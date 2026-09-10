@@ -41,6 +41,9 @@ import { GodotBuildVerifier } from "./godot-build-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import {installCreationEvaluation,reserveCreationEvaluationRequest} from "./craftmine-creation-evaluation";
 import {creationTaskStatus} from "./creation-task-status";
+import {createCreationEditService,validateCreationEdit,type CreationEditInput} from "./creation-edit-service";
+import {readFormalCreationJournal,assertDirectCreationCandidate} from "./creation-edit-guards";
+import type {DirectCreationIntent} from "./creation-check-requirements";
 import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
@@ -1141,6 +1144,71 @@ plugins.setServices({craftmineCreationCheckCompleted:async input=>{
   if(result.status==="applied")sendToRenderer(IPC.event.craftmineWorldChanged,{});
   return result;
 }});
+
+let creationEditStarting=false;
+const creationEditOwners=new Map<string,number>();
+async function assertCreationEditor(owner:number,sessionId:string){
+  if(!host||!mainWindow||mainWindow.isDestroyed()||mainWindow.webContents.isDestroyed()||mainWindow.webContents.id!==owner||notificationViewingSessionId!==sessionId||immersionState.blocked)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+  const detail=await host.call<{session:any}>("session.get",{id:sessionId});
+  if(!detail.session||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_SESSION_REQUIRED");
+  return detail.session;
+}
+async function creationEditCapture(owner:number,sessionId:string,captureId:string){
+  const session=await assertCreationEditor(owner,sessionId),projectId=craftmineProjectIdentity(session,sessionId);
+  const capture=await creationTargets.validate(owner,{creationTarget:{captureId}},{sessionId,projectId});
+  if(!capture)throw Error("CREATION_TARGET_REQUIRED");
+  return {session,projectId,capture};
+}
+const creationEdits=createCreationEditService({
+  begin:async(owner,input)=>{
+    if(creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
+    creationEditStarting=true;let turnId:string|undefined;
+    try{
+      const {session,projectId,capture}=await creationEditCapture(owner,input.sessionId,input.captureId);
+      let intent:DirectCreationIntent;
+      if(input.action==="undo")intent={action:"undo",undoOperationId:input.undoOperationId!,formalJournal:(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal};
+      else {if(!capture.target.entityId)throw Error("CREATION_OBJECT_REQUIRED");intent=input.action==="modify"?{action:"modify",targetId:capture.target.entityId,changes:input.changes!}:{action:"delete",targetId:capture.target.entityId};}
+      if(activeTurns.size||turnFinalizations.size)throw Error("ACTIVE_TASK_EXISTS");
+      await assertCreationEditor(owner,input.sessionId);
+      const turn=await host!.call<{turnId:string}>("session.beginTurn",{sessionId:input.sessionId});turnId=turn.turnId;
+      if(!turnId)throw Error("CREATION_EDIT_TURN_REQUIRED");activeTurns.set(input.sessionId,turnId);activeTurnUsages.delete(input.sessionId);
+      const content=input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      const message={id:crypto.randomUUID(),role:"user",content,createdAt:new Date().toISOString(),status:"complete"};
+      await host!.call("session.appendMessage",{sessionId:input.sessionId,turnId,message});
+      if(!await bindCraftmineTurn(input.sessionId,turnId,session,{id:message.id,text:content},{owner,capture,intent}))throw Error("CREATION_SESSION_REQUIRED");
+      const context={projectId,sessionId:input.sessionId,turnId},bound=creationTargets.bound(context,capture.worldId);
+      if(!bound||bound.autoApply||bound.creationRequirements?.status!=="verifiable")throw Error("CREATION_REQUIREMENTS_NEED_REVIEW");
+      creationEditOwners.set(turnId,owner);sendToRenderer(IPC.event.craftmineWorldChanged,{});return {context,capture:bound};
+    }catch(error){if(turnId)await finishTurn(input.sessionId,"error","CREATION_EDIT_BEGIN_FAILED",{createNotification:false,expectedTurnId:turnId});throw error;}
+    finally{creationEditStarting=false;}
+  },
+  execute:async(bound,name,args,toolCallId)=>{
+    const owner=creationEditOwners.get(bound.context.turnId);if(owner===undefined)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
+    await assertCreationEditor(owner,bound.context.sessionId);
+    if(activeTurns.get(bound.context.sessionId)!==bound.context.turnId||await godotSelection()!==bound.capture.worldId)throw Error("CREATION_TARGET_STALE");
+    const tool=plugins.getTools().find(entry=>entry.pluginId==="craftmine.world"&&entry.name===name);if(!tool)throw Error("CREATION_TOOL_UNAVAILABLE");
+    return tool.execute(args,{...bound.context,toolCallId,executionId:crypto.randomUUID()});
+  },
+  readJob:(bound,jobId)=>plugins.requestCraftmineHost("godotBuild.read",{context:bound.context,worldId:bound.capture.worldId,jobId}),
+  apply:async(bound,jobId,candidateId)=>{
+    const guard=async()=>{
+      const owner=creationEditOwners.get(bound.context.turnId);if(owner===undefined||activeTurns.get(bound.context.sessionId)!==bound.context.turnId||turnFinalizations.has(bound.context.sessionId))throw Error("CREATION_ACTIVE_TURN_REQUIRED");
+      await assertCreationEditor(owner,bound.context.sessionId);
+      if(await godotSelection()!==bound.capture.worldId)throw Error("CREATION_TARGET_STALE");
+      await assertDirectCreationCandidate((method,args)=>plugins.requestCraftmineHost(method,args),bound.context,bound.capture,jobId,candidateId);
+    };
+    await guard();return godotCandidates.autoApplyVerified(bound.capture.worldId,candidateId,{buildId:bound.capture.buildId,instanceId:bound.capture.instanceId},guard);
+  },
+  finish:async(bound,status)=>{
+    try{
+      await host!.call("session.appendMessage",{sessionId:bound.context.sessionId,turnId:bound.context.turnId,message:{id:crypto.randomUUID(),role:"assistant",content:status.phase==="applied"?"物体编辑已检查并采用。":`物体编辑未完成：${status.error??"请查看检查结果"}`,createdAt:new Date().toISOString(),status:"complete"}});
+    }finally{
+      await finishTurn(bound.context.sessionId,status.phase==="applied"?"completed":"error",status.error,{createNotification:false,expectedTurnId:bound.context.turnId});
+      creationEditOwners.delete(bound.context.turnId);sendToRenderer(IPC.event.craftmineWorldChanged,{});
+    }
+  },
+  changed:()=>sendToRenderer(IPC.event.craftmineWorldChanged,{}),
+});
 
 const logger = new Logger(
   dataDir,
@@ -2600,7 +2668,7 @@ const craftmineGateway = new CraftmineTurnGateway(
 );
 
 async function bindCraftmineTurn(sessionId: string, turnId: string, session: any,
-  request: { id: string; text: string },target?:{owner:number;capture:CreationCapture|null}): Promise<boolean> {
+  request: { id: string; text: string },target?:{owner:number;capture:CreationCapture|null;intent?:DirectCreationIntent}): Promise<boolean> {
   if (!plugins.getLoaded("craftmine.world") || !pluginActiveInProject("craftmine.world", session.projectPath ?? null)) {
     if(target?.capture)throw Error("CREATION_PROJECT_CHANGED");
     craftmineGateway.beginGeneric(sessionId, turnId); return false;
@@ -2615,7 +2683,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
     context: { projectId, sessionId, turnId }, selectedWorld, request,
   }) as { world: { id: string } };
   craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
-  if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id,request.text);
+  if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id,target.intent??request.text);
   return true;
 }
 /** sessionId -> last assistant usage recorded for active turn */
@@ -6321,10 +6389,25 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
-    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus"].includes(payload.channel)){
+    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory"].includes(payload.channel)){
       if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
       const input=payload.payload??{};
       if(!input||typeof input!=="object"||Array.isArray(input))throw Error("CREATION_REQUEST_INVALID");
+      if(payload.channel==="godot.creationEdit"){
+        const request=validateCreationEdit(input);await assertCreationEditor(event.sender.id,request.sessionId);return creationEdits.start(event.sender.id,request);
+      }
+      if(payload.channel==="godot.creationEditStatus"){
+        if(Object.keys(input).join(",")!=="operationId"||typeof input.operationId!=="string")throw Error("CREATION_REQUEST_INVALID");
+        const status=creationEdits.status(event.sender.id,input.operationId);await assertCreationEditor(event.sender.id,status.sessionId);return status;
+      }
+      if(payload.channel==="godot.creationEditHistory"){
+        if(Object.keys(input).sort().join(",")!=="captureId,sessionId"||typeof input.sessionId!=="string"||typeof input.captureId!=="string")throw Error("CREATION_REQUEST_INVALID");
+        const {capture}=await creationEditCapture(event.sender.id,input.sessionId,input.captureId);
+        const history=await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture);
+        await assertCreationEditor(event.sender.id,input.sessionId);
+        if(await godotSelection()!==capture.worldId)throw Error("CREATION_TARGET_STALE");
+        return {worldId:capture.worldId,latestUndoOperationId:history.latestUndoOperationId};
+      }
       if(payload.channel==="godot.creationTaskStatus"){
         if(Object.keys(input).length!==1||typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)throw Error("CREATION_REQUEST_INVALID");
         if(notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");

@@ -43,11 +43,23 @@ export function installCreationEvaluation(access:Access){
       return {sessionId,modelId};
     }
     if(!sessionId)throw Error("EVALUATION_NOT_INITIALIZED");
-    if(method==="chop-tree")return access.action("interact",{});
+    if(method==="chop-tree"){
+      const observed=await access.observe(),creation=observed?.payload?.creation;
+      if(observed?.baseId!=="creation-sandbox"||!creation?.entities?.some((entity:any)=>entity.kind==="tree"&&entity.id===creation.target?.entityId))throw Error("EVALUATION_TREE_NOT_TARGETED");
+      return access.action("interact",{});
+    }
     if(method==="wait-regrowth")return access.action("wait",{frames:300});
     if(method==="aim-ground"||method==="aim-tree"){
       const sample=await access.observe();if(sample.baseId!=="creation-sandbox")throw Error("EVALUATION_CREATION_BASE_REQUIRED");
       let yaw=.55,pitch=-.4;
+      if(method==="aim-ground"){
+        for(const angle of [.55,-.55,1.1,-1.1,0,2,-2,3]){
+          const result=await access.action("look",{yaw:angle,pitch});if(result?.error)throw Error(result.error);
+          const observation=await access.observe();
+          if(observation.payload?.creation?.target?.surface==="ground")return {result,observation};
+        }
+        throw Error("EVALUATION_GROUND_NOT_TARGETED");
+      }
       if(method==="aim-tree"){
         const tree=sample.payload?.creation?.entities?.find((item:any)=>item.kind==="tree");
         const obstacle=sample.payload?.creation?.obstacles?.find((item:any)=>item.entityId===tree?.id);

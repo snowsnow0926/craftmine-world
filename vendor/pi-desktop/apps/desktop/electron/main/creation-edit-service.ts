@@ -55,7 +55,7 @@ export function createCreationEditService(deps:Dependencies){
       let job:any;
       do{
         job=await deps.readJob(bound,started.jobId);
-        if(["passed","failed","cancelled","blocked"].includes(job.status))break;
+        if(["passed","failed","cancelled","blocked","interrupted"].includes(job.status))break;
         if(Date.now()>deadline)fail("CREATION_EDIT_CHECK_TIMEOUT");
         await pause(250);
       }while(true);
