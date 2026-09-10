@@ -1,0 +1,10 @@
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+Error occurred in handler for 'pi-plugin-panel-invoke': Error: BACKUP_CURRENT_HASH_CONFLICT
+    at desktopServiceError (file:///D:/cm-plan-loop-20260910/desktop/build/releases/ae32974eed09-f8b7f079-cede-45ab-814d-9df632e7b101/output/win-unpacked/resources/app.asar/out/main/index.js:718:24)
+    at Object.request (file:///D:/cm-plan-loop-20260910/desktop/build/releases/ae32974eed09-f8b7f079-cede-45ab-814d-9df632e7b101/output/win-unpacked/resources/app.asar/out/main/index.js:892:15)
+    at async file:///D:/cm-plan-loop-20260910/desktop/build/releases/ae32974eed09-f8b7f079-cede-45ab-814d-9df632e7b101/output/win-unpacked/resources/app.asar/out/main/index.js:476:34
+    at async Object.execute (file:///D:/cm-plan-loop-20260910/desktop/build/releases/ae32974eed09-f8b7f079-cede-45ab-814d-9df632e7b101/output/win-unpacked/resources/app.asar/out/main/index.js:503:16)
+    at async PluginPanelHost.pluginId.pluginId [as bridge] (file:///D:/cm-plan-loop-20260910/desktop/build/releases/ae32974eed09-f8b7f079-cede-45ab-814d-9df632e7b101/output/win-unpacked/resources/app.asar/out/main/index.js:60792:53)
+    at async Session.<anonymous> (node:electron/js2c/browser_init:2:118313) {
+  code: 'BACKUP_CURRENT_HASH_CONFLICT'
+}
