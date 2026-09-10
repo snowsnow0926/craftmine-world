@@ -8909,3 +8909,6 @@ actual desktop restart evidence must be labeled separately.
 7. Switch pages/worlds during reads and polling. Old responses must not overwrite the active page; background timers must stop. Use isolated headless page scripts with Pointer Lock disabled and no input simulation.
 
 Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
+### Optional creation guide in the library (2026-09-10)
+
+Open the actual library and confirm a collapsed six-step creation guide is inside the workbench. Expanding it must not change the fixed game chrome height. Navigate to checks using its existing action, verify the old guide is cleared, reopen the library and confirm it starts collapsed, then return to the world. No guide action may send a model request, prepare a draft, apply a candidate, or save progress. Use finite headless page scripts with no input simulation. Module-only DOM results are not assembled-client evidence.

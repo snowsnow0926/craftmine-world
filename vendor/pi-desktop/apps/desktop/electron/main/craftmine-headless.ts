@@ -115,6 +115,24 @@ export function installHeadlessControl(access: {
         };
         case "worldState": return evaluateWorld(`(async()=>({loaded:document.body.dataset.worldLoaded==='true',id:document.body.dataset.worldId,error:document.getElementById('error').textContent,status:document.getElementById('world-status').textContent,disabled:document.getElementById('save-world').disabled,guard:globalThis.__craftmineHeadless,snapshot:document.body.dataset.worldLoaded==='true'?(await craftmineView.snapshot()).snapshot:null}))()`);
         case "worldNavigationReady": return evaluateWorld(`({worldId:document.body.dataset.worldId,ready:!document.getElementById('world-list').disabled})`);
+        case "worldCreationGuide": {
+          if (Object.keys(request).sort().join(",") !== "id,method,type") throw Error("Unexpected creation guide probe fields");
+          return evaluateWorld(`(async()=>{
+            await craftmineView.showSurface({kind:'workbench',tab:'library'});
+            const area=document.querySelector('[data-creation-guide]'),details=area?.querySelector('details');
+            if(!details)throw Error('Creation guide was not mounted in the real library');
+            const result={worldId:document.body.dataset.worldId,collapsed:!details.open,steps:details.querySelectorAll('li').length,insideWorkbench:area.closest('#workbench-panel')!==null,headerHeight:document.querySelector('header').getBoundingClientRect().height};
+            details.open=true;
+            result.expanded=details.open;result.headerUnchanged=document.querySelector('header').getBoundingClientRect().height===result.headerHeight;
+            details.querySelector('form').requestSubmit();
+            result.checksVisible=!document.getElementById('checks-panel').hidden;result.clearedAfterNavigation=!area.querySelector('details');
+            await craftmineView.showSurface({kind:'workbench',tab:'library'});
+            result.reopenedCollapsed=area.querySelector('details')?.open===false;
+            await craftmineView.showSurface({kind:'world'});
+            result.clearedAfterWorld=!area.querySelector('details');
+            return result;
+          })()`);
+        }
         case "desktopState": {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
           return window.webContents.executeJavaScript(`(async()=>({title:document.title,text:document.body.innerText,version:globalThis.piDesktop?await piDesktop.invoke(piDesktop.channels.invoke.appGetVersion):null,guard:globalThis.__craftmineHeadless}))()`, false);

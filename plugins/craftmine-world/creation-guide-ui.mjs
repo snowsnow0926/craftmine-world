@@ -15,7 +15,7 @@ export function createCreationGuideUI({element, navigate}) {
     const epoch=++generation,details=node('details'),summary=node('summary','创作流程说明（可跳过）');
     details.className='craftmine-creation-guide';
     const style=node('style',`.craftmine-creation-guide{border:1px solid var(--border,#444);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.6}.craftmine-creation-guide summary{cursor:pointer}.craftmine-creation-guide ol{padding-left:22px;margin:10px 0}.craftmine-creation-guide li+li{margin-top:6px}.craftmine-creation-guide p{margin:8px 0}.craftmine-creation-guide .creation-guide-actions{display:flex;gap:8px;flex-wrap:wrap}.craftmine-creation-guide form{margin:0}`);
-    details.append(summary,node('p','不必一次完成。收起即可跳过，需要时再展开查看。'));
+    details.append(summary);
     const steps=node('ol');
     for(const [title,description] of [
       ['创建世界','在“新建”中选择底座和起点，也可以打开已有世界。'],
@@ -25,7 +25,7 @@ export function createCreationGuideUI({element, navigate}) {
       ['采用修改','满意后选择“应用到世界”，等待确认成功；也可以返回世界，继续修改草稿。'],
       ['保存并重开','回到正式世界游玩后点“保存”，确认“已保存”，下次从世界列表打开这个世界继续。'],
     ]) {const item=node('li');item.append(node('strong',title+'：'),doc.createTextNode(description));steps.append(item);}
-    details.append(steps,node('p','这里是流程说明，不代表任何步骤已经完成；具体结果以检查记录和世界提示为准。'));
+    details.append(steps);
     if(typeof navigate==='function') {
       const actions=node('div'),notice=node('p'),buttons=[];
       actions.className='creation-guide-actions';notice.setAttribute('role','status');notice.hidden=true;

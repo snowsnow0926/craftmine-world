@@ -36,7 +36,7 @@ try {
   const initial=await page.evaluate(()=>({count:document.querySelectorAll('details').length,open:document.querySelector('details').open,steps:[...document.querySelectorAll('li strong')].map(x=>x.textContent),text:document.body.textContent,calls}));
   assert.equal(initial.count,1);assert.equal(initial.open,false);assert.equal(initial.steps.length,6);
   assert.match(initial.text,/检查通过不等于已经采用修改/);assert.match(initial.text,/预览中的游玩不会写入正式世界/);
-  assert.match(initial.text,/应用到世界/);assert.match(initial.text,/不代表任何步骤已经完成/);assert.deepEqual(initial.calls,[]);
+  assert.match(initial.text,/应用到世界/);assert.deepEqual(initial.calls,[]);
   checks.push('six honest lifecycle explanations; default collapsed; mounting is idempotent');
   await page.evaluate(()=>{const d=document.querySelector('details');d.open=true;ui.show();if(!d.open)throw Error('show reset expansion');d.open=false;d.open=true;});
   assert.deepEqual(await page.evaluate(()=>calls),[]);
