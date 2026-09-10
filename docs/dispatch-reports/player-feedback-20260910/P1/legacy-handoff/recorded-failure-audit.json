@@ -1,0 +1,176 @@
+{
+  "format": "craftmine.legacy-handoff-readonly-audit/1",
+  "report": {
+    "path": "D:\\cm-fb5-20260910\\test-results\\desktop-native-lr-xkLzVU\\report.json",
+    "sha256": "de38f5a213268e930cfd37f2df101a3dadc4bf5d3a30ee1898ed63e73afe0eff"
+  },
+  "ledger": {
+    "path": "D:\\cm-fb5-20260910\\test-results\\desktop-native-lr-xkLzVU\\profile\\plugins\\data\\craftmine.world\\godot\\executor-ledger.json",
+    "sha256": "55f9d9626e2a5d3fb0a4fda05414503261e18897e0d2f608a570183fa772318b"
+  },
+  "worldId": "legacy-946e3d29703c4db6ad58",
+  "exactRowEquality": true,
+  "rowSha256": "e538440687acfb24a77ee57e6974e9ab92246cfabd78d07a08a43006d0282904",
+  "before": {
+    "baseId": "first-person",
+    "id": "legacy-946e3d29703c4db6ad58",
+    "revision": 0,
+    "runtimeKind": "godot",
+    "title": "Owned legacy first-load recovery",
+    "updatedAt": 1789035882274,
+    "base": {
+      "id": "first-person",
+      "label": "Godot 第一人称",
+      "delivered": false
+    },
+    "state": "failed",
+    "creation": {
+      "operationId": "gwinit-09f2fd58203db7377cf0c3283c62d6b926aa7b08804d0c135e2634bab2276fbf",
+      "stage": "confirm",
+      "stages": [
+        {
+          "id": "materialize",
+          "label": "复制底座与登记世界",
+          "status": "passed"
+        },
+        {
+          "id": "project",
+          "label": "建立工程源码",
+          "status": "passed"
+        },
+        {
+          "id": "build",
+          "label": "首次构建",
+          "status": "passed"
+        },
+        {
+          "id": "confirm",
+          "label": "确认可加载",
+          "status": "failed"
+        }
+      ],
+      "progress": 90,
+      "error": {
+        "code": "GODOT_INITIAL_LOAD_FAILED",
+        "message": "首次进入世界失败。重新初始化会修复可识别的旧版加载组件并重新检查；原始源码和存档会保留。",
+        "stage": "confirm",
+        "recoverable": true
+      },
+      "actions": [
+        "retry",
+        "details"
+      ]
+    }
+  },
+  "after": {
+    "baseId": "first-person",
+    "id": "legacy-946e3d29703c4db6ad58",
+    "revision": 0,
+    "runtimeKind": "godot",
+    "title": "Owned legacy first-load recovery",
+    "updatedAt": 1789035882274,
+    "base": {
+      "id": "first-person",
+      "label": "Godot 第一人称",
+      "delivered": false
+    },
+    "state": "failed",
+    "creation": {
+      "operationId": "gwinit-09f2fd58203db7377cf0c3283c62d6b926aa7b08804d0c135e2634bab2276fbf",
+      "stage": "confirm",
+      "stages": [
+        {
+          "id": "materialize",
+          "label": "复制底座与登记世界",
+          "status": "passed"
+        },
+        {
+          "id": "project",
+          "label": "建立工程源码",
+          "status": "passed"
+        },
+        {
+          "id": "build",
+          "label": "首次构建",
+          "status": "passed"
+        },
+        {
+          "id": "confirm",
+          "label": "确认可加载",
+          "status": "failed"
+        }
+      ],
+      "progress": 90,
+      "error": {
+        "code": "GODOT_INITIAL_LOAD_FAILED",
+        "message": "首次进入世界失败。重新初始化会修复可识别的旧版加载组件并重新检查；原始源码和存档会保留。",
+        "stage": "confirm",
+        "recoverable": true
+      },
+      "actions": [
+        "retry",
+        "details"
+      ]
+    }
+  },
+  "retryCalls": 1,
+  "retryReply": {
+    "status": "running",
+    "worldId": "legacy-946e3d29703c4db6ad58"
+  },
+  "recordedJobs": [
+    {
+      "jobId": "gjob-a1f317ba1b4a67ab979b3ab867f9402bb8354fe8df778fcd5819d83c07e057f4",
+      "startedAt": "2026-09-10T10:24:46.773Z",
+      "finishedAt": "2026-09-10T10:24:56.369Z",
+      "attempts": [
+        {
+          "requestId": "im-a6bb38f6885047f8aa5d0cd6",
+          "operation": "import",
+          "startedAt": "2026-09-10T10:24:46.774Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T10:24:50.037Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-622dd2ddd69944e4a93c8745",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T10:24:50.039Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T10:24:53.592Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ]
+    }
+  ],
+  "newBrokerAttempts": 0,
+  "fixtureExit": {
+    "code": 0,
+    "signal": null,
+    "forced": false
+  },
+  "launches": [
+    {
+      "number": 1,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "conclusion": "Immediate assertion rejected the identical old failure during asynchronous handoff; new import/export did not reach the executor ledger. Does not establish success of recovery or absence of every earlier Core preparation RPC.",
+  "liveSqliteReads": 0,
+  "nativeInvocations": 0
+}
