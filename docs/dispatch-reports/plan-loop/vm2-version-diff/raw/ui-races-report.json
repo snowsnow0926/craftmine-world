@@ -1,0 +1,22 @@
+{
+  "kind": "headless-react-response-races",
+  "checks": [
+    {
+      "name": "late old-world response cannot render after a world switch",
+      "passed": true
+    },
+    {
+      "name": "late old-version failures cannot replace the new comparison",
+      "passed": true
+    },
+    {
+      "name": "mismatched response identity is rejected in the renderer",
+      "passed": true
+    },
+    {
+      "name": "no input, focus, pointer lock or page errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

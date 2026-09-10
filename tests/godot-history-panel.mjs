@@ -7,6 +7,7 @@ import http from 'node:http';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
 import {playwright,browserOptions} from '../app/browser-tools.mjs';
 const root=path.resolve(fileURLToPath(new URL('../',import.meta.url)));
 const dependencies=process.env.CRAFTMINE_NATIVE_DEPENDENCY_ROOT||root;
@@ -18,7 +19,7 @@ const {build}=createRequire(path.join(dependencies,'vendor/pi-desktop/packages/a
 const {CoreClient}=require('../plugins/craftmine-world/core-client.cjs');
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/history-panel-'));
-fs.copyFileSync(path.join(dependencies,'plugins/craftmine-world/host-requests.cjs'),path.join(out,'host-requests.cjs'));
+fs.copyFileSync(path.join(root,'plugins/craftmine-world/host-requests.cjs'),path.join(out,'host-requests.cjs'));
 fs.copyFileSync(path.join(dependencies,'desktop/build/craftmine.world/domain.cjs'),path.join(out,'domain.cjs'));
 const {createHostRequests}=require(path.join(out,'host-requests.cjs'));
 const binary=process.env.CRAFTMINE_CORE_BIN||path.join(root,'test-restore-core.exe');
@@ -39,10 +40,25 @@ try {
   await core.call('godotProject.create',{context,worldId:'world-a',toolCallId:'seed',baseBuild:'base-a',baseId:'first-person',files:[
     {path:'project.godot',text:'config_version=5\n[application]\nrun/main_scene="res://main.tscn"\n'},
     {path:'main.tscn',text:'[gd_scene format=3]\n[node name="Main" type="Node3D"]\n'},
-    {path:'world.gd',text:'extends Node3D\nvar damage := 12\n'}]});
+    {path:'world.gd',text:'extends Node3D\nvar damage := 12\n'},
+    {path:'deleted.gd',text:'extends Node\n'}]});
   await core.call('workspace.endTurn',{sessionId:'seed',turnId:'seed',status:'completed'});
   await core.call('content.migrate.apply',{worldId:'world-a'});
-  const original=await core.call('content.status',{worldId:'world-a'});
+  let original=await core.call('content.status',{worldId:'world-a'});
+  const sourceOnly=await service.invoke('godot.historyLoad',{worldId:'world-a'});
+  await assert.rejects(service.invoke('godot.historyCompare',{worldId:'world-a',viewId:sourceOnly.viewId,targetOid:sourceOnly.headOid}),/GODOT_HISTORY_NO_FORMAL_VERSION/);
+  check('source-only migration does not masquerade as an applied version',original.appliedOid===null);
+  // Seed only the isolated test graph's applied ref, as RepositoryStore tests
+  // do. This is NOT a gameplay application or a check/application acceptance.
+  fs.writeFileSync(path.join(out,'empty-gitconfig'),'');
+  const seeded=spawnSync(original.git.path,['--git-dir',original.gitDir,'-c','core.hooksPath=/dev/null','update-ref','refs/craftmine/applied/world-a',original.headOid],{windowsHide:true,encoding:'utf8',env:{...process.env,GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:path.join(out,'empty-gitconfig'),GIT_TERMINAL_PROMPT:'0'}});
+  assert.equal(seeded.status,0,seeded.stderr);
+  report.limits.push('Applied ref is explicitly seeded in an isolated real Git fixture; this test does not prove Godot candidate application.');
+  original=await core.call('content.status',{worldId:'world-a'});
+  const readOnlyBefore=await core.call('backup.status',{});
+  const view=await service.invoke('godot.historyLoad',{worldId:'world-a'});
+  const unchanged=await service.invoke('godot.historyCompare',{worldId:'world-a',viewId:view.viewId,targetOid:view.headOid,offset:0});
+  check('formal self comparison is empty and browsing creates no tasks or writes',unchanged.total===0&&!calls.some(call=>call.method==='turn.begin')&&(await core.call('backup.status',{})).currentHash===readOnlyBefore.currentHash);
   await assert.rejects(service.invoke('godot.historyLoad',{worldId:'world-a',context:{}}),/INVALID_HISTORY_ACTION/);
   selected='world-b';await assert.rejects(service.invoke('godot.historyLoad',{worldId:'world-a'}),/GODOT_WORLD_CHANGED/);selected='world-a';
   check('forged context and cross-world selection rejected',true);
@@ -82,6 +98,37 @@ try {
   check('check binds forest source and reports missing executor honestly',buildCall.args.branchId==='forest'&&buildCall.args.mode==='check'&&await page.locator('[data-history-job]').textContent().then(text=>text.includes('GODOT_EXECUTION_UNAVAILABLE')));
   await page.evaluate(()=>document.querySelector('[data-history-candidates]').click());
   check('candidate entry reuses existing checks without applying refs',await page.evaluate(()=>window.openedChecks===true)&&!calls.some(call=>call.method.startsWith('content.apply')||call.method.startsWith('godotApplication.')));
+  // Real source transactions seed a multi-page comparison. These fixture writes
+  // happen before the read-only boundary measured below, never inside a read.
+  const diffContext={projectId:'diff-seed',sessionId:'diff-seed',turnId:'diff-seed'};
+  await host('turn.begin',{context:diffContext,selectedWorld:'world-a',request:{id:'diff-seed',text:'Seed exact Git diff cases'}});
+  let diffIndex=await core.call('godotProject.index',{context:diffContext,worldId:'world-a',branchId:'forest'});
+  const operation=async operationId=>{const status=await core.call('content.status',{worldId:'world-a'});return {operationId,worldId:'world-a',repoId:status.repoId,branchId:'forest',expectedHeadOid:status.branches.find(item=>item.name==='refs/heads/forest').oid,expectedAppliedOid:status.appliedOid,expectedProgressRevision:null};};
+  const fixtureFiles=[...Array.from({length:35},(_,i)=>({path:`added-${String(i).padStart(2,'0')}.gd`,bytesBase64:Buffer.from('extends Node\n').toString('base64'),expectedHash:null})),
+    {path:'binary.png',bytesBase64:Buffer.from([137,80,78,71,0,255,0]).toString('base64'),expectedHash:null},
+    {path:'long.gd',bytesBase64:Buffer.from('# <img src=x onerror="window.xss=1">\n'+('# 字符 exact '+ 'x'.repeat(90)+'\n').repeat(2000)).toString('base64'),expectedHash:null}];
+  diffIndex=await core.call('godotProject.applyFiles',{context:diffContext,worldId:'world-a',toolCallId:'diff-files',revision:diffIndex.revision,manifestHash:diffIndex.manifestHash,operation:await operation('diff-files'),files:fixtureFiles});
+  await core.call('godotProject.patch',{context:diffContext,worldId:'world-a',toolCallId:'diff-delete',revision:diffIndex.revision,manifestHash:diffIndex.manifestHash,operation:await operation('diff-delete'),operations:[{op:'remove',path:'deleted.gd',expectedHash:createHash('sha256').update('extends Node\n').digest('hex')}]});
+  await core.call('workspace.endTurn',{sessionId:'diff-seed',turnId:'diff-seed',status:'completed'});
+  await page.evaluate(()=>[...document.querySelectorAll('button')].find(button=>button.textContent==='刷新').click());
+  await page.waitForFunction(()=>!document.querySelector('[data-history-compare-head]').disabled);
+  const stableWorld=await core.call('world.read',{id:'world-a'}),stableBackup=await core.call('backup.status',{}),readCallStart=calls.length;
+  await page.evaluate(()=>document.querySelector('[data-history-compare-head]').click());
+  await page.waitForFunction(()=>document.querySelectorAll('[data-compare-files] li').length===32);
+  check('actual Git changes paginate at 32 visible files',await page.locator('[data-compare-count]').textContent().then(text=>text.includes('1–32')));
+  await page.evaluate(()=>document.querySelector('[data-compare-next]').click());
+  await page.waitForFunction(()=>document.querySelector('[data-compare-path="long.gd"]'));
+  check('deleted file is honestly listed',await page.locator('[data-compare-path="deleted.gd"]').textContent().then(text=>text.includes('删除')));
+  await page.evaluate(()=>document.querySelector('[data-compare-path="binary.png"]').click());
+  await page.waitForFunction(()=>document.querySelector('[data-compare-binary]'));
+  check('binary addition reports actual size and absent old file',await page.locator('[data-compare-binary]').textContent().then(text=>text.includes('不存在')&&text.includes('7 字节')));
+  await page.evaluate(()=>document.querySelector('[data-compare-path="long.gd"]').click());
+  await page.waitForFunction(()=>document.querySelector('[data-compare-truncated]'));
+  check('long exact text is visibly bounded and source HTML never executes',Buffer.byteLength(await page.locator('[data-compare-patch]').textContent())<=65536&&await page.evaluate(()=>!window.xss&&!document.querySelector('[data-compare-detail] img')));
+  await page.evaluate(()=>document.querySelector('[data-compare-path="world.gd"]').click());
+  await page.waitForFunction(()=>document.querySelector('[data-compare-patch]')?.textContent.includes('+var damage := 21'));
+  check('actual text diff preserves exact removed and added lines',await page.locator('[data-compare-patch]').textContent().then(text=>text.includes('-var damage := 12')));
+  check('comparison and detail reads preserve complete DB fingerprint and world',JSON.stringify(await core.call('world.read',{id:'world-a'}))===JSON.stringify(stableWorld)&&(await core.call('backup.status',{})).currentHash===stableBackup.currentHash&&!calls.slice(readCallStart).some(call=>call.method==='turn.begin'));
   await page.evaluate(()=>{const select=document.querySelector('[data-history-branch]');select.value='main';select.dispatchEvent(new Event('change',{bubbles:true}));});
   await page.waitForFunction(()=>document.querySelector('[data-history-branch]')?.value==='main'&&!document.querySelector('[data-history-check]').disabled);
   await page.evaluate(()=>[...document.querySelectorAll('[data-history-files] button')].find(button=>button.textContent==='world.gd').click());

@@ -1,0 +1,2117 @@
+[
+  {
+    "path": ".craftmine-operation.lock",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "content-history/git-config/deny-askpass.cmd",
+    "bytes": 22,
+    "sha256": "b54baa0fa11db46bb0b4140b69dda6d0a8d211970b0d8b8b2425da7ff4c3d1d4"
+  },
+  {
+    "path": "content-history/git-config/gitconfig",
+    "bytes": 60,
+    "sha256": "c0ff09f22ab73493334de95c159382f7125bab71d6e7ec1409adf5941f53df25"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/config",
+    "bytes": 104,
+    "sha256": "74c63b4eae3533b3ff4c0e285897778464d6c04815c33457729279ded1e2a947"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/description",
+    "bytes": 73,
+    "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/HEAD",
+    "bytes": 21,
+    "sha256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/applypatch-msg.sample",
+    "bytes": 478,
+    "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/commit-msg.sample",
+    "bytes": 896,
+    "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/fsmonitor-watchman.sample",
+    "bytes": 4726,
+    "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/post-update.sample",
+    "bytes": 189,
+    "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/pre-applypatch.sample",
+    "bytes": 424,
+    "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/pre-commit.sample",
+    "bytes": 1649,
+    "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/pre-merge-commit.sample",
+    "bytes": 416,
+    "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/pre-push.sample",
+    "bytes": 1374,
+    "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/pre-rebase.sample",
+    "bytes": 4898,
+    "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/pre-receive.sample",
+    "bytes": 544,
+    "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/prepare-commit-msg.sample",
+    "bytes": 1492,
+    "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/push-to-checkout.sample",
+    "bytes": 2783,
+    "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/sendemail-validate.sample",
+    "bytes": 2308,
+    "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/hooks/update.sample",
+    "bytes": 3650,
+    "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/info/exclude",
+    "bytes": 240,
+    "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/03/2ab8be9d00bd22bf285521f8f1e6d614106e45",
+    "bytes": 132,
+    "sha256": "5a31712cf64ffc6d3962bdadb83611ecda560706b397b83ddb2d0fbf9dec3200"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/06/0ebb0d541d56f7d81291f84eda9494a41806a9",
+    "bytes": 417,
+    "sha256": "648005cc89ee07e2d268874e50d30cf3d20a4d509d8c74d94dc3ead71186910b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/08/a882aa1ee1750d3ec6f9f0bb3d543389bb0ac6",
+    "bytes": 1969,
+    "sha256": "53ae2af82095d9d16d92eeec0637ea613f243f31196dc1737eb992eafd34cfe5"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/09/d67531a82b7293ae354a03c5ea30cea7528a25",
+    "bytes": 710,
+    "sha256": "0dfcb83c0097b9216afc6704d5c69215e5fdf92614e70b1c314ee7c10e8888db"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/0b/46a7e66d852c7f0d8d17e3288f5a10a2d936c9",
+    "bytes": 351,
+    "sha256": "732de0e9374bed492de55f87e718453db8022a59d363a4d007d08f196b188dc3"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/0b/652da6c53fa6dc82b6452a61f4e2bf0021e843",
+    "bytes": 123,
+    "sha256": "a3bf67e94cdcd833b5803d84d531840b7f12217fa82f2f10975cfaf3cfeb70f9"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/0f/311b0df17926c115ba2b098537c6636217604d",
+    "bytes": 1497,
+    "sha256": "0838c555df7a9458a7ae85c12611be3db76256256fc9e250074f103b9a66dd86"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/10/c90d89b505fedc8aa7d9deee6556c6b96957b2",
+    "bytes": 745,
+    "sha256": "2d0ff3f4ca883771d80d60d543df9d218c0534d9279bc5c79ec8e630d6adda99"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/14/1bb5e8e649e4f888f4a9e087440d56ea23802a",
+    "bytes": 1401,
+    "sha256": "3f5003d84c4703afc916f975273b21a916dc49f83b9c515cefe68af58ce745c7"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/1b/41c3d03c500bf75bbc0c550b2690bc4f464576",
+    "bytes": 2641,
+    "sha256": "c6a8266bcdfab4aef8a72a529bb50c575af5fdc65db5f008cdfa8f11226a5e2e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/1d/1e07030a59ea5317db5103b1729f795496f0ae",
+    "bytes": 2312,
+    "sha256": "eac0f738f31e9bb8caac2dec36391a3e8be97cc3bfb91c386a5843589c7ed25f"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/1d/95093622e8ab093deb86287048f32b083a82b7",
+    "bytes": 105,
+    "sha256": "a81b2c599fffd1429a0b14d54be1750d94c28f6a8c7fdf2125264bfbc7959181"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/20/e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+    "bytes": 305,
+    "sha256": "b69cdc881f4bb4dc3d945b6ce279ccff656773f38a872b83318de4dbdb6b1178"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/21/ef290f42c366093ef61d52c959faf38a906924",
+    "bytes": 3225,
+    "sha256": "1058f7bba90ea72f7ff002d3518e24c509ad1fc8be34da60d0400dfa8f719946"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/25/eaf6a01980c529cd83f252f62095ef1b9cc8e3",
+    "bytes": 734,
+    "sha256": "1f238b91d2e98eb2c1fc623c9868babbf588665fd0ce5b090ea36e3ecb5b68d4"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/28/12b952edae16f0daad2a3e7065c202cea5f65d",
+    "bytes": 418,
+    "sha256": "e5d0875a617d4c35df8703b7631bc60602e0f8e7b758a002ca3444741718485b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/2d/ea3c447f6ad2925229fc2e91f6e4829df5e36f",
+    "bytes": 584,
+    "sha256": "a50de6b45f0c6db4fdd2d8a250824bf0ff935d89e2d3535decb0208e05b83c06"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/30/797b0be9e803f11ee2648e4118f4a795cc5163",
+    "bytes": 255,
+    "sha256": "a8c03962c50d787eb03d74399e23b49c8a6cb3a5f84c11f9e5dc22bfd0db7486"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/30/c2918191df155cd054ad2bbbb109accaf7a759",
+    "bytes": 1641,
+    "sha256": "e0cbbc9937ecfe6f48e0a0b12f8e553ee443349ad08b36cca38f3113e5b13b28"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/35/2328dc6d9cb2c37b574ac585e74cfb79a09f37",
+    "bytes": 299,
+    "sha256": "6e9947ece68c138f48160cdc00ba7607b14d123a9df8f49b87950929cb414b60"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/39/0c1bddecd6fb1bf03eeacd3c615cc60533a2af",
+    "bytes": 58,
+    "sha256": "f7193eaeb8e31b68b7030cdec68ffa2ca896a340d3f9578c9f66fc4fb1f4921a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/3a/9d55c33cc3c45048b321d30315afcb7efc97af",
+    "bytes": 72,
+    "sha256": "e7eff456f408d248014dedf9572c976b05a5fb13ee5a8dbb23e1184bdf4633fb"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/3c/e7f812d9cb4279c17dd62fe953953f6bd5cb29",
+    "bytes": 98,
+    "sha256": "a808cf889744dd4ff22d07834826daa66ba4f9a5307d9843089fed6e2d8b856b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/3c/f297c7573b7b5cc7613dea432eab2227d56232",
+    "bytes": 174,
+    "sha256": "8cec469ab4d29373b0574e0cd8e4ecb5a8ea305b5a5076ead3201d5ffa0b69e4"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/44/2d244c77ab5a187e35cc219c5f64b1c21a3baa",
+    "bytes": 2035,
+    "sha256": "9ae536650ae98da1aac1769b562baea8348c7d2fab06a17e22a3d7efcc919942"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/44/487624d42c7bc676254839f7ecef32aff83dad",
+    "bytes": 2229,
+    "sha256": "229c2c47b2b6320e801069775f91b35f496a569b2fcb9b89298803c6ac101c2f"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/46/12ab20bd2a9036db7885db4387af5ecd3e0b8d",
+    "bytes": 3027,
+    "sha256": "e51f1ad0612a559a5e1b8132a61fbb03878e37ebb073825473f4c1dd71287d30"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/48/36b649600a674fc4b9976c1c52e9cf3e7eab88",
+    "bytes": 93,
+    "sha256": "9ce7063053582881896d6687b3ecbd54111a2d2fadcca1b7e7dd49bcd3335e53"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/48/b4969983ebb39a5954827956f8961684c61b25",
+    "bytes": 189,
+    "sha256": "9d69e573ea106949433bf6df6ef94d717b2c89347348931853f7aa455778932b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/4c/c0fb331bedcc03c04a8164d6e0523e6e067c9f",
+    "bytes": 2376,
+    "sha256": "050bf86f861d868f34dd0f076b828d6aa650802390631bbccb0d642fcf8d565c"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/4e/7f76fc955430d29e95bee2f5462035bd2eacd2",
+    "bytes": 123,
+    "sha256": "acced5152c904aa6192e21276db7d7da53174f64eb5c286ce65a1d345c7f9f8a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/4f/b691a78c74444baac177b1b50db981a260067b",
+    "bytes": 1142,
+    "sha256": "78cb08e4a262fa5bae5bc6b3cadc855bb5058df70e4a90fd9e53aec00c863627"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/53/f4fecd1e91b5440ef9b1eb8e0740d619ddd51a",
+    "bytes": 124,
+    "sha256": "5ce926c289418e9d029dd8730ec2311578bf89963a25a1a59de3fe90fe424941"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/5c/53eba281559deeb044bb53674ae9d9d717dbfe",
+    "bytes": 122,
+    "sha256": "e45841b3c3c7b4a5f56f03c67d54491428108a1fb2bb57e7597a725da10cfe1f"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/60/8a34269b59134ae9843274ebb6900cb9b1473a",
+    "bytes": 291,
+    "sha256": "625919a994460a6253577026fdf9456fe000ee5319ec88675db450b6914c289f"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/62/a04bf75ecf41fd11252acd341a069871ca4de2",
+    "bytes": 556,
+    "sha256": "1d94685c8b7ab3e4de376591ddba79a01065f80a81c3cd0288e3b48ba788e386"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/67/b1670626e4d70093c47341d7cc972a7cc4753d",
+    "bytes": 1880,
+    "sha256": "ce74b91da702c1abd964417576d0c6aa7b40d4b1649ada21bec9def853fa908a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/67/eea69cda47483a13d4da6e0c27689b0ad3b5c2",
+    "bytes": 503,
+    "sha256": "92cf0fcc452329493e799bd4f3be0725c882cb76005037440b8ef4564abaeb1e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/6c/6c98b08486d69c38fc747aeffbeb391aaf0126",
+    "bytes": 127,
+    "sha256": "64bac1ed4fae3b57530e4612b27f775dc3b9ce8d07dc748921c4e89115fb76c9"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/6f/8cdc23250402752fdae3bb3cb8c1bbcc863d8c",
+    "bytes": 164,
+    "sha256": "c4aab4bd096b7b95da70f64964aba886ee132f61dd9fbb864f3c9c5ff7a39fd1"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/71/b830f561f02e36a5a6c0f1173742065cfd674e",
+    "bytes": 268,
+    "sha256": "ed058e7ab9a9834b137bcb7806511b14047a4f6c7257fbfe425d24b9a5d11a72"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/72/b2376a2a65cf00c9cdaab60273904a36171de7",
+    "bytes": 318,
+    "sha256": "31483804d5cbc36f79fada53fe53dba19fabad1095963ecf95cd7cb96d245dbf"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/73/1b1d92d6a656494e36749be351f5e3415ce9ce",
+    "bytes": 61,
+    "sha256": "485267e76431dcf940d3cde175c116891f6092cc20b86db32201e229185f3932"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/78/edb6ef8d7c36a1580c64aa5bec1ac8e8dcf01a",
+    "bytes": 601,
+    "sha256": "016495df0c2d6baf153179358f693b027c214e1c0425b965d5daa302cb2752eb"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/79/7ce603e83af7be01a4cea25e7589caeb08b3c5",
+    "bytes": 1635,
+    "sha256": "d7c606157feaeacd174651061f6a79a0b2edd98262743a3fcc716215f9776e70"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/7f/0f02fa6918932d2f4a0e3517ada3a107142fc0",
+    "bytes": 133,
+    "sha256": "c932b31c7860c63fa94f2c497cd27a63b534fc315d3eb713414e3d851bd2e7b4"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/81/20bacf4af331bcff01a02aba74d4e6424a493f",
+    "bytes": 1507,
+    "sha256": "54f9bf623c52bff2d4137c348e1b6eaadb44ddb66c6e1cbfbde309d5a679e9e4"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/81/2faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+    "bytes": 265,
+    "sha256": "e409c8fc2192a457e948fb634b7db52a5e48118720bf3c8f7e96eecd841783b2"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/84/593657640971443188fc7e415ca95f35b72b17",
+    "bytes": 165,
+    "sha256": "30c47f5709655c9f3f998e242101cce806033f42e46fb487adadf2cb74d8d341"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/85/59b49713a43f9ef1a0e88a6740a0ff4fd3b172",
+    "bytes": 79,
+    "sha256": "b62e6295747768192662168995dda9c9204681676cb2f516df136fd7cd550ba4"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/8a/3657e4cdec7e13f9788ed7f9253e19e9a29a23",
+    "bytes": 746,
+    "sha256": "73701912d48c39d577ed3420275d77dca51cd9706335c11769556cc8c66fc94c"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/8c/1b69ba8a0140c1b6c01a66d4489981ec94931f",
+    "bytes": 195,
+    "sha256": "7734266fd670045a72445aba52ffce35c5c0a842bd8b8c425c4d861177b62ea7"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/8c/5e4ad9ff8b8d604df579a70f71e6d54358c5f1",
+    "bytes": 990,
+    "sha256": "d3404c12d78a8fa8ec1d7b86ef7c45134d41bc35f9949e1bf253ce358d526cc3"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/94/9be939315596de1aa43069a0c000d8afad5d3d",
+    "bytes": 190,
+    "sha256": "ff0d74ebbba7368a6df9baec4b67fdc63b72790e870277177309dca2f3a70fa1"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/98/230f09e629aba534be8d446d2cb2c94bd4269f",
+    "bytes": 235,
+    "sha256": "11513a529b771a85d2a7836dd7aaefb7b50fd525c9ef07cdcab2f54cff57c3f1"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/9a/ae8d29edb58ff31305ce794e6bf014180493dc",
+    "bytes": 1486,
+    "sha256": "6bb0cb580ba27d7fcd3ff4438f71454597c9458529968efd9f922d88c91e1087"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/9b/fdb1a0ae9bced92f45bb1401116d035e4b43d4",
+    "bytes": 53,
+    "sha256": "7d8b37484f305ed13cdf4c8eb89aeafabff9f992bdedd587260737436b99954a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/9c/fe5224b586e1faaf224cfb133e7c31bd8fe6fa",
+    "bytes": 1664,
+    "sha256": "4c5c2c7431d9bdcf066e24b12acc06e1049b0dfd2051bb7c8a774d6ca4a993fd"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/a3/c867a98e41baef3189694733e3843615a105ab",
+    "bytes": 398,
+    "sha256": "a8d34142ffd9b16c563b9f8df0d2aee41cb066a92d9c5a591e1c5e0df7d54eb6"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/a5/a2bd7805d252cc461cd6cf2e7c5f29d8414b3a",
+    "bytes": 556,
+    "sha256": "fea43de61032aa59b846de7ff6e6b05f7af12d8a07e1d7dbb6ac84b6d7c77517"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/aa/3b2d83e8d231c38fe6fd207dd63ee80b1abe58",
+    "bytes": 2038,
+    "sha256": "2e2573c1f46fd1fbfbf058c2aac149b631bdaf203ca2d70f701acf1683dd0caf"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/aa/403624a7ca0affe7c968cb75ba36c7b9b2cad3",
+    "bytes": 397,
+    "sha256": "5596c8d922db7bc02e85bf65853720818b4131220a0a2501391d1e4f942f2ac5"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/aa/aeb674e7f52892f358c9b1fe3c5ed6948aefdc",
+    "bytes": 999,
+    "sha256": "68b08bd831f72b9fc54afb60bc60e49e35d5cefc47a4ae521ee9f4e64aba253b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/ac/2f447f9cfc5883686b4062145bd381ece79153",
+    "bytes": 710,
+    "sha256": "602527470a85dc26d074e3bd02e4364e54600f3307bbc1f648c0ce7999488f50"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/ad/96b8425dca78b97a72ea1fba136e8c40f79512",
+    "bytes": 482,
+    "sha256": "3599d51be3a098d7fceb2f590946d533b55ec1c76f3b875c15141fdcb85792e5"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/ad/c0cdbd61f0cc3693f6f4d6c46e3ccb31de11ee",
+    "bytes": 779,
+    "sha256": "09a36ce41434dc2610596ec9674ee3a02bcf575f64a975c9fdfa5eb3eede860a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/b5/478591a46c7d39dd7e5cd7d6440d96c657c456",
+    "bytes": 875,
+    "sha256": "285a0f077bfb9b8e60c28776bcd53b07adf87eea858304ea68126681aa77cc37"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/b5/751b684e8a58fd78486f22f00b8d2aadb64742",
+    "bytes": 2870,
+    "sha256": "121f7e9837f582af3ffc4e8e55b14af0ec86d99edbe4ff27e5265519cd54f966"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/b5/d463430ce1ae1f8b86c9fb6e4f2a2f871233dd",
+    "bytes": 614,
+    "sha256": "625cd1bbe781cfffbbe6afcca37e930277099bc61254ee170864816db566c97e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/ba/c164308230a5306c810494a0a94cbb3ebdabea",
+    "bytes": 134,
+    "sha256": "632ebc7ac64bd79d12ee7d22c70f5986ceedd511ae3ec7ee2936c91b276534ea"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/bb/5938fb4d7cf3edba909612a55317671b358306",
+    "bytes": 251,
+    "sha256": "630a0ea7d4101edea418d7fabdc377b54204b4c45574a468a6d2a9a5ef9e26dc"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/c3/69db1ce1b509829af832b23d21a3fd61111ff5",
+    "bytes": 625,
+    "sha256": "f041cb6ae1b6f63cca28c3a805143eb2ec541fa88148c7b11cbfc587f881e001"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/c4/60a0d967a60b98f90e5fdc4de07b4f8ff1bc58",
+    "bytes": 424,
+    "sha256": "a9e8f349ab11fb1b32243d183a0a9949894716feb4e7b850e9d034b22026865f"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/c6/40bb00a52913eda273d950d61eb9e8a5a02f7b",
+    "bytes": 136,
+    "sha256": "7993efbf045eef5bc07cb855763af773e909dea2c56b29fd49616c4d7e6c7c4d"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/cb/919ecf80ce929bc05ac7f9c59bd3209534440f",
+    "bytes": 661,
+    "sha256": "0a8ef2e1c96d07828f963b975d8c1a53b17185d748ed35ba42ea3309dc49765b"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/cc/e61897c73b9c7ab273337dbb15c9bd8976105a",
+    "bytes": 116,
+    "sha256": "2af17e5c136eaf89bc2812bb993f1a84376ea815b8d63e860b534a51c7f8f6ce"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/cc/f469f99a1fd46e37d6c8d99a132e83bdfca4d3",
+    "bytes": 1121,
+    "sha256": "e56e486a75c0aaa542f3fb6b57b3a9aeabef89bce221082bfb12fc287f0bda5e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/d1/9c916eae0ab78db2b373c5147ca86ff81e6b93",
+    "bytes": 438,
+    "sha256": "5437d6af8b1ffc45c39af1dc2c19ea29e16ce461468f8b00c16a3a01125e5018"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/d2/60d0d8d360c6b59b77647e721fd2c810d3e867",
+    "bytes": 1330,
+    "sha256": "042209faea0bf76da05df378e0a7a1a2ac21dac607fe6e3559b533f989543aee"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/d3/809bf321256c601addd3af0e061a300157169f",
+    "bytes": 140,
+    "sha256": "c530af1acbbc6061999b993d11351b489a310850f88d11dde8d9a7536059f010"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/d5/2194364a44f308615f2016097c4fb100060669",
+    "bytes": 965,
+    "sha256": "521662c3d0d794114a6f3f5366ca8b8ffc0a758866369901c3b1f2e484e06485"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/d9/6c0d909ba0ca4faf39df5e20fd2f885b2f1446",
+    "bytes": 869,
+    "sha256": "49cc085147a50e69b25866cd17dd30dec35f49cfe6d636ece9c625c7b213f4e4"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/da/8841a99b57f78727306e3a8fc3c5ef46a837a7",
+    "bytes": 810,
+    "sha256": "7331196bbc71959c62bb206def3ff9bb0db25d41a4c47e57d5bf9e5dd407b1ce"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/de/3aebafcf41c0284ae9a6b0441db0069e3ca479",
+    "bytes": 64,
+    "sha256": "127784014ff383d0141ebb7cf5718e01b08d80856ef416fd4690b83e4fe71aea"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/e3/5f4114e90c1f9d06b5a8d80fa98d5e88dcf852",
+    "bytes": 275,
+    "sha256": "aeda40d35ab31d526fa66ffdaecf167f9f1dd45bfb77d4e08d3a67c64e9df9ee"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/ea/41ee52da6f4bf0ff12e894809708e295a9e502",
+    "bytes": 1606,
+    "sha256": "6d7b15ebf7f57028486fbe1cff1fbfd55199a2875ff07bcd435ef26c42c68660"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/ef/7dda026010aabb4452d656792ec5b38ff051cd",
+    "bytes": 3706,
+    "sha256": "7480ea35e7f428f448e6c9258d02beedfbed9f0f3fe6178adb7001f3f0a40c1a"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/f3/c464072a4dfa888201f42fdf822ed96fcb07df",
+    "bytes": 544,
+    "sha256": "87b03de04bd6af6bf4cb59685caf2879bcb90dfc40e314e8a8e247380384da76"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/f8/d1c63ea2e2acf8582514f47ab0d11d1935074b",
+    "bytes": 1308,
+    "sha256": "829177b22b92615486ec791d17b94dca1c813d94381e919b995f18d7ace7e60e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/f9/cc9e4e3ed5ce2019da53ad2b480ccdac473cba",
+    "bytes": 740,
+    "sha256": "3e9d5a12c3cd81bac397e56f4fbd62094f91680d4a4dcd06cb607b13456a4f97"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/fc/942fd3530770e5bff365bd83bf8941be900c24",
+    "bytes": 1114,
+    "sha256": "6da7aafc0056def4c284d0b8b9c63eb781921307866037c8306189b846440bc7"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/fd/5cccdf05a5f26ff90e5f7ea283853c44e1acfe",
+    "bytes": 120,
+    "sha256": "e7bf8c7f9ec86afdc0f220f64cb2572db38ccc709f12c033fb5a6afaf2d627be"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/fd/b6d2a9bb52d087d2eba84eab98a20a862328f9",
+    "bytes": 925,
+    "sha256": "c027922ae13606cba023e013cd17ed72f4ed80ba72408ca09df80a9805263662"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/objects/fe/1c8ba2c5a85ed9cb284fed1a3cb7485d97ef5b",
+    "bytes": 994,
+    "sha256": "93e1b69f2a3bd66d71f978a0aaca6c0fec6ff4c9c478268a7314eee3526c6b65"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/refs/craftmine/applied/world-a5eac9797410",
+    "bytes": 41,
+    "sha256": "42cb9f3c44e31c08c0c93acd3df9d86f688caf0ae12bf453fb2513ab925e4b4e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/refs/craftmine/migration/e929c6dca8cea78d13a1909a8a19abb2/00000000",
+    "bytes": 41,
+    "sha256": "3d8cd3cb4feb4e8ad7bb727dd3007463edbb1a9c9238ffcb720962041c629c45"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/refs/craftmine/migration/e929c6dca8cea78d13a1909a8a19abb2/00000001",
+    "bytes": 41,
+    "sha256": "eda1d1c6e7875c995c9111f03f689efb91ca37220c462d17e3b1d85e099ca9df"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.git/refs/heads/main",
+    "bytes": 41,
+    "sha256": "42cb9f3c44e31c08c0c93acd3df9d86f688caf0ae12bf453fb2513ab925e4b4e"
+  },
+  {
+    "path": "content-history/repos/e929c6dca8cea78d13a1909a8a19abb2/repo.json",
+    "bytes": 188,
+    "sha256": "dc29d927197a4462381a23304aa8d0075c82299045d880e96c693119a0a1fb2d"
+  },
+  {
+    "path": "domain-writer.lock",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "godot/executor-ledger.json",
+    "bytes": 2569,
+    "sha256": "0d8d5c99e1659b5434d3f28b101fdba90a9d167d83f20a9d08fb1a09156678cc"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.apple-touch-icon.png",
+    "bytes": 9395,
+    "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.audio.position.worklet.js",
+    "bytes": 2973,
+    "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.audio.worklet.js",
+    "bytes": 7298,
+    "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.html",
+    "bytes": 965,
+    "sha256": "2b8c572998a3d0f5c5d1472134351d5b1222d8c94f131be87f2db11f4c628331"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.icon.png",
+    "bytes": 4355,
+    "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.js",
+    "bytes": 314653,
+    "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.pck",
+    "bytes": 214352,
+    "sha256": "0b30ccec51ab2a564b1932d32b9fdb77f34680f2612b6cb91413235a02edd70f"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.png",
+    "bytes": 21443,
+    "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/artifacts/index.wasm",
+    "bytes": 38820072,
+    "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/logs/native-verification.json",
+    "bytes": 821,
+    "sha256": "7a22a0ba1aa56ade4ced915f8eb97a4371bb78ba60706dc0c643cb94f1880869"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/logs/process-verification.json",
+    "bytes": 830,
+    "sha256": "ec69d9ce4effef07f606b1304f0344e8865f0396c875e94621bdc61070590f61"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/logs/task.log",
+    "bytes": 21385,
+    "sha256": "3705694857b111e39c4cb66482a2b5737615646edcf95c3917bbfafc3376e1d4"
+  },
+  {
+    "path": "godot/tasks/ex-951eca7951bd400cb7b6abe4/task-identity.json",
+    "bytes": 165,
+    "sha256": "f351ed074990c3a08f33f34401762daee9c3b9ce8978cccaac1751f215d6e049"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.apple-touch-icon.png",
+    "bytes": 9395,
+    "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.audio.position.worklet.js",
+    "bytes": 2973,
+    "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.audio.worklet.js",
+    "bytes": 7298,
+    "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.html",
+    "bytes": 965,
+    "sha256": "835d2afd0481a6e2cddfae7592362f624a8f79b9cee2b30116f59d607efc17a6"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.icon.png",
+    "bytes": 4355,
+    "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.js",
+    "bytes": 314653,
+    "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.pck",
+    "bytes": 214400,
+    "sha256": "64e8479a17e67d3440741eb6c391717865b141eb5da6463d151c0a487fbfcf2e"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.png",
+    "bytes": 21443,
+    "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/artifacts/index.wasm",
+    "bytes": 38820072,
+    "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/logs/native-verification.json",
+    "bytes": 823,
+    "sha256": "3834727fd35b1f56a4cd3ece64f4c4cd3cafd6e89a8ff8976ac45bf070ac8aa8"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/logs/process-verification.json",
+    "bytes": 832,
+    "sha256": "7ce0491ff6a90d259e78077eaa0109d6de3085cd80cd702cd9b2713362e795e2"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/logs/task.log",
+    "bytes": 21385,
+    "sha256": "3705694857b111e39c4cb66482a2b5737615646edcf95c3917bbfafc3376e1d4"
+  },
+  {
+    "path": "godot/tasks/ex-cb986ef506f64f22bb4d4e7f/task-identity.json",
+    "bytes": 165,
+    "sha256": "89aa0ecc04a60b43742c7a7a86674b6a0cb341f798fd6fbec761d61bcd5a63d0"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/logs/native-verification.json",
+    "bytes": 822,
+    "sha256": "567dab6d1764a08baffb7a20004b0362489287d6bacd54b591d691635b57090b"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/logs/process-verification.json",
+    "bytes": 831,
+    "sha256": "c869ea504c5207e9b86bcf67a9f8d0bc66d887546e758832b3c82e154a71ff96"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/logs/task.log",
+    "bytes": 6664,
+    "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+  },
+  {
+    "path": "godot/tasks/im-482a28ac97bb45dd8e2606cd/task-identity.json",
+    "bytes": 165,
+    "sha256": "28e7cd7974abf34ae2f1b07c962f05d9184e3923312f4790773d81c4327f01a5"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/logs/native-verification.json",
+    "bytes": 823,
+    "sha256": "991a156f8293ace1ef85ef7ced37202dcf6aed277d997e8bb6783f6251b5e25e"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/logs/process-verification.json",
+    "bytes": 832,
+    "sha256": "bad4cf8eca983d34fecd28a612e33b57d20912129807c4b924265f6fa2cb4c93"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/logs/task.log",
+    "bytes": 6664,
+    "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+  },
+  {
+    "path": "godot/tasks/im-8b625ba3e1034ae588341603/task-identity.json",
+    "bytes": 165,
+    "sha256": "8c532ef3ab975a8fdbdcb059569d24ad6e34e57c65ba43c7b2c346d66870c5f4"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/logs/native-verification.json",
+    "bytes": 823,
+    "sha256": "5f82c2bdfe7d5a7d170e385a6fc39e267a67d5d39cd63fd6af3ce459f7bf9c12"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/logs/process-verification.json",
+    "bytes": 831,
+    "sha256": "f60e426ef98cd1c51ad1eea98639146f95b7a7a59829e81c1220dbc6304c7c3b"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/logs/task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "path": "godot/tasks/pf-3d6623e7346c40429f54c52c/task-identity.json",
+    "bytes": 165,
+    "sha256": "04c834b81ff64937fc413a9d278044e3c386a0b2dd35445241d02da47182999a"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/logs/native-verification.json",
+    "bytes": 822,
+    "sha256": "159664a94a7b70f5f0d9cc8ca7ec2d0e4d20db4a8128cd00e7b9f2709b0fc291"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/logs/process-verification.json",
+    "bytes": 831,
+    "sha256": "ff0daf342c2ebe88853b91efd66ad18cbf0305a3d7ef28afe4cfffc755595309"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/logs/task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "path": "godot/tasks/pf-95389f2c66ad4f40a1c26db9/task-identity.json",
+    "bytes": 165,
+    "sha256": "6c1697813ad15aa43f8cf9f61d339aedcc5c6f1164c2ff1f73291477620c3b55"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/bin/broker-preflight.exe",
+    "bytes": 801280,
+    "sha256": "abd205c5a9ac1fbcde7f4741dfd1195671c1718e646bd029c9fa0dd5f95139a7"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/bin/Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/logs/native-verification.json",
+    "bytes": 824,
+    "sha256": "fef7447a5edecc6ffaab5a618c407aeb6fdd6449738d8deb49665e7497a80c22"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/logs/preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/logs/process-verification.json",
+    "bytes": 833,
+    "sha256": "94499c4d9a7a477245867affc6db09fe926047f4268095806acb4fc7df591ee8"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/logs/task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "path": "godot/tasks/pf-9d9e2ea4740a4deb8783bdc7/task-identity.json",
+    "bytes": 165,
+    "sha256": "236fb5bec455d22a87a4b549bb409b6fe927371ffd661212a48a4b34a57ca018"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/bridge.js",
+    "bytes": 6415,
+    "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.apple-touch-icon.png",
+    "bytes": 9395,
+    "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.audio.position.worklet.js",
+    "bytes": 2973,
+    "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.audio.worklet.js",
+    "bytes": 7298,
+    "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.html",
+    "bytes": 965,
+    "sha256": "835d2afd0481a6e2cddfae7592362f624a8f79b9cee2b30116f59d607efc17a6"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.icon.png",
+    "bytes": 4355,
+    "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.js",
+    "bytes": 314653,
+    "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.pck",
+    "bytes": 214400,
+    "sha256": "64e8479a17e67d3440741eb6c391717865b141eb5da6463d151c0a487fbfcf2e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.png",
+    "bytes": 21443,
+    "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/artifacts/web/index.wasm",
+    "bytes": 38820072,
+    "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/manifest.json",
+    "bytes": 10847,
+    "sha256": "5cd60bc33be5718112c21b79f787afaa9fea8b0833d4527e3650feed86a21583"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/ASSET_MANIFEST.json",
+    "bytes": 4767,
+    "sha256": "95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/ammo_crate.tres",
+    "bytes": 118,
+    "sha256": "a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/crate_wood.tres",
+    "bytes": 119,
+    "sha256": "5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/pickup_kit.tres",
+    "bytes": 212,
+    "sha256": "dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/pistol_body.tres",
+    "bytes": 136,
+    "sha256": "bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/range_floor.tres",
+    "bytes": 119,
+    "sha256": "c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/range_wall.tres",
+    "bytes": 120,
+    "sha256": "71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/sword_blade.tres",
+    "bytes": 136,
+    "sha256": "488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/materials/target_plate.tres",
+    "bytes": 119,
+    "sha256": "0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/meshes/ammo_crate.obj",
+    "bytes": 1558,
+    "sha256": "6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/meshes/range_crate.obj",
+    "bytes": 1123,
+    "sha256": "74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/meshes/target_dummy.obj",
+    "bytes": 2873,
+    "sha256": "f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/meshes/weapon_pistol.obj",
+    "bytes": 2900,
+    "sha256": "3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/meshes/weapon_sword.obj",
+    "bytes": 2456,
+    "sha256": "8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/assets/provenance/ASSET_PROVENANCE.md",
+    "bytes": 2784,
+    "sha256": "c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/base_manifest.json",
+    "bytes": 12159,
+    "sha256": "3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/craftmine_host_bridge.js",
+    "bytes": 6415,
+    "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/craftmine_host_shell.html",
+    "bytes": 715,
+    "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/craftmine_initial_state.json",
+    "bytes": 2006,
+    "sha256": "b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/craftmine_shared/base_adapter.gd",
+    "bytes": 4420,
+    "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/craftmine_shared/runtime_bridge.gd",
+    "bytes": 6645,
+    "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/craftmine_shared/state_guard.gd",
+    "bytes": 1759,
+    "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/balance/blank_start.tres",
+    "bytes": 345,
+    "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/balance/training_range.tres",
+    "bytes": 345,
+    "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/equipment/equipment_catalog.tres",
+    "bytes": 610,
+    "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/equipment/inspection_tool.tres",
+    "bytes": 748,
+    "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/equipment/pistol.tres",
+    "bytes": 1114,
+    "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/equipment/practice_sword.tres",
+    "bytes": 1118,
+    "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/quests/range_basic.tres",
+    "bytes": 452,
+    "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/ui/crosshair_melee.tres",
+    "bytes": 397,
+    "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/data/ui/crosshair_precision.tres",
+    "bytes": 392,
+    "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/export_presets.cfg",
+    "bytes": 376,
+    "sha256": "ace4c5d0c269fb7524ab9d7640ef91aaabe9aa2bf406fda3e2acc23906c57e0b"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/icon.svg",
+    "bytes": 517,
+    "sha256": "0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+    "bytes": 1407,
+    "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/project.godot",
+    "bytes": 2529,
+    "sha256": "b9ea871ceb39da67f78170e686a3a1c1dbd78cdb7ef9601bd054488849732627"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/README.md",
+    "bytes": 8105,
+    "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/actors/player.tscn",
+    "bytes": 1865,
+    "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/actors/target_dummy.tscn",
+    "bytes": 860,
+    "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/blank_start.tscn",
+    "bytes": 3245,
+    "sha256": "2c0f69eca80b3783de112a28c5d0662c6d311643ce8613cbc28e69c33899994d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/props/ammo_crate.tscn",
+    "bytes": 846,
+    "sha256": "b83831825588559010dfeecec59bc2704f4ca8414de6982be2621d63ac9de685"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/props/pickup_item.tscn",
+    "bytes": 908,
+    "sha256": "7c528b0f6b5a312f9523e38b1ddfc4132e3b11c8484bf1aa40d5bc36c43e57b9"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/props/range_crate.tscn",
+    "bytes": 675,
+    "sha256": "ec8f6b6c72df5a5a0f9f9b3624d9c3c83b6c7b615f2e3172a397cb9f366e5b89"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/training_range.tscn",
+    "bytes": 7359,
+    "sha256": "b2071a9ba96b291405355c5fdc8d1b2c0b42686dcb707f510232caf01f5c873b"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scenes/ui/hud.tscn",
+    "bytes": 2845,
+    "sha256": "28db3258a4e03ae95f67ea64ca56785f5446842a331089570f989c40ddefee50"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/adapters/base_ops.gd",
+    "bytes": 6219,
+    "sha256": "277246cb086d2cc0f953e25a8ec730056307a141b148d37e4643b9872e00224b"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/adapters/preview_bridge.gd",
+    "bytes": 2341,
+    "sha256": "0fde93c3ce4cebec96344acded9bed9e819b03efc9503167cb62506c09b96d9e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/adapters/probe_runner.gd",
+    "bytes": 3054,
+    "sha256": "937b404bc947269e2742875dfb6d33d6c577b44903015d5622cb6d1231286179"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/aim_query.gd",
+    "bytes": 3544,
+    "sha256": "8cd96e752787e4d3b6060f52ee930bc4791b2927954c596d1c2d007b9a579885"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/ammo_crate.gd",
+    "bytes": 1688,
+    "sha256": "ba4600bad289a11ca4dc77d8f58466c0ae2bbe6f8166d9c658c81aa4bf6ece9d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/attack_dispatcher.gd",
+    "bytes": 2847,
+    "sha256": "94072313789b509c2b93c189e11f3fd766cae553b8d79929629d3d6140b3bc48"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/balance_profile.gd",
+    "bytes": 1107,
+    "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/base_world.gd",
+    "bytes": 8510,
+    "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/camera_rig.gd",
+    "bytes": 1527,
+    "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/equipment_catalog.gd",
+    "bytes": 1774,
+    "sha256": "3df79cb4656e2155fe47cb2e7a2d1a31eaa8ff0b549f09b02278a37e9790594e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/equipment_definition.gd",
+    "bytes": 3333,
+    "sha256": "71500902d7b869706b73da6631029870ace4f210b59686209bb6da2f8f203bfa"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/equipment_state.gd",
+    "bytes": 10389,
+    "sha256": "0e071e15ebabf8e45960850b158a637daa600c1808e7c85578a62019b4677f69"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/equipment_visuals.gd",
+    "bytes": 1892,
+    "sha256": "24b54c092acc28095c9d9b4b3594a382ca0fa8dae52a79e057fdd6c092dc17d5"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/interactable.gd",
+    "bytes": 1043,
+    "sha256": "3bea31038e9d10970c4155920128d69f8439ab1affbce91d88f951dde1c03010"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/inventory.gd",
+    "bytes": 2257,
+    "sha256": "bb858bd5e0e0ea94f4bc3d46669360754582f5c683441e518e8b4eaa61a7b8ea"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/melee_attack.gd",
+    "bytes": 3646,
+    "sha256": "9269cceb553d6940a195e5743b92bea263c3c7106dcdf49d18c12abdf8e6a47e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/pickup_item.gd",
+    "bytes": 1363,
+    "sha256": "1a45b6d2e5cae49eabce649bf85173b6dce042c8b41ae27f92b147588cb081ae"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/player_controller.gd",
+    "bytes": 5716,
+    "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/quest_definition.gd",
+    "bytes": 1256,
+    "sha256": "73837c256247e6620bf423d1da93ad7e38ee17b6551280cbfc4bd5ca2ec3502f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/quest_tracker.gd",
+    "bytes": 5880,
+    "sha256": "40c9771a1dddbf0365cb42541c7b8377d096a33d3f60da63ad4879e0f1f7395f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/ranged_attack.gd",
+    "bytes": 3244,
+    "sha256": "ff3896131fac0ed62e9bd3fd7151efc7be597ccb21a256fcb2bd3e90146bb7b8"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/save_store.gd",
+    "bytes": 3909,
+    "sha256": "4e6501d8cfebff70874b922c740a960b86736f79eef36cf030a228f48a14d015"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/target_dummy.gd",
+    "bytes": 4555,
+    "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/core/world_state.gd",
+    "bytes": 7267,
+    "sha256": "2443637943a20bb044e98cd6d9972e28dcea2da9ce5c1ef61e78725dc7742b8e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/ui/crosshair_style.gd",
+    "bytes": 1281,
+    "sha256": "12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/ui/crosshair.gd",
+    "bytes": 5904,
+    "sha256": "aef94179a55c9bd51da4eef523e6e8d2258610e58b4ee4fe358c7c7f46067137"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0/source/scripts/ui/hud.gd",
+    "bytes": 7454,
+    "sha256": "e26be9a45db7ca35bd526b0bd971bce58ae4cf0a2fcae07f80898f0d08b35fa4"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/bridge.js",
+    "bytes": 6415,
+    "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.apple-touch-icon.png",
+    "bytes": 9395,
+    "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.audio.position.worklet.js",
+    "bytes": 2973,
+    "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.audio.worklet.js",
+    "bytes": 7298,
+    "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.html",
+    "bytes": 965,
+    "sha256": "2b8c572998a3d0f5c5d1472134351d5b1222d8c94f131be87f2db11f4c628331"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.icon.png",
+    "bytes": 4355,
+    "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.js",
+    "bytes": 314653,
+    "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.pck",
+    "bytes": 214352,
+    "sha256": "0b30ccec51ab2a564b1932d32b9fdb77f34680f2612b6cb91413235a02edd70f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.png",
+    "bytes": 21443,
+    "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/artifacts/web/index.wasm",
+    "bytes": 38820072,
+    "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/manifest.json",
+    "bytes": 10797,
+    "sha256": "c78caa9ded13c4768e41ca33eaa10037bc4f1ec33fcf125c5ee002e5ad70f229"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/ASSET_MANIFEST.json",
+    "bytes": 4767,
+    "sha256": "95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/ammo_crate.tres",
+    "bytes": 118,
+    "sha256": "a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/crate_wood.tres",
+    "bytes": 119,
+    "sha256": "5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/pickup_kit.tres",
+    "bytes": 212,
+    "sha256": "dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/pistol_body.tres",
+    "bytes": 136,
+    "sha256": "bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/range_floor.tres",
+    "bytes": 119,
+    "sha256": "c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/range_wall.tres",
+    "bytes": 120,
+    "sha256": "71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/sword_blade.tres",
+    "bytes": 136,
+    "sha256": "488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/materials/target_plate.tres",
+    "bytes": 119,
+    "sha256": "0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/meshes/ammo_crate.obj",
+    "bytes": 1558,
+    "sha256": "6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/meshes/range_crate.obj",
+    "bytes": 1123,
+    "sha256": "74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/meshes/target_dummy.obj",
+    "bytes": 2873,
+    "sha256": "f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/meshes/weapon_pistol.obj",
+    "bytes": 2900,
+    "sha256": "3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/meshes/weapon_sword.obj",
+    "bytes": 2456,
+    "sha256": "8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/assets/provenance/ASSET_PROVENANCE.md",
+    "bytes": 2784,
+    "sha256": "c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/base_manifest.json",
+    "bytes": 12159,
+    "sha256": "3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/craftmine_host_bridge.js",
+    "bytes": 6415,
+    "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/craftmine_host_shell.html",
+    "bytes": 715,
+    "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/craftmine_initial_state.json",
+    "bytes": 2006,
+    "sha256": "b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/craftmine_shared/base_adapter.gd",
+    "bytes": 4420,
+    "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/craftmine_shared/runtime_bridge.gd",
+    "bytes": 6645,
+    "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/craftmine_shared/state_guard.gd",
+    "bytes": 1759,
+    "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/balance/blank_start.tres",
+    "bytes": 345,
+    "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/balance/training_range.tres",
+    "bytes": 345,
+    "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/equipment/equipment_catalog.tres",
+    "bytes": 610,
+    "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/equipment/inspection_tool.tres",
+    "bytes": 748,
+    "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/equipment/pistol.tres",
+    "bytes": 1114,
+    "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/equipment/practice_sword.tres",
+    "bytes": 1118,
+    "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/quests/range_basic.tres",
+    "bytes": 452,
+    "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/ui/crosshair_melee.tres",
+    "bytes": 397,
+    "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/data/ui/crosshair_precision.tres",
+    "bytes": 392,
+    "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/export_presets.cfg",
+    "bytes": 376,
+    "sha256": "ace4c5d0c269fb7524ab9d7640ef91aaabe9aa2bf406fda3e2acc23906c57e0b"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/icon.svg",
+    "bytes": 517,
+    "sha256": "0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/licenses/ORIGINAL_ASSETS_LICENSE.txt",
+    "bytes": 1407,
+    "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/project.godot",
+    "bytes": 2529,
+    "sha256": "b9ea871ceb39da67f78170e686a3a1c1dbd78cdb7ef9601bd054488849732627"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/README.md",
+    "bytes": 8105,
+    "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/actors/player.tscn",
+    "bytes": 1865,
+    "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/actors/target_dummy.tscn",
+    "bytes": 860,
+    "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/blank_start.tscn",
+    "bytes": 3245,
+    "sha256": "2c0f69eca80b3783de112a28c5d0662c6d311643ce8613cbc28e69c33899994d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/props/ammo_crate.tscn",
+    "bytes": 846,
+    "sha256": "b83831825588559010dfeecec59bc2704f4ca8414de6982be2621d63ac9de685"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/props/pickup_item.tscn",
+    "bytes": 908,
+    "sha256": "7c528b0f6b5a312f9523e38b1ddfc4132e3b11c8484bf1aa40d5bc36c43e57b9"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/props/range_crate.tscn",
+    "bytes": 675,
+    "sha256": "ec8f6b6c72df5a5a0f9f9b3624d9c3c83b6c7b615f2e3172a397cb9f366e5b89"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/training_range.tscn",
+    "bytes": 7335,
+    "sha256": "4669a4b2f4a326eae22f9c768679df1cac8156d05c09922e9d209a63ffaa0029"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scenes/ui/hud.tscn",
+    "bytes": 2845,
+    "sha256": "28db3258a4e03ae95f67ea64ca56785f5446842a331089570f989c40ddefee50"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/adapters/base_ops.gd",
+    "bytes": 6219,
+    "sha256": "277246cb086d2cc0f953e25a8ec730056307a141b148d37e4643b9872e00224b"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/adapters/preview_bridge.gd",
+    "bytes": 2341,
+    "sha256": "0fde93c3ce4cebec96344acded9bed9e819b03efc9503167cb62506c09b96d9e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/adapters/probe_runner.gd",
+    "bytes": 3054,
+    "sha256": "937b404bc947269e2742875dfb6d33d6c577b44903015d5622cb6d1231286179"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/aim_query.gd",
+    "bytes": 3544,
+    "sha256": "8cd96e752787e4d3b6060f52ee930bc4791b2927954c596d1c2d007b9a579885"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/ammo_crate.gd",
+    "bytes": 1688,
+    "sha256": "ba4600bad289a11ca4dc77d8f58466c0ae2bbe6f8166d9c658c81aa4bf6ece9d"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/attack_dispatcher.gd",
+    "bytes": 2847,
+    "sha256": "94072313789b509c2b93c189e11f3fd766cae553b8d79929629d3d6140b3bc48"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/balance_profile.gd",
+    "bytes": 1107,
+    "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/base_world.gd",
+    "bytes": 8510,
+    "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/camera_rig.gd",
+    "bytes": 1527,
+    "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/equipment_catalog.gd",
+    "bytes": 1774,
+    "sha256": "3df79cb4656e2155fe47cb2e7a2d1a31eaa8ff0b549f09b02278a37e9790594e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/equipment_definition.gd",
+    "bytes": 3333,
+    "sha256": "71500902d7b869706b73da6631029870ace4f210b59686209bb6da2f8f203bfa"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/equipment_state.gd",
+    "bytes": 10389,
+    "sha256": "0e071e15ebabf8e45960850b158a637daa600c1808e7c85578a62019b4677f69"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/equipment_visuals.gd",
+    "bytes": 1892,
+    "sha256": "24b54c092acc28095c9d9b4b3594a382ca0fa8dae52a79e057fdd6c092dc17d5"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/interactable.gd",
+    "bytes": 1043,
+    "sha256": "3bea31038e9d10970c4155920128d69f8439ab1affbce91d88f951dde1c03010"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/inventory.gd",
+    "bytes": 2257,
+    "sha256": "bb858bd5e0e0ea94f4bc3d46669360754582f5c683441e518e8b4eaa61a7b8ea"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/melee_attack.gd",
+    "bytes": 3646,
+    "sha256": "9269cceb553d6940a195e5743b92bea263c3c7106dcdf49d18c12abdf8e6a47e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/pickup_item.gd",
+    "bytes": 1363,
+    "sha256": "1a45b6d2e5cae49eabce649bf85173b6dce042c8b41ae27f92b147588cb081ae"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/player_controller.gd",
+    "bytes": 5716,
+    "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/quest_definition.gd",
+    "bytes": 1256,
+    "sha256": "73837c256247e6620bf423d1da93ad7e38ee17b6551280cbfc4bd5ca2ec3502f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/quest_tracker.gd",
+    "bytes": 5880,
+    "sha256": "40c9771a1dddbf0365cb42541c7b8377d096a33d3f60da63ad4879e0f1f7395f"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/ranged_attack.gd",
+    "bytes": 3244,
+    "sha256": "ff3896131fac0ed62e9bd3fd7151efc7be597ccb21a256fcb2bd3e90146bb7b8"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/save_store.gd",
+    "bytes": 3909,
+    "sha256": "4e6501d8cfebff70874b922c740a960b86736f79eef36cf030a228f48a14d015"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/target_dummy.gd",
+    "bytes": 4555,
+    "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/core/world_state.gd",
+    "bytes": 7267,
+    "sha256": "2443637943a20bb044e98cd6d9972e28dcea2da9ce5c1ef61e78725dc7742b8e"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/ui/crosshair_style.gd",
+    "bytes": 1281,
+    "sha256": "12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/ui/crosshair.gd",
+    "bytes": 5904,
+    "sha256": "aef94179a55c9bd51da4eef523e6e8d2258610e58b4ee4fe358c7c7f46067137"
+  },
+  {
+    "path": "godot-builds/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78/source/scripts/ui/hud.gd",
+    "bytes": 7454,
+    "sha256": "e26be9a45db7ca35bd526b0bd971bce58ae4cf0a2fcae07f80898f0d08b35fa4"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07",
+    "bytes": 610,
+    "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8",
+    "bytes": 517,
+    "sha256": "0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810",
+    "bytes": 119,
+    "sha256": "0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/0e071e15ebabf8e45960850b158a637daa600c1808e7c85578a62019b4677f69",
+    "bytes": 10389,
+    "sha256": "0e071e15ebabf8e45960850b158a637daa600c1808e7c85578a62019b4677f69"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69",
+    "bytes": 1118,
+    "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/0fde93c3ce4cebec96344acded9bed9e819b03efc9503167cb62506c09b96d9e",
+    "bytes": 2341,
+    "sha256": "0fde93c3ce4cebec96344acded9bed9e819b03efc9503167cb62506c09b96d9e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93",
+    "bytes": 397,
+    "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387",
+    "bytes": 1281,
+    "sha256": "12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/1a45b6d2e5cae49eabce649bf85173b6dce042c8b41ae27f92b147588cb081ae",
+    "bytes": 1363,
+    "sha256": "1a45b6d2e5cae49eabce649bf85173b6dce042c8b41ae27f92b147588cb081ae"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+    "bytes": 4555,
+    "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/2443637943a20bb044e98cd6d9972e28dcea2da9ce5c1ef61e78725dc7742b8e",
+    "bytes": 7267,
+    "sha256": "2443637943a20bb044e98cd6d9972e28dcea2da9ce5c1ef61e78725dc7742b8e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/24b54c092acc28095c9d9b4b3594a382ca0fa8dae52a79e057fdd6c092dc17d5",
+    "bytes": 1892,
+    "sha256": "24b54c092acc28095c9d9b4b3594a382ca0fa8dae52a79e057fdd6c092dc17d5"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/277246cb086d2cc0f953e25a8ec730056307a141b148d37e4643b9872e00224b",
+    "bytes": 6219,
+    "sha256": "277246cb086d2cc0f953e25a8ec730056307a141b148d37e4643b9872e00224b"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+    "bytes": 8510,
+    "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/28db3258a4e03ae95f67ea64ca56785f5446842a331089570f989c40ddefee50",
+    "bytes": 2845,
+    "sha256": "28db3258a4e03ae95f67ea64ca56785f5446842a331089570f989c40ddefee50"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/2c0f69eca80b3783de112a28c5d0662c6d311643ce8613cbc28e69c33899994d",
+    "bytes": 3245,
+    "sha256": "2c0f69eca80b3783de112a28c5d0662c6d311643ce8613cbc28e69c33899994d"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76",
+    "bytes": 6645,
+    "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/3bea31038e9d10970c4155920128d69f8439ab1affbce91d88f951dde1c03010",
+    "bytes": 1043,
+    "sha256": "3bea31038e9d10970c4155920128d69f8439ab1affbce91d88f951dde1c03010"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/3df79cb4656e2155fe47cb2e7a2d1a31eaa8ff0b549f09b02278a37e9790594e",
+    "bytes": 1774,
+    "sha256": "3df79cb4656e2155fe47cb2e7a2d1a31eaa8ff0b549f09b02278a37e9790594e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d",
+    "bytes": 2900,
+    "sha256": "3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e",
+    "bytes": 12159,
+    "sha256": "3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/40c9771a1dddbf0365cb42541c7b8377d096a33d3f60da63ad4879e0f1f7395f",
+    "bytes": 5880,
+    "sha256": "40c9771a1dddbf0365cb42541c7b8377d096a33d3f60da63ad4879e0f1f7395f"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/4669a4b2f4a326eae22f9c768679df1cac8156d05c09922e9d209a63ffaa0029",
+    "bytes": 7335,
+    "sha256": "4669a4b2f4a326eae22f9c768679df1cac8156d05c09922e9d209a63ffaa0029"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87",
+    "bytes": 136,
+    "sha256": "488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/4e6501d8cfebff70874b922c740a960b86736f79eef36cf030a228f48a14d015",
+    "bytes": 3909,
+    "sha256": "4e6501d8cfebff70874b922c740a960b86736f79eef36cf030a228f48a14d015"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159",
+    "bytes": 345,
+    "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781",
+    "bytes": 119,
+    "sha256": "5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f",
+    "bytes": 1558,
+    "sha256": "6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989",
+    "bytes": 452,
+    "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/71500902d7b869706b73da6631029870ace4f210b59686209bb6da2f8f203bfa",
+    "bytes": 3333,
+    "sha256": "71500902d7b869706b73da6631029870ace4f210b59686209bb6da2f8f203bfa"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950",
+    "bytes": 120,
+    "sha256": "71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9",
+    "bytes": 4420,
+    "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/73837c256247e6620bf423d1da93ad7e38ee17b6551280cbfc4bd5ca2ec3502f",
+    "bytes": 1256,
+    "sha256": "73837c256247e6620bf423d1da93ad7e38ee17b6551280cbfc4bd5ca2ec3502f"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a",
+    "bytes": 1123,
+    "sha256": "74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+    "bytes": 1865,
+    "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/7c528b0f6b5a312f9523e38b1ddfc4132e3b11c8484bf1aa40d5bc36c43e57b9",
+    "bytes": 908,
+    "sha256": "7c528b0f6b5a312f9523e38b1ddfc4132e3b11c8484bf1aa40d5bc36c43e57b9"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199",
+    "bytes": 1114,
+    "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89",
+    "bytes": 2456,
+    "sha256": "8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/8cd96e752787e4d3b6060f52ee930bc4791b2927954c596d1c2d007b9a579885",
+    "bytes": 3544,
+    "sha256": "8cd96e752787e4d3b6060f52ee930bc4791b2927954c596d1c2d007b9a579885"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f",
+    "bytes": 1527,
+    "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+    "bytes": 1107,
+    "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/9269cceb553d6940a195e5743b92bea263c3c7106dcdf49d18c12abdf8e6a47e",
+    "bytes": 3646,
+    "sha256": "9269cceb553d6940a195e5743b92bea263c3c7106dcdf49d18c12abdf8e6a47e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/937b404bc947269e2742875dfb6d33d6c577b44903015d5622cb6d1231286179",
+    "bytes": 3054,
+    "sha256": "937b404bc947269e2742875dfb6d33d6c577b44903015d5622cb6d1231286179"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/94072313789b509c2b93c189e11f3fd766cae553b8d79929629d3d6140b3bc48",
+    "bytes": 2847,
+    "sha256": "94072313789b509c2b93c189e11f3fd766cae553b8d79929629d3d6140b3bc48"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef",
+    "bytes": 4767,
+    "sha256": "95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20",
+    "bytes": 1759,
+    "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d",
+    "bytes": 118,
+    "sha256": "a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324",
+    "bytes": 5716,
+    "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/aef94179a55c9bd51da4eef523e6e8d2258610e58b4ee4fe358c7c7f46067137",
+    "bytes": 5904,
+    "sha256": "aef94179a55c9bd51da4eef523e6e8d2258610e58b4ee4fe358c7c7f46067137"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e",
+    "bytes": 2006,
+    "sha256": "b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+    "bytes": 860,
+    "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/b83831825588559010dfeecec59bc2704f4ca8414de6982be2621d63ac9de685",
+    "bytes": 846,
+    "sha256": "b83831825588559010dfeecec59bc2704f4ca8414de6982be2621d63ac9de685"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/b9ea871ceb39da67f78170e686a3a1c1dbd78cdb7ef9601bd054488849732627",
+    "bytes": 2529,
+    "sha256": "b9ea871ceb39da67f78170e686a3a1c1dbd78cdb7ef9601bd054488849732627"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/ba4600bad289a11ca4dc77d8f58466c0ae2bbe6f8166d9c658c81aa4bf6ece9d",
+    "bytes": 1688,
+    "sha256": "ba4600bad289a11ca4dc77d8f58466c0ae2bbe6f8166d9c658c81aa4bf6ece9d"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28",
+    "bytes": 748,
+    "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04",
+    "bytes": 392,
+    "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/bb858bd5e0e0ea94f4bc3d46669360754582f5c683441e518e8b4eaa61a7b8ea",
+    "bytes": 2257,
+    "sha256": "bb858bd5e0e0ea94f4bc3d46669360754582f5c683441e518e8b4eaa61a7b8ea"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94",
+    "bytes": 136,
+    "sha256": "bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be",
+    "bytes": 2784,
+    "sha256": "c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08",
+    "bytes": 119,
+    "sha256": "c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62",
+    "bytes": 1407,
+    "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e",
+    "bytes": 212,
+    "sha256": "dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/e26be9a45db7ca35bd526b0bd971bce58ae4cf0a2fcae07f80898f0d08b35fa4",
+    "bytes": 7454,
+    "sha256": "e26be9a45db7ca35bd526b0bd971bce58ae4cf0a2fcae07f80898f0d08b35fa4"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/ec8f6b6c72df5a5a0f9f9b3624d9c3c83b6c7b615f2e3172a397cb9f366e5b89",
+    "bytes": 675,
+    "sha256": "ec8f6b6c72df5a5a0f9f9b3624d9c3c83b6c7b615f2e3172a397cb9f366e5b89"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510",
+    "bytes": 8105,
+    "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45",
+    "bytes": 2873,
+    "sha256": "f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45"
+  },
+  {
+    "path": "godot-source/5a0ba25635865ce42a2d109b463e407574f13f037f4963a64af8b2ca063f0b90/blobs/ff3896131fac0ed62e9bd3fd7151efc7be597ccb21a256fcb2bd3e90146bb7b8",
+    "bytes": 3244,
+    "sha256": "ff3896131fac0ed62e9bd3fd7151efc7be597ccb21a256fcb2bd3e90146bb7b8"
+  },
+  {
+    "path": "settings.json",
+    "bytes": 43,
+    "sha256": "e09a7707a812f98e7c1884fe09d2d54844d9e718511d0c894b05af68cc46732f"
+  },
+  {
+    "path": "target-feedback-operations/dd1bb57c72deeda5a30d7e1f643775c6a075bdb620811bafb5ed6ba09421d77c.json",
+    "bytes": 13777,
+    "sha256": "f760c5263687248e74995618c5bbf2f2fca580eddec6eea8d76d0fda465ee664"
+  },
+  {
+    "path": "tasks.sqlite",
+    "bytes": 806912,
+    "sha256": "ed54526aec2ac60f0517ea4bb1be9486328c8a38cecf7a66a80849385e273384"
+  }
+]

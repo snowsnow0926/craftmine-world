@@ -1,0 +1,60 @@
+{
+  "format": "craftmine.vm2-diff-evidence/1",
+  "baseCommit": "85b1015de6d40d380ae93c255aa73122ca0fdf06",
+  "files": [
+    {
+      "path": "raw/initial-source-only-failure.json",
+      "bytes": 403,
+      "sha256": "8cd9816de7ee7f376756ec6701dccb0a57eefd5e449d83fa8e269dce66fa9bdc",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\history-panel-0VAES8\\report.json"
+    },
+    {
+      "path": "raw/real-git-react-report.json",
+      "bytes": 2341,
+      "sha256": "ec379950d9f9f593178a3a174d1730872162ff9feded44708c25ebb77a8266e2",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\history-panel-hinB4B\\report.json"
+    },
+    {
+      "path": "raw/real-git-react-calls.json",
+      "bytes": 15555,
+      "sha256": "73329560cccaf9a735a2a5d9cd137526e6e9e0d09957bfa6dc6cc4b11e67e748",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\history-panel-hinB4B\\calls.json"
+    },
+    {
+      "path": "raw/real-git-react.png",
+      "bytes": 41084,
+      "sha256": "117b9ef373cf9ff223ebd0d7811f44e066f2bbdb15f4921be28dd1d793d0fb7f",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\history-panel-hinB4B\\history.png"
+    },
+    {
+      "path": "raw/actual-adopted-core-report.json",
+      "bytes": 12392,
+      "sha256": "3848749c3da9fdcb162bb28f1823f2f02ee86bfeb4ececb9ae696f1ac46d1d4e",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\version-diff-applied-GaovoN\\report.json"
+    },
+    {
+      "path": "raw/actual-adopted-source-index.json",
+      "bytes": 109656,
+      "sha256": "403788bf0588eb3d5ca4bd06bf5fd75ec0c62abb2a70e55f4b387e225c9973e0",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\version-diff-applied-GaovoN\\source-index.json"
+    },
+    {
+      "path": "raw/ui-races-report.json",
+      "bytes": 504,
+      "sha256": "f2ed7b7b6ceccd267dfc7bdfa083146ce50f112c3f49604db256ec67613d0481",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\version-diff-ui-OvjWKv\\report.json"
+    },
+    {
+      "path": "raw/ui-races.png",
+      "bytes": 13966,
+      "sha256": "009a0897db5d11f2f40e5729a53cd0490760b0be0ddee990e8cdf2ae0b818788",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\version-diff-ui-OvjWKv\\ui-races.png"
+    },
+    {
+      "path": "raw/e2e-byte-append.json",
+      "bytes": 242,
+      "sha256": "68e63a0c1729ca04b73a6b45b7b8671d49e11280386016f5e6eae3ccfa6ed6e3",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-version-diff-20260910\\test-results\\version-diff-docs\\e2e-byte-append.json"
+    }
+  ]
+}

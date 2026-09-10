@@ -8968,3 +8968,12 @@ failed attempt reports. No model, network download, visible window or OS input.
 ### Shutdown while the runtime factory is pending
 
 Hold the runtime factory before it returns any instance. Request disposal and verify the shared promise remains pending with current/pending empty. Return a runtime, hold its cleanup, and verify disposal still cannot succeed. Release cleanup and require closure before success. Repeat with factory rejection and with late cleanup rejection; preserve the original caller error and any retirement failure. Hold startup readiness instead and verify close cancels that wait without a cycle. Expire the fixed shutdown deadline without releasing the factory: require GODOT_STARTUP_CLOSE_TIMEOUT, and never turn the failed receipt into success after a late return is cleaned. Confirm a real isolated local HTTP origin returned during shutdown refuses connections after successful disposal. Use no windows, real input, model or external service.
+
+## VM2 read-only version comparison (2026-09-10)
+
+- Open Versions and creation branches for a world with an applied Godot version. Compare a listed revision or the current branch with formal content; verify exact added/deleted/modified files, binary sizes, and text additions/removals.
+- With more than 32 changed files, verify both pages and exact totals; with a patch over 64 KiB, verify visible truncation without invalid UTF-8 or executable source HTML.
+- Change world, branch head or formal version during a delayed read: stale results must not render or expose private Git paths. A source-only world must not invent a formal comparison baseline.
+- Confirm history/source reads do not start/end authoring tasks or change content/progress. Preserve existing branch creation, source editing, blocked/real checking and restart behavior.
+- Use independent headless profiles with Pointer Lock/focus disabled and page-script actions only. Run tests/godot-history-panel.mjs, tests/plan-loop/version-diff-service.test.mjs and tests/plan-loop/version-diff-ui-races.mjs. The optional version-diff-applied-core.mjs requires an explicitly authorized completed test core directory and copies it before use.
+- Fixture applied refs are Git-layer evidence only; packaged application acceptance remains separate.

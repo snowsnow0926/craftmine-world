@@ -10,6 +10,7 @@ export const NAVIGATION_READ_CHANNELS = new Set([
 const HISTORY_CHANNELS = new Set([
   "godot.historyLoad", "godot.historyCreateBranch", "godot.historyReadSource",
   "godot.historySaveSource", "godot.historyCheck", "godot.historyJob",
+  "godot.historyCompare", "godot.historyDiff",
 ]);
 
 type Request = { pluginId?: unknown; channel?: unknown; payload?: unknown };
