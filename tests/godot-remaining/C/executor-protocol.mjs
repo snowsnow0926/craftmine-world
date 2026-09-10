@@ -128,9 +128,9 @@ const passingEvidence = (overrides = {}) => ({
   isolation:{ok:true, guard:{focus:0, pointerLock:0}}, recovery:{ok:true, gracefulExit:true}, ...overrides,
 });
 
-function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files}), verifier = {godotCheck: async () => passingEvidence()}, jobTimeoutMs = 30000, runRecovery}) {
+function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files}), verifier = {godotCheck: async () => passingEvidence()}, jobTimeoutMs = 30000, runRecovery, logger}) {
   return createGodotExecutor(core, {
-    dataPath:env.dataPath, verifier, jobTimeoutMs, runRecovery, logger:{log(){}, warn(){}, error(){}},
+    dataPath:env.dataPath, verifier, jobTimeoutMs, runRecovery, logger:logger ?? {log(){}, warn(){}, error(){}},
     spawnBroker: (binary, args, settings) => spawn(process.execPath, [fixtureBroker, ...args], settings),
   });
 }
@@ -782,7 +782,13 @@ test('a lost terminal reply is read back from the core, never re-submitted or fa
   assert.equal(core.jobs.get(jobId).status, 'passed');
   assert.equal(ledger.state, 'finished', 'the committed pass is the ledger state');
   assert.equal(ledger.outcome, 'passed');
-  assert.equal(ledger.failureSettlement, undefined, 'no failure is invented for a committed pass');
+  // The lost transport is still recorded as the reason, but nothing claims the
+  // pass failed: no settlement status and no settlement error exist.
+  assert.match(ledger.reason, /authored reply lost after the core commit/);
+  assert.match(ledger.failureSettlement.originalReason, /authored reply lost after the core commit/);
+  assert.equal(ledger.failureSettlement.status, undefined, 'a committed pass is never settled as a failure');
+  assert.equal(ledger.failureSettlement.settlementError, undefined);
+  assert.equal(ledger.failureSettlement.terminalStatus, undefined);
   const tasks = fs.readdirSync(path.join(env.dataPath, 'godot', 'tasks'));
   assert.equal(tasks.filter(name => name.startsWith('im-')).length, 1, 'the import ran once');
   assert.equal(tasks.filter(name => name.startsWith('ex-')).length, 1, 'the export ran once');
@@ -960,4 +966,57 @@ test('a stop during a running job reports no completion and deletes no evidence'
       item.path + ' was rewritten');
   }
   assertEvidenceUnchanged(before, files, 'a later stopped job may not touch earlier evidence');
+});
+
+test('a refused settlement resolved by a second read keeps the original reason and both errors', async t => {
+  const env = environment();
+  t.after(restoreEnv);
+  setScenario(env, {});
+  const jobId = 'gjob-' + 'f'.repeat(64);
+  const core = scriptedCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files});
+  core.addJob(jobId);
+  const diagnostics = [];
+  const executor = makeExecutor({env, core, logger:{log(){}, error(){}, warn:(...args) => diagnostics.push(args.map(String).join(' '))}});
+  // The recorded path, step by step: the real result is refused, the job still
+  // answers as active, the failure settlement is refused as well, and only the
+  // second read resolves the core's real terminal state.
+  let finishes = 0;
+  core.hooks.finish = () => {
+    finishes += 1;
+    throw Error(finishes === 1 ? 'GODOT_ARTIFACT_CONFLICT' : 'GODOT_SETTLEMENT_REFUSED');
+  };
+  core.hooks.read = params => finishes >= 2
+    ? {...core.record(params.jobId), status:'failed', stage:'failed', leaseExpiresAt:null}
+    : undefined;
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  await executor.stop();
+  const persisted = JSON.parse(fs.readFileSync(path.join(env.dataPath, 'godot', 'executor-ledger.json'), 'utf8')).jobs[jobId];
+
+  const attempts = core.attempts(jobId, 'godotJob.finish');
+  assert.equal(attempts.length, 2, 'exactly one real result and one settlement attempt');
+  assert.equal(attempts[0].params.token, attempts[1].params.token, 'the settlement keeps the original claim identity');
+  assert.equal(attempts[1].params.jobId, jobId);
+  assert.deepEqual(attempts[1].params.output.artifacts, []);
+  assert.equal(attempts[1].params.output.check.assertions[0].id, 'executor.finish-refused',
+    'the settlement was reached because the first read still reported an active job');
+  assert.match(attempts[1].params.output.check.assertions[0].detail, /GODOT_ARTIFACT_CONFLICT/,
+    'the submitted failure carries the original refusal');
+  assert.equal(core.attempts(jobId, 'godotBuild.read').length >= 2, true, 'the job record is read twice');
+  assert.equal(core.stages.filter(stage => stage === 'export').length, 1, 'the engine is never run again');
+  // The resolved state is trusted, and it still explains itself.
+  for (const view of [ledger, persisted]) {
+    assert.equal(view.state, 'failed', 'the second read resolves the real terminal state');
+    assert.equal(view.outcome, 'failed');
+    assert.equal(view.reason, 'GODOT_ARTIFACT_CONFLICT', 'the original refusal is the durable reason');
+    assert.equal(view.failureSettlement.originalReason, 'GODOT_ARTIFACT_CONFLICT');
+    assert.equal(view.failureSettlement.error, 'GODOT_SETTLEMENT_REFUSED', 'the recovery error is kept');
+    assert.equal(view.failureSettlement.settlementError, 'GODOT_SETTLEMENT_REFUSED', 'the refused settlement step is named');
+    assert.equal(view.failureSettlement.status, undefined, 'a refused settlement is not recorded as accepted');
+    assert.equal(view.failureSettlement.terminalStatus, 'failed');
+  }
+  assert.equal(diagnostics.some(line => line.includes('finish refused') && line.includes('GODOT_ARTIFACT_CONFLICT')), true,
+    'the refusal is reported before any read-back can fail');
 });
