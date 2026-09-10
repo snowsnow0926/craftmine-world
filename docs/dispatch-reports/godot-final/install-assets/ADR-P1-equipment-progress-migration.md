@@ -114,3 +114,31 @@ differently.
   `State is missing equipment: thunder_hammer`, derive, load, save durably and
   reopen in a fresh process, then confirm the added item is usable by equipping it
   and dealing its authored 35 damage to a real target.
+
+## Failure diagnostics (added after the first real candidate run)
+
+A real candidate that added a new key inside the `equipment` block was refused
+correctly, but the failure reached the author as a bare
+`MIGRATION_EQUIPMENT_SHAPE` with no indication of *what* was unexpected, so the
+author kept editing unrelated source until its request budget ran out. The code
+stays exactly the same — it is a contract, and callers, ledgers and tests may
+match it — and the failure now also carries:
+
+- the `side` that failed, `previous` or `candidateDefaults`;
+- the fixed `path` (`/body/equipment`, `/body/equipment.active`,
+  `/body/equipment/items`) plus the bounded, JSON-quoted item id or field name
+  where one applies;
+- for a key-set mismatch, `expectedKeys`, `actualKeys`, `unexpectedKeys` and
+  `missingKeys`; for ammunition, the expected range and the actual value kind.
+
+The detail is bounded (at most six names per list, at most 48 characters per
+name, truncated names marked with `...`) and is expressed with
+`canonicalProgressJson`, so a diagnostic can never echo a whole snapshot or an
+unbounded author string. Callers should read `error.code` for the stable code and
+pass `error.detail` (or the prefixed message) on to the author.
+
+`STATE_FORMAT.md` also gained a "Managed candidate application limit" section:
+the versioned migration policy it already documented does not mean the restricted
+managed install path supports arbitrary fields or versions, and accumulated state
+such as equipment possession should be designed inside containers that path
+already carries (for example `inventory`).

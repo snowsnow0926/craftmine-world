@@ -1,5 +1,13 @@
 import {createHash} from 'node:crypto';
-const fail=code=>{throw Object.assign(Error(code),{code});};
+// A failure keeps one stable code so callers, ledgers and tests never parse prose,
+// and may carry bounded JSON-safe diagnostics: which snapshot failed, which path,
+// which field and which key set or value shape. Never echo a whole snapshot back.
+const DIAGNOSTIC_LIMIT=6,DIAGNOSTIC_FIELD=48;
+const fail=(code,detail)=>{throw Object.assign(Error(detail===undefined?code:code+' '+canonicalProgressJson(detail)),{code,...(detail===undefined?{}:{detail})});};
+const boundedName=value=>{const text=String(value);return text.length<=DIAGNOSTIC_FIELD?text:text.slice(0,DIAGNOSTIC_FIELD)+'...';};
+const boundedNames=values=>[...values].sort().slice(0,DIAGNOSTIC_LIMIT).map(boundedName);
+const valueKind=value=>typeof value==='number'?(Number.isFinite(value)?'number('+String(value)+')':'number(non-finite)'):value===null?'null':Array.isArray(value)?'array':typeof value;
+const keyDetail=(problem,expected,actual)=>({problem,expectedKeys:boundedNames(expected),actualKeys:boundedNames(actual),unexpectedKeys:boundedNames([...actual].filter(key=>!expected.includes(key))),missingKeys:boundedNames([...expected].filter(key=>!actual.includes(key)))});
 const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 export function canonicalProgressJson(value,depth=0){
  if(depth>48)fail('MIGRATION_DEPTH_LIMIT');
@@ -27,12 +35,19 @@ function collection(entries){
  * No supplied rules, paths or deletion semantics are accepted. */
 export function deriveAdditiveProgress(previousSnapshot,defaultsSnapshot){
  envelope(previousSnapshot);envelope(defaultsSnapshot);
- for(const state of [previousSnapshot,defaultsSnapshot]){
+ for(const [side,state] of [['previous',previousSnapshot],['candidateDefaults',defaultsSnapshot]]){
   const equipment=state.body.equipment;
-  if(!object(equipment)||canonicalProgressJson(Object.keys(equipment).sort())!==canonicalProgressJson(['active','items'])||typeof equipment.active!=='string')fail('MIGRATION_EQUIPMENT_SHAPE');
+  if(!object(equipment))fail('MIGRATION_EQUIPMENT_SHAPE',{side,path:'/body/equipment',problem:'block-not-object',actual:valueKind(equipment)});
+  const blockKeys=Object.keys(equipment).sort(),allowedKeys=['active','items'];
+  if(canonicalProgressJson(blockKeys)!==canonicalProgressJson(allowedKeys))fail('MIGRATION_EQUIPMENT_SHAPE',{side,path:'/body/equipment',...keyDetail('block-keys',allowedKeys,blockKeys)});
+  if(typeof equipment.active!=='string')fail('MIGRATION_EQUIPMENT_SHAPE',{side,path:'/body/equipment.active',problem:'active-not-string',actual:valueKind(equipment.active)});
   const items=collection(equipment.items);
   if(!items.has(equipment.active))fail('MIGRATION_EQUIPMENT_ACTIVE');
-  for(const item of items.values())if(canonicalProgressJson(Object.keys(item).sort())!==canonicalProgressJson(['id','magazine','reserve'])||!['magazine','reserve'].every(key=>Number.isSafeInteger(item[key])&&item[key]>=0&&item[key]<=99999))fail('MIGRATION_EQUIPMENT_SHAPE');
+  for(const item of items.values()){
+   const itemKeys=Object.keys(item).sort(),itemFields=['id','magazine','reserve'];
+   if(canonicalProgressJson(itemKeys)!==canonicalProgressJson(itemFields))fail('MIGRATION_EQUIPMENT_SHAPE',{side,path:'/body/equipment/items',itemId:boundedName(item.id),...keyDetail('item-keys',itemFields,itemKeys)});
+   for(const field of ['magazine','reserve'])if(!(Number.isSafeInteger(item[field])&&item[field]>=0&&item[field]<=99999))fail('MIGRATION_EQUIPMENT_SHAPE',{side,path:'/body/equipment/items',itemId:boundedName(item.id),problem:'item-ammunition',field:boundedName(field),expected:'safe integer 0..99999',actual:valueKind(item[field])});
+  }
  }
  for(const key of ['format','worldId','baseId','baseVersion','stateVersion'])if(previousSnapshot[key]!==defaultsSnapshot[key])fail('MIGRATION_IDENTITY_CHANGED');
  const snapshot=JSON.parse(canonicalProgressJson(previousSnapshot)),added=[];

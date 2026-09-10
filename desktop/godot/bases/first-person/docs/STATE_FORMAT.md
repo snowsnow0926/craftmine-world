@@ -137,3 +137,28 @@ currently accepts version 1 and rejects anything else; there is no guessing at
 missing fields. Adding a field means: keep the old field readable, add the new
 one, bump `STATE_VERSION`, and add an explicit step in `_migrate()`. Never
 silently drop player progress.
+
+## Managed candidate application limit
+
+The rules above describe how this base's own save format may evolve. They do not
+by themselves make every evolution installable. A managed candidate is installed
+by the host through a separate, restricted additive path (`progress-migration`),
+which accepts **only the current `stateVersion`** and a **limited additive set**:
+new target, interactable and equipment *identities*, while every identity the
+save already knows keeps its own saved values. Two consequences follow:
+
+- A schema change — for example a new field *inside* the `equipment` block — is
+  **not** supported by that install path, even though this document describes how
+  to version a format change. The host rejects such a candidate instead of
+  guessing at the new field's meaning, and the versioned `_migrate()` step plus an
+  extension of the host's supported set are both required before it can install.
+- State a player accumulates should be designed inside containers the restricted
+  path already carries (for example `inventory`), rather than as fields only a new
+  build writes. New equipment *possession* is such accumulated state: express it
+  through the existing supported containers instead of adding a new key beside
+  `active` and `items`.
+
+This note records an installation limit; it neither relaxes the format above nor
+grants any new field. A rejection is reported with a stable code plus bounded
+field-level detail (which snapshot, which path, which key set or value was
+unexpected), so a candidate can be corrected from the check result alone.

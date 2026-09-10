@@ -65,3 +65,25 @@ test('a new equipment and a new target are installed together in scene order',()
  assert.deepEqual(proof.snapshot.body.equipment.items.find(x=>x.id==='pistol'),{id:'pistol',magazine:6,reserve:3});
 });
 test('full previous entry and unknown non-entity changes cannot be smuggled through defaults',()=>{const defaults=structuredClone(previous);defaults.body.inventory.slots=[];defaults.body.player.position=[99,99,99];defaults.body.savedAt='different';defaults.body.targets.reverse();const result=deriveAdditiveProgress(previous,defaults);assert.deepEqual(result.snapshot.body.inventory,previous.body.inventory);assert.deepEqual(result.snapshot.body.player,previous.body.player);assert.equal(result.snapshot.body.savedAt,previous.body.savedAt);assert.deepEqual(result.snapshot.body.targets,previous.body.targets.toReversed());assert.deepEqual(result.added,[]);});
+const shapeFailure=(previousSnapshot,defaultsSnapshot)=>{try{deriveAdditiveProgress(previousSnapshot,defaultsSnapshot);}catch(error){return error;}throw Error('expected an equipment shape failure');};
+test('equipment shape failures name the side, the path and the key set without echoing the save',()=>{
+ const candidate=structuredClone(previous);candidate.body.equipment.unlocked=['pistol'];
+ const reported=shapeFailure(previous,candidate);
+ assert.equal(reported.code,'MIGRATION_EQUIPMENT_SHAPE');
+ assert.ok(reported.message.startsWith('MIGRATION_EQUIPMENT_SHAPE '),'the stable code stays the message prefix');
+ assert.deepEqual(reported.detail,{side:'candidateDefaults',path:'/body/equipment',problem:'block-keys',expectedKeys:['active','items'],actualKeys:['active','items','unlocked'],unexpectedKeys:['unlocked'],missingKeys:[]});
+ const saved=structuredClone(previous);saved.body.equipment.unlocked=['pistol'];
+ assert.equal(shapeFailure(saved,structuredClone(previous)).detail.side,'previous');
+ const ammo=structuredClone(previous);ammo.body.equipment.items[0].reserve=1.5;
+ assert.deepEqual(shapeFailure(previous,ammo).detail,{side:'candidateDefaults',path:'/body/equipment/items',itemId:'pistol',problem:'item-ammunition',field:'reserve',expected:'safe integer 0..99999',actual:'number(1.5)'});
+ const block=structuredClone(previous);block.body.equipment=[];
+ assert.deepEqual(shapeFailure(previous,block).detail,{side:'candidateDefaults',path:'/body/equipment',problem:'block-not-object',actual:'array'});
+ const fields=structuredClone(previous),longItem=fields.body.equipment.items.at(-1);longItem.id='h'.repeat(200);longItem.extra=true;
+ const item=shapeFailure(previous,fields).detail;
+ assert.equal(item.problem,'item-keys');assert.ok(item.itemId.length<=56&&item.itemId.endsWith('...'),'a long field name stays bounded and marked');
+ assert.ok(item.unexpectedKeys.includes('extra'));
+ for(const failure of [reported,shapeFailure(saved,structuredClone(previous)),shapeFailure(previous,ammo),shapeFailure(previous,block),shapeFailure(previous,fields)]){
+  assert.ok(failure.message.length<1024,'diagnostics stay bounded');
+  assert.ok(!failure.message.includes('"items":[')&&!failure.message.includes('practice_sword'),'the save itself is never echoed');
+ }
+});
