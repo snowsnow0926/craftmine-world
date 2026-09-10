@@ -1,4 +1,5 @@
 import { shell, WebContentsView, type BrowserWindow } from "electron";
+import { OwnedViewClose } from "./owned-view-close";
 import { statSync, watch, type FSWatcher } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -77,6 +78,10 @@ export function resolveLocalFile(raw: string, root: string | null): string | nul
 
 export class BrowserPane {
   private view: WebContentsView | null = null;
+  private contents: Electron.WebContents | null = null;
+  private disposed = false;
+  private disposal: Promise<void> | null = null;
+  private readonly retiring = new OwnedViewClose("BROWSER_RENDERER");
   private window: BrowserWindow | null = null;
   private visible = false;
   private bounds = { x: 0, y: 0, width: 0, height: 0 };
@@ -91,12 +96,14 @@ export class BrowserPane {
   }
 
   setWindow(window: BrowserWindow | null): void {
+    if (this.disposed) return;
     if (this.window === window) return;
     this.detach();
     this.window = window;
   }
 
   getState(): BrowserState | null {
+    if (this.disposed) return null;
     const wc = this.view?.webContents;
     if (!wc || wc.isDestroyed()) return null;
     return {
@@ -109,12 +116,14 @@ export class BrowserPane {
   }
 
   getWebContents() {
+    if (this.disposed) return null;
     const wc = this.view?.webContents;
     if (!wc || wc.isDestroyed()) return null;
     return wc;
   }
 
   navigate(raw: string, fileRoot: string | null = null): BrowserState | null {
+    this.assertAlive();
     if (fileRoot) this.fileRoot = fileRoot;
     const localPath = resolveLocalFile(raw, this.fileRoot);
     if (localPath) {
@@ -142,6 +151,7 @@ export class BrowserPane {
     fileRoot: string | null = null,
     timeoutMs = 15_000,
   ): Promise<BrowserState | null> {
+    this.assertAlive();
     if (fileRoot) this.fileRoot = fileRoot;
     const localPath = resolveLocalFile(raw, this.fileRoot);
     const target = localPath
@@ -162,10 +172,13 @@ export class BrowserPane {
     } catch {
       // Load failures surface through did-fail-load → state push.
     }
+    this.assertAlive();
+    if (this.view !== view) throw new Error("BROWSER_VIEW_CHANGED");
     return this.getState();
   }
 
   action(action: "back" | "forward" | "reload" | "stop"): void {
+    if (this.disposed) return;
     const wc = this.view?.webContents;
     if (!wc || wc.isDestroyed()) return;
     if (action === "back" && wc.navigationHistory.canGoBack()) {
@@ -180,6 +193,7 @@ export class BrowserPane {
   }
 
   setBounds(bounds: { x: number; y: number; width: number; height: number }): void {
+    if (this.disposed) return;
     const safe = {
       x: Math.max(0, Math.round(Number(bounds.x) || 0)),
       y: Math.max(0, Math.round(Number(bounds.y) || 0)),
@@ -191,6 +205,7 @@ export class BrowserPane {
   }
 
   setVisible(visible: boolean): void {
+    if (this.disposed) return;
     this.visible = visible;
     if (!this.view) return;
     if (visible) this.attach();
@@ -198,6 +213,7 @@ export class BrowserPane {
   }
 
   openExternal(): void {
+    if (this.disposed) return;
     const url = this.view?.webContents.getURL();
     if (!url) return;
     const allowed = parseAllowedExternalUrl(url);
@@ -214,13 +230,29 @@ export class BrowserPane {
     }
   }
 
-  dispose(): void {
-    this.clearLiveReload();
-    this.detach();
-    if (this.view) {
-      this.view.webContents.close();
-      this.view = null;
-    }
+  /** Retire a plugin guest while keeping the application-owned pane reusable. */
+  closeGuest(): Promise<void> {
+    try { this.clearLiveReload(); } catch (error) { this.retiring.recordFailure(error); }
+    try { this.detach(); } catch (error) { this.retiring.recordFailure(error); }
+    const view = this.view;
+    const contents = this.contents ?? view?.webContents;
+    this.view = null;
+    this.contents = null;
+    this.visible = false;
+    this.fileRoot = null;
+    if (view && contents) void this.retiring.close(contents, view);
+    return this.retiring.drain();
+  }
+
+  dispose(): Promise<void> {
+    if (this.disposal) return this.disposal;
+    this.disposed = true;
+    this.disposal = Promise.resolve().then(() => this.closeGuest());
+    return this.disposal;
+  }
+
+  private assertAlive(): void {
+    if (this.disposed) throw new Error("BROWSER_PANE_DISPOSED");
   }
 
   private attach(): void {
@@ -247,6 +279,7 @@ export class BrowserPane {
 
   /** Watch the previewed file's directory so page + asset edits re-render. */
   private watchDirForReload(dir: string): void {
+    if (this.disposed) return;
     if (this.watcher && this.watchedDir === dir) return;
     this.clearLiveReload();
     try {
@@ -259,6 +292,7 @@ export class BrowserPane {
   }
 
   private scheduleReload(): void {
+    if (this.disposed) return;
     if (this.reloadTimer) clearTimeout(this.reloadTimer);
     this.reloadTimer = setTimeout(() => {
       this.reloadTimer = null;
@@ -289,7 +323,8 @@ export class BrowserPane {
   }
 
   private ensureView(): WebContentsView {
-    if (this.view && !this.view.webContents.isDestroyed()) return this.view;
+    this.assertAlive();
+    if (this.view && this.contents && !this.contents.isDestroyed()) return this.view;
     const view = new WebContentsView({
       webPreferences: {
         sandbox: true,
@@ -332,7 +367,9 @@ export class BrowserPane {
     wc.on("did-navigate-in-page", push);
     wc.on("page-title-updated", push);
     wc.on("did-fail-load", push);
+    if (this.disposed) { void this.retiring.close(wc, view); throw new Error("BROWSER_PANE_DISPOSED"); }
     this.view = view;
+    this.contents = wc;
     return view;
   }
 }
