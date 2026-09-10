@@ -118,7 +118,7 @@ export function installHeadlessControl(access: {
         case "worldCreationGuide": {
           if (Object.keys(request).sort().join(",") !== "id,method,type") throw Error("Unexpected creation guide probe fields");
           return evaluateWorld(`(async()=>{
-            await craftmineView.showSurface({kind:'workbench',tab:'library'});
+            await craftmineView.showSurface({surface:{kind:'workbench',tab:'library'}});
             const area=document.querySelector('[data-creation-guide]'),details=area?.querySelector('details');
             if(!details)throw Error('Creation guide was not mounted in the real library');
             const result={worldId:document.body.dataset.worldId,collapsed:!details.open,steps:details.querySelectorAll('li').length,insideWorkbench:area.closest('#workbench-panel')!==null,headerHeight:document.querySelector('header').getBoundingClientRect().height};
@@ -126,9 +126,9 @@ export function installHeadlessControl(access: {
             result.expanded=details.open;result.headerUnchanged=document.querySelector('header').getBoundingClientRect().height===result.headerHeight;
             details.querySelector('form').requestSubmit();
             result.checksVisible=!document.getElementById('checks-panel').hidden;result.clearedAfterNavigation=!area.querySelector('details');
-            await craftmineView.showSurface({kind:'workbench',tab:'library'});
+            await craftmineView.showSurface({surface:{kind:'workbench',tab:'library'}});
             result.reopenedCollapsed=area.querySelector('details')?.open===false;
-            await craftmineView.showSurface({kind:'world'});
+            await craftmineView.showSurface({surface:{kind:'world'}});
             result.clearedAfterWorld=!area.querySelector('details');
             return result;
           })()`);
