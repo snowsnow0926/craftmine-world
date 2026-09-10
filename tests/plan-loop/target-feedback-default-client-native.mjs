@@ -1,3 +1,4 @@
+import {assertOfficialTargetDefault,stopDefaultClient,finalizeDefaultClient} from '../player-product/default-client-audit.mjs';
 import {assertCleanHeadlessShutdown} from '../player-product/shutdown-exit-audit.mjs';
 // Actual compiled client and private profile; only finite page-script RPCs.
 import assert from 'node:assert/strict';
@@ -48,7 +49,7 @@ function rpc(method,payload={},timeout=30000){return new Promise((resolve,reject
 const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload},180000),panel=(worldId,channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}},60000);
 async function until(fn,accept,label,timeout=120000){const end=Date.now()+timeout;let last;while(Date.now()<end){if(ended)throw Error('Client exited during '+label);try{last=await fn();}catch(e){last=String(e);}if(accept(last))return last;await delay(400);}throw Error(label+': '+JSON.stringify(last));}
 async function step(name,fn){try{const value=await fn();report.steps.push({name,passed:true,value});persist();console.log('PASS '+name);return value;}catch(e){report.steps.push({name,passed:false,error:String(e)});persist();throw e;}}
-async function stop(){if(ended)return;try{await rpc('quit',{},10000);}catch{}await Promise.race([exit,delay(20000)]);if(!ended){launch.forcedStop=true;child.kill();}await exit;}
+async function stop(){return stopDefaultClient({ended:()=>ended,quit:()=>rpc('quit',{},10000),exit,kill:()=>child.kill(),launch});}
 function snapshot(value){const result=value?.state;assert.equal(result?.format,'craftmine.godot-progress/1');assert.equal(result.worldId,report.worldId);assert.equal(result.baseId,'first-person');assert.equal(result.baseVersion,'0.1.0');assert.equal(result.body?.format,'craftmine.godot-base-state/1');assert.equal(result.body.worldId,report.worldId);assert.ok(result.body.player&&result.body.equipment&&result.body.inventory&&result.body.quests);assert.ok(result.body.targets?.length>=3);assert.equal(typeof result.body.savedAt,'string');return structuredClone(result);}
 async function loaded(worldId){await until(()=>rpc('godotObserve'),x=>x?.worldId===worldId&&x.instanceId,'formal world',180000);await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===worldId,'world navigation');}
 async function auditStop(){const audit=await rpc('status');assert.equal(audit.violations.length,0);assert.deepEqual(audit.shutdownFailures,[]);assert.ok(audit.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await stop();assertCleanHeadlessShutdown(launch);return launch;}
@@ -93,7 +94,7 @@ try{
  await start();await until(()=>ready,Boolean,'third controller');await loaded(world.id);
  await step('second restart retains 500 milliseconds and every old gameplay field',async()=>{assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);const r=await panel(world.id,'targetFeedback.describe');assert.equal(r.targets.find(x=>x.targetId==='target_a').values.hitFlashMilliseconds,500);return feedback(world.id,500);});
  const describedDefault=await panel(world.id,'targetFeedback.describe'),defaultTarget=describedDefault.targets.find(t=>t.targetId==='target_a');
- assert.equal(defaultTarget.defaults?.format,'craftmine.target-feedback-default/1');const defaultValue=defaultTarget.defaults.values.hitFlashMilliseconds;assert.ok(Number.isInteger(defaultValue)&&defaultValue>=1&&defaultValue<=1000&&defaultValue!==500);report.default=defaultTarget.defaults;
+ const defaultValue=assertOfficialTargetDefault(defaultTarget);report.default=defaultTarget.defaults;
  await step('real default button only fills the observed target and leaves complete domain unchanged',async()=>{
   await panel(world.id,'godot.runtimeSave',{freeze:true});await defaultsView('open');const opened=await until(()=>defaultsView('read'),r=>r.open&&r.targets.includes('target_a')&&!r.defaultDisabled,'default DOM');assert.ok(opened.defaultSource);
   await defaultsView('select',{targetId:'target_a'});assert.equal((await defaultsView('read')).value,'500');
@@ -125,4 +126,4 @@ try{
  await start();await until(()=>ready,Boolean,'fourth controller');await loaded(world.id);
  await step('default value and latest full progress survive process restart',async()=>{assert.deepEqual(snapshot(await rpc('godotSnapshot')),latest);const current=await panel(world.id,'targetFeedback.describe');assert.equal(current.targets.find(t=>t.targetId==='target_a').values.hitFlashMilliseconds,defaultValue);return feedback(world.id,defaultValue);});
  await step('fourth orderly shutdown',auditStop);report.passed=true;
-}catch(e){report.error=String(e.stack??e);process.exitCode=1;}finally{await stop();report.finishedAt=new Date().toISOString();persist();console.log(JSON.stringify({out,passed:report.passed,steps:report.steps.map(({name,passed})=>({name,passed})),error:report.error}));}
+}catch(e){report.error=String(e.stack??e);process.exitCode=1;}finally{if(!await finalizeDefaultClient(report,async()=>{await stop();if(launch)assertCleanHeadlessShutdown(launch);},persist))process.exitCode=1;console.log(JSON.stringify({out,passed:report.passed,steps:report.steps.map(({name,passed})=>({name,passed})),error:report.error,shutdownError:report.shutdownError}));}

@@ -9082,3 +9082,10 @@ client exits must be code0 with empty shutdown/input/page-error audit arrays.
 The helper accepts no arbitrary selectors, values, scripts or RPC; reject unknown
 actions/targets, mismatching worlds and unavailable forms before submission.
 Preparation tests do not count as full-client or packaged acceptance.
+
+PP2 default-client acceptance hardening: official training-range expects120 ms from
+an independent fixed resource hash, not from the describe response under test.
+Reject wrong value/kind/path/hash. Graceful quit and owned exit have bounded waits;
+after kill allow at most5 seconds, then CLIENT_STOP_TIMEOUT. Any final shutdown or
+audit error must persist passed:false, finishedAt and prior step evidence.
+Unit command: node --test tests/player-product/default-client-audit.test.mjs.
