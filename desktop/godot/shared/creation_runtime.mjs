@@ -50,6 +50,41 @@ export function creationTargetSnapshot(runtime, { worldId, buildId, instanceId, 
   };
 }
 
+/** Map a durable entity to the same deterministic canvas coordinates as the
+ * top-down CreationRenderer. This pure mapping is used by headless interaction
+ * tests and keeps target identity tied to the persisted entity id. */
+export function creationScreenPoint(entity, { origin = [192, 128], pixelsPerUnit = 32 } = {}) {
+  if (!entity || !Array.isArray(entity.position) || entity.position.length !== 3) return null;
+  return [origin[0] + Number(entity.position[0]) * pixelsPerUnit,
+    origin[1] + Number(entity.position[2]) * pixelsPerUnit];
+}
+
+/** Select the nearest persisted entity under a top-down canvas point. */
+export function selectCreationTarget(runtime, point, { origin = [192, 128], pixelsPerUnit = 32,
+  padding = 8, maxDistance = Infinity } = {}) {
+  if (!runtime || !Array.isArray(runtime.entities) || !Array.isArray(point) || point.length !== 2) return null;
+  let best = null;
+  for (const entity of runtime.entities) {
+    const screen = creationScreenPoint(entity, { origin, pixelsPerUnit });
+    if (!screen) continue;
+    const half = entity.halfExtents || [0.5, 0.5, 0.5];
+    const radius = Math.max(Number(half[0]) || 0, Number(half[2]) || 0) * pixelsPerUnit + padding;
+    const dx = point[0] - screen[0], dy = point[1] - screen[1];
+    const distance = Math.hypot(dx, dy);
+    if (distance > radius || distance > maxDistance) continue;
+    if (!best || distance < best.distance || (distance === best.distance && entity.id < best.entity.id)) {
+      best = { entity, distance, screenPoint: screen };
+    }
+  }
+  return best ? best.entity : null;
+}
+
+/** Build a target snapshot directly from a safe canvas selection. */
+export function creationTargetSnapshotAtPoint(runtime, point, metadata = {}, options = {}) {
+  const target = selectCreationTarget(runtime, point, options);
+  return creationTargetSnapshot(runtime, { ...metadata, targetId: target?.id ?? null });
+}
+
 /** Apply one marker interaction to a sequence-door rule in pure logic. */
 export function advanceSequenceDoor(runtime, markerId) {
   const next = clone(runtime);

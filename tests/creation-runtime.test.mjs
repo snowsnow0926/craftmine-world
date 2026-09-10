@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { materializeCreationRuntime, creationTargetSnapshot, advanceSequenceDoor } from '../desktop/godot/shared/creation_runtime.mjs';
+import { materializeCreationRuntime, creationTargetSnapshot, creationTargetSnapshotAtPoint, selectCreationTarget, advanceSequenceDoor } from '../desktop/godot/shared/creation_runtime.mjs';
 
 const scene = { format:'craftmine.creation-scene/1', revision:3, defaults:{timeOfDay:12}, entities:[
   {id:'door-a',kind:'door',position:[4,0,4],rotationY:0,scale:[1,1,1],color:'#884422',parameters:{}},
@@ -12,6 +12,20 @@ test('creation scene reopens as deterministic runtime entities and target snapsh
   assert.deepEqual(reopened,first); assert.equal(first.entities.length,4);
   const snap=creationTargetSnapshot(first,{worldId:'w',buildId:'b',instanceId:'i',manifestHash:'f'.repeat(64),targetId:'door-a'});
   assert.equal(snap.target.entityId,'door-a'); assert.deepEqual(snap.target.position,[4,0,4]);
+});
+
+test('top-down point selection resolves persisted entity identity without UI input',()=>{
+  const runtime=materializeCreationRuntime(scene);
+  // door-a is at canvas [320, 256] using CreationRenderer's origin/scale.
+  assert.equal(selectCreationTarget(runtime,[320,256])?.id,'door-a');
+  const snap=creationTargetSnapshotAtPoint(runtime,[320,256],{worldId:'w',buildId:'b',instanceId:'i',manifestHash:'f'.repeat(64)});
+  assert.equal(snap.target.entityId,'door-a');
+  assert.equal(selectCreationTarget(runtime,[0,0]),null);
+});
+
+test('overlapping target selection is deterministic by distance then id',()=>{
+  const runtime=materializeCreationRuntime({ ...scene, entities: scene.entities.slice(0,2).map(entity=>({...entity,position:[4,0,4]})) });
+  assert.equal(selectCreationTarget(runtime,[320,256])?.id,'blue');
 });
 
 test('sequence door opens only after the authored marker order',()=>{
