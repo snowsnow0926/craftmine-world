@@ -208,7 +208,7 @@ try {
     } catch (error) { item.outcome = 'failed'; item.error = String(error.stack ?? error); process.exitCode = 1;
       if (item.binding && !ended && !stopControl.requested) { try { await p8('abort', caseId); } catch (abortError) { item.abortError = String(abortError); } }
     } finally { item.finishedAt = new Date().toISOString(); report.relay = relay.snapshot(); save(); }
-    if (ended || item.outcome === 'failed' && !item.binding || stopControl.requested || relay.snapshot().attempts.some(attempt => attempt.status === 400 || attempt.status === 401 || attempt.status === 403) || authorization.requestLimit !== null && relay.snapshot().attempts.length >= authorization.requestLimit) break;
+    if (ended || item.outcome === 'failed' || stopControl.requested || relay.snapshot().attempts.some(attempt => attempt.status === 400 || attempt.status === 401 || attempt.status === 403) || authorization.requestLimit !== null && relay.snapshot().attempts.length >= authorization.requestLimit) break;
   }
   await step('first strict owned shutdown', auditStop);
   const savedCases = report.cases.filter(item => item.saved);
