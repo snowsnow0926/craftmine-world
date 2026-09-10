@@ -87,8 +87,10 @@ try {
   const context={projectId:'story-fixture',sessionId:'story-fixture',turnId:'story-turn'};
   await core.call('workspace.open',{context,selectedWorld:'creation-story'});
   const authoredFiles=fs.readdirSync(project,{recursive:true}).filter(name=>!name.split(/[\\/]/).some(part=>part.startsWith('.'))&&!['story.gd','story-config.json','managed-base.json','export_presets.cfg','craftmine_host_shell.html'].includes(name)&&!name.endsWith('.uid')&&fs.lstatSync(path.join(project,name)).isFile()).map(name=>({path:name.replaceAll('\\','/'),text:fs.readFileSync(path.join(project,name),'utf8')}));
-  let indexed=await core.call('godotProject.create',{context,worldId:'creation-story',toolCallId:'story-source',baseBuild:'story-build',baseId:'creation-sandbox',files:authoredFiles.slice(0,16)});
-  for(let offset=16;offset<authoredFiles.length;offset+=16)indexed=await core.call('godotProject.patch',{context,worldId:'creation-story',toolCallId:'story-source-'+offset,revision:indexed.revision,manifestHash:indexed.manifestHash,operations:authoredFiles.slice(offset,offset+16).map(file=>({op:'put',...file,expectedHash:null}))});
+  // Deliberately use legal smaller batches so the first formal revision is
+  // above one and a new task cannot accidentally hide source-reindex behavior.
+  let indexed=await core.call('godotProject.create',{context,worldId:'creation-story',toolCallId:'story-source',baseBuild:'story-build',baseId:'creation-sandbox',files:authoredFiles.slice(0,8)});
+  for(let offset=8;offset<authoredFiles.length;offset+=8)indexed=await core.call('godotProject.patch',{context,worldId:'creation-story',toolCallId:'story-source-'+offset,revision:indexed.revision,manifestHash:indexed.manifestHash,operations:authoredFiles.slice(offset,offset+8).map(file=>({op:'put',...file,expectedHash:null}))});
   await core.call('godotExecutor.register',{executorId:'authored-story-fixture',attestation:{format:'craftmine.godot-executor/1',isolation:'authored-test-fixture',evidenceHash:sha('real-godot-story-logs'),engineVersion:'4.7.2-stable',capabilities:{import:true,build:true,check:true}}});
   const job=await core.call('godotBuild.start',{context,worldId:'creation-story',toolCallId:'story-check',revision:indexed.revision,manifestHash:indexed.manifestHash,mode:'check'});
   const claim=await core.call('godotJob.claim',{jobId:job.jobId,token:'story-claim',executorId:'authored-story-fixture'});
