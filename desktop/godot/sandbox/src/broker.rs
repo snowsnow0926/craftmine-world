@@ -359,7 +359,8 @@ mod tests {
     fn windows_export_rejects_custom_templates_and_resource_modification() {
         assert!(validate_windows_preset(WINDOWS_PRESET.as_bytes()).is_ok());
         for (from, to) in [("application/modify_resources=false", "application/modify_resources=true"),
-            ("custom_template/release=\"\"", "custom_template/release=\"C:/other.exe\"")]
+            ("custom_template/release=\"\"", "custom_template/release=\"C:/other.exe\""),
+            ("script_export_mode=0", "script_export_mode=2")]
         { assert!(validate_windows_preset(WINDOWS_PRESET.replace(from, to).as_bytes()).is_err()); }
     }
     #[test]

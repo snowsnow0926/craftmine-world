@@ -70,7 +70,7 @@ func run() -> void:
     print("GUIDANCE_RESULT=" + JSON.stringify({"failures":failures,"partial":partial,"final":final,"headless":DisplayServer.get_name() == "headless","captured":world.player.captured}))
     quit(0 if failures.is_empty() else 1)
 `);
- const env=await createGodotProbeEnvironment(out);
+ const env=await createGodotProbeEnvironment(out,{web:true,threads:true});
  await env.run('import',['--path',project,'--editor','--import']);
  const result=async(label,args=[])=>{
   const log=await env.run(label,['--path',project,'--script','res://guidance_probe.gd',...args]);
@@ -81,7 +81,33 @@ func run() -> void:
  const restarted=await result('restarted',['--','restore']);
  assert.deepEqual(restarted.final,first.final);
  assert.deepEqual(restarted.final.rules.example,{presses:2,completed:true});
- const report={format:'craftmine.guidance-rule-evidence/1',engine:env.actualVersion,runs:env.runs,first,restarted,
+ const host=fs.readFileSync(path.join(root,'vendor/pi-desktop/crates/craftmine-core/src/godot_host_resources.rs'),'utf8');
+ const serialized=host.match(/const EXPORT_PRESET: &str = ("(?:[^"\\]|\\.)*");/);
+ assert.ok(serialized,'生产Web预设必须可以按真实字节读取');
+ const webPreset=JSON.parse(serialized[1]);
+ assert.match(webPreset,/script_export_mode=0/);assert.match(webPreset,/include_filter="\*\.json,\*\.txt"/);
+ fs.copyFileSync(path.join(root,'desktop/godot/web/shell.html'),path.join(project,'craftmine_host_shell.html'));
+ const windowsPreset=fs.readFileSync(path.join(root,'desktop/godot/shared/windows-export.cfg'),'utf8');
+ assert.match(windowsPreset,/script_export_mode=0/);
+ assert.equal(windowsPreset,fs.readFileSync(path.join(root,'desktop/godot/sandbox/windows-export.cfg'),'utf8').replace(/\r\n/g,'\n'));
+ const packages={};
+ for(const [label,preset,platform] of [['web',webPreset,'Web'],['windows',windowsPreset,'Windows Desktop']]){
+  const fixed=preset.replace('custom_template/release=""','custom_template/release='+JSON.stringify(env.webTemplate.replaceAll('\\','/')));
+  fs.writeFileSync(path.join(project,'export_presets.cfg'),label==='web'?fixed:preset);
+  const pack=path.join(out,label+'.pck');
+  await env.run(label+'-pack-export',['--path',project,'--export-pack',platform,pack]);
+  const output=await env.run(label+'-pack-restore',['--main-pack',pack,'--script','res://guidance_probe.gd','--','restore']);
+  const line=output.split(/\r?\n/).find(line=>line.startsWith('GUIDANCE_RESULT='));
+  packages[label]=JSON.parse(line.slice('GUIDANCE_RESULT='.length));
+  assert.deepEqual(packages[label].failures,[]);assert.deepEqual(packages[label].final,first.final);
+ }
+ // 编译模式修复不能放松规则字节完整性检查。
+ fs.appendFileSync(path.join(project,'scripts/creation/rules/example.gd'),'\n# deliberate integrity mismatch\n');
+ const tampered=path.join(out,'tampered.pck');
+ await env.run('tampered-pack-export',['--path',project,'--export-pack','Windows Desktop',tampered]);
+ await assert.rejects(env.run('tampered-pack-probe',['--main-pack',tampered,'--quit-after','2']));
+ assert.match(fs.readFileSync(path.join(out,'tampered-pack-probe.log'),'utf8'),/Authored rule source hash mismatch: example/);
+ const report={tamperedRuleRejected:true,packages,format:'craftmine.guidance-rule-evidence/1',engine:env.actualVersion,runs:env.runs,first,restarted,
   coverage:'真实 Godot 普通规则源码和自定义进度往返；不代表模型首次成功率、玩家输入手感或完整主机采用。'};
  fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
  console.log('双按规则证据：'+out);
