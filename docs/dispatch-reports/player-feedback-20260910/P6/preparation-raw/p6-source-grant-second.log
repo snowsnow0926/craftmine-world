@@ -1,0 +1,24 @@
+<anonymous_script>:1
+(function anonymous(Dir,Dirent,FileReadStream,FileWriteStream,ReadStream,Stats,Utf8Stream,WriteStream,_toUnixTimestamp,access,accessSync,appendFile,appendFileSync,chmod,chmodSync,chown,chownSync,close,closeSync,constants,copyFile,copyFileSync,cp,cpSync,createReadStream,createWriteStream,default,exists,existsSync,fchmod,fchmodSync,fchown,fchownSync,fdatasync,fdatasyncSync,fstat,fstatSync,fsync,fsyncSync,ftruncate,ftruncateSync,futimes,futimesSync,glob,globSync,lchmod,lchmodSync,lchown,lchownSync,link,linkSync,lstat,lstatSync,lutimes,lutimesSync,mkdir,mkdirSync,mkdtemp,mkdtempDisposableSync,mkdtempSync,open,openAsBlob,openSync,opendir,opendirSync,promises,read,readFile,readFileSync,readSync,readdir,readdirSync,readlink,readlinkSync,readv,readvSync,realpath,realpathSync,rename,renameSync,rm,rmSync,rmdir,rmdirSync,stat,statSync,statfs,statfsSync,symlink,symlinkSync,truncate,truncateSync,unlink,unlinkSync,unwatchFile,utimes,utimesSync,watch,watchFile,write,writeFile,writeFileSync,writeSync,writev,writevSync,_makeLong,basename,delimiter,dirname,extname,format,isAbsolute,join,matchesGlob,normalize,parse,posix,relative,resolve,sep,toNamespacedPath,win32,FS_DENY_DIR_SEGMENTS,FS_DENY_FILE_PATTERNS,LEGACY_FS_PERMISSIONS,PLUGIN_FS_MODES,isDeniedFsPath,isFsPathInScope,isWholeTreePattern,matchFsGlob,normalizeFsPath,parseFsPolicy,resolveFsAccess,IMAGE_MIME,MAX_IMAGE_BYTES,MAX_TEXT_BYTES,imageMimeFor,isAttachmentBlobRef,isIgnoredName,listDir,previewFile,readOpenableFile,readOpenableImage,readWorkspaceFile,resolveOpenablePath,resolveRealOpenablePath,resolveRealPathForCreateWithinRoot,resolveRealPathWithinRoot,resolveWithinRoot,realpathOrSelf,apiError
+                                                                                                                                                                                                                                                                                                ^^^^^^^
+
+SyntaxError: Unexpected token 'default'
+    at Function (<anonymous>)
+    at file:///D:/cm-fb-p6-20260910/tests/plan-loop/asset-source-grant.test.mjs:15:13
+
+Node.js v24.14.0
+✖ tests\plan-loop\asset-source-grant.test.mjs (133.0251ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 137.7848
+
+✖ failing tests:
+
+test at tests\plan-loop\asset-source-grant.test.mjs:1:1
+✖ tests\plan-loop\asset-source-grant.test.mjs (133.0251ms)
+  'test failed'

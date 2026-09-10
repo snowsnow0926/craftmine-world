@@ -1,0 +1,40 @@
+✔ buildSearchRequest fills host defaults and clamps the page size (7.1784ms)
+✔ mergePage de-duplicates by assetId+version and keeps order (0.1804ms)
+✔ controller.search sends the built request and loadMore uses nextOffset (0.6866ms)
+✔ scope and category switching send the new filter to the host (0.2194ms)
+✔ the four state flags produce four independent badges (0.2457ms)
+✔ describePreview covers all six statuses with honest copy (0.3814ms)
+✔ OGG is never playable and never gets a player (0.08ms)
+✔ preview runs the real service and cancel terminates the attempt (0.9077ms)
+✔ a late preview result for a superseded selection is discarded (0.3101ms)
+✔ scanSummary and importRequestFor produce the import payload (0.7018ms)
+✔ snapshot data keys stay disjoint from controller action names (0.1158ms)
+✔ the panel import path reads the scan result, never the scan action (0.1296ms)
+✔ AssetLibraryPanel reads scan data from scanResult with a guarded items read (0.5707ms)
+✔ versionOptions lists newest first (0.1454ms)
+✔ host failures reach the caller and stay in the error state (0.3943ms)
+✔ asset UI sources contain no pointer-lock, click or focus emulation (0.6793ms)
+✔ a late search response for a previous scope never overwrites the list (0.1893ms)
+✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.1061ms)
+✔ import consumes the real selected directory grant before dispatch and before returning (1.1112ms)
+✔ scan authorizes the directory; preview uses only a managed identity (0.2025ms)
+✔ missing or revoked grants, stale owners and unknown path fields dispatch nothing (0.8996ms)
+✔ a world switch during authorization cannot dispatch into the old world (0.1517ms)
+✔ late durable import response is rejected after grant revocation; retry rechecks grant (0.1934ms)
+✔ late preview response cannot paint another owner or viewing session (0.2463ms)
+(node:246624) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ real finite directory grant accepts ordinary files and rejects roots or files outside the pick (5.1844ms)
+✔ read permission and explicit userSelected policy remain required (0.8372ms)
+✔ protected or denied descendants are rejected before any core scan (4.4042ms)
+✔ linked ordinary files are rejected without reading their content (1.2774ms)
+✔ scan preflight rejects excessive depth and entry count instead of scanning partially (294.592ms)
+✔ changing the picker grant during real authorization is rejected (1.29ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 512.0265

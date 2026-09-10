@@ -1,0 +1,13 @@
+PASS old owner rejected
+PASS actual auxiliary forms open actual navigation sheet
+PASS selection restricted to observed cards
+PASS real favorite form updates acknowledgement
+PASS favorites filter uses actual form
+PASS unfavorite removes filtered card with detail retained
+PASS tag form uses submitted DOM value without React internals
+PASS other asset cannot be annotated
+PASS actual directory import form scans the host-picked root
+PASS actual confirm form supplies the selected scan path for an empty picker file path
+PASS preview refuses a nonselected asset
+PASS actual preview form shows acknowledged fixture preview without writing metadata
+{"out":"D:\\cm-fb-p6-20260910\\test-results\\asset-forms-HNW7nj","error":"Error: INVALID_ASSET_PROBE\n    at assetsProbeScript (file:///D:/cm-fb-p6-20260910/vendor/pi-desktop/apps/desktop/electron/main/craftmine-assets-acceptance.ts:12:258)\n    at probe (file:///D:/cm-fb-p6-20260910/tests/plan-loop/asset-forms-headless.mjs:103:46)\n    at file:///D:/cm-fb-p6-20260910/tests/plan-loop/asset-forms-headless.mjs:121:24"}

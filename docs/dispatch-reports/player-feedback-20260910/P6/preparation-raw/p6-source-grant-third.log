@@ -1,0 +1,16 @@
+(node:273080) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ real finite directory grant accepts ordinary files and rejects roots or files outside the pick (6.3182ms)
+✔ read permission and explicit userSelected policy remain required (0.8667ms)
+✔ protected or denied descendants are rejected before any core scan (5.5204ms)
+✔ linked ordinary files are rejected without reading their content (1.2573ms)
+✔ scan preflight rejects excessive depth and entry count instead of scanning partially (301.299ms)
+✔ changing the picker grant during real authorization is rejected (1.2775ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 457.3775

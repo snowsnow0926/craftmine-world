@@ -294,15 +294,15 @@ export function AssetLibraryPanel({
         >
           {t("refresh", lang)}
         </Button>
-        <Button
+        <form data-asset-import-form="pick" onSubmit={event => {event.preventDefault(); startImport();}}><Button
           size="sm"
           variant="secondary"
           data-action="asset-import"
+          type="submit"
           disabled={controller.busy || controller.status === "unavailable" || !onImportRequest}
-          onClick={startImport}
         >
           {t("import", lang)}
-        </Button>
+        </Button></form>
       </div>
 
       {controller.status === "unavailable" && (
@@ -606,15 +606,15 @@ export function AssetLibraryPanel({
                 )}
                 <div className="asset-library-preview-actions">
                   {!controller.preview && (
-                    <Button
+                    <form data-asset-preview-form="begin" data-preview-version={selected.version_.version} onSubmit={event => {event.preventDefault(); startPreview();}}><Button
                       size="sm"
                       variant="secondary"
                       data-action="asset-preview"
+                      type="submit"
                       disabled={controller.busy}
-                      onClick={startPreview}
                     >
                       {t("previewStart", lang)}
-                    </Button>
+                    </Button></form>
                   )}
                   {controller.preview && canRetry(controller.preview) && (
                     <Button
@@ -762,7 +762,7 @@ export function AssetLibraryPanel({
           )}
 
           {picked && (
-            <div className="asset-library-import-form">
+            <form className="asset-library-import-form" data-asset-import-form="confirm" onSubmit={event => {event.preventDefault(); confirmImport();}}>
               <p className="asset-library-field-label">{t("importPick", lang)}</p>
               <label className="asset-library-field">
                 <span className="asset-library-field-label">{t("importName", lang)}</span>
@@ -847,12 +847,12 @@ export function AssetLibraryPanel({
                 size="sm"
                 variant="primary"
                 data-action="asset-import-confirm"
+                type="submit"
                 disabled={controller.busy}
-                onClick={confirmImport}
               >
                 {t("importConfirm", lang)}
               </Button>
-            </div>
+            </form>
           )}
 
           {controller.lastImport && (

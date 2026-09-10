@@ -3,11 +3,11 @@ type AssetProbe = {action: string; ownerWorldId: string | null; assetId?: string
 export function assetsProbeScript(input: unknown): string {
   if (!input || typeof input !== "object" || Array.isArray(input)) throw Error("INVALID_ASSET_PROBE");
   const value = input as Record<string, any>;
-  const fields: Record<string, string[]> = {open: [], close: [], read: [], select: ["assetId", "version"], favorite: ["assetId"], saveTags: ["assetId", "tags"], filter: ["favoritesOnly"]};
-  if (!Object.hasOwn(fields, value.action) || Object.keys(value).some(key => !["action", "ownerWorldId", ...fields[value.action]].includes(key))
+  const fields: Record<string, string[]> = {open: [], close: [], read: [], importPick: [], importConfirm: [], preview: ["assetId", "version"], select: ["assetId", "version"], favorite: ["assetId"], saveTags: ["assetId", "tags"], filter: ["favoritesOnly"]};
+  if (typeof value.action !== "string" || !Object.hasOwn(fields, value.action) || Object.keys(value).some(key => !["action", "ownerWorldId", ...fields[value.action]].includes(key))
     || !(value.ownerWorldId === null || typeof value.ownerWorldId === "string" && /^[a-z0-9][a-z0-9-]{1,47}$/.test(value.ownerWorldId))
     || (fields[value.action].includes("assetId") && !(typeof value.assetId === "string" && /^[a-z0-9][a-z0-9._-]{0,79}$/.test(value.assetId)))
-    || (value.action === "select" && !(Number.isSafeInteger(value.version) && value.version > 0))
+    || (fields[value.action].includes("version") && !(Number.isSafeInteger(value.version) && value.version > 0))
     || (value.action === "filter" && typeof value.favoritesOnly !== "boolean")
     || (value.action === "saveTags" && !(Array.isArray(value.tags) && value.tags.length <= 32 && value.tags.every((tag: unknown) => typeof tag === "string" && !!tag.trim() && new TextEncoder().encode(tag).length <= 40 && !/[\p{Cc},，;]/u.test(tag))))) throw Error("INVALID_ASSET_PROBE");
   return `(${assetsDomProbe.toString()})(${JSON.stringify(value)})`;
@@ -32,6 +32,13 @@ function assetsDomProbe(input: AssetProbe) {
     const card = cards.find(item => item.dataset.assetId === input.assetId && Number(item.dataset.assetVersion) === input.version);
     if (!card) throw Error("ASSET_PROBE_UNOBSERVED_ASSET");
     submit(card.form, card);
+  } else if (input.action === "importPick" || input.action === "importConfirm") {
+    submit(sheet?.querySelector<HTMLFormElement>(input.action === "importPick" ? '[data-asset-import-form="pick"]' : '[data-asset-import-form="confirm"]'));
+  } else if (input.action === "preview") {
+    if (!annotation || annotation.dataset.annotationAsset !== input.assetId) throw Error("ASSET_PROBE_UNOBSERVED_ASSET");
+    const form = sheet?.querySelector<HTMLFormElement>('[data-asset-preview-form="begin"]');
+    if (Number(form?.dataset.previewVersion) !== input.version) throw Error("ASSET_PROBE_UNOBSERVED_VERSION");
+    submit(form);
   } else if (input.action === "favorite" || input.action === "saveTags") {
     if (!annotation || annotation.dataset.annotationAsset !== input.assetId) throw Error("ASSET_PROBE_UNOBSERVED_ASSET");
     if (input.action === "saveTags") {
@@ -51,6 +58,8 @@ function assetsDomProbe(input: AssetProbe) {
     cards: cards.slice(0, 100).map(item => ({assetId: item.dataset.assetId, version: Number(item.dataset.assetVersion)})),
     selected: annotation ? {assetId: annotation.dataset.annotationAsset, favorite: button?.getAttribute("aria-pressed") === "true", tags: annotation.querySelector<HTMLInputElement>('[data-annotation-tags]')?.value ?? "", pending: button?.disabled === true} : null,
     favoritesOnly: sheet?.querySelector<HTMLInputElement>('[data-filter="favorites"]')?.checked ?? false,
+    import: {ready: !!sheet?.querySelector('[data-asset-import-form="confirm"]'), done: sheet?.querySelector('[data-asset-import="done"]')?.textContent?.slice(0, 500) ?? null},
+    preview: {tone: sheet?.querySelector<HTMLElement>('[data-preview-tone]')?.dataset.previewTone ?? null, label: sheet?.querySelector('.asset-library-preview-label')?.textContent?.slice(0, 500) ?? null, thumbnail: !!sheet?.querySelector('[data-preview-thumb]')},
     error: sheet?.querySelector('[role="alert"]')?.textContent?.slice(0, 1000) ?? null,
     guard: {...(globalThis as any).__craftmineHeadless}};
 }

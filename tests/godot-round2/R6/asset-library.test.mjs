@@ -669,6 +669,12 @@ test("scanSummary and importRequestFor produce the import payload", async () => 
     tags: ["base"],
   });
   assert.equal(joinScanPath("C:/assets/", "models/a.glb"), "C:/assets/models/a.glb");
+  for (const sourcePath of [undefined, null, "", "  "]) {
+    assert.equal(importRequestFor(scan.items[0], {...request, sourcePath}).sourcePath,
+      "C:\\assets\\models\\a.glb", "directory picker uses the selected scan path");
+  }
+  assert.equal(importRequestFor(scan.items[0], {...request, sourcePath: "D:/picked/a.glb"}).sourcePath,
+    "D:/picked/a.glb", "an explicit file picker path remains unchanged");
   assert.equal(mediaKindForType("audio/ogg"), "audio");
   assert.equal(mediaKindForType("application/x-godot-package"), "package");
   assert.equal(assetIdFromName("Crate (v2)!"), "crate-v2");
