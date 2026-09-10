@@ -125,6 +125,13 @@ npm run test:live-assets
 - [真实模型生成的滑门与弹跳板演示](examples/door-and-bounce.save.json)
 - [M5 完整可玩世界实施与验收计划](docs/M5_WORLD.md)
 - [最新建议计划：Windows 客户端与 PI-Desktop Harness 源码复用](docs/WINDOWS_CLIENT_REUSE_PLAN.md)
+- [玩家创作版本管理开发计划](docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md)（Git 历史、分支、应用与恢复）
+- [素材与作品库开发计划](docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md)（素材版本、作品复用与开源参考）
+- [玩家创作包、底座与复用开发计划](docs/CREATION_PACKAGE_DEVELOPMENT_PLAN.md)（七类内容、开发接口、打包与导出）
+- [创作社区与内容分发平台开发计划](docs/COMMUNITY_PLATFORM_DEVELOPMENT_PLAN.md)（网站与客户端、上传发布、审核与阶段上线）
+- [AI 创作效率与可靠性开发计划](docs/AI_CREATION_EFFICIENCY_DEVELOPMENT_PLAN.md)（思考模式、文档与 Skill、模块复用及四组对照）
+- [玩家产品体验与持续创作开发计划](docs/PLAYER_PRODUCT_EXPERIENCE_DEVELOPMENT_PLAN.md)（首次成功、参数调整、问题修复、玩法保护与好友试玩）
+- [Godot 原生运行与多目标交付长期计划](docs/NATIVE_RUNTIME_LONG_TERM_DEVELOPMENT_PLAN.md)（原生运行、中央嵌入、独立导出；暂不排期）
 - [上一版 Harness 项目开发计划书与实现记录](docs/HARNESS_DEVELOPMENT_PLAN.md)
 - [Codex、Claude Code 与 DeepSeek Harness 参考研究](docs/HARNESS_REFERENCE_RESEARCH.md)
 - [Harness 差距评估与优先级](docs/HARNESS_GAP_ASSESSMENT.md)
@@ -135,6 +142,7 @@ npm run test:live-assets
 - [模块记忆设计方案](docs/MODULE_MEMORY_PLAN.md)
 - [Alpha 0.3 历史实现记录](docs/IMPLEMENTATION.md)
 - [产品想法](docs/PRODUCT_VISION.md)
+- [已确认的许可与商业授权方案](docs/LICENSING_STRATEGY.md)（正式许可适用待逐模块核对）
 - [早期产品梳理与开发计划（历史）](docs/DEVELOPMENT_PLAN.md)
 
 ## 项目基线
