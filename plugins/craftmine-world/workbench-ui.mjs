@@ -1,5 +1,6 @@
 // Presentation only. All durable facts and authority come from the host bridge.
 import {createGodotPackageUI} from './godot-package-ui.mjs';
+import {createIssueUI} from './issue-ui.mjs';
 const labels={proposed:'待核实',validated:'已验证',needs_revalidation:'需要复验',retired:'已停用',running:'进行中',interrupted:'已中断',cancelled:'已停止',completed:'已完成',finished:'已完成'};
 const kinds={object:'物体',gameplay:'基础玩法',creation:'组合作品','project-rule':'创作规则','verified-experience':'验证经验','task-history':'任务历史',workflow:'创作流程'};
 const text=(tag,value,className)=>{const element=document.createElement(tag);element.textContent=value??'';if(className)element.className=className;return element;};
@@ -48,6 +49,8 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     const section=document.createElement('section');section.dataset.workbenchPage=key;section.setAttribute('aria-label',name);section.hidden=true;pages[key]=section;element.append(section);
   }
   const godotPackages=createGodotPackageUI({element:pages.library,request,getWorldId:()=>getWorld()?.id,action});
+  const issueArea=document.createElement('section');issueArea.dataset.issueNotebook='true';
+  const issues=createIssueUI({element:issueArea,request,getWorldId:()=>getWorld()?.id,action});
   function status(message,error=false){notice.textContent=message;notice.dataset.error=String(error);}
   function has(channel){return capabilities.has(channel);}
   async function call(channel,payload={}){
@@ -201,8 +204,13 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     }
   }
   async function showBackup(){
+    const generation=epoch;
     await refreshTask();
+    if(generation!==epoch)return;
+    issues.clear();
     pages.backup.replaceChildren(text('h2','备份与恢复'));
+    if(has('issue.list')){pages.backup.append(issueArea);await issues.show();}
+    if(generation!==epoch)return;
     pages.backup.append(text('p','备份包含此客户端的全部世界、作品与进度。模型密钥和浏览器档案不会打包。','workbench-meta'));
     const exportButton=button('导出全部世界和作品',()=>action(async()=>{await saveBeforeBackup();const result=await durableCall('backup.export',{});status(result?.cancelled||result?.status==='cancelled'?'已取消导出':result?.status==='completed'||result?.exported?'备份已导出。':'已提交导出，请查看作业状态。');}));exportButton.control.disabled=!has('backup.export');pages.backup.append(exportButton.form);
   const inspectButton=button('选择备份并查看内容',()=>action(async()=>{
@@ -249,8 +257,9 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
   }
   async function setWorld(){
     godotPackages.clear();
+    issues.clear();
     epoch++;pendingArea.replaceChildren();pendingArea.hidden=true;capabilities.clear();capabilitiesReady=false;pendingSelection=null;context=null;active=false;selected=null;selectionRevision=0;inspection=null;libraryDetail.hidden=true;renderSelection();
     await refreshCapabilities();
   }
-  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;selected=null;renderSelection();}};
+  return {show,setWorld,setSelection,refreshCapabilities,refreshPending:()=>!pending&&!isLocked()?refreshPending().catch(()=>{pendingArea.replaceChildren();pendingArea.hidden=true;}):Promise.resolve(),get busy(){return pending>0;},get tab(){return currentTab;},refresh:()=>currentTab?show(currentTab):refreshTask(),clearView(){epoch++;issues.clear();selected=null;renderSelection();}};
 }

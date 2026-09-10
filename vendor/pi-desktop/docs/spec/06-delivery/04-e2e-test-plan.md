@@ -8880,3 +8880,21 @@ Verify that a passed component check cannot unlock repeated import until its own
 ### Await owned Godot shutdown cleanup
 
 Run the gated disposal regression in tests/godot-host-lifecycle.mjs. Repeat actual saved-world profile checks and orderly exit; retain the WCI7EM native failure separately. A continuation of already applied initialization recovery must bind the earlier report hash and compare its snapshots without replay. See godot-shutdown-cleanup.md.
+
+### Craftmine local issue notebook (PP3a, 2026-09-10)
+
+In an independent offscreen client and fresh profile, create a formal Godot
+world, retain its complete progress, and record a description containing
+newlines and markup as literal text. Read back host world/build/base/instance
+and artifact identity, then restart and verify the immutable original record.
+Switch worlds and reject cross-world reads; reject creation during candidate,
+loading and changed-instance transitions. Retry the same operation after a
+lost response and require one record. Verify list response ordering cannot
+hide a newer create or delete. Confirm deletion, restart, and ensure old create
+receipts cannot resurrect the description. Storage failure and both record
+and lifetime-receipt limits must produce actionable, accurate messages.
+
+Do not inject OS input, invoke Pointer Lock, show/focus a window, read provider
+credentials, call a model, or export the report. Assert unchanged game progress
+and zero input guard violations. Runtime fixture checks, browser UI tests and
+actual desktop restart evidence must be labeled separately.

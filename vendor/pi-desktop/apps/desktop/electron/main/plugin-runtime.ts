@@ -1392,7 +1392,7 @@ export class PluginRuntime {
       case "browser.cdp":
         return this.invokeBrowser(loaded, "cdp", payload);
       default:
-        if (pluginId === "craftmine.world" && /^(?:workbench|task|draft|library|memory|selection|backup|diagnostics|package)\./.test(channel)) {
+        if (pluginId === "craftmine.world" && /^(?:workbench|task|draft|library|memory|selection|backup|diagnostics|package|issue)\./.test(channel)) {
           if (!this.services.craftminePanelRequest) throw apiError("UNSUPPORTED", "Craftmine desktop service unavailable");
           return this.services.craftminePanelRequest(channel, payload ?? {});
         }

@@ -29,6 +29,8 @@ import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-servic
 import { createGodotWorldCopyService } from "./godot-world-copy-service";
 import { createGodotWindowsExportService } from "./godot-windows-export-service.mjs";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
+import { createCraftmineIssueService } from "./craftmine-issue-service";
+import { createCraftmineIssueContext } from "./craftmine-issue-context";
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
@@ -2606,6 +2608,15 @@ const craftminePackages = createCraftminePackageService({
   },
 });
 const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
+const craftmineIssues = createCraftmineIssueService({
+  directory: join(dataDir, "craftmine-local-issues"),
+  client: {version: app.getVersion(), ...(typeof craftmineBuildIdentity.commit === "string" ? {commit: craftmineBuildIdentity.commit} : {})},
+  captureContext: createCraftmineIssueContext({
+    selection: godotSelection, instance: () => godotWorld.instance, state: () => godotWorld.state,
+    blocked: () => !!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
+    describe: godotAdapter.describe,
+  }),
+});
 const craftmineDiagnostics = createCraftmineDiagnosticsService({
   pickFile: craftmineFilePicker,
   snapshot: async () => {
@@ -2674,6 +2685,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
   backup: (channel, payload) => craftmineBackup.request(channel, payload),
   packages: (channel, payload) => craftminePackages.request(channel, payload),
   diagnostics: (channel, payload) => craftmineDiagnostics.request(channel, payload),
+  issues: (channel, payload) => craftmineIssues.request(channel, payload),
 });
 /** Preserve tool metadata until the result is persisted at tool_end. Subagent
  * calls also carry their attribution, which is what lets a permission request

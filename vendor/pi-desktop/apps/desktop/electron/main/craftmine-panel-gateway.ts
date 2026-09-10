@@ -7,6 +7,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "memory.search", "memory.propose", "memory.retire", "selection.set", "selection.clear",
   "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel",
   "diagnostics.status", "diagnostics.export",
+  "issue.create", "issue.list", "issue.read", "issue.delete",
   "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget",
   // Asset library reads (R6's contract). Writes stay in the player import flow.
   "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
@@ -29,6 +30,7 @@ export function createCraftminePanelGateway(options: {
   interrupt: (context: Record<string, string>, reason: string) => Promise<void>;
   backup: (channel: string, payload: Record<string, any>) => Promise<any>;
   diagnostics: (channel: string, payload: Record<string, any>) => Promise<any>;
+  issues?: (channel: string, payload: Record<string, any>) => Promise<any>;
   packages?: (channel: string, payload: Record<string, any>) => Promise<any>;
   operations?: CraftmineOperationJournal;
 }) {
@@ -85,7 +87,7 @@ export function createCraftminePanelGateway(options: {
     }
     if (channel === "workbench.capabilities") {
       const available = await workbench(channel);
-      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.packages ? ["package.request"] : []), ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
+      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.packages ? ["package.request"] : []), ...(options.issues ? ["issue.create", "issue.list", "issue.read", "issue.delete"] : []), ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
     }
     if (channel === "package.request") {
       if (!options.packages) throw Error("PACKAGE_SERVICE_UNAVAILABLE");
@@ -99,6 +101,10 @@ export function createCraftminePanelGateway(options: {
     if (channel.startsWith("diagnostics.")) {
       const { worldId: _worldId, ...input } = payload;
       return options.diagnostics(channel, input);
+    }
+    if (channel.startsWith("issue.")) {
+      if (!options.issues) throw Error("ISSUE_SERVICE_UNAVAILABLE");
+      return options.issues(channel, payload);
     }
     if (!["library.install", "memory.propose", "task.resume", "task.discard", "task.stop", "draft.recheck", "task.budget"].includes(channel)) return workbench(channel);
     if (!sessionId || !session) throw new Error("请先创建或打开一个创作任务，再执行此操作。");
