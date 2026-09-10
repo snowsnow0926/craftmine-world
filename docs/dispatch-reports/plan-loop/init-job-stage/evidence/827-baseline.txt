@@ -1,0 +1,95 @@
+✖ core failed build/check fallback fails the build stage, not project creation (3.2169ms)
+✖ core cancelled or interrupted job fallback fails the build stage, not project creation (0.2169ms)
+✔ an unclassified or project failure (GODOT_PROJECT_MISSING) is not promoted by status or an existing project (0.1333ms)
+✔ an unclassified or project failure (GODOT_JOB_FAILED_UNKNOWN) is not promoted by status or an existing project (0.0528ms)
+✔ an unclassified or project failure (Unclassified failure) is not promoted by status or an existing project (0.1931ms)
+✔ an unclassified or project failure (null) is not promoted by status or an existing project (0.0475ms)
+✔ unknown nonterminal status with a job-like reason does not invent failure or success (0.0842ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 160.4257
+
+✖ failing tests:
+
+test at vendor\pi-desktop\apps\desktop\test\godot-initialization-job-stage.test.mjs:21:3
+✖ core failed build/check fallback fails the build stage, not project creation (3.2169ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        'materialize',
+        'passed'
+      ],
+      [
+        'project',
+  +     'failed'
+  -     'passed'
+      ],
+      [
+        'build',
+  +     'pending'
+  -     'failed'
+      ],
+      [
+        'confirm',
+        'pending'
+      ]
+  
+      at TestContext.<anonymous> (file:///C:/cm-init-stage-0910/vendor/pi-desktop/apps/desktop/test/godot-initialization-job-stage.test.mjs:24:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'materialize', 'passed' ], [ 'project', 'failed' ], [ 'build', 'pending' ], [ 'confirm', 'pending' ] ],
+    expected: [ [ 'materialize', 'passed' ], [ 'project', 'passed' ], [ 'build', 'failed' ], [ 'confirm', 'pending' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at vendor\pi-desktop\apps\desktop\test\godot-initialization-job-stage.test.mjs:21:3
+✖ core cancelled or interrupted job fallback fails the build stage, not project creation (0.2169ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        'materialize',
+        'passed'
+      ],
+      [
+        'project',
+  +     'failed'
+  -     'passed'
+      ],
+      [
+        'build',
+  +     'pending'
+  -     'failed'
+      ],
+      [
+        'confirm',
+        'pending'
+      ]
+  
+      at TestContext.<anonymous> (file:///C:/cm-init-stage-0910/vendor/pi-desktop/apps/desktop/test/godot-initialization-job-stage.test.mjs:24:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'materialize', 'passed' ], [ 'project', 'failed' ], [ 'build', 'pending' ], [ 'confirm', 'pending' ] ],
+    expected: [ [ 'materialize', 'passed' ], [ 'project', 'passed' ], [ 'build', 'failed' ], [ 'confirm', 'pending' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

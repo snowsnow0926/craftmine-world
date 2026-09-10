@@ -9089,3 +9089,8 @@ Reject wrong value/kind/path/hash. Graceful quit and owned exit have bounded wai
 after kill allow at most5 seconds, then CLIENT_STOP_TIMEOUT. Any final shutdown or
 audit error must persist passed:false, finishedAt and prior step evidence.
 Unit command: node --test tests/player-product/default-client-audit.test.mjs.
+
+
+### Known initialization job failure stages (next integration, 2026-09-10)
+
+When durable initStatus reports failed with GODOT_JOB_FAILED or GODOT_JOB_ENDED, the world remains failed with materialize/project passed, build failed and confirm pending. Creation stage and error stage both identify build; the finite reason and retry/details remain unchanged. An unknown reason, a code-prefix lookalike or a project error must not gain this classification merely because projectRevision exists. The projection contract tests do not replace actual client/engine acceptance and are not a claim about the frozen 827 package.
