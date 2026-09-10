@@ -1,0 +1,592 @@
+{
+  "format": "craftmine.package-legacy-retirement-evidence/2",
+  "createdAt": "2026-09-10T08:28:03.088Z",
+  "frozenCommit": "570fed344ee775aa0cc8d4ef7d096bce96e1cc5f",
+  "manifestSha256": "f802fc7b23b350a0f6c5d4a6ac3cde9272da33ae9f5b26bccfb12efdb040f0c8",
+  "legacy": {
+    "passed": false,
+    "steps": 6,
+    "passedSteps": 5,
+    "launches": [
+      {
+        "number": 1,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      },
+      {
+        "number": 2,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 2147483651,
+          "signal": null
+        }
+      }
+    ],
+    "error": "AssertionError [ERR_ASSERTION]: Client must exit zero\n\n2147483651 !== 0\n\n    at assertCleanHeadlessShutdown (file:///D:/cm-fb3-20260910/tests/player-product/shutdown-exit-audit.mjs:5:10)\n    at stop (file:///D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-retry-client.mjs:72:161)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-retry-client.mjs:95:423\n    at async step (file:///D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-retry-client.mjs:56:45)\n    at async file:///D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-retry-client.mjs:95:2"
+  },
+  "diagnostic": {
+    "passed": true,
+    "steps": 6,
+    "launches": [
+      {
+        "number": 1,
+        "debugger": {
+          "helperSha256": "59378984e61eaf2f99be4a3a09fec0ac18e0db55b2b541f2ec7053a2bc14df2f",
+          "pid": 241728,
+          "creationTicks": "639246255686212457",
+          "output": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-1",
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      },
+      {
+        "number": 2,
+        "debugger": {
+          "helperSha256": "59378984e61eaf2f99be4a3a09fec0ac18e0db55b2b541f2ec7053a2bc14df2f",
+          "pid": 257764,
+          "creationTicks": "639246255976563320",
+          "output": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-2",
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      }
+    ],
+    "meaning": "No crash occurred under debugger; original release failure is not cleared; dump/stack capture branch was not exercised."
+  },
+  "retirement": {
+    "passed": true,
+    "cases": [
+      {
+        "name": "success-one",
+        "status": "passed",
+        "retirements": 2
+      },
+      {
+        "name": "success-two",
+        "status": "passed",
+        "retirements": 2
+      },
+      {
+        "name": "syntax-failure",
+        "status": "failed",
+        "retirements": 0
+      }
+    ],
+    "retiredTasks": 8,
+    "logicalBytesRemoved": 1453367360,
+    "preservedFiles": 82,
+    "preservedLogicalBytes": 260677491,
+    "freeBefore": 162710163456,
+    "freeAfter": 162201686016,
+    "coreClose": {
+      "code": 0,
+      "signal": null
+    },
+    "electronClose": {
+      "code": 0,
+      "signal": null,
+      "forced": false
+    }
+  },
+  "records": [
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\1-stderr.log",
+      "archive": "legacy-uninstrumented/1-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\1-stdout.log",
+      "archive": "legacy-uninstrumented/1-stdout.log",
+      "bytes": 6990,
+      "sha256": "a968e354ff9198b1a8d76ddde0e6e4ef8420d3bc35653f4378978a42ebcf7662"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\2-stderr.log",
+      "archive": "legacy-uninstrumented/2-stderr.log",
+      "bytes": 191,
+      "sha256": "72ba302d2e6f4f92e3d69f899d27ee4fb5a36f4f0338809e43cc290ceb8bb597"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\2-stdout.log",
+      "archive": "legacy-uninstrumented/2-stdout.log",
+      "bytes": 3145,
+      "sha256": "6bbedacf6f36a35566248fd8f5ee8e07b2755818043d5f6006dfdcc42df0c111"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\fixture-config.json",
+      "archive": "legacy-uninstrumented/fixture-config.json",
+      "bytes": 1923,
+      "sha256": "0ab2391fcd0b4b8bd929bd109dc2edcd04efd8d35f09656f388c2e97726806f1"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\fixture-stderr.log",
+      "archive": "legacy-uninstrumented/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\fixture-stdout.log",
+      "archive": "legacy-uninstrumented/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\native-failure.json",
+      "archive": "legacy-uninstrumented/native-failure.json",
+      "bytes": 60296,
+      "sha256": "564d1e64759e9b366fed1d217956448c3d66fca4f1d6e44cc22686a94983bc38"
+    },
+    {
+      "kind": "strict-package-failure",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\report.json",
+      "archive": "legacy-uninstrumented/report.json",
+      "bytes": 393271,
+      "sha256": "03b5a4015e23d311771bf3fa868530a38d7bad689b0089395e4e74495ff496ca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\config.json",
+      "archive": "retirement/config.json",
+      "bytes": 806997,
+      "sha256": "b83bdf4855afaefe6a17c2931957c7fc97d9fe9b301600691667f5398dd29063"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\electron-exit.json",
+      "archive": "retirement/electron-exit.json",
+      "bytes": 39,
+      "sha256": "1dff4461e0d850ac31ff79ecc82e4eb2e8d59dff2e999f7a66e9c2ed2069bc8c"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\electron-stdout.log",
+      "archive": "retirement/electron-stdout.log",
+      "bytes": 78,
+      "sha256": "30e629eb73ec4f50fe5cf77f5339c40c468c016214711338305c3ad45e0fe26e"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\ex-a6834aeb760c4881ae20e46d.stderr.log",
+      "archive": "retirement/ex-a6834aeb760c4881ae20e46d.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\ex-a6834aeb760c4881ae20e46d.stdout.log",
+      "archive": "retirement/ex-a6834aeb760c4881ae20e46d.stdout.log",
+      "bytes": 14989,
+      "sha256": "93d0f5908e4bbefae7e64894028ef4e0acb04f19774c04e9ee59cd7e1cf9fc4a"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\ex-a70479d804bc436bafe40aef.stderr.log",
+      "archive": "retirement/ex-a70479d804bc436bafe40aef.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\ex-a70479d804bc436bafe40aef.stdout.log",
+      "archive": "retirement/ex-a70479d804bc436bafe40aef.stdout.log",
+      "bytes": 14985,
+      "sha256": "1c0c60897ab7c97bca14c33476d912d57eab763e00daf7a541aee3746b40c5c4"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\im-c39bb7ef4808418ebe7b2b0e.stderr.log",
+      "archive": "retirement/im-c39bb7ef4808418ebe7b2b0e.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\im-c39bb7ef4808418ebe7b2b0e.stdout.log",
+      "archive": "retirement/im-c39bb7ef4808418ebe7b2b0e.stdout.log",
+      "bytes": 13925,
+      "sha256": "b3b6aa6199725e80d541ef239eaf68abee5b7170ee0d23e057bf940d76480641"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\im-cba4fad5926040c39d06ff5c.stderr.log",
+      "archive": "retirement/im-cba4fad5926040c39d06ff5c.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\im-cba4fad5926040c39d06ff5c.stdout.log",
+      "archive": "retirement/im-cba4fad5926040c39d06ff5c.stdout.log",
+      "bytes": 14044,
+      "sha256": "750344c308b3cb0a88f2ac0b68dbfd2c8f90c2e0c4044198123ce3a6ebce23e3"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\im-ef8103c538c5413ca7898d7a.stderr.log",
+      "archive": "retirement/im-ef8103c538c5413ca7898d7a.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\im-ef8103c538c5413ca7898d7a.stdout.log",
+      "archive": "retirement/im-ef8103c538c5413ca7898d7a.stdout.log",
+      "bytes": 13925,
+      "sha256": "c6e6eab45d428ab2aa78011772fbf6e299086b7620839ed7acf9d5750feb3c60"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-083a524f374040bbb6c4a370.stderr.log",
+      "archive": "retirement/pf-083a524f374040bbb6c4a370.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-083a524f374040bbb6c4a370.stdout.log",
+      "archive": "retirement/pf-083a524f374040bbb6c4a370.stdout.log",
+      "bytes": 4704,
+      "sha256": "0f7f3eaefc784cd809eb9a79f0271964ab7adbee34093e4dcb1c21ea83513750"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-3e8c03ae28b04aab870b8136.stderr.log",
+      "archive": "retirement/pf-3e8c03ae28b04aab870b8136.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-3e8c03ae28b04aab870b8136.stdout.log",
+      "archive": "retirement/pf-3e8c03ae28b04aab870b8136.stdout.log",
+      "bytes": 4707,
+      "sha256": "61ac12a82dbdfc9e7cbbd7aab05ebe3ea8211d7a58f00a4b910184be82ae11de"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-547891253eec4b64bb26af14.stderr.log",
+      "archive": "retirement/pf-547891253eec4b64bb26af14.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-547891253eec4b64bb26af14.stdout.log",
+      "archive": "retirement/pf-547891253eec4b64bb26af14.stdout.log",
+      "bytes": 4713,
+      "sha256": "80aa72c21ebdf952f0e4a23d8513700ba04af180f1213074ad94c27325c6834a"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-ec71114780e84ac084ab26cf.stderr.log",
+      "archive": "retirement/pf-ec71114780e84ac084ab26cf.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\pf-ec71114780e84ac084ab26cf.stdout.log",
+      "archive": "retirement/pf-ec71114780e84ac084ab26cf.stdout.log",
+      "bytes": 4709,
+      "sha256": "c5cba42ad74be1ea014887494cdeaf9093c5d8715196c96200fe90d55d5915ba"
+    },
+    {
+      "kind": "package-retirement",
+      "source": "D:\\cm-fb3-20260910\\test-results\\p7-native-LSat57\\report.json",
+      "archive": "retirement/report.json",
+      "bytes": 358990,
+      "sha256": "63ba5c472c44ed6b3abfc02aef1ffb4d4960ada37fb37e1da0a59daaf993758a"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\1-stderr.log",
+      "archive": "legacy-with-debugger/1-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\1-stdout.log",
+      "archive": "legacy-with-debugger/1-stdout.log",
+      "bytes": 6990,
+      "sha256": "0f347a8dc02f961b92b76c64ed6b12ce1c6cb7b3a5f30d1760d0357c3f8b60fd"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\2-stderr.log",
+      "archive": "legacy-with-debugger/2-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\2-stdout.log",
+      "archive": "legacy-with-debugger/2-stdout.log",
+      "bytes": 3440,
+      "sha256": "75f699e56c14ac9174681659e51c75e845455a95abc76cc7dd591b392dae8214"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\fixture-config.json",
+      "archive": "legacy-with-debugger/fixture-config.json",
+      "bytes": 1923,
+      "sha256": "9d6ca2d84010fa13d266ea2e1c8697c201c8cccb992f908d964892e7244775d7"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\fixture-stderr.log",
+      "archive": "legacy-with-debugger/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\fixture-stdout.log",
+      "archive": "legacy-with-debugger/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\native-failure.json",
+      "archive": "legacy-with-debugger/native-failure.json",
+      "bytes": 60296,
+      "sha256": "2b1ccce5856b6d39c2cbdf926d321bd368ada9b7eab4efed4caff0c36163fb9c"
+    },
+    {
+      "kind": "diagnostic-not-release-pass",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\report.json",
+      "archive": "legacy-with-debugger/report.json",
+      "bytes": 323354,
+      "sha256": "4d22c5db0a849ba5055e5f86f884c836d97083326d18f9b46581bb6d1e19dddb"
+    },
+    {
+      "kind": "owned-debugger",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-1\\debugger-config.json",
+      "archive": "legacy-with-debugger/debug-launch-1/debugger-config.json",
+      "bytes": 472,
+      "sha256": "122557d5fced538ef67c58dd169e8665d89f2a2fdbbfd48d37996db548aad6b4"
+    },
+    {
+      "kind": "owned-debugger",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-1\\debugger.log",
+      "archive": "legacy-with-debugger/debug-launch-1/debugger.log",
+      "bytes": 296,
+      "sha256": "243cd4dd04ee306e7b4903b78c41f471001023a3e609f35d348b4d14c1258ec7"
+    },
+    {
+      "kind": "owned-debugger",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-1\\stdout.log",
+      "archive": "legacy-with-debugger/debug-launch-1/stdout.log",
+      "bytes": 180,
+      "sha256": "69405c89507a96672f7ef4c55c03db99db8e003e18827694ff0f475e3036ef35"
+    },
+    {
+      "kind": "owned-debugger",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-2\\debugger-config.json",
+      "archive": "legacy-with-debugger/debug-launch-2/debugger-config.json",
+      "bytes": 472,
+      "sha256": "d5a705620f1b0b940f922e4ea0087c71f4bb2fbd0c90c4a8a215989013be9bce"
+    },
+    {
+      "kind": "owned-debugger",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-2\\debugger.log",
+      "archive": "legacy-with-debugger/debug-launch-2/debugger.log",
+      "bytes": 198,
+      "sha256": "fc1dbd543c81d981874e4749a6375b5016bd820fadc04534ca006c58bd0b0d1f"
+    },
+    {
+      "kind": "owned-debugger",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-KIeKIb\\debug-launch-2\\stdout.log",
+      "archive": "legacy-with-debugger/debug-launch-2/stdout.log",
+      "bytes": 111,
+      "sha256": "f570afd7cec0b384be00305761e3e3082bb29371953774701a79d9627142935a"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-Pmixr0\\debugger-config.json",
+      "archive": "shutdown-debug-Pmixr0/debugger-config.json",
+      "bytes": 479,
+      "sha256": "55c99128c80a216c506feba72f4f8c71605b9e88e41d5f1c4e07093071fc7832"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-Pmixr0\\debugger-stderr.log",
+      "archive": "shutdown-debug-Pmixr0/debugger-stderr.log",
+      "bytes": 388,
+      "sha256": "955a75ff4fd2a3615f8a747918bc26200282cfa898a71d41ca0f5ff78f5a4241"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-Pmixr0\\report.json",
+      "archive": "shutdown-debug-Pmixr0/report.json",
+      "bytes": 7041,
+      "sha256": "a1c84622d4fbd9462808df139ce4d9f664c39255454c832102e94757261215da"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-Pmixr0\\stderr.log",
+      "archive": "shutdown-debug-Pmixr0/stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-Pmixr0\\stdout.log",
+      "archive": "shutdown-debug-Pmixr0/stdout.log",
+      "bytes": 3152,
+      "sha256": "180f8b0347a29e295eb6be573b073b6a8cacf96c722ac3d59d9e9c340e237794"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-9uXe5H\\debugger-config.json",
+      "archive": "shutdown-debug-9uXe5H/debugger-config.json",
+      "bytes": 479,
+      "sha256": "113468f4ab93fb7a917521c1cde7ca87e6973c1103bf0273f0107bf628940a49"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-9uXe5H\\debugger-stdout.log",
+      "archive": "shutdown-debug-9uXe5H/debugger-stdout.log",
+      "bytes": 110,
+      "sha256": "9f4683d605a5f65303229e171c08eb0b662a3c53ef12ed81137faaefa43db582"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-9uXe5H\\debugger.log",
+      "archive": "shutdown-debug-9uXe5H/debugger.log",
+      "bytes": 197,
+      "sha256": "3f5562e17d731bf0bf93f716c40f6fd72d0e859105cd56e9998edf1aa88ffcf4"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-9uXe5H\\report.json",
+      "archive": "shutdown-debug-9uXe5H/report.json",
+      "bytes": 34967,
+      "sha256": "624568c71bcc2988b1657455737f3b543b1ed5098b17ea2b316ef42363d39416"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-9uXe5H\\stderr.log",
+      "archive": "shutdown-debug-9uXe5H/stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "minimal-diagnostic",
+      "source": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\shutdown-debug-9uXe5H\\stdout.log",
+      "archive": "shutdown-debug-9uXe5H/stdout.log",
+      "bytes": 3154,
+      "sha256": "e990892569a192b3c28fd12923cb4d0458b9fbd8d706d65d5c41b61582dee361"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb3-20260910/test-results/p7-package-driver/identity.json",
+      "archive": "drivers/p7-package-driver/identity.json",
+      "bytes": 753,
+      "sha256": "1e540ae9ca4a2629deb5b2000c1462ac2704357c060522bbb0e2c688bb836c1a"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb3-20260910/test-results/p7-package-driver/retirement-package-native.mjs",
+      "archive": "drivers/p7-package-driver/retirement-package-native.mjs",
+      "bytes": 6761,
+      "sha256": "7b83ccd96dd91fabdcdac24e85c84e74cd621506683534b7e06f94cb5edcce76"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb3-20260910/test-results/legacy-debug-driver/identity.json",
+      "archive": "drivers/legacy-debug-driver/identity.json",
+      "bytes": 646,
+      "sha256": "adbe69500cffca5d0622de67dfc503b73b83dab40b8620ea09ff2a8d82927a28"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb3-20260910/test-results/legacy-debug-driver/legacy-retry-debug.mjs",
+      "archive": "drivers/legacy-debug-driver/legacy-retry-debug.mjs",
+      "bytes": 16027,
+      "sha256": "cdd4a4455a51098b8ba81746d26d55c96e5367baac215f3dc4d45a3fb0b54d18"
+    },
+    {
+      "kind": "diagnostic-helper",
+      "source": "D:/cm-fb-p7-20260910/test-results/owned-debugger.ps1",
+      "archive": "drivers/owned-debugger.ps1",
+      "bytes": 7189,
+      "sha256": "59378984e61eaf2f99be4a3a09fec0ac18e0db55b2b541f2ec7053a2bc14df2f"
+    },
+    {
+      "kind": "diagnostic-helper",
+      "source": "D:/cm-fb-p7-20260910/test-results/owned-debug-launch.mjs",
+      "archive": "drivers/owned-debug-launch.mjs",
+      "bytes": 1716,
+      "sha256": "ed530e4d6a26a871b323fc772fb4077a44843c736b2a5d57240f5f7dc7e95300"
+    },
+    {
+      "kind": "diagnostic-helper",
+      "source": "D:/cm-fb-p7-20260910/test-results/shutdown-debug-minimal.mjs",
+      "archive": "drivers/shutdown-debug-minimal.mjs",
+      "bytes": 6276,
+      "sha256": "e48f024591cfa08541c4fa00d2885220f6d4c25f85e2bfa1f45b429b4fecd953"
+    },
+    {
+      "kind": "unchanged-tracked-driver",
+      "source": "D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-retry-client.mjs",
+      "archive": "drivers/frozen-tracked/legacy-retry-client.mjs",
+      "bytes": 15398,
+      "sha256": "abf3b157b9af3650af5d1295f5eeecd53da939d2d0fc16dab073900e4c0a75e0"
+    },
+    {
+      "kind": "unchanged-tracked-driver",
+      "source": "D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-runtime-ready.mjs",
+      "archive": "drivers/frozen-tracked/legacy-runtime-ready.mjs",
+      "bytes": 1081,
+      "sha256": "20374aa0547a3a5b9adf23ae705bac0aead3165ae97f4038f84457606fa9f3aa"
+    }
+  ]
+}

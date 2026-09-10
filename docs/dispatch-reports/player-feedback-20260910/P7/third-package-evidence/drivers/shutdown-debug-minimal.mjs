@@ -1,0 +1,34 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawn,execFileSync} from 'node:child_process';
+import {randomUUID,createHash} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
+import {inspectParameterPackage,isolatedParameterEnvironment} from 'file:///D:/cm-fb3-20260910/tests/plan-loop/parameter-client-package.mjs';
+import {loadPackageAsar} from 'file:///D:/cm-fb3-20260910/desktop/package-asar.mjs';
+import {stopDefaultClient} from 'file:///D:/cm-fb3-20260910/tests/player-product/default-client-audit.mjs';
+import {assertCleanHeadlessShutdown} from 'file:///D:/cm-fb3-20260910/tests/player-product/shutdown-exit-audit.mjs';
+import {waitForInitialRuntime} from 'file:///D:/cm-fb-p7-20260910/tests/player-feedback/P1/legacy-runtime-ready.mjs';
+const root='D:/cm-fb3-20260910',original=path.join(root,'test-results/desktop-native-lr-EyRddm'),profile=path.join(original,'profile');
+const source=JSON.parse(fs.readFileSync(path.join(original,'report.json'))),marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json')));
+assert.equal(marker.format,'craftmine.headless-profile/1');
+const out=fs.mkdtempSync(path.join(original,'shutdown-debug-'));
+const info=await inspectParameterPackage({packaged:source.identities.package.packaged,expectedCommit:source.identities.commit,expectedManifestHash:source.identities.package.buildManifestSha256,asar:loadPackageAsar(path.join(root,'vendor/pi-desktop/apps/desktop'))});
+const report={format:'craftmine.shutdown-minimal/1',original,profile,worldId:source.worldId,identity:info.identity,driverSha256:createHash('sha256').update(fs.readFileSync(new URL(import.meta.url))).digest('hex'),startedAt:new Date().toISOString(),events:[],calls:[],launch:{},passed:false};
+const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
+const event=(type,value)=>{report.events.push({at:new Date().toISOString(),type,value});persist();};
+let closed=false,ready=false;const pending=new Map();
+const env={...isolatedParameterEnvironment(process.env,{out:original,profile,token:marker.token,core:info.core,host:info.host,bases:info.bases}),TEMP:path.join(original,'temp'),TMP:path.join(original,'temp')};
+const child=spawn(info.executable,info.arguments,{cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
+const ticks=execFileSync('powershell.exe',['-NoProfile','-NonInteractive','-Command','(Get-Process -Id '+child.pid+').StartTime.ToUniversalTime().Ticks.ToString()'],{encoding:'utf8',windowsHide:true}).trim();
+const dc=path.join(out,'debugger-config.json');fs.writeFileSync(dc,JSON.stringify({pid:child.pid,parentPid:process.pid,creationTicks:ticks,executable:info.executable,exeSha256:info.identity.executableSha256,profile,output:out}));
+let attached=false;const dbg=spawn('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File','D:/cm-fb-p7-20260910/test-results/owned-debugger.ps1','-Config',dc],{windowsHide:true,env,stdio:['ignore','pipe','pipe']});
+for(const name of ['stdout','stderr'])dbg[name].on('data',b=>{fs.appendFileSync(path.join(out,'debugger-'+name+'.log'),b);if(b.toString().includes('ATTACHED pid='))attached=true;});
+const debugEnd=new Promise(resolve=>dbg.once('close',(code,signal)=>{report.debuggerExit={code,signal};persist();resolve();}));
+for(const name of ['stdout','stderr']){child[name].on('data',bytes=>{fs.appendFileSync(path.join(out,name+'.log'),bytes);event(name,{bytes:bytes.length});});child[name].once('close',()=>event(name+'-close'));}
+child.on('message',m=>{event('ipc',{type:m?.type,id:m?.id,error:m?.error});if(m?.type==='craftmine-headless-ready')ready=true;if(m?.type==='craftmine-headless-exit')report.launch.audit=m;const p=pending.get(m?.id);if(m?.type==='craftmine-headless'&&p){clearTimeout(p.timer);pending.delete(m.id);m.error?p.reject(Error(m.error)):p.resolve(m.result);}});
+child.once('disconnect',()=>event('disconnect'));child.once('exit',(code,signal)=>event('exit',{code,signal}));
+const exit=new Promise(resolve=>{child.once('error',error=>event('spawn-error',String(error)));child.once('close',(code,signal)=>{closed=true;report.launch.exit={code,signal};for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('CLIENT_CLOSED'));}pending.clear();event('close',{code,signal});resolve();});});
+const rpc=(method)=>new Promise((resolve,reject)=>{assert.ok(!closed&&child.connected);const id=randomUUID(),record={method,startedAt:new Date().toISOString()};report.calls.push(record);const timer=setTimeout(()=>{pending.delete(id);reject(Error('RPC_TIMEOUT:'+method));},15000);pending.set(id,{timer,reject,resolve:value=>{record.result=value;record.finishedAt=new Date().toISOString();persist();resolve(value);}});child.send({type:'craftmine-headless',id,method});});
+const stop=async()=>{await stopDefaultClient({ended:()=>closed,quit:()=>rpc('quit'),exit,launch:report.launch,kill:()=>child.kill()});assertCleanHeadlessShutdown(report.launch);};
+try{const deadline=Date.now()+90000;while(!attached){assert.ok(!report.debuggerExit,'DEBUGGER_CLOSED_BEFORE_ATTACH');assert.ok(!closed,'CLOSED_BEFORE_ATTACH');assert.ok(Date.now()<deadline,'DEBUG_ATTACH_TIMEOUT');await delay(100);}while(!ready){assert.ok(!closed);assert.ok(Date.now()<deadline,'READY_TIMEOUT');await delay(100);}let status;do{status=await rpc('status');if(!status.windows.length){assert.ok(Date.now()<deadline,'WINDOW_READY_TIMEOUT');await delay(100);}}while(!status.windows.length);assert.ok(status.windows.length&&status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));assert.deepEqual(status.violations,[]);await waitForInitialRuntime({worldId:source.worldId,observe:()=>rpc('godotObserve')});await rpc('godotSnapshot');await rpc('status');await stop();report.passed=true;}catch(error){report.error=String(error.stack??error);process.exitCode=1;}finally{try{await stop();}catch(error){report.shutdownError=String(error);report.passed=false;process.exitCode=1;}await debugEnd;if(report.debuggerExit.code!==0){report.passed=false;process.exitCode=1;}report.finishedAt=new Date().toISOString();persist();console.log(JSON.stringify({out,passed:report.passed,exit:report.launch.exit,error:report.error}));}

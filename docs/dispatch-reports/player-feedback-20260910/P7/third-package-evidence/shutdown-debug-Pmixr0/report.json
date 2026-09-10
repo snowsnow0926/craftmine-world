@@ -1,0 +1,322 @@
+{
+  "format": "craftmine.shutdown-minimal/1",
+  "original": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm",
+  "profile": "D:\\cm-fb3-20260910\\test-results\\desktop-native-lr-EyRddm\\profile",
+  "worldId": "legacy-a3d0c22a727e4059ae27",
+  "identity": {
+    "mode": "packaged",
+    "packaged": "D:\\cm-fb3-20260910\\desktop\\build\\releases\\570fed344ee7-5550aeb3-3715-4dfd-bd1c-58397501ef1c\\output\\win-unpacked",
+    "commit": "570fed344ee775aa0cc8d4ef7d096bce96e1cc5f",
+    "buildManifestSha256": "f802fc7b23b350a0f6c5d4a6ac3cde9272da33ae9f5b26bccfb12efdb040f0c8",
+    "sourceArchiveHash": "b812d032a5b62cf58ca51b4fd6f2234e14740308da4e756b3b1c3e83c86e3952",
+    "appVersion": "0.14.4-preview.1",
+    "executableSha256": "efa18c94a7dab00a122b01d4cdac51afcb26c39bc7c5ea58f5b5191c266af755",
+    "asarSha256": "62eda21e76facda3e65c40859e093f40642c6ea82aa002a1b58a7a28a8d76bec",
+    "mainSha256": "8f52bd3097b4f723f2e67f96e43900dbb4ea26f0925e30a49a12776c9664db14",
+    "pluginSha256": "6cbb196fd6d62c5363abfd3f98ff1150c65014c31cad98eb9846db25e27a6dca",
+    "coreSha256": "693232db8290bf6affbc4d2f2bd5e4320b7d8db5cb9df26ef9d0264a662a997d",
+    "hostSha256": "00515f111d43cbabb9cdee044944a4099396f8498498056824e585a9a7b5f5c4",
+    "runtimeSourceCommit": "570fed344ee775aa0cc8d4ef7d096bce96e1cc5f",
+    "runtimeFilesDigest": "e9ccd28b44e001ba6e7c0bf61679b5e9533e7357b8b273735cc7ab05313de395"
+  },
+  "driverSha256": "7e19ee75f1d5146be246651205772c9418226130fd51abca36ded9fe0985b4f0",
+  "startedAt": "2026-09-10T08:22:21.724Z",
+  "events": [
+    {
+      "at": "2026-09-10T08:22:22.499Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 646
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:22.500Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless-ready"
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.174Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.368Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.368Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 48
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.369Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 146
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.438Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.438Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 139
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.505Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.505Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 108
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.505Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 29
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.507Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 86
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.508Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 68
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.532Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 68
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.640Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 90
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.640Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 66
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.640Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 79
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.660Z",
+      "type": "stderr",
+      "value": {
+        "bytes": 146
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:23.661Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 160
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:24.053Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 89
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:25.807Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 133
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:25.961Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 97
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:29.586Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 142
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:29.586Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 289
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:29.592Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 147
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:29.592Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 142
+      }
+    },
+    {
+      "at": "2026-09-10T08:22:31.406Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 147
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:52.502Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless",
+        "id": "269244d0-08f1-49cd-8d1e-6bb0b4a61f42"
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:52.565Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 29
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:52.588Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:52.588Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:52.607Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 28
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:52.607Z",
+      "type": "stdout",
+      "value": {
+        "bytes": 24
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:55.574Z",
+      "type": "ipc",
+      "value": {
+        "type": "craftmine-headless-exit"
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:55.577Z",
+      "type": "disconnect"
+    },
+    {
+      "at": "2026-09-10T08:23:55.709Z",
+      "type": "stderr-close"
+    },
+    {
+      "at": "2026-09-10T08:23:55.709Z",
+      "type": "stdout-close"
+    },
+    {
+      "at": "2026-09-10T08:23:55.720Z",
+      "type": "exit",
+      "value": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "at": "2026-09-10T08:23:55.720Z",
+      "type": "close",
+      "value": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "calls": [
+    {
+      "method": "quit",
+      "startedAt": "2026-09-10T08:23:52.501Z",
+      "result": {
+        "requested": true
+      },
+      "finishedAt": "2026-09-10T08:23:52.503Z"
+    }
+  ],
+  "launch": {
+    "audit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    },
+    "exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "passed": false,
+  "debuggerExit": {
+    "code": 1,
+    "signal": null
+  },
+  "error": "AssertionError [ERR_ASSERTION]: DEBUG_ATTACH_TIMEOUT\n    at file:///D:/cm-fb-p7-20260910/test-results/shutdown-debug-minimal.mjs:34:103",
+  "finishedAt": "2026-09-10T08:23:55.721Z"
+}
