@@ -2,6 +2,7 @@ import { session, shell, WebContentsView, type BrowserWindow } from "electron";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
+import { OwnedViewClose } from "./owned-view-close";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import { prepareWorldViewsForQuit } from "./craftmine-lifecycle";
@@ -60,6 +61,8 @@ type LiveView = {
   key: string;
   pluginId: string;
   view: WebContentsView;
+  /** Electron clears view.webContents on destruction; retain the owned handle. */
+  contents?: Electron.WebContents;
   /** Monotonic counter; lowest value is the least recently shown. */
   usedAt: number;
 };
@@ -70,6 +73,9 @@ export function pluginViewKey(pluginId: string, viewId: string): string {
 
 export class PluginViewHost {
   private views = new Map<string, LiveView>();
+  private disposed = false;
+  private disposal: Promise<void> | null = null;
+  private readonly retiring = new OwnedViewClose("PLUGIN_RENDERER");
   private window: BrowserWindow | null = null;
   /** The one view currently attached to the window, if any. */
   private visibleKey: string | null = null;
@@ -112,6 +118,7 @@ export class PluginViewHost {
   }
 
   setWindow(window: BrowserWindow | null): void {
+    if (this.disposed) return;
     if (this.window === window) return;
     this.detachVisible();
     this.window = window;
@@ -145,6 +152,7 @@ export class PluginViewHost {
    * has measured the panel surface.
    */
   open(request: PluginViewOpenRequest): void {
+    if (this.disposed) throw new Error("PLUGIN_VIEWS_DISPOSED");
     const key = pluginViewKey(request.pluginId, request.viewId);
     const existing = this.views.get(key);
     if (existing) {
@@ -152,10 +160,12 @@ export class PluginViewHost {
       return;
     }
     const view = this.createView(request);
+    if (this.disposed) { void this.retiring.close(view.webContents, view); throw new Error("PLUGIN_VIEWS_DISPOSED"); }
     this.views.set(key, {
       key,
       pluginId: request.pluginId,
       view,
+      contents: view.webContents,
       usedAt: ++this.clock,
     });
     void view.webContents
@@ -168,6 +178,7 @@ export class PluginViewHost {
   }
 
   setBounds(bounds: PluginViewBounds): void {
+    if (this.disposed) return;
     this.bounds = {
       x: Math.max(0, Math.round(Number(bounds.x) || 0)),
       y: Math.max(0, Math.round(Number(bounds.y) || 0)),
@@ -187,6 +198,7 @@ export class PluginViewHost {
    * from lingering above the renderer when the user switches tabs quickly.
    */
   setVisible(pluginId: string, viewId: string, visible: boolean): void {
+    if (this.disposed) return;
     const key = pluginViewKey(pluginId, viewId);
     if (!visible) {
       if (this.visibleKey === key) this.detachVisible();
@@ -208,19 +220,25 @@ export class PluginViewHost {
 
   async close(pluginId: string, viewId: string): Promise<void> {
     const entry = this.views.get(pluginViewKey(pluginId, viewId));
-    if (entry) await this.prepareEntries([entry]);
-    this.destroy(pluginViewKey(pluginId, viewId));
+    if (entry) { entry.contents ??= entry.view.webContents; await this.prepareEntries([entry]); }
+    if (entry) await this.destroy(entry.key, entry);
   }
 
   /** Drop every view a plugin owns — disable, uninstall, reload, or crash. */
-  closePlugin(pluginId: string): void {
-    for (const [key, entry] of [...this.views]) {
-      if (entry.pluginId === pluginId) this.destroy(key);
-    }
+  async closePlugin(pluginId: string): Promise<void> {
+    const results = await Promise.allSettled([...this.views].filter(([, entry]) => entry.pluginId === pluginId).map(([key, entry]) => this.destroy(key, entry)));
+    const failures = results.filter((result): result is PromiseRejectedResult => result.status === "rejected");
+    if (failures.length) throw new AggregateError(failures.map(result => result.reason), "PLUGIN_RENDERER_CLOSE_INCOMPLETE");
   }
 
-  dispose(): void {
-    for (const key of [...this.views.keys()]) this.destroy(key);
+  dispose(): Promise<void> {
+    if (this.disposal) return this.disposal;
+    this.disposed = true;
+    this.disposal = Promise.resolve().then(async () => {
+      await Promise.allSettled([...this.views.keys()].map(key => this.destroy(key)));
+      await this.retiring.drain();
+    });
+    return this.disposal;
   }
 
   async prepareCraftmineForQuit(): Promise<void> {
@@ -280,12 +298,16 @@ export class PluginViewHost {
     })));
   }
 
-  private destroy(key: string): void {
-    const entry = this.views.get(key);
-    if (!entry) return;
-    if (this.visibleKey === key) this.detachVisible();
-    this.views.delete(key);
-    if (!entry.view.webContents.isDestroyed()) entry.view.webContents.close();
+  private destroy(key: string, expected?: LiveView): Promise<void> {
+    const entry = expected ?? this.views.get(key);
+    if (!entry) return Promise.resolve();
+    if (this.views.get(key) === entry) {
+      try { if (this.visibleKey === key) this.detachVisible(); }
+      catch (error) { this.retiring.recordFailure(error); }
+      this.views.delete(key);
+    }
+    const contents = entry.contents ??= entry.view.webContents;
+    return this.retiring.close(contents, entry.view);
   }
 
   private detachVisible(): void {
@@ -327,7 +349,7 @@ export class PluginViewHost {
         .sort((a, b) => a.usedAt - b.usedAt);
       const oldest = candidates[0];
       if (!oldest) return;
-      this.destroy(oldest.key);
+      void this.destroy(oldest.key);
     }
   }
 

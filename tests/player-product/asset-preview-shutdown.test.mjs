@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 const source=fs.readFileSync(new URL('../../vendor/pi-desktop/apps/desktop/electron/main/index.ts',import.meta.url),'utf8');
 const begin=source.indexOf('shutdownPromise = (async () => {');
-const end=source.indexOf('await godotExports.dispose();',begin)+'await godotExports.dispose();'.length;
+const end=source.indexOf('    // Replies still streaming',begin);
 assert.ok(begin>0&&end>begin);
 const fragment=source.slice(begin,end).replace('shutdownPromise = ','')+'})()';
 for(const fail of [false,true]) test(`actual Main awaits preview exit before next owner, rejection=${fail}`,async()=>{

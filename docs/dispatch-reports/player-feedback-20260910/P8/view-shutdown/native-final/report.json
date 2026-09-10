@@ -1,0 +1,27 @@
+{
+  "scope": "Actual Electron offscreen WebContentsViews and actual owner dispose implementations; no browser window, model, external navigation or input",
+  "checks": [
+    {
+      "name": "BrowserPane shared disposal resolves only after actual destroyed",
+      "passed": true
+    },
+    {
+      "name": "PluginViewHost waits for every actual detached offscreen view",
+      "passed": true
+    },
+    {
+      "name": "disposed actual owners reject later creation without navigation",
+      "passed": true
+    }
+  ],
+  "events": [
+    "1:pointerLockGuard=0",
+    "1:destroyed",
+    "2:pointerLockGuard=0",
+    "3:pointerLockGuard=0",
+    "2:destroyed",
+    "3:destroyed"
+  ],
+  "windows": 0,
+  "finishedAt": "2026-09-10T08:39:50.674Z"
+}

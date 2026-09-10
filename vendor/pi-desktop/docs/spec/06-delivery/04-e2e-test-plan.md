@@ -9197,3 +9197,18 @@ Use actual PI conversion and the pinned provider SDK with synthetic loopback res
 ### P8-20260910-GODOT-READ-HISTORY
 
 Run `node tests/player-feedback/P8/read-history.mjs`. Matching successful call/result metadata enters existing compaction read history; failed, mismatched, absent and narrated reads do not. Path control characters and traversal are rejected. Optional CRAFTMINE_P8_READ_EVIDENCE replays a completed owned P8 report without invoking a model or an engine; record this as receipt replay, not native acceptance.
+
+
+### OWNED-VIEW-CLOSE-20260910 — renderer retirement barriers
+
+Run from the repository root:
+
+- node --test tests/player-product/view-close-barriers.test.mjs tests/player-product/asset-preview-shutdown.test.mjs tests/player-product/shutdown-barriers.test.mjs tests/player-feedback/P1/plugin-fullscreen.test.mjs
+- CRAFTMINE_VIEW_CLOSE_DEPS points to a read-only installed desktop dependency directory; run node tests/player-product/view-close-electron.mjs.
+
+Require delayed destroyed, missing destroyed, synchronous close failure, repeated
+dispose, multiple views, stale prepared close, reusable guest reload, and rejected
+pre-shutdown phases to preserve their real outcomes. Missing termination rejects;
+other owners still start. Actual Electron checks must finish with exit 0, three
+checks, zero BrowserWindows and zero Pointer Lock requests. Keep failed attempts.
+This is isolated ownership evidence, not packaged-client or IOCP-root-cause proof.

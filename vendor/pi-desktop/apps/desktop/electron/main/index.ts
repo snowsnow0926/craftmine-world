@@ -860,8 +860,10 @@ const plugins: PluginRuntime = new PluginRuntime({
       godotWorld.setSurfaceVisible(false);
       void godotWorld.pause().catch(error => logger.app("persistence", "warn", "Godot pause after plugin interruption failed", {data:String(error)}));
     }
-    pluginViews.closePlugin(pluginId);
-    if (pluginId === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
+    void pluginViews.closePlugin(pluginId).catch(error => logger.app("lifecycle", "error", "plugin views close incomplete", {pluginId, data: String(error)}));
+    if (pluginId === BROWSER_PLUGIN_ID) void browserHost.disposeGuest().catch(error => {
+      logger.app("lifecycle", "error", "browser guest close incomplete", { data: String(error) });
+    });
     sendToRenderer(IPC.event.pluginChanged,{ reason: "crash", pluginId });
   },
   // Supervision state is UI-only: the runtime owns restarts, the renderer just
@@ -891,8 +893,10 @@ const plugins: PluginRuntime = new PluginRuntime({
       godotWorld.setSurfaceVisible(false);
       void godotWorld.pause().catch(error => logger.app("persistence", "warn", "Godot pause after plugin interruption failed", {data:String(error)}));
     }
-    pluginViews.closePlugin(pluginId);
-    if (pluginId === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
+    void pluginViews.closePlugin(pluginId).catch(error => logger.app("lifecycle", "error", "plugin views close incomplete", {pluginId, data: String(error)}));
+    if (pluginId === BROWSER_PLUGIN_ID) void browserHost.disposeGuest().catch(error => {
+      logger.app("lifecycle", "error", "browser guest close incomplete", { data: String(error) });
+    });
     sendToRenderer(IPC.event.pluginChanged,{ reason: "reload", pluginId });
   },
 });
@@ -1057,7 +1061,9 @@ plugins.setServices({
     cdp: (method, params) => browserHost.cdpCommand(method, params),
   },
   onPluginUnload: (pluginId) => {
-    if (pluginId === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
+    if (pluginId === BROWSER_PLUGIN_ID) void browserHost.disposeGuest().catch(error => {
+      logger.app("lifecycle", "error", "browser guest close incomplete", { data: String(error) });
+    });
   },
 });
 let scannedImportSessions = new Map<string, ExternalSessionSummary>();
@@ -8847,8 +8853,8 @@ function registerIpc() {
   handle(IPC.invoke.pluginDisable, async (id: string) => {
     if (!host) throw new Error("host unavailable");
     if (id === "craftmine.world") { await godotCandidates.closeForDeparture(); await pluginViews.prepareCraftmineForQuit(); await godotWorld.switchWorld(null); }
-    pluginViews.closePlugin(id);
-    if (id === BROWSER_PLUGIN_ID) browserHost.disposeGuest();
+    await pluginViews.closePlugin(id);
+    if (id === BROWSER_PLUGIN_ID) await browserHost.disposeGuest();
     await plugins.unload(id);
     logger.app("plugin", "info", "plugin disabled", { pluginId: id });
     const res = await host.call("plugins.disable", { id });
@@ -8859,7 +8865,7 @@ function registerIpc() {
   handle(IPC.invoke.pluginUninstall, async (id: string) => {
     if (!host) throw new Error("host unavailable");
     if (id === "craftmine.world") { await godotCandidates.closeForDeparture(); await pluginViews.prepareCraftmineForQuit(); await godotWorld.switchWorld(null); }
-    pluginViews.closePlugin(id);
+    await pluginViews.closePlugin(id);
     await plugins.unload(id);
     logger.app("plugin", "info", "plugin uninstalled", { pluginId: id });
     const res = await host.call("plugins.uninstall", { id });
@@ -9878,43 +9884,42 @@ app.on("before-quit", (event) => {
       recordHeadlessShutdownFailure("asset-previews", error);
       logger.app("lifecycle", "error", "asset preview shutdown incomplete", {data: String(error)});
     }
-    await godotExports.dispose();
+    try { await godotExports.dispose(); }
+    catch (error) {
+      recordHeadlessShutdownFailure("godot-exports", error);
+      logger.app("lifecycle", "error", "game export shutdown incomplete", { data: String(error) });
+    }
     // Replies still streaming are stopped through the sidecar first so their
     // aborted final rows can reach the transcript while host-core is alive;
     // whatever does not make it in time is covered by the last checkpoint
     // (D299). Bounded: a quit must not hang on an unresponsive provider.
-    await settleRunningTurnsForQuit();
-    const hostShutdown = host?.dispose();
-    const pluginPanelShutdown = pluginPanels.closeAll();
-    updater.dispose();
-    logger.app("lifecycle", "info", "app shutdown");
-    // Plugin hosts are stopped as a shutdown, not left for the process teardown
-    // to kill: an unannounced exit is indistinguishable from a crash, and would
-    // end every quit in error logs, toasts, and restarts into a closing app.
-    const pluginShutdown = plugins.disposeAll();
-    userMcp.disposeAll();
-    browserPane.dispose();
-    pluginViews.dispose();
-    const godotShutdown = godotWorld.dispose();
-    inflightCheckpointer.dispose();
-    const sidecarShutdown = sidecar?.dispose();
-    const shutdownServices = ["plugin-panels", "plugins", "agent-sidecar", "godot-world"];
-    // Attach rejection handlers before waiting for host-core: another owner
-    // may fail its close barrier immediately while that host is still exiting.
-    const serviceShutdown = Promise.allSettled([pluginPanelShutdown, pluginShutdown, sidecarShutdown, godotShutdown]);
-
-    try {
-      await hostShutdown;
-    } catch (error) {
-      logger.app("lifecycle", "warn", "host shutdown failed", { data: String(error) });
-      recordHeadlessShutdownFailure("host-core", error);
+    try { await settleRunningTurnsForQuit(); }
+    catch (error) {
+      recordHeadlessShutdownFailure("settle-running-turns", error);
+      logger.app("lifecycle", "error", "running turn shutdown incomplete", { data: String(error) });
     }
-    const shutdownResults = await serviceShutdown;
+    logger.app("lifecycle", "info", "app shutdown");
+    // Every owner starts independently: a synchronous close error must not
+    // skip other renderers/processes. Each promise reports its real barrier.
+    const shutdownOwners = [
+      ["host-core", () => host?.dispose()],
+      ["plugin-panels", () => pluginPanels.closeAll()],
+      ["updater", () => updater.dispose()],
+      ["plugins", () => plugins.disposeAll()],
+      ["user-mcp", () => userMcp.disposeAll()],
+      ["browser-pane", () => browserPane.dispose()],
+      ["plugin-views", () => pluginViews.dispose()],
+      ["godot-world", () => godotWorld.dispose()],
+      ["inflight-checkpointer", () => inflightCheckpointer.dispose()],
+      ["agent-sidecar", () => sidecar?.dispose()],
+    ] as const;
+    const shutdownResults = await Promise.allSettled(shutdownOwners.map(([, dispose]) => Promise.resolve().then(dispose)));
     shutdownResults.forEach((result, index) => {
       if (result.status !== "rejected") return;
-      recordHeadlessShutdownFailure(shutdownServices[index], result.reason);
+      const service = shutdownOwners[index][0];
+      recordHeadlessShutdownFailure(service, result.reason);
       logger.app("lifecycle", "error", "service shutdown incomplete", {
-        data: { service: shutdownServices[index], error: String(result.reason) },
+        data: { service, error: String(result.reason) },
       });
     });
   })();

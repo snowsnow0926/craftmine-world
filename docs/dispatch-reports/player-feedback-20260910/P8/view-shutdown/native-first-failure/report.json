@@ -1,0 +1,10 @@
+{
+  "scope": "Actual Electron offscreen WebContentsViews and actual owner dispose implementations; no browser window, model, external navigation or input",
+  "checks": [],
+  "events": [
+    "1:destroyed"
+  ],
+  "error": "TypeError: Cannot read properties of undefined (reading 'isDestroyed')\n    at D:\\cm-fb-view-close-20260910\\test-results\\view-close-electron-C3ctwr\\native.cjs:1:1687",
+  "windows": 0,
+  "finishedAt": "2026-09-10T08:32:56.907Z"
+}

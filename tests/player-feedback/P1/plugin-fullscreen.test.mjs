@@ -12,11 +12,14 @@ const root=new URL('../../../vendor/pi-desktop/apps/desktop/',import.meta.url);
 const strip=s=>stripTypeScriptTypes(s,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
 const source=strip(await fs.readFile(new URL('electron/main/plugin-view-host.ts',root),'utf8'));
 const helper=strip(await fs.readFile(new URL('shared/world-fullscreen-shortcuts.ts',root),'utf8'));
+const resource=strip(await fs.readFile(new URL('electron/main/owned-resource-close.ts',root),'utf8'));
+const retirement=strip(await fs.readFile(new URL('electron/main/owned-view-close.ts',root),'utf8'));
+const OwnedViewClose=vm.runInNewContext(resource+'\n'+retirement+'\nOwnedViewClose',{setTimeout,clearTimeout});
 const constants={PLUGIN_PANEL_EMBEDDED_ARGUMENT:'--embedded',PLUGIN_PANEL_LOCALE_ARGUMENT_PREFIX:'--locale=',PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX:'--scope=',PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL:'world-exit'};
 function fixture(pluginId='craftmine.world',viewId='world'){
  const views=[],actions=[],window={isDestroyed:()=>false,contentView:{children:[],addChildView(v){this.children.push(v);},removeChildView(v){this.children=this.children.filter(x=>x!==v);}}};
- class View{constructor(options){this.options=options;this.webContents=Object.assign(new EventEmitter(),{ipc:new EventEmitter(),mainFrame:{},isDestroyed:()=>false,loadURL:async()=>{},setWindowOpenHandler(){},close(){}});views.push(this);}setBounds(){}}
- const Host=vm.runInNewContext(source+'\nPluginViewHost',{...constants,randomUUID,pathToFileURL,join,__dirname:'owned',WebContentsView:View,isHeadlessAcceptance:()=>true,session:{fromPartition:()=>({})},pluginSessionPartition:id=>id,applyPluginEgressPolicy(){},nativeFullscreenKeyDecision:vm.runInNewContext(helper+'\nnativeFullscreenKeyDecision')});
+ class View{constructor(options){this.options=options;this.webContents=Object.assign(new EventEmitter(),{ipc:new EventEmitter(),mainFrame:{},isDestroyed:()=>false,loadURL:async()=>{},setWindowOpenHandler(){},close(){this.emit('destroyed');}});views.push(this);}setBounds(){}}
+ const Host=vm.runInNewContext(source+'\nPluginViewHost',{...constants,OwnedViewClose,randomUUID,pathToFileURL,join,__dirname:'owned',WebContentsView:View,isHeadlessAcceptance:()=>true,session:{fromPartition:()=>({})},pluginSessionPartition:id=>id,applyPluginEgressPolicy(){},nativeFullscreenKeyDecision:vm.runInNewContext(helper+'\nnativeFullscreenKeyDecision')});
  const host=new Host();host.onWorldFullscreenShortcut=a=>actions.push(a);host.setWindow(window);host.setBounds({x:0,y:0,width:100,height:100});
  const request={pluginId,viewId,htmlPath:'D:/owned/world.html',locale:'en',theme:'dark'};host.open(request);host.setVisible(pluginId,viewId,true);
  const view=views[0],wc=view.webContents,scope=view.options.webPreferences.additionalArguments.find(x=>x.startsWith('--scope='))?.slice(8);

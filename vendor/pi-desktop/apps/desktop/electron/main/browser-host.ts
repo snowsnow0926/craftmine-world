@@ -236,12 +236,16 @@ export class BrowserHost {
     return { ok: true };
   }
 
-  disposeGuest(): void {
-    this.cdp.detach(this.pane.getWebContents() ?? undefined);
-    this.pane.dispose();
+  async disposeGuest(): Promise<void> {
+    const failures: unknown[] = [];
+    try { this.cdp.detach(this.pane.getWebContents() ?? undefined); }
+    catch (error) { failures.push(error); }
     this.started = false;
     this.hole = null;
     this.holePluginId = null;
+    try { await this.pane.closeGuest(); }
+    catch (error) { failures.push(error); }
+    if (failures.length) throw new AggregateError(failures, "BROWSER_GUEST_CLOSE_INCOMPLETE");
   }
 
   private guestBounds(): BrowserRect | null {
