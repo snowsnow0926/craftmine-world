@@ -1271,6 +1271,10 @@ function createGodotExecutor(core, options = {}) {
           importCrashRetries:entry.importCrashRetries ? 1 : 0,
           state:typeof entry.state === 'string' ? entry.state : 'enqueued',
           attempts:Array.isArray(entry.attempts) ? entry.attempts.filter(attempt => attempt && typeof attempt === 'object') : [],
+          phaseTiming:entry.phaseTiming?.format==='craftmine.creation-timing/1' && Number.isFinite(entry.phaseTiming.totalMs)
+            && Array.isArray(entry.phaseTiming.stages) && entry.phaseTiming.stages.length<=2
+            && entry.phaseTiming.stages.every(stage=>['runtime-check','creation-application'].includes(stage?.stage)&&Number.isFinite(stage.elapsedMs)&&stage.elapsedMs>=0&&typeof stage.passed==='boolean')
+            ? entry.phaseTiming : null,
           startedAt:entry.startedAt ?? null, finishedAt:entry.finishedAt ?? null,
           outcome:entry.outcome ?? null, reason:entry.reason ?? null};
       }
