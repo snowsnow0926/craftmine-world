@@ -9,6 +9,7 @@ import vm from 'node:vm';
 import test from 'node:test';
 import {EventEmitter} from 'node:events';
 import {createWorldRuntime} from '../desktop/godot/web/runtime.mjs';
+import * as immersionTools from './helpers/immersion-host-tools.mjs';
 
 const source = await readFile(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts',import.meta.url),'utf8');
 const compiled = stripTypeScriptTypes(source,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
@@ -18,7 +19,7 @@ const deferred=()=>{let resolve,reject; const promise=new Promise((r,j)=>{resolv
 function fixture(clock={setTimeout,clearTimeout}) {
   const events=[], runtimes=[];
   let fault=null, descriptor=null, startupGate=null, callback=null, runtimeSetup=null, factory=null;
-  const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,...clock,console,
+  const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,...clock,console,...immersionTools,
     WORLD_CHROME_HEIGHT:76,GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_DETACH_CHANNEL:'detach',
     async createWorldRuntime(options){
       events.push('start:'+options.worldId);
@@ -53,6 +54,51 @@ function fixture(clock={setTimeout,clearTimeout}) {
   return {host,events,runtimes,request,metadata:context.module.exports.godotEngineOf,setFault:x=>fault=x,setDescriptor:x=>descriptor=x,setGate:x=>startupGate=x,setProgress:x=>callback=x,setRuntime:x=>runtimeSetup=x,setFactory:x=>factory=x};
 }
 
+const compactImmersion={active:true,overlay:'compact',overlayBounds:{x:0,y:400,width:800,height:200}};
+const closedImmersion={active:true,overlay:'closed',overlayBounds:null};
+
+test('manual pause survives overlay close and failed save/replacement recovery',async()=>{
+  const f=fixture();await f.host.ensure(f.request());await f.host.pause();f.events.length=0;
+  await f.host.setImmersion(compactImmersion);await f.host.setImmersion(closedImmersion);
+  f.setFault('persist');assert.equal((await f.host.checkpoint()).status,'failed');
+  assert.equal(f.host.pauseController.manualPaused(f.host.current),true);assert.ok(!f.events.includes('resume:alpha'));
+  f.setFault('startup');await assert.rejects(f.host.ensure(f.request('beta')),/broken candidate/);
+  assert.equal(f.host.pauseController.manualPaused(f.host.current),true);assert.ok(!f.events.includes('resume:alpha'));
+});
+
+test('failed save during overlay restores running intent without premature resume',async()=>{
+  const f=fixture();await f.host.ensure(f.request());await f.host.setImmersion(compactImmersion);f.events.length=0;
+  f.setFault('persist');assert.equal((await f.host.checkpoint()).status,'failed');
+  assert.equal(f.host.state.state,'paused');assert.ok(!f.events.includes('resume:alpha'));
+  await f.host.setImmersion(closedImmersion);
+  assert.equal(f.host.state.state,'ready');assert.equal(f.events.filter(event=>event==='resume:alpha').length,1);
+});
+
+test('failed pause acknowledgement cannot trigger automatic checkpoint resume',async()=>{
+  const f=fixture();await f.host.ensure(f.request());f.events.length=0;f.setFault('pause');
+  assert.equal((await f.host.checkpoint()).status,'failed');
+  assert.deepEqual(f.events,['pause:alpha']);
+  assert.equal(f.host.pauseController.manualPaused(f.host.current),true);
+});
+
+test('exited and fatally failed runtimes receive no subsequent overlay commands',async()=>{
+  for(const stop of [host=>host.handleEvent(host.current,{type:'exited'}),host=>host.fail(host.current,'renderer gone',true)]){
+    const f=fixture();await f.host.ensure(f.request());const old=f.host.current;f.events.length=0;
+    stop(f.host);assert.equal(f.host.pauseController.has(old),false);
+    await f.host.setImmersion(compactImmersion);await f.host.setImmersion(closedImmersion);
+    assert.deepEqual(f.events,[]);
+  }
+});
+
+test('manual pause arriving during failed persistence is preserved',async()=>{
+  const f=fixture();await f.host.ensure(f.request());const gate=deferred();
+  f.setProgress(async()=>{await gate.promise;return {failed:true,error:'disk unavailable'};});
+  f.events.length=0;const pending=f.host.checkpoint();
+  while(!f.events.some(event=>event.startsWith('persist:')))await new Promise(resolve=>setImmediate(resolve));
+  await f.host.pause();gate.resolve();assert.equal((await pending).status,'failed');
+  assert.equal(f.host.pauseController.manualPaused(f.host.current),true);assert.ok(!f.events.includes('resume:alpha'));
+});
+
 test('switch freezes and persists exact durable revision before starting replacement',async()=>{
   const f=fixture();await f.host.ensure(f.request());f.events.length=0;
   await f.host.ensure(f.request('beta',24));
@@ -83,7 +129,9 @@ test('explicit checkpoint is reused only while paused',async()=>{
 });
 for(const fault of ['hash','identity','revision','pause'])test('invalid '+fault+' cannot authorize quit',async()=>{
   const f=fixture();await f.host.ensure(f.request());f.setFault(fault);const result=await f.host.prepareForQuit();assert.equal(result.ok,false);
-  assert.ok(!f.events.includes('exit:alpha'));assert.equal(f.host.instance.worldId,'alpha');assert.ok(f.events.includes('resume:alpha'));
+  assert.ok(!f.events.includes('exit:alpha'));assert.equal(f.host.instance.worldId,'alpha');
+  if(fault==='pause')assert.equal(f.events.filter(event=>event==='resume:alpha').length,1,'only initial startup may resume');
+  else assert.ok(f.events.includes('resume:alpha'));
 });
 test('concurrent startup rejected before runtime async creation completes',async()=>{
   const f=fixture(),gate=deferred();f.setGate(gate);const first=f.host.ensure(f.request());
@@ -115,7 +163,7 @@ test('outside canonical build root is rejected before a runtime starts',async()=
   const f=fixture();await assert.rejects(f.host.ensure({...f.request(),root:directory}),/outside the allowed/);assert.equal(f.runtimes.length,0);
 });
 test('checkpoint waits for earlier save then takes a fresh snapshot after pause',async()=>{
-  const f=fixture();await f.host.ensure(f.request());const gate=deferred();let count=0;
+  const f=fixture();await f.host.ensure(f.request());f.events.length=0;const gate=deferred();let count=0;
   f.setProgress(async call=>{if(++count===1)await gate.promise;return {receipt:{format:'craftmine.progress-receipt/1',worldId:call.worldId,buildId:call.buildId,revision:call.revision+1,contentHash:'b'.repeat(64)}};});
   const save=f.host.save(),checkpoint=f.host.checkpoint();gate.resolve();await save;assert.equal((await checkpoint).status,'persisted');
   assert.deepEqual(f.events.filter(x=>x.startsWith('save:')||x.startsWith('pause:')||x.startsWith('persist:')),['save:alpha','persist:alpha:8','pause:alpha','save:alpha','persist:alpha:9']);
