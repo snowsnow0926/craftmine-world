@@ -1,0 +1,1028 @@
+[
+  {
+    "method": "world.create",
+    "args": {
+      "id": "alpha",
+      "title": "Parameters",
+      "world": {
+        "build": {
+          "id": "base-a",
+          "scene": {
+            "format": "craftmine.godot-scene/1",
+            "baseId": "first-person"
+          },
+          "godot": {}
+        },
+        "snapshot": {
+          "format": "craftmine.godot-progress/1",
+          "worldId": "alpha",
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "stateVersion": 1,
+          "body": {
+            "worldId": "alpha",
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "inventory": {
+              "coins": 17
+            },
+            "targets": [
+              {
+                "id": "target-one",
+                "health": 40,
+                "hitCount": 2
+              }
+            ]
+          }
+        },
+        "extensions": []
+      }
+    },
+    "result": {
+      "baseId": "first-person",
+      "contentHash": "61afc765ed7cfefcc3c634f99052a37eafbb4ac01154e1402ea0a167a668a5f2",
+      "id": "alpha",
+      "revision": 0,
+      "runtimeKind": "godot",
+      "title": "Parameters",
+      "updatedAt": 1789000698596,
+      "world": {
+        "build": {
+          "godot": {},
+          "id": "base-a",
+          "scene": {
+            "baseId": "first-person",
+            "format": "craftmine.godot-scene/1"
+          }
+        },
+        "extensions": [],
+        "snapshot": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "inventory": {
+              "coins": 17
+            },
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "targets": [
+              {
+                "health": 40,
+                "hitCount": 2,
+                "id": "target-one"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      }
+    }
+  },
+  {
+    "method": "workspace.open",
+    "args": {
+      "context": {
+        "projectId": "seed",
+        "sessionId": "seed",
+        "turnId": "one"
+      },
+      "selectedWorld": "alpha"
+    },
+    "result": {
+      "reads": {},
+      "resumedFrom": null,
+      "task": {
+        "binding": {
+          "baseBuild": "base-a",
+          "projectId": "seed",
+          "sessionId": "seed",
+          "taskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+          "turnId": "one"
+        },
+        "draft": {
+          "scene": {
+            "baseId": "first-person",
+            "format": "craftmine.godot-scene/1"
+          }
+        },
+        "draftHash": "a3ea103694b183ae8176c4903fec6f51b54bef0b12c2783b42a1b2fa7d5c9136",
+        "revision": 0,
+        "status": "running"
+      },
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotProject.create",
+    "args": {
+      "context": {
+        "projectId": "seed",
+        "sessionId": "seed",
+        "turnId": "one"
+      },
+      "worldId": "alpha",
+      "toolCallId": "create",
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "files": [
+        {
+          "path": "project.godot",
+          "text": "config_version=5\n[application]\nrun/main_scene=\"res://world.tscn\"\n"
+        },
+        {
+          "path": "world.tscn",
+          "text": "[gd_scene load_steps=2 format=3]\n[ext_resource type=\"Script\" path=\"res://scripts/core/target_dummy.gd\" id=\"script\"]\n[node name=\"World\" type=\"Node3D\"]\n[node name=\"Target\" type=\"StaticBody3D\" parent=\".\"]\nscript = ExtResource(\"script\")\ntarget_id = &\"target-one\"\n"
+        },
+        {
+          "path": "scripts/core/target_dummy.gd",
+          "text": "class_name TargetDummy\nextends StaticBody3D\n\n## A destructible training target. Damage, health and the destroyed flag are\n## real gameplay state and are preserved across a save and restart.\n\nsignal damaged(target: TargetDummy, amount: float, remaining: float)\nsignal destroyed(target: TargetDummy)\nsignal restored(target: TargetDummy)\n\n@export var target_id: StringName = &\"target\"\n@export var display_name: String = \"Target\"\n@export var max_health := 50.0\n@export var hit_flash_seconds := 0.12\n\n@onready var mesh_instance: MeshInstance3D = get_node_or_null(\"Mesh\")\n@onready var collision: CollisionShape3D = get_node_or_null(\"Collision\")\n\nvar health := 0.0\nvar is_destroyed := false\nvar hit_count := 0\nvar damage_taken := 0.0\nvar _flash_remaining := 0.0\nvar _base_material: Material\n\n\nfunc _ready() -> void:\n\thealth = max_health\n\tif mesh_instance != null:\n\t\t_base_material = mesh_instance.material_override\n\tadd_to_group(\"base_targets\")\n\n\nfunc _process(delta: float) -> void:\n\tif _flash_remaining <= 0.0:\n\t\treturn\n\t_flash_remaining = maxf(0.0, _flash_remaining - delta)\n\tif _flash_remaining == 0.0 and mesh_instance != null:\n\t\tmesh_instance.material_override = _base_material\n\n\nfunc apply_damage(amount: float, context: Dictionary = {}) -> Dictionary:\n\tif is_destroyed or amount <= 0.0 or not is_finite(amount):\n\t\treturn {\"applied\": 0.0, \"remaining\": health, \"destroyed\": is_destroyed}\n\tvar applied := minf(amount, health)\n\thealth = maxf(0.0, health - applied)\n\tdamage_taken += applied\n\thit_count += 1\n\t_flash()\n\tdamaged.emit(self, applied, health)\n\tif health <= 0.0 and not is_destroyed:\n\t\tis_destroyed = true\n\t\tdestroyed.emit(self)\n\treturn {\"applied\": applied, \"remaining\": health, \"destroyed\": is_destroyed, \"point\": context.get(\"point\", global_position)}\n\n\nfunc _flash() -> void:\n\t_flash_remaining = hit_flash_seconds\n\tif mesh_instance != null:\n\t\tvar material := StandardMaterial3D.new()\n\t\tmaterial.albedo_color = Color(1.0, 0.55, 0.35)\n\t\tmaterial.emission_enabled = true\n\t\tmaterial.emission = Color(0.9, 0.35, 0.1)\n\t\tmaterial.emission_energy_multiplier = 1.6\n\t\tmesh_instance.material_override = material\n\n\nfunc reset() -> void:\n\thealth = max_health\n\tis_destroyed = false\n\thit_count = 0\n\tdamage_taken = 0.0\n\tvisible = true\n\tif collision != null:\n\t\tcollision.disabled = false\n\n\nfunc snapshot() -> Dictionary:\n\treturn {\n\t\t\"id\": String(target_id),\n\t\t\"health\": health,\n\t\t\"destroyed\": is_destroyed,\n\t\t\"hitCount\": hit_count,\n\t\t\"damageTaken\": damage_taken,\n\t}\n\n\nfunc state_id() -> String:\n\treturn String(target_id)\n\n\n## Returns \"\" on success, otherwise why the saved target was rejected.\nfunc restore(data: Dictionary) -> String:\n\tvar saved_health = data.get(\"health\")\n\tif not (saved_health is float or saved_health is int) or not is_finite(float(saved_health)) or float(saved_health) < 0.0:\n\t\treturn String(target_id) + \": saved health is invalid\"\n\tvar saved_destroyed = data.get(\"destroyed\")\n\tif not saved_destroyed is bool:\n\t\treturn String(target_id) + \": saved destroyed flag is invalid\"\n\tif bool(saved_destroyed) != (float(saved_health) <= 0.0):\n\t\treturn String(target_id) + \": saved health and destroyed flag disagree\"\n\tvar saved_hits = data.get(\"hitCount\", 0)\n\tvar saved_damage = data.get(\"damageTaken\", 0.0)\n\tif not (saved_hits is float or saved_hits is int) or not is_finite(float(saved_hits)) or float(saved_hits) != floorf(float(saved_hits)) or float(saved_hits) < 0.0:\n\t\treturn String(target_id) + \": saved hit count is invalid\"\n\tif not (saved_damage is float or saved_damage is int) or not is_finite(float(saved_damage)) or float(saved_damage) < 0.0:\n\t\treturn String(target_id) + \": saved damage total is invalid\"\n\t# max_health is source and may be lowered; clamp instead of discarding progress.\n\thealth = minf(float(saved_health), max_health)\n\tis_destroyed = bool(saved_destroyed)\n\thit_count = int(saved_hits)\n\tdamage_taken = float(saved_damage)\n\tvisible = true\n\tif collision != null:\n\t\tcollision.disabled = false\n\tif mesh_instance != null:\n\t\tmesh_instance.material_override = _base_material\n\trestored.emit(self)\n\treturn \"\"\n"
+        }
+      ]
+    },
+    "result": {
+      "applied": false,
+      "baseBuild": "base-a",
+      "bytes": 4360,
+      "fileCount": 3,
+      "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+      "revision": 0,
+      "status": "source-only",
+      "taskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+      "toolCallId": "create",
+      "verified": false,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "content.migrate.apply",
+    "args": {
+      "worldId": "alpha"
+    },
+    "result": {
+      "adopted": 0,
+      "alreadyMigrated": false,
+      "headOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "imported": 1,
+      "mapping": [
+        {
+          "byteCount": 4360,
+          "commitOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+          "fileCount": 3,
+          "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+          "revision": 0,
+          "treeOid": "a917f50c88792ebd8dfb985decc79ef8a3150809"
+        }
+      ],
+      "objectFormat": "sha1",
+      "problems": [],
+      "repoId": "world-alpha",
+      "resumedFrom": null,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotExecutor.register",
+    "args": {
+      "executorId": "fixture",
+      "attestation": {
+        "format": "craftmine.godot-executor/1",
+        "isolation": "fixed-author-fixture",
+        "evidenceHash": "a14051271aefc351220fbc5fc0c61a98c01339eaafbc344d84e7f336773e9b9c",
+        "engineVersion": "4.7.2-stable",
+        "capabilities": {
+          "import": true,
+          "build": true,
+          "check": true
+        }
+      }
+    },
+    "result": {
+      "attestationHash": "2d55d7c4fd157d0ca2d261590f3639ccb726a8f18208d151714bfd1af2229b8d",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": true,
+      "executorId": "fixture",
+      "isolation": "fixed-author-fixture",
+      "promotedJobs": 0,
+      "registered": true,
+      "registeredAt": 1789000698987
+    }
+  },
+  {
+    "method": "godotBuild.start",
+    "args": {
+      "context": {
+        "projectId": "seed",
+        "sessionId": "seed",
+        "turnId": "one"
+      },
+      "worldId": "alpha",
+      "toolCallId": "check-seed",
+      "revision": 0,
+      "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+      "mode": "check"
+    },
+    "result": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "blockedReason": null,
+      "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": true,
+      "jobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+      "kind": "check",
+      "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+      "materialized": {
+        "bytes": 11866,
+        "files": 6
+      },
+      "renderer": "gl_compatibility",
+      "replayed": false,
+      "sourceRevision": 0,
+      "status": "queued",
+      "target": "web",
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotJob.claim",
+    "args": {
+      "jobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+      "token": "fixture-token",
+      "executorId": "fixture"
+    },
+    "result": {
+      "artifactsRoot": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-core-1o7PBA\\data\\godot-builds\\8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8\\gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679\\artifacts",
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "blockedReason": null,
+      "branchId": "main",
+      "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+      "cacheRoot": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-core-1o7PBA\\data\\godot-builds\\8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8\\gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679\\cache",
+      "candidateId": null,
+      "createdAt": 1789000699120,
+      "engineVersion": "4.7.2-stable",
+      "evidenceHash": "a14051271aefc351220fbc5fc0c61a98c01339eaafbc344d84e7f336773e9b9c",
+      "executorId": "fixture",
+      "files": {
+        "asset": [],
+        "host": [
+          {
+            "bytes": 6415,
+            "kind": "host",
+            "path": "craftmine_host_bridge.js",
+            "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+          },
+          {
+            "bytes": 715,
+            "kind": "host",
+            "path": "craftmine_host_shell.html",
+            "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39"
+          },
+          {
+            "bytes": 376,
+            "kind": "host",
+            "path": "export_presets.cfg",
+            "sha256": "ace4c5d0c269fb7524ab9d7640ef91aaabe9aa2bf406fda3e2acc23906c57e0b"
+          }
+        ],
+        "source": [
+          {
+            "bytes": 65,
+            "kind": "source",
+            "path": "project.godot",
+            "sha256": "516cfb3ca146e5e15a4ada547979b8ded12dbbd7a4034e55efd5e5e84d306017"
+          },
+          {
+            "bytes": 4036,
+            "kind": "source",
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "7e5edd7ccc2836472fe672b03ea47646cc1479326784e81b6398435c50771fbe"
+          },
+          {
+            "bytes": 259,
+            "kind": "source",
+            "path": "world.tscn",
+            "sha256": "b3f6ac4d1fdd7721475f5ca3de5aaa71f71ccc6a705cef0e0528ae52742f2a6e"
+          }
+        ]
+      },
+      "inputHash": "a1121ffefedaf99b5352ed29d394e1bf3203c3a3aab1978d54d102f61d00753f",
+      "interruptReason": null,
+      "isolation": "fixed-author-fixture",
+      "jobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+      "kind": "check",
+      "leaseExpiresAt": 1789000819123,
+      "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+      "originJobId": null,
+      "output": null,
+      "outputHash": null,
+      "progress": 0,
+      "projectRoot": "\\\\?\\C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-core-1o7PBA\\data\\godot-builds\\8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8\\gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679\\source",
+      "sourceRevision": 0,
+      "stage": "claimed",
+      "status": "claimed",
+      "taskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+      "token": "fixture-token",
+      "updatedAt": 1789000699123,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotJob.finish",
+    "args": {
+      "jobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+      "token": "fixture-token",
+      "output": {
+        "format": "craftmine.godot-job-result/1",
+        "inputHash": "a1121ffefedaf99b5352ed29d394e1bf3203c3a3aab1978d54d102f61d00753f",
+        "passed": true,
+        "import": {
+          "passed": true
+        },
+        "compile": {
+          "passed": true,
+          "errors": [],
+          "warnings": []
+        },
+        "check": {
+          "passed": true,
+          "assertions": [
+            {
+              "id": "fixture-only",
+              "passed": true
+            }
+          ]
+        },
+        "artifacts": [
+          {
+            "path": "web/index.html",
+            "bytes": 40,
+            "sha256": "029d535488e31187811bfd27f5700363a507f02dbed024f81d0a50d1e47be681"
+          }
+        ],
+        "engine": {
+          "version": "4.7.2-stable",
+          "isolation": "fixed-author-fixture",
+          "evidenceHash": "a14051271aefc351220fbc5fc0c61a98c01339eaafbc344d84e7f336773e9b9c"
+        }
+      }
+    },
+    "result": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "blockedReason": null,
+      "branchId": "main",
+      "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+      "candidateId": "gcan-45f56b360b12ce20507eb228fe8f4dc8686bff16e633cb6f875d1911258f3fdd",
+      "createdAt": 1789000699120,
+      "executorId": "fixture",
+      "interruptReason": null,
+      "jobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+      "kind": "check",
+      "leaseExpiresAt": null,
+      "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+      "originJobId": null,
+      "output": {
+        "artifacts": [
+          {
+            "bytes": 40,
+            "path": "web/index.html",
+            "sha256": "029d535488e31187811bfd27f5700363a507f02dbed024f81d0a50d1e47be681"
+          }
+        ],
+        "check": {
+          "assertions": [
+            {
+              "detail": null,
+              "id": "fixture-only",
+              "passed": true
+            }
+          ],
+          "passed": true
+        },
+        "compile": {
+          "errors": [],
+          "passed": true,
+          "warnings": []
+        },
+        "engine": {
+          "evidenceHash": "a14051271aefc351220fbc5fc0c61a98c01339eaafbc344d84e7f336773e9b9c",
+          "isolation": "fixed-author-fixture",
+          "version": "4.7.2-stable"
+        },
+        "format": "craftmine.godot-job-result/1",
+        "import": {
+          "log": null,
+          "passed": true
+        },
+        "inputHash": "a1121ffefedaf99b5352ed29d394e1bf3203c3a3aab1978d54d102f61d00753f",
+        "passed": true
+      },
+      "outputHash": "313ea35a2aa04d88d394e0459414079d3930f61d7d93838cc548d4004c3265e3",
+      "progress": 100,
+      "sourceRevision": 0,
+      "stage": "passed",
+      "status": "passed",
+      "taskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+      "updatedAt": 1789000699126,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotApplication.prepare",
+    "args": {
+      "id": "initial",
+      "token": "initial-token",
+      "candidateId": "gcan-45f56b360b12ce20507eb228fe8f4dc8686bff16e633cb6f875d1911258f3fdd",
+      "worldId": "alpha",
+      "revision": 0,
+      "snapshot": {
+        "format": "craftmine.godot-progress/1",
+        "worldId": "alpha",
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "stateVersion": 1,
+        "body": {
+          "worldId": "alpha",
+          "player": {
+            "position": [
+              1,
+              2,
+              3
+            ]
+          },
+          "inventory": {
+            "coins": 17
+          },
+          "targets": [
+            {
+              "id": "target-one",
+              "health": 40,
+              "hitCount": 2
+            }
+          ]
+        }
+      }
+    },
+    "result": {
+      "authorTaskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+      "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+      "candidateId": "gcan-45f56b360b12ce20507eb228fe8f4dc8686bff16e633cb6f875d1911258f3fdd",
+      "createdAt": 1789000699147,
+      "id": "initial",
+      "input": {
+        "authorTaskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+        "baseBuild": "base-a",
+        "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+        "candidateId": "gcan-45f56b360b12ce20507eb228fe8f4dc8686bff16e633cb6f875d1911258f3fdd",
+        "checkJobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+        "checkOutputHash": "313ea35a2aa04d88d394e0459414079d3930f61d7d93838cc548d4004c3265e3",
+        "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+        "revision": 0,
+        "snapshot": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "inventory": {
+              "coins": 17
+            },
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "targets": [
+              {
+                "health": 40,
+                "hitCount": 2,
+                "id": "target-one"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        },
+        "sourceRevision": 0,
+        "worldHash": "61afc765ed7cfefcc3c634f99052a37eafbb4ac01154e1402ea0a167a668a5f2",
+        "worldId": "alpha"
+      },
+      "inputHash": "e4179209d578ab68ba3f51e57b17c8f01200f59f968efb91b9ac767ad2c9390d",
+      "output": null,
+      "outputHash": null,
+      "status": "prepared",
+      "updatedAt": 1789000699147,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "alpha"
+    },
+    "result": {
+      "appliedOid": null,
+      "backend": "git",
+      "branches": [
+        {
+          "name": "refs/heads/main",
+          "objectType": "commit",
+          "oid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+          "symref": null
+        }
+      ],
+      "format": "craftmine.content-status/1",
+      "git": {
+        "path": "C:\\Program Files\\Git\\cmd\\git.exe",
+        "sha256": "da240fe9bc24895b3e04150a4990b8a6ff329ecabcd8f19684c2cc310da5ef3f",
+        "source": "pathFallback",
+        "version": "2.53.0.windows.1",
+        "versionMajor": 2,
+        "versionMinor": 53
+      },
+      "gitDir": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-core-1o7PBA\\data\\content-history\\repos\\2787eca396789d6d0537faf539397d8d\\repo.git",
+      "headOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "migratedRevisions": 1,
+      "registered": true,
+      "repoId": "world-alpha",
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "content.apply.prepare",
+    "args": {
+      "worldId": "alpha",
+      "context": {
+        "operationId": "initial",
+        "worldId": "alpha",
+        "repoId": "world-alpha",
+        "branchId": "main",
+        "expectedHeadOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+        "expectedAppliedOid": null,
+        "expectedProgressRevision": 0
+      },
+      "kind": "apply",
+      "targetOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "detail": "Fixed fixture initial application"
+    },
+    "result": {
+      "applicationId": null,
+      "branchId": "main",
+      "createdAt": 1789000699216,
+      "detail": "Fixed fixture initial application",
+      "expectedAppliedOid": null,
+      "expectedHeadOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "expectedProgressRevision": 0,
+      "kind": "apply",
+      "operationId": "initial",
+      "repoId": "world-alpha",
+      "state": "prepared",
+      "targetOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "updatedAt": 1789000699216,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "content.apply.advance",
+    "args": {
+      "operationId": "initial"
+    },
+    "result": {
+      "applicationId": null,
+      "branchId": "main",
+      "createdAt": 1789000699216,
+      "detail": "reference advanced",
+      "expectedAppliedOid": null,
+      "expectedHeadOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "expectedProgressRevision": 0,
+      "kind": "apply",
+      "operationId": "initial",
+      "repoId": "world-alpha",
+      "state": "referenceAdvanced",
+      "targetOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "updatedAt": 1789000699280,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotApplication.commit",
+    "args": {
+      "id": "initial",
+      "token": "initial-token",
+      "evidence": {
+        "format": "craftmine.godot-application/2",
+        "inputHash": "e4179209d578ab68ba3f51e57b17c8f01200f59f968efb91b9ac767ad2c9390d",
+        "launch": {
+          "passed": true,
+          "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+          "instanceId": "fixture",
+          "stateHash": "b9ad48944f82c957434b2b685f84dba072cc3f374cf0bb0dc370993146676580"
+        },
+        "player": null,
+        "snapshot": {
+          "format": "craftmine.godot-progress/1",
+          "worldId": "alpha",
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "stateVersion": 1,
+          "body": {
+            "worldId": "alpha",
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "inventory": {
+              "coins": 17
+            },
+            "targets": [
+              {
+                "id": "target-one",
+                "health": 40,
+                "hitCount": 2
+              }
+            ]
+          }
+        }
+      }
+    },
+    "result": {
+      "authorTaskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+      "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+      "candidateId": "gcan-45f56b360b12ce20507eb228fe8f4dc8686bff16e633cb6f875d1911258f3fdd",
+      "createdAt": 1789000699147,
+      "id": "initial",
+      "input": {
+        "authorTaskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+        "baseBuild": "base-a",
+        "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+        "candidateId": "gcan-45f56b360b12ce20507eb228fe8f4dc8686bff16e633cb6f875d1911258f3fdd",
+        "checkJobId": "gjob-9533e6f406f2ee09a4d9c7d1b442dde0005569090f8c188c1a55b181cc5ed7d7",
+        "checkOutputHash": "313ea35a2aa04d88d394e0459414079d3930f61d7d93838cc548d4004c3265e3",
+        "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+        "revision": 0,
+        "snapshot": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "inventory": {
+              "coins": 17
+            },
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "targets": [
+              {
+                "health": 40,
+                "hitCount": 2,
+                "id": "target-one"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        },
+        "sourceRevision": 0,
+        "worldHash": "61afc765ed7cfefcc3c634f99052a37eafbb4ac01154e1402ea0a167a668a5f2",
+        "worldId": "alpha"
+      },
+      "inputHash": "e4179209d578ab68ba3f51e57b17c8f01200f59f968efb91b9ac767ad2c9390d",
+      "output": {
+        "format": "craftmine.godot-application/2",
+        "inputHash": "e4179209d578ab68ba3f51e57b17c8f01200f59f968efb91b9ac767ad2c9390d",
+        "launch": {
+          "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+          "instanceId": "fixture",
+          "passed": true,
+          "stateHash": "b9ad48944f82c957434b2b685f84dba072cc3f374cf0bb0dc370993146676580"
+        },
+        "player": null,
+        "snapshot": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "inventory": {
+              "coins": 17
+            },
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "targets": [
+              {
+                "health": 40,
+                "hitCount": 2,
+                "id": "target-one"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      },
+      "outputHash": "a16b218b64b1fe412b7c81403219d04d020b160b272143e2d066e3ea0d1ce8ab",
+      "status": "applied",
+      "updatedAt": 1789000699307,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "content.apply.confirm",
+    "args": {
+      "operationId": "initial",
+      "applicationId": "initial",
+      "detail": "Fixed fixture application receipt"
+    },
+    "result": {
+      "applicationId": "initial",
+      "branchId": "main",
+      "createdAt": 1789000699216,
+      "detail": "Fixed fixture application receipt",
+      "expectedAppliedOid": null,
+      "expectedHeadOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "expectedProgressRevision": 0,
+      "kind": "apply",
+      "operationId": "initial",
+      "repoId": "world-alpha",
+      "state": "committed",
+      "targetOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "updatedAt": 1789000699328,
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "workspace.endTurn",
+    "args": {
+      "sessionId": "seed",
+      "turnId": "one",
+      "status": "completed"
+    },
+    "result": {
+      "ok": true
+    }
+  },
+  {
+    "method": "world.read",
+    "args": {
+      "id": "alpha"
+    },
+    "result": {
+      "baseId": "first-person",
+      "contentHash": "f847c2ce9d9d6521dc47edfc070ad37083386f53c1b3b2cc9ac1948977e7aa8f",
+      "id": "alpha",
+      "revision": 1,
+      "runtimeKind": "godot",
+      "title": "Parameters",
+      "updatedAt": 1789000699307,
+      "world": {
+        "build": {
+          "godot": {
+            "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "baseBuild": "base-a",
+            "engineVersion": "4.7.2-stable",
+            "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+            "renderer": "gl_compatibility",
+            "sourceRevision": 0,
+            "target": "web"
+          },
+          "id": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+          "scene": {
+            "baseId": "first-person",
+            "entry": "res://main.tscn",
+            "format": "craftmine.godot-scene/1",
+            "projectHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c"
+          }
+        },
+        "extensions": [],
+        "snapshot": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "inventory": {
+              "coins": 17
+            },
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "targets": [
+              {
+                "health": 40,
+                "hitCount": 2,
+                "id": "target-one"
+              }
+            ],
+            "worldId": "alpha"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "alpha"
+        }
+      }
+    }
+  },
+  {
+    "method": "content.status",
+    "args": {
+      "worldId": "alpha"
+    },
+    "result": {
+      "appliedOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "backend": "git",
+      "branches": [
+        {
+          "name": "refs/heads/main",
+          "objectType": "commit",
+          "oid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+          "symref": null
+        }
+      ],
+      "format": "craftmine.content-status/1",
+      "git": {
+        "path": "C:\\Program Files\\Git\\cmd\\git.exe",
+        "sha256": "da240fe9bc24895b3e04150a4990b8a6ff329ecabcd8f19684c2cc310da5ef3f",
+        "source": "pathFallback",
+        "version": "2.53.0.windows.1",
+        "versionMajor": 2,
+        "versionMinor": 53
+      },
+      "gitDir": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-core-1o7PBA\\data\\content-history\\repos\\2787eca396789d6d0537faf539397d8d\\repo.git",
+      "headOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "migratedRevisions": 1,
+      "registered": true,
+      "repoId": "world-alpha",
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotRuntime.exportSource",
+    "args": {
+      "worldId": "alpha"
+    },
+    "result": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "buildId": "gbd-fc233926d70582c4cba1c2328d68446b255e3d8b2d47988255492cda27ed3679",
+      "contentOid": "550a9bf08c6f4ed3737f5318f31fea1b4bcfef70",
+      "files": [
+        {
+          "bytes": 65,
+          "kind": "source",
+          "path": "project.godot",
+          "sha256": "516cfb3ca146e5e15a4ada547979b8ded12dbbd7a4034e55efd5e5e84d306017"
+        },
+        {
+          "bytes": 4036,
+          "kind": "source",
+          "path": "scripts/core/target_dummy.gd",
+          "sha256": "7e5edd7ccc2836472fe672b03ea47646cc1479326784e81b6398435c50771fbe"
+        },
+        {
+          "bytes": 259,
+          "kind": "source",
+          "path": "world.tscn",
+          "sha256": "b3f6ac4d1fdd7721475f5ca3de5aaa71f71ccc6a705cef0e0528ae52742f2a6e"
+        }
+      ],
+      "format": "craftmine.godot-export-source/1",
+      "repoId": "world-alpha",
+      "revision": 1,
+      "snapshot": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "body": {
+          "inventory": {
+            "coins": 17
+          },
+          "player": {
+            "position": [
+              1,
+              2,
+              3
+            ]
+          },
+          "targets": [
+            {
+              "health": 40,
+              "hitCount": 2,
+              "id": "target-one"
+            }
+          ],
+          "worldId": "alpha"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "alpha"
+      },
+      "sourceRevision": 0,
+      "sourceWorldId": "alpha",
+      "worldId": "alpha"
+    }
+  },
+  {
+    "method": "godotProject.sourceContext",
+    "args": {
+      "worldId": "alpha"
+    },
+    "result": {
+      "context": {
+        "projectId": "seed",
+        "sessionId": "seed",
+        "turnId": "one"
+      }
+    }
+  },
+  {
+    "method": "godotProject.index",
+    "args": {
+      "context": {
+        "projectId": "seed",
+        "sessionId": "seed",
+        "turnId": "one"
+      },
+      "worldId": "alpha",
+      "branchId": "main",
+      "offset": 0,
+      "limit": 32
+    },
+    "result": {
+      "applied": false,
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "binaryAssetsAvailable": false,
+      "currentTaskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "files": [
+        {
+          "bytes": 65,
+          "path": "project.godot",
+          "sha256": "516cfb3ca146e5e15a4ada547979b8ded12dbbd7a4034e55efd5e5e84d306017"
+        },
+        {
+          "bytes": 4036,
+          "path": "scripts/core/target_dummy.gd",
+          "sha256": "7e5edd7ccc2836472fe672b03ea47646cc1479326784e81b6398435c50771fbe"
+        },
+        {
+          "bytes": 259,
+          "path": "world.tscn",
+          "sha256": "b3f6ac4d1fdd7721475f5ca3de5aaa71f71ccc6a705cef0e0528ae52742f2a6e"
+        }
+      ],
+      "format": "craftmine.godot-project/1",
+      "language": "GDScript",
+      "lastWriter": {
+        "baseBuild": "base-a",
+        "projectId": "seed",
+        "sessionId": "seed",
+        "taskId": "work-23d62e0f4a61545aa131f20b62c924f17442edbde110ec2ba5f6954963e6c58a",
+        "turnId": "one"
+      },
+      "manifestHash": "cfdede14fadb05018aa723aaf72955e3653de299b65d8fec879383e42f342d9c",
+      "nextOffset": null,
+      "renderer": "gl_compatibility",
+      "revision": 0,
+      "status": "source-only",
+      "target": "web",
+      "totalFiles": 3,
+      "verified": false,
+      "worldId": "alpha"
+    }
+  }
+]

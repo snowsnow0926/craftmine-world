@@ -1,0 +1,14 @@
+{
+  "engine": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/editor/Godot_v4.7.2-stable_win64_console.exe",
+  "args": [
+    "--headless",
+    "--path",
+    "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-native-tiKduP\\project",
+    "--script",
+    "res://acceptance.gd"
+  ],
+  "code": 1,
+  "signal": null,
+  "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\n",
+  "stderr": "SCRIPT ERROR: Parse Error: Cannot infer the type of \"passed\" variable because the value doesn't have a set type.\r\n   at: GDScript::reload (res://acceptance.gd:29)\r\nERROR: Failed to load script \"res://acceptance.gd\" with error \"Parse error\".\r\n   at: load (modules/gdscript/gdscript_resource_format.cpp:46)\r\n"
+}

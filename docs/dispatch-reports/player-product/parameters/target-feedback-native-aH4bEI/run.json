@@ -1,0 +1,14 @@
+{
+  "engine": "D:/Craftmine World/desktop/build/godot/4.7.2-stable/editor/Godot_v4.7.2-stable_win64_console.exe",
+  "args": [
+    "--headless",
+    "--path",
+    "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\target-feedback-native-aH4bEI\\project",
+    "--script",
+    "res://acceptance.gd"
+  ],
+  "code": 0,
+  "signal": null,
+  "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\n{\"cases\":[{\"materialChanged\":true,\"materialRestored\":true,\"materialRetained\":true,\"milliseconds\":1,\"passed\":true,\"property\":0.001,\"remainingAfterDamage\":0.001,\"remainingAtEnd\":0.0,\"remainingMidpoint\":0.0005,\"snapshot\":{\"damageTaken\":1.0,\"destroyed\":false,\"health\":49.0,\"hitCount\":1,\"id\":\"target-one\"}},{\"materialChanged\":true,\"materialRestored\":true,\"materialRetained\":true,\"milliseconds\":500,\"passed\":true,\"property\":0.5,\"remainingAfterDamage\":0.5,\"remainingAtEnd\":0.0,\"remainingMidpoint\":0.25,\"snapshot\":{\"damageTaken\":1.0,\"destroyed\":false,\"health\":49.0,\"hitCount\":1,\"id\":\"target-one\"}},{\"materialChanged\":true,\"materialRestored\":true,\"materialRetained\":true,\"milliseconds\":1000,\"passed\":true,\"property\":1.0,\"remainingAfterDamage\":1.0,\"remainingAtEnd\":0.0,\"remainingMidpoint\":0.5,\"snapshot\":{\"damageTaken\":1.0,\"destroyed\":false,\"health\":49.0,\"hitCount\":1,\"id\":\"target-one\"}}],\"passed\":true,\"scope\":\"Actual PackedScene load, damage, flash and controlled process delta; no visual screenshot or full client lifecycle.\"}\r\n",
+  "stderr": ""
+}

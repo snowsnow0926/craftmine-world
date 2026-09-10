@@ -1,0 +1,48 @@
+[
+  {
+    "method": "world.create",
+    "args": {
+      "id": "alpha",
+      "title": "Parameters",
+      "world": {
+        "build": {
+          "id": "base-a",
+          "scene": {
+            "format": "craftmine.godot-scene/1",
+            "baseId": "first-person"
+          },
+          "godot": {}
+        },
+        "snapshot": {
+          "format": "craftmine.godot-progress/1",
+          "worldId": "alpha",
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "stateVersion": 1,
+          "body": {
+            "worldId": "alpha",
+            "player": {
+              "position": [
+                1,
+                2,
+                3
+              ]
+            },
+            "inventory": {
+              "coins": 17
+            },
+            "targets": [
+              {
+                "id": "target-one",
+                "health": 40,
+                "hitCount": 2
+              }
+            ]
+          }
+        },
+        "extensions": []
+      }
+    },
+    "error": "Error: INVALID_PROGRESS"
+  }
+]

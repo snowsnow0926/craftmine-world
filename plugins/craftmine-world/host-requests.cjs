@@ -7,7 +7,7 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback}){
   const reservations=new Map();
   // The bounded surface of the S5 asset service and the S3 works/package
   // service. The router forwards a method name, never an arbitrary core call.
@@ -55,6 +55,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(['targetFeedback.describe','targetFeedback.submit','targetFeedback.status'].includes(method)){
+      if(!targetFeedback)throw Error('TARGET_FEEDBACK_UNAVAILABLE');
+      return targetFeedback[method.split('.')[1]](params);
+    }
     if(method==='backup.restorePortableActive'){
       fields(params,['operationId','archivePath','archiveHash','expectedCurrentHash']);
       if(!portableRestore)throw Error('BACKUP_LIFECYCLE_UNAVAILABLE');
