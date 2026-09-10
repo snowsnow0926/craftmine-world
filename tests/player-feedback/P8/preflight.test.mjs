@@ -129,9 +129,28 @@ test('fixed exercise retains actual failures, rejects extra commands, and aborts
   });
   await f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' });
   await assert.rejects(f.run('exercise', { caseId: 'hammer', op: 'arbitrary' }), /INVALID_REQUEST/);
-  const result = await f.run('exercise', { caseId: 'hammer' }); assert.equal(result.actions.length, 7); assert.ok(result.actions.every(action => action.result.error));
+  const result = await f.run('exercise', { caseId: 'hammer' }); assert.equal(result.actions.length, 13); assert.ok(result.actions.every(action => action.result.error));
   assert.deepEqual(operations[1], ['equip', { value: 'thunder_hammer' }]); assert.equal(result.passed, undefined);
   operations.length = 0; change = true; await assert.rejects(f.run('exercise', { caseId: 'hammer' }), /RUNTIME_CHANGED/); assert.equal(operations.length, 1);
+});
+
+test('the fixed dog sequence walks away before its far-range talk', async () => {
+  const operations = [], dogWorld = 'world-dog';
+  const contents = { isDestroyed: () => false, executeJavaScript: async script => (script === 'document.body.dataset.worldId' ? dogWorld : { accepted: true, turnId: 'turn-fixture' }) };
+  const godot = { observe: async () => ({ format: 'craftmine.godot-observation/1', worldId: dogWorld, baseId: 'top-down', buildId: 'formal-build', instanceId: 'owned-dog' }),
+    action: async (op, args) => { operations.push([op, args]); return { error: 'synthetic missing authored item' }; },
+    capture: async (width, height) => ({ width, height, pngBase64: 'iVBORw0KGgo' }) };
+  const run = createP8Acceptance({ enabled: true, window: () => ({ isDestroyed: () => false, webContents: contents }), world: () => contents,
+    call: async method => (method === 'providers.create' ? { provider: { id: '22222222-2222-4222-8222-222222222222' } } : method === 'session.create' ? { session: { id: '11111111-1111-4111-8111-111111111111' } } : null),
+    panel: async () => ({ activeWorldId: dogWorld, worlds: [{ id: dogWorld, baseId: 'top-down', runtimeKind: 'godot' }] }), active: () => false, godot,
+  }, { CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_PROXY_BASE: 'http://127.0.0.1:12345/' + 'a'.repeat(48) + '/deepseek.com/v1', CRAFTMINE_P8_PROXY_AUTH: 'b'.repeat(64) });
+  await run('initialize', { caseId: 'dog', worldId: dogWorld });
+  const result = await run('exercise', { caseId: 'dog' });
+  assert.equal(result.actions.length, 10);
+  assert.deepEqual(operations.map(entry => entry[0]), ['resume', 'talk', 'move', 'wait', 'talk', 'move', 'wait', 'move', 'wait', 'talk']);
+  assert.equal(operations[1][1].npcId, 'p8-dog');
+  assert.ok(operations.filter(entry => entry[0] === 'move').every(entry => entry[1].steps <= 600));
+  assert.ok(result.actions.every(action => action.result.error));
 });
 
 test('private list without navigation state requires a real matching loaded runtime before provider creation', async () => {

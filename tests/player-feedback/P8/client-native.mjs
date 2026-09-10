@@ -1,4 +1,7 @@
 // Run only after the root integrator authorizes this exact compiled candidate.
+// One process runs exactly the cases named by CRAFTMINE_P8_CASES, on its own
+// ledger, profile, relay port and log directory, so two cases can run in parallel
+// and a single-case result can never be read as a two-case pass.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +19,13 @@ import { openRequestJournal, ordinaryParents, reconcileMetrics, unwrapP8ProductR
 import { deriveAdditiveProgress } from '../../../desktop/godot/shared/progress-migration.mjs';
 import { createStopControl } from './stop-control.mjs';
 import { p8Authorization } from './authorization.mjs';
+import { readLedgerSummary, admissionAccounting } from './ledger.mjs';
+import { evaluateGameplay } from './gameplay-criteria.mjs';
+import { summarizeRun } from './run-outcome.mjs';
+
+/** One initial request plus the three fixed continuations the product allows. */
+const MAX_ROUNDS = 4;
+const CASE_PLAN = Object.freeze({ hammer: { baseId: 'first-person', starterId: 'training-range' }, dog: { baseId: 'top-down', starterId: 'town' } });
 
 const options = parameterClientArguments(process.argv.slice(2)), { root, runtime, deps, packaged } = options;
 const app = path.join(root, 'vendor/pi-desktop/apps/desktop'), hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -24,7 +34,6 @@ assert.equal(execFileSync('git', ['status', '--porcelain'], { cwd: root, encodin
 assert.equal(process.env.CRAFTMINE_P8_APPROVED_COMMIT, commit, 'P8 exact compiled candidate authorization is required');
 assert.equal(hash(fs.readFileSync(fileURLToPath(import.meta.url))), hash(fs.readFileSync(path.join(root, 'tests/player-feedback/P8/client-native.mjs'))), 'P8 runner must match source');
 if (packaged) assert.equal(commit, options.expectedCommit);
-const authorization = p8Authorization(process.env, root);
 const asar = packaged ? loadPackageAsar(deps) : null, packageInfo = packaged ? await inspectParameterPackage({ ...options, asar }) : null;
 const electron = packaged ? null : createRequire(path.join(deps, 'package.json'))('electron');
 const main = packageInfo ? packageInfo.main : fs.readFileSync(path.join(app, 'out/main/index.js'));
@@ -35,21 +44,24 @@ const host = packageInfo?.host ?? path.join(runtime, 'vendor/pi-desktop/target/r
 const resources = packaged ? null : JSON.parse(fs.readFileSync(path.join(runtime, 'desktop/build/runtime-resources/runtime-resources.json'), 'utf8'));
 if (!packaged) { assert.equal(root, runtime); assert.equal(resources.sourceCommit, commit); }
 const parent = path.join(root, 'test-results'); fs.mkdirSync(parent, { recursive: true });
-const out = fs.mkdtempSync(path.join(parent, 'desktop-native-p8-')), profile = path.join(out, 'profile'), legacy = path.join(out, 'legacy'), temp = path.join(out, 'temp'), token = randomUUID();
+const out = fs.mkdtempSync(path.join(parent, 'desktop-native-p8-')), profile = path.join(out, 'profile'), legacy = path.join(out, 'legacy'), temp = path.join(out, 'temp'), token = randomUUID(), runId = randomUUID();
 for (const directory of [profile, legacy, temp]) fs.mkdirSync(directory);
 fs.writeFileSync(path.join(profile, 'headless-profile.json'), JSON.stringify({ format: 'craftmine.headless-profile/1', token, legacySource: legacy }));
-const report = { format: 'craftmine.p8-client/1', passed: false, commit, out, profile, mode: packaged ? 'packaged' : 'development', mainSha256: hash(main), coreSha256: hash(fs.readFileSync(core)), hostSha256: hash(fs.readFileSync(host)), runtimeFilesDigest: packageInfo?.identity.runtimeFilesDigest ?? resources.filesDigest,
-  requestedModel: MODEL, authorization, requestLimit: authorization.requestLimit, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.'] };
+// The ledger is resolved after the run's own output directory exists, because a
+// parallel run may only journal inside its own new output range.
+const authorization = p8Authorization(process.env, root, { out }), cases = authorization.cases;
+const report = { format: 'craftmine.p8-client/1', passed: false, commit, out, runId, profile, mode: packaged ? 'packaged' : 'development', mainSha256: hash(main), coreSha256: hash(fs.readFileSync(core)), hostSha256: hash(fs.readFileSync(host)), runtimeFilesDigest: packageInfo?.identity.runtimeFilesDigest ?? resources.filesDigest,
+  requestedModel: MODEL, authorization: { phase: authorization.phase, requestLimit: authorization.requestLimit, previousPhaseAdmissions: authorization.previousPhaseAdmissions, mode: authorization.mode, ownership: authorization.ownership }, requestedCases: cases, requestLimit: authorization.requestLimit, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.'] };
 if (packageInfo) Object.assign(report, packageInfo.identity);
 const save = () => fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
 const journalPath = authorization.journalPath, journal = openRequestJournal(journalPath, { requestLimit: authorization.requestLimit });
-report.requestJournal = journalPath; report.priorAdmissions = journal.entries.length;
+report.requestJournal = journalPath; report.priorAdmissions = journal.entries.length; report.ledger = authorization.ownership;
 let currentCase = null, relay;
 let child, ended = true, ready = false, launch, exit; const pending = new Map(), reopen = {};
-const stopControl = createStopControl({ out, abort: caseId => p8('abort', caseId), snapshot: caseId => p8('snapshot', caseId), record: event => {
+const stopControl = createStopControl({ runId, out, abort: caseId => p8('abort', caseId), snapshot: caseId => p8('snapshot', caseId), record: event => {
   report.stopEvents ??= []; report.stopEvents.push(event); if (report.stopEvents.length > 32) report.stopEvents.shift(); save();
 } });
-report.stopFile = stopControl.file;
+report.stopFile = stopControl.file; report.runStopFile = stopControl.runFile;
 async function start() {
   if (packageInfo) assert.deepEqual((await inspectParameterPackage({ ...options, asar })).identity, packageInfo.identity);
   ready = false; ended = false; launch = { startedAt: new Date().toISOString() }; report.launches.push(launch);
@@ -116,6 +128,9 @@ async function loaded(worldId) {
   await until(async () => { try { return await rpc('worldNavigationReady'); } catch (error) { if (/^(?:Error: )?World view is not ready$/.test(error.message)) return { ready: false }; throw error; } }, value => value.ready && value.worldId === worldId, 'navigation ready');
 }
 async function state(worldId) { const value = (await rpc('godotSnapshot')).state; assert.equal(value?.format, 'craftmine.godot-progress/1'); assert.equal(value.worldId, worldId); return value; }
+/** Progress is sampled between rounds; a transient runtime transition is kept as
+ * an error record rather than silently replacing the comparison. */
+async function progressSnapshot(worldId) { try { return await state(worldId); } catch (error) { return { unavailable: String(error) }; } }
 function rawCalls(binding, turnId) {
   const file = path.join(profile, 'pi.sqlite'); ordinaryParents(file); const db = new DatabaseSync(file, { readOnly: true });
   try { return db.prepare('SELECT c.observation_json FROM task_metric_calls c JOIN turns t ON t.id=c.turn_id WHERE t.session_id=? AND t.id=? ORDER BY c.call_id').all(binding.sessionId, turnId).map(row => JSON.parse(row.observation_json)); }
@@ -145,8 +160,9 @@ try {
     report.relay = relay?.snapshot(); save();
   } });
   await start(); await controllerReady();
-  for (const [caseId, baseId, starterId] of [['hammer', 'first-person', 'training-range'], ['dog', 'top-down', 'town']]) {
-    currentCase = caseId; const item = { caseId, baseId, outcome: 'running', behavior: 'pending', startedAt: new Date().toISOString() }; report.cases.push(item); save();
+  for (const caseId of cases) {
+    const { baseId, starterId } = CASE_PLAN[caseId];
+    currentCase = caseId; const item = { caseId, baseId, outcome: 'running', behavior: 'pending', startedAt: new Date().toISOString(), turns: [], progress: [] }; report.cases.push(item); save();
     try {
       await until(() => nav('world.createOptions'), value => value.bases?.some(base => base.id === baseId), 'base catalog');
       const world = await step('create fresh ' + caseId + ' world', () => nav('world.create', { baseId, starterId, title: 'P8 reconstructed ' + caseId, operationId: randomUUID() })); item.worldId = world.id;
@@ -156,12 +172,13 @@ try {
       const beforeCandidates = new Set((await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 })).items.map(row => row.candidateId));
       const binding = await step('bind real product chat and exact provider', () => p8('initialize', caseId, { worldId: world.id })); item.binding = binding;
       reopen[caseId] = { sessionId: binding.sessionId, worldId: world.id, providerId: binding.providerId };
-      item.turns = [];
-      for (let turnAttempt = 0; turnAttempt < 4; turnAttempt++) {
+      // Every round is retained: its request, usage, tool calls, failure, exit and
+      // the progress comparison made after it. Only the last round is never enough.
+      for (let round = 0; round < MAX_ROUNDS; round++) {
       const admissionStart = relay.snapshot().attempts.length;
-      const submitted = await step(turnAttempt ? 'continue unfinished request in the same world' : 'submit fixed reconstructed request once', () => p8(turnAttempt ? 'continue' : 'submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
+      const submitted = await step(round ? 'continue unfinished request in the same world' : 'submit fixed reconstructed request once', () => p8(round ? 'continue' : 'submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
       const stopBinding = { caseId, turnId: submitted.turnId, sessionId: binding.sessionId };
-      fs.writeFileSync(path.join(out, 'control.json'), JSON.stringify({ format: 'craftmine.p8-control/1', stopFile: stopControl.file, request: { format: 'craftmine.p8-stop/1', action: 'abort', caseId, turnId: submitted.turnId } }, null, 2));
+      fs.writeFileSync(path.join(out, 'control.json'), JSON.stringify({ format: 'craftmine.p8-control/1', runId, caseId, stopFile: stopControl.file, runStopFile: stopControl.runFile, turnId: submitted.turnId, sessionId: binding.sessionId, request: { format: 'craftmine.p8-stop/1', action: 'abort', caseId, turnId: submitted.turnId }, runRequest: { format: 'craftmine.p8-run-stop/1', action: 'abort', caseId, runId } }, null, 2));
       const final = await step('real task reaches a durable terminal state', () => until(async () => {
         const stopped = await stopControl.check(stopBinding);
         if (stopped) { item.stop = stopped; report.stopped = true; if (!stopped.cleanAbort) process.exitCode = 1; return stopped.snapshot; }
@@ -170,8 +187,8 @@ try {
       }, value => !value.active && value.metrics?.turnId === submitted.turnId && value.metrics.status !== 'running', 'model task', 1500000));
       item.metrics = final.metrics; item.record = final.record; item.dom = final.dom;
       await until(() => relay.snapshot().attempts.slice(admissionStart), attempts => attempts.every(attempt => attempt.endedAtMs), 'relay response evidence', 10000);
-      item.requests = relay.snapshot().attempts.slice(admissionStart); item.calls = rawCalls(binding, submitted.turnId);
-      await step('P4 durable usage and generation TPS match raw provider facts', () => reconcileMetrics(final.metrics, item.calls, item.requests, binding));
+      const roundRequests = relay.snapshot().attempts.slice(admissionStart), roundCalls = rawCalls(binding, submitted.turnId);
+      await step('P4 durable usage and generation TPS match raw provider facts', () => reconcileMetrics(final.metrics, roundCalls, roundRequests, binding));
       const visible = await until(() => p8('snapshot', caseId), value => value.dom?.metrics?.some(metric => metric.turnId === submitted.turnId), 'actual P5 task metrics');
       item.dom = visible.dom; const taskCards = visible.dom.metrics.filter(value => value.turnId === submitted.turnId);
       assert.equal(taskCards.length, 1, 'Exactly one metrics card must represent the durable user turn');
@@ -182,11 +199,17 @@ try {
         const stopped = await stopControl.check(stopBinding);
         if (stopped) { item.stop = stopped; report.stopped = true; if (!stopped.cleanAbort) process.exitCode = 1; }
       }
-      item.turns.push({turnId:submitted.turnId,metrics:item.metrics,requests:item.requests,calls:item.calls,dom:item.dom}); save();
+      const observed = await progressSnapshot(world.id);
+      item.turns.push({ round, turnId: submitted.turnId, metrics: item.metrics, requests: roundRequests, calls: roundCalls, dom: item.dom, progress: { round, before: item.before, after: observed } });
+      item.progress.push({ round, after: observed });
+      item.requestTotals = { rounds: item.turns.length, requests: item.turns.reduce((sum, turn) => sum + turn.requests.length, 0), tokens: item.turns.reduce((sum, turn) => sum + (turn.metrics.usage?.totalTokens ?? 0), 0) };
+      save();
       if (item.stop) break;
-      assert.equal(final.metrics.status, 'completed', 'Model task did not complete successfully');
+      // A cancelled, failed or errored turn is never continued.
+      assert.equal(final.metrics.status, 'completed', 'Model task did not complete successfully; a cancelled or failed turn is never continued');
       const available = await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 });
       if (available.items.some(row => !beforeCandidates.has(row.candidateId) && row.status === 'ready')) break;
+      if (round + 1 === MAX_ROUNDS) item.continuationExhausted = true;
       }
       if (item.stop) { item.outcome = 'stopped'; item.behavior = 'not accepted; explicit operator stop'; break; }
       const candidate = await step('actual model authored checked candidate exists', async () => {
@@ -209,9 +232,15 @@ try {
         else assert.deepEqual(item.adoptedState, item.before);
         return { retained: true, allowedAdditions: caseId === 'hammer' ? 'existing core-verified target/interactable migration only' : 'none' };
       });
-      const play = await p8('exercise', caseId, {}, 120000); item.gameplay = { ...play, actions: play.actions.map((action, index) => { const bytes = Buffer.from(action.image.pngBase64, 'base64'), file = path.join(out, `${caseId}-action-${index}.png`); fs.writeFileSync(file, bytes); return { ...action, image: { file, sha256: hash(bytes), width: action.image.width, height: action.image.height } }; }) };
+      const play = await p8('exercise', caseId, {}, 300000);
+      item.gameplay = { ...play, actions: play.actions.map((action, index) => { const bytes = Buffer.from(action.image.pngBase64, 'base64'), file = path.join(out, `${caseId}-action-${index}.png`); fs.writeFileSync(file, bytes); return { ...action, image: { file, sha256: hash(bytes), width: action.image.width, height: action.image.height } }; }) };
+      // The case is not "played" because the commands returned; each required
+      // mechanic needs its own direct evidence.
+      item.gameplay.verdict = evaluateGameplay({ caseId, exercise: item.gameplay, source: item.source });
+      item.behavior = item.gameplay.verdict.verified ? 'verified: every gameplay criterion has direct evidence' : 'not verified: failed=' + JSON.stringify(item.gameplay.verdict.failed) + ' insufficient=' + JSON.stringify(item.gameplay.verdict.insufficient);
+      if (!item.gameplay.verdict.verified) process.exitCode = 1;
       await panel(world.id, 'godot.runtimeSave', { freeze: true }); item.saved = await state(world.id);
-      item.outcome = 'source-check-apply-save-completed'; item.behavior = 'pending independent inspection of real source/actions/frames';
+      item.outcome = 'source-check-apply-save-completed'; save();
     } catch (error) { item.outcome = 'failed'; item.error = String(error.stack ?? error); process.exitCode = 1;
       if (item.binding && !ended && !stopControl.requested) { try { await p8('abort', caseId); } catch (abortError) { item.abortError = String(abortError); } }
     } finally { item.finishedAt = new Date().toISOString(); report.relay = relay.snapshot(); save(); }
@@ -229,12 +258,23 @@ try {
   }
   // Behavioral assertions require independent inspection of actual generated
   // content. A green build or command sequence cannot silently satisfy them.
-  report.pipelinePassed = report.cases.length === 2 && report.cases.every(item => item.outcome === 'source-check-apply-save-completed' && item.restart?.passed);
-  report.passed = false; report.reviewRequired = true;
 } catch (error) { report.error = String(error.stack ?? error); process.exitCode = 1; }
 finally {
   try { await stop(); if (launch) assertCleanHeadlessShutdown(launch); } catch (error) { report.shutdownError = String(error); report.passed = false; process.exitCode = 1; }
   try { if (relay) { await relay.close(); report.relay = relay.snapshot(); } } catch (error) { report.relayCloseError = String(error); process.exitCode = 1; }
   try { journal.close(); } catch (error) { report.journalCloseError = String(error); process.exitCode = 1; }
-  report.finishedAt = new Date().toISOString(); report.cumulativeAdmissions = authorization.previousPhaseAdmissions + (report.relay?.attempts.length ?? journal.entries.length); save(); console.log(JSON.stringify({ out, pipelinePassed: report.pipelinePassed, passed: report.passed, cases: report.cases.map(({ caseId, outcome, error }) => ({ caseId, outcome, error })), requests: report.relay?.attempts.length, error: report.error, shutdownError: report.shutdownError }));
+  try {
+    const thisRun = (report.relay?.attempts.length ?? journal.entries.length) - journal.initialAttempts.length;
+    report.admissions = admissionAccounting({ authorization, initialInLedger: journal.initialAttempts.length, thisRun });
+    // The historical ledgers are references. If either changed, this run's
+    // accounting is not trustworthy and must not be reported as evidence.
+    const historicalBefore = authorization.historical ?? [];
+    const historicalAfter = historicalBefore.map(item => readLedgerSummary(item.path));
+    report.historicalAdmissions = historicalBefore.map((item, index) => ({ path: item.path, existed: item.exists, entries: item.entries, entriesAfter: historicalAfter[index].entries, sha256Before: item.sha256, sha256After: historicalAfter[index].sha256 }));
+    if (historicalBefore.some((item, index) => item.sha256 !== historicalAfter[index].sha256)) { report.historicalLedgerMutated = true; process.exitCode = 1; }
+  } catch (error) { report.accountingError = String(error); process.exitCode = 1; }
+  report.summary = summarizeRun({ requestedCases: cases, executedCases: report.cases.map(item => item.caseId), cases: report.cases, stopped: !!report.stopped, error: report.error ?? report.shutdownError ?? null, requestLimitReached: authorization.requestLimit !== null && (report.relay?.attempts.length ?? 0) >= authorization.requestLimit });
+  report.pipelinePassed = report.summary.pipelinePassed; report.behaviorVerified = report.summary.behaviorVerified; report.reviewRequired = true; report.passed = false;
+  report.finishedAt = new Date().toISOString(); save();
+  console.log(JSON.stringify({ out, runId, requestedCases: cases, summary: { pipelinePassed: report.summary.pipelinePassed, behaviorVerified: report.summary.behaviorVerified, singleCasePassed: report.summary.singleCasePassed, combinedTwoCasePassed: report.summary.combinedTwoCasePassed, passed: report.summary.passed }, cases: report.cases.map(({ caseId, outcome, behavior, error }) => ({ caseId, outcome, behavior, error })), admissions: report.admissions, requests: report.relay?.attempts.length, error: report.error, shutdownError: report.shutdownError }));
 }
