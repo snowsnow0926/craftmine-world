@@ -80,3 +80,12 @@ actual issue UI in isolated headless Chromium against loopback HTTP and the real
 service, with a fixed owned picker callback. Neither uses a model, external
 network, real input, focus or Pointer Lock. This is not native Electron dialog,
 packaged-client or signed-release acceptance.
+
+`tests/plan-loop/issue-export-client-native.mjs` prepares separate actual Main
+channel acceptance using a matching compiled client or pinned package. It runs
+one authored-world build, creates a record and two followups, checks exact file
+and receipt content, refuses stale/unknown requests, and verifies raw ledger,
+export and complete progress through two strict clean exits. It uses the fixed
+headless save authorization, not an interactive OS dialog. Its preparation is
+not a native passing result; run instructions and boundaries are recorded in
+the PP6 dispatch report's `NATIVE-PREPARATION.md`.

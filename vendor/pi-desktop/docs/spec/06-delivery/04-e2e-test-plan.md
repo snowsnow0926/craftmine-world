@@ -9074,3 +9074,12 @@ Unit command: node --test tests/player-product/default-client-audit.test.mjs.
 - Exercise the 512 KiB cap on initial and repeated requests, strict payload/field allowlists, actual filesystem failure and an awaited false pre-commit guard. No credentials, chat, system logs, screenshots, source, progress, unrelated records, host paths or error stacks may enter output.
 - Automated service plus isolated production-DOM coverage: `node --test tests/plan-loop/issue-export.test.mjs` and `node tests/plan-loop/issue-export-headless.mjs`. The DOM test uses loopback HTTP, real issue persistence and a fixed picker callback; it is explicitly not Electron-native picker or packaged acceptance. Never use real input, focus, Pointer Lock, model calls or external networking.
 - Cross-restart export receipt recovery and complete diagnostic bundles are not claimed by this first slice.
+
+
+### PP6-SELECTED-ISSUE-MAIN — Native product channel and restart acceptance
+
+- Run `tests/plan-loop/issue-export-client-native.mjs` only against a committed, clean, compiled matching development client or an independently pinned matching package. Use a fresh private profile and exactly one authored training-range creation/build; no model and no real input/focus/Pointer Lock.
+- Play and explicitly checkpoint before creating the issue, add a note and a player still-present retest through real product channels, read the selected revision, and export through Main fixed headless save authorization. Compare the entire JSON document and receipt, original whitespace, all followup contexts/client fields, revision and player status. Check full gameplay including savedAt and raw ledger bytes remain identical.
+- Same-process replay must return the original receipt and bytes. A wrong revision, unknown path field, and unsupported export-all channel must fail with their specific errors and leave the existing output/ledger/progress intact. A timeout is not a successful rejection.
+- Require two strict clean exits with empty shutdownFailures, violations and pageErrors. After restart, verify persisted issue/ledger, output file and every gameplay field. Do not claim cross-process receipt recovery or an actual OS save-dialog interaction; the native fixed authorization path is the boundary under test.
+- Preparation-only contract checks: `node --test tests/plan-loop/issue-export-client-contract.test.mjs tests/player-product/default-client-audit.test.mjs`. Actual native execution remains a separate recorded result.
