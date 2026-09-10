@@ -8,9 +8,20 @@ import {
   PLUGIN_PANEL_LOCALE_ARGUMENT_PREFIX,
   PLUGIN_PANEL_WINDOW_CONTROL_CHANNEL,
   PLUGIN_PANEL_WINDOW_STATE_CHANNEL,
+  PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX,
+  PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL,
   type PluginPanelWindowControlAction,
   type PluginPanelTheme,
 } from "../shared/plugin-panel-chrome";
+import { attachFullscreenEscape } from "../../shared/world-fullscreen-shortcuts";
+
+const worldShortcutScope = process.argv.find(argument => argument.startsWith(PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX))?.slice(PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX.length);
+if (process.argv.includes(PLUGIN_PANEL_EMBEDDED_ARGUMENT) && worldShortcutScope && /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(worldShortcutScope)) {
+  const disposeEscape = attachFullscreenEscape(window, {
+    onExit: () => { ipcRenderer.send(PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL, {scope: worldShortcutScope}); },
+  });
+  window.addEventListener("pagehide", disposeEscape, {once: true});
+}
 
 const bridge = {
   invoke: async (channel: string, payload?: Record<string, unknown>) => {
