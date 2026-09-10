@@ -73,7 +73,7 @@ export function createTargetFeedbackUI({element,request,getWorldId,durableCall,a
     controls();notice.textContent='正在提交这次调整…';const result=await durableCall('targetFeedback.submit',attempt);
     if(current(generation,id))accept(result);
    }catch(error){if(current(generation,id)){notice.textContent=errors[error?.code]||errors[error?.message]||'结果尚未确认，请使用上方“待确认操作”继续原调整。';controls();}}
-  });submit=create.button;create.form.prepend(targetLabel,valueLabel);
+  });submit=create.button;submit.dataset.targetFeedbackSubmit='true';create.form.prepend(targetLabel,valueLabel);
   retry=formButton('查询原检查',poll);retry.form.hidden=!pending;
   const refresh=formButton('重新读取参数',load);
   element.append(notice,create.form,defaultsSource,useDefault.form,retry.form,refresh.form);controls();if(pending)void poll();else if(attempt)notice.textContent='有一次调整的结果尚未确认，请使用上方“待确认操作”继续。';else await load();

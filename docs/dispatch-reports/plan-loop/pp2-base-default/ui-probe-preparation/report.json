@@ -1,0 +1,62 @@
+{
+  "format": "craftmine.target-feedback-ui-test/1",
+  "type": "browser-dom-fixed-transport",
+  "native": false,
+  "sourceCommit": "d34420df45eeca89e7523c3940047a6948a1b5d7",
+  "sourceDirty": " M plugins/craftmine-world/target-feedback-ui.mjs\n M vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless.ts\n?? tests/plan-loop/target-feedback-acceptance.test.mjs\n?? tests/plan-loop/target-feedback-default-client-native.mjs\n?? vendor/pi-desktop/apps/desktop/electron/main/craftmine-target-feedback-acceptance.ts\n",
+  "sourceHashes": {
+    "workbench-ui.mjs": "39dc50f4f87585f755a8d2d17ef82931302e8ec01c90a647a301c9e66536cb1b",
+    "target-feedback-ui.mjs": "3b36331328bbafe6db964033402243bfae9741e51057ac40bafe6f4e35d00394",
+    "godot-package-ui.mjs": "68db821a84d5360638161cf031a8d328eaa3cb1c04592d9c51e3668d8af844b2",
+    "issue-ui.mjs": "4a8a4c08b9c2ac2902c464fbee6fa22ce8ac76eeb63766fc6281a878851e2bca",
+    "godot-windows-export-ui.mjs": "2fcce5c7b158963bd7a71269bef2a4b599e4de92d874d432a3a6f017237a14e0"
+  },
+  "startedAt": "2026-09-10T03:33:40.207Z",
+  "checks": [
+    {
+      "name": "workbench mount, 1..1000 integer validation and exact selected target durability",
+      "passed": true
+    },
+    {
+      "name": "verified defaults only fill the selected input until original durable submit",
+      "passed": true
+    },
+    {
+      "name": "detached old-world default form cannot fill the newly mounted world",
+      "passed": true
+    },
+    {
+      "name": "missing default never falls back to contract120 after reread",
+      "passed": true
+    },
+    {
+      "name": "background status polling never repeats modification; passed does not claim adoption",
+      "passed": true
+    },
+    {
+      "name": "lost reply recovers only through the pending original operation",
+      "passed": true
+    },
+    {
+      "name": "rejected result allows reread and a corrected value",
+      "passed": true
+    },
+    {
+      "name": "late submission across world switch cannot populate or unlock the new world",
+      "passed": true
+    },
+    {
+      "name": "late status after changing tab cannot reopen or poll the hidden parameter page",
+      "passed": true
+    },
+    {
+      "name": "a late initial read cannot overwrite a newer read of the same component",
+      "passed": true
+    }
+  ],
+  "completed": true,
+  "passed": true,
+  "finishedAt": "2026-09-10T03:33:46.182Z",
+  "externalRequests": [],
+  "pageErrors": []
+}
