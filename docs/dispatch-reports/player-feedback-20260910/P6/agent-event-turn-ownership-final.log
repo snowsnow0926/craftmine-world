@@ -1,0 +1,17 @@
+✔ late old root error and agent_end cannot finish or archive the current turn (2.6674ms)
+✔ delegate terminal events cannot finish the parent even with the current turn ID (0.6724ms)
+✔ old, missing and delegate usage cannot be attributed to the current root (0.2436ms)
+✔ late message updates cannot overwrite the current inflight checkpoint (0.112ms)
+✔ current root usage and normal agent_end still persist and finalize once (0.8233ms)
+✔ current root error ends the correct turn with its original failure (0.3112ms)
+✔ finishTurn rechecks expected identity before joining an existing finalization (0.1603ms)
+✔ unowned terminal envelopes never borrow the current turn identity (0.3204ms)
+✔ revision archive holds ownership until completion and a late old finish cannot archive the next turn (0.373ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.4532
