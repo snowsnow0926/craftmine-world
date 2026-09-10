@@ -23,6 +23,8 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/shared/initial-states/mining-sandbox-mine-camp.json',
   'desktop/godot/shared/progress-migration.mjs',
   'desktop/godot/shared/progress-migration.d.mts',
+  'desktop/godot/shared/target-feedback-configuration.mjs',
+  'desktop/godot/shared/target-feedback-configuration.d.mts',
 ]);
 export function authored(entry){return entry.author==='Craftmine World project'&&['authored','generated'].includes(entry.origin)&&['project-authored','MIT'].includes(entry.license);}
 function newEntry(relative,manifest){
@@ -57,6 +59,8 @@ export function refreshManifest(manifest,files,{approvedNew=NEW_AUTHORED}={}){
     if(full==='desktop/godot/shared/standalone_bootstrap.gd')entry.distribution=['app-bundle','user-export'];
     if(full==='desktop/godot/shared/windows-export.cfg')entry.distribution=['app-bundle'];
     if(full.startsWith('desktop/godot/shared/progress-migration.'))entry.distribution=['development-only'];
+    if(full==='desktop/godot/shared/target-feedback-configuration.mjs')entry.distribution=['app-bundle'];
+    if(full==='desktop/godot/shared/target-feedback-configuration.d.mts')entry.distribution=['development-only'];
   }
   return result;
 }
