@@ -15,6 +15,10 @@ if(-not $HostCompatibilityAuthorized){throw 'EXPLICIT_HOST_COMPATIBILITY_AUTHORI
 if([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT){throw 'WINDOWS_REQUIRED'}
 $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
 try{if(([Security.Principal.WindowsPrincipal]::new($identity)).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){throw 'NON_ELEVATED_CURRENT_USER_REQUIRED'}}finally{$identity.Dispose()}
+# Verify the required Windows PowerShell 5.1 cmdlets are the system ones before
+# creating the owned root: an inherited PSModulePath can shadow the Utility
+# module with a trimmed copy that lacks Get-FileHash. Nothing is created yet.
+Assert-CmHostTooling
 Assert-CmNoLinks $plan.root
 if(Test-Path -LiteralPath $plan.root){throw 'NEW_OWNED_ROOT_REQUIRED'}
 # Only a new private D root is created before input/collision checks; even the

@@ -17,6 +17,16 @@ PI distribution's shared core name does not itself collide: the owner resolver
 requires the `resources/bin` layout and separate `PI-Desktop.exe` product metadata.
 Missing/unknown ownership remains blocked. No PID/path exception is used.
 
+Before it creates the owned root the runner verifies that every Windows PowerShell
+5.1 cmdlet it depends on resolves from a module under `%WINDIR%`. An inherited
+`PSModulePath` that shadows `Microsoft.PowerShell.Utility` with a trimmed copy
+(for example an agent runtime's bundled `Modules` directory) lacks `Get-FileHash`;
+hashing would otherwise fail only after the owned root and owner marker exist.
+That case is refused as `HOST_POWERSHELL_TOOLING_INVALID` before any directory,
+marker or installer invocation. Launch the runner with a `PSModulePath` that
+resolves the system modules, and do not rely on `-NoProfile` alone: `PSModulePath`
+is inherited through the environment, including by any wrapper child process.
+
 The plan has exactly these fields (replace every placeholder with reviewed pins):
 
 ```json
@@ -135,11 +145,20 @@ performance. A synthetic backup does not prove arbitrary existing-user migration
 ## No-installer verification
 
 ```powershell
-$env:TEMP = 'D:\cm-fb-host-install-20260910\test-results\host-installer'
+# System modules only: an inherited PSModulePath can shadow Get-FileHash.
+$env:PSModulePath = 'C:\Users\<user>\Documents\WindowsPowerShell\Modules;' +
+    $env:ProgramFiles + '\WindowsPowerShell\Modules;' + $env:WINDIR + '\system32\WindowsPowerShell\v1.0\Modules'
+$env:TEMP = 'D:\cm-host-install-unit-20260910'
 $env:TMP = $env:TEMP
-powershell.exe -NoProfile -NonInteractive -File tests/delivery/windows-host-compatibility.test.ps1
+powershell.exe -NoProfile -NonInteractive -File tests/delivery/windows-host-compatibility.test.ps1 -OutputRoot $env:TEMP
+# Adds the end-to-end refusal of a shadowing non-system Utility module.
+powershell.exe -NoProfile -NonInteractive -File tests/delivery/windows-host-compatibility.test.ps1 -OutputRoot $env:TEMP -ShadowModuleRoot <shadow-module-root>
 ```
 
+`-ShadowModuleRoot <dir>` points at a non-system directory holding a shadowing
+`Microsoft.PowerShell.Utility`; the suite then proves end to end that the entry
+script exits 1 with `HOST_POWERSHELL_TOOLING_INVALID` and creates no owned root.
+Without that argument the case is reported in `skipped`, never as a pass.
 Tests compile the C# helper and exercise parsing, pure ownership policies, finite
 mocked sequencing, file/hash/backup/cache fixtures, and default `NOT_RUN` behavior.
 They never call its native `Run` method or an installer. Small test fixtures and

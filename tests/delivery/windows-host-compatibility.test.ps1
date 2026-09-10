@@ -1,4 +1,4 @@
-param([string]$OutputRoot=(Join-Path $PSScriptRoot '../../test-results/host-installer'))
+param([string]$OutputRoot=(Join-Path $PSScriptRoot '../../test-results/host-installer'),[string]$ShadowModuleRoot='')
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot '../../desktop/delivery/lib/windows-host-compatibility.ps1')
 Initialize-CmHostNative # Compile only; never call Run.
@@ -6,6 +6,7 @@ New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
 $out=Join-Path ([IO.Path]::GetFullPath($OutputRoot)) ('unit-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $out|Out-Null
 $results=[Collections.Generic.List[object]]::new()
+$skipped=[Collections.Generic.List[object]]::new()
 function Test([string]$Name,[scriptblock]$Body){try{& $Body;$results.Add(@{name=$Name;passed=$true})}catch{$results.Add(@{name=$Name;passed=$false;error=$_.Exception.Message})}}
 function Equal($A,$B){if($A -cne $B){throw "NOT_EQUAL: $A versus $B"}}
 function Reject([scriptblock]$Body,[string]$Expected){$errorMessage=$null;try{& $Body|Out-Null}catch{$errorMessage=$_.Exception.Message};if(-not $errorMessage -or $errorMessage -notlike ('*'+$Expected+'*')){throw "EXPECTED $Expected; ACTUAL $errorMessage"}}
@@ -117,7 +118,64 @@ Test 'NSIS prefix danger includes install-other even for unrelated executable' {
 Test 'Craftmine executable is blocked regardless of owner lookup' {
     Equal (Test-CmProcessCollision @{Name='Craftmine World.exe';ExecutablePath='D:\elsewhere\Craftmine World.exe'} 'D:\cm-owned\install' {param($path) 'other-pi'}) $true
 }
-$report=@{format='craftmine.host-installer-unit/1';installerInvocations=0;nativeLauncherInvocations=0;tests=@($results.ToArray());passed=(@($results|Where-Object {-not $_.passed}).Count -eq 0)}
+Test 'system Windows PowerShell tooling is required for hashing' {
+    Assert-CmHostTooling|Out-Null
+    $good=@{}
+    foreach($n in $script:CmHostRequiredCommands){$good[$n]=[ordered]@{name=$n;moduleName='Microsoft.PowerShell.Utility';modulePath=(Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1')}}
+    Assert-CmHostTooling -CommandTable $good|Out-Null
+    # A trimmed shadow module that simply lacks Get-FileHash is the real host case.
+    $missing=$good.Clone();$missing['Get-FileHash']=$null
+    Reject {Assert-CmHostTooling -CommandTable $missing} 'HOST_POWERSHELL_TOOLING_INVALID'
+    $foreign=$good.Clone();$foreign['Get-FileHash']=[ordered]@{name='Get-FileHash';moduleName='Microsoft.PowerShell.Utility';modulePath='D:\cm-host-unit\shadow\Microsoft.PowerShell.Utility.psd1'}
+    Reject {Assert-CmHostTooling -CommandTable $foreign} 'HOST_POWERSHELL_TOOLING_INVALID'
+    Reject {Assert-CmHostTooling -CommandTable $good -PowerShellEdition 'Core'} 'HOST_POWERSHELL_TOOLING_INVALID'
+}
+$shadowRoots=@()
+foreach($candidate in @($ShadowModuleRoot)+@($env:PSModulePath -split ';')){
+    if(-not $candidate){continue}
+    if($candidate -notmatch '(?i)WindowsPowerShell[\\/]v1\.0[\\/]Modules'){if(Test-Path -LiteralPath (Join-Path $candidate 'Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1')){$shadowRoots+=$candidate}}
+}
+$shadowRoots=@($shadowRoots|Select-Object -Unique)
+if(-not $shadowRoots.Count){
+    $skipped.Add(@{name='non-system shadow Utility module refuses before creating the owned root';reason='No non-system Microsoft.PowerShell.Utility module path on this host; pass -ShadowModuleRoot to exercise it.'})
+}else{
+Test 'non-system shadow Utility module refuses before creating the owned root' {
+    $ps51=Join-Path $env:WINDIR 'System32/WindowsPowerShell/v1.0/powershell.exe'
+    $systemModules=Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\Modules'
+    $poison=$shadowRoots[0]+';'+$systemModules
+    $probe=& $ps51 -NoProfile -NonInteractive -Command "`$env:PSModulePath='$($shadowRoots[0])';`$env:PSModulePath=`$env:PSModulePath+';$systemModules';if(Get-Command Get-FileHash -ErrorAction SilentlyContinue){'HAS_FUNCTION'}else{'MISSING_FUNCTION'}"
+    if(($probe|Out-String).Trim() -cne 'MISSING_FUNCTION'){
+        $skipped.Add(@{name='non-system shadow Utility module refuses before creating the owned root';reason='The detected shadow module still provides Get-FileHash on this host.'})
+        return
+    }
+    $p=Plan;$file=Join-Path $out ('poison-'+[Guid]::NewGuid().ToString('N')+'.json');$p|ConvertTo-Json -Depth 10|Set-Content -LiteralPath $file -Encoding UTF8
+    $entry=Join-Path $PSScriptRoot '../../desktop/delivery/windows-host-compatibility.ps1'
+    $stderr=Join-Path $out 'poison.stderr.txt';$stdout=Join-Path $out 'poison.stdout.txt'
+    $savedPath=$env:PSModulePath;$child=$null
+    try{
+        $env:PSModulePath=$poison
+        # An owned hidden child with redirected streams: PowerShell 5.1 turns a
+        # native command's stderr into an error record, which would abort this test.
+        $start=[Diagnostics.ProcessStartInfo]::new()
+        $start.FileName=$ps51
+        $start.Arguments='-NoProfile -NonInteractive -File "'+$entry+'" -PlanPath "'+$file+'" -Execute -HostCompatibilityAuthorized'
+        $start.UseShellExecute=$false;$start.CreateNoWindow=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
+        $fail=$null;$text=$null
+        $child=[Diagnostics.Process]::new();$child.StartInfo=$start
+        if($child.Start()){
+            $fail=$child.StandardError.ReadToEnd();$text=$child.StandardOutput.ReadToEnd();$child.WaitForExit()
+            $code=$child.ExitCode
+        }else{throw 'POISON_PROBE_START_FAILED'}
+    }finally{$env:PSModulePath=$savedPath;if($child){$child.Dispose()}}
+    [IO.File]::WriteAllText($stdout,[string]$text);[IO.File]::WriteAllText($stderr,[string]$fail)
+    Equal $code 1
+    Equal ([string]$fail -match 'HOST_POWERSHELL_TOOLING_INVALID') $true
+    # The refusal must happen before the owned root, installer cache or marker exist.
+    Equal (Test-Path -LiteralPath $p.root) $false
+    Equal (Test-Path -LiteralPath (Join-Path $p.root 'host-compatibility-owner.json')) $false
+}
+}
+$report=@{format='craftmine.host-installer-unit/1';installerInvocations=0;nativeLauncherInvocations=0;tests=@($results.ToArray());skipped=@($skipped.ToArray());passed=(@($results|Where-Object {-not $_.passed}).Count -eq 0)}
 $path=Join-Path $out 'report.json';$report|ConvertTo-Json -Depth 12|Set-Content $path -Encoding UTF8
 $results|ForEach-Object {[pscustomobject]$_}|Format-Table name,passed,error -Wrap
 Write-Output $path

@@ -1,7 +1,41 @@
 Set-StrictMode -Version Latest
 $script:CmHostGuid = 'b6e82c09-fb8e-58e5-a0b3-2d2cd57a1249'
+$script:CmHostRequiredCommands = @('Get-FileHash','Get-CimInstance','Get-Item','Get-Content','Get-ChildItem','Get-Acl','ConvertTo-Json','ConvertFrom-Json','Add-Type')
 function Initialize-CmHostNative {
     if (-not ('CraftmineHostProcess' -as [type])) { Add-Type -Path (Join-Path $PSScriptRoot 'windows-host-process.cs') }
+}
+function Get-CmHostCommandTable {
+    $table=@{}
+    foreach($name in $script:CmHostRequiredCommands){
+        $command=Get-Command -Name $name -ErrorAction SilentlyContinue
+        if(-not $command){$table[$name]=$null;continue}
+        $path=$null;if($command.Module){$path=$command.Module.Path}
+        $table[$name]=[ordered]@{name=$command.Name;moduleName=$command.ModuleName;modulePath=$path}
+    }
+    return $table
+}
+function Assert-CmHostTooling {
+    # Windows PowerShell 5.1 must supply every cmdlet the runner depends on. An
+    # inherited PSModulePath can shadow Microsoft.PowerShell.Utility with a
+    # trimmed copy that has no Get-FileHash; hashing then fails only after the
+    # owned root and marker already exist. Refuse before anything is created.
+    param([hashtable]$CommandTable,[string]$WindowsDirectory=$env:WINDIR,[string]$PowerShellEdition)
+    if(-not $PowerShellEdition){$PowerShellEdition=[string]$PSVersionTable.PSEdition}
+    if($PowerShellEdition -cne 'Desktop'){throw ('HOST_POWERSHELL_TOOLING_INVALID: edition=' + $PowerShellEdition)}
+    # Every cmdlet of a system-only Windows PowerShell 5.1 lives under %WINDIR%
+    # (the Utility/Management/Security psd1 modules or GAC-backed nested binary
+    # modules). A shadowing copy under the user profile stays outside it.
+    $windowsRoot=[IO.Path]::GetFullPath($WindowsDirectory).TrimEnd('\','/')+'\'
+    if(-not $CommandTable){$CommandTable=Get-CmHostCommandTable}
+    $missing=@();$foreign=@()
+    foreach($name in $script:CmHostRequiredCommands){
+        $entry=$CommandTable[$name]
+        if(-not $entry -or -not $entry.name){$missing+=$name;continue}
+        $path=[string]$entry.modulePath
+        if(-not $path -or -not $path.StartsWith($windowsRoot,[StringComparison]::OrdinalIgnoreCase)){$foreign+=($name+'@'+$path)}
+    }
+    if($missing.Count -or $foreign.Count){throw ('HOST_POWERSHELL_TOOLING_INVALID: missing=['+($missing -join ', ')+'] foreign=['+($foreign -join ', ')+'] windowsRoot='+$windowsRoot)}
+    return $true
 }
 function Assert-CmHostProcessResult($Result) {
     if(-not $Result.Completed -or -not $Result.JobActiveZero -or -not $Result.RootExitSignaled){throw ('OWNED_PROCESS_LIFECYCLE_FAILED: '+$Result.Failure+'; cleanup='+$Result.Cleanup+'; rootPid='+$Result.RootPid)}
