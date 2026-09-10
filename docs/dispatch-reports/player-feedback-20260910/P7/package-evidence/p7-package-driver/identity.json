@@ -1,0 +1,12 @@
+{
+  "source": "D:/cm-fb-20260910/tests/player-feedback/P7/retirement-native.mjs",
+  "originalSha256": "13ad44e48e2ca57cd670ac592e7fea958a758e887056d53c90c52d86f40a67cd",
+  "file": "D:/cm-fb-20260910/test-results/p7-package-driver/retirement-package-native.mjs",
+  "sha256": "d191f8befaa531b2ed83dbb4f6f01837bbef33a90fe8d4dcd61454b43c73d5be",
+  "frozenCommit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+  "changes": [
+    "Read bundled Core, broker, identity and engine from strictly verified package; no new binary build.",
+    "Bundle fixture entry from frozen root production modules; report frozen module hashes and external driver identity.",
+    "Run bounded 2 real successful checks and 1 syntax failure plus restart retention verification."
+  ]
+}
