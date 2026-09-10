@@ -41,8 +41,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 2355,
-      "sha256": "7978f2a16b0c67a65189e309016f22f9498fb9c05afdc7e1eec4c772638512b1"
+      "bytes": 4420,
+      "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
     },
     {
       "path": "adapters/mining-sandbox.gd",
@@ -302,8 +302,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 196,
-      "sha256": "44f7ff130170121eb5d90b697cbabf904507a1ad26a5cbd51308ac78a4507df2"
+      "bytes": 840,
+      "sha256": "a83283df76bb67f9cf0a05e5eb4a0d9dcb162c9e80b4b0c5d46bffdfa830b97c"
     },
     {
       "path": "observation.mjs",
@@ -318,8 +318,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 13003,
-      "sha256": "d25437ff8ce136baa015e746b9e8240e9bac7876ebdca90f7537aaffe354350a"
+      "bytes": 15061,
+      "sha256": "5482d5645e3d827bda8eb55185218eff383824a91165cb24701888d9e194da90"
     },
     {
       "path": "progress-migration.d.mts",
@@ -419,6 +419,38 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 1759,
       "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "path": "target-feedback-configuration.d.mts",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 618,
+      "sha256": "322795b8b2eebfe1818da7b105ab8b8e62c8af100bb77ac369296e9e3d4dc93e"
+    },
+    {
+      "path": "target-feedback-configuration.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 13777,
+      "sha256": "81ec7899bbb9e81bd153e3979feb263a7ffbd8eff85f17bfc78b7bf8800291ea"
     },
     {
       "path": "tests/driver.gd",
