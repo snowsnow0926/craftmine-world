@@ -25,6 +25,9 @@ export async function verifyCreationDoorSequence(runtime:any,r:CreationRequireme
    const result=await call('interact');if(result?.interacted===true&&result.entityId===id){placed=true;break;}
   }
   if(!placed)throw Error('CREATION_DOOR_TARGET_UNREACHABLE:'+id);
+  // Door collisions update with set_deferred; inspect after actual physics
+  // ticks rather than immediately after the interaction promise resolves.
+  await call('wait',{frames:2});
   await record(id,true);
  };
  await reset();await call('wait',{frames:2});await record('initial',false);

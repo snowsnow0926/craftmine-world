@@ -10,7 +10,7 @@ fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/creation-next-checks-'));
 const report={format:'craftmine.creation-next-checks/1',scope:quick?'unit':'integration',sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8',windowsHide:true}).trim(),startedAt:new Date().toISOString(),out,steps:[],passed:false,limitations:['No real model requests in this command; model comparison has its own report and budget.','No physical microphone, player or clean Windows lifecycle claim.']};
 const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
-const unit=['creation-operations','creation-source-service','creation-progress-migration','creation-runtime','creation-entities','creation-sequence-rule','creation-model-evaluation','godot-build-read-wait'].map(name=>'tests/'+name+'.test.mjs');
+const unit=['creation-operations','creation-source-service','creation-progress-migration','creation-runtime','creation-entities','creation-sequence-rule','creation-model-evaluation','godot-build-read-wait','creation-pack-integrity'].map(name=>'tests/'+name+'.test.mjs');
 unit.push('tests/creation-guidance/guidance.test.mjs','tests/creation-guidance/packaging.test.mjs','desktop/godot/bases/creation-sandbox/tests/contract.test.mjs');
 const host=fs.readdirSync(path.join(root,'vendor/pi-desktop/apps/desktop/test')).filter(name=>/^(?:creation-|voice-input|voice-microphone-permission|composer-voice-draft|craftmine-immersion|immersion-pause-controller).*\.test\.mjs$/.test(name)).sort().map(name=>'vendor/pi-desktop/apps/desktop/test/'+name);
 const steps=[['logic',['--test',...unit]],['host',['--test',...host]]];
@@ -18,7 +18,7 @@ if(!quick)for(const [name,file]of [
  ['editing-ui','creation-edit-ui-headless'],['voice-status-ui','creation-voice-status-headless'],
  ['editing-progress','creation-edit-progress-headless'],['general-behavior','creation-entity-behavior-headless'],
  ['requirements','creation-requirements-web'],['harvest','creation-harvest-web'],
- ['forged-observation','creation-observation-forgery-probe'],['managed-executor','creation-managed-executor'],
+ ['forged-observation','creation-observation-forgery-probe'],['exported-pack','creation-pack-export-headless'],['managed-executor','creation-managed-executor'],
  ['direct-native','creation-edit-native'],
 ])steps.push([name,['tests/'+file+'.mjs']]);
 persist();
