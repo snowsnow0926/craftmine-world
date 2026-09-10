@@ -1,6 +1,6 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.0.0`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.2.0`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
@@ -57,6 +57,8 @@ scale 各轴 0.25..4；颜色为六位 `#RRGGBB`；最多 128 个实体。
 
 - `modify`：targetId 必须等于冻结 entityId；changes 可包含 position、rotationY、scale、color、parameters，保持原 ID。
 - `duplicate`：targetId 仍须匹配冻结目标；count 为 1..8，offset 各轴 -8..8；工具检查每个新物件与其他物件、玩家的碰撞。
+- `delete`：targetId 必须是冻结选中对象，删除有规则引用的对象会明确拒绝。
+- `undo`：提供原 undoOperationId，支持本版记录的放置、修改、复制和删除；当前对象必须仍与原操作结束时一致。撤销只改内容，不回退背包、位置或已领奖历史；旧记录和规则修改不支持此快捷撤销。
 - `environment`：timeOfDay 为 0..24，通过源码默认时间变更进入候选采用。
 - `sequence-door`：为已有门和 2..16 个不同 marker 生成一份普通 GDScript 顺序规则。规则最多 8 个，工具的规则 ID 不可重复使用。
 
@@ -67,6 +69,8 @@ marker 的 label（最多 80 字符）；树和岩石的 parameters 为空对象
 此 Alpha 每个世界最多保存 4096 条结构化操作，日志上限 4 MiB；回执中的
 `operationLimit`、`operationsRemaining` 表示操作上限与本次之后剩余次数。旧记录不删除，
 达到上限明确拒绝新操作，不能称为无限创造。
+
+同一个愿望的相关编辑先连续写入同一草稿，完成后检查最终版本；不要对每个中间步骤重复导出。不同愿望不能为了合批而改变目标或吞掉取消。调用结果 timing 是真实分阶段耗时，可用于诊断，但不代表检查已完成。
 
 工具写入源码与操作日志，并不等于运行时已采用。重试同一请求使用同一 operationId；
 重放冲突时不能用同 ID 换请求内容。源码或目标过期时重新读取主机实际身份，保留别人的修改。

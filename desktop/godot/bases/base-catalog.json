@@ -52,7 +52,7 @@
         "manifest": "assets/ASSET_MANIFEST.json",
         "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt"
       },
-      "contentHash": "25cd8706907317af3fbe670f6061f8042a819e4071ddd8fdea432a9b33502bfa",
+      "contentHash": "03d8ecfa0f183e9d4f55bfd6068e9d9143b24b706595d406c5137ebf41e9b135",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": null,
       "capabilities": [

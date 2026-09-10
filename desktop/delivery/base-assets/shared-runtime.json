@@ -175,8 +175,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 5099,
-      "sha256": "d64e029b31bf1ca932da8281e7737b4b1a8a9f4885219bcd81dd41ac248df4d8"
+      "bytes": 5597,
+      "sha256": "dce58ced844ef15781ba9e0c71c33132efc7a6cbdbf478d929134153549e91ee"
     },
     {
       "path": "creation_runtime.mjs",
@@ -633,7 +633,7 @@
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 20897,
-      "sha256": "b6994e5bba3d40def45f1b29e96243618d46514dd3bb71962b74ad0aec17ea4c"
+      "sha256": "ab875ecde221719c29ad9df40e40aadc96e67a8044981ddabdf4aa1b2e42feef"
     },
     {
       "path": "desktop/godot/bases/component-catalog.json",

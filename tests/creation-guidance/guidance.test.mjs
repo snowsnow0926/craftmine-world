@@ -164,7 +164,8 @@ test('造物指导按真实底座和三个接口哈希匹配，普通脚本示�
  await assert.rejects(fixture({...opts,modified:true}).run({mode:'catalog'}),/GUIDANCE_INTERFACE_UNSUPPORTED/);
  assert.match(creationSkill.text,/sourceRevision[\s\S]*expected.revision/);
  assert.match(creationSkill.text,/不能.*snapshot ID/);
- assert.match(creationSkill.text,/kind \*\*仅支持 `sequence-door`\*\*/);
+ assert.match(creationSkill.text,/sequence-door[\s\S]*entity-behavior/);
+ assert.match(creationSkill.text,/project_entities/);
  assert.match(creationSkill.text,/godot_build_start[\s\S]*mode=check[\s\S]*godot_build_read/);
  assert.match(creationSkill.text,/sourceTimeOfDay/);
 });

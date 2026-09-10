@@ -231,8 +231,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 20866,
-      "sha256": "ef16e5d2e0e9ad8786c99875051a23b184fc815ee012e0a3167f8904a289946b"
+      "bytes": 26501,
+      "sha256": "312b2842e014453bb9f831c010f99febca1053897a1cbf97ad19fc5123a1e875"
     },
     {
       "path": "scripts/reused/camera_rig.gd",
@@ -282,8 +282,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 4614,
-      "sha256": "a66041df090694a176cc8dcb0f08632a1157e2d5fdee40d884e9dc6558276915"
+      "bytes": 5289,
+      "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
     },
     {
       "path": "tests/contract.test.mjs",
