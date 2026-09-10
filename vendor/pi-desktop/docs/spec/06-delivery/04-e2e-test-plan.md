@@ -9019,3 +9019,21 @@ Compile current Main/React/core, stage same-commit trusted runtime, and launch a
 The finite headless history probe rejects array/object/number action discriminators before producing page script. Its existing finite form actions are unchanged. Validation: `node --test tests/plan-loop/version-diff-probe.test.mjs` (3 tests).
 
 Follow-up: version discovery does not use editor cache. The real broker/executor/core chain must register after a verified version launch on the 266-unit layout, reject the subsequent import before launch, and retain the failed finite reason after core restart. See task-path-executor-native.cjs and DISCOVERY_FOLLOWUP.md; package acceptance remains separate.
+
+
+### PP3 actual client supplements and manual retest acceptance (2026-09-10)
+
+Run `tests/plan-loop/issue-client-native.mjs` on the independently compiled client
+with an isolated profile and explicitly pinned unchanged native runtime. The
+4992fbb run passed 22 checks: real world creation and gameplay; original record
+and note; real parameter draft/check/preview/application; preview refusals;
+still-present, player-resolved and reopened entries on the new formal build;
+exact replay; complete client restarts; deletion without replay resurrection.
+All full progress snapshots compare exactly, including savedAt. Three exits
+report zero input/focus/Pointer Lock violations and empty shutdownFailures.
+See docs/dispatch-reports/plan-loop/pp3-issue-followups/actual-client/REPORT.md
+for raw logs, native resource identity and evidence limits. This is developer
+client acceptance, not a new sealed Windows package or an automatic repair test.
+Strict finite protocol regression additionally rejects array/object/number
+discriminators, preserves corrupt ledger bytes, and verifies invalid requests
+produce zero ledger writes. Retain the independent pre-fix coercion failure.

@@ -1,0 +1,75 @@
+{
+  "directory": "C:/cm-plan-next-20260910/test-results/pp3-kind-review-6torrF",
+  "request": {
+    "worldId": "review-world",
+    "issueId": "issue-2d95ed432dd58cb4cd142b32bece7b7b24ab4ead236029f146e2bf575cc92f52",
+    "operationId": "review-array-kind",
+    "revision": 0,
+    "contextHash": "0a85136d8e3563d166aadb89cf7baa3ea329309e96d0550cf35c92a63df40127",
+    "kind": [
+      "note"
+    ],
+    "text": ""
+  },
+  "result": {
+    "status": "completed",
+    "replayed": false,
+    "deleted": false,
+    "issue": {
+      "format": "craftmine.local-issue/1",
+      "id": "issue-2d95ed432dd58cb4cd142b32bece7b7b24ab4ead236029f146e2bf575cc92f52",
+      "description": "finite kind review",
+      "createdAt": "2026-09-10T02:56:20.226Z",
+      "context": {
+        "phase": "formal",
+        "status": "ready",
+        "worldId": "review-world",
+        "buildId": "review-build",
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "instanceId": "review-instance",
+        "runtimeTarget": "godot-web",
+        "artifactManifestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "status": "recorded",
+      "scope": "local-only",
+      "reproduction": "not-attempted",
+      "attachments": [],
+      "client": {
+        "version": "0.14.3"
+      }
+    },
+    "followups": [
+      {
+        "format": "craftmine.local-issue-followup/1",
+        "id": "followup-d1c7b4332a9a500a415b706c4bf14c305ff76fa16627596e24866d88cf68bfee",
+        "issueId": "issue-2d95ed432dd58cb4cd142b32bece7b7b24ab4ead236029f146e2bf575cc92f52",
+        "revision": 1,
+        "kind": [
+          "note"
+        ],
+        "text": "",
+        "createdAt": "2026-09-10T02:56:20.231Z",
+        "context": {
+          "phase": "formal",
+          "status": "ready",
+          "worldId": "review-world",
+          "buildId": "review-build",
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "instanceId": "review-instance",
+          "runtimeTarget": "godot-web",
+          "artifactManifestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "client": {
+          "version": "0.14.3"
+        }
+      }
+    ],
+    "revision": 1,
+    "playerStatus": [
+      "note"
+    ],
+    "followupId": "followup-d1c7b4332a9a500a415b706c4bf14c305ff76fa16627596e24866d88cf68bfee"
+  }
+}

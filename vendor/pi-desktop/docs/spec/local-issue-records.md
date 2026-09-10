@@ -178,3 +178,21 @@ This implements only the local-record portion of PP-A12/A13/A25. Screenshots,
 state attachments, semantic history, imported feedback, AI diagnosis, repair
 candidates and the full PP-A15 repair loop remain outside this service. Manual
 player retest state is implemented; it is not automated verification.
+
+### Actual supplement acceptance
+
+The independently compiled 4992fbb client passed the 22-step
+`tests/plan-loop/issue-client-native.mjs` scenario, including actual Godot
+parameter draft/check/application to a different formal build, preview-time
+supplement refusals, all three player retest states, exact operation replay,
+two complete restarts and deletion without resurrection. Full saved progress
+is compared without field exclusions. The headless gateway adds only the same
+finite `issue.followupPrepare` and `issue.followup` panel channels; it exposes no
+general mutation interface. See the PP3 actual-client report for raw evidence
+and native source identity. This is developer-client acceptance, not a new
+Windows package or automated diagnosis/repair acceptance.
+
+Protocol discriminator fields are actual strings: followup `kind`, ledger
+`format`, and receipt `method` never accept coercion from arrays, numbers or
+objects. Invalid requests perform no ledger write, and malformed stored
+discriminators reject without rewriting the damaged evidence.

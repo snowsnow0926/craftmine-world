@@ -1,0 +1,9 @@
+{
+  "path": "vendor/pi-desktop/docs/spec/06-delivery/04-e2e-test-plan.md",
+  "beforeBytes": 582951,
+  "beforeSha256": "d0a1dd99ac649d335ea8b474b821803dd59d5ee7868a6b1a8a9c1066e6ad975d",
+  "appendedBytes": 1171,
+  "afterBytes": 584122,
+  "afterSha256": "5d3a70ca8d217e7e4eb8fef375a5ebc36d9ea7b449d339ef4ebc8443b7a32d27",
+  "prefixEqual": true
+}

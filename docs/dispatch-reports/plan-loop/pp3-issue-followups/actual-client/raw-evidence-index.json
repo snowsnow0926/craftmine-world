@@ -1,0 +1,72 @@
+{
+  "format": "craftmine.raw-evidence-index/1",
+  "testedCommit": "4992fbb1a8ec68e197e15208d4676b8deaefbe1b",
+  "entries": [
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/report.json",
+      "path": "raw/report.json",
+      "bytes": 61474,
+      "sha256": "ad70a16f82ea304f47d0a3d0537b674e675cabe6ba3b16efbff5a5396d1d62f9"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/runtime-provenance.json",
+      "path": "raw/runtime-provenance.json",
+      "bytes": 140525,
+      "sha256": "dc268c2230dadfc64b08e6e05071e1b6fe6c89d05c873f50ce9972572c6f2319"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/client-1-stdout.log",
+      "path": "raw/client-1-stdout.log",
+      "bytes": 16396,
+      "sha256": "a3f0927a60b783bba9a63fa214790fef6ff5d7285cb0f200c464f985df25efdc"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/client-1-stderr.log",
+      "path": "raw/client-1-stderr.log",
+      "bytes": 2322,
+      "sha256": "9a266bf5fc87438441f27d0d44605c439a9f6f208b3eb1c238ee57369260ecab"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/client-2-stdout.log",
+      "path": "raw/client-2-stdout.log",
+      "bytes": 3718,
+      "sha256": "69e68f5cf6842c924abe8dc3cddc9923246bf22ddf54701402a20bc45eae3f4f"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/client-2-stderr.log",
+      "path": "raw/client-2-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/client-3-stdout.log",
+      "path": "raw/client-3-stdout.log",
+      "bytes": 3718,
+      "sha256": "86e7035eea56118214adfe0b02fd72edd3f6e38fe400e48cab782fe3f9a3c373"
+    },
+    {
+      "source": "C:/cm-pp3/test-results/desktop-native-issues-mPIqBm/client-3-stderr.log",
+      "path": "raw/client-3-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "source": "C:/cm-plan-next-20260910/test-results/pp3-kind-review-6torrF/review.json",
+      "path": "raw/pre-fix-kind-coercion-review.json",
+      "bytes": 2370,
+      "sha256": "94ab397784bc85d4d6e0ef1b900ac7cfd43cca84a531f4bf4cb3b70ae29b6f44"
+    },
+    {
+      "source": "C:/Users/WINDOWS/AppData/Local/Temp/cm-issue-followups-20260910/test-results/issue-followups-DLmwXv/report.json",
+      "path": "raw/strict-service-regression.json",
+      "bytes": 1193,
+      "sha256": "f057e8452ca37c64b51a3bead304601db55215ac1f7784c209d30b38ce9c78c7"
+    },
+    {
+      "source": "owned byte-append verification",
+      "path": "raw/e2e-byte-append.json",
+      "bytes": 344,
+      "sha256": "6f7dbb6d6d8eb594c61fa5c734272b7516ea332c55eb41601db21573dcff071a"
+    }
+  ]
+}

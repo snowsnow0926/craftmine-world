@@ -57,18 +57,16 @@ No test failure was suppressed; intermediate passing runs remain in the owned
 ignored test-results directories. Archived final evidence is byte-hashed in
 `raw-evidence-index.json` and has Git text conversion disabled.
 
-## Pending integration acceptance
+## Subsequent actual client acceptance
 
-No actual Electron/Godot client or Windows package was built or launched for this
-slice: that run is queued until the root's release acceptance finishes. The DOM
-test proves production UI plus durable notebook behavior with fixture identity;
-the context tests separately prove the host identity selector. They do not prove
-this newly compiled feature inside the full client.
-
-The integrating client test should append on a real formally loaded world, apply
-or reopen a different build, append a retest, and verify both contexts plus
-unchanged full world progress across an entire client restart. Entering candidate
-preview must withhold new entries while leaving original records readable.
+The initially pending client acceptance is now complete: the independently
+compiled client passed 22 actual Electron/Godot checks, including a real new
+build, candidate preview refusal, all three player retest states, full client
+restarts and complete progress equality. See `actual-client/REPORT.md` for
+source/runtime identity, unchanged raw logs and the exact tested boundary.
+The initial unit/DOM evidence above remains unchanged. An independent review
+subsequently exposed discriminator coercion; b15ca1e fixes it and the new
+strict service regression preserves its negative evidence.
 
 The notebook remains local-only and outside world backups, source packages and
 uploads. No diagnosis, repair candidate, model request or automatic validation
