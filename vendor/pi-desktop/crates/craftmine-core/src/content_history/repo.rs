@@ -629,9 +629,12 @@ impl RepositoryStore {
         path: &str,
     ) -> Result<FileDiff> {
         validate_relative_path(path)?;
+        // A validated filename can still contain Git glob syntax (for example
+        // a[1].gd). Keep both queries literal; -- only terminates options.
+        let pathspec = format!(":(literal){path}");
         let numstat = self.git.repo(
             &layout.git_dir,
-            &["diff", "--numstat", "-z", "--no-renames", from, to, "--", path],
+            &["diff", "--numstat", "-z", "--no-renames", "--no-ext-diff", "--no-textconv", from, to, "--", &pathspec],
         )?;
         ensure!(numstat.ok(), "GIT_DIFF_FAILED: {}", numstat.stderr.trim());
         let tokens: Vec<&[u8]> = numstat.stdout.split(|byte| *byte == 0).collect();
@@ -661,7 +664,7 @@ impl RepositoryStore {
                 from,
                 to,
                 "--",
-                path,
+                &pathspec,
             ],
         )?;
         ensure!(patch.ok(), "GIT_DIFF_FAILED: {}", patch.stderr.trim());

@@ -8977,3 +8977,8 @@ Hold the runtime factory before it returns any instance. Request disposal and ve
 - Confirm history/source reads do not start/end authoring tasks or change content/progress. Preserve existing branch creation, source editing, blocked/real checking and restart behavior.
 - Use independent headless profiles with Pointer Lock/focus disabled and page-script actions only. Run tests/godot-history-panel.mjs, tests/plan-loop/version-diff-service.test.mjs and tests/plan-loop/version-diff-ui-races.mjs. The optional version-diff-applied-core.mjs requires an explicitly authorized completed test core directory and copies it before use.
 - Fixture applied refs are Git-layer evidence only; packaged application acceptance remains separate.
+
+
+### CRAFTMINE-CONTENT-LITERAL-DIFF-001
+
+In an actual managed Git repository, change a[1].gd and a1.gd with different line counts. Requesting the bracketed filename must produce only its patch and counts. Repeat with binary image[1].png and textual image1.png: the bracketed request must remain binary with exact byte sizes. Reject public Git magic prefixes, wildcards, traversal and drive paths without broadening the shared path contract. Preserve the branch head. See [literal content diff](../content-diff-literal-paths.md).

@@ -563,3 +563,44 @@ fn bulk_commit_hashes_all_files_in_one_git_invocation() -> Result<()> {
     assert_eq!(copies, 0);
     Ok(())
 }
+
+#[test]
+fn file_diff_uses_literal_paths_for_statistics_and_patch() -> Result<()> {
+    let dir = tempfile::tempdir()?;
+    let store = store(dir.path())?;
+    let layout = store.create("repo-literal-diff", "sha1", None)?;
+    let before = store.commit(&layout, MAIN_BRANCH, None, &[
+        text_file("a[1].gd", "old literal\n"),
+        text_file("a1.gd", "old sibling\n"),
+        ContentFile {path: "image[1].png".into(), bytes: vec![0, 1]},
+        text_file("image1.png", "text sibling\n"),
+    ], &commit_message("literal-before", "literal-task", "before", "")?)?;
+    let after = store.commit(&layout, MAIN_BRANCH, Some(&before), &[
+        text_file("a[1].gd", "new literal\n"),
+        text_file("a1.gd", "new sibling\nextra sibling\n"),
+        ContentFile {path: "image[1].png".into(), bytes: vec![0, 2, 3]},
+        text_file("image1.png", "changed text sibling\n"),
+    ], &commit_message("literal-after", "literal-task", "after", "")?)?;
+    match store.file_diff(&layout, &before, &after, "a[1].gd")? {
+        FileDiff::Text {path, added, removed, patch} => {
+            assert_eq!(path, "a[1].gd"); assert_eq!((added, removed), (1, 1));
+            assert!(patch.contains("+new literal"));
+            assert!(!patch.contains("sibling"));
+            assert!(!patch.contains("a1.gd"));
+            assert_eq!(patch.matches("diff --git ").count(), 1);
+        }
+        other => panic!("expected literal text diff, got {other:?}"),
+    }
+    match store.file_diff(&layout, &before, &after, "image[1].png")? {
+        FileDiff::Binary {path, old_bytes, new_bytes} => {
+            assert_eq!(path, "image[1].png"); assert_eq!(old_bytes, Some(2)); assert_eq!(new_bytes, Some(3));
+        }
+        other => panic!("expected literal binary diff, got {other:?}"),
+    }
+    // Internal literal decoration must never expand the public path contract.
+    for invalid in [":(glob)**", ":(literal)a[1].gd", ":(top)a1.gd", "*.gd", "a?.gd", "../a1.gd", "C:/a1.gd"] {
+        assert!(store.file_diff(&layout, &before, &after, invalid).is_err(), "accepted {invalid}");
+    }
+    assert_eq!(store.branch_head(&layout, MAIN_BRANCH)?, Some(after));
+    Ok(())
+}
