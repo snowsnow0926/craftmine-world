@@ -18,11 +18,11 @@ test('missing declarations and unresolved third-party redistribution fail closed
 });
 test('real stage copies permitted bytes and excludes declared tests before writing',()=>{
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'craftmine-distribution-')),sources=new Map(),index=new Map();
-  for(const [relative,include]of [['desktop/godot/shared/materialize.mjs',true],['desktop/godot/shared/tests/progress.mjs',false],['desktop/godot/bases/side-view/tools/new-world.mjs',true]]){
+  for(const [relative,include]of [['desktop/godot/shared/materialize.mjs',true],['desktop/godot/shared/tests/progress.mjs',false],['desktop/godot/bases/side-view/tools/new-world.mjs',true],['desktop/godot/bases/creation-sandbox/tools/new-world.mjs',true],['desktop/godot/bases/creation-sandbox/tests/headless.mjs',false]]){
     const bytes=Buffer.from(relative);sources.set(relative,{bytes});index.set(relative,[{distribution:[include?'app-bundle':'development-only'],redistribution:'permitted',bytes:bytes.length,sha256:hash(bytes)}]);
   }
   const destination=path.join(root,'godot'),result=stageRuntimeSourceSnapshot(sources,destination,index);
-  assert.equal(result.included.length,2);assert.equal(result.excluded.length,1);
+  assert.equal(result.included.length,3);assert.equal(result.excluded.length,2);
   assert.equal(fs.existsSync(path.join(destination,'shared/tests/progress.mjs')),false);
   assert.equal(fs.readFileSync(path.join(destination,'bases/side-view/tools/new-world.mjs'),'utf8'),'desktop/godot/bases/side-view/tools/new-world.mjs');
   const other=path.join(root,'rejected');index.get('desktop/godot/shared/materialize.mjs')[0].sha256='wrong';

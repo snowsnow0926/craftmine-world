@@ -28,7 +28,7 @@ export const MANIFEST_DIFF_FORMAT = 'craftmine.release-manifest-diff/1';
 
 export const TOOLCHAIN_LOCK = 'desktop/godot/toolchain.lock.json';
 export const BASE_ASSETS_DIR = 'desktop/delivery/base-assets';
-export const BASE_IDS = ['first-person', 'side-view', 'top-down', 'mining-sandbox'];
+export const BASE_IDS = ['first-person', 'side-view', 'top-down', 'mining-sandbox', 'creation-sandbox'];
 export const BRIDGE_FILES = [
   'desktop/godot/web/bridge.js',
   'desktop/godot/web/shell.html',

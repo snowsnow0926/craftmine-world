@@ -1,4 +1,4 @@
-// Actual source staging + all four product materializers. No engine or model.
+// Actual source staging + all five product materializers. No engine or model.
 import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -12,12 +12,17 @@ const result=stageRuntimeSourceSnapshot(readGitSnapshot(root,commit,['desktop/go
 const report={format:'craftmine.staged-materializers/1',commit,directory,distribution:result,cases:[],passed:false};
 try{
   const {materializeBase}=await import(pathToFileURL(path.join(destination,'shared/materialize.mjs')).href);
-  for(const baseId of ['first-person','top-down','side-view','mining-sandbox']){
+  for(const baseId of ['first-person','top-down','side-view','mining-sandbox','creation-sandbox']){
     assert.ok(fs.existsSync(path.join(destination,'bases',baseId,'tools/new-world.mjs')),'required tool retained');
     const out=path.join(directory,'world-'+baseId),world=materializeBase({baseId,worldId:'staged-'+baseId,template:'blank',out});
     assert.equal(world.baseId,baseId);assert.ok(world.files.length>5);
     assert.ok(fs.existsSync(path.join(out,'project.godot')));assert.ok(fs.existsSync(path.join(out,'craftmine_shared/runtime_bridge.gd')));
     assert.equal(fs.existsSync(path.join(out,'tools/new-world.mjs')),false,'authoring tool is not copied into the player project');
+    if(baseId==='creation-sandbox'){
+      assert.equal(JSON.parse(fs.readFileSync(path.join(out,'world/creation.json'),'utf8')).format,'craftmine.creation-scene/1');
+      assert.ok(fs.existsSync(path.join(out,'scripts/scene_contract.gd')));
+      assert.equal(fs.existsSync(path.join(out,'tests')),false);
+    }
     report.cases.push({baseId,files:world.files.length,initialState:fs.existsSync(path.join(out,'craftmine_initial_state.json')),passed:true});
   }
   assert.equal(fs.existsSync(path.join(destination,'shared/tests')),false);assert.equal(fs.existsSync(path.join(destination,'shared/tools')),false);

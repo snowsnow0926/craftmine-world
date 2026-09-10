@@ -9,7 +9,9 @@ const MINING='desktop/godot/bases/mining-sandbox';
 const MINING_REVIEWED_TREE='aad4e98123ed171568807e0184b94777318162da';
 const SHARED='desktop/godot/shared';
 const SHARED_REVIEWED_TREE='e37e26ede930e31c74f8177e30523bf327096a74';
-const MATERIALIZERS=new Set(['first-person','side-view','top-down','mining-sandbox'].map(base=>'desktop/godot/bases/'+base+'/tools/new-world.mjs'));
+const CREATION='desktop/godot/bases/creation-sandbox';
+const CREATION_REVIEWED_TREE='a35a7580f61775bb37ed02b75b37b9764e499418';
+const MATERIALIZERS=new Set(['first-person','side-view','top-down','mining-sandbox','creation-sandbox'].map(base=>'desktop/godot/bases/'+base+'/tools/new-world.mjs'));
 const NEW_AUTHORED=new Set([
   'desktop/godot/bases/first-person/assets/ASSET_MANIFEST.json',
   'desktop/godot/bases/first-person/data/balance/blank_start.tres',
@@ -25,6 +27,14 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/shared/progress-migration.d.mts',
   'desktop/godot/shared/target-feedback-configuration.mjs',
   'desktop/godot/shared/target-feedback-configuration.d.mts',
+  'desktop/godot/bases/first-person/scripts/core/creation_renderer.gd',
+  'desktop/godot/bases/top-down/core/scripts/creation_renderer.gd',
+  'desktop/godot/bases/top-down/worlds/blank/scripts/base/creation_renderer.gd',
+  'desktop/godot/shared/adapters/creation-sandbox.gd',
+  'desktop/godot/shared/creation-entities.mjs',
+  'desktop/godot/shared/creation-scene.mjs',
+  'desktop/godot/shared/creation_runtime.mjs',
+  'desktop/godot/shared/initial-states/creation-sandbox-blank.json',
 ]);
 export function authored(entry){return entry.author==='Craftmine World project'&&['authored','generated'].includes(entry.origin)&&['project-authored','MIT'].includes(entry.license);}
 function newEntry(relative,manifest){
@@ -78,6 +88,13 @@ export function refreshAuthoredPins({sourceRoot,sourceCommit,outputRoot,canonica
   for(const name of manifests){
     const manifest=JSON.parse(fs.readFileSync(ordinarySource(sourceRoot,MANIFESTS+'/'+name),'utf8'));
     output.set(name,refreshManifest(manifest,files));
+  }
+  if(![...output.values()].some(x=>x.sourceDirectory===CREATION)){
+    if(git(sourceRoot,['rev-parse',sourceCommit+':'+CREATION]).toString().trim()!==CREATION_REVIEWED_TREE)throw Error('CREATION_SOURCE_REVIEW_STALE');
+    const base=JSON.parse(files.get(CREATION+'/manifest.json').bytes),lock=JSON.parse(files.get('desktop/godot/toolchain.lock.json').bytes);
+    const manifest={format:'craftmine.base-assets/1',baseId:'creation-sandbox',displayName:'三维沉浸式造物底座',baseVersion:base.baseVersion,engine:{version:lock.version,renderer:base.renderer,language:base.language},sourceDirectory:CREATION,rightsStatus:'pending-formal-application',rightsNote:'项目自行编写的造物源码、场景和原始几何体，角色控制与相机复用项目第一人称底座；无外部图片、模型、音频或字体。本清单记录来源和分发范围，不增加授权或变更既有许可。',entries:[],externalEntries:[],requiredNotices:[]};
+    for(const relative of ['desktop/godot/licenses/GODOT_LICENSE.txt','desktop/godot/licenses/GODOT_COPYRIGHT.txt',CREATION+'/licenses/ORIGINAL_ASSETS_LICENSE.txt']){const file=files.get(relative);manifest.requiredNotices.push({path:relative,bytes:file.bytes.length,sha256:file.sha256,appliesTo:['app-bundle','user-export']});}
+    output.set('bases-creation-sandbox.json',refreshManifest(manifest,files,{approvedNew:new Set([...files.keys()].filter(x=>x.startsWith(CREATION+'/')))}));
   }
   if(![...output.values()].some(x=>x.sourceDirectory===MINING)){
     if(git(sourceRoot,['rev-parse',sourceCommit+':'+MINING]).toString().trim()!==MINING_REVIEWED_TREE)throw Error('MINING_SOURCE_REVIEW_STALE');
