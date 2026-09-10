@@ -69,3 +69,43 @@ separately from success in `docs/dispatch-reports/plan-issues-20260910`.
 
 These are `workbench-http-service-fixture` reports with `native:false`. They do
 not replace the parent task's complete native client or packaged-app evidence.
+
+## Declared training-target parameter UI
+
+```text
+node tests/local-issues/target-feedback-headless.mjs --source-root <checkout>
+node tests/local-issues/target-feedback-headless.mjs --source-root <checkout> --ui-ref <commit>
+```
+
+This reads and hashes the actual target-parameter UI, workbench and their module
+dependencies. Without `--ui-ref` it captures current files, including uncommitted
+ones, and records the source checkout's HEAD and dirty status. It rereads every
+source hash before compiling, rejecting a changing snapshot. It never modifies
+the source checkout. Outputs use a new `test-results/target-ui-*` directory.
+
+The first six scenarios mount the real **createWorkbench** and exercise its
+actual `durableCall` orchestration through a deterministic in-page transport.
+The journal/backend/executor are fixtures, not actual persistent core services.
+The final scenario mounts the actual `createTargetFeedbackUI` separately with
+its default concurrent action behavior to check overlapping reads. Reports are
+marked `browser-dom-fixed-transport`, `native:false`.
+
+Coverage: numeric values must be integers from 1 to 1000; invalid values never
+prepare an operation; two immediate submissions prepare once with the exact
+selected target/binding/value; queued status polling never repeats modification;
+passed says the formal world is unchanged; a lost response resumes the upper
+pending-operation entry with the same operation ID; rejection permits rereading
+and correction; late world/tab results remain scoped; hiding stops polling.
+
+HTML validation is disabled only for the invalid-value test to exercise the
+production JavaScript validation without browser invalid-control focus. Inputs
+otherwise use script-assigned values and `requestSubmit`, never pointer or
+keyboard simulation. No model or native runtime is called.
+
+The first dirty snapshot exposed a component-level race: an initial read of
+120 could arrive after a newer read of 777 and restore the stale value. The
+production workbench's existing outer action lock masks that concurrent entry;
+this finding must not be described as an independently reproduced whole-client
+failure. Root added read-sequence checks to load results and completion. The
+updated actual-source snapshot passed all seven tests. Both source-hashed
+reports are retained in `docs/dispatch-reports/plan-target-feedback-ui-20260910`.
