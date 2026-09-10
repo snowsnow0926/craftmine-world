@@ -2,6 +2,7 @@
 // It is reachable only in an already validated, isolated headless profile.
 import {createEvaluationBudget} from "./creation-evaluation-budget";
 import {evaluationGroundHasSpace} from "./creation-evaluation-placement";
+import {assertEvaluationSession,recordEvaluationSession} from "./creation-evaluation-session";
 import {randomUUID} from "node:crypto";
 import type {BrowserWindow} from "electron";
 
@@ -24,6 +25,7 @@ export function installCreationEvaluation(access:Access){
   let sessionId="";const submitted=new Set<string>();
   const desktop=async(source:string)=>{const window=access.window();if(!window||window.isDestroyed())throw Error("EVALUATION_WINDOW_UNAVAILABLE");return window.webContents.executeJavaScript(source,false);};
   const invoke=(name:string,args:unknown)=>desktop(`piDesktop.invoke(piDesktop.channels.invoke[${JSON.stringify(name)}],${JSON.stringify(args)})`);
+  const register=async(session:any)=>{const list=await access.call("providers.list",{});const provider=list.providers?.find((item:any)=>item.id===session?.providerId);recordEvaluationSession(process.env.CRAFTMINE_DATA_DIR??"",assertEvaluationSession(session,provider,process.env.CRAFTMINE_EVAL_MODEL??"",process.env.CRAFTMINE_EVAL_THINKING??"high"));};
   const run=async(method:string,caseId?:string)=>{
     if(method==="initialize"){
       if(sessionId)throw Error("EVALUATION_ALREADY_INITIALIZED");
@@ -33,13 +35,15 @@ export function installCreationEvaluation(access:Access){
       if(previous){
         if(!/^[a-f0-9-]{36}$/.test(previous))throw Error("EVALUATION_SESSION_INVALID");
         const found=await access.call("session.get",{id:previous});
-        if(found.session?.id!==previous||found.session.title!=="造物世界真实模型评测")throw Error("EVALUATION_SESSION_MISSING");
+        if(found.session?.id!==previous)throw Error("EVALUATION_SESSION_MISSING");
+        await register(found.session);
         sessionId=previous;await invoke("notificationSetViewingSession",{sessionId});return {sessionId,modelId,reopened:true};
       }
       const created=await access.call("session.create",{title:"造物世界真实模型评测"});sessionId=created.session.id;
       const provider=await access.call("providers.create",{name:"Isolated creation evaluation",vendorKey:"deepseek",protocol:"openai_compatible",type:"openai_compatible",baseUrl:"https://api.deepseek.com",authKind:"api_key_and_base_url",secretValue:secret,apiStyle:"chat_completions",defaultModelId:modelId,
         models:[{id:modelId,contextWindow:1000000,maxTokens:16384,thinkingLevels:["off","low","high"]}]});
       await access.call("session.configure",{id:sessionId,mode:"agent",permissionMode:"auto",providerId:provider.provider.id,modelId,thinkingLevel:process.env.CRAFTMINE_EVAL_THINKING??"high"});
+      await register((await access.call("session.get",{id:sessionId})).session);
       await invoke("notificationSetViewingSession",{sessionId});
       return {sessionId,modelId};
     }
@@ -67,6 +71,7 @@ export function installCreationEvaluation(access:Access){
       // keeps the same explicitly selected test model without changing providers.
       await access.call("session.configure",{id:created.id,mode:source.mode,providerId:source.providerId,modelId:source.modelId,thinkingLevel:source.thinkingLevel,permissionMode:source.permissionMode});
       await access.call("session.rename",{id:created.id,title:"造物世界真实模型评测"});
+      await register((await access.call("session.get",{id:created.id})).session);
       sessionId=created.id;await invoke("notificationSetViewingSession",{sessionId});
       return {status:"ready",sourceWorldId,worldId:selected.worldId,targetWorldId:selected.worldId,sourceSessionId,sessionId,budget:requestBudget?.snapshot(),modelRequestsAdded:0};
     }
