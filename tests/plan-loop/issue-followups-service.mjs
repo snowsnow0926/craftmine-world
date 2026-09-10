@@ -54,9 +54,10 @@ if(process.argv[2]==='--child'){
   f.setContext({...captured,phase:'candidate'});await rejected(input(f),'ISSUE_CONTEXT_NOT_READY');
  });
  await check('invalid transitions, source/context injection, text bounds and unknown kinds reject',async()=>{
-  const f=await fixture(),request=await input(f);await rejected(f.service.request('issue.followup',{...request,kind:'reopened'}),'ISSUE_STATE_CONFLICT');
+  const f=await fixture(),request=await input(f),before=await fs.readFile(path.join(f.directory,'issues.json'));await rejected(f.service.request('issue.followup',{...request,kind:'reopened'}),'ISSUE_STATE_CONFLICT');
   for(const extra of [{kind:'auto-fixed'},{kind:['note'],text:''},{kind:42},{kind:{}},{text:'\ud800'},{text:'x'.repeat(2049)},{context:captured},{path:'C:/outside'},{text:'\0'},{revision:1.2},{contextHash:'forged'}])await rejected(f.service.request('issue.followup',{...request,...extra}),'ISSUE_INVALID_INPUT');
   await rejected(f.service.request('issue.followup',{...request,worldId:'beta'}),'ISSUE_NOT_FOUND');
+  assert.deepEqual(await fs.readFile(path.join(f.directory,'issues.json')),before,'Invalid finite requests perform zero ledger writes');
  });
  await check('actual process interruption and lost commit reply preserve one durable followup',async()=>{
   for(const point of ['beforeWrite','beforeSync','beforeRename','afterRename']){

@@ -8982,3 +8982,21 @@ Run the fresh sealed Windows comprehensive client with REUSE/COPY/BACKUP enabled
 - Lose the reply after atomic rename, retry the same operation, and reopen in a separate process. Retain exactly one entry; deletion plus replay must not resurrect original or supplementary text.
 - Preserve legacy v1 bytes on reads, upgrade to v2 only on a successful mutation, and retain corruption/hardlink/oversize failures. At 32 followups refuse another while keeping deletion available; receipt capacity must still reserve deletions.
 - Run tests/plan-loop/issue-followups-service.mjs and issue-followups-dom.mjs with isolated data, then existing notebook/context/gateway regressions. DOM tests use a declared context fixture; a separate full-client run must verify actual formal context and unchanged gameplay after restart before claiming integration acceptance. No model, upload, credentials, visible windows or OS input.
+
+
+### PP3 actual client supplements and manual retest acceptance (2026-09-10)
+
+Run `tests/plan-loop/issue-client-native.mjs` on the independently compiled client
+with an isolated profile and explicitly pinned unchanged native runtime. The
+4992fbb run passed 22 checks: real world creation and gameplay; original record
+and note; real parameter draft/check/preview/application; preview refusals;
+still-present, player-resolved and reopened entries on the new formal build;
+exact replay; complete client restarts; deletion without replay resurrection.
+All full progress snapshots compare exactly, including savedAt. Three exits
+report zero input/focus/Pointer Lock violations and empty shutdownFailures.
+See docs/dispatch-reports/plan-loop/pp3-issue-followups/actual-client/REPORT.md
+for raw logs, native resource identity and evidence limits. This is developer
+client acceptance, not a new sealed Windows package or an automatic repair test.
+Strict finite protocol regression additionally rejects array/object/number
+discriminators, preserves corrupt ledger bytes, and verifies invalid requests
+produce zero ledger writes. Retain the independent pre-fix coercion failure.
