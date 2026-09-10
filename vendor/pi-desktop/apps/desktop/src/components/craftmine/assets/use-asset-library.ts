@@ -3,8 +3,8 @@
  *
  * The controller owns every host call and keeps one immutable snapshot, so the
  * same logic is driven by the real bridge in the app and by a fake `call` in
- * tests. Failures are recorded in `error`/`status` *and* rethrown: the caller
- * decides what to show, nothing is swallowed.
+ * tests. Failures are recorded and rethrown. Annotation failures are scoped to
+ * their logical asset so a late response cannot replace another asset's UI.
  */
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 import {
@@ -60,6 +60,8 @@ export type AssetLibrarySnapshot = {
   nextOffset: number | null;
   request: AssetSearchRequest | null;
   selected: AssetReadResult | null;
+  selectedMetadata: {assetId: string; tags: string[]; favorite: boolean} | null;
+  annotationEdits: Record<string, {request: AssetAnnotateRequest; saving: boolean; error: string | null}>;
   versions: AssetVersionEntry[];
   versionsTotal: number;
   versionsNextOffset: number | null;
@@ -100,6 +102,7 @@ export type AssetLibraryActions = {
   cancelPreview(): Promise<void>;
   retryPreview(): Promise<AssetPreviewBeginResult | null>;
   annotate(input: AssetAnnotateRequest): Promise<void>;
+  retryAnnotation(assetId: string): Promise<void>;
   scan(sourceRoot: string): Promise<AssetScanResult>;
   importAsset(request: AssetImportRequest): Promise<AssetLibraryImportSummary>;
 };
@@ -395,6 +398,8 @@ function initialState(call: AssetLibraryCall | null): AssetLibrarySnapshot {
     nextOffset: null,
     request: null,
     selected: null,
+    selectedMetadata: null,
+    annotationEdits: {},
     versions: [],
     versionsTotal: 0,
     versionsNextOffset: null,
@@ -446,8 +451,10 @@ export function createAssetLibraryController(
   // Preview attempts have their own generation. A late decode result, cancel or
   // retry for a previous attempt is dropped by identity, not hidden by the UI.
   let previewGeneration = 0;
+  let selectionGeneration = 0;
+  const acknowledgedMetadata = new Map<string, {tags?: string[]; favorite?: boolean}>();
 
-  const run = async <T>(work: () => Promise<T>): Promise<T> => {
+  const run = async <T>(work: () => Promise<T>, current: () => boolean = () => true): Promise<T> => {
     if (!call) {
       const failure = new Error("ASSET_LIBRARY_UNAVAILABLE");
       emit({ status: "unavailable", error: assetErrorMessage(failure) });
@@ -458,10 +465,10 @@ export function createAssetLibraryController(
       const result = await work();
       return result;
     } catch (failure) {
-      emit({ status: "error", error: assetErrorMessage(failure), busy: false });
+      if (current()) emit({ status: "error", error: assetErrorMessage(failure), busy: false });
       throw failure;
     } finally {
-      if (state.busy) emit({ busy: false });
+      if (current() && state.busy) emit({ busy: false });
     }
   };
 
@@ -474,12 +481,15 @@ export function createAssetLibraryController(
       );
       // A late response for a previous scope/world is dropped, not shown.
       if (mine !== generation) return page;
+      for (const card of page.items) acknowledgedMetadata.delete(card.assetId);
+      const selectedCard = page.items.find(card => card.assetId === state.selectedMetadata?.assetId);
       emit({
         cards: page.items,
         total: page.total,
         truncated: page.truncated,
         nextOffset: page.nextOffset,
         request,
+        selectedMetadata: selectedCard ? {assetId: selectedCard.assetId, tags: [...selectedCard.tags], favorite: selectedCard.favorite} : state.selectedMetadata,
         status: "ready",
       });
       return page;
@@ -523,11 +533,13 @@ export function createAssetLibraryController(
     return search({ ...request });
   };
 
-  const loadVersions = async (assetId: string, offset = 0): Promise<AssetVersionsResult> =>
-    run(async () => {
+  const loadVersions = async (assetId: string, offset = 0): Promise<AssetVersionsResult> => {
+    const mine = selectionGeneration;
+    return run(async () => {
       const result = parseVersionsResult(
         await call!("asset.versions", { assetId, offset, limit: ASSET_VERSIONS_LIMIT }),
       );
+      if (mine !== selectionGeneration) return result;
       emit({
         versions:
           offset > 0 ? mergeVersionEntries(state.versions, result.items) : result.items,
@@ -536,15 +548,22 @@ export function createAssetLibraryController(
         status: "ready",
       });
       return result;
-    });
+    }, () => mine === selectionGeneration);
+  };
 
-  const select = async (assetId: string, version: number): Promise<AssetReadResult> =>
-    run(async () => {
+  const select = async (assetId: string, version: number): Promise<AssetReadResult> => {
+    const mine = ++selectionGeneration;
+    const metadata = state.cards.find(card => card.assetId === assetId)
+      ?? (state.selectedMetadata?.assetId === assetId ? state.selectedMetadata : null);
+    emit({selected: null, selectedMetadata: null});
+    return run(async () => {
       // A preview in flight for the previous selection is now superseded.
       previewGeneration += 1;
       const read = parseReadResult(await call!("asset.read", { assetId, version }));
+      if (mine !== selectionGeneration) return read;
       emit({
         selected: read,
+        selectedMetadata: metadata ? {assetId, tags: [...metadata.tags], favorite: metadata.favorite, ...acknowledgedMetadata.get(assetId)} : null,
         preview: null,
         previewJob: null,
         previewRecords: [],
@@ -556,6 +575,7 @@ export function createAssetLibraryController(
         call!("asset.previewRead", { assetId, version }).then(parsePreviewRecords),
         call!("asset.usage", { assetId, version }).then(parseUsage),
       ]);
+      if (mine !== selectionGeneration) return read;
       emit({
         previewRecords: records,
         preview: latestPreview(records),
@@ -567,7 +587,8 @@ export function createAssetLibraryController(
         await loadVersions(assetId);
       }
       return read;
-    });
+    }, () => mine === selectionGeneration);
+  };
 
   const previewBegin = async (
     assetId: string,
@@ -669,20 +690,66 @@ export function createAssetLibraryController(
     return previewBegin(selected.version_.assetId, selected.version_.version);
   };
 
-  const annotate = async (input: AssetAnnotateRequest): Promise<void> => {
-    await run(async () => {
-      const payload: Record<string, unknown> = {
-        operationId: input.operationId ?? `asset-annotate:${input.assetId}`,
-        assetId: input.assetId,
-      };
-      if (input.displayName !== undefined) payload.displayName = input.displayName;
-      if (input.tags !== undefined) payload.tags = input.tags;
-      if (input.favorite !== undefined) payload.favorite = input.favorite;
-      if (input.notes !== undefined) payload.notes = input.notes;
-      await call!("asset.annotate", payload);
-      emit({ status: "ready" });
+  const annotationRuns = new Map<string, Promise<void>>();
+  const submitAnnotation = (request: AssetAnnotateRequest): Promise<void> => {
+    const {assetId} = request;
+    const active = annotationRuns.get(assetId);
+    if (active) return active;
+    const mine = generation;
+    emit({annotationEdits: {...state.annotationEdits, [assetId]: {request, saving: true, error: null}}});
+    const work = Promise.resolve().then(async () => {
+      try {
+        if (!call) throw new Error("ASSET_LIBRARY_UNAVAILABLE");
+        const result = record(await call("asset.annotate", request as Record<string, unknown>));
+        const metadata = record(result.metadata);
+        if (result.assetId !== assetId || result.operationId !== request.operationId
+          || (request.favorite !== undefined && metadata.favorite !== request.favorite)
+          || (request.tags !== undefined && (!Array.isArray(metadata.tags)
+            || JSON.stringify([...new Set(request.tags)].sort()) !== JSON.stringify([...metadata.tags].sort())))) {
+          throw new Error("ASSET_ANNOTATION_RECEIPT_MISMATCH");
+        }
+        const patch = {
+          ...(request.tags !== undefined ? {tags: [...metadata.tags as string[]]} : {}),
+          ...(request.favorite !== undefined ? {favorite: metadata.favorite as boolean} : {}),
+        };
+        const edits = {...state.annotationEdits};
+        delete edits[assetId];
+        // Release the write slot before publishing enabled controls. A slow
+        // read-only refresh must not swallow the player's next distinct edit.
+        annotationRuns.delete(assetId);
+        acknowledgedMetadata.set(assetId, {...acknowledgedMetadata.get(assetId), ...patch});
+        emit({annotationEdits: edits,
+          cards: state.cards.map(card => card.assetId === assetId ? {...card, ...patch} : card),
+          selectedMetadata: state.selectedMetadata?.assetId === assetId ? {...state.selectedMetadata, ...patch} : state.selectedMetadata});
+        // A committed edit is not retried because its list refresh failed.
+        // Never reuse a query from an earlier scope/world.
+        if (mine === generation && state.request) await refresh().catch(() => {});
+      } catch (failure) {
+        emit({annotationEdits: {...state.annotationEdits, [assetId]: {request, saving: false, error: assetErrorMessage(failure)}}});
+        throw failure;
+      } finally {
+        if (annotationRuns.get(assetId) === work) annotationRuns.delete(assetId);
+      }
     });
-    if (state.request) await refresh();
+    annotationRuns.set(assetId, work);
+    return work;
+  };
+  const annotate = (input: AssetAnnotateRequest): Promise<void> => {
+    // A new edit must not overtake an unacknowledged edit for this logical asset.
+    if (Object.hasOwn(state.annotationEdits, input.assetId)) return Promise.reject(new Error("ASSET_ANNOTATION_PENDING"));
+    const request: AssetAnnotateRequest = {assetId: input.assetId,
+      operationId: input.operationId ?? `asset-annotate:${globalThis.crypto.randomUUID()}`};
+    if (input.tags !== undefined) request.tags = [...input.tags];
+    if (input.favorite !== undefined) request.favorite = input.favorite;
+    if (input.displayName !== undefined) request.displayName = input.displayName;
+    if (input.notes !== undefined) request.notes = input.notes;
+    if (request.tags) Object.freeze(request.tags);
+    Object.freeze(request);
+    return submitAnnotation(request);
+  };
+  const retryAnnotation = (assetId: string): Promise<void> => {
+    const edit = Object.hasOwn(state.annotationEdits, assetId) ? state.annotationEdits[assetId] : null;
+    return edit ? submitAnnotation(edit.request) : Promise.resolve();
   };
 
   const scan = async (sourceRoot: string): Promise<AssetScanResult> =>
@@ -724,6 +791,7 @@ export function createAssetLibraryController(
     cancelPreview,
     retryPreview,
     annotate,
+    retryAnnotation,
     scan,
     importAsset,
   };
@@ -773,6 +841,7 @@ export function controllerActions(
     cancelPreview: controller.cancelPreview,
     retryPreview: controller.retryPreview,
     annotate: controller.annotate,
+    retryAnnotation: controller.retryAnnotation,
     scan: controller.scan,
     importAsset: controller.importAsset,
   };

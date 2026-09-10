@@ -37,6 +37,7 @@ import {
   type AssetLibraryController,
 } from "./use-asset-library";
 import "./asset-library.css";
+import {AssetAnnotationEditor} from "./AssetAnnotationEditor";
 
 export type AssetImportPick = { sourceRoot: string; sourcePath: string };
 
@@ -551,6 +552,8 @@ export function AssetLibraryPanel({
                   </span>
                 ))}
               </p>
+
+              <AssetAnnotationEditor key={assetKey(selected.version_.assetId, selected.version_.version)} controller={controller} lang={lang} />
 
               <h4 className="asset-library-section">{t("source", lang)}</h4>
               <dl className="asset-library-source">
