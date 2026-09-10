@@ -552,6 +552,8 @@ export type AgentActivity =
 export type AgentPromptRequest = {
   sessionId: string;
   content: string;
+  /** Opaque host capture; coordinates and entity identity never come from the renderer. */
+  requestContext?: { creationTarget: { captureId: string } };
   /** Attachments are resolved by Electron main and never trusted by the sidecar. */
   attachments?: AgentPromptAttachment[];
   /**
