@@ -1,0 +1,42 @@
+{
+  "kind": "headless-dom-real-local-ledger",
+  "checks": [
+    {
+      "name": "uncertain commit keeps original operation and text locked for retry",
+      "passed": true
+    },
+    {
+      "name": "lost response retry uses same operation and records only one old-context entry",
+      "passed": true
+    },
+    {
+      "name": "three player retest states render without rewriting original scene",
+      "passed": true
+    },
+    {
+      "name": "original and subsequent contexts remain distinct and markup inert",
+      "passed": true
+    },
+    {
+      "name": "version change after opening detail refuses stale submit without appending",
+      "passed": true
+    },
+    {
+      "name": "new service factory and refreshed DOM retain all prior entries",
+      "passed": true
+    },
+    {
+      "name": "world switch discards a delayed prepared editor and old issue details",
+      "passed": true
+    },
+    {
+      "name": "zero focus, pointer lock and browser script failures",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Host runtime context is a fixture; full Electron/Godot client validation is queued after the release.",
+    "No model, upload, OS input or visible windows."
+  ]
+}

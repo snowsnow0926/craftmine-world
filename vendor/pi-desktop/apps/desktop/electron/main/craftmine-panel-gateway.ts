@@ -7,7 +7,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "memory.search", "memory.propose", "memory.retire", "selection.set", "selection.clear",
   "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel",
   "diagnostics.status", "diagnostics.export",
-  "issue.create", "issue.list", "issue.read", "issue.delete",
+  "issue.create", "issue.list", "issue.read", "issue.delete", "issue.followupPrepare", "issue.followup",
   "targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status",
   "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget",
   // Asset library reads (R6's contract). Writes stay in the player import flow.
@@ -89,7 +89,7 @@ export function createCraftminePanelGateway(options: {
     }
     if (channel === "workbench.capabilities") {
       const available = await workbench(channel);
-      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.packages ? ["package.request"] : []), ...(options.targetFeedback ? ["targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status"] : []), ...(options.issues ? ["issue.create", "issue.list", "issue.read", "issue.delete"] : []), ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
+      return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.packages ? ["package.request"] : []), ...(options.targetFeedback ? ["targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status"] : []), ...(options.issues ? ["issue.create", "issue.list", "issue.read", "issue.delete", "issue.followupPrepare", "issue.followup"] : []), ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
     }
     if (channel === "package.request") {
       if (!options.packages) throw Error("PACKAGE_SERVICE_UNAVAILABLE");

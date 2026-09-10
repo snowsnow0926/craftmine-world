@@ -1,0 +1,48 @@
+{
+  "format": "craftmine.pp3-followups-evidence/1",
+  "baseCommit": "ae32974eed097c9b3308ae53c95ca7533e03532a",
+  "files": [
+    {
+      "path": "raw/followups-service.json",
+      "bytes": 1193,
+      "sha256": "851f46291517cdf61107da37a1f80f46442f51da860acc151d773a81360f4a5b",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\issue-followups-fwZRMQ\\report.json"
+    },
+    {
+      "path": "raw/followups-dom.json",
+      "bytes": 1210,
+      "sha256": "71491f28b27be07983f5cd319d43da65d9fa181da83559291063cb1fc39665f2",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\issue-followups-dom-AAEBFo\\report.json"
+    },
+    {
+      "path": "raw/followups-dom-calls.json",
+      "bytes": 5711,
+      "sha256": "9f0fffa4ba17f507b1550decf97c53f166f7d1e88928cfa3d284bc8f4d7440eb",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\issue-followups-dom-AAEBFo\\calls.json"
+    },
+    {
+      "path": "raw/followups-dom.png",
+      "bytes": 82846,
+      "sha256": "9bf0887bbba39fa6e105605a5b4a71c635673c21e1d34923eea0c0e895ea974f",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\issue-followups-dom-AAEBFo\\followups.png"
+    },
+    {
+      "path": "raw/legacy-service-regression.json",
+      "bytes": 2443,
+      "sha256": "7e2cd334d32a79503a932a156dea42d98f6dc474e6dd28ccfa14ad187846aa81",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\local-issues-MGAvrp\\report.json"
+    },
+    {
+      "path": "raw/legacy-ui-regression.json",
+      "bytes": 401,
+      "sha256": "ac955a115c05b3a240cc993cfb7b4a7455be90572be6089e39342c3d84cf09b3",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\issue-ui\\report.json"
+    },
+    {
+      "path": "raw/e2e-byte-append.json",
+      "bytes": 242,
+      "sha256": "dca0e664cf658fd6cd6edaccb134523c916cad8c5cd914c98fef4cfa263a4d53",
+      "originalPath": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-issue-followups-20260910\\test-results\\issue-followups-docs\\e2e-byte-append.json"
+    }
+  ]
+}

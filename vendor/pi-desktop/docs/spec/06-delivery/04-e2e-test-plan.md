@@ -8992,3 +8992,13 @@ The actual ae32974 package returned the expected stale-backup error through Elec
 ### CRAFTMINE-CONTENT-LITERAL-DIFF-001
 
 In an actual managed Git repository, change a[1].gd and a1.gd with different line counts. Requesting the bracketed filename must produce only its patch and counts. Repeat with binary image[1].png and textual image1.png: the bracketed request must remain binary with exact byte sizes. Reject public Git magic prefixes, wildcards, traversal and drive paths without broadening the shared path contract. Preserve the branch head. See [literal content diff](../content-diff-literal-paths.md).
+
+
+## PP3b local issue supplements and player retest (2026-09-10)
+
+- In a formally loaded world, open an existing issue and append Unicode text. Confirm the original description/build/instance stay unchanged and the new entry records its own current context.
+- Mark still present, player-resolved, then reopen. Notes do not alter status; no label claims automatic diagnosis or verification. Reject invalid transitions and stale issue revisions.
+- Change world/build/instance or enter candidate/loading state between preparation and submit; do not append under a different context. Discard delayed editor/detail results after switching worlds.
+- Lose the reply after atomic rename, retry the same operation, and reopen in a separate process. Retain exactly one entry; deletion plus replay must not resurrect original or supplementary text.
+- Preserve legacy v1 bytes on reads, upgrade to v2 only on a successful mutation, and retain corruption/hardlink/oversize failures. At 32 followups refuse another while keeping deletion available; receipt capacity must still reserve deletions.
+- Run tests/plan-loop/issue-followups-service.mjs and issue-followups-dom.mjs with isolated data, then existing notebook/context/gateway regressions. DOM tests use a declared context fixture; a separate full-client run must verify actual formal context and unchanged gameplay after restart before claiming integration acceptance. No model, upload, credentials, visible windows or OS input.

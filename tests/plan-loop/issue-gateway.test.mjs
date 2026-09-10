@@ -13,8 +13,8 @@ function fixture(enabled=true){
 }
 test('local notebook dispatch retains selected world without a model session or task mutation',async()=>{
  const f=fixture();const result=await f.panel('workbench.capabilities',{worldId:'alpha'});assert.ok(result.channels.includes('issue.create'));
- for(const channel of ['issue.create','issue.list','issue.read','issue.delete'])assert.deepEqual(await f.panel(channel,{worldId:'alpha',operationId:'op-owned'}),{ok:true});
- assert.equal(f.calls.length,4);assert.ok(f.calls.every(x=>x.input.worldId==='alpha'));
+ for(const channel of ['issue.create','issue.list','issue.read','issue.delete','issue.followupPrepare','issue.followup'])assert.deepEqual(await f.panel(channel,{worldId:'alpha',operationId:'op-owned'}),{ok:true});
+ assert.equal(f.calls.length,6);assert.ok(f.calls.every(x=>x.input.worldId==='alpha'));
 });
 test('changed selections and forged host identity never reach the service',async()=>{
  const f=fixture();await assert.rejects(f.panel('issue.create',{worldId:'beta'}),/SELECTED_WORLD_CHANGED/);
