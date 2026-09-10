@@ -1,0 +1,70 @@
+{
+  "format": "craftmine.outgoing-git-object-audit/1",
+  "at": "2026-09-10T05:21:42.957Z",
+  "refs": [
+    "master",
+    "codex/integration-next-20260910",
+    "codex/godot-cycle06-core",
+    "codex/godot-cycle06-host",
+    "codex/godot-cycle06-sandbox",
+    "codex/godot-remaining-j-20260910"
+  ],
+  "baseline": "a4944bed75244e7cf689c07b8a265163660053ba",
+  "objects": 11670,
+  "blobs": 4857,
+  "blobBytes": 131762856,
+  "textBlobs": 4744,
+  "largest": [
+    {
+      "id": "357f14221dfe95e338548d5be80610b9aca1ea9d",
+      "type": "blob",
+      "bytes": 4167578,
+      "path": "docs/dispatch-reports/plan-loop/827-package/raw/complete.json"
+    },
+    {
+      "id": "48e33cb3dded4db3d6a07745af45f56db51a09cc",
+      "type": "blob",
+      "bytes": 4096273,
+      "path": "docs/dispatch-reports/plan-loop/c4af-package/raw/complete.json"
+    },
+    {
+      "id": "59459595d5bcd08112bf1e60405fe987249a3ee8",
+      "type": "blob",
+      "bytes": 2875221,
+      "path": "docs/dispatch-reports/plan-loop/827-package/raw/capacityInterrupted.json"
+    },
+    {
+      "id": "8006b17344741d765ab3b4a5c7d25e788beadf1c",
+      "type": "blob",
+      "bytes": 1304307,
+      "path": "docs/dispatch-reports/plan-loop/restore-ipc-followup/raw/report.json"
+    },
+    {
+      "id": "36f9dab0e6891e323bb3a8f06af95ad1fb89ccbe",
+      "type": "blob",
+      "bytes": 809382,
+      "path": "docs/dispatch-reports/plan-loop-20260910/issue-client-native.json"
+    },
+    {
+      "id": "da83eea9c996da3acd50a0ca3e625486ff01b491",
+      "type": "blob",
+      "bytes": 732829,
+      "path": "docs/evidence/godot-cycle-04/bases/first-person.json"
+    },
+    {
+      "id": "76500b0fc72f5ad316f8e571ff14d2da5679ed44",
+      "type": "blob",
+      "bytes": 732825,
+      "path": "docs/evidence/godot-cycle-05/bases/test-results/godot-first-person-base-NYNHiO/report.json"
+    },
+    {
+      "id": "adb15b04415f8efa3420806cf87f1c84da4ee67c",
+      "type": "blob",
+      "bytes": 717325,
+      "path": "docs/dispatch-reports/godot-round3/S7/evidence/s7-probe-provisioned3/report.json"
+    }
+  ],
+  "findings": [],
+  "oversized": [],
+  "scope": "Local tracked outgoing Git objects only. No ignored files, credentials store, network API or remote mutation. Pattern screening is not an exhaustive security certification."
+}

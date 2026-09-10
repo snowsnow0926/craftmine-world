@@ -1,0 +1,52 @@
+✔ buildSearchRequest fills host defaults and clamps the page size (8.1013ms)
+✔ mergePage de-duplicates by assetId+version and keeps order (0.3628ms)
+✔ controller.search sends the built request and loadMore uses nextOffset (1.2046ms)
+✔ scope and category switching send the new filter to the host (0.37ms)
+✔ the four state flags produce four independent badges (0.3217ms)
+✔ describePreview covers all six statuses with honest copy (0.6687ms)
+✔ OGG is never playable and never gets a player (0.0872ms)
+✔ preview runs the real service and cancel terminates the attempt (0.9688ms)
+✔ a late preview result for a superseded selection is discarded (0.6573ms)
+✔ scanSummary and importRequestFor produce the import payload (1.1939ms)
+✔ snapshot data keys stay disjoint from controller action names (0.1346ms)
+✔ the panel import path reads the scan result, never the scan action (0.144ms)
+✔ AssetLibraryPanel reads scan data from scanResult with a guarded items read (0.2979ms)
+✔ versionOptions lists newest first (0.1396ms)
+✔ host failures reach the caller and stay in the error state (0.4058ms)
+✔ asset UI sources contain no pointer-lock, click or focus emulation (0.6092ms)
+✔ a late search response for a previous scope never overwrites the list (0.2153ms)
+✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.1103ms)
+✔ read-only channels are forwarded unchanged to the core (1.3347ms)
+✔ preview decodes the exact body and records evidence against the claim (0.5711ms)
+✔ a cached ok preview does not re-run the decoder and has no claim (0.1291ms)
+✔ a failed preview is retried as a new attempt with a new claim (0.1652ms)
+✔ a worker failure is recorded as failed, never as ok (0.1402ms)
+✔ cancel terminates the live worker and a late result is discarded (0.8428ms)
+✔ cancel never rewrites a cached ok preview (0.0842ms)
+✔ the asset service contains no window, input or playback calls (0.1004ms)
+✔ each new edit has a fresh operation, updates only browsing metadata and can clear tags (4.2868ms)
+✔ lost reply retries the frozen original ID and payload and prevents overtaking (0.7252ms)
+✔ late annotation failure stays on the original asset and can be retried after returning (0.466ms)
+✔ late annotation success does not switch the selected asset (0.4126ms)
+✔ a late read for the previous selection cannot restore its detail or metadata (0.1971ms)
+✔ removing a favorite can remove its card without losing the selected metadata (0.1889ms)
+✔ late previous-selection errors cannot replace the active detail error state (0.22ms)
+✔ duplicate retry joins the same active operation and a bad receipt remains retryable (0.2684ms)
+✔ a logical asset named constructor is not mistaken for a pending edit (0.2098ms)
+✔ a confirmed edit releases its write slot while a slow list refresh is outstanding (0.3616ms)
+✔ a pending selection uses refreshed metadata after annotation acknowledgement is retired (0.2376ms)
+✔ a refreshed old asset cannot return after a newer asset selection (0.1979ms)
+✔ exact Main function chain rejects unsupported methods, unsafe fields and bounded edits before core (1.9726ms)
+✔ old selected-world owner and changed trusted session never receive a confirmed receipt (0.7502ms)
+✔ headless finite asset probe rejects arbitrary selectors/scripts/RPC and unbounded fields (0.9368ms)
+asset main route evidence: C:\cm-git-closeout-20260910\test-results\asset-main-route-gATyLF
+✔ navigation → panel gateway → actual private asset service → existing Core persists only metadata (109ms)
+✔ native runner requires explicit mode and sealed package identity without fallback (1.5912ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 449.2973

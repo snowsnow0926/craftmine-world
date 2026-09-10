@@ -1,0 +1,199 @@
+{
+  "out": "C:\\cm-git-closeout-20260910\\test-results\\asset-main-route-gATyLF",
+  "core": "C:/cm-plan-next-20260910/vendor/pi-desktop/target/release/craftmine-core.exe",
+  "coreSha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+  "sourceFiles": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-navigation-host.ts",
+      "sha256": "1209b5d10f9e7eb845ecb8ef09322fe5eed492d31059e0f1ef5a6a8fafb5067d"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts",
+      "sha256": "86bad7b8c0a8bfe8ff19299b30cd8534ebc207bf39f908744459f229fc2ad3d0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-asset-panel.ts",
+      "sha256": "372154dd460233278cf8d4f309910e8c2293ca1df3cd34cd680d9e4df926573d"
+    }
+  ],
+  "passed": true,
+  "steps": [],
+  "calls": [
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "search",
+        "args": {
+          "scope": "local-library",
+          "query": "",
+          "tags": [],
+          "favoritesOnly": false,
+          "latestOnly": true,
+          "offset": 0,
+          "limit": 20
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "annotate",
+        "args": {
+          "operationId": "asset-annotate:test",
+          "assetId": "asset-a",
+          "favorite": true,
+          "tags": [
+            "建筑",
+            "常用"
+          ]
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "annotate",
+        "args": {
+          "operationId": "asset-annotate:test",
+          "assetId": "asset-a",
+          "favorite": true,
+          "tags": [
+            "建筑",
+            "常用"
+          ]
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "annotate",
+        "args": {
+          "operationId": "asset-annotate:test",
+          "assetId": "asset-a",
+          "favorite": false,
+          "tags": [
+            "建筑",
+            "常用"
+          ]
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "search",
+        "args": {
+          "scope": "local-library",
+          "query": "",
+          "tags": [],
+          "favoritesOnly": true,
+          "latestOnly": true,
+          "offset": 0,
+          "limit": 20
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "read",
+        "args": {
+          "assetId": "asset-a",
+          "version": 1
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "usage",
+        "args": {
+          "assetId": "asset-a",
+          "version": 1
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    },
+    {
+      "m": "asset.request",
+      "p": {
+        "method": "previewRead",
+        "args": {
+          "assetId": "asset-a",
+          "version": 1
+        }
+      }
+    },
+    {
+      "m": "selection.read",
+      "p": {}
+    }
+  ],
+  "receipt": {
+    "operationId": "asset-annotate:test",
+    "assetId": "asset-a",
+    "metadata": {
+      "favorite": true,
+      "tags": [
+        "常用",
+        "建筑"
+      ]
+    }
+  }
+}

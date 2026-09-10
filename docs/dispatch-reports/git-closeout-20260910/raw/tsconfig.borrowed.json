@@ -1,0 +1,19 @@
+{
+  "extends": "C:/cm-git-closeout-20260910/vendor/pi-desktop/apps/desktop/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "C:/cm-git-closeout-20260910/vendor/pi-desktop/apps/desktop",
+    "paths": {
+      "@renderer/*": [
+        "src/*"
+      ],
+      "*": [
+        "C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/node_modules/*"
+      ]
+    },
+    "typeRoots": [
+      "C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/node_modules/@types",
+      "C:/cm-plan-next-20260910/vendor/pi-desktop/apps/desktop/node_modules"
+    ],
+    "noEmit": true
+  }
+}
