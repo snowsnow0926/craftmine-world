@@ -1,0 +1,15 @@
+PASS actual creation UI exposes only delivered creation-world choice and one blank starter
+PASS actual target shows the sampled entity and coordinates
+PASS world auto-apply starts off and viewing UI does not grant consent
+PASS store queues an immutable opaque capture
+PASS queued send uses original target after subsequent camera snapshot
+PASS consent mutation explicitly names its world
+PASS late old-session sample never replaces new world capture
+PASS consent does not carry over to another world
+PASS no hit remains no selected location without an invented origin
+PASS unsupported target is visibly unavailable
+PASS closed-mode task indicator uses actual approval state
+PASS closing context releases renderer capture
+PASS no input or focus requests
+PASS no unhandled UI errors
+Report: D:\cm-iw-full-0911\test-results\creation-ui-UZrwpO

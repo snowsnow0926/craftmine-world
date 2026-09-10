@@ -1,0 +1,14 @@
+PASS 生产可信导出预设保留规则源码与 JSON
+PASS original：实际 Web PCK 加载动态脚本及哈希校验成功
+PASS Web 普通机关开门并获得一次奖励
+PASS original：无 Pointer Lock 或窗口置前
+PASS original：无脚本错误
+PASS candidate：实际 Web PCK 加载动态脚本及哈希校验成功
+PASS Web 候选完整恢复迁移字段
+PASS 候选保留旧门与奖励，新规则保持初始状态
+PASS 新源码玩法拒绝只按一次的旧顺序
+PASS 非预置双按规则在 Web PCK 实际开门
+PASS Web 迁移后宝箱不重复奖励
+PASS candidate：无 Pointer Lock 或窗口置前
+PASS candidate：无脚本错误
+Evidence: D:\cm-iw-full-0911\test-results\creation-web-7Tk1jm

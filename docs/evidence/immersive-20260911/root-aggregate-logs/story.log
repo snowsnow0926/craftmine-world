@@ -1,0 +1,34 @@
+PASS blank：真实 headless 进程完成
+PASS tree：真实 headless 进程完成
+PASS enlarged：真实 headless 进程完成
+PASS play：真实 headless 进程完成
+PASS 造物源码产生实际树、宝箱、门和标记
+PASS 有限复制在真实场景保留两个独立稳定身份与大小
+PASS play：真实 headless 进程完成
+PASS 真实 Godot 运行回执通过 Rust 保存校验
+PASS Rust 进程重启后完整进度一致
+PASS reopen：真实 headless 进程完成
+PASS 新 Godot 进程恢复全部字段与游玩进度
+PASS 重开宝箱不重复发放奖励
+PASS service-sample：真实 headless 进程完成
+PASS 生产源码服务真实 RPC 放置并返回待检查草稿
+PASS 生产源码服务真实回执恢复不重复创建物体
+PASS candidate-defaults：真实 headless 进程完成
+PASS continued：真实 headless 进程完成
+PASS 真实候选恢复新增对象和规则，同时保留旧进度
+PASS Rust 独立推导的第二次采用迁移与实际候选一致
+PASS continued：真实 headless 进程完成
+PASS 二次正式采用完成且未重置游玩进度
+PASS 第二世界复制仅替换世界身份并保留完整进度
+PASS 复制源码操作账本重绑定新世界且保留历史身份
+PASS continued：真实 headless 进程完成
+PASS continued：真实 headless 进程完成
+PASS 复制世界独立构建与正式采用后真实重开成功
+PASS copy-sample：真实 headless 进程完成
+PASS 独立采用的复制世界可通过生产源码服务继续创造
+PASS 复制世界后续编辑未修改原世界源码
+PASS 创建副本后原世界未改变
+PASS 真实完整备份通过内容校验
+PASS 完整备份恢复并激活独立数据目录
+PASS 恢复后重启服务，两个世界及进度仍完整
+Evidence: D:\cm-iw-full-0911\test-results\creation-story-dosAk5

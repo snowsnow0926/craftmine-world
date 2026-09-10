@@ -1,0 +1,62 @@
+{
+  "scope": "Actual React components/store with fixture native transport; no live engine, task, or microphone",
+  "checks": [
+    {
+      "name": "actual creation UI exposes only delivered creation-world choice and one blank starter",
+      "passed": true
+    },
+    {
+      "name": "actual target shows the sampled entity and coordinates",
+      "passed": true
+    },
+    {
+      "name": "world auto-apply starts off and viewing UI does not grant consent",
+      "passed": true
+    },
+    {
+      "name": "store queues an immutable opaque capture",
+      "passed": true
+    },
+    {
+      "name": "queued send uses original target after subsequent camera snapshot",
+      "passed": true
+    },
+    {
+      "name": "consent mutation explicitly names its world",
+      "passed": true
+    },
+    {
+      "name": "late old-session sample never replaces new world capture",
+      "passed": true
+    },
+    {
+      "name": "consent does not carry over to another world",
+      "passed": true
+    },
+    {
+      "name": "no hit remains no selected location without an invented origin",
+      "passed": true
+    },
+    {
+      "name": "unsupported target is visibly unavailable",
+      "passed": true
+    },
+    {
+      "name": "closed-mode task indicator uses actual approval state",
+      "passed": true
+    },
+    {
+      "name": "closing context releases renderer capture",
+      "passed": true
+    },
+    {
+      "name": "no input or focus requests",
+      "passed": true
+    },
+    {
+      "name": "no unhandled UI errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

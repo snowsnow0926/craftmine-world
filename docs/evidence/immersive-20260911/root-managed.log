@@ -1,0 +1,9 @@
+
+[godot-executor] registered craftmine-windows-broker-v1 evidence d556ab80657cff4d promoted 0
+[godot-executor] staged 10 artifacts into \\?\D:\cm-iw-full-0911\test-results\creation-managed-FYJH4b\core-data\godot-builds\5dd28e311001a2543f641aa79d1015284d97246a6c37b1e2526422f0820f245e\gbd-b22161bc85e7ae4ec36916929ef2000c8c6f385fdb4936cbdef5f47fb2806fb0\artifacts
+[godot-executor] job finished gjob-ac8f6625e278d6e4bdaf11e7b55914b700254d26b8e44f469e7fca96325c9ad5 passed 
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[godot-executor] staged 10 artifacts into \\?\D:\cm-iw-full-0911\test-results\creation-managed-FYJH4b\core-data\godot-builds\5dd28e311001a2543f641aa79d1015284d97246a6c37b1e2526422f0820f245e\gbd-dd9902fe5247c7002bb5f63b6f58e84d25c2ddf280a8a2b41e0a336741c59c2b\artifacts
+[godot-executor] job finished gjob-1afc83d8774cff1ee44e47acdb9626eb8af74009a31d5929702161feedd846ea passed 
+[godot-executor] staged 10 artifacts into \\?\D:\cm-iw-full-0911\test-results\creation-managed-FYJH4b\core-data\godot-builds\5dd28e311001a2543f641aa79d1015284d97246a6c37b1e2526422f0820f245e\gbd-6ceab8b9380decb0abfc0b9f61d103f957aad5097fe5b30a7301063a05748e98\artifacts
+[godot-executor] job finished gjob-853e2a3c6c2a663d00f02a0944e3ad4f03a998357b429856938778f965f33983 failed reason=GODOT_CHECK_TIMEOUT

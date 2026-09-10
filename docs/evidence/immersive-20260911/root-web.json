@@ -1,0 +1,335 @@
+{
+  "kind": "真实导出 Web 造物规则与进度迁移",
+  "out": "D:\\cm-iw-full-0911\\test-results\\creation-web-7Tk1jm",
+  "sourceRoot": "D:\\cm-iw-full-0911",
+  "sourceCommit": "a6e0e224d30e6c5950017aa41c823bdb12f9dc1a",
+  "checks": [
+    {
+      "name": "生产可信导出预设保留规则源码与 JSON",
+      "passed": true
+    },
+    {
+      "name": "original：实际 Web PCK 加载动态脚本及哈希校验成功",
+      "passed": true
+    },
+    {
+      "name": "Web 普通机关开门并获得一次奖励",
+      "passed": true
+    },
+    {
+      "name": "original：无 Pointer Lock 或窗口置前",
+      "passed": true
+    },
+    {
+      "name": "original：无脚本错误",
+      "passed": true
+    },
+    {
+      "name": "candidate：实际 Web PCK 加载动态脚本及哈希校验成功",
+      "passed": true
+    },
+    {
+      "name": "Web 候选完整恢复迁移字段",
+      "passed": true
+    },
+    {
+      "name": "候选保留旧门与奖励，新规则保持初始状态",
+      "passed": true
+    },
+    {
+      "name": "新源码玩法拒绝只按一次的旧顺序",
+      "passed": true
+    },
+    {
+      "name": "非预置双按规则在 Web PCK 实际开门",
+      "passed": true
+    },
+    {
+      "name": "Web 迁移后宝箱不重复奖励",
+      "passed": true
+    },
+    {
+      "name": "candidate：无 Pointer Lock 或窗口置前",
+      "passed": true
+    },
+    {
+      "name": "candidate：无脚本错误",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 80,
+      "exitCode": 0
+    },
+    {
+      "label": "original-import",
+      "elapsedMs": 2116,
+      "exitCode": 0
+    },
+    {
+      "label": "original-export",
+      "elapsedMs": 2017,
+      "exitCode": 0
+    },
+    {
+      "label": "candidate-import",
+      "elapsedMs": 1928,
+      "exitCode": 0
+    },
+    {
+      "label": "candidate-export",
+      "elapsedMs": 2017,
+      "exitCode": 0
+    }
+  ],
+  "versions": [
+    {
+      "version": "original",
+      "defaults": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {
+            "original-door": false
+          },
+          "format": "craftmine.creation-progress/1",
+          "inventory": {},
+          "openedChests": {},
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "rules": {
+            "original-rule": {
+              "completed": false,
+              "cursor": 0
+            }
+          },
+          "sourceTimeOfDay": 12,
+          "timeOfDay": 12,
+          "worldId": "creation-web"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "creation-web"
+      },
+      "pageErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "final": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {
+            "original-door": true
+          },
+          "format": "craftmine.creation-progress/1",
+          "inventory": {
+            "web-token": 2
+          },
+          "openedChests": {
+            "chest": true
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.422853916219486,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 1.5707963267949
+          },
+          "rules": {
+            "original-rule": {
+              "completed": true,
+              "cursor": 2
+            }
+          },
+          "sourceTimeOfDay": 12,
+          "timeOfDay": 21,
+          "worldId": "creation-web"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "creation-web"
+      },
+      "inputGuard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "version": "candidate",
+      "defaults": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {
+            "original-door": false,
+            "second-door": false
+          },
+          "format": "craftmine.creation-progress/1",
+          "inventory": {},
+          "openedChests": {},
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "rules": {
+            "double-press": {
+              "completed": false,
+              "presses": 0
+            },
+            "original-rule": {
+              "completed": false,
+              "cursor": 0
+            }
+          },
+          "sourceTimeOfDay": 18,
+          "timeOfDay": 18,
+          "worldId": "creation-web"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "creation-web"
+      },
+      "pageErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "migration": {
+        "format": "craftmine.godot-additive-progress/1",
+        "previousSnapshotHash": "5661907b2d192fb06de749fa660c61a59a7c791283c83d8936cc3c6d7a7f1b8d",
+        "defaultsSnapshotHash": "e4d4a981fdcf23fd6c424c88e52299f4317bcba960eaf1751b9b857540f39fb0",
+        "snapshotHash": "35ac408a9e715c3cecde2b1cd39e36be147351feca9a28b7cce6da58c48addd0",
+        "added": [
+          {
+            "path": "/body/doors",
+            "id": "second-door"
+          },
+          {
+            "path": "/body/rules",
+            "id": "double-press"
+          }
+        ],
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {
+              "original-door": true,
+              "second-door": false
+            },
+            "format": "craftmine.creation-progress/1",
+            "inventory": {
+              "web-token": 2
+            },
+            "openedChests": {
+              "chest": true
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.422853916219486,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 1.5707963267949
+            },
+            "rules": {
+              "original-rule": {
+                "completed": true,
+                "cursor": 2
+              },
+              "double-press": {
+                "completed": false,
+                "presses": 0
+              }
+            },
+            "sourceTimeOfDay": 18,
+            "timeOfDay": 18,
+            "worldId": "creation-web"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "creation-web"
+        }
+      },
+      "final": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {
+            "original-door": true,
+            "second-door": true
+          },
+          "format": "craftmine.creation-progress/1",
+          "inventory": {
+            "web-token": 2
+          },
+          "openedChests": {
+            "chest": true
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.308067514280439,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.785398163397448
+          },
+          "rules": {
+            "double-press": {
+              "completed": true,
+              "presses": 2
+            },
+            "original-rule": {
+              "completed": true,
+              "cursor": 2
+            }
+          },
+          "sourceTimeOfDay": 18,
+          "timeOfDay": 18,
+          "worldId": "creation-web"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "creation-web"
+      },
+      "inputGuard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "固定作者场景，不代表模型首次成功率或生产 LPAC 执行器",
+    "独立 headless 浏览器和页面脚本协议，无真实鼠标键盘输入"
+  ],
+  "trustedPresetSha256": "ad8451eebc0b844996a0dec43606f172547aa59a1402d8098eb3141e08a2d491"
+}

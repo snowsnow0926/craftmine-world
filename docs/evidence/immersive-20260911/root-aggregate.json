@@ -1,0 +1,137 @@
+{
+  "format": "craftmine.creation-alpha-checks/1",
+  "scope": "integration",
+  "sourceCommit": "a6e0e224d30e6c5950017aa41c823bdb12f9dc1a",
+  "startedAt": "2026-09-10T20:37:00.685Z",
+  "out": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi",
+  "steps": [
+    {
+      "name": "unit",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/creation-operations.test.mjs",
+        "tests/creation-source-service.test.mjs",
+        "tests/creation-progress-migration.test.mjs",
+        "tests/creation-font.test.mjs",
+        "tests/creation-runtime.test.mjs",
+        "tests/creation-entities.test.mjs",
+        "tests/creation-guidance/guidance.test.mjs",
+        "tests/creation-guidance/packaging.test.mjs",
+        "desktop/godot/bases/creation-sandbox/tests/contract.test.mjs",
+        "tests/godot-round3/S6/plugin-load.test.mjs",
+        "tests/godot-round3/S6/live-and-execution-wiring.test.mjs"
+      ],
+      "startedAt": "2026-09-10T20:37:00.687Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\unit.log",
+      "exitCode": 0,
+      "elapsedMs": 573,
+      "sha256": "f622c5d6091f89577091103d795c0058b68c329ddd2bf6b2b069258a019d463e"
+    },
+    {
+      "name": "host",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "vendor/pi-desktop/apps/desktop/test/craftmine-context-read.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-auto-apply-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-entities-projection.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/godot-world-creation.test.mjs"
+      ],
+      "startedAt": "2026-09-10T20:37:01.262Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\host.log",
+      "exitCode": 0,
+      "elapsedMs": 543,
+      "sha256": "92d91e51a02365d5c1a41e5d9b747fd9b11a7cdb2c3a6fb2f7d5d6cbb54386be"
+    },
+    {
+      "name": "rule-engine",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/creation-guidance/rule-headless.test.mjs"
+      ],
+      "startedAt": "2026-09-10T20:37:01.805Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\rule-engine.log",
+      "exitCode": 0,
+      "elapsedMs": 11692,
+      "sha256": "6802b19afe7a171a735c36e3a212529a97d17aa0464414a711a97f36baf2cb47"
+    },
+    {
+      "name": "ui",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-ui-headless.mjs"
+      ],
+      "startedAt": "2026-09-10T20:37:13.498Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\ui.log",
+      "exitCode": 0,
+      "elapsedMs": 1489,
+      "sha256": "a9d91c4df91f9f16d61324983d06eca6afe250f78068ae78e6ce391bdacf4a88"
+    },
+    {
+      "name": "story",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-story-headless.mjs"
+      ],
+      "startedAt": "2026-09-10T20:37:14.987Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\story.log",
+      "exitCode": 0,
+      "elapsedMs": 72950,
+      "sha256": "2a6cf7ecf0c0b9f192770ad6d1f81ed47360a091532fe18384e2cd14f227d1ff"
+    },
+    {
+      "name": "web",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-web-headless.mjs"
+      ],
+      "startedAt": "2026-09-10T20:38:27.937Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\web.log",
+      "exitCode": 0,
+      "elapsedMs": 22993,
+      "sha256": "ebc1225f873ffd8a9c4633c23621187a8a69b6bd543e588a1068eea917625c13"
+    },
+    {
+      "name": "managed-executor",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-managed-executor.mjs"
+      ],
+      "startedAt": "2026-09-10T20:38:50.931Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\managed-executor.log",
+      "exitCode": 0,
+      "elapsedMs": 127405,
+      "sha256": "47ec3af746e391ce06461db058cd83e0518d29705294ee2010c6660d21e342c1"
+    },
+    {
+      "name": "distribution",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/godot-final/staged-materializers.mjs"
+      ],
+      "startedAt": "2026-09-10T20:40:58.336Z",
+      "status": "passed",
+      "log": "D:\\cm-iw-full-0911\\test-results\\creation-alpha-WJ17yi\\distribution.log",
+      "exitCode": 0,
+      "elapsedMs": 730,
+      "sha256": "b2049e8b1666aff28d0d55ec7c40c56b19631c9371f9d5a6c9db7cb882a02f0d"
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "No real model first-request success-rate or physical microphone claim.",
+    "Installed-player interaction remains distinct from isolated automated acceptance."
+  ],
+  "finishedAt": "2026-09-10T20:40:59.068Z"
+}

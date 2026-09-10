@@ -1,0 +1,116 @@
+{
+  "sourceRoot": "D:\\cm-iw-full-0911",
+  "core": {
+    "path": "D:\\cm-iw-full-0911\\test-results\\creation-managed-FYJH4b\\craftmine-core.exe",
+    "source": "D:/cm-complete-cargo-20260910/release/craftmine-core.exe",
+    "sha256": "4f1df19dbcdbd63f1ee9ba4ce169e6a31b951cb12bfe8417597886369e21e2ca"
+  },
+  "electron": "D:\\cm-creation-integrate-20260911\\vendor\\pi-desktop\\node_modules\\.pnpm\\electron@43.5.0_supports-color@7.2.0\\node_modules\\electron\\dist\\electron.exe",
+  "files": [
+    {
+      "path": "craftmine_initial_state.json",
+      "bytes": 698,
+      "sha256": "1d6032677e5a1040c4bd4b1f02fa06d2ebf9210d4562c039f1d96526d21b355e"
+    },
+    {
+      "path": "creation-scene.schema.json",
+      "bytes": 6559,
+      "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 2430,
+      "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1177,
+      "sha256": "4d15b8e206c7b0b80baf38308f672ce3443f969c41c16078690103ae83117a02"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
+      "path": "assets/ASSET_MANIFEST.json",
+      "bytes": 548,
+      "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+    },
+    {
+      "path": "craftmine_shared/base_adapter.gd",
+      "bytes": 2759,
+      "sha256": "ea6140a3cde5fb368c62ad899840ddbb53e9259f44e67843ced7087d38c10418"
+    },
+    {
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "bytes": 6958,
+      "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+    },
+    {
+      "path": "craftmine_shared/state_guard.gd",
+      "bytes": 1759,
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "bytes": 1407,
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "path": "scenes/creation.tscn",
+      "bytes": 1099,
+      "sha256": "bac1347d32bb5736043ecb3d3e4794e40d22654dc0ae354f270ab09a4bbcab88"
+    },
+    {
+      "path": "scripts/creation_font.gd",
+      "bytes": 1737,
+      "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+    },
+    {
+      "path": "scripts/creation_world.gd",
+      "bytes": 20866,
+      "sha256": "ef16e5d2e0e9ad8786c99875051a23b184fc815ee012e0a3167f8904a289946b"
+    },
+    {
+      "path": "scripts/scene_contract.gd",
+      "bytes": 4614,
+      "sha256": "a66041df090694a176cc8dcb0f08632a1157e2d5fdee40d884e9dc6558276915"
+    },
+    {
+      "path": "world/creation.json",
+      "bytes": 115,
+      "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+    },
+    {
+      "path": "assets/fonts/cjk-0.json",
+      "bytes": 2800055,
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "path": "assets/fonts/cjk-1.json",
+      "bytes": 2790775,
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    },
+    {
+      "path": "assets/fonts/font.json",
+      "bytes": 832,
+      "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+    },
+    {
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
+      "path": "scripts/reused/camera_rig.gd",
+      "bytes": 1527,
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "path": "scripts/reused/player_controller.gd",
+      "bytes": 5716,
+      "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+    }
+  ]
+}

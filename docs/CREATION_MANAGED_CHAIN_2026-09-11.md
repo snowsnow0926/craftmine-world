@@ -1,5 +1,7 @@
 # 造物世界生产执行链验收记录
 
+总控最终重跑同样15项全部通过，使用重新编译的Core与broker，持久证据为[执行链报告](evidence/immersive-20260911/root-managed-chain.json)、[字节与源码清单](evidence/immersive-20260911/root-managed-setup.json)及[日志](evidence/immersive-20260911/root-managed.log)。下文专属工作树路径保留为历史执行记录。
+
 本次使用实际 Rust Core、正式 LPAC Broker、Godot 4.7.2、生产执行器、Electron Web 检查器、世界实例宿主和候选采用事务，验证空白世界与源码机关的完整执行链。没有使用合成构建回执或复制旧导出件冒充本次编译。
 
 最终 15 项验收全部通过，子进程退出码为 0。错误规则的预期拒绝已同时核对真实引擎错误文本、失败候选状态和正式世界未改变。

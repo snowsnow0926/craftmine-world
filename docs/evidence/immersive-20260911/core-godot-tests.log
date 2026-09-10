@@ -1,0 +1,374 @@
+warning: unused import: `load_manifest`
+  --> crates\craftmine-core\src\godot_builds.rs:21:22
+   |
+21 |     godot_projects::{load_manifest, ordinary, valid_hash, Manifest},
+   |                      ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `entry` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:11:15
+   |
+11 | pub(super) fn entry(
+   |               ^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `build` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:32:15
+   |
+32 | pub(super) fn build(entries: Vec<AssetLockEntry>) -> Result<AssetLock> {
+   |               ^^^^^
+
+warning: function `resolve_closure` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:37:15
+   |
+37 | pub(super) fn resolve_closure(lock: &AssetLock, roots: &[AssetRef]) -> Result<Vec<AssetRef>> {
+   |               ^^^^^^^^^^^^^^^
+
+warning: function `collect` is never used
+  --> crates\craftmine-core\src\asset_catalog\lock.rs:52:4
+   |
+52 | fn collect(entry: &AssetLockEntry, lock: &AssetLock, out: &mut Vec<AssetRef>) {
+   |    ^^^^^^^
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+
+warning: method `content_files` is never used
+   --> crates\craftmine-core\src\content.rs:618:19
+    |
+236 | impl TaskJournal {
+    | ---------------- method in this implementation
+...
+618 |     pub(crate) fn content_files(
+    |                   ^^^^^^^^^^^^^
+
+warning: function `abort` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:467:8
+    |
+467 | pub fn abort(db: &mut Connection, operation_id: &str, reason: &str) -> Result<ReferenceIntent> {    let intent = load(db, operation...
+    |        ^^^^^
+
+warning: function `receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:588:8
+    |
+588 | pub fn receipt(
+    |        ^^^^^^^
+
+warning: function `store_receipt` is never used
+   --> crates\craftmine-core\src\content_history\apply.rs:614:8
+    |
+614 | pub fn store_receipt(
+    |        ^^^^^^^^^^^^^
+
+warning: struct `ContentRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:219:12
+    |
+219 | pub struct ContentRef {
+    |            ^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:226:12
+    |
+225 | impl ContentRef {
+    | --------------- method in this implementation
+226 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `BuildRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:236:12
+    |
+236 | pub struct BuildRef {
+    |            ^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:246:12
+    |
+245 | impl BuildRef {
+    | ------------- method in this implementation
+246 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: struct `ProgressRef` is never constructed
+   --> crates\craftmine-core\src\content_history\contract.rs:260:12
+    |
+260 | pub struct ProgressRef {
+    |            ^^^^^^^^^^^
+
+warning: method `validate` is never used
+   --> crates\craftmine-core\src\content_history\contract.rs:270:12
+    |
+269 | impl ProgressRef {
+    | ---------------- method in this implementation
+270 |     pub fn validate(&self) -> Result<()> {
+    |            ^^^^^^^^
+
+warning: methods `config_dir`, `with_timeout`, `object_type`, and `cat_object` are never used
+   --> crates\craftmine-core\src\content_history\git.rs:493:12
+    |
+368 | impl GitAdapter {
+    | --------------- methods in this implementation
+...
+493 |     pub fn config_dir(&self) -> &Path {
+    |            ^^^^^^^^^^
+...
+497 |     pub fn with_timeout(mut self, timeout: Duration) -> Self {
+    |            ^^^^^^^^^^^^
+...
+834 |     pub fn object_type(&self, git_dir: &Path, oid: &str) -> Result<String> {
+    |            ^^^^^^^^^^^
+...
+842 |     pub fn cat_object(&self, git_dir: &Path, oid: &str) -> Result<Vec<u8>> {
+    |            ^^^^^^^^^^
+
+warning: constant `REPOSITORY_FORMAT` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:30:11
+   |
+30 | pub const REPOSITORY_FORMAT: &str = "craftmine.content-repository/1";
+   |           ^^^^^^^^^^^^^^^^^
+
+warning: method `as_str` is never used
+  --> crates\craftmine-core\src\content_history\migration.rs:42:8
+   |
+41 | impl ContentBackend {
+   | ------------------- method in this implementation
+42 |     fn as_str(self) -> &'static str {
+   |        ^^^^^^
+
+warning: associated function `text` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:108:12
+    |
+107 | impl ContentFile {
+    | ---------------- associated function in this implementation
+108 |     pub fn text(path: &str, text: &str) -> Self {
+    |            ^^^^
+
+warning: struct `MaterializedCopy` is never constructed
+   --> crates\craftmine-core\src\content_history\repo.rs:171:12
+    |
+171 | pub struct MaterializedCopy {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: methods `root`, `content_ref`, `materialize`, `set_draft`, `draft`, and `set_applied` are never used
+   --> crates\craftmine-core\src\content_history\repo.rs:211:12
+    |
+198 | impl RepositoryStore {
+    | -------------------- methods in this implementation
+...
+211 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+...
+477 |     pub fn content_ref(&self, layout: &RepoLayout, oid: &str) -> Result<ContentRef> {
+    |            ^^^^^^^^^^^
+...
+536 |     pub fn materialize(
+    |            ^^^^^^^^^^^
+...
+821 |     pub fn set_draft(
+    |            ^^^^^^^^^
+...
+836 |     pub fn draft(&self, layout: &RepoLayout, branch_id: &str) -> Result<Option<String>> {
+    |            ^^^^^
+...
+894 |     pub fn set_applied(
+    |            ^^^^^^^^^^^
+
+warning: function `group_by_request` is never used
+    --> crates\craftmine-core\src\content_history\repo.rs:1106:8
+     |
+1106 | pub fn group_by_request(records: &[CommitRecord]) -> BTreeMap<String, Vec<&CommitRecord>> {
+     |        ^^^^^^^^^^^^^^^^
+
+warning: function `blob_read` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:371:15
+    |
+371 | pub(super) fn blob_read(directory: &Path, world: &str, entry: &FileEntry) -> Result<String> {
+    |               ^^^^^^^^^
+
+warning: function `reconcile_git_head` is never used
+   --> crates\craftmine-core\src\godot_projects.rs:549:4
+    |
+549 | fn reconcile_git_head(
+    |    ^^^^^^^^^^^^^^^^^^
+
+warning: methods `project_manifest` and `project_is_git_backed` are never used
+   --> crates\craftmine-core\src\godot_projects.rs:762:19
+    |
+735 | impl TaskJournal {
+    | ---------------- methods in this implementation
+...
+762 |     pub(super) fn project_manifest(
+    |                   ^^^^^^^^^^^^^^^^
+...
+886 |     pub(super) fn project_is_git_backed(&self, world: &str) -> Result<bool> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: variable does not need to be mutable
+   --> crates\craftmine-core\src\content_history\migration_tests.rs:142:9
+    |
+142 |     let mut fixture = fixture(&[(0, "scenes/a.tscn", "[gd_scene]\n"), (1, "scenes/a.tscn", "[gd_scene name=\"a\"]\n")])?;
+    |         ----^^^^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `claim_owner` is never read
+  --> crates\craftmine-core\src\asset_catalog\preview.rs:95:5
+   |
+88 | struct PreviewState {
+   |        ------------ field in this struct
+...
+95 |     claim_owner: String,
+   |     ^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `root` is never used
+   --> crates\craftmine-core\src\content_history\repo.rs:211:12
+    |
+198 | impl RepositoryStore {
+    | -------------------- method in this implementation
+...
+211 |     pub fn root(&self) -> &Path {
+    |            ^^^^
+
+warning: function `VECTORS_JSON` should have a snake case name
+   --> crates\craftmine-core\src\content_history\contract_vectors_tests.rs:113:4
+    |
+113 | fn VECTORS_JSON() -> Result<Value> {
+    |    ^^^^^^^^^^^^ help: convert the identifier to snake case: `vectors_json`
+    |
+    = note: `#[warn(non_snake_case)]` (part of `#[warn(nonstandard_style)]`) on by default
+
+warning: `craftmine-core` (lib) generated 26 warnings (run `cargo fix --lib -p craftmine-core` to apply 1 suggestion)
+warning: `craftmine-core` (lib test) generated 11 warnings (7 duplicates) (run `cargo fix --lib -p craftmine-core --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running unittests src\lib.rs (D:/cm-complete-cargo-20260910\debug\deps\craftmine_core-13091a1caf054aaf.exe)
+
+running 109 tests
+test godot_applications::additive_progress::equipment_tests::a_save_that_predates_catalog_items_gains_each_of_them_from_the_candidate_scene ... ok
+test godot_applications::additive_progress::equipment_tests::an_identical_candidate_snapshot_is_a_no_change_migration ... ok
+test godot_applications::additive_progress::equipment_tests::new_equipment_takes_captured_defaults_and_old_progress_is_never_rewritten ... ok
+test godot_applications::additive_progress::equipment_tests::equipment_removal_duplication_shape_and_ammunition_are_rejected ... ok
+test godot_applications::additive_progress::equipment_tests::adds_equipment_without_changing_old_progress_and_rejects_forged_proof ... ok
+test godot_applications::additive_progress::equipment_tests::creation_additions_keep_old_ledgers_and_apply_only_explicit_time_changes ... ok
+test godot_applications::additive_progress::equipment_tests::a_proof_that_inflates_new_ammunition_or_hides_an_addition_is_rejected ... ok
+test godot_copy_runtime::tests::fixed_rebinding_preserves_every_other_byte_in_four_bases ... ok
+test godot_applications::tests::additive_progress_replays_two_actual_godot_captures_with_identical_semantics ... ok
+test godot_applications::tests::newer_formal_progress_cannot_be_overwritten_by_a_prepared_application ... ok
+test godot_builds::tests::a_stale_source_revision_cannot_start_a_build ... ok
+test backups::domain_tests::the_domain_snapshot_carries_the_godot_and_git_tables ... ok
+test godot_applications::tests::asset_edits_after_prepare_revoke_publication ... ok
+test godot_builds::tests::a_project_cannot_shadow_host_files_in_a_build_copy ... ok
+test godot_applications::tests::the_previous_world_and_its_progress_stay_recoverable ... ok
+test godot_builds::tests::a_forged_asset_hash_never_writes_anything ... ok
+test godot_applications::tests::commit_is_replay_safe_and_a_wrong_token_is_refused ... ok
+test godot_builds::tests::a_database_with_the_old_build_file_check_is_rebuilt_for_host_rows ... ok
+test godot_applications::tests::launch_evidence_must_prove_the_exact_candidate_build ... ok
+test godot_applications::tests::matching_player_does_not_authorize_replacing_other_formal_progress ... ok
+test godot_applications::tests::source_edits_after_prepare_revoke_publication ... ok
+test godot_builds::tests::a_binary_asset_over_the_model_limit_is_rejected_without_a_second_store ... ok
+test godot_applications::tests::prepare_rejects_a_progress_change_and_a_second_application ... ok
+test godot_applications::tests::additive_progress_old_database_gains_nullable_check_binding_columns ... ok
+test godot_builds::tests::a_corrupt_asset_blob_is_reported_and_never_repaired_silently ... ok
+test godot_builds::tests::a_build_copy_is_materialized_verified_and_reused_without_touching_source ... ok
+test godot_builds::tests::assets_are_content_addressed_listed_and_isolated_per_world ... ok
+test godot_applications::tests::a_verified_candidate_publishes_only_after_a_real_new_instance_launch ... ok
+test godot_builds::tests::cross_world_and_ended_turns_cannot_start_builds ... ok
+test godot_applications::tests::a_rejected_candidate_cannot_replace_the_formal_world ... ok
+test godot_jobs::requirements_tests::finite_requirements_bound_tolerance_keeps_raw_actual_and_old_backup_columns_default_to_none ... ok
+test godot_jobs::requirements_tests::finite_requirements_actual_match_passes_and_survives_restart_replay ... ok
+test godot_jobs::requirements_tests::finite_requirements_continue_preserves_expectations_and_corrupt_pair_is_refused ... ok
+test godot_applications::tests::a_restarted_core_never_applies_an_unconfirmed_candidate ... ok
+test godot_jobs::requirements_tests::finite_requirements_validate_scope_hash_and_start_replay ... ok
+test godot_jobs::tests::a_check_without_assertions_proves_nothing ... ok
+test godot_projects::tests::filesystem_directory_links_cannot_redirect_managed_blob_reads ... ignored, Windows junction fixture setup was denied/timed out under the managed test runner; run explicitly only when fixture creation is available
+test godot_jobs::tests::a_cancelled_job_rejects_a_late_result_and_creates_no_candidate ... ok
+test godot_applications::tests::additive_progress_rejects_forgery_removal_duplicate_identity_and_stale_cas ... ok
+test godot_jobs::tests::a_job_cannot_run_without_an_attested_executor ... ok
+test godot_jobs::tests::a_refused_result_is_settled_as_a_failure_without_touching_staged_artifacts ... ok
+test godot_jobs::tests::a_claim_hands_the_executor_absolute_isolated_paths_and_verified_inputs ... ok
+test godot_jobs::tests::a_result_from_another_job_is_rejected_by_the_input_hash ... ok
+test godot_jobs::tests::a_repeated_check_reuses_recorded_artifacts_and_refuses_a_changed_one ... ok
+test godot_jobs::tests::a_wrong_token_cannot_observe_or_finish_a_job ... ok
+test godot_jobs::tests::claim_rechecks_materialized_source_before_granting_a_job ... ok
+test godot_jobs::tests::a_restart_interrupts_a_running_job_and_refuses_its_late_result ... ok
+test godot_builds::tests::build_identity_changes_with_source_assets_and_base ... ok
+test godot_jobs::tests::an_artifact_that_does_not_match_its_declared_hash_is_rejected ... ok
+test godot_applications::tests::additive_progress_preserves_latest_play_and_exact_state_through_restart ... ok
+test godot_jobs::tests::a_passing_check_creates_a_ready_candidate_and_supersedes_the_older_one ... ok
+test godot_jobs::tests::a_continuation_keeps_its_origin_and_refuses_a_moved_source ... ok
+test godot_jobs::tests::executor_gate_finds_a_capable_executor_and_revocation_interrupts_only_its_jobs ... ok
+test godot_projects::tests::all_path_aliases_collisions_unknown_fields_and_missing_config_are_rejected ... ok
+test godot_jobs::tests::progress_is_monotonic_and_heartbeats_extend_the_lease ... ok
+test godot_projects::tests::corrupt_existing_blob_is_rejected_on_read_reuse_and_unrelated_patch ... ok
+test godot_runtime::tests::progress_limits_count_utf8_and_do_not_truncate_custom_state ... ok
+test godot_projects::tests::case_distinct_world_ids_have_separate_physical_files_on_windows ... ok
+test godot_jobs::tests::real_compile_errors_fail_the_job_even_when_the_executor_claims_success ... ok
+test godot_jobs::tests::usage_summary_reports_core_counters_and_keeps_model_counters_unknown ... ok
+test godot_jobs::tests::runtime_check_descriptor_requires_a_live_owner_and_verified_staged_bytes ... ok
+test godot_projects::tests::deleting_a_source_preserves_history_and_file_sets_are_world_scoped ... ok
+test godot_projects::tests::manifest_hash_and_stored_revision_mismatch_are_not_reset ... ok
+test godot_projects::tests::paginated_index_and_unicode_reads_remain_bound_to_an_immutable_revision ... ok
+test godot_worlds::mining_copy_tests::mining_copy_rejects_unknown_or_mixed_native_identity_without_mutating_source ... ok
+test godot_projects::tests::panel_selection_foreign_context_and_stale_turn_cannot_redirect_files ... ok
+test godot_projects::tests::private_source_context_reads_an_existing_finished_workspace_without_writing ... ok
+test godot_projects::tests::optimistic_version_and_file_hash_conflicts_leave_the_head_unchanged ... ok
+test godot_projects::tests::project_files_are_durable_and_independent_of_legacy_world_and_draft ... ok
+test godot_projects::tests::sqlite_failure_cannot_publish_a_partial_file_set_or_receipt ... ok
+test godot_projects::tests::replay_is_exact_and_receipts_survive_turn_completion_and_restart ... ok
+test godot_runtime::tests::progress_is_refused_for_a_world_whose_build_was_never_applied ... ok
+test godot_runtime::tests::legacy_returns_null_but_unverified_godot_is_an_error ... ok
+test godot_runtime::tests::base_and_schema_changes_need_explicit_migration_not_plain_save ... ok
+test godot_runtime::tests::applied_progress_requires_full_launch_state_and_prepared_world_is_frozen ... ok
+test godot_runtime::tests::descriptor_rehashes_exports_and_ignores_world_document_paths ... ok
+test godot_runtime::tests::full_progress_is_lossless_across_restart_and_noop_save ... ok
+test godot_runtime::tests::descriptor_uses_only_applied_store_and_survives_newer_source_head ... ok
+test godot_runtime::tests::godot_integral_floats_match_javascript_json_without_large_integer_aliases ... ok
+test godot_runtime::tests::a_new_turn_can_continue_applied_source_but_not_foreign_lineage ... ok
+test godot_projects::tests::source_files_over_two_megabytes_do_not_use_the_legacy_json_limit ... ok
+test godot_runtime::tests::receipt_tampering_and_cross_world_saves_leave_formal_progress_intact ... ok
+test godot_storage::tests::storage_status_counts_every_category_without_deleting_anything ... ok
+test godot_worlds::tests::a_failed_initialization_keeps_a_recoverable_record_and_can_be_retried ... ok
+test godot_worlds::tests::backup_descriptor_verifies_the_live_store_and_detects_tampering ... ok
+test godot_worlds::tests::initialize_creates_a_recoverable_record_and_never_declares_a_playable_world ... ok
+test godot_worlds::tests::first_launch_failure_archive_roundtrip_keeps_failure_and_accepts_older_absent_table ... ok
+test godot_worlds::tests::first_launch_failure_rejects_wrong_identity_unsettled_stale_and_applied_attempts ... ok
+test godot_worlds::tests::first_launch_failure_does_not_attach_to_a_new_checked_candidate ... ok
+test godot_storage::tests::a_caller_pin_from_works_backups_or_history_is_never_reclaimed ... ok
+test godot_storage::tests::a_durable_backup_pin_protects_a_build_without_any_caller_argument ... ok
+test godot_storage::tests::a_reference_created_after_the_plan_blocks_reclamation ... ok
+test godot_worlds::tests::first_launch_failure_survives_restart_and_explicit_retry_tombstones_old_delivery ... ok
+test godot_storage::tests::reclaim_protects_formal_and_recent_builds_and_commits_atomically ... ok
+test godot_storage::tests::continuing_a_draft_whose_build_was_reclaimed_is_refused_clearly ... ok
+test godot_worlds::tests::initialization_path_failure_is_hash_checked_finite_and_persistent ... ok
+test godot_worlds::tests::only_a_real_verified_application_confirms_initialization ... ok
+test godot_jobs::tests::engine_sized_artifacts_are_streamed_and_corruption_is_refused ... ok
+test godot_worlds::tests::initial_load_repair_rejects_bad_scope_pins_owner_and_cas_without_writes ... ok
+test godot_worlds::tests::initial_load_repair_is_exact_replayable_and_preserves_progress_and_other_sources ... ok
+test godot_worlds::tests::initial_load_repair_rejects_formal_adoption_after_host_read_even_when_git_head_is_unchanged ... ok
+test godot_worlds::tests::copying_a_formal_world_keeps_identity_separate_and_can_start_from_initial_state ... ok
+test godot_worlds::tests::a_git_backed_world_can_be_copied_and_described_from_its_commit ... ok
+test godot_jobs::requirements_tests::finite_requirements_missing_false_or_mixed_evidence_rejects_candidate_durably ... ok
+test godot_projects::tests::a_private_file_install_is_atomic_binary_safe_and_replayable_on_both_backends ... ok
+test godot_worlds::tests::initial_load_repair_preserves_a_customized_bridge_and_invalidates_prepared_old_candidate ... ok
+test godot_worlds::mining_copy_tests::mining_copy_preserves_all_progress_and_exact_formal_parent_and_draft_after_reopen ... ok
+test godot_worlds::tests::portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts ... ok
+test godot_worlds::tests::copied_runtime_rebind_is_exact_persistent_and_requires_independent_application ... ok
+
+test result: ok. 108 passed; 0 failed; 1 ignored; 0 measured; 206 filtered out; finished in 17.08s
+
+     Running unittests src\main.rs (D:/cm-complete-cargo-20260910\debug\deps\craftmine_core-d51d032be1083c22.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

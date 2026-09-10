@@ -1,0 +1,10 @@
+双按规则证据：D:\cm-iw-full-0911\test-results\guidance-rule-A5QjWY
+✔ 指南普通双按规则在真实世界加载、拒绝错误进度并跨进程保留自定义状态 (11519.2889ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11618.0038
