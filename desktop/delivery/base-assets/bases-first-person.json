@@ -704,8 +704,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 3245,
-      "sha256": "2c0f69eca80b3783de112a28c5d0662c6d311643ce8613cbc28e69c33899994d",
+      "bytes": 3431,
+      "sha256": "81c182aa45a031904926708285ca6102162b25e023bdd259c90d66c78d498bb1",
       "notes": "Authored scene; no third-party model, texture or audio is referenced."
     },
     {
@@ -973,6 +973,23 @@
       "bytes": 1527,
       "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f",
       "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/core/creation_renderer.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 3247,
+      "sha256": "9e8ef6193c4099cf6babf2733b01e959cb9aa5683cc521b99cb6f732cf530feb"
     },
     {
       "path": "scripts/core/equipment_catalog.gd",

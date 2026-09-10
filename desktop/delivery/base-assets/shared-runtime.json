@@ -28,6 +28,23 @@
       "sha256": "84ac18a03c592b7ab5be62e217f9e8678fdb765e731fac51370f987bb62ce8ec"
     },
     {
+      "path": "adapters/creation-sandbox.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2759,
+      "sha256": "ea6140a3cde5fb368c62ad899840ddbb53e9259f44e67843ced7087d38c10418"
+    },
+    {
       "path": "adapters/first-person.gd",
       "role": "source",
       "origin": "authored",
@@ -108,8 +125,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 15584,
-      "sha256": "6361acdd519030832804912517cf25f13f83bf1ba9b29155a6b5dc0fab8bf5ad"
+      "bytes": 16037,
+      "sha256": "0c71587e72dc1ddaf2ccd94e7f0f40d41df1294cae00d991340bb3f2ed834b37"
     },
     {
       "path": "components.mjs",
@@ -128,6 +145,57 @@
       "sha256": "ddc61f00c53d19554dd43ef34c042cfb2c181c664dfe9ea17bfe30a465f8bc7a"
     },
     {
+      "path": "creation-entities.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2658,
+      "sha256": "ef192cf60cc2204d3cef99f468f6acb0483f0db819ac0cd9e9f18e217f6db97d"
+    },
+    {
+      "path": "creation-scene.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 5099,
+      "sha256": "d64e029b31bf1ca932da8281e7737b4b1a8a9f4885219bcd81dd41ac248df4d8"
+    },
+    {
+      "path": "creation_runtime.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 5131,
+      "sha256": "4c5b3d53f6b081bd4d4eaa33151e5fcdf786e36a5d6630a09220361eb64b71bf"
+    },
+    {
       "path": "draft_install.mjs",
       "role": "tool",
       "origin": "authored",
@@ -142,6 +210,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 22520,
       "sha256": "367d85c0506c1062e5a3627fb8e4ada85b37d78d8369d5a312206e8b4275baf5"
+    },
+    {
+      "path": "initial-states/creation-sandbox-blank.json",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 954,
+      "sha256": "2b5758ba25af9f093cf2c12f26174a5acbee84cf1c786fd506c3a4167b61c640"
     },
     {
       "path": "initial-states/first-person-blank.json",
@@ -286,8 +371,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 4659,
-      "sha256": "c7f7ec6ebc59a9656470f4f1c871e7d629ff8dc079e5aa62b9811d88a0a3f889"
+      "bytes": 4772,
+      "sha256": "29db3a3bf9ff1f72aa534ea77f3824d17d39ac2d8f449fff3b7602d83750e209"
     },
     {
       "path": "observation.d.mts",
@@ -318,8 +403,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 15061,
-      "sha256": "5482d5645e3d827bda8eb55185218eff383824a91165cb24701888d9e194da90"
+      "bytes": 15594,
+      "sha256": "cb9c814fed3a8c3c7048b883413aa87f2202d79b677afb8b3d1ab6b1e65117ea"
     },
     {
       "path": "progress-migration.d.mts",
@@ -334,8 +419,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 443,
-      "sha256": "aac830eb1ab3ee33e7cb8f67f27aa4f6cffb62a4bbee92b60aa55c025de0be3d"
+      "bytes": 412,
+      "sha256": "69777f4ec41cf92479b9fe49eabed12e92a4c592761fa476dfa69272feb74334"
     },
     {
       "path": "progress-migration.mjs",
@@ -350,8 +435,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 6989,
-      "sha256": "71fb3f68e898a2d009d3a00ba3349b7f05f03dc10be74fa36e50c4ae2227775e"
+      "bytes": 9996,
+      "sha256": "366d6d7d0c383bf99ae5927572b19b3db83e8c3c2324bb3d0f439946559cb893"
     },
     {
       "path": "runtime_bridge.gd",
@@ -513,8 +598,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 3495,
-      "sha256": "d40a4ee089073a6126d6d16d9a5e958575ad9e1656c726339902bc2a354a9c27"
+      "bytes": 3524,
+      "sha256": "1c96f0a4458bc9ad55f47bd6e9d9d2afab4d8e3e372b6893f5710bf94939e9c6"
     },
     {
       "path": "windows-export.cfg",
@@ -547,8 +632,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 18013,
-      "sha256": "c43c461bfe51f8f9a40414567dd30984ebc89ed5ff99059dea765367395843e0"
+      "bytes": 20897,
+      "sha256": "87aa03eab73e9bf8490c8b5879ccab5e12515d6cd33b7c3008ea5f6f304f72c3"
     },
     {
       "path": "desktop/godot/bases/component-catalog.json",
@@ -564,7 +649,7 @@
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 32549,
-      "sha256": "eea408cd388f67d1c149ce13eda5f698ea9fb01b4ec8e79e1142e857be304fda"
+      "sha256": "b183a7a82c99a06f9e81c3d26b75b5e7f4215d384af93a0e9df57ee56218b085"
     },
     {
       "path": "desktop/godot/bases/README.md",

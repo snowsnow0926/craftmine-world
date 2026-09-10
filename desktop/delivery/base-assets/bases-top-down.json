@@ -260,6 +260,23 @@
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
+      "path": "core/scripts/creation_renderer.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 3033,
+      "sha256": "1b05a8d5b76a635ab9704fcdef434361b8b6b70c03f083b744f80efee632035b"
+    },
+    {
       "path": "core/scripts/directional_sprite.gd",
       "role": "source",
       "origin": "authored",
@@ -1215,8 +1232,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 2002,
-      "sha256": "5bb7ed7e95ae1239a3f3f7bbc97a4a1eebde81a287bb2a6a9a31f990f2f6ae7b",
+      "bytes": 2186,
+      "sha256": "e163886e76a9d6472c7650def5257723472732d3921f25280b73f51f8d386867",
       "notes": "Authored scene; no third-party model, texture or audio is referenced."
     },
     {
@@ -1237,6 +1254,23 @@
       "bytes": 915,
       "sha256": "bf5f665cf1d9568d4a5e0ce41895596095f6a28e90f1aac0c25e33636cfabb1c",
       "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "worlds/blank/scripts/base/creation_renderer.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 3033,
+      "sha256": "1b05a8d5b76a635ab9704fcdef434361b8b6b70c03f083b744f80efee632035b"
     },
     {
       "path": "worlds/blank/scripts/base/directional_sprite.gd",
