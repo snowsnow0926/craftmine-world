@@ -1,4 +1,4 @@
-// Development client acceptance through actual Main/React; no packaged claim.
+// Actual Main/React acceptance; explicit development or hash-verified package.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -6,34 +6,48 @@ import {spawn,execFileSync} from 'node:child_process';
 import {createHash,randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {setTimeout as delay} from 'node:timers/promises';
-import {isolatedParameterEnvironment} from './parameter-client-package.mjs';
+import {isolatedParameterEnvironment,inspectParameterPackage} from './parameter-client-package.mjs';
+import {loadPackageAsar} from '../../desktop/package-asar.mjs';
+import {versionDiffClientArguments,versionDiffLaunchPlan} from './version-diff-client-package.mjs';
 import {assertCleanHeadlessShutdown} from '../player-product/shutdown-exit-audit.mjs';
 import {compileScene,INITIAL_SNAPSHOT} from '../../app/scene.mjs';
 import {candidateFromTargetFeedbackStatus} from '../player-product/target-feedback-observation.mjs';
-const input=process.argv.slice(2),options={};
-for(let i=0;i<input.length;i+=2){assert.ok(['--source-root','--deps-app','--source-core','--world','--output-parent'].includes(input[i])&&!options[input[i]]&&input[i+1]);options[input[i]]=input[i+1];}
-for(const key of ['--source-root','--deps-app','--source-core','--world','--output-parent'])assert.ok(options[key],key);
-for(const key of ['--source-root','--deps-app','--source-core','--output-parent'])assert.ok(path.isAbsolute(options[key]),key);
+const options=versionDiffClientArguments(process.argv.slice(2));
 const root=path.resolve(options['--source-root']),app=path.join(root,'vendor/pi-desktop/apps/desktop'),source=path.resolve(options['--source-core']),worldId=options['--world'],parent=path.resolve(options['--output-parent']);
 assert.equal(path.basename(source),'craftmine.world');assert.equal(path.basename(parent),'test-results');assert.match(worldId,/^[a-z0-9][a-z0-9-]{1,47}$/);
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8'}).trim();
 const commit=git('rev-parse','HEAD');assert.equal(git('status','--porcelain'),'','Source must be committed and clean');
+const packaged=options['--packaged-root']?path.resolve(options['--packaged-root']):null;
+if(packaged)assert.equal(commit,options['--expected-commit'],'Expected package commit must match the clean source root');
+const packageOptions={packaged,expectedCommit:options['--expected-commit'],expectedManifestHash:options['--expected-build-manifest-sha256']};
+const asar=packaged?loadPackageAsar(options['--deps-app']):null;
+const packageInfo=packaged?await inspectParameterPackage({...packageOptions,asar}):null;
+// In package mode the dependency directory supplies only the ASAR parser.
+const electron=packaged?null:createRequire(path.join(options['--deps-app'],'package.json'))('electron');
+const plan=versionDiffLaunchPlan({packaged,packageInfo,root,app,electron});
 function ordinary(directory){for(let current=directory;;current=path.dirname(current)){const stat=fs.lstatSync(current);assert.ok(stat.isDirectory()&&!stat.isSymbolicLink(),current);if(current===path.dirname(current))break;}}
 function inventory(directory,prefix=''){ordinary(directory);const result=[];for(const name of fs.readdirSync(directory).sort()){const absolute=path.join(directory,name),relative=prefix+name,stat=fs.lstatSync(absolute);assert.ok(!stat.isSymbolicLink());if(stat.isDirectory())result.push(...inventory(absolute,relative+'/'));else{assert.ok(stat.isFile()&&stat.nlink===1);result.push({path:relative,bytes:stat.size,sha256:sha(fs.readFileSync(absolute))});}}return result;}
 ordinary(parent);const original=inventory(source);assert.ok(original.some(file=>file.path==='tasks.sqlite'));assert.ok(!original.some(file=>/credential|secret|token/i.test(file.path)),'Only an authorized core archive may be copied');
 const out=fs.mkdtempSync(path.join(parent,'desktop-native-vm2-')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),data=path.join(profile,'plugins/data/craftmine.world'),token=randomUUID();fs.mkdirSync(data,{recursive:true});fs.mkdirSync(legacy);fs.cpSync(source,data,{recursive:true,errorOnExist:true,force:false});assert.deepEqual(inventory(data),original);fs.writeFileSync(path.join(out,'source-inventory.json'),JSON.stringify(original,null,2));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
-const core=path.join(root,'vendor/pi-desktop/target/release/craftmine-core.exe'),host=path.join(root,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe'),main=fs.readFileSync(path.join(app,'out/main/index.js'));
+const {core,host}=plan,main=packageInfo?packageInfo.main:fs.readFileSync(path.join(app,'out/main/index.js'));
 for(const marker of ['historyView','historyProbeScript','godot.historyCompare','configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance'])assert.ok(main.includes(Buffer.from(marker)),marker);
-assert.ok(fs.readFileSync(path.join(app,'out/preload/craftmine-headless.cjs')).includes(Buffer.from('requestPointerLock')));
-const runtime=JSON.parse(fs.readFileSync(path.join(root,'desktop/build/runtime-resources/runtime-resources.json'),'utf8'));assert.equal(runtime.sourceCommit,commit);
-const report={format:'craftmine.vm2-desktop-acceptance/1',passed:false,commit,root,out,source,worldId,mainSha256:sha(main),coreSha256:sha(fs.readFileSync(core)),hostSha256:sha(fs.readFileSync(host)),runtimeSourceCommit:runtime.sourceCommit,runtimeFilesDigest:runtime.filesDigest,steps:[],calls:[],launches:[],limits:['Newly compiled development client with this source commit; not an ASAR, installer or sealed Windows acceptance.','Only the explicitly authorized completed test core is copied; no personal profile, credential, network/model request, real input, focus or Pointer Lock.','Read-only comparisons are audited separately from deliberate fixture setup and a real finite 501 ms check/application used to test formal-version invalidation.']};
+assert.ok((packageInfo?packageInfo.preload:fs.readFileSync(path.join(app,'out/preload/craftmine-headless.cjs'))).includes(Buffer.from('requestPointerLock')));
+const runtime=packageInfo?{sourceCommit:packageInfo.identity.runtimeSourceCommit,filesDigest:packageInfo.identity.runtimeFilesDigest}:JSON.parse(fs.readFileSync(path.join(root,'desktop/build/runtime-resources/runtime-resources.json'),'utf8'));assert.equal(runtime.sourceCommit,commit);
+const report={format:'craftmine.vm2-desktop-acceptance/1',passed:false,mode:packaged?'packaged':'development',...(packageInfo?.identity??{}),commit,root,out,source,worldId,mainSha256:sha(main),coreSha256:sha(fs.readFileSync(core)),hostSha256:sha(fs.readFileSync(host)),runtimeSourceCommit:runtime.sourceCommit,runtimeFilesDigest:runtime.filesDigest,steps:[],calls:[],launches:[],limits:[packaged?'Explicitly pinned packaged EXE and bundled core/host/runtime; every launch revalidates package hashes. Installer execution, signature and clean-OS acceptance remain separate.':'Newly compiled development client with this source commit; not an ASAR, installer or sealed Windows acceptance.','Only the explicitly authorized completed test core is copied; no personal profile, credential, network/model request, real input, focus or Pointer Lock.','Read-only comparisons are audited separately from deliberate fixture setup and a real finite 501 ms check/application used to test formal-version invalidation.']};
 const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
-const require=createRequire(import.meta.url),{CoreClient}=require(path.join(root,'plugins/craftmine-world/core-client.cjs'));
+const require=createRequire(import.meta.url),{CoreClient}=require(packaged?path.join(packaged,'resources/plugins/craftmine.world/core-client.cjs'):path.join(root,'plugins/craftmine-world/core-client.cjs'));
+if(packageInfo)assert.deepEqual((await inspectParameterPackage({...packageOptions,asar})).identity,packageInfo.identity,'Package changed before fixture core startup');
 const seed=new CoreClient(core,data),other='vm2-empty-world';
 await seed.start();try{const actual=await seed.call('world.read',{id:worldId});assert.equal(actual.id,worldId);assert.equal(actual.world.snapshot.baseId,'first-person');report.originalWorld=actual;await seed.call('world.create',{id:other,title:'Isolated VM2 empty fixture',world:{build:{...compileScene({format:'craftmine.scene/3',title:'VM2 empty fixture',night:false,objects:[],systems:[],behaviors:[]}),id:'base-vm2-empty'},snapshot:INITIAL_SNAPSHOT,extensions:[]}});}catch(error){report.setupError=String(error.stack??error);report.finishedAt=new Date().toISOString();persist();throw error;}finally{await seed.stop();}
 let child,ended=true,ready=false,exit,launch;const pending=new Map();
-const electron=createRequire(path.join(options['--deps-app'],'package.json'))('electron');
-function start(){ended=false;ready=false;launch={at:new Date().toISOString()};report.launches.push(launch);child=spawn(electron,[app],{cwd:root,env:isolatedParameterEnvironment(process.env,{out,profile,token,core,host,bases:path.join(root,'desktop/godot')}),windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,`${report.launches.length}-${stream}.log`),bytes));child.on('message',m=>{if(m?.type==='craftmine-headless-ready')ready=true;if(m?.type==='craftmine-headless-exit')launch.audit=m;if(m?.type!=='craftmine-headless')return;const p=pending.get(m.id);if(!p)return;clearTimeout(p.timer);pending.delete(m.id);m.error?p.reject(Error(m.error)):p.resolve(m.result);});exit=new Promise(resolve=>{const finish=(code,signal,error)=>{if(ended)return;ended=true;launch.exit={code,signal,error:String(error??'')};for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('Client exited'));}pending.clear();persist();resolve();};child.once('error',e=>finish(null,null,e));child.once('exit',(code,signal)=>finish(code,signal));});}
+async function start(){
+ if(packageInfo)assert.deepEqual((await inspectParameterPackage({...packageOptions,asar})).identity,packageInfo.identity,'Package changed before launch');
+ ended=false;ready=false;launch={at:new Date().toISOString()};report.launches.push(launch);const current=launch,number=report.launches.length;
+ child=spawn(plan.executable,plan.args,{cwd:plan.cwd,env:isolatedParameterEnvironment(process.env,{out,profile,token,core,host,bases:plan.bases}),windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
+ for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,`${number}-${stream}.log`),bytes));
+ child.on('message',m=>{if(m?.type==='craftmine-headless-ready')ready=true;if(m?.type==='craftmine-headless-exit')current.audit=m;if(m?.type!=='craftmine-headless')return;const p=pending.get(m.id);if(!p)return;clearTimeout(p.timer);pending.delete(m.id);m.error?p.reject(Error(m.error)):p.resolve(m.result);});
+ exit=new Promise(resolve=>{const finish=(code,signal,error)=>{if(ended)return;ended=true;current.exit={code,signal,error:String(error??'')};for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('Client exited'));}pending.clear();persist();resolve();};child.once('error',e=>finish(null,null,e));child.once('exit',(code,signal)=>finish(code,signal));});
+}
 function rpc(method,payload={},timeout=60000){return new Promise((resolve,reject)=>{if(ended||!child.connected)return reject(Error('Client exited'));const id=randomUUID(),record={method,payload};report.calls.push(record);const timer=setTimeout(()=>{pending.delete(id);record.error='timeout';reject(Error('Timed out '+method));},timeout);pending.set(id,{timer,resolve:value=>{record.result=value;resolve(value);},reject:e=>{record.error=String(e);reject(e);}});child.send({type:'craftmine-headless',id,method,...payload});});}
 const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload},180000),panel=(channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}},180000),view=(action,args={})=>rpc('historyView',{payload:{action,worldId,...args}});
 async function until(fn,accept,label,timeout=120000){const deadline=Date.now()+timeout;let last;while(Date.now()<deadline){if(ended)throw Error('Client exited: '+label);try{last=await fn();}catch(error){last={error:String(error)};}if(accept(last))return last;await delay(300);}throw Error(label+': '+JSON.stringify(last));}
@@ -43,7 +57,7 @@ async function stable(){await panel('godot.runtimeSave',{freeze:true});return {p
 async function readonly(before){assert.deepEqual((await rpc('godotSnapshot')).state,before.progress);assert.equal((await panel('backup.status')).currentHash,before.db.currentHash);assert.deepEqual(await panel('workbench.operations'),before.task);}
 async function stop(){if(!launch)return;if(!ended){try{await rpc('quit',{},5000);}catch{}await Promise.race([exit,delay(20000)]);if(!ended){launch.forcedStop=true;child.kill();await Promise.race([exit,delay(5000).then(()=>{throw Error('CLIENT_STOP_TIMEOUT');})]);}}assertCleanHeadlessShutdown(launch);}
 try{
- start();await until(()=>ready,Boolean,'controller');await until(()=>nav('world.list'),x=>x.worlds?.some(w=>w.id===worldId),'copied real world');await nav('world.open',{id:worldId});await loaded();
+ await start();await until(()=>ready,Boolean,'controller');await until(()=>nav('world.list'),x=>x.worlds?.some(w=>w.id===worldId),'copied real world');await nav('world.open',{id:worldId});await loaded();
  const before=await stable();report.before=before;
  await step('actual React history opens through finite form navigation without authoring work',async()=>{await view('open');const r=await until(()=>view('read'),r=>r.open&&r.viewId&&!r.busy,'history DOM');assert.equal(r.sourceOpen,false);assert.equal(r.comparison,false);assert.ok(r.appliedOid);await readonly(before);return r;});
  const history=await view('read'),older=history.records.find(oid=>oid!==history.appliedOid);assert.ok(older);

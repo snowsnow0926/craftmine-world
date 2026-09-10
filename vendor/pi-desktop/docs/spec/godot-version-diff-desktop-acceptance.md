@@ -1,6 +1,6 @@
 # Actual VM2 desktop acceptance
 
-The development-only `historyView` headless method supports open, close, read,
+The dedicated `historyView` headless method supports open, close, read,
 refresh, compareHead, compareVersion, diff, next and previous. It accepts no
 script, arbitrary selector or core RPC. Main validates fields; page execution
 requires the installed headless input guard and matching active world. Only an
@@ -39,3 +39,26 @@ The finite probe unit tests are controlled DOM fixtures. Earlier VM2 Rust/Git,
 React race and service tests remain their own evidence; neither they nor mere
 compilation count as this runner passing. Raw actual-client report and termination
 status are required. Rejected, interrupted or blocked builds fail visibly.
+
+## Explicit packaged mode
+
+Adding `--packaged-root`, `--expected-commit` and
+`--expected-build-manifest-sha256` selects package-only execution. The expected
+source commit must also match the explicitly selected clean source root.
+`inspectParameterPackage` verifies Main/preload, all manifest-listed client and
+plugin files, bundled core/host, source archive and runtime resource inventory.
+The package is rechecked before fixture-core startup and every client launch.
+An absent or changed package dependency fails; it never selects a development
+binary. The dependency-app argument supplies only the ASAR reader in this mode,
+not Electron. Fixture creation uses the bundled core and bundled CoreClient;
+the client starts the packaged EXE with no development app argument.
+
+The original nine Main/React, full-progress read-only, stale-view, real 501 ms
+check/application and strict shutdown assertions are unchanged. Only the same
+explicitly authorized completed core archive is copied. The report distinguishes
+`mode: packaged` from `mode: development` and records the actual package identity.
+Unit test success does not constitute a package acceptance run.
+
+```powershell
+node tests/plan-loop/version-diff-client-native.mjs --source-root C:/path/to/frozen-source --deps-app C:/path/to/dependencies/vendor/pi-desktop/apps/desktop --source-core C:/path/to/authorized-6Uvnzp/profile/plugins/data/craftmine.world --world world-a5eac9797410 --output-parent C:/cm-vm2-package/test-results --packaged-root C:/release/win-unpacked --expected-commit <40-hex-commit> --expected-build-manifest-sha256 <64-hex-hash>
+```
