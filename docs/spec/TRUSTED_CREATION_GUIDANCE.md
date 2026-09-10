@@ -69,6 +69,23 @@ hash-guarded draft patches and real host build/check evidence. Application stays
 with existing player controls. A shipped example is not a replacement for the
 player's customized source.
 
+## Packaging
+
+The production plugin builder explicitly stages `godot-guidance.cjs`,
+`guidance/catalog.json` and `guidance/equipment-parameters.md`. The developer-only
+catalog generator is excluded. `desktop/build-world-plugin.mjs --output <directory>`
+supports an isolated build destination; omitting the option preserves the normal
+`desktop/build/craftmine.world` destination. This is a developer build argument,
+not an exposed model tool or runtime filesystem capability.
+
+`node --test --test-isolation=none tests/creation-guidance/packaging.test.mjs`
+builds the actual production plugin in a fresh temporary output directory,
+compares each staged guidance resource byte-for-byte, loads the built broker and
+its real bundled domain module, and reads the packaged skill and reference body
+using fixture host replies. It requires the existing offline-installed esbuild
+and Babel build dependencies. A source-tree-only broker test is insufficient to
+prove that these files ship.
+
 ## Errors and verification
 
 `GUIDANCE_SKILL_NOT_FOUND`, `GUIDANCE_REFERENCE_NOT_FOUND`,

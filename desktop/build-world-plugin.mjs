@@ -8,11 +8,16 @@ import {NATIVE_ACCEPTANCE_MARKER,NATIVE_ACCEPTANCE_SOURCE} from '../vendor/pi-de
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root,'plugins/craftmine-world');
-const output = path.join(root,'desktop/build/craftmine.world');
+const args=process.argv.slice(2);
+if(args.length && (args.length!==2 || args[0]!=='--output' || !args[1].trim())) throw Error('Usage: build-world-plugin.mjs [--output <directory>]');
+const output = args.length ? path.resolve(args[1]) : path.join(root,'desktop/build/craftmine.world');
 const require = createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
 const {build} = require('esbuild');
 await fs.mkdir(path.join(output,'views'), {recursive:true});
-for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-restore-service.cjs','package-turn-lifecycle.cjs','world-tools.cjs','verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs','workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','asset-service.mjs','reuse-service.mjs','tool-services.cjs']) await fs.copyFile(path.join(source,file),path.join(output,file));
+for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-restore-service.cjs','package-turn-lifecycle.cjs','world-tools.cjs','verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs','workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','godot-routing.cjs','godot-docs.cjs','godot-guidance.cjs','guidance/catalog.json','guidance/equipment-parameters.md','godot-query.cjs','godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','asset-service.mjs','reuse-service.mjs','tool-services.cjs']) {
+  await fs.mkdir(path.dirname(path.join(output,file)),{recursive:true});
+  await fs.copyFile(path.join(source,file),path.join(output,file));
+}
 // The installer consumes package parsing and draft planning from source paths;
 // bundle those modules so the staged plugin has no checkout-relative imports.
 await build({entryPoints:[path.join(source,'reuse-service.mjs')],outfile:path.join(output,'reuse-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
