@@ -1,0 +1,47 @@
+{
+  "format": "craftmine.creation-next-batch/1",
+  "plan": "docs/CREATION_NEXT_BATCH_PLAN_2026-09-11.md",
+  "baseline": "c1660f12",
+  "status": "in_progress",
+  "updatedAt": "2026-09-10T21:23:36.190Z",
+  "stages": {
+    "NB0": {
+      "status": "in_progress",
+      "evidence": []
+    },
+    "NB1": {
+      "status": "pending",
+      "evidence": []
+    },
+    "NB2": {
+      "status": "pending",
+      "evidence": []
+    },
+    "NB3": {
+      "status": "pending",
+      "evidence": []
+    },
+    "NB4": {
+      "status": "pending",
+      "evidence": []
+    },
+    "NB5": {
+      "status": "pending",
+      "evidence": []
+    },
+    "NB6": {
+      "status": "pending",
+      "evidence": []
+    },
+    "NB7": {
+      "status": "pending",
+      "evidence": []
+    }
+  },
+  "externalValidation": {
+    "physicalMicrophone": "not_run",
+    "realPlayers": "not_run",
+    "cleanWindows": "not_run"
+  },
+  "realModelRuns": 0
+}
