@@ -19,6 +19,13 @@ export function validateInheritedBudget(before,after){
  if(after?.format!==before.format||after.limit!==40||!Array.isArray(after.requests)||after.requests.length<before.requests.length||after.requests.length>40||new Set(after.requests).size!==after.requests.length||before.requests.some((id,index)=>after.requests[index]!==id))throw Error('CONTINUATION_BUDGET_IDENTITY_CHANGED');
  return {limit:40,inherited:before.requests.length,reserved:after.requests.length,newReserved:after.requests.length-before.requests.length,remaining:40-after.requests.length};
 }
+export function assertRejectedBeforeModel({attempt,turn,messages,calls,gaps,interruptions,budget}){
+ if(attempt?.id!=='CA07'||attempt.submitted!==false||attempt.modelRequests!==0||attempt.promptResult?.ok!==false||attempt.promptResult.error?.code!=='CREATION_TARGET_STALE'||!attempt.finishedAt||attempt.budgetAtStart?.reserved!==31)throw Error('CONTINUATION_NOT_PROVEN_PRE_DISPATCH');
+ if(turn?.status!=='error'||turn.error_code!=='CREATION_TARGET_STALE'||turn.input_tokens!==0||turn.output_tokens!==0||turn.usage_json!==null||!turn.ended_at||turn.started_at<Date.parse(attempt.startedAt)||turn.ended_at>Date.parse(attempt.finishedAt)||calls!==0||gaps!==0||interruptions!==0)throw Error('CONTINUATION_MODEL_DISPATCH_UNCERTAIN');
+ if(messages.length!==1||messages[0].role!=='user'||messages[0].text!==attempt.request||messages[0].is_error!==0)throw Error('CONTINUATION_TRANSCRIPT_UNCERTAIN');
+ if(budget?.limit!==40||budget.requests?.length!==31||new Set(budget.requests).size!==31)throw Error('CONTINUATION_EXPECTED_31_REQUEST_BUDGET');
+ return {reason:'rejected-before-model',turnId:turn.id,modelRequests:0,reserved:31};
+}
 // Reopening can legitimately consume physics ticks before the pause request.
 // Only the already-authored countdown may advance; every other saved field must match.
 export function compareHarvestRestore(saved,restored,ruleId,physicsTick){
