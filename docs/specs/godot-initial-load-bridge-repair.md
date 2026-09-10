@@ -23,7 +23,3 @@ Only an explicit initialization retry enables the repair. The host reads the bun
 The host binds the repair to the current manifest, Git head, applied reference and numeric world revision. It does not change original managed-base files, their receipt, or progress. A new manifest must pass a fresh check before first-load adoption. Durable first-load failure remains a confirmation-stage, actionable message even when Main retains an older raw timeout string.
 
 Verification: 37 controlled initializer, creation-stage and acceptance-relay tests pass in the integrated checkout. Six of these exercise old/new bridge bytes and preserved materialization; none is a claim of native gameplay or final-package acceptance.
-
-## Offscreen complete-client measurements
-
-The existing explicitly enabled headless `status` response includes Electron's own process PID, type, creation time, CPU and memory facts. No other application or desktop is inspected. `tests/godot-final/client-complete.mjs` records the current source commit and launched PID; an expected-commit input additionally requires clean matching source. `CRAFTMINE_TEST_PERFORMANCE=1` records these process observations after successful scenario steps. Step durations retain their existing wall-clock definition. These measurements describe this offscreen run, not display FPS, physical-input latency, a clean machine or a complete process-tree peak (the independent Rust/broker children are outside Electron's metric set).
