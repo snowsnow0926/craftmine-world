@@ -6,7 +6,7 @@ import { mkdir, mkdtemp } from 'node:fs/promises';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createP8Relay, parseAuthorizedConfiguration, createSecretRedactor, MODEL, ENDPOINT } from './relay.mjs';
-import { openRequestJournal, normalizedProviderUsage, reconcileMetrics } from './evidence.mjs';
+import { openRequestJournal, normalizedProviderUsage, reconcileMetrics, unwrapP8ProductReply } from './evidence.mjs';
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const deps = process.env.CRAFTMINE_P8_TEST_DEPS ?? 'D:/cm-fb-20260910/vendor/pi-desktop/packages/agent-runtime';
 const require = createRequire(path.join(deps, 'package.json'));
@@ -126,4 +126,13 @@ test('private list without navigation state requires a real matching loaded runt
     const f = fixture({ observe: async () => observed }); await assert.rejects(f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' }), /READY_BASE_REQUIRED/); assert.equal(f.calls.length, 0);
   }
   const good = fixture(); assert.equal((await good.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' })).worldId, 'world-hammer');
+});
+
+test('product submit and abort envelopes unwrap without weakening accepted/turn identity', () => {
+  const accepted = { accepted: true, turnId: 'actual-turn' };
+  assert.deepEqual(unwrapP8ProductReply({ ok: true, data: accepted }), accepted);
+  assert.deepEqual(unwrapP8ProductReply({ ok: true, data: { aborted: true } }), { aborted: true });
+  for (const invalid of [null, [], accepted, { ok: true }, { ok: 1, data: accepted }, { ok: true, data: accepted, extra: true }, { ok: false, error: {} }]) assert.throws(() => unwrapP8ProductReply(invalid));
+  assert.throws(() => unwrapP8ProductReply({ ok: false, error: { message: 'TURN_BUSY' } }), /TURN_BUSY/);
+  assert.equal(unwrapP8ProductReply({ ok: true, data: { accepted: false } }).accepted, false);
 });
