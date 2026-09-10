@@ -1,0 +1,41 @@
+✔ actual clean source, sealed output, and complete evidence bind one run (271.6725ms)
+✔ different clean head cannot derive an old sealed application (295.3006ms)
+✔ missing, foreign, truncated or altered package evidence fails before compression (2009.7882ms)
+✔ source manifest or sealed bytes changing invalidates the derivative (448.8802ms)
+✖ unsafe ZIP paths, Windows aliases, extra files and special entries are rejected (1.5104ms)
+✔ actual junctions and hard links are rejected without following their contents (339.0721ms)
+✔ owned failure retains a failed report and cannot create a portable seal (224.3153ms)
+✔ pinned 7-Zip creates and extracts only a tiny owned fixture; repeat runs preserve prior output (1120.866ms)
+✔ each run has fresh output and sealed bytes reject later replacement (23.3691ms)
+✔ same-run pair mandatory; foreign old installer is never searched (6.6384ms)
+✔ changed manifest, outside record and resealing are rejected (9.0697ms)
+✔ archive listing accepts fixed payload and rejects traversal, aliases and links (0.627ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4807.0189
+
+✖ failing tests:
+
+test at tests\godot-final-install-assets\portable-seal.test.mjs:74:1
+✖ unsafe ZIP paths, Windows aliases, extra files and special entries are rejected (1.5104ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///D:/cm-plan-portable-20260910/tests/godot-final-install-assets/portable-seal.test.mjs:81:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /SPECIAL_FILE/,
+    operator: 'throws',
+    diff: 'simple'
+  }

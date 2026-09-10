@@ -1,0 +1,23 @@
+✔ actual clean source, sealed output, and complete evidence bind one run (264.2624ms)
+✔ different clean head cannot derive an old sealed application (294.16ms)
+✔ missing, foreign, truncated or altered package evidence fails before compression (1999.2787ms)
+✔ source manifest or sealed bytes changing invalidates the derivative (437.4305ms)
+✔ unsafe ZIP paths, Windows aliases, extra files and special entries are rejected (0.8169ms)
+✔ actual junctions and hard links are rejected without following their contents (327.995ms)
+✔ owned failure retains a failed report and cannot create a portable seal (225.9487ms)
+✔ a foreign run cannot create an output directory in either release (320.8223ms)
+✔ wrong inherited archive pin is a retained failure, never a PATH fallback (223.2452ms)
+{"evidenceType":"tiny-owned-payload-real-pinned-7zip","directory":"C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\craftmine-portable-seal-abk9Na\\desktop\\build\\releases\\434e115f4898-bcb87985-88d7-4207-8c1a-919befc9d190\\portable-8600250e-0ca6-41da-b919-f839074f76c8","archive":{"path":"Craftmine-World-portable-434e115f4898.zip","bytes":1553,"sha256":"29e15346f832bc28ad0e986e2f5d182587af8f52aa625e2c1653e70cd51defed"},"files":5,"totalBytes":260,"tool":{"path":"D:\\cm-godot-final-20260910\\desktop\\build\\archive-tool-26.03\\tools\\7z.exe","sha256":"6ee3c0ed0b27663c1b948ae85a7c0bb073aed1498983182f3f0df1f6a8c30b2f","librarySha256":"65e4c1f855f9ef6e8f0f5df8e3f27d9eb5f07311408639da0a1ca0b8f4871b0d"},"firstExtractedTamperRejected":true,"originalSealUnchanged":true}
+✔ pinned 7-Zip creates and extracts only a tiny owned fixture; repeat runs preserve prior output (1064.9652ms)
+✔ each run has fresh output and sealed bytes reject later replacement (21.4363ms)
+✔ same-run pair mandatory; foreign old installer is never searched (6.7054ms)
+✔ changed manifest, outside record and resealing are rejected (8.4007ms)
+✔ archive listing accepts fixed payload and rejects traversal, aliases and links (0.6111ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5248.674

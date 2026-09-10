@@ -8944,3 +8944,20 @@ Keep renderer destruction pending after runtime cleanup and verify disposal rema
 - Start an owned host process and dispose twice. Both callers await the same result; EOF precedes rejection of pending RPCs. An exit event without child close must remain pending.
 - Let either graceful or forced termination close the child and its pipes. Disposal succeeds only after that terminal event. An already exited process is never killed again while awaiting pipe closure.
 - Withhold close after exit or a kill request. Both callers receive HOST_CORE_CLOSE_TIMEOUT, and the actual client's shutdown audit records the failure instead of treating exit code 0 as successful cleanup.
+
+### Same-release portable ZIP sealing (2026-09-10)
+
+After an actual clean Windows build and same-run package verify, invoke
+node desktop/seal-portable.mjs --run <that release/run.json>. Require an
+exclusive portable attempt directory, ZIP plus full evidence/seal, exact
+extracted file equality with package-evidence.files, and unchanged original
+release output/seal. Repeat into another fresh attempt without replacing the
+first. Keep unsigned/local-preview, execution, and clean-machine limits explicit.
+
+Run portable-seal.test.mjs and release-run.test.mjs independently on tiny owned
+fixtures. Reject dirty/different HEAD, foreign run, missing/altered evidence,
+changed manifests/payload, wrong archive pins, traversal/ADS/aliases, links,
+special entries, duplicates, and extraction mismatches. Use only an already
+available explicitly hash-pinned 7-Zip for the small real round trip; never
+package an old application to manufacture acceptance for new source. Retain
+failed attempt reports. No model, network download, visible window or OS input.
