@@ -20,7 +20,7 @@ import {canAutomaticallyInitialize} from "./godot-world-initialization";
 
 export const PROGRESS_FORMAT = "craftmine.godot-progress/1";
 /** Bases this client can actually create. Matches the core's accepted set. */
-export const DELIVERED_GODOT_BASES = ["first-person", "top-down", "side-view", "mining-sandbox"] as const;
+export const DELIVERED_GODOT_BASES = ["first-person", "top-down", "side-view", "mining-sandbox", "creation-sandbox"] as const;
 
 export type GodotBaseTemplate = {
   id: string;
@@ -59,6 +59,7 @@ export type WorldCreation = {
 };
 
 const BASE_LABELS: Record<string, { label: string; description: string }> = {
+  "creation-sandbox": { label: "造物世界 · 3D", description: "空白创造场地、物体布置、交互与连续创作" },
   "first-person": { label: "3D 第一人称", description: "摄像机、碰撞、装备与指向交互" },
   "top-down": { label: "2D 俯视", description: "瓦片地图、人物碰撞、区域交互与背包" },
   "side-view": { label: "2D 横版", description: "重力、跳跃、平台碰撞与检查点" },

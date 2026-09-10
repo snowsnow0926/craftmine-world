@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { rememberCraftmineWidth } from "../lib/craftmine-layout";
+import { copyCreationRequestContext, type CreationRequestContext } from "../lib/creation-target";
 import i18n from "i18next";
 import type {
   AgentEventEnvelope,
@@ -896,11 +897,13 @@ export type AppState = {
     content: string,
     draft?: ComposerDraftSnapshot,
     targetSessionId?: string,
+    requestContext?: CreationRequestContext,
   ) => Promise<boolean>;
   enqueuePrompt: (
     content: string,
     draft?: ComposerDraftSnapshot,
     sessionId?: string,
+    requestContext?: CreationRequestContext,
   ) => void;
   removeQueuedPrompt: (promptId: string) => void;
   sendQueuedNow: (promptId: string) => Promise<void>;
@@ -2055,7 +2058,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     }));
   },
 
-  enqueuePrompt: (content, draft, requestedSessionId) => {
+  enqueuePrompt: (content, draft, requestedSessionId, requestContext) => {
     const sessionId = requestedSessionId ?? get().activeSessionId;
     if (!sessionId) return;
     const queuedDraft: ComposerDraftSnapshot = draft
@@ -2071,6 +2074,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       sessionId,
       content,
       draft: queuedDraft,
+      requestContext: copyCreationRequestContext(requestContext),
       createdAt: Date.now(),
     };
     set((state) => ({
@@ -2143,7 +2147,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         promptId,
       ),
     }));
-    const accepted = await get().sendPrompt(item.content, item.draft, sessionId);
+    const accepted = await get().sendPrompt(item.content, item.draft, sessionId, item.requestContext);
     if (!accepted) {
       set((state) => ({
         queuedPrompts: enqueueQueuedPrompt(state.queuedPrompts, {
@@ -2154,7 +2158,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  sendPrompt: async (content, draft, requestedSessionId) => {
+  sendPrompt: async (content, draft, requestedSessionId, requestContext) => {
+    const submittedRequestContext = copyCreationRequestContext(requestContext);
     let sessionId = requestedSessionId ?? get().activeSessionId;
     if (sessionId && get().pendingPlans[sessionId]?.status === "pending") {
       return false;
@@ -2170,7 +2175,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!sessionId) throw new Error("No active session");
     if (get().pendingPlans[sessionId]?.status === "pending") return false;
     if (get().runningSessions[sessionId]) {
-      get().enqueuePrompt(content, draft, sessionId);
+      get().enqueuePrompt(content, draft, sessionId, submittedRequestContext);
       return true;
     }
     const startedIn = sessionId;
@@ -2240,6 +2245,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         attachments: draft
           ? promptAttachmentsFromDraft(draft.fileReferences)
           : [],
+        requestContext: submittedRequestContext,
       });
       if (submission.abortResolution && (await submission.abortResolution)) {
         return false;
@@ -4459,7 +4465,7 @@ function drainQueuedPrompts(sessionId: string): Promise<void> {
       }));
       const accepted = await useAppStore
         .getState()
-        .sendPrompt(item.content, item.draft, sessionId);
+        .sendPrompt(item.content, item.draft, sessionId, item.requestContext);
       if (!accepted) {
         useAppStore.setState((state) => ({
           queuedPrompts: enqueueQueuedPrompt(state.queuedPrompts, {

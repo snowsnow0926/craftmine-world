@@ -339,7 +339,7 @@ test("creation recovery dispatches only host-supported actions", async () => {
     return {};
   });
   await bridge.creationAction("w1", "retry");
-  assert.deepEqual(calls[0], ["world.creationAction", { worldId: "w1", action: "retry" }]);
+  assert.deepEqual(calls[0], ["world.creationRetry", { worldId: "w1" }]);
   await assert.rejects(() => bridge.creationAction("w1", "invented"), /INVALID_WORLD_CREATION_ACTION/);
   assert.equal(calls.length, 1);
 });

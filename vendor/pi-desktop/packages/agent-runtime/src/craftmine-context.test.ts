@@ -15,6 +15,15 @@ function fixture() {
   return { hooks, calls, set: (value: CraftmineTaskContext) => { current = value; } };
 }
 describe("Craftmine authoritative request boundary", () => {
+  it("carries the host target through compaction/retry and drops a different world's capture", () => {
+    const current=snapshot();
+    current.creationTarget={worldId:"world",snapshotId:"host-capture",target:{entityId:"tree-fixed"}};
+    for(const purpose of ["creation","summary","review","retry"] as const){
+      expect(craftmineContextBlocks(current,purpose)).toContain("tree-fixed");
+    }
+    current.creationTarget.worldId="another-world";
+    expect(craftmineContextBlocks(current)).not.toContain("tree-fixed");
+  });
   it("summarizes a finished task without granting creation or retry access", () => {
     const current = snapshot(); current.status = "finished"; current.lease.owned = false;
     expect(craftmineContextBlocks(current, "summary")).toContain("Summarize the ongoing task");
