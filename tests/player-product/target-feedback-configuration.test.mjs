@@ -106,6 +106,7 @@ test('unknown roots, profile expressions, inheritance and duplicate or reordered
  const args=officialFixture(),profile='data/balance/training_range.tres';
  for(const changed of [
   replaceFile(args,args.scenePath,'scripts/core/base_world.gd','scripts/core/custom_world.gd'),
+  replaceFile(replaceFile(args,args.scenePath,'balance_profile = ExtResource("2_balance")\n',''),args.scenePath,'script = ExtResource("1_world")','balance_profile = ExtResource("2_balance")\nscript = ExtResource("1_world")'),
   replaceFile(args,profile,'hit_flash_seconds = 0.12','hit_flash_seconds = 0.1 + 0.02'),
   replaceFile(args,profile,'hit_flash_seconds = 0.12','hit_flash_seconds = 0.12\nhit_flash_seconds = 0.5'),
   replaceFile(args,profile,'[resource]','[sub_resource type="Resource" id="bad"]\n[resource]'),
