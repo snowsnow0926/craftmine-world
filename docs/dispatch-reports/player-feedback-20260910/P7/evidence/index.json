@@ -1,0 +1,704 @@
+[
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\broker-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\broker-identity.json",
+    "bytes": 215,
+    "sha256": "c8c5ee660a621f0c8368271f8c3d8240ccca86fcbbf05a412a008d58df3598f4"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\electron-exit.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\electron-exit.json",
+    "bytes": 39,
+    "sha256": "c5bc639a37ad93628890a3750630e46f508721cd8ced2faba27032c207f61685"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\electron-stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\electron-stdout.log",
+    "bytes": 644,
+    "sha256": "ffc8b44e6a5a31e4143dcfc79c402e554907e372e346731d33567954191c0bfa"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\pf-8e5f915eb97446f182121d5d.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\pf-8e5f915eb97446f182121d5d.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d.stdout.log",
+    "bytes": 4211,
+    "sha256": "9564c6010a6644f665ee90234115f063601096c441955dba2dd865b4f920cda1"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\report.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\report.json",
+    "bytes": 20422,
+    "sha256": "c4b7a3d44606561e45c668a4226a41d67591dbe347b770b44c274f0a0bf9cb85"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d\\task-identity.json",
+    "bytes": 165,
+    "sha256": "d3845c83a5921b433f0f36c0300bc49e8588cf06161abc80ad3213113686de03"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d\\native-verification.json",
+    "bytes": 768,
+    "sha256": "240b909d001a9f76d3e2550f896643a101f22ce1c4a5dbab266a5539f1380bb8"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d\\process-verification.json",
+    "bytes": 777,
+    "sha256": "cc6ab3c2041cab9f78e2667fb97457e8602e4754983207b9a68eaac60bd1bbdb"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-baseline\\pf-8e5f915eb97446f182121d5d\\task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\broker-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\broker-identity.json",
+    "bytes": 215,
+    "sha256": "34160a97f5995fffc3819a0524b412e586d14e58c487c4aca9e40cd097276d3e"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\electron-exit.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\electron-exit.json",
+    "bytes": 39,
+    "sha256": "c5bc639a37ad93628890a3750630e46f508721cd8ced2faba27032c207f61685"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\electron-stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\electron-stdout.log",
+    "bytes": 790,
+    "sha256": "de22010efc5bf773efd8eef9d15bdea88945c0a59187fc3395c87823b18cfa4e"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\pf-02ba5e94f75445c3a9473f85.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\pf-02ba5e94f75445c3a9473f85.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85.stdout.log",
+    "bytes": 4721,
+    "sha256": "09aca3724189e1261a1509ab646dabf8d81bdb96b61261210eb8b3d9a1f4fdad"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\report.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\report.json",
+    "bytes": 23371,
+    "sha256": "3eb29422c915a4cfb671cb31e64b05a84d166113b4376f3e1b11c3d6226cd645"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\bin-retirement-ack.json",
+    "bytes": 5419,
+    "sha256": "a0d75b80771aaf50e82eab9d4ab6146b78fe1261511131d83360d9b97c3f292a"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "eb9e338b7f0e7d8c51f4589b085371aab765e10741833ece016df786bf6d2d6c"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "9993cf6f1291db3aa1143127d56771d8e4ad62fda9758a19cd4cf335c19802c4"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\task-identity.json",
+    "bytes": 165,
+    "sha256": "523cd5fbaad9f2b00febf380902cef65abf38f21d6223c29c03f9b83a10dd574"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\native-verification.json",
+    "bytes": 768,
+    "sha256": "6eccde9f99846572dd4af97f89d156e98bdce72e70bddbff88a0cc9c098a4b7a"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\process-verification.json",
+    "bytes": 777,
+    "sha256": "f0c5004fa445540828ea78950c00d0053d4cf7ff5b3146cc9cff7f555b5c3f97"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-nNoQQ6\\data\\godot\\tasks\\pf-02ba5e94f75445c3a9473f85\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-fixture-failure\\pf-02ba5e94f75445c3a9473f85\\task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\broker-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\broker-identity.json",
+    "bytes": 215,
+    "sha256": "34160a97f5995fffc3819a0524b412e586d14e58c487c4aca9e40cd097276d3e"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\electron-exit.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\electron-exit.json",
+    "bytes": 39,
+    "sha256": "1dff4461e0d850ac31ff79ecc82e4eb2e8d59dff2e999f7a66e9c2ed2069bc8c"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\electron-stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\electron-stdout.log",
+    "bytes": 80,
+    "sha256": "3523ece6628881cab81049b1eee79b23b44f63c89e91ce166f25d4002c0d9688"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\ex-5ca3bd71c9794e5198ca875b.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\ex-5ca3bd71c9794e5198ca875b.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b.stdout.log",
+    "bytes": 15001,
+    "sha256": "d8d6aa4fa966bdd133a68974e0fddce293509566fdeacee9cdd1d8ba61632785"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\ex-6b25f5412e064b89a11aeb70.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\ex-6b25f5412e064b89a11aeb70.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70.stdout.log",
+    "bytes": 14997,
+    "sha256": "30f809d23b82c5ed2285656a11c2953dfcff060fd6d59c065795aa80f0a1a2a1"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\im-c264c5e7b1ea489daa694ae7.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\im-c264c5e7b1ea489daa694ae7.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7.stdout.log",
+    "bytes": 14054,
+    "sha256": "103b6bccb17cfe1fc3ef399316048603d1114b906c1e5d607def3f3a0581fc3e"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\im-c6b6942f41c64251a1ba64fb.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\im-c6b6942f41c64251a1ba64fb.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb.stdout.log",
+    "bytes": 13940,
+    "sha256": "da9850cef1cf99164a8fcc45cced3b08ececbed18634249988a9cd1e66dbbc44"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\im-e0711d8041554902ad14adbb.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\im-e0711d8041554902ad14adbb.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb.stdout.log",
+    "bytes": 13937,
+    "sha256": "dec543bbcb7a0147c5fda5536e9d5b85e0d2f1a268f980b64760de13cb93253d"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-92c1528dc06f4361bb38bb64.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-92c1528dc06f4361bb38bb64.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64.stdout.log",
+    "bytes": 4716,
+    "sha256": "b00a847b9513fbb90af93cb95a2f8b970f80d8cf37af83c2e027b4083287fa2c"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-a94150a9083b43be99389770.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-a94150a9083b43be99389770.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770.stdout.log",
+    "bytes": 4722,
+    "sha256": "b360f2ff5f26b5e67f48ab02916dd64cbf35d3a9cf209705d3328ff293d3f562"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-bdbd8afe655d4821a10e1b1f.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-bdbd8afe655d4821a10e1b1f.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f.stdout.log",
+    "bytes": 4717,
+    "sha256": "06d6414c9b508b5f0b24d30997e1c468352e7d59a915d7788d3b432464d642ee"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-d00848dbb7bc432c8c5540aa.stderr.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa.stderr.log",
+    "bytes": 190,
+    "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\pf-d00848dbb7bc432c8c5540aa.stdout.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa.stdout.log",
+    "bytes": 4719,
+    "sha256": "0ade4be021947dcb2ce9d273c84776e6f59f817015ad03c8f7a8388ece846cc7"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\report.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\report.json",
+    "bytes": 352687,
+    "sha256": "f379b921da0ea3f79f2c34cd73e57ba654d832025da232d0d2a4f922024a1dd3"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\bin-retirement-ack.json",
+    "bytes": 28896,
+    "sha256": "55d6e5c57ebe41bc0c96a6e1350116c5ec4a1643e112c258abf1c2693ad63bcf"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "660301982b6c3d0709b4e6bcbd6b08426e4670baaba2d60c4cbdab9f98b3cf33"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "f929662c8749a4e1fb3050cf6233fb279739b3684ef87ffe37d4b5b97daf51ba"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\task-identity.json",
+    "bytes": 165,
+    "sha256": "f6e51a08df4fc34ca811336eefe634172309f1cbbe9a982596597d595f9af3e9"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\native-verification.json",
+    "bytes": 769,
+    "sha256": "f27f641e3a5466fcbfabe6a6a4325718d29dd1faa3a474aadea1772de5b34c91"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\process-verification.json",
+    "bytes": 778,
+    "sha256": "db2e10ae0e5f91f3d6e0f7c3993b43852dd86d552e6b838dafac0861a9dd4c3b"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-5ca3bd71c9794e5198ca875b\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-5ca3bd71c9794e5198ca875b\\task.log",
+    "bytes": 21385,
+    "sha256": "3705694857b111e39c4cb66482a2b5737615646edcf95c3917bbfafc3376e1d4"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\bin-retirement-ack.json",
+    "bytes": 28892,
+    "sha256": "dffbd6bc1d9b47fd1140226db8b154a16ae73afc65a0db8ae4e7a91caf9c1a72"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "7ef02d2c366c4dcbeb11b8b29dece8bea7761be086ebf71e5c2d94882b9be8de"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "040a5f30862e57be6bcef4b6ca852bd0a56866ead3a5a9cfa3444470f45dd9e5"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\task-identity.json",
+    "bytes": 165,
+    "sha256": "bf8ec58e308baa1f70c5aca34d0db08521ebc68d2f67abfc47b814af4eb9ea65"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\native-verification.json",
+    "bytes": 767,
+    "sha256": "ead516a247258211426589e49989b53470b7336a09f3da894afb114b3bd46d16"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\process-verification.json",
+    "bytes": 776,
+    "sha256": "335829705a8db0e4dddf0f7dd3946e3ea2270f830c1adb293d1c6d4b6558271c"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\ex-6b25f5412e064b89a11aeb70\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\ex-6b25f5412e064b89a11aeb70\\task.log",
+    "bytes": 21385,
+    "sha256": "3705694857b111e39c4cb66482a2b5737615646edcf95c3917bbfafc3376e1d4"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c264c5e7b1ea489daa694ae7\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "43802546a72340ad9aa866f3ca9fca4bb29a54f1563f3ddda9f3ac19c9609604"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c264c5e7b1ea489daa694ae7\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7\\task-identity.json",
+    "bytes": 165,
+    "sha256": "6e17f58d03e3e956fb6eaf63bb4317dc0fb6c3a033f9193ca58e19d6fc28ada8"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c264c5e7b1ea489daa694ae7\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7\\native-verification.json",
+    "bytes": 768,
+    "sha256": "12d82e6a68aa3c2303702735211ca46db91ca33437ef46b913a4704784f51757"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c264c5e7b1ea489daa694ae7\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c264c5e7b1ea489daa694ae7\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7\\process-verification.json",
+    "bytes": 777,
+    "sha256": "6507e10b4ecc6c53db0c4367930da6eaafecb146526156960032d55aff5e26b1"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c264c5e7b1ea489daa694ae7\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c264c5e7b1ea489daa694ae7\\task.log",
+    "bytes": 7128,
+    "sha256": "38eae263ac81cb75f77e7f13edd0310d6d939bd1af5262842cddb183baf79718"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\bin-retirement-ack.json",
+    "bytes": 27835,
+    "sha256": "39b9aa908637c83e692ff24d8febb4a94401cbcf4a3dfdf957747ec73a14aa90"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "c0766f37259085dbef43334e7ba880a9b22c38491659821a3016ae64d97a7b29"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "6b4d4653a88f7332ed287a35a546c8371cb701aa536f12cf2f7f59f3d2ac4867"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\task-identity.json",
+    "bytes": 165,
+    "sha256": "9450aeb281e407645f4c1453b8b026dbf9bec4b1a0d1c5852fcf4869b824bc96"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\native-verification.json",
+    "bytes": 768,
+    "sha256": "a1760152eeb5aa2614f59eedf7281ee0fcace309abb665e7c66cd2d32b3f5215"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\process-verification.json",
+    "bytes": 778,
+    "sha256": "d2659a7926dfe11e760f900bf43bdce448e2ecc6e0438620c0c61f2895031513"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-c6b6942f41c64251a1ba64fb\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-c6b6942f41c64251a1ba64fb\\task.log",
+    "bytes": 6664,
+    "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\bin-retirement-ack.json",
+    "bytes": 27832,
+    "sha256": "46643dc46ed9ccee2e7084e77b98561e95d644b6b689d8e8abbb4af35f399891"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "07d6fcbf211e8eb546fbfbc1fcdc5f28c707e487730aeeb9239f33621922dfb8"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "26428dbe9f2d2c6ab0674101fdb03f4d52cbf1f3c17029a1fc3460ce8dbf9f8e"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\task-identity.json",
+    "bytes": 165,
+    "sha256": "d1d5aadc097d253d421b6f5e41d1eb1b57e038363b88d3babf5bc0573dd7009b"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\native-verification.json",
+    "bytes": 767,
+    "sha256": "132072b520d3d2c06f1e7a2eb7d3c2bb6d5a5813b070905327431327c986066a"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\process-verification.json",
+    "bytes": 776,
+    "sha256": "da4a0204379c802ed90dc46f63726c28057857ee97fcbdeefc36f14774ee23b3"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\im-e0711d8041554902ad14adbb\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\im-e0711d8041554902ad14adbb\\task.log",
+    "bytes": 6664,
+    "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\bin-retirement-ack.json",
+    "bytes": 5414,
+    "sha256": "e229ee9cecf228655e15063ff83c05c4799511f39ec762846b0635e0c9847b8f"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "a989b945be9644692b8829822f990b41e9c9c80467fdb29086e739beb4e0fc56"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "a932b2946707977158e91f466568d59a40bfbdec1243fef6453f3c4f87e3e09f"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\task-identity.json",
+    "bytes": 165,
+    "sha256": "cdfd7c78cd82c33802d184e23a7a71cbe8d6840773ac4161950c4a33e6bd481c"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\native-verification.json",
+    "bytes": 769,
+    "sha256": "3e70f7754d292d5f01cf6363788fa78acecc6de90e639030d7fea39f2d82d2ea"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\process-verification.json",
+    "bytes": 778,
+    "sha256": "c0369a73cf0421748bb63c4b52be888b07a578c4da695625badfc2edbc467e37"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-92c1528dc06f4361bb38bb64\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-92c1528dc06f4361bb38bb64\\task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\bin-retirement-ack.json",
+    "bytes": 5420,
+    "sha256": "2c12db3dc385b4fb69a4cb070be303b430064c2b78bd84e328b906abfb222fc6"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "1f20655f6ec299812b963ceb8261ec93a269dc794734f679654c16da987cac2c"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "e98a12d32ad05dca26fd23868db10071981d5ed6f09cef52eea5f9c4e1eb8f76"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\task-identity.json",
+    "bytes": 165,
+    "sha256": "e7f54afabf160e4e3a0e5a6ae67aeb4d0688b55d3149a8fc2049e571a4705f08"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\native-verification.json",
+    "bytes": 768,
+    "sha256": "007b2ab8c4ad53be527dd53be74a7878cb9f225212bdeb83bf66f71e19434cc7"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\process-verification.json",
+    "bytes": 777,
+    "sha256": "9d92506bfcefb170361e584238aa87f72af237e575550b7b90b182032b280c47"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-a94150a9083b43be99389770\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-a94150a9083b43be99389770\\task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\bin-retirement-ack.json",
+    "bytes": 5415,
+    "sha256": "fcf354ad5cc04787025c4ac0e06aa1e628d98b006abf16f8c24c7accda6792dc"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "d2829a450052ef883e89cc043618794c5224916afaee0e5d7c5cd518dd7f2df8"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "5ee3cfaa35d73aaa3d88e1253d38d0d1a092ba5b4e776a4b93e03bf373d1f99b"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\task-identity.json",
+    "bytes": 165,
+    "sha256": "92db8590fc7363c0414d7a35673d0e3090b65c2054e49bb03d61d7dae0320446"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\native-verification.json",
+    "bytes": 766,
+    "sha256": "f1c03c23c8639e3c83199e66cbee127ec5a569b54b5005038637e29b44b653ec"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\process-verification.json",
+    "bytes": 775,
+    "sha256": "a5f76ab64e2b821f4d7ed2c17460db12bfff4e1d053dbda8af74ba648c311851"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-bdbd8afe655d4821a10e1b1f\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-bdbd8afe655d4821a10e1b1f\\task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\bin-retirement-ack.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\bin-retirement-ack.json",
+    "bytes": 5417,
+    "sha256": "cd13952c03ec503d659ae2e0cb898beb83381a631e24958a39447e58494a08d1"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\bin-retirement-result.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\bin-retirement-result.json",
+    "bytes": 351,
+    "sha256": "6a14fddcf465cce1333826f0d8e7519e2faafa5976d4ea01207adccf6d8ed2e6"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\bin-retirement.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\bin-retirement.json",
+    "bytes": 493,
+    "sha256": "0cda72f0d10890f9b4edb88b689ad5a5118a9073e63ba759dde4ff6698075f8b"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\task-identity.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\task-identity.json",
+    "bytes": 165,
+    "sha256": "a9f1920fb7db3f8435156a8ec9c47e31e6121bff8fc70484d6485361890bf79d"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\logs\\native-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\native-verification.json",
+    "bytes": 767,
+    "sha256": "68d0834d4cf8dfa0c3344a44ec5d43767a251b42368f89894ff4c7ab685f9eb9"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\logs\\preflight.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\preflight.json",
+    "bytes": 508,
+    "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\logs\\process-verification.json",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\process-verification.json",
+    "bytes": 776,
+    "sha256": "1539eab30a6e696b800193ad0c696322a83792698de32551d2ad0d698894e4b5"
+  },
+  {
+    "source": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-p752ZX\\data\\godot\\tasks\\pf-d00848dbb7bc432c8c5540aa\\logs\\task.log",
+    "archived": "D:\\cm-fb-p7-20260910\\docs\\dispatch-reports\\player-feedback-20260910\\P7\\evidence\\native-final\\pf-d00848dbb7bc432c8c5540aa\\task.log",
+    "bytes": 33,
+    "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+  }
+]
