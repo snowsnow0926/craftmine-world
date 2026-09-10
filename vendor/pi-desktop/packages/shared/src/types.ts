@@ -714,6 +714,7 @@ export function formatAskToolOutput(
 }
 
 export type AgentEvent =
+  | { type: "model_call"; call: import("./task-metrics.js").ModelCallObservation }
   | { type: "agent_start" }
   | { type: "agent_end"; messageIds: string[] }
   | { type: "turn_start" }
