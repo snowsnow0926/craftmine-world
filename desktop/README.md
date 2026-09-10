@@ -33,7 +33,19 @@ powershell -NoProfile -File desktop/build-client.ps1 -Installer `
 
 The reduced `7za.exe` is insufficient: the tool must support NSIS. The same run's `output/` contains `Craftmine-World-Setup-<version>.exe` and its blockmap. Verification extracts the actual installer payload and compares it with that run's unpacked application, including source, native binaries, plugin, ASAR client files and runtime resources. It does not execute the installer or prove signing, clean-machine installation, upgrades or uninstall behavior. Read that run's evidence instead of reusing a previous package's results.
 
-The build entry does not itself produce a portable ZIP. A separately delivered portable archive must be made from that verified run's complete `win-unpacked`, then independently extracted and compared by file hashes. Do not add delivery files inside an already sealed `output/` directory. Keep delivery archive hashes and evidence outside that seal.
+The build entry does not itself produce a portable ZIP. After that run has its
+seal and package evidence, create and verify the portable derivative with:
+
+```powershell
+node desktop/seal-portable.mjs --run '<absolute same-run directory>/run.json'
+```
+
+This uses the run's pinned full 7-Zip and creates a fresh `portable-<uuid>/`
+directory alongside `output/`. The ZIP includes the complete verified
+`win-unpacked`; its independently extracted files must all match the package
+evidence. The new directory contains its own portable evidence and seal. The
+original sealed output is unchanged. This verifies bytes and extraction;
+running the resulting application remains a separate acceptance step.
 
 An optional `CARGO_TARGET_DIR` may point to a shared Cargo build cache. The build script copies only the two resulting release executables into the declared package resource paths; it does not copy that cache into the application.
 
