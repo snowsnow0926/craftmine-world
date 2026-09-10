@@ -1,0 +1,12 @@
+{
+  "source": "D:/cm-fb3-20260910/tests/player-feedback/P7/retirement-native.mjs",
+  "originalSha256": "13ad44e48e2ca57cd670ac592e7fea958a758e887056d53c90c52d86f40a67cd",
+  "file": "D:/cm-fb3-20260910/test-results/p7-package-driver/retirement-package-native.mjs",
+  "sha256": "7b83ccd96dd91fabdcdac24e85c84e74cd621506683534b7e06f94cb5edcce76",
+  "frozenCommit": "570fed344ee775aa0cc8d4ef7d096bce96e1cc5f",
+  "manifestSha256": "f802fc7b23b350a0f6c5d4a6ac3cde9272da33ae9f5b26bccfb12efdb040f0c8",
+  "changes": [
+    "Strict package inspection; packaged Core/broker/engine and fixed package identity without self-generated pin.",
+    "Fixture builds frozen root3 production modules; retained 2-success/1-failure, restart and process-close assertions."
+  ]
+}

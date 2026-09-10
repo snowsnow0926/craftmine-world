@@ -1,0 +1,10 @@
+{
+  "source": "D:/cm-fb3-20260910/tests/player-feedback/P1/legacy-retry-client.mjs",
+  "sourceSha256": "abf3b157b9af3650af5d1295f5eeecd53da939d2d0fc16dab073900e4c0a75e0",
+  "file": "D:/cm-fb3-20260910/test-results/legacy-debug-driver/legacy-retry-debug.mjs",
+  "sha256": "cdd4a4455a51098b8ba81746d26d55c96e5367baac215f3dc4d45a3fb0b54d18",
+  "changes": [
+    "Attach bounded owned debugger to each full-client process after spawn, before test requests; original product modules and full legacy assertions unchanged.",
+    "DebugActiveProcess first attach breakpoint continued; subsequent breakpoint captures do not swallow exception status."
+  ]
+}

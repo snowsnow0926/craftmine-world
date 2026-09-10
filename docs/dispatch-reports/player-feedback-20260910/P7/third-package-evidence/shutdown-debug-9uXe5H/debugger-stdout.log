@@ -1,0 +1,3 @@
+ATTACHED pid=179372
+EXCEPTION code=0x80000003 tid=97844 address=0x7ff9accb1020 first=1
+PROCESS_EXIT code=0
