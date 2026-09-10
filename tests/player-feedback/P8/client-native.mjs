@@ -151,7 +151,7 @@ try {
       reopen[caseId] = { sessionId: binding.sessionId, worldId: world.id, providerId: binding.providerId };
       const admissionStart = relay.snapshot().attempts.length;
       const submitted = await step('submit fixed reconstructed request once', () => p8('submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
-      const final = await step('real task completes through product tools', () => until(async () => {
+      const final = await step('real task reaches a durable terminal state', () => until(async () => {
         const value = await p8('snapshot', caseId); fs.writeFileSync(path.join(out, caseId + '-latest.json'), JSON.stringify(value, null, 2));
         return value;
       }, value => !value.active && value.metrics?.turnId === submitted.turnId && value.metrics.status !== 'running', 'model task', 1500000));
@@ -160,7 +160,9 @@ try {
       item.requests = relay.snapshot().attempts.slice(admissionStart); item.calls = rawCalls(binding, submitted.turnId);
       await step('P4 durable usage and generation TPS match raw provider facts', () => reconcileMetrics(final.metrics, item.calls, item.requests, binding));
       const visible = await until(() => p8('snapshot', caseId), value => value.dom?.metrics?.some(metric => metric.turnId === submitted.turnId), 'actual P5 task metrics');
-      item.dom = visible.dom; const metric = visible.dom.metrics.find(value => value.turnId === submitted.turnId);
+      item.dom = visible.dom; const taskCards = visible.dom.metrics.filter(value => value.turnId === submitted.turnId);
+      assert.equal(taskCards.length, 1, 'Exactly one metrics card must represent the durable user turn');
+      const metric = taskCards[0];
       assert.equal(metric.coverage, final.metrics.coverage); assert.ok(metric.values.model.includes(MODEL));
       if (final.metrics.usage) assert.ok(metric.values.tokens.includes(new Intl.NumberFormat('zh-CN').format(final.metrics.usage.totalTokens)));
       assert.equal(final.metrics.status, 'completed', 'Model task did not complete successfully');

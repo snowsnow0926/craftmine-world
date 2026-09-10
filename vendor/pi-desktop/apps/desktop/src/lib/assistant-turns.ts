@@ -46,6 +46,8 @@ export type AssistantTurnEntry = {
   kind: "assistant-turn";
   id: string;
   anchorId?: string;
+  /** Real assistant message used for host metrics; only the last compaction segment owns the card. */
+  metricsMessageId?: string;
   parts: AssistantTurnPart[];
 };
 
@@ -217,6 +219,23 @@ export function buildTranscriptEntries(
     }
   }
 
+  // Compaction is a visual divider, not a new user operation. Keep one host
+  // metrics anchor on its final segment; never derive totals from these rows.
+  let metricsOwner: AssistantTurnEntry | undefined;
+  let metricsMessageId: string | undefined;
+  for (const entry of entries) {
+    if (entry.kind === "message" && entry.message.role === "user") {
+      metricsOwner = undefined;
+      metricsMessageId = undefined;
+    } else if (entry.kind === "assistant-turn") {
+      const assistant = entry.parts.flatMap(part => part.kind === "message" ? [part.message] : part.items.map(item => item.message))
+        .find(message => message.role === "assistant");
+      metricsMessageId ??= assistant?.id;
+      if (metricsOwner) delete metricsOwner.metricsMessageId;
+      entry.metricsMessageId = metricsMessageId;
+      metricsOwner = entry;
+    }
+  }
   return { entries, visible };
 }
 
