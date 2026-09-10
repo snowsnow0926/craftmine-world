@@ -25,6 +25,17 @@ const vec=(value:unknown):value is Vector=>Array.isArray(value)&&value.length===
 function fail(code:string):never{throw Object.assign(Error(code),{errorCode:code});}
 const digest=(text:string)=>createHash("sha256").update(text).digest("hex");
 
+/** Editable values come from the same observed entity as the fixed ray target. */
+export function creationTargetDisplay(target:Target,entities:unknown){
+  const matches=Array.isArray(entities)?entities.filter(item=>item?.id===target.entityId):[];
+  if(target.surface!=="entity"||matches.length!==1)return structuredClone(target);
+  const entity=matches[0],names:Record<string,string>={tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"};
+  if(!Object.hasOwn(names,entity.kind)||!vec(entity.scale)||entity.scale.some((n:number)=>n<.25||n>4)||typeof entity.color!=="string"||!/^#[a-fA-F0-9]{6}$/.test(entity.color))return structuredClone(target);
+  const label=entity.kind==="marker"?entity.parameters?.label:undefined;
+  const entityName=typeof label==="string"&&label.length>0&&label.length<=80&&!/[\x00-\x1f]/.test(label)?label:names[entity.kind];
+  return {...structuredClone(target),entityName,entityKind:entity.kind,scale:[...entity.scale],color:entity.color};
+}
+
 /** Host-owned capture coordinates are immutable; a renderer receives only a handle. */
 export function createCreationTargetService(deps:Dependencies) {
   const now=deps.now??Date.now;
@@ -90,7 +101,7 @@ export function createCreationTargetService(deps:Dependencies) {
       if(pending.size>=64)pending.delete(pending.keys().next().value!);
       pending.set(capture.snapshotId,{owner,session:{...session},capture});
       return {captureId:capture.snapshotId,worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,
-        sourceRevision:capture.sourceRevision,manifestHash:capture.manifestHash,sampledAt:capture.sampledAt,target:target.surface==="none"?null:structuredClone(capture.target)};
+        sourceRevision:capture.sourceRevision,manifestHash:capture.manifestHash,sampledAt:capture.sampledAt,target:target.surface==="none"?null:creationTargetDisplay(capture.target,creation.entities)};
     },
     async validate(owner:number,value:unknown,session:CaptureSession):Promise<CreationCapture|null> {
       if(value===undefined)return null;

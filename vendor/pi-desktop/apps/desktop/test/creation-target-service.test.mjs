@@ -3,7 +3,7 @@ import test from "node:test";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import {createCreationTargetService} from "../electron/main/creation-target-service.ts";
+import {createCreationTargetService,creationTargetDisplay} from "../electron/main/creation-target-service.ts";
 
 const session={projectId:"project-a",sessionId:"session-a"};
 const context={...session,turnId:"turn-a"};
@@ -106,4 +106,13 @@ test("no hit preserves world context and owner revocation removes pending handle
   assert.equal(display.target,null);assert.ok(display.captureId);
   service.revokeOwner(11);
   await assert.rejects(service.validate(11,ref(display),session),/EXPIRED/);
+});
+
+
+test("editable target uses the same sampled entity values and rejects mismatched or duplicate entities",async t=>{
+ const {deps,service}=fixture(t);const original=deps.sample;deps.sample=async()=>{const sample=await original();sample.payload.creation.entities=[{id:'tree-a',kind:'tree',scale:[2,3,1.5],color:'#123456',parameters:{}}];return sample;};
+ const display=await service.capture(11,session);assert.equal(display.target.entityName,'树');assert.equal(display.target.entityKind,'tree');assert.deepEqual(display.target.scale,[2,3,1.5]);assert.equal(display.target.color,'#123456');
+ const target={entityId:'tree-a',surface:'entity',position:[0,0,0],normal:[0,1,0],revision:1};
+ const entity={id:'tree-a',kind:'tree',scale:[2,3,1.5],color:'#123456'};
+ assert.deepEqual(creationTargetDisplay(target,[{...entity,id:'other'}]),target);assert.deepEqual(creationTargetDisplay(target,[entity,entity]),target);assert.deepEqual(creationTargetDisplay(target,[{...entity,scale:[NaN,1,1]}]),target);
 });
