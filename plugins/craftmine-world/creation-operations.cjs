@@ -53,7 +53,7 @@ function overlap(a,b){return [0,1,2].every(i=>Math.abs(a.position[i]-b.position[
 function validatePlacement(item,others,snapshot){
   const box=bounds(item);
   check(box.position[0]-box.halfExtents[0]>=-28&&box.position[0]+box.halfExtents[0]<=28&&box.position[2]-box.halfExtents[2]>=-28&&box.position[2]+box.halfExtents[2]<=28&&box.position[1]+box.halfExtents[1]<=16,'CREATION_OUT_OF_BOUNDS');
-  const player={position:[snapshot.playerPosition[0],snapshot.playerPosition[1]+.9,snapshot.playerPosition[2]],halfExtents:[.5,.9,.5]};
+  const player={position:[...snapshot.playerPosition],halfExtents:[.5,.9,.5]};
   check(!overlap(box,player),'CREATION_PLAYER_OVERLAP');
   for(const other of others)if(other.id!==item.id)check(!overlap(box,bounds(other)),'CREATION_OCCUPIED');
   for(const obstacle of snapshot.obstacles??[])if(obstacle.id!==item.id)check(!overlap(box,obstacle),'CREATION_OCCUPIED');

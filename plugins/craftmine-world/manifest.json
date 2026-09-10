@@ -51,7 +51,9 @@
               "enum": [
                 "first-person",
                 "top-down",
-                "side-view"
+                "side-view",
+                "mining-sandbox",
+                "creation-sandbox"
               ]
             },
             "files": {
@@ -1080,15 +1082,513 @@
       },
       {
         "name": "creation_operation",
-        "description": "Apply one bounded, target-bound creation operation to the current Godot world source. Supports placing, modifying, duplicating, changing time of day and adding a sequence door. The operation is compiled with collision, bounds, stale-target and replay checks, then committed as a durable CAS patch. Supply the exact targetSnapshot captured from the running world and the full request; a source receipt does not apply a build or publish it.",
+        "description": "Compile one bounded creation-sandbox source operation using the immutable target captured by the host for this turn. request.expected uses source revision/hash from godot_project_index and world/build/instance/snapshot identity from the host creation context. The model cannot supply coordinates as authority. Places, modifies, duplicates, changes source time, or adds a generated sequence-door script. Returns a durable draft receipt; use godot_build_start mode check and inspect actual results before player preview/application. Recapture when the source or runtime changed outside this turn.",
         "risk": "medium",
         "schema": {
           "type": "object",
           "properties": {
-            "request": { "type": "object" },
-            "targetSnapshot": { "type": "object" }
+            "request": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "place"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "tree",
+                        "rock",
+                        "chest",
+                        "door",
+                        "marker"
+                      ]
+                    },
+                    "position": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -28,
+                        "maximum": 28
+                      }
+                    },
+                    "offset": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -8,
+                        "maximum": 8
+                      }
+                    },
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                    },
+                    "color": {
+                      "type": "string",
+                      "pattern": "^#[a-fA-F0-9]{6}$"
+                    },
+                    "scale": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": 0.25,
+                        "maximum": 4
+                      }
+                    },
+                    "rotationY": {
+                      "type": "number",
+                      "minimum": -180,
+                      "maximum": 180
+                    },
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "rewardId": {
+                          "type": "string",
+                          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                        },
+                        "rewardCount": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 99
+                        },
+                        "initiallyOpen": {
+                          "type": "boolean"
+                        },
+                        "label": {
+                          "type": "string",
+                          "maxLength": 80
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "kind"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "modify"
+                    },
+                    "targetId": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                    },
+                    "changes": {
+                      "type": "object",
+                      "properties": {
+                        "position": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": -28,
+                            "maximum": 28
+                          }
+                        },
+                        "rotationY": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        "scale": {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0.25,
+                            "maximum": 4
+                          }
+                        },
+                        "color": {
+                          "type": "string",
+                          "pattern": "^#[a-fA-F0-9]{6}$"
+                        },
+                        "parameters": {
+                          "type": "object",
+                          "properties": {
+                            "rewardId": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                            },
+                            "rewardCount": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 99
+                            },
+                            "initiallyOpen": {
+                              "type": "boolean"
+                            },
+                            "label": {
+                              "type": "string",
+                              "maxLength": 80
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "minProperties": 1,
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "targetId",
+                    "changes"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "duplicate"
+                    },
+                    "targetId": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 8
+                    },
+                    "offset": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "number",
+                        "minimum": -8,
+                        "maximum": 8
+                      }
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "targetId",
+                    "count",
+                    "offset"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "environment"
+                    },
+                    "timeOfDay": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 24
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "timeOfDay"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "sequence-door"
+                    },
+                    "ruleId": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                    },
+                    "doorId": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                    },
+                    "sequence": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                      },
+                      "minItems": 2,
+                      "maxItems": 16,
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "ruleId",
+                    "doorId",
+                    "sequence"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
           },
-          "required": ["request", "targetSnapshot"],
+          "required": [
+            "request"
+          ],
           "additionalProperties": false
         }
       },

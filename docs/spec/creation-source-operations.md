@@ -1,5 +1,15 @@
 # Persistent creation source operations
 
+## 2026-09-11 生产链路修订
+
+正式工具仅接收 `{request}`，内层使用 `creation-operation-schema.cjs` 完整分支；移除模型提供 `targetSnapshot` 的入口。宿主通过 `creationTarget(context)` 提供项目、会话、任务绑定的不可变采样。仅支持 `creation-sandbox`，模型只回填身份与源码版本。
+
+索引按32文件分页，正文按16000 Unicode字符分页并校验完整字节长度和SHA-256。正式构建ID取宿主捕获的正在运行实例，不能用最早的baseBuild。同一任务有界操作可推进同一固定目标，外部源码变化要求重新捕获。提交前重查当前实例与玩家碰撞，不移动原目标。
+
+稳定操作ID映射Rust收据键；重复调用先查原始事务，丢回复不重放不确定写入。源码回执返回applied:false，采用仍走检查候选事务。
+
+造物进度包含player、timeOfDay、sourceTimeOfDay、inventory、openedChests、doors、rules。候选检查捕获真实默认，JS和Rust分别推导相同迁移，仅补新door/rule键，保留奖励和历史键；源码默认时间明确变化才采用新时间。最终仍须真实实例精确恢复并产生确认回执。复制的操作收据重绑worldId并保留originWorldId及实体身份。
+
 Creation operations compile into ordinary `godotProject.patch` source edits.
 They never mutate the live scene, invoke a model, apply a candidate, or edit player
 progress. The existing source transaction, build/check, candidate review and apply

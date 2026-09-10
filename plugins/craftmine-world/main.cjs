@@ -115,6 +115,7 @@ async function onLoad() {
   // provider makes the tool report an explicit gap with its owner instead of
   // substituting a task-start snapshot, a saved value or a zero counter.
   const hostProviders=createHostProviders((method,params)=>{
+    if(method==='creationTarget'&&typeof pi.craftmine?.creationTarget==='function')return pi.craftmine.creationTarget(params);
     if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
     throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
   });
