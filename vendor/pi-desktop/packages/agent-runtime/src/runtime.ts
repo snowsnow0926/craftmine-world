@@ -2,7 +2,7 @@ import { requireCompleteSummary, CRAFTMINE_SUMMARY_FOCUS } from "./compaction-co
 import { randomUUID } from "node:crypto";
 import { completedGodotReadFiles } from "./craftmine-godot-read-files.js";
 import { observeModelStream } from "./task-metrics-stream.js";
-import { CRAFTMINE_SYSTEM_PROMPT, appendCraftmineRequestData, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
+import { CRAFTMINE_SYSTEM_PROMPT, appendCraftmineRequestData, craftmineAuthorizedBudget, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
   Agent,
   BACKGROUND_CONTEXT,
@@ -611,6 +611,10 @@ export type AgentRuntimeOptions = {
   /** Set exclusively by the desktop host for a bound world task. */
   craftmineWorld?: boolean;
   craftmineHooks?: CraftmineRequestHooks;
+  /** Trusted process configuration used to decide the durable budget. Only the
+   *  host supplies it (it defaults to this process's own environment); the
+   *  authorization itself is verified in `craftmineAuthorizedBudget`. */
+  craftmineBudgetEnv?: Record<string, string | undefined>;
   host: HostClient;
   sessionId: string;
   mode: Mode;
@@ -1317,6 +1321,11 @@ export class DesktopAgentRuntime {
     this.craftmineHooks = opts.craftmineHooks ?? (this.craftmineWorld ? createCraftmineProxyHooks(
       (method, params) => opts.host.call(method, params),
       () => ({ sessionId: this.sessionId, turnId: this.hostTurnId }),
+      // The authorized acceptance phase is decided here, from trusted process
+      // configuration only: a headless P8 run with a known dated authorization.
+      // Any other turn gets no budget at all and keeps the product default of 80
+      // requests. No model argument and no model-visible tool reaches this.
+      craftmineAuthorizedBudget(opts.craftmineBudgetEnv ?? process.env),
     ) : undefined);
     this.sessionId = opts.sessionId;
     this.hostTurnId = opts.turnId;

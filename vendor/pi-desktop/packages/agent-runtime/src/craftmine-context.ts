@@ -129,11 +129,49 @@ export function appendCraftmineRequestData(context: Context, text: string): Cont
   return { ...context, messages };
 }
 
+/** Durable task budget. `null` means "no boundary of this kind" and is only
+ *  accepted from an authorized trusted caller: every other request keeps the
+ *  product default, and no model argument can reach these fields because the
+ *  hooks build the reservation themselves. */
+export type CraftmineBudgetLimits = {
+  maxRequests?: number | null;
+  maxTokens?: number | null;
+  maxCompactions?: number;
+  deadlineAt?: number;
+};
+/** How a trusted caller proves it may remove the request boundary. `phase` is
+ *  the authorization a parent process verified, never a model argument. */
+export type CraftmineBudgetAuthorization = { kind: "p8-native-unlimited"; phase: string };
+export type CraftmineBudget = { limits: CraftmineBudgetLimits; authorization?: CraftmineBudgetAuthorization };
+/** Only these dated authorizations may run without the request boundary. */
+export const CRAFTMINE_UNLIMITED_REQUEST_PHASES = ["parallel-20260910", "unlimited-20260910"] as const;
+/** The durable budget of an authorized acceptance phase, derived from trusted
+ *  process configuration only: a headless acceptance run, the P8 native phase
+ *  and one of the known dated authorizations. Everything else (no phase, the
+ *  default `initial-16` phase, an unknown phase, a normal run) keeps the product
+ *  default of 80 requests. */
+export function craftmineAuthorizedBudget(env: Record<string, string | undefined> | undefined): CraftmineBudget | undefined {
+  if (!env) return undefined;
+  if (env.CRAFTMINE_HEADLESS_TEST !== "1" || env.CRAFTMINE_P8_NATIVE !== "1") return undefined;
+  const phase = env.CRAFTMINE_P8_AUTHORIZATION_PHASE;
+  if (typeof phase !== "string" || !(CRAFTMINE_UNLIMITED_REQUEST_PHASES as readonly string[]).includes(phase)) return undefined;
+  return { limits: { maxRequests: null, maxTokens: null, maxCompactions: 8 }, authorization: { kind: "p8-native-unlimited", phase } };
+}
+/** An unlimited *request* boundary without a verified authorization is refused.
+ *  `maxTokens: null` keeps its existing, always-legal meaning and is not gated. */
+export function assertCraftmineBudgetAuthorized(budget: CraftmineBudget | undefined): void {
+  if (!budget || budget.limits.maxRequests !== null) return;
+  const authorization = budget.authorization;
+  if (authorization?.kind !== "p8-native-unlimited") fail("CRAFTMINE_BUDGET_AUTHORIZATION_REQUIRED");
+  if (!(CRAFTMINE_UNLIMITED_REQUEST_PHASES as readonly string[]).includes(authorization.phase)) fail("CRAFTMINE_BUDGET_AUTHORIZATION_PHASE");
+}
 export function createCraftmineRequestHooks(options: {
   getContext: () => Promise<CraftmineTaskContext>;
   domainCall: CraftmineDomainCall;
-  limits?: { maxRequests?: number; maxTokens?: number | null; maxCompactions?: number; deadlineAt?: number };
+  limits?: CraftmineBudgetLimits;
+  authorization?: CraftmineBudgetAuthorization;
 }): CraftmineRequestHooks {
+  assertCraftmineBudgetAuthorized(options.limits ? { limits: options.limits, authorization: options.authorization } : undefined);
   async function prepare(input: CraftmineBeforeInput) {
     aborted(input.signal);
     const snapshot = await options.getContext();
@@ -174,10 +212,18 @@ export function createCraftmineRequestHooks(options: {
   };
 }
 
-export function createCraftmineProxyHooks(call: CraftmineDomainCall, identity: () => { sessionId: string; turnId?: string }): CraftmineRequestHooks {
+/**
+ * Trusted in-process caller. `budget` may only carry unlimited fields together
+ * with an explicit authorization, so a caller that merely omits a number can
+ * never widen a task; the core keeps the product default (80 requests) in force
+ * until an authorized first reservation fixes the task's own budget.
+ */
+export function createCraftmineProxyHooks(call: CraftmineDomainCall, identity: () => { sessionId: string; turnId?: string }, budget?: CraftmineBudget): CraftmineRequestHooks {
+  assertCraftmineBudgetAuthorized(budget);
   return createCraftmineRequestHooks({
     getContext: () => call<CraftmineTaskContext>("craftmine.context", identity()),
     domainCall: (method, params) => call(`craftmine.${method}`, { ...identity(), ...params }),
+    ...(budget ? { limits: budget.limits, ...(budget.authorization ? { authorization: budget.authorization } : {}) } : {}),
   });
 }
 

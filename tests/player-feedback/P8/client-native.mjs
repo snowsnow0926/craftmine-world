@@ -22,7 +22,7 @@ import { p8Authorization, stripCaseArgument } from './authorization.mjs';
 import { readLedgerSummary, admissionAccounting } from './ledger.mjs';
 import { evaluateGameplay } from './gameplay-criteria.mjs';
 import { summarizeRun, CASE_PIPELINE_COMPLETE } from './run-outcome.mjs';
-
+import { pollWorldInitialization, INITIALIZATION_DEADLINE_MS } from './initialization-poll.mjs';
 /** One initial request plus the three fixed continuations the product allows. */
 const MAX_ROUNDS = 4;
 const CASE_PLAN = Object.freeze({ hammer: { baseId: 'first-person', starterId: 'training-range' }, dog: { baseId: 'top-down', starterId: 'town' } });
@@ -76,7 +76,7 @@ async function start() {
   if (packageInfo) assert.deepEqual((await inspectParameterPackage({ ...options, asar })).identity, packageInfo.identity);
   ready = false; ended = false; launch = { startedAt: new Date().toISOString() }; report.launches.push(launch);
   const env = { ...isolatedParameterEnvironment(process.env, { out, profile, token, core, host, bases: packageInfo?.bases ?? path.join(runtime, 'desktop/godot') }), TEMP: temp, TMP: temp,
-    CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_PROXY_BASE: relay.baseUrl, CRAFTMINE_P8_PROXY_AUTH: relay.auth, CRAFTMINE_P8_REOPEN: JSON.stringify(reopen) };
+    CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_AUTHORIZATION_PHASE: authorization.phase, CRAFTMINE_P8_PROXY_BASE: relay.baseUrl, CRAFTMINE_P8_PROXY_AUTH: relay.auth, CRAFTMINE_P8_REOPEN: JSON.stringify(reopen) };
   child = spawn(packageInfo?.executable ?? electron, packageInfo ? [] : [app], { cwd: packageInfo?.cwd ?? root, env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe', 'ipc'] });
   for (const stream of ['stdout', 'stderr']) child[stream].on('data', bytes => fs.appendFileSync(path.join(out, `client-${report.launches.length}-${stream}.log`), bytes));
   child.on('message', message => {
@@ -176,7 +176,14 @@ try {
     try {
       await until(() => nav('world.createOptions'), value => value.bases?.some(base => base.id === baseId), 'base catalog');
       const world = await step('create fresh ' + caseId + ' world', () => nav('world.create', { baseId, starterId, title: 'P8 reconstructed ' + caseId, operationId: randomUUID() })); item.worldId = world.id;
-      await step('actual initialization build/check', () => until(async () => (await nav('world.list')).worlds.find(row => row.id === world.id), row => { assert.ok(!['failed', 'cancelled', 'interrupted'].includes(row?.state), JSON.stringify(row)); return row?.state === 'ready'; }, 'initialization', 900000)); await loaded(world.id);
+      // The world exists from here on: only the read that follows is retried, and
+      // only for the plugin's own 5 s read timeout. A terminal world state, any
+      // other error, or the overall deadline still ends the case as before.
+      const initialized = await step('actual initialization build/check', () => pollWorldInitialization({
+        read: () => nav('world.list'), worldId: world.id, deadline: Date.now() + INITIALIZATION_DEADLINE_MS,
+        onRetry: event => { item.initializationRetries = (item.initializationRetries ?? 0) + 1; report.initializationRetries ??= []; report.initializationRetries.push({ caseId, ...event }); save(); },
+      }));
+      item.initialization = { reads: initialized.reads, retries: initialized.retries, state: initialized.row.state }; await loaded(world.id);
       const initial = await rpc('godotObserve'); item.initialBuildId = initial.buildId;
       // The initial build's own source is the baseline for "the map and the
       // existing characters are preserved"; the candidate's source is compared

@@ -4,12 +4,40 @@ import type { BrowserWindow, WebContents } from "electron";
 import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance.js";
 import { exerciseP8Gameplay } from "./craftmine-acceptance-p8-gameplay.js";
 
+import { craftmineAuthorizedBudget } from "@pi-desktop/agent-runtime";
+
 export const P8_MODEL = "deepseek-v4.1-flash-expires-on-0910";
 export const P8_PROMPTS = {
   hammer: "这是新的隔离测试训练场；下面是重建需求，不是原玩家提示。请真正用当前Godot工程工具创作一把可见的雷神之锤，稳定装备ID为thunder_hammer，能在出生点附近拾取、装备，用现有普通攻击操作击打目标，并产生有至少1秒冷却的局部闪电视觉效果。保留原训练目标、原装备和所有旧进度字段。请先读当前底座规范及相关工程文件，沿实际工具读写、构建、检查反馈修正；不要使用旧体素world JSON代替Godot源码，也不要用文字模拟完成。锤子造型可以用工程内几何制作，不需要外部资产下载。不要加入测试专用接口、伪造观察值或为了通过检查重置玩家进度。只完成这个有限功能，实际发起Godot检查并读其结果，通过后保留未采用候选，等待玩家确认；明确给出候选ID、真实拾取位置和普通操作，不要宣称已正式采用。",
   dog: "这是新的隔离俯视村落测试世界；下面是重建需求，不是原玩家提示。请真正用当前Godot工程工具增加一只明显可见的小狗，稳定ID为p8-dog，在玩家出生点附近；在有限距离内跟随玩家，走远后停止追赶，接近交互时显示一句狗狗对白。保留地图、已有角色、任务、背包、钱物和所有旧进度字段。请先读当前底座规范及相关工程文件，沿实际工具读写、构建、检查反馈修正；不能用旧体素world JSON代替Godot源码，不要只说能做到。小狗可用项目内绘制或几何制作，不需要外部资产下载。不要加入测试专用接口、伪造观察值或为了检查清空旧进度。只完成这个有限功能，实际发起Godot检查并读取结果，通过后保留未采用候选等待玩家确认；明确给出候选ID、真实所在位置、跟随范围与普通交互操作，不要宣称已正式采用。",
 } as const;
 type CaseId = keyof typeof P8_PROMPTS;
+/** The native task budget this authorized phase requires: no request and no
+ *  cumulative-token boundary. Main must propagate exactly this value into the
+ *  crafting runtime; without it the product default (80 requests) stays in
+ *  force, which is what silently ended the recorded run. */
+export const P8_AUTHORIZED_LIMITS = { maxRequests: null, maxTokens: null, maxCompactions: 8 } as const;
+/** The authorized budget of this process, or undefined when this is not the
+ *  authorized P8 native phase. The decision (headless acceptance, P8 native and
+ *  one of the known dated phases) lives in the runtime package so the crafting
+ *  hooks and this acceptance can never disagree about what is authorized. */
+export function p8AuthorizedBudget(env: Record<string, string | undefined>) {
+  return craftmineAuthorizedBudget(env);
+}
+/** The request and token boundaries the live task actually carries, or null when
+ *  no task context is available. */
+export function p8ObservedLimits(current: unknown): { maxRequests: unknown; maxTokens: unknown } | null {
+  if (!record(current)) return null;
+  const context = record(current.context) ? current.context : null;
+  const budget = context && record(context.budget) ? context.budget : null;
+  const limits = budget && record(budget.limits) ? budget.limits : null;
+  return limits ? { maxRequests: limits.maxRequests, maxTokens: limits.maxTokens } : null;
+}
+/** A finite request boundary means the phase would stop at the product default. */
+export function assertP8UnlimitedRequests(observed: { maxRequests: unknown } | null): void {
+  if (!observed) throw Error("P8_NATIVE_BUDGET_UNVERIFIED");
+  if (observed.maxRequests !== null) throw Error("P8_NATIVE_REQUEST_LIMIT");
+}
 type Binding = { sessionId: string; worldId: string; providerId: string; submitted: boolean; continuations?: number };
 export type P8AcceptanceAccess = {
   enabled: boolean;
@@ -27,6 +55,16 @@ const record = (v: unknown): v is Record<string, any> => !!v && typeof v === "ob
 export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<string, string | undefined>) {
   const bindings = new Map<CaseId, Binding>();
   let busy = false;
+  const liveLimits = async (binding: Binding): Promise<{ limits: { maxRequests: unknown; maxTokens: unknown } | null; requestCount: number; error: string | null }> => {
+    try {
+      const current = await access.panel("task.current", { worldId: binding.worldId });
+      return { limits: p8ObservedLimits(current), requestCount: current?.context?.budget?.requestCount ?? 0, error: null };
+    } catch (error) {
+      // The core projection is the only authority for the live budget; an
+      // unreadable one is reported as unverified rather than assumed unlimited.
+      return { limits: null, requestCount: 0, error: error instanceof Error ? error.message : "P8_BUDGET_READ_FAILED" };
+    }
+  };
   const desktop = (script: string) => {
     const window = access.window();
     if (!window || window.isDestroyed()) throw Error("P8_DESKTOP_UNAVAILABLE");
@@ -118,7 +156,15 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
       const metrics = await access.call("session.turnMetrics", { sessionId: binding.sessionId });
       const dom = await desktop(`({metrics:[...document.querySelectorAll('.task-metrics')].map(section=>({turnId:section.dataset.taskId,coverage:section.dataset.taskCoverage,text:section.innerText,values:Object.fromEntries([...section.querySelectorAll('[data-metric]')].map(item=>[item.dataset.metric,item.textContent]))})),guard:globalThis.__craftmineHeadless})`);
       await selected(binding.worldId);
-      return { ...binding, caseId, modelId: P8_MODEL, active: access.active(binding.sessionId), record: saved, metrics, dom };
+      // The authorized phase must actually run without the product request
+      // boundary. A finite boundary is a real acceptance failure, not an inner
+      // error to be reported as an unrelated model outcome.
+      const budget = binding.submitted ? await liveLimits(binding) : { limits: null, requestCount: 0, error: null };
+      // The first reservation fixes the policy; a pre-reservation projection
+      // still carries defaults while the sidecar is preparing its first call.
+      if (budget.requestCount > 0 && p8AuthorizedBudget(env)) assertP8UnlimitedRequests(budget.limits);
+      return { ...binding, caseId, modelId: P8_MODEL, active: access.active(binding.sessionId), record: saved, metrics, dom,
+        budget: { authorized: p8AuthorizedBudget(env)?.limits ?? null, observed: budget.limits, requestCount: budget.requestCount, error: budget.error ?? null } };
     } finally { busy = false; }
   };
 }

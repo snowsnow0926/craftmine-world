@@ -12,7 +12,8 @@ const deps = process.env.CRAFTMINE_P8_TEST_DEPS ?? 'D:/cm-fb-20260910/vendor/pi-
 const require = createRequire(path.join(deps, 'package.json'));
 await mkdir(path.join(root, 'test-results'), { recursive: true });
 const out = await mkdtemp(path.join(root, 'test-results/p8-preflight-'));
-await require('esbuild').build({ entryPoints: [path.join(root, 'vendor/pi-desktop/apps/desktop/electron/main/craftmine-acceptance-p8.ts')], outfile: path.join(out, 'p8.mjs'), platform: 'node', format: 'esm', bundle: true });
+await require('esbuild').build({ entryPoints: [path.join(root, 'vendor/pi-desktop/apps/desktop/electron/main/craftmine-acceptance-p8.ts')], outfile: path.join(out, 'p8.mjs'), platform: 'node', format: 'esm', bundle: true,
+  banner: {js: `import {createRequire as testCreateRequire} from 'node:module'; const require = testCreateRequire(${JSON.stringify(path.join(deps, 'package.json'))});`} });
 const { createP8Acceptance } = await import(pathToFileURL(path.join(out, 'p8.mjs')));
 const fakeKey = 'sk-fixed-synthetic-fixture';
 const configuration = async () => ({ key: fakeKey, endpoint: ENDPOINT, model: MODEL });

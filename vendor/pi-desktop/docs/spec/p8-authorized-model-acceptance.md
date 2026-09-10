@@ -79,3 +79,41 @@ The driver reads hash-verified built files only in that owned profile, retains
 original candidate receipts, and checks complete saved state and metrics after
 restart. Teardown requires zero exit, no forced stop and empty input/page/shutdown
 failure lists. Finally failures are persisted rather than relabeled as success.
+
+## Authorized native budget
+
+The authorized phase runs without a native request or cumulative-token boundary,
+and only a verified authorization removes it. `craftmineAuthorizedBudget(env)`
+is the single decision point (`@pi-desktop/agent-runtime`): it returns
+`{limits:{maxRequests:null,maxTokens:null,maxCompactions:8}, authorization:{kind:
+"p8-native-unlimited",phase}}` only when `CRAFTMINE_HEADLESS_TEST=1`, the P8
+native phase is active (`CRAFTMINE_P8_NATIVE=1`) and
+`CRAFTMINE_P8_AUTHORIZATION_PHASE` names a known dated authorization
+(`parallel-20260910` or `unlimited-20260910`). The default `initial-16` phase, an
+unknown or absent phase, a non-headless process and a normal player turn all get
+no budget at all, so the core keeps its product default of 80 requests; a phase
+that is only shaped right is refused at the hook
+(`CRAFTMINE_BUDGET_AUTHORIZATION_PHASE`).
+
+The value reaches the task through the real construction path: the trusted parent
+passes `CRAFTMINE_P8_AUTHORIZATION_PHASE` (the phase its own ledger verified) to
+the child it launches, and `DesktopAgentRuntime` passes
+`craftmineAuthorizedBudget(opts.craftmineBudgetEnv ?? process.env)` as the third
+argument of `createCraftmineProxyHooks`, which forwards the limits *and* their
+authorization into every reservation the hooks build. Without the authorization
+an unlimited request boundary is refused before any request
+(`CRAFTMINE_BUDGET_AUTHORIZATION_REQUIRED`). The core accepts an explicit `null`
+for `maxRequests` as "no request boundary" while a missing or mistyped field
+stays an error; `maxTokens:null` keeps its existing, always-legal meaning and is
+not gated. The boundary is fixed by the task's first reservation and can be
+neither widened nor tightened later, and the player token configuration still
+changes only `maxTokens`, so no new model-reachable budget channel exists.
+
+`snapshot` reads the live task projection (`task.current`) and fails the case with
+`P8_NATIVE_REQUEST_LIMIT` when the task's own `maxRequests` is not null, so a
+hidden finite boundary is an explicit acceptance failure instead of an inner
+`REQUEST_BUDGET_EXHAUSTED` reported as an unrelated model outcome. An unreadable
+projection is reported as `budget.error` and is never assumed unlimited; the
+observed boundaries are retained in the snapshot receipt. Offline tests cover the
+authorized value, the gate and the trusted forwarding contract only; they do not
+establish that a real run reached any particular request count.

@@ -9349,3 +9349,22 @@ uninstall-retaining-data sequence. Validate system PowerShell tools before
 creating the owned root, read UTF-8 manifests explicitly, and verify restoration
 of the original shortcut bytes and metadata. Host compatibility results do not
 claim clean-VM, physical-input, signing or rights-review coverage.
+
+
+## Craftmine preview 5 actual-failure corrections (2026-09-10)
+
+In an authorized isolated P8 phase, verify the parent-to-sidecar-to-runtime
+reservation carries explicit unlimited requests. Admit and settle 81 requests,
+reopen the journal, and verify a default task still refuses request 81.
+A snapshot before the first reservation must not reject the preparation stage.
+
+Capture an actual detached offscreen WebContentsView: reproduce 0x0 reads before
+attachment, then verify temporary attachment to the hidden non-focusable owner
+produces real target-size pixels and restores bounds and attachment. Include
+hanging reads, world replacement, destroyed owners and restore failures.
+Never show a window or send input. Run the final packaged Godot cases separately.
+
+Retry only an exact initialization world-list read timeout under the original
+deadline. Do not replay creation; terminal failures remain failures. Reject a
+candidate with an extra equipment key and require bounded field-level details
+without changing the old save or relaxing the schema.

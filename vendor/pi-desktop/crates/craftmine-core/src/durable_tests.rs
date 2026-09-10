@@ -600,7 +600,14 @@ fn malformed_backup_accounting_is_rejected_before_replacing_any_world() -> Resul
             "craftmine_budget_limits",
             "limits",
             json!(serde_json::to_string(
-                &json!({"maxTokens":null,"maxRequests":null,"maxCompactions":8,"deadlineAt":null})
+                &json!({"maxTokens":null,"maxRequests":0,"maxCompactions":8,"deadlineAt":null})
+            )?),
+        ),
+        (
+            "craftmine_budget_limits",
+            "limits",
+            json!(serde_json::to_string(
+                &json!({"maxTokens":null,"maxCompactions":8,"deadlineAt":null})
             )?),
         ),
         (
@@ -663,5 +670,153 @@ fn malformed_backup_accounting_is_rejected_before_replacing_any_world() -> Resul
     assert_eq!(budget["reservedTokens"], 200);
     assert_eq!(budget["unknownRequestCount"], 1);
     assert_eq!(budget["actualTokens"], 50);
+    Ok(())
+}
+
+#[test]
+fn the_default_request_budget_still_refuses_the_eighty_first_request() -> Result<()> {
+    let (_dir, mut j, _ctx, id) = fixture()?;
+    for n in 0..80 {
+        j.budget_call("budget.reserve", &reserve(&id, &format!("default-{n}")))?;
+    }
+    let budget = j.budget_call("budget.inspect", &id)?;
+    assert_eq!(budget["requestCount"], 80);
+    assert_eq!(budget["limits"]["maxRequests"], 80);
+    let error = j
+        .budget_call("budget.reserve", &reserve(&id, "one-too-many"))
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("REQUEST_BUDGET_EXHAUSTED"), "{error}");
+    assert_eq!(j.budget_call("budget.inspect", &id)?["requestCount"], 80);
+    Ok(())
+}
+
+#[test]
+fn an_authorized_unlimited_request_budget_continues_past_the_product_default() -> Result<()> {
+    let (dir, mut j, _ctx, id) = fixture()?;
+    let mut first = reserve(&id, "authorized-first");
+    first["limits"] =
+        json!({"maxRequests":null,"maxTokens":null,"maxCompactions":8,"deadlineAt":null});
+    let authorized = j.budget_call("budget.reserve", &first)?;
+    assert!(authorized["budget"]["limits"]["maxRequests"].is_null());
+    // The boundary is removed for the whole task, not only for its first request:
+    // eighty further admissions take the count past the product default of 80.
+    for n in 0..80 {
+        j.budget_call("budget.reserve", &reserve(&id, &format!("unlimited-{n}")))?;
+    }
+    let budget = j.budget_call("budget.inspect", &id)?;
+    assert_eq!(budget["requestCount"], 81);
+    assert!(budget["limits"]["maxRequests"].is_null());
+    assert!(
+        budget["remainingTokens"].is_null(),
+        "an unlimited cumulative token budget keeps its existing null meaning"
+    );
+    // The authorized policy is durable: a reopened journal keeps both fields null
+    // and still admits the next request.
+    let mut reopened = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    let after = reopened.budget_call("budget.inspect", &id)?;
+    assert!(after["limits"]["maxRequests"].is_null());
+    assert!(after["limits"]["maxTokens"].is_null());
+    reopened.budget_call("budget.reserve", &reserve(&id, "after-reopen"))?;
+    assert_eq!(
+        reopened.budget_call("budget.inspect", &id)?["requestCount"],
+        82
+    );
+    Ok(())
+}
+
+#[test]
+fn a_missing_or_mistyped_request_limit_is_never_unlimited() -> Result<()> {
+    let (_dir, mut journal, _ctx, identity) = fixture()?;
+    let mut omitted = reserve(&identity, "omitted");
+    omitted["limits"] = json!({"maxTokens":null,"maxCompactions":8,"deadlineAt":null});
+    let admitted = journal.budget_call("budget.reserve", &omitted)?;
+    assert_eq!(admitted["budget"]["limits"]["maxRequests"], 80);
+    assert_eq!(admitted["budget"]["requestCount"], 1);
+    let cases = [
+        (
+            json!({"maxRequests":"80","maxTokens":null,"maxCompactions":8,"deadlineAt":null}),
+            "maxRequests: INTEGER_REQUIRED",
+        ),
+        (
+            json!({"maxRequests":-1,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}),
+            "maxRequests: INTEGER_REQUIRED",
+        ),
+        (
+            json!({"maxRequests":true,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}),
+            "maxRequests: INTEGER_REQUIRED",
+        ),
+        (
+            json!({"maxRequests":0,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}),
+            "INVALID_BUDGET_LIMIT",
+        ),
+        (
+            json!({"maxRequests":10001,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}),
+            "NUMBER_LIMIT",
+        ),
+        (
+            json!({"maxRequests":null,"maxTokens":null,"maxCompactions":false,"deadlineAt":null}),
+            "maxCompactions: INTEGER_REQUIRED",
+        ),
+        (
+            json!({"maxRequests":null,"maxTokens":null,"maxCompactions":0,"deadlineAt":null}),
+            "INVALID_BUDGET_LIMIT",
+        ),
+        (
+            json!({"maxRequests":null,"maxTokens":null,"maxCompactions":8,"deadlineAt":null,"extra":1}),
+            "UNKNOWN_FIELD",
+        ),
+    ];
+    for (limits, expected) in cases {
+        let (_dir, mut j, _ctx, id) = fixture()?;
+        let mut request = reserve(&id, "invalid");
+        request["limits"] = limits.clone();
+        let error = j
+            .budget_call("budget.reserve", &request)
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains(expected), "{limits}: {error}");
+        // Nothing was admitted, and the unknown caller left the product default
+        // in place instead of widening the task.
+        let budget = j.budget_call("budget.inspect", &id)?;
+        assert_eq!(budget["requestCount"], 0, "{limits}");
+        assert_eq!(budget["limits"]["maxRequests"], 80, "{limits}");
+    }
+    Ok(())
+}
+
+#[test]
+fn a_fixed_request_policy_cannot_be_rewritten_by_a_later_reservation() -> Result<()> {
+    let (_dir, mut j, _ctx, id) = fixture()?;
+    let mut first = reserve(&id, "first");
+    first["limits"] = json!({"maxRequests":null});
+    j.budget_call("budget.reserve", &first)?;
+    // Repeating the authorized policy is the normal path for a caller that sends
+    // it on every request and must stay allowed.
+    let mut repeated = reserve(&id, "repeated");
+    repeated["limits"] = json!({"maxRequests":null});
+    j.budget_call("budget.reserve", &repeated)?;
+    // Tightening or widening it afterwards is refused.
+    let mut tightened = reserve(&id, "tightened");
+    tightened["limits"] = json!({"maxRequests":80});
+    let error = j
+        .budget_call("budget.reserve", &tightened)
+        .unwrap_err()
+        .to_string();
+    assert!(error.contains("LIMITS_IMMUTABLE"), "{error}");
+    let after = j.budget_call("budget.inspect", &id)?;
+    assert!(after["limits"]["maxRequests"].is_null());
+    assert_eq!(after["requestCount"], 2);
+    Ok(())
+}
+
+#[test]
+fn the_player_token_configuration_cannot_change_the_request_boundary() -> Result<()> {
+    let (_dir, mut j, _ctx, id) = fixture()?;
+    let mut widen = configure(&id, "widen-requests", Value::Null);
+    widen["maxRequests"] = json!(null);
+    let error = j.budget_configure(&widen).unwrap_err().to_string();
+    assert!(error.contains("UNKNOWN_FIELD"), "{error}");
+    assert_eq!(j.budget_call("budget.inspect", &id)?["limits"]["maxRequests"], 80);
     Ok(())
 }

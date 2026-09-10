@@ -46,7 +46,7 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
     Ok(())
 }
 pub(super) fn legacy_limits() -> Value {
-    json!({"maxRequests":80,"maxTokens":1000000,"maxCompactions":8,"deadlineAt":null})
+    json!({"maxRequests":DEFAULT_MAX_REQUESTS,"maxTokens":1000000,"maxCompactions":8,"deadlineAt":null})
 }
 const MAX_TOKEN_LIMIT: u64 = 9_007_199_254_740_991;
 fn token_limit(value: &Value) -> Result<Option<u64>> {
@@ -55,6 +55,22 @@ fn token_limit(value: &Value) -> Result<Option<u64>> {
     }
     let n = value.as_u64().context("INVALID_BUDGET_LIMIT")?;
     ensure!(n > 0 && n <= MAX_TOKEN_LIMIT, "INVALID_BUDGET_LIMIT");
+    Ok(Some(n))
+}
+
+/// The request boundary a task keeps when no authorized budget was fixed. It is
+/// the product default and never changes because a caller stayed silent.
+const DEFAULT_MAX_REQUESTS: u64 = 80;
+const MAX_REQUEST_LIMIT: u64 = 10_000;
+/// An explicit null (authorized unlimited requests) is kept distinct from a
+/// missing or mistyped field, which is never treated as unlimited.
+fn request_limit(value: &Value) -> Result<Option<u64>> {
+    if value.is_null() {
+        return Ok(None);
+    }
+    let n = value.as_u64().context("maxRequests: INTEGER_REQUIRED")?;
+    ensure!(n <= MAX_REQUEST_LIMIT, "NUMBER_LIMIT");
+    ensure!(n > 0, "INVALID_BUDGET_LIMIT");
     Ok(Some(n))
 }
 
@@ -141,7 +157,7 @@ fn limits(db: &Connection, owner: &str) -> Result<Value> {
     let value = stored
         .map(|s| serde_json::from_str(&s))
         .transpose()?
-        .unwrap_or(json!({"maxRequests":80,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}));
+        .unwrap_or(json!({"maxRequests":DEFAULT_MAX_REQUESTS,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}));
     validate_limits(&value)?;
     Ok(value)
 }
@@ -150,8 +166,15 @@ fn validate_limits(value: &Value) -> Result<()> {
         value,
         &["maxRequests", "maxTokens", "maxCompactions", "deadlineAt"],
     )?;
+    // `null` is the only authorized way to remove the request boundary; a
+    // missing field stays an error so an unknown caller cannot widen a task.
+    request_limit(
+        value
+            .get("maxRequests")
+            .context("maxRequests: INTEGER_REQUIRED")?,
+    )?;
     ensure!(
-        number(value, "maxRequests", 10000)? > 0 && number(value, "maxCompactions", 100)? > 0,
+        number(value, "maxCompactions", 100)? > 0,
         "INVALID_BUDGET_LIMIT"
     );
     token_limit(value.get("maxTokens").context("MAX_TOKENS_REQUIRED")?)?;
@@ -548,12 +571,16 @@ impl TaskJournal {
                         &["maxRequests", "maxTokens", "maxCompactions", "deadlineAt"],
                     )?;
                     let mut normalized = limits(&tx, &owner)?;
-                    for (key, max) in [("maxRequests", 10000), ("maxCompactions", 100)] {
-                        if input.get(key).is_some() {
-                            let n = number(input, key, max)?;
-                            ensure!(n > 0, "INVALID_BUDGET_LIMIT");
-                            normalized[key] = json!(n);
-                        }
+                    if input.get("maxRequests").is_some() {
+                        // Only an explicit null removes the request boundary, and
+                        // the first reservation fixes it for the whole task. The
+                        // product default stays in force for anything else.
+                        normalized["maxRequests"] = json!(request_limit(&input["maxRequests"])?);
+                    }
+                    if input.get("maxCompactions").is_some() {
+                        let n = number(input, "maxCompactions", 100)?;
+                        ensure!(n > 0, "INVALID_BUDGET_LIMIT");
+                        normalized["maxCompactions"] = json!(n);
                     }
                     if let Some(value) = input.get("maxTokens") {
                         normalized["maxTokens"] = json!(token_limit(value)?);
@@ -606,7 +633,10 @@ impl TaskJournal {
                 let current = budget(&tx, &owner)?;
                 let l = &current["limits"];
                 ensure!(
-                    current["requestCount"].as_u64().unwrap() < l["maxRequests"].as_u64().unwrap(),
+                    request_limit(&l["maxRequests"])?.is_none_or(|max| current["requestCount"]
+                        .as_u64()
+                        .unwrap_or(0)
+                        < max),
                     "REQUEST_BUDGET_EXHAUSTED"
                 );
                 ensure!(
