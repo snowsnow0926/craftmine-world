@@ -18,7 +18,7 @@ export function createTargetFeedbackUI({element,request,getWorldId,durableCall,a
  async function call(channel,payload){const generation=epoch,id=world;const result=await request(channel,{worldId:id,...payload});if(!current(generation,id))throw Error('WORLD_CHANGED');return result;}
  function controls(){if(!select)return;const locked=reading||!!attempt||!!pending;select.disabled=locked;input.disabled=locked;submit.disabled=locked||!fields?.length;}
  function describeResult(result){
-  if(result.status==='unchanged')return '参数与当前值一致，没有创建新草稿。';
+  if(result.status==='unchanged')return '参数与已保存的设置一致，没有创建新草稿或运行检查。';
   if(result.status==='rejected')return errors[result.reason]||'这次调整未写入源码，请重新读取参数。';
   if(result.status==='passed')return '调整草稿已检查通过。请到“检查记录”预览并采用；正式世界尚未改变。';
   if(['failed','cancelled','interrupted'].includes(result.status))return '这次调整的检查未完成或未通过，源码草稿已保留，请查看“检查记录”。';
