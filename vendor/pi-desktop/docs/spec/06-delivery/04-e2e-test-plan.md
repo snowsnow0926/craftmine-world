@@ -9162,3 +9162,8 @@ completed metrics and report interrupted end time as unknown. Do not call a mode
 read user profiles or claim this fixture proves Electron/P5 wiring or P8 billing
 reconciliation. P10 must separately verify Main drains on success/error/abort,
 reads through its finite IPC method, and shows the new DTO per actual owning turn.
+
+
+### P1 durable first-load failure and explicit retry
+
+Thirteen actual Core world tests pass, including four new SQLite failure/restart/replay/tombstone/identity/new-candidate/archive cases. Twenty-eight controlled coordinator and initializer tests pass, including finite persistence receipts, failed receipt identity, no automatic task creation after a terminal failure, and exact explicit retry. Core binary check and strict host/initializer TypeScript pass. No OS input or native renderer is started by this slice. Root must independently verify its private RPC and creation-stage integration in the client; unsuccessful or missing prepare receipts remain an explicit boundary.

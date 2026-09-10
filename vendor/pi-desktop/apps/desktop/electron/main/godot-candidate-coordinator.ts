@@ -162,6 +162,10 @@ export function createGodotCandidateCoordinator(options:{
       if (init.playable !== false) throw error;
     }
     if(formal)throw new Error("GODOT_FORMAL_WORLD_EXISTS");
+    const initialization = await rpc("godotWorld.initStatus", {worldId});
+    if (initialization.worldId !== worldId || typeof initialization.initId !== "string" || initialization.playable !== false)
+      throw Error("GODOT_WORLD_NOT_INITIALIZING");
+    if (initialization.launchFailure) throw Error("GODOT_INITIAL_LOAD_RETRY_REQUIRED");
     release=await options.host.holdSelectionSync();
     try {
       const record=await rpc("world.read",{id:worldId});
@@ -169,7 +173,27 @@ export function createGodotCandidateCoordinator(options:{
       const session=await prepare(worldId,candidateId,record.revision,record.world.snapshot,"applying",true);
       session.evidence=await confirm(session);
       return await commit(session);
-    }catch(error){return failed(error);}
+    }catch(error){
+      // prepare assigns active across an await; preserve the actual session
+      // before recovery can drop it.
+      const attempted = active as Session | null;
+      let failure: unknown;
+      try { return await failed(error); } catch (recovered) { failure = recovered; }
+      if (attempted?.prepared) {
+        try {
+          const receipt = await rpc("godotWorld.initLaunchFailed", {worldId, initId: initialization.initId,
+            candidateId, applicationId: attempted.id});
+          if (receipt.worldId !== worldId || receipt.initId !== initialization.initId ||
+            receipt.candidateId !== candidateId || receipt.applicationId !== attempted.id ||
+            receipt.recorded !== true || typeof receipt.cleared !== "boolean") throw Error("GODOT_INIT_LAUNCH_RECEIPT_MISMATCH");
+        } catch {
+          // A still-uncertain application is never labelled settled, and failure
+          // to persist is reported rather than silently claimed durable.
+          throw Error(`${String(failure)}; GODOT_INITIAL_LOAD_FAILURE_RECORD_UNCONFIRMED`);
+        }
+      }
+      throw failure;
+    }
   }
   async function close(){if(!active)return {status:"closed"};const session=active;try{const result=await recover(session);options.host.setSurfaceVisible(true);return result;}catch(error){session.phase="uncertain";await options.host.candidateRequest("pause").catch(()=>undefined);options.host.setCandidateVisible(false);options.host.setSurfaceVisible(false);throw error;}}
   return {
