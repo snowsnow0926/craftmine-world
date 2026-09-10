@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "startedAtUtc": "2026-09-10T21:08:23.3012869Z",
+  "target": "D:/cm-p10",
+  "branch": "codex/windows-preview10-20260911",
+  "master": "c1660f12dfd07a70c835a484e5a3bf2c7d728b22",
+  "originMaster": "c1660f12dfd07a70c835a484e5a3bf2c7d728b22",
+  "sourceTreeClean": true,
+  "branchMerged": true,
+  "deliveryArchive": "D:/Craftmine-World-preview.10",
+  "verifiedDeliveryFileCount": 1603,
+  "nativeAcceptancePassed": true,
+  "creationAcceptancePassed": true,
+  "scope": "仅本次打包工作树 D:/cm-p10 与已合并分支；其他树、缓存、D:/cm-p10-tools 均保留",
+  "gitWorktreeRemove": {
+    "exitCode": 255,
+    "output": [
+      "error: failed to delete 'D:/cm-p10': Directory not empty"
+    ],
+    "targetRemains": true
+  },
+  "manualLongPathCleanup": {
+    "method": "单一 PowerShell/.NET 长路径，reparse 仅删链接条目，不跟随外部目标",
+    "removed": true,
+    "filesRemoved": 35013,
+    "directoriesRemoved": 5539,
+    "linksRemoved": 2337,
+    "errors": []
+  },
+  "branchDeletion": {
+    "exitCode": 0,
+    "output": [
+      "Deleted branch codex/windows-preview10-20260911 (was c1660f12)."
+    ]
+  },
+  "completed": true,
+  "completedAtUtc": "2026-09-10T21:09:32.0743036Z",
+  "toolsDirectoryRetained": true
+}

@@ -2,7 +2,7 @@
   "format": "craftmine.immersive-alpha-status/1",
   "plan": "docs/OVERALL_DEVELOPMENT_PLAN_2026-09-11.md",
   "baseline": "e61bae85",
-  "updatedAt": "2026-09-10T20:51:54.791Z",
+  "updatedAt": "2026-09-10T21:53:20.697954+00:00",
   "status": "complete",
   "worktree": "D:/Craftmine World",
   "branch": "master",
@@ -130,5 +130,53 @@
     },
     "root": "最终文档合入后执行普通 Git 清理；结果记入交付目录收尾记录。",
     "historicalTrees": "未触碰"
+  },
+  "latestDelivery": {
+    "version": "0.14.4-preview.10",
+    "sourceCommit": "c1660f12dfd07a70c835a484e5a3bf2c7d728b22",
+    "remote": "https://github.com/snowsnow0926/craftmine-world.git",
+    "branch": "master",
+    "pushed": true,
+    "recordedAt": "2026-09-10T21:10:08.404Z",
+    "artifacts": "D:/Craftmine-World-preview.10",
+    "installer": {
+      "path": "Craftmine-World-Setup-0.14.4-preview.10.exe",
+      "bytes": 360928355,
+      "sha256": "35a1f2079ff2c8eed966d1d26bf256138204d896ad5561c409c8cdcfa19ed131"
+    },
+    "portable": {
+      "path": "Craftmine-World-portable-c1660f12dfd0.zip",
+      "bytes": 461389637,
+      "sha256": "4d73f5ede62fcaee4f1a12fbe65f319127b284d2e847f6090051b25d531c6ed5"
+    },
+    "installerPayloadVerified": true,
+    "portablePayloadVerified": true,
+    "native": {
+      "passed": true,
+      "checks": 17
+    },
+    "creation": {
+      "passed": true,
+      "checks": 10
+    },
+    "signature": "unsigned-local-preview",
+    "installedClientReplaced": false,
+    "publicReleasePublished": false,
+    "evidence": "docs/evidence/feedback-resolution-20260911/preview10-delivery.json"
+  },
+  "latestCleanup": {
+    "completed": true,
+    "previousTemporaryDirectoriesRemoved": 3,
+    "packagingWorktreeRemoved": true,
+    "mergedBranchDeleted": true,
+    "archivedLooseFiles": 29,
+    "otherHistoricalWorktreesPreserved": true,
+    "recordedAt": "2026-09-10T21:10:08.404Z",
+    "archive": "D:/Craftmine-Cleanup-20260911/preview10-7bd122d65cb24a6aa745db5ccfb53fe2",
+    "scope": "preview.10交付时的上一轮残留和本次打包工作树；不代表本轮NB开发工作树状态",
+    "evidence": [
+      "docs/evidence/feedback-resolution-20260911/preview10-residual-cleanup.json",
+      "docs/evidence/feedback-resolution-20260911/preview10-packaging-cleanup.json"
+    ]
   }
 }

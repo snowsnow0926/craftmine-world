@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-09-10T21:00:52.5103646Z",
+  "master": "c1660f12dfd07a70c835a484e5a3bf2c7d728b22",
+  "implementationMerged": true,
+  "artifactArchive": "D:/Craftmine-Alpha-20260911",
+  "scope": "用户授权的三个上一轮残留目录，其他历史工作树未动",
+  "method": "单一 PowerShell 进程；精确绝对路径验证；.NET extended-length paths；reparse 不递归",
+  "allRemoved": true,
+  "results": [
+    {
+      "path": "D:\\cm-iw-full-0911",
+      "startedAtUtc": "2026-09-10T21:00:25.0246688Z",
+      "completedAtUtc": "2026-09-10T21:00:26.4341776Z",
+      "removed": true,
+      "filesRemoved": 6640,
+      "directoriesRemoved": 1773,
+      "linksRemoved": 59,
+      "errors": [],
+      "note": "仅处理精确授权的本轮残留目录；reparse 链接只删链接条目，未跟随目标。"
+    },
+    {
+      "path": "D:\\cm-iw-check-0911",
+      "startedAtUtc": "2026-09-10T21:00:26.4579697Z",
+      "completedAtUtc": "2026-09-10T21:00:28.5264611Z",
+      "removed": true,
+      "filesRemoved": 9147,
+      "directoriesRemoved": 3431,
+      "linksRemoved": 59,
+      "errors": [],
+      "note": "仅处理精确授权的本轮残留目录；reparse 链接只删链接条目，未跟随目标。"
+    },
+    {
+      "path": "D:\\cm-iw-target-0911",
+      "startedAtUtc": "2026-09-10T21:00:28.5276444Z",
+      "completedAtUtc": "2026-09-10T21:00:52.5097464Z",
+      "removed": true,
+      "filesRemoved": 50194,
+      "directoriesRemoved": 6840,
+      "linksRemoved": 2419,
+      "errors": [],
+      "note": "仅处理精确授权的本轮残留目录；reparse 链接只删链接条目，未跟随目标。"
+    }
+  ],
+  "postValidation": {
+    "checkedAtUtc": "2026-09-10T21:01:10.8746077Z",
+    "registeredWorktreeCount": 79,
+    "allThreePathsAbsent": true,
+    "artifactManifestRetained": true,
+    "sharedDependencySourceRetained": true,
+    "godotCacheRetained": true
+  }
+}

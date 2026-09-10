@@ -1,0 +1,26 @@
+{
+  "format": "craftmine.feedback-resolution-evidence/1",
+  "capturedAt": "2026-09-10T21:53:20.697954+00:00",
+  "originalFeedback": {
+    "path": "docs/USER_FEEDBACK_BATCH_001_2026-09-10.md",
+    "sha256": "ab95561a72049f90517c903f70c0d70e33e7e649fb16206f77e19e42df5b8415",
+    "modified": false
+  },
+  "files": {
+    "preview10-delivery.json": {
+      "source": "D:/Craftmine-World-preview.10/交付记录.json",
+      "bytes": 1352,
+      "sha256": "1eb212668f0127300cdfeffcb328cf067fbff7fd625ddf51bd14b372b99d6610"
+    },
+    "preview10-packaging-cleanup.json": {
+      "source": "D:/Craftmine-World-preview.10/evidence/packaging-worktree-cleanup.json",
+      "bytes": 1306,
+      "sha256": "4f919a6ec63c0b04cf3c7f8e44dadffd20fbe0aee07c29bb0fe08ba10af0d18f"
+    },
+    "preview10-residual-cleanup.json": {
+      "source": "D:/Craftmine-World-preview.10/evidence/cleanup.json",
+      "bytes": 1998,
+      "sha256": "2f3f45bea2429b8fc99854912136ee5f5e50022ec8b1a46aa789639368858946"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "format": "craftmine.windows-preview-delivery/1",
+  "version": "0.14.4-preview.10",
+  "sourceCommit": "c1660f12dfd07a70c835a484e5a3bf2c7d728b22",
+  "remote": "https://github.com/snowsnow0926/craftmine-world.git",
+  "branch": "master",
+  "pushed": true,
+  "installer": {
+    "path": "Craftmine-World-Setup-0.14.4-preview.10.exe",
+    "bytes": 360928355,
+    "sha256": "35a1f2079ff2c8eed966d1d26bf256138204d896ad5561c409c8cdcfa19ed131"
+  },
+  "portable": {
+    "path": "Craftmine-World-portable-c1660f12dfd0.zip",
+    "bytes": 461389637,
+    "sha256": "4d73f5ede62fcaee4f1a12fbe65f319127b284d2e847f6090051b25d531c6ed5"
+  },
+  "packageFiles": 1600,
+  "packageBytes": 1002970989,
+  "installerPayloadVerified": true,
+  "portablePayloadVerified": true,
+  "native": {
+    "passed": true,
+    "checks": 17
+  },
+  "creation": {
+    "passed": true,
+    "checks": 10
+  },
+  "signature": "unsigned-local-preview",
+  "installedOrReplaced": false,
+  "archive": "D:/Craftmine-Cleanup-20260911/preview10-7bd122d65cb24a6aa745db5ccfb53fe2",
+  "createdAt": "2026-09-10T21:07:59.472Z",
+  "cleanup": {
+    "completed": true,
+    "previousTemporaryDirectoriesRemoved": 3,
+    "packagingWorktreeRemoved": true,
+    "mergedBranchDeleted": true,
+    "archivedLooseFiles": 29,
+    "otherHistoricalWorktreesPreserved": true
+  },
+  "finalizedAt": "2026-09-10T21:10:08.404Z"
+}
