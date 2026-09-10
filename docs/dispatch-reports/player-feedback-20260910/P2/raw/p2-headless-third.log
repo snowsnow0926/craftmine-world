@@ -1,0 +1,20 @@
+PASS Current passed review permits normal application
+PASS Visible reason for review-missing
+PASS Visible reason for stale
+PASS Visible reason for review-running
+PASS Visible reason for review-failed
+PASS Visible reason for review-cancelled
+PASS Visible reason for review-interrupted
+PASS Visible reason for review-incomplete
+PASS Read failure is visible, disables application and renders text safely
+PASS Advisory confirmation remains a distinct enabled choice
+PASS Lost reply explains original operation reconciliation
+PASS Repeated form submission never creates another voxel application
+PASS Confirmed application preserves complete fixture progress
+PASS Page reload retains adopted build and complete fixture progress
+PASS Late old-preview rejection cannot overwrite new review state
+PASS Godot preview explains pending formal adoption without polling mutating state
+PASS Godot lost reply reconciles original candidate without applying twice
+PASS Godot fixture adopted build and full progress survive page reload
+PASS No pointer lock/focus requests or page errors
+D:\cm-fb-p2-20260910\test-results\p2-apply-view-1789021003475

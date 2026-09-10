@@ -1,0 +1,29 @@
+✔ no preview (0.6205ms)
+✔ busy (0.0609ms)
+✔ closing (0.0618ms)
+✔ pending voxel receipt (0.0416ms)
+✔ pending Godot receipt (0.0556ms)
+✔ missing review (0.0436ms)
+✔ loading review (0.0357ms)
+✔ read failure (0.032ms)
+✔ historical review (0.0467ms)
+✔ running (0.0813ms)
+✔ failed (0.058ms)
+✔ cancelled (0.0405ms)
+✔ interrupted (0.0294ms)
+✔ unknown status (0.0569ms)
+✔ missing acceptance (0.0338ms)
+✔ advisory warnings (0.0441ms)
+✔ ready (0.0201ms)
+✔ Godot preview (0.035ms)
+✔ apply rejected (0.034ms)
+✔ preserves the existing primary and advisory button admission matrix (0.8177ms)
+✔ arbitrary server strings are not interpolated into player instructions (0.1288ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.4034
