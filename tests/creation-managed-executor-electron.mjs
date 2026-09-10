@@ -23,7 +23,7 @@ const fatal=async error=>{report.passed=false;report.failure=String(error?.stack
 process.on('uncaughtException',fatal);process.on('unhandledRejection',fatal);app.on('window-all-closed',()=>{});
 const check=(name,value)=>{report.checks.push({name,passed:!!value});write();assert.ok(value,name);};
 app.whenReady().then(async()=>{
- const fixture=JSON.parse(fs.readFileSync(path.join(out,'fixtures.json'),'utf8')),{worldId}=fixture;
+ const fixture=JSON.parse(fs.readFileSync(path.join(out,'fixtures.json'),'utf8'));let worldId=fixture.worldId;
  owner=new BrowserWindow({show:false,focusable:false,width:1100,height:780,webPreferences:{offscreen:true,contextIsolation:true,nodeIntegration:false,sandbox:true}});await owner.loadFile(path.join(__dirname,'owner.html'));
  core=new CoreClient(process.env.CRAFTMINE_CORE_BIN,path.join(out,'core-data'));report.hello=await core.start();
  const call=async(method,args={},timeout)=>{try{const result=await core.call(method,args,timeout);if(['godotJob.claim','godotJob.checkDescriptor','godotJob.finish','godotApplication.prepare','godotApplication.commit'].includes(method)){report.rpc.push({method,args,result});write();}return result;}catch(error){report.rpc.push({method,args,error:String(error)});write();throw error;}};
@@ -69,6 +69,22 @@ app.whenReady().then(async()=>{
  const saved=await host.candidateRequest('save');assert.equal(saved.status,'confirmed');assert.deepEqual(saved.state,prepared.input.snapshot);
  await call('godotApplication.commit',{id:'bootstrap',token:'bootstrap-token',evidence:{format:'craftmine.godot-application/2',inputHash:prepared.inputHash,launch:{passed:true,buildId:descriptor.buildId,instanceId:host.candidateInstance.instanceId,stateHash:saved.runnerReceipt.snapshotSha256},player:null,snapshot:saved.state}});
  await host.promoteCandidate(await adapter.describe(worldId));check('真实候选首载回执建立正式世界',host.instance.buildId===blank.job.buildId);
+ let originalWorld=null;
+ if(process.env.CRAFTMINE_CREATION_COPY_SESSION==='1'){
+  originalWorld=await call('world.read',{id:worldId});const originalId=worldId,oldContext={...context,turnId:'old-session-copy-attempt'};
+  await call('godotWorld.copy',{sourceWorldId:originalId,targetWorldId:'managed-creation-copy',title:'副本独立会话验证',progress:'formal'});
+  worldId='managed-creation-copy';await call('content.migrate.apply',{worldId});await call('godotWorld.prepareRebuildSource',{worldId});await call('godotWorld.prepareCopyRuntime',{worldId});
+  const oldWorkspace=await call('workspace.open',{context:oldContext,selectedWorld:worldId});
+  check('旧会话选择副本仍绑定原世界，固定绑定保护不放宽',oldWorkspace.worldId===originalId);
+  await call('task.cancel',{binding:oldWorkspace.task.binding});
+  context={...context,sessionId:'managed-copy-fresh-session',turnId:'copy-bootstrap'};
+  const newWorkspace=await call('workspace.open',{context,selectedWorld:worldId});check('全新会话首次打开绑定副本',newWorkspace.worldId===worldId);
+  source=await call('godotProject.index',{context,worldId});const copied=await run('copy-bootstrap');check('副本源码经生产LPAC与实际Web检查',copied.terminal.status==='passed');
+  const preparation=await call('godotApplication.prepare',{id:'copy-bootstrap',token:'copy-bootstrap-token',worldId,candidateId:copied.terminal.candidateId,revision:copied.before.revision,snapshot:copied.before.world.snapshot});
+  await host.close();const candidate=await adapter.describeCandidate(worldId,'copy-bootstrap','copy-bootstrap-token');await host.stageCandidate(candidate,{first:true});const receipt=await host.candidateRequest('save');assert.equal(receipt.status,'confirmed');
+  await call('godotApplication.commit',{id:'copy-bootstrap',token:'copy-bootstrap-token',evidence:{format:'craftmine.godot-application/2',inputHash:preparation.inputHash,launch:{passed:true,buildId:candidate.buildId,instanceId:host.candidateInstance.instanceId,stateHash:receipt.runnerReceipt.snapshotSha256},player:null,snapshot:receipt.state}});
+  await host.promoteCandidate(await adapter.describe(worldId));check('副本实际加载并正式采用且进度完整',receipt.state.body.inventory['kept-token']===7);
+ }
  context={...context,turnId:'sequence'};activeContext=context;const workspace=await call('workspace.open',{context,selectedWorld:worldId});
  await targets.policy({worldId,autoApply:true});const display=await targets.capture(1,{projectId:context.projectId,sessionId:context.sessionId});
  const capture=await targets.validate(1,{creationTarget:{captureId:display.captureId}},{projectId:context.projectId,sessionId:context.sessionId});await targets.bind(1,capture,context,worldId);
@@ -91,6 +107,15 @@ app.whenReady().then(async()=>{
  check('真实Rust已完成任务可只读收尾且没有重新获取写租约',completedContext.status==='finished'&&!completedContext.lease.owned&&reservation.readOnlyCloseout&&reservation.context.tools.length===0&&JSON.stringify(reservation.context.messages).includes(sequence.job.buildId));
  await hooks.afterRequest({reservation,status:'cancelled',errorCode:'HEADLESS_PREFLIGHT_ONLY'});
  report.live=await host.request('observe-envelope',{});check('正式运行实例显示新树和源码机关',report.live.payload.creation.entities.some(entity=>entity.id==='new-tree')&&report.live.buildId===sequence.job.buildId);
+ if(originalWorld){
+  const beforeRestart=await call('world.read',{id:worldId});await executor.stop();executor=null;await host.close();await core.stop();await core.start();
+  check('副本采用后core重启保留完整正式进度',JSON.stringify(await call('world.read',{id:worldId}))===JSON.stringify(beforeRestart));
+  await host.ensure(await adapter.describe(worldId));const reopened=await host.request('observe-envelope',{}),reopenedSave=await host.request('save');
+  check('副本重开真实树碰撞及完整进度一致',reopened.payload.creation.entities.some(entity=>entity.id==='new-tree'&&entity.solid&&entity.visible)&&JSON.stringify(reopenedSave.state)===JSON.stringify(beforeRestart.world.snapshot));
+  check('副本继续创造并重启后原世界源码构建进度均不变',JSON.stringify(await call('world.read',{id:fixture.worldId}))===JSON.stringify(originalWorld));
+  check('所属窗口始终隐藏且不可获取焦点',!owner.isVisible()&&!owner.isFocusable());
+  report.copySession={originalSessionId:'managed-creation-test',sessionId:context.sessionId,worldId,modelRequests:0};report.passed=true;await finish(0);return;
+ }
  context={...context,turnId:'invalid-rule'};activeContext=context;await call('workspace.open',{context,selectedWorld:worldId});source=await call('godotProject.index',{context,worldId});
  const sceneFile=source.files.find(file=>file.path==='world/creation.json');
  const sceneRead=await call('godotProject.read',{context,worldId,revision:source.revision,manifestHash:source.manifestHash,path:sceneFile.path});const invalidScene=JSON.parse(sceneRead.text);invalidScene.revision++;invalidScene.rules[0].sha256='0'.repeat(64);

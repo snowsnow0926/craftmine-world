@@ -18,3 +18,12 @@ CA07 原始失败记录保留在 `desktop-native-complete-K7eooB/CA07-continuati
 - 设置 `CRAFTMINE_CREATION_COPY_SESSION=1` 运行 `tests/creation-managed-executor.mjs`：固定作者，真实 core、LPAC 导出、Web 检查及候选采用。复制前后的会话绑定分别检查；副本捕获目标后经生产造物事务添加树和机关，检查并采用，重启 core 后核对完整进度，原世界保持原构建和进度。该测试不代表新的模型测试，也不替换 CA07 原失败报告。
 
 测试日志与 profile 仅存独立 `test-results`，不提交数据库、凭据、模型源码或原始失败 profile。
+
+## 本次结果
+
+- 界面 9/9 通过：`D:/cm-nb-copy/test-results/creation-copy-session-ui-kI6Txl/report.json`，SHA256 `ec746adbbe990af26a45dcef2b4373a81e0694e71eb48618bc1f26cd1dd73210`。独立截图 `copy-session.png`。
+- 固定作者生产链 19/19 通过、进程退出码 0：`D:/cm-nb-copy/test-results/creation-managed-Moyb0c/report.json`，SHA256 `04a89b5824febc919b5443e2d3e243c5111d3091b56a5fece6bde10542bf4548`。新会话 `managed-copy-fresh-session` 绑定 `managed-creation-copy`；真实重开后树可见且有碰撞，完整存档与采用后的存档一致，原世界数据完整不变。模型请求为 0。
+- `pnpm exec tsc --noEmit` 通过，main/preload/renderer 构建通过。NB1 独立只读复核确认二次世界选择检查覆盖已复现的异步交接竞态。
+- 调试记录保留：`creation-managed-epxM7e` 缺显式 broker 路径；`creation-managed-WOG6I6` 断言误读 workspace 返回结构；`creation-managed-wm7Wxl` 在已通过副本采用后进入旧的无关规则破坏用例，该用例对 git 副本缺写操作上下文。最终复制分支专注复制、续创、重开与原世界保护，未改产品写权限以迁就测试。
+
+原 CA07 仍是发送模型前被拒绝的独立记录。上述证据不能把它改记为成功，也不计为新的真实模型完成样本；真实模型续测由总控在同一累计预算下单独恢复。
