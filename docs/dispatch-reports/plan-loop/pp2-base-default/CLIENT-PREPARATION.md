@@ -51,3 +51,22 @@ Packaged command:
 The packaged branch revalidates identity at each launch, runs only bundled binaries,
 and removes inherited development runtime overrides. Outputs use a fresh ignored
 profile under the source tree's test-results; preserve all failures and finished data.
+
+## Pre-run independent audit corrections
+
+The prepared runner initially reused describe.defaults as its expected value, which
+could make a wrong producer self-confirming. The fixed official training-range
+scenario now independently expects120 ms and exact balance-profile provenance at
+data/balance/training_range.tres, SHA256
+52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159
+(the checked-in official345-byte resource). A self-consistent returned250 is refused.
+
+The inherited stop helper also had an unbounded wait after kill. It now bounds the
+graceful request/exit/kill-exit phases at10/20/5 seconds respectively, clears deadline
+timers and rejects CLIENT_STOP_TIMEOUT. Finally preserves failed shutdown/audit
+status, original steps and finishedAt in report.json even when shutdown fails.
+Forced termination is never classified as an orderly successful exit.
+
+Five small audit tests cover these cases, known source hash, no-exit and final report
+failure preservation. Targeted TypeScript and runner syntax checks pass. No native
+client run or frozen827 package modification was performed for these corrections.
