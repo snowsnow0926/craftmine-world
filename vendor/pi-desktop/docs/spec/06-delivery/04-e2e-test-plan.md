@@ -9192,3 +9192,8 @@ Render one user operation split by three real transcript compaction marks. There
 ### P8-20260910-VISIBLE-BUDGET
 
 Use actual PI conversion and the pinned provider SDK with synthetic loopback responses. Attach 800KB of UI-only tool details to unchanged content: estimates and physical payload must equal the control. Enlarge real content beyond the safe window and separately expand the final wire payload: both must fail before forwarding. Run `node tests/player-feedback/P8/visible-budget.mjs`; zero real provider POSTs.
+
+
+### P8-20260910-GODOT-READ-HISTORY
+
+Run `node tests/player-feedback/P8/read-history.mjs`. Matching successful call/result metadata enters existing compaction read history; failed, mismatched, absent and narrated reads do not. Path control characters and traversal are rejected. Optional CRAFTMINE_P8_READ_EVIDENCE replays a completed owned P8 report without invoking a model or an engine; record this as receipt replay, not native acceptance.

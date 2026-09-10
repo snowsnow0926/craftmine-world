@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { completedGodotReadFiles } from "./craftmine-godot-read-files.js";
 import { observeModelStream } from "./task-metrics-stream.js";
 import { CRAFTMINE_SYSTEM_PROMPT, appendCraftmineRequestData, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
@@ -4288,6 +4289,7 @@ Delegation rules:
       retentionMode === "active_turn" && latestUser ? [latestUser] : [];
     return {
       ...preparation,
+      fileOps: { ...preparation.fileOps, read: new Set([...preparation.fileOps.read, ...completedGodotReadFiles(messagesToSummarize)]) },
       firstKeptEntryId: this.fullEntries.at(-1)?.id,
       messagesToSummarize,
       turnPrefixMessages: [],

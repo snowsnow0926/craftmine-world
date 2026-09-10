@@ -1,0 +1,50 @@
+{
+  "checks": [
+    {
+      "name": "successful matching partial read records path without claiming whole file",
+      "passed": true
+    },
+    {
+      "name": "failed, missing, mismatched and narrated reads are not durable read facts",
+      "passed": true
+    },
+    {
+      "name": "path metadata cannot inject traversal or a second summary line",
+      "passed": true
+    },
+    {
+      "name": "actual sealed-run successful Godot receipts replay into finite read history",
+      "passed": true
+    }
+  ],
+  "replay": {
+    "scope": "Replay of completed owned native receipts, not a new model or runtime acceptance",
+    "input": "D:/cm-fb2-20260910/test-results/desktop-native-p8-V35GyJ/report.json",
+    "files": [
+      "base_manifest.json",
+      "craftmine_initial_state.json",
+      "data/equipment/equipment_catalog.tres",
+      "data/equipment/pistol.tres",
+      "data/equipment/practice_sword.tres",
+      "project.godot",
+      "scenes/actors/player.tscn",
+      "scenes/props/pickup_item.tscn",
+      "scenes/training_range.tscn",
+      "scripts/adapters/base_ops.gd",
+      "scripts/adapters/probe_runner.gd",
+      "scripts/core/aim_query.gd",
+      "scripts/core/attack_dispatcher.gd",
+      "scripts/core/base_world.gd",
+      "scripts/core/equipment_catalog.gd",
+      "scripts/core/equipment_definition.gd",
+      "scripts/core/equipment_state.gd",
+      "scripts/core/equipment_visuals.gd",
+      "scripts/core/interactable.gd",
+      "scripts/core/inventory.gd",
+      "scripts/core/melee_attack.gd",
+      "scripts/core/pickup_item.gd",
+      "scripts/core/target_dummy.gd"
+    ],
+    "reads": 26
+  }
+}
