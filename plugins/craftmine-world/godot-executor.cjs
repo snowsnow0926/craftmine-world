@@ -744,7 +744,7 @@ function createGodotExecutor(core, options = {}) {
     if (!ordinaryDirectory(targetRoot)) throw Error('GODOT_ARTIFACT_ROOT_INVALID');
     const listed = Array.isArray(receipt.artifacts) ? receipt.artifacts : [];
     if (!listed.length) throw Error('GODOT_ARTIFACT_MISSING');
-    const seen = new Set(), staged = [];
+    const seen = new Set(), staged = [], copies = [];
     for (const artifact of listed) {
       const relative = safeRelative(artifact.path);
       const key = relative.toLowerCase();
@@ -756,9 +756,15 @@ function createGodotExecutor(core, options = {}) {
       if (info.size !== artifact.bytes) throw Error('GODOT_ARTIFACT_MISMATCH');
       if (await sha256File(from) !== artifact.sha256) throw Error('GODOT_ARTIFACT_MISMATCH');
       const to = assertInside(targetRoot, 'web/' + relative);
-      await fsp.mkdir(path.dirname(to), {recursive:true});
-      await fsp.copyFile(from, to);
-      if (await sha256File(to) !== artifact.sha256) throw Error('GODOT_ARTIFACT_MISMATCH');
+      // Build artifacts are immutable. Rechecking identical sources may reuse
+      // identical bytes, but must never overwrite a previous job's evidence.
+      // The host bridge is planned separately from the exported copy.
+      if (relative !== 'bridge.js') {
+        if (fs.existsSync(to)) {
+          const old=fs.lstatSync(to);
+          if (!old.isFile() || old.isSymbolicLink() || old.nlink!==1 || old.size!==artifact.bytes || await sha256File(to)!==artifact.sha256) throw Error('GODOT_ARTIFACT_CONFLICT');
+        } else copies.push({from,to,sha256:artifact.sha256,bytes:artifact.bytes});
+      }
       staged.push({path:'web/' + relative, bytes:artifact.bytes, sha256:artifact.sha256});
     }
     // A file the broker did not list must never be served from the staged root.
@@ -771,10 +777,18 @@ function createGodotExecutor(core, options = {}) {
     if (!pinned) throw Error('GODOT_BRIDGE_MISSING');
     let replaced = false;
     if (fs.existsSync(bridgeTarget)) {
-      const current = await sha256File(bridgeTarget);
-      if (current !== pinned.sha256) { replaced = true; await fsp.copyFile(pinned.file, bridgeTarget); }
-    } else { replaced = true; await fsp.copyFile(pinned.file, bridgeTarget); }
-    if (await sha256File(bridgeTarget) !== pinned.sha256) throw Error('GODOT_BRIDGE_MISMATCH');
+      const old=fs.lstatSync(bridgeTarget);
+      if (!old.isFile() || old.isSymbolicLink() || old.nlink!==1 || await sha256File(bridgeTarget)!==pinned.sha256) throw Error('GODOT_ARTIFACT_CONFLICT');
+    } else { replaced = true; copies.push({from:pinned.file,to:bridgeTarget,sha256:pinned.sha256,bytes:fs.statSync(pinned.file).size}); }
+    // Complete conflict checks before writing any new file. An exclusive copy
+    // also prevents a file created after preflight from being overwritten.
+    for (const copy of copies) {
+      await fsp.mkdir(path.dirname(copy.to), {recursive:true});
+      try { await fsp.copyFile(copy.from, copy.to, fs.constants.COPYFILE_EXCL); }
+      catch (error) { if (error.code!=='EEXIST') throw error; }
+      const final=fs.lstatSync(copy.to);
+      if (!final.isFile() || final.isSymbolicLink() || final.nlink!==1 || final.size!==copy.bytes || await sha256File(copy.to)!==copy.sha256) throw Error('GODOT_ARTIFACT_CONFLICT');
+    }
     const existing = staged.find(artifact => artifact.path === 'web/bridge.js');
     const bridgeRecord = {path:'web/bridge.js', bytes:fs.statSync(bridgeTarget).size, sha256:pinned.sha256};
     if (existing) Object.assign(existing, bridgeRecord); else staged.push(bridgeRecord);
@@ -1034,7 +1048,46 @@ function createGodotExecutor(core, options = {}) {
     } catch (error) {
       warn('finish refused:', jobId, String(error?.message ?? error), result.reason ?? '');
       const durable = ledgerEntry(jobId);
-      durable.state = 'failed';
+      // A refused artifact/result must not strand the core's lease as running.
+      // First resolve a lost terminal reply. Otherwise submit a failure with no
+      // artifact claims, retaining the original refusal as diagnostic evidence.
+      try {
+        const current=await core.call('godotBuild.read',{worldId:entry.worldId,jobId},15000);
+        if (current?.jobId!==jobId || current.worldId!==entry.worldId || current.buildId!==entry.claim?.buildId) throw Error('GODOT_FINISH_RECOVERY_IDENTITY');
+        let terminal=current;
+        if (['claimed','running'].includes(current.status)) {
+          const reason=String(error?.message??error).slice(0,300);
+          const failed={format:RESULT_FORMAT,inputHash:entry.claim.inputHash,passed:false,
+            import:{passed:false,log:''},compile:{passed:false,errors:[reason],warnings:[]},
+            check:{passed:false,assertions:[{id:'executor.finish-refused',passed:false,detail:reason}]},artifacts:[],engine:output.engine};
+          terminal=await core.call('godotJob.finish',{jobId,token,output:failed},30000);
+          durable.failureSettlement={originalReason:reason,status:terminal.status};
+        }
+        if (['passed','failed','cancelled','interrupted'].includes(terminal.status)) {
+          durable.state=terminal.status==='passed'?'finished':terminal.status;
+          durable.outcome=terminal.status;durable.reason=String(error?.message??error);durable.finishedAt=nowIso();
+          await persistLedger();
+          return {status:terminal.status,candidateId:terminal.candidateId??null,reason:durable.reason};
+        }
+      } catch (settlementError) {
+        durable.failureSettlement={error:String(settlementError?.message??settlementError)};
+        // The core refused the settlement, but it still owns a real terminal
+        // state. Read it back so the ledger reports the core's own answer
+        // instead of an open-ended "unconfirmed" lease; a record that is not
+        // this exact job/build stays unconfirmed rather than confirmed.
+        try {
+          const settled=await core.call('godotBuild.read',{worldId:entry.worldId,jobId},15000);
+          if (settled?.jobId===jobId && settled.worldId===entry.worldId && settled.buildId===entry.claim?.buildId
+              && ['passed','failed','cancelled','interrupted'].includes(settled.status)) {
+            durable.state=settled.status==='passed'?'finished':settled.status;
+            durable.outcome=settled.status;
+            durable.finishedAt=nowIso();
+            await persistLedger();
+            return {status:settled.status,candidateId:settled.candidateId??null,reason:durable.reason};
+          }
+        } catch (recheckError) { durable.failureSettlement.recheckError=String(recheckError?.message??recheckError); }
+      }
+      durable.state = 'unconfirmed';
       durable.outcome = 'refused';
       durable.finishedAt = nowIso();
       durable.reason = String(error?.message ?? error);
@@ -1497,7 +1550,9 @@ function createGodotExecutor(core, options = {}) {
         lastObserved:discovery.resources ?? null},
       jobs:[...jobs.keys()],
       ledger:{jobs:Object.keys(ledger.jobs).length,
-        active:Object.values(ledger.jobs).filter(entry => !['finished', 'failed', 'cancelled'].includes(entry.state)).length,
+        // An interrupted job is terminal: the core ended its lease, so a
+        // reported "active" count must not keep counting it forever.
+        active:Object.values(ledger.jobs).filter(entry => !['finished', 'failed', 'cancelled', 'interrupted'].includes(entry.state)).length,
         updatedAt:ledger.updatedAt, error:ledgerError},
       tasksRoot,
       registered,
