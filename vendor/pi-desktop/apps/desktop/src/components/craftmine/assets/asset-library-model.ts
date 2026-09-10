@@ -837,7 +837,7 @@ export function importRequestFor(
     operationId:
       input.operationId?.trim() || `asset-import:${input.assetId}:${version}:${item.path}`,
     sourceRoot: root,
-    sourcePath: (input.sourcePath ?? joinScanPath(root, item.path)).trim(),
+    sourcePath: input.sourcePath?.trim() || joinScanPath(root, item.path),
     assetId: input.assetId,
     version,
     kind: input.kind,

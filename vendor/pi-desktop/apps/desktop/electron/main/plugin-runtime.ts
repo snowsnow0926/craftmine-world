@@ -7,6 +7,8 @@ import {
   readdirSync,
   realpathSync,
   statSync,
+  lstatSync,
+  opendirSync,
   rmSync,
 } from "node:fs";
 import { basename, join, dirname, relative, resolve, sep, isAbsolute } from "node:path";
@@ -941,6 +943,40 @@ export class PluginRuntime {
     await this.sendToChild(loaded, {
       t: "call", method: "lifecycle.turnEnded", payload: input,
     }, 10_000);
+  }
+
+  /** Main asset import only: reuse the current user-selected read grant. */
+  async authorizeCraftmineAssetSource(sourceRoot: string, sourcePath?: string): Promise<void> {
+    const loaded = this.loaded.get("craftmine.world");
+    if (!loaded?.child || loaded.fsPolicy.read?.root !== "userSelected" || !loaded.userRoot
+      || typeof sourceRoot !== "string" || !isAbsolute(sourceRoot)
+      || resolve(sourceRoot) !== resolve(loaded.userRoot)
+      || (sourcePath !== undefined && (typeof sourcePath !== "string" || !isAbsolute(sourcePath)))) {
+      throw apiError("PERMISSION_DENIED", "Choose the asset directory again");
+    }
+    const granted = loaded.userRoot;
+    await this.resolveFsRequest(loaded, "read", sourceRoot);
+    if (sourcePath !== undefined) await this.resolveFsRequest(loaded, "read", sourcePath);
+    // Inspect names and metadata only before allowing the core's recursive scan.
+    // A granted parent directory must not expose a protected descendant.
+    let entries = 0;
+    const inspect = async (full: string, depth: number): Promise<void> => {
+      if (depth > 16 || ++entries > 1024) throw apiError("INVALID_ARGUMENT", "ASSET_DIRECTORY_LIMIT: choose a smaller asset directory");
+      const info = lstatSync(full);
+      if (info.isSymbolicLink() || (!info.isDirectory() && !info.isFile()) || (info.isFile() && info.nlink !== 1)) {
+        throw apiError("PERMISSION_DENIED", "ASSET_SOURCE_NOT_ORDINARY");
+      }
+      await this.resolveFsRequest(loaded, "read", full);
+      if (!info.isDirectory()) return;
+      const directory = opendirSync(full);
+      try {
+        for (let child = directory.readSync(); child; child = directory.readSync()) await inspect(join(full, child.name), depth + 1);
+      } finally { directory.closeSync(); }
+    };
+    await inspect(sourceRoot, 0);
+    if (this.loaded.get("craftmine.world") !== loaded || loaded.userRoot !== granted) {
+      throw apiError("PERMISSION_DENIED", "Asset directory grant changed");
+    }
   }
 
   /** Private orchestrator-to-domain bridge; no renderer/third-party API maps here. */

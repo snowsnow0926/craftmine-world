@@ -296,8 +296,9 @@ async function showSurface(request) {
 // this trusted page, exactly like the legacy import picker.
 async function pickDirectory() {
   if(!bridge)throw Error('桌面服务尚未连接');
-  const sourceRoot=await bridge.invoke('fs.requestDirectory');
-  return sourceRoot?{sourceRoot}:null;
+  const picked=await bridge.invoke('fs.requestDirectory');
+  const sourceRoot=typeof picked==='string'?picked:picked?.path;
+  return typeof sourceRoot==='string'&&sourceRoot?{sourceRoot}:null;
 }
 
 // Both navigation columns use the same live-view save sequence. Reject busy

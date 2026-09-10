@@ -1,4 +1,4 @@
-// Actual Main/React forms with two local assets. No model, engine job or input simulation.
+// Actual Main/React forms, native directory grant, import and isolated PNG preview.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -28,14 +28,14 @@ const runtime=packageInfo?{sourceCommit:packageInfo.identity.runtimeSourceCommit
 const out=fs.mkdtempSync(path.join(parent,'desktop-native-assets-')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),data=path.join(profile,'plugins/data/craftmine.world'),input=path.join(out,'input'),token=randomUUID();
 for(const directory of [data,legacy,input])fs.mkdirSync(directory,{recursive:true});
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
-const report={format:'craftmine.asset-client-acceptance/1',passed:false,startedAt:new Date().toISOString(),commit,mode:options['--mode'],package:packageInfo?.identity??null,out,mainSha256:sha(main),coreSha256:sha(fs.readFileSync(core)),hostSha256:sha(fs.readFileSync(host)),steps:[],calls:[],launches:[],limits:['Two tiny generated local assets only. No existing personal settings/profile are read.','Metadata changes use actual navigation/Main/React forms. Core calls only seed fixtures and inspect durable state while the client is stopped.','No engine job, real model, visible input, focus or Pointer Lock. Installer execution and clean-OS testing remain separate.']};
+const report={format:'craftmine.asset-client-acceptance/1',passed:false,startedAt:new Date().toISOString(),commit,mode:options['--mode'],package:packageInfo?.identity??null,out,mainSha256:sha(main),coreSha256:sha(fs.readFileSync(core)),hostSha256:sha(fs.readFileSync(host)),steps:[],calls:[],launches:[],limits:['Three tiny generated local PNG assets only. No existing personal settings/profile are read.','Metadata and third-asset import/preview use actual navigation/Main/React forms; native picker substitutes only the explicitly owned profile marker directory. Core calls seed the first two fixtures and inspect durable state while the client is stopped.','PNG library preview does not prove placement in a world. World use requires a separate actual creation-package install/check/apply/save/reopen acceptance.','No real model, visible input, focus or Pointer Lock. Installer execution and clean-OS testing remain separate.']};
 const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
 const verifyPackage=async()=>{if(packageInfo)assert.deepEqual((await inspectParameterPackage({...packageOptions,asar})).identity,packageInfo.identity,'Package changed before process startup');};
 const {CoreClient}=createRequire(import.meta.url)(packaged?path.join(packaged,'resources/plugins/craftmine.world/core-client.cjs'):path.join(root,'plugins/craftmine-world/core-client.cjs'));
 async function withCore(fn){await verifyPackage();const client=new CoreClient(core,data);try{await client.start();return await fn(client);}finally{await client.stop();}}
 const assetIds=['asset-local-a','asset-local-b'];
 async function immutable(c){return Promise.all(assetIds.map(async assetId=>({assetId,read:await c.call('asset.read',{assetId,version:1}),versions:await c.call('asset.versions',{assetId,offset:0,limit:20})})));}
-let child,ended=true,ready=false,exit,launch,ownerWorldId=null;const pending=new Map();
+let child,ended=true,ready=false,exit,launch,ownerWorldId=null,expectedCards=2;const pending=new Map();
 async function start(){
  if(packageInfo)assert.deepEqual((await inspectParameterPackage({...packageOptions,asar})).identity,packageInfo.identity,'Package changed before launch');
  ended=false;ready=false;launch={at:new Date().toISOString()};report.launches.push(launch);const current=launch,number=report.launches.length;
@@ -52,7 +52,7 @@ async function stop(){if(!launch)return;if(!ended){try{await rpc('quit',{},5000)
 async function openAssets(){
  await until(()=>ready,Boolean,'private controller');
  await until(async()=>{const list=await nav('world.list');ownerWorldId=list.activeWorldId??null;return view('open');},v=>v.open,'actual asset navigation');
- return until(()=>view('read'),v=>v.cards?.length===2&&!v.error,'two seeded cards');
+ return until(()=>view('read'),v=>v.cards?.length===expectedCards&&!v.error,'expected durable cards');
 }
 try {
  await withCore(async c=>{for(const [n,assetId]of assetIds.entries()){
@@ -64,11 +64,23 @@ try {
  await step('favorite and filter commit through real forms',async()=>{await view('favorite',{assetId:assetIds[0]});await until(()=>view('read'),v=>v.selected?.favorite&&!v.selected.pending,'favorite receipt');await view('filter',{favoritesOnly:true});return until(()=>view('read'),v=>v.cards?.length===1&&v.cards[0].assetId===assetIds[0],'favorite filter');});
  await step('unfavorite removes only its filtered card',async()=>{await view('favorite',{assetId:assetIds[0]});const value=await until(()=>view('read'),v=>v.cards?.length===0&&v.selected?.favorite===false&&!v.selected.pending,'unfavorite receipt');assert.equal(value.selected.assetId,assetIds[0]);return value;});
  await step('tag edit is acknowledged without another asset changing',async()=>{await view('saveTags',{assetId:assetIds[0],tags:['建筑','常用']});await until(()=>view('read'),v=>v.selected?.tags==='常用, 建筑'&&!v.selected.pending,'tag receipt');await view('filter',{favoritesOnly:false});await until(()=>view('read'),v=>v.cards?.length===2,'all cards');await view('select',{assetId:assetIds[1],version:1});const value=await until(()=>view('read'),v=>v.selected?.assetId===assetIds[1],'second asset');assert.equal(value.selected.favorite,false);assert.equal(value.selected.tags,'');assert.deepEqual(await nav('world.list'),beforeWorlds);return value;});
+ await step('tags can be cleared and old-owner operations are refused',async()=>{
+  await view('saveTags',{assetId:assetIds[1],tags:['临时']});await until(()=>view('read'),v=>v.selected?.tags==='临时'&&!v.selected.pending,'temporary tag');
+  await view('saveTags',{assetId:assetIds[1],tags:[]});await until(()=>view('read'),v=>v.selected?.tags===''&&!v.selected.pending,'cleared tag');
+  await assert.rejects(rpc('assetsView',{payload:{action:'saveTags',ownerWorldId:'world-stale-fixture',assetId:assetIds[1],tags:['错误世界']}}),/OWNER_CHANGED/);
+  assert.deepEqual(await nav('world.list'),beforeWorlds);return{cleared:true,staleOwnerRejected:true};
+ });
+ const importedId='player-import.png',importedFile=path.join(legacy,importedId);
+ fs.copyFileSync(path.join(input,assetIds[0]+'.png'),importedFile);report.importedSourceSha256=sha(fs.readFileSync(importedFile));
+ await step('real directory picker grant scans one explicitly owned PNG',async()=>{await view('importPick');return until(()=>view('read'),v=>v.import?.ready&&!v.error,'authorized scan');});
+ await step('real import form commits a third asset from its scanned path',async()=>{await view('importConfirm');const state=await until(()=>view('read'),v=>!!v.import?.done&&v.cards?.some(c=>c.assetId===importedId)&&!v.error,'actual import');expectedCards=3;return state;});
+ await view('select',{assetId:importedId,version:1});await until(()=>view('read'),v=>v.selected?.assetId===importedId,'imported selection');
+ await step('real isolated decoder produces a visible PNG preview',async()=>{await view('preview',{assetId:importedId,version:1});const state=await until(()=>view('read'),v=>v.preview?.tone==='success'&&v.preview.thumbnail&&!v.error,'decoded PNG thumbnail');assert.deepEqual(await nav('world.list'),beforeWorlds);return state;});
  await view('close');await until(()=>view('read'),v=>!v.open,'closed asset sheet');await step('first client shutdown is strictly clean',stop);
  await withCore(async c=>{assert.deepEqual(await immutable(c),report.beforeAssets);report.afterFirstAssets=await immutable(c);});
  await start();await step('reopened actual library retains tags and favorite state',async()=>{await openAssets();await view('select',{assetId:assetIds[0],version:1});const value=await until(()=>view('read'),v=>v.selected?.assetId===assetIds[0],'reopened detail');assert.equal(value.selected.tags,'常用, 建筑');assert.equal(value.selected.favorite,false);assert.deepEqual(await nav('world.list'),beforeWorlds);return value;});
  await view('close');await until(()=>view('read'),v=>!v.open,'second sheet close');await step('second client shutdown is strictly clean',stop);
- await step('durable bodies, licenses, hashes and versions are unchanged',async()=>withCore(async c=>{assert.deepEqual(await immutable(c),report.beforeAssets);const rows=await c.call('asset.search',{scope:'local-library',query:'',tags:[],favoritesOnly:false,latestOnly:true,offset:0,limit:20});assert.equal(rows.items.length,2);assert.deepEqual(rows.items.find(v=>v.assetId===assetIds[0]).tags,['常用','建筑']);assert.equal(rows.items.find(v=>v.assetId===assetIds[0]).favorite,false);assert.deepEqual(rows.items.find(v=>v.assetId===assetIds[1]).tags,[]);return rows;}));
+ await step('durable bodies, licenses, hashes and versions are unchanged',async()=>withCore(async c=>{assert.deepEqual(await immutable(c),report.beforeAssets);const rows=await c.call('asset.search',{scope:'local-library',query:'',tags:[],favoritesOnly:false,latestOnly:true,offset:0,limit:20});assert.equal(rows.items.length,3);assert.deepEqual(rows.items.find(v=>v.assetId===assetIds[0]).tags,['常用','建筑']);assert.equal(rows.items.find(v=>v.assetId===assetIds[0]).favorite,false);assert.deepEqual(rows.items.find(v=>v.assetId===assetIds[1]).tags,[]);const imported=await c.call('asset.read',{assetId:importedId,version:1});assert.equal(imported.version_.files.length,1);assert.equal(imported.version_.files[0].sha256,report.importedSourceSha256);report.importedAsset=imported;return rows;}));
  report.passed=true;
 } catch(e){report.error=String(e.stack??e);process.exitCode=1;}
 finally{try{await stop();}catch(e){report.shutdownError=String(e);report.passed=false;process.exitCode=1;}report.finishedAt=new Date().toISOString();persist();console.log(JSON.stringify({out,passed:report.passed,error:report.error,shutdownError:report.shutdownError}));}

@@ -14,6 +14,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   // Asset library reads (R6's contract). Writes stay in the player import flow.
   "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
   "asset.probe", "asset.previewRead", "asset.annotate",
+  "asset.import", "asset.preview", "asset.cancel",
   "package.request",
 ]);
 type Domain = (method: string, params: Record<string, any>) => Promise<any>;
@@ -35,6 +36,7 @@ export function createCraftminePanelGateway(options: {
   issues?: (channel: string, payload: Record<string, any>) => Promise<any>;
   targetFeedback?: (channel: string, payload: Record<string, any>) => Promise<any>;
   packages?: (channel: string, payload: Record<string, any>) => Promise<any>;
+  authorizeAssetSource?: (sourceRoot: string, sourcePath?: string) => Promise<void>;
   operations?: CraftmineOperationJournal;
 }) {
   const inFlight = new Map<string, Promise<any>>();
