@@ -1,0 +1,759 @@
+{
+  "format": "craftmine.task-path-package-acceptance/1",
+  "passed": false,
+  "startedAt": "2026-09-10T03:24:28.803Z",
+  "out": "C:\\cm-accept-0910\\test-results\\desktop-native-task-paths-Wpz8MV",
+  "profile": "C:\\cm-accept-0910\\test-results\\desktop-native-task-paths-Wpz8MV\\profile-ppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+  "cacheUtf16Units": 266,
+  "mode": "packaged",
+  "packaged": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\output\\win-unpacked",
+  "commit": "c4af0d28492980697c3ca89bf595ae1c8fa6bffc",
+  "buildManifestSha256": "8f7fd77255b21215e37d22db9ab55f587d7e14045ff75890acb20be726e2c2f1",
+  "sourceArchiveHash": "b4fae3c7a50c6338acd3d21f85d8caecc4330f7ffc3453fa3fab7ecdf0b9cd2a",
+  "appVersion": "0.14.3",
+  "executableSha256": "acefc9c315d2fbc27191f8d328704a8fd9970abc00eb2c4fa7a5772ee9e9d318",
+  "asarSha256": "c35dcadbd7069edde9c7276d5a1305d1a77c6c10cd8cd96883653663526db53f",
+  "mainSha256": "7f10e750c1275062906fb6a7ce232fc63f9f5357c162fe2e122ede7fa6a345ec",
+  "pluginSha256": "055b04fc070294ba18fa765d4fd4d7b3ff5aa60770fc5940cdcdc8a7eefcd8c6",
+  "coreSha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+  "hostSha256": "4587acd295b5ea9adbf11b080f7cbfb0c7aadf59e2226dc787812fde043309b3",
+  "runtimeSourceCommit": "c4af0d28492980697c3ca89bf595ae1c8fa6bffc",
+  "runtimeFilesDigest": "af2321023a12eb55744c523da489b8f94a4f50200e1fabe08b8e26b0daaadda3",
+  "steps": [
+    {
+      "name": "create one fixed world through the packaged product",
+      "passed": true,
+      "result": {
+        "id": "world-a9f3428fdb12",
+        "title": "Long task path rejection"
+      }
+    },
+    {
+      "name": "show precise build preparation failure without exposing an internal path",
+      "passed": true,
+      "result": {
+        "baseId": "first-person",
+        "id": "world-a9f3428fdb12",
+        "revision": 0,
+        "runtimeKind": "godot",
+        "title": "Long task path rejection",
+        "updatedAt": 1789010673967,
+        "base": {
+          "id": "first-person",
+          "label": "Godot 第一人称",
+          "delivered": false
+        },
+        "state": "failed",
+        "creation": {
+          "operationId": "gwinit-043553d997d2bdffc88ee1d36a5b18c3c0c87b64975464c3aa824073dbf07a3d",
+          "stage": "build",
+          "stages": [
+            {
+              "id": "materialize",
+              "label": "复制底座与登记世界",
+              "status": "passed"
+            },
+            {
+              "id": "project",
+              "label": "建立工程源码",
+              "status": "passed"
+            },
+            {
+              "id": "build",
+              "label": "首次构建",
+              "status": "failed"
+            },
+            {
+              "id": "confirm",
+              "label": "确认可加载",
+              "status": "pending"
+            }
+          ],
+          "progress": 60,
+          "error": {
+            "code": "GODOT_TASK_PATH_TOO_LONG",
+            "message": "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。",
+            "stage": "build",
+            "recoverable": true
+          },
+          "actions": [
+            "retry",
+            "details"
+          ]
+        }
+      }
+    },
+    {
+      "name": "record an unlaunched rejected import with no task directory",
+      "passed": true,
+      "result": {
+        "jobId": "gjob-2d8e2daee7ea30beed87995f4e3f83ffef35f4cdfb73b23a2e499b9296188ae7",
+        "requestId": "im-e13329c41b4b4ef28b359777",
+        "reason": "GODOT_TASK_PATH_TOO_LONG",
+        "failure": {
+          "exitCode": 1,
+          "engineExitCode": null,
+          "error": "GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245",
+          "parseError": null,
+          "cleanup": null,
+          "resources": null,
+          "stderr": "BROKER_ERROR: GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245\n"
+        },
+        "taskDirectoryAbsent": true
+      }
+    },
+    {
+      "name": "first orderly package shutdown",
+      "passed": true
+    },
+    {
+      "name": "restart keeps the same failed world, finite code and build stage",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'GODOT_INITIALIZATION_FAILED'\n- 'GODOT_TASK_PATH_TOO_LONG'\n         ^\n"
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T03:24:29.422Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    },
+    {
+      "at": "2026-09-10T03:24:42.102Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    }
+  ],
+  "calls": [
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": []
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.create",
+        "payload": {
+          "baseId": "first-person",
+          "starterId": "blank",
+          "title": "Long task path rejection",
+          "operationId": "ca01b50e-42ee-41d7-a969-ef901abd525c"
+        }
+      },
+      "result": {
+        "id": "world-a9f3428fdb12",
+        "title": "Long task path rejection"
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": [
+          {
+            "baseId": "first-person",
+            "id": "world-a9f3428fdb12",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "Long task path rejection",
+            "updatedAt": 1789010673967,
+            "base": {
+              "id": "first-person",
+              "label": "Godot 第一人称",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-043553d997d2bdffc88ee1d36a5b18c3c0c87b64975464c3aa824073dbf07a3d",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 50,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "ea054c9e-726d-4055-bb1b-53d9235c4fdd",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789010673907,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-a9f3428fdb12"
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": [
+          {
+            "baseId": "first-person",
+            "id": "world-a9f3428fdb12",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "Long task path rejection",
+            "updatedAt": 1789010673967,
+            "base": {
+              "id": "first-person",
+              "label": "Godot 第一人称",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-043553d997d2bdffc88ee1d36a5b18c3c0c87b64975464c3aa824073dbf07a3d",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "ea054c9e-726d-4055-bb1b-53d9235c4fdd",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789010673907,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-a9f3428fdb12"
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": [
+          {
+            "baseId": "first-person",
+            "id": "world-a9f3428fdb12",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "Long task path rejection",
+            "updatedAt": 1789010673967,
+            "base": {
+              "id": "first-person",
+              "label": "Godot 第一人称",
+              "delivered": false
+            },
+            "state": "failed",
+            "creation": {
+              "operationId": "gwinit-043553d997d2bdffc88ee1d36a5b18c3c0c87b64975464c3aa824073dbf07a3d",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "failed"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 60,
+              "error": {
+                "code": "GODOT_TASK_PATH_TOO_LONG",
+                "message": "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。",
+                "stage": "build",
+                "recoverable": true
+              },
+              "actions": [
+                "retry",
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "ea054c9e-726d-4055-bb1b-53d9235c4fdd",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789010673907,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-a9f3428fdb12"
+      }
+    },
+    {
+      "method": "quit",
+      "payload": {},
+      "result": {
+        "requested": true
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": [
+          {
+            "baseId": "first-person",
+            "id": "world-a9f3428fdb12",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "Long task path rejection",
+            "updatedAt": 1789010673967,
+            "base": {
+              "id": "first-person",
+              "label": "Godot 第一人称",
+              "delivered": false
+            },
+            "state": "failed",
+            "creation": {
+              "operationId": "gwinit-043553d997d2bdffc88ee1d36a5b18c3c0c87b64975464c3aa824073dbf07a3d",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "failed"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 60,
+              "error": {
+                "code": "GODOT_INITIALIZATION_FAILED",
+                "message": "Error: EXPLICIT_RECOVERY_REQUIRED",
+                "stage": "build",
+                "recoverable": true
+              },
+              "actions": [
+                "retry",
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "ea054c9e-726d-4055-bb1b-53d9235c4fdd",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789010673907,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-a9f3428fdb12"
+      }
+    },
+    {
+      "method": "quit",
+      "payload": {},
+      "result": {
+        "requested": true
+      }
+    }
+  ],
+  "limits": [
+    "Actual explicitly pinned packaged EXE/core/host/runtime, no development executable fallback.",
+    "Fixed first-person blank creation and read-only failed-world observation across restart. No mouse/keyboard/focus/Pointer Lock/model request.",
+    "A verified version preflight may launch Godot; the corresponding refused import must never allocate or launch an engine task.",
+    "This is intentional rejection of an unsupported 266-unit cache layout, not long-path support or successful game creation."
+  ],
+  "worldId": "world-a9f3428fdb12",
+  "before": {
+    "baseId": "first-person",
+    "id": "world-a9f3428fdb12",
+    "revision": 0,
+    "runtimeKind": "godot",
+    "title": "Long task path rejection",
+    "updatedAt": 1789010673967,
+    "base": {
+      "id": "first-person",
+      "label": "Godot 第一人称",
+      "delivered": false
+    },
+    "state": "failed",
+    "creation": {
+      "operationId": "gwinit-043553d997d2bdffc88ee1d36a5b18c3c0c87b64975464c3aa824073dbf07a3d",
+      "stage": "build",
+      "stages": [
+        {
+          "id": "materialize",
+          "label": "复制底座与登记世界",
+          "status": "passed"
+        },
+        {
+          "id": "project",
+          "label": "建立工程源码",
+          "status": "passed"
+        },
+        {
+          "id": "build",
+          "label": "首次构建",
+          "status": "failed"
+        },
+        {
+          "id": "confirm",
+          "label": "确认可加载",
+          "status": "pending"
+        }
+      ],
+      "progress": 60,
+      "error": {
+        "code": "GODOT_TASK_PATH_TOO_LONG",
+        "message": "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。",
+        "stage": "build",
+        "recoverable": true
+      },
+      "actions": [
+        "retry",
+        "details"
+      ]
+    }
+  },
+  "attempt": {
+    "jobId": "gjob-2d8e2daee7ea30beed87995f4e3f83ffef35f4cdfb73b23a2e499b9296188ae7",
+    "requestId": "im-e13329c41b4b4ef28b359777",
+    "reason": "GODOT_TASK_PATH_TOO_LONG",
+    "failure": {
+      "exitCode": 1,
+      "engineExitCode": null,
+      "error": "GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245",
+      "parseError": null,
+      "cleanup": null,
+      "resources": null,
+      "stderr": "BROKER_ERROR: GODOT_TASK_PATH_TOO_LONG: prepare editor-cache path uses 266 UTF-16 units; limit 245\n"
+    },
+    "taskDirectoryAbsent": true
+  },
+  "firstLedgerSha256": "e61fdfa0bd4cefc82aaa0541ce51e7c6830c0239d7a4a598581ff194be53caeb",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'GODOT_INITIALIZATION_FAILED'\n- 'GODOT_TASK_PATH_TOO_LONG'\n         ^\n\n    at assertTaskPathWorld (file:///C:/cm-accept-0910/tests/plan-loop/task-path-client-package.mjs:19:9)\n    at file:///C:/cm-accept-0910/tests/plan-loop/task-path-client-native.mjs:63:133\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async step (file:///C:/cm-accept-0910/tests/plan-loop/task-path-client-native.mjs:51:47)\n    at async file:///C:/cm-accept-0910/tests/plan-loop/task-path-client-native.mjs:63:15",
+  "finishedAt": "2026-09-10T03:24:47.204Z"
+}

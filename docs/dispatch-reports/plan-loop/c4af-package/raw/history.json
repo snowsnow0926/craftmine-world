@@ -1,0 +1,5897 @@
+{
+  "format": "craftmine.vm2-desktop-acceptance/1",
+  "passed": true,
+  "mode": "packaged",
+  "packaged": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\output\\win-unpacked",
+  "commit": "c4af0d28492980697c3ca89bf595ae1c8fa6bffc",
+  "buildManifestSha256": "8f7fd77255b21215e37d22db9ab55f587d7e14045ff75890acb20be726e2c2f1",
+  "sourceArchiveHash": "b4fae3c7a50c6338acd3d21f85d8caecc4330f7ffc3453fa3fab7ecdf0b9cd2a",
+  "appVersion": "0.14.3",
+  "executableSha256": "acefc9c315d2fbc27191f8d328704a8fd9970abc00eb2c4fa7a5772ee9e9d318",
+  "asarSha256": "c35dcadbd7069edde9c7276d5a1305d1a77c6c10cd8cd96883653663526db53f",
+  "mainSha256": "7f10e750c1275062906fb6a7ce232fc63f9f5357c162fe2e122ede7fa6a345ec",
+  "pluginSha256": "055b04fc070294ba18fa765d4fd4d7b3ff5aa60770fc5940cdcdc8a7eefcd8c6",
+  "coreSha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+  "hostSha256": "4587acd295b5ea9adbf11b080f7cbfb0c7aadf59e2226dc787812fde043309b3",
+  "runtimeSourceCommit": "c4af0d28492980697c3ca89bf595ae1c8fa6bffc",
+  "runtimeFilesDigest": "af2321023a12eb55744c523da489b8f94a4f50200e1fabe08b8e26b0daaadda3",
+  "root": "C:\\cm-accept-0910",
+  "out": "C:\\cm-accept-0910\\test-results\\desktop-native-vm2-AYXnuI",
+  "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\CraftmineWorld-acceptance-archive-20260910\\cm-plan-loop\\desktop-native-parameters-6Uvnzp\\profile\\plugins\\data\\craftmine.world",
+  "worldId": "world-a5eac9797410",
+  "steps": [
+    {
+      "name": "actual React history opens through finite form navigation without authoring work",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "actual Main historyCompare channel renders the formal-to-historical file list",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "actual Main historyDiff renders the exact earlier parameter source",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": "diff --git a/scenes/training_range.tscn b/scenes/training_range.tscn\nindex 9cfe522..30c2918 100644\n--- a/scenes/training_range.tscn\n+++ b/scenes/training_range.tscn\n@@ -145,7 +145,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -6)\n target_id = &\"target_a\"\n display_name = \"Near target\"\n \n-hit_flash_seconds = 0.5\n [node name=\"TargetB\" parent=\"Targets\" instance=ExtResource(\"11_target\")]\n transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)\n target_id = &\"target_b\"\n",
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "switching real worlds rejects the old history identity",
+      "passed": true,
+      "result": {
+        "rejected": "GODOT_WORLD_CHANGED"
+      }
+    },
+    {
+      "name": "real finite parameter edit produces a checked candidate for formal invalidation",
+      "passed": true,
+      "result": {
+        "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+        "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681"
+      }
+    },
+    {
+      "name": "real candidate application invalidates a view with unchanged draft head",
+      "passed": true,
+      "result": {
+        "head": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "previousApplied": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "applied": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096"
+      }
+    },
+    {
+      "name": "refreshing React comparison shows new formal identity without another write",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "d33abc3c-52dc-4d66-a9de-433b06b26d4a",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": "正式 4fbd91fd6822 → 所选 4fbd91fd6822",
+        "count": "内容相同，没有文件变化。",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "closing history uses the actual React lifecycle",
+      "passed": true,
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": false,
+        "viewId": null,
+        "headOid": null,
+        "appliedOid": null,
+        "busy": false,
+        "branch": null,
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "name": "owned client exits with complete audited shutdown",
+      "passed": true
+    }
+  ],
+  "calls": [
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "error": "Error: Error: Window is not ready"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "result": {
+        "worlds": [
+          {
+            "id": "vm2-empty-world",
+            "revision": 0,
+            "runtimeKind": "legacy",
+            "title": "Isolated VM2 empty fixture",
+            "updatedAt": 1789010764360,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          },
+          {
+            "baseId": "first-person",
+            "id": "world-a5eac9797410",
+            "revision": 3,
+            "runtimeKind": "godot",
+            "title": "Training target parameter acceptance",
+            "updatedAt": 1789006392219,
+            "base": {
+              "id": "first-person",
+              "label": "Godot 第一人称",
+              "delivered": false
+            },
+            "state": "ready",
+            "creation": {
+              "operationId": "gwinit-bf01308234512a488001497cd2209929235fd59cad9f4d83e38fd71a3f1a4996",
+              "stage": "confirm",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "passed"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "passed"
+                }
+              ],
+              "progress": 100,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "1353c107-f04e-4aeb-af07-6773182f39cc",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789006321886,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.open",
+        "payload": {
+          "id": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "ok": true,
+        "activeWorldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "godotObserve",
+      "payload": {},
+      "result": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "86ab955f966fecb431172322",
+        "payload": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 500,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-a5eac9797410"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T03:26:15Z",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldNavigationReady",
+      "payload": {},
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "ready": true
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.runtimeSave",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "freeze": true
+        }
+      },
+      "result": {
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "contentHash": "043b90797aca36ab3f452e5f8a9326a4bcf1e10731cca14c88bbe56eda18cf9e",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "86ab955f966fecb431172322",
+        "persistedAt": 1789006392219,
+        "revision": 3,
+        "snapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded",
+        "snapshotSha256": "fe28937d11e2c0c9a02d96fd8f96e87e1c22c2899f74ed143994d6ebac43fb64",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "2439dd7661e570b8e3c2331ce389e4dd216a022e8ae44d5aa5cd85b21861b379",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "open",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": false,
+        "viewId": null,
+        "headOid": null,
+        "appliedOid": null,
+        "busy": false,
+        "branch": null,
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "",
+        "headOid": "",
+        "appliedOid": "",
+        "busy": true,
+        "branch": null,
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "2439dd7661e570b8e3c2331ce389e4dd216a022e8ae44d5aa5cd85b21861b379",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "compareVersion",
+          "worldId": "world-a5eac9797410",
+          "targetOid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": true,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "2439dd7661e570b8e3c2331ce389e4dd216a022e8ae44d5aa5cd85b21861b379",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "diff",
+          "worldId": "world-a5eac9797410",
+          "path": "scenes/training_range.tscn"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": true,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [
+          {
+            "path": "scenes/training_range.tscn",
+            "text": "修改 · scenes/training_range.tscn"
+          }
+        ],
+        "range": "正式 812faa0dfa69 → 所选 20e56310be1a",
+        "count": "共 1 个文件变化 · 当前 1–1",
+        "patch": "diff --git a/scenes/training_range.tscn b/scenes/training_range.tscn\nindex 9cfe522..30c2918 100644\n--- a/scenes/training_range.tscn\n+++ b/scenes/training_range.tscn\n@@ -145,7 +145,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -6)\n target_id = &\"target_a\"\n display_name = \"Near target\"\n \n-hit_flash_seconds = 0.5\n [node name=\"TargetB\" parent=\"Targets\" instance=ExtResource(\"11_target\")]\n transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)\n target_id = &\"target_b\"\n",
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "2439dd7661e570b8e3c2331ce389e4dd216a022e8ae44d5aa5cd85b21861b379",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": []
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.open",
+        "payload": {
+          "id": "vm2-empty-world"
+        }
+      },
+      "result": {
+        "ok": true,
+        "activeWorldId": "vm2-empty-world"
+      }
+    },
+    {
+      "method": "worldState",
+      "payload": {},
+      "result": {
+        "loaded": false,
+        "id": "vm2-empty-world",
+        "error": "",
+        "status": "正在载入",
+        "disabled": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "snapshot": null
+      }
+    },
+    {
+      "method": "worldState",
+      "payload": {},
+      "result": {
+        "loaded": true,
+        "id": "vm2-empty-world",
+        "error": "",
+        "status": "已保存",
+        "disabled": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "snapshot": {
+          "format": "craftmine.progress/3",
+          "player": {
+            "pitch": 0,
+            "x": 0.5,
+            "y": 6,
+            "yaw": 0,
+            "z": 12.5
+          },
+          "gameplay": {
+            "systems": {},
+            "targets": {},
+            "equipped": null,
+            "archivedTargets": {},
+            "cooldown": 0
+          },
+          "behaviors": {
+            "format": "craftmine.behavior-state/2",
+            "time": 0,
+            "modules": {},
+            "inventory": {},
+            "archive": []
+          }
+        }
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "godot.historyCompare",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "viewId": "fb73c002-221c-48ba-8bf4-2ff7ff89def3",
+          "targetOid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+        }
+      },
+      "error": "Error: Error: GODOT_WORLD_CHANGED"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.open",
+        "payload": {
+          "id": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "ok": true,
+        "activeWorldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "godotObserve",
+      "payload": {},
+      "result": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "a2e5d257d94065cfa6f4aa6a",
+        "payload": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              32,
+              32
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              32,
+              32
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  22,
+                  32
+                ],
+                "kind": "line",
+                "to": [
+                  29,
+                  32
+                ]
+              },
+              {
+                "from": [
+                  35,
+                  32
+                ],
+                "kind": "line",
+                "to": [
+                  42,
+                  32
+                ]
+              },
+              {
+                "from": [
+                  32,
+                  22
+                ],
+                "kind": "line",
+                "to": [
+                  32,
+                  29
+                ]
+              },
+              {
+                "from": [
+                  32,
+                  35
+                ],
+                "kind": "line",
+                "to": [
+                  32,
+                  42
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              64,
+              64
+            ],
+            "viewportCenter": [
+              32,
+              32
+            ],
+            "viewportSize": [
+              64,
+              64
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            64,
+            64
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            0,
+            0
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 500,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            64,
+            64
+          ],
+          "windowSize": [
+            64,
+            64
+          ],
+          "worldId": "world-a5eac9797410"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T03:26:18Z",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldNavigationReady",
+      "payload": {},
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "ready": true
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.runtimeSave",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "freeze": true
+        }
+      },
+      "result": {
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "contentHash": "043b90797aca36ab3f452e5f8a9326a4bcf1e10731cca14c88bbe56eda18cf9e",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "a2e5d257d94065cfa6f4aa6a",
+        "persistedAt": 1789006392219,
+        "revision": 3,
+        "snapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded",
+        "snapshotSha256": "fe28937d11e2c0c9a02d96fd8f96e87e1c22c2899f74ed143994d6ebac43fb64",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.describe",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "targets": [
+          {
+            "targetId": "target_a",
+            "label": "TargetA",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-a5eac9797410",
+              "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+              "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+              "revision": 2,
+              "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+              "targetId": "target_a",
+              "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3"
+            },
+            "values": {
+              "hitFlashMilliseconds": 500
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          },
+          {
+            "targetId": "target_b",
+            "label": "TargetB",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-a5eac9797410",
+              "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+              "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+              "revision": 2,
+              "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+              "targetId": "target_b",
+              "targetHash": "0c9b2b499129d9a988c49a505c4a9c70ba126433358e2e8a7dae42a59b36d9cf"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          },
+          {
+            "targetId": "target_c",
+            "label": "TargetC",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-a5eac9797410",
+              "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+              "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+              "revision": 2,
+              "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+              "targetId": "target_c",
+              "targetHash": "ac0386662299852d7be91a00e9660b33bbb77fdcb5df2debf32577041ef13f5c"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          }
+        ],
+        "unsupportedCount": 0
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.prepare",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "channel": "targetFeedback.submit",
+          "payload": {
+            "targetId": "target_a",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-a5eac9797410",
+              "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+              "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+              "revision": 2,
+              "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+              "targetId": "target_a",
+              "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3"
+            },
+            "values": {
+              "hitFlashMilliseconds": 501
+            }
+          }
+        }
+      },
+      "result": {
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "channel": "targetFeedback.submit",
+        "payload": {
+          "sourceBinding": {
+            "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+            "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+            "format": "craftmine.target-feedback-source/1",
+            "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+            "revision": 2,
+            "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3",
+            "targetId": "target_a",
+            "worldId": "world-a5eac9797410"
+          },
+          "targetId": "target_a",
+          "values": {
+            "hitFlashMilliseconds": 501
+          }
+        },
+        "state": "pending",
+        "createdAt": 1789010783049
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.execute",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "queued",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "claimed",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "running",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "targetFeedback.status",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "operationId": "5d465107-3898-4100-835c-407ea56b9ff7"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+        "status": "passed",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "status": "passed",
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+          "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681"
+        },
+        "source": {
+          "revision": 3,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.candidateRead",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681"
+        }
+      },
+      "result": {
+        "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+        "candidate": {
+          "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "baseBuild": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+          "baseId": "first-person",
+          "buildBytes": 39595688,
+          "buildFiles": 81,
+          "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+          "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681",
+          "checkJobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+          "checkOutputHash": "979627eda2fb55ba04b0825c02c01b4f59b44f329761c4ab03391fa04b1f1649",
+          "content": {
+            "branchId": "main",
+            "contentOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+            "repoId": "world-world-a5eac9797410"
+          },
+          "createdAt": 1789010803074,
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8",
+          "sourceRevision": 3,
+          "status": "ready",
+          "updatedAt": 1789010803074,
+          "worldId": "world-a5eac9797410"
+        },
+        "check": {
+          "assertions": [
+            {
+              "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+              "id": "runtime.ready",
+              "passed": true
+            },
+            {
+              "detail": "frames=3 distinct=1",
+              "id": "runtime.frame",
+              "passed": true
+            },
+            {
+              "detail": null,
+              "id": "runtime.no-errors",
+              "passed": true
+            },
+            {
+              "detail": "formal progress unchanged",
+              "id": "runtime.snapshot",
+              "passed": true
+            },
+            {
+              "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+              "id": "runtime.isolation",
+              "passed": true
+            },
+            {
+              "detail": "graceful=true",
+              "id": "runtime.recovery",
+              "passed": true
+            },
+            {
+              "detail": "runtime expectation evidence required",
+              "id": "runtime.target-feedback",
+              "passed": true
+            },
+            {
+              "detail": "bound runtime expectation confirmed",
+              "id": "core.target-feedback",
+              "passed": true
+            }
+          ],
+          "defaultsSnapshot": {
+            "baseId": "first-person",
+            "baseVersion": "0.1.0",
+            "body": {
+              "base": "first-person",
+              "baseVersion": "0.1.0",
+              "equipment": {
+                "active": "pistol",
+                "items": [
+                  {
+                    "id": "pistol",
+                    "magazine": 6,
+                    "reserve": 12
+                  },
+                  {
+                    "id": "practice_sword",
+                    "magazine": 0,
+                    "reserve": 0
+                  },
+                  {
+                    "id": "inspection_tool",
+                    "magazine": 0,
+                    "reserve": 0
+                  }
+                ]
+              },
+              "format": "craftmine.godot-base-state/1",
+              "interactables": [
+                {
+                  "enabled": true,
+                  "id": "AmmoCrate",
+                  "usesLeft": 3
+                },
+                {
+                  "enabled": true,
+                  "id": "RepairKit",
+                  "taken": false
+                }
+              ],
+              "inventory": {
+                "slots": [
+                  {
+                    "count": 1,
+                    "id": "repair_kit"
+                  }
+                ]
+              },
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0
+              },
+              "quests": {
+                "quests": [
+                  {
+                    "count": 0,
+                    "id": "range_basic",
+                    "rewardGranted": false,
+                    "status": 1
+                  }
+                ]
+              },
+              "savedAt": "2026-09-10T03:26:40Z",
+              "stateVersion": 1,
+              "targets": [
+                {
+                  "damageTaken": 0,
+                  "destroyed": false,
+                  "health": 50,
+                  "hitCount": 0,
+                  "id": "target_a"
+                },
+                {
+                  "damageTaken": 0,
+                  "destroyed": false,
+                  "health": 50,
+                  "hitCount": 0,
+                  "id": "target_b"
+                },
+                {
+                  "damageTaken": 0,
+                  "destroyed": false,
+                  "health": 50,
+                  "hitCount": 0,
+                  "id": "target_c"
+                }
+              ],
+              "worldId": "world-a5eac9797410"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-a5eac9797410"
+          },
+          "passed": true,
+          "progressMigration": {
+            "added": [],
+            "defaultsSnapshotHash": "a096beb2d70d1049973bbf74ef5f36ac1d5e338e2895d68396196959148aa637",
+            "format": "craftmine.godot-additive-progress/1",
+            "previousSnapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded",
+            "snapshot": {
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "body": {
+                "base": "first-person",
+                "baseVersion": "0.1.0",
+                "equipment": {
+                  "active": "pistol",
+                  "items": [
+                    {
+                      "id": "pistol",
+                      "magazine": 6,
+                      "reserve": 12
+                    },
+                    {
+                      "id": "practice_sword",
+                      "magazine": 0,
+                      "reserve": 0
+                    },
+                    {
+                      "id": "inspection_tool",
+                      "magazine": 0,
+                      "reserve": 0
+                    }
+                  ]
+                },
+                "format": "craftmine.godot-base-state/1",
+                "interactables": [
+                  {
+                    "enabled": true,
+                    "id": "AmmoCrate",
+                    "usesLeft": 3
+                  },
+                  {
+                    "enabled": true,
+                    "id": "RepairKit",
+                    "taken": false
+                  }
+                ],
+                "inventory": {
+                  "slots": [
+                    {
+                      "count": 1,
+                      "id": "repair_kit"
+                    }
+                  ]
+                },
+                "player": {
+                  "onFloor": true,
+                  "pitch": -0.1,
+                  "position": [
+                    0,
+                    0.899999976158142,
+                    6
+                  ],
+                  "yaw": -0.3
+                },
+                "quests": {
+                  "quests": [
+                    {
+                      "count": 0,
+                      "id": "range_basic",
+                      "rewardGranted": false,
+                      "status": 1
+                    }
+                  ]
+                },
+                "savedAt": "2026-09-09T20:55:22Z",
+                "stateVersion": 1,
+                "targets": [
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_a"
+                  },
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_b"
+                  },
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_c"
+                  }
+                ],
+                "worldId": "world-a5eac9797410"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "world-a5eac9797410"
+            },
+            "snapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded"
+          },
+          "requirementsEvidence": {
+            "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+            "format": "craftmine.godot-check-requirements-evidence/1",
+            "instanceId": "ff129b05c8466d660fb27904",
+            "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+            "observations": [
+              {
+                "hitFlashMilliseconds": 501,
+                "phase": "loaded",
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 501,
+                "phase": "running",
+                "targetId": "target_a"
+              }
+            ],
+            "requirementsHash": "76cde04f9f40a2989073544b68c9ed41a36f463bced229dba4aa479a76fbfde2",
+            "worldId": "world-a5eac9797410"
+          }
+        },
+        "checkStatus": "passed",
+        "job": {
+          "artifacts": [
+            {
+              "bytes": 6415,
+              "path": "web/bridge.js",
+              "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+            },
+            {
+              "bytes": 9395,
+              "path": "web/index.apple-touch-icon.png",
+              "sha256": "5e84aed46eb199395bac370fe195fbce66a34430ec04411d600cc78d349f9b62"
+            },
+            {
+              "bytes": 2973,
+              "path": "web/index.audio.position.worklet.js",
+              "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+            },
+            {
+              "bytes": 7298,
+              "path": "web/index.audio.worklet.js",
+              "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+            },
+            {
+              "bytes": 965,
+              "path": "web/index.html",
+              "sha256": "835d2afd0481a6e2cddfae7592362f624a8f79b9cee2b30116f59d607efc17a6"
+            },
+            {
+              "bytes": 4355,
+              "path": "web/index.icon.png",
+              "sha256": "9c169796e4366405ba202f3e57ae43dff7fb9b4cc8f248a0284134c32261fb4f"
+            },
+            {
+              "bytes": 314653,
+              "path": "web/index.js",
+              "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+            },
+            {
+              "bytes": 214400,
+              "path": "web/index.pck",
+              "sha256": "04d9c379adbf50302a94255f576c136f97b64b29f0a92f9d353006b3dc485d97"
+            },
+            {
+              "bytes": 21443,
+              "path": "web/index.png",
+              "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+            },
+            {
+              "bytes": 38820072,
+              "path": "web/index.wasm",
+              "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+            }
+          ],
+          "check": {
+            "assertions": [
+              {
+                "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+                "id": "runtime.ready",
+                "passed": true
+              },
+              {
+                "detail": "frames=3 distinct=1",
+                "id": "runtime.frame",
+                "passed": true
+              },
+              {
+                "detail": null,
+                "id": "runtime.no-errors",
+                "passed": true
+              },
+              {
+                "detail": "formal progress unchanged",
+                "id": "runtime.snapshot",
+                "passed": true
+              },
+              {
+                "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+                "id": "runtime.isolation",
+                "passed": true
+              },
+              {
+                "detail": "graceful=true",
+                "id": "runtime.recovery",
+                "passed": true
+              },
+              {
+                "detail": "runtime expectation evidence required",
+                "id": "runtime.target-feedback",
+                "passed": true
+              },
+              {
+                "detail": "bound runtime expectation confirmed",
+                "id": "core.target-feedback",
+                "passed": true
+              }
+            ],
+            "defaultsSnapshot": {
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "body": {
+                "base": "first-person",
+                "baseVersion": "0.1.0",
+                "equipment": {
+                  "active": "pistol",
+                  "items": [
+                    {
+                      "id": "pistol",
+                      "magazine": 6,
+                      "reserve": 12
+                    },
+                    {
+                      "id": "practice_sword",
+                      "magazine": 0,
+                      "reserve": 0
+                    },
+                    {
+                      "id": "inspection_tool",
+                      "magazine": 0,
+                      "reserve": 0
+                    }
+                  ]
+                },
+                "format": "craftmine.godot-base-state/1",
+                "interactables": [
+                  {
+                    "enabled": true,
+                    "id": "AmmoCrate",
+                    "usesLeft": 3
+                  },
+                  {
+                    "enabled": true,
+                    "id": "RepairKit",
+                    "taken": false
+                  }
+                ],
+                "inventory": {
+                  "slots": [
+                    {
+                      "count": 1,
+                      "id": "repair_kit"
+                    }
+                  ]
+                },
+                "player": {
+                  "onFloor": true,
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    0.899999976158142,
+                    6
+                  ],
+                  "yaw": 0
+                },
+                "quests": {
+                  "quests": [
+                    {
+                      "count": 0,
+                      "id": "range_basic",
+                      "rewardGranted": false,
+                      "status": 1
+                    }
+                  ]
+                },
+                "savedAt": "2026-09-10T03:26:40Z",
+                "stateVersion": 1,
+                "targets": [
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_a"
+                  },
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_b"
+                  },
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_c"
+                  }
+                ],
+                "worldId": "world-a5eac9797410"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "world-a5eac9797410"
+            },
+            "passed": true,
+            "progressMigration": {
+              "added": [],
+              "defaultsSnapshotHash": "a096beb2d70d1049973bbf74ef5f36ac1d5e338e2895d68396196959148aa637",
+              "format": "craftmine.godot-additive-progress/1",
+              "previousSnapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded",
+              "snapshot": {
+                "baseId": "first-person",
+                "baseVersion": "0.1.0",
+                "body": {
+                  "base": "first-person",
+                  "baseVersion": "0.1.0",
+                  "equipment": {
+                    "active": "pistol",
+                    "items": [
+                      {
+                        "id": "pistol",
+                        "magazine": 6,
+                        "reserve": 12
+                      },
+                      {
+                        "id": "practice_sword",
+                        "magazine": 0,
+                        "reserve": 0
+                      },
+                      {
+                        "id": "inspection_tool",
+                        "magazine": 0,
+                        "reserve": 0
+                      }
+                    ]
+                  },
+                  "format": "craftmine.godot-base-state/1",
+                  "interactables": [
+                    {
+                      "enabled": true,
+                      "id": "AmmoCrate",
+                      "usesLeft": 3
+                    },
+                    {
+                      "enabled": true,
+                      "id": "RepairKit",
+                      "taken": false
+                    }
+                  ],
+                  "inventory": {
+                    "slots": [
+                      {
+                        "count": 1,
+                        "id": "repair_kit"
+                      }
+                    ]
+                  },
+                  "player": {
+                    "onFloor": true,
+                    "pitch": -0.1,
+                    "position": [
+                      0,
+                      0.899999976158142,
+                      6
+                    ],
+                    "yaw": -0.3
+                  },
+                  "quests": {
+                    "quests": [
+                      {
+                        "count": 0,
+                        "id": "range_basic",
+                        "rewardGranted": false,
+                        "status": 1
+                      }
+                    ]
+                  },
+                  "savedAt": "2026-09-09T20:55:22Z",
+                  "stateVersion": 1,
+                  "targets": [
+                    {
+                      "damageTaken": 0,
+                      "destroyed": false,
+                      "health": 50,
+                      "hitCount": 0,
+                      "id": "target_a"
+                    },
+                    {
+                      "damageTaken": 0,
+                      "destroyed": false,
+                      "health": 50,
+                      "hitCount": 0,
+                      "id": "target_b"
+                    },
+                    {
+                      "damageTaken": 0,
+                      "destroyed": false,
+                      "health": 50,
+                      "hitCount": 0,
+                      "id": "target_c"
+                    }
+                  ],
+                  "worldId": "world-a5eac9797410"
+                },
+                "format": "craftmine.godot-progress/1",
+                "stateVersion": 1,
+                "worldId": "world-a5eac9797410"
+              },
+              "snapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded"
+            },
+            "requirementsEvidence": {
+              "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+              "format": "craftmine.godot-check-requirements-evidence/1",
+              "instanceId": "ff129b05c8466d660fb27904",
+              "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+              "observations": [
+                {
+                  "hitFlashMilliseconds": 501,
+                  "phase": "loaded",
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 501,
+                  "phase": "running",
+                  "targetId": "target_a"
+                }
+              ],
+              "requirementsHash": "76cde04f9f40a2989073544b68c9ed41a36f463bced229dba4aa479a76fbfde2",
+              "worldId": "world-a5eac9797410"
+            }
+          },
+          "compile": {
+            "errors": [],
+            "passed": true,
+            "warnings": []
+          },
+          "engine": {
+            "evidenceHash": "42517fd1db657abd60c92ea28c4bcebc7096783a322524b837a6f12f9de1b1f5",
+            "isolation": "craftmine.windows.lpac-registry.v1",
+            "version": "4.7.2-stable"
+          },
+          "format": "craftmine.godot-job-result/1",
+          "import": {
+            "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Call to GetAdaptersAddresses failed with error 5.\r\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started 项目初始化 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在扫描文件结构……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在加载全局类名……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在校验 GDExtension……\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在创建自动加载脚本……\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在初始化插件……\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在启动文件扫描……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started 正在注册全局类…… (30 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[   3% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[   6% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[   9% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | BaseOps\u001b[39m\u001b[0m\r\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  19% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AimQuery\u001b[39m\u001b[0m\r\n[  22% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AmmoCrate\u001b[39m\u001b[0m\r\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | AttackDispatcher\u001b[39m\u001b[0m\r\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | BalanceProfile\u001b[39m\u001b[0m\r\n[  32% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | BaseWorld\u001b[39m\u001b[0m\r\n[  35% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CameraRig\u001b[39m\u001b[0m\r\n[  38% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | EquipmentCatalog\u001b[39m\u001b[0m\r\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | EquipmentDefinition\u001b[39m\u001b[0m\r\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | EquipmentState\u001b[39m\u001b[0m\r\n[  48% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | EquipmentVisuals\u001b[39m\u001b[0m\r\n[  51% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Interactable\u001b[39m\u001b[0m\r\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Inventory\u001b[39m\u001b[0m\r\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | MeleeAttack\u001b[39m\u001b[0m\r\n[  61% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | PickupItem\u001b[39m\u001b[0m\r\n[  64% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | PlayerController\u001b[39m\u001b[0m\r\n[  67% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | QuestDefinition\u001b[39m\u001b[0m\r\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | QuestTracker\u001b[39m\u001b[0m\r\n[  74% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | RangedAttack\u001b[39m\u001b[0m\r\n[  77% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SaveStore\u001b[39m\u001b[0m\r\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | TargetDummy\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WorldState\u001b[39m\u001b[0m\r\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Crosshair\u001b[39m\u001b[0m\r\n[  90% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CrosshairStyle\u001b[39m\u001b[0m\r\n[  93% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Hud\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Started 正在扫描动作…… (6 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | ammo_crate.obj\u001b[39m\u001b[0m\r\n[  14% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | range_crate.obj\u001b[39m\u001b[0m\r\n[  28% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | target_dummy.obj\u001b[39m\u001b[0m\r\n[  42% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | weapon_pistol.obj\u001b[39m\u001b[0m\r\n[  57% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | weapon_sword.obj\u001b[39m\u001b[0m\r\n[  71% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | icon.svg\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1m_update_scan_actions\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started 正在导入或重新导入资产 (6 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[  14% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[  42% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[  57% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在执行重新导入的前置操作……\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | icon.svg\u001b[39m\u001b[0m\r\n[  14% ] \u001b[90m\u001b[1mreimport\u001b[22m | ammo_crate.obj\u001b[39m\u001b[0m\r\n[  28% ] \u001b[90m\u001b[1mreimport\u001b[22m | range_crate.obj\u001b[39m\u001b[0m\r\n[  42% ] \u001b[90m\u001b[1mreimport\u001b[22m | target_dummy.obj\u001b[39m\u001b[0m\r\n[  57% ] \u001b[90m\u001b[1mreimport\u001b[22m | weapon_pistol.obj\u001b[39m\u001b[0m\r\n[  71% ] \u001b[90m\u001b[1mreimport\u001b[22m | weapon_sword.obj\u001b[39m\u001b[0m\r\n[  85% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在结束资产导入……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started 正在导入或重新导入资产 (6 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在执行重新导入的后置操作……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started 正在加载编辑器 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载编辑器布局……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载停靠面板……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\r\n\u001b[0m\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n",
+            "passed": true
+          },
+          "inputHash": "a6addd67fc9f030f82ba5c315c7301cefbf692bacca9f4c9989e6bd53c524a10",
+          "passed": true
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "open",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "92ccb968-98b6-4faf-b443-4a7a4404e581",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "92ccb968-98b6-4faf-b443-4a7a4404e581",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "refresh",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "92ccb968-98b6-4faf-b443-4a7a4404e581",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "92ccb968-98b6-4faf-b443-4a7a4404e581",
+        "headOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": true,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "4b378631-4e1b-4e7b-ad8e-1542b828d2d4",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "godot.historyCompare",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "viewId": "4b378631-4e1b-4e7b-ad8e-1542b828d2d4",
+          "targetOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "viewId": "4b378631-4e1b-4e7b-ad8e-1542b828d2d4",
+        "fromOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "toOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "changes": [
+          {
+            "path": "scenes/training_range.tscn",
+            "status": "M"
+          }
+        ],
+        "offset": 0,
+        "total": 1,
+        "nextOffset": null
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.candidatePreview",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681"
+        }
+      },
+      "result": {
+        "status": "preview",
+        "worldId": "world-a5eac9797410",
+        "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681",
+        "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.candidateApply",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681"
+        }
+      },
+      "result": {
+        "status": "applied",
+        "worldId": "world-a5eac9797410",
+        "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681",
+        "record": {
+          "baseId": "first-person",
+          "contentHash": "82445efaa85cf3360b1e53040a5a07a331d25bb1ccd91facf07885ec39675da1",
+          "id": "world-a5eac9797410",
+          "revision": 4,
+          "runtimeKind": "godot",
+          "title": "Training target parameter acceptance",
+          "updatedAt": 1789010806884,
+          "world": {
+            "build": {
+              "godot": {
+                "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "baseBuild": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+                "engineVersion": "4.7.2-stable",
+                "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8",
+                "renderer": "gl_compatibility",
+                "sourceRevision": 3,
+                "target": "web"
+              },
+              "id": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+              "scene": {
+                "baseId": "first-person",
+                "entry": "res://main.tscn",
+                "format": "craftmine.godot-scene/1",
+                "projectHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+              }
+            },
+            "extensions": [],
+            "snapshot": {
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "body": {
+                "base": "first-person",
+                "baseVersion": "0.1.0",
+                "equipment": {
+                  "active": "pistol",
+                  "items": [
+                    {
+                      "id": "pistol",
+                      "magazine": 6,
+                      "reserve": 12
+                    },
+                    {
+                      "id": "practice_sword",
+                      "magazine": 0,
+                      "reserve": 0
+                    },
+                    {
+                      "id": "inspection_tool",
+                      "magazine": 0,
+                      "reserve": 0
+                    }
+                  ]
+                },
+                "format": "craftmine.godot-base-state/1",
+                "interactables": [
+                  {
+                    "enabled": true,
+                    "id": "AmmoCrate",
+                    "usesLeft": 3
+                  },
+                  {
+                    "enabled": true,
+                    "id": "RepairKit",
+                    "taken": false
+                  }
+                ],
+                "inventory": {
+                  "slots": [
+                    {
+                      "count": 1,
+                      "id": "repair_kit"
+                    }
+                  ]
+                },
+                "player": {
+                  "onFloor": true,
+                  "pitch": -0.1,
+                  "position": [
+                    0,
+                    0.899999976158142,
+                    6
+                  ],
+                  "yaw": -0.3
+                },
+                "quests": {
+                  "quests": [
+                    {
+                      "count": 0,
+                      "id": "range_basic",
+                      "rewardGranted": false,
+                      "status": 1
+                    }
+                  ]
+                },
+                "savedAt": "2026-09-09T20:55:22Z",
+                "stateVersion": 1,
+                "targets": [
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_a"
+                  },
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_b"
+                  },
+                  {
+                    "damageTaken": 0,
+                    "destroyed": false,
+                    "health": 50,
+                    "hitCount": 0,
+                    "id": "target_c"
+                  }
+                ],
+                "worldId": "world-a5eac9797410"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "world-a5eac9797410"
+            }
+          }
+        }
+      }
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "godot.historyCompare",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "viewId": "4b378631-4e1b-4e7b-ad8e-1542b828d2d4",
+          "targetOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096"
+        }
+      },
+      "error": "Error: Error: GODOT_HISTORY_VIEW_STALE"
+    },
+    {
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "godot.historyLoad",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "branchId": "main",
+        "viewId": "f1d2eb45-24c6-4a04-a39b-0fd1e5de0069",
+        "repoId": "world-world-a5eac9797410",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "branches": [
+          {
+            "branchId": "main",
+            "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096"
+          }
+        ],
+        "index": {
+          "applied": false,
+          "baseBuild": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+          "baseId": "first-person",
+          "binaryAssetsAvailable": false,
+          "branchId": "main",
+          "currentTaskId": "work-72bb5463c7034f6c037d14cd15f139705afb87b0a78e662b233da3e6b6b23d6b",
+          "engineVersion": "4.7.2-stable",
+          "executionAvailable": false,
+          "files": [
+            {
+              "bytes": 8105,
+              "path": "README.md",
+              "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510"
+            },
+            {
+              "bytes": 4767,
+              "path": "assets/ASSET_MANIFEST.json",
+              "sha256": "95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef"
+            },
+            {
+              "bytes": 118,
+              "path": "assets/materials/ammo_crate.tres",
+              "sha256": "a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d"
+            },
+            {
+              "bytes": 119,
+              "path": "assets/materials/crate_wood.tres",
+              "sha256": "5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781"
+            },
+            {
+              "bytes": 212,
+              "path": "assets/materials/pickup_kit.tres",
+              "sha256": "dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e"
+            },
+            {
+              "bytes": 136,
+              "path": "assets/materials/pistol_body.tres",
+              "sha256": "bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94"
+            },
+            {
+              "bytes": 119,
+              "path": "assets/materials/range_floor.tres",
+              "sha256": "c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08"
+            },
+            {
+              "bytes": 120,
+              "path": "assets/materials/range_wall.tres",
+              "sha256": "71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950"
+            },
+            {
+              "bytes": 136,
+              "path": "assets/materials/sword_blade.tres",
+              "sha256": "488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87"
+            },
+            {
+              "bytes": 119,
+              "path": "assets/materials/target_plate.tres",
+              "sha256": "0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810"
+            },
+            {
+              "bytes": 1558,
+              "path": "assets/meshes/ammo_crate.obj",
+              "sha256": "6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f"
+            },
+            {
+              "bytes": 1123,
+              "path": "assets/meshes/range_crate.obj",
+              "sha256": "74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a"
+            },
+            {
+              "bytes": 2873,
+              "path": "assets/meshes/target_dummy.obj",
+              "sha256": "f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45"
+            },
+            {
+              "bytes": 2900,
+              "path": "assets/meshes/weapon_pistol.obj",
+              "sha256": "3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d"
+            },
+            {
+              "bytes": 2456,
+              "path": "assets/meshes/weapon_sword.obj",
+              "sha256": "8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89"
+            },
+            {
+              "bytes": 2784,
+              "path": "assets/provenance/ASSET_PROVENANCE.md",
+              "sha256": "c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be"
+            },
+            {
+              "bytes": 12159,
+              "path": "base_manifest.json",
+              "sha256": "3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e"
+            },
+            {
+              "bytes": 2006,
+              "path": "craftmine_initial_state.json",
+              "sha256": "b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e"
+            },
+            {
+              "bytes": 4420,
+              "path": "craftmine_shared/base_adapter.gd",
+              "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
+            },
+            {
+              "bytes": 6645,
+              "path": "craftmine_shared/runtime_bridge.gd",
+              "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+            },
+            {
+              "bytes": 1759,
+              "path": "craftmine_shared/state_guard.gd",
+              "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+            },
+            {
+              "bytes": 345,
+              "path": "data/balance/blank_start.tres",
+              "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+            },
+            {
+              "bytes": 345,
+              "path": "data/balance/training_range.tres",
+              "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+            },
+            {
+              "bytes": 610,
+              "path": "data/equipment/equipment_catalog.tres",
+              "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
+            },
+            {
+              "bytes": 748,
+              "path": "data/equipment/inspection_tool.tres",
+              "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
+            },
+            {
+              "bytes": 1114,
+              "path": "data/equipment/pistol.tres",
+              "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
+            },
+            {
+              "bytes": 1118,
+              "path": "data/equipment/practice_sword.tres",
+              "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
+            },
+            {
+              "bytes": 452,
+              "path": "data/quests/range_basic.tres",
+              "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
+            },
+            {
+              "bytes": 397,
+              "path": "data/ui/crosshair_melee.tres",
+              "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
+            },
+            {
+              "bytes": 392,
+              "path": "data/ui/crosshair_precision.tres",
+              "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
+            },
+            {
+              "bytes": 517,
+              "path": "icon.svg",
+              "sha256": "0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8"
+            },
+            {
+              "bytes": 1407,
+              "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+              "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+            }
+          ],
+          "format": "craftmine.godot-project/1",
+          "language": "GDScript",
+          "lastWriter": {
+            "baseBuild": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+            "projectId": "craftmine-target-feedback",
+            "sessionId": "feedback-d82db8e3589a8a0b0f4a8ecda6c3c2fee2d04a45",
+            "taskId": "work-72bb5463c7034f6c037d14cd15f139705afb87b0a78e662b233da3e6b6b23d6b",
+            "turnId": "5d465107-3898-4100-835c-407ea56b9ff7"
+          },
+          "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8",
+          "nextOffset": 32,
+          "renderer": "gl_compatibility",
+          "revision": 3,
+          "status": "source-only",
+          "target": "web",
+          "totalFiles": 68,
+          "verified": false,
+          "worldId": "world-a5eac9797410",
+          "offset": 0
+        },
+        "history": {
+          "limit": 20,
+          "nextSkip": null,
+          "records": [
+            {
+              "authorEmail": "craftmine-local@craftmine.local",
+              "authorName": "Craftmine",
+              "authoredAt": "2026-09-10T11:26:29+08:00",
+              "legacyManifestHash": null,
+              "legacyRevision": null,
+              "oid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+              "parents": [
+                "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5"
+              ],
+              "requestId": "feedback-d82db8e3589a8a0b0f4a8ecda6c3c2fee2d04a45",
+              "subject": "Craftmine project revision 3",
+              "taskId": "work-72bb5463c7034f6c037d14cd15f139705afb87b0a78e662b233da3e6b6b23d6b"
+            },
+            {
+              "authorEmail": "craftmine-local@craftmine.local",
+              "authorName": "Craftmine",
+              "authoredAt": "2026-09-10T10:12:45+08:00",
+              "legacyManifestHash": null,
+              "legacyRevision": null,
+              "oid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+              "parents": [
+                "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+              ],
+              "requestId": "feedback-dd1bb57c72deeda5a30d7e1f643775c6a075bdb6",
+              "subject": "Craftmine project revision 2",
+              "taskId": "work-e02bbbe185f1a66abd333278c7e801f10e47a62f0e3b3e3d940e3ba4ffdd4f78"
+            },
+            {
+              "authorEmail": "craftmine-local@craftmine.local",
+              "authorName": "Craftmine",
+              "authoredAt": "2026-09-10T10:12:03+08:00",
+              "legacyManifestHash": "8ab8133814f802c09cbd2e1c76a290211e508fed3e573d7bcc584cc6cd11ba3b",
+              "legacyRevision": 1,
+              "oid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+              "parents": [
+                "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+              ],
+              "requestId": null,
+              "subject": "Migrate legacy revision 1",
+              "taskId": "work-6cec24987686362a8cf78b6d141855ca1e1a1c63ce5a8caa13648974a3209648"
+            },
+            {
+              "authorEmail": "craftmine-local@craftmine.local",
+              "authorName": "Craftmine",
+              "authoredAt": "2026-09-10T10:12:02+08:00",
+              "legacyManifestHash": "893bea89a8637ec5dcfa87bacebbb4aed8cf86f98939153da790beb5b9a351b9",
+              "legacyRevision": 0,
+              "oid": "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852",
+              "parents": [],
+              "requestId": null,
+              "subject": "Migrate legacy revision 0",
+              "taskId": "work-6cec24987686362a8cf78b6d141855ca1e1a1c63ce5a8caa13648974a3209648"
+            }
+          ],
+          "skip": 0,
+          "total": 4
+        }
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "godot.runtimeSave",
+        "payload": {
+          "worldId": "world-a5eac9797410",
+          "freeze": true
+        }
+      },
+      "result": {
+        "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+        "contentHash": "82445efaa85cf3360b1e53040a5a07a331d25bb1ccd91facf07885ec39675da1",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "5368c5e40a2812b12e4f8222",
+        "persistedAt": 1789010806884,
+        "revision": 4,
+        "snapshotHash": "b58a86f36a5a197048082f770b5fb178e51f0068a50d313e46e809e763a12ded",
+        "snapshotSha256": "fe28937d11e2c0c9a02d96fd8f96e87e1c22c2899f74ed143994d6ebac43fb64",
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "857b400422ec4fe4eafed88a2b6d99479a442d9e1c959563fa7b89a2093c13b2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": [
+          {
+            "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+            "channel": "targetFeedback.submit",
+            "payload": {
+              "sourceBinding": {
+                "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+                "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+                "format": "craftmine.target-feedback-source/1",
+                "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+                "revision": 2,
+                "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3",
+                "targetId": "target_a",
+                "worldId": "world-a5eac9797410"
+              },
+              "targetId": "target_a",
+              "values": {
+                "hitFlashMilliseconds": 501
+              }
+            },
+            "state": "completed",
+            "createdAt": 1789010783049,
+            "result": {
+              "worldId": "world-a5eac9797410",
+              "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+              "status": "check-queued",
+              "applied": false,
+              "draftRetained": true,
+              "job": {
+                "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+                "status": "queued",
+                "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+              },
+              "source": {
+                "revision": 3,
+                "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "refresh",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "4b378631-4e1b-4e7b-ad8e-1542b828d2d4",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "4b378631-4e1b-4e7b-ad8e-1542b828d2d4",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+        "busy": true,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "d33abc3c-52dc-4d66-a9de-433b06b26d4a",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "compareHead",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "d33abc3c-52dc-4d66-a9de-433b06b26d4a",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "busy": false,
+        "branch": "main",
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "d33abc3c-52dc-4d66-a9de-433b06b26d4a",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": true,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "d33abc3c-52dc-4d66-a9de-433b06b26d4a",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": "正式 4fbd91fd6822 → 所选 4fbd91fd6822",
+        "count": "内容相同，没有文件变化。",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "857b400422ec4fe4eafed88a2b6d99479a442d9e1c959563fa7b89a2093c13b2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": [
+          {
+            "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+            "channel": "targetFeedback.submit",
+            "payload": {
+              "sourceBinding": {
+                "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+                "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+                "format": "craftmine.target-feedback-source/1",
+                "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+                "revision": 2,
+                "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3",
+                "targetId": "target_a",
+                "worldId": "world-a5eac9797410"
+              },
+              "targetId": "target_a",
+              "values": {
+                "hitFlashMilliseconds": 501
+              }
+            },
+            "state": "completed",
+            "createdAt": 1789010783049,
+            "result": {
+              "worldId": "world-a5eac9797410",
+              "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+              "status": "check-queued",
+              "applied": false,
+              "draftRetained": true,
+              "job": {
+                "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+                "status": "queued",
+                "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+              },
+              "source": {
+                "revision": 3,
+                "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "close",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": true,
+        "viewId": "d33abc3c-52dc-4d66-a9de-433b06b26d4a",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+        "busy": false,
+        "branch": "main",
+        "comparison": true,
+        "comparisonBusy": false,
+        "records": [
+          "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+        ],
+        "files": [],
+        "range": "正式 4fbd91fd6822 → 所选 4fbd91fd6822",
+        "count": "内容相同，没有文件变化。",
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "historyView",
+      "payload": {
+        "payload": {
+          "action": "read",
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "worldId": "world-a5eac9797410",
+        "open": false,
+        "viewId": null,
+        "headOid": null,
+        "appliedOid": null,
+        "busy": false,
+        "branch": null,
+        "comparison": false,
+        "comparisonBusy": false,
+        "records": [],
+        "files": [],
+        "range": null,
+        "count": null,
+        "patch": null,
+        "binary": null,
+        "error": null,
+        "sourceOpen": false,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        }
+      }
+    },
+    {
+      "method": "godotSnapshot",
+      "payload": {},
+      "result": {
+        "base": "first-person",
+        "state": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "body": {
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "equipment": {
+              "active": "pistol",
+              "items": [
+                {
+                  "id": "pistol",
+                  "magazine": 6,
+                  "reserve": 12
+                },
+                {
+                  "id": "practice_sword",
+                  "magazine": 0,
+                  "reserve": 0
+                },
+                {
+                  "id": "inspection_tool",
+                  "magazine": 0,
+                  "reserve": 0
+                }
+              ]
+            },
+            "format": "craftmine.godot-base-state/1",
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "savedAt": "2026-09-09T20:55:22Z",
+            "stateVersion": 1,
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "worldId": "world-a5eac9797410"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-a5eac9797410"
+        },
+        "worldId": "world-a5eac9797410"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "backup.status",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "currentHash": "857b400422ec4fe4eafed88a2b6d99479a442d9e1c959563fa7b89a2093c13b2",
+        "scope": "profile"
+      }
+    },
+    {
+      "method": "worldPanel",
+      "payload": {
+        "channel": "workbench.operations",
+        "payload": {
+          "worldId": "world-a5eac9797410"
+        }
+      },
+      "result": {
+        "items": [
+          {
+            "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+            "channel": "targetFeedback.submit",
+            "payload": {
+              "sourceBinding": {
+                "buildId": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+                "contentOid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+                "format": "craftmine.target-feedback-source/1",
+                "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+                "revision": 2,
+                "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3",
+                "targetId": "target_a",
+                "worldId": "world-a5eac9797410"
+              },
+              "targetId": "target_a",
+              "values": {
+                "hitFlashMilliseconds": 501
+              }
+            },
+            "state": "completed",
+            "createdAt": 1789010783049,
+            "result": {
+              "worldId": "world-a5eac9797410",
+              "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+              "status": "check-queued",
+              "applied": false,
+              "draftRetained": true,
+              "job": {
+                "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+                "status": "queued",
+                "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8"
+              },
+              "source": {
+                "revision": 3,
+                "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "method": "quit",
+      "payload": {},
+      "result": {
+        "requested": true
+      }
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T03:26:05.155Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": ""
+      }
+    }
+  ],
+  "limits": [
+    "Explicitly pinned packaged EXE and bundled core/host/runtime; every launch revalidates package hashes. Installer execution, signature and clean-OS acceptance remain separate.",
+    "Only the explicitly authorized completed test core is copied; no personal profile, credential, network/model request, real input, focus or Pointer Lock.",
+    "Read-only comparisons are audited separately from deliberate fixture setup and a real finite 501 ms check/application used to test formal-version invalidation."
+  ],
+  "originalWorld": {
+    "baseId": "first-person",
+    "contentHash": "043b90797aca36ab3f452e5f8a9326a4bcf1e10731cca14c88bbe56eda18cf9e",
+    "id": "world-a5eac9797410",
+    "revision": 3,
+    "runtimeKind": "godot",
+    "title": "Training target parameter acceptance",
+    "updatedAt": 1789006392219,
+    "world": {
+      "build": {
+        "godot": {
+          "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "baseBuild": "gbd-2c73d75eb4208183fca03641567c03d80e7710de29d947169a1ddfcf7589bb78",
+          "engineVersion": "4.7.2-stable",
+          "manifestHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45",
+          "renderer": "gl_compatibility",
+          "sourceRevision": 2,
+          "target": "web"
+        },
+        "id": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "scene": {
+          "baseId": "first-person",
+          "entry": "res://main.tscn",
+          "format": "craftmine.godot-scene/1",
+          "projectHash": "60a84426aff1c1be0918f485dabfd48b0491423167fc4a8f9c8d109bb11b0c45"
+        }
+      },
+      "extensions": [],
+      "snapshot": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "body": {
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "equipment": {
+            "active": "pistol",
+            "items": [
+              {
+                "id": "pistol",
+                "magazine": 6,
+                "reserve": 12
+              },
+              {
+                "id": "practice_sword",
+                "magazine": 0,
+                "reserve": 0
+              },
+              {
+                "id": "inspection_tool",
+                "magazine": 0,
+                "reserve": 0
+              }
+            ]
+          },
+          "format": "craftmine.godot-base-state/1",
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "savedAt": "2026-09-09T20:55:22Z",
+          "stateVersion": 1,
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "worldId": "world-a5eac9797410"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "world-a5eac9797410"
+      }
+    }
+  },
+  "before": {
+    "progress": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "body": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": true,
+          "pitch": -0.1,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": -0.3
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-09T20:55:22Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "world-a5eac9797410"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "world-a5eac9797410"
+    },
+    "db": {
+      "currentHash": "2439dd7661e570b8e3c2331ce389e4dd216a022e8ae44d5aa5cd85b21861b379",
+      "scope": "profile"
+    },
+    "task": {
+      "items": []
+    }
+  },
+  "checked": {
+    "worldId": "world-a5eac9797410",
+    "operationId": "5d465107-3898-4100-835c-407ea56b9ff7",
+    "status": "passed",
+    "applied": false,
+    "draftRetained": true,
+    "job": {
+      "jobId": "gjob-2033737a7c4029ccf39dfadc7d3dc51f30db0ffa4696f3d3d21efbeda420d2f8",
+      "status": "passed",
+      "buildId": "gbd-3774e894a3053cfe07618e1710799f0d50244773d2c2ed2283a3874579c516d8",
+      "candidateId": "gcan-16dcdfb843089f6ef59318103e5d50038f47834f176dc10a329566c390963681"
+    },
+    "source": {
+      "revision": 3,
+      "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8"
+    }
+  },
+  "formal": {
+    "worldId": "world-a5eac9797410",
+    "branchId": "main",
+    "viewId": "f1d2eb45-24c6-4a04-a39b-0fd1e5de0069",
+    "repoId": "world-world-a5eac9797410",
+    "appliedOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+    "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+    "branches": [
+      {
+        "branchId": "main",
+        "headOid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096"
+      }
+    ],
+    "index": {
+      "applied": false,
+      "baseBuild": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+      "baseId": "first-person",
+      "binaryAssetsAvailable": false,
+      "branchId": "main",
+      "currentTaskId": "work-72bb5463c7034f6c037d14cd15f139705afb87b0a78e662b233da3e6b6b23d6b",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "files": [
+        {
+          "bytes": 8105,
+          "path": "README.md",
+          "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510"
+        },
+        {
+          "bytes": 4767,
+          "path": "assets/ASSET_MANIFEST.json",
+          "sha256": "95af47c662dd81463e37197335777f5f676039f51895ff24301cf5b1c3e834ef"
+        },
+        {
+          "bytes": 118,
+          "path": "assets/materials/ammo_crate.tres",
+          "sha256": "a3763eec8e67253605c7b3865c7079114967d35cf03a0f84896f366b0ad1c53d"
+        },
+        {
+          "bytes": 119,
+          "path": "assets/materials/crate_wood.tres",
+          "sha256": "5ff3b4f6eab5a10bfc8bded27dcc401bd6ef1436b7b1829b146818dafb80d781"
+        },
+        {
+          "bytes": 212,
+          "path": "assets/materials/pickup_kit.tres",
+          "sha256": "dde90b8d8780e141eb14b4c8e29815049ebccded92ec3e2fc007e414f902480e"
+        },
+        {
+          "bytes": 136,
+          "path": "assets/materials/pistol_body.tres",
+          "sha256": "bfeddf5a87e76da09193a9922e73cf5e0b60547146a58613a32d85f17fbc6b94"
+        },
+        {
+          "bytes": 119,
+          "path": "assets/materials/range_floor.tres",
+          "sha256": "c71eaae57e620474b8051baab1708502ba5eb91e2b6e7bc729fb94328fdebd08"
+        },
+        {
+          "bytes": 120,
+          "path": "assets/materials/range_wall.tres",
+          "sha256": "71cd7c1acee72d90e27fcad6223edb247400d1b007d130abb61bf3b719dbf950"
+        },
+        {
+          "bytes": 136,
+          "path": "assets/materials/sword_blade.tres",
+          "sha256": "488a52dd725408297ec808bfcc5517f4cbd02b89c28b0354aa3b4f68c4b10e87"
+        },
+        {
+          "bytes": 119,
+          "path": "assets/materials/target_plate.tres",
+          "sha256": "0adc3f8b5e8962558b4326d9390f6dcdbc7af70d8f1cc36903e6e2b38fea3810"
+        },
+        {
+          "bytes": 1558,
+          "path": "assets/meshes/ammo_crate.obj",
+          "sha256": "6970e08fb28b072712b605d44a64fe3e106dde06c3c9ae7717377d6fa564384f"
+        },
+        {
+          "bytes": 1123,
+          "path": "assets/meshes/range_crate.obj",
+          "sha256": "74f5577542d69ac6fecb90aff7dc95051ad4e3c1817842975000a252d735c23a"
+        },
+        {
+          "bytes": 2873,
+          "path": "assets/meshes/target_dummy.obj",
+          "sha256": "f74917572b3a445437350d3daf7b42d2d71de478fce945fef9caca5768211b45"
+        },
+        {
+          "bytes": 2900,
+          "path": "assets/meshes/weapon_pistol.obj",
+          "sha256": "3e517f43db502395c9beddf32d93e67cca92d9ff50a81d1e3fb81064a36ce94d"
+        },
+        {
+          "bytes": 2456,
+          "path": "assets/meshes/weapon_sword.obj",
+          "sha256": "8aabc43a73a3d2f6f01044a14fe1589635380b0851b32ee2abf71ae346256b89"
+        },
+        {
+          "bytes": 2784,
+          "path": "assets/provenance/ASSET_PROVENANCE.md",
+          "sha256": "c04684ef6e5c0604b1745e292ff05dedf24e65687d853c6c114eed3e2e5b61be"
+        },
+        {
+          "bytes": 12159,
+          "path": "base_manifest.json",
+          "sha256": "3f914cac3b12544435dc00b83230a6bd65f7be3ffdd83cfa26481580e2a9a72e"
+        },
+        {
+          "bytes": 2006,
+          "path": "craftmine_initial_state.json",
+          "sha256": "b188b75ef1ae80e9fd20993319dc4537726d499f3681c28f50383008ce321b7e"
+        },
+        {
+          "bytes": 4420,
+          "path": "craftmine_shared/base_adapter.gd",
+          "sha256": "7243fd4c5052a5875c93e2ca3c1e84deef92c34b877239c257f1edc3151f22e9"
+        },
+        {
+          "bytes": 6645,
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "sha256": "318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76"
+        },
+        {
+          "bytes": 1759,
+          "path": "craftmine_shared/state_guard.gd",
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        },
+        {
+          "bytes": 345,
+          "path": "data/balance/blank_start.tres",
+          "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+        },
+        {
+          "bytes": 345,
+          "path": "data/balance/training_range.tres",
+          "sha256": "52cd8c5e39ac73b43659ef64b43d29ab68003d56ab693ecb89baeec7d6bf9159"
+        },
+        {
+          "bytes": 610,
+          "path": "data/equipment/equipment_catalog.tres",
+          "sha256": "00fa48a213a99939fb4da868a386870e3370a3860c71e256037a40d9dade8c07"
+        },
+        {
+          "bytes": 748,
+          "path": "data/equipment/inspection_tool.tres",
+          "sha256": "ba54f27f694dd94a4b2cf287ac4dd2b1765628156d5ef1a23d7fcfefcaf72d28"
+        },
+        {
+          "bytes": 1114,
+          "path": "data/equipment/pistol.tres",
+          "sha256": "84f00affe56f9ae056fec5867aff546373229adafff3780ae8489da831a21199"
+        },
+        {
+          "bytes": 1118,
+          "path": "data/equipment/practice_sword.tres",
+          "sha256": "0f60670f22ef7fb1dccc7bc5c576c71929985a4134222b9c249ace5fcf647b69"
+        },
+        {
+          "bytes": 452,
+          "path": "data/quests/range_basic.tres",
+          "sha256": "6b2a943d1f8d54accd496c6ee31251ff020534ad41663e45e2f02bcd9ba1d989"
+        },
+        {
+          "bytes": 397,
+          "path": "data/ui/crosshair_melee.tres",
+          "sha256": "129613f4899b9510f85329d2b443cf007bfe3bca7c29d7591288d074b032ab93"
+        },
+        {
+          "bytes": 392,
+          "path": "data/ui/crosshair_precision.tres",
+          "sha256": "bb2ddd54d6f88d2befa109e0e1a9ab9e1638efa98f793018e2868d5a75438a04"
+        },
+        {
+          "bytes": 517,
+          "path": "icon.svg",
+          "sha256": "0591a692ee396c4856ebbed3fb782f07eb0f3782a91bafb5bab48870b067e6f8"
+        },
+        {
+          "bytes": 1407,
+          "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+          "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+        }
+      ],
+      "format": "craftmine.godot-project/1",
+      "language": "GDScript",
+      "lastWriter": {
+        "baseBuild": "gbd-271874541d7d41eac94ab820edcbff9801a3df3c3ce795ac3d7af881984ea4b0",
+        "projectId": "craftmine-target-feedback",
+        "sessionId": "feedback-d82db8e3589a8a0b0f4a8ecda6c3c2fee2d04a45",
+        "taskId": "work-72bb5463c7034f6c037d14cd15f139705afb87b0a78e662b233da3e6b6b23d6b",
+        "turnId": "5d465107-3898-4100-835c-407ea56b9ff7"
+      },
+      "manifestHash": "2dafe08151820d9ea5d1bfff539664966c27c52366f69cfa3fa17560dc1f85d8",
+      "nextOffset": 32,
+      "renderer": "gl_compatibility",
+      "revision": 3,
+      "status": "source-only",
+      "target": "web",
+      "totalFiles": 68,
+      "verified": false,
+      "worldId": "world-a5eac9797410",
+      "offset": 0
+    },
+    "history": {
+      "limit": 20,
+      "nextSkip": null,
+      "records": [
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T11:26:29+08:00",
+          "legacyManifestHash": null,
+          "legacyRevision": null,
+          "oid": "4fbd91fd6822f6398784d3c1d6b10e3ad276a096",
+          "parents": [
+            "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5"
+          ],
+          "requestId": "feedback-d82db8e3589a8a0b0f4a8ecda6c3c2fee2d04a45",
+          "subject": "Craftmine project revision 3",
+          "taskId": "work-72bb5463c7034f6c037d14cd15f139705afb87b0a78e662b233da3e6b6b23d6b"
+        },
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T10:12:45+08:00",
+          "legacyManifestHash": null,
+          "legacyRevision": null,
+          "oid": "812faa0dfa69b7ff54e0dcaa1c7663bd51ba9fa5",
+          "parents": [
+            "20e56310be1a95c76cbc5ad3a9837adb7cee3c73"
+          ],
+          "requestId": "feedback-dd1bb57c72deeda5a30d7e1f643775c6a075bdb6",
+          "subject": "Craftmine project revision 2",
+          "taskId": "work-e02bbbe185f1a66abd333278c7e801f10e47a62f0e3b3e3d940e3ba4ffdd4f78"
+        },
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T10:12:03+08:00",
+          "legacyManifestHash": "8ab8133814f802c09cbd2e1c76a290211e508fed3e573d7bcc584cc6cd11ba3b",
+          "legacyRevision": 1,
+          "oid": "20e56310be1a95c76cbc5ad3a9837adb7cee3c73",
+          "parents": [
+            "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852"
+          ],
+          "requestId": null,
+          "subject": "Migrate legacy revision 1",
+          "taskId": "work-6cec24987686362a8cf78b6d141855ca1e1a1c63ce5a8caa13648974a3209648"
+        },
+        {
+          "authorEmail": "craftmine-local@craftmine.local",
+          "authorName": "Craftmine",
+          "authoredAt": "2026-09-10T10:12:02+08:00",
+          "legacyManifestHash": "893bea89a8637ec5dcfa87bacebbb4aed8cf86f98939153da790beb5b9a351b9",
+          "legacyRevision": 0,
+          "oid": "e35f4114e90c1f9d06b5a8d80fa98d5e88dcf852",
+          "parents": [],
+          "requestId": null,
+          "subject": "Migrate legacy revision 0",
+          "taskId": "work-6cec24987686362a8cf78b6d141855ca1e1a1c63ce5a8caa13648974a3209648"
+        }
+      ],
+      "skip": 0,
+      "total": 4
+    }
+  },
+  "archiveUnchanged": true,
+  "finishedAt": "2026-09-10T03:26:52.807Z"
+}

@@ -1,0 +1,56 @@
+{
+  "source": {
+    "commit": "c4af0d28492980697c3ca89bf595ae1c8fa6bffc",
+    "runSha256": "a0c5057ce4cb0fd5261a1fc242aeb3ea30d2d5fdea8e1b9e20c073dface19c4e",
+    "releaseSealSha256": "a7efde1bb53819972903c6c2993e60fc755af26453aee4f6d312821c061e3859",
+    "packageEvidenceSha256": "b66678b3b28c0f7e6b5cd6d67b0f414c5cf8939b889c9c557bedcc83acef361c",
+    "buildManifestSha256": "8f7fd77255b21215e37d22db9ab55f587d7e14045ff75890acb20be726e2c2f1",
+    "sourceArchiveHash": "b4fae3c7a50c6338acd3d21f85d8caecc4330f7ffc3453fa3fab7ecdf0b9cd2a",
+    "payloadDigest": "a89cc9e6536207f5fdbd2c4589ec2c4130f651e215418c7f3d3cb9fa1125aaa9"
+  },
+  "delivery": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery",
+  "entries": [
+    {
+      "path": "raw/complete.json",
+      "bytes": 4096273,
+      "sha256": "978c8ed5e9ee4318b4e541f41790211223ef6067d994ff86c8b6208696606a5e",
+      "source": "C:\\cm-release-next-20260910\\test-results\\desktop-native-complete-mBOBsn\\report.json",
+      "archiveSource": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery\\acceptance\\complete\\report.json"
+    },
+    {
+      "path": "raw/parameters.json",
+      "bytes": 152661,
+      "sha256": "399c0b9dac3f53df5cd88a3b52f7f567a54b12427a5e4be0d42642056c7aa994",
+      "source": "C:\\cm-pp2-package-20260910\\test-results\\desktop-native-parameters-fEHIjp\\report.json",
+      "archiveSource": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery\\acceptance\\parameters\\report.json"
+    },
+    {
+      "path": "raw/issues.json",
+      "bytes": 72326,
+      "sha256": "27979ecd5e08bfced9a3d8472025fc198688bb895e7f9b185d693f6713ee65c1",
+      "source": "C:\\cm-pp3-package\\test-results\\desktop-native-issues-SLXOaa\\report.json",
+      "archiveSource": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery\\acceptance\\issues\\report.json"
+    },
+    {
+      "path": "raw/history.json",
+      "bytes": 192962,
+      "sha256": "51cd6ea9183942ce15e1c959ef6e419b78802555408b401bfdff1e0dfa249208",
+      "source": "C:\\cm-accept-0910\\test-results\\desktop-native-vm2-AYXnuI\\report.json",
+      "archiveSource": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery\\acceptance\\history\\report.json"
+    },
+    {
+      "path": "raw/export.json",
+      "bytes": 470662,
+      "sha256": "2d60044d5b13a235d225c510d574837182f568f022bd81fc2b99ea1724685911",
+      "source": "C:\\cm-release-next-20260910\\test-results\\desktop-native-wx-MjJ0sZ\\report.json",
+      "archiveSource": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery\\acceptance\\export\\report.json"
+    },
+    {
+      "path": "raw/longPath.json",
+      "bytes": 22545,
+      "sha256": "6afa86c69d1651d9b7fef38d2d45bd93cded4581040e290c684f83b0959a9dc9",
+      "source": "C:\\cm-accept-0910\\test-results\\desktop-native-task-paths-Wpz8MV\\report.json",
+      "archiveSource": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\c4af0d284929-d619c069-59b2-4924-9012-53b14a3faa13\\delivery\\acceptance\\longPath\\report.json"
+    }
+  ]
+}
