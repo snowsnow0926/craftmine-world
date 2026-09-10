@@ -1,0 +1,67 @@
+// Actual compiled client and private profile; only finite page-script RPCs.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawn,execFileSync} from 'node:child_process';
+import {randomUUID,createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {setTimeout as delay} from 'node:timers/promises';
+import {assertTargetFeedbackObservation,candidateFromTargetFeedbackStatus} from '../player-product/target-feedback-observation.mjs';
+const arg=name=>{const i=process.argv.indexOf(name);assert.ok(i>=0,`Missing ${name}`);return path.resolve(process.argv[i+1]);};
+const root=arg('--source-root'),runtime=arg('--runtime-source'),deps=arg('--deps-app'),app=path.join(root,'vendor/pi-desktop/apps/desktop');
+const require=createRequire(path.join(deps,'package.json')),electron=require('electron'),sha=b=>createHash('sha256').update(b).digest('hex');
+const main=fs.readFileSync(path.join(app,'out/main/index.js'),'utf8');
+for(const marker of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance','targetFeedback.describe'])assert.ok(main.includes(marker),'Missing isolation/product marker '+marker);
+assert.ok(fs.readFileSync(path.join(app,'out/preload/craftmine-headless.cjs'),'utf8').includes('requestPointerLock'));
+const parent=path.join(root,'test-results');fs.mkdirSync(parent,{recursive:true});const out=fs.mkdtempSync(path.join(parent,'desktop-native-parameters-')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
+const report={format:'craftmine.target-feedback-client/1',passed:false,root,runtime,out,commit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),mainSha256:sha(main),pluginSha256:sha(fs.readFileSync(path.join(app,'resources/plugins/craftmine.world/views/view.js'))),steps:[],launches:[],limits:['Development client and current authored runtime source with unchanged baseline core/host binaries, not a Windows release acceptance','No model prompt, credentials, OS input, Pointer Lock, visible windows, screenshots or external report export','Snapshot comparison omits only savedAt timestamp fields, retaining all gameplay fields']};
+assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(),'','Source must be committed and clean');
+assert.equal(runtime,root,'Runtime source must come from this source checkout');
+const resources=JSON.parse(fs.readFileSync(path.join(runtime,'desktop/build/runtime-resources/runtime-resources.json'),'utf8'));
+assert.equal(resources.sourceCommit,report.commit);report.runtimeSourceCommit=resources.sourceCommit;report.runtimeFilesDigest=resources.filesDigest;
+const core=path.join(runtime,'vendor/pi-desktop/target/release/craftmine-core.exe'),host=path.join(runtime,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe');report.coreSha256=sha(fs.readFileSync(core));report.hostSha256=sha(fs.readFileSync(host));
+let child,ended=true,ready=false,exit,launch,formalBuildId;const pending=new Map();
+const persist=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
+function start(){ended=false;ready=false;launch={at:new Date().toISOString()};report.launches.push(launch);
+ const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:out,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CORE_BIN:core,PI_DESKTOP_HOST_BIN:host,CRAFTMINE_GODOT_BASES:path.join(runtime,'desktop/godot')};delete env.ELECTRON_RUN_AS_NODE;delete env.ELECTRON_RENDERER_URL;
+ child=spawn(electron,[app],{cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
+ for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,`client-${report.launches.length}-${stream}.log`),bytes));
+ child.on('message',message=>{if(message?.type==='craftmine-headless-ready')ready=true;if(message?.type==='craftmine-headless-exit')launch.audit=message;if(message?.type!=='craftmine-headless')return;const p=pending.get(message.id);if(!p)return;pending.delete(message.id);clearTimeout(p.timer);message.error?p.reject(Error(message.error)):p.resolve(message.result);});
+ exit=new Promise(resolve=>{const finish=(code,signal,error)=>{if(ended)return;ended=true;launch.exit={code,signal,error:error?String(error):null};for(const p of pending.values()){clearTimeout(p.timer);p.reject(Error('Client exited'));}pending.clear();persist();resolve();};child.once('error',e=>finish(null,null,e));child.once('exit',(code,signal)=>finish(code,signal));});
+}
+function rpc(method,payload={},timeout=30000){return new Promise((resolve,reject)=>{if(ended||!child.connected)return reject(Error('Client exited'));const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('Timed out '+method));},timeout);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...payload});});}
+const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload},180000),panel=(worldId,channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}},60000);
+async function until(fn,accept,label,timeout=120000){const end=Date.now()+timeout;let last;while(Date.now()<end){if(ended)throw Error('Client exited during '+label);try{last=await fn();}catch(e){last=String(e);}if(accept(last))return last;await delay(400);}throw Error(label+': '+JSON.stringify(last));}
+async function step(name,fn){try{const value=await fn();report.steps.push({name,passed:true,value});persist();console.log('PASS '+name);return value;}catch(e){report.steps.push({name,passed:false,error:String(e)});persist();throw e;}}
+async function stop(){if(ended)return;try{await rpc('quit',{},10000);}catch{}await Promise.race([exit,delay(20000)]);if(!ended){launch.forcedStop=true;child.kill();}await exit;}
+function snapshot(value){const result=structuredClone(value?.state??value?.result?.state??value);delete result.savedAt;if(result.body)delete result.body.savedAt;return result;}
+async function loaded(worldId){await until(()=>rpc('godotObserve'),x=>x?.worldId===worldId&&x.instanceId,'formal world',180000);await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===worldId,'world navigation');}
+async function auditStop(){const audit=await rpc('status');assert.equal(audit.violations.length,0);assert.ok(audit.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await stop();assert.equal(launch.exit.code,0);assert.ok(!launch.forcedStop);assert.deepEqual(launch.audit?.violations,[]);assert.deepEqual(launch.audit?.pageErrors,[]);return launch;}
+const feedback=async(worldId,value)=>{
+ const observed=await rpc('godotObserve');assertTargetFeedbackObservation(observed,{worldId,buildId:formalBuildId,targetId:'target_a',hitFlashMilliseconds:value});return observed;
+};
+try{
+ start();await until(()=>ready,Boolean,'headless controller');await until(()=>nav('world.createOptions'),x=>x.bases?.some(b=>b.id==='first-person'),'base catalog');
+ const world=await step('create actual first-person parameter world',()=>nav('world.create',{baseId:'first-person',starterId:'training-range',title:'Training target parameter acceptance',operationId:randomUUID()}));report.worldId=world.id;
+ await step('real broker check and baseline runtime parameter',async()=>{await until(async()=>{const r=await nav('world.list');return r.worlds.find(x=>x.id===world.id);},x=>{assert.ok(!['failed','cancelled','interrupted'].includes(x?.state),JSON.stringify(x));return x?.state==='ready';},'world initialization',900000);await loaded(world.id);formalBuildId=(await rpc('godotObserve')).buildId;report.baselineBuildId=formalBuildId;return feedback(world.id,120);});
+ await step('actual gameplay and checkpoint before editing source defaults',async()=>{await rpc('godotPlay',{},60000);return panel(world.id,'godot.runtimeSave');});const before=snapshot(await rpc('godotSnapshot'));report.before=before;
+ const description=await step('finite panel reads actual formal target configuration',()=>panel(world.id,'targetFeedback.describe'));const target=description.targets.find(x=>x.targetId==='target_a');assert.ok(target);assert.equal(target.values.hitFlashMilliseconds,120);
+ const payload={targetId:target.targetId,sourceBinding:target.sourceBinding,values:{hitFlashMilliseconds:500}};
+ await step('zero milliseconds is refused before preparing an operation',async()=>{await assert.rejects(panel(world.id,'workbench.prepare',{channel:'targetFeedback.submit',payload:{...payload,values:{hitFlashMilliseconds:0}}}));return{rejected:true};});
+ const intent=await step('persist original adjustment intent in existing workbench journal',()=>panel(world.id,'workbench.prepare',{channel:'targetFeedback.submit',payload}));report.operationId=intent.operationId;
+ const queued=await step('one product submission creates one source draft and real check',()=>panel(world.id,'workbench.execute',{operationId:intent.operationId}));assert.equal(queued.applied,false);assert.equal(queued.draftRetained,true);assert.ok(queued.job?.jobId);
+ await step('repeat panel request replays the original check receipt',async()=>{const r=await panel(world.id,'workbench.execute',{operationId:intent.operationId});assert.deepEqual(r,queued);assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return r;});
+ const checked=await step('actual parameter check passes and returns its exact candidate',()=>until(()=>panel(world.id,'targetFeedback.status',{operationId:intent.operationId}),x=>{assert.ok(!['failed','cancelled','interrupted','source-saved-check-blocked'].includes(x?.status),JSON.stringify(x));return x?.status==='passed';},'parameter check',900000));assert.equal(checked.job.status,'passed');assert.ok(checked.job.candidateId);const candidateId=checked.job.candidateId;report.candidateId=candidateId;
+ await step('candidate identity binds the same world, build and check job',async()=>{const r=await panel(world.id,'godot.candidateRead',{candidateId});return candidateFromTargetFeedbackStatus(checked,r);});
+ await step('candidate preview and close retain original formal defaults and gameplay',async()=>{const preview=await panel(world.id,'godot.candidatePreview',{candidateId});assert.equal(preview.status,'preview');await panel(world.id,'godot.candidateClose');assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return feedback(world.id,120);});
+ await step('first shutdown keeps checked draft without adopting it',auditStop);
+ start();await until(()=>ready,Boolean,'second controller');await loaded(world.id);
+ await step('restart restores pending original operation and original formal runtime',async()=>{const records=await panel(world.id,'workbench.operations');assert.ok(records.items.some(x=>x.operationId===intent.operationId));assert.equal((await panel(world.id,'targetFeedback.status',{operationId:intent.operationId})).job.candidateId,candidateId);assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return feedback(world.id,120);});
+ await step('adopt exact checked parameter candidate',async()=>{const preview=await panel(world.id,'godot.candidatePreview',{candidateId});assert.equal(preview.status,'preview');const adopted=await panel(world.id,'godot.candidateApply',{candidateId});assert.equal(adopted.status,'applied');assert.equal(adopted.record.world.build.id,checked.job.buildId);formalBuildId=checked.job.buildId;assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return{status:adopted.status,observation:await feedback(world.id,500)};});
+ await step('formal source agrees with live runtime and preserves other target defaults',async()=>{const r=await panel(world.id,'targetFeedback.describe');assert.equal(r.targets.find(x=>x.targetId==='target_a').values.hitFlashMilliseconds,500);for(const other of r.targets.filter(x=>x.targetId!=='target_a'))assert.equal(other.values.hitFlashMilliseconds,120);return r;});
+ await step('stale source binding becomes a visible rejection without a write',async()=>{const r=await panel(world.id,'targetFeedback.submit',{operationId:randomUUID(),...payload,values:{hitFlashMilliseconds:750}});assert.equal(r.status,'rejected');assert.equal(r.reason,'TARGET_FEEDBACK_STALE_BINDING');assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);return r;});
+ await step('second shutdown persists adopted parameter',auditStop);
+ start();await until(()=>ready,Boolean,'third controller');await loaded(world.id);
+ await step('second restart retains 500 milliseconds and every old gameplay field',async()=>{assert.deepEqual(snapshot(await rpc('godotSnapshot')),before);const r=await panel(world.id,'targetFeedback.describe');assert.equal(r.targets.find(x=>x.targetId==='target_a').values.hitFlashMilliseconds,500);return feedback(world.id,500);});
+ await step('third orderly shutdown',auditStop);report.passed=true;
+}catch(e){report.error=String(e.stack??e);process.exitCode=1;}finally{await stop();report.finishedAt=new Date().toISOString();persist();console.log(JSON.stringify({out,passed:report.passed,steps:report.steps.map(({name,passed})=>({name,passed})),error:report.error}));}
