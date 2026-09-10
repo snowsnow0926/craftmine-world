@@ -2,7 +2,7 @@ import { requireCompleteSummary, CRAFTMINE_SUMMARY_FOCUS } from "./compaction-co
 import { randomUUID } from "node:crypto";
 import { completedGodotReadFiles } from "./craftmine-godot-read-files.js";
 import { observeModelStream } from "./task-metrics-stream.js";
-import { CRAFTMINE_SYSTEM_PROMPT, appendCraftmineRequestData, craftmineAuthorizedBudget, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
+import { CRAFTMINE_SYSTEM_PROMPT, CRAFTMINE_CORE_TOOL_NAMES, appendCraftmineRequestData, craftmineAuthorizedBudget, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
 import {
   Agent,
   BACKGROUND_CONTEXT,
@@ -2514,7 +2514,7 @@ Delegation rules:
   }
 
   private isCoreTool(name: string): boolean {
-    if (this.craftmineWorld) return ["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read", "new_context", ASK_TOOL_NAME].includes(name);
+    if (this.craftmineWorld) return CRAFTMINE_CORE_TOOL_NAMES.has(name);
     return (
       name === CONTEXT_COMPACTION_TOOL_NAME ||
       MODE_TRANSITION_TOOL_NAMES.has(name) ||

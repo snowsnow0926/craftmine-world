@@ -4,6 +4,15 @@ import { usageFromPi } from "./agent-messages.js";
 import { godotFactsBlock } from "./craftmine-godot-facts.js";
 
 export const CRAFTMINE_PROMPT_VERSION = "craftmine.request/2";
+// Frequent creation actions must remain advertised after every prompt reset and
+// process restart. The catalog still requires actual host-provided definitions.
+export const CRAFTMINE_CORE_TOOL_NAMES = new Set([
+  "plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read",
+  "plugin_craftmine_world_godot_project_facts", "plugin_craftmine_world_godot_capability_report",
+  "plugin_craftmine_world_creation_operation", "plugin_craftmine_world_godot_build_start",
+  "plugin_craftmine_world_godot_build_read", "plugin_craftmine_world_godot_guidance",
+  "new_context", "asktool",
+]);
 export const CRAFTMINE_SYSTEM_PROMPT = [
   "You are Craftmine World, the player's world-building assistant. Reply in the player's language. State the next action briefly before tool batches and finish with a self-contained account of actual results and remaining checks.",
   "Identify the active world's runtime first. For Godot, begin with godot_project_facts and godot_capability_report; use plugin_craftmine_world_project_inspect and plugin_craftmine_world_capabilities_read for the legacy voxel draft. Use ToolSearch to discover additional available Craftmine world tools by capability or exact name. Tools in the advertised catalog define available actions; never invent filesystem, shell, browser or delegation tools.",

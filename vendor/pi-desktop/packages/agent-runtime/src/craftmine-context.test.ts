@@ -164,6 +164,19 @@ describe("Craftmine authoritative request boundary", () => {
     expect(internal.toolCatalog.has("AskUserQuestion")).toBe(false);
     await runtime.dispose();
   });
+  it("advertises available creation operations after new prompts and runtime reconstruction", async () => {
+    const essential=["creation_operation","godot_build_start","godot_build_read","godot_project_facts"].map(name=>"plugin_craftmine_world_"+name);
+    const plugins=[...essential,"plugin_craftmine_world_godot_project_patch"].map(name=>({name,description:name}));
+    for(let restart=0;restart<2;restart++){
+      const runtime=makeRuntime(fixture().hooks,[],[],plugins),internal=runtime as any,contexts:Context[]=[];
+      vi.spyOn(internal.models,"streamSimple").mockImplementation((_m:unknown,context:unknown)=>{contexts.push(context as Context);return stream(result());});
+      await runtime.prompt("First bounded request","user-a","turn-a");
+      await runtime.prompt("Continue creating","user-b","turn-b");
+      expect(contexts).toHaveLength(2);
+      for(const context of contexts){const names=context.tools!.map(tool=>tool.name);expect(names).toEqual(expect.arrayContaining(essential));expect(names).toContain("ToolSearch");expect(names).not.toContain("plugin_craftmine_world_godot_guidance");expect(names).not.toContain("plugin_craftmine_world_godot_project_patch");expect(names).not.toContain("Bash");}
+      await runtime.dispose();
+    }
+  });
   it("uses actual PI compaction three times and preserves draft facts and transcript", async () => {
     const f = fixture(), records: unknown[] = [], contexts: Context[] = [];
     const runtime = makeRuntime(f.hooks, records); const internal = runtime as any;
@@ -209,11 +222,11 @@ describe("Craftmine authoritative request boundary", () => {
     await runtime.dispose();
   });
 });
-function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = []) {
+function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = [], pluginTools=[{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }]) {
   return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, history, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
     // The provider is a contract fixture, never a real model or a mock PI loop.
     provider: { id: "fixture", name: "Fixture", modelId: "fixture", baseUrl: "http://127.0.0.1:1", apiKey: "", authKind: "none", supportsReasoning: false, supportedThinkingLevels: ["off"], modelConfig: { source: "generic", name: "Fixture", baseUrl: "http://127.0.0.1:1", input: ["text"], reasoning: false, cost: model.cost, contextWindow: 256000, maxTokens: 4000 } },
-    pluginTools: [{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }],
+    pluginTools,
     host: { call: vi.fn(async (method: string, params: any) => { if (method === "session.appendCompaction") records.push(params.compaction); return {}; }), onNotification: () => () => {} } as any,
     onEvent: () => {},
   });
