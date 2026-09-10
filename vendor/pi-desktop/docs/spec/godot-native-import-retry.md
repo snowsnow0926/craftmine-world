@@ -46,3 +46,11 @@ job or durable retry intent. A client closed before job submission can reopen
 with the previous failure and require another explicit retry. Tests must wait
 for a new attempt or a new terminal outcome, rather than interpreting the old
 failure returned immediately after acknowledgement as the retry result.
+
+The current pinned broker declares exactly two log records, `preflight.json`
+and `task.log`. The retry guard verifies both ordinary files against their
+bounded declared sizes and hashes, rejects duplicates/unknown declarations,
+and requires the native JSON to match the receipt's complete six-check denial
+observation. Identity sidecars in the same directory are separate records and
+are not mistaken for additional declared logs. Only the engine log is parsed
+for script errors. A single-log fixture does not represent this broker.

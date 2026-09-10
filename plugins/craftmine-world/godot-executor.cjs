@@ -686,13 +686,34 @@ function createGodotExecutor(core, options = {}) {
       || run.recovery.skipped?.length!==0 || run.recovery.unreadable?.length!==0) return null;
     const logs=path.resolve(tasksRoot,expected.requestId,'logs');
     if (path.resolve(plainPath(response.logsRoot??''))!==logs || !ordinaryDirectory(logs)) return null;
-    const record=response.logs?.length===1?response.logs[0]:null;
-    if (record?.path!=='task.log' || !Number.isSafeInteger(record.bytes) || record.bytes<1 || record.bytes>BROKER_TASK_LOG_BYTES) return null;
+    // The pinned broker declares both its native preflight and the engine log.
+    // Identity sidecars also exist in this directory but are not log entries.
+    if (!Array.isArray(response.logs) || response.logs.length!==2) return null;
+    const declared=new Map();
+    for(const record of response.logs){
+      const limit=record?.path==='task.log'?BROKER_TASK_LOG_BYTES:record?.path==='preflight.json'?4096:0;
+      if(!limit || declared.has(record.path) || !Number.isSafeInteger(record.bytes)
+        || record.bytes<1 || record.bytes>limit || !/^[a-f0-9]{64}$/.test(record.sha256??''))return null;
+      declared.set(record.path,record);
+    }
     try {
-      const file=path.join(logs,'task.log'),info=await fsp.lstat(file);
-      if(!info.isFile()||info.isSymbolicLink()||info.size!==record.bytes)return null;
-      const bytes=await fsp.readFile(file);
-      if(bytes.length!==record.bytes||sha256(bytes)!==record.sha256||classifyLog(bytes.toString('utf8')).errors.length)return null;
+      const verified=new Map();
+      for(const record of declared.values()){
+        const file=path.join(logs,record.path),info=await fsp.lstat(file);
+        if(!info.isFile()||info.isSymbolicLink()||info.size!==record.bytes)return null;
+        const bytes=await fsp.readFile(file);
+        if(bytes.length!==record.bytes||sha256(bytes)!==record.sha256)return null;
+        verified.set(record.path,bytes);
+      }
+      const observation=JSON.parse(verified.get('preflight.json').toString('utf8'));
+      const checks=['tcp4','tcp6','tcpExternal','udp4','udp6','udpExternal'];
+      if(observation?.winsockStartup!==0 || !Array.isArray(observation.checks)
+        || observation.checks.length!==checks.length
+        || observation.checks.some((check,index)=>check?.name!==checks[index] || check.ok!==false
+          || check.rawOsError!==10013 || check.errorKind!=='PermissionDenied')
+        || canonical(observation)!==canonical(response.networkPreflight?.observation))return null;
+      if(classifyLog(verified.get('task.log').toString('utf8')).errors.length)return null;
+      const record=declared.get('task.log');
       previous.importCrashRetries=1;
       recordAttempt(entry.jobId,{requestId:expected.requestId,retryDecision:{reason:'VERIFIED_NATIVE_IMPORT_CRASH',
         logSha256:record.sha256,sourceDigest:response.sourceSnapshotDigest,brokerSha256:response.brokerSha256}});

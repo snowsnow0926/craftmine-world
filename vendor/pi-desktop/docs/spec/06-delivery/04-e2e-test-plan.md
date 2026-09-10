@@ -9237,3 +9237,14 @@ leave the original preparation intact and only construct a complete checkpoint.
 Verify concise handoff instructions reach the summary request. Run provider,
 reasoning and compaction regressions plus runtime strict typecheck. Keep the real
 failed-run evidence; repeat native creation only on the next verified candidate.
+
+### P1-20260910-NATIVE-RETRY-LOG-SET
+
+Run `node --test tests/godot-remaining/C/executor-protocol.mjs`. Use the actual
+captured engine log and the pinned broker's two declared log records. Require
+one recovered import followed by a complete check, with the first failure and
+retry consumption retained. Reject altered, missing, duplicate, unknown,
+non-file, linked or mismatched native logs before spending the retry. Preserve
+script-error and repeated-crash failure. Record an unavailable file-symlink
+capability as skipped. This fixture does not prove actual native recovery;
+repeat that separately on the retained failed profile with the new package.

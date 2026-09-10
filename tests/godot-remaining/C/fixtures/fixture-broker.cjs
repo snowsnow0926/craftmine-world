@@ -39,7 +39,10 @@ function respond(request) {
   fs.mkdirSync(artifactsRoot, {recursive:true});
   const log = scenario.log ?? (scenario.logLines ?? ['Godot Engine v4.7.2.stable.official.ed1daf0bf\n']).join('');
   fs.writeFileSync(path.join(logsRoot, 'task.log'), log);
-  fs.writeFileSync(path.join(logsRoot, 'preflight.json'), JSON.stringify({winsockStartup:0, checks:[]}));
+  const nativeObservation={winsockStartup:0, checks:['tcp4','tcp6','tcpExternal','udp4','udp6','udpExternal']
+    .map(name=>({name,ok:false,rawOsError:10013,errorKind:'PermissionDenied'}))};
+  const nativeLog=JSON.stringify(nativeObservation);
+  fs.writeFileSync(path.join(logsRoot, 'preflight.json'), nativeLog);
 
   let sourceFiles = request.operation === 'version' ? [] : listFiles(request.projectRoot);
   if (request.operation !== 'version') {
@@ -72,7 +75,7 @@ function respond(request) {
   const verification = scenario.processVerified === false ? {verified:false, policyVersion:'craftmine.windows.lpac-registry.v1'}
     : {verified:true, policyVersion:'craftmine.windows.lpac-registry.v1', pid:4242, isAppContainer:true, jobMembershipVerified:true, resumePreviousCount:1};
   const preflight = scenario.networkVerified === false ? {verified:false, policyVersion:'craftmine.windows.lpac-registry.v1'}
-    : {verified:true, policyVersion:'craftmine.windows.lpac-registry.v1', observation:{winsockStartup:0, checks:[{name:'tcp4', ok:false, rawOsError:10013}]}};
+    : {verified:true, policyVersion:'craftmine.windows.lpac-registry.v1', observation:nativeObservation};
   const response = {
     schemaVersion:1,
     requestId: scenario.omitRequestId ? undefined : request.requestId,
@@ -90,7 +93,8 @@ function respond(request) {
     artifacts,
     artifactsRoot,
     logsRoot,
-    logs:[{path:'task.log', bytes:Buffer.byteLength(log), sha256:sha256(log)}],
+    logs:[{path:'task.log', bytes:Buffer.byteLength(log), sha256:sha256(log)},
+      {path:'preflight.json',bytes:Buffer.byteLength(nativeLog),sha256:sha256(nativeLog)}],
     cleanup: scenario.cleanupVerified === false ? {verified:false, profileHresult:1, workRemoved:false, error:'cleanup failed'}
       : {verified:true, profileHresult:0, workRemoved:true, error:null},
     error: scenario.error ?? null,
@@ -113,7 +117,26 @@ function respond(request) {
         case 'input':response.inputHash=sha256('wrong');break;
         case 'exit':response.exitCode=1;break;
         case 'log-hash':response.logs[0].sha256=sha256('wrong');break;
-        case 'script':{const bad='SCRIPT ERROR: deliberate fixture error\n';fs.writeFileSync(path.join(logsRoot,'task.log'),bad);response.logs=[{path:'task.log',bytes:Buffer.byteLength(bad),sha256:sha256(bad)}];break;}
+        case 'preflight-hash':response.logs[1].sha256=sha256('wrong');break;
+        case 'preflight-missing':response.logs.pop();break;
+        case 'duplicate-log':response.logs[1]={...response.logs[0]};break;
+        case 'unknown-log':response.logs[1].path='unexpected.json';break;
+        case 'preflight-mismatch':response.networkPreflight.observation={winsockStartup:0,checks:[]};break;
+        case 'preflight-invalid':{
+          const bad=JSON.stringify({winsockStartup:0,checks:[]});
+          fs.writeFileSync(path.join(logsRoot,'preflight.json'),bad);
+          response.logs[1]={path:'preflight.json',bytes:Buffer.byteLength(bad),sha256:sha256(bad)};
+          response.networkPreflight.observation=JSON.parse(bad);break;
+        }
+        case 'log-directory':fs.unlinkSync(path.join(logsRoot,'preflight.json'));fs.mkdirSync(path.join(logsRoot,'preflight.json'));break;
+        case 'log-link':{
+          const target=path.join(logsRoot,'preflight-original.json');
+          fs.renameSync(path.join(logsRoot,'preflight.json'),target);
+          try{fs.symlinkSync(target,path.join(logsRoot,'preflight.json'));}
+          catch(error){process.stderr.write('FIXTURE_SYMLINK_UNAVAILABLE:'+error.code+'\n');process.exit(2);}
+          break;
+        }
+        case 'script':{const bad='SCRIPT ERROR: deliberate fixture error\n';fs.writeFileSync(path.join(logsRoot,'task.log'),bad);response.logs[0]={path:'task.log',bytes:Buffer.byteLength(bad),sha256:sha256(bad)};break;}
       }
     }
   }

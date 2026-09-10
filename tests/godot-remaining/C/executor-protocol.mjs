@@ -496,8 +496,11 @@ test('a changed broker binary is refused when a pin is configured', async t => {
   await executor.stop();
 });
 
-test('one verified native import crash gets a fresh task, preserving its failure and full check',async t=>{
-  const env=environment();t.after(restoreEnv);setScenario(env,{importCrash:true});
+test('actual two-log shape permits one verified native import recovery and preserves its full check',async t=>{
+  const env=environment();t.after(restoreEnv);
+  const nativeLog=fs.readFileSync(new URL('./fixtures/native-import-task.log',import.meta.url),'utf8');
+  assert.equal(sha256(nativeLog),'a6fd727c7e52d069d76b57208e07faea3d84389dc449c2e497ee1316dfb95dbc');
+  setScenario(env,{importCrash:true,log:nativeLog});
   const core=fakeCore(env),runRecovery=async(_binary,args)=>({exitCode:0,stdout:JSON.stringify({policyVersion:'craftmine.windows.recovery-journal.v1',tasksRoot:args[1],journalRoot:args[1],entries:[],unreadable:[]}),stderr:''});
   const executor=makeExecutor({env,core,runRecovery});assert.equal((await executor.start()).available,true);
   const jobId='gjob-'+'d'.repeat(64);executor.enqueue({jobId,worldId:'world-c',mode:'check'});await settle(executor,jobId);
@@ -505,13 +508,28 @@ test('one verified native import crash gets a fresh task, preserving its failure
   const saved=JSON.parse(fs.readFileSync(path.join(env.dataPath,'godot/executor-ledger.json'),'utf8')).jobs[jobId];
   assert.equal(saved.importCrashRetries,1);assert.equal(saved.attempts.length,3);
   assert.equal(saved.attempts[0].failure.engineExitCode,0xc0000005);assert.equal(saved.attempts[0].retryDecision.reason,'VERIFIED_NATIVE_IMPORT_CRASH');
+  assert.equal(saved.attempts[0].retryDecision.logSha256,sha256(nativeLog));
   assert.notEqual(saved.attempts[0].requestId,saved.attempts[1].requestId);assert.equal(saved.attempts[1].outcome,'succeeded');assert.equal(saved.attempts[2].operation,'exportWeb');
   assert.ok(core.state.output.check.assertions.every(x=>x.passed));
   await executor.start();assert.equal(executor.ledger.jobs[jobId].importCrashRetries,1);await executor.stop();
 });
 
+test('a linked declared preflight cannot authorize native import recovery',async t=>{
+  const env=environment();t.after(restoreEnv);
+  const target=path.join(env.root,'link-target'),link=path.join(env.root,'link-probe');
+  fs.writeFileSync(target,'test');
+  try{fs.symlinkSync(target,link);}catch(error){if(['EPERM','EACCES'].includes(error.code)){t.skip('host does not permit file symlinks');return;}throw error;}
+  setScenario(env,{importCrash:true,crashTamper:'log-link'});
+  const core=fakeCore(env),runRecovery=async(_binary,args)=>({exitCode:0,stdout:JSON.stringify({policyVersion:'craftmine.windows.recovery-journal.v1',tasksRoot:args[1],journalRoot:args[1],entries:[],unreadable:[]}),stderr:''});
+  const executor=makeExecutor({env,core,runRecovery});assert.equal((await executor.start()).available,true);
+  const jobId='gjob-'+'f'.repeat(64);executor.enqueue({jobId,worldId:'world-c',mode:'check'});await settle(executor,jobId);await executor.stop();
+  assert.equal(core.state.status,'failed');assert.equal(executor.ledger.jobs[jobId].attempts.length,1);
+  assert.ok(!executor.ledger.jobs[jobId].importCrashRetries);
+});
+
 test('script errors, changed inputs, unknown cleanup and repeated crashes never become successful retries',async t=>{
-  for(const crashTamper of ['cleanup','journal','resource','source','input','exit','log-hash','script','second-crash']){
+  for(const crashTamper of ['cleanup','journal','resource','source','input','exit','log-hash','preflight-hash',
+    'preflight-missing','duplicate-log','unknown-log','preflight-mismatch','preflight-invalid','log-directory','script','second-crash']){
     const env=environment();t.after(restoreEnv);setScenario(env,{importCrash:true,crashTamper,crashCount:crashTamper==='second-crash'?2:1});
     const core=fakeCore(env),runRecovery=async(_binary,args)=>({exitCode:0,stdout:JSON.stringify({policyVersion:'craftmine.windows.recovery-journal.v1',tasksRoot:args[1],journalRoot:args[1],entries:[],unreadable:[]}),stderr:''});
     const executor=makeExecutor({env,core,runRecovery});assert.equal((await executor.start()).available,true);
