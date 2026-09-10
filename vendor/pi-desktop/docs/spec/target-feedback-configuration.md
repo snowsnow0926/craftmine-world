@@ -146,3 +146,51 @@ same-name targets with distinct IDs, defaults/no-op, explicit overrides, bounds,
 CRLF and unrelated-byte preservation, script/dependency changes, stale bindings,
 expressions, duplicates and malicious unknown fields. These are pure fixture
 tests and do not represent a real model, visible UI or engine run.
+
+## Verified base default fill (PP2, 2026-09-10)
+
+The default action is an input convenience for the selected instance, not an
+inheritance reset. Ignore only the selected world's explicit instance property,
+then resolve the existing supported configuration in this order:
+
+1. An explicit property on the actually instantiated PackedScene root.
+2. An explicit property on the actually applicable BalanceProfile resource.
+3. The hash-verified BalanceProfile script declaration if the resource omits it.
+4. The hash-verified TargetDummy script declaration if no profile applies.
+
+A direct scripted node's own current override is never its own template.
+Script defaults are parsed from the verified declaration, not copied from the
+static contract's 120 ms metadata. All existing restrictions on scripts,
+ancestors, profile applicability, resource syntax and integer 1..1000 remain.
+Arbitrary sibling code is still outside source-only proof; the existing bound
+runtime check requirement must pass before a candidate becomes adoptable.
+
+Each described target adds this read-only projection:
+
+```json
+{"defaults":{"format":"craftmine.target-feedback-default/1","values":{"hitFlashMilliseconds":250},"source":{"kind":"balance-profile","path":"data/balance/training_range.tres","sha256":"<64 lowercase hex characters>"}}}
+```
+
+Source kinds are exactly packed-scene, balance-profile, balance-profile-script,
+and target-script. Paths are managed project-relative dependencies, never host
+filesystem paths. Hashes identify exact raw UTF-8 source bytes; script trust
+continues to use the existing LF-normalized pins. The same dependencies remain
+part of the opaque source binding; a changed default cannot reuse an old binding.
+Main validates the finite projection. Missing or malformed defaults are not
+replaced with the static declaration's default.
+
+The player button fills only the current target input, displays provenance, and
+states that it has not submitted and will not restore dynamic inheritance.
+Changed values are written explicitly to the instance using the original
+submit/check/preview/adopt flow. An equal effective value keeps the existing
+no-op semantics, without adding a new override. No RPC, submit flag, property,
+model call or progress mutation is added. Pending/uncertain operations lock the
+button; delayed reads and detached old-world forms cannot update the new view.
+
+Validation uses the pure parser/service/Main suites, actual workbench DOM with
+fixed transport, and target-feedback-defaults-native.mjs with the pinned Godot
+editor. The latter loads all four precedence variants, compares actual runtime
+values, restores the complete JSON progress including damaged targets, restarts
+a new engine process, and proves an explicit chosen value survives a later
+profile update. This is fixed authored headless evidence, not full client,
+AppContainer, model, new package, or signed release acceptance.

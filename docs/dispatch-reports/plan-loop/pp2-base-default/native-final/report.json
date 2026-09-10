@@ -1,0 +1,1339 @@
+{
+  "format": "craftmine.target-feedback-default-native/1",
+  "kind": "fixed-authored-headless-godot",
+  "engineSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "checks": [
+    {
+      "kind": "packed-scene",
+      "stage": "verify",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 350
+        },
+        "source": {
+          "kind": "packed-scene",
+          "path": "scenes/actors/target_dummy.tscn",
+          "sha256": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "b4fbf0cd0091ac813736aedad0250a5cf8b0762a98eb3997ab5362b37b134311",
+      "actualMilliseconds": 350,
+      "checks": [
+        "actual inherited value matches parser provenance",
+        "current instance override800 remains distinct",
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": false,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:22Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "packed-scene",
+      "stage": "restart",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 350
+        },
+        "source": {
+          "kind": "packed-scene",
+          "path": "scenes/actors/target_dummy.tscn",
+          "sha256": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "d77fa00cfaab126c6464cfa23a501543f1db2f2d8256aed6f4275762fb9d8301",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "b4fbf0cd0091ac813736aedad0250a5cf8b0762a98eb3997ab5362b37b134311",
+      "actualMilliseconds": 350,
+      "checks": [
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": true,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:22Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "balance-profile",
+      "stage": "verify",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 250
+        },
+        "source": {
+          "kind": "balance-profile",
+          "path": "data/balance/training_range.tres",
+          "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "59c2f048f39995485eb7a67a57425d0368600c1430fa6646210967691bf791e9",
+      "actualMilliseconds": 250,
+      "checks": [
+        "actual inherited value matches parser provenance",
+        "current instance override800 remains distinct",
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": false,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:25Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "balance-profile",
+      "stage": "restart",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 250
+        },
+        "source": {
+          "kind": "balance-profile",
+          "path": "data/balance/training_range.tres",
+          "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "59c2f048f39995485eb7a67a57425d0368600c1430fa6646210967691bf791e9",
+      "actualMilliseconds": 250,
+      "checks": [
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": true,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:25Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "balance-profile-script",
+      "stage": "verify",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 120
+        },
+        "source": {
+          "kind": "balance-profile-script",
+          "path": "scripts/core/balance_profile.gd",
+          "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "62fa640040bc4cbdaca0ffa89a648d77b3259d8a3008f0298bfd847d8127c8ee"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "62fa640040bc4cbdaca0ffa89a648d77b3259d8a3008f0298bfd847d8127c8ee",
+        "scenes/actors/target_dummy.tscn": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "50ce1f9750898663f3bb2cd7529f1366b8da4c955fb8a1769df77ede4fd7f11b",
+      "actualMilliseconds": 120,
+      "checks": [
+        "actual inherited value matches parser provenance",
+        "current instance override800 remains distinct",
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": false,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:28Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "balance-profile-script",
+      "stage": "restart",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 120
+        },
+        "source": {
+          "kind": "balance-profile-script",
+          "path": "scripts/core/balance_profile.gd",
+          "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "dependencies": [
+          {
+            "path": "data/balance/training_range.tres",
+            "sha256": "62fa640040bc4cbdaca0ffa89a648d77b3259d8a3008f0298bfd847d8127c8ee"
+          },
+          {
+            "path": "scenes/actors/player.tscn",
+            "sha256": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17"
+          },
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f"
+          },
+          {
+            "path": "scripts/core/balance_profile.gd",
+            "sha256": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/player_controller.gd",
+            "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "f56addc44fa4d6ab196c47333eccad590fa49112bb8af4aae21b89f78dfa095f",
+        "data/balance/training_range.tres": "62fa640040bc4cbdaca0ffa89a648d77b3259d8a3008f0298bfd847d8127c8ee",
+        "scenes/actors/target_dummy.tscn": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "50ce1f9750898663f3bb2cd7529f1366b8da4c955fb8a1769df77ede4fd7f11b",
+      "actualMilliseconds": 120,
+      "checks": [
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": true,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:28Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "target-script",
+      "stage": "verify",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 120
+        },
+        "source": {
+          "kind": "target-script",
+          "path": "scripts/core/target_dummy.gd",
+          "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "2a0304710fb4653ad6d8c9c9b21ffafca82fd8dcae00e2e80bc3e5709d82ffc3",
+        "dependencies": [
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "2a0304710fb4653ad6d8c9c9b21ffafca82fd8dcae00e2e80bc3e5709d82ffc3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "2a0304710fb4653ad6d8c9c9b21ffafca82fd8dcae00e2e80bc3e5709d82ffc3",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "91540e9a5b4ef2edd099c425c0be75b89a1312544496518c500aa49e5e1fda12",
+      "actualMilliseconds": 120,
+      "checks": [
+        "actual inherited value matches parser provenance",
+        "current instance override800 remains distinct",
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": false,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:31Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    },
+    {
+      "kind": "target-script",
+      "stage": "restart",
+      "defaults": {
+        "format": "craftmine.target-feedback-default/1",
+        "values": {
+          "hitFlashMilliseconds": 120
+        },
+        "source": {
+          "kind": "target-script",
+          "path": "scripts/core/target_dummy.gd",
+          "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+        }
+      },
+      "binding": {
+        "format": "craftmine.target-configuration-binding/1",
+        "contractId": "fp.target.feedback/1",
+        "scenePath": "scenes/training_range.tscn",
+        "targetId": "target_b",
+        "nodePath": "Targets/TargetB",
+        "sourceHash": "2a0304710fb4653ad6d8c9c9b21ffafca82fd8dcae00e2e80bc3e5709d82ffc3",
+        "dependencies": [
+          {
+            "path": "scenes/actors/target_dummy.tscn",
+            "sha256": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0"
+          },
+          {
+            "path": "scenes/training_range.tscn",
+            "sha256": "2a0304710fb4653ad6d8c9c9b21ffafca82fd8dcae00e2e80bc3e5709d82ffc3"
+          },
+          {
+            "path": "scripts/core/base_world.gd",
+            "sha256": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1"
+          },
+          {
+            "path": "scripts/core/target_dummy.gd",
+            "sha256": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3"
+          }
+        ]
+      },
+      "sourceHashes": {
+        "scenes/training_range.tscn": "2a0304710fb4653ad6d8c9c9b21ffafca82fd8dcae00e2e80bc3e5709d82ffc3",
+        "data/balance/training_range.tres": "aa27daa9e5739edf0ccc5fe4da1180b8da9ac249a7a1598f06847455d29d0faf",
+        "scenes/actors/target_dummy.tscn": "b5170cc56c105f544d9019990bb37bb449a54f769e7770023500236895dc5bd0",
+        "scripts/core/target_dummy.gd": "1ffc6e5419aaf8bc9d901a9671942472fdee86f97bdca069d6c33afb199d5ff3",
+        "scripts/core/base_world.gd": "2782fcffd844a78b1e59e74a0e2234f8f1b649a089c93dc68c87610a498182f1",
+        "scripts/core/balance_profile.gd": "9179b102a43800bb23a60cf401e7a02fed55f4762e0d0a7b9e0942fa09cbc5f3",
+        "scenes/actors/player.tscn": "7536053578eabf51bf65378599436ce3d0159559248aa497f73626e27aa57c17",
+        "scripts/core/player_controller.gd": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324"
+      },
+      "patchedSceneSha256": "91540e9a5b4ef2edd099c425c0be75b89a1312544496518c500aa49e5e1fda12",
+      "actualMilliseconds": 120,
+      "checks": [
+        "full progress restore accepted",
+        "all progress fields and other targets exactly preserved",
+        "selected explicit default survives ready and restore",
+        "explicit value does not resume dynamic inheritance",
+        "profile configuration does not mutate saved progress"
+      ],
+      "passed": true,
+      "restart": true,
+      "snapshot": {
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "equipment": {
+          "active": "pistol",
+          "items": [
+            {
+              "id": "pistol",
+              "magazine": 6,
+              "reserve": 12
+            },
+            {
+              "id": "practice_sword",
+              "magazine": 0,
+              "reserve": 0
+            },
+            {
+              "id": "inspection_tool",
+              "magazine": 0,
+              "reserve": 0
+            }
+          ]
+        },
+        "format": "craftmine.godot-base-state/1",
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "player": {
+          "onFloor": false,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "savedAt": "2026-09-10T03:16:31Z",
+        "stateVersion": 1,
+        "targets": [
+          {
+            "damageTaken": 3,
+            "destroyed": false,
+            "health": 47,
+            "hitCount": 1,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 7,
+            "destroyed": false,
+            "health": 43,
+            "hitCount": 1,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "worldId": "local-world"
+      }
+    }
+  ],
+  "completed": true,
+  "passed": true,
+  "out": "C:\\cm-pp2-default-20260910\\test-results\\target-default-native-nnBqiu",
+  "finishedAt": "2026-09-10T03:16:31.669Z"
+}

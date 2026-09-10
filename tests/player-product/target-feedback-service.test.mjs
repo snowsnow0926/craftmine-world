@@ -110,3 +110,9 @@ test('persisted check requirements cannot differ from the original intent or its
  await assert.rejects(createTargetFeedbackService(f.options).submit(args),/INTENT_INVALID/);
  assert.equal(f.calls.filter(x=>x.method==='godotBuild.start').length,1);assert.equal(f.calls.filter(x=>x.method==='godotProject.applyFiles').length,1);
 });
+
+test('default is read-only source provenance; ordinary submit keeps its original expectation and receipt',async t=>{
+ const f=await fixture(t),described=await f.service.describe({worldId:'alpha'}),target=described.targets.find(item=>item.targetId==='target_b');
+ assert.deepEqual(target.defaults,{format:'craftmine.target-feedback-default/1',values:{hitFlashMilliseconds:120},source:{kind:'balance-profile',path:'data/balance/training_range.tres',sha256:hash(f.original.get('data/balance/training_range.tres'))}});assert.equal(f.beginCount,0);assert.equal(f.calls.filter(x=>/applyFiles|Build.start|saveProgress/.test(x.method)).length,0);
+ const args={worldId:'alpha',operationId:'fill-default-only',targetId:target.targetId,binding:target.binding,values:target.defaults.values};assert.equal((await f.service.submit(args)).status,'unchanged');assert.equal(f.beginCount,0);assert.equal((await f.service.submit(args)).status,'unchanged');
+});

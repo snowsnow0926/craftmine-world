@@ -11,3 +11,10 @@ export type TargetFeedbackConfiguration = {
 };
 export function targetFeedbackConfiguration(): TargetFeedbackConfiguration;
 export function validateTargetFeedbackConfiguration(value: unknown): TargetFeedbackConfiguration;
+
+export type TargetFeedbackDefaults = {
+ format: 'craftmine.target-feedback-default/1';
+ values: {hitFlashMilliseconds: number};
+ source: {kind: 'packed-scene'|'balance-profile'|'balance-profile-script'|'target-script'; path: string; sha256: string};
+};
+export function validateTargetFeedbackDefaults(value: unknown): TargetFeedbackDefaults;

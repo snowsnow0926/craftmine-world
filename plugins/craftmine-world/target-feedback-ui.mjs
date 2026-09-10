@@ -11,12 +11,12 @@ const errors={
   TARGET_FEEDBACK_OPERATION_NOT_FOUND:'尚未找到这次调整，请在待确认操作中查询并继续原操作。',
 };
 export function createTargetFeedbackUI({element,request,getWorldId,durableCall,action=fn=>fn()}){
- let epoch=0,readSequence=0,world=null,visible=false,timer=null,attempt=null,pending=null,notice,fields,select,input,submit,retry,reading=false;
+ let epoch=0,readSequence=0,world=null,visible=false,timer=null,attempt=null,pending=null,notice,fields,select,input,submit,retry,defaultsButton,defaultsSource,reading=false;
  const formButton=(label,fn)=>{const form=document.createElement('form'),button=text('button',label);form.className='workbench-form';button.type='submit';form.append(button);form.onsubmit=e=>{e.preventDefault();void action(fn);};return{form,button};};
  const stop=()=>{if(timer!==null)clearTimeout(timer);timer=null;};
  const current=(generation,id)=>visible&&generation===epoch&&world===id&&getWorldId()===id;
  async function call(channel,payload){const generation=epoch,id=world;const result=await request(channel,{worldId:id,...payload});if(!current(generation,id))throw Error('WORLD_CHANGED');return result;}
- function controls(){if(!select)return;const locked=reading||!!attempt||!!pending;select.disabled=locked;input.disabled=locked;submit.disabled=locked||!fields?.length;}
+ function controls(){if(!select)return;const locked=reading||!!attempt||!!pending;select.disabled=locked;input.disabled=locked;submit.disabled=locked||!fields?.length;if(defaultsButton)defaultsButton.disabled=locked||!selectedDefault();}
  function describeResult(result){
   if(result.status==='unchanged')return '参数与已保存的设置一致，没有创建新草稿或运行检查。';
   if(result.status==='rejected')return errors[result.reason]||'这次调整未写入源码，请重新读取参数。';
@@ -37,7 +37,14 @@ export function createTargetFeedbackUI({element,request,getWorldId,durableCall,a
   try{const result=await call('targetFeedback.status',{operationId:operation.operationId});if(current(generation,id)&&operation===pending)accept(result);}
   catch{if(current(generation,id)){notice.textContent='暂时无法查询检查结果，请重试查询；不会重新修改源码。';retry.form.hidden=false;}}
  }
- function choose(){const target=fields.find(x=>x.targetId===select.value);input.value=target?String(target.values.hitFlashMilliseconds):'';}
+ function selectedDefault(){
+  const value=fields?.find(x=>x.targetId===select?.value)?.defaults;
+  return value?.format==='craftmine.target-feedback-default/1'&&Number.isSafeInteger(value.values?.hitFlashMilliseconds)&&value.values.hitFlashMilliseconds>=1&&value.values.hitFlashMilliseconds<=1000&&['packed-scene','balance-profile','balance-profile-script','target-script'].includes(value.source?.kind)?value:null;
+ }
+ function choose(){const target=fields.find(x=>x.targetId===select.value);input.value=target?String(target.values.hitFlashMilliseconds):'';
+  const value=selectedDefault(),labels={'packed-scene':'靶场景显式值','balance-profile':'当前平衡配置','balance-profile-script':'平衡配置脚本默认','target-script':'训练靶脚本默认'};
+  defaultsSource.textContent=value?`底座默认：${value.values.hitFlashMilliseconds} 毫秒 · ${labels[value.source.kind]}（${value.source.path}）`:'尚无已验证的底座默认值。';controls();
+ }
  async function load(){
   if(attempt||pending)return;
   const generation=epoch,id=world,sequence=++readSequence;reading=true;controls();
@@ -52,6 +59,12 @@ export function createTargetFeedbackUI({element,request,getWorldId,durableCall,a
   element.replaceChildren(text('h2','调整训练靶'),text('p','生成草稿后检查，通过后再预览并采用。关闭试玩会保留草稿；不改变已有伤害与游玩进度。'));
   notice=text('p','正在读取参数…');notice.setAttribute('role','status');
   const targetLabel=text('label','训练靶'),valueLabel=text('label','受击闪光时长（毫秒）');select=document.createElement('select');input=document.createElement('input');input.type='number';input.min='1';input.max='1000';input.step='1';input.required=true;input.dataset.targetFeedbackValue='true';select.onchange=choose;targetLabel.append(select);valueLabel.append(input);
+  const defaultGeneration=epoch,defaultWorld=world;
+  defaultsSource=text('p','');defaultsSource.dataset.targetFeedbackDefaultSource='true';
+  const useDefault=formButton('使用底座默认值',async()=>{
+   if(!current(defaultGeneration,defaultWorld)||reading||attempt||pending)return;const value=selectedDefault();if(!value)return;
+   input.value=String(value.values.hitFlashMilliseconds);notice.textContent='默认值已填入，尚未提交。值有变化时会为此实例写入明确数值；不会恢复动态继承。';
+  });defaultsButton=useDefault.button;defaultsButton.dataset.targetFeedbackDefault='true';
   const create=formButton('生成调整草稿并检查',async()=>{
    const generation=epoch,id=world;
    try{
@@ -63,7 +76,7 @@ export function createTargetFeedbackUI({element,request,getWorldId,durableCall,a
   });submit=create.button;create.form.prepend(targetLabel,valueLabel);
   retry=formButton('查询原检查',poll);retry.form.hidden=!pending;
   const refresh=formButton('重新读取参数',load);
-  element.append(notice,create.form,retry.form,refresh.form);controls();if(pending)void poll();else if(attempt)notice.textContent='有一次调整的结果尚未确认，请使用上方“待确认操作”继续。';else await load();
+  element.append(notice,create.form,defaultsSource,useDefault.form,retry.form,refresh.form);controls();if(pending)void poll();else if(attempt)notice.textContent='有一次调整的结果尚未确认，请使用上方“待确认操作”继续。';else await load();
  }
  function clear(){epoch++;readSequence++;visible=false;stop();element.replaceChildren();}
  return{show,clear,accept};

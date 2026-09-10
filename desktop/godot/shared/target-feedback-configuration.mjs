@@ -86,7 +86,16 @@ function knownScript(parsed,node,expectedPath,expectedHash,read){
  requireValue(resource?.type==='Script'&&resource.path==='res://'+expectedPath,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
  requireValue(hash(read(expectedPath).replaceAll('\r\n','\n'))===expectedHash,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
 }
-function profileMilliseconds(text,read){
+function defaultAt(kind,path,value,read){
+ return {format:'craftmine.target-feedback-default/1',values:{hitFlashMilliseconds:value},source:{kind,path,sha256:hash(read(path))}};
+}
+function scriptDefault(path,kind,expectedHash,read){
+ const text=read(path);requireValue(hash(text.replaceAll('\r\n','\n'))===expectedHash,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
+ const declarations=[...text.matchAll(/^@export var hit_flash_seconds := ([0-9.]+):?\r?$/gm)];
+ requireValue(declarations.length===1,'TARGET_CONFIGURATION_UNKNOWN_SCRIPT');
+ return defaultAt(kind,path,milliseconds({properties:{[PROPERTY]:declarations[0][1]}}),read);
+}
+function profileMilliseconds(text,read,profilePath){
  // Reuse scene parsing for resource/property order and duplicate detection,
  // after converting only the two fixed resource section headers in memory.
  const lines=text.split(/\r?\n/);
@@ -106,17 +115,18 @@ function profileMilliseconds(text,read){
  requireValue(parsed.nodes.length===1&&parsed.resources.size===1,'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
  requireValue(Object.keys(profile.properties)[0]==='script','TARGET_CONFIGURATION_PROPERTY_BEFORE_SCRIPT');
  knownScript(parsed,profile,PROFILE_SCRIPT,PROFILE_SCRIPT_LF_SHA256,read);
- return milliseconds(profile);
+ return Object.hasOwn(profile.properties,PROPERTY)?defaultAt('balance-profile',profilePath,milliseconds(profile),read)
+  :scriptDefault(PROFILE_SCRIPT,'balance-profile-script',PROFILE_SCRIPT_LF_SHA256,read);
 }
 function worldDefault(parsed,read){
  const root=parsed.nodes.find(node=>node.parent===null);
  requireValue(/\btype="Node3D"/.test(root.header),'TARGET_CONFIGURATION_WORLD_UNSUPPORTED');
  if(!Object.hasOwn(root.properties,'script')){
-  requireValue(!Object.hasOwn(root.properties,'balance_profile'),'TARGET_CONFIGURATION_WORLD_UNSUPPORTED');return 120;
+  requireValue(!Object.hasOwn(root.properties,'balance_profile'),'TARGET_CONFIGURATION_WORLD_UNSUPPORTED');return scriptDefault(SCRIPT,'target-script',SCRIPT_LF_SHA256,read);
  }
  knownScript(parsed,root,WORLD_SCRIPT,WORLD_SCRIPT_LF_SHA256,read);
  const profile=root.properties.balance_profile;
- if(profile===undefined||profile==='null')return 120;
+ if(profile===undefined||profile==='null')return scriptDefault(SCRIPT,'target-script',SCRIPT_LF_SHA256,read);
  // BalanceProfile returns without applying anything if BaseWorld cannot bind
  // a PlayerController. Only the fixed known scene path is proven here; custom
  // paths/player implementations must use the ordinary checked authoring flow.
@@ -134,7 +144,7 @@ function worldDefault(parsed,read){
  knownScript(playerScene,playerRoot,PLAYER_SCRIPT,PLAYER_SCRIPT_LF_SHA256,read);
  const resource=parsed.resources.get(extId(profile));
  requireValue(resource?.type==='Resource'&&resource.path.startsWith('res://')&&resource.path.endsWith('.tres'),'TARGET_CONFIGURATION_PROFILE_UNSUPPORTED');
- return profileMilliseconds(read(resource.path.slice(6)),read);
+ return profileMilliseconds(read(resource.path.slice(6)),read,resource.path.slice(6));
 }
 function resolve(args){
  exact(args,['sceneText','scenePath','targetId','files']);
@@ -156,27 +166,29 @@ function resolve(args){
   requireValue(ancestor&&ancestor.parent!==null&&!Object.hasOwn(ancestor.properties,'script')&&!/\binstance=/.test(ancestor.header),'TARGET_CONFIGURATION_ANCESTOR_UNSUPPORTED');
   ancestorPath=ancestor.parent;
  }
- let definition=node,definitionScene=parsed;
+ let definition=node,definitionScene=parsed,definitionPath=scenePath;
  const instance=/\binstance=(ExtResource\("[A-Za-z0-9_-]+"\))/.exec(node.header);
  if(instance){
   requireValue(!Object.hasOwn(node.properties,'script'),'TARGET_CONFIGURATION_SCRIPT_OVERRIDE');
   const resource=parsed.resources.get(extId(instance[1]));
   requireValue(resource?.type==='PackedScene'&&resource.path.startsWith('res://'),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
-  definitionScene=parse(read(resource.path.slice(6)));definition=definitionScene.nodes.find(item=>item.parent===null);
+  definitionPath=resource.path.slice(6);definitionScene=parse(read(definitionPath));definition=definitionScene.nodes.find(item=>item.parent===null);
   requireValue(!definitionScene.nodes.some(item=>item!==definition&&item.properties.target_id!==undefined),'TARGET_CONFIGURATION_NESTED_TARGET');
   requireValue(!parsed.nodes.some(item=>item!==node&&(item.parent===node.nodePath||item.parent?.startsWith(node.nodePath+'/'))),'TARGET_CONFIGURATION_INSTANCE_CHILD_OVERRIDE');
  }else requireValue(!/\binstance=/.test(node.header),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
  requireValue(/\btype="StaticBody3D"/.test(definition.header),'TARGET_CONFIGURATION_SCENE_UNSUPPORTED');
  knownScript(definitionScene,definition,SCRIPT,SCRIPT_LF_SHA256,read);
- const fallback=milliseconds(definition,defaultValue);
- const value=milliseconds(node,fallback);
- return {node,value,binding:{format:'craftmine.target-configuration-binding/1',contractId:CONFIG.contractId,
+ // Ignore only this world's explicit instance value; never use a direct
+ // target node as its own template. The source of the fallback remains bound.
+ const defaults=instance&&Object.hasOwn(definition.properties,PROPERTY)?defaultAt('packed-scene',definitionPath,milliseconds(definition),read):defaultValue;
+ const value=milliseconds(node,defaults.values.hitFlashMilliseconds);
+ return {node,value,defaults,binding:{format:'craftmine.target-configuration-binding/1',contractId:CONFIG.contractId,
   scenePath,targetId,nodePath:node.nodePath,sourceHash:hash(sceneText),dependencies:[...dependencies].sort(([a],[b])=>a.localeCompare(b,'en')).map(([path,sha256])=>({path,sha256}))}};
 }
 
 export function describeTargetFeedback(args){
- const {value,binding}=resolve(args);
- return {configuration:targetFeedbackConfiguration(),binding,values:{hitFlashMilliseconds:value}};
+ const {value,binding,defaults}=resolve(args);
+ return {configuration:targetFeedbackConfiguration(),binding,values:{hitFlashMilliseconds:value},defaults};
 }
 
 export function patchTargetFeedback(args){
@@ -207,4 +219,12 @@ export function patchTargetFeedback(args){
  const next=describeTargetFeedback({sceneText:text,scenePath:args.scenePath,targetId:args.targetId,files});
  requireValue(next.values.hitFlashMilliseconds===value,'TARGET_CONFIGURATION_PATCH_INVALID');
  return {text,changed:text!==args.sceneText,previousHash:binding.sourceHash,sha256:hash(text),binding:next.binding,values:next.values};
+}
+
+export function validateTargetFeedbackDefaults(value){
+ exact(value,['format','values','source']);exact(value.values,['hitFlashMilliseconds']);exact(value.source,['kind','path','sha256']);
+ requireValue(value.format==='craftmine.target-feedback-default/1'&&Number.isInteger(value.values.hitFlashMilliseconds)&&value.values.hitFlashMilliseconds>=1&&value.values.hitFlashMilliseconds<=1000,'TARGET_CONFIGURATION_DEFAULT_INVALID');
+ const {kind,path,sha256}=value.source;filePath(path);requireValue(!/[\x00-\x1f]/.test(path)&&typeof sha256==='string'&&/^[a-f0-9]{64}$/.test(sha256),'TARGET_CONFIGURATION_DEFAULT_INVALID');
+ requireValue(kind==='packed-scene'&&path.endsWith('.tscn')||kind==='balance-profile'&&path.endsWith('.tres')||kind==='balance-profile-script'&&path===PROFILE_SCRIPT||kind==='target-script'&&path===SCRIPT,'TARGET_CONFIGURATION_DEFAULT_INVALID');
+ return clone(value);
 }

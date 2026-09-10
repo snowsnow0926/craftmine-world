@@ -1,4 +1,4 @@
-import { targetFeedbackConfiguration, validateTargetFeedbackConfiguration } from "../../../../../../desktop/godot/shared/target-feedback-configuration.mjs";
+import { targetFeedbackConfiguration, validateTargetFeedbackConfiguration, validateTargetFeedbackDefaults } from "../../../../../../desktop/godot/shared/target-feedback-configuration.mjs";
 
 type Data = Record<string, any>;
 const object = (value: unknown): value is Data => !!value && typeof value === "object" && !Array.isArray(value);
@@ -83,7 +83,7 @@ export function createCraftmineTargetFeedbackPanel(options: {
         if (!object(target) || !id(target.targetId) || identities.has(target.targetId)) fail("TARGET_FEEDBACK_INVALID_RESPONSE");
         identities.add(target.targetId); validateTargetFeedbackConfiguration(target.configuration);
         return {targetId: target.targetId, label: typeof target.label === "string" ? target.label.slice(0, 160) : target.targetId,
-          sourceBinding: binding(target.binding, input.worldId, target.targetId), values: values(target.values), configuration: targetFeedbackConfiguration()};
+          sourceBinding: binding(target.binding, input.worldId, target.targetId), values: values(target.values), configuration: targetFeedbackConfiguration(), defaults: validateTargetFeedbackDefaults(target.defaults)};
       });
       return {worldId: input.worldId, buildId: result.buildId, targets, unsupportedCount: Array.isArray(result.unsupported) ? result.unsupported.length : 0};
     }

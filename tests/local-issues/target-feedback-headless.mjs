@@ -31,7 +31,8 @@ async function fixture(standalone=false){
   window.guard={pointerLock:0,focus:0,input:0};Element.prototype.requestPointerLock=()=>{guard.pointerLock++;throw Error('Forbidden');};window.focus=()=>{guard.focus++;throw Error('Forbidden');};HTMLElement.prototype.focus=()=>{guard.focus++;throw Error('Forbidden');};for(const type of ['keydown','mousedown'])addEventListener(type,e=>{if(e.isTrusted)guard.input++;});
   window.world={id:'alpha',world:{build:{id:'build-alpha',engine:{kind:'godot-web'},scene:{objects:[]}}}};
   window.calls=[];window.journal=[];window.mutations=0;window.nextStatus='queued';window.describeValue=120;window.lastAction=Promise.resolve();window.pollStatuses=[];window.holds=[];window.loseReply=false;
-  window.targets=()=>({worldId:world.id,targets:[{targetId:'target_a',label:'A',values:{hitFlashMilliseconds:describeValue},sourceBinding:{revision:1,manifestHash:'a'.repeat(64)}},{targetId:'target_b',label:'B',values:{hitFlashMilliseconds:400},sourceBinding:{revision:1,manifestHash:'b'.repeat(64)}}]});
+  window.defaultValue=250;window.noDefaults=false;window.defaultFor=value=>noDefaults?undefined:{format:'craftmine.target-feedback-default/1',values:{hitFlashMilliseconds:value},source:{kind:'balance-profile',path:'data/balance/training_range.tres',sha256:'f'.repeat(64)}};
+  window.targets=()=>({worldId:world.id,targets:[{targetId:'target_a',label:'A',defaults:defaultFor(defaultValue),values:{hitFlashMilliseconds:describeValue},sourceBinding:{revision:1,manifestHash:'a'.repeat(64)}},{targetId:'target_b',label:'B',defaults:defaultFor(350),values:{hitFlashMilliseconds:400},sourceBinding:{revision:1,manifestHash:'b'.repeat(64)}}]});
   window.request=async(channel,input)=>{
    calls.push({channel,input:structuredClone(input)});let result;
    if(channel==='workbench.capabilities')result={channels:['package.request','targetFeedback.describe','targetFeedback.status','workbench.prepare','workbench.execute','workbench.operations','workbench.acknowledge']};
@@ -69,6 +70,18 @@ try{
   await p.evaluate(()=>{const area=document.querySelector('[data-target-feedback]'),select=area.querySelector('select');select.value='target_b';select.dispatchEvent(new Event('change'));const input=area.querySelector('input');input.value='1000';input.form.requestSubmit();input.form.requestSubmit();});await idle(p);
   const result=await p.evaluate(()=>({calls,mutations}));const prepares=result.calls.filter(x=>x.channel==='workbench.prepare');assert.equal(prepares.length,1);assert.deepEqual(prepares[0].input.payload,{targetId:'target_b',sourceBinding:{revision:1,manifestHash:'b'.repeat(64)},values:{hitFlashMilliseconds:1000}});assert.equal(result.mutations,1);await finish(p);
  });
+ await check('verified defaults only fill the selected input until original durable submit',async()=>{
+  const p=await fixture();const before=await p.evaluate(()=>calls.length);await submit(p,'使用底座默认值');assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'250');assert.equal(await p.evaluate(()=>calls.length),before);assert.equal(await p.evaluate(()=>mutations),0);
+  assert.match(await p.locator('[data-target-feedback-default-source]').textContent(),/250.*当前平衡配置/);assert.match(await p.locator('[data-target-feedback]').textContent(),/尚未提交.*不会恢复动态继承/);
+  await p.evaluate(()=>{const select=document.querySelector('[data-target-feedback] select');select.value='target_b';select.dispatchEvent(new Event('change'));});await submit(p,'使用底座默认值');assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'350');await submit(p,'生成调整草稿并检查');
+  assert.equal(await p.evaluate(()=>mutations),1);assert.deepEqual(await p.evaluate(()=>calls.find(c=>c.channel==='workbench.prepare').input.payload),{targetId:'target_b',sourceBinding:{revision:1,manifestHash:'b'.repeat(64)},values:{hitFlashMilliseconds:350}});assert.equal(await p.locator('[data-target-feedback-default]').isDisabled(),true);await finish(p);
+ });
+ await check('detached old-world default form cannot fill the newly mounted world',async()=>{
+  const p=await fixture(true);await p.evaluate(async()=>{window.oldDefault=document.querySelector('[data-target-feedback-default]').form;world={...world,id:'beta'};describeValue=777;defaultValue=333;await module.show();oldDefault.requestSubmit();await lastAction;});assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'777');await submit(p,'使用底座默认值');assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'333');assert.equal(await p.evaluate(()=>calls.filter(c=>c.channel==='targetFeedback.submit').length),0);await finish(p);
+ });
+ await check('missing default never falls back to contract120 after reread',async()=>{
+  const p=await fixture(true);await p.evaluate(()=>{noDefaults=true;});await submit(p,'重新读取参数');assert.equal(await p.locator('[data-target-feedback-default]').isDisabled(),true);assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'120');assert.equal(await p.evaluate(()=>calls.filter(c=>c.channel==='targetFeedback.submit').length),0);await finish(p);
+ });
  await check('background status polling never repeats modification; passed does not claim adoption',async()=>{
   const p=await fixture();await p.evaluate(()=>{document.querySelector('[data-target-feedback-value]').value='1';pollStatuses=['queued','passed'];});await submit(p,'生成调整草稿并检查');
   await p.waitForFunction(()=>document.querySelector('[data-target-feedback]').textContent.includes('正式世界尚未改变'),null,{timeout:6000});
@@ -76,7 +89,7 @@ try{
  });
  await check('lost reply recovers only through the pending original operation',async()=>{
   const p=await fixture();await p.evaluate(()=>{loseReply=true;document.querySelector('[data-target-feedback-value]').value='300';});await submit(p,'生成调整草稿并检查');
-  assert.ok((await p.locator('[data-target-feedback]').textContent()).includes('待确认操作'));assert.equal(await p.locator('[data-target-feedback-value]').isDisabled(),true);
+  assert.ok((await p.locator('[data-target-feedback]').textContent()).includes('待确认操作'));assert.equal(await p.locator('[data-target-feedback-value]').isDisabled(),true);assert.equal(await p.locator('[data-target-feedback-default]').isDisabled(),true);
   await submit(p,'查询并继续原调整');assert.equal(await p.evaluate(()=>mutations),1);const c=await p.evaluate(()=>calls);assert.equal(c.filter(x=>x.channel==='workbench.prepare').length,1);assert.equal(new Set(c.filter(x=>x.channel==='workbench.execute').map(x=>x.input.operationId)).size,1);await finish(p);
  });
  await check('rejected result allows reread and a corrected value',async()=>{
@@ -98,8 +111,8 @@ try{
  });
  await check('a late initial read cannot overwrite a newer read of the same component',async()=>{
   const p=await fixture(true);await p.evaluate(()=>{holds.push({channel:'targetFeedback.describe'});window.oldRead=module.show();});await p.waitForFunction(()=>holds[0].used);
-  await p.evaluate(async()=>{describeValue=777;submit('重新读取参数');await lastAction;});assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'777');
-  await p.evaluate(async()=>{holds[0].resolve();await oldRead;});assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'777');await finish(p);
+  await p.evaluate(async()=>{describeValue=777;defaultValue=444;submit('重新读取参数');await lastAction;});assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'777');
+  await p.evaluate(async()=>{holds[0].resolve();await oldRead;});assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'777');await submit(p,'使用底座默认值');assert.equal(await p.locator('[data-target-feedback-value]').inputValue(),'444');await finish(p);
  });
  assert.deepEqual(violations,[]);assert.deepEqual(pageErrors,[]);report.passed=report.checks.every(check=>check.passed);
 }catch(error){report.failure=String(error.stack||error);process.exitCode=1;}

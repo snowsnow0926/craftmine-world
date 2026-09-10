@@ -9017,3 +9017,28 @@ Compile current Main/React/core, stage same-commit trusted runtime, and launch a
 ## 2026-09-10 — Strict history probe action types
 
 The finite headless history probe rejects array/object/number action discriminators before producing page script. Its existing finite form actions are unchanged. Validation: `node --test tests/plan-loop/version-diff-probe.test.mjs` (3 tests).
+
+
+### CRAFTMINE-PP2-BASE-DEFAULT-20260910 — Verified default fill
+
+- On supported first-person 0.1.0 source, describe a selected instance override800
+  with template350/profile250, profile250, omitted profile property, and no profile.
+  Expect defaults350/250/120/120 with exact dependency provenance respectively.
+- Unknown scripts, unsafe source, stale bindings and malformed metadata must refuse;
+  a direct node's current override must not be called its own template default.
+- In actual workbench DOM, submit the default button via form.requestSubmit only.
+  It fills the selected input without transport or mutation. Original submit runs
+  once with its unchanged source binding and runtime expectation. Pending/lost replies
+  remain locked; world changes, old forms and late reads cannot populate a new view.
+- Pinned headless Godot must agree with each parsed fallback. Applying the selected
+  explicit value preserves every JSON progress field and other damaged targets,
+  survives another engine process, and does not resume dynamic profile inheritance.
+- Commands: node --test tests/player-product/target-feedback-configuration.test.mjs
+  tests/player-product/target-feedback-defaults.test.mjs
+  tests/player-product/target-feedback-service.test.mjs
+  tests/plan-loop/target-feedback-panel.test.mjs; node
+  tests/local-issues/target-feedback-headless.mjs; node
+  tests/player-product/target-feedback-defaults-native.mjs <pinned-editor-exe>.
+  CRAFTMINE_DEPS_ROOT may point to a read-only desktop dependency directory.
+- Keep strict Godot error/exit gates and full progress comparison. These fixtures
+  are not real model, whole-client, packaged application or signing evidence.

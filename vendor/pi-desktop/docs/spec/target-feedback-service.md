@@ -90,3 +90,8 @@ fixed executor fixture. It does not run Godot or claim a real engine check. It
 proves one adjustment write/check, unchanged formal build and full progress,
 draft refusal and same-operation restart replay. It leaves the owned temporary
 profile and complete `calls.json` evidence rather than deleting failures.
+
+The read-only target projection also carries the validated `defaults` value and
+managed relative source provenance specified in `target-feedback-configuration.md`.
+Submit arguments, durable operation identity and runtime check requirements remain
+unchanged; the default action only supplies the existing integer value.
