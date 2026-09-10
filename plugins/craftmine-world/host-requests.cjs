@@ -61,6 +61,18 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench}){
       fields(params,['worldId','buildId','revision','runnerReceipt','snapshot']);
       return core.call(method,params,60000);
     }
+    const applicationFields={
+      'godotJob.checkDescriptor':['jobId','token','artifacts'],
+      'godotApplication.prepare':['id','token','candidateId','worldId','revision','snapshot'],
+      'godotApplication.commit':['id','token','evidence'],
+      'godotApplication.read':['id'],
+      'godotApplication.abort':['id'],
+      'world.read':['id'],
+    };
+    if(Object.hasOwn(applicationFields,method)){
+      fields(params,applicationFields[method]);
+      return core.call(method,params,60000);
+    }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);
       return core.call(method,params);

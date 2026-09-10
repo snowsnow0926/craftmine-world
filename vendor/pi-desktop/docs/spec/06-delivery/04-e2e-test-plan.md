@@ -8781,3 +8781,14 @@ Fixed source/executor/application fixtures prove transport and persistence only;
 record separately whether the actual product entry was built/exercised. Do not
 claim arbitrary model execution, OS sandbox, candidate UI application or packaged
 asset licensing from these checks.
+
+### CRAFTMINE-GODOT-023 — Private build ownership and continued authoring
+
+Create a managed source build and confirm its fixed Web preset/shell/bridge are
+immutable host files with hashes included in build identity. Resolve staged Web
+artifacts only with the live check owner; reject foreign tokens, duplicate paths,
+corrupt bytes and revoked leases, without publishing a candidate. Revoke one
+executor and confirm other capable executors remain usable. Apply a Godot build,
+open a new authoring turn and patch/build the same source lineage; a different
+lineage must fail and neither patch changes formal play progress. Exercise both
+private application broker layers; pages cannot supply application evidence.

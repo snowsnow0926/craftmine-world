@@ -221,7 +221,8 @@ pub(super) fn build_id(identity: &BuildIdentity) -> Result<String> {
         "format":"craftmine.godot-build/1","worldId":identity.world_id,"baseId":identity.base_id,
         "baseBuild":identity.base_build,"sourceRevision":identity.source_revision,
         "manifestHash":identity.manifest_hash,"assetManifestHash":identity.asset_manifest_hash,
-        "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target
+        "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target,
+        "hostResourcesHash":super::godot_host_resources::hash()
     }))?;
     ensure!(body.len() <= 4096, "INVALID_GODOT_BUILD");
     Ok(format!("gbd-{}", digest(&body)))
@@ -473,6 +474,10 @@ pub(super) fn materialize(
     manifest: &Manifest,
     assets: &[AssetRow],
 ) -> Result<(Vec<Value>, u64)> {
+    let host_files = super::godot_host_resources::files();
+    for (reserved, _) in &host_files {
+        ensure!(!manifest.files.keys().any(|path| path.eq_ignore_ascii_case(reserved)), "GODOT_RESERVED_HOST_PATH: {reserved}");
+    }
     let root = build_root(directory, world, &identity.build_id, true)?;
     let source_root = ensure_dirs(&root, "source", "GODOT_STORAGE_UNAVAILABLE")?;
     let mut files = Vec::new();
@@ -491,6 +496,12 @@ pub(super) fn materialize(
             .checked_add(text.len() as u64)
             .context("GODOT_BUILD_TOO_LARGE")?;
         files.push(json!({"path":path,"kind":"source","sha256":entry.sha256,"bytes":entry.bytes}));
+    }
+    for (path, text) in host_files {
+        let sha256 = digest(&text);
+        write_verified(&source_root.join(path), &sha256, text.as_bytes(), "CORRUPT_GODOT_BUILD")?;
+        total = total.checked_add(text.len() as u64).context("GODOT_BUILD_TOO_LARGE")?;
+        files.push(json!({"path":path,"kind":"host","sha256":sha256,"bytes":text.len()}));
     }
     let assets_root = if assets.is_empty() {
         None

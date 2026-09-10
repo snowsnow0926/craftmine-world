@@ -3,6 +3,56 @@ use crate::godot_test_support::*;
 use std::path::Path;
 
 #[test]
+fn runtime_check_descriptor_requires_a_live_owner_and_verified_staged_bytes() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let job = start(&mut journal, &context, "check-preview", &project, "check")?;
+    let claimed = claim(&mut journal, &job, "token-a", "executor-a")?;
+    let files = write_artifact(&claimed, "web/index.html", b"<html>staged</html>")?;
+    let args = json!({"jobId":job["jobId"],"token":"token-a","artifacts":files});
+    let result = journal.godot_job_check_descriptor(&args)?;
+    assert_eq!(result["phase"], "check");
+    assert_eq!(result["inputHash"], claimed["inputHash"]);
+    assert_eq!(result["root"], claimed["artifactsRoot"]);
+    assert!(result["snapshot"].is_null());
+    assert!(journal.godot_candidate_list(&json!({"worldId":"a"}))?["items"].as_array().unwrap().is_empty());
+    let mut foreign = args.clone(); foreign["token"] = json!("token-b");
+    failed(journal.godot_job_check_descriptor(&foreign), "GODOT_JOB_OWNER_MISMATCH");
+    let mut duplicate = args.clone(); duplicate["artifacts"].as_array_mut().unwrap().push(files[0].clone());
+    failed(journal.godot_job_check_descriptor(&duplicate), "GODOT_ARTIFACT_CONFLICT");
+    std::fs::write(Path::new(claimed["artifactsRoot"].as_str().unwrap()).join("web/index.html"), b"<html>changed</html>")?;
+    failed(journal.godot_job_check_descriptor(&args), "CORRUPT_GODOT_ARTIFACT");
+    journal.godot_executor_revoke(&json!({"executorId":"executor-a"}))?;
+    assert_eq!(journal.godot_executor_status()["build"], false);
+    assert_eq!(journal.godot_build_read(&json!({"worldId":"a","jobId":job["jobId"]}))?["status"], "interrupted");
+    failed(journal.godot_job_check_descriptor(&args), "GODOT_JOB_OWNER_MISMATCH");
+    Ok(())
+}
+
+#[test]
+fn executor_gate_finds_a_capable_executor_and_revocation_interrupts_only_its_jobs() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    register(&mut journal, "build-only", json!({"import":true,"build":true,"check":false}), &digest("a"))?;
+    assert_eq!(journal.godot_executor_status()["check"], false);
+    register(&mut journal, "checks", json!({"import":true,"build":true,"check":true}), &digest("b"))?;
+    assert_eq!(journal.godot_executor_status()["check"], true);
+    let job = start(&mut journal, &context, "check-revoke", &project, "check")?;
+    claim(&mut journal, &job, "owner", "checks")?;
+    assert_eq!(journal.godot_executor_revoke(&json!({"executorId":"build-only"}))?["interrupted"], 0);
+    assert_eq!(journal.godot_executor_status()["check"], true);
+    assert_eq!(journal.godot_executor_revoke(&json!({"executorId":"checks"}))?["interrupted"], 1);
+    assert_eq!(journal.godot_build_read(&json!({"worldId":"a","jobId":job["jobId"]}))?["status"], "interrupted");
+    failed(journal.godot_job_heartbeat(&json!({"jobId":job["jobId"],"token":"owner"})), "GODOT_JOB_OWNER_MISMATCH");
+    Ok(())
+}
+
+#[test]
 fn a_job_cannot_run_without_an_attested_executor() -> Result<()> {
     let (_dir, path) = temp()?;
     let mut journal = setup(&path)?;

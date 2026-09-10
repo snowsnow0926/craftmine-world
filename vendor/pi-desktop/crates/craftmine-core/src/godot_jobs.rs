@@ -89,6 +89,18 @@ struct TokenArgs {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct CheckDescriptorArgs {
+    job_id: String,
+    token: String,
+    artifacts: Vec<Artifact>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct RevokeArgs { executor_id: String }
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct FinishArgs {
     job_id: String,
     token: String,
@@ -392,7 +404,7 @@ pub(super) fn verified_artifacts(db: &Connection, world: &str, build: &str, root
 }
 
 fn verify_project(db: &Connection, world: &str, build: &str, root: &std::path::Path) -> Result<()> {
-    for kind in ["source", "asset"] {
+    for kind in ["source", "asset", "host"] {
         for file in build_files(db, world, build, kind)? {
             verify_file(root, file["path"].as_str().context("CORRUPT_GODOT_BUILD")?,
                 file["sha256"].as_str().context("CORRUPT_GODOT_BUILD")?,
@@ -486,12 +498,76 @@ pub(super) fn require_ready_candidate(
 }
 
 impl TaskJournal {
+    /// The private host owns executor lifetime. Availability never survives a
+    /// core restart, and a failed worker cannot leave runnable capabilities.
+    pub fn godot_executor_status(&self) -> Value {
+        let (build, build_reason) = self.execution_gate("build");
+        let (check, check_reason) = self.execution_gate("check");
+        json!({"format":"craftmine.godot-execution-status/1","engineVersion":engine_version(),
+            "build":build,"check":check,"buildBlockedReason":build_reason,"checkBlockedReason":check_reason})
+    }
+
+    pub fn godot_executor_revoke(&mut self, args: &Value) -> Result<Value> {
+        let args: RevokeArgs = serde_json::from_value(args.clone())?;
+        workspaces::call_id(&args.executor_id)?;
+        let removed = self.executors.remove(&args.executor_id).is_some();
+        let interrupted = self.db.execute(
+            "UPDATE craftmine_godot_jobs SET status='interrupted',run_token=NULL,executor_id=NULL,
+                lease_expires_at=NULL,updated_at=?2 WHERE executor_id=?1 AND status IN ('claimed','running')",
+            params![args.executor_id, worlds::timestamp()?],
+        )?;
+        Ok(json!({"executorId":args.executor_id,"revoked":removed,"interrupted":interrupted}))
+    }
+
+    /// Resolve only a live worker's staged exports for an isolated runtime
+    /// check. This neither registers artifacts nor makes a candidate ready.
+    pub fn godot_job_check_descriptor(&mut self, args: &Value) -> Result<Value> {
+        let args: CheckDescriptorArgs = serde_json::from_value(args.clone())?;
+        let tx = self.db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        expire(&tx)?;
+        let (world, build, record) = owned_job(&tx, &args.job_id, &args.token)?;
+        ensure!(matches!(record["status"].as_str(), Some("claimed" | "running")), "GODOT_JOB_INACTIVE");
+        ensure!(record["kind"] == "check", "GODOT_RUNTIME_CHECK_REQUIRED");
+        let executor = self.executors.get(record["executorId"].as_str().unwrap_or_default())
+            .context("GODOT_EXECUTOR_UNAVAILABLE")?;
+        ensure!(executor.capabilities["check"] == true, "GODOT_EXECUTOR_CAPABILITY_MISSING");
+        let root = build_root(&self.directory, &world, &build, false)?;
+        verify_project(&tx, &world, &build, &root.join("source"))?;
+        let root = root.join("artifacts");
+        ensure!(!args.artifacts.is_empty() && args.artifacts.len() <= ARTIFACT_COUNT, "GODOT_ARTIFACT_MISSING");
+        let mut paths = std::collections::HashSet::new();
+        let mut bytes = 0u64;
+        for artifact in &args.artifacts {
+            bytes = bytes.checked_add(artifact.bytes).context("GODOT_ARTIFACT_TOO_LARGE")?;
+            ensure!(bytes <= ARTIFACT_TOTAL_BYTES, "GODOT_ARTIFACT_TOO_LARGE");
+            ensure!(paths.insert(artifact.path.to_ascii_lowercase()), "GODOT_ARTIFACT_CONFLICT");
+            verify_artifact(&root, artifact)?;
+        }
+        ensure!(paths.contains("web/index.html"), "GODOT_WEB_ENTRY_MISSING");
+        let input_hash: String = tx.query_row("SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1",
+            [&args.job_id], |row| row.get(0))?;
+        let current = worlds::read(&tx, &world)?;
+        let snapshot = if current.world.snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT {
+            ensure!(current.world.snapshot["baseId"] == record["baseId"], "GODOT_PROGRESS_BASE_MISMATCH");
+            current.world.snapshot
+        } else { Value::Null };
+        let result = json!({"format":"craftmine.godot-check-descriptor/1","phase":"check",
+            "jobId":args.job_id,"inputHash":input_hash,"worldId":world,"buildId":build,
+            "baseId":record["baseId"],"root":root.to_string_lossy(),"entry":"web/index.html",
+            "threads":true,"artifacts":args.artifacts,"snapshot":snapshot});
+        tx.commit()?;
+        Ok(result)
+    }
+
     /// Capability gate. Only an attested, matching executor may run a job.
     pub(super) fn execution_gate(&self, kind: &str) -> (bool, Option<&'static str>) {
         let Some(executor) = self
             .executors
             .values()
-            .find(|executor| executor.engine_version == engine_version())
+            .find(|executor| executor.engine_version == engine_version()
+                && executor.capabilities["import"] == true
+                && executor.capabilities[if kind == "check" { "check" } else { "build" }] == true)
+            .or_else(|| self.executors.values().find(|executor| executor.engine_version == engine_version()))
         else {
             return (false, Some("GODOT_EXECUTION_UNAVAILABLE"));
         };
@@ -629,7 +705,8 @@ impl TaskJournal {
         )?);
         description["files"] = json!({
             "source":build_files(&tx, world, build, "source")?,
-            "asset":build_files(&tx, world, build, "asset")?
+            "asset":build_files(&tx, world, build, "asset")?,
+            "host":build_files(&tx, world, build, "host")?
         });
         tx.commit()?;
         Ok(description)

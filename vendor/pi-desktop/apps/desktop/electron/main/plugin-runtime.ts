@@ -904,10 +904,12 @@ export class PluginRuntime {
     const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     allowed.add("budget.findReceipt");
     for (const operation of ["godotRuntime.describe", "godotRuntime.describeCandidate", "godotRuntime.saveProgress"]) allowed.add(operation);
+    for (const operation of ["godotApplication.prepare", "godotApplication.commit", "godotApplication.read", "godotApplication.abort", "world.read"]) allowed.add(operation);
+    allowed.add("godotJob.checkDescriptor");
     if (!allowed.has(method)) throw apiError("UNSUPPORTED", "Unsupported Craftmine host request");
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
-    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") || method.startsWith("godotRuntime.") || method === "workbench.request" ? 60_000 : 15_000);
+    return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") || method.startsWith("godotRuntime.") || method.startsWith("godotApplication.") || method === "godotJob.checkDescriptor" || method === "world.read" || method === "workbench.request" ? 60_000 : 15_000);
   }
 
   /**
