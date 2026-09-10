@@ -141,9 +141,9 @@ test('the real hammer plan records every action, frame and error it produced', a
   }
   const attackFrames = frames.filter(action => action.op === 'fire');
   assert.ok(attackFrames.length >= 2);
-  // The captured attacks are the third, fourth and seventh attack commands: the
+  // The captured attacks are the third through seventh attack commands: the
   // first two are deliberately left uncaptured so their gap stays real.
-  assert.deepEqual(attackFrames.map(action => action.frame.associatedAttack.attackIndex), [3, 4, 7]);
+  assert.deepEqual(attackFrames.map(action => action.frame.associatedAttack.attackIndex), [3, 4, 5, 6, 7]);
   for (const action of attackFrames) assert.equal(action.frame.associatedAttack.fired, action.result.fired, 'the frame keeps the actual attack outcome, including a cooldown refusal');
   assert.ok(attackFrames.every(action => Number.isFinite(action.frame.offsetFromAttackObservedMs) && Number.isFinite(action.frame.offsetFromAttackCompletedMs)));
   // Two adjacent attacks with nothing between them: no capture may sit in the gap.
@@ -153,12 +153,12 @@ test('the real hammer plan records every action, frame and error it produced', a
 });
 
 test('the pickup scan reaches a legal ground pickup and the aim evidence is recorded', async () => {
-  for (const distance of [1.2, 4.0]) {
-    const fake = firstPerson({ pickup: { bearing: 0, distance } });
+  for (const {bearing,distance} of [{bearing:0,distance:1.2},{bearing:0,distance:4.0},{bearing:-2,distance:1.8}]) {
+    const fake = firstPerson({ pickup: { bearing, distance } });
     const result = await exerciseP8Gameplay(fake.access, 'hammer', 'world-hammer');
     const interacts = result.actions.filter(action => action.op === 'interact');
     const picked = interacts.find(action => action.result.handled === true);
-    assert.ok(picked, 'a pickup ' + distance + ' m ahead must be reachable by the bounded scan');
+    assert.ok(picked, 'a pickup ' + distance + ' m away at bearing ' + bearing + ' must be reachable by the bounded scan');
     assert.equal(picked.result.item, 'thunder_hammer');
     const index = result.actions.indexOf(picked);
     assert.equal(result.actions[index - 1].observation.payload.aim.interactable, true, 'the scan aimed before it interacted');
@@ -168,9 +168,9 @@ test('the pickup scan reaches a legal ground pickup and the aim evidence is reco
 });
 
 test('a pickup the scan never aimed at is untested, and an aimed refusal is a mismatch', async () => {
-  // Far to the side: the bounded scan does not cover that bearing, so the driver
+  // Beyond both scan positions: the bounded scan cannot reach this item, so the driver
   // must report that it did not test the claim rather than blame the product.
-  const aside = firstPerson({ pickup: { bearing: 0.87, distance: 2.0 } });
+  const aside = firstPerson({ pickup: { bearing: 0.87, distance: 10.0 } });
   const missed = await exerciseP8Gameplay(aside.access, 'hammer', 'world-hammer');
   const missedVerdict = evaluateGameplay({ caseId: 'hammer', exercise: missed, source: [] });
   const pickup = missedVerdict.criteria.find(row => row.id === 'pickup-actual');

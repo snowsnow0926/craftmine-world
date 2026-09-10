@@ -14,11 +14,20 @@ await mkdir(path.join(root, 'test-results'), { recursive: true });
 const out = await mkdtemp(path.join(root, 'test-results/p8-preflight-'));
 await require('esbuild').build({ entryPoints: [path.join(root, 'vendor/pi-desktop/apps/desktop/electron/main/craftmine-acceptance-p8.ts')], outfile: path.join(out, 'p8.mjs'), platform: 'node', format: 'esm', bundle: true,
   banner: {js: `import {createRequire as testCreateRequire} from 'node:module'; const require = testCreateRequire(${JSON.stringify(path.join(deps, 'package.json'))});`} });
-const { createP8Acceptance } = await import(pathToFileURL(path.join(out, 'p8.mjs')));
+const { createP8Acceptance, p8SubmissionContent, P8_PROMPTS } = await import(pathToFileURL(path.join(out, 'p8.mjs')));
 const fakeKey = 'sk-fixed-synthetic-fixture';
 const configuration = async () => ({ key: fakeKey, endpoint: ENDPOINT, model: MODEL });
 const body = { model: MODEL, stream: true, max_tokens: 100, messages: [{ role: 'user', content: 'owned synthetic fixture' }] };
 const send = (relay, input = body, options = {}) => fetch(relay.baseUrl + '/chat/completions', { method: 'POST', headers: { authorization: 'Bearer ' + relay.auth, 'content-type': 'application/json' }, body: JSON.stringify(input), ...options });
+
+test('corrective submissions retain the original request and explicit bounded feedback', () => {
+  assert.equal(p8SubmissionContent('hammer'), P8_PROMPTS.hammer);
+  const text=p8SubmissionContent('hammer','The previous candidate had no visible equipped mesh.');
+  assert.ok(text.startsWith(P8_PROMPTS.hammer));
+  assert.ok(text.includes('不代表上一轮通过'));
+  assert.ok(text.endsWith('The previous candidate had no visible equipped mesh.'));
+  for(const input of ['',true,{},'x'.repeat(12001)])assert.throws(()=>p8SubmissionContent('dog',input),/P8_INVALID_FEEDBACK/);
+});
 
 test('configuration parsing is exact and errors disclose no input content', () => {
   assert.deepEqual(parseAuthorizedConfiguration(`https://api.deepseek.com/\n${MODEL}\n${fakeKey}`), { key: fakeKey, endpoint: ENDPOINT, model: MODEL });
@@ -137,8 +146,9 @@ test('fixed exercise retains actual failures, rejects extra commands, and aborts
   // plan shape is fully predictable here.
   const ops = operations.map(entry => entry[0]);
   assert.equal(ops[0], 'resume');
-  assert.equal(ops.filter(op => op === 'look').length, 3 * 8 * 2 + 1, 'the scan headings and pitches plus the aim reset');
-  assert.equal(ops.filter(op => op === 'interact').length, 3 * 8 * 2, 'one interaction per scan direction and distance');
+  assert.equal(ops.filter(op => op === 'look').length, 16 * 8 * 2 + 1, 'the scan headings and pitches plus the aim reset');
+  assert.equal(ops.filter(op => op === 'interact').length, 16 * 8 * 2, 'one interaction per scan direction and distance');
+  assert.ok(operations.some(([op,args]) => op === 'look' && args.yaw < -Math.PI / 2), 'pickups behind the right shoulder must be searched');
   assert.equal(ops.filter(op => op === 'fire').length, 7, 'the gate pair, the reopen and the walk-in shots');
   assert.equal(ops.filter(op => op === 'walk').length, 5, 'the scan advance, its return and three walk-ins');
   assert.equal(result.plan.actions, ops.length);

@@ -23,10 +23,11 @@ import { readLedgerSummary, admissionAccounting } from './ledger.mjs';
 import { evaluateGameplay } from './gameplay-criteria.mjs';
 import { summarizeRun, CASE_PIPELINE_COMPLETE } from './run-outcome.mjs';
 import { pollWorldInitialization, INITIALIZATION_DEADLINE_MS } from './initialization-poll.mjs';
+import { readCorrectiveFeedback } from './corrective-feedback.mjs';
 /** One initial request plus the three fixed continuations the product allows. */
 const MAX_ROUNDS = 4;
 const CASE_PLAN = Object.freeze({ hammer: { baseId: 'first-person', starterId: 'training-range' }, dog: { baseId: 'top-down', starterId: 'town' } });
-const DRIVER_MODULES = ['client-native.mjs', 'authorization.mjs', 'ledger.mjs', 'evidence.mjs', 'relay.mjs', 'stop-control.mjs', 'gameplay-criteria.mjs', 'run-outcome.mjs', 'review-merge.mjs'];
+const DRIVER_MODULES = ['client-native.mjs', 'authorization.mjs', 'ledger.mjs', 'evidence.mjs', 'relay.mjs', 'stop-control.mjs', 'gameplay-criteria.mjs', 'run-outcome.mjs', 'review-merge.mjs', 'initialization-poll.mjs', 'corrective-feedback.mjs'];
 
 // This driver owns `--case`; the generic parameter parser stays untouched, so an
 // unknown argument still fails there.
@@ -54,6 +55,7 @@ fs.writeFileSync(path.join(profile, 'headless-profile.json'), JSON.stringify({ f
 // The journal is resolved after the run's own output directory exists, because a
 // parallel run may only journal inside its own new output range.
 const authorization = p8Authorization(process.env, root, { out, argv: driverArgv }), cases = authorization.cases;
+const correctiveFeedback = readCorrectiveFeedback(process.env.CRAFTMINE_P8_FEEDBACK_FILE, cases);
 const driverHashes = Object.fromEntries(DRIVER_MODULES.map(name => {
   const file = path.join(root, 'tests/player-feedback/P8', name);
   return [name, fs.existsSync(file) ? hash(fs.readFileSync(file)) : null];
@@ -61,6 +63,7 @@ const driverHashes = Object.fromEntries(DRIVER_MODULES.map(name => {
 const report = { format: 'craftmine.p8-client/1', passed: false, commit, runtimeSourceCommit: resources?.sourceCommit ?? packageInfo?.identity?.runtimeSourceCommit ?? null, out, runId, profile, mode: packaged ? 'packaged' : 'development', mainSha256: hash(main), coreSha256: hash(fs.readFileSync(core)), hostSha256: hash(fs.readFileSync(host)), runtimeFilesDigest: packageInfo?.identity.runtimeFilesDigest ?? resources.filesDigest,
   driverHashes, requestedModel: MODEL, authorization: { phase: authorization.phase, requestLimit: authorization.requestLimit, previousPhaseAdmissions: authorization.previousPhaseAdmissions, phaseOneAdmissions: authorization.phaseOneAdmissions, mode: authorization.mode, ownership: authorization.ownership, caseSelection: authorization.caseSelection }, requestedCases: cases, caseSelection: authorization.caseSelection, requestLimit: authorization.requestLimit, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.', 'Frames and source support an independent review of claims no product channel reports; they are not a substitute for human visual confirmation.'] };
 if (packageInfo) Object.assign(report, packageInfo.identity);
+report.correctiveFeedback = correctiveFeedback;
 const save = () => fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
 report.pluginSha256 = packageInfo?.identity?.pluginSha256 ?? null; report.appVersion = packageInfo?.identity?.appVersion ?? JSON.parse(fs.readFileSync(path.join(app, 'package.json'), 'utf8')).version;
 const journalPath = authorization.journalPath, journal = openRequestJournal(journalPath, { requestLimit: authorization.requestLimit });
@@ -137,6 +140,10 @@ async function loaded(worldId) {
   await until(async () => { try { return await rpc('godotObserve'); } catch (error) { if (/^(?:Error: )?(No world runtime is running|WORLD_BUSY)$/.test(error.message)) return { waiting: error.message }; throw error; } }, value => value?.worldId === worldId && value.instanceId, 'formal runtime', 180000);
   await until(async () => { try { return await rpc('worldNavigationReady'); } catch (error) { if (/^(?:Error: )?World view is not ready$/.test(error.message)) return { ready: false }; throw error; } }, value => value.ready && value.worldId === worldId, 'navigation ready');
 }
+async function navigationReady() {
+  try { return await rpc('worldNavigationReady'); }
+  catch (error) { if (/^(?:Error: )?World view is not ready$/.test(error.message)) return {ready:false}; throw error; }
+}
 async function state(worldId) { const value = (await rpc('godotSnapshot')).state; assert.equal(value?.format, 'craftmine.godot-progress/1'); assert.equal(value.worldId, worldId); return value; }
 /** Progress is sampled between rounds; a transient runtime transition is kept as
  * an error record rather than silently replacing the comparison. */
@@ -200,7 +207,7 @@ try {
       // the progress comparison made after it. Only the last round is never enough.
       for (let round = 0; round < MAX_ROUNDS; round++) {
       const admissionStart = relay.snapshot().attempts.length;
-      const submitted = await step(round ? 'continue unfinished request in the same world' : 'submit fixed reconstructed request once', () => p8(round ? 'continue' : 'submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
+      const submitted = await step(round ? 'continue unfinished request in the same world' : correctiveFeedback ? 'submit reconstructed request with recorded prior-run feedback' : 'submit fixed reconstructed request once', () => p8(round ? 'continue' : 'submit', caseId, !round && correctiveFeedback ? {feedback:correctiveFeedback.feedback} : {})); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
       const stopBinding = { caseId, turnId: submitted.turnId, sessionId: binding.sessionId };
       fs.writeFileSync(path.join(out, 'control.json'), JSON.stringify({ format: 'craftmine.p8-control/1', runId, caseId, stopFile: stopControl.file, runStopFile: stopControl.runFile, turnId: submitted.turnId, sessionId: binding.sessionId, request: { format: 'craftmine.p8-stop/1', action: 'abort', caseId, turnId: submitted.turnId }, runRequest: { format: 'craftmine.p8-run-stop/1', action: 'abort', caseId, runId } }, null, 2));
       const final = await step('real task reaches a durable terminal state', () => until(async () => {
@@ -289,7 +296,7 @@ try {
   const savedCases = report.cases.filter(item => item.saved);
   if (savedCases.length && !report.stopped && !stopControl.requested) {
     await start(); await controllerReady();
-    for (const item of savedCases) { currentCase = item.caseId; await until(() => nav('world.list'), value => !!value.activeWorldId, 'restart selection'); await until(() => rpc('worldNavigationReady'), value => value.ready, 'restart initial navigation'); await nav('world.open', { id: item.worldId }); await loaded(item.worldId);
+    for (const item of savedCases) { currentCase = item.caseId; await until(() => nav('world.list'), value => !!value.activeWorldId, 'restart selection'); await until(navigationReady, value => value.ready, 'restart initial navigation'); await nav('world.open', { id: item.worldId }); await loaded(item.worldId);
       await p8('initialize', item.caseId, { worldId: item.worldId });
       await step('complete saved state and durable task metrics survive restart', async () => { assert.deepEqual(await state(item.worldId), item.saved); const latest = await p8('snapshot', item.caseId); const { observedAtMs: beforeTime, ...before } = item.metrics, { observedAtMs: afterTime, ...after } = latest.metrics; assert.deepEqual(after, before); assert.deepEqual(sourceEvidence(item.worldId, item.candidate.buildId), item.source); item.restart = { passed: true, observedAtMs: afterTime }; });
     }

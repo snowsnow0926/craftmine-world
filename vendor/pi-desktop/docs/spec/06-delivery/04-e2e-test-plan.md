@@ -9378,3 +9378,15 @@ environment with the production filter: only the built-in broker gets a policy
 bit in a validated headless dated P8 phase. Ordinary callers, other plugins,
 forged parent policy bits, arbitrary limits and review-limit parameters remain
 refused. No provider or relay credential enters the plugin process.
+
+
+### CM-COMP-09: corrective runs preserve failed evidence
+
+Link a closed prior synthetic run by report hash and run ID. Submit the original
+case prompt plus bounded, recorded operator feedback in a fresh world and ledger.
+Refuse a mismatched case, open prior process, unknown format and oversized feedback.
+Keep the old failure and source unchanged. Mark the new run as corrective.
+Scan ordinary pickup bearings around the whole spawn circle, including behind the
+player; a missing pickup remains unverified. Preserve the adjacent attack pair
+and capture later impacts with actual timestamps. On reopen, tolerate only the
+exact transient world-panel-not-ready reply under the existing deadline.

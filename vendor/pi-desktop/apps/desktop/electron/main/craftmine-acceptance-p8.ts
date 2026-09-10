@@ -12,6 +12,11 @@ export const P8_PROMPTS = {
   dog: "这是新的隔离俯视村落测试世界；下面是重建需求，不是原玩家提示。请真正用当前Godot工程工具增加一只明显可见的小狗，稳定ID为p8-dog，在玩家出生点附近；在有限距离内跟随玩家，走远后停止追赶，接近交互时显示一句狗狗对白。保留地图、已有角色、任务、背包、钱物和所有旧进度字段。请先读当前底座规范及相关工程文件，沿实际工具读写、构建、检查反馈修正；不能用旧体素world JSON代替Godot源码，不要只说能做到。小狗可用项目内绘制或几何制作，不需要外部资产下载。不要加入测试专用接口、伪造观察值或为了检查清空旧进度。只完成这个有限功能，实际发起Godot检查并读取结果，通过后保留未采用候选等待玩家确认；明确给出候选ID、真实所在位置、跟随范围与普通交互操作，不要宣称已正式采用。",
 } as const;
 type CaseId = keyof typeof P8_PROMPTS;
+export function p8SubmissionContent(caseId: CaseId, feedback?: unknown): string {
+  if (feedback === undefined) return P8_PROMPTS[caseId];
+  if (typeof feedback !== "string" || !feedback.trim() || feedback.length > 12000) throw Error("P8_INVALID_FEEDBACK");
+  return P8_PROMPTS[caseId] + "\n\n以下是总控对上一轮真实源码和玩法的验收反馈。本轮是带反馈的重新验收，不代表上一轮通过。请修复这些实际问题并重新验证；不要改观察协议、加入测试接口或伪造结果。\n" + feedback;
+}
 /** The native task budget this authorized phase requires: no request and no
  *  cumulative-token boundary. Main must propagate exactly this value into the
  *  crafting runtime; without it the product default (80 requests) stays in
@@ -87,7 +92,9 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
   return async (method: unknown, payload: unknown): Promise<any> => {
     if (!access.enabled || env.CRAFTMINE_P8_NATIVE !== "1") throw Error("P8_NOT_ENABLED");
     if (!record(payload) || !["hammer", "dog"].includes(payload.caseId) || typeof method !== "string" || !["initialize", "submit", "continue", "snapshot", "abort", "exercise"].includes(method)
-      || Object.keys(payload).some(key => !["caseId", ...(method === "initialize" ? ["worldId"] : [])].includes(key))) throw Error("P8_INVALID_REQUEST");
+      || Object.keys(payload).some(key => !["caseId", ...(method === "initialize" ? ["worldId"] : []), ...(method === "submit" ? ["feedback"] : [])].includes(key))) throw Error("P8_INVALID_REQUEST");
+    if (payload.feedback !== undefined && !p8AuthorizedBudget(env)) throw Error("P8_FEEDBACK_AUTHORIZATION_REQUIRED");
+    const submittedContent = method === "submit" ? p8SubmissionContent(payload.caseId as CaseId, payload.feedback) : null;
     if (busy) throw Error("P8_BUSY");
     busy = true;
     try {
@@ -140,7 +147,7 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
       if (method === "submit") {
         if (binding.submitted) throw Error("P8_ALREADY_SUBMITTED");
         await choose(binding); binding.submitted = true;
-        return desktop(`piDesktop.invoke(piDesktop.channels.invoke.agentPrompt,${JSON.stringify({ sessionId: binding.sessionId, viewingSessionId: binding.sessionId, messageId: randomUUID(), content: P8_PROMPTS[caseId] })})`);
+        return desktop(`piDesktop.invoke(piDesktop.channels.invoke.agentPrompt,${JSON.stringify({ sessionId: binding.sessionId, viewingSessionId: binding.sessionId, messageId: randomUUID(), content: submittedContent })})`);
       }
       if (method === "continue") {
         if (!binding.submitted || access.active(binding.sessionId)) throw Error("P8_CONTINUE_TERMINAL_REQUIRED");

@@ -15,7 +15,7 @@ import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance.
 // moved into a window whose timing has to be measured.
 //
 // Hammer plan
-//   resume → pickup scan over three pitches by three headings at two distances,
+//   resume → pickup scan over eight pitches by sixteen headings at two distances,
 //   interacting each time (bounded, stops early on a real pickup) → equip
 //   thunder_hammer → look at the training target → two adjacent attacks with no
 //   capture between them → wait → attack again → walk in and keep attacking.
@@ -98,12 +98,12 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     // Bounded pickup scan. A negative pitch looks down (the aim ray is the camera's
     // -Z, so pitch_pivot.rotation.x > 0 looks up), and these pitches form a ladder
     // whose rays meet the ground between about 0.7 m and 3.6 m, which is where an
-    // ordinary pickup near the spawn can be. Three headings cover the forward arc,
+    // ordinary pickup near the spawn can be. Sixteen headings cover the full circle,
     // and the whole scan repeats one walk further out. It stops as soon as the
     // hammer is really carried. The driver cannot aim at every point in the world,
     // so a scan that never points at an interactable is reported as untested rather
     // than as a product failure.
-    const yaws = [0, 0.6, -0.6], pitches = [-1.15, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.42];
+    const yaws = Array.from({length: 16}, (_, i) => (i <= 8 ? i : i - 16) * Math.PI / 8), pitches = [-1.15, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.42];
     let picked = false, scanned = 0;
     for (const leg of [0, 1]) {
       if (picked) break;
@@ -126,16 +126,19 @@ export async function exerciseP8Gameplay(access: GodotGameplayAccess, caseId: "h
     // commands is the real one. Frames are taken on later attacks only.
     await act("fire", {});
     await act("fire", {});
-    await act("wait", { frames: 66 });
+    await act("wait", { frames: 90 });
     await act("fire", {}, true);
     await act("wait", { frames: 12 });
     await act("fire", {}, true);
     // Close the distance to the training target and keep attacking.
     await act("walk", { forward: 1, frames: 150 });
-    await act("fire", {});
+    await act("wait", { frames: 90 });
+    await act("fire", {}, true);
     await act("walk", { forward: 1, frames: 45 });
-    await act("fire", {});
+    await act("wait", { frames: 90 });
+    await act("fire", {}, true);
     await act("walk", { forward: 1, frames: 45 });
+    await act("wait", { frames: 90 });
     await act("fire", {}, true);
   } else {
     await act("resume", {}, true);

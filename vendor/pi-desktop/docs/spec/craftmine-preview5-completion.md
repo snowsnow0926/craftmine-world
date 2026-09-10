@@ -35,6 +35,30 @@ Run `node desktop/build-world-plugin.mjs`, then use
 `node --experimental-transform-types --test tests/player-feedback/P8/host-budget-route.test.mjs`
 with `CRAFTMINE_CORE_BIN` set to the built binary and TEMP/TMP on the evidence drive.
 
+### Preview 7: explicit corrective acceptance
+
+Both preview 6 real model runs generated checked and adopted source, with actual
+captures and preserved progress. The hammer saved and reopened, but its generated
+definition assigned a PackedScene to a Mesh field; its pickup was behind the
+spawn and outside the driver's forward scan. The generated dog moved a child
+body separately from its outer visual/interaction entity and did not implement
+the ordinary NPC talk path. These are recorded failures, not accepted gameplay.
+The dog additionally hit a transient world-panel readiness error during reopen.
+
+The private P8 submit path can now append bounded operator feedback only in the
+already authorized dated headless phase. Original prompt text remains unchanged.
+A corrective run records its feedback file/hash, prior report/hash and prior run
+ID, uses a fresh synthetic world and ledger, and cannot rewrite the prior report
+or its generated source. Its outcome must be labelled a corrective rerun.
+
+The fixed pickup scan now covers sixteen headings over the full circle, still
+bounded to eight pitches at two distances. It does not teleport or set inventory.
+Walk-in attacks get normal wait commands and actual frames so effects on impact
+can be reviewed. The initial adjacent attack pair remains uncaptured to preserve
+its measured timing. No gameplay failure or missing evidence is promoted to a
+pass. Reopen navigation waits retry only the exact transient panel-not-ready
+error; other errors and the existing deadline remain failures.
+
 ## Actual offscreen frame capture
 
 A detached WebContentsView can report `isPainting() === true` but repeatedly
