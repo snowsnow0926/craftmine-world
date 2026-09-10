@@ -34,7 +34,19 @@ export async function requireRestoreConflict({restore, inspect, readSelection, r
   assert.match(grant.expectedCurrentHash, /^[a-f0-9]{64}$/);
   assert.equal(typeof grant.grantId, 'string');
   const wrongHash = (grant.expectedCurrentHash === '0'.repeat(64) ? '1' : '0').repeat(64);
-  await assert.rejects(restore({operationId, grantId: grant.grantId, expectedCurrentHash: wrongHash}), error => error.message === 'BACKUP_CURRENT_HASH_CONFLICT');
+  await assert.rejects(restore({operationId, grantId: grant.grantId, expectedCurrentHash: wrongHash}), error => {
+    // The actual renderer-to-main IPC serializes this finite product error.
+    // Accept only its observed wrapper, never a substring in another failure.
+    let message = error?.message;
+    if (typeof message !== 'string' || message.length > 256) return false;
+    if (message.startsWith('Error: ')) message = message.slice(7);
+    const prefix = "Error invoking remote method 'pi-plugin-panel-invoke': ";
+    if (message.startsWith(prefix)) {
+      message = message.slice(prefix.length);
+      if (message.startsWith('Error: ')) message = message.slice(7);
+    }
+    return message === 'BACKUP_CURRENT_HASH_CONFLICT';
+  });
   assert.equal(await readSelection(), expectedSelection);
   const comparison = compare(expectedProgress, await readProgress());
   assert.equal(comparison.equal, true, JSON.stringify(comparison.differences));

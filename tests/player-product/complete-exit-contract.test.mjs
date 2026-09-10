@@ -49,7 +49,10 @@ function fixture(error='BACKUP_CURRENT_HASH_CONFLICT'){
 }
 test('CAS fault requires exact production error and reinspection for a new grant',async()=>{
  const result=await requireRestoreConflict(fixture());assert.equal(result.grant.grantId,'fresh');assert.equal(result.fault.code,'BACKUP_CURRENT_HASH_CONFLICT');
- for(const code of ['Timed out: worldPanel','BACKUP_OPERATION_FAILED','BACKUP_LIFECYCLE_RECOVERY_FAILED'])await assert.rejects(requireRestoreConflict(fixture(code)));
+ for(const code of ['Error: BACKUP_CURRENT_HASH_CONFLICT',"Error invoking remote method 'pi-plugin-panel-invoke': Error: BACKUP_CURRENT_HASH_CONFLICT","Error: Error invoking remote method 'pi-plugin-panel-invoke': Error: BACKUP_CURRENT_HASH_CONFLICT"]){
+  const wrapped=await requireRestoreConflict(fixture(code));assert.equal(wrapped.grant.grantId,'fresh');
+ }
+ for(const code of ['Timed out: worldPanel','BACKUP_OPERATION_FAILED','BACKUP_LIFECYCLE_RECOVERY_FAILED','Timed out: BACKUP_CURRENT_HASH_CONFLICT','BACKUP_CURRENT_HASH_CONFLICT_EXTRA',"Error invoking remote method 'other-channel': Error: BACKUP_CURRENT_HASH_CONFLICT",'BACKUP_CURRENT_HASH_CONFLICT\ntransport failure'])await assert.rejects(requireRestoreConflict(fixture(code)));
 });
 test('CAS fault cannot pass on changed selection or any changed persistent field',async()=>{
  await assert.rejects(requireRestoreConflict({...fixture(),readSelection:async()=>'other'}));

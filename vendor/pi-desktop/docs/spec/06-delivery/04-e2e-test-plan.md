@@ -8972,3 +8972,8 @@ Hold the runtime factory before it returns any instance. Request disposal and ve
 ### CRAFTMINE-COMPLETE-PACKAGE-SHUTDOWN-001
 
 Run the fresh sealed Windows comprehensive client with REUSE/COPY/BACKUP enabled and an absolute ordinary CRAFTMINE_TEST_OUTPUT_ROOT. Require every actual exit audit to contain empty shutdownFailures in addition to zero exit, no forced stop, no input violations and no page errors. Persist finalizer failures and finishedAt. Require a real wrong-current-hash portable restore rejection with exact BACKUP_CURRENT_HASH_CONFLICT, unchanged selection/build/full progress, fresh reinspection and successful restore/restart. Keep historical recovery-fault reports separate. Commands and evidence limits: [complete package acceptance](complete-package-shutdown-acceptance.md).
+
+
+## 2026-09-10 — Complete-client restore conflict IPC wrapper
+
+The actual ae32974 package returned the expected stale-backup error through Electron IPC after 50 passed steps. The old exact raw-message assertion failed; normal restore was not reached. Preserve that failed run. The helper now recognizes only the exact observed panel channel wrapper and finite conflict code; timeouts, unrelated channels and extra text remain failures. Unit validation: `node --test tests/player-product/complete-exit-contract.test.mjs` (7 tests). Actual-client acceptance must be a separate new run. See `complete-ipc-conflict-recognition.md`.
