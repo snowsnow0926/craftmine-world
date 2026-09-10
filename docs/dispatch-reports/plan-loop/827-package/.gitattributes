@@ -1,0 +1,2 @@
+# Acceptance artifacts retain their original bytes across checkouts.
+raw/** -text

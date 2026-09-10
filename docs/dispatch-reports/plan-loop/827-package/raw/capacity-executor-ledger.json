@@ -1,0 +1,185 @@
+{
+  "format": "craftmine.godot-executor-ledger/1",
+  "executorId": "craftmine-windows-broker-v1",
+  "updatedAt": "2026-09-10T03:47:34.989Z",
+  "jobs": {
+    "gjob-6be71da7a8baa744c4506adf6a2e036ea5113dca9c51d04a638ec8c2ab7e7fe5": {
+      "jobId": "gjob-6be71da7a8baa744c4506adf6a2e036ea5113dca9c51d04a638ec8c2ab7e7fe5",
+      "worldId": "world-b5acaa9e6af0",
+      "mode": "check",
+      "importCrashRetries": 0,
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-237e4adfc36a4b7dbb579173",
+          "operation": "import",
+          "startedAt": "2026-09-10T03:45:04.936Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:45:10.000Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-1ee814571a104617b9d5640c",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T03:45:10.003Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:45:15.462Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "startedAt": "2026-09-10T03:45:04.934Z",
+      "finishedAt": "2026-09-10T03:45:23.978Z",
+      "outcome": "passed",
+      "reason": null
+    },
+    "gjob-7fa4180fb7202d0309734ade7abb15946ab63ae13de2fe911a7f30a7d4066bae": {
+      "jobId": "gjob-7fa4180fb7202d0309734ade7abb15946ab63ae13de2fe911a7f30a7d4066bae",
+      "worldId": "world-462207c1b725",
+      "mode": "check",
+      "importCrashRetries": 0,
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-980e25d8a39441f8a5872036",
+          "operation": "import",
+          "startedAt": "2026-09-10T03:45:30.573Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:45:36.729Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-f0b8a92aa083409ca9d60f9c",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T03:45:36.761Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:45:45.483Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "startedAt": "2026-09-10T03:45:30.549Z",
+      "finishedAt": "2026-09-10T03:45:47.733Z",
+      "outcome": "passed",
+      "reason": null
+    },
+    "gjob-c6cc9a1c970356c8fd1df8a2980d971cbcb8d2373bf0323c6d010043d2f3e018": {
+      "jobId": "gjob-c6cc9a1c970356c8fd1df8a2980d971cbcb8d2373bf0323c6d010043d2f3e018",
+      "worldId": "world-95bbb990a5e8",
+      "mode": "check",
+      "importCrashRetries": 0,
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-ae5eb15d0c1a44558bb326be",
+          "operation": "import",
+          "startedAt": "2026-09-10T03:46:05.954Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:46:13.370Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-a2025e654ac84a11979bb3ba",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T03:46:13.380Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:46:18.972Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "startedAt": "2026-09-10T03:46:05.852Z",
+      "finishedAt": "2026-09-10T03:46:20.550Z",
+      "outcome": "passed",
+      "reason": null
+    },
+    "gjob-969628563b3dd013a28548bd949ee1fe7378529d95b012013eb86c9de9d30c32": {
+      "jobId": "gjob-969628563b3dd013a28548bd949ee1fe7378529d95b012013eb86c9de9d30c32",
+      "worldId": "world-6bf1fd14750e",
+      "mode": "check",
+      "importCrashRetries": 0,
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-5af75101d273464385fd1dea",
+          "operation": "import",
+          "startedAt": "2026-09-10T03:46:40.894Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:46:46.132Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-139a5489a3de420b8a4ffe29",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T03:46:46.180Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T03:46:51.690Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "startedAt": "2026-09-10T03:46:40.826Z",
+      "finishedAt": "2026-09-10T03:46:53.335Z",
+      "outcome": "passed",
+      "reason": null
+    },
+    "gjob-0793bbc7ae0d2f8c1f10981dd4384a6a6a71392239a27c3cfa42e5ecff756368": {
+      "jobId": "gjob-0793bbc7ae0d2f8c1f10981dd4384a6a6a71392239a27c3cfa42e5ecff756368",
+      "worldId": "world-cd885fcf9c1e",
+      "mode": "check",
+      "state": "failed",
+      "attempts": [
+        {
+          "requestId": "im-2a4864c1dda54d3ba3248315",
+          "operation": "import",
+          "startedAt": "2026-09-10T03:47:34.812Z",
+          "outcome": "no-final-receipt:failed",
+          "transport": "failed",
+          "recovery": {
+            "trigger": "broker-exit",
+            "ok": true,
+            "parseError": null,
+            "reclaimed": [],
+            "skipped": 0,
+            "unreadable": 0
+          },
+          "finishedAt": "2026-09-10T03:47:34.986Z",
+          "journalRetired": false,
+          "failure": {
+            "exitCode": 1,
+            "engineExitCode": null,
+            "error": "磁盘空间不足。 (os error 112)",
+            "parseError": null,
+            "cleanup": null,
+            "resources": null,
+            "stderr": "BROKER_ERROR: 磁盘空间不足。 (os error 112)\n"
+          }
+        }
+      ],
+      "startedAt": "2026-09-10T03:47:34.810Z",
+      "finishedAt": "2026-09-10T03:47:34.989Z",
+      "outcome": "failed",
+      "reason": "GODOT_BROKER_PREPARATION_FAILED"
+    }
+  }
+}

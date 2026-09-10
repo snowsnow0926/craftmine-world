@@ -1,0 +1,71 @@
+{
+  "format": "craftmine.packaged-checkpoint/1",
+  "source": {
+    "commit": "8276b4540289c0d397c382dff2123edfe1861d42",
+    "runSha256": "72c8ff9eef6706b089b56273e89d43d307bdf5bf32fea38a3067e8c6f0aa5f4c",
+    "releaseSealSha256": "e3e4d3387f71aaf71613696998dd13c0a68422c81f72945cd8bd12a47636e03f",
+    "packageEvidenceSha256": "24e7b58dace8de38b8eb50ff36374e46ce5784d58aaed9be867a7cabd57e8e99",
+    "buildManifestSha256": "c963dba1632ce9fc5a9c4d0a6682e680643598dcdf298939fb204c9fe4b9f73b",
+    "sourceArchiveHash": "962c308d3d752b200ee508729459e1322269cf11a2a2aa47210ec6833fb872e3",
+    "payloadDigest": "6f1b8635c8f3c6a15c33ac619d5881726ea5c1a50f234ae880339b717c67bdfd"
+  },
+  "delivery": "C:/cm-plan-next-20260910/desktop/build/releases/8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6/delivery",
+  "releaseGate": "local-functional-acceptance-passed-real-model-not-run",
+  "entries": [
+    {
+      "path": "raw/complete.json",
+      "bytes": 4167578,
+      "sha256": "80a510870f6aec7d828376614cb54f40395de075decbabe94bb7a642c79a78e4",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\complete\\report.json",
+      "passed": true
+    },
+    {
+      "path": "raw/parameters.json",
+      "bytes": 152661,
+      "sha256": "f7b8c509f95ee19d9d041114b2b7d024aecb4d3f98e48a499e6dbed02468a385",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\parameters\\report.json",
+      "passed": true
+    },
+    {
+      "path": "raw/issues.json",
+      "bytes": 72325,
+      "sha256": "59f10123b423115d1ab84320beb084fb68aedd89320f221d45e0c4947fb39d95",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\issues\\report.json",
+      "passed": true
+    },
+    {
+      "path": "raw/history.json",
+      "bytes": 202011,
+      "sha256": "37891b058f62cd82912fefc119db2c9f3d0d84451da4aea78bfe4710c5494295",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\history\\report.json",
+      "passed": true
+    },
+    {
+      "path": "raw/export.json",
+      "bytes": 471353,
+      "sha256": "2cdae938f205783f052b15736434dc1b8b440a6758690e9b783368e1f37450cc",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\export\\report.json",
+      "passed": true
+    },
+    {
+      "path": "raw/longPath.json",
+      "bytes": 28168,
+      "sha256": "32c6db991c6a79aa13d233fe8a568c1d9995b475e2d795f75c447d9306001bc2",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\longPath\\report.json",
+      "passed": true
+    },
+    {
+      "path": "raw/capacityInterrupted.json",
+      "bytes": 2875221,
+      "sha256": "a09cd461f08d03514b93a3f7901b5377807d5c395063d4f554dc8e565f4bd2e1",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\capacityInterrupted\\report.json",
+      "passed": false
+    },
+    {
+      "path": "raw/capacity-executor-ledger.json",
+      "bytes": 6311,
+      "sha256": "284a7047f0099535a2fd066c97ad50f97fa0621d6994eb760e88efe1b5462288",
+      "source": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\delivery\\acceptance\\capacityInterrupted\\executor-ledger.json"
+    }
+  ]
+}

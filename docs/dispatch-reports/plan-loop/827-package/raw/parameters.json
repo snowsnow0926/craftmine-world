@@ -1,0 +1,5617 @@
+{
+  "format": "craftmine.target-feedback-client/1",
+  "passed": true,
+  "root": "C:\\cm-pp2-package-20260910",
+  "runtime": null,
+  "out": "C:\\cm-pp2-package-20260910\\test-results\\desktop-native-parameters-Oi57TM",
+  "commit": "8276b4540289c0d397c382dff2123edfe1861d42",
+  "mode": "packaged",
+  "mainSha256": "fd9dc9d821d531bac152ad677b8a7ac48c2b29dc9f2734f5dbe3c89873ad8ccd",
+  "pluginSha256": "055b04fc070294ba18fa765d4fd4d7b3ff5aa60770fc5940cdcdc8a7eefcd8c6",
+  "steps": [
+    {
+      "name": "create actual first-person parameter world",
+      "passed": true,
+      "value": {
+        "id": "world-91da8b1e286a",
+        "title": "Training target parameter acceptance"
+      }
+    },
+    {
+      "name": "real broker check and baseline runtime parameter",
+      "passed": true,
+      "value": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "f8bd0562bf40168f085f2908",
+        "payload": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0,
+              1.59999990463257,
+              6
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.239999994635582,
+              1.39999985694885,
+              5.57999992370605
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T03:46:27Z",
+        "worldId": "world-91da8b1e286a"
+      }
+    },
+    {
+      "name": "real library guide is optional, keeps game chrome fixed and uses existing navigation",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "collapsed": true,
+        "steps": 6,
+        "insideWorkbench": true,
+        "headerHeight": 46,
+        "expanded": true,
+        "headerUnchanged": true,
+        "checksVisible": true,
+        "clearedAfterNavigation": true,
+        "reopenedCollapsed": true,
+        "clearedAfterWorld": true
+      }
+    },
+    {
+      "name": "actual gameplay and checkpoint before editing source defaults",
+      "passed": true,
+      "value": {
+        "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+        "contentHash": "b07b3db01661d3d739301ad405a91d810fd945d199904570af8e63463a5ebf7b",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "f8bd0562bf40168f085f2908",
+        "persistedAt": 1789012000943,
+        "revision": 2,
+        "snapshotHash": "bc7c09a3c73b287fe22b7e40039b96e006b6509e0d9af321ccd5e26a7dd09023",
+        "snapshotSha256": "7c0f068a7284dfa8da58002e24af80592652037c8039a716effa50e82d972259",
+        "worldId": "world-91da8b1e286a"
+      }
+    },
+    {
+      "name": "finite panel reads actual formal target configuration",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+        "targets": [
+          {
+            "targetId": "target_a",
+            "label": "TargetA",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-91da8b1e286a",
+              "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+              "contentOid": "443b229016b6b42ffd06a89e5da4a6f1045a2c0e",
+              "revision": 1,
+              "manifestHash": "3c794db916073d4e8a40f5f9265d946b710e4c42737dccb70704bcfb466ad5f7",
+              "targetId": "target_a",
+              "targetHash": "8bd511c117ac65b280ea95e971f44851c5ab69aa9cf12fb2db35d0a430f52cec"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          },
+          {
+            "targetId": "target_b",
+            "label": "TargetB",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-91da8b1e286a",
+              "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+              "contentOid": "443b229016b6b42ffd06a89e5da4a6f1045a2c0e",
+              "revision": 1,
+              "manifestHash": "3c794db916073d4e8a40f5f9265d946b710e4c42737dccb70704bcfb466ad5f7",
+              "targetId": "target_b",
+              "targetHash": "1d520817cb8684a6929a90fdbf1aa9d84e7f8eca7f9a40fc033766b897e51d7f"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          },
+          {
+            "targetId": "target_c",
+            "label": "TargetC",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-91da8b1e286a",
+              "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+              "contentOid": "443b229016b6b42ffd06a89e5da4a6f1045a2c0e",
+              "revision": 1,
+              "manifestHash": "3c794db916073d4e8a40f5f9265d946b710e4c42737dccb70704bcfb466ad5f7",
+              "targetId": "target_c",
+              "targetHash": "e58ff88affb75055c410b90155b4144bf9132169bacc60615e087a6b43733d65"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          }
+        ],
+        "unsupportedCount": 0
+      }
+    },
+    {
+      "name": "zero milliseconds is refused before preparing an operation",
+      "passed": true,
+      "value": {
+        "rejected": true
+      }
+    },
+    {
+      "name": "persist original adjustment intent in existing workbench journal",
+      "passed": true,
+      "value": {
+        "operationId": "a61517e0-3bac-4e7d-97aa-721786bb12be",
+        "channel": "targetFeedback.submit",
+        "payload": {
+          "sourceBinding": {
+            "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+            "contentOid": "443b229016b6b42ffd06a89e5da4a6f1045a2c0e",
+            "format": "craftmine.target-feedback-source/1",
+            "manifestHash": "3c794db916073d4e8a40f5f9265d946b710e4c42737dccb70704bcfb466ad5f7",
+            "revision": 1,
+            "targetHash": "8bd511c117ac65b280ea95e971f44851c5ab69aa9cf12fb2db35d0a430f52cec",
+            "targetId": "target_a",
+            "worldId": "world-91da8b1e286a"
+          },
+          "targetId": "target_a",
+          "values": {
+            "hitFlashMilliseconds": 500
+          }
+        },
+        "state": "pending",
+        "createdAt": 1789012005852
+      }
+    },
+    {
+      "name": "one product submission creates one source draft and real check",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "operationId": "a61517e0-3bac-4e7d-97aa-721786bb12be",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-3ae76d94d18e89348c3cce599a382e7dc838e1760dd714eb177af9cdead8ab5d",
+          "status": "queued",
+          "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081"
+        },
+        "source": {
+          "revision": 2,
+          "manifestHash": "59a8c795f6302cb891ccc4597b370bfd29316a26567f1ffb7395d10d10b02d3f"
+        }
+      }
+    },
+    {
+      "name": "repeat panel request replays the original check receipt",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "operationId": "a61517e0-3bac-4e7d-97aa-721786bb12be",
+        "status": "check-queued",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-3ae76d94d18e89348c3cce599a382e7dc838e1760dd714eb177af9cdead8ab5d",
+          "status": "queued",
+          "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081"
+        },
+        "source": {
+          "revision": 2,
+          "manifestHash": "59a8c795f6302cb891ccc4597b370bfd29316a26567f1ffb7395d10d10b02d3f"
+        }
+      }
+    },
+    {
+      "name": "actual parameter check passes and returns its exact candidate",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "operationId": "a61517e0-3bac-4e7d-97aa-721786bb12be",
+        "status": "passed",
+        "applied": false,
+        "draftRetained": true,
+        "job": {
+          "jobId": "gjob-3ae76d94d18e89348c3cce599a382e7dc838e1760dd714eb177af9cdead8ab5d",
+          "status": "passed",
+          "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+          "candidateId": "gcan-ee0e4b94cb5c1783fb4943e83954d9c80b34a7ebce96d692a82805ec9e2ad3a8"
+        },
+        "source": {
+          "revision": 2,
+          "manifestHash": "59a8c795f6302cb891ccc4597b370bfd29316a26567f1ffb7395d10d10b02d3f"
+        }
+      }
+    },
+    {
+      "name": "candidate identity and required runtime values bind the same world, build and check job",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "candidateId": "gcan-ee0e4b94cb5c1783fb4943e83954d9c80b34a7ebce96d692a82805ec9e2ad3a8",
+        "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+        "checkJobId": "gjob-3ae76d94d18e89348c3cce599a382e7dc838e1760dd714eb177af9cdead8ab5d",
+        "requirementsEvidence": {
+          "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+          "format": "craftmine.godot-check-requirements-evidence/1",
+          "instanceId": "2d159ca83aa1efcea7a5481f",
+          "jobId": "gjob-3ae76d94d18e89348c3cce599a382e7dc838e1760dd714eb177af9cdead8ab5d",
+          "observations": [
+            {
+              "hitFlashMilliseconds": 500,
+              "phase": "loaded",
+              "targetId": "target_a"
+            },
+            {
+              "hitFlashMilliseconds": 500,
+              "phase": "running",
+              "targetId": "target_a"
+            }
+          ],
+          "requirementsHash": "8c7bd348e284f6f0652286f43d31ccc03e2ef81b330549ce27051379130bb240",
+          "worldId": "world-91da8b1e286a"
+        },
+        "assertion": {
+          "detail": "runtime expectation evidence required",
+          "id": "runtime.target-feedback",
+          "passed": true
+        }
+      }
+    },
+    {
+      "name": "candidate preview and close retain original formal defaults and gameplay",
+      "passed": true,
+      "value": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "f8bd0562bf40168f085f2908",
+        "payload": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T03:47:14Z",
+        "worldId": "world-91da8b1e286a"
+      }
+    },
+    {
+      "name": "first shutdown keeps checked draft without adopting it",
+      "passed": true,
+      "value": {
+        "at": "2026-09-10T03:45:47.729Z",
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "error": null
+        }
+      }
+    },
+    {
+      "name": "restart restores pending original operation and original formal runtime",
+      "passed": true,
+      "value": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "f056caa612918e465ff6915e",
+        "payload": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T03:47:28Z",
+        "worldId": "world-91da8b1e286a"
+      }
+    },
+    {
+      "name": "adopt exact checked parameter candidate",
+      "passed": true,
+      "value": {
+        "status": "applied",
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "a3237ed5d7bf74dd46165f91",
+          "payload": {
+            "aim": {
+              "collider": "Floor",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                4.72290277481079,
+                4.4703483581543e-8,
+                -9.26786231994629
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                1,
+                1,
+                1,
+                0.920000016689301
+              ],
+              "cooldownRatio": 0,
+              "drawn": true,
+              "enabledForEquipment": true,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [
+                {
+                  "from": [
+                    590,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    597,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    603,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    610,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    390
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    397
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    403
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    410
+                  ]
+                }
+              ],
+              "shape": 0,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": true
+            },
+            "display": {
+              "alignedWithCamera": true,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.0206519551575184,
+                1.5965029001236,
+                5.93323802947998
+              ],
+              "forwardDot": 1.00000011920929,
+              "global": [
+                0.367530554533005,
+                1.35557198524475,
+                5.62400102615356
+              ],
+              "local": [
+                0.239999994635582,
+                -0.200000002980232,
+                -0.419999986886978
+              ],
+              "meshPath": "res://assets/meshes/weapon_pistol.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "pistol",
+              "attackMode": "RANGED",
+              "blockReason": "",
+              "capacity": 6,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.35,
+              "crosshairVisible": true,
+              "damage": 12,
+              "displayName": "Service pistol",
+              "magazine": 6,
+              "reloading": false,
+              "reserve": 12
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "6 / 6   reserve 12",
+              "equipment": "Service pistol  ·  RANGED",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 500,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:47:31Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      }
+    },
+    {
+      "name": "formal source agrees with live runtime and preserves other target defaults",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+        "targets": [
+          {
+            "targetId": "target_a",
+            "label": "TargetA",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-91da8b1e286a",
+              "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+              "contentOid": "ed34111bcf07b75ad8304044351794d2757a20d7",
+              "revision": 2,
+              "manifestHash": "59a8c795f6302cb891ccc4597b370bfd29316a26567f1ffb7395d10d10b02d3f",
+              "targetId": "target_a",
+              "targetHash": "0e2c1ea394eabb5de0a5ee55015150ec61711b277d447bb8da8069c4ff28e8e3"
+            },
+            "values": {
+              "hitFlashMilliseconds": 500
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          },
+          {
+            "targetId": "target_b",
+            "label": "TargetB",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-91da8b1e286a",
+              "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+              "contentOid": "ed34111bcf07b75ad8304044351794d2757a20d7",
+              "revision": 2,
+              "manifestHash": "59a8c795f6302cb891ccc4597b370bfd29316a26567f1ffb7395d10d10b02d3f",
+              "targetId": "target_b",
+              "targetHash": "0c9b2b499129d9a988c49a505c4a9c70ba126433358e2e8a7dae42a59b36d9cf"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          },
+          {
+            "targetId": "target_c",
+            "label": "TargetC",
+            "sourceBinding": {
+              "format": "craftmine.target-feedback-source/1",
+              "worldId": "world-91da8b1e286a",
+              "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+              "contentOid": "ed34111bcf07b75ad8304044351794d2757a20d7",
+              "revision": 2,
+              "manifestHash": "59a8c795f6302cb891ccc4597b370bfd29316a26567f1ffb7395d10d10b02d3f",
+              "targetId": "target_c",
+              "targetHash": "ac0386662299852d7be91a00e9660b33bbb77fdcb5df2debf32577041ef13f5c"
+            },
+            "values": {
+              "hitFlashMilliseconds": 120
+            },
+            "configuration": {
+              "format": "craftmine.interfaces.configuration/1",
+              "contractId": "fp.target.feedback/1",
+              "baseId": "first-person",
+              "baseVersion": "0.1.0",
+              "scope": "instance",
+              "identityField": "target_id",
+              "parameters": [
+                {
+                  "id": "hitFlashMilliseconds",
+                  "label": "受击闪光时长",
+                  "type": "integer",
+                  "unit": "毫秒",
+                  "default": 120,
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              ],
+              "preview": "checked-candidate",
+              "requiredChecks": [
+                "native-load",
+                "full-progress-round-trip",
+                "target-hit-feedback"
+              ]
+            }
+          }
+        ],
+        "unsupportedCount": 0
+      }
+    },
+    {
+      "name": "stale source binding becomes a visible rejection without a write",
+      "passed": true,
+      "value": {
+        "worldId": "world-91da8b1e286a",
+        "operationId": "f0fff7f4-bb99-43ec-8ee9-7ac315771b79",
+        "status": "rejected",
+        "applied": false,
+        "draftRetained": false,
+        "job": null,
+        "reason": "TARGET_FEEDBACK_STALE_BINDING"
+      }
+    },
+    {
+      "name": "second shutdown persists adopted parameter",
+      "passed": true,
+      "value": {
+        "at": "2026-09-10T03:47:18.284Z",
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "error": null
+        }
+      }
+    },
+    {
+      "name": "second restart retains 500 milliseconds and every old gameplay field",
+      "passed": true,
+      "value": {
+        "baseId": "first-person",
+        "baseVersion": "0.1.0",
+        "buildId": "gbd-7f45964dda0978fb2861cf10ce1b6d750cf6cda1b99c5d9759582c7f6d0de081",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "b1c98b9106bc6586abe3cd6e",
+        "payload": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "surfaceSize": [
+            1200,
+            800
+          ],
+          "targetFeedback": {
+            "format": "craftmine.target-feedback-observation/1",
+            "targets": [
+              {
+                "hitFlashMilliseconds": 500,
+                "targetId": "target_a"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_b"
+              },
+              {
+                "hitFlashMilliseconds": 120,
+                "targetId": "target_c"
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-10T03:47:55Z",
+        "worldId": "world-91da8b1e286a"
+      }
+    },
+    {
+      "name": "third orderly shutdown",
+      "passed": true,
+      "value": {
+        "at": "2026-09-10T03:47:44.056Z",
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "error": null
+        }
+      }
+    }
+  ],
+  "launches": [
+    {
+      "at": "2026-09-10T03:45:47.729Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    },
+    {
+      "at": "2026-09-10T03:47:18.284Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    },
+    {
+      "at": "2026-09-10T03:47:44.056Z",
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      }
+    }
+  ],
+  "limits": [
+    "Packaged EXE and only bundled core/host/runtime; independently supplied source commit and build-manifest hash verified. ASAR parser is explicit test tooling. Installer execution, full release seal, clean OS, signing and live-model acceptance are separate.",
+    "No model prompt, credentials, OS input, Pointer Lock, visible windows, desktop captures or external report export; fixed gameplay captures only the isolated game view",
+    "Snapshot comparison retains every field including stable savedAt metadata"
+  ],
+  "packaged": "C:\\cm-plan-next-20260910\\desktop\\build\\releases\\8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6\\portable-7a6780f7-45b6-4f6d-ae5c-e670e8a898bf\\extracted",
+  "buildManifestSha256": "c963dba1632ce9fc5a9c4d0a6682e680643598dcdf298939fb204c9fe4b9f73b",
+  "sourceArchiveHash": "962c308d3d752b200ee508729459e1322269cf11a2a2aa47210ec6833fb872e3",
+  "appVersion": "0.14.3",
+  "executableSha256": "5a102c559708b1d04459b1985ca7b35819719ec4346db65219748be2876dea18",
+  "asarSha256": "33fd69d32f7c7752f4b6f38e7737cfaafbe77aec938a5b405da769f2b2154c82",
+  "coreSha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+  "hostSha256": "4587acd295b5ea9adbf11b080f7cbfb0c7aadf59e2226dc787812fde043309b3",
+  "runtimeSourceCommit": "8276b4540289c0d397c382dff2123edfe1861d42",
+  "runtimeFilesDigest": "28e0e390db227da968ed92fc52bc4922750f047cc1ccc507cb43135e7f1d8f82",
+  "worldId": "world-91da8b1e286a",
+  "baselineBuildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+  "gameplay": {
+    "before": {
+      "baseId": "first-person",
+      "baseVersion": "0.1.0",
+      "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "f8bd0562bf40168f085f2908",
+      "payload": {
+        "aim": {
+          "collider": "TargetB",
+          "hit": true,
+          "interactable": false,
+          "position": [
+            0,
+            1.59999990463257,
+            -9.80000114440918
+          ],
+          "prompt": ""
+        },
+        "base": "first-person",
+        "baseVersion": "0.1.0",
+        "crosshair": {
+          "center": [
+            600,
+            400
+          ],
+          "color": [
+            1,
+            1,
+            1,
+            0.920000016689301
+          ],
+          "cooldownRatio": 0,
+          "drawn": true,
+          "enabledForEquipment": true,
+          "globalCenter": [
+            600,
+            400
+          ],
+          "offsetFromViewportCenter": [
+            0,
+            0
+          ],
+          "segments": [
+            {
+              "from": [
+                590,
+                400
+              ],
+              "kind": "line",
+              "to": [
+                597,
+                400
+              ]
+            },
+            {
+              "from": [
+                603,
+                400
+              ],
+              "kind": "line",
+              "to": [
+                610,
+                400
+              ]
+            },
+            {
+              "from": [
+                600,
+                390
+              ],
+              "kind": "line",
+              "to": [
+                600,
+                397
+              ]
+            },
+            {
+              "from": [
+                600,
+                403
+              ],
+              "kind": "line",
+              "to": [
+                600,
+                410
+              ]
+            }
+          ],
+          "shape": 0,
+          "size": [
+            1200,
+            800
+          ],
+          "viewportCenter": [
+            600,
+            400
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "visible": true
+        },
+        "display": {
+          "alignedWithCamera": true,
+          "attachedToCamera": true,
+          "cameraGlobal": [
+            0,
+            1.59999990463257,
+            6
+          ],
+          "forwardDot": 1,
+          "global": [
+            0.239999994635582,
+            1.39999985694885,
+            5.57999992370605
+          ],
+          "local": [
+            0.239999994635582,
+            -0.200000002980232,
+            -0.419999986886978
+          ],
+          "meshPath": "res://assets/meshes/weapon_pistol.obj",
+          "visible": true
+        },
+        "equipment": {
+          "active": "pistol",
+          "attackMode": "RANGED",
+          "blockReason": "",
+          "capacity": 6,
+          "cooldownRemaining": 0,
+          "cooldownSeconds": 0.35,
+          "crosshairVisible": true,
+          "damage": 12,
+          "displayName": "Service pistol",
+          "magazine": 6,
+          "reloading": false,
+          "reserve": 12
+        },
+        "hasSave": false,
+        "hud": {
+          "ammo": "6 / 6   reserve 12",
+          "equipment": "Service pistol  ·  RANGED",
+          "inventory": "Bag: repair_kit x1",
+          "lastDamage": 0,
+          "message": "",
+          "prompt": "",
+          "quests": "Break two targets  0/2",
+          "status": "Ready"
+        },
+        "inputCaptured": false,
+        "interactables": [
+          {
+            "enabled": true,
+            "id": "AmmoCrate",
+            "usesLeft": 3
+          },
+          {
+            "enabled": true,
+            "id": "RepairKit",
+            "taken": false
+          }
+        ],
+        "inventory": {
+          "slots": [
+            {
+              "count": 1,
+              "id": "repair_kit"
+            }
+          ]
+        },
+        "levelTitle": "Training range",
+        "logicalViewportSize": [
+          1200,
+          800
+        ],
+        "persistentStorage": true,
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "quests": {
+          "quests": [
+            {
+              "count": 0,
+              "id": "range_basic",
+              "rewardGranted": false,
+              "status": 1
+            }
+          ]
+        },
+        "surfaceSize": [
+          1200,
+          800
+        ],
+        "targetFeedback": {
+          "format": "craftmine.target-feedback-observation/1",
+          "targets": [
+            {
+              "hitFlashMilliseconds": 120,
+              "targetId": "target_a"
+            },
+            {
+              "hitFlashMilliseconds": 120,
+              "targetId": "target_b"
+            },
+            {
+              "hitFlashMilliseconds": 120,
+              "targetId": "target_c"
+            }
+          ]
+        },
+        "targets": [
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_a"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_b"
+          },
+          {
+            "damageTaken": 0,
+            "destroyed": false,
+            "health": 50,
+            "hitCount": 0,
+            "id": "target_c"
+          }
+        ],
+        "viewportSize": [
+          1200,
+          800
+        ],
+        "windowSize": [
+          1200,
+          800
+        ],
+        "worldId": "world-91da8b1e286a"
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-10T03:46:39Z",
+      "worldId": "world-91da8b1e286a"
+    },
+    "actions": [
+      {
+        "op": "resume",
+        "args": {},
+        "result": {
+          "status": "ready"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "TargetB",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                0,
+                1.59999990463257,
+                -9.80000114440918
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                1,
+                1,
+                1,
+                0.920000016689301
+              ],
+              "cooldownRatio": 0,
+              "drawn": true,
+              "enabledForEquipment": true,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [
+                {
+                  "from": [
+                    590,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    597,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    603,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    610,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    390
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    397
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    403
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    410
+                  ]
+                }
+              ],
+              "shape": 0,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": true
+            },
+            "display": {
+              "alignedWithCamera": true,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0,
+                1.59999990463257,
+                6
+              ],
+              "forwardDot": 1,
+              "global": [
+                0.239999994635582,
+                1.39999985694885,
+                5.57999992370605
+              ],
+              "local": [
+                0.239999994635582,
+                -0.200000002980232,
+                -0.419999986886978
+              ],
+              "meshPath": "res://assets/meshes/weapon_pistol.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "pistol",
+              "attackMode": "RANGED",
+              "blockReason": "",
+              "capacity": 6,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.35,
+              "crosshairVisible": true,
+              "damage": 12,
+              "displayName": "Service pistol",
+              "magazine": 6,
+              "reloading": false,
+              "reserve": 12
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "6 / 6   reserve 12",
+              "equipment": "Service pistol  ·  RANGED",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:39Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "equip",
+        "args": {
+          "value": "pistol"
+        },
+        "result": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0,
+              1.59999990463257,
+              6
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.239999994635582,
+              1.39999985694885,
+              5.57999992370605
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "TargetB",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                0,
+                1.59999990463257,
+                -9.80000114440918
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                1,
+                1,
+                1,
+                0.920000016689301
+              ],
+              "cooldownRatio": 0,
+              "drawn": true,
+              "enabledForEquipment": true,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [
+                {
+                  "from": [
+                    590,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    597,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    603,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    610,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    390
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    397
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    403
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    410
+                  ]
+                }
+              ],
+              "shape": 0,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": true
+            },
+            "display": {
+              "alignedWithCamera": true,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0,
+                1.59999990463257,
+                6
+              ],
+              "forwardDot": 1,
+              "global": [
+                0.239999994635582,
+                1.39999985694885,
+                5.57999992370605
+              ],
+              "local": [
+                0.239999994635582,
+                -0.200000002980232,
+                -0.419999986886978
+              ],
+              "meshPath": "res://assets/meshes/weapon_pistol.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "pistol",
+              "attackMode": "RANGED",
+              "blockReason": "",
+              "capacity": 6,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.35,
+              "crosshairVisible": true,
+              "damage": 12,
+              "displayName": "Service pistol",
+              "magazine": 6,
+              "reloading": false,
+              "reserve": 12
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "6 / 6   reserve 12",
+              "equipment": "Service pistol  ·  RANGED",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:39Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "look",
+        "args": {
+          "yaw": 0.3,
+          "pitch": 0.15
+        },
+        "result": {
+          "aim": {
+            "collider": "TargetB",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              0,
+              1.59999990463257,
+              -9.80000114440918
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.030913395807147,
+              1.59213972091675,
+              6.09993457794189
+            ],
+            "forwardDot": 1,
+            "global": [
+              0.128636986017227,
+              1.45714950561523,
+              5.60372114181519
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0.15,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "",
+              "hit": false,
+              "interactable": false,
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                1,
+                1,
+                1,
+                0.920000016689301
+              ],
+              "cooldownRatio": 0,
+              "drawn": true,
+              "enabledForEquipment": true,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [
+                {
+                  "from": [
+                    590,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    597,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    603,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    610,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    390
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    397
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    403
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    410
+                  ]
+                }
+              ],
+              "shape": 0,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": true
+            },
+            "display": {
+              "alignedWithCamera": true,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.030913395807147,
+                1.59213972091675,
+                6.09993457794189
+              ],
+              "forwardDot": 1,
+              "global": [
+                0.128636986017227,
+                1.45714950561523,
+                5.60372114181519
+              ],
+              "local": [
+                0.239999994635582,
+                -0.200000002980232,
+                -0.419999986886978
+              ],
+              "meshPath": "res://assets/meshes/weapon_pistol.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "pistol",
+              "attackMode": "RANGED",
+              "blockReason": "",
+              "capacity": 6,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.35,
+              "crosshairVisible": true,
+              "damage": 12,
+              "displayName": "Service pistol",
+              "magazine": 6,
+              "reloading": false,
+              "reserve": 12
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "6 / 6   reserve 12",
+              "equipment": "Service pistol  ·  RANGED",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": 0.15,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:39Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "equip",
+        "args": {
+          "value": "practice_sword"
+        },
+        "result": {
+          "aim": {
+            "collider": "",
+            "hit": false,
+            "interactable": false,
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              0.850000023841858,
+              0.899999976158142,
+              1,
+              0.850000023841858
+            ],
+            "cooldownRatio": 0,
+            "drawn": false,
+            "enabledForEquipment": false,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [],
+            "shape": 2,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": false
+          },
+          "display": {
+            "alignedWithCamera": false,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.030913395807147,
+              1.59213972091675,
+              6.09993457794189
+            ],
+            "forwardDot": 0.987855911254883,
+            "global": [
+              0.156398385763168,
+              1.33067655563354,
+              5.49043416976929
+            ],
+            "local": [
+              0.300000011920929,
+              -0.340000003576279,
+              -0.5
+            ],
+            "meshPath": "res://assets/meshes/weapon_sword.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "practice_sword",
+            "attackMode": "MELEE",
+            "blockReason": "",
+            "capacity": 0,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.6,
+            "crosshairVisible": false,
+            "damage": 20,
+            "displayName": "Practice sword",
+            "magazine": 0,
+            "reloading": false,
+            "reserve": 0
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "∞",
+            "equipment": "Practice sword  ·  MELEE",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": 0.15,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "",
+              "hit": false,
+              "interactable": false,
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                0.850000023841858,
+                0.899999976158142,
+                1,
+                0.850000023841858
+              ],
+              "cooldownRatio": 0,
+              "drawn": false,
+              "enabledForEquipment": false,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [],
+              "shape": 2,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": false
+            },
+            "display": {
+              "alignedWithCamera": false,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.030913395807147,
+                1.59213972091675,
+                6.09993457794189
+              ],
+              "forwardDot": 0.987855911254883,
+              "global": [
+                0.156398385763168,
+                1.33067655563354,
+                5.49043416976929
+              ],
+              "local": [
+                0.300000011920929,
+                -0.340000003576279,
+                -0.5
+              ],
+              "meshPath": "res://assets/meshes/weapon_sword.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "practice_sword",
+              "attackMode": "MELEE",
+              "blockReason": "",
+              "capacity": 0,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.6,
+              "crosshairVisible": false,
+              "damage": 20,
+              "displayName": "Practice sword",
+              "magazine": 0,
+              "reloading": false,
+              "reserve": 0
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "∞",
+              "equipment": "Practice sword  ·  MELEE",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": 0.15,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:40Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "look",
+        "args": {
+          "yaw": -0.3,
+          "pitch": -0.1
+        },
+        "result": {
+          "aim": {
+            "collider": "",
+            "hit": false,
+            "interactable": false,
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              0.850000023841858,
+              0.899999976158142,
+              1,
+              0.850000023841858
+            ],
+            "cooldownRatio": 0,
+            "drawn": false,
+            "enabledForEquipment": false,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [],
+            "shape": 2,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": false
+          },
+          "display": {
+            "alignedWithCamera": false,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 0.987855970859528,
+            "global": [
+              0.444243907928467,
+              1.20828473567963,
+              5.57903957366943
+            ],
+            "local": [
+              0.300000011920929,
+              -0.340000003576279,
+              -0.5
+            ],
+            "meshPath": "res://assets/meshes/weapon_sword.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "practice_sword",
+            "attackMode": "MELEE",
+            "blockReason": "",
+            "capacity": 0,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.6,
+            "crosshairVisible": false,
+            "damage": 20,
+            "displayName": "Practice sword",
+            "magazine": 0,
+            "reloading": false,
+            "reserve": 0
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "∞",
+            "equipment": "Practice sword  ·  MELEE",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "Floor",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                4.72290277481079,
+                4.4703483581543e-8,
+                -9.26786231994629
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                0.850000023841858,
+                0.899999976158142,
+                1,
+                0.850000023841858
+              ],
+              "cooldownRatio": 0,
+              "drawn": false,
+              "enabledForEquipment": false,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [],
+              "shape": 2,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": false
+            },
+            "display": {
+              "alignedWithCamera": false,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.0206519551575184,
+                1.5965029001236,
+                5.93323802947998
+              ],
+              "forwardDot": 0.987855970859528,
+              "global": [
+                0.444243907928467,
+                1.20828473567963,
+                5.57903957366943
+              ],
+              "local": [
+                0.300000011920929,
+                -0.340000003576279,
+                -0.5
+              ],
+              "meshPath": "res://assets/meshes/weapon_sword.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "practice_sword",
+              "attackMode": "MELEE",
+              "blockReason": "",
+              "capacity": 0,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.6,
+              "crosshairVisible": false,
+              "damage": 20,
+              "displayName": "Practice sword",
+              "magazine": 0,
+              "reloading": false,
+              "reserve": 0
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "∞",
+              "equipment": "Practice sword  ·  MELEE",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:40Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "equip",
+        "args": {
+          "value": "pistol"
+        },
+        "result": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "Floor",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                4.72290277481079,
+                4.4703483581543e-8,
+                -9.26786231994629
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                1,
+                1,
+                1,
+                0.920000016689301
+              ],
+              "cooldownRatio": 0,
+              "drawn": true,
+              "enabledForEquipment": true,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [
+                {
+                  "from": [
+                    590,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    597,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    603,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    610,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    390
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    397
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    403
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    410
+                  ]
+                }
+              ],
+              "shape": 0,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": true
+            },
+            "display": {
+              "alignedWithCamera": true,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.0206519551575184,
+                1.5965029001236,
+                5.93323802947998
+              ],
+              "forwardDot": 1.00000011920929,
+              "global": [
+                0.367530554533005,
+                1.35557198524475,
+                5.62400102615356
+              ],
+              "local": [
+                0.239999994635582,
+                -0.200000002980232,
+                -0.419999986886978
+              ],
+              "meshPath": "res://assets/meshes/weapon_pistol.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "pistol",
+              "attackMode": "RANGED",
+              "blockReason": "",
+              "capacity": 6,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.35,
+              "crosshairVisible": true,
+              "damage": 12,
+              "displayName": "Service pistol",
+              "magazine": 6,
+              "reloading": false,
+              "reserve": 12
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "6 / 6   reserve 12",
+              "equipment": "Service pistol  ·  RANGED",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:40Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "equip",
+        "args": {
+          "value": "practice_sword"
+        },
+        "result": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              0.850000023841858,
+              0.899999976158142,
+              1,
+              0.850000023841858
+            ],
+            "cooldownRatio": 0,
+            "drawn": false,
+            "enabledForEquipment": false,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [],
+            "shape": 2,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": false
+          },
+          "display": {
+            "alignedWithCamera": false,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 0.987855970859528,
+            "global": [
+              0.444243907928467,
+              1.20828473567963,
+              5.57903957366943
+            ],
+            "local": [
+              0.300000011920929,
+              -0.340000003576279,
+              -0.5
+            ],
+            "meshPath": "res://assets/meshes/weapon_sword.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "practice_sword",
+            "attackMode": "MELEE",
+            "blockReason": "",
+            "capacity": 0,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.6,
+            "crosshairVisible": false,
+            "damage": 20,
+            "displayName": "Practice sword",
+            "magazine": 0,
+            "reloading": false,
+            "reserve": 0
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "∞",
+            "equipment": "Practice sword  ·  MELEE",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "Floor",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                4.72290277481079,
+                4.4703483581543e-8,
+                -9.26786231994629
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                0.850000023841858,
+                0.899999976158142,
+                1,
+                0.850000023841858
+              ],
+              "cooldownRatio": 0,
+              "drawn": false,
+              "enabledForEquipment": false,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [],
+              "shape": 2,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": false
+            },
+            "display": {
+              "alignedWithCamera": false,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.0206519551575184,
+                1.5965029001236,
+                5.93323802947998
+              ],
+              "forwardDot": 0.987855970859528,
+              "global": [
+                0.444243907928467,
+                1.20828473567963,
+                5.57903957366943
+              ],
+              "local": [
+                0.300000011920929,
+                -0.340000003576279,
+                -0.5
+              ],
+              "meshPath": "res://assets/meshes/weapon_sword.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "practice_sword",
+              "attackMode": "MELEE",
+              "blockReason": "",
+              "capacity": 0,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.6,
+              "crosshairVisible": false,
+              "damage": 20,
+              "displayName": "Practice sword",
+              "magazine": 0,
+              "reloading": false,
+              "reserve": 0
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "∞",
+              "equipment": "Practice sword  ·  MELEE",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:40Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      },
+      {
+        "op": "equip",
+        "args": {
+          "value": "pistol"
+        },
+        "result": {
+          "aim": {
+            "collider": "Floor",
+            "hit": true,
+            "interactable": false,
+            "position": [
+              4.72290277481079,
+              4.4703483581543e-8,
+              -9.26786231994629
+            ],
+            "prompt": ""
+          },
+          "base": "first-person",
+          "baseVersion": "0.1.0",
+          "crosshair": {
+            "center": [
+              600,
+              400
+            ],
+            "color": [
+              1,
+              1,
+              1,
+              0.920000016689301
+            ],
+            "cooldownRatio": 0,
+            "drawn": true,
+            "enabledForEquipment": true,
+            "globalCenter": [
+              600,
+              400
+            ],
+            "offsetFromViewportCenter": [
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "from": [
+                  590,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  597,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  603,
+                  400
+                ],
+                "kind": "line",
+                "to": [
+                  610,
+                  400
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  390
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  397
+                ]
+              },
+              {
+                "from": [
+                  600,
+                  403
+                ],
+                "kind": "line",
+                "to": [
+                  600,
+                  410
+                ]
+              }
+            ],
+            "shape": 0,
+            "size": [
+              1200,
+              800
+            ],
+            "viewportCenter": [
+              600,
+              400
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "visible": true
+          },
+          "display": {
+            "alignedWithCamera": true,
+            "attachedToCamera": true,
+            "cameraGlobal": [
+              0.0206519551575184,
+              1.5965029001236,
+              5.93323802947998
+            ],
+            "forwardDot": 1.00000011920929,
+            "global": [
+              0.367530554533005,
+              1.35557198524475,
+              5.62400102615356
+            ],
+            "local": [
+              0.239999994635582,
+              -0.200000002980232,
+              -0.419999986886978
+            ],
+            "meshPath": "res://assets/meshes/weapon_pistol.obj",
+            "visible": true
+          },
+          "equipment": {
+            "active": "pistol",
+            "attackMode": "RANGED",
+            "blockReason": "",
+            "capacity": 6,
+            "cooldownRemaining": 0,
+            "cooldownSeconds": 0.35,
+            "crosshairVisible": true,
+            "damage": 12,
+            "displayName": "Service pistol",
+            "magazine": 6,
+            "reloading": false,
+            "reserve": 12
+          },
+          "hasSave": false,
+          "hud": {
+            "ammo": "6 / 6   reserve 12",
+            "equipment": "Service pistol  ·  RANGED",
+            "inventory": "Bag: repair_kit x1",
+            "lastDamage": 0,
+            "message": "",
+            "prompt": "",
+            "quests": "Break two targets  0/2",
+            "status": "Ready"
+          },
+          "inputCaptured": false,
+          "interactables": [
+            {
+              "enabled": true,
+              "id": "AmmoCrate",
+              "usesLeft": 3
+            },
+            {
+              "enabled": true,
+              "id": "RepairKit",
+              "taken": false
+            }
+          ],
+          "inventory": {
+            "slots": [
+              {
+                "count": 1,
+                "id": "repair_kit"
+              }
+            ]
+          },
+          "levelTitle": "Training range",
+          "persistentStorage": true,
+          "player": {
+            "onFloor": true,
+            "pitch": -0.1,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -0.3
+          },
+          "quests": {
+            "quests": [
+              {
+                "count": 0,
+                "id": "range_basic",
+                "rewardGranted": false,
+                "status": 1
+              }
+            ]
+          },
+          "targets": [
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_a"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_b"
+            },
+            {
+              "damageTaken": 0,
+              "destroyed": false,
+              "health": 50,
+              "hitCount": 0,
+              "id": "target_c"
+            }
+          ],
+          "viewportSize": [
+            1200,
+            800
+          ],
+          "windowSize": [
+            1200,
+            800
+          ],
+          "worldId": "world-91da8b1e286a"
+        },
+        "observation": {
+          "baseId": "first-person",
+          "baseVersion": "0.1.0",
+          "buildId": "gbd-972f028c2bf022b537b0cb4ab9d1b9edc1153c985c0c2dee7894d2f77cee5157",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "f8bd0562bf40168f085f2908",
+          "payload": {
+            "aim": {
+              "collider": "Floor",
+              "hit": true,
+              "interactable": false,
+              "position": [
+                4.72290277481079,
+                4.4703483581543e-8,
+                -9.26786231994629
+              ],
+              "prompt": ""
+            },
+            "base": "first-person",
+            "baseVersion": "0.1.0",
+            "crosshair": {
+              "center": [
+                600,
+                400
+              ],
+              "color": [
+                1,
+                1,
+                1,
+                0.920000016689301
+              ],
+              "cooldownRatio": 0,
+              "drawn": true,
+              "enabledForEquipment": true,
+              "globalCenter": [
+                600,
+                400
+              ],
+              "offsetFromViewportCenter": [
+                0,
+                0
+              ],
+              "segments": [
+                {
+                  "from": [
+                    590,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    597,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    603,
+                    400
+                  ],
+                  "kind": "line",
+                  "to": [
+                    610,
+                    400
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    390
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    397
+                  ]
+                },
+                {
+                  "from": [
+                    600,
+                    403
+                  ],
+                  "kind": "line",
+                  "to": [
+                    600,
+                    410
+                  ]
+                }
+              ],
+              "shape": 0,
+              "size": [
+                1200,
+                800
+              ],
+              "viewportCenter": [
+                600,
+                400
+              ],
+              "viewportSize": [
+                1200,
+                800
+              ],
+              "visible": true
+            },
+            "display": {
+              "alignedWithCamera": true,
+              "attachedToCamera": true,
+              "cameraGlobal": [
+                0.0206519551575184,
+                1.5965029001236,
+                5.93323802947998
+              ],
+              "forwardDot": 1.00000011920929,
+              "global": [
+                0.367530554533005,
+                1.35557198524475,
+                5.62400102615356
+              ],
+              "local": [
+                0.239999994635582,
+                -0.200000002980232,
+                -0.419999986886978
+              ],
+              "meshPath": "res://assets/meshes/weapon_pistol.obj",
+              "visible": true
+            },
+            "equipment": {
+              "active": "pistol",
+              "attackMode": "RANGED",
+              "blockReason": "",
+              "capacity": 6,
+              "cooldownRemaining": 0,
+              "cooldownSeconds": 0.35,
+              "crosshairVisible": true,
+              "damage": 12,
+              "displayName": "Service pistol",
+              "magazine": 6,
+              "reloading": false,
+              "reserve": 12
+            },
+            "hasSave": false,
+            "hud": {
+              "ammo": "6 / 6   reserve 12",
+              "equipment": "Service pistol  ·  RANGED",
+              "inventory": "Bag: repair_kit x1",
+              "lastDamage": 0,
+              "message": "",
+              "prompt": "",
+              "quests": "Break two targets  0/2",
+              "status": "Ready"
+            },
+            "inputCaptured": false,
+            "interactables": [
+              {
+                "enabled": true,
+                "id": "AmmoCrate",
+                "usesLeft": 3
+              },
+              {
+                "enabled": true,
+                "id": "RepairKit",
+                "taken": false
+              }
+            ],
+            "inventory": {
+              "slots": [
+                {
+                  "count": 1,
+                  "id": "repair_kit"
+                }
+              ]
+            },
+            "levelTitle": "Training range",
+            "logicalViewportSize": [
+              1200,
+              800
+            ],
+            "persistentStorage": true,
+            "player": {
+              "onFloor": true,
+              "pitch": -0.1,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": -0.3
+            },
+            "quests": {
+              "quests": [
+                {
+                  "count": 0,
+                  "id": "range_basic",
+                  "rewardGranted": false,
+                  "status": 1
+                }
+              ]
+            },
+            "surfaceSize": [
+              1200,
+              800
+            ],
+            "targetFeedback": {
+              "format": "craftmine.target-feedback-observation/1",
+              "targets": [
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_a"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_b"
+                },
+                {
+                  "hitFlashMilliseconds": 120,
+                  "targetId": "target_c"
+                }
+              ]
+            },
+            "targets": [
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_a"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_b"
+              },
+              {
+                "damageTaken": 0,
+                "destroyed": false,
+                "health": 50,
+                "hitCount": 0,
+                "id": "target_c"
+              }
+            ],
+            "viewportSize": [
+              1200,
+              800
+            ],
+            "windowSize": [
+              1200,
+              800
+            ],
+            "worldId": "world-91da8b1e286a"
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-10T03:46:40Z",
+          "worldId": "world-91da8b1e286a"
+        }
+      }
+    ],
+    "captures": [
+      {
+        "afterAction": 2,
+        "width": 1280,
+        "height": 720,
+        "pngSha256": "4d44cecccd3856a586103577b1c4d2c417036e2f5e1420401edebbe3b77ddec9"
+      },
+      {
+        "afterAction": 4,
+        "width": 1280,
+        "height": 720,
+        "pngSha256": "fa0845391d3853c59703d8d624cda001f73d47897324d54ae4ef76361e210738"
+      }
+    ]
+  },
+  "before": {
+    "baseId": "first-person",
+    "baseVersion": "0.1.0",
+    "body": {
+      "base": "first-person",
+      "baseVersion": "0.1.0",
+      "equipment": {
+        "active": "pistol",
+        "items": [
+          {
+            "id": "pistol",
+            "magazine": 6,
+            "reserve": 12
+          },
+          {
+            "id": "practice_sword",
+            "magazine": 0,
+            "reserve": 0
+          },
+          {
+            "id": "inspection_tool",
+            "magazine": 0,
+            "reserve": 0
+          }
+        ]
+      },
+      "format": "craftmine.godot-base-state/1",
+      "interactables": [
+        {
+          "enabled": true,
+          "id": "AmmoCrate",
+          "usesLeft": 3
+        },
+        {
+          "enabled": true,
+          "id": "RepairKit",
+          "taken": false
+        }
+      ],
+      "inventory": {
+        "slots": [
+          {
+            "count": 1,
+            "id": "repair_kit"
+          }
+        ]
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": -0.1,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": -0.3
+      },
+      "quests": {
+        "quests": [
+          {
+            "count": 0,
+            "id": "range_basic",
+            "rewardGranted": false,
+            "status": 1
+          }
+        ]
+      },
+      "savedAt": "2026-09-09T20:55:22Z",
+      "stateVersion": 1,
+      "targets": [
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_a"
+        },
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_b"
+        },
+        {
+          "damageTaken": 0,
+          "destroyed": false,
+          "health": 50,
+          "hitCount": 0,
+          "id": "target_c"
+        }
+      ],
+      "worldId": "world-91da8b1e286a"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-91da8b1e286a"
+  },
+  "operationId": "a61517e0-3bac-4e7d-97aa-721786bb12be",
+  "candidateId": "gcan-ee0e4b94cb5c1783fb4943e83954d9c80b34a7ebce96d692a82805ec9e2ad3a8",
+  "finishedAt": "2026-09-10T03:47:58.717Z"
+}
