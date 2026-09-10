@@ -3,7 +3,7 @@
   "plan": "docs/CREATION_NEXT_BATCH_PLAN_2026-09-11.md",
   "baseline": "c1660f12",
   "status": "in_progress",
-  "updatedAt": "2026-09-10T22:09:44.470Z",
+  "updatedAt": "2026-09-10T23:07:22.612Z",
   "stages": {
     "NB0": {
       "status": "complete",
@@ -13,19 +13,21 @@
       ]
     },
     "NB1": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
-        "docs/CREATION_REQUIREMENTS_DEVELOPMENT_2026-09-11.md"
+        "docs/CREATION_REQUIREMENTS_DEVELOPMENT_2026-09-11.md",
+        "docs/CREATION_OBSERVATION_TRUST_2026-09-11.md"
       ]
     },
     "NB2": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
-        "docs/NB2_EDITING_2026-09-11.md"
+        "docs/NB2_EDITING_2026-09-11.md",
+        "docs/CREATION_STOCK_MIGRATION_2026-09-11.md"
       ]
     },
     "NB3": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
         "docs/NB3_VOICE_STATUS_DEVELOPMENT_2026-09-11.md"
       ]
@@ -38,11 +40,19 @@
     },
     "NB5": {
       "status": "in_progress",
-      "evidence": []
+      "evidence": [
+        "docs/CREATION_BUILD_READ_WAIT_2026-09-11.md",
+        "docs/NB_GENERIC_GODOT_READ_2026-09-11.md",
+        "vendor/pi-desktop/docs/spec/creation-core-tool-catalog.md"
+      ]
     },
     "NB6": {
       "status": "in_progress",
-      "evidence": []
+      "evidence": [
+        "test-results/creation-story-final-65e3ebca9a/final-evidence-index.json",
+        "test-results/desktop-native-complete-MmmG4i/report.json",
+        "test-results/creation-next-checks-CEvudw/report.json"
+      ]
     },
     "NB7": {
       "status": "pending",
@@ -54,7 +64,7 @@
     "realPlayers": "not_run",
     "cleanWindows": "本机未发现可用Get-VM/VMware/VirtualBox隔离运行入口；不对个人安装执行生命周期测试"
   },
-  "realModelRuns": 1,
+  "realModelRuns": 10,
   "modelBaseline": {
     "provider": "deepseek",
     "model": "deepseek-flash",
@@ -63,5 +73,29 @@
     "actualFormalAdoption": true,
     "acceptance": "首次runner误用导航保存路由，完整重开验收未完成；原始失败保留，修复runner后复验",
     "artifact": "test-results/desktop-native-complete-73fuxT"
-  }
+  },
+  "modelRounds": [
+    {
+      "artifact": "test-results/desktop-native-complete-73fuxT",
+      "observedRequests": 16,
+      "note": "原始CA01 runner路由失败；原模型产物零新增请求保存重开补验通过"
+    },
+    {
+      "artifact": "test-results/desktop-native-complete-nla0QX",
+      "observedRequests": 40,
+      "firstAttemptPass": 2,
+      "modelRepairedPass": 2,
+      "failed": 1,
+      "notRun": 3,
+      "note": "通用读路由和每轮工具激活暴露额外请求；CA06落点拥挤并达预算上限"
+    },
+    {
+      "artifact": "test-results/desktop-native-complete-IjZqHs",
+      "observedRequests": 25,
+      "firstAttemptPass": 3,
+      "failed": 1,
+      "notRun": 3,
+      "note": "CA05实际编写普通脚本、检查通过且采用；runner冻结保存后未恢复运行，零新增模型补验进行中，原结果不覆写"
+    }
+  ]
 }
