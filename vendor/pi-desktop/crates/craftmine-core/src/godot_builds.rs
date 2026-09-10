@@ -120,6 +120,8 @@ struct BuildStartArgs {
     revision: u64,
     manifest_hash: String,
     mode: String,
+    #[serde(default)]
+    check_requirements: Option<super::godot_jobs::requirements::Requirements>,
 }
 
 #[derive(Deserialize)]
@@ -864,6 +866,9 @@ impl TaskJournal {
         };
         scope(&self.db, &args.context, &args.world_id, false)?;
         let (manifest, manifest_hash) = self.project_manifest_for(&args.world_id, None,&args.branch_id)?;
+        if let Some(requirements) = &args.check_requirements {
+            requirements.validate(&manifest.base_id, &args.mode)?;
+        }
         let content_oid = if git_backed {
             Some(
                 super::godot_projects::git_commit_for(&self.db, &args.world_id, manifest.revision)?
@@ -991,12 +996,14 @@ impl TaskJournal {
                 i64::try_from(identity.source_revision)?, manifest_hash, asset_manifest_hash, identity.base_id,
                 identity.base_build, request_hash, status, blocked_reason, now],
         )?;
-        let result = json!({"jobId":job_id,"buildId":identity.build_id,"worldId":args.world_id,
+        super::godot_jobs::requirements::store(&tx, &job_id, args.check_requirements.as_ref())?;
+        let mut result = json!({"jobId":job_id,"buildId":identity.build_id,"worldId":args.world_id,
             "kind":args.mode,"status":status,"executionAvailable":queued,"blockedReason":blocked_reason,
             "sourceRevision":identity.source_revision,"manifestHash":manifest_hash,
             "assetManifestHash":asset_manifest_hash,"materialized":{"files":files.len(),"bytes":bytes},
             "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target,
             "baseId":identity.base_id,"baseBuild":identity.base_build,"replayed":false});
+        super::godot_jobs::requirements::attach(&tx, &job_id, &mut result)?;
         tx.execute(
             "INSERT INTO craftmine_godot_build_receipts(task_id,tool_call_id,request_hash,result) VALUES(?1,?2,?3,?4)",
             params![task, args.tool_call_id, request_hash, serde_json::to_string(&result)?],

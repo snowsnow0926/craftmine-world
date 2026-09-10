@@ -360,7 +360,7 @@ pub(super) fn additive_column_default(table:&str,column:&str)->Option<Value> {
     match (table,column) {
         ("craftmine_godot_project_commits","manifest") |
         ("craftmine_godot_builds","content_oid"|"asset_lock_hash") |
-        ("craftmine_godot_jobs","check_input"|"check_input_hash") |
+        ("craftmine_godot_jobs","check_input"|"check_input_hash"|"check_requirements"|"check_requirements_hash") |
         ("craftmine_content_operations","application_id") => Some(Value::Null),
         ("craftmine_godot_project_commits"|"craftmine_godot_builds","branch_id") => Some(json!("main")),
         _=>None,
