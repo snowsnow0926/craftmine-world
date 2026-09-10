@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {freezeCreationRequirements,creationEntitiesMatch,creationRequirementsHash,assertCreationJobRequirements,freezeUndoRequirements} from '../electron/main/creation-check-requirements.ts';
 import {parseGodotCheckRequirements,readGodotCreationObservation,godotCreationMatches} from '../electron/main/godot-check-requirements.ts';
-const tree={id:'tree-a',kind:'tree',position:[2,0,0],scale:[1,1,1],color:'#123456'};
+const tree={id:'tree-a',kind:'tree',position:[2,0,0],scale:[1,1,1],color:'#123456',visible:true,solid:true};
 const capture={target:{entityId:'tree-a',position:[3,0,0]},entities:[tree]};
 test('freezes exact placement and validates actual new identity/count/location',()=>{
  const frozen=freezeCreationRequirements(capture,'在这里放一棵树');assert.equal(frozen.status,'verifiable');
@@ -71,4 +71,19 @@ test('frozen evaluation variants are exact bounded phrases, not keyword matching
  const time=freezeCreationRequirements(capture,'把时间设为18点').requirements;
  assert.equal(godotCreationMatches({phase:'loaded',entities:[tree],timeOfDay:18},{format:'craftmine.godot-check-requirements/1',creation:time}),true);
  assert.equal(godotCreationMatches({phase:'loaded',entities:[tree],timeOfDay:12},{format:'craftmine.godot-check-requirements/1',creation:time}),false);
+});
+
+test('placement and direct modification cannot pass with hidden or nonblocking objects',()=>{
+ const placed=freezeCreationRequirements(capture,'在这里放一棵树').requirements;
+ const added={...tree,id:'new-tree',position:[3,0,0]};
+ for(const change of [{visible:false},{solid:false}])assert.equal(creationEntitiesMatch(placed,[tree,{...added,...change}]),false);
+ const modified=freezeCreationRequirements(capture,{action:'modify',targetId:'tree-a',changes:{color:'#abcdef'}}).requirements;
+ assert.equal(creationEntitiesMatch(modified,[{...tree,color:'#abcdef'}]),true);
+ assert.equal(creationEntitiesMatch(modified,[{...tree,color:'#abcdef',visible:false}]),false);
+});
+test('undo also freezes untouched objects instead of checking only their count',()=>{
+ const old={...tree,scale:[1,1,1]},changed={...tree,scale:[2,2,2]},other={...tree,id:'other-tree',position:[8,0,0],visible:false,solid:false};
+ const journal={format:'craftmine.creation-operations/1',operations:[{operationId:'edit-a',receipt:{undoSupported:true},inverse:{format:'craftmine.creation-inverse/1',before:[old],after:[changed]}}]};
+ const frozen=freezeUndoRequirements({entities:[changed,other]},journal,'edit-a');assert.equal(frozen.status,'verifiable');assert.equal(creationEntitiesMatch(frozen.requirements,[old,other]),true);
+ for(const change of [{position:[9,0,0]},{scale:[2,2,2]},{color:'#ff0000'},{visible:true},{solid:true}])assert.equal(creationEntitiesMatch(frozen.requirements,[old,{...other,...change}]),false);
 });

@@ -163,17 +163,17 @@ fn creation_requirements_bind_persist_and_reject_wrong_runtime_entities() -> Res
  let (_dir,path)=temp()?;let mut journal=setup(&path)?;
  let project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"creation","baseBuild":"base-a","baseId":"creation-sandbox","files":project_files()}))?;
  register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
- let requirement=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("double tree"),"entities":[{"id":"tree-a","kind":"tree","scale":[2,2,2]}],"counts":[]}});
+ let requirement=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("double tree"),"entities":[{"id":"tree-a","kind":"tree","scale":[2,2,2],"visible":true,"solid":true}],"counts":[]}});
  let mut args=request(&project,"creation-check");args["checkRequirements"]=requirement.clone();
  let job=journal.godot_build_start(&args)?;let claimed=claim(&mut journal,&job,"token-a","executor-a")?;
  let artifacts=write_artifact(&claimed,"web/index.html",b"<html>fixture only</html>")?;
  let descriptor=journal.godot_job_check_descriptor(&json!({"jobId":job["jobId"],"token":"token-a","artifacts":artifacts}))?;
  assert_eq!(descriptor["checkRequirements"],requirement);
  let required:requirements::Requirements=serde_json::from_value(requirement)?;
- let entity=json!({"id":"tree-a","kind":"tree","position":[0,0,0],"scale":[2,2,2]});
+ let entity=json!({"id":"tree-a","kind":"tree","position":[0,0,0],"scale":[2,2,2],"visible":true,"solid":true});
  let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":required.hash(),"jobId":job["jobId"],"worldId":"a","buildId":job["buildId"],"instanceId":"real-check","observations":[{"phase":"loaded","entities":[entity.clone()]},{"phase":"running","entities":[entity]}]});
  assert!(requirements::evidence_matches(&required,Some(&evidence),&descriptor));
- for field in ["id","scale"] {let mut bad=evidence.clone();bad["observations"][1]["entities"][0][field]=if field=="id"{json!("other")}else{json!([1,1,1])};assert!(!requirements::evidence_matches(&required,Some(&bad),&descriptor));}
+ for field in ["id","scale","visible","solid"] {let mut bad=evidence.clone();bad["observations"][1]["entities"][0][field]=if field=="id"{json!("other")}else if field=="scale"{json!([1,1,1])}else{json!(false)};assert!(!requirements::evidence_matches(&required,Some(&bad),&descriptor));}
  let mut result=output(&claimed,true,json!([{"id":"runtime.creation-requirements","passed":true}]),artifacts,json!([]));result["check"]["requirementsEvidence"]=evidence;
  assert_eq!(finish(&mut journal,&job,"token-a",&result)?["status"],"passed");
  drop(journal);let journal=TaskJournal::open(&path)?;assert_eq!(requirements::read(&journal.db,job["jobId"].as_str().unwrap())?.unwrap().hash(),required.hash());

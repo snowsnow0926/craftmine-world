@@ -1,0 +1,43 @@
+✔ checked completion rereads host facts and coalesces duplicate callbacks (4.256ms)
+✔ missing consent never invokes application (0.2473ms)
+✔ failed completion never applies (0.495ms)
+✔ cancelled completion never applies (0.2731ms)
+✔ buildOnly completion never applies (0.3278ms)
+✔ foreignTask completion never applies (0.4118ms)
+✔ staleSource completion never applies (0.3436ms)
+✔ forgedProof completion never applies (0.3033ms)
+✔ unready completion never applies (0.2968ms)
+✔ inactive completion never applies (0.2328ms)
+✔ revoked during launch prevents commit (0.4261ms)
+✔ cancelled during launch prevents commit (0.2497ms)
+✔ sourceChanged during launch prevents commit (0.3566ms)
+✔ model-supplied proof and unbounded arguments are rejected (0.1383ms)
+✔ unknown wishes stay manual and cannot silently auto-apply startup proof (0.2318ms)
+✔ downgraded or omitted wish check cannot auto-apply (0.4982ms)
+✔ freezes exact placement and validates actual new identity/count/location (1.5803ms)
+✔ exact scale targets original object; compound wishes remain unverified (0.434ms)
+✔ direct changes and delete have frozen values; mutated requirements cannot pass job binding (0.6805ms)
+✔ creation core descriptor parses only exact canonical hash and scoped engine observation (1.3415ms)
+✔ original first-person requirement digest contract remains unchanged (0.1328ms)
+✔ undo freezes formal inverse and refuses replay or changed actual entities (0.3554ms)
+✔ canonical requirement digest agrees with Rust numeric encoding (0.0966ms)
+✔ harvest accepts only the complete exact wish and preserves explicit expectations (0.3615ms)
+✔ frozen evaluation variants are exact bounded phrases, not keyword matching (0.4208ms)
+✔ placement and direct modification cannot pass with hidden or nonblocking objects (0.2185ms)
+✔ undo also freezes untouched objects instead of checking only their count (0.163ms)
+✔ host freezes sample and binds it to the exact project/session/turn (8.8823ms)
+✔ forged renderer snapshots, another owner, and cross-session handles are rejected (2.8497ms)
+✔ a new-chat capture can be claimed once by the first session in its host project (4.5078ms)
+✔ world, instance, build, source and expiry changes fail before binding (1.3913ms)
+✔ only one concurrent turn can consume an opaque capture (2.2732ms)
+✔ world consent defaults off, survives restart, and revocation applies to an active turn (6.3634ms)
+✔ invalid runtime samples and mid-sample transitions never create a handle (1.8004ms)
+✔ no hit preserves world context and owner revocation removes pending handles (1.3241ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.392
