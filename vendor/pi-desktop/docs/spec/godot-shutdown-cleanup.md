@@ -54,3 +54,13 @@ tests/godot-runtime-boundaries.mjs tests/player-product/shutdown-barriers.test.m
 from the outer Craftmine repository. They cover delayed/missing renderer
 destruction, concurrent disposal, a real isolated Node child's pipe closure,
 controlled UtilityProcess exit/pipe ordering, and real/controlled HTTP closure.
+
+## Retired instances and auditable shutdown failure
+
+All instance retirement paths now register combined renderer/runtime cleanup before discarding ownership. Disposal drains pending retirements and rejects remembered retirement failures even after a replacement became current. Failure history is bounded but never silently reset to success during the host lifetime.
+
+Electron 43.4.0 synchronously removes UtilityProcess pipe listeners and clears child.stdout/stderr after exit callbacks. Retain the original stream references and observe closed or reattach close listeners in the exit promise continuation. This is ordering after Electron cleanup, not elapsed-time evidence. A still-open pipe keeps the existing named deadline failure.
+
+Headless status and will-quit IPC include shutdownFailures. Main records rejected service barriers, host-core shutdown errors and top-level shutdown sequence failures. The parameter native runner requires this field to exist and be empty in the final exit audit, in addition to exit zero and empty input/page errors. Ordinary user quit remains permitted after recording incomplete cleanup. The earlier exit-zero oUpnWZ run with plugin timeout logs is an incomplete-shutdown baseline, not an accepted successful shutdown.
+
+Targeted coverage includes retirement after current/pending removal, a completed retirement timeout remembered at quit, Electron listener removal ordering, status/exit audit propagation and a zero-code child with a nonempty shutdown failure list. No IOCP root-cause resolution is claimed.

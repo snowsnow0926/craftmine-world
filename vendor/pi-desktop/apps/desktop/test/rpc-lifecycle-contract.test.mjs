@@ -162,7 +162,7 @@ test("app quit waits for one idempotent teardown before allowing the follow-up q
   );
   assert.ok(shutdownSource.indexOf("Promise.allSettled([pluginPanelShutdown") < shutdownSource.indexOf("await hostShutdown"));
   assert.match(shutdownSource, /await serviceShutdown/);
-  assert.match(shutdownSource, /result\.status === "rejected"[\s\S]*?"service shutdown incomplete"/);
+  assert.match(shutdownSource, /result\.status !== "rejected"\) return;[\s\S]*?recordHeadlessShutdownFailure\(shutdownServices\[index\], result.reason\)[\s\S]*?"service shutdown incomplete"/);
   const releaseQuit = shutdownSource.match(
     /const releaseQuit = \(\) => \{[\s\S]*?shutdownComplete = true;[\s\S]*?app\.quit\(\);[\s\S]*?\};/,
   );
@@ -170,7 +170,8 @@ test("app quit waits for one idempotent teardown before allowing the follow-up q
     releaseQuit,
     "the follow-up quit must run only after shutdownComplete is set",
   );
-  assert.match(shutdownSource, /void shutdownPromise\.then\(releaseQuit, releaseQuit\)/);
+  assert.match(shutdownSource, /void shutdownPromise\.then\(releaseQuit, error => \{[\s\S]*?recordHeadlessShutdownFailure\("shutdown-sequence", error\)[\s\S]*?releaseQuit\(\)/);
+  assert.match(shutdownSource, /recordHeadlessShutdownFailure\("host-core", error\)/);
 });
 
 test("settings writes validate without applying read defaults", () => {

@@ -133,6 +133,7 @@ type LiveInstance = {
   /** The web contents were already closed; closing twice must be a no-op. */
   closed: boolean;
   closePromise?: Promise<void>;
+  retirement?: Promise<void>;
   /** Bounded renderer console tail; evidence for a failed startup. */
   consoleLog: Array<{ at: number; level: string; message: string }>;
   /** Page/renderer faults observed for this instance, newest last. */
@@ -175,6 +176,8 @@ export class GodotWorldViewHost {
   private disposed = false;
   private closing: Promise<void> | null = null;
   private disposal: Promise<void> | null = null;
+  private retiring = new Set<Promise<void>>();
+  private retirementFailures: string[] = [];
   private onState?: (state: GodotWorldState) => void;
 
   constructor(
@@ -275,7 +278,7 @@ export class GodotWorldViewHost {
       view = this.createView(runtime);
     } catch (error) {
       // A view that cannot be created must not leave a listening server behind.
-      await runtime.dispose({ graceful: false }).catch(() => undefined);
+      await this.trackRetirement(() => runtime.dispose({ graceful: false })).catch(() => undefined);
       throw error;
     }
     const instance: LiveInstance = {
@@ -338,8 +341,7 @@ export class GodotWorldViewHost {
       this.pending = null;
       instance.alive = false;
       instance.detach();
-      this.closeView(instance);
-      await runtime.dispose({ graceful: false }).catch(() => undefined);
+      await this.retireInstance(instance, false).catch(() => undefined);
       const message = error instanceof Error ? error.message : String(error);
       const reason = `${message}${this.describeFailure(instance)}`;
       if (previous?.alive) {
@@ -356,8 +358,7 @@ export class GodotWorldViewHost {
       this.stagedRequest = null;
       instance.alive = false;
       instance.detach();
-      this.closeView(instance);
-      await runtime.dispose({ graceful: false }).catch(() => undefined);
+      await this.retireInstance(instance, false).catch(() => undefined);
       throw new Error("World startup was cancelled");
     }
     if (staged) {
@@ -389,8 +390,7 @@ export class GodotWorldViewHost {
         // The old renderer may already be gone.
       }
       this.detachView(previous.view);
-      this.closeView(previous);
-      await previous.runtime.dispose({ graceful: true }).catch(() => undefined);
+      await this.retireInstance(previous, true).catch(() => undefined);
     }
     return this.currentState!;
   }
@@ -448,7 +448,7 @@ export class GodotWorldViewHost {
       candidate.alive = false;
       candidate.detach();
       this.detachView(candidate.view);
-      await Promise.all([this.closeView(candidate), candidate.runtime.dispose({graceful:false})]);
+      await this.retireInstance(candidate, false);
     }
     this.applyBounds();
   }
@@ -466,8 +466,8 @@ export class GodotWorldViewHost {
     this.publish({...this.identityOf(candidate),state:"paused"});
     this.applyBounds();
     if (previous) {
-      previous.alive = false; previous.detach(); this.detachView(previous.view); this.closeView(previous);
-      await previous.runtime.dispose({graceful:true}).catch(()=>undefined);
+      previous.alive = false; previous.detach(); this.detachView(previous.view);
+      await this.retireInstance(previous, true).catch(()=>undefined);
     }
     await this.resume();
     return this.currentState!;
@@ -799,7 +799,7 @@ export class GodotWorldViewHost {
     if (pending) {
       pending.alive = false;
       pending.detach();
-      cleanup.push(this.closeView(pending), pending.runtime.dispose({ graceful: false }));
+      cleanup.push(this.retireInstance(pending, false));
     }
     if (!instance) {
       const results = await Promise.allSettled(cleanup);
@@ -816,7 +816,7 @@ export class GodotWorldViewHost {
       // The renderer may already be gone.
     }
     this.detachView(instance.view);
-    cleanup.push(this.closeView(instance), instance.runtime.dispose({ graceful: true }));
+    cleanup.push(this.retireInstance(instance, true));
     const results = await Promise.allSettled(cleanup);
     const failures = results.filter(result => result.status === "rejected");
     if (failures.length) throw new AggregateError(failures.map(result => result.reason), "GODOT_WORLD_CLOSE_INCOMPLETE: " + failures.map(result => String(result.reason)).join("; "));
@@ -827,8 +827,37 @@ export class GodotWorldViewHost {
     if (this.disposal) return this.disposal;
     this.disposed = true;
     this.stopPolling();
-    this.disposal = this.close();
+    this.disposal = (async () => {
+      let closeFailure: unknown;
+      try { await this.close(); } catch (error) { closeFailure = error; }
+      // Instances can already be absent from current/pending while their
+      // renderer or HTTP cleanup is still outstanding.
+      while (this.retiring.size) await Promise.allSettled([...this.retiring]);
+      if (this.retirementFailures.length) throw new Error("GODOT_RETIREMENT_INCOMPLETE: " + this.retirementFailures.join("; "));
+      if (closeFailure) throw closeFailure;
+    })();
     return this.disposal;
+  }
+
+  private trackRetirement(operation: () => Promise<void>): Promise<void> {
+    const completion = Promise.resolve().then(operation);
+    this.retiring.add(completion);
+    void completion.then(() => this.retiring.delete(completion), error => {
+      this.retiring.delete(completion);
+      // Keep failure evidence after the instance is removed, with bounded text.
+      this.retirementFailures.push(String(error).slice(0, 1000));
+      if (this.retirementFailures.length > 64) this.retirementFailures.shift();
+    });
+    return completion;
+  }
+
+  private retireInstance(instance: LiveInstance, graceful: boolean): Promise<void> {
+    instance.retirement ??= this.trackRetirement(async () => {
+      const results = await Promise.allSettled([this.closeView(instance), instance.runtime.dispose({graceful})]);
+      const failures = results.filter(result => result.status === "rejected");
+      if (failures.length) throw new Error(`GODOT_INSTANCE_CLOSE_INCOMPLETE ${instance.instanceId}: ` + failures.map(result => String(result.reason)).join("; "));
+    });
+    return instance.retirement;
   }
 
   /** Close a view at most once; `webContents.close()` is asynchronous. */
@@ -850,7 +879,7 @@ export class GodotWorldViewHost {
       }
     });
     // Replacement/startup cleanup also records failure even when its caller is
-    // already propagating a different startup error. Disposal awaits this promise.
+    // already propagating a different startup error. Retirement tracks this promise.
     void instance.closePromise.catch(error => this.recordFault(instance, String(error)));
     return instance.closePromise;
   }

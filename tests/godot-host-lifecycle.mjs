@@ -130,9 +130,9 @@ test('formal world disposal waits for destroyed even after runtime cleanup, with
   const contents=f.host.current.view.webContents;let closes=0,done=false;
   contents.close=()=>{closes++;};
   const first=f.host.close(),disposal=f.host.dispose();
-  assert.equal(first,disposal);disposal.then(()=>done=true);
+  assert.equal(f.host.dispose(),disposal);disposal.then(()=>done=true);
   await new Promise(resolve=>setImmediate(resolve));assert.equal(done,false);assert.equal(closes,1);
-  contents.emit('destroyed');await disposal;assert.equal(done,true);assert.equal(closes,1);
+  contents.emit('destroyed');await Promise.all([first,disposal]);assert.equal(done,true);assert.equal(closes,1);
 });
 
 test('missing renderer destroyed event rejects disposal with a specific timeout and removes listener',async()=>{
@@ -140,7 +140,29 @@ test('missing renderer destroyed event rejects disposal with a specific timeout 
   const f=fixture({setTimeout:callback=>{deadline=callback;return 1;},clearTimeout(){}});await f.host.ensure(f.request());
   const instance=f.host.current,contents=instance.view.webContents;contents.close=()=>{};
   const disposal=f.host.dispose(),rejected=assert.rejects(disposal,/GODOT_RENDERER_CLOSE_TIMEOUT/);
-  deadline();await rejected;assert.equal(contents.listenerCount('destroyed'),1); // The separate diagnostics listener remains.
+  await new Promise(resolve=>setImmediate(resolve));deadline();await rejected;assert.equal(contents.listenerCount('destroyed'),1); // The separate diagnostics listener remains.
   assert.ok(instance.faults.some(value=>value.includes('GODOT_RENDERER_CLOSE_TIMEOUT')));
   assert.equal(f.host.dispose(),disposal);
+});
+
+test('dispose waits for a replaced instance no longer in current or pending',async()=>{
+  const f=fixture();await f.host.ensure(f.request());
+  const previous=f.host.current,contents=previous.view.webContents;contents.close=()=>{};
+  const replacement=f.host.ensure(f.request('beta',24));
+  while(f.host.current===previous)await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(f.host.current.worldId,'beta');assert.equal(f.host.pending,null);
+  let stopped=false;const disposal=f.host.dispose();disposal.then(()=>stopped=true);
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(stopped,false);
+  contents.emit('destroyed');await Promise.all([replacement,disposal]);assert.equal(stopped,true);
+});
+
+test('an already retired renderer timeout remains a shutdown failure after replacement succeeds',async()=>{
+  const timers=new Map();let sequence=0;
+  const f=fixture({setTimeout:callback=>{timers.set(++sequence,callback);return sequence;},clearTimeout:id=>timers.delete(id)});
+  await f.host.ensure(f.request());const previous=f.host.current;previous.view.webContents.close=()=>{};
+  const replacement=f.host.ensure(f.request('beta',24));
+  while(!timers.size)await new Promise(resolve=>setImmediate(resolve));
+  const expire=[...timers.values()][0];expire();await replacement;
+  assert.equal(f.host.current.worldId,'beta');assert.equal(f.host.retiring.size,0);
+  await assert.rejects(f.host.dispose(),/GODOT_RETIREMENT_INCOMPLETE.*GODOT_RENDERER_CLOSE_TIMEOUT/);
 });

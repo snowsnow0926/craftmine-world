@@ -9,6 +9,12 @@ import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
 const pageErrors: string[] = [];
+const shutdownFailures: Array<{service: string; error: string}> = [];
+export function recordHeadlessShutdownFailure(service: string, error: unknown): void {
+  if (!isHeadlessAcceptance()) return;
+  shutdownFailures.push({service: service.slice(0, 100), error: String(error).slice(0, 2000)});
+  if (shutdownFailures.length > 64) shutdownFailures.shift();
+}
 type Profile = NonNullable<ReturnType<typeof readHeadlessProfile>>;
 let profile: Profile | null = null;
 
@@ -57,7 +63,7 @@ export function configureHeadlessAcceptance(): Profile | null {
     if (window.isVisible() || window.isFocusable() || !window.webContents.isOffscreen()) throw new Error("Headless window was not created offscreen and unfocusable");
     for (const name of ["show", "showInactive", "focus", "restore", "moveTop", "setAlwaysOnTop", "flashFrame"]) block(window, name);
   });
-  app.on("will-quit", () => process.send?.({ type: "craftmine-headless-exit", violations, pageErrors }));
+  app.on("will-quit", () => process.send?.({ type: "craftmine-headless-exit", violations, pageErrors, shutdownFailures }));
   return profile;
 }
 
@@ -109,7 +115,7 @@ export function installHeadlessControl(access: {
           if (!godotGameplay) throw new Error("Actual Godot gameplay host unavailable");
           return godotGameplay(request.method);
         case "status": return {
-          name: app.getName(), profile: app.getPath("userData"), runtime: access.runtime(), violations, pageErrors,
+          name: app.getName(), profile: app.getPath("userData"), runtime: access.runtime(), violations, pageErrors, shutdownFailures,
           windows: BrowserWindow.getAllWindows().map(window => ({ visible: window.isVisible(), focused: window.isFocused(), focusable: window.isFocusable(), offscreen: window.webContents.isOffscreen() })),
           world: access.world()?.getURL() || null,
         };

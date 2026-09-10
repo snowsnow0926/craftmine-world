@@ -7,6 +7,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {setTimeout as delay} from 'node:timers/promises';
 import {assertTargetFeedbackObservation,candidateFromTargetFeedbackStatus} from '../player-product/target-feedback-observation.mjs';
+import {assertCleanHeadlessShutdown} from '../player-product/shutdown-exit-audit.mjs';
 const arg=name=>{const i=process.argv.indexOf(name);assert.ok(i>=0,`Missing ${name}`);return path.resolve(process.argv[i+1]);};
 const root=arg('--source-root'),runtime=arg('--runtime-source'),deps=arg('--deps-app'),app=path.join(root,'vendor/pi-desktop/apps/desktop');
 const require=createRequire(path.join(deps,'package.json')),electron=require('electron'),sha=b=>createHash('sha256').update(b).digest('hex');
@@ -36,7 +37,7 @@ async function step(name,fn){try{const value=await fn();report.steps.push({name,
 async function stop(){if(ended)return;try{await rpc('quit',{},10000);}catch{}await Promise.race([exit,delay(20000)]);if(!ended){launch.forcedStop=true;child.kill();}await exit;}
 function snapshot(value){const result=value?.state;assert.equal(result?.format,'craftmine.godot-progress/1');assert.equal(result.worldId,report.worldId);assert.equal(result.baseId,'first-person');assert.equal(result.baseVersion,'0.1.0');assert.equal(result.body?.format,'craftmine.godot-base-state/1');assert.equal(result.body.worldId,report.worldId);assert.ok(result.body.player&&result.body.equipment&&result.body.inventory&&result.body.quests);assert.ok(result.body.targets?.length>=3);assert.equal(typeof result.body.savedAt,'string');return structuredClone(result);}
 async function loaded(worldId){await until(()=>rpc('godotObserve'),x=>x?.worldId===worldId&&x.instanceId,'formal world',180000);await until(()=>rpc('worldNavigationReady'),x=>x.ready&&x.worldId===worldId,'world navigation');}
-async function auditStop(){const audit=await rpc('status');assert.equal(audit.violations.length,0);assert.ok(audit.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await stop();assert.equal(launch.exit.code,0);assert.ok(!launch.forcedStop);assert.deepEqual(launch.audit?.violations,[]);assert.deepEqual(launch.audit?.pageErrors,[]);return launch;}
+async function auditStop(){const audit=await rpc('status');assert.equal(audit.violations.length,0);assert.deepEqual(audit.shutdownFailures,[]);assert.ok(audit.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await stop();assertCleanHeadlessShutdown(launch);return launch;}
 const feedback=async(worldId,value)=>{
  const observed=await rpc('godotObserve');assertTargetFeedbackObservation(observed,{worldId,buildId:formalBuildId,targetId:'target_a',hitFlashMilliseconds:value});return observed;
 };
