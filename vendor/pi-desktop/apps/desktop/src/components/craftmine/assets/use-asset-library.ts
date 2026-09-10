@@ -561,9 +561,14 @@ export function createAssetLibraryController(
       previewGeneration += 1;
       const read = parseReadResult(await call!("asset.read", { assetId, version }));
       if (mine !== selectionGeneration) return read;
+      // A confirmed annotation may have refreshed the cards while this body
+      // read was pending. Prefer that current metadata over the captured row.
+      const currentMetadata = state.cards.find(card => card.assetId === assetId)
+        ?? (state.selectedMetadata?.assetId === assetId ? state.selectedMetadata : null)
+        ?? metadata;
       emit({
         selected: read,
-        selectedMetadata: metadata ? {assetId, tags: [...metadata.tags], favorite: metadata.favorite, ...acknowledgedMetadata.get(assetId)} : null,
+        selectedMetadata: currentMetadata ? {assetId, tags: [...currentMetadata.tags], favorite: currentMetadata.favorite, ...acknowledgedMetadata.get(assetId)} : null,
         preview: null,
         previewJob: null,
         previewRecords: [],

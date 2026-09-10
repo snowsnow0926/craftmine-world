@@ -1,0 +1,38 @@
+✔ buildSearchRequest fills host defaults and clamps the page size (8.1589ms)
+✔ mergePage de-duplicates by assetId+version and keeps order (0.2094ms)
+✔ controller.search sends the built request and loadMore uses nextOffset (0.7092ms)
+✔ scope and category switching send the new filter to the host (0.2458ms)
+✔ the four state flags produce four independent badges (0.2722ms)
+✔ describePreview covers all six statuses with honest copy (0.6015ms)
+✔ OGG is never playable and never gets a player (0.0874ms)
+✔ preview runs the real service and cancel terminates the attempt (1.1837ms)
+✔ a late preview result for a superseded selection is discarded (0.3298ms)
+✔ scanSummary and importRequestFor produce the import payload (0.659ms)
+✔ snapshot data keys stay disjoint from controller action names (0.1148ms)
+✔ the panel import path reads the scan result, never the scan action (0.1415ms)
+✔ AssetLibraryPanel reads scan data from scanResult with a guarded items read (0.3093ms)
+✔ versionOptions lists newest first (0.1339ms)
+✔ host failures reach the caller and stay in the error state (0.366ms)
+✔ asset UI sources contain no pointer-lock, click or focus emulation (0.5809ms)
+✔ a late search response for a previous scope never overwrites the list (0.1831ms)
+✔ thumbnailSrc only accepts a bounded, well-formed base64 payload (0.1041ms)
+✔ each new edit has a fresh operation, updates only browsing metadata and can clear tags (3.8187ms)
+✔ lost reply retries the frozen original ID and payload and prevents overtaking (0.7295ms)
+✔ late annotation failure stays on the original asset and can be retried after returning (0.5945ms)
+✔ late annotation success does not switch the selected asset (0.4328ms)
+✔ a late read for the previous selection cannot restore its detail or metadata (0.198ms)
+✔ removing a favorite can remove its card without losing the selected metadata (0.1918ms)
+✔ late previous-selection errors cannot replace the active detail error state (0.2239ms)
+✔ duplicate retry joins the same active operation and a bad receipt remains retryable (0.2583ms)
+✔ a logical asset named constructor is not mistaken for a pending edit (0.2107ms)
+✔ a confirmed edit releases its write slot while a slow list refresh is outstanding (0.3827ms)
+✔ a pending selection uses refreshed metadata after annotation acknowledgement is retired (0.2547ms)
+✔ a refreshed old asset cannot return after a newer asset selection (0.2118ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 203.6317
