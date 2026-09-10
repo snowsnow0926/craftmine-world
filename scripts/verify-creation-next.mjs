@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawn,execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
 const root=path.resolve(import.meta.dirname,'..');
 const quick=process.argv.includes('--quick');
 if(process.argv.slice(2).some(arg=>arg!=='--quick'))throw Error('Usage: node scripts/verify-creation-next.mjs [--quick]');
@@ -14,6 +15,9 @@ const unit=['creation-operations','creation-source-service','creation-progress-m
 unit.push('tests/creation-guidance/guidance.test.mjs','tests/creation-guidance/packaging.test.mjs','desktop/godot/bases/creation-sandbox/tests/contract.test.mjs');
 const host=fs.readdirSync(path.join(root,'vendor/pi-desktop/apps/desktop/test')).filter(name=>/^(?:creation-|voice-input|voice-microphone-permission|composer-voice-draft|craftmine-immersion|immersion-pause-controller).*\.test\.mjs$/.test(name)).sort().map(name=>'vendor/pi-desktop/apps/desktop/test/'+name);
 const steps=[['logic',['--test',...unit]],['host',['--test',...host]]];
+const runtimeRequire=createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
+const vitest=path.join(path.dirname(runtimeRequire.resolve('vitest/package.json')),'vitest.mjs');
+steps.push(['runtime-request-boundary',[vitest,'run','--root',path.join(root,'vendor/pi-desktop/packages/agent-runtime'),'src/craftmine-context.test.ts','src/agent-errors.test.ts']]);
 if(!quick)for(const [name,file]of [
  ['editing-ui','creation-edit-ui-headless'],['voice-status-ui','creation-voice-status-headless'],
  ['editing-progress','creation-edit-progress-headless'],['general-behavior','creation-entity-behavior-headless'],
