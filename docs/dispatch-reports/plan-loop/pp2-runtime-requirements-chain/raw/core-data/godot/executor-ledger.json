@@ -1,0 +1,75 @@
+{
+  "format": "craftmine.godot-executor-ledger/1",
+  "executorId": "craftmine-windows-broker-v1",
+  "updatedAt": "2026-09-10T01:46:46.085Z",
+  "jobs": {
+    "gjob-ed8460f0e4f0f91fe930e8053248cbb38d61bd4ead5ed9668a955a9c508bb769": {
+      "jobId": "gjob-ed8460f0e4f0f91fe930e8053248cbb38d61bd4ead5ed9668a955a9c508bb769",
+      "worldId": "chain-positive",
+      "mode": "check",
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-3a99d4fda6dd4b19b6d51dba",
+          "operation": "import",
+          "startedAt": "2026-09-10T01:46:18.483Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T01:46:21.689Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-5f9e9811c9cb4ef89a1ce67f",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T01:46:21.692Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T01:46:25.216Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "startedAt": "2026-09-10T01:46:18.482Z",
+      "finishedAt": "2026-09-10T01:46:33.732Z",
+      "outcome": "passed",
+      "reason": null
+    },
+    "gjob-91d502af0ead07cafb78f2f75e3fdeb5ad4ca4b18c20d284f421ace89c1b6616": {
+      "jobId": "gjob-91d502af0ead07cafb78f2f75e3fdeb5ad4ca4b18c20d284f421ace89c1b6616",
+      "worldId": "chain-sibling-override",
+      "mode": "check",
+      "state": "failed",
+      "attempts": [
+        {
+          "requestId": "im-a1450fd3415643e2b1c70a1b",
+          "operation": "import",
+          "startedAt": "2026-09-10T01:46:37.472Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T01:46:40.732Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-647618d9d16d4006b95cc36d",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-10T01:46:40.734Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-10T01:46:44.268Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "startedAt": "2026-09-10T01:46:37.471Z",
+      "finishedAt": "2026-09-10T01:46:46.085Z",
+      "outcome": "failed",
+      "reason": "GODOT_CHECK_TARGET_FEEDBACK_MISMATCH:loaded"
+    }
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "format": "craftmine.raw-evidence-index/1",
+  "source": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy",
+  "files": [
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\electron-exit.json",
+      "path": "raw/electron-exit.json",
+      "bytes": 10,
+      "sha256": "7a97b9b4d758a3929b8a2be53fbe189c9ba9378d6fbb8190d37f7cc14f5cf5d3"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\electron.log",
+      "path": "raw/electron.log",
+      "bytes": 1233,
+      "sha256": "20a289a3efe08f2d7585120b83af3580e6f1ac3a965977336764695eab82fdcb"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\fixtures.json",
+      "path": "raw/fixtures.json",
+      "bytes": 507394,
+      "sha256": "2e5d8f5e61658e8925fa31ff66ac7387fdf0c85bd70676fb637edc2234c6c042"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\report.json",
+      "path": "raw/report.json",
+      "bytes": 324350,
+      "sha256": "c34b051131ed5c65a3c67409bd9d5d8e80625baafe8c4521f4079fe8cfa62a86"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\setup.json",
+      "path": "raw/setup.json",
+      "bytes": 25972,
+      "sha256": "4199ad1717433da7afd61975bcb1c0b73d3499aeac98b24ccd8e0754ede4102d"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\executor-ledger.json",
+      "path": "raw/core-data/godot/executor-ledger.json",
+      "bytes": 2546,
+      "sha256": "6de5910b1cfce5ff9d989849edf53f4b46975a9ef2ab0029f300dcf2d0049803"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-5f9e9811c9cb4ef89a1ce67f\\task-identity.json",
+      "path": "raw/core-data/godot/tasks/ex-5f9e9811c9cb4ef89a1ce67f/task-identity.json",
+      "bytes": 165,
+      "sha256": "e6f9e3227226d182e7b2833be083594a2dbac1a746a7aebfcc92f8f796d1a9c2"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-647618d9d16d4006b95cc36d\\task-identity.json",
+      "path": "raw/core-data/godot/tasks/ex-647618d9d16d4006b95cc36d/task-identity.json",
+      "bytes": 165,
+      "sha256": "f56130b3720ce1fb9610801b7109928918a8045b701603fb71d19679ce894bf8"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-3a99d4fda6dd4b19b6d51dba\\task-identity.json",
+      "path": "raw/core-data/godot/tasks/im-3a99d4fda6dd4b19b6d51dba/task-identity.json",
+      "bytes": 165,
+      "sha256": "d69418c214349fbce887fe343949ee6ecd763bc7b8e1d71ec7cff71594540fc7"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-a1450fd3415643e2b1c70a1b\\task-identity.json",
+      "path": "raw/core-data/godot/tasks/im-a1450fd3415643e2b1c70a1b/task-identity.json",
+      "bytes": 165,
+      "sha256": "ff03f7d1ecbf9116f5587936761d4d039b8eb56fd1e81d28149076a5456536a9"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\pf-8c93e9494b354c4ab14839e7\\task-identity.json",
+      "path": "raw/core-data/godot/tasks/pf-8c93e9494b354c4ab14839e7/task-identity.json",
+      "bytes": 165,
+      "sha256": "167b665bd3c62ad4281138cd42f671139982f2391903a52944e078a1e999e14e"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-5f9e9811c9cb4ef89a1ce67f\\logs\\native-verification.json",
+      "path": "raw/core-data/godot/tasks/ex-5f9e9811c9cb4ef89a1ce67f/logs/native-verification.json",
+      "bytes": 794,
+      "sha256": "e334b77153caa133c2d1a5fb98a78fff6625012ef7c846233b0fd723a10e28dc"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-5f9e9811c9cb4ef89a1ce67f\\logs\\preflight.json",
+      "path": "raw/core-data/godot/tasks/ex-5f9e9811c9cb4ef89a1ce67f/logs/preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-5f9e9811c9cb4ef89a1ce67f\\logs\\process-verification.json",
+      "path": "raw/core-data/godot/tasks/ex-5f9e9811c9cb4ef89a1ce67f/logs/process-verification.json",
+      "bytes": 802,
+      "sha256": "1e0783900d579063db067212d45d0a11d77804056f0ce6cfe20d36339131d9c1"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-5f9e9811c9cb4ef89a1ce67f\\logs\\task.log",
+      "path": "raw/core-data/godot/tasks/ex-5f9e9811c9cb4ef89a1ce67f/logs/task.log",
+      "bytes": 21385,
+      "sha256": "3705694857b111e39c4cb66482a2b5737615646edcf95c3917bbfafc3376e1d4"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-647618d9d16d4006b95cc36d\\logs\\native-verification.json",
+      "path": "raw/core-data/godot/tasks/ex-647618d9d16d4006b95cc36d/logs/native-verification.json",
+      "bytes": 796,
+      "sha256": "3a684a3d3776e58bf3e2ef647e782567a39ff2737c8e4b7ec4305d59c1d971dd"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-647618d9d16d4006b95cc36d\\logs\\preflight.json",
+      "path": "raw/core-data/godot/tasks/ex-647618d9d16d4006b95cc36d/logs/preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-647618d9d16d4006b95cc36d\\logs\\process-verification.json",
+      "path": "raw/core-data/godot/tasks/ex-647618d9d16d4006b95cc36d/logs/process-verification.json",
+      "bytes": 804,
+      "sha256": "a62f11ab44c8188957f5289efdbb05161d5f8164fade68662f0d3a60c0e9ccb9"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\ex-647618d9d16d4006b95cc36d\\logs\\task.log",
+      "path": "raw/core-data/godot/tasks/ex-647618d9d16d4006b95cc36d/logs/task.log",
+      "bytes": 21699,
+      "sha256": "682df54648b49007835ea7b1ad486c3bcd8504cfb345026a614b505b644e7b85"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-3a99d4fda6dd4b19b6d51dba\\logs\\native-verification.json",
+      "path": "raw/core-data/godot/tasks/im-3a99d4fda6dd4b19b6d51dba/logs/native-verification.json",
+      "bytes": 796,
+      "sha256": "fc73bbbffb14b9d685ee41f98c61202404fffbb423248fe68f73f832407e604b"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-3a99d4fda6dd4b19b6d51dba\\logs\\preflight.json",
+      "path": "raw/core-data/godot/tasks/im-3a99d4fda6dd4b19b6d51dba/logs/preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-3a99d4fda6dd4b19b6d51dba\\logs\\process-verification.json",
+      "path": "raw/core-data/godot/tasks/im-3a99d4fda6dd4b19b6d51dba/logs/process-verification.json",
+      "bytes": 805,
+      "sha256": "a7b650fe384602f47712a84ee7f45b207cd75805f971808b46237dcd5df165b7"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-3a99d4fda6dd4b19b6d51dba\\logs\\task.log",
+      "path": "raw/core-data/godot/tasks/im-3a99d4fda6dd4b19b6d51dba/logs/task.log",
+      "bytes": 6664,
+      "sha256": "1531c43de8277592d604f783a183bc613962b6f105227a40fca578b92a8935ff"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-a1450fd3415643e2b1c70a1b\\logs\\native-verification.json",
+      "path": "raw/core-data/godot/tasks/im-a1450fd3415643e2b1c70a1b/logs/native-verification.json",
+      "bytes": 797,
+      "sha256": "ed9ee3a250a26c6efc9feefaeb59fafb5854fb0131f96ee69fb0b6b85e364ad2"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-a1450fd3415643e2b1c70a1b\\logs\\preflight.json",
+      "path": "raw/core-data/godot/tasks/im-a1450fd3415643e2b1c70a1b/logs/preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-a1450fd3415643e2b1c70a1b\\logs\\process-verification.json",
+      "path": "raw/core-data/godot/tasks/im-a1450fd3415643e2b1c70a1b/logs/process-verification.json",
+      "bytes": 806,
+      "sha256": "7a51ab7cd2d0d0f43bb8c6ab6ea930abfa78a697adb3b674ecc143cd766b5d8b"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\im-a1450fd3415643e2b1c70a1b\\logs\\task.log",
+      "path": "raw/core-data/godot/tasks/im-a1450fd3415643e2b1c70a1b/logs/task.log",
+      "bytes": 6723,
+      "sha256": "a6cd9ddaf6288c7f7daed16e4a7ccaed24e1cd9a66287a67e5ff8a6d0dbf5cc4"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\pf-8c93e9494b354c4ab14839e7\\logs\\native-verification.json",
+      "path": "raw/core-data/godot/tasks/pf-8c93e9494b354c4ab14839e7/logs/native-verification.json",
+      "bytes": 797,
+      "sha256": "35e657d2e00b9d8bdb7a4d809a3cf16e9b0e4ee86656b53581dd148756bffa1f"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\pf-8c93e9494b354c4ab14839e7\\logs\\preflight.json",
+      "path": "raw/core-data/godot/tasks/pf-8c93e9494b354c4ab14839e7/logs/preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\pf-8c93e9494b354c4ab14839e7\\logs\\process-verification.json",
+      "path": "raw/core-data/godot/tasks/pf-8c93e9494b354c4ab14839e7/logs/process-verification.json",
+      "bytes": 806,
+      "sha256": "3a57be7dae98a956b278c94299c2f9ec98e0ad50f7f5dcfbe23bf6bc83664f75"
+    },
+    {
+      "original": "D:\\cm-plan-param-check-20260910\\test-results\\target-feedback-chain-0kQafy\\core-data\\godot\\tasks\\pf-8c93e9494b354c4ab14839e7\\logs\\task.log",
+      "path": "raw/core-data/godot/tasks/pf-8c93e9494b354c4ab14839e7/logs/task.log",
+      "bytes": 33,
+      "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+    }
+  ]
+}
