@@ -9263,3 +9263,13 @@ P8-FAILED-CASE-STOP-20260910 also covers an earlier saved hammer followed by an 
 ### P1-LEGACY-RETRY-HANDOFF-20260910 — Scheduling acknowledgment precedes new state
 
 Run the existing detached-native failure and full packaged-client repair fixture on a new immutable candidate. Record the complete failed world row and verify it again before dispatching exactly one world.creationRetry. Accept the exact old failed row for less than 30 seconds only until initializing/checking is observed. Any new or changed failure, failed row after preparing, other world, cancellation, unknown state or handoff timeout must fail immediately without a second mutation. Preserve baseline, reply, transitions and the last failed row. Keep all existing pinned bridge, new candidate/job, old aborted application/source revision, managed inventory, complete save/restart and strict exit assertions. Offline tests execute the actual driver retry step with controlled observations and do not constitute native recovery success. Preserve the earlier 688 xkLzVU failure independently.
+## Feedback authoring context regression (2026-09-10)
+
+In an isolated Git-backed world, invoke the actual project patch tool twice with
+successive source identities. Both edits must create commits. Replay the first
+host invocation after HEAD advances: return its original receipt without another
+commit. Changed replays, stale new invocations and forged context must fail without
+changing source or progress. Recover a lost committed reply through its receipt.
+Run the real hammer and dog prompts through packaged chat, check, preview, apply,
+save and restart before claiming model creation acceptance. Use only offscreen
+processes and no input simulation. See godot-authoring-content-context.md.

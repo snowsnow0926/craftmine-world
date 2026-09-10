@@ -67,8 +67,49 @@ async function fixture(t) {
     select:id=>{selectedWorld=id;},end:()=>{ended=true;}};
 }
 
-// A registered, attested executor: identity comes from the process protocol,
-// exactly as task A's isolated runner would do it.
+test('Git authoring binds immutable revisions and replays after subsequent commits',async t=>{
+  const f=await fixture(t);
+  await f.call('godot_project_create',{baseId:'first-person',files});
+  await f.client.call('content.migrate.apply',{worldId:'alpha'});
+  const before=await f.client.call('world.read',{id:'alpha'});
+  const firstIndex=await f.call('godot_project_index');
+  const status=await f.client.call('content.status',{worldId:'alpha'});
+  assert.deepEqual(firstIndex.content,{repoId:status.repoId,branchId:'main',contentOid:status.headOid});
+  const request={revision:firstIndex.revision,manifestHash:firstIndex.manifestHash,
+    operations:[{op:'put',path:'one.gd',text:'extends Node\n',expectedHash:null}]};
+  const first=await f.call('godot_project_patch',request,{toolCallId:'git-first'});
+  const secondIndex=await f.call('godot_project_index');
+  assert.equal(secondIndex.content.contentOid,first.commitOid);
+  const second=await f.call('godot_project_patch',{revision:secondIndex.revision,manifestHash:secondIndex.manifestHash,
+    operations:[{op:'put',path:'two.gd',text:'extends Node\n',expectedHash:null}]});
+  assert.notEqual(second.commitOid,first.commitOid);
+  // A fresh broker must reconstruct the original operation without a RAM cache.
+  const fresh=createWorldTools(f.core,async()=>({activeWorldId:'alpha'}));
+  const replay=await fresh.find(tool=>tool.name==='godot_project_patch').execute(request,
+    {...f.invocation,toolCallId:'git-first'});
+  assert.deepEqual(replay,first);
+  await assert.rejects(f.call('godot_project_patch',{...request,operations:[{...request.operations[0],text:'extends Node\n# changed\n'}]},
+    {toolCallId:'git-first'}),/REPLAY_MISMATCH/);
+  await assert.rejects(f.call('godot_project_patch',request),/PROJECT_.*CONFLICT/);
+  await assert.rejects(f.call('godot_project_patch',{...request,operation:{expectedHeadOid:second.commitOid}}),error=>error.code==='INVALID_ARGUMENTS');
+  assert.equal((await f.client.call('content.status',{worldId:'alpha'})).headOid,second.commitOid);
+  assert.deepEqual(await f.client.call('world.read',{id:'alpha'}),before);
+});
+
+test('Git authoring recovers a lost committed reply using its exact operation context',async t=>{
+  const f=await fixture(t);
+  const created=await f.call('godot_project_create',{baseId:'first-person',files});
+  await f.client.call('content.migrate.apply',{worldId:'alpha'});
+  const before=await f.client.call('content.status',{worldId:'alpha'});
+  f.lose('godotProject.patch');
+  const result=await f.call('godot_project_patch',{revision:created.revision,manifestHash:created.manifestHash,
+    operations:[{op:'put',path:'recovered.gd',text:'extends Node\n',expectedHash:null}]});
+  assert.notEqual(result.commitOid,before.headOid);
+  assert.equal(result.commitOid,(await f.client.call('content.status',{worldId:'alpha'})).headOid);
+  assert.ok(f.calls.includes('godotProject.receipt'));
+});
+
+// A registered, attested executor uses the same process protocol as the runner.
 async function registerExecutor(f,capabilities={import:true,build:true,check:true}) {
   return f.client.call('godotExecutor.register',{executorId:'executor-a',attestation:{
     format:'craftmine.godot-executor/1',isolation:'appcontainer',evidenceHash:hash('isolation-evidence'),
@@ -106,7 +147,7 @@ test('managed build: blocked without an executor, queued after attestation, real
   assert.equal(blocked.status,'blocked');
   assert.equal(blocked.executionAvailable,false);
   assert.equal(blocked.blockedReason,'GODOT_EXECUTION_UNAVAILABLE');
-  assert.equal(blocked.materialized.files,4);
+  assert.equal(blocked.materialized.files,7);
   await assert.rejects(f.client.call('godotJob.claim',{jobId:blocked.jobId,token:randomUUID(),
     executorId:'executor-a'}),/GODOT_EXECUTOR_UNAVAILABLE/);
   await registerExecutor(f);
@@ -230,7 +271,7 @@ test('only the player application transaction can publish a candidate',async t=>
 test('tool catalogue declares managed build tools without host identity',async()=>{
   const manifest=JSON.parse(await readFile(path.join(root,'plugins/craftmine-world/manifest.json'),'utf8'));
   const tools=manifest.contributes.agentTools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(tools.length,11);
+  assert.equal(tools.length,19);
   for(const tool of tools)for(const key of ['worldId','context','toolCallId','baseBuild'])
     assert.ok(!Object.hasOwn(tool.schema.properties,key),`${tool.name} must not accept ${key}`);
   assert.ok(tools.every(tool=>tool.schema.additionalProperties===false));

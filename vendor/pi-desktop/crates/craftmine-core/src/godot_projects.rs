@@ -1087,8 +1087,19 @@ impl TaskJournal {
             .map(|(path, file)| json!({"path":path,"sha256":file.sha256,"bytes":file.bytes}))
             .collect();
         let next = args.offset + files.len();
+        // Bind authoring to this immutable source revision, not whichever HEAD
+        // happens to be current when a lost write reply is retried.
+        let content = if self.is_git_backed(&args.world_id)? {
+            let (_, layout) = self.content_layout(&args.world_id)?;
+            let oid = git_commit_for(&self.db, &args.world_id, manifest.revision)?
+                .context("GODOT_PROJECT_HEAD_MISSING")?;
+            Some(json!({"repoId":layout.repo_id,"branchId":args.branch_id,"contentOid":oid}))
+        } else {
+            None
+        };
         Ok(
             json!({"format":manifest.format,"worldId":manifest.world_id,"branchId":args.branch_id,"revision":manifest.revision,"manifestHash":hash,
+            "content":content,
             "baseBuild":manifest.base_build,"currentTaskId":workspace.task.binding.task_id,"lastWriter":manifest.task,
             "baseId":manifest.base_id,"engineVersion":manifest.engine_version,"language":manifest.language,"renderer":manifest.renderer,"target":manifest.target,
             "files":files,"totalFiles":manifest.files.len(),"nextOffset":(next<manifest.files.len()).then_some(next),

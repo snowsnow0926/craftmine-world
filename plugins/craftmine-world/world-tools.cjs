@@ -1,4 +1,5 @@
 // PI owns the agent loop. This broker exposes bounded domain operations only.
+const {createHash}=require('node:crypto');
 const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVerification,draftPackages,createLibraryService,createMemoryService}=require('./domain.cjs');
 const docs=require('./godot-docs.cjs');
 const {createProjectQuery}=require('./godot-query.cjs');
@@ -216,12 +217,41 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(godotWrites[definition.name])params.toolCallId=invocation.toolCallId;
       if(definition.name==='godot_project_create')params.baseBuild=workspace.task.binding.baseBuild;
       const method=GODOT_METHODS[definition.name];
-      try {
-        const result=await core.call(method,params);
+      if(definition.name==='godot_project_patch') {
+        const source=await core.call('godotProject.index',{context,worldId:workspace.worldId,
+          revision:args.revision,manifestHash:args.manifestHash,limit:1});
+        assertActive();
+        if(source.worldId!==workspace.worldId||source.revision!==args.revision||source.manifestHash!==args.manifestHash)throw Error('GODOT_PROJECT_IDENTITY_MISMATCH');
+        if(source.content) {
+          const {repoId,branchId,contentOid}=source.content;
+          if(typeof repoId!=='string'||!repoId||branchId!=='main'||typeof contentOid!=='string'||!/^[a-f0-9]{40,64}$/.test(contentOid))throw Error('GODOT_PROJECT_CONTENT_IDENTITY_INVALID');
+          // Authority comes from the Rust revision index and host invocation.
+          // Source edits do not apply content or change saves. Null is intentional
+          // for those expectations and keeps the original receipt replay stable.
+          params.operation={operationId:'patch-'+createHash('sha256').update(JSON.stringify([context,invocation.toolCallId])).digest('hex'),
+            worldId:workspace.worldId,repoId,branchId,expectedHeadOid:contentOid,
+            expectedAppliedOid:null,expectedProgressRevision:null};
+        }
+      }
+      let result;
+      try { result=await core.call(method,params); }
+      catch(error) {
+        if(!godotWrites[definition.name]||error?.errorCode)throw error;
+        // Recover the exact durable result without replaying an uncertain write.
+        // A recovered queued job still needs the same executor handoff below.
+        try {
+          await core.start();
+          result=await core.call(godotReceipts[method],{binding:workspace.task.binding,
+            worldId:workspace.worldId,toolCallId:params.toolCallId,method,request:params});
+        } catch {/* Preserve the original uncertain outcome if lookup is unavailable. */}
+        if(!result)throw error;
+      }
         // A queued build/check job must reach the live executor in the same
         // turn; otherwise the model reports a build that never runs.
         if(definition.name==='godot_build_start'&&result&&typeof result==='object'){
-          const execution=result.executionAvailable===false
+          const execution=isEnded(context)
+            ? {enqueued:false,reason:'TURN_ENDED',owner:'S2',skipped:true}
+            : result.executionAvailable===false
             ? {enqueued:false,reason:result.blockedReason||'GODOT_EXECUTION_UNAVAILABLE',owner:'S2',skipped:true}
             : await handOffJob(result,context);
           return {...result,execution};
@@ -231,20 +261,6 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
           return {...result,execution:{cancelled:cancelled?.cancelled===true,reason:cancelled?.reason??null,owner:'S2'}};
         }
         return result;
-      }
-      catch(error) {
-        if(!godotWrites[definition.name]||error?.errorCode)throw error;
-        // A transport failure cannot establish whether the commit happened.
-        // Look up only the original receipt, including after the turn ended;
-        // never reopen its lease or replay a write to discover the outcome.
-        try {
-          await core.start();
-          const receipt=await core.call(godotReceipts[method],{binding:workspace.task.binding,
-            worldId:workspace.worldId,toolCallId:params.toolCallId,method,request:params});
-          if(receipt)return receipt;
-        } catch {/* Preserve the original uncertain outcome if lookup is unavailable. */}
-        throw error;
-      }
     }
     if(definition.name==='library_search')return library.search(args);
     if(definition.name==='library_read')return library.read(args);
