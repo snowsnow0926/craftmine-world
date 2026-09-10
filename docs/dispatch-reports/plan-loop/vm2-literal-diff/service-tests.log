@@ -1,0 +1,16 @@
+✔ history and source reads reuse actual context without starting or ending work (1.5213ms)
+✔ no source context is an honest read failure, never a synthetic task fallback (0.598ms)
+✔ world, repo, head and formal view identity changes all reject stale reads (0.5077ms)
+✔ changes during an asynchronous read reject before returning bytes (0.2554ms)
+✔ forged target, view, unknown fields, page and arbitrary path are rejected (0.8189ms)
+✔ bounded view eviction invalidates the oldest token (0.6034ms)
+✔ private Git diagnostic paths never reach renderer errors (0.1812ms)
+✔ only finite history channels pass the Main navigation gateway (0.222ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 508.2184

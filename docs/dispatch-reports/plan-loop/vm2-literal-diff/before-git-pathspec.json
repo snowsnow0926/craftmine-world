@@ -1,0 +1,17 @@
+{
+  "dir": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\cm-vm2-path-audit-Fo0exo",
+  "args": [
+    "diff",
+    "--no-color",
+    "--no-ext-diff",
+    "--no-textconv",
+    "--no-renames",
+    "396367c0befecab13fb065593e84b8828c8c6510",
+    "bb706e697cdc1891d5391b8bea07b34ea357f691",
+    "--",
+    "a[1].gd"
+  ],
+  "numstat": "1\t1\ta1.gd\u00001\t1\ta[1].gd\u0000",
+  "patch": "diff --git a/a1.gd b/a1.gd\nindex 22aa34e..bb26e68 100644\n--- a/a1.gd\n+++ b/a1.gd\n@@ -1,2 +1,2 @@\n extends Node\n-var value=1\n+var value=2\ndiff --git a/a[1].gd b/a[1].gd\nindex 22aa34e..bb26e68 100644\n--- a/a[1].gd\n+++ b/a[1].gd\n@@ -1,2 +1,2 @@\n extends Node\n-var value=1\n+var value=2",
+  "literal": "diff --git a/a[1].gd b/a[1].gd\nindex 22aa34e..bb26e68 100644\n--- a/a[1].gd\n+++ b/a[1].gd\n@@ -1,2 +1,2 @@\n extends Node\n-var value=1\n+var value=2"
+}
