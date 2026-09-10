@@ -1,0 +1,11 @@
+PASS workbench mount, 1..1000 integer validation and exact selected target durability
+PASS verified defaults only fill the selected input until original durable submit
+PASS detached old-world default form cannot fill the newly mounted world
+PASS missing default never falls back to contract120 after reread
+PASS background status polling never repeats modification; passed does not claim adoption
+PASS lost reply recovers only through the pending original operation
+PASS rejected result allows reread and a corrected value
+PASS late submission across world switch cannot populate or unlock the new world
+PASS late status after changing tab cannot reopen or poll the hidden parameter page
+PASS a late initial read cannot overwrite a newer read of the same component
+{"out":"C:\\cm-plan-next-20260910\\test-results\\target-ui-7TG6pm","passed":true,"checks":10}

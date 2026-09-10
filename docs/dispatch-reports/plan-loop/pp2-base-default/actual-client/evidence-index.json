@@ -1,0 +1,96 @@
+{
+  "sourceCommit": "16134bac6e706ab3cee45936db8d8d352e0b67bf",
+  "mode": "development",
+  "entries": [
+    {
+      "path": "raw/client-1-stderr.log",
+      "bytes": 833,
+      "sha256": "bdcc72b75e5f1ac9d6a02ec94adb7d9c43acb950cdcd896d4c8c5ba8cb9c0e66",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-1-stderr.log"
+    },
+    {
+      "path": "raw/client-1-stdout.log",
+      "bytes": 9831,
+      "sha256": "512b6d5026d4a78b59659b129ab83424289ba2f63e10f7e8c0bf767de13c45f5",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-1-stdout.log"
+    },
+    {
+      "path": "raw/client-2-stderr.log",
+      "bytes": 1030,
+      "sha256": "9ec23324ac281b78a08b12c494bc4f5c438624e324855ce8ff9095c0ce73763d",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-2-stderr.log"
+    },
+    {
+      "path": "raw/client-2-stdout.log",
+      "bytes": 10568,
+      "sha256": "25700c639ce3cd91fb9d9be769b390dc1f4e819a25301ee49dd6e4e401125c81",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-2-stdout.log"
+    },
+    {
+      "path": "raw/client-3-stderr.log",
+      "bytes": 1673,
+      "sha256": "ffbdfcc7bbaffa1322b8f56e40f1d3e4dc1dffd5eb2d9f681a3df5376d5d882d",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-3-stderr.log"
+    },
+    {
+      "path": "raw/client-3-stdout.log",
+      "bytes": 13409,
+      "sha256": "c3100bfb9ec98569dd3f1414b12ca867e429a1ca694e577ba875cef36dabd474",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-3-stdout.log"
+    },
+    {
+      "path": "raw/client-4-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-4-stderr.log"
+    },
+    {
+      "path": "raw/client-4-stdout.log",
+      "bytes": 3723,
+      "sha256": "517169c5324d8ac97708b7a2e442f1d64e2cc693e699cfb758c56f9fb178b7a7",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\client-4-stdout.log"
+    },
+    {
+      "path": "raw/report.json",
+      "bytes": 180861,
+      "sha256": "2cdb75b9eeda7a97f40d78154d7bf10c70b84d04e4099ae3c980dc010db7131c",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\desktop-native-defaults-yED1fh\\report.json"
+    },
+    {
+      "path": "raw/controls-development-native-reuse.json",
+      "bytes": 607,
+      "sha256": "9ead463b0de178b6c2cef418b3402c22c5a4ff2203d991a2b05b134931366299",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\controls-development-native-reuse.json"
+    },
+    {
+      "path": "raw/controls-development-build.log",
+      "bytes": 20593,
+      "sha256": "6925039f39cb740095fff73c763941e2d55b884793687578c68b2c9e4a0a7814",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\controls-development-build.log"
+    },
+    {
+      "path": "raw/controls-default-native.log",
+      "bytes": 4503,
+      "sha256": "3aefcf5bfd687fb5cc70fcafb249a54d6a7380496a61f317660d257fcfb0dc8b",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\controls-default-native.log"
+    },
+    {
+      "path": "raw/next-defaults-stage-tests.log",
+      "bytes": 6218,
+      "sha256": "f13129226d390e7dc1a32e6b384b34e958faf86c9e036fc498dc37b3b461b1e4",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\next-defaults-stage-tests.log"
+    },
+    {
+      "path": "raw/next-defaults-ui.log",
+      "bytes": 870,
+      "sha256": "f36876526b862da9068a8d999a4aaa95b8307345750bd494a06a1ff9d73f7168",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\next-defaults-ui.log"
+    },
+    {
+      "path": "raw/next-defaults-typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source": "C:\\cm-plan-next-20260910\\test-results\\next-defaults-typecheck.log"
+    }
+  ]
+}
