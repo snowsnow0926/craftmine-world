@@ -24,7 +24,7 @@ const rounds=directories.map(directory=>{
  return {directory:root,reportSha256:sha(raw),sourceCommit:report.sourceCommit,compiledMainSha256:report.compiledMainSha256,model:report.model,provider:report.provider,limits:report.limits,summary:report.summary,
   cases:report.cases.map(item=>({id:item.id,request:item.request,evidenceUse:item.evidenceUse??'development_case',outcome:item.outcome,modelRequests:item.modelRequests,repairAttempts:item.repairAttempts??0,elapsedMs:item.elapsedMs??null,error:item.error??null,
    tools:(item.turnMessages??[]).filter(m=>m.role==='tool').map(m=>({name:m.toolName,elapsedMs:m.toolDurationMs??null,status:m.toolStatus??null,...(findTiming(m.toolResult??m.content)?{sourceTiming:findTiming(m.toolResult??m.content)}:{})}))})),
-  jobs:Object.values(ledger?.jobs??{}).map(job=>({jobId:job.jobId,state:job.state,outcome:job.outcome,checkElapsedMs:duration(job.startedAt,job.finishedAt),brokerAttempts:job.attempts.map(attempt=>({operation:attempt.operation,outcome:attempt.outcome,elapsedMs:duration(attempt.startedAt,attempt.finishedAt)})),phaseTiming:job.phaseTiming??null})),
+  jobs:Object.values(ledger?.jobs??{}).map(job=>({jobId:job.jobId,state:job.state,outcome:job.outcome,checkElapsedMs:duration(job.startedAt,job.finishedAt),brokerAttempts:job.attempts.map(attempt=>({operation:attempt.operation,outcome:attempt.outcome,elapsedMs:duration(attempt.startedAt,attempt.finishedAt)})),phaseTiming:job.phaseTiming??null,creationPackProof:job.creationPackProof??null})),
  };
 });
 const result={format:'craftmine.creation-model-comparison/1',generatedAt:new Date().toISOString(),rounds,totalObservedRequests:rounds.reduce((sum,round)=>sum+(round.summary?.requestCount??0),0),cost:null,notes:[

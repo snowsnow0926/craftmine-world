@@ -1275,6 +1275,9 @@ function createGodotExecutor(core, options = {}) {
           importCrashRetries:entry.importCrashRetries ? 1 : 0,
           state:typeof entry.state === 'string' ? entry.state : 'enqueued',
           attempts:Array.isArray(entry.attempts) ? entry.attempts.filter(attempt => attempt && typeof attempt === 'object') : [],
+          // Historical proof is diagnostic only; new jobs always inspect the
+          // actual pack again before they can submit a passed result.
+          creationPackProof:entry.creationPackProof?.format==='craftmine.creation-pack-proof/1' ? entry.creationPackProof : null,
           phaseTiming:entry.phaseTiming?.format==='craftmine.creation-timing/1' && Number.isFinite(entry.phaseTiming.totalMs)
             && Array.isArray(entry.phaseTiming.stages) && entry.phaseTiming.stages.length<=2
             && entry.phaseTiming.stages.every(stage=>['runtime-check','creation-application'].includes(stage?.stage)&&Number.isFinite(stage.elapsedMs)&&stage.elapsedMs>=0&&typeof stage.passed==='boolean')
