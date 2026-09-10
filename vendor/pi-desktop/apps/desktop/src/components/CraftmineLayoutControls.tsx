@@ -10,6 +10,7 @@ import {
 } from "../lib/craftmine-layout";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import { api } from "../lib/api";
+import { CraftmineOverlayControls } from "./CraftmineOverlayControls";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -62,6 +63,7 @@ export function CraftmineLayoutControls() {
     >
       <form onSubmit={(event) => { event.preventDefault(); choose("create"); }}><button type="submit" aria-pressed={layout.mode === "create"} title={chinese ? "保留聊天与作品工作面板" : "Chat and world side by side"}>{layout.mode === "play" ? (chinese ? "回到创作" : "Back to create") : (chinese ? "创作" : "Create")}</button></form>
       <form onSubmit={(event) => { event.preventDefault(); choose("play"); }}><button type="submit" aria-pressed={layout.mode === "play"} title={chinese ? "世界占满工作区；保留当前对话与标签" : "Fill the workspace; preserve your conversation and tabs"}>{chinese ? "游玩" : "Play"}</button></form>
+      {layout.mode === "play" && layout.overlay === "closed" && <CraftmineOverlayControls />}
       <button type="button" data-action="reset-layout" onClick={reset} title={CRAFTMINE_WORLD_TEXT.layoutReset[lang]}>
         {CRAFTMINE_WORLD_TEXT.layoutReset[lang]}
       </button>
