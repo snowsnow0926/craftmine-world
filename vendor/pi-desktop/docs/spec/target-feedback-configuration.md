@@ -97,6 +97,11 @@ Missing/renamed players, custom paths or unknown player implementations are
 unsupported rather than described using a profile that would return early.
 This finite source check does not replace native build/runtime verification of
 the whole authored project, including unrelated custom gameplay scripts.
+Ancestors between the target and the known scene root must also be ordinary
+nodes without scripts or scene instances. A scripted parent can overwrite
+values during readiness and is therefore refused. This restriction does not
+prove that arbitrary sibling scripts cannot write the target; successful
+runtime read-back remains necessary before adopting the checked change.
 
 Legacy target/profile scripts are deliberately unsupported for editing because
 they overwrite instance values during initialization; merely having the same

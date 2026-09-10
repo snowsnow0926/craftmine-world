@@ -148,6 +148,14 @@ function resolve(args){
  const defaultValue=worldDefault(parsed,read);
  requireValue(matches.length===1,'TARGET_CONFIGURATION_TARGET_NOT_FOUND');const node=matches[0];
  requireValue(node.parent!==null,'TARGET_CONFIGURATION_ROOT_TARGET_REFUSED');
+ let ancestorPath=node.parent;
+ const ancestors=new Set();
+ while(ancestorPath!=='.'){
+  requireValue(!ancestors.has(ancestorPath),'TARGET_CONFIGURATION_ANCESTOR_UNSUPPORTED');ancestors.add(ancestorPath);
+  const ancestor=parsed.nodes.find(item=>item.nodePath===ancestorPath);
+  requireValue(ancestor&&ancestor.parent!==null&&!Object.hasOwn(ancestor.properties,'script')&&!/\binstance=/.test(ancestor.header),'TARGET_CONFIGURATION_ANCESTOR_UNSUPPORTED');
+  ancestorPath=ancestor.parent;
+ }
  let definition=node,definitionScene=parsed;
  const instance=/\binstance=(ExtResource\("[A-Za-z0-9_-]+"\))/.exec(node.header);
  if(instance){

@@ -87,6 +87,16 @@ test('profile applicability requires the known default Player binding, without u
   replaceFile(args,'scripts/core/player_controller.gd','extends CharacterBody3D','extends Node3D')
  ])assert.throws(()=>describeTargetFeedback(changed),/TARGET_CONFIGURATION_/);
 });
+test('scripted or instanced ancestors cannot authorize instance parameters that they may overwrite',()=>{
+ const args=officialFixture();
+ const custom=replaceFile(args,args.scenePath,'[node name="Targets" type="Node3D" parent="."]','[node name="Targets" type="Node3D" parent="."]\nscript = ExtResource("parent_script")');
+ const parentScript=replaceFile(custom,args.scenePath,'[node name="World" type="Node3D"]','[ext_resource type="Script" path="res://scripts/parent_override.gd" id="parent_script"]\n[node name="World" type="Node3D"]');
+ parentScript.files.set('scripts/parent_override.gd',Buffer.from('extends Node3D\nfunc _ready():\n\t$TargetB.hit_flash_seconds = 0.7\n'));
+ assert.throws(()=>describeTargetFeedback(parentScript),/ANCESTOR_UNSUPPORTED/);
+ assert.throws(()=>patchTargetFeedback({...parentScript,binding:describeTargetFeedback(args).binding,values:{hitFlashMilliseconds:500}}),/ANCESTOR_UNSUPPORTED/);
+ const instance=replaceFile(args,args.scenePath,'[node name="Targets" type="Node3D" parent="."]','[node name="Targets" parent="." instance=ExtResource("11_target")]');
+ assert.throws(()=>describeTargetFeedback(instance),/ANCESTOR_UNSUPPORTED/);
+});
 test('known world profile defaults and explicit instance/template values follow actual runtime precedence',()=>{
  let args=replaceFile(officialFixture(),'data/balance/training_range.tres','hit_flash_seconds = 0.12','hit_flash_seconds = 0.25');
  assert.equal(describeTargetFeedback(args).values.hitFlashMilliseconds,250);
