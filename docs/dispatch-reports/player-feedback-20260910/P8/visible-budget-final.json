@@ -1,0 +1,30 @@
+{
+  "scope": "Actual pinned PI conversion and SDK, loopback transport, synthetic upstream response; no authorized file or external provider request",
+  "checks": [
+    {
+      "name": "actual PI conversion preserves mirrored details, requiring explicit estimator projection",
+      "passed": true
+    },
+    {
+      "name": "huge UI mirror has exactly zero model-input budget impact",
+      "passed": true
+    },
+    {
+      "name": "actual SDK produces byte-equivalent model payload with and without mirrored details",
+      "passed": true
+    },
+    {
+      "name": "large actual content still exceeds both compaction threshold and hard context budget",
+      "passed": true
+    },
+    {
+      "name": "oversized actual content fails closed before SDK forwarding",
+      "passed": true
+    },
+    {
+      "name": "unexpected provider wire expansion still fails final physical gate",
+      "passed": true
+    }
+  ],
+  "forwardedSynthetic": 2
+}

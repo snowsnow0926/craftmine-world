@@ -1,0 +1,17 @@
+{
+  "scope": "Actual pinned PI conversion and SDK, loopback transport, synthetic upstream response; no authorized file or external provider request",
+  "checks": [
+    {
+      "name": "actual PI conversion preserves mirrored details, requiring explicit estimator projection",
+      "passed": true
+    },
+    {
+      "name": "huge UI mirror has exactly zero model-input budget impact",
+      "passed": true
+    },
+    {
+      "failure": "AssertionError [ERR_ASSERTION]: CRAFTMINE_CONTEXT_INVALID\n\n'error' !== 'stop'\n\n    at file:///D:/cm-fb-p8-20260910/tests/player-feedback/P8/visible-budget.mjs:19:138\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    }
+  ],
+  "forwardedSynthetic": 0
+}
