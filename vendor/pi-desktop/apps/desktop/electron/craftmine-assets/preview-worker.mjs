@@ -29,36 +29,53 @@ export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, si
   const worker = new Worker(fileURLToPath(new URL('./asset-preview-worker.js', import.meta.url)), {
     workerData: { previewRequest: request },
   });
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     let settled = false;
     let timer = null;
+    let stopTimer = null;
     let response = null;
-    const terminate = () => {
-      worker.terminate().catch(() => {});
+    let stopping = null;
+    const cleanup = () => {
+      if (timer !== null) clearTimeout(timer);
+      if (stopTimer !== null) clearTimeout(stopTimer);
+      signal?.removeEventListener?.('abort', onAbort);
+    };
+    const terminate = value => {
+      if (settled || stopping !== null) return;
+      stopping = value;
+      if (timer !== null) clearTimeout(timer);
+      // A termination request is not proof of termination. Keep ownership until
+      // exit; fail explicitly if the platform cannot confirm it within 5 s.
+      stopTimer = setTimeout(() => {
+        if (settled) return;
+        settled = true; cleanup();
+        reject(Error('ASSET_PREVIEW_WORKER_STOP_TIMEOUT'));
+      }, 5000);
+      worker.terminate().catch(() => {
+        // The exit event may still arrive. Otherwise the bounded stop timer
+        // rejects; never convert a rejected terminate request into success.
+      });
     };
     const onAbort = () => {
-      terminate();
-      finish({
+      terminate({
         cacheKey: null,
         status: 'cancelled',
         detail: 'PREVIEW_CANCELLED',
-        facts: { workerTerminated: true },
+        facts: {},
       });
     };
     const finish = value => {
       if (settled) return;
       settled = true;
-      if (timer !== null) clearTimeout(timer);
-      signal?.removeEventListener?.('abort', onAbort);
+      cleanup();
       resolve(value);
     };
     timer = setTimeout(() => {
-      terminate();
-      finish({
+      terminate({
         cacheKey: null,
         status: 'timeout',
         detail: 'PREVIEW_TIMEOUT',
-        facts: { workerTerminated: true },
+        facts: {},
       });
     }, timeoutMs);
     timer.unref?.();
@@ -76,7 +93,7 @@ export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, si
       }
     });
     worker.once('error', error => {
-      finish({
+      terminate({
         cacheKey: null,
         status: 'failed',
         detail: String(error?.message || error).slice(0, 200),
@@ -85,6 +102,10 @@ export function runPreviewInWorker(request, { timeoutMs = PREVIEW_TIMEOUT_MS, si
     });
     worker.once('exit', code => {
       if (!settled) {
+        if (stopping !== null) {
+          finish({...stopping, facts: {...stopping.facts, workerTerminated: true, workerExitCode: code}});
+          return;
+        }
         if (code === 0 && response !== null) { finish(response); return; }
         finish({
           cacheKey: null,
