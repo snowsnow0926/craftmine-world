@@ -350,8 +350,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 5067,
-      "sha256": "758ca430ebf7d3faf80d19d00628fa8727d17b4d0e4bca73096e62c38e13b62d"
+      "bytes": 6989,
+      "sha256": "71fb3f68e898a2d009d3a00ba3349b7f05f03dc10be74fa36e50c4ae2227775e"
     },
     {
       "path": "runtime_bridge.gd",

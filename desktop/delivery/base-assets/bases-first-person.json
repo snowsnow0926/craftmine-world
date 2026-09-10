@@ -590,8 +590,8 @@
       "distribution": [
         "development-only"
       ],
-      "bytes": 5450,
-      "sha256": "498ae9c07ff23ff2aff336fdf90902f8b202d6825c8657668c4b6b5562695017",
+      "bytes": 7029,
+      "sha256": "53ab4ead445efac3596c0395d11a8f1e61791d77a483c178860e7f12d0a862c6",
       "notes": "Project documentation; not loaded by the running game."
     },
     {
