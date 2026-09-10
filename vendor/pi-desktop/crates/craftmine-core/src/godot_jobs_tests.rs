@@ -478,3 +478,116 @@ fn claim_rechecks_materialized_source_before_granting_a_job() -> Result<()> {
     assert_eq!(read_job(&journal.db, job["jobId"].as_str().unwrap())?["status"], "queued");
     Ok(())
 }
+
+/// A refused result must not settle the job, and the executor's explicit
+/// no-artifact failure is what a model can actually read. This drives the real
+/// core, not a ledger stand-in.
+#[test]
+fn a_refused_result_is_settled_as_a_failure_without_touching_staged_artifacts() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    register(&mut journal, "executor-a", json!({"import":true,"build":true,"check":true}), &digest("e"))?;
+    let job = start(&mut journal, &context, "check-refused", &project, "check")?;
+    let claimed = claim(&mut journal, &job, "token-a", "executor-a")?;
+    let artifacts = write_artifact(&claimed, "web/index.html", b"<html>staged</html>")?;
+    let build = job["buildId"].as_str().unwrap().to_string();
+    let staged = Path::new(claimed["artifactsRoot"].as_str().unwrap()).join("web/index.html");
+    // The same path claimed twice is the shape the recorded real run hit: the
+    // core refuses the whole result and records nothing.
+    let mut duplicated = artifacts.clone();
+    duplicated.as_array_mut().unwrap().push(artifacts[0].clone());
+    failed(
+        finish(&mut journal, &job, "token-a",
+            &output(&claimed, true, json!([{"id":"runtime.ready","passed":true}]), duplicated, json!([]))),
+        "GODOT_ARTIFACT_CONFLICT",
+    );
+    let active = journal.godot_build_read(&json!({"context":&context,"worldId":"a","jobId":job["jobId"]}))?;
+    assert!(
+        matches!(active["status"].as_str(), Some("claimed" | "running")),
+        "a refused result leaves the lease active, so the failure has to be submitted explicitly: {active}"
+    );
+    assert!(active["output"].is_null());
+    assert!(build_files(&journal.db, "a", &build, "artifact")?.is_empty());
+    assert_eq!(std::fs::read(&staged)?, b"<html>staged</html>");
+    // The settlement the executor submits after a refusal: a real failure that
+    // claims no artifacts and keeps the refusal as its own evidence.
+    let reason = "GODOT_ARTIFACT_CONFLICT";
+    let settlement = json!({"format":"craftmine.godot-job-result/1","inputHash":claimed["inputHash"],"passed":false,
+        "import":{"passed":false,"log":""},
+        "compile":{"passed":false,"errors":[reason],"warnings":[]},
+        "check":{"passed":false,"assertions":[{"id":"executor.finish-refused","passed":false,"detail":reason}]},
+        "artifacts":[],
+        "engine":{"version":"4.7.2-stable","isolation":"appcontainer","evidenceHash":claimed["evidenceHash"]}});
+    let settled = finish(&mut journal, &job, "token-a", &settlement)?;
+    assert_eq!(settled["status"], "failed");
+    let read = journal.godot_build_read(&json!({"context":&context,"worldId":"a","jobId":job["jobId"]}))?;
+    assert_eq!(read["status"], "failed");
+    assert_eq!(read["stage"], "failed");
+    assert!(read["leaseExpiresAt"].is_null(), "a settled job holds no lease: {read}");
+    assert_eq!(read["output"]["compile"]["errors"][0], reason);
+    assert_eq!(read["output"]["check"]["assertions"][0]["detail"], reason);
+    assert!(read["output"]["artifacts"].as_array().unwrap().is_empty());
+    assert!(build_files(&journal.db, "a", &build, "artifact")?.is_empty());
+    // Bytes the engine already staged are never removed by the settlement.
+    assert_eq!(std::fs::read(&staged)?, b"<html>staged</html>");
+    // A late different result can never overwrite the confirmed failure, and
+    // replaying the exact settlement is idempotent.
+    failed(
+        finish(&mut journal, &job, "token-a",
+            &output(&claimed, true, json!([{"id":"runtime.ready","passed":true}]), artifacts, json!([]))),
+        "REPLAY_MISMATCH",
+    );
+    assert_eq!(finish(&mut journal, &job, "token-a", &settlement)?["status"], "failed");
+    assert_eq!(journal.godot_build_read(&json!({"context":&context,"worldId":"a","jobId":job["jobId"]}))?["status"], "failed");
+    Ok(())
+}
+
+/// A repeated check of the same source reuses identical bytes, and a result
+/// that claims different bytes for an already recorded path is refused without
+/// replacing the first evidence.
+#[test]
+fn a_repeated_check_reuses_recorded_artifacts_and_refuses_a_changed_one() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let context = ctx("one");
+    let project = create_project(&mut journal, &context)?;
+    let (first, checked) = run_check(&mut journal, &context, &project, "check-one", true)?;
+    assert_eq!(checked["status"], "passed");
+    let build = first["buildId"].as_str().unwrap().to_string();
+    let root = build_root(&journal.directory, "a", &build, false)?.join("artifacts");
+    let recorded = build_files(&journal.db, "a", &build, "artifact")?;
+    assert_eq!(recorded.len(), 1);
+    let original = recorded[0].clone();
+    // Same source, same build identity: the identical bytes are reused and the
+    // repeated result is accepted.
+    let second = start(&mut journal, &context, "check-two", &project, "check")?;
+    assert_eq!(second["buildId"], first["buildId"], "the same source keeps its build identity");
+    let claimed = claim(&mut journal, &second, "token-b", "executor-a")?;
+    let identical = write_artifact(&claimed, "web/index.html", b"<html></html>")?;
+    let repeated = finish(&mut journal, &second, "token-b",
+        &output(&claimed, true, json!([{"id":"runtime.ready","passed":true}]), identical, json!([])))?;
+    assert_eq!(repeated["status"], "passed");
+    assert_eq!(build_files(&journal.db, "a", &build, "artifact")?, vec![original.clone()]);
+    // Different bytes for an already recorded path are a conflict: the job stays
+    // unsettled and the recorded evidence keeps the first hash.
+    let third = start(&mut journal, &context, "check-three", &project, "check")?;
+    let claimed = claim(&mut journal, &third, "token-c", "executor-a")?;
+    let changed = write_artifact(&claimed, "web/index.html", b"<html>a different build produced this</html>")?;
+    assert_ne!(changed[0]["sha256"], original["sha256"]);
+    failed(
+        finish(&mut journal, &third, "token-c",
+            &output(&claimed, true, json!([{"id":"runtime.ready","passed":true}]), changed, json!([]))),
+        "GODOT_ARTIFACT_CONFLICT",
+    );
+    assert_eq!(read_job(&journal.db, third["jobId"].as_str().unwrap())?["status"], "claimed");
+    assert_eq!(build_files(&journal.db, "a", &build, "artifact")?, vec![original.clone()]);
+    // With the verified bytes back in place the build still serves the first
+    // evidence, so the refusal left nothing behind.
+    std::fs::write(root.join("web/index.html"), b"<html></html>")?;
+    let served = verified_artifacts(&journal.db, "a", &build, &root)?;
+    assert_eq!(served.len(), 1);
+    assert_eq!(served[0]["sha256"], original["sha256"]);
+    Ok(())
+}

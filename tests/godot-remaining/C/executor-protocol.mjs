@@ -97,7 +97,7 @@ function fakeCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), proje
       switch (method) {
         case 'godotExecutor.register': state.executor = params.attestation; return {executorId:params.executorId, registered:true, executionAvailable:true, attestationHash:sha256(JSON.stringify(params.attestation)), promotedJobs:0};
         case 'godotExecutor.revoke': state.executor = null; return {executorId:params.executorId, revoked:true, interrupted:0};
-        case 'godotBuild.read': return {jobId:params.jobId, worldId, status:state.status};
+        case 'godotBuild.read': return {jobId:params.jobId, worldId, buildId, status:state.status};
         case 'godotJob.claim':
           if (state.status !== 'queued') throw Error('GODOT_JOB_INACTIVE');
           state.status = 'claimed';
@@ -586,3 +586,378 @@ for (const variant of ['matched','descriptor-missing','descriptor-dropped','desc
     }
   });
 }
+
+// ---------------------------------------------------------------------------
+// Failure settlement and immutable build evidence.
+//
+// Unlike the single-job `fakeCore` above, these paths need one status per job
+// and a scriptable refusal, so they drive a stand-in that behaves like the real
+// core where the assertions depend on it: a claim is bound to its token, a
+// terminal job rejects a late result, and a refused result leaves the job's
+// lease active until an explicit settlement is submitted. The real Rust core is
+// exercised separately by the `craftmine-core` job tests; nothing here is
+// native engine evidence.
+
+const SAME_SOURCE_ARTIFACTS = {'index.html':'<!doctype html><canvas id="canvas"></canvas>',
+  'index.js':'// game', 'bridge.js':'// authored bridge'};
+
+/** Evidence is compared by identity and timestamp, not only by size. */
+function evidenceFingerprint(file) {
+  const info = fs.statSync(file);
+  return {path:path.basename(file), bytes:info.size, mtimeMs:info.mtimeMs, ino:info.ino || 0};
+}
+
+function assertEvidenceUnchanged(before, files, why) {
+  files.forEach((file, index) => {
+    const after = evidenceFingerprint(file);
+    assert.equal(after.bytes, before[index].bytes, why + ': ' + after.path + ' length changed');
+    assert.equal(after.mtimeMs, before[index].mtimeMs, why + ': ' + after.path + ' was rewritten');
+    if (before[index].ino && after.ino) assert.equal(after.ino, before[index].ino, why + ': ' + after.path + ' was replaced');
+  });
+}
+
+/**
+ * A per-job core stand-in with a call log and refusing hooks. A hook that
+ * throws refuses the call exactly like the core; returning undefined keeps the
+ * default behaviour, and `commit` performs the core's own commit.
+ */
+function scriptedCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), projectRoot, artifactsRoot,
+  files, inputHash = sha256('input')} = {}) {
+  const jobs = new Map();
+  const core = {jobs, calls:[], stages:[], hooks:{}, worldId, buildId};
+  core.attempts = (jobId, method) => core.calls.filter(call => call.method === method && call.params?.jobId === jobId);
+  core.addJob = id => {
+    jobs.set(id, {jobId:id, worldId, buildId, kind:'check', mode:'check', status:'queued', token:null,
+      inputHash, output:null, outputHash:null, candidateId:null, stage:'queued', evidenceHash:null});
+    return jobs.get(id);
+  };
+  const lease = job => ['claimed', 'running'].includes(job.status) ? Date.now() + 60000 : null;
+  core.record = id => {
+    const job = jobs.get(id);
+    if (!job) throw Error('GODOT_JOB_NOT_FOUND');
+    return {jobId:job.jobId, worldId:job.worldId, buildId:job.buildId, kind:job.kind, status:job.status,
+      stage:job.stage, output:job.output, outputHash:job.outputHash, candidateId:job.candidateId, leaseExpiresAt:lease(job)};
+  };
+  function commit({jobId, token, output}) {
+    const job = jobs.get(jobId);
+    if (!job) throw Error('GODOT_JOB_NOT_FOUND');
+    if (job.token !== token) throw Error('GODOT_JOB_OWNER_MISMATCH');
+    if (['cancelled', 'interrupted'].includes(job.status)) throw Error('GODOT_JOB_INACTIVE');
+    const body = JSON.stringify(output);
+    if (['passed', 'failed'].includes(job.status)) {
+      if (job.outputHash !== sha256(body)) throw Error('REPLAY_MISMATCH');
+      return {jobId, status:job.status, candidateId:job.candidateId};
+    }
+    if (!['claimed', 'running'].includes(job.status)) throw Error('GODOT_JOB_INACTIVE');
+    if (output.inputHash !== job.inputHash) throw Error('GODOT_JOB_INPUT_MISMATCH');
+    if (output.engine?.version !== '4.7.2-stable') throw Error('GODOT_EXECUTOR_MISMATCH');
+    if (job.evidenceHash && output.engine?.evidenceHash !== job.evidenceHash) throw Error('GODOT_EXECUTOR_MISMATCH');
+    if (job.kind === 'check' && !(output.check?.assertions ?? []).length) throw Error('GODOT_CHECK_ASSERTIONS_REQUIRED');
+    job.evidenceHash = output.engine.evidenceHash;
+    job.status = output.passed ? 'passed' : 'failed';
+    job.stage = job.status;
+    job.output = output;
+    job.outputHash = sha256(body);
+    job.candidateId = output.passed ? 'gcan-' + 'b'.repeat(64) : null;
+    return {jobId, status:job.status, candidateId:job.candidateId};
+  }
+  core.call = async (method, params = {}) => {
+    core.calls.push({method, params});
+    switch (method) {
+      case 'godotExecutor.register': return {executorId:params.executorId, registered:true, executionAvailable:true,
+        attestationHash:sha256(JSON.stringify(params.attestation)), promotedJobs:0};
+      case 'godotExecutor.revoke': return {executorId:params.executorId, revoked:true, interrupted:0};
+      case 'godotBuild.read': {
+        if (core.hooks.read) { const forced = await core.hooks.read(params); if (forced !== undefined) return forced; }
+        return core.record(params.jobId);
+      }
+      case 'godotJob.claim': {
+        const job = jobs.get(params.jobId);
+        if (!job) throw Error('GODOT_JOB_NOT_FOUND');
+        if (job.status !== 'queued') throw Error(job.status === 'blocked' ? 'GODOT_EXECUTION_UNAVAILABLE' : 'GODOT_JOB_INACTIVE');
+        job.token = params.token; job.status = 'claimed'; job.stage = 'claimed';
+        return {...core.record(params.jobId), baseId:'first-person', sourceRevision:3, manifestHash:sha256('manifest'),
+          assetManifestHash:sha256('assets'), inputHash:job.inputHash, projectRoot, artifactsRoot,
+          cacheRoot:path.join(artifactsRoot, '..', 'cache'), files:{source:files, asset:[]}};
+      }
+      case 'godotJob.progress': {
+        const job = jobs.get(params.jobId);
+        if (!job || !['claimed', 'running'].includes(job.status)) throw Error('GODOT_JOB_INACTIVE');
+        job.status = 'running'; job.stage = params.stage; core.stages.push(params.stage);
+        return {jobId:params.jobId, status:'running', stage:params.stage, progress:params.percent};
+      }
+      case 'godotJob.heartbeat': return {jobId:params.jobId, status:'running'};
+      case 'godotJob.finish': {
+        if (core.hooks.finish) {
+          const forced = await core.hooks.finish(params, jobs.get(params.jobId), commit);
+          if (forced !== undefined) return forced;
+        }
+        return commit(params);
+      }
+      case 'godotBuild.cancel': {
+        const job = jobs.get(params.jobId);
+        if (job) { job.status = 'cancelled'; job.stage = 'cancelled'; }
+        return {jobId:params.jobId, status:'cancelled'};
+      }
+      case 'world.read': return {id:worldId, world:{build:{id:'base-a', scene:{format:'craftmine.godot-scene/1', baseId:'first-person'}, godot:{}},
+        snapshot:{format:'craftmine.godot-progress/1', worldId, baseId:'first-person', baseVersion:'1.0.0', stateVersion:1, body:{coins:7}}, extensions:[]}};
+      case 'godotJob.checkDescriptor': throw Error('UNSUPPORTED');
+      case 'godotJob.pending': throw Error('UNSUPPORTED');
+      default: throw Error('UNSUPPORTED_METHOD:' + method);
+    }
+  };
+  return core;
+}
+
+function scriptedEnvironment(t, scenario = {}) {
+  const env = environment();
+  t.after(restoreEnv);
+  setScenario(env, scenario);
+  const core = scriptedCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files});
+  return {env, core, executor:makeExecutor({env, core})};
+}
+
+const stagedFiles = env => Object.keys(SAME_SOURCE_ARTIFACTS).map(name => path.join(env.artifactsRoot, 'web', name));
+
+test('a refused finish results in a core-confirmed failure that keeps the original identity', async t => {
+  const {env, core, executor} = scriptedEnvironment(t);
+  const jobId = 'gjob-' + '1'.repeat(64);
+  core.addJob(jobId);
+  // The core refuses the real result exactly like the recorded GODOT_ARTIFACT_CONFLICT.
+  core.hooks.finish = params => { if (params.output.passed) throw Error('GODOT_ARTIFACT_CONFLICT'); };
+  assert.equal((await executor.start()).available, true);
+  assert.equal(executor.enqueue({jobId, worldId:'world-c', mode:'check'}).enqueued, true);
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  const attempts = core.attempts(jobId, 'godotJob.finish');
+  await executor.stop();
+
+  assert.equal(attempts.length, 2, 'one real result, then exactly one failure settlement');
+  const [refused, settled] = attempts;
+  assert.equal(refused.params.output.passed, true);
+  assert.equal(settled.params.jobId, jobId, 'the settlement names the same job');
+  assert.equal(settled.params.token, refused.params.token, 'the original claim token is retained');
+  assert.equal(settled.params.output.inputHash, refused.params.output.inputHash, 'the original input hash is retained');
+  assert.equal(settled.params.output.engine.evidenceHash, refused.params.output.engine.evidenceHash);
+  assert.equal(settled.params.output.passed, false);
+  assert.deepEqual(settled.params.output.artifacts, [], 'a refused result claims no artifacts');
+  assert.equal(core.stages.filter(stage => stage === 'export').length, 1, 'the engine is never run twice');
+  // The core is terminal and the model can read why.
+  const job = core.jobs.get(jobId);
+  assert.equal(job.status, 'failed');
+  assert.match(job.output.compile.errors.join(' '), /GODOT_ARTIFACT_CONFLICT/);
+  assert.equal(job.output.check.assertions.length, 1);
+  assert.equal(job.output.check.assertions[0].id, 'executor.finish-refused');
+  assert.match(job.output.check.assertions[0].detail, /GODOT_ARTIFACT_CONFLICT/);
+  assert.equal(core.record(jobId).leaseExpiresAt, null, 'a terminal job holds no lease');
+  assert.equal(core.attempts(jobId, 'godotBuild.read').some(call => call.params.worldId === 'world-c'), true,
+    'the refused finish is resolved against the core record first');
+  // The ledger reports the core's own terminal state, not a hopeful one.
+  assert.equal(ledger.state, 'failed');
+  assert.equal(ledger.outcome, 'failed');
+  assert.match(ledger.reason, /GODOT_ARTIFACT_CONFLICT/);
+  assert.match(ledger.failureSettlement.originalReason, /GODOT_ARTIFACT_CONFLICT/);
+  const persisted = JSON.parse(fs.readFileSync(path.join(env.dataPath, 'godot', 'executor-ledger.json'), 'utf8'));
+  assert.match(persisted.jobs[jobId].failureSettlement.originalReason, /GODOT_ARTIFACT_CONFLICT/,
+    'the refusal stays as durable evidence');
+  // Already staged bytes belong to the refused job and are never deleted.
+  for (const name of Object.keys(SAME_SOURCE_ARTIFACTS)) {
+    const body = name === 'bridge.js' ? '// host pinned bridge\n' : SAME_SOURCE_ARTIFACTS[name];
+    assert.equal(fs.readFileSync(path.join(env.artifactsRoot, 'web', name), 'utf8'), body);
+  }
+});
+
+test('a lost terminal reply is read back from the core, never re-submitted or faked', async t => {
+  const {env, core, executor} = scriptedEnvironment(t);
+  const jobId = 'gjob-' + '2'.repeat(64);
+  core.addJob(jobId);
+  core.hooks.finish = (params, job, commit) => { commit(params); throw Error('authored reply lost after the core commit'); };
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  await executor.stop();
+
+  assert.equal(core.attempts(jobId, 'godotJob.finish').length, 1, 'a lost reply must not be re-submitted');
+  assert.equal(core.jobs.get(jobId).status, 'passed');
+  assert.equal(ledger.state, 'finished', 'the committed pass is the ledger state');
+  assert.equal(ledger.outcome, 'passed');
+  assert.equal(ledger.failureSettlement, undefined, 'no failure is invented for a committed pass');
+  const tasks = fs.readdirSync(path.join(env.dataPath, 'godot', 'tasks'));
+  assert.equal(tasks.filter(name => name.startsWith('im-')).length, 1, 'the import ran once');
+  assert.equal(tasks.filter(name => name.startsWith('ex-')).length, 1, 'the export ran once');
+  assert.deepEqual(stagedFiles(env).map(name => fs.existsSync(name)), [true, true, true]);
+});
+
+test('a conflicting artifact is refused without overwriting or deleting the old evidence', async t => {
+  const {env, core, executor} = scriptedEnvironment(t, {artifacts:SAME_SOURCE_ARTIFACTS});
+  const web = path.join(env.artifactsRoot, 'web');
+  fs.mkdirSync(web, {recursive:true});
+  const previous = '// previous job evidence\n';
+  fs.writeFileSync(path.join(web, 'index.js'), previous);
+  const before = evidenceFingerprint(path.join(web, 'index.js'));
+  const jobId = 'gjob-' + '3'.repeat(64);
+  core.addJob(jobId);
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  await executor.stop();
+
+  const attempts = core.attempts(jobId, 'godotJob.finish');
+  assert.equal(attempts.length, 1);
+  assert.equal(attempts[0].params.output.passed, false);
+  assert.match(attempts[0].params.output.compile.errors.join(' '), /GODOT_ARTIFACT_CONFLICT/);
+  assert.equal(core.jobs.get(jobId).status, 'failed', 'a conflict is never a success');
+  assert.equal(ledger.state, 'failed');
+  assert.match(ledger.reason, /GODOT_ARTIFACT_CONFLICT/);
+  // Every conflict is checked before the first write, so no new file exists.
+  assert.deepEqual(listFiles(env.artifactsRoot).map(item => item.path), ['web/index.js']);
+  assert.equal(fs.readFileSync(path.join(web, 'index.js'), 'utf8'), previous);
+  assertEvidenceUnchanged([before], [path.join(web, 'index.js')], 'a conflict may not touch the old file');
+});
+
+test('a same-source recheck reuses verified bytes and can never replace them', async t => {
+  const {env, core, executor} = scriptedEnvironment(t, {artifacts:SAME_SOURCE_ARTIFACTS});
+  const jobs = ['4', '5', '6'].map(digit => 'gjob-' + digit.repeat(64));
+  for (const jobId of jobs) core.addJob(jobId);
+  assert.equal((await executor.start()).available, true);
+
+  executor.enqueue({jobId:jobs[0], worldId:'world-c', mode:'check'});
+  await settle(executor, jobs[0]);
+  assert.equal(core.jobs.get(jobs[0]).status, 'passed');
+  const files = stagedFiles(env);
+  const before = files.map(evidenceFingerprint);
+  assert.deepEqual(listFiles(env.artifactsRoot).map(item => item.path), ['web/bridge.js', 'web/index.html', 'web/index.js']);
+
+  // The identical source produces the identical bytes: reuse, never rewrite.
+  executor.enqueue({jobId:jobs[1], worldId:'world-c', mode:'check'});
+  await settle(executor, jobs[1]);
+  assert.equal(core.jobs.get(jobs[1]).status, 'passed', 'an identical recheck is a real pass');
+  assert.equal(executor.ledger.jobs[jobs[1]].state, 'finished');
+  assertEvidenceUnchanged(before, files, 'identical bytes are reused');
+
+  // A different export for the same build and path is a conflict, not a rewrite.
+  setScenario(env, {artifacts:{...SAME_SOURCE_ARTIFACTS, 'index.html':'<!doctype html>a different build produced this'}});
+  executor.enqueue({jobId:jobs[2], worldId:'world-c', mode:'check'});
+  await settle(executor, jobs[2]);
+  await executor.stop();
+  assert.equal(core.jobs.get(jobs[2]).status, 'failed');
+  assert.match(core.jobs.get(jobs[2]).output.compile.errors.join(' '), /GODOT_ARTIFACT_CONFLICT/);
+  assert.equal(fs.readFileSync(path.join(env.artifactsRoot, 'web', 'index.html'), 'utf8'), SAME_SOURCE_ARTIFACTS['index.html'],
+    'the first verified artifact still stands');
+  assertEvidenceUnchanged(before, files, 'a refusal may not replace the old evidence');
+  assert.deepEqual(listFiles(env.artifactsRoot).map(item => item.path), ['web/bridge.js', 'web/index.html', 'web/index.js'],
+    'a refusal may not clear or add files');
+});
+
+test('a cancelled job reports the core cancel and submits no result', async t => {
+  const {env, core, executor} = scriptedEnvironment(t, {delayMs:400, artifacts:SAME_SOURCE_ARTIFACTS});
+  const jobId = 'gjob-' + '7'.repeat(64);
+  core.addJob(jobId);
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await new Promise(resolve => setTimeout(resolve, 120));
+  await executor.cancel(jobId, 'user stop');
+  await settle(executor, jobId);
+  await executor.stop();
+
+  assert.equal(core.attempts(jobId, 'godotJob.finish').length, 0, 'a cancelled job has no result to report');
+  assert.equal(core.attempts(jobId, 'godotBuild.cancel').length, 1);
+  assert.equal(core.jobs.get(jobId).status, 'cancelled');
+  const ledger = executor.ledger.jobs[jobId];
+  assert.equal(ledger.state, 'cancelled');
+  assert.equal(ledger.outcome, 'cancelled');
+  assert.equal(fs.existsSync(path.join(env.artifactsRoot, 'web', 'index.html')), false, 'nothing is staged for a cancelled job');
+});
+
+test('an interrupted job records the core state instead of a failure it cannot prove', async t => {
+  const {env, core, executor} = scriptedEnvironment(t, {artifacts:SAME_SOURCE_ARTIFACTS});
+  const jobId = 'gjob-' + '8'.repeat(64);
+  core.addJob(jobId);
+  let refused = false;
+  core.hooks.finish = () => { refused = true; throw Error('GODOT_JOB_INACTIVE'); };
+  // The lease expired: the core answers the read with its own terminal state.
+  core.hooks.read = params => refused ? {...core.record(params.jobId), status:'interrupted', leaseExpiresAt:null} : undefined;
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  await executor.stop();
+
+  assert.equal(core.attempts(jobId, 'godotJob.finish').length, 1, 'a late result is never re-submitted to an interrupted job');
+  assert.equal(ledger.state, 'interrupted', 'the core terminal state is recorded as itself');
+  assert.equal(ledger.outcome, 'interrupted');
+  assert.match(ledger.reason, /GODOT_JOB_INACTIVE/);
+  assert.notEqual(ledger.state, 'finished');
+  assert.deepEqual(stagedFiles(env).map(name => fs.existsSync(name)), [true, true, true], 'staged diagnostics are not deleted');
+});
+
+test('a wrong token leaves the job unconfirmed and never confirmed', async t => {
+  const {env, core, executor} = scriptedEnvironment(t);
+  const jobId = 'gjob-' + '9'.repeat(64);
+  core.addJob(jobId);
+  core.hooks.finish = () => { throw Error('GODOT_JOB_OWNER_MISMATCH'); };
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  await executor.stop();
+
+  assert.equal(core.attempts(jobId, 'godotJob.finish').length, 2, 'the settlement really was attempted');
+  assert.equal(ledger.state, 'unconfirmed');
+  assert.equal(ledger.outcome, 'refused');
+  assert.match(ledger.reason, /GODOT_JOB_OWNER_MISMATCH/);
+  assert.match(ledger.failureSettlement.error, /GODOT_JOB_OWNER_MISMATCH/);
+  assert.equal(core.jobs.get(jobId).status, 'running', 'an unowned job is left to the core, never marked done');
+});
+
+test('a cross-world record is refused instead of settling a foreign job', async t => {
+  const {env, core, executor} = scriptedEnvironment(t);
+  const jobId = 'gjob-' + 'c'.repeat(63) + 'd';
+  core.addJob(jobId);
+  let refused = false;
+  core.hooks.finish = () => { refused = true; throw Error('authored refusal'); };
+  core.hooks.read = params => refused
+    ? {jobId:params.jobId, worldId:'other-world', buildId:'gbd-' + 'a'.repeat(64), status:'running'}
+    : undefined;
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId, worldId:'world-c', mode:'check'});
+  await settle(executor, jobId);
+  const ledger = executor.ledger.jobs[jobId];
+  await executor.stop();
+
+  assert.equal(core.attempts(jobId, 'godotJob.finish').length, 1, 'a foreign job is never settled');
+  assert.equal(ledger.state, 'unconfirmed');
+  assert.match(ledger.failureSettlement.error, /GODOT_FINISH_RECOVERY_IDENTITY/);
+  assert.notEqual(ledger.state, 'failed');
+});
+
+test('a stop during a running job reports no completion and deletes no evidence', async t => {
+  const {env, core, executor} = scriptedEnvironment(t, {artifacts:SAME_SOURCE_ARTIFACTS});
+  const done = 'gjob-' + 'd'.repeat(64), running = 'gjob-' + 'e'.repeat(64);
+  core.addJob(done); core.addJob(running);
+  assert.equal((await executor.start()).available, true);
+  executor.enqueue({jobId:done, worldId:'world-c', mode:'check'});
+  await settle(executor, done);
+  const tasksRoot = path.join(env.dataPath, 'godot', 'tasks');
+  const tasksBefore = listFiles(tasksRoot);
+  const files = stagedFiles(env);
+  const before = files.map(evidenceFingerprint);
+
+  setScenario(env, {delayMs:1000, artifacts:SAME_SOURCE_ARTIFACTS});
+  executor.enqueue({jobId:running, worldId:'world-c', mode:'check'});
+  await new Promise(resolve => setTimeout(resolve, 150));
+  await executor.stop();
+
+  assert.equal(core.attempts(running, 'godotJob.finish').length, 0, 'a stopped job reports no result');
+  assert.equal(executor.ledger.jobs[running].state, 'cancelled');
+  assert.notEqual(executor.ledger.jobs[running].state, 'finished');
+  assert.deepEqual(listFiles(tasksRoot).map(item => item.path), tasksBefore.map(item => item.path),
+    'stop and its recovery pass delete no recorded task');
+  for (const item of tasksBefore) {
+    assert.equal(listFiles(tasksRoot).find(candidate => candidate.path === item.path).sha256, item.sha256,
+      item.path + ' was rewritten');
+  }
+  assertEvidenceUnchanged(before, files, 'a later stopped job may not touch earlier evidence');
+});
