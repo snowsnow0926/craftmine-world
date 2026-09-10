@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {createGodotProbeEnvironment} from '../desktop/godot/toolchain.mjs';
 import {createWorldRuntime} from '../desktop/godot/web/runtime.mjs';
@@ -16,7 +17,8 @@ const require=createRequire(import.meta.url),{generateSequenceDoorRule}=require(
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/creation-web-'));
-const report={kind:'真实导出 Web 造物规则与进度迁移',out,sourceRoot,checks:[],runs:[],versions:[],errors:[],limits:['固定作者场景，不代表模型首次成功率或生产 LPAC 执行器','独立 headless 浏览器和页面脚本协议，无真实鼠标键盘输入']};
+const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:sourceRoot,windowsHide:true,encoding:'utf8'}).trim();
+const report={kind:'真实导出 Web 造物规则与进度迁移',out,sourceRoot,sourceCommit,checks:[],runs:[],versions:[],errors:[],limits:['固定作者场景，不代表模型首次成功率或生产 LPAC 执行器','独立 headless 浏览器和页面脚本协议，无真实鼠标键盘输入']};
 const check=(name,value)=>{report.checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
 let browser,runtime,page;
 try {

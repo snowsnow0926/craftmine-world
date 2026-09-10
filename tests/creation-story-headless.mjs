@@ -6,6 +6,7 @@ import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {createGodotProbeEnvironment} from '../desktop/godot/toolchain.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -21,7 +22,8 @@ const sha=value=>createHash('sha256').update(value).digest('hex');
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/creation-story-'));
 const project=path.join(out,'project');
-const report={kind:'真实引擎造物故事与 Rust 跨重启保存',sourceRoot,out,checks:[],stages:[],limits:['固定作者输入，未调用模型，不能作为首次创作成功率','headless 物理与状态验证，不声称画面、语音或桌面面板验收','验收专用 executor 注册实际导出件，不声称生产沙箱执行器验收'],errors:[]};
+const sourceCommit=execFileSync('git',['rev-parse','HEAD'],{cwd:sourceRoot,windowsHide:true,encoding:'utf8'}).trim();
+const report={kind:'真实引擎造物故事与 Rust 跨重启保存',sourceRoot,sourceCommit,out,checks:[],stages:[],limits:['固定作者输入，未调用模型，不能作为首次创作成功率','headless 物理与状态验证，不声称画面、语音或桌面面板验收','验收专用 executor 注册实际导出件，不声称生产沙箱执行器验收'],errors:[]};
 let core;
 const check=(name,value)=>{report.checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
 try {
