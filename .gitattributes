@@ -29,3 +29,6 @@ docs/dispatch-reports/plan-loop/pp2-base-default/**/*.log -text
 docs/assets/user-feedback-20260910/** -text whitespace=cr-at-eol
 docs/dispatch-prompts/player-feedback-20260910/** -text whitespace=cr-at-eol
 docs/dispatch-prompts/player-feedback-20260910/ALL_PROMPTS.md whitespace=cr-at-eol,-blank-at-eof
+
+# Native replay fixtures are compared to the original full-file SHA256.
+tests/godot-remaining/C/fixtures/native-import-task.log -text whitespace=cr-at-eol
