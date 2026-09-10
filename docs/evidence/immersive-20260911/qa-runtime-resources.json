@@ -1,0 +1,44 @@
+{
+  "format": "craftmine.final-runtime-resource-check/1",
+  "sourceCommit": "457ddb4f53de14a2d4457a60be0e09a3ce250874",
+  "output": "D:\\cm-iw-check-0911\\desktop\\build\\runtime-resources",
+  "files": 749,
+  "totalBytes": 541249872,
+  "filesDigest": "c27d0ebbd862c4aa43fd45ed401717806b196611c51a5095645231a32ee3a8a2",
+  "toolchain": {
+    "godot": "4.7.2-stable",
+    "templatesArchiveSha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+    "git": "2.53.0.windows.1",
+    "gitArchiveSha256": "82b562c918ec87b2ef5316ed79bb199e3a25719bb871a0f10294acf21ebd08cd",
+    "brokerSha256": "77a0728eb356c57310b320df5ff965790748c2b2e41eeca882ac666fed8b40df",
+    "brokerSourceDigest": "3485c3d9cda0528b1d7c0254980dcbf80c1d21cd410baf4fba7b001a3fc8ca73"
+  },
+  "cases": [
+    {
+      "baseId": "first-person",
+      "files": 67,
+      "passed": true
+    },
+    {
+      "baseId": "top-down",
+      "files": 35,
+      "passed": true
+    },
+    {
+      "baseId": "side-view",
+      "files": 47,
+      "passed": true
+    },
+    {
+      "baseId": "mining-sandbox",
+      "files": 28,
+      "passed": true
+    },
+    {
+      "baseId": "creation-sandbox",
+      "files": 20,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

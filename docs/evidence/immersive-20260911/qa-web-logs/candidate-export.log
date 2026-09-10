@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started Packing (102 steps)[39m[0m
+[   1% ] [90m[1msavepack[22m | Storing File: res://assets/fonts/cjk-0.json[39m[0m
+[   5% ] [90m[1msavepack[22m | Storing File: res://assets/fonts/cjk-1.json[39m[0m
+[  10% ] [90m[1msavepack[22m | Storing File: res://assets/fonts/font.json[39m[0m
+[  14% ] [90m[1msavepack[22m | Storing File: res://assets/ASSET_MANIFEST.json[39m[0m
+[  19% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/base_adapter.gd[39m[0m
+[  23% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/runtime_bridge.gd[39m[0m
+[  28% ] [90m[1msavepack[22m | Storing File: res://craftmine_shared/state_guard.gd[39m[0m
+[  32% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-5f2d43664cfaf560b28f169500471759-creation.scn[39m[0m
+[  36% ] [90m[1msavepack[22m | Storing File: res://scripts/creation/rules/double-press.gd[39m[0m
+[  40% ] [90m[1msavepack[22m | Storing File: res://scripts/creation/rules/original-rule.gd[39m[0m
+[  45% ] [90m[1msavepack[22m | Storing File: res://scripts/reused/camera_rig.gd[39m[0m
+[  50% ] [90m[1msavepack[22m | Storing File: res://scripts/reused/player_controller.gd[39m[0m
+[  54% ] [90m[1msavepack[22m | Storing File: res://scripts/creation_font.gd[39m[0m
+[  59% ] [90m[1msavepack[22m | Storing File: res://scripts/creation_world.gd[39m[0m
+[  63% ] [90m[1msavepack[22m | Storing File: res://scripts/scene_contract.gd[39m[0m
+[  67% ] [90m[1msavepack[22m | Storing File: res://world/creation.json[39m[0m
+[  71% ] [90m[1msavepack[22m | Storing File: res://craftmine_initial_state.json[39m[0m
+[  76% ] [90m[1msavepack[22m | Storing File: res://creation-scene.schema.json[39m[0m
+[  80% ] [90m[1msavepack[22m | Storing File: res://managed-base.json[39m[0m
+[  85% ] [90m[1msavepack[22m | Storing File: res://manifest.json[39m[0m
+[  89% ] [90m[1msavepack[22m | Storing File: res://assets/fonts/OFL-NotoSansSC.txt[39m[0m
+[  94% ] [90m[1msavepack[22m | Storing File: res://licenses/ORIGINAL_ASSETS_LICENSE.txt[39m[0m
+[  94% ] [90m[1msavepack[22m | Storing File: res://scenes/creation.tscn.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | Storing File: res://.godot/global_script_class_cache.cfg[39m[0m
+[  94% ] [90m[1msavepack[22m | Storing File: res://.godot/uid_cache.bin[39m[0m
+[  94% ] [90m[1msavepack[22m | Storing File: res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m

@@ -1,0 +1,82 @@
+{
+  "checks": [
+    {
+      "base": "side-view-materializer",
+      "passed": true,
+      "distinctInstanceIds": [
+        "e8b71a6c-a590-4424-85c3-1a3cde57e9c8",
+        "a52d11f4-8df6-4a96-b5b1-a8f95f3acb82"
+      ]
+    },
+    {
+      "base": "first-person",
+      "passed": true
+    },
+    {
+      "base": "top-down/worlds/town",
+      "passed": true
+    },
+    {
+      "base": "mining-sandbox/worlds/mine-camp",
+      "passed": true
+    },
+    {
+      "base": "side-view",
+      "passed": true
+    },
+    {
+      "base": "side-view-rejected-boot",
+      "passed": true,
+      "exitCode": 3
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 78,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-import",
+      "elapsedMs": 2207,
+      "exitCode": 0
+    },
+    {
+      "label": "first-person-state",
+      "elapsedMs": 242,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-import",
+      "elapsedMs": 1922,
+      "exitCode": 0
+    },
+    {
+      "label": "top-down-state",
+      "elapsedMs": 242,
+      "exitCode": 0
+    },
+    {
+      "label": "mining-sandbox-import",
+      "elapsedMs": 1921,
+      "exitCode": 0
+    },
+    {
+      "label": "mining-sandbox-state",
+      "elapsedMs": 149,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-import",
+      "elapsedMs": 1738,
+      "exitCode": 0
+    },
+    {
+      "label": "side-view-state",
+      "elapsedMs": 150,
+      "exitCode": 0
+    }
+  ],
+  "realModelCalls": 0,
+  "knownImportDiagnostics": []
+}
