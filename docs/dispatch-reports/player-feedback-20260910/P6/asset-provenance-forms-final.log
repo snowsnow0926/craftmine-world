@@ -1,0 +1,18 @@
+PASS old owner rejected
+PASS actual auxiliary forms open actual navigation sheet
+PASS selection restricted to observed cards
+PASS real favorite form updates acknowledgement
+PASS favorites filter uses actual form
+PASS unfavorite removes filtered card with detail retained
+PASS tag form uses submitted DOM value without React internals
+PASS other asset cannot be annotated
+PASS actual directory import form scans the host-picked root
+PASS actual confirm form supplies the selected scan path for an empty picker file path
+PASS blank provenance is explicitly unknown without claiming a licence grant
+PASS preview refuses a nonselected asset
+PASS preview refuses a different version of the same asset
+PASS actual preview form shows acknowledged fixture preview without writing metadata
+PASS finite import probe cannot supply a filesystem path
+PASS close form unmounts sheet
+PASS no focus or pointer lock
+{"out":"D:\\cm-fb-p6-20260910\\test-results\\asset-forms-xyfd4V","passed":true}

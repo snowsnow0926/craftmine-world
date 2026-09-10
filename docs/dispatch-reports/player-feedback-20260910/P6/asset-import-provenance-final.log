@@ -1,0 +1,13 @@
+✔ blank UI provenance becomes explicit unknown without granting a licence (0.8991ms)
+✔ whitespace and a stale verified selection cannot verify an absent licence (0.1472ms)
+✔ provided attribution and licence status remain their actual submitted values (0.1015ms)
+{"out":"D:\\cm-fb-p6-20260910\\test-results\\asset-import-provenance-wq2ZJt","passed":true}
+✔ actual packaged Core accepts normalized unknown metadata and retains exact bytes after restart (125.5469ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 307.2786
