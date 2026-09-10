@@ -1,0 +1,6 @@
+{"ts":"2026-09-10T02:11:57.135Z","level":"info","channel":"app","category":"lifecycle","message":"app boot craftmine world 0.14.3","data":{"protocolVersion":11}}
+{"ts":"2026-09-10T02:12:57.785Z","level":"info","channel":"app","category":"lifecycle","message":"app shutdown"}
+{"ts":"2026-09-10T02:13:01.234Z","level":"info","channel":"app","category":"lifecycle","message":"app boot craftmine world 0.14.3","data":{"protocolVersion":11}}
+{"ts":"2026-09-10T02:13:20.530Z","level":"info","channel":"app","category":"lifecycle","message":"app shutdown"}
+{"ts":"2026-09-10T02:13:23.937Z","level":"info","channel":"app","category":"lifecycle","message":"app boot craftmine world 0.14.3","data":{"protocolVersion":11}}
+{"ts":"2026-09-10T02:13:36.293Z","level":"info","channel":"app","category":"lifecycle","message":"app shutdown"}

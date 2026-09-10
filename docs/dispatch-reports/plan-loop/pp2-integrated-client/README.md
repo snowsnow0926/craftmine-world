@@ -40,3 +40,18 @@ SHA-256 was verified after moving. `earlier-test-archive-index.json` records the
 original and current paths and all file hashes. No active test, user profile or
 previous Windows delivery was moved. Existing committed raw reports remain
 unchanged; their original run paths are historical identities.
+
+## Verification after startup-disposal repair
+
+The subsequent fresh run `desktop-native-parameters-6Uvnzp`, using source and
+runtime commit `85b1015de6d40d380ae93c255aa73122ca0fdf06`, again passed all
+20 checks with three zero exits and empty shutdown/input/page failure arrays.
+Its untouched report and stderr/lifecycle logs are in `after-startup-fix/`.
+This repeats the same client scenarios and is not twenty additional cases.
+
+That source adds in-flight startup tracking, so disposal cannot return while a
+runtime factory or its late cleanup is still pending. The integrated targeted
+suite passed 60 checks, including six new startup timing cases and a real local
+HTTP factory/cleanup case. TypeScript compilation passed. Those timing tests
+are distinct from the native client's ordinary workflow; neither result proves
+the cause of any prior intermittent IOCP failure.
