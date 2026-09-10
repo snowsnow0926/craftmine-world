@@ -9,7 +9,7 @@ const sha=b=>createHash('sha256').update(b).digest('hex');
 register(new URL('../../vendor/pi-desktop/apps/desktop/test/helpers/ts-import-hooks.mjs',import.meta.url));
 const {invokeCraftmineNavigation,NAVIGATION_READ_CHANNELS}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-navigation-host.ts');
 const {createCraftminePanelGateway}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-panel-gateway.ts');
-const {assetsProbeScript}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-assets-acceptance.ts');
+const {assetsProbeScript,unwrapAssetsProbeResult}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-assets-acceptance.ts');
 const deps=createRequire(path.join(process.env.ASSET_TEST_DEPS,'package.json')), {build}=deps('esbuild');
 const bundled=await build({entryPoints:[new URL('../../plugins/craftmine-world/host-requests.cjs',import.meta.url).pathname.replace(/^\/(\w:)/,'$1')],bundle:true,platform:'node',format:'cjs',write:false,alias:{'@babel/parser':deps.resolve('@babel/parser')},plugins:[{name:'actual-domain',setup(b){b.onResolve({filter:/domain\.cjs$/},()=>({path:new URL('../../plugins/craftmine-world/domain-adapter.mjs',import.meta.url).pathname.replace(/^\/(\w:)/,'$1')}));b.onResolve({filter:/behavior-syntax\.mjs$/},()=>({path:new URL('../../plugins/craftmine-world/behavior-syntax.mjs',import.meta.url).pathname.replace(/^\/(\w:)/,'$1')}));}}]});
 const module={exports:{}};new Function('require','module','exports',bundled.outputFiles[0].text)(createRequire(import.meta.url),module,module.exports);const {createHostRequests}=module.exports;
@@ -40,7 +40,7 @@ test('old selected-world owner and changed trusted session never receive a confi
 test('headless finite asset probe rejects arbitrary selectors/scripts/RPC and unbounded fields',()=>{
  for(const x of [{action:'evaluate',script:'1'},{action:'read',selector:'body'},{action:'read',rpc:'world.create'},{action:'favorite',assetId:'x"#'}])assert.throws(()=>assetsProbeScript({ownerWorldId:null,...x}),/INVALID_ASSET_PROBE/);
  assert.throws(()=>assetsProbeScript({action:'saveTags',ownerWorldId:null,assetId:'asset-a',tags:['x;other']}),/INVALID/);
- assert.throws(()=>vm.runInNewContext(assetsProbeScript({action:'read',ownerWorldId:null})),/HEADLESS_ASSET_GUARD_REQUIRED/);
+ assert.throws(()=>unwrapAssetsProbeResult(vm.runInNewContext(assetsProbeScript({action:'read',ownerWorldId:null}))),/HEADLESS_ASSET_GUARD_REQUIRED/);
 });
 test('navigation → panel gateway → actual private asset service → existing Core persists only metadata',async()=>{
  const executable=process.env.ASSET_TEST_CORE;assert(executable&&path.isAbsolute(executable),'ASSET_TEST_CORE must name the existing compatible core; no build fallback');

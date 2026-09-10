@@ -1,0 +1,14 @@
+✔ unready open returns explicit false without a page exception (1.0794ms)
+✔ old owner rejection crosses the page boundary as finite data then throws at caller (0.7844ms)
+✔ unobserved controls remain rejected rather than becoming successful observations (1.3158ms)
+✔ read keeps the real observation and guard without pretending the sheet is open (0.6162ms)
+✔ unexpected renderer failures are not translated or hidden (1.2858ms)
+✔ forged, unknown and malformed structured results are rejected (0.1441ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 147.318

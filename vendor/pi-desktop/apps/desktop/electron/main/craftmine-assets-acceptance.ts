@@ -10,7 +10,33 @@ export function assetsProbeScript(input: unknown): string {
     || (fields[value.action].includes("version") && !(Number.isSafeInteger(value.version) && value.version > 0))
     || (value.action === "filter" && typeof value.favoritesOnly !== "boolean")
     || (value.action === "saveTags" && !(Array.isArray(value.tags) && value.tags.length <= 32 && value.tags.every((tag: unknown) => typeof tag === "string" && !!tag.trim() && new TextEncoder().encode(tag).length <= 40 && !/[\p{Cc},，;]/u.test(tag))))) throw Error("INVALID_ASSET_PROBE");
-  return `(${assetsDomProbe.toString()})(${JSON.stringify(value)})`;
+  return `(${assetsDomProbeResult.toString()})(${JSON.stringify(value)},${assetsDomProbe.toString()})`;
+}
+/** Decode only our finite test transport; unknown page failures still reject. */
+export function unwrapAssetsProbeResult(result: unknown): any {
+  const value = result as any;
+  if (!value || value.format !== "craftmine.asset-probe-result/1" || typeof value.ok !== "boolean") throw Error("INVALID_ASSET_PROBE_RESULT");
+  if (!value.ok) {
+    if (Object.keys(value).sort().join(",") !== "code,format,ok" ||
+        !["HEADLESS_ASSET_GUARD_REQUIRED", "ASSET_PANEL_OWNER_CHANGED", "ASSET_PROBE_CONTROL_UNAVAILABLE", "ASSET_PROBE_UNOBSERVED_ASSET", "ASSET_PROBE_UNOBSERVED_VERSION"].includes(value.code)) throw Error("INVALID_ASSET_PROBE_RESULT");
+    throw Error(value.code);
+  }
+  if (Object.keys(value).sort().join(",") !== "format,ok,value" || !value.value || typeof value.value !== "object" || Array.isArray(value.value)) throw Error("INVALID_ASSET_PROBE_RESULT");
+  return value.value;
+}
+function assetsDomProbeResult(input: AssetProbe, probe: (input: AssetProbe) => unknown) {
+  try {
+    return {format: "craftmine.asset-probe-result/1", ok: true, value: probe(input)};
+  } catch (error) {
+    const code = error instanceof Error ? error.message : null;
+    if (code === "ASSET_PROBE_CONTROL_UNAVAILABLE" && input.action === "open") {
+      return {format: "craftmine.asset-probe-result/1", ok: true, value: {ready: false, open: false}};
+    }
+    if (code && ["HEADLESS_ASSET_GUARD_REQUIRED", "ASSET_PANEL_OWNER_CHANGED", "ASSET_PROBE_CONTROL_UNAVAILABLE", "ASSET_PROBE_UNOBSERVED_ASSET", "ASSET_PROBE_UNOBSERVED_VERSION"].includes(code)) {
+      return {format: "craftmine.asset-probe-result/1", ok: false, code};
+    }
+    throw error;
+  }
 }
 function assetsDomProbe(input: AssetProbe) {
   if (!(globalThis as any).__craftmineHeadless) throw Error("HEADLESS_ASSET_GUARD_REQUIRED");
