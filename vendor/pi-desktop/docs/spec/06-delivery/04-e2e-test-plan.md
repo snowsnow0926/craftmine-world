@@ -9141,3 +9141,8 @@ Run `tests/player-feedback/P5/metrics-headless.mjs` in a private D-drive headles
 ## P1/P3 Godot child shortcut scope (2026-09-10)
 
 Controlled host/preload tests must refuse stale, hidden, detached, unshown and foreign-scope callers. Plain F11 toggles once; repeat is consumed. Escape respects consumed events, menus, editing, IME and pointer capture, sends only fixed scope and requests exit rather than toggle. Main integration and actual user keys are separate acceptance; no simulated keyboard or focus is permitted.
+
+
+### Player feedback P3 embedded world shortcut scope
+
+The P1 plugin-fullscreen tests exercise exact embedded Craftmine identity, current view ownership, hidden/replaced/zero-size denial, top-frame scope validation and preload disposal without OS input. Seven plugin/Godot bridge tests pass; plugin host/preload strict TypeScript has zero diagnostics. Main window integration and actual unconsumed Escape remain separate verification boundaries.

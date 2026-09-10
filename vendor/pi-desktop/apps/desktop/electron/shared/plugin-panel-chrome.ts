@@ -1,5 +1,9 @@
 export const PLUGIN_PANEL_TITLEBAR_HEIGHT = 46;
 
+/** Private embedded Craftmine world shortcut scope; never a generic plugin API. */
+export const PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX = "--craftmine-world-shortcut-scope=";
+export const PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL = "pi-plugin-world-fullscreen-exit";
+
 /**
  * Opt-in marker for plugin pages that use the host-published titlebar CSS
  * variable. Pages with this marker own their normal-flow top spacing; legacy

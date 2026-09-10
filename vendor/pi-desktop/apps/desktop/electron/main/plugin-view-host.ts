@@ -1,6 +1,8 @@
 import { session, shell, WebContentsView, type BrowserWindow } from "electron";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
+import { randomUUID } from "node:crypto";
+import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import { prepareWorldViewsForQuit } from "./craftmine-lifecycle";
 import { isHeadlessAcceptance } from "./craftmine-headless";
@@ -12,6 +14,8 @@ import {
 import {
   PLUGIN_PANEL_EMBEDDED_ARGUMENT,
   PLUGIN_PANEL_LOCALE_ARGUMENT_PREFIX,
+  PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX,
+  PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL,
   type PluginPanelTheme,
 } from "../shared/plugin-panel-chrome";
 
@@ -76,6 +80,9 @@ export class PluginViewHost {
   constructor(onBlockedRequest?: PluginPanelBlockedRequest) {
     this.onBlockedRequest = onBlockedRequest;
   }
+
+  /** Main-owned window action, available only to the embedded Craftmine world. */
+  onWorldFullscreenShortcut?: (action: "toggle" | "exit") => void;
 
   /**
    * Fired when the visible plugin view changes. The work-panel browser guest
@@ -325,6 +332,7 @@ export class PluginViewHost {
   }
 
   private createView(request: PluginViewOpenRequest): WebContentsView {
+    const worldShortcutScope = request.pluginId === "craftmine.world" && request.viewId === "world" ? randomUUID() : null;
     const ses = session.fromPartition(pluginSessionPartition(request.pluginId), {
       cache: true,
     });
@@ -347,11 +355,31 @@ export class PluginViewHost {
           `${PLUGIN_PANEL_LOCALE_ARGUMENT_PREFIX}${encodeURIComponent(request.locale)}`,
           `--pi-plugin-panel-theme=${request.theme}`,
           PLUGIN_PANEL_EMBEDDED_ARGUMENT,
+          ...(worldShortcutScope ? [PLUGIN_WORLD_SHORTCUT_SCOPE_PREFIX + worldShortcutScope] : []),
         ],
       },
     });
 
     const wc = view.webContents;
+    if (worldShortcutScope) {
+      const current = (): boolean => {
+        const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
+        return !!this.onWorldFullscreenShortcut && this.visibleKey === entry?.key && entry?.view === view &&
+          !wc.isDestroyed() && !!this.window && !this.window.isDestroyed() &&
+          this.bounds.width > 0 && this.bounds.height > 0 && this.window.contentView.children.includes(view);
+      };
+      wc.on("before-input-event", (event, input) => {
+        if (!current()) return;
+        const decision = nativeFullscreenKeyDecision(input);
+        if (decision.preventDefault) event.preventDefault();
+        if (decision.action) this.onWorldFullscreenShortcut?.(decision.action);
+      });
+      wc.ipc.on(PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL, (event, payload: unknown) => {
+        if (!current() || event.senderFrame !== wc.mainFrame || !payload || typeof payload !== "object") return;
+        const value = payload as Record<string, unknown>;
+        if (Object.keys(value).length === 1 && value.scope === worldShortcutScope) this.onWorldFullscreenShortcut?.("exit");
+      });
+    }
     // A docked view gets exactly one web contents. `window.open` would mint a
     // chromeless window outside the egress policy applied above.
     wc.setWindowOpenHandler(({ url }) => {
