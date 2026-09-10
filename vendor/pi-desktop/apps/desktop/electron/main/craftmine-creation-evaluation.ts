@@ -46,6 +46,30 @@ export function installCreationEvaluation(access:Access){
     if(!sessionId)throw Error("EVALUATION_NOT_INITIALIZED");
     if(method==="resume-play")return access.action("resume",{});
     if(method==="pause-play")return access.action("pause",{});
+    if(method==="copy-world"){
+      if(access.active(sessionId))throw Error("EVALUATION_ACTIVE_TASK");
+      const sourceSessionId=sessionId,source=(await access.call("session.get",{id:sourceSessionId})).session;
+      const original=await access.observe(),sourceWorldId=original?.worldId;
+      if(!source||!sourceWorldId)throw Error("EVALUATION_COPY_SOURCE_REQUIRED");
+      await desktop(`(()=>{const button=document.querySelector('[data-godot-copy-world] button');if(!button||button.disabled)throw Error('EVALUATION_COPY_BUTTON_UNAVAILABLE');const key=Object.keys(button).find(key=>key.startsWith('__reactProps'));if(!key||typeof button[key].onClick!=='function')throw Error('EVALUATION_COPY_CALLBACK_UNAVAILABLE');button[key].onClick();})()`);
+      const deadline=Date.now()+900000;let selected:{sessionId:string;worldId:string}|null=null;
+      while(Date.now()<deadline){
+        const state=await desktop(`(()=>{const copy=document.querySelector('[data-godot-copy-world]');return {sessionId:copy?.dataset.copySession,worldId:copy?.dataset.copyTargetWorld,viewing:document.querySelector('[data-world-session]')?.dataset.worldSession,error:copy?.querySelector('[role="alert"]')?.textContent};})()`);
+        if(state.error)throw Error(state.error);
+        if(state.sessionId&&state.sessionId!==sourceSessionId&&state.worldId&&state.worldId!==sourceWorldId&&state.viewing===state.sessionId){selected=state;break;}
+        await new Promise(resolve=>setTimeout(resolve,250));
+      }
+      if(!selected)throw Error("EVALUATION_COPY_SESSION_TIMEOUT");
+      const live=await access.observe();if(live?.worldId!==selected.worldId)throw Error("EVALUATION_COPY_WORLD_CHANGED");
+      const created=(await access.call("session.get",{id:selected.sessionId})).session;
+      if(!created||created.id===sourceSessionId||created.messages?.length)throw Error("EVALUATION_COPY_SESSION_NOT_FRESH");
+      // The product used normal new-chat defaults. This opt-in evaluator then
+      // keeps the same explicitly selected test model without changing providers.
+      await access.call("session.configure",{id:created.id,mode:source.mode,providerId:source.providerId,modelId:source.modelId,thinkingLevel:source.thinkingLevel,permissionMode:source.permissionMode});
+      await access.call("session.rename",{id:created.id,title:"造物世界真实模型评测"});
+      sessionId=created.id;await invoke("notificationSetViewingSession",{sessionId});
+      return {status:"ready",sourceWorldId,worldId:selected.worldId,targetWorldId:selected.worldId,sourceSessionId,sessionId,budget:requestBudget?.snapshot(),modelRequestsAdded:0};
+    }
     if(method==="chop-tree"){
       const observed=await access.observe(),creation=observed?.payload?.creation;
       if(observed?.baseId!=="creation-sandbox"||!creation?.entities?.some((entity:any)=>entity.kind==="tree"&&entity.id===creation.target?.entityId))throw Error("EVALUATION_TREE_NOT_TARGETED");

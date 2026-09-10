@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box } from "lucide-react";
-import { useAppStore } from "../stores/app-store";
+import { useAppStore, createCopiedWorldSession } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
 import { loadCraftmineLayout } from "../lib/craftmine-layout";
@@ -32,6 +32,15 @@ export function CraftmineNavigation() {
   const sessions = useAppStore((s) => s.sessions);
   const initialized = useRef(false);
   const controller = useCraftmineWorlds(lang);
+
+  const copied = async (worldId: string, sourceSessionId?: string) => {
+    const selected = await controller.bridge?.list();
+    if (selected?.activeWorldId !== worldId) throw Error("COPY_WORLD_SELECTION_CHANGED");
+    const sessionId = await createCopiedWorldSession(worldId, sourceSessionId);
+    if ((await controller.bridge?.list())?.activeWorldId !== worldId) throw Error("COPY_WORLD_SELECTION_CHANGED");
+    open();
+    return sessionId;
+  };
 
   const open = () => {
     const state = useAppStore.getState();
@@ -105,7 +114,7 @@ export function CraftmineNavigation() {
       {available && (
         <>
           <WorldListPanel controller={controller} lang={lang} onOpenWorld={open} />
-          <CopyWorldButton bridge={controller.bridge} worldId={controller.activeWorldId} onCopied={open} />
+          <CopyWorldButton bridge={controller.bridge} worldId={controller.activeWorldId} sessionId={activeSessionId} onCopied={copied} />
 
           {activeSessionId && (
             <div className="craftmine-world-session" data-world-session={activeSessionId}>

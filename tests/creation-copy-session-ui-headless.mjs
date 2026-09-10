@@ -1,0 +1,33 @@
+// Actual navigation, copy button and store; isolated scripted callbacks only.
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import{createRequire}from'node:module';import{pathToFileURL}from'node:url';
+import{playwright,browserOptions}from'../app/browser-tools.mjs';
+const desktop=path.resolve('vendor/pi-desktop/apps/desktop'),require=createRequire(path.join(desktop,'package.json'));
+fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/creation-copy-session-ui-'));
+const script=`import React from'react';import{createRoot}from'react-dom/client';import i18n from'i18next';import{initReactI18next}from'react-i18next';import{catalogs,flattenCatalog}from'@pi-desktop/i18n';import{CraftmineNavigation}from'./src/components/CraftmineNavigation';import{useAppStore,createCopiedWorldSession}from'./src/stores/app-store';import{api}from'./src/lib/api';
+let selected='world-original',listeners=[],calls=[],creates=[],fail=true,nextWorld='world-copy',race=false;
+const world=id=>({id,title:id,baseId:'creation-sandbox',build:{scene:{format:'craftmine.godot-scene/1',baseId:'creation-sandbox'}}});
+globalThis.__craftmineWorldBridge={invoke:async(_,channel,payload)=>{if(channel==='world.list')return {activeWorldId:selected,worlds:[world('world-original'),...(selected==='world-original'?[]:[world(selected)])]};if(channel==='world.copy'){calls.push(structuredClone(payload));selected=nextWorld;listeners.forEach(fn=>fn());return {status:'ready',targetWorldId:selected};}return {};},onChanged:fn=>{listeners.push(fn);return()=>{};}};
+api.createSession=async input=>{creates.push(input);if(fail){fail=false;throw Error('FIXTURE_SESSION_CREATE_FAILED');}if(race){selected='world-original';listeners.forEach(fn=>fn());}return{session:{id:race?'session-copy-race':'session-copy',title:'新任务',mode:input.mode,thinkingLevel:input.thinkingLevel,projectPath:input.projectPath,createdAt:1,updatedAt:1}};};
+api.getSession=async()=>({session:{id:'session-original',title:'原会话',mode:'agent',messages:[]}});
+useAppStore.setState({ready:true,activeSessionId:'session-original',sessions:[{id:'session-original',title:'原会话',mode:'agent',projectPath:'D:/fixture'}],messages:[],settings:{defaultMode:'agent'},workspace:{path:'D:/fixture'},providers:[],pluginViews:[{ref:'craftmine.world/world'}],isRunning:false,runningSessions:{},selectSession:async id=>{useAppStore.setState({activeSessionId:id});}});
+globalThis.fixture={get:()=>({selected,calls,creates,active:useAppStore.getState().activeSessionId,sessions:useAppStore.getState().sessions}),setOriginal:()=>useAppStore.setState({activeSessionId:'session-original',isRunning:false}),race:()=>{race=true;nextWorld='world-copy-race';selected='world-original';useAppStore.setState({activeSessionId:'session-original'});listeners.forEach(fn=>fn());},idempotent:()=>createCopiedWorldSession('world-copy','session-original')};
+void i18n.use(initReactI18next).init({lng:'zh-CN',fallbackLng:'en',resources:Object.fromEntries(Object.entries(catalogs).map(([key,value])=>[key,{translation:flattenCatalog(value)}])),interpolation:{escapeValue:false}}).then(()=>createRoot(document.getElementById('root')).render(<CraftmineNavigation/>));`;
+await require('esbuild').build({stdin:{contents:script,resolveDir:desktop,loader:'jsx'},outfile:path.join(out,'fixture.js'),bundle:true,platform:'browser',format:'iife',target:'chrome130',define:{'process.env.NODE_ENV':'"production"'}});
+fs.writeFileSync(path.join(out,'index.html'),'<!doctype html><html lang="zh-CN"><meta charset="utf-8"><body><div id="root"></div><script src="fixture.js"></script></body></html>');
+const browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),headless:true,viewport:{width:1100,height:850}}),checks=[],errors=[];
+const check=(name,value)=>{checks.push({name,passed:!!value});assert.ok(value,name);console.log('PASS '+name);};
+try{await browser.addInitScript(()=>{globalThis.inputRequests=0;Element.prototype.requestPointerLock=()=>{inputRequests++;throw Error('Disabled');};window.focus=()=>inputRequests++;window.piDesktop={platform:'win32',on:()=>()=>{},invoke:async()=>({ok:true,data:{}})};});
+const page=await browser.newPage();page.on('pageerror',error=>errors.push(error.message));await page.goto(pathToFileURL(path.join(out,'index.html')).href);
+await page.waitForFunction(()=>document.querySelector('[data-godot-copy-world] button')&&!document.querySelector('[data-godot-copy-world] button').disabled);
+const copy=()=>page.evaluate(()=>{const node=document.querySelector('[data-godot-copy-world] button');node[Object.keys(node).find(key=>key.startsWith('__reactProps'))].onClick();});
+await copy();await page.waitForFunction(()=>document.querySelector('[data-godot-copy-world] [role=alert]'));
+check('会话创建失败保持原会话与可重试复制身份',await page.evaluate(()=>fixture.get().calls.length===1&&fixture.get().active==='session-original'));
+await copy();await page.waitForFunction(()=>document.querySelector('[data-copy-session="session-copy"]'));
+const state=await page.evaluate(()=>fixture.get());check('副本成功后真正创建并选中新空会话',state.active==='session-copy'&&state.sessions.some(item=>item.id==='session-original')&&state.sessions.some(item=>item.id==='session-copy'));
+check('重试复用原复制操作而不创建副本的副本',state.calls.length===2&&state.calls[0].worldId==='world-original'&&JSON.stringify(state.calls[0])===JSON.stringify(state.calls[1]));
+check('新会话遵循默认配置与项目作用域',state.creates[1].mode==='agent'&&state.creates[1].projectPath==='D:/fixture'&&state.creates[1].providerId===undefined&&state.creates[1].modelId===undefined);
+check('真实导航行显示新选中会话',await page.evaluate(()=>document.querySelector('[data-world-session]')?.dataset.worldSession==='session-copy'));
+await page.evaluate(()=>fixture.idempotent());check('同副本重复交接复用已创建会话',await page.evaluate(()=>fixture.get().creates.length===2));
+await page.evaluate(()=>fixture.race());await page.waitForFunction(()=>fixture.get().selected==='world-original');await copy();await page.waitForFunction(()=>document.querySelector('[data-godot-copy-world] [role=alert]')?.textContent.includes('COPY_WORLD_SELECTION_CHANGED'));check('创建会话期间切换世界拒绝误报副本成功',await page.evaluate(()=>!document.querySelector('[data-copy-session]')&&fixture.get().selected==='world-original'));
+check('无鼠标键盘焦点或PointerLock请求',await page.evaluate(()=>inputRequests===0));check('无未处理界面异常',errors.length===0);await page.screenshot({path:path.join(out,'copy-session.png')});
+}catch(error){errors.push(String(error.stack));process.exitCode=1;}finally{await browser.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({checks,errors,scope:'真实React导航与store，fixture宿主；无模型请求'},null,2));console.log(out);}

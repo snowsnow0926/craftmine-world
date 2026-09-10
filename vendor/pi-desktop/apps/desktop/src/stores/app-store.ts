@@ -4708,3 +4708,22 @@ export async function materializeDraftSession(
   }
   return persistSessionAndSelect({ intent });
 }
+
+
+const copiedWorldSessions = new Map<string, string>();
+/** A copied world gets a fresh conversation; existing session/world bindings never move. */
+export async function createCopiedWorldSession(worldId: string, sourceSessionId?: string): Promise<string> {
+  const known = copiedWorldSessions.get(worldId);
+  if (known) {
+    if (useAppStore.getState().activeSessionId !== known) await useAppStore.getState().selectSession(known);
+    return known;
+  }
+  const state = useAppStore.getState();
+  if (state.activeSessionId !== sourceSessionId || state.isRunning) throw Error("COPY_SESSION_CONTEXT_CHANGED");
+  // Deliberately bypass reusable-empty-session lookup: even an empty chat may
+  // already own a durable task in the original world.
+  const id = await persistSessionAndSelect({projectPath: state.workspace?.path ?? null, draftConfiguration: null});
+  if (!id || useAppStore.getState().activeSessionId !== id) throw Error("COPY_SESSION_SELECTION_SUPERSEDED");
+  copiedWorldSessions.set(worldId, id);
+  return id;
+}
