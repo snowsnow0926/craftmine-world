@@ -7,6 +7,12 @@ type Domain = (method: string, args: Data) => Promise<any>;
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 const SOURCE = new Set([".godot", ".gd", ".tscn", ".tres", ".gdshader", ".gdshaderinc", ".json", ".cfg", ".txt", ".md", ".csv", ".svg", ".obj", ".mtl", ".uid", ".png", ".jpg", ".jpeg", ".webp", ".glb", ".ogg", ".wav"]);
 
+/** Only unfinished work resumes automatically; terminal states require explicit retry. */
+export function canAutomaticallyInitialize(status: Data | null | undefined): boolean {
+  // The initialize transaction's raw record omits playable; initStatus includes it.
+  return !!status && status.playable !== true && ["pending", "drafting", "building", "checked"].includes(status.status);
+}
+
 /** Preserve this finite host preparation code from the hash-checked job output. */
 export function initializationJobFailure(current: Data): string {
   if (Array.isArray(current.output?.compile?.errors)
@@ -26,6 +32,7 @@ export function createGodotWorldInitializer(options: {
     if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
     const status = await domain("godotWorld.initStatus", {worldId});
     if (status.playable) return;
+    if (!recover && !canAutomaticallyInitialize(status)) return;
     const directory = path.join(options.worldsRoot, worldId);
     const metadata = JSON.parse(fs.readFileSync(path.join(directory, "managed-base.json"), "utf8"));
     if (metadata.worldId !== worldId || !Array.isArray(metadata.files)) throw Error("MANAGED_BASE_IDENTITY_MISMATCH");

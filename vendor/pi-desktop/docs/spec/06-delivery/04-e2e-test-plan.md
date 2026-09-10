@@ -9037,3 +9037,8 @@ client acceptance, not a new sealed Windows package or an automatic repair test.
 Strict finite protocol regression additionally rejects array/object/number
 discriminators, preserves corrupt ledger bytes, and verifies invalid requests
 produce zero ledger writes. Retain the independent pre-fix coercion failure.
+
+
+### Terminal Godot initialization across restart (2026-09-10)
+
+Use the strict packaged long-profile scenario with an independently pinned source commit and build-manifest hash. After the real import is rejected with GODOT_TASK_PATH_TOO_LONG, read the world repeatedly, exit, reopen and read it again. Creation stage and error stage must remain build, the concise path explanation must persist, and the world must remain unplayable. Status reads and an idempotent create replay must not open a new task or build. Preserve the failed attempt ledger and no-engine-start evidence. Explicit Retry remains available and must use task recovery before a new check; retrying an unchanged overlong profile is not expected to pass. Both client exits require empty shutdown audit arrays. See ../godot-initialization-terminal-recovery.md for module regressions; they do not replace this package scenario.
