@@ -76,8 +76,8 @@
       "distribution": [
         "app-bundle"
       ],
-      "bytes": 19617,
-      "sha256": "7c4b60b590fe62d267b296ab332a6a28db5426df55f3592a0f4c528ae391260b",
+      "bytes": 19747,
+      "sha256": "1bf3163896b4fae7bdd3a936c9301e366871ef340f94352f6f61ec96f0bdc558",
       "outstanding": "Formal licence text pending the per-module review in docs/LICENSING_STRATEGY.md (see desktop/delivery/licensing/inventory.json); the project owns this file. Target: creation-core path (AGPL-3.0-only or commercial).",
       "notes": "Host-side Godot Web world runtime: one token-scoped loopback origin per world instance plus the craftmine.godot-runtime/2 protocol. Imported by the Electron main process, app/game.js and app/static-files.mjs. Never copied into a player export."
     },
