@@ -8,7 +8,7 @@
 // binary, no browser, no input simulation.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,copyFile,writeFile} from 'node:fs/promises';
+import {mkdtemp,mkdir,copyFile,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -16,12 +16,30 @@ import {createRequire} from 'node:module';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const source=path.join(root,'plugins/craftmine-world');
-const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-load-'));
+// The real plugin modules import private shared modules through
+// '../../desktop/godot/shared', so the private copy keeps that exact layout:
+// staging is <scratch>/plugins/craftmine-world and the shared modules sit at
+// <scratch>/desktop/godot/shared.
+const scratch=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-load-'));
+const staging=path.join(scratch,'plugins','craftmine-world');
+const shared=path.join(scratch,'desktop','godot','shared');
+await mkdir(staging,{recursive:true});
+await mkdir(shared,{recursive:true});
+// Every plugin file `main.cjs` loads at startup, directly or transitively. A
+// missing entry fails the whole file with MODULE_NOT_FOUND before any assertion
+// runs, so this list must cover the real entry point's local require closure.
+// `domain.cjs` and `core-client.cjs` are deliberately absent: the test supplies
+// stubs for them below.
 const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',
-  'workbench-service.cjs','godot-executor.cjs','asset-service.mjs','reuse-service.mjs'];
+  'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','asset-service.mjs','reuse-service.mjs',
+  'portable-restore-service.cjs','package-turn-lifecycle.cjs','target-feedback-service.mjs','godot-package-source.mjs',
+  'package-format.mjs','package-zip.mjs','asset-lock.mjs'];
+// Imported by the staged plugin modules through the repository-relative path.
+const SHARED=['draft_install.mjs','scene_materializer.mjs','target-feedback-configuration.mjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
+for(const file of SHARED)await copyFile(path.join(root,'desktop/godot/shared',file),path.join(shared,file));
 
 const HANDSHAKE={format:'craftmine.core/1',godotProjects:true,godotBuildJobs:true,godotExecutorGate:true,
   verificationJobs:true,playerApplications:true,advisoryReviews:true,sessionDrafts:true,publishesWorlds:true};
@@ -40,6 +58,7 @@ class CoreClient {
   constructor(binary,directory){this.binary=binary;this.directory=directory;}
   async start(){return HANDSHAKE;}
   async stop(){}
+  async exclusive(run){await this.start();return run((method,params={})=>this.call(method,params));}
   async call(method,params={}){
     calls.push({method,params});
     if(method==='workspace.open')return {worldId:'alpha',revision:3,repoId:'repo-alpha',branchId:'main',
