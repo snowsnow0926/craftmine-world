@@ -248,6 +248,15 @@ requirements.
 
 ## Integration audit hardening
 
+P7 new-task acceptance found that a successful process wait can precede the
+owned Job accounting transition to zero. Native preflight and engine completion
+now query that exact Job for up to two seconds, pacing queries by ten milliseconds.
+Only an actual zero authorizes the existing optional bin-retirement proof;
+timeout preserves the last nonzero count and query failure remains unknown.
+This does not replace stdio closure or the Core acknowledgment gates. See
+`docs/dispatch-reports/player-feedback-20260910/P7/REPORT.md` for new release-broker,
+real-engine/Core/verifier evidence and preserved initial failures.
+
 Final integration recovery preserves task identity and logs whenever a recorded
 child cannot be proven gone/terminated, or profile removal fails. A matching
 task nonce alone does not prove that its processes have stopped. Recovery never

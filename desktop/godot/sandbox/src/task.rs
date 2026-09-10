@@ -691,7 +691,7 @@ impl Task {
         };
         self.resource_enforcement = Some(enforcement);
         let (state, exit, reason) = outcome;
-        let active = running.job().and_then(|job| job.active_processes());
+        let active = running.job().and_then(|job| job.completed_active_processes(Duration::from_secs(2)));
         self.completed_job_active_processes = active;
         if state != TaskState::Succeeded && active != Some(0) {
             return Err(format!("Task job still holds {active:?} processes after termination").into());

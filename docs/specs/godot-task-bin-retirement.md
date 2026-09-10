@@ -33,6 +33,23 @@ The current process caches each retirement promise: duplicate calls do not repea
 
 ## Boundaries and remaining validation
 
+P7 update (2026-09-10): the fresh native baseline returned a successful version
+and verified network policy while the immediately sampled native Job still
+reported one active process. That correctly prevented retirement. Completion
+now polls accounting on the same retained Job handle for at most two seconds;
+measured zero is the only successful result. Ten-millisecond pacing is not
+evidence of completion. Unknown or still-nonzero results keep the existing
+preservation gate. Both native probe and Godot engine use this rule.
+
+The new release broker passed two actual import/exportWeb/runtime-verifier/Core
+check cycles, four actual version/registration calls including executor restart,
+and one actual syntax-error job retained its binaries. Complete before/after
+task file hashes and directory sets verify that only the two allowed binaries
+were removed and that restart did not reclaim previously retained task files.
+These are isolated source-level native results, not a packaged-client claim.
+Late-pipe, unknown-exit, missing-ack and duplicate-capability cases retain their
+separate authored transport-fixture evidence. They were not induced in Godot.
+
 - Runtime failed, cancelled, unknown, refused finish, unflushed ledger, lost reply and unresolved recovery tasks retain every bin copy. Failure retention is not automatically bounded in this slice.
 - Independent Windows export consumers are not connected to retirement. They keep their copies even if a new broker provides a registration. Artifact duplication, global quota accounting and failed-task retention policy are also later work.
 - The fixed task root remains host-owned and unavailable for child writes. This code does not claim protection against an independently malicious process with the host user's full filesystem rights racing every filesystem operation.

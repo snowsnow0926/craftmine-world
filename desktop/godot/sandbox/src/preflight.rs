@@ -133,7 +133,7 @@ pub fn run(mut spec: LaunchSpec, cancel: &AtomicBool) -> Result<NetworkPreflight
         }
     };
     if code != 0 { return Err(format!("Native preflight exited {code}").into()); }
-    let job_active_processes = running.job().and_then(|job| job.active_processes());
+    let job_active_processes = running.job().and_then(|job| job.completed_active_processes(Duration::from_secs(2)));
     let path = running.log.as_ref().ok_or("Missing native preflight log")?;
     if fs::metadata(path)?.len() > 65536 { return Err("Native observation exceeds limit".into()); }
     let observation: NativeObservation = serde_json::from_slice(&fs::read(path)?)?;

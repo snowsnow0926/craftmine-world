@@ -1,0 +1,570 @@
+{
+  "format": "craftmine.p7-native-retirement/1",
+  "sourceCommit": "b23c60be410a97dc0fcbcc91aa0ff82d44ecf78d",
+  "identities": {
+    "core": {
+      "path": "D:\\cm-fb-p7-20260910\\test-results\\core-target\\debug\\craftmine-core.exe",
+      "sha256": "19bdefa5b3ef601415c48df487750c5295417edaa2105ef3cafd900a590f3c2f"
+    },
+    "broker": {
+      "format": "craftmine.godot-broker-identity/1",
+      "sha256": "72fdbddcc9ff3afe74d98ea7d29937ffa026916bcd76c48d4f142f0d37c7361d",
+      "bytes": 812032,
+      "sourceCommit": "b23c60be410a97dc0fcbcc91aa0ff82d44ecf78d",
+      "protocolVersion": 1
+    },
+    "electron": {
+      "path": "C:\\cm-plan-next-20260910\\vendor\\pi-desktop\\node_modules\\.pnpm\\electron@43.4.0_supports-color@7.2.0\\node_modules\\electron\\dist\\electron.exe",
+      "sha256": "bab31519ee1bc5b490caf7844e2b1dbcd4f7bb49a13039103952ab381c02ade4"
+    }
+  },
+  "startedAt": "2026-09-10T06:56:51.040Z",
+  "events": [
+    {
+      "kind": "broker-request",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "at": "2026-09-10T06:56:51.542Z",
+      "monotonicMs": 559.5002
+    },
+    {
+      "kind": "broker-stderr",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "bytes": 112,
+      "at": "2026-09-10T06:56:51.835Z",
+      "monotonicMs": 852.3957
+    },
+    {
+      "kind": "broker-stderr",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "bytes": 78,
+      "at": "2026-09-10T06:56:52.220Z",
+      "monotonicMs": 1237.1393
+    },
+    {
+      "kind": "broker-stdout",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "bytes": 4211,
+      "at": "2026-09-10T06:56:52.220Z",
+      "monotonicMs": 1237.6225
+    },
+    {
+      "kind": "stderr-close",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "at": "2026-09-10T06:56:52.248Z",
+      "monotonicMs": 1264.7886
+    },
+    {
+      "kind": "stdout-close",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "at": "2026-09-10T06:56:52.248Z",
+      "monotonicMs": 1265.1882
+    },
+    {
+      "kind": "broker-exit",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "code": 0,
+      "signal": null,
+      "at": "2026-09-10T06:56:52.248Z",
+      "monotonicMs": 1265.5718
+    },
+    {
+      "kind": "broker-close",
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "code": 0,
+      "signal": null,
+      "at": "2026-09-10T06:56:52.249Z",
+      "monotonicMs": 1266.4117
+    },
+    {
+      "kind": "core-ack",
+      "method": "godotExecutor.register",
+      "jobId": null,
+      "at": "2026-09-10T06:56:52.394Z",
+      "monotonicMs": 1411.4553
+    },
+    {
+      "kind": "executor-log",
+      "args": [
+        "[godot-executor]",
+        "registered",
+        "craftmine-windows-broker-v1",
+        "evidence",
+        "459c009cea51b7cf",
+        "promoted",
+        0
+      ],
+      "at": "2026-09-10T06:56:52.395Z",
+      "monotonicMs": 1411.8418
+    }
+  ],
+  "runs": [
+    {
+      "taskId": "pf-8e5f915eb97446f182121d5d",
+      "pid": 274528,
+      "operation": "version",
+      "request": {
+        "schemaVersion": 1,
+        "requestId": "pf-8e5f915eb97446f182121d5d",
+        "taskId": "pf-8e5f915eb97446f182121d5d",
+        "operation": "version",
+        "tasksRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks",
+        "engineRoot": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable",
+        "sourceBinding": {
+          "worldId": "executor-preflight",
+          "buildId": "executor-preflight",
+          "sourceRevision": 0,
+          "sourceDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "inputHash": "010bf5d260f05c1722f25da74feb73fdb96c35d0f9cd2471bf712e02a14109c5"
+      },
+      "events": [],
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "monotonicMs": 1265.5536
+      },
+      "close": {
+        "code": 0,
+        "signal": null,
+        "monotonicMs": 1266.0827
+      },
+      "response": {
+        "schemaVersion": 1,
+        "requestId": "pf-8e5f915eb97446f182121d5d",
+        "taskId": "pf-8e5f915eb97446f182121d5d",
+        "operation": "version",
+        "sourceBinding": {
+          "worldId": "executor-preflight",
+          "buildId": "executor-preflight",
+          "sourceRevision": 0,
+          "sourceDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "inputHash": "010bf5d260f05c1722f25da74feb73fdb96c35d0f9cd2471bf712e02a14109c5",
+        "sourceSnapshotDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sourceFiles": [],
+        "state": "succeeded",
+        "exitCode": 0,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "processVerification": {
+          "verified": true,
+          "policyVersion": "craftmine.windows.lpac-registry.v1",
+          "pid": 102180,
+          "creationTimeFiletime": "134334970119970843",
+          "imagePath": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\bin\\Godot_v4.7.2-stable_win64.exe",
+          "appContainerSid": "S-1-15-2-2760704272-2845511233-2589709476-386517659-2556046376-3185901773-3933244997",
+          "capabilitySids": [
+            "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+          ],
+          "integrityRid": 4096,
+          "isAppContainer": true,
+          "lpacQueryValue": null,
+          "lpacQueryError": 87,
+          "lpacCreationAttribute": true,
+          "jobMembershipVerified": true,
+          "jobLimitFlags": 8456,
+          "activeProcessLimit": 1,
+          "processMemoryBytes": 4294967296,
+          "verifiedBeforeResume": true,
+          "resumePreviousCount": 1
+        },
+        "networkPreflight": {
+          "verified": true,
+          "jobActiveProcesses": 1,
+          "policyVersion": "craftmine.windows.lpac-registry.v1",
+          "hostPositiveControls": [
+            "tcp4Echo",
+            "tcp6Echo",
+            "udp4Echo",
+            "udp6Echo"
+          ],
+          "hostReceivedCounts": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "exactTaskExempt": false,
+          "processVerification": {
+            "verified": true,
+            "policyVersion": "craftmine.windows.lpac-registry.v1",
+            "pid": 172976,
+            "creationTimeFiletime": "134334970118642683",
+            "imagePath": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\bin\\broker-preflight.exe",
+            "appContainerSid": "S-1-15-2-2760704272-2845511233-2589709476-386517659-2556046376-3185901773-3933244997",
+            "capabilitySids": [
+              "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+            ],
+            "integrityRid": 4096,
+            "isAppContainer": true,
+            "lpacQueryValue": null,
+            "lpacQueryError": 87,
+            "lpacCreationAttribute": true,
+            "jobMembershipVerified": true,
+            "jobLimitFlags": 8456,
+            "activeProcessLimit": 1,
+            "processMemoryBytes": 4294967296,
+            "verifiedBeforeResume": true,
+            "resumePreviousCount": 1
+          },
+          "observation": {
+            "winsockStartup": 0,
+            "checks": [
+              {
+                "name": "tcp4",
+                "ok": false,
+                "rawOsError": 10013,
+                "errorKind": "PermissionDenied"
+              },
+              {
+                "name": "tcp6",
+                "ok": false,
+                "rawOsError": 10013,
+                "errorKind": "PermissionDenied"
+              },
+              {
+                "name": "tcpExternal",
+                "ok": false,
+                "rawOsError": 10013,
+                "errorKind": "PermissionDenied"
+              },
+              {
+                "name": "udp4",
+                "ok": false,
+                "rawOsError": 10013,
+                "errorKind": "PermissionDenied"
+              },
+              {
+                "name": "udp6",
+                "ok": false,
+                "rawOsError": 10013,
+                "errorKind": "PermissionDenied"
+              },
+              {
+                "name": "udpExternal",
+                "ok": false,
+                "rawOsError": 10013,
+                "errorKind": "PermissionDenied"
+              }
+            ]
+          }
+        },
+        "resourceEnforcement": {
+          "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+          "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+          "hardFilesystemQuota": false,
+          "workBytesLimit": 1073741824,
+          "logBytesLimit": 4194304,
+          "sampleIntervalMs": 50,
+          "samples": 3,
+          "maxObservedWorkBytes": 30769451,
+          "maxObservedLogBytes": 0,
+          "enforced": false,
+          "reason": null
+        },
+        "artifacts": [],
+        "artifactsRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\artifacts",
+        "logsRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\pf-8e5f915eb97446f182121d5d\\logs",
+        "logs": [
+          {
+            "path": "preflight.json",
+            "bytes": 508,
+            "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+          },
+          {
+            "path": "task.log",
+            "bytes": 33,
+            "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+          }
+        ],
+        "cleanup": {
+          "verified": true,
+          "profileHresult": 0,
+          "workRemoved": true,
+          "error": null
+        },
+        "recoveryJournal": {
+          "path": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\.recovery-journal\\pf-8e5f915eb97446f182121d5d.json",
+          "policyVersion": "craftmine.windows.recovery-journal.v1",
+          "cleared": true,
+          "error": null
+        },
+        "error": null,
+        "brokerSha256": "72fdbddcc9ff3afe74d98ea7d29937ffa026916bcd76c48d4f142f0d37c7361d"
+      }
+    }
+  ],
+  "ackBoundaries": [
+    {
+      "method": "godotExecutor.register",
+      "jobId": null,
+      "beforeAt": 1267.1636,
+      "tasks": [
+        {
+          "taskId": "pf-8e5f915eb97446f182121d5d",
+          "before": {
+            "files": [
+              {
+                "path": "bin/Godot_v4.7.2-stable_win64.exe",
+                "bytes": 180858888,
+                "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+              },
+              {
+                "path": "bin/broker-preflight.exe",
+                "bytes": 812032,
+                "sha256": "72fdbddcc9ff3afe74d98ea7d29937ffa026916bcd76c48d4f142f0d37c7361d"
+              },
+              {
+                "path": "logs/native-verification.json",
+                "bytes": 768,
+                "sha256": "240b909d001a9f76d3e2550f896643a101f22ce1c4a5dbab266a5539f1380bb8"
+              },
+              {
+                "path": "logs/preflight.json",
+                "bytes": 508,
+                "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+              },
+              {
+                "path": "logs/process-verification.json",
+                "bytes": 777,
+                "sha256": "cc6ab3c2041cab9f78e2667fb97457e8602e4754983207b9a68eaac60bd1bbdb"
+              },
+              {
+                "path": "logs/task.log",
+                "bytes": 33,
+                "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+              },
+              {
+                "path": "task-identity.json",
+                "bytes": 165,
+                "sha256": "d3845c83a5921b433f0f36c0300bc49e8588cf06161abc80ad3213113686de03"
+              }
+            ],
+            "directories": [
+              "artifacts",
+              "bin",
+              "logs"
+            ],
+            "logicalBytes": 181673171
+          },
+          "after": {
+            "files": [
+              {
+                "path": "bin/Godot_v4.7.2-stable_win64.exe",
+                "bytes": 180858888,
+                "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+              },
+              {
+                "path": "bin/broker-preflight.exe",
+                "bytes": 812032,
+                "sha256": "72fdbddcc9ff3afe74d98ea7d29937ffa026916bcd76c48d4f142f0d37c7361d"
+              },
+              {
+                "path": "logs/native-verification.json",
+                "bytes": 768,
+                "sha256": "240b909d001a9f76d3e2550f896643a101f22ce1c4a5dbab266a5539f1380bb8"
+              },
+              {
+                "path": "logs/preflight.json",
+                "bytes": 508,
+                "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+              },
+              {
+                "path": "logs/process-verification.json",
+                "bytes": 777,
+                "sha256": "cc6ab3c2041cab9f78e2667fb97457e8602e4754983207b9a68eaac60bd1bbdb"
+              },
+              {
+                "path": "logs/task.log",
+                "bytes": 33,
+                "sha256": "bf8803022b574250bb04dea65053a46b7c58570725316c1f7fe2aa6735706498"
+              },
+              {
+                "path": "task-identity.json",
+                "bytes": 165,
+                "sha256": "d3845c83a5921b433f0f36c0300bc49e8588cf06161abc80ad3213113686de03"
+              }
+            ],
+            "directories": [
+              "artifacts",
+              "bin",
+              "logs"
+            ],
+            "logicalBytes": 181673171
+          }
+        }
+      ],
+      "replyAt": 1411.4348,
+      "reply": {
+        "attestationHash": "0d0d9bb03994205f628aee80200a66903ab60a2c9495abea57d849cf17d0894a",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": true,
+        "executorId": "craftmine-windows-broker-v1",
+        "isolation": "craftmine.windows.lpac-registry.v1",
+        "promotedJobs": 0,
+        "registered": true,
+        "registeredAt": 1789023412394
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "success-one",
+      "worldId": "retire-success-one",
+      "freeBefore": 187858915328,
+      "discovery": {
+        "format": "craftmine.godot-executor-status/1",
+        "executorId": "craftmine-windows-broker-v1",
+        "engineVersion": "4.7.2-stable",
+        "isolation": "craftmine.windows.lpac-registry.v1",
+        "state": "registered",
+        "available": true,
+        "buildAvailable": true,
+        "checkAvailable": true,
+        "reason": null,
+        "broker": {
+          "sha256": "72fdbddcc9ff3afe74d98ea7d29937ffa026916bcd76c48d4f142f0d37c7361d",
+          "pinned": true,
+          "pinSource": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\broker-identity.json",
+          "sourceCommit": "b23c60be410a97dc0fcbcc91aa0ff82d44ecf78d",
+          "protocolVersion": 1
+        },
+        "engineRoot": "D:\\Craftmine World\\desktop\\build\\godot\\4.7.2-stable",
+        "lock": "toolchain.lock.json",
+        "evidenceHash": "459c009cea51b7cf42ba80a3aaee3889499de2e86216169a0947c68907ba7d5d",
+        "bridge": {
+          "sha256": "fb211925619e8acc732744c233f46d4db0ec88178921172dc9cd43a22a5be0d3"
+        },
+        "preflight": {
+          "policyVersion": "craftmine.windows.lpac-registry.v1",
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "networkChecks": [
+            {
+              "name": "tcp4",
+              "ok": false,
+              "rawOsError": 10013
+            },
+            {
+              "name": "tcp6",
+              "ok": false,
+              "rawOsError": 10013
+            },
+            {
+              "name": "tcpExternal",
+              "ok": false,
+              "rawOsError": 10013
+            },
+            {
+              "name": "udp4",
+              "ok": false,
+              "rawOsError": 10013
+            },
+            {
+              "name": "udp6",
+              "ok": false,
+              "rawOsError": 10013
+            },
+            {
+              "name": "udpExternal",
+              "ok": false,
+              "rawOsError": 10013
+            }
+          ]
+        },
+        "recoveries": [
+          {
+            "format": "craftmine.godot-recovery-summary/1",
+            "trigger": "startup",
+            "ok": true,
+            "policyVersion": "craftmine.windows.recovery-journal.v1",
+            "tasksRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks",
+            "journalRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\.recovery-journal",
+            "exitCode": 0,
+            "parseError": null,
+            "timedOut": false,
+            "stderr": "",
+            "reconciledCount": 0,
+            "skippedCount": 0,
+            "reportedReconciledCount": 0,
+            "reportedSkippedCount": 0,
+            "reclaimed": [],
+            "skipped": [],
+            "unreadable": [],
+            "finalReceiptClaimed": false
+          },
+          {
+            "format": "craftmine.godot-recovery-summary/1",
+            "trigger": "reconcile",
+            "ok": true,
+            "policyVersion": "craftmine.windows.recovery-journal.v1",
+            "tasksRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks",
+            "journalRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\.recovery-journal",
+            "exitCode": 0,
+            "parseError": null,
+            "timedOut": false,
+            "stderr": "",
+            "reconciledCount": 0,
+            "skippedCount": 0,
+            "reportedReconciledCount": 0,
+            "reportedSkippedCount": 0,
+            "reclaimed": [],
+            "skipped": [],
+            "unreadable": [],
+            "finalReceiptClaimed": false
+          }
+        ],
+        "startupRecovery": {
+          "format": "craftmine.godot-recovery-summary/1",
+          "trigger": "startup",
+          "ok": true,
+          "policyVersion": "craftmine.windows.recovery-journal.v1",
+          "tasksRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks",
+          "journalRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks\\.recovery-journal",
+          "exitCode": 0,
+          "parseError": null,
+          "timedOut": false,
+          "stderr": "",
+          "reconciledCount": 0,
+          "skippedCount": 0,
+          "reportedReconciledCount": 0,
+          "reportedSkippedCount": 0,
+          "reclaimed": [],
+          "skipped": [],
+          "unreadable": [],
+          "finalReceiptClaimed": false
+        },
+        "restartReconciliation": {
+          "checked": 0,
+          "requeued": [],
+          "terminal": [],
+          "interrupted": [],
+          "unverifiable": [],
+          "recovery": "startup"
+        },
+        "stopRecovery": null,
+        "resources": {
+          "sampled": true,
+          "hardFilesystemQuota": false,
+          "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+          "lastObserved": null
+        },
+        "jobs": [],
+        "ledger": {
+          "jobs": 0,
+          "active": 0,
+          "updatedAt": "2026-09-10T06:56:52.395Z",
+          "error": null
+        },
+        "tasksRoot": "D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\data\\godot\\tasks",
+        "registered": true,
+        "revokedOnStop": null
+      }
+    }
+  ],
+  "restarts": [],
+  "passed": false,
+  "initialFreeBytes": 187860398080,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ {\n+   bytes: 180858888,\n+   path: 'bin/Godot_v4.7.2-stable_win64.exe',\n+   sha256: 'ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424'\n+ }\n- undefined\n\n    at verifyBoundary (D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\app\\main\\index.cjs:1260:68)\n    at D:\\cm-fb-p7-20260910\\test-results\\p7-native-wDa7iy\\app\\main\\index.cjs:1289:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "finishedAt": "2026-09-10T06:56:52.562Z"
+}
