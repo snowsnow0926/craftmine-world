@@ -10,7 +10,9 @@ export const CREATION_MODEL_CASES=[
   {id:'CA05',request:'让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态。',aim:'aim-tree'},
   {id:'CA06',request:'在这里再放一块石头，保留已有物体和游玩进度',aim:'aim-ground'},
   {id:'CA07',request:'在这个副本的这里放一棵树，保留之前的内容',aim:'aim-ground'},
-  {id:'HOLDOUT01',request:'这棵树的颜色改成#88bb44，其他东西保持原样',aim:'aim-tree'},
+  // Historical case identifier retained; this expression was used during parser
+  // development, so it is a development variant, not an unseen holdout.
+  {id:'HOLDOUT01',request:'这棵树的颜色改成#88bb44，其他东西保持原样',aim:'aim-tree',evidenceUse:'development_variant'},
 ];
 export const MODEL_LIMITS={maxRequests:40,maxCaseMs:600000,maxRepairs:3,maxCases:10};
 export const successfulOutcomes=new Set(['first_attempt_pass','model_repaired_pass','human_assisted_pass']);

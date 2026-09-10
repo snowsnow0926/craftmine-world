@@ -2,6 +2,7 @@ import {app,BrowserWindow} from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {CoreClient} from '../plugins/craftmine-world/core-client.cjs';
 import {createGodotExecutor} from '../plugins/craftmine-world/godot-executor.cjs';
 import {createCreationSourceService} from '../plugins/craftmine-world/creation-source-service.cjs';
@@ -11,6 +12,7 @@ import {createGodotRuntimeAdapter} from '../vendor/pi-desktop/apps/desktop/elect
 import {createGodotCandidateCoordinator} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-candidate-coordinator';
 import {createCreationTargetService} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-target-service';
 import {createCreationAutoApplyService} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-auto-apply-service';
+import {validCreationRequirement} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-check-requirements';
 import {createCraftmineLiveSampler} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-live-sample';
 import {createCraftmineRequestHooks} from '../vendor/pi-desktop/packages/agent-runtime/src/craftmine-context';
 const out=process.env.CRAFTMINE_CREATION_CHAIN_OUT,report={kind:'真实生产LPAC执行器、Godot导出、Web检查及自动采用',checks:[],cases:[],rpc:[],limits:['使用固定作者输入，不代表真实模型首轮创作成功率。','主进程授权上下文由测试直接绑定；未驱动用户桌面UI。']};
@@ -29,8 +31,11 @@ app.whenReady().then(async()=>{
  host=new GodotWorldViewHost({window:()=>owner,allowedRoots:adapter.allowedRoots,descriptor:adapter.descriptor,progress:adapter.progress});host.setBounds({x:0,y:0,width:1060,height:740});host.setVisible(true);
  coordinator=createGodotCandidateCoordinator({host,adapter,selection:async()=>worldId,domain:call});
  const targets=createCreationTargetService({directory:path.join(out,'captures'),selection:async()=>worldId,instance:()=>host.instance,descriptor:id=>call('godotRuntime.describe',{worldId:id}),sample:createCraftmineLiveSampler(()=>host)});
- let activeContext=null;
- const auto=createCreationAutoApplyService({capture:async context=>{assert.deepEqual(context,activeContext);return targets.bound(context,worldId);},domain:call,apply:(...args)=>coordinator.autoApplyVerified(...args)});
+ let activeContext=null,fixtureRequirements=null;
+ // The harness is the trusted author for this fixed integration fixture. These
+ // expectations are fixed before any source operation; no model chooses them.
+ const boundCapture=async()=>{const capture=await targets.bound(activeContext,worldId);return {...capture,creationRequirements:fixtureRequirements};};
+ const auto=createCreationAutoApplyService({capture:async context=>{assert.deepEqual(context,activeContext);return boundCapture();},domain:call,apply:(...args)=>coordinator.autoApplyVerified(...args)});
  const verifier=new GodotBuildVerifier({deadlineMs:90000});
  executor=createGodotExecutor({call},{dataPath:path.join(out,'core-data'),logger:console,verifier:{godotCheck:async descriptor=>{
   const item=report.cases.find(item=>item.job.jobId===descriptor.jobId);assert.ok(item);item.descriptor=descriptor;write();const evidence=await verifier.check(descriptor);item.runtime=evidence;write();return evidence;
@@ -45,7 +50,7 @@ app.whenReady().then(async()=>{
  let source=await call('godotProject.create',{context,worldId,toolCallId:'create',baseBuild:'base-creation',baseId:'creation-sandbox',files:[{path:'project.godot',text:Buffer.from(fixture.files.find(file=>file.path==='project.godot').bytesBase64,'base64').toString('utf8')}]});
  source=await call('godotProject.applyFiles',{context,worldId,toolCallId:'source',revision:source.revision,manifestHash:source.manifestHash,files:fixture.files.filter(file=>file.path!=='project.godot').map(file=>({...file,expectedHash:null}))},30000);
  async function run(name){
-  const job=await call('godotBuild.start',{context,worldId,toolCallId:'check-'+name,revision:source.revision,manifestHash:source.manifestHash,mode:'check'},30000);
+  const job=await call('godotBuild.start',{context,worldId,toolCallId:'check-'+name,revision:source.revision,manifestHash:source.manifestHash,mode:'check',...(name==='sequence'?{checkRequirements:{creation:fixtureRequirements.requirements}}:{})},30000);
   const item={name,job,before:await call('world.read',{id:worldId})};report.cases.push(item);write();
   assert.equal(executor.enqueue({jobId:job.jobId,worldId,mode:'check'},context).enqueued,true);
   const deadline=Date.now()+360000;
@@ -67,6 +72,8 @@ app.whenReady().then(async()=>{
  context={...context,turnId:'sequence'};activeContext=context;const workspace=await call('workspace.open',{context,selectedWorld:worldId});
  await targets.policy({worldId,autoApply:true});const display=await targets.capture(1,{projectId:context.projectId,sessionId:context.sessionId});
  const capture=await targets.validate(1,{creationTarget:{captureId:display.captureId}},{projectId:context.projectId,sessionId:context.sessionId});await targets.bind(1,capture,context,worldId);
+ const expected={format:'craftmine.creation-requirements/1',requestHash:createHash('sha256').update(JSON.stringify(fixture.scene)).digest('hex'),entities:fixture.scene.entities.map(({id,kind,position,scale,color})=>({id,kind,position,scale,color,visible:true,solid:true})),counts:['tree','rock','chest','door','marker'].map(kind=>({kind,count:fixture.scene.entities.filter(entity=>entity.kind===kind).length})),doorSequence:{doorId:'new-door',steps:['mark-a','mark-b']}};
+ assert.ok(validCreationRequirement(expected));fixtureRequirements={status:'verifiable',requirements:structuredClone(expected)};report.hostFixtureRequirements=structuredClone(fixtureRequirements);
  source=await call('godotProject.index',{context,worldId});report.sourceOperations=[];
  const createSource=createCreationSourceService({core:{call},capture:async()=>targets.bound(context,worldId),assertActive:input=>assert.deepEqual(input,activeContext),sample:async input=>{const envelope=await createCraftmineLiveSampler(()=>host)(input);return {...envelope,...envelope.payload};}});
  const operations=[...fixture.scene.entities.map(entity=>({action:'place',...entity})),{action:'sequence-door',ruleId:'ordered-door',doorId:'new-door',sequence:['mark-a','mark-b']}];
