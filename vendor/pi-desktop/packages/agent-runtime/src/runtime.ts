@@ -1,3 +1,4 @@
+import { requireCompleteSummary, CRAFTMINE_SUMMARY_FOCUS } from "./compaction-completion.js";
 import { randomUUID } from "node:crypto";
 import { completedGodotReadFiles } from "./craftmine-godot-read-files.js";
 import { observeModelStream } from "./task-metrics-stream.js";
@@ -4751,14 +4752,14 @@ Delegation rules:
       get: (target, property, receiver) => property === "completeSimple"
         ? (model: Model<Api>, context: import("@earendil-works/pi-ai").Context, options?: SimpleStreamOptions) =>
           craftmineGuardedStream(model, context, options, this.craftmineHooks, "summary",
-            (boundedContext, boundedOptions) => this.trackedModelStream(model, "compaction", () => target.streamSimple(model, boundedContext, boundedOptions))).result()
+            (boundedContext, boundedOptions) => this.trackedModelStream(model, "compaction", () => target.streamSimple(model, boundedContext, boundedOptions))).result().then(requireCompleteSummary)
         : Reflect.get(target, property, receiver),
     });
     return compact(
       preparation,
       models,
       this.model,
-      undefined,
+      this.craftmineWorld ? CRAFTMINE_SUMMARY_FOCUS : undefined,
       this.thinkingLevel,
       undefined,
       undefined,

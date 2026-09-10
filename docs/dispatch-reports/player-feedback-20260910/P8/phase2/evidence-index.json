@@ -1,0 +1,17 @@
+[
+  {
+    "path": "D:/cm-fb4-20260910/test-results/desktop-native-p8-t6g5Us/report.json",
+    "bytes": 56691,
+    "sha256": "fb030515bc570e615e7ff4c5ddf7d9c4fee3c0f451563faab08b7271daae7e7a"
+  },
+  {
+    "path": "D:/cm-fb-p8-20260910/test-results/p8-phase2-unlimited-20260910/p8-phase2-admissions.ndjson",
+    "bytes": 14732,
+    "sha256": "0ed5e705e4ec7ac709f92c6cd7b62b29e5b04d3b5adbe178f40b37aca4273a4c"
+  },
+  {
+    "path": "D:/cm-fb2-20260910/test-results/p8-authorized-20260910.ndjson",
+    "bytes": 6921,
+    "sha256": "e6d1f71609501599c8c9fa977a28319f65a4cec6f46030a45dd26f3508c5b706"
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "scope": "Actual pinned SDK and actual runtime compaction methods with synthetic provider response; zero external model/configuration access",
+  "checks": [
+    {
+      "name": "actual SDK off-only binding emits disabled and preserves exact requested identity",
+      "passed": true
+    },
+    {
+      "name": "actual SDK enabled high remains enabled",
+      "passed": true
+    },
+    {
+      "name": "unrelated vendor and host is not rewritten",
+      "passed": true
+    },
+    {
+      "name": "unrelated model is not rewritten",
+      "passed": true
+    },
+    {
+      "name": "Responses protocol is not rewritten",
+      "passed": true
+    },
+    {
+      "name": "official exact hostname works without vendor metadata; lookalike does not",
+      "passed": true
+    },
+    {
+      "name": "actual runtime + PI compact length completion gate",
+      "passed": true
+    },
+    {
+      "name": "actual runtime + PI compact toolUse completion gate",
+      "passed": true
+    },
+    {
+      "name": "actual runtime + PI compact stop completion gate",
+      "passed": true
+    },
+    {
+      "name": "actual runtime + PI compact error completion gate",
+      "passed": true
+    },
+    {
+      "name": "actual runtime + PI compact aborted completion gate",
+      "passed": true
+    },
+    {
+      "name": "empty successful summary is refused",
+      "passed": true
+    }
+  ],
+  "syntheticRequests": 2,
+  "bodies": [
+    {
+      "model": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": {
+        "type": "disabled"
+      },
+      "max_tokens": 32
+    },
+    {
+      "model": "deepseek-v4.1-flash-expires-on-0910",
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoning_effort": "high",
+      "max_tokens": 32
+    }
+  ]
+}
