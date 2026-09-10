@@ -196,6 +196,30 @@ executor:
    again over an unverified task root. This is also what stops a job from being
    started twice after an observation wait timed out.
 
+A refused finish is resolved against the core's record for the exact
+`worldId`/`jobId`/`buildId`, rather than the executor ledger:
+
+1. An existing terminal state (`passed`, `failed`, `cancelled`, `interrupted`)
+   is adopted without re-running the engine or inventing a failure.
+2. A still `claimed`/`running` job receives one explicit failure with no
+   artifact claims and an `executor.finish-refused` assertion.
+3. If that settlement is also refused, an exact terminal record may be read
+   back. An unreachable core, foreign identity or still unconfirmed result
+   remains `unconfirmed`/`refused` and never becomes a claimed success.
+
+The original refusal is captured before recovery and retained in every return
+and ledger path. Settlement and read-back errors add diagnostics under
+`failureSettlement` without replacing the original reason.
+
+Build artifacts are immutable evidence. Staging checks the complete copy plan,
+including the host-pinned bridge, before its first write. Existing ordinary,
+unlinked files are reused only when their bytes match. Conflicting hashes,
+links or non-files produce `GODOT_ARTIFACT_CONFLICT`; existing evidence is never
+overwritten or deleted. New files use exclusive copies and are verified again.
+A repeated check can reuse identical artifacts. Different exports for the same
+build fail explicitly; retrying changed content requires a new source revision.
+An interrupted ledger entry is terminal and excluded from the active count.
+
 ### Resource budget
 
 `resourceEnforcement` is a **sampled** budget enforced by the parent broker
