@@ -8781,3 +8781,24 @@ Fixed source/executor/application fixtures prove transport and persistence only;
 record separately whether the actual product entry was built/exercised. Do not
 claim arbitrary model execution, OS sandbox, candidate UI application or packaged
 asset licensing from these checks.
+
+## CRAFTMINE-GODOT-024 — Isolated native candidate preview and durable application
+
+Run the candidate coordinator, host and typecheck entries, then
+`tests/godot-candidate-native.mjs` with a this-cycle fixed authored E export,
+current core binary and independent Electron data directory. No input/focus or
+Pointer Lock is allowed. Preserve unique reports and failure logs.
+
+Verify preview mutation never changes formal Rust progress; cancel retains the
+exact original native instance; apply discards played preview, checkpoints the
+latest formal progress and confirms a fresh instance before commit. Descriptor,
+startup, state mismatch and storage failure must retain the old instance. A lost
+committed reply must be recovered by reading the original input/output/instance,
+without a second commit. Unknown/foreign outcomes must stay paused and cannot
+promote. The new build and complete state must survive core/Electron restart.
+The panel preview controls remain above the native sibling and a confirmation
+retry must not replay an application.
+
+Report fixture executor/check registration separately from actual native and
+Rust coordination. Full product entry, first-world bootstrap and OS-isolated
+execution require their own evidence; partial passing counts are not completion.
