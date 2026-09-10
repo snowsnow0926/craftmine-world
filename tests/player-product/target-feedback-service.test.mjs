@@ -10,7 +10,7 @@ const clone=value=>JSON.parse(JSON.stringify(value));
 async function fixture(t){
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'target-feedback-service-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));
  const base=path.resolve(import.meta.dirname,'../../desktop/godot/bases/first-person');
- const files=new Map();for(const name of ['scripts/core/target_dummy.gd','scenes/actors/target_dummy.tscn','scenes/training_range.tscn','scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres'])files.set(name,await fs.readFile(path.join(base,name)));
+ const files=new Map();for(const name of ['scripts/core/target_dummy.gd','scenes/actors/target_dummy.tscn','scenes/training_range.tscn','scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres','scenes/actors/player.tscn','scripts/core/player_controller.gd'])files.set(name,await fs.readFile(path.join(base,name)));
  files.set('project.godot',Buffer.from('[application]\nrun/main_scene="res://scenes/training_range.tscn"\n'));
  const original=new Map(files),calls=[],receipts=new Map();let revision=5,head='formal-oid',selectedWorld='alpha',lostApply=false,lostBuild=false,failBuild=false,beginCount=0;
  let job={jobId:'job-one',status:'queued',buildId:'new-build',worldId:'alpha'},liveContext=null;

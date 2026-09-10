@@ -88,6 +88,16 @@ are supported. Duplicate resources/properties, reordered script assignment,
 subresources/inheritance and expressions are refused. Consulted root/profile
 scripts and profile resource bytes join the existing binding dependencies.
 
+A non-null profile is only considered applicable when the known BaseWorld can
+bind its PlayerController: `player_path` must be absent or exactly `^"Player"`,
+and its unique direct `Player` child must instantiate the unchanged known
+`scenes/actors/player.tscn` with no script/child overrides. The actor and known
+`scripts/core/player_controller.gd` bytes are additional binding dependencies.
+Missing/renamed players, custom paths or unknown player implementations are
+unsupported rather than described using a profile that would return early.
+This finite source check does not replace native build/runtime verification of
+the whole authored project, including unrelated custom gameplay scripts.
+
 Legacy target/profile scripts are deliberately unsupported for editing because
 they overwrite instance values during initialization; merely having the same
 file path or base version does not authorize them. Read-only runtime observation

@@ -8,7 +8,7 @@ import {contentHash,validateResourceManifest} from '../../plugins/craftmine-worl
 const root=path.resolve(import.meta.dirname,'../..'),base=path.join(root,'desktop/godot/bases/first-person');
 const script=fs.readFileSync(path.join(base,'scripts/core/target_dummy.gd'));
 const hash=value=>createHash('sha256').update(value).digest('hex');
-const profileFiles=['scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres'];
+const profileFiles=['scripts/core/base_world.gd','scripts/core/balance_profile.gd','data/balance/training_range.tres','scenes/actors/player.tscn','scripts/core/player_controller.gd'];
 function officialFixture(){
  const scenePath='scenes/training_range.tscn',files=new Map();
  for(const name of [scenePath,'scenes/actors/target_dummy.tscn','scripts/core/target_dummy.gd',...profileFiles])files.set(name,fs.readFileSync(path.join(base,name)));
@@ -72,7 +72,20 @@ test('official training scene and direct known PackedScene root resolve without 
  const result=apply(args,400);assert.equal(result.values.hitFlashMilliseconds,400);
  assert.equal(result.text.replace('hit_flash_seconds = 0.4\n',''),text);
  assert.ok(result.text.indexOf('hit_flash_seconds = 0.4')>result.text.indexOf('target_id = &"target_b"'));
- assert.equal(args.files.get(template),templateBytes);assert.equal(result.binding.dependencies.length,6);
+ assert.equal(args.files.get(template),templateBytes);assert.equal(result.binding.dependencies.length,8);
+});
+test('profile applicability requires the known default Player binding, without unknown paths or player overrides',()=>{
+ const args=officialFixture();
+ const supported=replaceFile(args,args.scenePath,'balance_profile = ExtResource("2_balance")','balance_profile = ExtResource("2_balance")\nplayer_path = ^"Player"');
+ assert.equal(describeTargetFeedback(supported).values.hitFlashMilliseconds,120);
+ for(const changed of [
+  replaceFile(args,args.scenePath,'balance_profile = ExtResource("2_balance")','balance_profile = ExtResource("2_balance")\nplayer_path = ^"Missing"'),
+  replaceFile(args,args.scenePath,'[node name="Player" parent="."','[node name="MissingPlayer" parent="."'),
+  replaceFile(args,args.scenePath,'[node name="Player" parent="." instance=ExtResource("10_player")]','[node name="Player" parent="." instance=ExtResource("10_player")]\nscript = ExtResource("1_world")'),
+  replaceFile(args,args.scenePath,'scenes/actors/player.tscn','scenes/actors/other_player.tscn'),
+  replaceFile(args,'scenes/actors/player.tscn','[node name="Player" type="CharacterBody3D"]','[node name="Player" type="Node3D"]'),
+  replaceFile(args,'scripts/core/player_controller.gd','extends CharacterBody3D','extends Node3D')
+ ])assert.throws(()=>describeTargetFeedback(changed),/TARGET_CONFIGURATION_/);
 });
 test('known world profile defaults and explicit instance/template values follow actual runtime precedence',()=>{
  let args=replaceFile(officialFixture(),'data/balance/training_range.tres','hit_flash_seconds = 0.12','hit_flash_seconds = 0.25');
