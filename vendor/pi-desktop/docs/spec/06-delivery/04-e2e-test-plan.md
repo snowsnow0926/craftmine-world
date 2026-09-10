@@ -9146,3 +9146,8 @@ Controlled host/preload tests must refuse stale, hidden, detached, unshown and f
 ### Player feedback P3 embedded world shortcut scope
 
 The P1 plugin-fullscreen tests exercise exact embedded Craftmine identity, current view ownership, hidden/replaced/zero-size denial, top-frame scope validation and preload disposal without OS input. Seven plugin/Godot bridge tests pass; plugin host/preload strict TypeScript has zero diagnostics. Main window integration and actual unconsumed Escape remain separate verification boundaries.
+
+
+### P8 finite authorized model acceptance preflight
+
+Run node tests/player-feedback/P8/preflight.test.mjs with read-only esbuild dependencies. Synthetic loopback tests must reject altered route/auth/model and the seventeenth request before forwarding, retain the counter across restart, redact split credentials, preserve provider errors, and refuse unknown helper methods/world rebinding/duplicate submission. This is offline preflight, not live-model or gameplay acceptance. Real execution requires the separately approved clean compiled candidate and preserved raw evidence.
