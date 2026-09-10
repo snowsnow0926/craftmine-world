@@ -7,6 +7,7 @@ const source=fs.readFileSync(new URL('../../vendor/pi-desktop/apps/desktop/elect
 const {historyProbeScript}=await import('data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(source,{mode:'transform'})).toString('base64'));
 test('history probe accepts only finite navigation and bounded observed identifiers',()=>{
  for(const action of ['open','close','read','refresh','compareHead','next','previous'])assert.equal(typeof historyProbeScript({action,worldId:'world-a'}),'string');
+ for(const action of [['read'],['open'],{},null,1])assert.throws(()=>historyProbeScript({action,worldId:'world-a'}),/INVALID_HISTORY_PROBE/);
  for(const payload of [{action:'evaluate',worldId:'world-a',script:'bad'},{action:'read',worldId:'world-a',channel:'world.create'},{action:'diff',worldId:'world-a',path:'x\0gd'},{action:'compareVersion',worldId:'world-a',targetOid:'main'},{action:'read',worldId:'../a'},{action:'read',worldId:'world-a',path:'a.gd'}])assert.throws(()=>historyProbeScript(payload),/INVALID_HISTORY_PROBE/);
 });
 function documentFixture(){

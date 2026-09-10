@@ -9012,3 +9012,8 @@ See godot-task-path-budget.md. Fixed native broker imports at 180/245 UTF-16 cac
 ### CRAFTMINE-VM2-DESKTOP-001
 
 Compile current Main/React/core, stage same-commit trusted runtime, and launch an isolated short profile copied only from the authorized adopted 500 ms core archive. Use finite historyView form navigation to compare actual versions and text through Main, asserting complete progress, database fingerprint and task facts unchanged. Switch world and reject the old view. Separately check/apply a real 501 ms candidate, capturing a fresh view after draft creation but before application; reject that view after only the formal identity changes. Require refreshed self-comparison, real panel teardown and zero shutdown/input/page failures. See [desktop acceptance](../godot-version-diff-desktop-acceptance.md).
+
+
+## 2026-09-10 — Strict history probe action types
+
+The finite headless history probe rejects array/object/number action discriminators before producing page script. Its existing finite form actions are unchanged. Validation: `node --test tests/plan-loop/version-diff-probe.test.mjs` (3 tests).

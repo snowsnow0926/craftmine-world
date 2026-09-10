@@ -5,6 +5,8 @@ refresh, compareHead, compareVersion, diff, next and previous. It accepts no
 script, arbitrary selector or core RPC. Main validates fields; page execution
 requires the installed headless input guard and matching active world. Only an
 existing enabled control belonging to the observed history form may be submitted.
+Action discriminators must be strings in the finite enumeration; arrays and
+objects are rejected rather than coerced into read operations.
 The ordinary UI uses the same React form handlers. No mouse/keyboard dispatch,
 click/fill simulation, focus or Pointer Lock is used.
 

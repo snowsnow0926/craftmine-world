@@ -4,7 +4,7 @@ const actions = new Set(['open', 'close', 'read', 'refresh', 'compareHead', 'com
 export function historyProbeScript(input: unknown): string {
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw Error('INVALID_HISTORY_PROBE');
   const value = input as Record<string, unknown>;
-  if (Object.keys(value).some(key => !['action','worldId','targetOid','path'].includes(key)) || !actions.has(String(value.action))
+  if (Object.keys(value).some(key => !['action','worldId','targetOid','path'].includes(key)) || typeof value.action !== 'string' || !actions.has(value.action)
     || typeof value.worldId !== 'string' || !/^[a-z0-9][a-z0-9-]{1,47}$/.test(value.worldId)) throw Error('INVALID_HISTORY_PROBE');
   if (value.action === 'compareVersion') {
     if (typeof value.targetOid !== 'string' || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(value.targetOid)) throw Error('INVALID_HISTORY_PROBE');
