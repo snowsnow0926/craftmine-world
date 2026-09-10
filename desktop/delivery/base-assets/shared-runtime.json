@@ -449,8 +449,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 13777,
-      "sha256": "81ec7899bbb9e81bd153e3979feb263a7ffbd8eff85f17bfc78b7bf8800291ea"
+      "bytes": 16061,
+      "sha256": "f4dd6ef7c25f0d836b721bdb93c220358c9a3c81aee331d30abeeecd28c7f83d"
     },
     {
       "path": "tests/driver.gd",
