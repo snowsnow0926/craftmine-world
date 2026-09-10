@@ -17,3 +17,7 @@ Consequences: the feature requires matching private service and Main/UI deployme
 Existing contract metadata and resource formats stay stable. Full desktop and packaged
 acceptance are next-cycle integration work; pure and fixed-engine results do not
 replace them. See the configuration specification and PP2-defaults dispatch report.
+
+A dedicated finite headless form probe and standalone full-client runner are now
+prepared. Their controlled helper/DOM checks do not assert that the native client
+sequence has run. Same-source integration and four audited exits remain required.

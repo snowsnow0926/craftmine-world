@@ -194,3 +194,17 @@ values, restores the complete JSON progress including damaged targets, restarts
 a new engine process, and proves an explicit chosen value survives a later
 profile update. This is fixed authored headless evidence, not full client,
 AppContainer, model, new package, or signed release acceptance.
+
+### Finite actual-client acceptance interface
+
+In an explicitly configured isolated headless acceptance profile only,
+`targetFeedbackView` delegates to a dedicated fixed DOM probe. Its exact actions
+are open, close, read, select, useDefault and submit. Only select accepts a targetId,
+which must already exist among actual DOM options; no values, selectors, scripts
+or private RPC names are accepted. World identity is checked before and after
+awaited navigation. Hidden, disabled or detached forms refuse submission.
+
+The prepared default-client runner must prove fill-only domain/source/task/progress
+immutability, bound runtime check, preview cancellation, preservation of newer
+gameplay at adoption, and complete restart persistence. Until that runner executes
+on newly built same-source client/package bytes, fixture tests are preparation only.

@@ -9042,3 +9042,18 @@ The finite headless history probe rejects array/object/number action discriminat
   CRAFTMINE_DEPS_ROOT may point to a read-only desktop dependency directory.
 - Keep strict Godot error/exit gates and full progress comparison. These fixtures
   are not real model, whole-client, packaged application or signing evidence.
+
+
+### CRAFTMINE-PP2-DEFAULT-CLIENT-20260910 — Prepared full-client sequence
+
+Use tests/plan-loop/target-feedback-default-client-native.mjs only after a same-source
+clean build; explicit strict package mode requires independent commit/manifest hash.
+Create/adopt500 through real checks. In actual product DOM, select an observed target
+and submit useDefault. Full progress, domain hash, source head/applied and task journal
+must remain equal before the original submit. Then require one exact durable operation,
+loaded/running runtime expectations, preview-close preservation, newer fixed gameplay,
+default adoption preserving that latest full state and a new-process restart. All four
+client exits must be code0 with empty shutdown/input/page-error audit arrays.
+The helper accepts no arbitrary selectors, values, scripts or RPC; reject unknown
+actions/targets, mismatching worlds and unavailable forms before submission.
+Preparation tests do not count as full-client or packaged acceptance.
