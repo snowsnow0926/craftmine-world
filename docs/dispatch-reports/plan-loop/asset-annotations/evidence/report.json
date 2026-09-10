@@ -1,0 +1,1415 @@
+{
+  "kind": "actual-react-and-core-asset-annotations",
+  "passed": true,
+  "out": "C:\\cm-init-stage-0910\\test-results\\asset-annotations-0bNTNK",
+  "core": "C:/cm-plan-next-20260910/desktop/build/releases/8276b4540289-84495c89-013c-4c2e-a67d-1d6b60c6b0e6/output/win-unpacked/resources/bin/craftmine-core.exe",
+  "coreSha256": "072556858144cf7c9ce8e3030103a889300cf3add4af2bb0066916ab7811dc7b",
+  "steps": [
+    {
+      "name": "real detail exposes favorite and tag edits",
+      "passed": true
+    },
+    {
+      "name": "two favorite toggles use distinct operations and persist",
+      "passed": true
+    },
+    {
+      "name": "Chinese tags save through the real core",
+      "passed": true
+    },
+    {
+      "name": "lost committed reply is retried with the original request after switching away and back",
+      "passed": true
+    },
+    {
+      "name": "late successful reply cannot replace another selected detail",
+      "passed": true
+    },
+    {
+      "name": "UTF-8 tag limits reject locally without an annotation write",
+      "passed": true
+    },
+    {
+      "name": "empty tags clear metadata without changing source, license, version or worlds",
+      "passed": true
+    },
+    {
+      "name": "metadata survives actual core restart",
+      "passed": true
+    }
+  ],
+  "calls": [
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    },
+    {
+      "method": "asset.read",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version_": {
+          "assetId": "asset-a",
+          "bytes": 68,
+          "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+          "createdAt": 1789013704461,
+          "displayName": "asset-a",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 68,
+              "mediaType": "image/png",
+              "path": "image.png",
+              "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+            }
+          ],
+          "kind": "raw",
+          "mediaKind": "image",
+          "source": {
+            "author": "test",
+            "license": "unknown",
+            "licenseStatus": "unverified",
+            "origin": "fixed-fixture"
+          },
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [],
+        "total": 0,
+        "version": 1
+      }
+    },
+    {
+      "method": "asset.usage",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [],
+        "total": 0
+      }
+    },
+    {
+      "method": "asset.versions",
+      "payload": {
+        "assetId": "asset-a",
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [
+          {
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "version_": {
+              "assetId": "asset-a",
+              "bytes": 68,
+              "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+              "createdAt": 1789013704461,
+              "displayName": "asset-a",
+              "fileCount": 1,
+              "files": [
+                {
+                  "bytes": 68,
+                  "mediaType": "image/png",
+                  "path": "image.png",
+                  "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+                }
+              ],
+              "kind": "raw",
+              "mediaKind": "image",
+              "source": {
+                "author": "test",
+                "license": "unknown",
+                "licenseStatus": "unverified",
+                "origin": "fixed-fixture"
+              },
+              "version": 1
+            }
+          }
+        ],
+        "nextOffset": null,
+        "total": 1
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:3466dfca-a01e-4bb8-81e0-e0029ca9d2ad",
+        "favorite": true
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": true,
+          "notes": null,
+          "tags": null
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:3466dfca-a01e-4bb8-81e0-e0029ca9d2ad",
+        "replayed": false
+      }
+    },
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": true,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:31e5a5ba-133b-4f88-9182-f338b8c27fcf",
+        "favorite": false
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": false,
+          "notes": null,
+          "tags": null
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:31e5a5ba-133b-4f88-9182-f338b8c27fcf",
+        "replayed": false
+      }
+    },
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:9a7a3874-9fbc-4070-94e1-389621616480",
+        "tags": [
+          "常用",
+          "建筑"
+        ]
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": null,
+          "notes": null,
+          "tags": [
+            "常用",
+            "建筑"
+          ]
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:9a7a3874-9fbc-4070-94e1-389621616480",
+        "replayed": false
+      }
+    },
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [
+              "常用",
+              "建筑"
+            ],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:309a2201-0326-4af6-bcd2-934413d3dd47",
+        "tags": [
+          "已提交"
+        ]
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": null,
+          "notes": null,
+          "tags": [
+            "已提交"
+          ]
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:309a2201-0326-4af6-bcd2-934413d3dd47",
+        "replayed": false
+      },
+      "transport": "reply-dropped-after-commit",
+      "error": "Error: FIXED_REPLY_LOST"
+    },
+    {
+      "method": "asset.read",
+      "payload": {
+        "assetId": "asset-b",
+        "version": 1
+      },
+      "result": {
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version_": {
+          "assetId": "asset-b",
+          "bytes": 68,
+          "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+          "createdAt": 1789013704466,
+          "displayName": "asset-b",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 68,
+              "mediaType": "image/png",
+              "path": "image.png",
+              "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+            }
+          ],
+          "kind": "raw",
+          "mediaKind": "image",
+          "source": {
+            "author": "test",
+            "license": "unknown",
+            "licenseStatus": "unverified",
+            "origin": "fixed-fixture"
+          },
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-b",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-b",
+        "items": [],
+        "total": 0,
+        "version": 1
+      }
+    },
+    {
+      "method": "asset.usage",
+      "payload": {
+        "assetId": "asset-b",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-b",
+        "items": [],
+        "total": 0
+      }
+    },
+    {
+      "method": "asset.versions",
+      "payload": {
+        "assetId": "asset-b",
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "assetId": "asset-b",
+        "items": [
+          {
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "version_": {
+              "assetId": "asset-b",
+              "bytes": 68,
+              "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+              "createdAt": 1789013704466,
+              "displayName": "asset-b",
+              "fileCount": 1,
+              "files": [
+                {
+                  "bytes": 68,
+                  "mediaType": "image/png",
+                  "path": "image.png",
+                  "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+                }
+              ],
+              "kind": "raw",
+              "mediaKind": "image",
+              "source": {
+                "author": "test",
+                "license": "unknown",
+                "licenseStatus": "unverified",
+                "origin": "fixed-fixture"
+              },
+              "version": 1
+            }
+          }
+        ],
+        "nextOffset": null,
+        "total": 1
+      }
+    },
+    {
+      "method": "asset.read",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version_": {
+          "assetId": "asset-a",
+          "bytes": 68,
+          "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+          "createdAt": 1789013704461,
+          "displayName": "asset-a",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 68,
+              "mediaType": "image/png",
+              "path": "image.png",
+              "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+            }
+          ],
+          "kind": "raw",
+          "mediaKind": "image",
+          "source": {
+            "author": "test",
+            "license": "unknown",
+            "licenseStatus": "unverified",
+            "origin": "fixed-fixture"
+          },
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [],
+        "total": 0,
+        "version": 1
+      }
+    },
+    {
+      "method": "asset.usage",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [],
+        "total": 0
+      }
+    },
+    {
+      "method": "asset.versions",
+      "payload": {
+        "assetId": "asset-a",
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [
+          {
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "version_": {
+              "assetId": "asset-a",
+              "bytes": 68,
+              "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+              "createdAt": 1789013704461,
+              "displayName": "asset-a",
+              "fileCount": 1,
+              "files": [
+                {
+                  "bytes": 68,
+                  "mediaType": "image/png",
+                  "path": "image.png",
+                  "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+                }
+              ],
+              "kind": "raw",
+              "mediaKind": "image",
+              "source": {
+                "author": "test",
+                "license": "unknown",
+                "licenseStatus": "unverified",
+                "origin": "fixed-fixture"
+              },
+              "version": 1
+            }
+          }
+        ],
+        "nextOffset": null,
+        "total": 1
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:309a2201-0326-4af6-bcd2-934413d3dd47",
+        "tags": [
+          "已提交"
+        ]
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": null,
+          "notes": null,
+          "tags": [
+            "已提交"
+          ]
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:309a2201-0326-4af6-bcd2-934413d3dd47",
+        "replayed": true
+      }
+    },
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [
+              "已提交"
+            ],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:5fbbc025-3062-4b1d-aa34-271eae7b6ebc",
+        "favorite": true
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": true,
+          "notes": null,
+          "tags": null
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:5fbbc025-3062-4b1d-aa34-271eae7b6ebc",
+        "replayed": false
+      },
+      "transport": "held-after-commit"
+    },
+    {
+      "method": "asset.read",
+      "payload": {
+        "assetId": "asset-b",
+        "version": 1
+      },
+      "result": {
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version_": {
+          "assetId": "asset-b",
+          "bytes": 68,
+          "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+          "createdAt": 1789013704466,
+          "displayName": "asset-b",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 68,
+              "mediaType": "image/png",
+              "path": "image.png",
+              "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+            }
+          ],
+          "kind": "raw",
+          "mediaKind": "image",
+          "source": {
+            "author": "test",
+            "license": "unknown",
+            "licenseStatus": "unverified",
+            "origin": "fixed-fixture"
+          },
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-b",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-b",
+        "items": [],
+        "total": 0,
+        "version": 1
+      }
+    },
+    {
+      "method": "asset.usage",
+      "payload": {
+        "assetId": "asset-b",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-b",
+        "items": [],
+        "total": 0
+      }
+    },
+    {
+      "method": "asset.versions",
+      "payload": {
+        "assetId": "asset-b",
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "assetId": "asset-b",
+        "items": [
+          {
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "version_": {
+              "assetId": "asset-b",
+              "bytes": 68,
+              "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+              "createdAt": 1789013704466,
+              "displayName": "asset-b",
+              "fileCount": 1,
+              "files": [
+                {
+                  "bytes": 68,
+                  "mediaType": "image/png",
+                  "path": "image.png",
+                  "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+                }
+              ],
+              "kind": "raw",
+              "mediaKind": "image",
+              "source": {
+                "author": "test",
+                "license": "unknown",
+                "licenseStatus": "unverified",
+                "origin": "fixed-fixture"
+              },
+              "version": 1
+            }
+          }
+        ],
+        "nextOffset": null,
+        "total": 1
+      }
+    },
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": true,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [
+              "已提交"
+            ],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    },
+    {
+      "method": "asset.read",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version_": {
+          "assetId": "asset-a",
+          "bytes": 68,
+          "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+          "createdAt": 1789013704461,
+          "displayName": "asset-a",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 68,
+              "mediaType": "image/png",
+              "path": "image.png",
+              "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+            }
+          ],
+          "kind": "raw",
+          "mediaKind": "image",
+          "source": {
+            "author": "test",
+            "license": "unknown",
+            "licenseStatus": "unverified",
+            "origin": "fixed-fixture"
+          },
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "asset.previewRead",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [],
+        "total": 0,
+        "version": 1
+      }
+    },
+    {
+      "method": "asset.usage",
+      "payload": {
+        "assetId": "asset-a",
+        "version": 1
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [],
+        "total": 0
+      }
+    },
+    {
+      "method": "asset.versions",
+      "payload": {
+        "assetId": "asset-a",
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "assetId": "asset-a",
+        "items": [
+          {
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "version_": {
+              "assetId": "asset-a",
+              "bytes": 68,
+              "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+              "createdAt": 1789013704461,
+              "displayName": "asset-a",
+              "fileCount": 1,
+              "files": [
+                {
+                  "bytes": 68,
+                  "mediaType": "image/png",
+                  "path": "image.png",
+                  "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+                }
+              ],
+              "kind": "raw",
+              "mediaKind": "image",
+              "source": {
+                "author": "test",
+                "license": "unknown",
+                "licenseStatus": "unverified",
+                "origin": "fixed-fixture"
+              },
+              "version": 1
+            }
+          }
+        ],
+        "nextOffset": null,
+        "total": 1
+      }
+    },
+    {
+      "method": "asset.annotate",
+      "payload": {
+        "assetId": "asset-a",
+        "operationId": "asset-annotate:167142fc-c7c7-4c4a-8d6a-2a378bf1f9af",
+        "tags": []
+      },
+      "result": {
+        "assetId": "asset-a",
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "metadata": {
+          "displayName": null,
+          "favorite": null,
+          "notes": null,
+          "tags": []
+        },
+        "method": "asset.annotate",
+        "operationId": "asset-annotate:167142fc-c7c7-4c4a-8d6a-2a378bf1f9af",
+        "replayed": false
+      }
+    },
+    {
+      "method": "asset.search",
+      "payload": {
+        "scope": "local-library",
+        "query": "",
+        "tags": [],
+        "favoritesOnly": false,
+        "latestOnly": true,
+        "offset": 0,
+        "limit": 50
+      },
+      "result": {
+        "items": [
+          {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "favorite": true,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          },
+          {
+            "assetId": "asset-b",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704466,
+            "displayName": "asset-b",
+            "favorite": false,
+            "fileCount": 1,
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "state": {
+              "appliedToSource": null,
+              "baseChecked": null,
+              "indexed": true,
+              "previewable": false
+            },
+            "tags": [],
+            "version": 1
+          }
+        ],
+        "method": "asset.search",
+        "nextOffset": null,
+        "scope": "local-library",
+        "total": 2,
+        "truncated": false
+      }
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Fixed local image fixtures; no full Electron client or Godot execution.",
+    "Lost/late transport responses are injected only after the actual core transaction."
+  ],
+  "sourceBaseCommit": "7d7f05e06a5f8700d7f01cbbf790bc88c2c5863d",
+  "uiSourceFiles": [
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetLibraryPanel.tsx",
+      "sha256": "f452616572468d8a3df6071372e80173c2e36d43c68f55e03705abc3d85f8e61"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/AssetAnnotationEditor.tsx",
+      "sha256": "d69adbd97d8c0aee0c7c94d2f89c7e33db0408c731166df5f136150a40ec8851"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/use-asset-library.ts",
+      "sha256": "98e01dc579e1fa7cd04247b8365a11c9a629d11326a4e45e149d058ab1732fc5"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/src/components/craftmine/assets/asset-library-model.ts",
+      "sha256": "0e0aa0b1ec0f123dc1bcfc7e29b5060b495134a3f2a959d73a85071b96e48c4f"
+    }
+  ],
+  "before": {
+    "worlds": [],
+    "a": {
+      "state": {
+        "appliedToSource": null,
+        "baseChecked": null,
+        "indexed": true,
+        "previewable": false
+      },
+      "version_": {
+        "assetId": "asset-a",
+        "bytes": 68,
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "createdAt": 1789013704461,
+        "displayName": "asset-a",
+        "fileCount": 1,
+        "files": [
+          {
+            "bytes": 68,
+            "mediaType": "image/png",
+            "path": "image.png",
+            "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+          }
+        ],
+        "kind": "raw",
+        "mediaKind": "image",
+        "source": {
+          "author": "test",
+          "license": "unknown",
+          "licenseStatus": "unverified",
+          "origin": "fixed-fixture"
+        },
+        "version": 1
+      }
+    },
+    "versions": {
+      "assetId": "asset-a",
+      "items": [
+        {
+          "state": {
+            "appliedToSource": null,
+            "baseChecked": null,
+            "indexed": true,
+            "previewable": false
+          },
+          "version_": {
+            "assetId": "asset-a",
+            "bytes": 68,
+            "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+            "createdAt": 1789013704461,
+            "displayName": "asset-a",
+            "fileCount": 1,
+            "files": [
+              {
+                "bytes": 68,
+                "mediaType": "image/png",
+                "path": "image.png",
+                "sha256": "4c5d573cfb85b8ab0a5659062b830a058d1a449e51a6d79c13b483a77ea7ed28"
+              }
+            ],
+            "kind": "raw",
+            "mediaKind": "image",
+            "source": {
+              "author": "test",
+              "license": "unknown",
+              "licenseStatus": "unverified",
+              "origin": "fixed-fixture"
+            },
+            "version": 1
+          }
+        }
+      ],
+      "nextOffset": null,
+      "total": 1
+    }
+  },
+  "audit": {
+    "focus": 0,
+    "lock": 0
+  },
+  "after": {
+    "items": [
+      {
+        "assetId": "asset-a",
+        "bytes": 68,
+        "contentHash": "0289ccc70454e4466db451810bf20c87b9cb4b23998b39485e2b2a84ea342aeb",
+        "createdAt": 1789013704461,
+        "displayName": "asset-a",
+        "favorite": true,
+        "fileCount": 1,
+        "kind": "raw",
+        "mediaKind": "image",
+        "source": {
+          "author": "test",
+          "license": "unknown",
+          "licenseStatus": "unverified",
+          "origin": "fixed-fixture"
+        },
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "tags": [],
+        "version": 1
+      }
+    ],
+    "method": "asset.search",
+    "nextOffset": null,
+    "scope": "local-library",
+    "total": 1,
+    "truncated": false
+  },
+  "finishedAt": "2026-09-10T04:15:05.821Z"
+}

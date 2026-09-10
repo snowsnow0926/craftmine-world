@@ -9094,3 +9094,8 @@ Unit command: node --test tests/player-product/default-client-audit.test.mjs.
 ### Known initialization job failure stages (next integration, 2026-09-10)
 
 When durable initStatus reports failed with GODOT_JOB_FAILED or GODOT_JOB_ENDED, the world remains failed with materialize/project passed, build failed and confirm pending. Creation stage and error stage both identify build; the finite reason and retry/details remain unchanged. An unknown reason, a code-prefix lookalike or a project error must not gain this classification merely because projectRevision exists. The projection contract tests do not replace actual client/engine acceptance and are not a claim about the frozen 827 package.
+
+
+### Asset favorites and tags (AL2 slice, 2026-09-10)
+
+Open a selected asset detail, favorite and unfavorite it with distinct operation ids, save Chinese tags, and clear them. Reject excessive UTF-8 tag length without sending a write. Drop a response after core commit: controls must retain the request, and Retry after switching away/back must use the exact original id/payload. A late success/error for the previous asset must not replace the current detail. Verify content hashes, version rows, source/license and worlds remain unchanged, and metadata persists after core restart. The standalone real React/Core headless scenario is tests/plan-loop/asset-annotation-headless.mjs; it sends only page-script DOM events/forms with focus and pointer lock audited. Full Electron integration is a separate acceptance step.
