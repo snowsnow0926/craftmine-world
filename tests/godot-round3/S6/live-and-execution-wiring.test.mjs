@@ -219,3 +219,13 @@ test('discussion mode still refuses every write even with live providers wired',
   assert.equal(state.live.available,true);
   assert.ok(f);
 });
+
+test('check requirements come exclusively from the frozen host capture',async()=>{
+ const requirements={format:'craftmine.creation-requirements/1',requestHash:'a'.repeat(64),entities:[{id:'tree-a',scale:[2,2,2]}],counts:[]};
+ const f=fixture({options:{creationTarget:async()=>({creationRequirements:{status:'verifiable',requirements}})}});
+ const args={revision:3,manifestHash:'b'.repeat(64),mode:'check'};
+ await f.call('godot_build_start',args);
+ assert.deepEqual(f.calls.find(call=>call.method==='godotBuild.start').params.checkRequirements,{format:'craftmine.godot-check-requirements/1',creation:requirements});
+ await assert.rejects(f.call('godot_build_start',{...args,checkRequirements:{format:'fake'}}),/UNKNOWN_FIELD/);
+ const unknown=fixture({options:{creationTarget:async()=>({creationRequirements:{status:'unverified',reason:'unknown'}})}});await unknown.call('godot_build_start',args);assert.equal(unknown.calls.find(call=>call.method==='godotBuild.start').params.checkRequirements,undefined);
+});

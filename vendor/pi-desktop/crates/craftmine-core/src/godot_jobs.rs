@@ -1160,7 +1160,7 @@ impl TaskJournal {
         // executor submission returns the same durable failed result.
         if let Some(required) = requirements::read(&tx, &args.job_id)? {
             let required_assertions: Vec<_> = args.output.check.assertions.iter()
-                .filter(|a| a.id == requirements::ASSERTION).collect();
+                .filter(|a| a.id == required.assertion()).collect();
             let descriptor = check_input(&tx, &args.job_id).ok();
             let accepted = required_assertions.len() == 1 && required_assertions[0].passed
                 && descriptor.as_ref().is_some_and(|descriptor|
@@ -1168,7 +1168,7 @@ impl TaskJournal {
                     && descriptor["buildId"] == build && descriptor["inputHash"] == args.output.input_hash
                     && descriptor["artifacts"] == serde_json::to_value(&args.output.artifacts).unwrap_or(Value::Null)
                     && requirements::evidence_matches(&required, args.output.check.requirements_evidence.as_ref(), descriptor));
-            args.output.check.assertions.push(Assertion { id: "core.target-feedback".into(),
+            args.output.check.assertions.push(Assertion { id: if required.assertion()=="runtime.creation-requirements" {"core.creation-requirements"} else {"core.target-feedback"}.into(),
                 passed: accepted, detail: Some(if accepted { "bound runtime expectation confirmed" }
                     else { "GODOT_CHECK_REQUIREMENTS_UNCONFIRMED" }.into()) });
             if !accepted {

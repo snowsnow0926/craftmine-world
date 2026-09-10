@@ -1,13 +1,17 @@
+import {validCreationRequirement,creationRequirementsHash,creationEntitiesMatch,type CreationRequirement,type CreationEntity} from "./creation-check-requirements.ts";
 import {createHash} from "node:crypto";
 
 export type GodotCheckRequirements = {
   format: "craftmine.godot-check-requirements/1";
-  targetFeedback: {targetId: string; hitFlashMilliseconds: number};
+  targetFeedback?: {targetId: string; hitFlashMilliseconds: number};
+  creation?: CreationRequirement;
 };
 export type GodotRequirementsObservation = {
   phase: "loaded" | "running";
-  targetId: string;
-  hitFlashMilliseconds: number;
+  targetId?: string;
+  hitFlashMilliseconds?: number;
+  entities?:CreationEntity[];
+  doorTrace?:import("./creation-door-verifier").CreationDoorTrace;
 };
 export type GodotRequirementsEvidence = {
   format: "craftmine.godot-check-requirements-evidence/1";
@@ -29,6 +33,10 @@ const invalid = (): never => {throw Error("INVALID_GODOT_CHECK_REQUIREMENTS");};
 export function parseGodotCheckRequirements(value: unknown, digest: unknown, baseId: string):
   {checkRequirements: GodotCheckRequirements; checkRequirementsHash: string} | undefined {
   if(value === undefined && digest === undefined) return undefined;
+  if(baseId === "creation-sandbox"){
+    if(!record(value)||!exactKeys(value,["format","creation"])||value.format!=="craftmine.godot-check-requirements/1"||!validCreationRequirement(value.creation)||digest!==creationRequirementsHash(value.creation))return invalid();
+    return {checkRequirements:{format:"craftmine.godot-check-requirements/1",creation:value.creation},checkRequirementsHash:digest as string};
+  }
   if(baseId !== "first-person" || !record(value) || !exactKeys(value,["format","targetFeedback"]) || value.format !== "craftmine.godot-check-requirements/1") return invalid();
   const target=value.targetFeedback;
   if(!record(target) || !exactKeys(target,["targetId","hitFlashMilliseconds"]) || !validId(target.targetId) || !Number.isInteger(target.hitFlashMilliseconds) || (target.hitFlashMilliseconds as number)<1 || (target.hitFlashMilliseconds as number)>1000) return invalid();
@@ -56,5 +64,11 @@ export function readGodotTargetFeedback(raw: unknown, scope: {worldId:string;bui
 }
 
 export function godotTargetFeedbackMatches(observation: GodotRequirementsObservation, requirements: GodotCheckRequirements): boolean {
-  return observation.targetId===requirements.targetFeedback.targetId && Number.isFinite(observation.hitFlashMilliseconds) && Math.abs(observation.hitFlashMilliseconds-requirements.targetFeedback.hitFlashMilliseconds)<=1e-6;
+  return !!requirements.targetFeedback && observation.targetId===requirements.targetFeedback.targetId && typeof observation.hitFlashMilliseconds==="number" && Number.isFinite(observation.hitFlashMilliseconds) && Math.abs(observation.hitFlashMilliseconds-requirements.targetFeedback.hitFlashMilliseconds)<=1e-6;
 }
+
+export function readGodotCreationObservation(raw:unknown,scope:{worldId:string;buildId:string;instanceId:string},phase:"loaded"|"running"):GodotRequirementsObservation {
+ if(!record(raw)||raw.format!=="craftmine.godot-observation/1"||raw.baseId!=="creation-sandbox"||raw.worldId!==scope.worldId||raw.buildId!==scope.buildId||raw.instanceId!==scope.instanceId||typeof raw.sampledAt!=="string"||!Number.isFinite(Date.parse(raw.sampledAt))||!record(raw.payload)||!record(raw.payload.creation)||!Array.isArray(raw.payload.creation.entities))throw Error("GODOT_CHECK_CREATION_OBSERVATION_INVALID");
+ return {phase,entities:structuredClone(raw.payload.creation.entities) as CreationEntity[]};
+}
+export function godotCreationMatches(observation:GodotRequirementsObservation,requirements:GodotCheckRequirements):boolean{return !!requirements.creation&&!!observation.entities&&creationEntitiesMatch(requirements.creation,observation.entities);}

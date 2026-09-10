@@ -860,8 +860,9 @@ function createGodotExecutor(core, options = {}) {
       {id:'runtime.recovery', passed:evidence?.recovery?.ok === true, detail:`graceful=${evidence?.recovery?.gracefulExit === true}`},
     ];
     if (claim?.checkRequirements !== undefined || claim?.checkRequirementsHash !== undefined) {
-      const actual = (Array.isArray(evidence?.assertions) ? evidence.assertions : []).filter(item => item?.id === 'runtime.target-feedback');
-      base.push({id:'runtime.target-feedback', passed:actual.length === 1 && actual[0].passed === true
+      const assertionId=claim.checkRequirements?.creation?'runtime.creation-requirements':'runtime.target-feedback';
+      const actual = (Array.isArray(evidence?.assertions) ? evidence.assertions : []).filter(item => item?.id === assertionId);
+      base.push({id:assertionId, passed:actual.length === 1 && actual[0].passed === true
         && evidence?.requirementsEvidence?.requirementsHash === claim.checkRequirementsHash,
         detail:actual.length === 1 && typeof actual[0].detail === 'string' ? actual[0].detail.slice(0, 300) : 'runtime expectation evidence required'});
     }

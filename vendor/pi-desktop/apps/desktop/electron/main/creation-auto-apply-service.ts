@@ -1,3 +1,4 @@
+import {creationRequirementsHash} from "./creation-check-requirements.ts";
 import type {CreationCapture} from "./creation-target-service";
 
 type Context={projectId:string;sessionId:string;turnId:string};
@@ -16,6 +17,8 @@ export function createCreationAutoApplyService(deps:Dependencies){
   async function perform({jobId,context}:CreationCheckCompletion):Promise<Data>{
     const capture=await deps.capture(context);
     if(!capture?.autoApply)return {status:"manual",reason:"CREATION_AUTO_APPLY_NOT_AUTHORIZED"};
+    if(capture.creationRequirements?.status!=="verifiable")return {status:"manual",reason:"CREATION_REQUIREMENTS_NEED_REVIEW"};
+    const required=capture.creationRequirements.requirements;
     const worldId=capture.worldId;
     let candidateId="";
     const guard=async()=>{
@@ -25,6 +28,7 @@ export function createCreationAutoApplyService(deps:Dependencies){
       if(formal?.baseId!=="creation-sandbox"||formal.worldId!==worldId||formal.buildId!==capture.buildId||formal.sourceRevision!==capture.sourceRevision||formal.manifestHash!==capture.manifestHash)throw Error("CREATION_TARGET_STALE");
       const job=await deps.domain("godotBuild.read",{context,worldId,jobId});
       if(job?.worldId!==worldId||job.jobId!==jobId||job.kind!=="check"||job.status!=="passed"||job.baseId!=="creation-sandbox"||typeof job.candidateId!=="string"||!job.candidateId)throw Error("CREATION_CHECK_NOT_PASSED");
+      if(job.checkRequirementsHash!==creationRequirementsHash(required)||!job.checkRequirements?.creation||creationRequirementsHash(job.checkRequirements.creation)!==creationRequirementsHash(required))throw Error("CREATION_REQUIREMENTS_NOT_BOUND");
       if(candidateId&&candidateId!==job.candidateId)throw Error("CREATION_CANDIDATE_CHANGED");
       candidateId=job.candidateId;
       // This private host route accepts only ids; task ownership is established

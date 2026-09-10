@@ -2615,7 +2615,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
     context: { projectId, sessionId, turnId }, selectedWorld, request,
   }) as { world: { id: string } };
   craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
-  if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id);
+  if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id,request.text);
   return true;
 }
 /** sessionId -> last assistant usage recorded for active turn */

@@ -1,3 +1,5 @@
+import {verifyCreationDoorSequence} from "./creation-door-verifier";
+import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
 /**
  * Isolated Electron runtime check for one managed Godot Web build (task C).
  *
@@ -113,7 +115,8 @@ export type GodotRuntimeCheckAssertionId =
   | "runtime.snapshot"
   | "runtime.isolation"
   | "runtime.recovery"
-  | "runtime.target-feedback";
+  | "runtime.target-feedback"
+  | "runtime.creation-requirements";
 
 export type GodotRuntimeCheckAssertion = {
   id: GodotRuntimeCheckAssertionId;
@@ -567,7 +570,7 @@ export class GodotBuildVerifier {
       } finally {
         clearInterval(probe);
       }
-      if (["first-person", "creation-sandbox"].includes(descriptor.baseId) && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") {
+      if ((["first-person", "creation-sandbox"].includes(descriptor.baseId) && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") || descriptor.checkRequirements?.creation?.doorSequence) {
         // Read defaults from this exact new scene before restoring any player
         // state. Only fixed additive entity rules can combine the two snapshots.
         const fresh = await bounded(activeRuntime.load({build:null, snapshot:null}));
@@ -576,8 +579,8 @@ export class GodotBuildVerifier {
         const raw = observedDefaults.result;
         if (observedDefaults.error || !isRecord(raw) || raw.worldId !== descriptor.worldId || !isRecord(raw.state)) throw Error("GODOT_CHECK_DEFAULT_SNAPSHOT_INVALID");
         defaultsSnapshot = raw.state;
-        progressMigration = deriveAdditiveProgress(descriptor.snapshot, defaultsSnapshot);
-        expectedSnapshot = progressMigration.snapshot;
+        if(descriptor.snapshot){progressMigration = deriveAdditiveProgress(descriptor.snapshot, defaultsSnapshot);
+        expectedSnapshot = progressMigration.snapshot;}
       }
       const loaded = await bounded(activeRuntime.load({ build: null, snapshot: expectedSnapshot }));
       if (loaded.error) throw new Error(`GODOT_CHECK_LOAD_FAILED: ${loaded.error}`);
@@ -587,9 +590,10 @@ export class GodotBuildVerifier {
         try{
           const observed=await bounded(activeRuntime.request("observe-envelope",{}));
           if(observed.error)throw Error(`GODOT_CHECK_TARGET_FEEDBACK_OBSERVATION_FAILED: ${observed.error}`);
-          const value=readGodotTargetFeedback(observed.result,requirementsEvidence,descriptor.checkRequirements.targetFeedback.targetId,phase);
+          const creation=!!descriptor.checkRequirements.creation;
+          const value=creation?readGodotCreationObservation(observed.result,requirementsEvidence,phase):readGodotTargetFeedback(observed.result,requirementsEvidence,descriptor.checkRequirements.targetFeedback!.targetId,phase);
           requirementsEvidence.observations.push(value);
-          if(!godotTargetFeedbackMatches(value,descriptor.checkRequirements))throw Error(`GODOT_CHECK_TARGET_FEEDBACK_MISMATCH:${phase}`);
+          if(!(creation?godotCreationMatches(value,descriptor.checkRequirements):godotTargetFeedbackMatches(value,descriptor.checkRequirements)))throw Error(`GODOT_CHECK_REQUIREMENTS_MISMATCH:${phase}`);
         }catch(failure){targetFeedbackDetail=messageOf(failure).slice(0,MAX_ERROR_CHARS);throw failure;}
       };
       await observeTargetFeedback("loaded");
@@ -678,6 +682,7 @@ export class GodotBuildVerifier {
       // Re-sample after real simulation/frame checks to catch overrides during
       // this bounded check window; future arbitrary script behavior is unproven.
       await observeTargetFeedback("running");
+      if(descriptor.checkRequirements?.creation?.doorSequence && requirementsEvidence){requirementsEvidence.observations[1].doorTrace=await verifyCreationDoorSequence(activeRuntime,descriptor.checkRequirements.creation,defaultsSnapshot,bounded);}
       targetFeedbackPassed=!!requirementsEvidence && requirementsEvidence.observations.length===2;
     } catch (failure) {
       error = messageOf(failure);
@@ -735,7 +740,7 @@ export class GodotBuildVerifier {
       { id: "runtime.isolation", passed: isolation.ok },
       { id: "runtime.recovery", passed: recovery.ok },
     ];
-    if(descriptor.checkRequirements)assertions.push({id:"runtime.target-feedback",passed:targetFeedbackPassed,...(targetFeedbackDetail?{detail:targetFeedbackDetail}:{})});
+    if(descriptor.checkRequirements)assertions.push({id:descriptor.checkRequirements.creation?"runtime.creation-requirements":"runtime.target-feedback",passed:targetFeedbackPassed,...(targetFeedbackDetail?{detail:targetFeedbackDetail}:{})});
     const passed = assertions.every((assertion) => assertion.passed);
     if (!passed && error === null) {
       error = `GODOT_CHECK_FAILED: ${assertions.filter((assertion) => !assertion.passed).map((assertion) => assertion.id).join(",")}`;

@@ -157,3 +157,44 @@ fn finite_requirements_bound_tolerance_keeps_raw_actual_and_old_backup_columns_d
     }
     Ok(())
 }
+
+#[test]
+fn creation_requirements_bind_persist_and_reject_wrong_runtime_entities() -> Result<()> {
+ let (_dir,path)=temp()?;let mut journal=setup(&path)?;
+ let project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"creation","baseBuild":"base-a","baseId":"creation-sandbox","files":project_files()}))?;
+ register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+ let requirement=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("double tree"),"entities":[{"id":"tree-a","kind":"tree","scale":[2,2,2]}],"counts":[]}});
+ let mut args=request(&project,"creation-check");args["checkRequirements"]=requirement.clone();
+ let job=journal.godot_build_start(&args)?;let claimed=claim(&mut journal,&job,"token-a","executor-a")?;
+ let artifacts=write_artifact(&claimed,"web/index.html",b"<html>fixture only</html>")?;
+ let descriptor=journal.godot_job_check_descriptor(&json!({"jobId":job["jobId"],"token":"token-a","artifacts":artifacts}))?;
+ assert_eq!(descriptor["checkRequirements"],requirement);
+ let required:requirements::Requirements=serde_json::from_value(requirement)?;
+ let entity=json!({"id":"tree-a","kind":"tree","position":[0,0,0],"scale":[2,2,2]});
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":required.hash(),"jobId":job["jobId"],"worldId":"a","buildId":job["buildId"],"instanceId":"real-check","observations":[{"phase":"loaded","entities":[entity.clone()]},{"phase":"running","entities":[entity]}]});
+ assert!(requirements::evidence_matches(&required,Some(&evidence),&descriptor));
+ for field in ["id","scale"] {let mut bad=evidence.clone();bad["observations"][1]["entities"][0][field]=if field=="id"{json!("other")}else{json!([1,1,1])};assert!(!requirements::evidence_matches(&required,Some(&bad),&descriptor));}
+ let mut result=output(&claimed,true,json!([{"id":"runtime.creation-requirements","passed":true}]),artifacts,json!([]));result["check"]["requirementsEvidence"]=evidence;
+ assert_eq!(finish(&mut journal,&job,"token-a",&result)?["status"],"passed");
+ drop(journal);let journal=TaskJournal::open(&path)?;assert_eq!(requirements::read(&journal.db,job["jobId"].as_str().unwrap())?.unwrap().hash(),required.hash());
+ Ok(())
+}
+
+#[test]
+fn creation_requirements_hash_is_identical_to_host_for_small_floats() -> Result<()> {
+ let r:requirements::Requirements=serde_json::from_value(json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":"a".repeat(64),"entities":[{"id":"tree-a","position":[0.000001,2.4,0],"scale":[1,2,3]}],"counts":[]}}))?;
+ r.validate("creation-sandbox","check")?;
+ assert_eq!(r.hash(),"f85e44d5f4e124c7527d53f15378a5a0dca699e08c1e14edca73a10bef061a2e");Ok(())
+}
+#[test]
+fn creation_door_trace_rejects_unconditional_open_missing_steps_and_wrong_order() -> Result<()> {
+ let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("sequence"),"entities":[],"counts":[],"doorSequence":{"doorId":"door-a","steps":["marker-a","marker-b"]}}});
+ let r:requirements::Requirements=serde_json::from_value(value.clone())?;r.validate("creation-sandbox","check")?;
+ let descriptor=json!({"format":"craftmine.godot-check-descriptor/1","phase":"check","checkRequirements":value,"checkRequirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build"});
+ let trace=json!([{"step":"initial","doorOpen":false,"interacted":false},{"step":"marker-b","doorOpen":false,"interacted":true},{"step":"marker-a","doorOpen":false,"interacted":true},{"step":"marker-b","doorOpen":true,"interacted":true}]);
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build","instanceId":"engine","observations":[{"phase":"loaded","entities":[]},{"phase":"running","entities":[],"doorTrace":trace}]});
+ assert!(requirements::evidence_matches(&r,Some(&evidence),&descriptor));
+ let mut missing=evidence.clone();missing["observations"][1].as_object_mut().unwrap().remove("doorTrace");assert!(!requirements::evidence_matches(&r,Some(&missing),&descriptor));
+ for index in 0..3 {let mut bad=evidence.clone();bad["observations"][1]["doorTrace"][index]["doorOpen"]=json!(true);assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));}
+ let mut bad=evidence.clone();bad["observations"][1]["doorTrace"][2]["step"]=json!("marker-b");assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));Ok(())
+}

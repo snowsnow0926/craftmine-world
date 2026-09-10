@@ -179,7 +179,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'godotProject.read':[['context','worldId','revision','manifestHash','path'],['offset','limit','branchId']],
       'godotProject.patch':[['context','worldId','toolCallId','revision','manifestHash','operations'],['operation']],
       'godotProject.receipt':[['binding','worldId','toolCallId','method','request'],[]],
-      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],['branchId']],
+      'godotBuild.start':[['context','worldId','toolCallId','revision','manifestHash','mode'],['branchId','checkRequirements']],
       'godotBuild.read':[['worldId','jobId'],['context']],
       'godotBuild.cancel':[['worldId','jobId'],['context']],
       'godotBuild.receipt':[['binding','worldId','toolCallId','method','request'],[]],

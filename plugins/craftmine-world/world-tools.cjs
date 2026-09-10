@@ -225,6 +225,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       const params={...args,context,worldId:workspace.worldId};
       if(godotWrites[definition.name])params.toolCallId=invocation.toolCallId;
       if(definition.name==='godot_project_create')params.baseBuild=workspace.task.binding.baseBuild;
+      if(definition.name==='godot_build_start'&&args.mode==='check'&&typeof options.creationTarget==='function'){
+        const captured=await options.creationTarget(context);assertActive();
+        if(captured?.creationRequirements?.status==='verifiable')params.checkRequirements={format:'craftmine.godot-check-requirements/1',creation:captured.creationRequirements.requirements};
+      }
       const method=GODOT_METHODS[definition.name];
       if(definition.name==='godot_project_patch') {
         const source=await core.call('godotProject.index',{context,worldId:workspace.worldId,

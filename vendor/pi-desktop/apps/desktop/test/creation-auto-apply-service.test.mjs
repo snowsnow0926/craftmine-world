@@ -1,3 +1,4 @@
+import {creationRequirementsHash} from "../electron/main/creation-check-requirements.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
@@ -11,8 +12,9 @@ new Function("require","module","exports",fs.readFileSync(new URL("../../../../.
 const {createHostRequests}=routerModule.exports;
 const input={jobId:"gjob-"+"1".repeat(64),context:{projectId:"project",sessionId:"session",turnId:"turn"}};
 function fixture(){
-  const state={capture:{snapshotId:"capture",worldId:"world",buildId:"formal",instanceId:"live",sourceRevision:1,manifestHash:"old",autoApply:true},
-    job:{worldId:"world",jobId:input.jobId,kind:"check",status:"passed",baseId:"creation-sandbox",candidateId:"candidate",buildId:"new",sourceRevision:2,manifestHash:"new",outputHash:"proof",taskId:"task",branchId:"main"},
+ const requirements={format:"craftmine.creation-requirements/1",requestHash:"a".repeat(64),entities:[{id:"tree",scale:[2,2,2]}],counts:[]};
+  const state={capture:{snapshotId:"capture",worldId:"world",buildId:"formal",instanceId:"live",sourceRevision:1,manifestHash:"old",autoApply:true,creationRequirements:{status:"verifiable",requirements}},
+    job:{checkRequirements:{format:"craftmine.godot-check-requirements/1",creation:requirements},checkRequirementsHash:creationRequirementsHash(requirements),worldId:"world",jobId:input.jobId,kind:"check",status:"passed",baseId:"creation-sandbox",candidateId:"candidate",buildId:"new",sourceRevision:2,manifestHash:"new",outputHash:"proof",taskId:"task",branchId:"main"},
     candidate:{status:"ready",worldId:"world",checkJobId:input.jobId,buildId:"new",sourceRevision:2,manifestHash:"new",checkOutputHash:"proof"},
     source:{currentTaskId:"task",worldId:"world",baseId:"creation-sandbox",revision:2,manifestHash:"new"},checkStatus:"passed",active:true,applies:0,commits:0,beforeCommit:()=>{}};
   const service=createCreationAutoApplyService({capture:async()=>{if(!state.active)throw Error("CREATION_ACTIVE_TURN_REQUIRED");return structuredClone(state.capture);},
@@ -44,3 +46,6 @@ test("model-supplied proof and unbounded arguments are rejected",async()=>{
   const {state,service}=fixture();await assert.rejects(service.completed({...input,verified:true}));
   await assert.rejects(service.completed({...input,context:{...input.context,targetSnapshot:{}}}));assert.equal(state.applies,0);
 });
+
+test("unknown wishes stay manual and cannot silently auto-apply startup proof",async()=>{const {state,service}=fixture();state.capture.creationRequirements={status:"unverified",reason:"unknown"};assert.equal((await service.completed(input)).status,"manual");assert.equal(state.applies,0);});
+test("downgraded or omitted wish check cannot auto-apply",async()=>{const {state,service}=fixture();delete state.job.checkRequirements;await assert.rejects(service.completed(input),/REQUIREMENTS_NOT_BOUND/);assert.equal(state.applies,0);});

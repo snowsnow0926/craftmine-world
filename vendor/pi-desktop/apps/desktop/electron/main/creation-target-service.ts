@@ -1,3 +1,4 @@
+import {freezeCreationRequirements, type CreationEntity, type FrozenCreationRequirement, type DirectCreationIntent} from "./creation-check-requirements.ts";
 import fs from "node:fs";
 import path from "node:path";
 import {createHash, randomUUID} from "node:crypto";
@@ -9,7 +10,7 @@ type CaptureSession = {projectId:string;sessionId:string|null};
 export type CreationCapture = {
   format:"craftmine.creation-target/1";snapshotId:string;worldId:string;buildId:string;instanceId:string;
   sourceRevision:number;manifestHash:string;sampledAt:string;capturedAt:number;
-  playerPosition:Vector;target:Target;autoApply:boolean;
+  playerPosition:Vector;target:Target;autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;
 };
 type Dependencies = {
   directory:string;
@@ -82,7 +83,7 @@ export function createCreationTargetService(deps:Dependencies) {
         (target.entityId!==null&&(!id(target.entityId)||target.surface!=="entity"))||(target.surface==="entity"&&!id(target.entityId)))fail("CREATION_OBSERVATION_INVALID");
       const capture:CreationCapture={format:"craftmine.creation-target/1",snapshotId:randomUUID(),worldId:instance.worldId,buildId:instance.buildId,instanceId:instance.instanceId,
         sourceRevision:descriptor.sourceRevision,manifestHash:descriptor.manifestHash,sampledAt:sample.sampledAt,capturedAt:now(),
-        playerPosition:[...player] as Vector,target:{entityId:target.entityId,position:target.surface==="none"?null:[...target.position] as Vector,
+        entities:Array.isArray(creation.entities)?structuredClone(creation.entities):undefined,playerPosition:[...player] as Vector,target:{entityId:target.entityId,position:target.surface==="none"?null:[...target.position] as Vector,
           normal:target.surface==="none"?null:[...target.normal] as Vector,surface:target.surface,revision:target.revision},autoApply:false};
       await assertFormal(capture);
       for(const [key,value] of pending)if(now()-value.capture.capturedAt>300000)pending.delete(key);
@@ -106,14 +107,14 @@ export function createCreationTargetService(deps:Dependencies) {
       if(item.session.sessionId!==session.sessionId)fail("CREATION_SESSION_CHANGED");
       return structuredClone(item.capture);
     },
-    async bind(owner:number,capture:CreationCapture|null,context:Context,worldId:string) {
+    async bind(owner:number,capture:CreationCapture|null,context:Context,worldId:string,requestText?:string|DirectCreationIntent) {
       if(!capture)return null;
       const key=contextKey(context),item=pending.get(capture.snapshotId);
       if(!item||item.owner!==owner||item.bound||capture.worldId!==worldId)fail("CREATION_TARGET_STALE");
       if(item.session.sessionId!==context.sessionId||item.session.projectId!==context.projectId)fail("CREATION_SESSION_CHANGED");
       await assertFormal(item.capture);
       if(item.bound||now()-item.capture.capturedAt>300000)fail("CREATION_TARGET_EXPIRED");
-      const frozen={...structuredClone(item.capture),autoApply:policyFor(worldId).autoApply};
+      const frozen={...structuredClone(item.capture),autoApply:(requestText===undefined||typeof requestText==="string")&&policyFor(worldId).autoApply,creationRequirements:freezeCreationRequirements(item.capture,requestText??"")};
       write(file("turns",key),{context,capture:frozen});item.bound=key;return structuredClone(frozen);
     },
     bound(context:Context,worldId:string):CreationCapture|null {
