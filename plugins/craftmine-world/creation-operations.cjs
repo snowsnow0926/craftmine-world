@@ -1,11 +1,12 @@
 'use strict';
 const {createHash}=require('node:crypto');
 const {generateSequenceDoorRule}=require('./creation-sequence-rule.cjs');
+const {CREATION_OPERATION_LIMIT,CREATION_JOURNAL_BYTES}=require('./creation-operation-schema.cjs');
 const SCENE_PATH='world/creation.json', JOURNAL_PATH='world/creation-operations.json';
 const ID=/^[a-z][a-z0-9_-]{0,63}$/, HASH=/^[a-f0-9]{64}$/;
 const KINDS=new Set(['tree','rock','chest','door','marker']);
 const identifier=value=>typeof value==='string'&&ID.test(value);
-const MAX_OPERATIONS=64;
+const MAX_OPERATIONS=CREATION_OPERATION_LIMIT;
 const fail=code=>{throw Object.assign(Error(code),{errorCode:code});};
 const check=(value,code)=>{if(!value)fail(code);};
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -40,7 +41,7 @@ function scene(value){
 }
 function readFile(source,path,required=false){
   const file=source.files[path];if(!file){check(!required,'CREATION_SOURCE_FILE_MISSING');return null;}
-  check(object(file)&&typeof file.text==='string'&&Buffer.byteLength(file.text)<=120000&&HASH.test(file.sha256)&&hash(file.text)===file.sha256,'CREATION_SOURCE_FILE_HASH_MISMATCH');return file;
+  check(object(file)&&typeof file.text==='string'&&Buffer.byteLength(file.text)<=(path===JOURNAL_PATH?CREATION_JOURNAL_BYTES:120000)&&HASH.test(file.sha256)&&hash(file.text)===file.sha256,'CREATION_SOURCE_FILE_HASH_MISMATCH');return file;
 }
 function readJson(file,empty){if(!file)return empty;try{return JSON.parse(file.text);}catch{fail('CREATION_SOURCE_JSON_INVALID');}}
 function bounds(item){
@@ -79,7 +80,7 @@ function compileCreationOperation({source,targetSnapshot,request}) {
   keys(expected,['worldId','buildId','instanceId','revision','manifestHash','targetSnapshotId']);
   for(const name of ['worldId','buildId','instanceId','revision','manifestHash'])check(expected[name]===source[name],'CREATION_STALE_SOURCE');
   check(snapshot.worldId===source.worldId&&snapshot.buildId===source.buildId&&snapshot.instanceId===source.instanceId&&snapshot.sourceRevision===source.revision&&snapshot.manifestHash===source.manifestHash&&snapshot.snapshotId===expected.targetSnapshotId,'CREATION_STALE_TARGET');
-  check(snapshot.target?.revision===document.revision&&vector(snapshot.playerPosition,[-28,0,-28],[28,16,28]),'CREATION_TARGET_INVALID');
+  check(snapshot.target?.revision===document.revision&&vector(snapshot.playerPosition,[-32,0,-32],[32,32,32]),'CREATION_TARGET_INVALID');
   check(snapshot.obstacles===undefined||(Array.isArray(snapshot.obstacles)&&snapshot.obstacles.length<=128&&snapshot.obstacles.every(item=>object(item)&&typeof item.id==='string'&&vector(item.position,-100,100)&&vector(item.halfExtents,0,20))),'CREATION_OBSTACLES_INVALID');
   const next=structuredClone(document), createdIds=[], affectedIds=[], extra=[];
   const minted=index=>`created-${hash(`${source.worldId}:${request.operationId}:${index}`).slice(0,24)}`;
@@ -117,10 +118,10 @@ function compileCreationOperation({source,targetSnapshot,request}) {
     next.rules=[...(next.rules??[]),generated.declaration];extra.push({op:'put',path:generated.declaration.script,text:generated.text,expectedHash:null});affectedIds.push(request.doorId,...new Set(request.sequence));
   } else fail('CREATION_ACTION_UNSUPPORTED');
   next.revision++;scene(next);
-  const receipt={format:'craftmine.creation-operation/1',operationId:request.operationId,action:request.action,worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,sourceRevision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:snapshot.snapshotId,beforeRevision:document.revision,afterRevision:next.revision,affectedIds,createdIds,requestHash};
+  const receipt={format:'craftmine.creation-operation/1',operationId:request.operationId,action:request.action,worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,sourceRevision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:snapshot.snapshotId,operationCount:journal.operations.length+1,operationLimit:MAX_OPERATIONS,operationsRemaining:MAX_OPERATIONS-journal.operations.length-1,beforeRevision:document.revision,afterRevision:next.revision,affectedIds,createdIds,requestHash};
   journal.operations.push({operationId:request.operationId,requestHash,receipt});
   const operations=[{op:'put',path:SCENE_PATH,text:JSON.stringify(next,null,2)+'\n',expectedHash:sceneFile?.sha256??null},{op:'put',path:JOURNAL_PATH,text:JSON.stringify(journal,null,2)+'\n',expectedHash:journalFile?.sha256??null},...extra];
-  check(operations.every(op=>Buffer.byteLength(op.text)<=120000)&&Buffer.byteLength(JSON.stringify(operations))<=170000,'CREATION_PATCH_TOO_LARGE');
+  check(operations.every(op=>Buffer.byteLength(op.text)<=(op.path===JOURNAL_PATH?CREATION_JOURNAL_BYTES:120000))&&Buffer.byteLength(JSON.stringify(operations))<=8*1024*1024,'CREATION_PATCH_TOO_LARGE');
   return {document:next,operations,receipt,sourceBinding:{worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,revision:source.revision,manifestHash:source.manifestHash},replayed:false};
 }
 module.exports={compileCreationOperation,creationOperationHash,SCENE_PATH,JOURNAL_PATH,MAX_OPERATIONS};
