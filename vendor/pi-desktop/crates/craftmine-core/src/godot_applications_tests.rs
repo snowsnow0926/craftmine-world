@@ -6,7 +6,7 @@ fn fps_snapshot() -> Value {
         "baseVersion":"0.1.0","stateVersion":1,"body":{"format":"craftmine.godot-base-state/1",
         "worldId":"a","base":"first-person","baseVersion":"0.1.0","stateVersion":1,
         "savedAt":"2001-01-01T00:00:00Z","player":{"position":[1,2,3]},"inventory":{"coins":71},
-        "quests":{"done":true,"custom":{"preserve":[1,2,3]}},"equipment":{"selected":"gun"},
+        "quests":{"done":true,"custom":{"preserve":[1,2,3]}},"equipment":{"active":"pistol","items":[{"id":"pistol","magazine":6,"reserve":12},{"id":"practice_sword","magazine":0,"reserve":0}]},
         "targets":[{"id":"old-target","health":3,"damageTaken":7,"destroyed":false,"hitCount":4,"custom":9}],
         "interactables":[{"id":"old-pickup","enabled":false,"taken":true}]}})
 }
@@ -42,6 +42,9 @@ fn additive_check(journal: &mut TaskJournal) -> Result<(Value, Value, Value)> {
     defaults["body"]["targets"][0]["health"] = json!(10);
     defaults["body"]["targets"].as_array_mut().unwrap().insert(0,json!({"id":"new-target","health":25,"damageTaken":0,"hitCount":0,"destroyed":false}));
     defaults["body"]["interactables"].as_array_mut().unwrap().push(json!({"id":"new-door","enabled":true,"usesLeft":3}));
+    defaults["body"]["equipment"]["active"] = json!("thunder_hammer");
+    defaults["body"]["equipment"]["items"][0]["reserve"] = json!(99);
+    defaults["body"]["equipment"]["items"].as_array_mut().unwrap().push(json!({"id":"thunder_hammer","magazine":2,"reserve":7}));
     let proof = additive_progress::derive(&descriptor["snapshot"], &defaults)?;
     let mut result = output(&claimed, true, json!([{"id":"migration.native-load","passed":true}]), artifacts, json!([]));
     result["check"]["defaultsSnapshot"] = defaults;
@@ -69,6 +72,13 @@ fn additive_progress_preserves_latest_play_and_exact_state_through_restart() -> 
     assert_eq!(prepared["input"]["previousSnapshot"], played);
     assert_eq!(expected["body"]["targets"][1], played["body"]["targets"][0]);
     assert_eq!(expected["body"]["quests"], played["body"]["quests"]);
+    // The candidate adds one equipment definition. The old magazine and reserve
+    // survive, the old selection survives and only the new identity is new.
+    assert_eq!(expected["body"]["equipment"]["active"], json!("pistol"));
+    assert_eq!(expected["body"]["equipment"]["items"][0], played["body"]["equipment"]["items"][0]);
+    assert_eq!(expected["body"]["equipment"]["items"][1], played["body"]["equipment"]["items"][1]);
+    assert_eq!(expected["body"]["equipment"]["items"][2], json!({"id":"thunder_hammer","magazine":2,"reserve":7}));
+    assert_eq!(expected["body"]["equipment"]["items"].as_array().unwrap().len(), 3);
     let runtime = journal.godot_runtime_describe_candidate(&json!({"applicationId":"apply-one","token":"token-a","worldId":"a"}))?;
     assert_eq!(runtime["snapshot"], expected);
     assert_eq!(journal.world_read("a")?.world.snapshot, played);
@@ -108,6 +118,14 @@ fn additive_progress_rejects_forgery_removal_duplicate_identity_and_stale_cas() 
     failed(finish(&mut journal, &job, "check-token", &forged), "GODOT_ADDITIVE_INVALID_PROOF");
     forged = result.clone(); forged["check"]["defaultsSnapshot"]["worldId"] = json!("b");
     failed(finish(&mut journal, &job, "check-token", &forged), "GODOT_CHECK_INPUT_MISMATCH");
+    forged = result.clone(); forged["check"]["progressMigration"]["snapshot"]["body"]["equipment"]["items"][1]["reserve"] = json!(100);
+    failed(finish(&mut journal, &job, "check-token", &forged), "GODOT_ADDITIVE_INVALID_PROOF");
+    forged = result.clone(); forged["check"]["progressMigration"]["snapshot"]["body"]["equipment"]["items"].as_array_mut().unwrap().pop();
+    failed(finish(&mut journal, &job, "check-token", &forged), "GODOT_ADDITIVE_INVALID_PROOF");
+    forged = result.clone(); forged["check"]["progressMigration"]["snapshot"]["body"]["equipment"]["items"].as_array_mut().unwrap().push(json!({"id":"forged_hammer","magazine":5,"reserve":5}));
+    failed(finish(&mut journal, &job, "check-token", &forged), "GODOT_ADDITIVE_INVALID_PROOF");
+    forged = result.clone(); forged["check"]["progressMigration"]["snapshot"]["body"]["equipment"]["active"] = json!("thunder_hammer");
+    failed(finish(&mut journal, &job, "check-token", &forged), "GODOT_ADDITIVE_INVALID_PROOF");
     let checked = finish(&mut journal, &job, "check-token", &result)?;
     let prepared = journal.godot_application_prepare(&json!({"id":"apply-one","token":"token-a","candidateId":checked["candidateId"],"worldId":"a","revision":1,"snapshot":original}))?;
     let mut played = original.clone(); played["body"]["inventory"]["coins"] = json!(99);
