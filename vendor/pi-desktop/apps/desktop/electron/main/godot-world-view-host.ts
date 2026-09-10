@@ -177,6 +177,7 @@ export class GodotWorldViewHost {
   private closing: Promise<void> | null = null;
   private disposal: Promise<void> | null = null;
   private retiring = new Set<Promise<void>>();
+  private starting = new Set<Promise<void>>();
   private retirementFailures: string[] = [];
   private onState?: (state: GodotWorldState) => void;
 
@@ -261,7 +262,20 @@ export class GodotWorldViewHost {
     }
   }
 
-  private async startReplacement(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged = false): Promise<GodotWorldState> {
+  private startReplacement(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged = false): Promise<GodotWorldState> {
+    if (this.disposed) return Promise.reject(new Error("World startup was cancelled"));
+    const completion = this.startReplacementInner(request, root, worldId, buildId, previous, staged);
+    // Track from before the factory returns, not only after pending is set.
+    // A failed creation remains an error for its caller; shutdown waits for its
+    // completion and any owned cleanup, rather than treating cancellation as a
+    // cleanup failure by itself.
+    const settled = completion.then(() => undefined, () => undefined);
+    this.starting.add(settled);
+    void settled.then(() => this.starting.delete(settled));
+    return completion;
+  }
+
+  private async startReplacementInner(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged: boolean): Promise<GodotWorldState> {
     const generation = this.generation;
     const runtime = await createWorldRuntime({
       worldId,
@@ -828,13 +842,20 @@ export class GodotWorldViewHost {
     this.disposed = true;
     this.stopPolling();
     this.disposal = (async () => {
-      let closeFailure: unknown;
-      try { await this.close(); } catch (error) { closeFailure = error; }
+      // Close first so a startup waiting for readiness is cancelled by runtime
+      // cleanup. Waiting for startup before close would deadlock that path.
+      const closing = this.close();
+      const startupDrain = this.starting.size ? new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error("GODOT_STARTUP_CLOSE_TIMEOUT")), 10000);
+        Promise.all([...this.starting]).then(() => { clearTimeout(timer); resolve(); });
+      }) : Promise.resolve();
+      const outcomes = await Promise.allSettled([closing, startupDrain]);
+      if (outcomes[1].status === "rejected") throw outcomes[1].reason;
       // Instances can already be absent from current/pending while their
       // renderer or HTTP cleanup is still outstanding.
       while (this.retiring.size) await Promise.allSettled([...this.retiring]);
       if (this.retirementFailures.length) throw new Error("GODOT_RETIREMENT_INCOMPLETE: " + this.retirementFailures.join("; "));
-      if (closeFailure) throw closeFailure;
+      if (outcomes[0].status === "rejected") throw outcomes[0].reason;
     })();
     return this.disposal;
   }

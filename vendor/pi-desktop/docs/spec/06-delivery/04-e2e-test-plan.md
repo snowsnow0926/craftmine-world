@@ -8964,3 +8964,7 @@ special entries, duplicates, and extraction mismatches. Use only an already
 available explicitly hash-pinned 7-Zip for the small real round trip; never
 package an old application to manufacture acceptance for new source. Retain
 failed attempt reports. No model, network download, visible window or OS input.
+
+### Shutdown while the runtime factory is pending
+
+Hold the runtime factory before it returns any instance. Request disposal and verify the shared promise remains pending with current/pending empty. Return a runtime, hold its cleanup, and verify disposal still cannot succeed. Release cleanup and require closure before success. Repeat with factory rejection and with late cleanup rejection; preserve the original caller error and any retirement failure. Hold startup readiness instead and verify close cancels that wait without a cycle. Expire the fixed shutdown deadline without releasing the factory: require GODOT_STARTUP_CLOSE_TIMEOUT, and never turn the failed receipt into success after a late return is cleaned. Confirm a real isolated local HTTP origin returned during shutdown refuses connections after successful disposal. Use no windows, real input, model or external service.

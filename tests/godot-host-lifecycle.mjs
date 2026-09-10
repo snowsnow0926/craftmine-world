@@ -1,27 +1,30 @@
 // Exercises the real host class with deterministic transport/store fault injection.
 // No Electron, browser, Godot import, OS input, or actual durable-store claim.
 import assert from 'node:assert/strict';
-import {readFile, mkdtemp, mkdir, realpath} from 'node:fs/promises';
+import {readFile, writeFile, mkdtemp, mkdir, realpath} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join, resolve, sep} from 'node:path';
 import {stripTypeScriptTypes} from 'node:module';
 import vm from 'node:vm';
 import test from 'node:test';
 import {EventEmitter} from 'node:events';
+import {createWorldRuntime} from '../desktop/godot/web/runtime.mjs';
 
 const source = await readFile(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts',import.meta.url),'utf8');
 const compiled = stripTypeScriptTypes(source,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
 const directory = await mkdtemp(join(tmpdir(),'godot-host-lifecycle-'));
 const root = join(directory,'builds'); await mkdir(root);
-const deferred=()=>{let resolve; const promise=new Promise(r=>resolve=r); return {promise,resolve};};
+const deferred=()=>{let resolve,reject; const promise=new Promise((r,j)=>{resolve=r;reject=j;}); return {promise,resolve,reject};};
 function fixture(clock={setTimeout,clearTimeout}) {
   const events=[], runtimes=[];
-  let fault=null, descriptor=null, startupGate=null, callback=null;
+  let fault=null, descriptor=null, startupGate=null, callback=null, runtimeSetup=null, factory=null;
   const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,...clock,console,
     WORLD_CHROME_HEIGHT:76,GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_DETACH_CHANNEL:'detach',
     async createWorldRuntime(options){
       events.push('start:'+options.worldId);
       if(startupGate) await startupGate.promise;
+      if(factory)return factory(options);
+      if(fault==='factory')throw Error('factory failed');
       const runtime={...options,instanceId:'instance-'+runtimes.length,url:'http://127.0.0.1/test',origin:'http://127.0.0.1',
         requests:[],
         attach(){return ()=>{};},onEvent(){},async waitReady(){if(fault==='startup')throw Error('broken candidate');},
@@ -30,7 +33,7 @@ function fixture(clock={setTimeout,clearTimeout}) {
         async save(){events.push('save:'+options.worldId);return {result:{status:'confirmed',state:{coins:7},runnerReceipt:{sha256:'a'.repeat(64)}}};},
         async acknowledge(){return {};},async snapshot(){return {result:{state:{coins:7}}};},async request(){return {};},
         async exit(){events.push('exit:'+options.worldId);return {};},async dispose(){events.push('dispose:'+options.worldId);}
-      };runtimes.push(runtime);return runtime;
+      };runtimeSetup?.(runtime);runtimes.push(runtime);return runtime;
     }};
   vm.runInNewContext(compiled+'\nmodule.exports={GodotWorldViewHost,godotEngineOf};',context);
   const host=new context.module.exports.GodotWorldViewHost({window:()=>null,allowedRoots:()=>[root],
@@ -47,7 +50,7 @@ function fixture(clock={setTimeout,clearTimeout}) {
     }});
   host.createView=()=>{const contents=new EventEmitter();let destroyed=false;return {webContents:Object.assign(contents,{async loadURL(){},send(){},isDestroyed(){return destroyed;},close(){events.push('close-view');destroyed=true;contents.emit('destroyed');}})};};
   const request=(worldId='alpha',revision=8)=>({worldId,buildId:'build-'+worldId,revision,root,artifacts:[{path:'index.html',sha256:'a'.repeat(64),bytes:0}]});
-  return {host,events,runtimes,request,metadata:context.module.exports.godotEngineOf,setFault:x=>fault=x,setDescriptor:x=>descriptor=x,setGate:x=>startupGate=x,setProgress:x=>callback=x};
+  return {host,events,runtimes,request,metadata:context.module.exports.godotEngineOf,setFault:x=>fault=x,setDescriptor:x=>descriptor=x,setGate:x=>startupGate=x,setProgress:x=>callback=x,setRuntime:x=>runtimeSetup=x,setFactory:x=>factory=x};
 }
 
 test('switch freezes and persists exact durable revision before starting replacement',async()=>{
@@ -89,7 +92,7 @@ test('concurrent startup rejected before runtime async creation completes',async
 test('dispose during startup cannot resurrect the world',async()=>{
   const f=fixture(),gate=deferred();f.setGate(gate);const first=f.host.ensure(f.request());
   while(!f.events.includes('start:alpha'))await new Promise(r=>setImmediate(r));
-  f.host.dispose();gate.resolve();await assert.rejects(first,/cancelled/);assert.equal(f.host.instance,null);assert.ok(f.events.includes('dispose:alpha'));
+  const disposal=f.host.dispose();gate.resolve();await assert.rejects(first,/cancelled/);await disposal;assert.equal(f.host.instance,null);assert.ok(f.events.includes('dispose:alpha'));
 });
 test('missing revision is rejected instead of guessed zero',async()=>{
   const f=fixture(),request=f.request();delete request.revision;await assert.rejects(f.host.ensure(request),/revision is required/);assert.equal(f.runtimes.length,0);
@@ -165,4 +168,60 @@ test('an already retired renderer timeout remains a shutdown failure after repla
   const expire=[...timers.values()][0];expire();await replacement;
   assert.equal(f.host.current.worldId,'beta');assert.equal(f.host.retiring.size,0);
   await assert.rejects(f.host.dispose(),/GODOT_RETIREMENT_INCOMPLETE.*GODOT_RENDERER_CLOSE_TIMEOUT/);
+});
+
+test('dispose waits for a pending factory and its later returned runtime cleanup',async()=>{
+  const f=fixture(),factory=deferred(),cleanup=deferred();f.setGate(factory);
+  f.setRuntime(runtime=>{runtime.dispose=async()=>{f.events.push('cleanup-entered');await cleanup.promise;};});
+  const opening=f.host.ensure(f.request()),cancelled=assert.rejects(opening,/cancelled/);
+  while(!f.events.includes('start:alpha'))await new Promise(resolve=>setImmediate(resolve));
+  let done=false;const disposal=f.host.dispose();assert.equal(f.host.dispose(),disposal);disposal.then(()=>done=true);
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(done,false);assert.equal(f.host.pending,null);
+  factory.resolve();while(!f.events.includes('cleanup-entered'))await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(done,false);cleanup.resolve();await Promise.all([disposal,cancelled]);assert.equal(done,true);assert.equal(f.host.starting.size,0);
+});
+
+test('factory failure is preserved for its caller while disposal waits for that failure to settle',async()=>{
+  const f=fixture(),factory=deferred();f.setGate(factory);f.setFault('factory');
+  const opening=f.host.ensure(f.request()),failed=assert.rejects(opening,/factory failed/);
+  while(!f.events.includes('start:alpha'))await new Promise(resolve=>setImmediate(resolve));
+  let done=false;const disposal=f.host.dispose();disposal.then(()=>done=true);await new Promise(resolve=>setImmediate(resolve));assert.equal(done,false);
+  factory.resolve();await Promise.all([failed,disposal]);assert.equal(f.runtimes.length,0);assert.equal(f.host.instance,null);
+});
+
+test('cleanup failure from a late factory result rejects disposal instead of being hidden by cancellation',async()=>{
+  const f=fixture(),factory=deferred();f.setGate(factory);
+  f.setRuntime(runtime=>{runtime.dispose=async()=>{throw Error('LATE_RUNTIME_CLOSE_FAILED');};});
+  const opening=f.host.ensure(f.request()),cancelled=assert.rejects(opening,/cancelled/);
+  while(!f.events.includes('start:alpha'))await new Promise(resolve=>setImmediate(resolve));
+  const disposal=f.host.dispose(),failed=assert.rejects(disposal,/GODOT_RETIREMENT_INCOMPLETE.*LATE_RUNTIME_CLOSE_FAILED/);
+  factory.resolve();await Promise.all([failed,cancelled]);assert.equal(f.host.dispose(),disposal);
+});
+
+test('disposing an instance waiting for ready cancels it before draining startup, without a cycle',async()=>{
+  const f=fixture(),ready=deferred();
+  f.setRuntime(runtime=>{runtime.waitReady=()=>ready.promise;runtime.dispose=async()=>{ready.reject(Error('owned runtime disposed'));};});
+  const opening=f.host.ensure(f.request()),cancelled=assert.rejects(opening,/owned runtime disposed/);
+  while(!f.host.pending)await new Promise(resolve=>setImmediate(resolve));
+  await Promise.all([f.host.dispose(),cancelled]);assert.equal(f.host.pending,null);assert.equal(f.host.instance,null);
+});
+
+test('stalled factory produces a sticky named shutdown timeout; a late runtime is still cleaned',async()=>{
+  let deadline;
+  const f=fixture({setTimeout:(callback,ms)=>{assert.equal(ms,10000);deadline=callback;return 1;},clearTimeout(){}}),factory=deferred();f.setGate(factory);
+  const opening=f.host.ensure(f.request()),cancelled=assert.rejects(opening,/cancelled/);
+  while(!f.events.includes('start:alpha'))await new Promise(resolve=>setImmediate(resolve));
+  const disposal=f.host.dispose(),failure=assert.rejects(disposal,/GODOT_STARTUP_CLOSE_TIMEOUT/);deadline();await failure;
+  factory.resolve();await cancelled;assert.ok(f.events.includes('dispose:alpha'));assert.equal(f.host.dispose(),disposal);
+  await assert.rejects(f.host.dispose(),/GODOT_STARTUP_CLOSE_TIMEOUT/);
+});
+
+test('real local HTTP runtime returned after disposal starts is closed before disposal succeeds',async()=>{
+  const f=fixture(),factory=deferred();f.setGate(factory);let actual;
+  await writeFile(join(root,'index.html'),'owned');
+  f.setFactory(async options=>{actual=await createWorldRuntime({worldId:options.worldId,buildId:options.buildId,root});return actual;});
+  const opening=f.host.ensure(f.request()),cancelled=assert.rejects(opening,/cancelled/);
+  while(!f.events.includes('start:alpha'))await new Promise(resolve=>setImmediate(resolve));
+  const disposal=f.host.dispose();factory.resolve();await Promise.all([disposal,cancelled]);
+  assert.ok(actual);await assert.rejects(fetch(actual.url));assert.equal(f.host.instance,null);
 });
