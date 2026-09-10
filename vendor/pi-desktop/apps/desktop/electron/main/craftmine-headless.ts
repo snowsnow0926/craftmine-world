@@ -1,3 +1,4 @@
+import { historyProbeScript } from "./craftmine-history-acceptance";
 import { app, BrowserWindow, dialog, globalShortcut, Notification, session, shell, type WebContents } from "electron";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -142,6 +143,11 @@ export function installHeadlessControl(access: {
         case "desktopState": {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
           return window.webContents.executeJavaScript(`(async()=>({title:document.title,text:document.body.innerText,version:globalThis.piDesktop?await piDesktop.invoke(piDesktop.channels.invoke.appGetVersion):null,guard:globalThis.__craftmineHeadless}))()`, false);
+        }
+        case "historyView": {
+          if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_HISTORY_PROBE");
+          const window = access.window(); if (!window) throw Error("Window is not ready");
+          return window.webContents.executeJavaScript(historyProbeScript(request.payload), false);
         }
         case "worldNavigation": {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
