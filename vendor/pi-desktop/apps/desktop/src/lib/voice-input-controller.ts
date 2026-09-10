@@ -23,6 +23,7 @@ export class VoiceInputController {
     transcript: (text: string) => void,
     maxDuration = 30_000,
   ) { this.adapter = adapter; this.state = state; this.transcript = transcript; this.maxDuration = maxDuration; }
+  get active(): boolean { return this.run !== undefined; }
 
   async start(context: string, locale: string) {
     if (this.run) return;

@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 import { VoiceInputController } from "../src/lib/voice-input-controller.ts";
 import { encodeVoiceWav, MAX_VOICE_SAMPLES } from "../src/lib/voice-pcm.ts";
+import { normalizeVoiceCapability } from "../../../packages/shared/src/voice-input.ts";
 
 const bundled = await build({ entryPoints: [new URL("../electron/main/local-voice-input.ts", import.meta.url).pathname.replace(/^\/(\w:)/, "$1")], bundle: true, write: false, platform: "node", format: "esm" });
 const { validateVoiceRequest, LocalVoiceInputService, runLocalVoiceProcess } = await import(`data:text/javascript;base64,${Buffer.from(bundled.outputFiles[0].text).toString("base64")}`);
@@ -99,6 +100,33 @@ test("unsupported platform and missing recognizer report capability without capt
   const service = new LocalVoiceInputService(() => ({ result: Promise.reject(new Error("missing")), cancel() {} }), "win32");
   assert.equal((await service.capability()).reason, "engine-unavailable");
   assert.equal((await new LocalVoiceInputService(undefined, "linux").capability()).reason, "platform");
+});
+test("capability lookup shares one owned process, caches success, and disposal stops future work", async () => {
+  const pending = deferred(); let starts = 0, killed = 0;
+  const service = new LocalVoiceInputService(() => { starts++; return { result: pending.promise, cancel() { killed++; } }; }, "win32");
+  const first = service.capability(1), second = service.capability(1);
+  assert.equal(starts, 1); pending.resolve({ locales: ["zh-CN"] });
+  assert.equal((await first).available, true); assert.equal((await second).available, true);
+  assert.equal((await service.capability(1)).available, true); assert.equal(starts, 1);
+  service.dispose(); assert.equal((await service.capability(1)).available, false);
+  await assert.rejects(service.transcribe(1, request()), /disposed/); assert.equal(starts, 1); assert.equal(killed, 0);
+});
+test("window cancellation and disposal kill capability jobs and reject late enumeration results", async () => {
+  for (const mode of ["window", "dispose"]) {
+    const pending = deferred(); let killed = 0;
+    const service = new LocalVoiceInputService(() => ({ result: pending.promise, cancel() { killed++; } }), "win32");
+    const result = service.capability(7);
+    service.cancel(8); service.cancel(7, "capture-gesture"); assert.equal(killed, 0);
+    if (mode === "window") service.cancel(7); else service.dispose();
+    assert.equal(killed, 1); pending.resolve({ locales: ["zh-CN"] });
+    assert.equal((await result).available, false);
+  }
+});
+test("malformed capability success data becomes disabled UI with a safe locale array", () => {
+  for (const value of [undefined, null, { ok: true }, { available: true }, { available: true, provider: "windows-local", locales: "zh-CN" }]) {
+    const result = normalizeVoiceCapability(value); assert.equal(result.available, false); assert.deepEqual(result.locales, []);
+  }
+  assert.equal(normalizeVoiceCapability({ available: true, provider: "windows-local", locales: ["zh-CN"] }).available, true);
 });
 test("Windows local engine can enumerate and process synthetic silence without microphone capture", { skip: process.platform !== "win32" }, async () => {
   const capability = await new LocalVoiceInputService().capability();

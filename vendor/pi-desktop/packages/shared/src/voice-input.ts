@@ -16,6 +16,12 @@ export type VoiceCapability = {
   locales: string[];
   reason?: "platform" | "engine-unavailable";
 };
+export function normalizeVoiceCapability(value: unknown): VoiceCapability {
+  const input = value && typeof value === "object" ? value as Partial<VoiceCapability> : {};
+  const locales = Array.isArray(input.locales) ? input.locales.filter((locale) => typeof locale === "string" && /^[a-zA-Z0-9-]{1,40}$/.test(locale)) : [];
+  return { provider: "windows-local", available: input.provider === "windows-local" && input.available === true && locales.length > 0, locales,
+    ...(input.reason === "platform" || input.reason === "engine-unavailable" ? { reason: input.reason } : {}) };
+}
 export type VoiceTranscriptionRequest = {
   requestId: string;
   contextKey: string;

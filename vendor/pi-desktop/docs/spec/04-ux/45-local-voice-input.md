@@ -32,6 +32,11 @@ invalidate results. Main binds recognition to the originating WebContents and
 kills jobs on cancellation/disposal. Audio lives only in bounded in-memory buffers
 and process pipes; no audio files, attachments, history, telemetry, or logging are
 created. Ordinary composer draft persistence may retain corrected transcript text.
+While a voice gesture is active, Escape is consumed before overlay navigation and
+only cancels voice. Capability responses are normalized before rendering. Concurrent
+capability requests share an owned process and successful discovery is cached for
+the service lifetime; window cancellation and service disposal kill pending discovery
+as well as transcription. Disposed services cannot launch replacement jobs.
 
 The main-renderer IPC contract is defined in `packages/shared/src/voice-input.ts`.
 `capability`, `arm`, `transcribe`, and `cancel` use the standard Result envelope.

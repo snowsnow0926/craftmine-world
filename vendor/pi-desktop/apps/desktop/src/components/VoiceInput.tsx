@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Mic, X } from "lucide-react";
-import { VOICE_INPUT_CHANNELS, type VoiceCapability, type VoiceTranscriptionResult } from "../../../../packages/shared/src/voice-input";
+import { VOICE_INPUT_CHANNELS, normalizeVoiceCapability, type VoiceCapability, type VoiceTranscriptionResult } from "../../../../packages/shared/src/voice-input";
 import { captureVoice } from "../lib/voice-capture";
 import { VoiceInputController, type VoiceAdapter, type VoiceState } from "../lib/voice-input-controller";
 import "./VoiceInput.css";
@@ -64,7 +64,7 @@ export function VoiceInput({ contextKey, disabled = false, onTranscript, labels,
   useEffect(() => {
     let disposed = false;
     if (adapter !== desktopAdapter) { setCapability({ available: true, provider: "windows-local", locales: [] }); return; }
-    void invoke<VoiceCapability>(VOICE_INPUT_CHANNELS.capability).then((value) => { if (!disposed) setCapability(value); })
+    void invoke<VoiceCapability>(VOICE_INPUT_CHANNELS.capability).then((value) => { if (!disposed) setCapability(normalizeVoiceCapability(value)); })
       .catch(() => { if (!disposed) setCapability({ available: false, provider: "windows-local", locales: [] }); });
     return () => { disposed = true; };
   }, [adapter]);
@@ -75,11 +75,14 @@ export function VoiceInput({ contextKey, disabled = false, onTranscript, labels,
   useEffect(() => {
     const cancel = () => controller.cancel();
     const hidden = () => { if (document.hidden) cancel(); };
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") cancel(); };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !controller.active) return;
+      event.preventDefault(); event.stopImmediatePropagation(); cancel();
+    };
     window.addEventListener("blur", cancel);
-    window.addEventListener("keydown", escape);
+    window.addEventListener("keydown", escape, true);
     document.addEventListener("visibilitychange", hidden);
-    return () => { window.removeEventListener("blur", cancel); window.removeEventListener("keydown", escape); document.removeEventListener("visibilitychange", hidden); };
+    return () => { window.removeEventListener("blur", cancel); window.removeEventListener("keydown", escape, true); document.removeEventListener("visibilitychange", hidden); };
   }, [controller]);
   const active = ["starting", "recording", "transcribing"].includes(state.phase);
   const status = state.phase === "error" ? copy[state.error ?? "transcription"]

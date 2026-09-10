@@ -101,18 +101,35 @@ export function runLocalVoiceProcess(payload: object, timeoutMs = 45_000): Local
 /** Main owns jobs by WebContents ID. No file, network, agent, or secret-store access. */
 export class LocalVoiceInputService {
   private jobs = new Map<number, { requestId: string; job: LocalJob }>();
+  private capabilityJob?: { job: LocalJob; owners: Set<number>; result: Promise<VoiceCapability> };
+  private cachedCapability?: VoiceCapability;
+  private disposed = false;
   constructor(private runner = runLocalVoiceProcess, private platform = process.platform) {}
 
-  async capability(): Promise<VoiceCapability> {
+  async capability(ownerId?: number): Promise<VoiceCapability> {
+    const unavailable: VoiceCapability = { available: false, provider: "windows-local", locales: [], reason: "engine-unavailable" };
+    if (this.disposed) return unavailable;
     if (this.platform !== "win32") return { available: false, provider: "windows-local", locales: [], reason: "platform" };
-    try {
-      const result = await this.runner({ mode: "capability" }, 10_000).result as VoiceCapability;
-      const locales = Array.isArray(result.locales) ? result.locales.filter((value) => typeof value === "string") : [];
-      return { available: locales.length > 0, provider: "windows-local", locales, ...(locales.length ? {} : { reason: "engine-unavailable" as const }) };
-    } catch { return { available: false, provider: "windows-local", locales: [], reason: "engine-unavailable" }; }
+    if (this.cachedCapability) return this.cachedCapability;
+    if (this.capabilityJob) {
+      if (ownerId !== undefined) this.capabilityJob.owners.add(ownerId);
+      return this.capabilityJob.result;
+    }
+    const entry = { job: this.runner({ mode: "capability" }, 10_000), owners: new Set(ownerId === undefined ? [] : [ownerId]), result: Promise.resolve(unavailable) };
+    this.capabilityJob = entry;
+    entry.result = entry.job.result.then((value) => {
+      if (this.disposed || this.capabilityJob !== entry) return unavailable;
+      const result = value as VoiceCapability;
+      const locales = Array.isArray(result.locales) ? result.locales.filter((locale) => typeof locale === "string") : [];
+      const capability: VoiceCapability = { available: locales.length > 0, provider: "windows-local", locales, ...(locales.length ? {} : { reason: "engine-unavailable" as const }) };
+      if (capability.available) this.cachedCapability = capability;
+      return capability;
+    }).catch(() => unavailable).finally(() => { if (this.capabilityJob === entry) this.capabilityJob = undefined; });
+    return entry.result;
   }
 
   async transcribe(ownerId: number, value: unknown): Promise<VoiceTranscriptionResult> {
+    if (this.disposed) throw new Error("Voice input service disposed");
     const input = validateVoiceRequest(value);
     if (this.platform !== "win32") throw new Error("Local speech engine unavailable");
     this.cancel(ownerId);
@@ -127,10 +144,20 @@ export class LocalVoiceInputService {
   }
 
   cancel(ownerId: number, requestId?: string) {
+    if (!requestId && this.capabilityJob?.owners.has(ownerId)) {
+      const capability = this.capabilityJob;
+      this.capabilityJob = undefined; capability.job.cancel();
+    }
     const entry = this.jobs.get(ownerId);
     if (!entry || (requestId && entry.requestId !== requestId)) return;
     this.jobs.delete(ownerId); entry.job.cancel();
   }
 
-  dispose() { for (const ownerId of this.jobs.keys()) this.cancel(ownerId); }
+  dispose() {
+    this.disposed = true;
+    const capability = this.capabilityJob;
+    this.capabilityJob = undefined; capability?.job.cancel();
+    this.cachedCapability = undefined;
+    for (const ownerId of this.jobs.keys()) this.cancel(ownerId);
+  }
 }
