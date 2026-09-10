@@ -68,3 +68,16 @@ export function reconcileMetrics(metrics, calls, upstream, binding) {
   assert.ok(metrics.models.every(model => model.providerId === binding.providerId && model.modelId === MODEL));
   return { rawRequests: upstream.length, providerUsageReports: raw.length, durableCalls: calls.length, coverage: metrics.coverage, tps: metrics.tps, timingNote: 'Relay and client measure different observation boundaries; TPS is recomputed from durable client timestamps, never relay timing.' };
 }
+
+/** Only the existing product invoke boundary wraps submit/abort replies. */
+export function unwrapP8ProductReply(result) {
+  assert.ok(result && typeof result === 'object' && !Array.isArray(result), 'P8_PRODUCT_IPC_ENVELOPE_REQUIRED');
+  if (result.ok === false) {
+    assert.deepEqual(Object.keys(result).sort(), ['error', 'ok']);
+    assert.ok(result.error && typeof result.error.message === 'string', 'P8_PRODUCT_IPC_ERROR_REQUIRED');
+    throw Error(result.error.message);
+  }
+  assert.deepEqual(Object.keys(result).sort(), ['data', 'ok']);
+  assert.equal(result.ok, true);
+  return result.data;
+}

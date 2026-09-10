@@ -12,7 +12,7 @@ import { parameterClientArguments, inspectParameterPackage, isolatedParameterEnv
 import { loadPackageAsar } from '../../../desktop/package-asar.mjs';
 import { assertCleanHeadlessShutdown } from '../../player-product/shutdown-exit-audit.mjs';
 import { createP8Relay, MODEL } from './relay.mjs';
-import { openRequestJournal, ordinaryParents, reconcileMetrics } from './evidence.mjs';
+import { openRequestJournal, ordinaryParents, reconcileMetrics, unwrapP8ProductReply } from './evidence.mjs';
 import { deriveAdditiveProgress } from '../../../desktop/godot/shared/progress-migration.mjs';
 
 const options = parameterClientArguments(process.argv.slice(2)), { root, runtime, deps, packaged } = options;
@@ -66,7 +66,10 @@ function rpc(method, payload = {}, timeout = 30000, type = 'craftmine-headless')
     pending.set(id, { resolve, reject, timer, type }); child.send({ type, id, method, ...payload });
   });
 }
-const p8 = (method, caseId, extra = {}, timeout = 30000) => rpc(method, { payload: { caseId, ...extra } }, timeout, 'craftmine-acceptance-p8');
+const p8 = async (method, caseId, extra = {}, timeout = 30000) => {
+  const value = await rpc(method, { payload: { caseId, ...extra } }, timeout, 'craftmine-acceptance-p8');
+  return method === 'submit' || method === 'abort' ? unwrapP8ProductReply(value) : value;
+};
 const nav = async (channel, payload = {}) => {
   if (channel !== 'world.createOptions') return rpc('worldNavigation', { channel, payload }, 180000);
   return until(async () => { try { return await rpc('worldNavigation', { channel, payload }, 180000); }
