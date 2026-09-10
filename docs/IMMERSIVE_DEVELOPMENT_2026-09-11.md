@@ -57,10 +57,22 @@ branch `codex/iw-integration-20260911` and worktree
 Relevant ADRs/specs and central scenarios CM-IW-01/02/03 and AI1-G01 were updated.
 
 This is the existing-world IW1 foundation with early voice and bounded AI1
-guidance. The new creation-sandbox base, persistent object placement/editing,
-new interaction logic, incremental rebuild optimization and player acceptance
-remain subsequent work. No new installer/version was published and the existing
-installed client/shortcut was not replaced. Remote publishing was not requested.
+guidance. The next IW1 slice is now wired: `creation_operation` compiles and
+commits target-bound Godot source edits through the real CAS patch route. It
+materializes a blank `world/creation.json` on first placement and records
+`world/creation-operations.json` for replay-safe persistence. Placement,
+modification, bounded duplication, environment time and sequence-door rules
+share world/build/instance/revision/manifest/snapshot checks. The production
+plugin builder ships the compiler modules, and the production-entry test covers
+an actual placement request through the tool. Twelve creation compiler tests,
+including the blank-world case, and four plugin-load tests pass; the optional
+Godot execution test remains skipped when Godot is unavailable.
+
+The remaining work is the playable renderer for these scene entities, the
+continuous creation story (including a newly authored non-prebuilt mechanic),
+incremental rebuild optimization and player acceptance. No new installer/version
+was published and the existing installed client/shortcut was not replaced.
+Remote publishing was not requested.
 
 Merge, commit and cleanup results are recorded in the evidence archive. Original
 user documents and unrelated retained worktrees are preserved.
