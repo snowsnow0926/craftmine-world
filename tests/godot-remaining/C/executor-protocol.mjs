@@ -959,11 +959,13 @@ test('a stop during a running job reports no completion and deletes no evidence'
   assert.equal(core.attempts(running, 'godotJob.finish').length, 0, 'a stopped job reports no result');
   assert.equal(executor.ledger.jobs[running].state, 'cancelled');
   assert.notEqual(executor.ledger.jobs[running].state, 'finished');
-  assert.deepEqual(listFiles(tasksRoot).map(item => item.path), tasksBefore.map(item => item.path),
-    'stop and its recovery pass delete no recorded task');
+  // The stopped job may still add a task directory of its own (the fixture
+  // broker writes it when it answers), so the guarantee is that nothing
+  // recorded before the stop disappears or changes.
+  const after = new Map(listFiles(tasksRoot).map(item => [item.path, item]));
+  assert.equal(after.size >= tasksBefore.length, true, 'stop must not drop a recorded task');
   for (const item of tasksBefore) {
-    assert.equal(listFiles(tasksRoot).find(candidate => candidate.path === item.path).sha256, item.sha256,
-      item.path + ' was rewritten');
+    assert.equal(after.get(item.path)?.sha256, item.sha256, item.path + ' was deleted or rewritten');
   }
   assertEvidenceUnchanged(before, files, 'a later stopped job may not touch earlier evidence');
 });
