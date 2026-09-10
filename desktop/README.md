@@ -8,13 +8,36 @@ Use Windows x64, Node.js 24, pnpm 11 and a Rust MSVC toolchain with Visual Studi
 
 1. Extract the source archive to a directory with a reasonably short path.
 2. Run `pnpm install --frozen-lockfile` from `vendor/pi-desktop`.
-3. From the repository root run `powershell -File desktop/build-client.ps1` in a clean Git checkout. The output is `vendor/pi-desktop/apps/desktop/release/win-unpacked/Craftmine World.exe` plus its adjacent runtime files.
-4. For an extracted source archive without Git metadata, initialize a local Git repository and commit the extracted sources before running the script. This creates the matching source archive embedded by the packaging step. Preserve the supplied `UPSTREAM.json` provenance.
-5. The optional `-Installer` switch builds the NSIS installer. Installer acceptance remains a later milestone.
+3. Use a clean Git checkout. For an extracted source archive without Git metadata, initialize a local Git repository and commit the extracted sources first. This produces a new local build identity; it does not reproduce the original release commit. Preserve `UPSTREAM.json` and the supplied release evidence.
+4. Provide the pinned Godot cache and MinGit ZIP explicitly. `desktop/godot/toolchain.lock.json` defines the required editor, complete export-template TPZ and extracted Web templates; `desktop/delivery/git-bundle.json` defines the MinGit ZIP identity. The build does not download these inputs or discover a user's Git installation for the bundled runtime.
+5. From the repository root, run the following directory build, substituting existing absolute paths:
+
+```powershell
+powershell -NoProfile -File desktop/build-client.ps1 `
+  -GodotCache '<Godot 4.7.2-stable cache directory>' `
+  -GitArchive '<MinGit-2.53.0-64-bit.zip>'
+```
+
+The script rebuilds the broker, stages verified runtime resources, builds the plugin and desktop/native services, archives clean HEAD, and reserves a fresh `desktop/build/releases/<commit-prefix>-<uuid>/` run. Its application is `output/win-unpacked/Craftmine World.exe` within that run. `run.json`, `seal.json` and `package-evidence.json` identify the actual output. The generated `desktop/build/CraftmineWorld-source.zip` is also included at `output/win-unpacked/resources/source/CraftmineWorld-source.zip`.
+
+For a new NSIS installer, add `-Installer` and the pinned **full** 7-Zip extractor arguments:
+
+```powershell
+powershell -NoProfile -File desktop/build-client.ps1 -Installer `
+  -GodotCache '<Godot 4.7.2-stable cache directory>' `
+  -GitArchive '<MinGit-2.53.0-64-bit.zip>' `
+  -ArchiveTool '<full 7-Zip directory>/7z.exe' `
+  -ArchiveToolSha256 '<64 lowercase hex for 7z.exe>' `
+  -ArchiveLibrarySha256 '<64 lowercase hex for adjacent 7z.dll>'
+```
+
+The reduced `7za.exe` is insufficient: the tool must support NSIS. The same run's `output/` contains `Craftmine-World-Setup-<version>.exe` and its blockmap. Verification extracts the actual installer payload and compares it with that run's unpacked application, including source, native binaries, plugin, ASAR client files and runtime resources. It does not execute the installer or prove signing, clean-machine installation, upgrades or uninstall behavior. Read that run's evidence instead of reusing a previous package's results.
+
+The build entry does not itself produce a portable ZIP. A separately delivered portable archive must be made from that verified run's complete `win-unpacked`, then independently extracted and compared by file hashes. Do not add delivery files inside an already sealed `output/` directory. Keep delivery archive hashes and evidence outside that seal.
 
 An optional `CARGO_TARGET_DIR` may point to a shared Cargo build cache. The build script copies only the two resulting release executables into the declared package resource paths; it does not copy that cache into the application.
 
-Do not separate the executable from its adjacent files. End users of the finished package will not need Node, Rust or pnpm. Offscreen native startup and lifecycle have development-build coverage; installer and visible-window acceptance remain separate work.
+Do not separate the executable from its adjacent files. End users of the finished package will not need Node, Rust or pnpm. Development and packaged offscreen acceptance have separate reports tied to their actual bytes; clean-machine installer and visible-window acceptance remain separate work.
 
 ## Runtime profile
 
