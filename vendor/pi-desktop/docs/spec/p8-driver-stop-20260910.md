@@ -41,6 +41,9 @@ abort acknowledgment or a lost reply never permits starting the next case.
 The original case error and any abort error remain recorded, and the first
 strict shutdown audit is still executed. This rule prevents a failure after
 binding from starting another paid request while the previous task is unknown.
+An accepted stop also disables the saved-case restart block even when its
+abort/terminal wait failed before `report.stopped` could become true. A prior
+saved case cannot restart the application after that failed stop.
 
 ## Authorization phases
 
@@ -75,7 +78,8 @@ or establish success for either requested creative case.
 
 Run `node tests/player-feedback/P8/case-failure.test.mjs` to execute the actual
 checked-in catch/finally/loop-exit and strict-shutdown call under a controlled
-VM. Its six cases cover bound failure with lost reply, acknowledgment without
+VM. Its seven cases cover bound failure with lost reply, acknowledgment without
 terminal evidence, unbound failure, a previously requested stop, strict exit
-failure retention and the successful continuation control. No model or
+failure retention, saved-case restart suppression after a failed accepted stop,
+and the successful continuation control. No model or
 application is launched by this test.

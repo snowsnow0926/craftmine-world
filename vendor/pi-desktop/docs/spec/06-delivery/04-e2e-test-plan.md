@@ -9257,3 +9257,5 @@ In a newly authorized exact-source packaged P8 run, read its owned control.json 
 ### P8-FAILED-CASE-STOP-20260910 — A failed bound task cannot start another case
 
 Inject a failure after the fixed hammer case has a real session binding. Regardless of whether error-cleanup abort acknowledges, loses its response, or fails, verify that the driver records the original failure, never begins dog, and still executes the existing strict owned shutdown audit. Preserve abort errors and shutdown rejection. The successful-case control must retain normal continuation. Offline verification executes the actual checked-in catch/finally/break/shutdown snippet and does not count as a live model or SDK abort result.
+
+P8-FAILED-CASE-STOP-20260910 also covers an earlier saved hammer followed by an accepted dog stop whose terminal wait fails. Despite report.stopped still being false, the retained stop operation must suppress saved-case application restart. Keep the strict shutdown failure and prior saved evidence; do not relabel this as a successful stop.

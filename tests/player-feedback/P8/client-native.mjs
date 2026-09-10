@@ -212,7 +212,7 @@ try {
   }
   await step('first strict owned shutdown', auditStop);
   const savedCases = report.cases.filter(item => item.saved);
-  if (savedCases.length && !report.stopped) {
+  if (savedCases.length && !report.stopped && !stopControl.requested) {
     await start(); await controllerReady();
     for (const item of savedCases) { currentCase = item.caseId; await until(() => nav('world.list'), value => !!value.activeWorldId, 'restart selection'); await until(() => rpc('worldNavigationReady'), value => value.ready, 'restart initial navigation'); await nav('world.open', { id: item.worldId }); await loaded(item.worldId);
       await p8('initialize', item.caseId, { worldId: item.worldId });
