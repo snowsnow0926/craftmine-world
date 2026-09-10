@@ -1046,8 +1046,14 @@ function createGodotExecutor(core, options = {}) {
       }
       return {status, candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
     } catch (error) {
-      warn('finish refused:', jobId, String(error?.message ?? error), result.reason ?? '');
+      const originalReason = String(error?.message ?? error);
+      warn('finish refused:', jobId, originalReason, result.reason ?? '');
       const durable = ledgerEntry(jobId);
+      // The refusal is the only durable explanation a model may have, so it is
+      // recorded before any read-back or settlement: every later branch adds to
+      // it instead of replacing it, and every return path reports it.
+      durable.reason = originalReason;
+      durable.failureSettlement = {originalReason};
       // A refused artifact/result must not strand the core's lease as running.
       // First resolve a lost terminal reply. Otherwise submit a failure with no
       // artifact claims, retaining the original refusal as diagnostic evidence.
@@ -1056,21 +1062,27 @@ function createGodotExecutor(core, options = {}) {
         if (current?.jobId!==jobId || current.worldId!==entry.worldId || current.buildId!==entry.claim?.buildId) throw Error('GODOT_FINISH_RECOVERY_IDENTITY');
         let terminal=current;
         if (['claimed','running'].includes(current.status)) {
-          const reason=String(error?.message??error).slice(0,300);
+          const reason=originalReason.slice(0,300);
           const failed={format:RESULT_FORMAT,inputHash:entry.claim.inputHash,passed:false,
             import:{passed:false,log:''},compile:{passed:false,errors:[reason],warnings:[]},
             check:{passed:false,assertions:[{id:'executor.finish-refused',passed:false,detail:reason}]},artifacts:[],engine:output.engine};
-          terminal=await core.call('godotJob.finish',{jobId,token,output:failed},30000);
-          durable.failureSettlement={originalReason:reason,status:terminal.status};
+          try { terminal=await core.call('godotJob.finish',{jobId,token,output:failed},30000); }
+          catch (settlementError) {
+            // The recovery step that refused is named, so a read or identity
+            // failure is never mistaken for a refused failure submission.
+            durable.failureSettlement.settlementError=String(settlementError?.message??settlementError);
+            throw settlementError;
+          }
+          durable.failureSettlement.status=terminal.status;
         }
         if (['passed','failed','cancelled','interrupted'].includes(terminal.status)) {
           durable.state=terminal.status==='passed'?'finished':terminal.status;
-          durable.outcome=terminal.status;durable.reason=String(error?.message??error);durable.finishedAt=nowIso();
+          durable.outcome=terminal.status;durable.finishedAt=nowIso();
           await persistLedger();
-          return {status:terminal.status,candidateId:terminal.candidateId??null,reason:durable.reason};
+          return {status:terminal.status,candidateId:terminal.candidateId??null,reason:originalReason};
         }
       } catch (settlementError) {
-        durable.failureSettlement={error:String(settlementError?.message??settlementError)};
+        durable.failureSettlement.error=String(settlementError?.message??settlementError);
         // The core refused the settlement, but it still owns a real terminal
         // state. Read it back so the ledger reports the core's own answer
         // instead of an open-ended "unconfirmed" lease; a record that is not
@@ -1082,17 +1094,17 @@ function createGodotExecutor(core, options = {}) {
             durable.state=settled.status==='passed'?'finished':settled.status;
             durable.outcome=settled.status;
             durable.finishedAt=nowIso();
+            durable.failureSettlement.terminalStatus=settled.status;
             await persistLedger();
-            return {status:settled.status,candidateId:settled.candidateId??null,reason:durable.reason};
+            return {status:settled.status,candidateId:settled.candidateId??null,reason:originalReason};
           }
         } catch (recheckError) { durable.failureSettlement.recheckError=String(recheckError?.message??recheckError); }
       }
       durable.state = 'unconfirmed';
       durable.outcome = 'refused';
       durable.finishedAt = nowIso();
-      durable.reason = String(error?.message ?? error);
       persistLedger();
-      return {status:'refused', candidateId:null, reason:String(error?.message ?? error)};
+      return {status:'refused', candidateId:null, reason:originalReason};
     }
   }
 
