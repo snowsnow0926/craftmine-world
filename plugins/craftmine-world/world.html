@@ -45,6 +45,8 @@
     #review-state { font-weight:550; }
     #apply-explanation { flex:none; padding:8px 12px; border-bottom:1px solid light-dark(#ddd,#393939); font-size:12px; line-height:1.6; }
     #apply-explanation p { margin:3px 0; overflow-wrap:anywhere; }
+    /* Keep the sibling Godot candidate's 46 + 100px chrome reservation aligned. */
+    body[data-godot="true"] #apply-explanation { height:100px; overflow:auto; }
     #apply-reason { font-weight:550; }
     .check-row { padding:12px; margin-bottom:10px; border:1px solid light-dark(#ddd,#393939); border-radius:8px; }
     .check-row h3 { margin:0 0 6px; font-size:13px; font-weight:550; overflow-wrap:anywhere; }

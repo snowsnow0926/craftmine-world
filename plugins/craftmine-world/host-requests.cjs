@@ -150,6 +150,8 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'task.recoverable':[['projectId','worldId'],[]],
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],
+      'godotWorld.initLaunchFailed':[['worldId','initId','candidateId','applicationId'],[]],
+      'godotWorld.initLaunchRetry':[['worldId','initId','candidateId','applicationId'],[]],
       'godotWorld.copyStatus':[['worldId'],['sourceWorldId']],
       'content.branch.create':[['worldId','branchId','fromRev'],['requestId','taskId','title']],
       'content.migrate.plan':[['worldId'],[]],

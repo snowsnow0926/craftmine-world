@@ -42,7 +42,7 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   if (channel === "world.copyStatus") return deps.invoke(channel, payload);
   if (channel === "world.copy") return deps.navigate({...payload, operation: "copy"});
-  if (channel === "asset.annotate") return deps.invoke(channel, payload);
+  if (["asset.annotate", "asset.import", "asset.preview", "asset.cancel"].includes(channel)) return deps.invoke(channel, payload);
   if (NAVIGATION_READ_CHANNELS.has(channel) || HISTORY_CHANNELS.has(channel)) return deps.invoke(channel, payload);
   if (channel === "world.surface") {
     const surface = payload.surface as Record<string, unknown> | undefined;

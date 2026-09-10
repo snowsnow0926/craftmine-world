@@ -962,6 +962,7 @@ export class PluginRuntime {
     // stay off this list so a renderer can never start or stop engine execution.
     for (const operation of [
       "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy", "godotWorld.copyStatus", "godotWorld.rebuildPlan", "godotWorld.prepareRebuildSource", "godotWorld.prepareCopyRuntime", "godotRuntime.exportSource",
+      "godotWorld.initLaunchFailed", "godotWorld.initLaunchRetry",
       "godotWorld.backupSnapshot", "godotWorld.verifySnapshot",
       "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
       "godotProject.applyFiles",

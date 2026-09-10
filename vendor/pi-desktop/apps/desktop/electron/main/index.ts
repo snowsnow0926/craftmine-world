@@ -34,6 +34,7 @@ import { createCraftmineIssueService } from "./craftmine-issue-service";
 import { createCraftmineIssueContext } from "./craftmine-issue-context";
 import { createCraftmineTargetFeedbackPanel } from "./craftmine-target-feedback-panel";
 import { createCraftmineTelemetry } from "./craftmine-telemetry";
+import { createTaskMetricsRecorder } from "./task-metrics-recorder";
 import { readCraftmineBuildIdentity } from "./craftmine-build-identity";
 import { CraftmineVerifier } from "./craftmine-verifier";
 import { GodotBuildVerifier } from "./godot-build-verifier";
@@ -928,6 +929,11 @@ const pluginViews = new PluginViewHost(({ pluginId, url }) => {
     data: { api: "view.egress", ok: false, url, ts: Date.now() },
   });
 });
+pluginViews.onWorldFullscreenShortcut = action => {
+  const owner = mainWindow;
+  if (!owner || owner.isDestroyed()) return;
+  owner.setFullScreen(action === "exit" ? false : !owner.isFullScreen());
+};
 const godotSelection = async () => {
   if (!plugins.getLoaded("craftmine.world")) return null;
   const selected = await plugins.requestCraftmineHost("selection.read", {}) as {worldId: string | null};
@@ -944,6 +950,11 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
   descriptor: godotAdapter.descriptor,
   progress: godotAdapter.progress,
   onState: state => pluginViews.broadcast("godot-world:state", state),
+  onFullscreenShortcut: action => {
+    const owner = mainWindow;
+    if (!owner || owner.isDestroyed()) return;
+    owner.setFullScreen(action === "exit" ? false : !owner.isFullScreen());
+  },
 });
 // Live observation for the model tools (task S6). The sampler reads the formal
 // instance only, and every envelope carries the host's own world/build/instance
@@ -2212,6 +2223,9 @@ function executeNativeMenuAction(
     case "toggleFullScreen":
       target.setFullScreen(!target.isFullScreen());
       break;
+    case "exitFullScreen":
+      target.setFullScreen(false);
+      break;
     case "minimize":
       target.minimize();
       break;
@@ -2455,6 +2469,13 @@ async function importLegacyScheduled() {
 
 /** sessionId → open host turn id, for turn bookkeeping across agent events. */
 const activeTurns = new Map<string, string>();
+const taskMetricsAdmissionFailures = new Set<string>();
+const taskMetricsRecorder = createTaskMetricsRecorder({
+  call: (method, params) => {
+    if (!host) return Promise.reject(Error("TASK_METRICS_HOST_UNAVAILABLE"));
+    return host.call(method, params);
+  },
+});
 /** Plan submission turns end without a task-complete notification. */
 const planSubmissionTurnIds = new Set<string>();
 /** sessionId → host execution id for an approved plan currently dispatched. */
@@ -5061,6 +5082,18 @@ function wireSidecar(s: AgentSidecar) {
   s.onNotification((method, params) => {
     if (method === "agent.event") {
       const envelope = params as AgentEventEnvelope;
+      // Account by the event's durable owner before transcript/delegate
+      // handling. Late events must never be rebound to a newer active turn.
+      try {
+        taskMetricsRecorder.observe(envelope);
+      } catch {
+        if (envelope.sessionId && envelope.turnId) {
+          taskMetricsAdmissionFailures.add(JSON.stringify([envelope.sessionId, envelope.turnId]));
+        }
+        logger.app("persistence", "warn", "Task metrics observation unavailable", {
+          sessionId: envelope.sessionId,
+        });
+      }
       craftmineTelemetry.observeAgentEvent(envelope);
       const event = envelope.event;
       if (event.type === "tool_start") {
@@ -5403,6 +5436,16 @@ function finishTurn(
           (!wasPlanSubmission && shouldCreateTaskNotification(sessionId));
         const turnUsage = activeTurnUsages.get(sessionId);
         activeTurnUsages.delete(sessionId);
+        let metricsUnavailable = taskMetricsAdmissionFailures.has(JSON.stringify([sessionId, turnId]));
+        try {
+          const metrics = await taskMetricsRecorder.drain({ sessionId, turnId });
+          metricsUnavailable ||= !metrics.complete;
+        } catch {
+          metricsUnavailable = true;
+        }
+        if (metricsUnavailable) {
+          logger.app("persistence", "warn", "Task usage is incomplete; preserving an accounting gap", { sessionId });
+        }
         try {
           const result = await host.call<{
             ok: boolean;
@@ -5413,6 +5456,7 @@ function finishTurn(
             status,
             errorCode,
             createNotification,
+            ...(metricsUnavailable ? { metricsUnavailable: true } : {}),
             ...(turnUsage ? { usage: turnUsage } : {}),
             // The reply can no longer finish on its own: promote its last
             // checkpoint instead of waiting for a final row that never comes.
@@ -5456,6 +5500,10 @@ function finishTurn(
         }
       }
     } finally {
+      if (turnId) {
+        taskMetricsRecorder.release({ sessionId, turnId });
+        taskMetricsAdmissionFailures.delete(JSON.stringify([sessionId, turnId]));
+      }
       // Do not release local ownership or wake a queued approved execution
       // until the durable endTurn request has settled above.
       if (turnId && activeTurns.get(sessionId) === turnId) {

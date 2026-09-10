@@ -228,7 +228,9 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
     if (raw === "blocked" || FAILED_STATUSES.has(raw)) {
       // The core emits JOB_FAILED/JOB_ENDED only for an existing build/check job.
       // Do not infer this phase from an arbitrary failed status or reason prefix.
-      const blockedAt = ["GODOT_EXECUTION_UNAVAILABLE", "GODOT_TASK_PATH_TOO_LONG", "GODOT_JOB_FAILED", "GODOT_JOB_ENDED"].includes(reason) ? "build" : "project";
+      const blockedAt = reason === "GODOT_INITIAL_LOAD_FAILED" && status.failureStage === "confirm"
+        ? "confirm"
+        : ["GODOT_EXECUTION_UNAVAILABLE", "GODOT_TASK_PATH_TOO_LONG", "GODOT_JOB_FAILED", "GODOT_JOB_ENDED"].includes(reason) ? "build" : "project";
       const index = order.indexOf(stage);
       const blockedIndex = order.indexOf(blockedAt);
       return index < blockedIndex ? "passed" : index === blockedIndex ? "failed" : "pending";
@@ -241,7 +243,7 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
     : raw === "checked" ? 90
       : raw === "building" ? 75
         : raw === "drafting" ? 50
-          : raw === "pending" ? 25 : failed ? 60 : 0;
+          : raw === "pending" ? 25 : failed && reason === "GODOT_INITIAL_LOAD_FAILED" ? 90 : failed ? 60 : 0;
   return {
     state: playable ? "ready" : failed ? "failed" : "initializing",
     creation: {
@@ -250,7 +252,7 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
       stages,
       progress,
       error: failed
-        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
+        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_INITIAL_LOAD_FAILED" ? "首次进入世界失败。已保留世界和检查结果，可选择重新初始化后再试。" : reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
         : null,
       // Only actions this module can actually perform are advertised.
       actions: failed ? ["retry", "details"] : ["details"],
