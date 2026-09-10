@@ -59,7 +59,14 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
         const old = bindings.get(caseId);
         if (old) { if (old.worldId !== payload.worldId) throw Error("P8_BINDING_CONFLICT"); await choose(old); return { ...old, caseId, modelId: P8_MODEL, replayed: true }; }
         const row = await selected(payload.worldId);
-        if (row?.baseId !== (caseId === "hammer" ? "first-person" : "top-down") || row?.state !== "ready") throw Error("P8_READY_BASE_REQUIRED");
+        const expectedBase = caseId === "hammer" ? "first-person" : "top-down";
+        // The private plugin list is the core projection, without navigation's
+        // synthetic `state` field. Readiness comes from the actual loaded host.
+        if (row?.baseId !== expectedBase || row?.runtimeKind !== "godot" || !access.godot) throw Error("P8_READY_BASE_REQUIRED");
+        const observed = await access.godot.observe();
+        if (observed?.format !== "craftmine.godot-observation/1" || observed.worldId !== payload.worldId || observed.baseId !== expectedBase
+          || typeof observed.buildId !== "string" || !observed.buildId || typeof observed.instanceId !== "string" || !observed.instanceId) throw Error("P8_READY_BASE_REQUIRED");
+        await selected(payload.worldId);
         const base = new URL(env.CRAFTMINE_P8_PROXY_BASE ?? "invalid:");
         if (base.protocol !== "http:" || base.hostname !== "127.0.0.1" || !base.port || base.username || base.password || base.search || base.hash || !/^\/[a-f0-9]{48}\/deepseek\.com\/v1$/.test(base.pathname)
           || !/^[a-f0-9]{64}$/.test(env.CRAFTMINE_P8_PROXY_AUTH ?? "")) throw Error("P8_FIXED_RELAY_REQUIRED");

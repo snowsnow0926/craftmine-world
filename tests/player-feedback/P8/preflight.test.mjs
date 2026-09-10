@@ -55,12 +55,12 @@ test('provider error is counted, never retried or substituted, and credentials a
   try { const response = await send(relay); assert.equal(response.status, 400); assert.ok(!(await response.text()).includes(fakeKey)); assert.equal(forwards, 1); assert.equal(relay.snapshot().attempts[0].passedTransport, false); assert.ok(!JSON.stringify(evidence).includes(fakeKey)); } finally { await relay.close(); }
 });
 
-function fixture(godot) {
+function fixture(godot = { observe: async () => ({ format: 'craftmine.godot-observation/1', worldId: 'world-hammer', baseId: 'first-person', buildId: 'formal-build', instanceId: 'formal-instance' }) }) {
   let selected = 'world-hammer'; const calls = [], scripts = []; let active = false;
   const sessionId = '11111111-1111-4111-8111-111111111111', providerId = '22222222-2222-4222-8222-222222222222';
   const contents = { isDestroyed: () => false, executeJavaScript: async script => { scripts.push(script); if (script === 'document.body.dataset.worldId') return selected; return { accepted: true, turnId: 'turn-fixture' }; } };
   const run = createP8Acceptance({ enabled: true, window: () => ({ isDestroyed: () => false, webContents: contents }), world: () => contents,
-    call: async (method, params) => { calls.push({ method, params }); if (method === 'providers.create') return { provider: { id: providerId } }; if (method === 'session.create') return { session: { id: sessionId } }; if (method === 'session.get') return { session: { id: sessionId, providerId, modelId: MODEL, messages: [] } }; return null; }, panel: async () => ({ activeWorldId: selected, worlds: [{ id: selected, baseId: 'first-person', state: 'ready' }] }), active: () => active, godot,
+    call: async (method, params) => { calls.push({ method, params }); if (method === 'providers.create') return { provider: { id: providerId } }; if (method === 'session.create') return { session: { id: sessionId } }; if (method === 'session.get') return { session: { id: sessionId, providerId, modelId: MODEL, messages: [] } }; return null; }, panel: async () => ({ activeWorldId: selected, worlds: [{ id: selected, baseId: 'first-person', runtimeKind: 'godot' }] }), active: () => active, godot,
   }, { CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_PROXY_BASE: 'http://127.0.0.1:12345/' + 'a'.repeat(48) + '/deepseek.com/v1', CRAFTMINE_P8_PROXY_AUTH: 'b'.repeat(64) });
   return { run, calls, scripts, setSelected: value => { selected = value; }, setActive: value => { active = value; } };
 }
@@ -118,4 +118,12 @@ test('fixed exercise retains actual failures, rejects extra commands, and aborts
   const result = await f.run('exercise', { caseId: 'hammer' }); assert.equal(result.actions.length, 7); assert.ok(result.actions.every(action => action.result.error));
   assert.deepEqual(operations[1], ['equip', { value: 'thunder_hammer' }]); assert.equal(result.passed, undefined);
   operations.length = 0; change = true; await assert.rejects(f.run('exercise', { caseId: 'hammer' }), /RUNTIME_CHANGED/); assert.equal(operations.length, 1);
+});
+
+test('private list without navigation state requires a real matching loaded runtime before provider creation', async () => {
+  const valid = { format: 'craftmine.godot-observation/1', worldId: 'world-hammer', baseId: 'first-person', buildId: 'formal-build', instanceId: 'formal-instance' };
+  for (const observed of [null, { ...valid, worldId: 'world-other' }, { ...valid, baseId: 'top-down' }, { ...valid, instanceId: '' }, { ...valid, buildId: null }]) {
+    const f = fixture({ observe: async () => observed }); await assert.rejects(f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' }), /READY_BASE_REQUIRED/); assert.equal(f.calls.length, 0);
+  }
+  const good = fixture(); assert.equal((await good.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' })).worldId, 'world-hammer');
 });

@@ -17,6 +17,15 @@ The selected world is checked before and after asynchronous reads. Each case
 has one session/provider/world binding and one submission. Reopening can only
 reuse the explicitly supplied matching session and exact model.
 
+The private plugin's `world.list` returns the core projection (`runtimeKind`,
+`baseId`) and does not contain Main navigation's additional `state` field.
+Initialization validates that projection and obtains a real loaded Godot
+observation with the exact world/base and nonempty build/instance identity before
+creating the isolated provider/session. A matching navigation fixture cannot
+replace this live readiness proof. The driver also waits for actual Main/backend
+readiness after the headless IPC notification; only the known window-starting
+error is retried on the read-only creation-options query.
+
 The authorized endpoint is `https://api.deepseek.com/chat/completions` and the
 exact requested model is `deepseek-v4.1-flash-expires-on-0910`. A driver-owned
 loopback relay accepts only POST at a random authenticated path. The fixed
