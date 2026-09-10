@@ -1,0 +1,4 @@
+# Raw evidence must retain its original bytes across Windows checkouts.
+*.json -text
+**/*.json -text
+*.log -text
