@@ -846,10 +846,11 @@ export function importRequestFor(
     mediaType: item.mediaType ?? "",
     displayName: input.displayName,
     source: {
-      origin: input.source.origin,
-      author: input.source.author,
-      license: input.source.license,
-      licenseStatus: input.source.licenseStatus,
+      origin: input.source.origin.trim() || "unknown",
+      author: input.source.author.trim() || "unknown",
+      license: input.source.license.trim() || "unknown",
+      // Absence is unknown provenance, never an inferred licence grant.
+      licenseStatus: input.source.license.trim() ? input.source.licenseStatus : "unknown",
     },
   };
   const tags = normalizeTags(input.tags);

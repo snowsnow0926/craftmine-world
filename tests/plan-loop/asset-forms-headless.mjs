@@ -114,7 +114,10 @@ try {
   await assert.rejects(probe('favorite',{assetId:'asset-b'}),/UNOBSERVED/);check('other asset cannot be annotated',true);
   await probe('filter',{favoritesOnly:false});await until(()=>probe('read'),r=>r.cards.length===2);
   await probe('importPick');await until(()=>probe('read'),r=>r.import.ready);check('actual directory import form scans the host-picked root',true);
+  assert.equal(await page.locator('[data-import-source-hint="true"]').textContent(), '作者或许可可留空，系统会记为“未知”；许可留空时不会标记为已验证。');
   await probe('importConfirm');state=await until(()=>probe('read'),r=>r.cards.length===3&&!!r.import.done);check('actual confirm form supplies the selected scan path for an empty picker file path',!state.error);
+  const importedSource=await page.evaluate(()=>__calls.find(c=>c.channel==='asset.import').payload.source);
+  assert.deepEqual(importedSource,{origin:'player-import',author:'unknown',license:'unknown',licenseStatus:'unknown'});check('blank provenance is explicitly unknown without claiming a licence grant',true);
   await probe('select',{assetId:'fixture.png',version:1});await until(()=>probe('read'),r=>r.selected?.assetId==='fixture.png');
   await assert.rejects(probe('preview',{assetId:'asset-a',version:1}),/UNOBSERVED/);check('preview refuses a nonselected asset',true);
   await assert.rejects(probe('preview',{assetId:'fixture.png',version:2}),/UNOBSERVED_VERSION/);check('preview refuses a different version of the same asset',true);

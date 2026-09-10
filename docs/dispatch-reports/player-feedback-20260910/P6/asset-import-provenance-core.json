@@ -1,0 +1,89 @@
+{
+  "format": "craftmine.asset-import-provenance-core/1",
+  "passed": true,
+  "binary": "D:/cm-fb2-20260910/desktop/build/releases/beb66d76c00a-04d1dca3-2129-4a62-9cf9-653326e6ef6f/output/win-unpacked/resources/bin/craftmine-core.exe",
+  "binarySha256": "476297048415332458e451aa2646f47b0fb57d98e76c8d5929645c8eb7fedd63",
+  "out": "D:\\cm-fb-p6-20260910\\test-results\\asset-import-provenance-wq2ZJt",
+  "limit": "Actual Core import/read/restart only; not the packaged UI or PNG decoder.",
+  "receipt": {
+    "assetId": "pixel",
+    "bytes": 68,
+    "contentHash": "788263356160b300524a7672ff85c5ede9b69e566ebfbd972f517e7c5cd16788",
+    "deduplicated": false,
+    "existing": false,
+    "fileCount": 1,
+    "kind": "object",
+    "mediaKind": "image",
+    "method": "asset.import",
+    "operationId": "asset-import:pixel:1:pixel.png",
+    "preview": {
+      "state": "pending"
+    },
+    "replayed": false,
+    "state": {
+      "appliedToSource": null,
+      "baseChecked": null,
+      "indexed": true,
+      "previewable": false
+    },
+    "version": 1,
+    "version_": {
+      "assetId": "pixel",
+      "bytes": 68,
+      "contentHash": "788263356160b300524a7672ff85c5ede9b69e566ebfbd972f517e7c5cd16788",
+      "createdAt": 1789026906502,
+      "displayName": "Pixel",
+      "fileCount": 1,
+      "files": [
+        {
+          "bytes": 68,
+          "mediaType": "image/png",
+          "path": "pixel.png",
+          "sha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15"
+        }
+      ],
+      "kind": "object",
+      "mediaKind": "image",
+      "source": {
+        "author": "unknown",
+        "license": "unknown",
+        "licenseStatus": "unknown",
+        "origin": "player-import"
+      },
+      "version": 1
+    }
+  },
+  "restored": {
+    "state": {
+      "appliedToSource": null,
+      "baseChecked": null,
+      "indexed": true,
+      "previewable": false
+    },
+    "version_": {
+      "assetId": "pixel",
+      "bytes": 68,
+      "contentHash": "788263356160b300524a7672ff85c5ede9b69e566ebfbd972f517e7c5cd16788",
+      "createdAt": 1789026906502,
+      "displayName": "Pixel",
+      "fileCount": 1,
+      "files": [
+        {
+          "bytes": 68,
+          "mediaType": "image/png",
+          "path": "pixel.png",
+          "sha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15"
+        }
+      ],
+      "kind": "object",
+      "mediaKind": "image",
+      "source": {
+        "author": "unknown",
+        "license": "unknown",
+        "licenseStatus": "unknown",
+        "origin": "player-import"
+      },
+      "version": 1
+    }
+  }
+}

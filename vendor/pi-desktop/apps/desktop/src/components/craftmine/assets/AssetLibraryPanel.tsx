@@ -83,6 +83,10 @@ const COPY = {
   author: { zh: "作者", en: "Author" },
   license: { zh: "许可", en: "Licence" },
   licenseStatus: { zh: "许可状态", en: "Licence status" },
+  importSourceHint: {
+    zh: "作者或许可可留空，系统会记为“未知”；许可留空时不会标记为已验证。",
+    en: "Blank author or licence is recorded as unknown. A blank licence is never marked verified.",
+  },
   files: { zh: "文件清单", en: "Files" },
   versions: { zh: "版本", en: "Versions" },
   usage: { zh: "使用关系", en: "Usage" },
@@ -805,6 +809,7 @@ export function AssetLibraryPanel({
                   onChange={(event) => setImportOrigin(event.target.value)}
                 />
               </label>
+              <p data-import-source-hint="true">{t("importSourceHint", lang)}</p>
               <label className="asset-library-field">
                 <span className="asset-library-field-label">{t("author", lang)}</span>
                 <Input
