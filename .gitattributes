@@ -13,6 +13,7 @@ desktop/godot/probes/** text eol=lf
 desktop/godot/licenses/** -text
 desktop/delivery/licensing/texts/** -text
 docs/evidence/godot-cycle-*/** -text whitespace=cr-at-eol
+docs/evidence/immersive-20260911/** -text whitespace=cr-at-eol,-blank-at-eof
 
 desktop/godot/sandbox/evidence/** -text whitespace=cr-at-eol
 
