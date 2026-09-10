@@ -29,7 +29,7 @@ if(!quick)steps.push(['copied-world-native',['tests/creation-managed-executor.mj
 if(!quick)steps.push(['saved-world-story',['tests/creation-story-headless.mjs']],['staged-materializers',['tests/godot-final/staged-materializers.mjs']]);
 persist();
 for(const [name,args,environment={}]of steps){
- const log=path.join(out,name+'.log'),item={name,command:[process.execPath,...args],status:'running',startedAt:new Date().toISOString(),log};report.steps.push(item);persist();console.log('Running '+name+'; log '+log);
+ const log=path.join(out,name+'.log'),item={name,command:[process.execPath,...args],environment,status:'running',startedAt:new Date().toISOString(),log};report.steps.push(item);persist();console.log('Running '+name+'; log '+log);
  const fd=fs.openSync(log,'w'),start=Date.now();
  try{
   const child=spawn(process.execPath,args,{cwd:root,windowsHide:true,stdio:['ignore',fd,fd],env:{...process.env,CRAFTMINE_CREATION_COPY_SESSION:'0',...environment,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_REVIEW_ROOT:root,CRAFTMINE_EXPECT_FORGERY_REJECTED:'1'}});
