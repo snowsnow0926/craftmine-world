@@ -75,6 +75,8 @@ export default defineConfig({
           // Forked per plugin by PluginRuntime (ADR 0008); must stay a
           // standalone entry so utilityProcess can point at a real file.
           "plugin-host-process": resolve(__dirname, "electron/main/plugin-host-process.mjs"),
+          // A fixed decoder-only worker; it must never self-spawn bundled Main.
+          "asset-preview-worker": resolve(__dirname, "electron/craftmine-assets/asset-preview-worker.js"),
         },
       },
     },
