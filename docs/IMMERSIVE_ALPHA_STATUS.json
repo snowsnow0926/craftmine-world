@@ -1,0 +1,79 @@
+{
+  "format": "craftmine.immersive-alpha-status/1",
+  "plan": "docs/OVERALL_DEVELOPMENT_PLAN_2026-09-11.md",
+  "baseline": "e61bae85",
+  "updatedAt": "2026-09-10T20:15:33.518Z",
+  "status": "in_progress",
+  "worktree": "D:/cm-iw-full-0911",
+  "branch": "codex/iw-full-0911",
+  "stages": {
+    "P0": {
+      "status": "complete",
+      "evidence": "固定Godot4.7.2已校验；隔离依赖已就绪"
+    },
+    "P1": {
+      "status": "complete",
+      "evidence": "真实3D底座和官方materializer；五base登记，旧四base持久化回归"
+    },
+    "P2": {
+      "status": "complete",
+      "evidence": "host opaque capture与UI；14项headless UI通过"
+    },
+    "P3": {
+      "status": "complete",
+      "evidence": "生产creation-source-service+真实Rust分页/写入/收据回放"
+    },
+    "P4": {
+      "status": "in_progress",
+      "remaining": "最终生产Web/可信执行器/自动采用跨服务验证"
+    },
+    "P5": {
+      "status": "in_progress",
+      "evidence": "准确guidance、普通双按规则及自定义state重启通过；真实模型分栏账本已冻结",
+      "remaining": "最终导出成品集成"
+    },
+    "P6": {
+      "status": "in_progress",
+      "evidence": "二次采用、副本和完整备份恢复；5base staged创建通过",
+      "remaining": "最终源码pin刷新与成品验证"
+    },
+    "P7": {
+      "status": "pending",
+      "remaining": "综合报告、统一运行入口和本地合并"
+    }
+  },
+  "validation": {
+    "defaultUnit": {
+      "pass": 276,
+      "fail": 0
+    },
+    "coreGodot": {
+      "pass": 108,
+      "fail": 0,
+      "ignored": 1
+    },
+    "desktopCreation": {
+      "pass": 83,
+      "fail": 0
+    },
+    "rootIntegration": {
+      "pass": 24,
+      "fail": 0
+    },
+    "ui": {
+      "pass": 14,
+      "fail": 0
+    },
+    "story": {
+      "pass": 25,
+      "nativeAssertions": 195,
+      "engineRuns": 23
+    }
+  },
+  "notClaimed": [
+    "真实玩家首次需求成功率",
+    "真实麦克风准确率",
+    "已安装客户端手感",
+    "公网发布"
+  ]
+}

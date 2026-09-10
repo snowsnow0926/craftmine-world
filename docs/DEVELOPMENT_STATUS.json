@@ -1,9 +1,9 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "Godot第5轮：完整进度/可信产物解析/真实宿主接线完成；Rust111、客户端25、第一人称Godot原生9通过；可信执行器、产品多底座创建与真实模型验收继续推进",
+  "currentMilestone": "沉浸式造物Alpha：真实3D底座/可信目标/持续源码与进度迁移已接线，正在完成Web/可信执行器和最终交付验收",
   "baseline": "2f84da9e9779226cf153861ce5a397be1442f2b5",
-  "updated": "2026-09-09T15:47:27.037Z",
+  "updated": "2026-09-10T20:15:33.809Z",
   "execution": {
     "scope": "current_codex_thread",
     "status": "godot_goal_active_cycle05_merged",
@@ -1529,5 +1529,12 @@
     ],
     "existingMilestonesRetained": true,
     "modelBackendNote": "2026-09-09 后端已切换到 DeepSeek 官方 API 并通过一次真实门需求验收；这属于 H1/P1 的接入基线，不等于工具闭环或真实试玩验收完成。"
+  },
+  "immersiveAlpha": {
+    "plan": "docs/OVERALL_DEVELOPMENT_PLAN_2026-09-11.md",
+    "statusFile": "docs/IMMERSIVE_ALPHA_STATUS.json",
+    "status": "in_progress",
+    "baseline": "e61bae85",
+    "updatedAt": "2026-09-10T20:15:33.809Z"
   }
 }

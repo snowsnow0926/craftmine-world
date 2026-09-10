@@ -1,0 +1,115 @@
+{
+  "format": "craftmine.creation-alpha-evaluation/1",
+  "version": "1.0.0",
+  "frozenAt": "2026-09-11",
+  "baseId": "creation-sandbox",
+  "baseVersion": "1.0.0",
+  "engineVersion": "4.7.2-stable",
+  "scope": "首版固定需求与验收分层；固定作者输入不计入真实模型成功率。",
+  "outcomeClasses": [
+    "first_attempt_pass",
+    "model_repaired_pass",
+    "human_assisted_pass",
+    "failed",
+    "environment_blocked",
+    "not_run"
+  ],
+  "gates": [
+    "correct_world_and_target",
+    "real_checked_build",
+    "applied_content_identity",
+    "latest_progress_preserved",
+    "fresh_process_restore",
+    "no_duplicate_reward"
+  ],
+  "cases": [
+    {
+      "id": "CA01",
+      "request": "在这里放一棵树",
+      "required": [
+        "same_captured_ground_position",
+        "live_entity",
+        "collision"
+      ]
+    },
+    {
+      "id": "CA02",
+      "request": "把这棵树变大一倍",
+      "required": [
+        "same_entity_id",
+        "double_height",
+        "fresh_process_dimensions"
+      ]
+    },
+    {
+      "id": "CA03",
+      "request": "复制这块石头三个，排开一点",
+      "required": [
+        "bounded_count",
+        "unique_ids",
+        "no_overlap",
+        "unchanged_original"
+      ]
+    },
+    {
+      "id": "CA04",
+      "request": "把这里变成傍晚",
+      "required": [
+        "source_default_changed",
+        "candidate_applied",
+        "persisted_time",
+        "unrelated_progress_preserved"
+      ]
+    },
+    {
+      "id": "CA05",
+      "request": "先连续碰两次第一个标记，再碰第二个标记开门",
+      "required": [
+        "new_plain_script",
+        "actual_interaction",
+        "custom_partial_state_restore",
+        "locked_door_cannot_bypass"
+      ]
+    },
+    {
+      "id": "CA06",
+      "request": "保存退出，重新打开，再添加一个物件",
+      "required": [
+        "fresh_core_and_game",
+        "old_chest_reward_once",
+        "old_rules_preserved",
+        "new_object_usable"
+      ]
+    },
+    {
+      "id": "CA07",
+      "request": "复制世界后在副本继续创造",
+      "required": [
+        "separate_world_id",
+        "source_and_state_preserved",
+        "copy_draft_edit",
+        "original_unchanged"
+      ]
+    }
+  ],
+  "resultFields": [
+    "caseId",
+    "inputOrigin",
+    "model",
+    "provider",
+    "attempt",
+    "outcome",
+    "humanIntervention",
+    "sourceRevision",
+    "buildId",
+    "evidencePath",
+    "evidenceSha256",
+    "elapsedMs",
+    "usage"
+  ],
+  "currentResult": {
+    "realModelRuns": 0,
+    "reason": "尚未运行首次玩家模型评测；现有可复现引擎/宿主用例为固定作者输入，不纳入首次成功率。",
+    "successRate": null
+  }
+}
