@@ -1,0 +1,137 @@
+{
+  "format": "craftmine.player-feedback-dispatch/1",
+  "createdAt": "2026-09-10T14:06:21+08:00",
+  "state": "documentation-only; user will distribute",
+  "baseBranch": "codex/integration-next-20260910",
+  "baseCommit": "eae279915094f09d987ef0eb747eba20ef92cd0e",
+  "testedReleaseSource": "8276b4540289c0d397c382dff2123edfe1861d42",
+  "sourceReport": "../../assets/user-feedback-20260910/batch-001/开发进度报告-用户指定原件快照.md",
+  "sourceReportSha256": "6666856d8d42b5df0805132a6e5481e4659aceec24e8c3228d5d14a832ca0f92",
+  "feedbackIds": [
+    "FB01-001",
+    "FB01-002",
+    "FB01-003",
+    "FB01-004",
+    "FB01-005"
+  ],
+  "priorityStartWithFourSlots": [
+    "P10",
+    "P1",
+    "P2",
+    "P4"
+  ],
+  "implementationDependencies": [
+    {
+      "producer": "P4",
+      "consumer": "P5",
+      "item": "Persistent task statistics DTO before production UI wiring"
+    },
+    {
+      "producer": "P1",
+      "consumer": "P3",
+      "item": "Runtime view identity and input hook contract"
+    },
+    {
+      "producer": "P2",
+      "consumer": "P3",
+      "item": "Plugin-side display hooks if needed"
+    }
+  ],
+  "finalAcceptanceSequence": [
+    "P10 creates same-source development client",
+    "P1-P7 verify their integrated scope",
+    "P10 freezes and builds candidate",
+    "P8 authorized real-model acceptance and P11 isolated environment acceptance",
+    "P10 final review; any payload fix creates a new explicit candidate"
+  ],
+  "tasks": [
+    {
+      "id": "P1",
+      "file": "P1-world-initialization.md",
+      "title": "P1：世界初始化、加载与故障解释",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "d628c9cee433beede67016ad6c46eb017d6aee6f170b4c196c62cec89bffa2d3"
+    },
+    {
+      "id": "P2",
+      "file": "P2-apply-explanations.md",
+      "title": "P2：解释为何不能应用，并打通符合条件的采用流程",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "835b328a10bb2cde38a3f303d2bfb531a0dae5b198ebc55a27cf7dd2d51e49e6"
+    },
+    {
+      "id": "P3",
+      "file": "P3-fullscreen-shortcuts.md",
+      "title": "P3：游玩全屏、退出全屏与焦点规则",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "c8817cb41727bf7520ed82142798ea36175a351d280ee394b386848e9a9c1851"
+    },
+    {
+      "id": "P4",
+      "file": "P4-task-usage-data.md",
+      "title": "P4：本次操作的真实 Token、TPS、耗时和模型数据",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "f4ee7801cb34ff3b257252b0bf6186fa29825b3f50735b536a43976cb9c19055"
+    },
+    {
+      "id": "P5",
+      "file": "P5-task-metrics-and-version-ui.md",
+      "title": "P5：任务统计展示与取消 PI 版本外链",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "73a6e4313af1ad3c69251378e0eb20439ba2961d09efdbbf8f83f34347bae73f"
+    },
+    {
+      "id": "P6",
+      "file": "P6-existing-features-client-acceptance.md",
+      "title": "P6：素材入口及已实现增量的真实客户端验收",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "a5b11a67321b7c14403db7c0969bc2b6e3491bb0b4c86506cb66d392a2c1617e"
+    },
+    {
+      "id": "P7",
+      "file": "P7-engine-retirement-and-disk.md",
+      "title": "P7：新任务自动回收真实验证与测试磁盘控制",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "07d4836ce9e7eb2e348cc6eee5a9f060204e195b3e3c08d25ce16f796f41a75e"
+    },
+    {
+      "id": "P8",
+      "file": "P8-real-model-and-fault-acceptance.md",
+      "title": "P8：真实模型创作与故障验收记录",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "c06bdd32da8259cd5612612af4e2db8fcfe25497701577dd43299a4bb5a7250a"
+    },
+    {
+      "id": "P9",
+      "file": "P9-bounded-world-content.md",
+      "title": "P9：四底座有限示例内容与新手试玩路线（后置可选）",
+      "state": "prepared-not-dispatched",
+      "optional": true,
+      "sha256": "dda7a4a8306f6cdd69352da0f6e1e756f30e1886eff14e11e6393461626383c7"
+    },
+    {
+      "id": "P10",
+      "file": "P10-integration-and-windows-build.md",
+      "title": "P10：统一集成、正式接线与同源码 Windows 修复包",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "7ca4c40ccce730ccae09de38bb0b6166c7a2b323b0ccb98470f3608933c4e2a3"
+    },
+    {
+      "id": "P11",
+      "file": "P11-windows-lifecycle-and-performance.md",
+      "title": "P11：隔离 Windows 安装生命周期、发行检查与性能",
+      "state": "prepared-not-dispatched",
+      "optional": false,
+      "sha256": "3d7fc85e63a83b708da12641ef5436839aaa33a00da70610f641977a480904c2"
+    }
+  ]
+}

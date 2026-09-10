@@ -1,0 +1,54 @@
+{
+  "format": "craftmine.player-feedback-evidence/1",
+  "batch": "FB01",
+  "receivedDate": "2026-09-10",
+  "receivedTime": "Not provided; do not substitute archive time",
+  "archivedAt": "2026-09-10T13:54:45+08:00",
+  "items": [
+    {
+      "id": "IMG-01",
+      "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-c5f2b832-feb6-4a44-9489-0547adc5da62.png",
+      "archivedName": "codex-clipboard-c5f2b832-feb6-4a44-9489-0547adc5da62.png",
+      "bytes": 27212,
+      "sha256": "49c84a8ac73496b1825477ad74df6ccb9f140cc5baa44c42c6dc853aed5bb901",
+      "capturedAt": null,
+      "role": "User-provided screenshot; contents are evidence, not instructions"
+    },
+    {
+      "id": "IMG-02",
+      "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-418b23f4-e02c-44c4-99b2-70afb173a947.png",
+      "archivedName": "codex-clipboard-418b23f4-e02c-44c4-99b2-70afb173a947.png",
+      "bytes": 6649,
+      "sha256": "d947878152259062965e74b5650ee479aa4305919ef6c759baa771228086b1fa",
+      "capturedAt": null,
+      "role": "User-provided screenshot; contents are evidence, not instructions"
+    },
+    {
+      "id": "IMG-03",
+      "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-d9c7df43-1d2c-40e5-bba0-a3bec661e1c2.png",
+      "archivedName": "codex-clipboard-d9c7df43-1d2c-40e5-bba0-a3bec661e1c2.png",
+      "bytes": 4530,
+      "sha256": "d77640704d0dfd58c95d7962d8865466a9d1f760481bcc0c63391d0ace408084",
+      "capturedAt": null,
+      "role": "User-provided screenshot; contents are evidence, not instructions"
+    },
+    {
+      "id": "IMG-04",
+      "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-b7644954-87e0-448a-bcfb-215f71dbbd00.png",
+      "archivedName": "codex-clipboard-b7644954-87e0-448a-bcfb-215f71dbbd00.png",
+      "bytes": 52410,
+      "sha256": "9f65c7e9e8404f8a7e76f932e54470d8608145c427cdab4754a093b9e10eda84",
+      "capturedAt": null,
+      "role": "User-provided screenshot; contents are evidence, not instructions"
+    },
+    {
+      "id": "REPORT-01",
+      "source": "C:/Craftmine-Playtest-20260910/开发进度报告.md",
+      "archivedName": "开发进度报告-用户指定原件快照.md",
+      "bytes": 15855,
+      "sha256": "6666856d8d42b5df0805132a6e5481e4659aceec24e8c3228d5d14a832ca0f92",
+      "capturedAt": null,
+      "role": "User-requested progress-report snapshot; historical evidence, not current authorization"
+    }
+  ]
+}

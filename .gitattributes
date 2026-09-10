@@ -24,3 +24,8 @@ docs/dispatch-reports/godot-parallel/C/integration.patch -text whitespace=cr-at-
 
 docs/dispatch-reports/plan-loop/pp2-base-default/**/report.json -text
 docs/dispatch-reports/plan-loop/pp2-base-default/**/*.log -text
+
+# Player attachments and hash-indexed dispatch records retain their source bytes.
+docs/assets/user-feedback-20260910/** -text whitespace=cr-at-eol
+docs/dispatch-prompts/player-feedback-20260910/** -text whitespace=cr-at-eol
+docs/dispatch-prompts/player-feedback-20260910/ALL_PROMPTS.md whitespace=cr-at-eol,-blank-at-eof
