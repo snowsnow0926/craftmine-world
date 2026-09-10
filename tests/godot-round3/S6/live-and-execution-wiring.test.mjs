@@ -149,8 +149,8 @@ test('the capability report exposes the real wiring state and the durable ledger
   assert.deepEqual(report.limits.kinds.tokens,{known:true,limit:10000,used:1500,remaining:8500,exhausted:false,source:'durable-ledger'});
   assert.equal(report.limits.kinds.context.known,false);
   assert.equal(report.limits.ledger.ownerTaskId,'task-1');
-  // The inventory now routes every gap to a round-three owner.
-  assert.ok(report.tools.every(tool=>tool.owner===null||/^S\d$/.test(tool.owner)),'tool owners must be round-three agents');
+  // The installed guidance catalog adds AI1 alongside the original S owners.
+  assert.ok(report.tools.every(tool=>tool.owner===null||/^(S\d|AI1)$/.test(tool.owner)),'tool owners must name an installed module owner');
 });
 
 test('godot_jobs mode=status prefers the live executor over the durable registration row',async()=>{

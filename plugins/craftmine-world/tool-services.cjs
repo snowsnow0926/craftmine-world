@@ -18,7 +18,7 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
-  creationTarget:{kind:'function',owner:'IW2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation']},
+  creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation']},
   sampleLiveState:{
     kind:'function',owner:'R2',hostMethod:'godotLiveState',
     provides:'a timestamped sample of the running instance: world, build, instance, camera, equipment, entities, quests',

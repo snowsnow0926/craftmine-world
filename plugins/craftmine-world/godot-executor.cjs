@@ -1044,6 +1044,14 @@ function createGodotExecutor(core, options = {}) {
         }
         await persistLedger();
       }
+      if(status==='passed'&&record?.candidateId&&!entry.cancelled&&!stopped&&typeof verifier?.creationCheckCompleted==='function'){
+        // Application is a separate host-owned transaction. Its failure must
+        // never turn a durable passed check into an executor finish failure.
+        try {
+          durable.creationApplication=await verifier.creationCheckCompleted({jobId,context:entry.context});
+          await persistLedger();
+        } catch(error) {warn('creation candidate awaits manual adoption:',jobId,String(error?.message??error));}
+      }
       return {status, candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
     } catch (error) {
       const originalReason = String(error?.message ?? error);

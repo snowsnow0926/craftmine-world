@@ -88,6 +88,7 @@ function normalizeLiveSample(sample,identity={},options={}){
     inventory:present(sample.inventory),hud:present(sample.hud),crosshair:present(sample.crosshair),aim:present(sample.aim),
     entities:{targets:present(sample.targets),interactables:present(sample.interactables)},creation:present(sample.creation)};
   const unavailable=LIVE_FIELDS.filter(field=>{
+    if(field==='creation'&&baseId!=='creation-sandbox')return false;
     const value=normalized[field];
     if(field==='entities')return value.targets===null&&value.interactables===null;
     return value===null||value===undefined;
