@@ -16,7 +16,7 @@ window.piDesktop={platform:'win32',on:()=>()=>{},invoke:async(channel,payload)=>
 globalThis.__craftmineWorldBridge={invoke:async(_,channel,payload)=>{if(channel==='godot.creationTaskStatus')return{...status,sessionId:payload.sessionId};throw Error('Unexpected channel '+channel);},onChanged:listener=>{changed=listener;return()=>{changed=null;};}};
 useAppStore.setState({activeSessionId:'session-a',isRunning:false,agentStatuses:{}});
 const root=createRoot(document.getElementById('root'));function render(){root.render(<main><h2>造物世界 · 语音和任务状态</h2><CraftmineOverlayControls/><div style={{marginTop:150,display:'flex',justifyContent:'flex-end'}}><VoiceInput contextKey="world-a:session-a" onTranscript={text=>transcripts.push(text)}/></div><textarea defaultValue="已有草稿"/></main>);}
-globalThis.fixture={languages:value=>{locales=value;},reads:()=>reads,transcripts:()=>transcripts,status:value=>{status={...status,...value};changed?.();},remount:()=>{root.render(null);setTimeout(render,20);},
+globalThis.fixture={languages:value=>{locales=value;},reads:()=>reads,transcripts:()=>transcripts,status:value=>{status={...status,...value};changed?.();},running:(value,approval=false)=>useAppStore.setState({isRunning:value,agentStatuses:{'session-a':{sessionId:'session-a',isRunning:value,pendingToolConfirmations:approval?1:0,activity:{phase:'waiting-model'}}}}),remount:()=>{root.render(null);setTimeout(render,20);},
  props:selector=>{const element=document.querySelector(selector);return element[Object.keys(element).find(key=>key.startsWith('__reactProps'))];}};
 void i18n.use(initReactI18next).init({lng:'zh',resources:{zh:{translation:{}}},interpolation:{escapeValue:false}}).then(render);
 `;
@@ -40,6 +40,13 @@ try{
  check('direct edit checking is visible while the model is not running',await page.evaluate(()=>document.querySelector('[data-task-stage="checking"]').textContent.includes('正在检查')));
  await page.evaluate(()=>fixture.status({phase:'applied',requirementStatus:'unsupported'}));await page.waitForFunction(()=>document.querySelector('[data-task-stage="applied"]'));
  check('applied does not imply unknown wishes were checked',await page.evaluate(()=>document.querySelector('.craftmine-overlay-task').textContent.includes('已采用 · 愿望结果待验证')));
+ await page.evaluate(()=>fixture.running(true));await page.waitForFunction(()=>document.querySelector('[data-task-stage="waiting-model"]'));
+ check('prior applied outcome cannot hide a newly running model request',true);
+ await page.evaluate(()=>fixture.status({phase:'checking',requirementStatus:'pending'}));await page.waitForFunction(()=>document.querySelector('[data-task-stage="checking"]'));
+ check('real current checking remains visible during model execution',true);
+ await page.evaluate(()=>fixture.running(true,true));await page.waitForFunction(()=>document.querySelector('[data-task-stage="approval"]'));
+ check('actual pending approval takes precedence over host task phase',await page.evaluate(()=>document.querySelector('.craftmine-overlay-task').textContent.includes('等待确认')));
+ await page.evaluate(()=>{fixture.running(false);fixture.status({phase:'applied',requirementStatus:'unsupported'});});await page.waitForFunction(()=>document.querySelector('[data-task-stage="applied"]'));
  await page.evaluate(()=>fixture.remount());await page.waitForFunction(()=>document.querySelector('[data-task-stage="applied"]'));
  check('closing and reopening controls rereads the real terminal result',true);
  await page.evaluate(()=>fixture.status({phase:'failed',error:'REQUIREMENT_SIZE_MISMATCH'}));await page.waitForFunction(()=>document.querySelector('[data-task-stage="failed"]'));

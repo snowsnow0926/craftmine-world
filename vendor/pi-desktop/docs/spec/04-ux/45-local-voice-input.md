@@ -93,3 +93,8 @@ and [SetInputToWaveStream](https://learn.microsoft.com/en-us/dotnet/api/system.s
 补充自动证据：`test/creation-task-status.test.mjs`，`tests/creation-voice-status-headless.mjs`。
 后者运行实际 React 控件和假宿主传输，采用独立 headless profile、页面函数、禁用麦克风和
 Pointer Lock，不调用任何真实输入或浏览器输入模拟接口；不证明物理语音识别准确率。
+
+当前待确认请求优先显示“等待确认”。模型新任务正在执行时，上一任务的采用、失败、取消、
+中断等终态不遮住当前模型活动；真正进行中的检查/采用仍显示宿主阶段。模型仍执行时继续
+有界补读以发现新检查，模型结束后终态继续保留并停止轮询。idle 同时在文字与 data 属性
+回落到实际 agent activity，避免看见等待确认却记录为 idle。
