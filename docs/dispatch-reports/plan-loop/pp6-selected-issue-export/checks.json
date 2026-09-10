@@ -1,0 +1,33 @@
+{
+  "format": "craftmine.pp6-export-checks/1",
+  "baseCommit": "1b5ff983a27808159b8eb0a0a8047fb08649cd7c",
+  "native": false,
+  "service": {
+    "passed": 10,
+    "failed": 0
+  },
+  "existingWindowsServices": {
+    "passed": 11,
+    "failed": 0
+  },
+  "dom": {
+    "passed": 3,
+    "failed": 0,
+    "report": "dom-report.json"
+  },
+  "targetedTypecheck": {
+    "exitCode": 0,
+    "module": "preserve",
+    "moduleResolution": "bundler"
+  },
+  "e2ePrefix": {
+    "bytes": 590012,
+    "sha256": "7538f6a65834af59a895c79392081d3e3843d5b817cc3af96b9fcfec16c1f0b0",
+    "unchanged": true
+  },
+  "limitations": [
+    "No full Electron or native dialog execution",
+    "No packaged or signed release acceptance",
+    "No cross-process export receipts"
+  ]
+}

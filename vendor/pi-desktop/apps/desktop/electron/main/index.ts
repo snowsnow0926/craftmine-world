@@ -1,3 +1,4 @@
+import { createCraftmineIssueExportService } from "./craftmine-issue-export-service";
 import {
   app,
   BrowserWindow,
@@ -2533,12 +2534,12 @@ const scheduledRunsBySession = new Map<string, string>();
 let notificationViewingSessionId: string | null = null;
 const craftmineFilePicker: CraftmineFilePicker = async request => {
   // Acceptance processes never display an OS picker or acquire focus.
-  if (headlessAcceptance) return join(headlessAcceptance.root, request.kind === "save-diagnostics" ? "diagnostics.json" : "portable-backup.craftmine");
+  if (headlessAcceptance) return join(headlessAcceptance.root, request.kind === "save-issue" ? "selected-issue.json" : request.kind === "save-diagnostics" ? "diagnostics.json" : "portable-backup.craftmine");
   if (request.kind === "open-backup") {
     const result = await dialog.showOpenDialog({ title: "选择 Craftmine World 备份", properties: ["openFile"], filters: [{ name: "Craftmine World 备份", extensions: ["craftmine"] }] });
     return result.canceled ? null : result.filePaths[0] ?? null;
   }
-  const result = await dialog.showSaveDialog({ title: request.kind === "save-backup" ? "备份此客户端的全部世界和作品" : "导出诊断", defaultPath: request.suggestedName, filters: [{ name: request.kind === "save-backup" ? "Craftmine World 备份" : "JSON", extensions: [request.kind === "save-backup" ? "craftmine" : "json"] }] });
+  const result = await dialog.showSaveDialog({ title: request.kind === "save-backup" ? "备份此客户端的全部世界和作品" : request.kind === "save-issue" ? "导出这条问题记录" : "导出诊断", defaultPath: request.suggestedName, filters: [{ name: request.kind === "save-backup" ? "Craftmine World 备份" : "JSON", extensions: [request.kind === "save-backup" ? "craftmine" : "json"] }] });
   return result.canceled ? null : result.filePath ?? null;
 };
 type ProfileRestoreOperation = {operationId: string; previous: string | null; release: () => void};
@@ -2618,6 +2619,10 @@ const craftmineIssues = createCraftmineIssueService({
     describe: godotAdapter.describe,
   }),
 });
+const craftmineIssueExports = createCraftmineIssueExportService({
+  read: (worldId, issueId) => craftmineIssues.request("issue.read", {worldId, issueId}) as Promise<any>,
+  selection: godotSelection, pickFile: craftmineFilePicker,
+});
 const craftmineDiagnostics = createCraftmineDiagnosticsService({
   pickFile: craftmineFilePicker,
   snapshot: async () => {
@@ -2690,7 +2695,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
   backup: (channel, payload) => craftmineBackup.request(channel, payload),
   packages: (channel, payload) => craftminePackages.request(channel, payload),
   diagnostics: (channel, payload) => craftmineDiagnostics.request(channel, payload),
-  issues: (channel, payload) => craftmineIssues.request(channel, payload),
+  issues: (channel, payload) => channel === "issue.export" ? craftmineIssueExports.request(channel, payload) : craftmineIssues.request(channel, payload),
 });
 /** Preserve tool metadata until the result is persisted at tool_end. Subagent
  * calls also carry their attribution, which is what lets a permission request
