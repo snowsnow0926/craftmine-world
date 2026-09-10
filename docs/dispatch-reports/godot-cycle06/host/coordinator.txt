@@ -1,0 +1,22 @@
+(node:238828) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ preview independently stages without writing formal state and cancel retains original native identity (3.585ms)
+✔ apply discards played preview, checkpoints latest formal state and launches fresh exact state before commit (0.5557ms)
+✔ preview descriptor failure retains original and releases locks (0.4703ms)
+✔ preview load failure retains original and releases locks (0.4312ms)
+✔ preview state failure retains original and releases locks (0.6975ms)
+✔ preview prepare failure retains original and releases locks (0.5365ms)
+✔ apply storage failure never replaces formal instance (0.5243ms)
+✔ apply commit-before failure never replaces formal instance (0.5818ms)
+✔ lost committed reply is recovered by matching original receipt without second commit (0.6536ms)
+✔ unknown commit keeps both instances paused; later read reconciles exact commit once (1.1416ms)
+✔ foreign committed instance proof cannot authorize promotion (0.6991ms)
+✔ page cannot supply token/evidence/snapshot or target another world (0.2619ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18.3099

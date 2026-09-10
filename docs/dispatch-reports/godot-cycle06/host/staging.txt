@@ -1,0 +1,14 @@
+(node:142176) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ staged runtime retains old identity and blocks formal saves/departure/quit (4.0426ms)
+✔ promotion requires matching committed artifacts and revision; only then disposes previous (2.4728ms)
+✔ bad candidate startup leaves original running object available for recovery (1.8577ms)
+✔ candidate commands target pending runtime rather than formal request path (1.8792ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13.5281
