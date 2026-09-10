@@ -11,6 +11,22 @@
   "rightsNote": "项目原创源码、场景和几何体沿用原声明；完整中文字体由仓库已有 Noto Sans SC 字体派生，单独遵循 OFL-1.1，并在应用与用户导出中保留许可。字体不归类为项目原创。",
   "entries": [
     {
+      "path": "README.md",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
       "path": "assets/ASSET_MANIFEST.json",
       "role": "data",
       "origin": "authored",
@@ -24,8 +40,26 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 212,
-      "sha256": "ecbf96a5e7be23561e6c6d096849e310a9d87f7c1131dfb3a1caea4bb9f698f7"
+      "bytes": 548,
+      "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+    },
+    {
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "role": "license",
+      "origin": "upstream",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
     },
     {
       "path": "assets/fonts/cjk-0.json",
@@ -82,24 +116,6 @@
       "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
     },
     {
-      "path": "assets/fonts/OFL-NotoSansSC.txt",
-      "role": "license",
-      "origin": "upstream",
-      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
-      "version": "Craftmine CJK Regular 1.0",
-      "license": "OFL-1.1",
-      "licenseFile": "assets/fonts/OFL-NotoSansSC.txt",
-      "redistribution": "permitted-with-notice",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
-      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
-      "bytes": 4388,
-      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
-    },
-    {
       "path": "creation-scene.schema.json",
       "role": "data",
       "origin": "authored",
@@ -147,8 +163,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 2257,
-      "sha256": "1e3bc31b9b300eb8cf17d798ef62f7b9761763df880b8fd61a7243e2eef24cea"
+      "bytes": 2430,
+      "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
     },
     {
       "path": "project.godot",
@@ -168,22 +184,6 @@
       "sha256": "7d7d408d6052068ee0bd63518e6f4b240a0764a73d26601cb2787a453df603cc"
     },
     {
-      "path": "README.md",
-      "role": "data",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "development-only"
-      ],
-      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 1677,
-      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
-    },
-    {
       "path": "scenes/creation.tscn",
       "role": "scene",
       "origin": "authored",
@@ -201,6 +201,23 @@
       "sha256": "bac1347d32bb5736043ecb3d3e4794e40d22654dc0ae354f270ab09a4bbcab88"
     },
     {
+      "path": "scripts/creation_font.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1737,
+      "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+    },
+    {
       "path": "scripts/creation_world.gd",
       "role": "source",
       "origin": "authored",
@@ -214,8 +231,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 19360,
-      "sha256": "32e63fd3ce8416bfd0b66c930a7a270e005a3008a3330b763018e1b22b93bb98"
+      "bytes": 20866,
+      "sha256": "ef16e5d2e0e9ad8786c99875051a23b184fc815ee012e0a3167f8904a289946b"
     },
     {
       "path": "scripts/reused/camera_rig.gd",
