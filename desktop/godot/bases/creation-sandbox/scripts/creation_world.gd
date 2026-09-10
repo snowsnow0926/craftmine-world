@@ -374,6 +374,27 @@ func validate_progress(data: Variant) -> String:
 			return "Creation progress needs the new rule default: " + definition.id
 		if data.rules[definition.id].get("completed", false) and not data.doors.get(definition.doorId, false):
 			return "Completed rule requires its open door: " + definition.id
+	var collision := _player_overlap(Vector3(p[0], p[1], p[2]), data.doors)
+	if not collision.is_empty():
+		return "Saved player overlaps candidate entity: " + collision
+	return ""
+
+func _player_overlap(player_position: Vector3, saved_doors: Dictionary) -> String:
+	# Capsule versus each actual Y-rotated box, before mutating any progress.
+	# Use the proposed door state, not fresh-instance/default collider state.
+	# A tiny contact tolerance preserves valid saves taken against a wall.
+	for id in entities:
+		var definition: Dictionary = entities[id]
+		if definition.kind == "door" and saved_doors.get(id, false):
+			continue
+		var offset := player_position - Vector3(definition.position[0], definition.position[1], definition.position[2])
+		var local := offset.rotated(Vector3.UP, -deg_to_rad(float(definition.rotationY)))
+		var half: Vector3 = HALF_EXTENTS[definition.kind] * Vector3(definition.scale[0], definition.scale[1], definition.scale[2])
+		var dx := maxf(absf(local.x) - half.x, 0)
+		var dz := maxf(absf(local.z) - half.z, 0)
+		var dy := maxf(maxf(-local.y - 0.6, local.y - 0.6 - half.y * 2), 0)
+		if dx * dx + dy * dy + dz * dz < 0.298 * 0.298:
+			return id
 	return ""
 
 func _json_value(value: Variant, depth: int) -> bool:
