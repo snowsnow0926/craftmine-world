@@ -1,0 +1,38 @@
+{
+  "format": "craftmine.issue-followups-service-tests/1",
+  "checks": [
+    {
+      "name": "v1 reads leave original bytes untouched; first append upgrades only ledger schema",
+      "passed": true
+    },
+    {
+      "name": "player state transitions and notes keep original context and record verbatim",
+      "passed": true
+    },
+    {
+      "name": "same operation replay survives changed context and later entries without duplication",
+      "passed": true
+    },
+    {
+      "name": "stale issue revision, world/build/instance and unavailable preview are fail closed",
+      "passed": true
+    },
+    {
+      "name": "invalid transitions, source/context injection, text bounds and unknown kinds reject",
+      "passed": true
+    },
+    {
+      "name": "actual process interruption and lost commit reply preserve one durable followup",
+      "passed": true
+    },
+    {
+      "name": "followup corruption and hardlinks fail without replacing original storage",
+      "passed": true
+    },
+    {
+      "name": "per-issue cap is finite while deletion remains available",
+      "passed": true
+    }
+  ],
+  "sourceSha256": "3556f38a2ef397f8b0d24301402e10a05752fe1ea2cfd316f565371b7be289c2"
+}

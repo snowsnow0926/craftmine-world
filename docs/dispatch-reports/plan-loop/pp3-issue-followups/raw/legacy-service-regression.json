@@ -1,0 +1,77 @@
+{
+  "format": "craftmine.local-issues-service-test/1",
+  "sourceHash": "3556f38a2ef397f8b0d24301402e10a05752fe1ea2cfd316f565371b7be289c2",
+  "startedAt": "2026-09-10T02:51:12.751Z",
+  "checks": [
+    {
+      "name": "verbatim Unicode, projected host identity, clone isolation and a separate process reopen",
+      "passed": true
+    },
+    {
+      "name": "create replay never resamples or replaces original evidence; operation conflicts reject",
+      "passed": true
+    },
+    {
+      "name": "phase, runtime readiness, missing identity and each identity transition fail closed",
+      "passed": true
+    },
+    {
+      "name": "untrusted parameters, invalid encoding, paths and unsupported operations are rejected",
+      "passed": true
+    },
+    {
+      "name": "world isolation, pagination, durable deletion and replay cannot resurrect a deleted record",
+      "passed": true
+    },
+    {
+      "name": "write, sync and rename failures preserve exact old ledger; errors do not disclose paths",
+      "passed": true
+    },
+    {
+      "name": "response loss after atomic commit resolves from the original receipt",
+      "passed": true
+    },
+    {
+      "name": "real process interruption before and after rename recovers without partial records",
+      "passed": true
+    },
+    {
+      "name": "bounded concurrent requests and multiple same-process factories never lose updates",
+      "passed": true
+    },
+    {
+      "name": "capture timeout is bounded and a late callback cannot create a record",
+      "passed": true
+    },
+    {
+      "name": "active-record quota blocks growth and deletion permits a new record",
+      "passed": true
+    },
+    {
+      "name": "cumulative receipt capacity preserves deletion and old retries without recycling",
+      "passed": true
+    },
+    {
+      "name": "serialized-byte quota rejects growth before the active-record limit",
+      "passed": true
+    },
+    {
+      "name": "failed delete preserves the record and a lost delete response remains recoverable",
+      "passed": true
+    },
+    {
+      "name": "corrupt or oversized ledger is never replaced with an empty success",
+      "passed": true
+    },
+    {
+      "name": "hardlink and ancestor junction/symlink are refused without modifying the sentinel",
+      "passed": true
+    }
+  ],
+  "completed": true,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "visibleWindows": 0,
+  "passed": true,
+  "finishedAt": "2026-09-10T02:51:33.041Z"
+}

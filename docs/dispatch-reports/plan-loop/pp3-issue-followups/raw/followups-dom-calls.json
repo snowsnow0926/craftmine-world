@@ -1,0 +1,223 @@
+[
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.create",
+    "input": {
+      "worldId": "alpha",
+      "operationId": "a0cd660f-5ddd-413b-a6ea-8b7b0c7ad226",
+      "description": "  Original problem 🌍\n<script>window.xss=1</script>  "
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.read",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followup",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73",
+      "operationId": "b97111c6-45e3-4955-836e-d996fe326eb1",
+      "revision": 0,
+      "contextHash": "79771be606c59228718bc71a07ea537c8f5bfa3bbac6150b6fa8150f1648f628",
+      "kind": "note",
+      "text": "  Additional detail <img src=x onerror=\"window.xss=1\">  "
+    }
+  },
+  {
+    "channel": "issue.followup",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73",
+      "operationId": "b97111c6-45e3-4955-836e-d996fe326eb1",
+      "revision": 0,
+      "contextHash": "79771be606c59228718bc71a07ea537c8f5bfa3bbac6150b6fa8150f1648f628",
+      "kind": "note",
+      "text": "  Additional detail <img src=x onerror=\"window.xss=1\">  "
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followup",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73",
+      "operationId": "a9c57c02-ac9c-4c65-a305-3f47457fd3e0",
+      "revision": 1,
+      "contextHash": "8566af6d1b9e3a7bf6cb5aa33b704f4191ba75a446e40879bea786ea148558d8",
+      "kind": "still-present",
+      "text": ""
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followup",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73",
+      "operationId": "b4180bda-39e1-4288-bd3b-54d98d58c741",
+      "revision": 2,
+      "contextHash": "8566af6d1b9e3a7bf6cb5aa33b704f4191ba75a446e40879bea786ea148558d8",
+      "kind": "player-resolved",
+      "text": ""
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followup",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73",
+      "operationId": "162b11ff-327b-4417-b130-323362c8f638",
+      "revision": 3,
+      "contextHash": "8566af6d1b9e3a7bf6cb5aa33b704f4191ba75a446e40879bea786ea148558d8",
+      "kind": "reopened",
+      "text": ""
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followup",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73",
+      "operationId": "701194dc-855d-4562-b1b5-cd2ef7ce1c92",
+      "revision": 4,
+      "contextHash": "8566af6d1b9e3a7bf6cb5aa33b704f4191ba75a446e40879bea786ea148558d8",
+      "kind": "note",
+      "text": "stale context"
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "alpha",
+      "offset": 0,
+      "limit": 20
+    }
+  },
+  {
+    "channel": "issue.read",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.read",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.followupPrepare",
+    "input": {
+      "worldId": "alpha",
+      "issueId": "issue-5c195751bb53e365130684a1acaa402780608c5227b2f604e2e4d4136efc4e73"
+    }
+  },
+  {
+    "channel": "issue.list",
+    "input": {
+      "worldId": "beta",
+      "offset": 0,
+      "limit": 20
+    }
+  }
+]

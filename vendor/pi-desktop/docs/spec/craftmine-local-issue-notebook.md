@@ -25,8 +25,8 @@ list reads the durable records; no pending creation is replayed automatically.
 List reads have a sequence independent of world selection. An older response
 must not erase a newly created or deleted record. Switching worlds or clearing
 the view invalidates outstanding responses. Record reads and deletion remain
-available when that world's runtime cannot start; only creation needs a live
-formal instance.
+available when that world's runtime cannot start; creation and new supplements
+need a live formal instance.
 
 If a previous world's workbench action still owns the UI lock, the new page
 refresh is queued until that action finishes. Its stale result is discarded;
@@ -42,3 +42,25 @@ Validation consists of real service storage/fault tests, host identity and
 gateway tests, isolated headless UI tests, and a separate actual desktop
 create/read/restart/delete run. Fixture UI tests do not prove native runtime
 behavior; actual desktop evidence records its own build and limitations.
+
+## Player followups (PP3b)
+
+Record details contain the original description and scene, followed by immutable
+supplements. A player may add a note, mark the issue still present, mark it
+resolved after their own retest, or explicitly reopen a resolved issue. The UI
+calls these player reports, never automatic diagnosis or verification results.
+Every supplement shows its own timestamp, world, build and instance, distinct
+from the original context. Text is displayed with text nodes only.
+
+The editor is prepared against the current trusted formal context and current
+issue revision. Loading/candidate/restore transitions withhold the editor while
+old records remain readable/deletable. A changed build or issue revision rejects
+submission and asks the player to reopen details. Pending uncertain operations
+lock both text and action and retain the exact original operation for retry;
+they do not acquire a new context just to make a stale write succeed.
+
+The form keeps pending attempts only in the current UI lifetime. After restart,
+read the durable history first; nothing is automatically replayed. World/view
+changes invalidate pending responses, including delayed editor preparation.
+Manual supplements share the local-only, no-backup/no-upload policy and existing
+world/action locking of the notebook.

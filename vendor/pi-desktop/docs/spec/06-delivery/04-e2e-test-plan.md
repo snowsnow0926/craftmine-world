@@ -8972,3 +8972,13 @@ Hold the runtime factory before it returns any instance. Request disposal and ve
 ### CRAFTMINE-COMPLETE-PACKAGE-SHUTDOWN-001
 
 Run the fresh sealed Windows comprehensive client with REUSE/COPY/BACKUP enabled and an absolute ordinary CRAFTMINE_TEST_OUTPUT_ROOT. Require every actual exit audit to contain empty shutdownFailures in addition to zero exit, no forced stop, no input violations and no page errors. Persist finalizer failures and finishedAt. Require a real wrong-current-hash portable restore rejection with exact BACKUP_CURRENT_HASH_CONFLICT, unchanged selection/build/full progress, fresh reinspection and successful restore/restart. Keep historical recovery-fault reports separate. Commands and evidence limits: [complete package acceptance](complete-package-shutdown-acceptance.md).
+
+
+## PP3b local issue supplements and player retest (2026-09-10)
+
+- In a formally loaded world, open an existing issue and append Unicode text. Confirm the original description/build/instance stay unchanged and the new entry records its own current context.
+- Mark still present, player-resolved, then reopen. Notes do not alter status; no label claims automatic diagnosis or verification. Reject invalid transitions and stale issue revisions.
+- Change world/build/instance or enter candidate/loading state between preparation and submit; do not append under a different context. Discard delayed editor/detail results after switching worlds.
+- Lose the reply after atomic rename, retry the same operation, and reopen in a separate process. Retain exactly one entry; deletion plus replay must not resurrect original or supplementary text.
+- Preserve legacy v1 bytes on reads, upgrade to v2 only on a successful mutation, and retain corruption/hardlink/oversize failures. At 32 followups refuse another while keeping deletion available; receipt capacity must still reserve deletions.
+- Run tests/plan-loop/issue-followups-service.mjs and issue-followups-dom.mjs with isolated data, then existing notebook/context/gateway regressions. DOM tests use a declared context fixture; a separate full-client run must verify actual formal context and unchanged gameplay after restart before claiming integration acceptance. No model, upload, credentials, visible windows or OS input.
