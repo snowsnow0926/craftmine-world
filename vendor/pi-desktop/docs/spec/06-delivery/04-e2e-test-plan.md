@@ -9064,3 +9064,13 @@ Reject wrong value/kind/path/hash. Graceful quit and owned exit have bounded wai
 after kill allow at most5 seconds, then CLIENT_STOP_TIMEOUT. Any final shutdown or
 audit error must persist passed:false, finishedAt and prior step evidence.
 Unit command: node --test tests/player-product/default-client-audit.test.mjs.
+
+
+### PP6-SELECTED-ISSUE-JSON — Export one selected local record
+
+- Open a recorded issue with a followup. Export the selected revision through the native save action; verify exact original wording (including whitespace), followups, player retest status, and their separate recorded world/build/base/instance/client identities in `craftmine.local-issue-export/1`. Confirm no ledger mutation.
+- Cancel the picker: no output, no record changes. Retry a write failure or lost reply using the original operation; require the original bytes and picker authorization, with no second-file success receipt. Reject a changed payload under the same operation.
+- Change selection, append a followup or delete the issue while saving: require a specific world/revision/not-found refusal and preservation of the existing target. Reopen the latest detail before exporting a newer revision. No late success may appear in another world.
+- Exercise the 512 KiB cap on initial and repeated requests, strict payload/field allowlists, actual filesystem failure and an awaited false pre-commit guard. No credentials, chat, system logs, screenshots, source, progress, unrelated records, host paths or error stacks may enter output.
+- Automated service plus isolated production-DOM coverage: `node --test tests/plan-loop/issue-export.test.mjs` and `node tests/plan-loop/issue-export-headless.mjs`. The DOM test uses loopback HTTP, real issue persistence and a fixed picker callback; it is explicitly not Electron-native picker or packaged acceptance. Never use real input, focus, Pointer Lock, model calls or external networking.
+- Cross-restart export receipt recovery and complete diagnostic bundles are not claimed by this first slice.

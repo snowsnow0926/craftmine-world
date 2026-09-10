@@ -1,5 +1,8 @@
 // Local player reports. Text and version identity are retained by Main.
 const messages = {
+  ISSUE_EXPORT_WRITE_FAILED: '导出未能完成，原记录未改变。可重试原导出。',
+  ISSUE_EXPORT_LIMIT: '本次运行的导出次数已达上限；重新打开客户端后可继续。',
+  ISSUE_EXPORT_TOO_LARGE: '这条记录超过导出大小上限。',
   ISSUE_INVALID_INPUT: '问题描述不能为空，最多 4096 字。',
   ISSUE_CONTEXT_UNAVAILABLE: '请先打开一个已能游玩的 Godot 世界。',
   ISSUE_CONTEXT_NOT_READY: '请先结束候选试玩，并等待正式世界加载完成。',
@@ -33,6 +36,7 @@ export function createIssueUI({element, request, getWorldId, action = fn => fn()
   let epoch = 0, readSequence = 0, mountedWorld = null, busy = false, offset = 0, pendingCreate = null;
   let description, list, detail, notice, total;
   const deletions = new Map();
+  const exports = new Map();
   const pendingFollowups = new Map();
   let detailSequence = 0;
   function current(generation, worldId) { return generation === epoch && worldId === mountedWorld && worldId === getWorldId(); }
@@ -73,6 +77,17 @@ export function createIssueUI({element, request, getWorldId, action = fn => fn()
       version.append(text('p', `${label}：${value}`));
     }
     detail.append(version);
+    const exportButton = formButton('导出这条记录（JSON）', () => run(async () => {
+      if (!current(generation, worldId) || sequence !== detailSequence) return;
+      let attempt = exports.get(record.id);
+      if (!attempt || attempt.revision !== (response.revision ?? 0)) { attempt = {issueId:record.id, revision:response.revision ?? 0, operationId:crypto.randomUUID()}; exports.set(record.id, attempt); }
+      const result = await call('issue.export', attempt);
+      if (result.operationId !== attempt.operationId || result.issueId !== record.id || result.revision !== attempt.revision) throw Error('UNCONFIRMED');
+      if (result.status === 'cancelled') { exports.delete(record.id); status('已取消导出，原记录未改变。'); }
+      else if (result.status === 'completed' && result.scope === 'selected-record' && /^[a-f0-9]{64}$/.test(result.sha256) && result.bytes > 0) { exports.delete(record.id); status('这条记录已导出为本地 JSON。'); }
+      else throw Error('UNCONFIRMED');
+    }));exportButton.button.dataset.issueExport = 'true';
+    detail.append(text('p', '仅导出本条原话、补充、复测状态及记录时的版本身份；不含截图、日志或存档，也不会自动发送。', 'workbench-meta'), exportButton.form);
     const followups = response.followups ?? [];
     const history = document.createElement('section'); history.dataset.issueFollowups = 'true';
     history.append(text('h3', `补充与复测（${followups.length} / 32）`));

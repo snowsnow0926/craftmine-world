@@ -1,0 +1,119 @@
+{
+  "format": "craftmine.issue-export-dom/1",
+  "native": false,
+  "passed": true,
+  "sourceSha256": "e6abd63e76eb3fac7cc3c7920d3c2e80c9cfe1ae20acb2a05f7ef484a2c5c596",
+  "out": "C:\\cm-pp2-default-20260910\\test-results\\issue-export-TDEL1Y",
+  "checks": [
+    {
+      "name": "actual detail export cancellation writes nothing and does not alter original text",
+      "passed": true
+    },
+    {
+      "name": "real write failure remains visible and repeated original operation recovers lost reply once",
+      "passed": true
+    },
+    {
+      "name": "switching worlds during picker never exports or displays late success in the new notebook",
+      "passed": true
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "plugins/craftmine-world/issue-ui.mjs",
+      "sha256": "e6abd63e76eb3fac7cc3c7920d3c2e80c9cfe1ae20acb2a05f7ef484a2c5c596"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-issue-export-service.ts",
+      "sha256": "f46d09800e41a789bb59a65d4daf44de8813651a761429e571be2b9e5064ca98"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-issue-service.ts",
+      "sha256": "bae4f3c87d3b14713c015877da859c167eab45120872d59d0a7bf031436dd353"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/electron/main/craftmine-backup-service.ts",
+      "sha256": "1e0225736f72dd8d7c246d9a73919e57fd5698541337dabf81f39742241a880a"
+    }
+  ],
+  "finishedAt": "2026-09-10T04:16:11.045Z",
+  "pageErrors": [],
+  "externalRequests": [],
+  "calls": [
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "alpha",
+        "offset": 0,
+        "limit": 20
+      }
+    },
+    {
+      "channel": "issue.read",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a"
+      }
+    },
+    {
+      "channel": "issue.followupPrepare",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a"
+      }
+    },
+    {
+      "channel": "issue.export",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a",
+        "revision": 1,
+        "operationId": "40f8e15a-18ce-44d4-a9f5-2ffa8d4bd56e"
+      }
+    },
+    {
+      "channel": "issue.export",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a",
+        "revision": 1,
+        "operationId": "a6f34f51-dfe6-4ab1-be1c-4e2545ab9eca"
+      }
+    },
+    {
+      "channel": "issue.export",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a",
+        "revision": 1,
+        "operationId": "a6f34f51-dfe6-4ab1-be1c-4e2545ab9eca"
+      }
+    },
+    {
+      "channel": "issue.export",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a",
+        "revision": 1,
+        "operationId": "a6f34f51-dfe6-4ab1-be1c-4e2545ab9eca"
+      }
+    },
+    {
+      "channel": "issue.export",
+      "input": {
+        "worldId": "alpha",
+        "issueId": "issue-e067fd19788e18ce247b6c431034457cef0b76096ed014f6a3d5afb02622189a",
+        "revision": 1,
+        "operationId": "39ec6c40-8dc3-4047-934a-a4c9224265c9"
+      }
+    },
+    {
+      "channel": "issue.list",
+      "input": {
+        "worldId": "beta",
+        "offset": 0,
+        "limit": 20
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { dirname, isAbsolute, join } from "node:path";
 import { createHash, randomUUID } from "node:crypto";
 
 export type CraftmineDomainCall = (method: string, params: Record<string, unknown>) => Promise<any>;
-export type CraftmineFilePicker = (request: { kind: "save-backup" | "open-backup" | "save-diagnostics"; suggestedName?: string }) => Promise<string | null>;
+export type CraftmineFilePicker = (request: { kind: "save-backup" | "open-backup" | "save-diagnostics" | "save-issue"; suggestedName?: string }) => Promise<string | null>;
 export const CRAFTMINE_BACKUP_LIMIT = 256 * 1024 * 1024 * 1024;
 export function desktopServiceError(code: string): Error { return Object.assign(new Error(code), { code }); }
 function fields(input: Record<string, unknown>, allowed: string[]) {
@@ -36,13 +36,13 @@ async function fingerprintFile(path: string): Promise<{hash: string; bytes: numb
     return {hash: digest.digest("hex"), bytes: total};
   } finally { await handle.close(); }
 }
-export async function writeSelectedFile(path: string, bytes: Buffer, canCommit: () => boolean = () => true): Promise<void> {
+export async function writeSelectedFile(path: string, bytes: Buffer, canCommit: () => boolean | Promise<boolean> = () => true): Promise<void> {
   const target = await selectedFile(path), temporary = `${target}.tmp-${randomUUID()}`;
   const file = await open(temporary, "wx", 0o600);
   try { await file.writeFile(bytes); await file.sync(); }
   catch (error) { await file.close(); await unlink(temporary).catch(() => {}); throw error; }
   await file.close();
-  try { await selectedFile(target); if (!canCommit()) throw desktopServiceError("BACKUP_CANCELLED"); await rename(temporary, target); }
+  try { await selectedFile(target); if (!await canCommit()) throw desktopServiceError("BACKUP_CANCELLED"); await rename(temporary, target); }
   catch (error) { await unlink(temporary).catch(() => {}); throw error; }
 }
 
