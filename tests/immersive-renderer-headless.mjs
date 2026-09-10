@@ -73,6 +73,9 @@ try {
   await page.evaluate(()=>{const menu=document.createElement('div');menu.id='fixture-picker';menu.setAttribute('role','menu');Object.assign(menu.style,{position:'absolute',top:'-80px',left:'20px',width:'120px',height:'100px'});document.querySelector('.main-pane').append(menu);});
   await page.waitForFunction(()=>fixture.state().immersion.overlayBounds.y<document.querySelector('.main-pane').getBoundingClientRect().y);
   check('picker extending above compact is included in native exclusion bounds',true);
+  await page.evaluate(()=>document.getElementById('fixture-picker').style.top='-10000px');
+  await page.waitForFunction(()=>fixture.state().immersion.overlayBounds.y===0);
+  check('offscreen picker geometry is clamped to valid viewport coordinates',await page.evaluate(()=>fixture.state().immersion.overlayBounds.x>=0&&fixture.state().immersion.overlayBounds.height<=innerHeight));
   await page.evaluate(()=>document.getElementById('fixture-picker').remove());
   await page.evaluate(()=>fixture.shortcut('full'));
   await page.waitForFunction(()=>document.querySelector('.craftmine-overlay-full'));

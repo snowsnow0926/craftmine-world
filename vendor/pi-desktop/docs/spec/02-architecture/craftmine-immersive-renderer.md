@@ -26,6 +26,8 @@ input/pause boundary while a modal is open. Changes between compact and full do
 not publish an intermediate inactive state. Host errors are shown in the open
 creation surface. Visible composer picker bounds extend the exclusion rectangle
 when they exceed the compact strip.
+Exclusion bounds are clipped to the viewport so partially offscreen pickers in
+short windows cannot send negative native coordinates.
 
 F2 toggles compact chat; Shift+F2 toggles the full workbench. Escape dismisses
 an open creation surface only after IME, pointer lock, menus, pickers and other
