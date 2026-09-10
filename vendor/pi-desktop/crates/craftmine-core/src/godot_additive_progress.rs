@@ -8,6 +8,7 @@ pub(super) fn derive(previous: &Value, defaults: &Value) -> Result<Value> {
     for key in ["format", "worldId", "baseId", "baseVersion", "stateVersion"] {
         ensure!(previous[key] == defaults[key], "GODOT_ADDITIVE_IDENTITY_MISMATCH");
     }
+    if previous["baseId"] == "creation-sandbox" { return derive_creation(previous, defaults); }
     ensure!(previous["baseId"] == "first-person" && previous["baseVersion"] == "0.1.0"
         && previous["stateVersion"] == 1, "GODOT_ADDITIVE_UNSUPPORTED");
     for state in [previous, defaults] {
@@ -58,6 +59,47 @@ pub(super) fn derive(previous: &Value, defaults: &Value) -> Result<Value> {
         "previousSnapshotHash":digest(&serde_json::to_string(previous)?),
         "defaultsSnapshotHash":digest(&serde_json::to_string(defaults)?),
         "snapshotHash":digest(&serde_json::to_string(&snapshot)?),"added":added,"snapshot":snapshot}))
+}
+
+fn derive_creation(previous: &Value, defaults: &Value) -> Result<Value> {
+    ensure!(previous["baseVersion"] == "1.0.0" && previous["stateVersion"] == 1, "GODOT_ADDITIVE_UNSUPPORTED");
+    let keys = ["format","worldId","baseVersion","player","timeOfDay","sourceTimeOfDay","inventory","openedChests","doors","rules"];
+    let valid_id = |id: &str| {let bytes=id.as_bytes(); !bytes.is_empty() && bytes.len()<=64 && bytes[0].is_ascii_lowercase() && bytes.iter().all(|c|c.is_ascii_lowercase()||c.is_ascii_digit()||matches!(*c,b'_'|b'-'))};
+    let num = |v: &Value, min: f64, max: f64| v.as_f64().is_some_and(|n|n.is_finite() && n>=min && n<=max);
+    for value in [previous,defaults] {
+        let b=&value["body"];
+        ensure!(b.as_object().is_some_and(|m|m.len()==keys.len() && keys.iter().all(|k|m.contains_key(*k))) && b["format"]=="craftmine.creation-progress/1" && b["worldId"]==value["worldId"] && b["baseVersion"]==value["baseVersion"],"GODOT_ADDITIVE_UNSUPPORTED_SHAPE");
+        let p=&b["player"];
+        ensure!(p.as_object().is_some_and(|m|m.len()==4 && ["position","yaw","pitch","onFloor"].iter().all(|k|m.contains_key(*k))) && p["position"].as_array().is_some_and(|a|a.len()==3 && a.iter().enumerate().all(|(i,v)|num(v,if i==1 {0.0} else {-32.0},32.0))) && num(&p["yaw"],-std::f64::consts::PI,std::f64::consts::PI) && num(&p["pitch"],-89.0*std::f64::consts::PI/180.0,89.0*std::f64::consts::PI/180.0) && p["onFloor"].is_boolean() && num(&b["timeOfDay"],0.0,24.0) && num(&b["sourceTimeOfDay"],0.0,24.0),"GODOT_ADDITIVE_CREATION_STATE_INVALID");
+        for key in ["inventory","openedChests","doors","rules"] {
+            let map=b[key].as_object().context("GODOT_ADDITIVE_CREATION_STATE_INVALID")?;
+            ensure!(map.len()<=4096,"GODOT_ADDITIVE_CREATION_STATE_INVALID");
+            for (id,v) in map {
+                ensure!(valid_id(id),"GODOT_ADDITIVE_CREATION_STATE_INVALID");
+                let valid=match key {
+                    "inventory"=>num(v,0.0,999999.0) && v.as_f64().unwrap().fract()==0.0,
+                    "openedChests"=>v==true,
+                    "doors"=>v.is_boolean(),
+                    _=>v.is_object(),
+                };
+                ensure!(valid,"GODOT_ADDITIVE_CREATION_STATE_INVALID");
+            }
+        }
+    }
+    let mut snapshot=previous.clone();let mut added=Vec::new();
+    for key in ["doors","rules"] {
+        let ordered:BTreeMap<_,_>=defaults["body"][key].as_object().unwrap().iter().collect();
+        for (id,value) in ordered {
+            let target=snapshot["body"][key].as_object_mut().unwrap();
+            if !target.contains_key(id) {target.insert(id.clone(),value.clone());added.push(json!({"path":format!("/body/{key}"),"id":id}));}
+        }
+    }
+    if !super::super::godot_runtime::same_json(&previous["body"]["sourceTimeOfDay"],&defaults["body"]["sourceTimeOfDay"]) {
+        snapshot["body"]["timeOfDay"]=defaults["body"]["sourceTimeOfDay"].clone();
+        snapshot["body"]["sourceTimeOfDay"]=defaults["body"]["sourceTimeOfDay"].clone();
+    }
+    super::super::godot_runtime::validate_progress(&snapshot)?;
+    Ok(json!({"format":"craftmine.godot-additive-progress/1","hashEncoding":"serde-json/1","previousSnapshotHash":digest(&serde_json::to_string(previous)?),"defaultsSnapshotHash":digest(&serde_json::to_string(defaults)?),"snapshotHash":digest(&serde_json::to_string(&snapshot)?),"added":added,"snapshot":snapshot}))
 }
 
 fn entries(value: &Value) -> Result<BTreeMap<&str, &Value>> {
@@ -117,6 +159,23 @@ pub(crate) fn validate_prepared(db: &Connection, candidate: &Value, before: &wor
 mod equipment_tests {
     use super::*;
     use crate::godot_test_support::failed;
+
+    #[test]
+    fn creation_additions_keep_old_ledgers_and_apply_only_explicit_time_changes() -> Result<()> {
+        let previous=json!({"format":"craftmine.godot-progress/1","worldId":"alpha","baseId":"creation-sandbox","baseVersion":"1.0.0","stateVersion":1,"body":{"format":"craftmine.creation-progress/1","worldId":"alpha","baseVersion":"1.0.0","player":{"position":[2,0.9,6],"yaw":1,"pitch":0.1,"onFloor":true},"timeOfDay":18,"sourceTimeOfDay":12,"inventory":{"token":3},"openedChests":{"chest":true},"doors":{"old":true},"rules":{"old":{"cursor":3,"completed":true}}}});
+        let mut defaults=previous.clone();defaults["body"]["doors"]=json!({"fresh":false});defaults["body"]["rules"]=json!({"new":{"presses":0,"completed":false}});defaults["body"]["inventory"]=json!({});defaults["body"]["openedChests"]=json!({});
+        let proof=derive(&previous,&defaults)?;
+        assert_eq!(proof["snapshot"]["body"]["inventory"],previous["body"]["inventory"]);
+        assert_eq!(proof["snapshot"]["body"]["doors"],json!({"old":true,"fresh":false}));
+        assert_eq!(proof["snapshot"]["body"]["timeOfDay"],18);
+        assert_eq!(proof["added"],json!([{"path":"/body/doors","id":"fresh"},{"path":"/body/rules","id":"new"}]));
+        verify_proof(&previous,&defaults,&proof)?;
+        defaults["body"]["sourceTimeOfDay"]=json!(21);let changed=derive(&previous,&defaults)?;
+        assert_eq!(changed["snapshot"]["body"]["timeOfDay"],21);
+        let mut forged=changed.clone();forged["snapshot"]["body"]["inventory"]["token"]=json!(99);assert!(verify_proof(&previous,&defaults,&forged).is_err());
+        defaults["body"]["player"]["pitch"]=json!(std::f64::consts::FRAC_PI_2);assert!(derive(&previous,&defaults).is_err());
+        Ok(())
+    }
 
     fn state() -> Value {
         json!({"format":"craftmine.godot-progress/1","worldId":"alpha","baseId":"first-person","baseVersion":"0.1.0","stateVersion":1,

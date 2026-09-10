@@ -18,7 +18,7 @@ mod tests;
 #[path = "godot_mining_copy_tests.rs"]
 mod mining_copy_tests;
 
-const BASES: [&str; 4] = ["first-person", "top-down", "side-view", "mining-sandbox"];
+const BASES: [&str; 5] = ["first-person", "top-down", "side-view", "mining-sandbox", "creation-sandbox"];
 
 fn rebind_copy_progress(source:&Value,old:&str,new:&str)->Result<Value>{
     godot_runtime::validate_progress(source)?;
