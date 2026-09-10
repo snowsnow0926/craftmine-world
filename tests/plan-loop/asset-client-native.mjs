@@ -56,7 +56,7 @@ async function openAssets(){
 }
 try {
  await withCore(async c=>{for(const [n,assetId]of assetIds.entries()){
-  const sourcePath=path.join(input,assetId+'.png');fs.writeFileSync(sourcePath,Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a3ioAAAAASUVORK5CYII=','base64'));
+  const sourcePath=path.join(input,assetId+'.png');fs.writeFileSync(sourcePath,Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=','base64'));
   await c.call('asset.import',{operationId:'seed-'+assetId,sourceRoot:input,sourcePath,assetId,version:1,kind:'raw',mediaKind:'image',path:assetId+'.png',mediaType:'image/png',displayName:assetId,source:{origin:'fixed-local-test',author:'test-fixture',license:'unknown',licenseStatus:'unverified'},tags:[]});
  }report.beforeAssets=await immutable(c);});
  await start();await step('actual Main navigation opens the local asset library',openAssets);const beforeWorlds=await nav('world.list');report.beforeWorlds=beforeWorlds;
