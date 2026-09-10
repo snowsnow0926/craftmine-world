@@ -8,7 +8,7 @@ use serde_json::{json, Value};
 
 use super::digest;
 
-const EXPORT_PRESET: &str = "[preset.0]\nname=\"Web\"\nplatform=\"Web\"\nrunnable=true\nexport_filter=\"all_resources\"\ninclude_filter=\"\"\nexclude_filter=\"\"\n[preset.0.options]\ncustom_template/release=\"\"\nvariant/thread_support=true\nvariant/extensions_support=false\nhtml/custom_html_shell=\"res://craftmine_host_shell.html\"\nhtml/focus_canvas_on_start=false\nhtml/canvas_resize_policy=2\nprogressive_web_app/enabled=false\n";
+const EXPORT_PRESET: &str = "[preset.0]\nname=\"Web\"\nplatform=\"Web\"\nrunnable=true\nexport_filter=\"all_resources\"\ninclude_filter=\"*.json,*.txt\"\nexclude_filter=\"\"\nscript_export_mode=0\n[preset.0.options]\ncustom_template/release=\"\"\nvariant/thread_support=true\nvariant/extensions_support=false\nhtml/custom_html_shell=\"res://craftmine_host_shell.html\"\nhtml/focus_canvas_on_start=false\nhtml/canvas_resize_policy=2\nprogressive_web_app/enabled=false\n";
 
 /// `(relative path, exact bytes)` for every host-owned file in a build copy.
 pub(super) fn files() -> Vec<(&'static str, String)> {
@@ -37,4 +37,19 @@ pub(super) fn hash() -> String {
         )
         .unwrap(),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn export_preserves_authored_rule_bytes_and_creation_documents() {
+        let preset = files().into_iter().find(|(path, _)| *path == "export_presets.cfg").unwrap().1;
+        assert!(preset.contains("script_export_mode=0\n"));
+        assert!(preset.contains("include_filter=\"*.json,*.txt\"\n"));
+        assert!(!preset.contains("script_export_mode=2"));
+        assert_eq!(hash().len(), 64);
+        assert_ne!(digest(&preset), digest(&preset.replace("script_export_mode=0", "script_export_mode=2")));
+    }
 }
