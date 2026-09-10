@@ -99,5 +99,11 @@ export function createImmersionPauseController() {
     paused(token: ImmersionRuntimeToken): boolean {
       return desired(current(token));
     },
+    manualPaused(token: ImmersionRuntimeToken): boolean {
+      return current(token).manualPaused;
+    },
+    has(token: ImmersionRuntimeToken): boolean {
+      return runtimes.get(token)?.attached === true;
+    },
   };
 }

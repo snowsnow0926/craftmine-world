@@ -92,3 +92,15 @@ test('overlay observes every runtime even when one fails to pause',async()=>{
   assert.equal(c.paused('bad'),true);assert.equal(c.paused('good'),true);
   assert.deepEqual(good.calls,['pause','resume','pause']);
 });
+
+test('manual intent remains distinct from overlay hold and attached status',async()=>{
+  const c=createImmersionPauseController(),f=fixture(),token={};
+  assert.equal(c.has(token),false);
+  await c.attach(token,f.callbacks);assert.equal(c.has(token),true);
+  assert.equal(c.manualPaused(token),true);
+  await c.setManual(token,false);await c.setOverlay(true);
+  assert.equal(c.paused(token),true);assert.equal(c.manualPaused(token),false);
+  await c.setManual(token,true);assert.equal(c.manualPaused(token),true);
+  c.detach(token);assert.equal(c.has(token),false);
+  assert.throws(()=>c.manualPaused(token),/IMMERSION_RUNTIME_DETACHED/);
+});
