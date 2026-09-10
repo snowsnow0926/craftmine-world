@@ -1,0 +1,65 @@
+✖ failed creation survives factory/initializer restart and replay without opening a task; explicit retry resumes (8.7598ms)
+✖ a failed explicit recovery cannot replace the trusted durable path reason (3.3946ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 153.8203
+
+✖ failing tests:
+
+test at test-results\terminal-baseline\baseline.test.mjs:85:1
+✖ failed creation survives factory/initializer restart and replay without opening a task; explicit retry resumes (8.7598ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      creation: {
+        actions: [
+          'retry',
+          'details'
+        ],
+        error: {
+  +       code: 'GODOT_INITIALIZATION_FAILED',
+  +       message: 'Error: EXPLICIT_RECOVERY_REQUIRED',
+  -       code: 'GODOT_TASK_PATH_TOO_LONG',
+  -       message: '任务目录路径过长，无法开始构建。请在较短的数据目录中重试。',
+          recoverable: true,
+          stage: 'build'
+        },
+        operationId: 'gwinit-fixture',
+        progress: 60,
+  
+      at TestContext.<anonymous> (file:///C:/cm-init-terminal-0910/test-results/terminal-baseline/baseline.test.mjs:102:50)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { state: 'failed', creation: { operationId: 'gwinit-fixture', stage: 'build', stages: [Array], progress: 60, error: [Object], actions: [Array] } },
+    expected: { state: 'failed', creation: { operationId: 'gwinit-fixture', stage: 'build', stages: [Array], progress: 60, error: [Object], actions: [Array] } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test-results\terminal-baseline\baseline.test.mjs:142:1
+✖ a failed explicit recovery cannot replace the trusted durable path reason (3.3946ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'GODOT_INITIALIZATION_FAILED'
+  - 'GODOT_TASK_PATH_TOO_LONG'
+           ^
+  
+      at TestContext.<anonymous> (file:///C:/cm-init-terminal-0910/test-results/terminal-baseline/baseline.test.mjs:152:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'GODOT_INITIALIZATION_FAILED',
+    expected: 'GODOT_TASK_PATH_TOO_LONG',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

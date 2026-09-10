@@ -16,6 +16,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {createHash, randomBytes} from "node:crypto";
 import {pathToFileURL} from "node:url";
+import {canAutomaticallyInitialize} from "./godot-world-initialization";
 
 export const PROGRESS_FORMAT = "craftmine.godot-progress/1";
 /** Bases this client can actually create. Matches the core's accepted set. */
@@ -307,7 +308,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         const owner = readJson(path.join(projectDir, ".creation-owner.json"));
         if (owner?.operationId !== request.operationId || owner?.worldId !== worldId || owner?.baseId !== request.baseId || owner?.templateId !== request.templateId || owner?.title !== request.title) throw new Error("WORLD_EXISTS");
         const existing = await deps.domain("godotWorld.initStatus", {worldId});
-        if (!existing.playable) void deps.initialization?.start(worldId);
+        if (canAutomaticallyInitialize(existing)) void deps.initialization?.start(worldId);
         const mapped = initStatusToCreation(existing);
         return {id: worldId, title: request.title, state: mapped.state, creation: mapped.creation};
       }
@@ -326,7 +327,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
           snapshot,
         });
         const mapped = initStatusToCreation(result?.init ?? null);
-        void deps.initialization?.start(worldId);
+        if (canAutomaticallyInitialize(result?.init)) void deps.initialization?.start(worldId);
         return {id: worldId, title: request.title, state: mapped.state, creation: mapped.creation};
       } catch (error) {
         // A transport failure can hide a committed transaction. Ask the core
@@ -361,12 +362,15 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       try {
         const status = await deps.domain("godotWorld.initStatus", {worldId});
         const mapped = initStatusToCreation(status);
+        // This finite durable reason comes from the core's identity/hash-checked
+        // job output. A stale in-memory recovery error cannot replace it.
+        if (status.playable || mapped.creation?.error?.code === "GODOT_TASK_PATH_TOO_LONG") return mapped;
         const failure = deps.initialization?.error(worldId);
         if (failure === "Error: GODOT_TASK_PATH_TOO_LONG" || failure === "GODOT_TASK_PATH_TOO_LONG") {
           return initStatusToCreation({...status, status: "failed", playable: false, reason: "GODOT_TASK_PATH_TOO_LONG"});
         }
         if (failure && mapped.creation) return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message: failure, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
-        if (!status.playable && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
+        if (canAutomaticallyInitialize(status) && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
         return mapped;
       } catch {
         return null;
