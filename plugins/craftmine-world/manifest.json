@@ -1082,7 +1082,7 @@
       },
       {
         "name": "creation_operation",
-        "description": "Compile one bounded creation-sandbox source operation using the immutable target captured by the host for this turn. request.expected uses source revision/hash from godot_project_index and world/build/instance/snapshot identity from the host creation context. The model cannot supply coordinates as authority. Places, modifies, duplicates, changes source time, or adds a generated sequence-door script. Returns a durable draft receipt; use godot_build_start mode check and inspect actual results before player preview/application. Recapture when the source or runtime changed outside this turn.",
+        "description": "Compile one bounded creation-sandbox source operation using the immutable target captured by the host for this turn. request.expected uses source revision/hash from godot_project_index and world/build/instance/snapshot identity from the host creation context. The model cannot supply coordinates as authority. Places, modifies, duplicates, deletes unreferenced objects, reverses supported durable operations, changes source time, or adds a generated sequence-door script. Deletion is refused while authored rules exist. Undo preserves played progress and rejects intervening object changes. Returns a durable draft receipt; use godot_build_start mode check and inspect actual results before player preview/application. Recapture when the source or runtime changed outside this turn.",
         "risk": "medium",
         "schema": {
           "type": "object",
@@ -1094,7 +1094,8 @@
                   "properties": {
                     "operationId": {
                       "type": "string",
-                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
                     },
                     "expected": {
                       "type": "object",
@@ -1231,7 +1232,8 @@
                   "properties": {
                     "operationId": {
                       "type": "string",
-                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
                     },
                     "expected": {
                       "type": "object",
@@ -1356,7 +1358,8 @@
                   "properties": {
                     "operationId": {
                       "type": "string",
-                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
                     },
                     "expected": {
                       "type": "object",
@@ -1439,7 +1442,142 @@
                   "properties": {
                     "operationId": {
                       "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "delete"
+                    },
+                    "targetId": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "targetId"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
+                    },
+                    "expected": {
+                      "type": "object",
+                      "properties": {
+                        "worldId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "buildId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "instanceId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "manifestHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "targetSnapshotId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 240
+                        }
+                      },
+                      "required": [
+                        "worldId",
+                        "buildId",
+                        "instanceId",
+                        "revision",
+                        "manifestHash",
+                        "targetSnapshotId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "type": "string",
+                      "const": "undo"
+                    },
+                    "undoOperationId": {
+                      "type": "string",
                       "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                    }
+                  },
+                  "required": [
+                    "operationId",
+                    "expected",
+                    "action",
+                    "undoOperationId"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "operationId": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
                     },
                     "expected": {
                       "type": "object",
@@ -1506,7 +1644,8 @@
                   "properties": {
                     "operationId": {
                       "type": "string",
-                      "pattern": "^[a-zA-Z0-9_-]{1,120}$"
+                      "pattern": "^[a-zA-Z0-9_-]{1,120}$",
+                      "description": "稳定重放编号；每个世界最多保留4096条操作，回执包含operationLimit与operationsRemaining。"
                     },
                     "expected": {
                       "type": "object",

@@ -84,7 +84,7 @@ test('new sequence door emits actual deterministic source and hashed runtime dec
 test('operation ledger is bounded and schema advertises precisely supported action branches',()=>{
   assert.equal(MAX_OPERATIONS,4096);
   const f=fixture();f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations:[null]});assert.throws(()=>run(f,{}),/JOURNAL_INVALID/);
-  assert.deepEqual(CREATION_OPERATION_SCHEMA.oneOf.map(branch=>branch.properties.action.const),['place','modify','duplicate','environment','sequence-door']);
+  assert.deepEqual(CREATION_OPERATION_SCHEMA.oneOf.map(branch=>branch.properties.action.const),['place','modify','duplicate','delete','undo','environment','sequence-door']);
   for(const branch of CREATION_OPERATION_SCHEMA.oneOf)assert.equal(branch.additionalProperties,false);
 });
 test('full ledger rejects new operations without pruning replay identity',()=>{
@@ -117,4 +117,33 @@ test('large append-only ledgers pass the former 64-entry and 120k limits and rep
  assert.equal(run(f,{}).replayed,true);
  f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations:[],padding:'x'.repeat(4*1024*1024)});
  assert.throws(()=>run(f,{}),/SOURCE_FILE_HASH_MISMATCH/);
+});
+
+function accept(f,result){for(const op of result.operations)f.source.files[op.path]={text:op.text,sha256:hash(op.text)};f.targetSnapshot.target.revision=result.document.revision;}
+const operation=(f,action,extra={})=>({operationId:action+'-'+f.targetSnapshot.target.revision,expected:f.request.expected,action,...extra});
+test('delete and undo retain stable chest identity without touching player reward ledgers',()=>{
+ const f=fixture([entity('chest-a','chest')]),deleted=compileCreationOperation({...f,request:operation(f,'delete',{targetId:'chest-a'})});
+ assert.equal(deleted.document.entities.length,0);assert.equal(deleted.receipt.undoSupported,true);accept(f,deleted);
+ const undoRequest=operation(f,'undo',{undoOperationId:deleted.receipt.operationId});
+ const restored=compileCreationOperation({...f,request:undoRequest});assert.deepEqual(restored.document.entities,[entity('chest-a','chest')]);assert.equal(restored.receipt.createdIds.length,0);
+ assert.ok(restored.operations.every(op=>['world/creation.json','world/creation-operations.json'].includes(op.path)));accept(f,restored);
+ assert.equal(compileCreationOperation({...f,request:undoRequest}).replayed,true);
+ assert.throws(()=>compileCreationOperation({...f,request:operation(f,'undo',{undoOperationId:deleted.receipt.operationId})}),/ALREADY_UNDONE/);
+});
+test('undo modify rejects later changes and restore into occupied player space',()=>{
+ const f=fixture([entity('rock-a')]);const changed=compileCreationOperation({...f,request:operation(f,'modify',{targetId:'rock-a',changes:{color:'#123456'}})});accept(f,changed);
+ const later=compileCreationOperation({...f,request:operation(f,'modify',{targetId:'rock-a',changes:{scale:[2,2,2]}})});accept(f,later);
+ assert.throws(()=>compileCreationOperation({...f,request:operation(f,'undo',{undoOperationId:changed.receipt.operationId})}),/UNDO_CONFLICT/);
+ const f2=fixture([entity('rock-a')]);const deleted=compileCreationOperation({...f2,request:operation(f2,'delete',{targetId:'rock-a'})});accept(f2,deleted);f2.targetSnapshot.playerPosition=[4,1,4];
+ assert.throws(()=>compileCreationOperation({...f2,request:operation(f2,'undo',{undoOperationId:deleted.receipt.operationId})}),/PLAYER_OVERLAP/);
+});
+test('deletion and undo creation fail closed around arbitrary authored rule dependencies',()=>{
+ const f=fixture([entity('door-a','door',[8,0,8]),entity('marker-a','marker',[4,0,4]),entity('marker-b','marker',[6,0,6])]);
+ const rule=compileCreationOperation({...f,request:operation(f,'sequence-door',{ruleId:'rule-a',doorId:'door-a',sequence:['marker-a','marker-b']})});accept(f,rule);
+ assert.throws(()=>compileCreationOperation({...f,request:operation(f,'delete',{targetId:'door-a'})}),/RULE_DEPENDENCY/);
+ assert.throws(()=>compileCreationOperation({...f,request:operation(f,'undo',{undoOperationId:rule.receipt.operationId})}),/UNDO_UNSUPPORTED/);
+});
+test('legacy journal without inverse remains replayable but cannot claim reversible history',()=>{
+ const f=fixture();const created=run(f,{});accept(f,created);const journal=JSON.parse(f.source.files['world/creation-operations.json'].text);delete journal.operations[0].inverse;f.source.files['world/creation-operations.json']=file(journal);
+ assert.equal(run(f,{}).replayed,true);assert.throws(()=>compileCreationOperation({...f,request:operation(f,'undo',{undoOperationId:created.receipt.operationId})}),/UNDO_UNSUPPORTED/);
 });

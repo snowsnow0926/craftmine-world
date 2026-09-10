@@ -109,6 +109,31 @@ function compileCreationOperation({source,targetSnapshot,request}) {
       const item=entity({...structuredClone(original),id:minted(index),position:original.position.map((value,i)=>value+request.offset[i]*index)});
       check(!used(item.id),'CREATION_DUPLICATE_ID');validatePlacement(item,next.entities,snapshot);next.entities.push(item);createdIds.push(item.id);affectedIds.push(item.id);
     }
+  } else if(request.action==='delete'){
+    keys(request,['operationId','expected','action','targetId']);const item=selected();
+    // Authored scripts may reference entities beyond declaration fields. Until
+    // a rule supplies a trusted dependency contract, deletion fails closed.
+    check(!(next.rules??[]).length,'CREATION_DELETE_RULE_DEPENDENCY');
+    next.entities=next.entities.filter(value=>value.id!==item.id);affectedIds.push(item.id);
+  } else if(request.action==='undo'){
+    keys(request,['operationId','expected','action','undoOperationId']);
+    const original=journal.operations.find(op=>op.operationId===request.undoOperationId);
+    check(original&&original.inverse?.format==='craftmine.creation-inverse/1','CREATION_UNDO_UNSUPPORTED');
+    check(!journal.operations.some(op=>op.receipt.undoOperationId===request.undoOperationId),'CREATION_ALREADY_UNDONE');
+    const inverse=original.inverse;
+    check(['place','modify','duplicate','delete'].includes(original.receipt.action)&&Array.isArray(inverse.before)&&Array.isArray(inverse.after),'CREATION_UNDO_UNSUPPORTED');
+    keys(inverse,['format','before','after']);
+    const ids=new Set([...inverse.before,...inverse.after].map(item=>entity(item).id));
+    check(Array.isArray(original.receipt.affectedIds)&&ids.size===original.receipt.affectedIds.length&&original.receipt.affectedIds.every(id=>ids.has(id))&&new Set(inverse.before.map(item=>item.id)).size===inverse.before.length&&new Set(inverse.after.map(item=>item.id)).size===inverse.after.length,'CREATION_UNDO_INVALID');
+    for(const before of inverse.before){const after=inverse.after.find(item=>item.id===before.id);if(after){check(before.kind===after.kind,'CREATION_UNDO_INVALID');if(before.kind==='chest')check(JSON.stringify(canonical(before.parameters))===JSON.stringify(canonical(after.parameters)),'CREATION_CHEST_REWARD_IMMUTABLE');}}
+    check(ids.size>0&&ids.size<=8,'CREATION_UNDO_INVALID');
+    const actual=next.entities.filter(item=>ids.has(item.id));
+    const sorted=items=>JSON.stringify(canonical([...items].sort((a,b)=>a.id.localeCompare(b.id))));
+    check(sorted(actual)===sorted(inverse.after),'CREATION_UNDO_CONFLICT');
+    if(inverse.after.some(item=>!inverse.before.some(before=>before.id===item.id)))check(!(next.rules??[]).length,'CREATION_DELETE_RULE_DEPENDENCY');
+    const rest=next.entities.filter(item=>!ids.has(item.id));
+    for(const item of inverse.before){validatePlacement(item,rest,snapshot);rest.push(structuredClone(item));}
+    next.entities=rest;affectedIds.push(...ids);
   } else if(request.action==='environment'){
     keys(request,['operationId','expected','action','timeOfDay']);check(finite(request.timeOfDay,0,24),'CREATION_INVALID_DEFAULTS');next.defaults.timeOfDay=request.timeOfDay;
   } else if(request.action==='sequence-door'){
@@ -119,7 +144,11 @@ function compileCreationOperation({source,targetSnapshot,request}) {
   } else fail('CREATION_ACTION_UNSUPPORTED');
   next.revision++;scene(next);
   const receipt={format:'craftmine.creation-operation/1',operationId:request.operationId,action:request.action,worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,sourceRevision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:snapshot.snapshotId,operationCount:journal.operations.length+1,operationLimit:MAX_OPERATIONS,operationsRemaining:MAX_OPERATIONS-journal.operations.length-1,beforeRevision:document.revision,afterRevision:next.revision,affectedIds,createdIds,requestHash};
-  journal.operations.push({operationId:request.operationId,requestHash,receipt});
+  if(request.action==='undo')receipt.undoOperationId=request.undoOperationId;
+  const reversible=['place','modify','duplicate','delete'].includes(request.action);
+  const inverse=reversible?{format:'craftmine.creation-inverse/1',before:document.entities.filter(item=>affectedIds.includes(item.id)),after:next.entities.filter(item=>affectedIds.includes(item.id))}:undefined;
+  receipt.undoSupported=reversible;
+  journal.operations.push({operationId:request.operationId,requestHash,receipt,...(inverse?{inverse}: {})});
   const operations=[{op:'put',path:SCENE_PATH,text:JSON.stringify(next,null,2)+'\n',expectedHash:sceneFile?.sha256??null},{op:'put',path:JOURNAL_PATH,text:JSON.stringify(journal,null,2)+'\n',expectedHash:journalFile?.sha256??null},...extra];
   check(operations.every(op=>Buffer.byteLength(op.text)<=(op.path===JOURNAL_PATH?CREATION_JOURNAL_BYTES:120000))&&Buffer.byteLength(JSON.stringify(operations))<=8*1024*1024,'CREATION_PATCH_TOO_LARGE');
   return {document:next,operations,receipt,sourceBinding:{worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,revision:source.revision,manifestHash:source.manifestHash},replayed:false};
