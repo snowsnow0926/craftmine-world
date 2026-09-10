@@ -1,0 +1,612 @@
+{
+  "format": "craftmine.local-core-build-evidence/1",
+  "sourceCommit": "991134247b6852d21941d97e345d42b584e26714",
+  "command": "cargo build --offline --release --jobs 1 --manifest-path vendor/pi-desktop/Cargo.toml -p craftmine-core -p host-core",
+  "exitCode": 0,
+  "toolchain": "rustc 1.96.1 (31fca3adb 2026-06-26)\nbinary: rustc\ncommit-hash: 31fca3adb283cc9dfd56b49cdee9a96eb9c96ffd\ncommit-date: 2026-06-26\nhost: x86_64-pc-windows-msvc\nrelease: 1.96.1\nLLVM version: 22.1.2\n",
+  "scope": "Locally rebuilt development acceptance binaries. Source hashes are unchanged since the recorded commit; not a sealed release or independent reproducible-build proof.",
+  "files": [
+    {
+      "path": "vendor/pi-desktop/Cargo.lock",
+      "bytes": 32865,
+      "sha256": "df9b004ade14b617b4293e0ec36a6653b30c71decd4d8a73a11b7978fd31540c"
+    },
+    {
+      "path": "vendor/pi-desktop/Cargo.toml",
+      "bytes": 170,
+      "sha256": "2cea454e977e59d562c1a43c6088c2adc6855af746905b04d6aa8d81cf95f6b1"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/README.md",
+      "bytes": 74,
+      "sha256": "d23429745405f0955bc0f72eb521a4ca6d09ae9d146018e8233c7f81a4acd42d"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/Cargo.toml",
+      "bytes": 392,
+      "sha256": "6394e77d053f86b66c2d3cdd10c5ca3d8f627a2c853a5d3eabcef7e138c2e8de"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/applications.rs",
+      "bytes": 13866,
+      "sha256": "ea180b71e0e94c6ff645240755e2f01a0a3840fba9cfc22d794e9485ea62df60"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/applications_tests.rs",
+      "bytes": 16781,
+      "sha256": "6be0459fecde496fa0d0a437d1aeac2ce65a8ebf80df39a811d4aadc65c19a13"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/asset_catalog_tests.rs",
+      "bytes": 65572,
+      "sha256": "d62b4104ede17801f1f15659839270896582ba360d7e8c80e7a86e8994b64475"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/budget.rs",
+      "bytes": 3061,
+      "sha256": "63404bb6f92365957532093a223f0f1ff9a8718a59a9e1f84cd1bf0309b8f829"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/contract.rs",
+      "bytes": 7354,
+      "sha256": "da11deb4d51f080dc35c6a1282d6bb43e3c431060f32cce92257fed2514e5870"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/dispatch.rs",
+      "bytes": 2168,
+      "sha256": "147941ec47662b5c910c12143c4bb88002ac373c272ac199dba976a2eb04265a"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/import.rs",
+      "bytes": 19931,
+      "sha256": "ad22c285075d3d965533c20806a7e583af2f295a3e62fe207c053da25611871d"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/index.rs",
+      "bytes": 17459,
+      "sha256": "064c76714d6f453ffc52ef9062bff91a1bbbff1be12bf55b54452093a0e31e06"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/lock.rs",
+      "bytes": 2058,
+      "sha256": "ef46b18b8c9ef4056d82f043dd9ec40b8c0417eb71f3513ba3f8a04b2d7c992b"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/mod.rs",
+      "bytes": 2310,
+      "sha256": "9a9f791b7fa85d55db2d1669d3a2e1ed2abb2bf562e83d7c6b3e4c95dde422e8"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/preview.rs",
+      "bytes": 31405,
+      "sha256": "1e8707f83192ddd79abbc0433f04cf61308da36323b751b714678e15dbfdf8e0"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/reclaim.rs",
+      "bytes": 12423,
+      "sha256": "1783e4537eaeceb0b6c21dcacd66fbc6a6d02bba8e4db44d6fc5351a0818e3c7"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/reclaim_tests.rs",
+      "bytes": 13021,
+      "sha256": "00755a79a4d9fa042ace0e3d2dfca35f3f5e2a11d93b84e00de734a2d6a9e4c9"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/scan.rs",
+      "bytes": 10594,
+      "sha256": "ce2c146385020c56569404c9d1f7ee1c3c25b9cf8fe8d294d02f2a361f870274"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/asset_catalog/store.rs",
+      "bytes": 20095,
+      "sha256": "b62e1cb6f7a5237475a709edd452c92094695144f864a83c07e34ad7c874f93f"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups.rs",
+      "bytes": 29428,
+      "sha256": "38469b50cb4d1b6e0e6ab47af69f62018e572078ed892288afa5f3eb12c4154e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups/complete.rs",
+      "bytes": 14512,
+      "sha256": "2be20405868c0771e8f6cf80ac9c097f660ff61ada932bd26a3fb77eff1fcf67"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups/complete_tests.rs",
+      "bytes": 7558,
+      "sha256": "800d07fc8f61a70696ec2bc2bb3349bc654b016d1806f293b634eca0ff6b718b"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups/domain_tests.rs",
+      "bytes": 3197,
+      "sha256": "e65142a737d3b3f1e15b9200693004da3211d1912e1ca186d33272cfbeda2afd"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups/durability_tests.rs",
+      "bytes": 14036,
+      "sha256": "3975d4cc69a47a96bb890edd9a88a6585d64abddf65a8cc1226bf7a5be779293"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups/portable.rs",
+      "bytes": 105453,
+      "sha256": "4dd8e7aabb5d196222812fdd472e0879718b577ffa990bf01db2bfc8acc8d72e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/backups/portable_tests.rs",
+      "bytes": 36533,
+      "sha256": "21bf417dabf696341e32bd108fb6e1dbc7e3d0982ebaa0aa6e574f77415b363e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content.rs",
+      "bytes": 24797,
+      "sha256": "28c53a9d9212c84af4291c8ceb382deb428306a92efd626ab1ab50cd292e930d"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/apply.rs",
+      "bytes": 24563,
+      "sha256": "0b237d1d058d1b5187525fbbdd662e3ba28a8a7b823b8ec75e01b83e4b935c74"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/apply_tests.rs",
+      "bytes": 14147,
+      "sha256": "36b48a12c80c321e0f86048f0fa7d2bc6681bba12ca79cea4865836cf0908867"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/contract.rs",
+      "bytes": 19462,
+      "sha256": "1109a31d12891ce4258c69f6810172c4d6c6e40b22ce4fb0ed579f26c82514a1"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/contract_tests.rs",
+      "bytes": 10880,
+      "sha256": "dbf2485ada56c0d7c8407c22d5e80190770228e024ab59146f26e19e1fa61d29"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/contract_vectors_tests.rs",
+      "bytes": 6623,
+      "sha256": "3dc7d591861e75653cefc8c5a07cd9b2cbaa51b125aaebaf5f17ac4941d59395"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/git.rs",
+      "bytes": 42645,
+      "sha256": "f87e1e77f5e8ce07a059a88832a65b9785f277904af54ae9820096a0bfc4ccea"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/git_tests.rs",
+      "bytes": 10310,
+      "sha256": "df089671b248544162b4e521afe98d4f1ae55000698b8c3e28109c475d2fbd4e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/migration.rs",
+      "bytes": 25838,
+      "sha256": "53f49ed147ae562deac714da38350d68276291c64f1cd6b53a53c0d513f8da94"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/migration_tests.rs",
+      "bytes": 14173,
+      "sha256": "2464481f99fe642b9a6e34f5b4e8ceb92c3843acd15f248ecc0998ab37d344ce"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/mod.rs",
+      "bytes": 1136,
+      "sha256": "17acce4827c42919f0941ba67e093f6febb6871547ce803f1313bf3365d36b79"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/repo.rs",
+      "bytes": 39956,
+      "sha256": "c30ade2b272cf01dede8e4747364d154362052e2c30df85dbec3965d6f262362"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_history/repo_tests.rs",
+      "bytes": 18814,
+      "sha256": "ea9bd5222faa3e5afd16076f8349e1eb66b3e8c53321fbdfa6ff4b116350635b"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/content_tests.rs",
+      "bytes": 18565,
+      "sha256": "f9e677e799762c587b8b37e311b7865bc17e429629ce576e08f405370bc1efe3"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/durable.rs",
+      "bytes": 40652,
+      "sha256": "e3dd919388334bfa7f4759a583e527d459bb118a48e1968bc7762ff3c403831a"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/durable_tests.rs",
+      "bytes": 27085,
+      "sha256": "9ec01ab4d209a776fef795f790e185647c13643c7b637adcdcd6ab8a39aed681"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_additive_progress.rs",
+      "bytes": 5932,
+      "sha256": "0f91ef26a0d8eb8d1114f300dc46ff25bcdf4524e427cb96960b8806479dc918"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_applications.rs",
+      "bytes": 22906,
+      "sha256": "27d8e8e22767058f7e57c55024a1e86d74c86f5adc998f427fbc3135cc27c16f"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_applications_tests.rs",
+      "bytes": 26043,
+      "sha256": "79493684b0ba35a7eaf321e1a7dc1944d057375eb5f4ff23aac7ca600c689463"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_builds.rs",
+      "bytes": 47461,
+      "sha256": "53a7e62adc162d5b92e04ede9da73d5d41c2987b8954d27d15a14b006df539a9"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_builds_tests.rs",
+      "bytes": 14982,
+      "sha256": "a79d4773065bd12e9799abe371a45cb8c7b765270af66243f39fa4aceff9da20"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_check_requirements.rs",
+      "bytes": 5007,
+      "sha256": "ee5d53a8a12d5eea8026e470cbbee9900d2c34672f7eac2bb52c659f694a5780"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_check_requirements_tests.rs",
+      "bytes": 10069,
+      "sha256": "cf2e0bbfb2d1d05ad7b567e5952d74a9ae842eb6d63e2eccfe97a25c17543ed9"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_copy_runtime.rs",
+      "bytes": 15269,
+      "sha256": "7e90bd51a249eac7f8fa2ae44b3b757b437e5c9dfe0037fefd2100557d3cc342"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_host_resources.rs",
+      "bytes": 1785,
+      "sha256": "912ed550d5e0d97fbe36c35f91f694733cd975308746e8ee7969de437fda7e7e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_jobs.rs",
+      "bytes": 63453,
+      "sha256": "1d83e130a65e417c3e32573eabcab83d18ac686402dce23d5606c7ca9aa9ca85"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_jobs_tests.rs",
+      "bytes": 26271,
+      "sha256": "85e1232935db0853852a6d8de24612c25b9a0a2e365daac2b209baefcdec70e3"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_mining_copy_tests.rs",
+      "bytes": 6739,
+      "sha256": "8e90732572d81536caa4e07f2dfeb8f34156841f99ec66ba2593e55de3006ae9"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_projects.rs",
+      "bytes": 58037,
+      "sha256": "f19f186e1afe86636c4b149f2909da15fa9b1847d52872f04beb733d7d09e989"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_projects_tests.rs",
+      "bytes": 28208,
+      "sha256": "1404fabce6d8e3fb59da5b4eccff359a66a4b9af8eb7acee36289ee484fd742e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_runtime.rs",
+      "bytes": 21818,
+      "sha256": "0215d00a6605ae9ba135d50d33b91ffe5dc81dd3454fefae4faf88b5605f51e1"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_runtime_tests.rs",
+      "bytes": 15155,
+      "sha256": "6abe82fa690d9c8187dded024b82e9628b5acf2a4bb52bf15171a1c01703b3fe"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_storage.rs",
+      "bytes": 18282,
+      "sha256": "bd0c602282a52b8952f7960b30931baeb22852a0f707dc6afc449fda9fcfbdf4"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_storage_tests.rs",
+      "bytes": 11158,
+      "sha256": "111b66a15bd5da79ae00b6647928b3b7081a1acbd4a950e9b3c506bd897b87d0"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_test_support.rs",
+      "bytes": 6354,
+      "sha256": "9edee12e649d01348ae3715c9b2571aad537d9f2dacb34cbe81f80e04fe28bac"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_worlds.rs",
+      "bytes": 37467,
+      "sha256": "64ec507ee0d10f11da6891fd9840e49bd44631da6f8036ad28f78d5b120893a5"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/godot_worlds_tests.rs",
+      "bytes": 40234,
+      "sha256": "840815b9ad53a7997e9f0f5bb0001f29f1a52f2273f4ce9dbba4669969af65a5"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/legacy.rs",
+      "bytes": 16617,
+      "sha256": "f81f8f24adaba774718e0f018c9158edfb35858de4d0651f48b3ec26e0c45b40"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/legacy/convert.rs",
+      "bytes": 11139,
+      "sha256": "40d79bde5835f22f655bdcd9994fbcd8faaae0861a2ee0e2e1bdb35872424605"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/legacy/convert_tests.rs",
+      "bytes": 5018,
+      "sha256": "ab97a1ed9405e8ea85f2f132b875b94025831a8a9c24a8ce1d9516f41bcdbaf7"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/lib.rs",
+      "bytes": 14860,
+      "sha256": "01053f40f4b379931c22def91890d3de9bfc404abd8ef2e87dce3122780c0973"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library.rs",
+      "bytes": 19540,
+      "sha256": "9b7da3827456127deebcf3fbbbe4c026e45d363be526a5378903c994d3d2b8c8"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/installer.rs",
+      "bytes": 14521,
+      "sha256": "fb9c2724603030f9e0a5b5fa9173fd401a5d867b99a2f65da5383b4875f374c6"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/installer_tests.rs",
+      "bytes": 13117,
+      "sha256": "e066c1cc47ec6c7c99582f0d8ce3e16e063c2d84c16355c5c6cfda8ea335e55f"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/package_format.rs",
+      "bytes": 28226,
+      "sha256": "14a12901ebf1480790da11c85c5ae12e949ed053aab999d74285fc0bb40698a0"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/package_format_tests.rs",
+      "bytes": 9781,
+      "sha256": "7be9f692c0fd5bd1184fb05b639feb30fc688c7391871209487a24487d24af27"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/packages.rs",
+      "bytes": 31466,
+      "sha256": "5992e5964aedf93dfe3dfd44d093a81d359bd51426cf70881c13cc6291764086"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/reuse.rs",
+      "bytes": 39974,
+      "sha256": "a217e9b6cac699fda4c8364a964b8afcac27b8930d65ce28553707054f0e6127"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/library/reuse_tests.rs",
+      "bytes": 18375,
+      "sha256": "a5a4fa75ab0fa578db7dc924ad905e27788a8a200a7946386df10b804314cb5e"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/main.rs",
+      "bytes": 25164,
+      "sha256": "a5d755a087535df00e9c71f49cf92b8b1b60b497239c7e3266903c156fbcabc2"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/memories.rs",
+      "bytes": 20715,
+      "sha256": "5caaff3266c14128c3d128b8fabf27ee995122afa315b0c2d03173c1c0c799ca"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/memory_receipt_tests.rs",
+      "bytes": 7257,
+      "sha256": "9de58825db5beef650830b7cdc10fa31d025091d3013dfbeb2b31257ca2d7e2d"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/operation_lock.rs",
+      "bytes": 4089,
+      "sha256": "7c65a1cfa14a560c4f340385185cf15edfbee005f3173cae4573d287837735b6"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/recovery.rs",
+      "bytes": 11696,
+      "sha256": "5f5020f14cddefe6e988fe234ba8353e31e4e0dc085524a089c0048b958c4795"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/recovery_tests.rs",
+      "bytes": 16480,
+      "sha256": "0b8a82b3280788e531c5aaed06daea27eac6abd0eb8686acd652c62af54f1309"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/reviews.rs",
+      "bytes": 12004,
+      "sha256": "1917792901edddf25fc301f52295a65e35c8beb524e47745150612e7f11152d2"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/verification.rs",
+      "bytes": 17527,
+      "sha256": "5a1c9b4f567a68769f42b9231581690bbd5804dbd12dedb75bfb85b86bc8164d"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/verification_tests.rs",
+      "bytes": 11289,
+      "sha256": "65c92442d49ff6c486d00763b1b79fb3bba33ccfa86f26d352a8321ca1befa05"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/workspaces.rs",
+      "bytes": 21769,
+      "sha256": "d687b7cfcb1539a74267cbd36893972c685bda3d9cd60555329d2362384b9b6a"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/workspaces_tests.rs",
+      "bytes": 7646,
+      "sha256": "84782e14beb8564fd2f93fc2c1c63f1b8d23dac3a4640d9545294c45de13481f"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/craftmine-core/src/worlds.rs",
+      "bytes": 14957,
+      "sha256": "3ed10f72cef4314877dc2e7974f0483c35bf34777a80eb7b5974f9595ebdd809"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/Cargo.toml",
+      "bytes": 1115,
+      "sha256": "6511f0f64bab17db85a3a224041eee987414463f16aa4a171d3d85c843c9bb18"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/activation.rs",
+      "bytes": 5894,
+      "sha256": "2bc98ef1f0a3288bdb9463363a721d82e35c30ad598cba985a860cfcbefe233b"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/agent_capabilities.rs",
+      "bytes": 17415,
+      "sha256": "3fcd5a98cf5187125c623a9255512f4d6f4502f5f596852ac76015c0993c8a6a"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/artifacts.rs",
+      "bytes": 3947,
+      "sha256": "1fc4198b53755552d7893dd2533edc0b98d0d185d4712d2d436bfc1fe0f3f6b0"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/audit.rs",
+      "bytes": 2135,
+      "sha256": "ded59816bf013e72270faa1435cf5c3c1625a3a087d66d3d81846d4b7f854c89"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/db.rs",
+      "bytes": 84433,
+      "sha256": "475e9732c3d6d960415c88cff5caceeb5ad70831876ec3d5745f8de07d7c8123"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/keyboard.rs",
+      "bytes": 4862,
+      "sha256": "9ae39bcf88413363faa2dbf5863c53f83da95d0475f50c1580e07d6618e85670"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/main.rs",
+      "bytes": 2634,
+      "sha256": "6a68ec8dde181033f31dddfc96b26ac8376310a868dad4f1176c72c85dc37354"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/mcp_servers.rs",
+      "bytes": 23780,
+      "sha256": "0058179bd6770ce9e250b16f5c3a66bf98365e8bb16949371497aa43239f6996"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/network_proxy.rs",
+      "bytes": 6166,
+      "sha256": "32718c24922085af4bd19d2cafcac4aa39a04c1c1907113ceb13dc22cc341679"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/notifications.rs",
+      "bytes": 7985,
+      "sha256": "e8bb712842a75ff56e879046ee743f5315fba474c935884d053893a264e7d8a2"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/permissions.rs",
+      "bytes": 19274,
+      "sha256": "314adca80ca7a1f03befbc40aae892433ff35100b2b2f90f13a7dd1b6b193bd8"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/plans.rs",
+      "bytes": 71779,
+      "sha256": "6b5fcab1aedca85c1b0623a4ca8816febcc089c72f0e41d051e4db51e4503a9c"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/plugins.rs",
+      "bytes": 178254,
+      "sha256": "3981c6432f77462284d4e9b3a70ae69fd1c0acfcd4da678869f1cd71be6c63e8"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/providers.rs",
+      "bytes": 67593,
+      "sha256": "09419bc2547e874fa50087d7ea8c06b5635a929c988191c4880191ac0d59ddda"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/review.rs",
+      "bytes": 22751,
+      "sha256": "4eec0f9ef7234d9182a66a3522de65220c9efff77e7aab0321600547ca27bff8"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/rpc/mod.rs",
+      "bytes": 234581,
+      "sha256": "4862d6bf4ff8635689566768f40153c8f315bf2a0b02eddff68f38da012d5c51"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/scheduled.rs",
+      "bytes": 17445,
+      "sha256": "a29c2cc3c6db2acfbb404c260056b75a63eb3f80f6ca6343c526b19a9de0b3f9"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/scratch.rs",
+      "bytes": 4241,
+      "sha256": "3e792c63f75d11802cf118da80e998c980fc03ab64c75d79e84d949fa6e6c2a0"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/secrets.rs",
+      "bytes": 10443,
+      "sha256": "26fb92b31d37455726056bb0b18fa260b954f23b5e0e98c93fc28015615fd1c6"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/secrets_windows.rs",
+      "bytes": 8032,
+      "sha256": "d74e8c94aed4a35c7cb2653ecbb7a1e53791bf842371bf30459c0b65c87e2b1b"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/sessions.rs",
+      "bytes": 188049,
+      "sha256": "6fdc188a006a2e170666176e625263d9f843337fee82d45f7929203cb959d7de"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/state.rs",
+      "bytes": 10869,
+      "sha256": "18de987ef5bfd9db2292aae5c3b7136e58aec9543bf4686dd14d174d92f261bd"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/tool_budget.rs",
+      "bytes": 10636,
+      "sha256": "5d97d5381029dc05e85582e4312afcc7765e7ca32c8447f4fe4e8591a11b2c22"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/tools/grep_rg.rs",
+      "bytes": 9501,
+      "sha256": "23413b1ebf1df1df06d0de8d5bbdfd6171c8447a631ae2010e51a82d0f9e3177"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/tools/mod.rs",
+      "bytes": 139105,
+      "sha256": "40fd54326c1015b906f01a3da47ccdb49fcbff75fb8dc5a8db3f953b6ce279c4"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/tools/shell.rs",
+      "bytes": 22289,
+      "sha256": "f3f370794039257f27293cbe06888f446589912b7569ad334c58c131027f23f7"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/transcripts.rs",
+      "bytes": 52420,
+      "sha256": "b941b6b30668434c0ea1b69a7e89481eabffbe813bf2b304f4f937b25e6fe7c9"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/user_skills.rs",
+      "bytes": 24814,
+      "sha256": "dcc97b561554f0079a03c1f805f04ab6c4c2dcb7a6b7a0ed9cae6da986ef6de5"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/user_subagents.rs",
+      "bytes": 16440,
+      "sha256": "8903e2d34b20e7b37e4e81a2db82f82caa905ee0165b94d56ef644850abfea49"
+    },
+    {
+      "path": "vendor/pi-desktop/crates/host-core/src/workspace.rs",
+      "bytes": 15411,
+      "sha256": "c943ea3a9a387d5b4f22cf0f460728258c7a484be8a6e09d33c77278c0b844e7"
+    }
+  ],
+  "binaries": [
+    {
+      "path": "D:\\cm-plan-loop-20260910\\vendor\\pi-desktop\\target\\release\\craftmine-core.exe",
+      "bytes": 7909376,
+      "sha256": "285578bc384302eaccf2017225d446732ead3daf24c80a52e5150018604060bb"
+    },
+    {
+      "path": "D:\\cm-plan-loop-20260910\\vendor\\pi-desktop\\target\\release\\pi-desktop-host-core.exe",
+      "bytes": 9084416,
+      "sha256": "04080dcc21e4909699977055724116fc92a8e6bc19fcdc0ea42e91a2a3b3224b"
+    }
+  ]
+}
