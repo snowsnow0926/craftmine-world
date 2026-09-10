@@ -60,3 +60,20 @@ readable but require an ordinary checked source upgrade before parameter editing
 
 Zero remains unsupported because the flash loop's zero-duration material
 behavior was not changed. The platform contract stays 1–1000 integer ms.
+
+## Subsequent bounded source review
+
+`84fdb83` covers the already enforced refusal of a root balance-profile
+assignment before its script. `3be845d` additionally requires the fixed known
+Player binding before claiming a non-null profile's effective value; invalid
+player paths, missing nodes, script/child overrides and unknown actor/controller
+source are refused. Its targeted configuration/service tests passed 19/19,
+and `profile-semantics/target-feedback-observation-kOru9H` repeats the real
+normal-training-scene 500 ms observation in two processes after this restriction.
+
+`7245190` refuses scripts and scene instances on target ancestors up to the
+known root; its 13 configuration regressions include a parent script attempting
+to set TargetB to 700 ms. This is a finite source restriction, not a claim that
+arbitrary sibling gameplay scripts cannot modify properties. Root's later
+candidate/runtime expected-value guard and actual client adoption remain the
+appropriate authority for that broader behavior.
