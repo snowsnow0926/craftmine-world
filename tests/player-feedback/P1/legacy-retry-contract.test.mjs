@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {BRIDGE,OLD_BRIDGE,NEW_BRIDGE,sha,assertNativeFailure,assertRepair} from './legacy-retry-contract.mjs';
+import {BRIDGE,OLD_BRIDGE,NEW_BRIDGE,sha,assertNativeFailure,assertRepair,runtimeObservationPending} from './legacy-retry-contract.mjs';
 const file=(path,sha256,bytes=1)=>({path,sha256,bytes});
 const before=()=>({passed:true,loadError:'Runtime request timed out: load [requests=15/15]',worldId:'own',candidateId:'old-candidate',
  init:{status:'failed',playable:false,reason:'GODOT_INITIAL_LOAD_FAILED',failureStage:'confirm',launchFailure:{candidateId:'old-candidate',applicationId:'old-application'}},
@@ -22,4 +22,8 @@ test('requires real-shaped passed check, native load error, durable abort and co
 test('new candidate and job cannot substitute for preservation of the old revision',()=>{
  const b=before();assertRepair(b,after(b));
  for(const change of [a=>a.application.candidateId='old-candidate',a=>a.job.jobId='old-job',a=>a.project.files[1].sha256='changed-game',a=>a.oldProject.files[0].sha256=NEW_BRIDGE,a=>a.oldApplication.status='applied',a=>a.job.status='failed',a=>a.project.files.push(file('extra.gd','extra'))]){const a=after(b);change(a);assert.throws(()=>assertRepair(b,a));}
+});
+test('only the exact absent formal runtime reply is pending during bounded promotion',()=>{
+ assert.equal(runtimeObservationPending(Error('Error: No world runtime is running')),true);
+ for(const message of ['Runtime request timed out: load','WORLD_BUSY','Error: No world runtime is running; renderer crashed','Error: GODOT_WORLD_CHANGED'])assert.equal(runtimeObservationPending(Error(message)),false);
 });

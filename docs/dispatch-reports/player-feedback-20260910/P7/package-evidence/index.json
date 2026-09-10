@@ -1,0 +1,479 @@
+{
+  "format": "craftmine.package-legacy-retirement-evidence/1",
+  "createdAt": "2026-09-10T07:39:17.869Z",
+  "frozenCommit": "b9c0c0d5bdf371280d1a9814773d614e02920e16",
+  "manifestSha256": "82ff45ab47e683c35bba3a6f76b545cea27a1968b0c9381eae7d5f5f02c34284",
+  "legacy": {
+    "steps": 6,
+    "passed": 6,
+    "clientCloses": [
+      {
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      }
+    ],
+    "oldRevision": 1,
+    "newRevision": 2,
+    "sourceFiles": 66,
+    "managedFiles": 68,
+    "oldCandidate": "gcan-1c41936db5a3026f24466e4d89d5d8e16571f9b173e9d5df67f96dae9cfe69a3",
+    "newCandidate": "gcan-e6907d3ccf7ae031e440d06695b2819d8b33fad547ed7c6042a76e903e2e6e51"
+  },
+  "retirement": {
+    "cases": [
+      {
+        "name": "success-one",
+        "status": "passed",
+        "retirements": 2
+      },
+      {
+        "name": "success-two",
+        "status": "passed",
+        "retirements": 2
+      },
+      {
+        "name": "syntax-failure",
+        "status": "failed",
+        "retirements": 0
+      }
+    ],
+    "retiredTasks": 8,
+    "logicalBytesRemoved": 1453367360,
+    "preservedFiles": 82,
+    "preservedLogicalBytes": 260677476,
+    "coreClose": {
+      "code": 0,
+      "signal": null
+    },
+    "freeBefore": 177685987328,
+    "freeAfter": 177182773248
+  },
+  "records": [
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\1-stderr.log",
+      "archive": "legacy-directory-contract-failure/1-stderr.log",
+      "bytes": 111,
+      "sha256": "a5a344f6b3c35bc35382599e7b2f6575a1eed5a1efb9de732be95844551ff064"
+    },
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\1-stdout.log",
+      "archive": "legacy-directory-contract-failure/1-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\fixture-config.json",
+      "archive": "legacy-directory-contract-failure/fixture-config.json",
+      "bytes": 1916,
+      "sha256": "4db99c344fa185236412205bfa075881f1678ac722c8ac2372807a911e969313"
+    },
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\fixture-stderr.log",
+      "archive": "legacy-directory-contract-failure/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\fixture-stdout.log",
+      "archive": "legacy-directory-contract-failure/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\native-failure.json",
+      "archive": "legacy-directory-contract-failure/native-failure.json",
+      "bytes": 60297,
+      "sha256": "a4e94dfe95eeea5544ba545f3f1ddc4f5eb105d1c06e3c0885bf4e8ab9e4ea32"
+    },
+    {
+      "kind": "legacy-directory-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\legacy-retry-client-3fw4CV\\report.json",
+      "archive": "legacy-directory-contract-failure/report.json",
+      "bytes": 67879,
+      "sha256": "48c11f595cf3c724baf1c514747c7a1dbb5b08c385ff6634154538254ea541b0"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\1-stderr.log",
+      "archive": "legacy-premature-observation-failure/1-stderr.log",
+      "bytes": 206,
+      "sha256": "f2bc419e057fdfb5e2cc8e168c013fe3a0b4c54f7f000dc7af9556050f35c0d3"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\1-stdout.log",
+      "archive": "legacy-premature-observation-failure/1-stdout.log",
+      "bytes": 8302,
+      "sha256": "de732a292900cb01837aa9fb40df99c7805c7888c47a1f19526ea8bfd9c368f5"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\fixture-config.json",
+      "archive": "legacy-premature-observation-failure/fixture-config.json",
+      "bytes": 1910,
+      "sha256": "4b465a71cf033e5e230fd6af46eb70264c0fe5b818f79466e7d2facab3016ac1"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\fixture-stderr.log",
+      "archive": "legacy-premature-observation-failure/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\fixture-stdout.log",
+      "archive": "legacy-premature-observation-failure/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\native-failure.json",
+      "archive": "legacy-premature-observation-failure/native-failure.json",
+      "bytes": 60295,
+      "sha256": "b6d24393cb7ecd1446a561a5fb883ade51683fe13d9becd1ed0f17d945bf721e"
+    },
+    {
+      "kind": "legacy-premature-observation-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-d14mgf\\report.json",
+      "archive": "legacy-premature-observation-failure/report.json",
+      "bytes": 217131,
+      "sha256": "3479268307e458b8d66256f4afc46775c9aca0690dda861fbdc8fa6d516a3d0f"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\1-stderr.log",
+      "archive": "legacy-final/1-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\1-stdout.log",
+      "archive": "legacy-final/1-stdout.log",
+      "bytes": 7568,
+      "sha256": "63065b3ba2e9d86c718e67f86ab3ed26162744baaea7d1c9dcc9ef6f42370df6"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\2-stderr.log",
+      "archive": "legacy-final/2-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\2-stdout.log",
+      "archive": "legacy-final/2-stdout.log",
+      "bytes": 3153,
+      "sha256": "357185c5742ac344de8903815920243a6da78b44c33799e3fc2943c20bd8a4c1"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\fixture-config.json",
+      "archive": "legacy-final/fixture-config.json",
+      "bytes": 1910,
+      "sha256": "ae20b16a64559aafb6c2c32c415af44aa574ba68f34810491a99b738f05818f7"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\fixture-stderr.log",
+      "archive": "legacy-final/fixture-stderr.log",
+      "bytes": 146,
+      "sha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\fixture-stdout.log",
+      "archive": "legacy-final/fixture-stdout.log",
+      "bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\native-failure.json",
+      "archive": "legacy-final/native-failure.json",
+      "bytes": 60293,
+      "sha256": "40253e9cf7edf2cc848c97d7bda18ec34082061aa33646b2f6607cfc70c3c159"
+    },
+    {
+      "kind": "legacy-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\desktop-native-lr-wD8aLi\\report.json",
+      "archive": "legacy-final/report.json",
+      "bytes": 353706,
+      "sha256": "c22b957c8cc11b67c1044deabddc20643a230699446f75c7f8d5b761f14c54da"
+    },
+    {
+      "kind": "retirement-path-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-Yz62zl\\config.json",
+      "archive": "retirement-path-contract-failure/config.json",
+      "bytes": 806951,
+      "sha256": "d7ed9486dc4890ecf7b597844b0570a58203387e32d84fbbf504cc1cae049f36"
+    },
+    {
+      "kind": "retirement-path-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-Yz62zl\\electron-exit.json",
+      "archive": "retirement-path-contract-failure/electron-exit.json",
+      "bytes": 39,
+      "sha256": "c5bc639a37ad93628890a3750630e46f508721cd8ced2faba27032c207f61685"
+    },
+    {
+      "kind": "retirement-path-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-Yz62zl\\electron-stdout.log",
+      "archive": "retirement-path-contract-failure/electron-stdout.log",
+      "bytes": 1085,
+      "sha256": "c55a4dee731bff4202265c91254ee8eec2f8d53af28e0dd93cf2737bd8975f16"
+    },
+    {
+      "kind": "retirement-path-contract-failure",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-Yz62zl\\report.json",
+      "archive": "retirement-path-contract-failure/report.json",
+      "bytes": 8647,
+      "sha256": "5d1d768b8ecf4d1447484a9cf5b51f13c85ea4475cab2ccdc00878ae6a914fa4"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\config.json",
+      "archive": "retirement-final/config.json",
+      "bytes": 806965,
+      "sha256": "a5ae82cdd85e14c64737dab634aac4f389967181d83133743c7edbf2c1576847"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\electron-exit.json",
+      "archive": "retirement-final/electron-exit.json",
+      "bytes": 39,
+      "sha256": "1dff4461e0d850ac31ff79ecc82e4eb2e8d59dff2e999f7a66e9c2ed2069bc8c"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\electron-stdout.log",
+      "archive": "retirement-final/electron-stdout.log",
+      "bytes": 77,
+      "sha256": "7e1a7122adbe2362e2d1cbce5fabd7bd2ca6c31d86b1b4103ecf713372b27c66"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\ex-0981a11e9c6e4e2e94dd0754.stderr.log",
+      "archive": "retirement-final/ex-0981a11e9c6e4e2e94dd0754.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\ex-0981a11e9c6e4e2e94dd0754.stdout.log",
+      "archive": "retirement-final/ex-0981a11e9c6e4e2e94dd0754.stdout.log",
+      "bytes": 14984,
+      "sha256": "e26ea5c1b5e90775a7d9542f56079252237d77063f95b40b8d474c3dcb7ff893"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\ex-aa93756a1aa74fbca2e1deb6.stderr.log",
+      "archive": "retirement-final/ex-aa93756a1aa74fbca2e1deb6.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\ex-aa93756a1aa74fbca2e1deb6.stdout.log",
+      "archive": "retirement-final/ex-aa93756a1aa74fbca2e1deb6.stdout.log",
+      "bytes": 14982,
+      "sha256": "0478dbbafe05fb4cfb4d12be32205a6068e16a6bcc01ef49276abfc3a1c1415e"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\im-3dc730395dee4269b0c221a2.stderr.log",
+      "archive": "retirement-final/im-3dc730395dee4269b0c221a2.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\im-3dc730395dee4269b0c221a2.stdout.log",
+      "archive": "retirement-final/im-3dc730395dee4269b0c221a2.stdout.log",
+      "bytes": 14035,
+      "sha256": "aaf06513a2a2d0696b0f7b65084865af559886a4c171c1da112823928fb01bf4"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\im-afc0b9c329094538a6afdc74.stderr.log",
+      "archive": "retirement-final/im-afc0b9c329094538a6afdc74.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\im-afc0b9c329094538a6afdc74.stdout.log",
+      "archive": "retirement-final/im-afc0b9c329094538a6afdc74.stdout.log",
+      "bytes": 13921,
+      "sha256": "23751ad642198cd76f00115593c748738d1c382eebb1b6193bda9881adc267a9"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\im-feeed920b3374d6b8e45ae22.stderr.log",
+      "archive": "retirement-final/im-feeed920b3374d6b8e45ae22.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\im-feeed920b3374d6b8e45ae22.stdout.log",
+      "archive": "retirement-final/im-feeed920b3374d6b8e45ae22.stdout.log",
+      "bytes": 13926,
+      "sha256": "da5b7b7bafa4b16ccdd6eb49bdfa3f18f741b5633faa7c38edda55f5d511f449"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-37f3a2e37fd442cb8edd2f9c.stderr.log",
+      "archive": "retirement-final/pf-37f3a2e37fd442cb8edd2f9c.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-37f3a2e37fd442cb8edd2f9c.stdout.log",
+      "archive": "retirement-final/pf-37f3a2e37fd442cb8edd2f9c.stdout.log",
+      "bytes": 4704,
+      "sha256": "2c2481b5e0eee2d1cea96914ec76601f6b66fce49a1031b15cacad7b9561a374"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-cfbb115e2c1d412b9c5a5595.stderr.log",
+      "archive": "retirement-final/pf-cfbb115e2c1d412b9c5a5595.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-cfbb115e2c1d412b9c5a5595.stdout.log",
+      "archive": "retirement-final/pf-cfbb115e2c1d412b9c5a5595.stdout.log",
+      "bytes": 4706,
+      "sha256": "cc42f8999eed596ef53db86381c00ddd3206fc81cbf66fbb8f000fa4718dc316"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-d4219aa1eca144f3ab36a605.stderr.log",
+      "archive": "retirement-final/pf-d4219aa1eca144f3ab36a605.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-d4219aa1eca144f3ab36a605.stdout.log",
+      "archive": "retirement-final/pf-d4219aa1eca144f3ab36a605.stdout.log",
+      "bytes": 4700,
+      "sha256": "b128aa78f70011b721400b779e38ba8e8eb2c1185043aa5ad779a38b3915685c"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-e0818ae7a6c248ca8a7d1601.stderr.log",
+      "archive": "retirement-final/pf-e0818ae7a6c248ca8a7d1601.stderr.log",
+      "bytes": 190,
+      "sha256": "bc09e5bdda86e95e329522aa6db7959a220bed1fdd1e57de9dfd98ad361bdcca"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\pf-e0818ae7a6c248ca8a7d1601.stdout.log",
+      "archive": "retirement-final/pf-e0818ae7a6c248ca8a7d1601.stdout.log",
+      "bytes": 4706,
+      "sha256": "f0ed5b8ee2db2664a74db6ff69ae94ae61b2e36815e03d065f1d866e52e3e55f"
+    },
+    {
+      "kind": "retirement-final",
+      "source": "D:\\cm-fb-20260910\\test-results\\p7-native-UsEoqi\\report.json",
+      "archive": "retirement-final/report.json",
+      "bytes": 358885,
+      "sha256": "2f82005ee2413fd686e61e956f8f3c30477f8287ed51a721003ef1122faa8ca0"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/legacy-driver-303632b8/driver-identity.json",
+      "archive": "legacy-driver-303632b8/driver-identity.json",
+      "bytes": 1489,
+      "sha256": "38aaa35436f8b06be4d6c32dd7123f4db386e54e40b56123eea4239d505ab3cf"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/legacy-driver-303632b8/legacy-retry-client-v2.mjs",
+      "archive": "legacy-driver-303632b8/legacy-retry-client-v2.mjs",
+      "bytes": 15821,
+      "sha256": "cfa5fd977c1e39dc4db6aede99827c1b41e3ea0352d7c73f56e266f5ce53439d"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/legacy-driver-303632b8/legacy-retry-client-v3.mjs",
+      "archive": "legacy-driver-303632b8/legacy-retry-client-v3.mjs",
+      "bytes": 16031,
+      "sha256": "115ae57460be23f14affeeb55fae2ac8a9c2aa33dfc64cc57d1a49e89cbeeef1"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/legacy-driver-303632b8/legacy-retry-client.mjs",
+      "archive": "legacy-driver-303632b8/legacy-retry-client.mjs",
+      "bytes": 15823,
+      "sha256": "2a49aaed9f97f69d223fdc887c51e203c684e97db882bef4018fb3b63779d635"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/legacy-driver-303632b8/legacy-retry-contract.mjs",
+      "archive": "legacy-driver-303632b8/legacy-retry-contract.mjs",
+      "bytes": 3336,
+      "sha256": "9fbe6ac08565360f3330712070acfb0abdc13c3614b7814c430ac78c926ca6d2"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/p7-package-driver/identity.json",
+      "archive": "p7-package-driver/identity.json",
+      "bytes": 755,
+      "sha256": "9e3959065cf59373644bc9891dbbe02944660f54c3734c36a26ab2dc0b91af59"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/p7-package-driver/retirement-package-native-v2.mjs",
+      "archive": "p7-package-driver/retirement-package-native-v2.mjs",
+      "bytes": 6792,
+      "sha256": "48c3a1cd4bd8d53614f48d74783fb1f71d1605496241a31c4b6f17d210ecfde2"
+    },
+    {
+      "kind": "external-driver",
+      "source": "D:/cm-fb-20260910/test-results/p7-package-driver/retirement-package-native.mjs",
+      "archive": "p7-package-driver/retirement-package-native.mjs",
+      "bytes": 6778,
+      "sha256": "d191f8befaa531b2ed83dbb4f6f01837bbef33a90fe8d4dcd61454b43c73d5be"
+    },
+    {
+      "kind": "actual-isolated-game-image",
+      "source": "D:/cm-fb-20260910/test-results/desktop-native-lr-wD8aLi/capture-29d42112-4067-4492-b4ba-6e96ad958c3d.png",
+      "archive": "legacy-final/world.png",
+      "bytes": 247992,
+      "sha256": "862fd9cc7fab8862149434109521cc6cb0c6cfa2b1d0c56f04ae86389627e170"
+    }
+  ]
+}

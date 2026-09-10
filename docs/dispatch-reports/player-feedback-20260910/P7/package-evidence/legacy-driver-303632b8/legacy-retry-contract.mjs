@@ -7,9 +7,6 @@ export const BRIDGE = 'craftmine_shared/runtime_bridge.gd';
 export const OLD_BRIDGE = '318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76';
 export const NEW_BRIDGE = 'faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2';
 export const sha = bytes => createHash('sha256').update(bytes).digest('hex');
-// Durable application commit can precede host promotion. Only this observed
-// read-only absence is pending; all other errors still fail the bounded poll.
-export const runtimeObservationPending = error => String(error)==='Error: Error: No world runtime is running';
 export function inventory(directory) {
   const files=[];
   function visit(dir, prefix='') {

@@ -49,3 +49,10 @@ to actual Core tests and need not each launch another full engine instance.
 Contract unit tests only verify acceptance rejection rules, not native recovery.
 No recovery success is claimed until the native report and both client launches
 pass against the newly compiled candidate. The previous 827 package is ineligible.
+
+The dedicated directory uses the existing `desktop-native-*` headless marker
+contract. A durable `ready` row can precede the asynchronous promotion of its
+view: the runtime poll treats only the observed exact "No world runtime is
+running" transport reply as pending, within its existing 120-second deadline.
+It still requires a matching actual runtime, capture, save and strict exit;
+load timeouts, foreign identity and other renderer errors are not retried.
