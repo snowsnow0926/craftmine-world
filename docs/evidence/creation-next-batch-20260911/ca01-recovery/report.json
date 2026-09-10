@@ -1,0 +1,674 @@
+{
+  "format": "craftmine.model-case-supplement/1",
+  "startedAt": "2026-09-10T22:18:56.905Z",
+  "finishedAt": "2026-09-10T22:19:21.181Z",
+  "originalCase": "CA01",
+  "originalReport": {
+    "path": "D:\\cm-nb-root\\test-results\\desktop-native-complete-73fuxT\\report.json",
+    "sha256": "9da63ad9d767215651f99fae089f85a5ec159cb066bdfa58dcca778fb9f7920e",
+    "outcome": "failed",
+    "error": "Error: PERMISSION_DENIED",
+    "modelRequests": 16,
+    "sourceCommit": "3905222bd7d79c48b32bc46149ab388ae0e052ba"
+  },
+  "hostBuild": {
+    "root": "D:\\cm-nb-root",
+    "sourceCommit": "d94a45fa442add85820c7fdd73d1c02ef830ff51",
+    "mainSha256": "3400c32d80cf432b1ff039023562036c2f74e41e925da409f3f3507087bfe191",
+    "coreSha256": "ade10f3c9fd6d3963b55f9d03080e0227e96f4b6c183633e12c695f197a52c78",
+    "hostSha256": "f71ad5f7401cb83b39df215b679b69db11754e7088ed4d09d216c2814f62c4ab"
+  },
+  "worldId": "world-1a2594dc508d",
+  "sessionId": "0dd33b95-07a7-42d3-8835-8b4899fde080",
+  "launches": [
+    {
+      "number": 1,
+      "pid": 275944,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "pid": 254512,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "launch 1 remains hidden/offscreen/nonfocusable",
+      "passed": true
+    },
+    {
+      "name": "original task remains inactive with exactly 16 model calls",
+      "passed": true
+    },
+    {
+      "name": "original authored build and stable tree identity are retained",
+      "passed": true
+    },
+    {
+      "name": "tree remains at the original player requested location",
+      "passed": true
+    },
+    {
+      "name": "actual original tree is visible and has its collision obstacle",
+      "passed": true
+    },
+    {
+      "name": "save uses correct product panel and formal build remains original",
+      "passed": true
+    },
+    {
+      "name": "launch 2 remains hidden/offscreen/nonfocusable",
+      "passed": true
+    },
+    {
+      "name": "full progress survives clean shutdown and reopening",
+      "passed": true
+    },
+    {
+      "name": "same authored tree and collision survive reopening",
+      "passed": true
+    },
+    {
+      "name": "provider call count and all recorded usage remain unchanged",
+      "passed": true
+    },
+    {
+      "name": "durable model budget request IDs are byte-identical",
+      "passed": true
+    },
+    {
+      "name": "original report and every stopped-profile file remain byte-identical",
+      "passed": true
+    }
+  ],
+  "newModelRequests": 0,
+  "passed": true,
+  "interpretation": "原CA01保持failed历史；这是其已生成且已采用源码的零模型保存/重开补验，不是新模型run或人工修写世界。",
+  "rawEvidence": {
+    "path": "D:/cm-nb-edit/test-results/desktop-native-complete-xG8ZlT/report.json",
+    "sha256": "e211c6c467af00f53a9b98d8c0274f311af413b567bc7a76c81f303db21c000c"
+  },
+  "classification": "original_model_artifact_recovery_verified_no_new_model_run",
+  "originalJob": {
+    "jobId": "gjob-5fc3ec639d66d395cde7bee4462f133be327ad02e3fb01bfcd261a4d4a85965f",
+    "taskId": "work-9054f86a5e58db7094acb736953eb721240cd956f56d1ca7a0b04e53fe5151a9",
+    "kind": "check",
+    "status": "passed",
+    "buildId": "gbd-5b03b4555d306d18dc1eea149786bdd654ba9a780c3d19abe6bad6251fca1e46",
+    "baseId": "creation-sandbox",
+    "sourceRevision": 2,
+    "manifestHash": "edb08e774c11247357c10537d80ea2f47ea32b60a761545a770f6263664b66f7",
+    "outputHash": "2b59d7e0e554a214ec3409ddb5b58830a454f766e3125ef236ee115946d0930c",
+    "checkRequirements": {
+      "creation": {
+        "counts": [
+          {
+            "count": 1,
+            "kind": "tree"
+          },
+          {
+            "count": 0,
+            "kind": "rock"
+          },
+          {
+            "count": 0,
+            "kind": "chest"
+          },
+          {
+            "count": 0,
+            "kind": "door"
+          },
+          {
+            "count": 0,
+            "kind": "marker"
+          }
+        ],
+        "entities": [
+          {
+            "excludeIds": [],
+            "kind": "tree",
+            "position": [
+              -1.916,
+              0,
+              2.875
+            ]
+          }
+        ],
+        "format": "craftmine.creation-requirements/1",
+        "requestHash": "ac986123b062ed634df6ef178b3d14911ff02491a624c8179453c411e588e9cc"
+      },
+      "format": "craftmine.godot-check-requirements/1"
+    },
+    "checkRequirementsHash": "c1ac5e32392acc727b321125c051a1a7c7c60b9dce7677f7baad3e9b0be9a6d2",
+    "assertions": [
+      {
+        "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+        "id": "runtime.ready",
+        "passed": true
+      },
+      {
+        "detail": "frames=3 distinct=1",
+        "id": "runtime.frame",
+        "passed": true
+      },
+      {
+        "detail": null,
+        "id": "runtime.no-errors",
+        "passed": true
+      },
+      {
+        "detail": "formal progress unchanged",
+        "id": "runtime.snapshot",
+        "passed": true
+      },
+      {
+        "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+        "id": "runtime.isolation",
+        "passed": true
+      },
+      {
+        "detail": "graceful=true",
+        "id": "runtime.recovery",
+        "passed": true
+      },
+      {
+        "detail": "runtime expectation evidence required",
+        "id": "runtime.creation-requirements",
+        "passed": true
+      },
+      {
+        "detail": "bound runtime expectation confirmed",
+        "id": "core.creation-requirements",
+        "passed": true
+      }
+    ]
+  },
+  "beforeAccounting": {
+    "budget": {
+      "limit": 40,
+      "reserved": 16,
+      "remaining": 24
+    },
+    "metrics": {
+      "calls": {
+        "observed": 16,
+        "pending": 0,
+        "reported": 16
+      },
+      "coverage": "complete",
+      "endedAtMs": 1789077574770,
+      "format": "craftmine.task-metrics/1",
+      "modelIdentity": "runtime-binding",
+      "models": [
+        {
+          "calls": {
+            "observed": 16,
+            "pending": 0,
+            "reported": 16
+          },
+          "coverage": "complete",
+          "modelId": "deepseek-flash",
+          "providerId": "ece82486-9b64-4e87-a2b6-f233bcdca37c",
+          "tps": {
+            "coverage": "complete",
+            "generationMs": 25762,
+            "outputTokens": 6266,
+            "value": 243.2264575731698,
+            "window": "model-generation"
+          },
+          "usage": {
+            "cacheReadTokens": 246400,
+            "inputTokens": 103840,
+            "outputTokens": 6266,
+            "reasoningTokens": 3460,
+            "totalTokens": 356506
+          }
+        }
+      ],
+      "observedAtMs": 1789078746164,
+      "scope": "root-and-delegates",
+      "sessionId": "0dd33b95-07a7-42d3-8835-8b4899fde080",
+      "startedAtMs": 1789077537358,
+      "status": "completed",
+      "tps": {
+        "coverage": "complete",
+        "generationMs": 25762,
+        "outputTokens": 6266,
+        "value": 243.2264575731698,
+        "window": "model-generation"
+      },
+      "turnId": "46a5ad97-c27e-4a5b-ad04-2a037750ac1e",
+      "usage": {
+        "cacheReadTokens": 246400,
+        "inputTokens": 103840,
+        "outputTokens": 6266,
+        "reasoningTokens": 3460,
+        "totalTokens": 356506
+      },
+      "wallTimeMs": 37412
+    }
+  },
+  "afterAccounting": {
+    "budget": {
+      "limit": 40,
+      "reserved": 16,
+      "remaining": 24
+    },
+    "metrics": {
+      "calls": {
+        "observed": 16,
+        "pending": 0,
+        "reported": 16
+      },
+      "coverage": "complete",
+      "endedAtMs": 1789077574770,
+      "format": "craftmine.task-metrics/1",
+      "modelIdentity": "runtime-binding",
+      "models": [
+        {
+          "calls": {
+            "observed": 16,
+            "pending": 0,
+            "reported": 16
+          },
+          "coverage": "complete",
+          "modelId": "deepseek-flash",
+          "providerId": "ece82486-9b64-4e87-a2b6-f233bcdca37c",
+          "tps": {
+            "coverage": "complete",
+            "generationMs": 25762,
+            "outputTokens": 6266,
+            "value": 243.2264575731698,
+            "window": "model-generation"
+          },
+          "usage": {
+            "cacheReadTokens": 246400,
+            "inputTokens": 103840,
+            "outputTokens": 6266,
+            "reasoningTokens": 3460,
+            "totalTokens": 356506
+          }
+        }
+      ],
+      "observedAtMs": 1789078757821,
+      "scope": "root-and-delegates",
+      "sessionId": "0dd33b95-07a7-42d3-8835-8b4899fde080",
+      "startedAtMs": 1789077537358,
+      "status": "completed",
+      "tps": {
+        "coverage": "complete",
+        "generationMs": 25762,
+        "outputTokens": 6266,
+        "value": 243.2264575731698,
+        "window": "model-generation"
+      },
+      "turnId": "46a5ad97-c27e-4a5b-ad04-2a037750ac1e",
+      "usage": {
+        "cacheReadTokens": 246400,
+        "inputTokens": 103840,
+        "outputTokens": 6266,
+        "reasoningTokens": 3460,
+        "totalTokens": 356506
+      },
+      "wallTimeMs": 37412
+    }
+  },
+  "observed": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-5b03b4555d306d18dc1eea149786bdd654ba9a780c3d19abe6bad6251fca1e46",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "3e6c8c1d4453b2359b100bbd",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "creation": {
+        "entities": [
+          {
+            "color": "#84a866",
+            "id": "created-16c7beb60aeef26d9c89cb71",
+            "kind": "tree",
+            "parameters": {},
+            "position": [
+              -1.91622078418732,
+              4.4703483581543e-08,
+              2.87456464767456
+            ],
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "visible": true
+          }
+        ],
+        "obstacles": [
+          {
+            "entityId": "created-16c7beb60aeef26d9c89cb71",
+            "max": [
+              -1.31622076034546,
+              4,
+              3.47456455230713
+            ],
+            "min": [
+              -2.51622080802917,
+              4.4703483581543e-08,
+              2.27456474304199
+            ]
+          }
+        ],
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-08,
+            6
+          ]
+        },
+        "revision": 2,
+        "target": {
+          "color": "#84a866",
+          "entityId": "created-16c7beb60aeef26d9c89cb71",
+          "entityKind": "tree",
+          "entityName": "树",
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            -1.54835772514343,
+            0.297558426856995,
+            3.47456455230713
+          ],
+          "revision": 2,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "surface": "entity"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.55
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T22:19:06Z",
+    "worldId": "world-1a2594dc508d"
+  },
+  "savedProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.55
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-1a2594dc508d"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-1a2594dc508d"
+  },
+  "restoredProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.55
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-1a2594dc508d"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-1a2594dc508d"
+  },
+  "reopenedObservation": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-5b03b4555d306d18dc1eea149786bdd654ba9a780c3d19abe6bad6251fca1e46",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "da633a63887de7bfdbc473fd",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "creation": {
+        "entities": [
+          {
+            "color": "#84a866",
+            "id": "created-16c7beb60aeef26d9c89cb71",
+            "kind": "tree",
+            "parameters": {},
+            "position": [
+              -1.91622078418732,
+              4.4703483581543e-08,
+              2.87456464767456
+            ],
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "visible": true
+          }
+        ],
+        "obstacles": [
+          {
+            "entityId": "created-16c7beb60aeef26d9c89cb71",
+            "max": [
+              -1.31622076034546,
+              4,
+              3.47456455230713
+            ],
+            "min": [
+              -2.51622080802917,
+              4.4703483581543e-08,
+              2.27456474304199
+            ]
+          }
+        ],
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-08,
+            6
+          ]
+        },
+        "revision": 2,
+        "target": {
+          "color": "#84a866",
+          "entityId": "created-16c7beb60aeef26d9c89cb71",
+          "entityKind": "tree",
+          "entityName": "树",
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            -1.54835772514343,
+            0.297558426856995,
+            3.47456455230713
+          ],
+          "revision": 2,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "surface": "entity"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.55
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T22:19:17Z",
+    "worldId": "world-1a2594dc508d"
+  },
+  "priorHarnessFailures": [
+    {
+      "path": "D:/cm-nb-edit/test-results/desktop-native-complete-7TuwEs/report.json",
+      "sha256": "5bd1b61b42ab56f94aa501631a77e0c5a06c63926c470f985547fc6dad980ece",
+      "error": "Error: copied world catalog: \"Error: Error: plugin not loaded: craftmine.world\"\n    at until (file:///D:/cm-nb-edit/tests/creation-model-recovery-native.mjs:34:269)\n    at async boot (file:///D:/cm-nb-edit/tests/creation-model-recovery-native.mjs:35:154)\n    at async file:///D:/cm-nb-edit/tests/creation-model-recovery-native.mjs:39:2",
+      "launches": [
+        {
+          "number": 1,
+          "pid": 239836,
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        }
+      ],
+      "checksPassed": 0,
+      "newModelRequests": 0
+    },
+    {
+      "path": "D:/cm-nb-edit/test-results/desktop-native-complete-0dm5F1/report.json",
+      "sha256": "caf84fb7f22d02dc6e3a4c92dfa963732fe2ca2febd78483df0a8ccec24f9ec9",
+      "error": "Error: Error: WORLD_BUSY\n    at ChildProcess.<anonymous> (file:///D:/cm-nb-edit/tests/creation-model-recovery-native.mjs:30:298)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+      "launches": [
+        {
+          "number": 1,
+          "pid": 253212,
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        },
+        {
+          "number": 2,
+          "pid": 278756,
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        }
+      ],
+      "checksPassed": 6,
+      "newModelRequests": 0
+    }
+  ],
+  "privacy": "本记录只保留选定世界与验收统计，不含profile、数据库、配置凭据或完整会话消息；原始数据留在独立测试目录。"
+}
