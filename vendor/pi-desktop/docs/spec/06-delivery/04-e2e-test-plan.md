@@ -9151,3 +9151,8 @@ The P1 plugin-fullscreen tests exercise exact embedded Craftmine identity, curre
 ### P8 finite authorized model acceptance preflight
 
 Run node tests/player-feedback/P8/preflight.test.mjs with read-only esbuild dependencies. Synthetic loopback tests must reject altered route/auth/model and the seventeenth request before forwarding, retain the counter across restart, redact split credentials, preserve provider errors, and refuse unknown helper methods/world rebinding/duplicate submission. This is offline preflight, not live-model or gameplay acceptance. Real execution requires the separately approved clean compiled candidate and preserved raw evidence.
+
+
+### P8 actual compiled-client and durable request-budget driver
+
+After explicit clean compiled candidate approval, run tests/player-feedback/P8/client-native.mjs using matching source/runtime (or strict package identity). Keep the shared 16-admission journal across profiles and restarts. Verify real fixed prompts, provider-request versus response model identities, durable usage/TPS and actual P5 DOM; then actual checked candidate preview/close/apply, source hashes, full progress and metrics restart. Fixed exercise transport and captures are evidence for separate behavioral review, never automatic proof of a hammer or dog. Require strict owned teardown and retain final failures. No real-model execution is claimed by the offline ten-case preflight.

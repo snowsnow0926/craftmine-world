@@ -3,8 +3,10 @@ import { test } from 'node:test';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { mkdir, mkdtemp } from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'node:path';
 import { createP8Relay, parseAuthorizedConfiguration, createSecretRedactor, MODEL, ENDPOINT } from './relay.mjs';
+import { openRequestJournal, normalizedProviderUsage, reconcileMetrics } from './evidence.mjs';
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const deps = process.env.CRAFTMINE_P8_TEST_DEPS ?? 'D:/cm-fb-20260910/vendor/pi-desktop/packages/agent-runtime';
 const require = createRequire(path.join(deps, 'package.json'));
@@ -53,12 +55,12 @@ test('provider error is counted, never retried or substituted, and credentials a
   try { const response = await send(relay); assert.equal(response.status, 400); assert.ok(!(await response.text()).includes(fakeKey)); assert.equal(forwards, 1); assert.equal(relay.snapshot().attempts[0].passedTransport, false); assert.ok(!JSON.stringify(evidence).includes(fakeKey)); } finally { await relay.close(); }
 });
 
-function fixture() {
+function fixture(godot) {
   let selected = 'world-hammer'; const calls = [], scripts = []; let active = false;
   const sessionId = '11111111-1111-4111-8111-111111111111', providerId = '22222222-2222-4222-8222-222222222222';
   const contents = { isDestroyed: () => false, executeJavaScript: async script => { scripts.push(script); if (script === 'document.body.dataset.worldId') return selected; return { accepted: true, turnId: 'turn-fixture' }; } };
   const run = createP8Acceptance({ enabled: true, window: () => ({ isDestroyed: () => false, webContents: contents }), world: () => contents,
-    call: async (method, params) => { calls.push({ method, params }); if (method === 'providers.create') return { provider: { id: providerId } }; if (method === 'session.create') return { session: { id: sessionId } }; if (method === 'session.get') return { session: { id: sessionId, providerId, modelId: MODEL, messages: [] } }; return null; }, panel: async () => ({ activeWorldId: selected, worlds: [{ id: selected, baseId: 'first-person', state: 'ready' }] }), active: () => active,
+    call: async (method, params) => { calls.push({ method, params }); if (method === 'providers.create') return { provider: { id: providerId } }; if (method === 'session.create') return { session: { id: sessionId } }; if (method === 'session.get') return { session: { id: sessionId, providerId, modelId: MODEL, messages: [] } }; return null; }, panel: async () => ({ activeWorldId: selected, worlds: [{ id: selected, baseId: 'first-person', state: 'ready' }] }), active: () => active, godot,
   }, { CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_PROXY_BASE: 'http://127.0.0.1:12345/' + 'a'.repeat(48) + '/deepseek.com/v1', CRAFTMINE_P8_PROXY_AUTH: 'b'.repeat(64) });
   return { run, calls, scripts, setSelected: value => { selected = value; }, setActive: value => { active = value; } };
 }
@@ -78,4 +80,42 @@ test('unknown fields/methods and asynchronous world changes cannot rebind a case
   await assert.rejects(f.run('submit', { caseId: 'hammer' }), /WORLD_CHANGED/);
   await assert.rejects(f.run('initialize', { caseId: 'hammer', worldId: 'world-other' }), /BINDING_CONFLICT/);
   assert.equal(f.scripts.filter(x => x.includes('piDesktop.channels.invoke.agentPrompt')).length, 0);
+});
+
+test('real file journal retains admissions, excludes a concurrent owner and fails closed on incomplete bytes', () => {
+  const file = path.join(out, 'journal.ndjson'); const first = openRequestJournal(file);
+  assert.throws(() => openRequestJournal(file), /EEXIST/);
+  first.reserve({ id: 1, endpoint: ENDPOINT, requestedModel: MODEL }, 'hammer', out); first.close();
+  const second = openRequestJournal(file); assert.equal(second.initialAttempts.length, 1); assert.throws(() => second.reserve({ id: 1 }, 'hammer', out), /ADMISSION_ORDER/); second.close();
+  fs.appendFileSync(file, '{'); assert.throws(() => openRequestJournal(file), /INCOMPLETE_JOURNAL/);
+});
+
+test('usage reconciliation preserves cache/reasoning semantics and rejects invented tokens or TPS', () => {
+  const raw = { prompt_tokens: 100, prompt_cache_hit_tokens: 60, completion_tokens: 20, completion_tokens_details: { reasoning_tokens: 5 } };
+  const usage = normalizedProviderUsage(raw); assert.equal(usage.inputTokens, 40); assert.equal(usage.totalTokens, 120);
+  const binding = { sessionId: 's', providerId: 'p' }, calls = [{ providerId: 'p', modelId: MODEL, usage, generationStartedAtMs: 1500, endedAtMs: 2500 }];
+  const metrics = { format: 'craftmine.task-metrics/1', sessionId: 's', status: 'completed', startedAtMs: 1000, endedAtMs: 3000, wallTimeMs: 2000, calls: { observed: 1, reported: 1, pending: 0 }, usage, tps: { generationMs: 1000, outputTokens: 20, value: 20 }, models: [{ providerId: 'p', modelId: MODEL }], coverage: 'complete' };
+  const upstream = [{ passedTransport: true, sse: { usageReports: [raw] } }];
+  assert.equal(reconcileMetrics(metrics, calls, upstream, binding).providerUsageReports, 1);
+  assert.throws(() => reconcileMetrics({ ...metrics, usage: { ...usage, totalTokens: 125 } }, calls, upstream, binding));
+  assert.throws(() => reconcileMetrics({ ...metrics, tps: { ...metrics.tps, value: 25 } }, calls, upstream, binding));
+});
+
+test('the upstream receives original JSON bytes without model or protocol translation', async () => {
+  const payload = JSON.stringify(body, null, 2) + '\n'; let received;
+  const relay = await createP8Relay({ configuration, persist: async () => {}, forward: async (_url, options) => { received = options.body; return new Response('data: [DONE]\n\n'); } });
+  try { await (await send(relay, body, { body: payload })).text(); assert.equal(received, payload); } finally { await relay.close(); }
+});
+
+test('fixed exercise retains actual failures, rejects extra commands, and aborts on instance change', async () => {
+  const operations = []; let instanceId = 'owned-first'; let change = false;
+  const f = fixture({ observe: async () => ({ format: 'craftmine.godot-observation/1', worldId: 'world-hammer', baseId: 'first-person', buildId: 'b', instanceId }),
+    action: async (op, args) => { operations.push([op, args]); if (change) instanceId = 'foreign'; return { error: 'synthetic missing authored item' }; },
+    capture: async (width, height) => ({ width, height, pngBase64: 'iVBORw0KGgo' }),
+  });
+  await f.run('initialize', { caseId: 'hammer', worldId: 'world-hammer' });
+  await assert.rejects(f.run('exercise', { caseId: 'hammer', op: 'arbitrary' }), /INVALID_REQUEST/);
+  const result = await f.run('exercise', { caseId: 'hammer' }); assert.equal(result.actions.length, 7); assert.ok(result.actions.every(action => action.result.error));
+  assert.deepEqual(operations[1], ['equip', { value: 'thunder_hammer' }]); assert.equal(result.passed, undefined);
+  operations.length = 0; change = true; await assert.rejects(f.run('exercise', { caseId: 'hammer' }), /RUNTIME_CHANGED/); assert.equal(operations.length, 1);
 });

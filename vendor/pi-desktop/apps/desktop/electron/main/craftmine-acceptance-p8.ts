@@ -1,6 +1,8 @@
 // Explicitly enabled, finite acceptance only. Real credentials never enter Main.
 import { randomUUID } from "node:crypto";
 import type { BrowserWindow, WebContents } from "electron";
+import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance.js";
+import { exerciseP8Gameplay } from "./craftmine-acceptance-p8-gameplay.js";
 
 export const P8_MODEL = "deepseek-v4.1-flash-expires-on-0910";
 export const P8_PROMPTS = {
@@ -16,6 +18,7 @@ export type P8AcceptanceAccess = {
   call: <T = any>(method: string, params: Record<string, unknown>) => Promise<T>;
   panel: (channel: string, payload: Record<string, unknown>) => Promise<any>;
   active: (sessionId: string) => boolean;
+  godot?: GodotGameplayAccess;
 };
 const uuid = (v: unknown): v is string => typeof v === "string" && /^[a-f0-9-]{36}$/.test(v);
 const worldId = (v: unknown): v is string => typeof v === "string" && /^[a-z0-9][a-z0-9-]{1,47}$/.test(v);
@@ -45,7 +48,7 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
   };
   return async (method: unknown, payload: unknown): Promise<any> => {
     if (!access.enabled || env.CRAFTMINE_P8_NATIVE !== "1") throw Error("P8_NOT_ENABLED");
-    if (!record(payload) || !["hammer", "dog"].includes(payload.caseId) || typeof method !== "string" || !["initialize", "submit", "snapshot", "abort"].includes(method)
+    if (!record(payload) || !["hammer", "dog"].includes(payload.caseId) || typeof method !== "string" || !["initialize", "submit", "snapshot", "abort", "exercise"].includes(method)
       || Object.keys(payload).some(key => !["caseId", ...(method === "initialize" ? ["worldId"] : [])].includes(key))) throw Error("P8_INVALID_REQUEST");
     if (busy) throw Error("P8_BUSY");
     busy = true;
@@ -84,6 +87,11 @@ export function createP8Acceptance(access: P8AcceptanceAccess, env: Record<strin
       const binding = bindings.get(caseId); if (!binding) throw Error("P8_INITIALIZE_REQUIRED");
       if (method === "abort") return desktop(`piDesktop.invoke(piDesktop.channels.invoke.agentAbort,${JSON.stringify({ sessionId: binding.sessionId })})`);
       await selected(binding.worldId);
+      if (method === "exercise") {
+        if (!access.godot) throw Error("P8_GAMEPLAY_NOT_WIRED");
+        const evidence = await exerciseP8Gameplay(access.godot, caseId, binding.worldId);
+        await selected(binding.worldId); return evidence;
+      }
       if (method === "submit") {
         if (binding.submitted) throw Error("P8_ALREADY_SUBMITTED");
         await choose(binding); binding.submitted = true;
