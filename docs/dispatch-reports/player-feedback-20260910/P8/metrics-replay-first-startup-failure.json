@@ -1,0 +1,251 @@
+{
+  "format": "craftmine.p8-metrics-replay/1",
+  "passed": false,
+  "out": "D:\\cm-fb-p8-20260910\\test-results\\desktop-native-p8-replay-WaXDJD",
+  "profile": "D:\\cm-fb2-20260910\\test-results\\desktop-native-p8-V35GyJ\\profile",
+  "runnerSha256": "d7f62f4ce6b627b176041c8cd92edfb5ccf356e80581dd90944db880380a8a2e",
+  "package": {
+    "mode": "packaged",
+    "packaged": "D:\\cm-fb3-20260910\\desktop\\build\\releases\\570fed344ee7-5550aeb3-3715-4dfd-bd1c-58397501ef1c\\output\\win-unpacked",
+    "commit": "570fed344ee775aa0cc8d4ef7d096bce96e1cc5f",
+    "buildManifestSha256": "f802fc7b23b350a0f6c5d4a6ac3cde9272da33ae9f5b26bccfb12efdb040f0c8",
+    "sourceArchiveHash": "b812d032a5b62cf58ca51b4fd6f2234e14740308da4e756b3b1c3e83c86e3952",
+    "appVersion": "0.14.4-preview.1",
+    "executableSha256": "efa18c94a7dab00a122b01d4cdac51afcb26c39bc7c5ea58f5b5191c266af755",
+    "asarSha256": "62eda21e76facda3e65c40859e093f40642c6ea82aa002a1b58a7a28a8d76bec",
+    "mainSha256": "8f52bd3097b4f723f2e67f96e43900dbb4ea26f0925e30a49a12776c9664db14",
+    "pluginSha256": "6cbb196fd6d62c5363abfd3f98ff1150c65014c31cad98eb9846db25e27a6dca",
+    "coreSha256": "693232db8290bf6affbc4d2f2bd5e4320b7d8db5cb9df26ef9d0264a662a997d",
+    "hostSha256": "00515f111d43cbabb9cdee044944a4099396f8498498056824e585a9a7b5f5c4",
+    "runtimeSourceCommit": "570fed344ee775aa0cc8d4ef7d096bce96e1cc5f",
+    "runtimeFilesDigest": "e9ccd28b44e001ba6e7c0bf61679b5e9533e7357b8b273735cc7ab05313de395"
+  },
+  "steps": [
+    {
+      "name": "strict actual new package and original profile readiness",
+      "passed": false,
+      "error": "Error: Error: World view is not ready"
+    }
+  ],
+  "launch": {
+    "startedAt": "2026-09-10T08:18:39.806Z",
+    "audit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [
+        "Uncaught (in promise) Error: host-core is unavailable"
+      ],
+      "shutdownFailures": []
+    },
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "error": null
+    }
+  },
+  "actualUpstreamPosts": 0,
+  "scope": "Actual new packaged Main/React, original owned persisted P8 task; session selection and metrics only. No OS input, no model or relay. Application append logs may change; original evidence files must not.",
+  "startedAt": "2026-09-10T08:18:39.755Z",
+  "before": {
+    "evidence": [
+      {
+        "name": "hammer-latest.json",
+        "bytes": 1468930,
+        "sha256": "f2bb04eaf0c63ded494887fdddfdbc6d778f65d130d7a625f5fd6a363266b74c"
+      },
+      {
+        "name": "report.json",
+        "bytes": 3083871,
+        "sha256": "f7be44a7e5a21be609279a508a41d7da1490f00b549776487af9bccffb7938ce"
+      },
+      {
+        "name": "upstream-10-request.json",
+        "bytes": 104168,
+        "sha256": "fb58dff55cbf04afd60f24cd2763f55c38c37d533f3ee544ed6c6071187e7986"
+      },
+      {
+        "name": "upstream-10-response.json",
+        "bytes": 2319237,
+        "sha256": "626311012dabede4b17c96d18fa60ea287ffb7faeb26a8de4c42873f2c4c3c2b"
+      },
+      {
+        "name": "upstream-11-request.json",
+        "bytes": 97788,
+        "sha256": "971bb739c77e57ccbc45630ce8f4d3e6b77832c64c5bb34729b7998aaff80098"
+      },
+      {
+        "name": "upstream-11-response.json",
+        "bytes": 187535,
+        "sha256": "8177677e46729c0e74cc8a858db1b359c8064a9c7b87e93988ef025c8523a7c9"
+      },
+      {
+        "name": "upstream-12-request.json",
+        "bytes": 181568,
+        "sha256": "40a2ecafeae7011f19b657d7d0dff273817c59f240883ebea037581f6460f493"
+      },
+      {
+        "name": "upstream-12-response.json",
+        "bytes": 212522,
+        "sha256": "2b2e7de6ebdb2df16ce1a22036a7e83b8c32ada7466e0b29a24f68b7490e38ad"
+      },
+      {
+        "name": "upstream-13-request.json",
+        "bytes": 254918,
+        "sha256": "9c542fc384bc3b44ad53dbd1ee35d621ec7c26962acba788291a15cf590c518f"
+      },
+      {
+        "name": "upstream-13-response.json",
+        "bytes": 209632,
+        "sha256": "8f282e079accab2385b0e28d0bc0ce7af844719281c155376f131169327c476b"
+      },
+      {
+        "name": "upstream-14-request.json",
+        "bytes": 112717,
+        "sha256": "90738e35f7f3b8eb987875a06393702c5f009e652b905921c89e380698f22213"
+      },
+      {
+        "name": "upstream-14-response.json",
+        "bytes": 3400365,
+        "sha256": "707eb3b7e7a7b8e4625803a335c40049420f22b6c5da35f20305b2931234c460"
+      },
+      {
+        "name": "upstream-15-request.json",
+        "bytes": 113055,
+        "sha256": "47199ae93c92909e6b88457f7f53a17f2ff61ebf2a366f7913f2942727132d25"
+      },
+      {
+        "name": "upstream-15-response.json",
+        "bytes": 631225,
+        "sha256": "ee937a1f156b564b87189c82a7aed9792540aaeade274ecafbb2142383d2fe07"
+      },
+      {
+        "name": "upstream-16-request.json",
+        "bytes": 213918,
+        "sha256": "f7717d162457a87e59c1daa4779572537947cb62d0abccf2e3655bc838c779c1"
+      },
+      {
+        "name": "upstream-16-response.json",
+        "bytes": 363595,
+        "sha256": "489a25712a06a1cc0af951dca9401781c511b4083556146f6ca90cdbc0a80db0"
+      },
+      {
+        "name": "upstream-2-request.json",
+        "bytes": 36045,
+        "sha256": "454ff9281e3b7947274d138a173627dfd63a08e01eb67198d65d4bf8e191182e"
+      },
+      {
+        "name": "upstream-2-response.json",
+        "bytes": 48124,
+        "sha256": "17fc0f842208b43b799476df5e1d519b1a0347b45e96fbf6d027c25ad4018eba"
+      },
+      {
+        "name": "upstream-3-request.json",
+        "bytes": 56087,
+        "sha256": "ce6c86abe30625be76b0bea62202ae3634899294a918dab947587af34c739ae9"
+      },
+      {
+        "name": "upstream-3-response.json",
+        "bytes": 191047,
+        "sha256": "a015f51796bb13b27916d47230acb7def76297b26a35ccdf5be3e6e650e76064"
+      },
+      {
+        "name": "upstream-4-request.json",
+        "bytes": 127612,
+        "sha256": "f5dba74332fcf71ab725c5538f23e5c320a20e7710de59ed0fffa57c18bd859e"
+      },
+      {
+        "name": "upstream-4-response.json",
+        "bytes": 127885,
+        "sha256": "5ed3d3d6c838859458e2bd2d189dd3b5e0d6937066bab424b992bdb0fe1f289a"
+      },
+      {
+        "name": "upstream-5-request.json",
+        "bytes": 213074,
+        "sha256": "835e8bbf346903e9b1d5b94be00f5147fe0cb2cc5e72abf360d77b872f8bb05d"
+      },
+      {
+        "name": "upstream-5-response.json",
+        "bytes": 256366,
+        "sha256": "9c903590a65b0fe25e1cb635c7af6b08c90009e384df1ec948f6bfe65a64d154"
+      },
+      {
+        "name": "upstream-6-request.json",
+        "bytes": 74305,
+        "sha256": "65c3dc62d890a9606ccde1f1f378879568d90f9a4bf74c138ac8da8632f5e865"
+      },
+      {
+        "name": "upstream-6-response.json",
+        "bytes": 1312452,
+        "sha256": "6221b6593b45763411998942c7f437876f0ea3cbc5e957f78e607e7a19c85db7"
+      },
+      {
+        "name": "upstream-7-request.json",
+        "bytes": 86770,
+        "sha256": "6a7008e8a5b5c092232ed3b7dea1c04c1a0ab1a426c950f60ea318653ad84c98"
+      },
+      {
+        "name": "upstream-7-response.json",
+        "bytes": 74896,
+        "sha256": "b4f466b3c832e288fc56fffdd5385be2d989a2f5d8e5a69f080bfc8889f466c5"
+      },
+      {
+        "name": "upstream-8-request.json",
+        "bytes": 184898,
+        "sha256": "dff46aaee456f71613f7e16e7104e87ae438f8b7382f41b2a871d6957ba849aa"
+      },
+      {
+        "name": "upstream-8-response.json",
+        "bytes": 104681,
+        "sha256": "8b92ad9eeb5817e5b4bfc1ac3e1f79411f18b4ae31237364a209b41d2b597fc6"
+      },
+      {
+        "name": "upstream-9-request.json",
+        "bytes": 227168,
+        "sha256": "23fdc905a1918a63a206778e99df5cf32f89676954de5086c66169468a908272"
+      },
+      {
+        "name": "upstream-9-response.json",
+        "bytes": 326224,
+        "sha256": "5b0c564f26db8a4ca27caa051290fa425a3214c4d0d6ba4bbd663f6aa33d0cc6"
+      }
+    ],
+    "observationsSha256": "638d7352d2e5d582b8ed59838159e1743c20557c9b7740b8b8c2ccbb62462651",
+    "logs": [
+      {
+        "name": "lifecycle.log",
+        "bytes": 285,
+        "sha256": "ced835c31589787687a11a77240d58e9a839692a5dd8d86fae01acb3a3e9b823"
+      },
+      {
+        "name": "plugin.log",
+        "bytes": 16377,
+        "sha256": "20a85b9515212b07c9f578a03d4dc912e0c296a69a9111643d87019e47da28d9"
+      },
+      {
+        "name": "runtime.log",
+        "bytes": 305,
+        "sha256": "7bbaf4a7b4f4d5098dd4eb1a1cd7cc65b6f776df21f377824b77192465173b1c"
+      },
+      {
+        "name": "session.log",
+        "bytes": 902,
+        "sha256": "3c52d062e1a062edad09f24a49caed221aecee96d1b0c42f705d27f79f9ba17b"
+      },
+      {
+        "name": "timing.log",
+        "bytes": 3545,
+        "sha256": "6c7a3f6ae2d38c963228f333ecf12286dfb4be1983fbc5fc0e0cf2167787baa7"
+      },
+      {
+        "name": "tool.log",
+        "bytes": 26072,
+        "sha256": "46087ebef16ddd4905d398e38451bd7357c0d88b7ccc8fa00841dab8d585cee8"
+      }
+    ],
+    "journalSha256": "e6d1f71609501599c8c9fa977a28319f65a4cec6f46030a45dd26f3508c5b706",
+    "admissions": 16
+  },
+  "error": "Error: Error: World view is not ready\n    at ChildProcess.<anonymous> (file:///D:/cm-fb-p8-20260910/tests/player-feedback/P8/metrics-replay-native.mjs:25:547)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "shutdownError": "AssertionError [ERR_ASSERTION]: Renderer errors\n+ actual - expected\n\n+ [\n+   'Uncaught (in promise) Error: host-core is unavailable'\n+ ]\n- []\n\n    at assertCleanHeadlessShutdown (file:///D:/cm-fb-p8-20260910/tests/player-product/shutdown-exit-audit.mjs:8:10)\n    at stop (file:///D:/cm-fb-p8-20260910/tests/player-feedback/P8/metrics-replay-native.mjs:23:362)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///D:/cm-fb-p8-20260910/tests/player-feedback/P8/metrics-replay-native.mjs:31:87",
+  "finishedAt": "2026-09-10T08:18:44.999Z"
+}
