@@ -3,7 +3,7 @@ import { classifyAgentError } from "./agent-errors.js";
 
 describe("classifyAgentError", () => {
   it("keeps local task limits terminal even when wrapped in an RPC or transport error", () => {
-    for (const code of ["TOKEN_BUDGET_EXHAUSTED", "REQUEST_BUDGET_EXHAUSTED", "COMPACTION_BUDGET_EXHAUSTED", "TASK_DEADLINE_EXCEEDED"]) {
+    for (const code of ["TOKEN_BUDGET_EXHAUSTED", "REQUEST_BUDGET_EXHAUSTED", "COMPACTION_BUDGET_EXHAUSTED", "TASK_DEADLINE_EXCEEDED", "EVALUATION_REQUEST_LIMIT"]) {
       expect(classifyAgentError(`host RPC: ${code}`)).toMatchObject({ code, retriable: false });
       expect(classifyAgentError(Object.assign(new Error(`${code}: network error`), { status: 429 }))).toMatchObject({ code, retriable: false });
     }

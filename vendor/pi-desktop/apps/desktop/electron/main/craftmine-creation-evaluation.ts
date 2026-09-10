@@ -1,6 +1,7 @@
 // Opt-in evaluator of the actual renderer -> host -> model -> product tool path.
 // It is reachable only in an already validated, isolated headless profile.
 import {createEvaluationBudget} from "./creation-evaluation-budget";
+import {evaluationGroundHasSpace} from "./creation-evaluation-placement";
 import {randomUUID} from "node:crypto";
 import type {BrowserWindow} from "electron";
 
@@ -53,10 +54,10 @@ export function installCreationEvaluation(access:Access){
       const sample=await access.observe();if(sample.baseId!=="creation-sandbox")throw Error("EVALUATION_CREATION_BASE_REQUIRED");
       let yaw=.55,pitch=-.4;
       if(method==="aim-ground"){
-        for(const angle of [.55,-.55,1.1,-1.1,0,2,-2,3]){
-          const result=await access.action("look",{yaw:angle,pitch});if(result?.error)throw Error(result.error);
+        for(const groundPitch of [-.4,-.55,-.7])for(const angle of [.55,-.55,1.1,-1.1,0,2,-2,3]){
+          const result=await access.action("look",{yaw:angle,pitch:groundPitch});if(result?.error)throw Error(result.error);
           const observation=await access.observe();
-          if(observation.payload?.creation?.target?.surface==="ground")return {result,observation};
+          if(evaluationGroundHasSpace(observation))return {result,observation};
         }
         throw Error("EVALUATION_GROUND_NOT_TARGETED");
       }

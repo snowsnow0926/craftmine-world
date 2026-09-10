@@ -125,7 +125,7 @@ export function classifyAgentError(err: unknown): ClassifiedAgentError {
 
   // Local task accounting cannot be repaired by another provider attempt.
   // Classify before network/status text, including wrapped RPC/stream errors.
-  const taskLimit = rawMessage.match(/\b(TOKEN_BUDGET_EXHAUSTED|REQUEST_BUDGET_EXHAUSTED|COMPACTION_BUDGET_EXHAUSTED|TASK_DEADLINE_EXCEEDED)\b/);
+  const taskLimit = rawMessage.match(/\b(TOKEN_BUDGET_EXHAUSTED|REQUEST_BUDGET_EXHAUSTED|COMPACTION_BUDGET_EXHAUSTED|TASK_DEADLINE_EXCEEDED|EVALUATION_REQUEST_LIMIT)\b/);
   if (taskLimit) return result(taskLimit[1], false);
   if (/\bCRAFTMINE_(?:CONTEXT_BUDGET_EXCEEDED|FINAL_PAYLOAD_BUDGET_EXCEEDED|CONTEXT_TOO_LARGE)\b/.test(rawMessage)) {
     return result("CRAFTMINE_REQUEST_TOO_LARGE", false);
