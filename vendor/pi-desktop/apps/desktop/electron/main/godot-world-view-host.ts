@@ -8,8 +8,10 @@ import {
   type WorldRuntime,
 } from "../../../../../../desktop/godot/web/runtime.mjs";
 import { isHeadlessAcceptance } from "./craftmine-headless";
+import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
+  GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL,
   GODOT_WORLD_MESSAGE_CHANNEL,
   godotWorldScopeArgument,
 } from "../shared/godot-world-chrome";
@@ -196,6 +198,8 @@ export class GodotWorldViewHost {
        */
       descriptor?: () => Promise<GodotWorldOpenRequest | null>;
       onState?: (state: GodotWorldState) => void;
+      /** Finite native keyboard action for this host's currently displayed view. */
+      onFullscreenShortcut?: (action: "toggle" | "exit") => void;
       /** Test seam: called with every runtime event. */
       onEvent?: (event: RuntimeEvent) => void;
     },
@@ -1048,6 +1052,33 @@ export class GodotWorldViewHost {
     view.webContents.ipc.on(GODOT_WORLD_MESSAGE_CHANNEL, (_event, message: unknown) => {
       const owner = this.current?.runtime === runtime ? this.current : this.pending?.runtime === runtime ? this.pending : null;
       if (owner) runtime.receive(message);
+    });
+    const displayed = (): boolean => {
+      const owner = this.candidateVisible && this.stagedRequest ? this.pending : this.current;
+      const window = this.options.window();
+      return !!this.options.onFullscreenShortcut && !this.disposed && this.visible && this.surfaceVisible &&
+        !!owner?.alive && owner.runtime === runtime && owner.view === view &&
+        !view.webContents.isDestroyed() && !!window && !window.isDestroyed() && window.contentView.children.includes(view);
+    };
+    const shortcut = (action: "toggle" | "exit"): void => {
+      try { this.options.onFullscreenShortcut?.(action); }
+      catch (error) {
+        const owner = this.current?.runtime === runtime ? this.current : this.pending?.runtime === runtime ? this.pending : null;
+        if (owner) this.recordFault(owner, `Fullscreen action failed: ${String(error)}`);
+      }
+    };
+    view.webContents.on("before-input-event", (event, input) => {
+      if (!displayed()) return;
+      const decision = nativeFullscreenKeyDecision(input);
+      if (decision.preventDefault) event.preventDefault();
+      if (decision.action) shortcut(decision.action);
+    });
+    view.webContents.ipc.on(GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL, (event, payload: unknown) => {
+      if (!displayed() || event.senderFrame !== view.webContents.mainFrame || !payload || typeof payload !== "object") return;
+      const scope = payload as Record<string, unknown>;
+      if (Object.keys(scope).length !== 4 || scope.protocol !== runtime.protocol || scope.worldId !== runtime.worldId ||
+          scope.buildId !== runtime.buildId || scope.instanceId !== runtime.instanceId) return;
+      shortcut("exit");
     });
     return view;
   }

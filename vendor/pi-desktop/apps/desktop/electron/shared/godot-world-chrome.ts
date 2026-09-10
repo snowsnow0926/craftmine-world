@@ -13,6 +13,9 @@ export const GODOT_WORLD_MESSAGE_CHANNEL = "pi-desktop/godot-world/message";
 /** Host -> page: the view is being torn down; stop sending. */
 export const GODOT_WORLD_DETACH_CHANNEL = "pi-desktop/godot-world/detach";
 
+/** Trusted preload -> host: exit fullscreen for this currently displayed scope. */
+export const GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL = "pi-desktop/godot-world/fullscreen-exit";
+
 /**
  * Instance scope handed to the preload through `additionalArguments`. The page
  * cannot change it: it is fixed before the document is created.

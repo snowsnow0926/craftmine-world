@@ -1,0 +1,27 @@
+(node:267492) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ displayed view toggles only plain F11 and consumes repeats without toggling (2.49ms)
+✔ old, hidden, detached and unshown candidate views cannot affect fullscreen (2.9321ms)
+✔ escape private channel accepts only its displayed top-frame exact scope (0.5565ms)
+✔ preload adds no page API and sends only fixed scope, with detach/pagehide disposal (2.8486ms)
+✔ native F11 is finite and repeat-safe (0.55ms)
+✔ escape policy accepts only an unconsumed trusted unmodified first press (0.1214ms)
+✔ unconsumed escape invokes only exit, never toggle/close/navigation (2.4492ms)
+✔ menu present at capture blocks exit even if its handler removes it (0.3503ms)
+✔ same Escape cannot release pointer capture and exit fullscreen (0.2991ms)
+✔ late bubble consumer wins before deferred fullscreen request (0.2053ms)
+✔ new overlay before deferred decision blocks fullscreen exit (0.2165ms)
+✔ composition lifecycle suppresses Escape even without event flag (0.2496ms)
+✔ editing context is retained until the next key (0.2107ms)
+✔ untrusted synthetic key never requests a window action (0.2198ms)
+✔ disposing view cancels queued action and removes all handlers (0.2054ms)
+✔ focus departure invalidates a queued action (0.2037ms)
+✔ pending window action is single-flight; failure permits a later request (0.3013ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.2329

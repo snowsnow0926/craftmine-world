@@ -9137,3 +9137,7 @@ Use tests/player-feedback/P1/renderer-load-native.mjs with independent D-drive d
 ## Craftmine P5: operation metrics and static version label
 
 Run `tests/player-feedback/P5/metrics-headless.mjs` in a private D-drive headless profile with Pointer Lock and focus disabled. Its actual React components must display complete, partial, absent and zero usage correctly, preserve distinct runtime model identities, fit a narrow chat column, reject late/mismatched session results and refetch final metrics when completion precedes persistence. The build label must show the supplied host version with no action/link semantics. Fixture evidence does not satisfy native/model acceptance; the same-source client must additionally verify the durable `session.turnMetrics` response after real operation completion and restart.
+
+## P1/P3 Godot child shortcut scope (2026-09-10)
+
+Controlled host/preload tests must refuse stale, hidden, detached, unshown and foreign-scope callers. Plain F11 toggles once; repeat is consumed. Escape respects consumed events, menus, editing, IME and pointer capture, sends only fixed scope and requests exit rather than toggle. Main integration and actual user keys are separate acceptance; no simulated keyboard or focus is permitted.

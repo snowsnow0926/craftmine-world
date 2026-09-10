@@ -1,9 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
+  GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL,
   GODOT_WORLD_MESSAGE_CHANNEL,
   parseGodotWorldScopeArgument,
 } from "../shared/godot-world-chrome";
+import { attachFullscreenEscape } from "../../shared/world-fullscreen-shortcuts";
 
 /**
  * Transport for the Godot world runtime page (`craftmine.godot-runtime/2`).
@@ -19,6 +21,11 @@ const scope = process.argv
   .find((value): value is NonNullable<typeof value> => value !== null);
 
 if (scope) {
+  const disposeEscape = attachFullscreenEscape(window, {
+    onExit: () => { ipcRenderer.send(GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL, scope); },
+  });
+  ipcRenderer.once(GODOT_WORLD_DETACH_CHANNEL, disposeEscape);
+  window.addEventListener("pagehide", disposeEscape, {once: true});
   contextBridge.exposeInMainWorld("craftmineRuntime", {
     scope,
     post(message: unknown) {
