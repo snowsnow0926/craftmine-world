@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/base/world_root.gd" id="1_root"]
 [ext_resource type="Script" path="res://scripts/base/map_renderer.gd" id="2_map"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/base/directional_sprite.gd" id="5_sprite"]
 [ext_resource type="Texture2D" path="res://assets/characters/player_sheet.png" id="6_player_tex"]
 [ext_resource type="Script" path="res://scripts/base/spawn_marker.gd" id="7_spawn"]
+[ext_resource type="Script" path="res://scripts/base/creation_renderer.gd" id="8_creation"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(10, 12)
@@ -27,6 +28,9 @@ tile_set_path = "res://assets/tiles/town_tileset.tres"
 tile_set = ExtResource("3_tileset")
 
 [node name="Collision" type="StaticBody2D" parent="Map"]
+
+[node name="CreationEntities" type="Node2D" parent="."]
+script = ExtResource("8_creation")
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(192, 128)
