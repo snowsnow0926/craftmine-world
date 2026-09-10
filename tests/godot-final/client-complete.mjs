@@ -3,6 +3,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import {assertCleanHeadlessShutdown} from '../player-product/shutdown-exit-audit.mjs';
+import {createCompleteOutput,completeEnvironment,requireRestoreConflict} from './complete-contract.mjs';
 import {createRequire} from 'node:module';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
@@ -21,8 +23,7 @@ function readApp(relative){
 const compiled=readApp('out/main/index.js').toString();
 for(const guard of ['configureHeadlessAcceptance()', 'focusable: !headlessAcceptance', 'offscreen: !!headlessAcceptance','Headless window was not created offscreen'])assert.ok(compiled.includes(guard),'Build lacks input isolation: '+guard);
 assert.ok(readApp('out/preload/craftmine-headless.cjs').includes(Buffer.from('requestPointerLock')));
-fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
-const out=fs.mkdtempSync(path.join(root,'test-results/desktop-native-complete-')),profile=path.join(out,'profile'),token=randomUUID();
+const out=createCompleteOutput(root,process.env.CRAFTMINE_TEST_OUTPUT_ROOT),profile=path.join(out,'profile'),token=randomUUID();
 const legacySource=path.join(out,'legacy');fs.mkdirSync(profile);fs.mkdirSync(legacySource);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
 const report={format:'craftmine.complete-client-acceptance/1',startedAt:new Date().toISOString(),packaged,out,steps:[],launches:[],calls:[]};
@@ -43,10 +44,10 @@ let child,ready=false,ended=true,exit=Promise.resolve(),launch;
 const pending=new Map();
 function start(){
   assert.ok(ended);ready=false;ended=false;launch={number:report.launches.length+1,startedAt:new Date().toISOString()};report.launches.push(launch);
-  const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:out,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,
-    CRAFTMINE_CORE_BIN:resources?path.join(resources,'bin/craftmine-core.exe'):path.join(root,'vendor/pi-desktop/target/release/craftmine-core.exe'),
-    PI_DESKTOP_HOST_BIN:resources?path.join(resources,'bin/pi-desktop-host-core.exe'):path.join(root,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe')};
-  delete env.ELECTRON_RUN_AS_NODE;
+  const env=completeEnvironment(process.env,{out,profile,token,
+    core:resources?path.join(resources,'bin/craftmine-core.exe'):path.join(root,'vendor/pi-desktop/target/release/craftmine-core.exe'),
+    host:resources?path.join(resources,'bin/pi-desktop-host-core.exe'):path.join(root,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe'),
+    bases:resources?path.join(resources,'godot'):path.join(root,'desktop/godot')});
   child=spawn(packaged?path.join(packaged,'Craftmine World.exe'):require('electron'),packaged?[]:[desktop],{cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
   const current=launch,number=current.number;
   for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,`${number}-${stream}.log`),bytes));
@@ -73,7 +74,18 @@ const until=async(fn,predicate,label,timeout=90000)=>{const deadline=Date.now()+
 const step=async(name,fn)=>{const begin=Date.now();try{const result=await fn();report.steps.push({name,passed:true,ms:Date.now()-begin,result:evidence(result)});console.log('PASS '+name);save();return result;}catch(error){report.steps.push({name,passed:false,ms:Date.now()-begin,error:String(error)});save();throw error;}};
 const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload},180000);
 const panel=(worldId,channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}},180000);
-async function stop(){if(ended)return;try{await rpc('quit',{},5000);}catch{}await Promise.race([exit,delay(10000)]);if(!ended){launch.forcedStop=true;child.kill();}await exit;}
+async function stop(){
+  if(!launch)return;
+  if(!ended){
+    try{await rpc('quit',{},5000);}catch{}
+    await Promise.race([exit,delay(10000)]);
+    if(!ended){
+      launch.forcedStop=true;child.kill();
+      await Promise.race([exit,delay(5000).then(()=>{throw Error('CLIENT_FORCED_STOP_TIMEOUT');})]);
+    }
+  }
+  assertCleanHeadlessShutdown({...launch,audit:launch.exitAudit});
+}
 async function settled(worldId){const row=await until(async()=>{const list=await nav('world.list'),row=list.worlds.find(item=>item.id===worldId);if(row?.state==='failed')throw Object.assign(Error(JSON.stringify(row.creation)),{fatal:true});return row;},row=>row?.state==='ready','World initialization',900000);await until(()=>rpc('godotObserve'),value=>value?.worldId===worldId&&value?.instanceId,'Formal runtime promotion');await until(()=>rpc('worldNavigationReady'),value=>value?.ready&&value.worldId===worldId,'Actual navigation controls enabled');return row;}
 async function started(){await until(()=>ready,Boolean,'Controller');await until(()=>rpc('status'),value=>value.windows.length>0,'Main window');const status=await rpc('status');assert.equal(status.violations.length,0);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await until(()=>nav('world.createOptions'),v=>v.bases?.some(b=>b.id==='first-person'),'Catalog');const list=await nav('world.list');if(list.worlds.find(w=>w.id===list.activeWorldId)?.runtimeKind==='godot')await settled(list.activeWorldId);return status;}
 async function capture(baseId){const result=await rpc('godotCaptureView');assert.equal(result.width,1280);assert.equal(result.height,720);assert.ok(result.pixelStats.sampledColors>4,'Blank or single-color runtime');assert.equal(result.viewportObservation.baseId,baseId);return result;}
@@ -151,7 +163,13 @@ try{
     const beforeBackup=await rpc('godotSnapshot');
     await step('export full portable source and progress archive',()=>panel(selected,'backup.export',{operationId:randomUUID()}));
     const inspected=await step('inspect portable archive bodies and current state',()=>panel(selected,'backup.inspect'));
-    const restored=await step('activate portable archive and rebuild formal world',()=>panel(selected,'backup.restore',{operationId:randomUUID(),grantId:inspected.grantId,expectedCurrentHash:inspected.expectedCurrentHash}));
+    const conflict=await step('reject stale portable restore without changing formal progress',()=>requireRestoreConflict({
+      restore:args=>panel(selected,'backup.restore',args),inspect:()=>panel(selected,'backup.inspect'),
+      readSelection:async()=>(await nav('world.list')).activeWorldId,
+      readProgress:async()=>{await settled(selected);const live=await rpc('godotObserve');assert.equal(live.worldId,saved.worldId);assert.equal(live.buildId,saved.buildId);return rpc('godotSnapshot');},
+      expectedSelection:selected,expectedProgress:beforeBackup,compare:compareGodotPersistentProgress,grant:inspected,operationId:randomUUID()
+    }));
+    const restored=await step('activate portable archive and rebuild formal world',()=>panel(selected,'backup.restore',{operationId:randomUUID(),grantId:conflict.grant.grantId,expectedCurrentHash:conflict.grant.expectedCurrentHash}));
     assert.equal(restored.activated,true);assert.equal(restored.modelReplay,false);
     const observed=await rpc('godotObserve');assert.equal(observed.worldId,saved.worldId);
     await step('restored progress matches every saved native field',async()=>{const result=compareGodotPersistentProgress(beforeBackup,await rpc('godotSnapshot'));assert.equal(result.equal,true,JSON.stringify(result.differences));return result;});
@@ -160,4 +178,11 @@ try{
   }
   await step('no foreground windows or input-policy violations',async()=>{const status=await rpc('status');assert.equal(status.violations.length,0);assert.ok(status.windows.length>0&&status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));return status;});
 }catch(error){report.fatal=String(error?.stack??error);process.exitCode=1;console.error(report.fatal);}
-finally{await stop();report.finishedAt=new Date().toISOString();save();console.log('Evidence: '+out);}
+finally{
+  try{await stop();}catch(error){
+    report.shutdownError=String(error?.stack??error);report.fatal??=report.shutdownError;
+    process.exitCode=1;console.error(report.shutdownError);
+  }
+  report.passed=!report.fatal&&report.steps.every(step=>step.passed);
+  report.finishedAt=new Date().toISOString();save();console.log('Evidence: '+out);
+}
