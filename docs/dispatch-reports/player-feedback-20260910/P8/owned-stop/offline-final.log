@@ -1,0 +1,21 @@
+✔ one real abort callback followed by same-turn terminal evidence; repeats share result (7.2514ms)
+✔ missing, stale, unknown fields and actions cannot call abort; corrected request may proceed (2.3858ms)
+✔ oversize and linked request files are refused without following them (1.5923ms)
+✔ terminal completion race does not send abort but still stops the run (0.699ms)
+✔ ack waits for delayed inactive state and zero pending metrics (13.6636ms)
+✔ stop ownership does not depend on retaining diagnostic history (1.275ms)
+✔ acknowledgment alone is not terminal; no duplicate abort on timeout (44.5197ms)
+✔ unknown lost abort response is never retried or called a clean abort (1.4481ms)
+✔ only exact pre-dispatch P8_BUSY may retry (0.9752ms)
+✔ changed session/turn cannot abort; a hanging sample is bounded (44.5741ms)
+✔ hanging abort is bounded and is not repeated (90.997ms)
+✔ dated unlimited phase shares one journal across root checkouts; legacy is unchanged (0.4194ms)
+✔ unlimited admission keeps exclusive durable ordering beyond 16 and after reopen without secret or network (70.7646ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 404.5599

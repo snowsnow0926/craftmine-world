@@ -40,9 +40,10 @@ export function observeSse(text) {
   }
   return evidence;
 }
-export async function createP8Relay({ persist, initialAttempts = [], configuration = readAuthorizedConfiguration, forward = (url, options) => fetch(url, options) }) {
+export async function createP8Relay({ persist, initialAttempts = [], configuration = readAuthorizedConfiguration, forward = (url, options) => fetch(url, options), requestLimit = REQUEST_LIMIT }) {
+  if (requestLimit !== null && requestLimit !== REQUEST_LIMIT) throw Error('P8_INVALID_REQUEST_LIMIT');
   if (typeof persist !== 'function') throw Error('P8_EVIDENCE_WRITER_REQUIRED');
-  if (!Array.isArray(initialAttempts) || initialAttempts.length > REQUEST_LIMIT || initialAttempts.some((value, index) => value.id !== index + 1 || value.endpoint !== ENDPOINT || value.requestedModel !== MODEL)) throw Error('P8_INVALID_REQUEST_JOURNAL');
+  if (!Array.isArray(initialAttempts) || requestLimit !== null && initialAttempts.length > requestLimit || initialAttempts.some((value, index) => value.id !== index + 1 || value.endpoint !== ENDPOINT || value.requestedModel !== MODEL)) throw Error('P8_INVALID_REQUEST_JOURNAL');
   const route = `/${randomBytes(24).toString('hex')}/deepseek.com/v1/chat/completions`;
   const auth = randomBytes(32).toString('hex');
   const attempts = structuredClone(initialAttempts), rejected = []; const controllers = new Set(), inflight = new Set(); let closing = false, credentials;
@@ -58,8 +59,8 @@ export async function createP8Relay({ persist, initialAttempts = [], configurati
     let body; try { if (!Buffer.from(payload).equals(rawRequest)) throw Error('invalid UTF-8'); body = JSON.parse(payload); } catch { return refuse(response, 'P8_INVALID_JSON'); }
     if (!body || Array.isArray(body) || body.model !== MODEL || body.stream !== true || !Array.isArray(body.messages) || !Number.isSafeInteger(body.max_tokens) || body.max_tokens < 1 || body.max_tokens > 16384) return refuse(response, 'P8_EXACT_MODEL_STREAM_REQUIRED');
     // Synchronous slot claim occurs before awaits: concurrent SDK retries cannot
-    // cross the cap. A failed forward still consumes its attempt slot.
-    if (attempts.length >= REQUEST_LIMIT) return refuse(response, 'P8_REQUEST_LIMIT', 429);
+    // cross a configured cap. Unlimited authorization still journals every attempt.
+    if (requestLimit !== null && attempts.length >= requestLimit) return refuse(response, 'P8_REQUEST_LIMIT', 429);
     const attempt = { id: attempts.length + 1, admittedAtMs: Date.now(), endpoint: ENDPOINT, requestedModel: MODEL, dispatched: false, passedTransport: false };
     attempts.push(attempt);
     const controller = new AbortController(); controllers.add(controller);
@@ -104,7 +105,7 @@ export async function createP8Relay({ persist, initialAttempts = [], configurati
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   const address = server.address();
   return { baseUrl: `http://127.0.0.1:${address.port}${route.slice(0, -'/chat/completions'.length)}`, auth,
-    snapshot: () => structuredClone({ limit: REQUEST_LIMIT, attempts, rejected }),
+    snapshot: () => structuredClone({ limit: requestLimit, attempts, rejected }),
     async close() { closing = true; for (const controller of controllers) controller.abort(Error('P8_RELAY_CLOSING')); server.closeAllConnections(); let timer;
       try { await Promise.race([Promise.all([new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve())), Promise.allSettled([...inflight])]), new Promise((_, reject) => { timer = setTimeout(() => reject(Error('P8_RELAY_CLOSE_TIMEOUT')), 5000); })]); }
       finally { clearTimeout(timer); }

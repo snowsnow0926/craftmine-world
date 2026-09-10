@@ -14,6 +14,8 @@ import { assertCleanHeadlessShutdown } from '../../player-product/shutdown-exit-
 import { createP8Relay, MODEL } from './relay.mjs';
 import { openRequestJournal, ordinaryParents, reconcileMetrics, unwrapP8ProductReply } from './evidence.mjs';
 import { deriveAdditiveProgress } from '../../../desktop/godot/shared/progress-migration.mjs';
+import { createStopControl } from './stop-control.mjs';
+import { p8Authorization } from './authorization.mjs';
 
 const options = parameterClientArguments(process.argv.slice(2)), { root, runtime, deps, packaged } = options;
 const app = path.join(root, 'vendor/pi-desktop/apps/desktop'), hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -22,6 +24,7 @@ assert.equal(execFileSync('git', ['status', '--porcelain'], { cwd: root, encodin
 assert.equal(process.env.CRAFTMINE_P8_APPROVED_COMMIT, commit, 'P8 exact compiled candidate authorization is required');
 assert.equal(hash(fs.readFileSync(fileURLToPath(import.meta.url))), hash(fs.readFileSync(path.join(root, 'tests/player-feedback/P8/client-native.mjs'))), 'P8 runner must match source');
 if (packaged) assert.equal(commit, options.expectedCommit);
+const authorization = p8Authorization(process.env, root);
 const asar = packaged ? loadPackageAsar(deps) : null, packageInfo = packaged ? await inspectParameterPackage({ ...options, asar }) : null;
 const electron = packaged ? null : createRequire(path.join(deps, 'package.json'))('electron');
 const main = packageInfo ? packageInfo.main : fs.readFileSync(path.join(app, 'out/main/index.js'));
@@ -36,13 +39,17 @@ const out = fs.mkdtempSync(path.join(parent, 'desktop-native-p8-')), profile = p
 for (const directory of [profile, legacy, temp]) fs.mkdirSync(directory);
 fs.writeFileSync(path.join(profile, 'headless-profile.json'), JSON.stringify({ format: 'craftmine.headless-profile/1', token, legacySource: legacy }));
 const report = { format: 'craftmine.p8-client/1', passed: false, commit, out, profile, mode: packaged ? 'packaged' : 'development', mainSha256: hash(main), coreSha256: hash(fs.readFileSync(core)), hostSha256: hash(fs.readFileSync(host)), runtimeFilesDigest: packageInfo?.identity.runtimeFilesDigest ?? resources.filesDigest,
-  requestedModel: MODEL, requestLimit: 16, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.'] };
+  requestedModel: MODEL, authorization, requestLimit: authorization.requestLimit, cumulativeTokenLimit: null, cases: [], steps: [], launches: [], faults: [], limitations: ['Reconstructed synthetic requests; no player profile or original prompt was copied.', 'Actual product chat and model responses are not authored fixtures. An unverified behavior remains pending even if its build passes.', 'No real OS input, foreground window, Pointer Lock, desktop capture or credential reporting.', 'This run is not installer/signing/clean-machine or player acceptance.'] };
 if (packageInfo) Object.assign(report, packageInfo.identity);
 const save = () => fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
-const journalPath = path.join(parent, 'p8-authorized-20260910.ndjson'), journal = openRequestJournal(journalPath);
+const journalPath = authorization.journalPath, journal = openRequestJournal(journalPath, { requestLimit: authorization.requestLimit });
 report.requestJournal = journalPath; report.priorAdmissions = journal.entries.length;
 let currentCase = null, relay;
 let child, ended = true, ready = false, launch, exit; const pending = new Map(), reopen = {};
+const stopControl = createStopControl({ out, abort: caseId => p8('abort', caseId), snapshot: caseId => p8('snapshot', caseId), record: event => {
+  report.stopEvents ??= []; report.stopEvents.push(event); if (report.stopEvents.length > 32) report.stopEvents.shift(); save();
+} });
+report.stopFile = stopControl.file;
 async function start() {
   if (packageInfo) assert.deepEqual((await inspectParameterPackage({ ...options, asar })).identity, packageInfo.identity);
   ready = false; ended = false; launch = { startedAt: new Date().toISOString() }; report.launches.push(launch);
@@ -105,8 +112,8 @@ async function controllerReady() {
   }, value => value.runtime?.hostAvailable && value.runtime.plugins.includes('craftmine.world') && value.windows.length > 0, 'actual guarded Main/backend readiness');
 }
 async function loaded(worldId) {
-  await until(async () => { try { return await rpc('godotObserve'); } catch (error) { if (/^(No world runtime is running|WORLD_BUSY)$/.test(error.message)) return { waiting: error.message }; throw error; } }, value => value?.worldId === worldId && value.instanceId, 'formal runtime', 180000);
-  await until(() => rpc('worldNavigationReady'), value => value.ready && value.worldId === worldId, 'navigation ready');
+  await until(async () => { try { return await rpc('godotObserve'); } catch (error) { if (/^(?:Error: )?(No world runtime is running|WORLD_BUSY)$/.test(error.message)) return { waiting: error.message }; throw error; } }, value => value?.worldId === worldId && value.instanceId, 'formal runtime', 180000);
+  await until(async () => { try { return await rpc('worldNavigationReady'); } catch (error) { if (/^(?:Error: )?World view is not ready$/.test(error.message)) return { ready: false }; throw error; } }, value => value.ready && value.worldId === worldId, 'navigation ready');
 }
 async function state(worldId) { const value = (await rpc('godotSnapshot')).state; assert.equal(value?.format, 'craftmine.godot-progress/1'); assert.equal(value.worldId, worldId); return value; }
 function rawCalls(binding, turnId) {
@@ -132,7 +139,7 @@ function sourceEvidence(worldId, buildId) {
 async function capture(name) { const image = await rpc('godotCaptureView'); assert.equal(image.width, 1280); assert.equal(image.height, 720); const bytes = Buffer.from(image.pngBase64, 'base64'); assert.ok(bytes.subarray(1, 4).equals(Buffer.from('PNG'))); const file = path.join(out, name + '.png'); fs.writeFileSync(file, bytes); return { file, sha256: hash(bytes), width: image.width, height: image.height }; }
 
 try {
-  relay = await createP8Relay({ initialAttempts: journal.initialAttempts, persist: async event => {
+  relay = await createP8Relay({ requestLimit: authorization.requestLimit, initialAttempts: journal.initialAttempts, persist: async event => {
     if (event.kind === 'request') journal.reserve(event.attempt, currentCase, out);
     fs.writeFileSync(path.join(out, `upstream-${event.attempt.id}-${event.kind}.json`), JSON.stringify(event, null, 2));
     report.relay = relay?.snapshot(); save();
@@ -151,7 +158,11 @@ try {
       reopen[caseId] = { sessionId: binding.sessionId, worldId: world.id, providerId: binding.providerId };
       const admissionStart = relay.snapshot().attempts.length;
       const submitted = await step('submit fixed reconstructed request once', () => p8('submit', caseId)); item.submission = submitted; assert.equal(submitted.accepted, true); assert.ok(submitted.turnId);
+      const stopBinding = { caseId, turnId: submitted.turnId, sessionId: binding.sessionId };
+      fs.writeFileSync(path.join(out, 'control.json'), JSON.stringify({ format: 'craftmine.p8-control/1', stopFile: stopControl.file, request: { format: 'craftmine.p8-stop/1', action: 'abort', caseId, turnId: submitted.turnId } }, null, 2));
       const final = await step('real task reaches a durable terminal state', () => until(async () => {
+        const stopped = await stopControl.check(stopBinding);
+        if (stopped) { item.stop = stopped; report.stopped = true; if (!stopped.cleanAbort) process.exitCode = 1; return stopped.snapshot; }
         const value = await p8('snapshot', caseId); fs.writeFileSync(path.join(out, caseId + '-latest.json'), JSON.stringify(value, null, 2));
         return value;
       }, value => !value.active && value.metrics?.turnId === submitted.turnId && value.metrics.status !== 'running', 'model task', 1500000));
@@ -165,6 +176,11 @@ try {
       const metric = taskCards[0];
       assert.equal(metric.coverage, final.metrics.coverage); assert.ok(metric.values.model.includes(MODEL));
       if (final.metrics.usage) assert.ok(metric.values.tokens.includes(new Intl.NumberFormat('zh-CN').format(final.metrics.usage.totalTokens)));
+      if (!item.stop) {
+        const stopped = await stopControl.check(stopBinding);
+        if (stopped) { item.stop = stopped; report.stopped = true; if (!stopped.cleanAbort) process.exitCode = 1; }
+      }
+      if (item.stop) { item.outcome = 'stopped'; item.behavior = 'not accepted; explicit operator stop'; break; }
       assert.equal(final.metrics.status, 'completed', 'Model task did not complete successfully');
       const candidate = await step('actual model authored checked candidate exists', async () => {
         const list = await panel(world.id, 'godot.candidateList', { offset: 0, limit: 32 }); const latest = list.items.find(row => !beforeCandidates.has(row.candidateId) && row.status === 'ready'); assert.ok(latest, 'No new ready model candidate');
@@ -190,13 +206,13 @@ try {
       await panel(world.id, 'godot.runtimeSave', { freeze: true }); item.saved = await state(world.id);
       item.outcome = 'source-check-apply-save-completed'; item.behavior = 'pending independent inspection of real source/actions/frames';
     } catch (error) { item.outcome = 'failed'; item.error = String(error.stack ?? error); process.exitCode = 1;
-      if (item.binding && !ended) { try { await p8('abort', caseId); } catch {} }
+      if (item.binding && !ended && !stopControl.requested) { try { await p8('abort', caseId); } catch (abortError) { item.abortError = String(abortError); } }
     } finally { item.finishedAt = new Date().toISOString(); report.relay = relay.snapshot(); save(); }
-    if (ended || relay.snapshot().attempts.some(attempt => attempt.status === 400 || attempt.status === 401 || attempt.status === 403) || relay.snapshot().attempts.length >= 16) break;
+    if (ended || item.outcome === 'failed' && !item.binding || stopControl.requested || relay.snapshot().attempts.some(attempt => attempt.status === 400 || attempt.status === 401 || attempt.status === 403) || authorization.requestLimit !== null && relay.snapshot().attempts.length >= authorization.requestLimit) break;
   }
   await step('first strict owned shutdown', auditStop);
   const savedCases = report.cases.filter(item => item.saved);
-  if (savedCases.length) {
+  if (savedCases.length && !report.stopped) {
     await start(); await controllerReady();
     for (const item of savedCases) { currentCase = item.caseId; await until(() => nav('world.list'), value => !!value.activeWorldId, 'restart selection'); await until(() => rpc('worldNavigationReady'), value => value.ready, 'restart initial navigation'); await nav('world.open', { id: item.worldId }); await loaded(item.worldId);
       await p8('initialize', item.caseId, { worldId: item.worldId });
@@ -213,5 +229,5 @@ finally {
   try { await stop(); if (launch) assertCleanHeadlessShutdown(launch); } catch (error) { report.shutdownError = String(error); report.passed = false; process.exitCode = 1; }
   try { if (relay) { await relay.close(); report.relay = relay.snapshot(); } } catch (error) { report.relayCloseError = String(error); process.exitCode = 1; }
   try { journal.close(); } catch (error) { report.journalCloseError = String(error); process.exitCode = 1; }
-  report.finishedAt = new Date().toISOString(); save(); console.log(JSON.stringify({ out, pipelinePassed: report.pipelinePassed, passed: report.passed, cases: report.cases.map(({ caseId, outcome, error }) => ({ caseId, outcome, error })), requests: report.relay?.attempts.length, error: report.error, shutdownError: report.shutdownError }));
+  report.finishedAt = new Date().toISOString(); report.cumulativeAdmissions = authorization.previousPhaseAdmissions + (report.relay?.attempts.length ?? journal.entries.length); save(); console.log(JSON.stringify({ out, pipelinePassed: report.pipelinePassed, passed: report.passed, cases: report.cases.map(({ caseId, outcome, error }) => ({ caseId, outcome, error })), requests: report.relay?.attempts.length, error: report.error, shutdownError: report.shutdownError }));
 }

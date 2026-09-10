@@ -13,22 +13,23 @@ export function ordinaryParents(file) {
 }
 // This small shared journal is retained across new profiles and relay restarts.
 // A stale lock fails closed; this tool never deletes another run's lock.
-export function openRequestJournal(file) {
+export function openRequestJournal(file, { requestLimit = REQUEST_LIMIT } = {}) {
+  assert.ok(requestLimit === null || requestLimit === REQUEST_LIMIT, 'P8_INVALID_REQUEST_LIMIT');
   assert.ok(path.isAbsolute(file), 'P8_ABSOLUTE_JOURNAL_REQUIRED'); ordinaryParents(file);
   const lock = file + '.lock', owner = randomUUID();
   const lockFd = fs.openSync(lock, 'wx'); fs.writeFileSync(lockFd, JSON.stringify({ owner, pid: process.pid })); fs.fsyncSync(lockFd);
   let fd;
   try {
-    if (fs.existsSync(file)) { const stat = fs.lstatSync(file); assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.nlink === 1 && stat.size <= 65536, 'P8_INVALID_JOURNAL_FILE'); }
+    if (fs.existsSync(file)) { const stat = fs.lstatSync(file); assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.nlink === 1 && (requestLimit === null || stat.size <= 65536), 'P8_INVALID_JOURNAL_FILE'); }
     const lines = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
     assert.ok(!lines || lines.endsWith('\n'), 'P8_INCOMPLETE_JOURNAL');
     const entries = lines.trim() ? lines.trimEnd().split('\n').map(line => JSON.parse(line)) : [];
-    assert.ok(entries.length <= REQUEST_LIMIT, 'P8_JOURNAL_OVER_BUDGET');
+    assert.ok(requestLimit === null || entries.length <= requestLimit, 'P8_JOURNAL_OVER_BUDGET');
     for (const [index, row] of entries.entries()) assert.ok(row.format === 'craftmine.p8-admission/1' && row.attempt.id === index + 1 && row.attempt.requestedModel === MODEL && row.attempt.endpoint === ENDPOINT && ['hammer', 'dog'].includes(row.caseId), 'P8_JOURNAL_IDENTITY_MISMATCH');
     fd = fs.openSync(file, 'a'); let closed = false;
     return { entries, initialAttempts: entries.map(row => row.attempt),
       reserve(attempt, caseId, output) {
-        assert.ok(!closed && entries.length < REQUEST_LIMIT && attempt.id === entries.length + 1 && ['hammer', 'dog'].includes(caseId), 'P8_ADMISSION_ORDER_OR_LIMIT');
+        assert.ok(!closed && (requestLimit === null || entries.length < requestLimit) && attempt.id === entries.length + 1 && ['hammer', 'dog'].includes(caseId), 'P8_ADMISSION_ORDER_OR_LIMIT');
         const entry = { format: 'craftmine.p8-admission/1', attempt, caseId, output };
         fs.writeSync(fd, JSON.stringify(entry) + '\n'); fs.fsyncSync(fd); entries.push(entry);
       },
