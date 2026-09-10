@@ -108,7 +108,7 @@ function Assert-CmTreeEqual($Before,$After,[string]$Code) { if ((Get-CmTreeDiges
 function Read-CmHostPlan([string]$File) {
     Assert-CmNoLinks $File
     if ((Get-Item -LiteralPath $File).Length -gt 65536) { throw 'PLAN_TOO_LARGE' }
-    $plan = Get-Content -LiteralPath $File -Raw | ConvertFrom-Json
+    $plan = Get-Content -LiteralPath $File -Raw -Encoding UTF8 | ConvertFrom-Json
     Assert-CmKeys $plan @('format','root','previous','next')
     if ($plan.format -isnot [string] -or $plan.format -cne 'craftmine.windows-host-compatibility-plan/1') { throw 'PLAN_FORMAT_INVALID' }
     $plan.root = Assert-CmPath $plan.root -DOnly
@@ -228,7 +228,9 @@ function Get-CmPackage($Part) {
     if((Get-CmHash $Part.installer) -cne $Part.installerSha256){throw 'INSTALLER_HASH_MISMATCH'}
     $manifest=Join-Path $Part.packageRoot 'resources/source/build-manifest.json'
     if((Get-CmHash $manifest) -cne $Part.buildManifestSha256){throw 'BUILD_MANIFEST_HASH_MISMATCH'}
-    $m=Get-Content -LiteralPath $manifest -Raw|ConvertFrom-Json
+    # The build manifest is UTF-8 without a BOM and carries a non-ASCII product
+    # name; the Windows PowerShell default (ANSI) encoding would corrupt it.
+    $m=Get-Content -LiteralPath $manifest -Raw -Encoding UTF8|ConvertFrom-Json
     if($m.format -cne 'craftmine.build/1' -or $m.appId -cne 'world.craftmine.desktop' -or $m.commit -cne $Part.commit){throw 'BUILD_IDENTITY_MISMATCH'}
     $tree=Get-CmTree $Part.packageRoot
     if((Get-CmTreeDigest $tree) -cne $Part.packageTreeSha256){throw 'APPROVED_PAYLOAD_TREE_MISMATCH'}
@@ -258,7 +260,7 @@ function Assert-CmBackup([string]$Profile,$Seed,[string]$Version) {
     $backup=$dirs[0].FullName;$tree=Get-CmTree $backup
     $manifestPath=Join-Path $backup 'manifest.json'
     if((Get-Item -LiteralPath $manifestPath).Length -gt 65536){throw 'BACKUP_MANIFEST_TOO_LARGE'}
-    $manifest=Get-Content -LiteralPath $manifestPath -Raw|ConvertFrom-Json
+    $manifest=Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8|ConvertFrom-Json
     if($manifest.format -cne 'craftmine.offline-upgrade/1' -or $manifest.schemaVersion -ne 1 -or $manifest.targetBuild -cne $Version -or $manifest.credentialStoreIncluded -ne $false){throw 'BACKUP_IDENTITY_MISMATCH'}
     Assert-CmTreeEqual $Seed $manifest.files 'BACKUP_MANIFEST_CONTENT_MISMATCH'
     Assert-CmTreeEqual $Seed @($tree|Where-Object path -cne 'manifest.json') 'BACKUP_BODY_MISMATCH'

@@ -54,6 +54,10 @@ The plan has exactly these fields (replace every placeholder with reviewed pins)
 }
 ```
 
+All JSON the runner reads is read as UTF-8 explicitly. The release build
+manifest is UTF-8 **without a BOM** and carries a non-ASCII product name; the
+Windows PowerShell default (ANSI) encoding corrupted it on a non-UTF-8 code page
+and made `Get-CmPackage` fail before any installer ran.
 The D root must be a new, short, single-level directory, with no reparse ancestors.
 Payload digest is SHA-256 of ordinal-sorted UTF-8/LF rows
 `relative/path|decimalBytes|lowercaseSha256\n`, including **every regular payload
