@@ -9,6 +9,11 @@ import { pluginWorkPanelTab } from "./work-panel-tabs";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
+/** Return to the two primary modes without changing the active world or task. */
+export function openCraftmineModeEntry(): void {
+  window.dispatchEvent(new CustomEvent("craftmine-mode-entry-open"));
+}
+
 /**
  * Switches the workspace presentation only. Like every other layout change it
  * never creates a session, submits a prompt or stops a running task: the world,

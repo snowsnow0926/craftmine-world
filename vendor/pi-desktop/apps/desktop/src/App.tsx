@@ -35,6 +35,8 @@ import { useCraftmineLayout, useCraftmineImmersionSurface } from "./lib/use-craf
 import { CraftmineOverlayControls } from "./components/CraftmineOverlayControls";
 import { isCraftmineWorldWorkspace } from "./lib/craftmine-layout";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
+import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
+import { enterCraftmineMode } from "./lib/craftmine-mode";
 import { WindowControls } from "./components/WindowControls";
 import { useAppStore } from "./stores/app-store";
 import type { ToastOptions } from "./stores/app-store";
@@ -200,6 +202,20 @@ function AppShell() {
   const projectPath = useAppStore((s) => s.workspace?.path ?? null);
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [modeChosen, setModeChosen] = useState(false);
+  const [modeEntryOpen, setModeEntryOpen] = useState(true);
+  const modeEntryOpenRef = useRef(true);
+  modeEntryOpenRef.current = modeEntryOpen;
+  useEffect(() => {
+    const open = () => { setSearchOpen(false); setModeEntryOpen(true); };
+    window.addEventListener("craftmine-mode-entry-open", open);
+    return () => window.removeEventListener("craftmine-mode-entry-open", open);
+  }, []);
+  const selectPrimaryMode = (mode: "create" | "play") => {
+    enterCraftmineMode(mode, { explicit: true });
+    setModeChosen(true);
+    setModeEntryOpen(false);
+  };
   const [craftmineSheetOpen, setCraftmineSheetOpen] = useState(false);
   useEffect(() => {
     const update = (event: Event) => setCraftmineSheetOpen((event as CustomEvent).detail?.open === true);
@@ -256,7 +272,7 @@ function AppShell() {
   const craftmineWorldFirst = isCraftmineWorldWorkspace(page, presentedWorkPanelOpen && workPanelOpen, activeWorkPanelTabId, subagentPanelOpen);
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
   const craftmineChatRef = useRef<HTMLElement | null>(null);
-  const craftmineImmersionError = useCraftmineImmersionSurface(craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen, craftmineChatRef);
+  const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen, craftmineChatRef);
   useEffect(() => {
     if (!craftmineWorldFirst) return;
     const narrow = window.matchMedia("(max-width: 1100px)");
@@ -373,6 +389,7 @@ function AppShell() {
 
   const runMenuCommand = useCallback(
     async (command: AppMenuCommand) => {
+      if (modeEntryOpenRef.current) return;
       try {
         const store = useAppStore.getState();
         switch (command) {
@@ -620,6 +637,7 @@ function AppShell() {
       },
     );
     const onKey = (e: KeyboardEvent) => {
+      if (modeEntryOpenRef.current) return;
       const modifierOnly = MODIFIER_ONLY_KEYS.has(e.key);
       if (modifierOnly || e.isComposing || e.keyCode === 229) return;
       const shortcut = KEYBOARD_SHORTCUTS.find((candidate) =>
@@ -1848,7 +1866,7 @@ function AppShell() {
     : "";
 
   let shell: ReactNode = null;
-  if (ready) {
+  if (ready && modeChosen) {
     if (page === "settings") {
       shell = (
         <>
@@ -1878,7 +1896,13 @@ function AppShell() {
           ) : null}
 
           {craftmineImmersive && <WindowControls />}
-          <section className="main-pane" ref={craftmineChatRef} inert={craftmineImmersive && craftmineLayout.overlay === "closed" ? true : undefined} aria-hidden={craftmineImmersive && craftmineLayout.overlay === "closed" ? true : undefined}>
+          <section className="main-pane" ref={craftmineChatRef}
+            role={craftmineImmersive && craftmineLayout.overlay !== "closed" ? "dialog" : undefined}
+            aria-modal={craftmineImmersive && craftmineLayout.overlay !== "closed" ? true : undefined}
+            aria-label={craftmineImmersive && craftmineLayout.overlay !== "closed" ? (i18n.language.startsWith("zh") ? "游戏内创作" : "Create in world") : undefined}
+            tabIndex={craftmineImmersive ? -1 : undefined}
+            inert={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}
+            aria-hidden={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}>
             {craftmineImmersive && craftmineLayout.overlay !== "closed" && <CraftmineOverlayControls />}
             {craftmineImmersive && craftmineImmersionError && <div role="alert" className="craftmine-immersion-error">{craftmineImmersionError}</div>}
             {craftmineWorldFirst && !craftmineImmersive && <CraftmineChatResize width={craftmineLayout.chatWidth} />}
@@ -1950,14 +1974,14 @@ function AppShell() {
                   <PluginsPage />
                 </div>
               ) : (
-                <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen} />
+                <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen} />
               )}
             </Suspense>
           </section>
 
           {(presentedWorkPanelOpen || workPanelExiting) && (
             <WorkPanel
-              panelBlocked={searchOpen || craftmineSheetOpen}
+              panelBlocked={searchOpen || craftmineSheetOpen || modeEntryOpen}
               exiting={workPanelExiting}
               onExitAnimationEnd={() =>
                 finishWorkPanelExit(workPanelExitGeneration.current)
@@ -1986,6 +2010,7 @@ function AppShell() {
     <div
       className={cx(
         "app-shell",
+        modeEntryOpen && "craftmine-mode-entry-open",
         craftmineWorldFirst && "craftmine-world-first",
         craftmineImmersive && "craftmine-play",
         craftmineImmersive && `craftmine-overlay-${craftmineLayout.overlay}`,
@@ -1997,6 +2022,7 @@ function AppShell() {
       style={{ "--ds-sidebar-width": `${sidebarWidth}px`, "--craftmine-chat-width": `${craftmineLayout.chatWidth}px` } as CSSProperties}
     >
       {shell}
+      {ready && modeEntryOpen && <CraftmineModeEntry onSelect={selectPrimaryMode} />}
       {splash}
     </div>
   );
