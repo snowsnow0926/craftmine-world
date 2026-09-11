@@ -7,7 +7,7 @@ const { pathToFileURL } = require('node:url');
 // game must refuse incomplete or stale inputs before producing an installer.
 module.exports = async function beforePack(context) {
   if (context.electronPlatformName !== 'win32') return;
-  const root = path.resolve(context.appDir, '../../../..');
+  const root = path.resolve(context.packager.info.appDir, '../../../..');
   const build = path.join(root, 'desktop/build');
   try {
     const { fileHash, resourceInventory, verifyRuntimeResources } = await import(pathToFileURL(path.join(root, 'desktop/prepare-runtime-resources.mjs')).href);
