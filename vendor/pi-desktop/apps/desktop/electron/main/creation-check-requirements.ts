@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import {parseCreationWishIntent} from './creation-wish-intent.ts';
+import {resolveCreationSequenceIntent} from './creation-sequence-intent.ts';
 export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;presenceMutable?:boolean;solidMutable?:boolean;bounds?:{min:number[];max:number[]}};
 export type CreationRequirement = {format:'craftmine.creation-requirements/1';requestHash:string;entities:Array<{id?:string;kind?:string;position?:number[];scale?:number[];color?:string;visible?:boolean;solid?:boolean;absent?:boolean;excludeIds?:string[]}>;counts:Array<{kind:string;count:number}>;doorSequence?:{doorId:string;steps:string[];verifyPassage?:true};harvest?:{entityId:string;inventoryId:"wood";reward:1;regrowFrames:300};timeOfDay?:18;duplicates?:{kind:string;count:2;scale:number[];color:string;priorIds:string[]}};
 export type FrozenCreationRequirement = {status:'verifiable';requirements:CreationRequirement}|{status:'unverified';reason:string};
@@ -47,7 +48,7 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   else if(text==='复制这棵树两个，排开一点'&&selected?.kind==='tree'&&selected.color){r.duplicates={kind:'tree',count:2,scale:[...selected.scale],color:selected.color,priorIds:all.map(e=>e.id)};r.counts.push({kind:'tree',count:all.filter(e=>e.kind==='tree').length+2});}
   else if(wish?.action==='place'&&capture.target.position){const kind=wish.kind;r.entities.push({kind,position:capture.target.position.map(n=>Math.round(n*1000)/1000),...(wish.color?{color:wish.color}:{}),...(wish.scale?{scale:wish.scale}:{}),excludeIds:all.map(e=>e.id),visible:true,solid:true});r.counts.push({kind,count:all.filter(e=>e.kind===kind).length+1});}
   else if(/^(?:请)?删除(?:这个对象|这棵树|它)$/.test(text)&&selected){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
-  else {const sequence=/^依次触碰([A-Za-z0-9._-]+(?:、[A-Za-z0-9._-]+){1,7})后打开([A-Za-z0-9._-]+)$/.exec(text);if(!sequence)return unknown;const steps=sequence[1].split('、'),doorId=sequence[2];if(!all.some(e=>e.id===doorId&&e.kind==='door')||!steps.every(id=>all.some(e=>e.id===id&&e.kind==='marker')))return unknown;r.doorSequence={doorId,steps,verifyPassage:true};r.entities.push(...[doorId,...steps].map(id=>{const e=all.find(e=>e.id===id)!;return {id,kind:e.kind,position:[...e.position],scale:[...e.scale]};}));}
+  else {const sequence=resolveCreationSequenceIntent(input,capture);if(!sequence)return unknown;const {steps,doorId}=sequence;r.doorSequence={doorId,steps,verifyPassage:true};r.entities.push(...[doorId,...steps].map(id=>{const e=all.find(e=>e.id===id)!;return {id,kind:e.kind,position:[...e.position],scale:[...e.scale]};}));}
  }else{
   if(input.action==='place'){
    if(capture.source==='recent')return unknown;
