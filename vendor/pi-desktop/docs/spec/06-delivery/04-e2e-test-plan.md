@@ -9607,3 +9607,19 @@ ordinary observation, with base-triangle and unverified-LOD limits retained.
 Run source/hash/cohort tests separately from real native/Web fixtures and formal
 packaged source import/check/application/cold reopen. No fixture result alone
 establishes ordinary model completion or the entire GU4 acceptance scope.
+
+## GU6 fixed catalog source acceptance
+
+With two fixed ZIP versions in an isolated real catalog, model suggestions read
+only task identity and exact metadata, without a lease or install. The creations
+panel can explicitly select an older version, preserves an uncertain operation
+for exact retry, and never promotes indexing to a compatibility claim. Main
+rejects wrong catalog/file/inner hashes and owner changes before acceptance.
+After dispatch, it preserves the original-world result without confirming it for
+a new owner. Real intent-store tests cover same-ZIP/different-ref collisions,
+lost replies, renewed authorization after expiry and no duplicate source/job.
+The sealed-client scenario removes only fixture download copies, installs both
+catalog refs through the normal panel channel, checks and applies them, cold
+reopens, and repeats the exact operations to recover original receipts without
+new source or jobs. Fixture setup and model-free flow must remain labeled; a
+separate ordinary player sample is still required for player-creation claims.
