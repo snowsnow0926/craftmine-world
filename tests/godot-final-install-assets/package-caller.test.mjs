@@ -49,3 +49,9 @@ test('a source proposal cannot install after the captured source changes',async(
  const result=await f.create()({worldId:'world',operationId:'current-proposal',archiveBase64,expectedSource:{revision:1,manifestHash:'a'.repeat(64)}});
  assert.equal(result.status,'check-queued');
 });
+
+test('explicit 3D placement still rejects a declared 2D component before source writes',async()=>{
+ const root=await fs.mkdtemp(path.join(os.tmpdir(),'package-2d-position-')),f=fixture(root);
+ await assert.rejects(f.create()({worldId:'world',operationId:'wrong-dimension',archiveBase64,position:{x:1,y:0,z:2}}),/PACKAGE_POSITION_REQUIRES_3D_NODE/);
+ assert.equal(f.applied,undefined);
+});

@@ -232,7 +232,8 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
           const current=scenes.get(scene)??await fs.readFile(safe(scene),'utf8');
           const linked={...spec,parent:spec.parent??'.',script:spec.script?instance.installPath+'/'+spec.script:undefined,sceneFile:spec.sceneFile?instance.installPath+'/'+spec.sceneFile:undefined};
           if(args.position!==undefined){
-            const nodeType=spec.mode==='script-node'?spec.nodeType:parseScene(resource.files.get(spec.sceneFile)?.toString('utf8')??'').nodes.find(n=>n.parent===null)?.type;
+            const sceneRoot=spec.mode==='instance'?parseScene(resource.files.get(spec.sceneFile)?.toString('utf8')??'').nodes.find(n=>n.parent===null):null;
+            const nodeType=spec.mode==='script-node'?spec.nodeType:/(?:^|\s)type="([^"]+)"(?:\s|$)/.exec(sceneRoot?.attributes??'')?.[1];
             requireValue(typeof nodeType==='string'&&nodeType.endsWith('3D'),'PACKAGE_POSITION_REQUIRES_3D_NODE');
           }
           const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0],...(args.position?{placement:{position:`Vector3(${args.position.x}, ${args.position.y}, ${args.position.z})`}}:{})});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
