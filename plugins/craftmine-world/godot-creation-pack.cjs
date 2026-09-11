@@ -1,9 +1,45 @@
 'use strict';
 const {createHash}=require('node:crypto');
 const PROTECTED_CREATION_FILES=Object.freeze(['craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/state_guard.gd','craftmine_shared/headless_play_action.gd','craftmine_shared/scene_mesh_picker.gd']);
+// Reviewed historical cohort, never selected by a request argument or file count.
+// Only exact LF/CRLF bytes from this commit are admitted; no runtime git access.
+const HISTORICAL_CREATION_PROFILE=Object.freeze({
+ id:'creation-observer-940c5a84',sourceCommit:'940c5a84702a5ac85cbaa2de583b62ad0a5cbab2',
+ files:Object.freeze([
+  {path:'craftmine_shared/base_adapter.gd',sourcePath:'desktop/godot/shared/adapters/creation-sandbox.gd',variants:[
+   {sha256:'edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee',bytes:9456},
+   {sha256:'b381b17a4c26176fa257a843fcd5d11e48ce0ea16252961c7d8f619ba14962c5',bytes:9667}]},
+  {path:'craftmine_shared/runtime_bridge.gd',sourcePath:'desktop/godot/shared/runtime_bridge.gd',variants:[
+   {sha256:'faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2',bytes:6958},
+   {sha256:'4424aa350e3c2bcd8783c73a1adcb2a455b9c1ca2c4b4200a886d4eaa6966ac1',bytes:7104}]},
+  {path:'craftmine_shared/state_guard.gd',sourcePath:'desktop/godot/shared/state_guard.gd',variants:[
+   {sha256:'a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20',bytes:1759},
+   {sha256:'9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293',bytes:1800}]},
+ ].map(file=>Object.freeze({...file,variants:Object.freeze(file.variants.map(Object.freeze))}))),
+ absent:Object.freeze(PROTECTED_CREATION_FILES.slice(3)),
+});
 const digest=(value,algorithm='sha256')=>createHash(algorithm).update(value).digest('hex');
 const fail=code=>{throw Error(code);};
 const utf8=new TextDecoder('utf-8',{fatal:true});
+const reservedAlias=(path,name)=>typeof path==='string'&&(path.toLowerCase()===name||path.toLowerCase().startsWith(name+'.')||path.toLowerCase()===name.slice(0,-3)+'.gdc'||path.toLowerCase().startsWith(name.slice(0,-3)+'.gdc.'));
+
+function sourceContract(sourceFiles,pack){
+ const files=Array.isArray(sourceFiles)?sourceFiles:[];
+ const old=HISTORICAL_CREATION_PROFILE;
+ const historical=old.files.every(expected=>{
+  const found=files.filter(file=>file?.path===expected.path);
+  return found.length===1&&expected.variants.some(variant=>variant.sha256===found[0].sha256&&variant.bytes===found[0].bytes);
+ });
+ if(!historical)return {names:PROTECTED_CREATION_FILES,proof:{profileId:'current-source-pins',historical:false}};
+ // Do not accept a complete old sampler plus newly introduced helpers, even
+ // when those helpers would make the ordinary five-file source list complete.
+ if(old.absent.some(name=>files.some(file=>reservedAlias(file?.path,name))||[...pack.files.keys()].some(path=>reservedAlias(path,name))))fail('CREATION_PACK_HISTORICAL_PROFILE_MIXED');
+ for(const expected of old.files){
+  if(files.some(file=>file?.path!==expected.path&&reservedAlias(file?.path,expected.path))||[...pack.files.keys()].some(path=>path!==expected.path&&reservedAlias(path,expected.path)))fail('CREATION_PACK_PROTECTED_ALIAS');
+ }
+ return {names:old.files.map(file=>file.path),proof:{profileId:old.id,sourceCommit:old.sourceCommit,historical:true,
+  sceneObjectTarget:false,headlessPlayAction:false,requiresNormalMigration:true}};
+}
 
 /** Pinned Godot 4.7.2 standalone, unencrypted PCK v4. Never extracts or runs it. */
 function readPck4(buffer){
@@ -56,8 +92,8 @@ function readCreationProjectSelectors(buffer){
 
 /** Claims were pinned by core before export; @tool cannot rewrite the actual packed sampler. */
 function verifyCreationPack(buffer,sourceFiles){
- const pack=readPck4(buffer),verified=[];
- for(const name of PROTECTED_CREATION_FILES){
+ const pack=readPck4(buffer),verified=[],contract=sourceContract(sourceFiles,pack);
+ for(const name of contract.names){
   const expected=Array.isArray(sourceFiles)?sourceFiles.filter(file=>file.path===name):[];
   if(expected.length!==1||!/^[a-f0-9]{64}$/.test(expected[0].sha256)||!Number.isSafeInteger(expected[0].bytes))fail('CREATION_PACK_SOURCE_PIN_MISSING');
   for(const path of pack.files.keys())if(path!==name&&(path.toLowerCase()===name||path.toLowerCase().startsWith(name+'.')||path.toLowerCase()===name.slice(0,-3)+'.gdc'))fail('CREATION_PACK_PROTECTED_ALIAS');
@@ -67,6 +103,6 @@ function verifyCreationPack(buffer,sourceFiles){
  if(pack.files.has('override.cfg'))fail('CREATION_PACK_SELECTOR_OVERRIDE');
  const project=pack.files.get('project.binary');if(!project)fail('CREATION_PACK_PROJECT_MISSING');
  const selectors=readCreationProjectSelectors(project.data);
- return {format:'craftmine.creation-pack-proof/1',packSha256:digest(buffer),packBytes:buffer.length,engineVersion:'4.7.2-stable',packFormat:4,files:verified,project:{sha256:project.sha256,selectors}};
+ return {format:'craftmine.creation-pack-proof/1',packSha256:digest(buffer),packBytes:buffer.length,engineVersion:'4.7.2-stable',packFormat:4,files:verified,project:{sha256:project.sha256,selectors},observerContract:contract.proof};
 }
-module.exports={PROTECTED_CREATION_FILES,readPck4,readCreationProjectSelectors,verifyCreationPack};
+module.exports={PROTECTED_CREATION_FILES,HISTORICAL_CREATION_PROFILE,readPck4,readCreationProjectSelectors,verifyCreationPack};

@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {createRequire} from 'node:module';
+import {execFileSync} from 'node:child_process';
 const require=createRequire(import.meta.url),{PROTECTED_CREATION_FILES,readPck4,readCreationProjectSelectors,verifyCreationPack}=require('../plugins/craftmine-world/godot-creation-pack.cjs');
 const hash=(value,algorithm='sha256')=>createHash(algorithm).update(value).digest(),u32=value=>{const b=Buffer.alloc(4);b.writeUInt32LE(value);return b;},u64=value=>{const b=Buffer.alloc(8);b.writeBigUInt64LE(BigInt(value));return b;};
 const string=value=>{const raw=Buffer.from(value),pad=Buffer.alloc((4-raw.length%4)%4);return Buffer.concat([u32(4),u32(raw.length),raw,pad]);};
@@ -21,3 +22,57 @@ test('binary project reader skips only length-bounded unrelated variants and rej
  const b=project();b.writeUInt32LE(0xffffffff,8);assert.throws(()=>readCreationProjectSelectors(b),/PROJECT_INVALID/);
 });
 test('truncation, out-of-range file offsets and raw data corruption are refused',()=>{const b=pack(files());assert.throws(()=>readPck4(b.subarray(0,b.length-1)));const corrupted=Buffer.from(b);corrupted[112]^=1;assert.throws(()=>readPck4(corrupted),/DIGEST_MISMATCH/);const invalid=Buffer.from(b);invalid.writeBigUInt64LE(2n**63n,32);assert.throws(()=>readPck4(invalid),/RANGE_INVALID/);});
+
+const {HISTORICAL_CREATION_PROFILE:history}=require('../plugins/craftmine-world/godot-creation-pack.cjs');
+const oldFiles=(crlf=false)=>[...history.files.map(file=>({path:file.path,data:execFileSync('git',['show',history.sourceCommit+':'+file.sourcePath],{encoding:'utf8',windowsHide:true}).replace(/\r\n/g,'\n').replace(/\n/g,crlf?'\r\n':'\n')})),{path:'project.binary',data:project()}];
+
+test('reviewed history pins are exact committed LF/CRLF sources and do not claim new capabilities',()=>{
+ for(const crlf of [false,true]){
+  const entries=oldFiles(crlf),expected=pins(entries);
+  for(const file of history.files){const actual=expected.find(entry=>entry.path===file.path);assert.ok(file.variants.some(variant=>variant.bytes===actual.bytes&&variant.sha256===actual.sha256));}
+  const proof=verifyCreationPack(pack(entries),expected);
+  assert.equal(proof.format,'craftmine.creation-pack-proof/1');assert.equal(proof.files.length,3);
+  assert.deepEqual(proof.observerContract,{profileId:history.id,sourceCommit:history.sourceCommit,historical:true,sceneObjectTarget:false,headlessPlayAction:false,requiresNormalMigration:true});
+ }
+ const current=verifyCreationPack(pack(files()),pins(files()));
+ assert.deepEqual(current.observerContract,{profileId:'current-source-pins',historical:false});
+ assert.equal(Object.hasOwn(current.observerContract,'sceneObjectTarget'),false);
+ assert.equal(Object.hasOwn(current.observerContract,'headlessPlayAction'),false);
+});
+
+test('historical source selection rejects unknown, incomplete and version-mixed old cohorts',()=>{
+ const originals=oldFiles();
+ for(let index=0;index<3;index++){
+  const mutated=structuredClone(originals);mutated[index].data+='\n# one changed byte\n';
+  assert.throws(()=>verifyCreationPack(pack(mutated),pins(mutated)),/SOURCE_PIN_MISSING/);
+  const missing=originals.filter((_,i)=>i!==index);assert.throws(()=>verifyCreationPack(pack(missing),pins(missing)),/SOURCE_PIN_MISSING/);
+ }
+ const duplicate=[...originals,{...originals[0]}];assert.throws(()=>verifyCreationPack(pack(originals),pins(duplicate)),/SOURCE_PIN_MISSING/);
+ const unknown=files().slice(0,3).concat({path:'project.binary',data:project()});assert.throws(()=>verifyCreationPack(pack(unknown),pins(unknown)),/SOURCE_PIN_MISSING/);
+});
+
+test('new helpers or any known remap/compiled alias cannot be mixed into reviewed history',()=>{
+ for(const name of history.absent)for(const suffix of ['', '.remap', '.uid']){
+  const added={path:name+suffix,data:'untrusted helper'},originals=oldFiles();
+  assert.throws(()=>verifyCreationPack(pack([...originals,added]),pins(originals)),/HISTORICAL_PROFILE_MIXED/);
+  assert.throws(()=>verifyCreationPack(pack(originals),[...pins(originals),{path:added.path,bytes:1,sha256:'a'.repeat(64)}]),/HISTORICAL_PROFILE_MIXED/);
+ }
+ for(const name of history.absent)for(const alias of [name.toUpperCase(),name.replace('.gd','.gdc'),name.replace('.gd','.gdc.remap')]){
+  const originals=oldFiles();assert.throws(()=>verifyCreationPack(pack([...originals,{path:alias,data:'untrusted'}]),pins(originals)),/HISTORICAL_PROFILE_MIXED/);
+ }
+ const mixed=[...oldFiles(),...files().filter(file=>history.absent.includes(file.path))];assert.throws(()=>verifyCreationPack(pack(mixed),pins(mixed)),/HISTORICAL_PROFILE_MIXED/);
+});
+
+test('historical PCK still verifies each actual script and selector independently of source pins',()=>{
+ for(let index=0;index<3;index++){
+  const entries=oldFiles(),expected=pins(entries);entries[index].data+='x';
+  assert.throws(()=>verifyCreationPack(pack(entries),expected),/PROTECTED_MISMATCH/);
+  const missing=oldFiles();assert.throws(()=>verifyCreationPack(pack(missing.filter((_,i)=>i!==index)),pins(missing)),/PROTECTED_MISMATCH/);
+ }
+ for(const file of history.files)for(const alias of [file.path+'.remap',file.path.replace('.gd','.gdc'),file.path.replace('.gd','.gdc.remap')]){
+  const entries=oldFiles();assert.throws(()=>verifyCreationPack(pack([...entries,{path:alias,data:'alias'}]),pins(entries)),/PROTECTED_ALIAS/);
+  assert.throws(()=>verifyCreationPack(pack(entries),[...pins(entries),{path:alias,bytes:5,sha256:'a'.repeat(64)}]),/PROTECTED_ALIAS/);
+ }
+ const entries=oldFiles();entries.at(-1).data=project([selectors[0],[selectors[1][0],'res://forged.gd']]);
+ assert.throws(()=>verifyCreationPack(pack(entries),pins(entries)),/SELECTOR_MISMATCH/);
+});
