@@ -1,0 +1,140 @@
+{
+  "format": "craftmine.promo-effect-summary/1",
+  "wish": {
+    "id": "FLIGHT01",
+    "text": "我想要驾驶歼20。"
+  },
+  "driverStatus": "TASK_SETTLED_UNVERIFIED",
+  "assessment": "MODEL_ERROR_EMPTY_RESPONSE",
+  "functional": "NOT_IMPLEMENTED",
+  "visual": "NO_AIRCRAFT",
+  "worldId": "world-a5b0009792d7",
+  "model": "deepseek-flash",
+  "thinking": "high",
+  "budget": {
+    "limit": 40,
+    "reserved": 8,
+    "remaining": 32
+  },
+  "actualReservations": 8,
+  "modelSourceWrites": 0,
+  "adoptionAttempted": false,
+  "playerClarification": {
+    "mode": "recommended-or-first",
+    "count": 1,
+    "questionCount": 4,
+    "events": [
+      {
+        "sessionId": "d23fede3-b148-407c-89a5-71f098aaef9b",
+        "requestId": "268cf247-9c9c-4bc3-8101-58301588f06b",
+        "toolCallId": "call_00_SORtxfk0QzLumeOwJZGB6443",
+        "questions": [
+          {
+            "question": "歼20 的飞行手感你想要哪一种？",
+            "options": [
+              "街机式好上手：A/D 转向、W 加速、松手自动保持平飞，几乎不会失控",
+              "半真实：需要速度维持升力，俯仰/滚转/偏航分开控制，低速会失速下坠",
+              "先做街机式，之后我再让你调更真实"
+            ]
+          },
+          {
+            "question": "你想怎么开始驾驶它？",
+            "options": [
+              "出生点前方停一架，走近按 E 登机/下机（保留步行）",
+              "一进世界就直接坐在驾驶舱里（第一人称座舱视角）",
+              "放在远处跑道上，我需要自己走过去登机"
+            ]
+          },
+          {
+            "question": "除了飞行，还要什么系统？",
+            "options": [
+              "只要能飞（含加力加速、起落架收放、抬头显示）",
+              "飞行 + 机炮/导弹发射效果（有火光弹道，不做实际伤害/爆炸逻辑）",
+              "飞行 + 导弹 + 命中目标爆炸击毁"
+            ]
+          },
+          {
+            "question": "高空表现和场景范围要做到哪一步？",
+            "options": [
+              "低空绕场飞行就够（几百米高度内）",
+              "能爬升到高空巡航，速度快、视野开阔",
+              "还要加云层/地景扩展，飞起来更有高度感"
+            ]
+          }
+        ],
+        "answers": [
+          [
+            "街机式好上手：A/D 转向、W 加速、松手自动保持平飞，几乎不会失控"
+          ],
+          [
+            "出生点前方停一架，走近按 E 登机/下机（保留步行）"
+          ],
+          [
+            "只要能飞（含加力加速、起落架收放、抬头显示）"
+          ],
+          [
+            "低空绕场飞行就够（几百米高度内）"
+          ]
+        ],
+        "choices": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        "selectionReasons": [
+          "first-listed-option",
+          "first-listed-option",
+          "first-listed-option",
+          "first-listed-option"
+        ],
+        "startedAt": "2026-09-11T18:29:29.998Z",
+        "status": "resolved",
+        "answeredAt": "2026-09-11T18:29:30.004Z"
+      }
+    ]
+  },
+  "error": {
+    "code": "EMPTY_MODEL_RESPONSE",
+    "details": {
+      "phase": "stream",
+      "providerStatus": 200,
+      "providerWaitMs": 319,
+      "streamMs": 74508
+    },
+    "message": "The model ended its turn without producing any output",
+    "retriable": true
+  },
+  "lastResponseUsage": {
+    "cacheReadTokens": 8320,
+    "inputTokens": 79706,
+    "outputTokens": 16384,
+    "reasoningTokens": 16384,
+    "totalTokens": 104410
+  },
+  "lastResponseDurationMs": 74508,
+  "modelTaskStatus": "error",
+  "startedAt": "2026-09-11T18:28:42.052Z",
+  "endedAt": "2026-09-11T18:33:08.667Z",
+  "elapsedMs": 266615,
+  "packageRoot": "D:\\cm-promo-loop-0912\\desktop\\build\\releases\\964d96d06ce8-ee1849da-a925-41c3-988c-38cb3b6784af\\output\\win-unpacked",
+  "packageInventory": "d9852acab6c6d8c191ef2eed0f877e478b5cc76f496ed7995380ad405d735b63",
+  "originalReport": "D:\\cm-promo-flight-clarified-0912\\test-results\\desktop-native-complete-BKI6gF\\report.json",
+  "originalReportSha256": "14a71b8b3dd206f2b4ab81dc9a38d5791090890d8c26aec9e801335b1d169704",
+  "image": "formal-world.png",
+  "imageSha256": "9450d1c6a926b40ede4b6cfd9f8e8bc4772999c0fbe3281432e6285cd0c35957",
+  "isolation": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  }
+}
