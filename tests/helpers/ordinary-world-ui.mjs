@@ -39,6 +39,11 @@ export async function createSessionThroughDesktopUi(port,worldId){
  const targets=await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
  const matches=[];
  for(const target of targets){
+  // Only the ordinary packaged desktop renderer owns Session IPC. Godot pages
+  // and WASM worker targets may not service Runtime.evaluate while executing.
+  if(target.type!=='page'||typeof target.url!=='string')continue;
+  const page=new URL(target.url);
+  if(page.protocol!=='file:'||!page.pathname.endsWith('/out/renderer/index.html'))continue;
   if(!target.webSocketDebuggerUrl)continue;
   const url=new URL(target.webSocketDebuggerUrl);
   if(!['127.0.0.1','localhost'].includes(url.hostname)||url.port!==String(port))continue;
