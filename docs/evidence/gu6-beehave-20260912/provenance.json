@@ -1,0 +1,24 @@
+{
+  "format": "craftmine.beehave-trial-provenance/1",
+  "baselineCommit": "0ce0ba9f",
+  "upstreamCommit": "58a0df12330114e330f47fc1469132f016c056bc",
+  "upstreamVersion": "2.9.4-dev",
+  "hostFiles": [
+    {
+      "file": "scripts/try-beehave-runtime.mjs",
+      "sha256": "8108bb136b2ae3755ba88c8d769c28b862c9b5735df1d161192f3220216bc204"
+    },
+    {
+      "file": "scripts/lib/beehave-trial-evidence.mjs",
+      "sha256": "082a67b6434797d33a617f7235b60204057b03b5b89572ae71220fd202e6e1d6"
+    },
+    {
+      "file": "scripts/fixtures/beehave-follow-trial.gd",
+      "sha256": "262525ea9339f5f451f47b5172494246ee2935e7c44cf50ce023266528a044f8"
+    },
+    {
+      "file": "scripts/lib/godot-external-receipt.mjs",
+      "sha256": "7e9a83fa78e75eec2129b1338be11ea414b4e6bf4a4aa442d1386073afb49abe"
+    }
+  ]
+}

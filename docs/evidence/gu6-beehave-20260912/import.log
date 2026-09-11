@@ -1,0 +1,90 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Call to GetAdaptersAddresses failed with error 5.
+   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 项目初始化 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 正在扫描文件结构……[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 正在加载全局类名……[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | 正在校验 GDExtension……[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 正在创建自动加载脚本……[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 正在初始化插件……[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | 正在启动文件扫描……[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started 正在注册全局类…… (13 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | BeehaveDebuggerMessages[39m[0m
+[   7% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  14% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  21% ] [90m[1mupdate_scripts_classes[22m | Composite[39m[0m
+[  28% ] [90m[1mupdate_scripts_classes[22m | SelectorReactiveComposite[39m[0m
+[  35% ] [90m[1mupdate_scripts_classes[22m | SequenceReactiveComposite[39m[0m
+[  42% ] [90m[1mupdate_scripts_classes[22m | ActionLeaf[39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | ConditionLeaf[39m[0m
+[  57% ] [90m[1mupdate_scripts_classes[22m | Leaf[39m[0m
+[  64% ] [90m[1mupdate_scripts_classes[22m | BeehaveNode[39m[0m
+[  71% ] [90m[1mupdate_scripts_classes[22m | BeehaveTree[39m[0m
+[  78% ] [90m[1mupdate_scripts_classes[22m | Blackboard[39m[0m
+[  85% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started 正在扫描动作…… (8 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | action.svg[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | blackboard.svg[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | category_composite.svg[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | category_leaf.svg[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | condition.svg[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | selector_reactive.svg[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | sequence_reactive.svg[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | tree.svg[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 正在导入或重新导入资产 (8 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  11% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  22% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  33% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  44% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  55% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  66% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  77% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在执行重新导入的前置操作……[39m[0m
+[   0% ] [90m[1mreimport[22m | action.svg[39m[0m
+[  11% ] [90m[1mreimport[22m | blackboard.svg[39m[0m
+[  22% ] [90m[1mreimport[22m | category_composite.svg[39m[0m
+[  33% ] [90m[1mreimport[22m | category_leaf.svg[39m[0m
+[  44% ] [90m[1mreimport[22m | condition.svg[39m[0m
+[  55% ] [90m[1mreimport[22m | selector_reactive.svg[39m[0m
+[  66% ] [90m[1mreimport[22m | sequence_reactive.svg[39m[0m
+[  77% ] [90m[1mreimport[22m | tree.svg[39m[0m
+[  88% ] [90m[1mreimport[22m | 正在结束资产导入……[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 正在导入或重新导入资产 (8 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在执行重新导入的后置操作……[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started 正在加载编辑器 (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | 正在加载编辑器布局……[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | 正在加载停靠面板……[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
