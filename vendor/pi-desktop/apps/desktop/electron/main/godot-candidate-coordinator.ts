@@ -42,7 +42,7 @@ export function createGodotCandidateCoordinator(options:{
     const descriptor=await options.adapter.describeCandidate(worldId,session.id,session.token);
     if(descriptor.buildId!==prepared.buildId||descriptor.applicationInputHash!==prepared.inputHash||!isDeepStrictEqual(descriptor.snapshot,expected))throw new Error("GODOT_CANDIDATE_DESCRIPTOR_MISMATCH");
     session.descriptor=descriptor;
-    await options.host.stageCandidate(descriptor,{first});
+    await options.host.stageCandidate(descriptor,{first,candidateId});
     return session;
   }
   async function confirm(session:Session) {

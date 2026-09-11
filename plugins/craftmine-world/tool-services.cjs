@@ -18,6 +18,7 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
+  captureView:{kind:'function',owner:'R2',hostMethod:'godotViewCapture',provides:'one real bound game-view PNG for a declared image-capable session; never desktop capture',requiredFor:['godot_view_capture']},
   sourceLibrary:{kind:'function',owner:'S3',hostMethod:'asset.search+asset.read+asset.bodyPath',provides:'modern source ZIP discovery and host-bound proposals; player installation uses package.installSource',requiredFor:['godot_source_library']},
   executorCreationCompletion:{kind:'function',owner:'CN4',hostMethod:null,optional:true,provides:'same-job recorded application state; a diagnostic receipt never grants application authority',requiredFor:['godot_build_read']},
   buildReadWaitMs:{kind:"number",owner:"NB5",hostMethod:null,optional:true,provides:"bounded model job-read waiting in milliseconds; fixture default is zero",requiredFor:["godot_build_read"]},
@@ -113,6 +114,7 @@ function describeToolServices(options){
 function createHostProviders(callHost){
   if(typeof callHost!=='function')fail('HOST_CALL_REQUIRED');
   return {
+    async captureView(input){return callHost('godotViewCapture',input);},
     async creationTarget(context){return callHost('creationTarget',context);},
     async sampleLiveState({worldId,buildId,instanceId}={}){
       const envelope=await callHost('godotLiveState',{worldId:worldId??null,buildId:buildId??null,instanceId:instanceId??null});

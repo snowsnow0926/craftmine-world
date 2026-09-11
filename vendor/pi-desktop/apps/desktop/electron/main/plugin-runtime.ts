@@ -1,5 +1,6 @@
 import { ASSET_PANEL_CHANNELS } from "./craftmine-asset-panel";
 import { craftmineAuthorizedBudget } from "@pi-desktop/agent-runtime";
+import {authorizeViewCaptureCaller} from "./craftmine-view-capture";
 import {
   readFileSync,
   existsSync,
@@ -221,6 +222,7 @@ export type PluginHostServices = {
     instanceId?: string | null;
   }) => Promise<Record<string, unknown> | null>;
   craftmineCreationTarget?: (input:{projectId:string;sessionId:string;turnId:string}) => Promise<Record<string, unknown>|null>;
+  craftmineViewCapture?: (input:unknown) => Promise<Record<string,unknown>>;
   craftmineCreationCheckCompleted?: (input:{jobId:string;context:{projectId:string;sessionId:string;turnId:string}}) => Promise<Record<string,unknown>>;
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
@@ -1632,6 +1634,12 @@ export class PluginRuntime {
           buildId: idOrNull(input.buildId),
           instanceId: idOrNull(input.instanceId),
         });
+      }
+      case "craftmine.godotViewCapture": {
+        if(pluginId!=="craftmine.world"||!this.services.craftmineViewCapture)throw apiError("UNSUPPORTED","Game view capture unavailable");
+        if(args.length!==1)throw apiError("INVALID_ARGUMENT","One bound capture request required");
+        const input=authorizeViewCaptureCaller(args[0],this.inFlightTool(pluginId));
+        return this.services.craftmineViewCapture(input);
       }
       case "craftmine.creationTarget": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineCreationTarget) throw apiError("UNSUPPORTED", "Creation target unavailable");
