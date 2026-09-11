@@ -10,8 +10,12 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {createCompleteOutput,completeEnvironment} from '../godot-final/complete-contract.mjs';
 import {assertCleanHeadlessShutdown} from '../player-product/shutdown-exit-audit.mjs';
 import {assertFormalPackageCheck,assertFormalAdoption,assertFormalCold} from './formal-package-contract.mjs';
+import {seedCatalogArchives,assertCatalogSourceBinding} from './formal-catalog-contract.mjs';
 const root=path.resolve(import.meta.dirname,'../..');
 const packaged=process.env.CRAFTMINE_PACKAGED_ROOT;
+const sourceMode=process.env.CRAFTMINE_SOURCE_PACKAGE_MODE??'file';
+assert.ok(['file','catalog'].includes(sourceMode),'Unknown source package mode');
+if(sourceMode==='catalog')assert.ok(process.env.CRAFTMINE_EXPECTED_PACKAGE_COMMIT,'Catalog trial requires an explicit new package commit');
 if(!packaged||!path.isAbsolute(packaged))throw Error('Exact sealed CRAFTMINE_PACKAGED_ROOT required');
 const resources=path.join(packaged,'resources'),manifestFile=path.join(resources,'source/build-manifest.json');
 const manifest=JSON.parse(fs.readFileSync(manifestFile,'utf8'));
@@ -28,6 +32,8 @@ const out=createCompleteOutput(root),profile=path.join(out,'profile'),legacySour
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
 const report={format:'craftmine.formal-package-client/1',out,packaged,commit:manifest.commit,manifestSha256:hash(fs.readFileSync(manifestFile)),startedAt:new Date().toISOString(),launches:[],steps:[],calls:[],packages:[],
   scope:'Model-free protected ordinary source-package import/check/candidate/apply/restart',notVerified:['Player-model authorship','Module parameter progress persistence','Player controls and gameplay','Second formal world']};
+report.sourceMode=sourceMode;
+if(sourceMode==='catalog')report.notVerified.push('Initial catalog input is an explicit core fixture, not an ordinary asset UI import');
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));let imageCount=0;
 function evidence(value){if(Array.isArray(value))return value.map(evidence);if(value&&typeof value==='object'){const result={};for(const [key,item]of Object.entries(value)){if(key==='pngBase64'){const bytes=Buffer.from(item,'base64'),file='capture-'+(++imageCount)+'.png';fs.writeFileSync(path.join(out,file),bytes);result.image={file,sha256:hash(bytes),bytes:bytes.length};}else result[key]=evidence(item);}return result;}return value;}
 let child,ready=false,ended=true,exit=Promise.resolve(),launch,stopping=false;const pending=new Map();
@@ -59,6 +65,7 @@ async function terminal(worldId,jobId){return until(()=>nav('godot.historyJob',{
 function ids(list){return list.items.map(item=>item.entityId).sort();}
 console.log('EVIDENCE_DIRECTORY='+out);save();
 try{
+  if(sourceMode==='catalog')report.catalogFixture=await step('explicit catalog fixture import and original test download removal',()=>seedCatalogArchives({root,out,profile,binary:path.join(resources,'bin/craftmine-core.exe'),assertActive:()=>{if(stopping)throw Error('TRIAL_CANCELLED');}}));
   start();await step('sealed client starts offscreen in protected fresh profile',started);
   await step('ordinary create mode opens product surface',()=>rpc('primaryMode',{payload:{action:'create'}}));
   const world=await step('ordinary creation-sandbox world creation',()=>nav('world.create',{title:'GU6 formal package adoption',baseId:'creation-sandbox',starterId:'blank',operationId:randomUUID()}));report.worldId=world.id;
@@ -66,8 +73,11 @@ try{
   report.initialObservation=await rpc('godotObserve');report.initialSnapshot=await rpc('godotSnapshot');save();
   const expectedIds=[];let lastBuild=report.initialObservation.buildId;
   for(const kind of ['building','road']){
-    const bytes=fs.readFileSync(path.join(root,'docs/evidence/gu6-kenney-modules-20260912',kind+'.zip'));fs.writeFileSync(path.join(out,'component.zip'),bytes);
-    const imported=await step(kind+' ordinary native importSource',()=>packageCall(world.id,'importSource',{operationId:randomUUID()}));
+    const bytes=fs.readFileSync(path.join(root,'docs/evidence/gu6-kenney-modules-20260912',kind+'.zip'));
+    if(sourceMode==='file')fs.writeFileSync(path.join(out,'component.zip'),bytes);
+    const catalog=report.catalogFixture?.records.find(r=>r.kind===kind),operationId=randomUUID();
+    const imported=await step(kind+' ordinary native '+(catalog?'importCatalogSource':'importSource'),()=>packageCall(world.id,catalog?'importCatalogSource':'importSource',{operationId,...(catalog?{ref:catalog.ref}:{})}));
+    if(catalog)assertCatalogSourceBinding(catalog,imported);
     assert.equal(imported.status,'check-queued');assert.equal(imported.applied,false);assert.equal(imported.archiveSha256,hash(bytes));expectedIds.push(...imported.instanceIds.map(id=>id+'-e0'));
     const checked=await step(kind+' actual executor job check passed',()=>terminal(world.id,imported.job.id));assertFormalPackageCheck(world.id,imported,checked);
     const native=await packageCall(world.id,'sourceJob',{jobId:imported.job.id});assert.equal(native.status,'passed');assert.equal(native.terminal,true);
@@ -79,7 +89,7 @@ try{
     assertFormalAdoption(world.id,checked,preview,applied,observed);
     const listed=await step(kind+' adopted source identities',()=>packageCall(world.id,'sourceList'));for(const id of expectedIds)assert.ok(ids(listed).includes(id));
     const capture=await step(kind+' formal runtime pixels',()=>rpc('godotCaptureView'));assert.ok(capture.pixelStats.sampledColors>4);
-    report.packages.push({kind,archiveSha256:hash(bytes),imported,checked:evidence(checked),preview,adoptedBuildId:lastBuild,identities:ids(listed)});save();
+    report.packages.push({kind,archiveSha256:hash(bytes),imported,checked:evidence(checked),preview,adoptedBuildId:lastBuild,identities:ids(listed),...(catalog?{catalogRef:catalog.ref,operationId}:{})});save();
   }
   await panel(world.id,'godot.runtimeSave',{freeze:true});const beforeCold={observation:await rpc('godotObserve'),snapshot:await rpc('godotSnapshot'),sources:await packageCall(world.id,'sourceList')};report.beforeCold=evidence(beforeCold);save();
   await step('first process shuts down cleanly',stop);start();await step('same sealed build cold reopens protected profile',started);
@@ -87,6 +97,13 @@ try{
   await step('ordinary world.open after cold launch',()=>nav('world.open',{id:world.id}));await settled(world.id);
   const afterCold=await step('adopted package source and build survive cold restart',async()=>{const observed=await rpc('godotObserve'),sources=await packageCall(world.id,'sourceList');assert.equal(observed.worldId,world.id);assert.equal(observed.buildId,beforeCold.observation.buildId);assert.deepEqual(ids(sources),ids(beforeCold.sources));return {observed,sources,snapshot:await rpc('godotSnapshot')};});report.afterCold=evidence(afterCold);
   assertFormalCold(beforeCold,afterCold);
+  if(sourceMode==='catalog'){
+    for(const entry of report.packages)await step(entry.kind+' same catalog operation survives service restart',async()=>{
+      const replay=await packageCall(world.id,'importCatalogSource',{operationId:entry.operationId,ref:entry.catalogRef});assert.deepEqual(replay,entry.imported);
+      const sources=await packageCall(world.id,'sourceList');assert.deepEqual(sources,afterCold.sources);
+      const observed=await rpc('godotObserve');assert.equal(observed.buildId,afterCold.observed.buildId);return {replay,sources};
+    });
+  }
   await step('cold reopened formal runtime pixels',()=>rpc('godotCaptureView'));const status=await rpc('status');assert.deepEqual(status.violations,[]);assert.deepEqual(status.pageErrors,[]);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
 }catch(error){report.failure=String(error.stack??error);process.exitCode=1;console.error(report.failure);}
 finally{try{await stop();}catch(error){report.shutdownFailure=String(error.stack??error);process.exitCode=1;}clearInterval(cancelPoll);report.passed=!stopping&&!report.failure&&!report.shutdownFailure&&report.steps.every(s=>s.passed);report.finishedAt=new Date().toISOString();save();console.log('EVIDENCE_DIRECTORY='+out);}

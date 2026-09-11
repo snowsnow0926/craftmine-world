@@ -2,6 +2,8 @@
 
 2026-09-12，只读审计基于 `09f7443a`。以下是待实施增量，当前未交付。
 
+开发已开始：模型建议、作品界面和宿主接受路径分别在独立工作树实现。主集成的正式产品验收驱动新增显式 `CRAFTMINE_SOURCE_PACKAGE_MODE=catalog`；在客户端启动前用同一包的真实核心向独立库导入两份固定 ZIP，删除仅供测试的下载副本，然后计划走正常 `importCatalogSource`、检查、采用和冷开重放。种子准备、三层身份区分及原流程回归共 12 项测试通过；此时新宿主方法尚未合入，不能把驱动准备称为实际安装成功。
+
 现有 `godot_library` 能检索 ZIP，但其 `proposeInstall` 指向旧 library bundle 的 `package.install`，不是 CP0 ZIP 源安装。不能把这两条路径或三层哈希混用。最小方案沿用现有作品面板和 `createManagedPackageInstaller.installSource`，不增加安装注册表。
 
 1. 模型只提出固定 `{assetId, version, contentHash}` 及宿主绑定 worldId，保持 `applies:false`、`requiresPlayerAction:true`。读回确切版本，确认包含 ZIP；提案不是授权凭证。
