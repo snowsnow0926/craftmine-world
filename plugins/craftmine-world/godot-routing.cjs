@@ -17,7 +17,7 @@ const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_in
 // used for a tool that does not depend on a flag.
 const LOCAL_TOOLS={
   godot_docs:{owner:'S6',hostMethod:null,needs:[]},
-  godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'}}},
+  godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'},'propose-group':{proposal:true,targetMethod:'package.installSourceProposal'}}},
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
