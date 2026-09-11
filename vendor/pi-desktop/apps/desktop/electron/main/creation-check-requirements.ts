@@ -69,7 +69,7 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
  for(const kind of kinds)if(!r.counts.some(c=>c.kind===kind))r.counts.push({kind,count:all.filter(e=>e.kind===kind).length});
  return validCreationRequirement(r)?{status:'verifiable',requirements:r}:unknown;
 }
-export function creationRequirementsHash(r:CreationRequirement):string{const canonical=(v:any):any=>{if(typeof v==='number'){const b=Buffer.alloc(8);b.writeDoubleBE(v===0?0:v);return {$f64:b.toString('hex')};}return Array.isArray(v)?v.map(canonical):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,canonical(v[k])])):v;};return hash(JSON.stringify(canonical(r)));}
+export function creationRequirementsHash(r:CreationRequirement):string{const canonical=(v:any):any=>{if(typeof v==='number'){const b=Buffer.alloc(8);b.writeDoubleBE(v===0?0:v);return {$f64:b.toString('hex')};}return Array.isArray(v)?v.map(canonical):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).map(k=>[k,canonical(v[k])])):v;};return hash(JSON.stringify(canonical(r)));}
 export function creationEntitiesMatch(r:CreationRequirement,entities:CreationEntity[]):boolean {
  if(!Array.isArray(entities)||entities.length>256||entities.some(e=>!id(e?.id)||!kinds.includes(e.kind)||!vector(e.position)||!vector(e.scale))||new Set(entities.map(e=>e.id)).size!==entities.length)return false;
  const close=(a:number[],b:number[])=>a.every((n,i)=>Math.abs(n-b[i])<=0.005);
@@ -83,7 +83,7 @@ export function creationEntitiesMatch(r:CreationRequirement,entities:CreationEnt
 export function assertCreationJobRequirements(capture:{creationRequirements?:FrozenCreationRequirement},job:any):void {
  const frozen=capture.creationRequirements;
  if(frozen?.status!=='verifiable')throw Error('CREATION_REQUIREMENTS_NEED_REVIEW');
- if(job?.checkRequirementsHash!==creationRequirementsHash(frozen.requirements)||!job.checkRequirements?.creation||creationRequirementsHash(job.checkRequirements.creation)!==creationRequirementsHash(frozen.requirements))throw Error('CREATION_REQUIREMENTS_NOT_BOUND');
+ if(job?.checkRequirementsHash!==creationRequirementsHash(frozen.requirements)||!job.checkRequirements?.creation||creationRequirementsHash(job.checkRequirements.creation)!==creationRequirementsHash(frozen.requirements))throw Error(`CREATION_REQUIREMENTS_NOT_BOUND:${creationRequirementsHash(frozen.requirements)}:${job?.checkRequirementsHash??'missing'}:${job?.checkRequirements?.creation?creationRequirementsHash(job.checkRequirements.creation):'missing'}`);
 }
 
 // The caller must obtain this journal from the formal build before the edit
