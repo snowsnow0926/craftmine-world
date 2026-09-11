@@ -25,11 +25,14 @@ assert.ok(secret&&config.baseUrl==='https://api.deepseek.com'&&config.vendorKey=
 const client=resolveCreationNativeLaunch({root:process.cwd(),packagedRoot,requiredGuards:['HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED','playerSetup','playerPrompt','headlessAskPending','headlessAskResolve','headlessPermissionPending','headlessPermissionResolve']});
 const proofs=[sourceFile,markerFile,configFile,textFile].map(fileProof),sanitize=checkpointSanitizer([secret,marker.token]),runId=randomUUID();
 const output=path.join(out,'player-'+runId+'.json'),controller=new AbortController(),signal=controller.signal;
+const cancelFile=path.join(out,'player-'+runId+'.cancel');
 for(const event of ['SIGINT','SIGTERM'])process.on(event,()=>controller.abort());
 const exchange=createFileClarificationExchange({directory:path.join(out,'player-questions-'+runId),signal});
 const permissionDirectory=path.join(out,'player-permissions-'+runId);fs.mkdirSync(permissionDirectory);
 const report={format:'craftmine.promo-player/1',sourceReport:sourceFile,worldId,sessionId,packageIdentity:client.identity,playerConfig:config,text,messageId:randomUUID(),startedAt:new Date().toISOString(),status:'PREPARING',clarifications:[],permissions:[],permissionDirectory,questionDirectory:exchange.directory,creationEvaluation:false,sourceEditsByHarness:0};
+report.cancelFile=cancelFile;
 fs.writeFileSync(output,JSON.stringify(report,null,2),{flag:'wx'});const save=()=>fs.writeFileSync(output,JSON.stringify(sanitize(report),null,2));
+const cancelWatch=setInterval(()=>{if(fs.existsSync(cancelFile))controller.abort();},250);
 const env=adoptionEnvironment(client,{out,profile,token:marker.token});assert.equal(env.CRAFTMINE_CREATION_EVAL,undefined);
 let ready=false,ended=false,exitReport,submitted=false,seenActive=false;const pending=new Map();
 const child=spawn(client.executable,client.args,{cwd:client.cwd,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
@@ -84,6 +87,7 @@ try{
   if(signal.aborted)report.status='CANCELLED';
 }catch(error){report.status=signal.aborted?'CANCELLED':'RUN_FAILED';report.error=String(error.stack??error);process.exitCode=1;}
 finally{
+  clearInterval(cancelWatch);
   if(!ended){
     if(submitted){try{await rpc('playerAbort',{payload});report.latest=await rpc('playerStatus',{payload});assert.equal(report.latest.active,false);}catch(error){report.closeoutError=String(error.message);}}
     try{const frame=await rpc('godotCaptureView');const imageFile='player-'+runId+'-formal-world.png';fs.writeFileSync(path.join(out,imageFile),Buffer.from(frame.pngBase64,'base64'),{flag:'wx'});report.formalCapture={file:imageFile,width:frame.width,height:frame.height};}catch(error){report.captureError=String(error.message);}
