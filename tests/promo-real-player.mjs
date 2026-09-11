@@ -83,7 +83,10 @@ try{
     const state=await rpc('playerStatus',{payload});report.latest=state;assert.equal(state.sessionId,sessionId);assert.equal(state.observation.worldId,worldId);
     seenActive ||= state.active;save();
     const newTurn=seenActive||state.metrics?.messageId===report.messageId||state.record?.session?.messages?.some(m=>m.id===report.messageId);
-    if(newTurn&&!state.active&&!['queued','running','recovering'].includes(state.job?.status)&&state.application?.status!=='applying'&&state.application?.phase!=='applying'){report.status=state.metrics?.status==='error'?'MODEL_ERROR':'SETTLED_UNVERIFIED';break;}
+    if(newTurn&&!state.active&&!['queued','running','recovering'].includes(state.job?.status)&&state.application?.status!=='applying'&&state.application?.phase!=='applying'){
+      const last=state.record?.session?.messages?.at(-1);
+      report.status=state.metrics?.status==='error'||last?.status==='error'?'MODEL_ERROR':last?.status==='aborted'?'MODEL_INTERRUPTED':'SETTLED_UNVERIFIED';break;
+    }
     const permission=await rpc('headlessPermissionPending',{payload:{sessionId}});
     if(permission){
       assert.equal(permission.sessionId,sessionId);assert.ok(typeof permission.requestId==='string');
