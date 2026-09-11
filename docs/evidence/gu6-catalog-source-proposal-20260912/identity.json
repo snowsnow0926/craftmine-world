@@ -1,0 +1,12 @@
+{
+  "sourceReport": "D:\\cm-catalog-source-proposal-0912\\test-results\\catalog-source-proposal-RzRqZ5\\report.json",
+  "baseline": "5ea4a7da",
+  "reportSha256": "69a9cfa1b8734189dd26115e317d979a57dc554d0d0c334e00c3e880bb3a4c9b",
+  "testResult": {
+    "tests": 53,
+    "passed": 53,
+    "failed": 0,
+    "skipped": 0
+  },
+  "packaging": "node desktop/build-world-plugin.mjs completed; changed packaged modules matched source bytes"
+}

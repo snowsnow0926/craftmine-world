@@ -133,9 +133,9 @@ function localState(local,handshake){
 function modeInventory(name,local,handshake,context,overrides){
   const modes=Object.entries(local.modes).map(([mode,entry])=>{
     const historyKey={operation:'operationResult','merge-candidate':'mergeCandidate'}[mode]||mode;
-    const override=name==='godot_history'?overrides.historyMethods?.[historyKey]
+    const override=name==='package_library'&&mode==='propose-source-install'?undefined:name==='godot_history'?overrides.historyMethods?.[historyKey]
       :overrides.libraryMethods?.[name==='asset_library'?'asset':'package']?.[mode];
-    const hostMethod=entry.proposal?null:(override??entry.method);
+    const hostMethod=entry.method?(override??entry.method):null;
     const needs=[...local.needs,...(entry.capability?[entry.capability]:[])];
     const state=localState({needs},handshake);
     if(state.reachable===true){
@@ -152,7 +152,7 @@ function modeInventory(name,local,handshake,context,overrides){
       reachable:state.reachable,blockedBy:state.blockedBy,
       ...(entry.proposal?{applies:false,requiresPlayerAction:true}:{}),needs};
   });
-  const reads=modes.filter(mode=>mode.kind==='read');
+  const reads=modes.filter(mode=>mode.hostMethod!==null);
   const considered=reads.length?reads:modes;
   const reachable=considered.some(mode=>mode.reachable===true)?true:considered.some(mode=>mode.reachable===null)?null:false;
   return {reachable,blockedBy:reachable===true?null:(considered.find(mode=>mode.reachable===reachable)?.blockedBy||null),modes};

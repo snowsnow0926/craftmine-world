@@ -44,7 +44,8 @@ const LOCAL_TOOLS={
   asset_library:{owner:'S5',needs:['sessionDrafts'],modes:Object.fromEntries(Object.entries(ASSET_METHODS)
     .map(([mode,method])=>[mode,{method,capability:'assetCatalog'}]))},
   package_library:{owner:'S3',needs:['sessionDrafts'],modes:{...Object.fromEntries(Object.entries(PACKAGE_METHODS)
-    .map(([mode,method])=>[mode,{method,capability:'creationPackages'}])),propose:{proposal:true}}},
+    .map(([mode,method])=>[mode,{method,capability:'creationPackages'}])),propose:{proposal:true},
+    'propose-source-install':{proposal:true,method:ASSET_METHODS.read,capability:'assetCatalog',targetMethod:'importCatalogSource'}}},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
   project_inspect:{owner:'S1',hostMethod:'workspace.open+world.read+(Godot:godotProject.index|legacy:inspect)',needs:['sessionDrafts']},
