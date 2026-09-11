@@ -27,6 +27,7 @@ for(const file of ['godot-engine-api.cjs','godot-diagnostics.cjs','creation-chan
 // The installer consumes package parsing and draft planning from source paths;
 // bundle those modules so the staged plugin has no checkout-relative imports.
 await build({entryPoints:[path.join(source,'reuse-service.mjs')],outfile:path.join(output,'reuse-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
+await build({entryPoints:[path.join(source,'godot-instance-declaration.mjs')],outfile:path.join(output,'godot-instance-declaration.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'target-feedback-service.mjs')],outfile:path.join(output,'target-feedback-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await fs.rm(path.join(output,'main.js'), {force:true});
 await build({entryPoints:[path.join(source,'domain-adapter.mjs')],outfile:path.join(output,'domain.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',

@@ -238,7 +238,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
           const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0]});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
           sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
         }
-        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
+        const draft=planDraftInstall({plan,payload,resourceManifests:archive.resources.map(resource=>resource.manifest),projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
         const files=draft.files.filter(f=>originals.get(f.path)!==f.sha256).map(f=>({path:f.path,bytesBase64:f.bytes.toString('base64'),expectedHash:originals.get(f.path)??null}));
         requireValue(files.length>0,'PACKAGE_NO_CHANGES');
         const toolCallId='package-'+key.slice(0,40);

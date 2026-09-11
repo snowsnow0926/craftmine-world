@@ -154,8 +154,16 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           const target=await ordinaryFile(picked,true),result=await privateCall('exportSource',args);await selected(worldId);
           if(typeof result.archiveBase64!=='string'||result.archiveBase64.length>Math.ceil(MAX_ZIP/3)*4)failure('PACKAGE_ARCHIVE_TOO_LARGE');
           const bytes=Buffer.from(result.archiveBase64,'base64');if(bytes.length>MAX_ZIP||bytes.toString('base64')!==result.archiveBase64||hash(bytes)!==result.archiveSha256)failure('PACKAGE_EXPORT_HASH_MISMATCH');
+          let parameterDeclaration;
+          if(result.parameterDeclaration!==undefined){
+            const declaration=result.parameterDeclaration,ref=declaration?.resourceRef;
+            if(!declaration||typeof declaration!=='object'||Array.isArray(declaration)||!['source-declared','unknown'].includes(declaration.status)||declaration.reason!==undefined&&(typeof declaration.reason!=='string'||!/^[A-Z][A-Z0-9_]{0,100}$/.test(declaration.reason))||declaration.status==='unknown'&&!declaration.reason)failure('PACKAGE_PARAMETER_DECLARATION_INVALID');
+            if(ref!==undefined&&(!ref||typeof ref!=='object'||Array.isArray(ref)||Object.keys(ref).some(key=>!['assetId','version','contentHash'].includes(key))||typeof ref.assetId!=='string'||!/^[a-z0-9][a-z0-9._-]{0,79}$/.test(ref.assetId)||!Number.isSafeInteger(ref.version)||ref.version<1||ref.version>100000||!digest(ref.contentHash)))failure('PACKAGE_PARAMETER_DECLARATION_INVALID');
+            if(declaration.status==='source-declared'&&!ref)failure('PACKAGE_PARAMETER_DECLARATION_INVALID');
+            parameterDeclaration={status:declaration.status,...(declaration.reason?{reason:declaration.reason}:{}),...(ref?{resourceRef:{assetId:ref.assetId,version:ref.version,contentHash:ref.contentHash}}:{})};
+          }
           await writeSelectedFile(target,bytes,()=>!disposed);
-          return {status:'completed',worldId,archiveSha256:result.archiveSha256,bytes:bytes.length,files:result.files,requiredSourceFiles:result.requiredSourceFiles};
+          return {status:'completed',worldId,archiveSha256:result.archiveSha256,bytes:bytes.length,files:result.files,requiredSourceFiles:result.requiredSourceFiles,...(parameterDeclaration?{parameterDeclaration}:{})};
         }
         if(method==='importSource'||method==='repeatImportSource') {
           fields(args,method==='importSource'?['worldId','operationId']:['worldId','operationId','grantId']);const result=await install(worldId,method,args);await selected(worldId);return result;
