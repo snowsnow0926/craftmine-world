@@ -1,6 +1,6 @@
 # GU4 有限场景判定内核与门碰撞切片
 
-日期：2026-09-12。状态：隔离原型已实现；当前只接入可信原生 headless 夹具。没有注册新 Agent 工具，没有改变生产候选采用或正式存档路径。
+日期：2026-09-12。状态：第一切片原生 headless 夹具已通过；第二切片增加生产验证器可选诊断接点，并完成真实 Web/offscreen 验证。没有注册新 Agent 工具，没有改变生产候选采用或正式存档路径。第二切片接口与边界见文末。
 
 ## 协议与所有权
 
@@ -36,4 +36,36 @@ node tests/godot-door-scenario-headless.mjs
 
 结果写入独立 `test-results/godot-door-scenario-*`，包括两个变体的源码清单、原始引擎日志、逐步 transcript、逐断言 verdict 和总报告。命令无真实键鼠、浏览器或窗口焦点操作；不调用模型。原生 headless 没有 Web Pointer Lock 路径。
 
-当前可证明真实关闭阻挡、正常互动开启、打开后通行，以及自报开启而保留碰撞的负例可被检出。仍未证明渲染画面质量、Web 成品、玩家体验、钥匙条件、宝箱一次性奖励/冷重开、生产候选服务权限与取消，或 Agent 自主使用。这是 GU4 的 GA11/GA20 子切片，不能标记整项或完整 GU4 已交付。
+第一切片证明真实关闭阻挡、正常互动开启、打开后通行，以及自报开启而保留碰撞的负例可被检出。当时未证明渲染画面质量、Web 成品、玩家体验、钥匙条件、宝箱一次性奖励/冷重开、生产候选服务权限与取消，或 Agent 自主使用。这是 GU4 的 GA11/GA20 子切片，不能标记整项或完整 GU4 已交付；后续新增范围在下面单独记录。
+
+## 第二切片：生产验证器的可选诊断收集器
+
+`GodotBuildVerifier` 构造器新增仅进程内可传的 `scenarioDiagnostics(binding)` 选择器，默认不存在。它只收到已解析且完成工件校验的当前 check 所属 `jobId / inputHash / worldId / buildId / baseId / checkRequirementsHash`，不收到路径、renderer 回调或原始 runtime。没有新 IPC、模型工具、任意路径或 eval API，也不从 descriptor、模型回复或运行页面读取扩展计划。
+
+选择器在当前权威启动、快照、运行画面、原有限需求检查之后执行。它可以选择一个宿主计划，`collectGodotScenarioDiagnostic` 会在第一次 await 前克隆并校验整份计划，生成独立需求哈希，然后只对验证器已创建的那个可丢弃 runtime 调用 `observe-envelope / walk / wait / look / interact`。不得把正式世界 runtime 传入此 provider。收集器没有 `load / save / acknowledge / cancel` 存档或恢复接口，不初始化进度、不传送、不将 `fixtureRef` 解析为路径；fixtureRef 只记录当前场景预期起点的宿主引用。
+
+每次动作前后核对 host runtime 身份和 envelope 世界/构建/实例/base、新鲜时间及物理 tick。即时动作通过只读采样等到后续物理帧，不增加隐藏的玩法动作。缺失时钟、实例变化、不支持的底座、超大响应、断开的 transport 和缺字段返回 `inconclusive`；确定观测违反断言返回 `failed`。只保留断言引用的有限标量，不把完整自报场景反复塞入证据。
+
+### 诊断与权威结果严格分开
+
+返回字段是 `scenarioDiagnostic`，其中 `authority=diagnostic-only`、`affectsCandidateReadiness=false`。扩展计划哈希与核心 `checkRequirementsHash` 分列；既有 `requirementsEvidence` 和核心要求不会被替换。该字段不加入 `assertions`，`passed` 不读取诊断的成功或失败。普通脚本发出的真实 runtime-error、隔离故障和取消仍执行已有失败策略；不能因诊断开关忽略这些宿主故障。
+
+当前 `godot-executor.cjs` 的 `finish` 只向核心提交原 requirementsEvidence 和迁移结果，没有将本扩展变为 `godotJob.finish` 的权威输入，也没有新增持久诊断查询工具。本次完成的是生产类中的可选收集接点和独立诊断返回，默认产品调用没有启用它。后续要形成可靠自动采用门槛，必须由核心冻结和绑定新增要求，再独立验收；不能把本函数的任意 caller assertions 升格为已满足玩家需求。
+
+### 取消与迟到结果
+
+验证器已有 cancel/cancelAll/截止的 halt 路径传播 AbortSignal。收集器对每个 transport promise 做取消竞速，取消后不再发下一动作、不追加迟到记录。已发出的动作可能在隔离实例关闭前短暂继续，实例由验证器 finally 正常退出并销毁。不会向正式存档发送取消/恢复操作。补上 `!halted` 总通过条件，防止基础断言已经完成但扩展期间被取消的 check 仍返回 passed。
+
+### 验收
+
+```powershell
+node --test tests/godot-scenario-collector.test.mjs tests/godot-scenario-verdict.test.mjs
+$env:CRAFTMINE_GODOT_CACHE_DIR='D:/Craftmine World/desktop/build/godot/4.7.2-stable'
+node tests/godot-scenario-collector-web.mjs
+```
+
+Web 入口使用固定引擎真实导出、独立 Chromium headless profile，并在初始化时禁用 Pointer Lock/focus；全部动作走运行桥，没有 Playwright 输入模拟。覆盖正常门、碰撞负例、实际 walk 期间取消，以及切换到第二个真实 runtime 后不得向新实例继续发送动作。
+
+随后编译并启动独立隐藏 Electron 程序，直接执行当前生产 `GodotBuildVerifier` 与固定 preload，覆盖默认关闭、成功诊断、失败诊断、取消和原权威检查失败。正常/失败扩展诊断都不能改变原六项通过；取消必须失败；原快照格式失败不能被诊断通过替代，甚至不会调用选择器。正式错误早于 guard 采样时，guard 未验部分保留为空，不把这种预期拒绝记为完整隔离验收。
+
+这些是实际 Web/offscreen 引擎与生产类验证，descriptor 是明确标记的可信 authored fixture。没有运行 Rust 发放/finish、真实候选注册/自动采用、Windows 安装包或真实玩家模型，因此仍不能宣称整条正式候选链已交付。

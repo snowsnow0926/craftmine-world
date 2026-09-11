@@ -1,4 +1,5 @@
 import {verifyCreationHarvest} from "./creation-harvest-verifier";
+import {collectGodotScenarioDiagnostic,type ScenarioDiagnosticSelector} from "./godot-scenario-collector";
 import {verifyCreationDoorSequence} from "./creation-door-verifier";
 import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
 /**
@@ -148,6 +149,8 @@ export type GodotRuntimeCheckEvidence = {
   defaultsSnapshot?: unknown;
   progressMigration?: ReturnType<typeof deriveAdditiveProgress>;
   requirementsEvidence?: GodotRequirementsEvidence;
+  /** Host-selected extension; never contributes an assertion or readiness. */
+  scenarioDiagnostic?: Awaited<ReturnType<typeof collectGodotScenarioDiagnostic>>;
 };
 
 /** One bounded deadline for the whole check, mirroring `CraftmineVerifier`. */
@@ -356,12 +359,14 @@ function readGuardProbe(raw: unknown): GuardProbe {
 export class GodotBuildVerifier {
   private jobs = new Map<string, () => void>();
   private readonly deadlineMs: number;
+  private readonly scenarioDiagnostics?: ScenarioDiagnosticSelector;
 
   /** A real Web export can take tens of seconds to start in software GL. */
-  constructor(options: { deadlineMs?: number } = {}) {
+  constructor(options: { deadlineMs?: number; scenarioDiagnostics?: ScenarioDiagnosticSelector } = {}) {
     this.deadlineMs = Number.isSafeInteger(options.deadlineMs) && (options.deadlineMs as number) > 0
       ? Math.min(options.deadlineMs as number, 600_000)
       : CHECK_DEADLINE_MS;
+    this.scenarioDiagnostics = options.scenarioDiagnostics;
   }
 
   cancel(jobId: string): void {
@@ -397,6 +402,7 @@ export class GodotBuildVerifier {
     let defaultsSnapshot: unknown;
     let progressMigration: ReturnType<typeof deriveAdditiveProgress> | undefined;
     let requirementsEvidence: GodotRequirementsEvidence | undefined;
+    let scenarioDiagnostic: Awaited<ReturnType<typeof collectGodotScenarioDiagnostic>> | undefined;
     let targetFeedbackPassed = false;
     let targetFeedbackDetail: string | undefined;
     let runtime: WorldRuntime | null = null;
@@ -410,6 +416,7 @@ export class GodotBuildVerifier {
     // inside the check races it, so neither a hung page nor a cancel can leave
     // the check running past its budget.
     let halted = false;
+    const scenarioStop = new AbortController();
     let haltReason = "";
     let rejectHalt: (failure: Error) => void = () => {};
     const haltedPromise = new Promise<never>((_resolve, reject) => { rejectHalt = reject; });
@@ -418,6 +425,7 @@ export class GodotBuildVerifier {
       if (halted) return;
       halted = true;
       haltReason = reason;
+      scenarioStop.abort();
       rejectHalt(new Error(reason));
     };
     const assertRunning = (): void => {
@@ -686,10 +694,23 @@ export class GodotBuildVerifier {
       if(descriptor.checkRequirements?.creation?.doorSequence && requirementsEvidence){requirementsEvidence.observations[1].doorTrace=await verifyCreationDoorSequence(activeRuntime,descriptor.checkRequirements.creation,defaultsSnapshot,bounded);}
       if(descriptor.checkRequirements?.creation?.harvest && requirementsEvidence){requirementsEvidence.observations[1].harvestTrace=await verifyCreationHarvest(activeRuntime,descriptor.checkRequirements.creation,defaultsSnapshot,bounded);}
       targetFeedbackPassed=!!requirementsEvidence && requirementsEvidence.observations.length===2;
+      // Optional in-process host selection runs only after authoritative checks,
+      // on their disposable runtime. No extension is read from the descriptor,
+      // model or renderer. Functional verdicts remain diagnostic-only; transport,
+      // cancellation, renderer and isolation failures retain existing safeguards.
+      if(this.scenarioDiagnostics){
+        const binding=Object.freeze({jobId:descriptor.jobId,inputHash:descriptor.inputHash,worldId:descriptor.worldId,buildId:descriptor.buildId,baseId:descriptor.baseId,...(descriptor.checkRequirementsHash?{checkRequirementsHash:descriptor.checkRequirementsHash}:{})});
+        try{
+          const plan=this.scenarioDiagnostics(binding);
+          if(plan)scenarioDiagnostic=await collectGodotScenarioDiagnostic({binding,runtime:activeRuntime,plan,signal:scenarioStop.signal});
+        }catch(failure){if(diagnostics.length<64)diagnostics.push("[scenario-selection] "+messageOf(failure).slice(0,300));}
+        assertRunning();
+      }
     } catch (failure) {
       error = messageOf(failure);
     } finally {
       finished = true;
+      scenarioStop.abort();
       clearTimeout(timer);
       this.jobs.delete(descriptor.jobId);
       const activeRuntime = runtime;
@@ -743,7 +764,7 @@ export class GodotBuildVerifier {
       { id: "runtime.recovery", passed: recovery.ok },
     ];
     if(descriptor.checkRequirements)assertions.push({id:descriptor.checkRequirements.creation?"runtime.creation-requirements":"runtime.target-feedback",passed:targetFeedbackPassed,...(targetFeedbackDetail?{detail:targetFeedbackDetail}:{})});
-    const passed = assertions.every((assertion) => assertion.passed);
+    const passed = !halted && assertions.every((assertion) => assertion.passed);
     if (!passed && error === null) {
       error = `GODOT_CHECK_FAILED: ${assertions.filter((assertion) => !assertion.passed).map((assertion) => assertion.id).join(",")}`;
     }
@@ -768,6 +789,7 @@ export class GodotBuildVerifier {
       error,
       ...(defaultsSnapshot && progressMigration ? {defaultsSnapshot, progressMigration} : {}),
       ...(requirementsEvidence ? {requirementsEvidence} : {}),
+      ...(scenarioDiagnostic ? {scenarioDiagnostic} : {}),
     };
   }
 }
