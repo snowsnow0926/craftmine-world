@@ -59,6 +59,9 @@ function bounds(item){
   return {id:item.id,position:[item.position[0],item.position[1]+widths[1]*item.scale[1],item.position[2]],halfExtents:[x*c+z*s,widths[1]*item.scale[1],x*s+z*c]};
 }
 function overlap(a,b){return [0,1,2].every(i=>Math.abs(a.position[i]-b.position[i])<a.halfExtents[i]+b.halfExtents[i]-.001);}
+function placementChanged(before,after){
+  return !before||before.kind!==after.kind||before.rotationY!==after.rotationY||['position','scale'].some(key=>before[key].some((n,i)=>n!==after[key][i]));
+}
 function validatePlacement(item,others,snapshot){
   const box=bounds(item);
   check(box.position[0]-box.halfExtents[0]>=-28&&box.position[0]+box.halfExtents[0]<=28&&box.position[2]-box.halfExtents[2]>=-28&&box.position[2]+box.halfExtents[2]<=28&&box.position[1]+box.halfExtents[1]<=16,'CREATION_OUT_OF_BOUNDS');
@@ -125,7 +128,11 @@ function compileCreationOperation({source,targetSnapshot,request}) {
     keys(request.changes,['position','rotationY','scale','color','parameters'],[]);check(Object.keys(request.changes).length>0,'CREATION_EMPTY_CHANGE');
     const updated=entity({...item,...request.changes});
     if(item.kind==='chest')check((updated.parameters.rewardId??'creation-token')===(item.parameters.rewardId??'creation-token')&&(updated.parameters.rewardCount??1)===(item.parameters.rewardCount??1),'CREATION_CHEST_REWARD_IMMUTABLE');
-    validatePlacement(updated,next.entities,snapshot);Object.assign(item,updated);affectedIds.push(item.id);
+    // An unchanged declared placement needs no new placement approval. Requiring
+    // the conservative margin for a color edit prevents repainting a door while
+    // standing next to its actual smaller player capsule. Geometry edits still
+    // run the original checks; live identity and formal validation are retained.
+    if(placementChanged(item,updated))validatePlacement(updated,next.entities,snapshot);Object.assign(item,updated);affectedIds.push(item.id);
   } else if(request.action==='duplicate'){
     keys(request,['operationId','expected','action','targetId','count','offset']);const original=selected();
     check(Number.isInteger(request.count)&&request.count>=1&&request.count<=8&&vector(request.offset,-8,8)&&Math.hypot(...request.offset)>=.5,'CREATION_DUPLICATE_LIMIT');
@@ -157,7 +164,7 @@ function compileCreationOperation({source,targetSnapshot,request}) {
     check(sorted(actual)===sorted(inverse.after),'CREATION_UNDO_CONFLICT');
     if(inverse.after.some(item=>!inverse.before.some(before=>before.id===item.id)))check(!(next.rules??[]).length,'CREATION_DELETE_RULE_DEPENDENCY');
     const rest=next.entities.filter(item=>!ids.has(item.id));
-    for(const item of inverse.before){validatePlacement(item,rest,snapshot);rest.push(structuredClone(item));}
+    for(const item of inverse.before){if(placementChanged(actual.find(current=>current.id===item.id),item))validatePlacement(item,rest,snapshot);rest.push(structuredClone(item));}
     next.entities=rest;affectedIds.push(...ids);
   } else if(request.action==='environment'){
     keys(request,['operationId','expected','action','timeOfDay']);check(finite(request.timeOfDay,0,24),'CREATION_INVALID_DEFAULTS');next.defaults.timeOfDay=request.timeOfDay;

@@ -47,6 +47,14 @@ test('a committed lost reply is read exactly once and does not duplicate a place
  assert.deepEqual(replay.changeSummary.entities,saved.changeSummary.entities);assert.deepEqual(replay.receipt,saved.receipt);
 });
 
+test('normal source service permits color-only edits beside a door and retains live/source checks',async()=>{
+ const f=fixture(),doc=JSON.parse(f.versions.get(1)['world/creation.json']);doc.entities.push({id:'door',kind:'door',position:[0,0,2],rotationY:0,scale:[1,1,1],color:'#0000ff',parameters:{initiallyOpen:false}});f.versions.get(1)['world/creation.json']=JSON.stringify(doc);
+ f.bound.target={surface:'entity',entityId:'door',position:[0,1.5,1.75],normal:[0,0,-1],revision:1};f.bound.playerPosition=[0,.90084,1.44912];f.live.player.position=[...f.bound.playerPosition];
+ const request={operationId:'recolor-at-door',expected:f.request().expected,action:'modify',targetId:'door',changes:{color:'#ff0000'}};
+ const result=await f.run(request);assert.equal(result.source.revision,2);assert.equal(result.applied,false);assert.equal(result.changeSummary.entities[0].fields[0].field,'color');
+ const wrong=fixture();wrong.live.instanceId='changed';await assert.rejects(wrong.run(wrong.request()),/CREATION_TARGET_STALE/);
+});
+
 test('source service retains recent origin through source rebasing and refuses placement before patch',async()=>{
  const f=fixture();f.bound.source='recent';f.bound.target={surface:'entity',entityId:'selected-object',position:[12,0,4],normal:[0,1,0],revision:1};
  const scene=JSON.parse(f.versions.get(1)['world/creation.json']);scene.entities.push({id:'selected-object',kind:'rock',position:[12,0,4],rotationY:0,scale:[1,1,1],color:'#84a866',parameters:{}});f.versions.get(1)['world/creation.json']=JSON.stringify(scene);

@@ -39,6 +39,21 @@ test('modification preserves stable chest identity and immutable one-time reward
   assert.throws(()=>compileCreationOperation({...f,request:{...request,changes:{parameters:{rewardId:'other'}}}}),/CHEST_REWARD_IMMUTABLE/);
   assert.throws(()=>compileCreationOperation({...f,request:{...request,changes:{id:'fresh-reward'}}}),/INVALID_FIELDS/);
 });
+
+test('color-only edits remain possible beside a solid door while actual geometry changes retain placement checks',()=>{
+ const door=entity('blue-door','door',[0,0,2]);door.color='#0000ff';
+ const f=fixture([door]);f.targetSnapshot.playerPosition=[0,.900840580463409,1.44912254810333];
+ const request={operationId:'recolor-near-door',expected:f.request.expected,action:'modify',targetId:'blue-door',changes:{color:'#ff0000'}};
+ const first=compileCreationOperation({...f,request});assert.equal(first.document.entities[0].color,'#ff0000');
+ assert.deepEqual(first.document.entities[0].position,door.position);assert.deepEqual(first.document.entities[0].scale,door.scale);
+ assert.throws(()=>compileCreationOperation({...f,request:{...request,changes:{scale:[1.1,1,1]}}}),/CREATION_PLAYER_OVERLAP/);
+ const noSpatialDelta=compileCreationOperation({...f,request:{...request,changes:{color:'#ff0000',position:[0,0,2],rotationY:0,scale:[1,1,1]}}});
+ assert.equal(noSpatialDelta.document.entities[0].color,'#ff0000');
+ for(const op of first.operations)f.source.files[op.path]={text:op.text,sha256:hash(op.text)};
+ f.source.revision++;f.source.manifestHash='b'.repeat(64);f.targetSnapshot.sourceRevision=f.source.revision;f.targetSnapshot.manifestHash=f.source.manifestHash;f.targetSnapshot.target.revision=first.document.revision;
+ const undo=compileCreationOperation({...f,request:{operationId:'undo-color-beside-door',expected:{...request.expected,revision:f.source.revision,manifestHash:f.source.manifestHash},action:'undo',undoOperationId:request.operationId}});
+ assert.equal(undo.document.entities[0].color,'#0000ff');assert.deepEqual(undo.document.entities[0].position,door.position);
+});
 test('duplicates mint deterministic separate stable identities and reject count/occupancy limits',()=>{
   const f=fixture([entity('source','rock',[2,0,2])]);const request={operationId:'copy',expected:f.request.expected,action:'duplicate',targetId:'source',count:3,offset:[3,0,0]};
   const result=compileCreationOperation({...f,request});assert.equal(result.document.entities.length,4);assert.equal(new Set(result.document.entities.map(e=>e.id)).size,4);
