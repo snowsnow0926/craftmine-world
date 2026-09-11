@@ -13,3 +13,7 @@
 返回 format=craftmine.godot-view-capture/1、worldId/buildId/instanceId、candidateId(null或字符串)、scope(formal/candidate)、capturedAt(宿主 UTC ISO时间)、viewWidth/viewHeight、sourceWidth/sourceHeight、width/height、resized、pngBase64、sha256。没有附加世界观察，也不宣称截图与物理观察在同一个 tick。NativeImage 尺寸/编码语义参考官方 https://www.electronjs.org/docs/latest/api/native-image ，本实现不使用 resize 修改世界视图。
 
 11 项无窗口/无输入测试覆盖正式暂停、可信候选ID、错误身份与不可用状态、过程中视图/尺寸/实例变更、超时及并发积累防护、纯色/空图/超限、4K/DPI与截图后缩小、原始异常消息清洗。成品集成还需独立正式/候选实际 WebContents 像素验收，不得用旧 headlessCapture 的临时挂接能力冒充新接口成功。
+
+## 成品验收入口
+
+`tests/godot-view-capture-native.mjs --packaged-root <新成品> --run` 强制新建独立 profile，正常进入 play UI、创建空白世界、freeze 保存并截图，再正常导入环境包生成 preview 候选。它使用仅在既有 headless 授权下开启的 godotCaptureBoundView（直接调用真实 captureView）与只读 godotCaptureBoundState，验证前后身份/布局、正式暂停、候选分支及关闭/切换拒绝。驱动不包含旧 headlessCapture，也不替 detached 视图 attach/resize。默认不加 --run 只准备，不启动成品或模型。

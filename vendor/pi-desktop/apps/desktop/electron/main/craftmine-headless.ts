@@ -14,6 +14,8 @@ import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
 import {createHeadlessPlayer,unwrapPlayerDesktopResult} from './craftmine-headless-player';
 import {createHeadlessObserverUpgrade} from './craftmine-headless-observer-upgrade';
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
+import {runHeadlessBoundCapture} from './craftmine-headless-bound-capture';
+import type {GodotViewCaptureIdentity} from './godot-view-capture';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -93,6 +95,8 @@ export function installHeadlessControl(access: {
   godotSave?: () => Promise<any>;
   playerActive?: (sessionId:string)=>boolean;
   playerLatest?: (worldId:string,sessionId:string)=>Promise<any>;
+  boundCapture?: (identity:GodotViewCaptureIdentity)=>Promise<unknown>;
+  boundCaptureState?: ()=>unknown;
 }): void {
   if (!profile) return;
   const godotExplore = access.godotGameplay ? createGodotExploration(access.godotGameplay) : null;
@@ -125,6 +129,9 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case 'godotCaptureBoundView':case 'godotCaptureBoundState':
+          if(!access.boundCapture||!access.boundCaptureState)throw Error('HEADLESS_BOUND_CAPTURE_UNAVAILABLE');
+          return runHeadlessBoundCapture(request,{enabled:hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1',capture:access.boundCapture,state:access.boundCaptureState});
         case 'playerObserverHint':case 'playerObserverUpgrade':case 'playerObserverStatus':
           if(!hasHeadlessController()||!observerUpgrade||process.env.CRAFTMINE_CREATION_EVAL==='1'||Object.keys(request).sort().join(',')!=='id,method,payload,type')throw Error('HEADLESS_OBSERVER_NORMAL_SESSION_REQUIRED');
           return observerUpgrade(request.method,request.payload);
