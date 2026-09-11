@@ -51,6 +51,15 @@ async function fixture(t){
  await ui.show();t.after(()=>ui.clear());return{ui,state,calls,domainCalls,nodes,button,control,start,submit,tick,timers};
 }
 const choose=async f=>{await f.submit('检索资源库');await f.submit('核对所选版本');};
+
+test('catalog type options send all seven canonical Core kinds through the real gateway',async t=>{
+ const f=await fixture(t),kinds=['base','world','module','object','scene','raw','data'];
+ assert.deepEqual(f.control('作品类型').options.map(option=>option.value),['',...kinds]);
+ for(const kind of kinds){f.control('作品类型').value=kind;await f.submit('检索资源库');}
+ const queries=f.domainCalls.filter(call=>call.method==='asset.request'&&call.params.method==='search');
+ assert.deepEqual(queries.map(call=>call.params.args.kind),kinds);
+ assert.equal(f.calls.filter(call=>call.input.method==='importCatalogSource').length,0);
+});
 test('real gateway accepts owner-bound search/read, fixed versions and filtered pagination before explicit install',async t=>{
  const f=await fixture(t);
  assert.equal(f.calls.some(c=>c.channel.startsWith('asset.')),false,'opening does not choose a resource');
