@@ -16,3 +16,5 @@
 - 工作区依赖构建与完整 desktop TypeScript 检查通过。
 
 另外尝试既有 `tests/godot-host-lifecycle.mjs` 总套件时，其 VM fixture 没有提供早已新增的 `hasHeadlessController`，在创建 runtime 的旧入口失败，不能算本次通过证据；没有扩大范围修这个历史夹具。上述专用 checkpoint 测试避开构造器，执行的是未经重写的生产方法。新成品中的实际走动、重新预览与截图复验由总控继续，不将这些离线结果冒充实机验收。
+
+总控集成复核补齐了旧 lifecycle fixture 的依赖：正常非 headless 控制场景明确返回 `hasHeadlessController=false`，`PRIVATE_PLAY_OPS` 使用真实模块导入；没有修改原断言或生产行为。该 34 项套件随后全部通过，覆盖暂停意图、存储失败、切换、退出和并发冻结。原缺依赖失败仍保留为发现过程。
