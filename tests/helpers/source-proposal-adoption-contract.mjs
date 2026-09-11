@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 export function acceptCurrentPreviewReceipt(binding,receipt){assert.equal(receipt?.status,'preview');assert.equal(receipt.worldId,binding.worldId);assert.equal(receipt.candidateId,binding.candidateId);assert.equal(receipt.buildId,binding.candidateBuildId);binding.activePreviewCandidateId=receipt.candidateId;}
 export function clearCurrentPreview(binding){delete binding.activePreviewCandidateId;}
+export function validateSourceViewPreparationCall(method,fields={},binding){
+ if(method==='worldPanel')assert.ok(['godot.runtimeResume','godot.runtimeSave'].includes(fields.channel)||fields.channel==='package.request'&&fields.payload?.method==='sourceList','VIEW_PREPARATION_MUTATION_DENIED');
+ validateSourceProposalAdoptionCall(method,fields,binding);
+}
 export function inspectModelSourceProposal(report,proposalId){
  assert.equal(report?.format,'craftmine.promo-player/1');assert.equal(report.status,'SETTLED_UNVERIFIED');assert.equal(report.stateIntegrityVerified,true);assert.equal(report.latest?.active,false);assert.equal(report.forcedStop,undefined);assert.equal(report.closeoutError,undefined);assert.ok(Number.isFinite(Date.parse(report.endedAt))&&Date.parse(report.endedAt)>=Date.parse(report.submittedAt));
  for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(report.exitReport?.[field],[]);
