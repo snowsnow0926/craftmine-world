@@ -33,13 +33,28 @@
     },
     {
       "path": "README.md",
-      "bytes": 2532,
-      "sha256": "352f100f8acdfcb1dd8282083458abf5b7dd46d7275ed4be29cd19c37422ef8d"
+      "bytes": 2834,
+      "sha256": "c3256457cc7e78c5315e70e9bf6012fc2f93d3fd9312928c927acfb3dc29dded"
     },
     {
       "path": "LICENSE.txt",
       "bytes": 1410,
       "sha256": "0730faa06afabf9a87e0f971e362faf1a3cb5cd6037ab15a5553f1a632293bf5"
+    },
+    {
+      "path": "natural_daylight.gd.uid",
+      "bytes": 20,
+      "sha256": "62ee088541bb7734588dafe7fe14c85fc6413062fbedaa8a61d66215624700eb"
+    },
+    {
+      "path": "creation_sandbox_preset.gd",
+      "bytes": 1617,
+      "sha256": "de23596edb3da31ac53b0fabec13ecbc3a04789669b183f0c9f35396d2eb0a9e"
+    },
+    {
+      "path": "creation_sandbox_preset.gd.uid",
+      "bytes": 20,
+      "sha256": "876ca04321be3f551ccf5697bc310b890e59cdd6b099883998a4e697d7e6bd5e"
     }
   ]
 }

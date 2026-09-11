@@ -20,6 +20,13 @@ func _run() -> void:
 	for _tick in 20:
 		await physics_frame
 	verify(world.get("ready_for_play") == true, "original creation base loads")
+	var installed_preset := load("res://components/natural-daylight/creation_sandbox_preset.gd").new() as Node3D
+	var install_state: Dictionary = world.capture()
+	world.add_child(installed_preset)
+	for _tick in 3:
+		await physics_frame
+	verify(installed_preset.get("applied") == true, "optional stock-base package binds actual environment after parent initialization")
+	verify(world.capture() == install_state, "installed preset preserves complete player progress")
 	paused = true
 	var ground: MeshInstance3D
 	var environment_node: WorldEnvironment

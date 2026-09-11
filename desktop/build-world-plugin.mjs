@@ -5,6 +5,7 @@ import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
 import {compileScene, INITIAL_SNAPSHOT} from '../app/scene.mjs';
 import {NATIVE_ACCEPTANCE_MARKER,NATIVE_ACCEPTANCE_SOURCE} from '../vendor/pi-desktop/apps/desktop/electron/shared/craftmine-native-acceptance-source.mjs';
+import {buildBuiltinSourceLibrary} from './build-builtin-source-library.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(root,'plugins/craftmine-world');
@@ -20,6 +21,10 @@ for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-resto
 }
 // The installer consumes package parsing and draft planning from source paths;
 // bundle those modules so the staged plugin has no checkout-relative imports.
+await fs.copyFile(path.join(source,'builtin-source-library.cjs'),path.join(output,'builtin-source-library.cjs'));
+buildBuiltinSourceLibrary({output:path.join(output,'builtin-source-library')});
+await build({entryPoints:[path.join(source,'source-library-service.cjs')],outfile:path.join(output,'source-library-service.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',external:['./package-zip.mjs']});
+await build({entryPoints:[path.join(source,'package-zip.mjs')],outfile:path.join(output,'package-zip.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'reuse-service.mjs')],outfile:path.join(output,'reuse-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'target-feedback-service.mjs')],outfile:path.join(output,'target-feedback-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await fs.rm(path.join(output,'main.js'), {force:true});
