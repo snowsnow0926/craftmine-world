@@ -1,0 +1,187 @@
+{
+  "format": "craftmine.builtin-source-group-preflight/1",
+  "packagedRoot": "D:/cm-promo-loop-0912/desktop/build/releases/fc58b4237f5a-9efd801e-dfc5-45cc-8b15-04583b907eb0/output/win-unpacked",
+  "out": "D:\\cm-group-source-install-0912\\test-results\\builtin-group-rlwKzC",
+  "coreSha256": "22020ae14e8e1ff169354d124da09cf35c12d236e8e8caa22b10460b40ff0ead",
+  "catalogSha256": "893f79d8235250ab0291e05670a341e7c475f5565d7d85a291db35a7ce642117",
+  "standardSourceSha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff",
+  "modelCalls": 0,
+  "engineLaunches": 0,
+  "uiLaunches": 0,
+  "groups": [
+    {
+      "items": [
+        {
+          "assetId": "cw.environment.natural-daylight",
+          "position": null,
+          "archiveSha256": "bad2a8f6bd9d3b154ba6b599f0cfbc423a76fb77da004d7ba6afc5bb12454192",
+          "instanceIds": [
+            "ins-cdbf4da0fb842817a35e8241"
+          ]
+        },
+        {
+          "assetId": "cw.scene.forest-gateway",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": -8
+          },
+          "archiveSha256": "536869158ed55beda23fb79019ebfcd21a96443cb76580c525c929cee982cdc6",
+          "instanceIds": [
+            "ins-6ef59447626f982e7389055c"
+          ]
+        },
+        {
+          "assetId": "cw.nature.tree-oak",
+          "position": {
+            "x": -6,
+            "y": 0,
+            "z": -5
+          },
+          "archiveSha256": "5d3ad90b1661c214204dad18ba44a8d9b5e0162f009eba70bb0006a9b485cf34",
+          "instanceIds": [
+            "ins-822b08651503e3a2b2293252"
+          ]
+        },
+        {
+          "assetId": "cw.nature.tree-oak",
+          "position": {
+            "x": 6,
+            "y": 0,
+            "z": -5
+          },
+          "archiveSha256": "5d3ad90b1661c214204dad18ba44a8d9b5e0162f009eba70bb0006a9b485cf34",
+          "instanceIds": [
+            "ins-636110a22da650ebba9cb216"
+          ]
+        }
+      ],
+      "source": {
+        "assetLockHash": "b9f6c45d2766a780fa24e1bc5005bdb39dcb9afc93405a0e6f18c94cb8d82684",
+        "baseBuild": "builtin-group-base",
+        "branchId": "main",
+        "commitOid": "704060466242db740a4945b21ebad14f5d4fd3d1",
+        "currentTaskId": "work-6f36423e4f81aad6646304373fd730c9db0fe3c75fae74d44a4503c8ba7bb047",
+        "fileCount": 51,
+        "lastWriter": {
+          "baseBuild": "builtin-group-base",
+          "projectId": "builtin-group-project",
+          "sessionId": "builtin-group-session",
+          "taskId": "work-6f36423e4f81aad6646304373fd730c9db0fe3c75fae74d44a4503c8ba7bb047",
+          "turnId": "builtin-group-turn"
+        },
+        "manifestHash": "b775c4de79c180086ed6b9649288a67c8b5b64282404f31f95599b4a6c356331",
+        "revision": 1
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "builtin-group-base",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-931e061fc41f2221bd99b3bd4bb30d827e6d6a8c4ab8a2720a723d56258c987c",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-c8daa83762beed8a364ca65bc88df82576d5be19f29a497723e334a98767c17b",
+        "kind": "check",
+        "manifestHash": "b775c4de79c180086ed6b9649288a67c8b5b64282404f31f95599b4a6c356331",
+        "materialized": {
+          "bytes": 251672,
+          "files": 54
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 1,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "builtin-group-world"
+      },
+      "applyFilesCalls": 1,
+      "checkStartCalls": 1,
+      "filesVerified": 46,
+      "uidOwners": 4,
+      "lockAssets": 3,
+      "totalInstances": 4,
+      "previousInstancesUnchanged": true,
+      "worldProgressUnchanged": true
+    },
+    {
+      "items": [
+        {
+          "assetId": "cw.castle.wall",
+          "position": {
+            "x": 8,
+            "y": 0,
+            "z": -10
+          },
+          "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+          "instanceIds": [
+            "ins-022c9ac747a1960df1553997"
+          ]
+        },
+        {
+          "assetId": "cw.castle.tower-base",
+          "position": {
+            "x": 11,
+            "y": 0,
+            "z": -10
+          },
+          "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+          "instanceIds": [
+            "ins-a4a9b00ae1bef6ed33974c3e"
+          ]
+        }
+      ],
+      "source": {
+        "assetLockHash": "1654ca5e559f56a0f06548620f3ea4009edc84b4295caaaccd37b2087f64c152",
+        "baseBuild": "builtin-group-base",
+        "branchId": "main",
+        "commitOid": "a9ac66cf73e543b15e77bd01cac2d5a5ca6795b6",
+        "currentTaskId": "work-6f36423e4f81aad6646304373fd730c9db0fe3c75fae74d44a4503c8ba7bb047",
+        "fileCount": 69,
+        "lastWriter": {
+          "baseBuild": "builtin-group-base",
+          "projectId": "builtin-group-project",
+          "sessionId": "builtin-group-session",
+          "taskId": "work-6f36423e4f81aad6646304373fd730c9db0fe3c75fae74d44a4503c8ba7bb047",
+          "turnId": "builtin-group-turn"
+        },
+        "manifestHash": "94f2ab99193569e5b42db118c58d9662d2e2bd344a04513143a6a3a98b92c205",
+        "revision": 2
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "builtin-group-base",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-d7b1020eb1cbdd417525e67c146dbd27346cbe9431daeeea9673e32aacc29e04",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-89c9d39bb381f054d5e0f76fa9fe8f48b6724e2924d3a80ee3e6174b378c71c9",
+        "kind": "check",
+        "manifestHash": "94f2ab99193569e5b42db118c58d9662d2e2bd344a04513143a6a3a98b92c205",
+        "materialized": {
+          "bytes": 313564,
+          "files": 72
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 2,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "builtin-group-world"
+      },
+      "applyFilesCalls": 1,
+      "checkStartCalls": 1,
+      "filesVerified": 64,
+      "uidOwners": 6,
+      "lockAssets": 5,
+      "totalInstances": 6,
+      "previousInstancesUnchanged": true,
+      "worldProgressUnchanged": true
+    }
+  ],
+  "ok": true,
+  "worldBeforeSha256": "3509037b3013711aba83849d17b2f295f6e8d2dec75318a56cd36bc184cd892c",
+  "worldAfterSha256": "3509037b3013711aba83849d17b2f295f6e8d2dec75318a56cd36bc184cd892c",
+  "limit": "Real frozen ZIPs reached Rust planning and atomic source transactions. No executor: checks are blocked, not engine/visual acceptance. Minimal creation-sandbox fixture includes frozen exact base source; no player profile opened."
+}
