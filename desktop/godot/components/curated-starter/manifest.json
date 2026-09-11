@@ -53,6 +53,11 @@
           "sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3"
         },
         {
+          "path": "models/nature/tree_oak.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.tree-oak.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -74,10 +79,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/tree_oak.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
       "placement": {
         "units": "metres",
@@ -110,8 +124,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 2,
+        "meshInstances": 1,
         "triangles": 196,
         "materials": 2,
         "animations": 0,
@@ -154,6 +168,11 @@
           "sha256": "c041daf2f0fb1d49e4325227cbcd58667adbe51e9b55e8c1f0a94b74cc521b3b"
         },
         {
+          "path": "models/nature/tree_detailed.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.tree-detailed.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -175,10 +194,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/tree_detailed.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
       "placement": {
         "units": "metres",
@@ -211,8 +239,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 3,
+        "meshInstances": 1,
         "triangles": 402,
         "materials": 3,
         "animations": 0,
@@ -255,6 +283,11 @@
           "sha256": "7dc9711f31585eafdcb965d0649c30af5e19f2def1955f7a915081d30759ef8e"
         },
         {
+          "path": "models/nature/tree_pineRoundA.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.tree-pine.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -276,10 +309,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/tree_pineRoundA.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
       "placement": {
         "units": "metres",
@@ -312,8 +354,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 2,
+        "meshInstances": 1,
         "triangles": 204,
         "materials": 2,
         "animations": 0,
@@ -355,6 +397,11 @@
           "sha256": "260e41d3e5f2472492ed7b475c5b92a30b13ce2bad408535b5ff50574d4575e7"
         },
         {
+          "path": "models/nature/grass.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.grass.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -376,10 +423,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/grass.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
       "placement": {
         "units": "metres",
@@ -412,8 +468,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 132,
         "materials": 1,
         "animations": 0,
@@ -455,6 +511,11 @@
           "sha256": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020"
         },
         {
+          "path": "models/nature/flower_redA.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.flower-red.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -476,10 +537,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/flower_redA.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
       "placement": {
         "units": "metres",
@@ -512,8 +582,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 2,
+        "meshInstances": 1,
         "triangles": 76,
         "materials": 2,
         "animations": 0,
@@ -555,6 +625,11 @@
           "sha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406"
         },
         {
+          "path": "models/nature/plant_bushDetailed.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.bush.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -576,10 +651,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/plant_bushDetailed.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
       "placement": {
         "units": "metres",
@@ -612,8 +696,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 104,
         "materials": 1,
         "animations": 0,
@@ -655,6 +739,11 @@
           "sha256": "df9fff9d711e61370e8df0caa2514c89b8f8a8dc6c6fafaf4eb2ec79c5ae07c1"
         },
         {
+          "path": "models/nature/rock_smallA.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.rock.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -681,10 +770,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/rock_smallA.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -717,8 +815,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 2,
+        "meshInstances": 1,
         "triangles": 16,
         "materials": 2,
         "animations": 0,
@@ -761,6 +859,11 @@
           "sha256": "3da4c208b0f72b7f2ba42db521b62ec4b0278050c75256a6982c40d21aab5701"
         },
         {
+          "path": "models/nature/bridge_wood.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.bridge-wood.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -787,10 +890,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/bridge_wood.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -823,8 +935,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 3,
+        "meshInstances": 1,
         "triangles": 220,
         "materials": 3,
         "animations": 0,
@@ -867,6 +979,11 @@
           "sha256": "ecaf6c29532aa9fd305a8ef71df769d60748bd797f2eb1c63bdefc4edb8062a7"
         },
         {
+          "path": "models/nature/fence_simple.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.nature.fence-wood.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -893,10 +1010,19 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         }
       ],
+      "importConfiguration": {
+        "path": "models/nature/fence_simple.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -929,8 +1055,8 @@
       "geometry": {
         "declaredNodes": 2,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 2,
+        "meshInstances": 1,
         "triangles": 64,
         "materials": 2,
         "animations": 0,
@@ -973,6 +1099,11 @@
           "sha256": "b2ea00acbf4ba91ff0d4b8b942edf9fa12d821abd0b2c945c57a2b9b3153cfe3"
         },
         {
+          "path": "models/castle/wall.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.wall.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -999,8 +1130,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1008,6 +1139,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/wall.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1040,8 +1180,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 178,
         "materials": 1,
         "animations": 0,
@@ -1086,6 +1226,11 @@
           "sha256": "82d27b869162b6a9ee19b0d7480913f56928b6620708f3b3899131495803cc9a"
         },
         {
+          "path": "models/castle/wall-corner.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.wall-corner.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -1112,8 +1257,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1121,6 +1266,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/wall-corner.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1153,8 +1307,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 168,
         "materials": 1,
         "animations": 0,
@@ -1199,6 +1353,11 @@
           "sha256": "8daf5cccceace888d51d74b0e0254e192004faf926e07f1b28e94191879af3a6"
         },
         {
+          "path": "models/castle/wall-doorway.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.wall-doorway.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -1225,8 +1384,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1234,6 +1393,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/wall-doorway.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1266,8 +1434,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 500,
         "materials": 1,
         "animations": 0,
@@ -1312,6 +1480,11 @@
           "sha256": "d9bc817e776e34fc24ad5b448b8cfc2c02603e79f6d90597de8936dc65a07359"
         },
         {
+          "path": "models/castle/door.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.door.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -1338,8 +1511,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1347,6 +1520,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/door.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1379,8 +1561,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 188,
         "materials": 1,
         "animations": 0,
@@ -1425,6 +1607,11 @@
           "sha256": "996887e98957eeea2ba7b5d14f0d17877c91e4e99e1c5b8ee57d87b7f7c9d5e8"
         },
         {
+          "path": "models/castle/tower-square-base.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.tower-base.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -1451,8 +1638,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1460,6 +1647,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/tower-square-base.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1492,8 +1688,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 28,
         "materials": 1,
         "animations": 0,
@@ -1538,6 +1734,11 @@
           "sha256": "34a43b162b0984df0c691cb12fcd169ff374412deca0de5fdfdd702a9fa0c98f"
         },
         {
+          "path": "models/castle/tower-square-mid.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.tower-mid.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -1564,8 +1765,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1573,6 +1774,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/tower-square-mid.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1605,8 +1815,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 76,
         "materials": 1,
         "animations": 0,
@@ -1651,6 +1861,11 @@
           "sha256": "5e98cdf2bf4d885edc3fa514719f80d63872e11c54ee629c11859223dad8489c"
         },
         {
+          "path": "models/castle/tower-square-top.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
           "path": "scripts/cw.castle.tower-top.gd",
           "bytes": 122,
           "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
@@ -1677,8 +1892,8 @@
         },
         {
           "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
-          "bytes": 1302,
-          "sha256": "211c6426815b4ac3948fccff91fbd93ebb910e7d796656fac30e168574bd5a2d"
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
         },
         {
           "path": "models/castle/Textures/colormap.png",
@@ -1686,6 +1901,15 @@
           "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
         }
       ],
+      "importConfiguration": {
+        "path": "models/castle/tower-square-top.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
       "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
       "placement": {
         "units": "metres",
@@ -1718,8 +1942,8 @@
       "geometry": {
         "declaredNodes": 1,
         "activeNodes": 1,
-        "meshInstances": 1,
         "primitives": 1,
+        "meshInstances": 1,
         "triangles": 148,
         "materials": 1,
         "animations": 0,
@@ -1744,9 +1968,9 @@
   ],
   "totals": {
     "items": 16,
-    "files": 78,
+    "files": 94,
     "sourceGlbBytes": 225584,
-    "uniquePayloadBytes": 358941,
+    "uniquePayloadBytes": 360580,
     "triangles": 2700
   },
   "limits": [

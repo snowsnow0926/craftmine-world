@@ -29,6 +29,10 @@ Nature 的 9 个 GLB 自包含；Castle 的 7 个 GLB 使用同目录 `Textures/
 
 使用项目既有 `createGodotProbeEnvironment`：核对锁定 Godot 4.7.2 引擎哈希，在独立 headless profile 中仅运行本仓可信静态夹具。26 个场景均真实导入、实例化、身份赋值、材质加载成功；尺寸、接地高度、三角数与静态碰撞三角数符合清单。门洞穿透射线为空，门柱及门楣实际射线命中，证明碰撞没有用 AABB 封洞。没有运行用户生成代码、OS 键鼠、前台窗口或 Pointer Lock。
 
-Godot 默认导入会为 6 个入选模型自动生成 LOD（松树、草、木桥、门洞、木门、塔基座），按场景重复统计为 13 个 surface；这与原 GLB 不含 skins/animations 是两回事。当前普通对象选择器对 ArrayMesh/LOD 的覆盖另行处理，本批不能因此宣称“所有组件已经能精准瞄准修改”。未为测试修改 GLB 或隐藏 LOD；记录保留真实默认导入结果。
+Godot 默认导入曾为 6 个入选模型自动生成 LOD（松树、草、木桥、门洞、木门、塔基座），按场景重复统计为 13 个 surface。这与原 GLB 不含 skins/animations 是两回事。为保持这些低多边形素材的最高细节，现每个 GLB 随包携带最小 `.glb.import`：只声明 scene/PackedScene 导入器和 `meshes/generate_lods=false`。不携机器路径、缓存目标、UID 或 `.godot` 内容；GLB 原始字节和许可不变，派生配置单独列在每项 `importConfiguration/files`。
+
+这份配置由普通 Godot 导入器处理，玩家、Web、测试使用同一路径，没有 headless 分支，也没有运行时修改 mesh 的脚本。全新无缓存工程复验 26 个包装全部导入、纹理与碰撞正常，实际 LOD surface 数从 13 降到 0。GLB 原字节不变、参数在引擎重写后的 `.import` 中仍保留为 false。
+
+上述原生静态导入未经过完整产品 broker 的 expectedFiles/PCK 验证；Godot 会扩写 `.import`，不能仅凭这项成功就宣称托管安装检查通过。一次普通包安装夹具尝试在其准备阶段遇到 `INVALID_WORLD_ID`，尚未到达包安装，不能据此判断 sidecar 的托管安装结果。该层及精准对象选择交由总控在新成品真实复验，不放宽生产观察器的信任或几何校验。
 
 复建：`node scripts/build-curated-starter.mjs <保存原 ZIP 的绝对目录>`。验证：`node --test tests/curated-starter.test.mjs`；实际引擎验证：设置现有 `CRAFTMINE_GODOT_CACHE_DIR` 后运行 `node tests/curated-starter-engine.mjs`。修改清单/包装后需要重新执行引擎验证并更新对应记录。

@@ -1,7 +1,7 @@
 {
   "format": "craftmine.curated-source-validation/1",
   "engine": "4.7.2.stable.official.ed1daf0bf",
-  "sourceManifestSha256": "08cc207466a7495c2163ce595d474cf86416c201a55249a9a5da1a5807a18e75",
+  "sourceManifestSha256": "ffd3b81f5bd0372a613715b76052e3f64944a5e0834e1a42025fbd89a00d99ba",
   "passed": true,
   "doorway": {
     "lintelSolid": true,
@@ -71,7 +71,7 @@
       "id": "cw.nature.tree-pine",
       "meshInstances": 1,
       "nodes": 3,
-      "surfacesWithLods": 2,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 0,
       "triangles": 204
     },
@@ -93,7 +93,7 @@
       "id": "cw.nature.grass",
       "meshInstances": 1,
       "nodes": 3,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 0,
       "triangles": 132
     },
@@ -203,7 +203,7 @@
       "id": "cw.nature.bridge-wood",
       "meshInstances": 1,
       "nodes": 5,
-      "surfacesWithLods": 2,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 0,
       "triangles": 220
     },
@@ -225,7 +225,7 @@
       "id": "cw.nature.bridge-wood",
       "meshInstances": 1,
       "nodes": 3,
-      "surfacesWithLods": 2,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 0,
       "triangles": 220
     },
@@ -379,7 +379,7 @@
       "id": "cw.castle.wall-doorway",
       "meshInstances": 1,
       "nodes": 5,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 1,
       "triangles": 500
     },
@@ -401,7 +401,7 @@
       "id": "cw.castle.wall-doorway",
       "meshInstances": 1,
       "nodes": 3,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 1,
       "triangles": 500
     },
@@ -423,7 +423,7 @@
       "id": "cw.castle.door",
       "meshInstances": 1,
       "nodes": 5,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 1,
       "triangles": 188
     },
@@ -445,7 +445,7 @@
       "id": "cw.castle.door",
       "meshInstances": 1,
       "nodes": 3,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 1,
       "triangles": 188
     },
@@ -467,7 +467,7 @@
       "id": "cw.castle.tower-base",
       "meshInstances": 1,
       "nodes": 5,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 1,
       "triangles": 28
     },
@@ -489,7 +489,7 @@
       "id": "cw.castle.tower-base",
       "meshInstances": 1,
       "nodes": 3,
-      "surfacesWithLods": 1,
+      "surfacesWithLods": 0,
       "texturedSurfaces": 1,
       "triangles": 28
     },
@@ -583,8 +583,8 @@
     }
   ],
   "notes": [
-    "使用项目既有哈希锁定引擎与独立headless用户目录，只运行本仓可信静态导入夹具。",
-    "原GLB未改；default importer产生的LOD逐surface记录，不宣称所有模型已支持精准拾取。",
-    "这是静态加载/尺寸/碰撞验证，不是交互玩法验收；没有键鼠或PointerLock。"
+    "项目既有锁定引擎、独立headless profile与可信静态夹具。",
+    "所有组件使用同一正式无LOD导入配置，原GLB字节不变，没有headless条件分支。",
+    "新工程原生导入成功不等于托管broker expectedFiles/PCK检查通过；普通产品安装检查和精准选择由总控后续实测。"
   ]
 }
