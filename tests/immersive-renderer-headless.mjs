@@ -26,6 +26,8 @@ const view={pluginId:'craftmine.world',viewId:'world',ref:'craftmine.world/world
 const plugins=[{id:'craftmine.world',name:'Craftmine World',version:'0.1.0',enabled:true,status:'ready',source:'builtin',permissions:['ui.view']}];
 const settings={language:'zh-CN',theme:'dark',defaultMode:'agent',enterToSend:true,onboardingDismissed:true};
 let nativeBounds=null,immersion=null,shortcut=null,presentations=[];
+let preview=null;
+api.pluginPanelInvoke=async(_plugin,channel,payload)=>channel==='world.previewControl' ? (payload.action==='state'?preview:(preview=null)) : {};
 globalThis.__craftmineWorldBridge={invoke:async(_plugin,channel)=>channel==='world.list'?{worlds:[{id:'fixture-world',title:'测试世界',state:'ready'}],activeWorldId:'fixture-world'}:{}};
 api.listPlugins=async()=>({plugins}); api.listPluginViews=async()=>[view]; api.listPluginThemes=async()=>[];
 api.getSettings=async()=>settings; api.listNotifications=async()=>({notifications:[],unreadCount:0}); api.setNotificationViewingSession=async()=>({ok:true});
@@ -37,6 +39,7 @@ await i18n.use(initReactI18next).init({lng:'zh-CN',fallbackLng:'en',resources:Ob
 writeComposerDraft(HOME_DRAFT_KEY,{text:'Keep this unsent wish',fileReferences:[]});
 useAppStore.setState({ready:true,bootstrap:async()=>{},settings,plugins,pluginViews:[view],version:{appName:'Craftmine World',version:'fixture',protocolVersion:11},healthOk:true,onboarding:{needed:false,dismissed:true},workPanelOpen:false,workPanelWidth:560,workPanelTabs:[],activeWorkPanelTabId:null});
 globalThis.fixture={
+ preview(value){preview=value;},
  choose(mode){const button=document.querySelector('[data-mode="'+mode+'"]');const key=Object.keys(button).find(key=>key.startsWith('__reactProps$'));button[key].onClick();},
  entry:openCraftmineModeEntry,
  artifact(path='fixture.txt'){useAppStore.setState({workspace:{path:'D:/fixture',name:'Fixture'}});useAppStore.getState().openFileInWorkPanel(path);},
@@ -75,6 +78,11 @@ try {
   await page.waitForFunction(()=>document.querySelector('.composer-input')&&document.querySelector('.work-plugin-view-surface')&&!document.querySelector('[data-testid="startup-splash"]'));
   await page.evaluate(()=>{globalThis.composer=document.querySelector('.composer-input');globalThis.world=document.querySelector('.work-plugin-view-surface');fixture.mode('play');fixture.run();});
   await page.evaluate(()=>fixture.artifact());
+  await page.waitForFunction(()=>fixture.state().activeTab==='file:fixture.txt'&&fixture.state().immersion?.overlay==='closed');
+  check('background artifact does not interrupt closed gameplay',await page.evaluate(()=>!document.querySelector('.craftmine-workbench-artifacts')));
+  await page.evaluate(()=>fixture.overlay('compact'));
+  await page.waitForFunction(()=>fixture.state().immersion?.overlay==='compact');
+  await page.evaluate(()=>fixture.artifact());
   await page.waitForFunction(()=>fixture.state().activeTab==='file:fixture.txt'&&fixture.state().immersion?.overlay==='full'&&document.querySelector('[data-artifact-kind="file"]')?.textContent.includes('fixture file content: fixture.txt'));
   check('task-opened artifact stays selected behind the same immersive world',await page.evaluate(()=>world===document.querySelector('.work-plugin-view-surface')&&!!document.querySelector('.craftmine-play')));
   check('opening a file reveals its real viewer in the full overlay',await page.evaluate(()=>fixture.state().immersion.overlay==='full'&&document.querySelectorAll('.work-plugin-view-surface').length===1));
@@ -92,6 +100,15 @@ try {
   await page.waitForFunction(()=>document.querySelector('[data-artifact-kind="file"]')?.textContent.includes('fixture file content: fixture.txt'));
   check('overlay selector switches retained files and review without changing world or draft',await page.evaluate(()=>document.querySelectorAll('.craftmine-workbench-artifact-toolbar option').length===4&&world===document.querySelector('.work-plugin-view-surface')&&composer.textContent==='Keep this unsent wish'));
   await page.evaluate(()=>fixture.world());
+  await page.evaluate(()=>{fixture.overlay('closed');fixture.preview({worldId:'fixture-world',candidateId:'candidate',buildId:'build',previewId:'preview-one',applyDisabled:false,closeDisabled:false,applyLabel:'应用到世界',reason:'草稿就绪',next:'采用或返回',error:''});});
+  await page.waitForFunction(()=>fixture.state().immersion?.overlay==='compact'&&document.querySelector('[data-preview-id="preview-one"]'));
+  check('new candidate exposes its controls above the world',await page.evaluate(()=>document.querySelector('[data-preview-id] button').getBoundingClientRect().width>0&&world===document.querySelector('.work-plugin-view-surface')));
+  await page.evaluate(()=>fixture.overlay('closed'));
+  await page.waitForFunction(()=>fixture.state().immersion?.overlay==='closed');
+  await page.waitForTimeout(1200);
+  check('closing candidate controls stays closed for gameplay',await page.evaluate(()=>fixture.state().immersion?.overlay==='closed'));
+  await page.evaluate(()=>{fixture.preview(null);fixture.overlay('compact');});
+  await page.waitForFunction(()=>!document.querySelector('[data-preview-id]'));
   for(const overlay of ['closed','compact','full','closed','compact']) {
     await page.evaluate(state=>fixture.overlay(state),overlay);
     await page.waitForFunction(state=>document.querySelector('.craftmine-overlay-'+state)&&fixture.state().immersion?.overlay===state,overlay);

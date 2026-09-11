@@ -34,6 +34,7 @@ import { ToastHost } from "./components/Toast";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { useCraftmineLayout, useCraftmineImmersionSurface } from "./lib/use-craftmine-immersion";
 import { CraftmineOverlayControls } from "./components/CraftmineOverlayControls";
+import { CraftminePreviewControls } from "./components/CraftminePreviewControls";
 import { isCraftmineWorldWorkspace } from "./lib/craftmine-layout";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
@@ -1909,6 +1910,7 @@ function AppShell() {
             inert={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}
             aria-hidden={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}>
             {craftmineImmersive && craftmineLayout.overlay !== "closed" && <CraftmineOverlayControls />}
+            {craftmineImmersive && <CraftminePreviewControls />}
             {craftmineImmersive && craftmineImmersionError && <div role="alert" className="craftmine-immersion-error">{craftmineImmersionError}</div>}
             {craftmineWorldFirst && !craftmineImmersive && <CraftmineChatResize width={craftmineLayout.chatWidth} />}
             <WindowControls contained />
