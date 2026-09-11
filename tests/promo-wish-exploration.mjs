@@ -26,6 +26,9 @@ const budgetFile = sourceProof.budgetFile;
 const budgetBytes = budgetFile?fs.readFileSync(budgetFile, 'utf8'):null;
 assertProofs(sourceProof.proofs);
 const planFlag = process.argv.indexOf('--plan');
+const aimFlag=process.argv.indexOf('--aim-creation-entity');
+const aimEntity=aimFlag<0?null:process.argv[aimFlag+1];
+if(aimFlag>=0)assert.ok(typeof aimEntity==='string'&&/^[a-z][a-z0-9_-]{0,63}$/.test(aimEntity),'Exact creation entity ID required');
 const steps = planFlag < 0
   ? [0, Math.PI / 2, Math.PI, -Math.PI / 2].map(yaw => ({op: 'look', args: {yaw, pitch: -0.35}, capture: true}))
   : JSON.parse(fs.readFileSync(process.argv[planFlag + 1]));
@@ -104,6 +107,28 @@ try {
     () => rpc('worldPanel', {channel: 'godot.runtimeResume', payload: {worldId: before.worldId}}),
     value => value !== undefined, 'startup transaction before resume');
   const identity = {worldId: before.worldId, buildId: before.buildId, instanceId: before.instanceId};
+  if(aimEntity){
+    // Test-only aiming from fresh observed geometry. Wait for deceleration;
+    // never infer the final position from a previous walk's frame count.
+    assert.equal(before.baseId,'creation-sandbox');
+    const settled=await rpc('godotExplore',{payload:{...identity,steps:[{op:'wait',args:{frames:30}}]}});
+    const current=settled.after,body=current.payload,entity=body.creation.entities.find(e=>e.id===aimEntity);
+    assert.ok(entity,'Observed target entity required');
+    const position=body.player.position;
+    // The stock door's aim area rotates with its visible hinge. An open door
+    // has no blocking collider, so propose its observed mesh center instead.
+    // The real ray identity below still has to confirm this aiming hypothesis.
+    const bounds=entity.collisionBounds??entity.meshBounds;
+    assert.ok(bounds,'Observed collision or mesh bounds required');
+    assert.ok([position,bounds.min,bounds.max].every(v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite)));
+    // Eye offset from the stock creation.tscn; this is only a proposed look.
+    // The actual runtime ray must independently confirm the same entity.
+    const center=bounds.min.map((v,i)=>(v+bounds.max[i])/2),delta=center.map((v,i)=>v-position[i]-(i===1?.65:0));
+    const yaw=Math.atan2(-delta[0],-delta[2]),pitch=Math.atan2(delta[1],Math.hypot(delta[0],delta[2]));
+    const aimed=await rpc('godotExplore',{payload:{...identity,steps:[{op:'look',args:{yaw,pitch}},{op:'wait',args:{frames:4}}]}});
+    report.aim={entityId:aimEntity,eyeOffsetAssumption:.65,settled,aimed};
+    assert.equal(aimed.after.payload.creation.target.entityId,aimEntity,'Actual ray must hit intended entity before interaction');
+  }
   const exploration = await rpc('godotExplore', {payload: {...identity, steps}});
   for (const [index, capture] of exploration.captures.entries()) {
     const imageFile = 'view-' + (index + 1) + '.png';

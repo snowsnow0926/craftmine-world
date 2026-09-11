@@ -45,9 +45,11 @@
       "id": "GA05",
       "scenario": "继承场景与同名实体",
       "requiredEvidence": "定位真实对象，不改错实例 GU2",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "tests/godot-agent/query-relations.test.mjs"
+      ],
+      "next": "Static inherited/instance/duplicate-path relations tested; expanded runtime identity and safe editing still require coverage"
     },
     {
       "id": "GA06",
@@ -71,9 +73,11 @@
       "id": "GA08",
       "scenario": "参数与共享材质",
       "requiredEvidence": "改动范围准确，其他对象按约定保持 GU3",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "tests/creation-change-summary.test.mjs"
+      ],
+      "next": "Exact field delta and declared rules tested; shared material scope across arbitrary scenes remains"
     },
     {
       "id": "GA09",
@@ -99,9 +103,10 @@
       "requiredEvidence": "关闭阻挡、打开通行，视觉状态对应 GU4",
       "status": "partial",
       "evidence": [
-        "docs/GU4_DOOR_SCENARIO_PROGRESS_2026-09-12.md"
+        "docs/GU4_DOOR_SCENARIO_PROGRESS_2026-09-12.md",
+        "docs/GODOT_AGENT_ORDINARY_PLAYER_BASELINE_2026-09-12.md"
       ],
-      "next": "Actual normal/blocked native and Web diagnostic fixtures passed; authoritative door passage extension underway"
+      "next": "Ordinary-model blue door physically blocks/passes/recloses; newer fixed sequence-door core passage covered separately; latest-package and binding checks remain"
     },
     {
       "id": "GA12",
@@ -115,9 +120,11 @@
       "id": "GA13",
       "scenario": "宝箱奖励重开",
       "requiredEvidence": "奖励一次性，保存重启后不重复 GU4",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "docs/GODOT_AGENT_ORDINARY_PLAYER_BASELINE_2026-09-12.md"
+      ],
+      "next": "One ordinary-model chest proved one token across restart and repeated interaction; broader latest-package matrix remains"
     },
     {
       "id": "GA14",
@@ -201,9 +208,10 @@
       "requiredEvidence": "资源齐全、身份独立、不复制源进度 GU6",
       "status": "partial",
       "evidence": [
-        "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md"
+        "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
+        "docs/specs/godot-agent-gu6-kenney-modules.md"
       ],
-      "next": "Fixed sources and LPAC/Web startup verified; real package roundtrip and two-world instance test underway"
+      "next": "Two source worlds and real GLB/texture/license roundtrip verified; formal check/adoption and state initialization remain"
     },
     {
       "id": "GA24",
@@ -247,9 +255,11 @@
       "id": "GA28",
       "scenario": "全新措辞组合需求",
       "requiredEvidence": "真实模型独立完成，并记录失败和人工介入 GU7",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "docs/GODOT_AGENT_ORDINARY_PLAYER_BASELINE_2026-09-12.md"
+      ],
+      "next": "One combined ordinary request completed with manual permissions/adoption and separate gameplay checks; holdout and broader compositions remain"
     }
   ]
 }

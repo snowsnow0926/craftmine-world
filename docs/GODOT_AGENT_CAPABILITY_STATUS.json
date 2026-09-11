@@ -25,7 +25,7 @@
     {
       "id": "GU0",
       "status": "in-progress",
-      "next": "First enhanced package frozen at d4b15812; ordinary blank-world/session bootstrap passed; first confirmed-model creation is running"
+      "next": "First ordinary player baseline completed on frozen d4b15812 package; comparative task set and latest-package coverage remain"
     },
     {
       "id": "GU1",
@@ -45,7 +45,7 @@
     {
       "id": "GU4",
       "status": "in-progress",
-      "next": "Optional host-only collector integrated; real Web and offscreen verifier evidence passed; core-authoritative candidate integration remains"
+      "next": "Fixed sequence-door passage frozen into core requirements and candidate verdict; normal/ghost/still-blocked fixtures pass expected outcomes; actual controller binding and later scopes remain"
     },
     {
       "id": "GU5",
@@ -55,12 +55,12 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Pinned source catalog and repeatable LPAC/Web trial integrated; next adapt selected modules to existing asset/package contracts and verify gameplay plus independent-world reuse"
+      "next": "Kenney building/road packages cross two source worlds with texture/attribution closure and 29 separate LPAC/Web assertions; formal host adoption, persistent parameters and performance remain"
     },
     {
       "id": "GU7",
       "status": "in-progress",
-      "next": "Frozen package d4b15812 built and integrity verified; ordinary blue-door plus one-time chest run uses confirmed DeepSeek model/max with no added task limits"
+      "next": "Ordinary blue-door/chest task: 13 model calls, normal manual adoption/cold reopen, actual block/pass/reclose and one-time reward across restart verified; repackage later source and continue full matrix"
     }
   ],
   "evidence": [
@@ -142,13 +142,32 @@
     {
       "kind": "ordinary-player",
       "path": "test-results/desktop-native-ordinary-jHKHPj/player-29bc92e8-d233-4782-9806-6bcebf97de01.json",
-      "status": "running",
+      "status": "completed-with-separate-gameplay-evidence",
       "scope": "blue door and one-time chest; confirmed DeepSeek/max; no evaluator limits; manually reviewed per-operation test approvals"
+    },
+    {
+      "kind": "ordinary-gameplay",
+      "path": "docs/evidence/gu7-ordinary-player-20260912/summary.json",
+      "status": "passed",
+      "scope": "one blue-door/chest wish; normal model draft and manual adoption; five independent background exploration attempts including two retained aim failures"
+    },
+    {
+      "kind": "frozen-passage-core",
+      "commit": "0337cbac",
+      "status": "passed",
+      "scope": "15 real Rust requirements tests and desktop typecheck; actual controller-binding limitations remain"
+    },
+    {
+      "kind": "module-reuse",
+      "commit": "ee6003e3",
+      "path": "docs/evidence/gu6-kenney-modules-20260912/summary.json",
+      "status": "passed",
+      "scope": "five source installs in two worlds, 29 separate LPAC/Web physics/parameter assertions; source jobs themselves are still check-blocked"
     }
   ],
   "limitations": [
     "Current installed client has not been revalidated by this goal",
     "Prior player records apply only to their recorded wishes and builds",
-    "The first new ordinary-player run is in progress; completion and gameplay are not yet established"
+    "The first player package predates query-relations, core passage and GLB/attribution integration; latest package revalidation remains"
   ]
 }
