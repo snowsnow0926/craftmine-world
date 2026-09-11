@@ -30,7 +30,7 @@
     {
       "id": "GU1",
       "status": "in-progress",
-      "next": "Live readiness increment integrated and tested; pending broader registry/permission and packaged validation"
+      "next": "Live readiness plus canonical asset kind/schema/UI alignment integrated; actual returned kinds round-trip through model filters, broader mode/permission/package coverage remains"
     },
     {
       "id": "GU2",
@@ -40,7 +40,7 @@
     {
       "id": "GU3",
       "status": "in-progress",
-      "next": "Finite natural sequence requests freeze existing IDs/colors/declared labels; nonspatial edit and undo placement fixed; generic parameters and incremental checks remain"
+      "next": "Actual module configure persistence gap reproduced: same-instance restore retains only memory, reconstructed instance resets; implement existing per-instance source overrides with typed declaration preservation, then actual check/adoption/cold proof"
     },
     {
       "id": "GU4",
@@ -238,6 +238,20 @@
       "path": "docs/evidence/gu6-catalog-adoption-20260912/summary.json",
       "status": "passed-scoped-product-flow",
       "scope": "25 actual product steps, real checks/adoption/cold exact-op replay; readonly SQLite has only 3 expected jobs; both exits clean; initial catalog seed is a fixture and no model was run"
+    },
+    {
+      "kind": "asset-kind-alignment",
+      "commit": "b49b1ec8",
+      "path": "docs/evidence/gu1-asset-kinds-20260912/identity.json",
+      "status": "passed-in-real-core-and-bundled-tool",
+      "scope": "Core canonical7 plus legacy2 aliases, UI canonical filters; later than a9 sealed trial"
+    },
+    {
+      "kind": "module-parameter-persistence",
+      "commit": "1e7a6041",
+      "path": "docs/evidence/gu3-module-runtime-persistence-20260912/report.json",
+      "status": "gap-reproduced",
+      "scope": "12 real LPAC/Web assertions, explicit reconstructed instance not cold product; configure is transient, current snapshot omits module fields; implementation still required"
     }
   ],
   "limitations": [

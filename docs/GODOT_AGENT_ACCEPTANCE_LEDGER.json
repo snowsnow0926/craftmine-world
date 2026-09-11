@@ -78,9 +78,10 @@
       "status": "partial",
       "evidence": [
         "tests/creation-change-summary.test.mjs",
-        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json"
+        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
+        "docs/spec/godot-module-instance-persistence-audit.md"
       ],
-      "next": "Ordinary recolor via generic patch preserves both known entities and progress; arbitrary shared-material edits and parameter scope remain"
+      "next": "Native recolor preservation already observed; imported module configure is transient in real reconstruction diagnostic, needs instance source persistence plus independent shared-material scope validation"
     },
     {
       "id": "GA09",
