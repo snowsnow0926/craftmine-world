@@ -52,7 +52,7 @@ const HANDSHAKE={format:'craftmine.core/1',godotProjects:true,godotExecution:fal
   publishesWorlds:true,agentPublishesWorlds:false};
 
 let sequence=0;
-function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false,noWorld=false,registered=false}={}){
+function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false,noWorld=false,registered=false,store=STORE}={}){
   const calls=[];
   const core={start:async()=>({...HANDSHAKE,...(registered?{contentHistory:true,assetCatalog:true,creationPackages:true}:{})}),call:async(method,params)=>{
     calls.push({method,params});
@@ -65,7 +65,7 @@ function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false
     if(method==='workspace.open')return {worldId:'alpha',task:{binding:{taskId:'task-1',baseBuild:'gbd-0',
       repoId:'world-alpha',branchId:'plan-1'},revision:3,draftHash:'h'.repeat(64),draft:{scene:{objects:[],systems:[],behaviors:[]}}}};
     if(method==='godotProject.index'){
-      const files=[...STORE.keys()].map(file=>({path:file,sha256:'a'.repeat(64),bytes:STORE.get(file).length}));
+      const files=[...store.keys()].map(file=>({path:file,sha256:'a'.repeat(64),bytes:store.get(file).length}));
       const offset=params.offset||0,limit=params.limit||32;
       const page=files.slice(offset,offset+limit);
       return {format:'craftmine.godot-project/1',worldId:'alpha',revision:3,manifestHash:'b'.repeat(64),
@@ -74,7 +74,7 @@ function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false
         status:'source-only',verified:false,applied:false,executionAvailable:false,binaryAssetsAvailable:false};
     }
     if(method==='godotProject.read'){
-      const text=STORE.get(params.path);
+      const text=store.get(params.path);
       if(text===undefined)throw Object.assign(Error('PROJECT_FILE_NOT_FOUND'),{errorCode:'PROJECT_FILE_NOT_FOUND'});
       const chars=Array.from(text),offset=params.offset||0,limit=params.limit||16000;
       const slice=chars.slice(offset,offset+limit).join('');
@@ -184,6 +184,19 @@ test('godot_project_query reads the real project shape through the broker',async
   assert.deepEqual(found.matches,[{path:'world.gd',kind:'func',line:3,returns:'void'}]);
   await assert.rejects(f.call('godot_project_query',{mode:'scene'}),/PATH_REQUIRED/);
   await assert.rejects(f.call('godot_project_query',{mode:'find'}),/SYMBOL_NAME_REQUIRED/);
+});
+
+test('query continuation fields traverse the real broker schema and immutable source reads',async()=>{
+  const f=fixture({store:new Map([...STORE,['last.gd','extends Node\nfunc last_symbol():\n pass\n']])});
+  const first=await f.call('godot_project_query',{mode:'scripts',limit:1});
+  assert.equal(first.nextOffset,1);
+  const callStart=f.calls.length;
+  const pin={revision:first.identity.revision,manifestHash:first.identity.manifestHash};
+  const last=await f.call('godot_project_query',{mode:'scripts',offset:first.nextOffset,limit:1,...pin});
+  assert.equal(last.scripts[0].path,'last.gd');assert.equal(last.nextOffset,null);
+  const reads=f.calls.slice(callStart).filter(entry=>/^godotProject\.(index|read)$/.test(entry.method));
+  assert.ok(reads.length>=2);
+  for(const read of reads){assert.equal(read.params.revision,pin.revision);assert.equal(read.params.manifestHash,pin.manifestHash);}
 });
 
 test('live observation refuses to substitute saved progress for current state',async()=>{

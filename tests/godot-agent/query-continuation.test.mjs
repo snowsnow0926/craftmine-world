@@ -74,3 +74,10 @@ test('Unicode read cap counts characters, not UTF16 units, and returns continuat
   const result=await query.readText('a.gd',{cap:4});
   assert.equal(result.text,'😀😀😀😀');assert.equal(result.nextOffset,4);assert.equal(result.truncated,true);
 });
+
+test('missing index pages and mismatched file hashes cannot certify complete source evidence',async()=>{
+  const incomplete=fixture([['a.gd','extends Node']],{alter(method,args,result){if(method==='godotProject.index')result.totalFiles=2;}});
+  await assert.rejects(incomplete.query.scripts(),/INVALID_PROJECT_PAGE/);
+  const mismatched=fixture([['a.gd','extends Node']],{alter(method,args,result){if(method==='godotProject.read')result.sha256=hash('foreign');}});
+  await assert.rejects(mismatched.query.scripts(),/PROJECT_QUERY_IDENTITY_MISMATCH/);
+});

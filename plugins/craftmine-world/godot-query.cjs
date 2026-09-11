@@ -239,7 +239,17 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     let page=await indexPage({revision:args.revision,manifestHash:args.manifestHash});
     const identity={worldId:page.worldId,revision:page.revision,manifestHash:page.manifestHash,baseId:page.baseId,
       engineVersion:page.engineVersion,renderer:page.renderer,target:page.target,format:page.format};
-    files.push(...(page.files||[]));
+    const total=page.totalFiles,seen=new Set();
+    if(!Number.isSafeInteger(total)||total<0)throw Error('INVALID_PROJECT_PAGE');
+    function appendPage(page){
+      if(page.totalFiles!==total||!Array.isArray(page.files))throw Error('INVALID_PROJECT_PAGE');
+      for(const file of page.files){
+        if(typeof file.path!=='string'||!file.path||seen.has(file.path)||typeof file.sha256!=='string'||!/^[a-f0-9]{64}$/.test(file.sha256))throw Error('INVALID_PROJECT_PAGE');
+        seen.add(file.path);files.push(file);
+      }
+      if(files.length>total||(page.nextOffset!=null&&(page.files.length===0||page.nextOffset!==files.length||page.nextOffset>=total)))throw Error('INVALID_PROJECT_PAGE');
+    }
+    appendPage(page);
     // Every later page is pinned to the revision of the first page, so the
     // returned file list and hashes cannot span two revisions.
     const pin={revision:identity.revision,manifestHash:identity.manifestHash};
@@ -248,11 +258,12 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
       if(!Number.isInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('INVALID_PROJECT_PAGE');
       offset=page.nextOffset;
       page=await indexPage({...pin,offset});
-      files.push(...(page.files||[]));
+      appendPage(page);
     }
+    if(files.length!==total)throw Error('INVALID_PROJECT_PAGE');
     return {identity,files,latest:page};
   }
-  async function readText(path,{revision,manifestHash,cap=readLimit}={}){
+  async function readText(path,{revision,manifestHash,cap=readLimit,expectedHash}={}){
     if(typeof path!=='string'||!path)throw Error('PATH_REQUIRED');
     validateArgs({revision,manifestHash});
     if(!Number.isSafeInteger(cap)||cap<1)throw Error('PROJECT_QUERY_PAGE_INVALID');
@@ -262,6 +273,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
       const page=await call('godotProject.read',{...pin,path,offset,limit:Math.min(readLimit,cap-characters)});
       assertIdentity(page,pin);
       if(page.path!==path)throw Error('PROJECT_QUERY_IDENTITY_MISMATCH');
+      if(expectedHash!==undefined&&page.sha256!==expectedHash)throw Error('PROJECT_QUERY_IDENTITY_MISMATCH');
       if(typeof page.text!=='string'||page.offset!==offset||!Number.isSafeInteger(page.totalCharacters)||page.totalCharacters<offset+Array.from(page.text).length)throw Error('INVALID_PROJECT_PAGE');
       if(meta&&(page.sha256!==meta.sha256||page.totalCharacters!==meta.totalCharacters))throw Error('PROJECT_QUERY_IDENTITY_MISMATCH');
       meta=page;
@@ -286,7 +298,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     const settingsFile=files.find(file=>file.path==='project.godot');
     let settings=null;
     if(settingsFile){
-      const read=await readText('project.godot',{...identity,cap:readLimit});
+      const read=await readText('project.godot',{...identity,expectedHash:settingsFile.sha256,cap:readLimit});
       settings={...parseProjectSettings(read.text),truncated:read.truncated,nextOffset:read.nextOffset};
     }
     const scriptFiles=files.filter(file=>kindOf(file.path)==='script');
@@ -324,7 +336,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     const {identity,wanted,offset,nextOffset,totalFiles}=await selectFiles(args,'script');
     const parsed=[],skipped=[];
     for(const file of wanted){
-      const read=await readText(file.path,{...identity,cap:readLimit});
+      const read=await readText(file.path,{...identity,expectedHash:file.sha256,cap:readLimit});
       if(read.truncated){skipped.push({path:file.path,reason:'FILE_EXCEEDS_READ_CAP'});continue;}
       const script=parseScript(read.text);
       parsed.push({path:file.path,sha256:file.sha256,...script});
@@ -337,7 +349,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     const {identity,wanted,offset,nextOffset,totalFiles}=await selectFiles(args,'resource');
     const parsed=[],skipped=[];
     for(const file of wanted){
-      const read=await readText(file.path,{...identity,cap:readLimit});
+      const read=await readText(file.path,{...identity,expectedHash:file.sha256,cap:readLimit});
       if(read.truncated){skipped.push({path:file.path,reason:'FILE_EXCEEDS_READ_CAP'});continue;}
       parsed.push({path:file.path,sha256:file.sha256,...parseResource(read.text)});
     }
@@ -353,7 +365,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     let scanned=0;
     for(const file of wanted){
       scanned++;
-      const read=await readText(file.path,{...identity,cap:readLimit});
+      const read=await readText(file.path,{...identity,expectedHash:file.sha256,cap:readLimit});
       if(read.truncated){skipped.push({path:file.path,reason:'FILE_EXCEEDS_READ_CAP'});continue;}
       const script=parseScript(read.text);
       if(script.className===name)matches.push({path:file.path,kind:'class_name',line:script.classLine});
