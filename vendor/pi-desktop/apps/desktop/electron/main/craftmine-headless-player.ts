@@ -1,6 +1,11 @@
 type Access={invoke:(channel:string,...args:unknown[])=>Promise<any>;panel:(channel:string,payload:Record<string,unknown>)=>Promise<any>;observe:()=>Promise<any>;active:(sessionId:string)=>boolean;latest:(worldId:string,sessionId:string)=>Promise<any>};
 const object=(value:unknown):value is Record<string,any>=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const id=(value:unknown):value is string=>typeof value==='string'&&/^[a-zA-Z0-9._-]{1,128}$/.test(value);
+export function unwrapPlayerDesktopResult(result:any){
+  if(!result||typeof result.ok!=='boolean')throw Error('HEADLESS_PLAYER_DESKTOP_RESULT_INVALID');
+  if(!result.ok)throw Object.assign(Error(result.error?.message??'Desktop request failed'),{code:result.error?.code});
+  return result.data;
+}
 /** Ordinary desktop APIs inside the existing protected headless controller. */
 export function createHeadlessPlayer(access:Access){
   let binding:{sessionId:string;worldId:string}|null=null,busy=false,lastMessageId:string|undefined;

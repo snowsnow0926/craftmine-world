@@ -1,8 +1,19 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createHeadlessPlayer} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless-player.ts';
+import {createHeadlessPlayer,unwrapPlayerDesktopResult} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless-player.ts';
 const config={format:'craftmine.player-config-snapshot/1',credentialsIncluded:false,modelId:'deepseek-v4.1-flash-expires-on-0910',thinkingLevel:'max',thinkingLevels:['medium','high','max','off'],contextWindow:1000000,maxTokens:384000,vendorKey:'deepseek',baseUrl:'https://api.deepseek.com',protocol:'openai_compatible',apiStyle:'chat_completions'};
 config.mode='agent';config.permissionMode='inherit';config.modelBinding={id:config.modelId,contextWindow:config.contextWindow,maxTokens:config.maxTokens,thinkingLevels:config.thinkingLevels,defaultThinkingLevel:'max',supportsImages:true,supportsDocuments:true,availableForSubagents:true};
 const identity={sessionId:'session-a',worldId:'world-a'};
+test('ordinary UI result envelopes are unwrapped before session identity checks',async()=>{
+ const session={id:identity.sessionId};
+ const player=createHeadlessPlayer({
+  invoke:async(channel,...args)=>unwrapPlayerDesktopResult({ok:true,data:channel==='providersCreate'?{provider:{id:'provider-a'}}:{session:channel==='sessionConfigure'?{...session,...args[1]}:session}}),
+  panel:async()=>({}),observe:async()=>({worldId:identity.worldId}),active:()=>false,latest:async()=>null,
+ });
+ const result=await player('playerSetup',{...identity,config,secret:'fixture-key'});
+ assert.equal(result.sessionId,identity.sessionId);assert.equal(result.modelId,config.modelId);
+ assert.throws(()=>unwrapPlayerDesktopResult({ok:false,error:{code:'REJECTED',message:'Request rejected'}}),error=>error.code==='REJECTED');
+ assert.throws(()=>unwrapPlayerDesktopResult({session}),/DESKTOP_RESULT_INVALID/);
+});
 function fixture(){
   const calls=[];let session={id:'session-a',mode:'agent',permissionMode:'auto',messages:[{id:'old-message'}]},active=false,worldId='world-a';
   const player=createHeadlessPlayer({invoke:async(channel,...args)=>{calls.push([channel,...args]);if(channel==='sessionGet')return {session};if(channel==='providersCreate')return {provider:{id:'isolated-provider'}};if(channel==='sessionConfigure'){session={...session,...args[1]};return {session};}if(channel==='sessionTurnMetrics')return {usage:{totalTokens:123}};if(channel==='agentPrompt'){active=true;return {accepted:true};}if(channel==='agentAbort'){active=false;return {ok:true};}return {};},panel:async(channel)=>channel==='godot.creationTarget'?{worldId,captureId:'capture-a'}:{status:'working'},observe:async()=>({worldId,buildId:'build-a'}),active:()=>active,latest:async()=>({jobId:'job-a'})});

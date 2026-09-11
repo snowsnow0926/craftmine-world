@@ -11,7 +11,7 @@ import { createGodotBasesAcceptance } from "./craftmine-godot-bases-acceptance";
 import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance";
 import { createGodotExploration } from "./craftmine-godot-exploration";
 import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
-import {createHeadlessPlayer} from './craftmine-headless-player';
+import {createHeadlessPlayer,unwrapPlayerDesktopResult} from './craftmine-headless-player';
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
@@ -105,7 +105,7 @@ export function installHeadlessControl(access: {
     return window.webContents.executeJavaScript(script,false);
   };
   const player=access.godotGameplay&&access.playerActive&&access.playerLatest?createHeadlessPlayer({
-    invoke:(channel,...args)=>desktopCall(`piDesktop.invoke(piDesktop.channels.invoke[${JSON.stringify(channel)}],...${JSON.stringify(args)})`),
+    invoke:async(channel,...args)=>unwrapPlayerDesktopResult(await desktopCall(`piDesktop.invoke(piDesktop.channels.invoke[${JSON.stringify(channel)}],...${JSON.stringify(args)})`)),
     panel:(channel,payload)=>desktopCall(`piDesktop.pluginPanelInvoke('craftmine.world',${JSON.stringify(channel)},${JSON.stringify(payload)})`),
     observe:access.godotGameplay.observe,active:access.playerActive,latest:access.playerLatest,
   }):null;
