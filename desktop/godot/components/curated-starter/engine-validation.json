@@ -1,0 +1,590 @@
+{
+  "format": "craftmine.curated-source-validation/1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sourceManifestSha256": "08cc207466a7495c2163ce595d474cf86416c201a55249a9a5da1a5807a18e75",
+  "passed": true,
+  "doorway": {
+    "lintelSolid": true,
+    "openingClear": true,
+    "postSolid": true
+  },
+  "scenes": [
+    {
+      "bounds": {
+        "min": [
+          -1.28110826015472,
+          6.4e-31,
+          -1.4792959690094
+        ],
+        "size": [
+          2.56221604347229,
+          4.9049596786499,
+          2.9585919380188
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.tree-oak.tscn",
+      "id": "cw.nature.tree-oak",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 196
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.69423043727875,
+          0,
+          -1.52320492267609
+        ],
+        "size": [
+          3.38846015930176,
+          5.32966804504395,
+          3.04641008377075
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.tree-detailed.tscn",
+      "id": "cw.nature.tree-detailed",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 402
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.23403763771057,
+          -2.55294486222805e-16,
+          -1.42494404315948
+        ],
+        "size": [
+          2.46807527542114,
+          5.46574878692627,
+          2.84988808631897
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.tree-pine.tscn",
+      "id": "cw.nature.tree-pine",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 2,
+      "texturedSurfaces": 0,
+      "triangles": 204
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.381074190139771,
+          0,
+          -0.392182528972626
+        ],
+        "size": [
+          0.762148022651672,
+          0.508000016212463,
+          0.784365594387054
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.grass.tscn",
+      "id": "cw.nature.grass",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 0,
+      "triangles": 132
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.159097999334335,
+          0,
+          -0.181059062480927
+        ],
+        "size": [
+          0.318195044994354,
+          0.584999978542328,
+          0.362118124961853
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.flower-red.tscn",
+      "id": "cw.nature.flower-red",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 76
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.602543711662292,
+          0,
+          -0.602543711662292
+        ],
+        "size": [
+          1.20508742332459,
+          0.720821857452393,
+          1.20508742332459
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.bush.tscn",
+      "id": "cw.nature.bush",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 104
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.54119998216629,
+          6.76791964175946e-17,
+          -0.54119998216629
+        ],
+        "size": [
+          1.08239996433258,
+          0.573702037334442,
+          1.08239996433258
+        ]
+      },
+      "collisionTriangles": 16,
+      "entry": "scenes/cw.nature.rock.tscn",
+      "id": "cw.nature.rock",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 16
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.54119998216629,
+          6.76791964175946e-17,
+          -0.54119998216629
+        ],
+        "size": [
+          1.08239996433258,
+          0.573702037334442,
+          1.08239996433258
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.rock-visual.tscn",
+      "id": "cw.nature.rock",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 16
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.55999994277954,
+          0,
+          -1.55999994277954
+        ],
+        "size": [
+          3.11999988555908,
+          1.20000004768372,
+          3.11999988555908
+        ]
+      },
+      "collisionTriangles": 220,
+      "entry": "scenes/cw.nature.bridge-wood.tscn",
+      "id": "cw.nature.bridge-wood",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 2,
+      "texturedSurfaces": 0,
+      "triangles": 220
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.55999994277954,
+          0,
+          -1.55999994277954
+        ],
+        "size": [
+          3.11999988555908,
+          1.20000004768372,
+          3.11999988555908
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.bridge-wood-visual.tscn",
+      "id": "cw.nature.bridge-wood",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 2,
+      "texturedSurfaces": 0,
+      "triangles": 220
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -0.105000019073486
+        ],
+        "size": [
+          3,
+          1.03508186340332,
+          0.210000038146973
+        ]
+      },
+      "collisionTriangles": 64,
+      "entry": "scenes/cw.nature.fence-wood.tscn",
+      "id": "cw.nature.fence-wood",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 64
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -0.105000019073486
+        ],
+        "size": [
+          3,
+          1.03508186340332,
+          0.210000038146973
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.nature.fence-wood-visual.tscn",
+      "id": "cw.nature.fence-wood",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 0,
+      "triangles": 64
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          3.92999982833862,
+          3
+        ]
+      },
+      "collisionTriangles": 178,
+      "entry": "scenes/cw.castle.wall.tscn",
+      "id": "cw.castle.wall",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 178
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          3.92999982833862,
+          3
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.wall-visual.tscn",
+      "id": "cw.castle.wall",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 178
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          3.92999982833862,
+          3
+        ]
+      },
+      "collisionTriangles": 168,
+      "entry": "scenes/cw.castle.wall-corner.tscn",
+      "id": "cw.castle.wall-corner",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 168
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          3.92999982833862,
+          3
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.wall-corner-visual.tscn",
+      "id": "cw.castle.wall-corner",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 168
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.75,
+          -1.35460222077317e-16,
+          -1.5
+        ],
+        "size": [
+          1.5,
+          3.92999982833862,
+          3
+        ]
+      },
+      "collisionTriangles": 500,
+      "entry": "scenes/cw.castle.wall-doorway.tscn",
+      "id": "cw.castle.wall-doorway",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 1,
+      "triangles": 500
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.75,
+          -1.35460222077317e-16,
+          -1.5
+        ],
+        "size": [
+          1.5,
+          3.92999982833862,
+          3
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.wall-doorway-visual.tscn",
+      "id": "cw.castle.wall-doorway",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 1,
+      "triangles": 500
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.225000008940697,
+          0,
+          -0.539060413837433
+        ],
+        "size": [
+          0.450000017881393,
+          1.81602001190186,
+          1.07812082767487
+        ]
+      },
+      "collisionTriangles": 188,
+      "entry": "scenes/cw.castle.door.tscn",
+      "id": "cw.castle.door",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 1,
+      "triangles": 188
+    },
+    {
+      "bounds": {
+        "min": [
+          -0.225000008940697,
+          0,
+          -0.539060413837433
+        ],
+        "size": [
+          0.450000017881393,
+          1.81602001190186,
+          1.07812082767487
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.door-visual.tscn",
+      "id": "cw.castle.door",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 1,
+      "triangles": 188
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          3.02999997138977,
+          3
+        ]
+      },
+      "collisionTriangles": 28,
+      "entry": "scenes/cw.castle.tower-base.tscn",
+      "id": "cw.castle.tower-base",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 1,
+      "triangles": 28
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          3.02999997138977,
+          3
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.tower-base-visual.tscn",
+      "id": "cw.castle.tower-base",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 1,
+      "texturedSurfaces": 1,
+      "triangles": 28
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.39499998092651,
+          0,
+          -1.39499998092651
+        ],
+        "size": [
+          2.78999996185303,
+          3.02999997138977,
+          2.78999996185303
+        ]
+      },
+      "collisionTriangles": 76,
+      "entry": "scenes/cw.castle.tower-mid.tscn",
+      "id": "cw.castle.tower-mid",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 76
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.39499998092651,
+          0,
+          -1.39499998092651
+        ],
+        "size": [
+          2.78999996185303,
+          3.02999997138977,
+          2.78999996185303
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.tower-mid-visual.tscn",
+      "id": "cw.castle.tower-mid",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 76
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          0.900000035762787,
+          3
+        ]
+      },
+      "collisionTriangles": 148,
+      "entry": "scenes/cw.castle.tower-top.tscn",
+      "id": "cw.castle.tower-top",
+      "meshInstances": 1,
+      "nodes": 5,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 148
+    },
+    {
+      "bounds": {
+        "min": [
+          -1.5,
+          0,
+          -1.5
+        ],
+        "size": [
+          3,
+          0.900000035762787,
+          3
+        ]
+      },
+      "collisionTriangles": 0,
+      "entry": "scenes/cw.castle.tower-top-visual.tscn",
+      "id": "cw.castle.tower-top",
+      "meshInstances": 1,
+      "nodes": 3,
+      "surfacesWithLods": 0,
+      "texturedSurfaces": 1,
+      "triangles": 148
+    }
+  ],
+  "notes": [
+    "使用项目既有哈希锁定引擎与独立headless用户目录，只运行本仓可信静态导入夹具。",
+    "原GLB未改；default importer产生的LOD逐surface记录，不宣称所有模型已支持精准拾取。",
+    "这是静态加载/尺寸/碰撞验证，不是交互玩法验收；没有键鼠或PointerLock。"
+  ]
+}

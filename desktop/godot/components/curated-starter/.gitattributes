@@ -1,0 +1,5 @@
+# Catalog hashes and imported licenses refer to exact bytes on every platform.
+** -text
+*.glb binary
+*.png binary
+licenses/** whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
