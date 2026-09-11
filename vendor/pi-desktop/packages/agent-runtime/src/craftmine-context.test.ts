@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createAssistantMessageEventStream, type Api, type AssistantMessage, type Context, type Model } from "@earendil-works/pi-ai";
-import { craftmineContextBlocks, craftmineGuardedStream, createCraftmineRequestHooks, estimateCraftmineRequest, isCraftmineToolAllowed, type CraftmineTaskContext } from "./craftmine-context.js";
+import { CRAFTMINE_SYSTEM_PROMPT, craftmineContextBlocks, craftmineGuardedStream, createCraftmineRequestHooks, estimateCraftmineRequest, isCraftmineToolAllowed, type CraftmineTaskContext } from "./craftmine-context.js";
 import { DesktopAgentRuntime } from "./runtime.js";
 
 const model: Model<Api> = { id: "fixture", name: "fixture", api: "openai-completions", provider: "fixture", baseUrl: "http://127.0.0.1:1", reasoning: false, input: ["text", "image"], contextWindow: 256000, maxTokens: 4000, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } };
@@ -15,6 +15,17 @@ function fixture() {
   return { hooks, calls, set: (value: CraftmineTaskContext) => { current = value; } };
 }
 describe("Craftmine authoritative request boundary", () => {
+  it("preserves ordinary scene references without labeling them as structured entities", () => {
+    const current=snapshot();
+    current.creationTarget={worldId:"world",sceneObjectTarget:{objectId:"111",nodePath:"Actor/Body",identityScope:"runtime-instance",sourceUse:"context-only"},sceneObjectLive:{currentNodePath:"Renamed/Body"}};
+    for(const purpose of ["creation","summary","review","retry"] as const){
+      const content=craftmineContextBlocks(current,purpose);
+      expect(content).toContain("Renamed/Body");
+    }
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("not a creation_operation entity");
+    current.creationTarget.worldId="other-world";
+    expect(craftmineContextBlocks(current)).not.toContain("Renamed/Body");
+  });
   it("carries the host target through compaction/retry and drops a different world's capture", () => {
     const current=snapshot();
     current.creationTarget={worldId:"world",snapshotId:"host-capture",target:{entityId:"tree-fixed"}};

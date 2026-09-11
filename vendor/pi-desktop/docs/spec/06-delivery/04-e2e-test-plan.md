@@ -9572,3 +9572,8 @@ A fresh host-bound Godot task with no source receipts exposes its registered fil
 ### CM-PROMO-03: bounded runtime exploration
 
 Only an authenticated isolated headless profile accepts godotExplore. Bind world/build/instance from the actual current observation, then drive supported look/walk/wait/interact through existing adapters. Reject unknown fields, unsupported bases/operations, out-of-range axes/angles, excessive steps/ticks/captures, and concurrent exploration before applying input. Reject runtime changes before and after each action and capture. Captures require their own matching viewport observation, fixed dimensions and PNG metadata; no later observation substitutes for capture identity. The production model tool catalog remains unchanged. Callback tests prove protocol behavior only; real movement, collision and multi-angle screenshots require separate isolated Godot evidence.
+# 普通场景引用补充（2026-09-12）
+
+隔离测试中捕获普通碰撞体：模型上下文应保留真实节点与来源，禁止将它
+转成五类操作实体或自动采用。捕获后改名可继续；删除、同路径替换、换脚本
+或更换祖先须重新捕获。近乎重叠的两个不同碰撞体不能因交点接近而混淆。

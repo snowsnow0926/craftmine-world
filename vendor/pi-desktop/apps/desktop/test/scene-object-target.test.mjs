@@ -44,6 +44,19 @@ test('a target deleted between validation and binding cannot enter the turn',asy
  state.refs=[];await assert.rejects(service.bind(1,capture,context,'w'),/RECAPTURE/);
  assert.equal(service.bound(context,'w'),null);
 });
+
+test('a changed script or ancestor requires recapture while same-parent renames remain usable',async t=>{
+ for(const mutate of [s=>s.refs[0].scriptPath='res://scripts/another.gd',s=>s.refs[0].ancestors[0].objectId='51',s=>s.refs[0].ancestors[0].scriptPath='']){
+  const {state,service}=fixture(t),parent={objectId:'50',nodePath:'Actor',nodeClass:'Node3D',scriptPath:'res://scripts/actor.gd',scenePath:''};
+  state.hit.ancestors=[parent];state.refs[0].ancestors=[structuredClone(parent)];
+  const display=await service.capture(1,session);mutate(state);
+  await assert.rejects(service.validate(1,ref(display),session),/RECAPTURE/);
+ }
+ const {state,service}=fixture(t),parent={objectId:'50',nodePath:'Actor',nodeClass:'Node3D',scriptPath:'',scenePath:''};
+ state.hit.ancestors=[parent];state.refs[0].ancestors=[structuredClone(parent)];
+ const display=await service.capture(1,session);state.refs[0].ancestors[0].nodePath='Renamed';state.refs[0].nodePath='Renamed/Body';
+ assert.equal((await service.validate(1,ref(display),session)).sceneObjectLive.currentNodePath,'Renamed/Body');
+});
 test('build, instance, world, source and stale refresh changes invalidate capture',async t=>{
  for(const mutate of [s=>s.instance.buildId='b2',s=>s.instance.instanceId='i2',s=>s.instance.worldId='w2',s=>s.revision++,s=>s.manifestHash='b'.repeat(64),s=>s.stamp=new Date(s.now-31000).toISOString()]){
   const {state,service}=fixture(t),display=await service.capture(1,session);mutate(state);

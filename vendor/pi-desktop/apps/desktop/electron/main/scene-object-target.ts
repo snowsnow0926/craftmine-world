@@ -23,5 +23,16 @@ export function currentSceneObjectPath(target:SceneObjectTarget,refs:unknown):st
  if(!Array.isArray(refs)||refs.length>32)throw Error('SCENE_OBJECT_RECAPTURE_REQUIRED');
  const found=refs.filter(v=>v?.objectId===target.objectId);
  if(found.length!==1)throw Error('SCENE_OBJECT_RECAPTURE_REQUIRED');
- return reference(found[0]).nodePath;
+ const fresh=found[0];
+ const sameSource=(before:SceneNodeRef,raw:any)=>{
+  // Compare only source paths already admitted by the formal source manifest.
+  const allowed=new Set([before.scriptPath,before.scenePath].filter((p):p is string=>p!==null).map(p=>p.slice(6)));
+  const after=reference(raw,allowed);
+  if(after.objectId!==before.objectId||after.nodeClass!==before.nodeClass||after.scriptPath!==before.scriptPath||after.scenePath!==before.scenePath)throw Error('SCENE_OBJECT_RECAPTURE_REQUIRED');
+  return after;
+ };
+ const current=sameSource(target,fresh),ancestors=fresh.ancestors??[];
+ if(!Array.isArray(ancestors)||ancestors.length!==target.ancestors.length)throw Error('SCENE_OBJECT_RECAPTURE_REQUIRED');
+ target.ancestors.forEach((ancestor,index)=>sameSource(ancestor,ancestors[index]));
+ return current.nodePath;
 }

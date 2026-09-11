@@ -41,6 +41,14 @@ func _scene_node(node: Node) -> Dictionary:
 	var script: Script = node.get_script() as Script
 	return {"objectId": str(node.get_instance_id()), "nodePath": str(world().get_path_to(node)).left(513), "nodeClass": node.get_class().left(81), "scriptPath": script.resource_path.left(513) if script != null else "", "scenePath": node.scene_file_path.left(513)}
 
+func _scene_ancestors(node: Node) -> Array:
+	var result := []
+	var ancestor := node.get_parent()
+	while ancestor != null and ancestor != world() and result.size() < 4:
+		result.append(_scene_node(ancestor))
+		ancestor = ancestor.get_parent()
+	return result
+
 # Bounded read-only references from actual hits; project metadata is never identity.
 func _scene_objects(existing: Dictionary) -> Dictionary:
 	var camera := world().get_node_or_null("Player/CameraRig/PitchPivot/Camera3D") as Camera3D
@@ -65,18 +73,16 @@ func _scene_objects(existing: Dictionary) -> Dictionary:
 				selected = _scene_node(collider)
 				selected["position"] = [point.x, point.y, point.z]
 				selected["normal"] = [hit.normal.x, hit.normal.y, hit.normal.z]
-				selected["ancestors"] = []
-				var ancestor := collider.get_parent()
-				while ancestor != null and ancestor != world() and selected.ancestors.size() < 4:
-					selected.ancestors.append(_scene_node(ancestor))
-					ancestor = ancestor.get_parent()
+				selected["ancestors"] = _scene_ancestors(collider)
 	var live := []
 	for key in scene_object_refs.keys():
 		var node: Node = scene_object_refs[key].get_ref()
 		if node == null or not node.is_inside_tree() or node.is_queued_for_deletion() or not world().is_ancestor_of(node):
 			scene_object_refs.erase(key)
 		else:
-			live.append(_scene_node(node))
+			var reference := _scene_node(node)
+			reference["ancestors"] = _scene_ancestors(node)
+			live.append(reference)
 	return {"target": selected, "references": live}
 
 func _init() -> void:
