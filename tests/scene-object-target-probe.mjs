@@ -103,7 +103,22 @@ func run() -> void:
  visual.position = Vector3(0, 1, -3)
  await physics_frame
  await physics_frame
- check(adapter._scene_objects({}).target == null, "mesh without collision is explicitly unsupported")
+ var mesh_hit: Dictionary = adapter._scene_objects({})
+ check(mesh_hit.target != null and mesh_hit.target.objectId == str(visual.get_instance_id()), "actual mesh without collision is captured")
+ var other_camera := Camera3D.new()
+ scene.add_child(other_camera)
+ other_camera.position = Vector3(0, 1, 0)
+ other_camera.rotation.y = PI / 2
+ other_camera.make_current()
+ check(adapter._scene_objects({}).target == null, "ray follows actual current camera instead of inactive canonical camera")
+ camera.make_current()
+ other_camera.queue_free()
+ var uncertain := MeshInstance3D.new()
+ uncertain.mesh = SphereMesh.new()
+ scene.add_child(uncertain)
+ uncertain.position = Vector3(0, 1, -1.5)
+ var blocked: Dictionary = adapter._scene_objects({"surface":"ground", "position":[0, 0, -6]})
+ check(blocked.target == null and blocked.selection.status == "fallback", "unknown nearer mesh cannot silently select the object behind it")
  print("SCENE_OBJECT_CHECKS=" + str(checks))
  quit()
 `);
@@ -116,5 +131,5 @@ try{
  await env.run('adapter-parse',['--path',project,'--check-only','--script','res://craftmine_shared/base_adapter.gd']);
  const stdout=await env.run('observe',['--path',project,'--script','res://probe.gd'],{timeout:20000});
  report.checks=Number(stdout.match(/SCENE_OBJECT_CHECKS=(\d+)/)?.[1]);
- assert.equal(report.checks,11);report.passed=true;
+ assert.equal(report.checks,13);report.passed=true;
 }finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

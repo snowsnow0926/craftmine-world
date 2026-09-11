@@ -10,11 +10,11 @@ const session={projectId:'p',sessionId:'s'},context={...session,turnId:'t'};
 const actor={objectId:'9007199254740993',nodePath:'Actor/Body',nodeClass:'StaticBody3D',scriptPath:'res://scripts/actor.gd',scenePath:'',position:[0,1,-2],normal:[0,0,1],ancestors:[]};
 function fixture(t){
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'scene-target-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
- const state={now:100000,instance:{worldId:'w',buildId:'b',instanceId:'i'},revision:3,manifestHash:'a'.repeat(64),hit:structuredClone(actor),refs:[structuredClone(actor)],stamp:null,sourcePath:'scripts/actor.gd'};
+ const state={now:100000,instance:{worldId:'w',buildId:'b',instanceId:'i'},revision:3,manifestHash:'a'.repeat(64),hit:structuredClone(actor),refs:[structuredClone(actor)],stamp:null,sourcePath:'scripts/actor.gd',selection:null};
  const deps={directory,now:()=>state.now,selection:async()=>state.instance.worldId,instance:()=>({...state.instance}),
  descriptor:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,manifestHash:state.manifestHash}),
  source:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,files:[{path:state.sourcePath,bytes:10,sha256:'f'.repeat(64)}]}),
- sample:async()=>({...state.instance,baseId:'creation-sandbox',sampledAt:state.stamp??new Date(state.now).toISOString(),payload:{player:{position:[0,1,0]},creation:{entities:[],target:{entityId:null,position:[0,0,-6],normal:[0,1,0],surface:'ground',revision:1},sceneObjectTarget:state.hit,sceneObjectRefs:state.refs}}})};
+ sample:async()=>({...state.instance,baseId:'creation-sandbox',sampledAt:state.stamp??new Date(state.now).toISOString(),payload:{player:{position:[0,1,0]},creation:{entities:[],target:{entityId:null,position:[0,0,-6],normal:[0,1,0],surface:'ground',revision:1},sceneObjectTarget:state.hit,sceneObjectRefs:state.refs,sceneObjectSelection:state.selection}}})};
  return {state,service:createCreationTargetService(deps)};
 }
 const ref=capture=>({creationTarget:{captureId:capture.captureId}});
@@ -77,4 +77,12 @@ test('source paths must exist in formal source and malformed bounded references 
 test('no ordinary hit preserves structured ground and does not invent scene identity',async t=>{
  const {state,service}=fixture(t);state.hit=null;
  const display=await service.capture(1,session);assert.equal(display.target.surface,'ground');assert.equal(display.sceneObjectTarget,undefined);
+});
+
+test('incomplete geometry coverage never offers the ground behind it for structured editing',async t=>{
+ const {state,service}=fixture(t);state.hit=null;state.selection={status:'fallback',reason:'unsupported-mesh-type'};
+ const display=await service.capture(1,session);
+ assert.equal(display.target,null);assert.equal(display.reason,'SCENE_OBJECT_SELECTION_UNCERTAIN');
+ const frozen=await service.validate(1,ref(display),session);
+ assert.equal(frozen.target.surface,'none');
 });

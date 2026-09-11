@@ -135,13 +135,14 @@ export function createCreationTargetService(deps:Dependencies) {
       const selectionFile=file('selection',JSON.stringify([session.projectId,session.sessionId??'new-draft',capture.worldId]));
       const saved=selection===undefined?read(selectionFile):selection;
       const choice=saved?.worldId===capture.worldId&&id(saved?.entityId)?saved:null;
-      let reason:string|undefined;
+      let reason:string|undefined=creation.sceneObjectSelection?.status==='fallback'?'SCENE_OBJECT_SELECTION_UNCERTAIN':undefined;
       if(choice){
         delete capture.sceneObjectTarget;delete capture.sceneObjectLive;
         const result=recent.find(item=>item.entityId===choice.entityId);
         if(selection&&(!result||!result.available))fail(result?.reason??'CREATION_RECENT_UNAVAILABLE');
         capture.source='recent';
         if(result?.available){
+          reason=undefined;
           const entity=capture.entities!.find(item=>item.id===choice.entityId)!;
           // An explicit object selection has an observed origin, not a ray hit.
           // The normal is only an object-up convention; placement must require ray source.
@@ -151,7 +152,7 @@ export function createCreationTargetService(deps:Dependencies) {
       if(selection!==undefined)write(selectionFile,selection);
       // A nearer ordinary actor must not silently select the ground/tree behind it.
       // Keep structured targets unchanged when no ordinary actor was captured.
-      if(capture.sceneObjectTarget)capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};
+      if(capture.sceneObjectTarget||(capture.source!=='recent'&&creation.sceneObjectSelection?.status==='fallback'))capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};
       for(const [key,value] of pending)if(now()-value.capture.capturedAt>300000)pending.delete(key);
       if(pending.size>=64)pending.delete(pending.keys().next().value!);
       pending.set(capture.snapshotId,{owner,session:{...session},capture});

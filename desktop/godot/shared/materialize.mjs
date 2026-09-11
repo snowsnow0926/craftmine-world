@@ -35,7 +35,7 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
   }
   const shared=path.join(out,'craftmine_shared');
   fs.mkdirSync(shared,{recursive:true});
-  for(const file of ['runtime_bridge.gd','state_guard.gd','headless_play_action.gd']) fs.copyFileSync(path.join(here,file),path.join(shared,file));
+  for(const file of ['runtime_bridge.gd','state_guard.gd','headless_play_action.gd','scene_mesh_picker.gd']) fs.copyFileSync(path.join(here,file),path.join(shared,file));
   fs.copyFileSync(path.join(here,'adapters',baseId+'.gd'),path.join(shared,'base_adapter.gd'));
   const project=path.join(out,'project.godot');
   let text=fs.readFileSync(project,'utf8');

@@ -3,6 +3,7 @@ const BASE_ID := "creation-sandbox"
 const BASE_VERSION := "1.0.0"
 const Guard = preload("res://craftmine_shared/state_guard.gd")
 const Contract = preload("res://scripts/scene_contract.gd")
+const MeshPicker = preload("res://craftmine_shared/scene_mesh_picker.gd")
 
 func world() -> Node:
 	return Engine.get_main_loop().current_scene
@@ -36,6 +37,40 @@ func restore(body: Dictionary) -> String:
 var observed_physics_tick: int = 0
 var scene_object_refs: Dictionary = {}
 var observed_target_collider: int = 0
+var mesh_picker := MeshPicker.new()
+
+func _target_camera() -> Camera3D:
+	var camera := world().get_viewport().get_camera_3d()
+	return camera if camera != null and world().is_ancestor_of(camera) else null
+
+func _ray_hit(camera: Camera3D, player: Node, mask: int) -> Dictionary:
+	var excluded: Array[RID] = []
+	if player is CollisionObject3D: excluded.append(player.get_rid())
+	for child in player.find_children("*", "CollisionObject3D", true, false): excluded.append(child.get_rid())
+	var center := camera.get_viewport().get_visible_rect().size * 0.5
+	var direction := camera.project_ray_normal(center).normalized()
+	var origin := camera.project_ray_origin(center) + direction * camera.near
+	var query := PhysicsRayQueryParameters3D.create(origin, origin + direction * minf(80.0, camera.far - camera.near), mask, excluded)
+	query.collide_with_areas = true
+	return camera.get_world_3d().direct_space_state.intersect_ray(query)
+
+func _helper_exclusions(player: Node, existing: Dictionary) -> Array[Node]:
+	var excluded: Array[Node] = [player]
+	# Existing base HUD references are excluded only when their actual native
+	# geometry still has the narrow helper shape. No names/metadata grant exclusion.
+	for field in ["marker", "selection_box"]:
+		var node: Variant = world().get(field)
+		if not node is MeshInstance3D or node.get_parent() != world() or node.get_script() != null or node.get_child_count() != 0 or node.mesh == null or node.mesh.get_script() != null: continue
+		var material: Variant = node.material_override
+		if not material is StandardMaterial3D or material.get_script() != null or material.shading_mode != BaseMaterial3D.SHADING_MODE_UNSHADED: continue
+		if field == "marker" and node.mesh is SphereMesh and is_equal_approx(node.mesh.radius, 0.045) and is_equal_approx(node.mesh.height, 0.09): excluded.append(node)
+		if field == "selection_box" and node.mesh is ImmediateMesh: excluded.append(node)
+	# A current structured physics hit already establishes this entity. Other
+	# visible entities remain in the mesh scan and may block an uncertain ray.
+	if existing.get("surface") == "entity":
+		for child in world().get_children():
+			if str(child.name) == "Entity_" + str(existing.get("entityId", "")): excluded.append(child)
+	return excluded
 
 func _scene_node(node: Node) -> Dictionary:
 	var script: Script = node.get_script() as Script
@@ -51,16 +86,23 @@ func _scene_ancestors(node: Node) -> Array:
 
 # Bounded read-only references from actual hits; project metadata is never identity.
 func _scene_objects(existing: Dictionary) -> Dictionary:
-	var camera := world().get_node_or_null("Player/CameraRig/PitchPivot/Camera3D") as Camera3D
+	var camera := _target_camera()
 	var player := world().get_node_or_null("Player")
 	var selected: Variant = null
+	var selection := {"status": "none", "reason": "no-current-camera"}
 	if camera != null and player != null:
-		var excluded: Array[RID] = []
-		if player is CollisionObject3D: excluded.append(player.get_rid())
-		for child in player.find_children("*", "CollisionObject3D", true, false): excluded.append(child.get_rid())
-		var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 80, 4294967295, excluded)
-		query.collide_with_areas = true
-		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+		var hit := _ray_hit(camera, player, 4294967295)
+		var picked: Dictionary = mesh_picker.pick(world(), camera, _helper_exclusions(player, existing), hit)
+		selection = {"status": picked.status, "reason": picked.reason, "counts": picked.counts}
+		if picked.status == "fallback":
+			hit = {}
+		elif picked.status == "hit":
+			var center := camera.get_viewport().get_visible_rect().size * 0.5
+			var origin := camera.project_ray_origin(center) + camera.project_ray_normal(center).normalized() * camera.near
+			# Physical interaction wins an exact surface tie. This is a precedence
+			# rule, never a claim that a mesh and collider share object identity.
+			if hit.is_empty() or origin.distance_to(picked.position) < origin.distance_to(hit.position) - MeshPicker.EPS:
+				hit = {"collider": picked.node, "position": picked.position, "normal": picked.normal}
 		if not hit.is_empty():
 			var point: Vector3 = hit.position
 			var collider := hit.collider as Node
@@ -83,7 +125,7 @@ func _scene_objects(existing: Dictionary) -> Dictionary:
 			var reference := _scene_node(node)
 			reference["ancestors"] = _scene_ancestors(node)
 			live.append(reference)
-	return {"target": selected, "references": live}
+	return {"target": selected, "references": live, "selection": selection}
 
 func _init() -> void:
 	var tree := Engine.get_main_loop() as SceneTree
@@ -148,13 +190,11 @@ func _actual_entity(node: Node3D, declared: Dictionary) -> Dictionary:
 func _actual_target(revision: int, actual: Array) -> Dictionary:
 	observed_target_collider = 0
 	var target := {"entityId": null, "position": null, "normal": null, "surface": "none", "revision": revision}
-	var camera := world().get_node_or_null("Player/CameraRig/PitchPivot/Camera3D") as Camera3D
+	var camera := _target_camera()
 	var player := world().get_node_or_null("Player") as CollisionObject3D
 	if camera == null or player == null:
 		return target
-	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 80, 7, [player.get_rid()])
-	query.collide_with_areas = true
-	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+	var hit := _ray_hit(camera, player, 7)
 	if hit.is_empty():
 		return target
 	var point: Vector3 = hit.position
@@ -220,6 +260,9 @@ func observe() -> Dictionary:
 	var scene_objects := _scene_objects(result.creation.target)
 	result.creation.sceneObjectTarget = scene_objects.target
 	result.creation.sceneObjectRefs = scene_objects.references
+	result.creation.sceneObjectSelection = scene_objects.selection
+	if scene_objects.selection.status == "fallback":
+		result.creation.target = {"entityId": null, "position": null, "normal": null, "surface": "none", "revision": result.creation.revision}
 	result.creation.timeOfDay = world().get("time_of_day")
 	var inventory: Variant = world().get("inventory")
 	result.inventory = inventory.duplicate(true) if inventory is Dictionary else {}

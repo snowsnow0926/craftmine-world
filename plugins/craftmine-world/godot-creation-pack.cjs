@@ -1,6 +1,6 @@
 'use strict';
 const {createHash}=require('node:crypto');
-const PROTECTED_CREATION_FILES=Object.freeze(['craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/state_guard.gd','craftmine_shared/headless_play_action.gd']);
+const PROTECTED_CREATION_FILES=Object.freeze(['craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/state_guard.gd','craftmine_shared/headless_play_action.gd','craftmine_shared/scene_mesh_picker.gd']);
 const digest=(value,algorithm='sha256')=>createHash(algorithm).update(value).digest('hex');
 const fail=code=>{throw Error(code);};
 const utf8=new TextDecoder('utf-8',{fatal:true});

@@ -9,6 +9,7 @@ pub(super) fn files()->Vec<(&'static str,String)>{vec![
  ("craftmine_shared/runtime_bridge.gd",include_str!("../../../../../desktop/godot/shared/runtime_bridge.gd").replace("\r\n","\n")),
  ("craftmine_shared/state_guard.gd",include_str!("../../../../../desktop/godot/shared/state_guard.gd").replace("\r\n","\n")),
  ("craftmine_shared/headless_play_action.gd",include_str!("../../../../../desktop/godot/shared/headless_play_action.gd").replace("\r\n","\n")),
+ ("craftmine_shared/scene_mesh_picker.gd",include_str!("../../../../../desktop/godot/shared/scene_mesh_picker.gd").replace("\r\n","\n")),
 ]}
 pub(super) fn hash()->String {digest(&serde_json::to_string(&files().iter().map(|(path,text)|json!({"path":path,"sha256":digest(text)})).collect::<Vec<_>>()).unwrap())}
 pub(super) fn validate_manifest(manifest:&Manifest)->Result<()> {
