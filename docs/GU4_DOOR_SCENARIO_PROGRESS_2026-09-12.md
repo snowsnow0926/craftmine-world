@@ -32,3 +32,36 @@
 后续先固定候选/需求/源码/运行身份和可信收集器，再接入原作业体系；不得直接把可改状态的动作开放到正式世界，也不能把通用内核当作对任意项目数据的反作弊保证。
 
 协议与可复现命令见 [有限场景说明](../vendor/pi-desktop/docs/spec/godot-finite-scenario-verdict.md)。
+
+## 第二切片：可选生产诊断收集接口
+
+从第一切片提交 `d6776be3` 继续，增加 `godot-scenario-collector.ts` 和生产 `GodotBuildVerifier` 构造器的可选 `scenarioDiagnostics`。选择器仅宿主进程可配置，默认关闭，计划来自宿主，运行实例来自当前已验证 descriptor 的独立 check。只读采样加 walk/look/wait/interact，没有正式进度写入、任意路径或代码 API。
+
+诊断绑定 job/inputHash/world/build/instance 与单独的冻结需求哈希，返回 passed/failed/inconclusive；只保留断言所需有限标量。它不进入权威 assertions，也不作为 candidate readiness 依据。原取消/截止信号传播到 pending 动作；补上总结果 `!halted`，避免在基础断言完成后被取消的任务仍然通过。
+
+### 最终验收
+
+- 32 项 collector、判定、探索和实际 verifier 类模拟回归通过。
+- 完整桌面 `tsc -p tsconfig.json --noEmit` 通过；复用主树已安装依赖的只读 junction。
+- 固定 Godot `4.7.2.stable.official.ed1daf0bf` 真实 Web 导入、导出、独立 headless Chromium 通过；5 个实际 runtime 页面观察的 Pointer Lock/focus 调用均为 0。
+- 最终 Web/集成报告：`D:/cm-gu4-scenario-0912/test-results/godot-scenario-collector-web-c9o8bb/report.json`。
+- 当前生产验证器隐藏 offscreen 报告：同目录下 `offscreen-tCqfKD/offscreen-report.json`。
+- 本批冻结 Web 需求 SHA-256：`7801e46bad39e9e25f106207e4a5c7b8389d4e6f478e1e23c68a52dcb1f4637e`。
+
+| 实际场景 | 返回结果 | 证据边界 |
+|---|---|---|
+| Web 正常门 | diagnostic passed | 实际关门阻挡、射线互动、开门通行 |
+| Web 保留碰撞 | diagnostic failed | 固定观察及实际通行失败 |
+| 实际 walk 中取消 | inconclusive / SCENARIO_CANCELLED | 不再发 interact，旧 pending 回复不追加 |
+| 切到第二个真实 runtime | inconclusive / IDENTITY_CHANGED | 新实例未收到后续动作且初始位置不变 |
+| 生产 verifier 默认关闭 | 基础 passed，无 diagnostic | 兼容原路径 |
+| 生产 verifier 成功诊断 | 基础 passed，diagnostic passed | 诊断没有新增权威断言 |
+| 生产 verifier 失败诊断 | 基础 passed，diagnostic failed | 扩展失败只作诊断，不冒充核心玩法门槛 |
+| 生产 verifier 收集中取消 | 基础 failed，diagnostic inconclusive | error=GODOT_CHECK_CANCELLED，正常清理 |
+| 生产 verifier 原快照格式错误 | 基础 failed，没有调用选择器 | 不能靠扩展计划覆盖原失败 |
+
+最后一项在 guard 采样前已按预期拒绝，因此 guard 保留未采样，不能把该项称为完整隔离检查通过；其窗口隐藏/不可聚焦和清理均有实际记录。其余 offscreen 运行隔离、零 guard 调用与清理检查通过。
+
+准备过程保留：首次 Web provider 报告 `godot-scenario-collector-web-YBJusS` 已通过；新增 offscreen 的首轮 `godot-scenario-collector-web-Kb9aH6` 因测试错误地要求“早期快照拒绝也须有已采样 guard”而失败。纠正这个测试范围后，独立重跑和最终整套重跑均通过，没有弱化产品判定或覆盖原失败日志。首次需要现有 Electron 包自动补齐其缺失的固定版本二进制，未修改受测产品源码绕过环境问题。
+
+该批仍是 authored descriptors 的生产类验收，未运行 Rust 发放/finish、候选注册与采用，也未启用普通产品默认诊断、持久查询或 Agent 调用。完整候选权限链与新增核心冻结要求留待后续；没有真实模型调用、玩家额外额度或真实输入操作。
