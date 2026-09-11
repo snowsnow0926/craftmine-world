@@ -1,0 +1,111 @@
+{
+  "format": "craftmine.promo-pilot-summary/1",
+  "sourceCommit": "cf6f895ae021a35da8ae16ac10fe068127bace0d",
+  "case": {
+    "id": "PET01",
+    "text": "我希望有条宠物狗。"
+  },
+  "worldId": "world-06f8132e824a",
+  "model": "deepseek-flash",
+  "outcome": "BUDGET_STOP_UNVERIFIED",
+  "driverIssue": "Model ended at request limit while queued check was still importing; original run closed before check settled.",
+  "functional": "UNVERIFIED",
+  "visual": "UNVERIFIED",
+  "adoption": "NOT_OBSERVED",
+  "saveReopen": "NOT_TESTED",
+  "metrics": {
+    "calls": {
+      "observed": 10,
+      "pending": 0,
+      "reported": 10
+    },
+    "coverage": "complete",
+    "endedAtMs": 1789142368068,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [
+      {
+        "calls": {
+          "observed": 10,
+          "pending": 0,
+          "reported": 10
+        },
+        "coverage": "complete",
+        "modelId": "deepseek-flash",
+        "providerId": "b1d7452f-549a-4fe4-ae10-2ab97aa82da5",
+        "tps": {
+          "coverage": "complete",
+          "generationMs": 129760,
+          "outputTokens": 33419,
+          "value": 257.54469790382245,
+          "window": "model-generation"
+        },
+        "usage": {
+          "cacheReadTokens": 320512,
+          "inputTokens": 149419,
+          "outputTokens": 33419,
+          "reasoningTokens": 27491,
+          "totalTokens": 503350
+        }
+      }
+    ],
+    "observedAtMs": 1789142369579,
+    "scope": "root-and-delegates",
+    "sessionId": "67afbfce-20d2-4dd5-a260-e608499dad5b",
+    "startedAtMs": 1789142227301,
+    "status": "error",
+    "tps": {
+      "coverage": "complete",
+      "generationMs": 129760,
+      "outputTokens": 33419,
+      "value": 257.54469790382245,
+      "window": "model-generation"
+    },
+    "turnId": "506b0c92-5437-4be2-8191-223212af0578",
+    "usage": {
+      "cacheReadTokens": 320512,
+      "inputTokens": 149419,
+      "outputTokens": 33419,
+      "reasoningTokens": 27491,
+      "totalTokens": 503350
+    },
+    "wallTimeMs": 140767
+  },
+  "budget": {
+    "limit": 10,
+    "reserved": 10,
+    "remaining": 0
+  },
+  "toolCounts": {
+    "plugin_craftmine_world_godot_project_facts": 1,
+    "plugin_craftmine_world_godot_capability_report": 1,
+    "plugin_craftmine_world_project_inspect": 1,
+    "plugin_craftmine_world_godot_guidance": 2,
+    "ToolSearch": 6,
+    "plugin_craftmine_world_godot_project_query": 1,
+    "plugin_craftmine_world_godot_file_read": 7,
+    "plugin_craftmine_world_godot_docs": 2,
+    "plugin_craftmine_world_godot_jobs": 1,
+    "plugin_craftmine_world_godot_project_patch": 1,
+    "plugin_craftmine_world_godot_build_start": 1
+  },
+  "toolErrors": 0,
+  "lastCheck": {
+    "jobId": "gjob-07d7d1096e938266171fe8ed6f03596eea2348dbf43b3db2f7749469868bbc96",
+    "status": "running",
+    "stage": "import"
+  },
+  "isolatedForensicImport": {
+    "source": "Copied original model output without editing",
+    "godot": "4.7.2-stable",
+    "exitCode": 0,
+    "acceptedWorld": false
+  },
+  "isolation": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  },
+  "rawReport": "D:\\cm-promo-loop-0912\\test-results\\desktop-native-complete-1alxXA\\report.json"
+}
