@@ -139,7 +139,7 @@ export function installHeadlessControl(access: {
           const script=validateHeadlessPermissionEnvelope(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
           return desktopCall(script);
         }
-        case 'playerSetup':case 'playerPrompt':case 'playerStatus':case 'playerAbort':
+        case 'playerSetup':case 'playerPrompt':case 'playerRetryFailedPrompt':case 'playerStatus':case 'playerAbort':
           if(!hasHeadlessController()||!player||process.env.CRAFTMINE_CREATION_EVAL==='1'||Object.keys(request).sort().join(',')!=='id,method,payload,type')throw Error('HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED');
           return player(request.method,request.payload);
         case "headlessAskPending":
