@@ -49,7 +49,11 @@ func run() -> void:
 	check(absf(hit.position.z+3) < 0.0001 and hit.normal.z > 0.99, "array surface point and transformed normal are real")
 	check(hit.counts.facesRead == 1 and hit.counts.triangles == 1, "surface reads and triangle accounting are bounded")
 	mesh.custom_aabb = AABB(Vector3(50,50,50), Vector3.ONE)
-	check(pick().node == near, "false authored AABB cannot hide a nearer triangle")
+	check(pick().reason == "custom-array-culling-bounds" and pick().counts.facesRead == 0, "authored culling bounds cannot claim invisible or hidden geometry")
+	mesh.custom_aabb = AABB()
+	near.custom_aabb = AABB(Vector3(50,50,50), Vector3.ONE)
+	check(pick().reason == "custom-array-culling-bounds", "instance culling override is equally unsupported")
+	near.custom_aabb = AABB()
 	near.scale = Vector3(2,0.5,1)
 	check(pick().node == near, "positive nonuniform transform remains supported")
 	near.scale.x = -2
