@@ -1,0 +1,587 @@
+{
+  "format": "craftmine.authored-scene-layout/1",
+  "id": "cw.scene.forest-gateway",
+  "forward": [
+    0,
+    0,
+    -1
+  ],
+  "placements": [
+    {
+      "name": "OakFrontLeft",
+      "asset": "tree-oak",
+      "group": "Trees",
+      "position": [
+        -4.36560278,
+        0,
+        7.03341885
+      ],
+      "scale": 1.15,
+      "yawDegrees": 24
+    },
+    {
+      "name": "PineFrontRight",
+      "asset": "tree-pine",
+      "group": "Trees",
+      "position": [
+        4.43439722,
+        0,
+        6.23341885
+      ],
+      "scale": 1.22,
+      "yawDegrees": -18
+    },
+    {
+      "name": "OakMiddleLeft",
+      "asset": "tree-oak",
+      "group": "Trees",
+      "position": [
+        -3.86560278,
+        0,
+        1.33341885
+      ],
+      "scale": 0.95,
+      "yawDegrees": -36
+    },
+    {
+      "name": "OakMiddleRight",
+      "asset": "tree-oak",
+      "group": "Trees",
+      "position": [
+        4.13439722,
+        0,
+        1.03341885
+      ],
+      "scale": 1.03,
+      "yawDegrees": 62
+    },
+    {
+      "name": "PineBackLeft",
+      "asset": "tree-pine",
+      "group": "Trees",
+      "position": [
+        -4.56560278,
+        0,
+        -3.16658115
+      ],
+      "scale": 1.15,
+      "yawDegrees": 16
+    },
+    {
+      "name": "OakBackRight",
+      "asset": "tree-oak",
+      "group": "Trees",
+      "position": [
+        3.33439722,
+        0,
+        -3.66658115
+      ],
+      "scale": 1.1,
+      "yawDegrees": -24
+    },
+    {
+      "name": "PineFarLeft",
+      "asset": "tree-pine",
+      "group": "Trees",
+      "position": [
+        -2.56560278,
+        0,
+        -7.16658115
+      ],
+      "scale": 1.08,
+      "yawDegrees": 48
+    },
+    {
+      "name": "OpenStoneGateway",
+      "asset": "wall-doorway",
+      "group": "Gateway",
+      "position": [
+        -0.06560278,
+        0,
+        2.83341885
+      ],
+      "scale": 1.5,
+      "yawDegrees": 90
+    },
+    {
+      "name": "Grass01",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -2.56560278,
+        0,
+        8.13341885
+      ],
+      "scale": 0.95,
+      "yawDegrees": 20
+    },
+    {
+      "name": "Grass02",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -3.16560278,
+        0,
+        7.53341885
+      ],
+      "scale": 0.8,
+      "yawDegrees": 85
+    },
+    {
+      "name": "Grass03",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -2.66560278,
+        0,
+        6.43341885
+      ],
+      "scale": 1.1,
+      "yawDegrees": 150
+    },
+    {
+      "name": "Grass04",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -3.66560278,
+        0,
+        5.63341885
+      ],
+      "scale": 0.85,
+      "yawDegrees": 215
+    },
+    {
+      "name": "Grass05",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -2.26560278,
+        0,
+        5.03341885
+      ],
+      "scale": 0.75,
+      "yawDegrees": 44
+    },
+    {
+      "name": "Grass06",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -2.56560278,
+        0,
+        3.63341885
+      ],
+      "scale": 0.8,
+      "yawDegrees": 120
+    },
+    {
+      "name": "Grass07",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -3.46560278,
+        0,
+        0.73341885
+      ],
+      "scale": 0.95,
+      "yawDegrees": 250
+    },
+    {
+      "name": "Grass08",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -2.26560278,
+        0,
+        -0.26658115
+      ],
+      "scale": 0.8,
+      "yawDegrees": 35
+    },
+    {
+      "name": "Grass09",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -3.36560278,
+        0,
+        -1.56658115
+      ],
+      "scale": 1.1,
+      "yawDegrees": 75
+    },
+    {
+      "name": "Grass10",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -2.36560278,
+        0,
+        -3.16658115
+      ],
+      "scale": 0.85,
+      "yawDegrees": 180
+    },
+    {
+      "name": "Grass11",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        -4.26560278,
+        0,
+        -3.96658115
+      ],
+      "scale": 0.9,
+      "yawDegrees": 280
+    },
+    {
+      "name": "Grass12",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        2.03439722,
+        0,
+        8.43341885
+      ],
+      "scale": 0.85,
+      "yawDegrees": 310
+    },
+    {
+      "name": "Grass13",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        2.93439722,
+        0,
+        7.63341885
+      ],
+      "scale": 1.05,
+      "yawDegrees": 12
+    },
+    {
+      "name": "Grass14",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        2.33439722,
+        0,
+        6.33341885
+      ],
+      "scale": 0.8,
+      "yawDegrees": 96
+    },
+    {
+      "name": "Grass15",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        3.63439722,
+        0,
+        5.23341885
+      ],
+      "scale": 0.95,
+      "yawDegrees": 177
+    },
+    {
+      "name": "Grass16",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        2.03439722,
+        0,
+        4.73341885
+      ],
+      "scale": 0.8,
+      "yawDegrees": 251
+    },
+    {
+      "name": "Grass17",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        2.33439722,
+        0,
+        1.03341885
+      ],
+      "scale": 0.85,
+      "yawDegrees": 60
+    },
+    {
+      "name": "Grass18",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        3.13439722,
+        0,
+        0.03341885
+      ],
+      "scale": 1.05,
+      "yawDegrees": 132
+    },
+    {
+      "name": "Grass19",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        1.93439722,
+        0,
+        -0.96658115
+      ],
+      "scale": 0.8,
+      "yawDegrees": 203
+    },
+    {
+      "name": "Grass20",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        3.33439722,
+        0,
+        -2.06658115
+      ],
+      "scale": 0.9,
+      "yawDegrees": 271
+    },
+    {
+      "name": "Grass21",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        2.23439722,
+        0,
+        -3.86658115
+      ],
+      "scale": 1,
+      "yawDegrees": 30
+    },
+    {
+      "name": "Grass22",
+      "asset": "grass",
+      "group": "GroundCover",
+      "position": [
+        3.73439722,
+        0,
+        -4.96658115
+      ],
+      "scale": 0.85,
+      "yawDegrees": 114
+    },
+    {
+      "name": "Flower01",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        -2.16560278,
+        0,
+        7.63341885
+      ],
+      "scale": 0.9,
+      "yawDegrees": 0
+    },
+    {
+      "name": "Flower02",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        -2.66560278,
+        0,
+        7.13341885
+      ],
+      "scale": 1.1,
+      "yawDegrees": 37
+    },
+    {
+      "name": "Flower03",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        -1.96560278,
+        0,
+        5.73341885
+      ],
+      "scale": 0.85,
+      "yawDegrees": 74
+    },
+    {
+      "name": "Flower04",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        -2.56560278,
+        0,
+        0.83341885
+      ],
+      "scale": 0.95,
+      "yawDegrees": 111
+    },
+    {
+      "name": "Flower05",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        -2.16560278,
+        0,
+        -1.26658115
+      ],
+      "scale": 1.1,
+      "yawDegrees": 148
+    },
+    {
+      "name": "Flower06",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        1.83439722,
+        0,
+        8.03341885
+      ],
+      "scale": 1,
+      "yawDegrees": 185
+    },
+    {
+      "name": "Flower07",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        2.23439722,
+        0,
+        7.53341885
+      ],
+      "scale": 0.85,
+      "yawDegrees": 222
+    },
+    {
+      "name": "Flower08",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        1.93439722,
+        0,
+        5.53341885
+      ],
+      "scale": 1.1,
+      "yawDegrees": 259
+    },
+    {
+      "name": "Flower09",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        2.23439722,
+        0,
+        0.03341885
+      ],
+      "scale": 1,
+      "yawDegrees": 296
+    },
+    {
+      "name": "Flower10",
+      "asset": "flower-red",
+      "group": "GroundCover",
+      "position": [
+        1.93439722,
+        0,
+        -2.86658115
+      ],
+      "scale": 0.9,
+      "yawDegrees": 333
+    },
+    {
+      "name": "Bush1",
+      "asset": "bush",
+      "group": "Shrubs",
+      "position": [
+        -4.76560278,
+        0,
+        5.53341885
+      ],
+      "scale": 1.1,
+      "yawDegrees": 0
+    },
+    {
+      "name": "Bush2",
+      "asset": "bush",
+      "group": "Shrubs",
+      "position": [
+        4.13439722,
+        0,
+        4.03341885
+      ],
+      "scale": 0.95,
+      "yawDegrees": 67
+    },
+    {
+      "name": "Bush3",
+      "asset": "bush",
+      "group": "Shrubs",
+      "position": [
+        -4.66560278,
+        0,
+        -1.46658115
+      ],
+      "scale": 1,
+      "yawDegrees": 134
+    },
+    {
+      "name": "Bush4",
+      "asset": "bush",
+      "group": "Shrubs",
+      "position": [
+        3.93439722,
+        0,
+        -3.66658115
+      ],
+      "scale": 1.15,
+      "yawDegrees": 201
+    },
+    {
+      "name": "Rock1",
+      "asset": "rock",
+      "group": "Rocks",
+      "position": [
+        -2.31560278,
+        0,
+        8.03341885
+      ],
+      "scale": 1,
+      "yawDegrees": 0
+    },
+    {
+      "name": "Rock2",
+      "asset": "rock",
+      "group": "Rocks",
+      "position": [
+        2.63439722,
+        0,
+        7.13341885
+      ],
+      "scale": 0.8,
+      "yawDegrees": 53
+    },
+    {
+      "name": "Rock3",
+      "asset": "rock",
+      "group": "Rocks",
+      "position": [
+        -2.96560278,
+        0,
+        -0.76658115
+      ],
+      "scale": 1.2,
+      "yawDegrees": 106
+    },
+    {
+      "name": "Rock4",
+      "asset": "rock",
+      "group": "Rocks",
+      "position": [
+        2.63439722,
+        0,
+        -2.36658115
+      ],
+      "scale": 1.1,
+      "yawDegrees": 159
+    }
+  ]
+}
