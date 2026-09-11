@@ -2,7 +2,7 @@
 
 整体计划见 `OVERALL_DEVELOPMENT_PLAN_2026-09-11.md`，机器进度见 `IMMERSIVE_ALPHA_STATUS.json`。
 
-1. 在独立工作树准备依赖：设置 `CRAFTMINE_DEPENDENCY_ROOT` 到已有完整依赖目录，再运行 `node scripts/prepare-isolated-dependencies.mjs`。各workspace包需先完成TypeScript构建，再构建desktop的main/preload/renderer。
+1. 在独立工作树准备依赖：设置 `CRAFTMINE_DEPENDENCY_ROOT` 到已有完整依赖目录，再运行 `node scripts/prepare-isolated-dependencies.mjs`。各workspace包需先完成TypeScript构建，再构建desktop的main/preload/renderer。若该目录已被清理（包目录仍在但内容为空），脚本会检测到并改用本机 pnpm store 离线安装（`pnpm install --offline --frozen-lockfile --ignore-scripts`）；输出中的 `mode` 为 `mirror` 或 `offline-install`，`store` 记录实际使用的存储路径。离线安装跳过 postinstall，因此不会下载 Electron 二进制。
 2. 固定引擎缓存用 `CRAFTMINE_GODOT_CACHE_DIR`。新编译Rust核心用 `CRAFTMINE_CORE_BIN` 与 `CRAFTMINE_CORE_BINARY`。可信执行器用 `CRAFTMINE_GODOT_BROKER_BIN`、`CRAFTMINE_GODOT_BROKER_IDENTITY`、`CRAFTMINE_GODOT_ENGINE_ROOT`；均使用真实已验证路径，不能借用未匹配源码的身份文件。
 3. 浏览器依赖用既有 `PLAYWRIGHT_MODULE_PATH`／`CRAFTMINE_BROWSER`（或自动发现）；脚本只创建独立headless配置。运行 `node scripts/verify-creation-alpha.mjs`。
 4. 报告位于 `test-results/creation-alpha-*/report.json`，每个步骤保留日志、退出码、耗时与SHA-256。任一步失败则整个报告失败，依赖缺失不能计为通过。
