@@ -2,6 +2,8 @@
 
 2026-09-12，只读审计基于 `09f7443a`。以下是待实施增量，当前未交付。
 
+后续宿主增量已实现，详见 [catalog source host contract](godot-agent-gu6-catalog-source-host.md)。本页保留原始审计方案；真实安装包整链验收由主集成记录单独报告。
+
 现有 `godot_library` 能检索 ZIP，但其 `proposeInstall` 指向旧 library bundle 的 `package.install`，不是 CP0 ZIP 源安装。不能把这两条路径或三层哈希混用。最小方案沿用现有作品面板和 `createManagedPackageInstaller.installSource`，不增加安装注册表。
 
 1. 模型只提出固定 `{assetId, version, contentHash}` 及宿主绑定 worldId，保持 `applies:false`、`requiresPlayerAction:true`。读回确切版本，确认包含 ZIP；提案不是授权凭证。
