@@ -28,7 +28,7 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
     const content={assetId:item.id,version:1,kind:'object',files:Object.entries(files).sort(([a],[b])=>a.localeCompare(b,'en')).map(([name,bytes])=>({path:name,bytes:bytes.length,sha256:sha(bytes)})),dependencies:[],
       entry:{entities:['root'],sceneInstall:{mode:'instance',sceneFile:item.entryScene,identityField:'entity_id',identityType:'String'},description:item.usage,label:item.label,
         placement:{anchor:item.placement.anchor,dimensionsMm:item.placement.dimensionsMm},geometry:item.geometry,collision:{mode:item.collision.mode,triangles:item.collision.triangles},
-        visualOnlyScene:item.visualScene},
+        visualOnlyScene:item.visualScene,...(item.importConfiguration?{importConfiguration:item.importConfiguration}:{})},
       interfaces:{},compatibility:{base:'creation-sandbox',baseVersion:'1.0.0',engine:'4.7.2-stable'},state:{kind:'static-no-gameplay-state'},
       licenses:{author:'Kenney',license:'CC0-1.0',sourceUrl:source.url,sourceVersion:source.version,sourceArchiveSha256:source.archiveSha256,wrapperLicense:'MIT'}};
     const manifest={format:'craftmine.resource/1',content,contentHash:contentHash(content)};
