@@ -1,0 +1,226 @@
+{
+  "format": "craftmine.visual-correction-preparation-evidence/1",
+  "report": {
+    "file": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/view-preparation-749aa540-3467-4c15-a96d-40a81687e187/report.json",
+    "sha256": "5065e17c6644fadebc9dc862c93552f73c4f6ca1ca58b6eed85d817ef868c83f"
+  },
+  "sourceReport": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/source-proposal-adoption-7272f689-9956-43d3-a49c-30b7efa2b624/report.json",
+  "originalReport": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/player-7068bc1e-3e3c-411c-9cf1-79757095260b.json",
+  "worldId": "world-dd7fa4f8fff6",
+  "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+  "ok": true,
+  "stateIntegrityVerified": true,
+  "modelCalls": 0,
+  "sourceEdits": 0,
+  "installations": 0,
+  "checks": 0,
+  "applications": 0,
+  "before": {
+    "onFloor": true,
+    "pitch": 0.03,
+    "position": [
+      0,
+      0.899999976158142,
+      0.333885878324509
+    ],
+    "yaw": 0
+  },
+  "after": {
+    "onFloor": true,
+    "pitch": 0.15,
+    "position": [
+      0,
+      0.899999976158142,
+      15.6849727630615
+    ],
+    "yaw": 0
+  },
+  "walk": {
+    "worldId": "world-dd7fa4f8fff6",
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "instanceId": "43c8eefbba71d487d067d7d8",
+    "steps": [
+      {
+        "op": "look",
+        "args": {
+          "yaw": 0,
+          "pitch": 0.15
+        }
+      },
+      {
+        "op": "walk",
+        "args": {
+          "forward": -1,
+          "right": 0,
+          "frames": 120
+        }
+      },
+      {
+        "op": "walk",
+        "args": {
+          "forward": -1,
+          "right": 0,
+          "frames": 80
+        }
+      },
+      {
+        "op": "wait",
+        "args": {
+          "frames": 30
+        }
+      }
+    ]
+  },
+  "saved": {
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "contentHash": "19845d21d1ba3218c6c3f48245447d2200735ff494c0042a6c95cfe549a69f4d",
+    "format": "craftmine.godot-progress-receipt/1",
+    "instanceId": "43c8eefbba71d487d067d7d8",
+    "persistedAt": 1789169603416,
+    "revision": 9,
+    "snapshotHash": "54288f10394eda144d6dae9427c2eee448c67c792714e8bbbc29d158029f3ddf",
+    "snapshotSha256": "ba25c375d9e1bed301d91ccd5c540b1a512ce907e57400f82f014055ea057f7f",
+    "worldId": "world-dd7fa4f8fff6"
+  },
+  "capture": {
+    "proof": {
+      "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\view-preparation-749aa540-3467-4c15-a96d-40a81687e187\\gate-view.png",
+      "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce"
+    },
+    "scope": "formal",
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "instanceId": "43c8eefbba71d487d067d7d8",
+    "width": 1200,
+    "height": 800,
+    "hostStateAndBoundsUnchanged": true
+  },
+  "source": {
+    "revision": 4,
+    "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd",
+    "items": [
+      {
+        "nodePath": "ins-efa91144106606cbe17ac721-e0",
+        "name": "ins-efa91144106606cbe17ac721-e0",
+        "entityId": "ins-efa91144106606cbe17ac721-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+        "name": "ins-544a40bb5763677b245fa53f-e0",
+        "entityId": "ins-544a40bb5763677b245fa53f-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "name": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "entityId": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-478c7fa5192e1c613f28650d-e0",
+        "name": "ins-478c7fa5192e1c613f28650d-e0",
+        "entityId": "ins-478c7fa5192e1c613f28650d-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-9de3589fcb52dc27561e671d-e0",
+        "name": "ins-9de3589fcb52dc27561e671d-e0",
+        "entityId": "ins-9de3589fcb52dc27561e671d-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-63ecd97c7a87b7e288db537e-e0",
+        "name": "ins-63ecd97c7a87b7e288db537e-e0",
+        "entityId": "ins-63ecd97c7a87b7e288db537e-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "name": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "entityId": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-a1f69e8cda073350ed2a4419-e0",
+        "name": "ins-a1f69e8cda073350ed2a4419-e0",
+        "entityId": "ins-a1f69e8cda073350ed2a4419-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "name": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "entityId": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-04ac6382731adc3a91b33662-e0",
+        "name": "ins-04ac6382731adc3a91b33662-e0",
+        "entityId": "ins-04ac6382731adc3a91b33662-e0",
+        "supported": true
+      }
+    ]
+  },
+  "sourceUnchanged": true,
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "exitReport": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  },
+  "calls": [
+    "status",
+    "status",
+    "status",
+    "status",
+    "primaryMode",
+    "primaryMode",
+    "primaryMode",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "worldPanel:godot.runtimeResume",
+    "godotObserve",
+    "worldPanel:package.request:sourceList",
+    "godotCaptureBoundState",
+    "godotCaptureBoundView",
+    "godotCaptureBoundState",
+    "godotExplore",
+    "godotObserve",
+    "godotCaptureBoundState",
+    "godotCaptureBoundView",
+    "godotCaptureBoundState",
+    "worldPanel:godot.runtimeSave",
+    "worldPanel:package.request:sourceList",
+    "quit"
+  ],
+  "followup": {
+    "text": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。",
+    "mode": "prepared-not-submitted",
+    "waitingFor": "preview.13 exact frozen package",
+    "launchSource": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/player-7068bc1e-3e3c-411c-9cf1-79757095260b.json",
+    "modelId": "deepseek-v4.1-flash-expires-on-0910",
+    "thinkingLevel": "max"
+  }
+}
