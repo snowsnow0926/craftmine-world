@@ -8,7 +8,7 @@ const deps=process.env.CRAFTMINE_NATIVE_DEPENDENCY_ROOT||'C:/cm-plan-next-202609
 const {buildSync}=createRequire(path.join(deps,'vendor/pi-desktop/apps/desktop/package.json'))('esbuild');
 const result=buildSync({entryPoints:[path.resolve('vendor/pi-desktop/apps/desktop/shared/world-fullscreen-shortcuts.ts')],bundle:true,platform:'node',format:'cjs',write:false});
 const module={exports:{}};vm.runInNewContext(result.outputFiles[0].text,{module,exports:module.exports,Promise,WeakMap,Array});
-const {nativeFullscreenKeyDecision,mayExitFullscreen,attachFullscreenEscape}=module.exports;
+const {nativeFullscreenKeyDecision,mayExitFullscreen,attachFullscreenEscape,fullscreenEscapeContext}=module.exports;
 const key={type:'keyDown',key:'F11'};
 test('native F11 is finite and repeat-safe',()=>{
  assert.equal(nativeFullscreenKeyDecision(key).action,'toggle');
@@ -34,6 +34,16 @@ function harness(){
  return {listeners,actions,errors,document,dispose,capture,bubble,setVisible:v=>visible=v,setEditing:v=>editing=v,setHold:v=>hold=v};
 }
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
+
+test('immersive dialog yields to its own shortcut but a nested menu still owns Escape',()=>{
+ const dialog={closest:()=>null,getClientRects:()=>[{}]};
+ const menu={closest:()=>null,getClientRects:()=>[{}]};
+ const document={defaultView:{getComputedStyle:()=>({display:'block',visibility:'visible'})},querySelectorAll:()=>[dialog],activeElement:null,pointerLockElement:null};
+ assert.equal(fullscreenEscapeContext(document).overlayOpen,true);
+ assert.equal(fullscreenEscapeContext(document,false,dialog).overlayOpen,false);
+ document.querySelectorAll=()=>[dialog,menu];
+ assert.equal(fullscreenEscapeContext(document,false,dialog).overlayOpen,true);
+});
 test('unconsumed escape invokes only exit, never toggle/close/navigation',async()=>{const h=harness(),e={...event};h.capture(e);h.bubble(e);await tick();assert.deepEqual(h.actions,['exit']);h.dispose();assert.equal(h.listeners.size,0);});
 test('menu present at capture blocks exit even if its handler removes it',async()=>{const h=harness(),e={...event};h.setVisible(true);h.capture(e);h.setVisible(false);h.bubble(e);await tick();assert.equal(h.actions.length,0);h.dispose();});
 test('same Escape cannot release pointer capture and exit fullscreen',async()=>{const h=harness(),e={...event};h.document.pointerLockElement={};h.capture(e);h.document.pointerLockElement=null;h.bubble(e);await tick();assert.equal(h.actions.length,0);const next={...event};h.capture(next);h.bubble(next);await tick();assert.deepEqual(h.actions,['exit']);h.dispose();});

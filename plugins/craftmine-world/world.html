@@ -32,6 +32,18 @@
     .modes button { border-color:transparent; background:transparent; font-size:12px; }
     .modes button[aria-selected="true"] { background:light-dark(#e9e9e9,#303030); }
     #surface { position:relative; flex:1; min-height:0; display:flex; }
+    body[data-immersive="true"] > header,
+    body[data-immersive="true"] > .modes,
+    body[data-immersive="true"] > #selection-context { display:none; }
+    body[data-immersive="true"] > #surface { position:absolute; inset:0; }
+    body[data-immersive="true"] > #error,
+    body[data-immersive="true"] > #import-result { position:absolute; bottom:0; left:0; right:0; z-index:4; }
+    #immersion-hint { display:none; }
+    body[data-immersive="true"]:not([data-godot="true"]) #immersion-hint {
+      display:block; position:fixed; bottom:12px; right:16px; z-index:5;
+      pointer-events:none; font-size:12px; color:#fff;
+      text-shadow:0 1px 3px #000;
+    }
     #checks-panel,#preview-panel { position:absolute; inset:0; background:light-dark(#fafafa,#191919); }
     #checks-panel { overflow:auto; padding:14px; font-size:12px; }
     #checks-panel[hidden],#preview-panel[hidden] { display:none; }
@@ -111,6 +123,7 @@
     <form id="refresh-workbench"><button type="submit" title="重新读取服务状态">刷新</button></form>
   </nav>
   <main id="surface">
+    <span id="immersion-hint" aria-hidden="true">F2 对话 · Shift+F2 工作台</span>
     <div id="godot-surface" role="region" aria-label="Godot 世界画面区域"></div>
     <iframe title="可游玩的世界" sandbox="allow-scripts allow-pointer-lock"></iframe>
     <section id="workbench-panel" aria-label="创作工作台" hidden></section>

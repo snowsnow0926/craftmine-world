@@ -9417,8 +9417,9 @@ Open an existing world, conversation, running task and unsent draft. Switch
 closed, compact, full and back. Preserve the exact world/session/task, draft and
 attachments; never create a session, send a prompt or cancel the task by changing
 presentation. Resize wide and narrow windows and open composer pickers. Actual
-native plugin/Godot rectangles must exclude the measured creation region. Full
-becomes two rows in narrow windows. A blocking dialog over closed play retains
+native plugin/Godot rectangles must remain full-client while the transparent
+primary renderer overlays centered chat. Narrow full remains a covering window,
+without a second row. A blocking dialog over closed play retains
 the pause hold and hides native content. Returning to create releases only the
 immersion hold. Verify F2/Shift+F2 and F11 from native world and main content;
 Escape must yield to IME, voice, menus and pointer release before closing chat.
@@ -9453,17 +9454,34 @@ fake-device permission probes do not establish live recognition accuracy.
 
 Open a world from the world list and require the workspace to fill with the world
 on its own: side columns removed, world surface at full width, and no session,
-prompt or task created by the change. F2 must reserve a real bottom strip and
-Shift+F2 a side column, both leaving the world visible and the same conversation
+prompt or task created by the change. F2 opens a compact covering window and
+Shift+F2 a larger covering window, both leaving world geometry unchanged and the same conversation
 draft behind. Escape closes an open overlay first; with no overlay left, the same
 key returns to the workbench, and the visible "回到创作" control does the same in
-every state a key can reach. The return keeps the world view, session, tabs,
+the open overlay. The return keeps the world view, session, tabs,
 draft and a running task, and it states the stored preference so a later world
 stays in the workbench; the 游玩 control re-enables filling the workspace and
 applies it immediately. A reload and an ordinary re-render must not replay the
 automatic switch for a world that was already entered, and a layout stored by an
-earlier build must keep working. Native Godot rectangle exclusion, the installed
+earlier build must keep working. Native Godot composition, the installed
 client, physical input and player comfort remain separate acceptance items.
+
+### CM-IW-05: equal primary modes and gameplay cursor
+
+Every launch first offers two equal left/right choices: immersive world and
+game creation workbench. With no ready world, immersive opens the real world
+selection/creation flow. Workbench selection remains explicit after later world
+activation and layout resets. Reopening mode selection retains the world,
+conversation, draft and running task. Artifacts opened by a running task do not
+replace the immersive world; explicit workbench entry reveals retained tabs.
+
+On an authorized player click, Web gameplay hides the canvas cursor and enters
+its normal capture flow. Pause, overlay, focus loss and capture loss restore the
+cursor; a late capture reply cannot revive paused input. Godot controllers release
+capture on pause/focus loss and refuse headless capture. Returning from a dialog
+allows the player to click back into gameplay. Automated verification uses only
+memory input objects, headless engine import, and isolated renderer/native
+fixtures with focus, physical input and Pointer Lock requests disabled.
 
 ### AI1-G01: pinned creation guidance discovery and packaging
 

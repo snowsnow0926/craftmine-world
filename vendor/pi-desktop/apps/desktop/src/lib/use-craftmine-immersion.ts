@@ -16,7 +16,7 @@ export function useCraftmineLayout() {
   return layout;
 }
 
-/** A layout preference only: never activates a window or enters OS fullscreen. */
+/** A client presentation only: never activates a window or enters OS fullscreen. */
 export function useCraftmineImmersion(page: string, open: boolean, activeTabId: string | null, blocked = false): boolean {
   return useCraftmineLayout().mode === "play" && isCraftmineWorldWorkspace(page, open, activeTabId, blocked);
 }
@@ -43,7 +43,7 @@ export function useCraftmineImmersionSurface(
         let overlayBounds = rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null;
         if (overlayBounds && surface) {
           // Composer pickers can extend above the compact strip. Their actual
-          // bounds are part of the native exclusion rectangle while visible.
+          // bounds are included in the host's overlay measurement while visible.
           for (const layer of surface.querySelectorAll('[role="menu"],[role="listbox"],[role="dialog"]')) {
             if (layer.closest('[hidden],[inert],[aria-hidden="true"]') || !layer.getClientRects().length) continue;
             const bounds = layer.getBoundingClientRect();
@@ -87,6 +87,33 @@ export function useCraftmineImmersionSurface(
   }, [active, overlay, blocked, surfaceRef]);
 
   useEffect(() => {
+    if (!active || overlay === "closed" || blocked) return;
+    const surface = surfaceRef.current;
+    if (!surface) return;
+    const focusables = () => Array.from(surface.querySelectorAll<HTMLElement>(
+      'button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[contenteditable="true"],[tabindex]:not([tabindex="-1"])',
+    )).filter(element => element.tabIndex >= 0 && element.getClientRects().length > 0 && !element.closest('[inert],[hidden],[aria-hidden="true"]'));
+    const frame = requestAnimationFrame(() => {
+      if (!surface.contains(document.activeElement)) {
+        const composer = surface.querySelector<HTMLElement>('.composer-input[contenteditable="true"]');
+        (composer ?? focusables()[0] ?? surface).focus({ preventScroll: true });
+      }
+    });
+    const contain = (event: KeyboardEvent) => {
+      if (event.key !== "Tab" || event.defaultPrevented) return;
+      // Portalled menus and dialogs own their own focus while open.
+      if (fullscreenEscapeContext(document, false, surface).overlayOpen) return;
+      const elements = focusables();
+      const current = elements.indexOf(document.activeElement as HTMLElement);
+      if (elements.length === 0) { event.preventDefault(); surface.focus({ preventScroll: true }); }
+      else if (event.shiftKey && current <= 0) { event.preventDefault(); elements.at(-1)!.focus({ preventScroll: true }); }
+      else if (!event.shiftKey && (current < 0 || current === elements.length - 1)) { event.preventDefault(); elements[0].focus({ preventScroll: true }); }
+    };
+    window.addEventListener("keydown", contain);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("keydown", contain); };
+  }, [active, overlay, blocked, surfaceRef]);
+
+  useEffect(() => {
     if (!active || blocked) return;
     let composing = false;
     const layers = new WeakMap<KeyboardEvent, boolean>();
@@ -95,7 +122,7 @@ export function useCraftmineImmersionSurface(
     // next world still opens filling the workspace.
     const exitPlay = () => { enterCraftmineMode("create"); };
     const capture = (event: KeyboardEvent) => {
-      const context = fullscreenEscapeContext(document, composing);
+      const context = fullscreenEscapeContext(document, composing, surfaceRef.current);
       const voiceActive = event.key === "Escape" && !!document.querySelector('.voice-input[data-voice-state="starting"],.voice-input[data-voice-state="recording"],.voice-input[data-voice-state="transcribing"]');
       layers.set(event, context.composing || context.overlayOpen || context.editing || context.pointerLocked || voiceActive);
     };
@@ -107,7 +134,7 @@ export function useCraftmineImmersionSurface(
     const begin = () => { composing = true; };
     const end = () => { composing = false; };
     const off = api.onCraftmineImmersionShortcut(action => {
-      const context = fullscreenEscapeContext(document, composing);
+      const context = fullscreenEscapeContext(document, composing, surfaceRef.current);
       if (context.composing || context.overlayOpen || context.editing || context.pointerLocked) return;
       const current = loadCraftmineLayout(localStorage).overlay;
       applyImmersionKey(immersionShortcutAction(action, current), { setOverlay: setCraftmineOverlay, exitPlay });

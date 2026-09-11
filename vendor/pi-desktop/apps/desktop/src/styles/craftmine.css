@@ -52,14 +52,26 @@
   .app-shell.craftmine-world-first .work-panel-header { padding-right: 146px; }
 }
 
-/* Preserve mounted conversation/sidebar state while giving the native world
-   view the entire client workspace. ResizeObserver updates its native bounds. */
+/* Native composition puts the transparent shell above the world only while
+   a dialog owns input. Both surfaces retain their full viewport geometry. */
+html:has(.craftmine-play),
+body:has(.craftmine-play),
+#root:has(.craftmine-play) { background: transparent; }
+.app-shell.craftmine-play { position: relative; display: block; background: transparent; }
 .app-shell.craftmine-play > .sidebar,
 .app-shell.craftmine-play > .main-pane { display: none; }
-.app-shell.craftmine-play > .work-panel { width: 100% !important; max-width: none; min-width: 0; flex: 1 1 100%; border-left: 0; }
-.app-shell.craftmine-play .work-panel-header { padding-right: 146px; }
+.app-shell.craftmine-play > .work-panel {
+  position: absolute; inset: 0; width: 100% !important; height: 100%;
+  max-width: none; min-width: 0; border: 0; background: transparent;
+  animation: none; transform: none;
+}
+.app-shell.craftmine-play .work-panel-header { display: none; }
 .app-shell.craftmine-play .work-panel-resize { display: none; }
-.app-shell.craftmine-play .craftmine-layout-controls { flex-wrap: nowrap; }
+.app-shell.craftmine-play .work-panel-body,
+.app-shell.craftmine-play .work-panel-tabpane,
+.app-shell.craftmine-play .work-plugin-view,
+.app-shell.craftmine-play .work-plugin-view-surface { background: transparent; }
+.app-shell.craftmine-play.craftmine-overlay-closed > .window-controls { display: none; }
 .craftmine-overlay-controls { display: flex; flex: none; align-items: center; flex-wrap: wrap; gap: 4px; padding: 6px 8px; }
 .craftmine-overlay-controls button {
   border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
@@ -76,32 +88,33 @@
 .creation-policy input { flex: none; margin-top: 2px; }
 .creation-target-note { overflow-wrap: anywhere; }
 .craftmine-immersion-error { padding: 6px 12px; color: var(--ds-text-primary); font-size: var(--text-xs); }
-/* Reserve actual rectangles for native child views; z-index is insufficient. */
-.app-shell.craftmine-play.craftmine-overlay-compact {
-  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(120px, 1fr) min(320px, 48%);
+/* Centered covering windows, never a row or column allocated to chat. */
+.app-shell.craftmine-play:not(.craftmine-overlay-closed)::before {
+  content: ""; position: absolute; inset: 0; z-index: 30;
+  background: color-mix(in oklab, var(--ds-bg-primary) 38%, transparent);
 }
-.app-shell.craftmine-play.craftmine-overlay-compact > .work-panel { grid-row: 1; grid-column: 1; height: 100%; min-height: 0; }
-.app-shell.craftmine-play.craftmine-overlay-compact > .main-pane {
-  display: flex; grid-row: 2; grid-column: 1; min-width: 0; min-height: 0; width: 100%; border-top: 1px solid var(--ds-border-subtle);
-}
+.app-shell.craftmine-play.craftmine-overlay-compact > .main-pane,
 .app-shell.craftmine-play.craftmine-overlay-full > .main-pane {
-  display: flex; flex: 0 0 min(560px, 48%); min-width: 300px; min-height: 0;
+  display: flex; position: absolute; z-index: 40;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  min-width: 0; min-height: 0; flex: none; margin: 0;
+  max-width: calc(100% - 32px); max-height: calc(100% - 64px);
+  border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-lg);
+  background: var(--ds-bg-primary); box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
-.app-shell.craftmine-play.craftmine-overlay-full > .work-panel { flex: 1 1 0; width: 0 !important; }
+.app-shell.craftmine-play.craftmine-overlay-compact > .main-pane { width: 680px; height: min(440px, calc(100% - 64px)); }
+.app-shell.craftmine-play.craftmine-overlay-full > .main-pane { width: min(1120px, calc(100% - 64px)); height: calc(100% - 96px); }
 .app-shell.craftmine-play > .main-pane > .window-controls-in-pane,
-.app-shell.craftmine-play > .main-pane > .conversation-topbar { display: none; }
+.app-shell.craftmine-play > .main-pane > .conversation-topbar,
+.app-shell.craftmine-play > .main-pane > .main-titlebar { display: none; }
 .app-shell.craftmine-overlay-compact .home-scroll { display: none; }
 .app-shell.craftmine-overlay-compact .home-main-content { padding-top: 0; justify-content: flex-end; }
 .app-shell.craftmine-overlay-compact .home-composer-wrap { padding-top: 0; }
 .app-shell.craftmine-overlay-compact .composer-dock { max-height: 100%; }
 @media (max-width: 660px) {
-  .app-shell.craftmine-play.craftmine-overlay-full { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(100px, 40%) minmax(0, 1fr); }
-  .app-shell.craftmine-play.craftmine-overlay-full > .work-panel { grid-row: 1; width: 100% !important; min-height: 0; }
-  .app-shell.craftmine-play.craftmine-overlay-full > .main-pane { grid-row: 2; min-width: 0; }
-}
-@media (max-width: 660px) {
-  .app-shell.craftmine-play .work-panel-header { flex-wrap: wrap; height: auto; min-height: 72px; }
-  .app-shell.craftmine-play .craftmine-layout-controls { order: 3; }
+  .app-shell.craftmine-play.craftmine-overlay-full > .main-pane { width: calc(100% - 24px); height: calc(100% - 48px); max-width: calc(100% - 24px); max-height: calc(100% - 48px); }
+  .craftmine-overlay-controls { gap: 3px; padding: 4px; }
 }
 
 /* World list, create flow and auxiliary surfaces in the left column. */

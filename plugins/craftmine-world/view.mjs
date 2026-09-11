@@ -51,6 +51,14 @@ if(bridge) {
   void bridge.invoke('app.getAppearance').then(applyAppearance).catch(()=>{});
   bridge.on?.('appearance:changed',applyAppearance);
   bridge.on?.('godot-world:state',onGodotState);
+  bridge.on?.('craftmine-presentation',value=>{
+    const active=value?.active===true;
+    const entering=active&&document.body.dataset.immersive!=='true';
+    document.body.dataset.immersive=String(active);
+    // Showing the world changes presentation only; never discard a candidate
+    // application or preview that the player is still deciding on.
+    if(entering&&!preview&&!applicationAttempt)setMode(false);
+  });
   bridge.on?.('craftmine-immersion',value=>{
     immersionHeld=value===true;
     if(!godot&&current)send('immersion',{paused:immersionHeld});

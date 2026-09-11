@@ -19,7 +19,7 @@ export function mayExitFullscreen(event:EscapeEvent,context:FullscreenEscapeCont
 }
 
 /** Read actual renderer layers before their Escape handlers can dismiss them. */
-export function fullscreenEscapeContext(document:Document,composing=false):FullscreenEscapeContext {
+export function fullscreenEscapeContext(document:Document,composing=false,ignoredOverlay:Element|null=null):FullscreenEscapeContext {
   const view=document.defaultView;
   const visible=(element:Element)=>{
     if(element.closest('[hidden],[inert],[aria-hidden="true"]'))return false;
@@ -31,7 +31,7 @@ export function fullscreenEscapeContext(document:Document,composing=false):Fulls
   // handled independently above/below; native pickers/search clear operations
   // can consume Escape without a DOM preventDefault, so retain their layer.
   const editing=!!active&&active.matches('select,input[list],input[type="search"],input[type="color"],input[type="date"],input[type="datetime-local"],input[type="month"],input[type="time"],input[type="week"]');
-  const overlayOpen=Array.from(document.querySelectorAll('[role="dialog"],[role="menu"],[role="listbox"],[aria-modal="true"],dialog[open],[popover]')).some(visible);
+  const overlayOpen=Array.from(document.querySelectorAll('[role="dialog"],[role="menu"],[role="listbox"],[aria-modal="true"],dialog[open],[popover]')).some(element=>element!==ignoredOverlay&&visible(element));
   return {pointerLocked:!!document.pointerLockElement,overlayOpen,editing,composing};
 }
 
