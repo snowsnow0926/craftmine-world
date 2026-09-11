@@ -33,6 +33,26 @@ test("renderer cannot inject identity, arbitrary operations or invalid dimension
  assert.equal(validateCreationEdit({...input,action:"delete",changes:undefined}).action,"delete");
 });
 
+test('all five placement kinds and bounded duplication reuse the checked operation pipeline',async()=>{
+ for(const kind of ['tree','rock','chest','door','marker']){
+  const {service,calls}=fixture();const request={sessionId:'session-a',captureId:'capture-a',operationId:'edit-a',action:'place',kind};
+  service.start(1,request);service.start(1,request);assert.equal((await terminal(service)).phase,'applied');
+  const writes=calls.filter(c=>c.name==='creation_operation');assert.equal(writes.length,1);assert.equal(writes[0].args.request.kind,kind);
+  assert.deepEqual(writes[0].args.request.scale,[1,1,1]);assert.equal(writes[0].args.request.color,'#84A866');assert.ok(!('targetId' in writes[0].args.request));assert.ok(!('position' in writes[0].args.request));
+ }
+ for(const count of [1,8]){const {service,calls}=fixture();service.start(1,{sessionId:'session-a',captureId:'capture-a',operationId:'edit-a',action:'duplicate',count,offset:[2,0,0]});assert.equal((await terminal(service)).phase,'applied');const request=calls.find(c=>c.name==='creation_operation').args.request;assert.equal(request.count,count);assert.equal(request.targetId,'tree-a');assert.deepEqual(request.offset,[2,0,0]);}
+});
+
+test('placement and duplicate contracts reject injection, unknown fields and unbounded offsets',()=>{
+ const base={sessionId:'session-a',captureId:'capture-a',operationId:'edit-a'};
+ for(const extra of [{action:'place',kind:'script'},{action:'place',kind:'tree',offset:[1,0,0]},{action:'place',kind:'tree',parameters:{}},{action:'place',kind:'tree',changes:{color:'#ffffff'}},{action:'duplicate',count:0,offset:[2,0,0]},{action:'duplicate',count:9,offset:[2,0,0]},{action:'duplicate',count:1.5,offset:[2,0,0]},{action:'duplicate',count:2,offset:[0,0,0]},{action:'duplicate',count:2,offset:[9,0,0]},{action:'duplicate',count:2,offset:[NaN,0,0]},{action:'duplicate',count:2,offset:[2,0,0],kind:'tree'}])assert.throws(()=>validateCreationEdit({...base,...extra}),/INVALID/);
+});
+
+test('occupied placement fails atomically before build and never adopts',async()=>{
+ const {service,calls}=fixture({execute:async(_,name)=>{calls.push({name});if(name==='godot_project_index')return {revision:4,manifestHash:'a'.repeat(64)};throw Error('CREATION_OCCUPIED');}});
+ service.start(1,{sessionId:'session-a',captureId:'capture-a',operationId:'edit-a',action:'place',kind:'tree'});assert.match((await terminal(service)).error,/CREATION_OCCUPIED/);assert.ok(!calls.some(c=>c.name==='apply'||c.name==='godot_build_start'));
+});
+
 function directory(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'creation-edit-state-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));return root;}
 test('completed durable operation survives service restart and owner rebind without new writes',async t=>{
  const root=directory(t),first=fixture({directory:root});first.service.start(1,input);await terminal(first.service);

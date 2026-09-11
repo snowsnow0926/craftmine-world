@@ -42,7 +42,7 @@ import { checkCraftmineFrame } from "./craftmine-frame-check";
 import {installCreationEvaluation,reserveCreationEvaluationRequest} from "./craftmine-creation-evaluation";
 import {creationTaskStatus} from "./creation-task-status";
 import {createCreationEditService,validateCreationEdit,type CreationEditInput} from "./creation-edit-service";
-import {readFormalCreationJournal,assertDirectCreationCandidate} from "./creation-edit-guards";
+import {readFormalCreationJournal,assertDirectCreationCandidate,directCreationEditIntent} from "./creation-edit-guards";
 import {installCreationEditAcceptance} from "./creation-edit-acceptance";
 import {createCreationSourceMigration} from "./creation-source-migration";
 import type {DirectCreationIntent} from "./creation-check-requirements";
@@ -1181,12 +1181,12 @@ const creationEdits=createCreationEditService({
       const {session,projectId,capture}=await creationEditCapture(owner,input.sessionId,input.captureId);
       let intent:DirectCreationIntent;
       if(input.action==="undo")intent={action:"undo",undoOperationId:input.undoOperationId!,formalJournal:(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal};
-      else {if(!capture.target.entityId)throw Error("CREATION_OBJECT_REQUIRED");intent=input.action==="modify"?{action:"modify",targetId:capture.target.entityId,changes:input.changes!}:{action:"delete",targetId:capture.target.entityId};}
+      else intent=directCreationEditIntent(capture,input);
       if(activeTurns.size||turnFinalizations.size)throw Error("ACTIVE_TASK_EXISTS");
       await assertCreationEditor(owner,input.sessionId);
       const turn=await host!.call<{turnId:string}>("session.beginTurn",{sessionId:input.sessionId});turnId=turn.turnId;
       if(!turnId)throw Error("CREATION_EDIT_TURN_REQUIRED");activeTurns.set(input.sessionId,turnId);activeTurnUsages.delete(input.sessionId);
-      const content=input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      const content=input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
       const message={id:crypto.randomUUID(),role:"user",content,createdAt:new Date().toISOString(),status:"complete"};
       await host!.call("session.appendMessage",{sessionId:input.sessionId,turnId,message});
       if(!await bindCraftmineTurn(input.sessionId,turnId,session,{id:message.id,text:content},{owner,capture,intent}))throw Error("CREATION_SESSION_REQUIRED");

@@ -15,6 +15,7 @@ const saveStatus=(scope:string,status:Status)=>{statuses.set(scope,status);try{s
 const failures:Record<string,string>={CREATION_DELETE_RULE_DEPENDENCY:"世界中有机关脚本，无法确认删除是否会破坏引用，请先处理机关依赖。",CREATION_UNDO_CONFLICT:"对象已被后续修改，不能撤销这一步。",CREATION_UNDO_UNSUPPORTED:"这条旧操作没有可用的撤销记录。",CREATION_ALREADY_UNDONE:"这条操作已经撤销。",CREATION_TARGET_EXPIRED:"指向已过期，请更新指向后重试。",CREATION_TARGET_STALE:"世界已变化，请更新指向后重试。",CREATION_PLAYER_OVERLAP:"对象会挡住玩家，请移动后重试。",CREATION_OCCUPIED:"对象会与其他物件重叠。"};
 
 Object.assign(failures,{CREATION_MIGRATION_NEEDED:"旧版底座含有自定义改动，需要手动适配；源码和存档已保留。",CREATION_MIGRATION_DRAFT_CONFLICT:"当前还有未采用的源码修改，请先处理草稿。正式世界保持原样。"});
+Object.assign(failures,{CREATION_PLACEMENT_GROUND_REQUIRED:"请切回当前指向并对准空地，再放置物体。",CREATION_OUT_OF_BOUNDS:"物体超出世界边界，请缩小偏移或减少数量。",CREATION_ENTITY_LIMIT:"世界物体数量已达上限，请先整理物体。",CREATION_DUPLICATE_LIMIT:"复制数量应为 1–8 个，偏移距离至少为 0.5。"});
 
 export function CreationObjectEditor({controller}:{controller:ReturnType<typeof useCreationTarget>}){
   const zh=useTranslation().i18n.language.startsWith("zh");
@@ -23,6 +24,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
   const scopeRef=useRef(scope);scopeRef.current=scope;
   const submitted=useRef(false);
   const [open,setOpen]=useState(false),[scale,setScale]=useState([1,1,1]),[color,setColor]=useState("#84a866");
+  const [placing,setPlacing]=useState(false),[kind,setKind]=useState("tree"),[count,setCount]=useState(1),[offset,setOffset]=useState([2,0,0]);
   const [status,setStatus]=useState<Status|null>(()=>scope?readStatus(scope):null);
   const [error,setError]=useState("");
   const [undo,setUndo]=useState<string|null>(null);
@@ -34,7 +36,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
     if(scopeRef.current===expectedScope)setStatus(next);
     window.dispatchEvent(new CustomEvent("craftmine-creation-edit-status",{detail:next}));
   };
-  useEffect(()=>{setOpen(false);setScale(target?.scale??[1,1,1]);setColor(target?.color??"#84a866");setError("");},[controller.capture?.captureId]);
+  useEffect(()=>{setOpen(false);setPlacing(false);setScale(target?.scale??[1,1,1]);setColor(target?.color??"#84a866");setError("");},[controller.capture?.captureId]);
   useEffect(()=>{setStatus(scope?readStatus(scope):null);setUndo(null);setError("");submitted.current=false;},[scope]);
   useEffect(()=>{
     if(!sessionId||!controller.capture?.captureId||!bridge)return;
@@ -54,7 +56,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
         if(next.phase==="applied"){
           submitted.current=false;
           setUndo(next.receipt?.undoSupported?next.receipt.operationId:null);
-          setOpen(false);void controller.refresh();return;
+          setOpen(false);setPlacing(false);void controller.refresh();return;
         }
         if(["failed","interrupted"].includes(next.phase)){submitted.current=false;return;}
       }catch(failure){
@@ -67,13 +69,13 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
     };
     void poll();return()=>{alive=false;clearTimeout(timer);};
   },[busy,visibleStatus?.operationId,scope]);
-  const submit=async(action:"modify"|"delete"|"undo")=>{
+  const submit=async(action:"modify"|"delete"|"undo"|"place"|"duplicate")=>{
     if(!bridge||!sessionId||!worldId||!controller.capture?.captureId||busy||visibleStatus?.phase==="interrupted"||submitted.current)return;
     submitted.current=true;setError("");
     const operationId=crypto.randomUUID(),requestScope=scope;
     const pending:Status={sessionId,worldId,operationId,phase:"preparing"};publish(pending);
     try{
-      const next=await bridge.call("godot.creationEdit",{sessionId,captureId:controller.capture.captureId,operationId,action,...(action==="modify"?{changes:{scale,color}}:{}),...(action==="undo"?{undoOperationId:undo}:{})}) as Status;
+      const next=await bridge.call("godot.creationEdit",{sessionId,captureId:controller.capture.captureId,operationId,action,...(action==="modify"?{changes:{scale,color}}:{}),...(action==="undo"?{undoOperationId:undo}:{}),...(action==="place"?{kind}:{}),...(action==="duplicate"?{count,offset}:{})}) as Status;
       if(next.sessionId!==sessionId||next.operationId!==operationId||(next.worldId!==undefined&&next.worldId!==worldId))throw Error("CREATION_EDIT_CONTEXT_CHANGED");
       // The status poll may have already observed a later phase while this
       // original response was delayed. Never move that operation backwards.
@@ -90,14 +92,28 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
   const problem=error||visibleStatus?.error;
   return <div className="creation-object-editor">
     <div className="creation-target-row">
-      <button type="button" disabled={!sessionId||!target?.entityId||!target.scale||!target.color||busy||visibleStatus?.phase==="interrupted"} onClick={()=>setOpen(!open)}>{zh?"编辑对象":"Edit object"}</button>
+      <button type="button" disabled={!sessionId||!controller.capture?.captureId||target?.surface!=="ground"||(controller.capture as {source?:string}|null)?.source==="recent"||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{setPlacing(!placing);setOpen(false);}}>{zh?"在此放置":"Place here"}</button>
+      <button type="button" disabled={!sessionId||!target?.entityId||!target.scale||!target.color||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{setOpen(!open);setPlacing(false);}}>{zh?"编辑对象":"Edit object"}</button>
       <button type="button" title={zh?"支持本版记录的放置、参数修改、复制和删除；旧记录与规则修改暂不可撤销。":"Supports recorded placement, property edits, duplication and deletion; older records and rule edits cannot be undone."} disabled={!sessionId||!undo||busy||visibleStatus?.phase==="interrupted"||!controller.capture?.captureId} onClick={()=>void submit("undo")}>{zh?"撤销上次操作":"Undo last edit"}</button>
     </div>
+    {placing&&<fieldset disabled={busy}>
+      <legend>{zh?"在当前空地放置物体，无需模型":"Place an object on the selected ground without a model"}</legend>
+      <label>{zh?"物体类型":"Object type"}<select aria-label={zh?"放置类型":"Placement kind"} value={kind} onChange={event=>setKind(event.target.value)}>{[["tree","树","Tree"],["rock","石头","Rock"],["chest","宝箱","Chest"],["door","门","Door"],["marker","标记","Marker"]].map(([value,cn,en])=><option key={value} value={value}>{zh?cn:en}</option>)}</select></label>
+      <span className="creation-target-note">{zh?"默认尺寸与绿色外观；宝箱奖励一个造物代币，门初始关闭。采用后可编辑或撤销。":"Default size and green appearance; chests reward one creation token and doors start closed. Edit or undo after adoption."}</span>
+      <button type="button" onClick={()=>void submit("place")}>{zh?"放置并检查":"Place and check"}</button>
+      <button type="button" onClick={()=>setPlacing(false)}>{zh?"取消":"Cancel"}</button>
+    </fieldset>}
     {open&&<fieldset disabled={busy}>
       <legend>{target?.entityName??target?.entityId}</legend>
       <div className="creation-target-row">{["X","Y","Z"].map((axis,index)=><label key={axis}>{axis}<input aria-label={`${zh?"尺寸":"Scale"} ${axis}`} type="number" min="0.25" max="4" step="0.25" value={scale[index]} onChange={event=>setScale(values=>values.map((value,i)=>i===index?Number(event.target.value):value))} style={{width:65}}/></label>)}
         <label>{zh?"颜色":"Color"}<input aria-label={zh?"对象颜色":"Object color"} type="color" value={color} onChange={event=>setColor(event.target.value)}/></label>
       </div>
+      <div className="creation-target-row">
+        <label>{zh?"复制数量":"Copies"}<input aria-label={zh?"复制数量":"Copy count"} type="number" min="1" max="8" step="1" value={count} onChange={event=>setCount(Number(event.target.value))}/></label>
+        {["X","Y","Z"].map((axis,index)=><label key={axis}>{zh?"偏移":"Offset"} {axis}<input aria-label={`${zh?"复制偏移":"Copy offset"} ${axis}`} type="number" min="-8" max="8" step="0.5" value={offset[index]} onChange={event=>setOffset(values=>values.map((value,i)=>i===index?Number(event.target.value):value))} style={{width:65}}/></label>)}
+        <button type="button" disabled={!Number.isInteger(count)||count<1||count>8||offset.some(n=>!Number.isFinite(n)||Math.abs(n)>8)||Math.hypot(...offset)<.5} onClick={()=>void submit("duplicate")}>{zh?"复制并检查":"Duplicate and check"}</button>
+      </div>
+      <span className="creation-target-note">{zh?"每个副本相对上一个偏移，使用当前已采用的属性；未提交的尺寸和颜色不随复制生效。占用或越界时整次操作不生效。":"Copies use adopted properties and successive offsets. Unsubmitted size or color edits are not copied. Occupied or out-of-bounds placement rejects the whole operation."}</span>
       <div className="creation-target-row">
         <button type="button" disabled={scale.some(n=>!Number.isFinite(n)||n<.25||n>4)} onClick={()=>void submit("modify")}>{zh?"检查并应用":"Check and apply"}</button>
         <button type="button" onClick={()=>void submit("delete")}>{zh?"删除对象":"Delete object"}</button>

@@ -1,9 +1,24 @@
 import {createHash} from 'node:crypto';
 import {assertCreationJobRequirements,freezeUndoRequirements} from './creation-check-requirements';
 import type {CreationCapture} from './creation-target-service';
+import type {DirectCreationIntent} from './creation-check-requirements';
+import type {CreationEditInput} from './creation-edit-service';
 type Data=Record<string,any>;
 type Domain=(method:string,input:Data)=>Promise<any>;
 type Context={projectId:string;sessionId:string;turnId:string};
+
+/** Placement only uses current ground; explicit recent selections identify objects, not landing points. */
+export function directCreationEditIntent(capture:CreationCapture,input:CreationEditInput):Exclude<DirectCreationIntent,{action:'undo'}>{
+  if(input.action==='place'){
+    if((capture as CreationCapture&{source?:string}).source==='recent'||capture.target.surface!=='ground'||!capture.target.position)throw Error('CREATION_PLACEMENT_GROUND_REQUIRED');
+    return {action:'place',kind:input.kind!,scale:[1,1,1],color:'#84A866'};
+  }
+  const targetId=capture.target.entityId;if(!targetId)throw Error('CREATION_OBJECT_REQUIRED');
+  if(input.action==='modify')return {action:'modify',targetId,changes:input.changes!};
+  if(input.action==='duplicate')return {action:'duplicate',targetId,count:input.count!,offset:input.offset!};
+  if(input.action==='delete')return {action:'delete',targetId};
+  throw Error('CREATION_EDIT_INVALID');
+}
 
 /** Read only the immutable source exported for the still-current formal build. */
 export async function readFormalCreationJournal(domain:Domain,capture:CreationCapture){

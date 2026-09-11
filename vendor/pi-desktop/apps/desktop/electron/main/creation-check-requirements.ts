@@ -3,7 +3,7 @@ import {parseCreationWishIntent} from './creation-wish-intent.ts';
 export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;presenceMutable?:boolean;solidMutable?:boolean;bounds?:{min:number[];max:number[]}};
 export type CreationRequirement = {format:'craftmine.creation-requirements/1';requestHash:string;entities:Array<{id?:string;kind?:string;position?:number[];scale?:number[];color?:string;visible?:boolean;solid?:boolean;absent?:boolean;excludeIds?:string[]}>;counts:Array<{kind:string;count:number}>;doorSequence?:{doorId:string;steps:string[]};harvest?:{entityId:string;inventoryId:"wood";reward:1;regrowFrames:300};timeOfDay?:18;duplicates?:{kind:string;count:2;scale:number[];color:string;priorIds:string[]}};
 export type FrozenCreationRequirement = {status:'verifiable';requirements:CreationRequirement}|{status:'unverified';reason:string};
-export type DirectCreationIntent = {action:'modify';targetId:string;changes:{scale?:number[];color?:string}}|{action:'delete';targetId:string}|{action:'undo';undoOperationId:string;formalJournal:unknown};
+export type DirectCreationIntent = {action:'modify';targetId:string;changes:{scale?:number[];color?:string}}|{action:'delete';targetId:string}|{action:'undo';undoOperationId:string;formalJournal:unknown}|{action:'place';kind:'tree'|'rock'|'chest'|'door'|'marker';scale:number[];color:string}|{action:'duplicate';targetId:string;count:number;offset:number[]};
 const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
 const kinds=['tree','rock','chest','door','marker'];
 const vector=(value:unknown):value is number[]=>Array.isArray(value)&&value.length===3&&value.every(n=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<=100000);
@@ -47,9 +47,18 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   else if(/^(?:请)?删除(?:这个对象|这棵树|它)$/.test(text)&&selected){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
   else {const sequence=/^依次触碰([A-Za-z0-9._-]+(?:、[A-Za-z0-9._-]+){1,7})后打开([A-Za-z0-9._-]+)$/.exec(text);if(!sequence)return unknown;const steps=sequence[1].split('、'),doorId=sequence[2];if(!all.some(e=>e.id===doorId&&e.kind==='door')||!steps.every(id=>all.some(e=>e.id===id&&e.kind==='marker')))return unknown;r.doorSequence={doorId,steps};r.entities.push({id:doorId,kind:'door'},...steps.map(id=>({id,kind:'marker'})));}
  }else{
+  if(input.action==='place'){
+   if(!kinds.includes(input.kind)||!vector(capture.target.position)||!vector(input.scale)||!/^#[a-fA-F0-9]{6}$/.test(input.color))return unknown;
+   r.entities.push({kind:input.kind,position:[...capture.target.position],scale:[...input.scale],color:input.color,excludeIds:all.map(e=>e.id),visible:true,solid:true});r.counts.push({kind:input.kind,count:all.filter(e=>e.kind===input.kind).length+1});
+  }else{
   if(!selected||input.targetId!==selected.id)return unknown;
-  if(input.action==='delete'){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
+  if(input.action==='duplicate'){
+   if(!Number.isInteger(input.count)||input.count<1||input.count>8||!vector(input.offset)||input.offset.some(n=>Math.abs(n)>8)||Math.hypot(...input.offset)<.5||!selected.color)return unknown;
+   for(let i=1;i<=input.count;i++)r.entities.push({kind:selected.kind,position:selected.position.map((n,axis)=>n+input.offset[axis]*i),scale:[...selected.scale],color:selected.color,excludeIds:all.map(e=>e.id),visible:true,solid:selected.kind==='door'?selected.open!==true:true});
+   r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length+input.count});
+  }else if(input.action==='delete'){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
   else if(input.action==='modify'&&Object.keys(input.changes).length&&Object.keys(input.changes).every(k=>['scale','color'].includes(k)))r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],scale:[...selected.scale],...(selected.color?{color:selected.color}:{}),...frozenPresence(selected),...input.changes});else return unknown;
+  }
  }
  const changedIds=new Set(r.entities.map(e=>e.id).filter(Boolean));
  for(const e of all)if(!changedIds.has(e.id))r.entities.push({id:e.id,kind:e.kind,position:[...e.position],scale:[...e.scale],...(e.color?{color:e.color}:{}),...frozenPresence(e)});

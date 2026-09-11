@@ -46,6 +46,20 @@ test('duplicates mint deterministic separate stable identities and reject count/
   assert.throws(()=>compileCreationOperation({...f,request:{...request,count:9}}),/DUPLICATE_LIMIT/);
   assert.throws(()=>compileCreationOperation({...f,request:{...request,offset:[.5,0,0]}}),/OCCUPIED/);
 });
+
+test('eight direct copies are atomic, replayable and undo together while preserving original declarations',()=>{
+  const original=entity('source','chest',[-16,0,5]);original.parameters={rewardId:'token',rewardCount:2};
+  const f=fixture([original]),request={operationId:'copy-eight',expected:f.request.expected,action:'duplicate',targetId:'source',count:8,offset:[2,0,0]};
+  const before=structuredClone(f),result=compileCreationOperation({...f,request});assert.deepEqual(f,before);assert.equal(result.receipt.createdIds.length,8);
+  assert.ok(result.document.entities.every(e=>JSON.stringify(e.parameters)===JSON.stringify(original.parameters)));
+  for(const op of result.operations)f.source.files[op.path]={text:op.text,sha256:hash(op.text)};
+  assert.equal(compileCreationOperation({...f,request}).replayed,true);
+  f.source.revision++;f.source.manifestHash='b'.repeat(64);f.targetSnapshot.sourceRevision=f.source.revision;f.targetSnapshot.manifestHash=f.source.manifestHash;f.targetSnapshot.target.revision=result.document.revision;
+  const undo=compileCreationOperation({...f,request:{operationId:'undo-eight',action:'undo',undoOperationId:'copy-eight',expected:{...request.expected,revision:f.source.revision,manifestHash:f.source.manifestHash}}});
+  assert.deepEqual(undo.document.entities,[original]);
+  const blocked=fixture([original,entity('blocker','rock',[-8,0,5])]),blockedBefore=structuredClone(blocked);
+  assert.throws(()=>compileCreationOperation({...blocked,request:{...request,expected:blocked.request.expected}}),/OCCUPIED/);assert.deepEqual(blocked,blockedBefore);
+});
 test('explicit positions are bounded; here needs authoritative hit; player and obstacle overlap reject',()=>{
   const f=fixture();for(const position of [[0,0,0],[28,0,0],[4,17,4],[NaN,0,0]])assert.throws(()=>run(f,{position}));
   f.targetSnapshot.target.surface='none';f.targetSnapshot.target.position=null;assert.throws(()=>run(f,{}),/NO_POSITION/);
