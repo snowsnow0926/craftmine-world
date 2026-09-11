@@ -27,11 +27,23 @@ export function classifyModelCase({submitted=false,checks=[],modelRequests=0,rep
 export function summarizeModelCases(cases){
   const counts=Object.fromEntries(['first_attempt_pass','model_repaired_pass','human_assisted_pass','failed','environment_blocked','not_run'].map(key=>[key,0]));
   for(const item of cases)counts[item.outcome]=(counts[item.outcome]??0)+1;
-  const runs=cases.filter(item=>item.modelRequests>0),unassisted=runs.filter(item=>!item.humanIntervention);
+  const runs=cases.filter(item=>item.modelRequests>0);
+  // Assistance is an outcome of an attempt, not a reason to remove it from
+  // the denominator. Keep both the raw classes and the metric definition.
+  const autonomous=item=>item.modelRequests>0&&!item.humanIntervention&&['first_attempt_pass','model_repaired_pass'].includes(item.outcome);
   const attempted=cases.filter(item=>item.submitted||item.startedAt||item.modelRequests>0||item.outcome==='environment_blocked');
-  return {counts,attemptedCases:attempted.length,attemptDenominator:attempted.length,attemptAutonomousRate:attempted.length?attempted.filter(item=>['first_attempt_pass','model_repaired_pass'].includes(item.outcome)).length/attempted.length:null,realModelRuns:runs.length,denominator:unassisted.length,firstAttemptRate:unassisted.length?unassisted.filter(item=>item.outcome==='first_attempt_pass').length/unassisted.length:null,
-    autonomousCompletionRate:unassisted.length?unassisted.filter(item=>['first_attempt_pass','model_repaired_pass'].includes(item.outcome)).length/unassisted.length:null,
-    requestCount:cases.reduce((sum,item)=>sum+(item.modelRequests??0),0),cost:null,costReason:'No verified monetary price or billed cost in the product usage ledger'};
+  return {
+    metricsFormat:'craftmine.model-case-metrics/2',
+    denominatorDefinition:'all_cases_with_observed_model_requests_including_human_assisted',
+    counts,attemptedCases:attempted.length,attemptDenominator:attempted.length,
+    attemptAutonomousRate:attempted.length?attempted.filter(autonomous).length/attempted.length:null,
+    realModelRuns:runs.length,denominator:runs.length,
+    unassistedModelRuns:runs.filter(item=>!item.humanIntervention&&item.outcome!=='human_assisted_pass').length,
+    firstAttemptRate:runs.length?runs.filter(item=>autonomous(item)&&item.outcome==='first_attempt_pass').length/runs.length:null,
+    autonomousCompletionRate:runs.length?runs.filter(autonomous).length/runs.length:null,
+    requestCount:cases.reduce((sum,item)=>sum+(item.modelRequests??0),0),cost:null,
+    costReason:'No verified monetary price or billed cost in the product usage ledger',
+  };
 }
 export function completeCreationProgress(value){
   if(value?.format==='craftmine.godot-progress/1'&&value.baseId==='creation-sandbox'&&value.body?.format==='craftmine.creation-progress/1')return structuredClone(value);
