@@ -108,6 +108,58 @@ pub(super) fn assert_idle(db: &Connection, world: &str) -> Result<()> {
     Ok(())
 }
 
+/// A completed observer/planning task can outlive a source candidate authored
+/// by another host session. Follow only committed applications on the current
+/// world's actual build lineage, and prove its entire scene draft was still
+/// the formal baseline. This does not mark that task's source edits applied.
+pub(super) fn supersedes_unmodified_draft(
+    db: &Connection,
+    world_id: &str,
+    current_build: &str,
+    current_revision: u64,
+    base_build: &str,
+    draft: &Value,
+) -> Result<bool> {
+    let mut statement = db.prepare(
+        "SELECT build_id,input,input_hash,previous_world,previous_hash,output,output_hash
+         FROM craftmine_godot_applications WHERE world_id=?1 AND status='applied'
+         ORDER BY CAST(json_extract(input,'$.revision') AS INTEGER) DESC,created_at DESC,id DESC",
+    )?;
+    let rows = statement.query_map([world_id], |row| {
+        Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?, row.get::<_, String>(2)?,
+            row.get::<_, String>(3)?, row.get::<_, String>(4)?,
+            row.get::<_, Option<String>>(5)?, row.get::<_, Option<String>>(6)?))
+    })?;
+    let mut cursor = current_build.to_owned();
+    let mut revision_ceiling = current_revision;
+    for row in rows {
+        let (build, input_body, input_hash, previous_body, previous_hash, output, output_hash) = row?;
+        if build != cursor { continue; }
+        ensure!(digest(&input_body) == input_hash, "CORRUPT_APPLICATION_INPUT");
+        let input: Value = serde_json::from_str(&input_body)?;
+        let revision = input["revision"].as_u64().context("INVALID_REVISION")?;
+        // Saves may advance the world between deployments. A future receipt
+        // or another branch is not evidence for this formal world.
+        if revision >= revision_ceiling { continue; }
+        ensure!(digest(&previous_body) == previous_hash, "CORRUPT_APPLICATION_PREVIOUS_WORLD");
+        let previous: worlds::WorldDocument = serde_json::from_str(&previous_body)?;
+        let previous_build = previous.build["id"].as_str().context("BUILD_ID_REQUIRED")?;
+        let output = output.context("GODOT_APPLICATION_OUTPUT_REQUIRED")?;
+        ensure!(Some(digest(&output)) == output_hash, "CORRUPT_APPLICATION_OUTPUT");
+        let output: Value = serde_json::from_str(&output)?;
+        ensure!(input["worldId"] == world_id && input["buildId"] == build
+            && input["baseBuild"] == previous_build && input["worldHash"] == previous_hash
+            && output["launch"]["passed"] == true && output["launch"]["buildId"] == build,
+            "GODOT_APPLICATION_LINEAGE_MISMATCH");
+        if previous_build == base_build {
+            return Ok(draft == &json!({"scene":previous.build["scene"]}));
+        }
+        cursor = previous_build.to_owned();
+        revision_ceiling = revision;
+    }
+    Ok(false)
+}
+
 pub(super) fn read(db: &Connection, id: &str) -> Result<Value> {
     expire(db)?;
     let (world_id, candidate_id, build_id, author_task, input, input_hash, status, output,
