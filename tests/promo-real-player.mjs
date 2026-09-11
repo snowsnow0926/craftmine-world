@@ -22,12 +22,13 @@ if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-o
 const secretsFile=process.env.CRAFTMINE_LIVE_CONFIG;assert.ok(secretsFile&&path.isAbsolute(secretsFile),'Explicit local secrets configuration required');
 const secrets={};loadLocalConfig(secretsFile,secrets);const secret=secrets.CRAFTMINE_DEEPSEEK_API_KEY??secrets.DEEPSEEK_API_KEY??secrets.CRAFTMINE_EVAL_KEY;
 assert.ok(secret&&config.baseUrl==='https://api.deepseek.com'&&config.vendorKey==='deepseek','Only the selected DeepSeek endpoint receives this key');
-const client=resolveCreationNativeLaunch({root:process.cwd(),packagedRoot,requiredGuards:['HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED','playerSetup','playerPrompt','headlessAskPending','headlessAskResolve']});
+const client=resolveCreationNativeLaunch({root:process.cwd(),packagedRoot,requiredGuards:['HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED','playerSetup','playerPrompt','headlessAskPending','headlessAskResolve','headlessPermissionPending','headlessPermissionResolve']});
 const proofs=[sourceFile,markerFile,configFile,textFile].map(fileProof),sanitize=checkpointSanitizer([secret,marker.token]),runId=randomUUID();
 const output=path.join(out,'player-'+runId+'.json'),controller=new AbortController(),signal=controller.signal;
 for(const event of ['SIGINT','SIGTERM'])process.on(event,()=>controller.abort());
 const exchange=createFileClarificationExchange({directory:path.join(out,'player-questions-'+runId),signal});
-const report={format:'craftmine.promo-player/1',sourceReport:sourceFile,worldId,sessionId,packageIdentity:client.identity,playerConfig:config,text,messageId:randomUUID(),startedAt:new Date().toISOString(),status:'PREPARING',clarifications:[],questionDirectory:exchange.directory,creationEvaluation:false,sourceEditsByHarness:0};
+const permissionDirectory=path.join(out,'player-permissions-'+runId);fs.mkdirSync(permissionDirectory);
+const report={format:'craftmine.promo-player/1',sourceReport:sourceFile,worldId,sessionId,packageIdentity:client.identity,playerConfig:config,text,messageId:randomUUID(),startedAt:new Date().toISOString(),status:'PREPARING',clarifications:[],permissions:[],permissionDirectory,questionDirectory:exchange.directory,creationEvaluation:false,sourceEditsByHarness:0};
 fs.writeFileSync(output,JSON.stringify(report,null,2),{flag:'wx'});const save=()=>fs.writeFileSync(output,JSON.stringify(sanitize(report),null,2));
 const env=adoptionEnvironment(client,{out,profile,token:marker.token});assert.equal(env.CRAFTMINE_CREATION_EVAL,undefined);
 let ready=false,ended=false,exitReport,submitted=false,seenActive=false;const pending=new Map();
@@ -54,6 +55,23 @@ try{
     seenActive ||= state.active;save();
     const newTurn=seenActive||state.metrics?.messageId===report.messageId||state.record?.session?.messages?.some(m=>m.id===report.messageId);
     if(newTurn&&!state.active&&!['queued','running','recovering'].includes(state.job?.status)&&state.application?.status!=='applying'&&state.application?.phase!=='applying'){report.status=state.metrics?.status==='error'?'MODEL_ERROR':'SETTLED_UNVERIFIED';break;}
+    const permission=await rpc('headlessPermissionPending',{payload:{sessionId}});
+    if(permission){
+      assert.equal(permission.sessionId,sessionId);assert.ok(typeof permission.requestId==='string');
+      const ticketId=randomUUID(),requestFile=path.join(permissionDirectory,ticketId+'.request.json'),responseFile=path.join(permissionDirectory,ticketId+'.response.json');
+      fs.writeFileSync(requestFile,JSON.stringify(sanitize({format:'craftmine.player-permission-request/1',permission,responseFile}),null,2),{flag:'wx'});
+      report.pendingPermission={requestFile,responseFile};save();console.log('Player permission: '+requestFile);
+      while(!fs.existsSync(responseFile)&&!signal.aborted){
+        await delay(500);
+        const current=await rpc('headlessPermissionPending',{payload:{sessionId}});
+        assert.equal(current?.requestId,permission.requestId,'Product permission expired or changed while awaiting review');
+      }
+      assert.ok(!signal.aborted,'PLAYER_CANCELLED');const response=readCheckpointJson(responseFile);
+      assert.equal(Object.keys(response).sort().join(','),'decision,requestId,sessionId');assert.equal(response.sessionId,sessionId);assert.equal(response.requestId,permission.requestId);assert.ok(['allow-once','deny'].includes(response.decision));
+      const receipt=await rpc('headlessPermissionResolve',{payload:response});
+      assert.equal(receipt.status,'resolved');assert.equal(receipt.sessionId,sessionId);assert.equal(receipt.requestId,permission.requestId);assert.equal(receipt.toolCallId,permission.toolCallId);assert.equal(receipt.decision,response.decision);
+      report.permissions.push({permission,decision:response.decision,requestFile,responseFile,receipt});delete report.pendingPermission;save();
+    }
     const ask=await rpc('headlessAskPending',{payload:{sessionId}});
     if(ask){
       const ticket=exchange.publish(ask,sessionId);console.log('Player clarification: '+ticket.requestFile);report.pendingQuestion=ticket;save();

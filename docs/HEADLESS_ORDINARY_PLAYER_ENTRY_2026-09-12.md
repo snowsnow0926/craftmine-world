@@ -17,6 +17,8 @@
 
 实际澄清写入独立 `player-questions-UUID` 目录，等待测试 agent 依据原玩家目标提交 file-response；不选默认或首项、不自动回复。真实权限仍由产品的普通权限流程决定，没有改成 auto。
 
+普通权限请求通过 `headlessPermissionPending` 读当前队首，写入独立 `player-permissions-UUID/*.request.json`，包含真实工具名称、风险、参数预览、原因及 `responseFile` 路径。测试 agent 审阅后向对应 responseFile 原子写入 `{ "sessionId": "原值", "requestId": "原值", "decision": "allow-once" }` 或 `deny`，driver 再调用 `headlessPermissionResolve` 并校验完整回执。没有自动全批、allow-session 或权限升级。等待期间产品若撤销/过期/改变队首会立即保留错误，不能对新请求套用旧批准。产品入口由独立权限桥提交提供，薄驱动 live 会先确认成品包含该桥。
+
 报告格式为 `craftmine.promo-player/1`，位置为原 profile 父目录 `player-UUID.json`，包含 worldId、sessionId、packageIdentity、submittedAt、完整 before/latest（含 active/job/metrics/observation）、endedAt、exitReport、stateIntegrityVerified；不伪造 budget 字段。采用前仍须核对本次提交后的新检查与世界身份。原报告、marker、输入文件、配置快照和成品未被改写且退出审计干净，才将 stateIntegrityVerified 标为 true。
 
 FLIGHT 旧报告的 prepare-only 已验证能解析原会话与世界，显示保存的 `deepseek-v4.1-flash-expires-on-0910`、`max`、1,000,000 上下文和 384,000 输出配置，输入为“继续完成刚才的歼20，我要能实际驾驶它飞起来。”。仅用了旧固定目录作参数解析演示，未启动旧包或模型；live 必须使用含新入口的成品。入口及文件问答现有检查共 11 项通过，薄驱动语法检查通过。
