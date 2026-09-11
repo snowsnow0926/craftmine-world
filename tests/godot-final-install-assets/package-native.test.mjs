@@ -25,6 +25,16 @@ test('oversized and linked files reject without invoking a core installer',async
 test('native export saves verified bytes and returns no archive payload',async()=>{const f=await fixture();f.state.pick=path.join(f.dir,'export.zip');const result=await f.call('exportSource',{revision:1,manifestHash:'a'.repeat(64),nodePath:'Door',assetId:'door',version:1});assert.equal(result.status,'completed');assert.deepEqual(await fs.readFile(f.state.pick),f.bytes);assert.equal('archiveBase64'in result,false);f.service.dispose();await assert.rejects(f.call('sourceList'),/DISPOSED/);});
 console.log('PACKAGE_NATIVE_FIXTURE '+root);
 
+test('normal source-file import freezes finite placement into its exact retry identity',async()=>{
+ const f=await fixture(),position={x:3,y:0,z:-4};f.state.fail=true;
+ await assert.rejects(f.call('importSource',{operationId:'placed-import',position}),/TRANSPORT_LOST/);
+ assert.deepEqual(f.state.calls[0].args.position,position);
+ await assert.rejects(f.call('importSource',{operationId:'placed-import',position:{x:4,y:0,z:-4}}),/PACKAGE_OPERATION_CONFLICT/);
+ await f.call('importSource',{operationId:'placed-import',position});assert.deepEqual(f.state.calls[0],f.state.calls[1]);assert.equal(f.state.picks,1);
+ for(const bad of [{x:81,y:0,z:0},{x:0,y:NaN,z:0},{x:0,z:0},{x:0,y:0,z:0,extra:1}])await assert.rejects(f.call('importSource',{operationId:'bad-position',position:bad}),/INVALID_PLACEMENT|INVALID_PARAMS/);
+ assert.equal(f.state.picks,1);
+});
+
 test('sourceJob queries exact world/job only and projects no source, token or private paths',async()=>{
  const jobId='gjob-'+'b'.repeat(64),calls=[];let selected='alpha',wrong=false,status='running';
  const service=createCraftminePackageService({selection:()=>selected,pickFile:async()=>{throw Error('picker forbidden');},domainCall:async(method,args)=>{calls.push({method,args});return{worldId:wrong?'beta':'alpha',jobId,status,source:{text:'private script'},request:{token:'private'},artifactsRoot:'private path'};}});

@@ -8,6 +8,7 @@ const hash=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex
 function failure(code:string):never {throw desktopServiceError(code);}
 const fields=(value:any,allowed:string[])=>{if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(key=>!allowed.includes(key)))failure('INVALID_PARAMS');};
 const identifier=(value:any)=>{if(typeof value!=='string'||!/^[a-zA-Z0-9_-]{8,100}$/.test(value))failure('INVALID_OPERATION_ID');return value as string;};
+const position=(value:any)=>{fields(value,['x','y','z']);if(!['x','y','z'].every(key=>Number.isFinite(value[key])&&Math.abs(value[key])<=80))failure('INVALID_PLACEMENT');return {x:value.x,y:value.y,z:value.z};};
 const canonical=(value:any):string=>JSON.stringify(value,Object.keys(value).sort());
 async function ordinaryFile(target:string,missing=false) {
   if(!isAbsolute(target))failure('PACKAGE_SELECTED_PATH_INVALID');
@@ -38,7 +39,8 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
   const prune=()=>{for(const [id,grant]of grants)if(grant.expiresAt<=now())grants.delete(id);};
   const privateCall=(method:string,args:any)=>options.domainCall('package.request',{method,args});
   async function install(worldId:string,method:string,args:any) {
-    const operationId=identifier(args.operationId),key=worldId+':'+operationId,binding=canonical({worldId,method,operationId,grantId:args.grantId??null});
+    const placed=args.position===undefined?undefined:position(args.position);
+    const operationId=identifier(args.operationId),key=worldId+':'+operationId,binding=canonical({worldId,method,operationId,grantId:args.grantId??null,position:placed?JSON.stringify(placed):null});
     let operation=operations.get(key);
     if(operation){if(operation.binding!==binding)failure('PACKAGE_OPERATION_CONFLICT');if(operation.result)return operation.result;if(operation.pending)return operation.pending;}
     else {if(operations.size>=64)failure('PACKAGE_OPERATION_LIMIT');operation={binding};operations.set(key,operation);}
@@ -55,7 +57,7 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
       }
       const grant=grants.get(entry.grantId);if(!grant||grant.expiresAt<=now())failure('PACKAGE_GRANT_EXPIRED');if(grant.worldId!==worldId)failure('PACKAGE_GRANT_WORLD_MISMATCH');
       const bytes=await readZip(grant.path);if(hash(bytes)!==grant.sha256)failure('PACKAGE_FILE_CHANGED');await selected(worldId);
-      const result=await privateCall('installSource',{worldId,operationId,archiveBase64:bytes.toString('base64')});
+      const result=await privateCall('installSource',{worldId,operationId,archiveBase64:bytes.toString('base64'),...(placed?{position:placed}:{})});
       if(result.worldId!==worldId||result.applied!==false||result.archiveSha256!==grant.sha256||!['check-queued','source-saved-check-blocked'].includes(result.status)||!Array.isArray(result.instanceIds)||result.instanceIds.length>1024||result.instanceIds.some((id:any)=>typeof id!=='string'||id.length>240)||!Number.isSafeInteger(result.source?.revision)||!/^[a-f0-9]{64}$/.test(result.source?.manifestHash))failure('PACKAGE_INSTALL_RECEIPT_INVALID');
       // Project a receipt, never the core job's private request/body/paths.
       if (typeof result.job?.jobId !== 'string' || !/^gjob-[a-f0-9]{64}$/.test(result.job.jobId)) failure('PACKAGE_INSTALL_JOB_INVALID');
@@ -100,7 +102,7 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           return {status:'completed',worldId,archiveSha256:result.archiveSha256,bytes:bytes.length,files:result.files,requiredSourceFiles:result.requiredSourceFiles};
         }
         if(method==='importSource'||method==='repeatImportSource') {
-          fields(args,method==='importSource'?['worldId','operationId']:['worldId','operationId','grantId']);const result=await install(worldId,method,args);await selected(worldId);return result;
+          fields(args,method==='importSource'?['worldId','operationId','position']:['worldId','operationId','grantId','position']);const result=await install(worldId,method,args);await selected(worldId);return result;
         }
         failure('UNKNOWN_PACKAGE_METHOD');
       }catch(error){const candidate=error as {code?:unknown;errorCode?:unknown;message?:unknown};const code=candidate.errorCode??candidate.code??candidate.message;throw desktopServiceError(typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,100}$/.test(code)?code:'PACKAGE_OPERATION_FAILED');}
