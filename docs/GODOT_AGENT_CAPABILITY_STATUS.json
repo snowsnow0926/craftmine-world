@@ -1,0 +1,33 @@
+{
+  "format": "craftmine.godot-agent-plan-status/1",
+  "planVersion": "1.1",
+  "plan": "docs/GODOT_AGENT_CAPABILITY_DEVELOPMENT_PLAN.md",
+  "goalStatus": "active",
+  "startedAt": "2026-09-12",
+  "baselineCommit": "2cf285fe87d53537435aa59783abd72bc5f56a63",
+  "integrationWorktree": "D:/cm-agent-godot-0912",
+  "integrationBranch": "codex/agent-godot-capability-20260912",
+  "playerAcceptance": {
+    "entry": "ordinary-player-creation",
+    "configuration": "read-selected-session-before-run",
+    "extraTokenLimit": null,
+    "extraModelCallLimit": null,
+    "extraTurnDeadline": null,
+    "preserveOriginalWish": true,
+    "isolatedBackground": true,
+    "cancellable": true,
+    "physicalInputAllowed": false
+  },
+  "packages": [
+    {"id":"GU0","status":"in-progress","next":"Freeze current source, non-secret player configuration, runtime and prior evidence"},
+    {"id":"GU1","status":"in-progress","next":"Validate existing mode capabilities and add live execution availability"},
+    {"id":"GU2","status":"in-progress","next":"Repair query completeness, exact revision identity and continuation"},
+    {"id":"GU3","status":"planned"},
+    {"id":"GU4","status":"planned"},
+    {"id":"GU5","status":"planned"},
+    {"id":"GU6","status":"planned"},
+    {"id":"GU7","status":"planned"}
+  ],
+  "evidence": [],
+  "limitations": ["Current installed client has not been revalidated by this goal", "Prior player records apply only to their recorded wishes and builds", "No new player model execution has started"]
+}
