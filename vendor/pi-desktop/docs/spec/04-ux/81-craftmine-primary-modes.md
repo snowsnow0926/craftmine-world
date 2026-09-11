@@ -26,6 +26,14 @@ are modal overlays with the world geometry retained. The workbench retains its
 side-by-side editing layout. Startup selection is a product entry point, not a
 world navigation sidebar layout preset.
 
+While immersive mode is selected, the existing world tab remains the presented
+resource even when a task selects a file, review, or another plugin tab. These
+artifacts remain in the session-owned store, without changing its selected tab
+back and forth or remounting the world surface. An explicit return to the
+workbench reveals its retained selected artifact. Subagent detail panels also
+wait behind the immersive presentation. A missing world tab is never fabricated
+by presentation alone.
+
 Validation: targeted pure tests cover explicit mode preferences, resetting,
 retained task identity, and the presentation-only chooser event. Integration
 validation uses an isolated headless renderer with pointer lock disabled and

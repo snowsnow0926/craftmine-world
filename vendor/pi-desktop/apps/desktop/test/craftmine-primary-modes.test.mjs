@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { register } from "node:module";
 register(new URL("./helpers/ts-import-hooks.mjs", import.meta.url));
 const layout = await import("../src/lib/craftmine-layout.ts");
+const presentation = await import("../src/lib/craftmine-mode-presentation.ts");
 
 const bundled = await build({
   entryPoints: [fileURLToPath(new URL("../src/lib/craftmine-mode.ts", import.meta.url))],
@@ -21,8 +22,10 @@ globalThis.window = new EventTarget();
 const calls = [];
 globalThis.modeStoreFixture = {
   workPanelWidth: 495, activeSessionId: "retained-session", running: true,
+  activeWorkPanelTabId: null, workPanelTabs: [],
   setPage: page => calls.push(["page", page]),
   openWorkPanelTab: tab => calls.push(["tab", tab.id]),
+  openWorkPanel: () => calls.push(["open"]),
   setWorkPanelWidth: width => calls.push(["width", width]),
 };
 
@@ -63,4 +66,29 @@ test("resetting workbench dimensions cannot re-enable automatic play", () => {
   assert.equal(reset.mode, "create");
   assert.equal(reset.playWhenWorldActivates, false);
   assert.equal(layout.resetCraftmineLayout(storage, "play").playWhenWorldActivates, true);
+});
+
+test("task-opened file and review tabs cannot replace the immersive world", () => {
+  const tabs = [{ id: presentation.CRAFTMINE_WORLD_TAB_ID }, { id: "file:level.gd" }, { id: "review" }];
+  for (const selected of ["file:level.gd", "review", null]) {
+    assert.equal(presentation.craftminePresentedTabId("play", selected, tabs), presentation.CRAFTMINE_WORLD_TAB_ID);
+    assert.equal(presentation.craftminePresentedTabId("create", selected, tabs), selected);
+  }
+  assert.equal(tabs.length, 3);
+  assert.equal(presentation.craftminePresentedTabId("play", "review", [{ id: "review" }]), "review");
+});
+
+test("deliberate workbench entry reveals the retained artifact without reopening the world", () => {
+  calls.length = 0;
+  const fixture = globalThis.modeStoreFixture;
+  fixture.activeWorkPanelTabId = "file:level.gd";
+  fixture.workPanelTabs = [{ id: presentation.CRAFTMINE_WORLD_TAB_ID }, { id: "file:level.gd" }];
+  storage.value = JSON.stringify({ mode: "play", overlay: "full" });
+  mode.enterCraftmineMode("create", { explicit: true });
+  assert.deepEqual(calls, [["page", "chat"], ["open"], ["width", 480]]);
+  assert.equal(fixture.activeWorkPanelTabId, "file:level.gd");
+  assert.equal(fixture.activeSessionId, "retained-session");
+  assert.equal(fixture.running, true);
+  assert.equal(presentation.shouldOpenCraftmineWorldTab("play", fixture.activeWorkPanelTabId, fixture.workPanelTabs), true);
+  assert.equal(presentation.shouldOpenCraftmineWorldTab("create", "missing", fixture.workPanelTabs), true);
 });
