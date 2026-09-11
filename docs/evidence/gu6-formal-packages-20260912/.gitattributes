@@ -1,0 +1,2 @@
+# Preserve captured reports and image bytes exactly.
+* -text whitespace=-blank-at-eol,cr-at-eol
