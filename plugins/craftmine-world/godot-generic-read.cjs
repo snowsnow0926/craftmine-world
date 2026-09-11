@@ -27,6 +27,7 @@ async function readGodotGeneric({name,args,core,context,workspace,record,assertA
  if(name==='project_inspect'){
   const target=typeof capture==='function'?await capture(context):null;assertActive();
   return {format:'craftmine.godot-project-inspection/1',...identity,project:source,nextTools,...(target?{creationTarget:target}:{}),
+    ...(target?.sceneObjectTarget?{sceneObjectTarget:target.sceneObjectTarget,sceneObjectContext:{use:'ordinary-source-editing-only',identityScope:'runtime-instance',current:target.sceneObjectLive??null,note:'这是本回合捕获的普通场景节点引用，不是 creation_operation 实体或跨重开身份。共享脚本可能影响多个实例；先读取来源再修改。'}}:{}),
     note:'这是 Godot 源码工程索引，文件列表及 revision/manifestHash 来自当前任务的真实源码。请使用 godot_file_read / godot_project_patch；不要把它当体素 objects/systems，也不要调用旧 workspace_patch。源码草稿与正式游玩构建分别标识。'};
  }
  if(name!=='capabilities_read')fail('UNSUPPORTED_GENERIC_GODOT_READ');

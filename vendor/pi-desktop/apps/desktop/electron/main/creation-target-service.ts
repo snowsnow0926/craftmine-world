@@ -4,6 +4,7 @@ import path from "node:path";
 import {createHash, randomUUID} from "node:crypto";
 import type {CreationMigrationAdvance} from './creation-source-migration';
 import {recentCreationResults} from './creation-recent-results.ts';
+import {readSceneObjectTarget,currentSceneObjectPath,type SceneObjectTarget} from './scene-object-target.ts';
 
 type Context = {projectId:string;sessionId:string;turnId:string};
 type Vector = [number,number,number];
@@ -14,6 +15,7 @@ export type CreationCapture = {
   format:"craftmine.creation-target/1";snapshotId:string;worldId:string;buildId:string;instanceId:string;
   sourceRevision:number;manifestHash:string;sampledAt:string;capturedAt:number;
   playerPosition:Vector;target:Target;source?:'ray'|'recent';autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;sourceMigration?:CreationMigrationAdvance;
+  sceneObjectTarget?:SceneObjectTarget;sceneObjectLive?:{currentNodePath:string;sampledAt:string};
 };
 type Dependencies = {
   directory:string;
@@ -22,6 +24,7 @@ type Dependencies = {
   descriptor(worldId:string):Promise<any>;
   sample(input:{worldId:string;buildId:string;instanceId:string}):Promise<any>;
   journal?(capture:CreationCapture):Promise<unknown>;
+  source?(worldId:string):Promise<any>;
   now?:()=>number;
 };
 const id=(value:unknown):value is string=>typeof value==="string"&&/^[a-zA-Z0-9._-]{1,128}$/.test(value);
@@ -69,6 +72,15 @@ export function createCreationTargetService(deps:Dependencies) {
       descriptor.sourceRevision!==capture.sourceRevision || descriptor.manifestHash!==capture.manifestHash)fail("CREATION_TARGET_STALE");
     assertLive(capture);
   };
+  const confirmSceneObject=async(capture:CreationCapture)=>{
+    if(!capture.sceneObjectTarget)return;
+    await assertFormal(capture);
+    const sample=await deps.sample(capture),age=now()-Date.parse(sample?.sampledAt);
+    if(sample?.worldId!==capture.worldId||sample?.buildId!==capture.buildId||sample?.instanceId!==capture.instanceId||sample?.baseId!=='creation-sandbox'||!Number.isFinite(age)||age< -5000||age>30000)fail('SCENE_OBJECT_RECAPTURE_REQUIRED');
+    const currentNodePath=currentSceneObjectPath(capture.sceneObjectTarget,sample.payload?.creation?.sceneObjectRefs);
+    await assertFormal(capture);
+    capture.sceneObjectLive={currentNodePath,sampledAt:sample.sampledAt};
+  };
   return {
     async policy(input:Record<string,unknown>={}) {
       const worldId=await deps.selection();if(!worldId)fail("CREATION_WORLD_UNAVAILABLE");
@@ -105,6 +117,18 @@ export function createCreationTargetService(deps:Dependencies) {
         entities:Array.isArray(creation.entities)?structuredClone(creation.entities):undefined,playerPosition:[...player] as Vector,target:{entityId:target.entityId,position:target.surface==="none"?null:[...target.position] as Vector,
           normal:target.surface==="none"?null:[...target.normal] as Vector,surface:target.surface,revision:target.revision},source:'ray',autoApply:false};
       await assertFormal(capture);
+      if(creation.sceneObjectTarget!=null){
+        if(!deps.source)fail('SCENE_OBJECT_SOURCE_UNAVAILABLE');
+        const source=await deps.source(capture.worldId);
+        if(source?.worldId!==capture.worldId||source.buildId!==capture.buildId||source.sourceRevision!==capture.sourceRevision||source.baseId!=='creation-sandbox'||!Array.isArray(source.files)||source.files.length>512)fail('SCENE_OBJECT_SOURCE_CHANGED');
+        const files=new Set<string>();
+        for(const entry of source.files){
+          if(typeof entry?.path!=='string'||files.has(entry.path)||!Number.isSafeInteger(entry.bytes)||entry.bytes<0||!/^[a-f0-9]{64}$/.test(entry.sha256))fail('SCENE_OBJECT_SOURCE_CHANGED');
+          files.add(entry.path);
+        }
+        capture.sceneObjectTarget=readSceneObjectTarget(creation.sceneObjectTarget,files)!;
+        await confirmSceneObject(capture);
+      }
       const recent=recentCreationResults(capture.worldId,await deps.journal?.(capture),capture.entities);
       await assertFormal(capture);
       if(captureEpochs.get(owner)!==generation)fail('CREATION_CAPTURE_SUPERSEDED');
@@ -113,6 +137,7 @@ export function createCreationTargetService(deps:Dependencies) {
       const choice=saved?.worldId===capture.worldId&&id(saved?.entityId)?saved:null;
       let reason:string|undefined;
       if(choice){
+        delete capture.sceneObjectTarget;delete capture.sceneObjectLive;
         const result=recent.find(item=>item.entityId===choice.entityId);
         if(selection&&(!result||!result.available))fail(result?.reason??'CREATION_RECENT_UNAVAILABLE');
         capture.source='recent';
@@ -124,12 +149,16 @@ export function createCreationTargetService(deps:Dependencies) {
         }else{reason=result?.reason??'CREATION_RECENT_UNAVAILABLE';capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};}
       }
       if(selection!==undefined)write(selectionFile,selection);
+      // A nearer ordinary actor must not silently select the ground/tree behind it.
+      // Keep structured targets unchanged when no ordinary actor was captured.
+      if(capture.sceneObjectTarget)capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};
       for(const [key,value] of pending)if(now()-value.capture.capturedAt>300000)pending.delete(key);
       if(pending.size>=64)pending.delete(pending.keys().next().value!);
       pending.set(capture.snapshotId,{owner,session:{...session},capture});
       return {captureId:capture.snapshotId,worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,
         sourceRevision:capture.sourceRevision,manifestHash:capture.manifestHash,sampledAt:capture.sampledAt,source:capture.source,recent,reason,
-        target:capture.target.surface==="none"?null:creationTargetDisplay(capture.target,creation.entities)};
+        target:capture.target.surface==="none"?null:creationTargetDisplay(capture.target,creation.entities),
+        ...(capture.sceneObjectTarget?{sceneObjectTarget:structuredClone(capture.sceneObjectTarget)}:{})};
     },
     async validate(owner:number,value:unknown,session:CaptureSession):Promise<CreationCapture|null> {
       if(value===undefined)return null;
@@ -140,6 +169,7 @@ export function createCreationTargetService(deps:Dependencies) {
       if(!item||item.owner!==owner||now()-item.capture.capturedAt>300000||item.bound)fail("CREATION_TARGET_EXPIRED");
       if((item.session.sessionId!==null&&item.session.sessionId!==session.sessionId)||item.session.projectId!==session.projectId)fail("CREATION_SESSION_CHANGED");
       await assertFormal(item.capture);
+      await confirmSceneObject(item.capture);
       // The first send materializes a new chat. Claim its host-resolved session
       // once, without allowing a previously existing session capture to move.
       if(item.session.sessionId===null){
@@ -155,8 +185,9 @@ export function createCreationTargetService(deps:Dependencies) {
       if(!item||item.owner!==owner||item.bound||capture.worldId!==worldId)fail("CREATION_TARGET_STALE");
       if(item.session.sessionId!==context.sessionId||item.session.projectId!==context.projectId)fail("CREATION_SESSION_CHANGED");
       await assertFormal(item.capture);
+      await confirmSceneObject(item.capture);
       if(item.bound||now()-item.capture.capturedAt>300000)fail("CREATION_TARGET_EXPIRED");
-      const frozen={...structuredClone(item.capture),autoApply:(requestText===undefined||typeof requestText==="string")&&policyFor(worldId).autoApply,creationRequirements:freezeCreationRequirements(item.capture,requestText??"")};
+      const frozen={...structuredClone(item.capture),autoApply:!item.capture.sceneObjectTarget&&(requestText===undefined||typeof requestText==="string")&&policyFor(worldId).autoApply,creationRequirements:item.capture.sceneObjectTarget?{status:'unverified' as const,reason:'SCENE_OBJECT_SOURCE_REVIEW_REQUIRED'}:freezeCreationRequirements(item.capture,requestText??"")};
       write(file("turns",key),{context,capture:frozen});item.bound=key;return structuredClone(frozen);
     },
     bound(context:Context,worldId:string):CreationCapture|null {

@@ -34,6 +34,50 @@ func restore(body: Dictionary) -> String:
 	return ""
 
 var observed_physics_tick: int = 0
+var scene_object_refs: Dictionary = {}
+
+func _scene_node(node: Node) -> Dictionary:
+	var script: Script = node.get_script() as Script
+	return {"objectId": str(node.get_instance_id()), "nodePath": str(world().get_path_to(node)).left(513), "nodeClass": node.get_class().left(81), "scriptPath": script.resource_path.left(513) if script != null else "", "scenePath": node.scene_file_path.left(513)}
+
+# Bounded read-only references from actual hits; project metadata is never identity.
+func _scene_objects(existing: Dictionary) -> Dictionary:
+	var camera := world().get_node_or_null("Player/CameraRig/PitchPivot/Camera3D") as Camera3D
+	var player := world().get_node_or_null("Player")
+	var selected: Variant = null
+	if camera != null and player != null:
+		var excluded: Array[RID] = []
+		if player is CollisionObject3D: excluded.append(player.get_rid())
+		for child in player.find_children("*", "CollisionObject3D", true, false): excluded.append(child.get_rid())
+		var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * 80, 4294967295, excluded)
+		query.collide_with_areas = true
+		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+		if not hit.is_empty():
+			var point: Vector3 = hit.position
+			var prior: Variant = existing.get("position")
+			var stock_hit: bool = existing.get("surface") in ["ground", "entity", "boundary"] and prior is Array and prior.size() == 3 and point.distance_to(Vector3(prior[0], prior[1], prior[2])) < 0.001
+			var collider := hit.collider as Node
+			if not stock_hit and collider != null and world().is_ancestor_of(collider):
+				var key := str(collider.get_instance_id())
+				if not scene_object_refs.has(key):
+					if scene_object_refs.size() >= 32: scene_object_refs.erase(scene_object_refs.keys()[0])
+					scene_object_refs[key] = weakref(collider)
+				selected = _scene_node(collider)
+				selected["position"] = [point.x, point.y, point.z]
+				selected["normal"] = [hit.normal.x, hit.normal.y, hit.normal.z]
+				selected["ancestors"] = []
+				var ancestor := collider.get_parent()
+				while ancestor != null and ancestor != world() and selected.ancestors.size() < 4:
+					selected.ancestors.append(_scene_node(ancestor))
+					ancestor = ancestor.get_parent()
+	var live := []
+	for key in scene_object_refs.keys():
+		var node: Node = scene_object_refs[key].get_ref()
+		if node == null or not node.is_inside_tree() or node.is_queued_for_deletion() or not world().is_ancestor_of(node):
+			scene_object_refs.erase(key)
+		else:
+			live.append(_scene_node(node))
+	return {"target": selected, "references": live}
 
 func _init() -> void:
 	var tree := Engine.get_main_loop() as SceneTree
@@ -164,6 +208,9 @@ func observe() -> Dictionary:
 	result.creation.physicsTick = observed_physics_tick
 	result.creation.revision = int(document.get("revision", 1))
 	result.creation.target = _actual_target(result.creation.revision, actual)
+	var scene_objects := _scene_objects(result.creation.target)
+	result.creation.sceneObjectTarget = scene_objects.target
+	result.creation.sceneObjectRefs = scene_objects.references
 	result.creation.timeOfDay = world().get("time_of_day")
 	var inventory: Variant = world().get("inventory")
 	result.inventory = inventory.duplicate(true) if inventory is Dictionary else {}
