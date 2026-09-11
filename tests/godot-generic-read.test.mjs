@@ -7,7 +7,7 @@ const {inspectDraft,draftPackages}=require(path.join(out,'domain.cjs'));
 const context={projectId:'project-a',sessionId:'session-a',turnId:'turn-a'};
 const bytes=Buffer.from('extends Node3D\n'),sha256=createHash('sha256').update(bytes).digest('hex');
 const legacy={format:'craftmine.scene/3',title:'Legacy',night:false,objects:[],systems:[],behaviors:[]};
-function fixture({baseId='creation-sandbox',legacyWorld=false,missing=false,indexError,worldMismatch=false,sourceMismatch=false,discussionOnly=false}={}){
+function fixture({baseId='creation-sandbox',legacyWorld=false,missing=false,indexError,worldMismatch=false,sourceMismatch=false,discussionOnly=false,sceneObjectTarget}={}){
  const scene=legacyWorld?structuredClone(legacy):{format:'craftmine.godot-scene/1',baseId};
  const workspace={worldId:'world-a',task:{binding:{...context,taskId:'task-a',baseBuild:'build-a'},revision:9,status:'active',draft:{scene}}};
  const record={id:worldMismatch?'other-world':'world-a',runtimeKind:legacyWorld?'legacy':'godot',baseId,world:{build:{id:'build-a',scene},extensions:[]}};
@@ -20,7 +20,7 @@ function fixture({baseId='creation-sandbox',legacyWorld=false,missing=false,inde
   }
   throw Error('Unexpected method '+method);
  }};
- const toolset=createWorldTools(core,async()=>({activeWorldId:'world-a',discussionOnly}),()=>false,undefined,undefined,{creationTarget:async()=>({format:'craftmine.creation-target/1',worldId:'world-a',snapshotId:'capture-a'})});
+ const toolset=createWorldTools(core,async()=>({activeWorldId:'world-a',discussionOnly}),()=>false,undefined,undefined,{creationTarget:async()=>({format:'craftmine.creation-target/1',worldId:'world-a',snapshotId:'capture-a',...(sceneObjectTarget?{sceneObjectTarget}:{})})});
  return {workspace,record,calls,invoke:(name,args={})=>toolset.find(tool=>tool.name===name).execute(args,{...context,toolCallId:'read-a',executionId:'execution-a'})};
 }
 test('the actual old domain reproduces both Godot wrong-format failures',()=>{const f=fixture();assert.throws(()=>inspectDraft(f.workspace,{}),/map|undefined/);assert.throws(()=>draftPackages(f.workspace.task.draft,f.record.world),/objects|iterable/);});
@@ -34,6 +34,14 @@ test('generic capability sections return actual Godot tools and never voxel/Java
  for(const section of ['objects','systems','behaviors','catalog']){
   const f=fixture(),result=await f.invoke('capabilities_read',{section});const body=JSON.parse(result.text);assert.equal(body.runtimeKind,'godot');assert.equal(body.project.revision,7);assert.ok(body.tools.some(t=>t.name==='godot_project_patch'));assert.ok(body.tools.some(t=>t.name==='creation_operation'));assert.ok(!body.tools.some(t=>t.name==='workspace_patch'));assert.ok(!Object.hasOwn(body,'groundY'));assert.ok(!Object.hasOwn(body,'schema'));assert.match(body.guidance.join(' '),/GDScript/);assert.equal(result.next,null);
  }
+});
+test('generic source inspection exposes frozen scene context without widening creation operations',async()=>{
+ const sceneObjectTarget={objectId:'42',nodePath:'Actor/Body',identityScope:'runtime-instance',sourceUse:'context-only'};
+ const read=await fixture({sceneObjectTarget}).invoke('project_inspect');
+ assert.deepEqual(read.sceneObjectTarget,sceneObjectTarget);
+ assert.equal(read.sceneObjectContext.use,'ordinary-source-editing-only');
+ assert.equal(read.creationTarget.snapshotId,'capture-a');
+ assert.equal(read.sceneObjectContext.current,null);
 });
 test('capability text pagination preserves exact complete Unicode data',async()=>{const f=fixture(),whole=await f.invoke('capabilities_read',{section:'behaviors'});let text='',start=0;do{const part=await f.invoke('capabilities_read',{section:'behaviors',start,limit:97});text+=part.text;start=part.next;}while(start!==null);assert.equal(text,whole.text);});
 test('missing Godot project is explicit and never manufactures an empty valid world',async()=>{const f=fixture({missing:true});const read=await f.invoke('project_inspect');assert.equal(read.project.available,false);assert.equal(read.project.reason,'GODOT_PROJECT_NOT_FOUND');assert.ok(read.nextTools.includes('godot_project_create'));assert.ok(!Object.hasOwn(read.project,'files'));const caps=JSON.parse((await f.invoke('capabilities_read')).text);assert.equal(caps.project.available,false);});

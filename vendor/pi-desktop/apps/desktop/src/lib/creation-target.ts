@@ -16,6 +16,7 @@ export type CreationTargetCapture = {
   reason: string | null;
   source?: 'ray' | 'recent';
   recent?: Array<{entityId:string;entityName:string;entityKind:string;operationId:string;available:boolean;reason?:string}>;
+  sceneObjectTarget?:{nodePath:string;nodeClass:string};
 };
 export type CreationRequestContext = { creationTarget: { captureId: string } };
 const record = (value: unknown): Record<string, unknown> => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -25,6 +26,8 @@ const vector = (value: unknown): [number, number, number] | null => Array.isArra
 /** Display only host-observed valid entity/ground hits; a boundary is not a placement target. */
 export function parseCreationTarget(value: unknown): CreationTargetCapture {
   const raw = record(value), hit = record(raw.target);
+  const scene=record(raw.sceneObjectTarget);
+  const sceneObjectTarget=typeof scene.nodePath==='string'&&scene.nodePath.length>0&&scene.nodePath.length<=512&&!/[\x00-\x1f]/.test(scene.nodePath)&&id(scene.nodeClass)&&scene.identityScope==='runtime-instance'&&scene.sourceUse==='context-only'?{nodePath:scene.nodePath,nodeClass:scene.nodeClass as string}:undefined;
   const position = vector(hit.position), normal = vector(hit.normal);
   const entityId = id(hit.entityId);
   const validSurface = hit.surface === "ground" || (hit.surface === "entity" && entityId !== null);
@@ -37,7 +40,7 @@ export function parseCreationTarget(value: unknown): CreationTargetCapture {
     return id(item.entityId)&&id(item.entityName)&&id(item.entityKind)&&id(item.operationId)&&typeof item.available==='boolean'
       ?[{entityId:item.entityId as string,entityName:item.entityName as string,entityKind:item.entityKind as string,operationId:item.operationId as string,available:item.available,...(id(item.reason)?{reason:item.reason as string}:{})}]:[];
   }):[];
-  return { captureId: target || raw.target === null ? id(raw.captureId) : null, worldId: id(raw.worldId), target, reason: id(raw.reason), source:raw.source==='recent'?'recent':'ray',recent };
+  return { captureId: target || raw.target === null ? id(raw.captureId) : null, worldId: id(raw.worldId), target:sceneObjectTarget?null:target, reason: id(raw.reason), source:raw.source==='recent'?'recent':'ray',recent,...(sceneObjectTarget?{sceneObjectTarget}:{}) };
 }
 
 /** Copy the opaque host capture now. Queuing or later camera movement cannot alter it. */

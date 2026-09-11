@@ -1130,6 +1130,7 @@ const creationTargets=createCreationTargetService({
   directory:join(dataDir,"creation-context"),selection:godotSelection,instance:()=>godotWorld.instance,
   descriptor:worldId=>plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),
   sample:createCraftmineLiveSampler(()=>godotWorld),
+  source:worldId=>plugins.requestCraftmineHost("godotRuntime.exportSource",{worldId}),
   journal:async capture=>(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal,
 });
 const migrateCreationSource=createCreationSourceMigration({
