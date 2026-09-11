@@ -1,11 +1,11 @@
-# PET01 检查点派生 A05 第二次尝试：模型驱动
+# 第二次 PET01 结果的检查点派生 A05：模型驱动
 
 本轮交付独立驱动与离线验证。没有启动产品或调用模型。
 
 ## 试验定义
 
 - 来源是已经成功恢复的 PET01 采用检查点。
-- 本轮是第二次基于该检查点的主线 A05 尝试，标记 `trialKind: checkpoint-derived`、`derivedAttempt: 2`。
+- 本轮是基于第二次 PET01 结果的新 A05 尝试，标记 `trialKind: checkpoint-derived`、`attemptWithinRestoredProfile: 1`；没有虚构此前 A05 尝试。
 - 唯一模型输入为：**我希望狗换成白色博美犬。**
 - 愿望 ID 固定为 `PET_CHECKPOINT_A05`。不接受外部提示词、文件名或实现步骤。
 - 这不是独立清单 PET02「叫它团子」，也不代表完整主线通过。原失败／耗尽试验报告不改写。

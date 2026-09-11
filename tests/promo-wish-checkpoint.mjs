@@ -65,6 +65,11 @@ try{
   const archivePath=path.join(out,'portable-backup.craftmine');fs.copyFileSync(archive.path,archivePath,fs.constants.COPYFILE_EXCL);
   report.archive=await archiveProof(archivePath);assert.equal(report.archive.sha256,archive.sha256);
   await start({out,profile,token});
+  // Persist first-run schema normalization through the normal close flow.
+  // Reopening must still pass the genuine unsaved-progress check.
+  await controller.stop();controller=null;
+  report.defaultWorldPreparation='normal first-run close and reopen before inspection';
+  await start({out,profile,token});
   const initial=await controller.nav('world.list');report.replacedSelection=initial.activeWorldId;
   const grant=await controller.panel('backup.inspect',{worldId:initial.activeWorldId});
   assert.equal(grant.status,'ready');assert.equal(grant.bodiesVerified,true);assert.equal(grant.archiveHash,exported.archiveHash);

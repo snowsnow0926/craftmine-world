@@ -40,8 +40,8 @@ export function inspectCheckpointLive(file,env=process.env){
  return {restored,original,out,profile,token:marker.token,model,proofs,budget,output};
 }
 export function checkpointA05Plan(context){
- const plan={trialKind:'checkpoint-derived',checkpointBase:'PET01',mainlineStep:'A05',derivedAttempt:2,wish:CHECKPOINT_A05,
-  note:'第二次基于 PET01 已采用检查点的主线 A05 尝试；不是独立清单 PET02（叫它团子），也不是完整主线通过。',
+ const plan={trialKind:'checkpoint-derived',checkpointBase:'PET01',mainlineStep:'A05',attemptWithinRestoredProfile:1,wish:CHECKPOINT_A05,
+  note:'基于 PET01 已采用检查点的新 A05 尝试；不是独立清单 PET02（叫它团子），也不是完整主线通过。',
   worldId:context.restored.checkpoint.worldId,originalBuild:context.restored.checkpoint.buildId,model:context.model,thinking:'high',maxRequests:10,maxMinutes:10};
  return {...plan,planSha256:createHash('sha256').update(JSON.stringify(plan)).digest('hex')};
 }

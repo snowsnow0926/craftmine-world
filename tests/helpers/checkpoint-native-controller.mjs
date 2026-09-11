@@ -20,7 +20,7 @@ export function checkpointEnvironment(client,paths){
 }
 export function createCheckpointController({client,out,profile,token,record}){
  const pending=new Map();let child,ready=false,ended=true,exited,exitReport;
- const launch={stdoutBytes:0,stderrBytes:0};record.launch=launch;
+ const launch={stdoutBytes:0,stderrBytes:0};record.launch=launch;(record.launches??=[]).push(launch);
  const rejectPending=error=>{for(const call of pending.values()){clearTimeout(call.timer);call.reject(error);}pending.clear();};
  function rpc(method,fields={},timeoutMs=120000){
   validateCheckpointCall(method,fields);if(ended)return Promise.reject(Error('CHECKPOINT_CLIENT_EXITED'));
@@ -44,12 +44,13 @@ export function createCheckpointController({client,out,profile,token,record}){
    const call=pending.get(message.id);if(call){clearTimeout(call.timer);pending.delete(message.id);message.error?call.reject(Error(message.error)):call.resolve(message.result);}});
   await until(async()=>ready,Boolean,'controller');assertIsolation(await until(()=>rpc('status'),value=>value.windows?.length,'window'));
   await until(()=>rpc('primaryMode'),value=>value.entry,'entry');await rpc('primaryMode',{payload:{action:'create'}});
+  await until(()=>rpc('worldNavigationReady'),value=>value.ready&&value.worldId,'retained world view');
  }
  async function stop(){
   if(!child)return;
   if(!ended){try{await rpc('quit',{},5000);}catch{}await Promise.race([exited,delay(15000)]);
    if(!ended){launch.forcedStop=true;child.kill();await Promise.race([exited,delay(5000)]);}}
-  record.audit=exitReport;rejectPending(Error('CHECKPOINT_CLOSED'));
+  record.audit=exitReport;launch.audit=exitReport;rejectPending(Error('CHECKPOINT_CLOSED'));
   assert.ok(!launch.forcedStop,'CHECKPOINT_SHUTDOWN_TIMEOUT');assert.deepEqual(exitReport?.violations,[]);assert.deepEqual(exitReport?.pageErrors,[]);assert.deepEqual(exitReport?.shutdownFailures,[]);client.assertUnchanged();
  }
  return {start,stop,rpc,until,nav:(channel,payload={})=>rpc('worldNavigation',{channel,payload}),panel:(channel,payload={})=>rpc('worldPanel',{channel,payload},900000)};

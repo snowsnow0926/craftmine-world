@@ -1,4 +1,4 @@
-// A second PET01-checkpoint-derived A05 attempt, one exact wish, never a retry.
+// One PET01-checkpoint-derived A05 wish; previous trials remain unchanged.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';

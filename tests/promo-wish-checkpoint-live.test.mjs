@@ -21,7 +21,7 @@ test('only fixed A05 and explicit live flag are permitted',()=>{
  assert.deepEqual(CHECKPOINT_A05,{id:'PET_CHECKPOINT_A05',text:'我希望狗换成白色博美犬。'});
  const f=fixture();assert.equal(parseCheckpointLiveArgs([f.file]).live,false);assert.equal(parseCheckpointLiveArgs([f.file,'--live']).live,true);
  for(const args of [[f.file,'--wish','answer'],[f.file,'--live','--retry'],['relative'],[f.file,'--initialize']])assert.throws(()=>parseCheckpointLiveArgs(args));
- const plan=checkpointA05Plan(inspectCheckpointLive(f.file,{}));assert.equal(plan.derivedAttempt,2);assert.equal(plan.mainlineStep,'A05');assert.equal(plan.checkpointBase,'PET01');assert.equal(plan.maxRequests,10);assert.equal(plan.thinking,'high');assert.match(plan.note,/不是独立清单 PET02/);
+ const plan=checkpointA05Plan(inspectCheckpointLive(f.file,{}));assert.equal(plan.attemptWithinRestoredProfile,1);assert.equal(plan.mainlineStep,'A05');assert.equal(plan.checkpointBase,'PET01');assert.equal(plan.maxRequests,10);assert.equal(plan.thinking,'high');assert.match(plan.note,/不是独立清单 PET02/);
 });
 test('successful restore must preserve isolation, proof hashes and zero reservations',()=>{
  const f=fixture();assert.equal(inspectCheckpointLive(f.file,{}).budget.reserved,0);

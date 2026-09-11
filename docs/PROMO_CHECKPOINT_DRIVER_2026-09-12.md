@@ -49,3 +49,12 @@ node tests/promo-wish-checkpoint.mjs restore "D:\...\checkpoint-export-root\repo
 - 未运行真实 export/restore。真实旧包导出、新包恢复、重建及源／进度比对由总控运行上述两阶段验证。
 
 测试命令：`node --test tests/promo-wish-checkpoint.test.mjs`。
+# 总控实机复核补充
+
+导出已在原实际宠物档案完成，原报告、预算与 marker 未变。恢复验证发现
+两个产品问题：旧 legacy 快照键序被误判为未保存，以及激活后的历史
+Godot PCK 被错误套用新增文件清单。失败档案和激活阶段证据均保留。
+
+驱动现在等待实际世界视图可用；新 profile 经正常关闭保存首次运行的
+进度格式，再重开检查备份。没有通过改写快照、跳过未保存检查或重置
+账本来绕开问题。准备／恢复的每次启动分别保留审计结果。
