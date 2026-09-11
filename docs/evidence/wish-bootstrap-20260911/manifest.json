@@ -1,0 +1,82 @@
+{
+  "format": "craftmine.wish-bootstrap-evidence/1",
+  "baseline": "38f22b3fe361c4f21c8d980cc07baa8d3de0f038",
+  "scope": "pure Node helpers and offline CLI only; retrieved-file subset, not a full repository checkout",
+  "environment": {
+    "os": "Linux",
+    "node": "v22.16.0"
+  },
+  "before": {
+    "tests": 6,
+    "passed": 2,
+    "failed": 4,
+    "command": "node --test tests/creation-model-metrics.test.mjs",
+    "helperBlob": "e78a3077041004c52990377853f25cdfee173843"
+  },
+  "after": {
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "skipped": 0,
+    "command": "npm run test:wish-evaluation"
+  },
+  "liveModelRequests": 0,
+  "windowsAcceptance": "NOT_RUN",
+  "fullRepositoryTests": "NOT_RUN",
+  "files": [
+    {
+      "path": "package.json",
+      "bytes": 3088,
+      "sha256": "67ddaa2ff4b3059998d0c92ebbf9f5a99eb0a8c288d4601a99d843f664bc2e61",
+      "gitBlobSha1": "2462fd7ecc7318049c2fa86287875c329c924b8c"
+    },
+    {
+      "path": "tests/helpers/creation-model-evaluation.mjs",
+      "bytes": 10835,
+      "sha256": "9684d2e83a1f6d4d5b4adf1f4e74b459f29086c9c0df4372cf8cd49015b14b28",
+      "gitBlobSha1": "14c9b2d9572fc28db06d88cceb88358cb2e9f5c8"
+    },
+    {
+      "path": "tests/helpers/promo-wish-plan.mjs",
+      "bytes": 9160,
+      "sha256": "5ccd8028cd0fec44c990788c4a0c2f9ca7dac9328d409793fdc7ddbc97bcec95",
+      "gitBlobSha1": "e63f525ee146c9f51782d897892455c439a539c4"
+    },
+    {
+      "path": "scripts/prepare-promo-wishes.mjs",
+      "bytes": 2710,
+      "sha256": "f3961bcc2ae7babac4a46ca64db22c985a0ccba6b38b9c6fade17f96c2468408",
+      "gitBlobSha1": "934fbb766b7987c5f8497e5ed01b26aad4bffd3b"
+    },
+    {
+      "path": "tests/creation-model-metrics.test.mjs",
+      "bytes": 2397,
+      "sha256": "f743a2914dc048a082aaad10ae2a7879ba6e86373332ce127f0a4b14ab33291b",
+      "gitBlobSha1": "bd53dd0899349f0bca4a3a5e6db5789b06225d59"
+    },
+    {
+      "path": "tests/promo-wish-plan.test.mjs",
+      "bytes": 5013,
+      "sha256": "b391037c8a745e51faa9ee064fa79a0cb2f0675f6758d342cb5cee91fadd44e7",
+      "gitBlobSha1": "e1b1a50325793e7d381d0c17f1bb8c140571b01f"
+    },
+    {
+      "path": "tests/creation-model-evaluation.test.mjs",
+      "bytes": 5637,
+      "sha256": "f0fbd38f14f80b3c6558c239f99524860ac554c2646d7699daaae26ed3eec7c9",
+      "gitBlobSha1": "4c6c4ce4658d9adeabb1cb4ab6938dfca260c96f"
+    },
+    {
+      "path": "docs/evidence/wish-bootstrap-20260911/metrics-before.tap",
+      "bytes": 4305,
+      "sha256": "24f474fac6ec7acd21995fd1bf757c2abf3b1f788105f9f88498d510e5e301db",
+      "gitBlobSha1": "e4f36b845987f2386cca831a9427ddc8749a4e57"
+    },
+    {
+      "path": "docs/evidence/wish-bootstrap-20260911/targeted-after.tap",
+      "bytes": 5404,
+      "sha256": "aebab80f9403c3b8fefbbd7cc1ac49c01d3da92a6884ab80e8b42c836474271f",
+      "gitBlobSha1": "c575e52023eb61991035eb177e9f96c0db5e7da7"
+    }
+  ]
+}
