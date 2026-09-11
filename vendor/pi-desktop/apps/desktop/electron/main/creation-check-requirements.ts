@@ -83,7 +83,7 @@ export function creationEntitiesMatch(r:CreationRequirement,entities:CreationEnt
 export function assertCreationJobRequirements(capture:{creationRequirements?:FrozenCreationRequirement},job:any):void {
  const frozen=capture.creationRequirements;
  if(frozen?.status!=='verifiable')throw Error('CREATION_REQUIREMENTS_NEED_REVIEW');
- if(job?.checkRequirementsHash!==creationRequirementsHash(frozen.requirements)||!job.checkRequirements?.creation||creationRequirementsHash(job.checkRequirements.creation)!==creationRequirementsHash(frozen.requirements))throw Error(`CREATION_REQUIREMENTS_NOT_BOUND:${creationRequirementsHash(frozen.requirements)}:${job?.checkRequirementsHash??'missing'}:${job?.checkRequirements?.creation?creationRequirementsHash(job.checkRequirements.creation):'missing'}`);
+ if(job?.checkRequirementsHash!==creationRequirementsHash(frozen.requirements)||!job.checkRequirements?.creation||creationRequirementsHash(job.checkRequirements.creation)!==creationRequirementsHash(frozen.requirements))throw Error('CREATION_REQUIREMENTS_NOT_BOUND');
 }
 
 // The caller must obtain this journal from the formal build before the edit

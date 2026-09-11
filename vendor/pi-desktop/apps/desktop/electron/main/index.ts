@@ -2666,7 +2666,7 @@ const craftmineGateway = new CraftmineTurnGateway(
       return craftmineMaintenanceContexts.request(binding, operation, input,
         (name, payload) => plugins.requestCraftmineHost(name, payload));
     }
-    if(operation==="budget.reserve")reserveCreationEvaluationRequest(String(input.requestId??""));
+    if(operation==="budget.reserve")await reserveCreationEvaluationRequest(String(input.requestId??""),context);
     if (operation === "task.context") {
       if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
       const detail = await host.call<{ session?: any }>("session.get", { id: binding.sessionId });
