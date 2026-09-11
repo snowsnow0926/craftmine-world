@@ -173,7 +173,6 @@ function parseScript(text){
   let pendingExports=[];
   lines.forEach((line,index)=>{
     if(!maskedLines[index]?.trim())return;
-    if(!maskedLines[index]?.trim())return;
     const trimmed=line.trim();
     const at=index+1;
     let match;
