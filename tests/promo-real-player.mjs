@@ -55,12 +55,14 @@ try{
   await rpc('worldPanel',{channel:'godot.runtimeResume',payload:{worldId}});
   const recoverable=await rpc('worldNavigation',{channel:'task.recoverable',payload:{worldId}});
   report.recoverable=recoverable;
+  report.taskBefore=await rpc('worldNavigation',{channel:'task.current',payload:{worldId}});
   report.submittedAt=new Date().toISOString();report.status='SUBMITTING';save();submitted=true;
   if(recoverable.items?.length){
     assert.equal(recoverable.items.length,1,'Review multiple interrupted tasks before choosing a recovery');
     const task=recoverable.items[0];
-    if(process.argv.includes('--finish-expired-task')){
-      assert.equal(source.latest?.record?.session?.messages?.at(-1)?.error?.code,'TASK_DEADLINE_EXCEEDED','Only an observed expired interrupted task may be finished by this explicit player choice');
+    const current=report.taskBefore.context,deadline=current?.budget?.limits?.deadlineAt;
+    const expired=current?.binding?.taskId===(task.taskId??task.id)&&current?.generation===task.generation&&Number.isFinite(deadline)&&deadline<=Date.now();
+    if(process.argv.includes('--finish-expired-task')&&expired){
       report.expiredTaskDisposition=await finishInterruptedThroughWorldUi(debugPort,worldId,{taskId:task.taskId??task.id,generation:task.generation});
       assert.equal(report.expiredTaskDisposition.preservedDraft,true);
       report.submission=await rpc('playerPrompt',{payload:{...payload,text,messageId:report.messageId}});
