@@ -24,7 +24,8 @@ function directory(value){
  }
  return resolved;
 }
-const out=fs.mkdtempSync(path.join(directory(parent),'creation-continuity-')),raw=path.join(out,'raw');fs.mkdirSync(raw);
+// Product headless acceptance also requires the immediate parent to be named test-results.
+const out=fs.mkdtempSync(path.join(directory(parent),'creation-continuity-')),raw=path.join(out,'raw','test-results');fs.mkdirSync(raw,{recursive:true});
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const git=argv=>execFileSync('git',argv,{cwd:root,windowsHide:true,encoding:'utf8',maxBuffer:64*1024*1024});
 const identity=()=>({commit:git(['rev-parse','HEAD']).trim(),trackedDiffSha256:digest(git(['diff','--binary','HEAD'])),dirty:!!git(['status','--porcelain','--untracked-files=no']).trim()});
