@@ -1,0 +1,952 @@
+{
+  "format": "craftmine.creation-next-built-source/1",
+  "sourceCommit": "fd96e9520918ee22f2f3fef0b26e51a7bf0ae609",
+  "coreBuiltAtCommit": "0cf946fb",
+  "coreInputsEquivalent": true,
+  "desktopBuiltAtCommit": "a0ac1bdb",
+  "desktopInputsEquivalent": true,
+  "runtimeResources": "832ac71076aa48d787c30e8a55aecffd7aa69390",
+  "physicalInputUsed": false,
+  "files": [
+    {
+      "path": "vendor/pi-desktop/target/release/craftmine-core.exe",
+      "bytes": 8094208,
+      "sha256": "e095121b8f799c2e55423f40ff4bdf864c626a9c2f7b53842a64754aa0359688"
+    },
+    {
+      "path": "vendor/pi-desktop/target/release/pi-desktop-host-core.exe",
+      "bytes": 9189888,
+      "sha256": "f71ad5f7401cb83b39df215b679b69db11754e7088ed4d09d216c2814f62c4ab"
+    },
+    {
+      "path": "vendor/pi-desktop/packages/agent-runtime/dist-bundle/sidecar.js",
+      "bytes": 5207510,
+      "sha256": "c3e34c5bee3719638d58cee07d49e9f0dfe1ae40a41e279d184b4bb91cb401ae"
+    },
+    {
+      "path": "desktop/build/runtime-resources/runtime-resources.json",
+      "bytes": 216129,
+      "sha256": "a1dece97bdbd4a6adc0eca22b7ffbc7929e877c7d135a7800b4cce539b19c829"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/asset-preview-worker.js",
+      "bytes": 546,
+      "sha256": "d350d4bda4552f1dbca86872b858f637a41e72bb385b53f807d2ea25a05ed44e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/anthropic-messages-M9EeCnIk.js",
+      "bytes": 497462,
+      "sha256": "260b92a34cac4696138da66af880b183a719ff8fa38e99cf88eb55475957802b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/azure-openai-responses-zXXpncG-.js",
+      "bytes": 14462,
+      "sha256": "62cd7ec909846843de2b82d29009b57633aff79d1a0eff8208d022ee7893d2c8"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/client-BjqfcAKe.js",
+      "bytes": 320470,
+      "sha256": "52c7a3f3207e607bb26eff4f846b241ec3fd48e923c7c0d2a90b140900d3634b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/deferred-tools-DVRLNyoc.js",
+      "bytes": 1257,
+      "sha256": "52ab2aba8d5343172f764a4de4e2ad74b0d31a14b858e3b0a80a771db5f73eb6"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/error-body-DKhVTZMw.js",
+      "bytes": 2807,
+      "sha256": "08f7ba708929ac1f8136b72a01bbe9cad0da07ba296e0b7053c30f48503f1c57"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/google-generative-ai-BltiO52G.js",
+      "bytes": 15208,
+      "sha256": "9369129602a40115890aa350b68187db81c1488856663d7763c8aca06441ecc1"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/google-shared-C1s_4_2c.js",
+      "bytes": 1261076,
+      "sha256": "674b8e00a1a4a336e2ce7c085bb12e8bab45622bc2eb0189b0a5f05a15086b83"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/google-vertex-duCeYHxs.js",
+      "bytes": 17242,
+      "sha256": "ccad32ade076c1664adedaf49a64c9a0c744607d03aced2d903c4b5992e5da6b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/hash-RwksDas4.js",
+      "bytes": 496,
+      "sha256": "a1e540d6b1d0479fa6b12c10166f3b94cd3d6ee5122352314e63780093acaf55"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/headers-CHRjKt3O.js",
+      "bytes": 494,
+      "sha256": "6a1eb2fad04ba4a933e502612995d4414955a83769f27677fc8dc8399d01eabb"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/index-KgTK8x7A.js",
+      "bytes": 39547,
+      "sha256": "b8bb0c78f012f31c4924810f713649f1fe86dd64e35577d5bc44c2bd5fbbf577"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/index-N4H3gfhu.js",
+      "bytes": 241206,
+      "sha256": "731e4c82d22b1ffa2c10d65e150f4f01ef125080b4ce2aacc23d5df1cdf279ab"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/json-parse-6hu4-sZc.js",
+      "bytes": 11550,
+      "sha256": "7e3de77d4bbc9b4eab97cb48dfc7d627628268656f04239fa9ab4d841d8fcf11"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/mistral-conversations-DtePfF7x.js",
+      "bytes": 26160,
+      "sha256": "1336466fd4c5e29fbbd22404c34e297a6f91207d954a712e2af2ef9523ae2dcd"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/multipart-parser-BQvOYo6S.js",
+      "bytes": 10663,
+      "sha256": "f2270863e386c39830256159abf3d6dbfc43fa2f7137c24cc351ca92f1011049"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/node-BFJ9yMm_.js",
+      "bytes": 344,
+      "sha256": "40828cffa2af22a2e673a43fe328f10b99b171101ddb5c231173356064b4304b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/node-WH5Kg3Wj.js",
+      "bytes": 87020,
+      "sha256": "bb33241b658e41e5156a8b2c693f3c789ca92df794d0a7138751dbed1a8a4b0f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/openai-codex-responses-D903COHA.js",
+      "bytes": 51792,
+      "sha256": "75cb69c1cec4d0cfbb5d3ab427973731ccf4e5b7bb3b686edeff92f43d29e580"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/openai-completions-DTydUuuY.js",
+      "bytes": 49334,
+      "sha256": "1745501aec04bd69f37a164a59b5d21cc9ed83be5dff7321272c3f8476b55c33"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/openai-prompt-cache-COP8flKD.js",
+      "bytes": 354,
+      "sha256": "52b79f3d2c9a07637e63b59497c21501d35792ac3805b4ae46dd1e497faea45e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/openai-responses-CGqnbP90.js",
+      "bytes": 11872,
+      "sha256": "b9fcadb4c2ac7580c0f14c34a8b3b9570f8b7af8359c214aa78b48ee8bdbe746"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/openai-responses-shared-DB1n-2F9.js",
+      "bytes": 24644,
+      "sha256": "b499485fefcbf99e220ea557f024c19bb9d2e32853e1828c3e617d3604f67325"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/pi-messages-B2sDWVx-.js",
+      "bytes": 10514,
+      "sha256": "ab618e9206443f478ce7ac675b474fcd7456f5ba6b6efecad471b861ea58cf4b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/preview-service-BEQpGqMs.js",
+      "bytes": 104064,
+      "sha256": "cedd0f39ad323736df20e2b2baab723b4c8042c3ca25c6b4f17a2ee1d7407c69"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/provider-retry-CLODmUJt.js",
+      "bytes": 3055,
+      "sha256": "7a4c43cd0e4556d049f551c44bf62d0b6f07c008bfad8c6a7d86f30feecf7cfd"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/chunks/transform-messages-BZ7sru6h.js",
+      "bytes": 20924,
+      "sha256": "d0a40614db9a63fee490cc1e50ad23af082f68b35fd61eebbaf5fb5cf245e2bc"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/index.js",
+      "bytes": 3577643,
+      "sha256": "40afa55d29444593f59def499a5b6efa742c77debc65df0089f6b8f9aa0c3764"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/plugin-host-process.js",
+      "bytes": 16470,
+      "sha256": "4022f718d8591080f3d06638b4637afa0db0eda335b1f4a49d0927c634972bc4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/preload/craftmine-headless.cjs",
+      "bytes": 2075,
+      "sha256": "4f8db2874bf597f7cee0862126311b395e1ead496dcbbff741656063dd44f489"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/preload/godot-check.cjs",
+      "bytes": 4178,
+      "sha256": "f52ccb9cad227e6465f1b970ae4f7a341600507e63bb09ac3c4cf4357e19a432"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/preload/godot-world.cjs",
+      "bytes": 7886,
+      "sha256": "89c543c76cd6d6fd576fcfe6b91bdf0f97ece52d2740113775b05559987cfdce"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/preload/index.cjs",
+      "bytes": 19566,
+      "sha256": "70eb3458368239dee6b8374320ac749cf904236ed3908a0bb3ecce0b63a0e54d"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/preload/plugin-panel.js",
+      "bytes": 27130,
+      "sha256": "f3ed83e834b609630ab91a4bb3ca12af795d7682947335c17d5f8debba6026e4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/abnfDiagram-N423BO3Z-C1lDfFU8.js",
+      "bytes": 1841,
+      "sha256": "62019ef0aec3f9974a87a91ac2bf20abb62061ea8236b962f39c329ae0006123"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/arc-lQAWV3oN.js",
+      "bytes": 3426,
+      "sha256": "51d90ae13ae96ea2d7dd5daa041cecfa151c1ae2d4d7bf24a7b17c91ec3cceae"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/architectureDiagram-T3A2C74G-1Lfb2CKl.js",
+      "bytes": 151858,
+      "sha256": "11dc83c283a9860cd04688432d2c0a9f240e76e1ef776c4794eda305f10c8ac6"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/astro-BrJk1R9x.js",
+      "bytes": 24013,
+      "sha256": "a727c9f8583e565cdc3d93c765f62c496a54e59ec5fbc8e6c1960ba98919b727"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/bat-CickPsom.js",
+      "bytes": 12894,
+      "sha256": "0bd1f69ed1594d1e3832ca1d1108c52060f732c435e5cd2f10a1503bebeeca54"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/blockDiagram-VBNYF7ZC-CKR-O5dm.js",
+      "bytes": 73771,
+      "sha256": "99f331fd2fea6e8d83e822b4d60f877d7b4b28ace59d8db50ca1569679730052"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/c-BIGW1oBm.js",
+      "bytes": 72113,
+      "sha256": "d6cf83167ef5e3f3ce64b34b57082b5ad6824eba4970eae9a278ab9285c9f3d8"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/c4Diagram-5PPSVZJV-Bw__U9Ih.js",
+      "bytes": 69972,
+      "sha256": "6f98b645b4e7657914760e3739272be27e39ad774931b9174665df55abf478d3"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/channel-DNbQHMYQ.js",
+      "bytes": 113,
+      "sha256": "e91d8e1a465064b839cc1be20b8c45d32e5bb21a730b1a5b91f591953a4dd0b4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-2GRJ4B5K-DSCx3maH.js",
+      "bytes": 1883,
+      "sha256": "e07d27c77a798eace75985c510eecf044d85263e0164962c67655af27ff11d7e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-2Q5K7J3B-D11W_bRX.js",
+      "bytes": 195,
+      "sha256": "bcd290ba42d2a9976ed866fdb71b828ab3dfdce6605bd4d5cf537261df36d2e0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-5RXB4S5H-BBlNu4mp.js",
+      "bytes": 38159,
+      "sha256": "6ec5c622c8318b61a4716880a78c7d7caefe501e0ec2011a86ac7f08398636cc"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-5VM5RSS4-BlSYkrmn.js",
+      "bytes": 366,
+      "sha256": "8a5a4df178de542e64a95a870c4f6f0a95a29b2ff0c082da5886030e8f88a384"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-6Q2QTUOP-7lv92M0i.js",
+      "bytes": 15733,
+      "sha256": "db3c6cf0a4aeb191c3563c180359921c2a83028828b22a1d8d43f931e6e2911d"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-GF5L2VYU-DdGjM28d.js",
+      "bytes": 49210,
+      "sha256": "a50eae6da5eec53192f8b62bf510364656eea57e5de12637e762eaad025491df"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-JWPE2WC7-DmyD6fxZ.js",
+      "bytes": 227,
+      "sha256": "d3f735fa03346fa529d93f6f1624b2b0dbf65a7b7ca2d3951a699d4ecb922d6f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-KBJHAD2P-DpLrTggh.js",
+      "bytes": 506,
+      "sha256": "1d8153715b002b9f8901cb3162c8fc88cf68e1ab203904abd6caa4dfb2f33fdd"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-RYQCIY6F-CpOijPy0.js",
+      "bytes": 7081,
+      "sha256": "dbae71f8e1db26706649592c3bf4a9e2f0f1510d3afbe3d8b1981d5edb2e315b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/chunk-XXDRQBXY-fm4jPtZT.js",
+      "bytes": 235,
+      "sha256": "e22a8710d046765202fa914340bcb380e4a1aed50da4beac2f66bea336a7e8d4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/classDiagram-JCYQIIEL-Cyg-WrR7.js",
+      "bytes": 499,
+      "sha256": "daae149e546581fd31baa0513799443297831b90e94fc9313e9884a7b634889c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/classDiagram-v2-OCEON4UE-Cyg-WrR7.js",
+      "bytes": 499,
+      "sha256": "daae149e546581fd31baa0513799443297831b90e94fc9313e9884a7b634889c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/cose-bilkent-JH36ORCC-Dz5BjIIW.js",
+      "bytes": 81733,
+      "sha256": "61383d8caab16b03d7a622780bdc4c125671c0fa104eb6a5e6eacb150120d46e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/cpp-DddhVWhK.js",
+      "bytes": 796962,
+      "sha256": "b9dfa8023b6f306908141bf8b39b56f6ef9702fc17b9f9154836248444899256"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/csharp-DSvCPggb.js",
+      "bytes": 90189,
+      "sha256": "1ed6cae3a3f91c58b1ce9d8da2f95090c1804cd330b3ef813d35df14da2b88c6"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/css-CLj8gQPS.js",
+      "bytes": 49041,
+      "sha256": "2848016b846e4595ae4798cb70305f259eb0e8d297b0cc9fa4ac5b0b612a3166"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/cynefin-VYW2F7L2-BFF-MqQs.js",
+      "bytes": 687709,
+      "sha256": "030d8ecd460530680ca76ba71539c8be80044bddf8065f0f00638ad85400d37e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/cynefinDiagram-MW4NZA55-DwsZ7acD.js",
+      "bytes": 10129,
+      "sha256": "5b4d270b34d8ddd4747b0b0d2cf6828d85f494e4f16b8f3db6914e6c85b7753f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/cytoscape.esm-D3_iZ_3b.js",
+      "bytes": 442924,
+      "sha256": "abfdfba7922c9940a0f958746526d1a8e4f18435a5695c15aaf3f1328b0146cc"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/dagre-VZM6K2ZE-BOBxyBGp.js",
+      "bytes": 8599,
+      "sha256": "013882170c9e6dc845b583ae9d653712cd80048dc5fa4e04180d1f84560c33d0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/dart-bE4Kk8sk.js",
+      "bytes": 8623,
+      "sha256": "2cdb81143af7036eaaee976385babd4e4610838e94e72c95eea43825a6d8260d"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/defaultLocale-DX6XiGOO.js",
+      "bytes": 4688,
+      "sha256": "0cefbd76f932c4eea4758d28169802589b1ad15b46607253de4bd82328998ece"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/diagram-7IWD3JNH-Dx79i9JW.js",
+      "bytes": 8366,
+      "sha256": "888789e7b94583df5cf02e5ac1406cfe412fa7c81abc0f8481e8f172354b1a42"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/diagram-B4RE2ZJO-DOnSTVUl.js",
+      "bytes": 10748,
+      "sha256": "9cb6969e4c65052978f38960397eb5508d7990ddaeef0def49f17a6a62413c84"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/diagram-LBJQPF4R-D7KL0H3q.js",
+      "bytes": 4245,
+      "sha256": "5205c7addfc702ccb11789e1beb504bcf4315a26188168f161f0e103aa34383c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/diagram-Q27KOJAE-B0kpC9lF.js",
+      "bytes": 15987,
+      "sha256": "856cfdbe6a403ac3633add24141997edcc4ecc8c23374815c93edc2d44ba9b14"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/diagram-UB23O5K3-CQmA8W8H.js",
+      "bytes": 6111,
+      "sha256": "f804acf6103d3ae7e7f99856d566c6133d611227f12e119c07ca1acba08101f1"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/diff-D97Zzqfu.js",
+      "bytes": 2569,
+      "sha256": "071f6c7f36d51227bb0701147c7508f96a0f342ba5df808ed83a820ee486c17b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/docker-BcOcwvcX.js",
+      "bytes": 1741,
+      "sha256": "0995ae194f7a702d1572e90b064fd0b1ee0a8da03b8f587c12261c00306eb145"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/dotenv-Da5cRb03.js",
+      "bytes": 1422,
+      "sha256": "551287cfbe5723329a252cc084780c0511bcf7e9fc6370c241cc458fe2b7dc62"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ebnfDiagram-BXEA7PRR-DB0eprxg.js",
+      "bytes": 2037,
+      "sha256": "4e91db016a6246fdbe0eebf9610871110155833a29dac76673d2999102811b17"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/erDiagram-JOGREHBK-BNL82G1Q.js",
+      "bytes": 27128,
+      "sha256": "a8d516b0a526e38c0cdf66799ad71e5247c3913a618746b348774e49c9b52e56"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/flowDiagram-UKHOOZJN-BF35chQ6.js",
+      "bytes": 60743,
+      "sha256": "d737fc18efdd4223d2ad4b7a080dad3bc9448635371fa1e95e4622c6010f71a0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ganttDiagram-PKOTCBZU-DVMKO0xf.js",
+      "bytes": 69727,
+      "sha256": "9e4711aec0ee923ba5d27c9e007090649b09772e001ea86f357a04fca8ff06f2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/geist-Bj2R_7yk.woff2",
+      "bytes": 69652,
+      "sha256": "a369fcf5628ea2aa4e1b9e2ec6a5b3624e365bda588e1f0f2f12b564f728fbb8"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/gitGraphDiagram-DS77QQ5N-C_Ns50m2.js",
+      "bytes": 29449,
+      "sha256": "3c86458ab8f003e798c0a1b33af29ede551b11bf1ad4e8d5a1d722263d1f736f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/go-C27-OAKa.js",
+      "bytes": 46818,
+      "sha256": "46ec75c1455e917fb6e0b1b4aa0f0b15686386aba0c8e3ca3615984ae9be696e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/graph-DOmOIIwC.js",
+      "bytes": 23924,
+      "sha256": "97862517e3f2f5d40c14fb4b720dc42fd3219a1ab5abd1c560b0ebb06c82c4a2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/graphql-ChdNCCLP.js",
+      "bytes": 18002,
+      "sha256": "ce3367ffe23232e3d6d2ce940d1bb233839c0ebf02b9f12b151108c8bc2d4b58"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/groovy-gcz8RCvz.js",
+      "bytes": 19179,
+      "sha256": "a03245cec1dc1cbbf9d68a083dcc04b77cbf748ad95bdd0291bf7ae3555bc1b2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/hcl-BWvSN4gD.js",
+      "bytes": 10053,
+      "sha256": "2d11254542388410861c6a6a3c0f57deb9c218fdc2c1c5ffac901bdb876fe80a"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/home-mascot-dark-BS3m6HWm.gif",
+      "bytes": 36662,
+      "sha256": "eea58b44d54b5d781b6930c3aab3a5107ca3cfd908b8f8c0a78d76a981f6dc2c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/home-mascot-light-BkHnB2PE.gif",
+      "bytes": 14531,
+      "sha256": "51fa2d833b4af5f4da3f1780a1bdb4718e2dfdcbf6274bb26dd23004714cb959"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/home-mascot-still-dark-BxXodyPO.png",
+      "bytes": 16920,
+      "sha256": "f69cff86fc549e77a40e73f0c845c92c7be8efe3b1a4c27ab216274cf9789e72"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/home-mascot-still-light-P-vWa3Uv.png",
+      "bytes": 10140,
+      "sha256": "73f7e689cba3327ba954c4e0529cdb390f13a671451f8f0df32f5733358b4654"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/html-pp8916En.js",
+      "bytes": 57247,
+      "sha256": "ebe4cd4e01fd2bea09e62bc3e6117f98e0c50876ecc95aa142a3660f12a0bc53"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/index-Bhw2Ekef.js",
+      "bytes": 2519056,
+      "sha256": "58199d3550f8f5c52dfd7a9ec7cd9ce394560f2f2d04222e402fcc912fba9750"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/index-D9t8P1r_.css",
+      "bytes": 432611,
+      "sha256": "920d691f7f16a88ac0dd24873704a464c48c3658b83177000927edc699d167f6"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/infoDiagram-6WML65LV-BJjyBpd5.js",
+      "bytes": 614,
+      "sha256": "e3f124dfa4d115003c9c0712fcfab81211c06965e5a0329e127e0c2188e54a5b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ini-BEwlwnbL.js",
+      "bytes": 1525,
+      "sha256": "7830e62a2a96e22c418b5a1e52ba15545ece3c5684346dd50fc174a60b3c225f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/init-Gi6I4Gst.js",
+      "bytes": 147,
+      "sha256": "379fa880c14ad48f43b0c23ff56b30b2b808e8460fd9f9cad8bf7cb278c5b814"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/inter-DiVDrmQJ.woff2",
+      "bytes": 352240,
+      "sha256": "693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ishikawaDiagram-WSZJBQD7-D66530Gz.js",
+      "bytes": 17501,
+      "sha256": "319d612e37fcdf4b906b6237a7f7f468049b46f53b48143d19836d83a975c37a"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/java-CylS5w8V.js",
+      "bytes": 27219,
+      "sha256": "2bec4be5ba0dea3d8258669df1e6957e1ba2590a1ad56c6e103ea8c00baeba7e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/javascript-wDzz0qaB.js",
+      "bytes": 174827,
+      "sha256": "a4a56cc72c7d0f1ecbbeb1ba6bf5f532193c8d13fc3de19910f8d64c70aec4e9"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/journeyDiagram-NVQOT4AX-7X_oz6B4.js",
+      "bytes": 23602,
+      "sha256": "77e0672ee528805ab21405f824cb041908adeab890068fef772921ad0385a854"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/json-Cp-IABpG.js",
+      "bytes": 2824,
+      "sha256": "ca32840cab9c2eb61da2afd6581e7a22c9937229f6b1a47115eea432794e7740"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/jsonc-Des-eS-w.js",
+      "bytes": 3109,
+      "sha256": "1a23e00b91a35d38fba019125c68139ed9c6b9a0bdb953e9b21a709875f41125"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/jsonl-DcaNXYhu.js",
+      "bytes": 3011,
+      "sha256": "10ebbfda6fda38f977a98ef80441310d350b084c6c27c811296ddcf2d84ba3ea"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/jsx-g9-lgVsj.js",
+      "bytes": 177792,
+      "sha256": "abb8a7007d9a1f743c33283c233a509dc702eb618d1447d128b1330b73851bf2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/kanban-definition-27J2QSJJ-Bbx2rY0R.js",
+      "bytes": 20327,
+      "sha256": "76a364c006ee56baebb267583a46dd8ae4375b33378f6905d0f377bd316fc530"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_AMS-Regular-BQhdFMY1.woff2",
+      "bytes": 28076,
+      "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2",
+      "bytes": 6912,
+      "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2",
+      "bytes": 6908,
+      "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2",
+      "bytes": 11348,
+      "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2",
+      "bytes": 11316,
+      "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Main-Bold-Cx986IdX.woff2",
+      "bytes": 25324,
+      "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2",
+      "bytes": 16780,
+      "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Main-Italic-NWA7e6Wa.woff2",
+      "bytes": 16988,
+      "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Main-Regular-B22Nviop.woff2",
+      "bytes": 26272,
+      "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2",
+      "bytes": 16400,
+      "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Math-Italic-t53AETM-.woff2",
+      "bytes": 16440,
+      "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2",
+      "bytes": 12216,
+      "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2",
+      "bytes": 12028,
+      "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2",
+      "bytes": 10344,
+      "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Script-Regular-D3wIWfF6.woff2",
+      "bytes": 9644,
+      "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Size1-Regular-mCD8mA8B.woff2",
+      "bytes": 5468,
+      "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Size2-Regular-Dy4dx90m.woff2",
+      "bytes": 5208,
+      "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2",
+      "bytes": 4928,
+      "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2",
+      "bytes": 13568,
+      "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/kotlin-BdnUsdx6.js",
+      "bytes": 8785,
+      "sha256": "2a95758b9ec1532516fb3fa38cdd82fed5534d944ca791f327e624ec94e829ac"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/layout-D-LzfAck.js",
+      "bytes": 30997,
+      "sha256": "b598229dc48b69077ee6c3c2092783ebb4fee75cb8fe6a2e76167eccd874aa98"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/linear-H-dFBSwC.js",
+      "bytes": 5661,
+      "sha256": "dbbb0711560bf81d34d069b8b48afdf8212f408b040d0c3abe9433d54014918e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/lua-BaeVxFsk.js",
+      "bytes": 15535,
+      "sha256": "890724e2d1bc79e6f6498ce6cedd5a4bed0d9489121621c1946ef05e209f5623"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/lxgw-wenkai-DsLg8swP.woff2",
+      "bytes": 8016748,
+      "sha256": "dc19ced748a230d80baac62ce5b869389f1c8a8d1544f4ff71bc54609d64204d"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/make-CHLpvVh8.js",
+      "bytes": 8961,
+      "sha256": "50df72a259773a4ca73a97534238010cdef78d632729871d880b58fcc6d3112f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/map-DxJ2ADlA.js",
+      "bytes": 5070,
+      "sha256": "caf684b7a25676e3f43a63d91ea1ca8016cadb1ffa8aa59336f0bd692b9d130c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/markdown-Cvjx9yec.js",
+      "bytes": 59335,
+      "sha256": "ce6a8b1a6ed9b803b1847231214ba37621c2fa51611ec3037d38b561b360c278"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/mdx-Cmh6b_Ma.js",
+      "bytes": 136114,
+      "sha256": "c2c652334464f6085341dd1c46e32717e22556890fbc0d2651d9200f372069bb"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/mermaid-CQcHuHx7.js",
+      "bytes": 54814,
+      "sha256": "82f6b9a2ce0fadf1bf76a24d14b621412f28535d2786b60ea65cd656a1ef8576"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/mermaid.core-Ccmk79Vb.js",
+      "bytes": 593616,
+      "sha256": "998963d4f94bfd6c77d3f972b309360bfc26346cff011c09e4bb752c4917c6d0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/mindmap-definition-FAOFIHXS-CkNY7PCO.js",
+      "bytes": 23209,
+      "sha256": "caa9f38f9a7171eede2cd159e525f2bf05b1d8985995431cce131f4743f898cf"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/nginx-BpAMiNFr.js",
+      "bytes": 35374,
+      "sha256": "25b53af8ecce64bdefc084c8b7af5f27537ef7022618e8d90e4b20fd1ebe485f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/noto-sans-sc-DKKZoNvi.woff2",
+      "bytes": 7782072,
+      "sha256": "aef8c34277afad81ecd0227138a830263c0caea65b7aea66d1195395f097b55a"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/one-dark-pro-DVMEJ2y_.js",
+      "bytes": 33787,
+      "sha256": "7c55d00426abb85391f3432fd1282150e0bd7d54a8e5de7553a1d65c31459eb2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/one-light-C3Wv6jpd.js",
+      "bytes": 25300,
+      "sha256": "8f9b7f248dd34ae2acccfb35c8c095f0b581ea4e0d3351c7fe25721b914ae177"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ordinal-Cboi1Yqb.js",
+      "bytes": 1189,
+      "sha256": "71be569ce2355b7f256a834b3a4c11668fe80a880b3587c1b3b14e9e5dedf478"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/pegDiagram-VL7TDLO6-D0IwQ_y0.js",
+      "bytes": 1988,
+      "sha256": "b1ded29633155b7efd7aef51448ea0d0d32f1a034934ff2e9fa6eea2c99106e0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/php-Csjmro_R.js",
+      "bytes": 113090,
+      "sha256": "d343f73b0522b328ecd47df9de83cb919bcec370314c8f23c1e95d2126a636c4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/pieDiagram-7S7Q4E2Y-B4VvGrZl.js",
+      "bytes": 6325,
+      "sha256": "81f856f692d2f54a28d5a14b6bcfd47b97bf3574fc4fcbe5e7fc23de49b370e6"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/PluginsPage-B38wWqG1.js",
+      "bytes": 41857,
+      "sha256": "a7d21003084d2e8c63db5c95a7fbcac249275e2a83c4f545471d39753bdc4120"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/postcss-DnzrXTVv.js",
+      "bytes": 6411,
+      "sha256": "4710939ffc56a2532dd11efc51035de7f94f7f7ac368d5b54a86bac2eb2ba3df"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/powershell-BmBUJMz7.js",
+      "bytes": 20158,
+      "sha256": "dc784b8a7baa1ec8a68fe8a790d540ae21c924c3181b239683d48bea87cfb1e0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/prisma-Vru482bI.js",
+      "bytes": 7744,
+      "sha256": "b3fde1ec204bd87bc16f820a438db08ec481521edebdf36ab0c033ef0cfd5a1e"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/proto-C7zT0LnQ.js",
+      "bytes": 6548,
+      "sha256": "2f6893062281306a31a73dcc50949a332ade86a11565f7b78d66e28ed2aaa627"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/PullRequestsPage-BIFmLdO0.js",
+      "bytes": 3648,
+      "sha256": "6a1d901926fdfe308a97b8ede3aad7db2e14037f70175f97ed848d01753c9069"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/purify.es-Cz4mVeUR.js",
+      "bytes": 28978,
+      "sha256": "736b26c1df94e185a993935728dba8b54186e4c3ec5e7ab330adfec5f3d4cb64"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/python-B6aJPvgy.js",
+      "bytes": 69952,
+      "sha256": "7652ab863f920a5959c4aa52d6decb8c11d23fd590773977ce8aa0fbb3c555c4"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/quadrantDiagram-CIZ2JOQS-eII_BLEn.js",
+      "bytes": 34042,
+      "sha256": "4e6be7b9fb499b06038e7acef6518814e91254544c743de4eb11208878bc506f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/railroadDiagram-AXF67PYL-DET4aRk6.js",
+      "bytes": 1638,
+      "sha256": "b5dadf4aa9abeae35436743e7fdb546ff3a4f67f0d40b7192ec62f9e3db3dcfb"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/requirementDiagram-LRYGKXZP-vQ5oq9Iz.js",
+      "bytes": 31030,
+      "sha256": "315a4e238c7f84db06b2a71decaf52e9551c58b3d98913d67f6fa1afc7df64e2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ruby-B6QtyW_S.js",
+      "bytes": 54791,
+      "sha256": "efe8bc878f2fba7cfd444a052314f445c6684b5b0b806f849c0a83c2f94cc757"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/rust-B1yitclQ.js",
+      "bytes": 15069,
+      "sha256": "c48161f6b21740ac415d982a627f24bb81081225f7405632784f667cf915d985"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/sankeyDiagram-W5VNT64P-Qe-DBseP.js",
+      "bytes": 23239,
+      "sha256": "d9b8ab20e29eabd9638140f598ef44ac1ca472801f8224a70cd867e0b376d898"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/scala-CqE71os6.js",
+      "bytes": 28889,
+      "sha256": "49722f789f01275a832469db84cef6009c48b2e9ceb5bf047b798399d5ce6093"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ScheduledPage-DjTOlEDd.js",
+      "bytes": 3958,
+      "sha256": "dbad81328014be9019bd93ec5a303b0348593955be67344137e3d40ea3769f96"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/ScopeControl-DcOfzK_-.js",
+      "bytes": 6864,
+      "sha256": "af199f03c25ed42861af381e6204c9fe10f528c9f056eee8d7a0e0204bdd3ec0"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/sequenceDiagram-SI44F4Z6-BEsOQZBW.js",
+      "bytes": 116997,
+      "sha256": "440e461d33e9039046d54d3d68d1836ca5016a9e30a58948a202584d1cb93720"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/SettingsPage-BhSsl99F.js",
+      "bytes": 435252,
+      "sha256": "d4bfbc98be64653a378a08dbaedef9544da58a4de15784efafc1646305869e5c"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/shellscript-Yzrsuije.js",
+      "bytes": 41479,
+      "sha256": "6a7311ff85af4098e170435bf140299e6be66e458e51d97ff91b2cea51300438"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/sizeCapture-X5ZJPWSS-DxBwPHU5.js",
+      "bytes": 968,
+      "sha256": "81a8e7d49dd64c68d3920c3fcb1fcbede81682047f45bcf4c34dd36a36259d3a"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/sql-CRqJ_cUM.js",
+      "bytes": 23428,
+      "sha256": "6df4a8b7587aced94ab3c692d791a8095269b8cb3106c7276088aaa3b7a016e7"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/stateDiagram-OKZ733FA-DkYDL7k-.js",
+      "bytes": 10455,
+      "sha256": "cba30ef9b1d46d37f8e33a81c47649731fb4c76ab6d7641b3d6644784ef66c82"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/stateDiagram-v2-UEYNNEHI-CVCh2vFD.js",
+      "bytes": 460,
+      "sha256": "73e1059af21aff97a55643a74f191d6004888158b67e64573875379f9a6719ff"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/svelte-C71xKXYG.js",
+      "bytes": 18247,
+      "sha256": "3687fe92d92af559df07969612f8d5851babf22a693b1f2bd388d23caa516874"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/swift-C2oV4EkX.js",
+      "bytes": 87231,
+      "sha256": "9f7077844a225a537eea5869de8ca98bd00d512cf62674f7d0b903d827cab839"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/swimlanes-SLNWSIFB-DIY5ITXy.js",
+      "bytes": 118874,
+      "sha256": "ea2f82ec4d5f9d7e90ad1c419d434d838da9666f03b2c0de926e763a23a5ff5a"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/swimlanesDiagram-ULZ7WXOC-BH2la80N.js",
+      "bytes": 580,
+      "sha256": "0658a67775b5103e4d62a3ad7a21a528ff6df54dc5ef400f0d35925121063766"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/terraform-BETggiCN.js",
+      "bytes": 11389,
+      "sha256": "845d38e761505099172e28bb36870b326f66ab907aaa625fcc9c4d0fee4eca49"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/timeline-definition-Z64GVDOM-B4vqZniy.js",
+      "bytes": 30867,
+      "sha256": "4be4f49987c91c6d146fcbe1a60d4d9017e2d8a2a76bc62115f60e98e89871a2"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/toml-vGWfd6FD.js",
+      "bytes": 6426,
+      "sha256": "13957c3e75de850523d59c55223a274de54f38319159b54c11a41e1e909965de"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/tsx-COt5Ahok.js",
+      "bytes": 175536,
+      "sha256": "6f65bdaf80285d2241cf747f58b0c2bdd7485e25bbfbc0144840ed8e13f31a4d"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/typescript-BPQ3VLAy.js",
+      "bytes": 181080,
+      "sha256": "fcdcca54a7ccb637627d4dba50774a3dc7a5bae93a9f0a43c7748114b1d1d75f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/vennDiagram-T6HMQDX7-GGz4Cyz-.js",
+      "bytes": 41996,
+      "sha256": "c065d35659d576c23a924fe4cf5ba6eb08a28a7bc1714603b4e1916741bcfabb"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/voice-capture-worklet-BVJ6E49U.js",
+      "bytes": 1075,
+      "sha256": "45a68b5e949032d048c6a2dc04f817fe4b253e9f0a312743abc376cbefaa8b1f"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/vue-CHlpWS_5.js",
+      "bytes": 25690,
+      "sha256": "f2a7a9fb323bff4c4f5af0ceb20a7267e7f06d91efed2b186ba718def080a139"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/wardleyDiagram-T6FBY63Y-BcBGxpYo.js",
+      "bytes": 25533,
+      "sha256": "ae8a5d2cf12980e2632c28022835f78fc01d600af0cb6f4d6ea46141ee685a43"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/xml-sdJ4AIDG.js",
+      "bytes": 5384,
+      "sha256": "50f00554f7503986c098ada8706f8e6a8fdad39e5158c7626d31532a883a51e8"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/xychartDiagram-ELKLHX3M-D1_Pbxwm.js",
+      "bytes": 41948,
+      "sha256": "3ce76ae8698fa0cecacac2881ad0b25c981f7a3b40851f72494306caba8666ea"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/assets/yaml-Buea-lGh.js",
+      "bytes": 10506,
+      "sha256": "a7a8b4fc14fa7ba338598f61185a3a13e49d7450830af367407ae61b9634bede"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/renderer/index.html",
+      "bytes": 719,
+      "sha256": "99dff437be2ab25f02cf737b5981f8248af7f94f72d73b7921b6d7284f960fdc"
+    }
+  ]
+}

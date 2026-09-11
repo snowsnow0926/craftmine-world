@@ -25,11 +25,11 @@ const rounds=directories.map(directory=>{
  return {directory:root,reportPath,scope:report.scope??'live-model',parentReportSha256:report.parentReportSha256??null,budgetBefore:report.budgetBefore??null,budgetAfter:report.budgetAfter??null,reportSha256:sha(raw),sourceCommit:report.sourceCommit,compiledMainSha256:report.compiledMainSha256,model:report.model,provider:report.provider,limits:report.limits,summary:report.summary,
   cases:report.cases.map(item=>({id:item.id,request:item.request,evidenceUse:item.evidenceUse??'development_case',outcome:item.outcome,modelRequests:item.modelRequests,repairAttempts:item.repairAttempts??0,elapsedMs:item.elapsedMs??null,error:item.error??null,
    tools:(item.turnMessages??[]).filter(m=>m.role==='tool').map(m=>({name:m.toolName,elapsedMs:m.toolDurationMs??null,status:m.toolStatus??null,...(findTiming(m.toolResult??m.content)?{sourceTiming:findTiming(m.toolResult??m.content)}:{})}))})),
-  jobs:Object.values(ledger?.jobs??{}).filter(job=>Date.parse(job.startedAt)>=Date.parse(report.startedAt)).map(job=>({jobId:job.jobId,state:job.state,outcome:job.outcome,checkElapsedMs:duration(job.startedAt,job.finishedAt),brokerAttempts:job.attempts.map(attempt=>({operation:attempt.operation,outcome:attempt.outcome,elapsedMs:duration(attempt.startedAt,attempt.finishedAt)})),phaseTiming:job.phaseTiming??null,creationPackProof:job.creationPackProof??null})),
+  jobs:Object.values(ledger?.jobs??{}).filter(job=>Date.parse(job.startedAt)>=Date.parse(report.startedAt)&&Date.parse(job.startedAt)<=Date.parse(report.finishedAt)).map(job=>({jobId:job.jobId,state:job.state,outcome:job.outcome,checkElapsedMs:duration(job.startedAt,job.finishedAt),brokerAttempts:job.attempts.map(attempt=>({operation:attempt.operation,outcome:attempt.outcome,elapsedMs:duration(attempt.startedAt,attempt.finishedAt)})),phaseTiming:job.phaseTiming??null,creationPackProof:job.creationPackProof??null})),
  };
 });
 const result={format:'craftmine.creation-model-comparison/1',generatedAt:new Date().toISOString(),rounds,totalObservedRequests:rounds.reduce((sum,round)=>sum+(round.summary?.requestCount??0),0),cost:null,notes:[
- '各轮预算独立；保留原始失败分类。补验旧模型产物不计新增模型样本。',
+ '原始轮次预算分别记录；带parentReportSha256的续测沿用其原轮次预算，不视为新额度。保留原始失败分类，补验旧模型产物不计新增模型样本。',
  '原HOLDOUT01表达已用于开发，属于已知表达变体，不能作为未见需求的泛化证据。',
  '源码、检查器和runner在修复后变化；阶段计时是实际测量，不据此宣称同条件整体提速。',
  'timing.stages.passed仅表示调用正常返回；是否检查或采用成功以真实job/outcome为准。',

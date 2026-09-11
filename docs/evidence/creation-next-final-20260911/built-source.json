@@ -1,0 +1,35 @@
+{
+  "format": "craftmine.creation-next-built-source/1",
+  "sourceCommit": "832ac71076aa48d787c30e8a55aecffd7aa69390",
+  "coreBuiltAtCommit": "0cf946fb",
+  "coreInputsEquivalent": true,
+  "files": [
+    {
+      "path": "vendor/pi-desktop/target/release/craftmine-core.exe",
+      "bytes": 8094208,
+      "sha256": "e095121b8f799c2e55423f40ff4bdf864c626a9c2f7b53842a64754aa0359688"
+    },
+    {
+      "path": "vendor/pi-desktop/target/release/pi-desktop-host-core.exe",
+      "bytes": 9189888,
+      "sha256": "f71ad5f7401cb83b39df215b679b69db11754e7088ed4d09d216c2814f62c4ab"
+    },
+    {
+      "path": "vendor/pi-desktop/apps/desktop/out/main/index.js",
+      "bytes": 3572421,
+      "sha256": "7c154a5a34e6235eddbc3c09a053175861c2f2d3448a8918c15737e6f3ee2dd2"
+    },
+    {
+      "path": "vendor/pi-desktop/packages/agent-runtime/dist-bundle/sidecar.js",
+      "bytes": 5207510,
+      "sha256": "c3e34c5bee3719638d58cee07d49e9f0dfe1ae40a41e279d184b4bb91cb401ae"
+    },
+    {
+      "path": "desktop/build/runtime-resources/runtime-resources.json",
+      "bytes": 216129,
+      "sha256": "a1dece97bdbd4a6adc0eca22b7ffbc7929e877c7d135a7800b4cce539b19c829"
+    }
+  ],
+  "runtimeResources": "832ac71076aa48d787c30e8a55aecffd7aa69390",
+  "physicalInputUsed": false
+}

@@ -1,0 +1,1889 @@
+{
+  "format": "craftmine.creation-next-model/1",
+  "scope": "new_model_cases_after_original_artifact_recovery",
+  "parentReportSha256": "62444302afcf44f45d9f7a8750fe6d07e1e90e6318b11c39cf9e18c63c4497f3",
+  "budgetBefore": 25,
+  "budgetIdentitySha256": "008911d56fdcda9cb71858054976909b42096c4d6cdb495a2850fac53bf193e7",
+  "recovery": {
+    "report": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\report.json",
+    "sha256": "c918462c947291de9931fa9e21411910aea49b36ae2b28e255d2ac2ec737ec4e",
+    "newModelRequests": 0,
+    "passed": true
+  },
+  "out": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB",
+  "sourceRoot": "D:\\cm-nb-root",
+  "sourceCommit": "8b83dec059b45b4bd1f97c4d190c1595359d27cc",
+  "compiledMainSha256": "3f596c468a40223b15c3b771666a2da623b2fadf3913d06f252d6653527ce0ef",
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "thinking": "high",
+  "startedAt": "2026-09-10T23:19:42.456Z",
+  "limits": {
+    "maxRequests": 40,
+    "maxCaseMs": 600000,
+    "maxRepairs": 3,
+    "maxCases": 10
+  },
+  "launches": [
+    {
+      "number": 1,
+      "pid": 255416,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "pid": 283472,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 3,
+      "pid": 279656,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "CA06",
+      "request": "在这里再放一块石头，保留已有物体和游玩进度",
+      "aim": "aim-ground",
+      "outcome": "first_attempt_pass",
+      "submitted": true,
+      "modelRequests": 6,
+      "humanIntervention": false,
+      "checks": [
+        {
+          "name": "same-world",
+          "passed": true
+        },
+        {
+          "name": "actual-checked-and-applied-build",
+          "passed": true
+        },
+        {
+          "name": "unrelated-inventory-and-reward-ledgers-preserved",
+          "passed": true
+        },
+        {
+          "name": "player-position-preserved",
+          "passed": true
+        },
+        {
+          "name": "preserve-object:created-e995b7dbd0c8ac590df4b041",
+          "passed": true
+        },
+        {
+          "name": "preserve-object:created-62bf6336d4935ab0a75839bb",
+          "passed": true
+        },
+        {
+          "name": "preserve-object:created-75180a8afbd05eac45bbf448",
+          "passed": true
+        },
+        {
+          "name": "exactly-one-new-rock",
+          "passed": true
+        },
+        {
+          "name": "captured-ground-position",
+          "passed": true
+        },
+        {
+          "name": "actual-new-collision",
+          "passed": true
+        },
+        {
+          "name": "fresh-process-runtime-restored",
+          "passed": true
+        },
+        {
+          "name": "fresh-process-entities-and-dimensions",
+          "passed": true
+        },
+        {
+          "name": "full-persistent-progress-restored",
+          "passed": true
+        }
+      ],
+      "startedAt": "2026-09-10T23:20:02.816Z",
+      "beforeTurnId": "8d835400-8c99-4b5e-8dd8-15bf3e50a218",
+      "budgetAtStart": {
+        "limit": 40,
+        "inherited": 25,
+        "reserved": 25,
+        "newReserved": 0,
+        "remaining": 15
+      },
+      "promptResult": {
+        "ok": true,
+        "data": {
+          "accepted": true,
+          "turnId": "5ebb41f5-8913-4a67-b841-adf40ec985d7"
+        }
+      },
+      "repairAttempts": 0,
+      "metrics": {
+        "calls": {
+          "observed": 6,
+          "pending": 0,
+          "reported": 6
+        },
+        "coverage": "complete",
+        "endedAtMs": 1789082434749,
+        "format": "craftmine.task-metrics/1",
+        "modelIdentity": "runtime-binding",
+        "models": [
+          {
+            "calls": {
+              "observed": 6,
+              "pending": 0,
+              "reported": 6
+            },
+            "coverage": "complete",
+            "modelId": "deepseek-flash",
+            "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+            "tps": {
+              "coverage": "complete",
+              "generationMs": 15058,
+              "outputTokens": 3832,
+              "value": 254.48266702085272,
+              "window": "model-generation"
+            },
+            "usage": {
+              "cacheReadTokens": 426240,
+              "inputTokens": 162181,
+              "outputTokens": 3832,
+              "reasoningTokens": 2004,
+              "totalTokens": 592253
+            }
+          }
+        ],
+        "observedAtMs": 1789082436145,
+        "scope": "root-and-delegates",
+        "sessionId": "513ac1c0-0cf4-4e9e-8014-432e8b2f5a1a",
+        "startedAtMs": 1789082402926,
+        "status": "completed",
+        "tps": {
+          "coverage": "complete",
+          "generationMs": 15058,
+          "outputTokens": 3832,
+          "value": 254.48266702085272,
+          "window": "model-generation"
+        },
+        "turnId": "5ebb41f5-8913-4a67-b841-adf40ec985d7",
+        "usage": {
+          "cacheReadTokens": 426240,
+          "inputTokens": 162181,
+          "outputTokens": 3832,
+          "reasoningTokens": 2004,
+          "totalTokens": 592253
+        },
+        "wallTimeMs": 31823
+      },
+      "usage": {
+        "cacheReadTokens": 426240,
+        "inputTokens": 162181,
+        "outputTokens": 3832,
+        "reasoningTokens": 2004,
+        "totalTokens": 592253
+      },
+      "progress": [
+        {
+          "elapsedMs": 12465,
+          "active": true,
+          "jobId": "gjob-50e5fcfbe77a8f302efa2bfa777066df8c2f155525cef3c67ff517eeb330c72a",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 0,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 25,
+            "newReserved": 0,
+            "remaining": 15
+          }
+        },
+        {
+          "elapsedMs": 14494,
+          "active": true,
+          "jobId": "gjob-50e5fcfbe77a8f302efa2bfa777066df8c2f155525cef3c67ff517eeb330c72a",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 1,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 26,
+            "newReserved": 1,
+            "remaining": 14
+          }
+        },
+        {
+          "elapsedMs": 20579,
+          "active": true,
+          "jobId": "gjob-50e5fcfbe77a8f302efa2bfa777066df8c2f155525cef3c67ff517eeb330c72a",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 2,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 27,
+            "newReserved": 2,
+            "remaining": 13
+          }
+        },
+        {
+          "elapsedMs": 22615,
+          "active": true,
+          "jobId": "gjob-50e5fcfbe77a8f302efa2bfa777066df8c2f155525cef3c67ff517eeb330c72a",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 3,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 28,
+            "newReserved": 3,
+            "remaining": 12
+          }
+        },
+        {
+          "elapsedMs": 26766,
+          "active": true,
+          "jobId": "gjob-50e5fcfbe77a8f302efa2bfa777066df8c2f155525cef3c67ff517eeb330c72a",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 4,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 29,
+            "newReserved": 4,
+            "remaining": 11
+          }
+        },
+        {
+          "elapsedMs": 28799,
+          "active": true,
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "status": "running",
+          "stage": "import",
+          "modelRequests": 5,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 30,
+            "newReserved": 5,
+            "remaining": 10
+          }
+        },
+        {
+          "elapsedMs": 30826,
+          "active": true,
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "status": "running",
+          "stage": "export",
+          "modelRequests": 5,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 30,
+            "newReserved": 5,
+            "remaining": 10
+          }
+        },
+        {
+          "elapsedMs": 34897,
+          "active": true,
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "status": "running",
+          "stage": "check",
+          "modelRequests": 5,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 30,
+            "newReserved": 5,
+            "remaining": 10
+          }
+        },
+        {
+          "elapsedMs": 36937,
+          "active": true,
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 6,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 31,
+            "newReserved": 6,
+            "remaining": 9
+          }
+        },
+        {
+          "elapsedMs": 38962,
+          "active": true,
+          "modelRequests": 6,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 31,
+            "newReserved": 6,
+            "remaining": 9
+          }
+        },
+        {
+          "elapsedMs": 41002,
+          "active": true,
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 6,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 31,
+            "newReserved": 6,
+            "remaining": 9
+          }
+        },
+        {
+          "elapsedMs": 45071,
+          "active": false,
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "status": "passed",
+          "stage": "passed",
+          "modelRequests": 6,
+          "budget": {
+            "limit": 40,
+            "inherited": 25,
+            "reserved": 31,
+            "newReserved": 6,
+            "remaining": 9
+          }
+        }
+      ],
+      "transcript": {
+        "file": "CA06-continuation-session.json",
+        "sha256": "eb8eccdc74129f4b321d904bb70c502a66760af3b675f81de48e065b8b4b95d0"
+      },
+      "turnMessages": [
+        {
+          "content": "在这里再放一块石头，保留已有物体和游玩进度",
+          "createdAt": "2026-09-10T23:20:02.926Z",
+          "id": "aecaf954-2c72-421e-bb6b-8bf7cd3eb0ae",
+          "role": "user",
+          "status": "complete"
+        },
+        {
+          "content": "新任务开始，宿主已捕获新落点（地面，`(-3.334, 0, 7.526)`）。先重建源码头部身份再放置，避免用过期的 revision。",
+          "createdAt": "2026-09-10T23:20:04.096Z",
+          "id": "d444c875-e3bb-4f2b-ae6a-65b18701546e",
+          "modelId": "deepseek-flash",
+          "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+          "responseDurationMs": 6188,
+          "role": "assistant",
+          "status": "complete",
+          "thinking": "The new requirements: place a rock at the hit position, preserving existing objects and play progress. The creationTarget is captured (ground hit at (-3.334, 0, 7.526), snapshotId e1958258-..., sourceRevision 6, manifestHash 70fdffa2..., buildId gbd-a2d84691...). Note world buildId is now gbd-a2d84691 (the chop-tree build applied). \n\nSource revision is 6, manifestHash 70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69. But wait — the draft hash is 6a2eb163... revision 0? machineFacts.draft revision 0. Hmm, but creationTarget.sourceRevision 6 and manifestHash 70fdffa2. I should verify the current project index revision before calling creation_operation, since the chop-tree task ended and a new task started (different projectId even: pi-b97850... same as before actually). The guidance says: use current godot_project_index revision/manifestHash for expected. But creation_operation's expected uses source revision/hash from godot_project_index. The captured target gives sourceRevision 6 and manifestHash 70fdffa2 which likely matches the current head.\n\nHmm, but is the source head still at revision 6? The previous task's writes ended at revision 6 (manifestHash 70fdffa2). The world buildId is now gbd-a2d84691 — which is exactly the check build from revision 6, meaning it was applied. So head revision should be 6 with manifestHash 70fdffa2.\n\nBut careful: applying a candidate could have added files? The applied build materialized 26 files. Anyway, let me call project_index to confirm head revision/manifestHash before operating. That's cheap and safe. Actually I could also call godot_project_facts to rebuild durable facts. The instructions say after compaction/model switch call godot_project_facts. Not a compaction, but new task. Let me call godot_project_index (need to activate via ToolSearch again since new turn? The tools were activated in the previous turn; on-demand tool activation—the ToolSearch said \"They are available on the next model turn.\" This is a new turn, so I may need to re-activate. Let me use ToolSearch for project_index again.)\n\nActually, project_inspect and capabilities_read are in current list. godot_build_start and godot_build_read are in current list too (they're listed directly in functions). Let me check the function list: plugin_craftmine_world_godot_build_start and plugin_craftmine_world_godot_build_read are present. creation_operation present. project_inspect present. So I need ToolSearch for godot_project_index.\n\nLet me do ToolSearch for godot_project_index and godot_project_facts.\n\nAlso: the rock placement must preserve existing objects and play progress. The creation_operation place action adds a new entity, and the tool checks collisions. Requirement entity list includes excludeIds for existing three trees — meaning the requirement is \"one new rock, existing trees must still exist\". The check will verify the existing entities and progress preservation.\n\nAlso important: the rock is a new entity. Existing progress: rules.chop-tree state and inventory. The runtime requires new defaults to be merged by the host — for rocks there's no new default. The rock itself is a new entity but not a door/rule, so fine.\n\nPlan:\n1. ToolSearch godot_project_index (+ maybe facts).\n2. project_index to get head revision/manifestHash.\n3. creation_operation place rock with expected from index + captured target ids.\n4. build_start check.\n5. build_read.\n\nNote: expected.revision/manifestHash should be from current godot_project_index. targetSnapshotId from capture: e1958258-265d-4289-ae6a-0f7049ead2cc; worldId world-f6b800d43bbf; buildId gbd-a2d84691...; instanceId d9b36e7e7e7b320b5937b2ea.\n\nLet me search.\n\nAlso should I worry that the tree chop rule script must keep its hash? Adding a rock doesn't touch creation.json's rules. Good — placement adds an entity entry; the patch regenerates creation.json presumably preserving rules. We'll verify after the operation by reading creation.json to confirm rules preserved (the requirement \"保留已有物体和游玩进度\" demands it). Also the check's `runtime.snapshot` assertion should say existing progress preserved.\n\nLet me proceed.\n\nNote the rock position: target position (-3.33357, 0, 7.5256); rock half extents 0.7 → bounds x [-4.03,-2.63], z [6.83,8.23] — within ±28. Good. Distance from player (0,0.9,6) — fine, no overlap.\n\nI won't pass position; place at frozen hit point. Requirement target position is [-3.334, 0, 7.526], consistent.\n\noperationId: \"place-rock-1\".\n\nLet's do ToolSearch first.",
+          "usage": {
+            "cacheReadTokens": 44160,
+            "inputTokens": 49331,
+            "outputTokens": 1230,
+            "reasoningTokens": 1117,
+            "totalTokens": 94721
+          }
+        },
+        {
+          "content": "{\"content\":[{\"type\":\"text\",\"text\":\"Activated on-demand tools: plugin_craftmine_world_godot_project_index. They are available on the next model turn.\"}],\"details\":{\"query\":\"godot_project_index\",\"matches\":[\"plugin_craftmine_world_godot_project_index\"],\"activated\":[\"plugin_craftmine_world_godot_project_index\"]},\"addedToolNames\":[\"plugin_craftmine_world_godot_project_index\"]}",
+          "createdAt": "2026-09-10T23:20:10.284Z",
+          "id": "call_00_nABSzo4pzdC2cNdy34m98167",
+          "role": "tool",
+          "status": "complete",
+          "toolArgs": {
+            "query": "godot_project_index"
+          },
+          "toolCallId": "call_00_nABSzo4pzdC2cNdy34m98167",
+          "toolCompletedAt": "2026-09-10T23:20:10.308Z",
+          "toolDurationMs": 24,
+          "toolName": "ToolSearch",
+          "toolResult": {
+            "addedToolNames": [
+              "plugin_craftmine_world_godot_project_index"
+            ],
+            "content": [
+              {
+                "text": "Activated on-demand tools: plugin_craftmine_world_godot_project_index. They are available on the next model turn.",
+                "type": "text"
+              }
+            ],
+            "details": {
+              "activated": [
+                "plugin_craftmine_world_godot_project_index"
+              ],
+              "matches": [
+                "plugin_craftmine_world_godot_project_index"
+              ],
+              "query": "godot_project_index"
+            }
+          },
+          "toolStatus": "success"
+        },
+        {
+          "content": "{\"content\":[{\"type\":\"text\",\"text\":\"No matching on-demand tool. Available names: plugin_craftmine_world_runtime_info, plugin_craftmine_world_godot_project_create, plugin_craftmine_world_godot_project_index, plugin_craftmine_world_godot_file_read, plugin_craftmine_world_godot_project_patch, plugin_craftmine_world_godot_asset_put, plugin_craftmine_world_godot_asset_list, plugin_craftmine_world_godot_build_cancel, plugin_craftmine_world_godot_candidate_read, plugin_craftmine_world_godot_candidate_list, plugin_craftmine_world_godot_docs, plugin_craftmine_world_godot_project_query, plugin_craftmine_world_godot_runtime_state, plugin_craftmine_world_godot_history, plugin_craftmine_world_godot_jobs, plugin_craftmine_world_godot_draft_recovery, plugin_craftmine_world_asset_library, plugin_craftmine_world_package_library, plugin_craftmine_world_resource_read, plugin_craftmine_world_workspace_patch, plugin_craftmine_world_verification_submit, plugin_craftmine_world_verification_read, plugin_craftmine_world_verification_cancel, plugin_craftmine_world_library_search, and 5 more.\"}],\"details\":{\"query\":\"godot_project_facts\",\"matches\":[],\"activated\":[]}}",
+          "createdAt": "2026-09-10T23:20:10.308Z",
+          "id": "call_01_OoWcIvUSmsyKllRQS07H9208",
+          "role": "tool",
+          "status": "complete",
+          "toolArgs": {
+            "query": "godot_project_facts"
+          },
+          "toolCallId": "call_01_OoWcIvUSmsyKllRQS07H9208",
+          "toolCompletedAt": "2026-09-10T23:20:10.323Z",
+          "toolDurationMs": 15,
+          "toolName": "ToolSearch",
+          "toolResult": {
+            "content": [
+              {
+                "text": "No matching on-demand tool. Available names: plugin_craftmine_world_runtime_info, plugin_craftmine_world_godot_project_create, plugin_craftmine_world_godot_project_index, plugin_craftmine_world_godot_file_read, plugin_craftmine_world_godot_project_patch, plugin_craftmine_world_godot_asset_put, plugin_craftmine_world_godot_asset_list, plugin_craftmine_world_godot_build_cancel, plugin_craftmine_world_godot_candidate_read, plugin_craftmine_world_godot_candidate_list, plugin_craftmine_world_godot_docs, plugin_craftmine_world_godot_project_query, plugin_craftmine_world_godot_runtime_state, plugin_craftmine_world_godot_history, plugin_craftmine_world_godot_jobs, plugin_craftmine_world_godot_draft_recovery, plugin_craftmine_world_asset_library, plugin_craftmine_world_package_library, plugin_craftmine_world_resource_read, plugin_craftmine_world_workspace_patch, plugin_craftmine_world_verification_submit, plugin_craftmine_world_verification_read, plugin_craftmine_world_verification_cancel, plugin_craftmine_world_library_search, and 5 more.",
+                "type": "text"
+              }
+            ],
+            "details": {
+              "activated": [],
+              "matches": [],
+              "query": "godot_project_facts"
+            }
+          },
+          "toolStatus": "success"
+        },
+        {
+          "content": "",
+          "createdAt": "2026-09-10T23:20:10.731Z",
+          "id": "e248b72b-db3b-48d5-8257-8b352a90a70f",
+          "modelId": "deepseek-flash",
+          "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+          "responseDurationMs": 2005,
+          "role": "assistant",
+          "status": "complete",
+          "thinking": "The capture gives sourceRevision 6, manifestHash 70fdffa2. Now I should confirm the current head via project_index (activated next turn). Let me call project_index now — it was activated \"on the next model turn\", so it should be callable now.\n\nThen place rock.\n\nRequirement: rock at [-3.334, 0, 7.526], visible, solid; existing 3 trees preserved.\n\nLet me call project_index.",
+          "usage": {
+            "cacheReadTokens": 2560,
+            "inputTokens": 92688,
+            "outputTokens": 141,
+            "reasoningTokens": 95,
+            "totalTokens": 95389
+          }
+        },
+        {
+          "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"applied\\\": false,\\n  \\\"baseBuild\\\": \\\"gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9\\\",\\n  \\\"baseId\\\": \\\"creation-sandbox\\\",\\n  \\\"binaryAssetsAvailable\\\": false,\\n  \\\"branchId\\\": \\\"main\\\",\\n  \\\"content\\\": {\\n    \\\"branchId\\\": \\\"main\\\",\\n    \\\"contentOid\\\": \\\"42221214315392efbf96fb2a73da914a00d22646\\\",\\n    \\\"repoId\\\": \\\"world-world-f6b800d43bbf\\\"\\n  },\\n  \\\"currentTaskId\\\": \\\"work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999\\\",\\n  \\\"engineVersion\\\": \\\"4.7.2-stable\\\",\\n  \\\"executionAvailable\\\": false,\\n  \\\"files\\\": [\\n    {\\n      \\\"bytes\\\": 1677,\\n      \\\"path\\\": \\\"README.md\\\",\\n      \\\"sha256\\\": \\\"dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 548,\\n      \\\"path\\\": \\\"assets/ASSET_MANIFEST.json\\\",\\n      \\\"sha256\\\": \\\"f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 4388,\\n      \\\"path\\\": \\\"assets/fonts/OFL-NotoSansSC.txt\\\",\\n      \\\"sha256\\\": \\\"1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 2800055,\\n      \\\"path\\\": \\\"assets/fonts/cjk-0.json\\\",\\n      \\\"sha256\\\": \\\"8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f\\\"\\n    }\\n  ],\\n  \\\"format\\\": \\\"craftmine.godot-project/1\\\",\\n  \\\"language\\\": \\\"GDScript\\\",\\n  \\\"lastWriter\\\": {\\n    \\\"baseBuild\\\": \\\"gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9\\\",\\n    \\\"projectId\\\": \\\"pi-b97850bfc72c4283bbb2dc286dfec495e8304795c0d267396f66b0b72c9b5765\\\",\\n    \\\"sessionId\\\": \\\"513ac1c0-0cf4-4e9e-8014-432e8b2f5a1a\\\",\\n    \\\"taskId\\\": \\\"work-87b509a95ab2e4b72b5073d6ee537376c7a827f21da4c07e1cd211bab2843355\\\",\\n    \\\"turnId\\\": \\\"8d835400-8c99-4b5e-8dd8-15bf3e50a218\\\"\\n  },\\n  \\\"manifestHash\\\": \\\"70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69\\\",\\n  \\\"nextOffset\\\": 4,\\n  \\\"renderer\\\": \\\"gl_compatibility\\\",\\n  \\\"revision\\\": 6,\\n  \\\"status\\\": \\\"source-only\\\",\\n  \\\"target\\\": \\\"web\\\",\\n  \\\"totalFiles\\\": 23,\\n  \\\"verified\\\": false,\\n  \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n}\"}],\"details\":{\"applied\":false,\"baseBuild\":\"gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9\",\"baseId\":\"creation-sandbox\",\"binaryAssetsAvailable\":false,\"branchId\":\"main\",\"content\":{\"branchId\":\"main\",\"contentOid\":\"42221214315392efbf96fb2a73da914a00d22646\",\"repoId\":\"world-world-f6b800d43bbf\"},\"currentTaskId\":\"work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999\",\"engineVersion\":\"4.7.2-stable\",\"executionAvailable\":false,\"files\":[{\"bytes\":1677,\"path\":\"README.md\",\"sha256\":\"dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16\"},{\"bytes\":548,\"path\":\"assets/ASSET_MANIFEST.json\",\"sha256\":\"f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260\"},{\"bytes\":4388,\"path\":\"assets/fonts/OFL-NotoSansSC.txt\",\"sha256\":\"1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9\"},{\"bytes\":2800055,\"path\":\"assets/fonts/cjk-0.json\",\"sha256\":\"8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f\"}],\"format\":\"craftmine.godot-project/1\",\"language\":\"GDScript\",\"lastWriter\":{\"baseBuild\":\"gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9\",\"projectId\":\"pi-b97850bfc72c4283bbb2dc286dfec495e8304795c0d267396f66b0b72c9b5765\",\"sessionId\":\"513ac1c0-0cf4-4e9e-8014-432e8b2f5a1a\",\"taskId\":\"work-87b509a95ab2e4b72b5073d6ee537376c7a827f21da4c07e1cd211bab2843355\",\"turnId\":\"8d835400-8c99-4b5e-8dd8-15bf3e50a218\"},\"manifestHash\":\"70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69\",\"nextOffset\":4,\"renderer\":\"gl_compatibility\",\"revision\":6,\"status\":\"source-only\",\"target\":\"web\",\"totalFiles\":23,\"verified\":false,\"worldId\":\"world-f6b800d43bbf\"},\"isError\":false}",
+          "createdAt": "2026-09-10T23:20:12.736Z",
+          "id": "call_00_6QUgqKaN2cijJDrTBblz7065",
+          "role": "tool",
+          "status": "complete",
+          "toolArgs": {
+            "limit": 4
+          },
+          "toolCallId": "call_00_6QUgqKaN2cijJDrTBblz7065",
+          "toolCompletedAt": "2026-09-10T23:20:12.800Z",
+          "toolDurationMs": 64,
+          "toolName": "plugin_craftmine_world_godot_project_index",
+          "toolResult": {
+            "content": [
+              {
+                "text": "{\n  \"applied\": false,\n  \"baseBuild\": \"gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9\",\n  \"baseId\": \"creation-sandbox\",\n  \"binaryAssetsAvailable\": false,\n  \"branchId\": \"main\",\n  \"content\": {\n    \"branchId\": \"main\",\n    \"contentOid\": \"42221214315392efbf96fb2a73da914a00d22646\",\n    \"repoId\": \"world-world-f6b800d43bbf\"\n  },\n  \"currentTaskId\": \"work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999\",\n  \"engineVersion\": \"4.7.2-stable\",\n  \"executionAvailable\": false,\n  \"files\": [\n    {\n      \"bytes\": 1677,\n      \"path\": \"README.md\",\n      \"sha256\": \"dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16\"\n    },\n    {\n      \"bytes\": 548,\n      \"path\": \"assets/ASSET_MANIFEST.json\",\n      \"sha256\": \"f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260\"\n    },\n    {\n      \"bytes\": 4388,\n      \"path\": \"assets/fonts/OFL-NotoSansSC.txt\",\n      \"sha256\": \"1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9\"\n    },\n    {\n      \"bytes\": 2800055,\n      \"path\": \"assets/fonts/cjk-0.json\",\n      \"sha256\": \"8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f\"\n    }\n  ],\n  \"format\": \"craftmine.godot-project/1\",\n  \"language\": \"GDScript\",\n  \"lastWriter\": {\n    \"baseBuild\": \"gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9\",\n    \"projectId\": \"pi-b97850bfc72c4283bbb2dc286dfec495e8304795c0d267396f66b0b72c9b5765\",\n    \"sessionId\": \"513ac1c0-0cf4-4e9e-8014-432e8b2f5a1a\",\n    \"taskId\": \"work-87b509a95ab2e4b72b5073d6ee537376c7a827f21da4c07e1cd211bab2843355\",\n    \"turnId\": \"8d835400-8c99-4b5e-8dd8-15bf3e50a218\"\n  },\n  \"manifestHash\": \"70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69\",\n  \"nextOffset\": 4,\n  \"renderer\": \"gl_compatibility\",\n  \"revision\": 6,\n  \"status\": \"source-only\",\n  \"target\": \"web\",\n  \"totalFiles\": 23,\n  \"verified\": false,\n  \"worldId\": \"world-f6b800d43bbf\"\n}",
+                "type": "text"
+              }
+            ],
+            "details": {
+              "applied": false,
+              "baseBuild": "gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9",
+              "baseId": "creation-sandbox",
+              "binaryAssetsAvailable": false,
+              "branchId": "main",
+              "content": {
+                "branchId": "main",
+                "contentOid": "42221214315392efbf96fb2a73da914a00d22646",
+                "repoId": "world-world-f6b800d43bbf"
+              },
+              "currentTaskId": "work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999",
+              "engineVersion": "4.7.2-stable",
+              "executionAvailable": false,
+              "files": [
+                {
+                  "bytes": 1677,
+                  "path": "README.md",
+                  "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+                },
+                {
+                  "bytes": 548,
+                  "path": "assets/ASSET_MANIFEST.json",
+                  "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+                },
+                {
+                  "bytes": 4388,
+                  "path": "assets/fonts/OFL-NotoSansSC.txt",
+                  "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+                },
+                {
+                  "bytes": 2800055,
+                  "path": "assets/fonts/cjk-0.json",
+                  "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+                }
+              ],
+              "format": "craftmine.godot-project/1",
+              "language": "GDScript",
+              "lastWriter": {
+                "baseBuild": "gbd-21e812a57d7f5c511ee9ba0530edda5698e417a8b6a50af9917c6465eae623f9",
+                "projectId": "pi-b97850bfc72c4283bbb2dc286dfec495e8304795c0d267396f66b0b72c9b5765",
+                "sessionId": "513ac1c0-0cf4-4e9e-8014-432e8b2f5a1a",
+                "taskId": "work-87b509a95ab2e4b72b5073d6ee537376c7a827f21da4c07e1cd211bab2843355",
+                "turnId": "8d835400-8c99-4b5e-8dd8-15bf3e50a218"
+              },
+              "manifestHash": "70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69",
+              "nextOffset": 4,
+              "renderer": "gl_compatibility",
+              "revision": 6,
+              "status": "source-only",
+              "target": "web",
+              "totalFiles": 23,
+              "verified": false,
+              "worldId": "world-f6b800d43bbf"
+            },
+            "isError": false
+          },
+          "toolStatus": "success"
+        },
+        {
+          "content": "源码头部确认：revision 6，`manifestHash 70fdffa2…`，与捕获目标一致。提交石头放置。",
+          "createdAt": "2026-09-10T23:20:13.244Z",
+          "id": "28147e26-f0c1-41cf-9556-8a6b63199845",
+          "modelId": "deepseek-flash",
+          "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+          "responseDurationMs": 1887,
+          "role": "assistant",
+          "status": "complete",
+          "thinking": "Head revision is 6, manifestHash 70fdffa2 — matches the captured target. Good.\n\nNow place rock. Requirement: rock at [-3.334,0,7.526], solid+visible, excluding the 3 existing trees (they must remain). Place at frozen hit point.\n\nexpected: worldId world-f6b800d43bbf, buildId gbd-a2d84691..., instanceId d9b36e7e7e7b320b5937b2ea, revision 6, manifestHash 70fdffa2..., targetSnapshotId e1958258-265d-4289-ae6a-0f7049ead2cc.\n\noperationId \"place-rock-1\".",
+          "usage": {
+            "cacheReadTokens": 93184,
+            "inputTokens": 3064,
+            "outputTokens": 412,
+            "reasoningTokens": 154,
+            "totalTokens": 96660
+          }
+        },
+        {
+          "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"applied\\\": false,\\n  \\\"checkRequired\\\": true,\\n  \\\"format\\\": \\\"craftmine.creation-operation-result/1\\\",\\n  \\\"receipt\\\": {\\n    \\\"action\\\": \\\"place\\\",\\n    \\\"affectedIds\\\": [\\n      \\\"created-fd40c8d809c37bab316d1f26\\\"\\n    ],\\n    \\\"afterRevision\\\": 6,\\n    \\\"beforeRevision\\\": 5,\\n    \\\"buildId\\\": \\\"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\\\",\\n    \\\"createdIds\\\": [\\n      \\\"created-fd40c8d809c37bab316d1f26\\\"\\n    ],\\n    \\\"format\\\": \\\"craftmine.creation-operation/1\\\",\\n    \\\"instanceId\\\": \\\"d9b36e7e7e7b320b5937b2ea\\\",\\n    \\\"manifestHash\\\": \\\"70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69\\\",\\n    \\\"operationCount\\\": 4,\\n    \\\"operationId\\\": \\\"place-rock-1\\\",\\n    \\\"operationLimit\\\": 4096,\\n    \\\"operationsRemaining\\\": 4092,\\n    \\\"requestHash\\\": \\\"a0fa3d6abb406cccf80b36f11fbe36bf2f7e93719858d1cbf70a7563b1eea43b\\\",\\n    \\\"sourceRevision\\\": 6,\\n    \\\"targetSnapshotId\\\": \\\"e1958258-265d-4289-ae6a-0f7049ead2cc\\\",\\n    \\\"undoSupported\\\": true,\\n    \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n  },\\n  \\\"replayed\\\": false,\\n  \\\"source\\\": {\\n    \\\"manifestHash\\\": \\\"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\\\",\\n    \\\"revision\\\": 7\\n  },\\n  \\\"timing\\\": {\\n    \\\"format\\\": \\\"craftmine.creation-timing/1\\\",\\n    \\\"stages\\\": [\\n      {\\n        \\\"elapsedMs\\\": 0.679,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"capture\\\"\\n      },\\n      {\\n        \\\"elapsedMs\\\": 0.645,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"source-index\\\"\\n      },\\n      {\\n        \\\"elapsedMs\\\": 19.119,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"read-scene\\\"\\n      },\\n      {\\n        \\\"elapsedMs\\\": 17.925,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"read-journal\\\"\\n      },\\n      {\\n        \\\"elapsedMs\\\": 0.789,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"receipt-lookup\\\"\\n      },\\n      {\\n        \\\"elapsedMs\\\": 2.792,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"live-safety\\\"\\n      },\\n      {\\n        \\\"elapsedMs\\\": 597.527,\\n        \\\"passed\\\": true,\\n        \\\"stage\\\": \\\"source-patch\\\"\\n      }\\n    ],\\n    \\\"totalMs\\\": 641.533\\n  }\\n}\"}],\"details\":{\"applied\":false,\"checkRequired\":true,\"format\":\"craftmine.creation-operation-result/1\",\"receipt\":{\"action\":\"place\",\"affectedIds\":[\"created-fd40c8d809c37bab316d1f26\"],\"afterRevision\":6,\"beforeRevision\":5,\"buildId\":\"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\",\"createdIds\":[\"created-fd40c8d809c37bab316d1f26\"],\"format\":\"craftmine.creation-operation/1\",\"instanceId\":\"d9b36e7e7e7b320b5937b2ea\",\"manifestHash\":\"70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69\",\"operationCount\":4,\"operationId\":\"place-rock-1\",\"operationLimit\":4096,\"operationsRemaining\":4092,\"requestHash\":\"a0fa3d6abb406cccf80b36f11fbe36bf2f7e93719858d1cbf70a7563b1eea43b\",\"sourceRevision\":6,\"targetSnapshotId\":\"e1958258-265d-4289-ae6a-0f7049ead2cc\",\"undoSupported\":true,\"worldId\":\"world-f6b800d43bbf\"},\"replayed\":false,\"source\":{\"manifestHash\":\"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\",\"revision\":7},\"timing\":{\"format\":\"craftmine.creation-timing/1\",\"stages\":[{\"elapsedMs\":0.679,\"passed\":true,\"stage\":\"capture\"},{\"elapsedMs\":0.645,\"passed\":true,\"stage\":\"source-index\"},{\"elapsedMs\":19.119,\"passed\":true,\"stage\":\"read-scene\"},{\"elapsedMs\":17.925,\"passed\":true,\"stage\":\"read-journal\"},{\"elapsedMs\":0.789,\"passed\":true,\"stage\":\"receipt-lookup\"},{\"elapsedMs\":2.792,\"passed\":true,\"stage\":\"live-safety\"},{\"elapsedMs\":597.527,\"passed\":true,\"stage\":\"source-patch\"}],\"totalMs\":641.533}},\"isError\":false}",
+          "createdAt": "2026-09-10T23:20:15.131Z",
+          "id": "call_00_qa1QFrdbWbhq3wS4kBUB2468",
+          "role": "tool",
+          "status": "complete",
+          "toolArgs": {
+            "request": {
+              "action": "place",
+              "expected": {
+                "buildId": "gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3",
+                "instanceId": "d9b36e7e7e7b320b5937b2ea",
+                "manifestHash": "70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69",
+                "revision": 6,
+                "targetSnapshotId": "e1958258-265d-4289-ae6a-0f7049ead2cc",
+                "worldId": "world-f6b800d43bbf"
+              },
+              "kind": "rock",
+              "operationId": "place-rock-1"
+            }
+          },
+          "toolCallId": "call_00_qa1QFrdbWbhq3wS4kBUB2468",
+          "toolCompletedAt": "2026-09-10T23:20:15.815Z",
+          "toolDurationMs": 684,
+          "toolName": "plugin_craftmine_world_creation_operation",
+          "toolResult": {
+            "content": [
+              {
+                "text": "{\n  \"applied\": false,\n  \"checkRequired\": true,\n  \"format\": \"craftmine.creation-operation-result/1\",\n  \"receipt\": {\n    \"action\": \"place\",\n    \"affectedIds\": [\n      \"created-fd40c8d809c37bab316d1f26\"\n    ],\n    \"afterRevision\": 6,\n    \"beforeRevision\": 5,\n    \"buildId\": \"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\",\n    \"createdIds\": [\n      \"created-fd40c8d809c37bab316d1f26\"\n    ],\n    \"format\": \"craftmine.creation-operation/1\",\n    \"instanceId\": \"d9b36e7e7e7b320b5937b2ea\",\n    \"manifestHash\": \"70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69\",\n    \"operationCount\": 4,\n    \"operationId\": \"place-rock-1\",\n    \"operationLimit\": 4096,\n    \"operationsRemaining\": 4092,\n    \"requestHash\": \"a0fa3d6abb406cccf80b36f11fbe36bf2f7e93719858d1cbf70a7563b1eea43b\",\n    \"sourceRevision\": 6,\n    \"targetSnapshotId\": \"e1958258-265d-4289-ae6a-0f7049ead2cc\",\n    \"undoSupported\": true,\n    \"worldId\": \"world-f6b800d43bbf\"\n  },\n  \"replayed\": false,\n  \"source\": {\n    \"manifestHash\": \"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\",\n    \"revision\": 7\n  },\n  \"timing\": {\n    \"format\": \"craftmine.creation-timing/1\",\n    \"stages\": [\n      {\n        \"elapsedMs\": 0.679,\n        \"passed\": true,\n        \"stage\": \"capture\"\n      },\n      {\n        \"elapsedMs\": 0.645,\n        \"passed\": true,\n        \"stage\": \"source-index\"\n      },\n      {\n        \"elapsedMs\": 19.119,\n        \"passed\": true,\n        \"stage\": \"read-scene\"\n      },\n      {\n        \"elapsedMs\": 17.925,\n        \"passed\": true,\n        \"stage\": \"read-journal\"\n      },\n      {\n        \"elapsedMs\": 0.789,\n        \"passed\": true,\n        \"stage\": \"receipt-lookup\"\n      },\n      {\n        \"elapsedMs\": 2.792,\n        \"passed\": true,\n        \"stage\": \"live-safety\"\n      },\n      {\n        \"elapsedMs\": 597.527,\n        \"passed\": true,\n        \"stage\": \"source-patch\"\n      }\n    ],\n    \"totalMs\": 641.533\n  }\n}",
+                "type": "text"
+              }
+            ],
+            "details": {
+              "applied": false,
+              "checkRequired": true,
+              "format": "craftmine.creation-operation-result/1",
+              "receipt": {
+                "action": "place",
+                "affectedIds": [
+                  "created-fd40c8d809c37bab316d1f26"
+                ],
+                "afterRevision": 6,
+                "beforeRevision": 5,
+                "buildId": "gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3",
+                "createdIds": [
+                  "created-fd40c8d809c37bab316d1f26"
+                ],
+                "format": "craftmine.creation-operation/1",
+                "instanceId": "d9b36e7e7e7b320b5937b2ea",
+                "manifestHash": "70fdffa2f97b546f82231844f6727ce166c2db29162f95d2f6e36bd735426b69",
+                "operationCount": 4,
+                "operationId": "place-rock-1",
+                "operationLimit": 4096,
+                "operationsRemaining": 4092,
+                "requestHash": "a0fa3d6abb406cccf80b36f11fbe36bf2f7e93719858d1cbf70a7563b1eea43b",
+                "sourceRevision": 6,
+                "targetSnapshotId": "e1958258-265d-4289-ae6a-0f7049ead2cc",
+                "undoSupported": true,
+                "worldId": "world-f6b800d43bbf"
+              },
+              "replayed": false,
+              "source": {
+                "manifestHash": "05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db",
+                "revision": 7
+              },
+              "timing": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.679,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.645,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 19.119,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 17.925,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.789,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 2.792,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 597.527,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 641.533
+              }
+            },
+            "isError": false
+          },
+          "toolStatus": "success"
+        },
+        {
+          "content": "石头草稿已生成（`created-fd40c8d809c37bab316d1f26`，源码 revision 7）。提交校验。",
+          "createdAt": "2026-09-10T23:20:16.284Z",
+          "id": "03369105-f5c4-41c3-ba7c-3f1ca7d76d33",
+          "modelId": "deepseek-flash",
+          "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+          "responseDurationMs": 1666,
+          "role": "assistant",
+          "status": "complete",
+          "thinking": "Rock placed: created-fd40c8d809c37bab316d1f26, source revision 6 → 7 (manifestHash 05295d79...).\n\nRequirements: exactly 1 rock at [-3.334,0,7.526], solid+visible, plus the 3 existing trees must remain (with tree #2 and #3 needing visible/solid true; tree #1 has presenceMutable so it's excluded from visible/solid checks? It lists scale/color/position only — presence is mutable so it isn't required visible). Counts: rock 1, tree 3.\n\nNow submit check with revision 7, manifestHash 05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db.",
+          "usage": {
+            "cacheReadTokens": 94208,
+            "inputTokens": 3162,
+            "outputTokens": 323,
+            "reasoningTokens": 175,
+            "totalTokens": 97693
+          }
+        },
+        {
+          "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"assetManifestHash\\\": \\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\\",\\n  \\\"baseBuild\\\": \\\"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\\\",\\n  \\\"baseId\\\": \\\"creation-sandbox\\\",\\n  \\\"blockedReason\\\": null,\\n  \\\"buildId\\\": \\\"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\\\",\\n  \\\"checkRequirements\\\": {\\n    \\\"creation\\\": {\\n      \\\"counts\\\": [\\n        {\\n          \\\"count\\\": 1,\\n          \\\"kind\\\": \\\"rock\\\"\\n        },\\n        {\\n          \\\"count\\\": 3,\\n          \\\"kind\\\": \\\"tree\\\"\\n        },\\n        {\\n          \\\"count\\\": 0,\\n          \\\"kind\\\": \\\"chest\\\"\\n        },\\n        {\\n          \\\"count\\\": 0,\\n          \\\"kind\\\": \\\"door\\\"\\n        },\\n        {\\n          \\\"count\\\": 0,\\n          \\\"kind\\\": \\\"marker\\\"\\n        }\\n      ],\\n      \\\"entities\\\": [\\n        {\\n          \\\"excludeIds\\\": [\\n            \\\"created-e995b7dbd0c8ac590df4b041\\\",\\n            \\\"created-62bf6336d4935ab0a75839bb\\\",\\n            \\\"created-75180a8afbd05eac45bbf448\\\"\\n          ],\\n          \\\"kind\\\": \\\"rock\\\",\\n          \\\"position\\\": [\\n            -3.334,\\n            0,\\n            7.526\\n          ],\\n          \\\"solid\\\": true,\\n          \\\"visible\\\": true\\n        },\\n        {\\n          \\\"color\\\": \\\"#84a866\\\",\\n          \\\"id\\\": \\\"created-e995b7dbd0c8ac590df4b041\\\",\\n          \\\"kind\\\": \\\"tree\\\",\\n          \\\"position\\\": [\\n            -1.91622078418732,\\n            4.4703483581543e-8,\\n            2.87456464767456\\n          ],\\n          \\\"scale\\\": [\\n            2,\\n            2,\\n            2\\n          ]\\n        },\\n        {\\n          \\\"color\\\": \\\"#84a866\\\",\\n          \\\"id\\\": \\\"created-62bf6336d4935ab0a75839bb\\\",\\n          \\\"kind\\\": \\\"tree\\\",\\n          \\\"position\\\": [\\n            1.08377921581268,\\n            4.4703483581543e-8,\\n            2.87456464767456\\n          ],\\n          \\\"scale\\\": [\\n            2,\\n            2,\\n            2\\n          ],\\n          \\\"solid\\\": true,\\n          \\\"visible\\\": true\\n        },\\n        {\\n          \\\"color\\\": \\\"#84a866\\\",\\n          \\\"id\\\": \\\"created-75180a8afbd05eac45bbf448\\\",\\n          \\\"kind\\\": \\\"tree\\\",\\n          \\\"position\\\": [\\n            4.08377933502197,\\n            4.4703483581543e-8,\\n            2.87456464767456\\n          ],\\n          \\\"scale\\\": [\\n            2,\\n            2,\\n            2\\n          ],\\n          \\\"solid\\\": true,\\n          \\\"visible\\\": true\\n        }\\n      ],\\n      \\\"format\\\": \\\"craftmine.creation-requirements/1\\\",\\n      \\\"requestHash\\\": \\\"a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be\\\"\\n    },\\n    \\\"format\\\": \\\"craftmine.godot-check-requirements/1\\\"\\n  },\\n  \\\"checkRequirementsHash\\\": \\\"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\\\",\\n  \\\"engineVersion\\\": \\\"4.7.2-stable\\\",\\n  \\\"execution\\\": {\\n    \\\"enqueued\\\": true,\\n    \\\"owner\\\": \\\"S2\\\",\\n    \\\"reason\\\": null\\n  },\\n  \\\"executionAvailable\\\": true,\\n  \\\"jobId\\\": \\\"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\\\",\\n  \\\"kind\\\": \\\"check\\\",\\n  \\\"manifestHash\\\": \\\"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\\\",\\n  \\\"materialized\\\": {\\n    \\\"bytes\\\": 5694308,\\n    \\\"files\\\": 26\\n  },\\n  \\\"renderer\\\": \\\"gl_compatibility\\\",\\n  \\\"replayed\\\": false,\\n  \\\"sourceRevision\\\": 7,\\n  \\\"status\\\": \\\"queued\\\",\\n  \\\"target\\\": \\\"web\\\",\\n  \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n}\"}],\"details\":{\"assetManifestHash\":\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\"baseBuild\":\"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\",\"baseId\":\"creation-sandbox\",\"blockedReason\":null,\"buildId\":\"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\",\"checkRequirements\":{\"creation\":{\"counts\":[{\"count\":1,\"kind\":\"rock\"},{\"count\":3,\"kind\":\"tree\"},{\"count\":0,\"kind\":\"chest\"},{\"count\":0,\"kind\":\"door\"},{\"count\":0,\"kind\":\"marker\"}],\"entities\":[{\"excludeIds\":[\"created-e995b7dbd0c8ac590df4b041\",\"created-62bf6336d4935ab0a75839bb\",\"created-75180a8afbd05eac45bbf448\"],\"kind\":\"rock\",\"position\":[-3.334,0,7.526],\"solid\":true,\"visible\":true},{\"color\":\"#84a866\",\"id\":\"created-e995b7dbd0c8ac590df4b041\",\"kind\":\"tree\",\"position\":[-1.91622078418732,4.4703483581543e-8,2.87456464767456],\"scale\":[2,2,2]},{\"color\":\"#84a866\",\"id\":\"created-62bf6336d4935ab0a75839bb\",\"kind\":\"tree\",\"position\":[1.08377921581268,4.4703483581543e-8,2.87456464767456],\"scale\":[2,2,2],\"solid\":true,\"visible\":true},{\"color\":\"#84a866\",\"id\":\"created-75180a8afbd05eac45bbf448\",\"kind\":\"tree\",\"position\":[4.08377933502197,4.4703483581543e-8,2.87456464767456],\"scale\":[2,2,2],\"solid\":true,\"visible\":true}],\"format\":\"craftmine.creation-requirements/1\",\"requestHash\":\"a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be\"},\"format\":\"craftmine.godot-check-requirements/1\"},\"checkRequirementsHash\":\"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\",\"engineVersion\":\"4.7.2-stable\",\"execution\":{\"enqueued\":true,\"owner\":\"S2\",\"reason\":null},\"executionAvailable\":true,\"jobId\":\"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\",\"kind\":\"check\",\"manifestHash\":\"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\",\"materialized\":{\"bytes\":5694308,\"files\":26},\"renderer\":\"gl_compatibility\",\"replayed\":false,\"sourceRevision\":7,\"status\":\"queued\",\"target\":\"web\",\"worldId\":\"world-f6b800d43bbf\"},\"isError\":false}",
+          "createdAt": "2026-09-10T23:20:17.950Z",
+          "id": "call_00_OIGmB8zWuix7YouWqwio9616",
+          "role": "tool",
+          "status": "complete",
+          "toolArgs": {
+            "manifestHash": "05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db",
+            "mode": "check",
+            "revision": 7
+          },
+          "toolCallId": "call_00_OIGmB8zWuix7YouWqwio9616",
+          "toolCompletedAt": "2026-09-10T23:20:18.524Z",
+          "toolDurationMs": 574,
+          "toolName": "plugin_craftmine_world_godot_build_start",
+          "toolResult": {
+            "content": [
+              {
+                "text": "{\n  \"assetManifestHash\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n  \"baseBuild\": \"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\",\n  \"baseId\": \"creation-sandbox\",\n  \"blockedReason\": null,\n  \"buildId\": \"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\",\n  \"checkRequirements\": {\n    \"creation\": {\n      \"counts\": [\n        {\n          \"count\": 1,\n          \"kind\": \"rock\"\n        },\n        {\n          \"count\": 3,\n          \"kind\": \"tree\"\n        },\n        {\n          \"count\": 0,\n          \"kind\": \"chest\"\n        },\n        {\n          \"count\": 0,\n          \"kind\": \"door\"\n        },\n        {\n          \"count\": 0,\n          \"kind\": \"marker\"\n        }\n      ],\n      \"entities\": [\n        {\n          \"excludeIds\": [\n            \"created-e995b7dbd0c8ac590df4b041\",\n            \"created-62bf6336d4935ab0a75839bb\",\n            \"created-75180a8afbd05eac45bbf448\"\n          ],\n          \"kind\": \"rock\",\n          \"position\": [\n            -3.334,\n            0,\n            7.526\n          ],\n          \"solid\": true,\n          \"visible\": true\n        },\n        {\n          \"color\": \"#84a866\",\n          \"id\": \"created-e995b7dbd0c8ac590df4b041\",\n          \"kind\": \"tree\",\n          \"position\": [\n            -1.91622078418732,\n            4.4703483581543e-8,\n            2.87456464767456\n          ],\n          \"scale\": [\n            2,\n            2,\n            2\n          ]\n        },\n        {\n          \"color\": \"#84a866\",\n          \"id\": \"created-62bf6336d4935ab0a75839bb\",\n          \"kind\": \"tree\",\n          \"position\": [\n            1.08377921581268,\n            4.4703483581543e-8,\n            2.87456464767456\n          ],\n          \"scale\": [\n            2,\n            2,\n            2\n          ],\n          \"solid\": true,\n          \"visible\": true\n        },\n        {\n          \"color\": \"#84a866\",\n          \"id\": \"created-75180a8afbd05eac45bbf448\",\n          \"kind\": \"tree\",\n          \"position\": [\n            4.08377933502197,\n            4.4703483581543e-8,\n            2.87456464767456\n          ],\n          \"scale\": [\n            2,\n            2,\n            2\n          ],\n          \"solid\": true,\n          \"visible\": true\n        }\n      ],\n      \"format\": \"craftmine.creation-requirements/1\",\n      \"requestHash\": \"a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be\"\n    },\n    \"format\": \"craftmine.godot-check-requirements/1\"\n  },\n  \"checkRequirementsHash\": \"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\",\n  \"engineVersion\": \"4.7.2-stable\",\n  \"execution\": {\n    \"enqueued\": true,\n    \"owner\": \"S2\",\n    \"reason\": null\n  },\n  \"executionAvailable\": true,\n  \"jobId\": \"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\",\n  \"kind\": \"check\",\n  \"manifestHash\": \"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\",\n  \"materialized\": {\n    \"bytes\": 5694308,\n    \"files\": 26\n  },\n  \"renderer\": \"gl_compatibility\",\n  \"replayed\": false,\n  \"sourceRevision\": 7,\n  \"status\": \"queued\",\n  \"target\": \"web\",\n  \"worldId\": \"world-f6b800d43bbf\"\n}",
+                "type": "text"
+              }
+            ],
+            "details": {
+              "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "baseBuild": "gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3",
+              "baseId": "creation-sandbox",
+              "blockedReason": null,
+              "buildId": "gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef",
+              "checkRequirements": {
+                "creation": {
+                  "counts": [
+                    {
+                      "count": 1,
+                      "kind": "rock"
+                    },
+                    {
+                      "count": 3,
+                      "kind": "tree"
+                    },
+                    {
+                      "count": 0,
+                      "kind": "chest"
+                    },
+                    {
+                      "count": 0,
+                      "kind": "door"
+                    },
+                    {
+                      "count": 0,
+                      "kind": "marker"
+                    }
+                  ],
+                  "entities": [
+                    {
+                      "excludeIds": [
+                        "created-e995b7dbd0c8ac590df4b041",
+                        "created-62bf6336d4935ab0a75839bb",
+                        "created-75180a8afbd05eac45bbf448"
+                      ],
+                      "kind": "rock",
+                      "position": [
+                        -3.334,
+                        0,
+                        7.526
+                      ],
+                      "solid": true,
+                      "visible": true
+                    },
+                    {
+                      "color": "#84a866",
+                      "id": "created-e995b7dbd0c8ac590df4b041",
+                      "kind": "tree",
+                      "position": [
+                        -1.91622078418732,
+                        4.4703483581543e-8,
+                        2.87456464767456
+                      ],
+                      "scale": [
+                        2,
+                        2,
+                        2
+                      ]
+                    },
+                    {
+                      "color": "#84a866",
+                      "id": "created-62bf6336d4935ab0a75839bb",
+                      "kind": "tree",
+                      "position": [
+                        1.08377921581268,
+                        4.4703483581543e-8,
+                        2.87456464767456
+                      ],
+                      "scale": [
+                        2,
+                        2,
+                        2
+                      ],
+                      "solid": true,
+                      "visible": true
+                    },
+                    {
+                      "color": "#84a866",
+                      "id": "created-75180a8afbd05eac45bbf448",
+                      "kind": "tree",
+                      "position": [
+                        4.08377933502197,
+                        4.4703483581543e-8,
+                        2.87456464767456
+                      ],
+                      "scale": [
+                        2,
+                        2,
+                        2
+                      ],
+                      "solid": true,
+                      "visible": true
+                    }
+                  ],
+                  "format": "craftmine.creation-requirements/1",
+                  "requestHash": "a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be"
+                },
+                "format": "craftmine.godot-check-requirements/1"
+              },
+              "checkRequirementsHash": "d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13",
+              "engineVersion": "4.7.2-stable",
+              "execution": {
+                "enqueued": true,
+                "owner": "S2",
+                "reason": null
+              },
+              "executionAvailable": true,
+              "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+              "kind": "check",
+              "manifestHash": "05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db",
+              "materialized": {
+                "bytes": 5694308,
+                "files": 26
+              },
+              "renderer": "gl_compatibility",
+              "replayed": false,
+              "sourceRevision": 7,
+              "status": "queued",
+              "target": "web",
+              "worldId": "world-f6b800d43bbf"
+            },
+            "isError": false
+          },
+          "toolStatus": "success"
+        },
+        {
+          "content": "校验作业已入队（`gbd-b9a95484…`）。读取实际结果。",
+          "createdAt": "2026-09-10T23:20:18.906Z",
+          "id": "083e4c61-8caf-4f37-a4db-fb837fee687b",
+          "modelId": "deepseek-flash",
+          "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+          "responseDurationMs": 626,
+          "role": "assistant",
+          "status": "complete",
+          "thinking": "Job queued: gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8. Read it.",
+          "usage": {
+            "cacheReadTokens": 95360,
+            "inputTokens": 3381,
+            "outputTokens": 153,
+            "reasoningTokens": 47,
+            "totalTokens": 98894
+          }
+        },
+        {
+          "content": "{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"artifacts\\\": [\\n    {\\n      \\\"bytes\\\": 9919,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/bridge.js\\\",\\n      \\\"sha256\\\": \\\"a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 11944,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.apple-touch-icon.png\\\",\\n      \\\"sha256\\\": \\\"01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 2973,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.audio.position.worklet.js\\\",\\n      \\\"sha256\\\": \\\"be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 7298,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.audio.worklet.js\\\",\\n      \\\"sha256\\\": \\\"5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 965,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.html\\\",\\n      \\\"sha256\\\": \\\"f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 5700,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.icon.png\\\",\\n      \\\"sha256\\\": \\\"ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 314653,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.js\\\",\\n      \\\"sha256\\\": \\\"1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 5687580,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.pck\\\",\\n      \\\"sha256\\\": \\\"9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 21443,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.png\\\",\\n      \\\"sha256\\\": \\\"3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e\\\"\\n    },\\n    {\\n      \\\"bytes\\\": 38820072,\\n      \\\"kind\\\": \\\"artifact\\\",\\n      \\\"path\\\": \\\"web/index.wasm\\\",\\n      \\\"sha256\\\": \\\"f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051\\\"\\n    }\\n  ],\\n  \\\"assetManifestHash\\\": \\\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\\\",\\n  \\\"baseBuild\\\": \\\"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\\\",\\n  \\\"baseId\\\": \\\"creation-sandbox\\\",\\n  \\\"blockedReason\\\": null,\\n  \\\"branchId\\\": \\\"main\\\",\\n  \\\"buildId\\\": \\\"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\\\",\\n  \\\"candidateId\\\": \\\"gcan-74ec2afa7060a770d5be54baeac8525b9d57af126e1d579a179034bb74c068f5\\\",\\n  \\\"checkRequirements\\\": {\\n    \\\"creation\\\": {\\n      \\\"counts\\\": [\\n        {\\n          \\\"count\\\": 1,\\n          \\\"kind\\\": \\\"rock\\\"\\n        },\\n        {\\n          \\\"count\\\": 3,\\n          \\\"kind\\\": \\\"tree\\\"\\n        },\\n        {\\n          \\\"count\\\": 0,\\n          \\\"kind\\\": \\\"chest\\\"\\n        },\\n        {\\n          \\\"count\\\": 0,\\n          \\\"kind\\\": \\\"door\\\"\\n        },\\n        {\\n          \\\"count\\\": 0,\\n          \\\"kind\\\": \\\"marker\\\"\\n        }\\n      ],\\n      \\\"entities\\\": [\\n        {\\n          \\\"excludeIds\\\": [\\n            \\\"created-e995b7dbd0c8ac590df4b041\\\",\\n            \\\"created-62bf6336d4935ab0a75839bb\\\",\\n            \\\"created-75180a8afbd05eac45bbf448\\\"\\n          ],\\n          \\\"kind\\\": \\\"rock\\\",\\n          \\\"position\\\": [\\n            -3.334,\\n            0,\\n            7.526\\n          ],\\n          \\\"solid\\\": true,\\n          \\\"visible\\\": true\\n        },\\n        {\\n          \\\"color\\\": \\\"#84a866\\\",\\n          \\\"id\\\": \\\"created-e995b7dbd0c8ac590df4b041\\\",\\n          \\\"kind\\\": \\\"tree\\\",\\n          \\\"position\\\": [\\n            -1.91622078418732,\\n            4.4703483581543e-8,\\n            2.87456464767456\\n          ],\\n          \\\"scale\\\": [\\n            2,\\n            2,\\n            2\\n          ]\\n        },\\n        {\\n          \\\"color\\\": \\\"#84a866\\\",\\n          \\\"id\\\": \\\"created-62bf6336d4935ab0a75839bb\\\",\\n          \\\"kind\\\": \\\"tree\\\",\\n          \\\"position\\\": [\\n            1.08377921581268,\\n            4.4703483581543e-8,\\n            2.87456464767456\\n          ],\\n          \\\"scale\\\": [\\n            2,\\n            2,\\n            2\\n          ],\\n          \\\"solid\\\": true,\\n          \\\"visible\\\": true\\n        },\\n        {\\n          \\\"color\\\": \\\"#84a866\\\",\\n          \\\"id\\\": \\\"created-75180a8afbd05eac45bbf448\\\",\\n          \\\"kind\\\": \\\"tree\\\",\\n          \\\"position\\\": [\\n            4.08377933502197,\\n            4.4703483581543e-8,\\n            2.87456464767456\\n          ],\\n          \\\"scale\\\": [\\n            2,\\n            2,\\n            2\\n          ],\\n          \\\"solid\\\": true,\\n          \\\"visible\\\": true\\n        }\\n      ],\\n      \\\"format\\\": \\\"craftmine.creation-requirements/1\\\",\\n      \\\"requestHash\\\": \\\"a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be\\\"\\n    },\\n    \\\"format\\\": \\\"craftmine.godot-check-requirements/1\\\"\\n  },\\n  \\\"checkRequirementsHash\\\": \\\"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\\\",\\n  \\\"createdAt\\\": 1789082418521,\\n  \\\"executorId\\\": \\\"craftmine-windows-broker-v1\\\",\\n  \\\"interruptReason\\\": null,\\n  \\\"jobId\\\": \\\"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\\\",\\n  \\\"kind\\\": \\\"check\\\",\\n  \\\"lastReadAgeMs\\\": 0,\\n  \\\"leaseExpiresAt\\\": null,\\n  \\\"manifestHash\\\": \\\"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\\\",\\n  \\\"originJobId\\\": null,\\n  \\\"output\\\": {\\n    \\\"artifacts\\\": [\\n      {\\n        \\\"bytes\\\": 9919,\\n        \\\"path\\\": \\\"web/bridge.js\\\",\\n        \\\"sha256\\\": \\\"a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 11944,\\n        \\\"path\\\": \\\"web/index.apple-touch-icon.png\\\",\\n        \\\"sha256\\\": \\\"01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 2973,\\n        \\\"path\\\": \\\"web/index.audio.position.worklet.js\\\",\\n        \\\"sha256\\\": \\\"be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 7298,\\n        \\\"path\\\": \\\"web/index.audio.worklet.js\\\",\\n        \\\"sha256\\\": \\\"5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 965,\\n        \\\"path\\\": \\\"web/index.html\\\",\\n        \\\"sha256\\\": \\\"f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 5700,\\n        \\\"path\\\": \\\"web/index.icon.png\\\",\\n        \\\"sha256\\\": \\\"ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 314653,\\n        \\\"path\\\": \\\"web/index.js\\\",\\n        \\\"sha256\\\": \\\"1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 5687580,\\n        \\\"path\\\": \\\"web/index.pck\\\",\\n        \\\"sha256\\\": \\\"9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 21443,\\n        \\\"path\\\": \\\"web/index.png\\\",\\n        \\\"sha256\\\": \\\"3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e\\\"\\n      },\\n      {\\n        \\\"bytes\\\": 38820072,\\n        \\\"path\\\": \\\"web/index.wasm\\\",\\n        \\\"sha256\\\": \\\"f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051\\\"\\n      }\\n    ],\\n    \\\"check\\\": {\\n      \\\"assertions\\\": [\\n        {\\n          \\\"detail\\\": \\\"ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit\\\",\\n          \\\"id\\\": \\\"runtime.ready\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": \\\"frames=3 distinct=1\\\",\\n          \\\"id\\\": \\\"runtime.frame\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": null,\\n          \\\"id\\\": \\\"runtime.no-errors\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": \\\"formal progress unchanged\\\",\\n          \\\"id\\\": \\\"runtime.snapshot\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": \\\"guard={\\\\\\\"focus\\\\\\\":0,\\\\\\\"pointerLock\\\\\\\":0}\\\",\\n          \\\"id\\\": \\\"runtime.isolation\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": \\\"graceful=true\\\",\\n          \\\"id\\\": \\\"runtime.recovery\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": \\\"runtime expectation evidence required\\\",\\n          \\\"id\\\": \\\"runtime.creation-requirements\\\",\\n          \\\"passed\\\": true\\n        },\\n        {\\n          \\\"detail\\\": \\\"bound runtime expectation confirmed\\\",\\n          \\\"id\\\": \\\"core.creation-requirements\\\",\\n          \\\"passed\\\": true\\n        }\\n      ],\\n      \\\"defaultsSnapshot\\\": {\\n        \\\"baseId\\\": \\\"creation-sandbox\\\",\\n        \\\"baseVersion\\\": \\\"1.0.0\\\",\\n        \\\"body\\\": {\\n          \\\"baseVersion\\\": \\\"1.0.0\\\",\\n          \\\"doors\\\": {},\\n          \\\"format\\\": \\\"craftmine.creation-progress/1\\\",\\n          \\\"inventory\\\": {},\\n          \\\"openedChests\\\": {},\\n          \\\"player\\\": {\\n            \\\"onFloor\\\": true,\\n            \\\"pitch\\\": 0,\\n            \\\"position\\\": [\\n              0,\\n              0.899999976158142,\\n              6\\n            ],\\n            \\\"yaw\\\": 0\\n          },\\n          \\\"rules\\\": {\\n            \\\"chop-tree\\\": {\\n              \\\"chopped\\\": false,\\n              \\\"chops\\\": 0,\\n              \\\"remainingFrames\\\": 0\\n            }\\n          },\\n          \\\"sourceTimeOfDay\\\": 12,\\n          \\\"timeOfDay\\\": 12,\\n          \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n        },\\n        \\\"format\\\": \\\"craftmine.godot-progress/1\\\",\\n        \\\"stateVersion\\\": 1,\\n        \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n      },\\n      \\\"passed\\\": true,\\n      \\\"progressMigration\\\": {\\n        \\\"added\\\": [],\\n        \\\"defaultsSnapshotHash\\\": \\\"dcd57b54a17b0bc35bc437f9f6737c868a7a54bb8794a9be24e98a4a2e927c8a\\\",\\n        \\\"format\\\": \\\"craftmine.godot-additive-progress/1\\\",\\n        \\\"previousSnapshotHash\\\": \\\"fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c\\\",\\n        \\\"snapshot\\\": {\\n          \\\"baseId\\\": \\\"creation-sandbox\\\",\\n          \\\"baseVersion\\\": \\\"1.0.0\\\",\\n          \\\"body\\\": {\\n            \\\"baseVersion\\\": \\\"1.0.0\\\",\\n            \\\"doors\\\": {},\\n            \\\"format\\\": \\\"craftmine.creation-progress/1\\\",\\n            \\\"inventory\\\": {\\n              \\\"wood\\\": 1\\n            },\\n            \\\"openedChests\\\": {},\\n            \\\"player\\\": {\\n              \\\"onFloor\\\": true,\\n              \\\"pitch\\\": -0.4,\\n              \\\"position\\\": [\\n                0,\\n                0.899999976158142,\\n                6\\n              ],\\n              \\\"yaw\\\": 2\\n            },\\n            \\\"rules\\\": {\\n              \\\"chop-tree\\\": {\\n                \\\"chopped\\\": false,\\n                \\\"chops\\\": 1,\\n                \\\"remainingFrames\\\": 0\\n              }\\n            },\\n            \\\"sourceTimeOfDay\\\": 12,\\n            \\\"timeOfDay\\\": 12,\\n            \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n          },\\n          \\\"format\\\": \\\"craftmine.godot-progress/1\\\",\\n          \\\"stateVersion\\\": 1,\\n          \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n        },\\n        \\\"snapshotHash\\\": \\\"fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c\\\"\\n      },\\n      \\\"requirementsEvidence\\\": {\\n        \\\"buildId\\\": \\\"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\\\",\\n        \\\"format\\\": \\\"craftmine.godot-check-requirements-evidence/1\\\",\\n        \\\"instanceId\\\": \\\"0f47b070f51b610cfcb548f7\\\",\\n        \\\"jobId\\\": \\\"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\\\",\\n        \\\"observations\\\": [\\n          {\\n            \\\"entities\\\": [\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    -0.716220855712891,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -3.11622095108032,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    -0.716220855712891,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -3.11622095108032,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-e995b7dbd0c8ac590df4b041\\\",\\n                \\\"kind\\\": \\\"tree\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    -0.71757984161377,\\n                    7.99999904632568,\\n                    4.07320547103882\\n                  ],\\n                  \\\"min\\\": [\\n                    -3.11486148834229,\\n                    0,\\n                    1.6759238243103\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  -1.91622078418732,\\n                  4.4703483581543e-8,\\n                  2.87456464767456\\n                ],\\n                \\\"presenceMutable\\\": true,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  2,\\n                  2,\\n                  2\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              },\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    2.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -0.116220831871033,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    2.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -0.116220831871033,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-62bf6336d4935ab0a75839bb\\\",\\n                \\\"kind\\\": \\\"tree\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    2.28242015838623,\\n                    7.99999904632568,\\n                    4.07320547103882\\n                  ],\\n                  \\\"min\\\": [\\n                    -0.114861607551575,\\n                    0,\\n                    1.6759238243103\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  1.08377921581268,\\n                  4.4703483581543e-8,\\n                  2.87456464767456\\n                ],\\n                \\\"presenceMutable\\\": false,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  2,\\n                  2,\\n                  2\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              },\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    5.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    2.88377928733826,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    5.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    2.88377928733826,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-75180a8afbd05eac45bbf448\\\",\\n                \\\"kind\\\": \\\"tree\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    5.28242015838623,\\n                    7.99999904632568,\\n                    4.07320547103882\\n                  ],\\n                  \\\"min\\\": [\\n                    2.88513851165771,\\n                    0,\\n                    1.6759238243103\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  4.08377933502197,\\n                  4.4703483581543e-8,\\n                  2.87456464767456\\n                ],\\n                \\\"presenceMutable\\\": false,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  2,\\n                  2,\\n                  2\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              },\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    -2.63357043266296,\\n                    1.40000009536743,\\n                    8.22563362121582\\n                  ],\\n                  \\\"min\\\": [\\n                    -4.03357028961182,\\n                    5.96046447753906e-8,\\n                    6.82563400268555\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    -2.63357043266296,\\n                    1.40000009536743,\\n                    8.22563362121582\\n                  ],\\n                  \\\"min\\\": [\\n                    -4.03357028961182,\\n                    5.96046447753906e-8,\\n                    6.82563400268555\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-fd40c8d809c37bab316d1f26\\\",\\n                \\\"kind\\\": \\\"rock\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    -2.63436317443848,\\n                    1.40000009536743,\\n                    8.22484111785889\\n                  ],\\n                  \\\"min\\\": [\\n                    -4.03277778625488,\\n                    5.96046447753906e-8,\\n                    6.82642650604248\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  -3.33357048034668,\\n                  4.4703483581543e-8,\\n                  7.52563381195068\\n                ],\\n                \\\"presenceMutable\\\": false,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  1,\\n                  1,\\n                  1\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              }\\n            ],\\n            \\\"phase\\\": \\\"loaded\\\",\\n            \\\"timeOfDay\\\": 12\\n          },\\n          {\\n            \\\"entities\\\": [\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    -0.716220855712891,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -3.11622095108032,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    -0.716220855712891,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -3.11622095108032,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-e995b7dbd0c8ac590df4b041\\\",\\n                \\\"kind\\\": \\\"tree\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    -0.71757984161377,\\n                    7.99999904632568,\\n                    4.07320547103882\\n                  ],\\n                  \\\"min\\\": [\\n                    -3.11486148834229,\\n                    0,\\n                    1.6759238243103\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  -1.91622078418732,\\n                  4.4703483581543e-8,\\n                  2.87456464767456\\n                ],\\n                \\\"presenceMutable\\\": true,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  2,\\n                  2,\\n                  2\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              },\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    2.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -0.116220831871033,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    2.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    -0.116220831871033,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-62bf6336d4935ab0a75839bb\\\",\\n                \\\"kind\\\": \\\"tree\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    2.28242015838623,\\n                    7.99999904632568,\\n                    4.07320547103882\\n                  ],\\n                  \\\"min\\\": [\\n                    -0.114861607551575,\\n                    0,\\n                    1.6759238243103\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  1.08377921581268,\\n                  4.4703483581543e-8,\\n                  2.87456464767456\\n                ],\\n                \\\"presenceMutable\\\": false,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  2,\\n                  2,\\n                  2\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              },\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    5.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    2.88377928733826,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    5.28377914428711,\\n                    8,\\n                    4.07456493377686\\n                  ],\\n                  \\\"min\\\": [\\n                    2.88377928733826,\\n                    0,\\n                    1.67456459999084\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-75180a8afbd05eac45bbf448\\\",\\n                \\\"kind\\\": \\\"tree\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    5.28242015838623,\\n                    7.99999904632568,\\n                    4.07320547103882\\n                  ],\\n                  \\\"min\\\": [\\n                    2.88513851165771,\\n                    0,\\n                    1.6759238243103\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  4.08377933502197,\\n                  4.4703483581543e-8,\\n                  2.87456464767456\\n                ],\\n                \\\"presenceMutable\\\": false,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  2,\\n                  2,\\n                  2\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              },\\n              {\\n                \\\"bounds\\\": {\\n                  \\\"max\\\": [\\n                    -2.63357043266296,\\n                    1.40000009536743,\\n                    8.22563362121582\\n                  ],\\n                  \\\"min\\\": [\\n                    -4.03357028961182,\\n                    5.96046447753906e-8,\\n                    6.82563400268555\\n                  ]\\n                },\\n                \\\"collisionBounds\\\": {\\n                  \\\"max\\\": [\\n                    -2.63357043266296,\\n                    1.40000009536743,\\n                    8.22563362121582\\n                  ],\\n                  \\\"min\\\": [\\n                    -4.03357028961182,\\n                    5.96046447753906e-8,\\n                    6.82563400268555\\n                  ]\\n                },\\n                \\\"color\\\": \\\"#84a866\\\",\\n                \\\"id\\\": \\\"created-fd40c8d809c37bab316d1f26\\\",\\n                \\\"kind\\\": \\\"rock\\\",\\n                \\\"meshBounds\\\": {\\n                  \\\"max\\\": [\\n                    -2.63436317443848,\\n                    1.40000009536743,\\n                    8.22484111785889\\n                  ],\\n                  \\\"min\\\": [\\n                    -4.03277778625488,\\n                    5.96046447753906e-8,\\n                    6.82642650604248\\n                  ]\\n                },\\n                \\\"parameters\\\": {},\\n                \\\"position\\\": [\\n                  -3.33357048034668,\\n                  4.4703483581543e-8,\\n                  7.52563381195068\\n                ],\\n                \\\"presenceMutable\\\": false,\\n                \\\"rotationY\\\": 0,\\n                \\\"scale\\\": [\\n                  1,\\n                  1,\\n                  1\\n                ],\\n                \\\"solid\\\": true,\\n                \\\"solidMutable\\\": false,\\n                \\\"visible\\\": true\\n              }\\n            ],\\n            \\\"phase\\\": \\\"running\\\",\\n            \\\"timeOfDay\\\": 12\\n          }\\n        ],\\n        \\\"requirementsHash\\\": \\\"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\\\",\\n        \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n      }\\n    },\\n    \\\"compile\\\": {\\n      \\\"errors\\\": [],\\n      \\\"passed\\\": true,\\n      \\\"warnings\\\": []\\n    },\\n    \\\"engine\\\": {\\n      \\\"evidenceHash\\\": \\\"5effa11921fd03b4a144ca0a5631b935b2b32b402637c43a65724c9241081d57\\\",\\n      \\\"isolation\\\": \\\"craftmine.windows.lpac-registry.v1\\\",\\n      \\\"version\\\": \\\"4.7.2-stable\\\"\\n    },\\n    \\\"format\\\": \\\"craftmine.godot-job-result/1\\\",\\n    \\\"import\\\": {\\n      \\\"log\\\": \\\"Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\\\\r\\\\n\\\\r\\\\nERROR: Condition \\\\\\\"res != ((HRESULT)0x00000000)\\\\\\\" is true. Returning: String()\\\\r\\\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\\\r\\\\nERROR: Condition \\\\\\\"res != ((HRESULT)0x00000000)\\\\\\\" is true. Returning: String()\\\\r\\\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\\\r\\\\nERROR: Call to GetAdaptersAddresses failed with error 5.\\\\r\\\\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\\\\r\\\\nERROR: Method/function failed. Returning: \\\\\\\"\\\\\\\"\\\\r\\\\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\\\\r\\\\nERROR: Method/function failed. Returning: \\\\\\\"\\\\\\\"\\\\r\\\\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\\\\r\\\\nERROR: Condition \\\\\\\"res != ((HRESULT)0x00000000)\\\\\\\" is true. Returning: String()\\\\r\\\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\\\r\\\\nERROR: Condition \\\\\\\"res != ((HRESULT)0x00000000)\\\\\\\" is true. Returning: String()\\\\r\\\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\\\r\\\\nERROR: Condition \\\\\\\"_sock == (SOCKET)(~0)\\\\\\\" is true. Returning: FAILED\\\\r\\\\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\\\\r\\\\nERROR: Condition \\\\\\\"err != OK\\\\\\\" is true. Returning: ERR_CANT_CREATE\\\\r\\\\n   at: listen (core/io/tcp_server.cpp:56)\\\\r\\\\n[   0% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | Started 项目初始化 (5 steps)\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[   0% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | 正在扫描文件结构……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  16% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | 正在加载全局类名……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  33% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | 正在校验 GDExtension……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  50% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | 正在创建自动加载脚本……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  66% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | 正在初始化插件……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  83% ] \\\\u001b[90m\\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m | 正在启动文件扫描……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n\\\\u001b[92m[ DONE ]\\\\u001b[39m \\\\u001b[1mfirst_scan_filesystem\\\\u001b[22m\\\\r\\\\n\\\\u001b[0m\\\\r\\\\n[   0% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | Started 正在注册全局类…… (9 steps)\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[   0% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  10% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  20% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  30% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  40% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | CameraRig\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  50% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | PlayerController\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  60% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  70% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  80% ] \\\\u001b[90m\\\\u001b[1mupdate_scripts_classes\\\\u001b[22m | \\\\u001b[39m\\\\u001b[0m\\\\r\\\\n\\\\u001b[92m[ DONE ]\\\\u001b[39m \\\\u001b[1mupdate_scripts_classes\\\\u001b[22m\\\\r\\\\n\\\\u001b[0m\\\\r\\\\n[   0% ] \\\\u001b[90m\\\\u001b[1mloading_editor_layout\\\\u001b[22m | Started 正在加载编辑器 (5 steps)\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[   0% ] \\\\u001b[90m\\\\u001b[1mloading_editor_layout\\\\u001b[22m | 正在加载编辑器布局……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n[  16% ] \\\\u001b[90m\\\\u001b[1mloading_editor_layout\\\\u001b[22m | 正在加载停靠面板……\\\\u001b[39m\\\\u001b[0m\\\\r\\\\n\\\\u001b[92m[ DONE ]\\\\u001b[39m \\\\u001b[1mloading_editor_layout\\\\u001b[22m\\\\r\\\\n\\\\u001b[0m\\\\r\\\\nERROR: Condition \\\\\\\"_sock == (SOCKET)(~0)\\\\\\\" is true. Returning: FAILED\\\\r\\\\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\\\\r\\\\nERROR: Condition \\\\\\\"err != OK\\\\\\\" is true. Returning: ERR_CANT_CREATE\\\\r\\\\n   at: listen (core/io/tcp_server.cpp:56)\\\\r\\\\n\\\",\\n      \\\"passed\\\": true\\n    },\\n    \\\"inputHash\\\": \\\"77efb17b1e3a1ee4e389e5f41263bbd7c44213777d714ba7633820326081eb80\\\",\\n    \\\"passed\\\": true\\n  },\\n  \\\"outputHash\\\": \\\"0fe4ae317b8e285eca068630305db797df33872645613e8c806948648ebcef48\\\",\\n  \\\"progress\\\": 100,\\n  \\\"sourceRevision\\\": 7,\\n  \\\"sourceStale\\\": false,\\n  \\\"stage\\\": \\\"passed\\\",\\n  \\\"status\\\": \\\"passed\\\",\\n  \\\"taskId\\\": \\\"work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999\\\",\\n  \\\"updatedAt\\\": 1789082427452,\\n  \\\"waitReason\\\": \\\"terminal\\\",\\n  \\\"waitedMs\\\": 8137,\\n  \\\"worldId\\\": \\\"world-f6b800d43bbf\\\"\\n}\"}],\"details\":{\"artifacts\":[{\"bytes\":9919,\"kind\":\"artifact\",\"path\":\"web/bridge.js\",\"sha256\":\"a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5\"},{\"bytes\":11944,\"kind\":\"artifact\",\"path\":\"web/index.apple-touch-icon.png\",\"sha256\":\"01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5\"},{\"bytes\":2973,\"kind\":\"artifact\",\"path\":\"web/index.audio.position.worklet.js\",\"sha256\":\"be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8\"},{\"bytes\":7298,\"kind\":\"artifact\",\"path\":\"web/index.audio.worklet.js\",\"sha256\":\"5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3\"},{\"bytes\":965,\"kind\":\"artifact\",\"path\":\"web/index.html\",\"sha256\":\"f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e\"},{\"bytes\":5700,\"kind\":\"artifact\",\"path\":\"web/index.icon.png\",\"sha256\":\"ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5\"},{\"bytes\":314653,\"kind\":\"artifact\",\"path\":\"web/index.js\",\"sha256\":\"1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c\"},{\"bytes\":5687580,\"kind\":\"artifact\",\"path\":\"web/index.pck\",\"sha256\":\"9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf\"},{\"bytes\":21443,\"kind\":\"artifact\",\"path\":\"web/index.png\",\"sha256\":\"3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e\"},{\"bytes\":38820072,\"kind\":\"artifact\",\"path\":\"web/index.wasm\",\"sha256\":\"f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051\"}],\"assetManifestHash\":\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\"baseBuild\":\"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\",\"baseId\":\"creation-sandbox\",\"blockedReason\":null,\"branchId\":\"main\",\"buildId\":\"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\",\"candidateId\":\"gcan-74ec2afa7060a770d5be54baeac8525b9d57af126e1d579a179034bb74c068f5\",\"checkRequirements\":{\"creation\":{\"counts\":[{\"count\":1,\"kind\":\"rock\"},{\"count\":3,\"kind\":\"tree\"},{\"count\":0,\"kind\":\"chest\"},{\"count\":0,\"kind\":\"door\"},{\"count\":0,\"kind\":\"marker\"}],\"entities\":[{\"excludeIds\":[\"created-e995b7dbd0c8ac590df4b041\",\"created-62bf6336d4935ab0a75839bb\",\"created-75180a8afbd05eac45bbf448\"],\"kind\":\"rock\",\"position\":[-3.334,0,7.526],\"solid\":true,\"visible\":true},{\"color\":\"#84a866\",\"id\":\"created-e995b7dbd0c8ac590df4b041\",\"kind\":\"tree\",\"position\":[-1.91622078418732,4.4703483581543e-8,2.87456464767456],\"scale\":[2,2,2]},{\"color\":\"#84a866\",\"id\":\"created-62bf6336d4935ab0a75839bb\",\"kind\":\"tree\",\"position\":[1.08377921581268,4.4703483581543e-8,2.87456464767456],\"scale\":[2,2,2],\"solid\":true,\"visible\":true},{\"color\":\"#84a866\",\"id\":\"created-75180a8afbd05eac45bbf448\",\"kind\":\"tree\",\"position\":[4.08377933502197,4.4703483581543e-8,2.87456464767456],\"scale\":[2,2,2],\"solid\":true,\"visible\":true}],\"format\":\"craftmine.creation-requirements/1\",\"requestHash\":\"a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be\"},\"format\":\"craftmine.godot-check-requirements/1\"},\"checkRequirementsHash\":\"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\",\"createdAt\":1789082418521,\"executorId\":\"craftmine-windows-broker-v1\",\"interruptReason\":null,\"jobId\":\"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\",\"kind\":\"check\",\"lastReadAgeMs\":0,\"leaseExpiresAt\":null,\"manifestHash\":\"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\",\"originJobId\":null,\"output\":{\"artifacts\":[{\"bytes\":9919,\"path\":\"web/bridge.js\",\"sha256\":\"a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5\"},{\"bytes\":11944,\"path\":\"web/index.apple-touch-icon.png\",\"sha256\":\"01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5\"},{\"bytes\":2973,\"path\":\"web/index.audio.position.worklet.js\",\"sha256\":\"be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8\"},{\"bytes\":7298,\"path\":\"web/index.audio.worklet.js\",\"sha256\":\"5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3\"},{\"bytes\":965,\"path\":\"web/index.html\",\"sha256\":\"f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e\"},{\"bytes\":5700,\"path\":\"web/index.icon.png\",\"sha256\":\"ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5\"},{\"bytes\":314653,\"path\":\"web/index.js\",\"sha256\":\"1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c\"},{\"bytes\":5687580,\"path\":\"web/index.pck\",\"sha256\":\"9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf\"},{\"bytes\":21443,\"path\":\"web/index.png\",\"sha256\":\"3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e\"},{\"bytes\":38820072,\"path\":\"web/index.wasm\",\"sha256\":\"f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051\"}],\"check\":{\"assertions\":[{\"detail\":\"ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit\",\"id\":\"runtime.ready\",\"passed\":true},{\"detail\":\"frames=3 distinct=1\",\"id\":\"runtime.frame\",\"passed\":true},{\"detail\":null,\"id\":\"runtime.no-errors\",\"passed\":true},{\"detail\":\"formal progress unchanged\",\"id\":\"runtime.snapshot\",\"passed\":true},{\"detail\":\"guard={\\\"focus\\\":0,\\\"pointerLock\\\":0}\",\"id\":\"runtime.isolation\",\"passed\":true},{\"detail\":\"graceful=true\",\"id\":\"runtime.recovery\",\"passed\":true},{\"detail\":\"runtime expectation evidence required\",\"id\":\"runtime.creation-requirements\",\"passed\":true},{\"detail\":\"bound runtime expectation confirmed\",\"id\":\"core.creation-requirements\",\"passed\":true}],\"defaultsSnapshot\":{\"baseId\":\"creation-sandbox\",\"baseVersion\":\"1.0.0\",\"body\":{\"baseVersion\":\"1.0.0\",\"doors\":{},\"format\":\"craftmine.creation-progress/1\",\"inventory\":{},\"openedChests\":{},\"player\":{\"onFloor\":true,\"pitch\":0,\"position\":[0,0.899999976158142,6],\"yaw\":0},\"rules\":{\"chop-tree\":{\"chopped\":false,\"chops\":0,\"remainingFrames\":0}},\"sourceTimeOfDay\":12,\"timeOfDay\":12,\"worldId\":\"world-f6b800d43bbf\"},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"world-f6b800d43bbf\"},\"passed\":true,\"progressMigration\":{\"added\":[],\"defaultsSnapshotHash\":\"dcd57b54a17b0bc35bc437f9f6737c868a7a54bb8794a9be24e98a4a2e927c8a\",\"format\":\"craftmine.godot-additive-progress/1\",\"previousSnapshotHash\":\"fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c\",\"snapshot\":{\"baseId\":\"creation-sandbox\",\"baseVersion\":\"1.0.0\",\"body\":{\"baseVersion\":\"1.0.0\",\"doors\":{},\"format\":\"craftmine.creation-progress/1\",\"inventory\":{\"wood\":1},\"openedChests\":{},\"player\":{\"onFloor\":true,\"pitch\":-0.4,\"position\":[0,0.899999976158142,6],\"yaw\":2},\"rules\":{\"chop-tree\":{\"chopped\":false,\"chops\":1,\"remainingFrames\":0}},\"sourceTimeOfDay\":12,\"timeOfDay\":12,\"worldId\":\"world-f6b800d43bbf\"},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"world-f6b800d43bbf\"},\"snapshotHash\":\"fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c\"},\"requirementsEvidence\":{\"buildId\":\"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\",\"format\":\"craftmine.godot-check-requirements-evidence/1\",\"instanceId\":\"0f47b070f51b610cfcb548f7\",\"jobId\":\"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\",\"observations\":[{\"entities\":[{\"bounds\":{\"max\":[-0.716220855712891,8,4.07456493377686],\"min\":[-3.11622095108032,0,1.67456459999084]},\"collisionBounds\":{\"max\":[-0.716220855712891,8,4.07456493377686],\"min\":[-3.11622095108032,0,1.67456459999084]},\"color\":\"#84a866\",\"id\":\"created-e995b7dbd0c8ac590df4b041\",\"kind\":\"tree\",\"meshBounds\":{\"max\":[-0.71757984161377,7.99999904632568,4.07320547103882],\"min\":[-3.11486148834229,0,1.6759238243103]},\"parameters\":{},\"position\":[-1.91622078418732,4.4703483581543e-8,2.87456464767456],\"presenceMutable\":true,\"rotationY\":0,\"scale\":[2,2,2],\"solid\":true,\"solidMutable\":false,\"visible\":true},{\"bounds\":{\"max\":[2.28377914428711,8,4.07456493377686],\"min\":[-0.116220831871033,0,1.67456459999084]},\"collisionBounds\":{\"max\":[2.28377914428711,8,4.07456493377686],\"min\":[-0.116220831871033,0,1.67456459999084]},\"color\":\"#84a866\",\"id\":\"created-62bf6336d4935ab0a75839bb\",\"kind\":\"tree\",\"meshBounds\":{\"max\":[2.28242015838623,7.99999904632568,4.07320547103882],\"min\":[-0.114861607551575,0,1.6759238243103]},\"parameters\":{},\"position\":[1.08377921581268,4.4703483581543e-8,2.87456464767456],\"presenceMutable\":false,\"rotationY\":0,\"scale\":[2,2,2],\"solid\":true,\"solidMutable\":false,\"visible\":true},{\"bounds\":{\"max\":[5.28377914428711,8,4.07456493377686],\"min\":[2.88377928733826,0,1.67456459999084]},\"collisionBounds\":{\"max\":[5.28377914428711,8,4.07456493377686],\"min\":[2.88377928733826,0,1.67456459999084]},\"color\":\"#84a866\",\"id\":\"created-75180a8afbd05eac45bbf448\",\"kind\":\"tree\",\"meshBounds\":{\"max\":[5.28242015838623,7.99999904632568,4.07320547103882],\"min\":[2.88513851165771,0,1.6759238243103]},\"parameters\":{},\"position\":[4.08377933502197,4.4703483581543e-8,2.87456464767456],\"presenceMutable\":false,\"rotationY\":0,\"scale\":[2,2,2],\"solid\":true,\"solidMutable\":false,\"visible\":true},{\"bounds\":{\"max\":[-2.63357043266296,1.40000009536743,8.22563362121582],\"min\":[-4.03357028961182,5.96046447753906e-8,6.82563400268555]},\"collisionBounds\":{\"max\":[-2.63357043266296,1.40000009536743,8.22563362121582],\"min\":[-4.03357028961182,5.96046447753906e-8,6.82563400268555]},\"color\":\"#84a866\",\"id\":\"created-fd40c8d809c37bab316d1f26\",\"kind\":\"rock\",\"meshBounds\":{\"max\":[-2.63436317443848,1.40000009536743,8.22484111785889],\"min\":[-4.03277778625488,5.96046447753906e-8,6.82642650604248]},\"parameters\":{},\"position\":[-3.33357048034668,4.4703483581543e-8,7.52563381195068],\"presenceMutable\":false,\"rotationY\":0,\"scale\":[1,1,1],\"solid\":true,\"solidMutable\":false,\"visible\":true}],\"phase\":\"loaded\",\"timeOfDay\":12},{\"entities\":[{\"bounds\":{\"max\":[-0.716220855712891,8,4.07456493377686],\"min\":[-3.11622095108032,0,1.67456459999084]},\"collisionBounds\":{\"max\":[-0.716220855712891,8,4.07456493377686],\"min\":[-3.11622095108032,0,1.67456459999084]},\"color\":\"#84a866\",\"id\":\"created-e995b7dbd0c8ac590df4b041\",\"kind\":\"tree\",\"meshBounds\":{\"max\":[-0.71757984161377,7.99999904632568,4.07320547103882],\"min\":[-3.11486148834229,0,1.6759238243103]},\"parameters\":{},\"position\":[-1.91622078418732,4.4703483581543e-8,2.87456464767456],\"presenceMutable\":true,\"rotationY\":0,\"scale\":[2,2,2],\"solid\":true,\"solidMutable\":false,\"visible\":true},{\"bounds\":{\"max\":[2.28377914428711,8,4.07456493377686],\"min\":[-0.116220831871033,0,1.67456459999084]},\"collisionBounds\":{\"max\":[2.28377914428711,8,4.07456493377686],\"min\":[-0.116220831871033,0,1.67456459999084]},\"color\":\"#84a866\",\"id\":\"created-62bf6336d4935ab0a75839bb\",\"kind\":\"tree\",\"meshBounds\":{\"max\":[2.28242015838623,7.99999904632568,4.07320547103882],\"min\":[-0.114861607551575,0,1.6759238243103]},\"parameters\":{},\"position\":[1.08377921581268,4.4703483581543e-8,2.87456464767456],\"presenceMutable\":false,\"rotationY\":0,\"scale\":[2,2,2],\"solid\":true,\"solidMutable\":false,\"visible\":true},{\"bounds\":{\"max\":[5.28377914428711,8,4.07456493377686],\"min\":[2.88377928733826,0,1.67456459999084]},\"collisionBounds\":{\"max\":[5.28377914428711,8,4.07456493377686],\"min\":[2.88377928733826,0,1.67456459999084]},\"color\":\"#84a866\",\"id\":\"created-75180a8afbd05eac45bbf448\",\"kind\":\"tree\",\"meshBounds\":{\"max\":[5.28242015838623,7.99999904632568,4.07320547103882],\"min\":[2.88513851165771,0,1.6759238243103]},\"parameters\":{},\"position\":[4.08377933502197,4.4703483581543e-8,2.87456464767456],\"presenceMutable\":false,\"rotationY\":0,\"scale\":[2,2,2],\"solid\":true,\"solidMutable\":false,\"visible\":true},{\"bounds\":{\"max\":[-2.63357043266296,1.40000009536743,8.22563362121582],\"min\":[-4.03357028961182,5.96046447753906e-8,6.82563400268555]},\"collisionBounds\":{\"max\":[-2.63357043266296,1.40000009536743,8.22563362121582],\"min\":[-4.03357028961182,5.96046447753906e-8,6.82563400268555]},\"color\":\"#84a866\",\"id\":\"created-fd40c8d809c37bab316d1f26\",\"kind\":\"rock\",\"meshBounds\":{\"max\":[-2.63436317443848,1.40000009536743,8.22484111785889],\"min\":[-4.03277778625488,5.96046447753906e-8,6.82642650604248]},\"parameters\":{},\"position\":[-3.33357048034668,4.4703483581543e-8,7.52563381195068],\"presenceMutable\":false,\"rotationY\":0,\"scale\":[1,1,1],\"solid\":true,\"solidMutable\":false,\"visible\":true}],\"phase\":\"running\",\"timeOfDay\":12}],\"requirementsHash\":\"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\",\"worldId\":\"world-f6b800d43bbf\"}},\"compile\":{\"errors\":[],\"passed\":true,\"warnings\":[]},\"engine\":{\"evidenceHash\":\"5effa11921fd03b4a144ca0a5631b935b2b32b402637c43a65724c9241081d57\",\"isolation\":\"craftmine.windows.lpac-registry.v1\",\"version\":\"4.7.2-stable\"},\"format\":\"craftmine.godot-job-result/1\",\"import\":{\"log\":\"Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\\r\\n\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Call to GetAdaptersAddresses failed with error 5.\\r\\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\\r\\nERROR: Method/function failed. Returning: \\\"\\\"\\r\\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\\r\\nERROR: Method/function failed. Returning: \\\"\\\"\\r\\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Condition \\\"_sock == (SOCKET)(~0)\\\" is true. Returning: FAILED\\r\\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\\r\\nERROR: Condition \\\"err != OK\\\" is true. Returning: ERR_CANT_CREATE\\r\\n   at: listen (core/io/tcp_server.cpp:56)\\r\\n[   0% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | Started 项目初始化 (5 steps)\\u001b[39m\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在扫描文件结构……\\u001b[39m\\u001b[0m\\r\\n[  16% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在加载全局类名……\\u001b[39m\\u001b[0m\\r\\n[  33% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在校验 GDExtension……\\u001b[39m\\u001b[0m\\r\\n[  50% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在创建自动加载脚本……\\u001b[39m\\u001b[0m\\r\\n[  66% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在初始化插件……\\u001b[39m\\u001b[0m\\r\\n[  83% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在启动文件扫描……\\u001b[39m\\u001b[0m\\r\\n\\u001b[92m[ DONE ]\\u001b[39m \\u001b[1mfirst_scan_filesystem\\u001b[22m\\r\\n\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | Started 正在注册全局类…… (9 steps)\\u001b[39m\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  10% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  20% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  30% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  40% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | CameraRig\\u001b[39m\\u001b[0m\\r\\n[  50% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | PlayerController\\u001b[39m\\u001b[0m\\r\\n[  60% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  70% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  80% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n\\u001b[92m[ DONE ]\\u001b[39m \\u001b[1mupdate_scripts_classes\\u001b[22m\\r\\n\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mloading_editor_layout\\u001b[22m | Started 正在加载编辑器 (5 steps)\\u001b[39m\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mloading_editor_layout\\u001b[22m | 正在加载编辑器布局……\\u001b[39m\\u001b[0m\\r\\n[  16% ] \\u001b[90m\\u001b[1mloading_editor_layout\\u001b[22m | 正在加载停靠面板……\\u001b[39m\\u001b[0m\\r\\n\\u001b[92m[ DONE ]\\u001b[39m \\u001b[1mloading_editor_layout\\u001b[22m\\r\\n\\u001b[0m\\r\\nERROR: Condition \\\"_sock == (SOCKET)(~0)\\\" is true. Returning: FAILED\\r\\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\\r\\nERROR: Condition \\\"err != OK\\\" is true. Returning: ERR_CANT_CREATE\\r\\n   at: listen (core/io/tcp_server.cpp:56)\\r\\n\",\"passed\":true},\"inputHash\":\"77efb17b1e3a1ee4e389e5f41263bbd7c44213777d714ba7633820326081eb80\",\"passed\":true},\"outputHash\":\"0fe4ae317b8e285eca068630305db797df33872645613e8c806948648ebcef48\",\"progress\":100,\"sourceRevision\":7,\"sourceStale\":false,\"stage\":\"passed\",\"status\":\"passed\",\"taskId\":\"work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999\",\"updatedAt\":1789082427452,\"waitReason\":\"terminal\",\"waitedMs\":8137,\"worldId\":\"world-f6b800d43bbf\"},\"isError\":false}",
+          "createdAt": "2026-09-10T23:20:19.532Z",
+          "id": "call_00_BzEGXDAWMBSPyNadfcJ41422",
+          "role": "tool",
+          "status": "complete",
+          "toolArgs": {
+            "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8"
+          },
+          "toolCallId": "call_00_BzEGXDAWMBSPyNadfcJ41422",
+          "toolCompletedAt": "2026-09-10T23:20:27.709Z",
+          "toolDurationMs": 8177,
+          "toolName": "plugin_craftmine_world_godot_build_read",
+          "toolResult": {
+            "content": [
+              {
+                "text": "{\n  \"artifacts\": [\n    {\n      \"bytes\": 9919,\n      \"kind\": \"artifact\",\n      \"path\": \"web/bridge.js\",\n      \"sha256\": \"a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5\"\n    },\n    {\n      \"bytes\": 11944,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.apple-touch-icon.png\",\n      \"sha256\": \"01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5\"\n    },\n    {\n      \"bytes\": 2973,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.audio.position.worklet.js\",\n      \"sha256\": \"be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8\"\n    },\n    {\n      \"bytes\": 7298,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.audio.worklet.js\",\n      \"sha256\": \"5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3\"\n    },\n    {\n      \"bytes\": 965,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.html\",\n      \"sha256\": \"f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e\"\n    },\n    {\n      \"bytes\": 5700,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.icon.png\",\n      \"sha256\": \"ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5\"\n    },\n    {\n      \"bytes\": 314653,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.js\",\n      \"sha256\": \"1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c\"\n    },\n    {\n      \"bytes\": 5687580,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.pck\",\n      \"sha256\": \"9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf\"\n    },\n    {\n      \"bytes\": 21443,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.png\",\n      \"sha256\": \"3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e\"\n    },\n    {\n      \"bytes\": 38820072,\n      \"kind\": \"artifact\",\n      \"path\": \"web/index.wasm\",\n      \"sha256\": \"f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051\"\n    }\n  ],\n  \"assetManifestHash\": \"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\n  \"baseBuild\": \"gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3\",\n  \"baseId\": \"creation-sandbox\",\n  \"blockedReason\": null,\n  \"branchId\": \"main\",\n  \"buildId\": \"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\",\n  \"candidateId\": \"gcan-74ec2afa7060a770d5be54baeac8525b9d57af126e1d579a179034bb74c068f5\",\n  \"checkRequirements\": {\n    \"creation\": {\n      \"counts\": [\n        {\n          \"count\": 1,\n          \"kind\": \"rock\"\n        },\n        {\n          \"count\": 3,\n          \"kind\": \"tree\"\n        },\n        {\n          \"count\": 0,\n          \"kind\": \"chest\"\n        },\n        {\n          \"count\": 0,\n          \"kind\": \"door\"\n        },\n        {\n          \"count\": 0,\n          \"kind\": \"marker\"\n        }\n      ],\n      \"entities\": [\n        {\n          \"excludeIds\": [\n            \"created-e995b7dbd0c8ac590df4b041\",\n            \"created-62bf6336d4935ab0a75839bb\",\n            \"created-75180a8afbd05eac45bbf448\"\n          ],\n          \"kind\": \"rock\",\n          \"position\": [\n            -3.334,\n            0,\n            7.526\n          ],\n          \"solid\": true,\n          \"visible\": true\n        },\n        {\n          \"color\": \"#84a866\",\n          \"id\": \"created-e995b7dbd0c8ac590df4b041\",\n          \"kind\": \"tree\",\n          \"position\": [\n            -1.91622078418732,\n            4.4703483581543e-8,\n            2.87456464767456\n          ],\n          \"scale\": [\n            2,\n            2,\n            2\n          ]\n        },\n        {\n          \"color\": \"#84a866\",\n          \"id\": \"created-62bf6336d4935ab0a75839bb\",\n          \"kind\": \"tree\",\n          \"position\": [\n            1.08377921581268,\n            4.4703483581543e-8,\n            2.87456464767456\n          ],\n          \"scale\": [\n            2,\n            2,\n            2\n          ],\n          \"solid\": true,\n          \"visible\": true\n        },\n        {\n          \"color\": \"#84a866\",\n          \"id\": \"created-75180a8afbd05eac45bbf448\",\n          \"kind\": \"tree\",\n          \"position\": [\n            4.08377933502197,\n            4.4703483581543e-8,\n            2.87456464767456\n          ],\n          \"scale\": [\n            2,\n            2,\n            2\n          ],\n          \"solid\": true,\n          \"visible\": true\n        }\n      ],\n      \"format\": \"craftmine.creation-requirements/1\",\n      \"requestHash\": \"a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be\"\n    },\n    \"format\": \"craftmine.godot-check-requirements/1\"\n  },\n  \"checkRequirementsHash\": \"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\",\n  \"createdAt\": 1789082418521,\n  \"executorId\": \"craftmine-windows-broker-v1\",\n  \"interruptReason\": null,\n  \"jobId\": \"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\",\n  \"kind\": \"check\",\n  \"lastReadAgeMs\": 0,\n  \"leaseExpiresAt\": null,\n  \"manifestHash\": \"05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db\",\n  \"originJobId\": null,\n  \"output\": {\n    \"artifacts\": [\n      {\n        \"bytes\": 9919,\n        \"path\": \"web/bridge.js\",\n        \"sha256\": \"a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5\"\n      },\n      {\n        \"bytes\": 11944,\n        \"path\": \"web/index.apple-touch-icon.png\",\n        \"sha256\": \"01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5\"\n      },\n      {\n        \"bytes\": 2973,\n        \"path\": \"web/index.audio.position.worklet.js\",\n        \"sha256\": \"be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8\"\n      },\n      {\n        \"bytes\": 7298,\n        \"path\": \"web/index.audio.worklet.js\",\n        \"sha256\": \"5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3\"\n      },\n      {\n        \"bytes\": 965,\n        \"path\": \"web/index.html\",\n        \"sha256\": \"f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e\"\n      },\n      {\n        \"bytes\": 5700,\n        \"path\": \"web/index.icon.png\",\n        \"sha256\": \"ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5\"\n      },\n      {\n        \"bytes\": 314653,\n        \"path\": \"web/index.js\",\n        \"sha256\": \"1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c\"\n      },\n      {\n        \"bytes\": 5687580,\n        \"path\": \"web/index.pck\",\n        \"sha256\": \"9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf\"\n      },\n      {\n        \"bytes\": 21443,\n        \"path\": \"web/index.png\",\n        \"sha256\": \"3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e\"\n      },\n      {\n        \"bytes\": 38820072,\n        \"path\": \"web/index.wasm\",\n        \"sha256\": \"f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051\"\n      }\n    ],\n    \"check\": {\n      \"assertions\": [\n        {\n          \"detail\": \"ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit\",\n          \"id\": \"runtime.ready\",\n          \"passed\": true\n        },\n        {\n          \"detail\": \"frames=3 distinct=1\",\n          \"id\": \"runtime.frame\",\n          \"passed\": true\n        },\n        {\n          \"detail\": null,\n          \"id\": \"runtime.no-errors\",\n          \"passed\": true\n        },\n        {\n          \"detail\": \"formal progress unchanged\",\n          \"id\": \"runtime.snapshot\",\n          \"passed\": true\n        },\n        {\n          \"detail\": \"guard={\\\"focus\\\":0,\\\"pointerLock\\\":0}\",\n          \"id\": \"runtime.isolation\",\n          \"passed\": true\n        },\n        {\n          \"detail\": \"graceful=true\",\n          \"id\": \"runtime.recovery\",\n          \"passed\": true\n        },\n        {\n          \"detail\": \"runtime expectation evidence required\",\n          \"id\": \"runtime.creation-requirements\",\n          \"passed\": true\n        },\n        {\n          \"detail\": \"bound runtime expectation confirmed\",\n          \"id\": \"core.creation-requirements\",\n          \"passed\": true\n        }\n      ],\n      \"defaultsSnapshot\": {\n        \"baseId\": \"creation-sandbox\",\n        \"baseVersion\": \"1.0.0\",\n        \"body\": {\n          \"baseVersion\": \"1.0.0\",\n          \"doors\": {},\n          \"format\": \"craftmine.creation-progress/1\",\n          \"inventory\": {},\n          \"openedChests\": {},\n          \"player\": {\n            \"onFloor\": true,\n            \"pitch\": 0,\n            \"position\": [\n              0,\n              0.899999976158142,\n              6\n            ],\n            \"yaw\": 0\n          },\n          \"rules\": {\n            \"chop-tree\": {\n              \"chopped\": false,\n              \"chops\": 0,\n              \"remainingFrames\": 0\n            }\n          },\n          \"sourceTimeOfDay\": 12,\n          \"timeOfDay\": 12,\n          \"worldId\": \"world-f6b800d43bbf\"\n        },\n        \"format\": \"craftmine.godot-progress/1\",\n        \"stateVersion\": 1,\n        \"worldId\": \"world-f6b800d43bbf\"\n      },\n      \"passed\": true,\n      \"progressMigration\": {\n        \"added\": [],\n        \"defaultsSnapshotHash\": \"dcd57b54a17b0bc35bc437f9f6737c868a7a54bb8794a9be24e98a4a2e927c8a\",\n        \"format\": \"craftmine.godot-additive-progress/1\",\n        \"previousSnapshotHash\": \"fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c\",\n        \"snapshot\": {\n          \"baseId\": \"creation-sandbox\",\n          \"baseVersion\": \"1.0.0\",\n          \"body\": {\n            \"baseVersion\": \"1.0.0\",\n            \"doors\": {},\n            \"format\": \"craftmine.creation-progress/1\",\n            \"inventory\": {\n              \"wood\": 1\n            },\n            \"openedChests\": {},\n            \"player\": {\n              \"onFloor\": true,\n              \"pitch\": -0.4,\n              \"position\": [\n                0,\n                0.899999976158142,\n                6\n              ],\n              \"yaw\": 2\n            },\n            \"rules\": {\n              \"chop-tree\": {\n                \"chopped\": false,\n                \"chops\": 1,\n                \"remainingFrames\": 0\n              }\n            },\n            \"sourceTimeOfDay\": 12,\n            \"timeOfDay\": 12,\n            \"worldId\": \"world-f6b800d43bbf\"\n          },\n          \"format\": \"craftmine.godot-progress/1\",\n          \"stateVersion\": 1,\n          \"worldId\": \"world-f6b800d43bbf\"\n        },\n        \"snapshotHash\": \"fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c\"\n      },\n      \"requirementsEvidence\": {\n        \"buildId\": \"gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef\",\n        \"format\": \"craftmine.godot-check-requirements-evidence/1\",\n        \"instanceId\": \"0f47b070f51b610cfcb548f7\",\n        \"jobId\": \"gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8\",\n        \"observations\": [\n          {\n            \"entities\": [\n              {\n                \"bounds\": {\n                  \"max\": [\n                    -0.716220855712891,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -3.11622095108032,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    -0.716220855712891,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -3.11622095108032,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-e995b7dbd0c8ac590df4b041\",\n                \"kind\": \"tree\",\n                \"meshBounds\": {\n                  \"max\": [\n                    -0.71757984161377,\n                    7.99999904632568,\n                    4.07320547103882\n                  ],\n                  \"min\": [\n                    -3.11486148834229,\n                    0,\n                    1.6759238243103\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  -1.91622078418732,\n                  4.4703483581543e-8,\n                  2.87456464767456\n                ],\n                \"presenceMutable\": true,\n                \"rotationY\": 0,\n                \"scale\": [\n                  2,\n                  2,\n                  2\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              },\n              {\n                \"bounds\": {\n                  \"max\": [\n                    2.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -0.116220831871033,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    2.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -0.116220831871033,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-62bf6336d4935ab0a75839bb\",\n                \"kind\": \"tree\",\n                \"meshBounds\": {\n                  \"max\": [\n                    2.28242015838623,\n                    7.99999904632568,\n                    4.07320547103882\n                  ],\n                  \"min\": [\n                    -0.114861607551575,\n                    0,\n                    1.6759238243103\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  1.08377921581268,\n                  4.4703483581543e-8,\n                  2.87456464767456\n                ],\n                \"presenceMutable\": false,\n                \"rotationY\": 0,\n                \"scale\": [\n                  2,\n                  2,\n                  2\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              },\n              {\n                \"bounds\": {\n                  \"max\": [\n                    5.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    2.88377928733826,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    5.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    2.88377928733826,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-75180a8afbd05eac45bbf448\",\n                \"kind\": \"tree\",\n                \"meshBounds\": {\n                  \"max\": [\n                    5.28242015838623,\n                    7.99999904632568,\n                    4.07320547103882\n                  ],\n                  \"min\": [\n                    2.88513851165771,\n                    0,\n                    1.6759238243103\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  4.08377933502197,\n                  4.4703483581543e-8,\n                  2.87456464767456\n                ],\n                \"presenceMutable\": false,\n                \"rotationY\": 0,\n                \"scale\": [\n                  2,\n                  2,\n                  2\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              },\n              {\n                \"bounds\": {\n                  \"max\": [\n                    -2.63357043266296,\n                    1.40000009536743,\n                    8.22563362121582\n                  ],\n                  \"min\": [\n                    -4.03357028961182,\n                    5.96046447753906e-8,\n                    6.82563400268555\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    -2.63357043266296,\n                    1.40000009536743,\n                    8.22563362121582\n                  ],\n                  \"min\": [\n                    -4.03357028961182,\n                    5.96046447753906e-8,\n                    6.82563400268555\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-fd40c8d809c37bab316d1f26\",\n                \"kind\": \"rock\",\n                \"meshBounds\": {\n                  \"max\": [\n                    -2.63436317443848,\n                    1.40000009536743,\n                    8.22484111785889\n                  ],\n                  \"min\": [\n                    -4.03277778625488,\n                    5.96046447753906e-8,\n                    6.82642650604248\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  -3.33357048034668,\n                  4.4703483581543e-8,\n                  7.52563381195068\n                ],\n                \"presenceMutable\": false,\n                \"rotationY\": 0,\n                \"scale\": [\n                  1,\n                  1,\n                  1\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              }\n            ],\n            \"phase\": \"loaded\",\n            \"timeOfDay\": 12\n          },\n          {\n            \"entities\": [\n              {\n                \"bounds\": {\n                  \"max\": [\n                    -0.716220855712891,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -3.11622095108032,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    -0.716220855712891,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -3.11622095108032,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-e995b7dbd0c8ac590df4b041\",\n                \"kind\": \"tree\",\n                \"meshBounds\": {\n                  \"max\": [\n                    -0.71757984161377,\n                    7.99999904632568,\n                    4.07320547103882\n                  ],\n                  \"min\": [\n                    -3.11486148834229,\n                    0,\n                    1.6759238243103\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  -1.91622078418732,\n                  4.4703483581543e-8,\n                  2.87456464767456\n                ],\n                \"presenceMutable\": true,\n                \"rotationY\": 0,\n                \"scale\": [\n                  2,\n                  2,\n                  2\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              },\n              {\n                \"bounds\": {\n                  \"max\": [\n                    2.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -0.116220831871033,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    2.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    -0.116220831871033,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-62bf6336d4935ab0a75839bb\",\n                \"kind\": \"tree\",\n                \"meshBounds\": {\n                  \"max\": [\n                    2.28242015838623,\n                    7.99999904632568,\n                    4.07320547103882\n                  ],\n                  \"min\": [\n                    -0.114861607551575,\n                    0,\n                    1.6759238243103\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  1.08377921581268,\n                  4.4703483581543e-8,\n                  2.87456464767456\n                ],\n                \"presenceMutable\": false,\n                \"rotationY\": 0,\n                \"scale\": [\n                  2,\n                  2,\n                  2\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              },\n              {\n                \"bounds\": {\n                  \"max\": [\n                    5.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    2.88377928733826,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    5.28377914428711,\n                    8,\n                    4.07456493377686\n                  ],\n                  \"min\": [\n                    2.88377928733826,\n                    0,\n                    1.67456459999084\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-75180a8afbd05eac45bbf448\",\n                \"kind\": \"tree\",\n                \"meshBounds\": {\n                  \"max\": [\n                    5.28242015838623,\n                    7.99999904632568,\n                    4.07320547103882\n                  ],\n                  \"min\": [\n                    2.88513851165771,\n                    0,\n                    1.6759238243103\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  4.08377933502197,\n                  4.4703483581543e-8,\n                  2.87456464767456\n                ],\n                \"presenceMutable\": false,\n                \"rotationY\": 0,\n                \"scale\": [\n                  2,\n                  2,\n                  2\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              },\n              {\n                \"bounds\": {\n                  \"max\": [\n                    -2.63357043266296,\n                    1.40000009536743,\n                    8.22563362121582\n                  ],\n                  \"min\": [\n                    -4.03357028961182,\n                    5.96046447753906e-8,\n                    6.82563400268555\n                  ]\n                },\n                \"collisionBounds\": {\n                  \"max\": [\n                    -2.63357043266296,\n                    1.40000009536743,\n                    8.22563362121582\n                  ],\n                  \"min\": [\n                    -4.03357028961182,\n                    5.96046447753906e-8,\n                    6.82563400268555\n                  ]\n                },\n                \"color\": \"#84a866\",\n                \"id\": \"created-fd40c8d809c37bab316d1f26\",\n                \"kind\": \"rock\",\n                \"meshBounds\": {\n                  \"max\": [\n                    -2.63436317443848,\n                    1.40000009536743,\n                    8.22484111785889\n                  ],\n                  \"min\": [\n                    -4.03277778625488,\n                    5.96046447753906e-8,\n                    6.82642650604248\n                  ]\n                },\n                \"parameters\": {},\n                \"position\": [\n                  -3.33357048034668,\n                  4.4703483581543e-8,\n                  7.52563381195068\n                ],\n                \"presenceMutable\": false,\n                \"rotationY\": 0,\n                \"scale\": [\n                  1,\n                  1,\n                  1\n                ],\n                \"solid\": true,\n                \"solidMutable\": false,\n                \"visible\": true\n              }\n            ],\n            \"phase\": \"running\",\n            \"timeOfDay\": 12\n          }\n        ],\n        \"requirementsHash\": \"d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13\",\n        \"worldId\": \"world-f6b800d43bbf\"\n      }\n    },\n    \"compile\": {\n      \"errors\": [],\n      \"passed\": true,\n      \"warnings\": []\n    },\n    \"engine\": {\n      \"evidenceHash\": \"5effa11921fd03b4a144ca0a5631b935b2b32b402637c43a65724c9241081d57\",\n      \"isolation\": \"craftmine.windows.lpac-registry.v1\",\n      \"version\": \"4.7.2-stable\"\n    },\n    \"format\": \"craftmine.godot-job-result/1\",\n    \"import\": {\n      \"log\": \"Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\\r\\n\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Call to GetAdaptersAddresses failed with error 5.\\r\\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\\r\\nERROR: Method/function failed. Returning: \\\"\\\"\\r\\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\\r\\nERROR: Method/function failed. Returning: \\\"\\\"\\r\\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Condition \\\"res != ((HRESULT)0x00000000)\\\" is true. Returning: String()\\r\\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\\r\\nERROR: Condition \\\"_sock == (SOCKET)(~0)\\\" is true. Returning: FAILED\\r\\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\\r\\nERROR: Condition \\\"err != OK\\\" is true. Returning: ERR_CANT_CREATE\\r\\n   at: listen (core/io/tcp_server.cpp:56)\\r\\n[   0% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | Started 项目初始化 (5 steps)\\u001b[39m\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在扫描文件结构……\\u001b[39m\\u001b[0m\\r\\n[  16% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在加载全局类名……\\u001b[39m\\u001b[0m\\r\\n[  33% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在校验 GDExtension……\\u001b[39m\\u001b[0m\\r\\n[  50% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在创建自动加载脚本……\\u001b[39m\\u001b[0m\\r\\n[  66% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在初始化插件……\\u001b[39m\\u001b[0m\\r\\n[  83% ] \\u001b[90m\\u001b[1mfirst_scan_filesystem\\u001b[22m | 正在启动文件扫描……\\u001b[39m\\u001b[0m\\r\\n\\u001b[92m[ DONE ]\\u001b[39m \\u001b[1mfirst_scan_filesystem\\u001b[22m\\r\\n\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | Started 正在注册全局类…… (9 steps)\\u001b[39m\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  10% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  20% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  30% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  40% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | CameraRig\\u001b[39m\\u001b[0m\\r\\n[  50% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | PlayerController\\u001b[39m\\u001b[0m\\r\\n[  60% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  70% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n[  80% ] \\u001b[90m\\u001b[1mupdate_scripts_classes\\u001b[22m | \\u001b[39m\\u001b[0m\\r\\n\\u001b[92m[ DONE ]\\u001b[39m \\u001b[1mupdate_scripts_classes\\u001b[22m\\r\\n\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mloading_editor_layout\\u001b[22m | Started 正在加载编辑器 (5 steps)\\u001b[39m\\u001b[0m\\r\\n[   0% ] \\u001b[90m\\u001b[1mloading_editor_layout\\u001b[22m | 正在加载编辑器布局……\\u001b[39m\\u001b[0m\\r\\n[  16% ] \\u001b[90m\\u001b[1mloading_editor_layout\\u001b[22m | 正在加载停靠面板……\\u001b[39m\\u001b[0m\\r\\n\\u001b[92m[ DONE ]\\u001b[39m \\u001b[1mloading_editor_layout\\u001b[22m\\r\\n\\u001b[0m\\r\\nERROR: Condition \\\"_sock == (SOCKET)(~0)\\\" is true. Returning: FAILED\\r\\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\\r\\nERROR: Condition \\\"err != OK\\\" is true. Returning: ERR_CANT_CREATE\\r\\n   at: listen (core/io/tcp_server.cpp:56)\\r\\n\",\n      \"passed\": true\n    },\n    \"inputHash\": \"77efb17b1e3a1ee4e389e5f41263bbd7c44213777d714ba7633820326081eb80\",\n    \"passed\": true\n  },\n  \"outputHash\": \"0fe4ae317b8e285eca068630305db797df33872645613e8c806948648ebcef48\",\n  \"progress\": 100,\n  \"sourceRevision\": 7,\n  \"sourceStale\": false,\n  \"stage\": \"passed\",\n  \"status\": \"passed\",\n  \"taskId\": \"work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999\",\n  \"updatedAt\": 1789082427452,\n  \"waitReason\": \"terminal\",\n  \"waitedMs\": 8137,\n  \"worldId\": \"world-f6b800d43bbf\"\n}",
+                "type": "text"
+              }
+            ],
+            "details": {
+              "artifacts": [
+                {
+                  "bytes": 9919,
+                  "kind": "artifact",
+                  "path": "web/bridge.js",
+                  "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+                },
+                {
+                  "bytes": 11944,
+                  "kind": "artifact",
+                  "path": "web/index.apple-touch-icon.png",
+                  "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+                },
+                {
+                  "bytes": 2973,
+                  "kind": "artifact",
+                  "path": "web/index.audio.position.worklet.js",
+                  "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+                },
+                {
+                  "bytes": 7298,
+                  "kind": "artifact",
+                  "path": "web/index.audio.worklet.js",
+                  "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+                },
+                {
+                  "bytes": 965,
+                  "kind": "artifact",
+                  "path": "web/index.html",
+                  "sha256": "f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e"
+                },
+                {
+                  "bytes": 5700,
+                  "kind": "artifact",
+                  "path": "web/index.icon.png",
+                  "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+                },
+                {
+                  "bytes": 314653,
+                  "kind": "artifact",
+                  "path": "web/index.js",
+                  "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+                },
+                {
+                  "bytes": 5687580,
+                  "kind": "artifact",
+                  "path": "web/index.pck",
+                  "sha256": "9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf"
+                },
+                {
+                  "bytes": 21443,
+                  "kind": "artifact",
+                  "path": "web/index.png",
+                  "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+                },
+                {
+                  "bytes": 38820072,
+                  "kind": "artifact",
+                  "path": "web/index.wasm",
+                  "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+                }
+              ],
+              "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "baseBuild": "gbd-a2d846914cb7ad681037147bf4029d81fd6666a23586e34683f7f897148e48e3",
+              "baseId": "creation-sandbox",
+              "blockedReason": null,
+              "branchId": "main",
+              "buildId": "gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef",
+              "candidateId": "gcan-74ec2afa7060a770d5be54baeac8525b9d57af126e1d579a179034bb74c068f5",
+              "checkRequirements": {
+                "creation": {
+                  "counts": [
+                    {
+                      "count": 1,
+                      "kind": "rock"
+                    },
+                    {
+                      "count": 3,
+                      "kind": "tree"
+                    },
+                    {
+                      "count": 0,
+                      "kind": "chest"
+                    },
+                    {
+                      "count": 0,
+                      "kind": "door"
+                    },
+                    {
+                      "count": 0,
+                      "kind": "marker"
+                    }
+                  ],
+                  "entities": [
+                    {
+                      "excludeIds": [
+                        "created-e995b7dbd0c8ac590df4b041",
+                        "created-62bf6336d4935ab0a75839bb",
+                        "created-75180a8afbd05eac45bbf448"
+                      ],
+                      "kind": "rock",
+                      "position": [
+                        -3.334,
+                        0,
+                        7.526
+                      ],
+                      "solid": true,
+                      "visible": true
+                    },
+                    {
+                      "color": "#84a866",
+                      "id": "created-e995b7dbd0c8ac590df4b041",
+                      "kind": "tree",
+                      "position": [
+                        -1.91622078418732,
+                        4.4703483581543e-8,
+                        2.87456464767456
+                      ],
+                      "scale": [
+                        2,
+                        2,
+                        2
+                      ]
+                    },
+                    {
+                      "color": "#84a866",
+                      "id": "created-62bf6336d4935ab0a75839bb",
+                      "kind": "tree",
+                      "position": [
+                        1.08377921581268,
+                        4.4703483581543e-8,
+                        2.87456464767456
+                      ],
+                      "scale": [
+                        2,
+                        2,
+                        2
+                      ],
+                      "solid": true,
+                      "visible": true
+                    },
+                    {
+                      "color": "#84a866",
+                      "id": "created-75180a8afbd05eac45bbf448",
+                      "kind": "tree",
+                      "position": [
+                        4.08377933502197,
+                        4.4703483581543e-8,
+                        2.87456464767456
+                      ],
+                      "scale": [
+                        2,
+                        2,
+                        2
+                      ],
+                      "solid": true,
+                      "visible": true
+                    }
+                  ],
+                  "format": "craftmine.creation-requirements/1",
+                  "requestHash": "a1cc6fc3860272c759c809944bdb8db0af9dec77b42a056826debd7e25b4d4be"
+                },
+                "format": "craftmine.godot-check-requirements/1"
+              },
+              "checkRequirementsHash": "d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13",
+              "createdAt": 1789082418521,
+              "executorId": "craftmine-windows-broker-v1",
+              "interruptReason": null,
+              "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+              "kind": "check",
+              "lastReadAgeMs": 0,
+              "leaseExpiresAt": null,
+              "manifestHash": "05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db",
+              "originJobId": null,
+              "output": {
+                "artifacts": [
+                  {
+                    "bytes": 9919,
+                    "path": "web/bridge.js",
+                    "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+                  },
+                  {
+                    "bytes": 11944,
+                    "path": "web/index.apple-touch-icon.png",
+                    "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+                  },
+                  {
+                    "bytes": 2973,
+                    "path": "web/index.audio.position.worklet.js",
+                    "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+                  },
+                  {
+                    "bytes": 7298,
+                    "path": "web/index.audio.worklet.js",
+                    "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+                  },
+                  {
+                    "bytes": 965,
+                    "path": "web/index.html",
+                    "sha256": "f6c49d22a504d420843bad720ef751ce502a5f6d5a9dc587673f080774c10a5e"
+                  },
+                  {
+                    "bytes": 5700,
+                    "path": "web/index.icon.png",
+                    "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+                  },
+                  {
+                    "bytes": 314653,
+                    "path": "web/index.js",
+                    "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+                  },
+                  {
+                    "bytes": 5687580,
+                    "path": "web/index.pck",
+                    "sha256": "9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf"
+                  },
+                  {
+                    "bytes": 21443,
+                    "path": "web/index.png",
+                    "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+                  },
+                  {
+                    "bytes": 38820072,
+                    "path": "web/index.wasm",
+                    "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+                  }
+                ],
+                "check": {
+                  "assertions": [
+                    {
+                      "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+                      "id": "runtime.ready",
+                      "passed": true
+                    },
+                    {
+                      "detail": "frames=3 distinct=1",
+                      "id": "runtime.frame",
+                      "passed": true
+                    },
+                    {
+                      "detail": null,
+                      "id": "runtime.no-errors",
+                      "passed": true
+                    },
+                    {
+                      "detail": "formal progress unchanged",
+                      "id": "runtime.snapshot",
+                      "passed": true
+                    },
+                    {
+                      "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+                      "id": "runtime.isolation",
+                      "passed": true
+                    },
+                    {
+                      "detail": "graceful=true",
+                      "id": "runtime.recovery",
+                      "passed": true
+                    },
+                    {
+                      "detail": "runtime expectation evidence required",
+                      "id": "runtime.creation-requirements",
+                      "passed": true
+                    },
+                    {
+                      "detail": "bound runtime expectation confirmed",
+                      "id": "core.creation-requirements",
+                      "passed": true
+                    }
+                  ],
+                  "defaultsSnapshot": {
+                    "baseId": "creation-sandbox",
+                    "baseVersion": "1.0.0",
+                    "body": {
+                      "baseVersion": "1.0.0",
+                      "doors": {},
+                      "format": "craftmine.creation-progress/1",
+                      "inventory": {},
+                      "openedChests": {},
+                      "player": {
+                        "onFloor": true,
+                        "pitch": 0,
+                        "position": [
+                          0,
+                          0.899999976158142,
+                          6
+                        ],
+                        "yaw": 0
+                      },
+                      "rules": {
+                        "chop-tree": {
+                          "chopped": false,
+                          "chops": 0,
+                          "remainingFrames": 0
+                        }
+                      },
+                      "sourceTimeOfDay": 12,
+                      "timeOfDay": 12,
+                      "worldId": "world-f6b800d43bbf"
+                    },
+                    "format": "craftmine.godot-progress/1",
+                    "stateVersion": 1,
+                    "worldId": "world-f6b800d43bbf"
+                  },
+                  "passed": true,
+                  "progressMigration": {
+                    "added": [],
+                    "defaultsSnapshotHash": "dcd57b54a17b0bc35bc437f9f6737c868a7a54bb8794a9be24e98a4a2e927c8a",
+                    "format": "craftmine.godot-additive-progress/1",
+                    "previousSnapshotHash": "fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c",
+                    "snapshot": {
+                      "baseId": "creation-sandbox",
+                      "baseVersion": "1.0.0",
+                      "body": {
+                        "baseVersion": "1.0.0",
+                        "doors": {},
+                        "format": "craftmine.creation-progress/1",
+                        "inventory": {
+                          "wood": 1
+                        },
+                        "openedChests": {},
+                        "player": {
+                          "onFloor": true,
+                          "pitch": -0.4,
+                          "position": [
+                            0,
+                            0.899999976158142,
+                            6
+                          ],
+                          "yaw": 2
+                        },
+                        "rules": {
+                          "chop-tree": {
+                            "chopped": false,
+                            "chops": 1,
+                            "remainingFrames": 0
+                          }
+                        },
+                        "sourceTimeOfDay": 12,
+                        "timeOfDay": 12,
+                        "worldId": "world-f6b800d43bbf"
+                      },
+                      "format": "craftmine.godot-progress/1",
+                      "stateVersion": 1,
+                      "worldId": "world-f6b800d43bbf"
+                    },
+                    "snapshotHash": "fff988fc5a24494393bbb81232d37c6465eb86275e0dace578bb27a0a6802a9c"
+                  },
+                  "requirementsEvidence": {
+                    "buildId": "gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef",
+                    "format": "craftmine.godot-check-requirements-evidence/1",
+                    "instanceId": "0f47b070f51b610cfcb548f7",
+                    "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+                    "observations": [
+                      {
+                        "entities": [
+                          {
+                            "bounds": {
+                              "max": [
+                                -0.716220855712891,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -3.11622095108032,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                -0.716220855712891,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -3.11622095108032,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-e995b7dbd0c8ac590df4b041",
+                            "kind": "tree",
+                            "meshBounds": {
+                              "max": [
+                                -0.71757984161377,
+                                7.99999904632568,
+                                4.07320547103882
+                              ],
+                              "min": [
+                                -3.11486148834229,
+                                0,
+                                1.6759238243103
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              -1.91622078418732,
+                              4.4703483581543e-8,
+                              2.87456464767456
+                            ],
+                            "presenceMutable": true,
+                            "rotationY": 0,
+                            "scale": [
+                              2,
+                              2,
+                              2
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          },
+                          {
+                            "bounds": {
+                              "max": [
+                                2.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -0.116220831871033,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                2.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -0.116220831871033,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-62bf6336d4935ab0a75839bb",
+                            "kind": "tree",
+                            "meshBounds": {
+                              "max": [
+                                2.28242015838623,
+                                7.99999904632568,
+                                4.07320547103882
+                              ],
+                              "min": [
+                                -0.114861607551575,
+                                0,
+                                1.6759238243103
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              1.08377921581268,
+                              4.4703483581543e-8,
+                              2.87456464767456
+                            ],
+                            "presenceMutable": false,
+                            "rotationY": 0,
+                            "scale": [
+                              2,
+                              2,
+                              2
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          },
+                          {
+                            "bounds": {
+                              "max": [
+                                5.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                2.88377928733826,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                5.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                2.88377928733826,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-75180a8afbd05eac45bbf448",
+                            "kind": "tree",
+                            "meshBounds": {
+                              "max": [
+                                5.28242015838623,
+                                7.99999904632568,
+                                4.07320547103882
+                              ],
+                              "min": [
+                                2.88513851165771,
+                                0,
+                                1.6759238243103
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              4.08377933502197,
+                              4.4703483581543e-8,
+                              2.87456464767456
+                            ],
+                            "presenceMutable": false,
+                            "rotationY": 0,
+                            "scale": [
+                              2,
+                              2,
+                              2
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          },
+                          {
+                            "bounds": {
+                              "max": [
+                                -2.63357043266296,
+                                1.40000009536743,
+                                8.22563362121582
+                              ],
+                              "min": [
+                                -4.03357028961182,
+                                5.96046447753906e-8,
+                                6.82563400268555
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                -2.63357043266296,
+                                1.40000009536743,
+                                8.22563362121582
+                              ],
+                              "min": [
+                                -4.03357028961182,
+                                5.96046447753906e-8,
+                                6.82563400268555
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-fd40c8d809c37bab316d1f26",
+                            "kind": "rock",
+                            "meshBounds": {
+                              "max": [
+                                -2.63436317443848,
+                                1.40000009536743,
+                                8.22484111785889
+                              ],
+                              "min": [
+                                -4.03277778625488,
+                                5.96046447753906e-8,
+                                6.82642650604248
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              -3.33357048034668,
+                              4.4703483581543e-8,
+                              7.52563381195068
+                            ],
+                            "presenceMutable": false,
+                            "rotationY": 0,
+                            "scale": [
+                              1,
+                              1,
+                              1
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          }
+                        ],
+                        "phase": "loaded",
+                        "timeOfDay": 12
+                      },
+                      {
+                        "entities": [
+                          {
+                            "bounds": {
+                              "max": [
+                                -0.716220855712891,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -3.11622095108032,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                -0.716220855712891,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -3.11622095108032,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-e995b7dbd0c8ac590df4b041",
+                            "kind": "tree",
+                            "meshBounds": {
+                              "max": [
+                                -0.71757984161377,
+                                7.99999904632568,
+                                4.07320547103882
+                              ],
+                              "min": [
+                                -3.11486148834229,
+                                0,
+                                1.6759238243103
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              -1.91622078418732,
+                              4.4703483581543e-8,
+                              2.87456464767456
+                            ],
+                            "presenceMutable": true,
+                            "rotationY": 0,
+                            "scale": [
+                              2,
+                              2,
+                              2
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          },
+                          {
+                            "bounds": {
+                              "max": [
+                                2.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -0.116220831871033,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                2.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                -0.116220831871033,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-62bf6336d4935ab0a75839bb",
+                            "kind": "tree",
+                            "meshBounds": {
+                              "max": [
+                                2.28242015838623,
+                                7.99999904632568,
+                                4.07320547103882
+                              ],
+                              "min": [
+                                -0.114861607551575,
+                                0,
+                                1.6759238243103
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              1.08377921581268,
+                              4.4703483581543e-8,
+                              2.87456464767456
+                            ],
+                            "presenceMutable": false,
+                            "rotationY": 0,
+                            "scale": [
+                              2,
+                              2,
+                              2
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          },
+                          {
+                            "bounds": {
+                              "max": [
+                                5.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                2.88377928733826,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                5.28377914428711,
+                                8,
+                                4.07456493377686
+                              ],
+                              "min": [
+                                2.88377928733826,
+                                0,
+                                1.67456459999084
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-75180a8afbd05eac45bbf448",
+                            "kind": "tree",
+                            "meshBounds": {
+                              "max": [
+                                5.28242015838623,
+                                7.99999904632568,
+                                4.07320547103882
+                              ],
+                              "min": [
+                                2.88513851165771,
+                                0,
+                                1.6759238243103
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              4.08377933502197,
+                              4.4703483581543e-8,
+                              2.87456464767456
+                            ],
+                            "presenceMutable": false,
+                            "rotationY": 0,
+                            "scale": [
+                              2,
+                              2,
+                              2
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          },
+                          {
+                            "bounds": {
+                              "max": [
+                                -2.63357043266296,
+                                1.40000009536743,
+                                8.22563362121582
+                              ],
+                              "min": [
+                                -4.03357028961182,
+                                5.96046447753906e-8,
+                                6.82563400268555
+                              ]
+                            },
+                            "collisionBounds": {
+                              "max": [
+                                -2.63357043266296,
+                                1.40000009536743,
+                                8.22563362121582
+                              ],
+                              "min": [
+                                -4.03357028961182,
+                                5.96046447753906e-8,
+                                6.82563400268555
+                              ]
+                            },
+                            "color": "#84a866",
+                            "id": "created-fd40c8d809c37bab316d1f26",
+                            "kind": "rock",
+                            "meshBounds": {
+                              "max": [
+                                -2.63436317443848,
+                                1.40000009536743,
+                                8.22484111785889
+                              ],
+                              "min": [
+                                -4.03277778625488,
+                                5.96046447753906e-8,
+                                6.82642650604248
+                              ]
+                            },
+                            "parameters": {},
+                            "position": [
+                              -3.33357048034668,
+                              4.4703483581543e-8,
+                              7.52563381195068
+                            ],
+                            "presenceMutable": false,
+                            "rotationY": 0,
+                            "scale": [
+                              1,
+                              1,
+                              1
+                            ],
+                            "solid": true,
+                            "solidMutable": false,
+                            "visible": true
+                          }
+                        ],
+                        "phase": "running",
+                        "timeOfDay": 12
+                      }
+                    ],
+                    "requirementsHash": "d8d568c8ec003951f3495329ba849eee641de9368392ac1260f97991e16eab13",
+                    "worldId": "world-f6b800d43bbf"
+                  }
+                },
+                "compile": {
+                  "errors": [],
+                  "passed": true,
+                  "warnings": []
+                },
+                "engine": {
+                  "evidenceHash": "5effa11921fd03b4a144ca0a5631b935b2b32b402637c43a65724c9241081d57",
+                  "isolation": "craftmine.windows.lpac-registry.v1",
+                  "version": "4.7.2-stable"
+                },
+                "format": "craftmine.godot-job-result/1",
+                "import": {
+                  "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Call to GetAdaptersAddresses failed with error 5.\r\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started 项目初始化 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在扫描文件结构……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在加载全局类名……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在校验 GDExtension……\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在创建自动加载脚本……\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在初始化插件……\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在启动文件扫描……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started 正在注册全局类…… (9 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  10% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  30% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  40% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CameraRig\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | PlayerController\u001b[39m\u001b[0m\r\n[  60% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  80% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started 正在加载编辑器 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载编辑器布局……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载停靠面板……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\r\n\u001b[0m\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n",
+                  "passed": true
+                },
+                "inputHash": "77efb17b1e3a1ee4e389e5f41263bbd7c44213777d714ba7633820326081eb80",
+                "passed": true
+              },
+              "outputHash": "0fe4ae317b8e285eca068630305db797df33872645613e8c806948648ebcef48",
+              "progress": 100,
+              "sourceRevision": 7,
+              "sourceStale": false,
+              "stage": "passed",
+              "status": "passed",
+              "taskId": "work-139d06ce89e63b661ac9230a65877a505078e40ebf80607bf4cdc1b026f60999",
+              "updatedAt": 1789082427452,
+              "waitReason": "terminal",
+              "waitedMs": 8137,
+              "worldId": "world-f6b800d43bbf"
+            },
+            "isError": false
+          },
+          "toolStatus": "success"
+        },
+        {
+          "content": "## 结果：石头已放置并校验通过，候选已生成（**尚未应用到正式世界**），既有 3 棵树与游玩进度均保留\n\n**目标绑定**\n本回合宿主捕获的是地面落点：`target.position = (-3.33357, ~0, 7.52563)`，法线 `(0,1,0)`，`surface: ground`，`entityId: null`，快照 `e1958258-265d-4289-ae6a-0f7049ead2cc`，`autoApply: true`。放置用的是这个冻结落点，未自造坐标。\n\n**已执行**\n1. 先核对源码头部：`revision 6`，`manifestHash 70fdffa2…` —— 与捕获目标的 `sourceRevision/manifestHash` 一致，未用过期身份。\n2. `creation_operation`（`operationId: place-rock-1`，`place` / `rock`）\n   - 新增实体 **`created-fd40c8d809c37bab316d1f26`**，源码草稿 revision **6 → 7**（`manifestHash 05295d7945566803b13b59709b32c37ae61a1d67dbeb490d89086aab1d79a4db`）\n   - 返回 `applied: false, checkRequired: true`；可撤销，操作额度剩余 4092。\n3. 校验作业 `gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8`（check，源 revision 7）→ 已终结。\n\n**校验实际证据（通过）**\n- 构建 `gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef`，候选 `gcan-74ec2afa7060a770d5be54baeac8525b9d57af126e1d579a179034bb74c068f5`，`status: passed`，`sourceStale: false`。\n- 编译 **0 错误 / 0 警告**，导入通过，引擎 4.7.2-stable（日志中的 Windows 系统目录/套接字报错为沙箱噪声）。\n- 8 项断言全通过；`runtime.snapshot` 明细：「formal progress unchanged」，`progressMigration.added = []` —— 说明本次改动**没有新增需要迁移的进度字段**。\n- 需求证据（loaded 与 running 两阶段一致）共 4 个实体：\n  - 新石头 `created-fd40c8d809c37bab316d1f26`：位置 `(-3.33357, ~0, 7.52563)`，`scale [1,1,1]`，包围盒 x `[-4.034,-2.634]`、y `0→1.4`、z `[6.826,8.226]`，`solid: true`、`visible: true`，符合要求的「1 块石头、实体化、可见」。\n  - 原有 3 棵树 ID、位置、`scale [2,2,2]`、颜色 `#84a866`、可见/阻挡状态全部与上一轮一致，且需求显式用 `excludeIds` 指定这三棵树必须保留 —— 均已满足；`counts: rock 1 / tree 3`。\n\n**游玩进度保留的实际证据**\n- 校验读取到的既有进度快照包含：`inventory: {\"wood\": 1}`、`rules.chop-tree: {chopped: false, chops: 1, remainingFrames: 0}`、玩家位置 `(0,0.9,6)` 与朝向 —— 即上一轮的木头与砍伐次数仍在。\n- 承载 E 交互的那棵树在观察中仍是 `presenceMutable: true`（来自 `chop-tree` 规则声明），说明砍伐规则没有被这次放置覆盖；新石头是 `presenceMutable: false`，不参与该行为。\n\n**应用状态（请区分）**\n宿主事实里世界仍是 `buildId = gbd-a2d84691…`（revision 11，即上一轮砍伐逻辑的构建），`receipts` 为 `[]`。所以：\n- **砍伐玩法已应用到正式世界**（世界 buildId 等于上一轮通过校验的 `gbd-a2d84691…`）；\n- **这块新石头目前只是通过校验的候选**，正式世界尚未换到 `gbd-b9a95484…`；应用由玩家的世界控件执行，我没有可引用的已应用回执。\n\n**剩余检查 / 未完成项**\n- 未做实时游玩采样：本任务已结束、`godot_runtime_state` 不可达，运行实例中的实时画面/装备快照为**未知**，不以存档快照替代。\n- 若想挪动或删除这块石头：`created-fd40c8d809c37bab316d1f26` 可 modify 或直接用 `undo` 回退本次放置（`undoSupported: true`）。",
+          "createdAt": "2026-09-10T23:20:28.182Z",
+          "id": "0c87c603-a645-4392-8cd0-46d6aae29068",
+          "modelId": "deepseek-flash",
+          "providerId": "1752c9b7-8e35-46aa-84d7-e22bc9607855",
+          "responseDurationMs": 6559,
+          "role": "assistant",
+          "status": "complete",
+          "thinking": "Check passed. Candidate gcan-74ec2afa7060a770d5be54baeac8525b9d57af126e1d579a179034bb74c068f5, build gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef.\n\nEvidence: 4 entities — 3 trees intact + 1 rock created-fd40c8d809c37bab316d1f26 at (-3.33357, ~0, 7.52563), scale [1,1,1], color #84a866, solid/visible true, bounds x[-4.034,-2.634], y 0→1.4, z[6.826,8.226].\n\nProgress: runtime.snapshot assertion detail \"formal progress unchanged\"; progressMigration.added = [] and the previous snapshot includes inventory {wood: 1} and rules.chop-tree {chopped:false, chops:1, remainingFrames:0} — so play progress (wood 1, one chop) preserved. The requirements evidence observations include those entity states. Note the previousSnapshotHash fff988fc... is the live player state (yaw 2, pitch -0.4) with wood 1.\n\nWorld buildId is still gbd-a2d84691 (revision 11) = the chop-tree build, so the rock candidate is not applied yet.\n\nLet me report. Note applied:false, checkRequired. Host receipts empty.\n\nShould I verify creation.json keeps the chop-tree rule? The check passed and the requirement includes tree #1 with presenceMutable true (which comes from the rule declaration), and previousSnapshot includes rules.chop-tree — that's evidence the rule survived. Good enough; I can mention it's evidenced by presenceMutable=true and the rules ledger.\n\nRemaining checks: live runtime state not read (task ended). Report clearly.",
+          "usage": {
+            "cacheReadTokens": 96768,
+            "inputTokens": 10555,
+            "outputTokens": 1573,
+            "reasoningTokens": 416,
+            "totalTokens": 108896
+          }
+        }
+      ],
+      "observations": {
+        "file": "CA06-continuation-runtime.json",
+        "sha256": "036871257907c35b286962c4641f3c4492f2d74bac2cde9a2b5fc5256a21af3e"
+      },
+      "elapsedMs": 58218,
+      "finishedAt": "2026-09-10T23:20:49.303Z"
+    },
+    {
+      "id": "CA07",
+      "request": "在这个副本的这里放一棵树，保留之前的内容",
+      "aim": "aim-ground",
+      "outcome": "not_run",
+      "submitted": false,
+      "modelRequests": 0,
+      "humanIntervention": false,
+      "checks": [],
+      "startedAt": "2026-09-10T23:21:15.989Z",
+      "beforeTurnId": "5ebb41f5-8913-4a67-b841-adf40ec985d7",
+      "budgetAtStart": {
+        "limit": 40,
+        "inherited": 25,
+        "reserved": 31,
+        "newReserved": 6,
+        "remaining": 9
+      },
+      "promptResult": {
+        "ok": false,
+        "error": {
+          "code": "CREATION_TARGET_STALE",
+          "message": "CREATION_TARGET_STALE",
+          "retriable": false
+        }
+      },
+      "error": "{\"ok\":false,\"error\":{\"code\":\"CREATION_TARGET_STALE\",\"message\":\"CREATION_TARGET_STALE\",\"retriable\":false}}\n\nfalse !== true\n",
+      "partialEvidence": {
+        "file": "CA07-continuation-partial.json",
+        "sha256": "bb73eaaf62c6c6ee4e0f64f9a52c6fceacea0563259e9df87e1f8bf8eef3405a"
+      },
+      "elapsedMs": 26810,
+      "finishedAt": "2026-09-10T23:21:16.115Z"
+    },
+    {
+      "id": "HOLDOUT01",
+      "request": "这棵树的颜色改成#88bb44，其他东西保持原样",
+      "aim": "aim-tree",
+      "evidenceUse": "development_variant",
+      "outcome": "not_run",
+      "submitted": false,
+      "modelRequests": 0,
+      "humanIntervention": false,
+      "checks": []
+    }
+  ],
+  "continuationInitialBudget": {
+    "limit": 40,
+    "inherited": 25,
+    "reserved": 25,
+    "newReserved": 0,
+    "remaining": 15
+  },
+  "budgetAfter": {
+    "limit": 40,
+    "inherited": 25,
+    "reserved": 31,
+    "newReserved": 6,
+    "remaining": 9
+  },
+  "summary": {
+    "counts": {
+      "first_attempt_pass": 1,
+      "model_repaired_pass": 0,
+      "human_assisted_pass": 0,
+      "failed": 0,
+      "environment_blocked": 0,
+      "not_run": 2
+    },
+    "attemptedCases": 2,
+    "attemptDenominator": 2,
+    "attemptAutonomousRate": 0.5,
+    "realModelRuns": 1,
+    "denominator": 1,
+    "firstAttemptRate": 1,
+    "autonomousCompletionRate": 1,
+    "requestCount": 6,
+    "cost": null,
+    "costReason": "No verified monetary price or billed cost in the product usage ledger"
+  },
+  "originalEvidenceUnchanged": true,
+  "finishedAt": "2026-09-10T23:21:19.747Z"
+}

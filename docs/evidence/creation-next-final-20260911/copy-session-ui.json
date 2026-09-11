@@ -1,0 +1,42 @@
+{
+  "checks": [
+    {
+      "name": "会话创建失败保持原会话与可重试复制身份",
+      "passed": true
+    },
+    {
+      "name": "副本成功后真正创建并选中新空会话",
+      "passed": true
+    },
+    {
+      "name": "重试复用原复制操作而不创建副本的副本",
+      "passed": true
+    },
+    {
+      "name": "新会话遵循默认配置与项目作用域",
+      "passed": true
+    },
+    {
+      "name": "真实导航行显示新选中会话",
+      "passed": true
+    },
+    {
+      "name": "同副本重复交接复用已创建会话",
+      "passed": true
+    },
+    {
+      "name": "创建会话期间切换世界拒绝误报副本成功",
+      "passed": true
+    },
+    {
+      "name": "无鼠标键盘焦点或PointerLock请求",
+      "passed": true
+    },
+    {
+      "name": "无未处理界面异常",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "scope": "真实React导航与store，fixture宿主；无模型请求"
+}

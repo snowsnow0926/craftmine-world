@@ -1,0 +1,42 @@
+{
+  "checks": [
+    {
+      "name": "对象名称与真实尺寸显示",
+      "passed": true
+    },
+    {
+      "name": "取消没有写入请求",
+      "passed": true
+    },
+    {
+      "name": "真实按钮提交有界参数与opaque目标",
+      "passed": true
+    },
+    {
+      "name": "撤销发送原始回执编号",
+      "passed": true
+    },
+    {
+      "name": "同会话切换世界不显示旧世界采用结果",
+      "passed": true
+    },
+    {
+      "name": "丢回复和同帧双提交仍只产生一个操作编号",
+      "passed": true
+    },
+    {
+      "name": "原回执恢复后不再显示传输错误",
+      "passed": true
+    },
+    {
+      "name": "没有输入锁定或焦点请求",
+      "passed": true
+    },
+    {
+      "name": "没有页面错误",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "scope": "真实React与fixture传输；生产host集成另验收"
+}

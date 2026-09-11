@@ -1,13 +1,13 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "preview.10已交付；当前Goal按NB0–NB7推进愿望结果验收、常用编辑、中文语音、真实模型可靠性与集成交付复验。",
+  "currentMilestone": "NB0–NB6完成，正在完成NB7本地合并与工作树清理；最后模型预算结束，失败与零请求补验分别保留。",
   "baseline": "2f84da9e9779226cf153861ce5a397be1442f2b5",
-  "updated": "2026-09-10T21:53:20.697954+00:00",
+  "updated": "2026-09-11T00:08:08.446Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "creation_next_batch_in_progress",
-    "reason": "用户要求将中文计划设为Goal并持续开发；工程验收与外部真人验收分开记录。",
+    "status": "creation_next_batch_integrating",
+    "reason": "正在归档原始证据并完成本地收尾。",
     "activeGoal": true,
     "recurringDevelopment": false,
     "executionMode": "goal",
@@ -28,7 +28,8 @@
     "feedbackResolution": "docs/FEEDBACK_RESOLUTION_2026-09-11.md",
     "latestDeliveredVersion": "0.14.4-preview.10",
     "latestDeliveryRecord": "docs/evidence/feedback-resolution-20260911/preview10-delivery.json",
-    "pushAuthorizedForCurrentBatch": false
+    "pushAuthorizedForCurrentBatch": false,
+    "developmentDeliveryRecord": "docs/CREATION_NEXT_BATCH_DELIVERY_2026-09-11.md"
   },
   "godotMultibasePlan": {
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",

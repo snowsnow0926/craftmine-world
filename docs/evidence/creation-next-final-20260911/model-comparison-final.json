@@ -1,0 +1,2635 @@
+{
+  "format": "craftmine.creation-model-comparison/1",
+  "generatedAt": "2026-09-11T00:03:04.798Z",
+  "rounds": [
+    {
+      "directory": "D:\\cm-nb-root\\test-results\\desktop-native-complete-73fuxT",
+      "reportPath": "D:\\cm-nb-root\\test-results\\desktop-native-complete-73fuxT\\report.json",
+      "scope": "live-model",
+      "parentReportSha256": null,
+      "budgetBefore": null,
+      "budgetAfter": null,
+      "reportSha256": "9da63ad9d767215651f99fae089f85a5ec159cb066bdfa58dcca778fb9f7920e",
+      "sourceCommit": "3905222bd7d79c48b32bc46149ab388ae0e052ba",
+      "compiledMainSha256": "3400c32d80cf432b1ff039023562036c2f74e41e925da409f3f3507087bfe191",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "limits": {
+        "maxRequests": 40,
+        "maxCaseMs": 600000,
+        "maxRepairs": 3,
+        "maxCases": 10
+      },
+      "summary": {
+        "counts": {
+          "first_attempt_pass": 0,
+          "model_repaired_pass": 0,
+          "human_assisted_pass": 0,
+          "failed": 1,
+          "environment_blocked": 0,
+          "not_run": 0
+        },
+        "realModelRuns": 1,
+        "denominator": 1,
+        "firstAttemptRate": 0,
+        "autonomousCompletionRate": 0,
+        "requestCount": 16,
+        "cost": null,
+        "costReason": "No verified monetary price or billed cost in the product usage ledger"
+      },
+      "cases": [
+        {
+          "id": "CA01",
+          "request": "在这里放一棵树",
+          "evidenceUse": "development_case",
+          "outcome": "failed",
+          "modelRequests": 16,
+          "repairAttempts": 0,
+          "elapsedMs": 39351,
+          "error": "Error: PERMISSION_DENIED",
+          "tools": [
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 13,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 9,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_capability_report",
+              "elapsedMs": 59,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 836,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.702,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.762,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 24.153,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 0.255,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.041,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 735.025,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 763.223
+              }
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 13,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 8,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 11,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 847,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_jobs",
+              "elapsedMs": 25,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 12,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 11,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 19,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 18,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 21,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 25,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 18,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 16,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 20,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 24,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 19,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_candidate_read",
+              "elapsedMs": 100,
+              "status": "error"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_facts",
+              "elapsedMs": 53,
+              "status": "error"
+            }
+          ]
+        }
+      ],
+      "jobs": [
+        {
+          "jobId": "gjob-ce84c4a0600cdec1121aa8e3ab21bf92f8c89d4952f998606e4fbb240024711e",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 13922,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3303
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3460
+            }
+          ],
+          "phaseTiming": null,
+          "creationPackProof": null
+        },
+        {
+          "jobId": "gjob-5fc3ec639d66d395cde7bee4462f133be327ad02e3fb01bfcd261a4d4a85965f",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 10635,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 4130
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3900
+            }
+          ],
+          "phaseTiming": null,
+          "creationPackProof": null
+        }
+      ]
+    },
+    {
+      "directory": "D:\\cm-nb-root\\test-results\\desktop-native-complete-nla0QX",
+      "reportPath": "D:\\cm-nb-root\\test-results\\desktop-native-complete-nla0QX\\report.json",
+      "scope": "live-model",
+      "parentReportSha256": null,
+      "budgetBefore": null,
+      "budgetAfter": null,
+      "reportSha256": "8bd14cff5c7f4c91d5c3af248e3d8cac5ad81061d0c35122deeb3c530a316dd8",
+      "sourceCommit": "badd725fa70596ade7cdf336f1469652307c4159",
+      "compiledMainSha256": "3ace0d86f9321546161d3a94cffd754698e1e04b4259e356775e2eab59d3a8bb",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "limits": {
+        "maxRequests": 40,
+        "maxCaseMs": 600000,
+        "maxRepairs": 3,
+        "maxCases": 10
+      },
+      "summary": {
+        "counts": {
+          "first_attempt_pass": 2,
+          "model_repaired_pass": 2,
+          "human_assisted_pass": 0,
+          "failed": 1,
+          "environment_blocked": 0,
+          "not_run": 3
+        },
+        "attemptedCases": 5,
+        "attemptDenominator": 5,
+        "attemptAutonomousRate": 0.8,
+        "realModelRuns": 5,
+        "denominator": 5,
+        "firstAttemptRate": 0.4,
+        "autonomousCompletionRate": 0.8,
+        "requestCount": 40,
+        "cost": null,
+        "costReason": "No verified monetary price or billed cost in the product usage ledger"
+      },
+      "cases": [
+        {
+          "id": "CA01",
+          "request": "在这里放一棵树",
+          "evidenceUse": "development_case",
+          "outcome": "model_repaired_pass",
+          "modelRequests": 8,
+          "repairAttempts": 1,
+          "elapsedMs": 49090,
+          "error": null,
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_project_inspect",
+              "elapsedMs": 15,
+              "status": "error"
+            },
+            {
+              "name": "plugin_craftmine_world_capabilities_read",
+              "elapsedMs": 14,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 7,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_capabilities_read",
+              "elapsedMs": 9,
+              "status": "error"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 713,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.974,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 1.305,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 31.118,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 0.429,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.775,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 651.894,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 689.664
+              }
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 28,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 10,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 622,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 8156,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 6,
+              "status": "error"
+            }
+          ]
+        },
+        {
+          "id": "CA02",
+          "request": "把这棵树变大一倍",
+          "evidenceUse": "development_case",
+          "outcome": "model_repaired_pass",
+          "modelRequests": 12,
+          "repairAttempts": 2,
+          "elapsedMs": 65187,
+          "error": null,
+          "tools": [
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 17,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 13,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_capability_report",
+              "elapsedMs": 17,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 108,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 80,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 0,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 10,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 845,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.75,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 1.042,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 31.039,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 24.153,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.323,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 3.211,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 753.789,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 816.22
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 0,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 16,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 14,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 731,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 12933,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_candidate_read",
+              "elapsedMs": 10,
+              "status": "error"
+            }
+          ]
+        },
+        {
+          "id": "CA03",
+          "request": "复制这棵树两个，排开一点",
+          "evidenceUse": "development_case",
+          "outcome": "first_attempt_pass",
+          "modelRequests": 7,
+          "repairAttempts": 0,
+          "elapsedMs": 68385,
+          "error": null,
+          "tools": [
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 56,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 37,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 38,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 634,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.517,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 1.59,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 23.788,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 17.77,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.889,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.396,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 551.274,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 599.267
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 722,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.359,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.581,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 24.211,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 19.122,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.303,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.246,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 649.434,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 695.814
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 587,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 8233,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_candidate_read",
+              "elapsedMs": 13,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 8,
+              "status": "error"
+            }
+          ]
+        },
+        {
+          "id": "CA04",
+          "request": "把时间设为18点",
+          "evidenceUse": "development_case",
+          "outcome": "first_attempt_pass",
+          "modelRequests": 6,
+          "repairAttempts": 0,
+          "elapsedMs": 47799,
+          "error": null,
+          "tools": [
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 13,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 19,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 37,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 645,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.536,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.668,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 23.887,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 25.623,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.412,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.305,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 553.411,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 607.132
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 785,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 11300,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 13,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 18,
+              "status": "error"
+            }
+          ]
+        },
+        {
+          "id": "CA06",
+          "request": "在这里再放一块石头，保留已有物体和游玩进度",
+          "evidenceUse": "development_case",
+          "outcome": "failed",
+          "modelRequests": 7,
+          "repairAttempts": 1,
+          "elapsedMs": 102576,
+          "error": "PROVIDER_ERROR",
+          "tools": [
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 18,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 16,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 41,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 128,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 110,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 36,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_query",
+              "elapsedMs": 110,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_query",
+              "elapsedMs": 346,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_query",
+              "elapsedMs": 242,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 222,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 698,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 1.094,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.696,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 24.884,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 25.386,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.536,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.894,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 603.385,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 658.858
+              }
+            }
+          ]
+        },
+        {
+          "id": "CA07",
+          "request": "在这个副本的这里放一棵树，保留之前的内容",
+          "evidenceUse": "development_case",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        },
+        {
+          "id": "HOLDOUT01",
+          "request": "这棵树的颜色改成#88bb44，其他东西保持原样",
+          "evidenceUse": "development_variant",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        },
+        {
+          "id": "CA05",
+          "request": "让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态。",
+          "evidenceUse": "development_case",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        }
+      ],
+      "jobs": [
+        {
+          "jobId": "gjob-d4f79feeb8b422a6a33d3129d30f58669cefa60205ddec29796c8ebe50ccfa3e",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 15975,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3017
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 5605
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 16307.447,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 7115.892,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 0.593,
+                "passed": false
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "516b8a9e09dc9a8ae5da41108261fbf3b374f4e90dcbd76163b41e3320425f21",
+            "packBytes": 5674872,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "8323912b0517cc9fc848a5098e3b14aa85f9c09f0a5ff3749d8c6e2339e8772d",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-554e46dda5019ec4ff65799e891a3fec2954a3913081befff7fdb6ca8b596bc1",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9852,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3219
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3996
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 12807.251,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2447.318,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2502.569,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "42c9a489a1812ccb44407bdb4b711235ffbcef177d4c2fd4bc211d7025270880",
+            "packBytes": 5676912,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "8323912b0517cc9fc848a5098e3b14aa85f9c09f0a5ff3749d8c6e2339e8772d",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-b97af0446147dece32ac86262c6d9d699a5134e895b99ab3fd9a4f74a7ab31ca",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 14290,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 4838
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 5977
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 17879.745,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 3263.168,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 3143.112,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "93d787442bf35421ec5f20cda923a0aa6cea65dbcecd03c6c34b897d4ce0ce5e",
+            "packBytes": 5678864,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "8323912b0517cc9fc848a5098e3b14aa85f9c09f0a5ff3749d8c6e2339e8772d",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-dba82d44621a30a85baa63c692d3444bae4940da4937686386a7438a2b355fba",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9953,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3483
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3583
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 12650.957,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2701.794,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2367.128,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "7a965c3a6a9b6f2c8ba325724d84da8c92865f7ea743c742ccffaa11b1b868b7",
+            "packBytes": 5682832,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "8323912b0517cc9fc848a5098e3b14aa85f9c09f0a5ff3749d8c6e2339e8772d",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-b2744c0cf8058024f2420312ac86cb7b411df468f1cbc4db06bbf02457e45372",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 12757,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3400
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 6275
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 15836.922,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2650.64,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2563.242,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "c53c1ddef064be548977f1ded355b14e76d77956d93880dd5b738073f1c1fe6b",
+            "packBytes": 5683824,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "8323912b0517cc9fc848a5098e3b14aa85f9c09f0a5ff3749d8c6e2339e8772d",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "directory": "D:\\cm-nb-root\\test-results\\desktop-native-complete-IjZqHs",
+      "reportPath": "D:\\cm-nb-root\\test-results\\desktop-native-complete-IjZqHs\\report.json",
+      "scope": "live-model",
+      "parentReportSha256": null,
+      "budgetBefore": null,
+      "budgetAfter": null,
+      "reportSha256": "62444302afcf44f45d9f7a8750fe6d07e1e90e6318b11c39cf9e18c63c4497f3",
+      "sourceCommit": "832ac71076aa48d787c30e8a55aecffd7aa69390",
+      "compiledMainSha256": "7c154a5a34e6235eddbc3c09a053175861c2f2d3448a8918c15737e6f3ee2dd2",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "limits": {
+        "maxRequests": 40,
+        "maxCaseMs": 600000,
+        "maxRepairs": 3,
+        "maxCases": 10
+      },
+      "summary": {
+        "counts": {
+          "first_attempt_pass": 3,
+          "model_repaired_pass": 0,
+          "human_assisted_pass": 0,
+          "failed": 1,
+          "environment_blocked": 0,
+          "not_run": 3
+        },
+        "attemptedCases": 4,
+        "attemptDenominator": 4,
+        "attemptAutonomousRate": 0.75,
+        "realModelRuns": 4,
+        "denominator": 4,
+        "firstAttemptRate": 0.75,
+        "autonomousCompletionRate": 0.75,
+        "requestCount": 25,
+        "cost": null,
+        "costReason": "No verified monetary price or billed cost in the product usage ledger"
+      },
+      "cases": [
+        {
+          "id": "CA01",
+          "request": "在这里放一棵树",
+          "evidenceUse": "development_case",
+          "outcome": "first_attempt_pass",
+          "modelRequests": 6,
+          "repairAttempts": 0,
+          "elapsedMs": 45398,
+          "error": null,
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_project_inspect",
+              "elapsedMs": 34,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_capability_report",
+              "elapsedMs": 10,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 800,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.439,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.814,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 18.681,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 0.361,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.223,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 716.156,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 738.833
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 918,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 9221,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 7,
+              "status": "error"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 8,
+              "status": "error"
+            }
+          ]
+        },
+        {
+          "id": "CA02",
+          "request": "把这棵树变大一倍",
+          "evidenceUse": "development_case",
+          "outcome": "first_attempt_pass",
+          "modelRequests": 4,
+          "repairAttempts": 0,
+          "elapsedMs": 38781,
+          "error": null,
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 607,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 2.961,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.632,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 18.541,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 18.86,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.293,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 1.156,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 538.879,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 582.583
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 529,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 8190,
+              "status": "success"
+            }
+          ]
+        },
+        {
+          "id": "CA03",
+          "request": "复制这棵树两个，排开一点",
+          "evidenceUse": "development_case",
+          "outcome": "first_attempt_pass",
+          "modelRequests": 4,
+          "repairAttempts": 0,
+          "elapsedMs": 37140,
+          "error": null,
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 625,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.762,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 1.082,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 23.631,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 17.998,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.292,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 2.857,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 550.23,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 598.324
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 525,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 7849,
+              "status": "success"
+            }
+          ]
+        },
+        {
+          "id": "CA05",
+          "request": "让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态。",
+          "evidenceUse": "development_case",
+          "outcome": "failed",
+          "modelRequests": 11,
+          "repairAttempts": 1,
+          "elapsedMs": 125225,
+          "error": "WORLD_BUSY",
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 103,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 13,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 12,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 10,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 12,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_index",
+              "elapsedMs": 41,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 83,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 85,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 55,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 41,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 93,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 54,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 29,
+              "status": "error"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 72,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 47,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 61,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 76,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_guidance",
+              "elapsedMs": 146,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_patch",
+              "elapsedMs": 643,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 78,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_file_read",
+              "elapsedMs": 54,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_patch",
+              "elapsedMs": 966,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 631,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 14313,
+              "status": "success"
+            }
+          ]
+        },
+        {
+          "id": "CA06",
+          "request": "在这里再放一块石头，保留已有物体和游玩进度",
+          "evidenceUse": "development_case",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        },
+        {
+          "id": "CA07",
+          "request": "在这个副本的这里放一棵树，保留之前的内容",
+          "evidenceUse": "development_case",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        },
+        {
+          "id": "HOLDOUT01",
+          "request": "这棵树的颜色改成#88bb44，其他东西保持原样",
+          "evidenceUse": "development_variant",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        }
+      ],
+      "jobs": [
+        {
+          "jobId": "gjob-57d3fbfeffb05d3853ca1ec6419830285c16f2ff6466fa0e5708f805898f5edd",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 13408,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 2990
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3355
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 13754.526,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 6887.403,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 0.5,
+                "passed": false
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "c77095ccac927d817282decaea80ed50c84c140171ce683d4e73ce2566df6d12",
+            "packBytes": 5674872,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "15fd117acf9c385b5985b01393bb01a322de55fa0778707fcb14012a02839eec",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-a83246ed5e2a6fc8605961891d38f94dd6bccf1e252359c3e2a112a9ede94aa0",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 10109,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 4512
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3252
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 12745.142,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2166.313,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2294.169,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "47aa12973e8092be4c7a7097ac4f652544ffd79d4d1d4d6c7a47040c55c1d109",
+            "packBytes": 5676992,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "15fd117acf9c385b5985b01393bb01a322de55fa0778707fcb14012a02839eec",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-f855b79bba5cfd4d0b783a1c8e5b833c36527cee44ae398d801bd3e4faeb10aa",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9209,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3086
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3350
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 11857.548,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2525.131,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2319.745,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "eb4a29d24389c4f839ec2ec7d84b8f897d66388cdba1c371775e3924030e9717",
+            "packBytes": 5679024,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "15fd117acf9c385b5985b01393bb01a322de55fa0778707fcb14012a02839eec",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-07a493e1e0966dafa8837efdc7ff54d30756d2b3490240d0cbf3b911b2fb1a4c",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9167,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3113
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3358
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 11775.696,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2465.102,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2288.995,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "0a589d11102f36406a14a7bc4cae4ec491caa5f6d10c3cddcb87c6a0e1445f16",
+            "packBytes": 5681824,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "15fd117acf9c385b5985b01393bb01a322de55fa0778707fcb14012a02839eec",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-50e5fcfbe77a8f302efa2bfa777066df8c2f155525cef3c67ff517eeb330c72a",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 16268,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 4069
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3802
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 19115.436,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 8223.521,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2461.23,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "c80cf1db90642230e6a9af8fba25ea02fa8fa60a936b547b14e2045abcf91808",
+            "packBytes": 5685612,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "15fd117acf9c385b5985b01393bb01a322de55fa0778707fcb14012a02839eec",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "directory": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB",
+      "reportPath": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\continuation-recovered-report.json",
+      "scope": "new_model_cases_after_original_artifact_recovery",
+      "parentReportSha256": "62444302afcf44f45d9f7a8750fe6d07e1e90e6318b11c39cf9e18c63c4497f3",
+      "budgetBefore": 25,
+      "budgetAfter": {
+        "limit": 40,
+        "inherited": 25,
+        "reserved": 37,
+        "newReserved": 12,
+        "remaining": 3
+      },
+      "reportSha256": "cf14c6a5aeb0d85986222e9dab9145be0917770435d15519cda1f72159db0bb0",
+      "sourceCommit": "8b83dec059b45b4bd1f97c4d190c1595359d27cc",
+      "compiledMainSha256": "3f596c468a40223b15c3b771666a2da623b2fadf3913d06f252d6653527ce0ef",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "limits": {
+        "maxRequests": 40,
+        "maxCaseMs": 600000,
+        "maxRepairs": 3,
+        "maxCases": 10
+      },
+      "summary": {
+        "counts": {
+          "first_attempt_pass": 1,
+          "model_repaired_pass": 0,
+          "human_assisted_pass": 0,
+          "failed": 1,
+          "environment_blocked": 0,
+          "not_run": 1
+        },
+        "attemptedCases": 2,
+        "attemptDenominator": 2,
+        "attemptAutonomousRate": 0.5,
+        "realModelRuns": 2,
+        "denominator": 2,
+        "firstAttemptRate": 0.5,
+        "autonomousCompletionRate": 0.5,
+        "requestCount": 12,
+        "cost": null,
+        "costReason": "No verified monetary price or billed cost in the product usage ledger"
+      },
+      "cases": [
+        {
+          "id": "CA06",
+          "request": "在这里再放一块石头，保留已有物体和游玩进度",
+          "evidenceUse": "development_case",
+          "outcome": "first_attempt_pass",
+          "modelRequests": 6,
+          "repairAttempts": 0,
+          "elapsedMs": 58218,
+          "error": null,
+          "tools": [
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 24,
+              "status": "success"
+            },
+            {
+              "name": "ToolSearch",
+              "elapsedMs": 15,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_index",
+              "elapsedMs": 64,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 684,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.679,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.645,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 19.119,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 17.925,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.789,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 2.792,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 597.527,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 641.533
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 574,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 8177,
+              "status": "success"
+            }
+          ]
+        },
+        {
+          "id": "CA07",
+          "request": "在这个副本的这里放一棵树，保留之前的内容",
+          "evidenceUse": "development_case",
+          "outcome": "failed",
+          "modelRequests": 6,
+          "repairAttempts": 0,
+          "elapsedMs": 86262,
+          "error": "EVALUATION_SESSION_MISSING",
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_project_inspect",
+              "elapsedMs": 521,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_facts",
+              "elapsedMs": 80,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 1137,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.689,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.744,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 19.859,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 18.938,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.329,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 490.702,
+                    "passed": true,
+                    "stage": "formal-source"
+                  },
+                  {
+                    "elapsedMs": 1.634,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 578.106,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 1112.892
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 555,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 8190,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_project_facts",
+              "elapsedMs": 47,
+              "status": "error"
+            }
+          ]
+        },
+        {
+          "id": "HOLDOUT01",
+          "request": "这棵树的颜色改成#88bb44，其他东西保持原样",
+          "evidenceUse": "development_variant",
+          "outcome": "not_run",
+          "modelRequests": 0,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": null,
+          "tools": []
+        }
+      ],
+      "jobs": [
+        {
+          "jobId": "gjob-539efa8128cd1221e064477f6a4862a23b7537d8121372452ef3c80c16ebd5e8",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 8899,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3079
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3229
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 11734.709,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2344.861,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2487.842,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "9c318e4521b7a5b2022084a64dd8bbf770e76b0e46142461b49a20da1307badf",
+            "packBytes": 5687580,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "15fd117acf9c385b5985b01393bb01a322de55fa0778707fcb14012a02839eec",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-42047f598af541605d5870f09be8e5c49c66bfa65fc9be02da6974344371e70f",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 8731,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3092
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3221
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 9046.964,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2192.012,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 0.496,
+                "passed": false
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "3905a7bbfa6ee956bfdf725f55124e1e14b76ff25dc81fb39257ddd5fe67d935",
+            "packBytes": 5687900,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "98a256a1b4c468fc9ec2a50f492539e65ec0b0030c00ae330c7f3d9812da91bf",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-4b90d4e233744ba93948bef5638e7d313c8f325cddece403d7da72995166d465",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9975,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3060
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 4529
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 10359.988,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2109.48,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 0.624,
+                "passed": false
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "ac9a1bd4d3e33f0ce170308fe0d8f87b71b60cdb10edf8d70f9efe2fcefae912",
+            "packBytes": 5687900,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "31dfc649776b4b238741ffb8eac4530ee55143057b6edc2b92436c76d6f1717f",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        },
+        {
+          "jobId": "gjob-493f807a8015ee1ef89dcaf94cb5f1d15068367c203c773101f12e106d90546d",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9337,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3161
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3673
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 12137.154,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2325.359,
+                "passed": true
+              },
+              {
+                "stage": "creation-application",
+                "elapsedMs": 2473.006,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "4839d21398d5961b0267e6593314712fbbb5d3483b252678484642ac7a468a65",
+            "packBytes": 5689836,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "31dfc649776b4b238741ffb8eac4530ee55143057b6edc2b92436c76d6f1717f",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "directory": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB",
+      "reportPath": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\final-continuation-report.json",
+      "scope": "ca07_artifact_recovery_and_final_untouched_case",
+      "parentReportSha256": "cf14c6a5aeb0d85986222e9dab9145be0917770435d15519cda1f72159db0bb0",
+      "budgetBefore": 37,
+      "budgetAfter": {
+        "limit": 40,
+        "inherited": 25,
+        "reserved": 40,
+        "newReserved": 15,
+        "remaining": 0
+      },
+      "reportSha256": "fc56eba67b331c69c283f8b28f76f8becce2b5cd922ba7a2a75db8c3a17e8fbb",
+      "sourceCommit": "a0ac1bdbb326e572c5441ab92462fac1eba7898f",
+      "compiledMainSha256": "40afa55d29444593f59def499a5b6efa742c77debc65df0089f6b8f9aa0c3764",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "limits": {
+        "maxRequests": 40,
+        "maxCaseMs": 600000,
+        "maxRepairs": 3,
+        "maxCases": 10
+      },
+      "summary": {
+        "counts": {
+          "first_attempt_pass": 0,
+          "model_repaired_pass": 0,
+          "human_assisted_pass": 0,
+          "failed": 1,
+          "environment_blocked": 0,
+          "not_run": 0
+        },
+        "attemptedCases": 1,
+        "attemptDenominator": 1,
+        "attemptAutonomousRate": 0,
+        "realModelRuns": 1,
+        "denominator": 1,
+        "firstAttemptRate": 0,
+        "autonomousCompletionRate": 0,
+        "requestCount": 3,
+        "cost": null,
+        "costReason": "No verified monetary price or billed cost in the product usage ledger"
+      },
+      "cases": [
+        {
+          "id": "HOLDOUT01",
+          "request": "这棵树的颜色改成#88bb44，其他东西保持原样",
+          "evidenceUse": "development_variant",
+          "outcome": "failed",
+          "modelRequests": 3,
+          "repairAttempts": 0,
+          "elapsedMs": null,
+          "error": "EVALUATION_REQUEST_LIMIT",
+          "tools": [
+            {
+              "name": "plugin_craftmine_world_creation_operation",
+              "elapsedMs": 631,
+              "status": "success",
+              "sourceTiming": {
+                "format": "craftmine.creation-timing/1",
+                "stages": [
+                  {
+                    "elapsedMs": 0.579,
+                    "passed": true,
+                    "stage": "capture"
+                  },
+                  {
+                    "elapsedMs": 0.699,
+                    "passed": true,
+                    "stage": "source-index"
+                  },
+                  {
+                    "elapsedMs": 19.792,
+                    "passed": true,
+                    "stage": "read-scene"
+                  },
+                  {
+                    "elapsedMs": 19.249,
+                    "passed": true,
+                    "stage": "read-journal"
+                  },
+                  {
+                    "elapsedMs": 0.494,
+                    "passed": true,
+                    "stage": "receipt-lookup"
+                  },
+                  {
+                    "elapsedMs": 2.389,
+                    "passed": true,
+                    "stage": "live-safety"
+                  },
+                  {
+                    "elapsedMs": 560.168,
+                    "passed": true,
+                    "stage": "source-patch"
+                  }
+                ],
+                "totalMs": 605.085
+              }
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_start",
+              "elapsedMs": 538,
+              "status": "success"
+            },
+            {
+              "name": "plugin_craftmine_world_godot_build_read",
+              "elapsedMs": 7907,
+              "status": "success"
+            }
+          ]
+        }
+      ],
+      "jobs": [
+        {
+          "jobId": "gjob-36379bfba420a395363f65c1b0e73b552759644d26b6d102e2f0be893f2a560c",
+          "state": "finished",
+          "outcome": "passed",
+          "checkElapsedMs": 9159,
+          "brokerAttempts": [
+            {
+              "operation": "import",
+              "outcome": "succeeded",
+              "elapsedMs": 3181
+            },
+            {
+              "operation": "exportWeb",
+              "outcome": "succeeded",
+              "elapsedMs": 3311
+            }
+          ],
+          "phaseTiming": {
+            "format": "craftmine.creation-timing/1",
+            "totalMs": 9472.254,
+            "stages": [
+              {
+                "stage": "runtime-check",
+                "elapsedMs": 2401.357,
+                "passed": true
+              }
+            ]
+          },
+          "creationPackProof": {
+            "format": "craftmine.creation-pack-proof/1",
+            "packSha256": "249865574dcd307dcb2e7775c75a0351fc98d1b4e42b4e673930ca04f2dc6aed",
+            "packBytes": 5691900,
+            "engineVersion": "4.7.2-stable",
+            "packFormat": 4,
+            "files": [
+              {
+                "path": "craftmine_shared/base_adapter.gd",
+                "bytes": 9456,
+                "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+              },
+              {
+                "path": "craftmine_shared/runtime_bridge.gd",
+                "bytes": 6958,
+                "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+              },
+              {
+                "path": "craftmine_shared/state_guard.gd",
+                "bytes": 1759,
+                "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+              }
+            ],
+            "project": {
+              "sha256": "31dfc649776b4b238741ffb8eac4530ee55143057b6edc2b92436c76d6f1717f",
+              "selectors": {
+                "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+                "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "totalObservedRequests": 96,
+  "cost": null,
+  "notes": [
+    "原始轮次预算分别记录；带parentReportSha256的续测沿用其原轮次预算，不视为新额度。保留原始失败分类，补验旧模型产物不计新增模型样本。",
+    "原HOLDOUT01表达已用于开发，属于已知表达变体，不能作为未见需求的泛化证据。",
+    "源码、检查器和runner在修复后变化；阶段计时是实际测量，不据此宣称同条件整体提速。",
+    "timing.stages.passed仅表示调用正常返回；是否检查或采用成功以真实job/outcome为准。",
+    "费用未由账单确认，保留null。物理麦克风、真人和干净Windows不属于本报告。"
+  ]
+}

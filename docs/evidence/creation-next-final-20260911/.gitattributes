@@ -1,0 +1,3 @@
+* -text
+# Raw tool logs retain their original trailing blank lines and CRLF bytes.
+*.log whitespace=cr-at-eol,-blank-at-eof

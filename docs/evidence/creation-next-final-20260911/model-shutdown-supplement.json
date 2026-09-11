@@ -1,0 +1,13 @@
+{
+  "format": "craftmine.continuation-cleanup/1",
+  "createdAt": "2026-09-10T23:48:17.899Z",
+  "report": "continuation-recovered-report.json",
+  "reason": "Evaluation initialize rejected the mutable auto-generated session title; final snapshot then failed before the old runner reached native quit.",
+  "ownedRunnerPid": 284068,
+  "ownedClientPid": 267684,
+  "ownershipVerifiedBy": "Win32_Process.ParentProcessId == ownedRunnerPid and process name electron",
+  "cleanup": "Terminated only the verified owned Electron client; runner exited 1; no immediate child processes remained.",
+  "cleanShutdown": false,
+  "modelRequestsAddedByCleanup": 0,
+  "budgetReserved": 37
+}

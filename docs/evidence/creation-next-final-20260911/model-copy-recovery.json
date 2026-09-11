@@ -1,0 +1,759 @@
+{
+  "restoredCopy": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-d41509036a2ff280669f9fb9281381d1285798e92d7899b8baf94ab5d6090eae",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "db5a7828f4f7d64a9da88c26",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "creation": {
+        "entities": [
+          {
+            "collisionBounds": {
+              "max": [
+                -0.716220855712891,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                -3.11622095108032,
+                0,
+                1.67456459999084
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-e995b7dbd0c8ac590df4b041",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                -0.71757984161377,
+                7.99999904632568,
+                4.07320547103882
+              ],
+              "min": [
+                -3.11486148834229,
+                0,
+                1.6759238243103
+              ]
+            },
+            "parameters": {},
+            "position": [
+              -1.91622078418732,
+              4.4703483581543e-8,
+              2.87456464767456
+            ],
+            "presenceMutable": true,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                2.28377914428711,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                -0.116220831871033,
+                0,
+                1.67456459999084
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-62bf6336d4935ab0a75839bb",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                2.28242015838623,
+                7.99999904632568,
+                4.07320547103882
+              ],
+              "min": [
+                -0.114861607551575,
+                0,
+                1.6759238243103
+              ]
+            },
+            "parameters": {},
+            "position": [
+              1.08377921581268,
+              4.4703483581543e-8,
+              2.87456464767456
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                5.28377914428711,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                2.88377928733826,
+                0,
+                1.67456459999084
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-75180a8afbd05eac45bbf448",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                5.28242015838623,
+                7.99999904632568,
+                4.07320547103882
+              ],
+              "min": [
+                2.88513851165771,
+                0,
+                1.6759238243103
+              ]
+            },
+            "parameters": {},
+            "position": [
+              4.08377933502197,
+              4.4703483581543e-8,
+              2.87456464767456
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                -2.63357043266296,
+                1.40000009536743,
+                8.22563362121582
+              ],
+              "min": [
+                -4.03357028961182,
+                5.96046447753906e-8,
+                6.82563400268555
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-fd40c8d809c37bab316d1f26",
+            "kind": "rock",
+            "meshBounds": {
+              "max": [
+                -2.63436317443848,
+                1.40000009536743,
+                8.22484111785889
+              ],
+              "min": [
+                -4.03277778625488,
+                5.96046447753906e-8,
+                6.82642650604248
+              ]
+            },
+            "parameters": {},
+            "position": [
+              -3.33357048034668,
+              4.4703483581543e-8,
+              7.52563381195068
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                4.53400039672852,
+                8,
+                8.72599983215332
+              ],
+              "min": [
+                2.1340000629425,
+                0,
+                6.32600021362305
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-bebd05efce92531edbfc85c8",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                4.53264093399048,
+                7.99999904632568,
+                8.72464084625244
+              ],
+              "min": [
+                2.13535928726196,
+                0,
+                6.32735919952393
+              ]
+            },
+            "parameters": {},
+            "position": [
+              3.33400011062622,
+              0,
+              7.52600002288818
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          }
+        ],
+        "obstacles": [
+          {
+            "entityId": "created-e995b7dbd0c8ac590df4b041",
+            "max": [
+              -0.716220855712891,
+              8,
+              4.07456493377686
+            ],
+            "min": [
+              -3.11622095108032,
+              0,
+              1.67456459999084
+            ]
+          },
+          {
+            "entityId": "created-62bf6336d4935ab0a75839bb",
+            "max": [
+              2.28377914428711,
+              8,
+              4.07456493377686
+            ],
+            "min": [
+              -0.116220831871033,
+              0,
+              1.67456459999084
+            ]
+          },
+          {
+            "entityId": "created-75180a8afbd05eac45bbf448",
+            "max": [
+              5.28377914428711,
+              8,
+              4.07456493377686
+            ],
+            "min": [
+              2.88377928733826,
+              0,
+              1.67456459999084
+            ]
+          },
+          {
+            "entityId": "created-fd40c8d809c37bab316d1f26",
+            "max": [
+              -2.63357043266296,
+              1.40000009536743,
+              8.22563362121582
+            ],
+            "min": [
+              -4.03357028961182,
+              5.96046447753906e-8,
+              6.82563400268555
+            ]
+          },
+          {
+            "entityId": "created-bebd05efce92531edbfc85c8",
+            "max": [
+              4.53400039672852,
+              8,
+              8.72599983215332
+            ],
+            "min": [
+              2.1340000629425,
+              0,
+              6.32600021362305
+            ]
+          }
+        ],
+        "physicsTick": 14,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 7,
+        "target": {
+          "color": "#84a866",
+          "entityId": "created-bebd05efce92531edbfc85c8",
+          "entityKind": "tree",
+          "entityName": "树",
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            2.1340000629425,
+            0.55776047706604,
+            6.9766411781311
+          ],
+          "revision": 7,
+          "scale": [
+            2,
+            2,
+            2
+          ],
+          "surface": "entity"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {
+        "wood": 1
+      },
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": -2
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T23:56:42Z",
+    "worldId": "copy-0afdd1207dd9b56be6149649b36b1da6af6663d9"
+  },
+  "restoredCopyProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "wood": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": -2
+      },
+      "rules": {
+        "chop-tree": {
+          "chopped": false,
+          "chops": 1,
+          "remainingFrames": 0
+        }
+      },
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "copy-0afdd1207dd9b56be6149649b36b1da6af6663d9"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "copy-0afdd1207dd9b56be6149649b36b1da6af6663d9"
+  },
+  "originalWorld": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-b9a954846c3cbe4c7110cee7eac10cf84b33025553104574c067448a596fb9ef",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "4688555a104e1da05ea6c18b",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "creation": {
+        "entities": [
+          {
+            "collisionBounds": {
+              "max": [
+                -0.716220855712891,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                -3.11622095108032,
+                0,
+                1.67456459999084
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-e995b7dbd0c8ac590df4b041",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                -0.71757984161377,
+                7.99999904632568,
+                4.07320547103882
+              ],
+              "min": [
+                -3.11486148834229,
+                0,
+                1.6759238243103
+              ]
+            },
+            "parameters": {},
+            "position": [
+              -1.91622078418732,
+              4.4703483581543e-8,
+              2.87456464767456
+            ],
+            "presenceMutable": true,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                2.28377914428711,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                -0.116220831871033,
+                0,
+                1.67456459999084
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-62bf6336d4935ab0a75839bb",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                2.28242015838623,
+                7.99999904632568,
+                4.07320547103882
+              ],
+              "min": [
+                -0.114861607551575,
+                0,
+                1.6759238243103
+              ]
+            },
+            "parameters": {},
+            "position": [
+              1.08377921581268,
+              4.4703483581543e-8,
+              2.87456464767456
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                5.28377914428711,
+                8,
+                4.07456493377686
+              ],
+              "min": [
+                2.88377928733826,
+                0,
+                1.67456459999084
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-75180a8afbd05eac45bbf448",
+            "kind": "tree",
+            "meshBounds": {
+              "max": [
+                5.28242015838623,
+                7.99999904632568,
+                4.07320547103882
+              ],
+              "min": [
+                2.88513851165771,
+                0,
+                1.6759238243103
+              ]
+            },
+            "parameters": {},
+            "position": [
+              4.08377933502197,
+              4.4703483581543e-8,
+              2.87456464767456
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              2,
+              2,
+              2
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                -2.63357043266296,
+                1.40000009536743,
+                8.22563362121582
+              ],
+              "min": [
+                -4.03357028961182,
+                5.96046447753906e-8,
+                6.82563400268555
+              ]
+            },
+            "color": "#84a866",
+            "id": "created-fd40c8d809c37bab316d1f26",
+            "kind": "rock",
+            "meshBounds": {
+              "max": [
+                -2.63436317443848,
+                1.40000009536743,
+                8.22484111785889
+              ],
+              "min": [
+                -4.03277778625488,
+                5.96046447753906e-8,
+                6.82642650604248
+              ]
+            },
+            "parameters": {},
+            "position": [
+              -3.33357048034668,
+              4.4703483581543e-8,
+              7.52563381195068
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true
+          }
+        ],
+        "obstacles": [
+          {
+            "entityId": "created-e995b7dbd0c8ac590df4b041",
+            "max": [
+              -0.716220855712891,
+              8,
+              4.07456493377686
+            ],
+            "min": [
+              -3.11622095108032,
+              0,
+              1.67456459999084
+            ]
+          },
+          {
+            "entityId": "created-62bf6336d4935ab0a75839bb",
+            "max": [
+              2.28377914428711,
+              8,
+              4.07456493377686
+            ],
+            "min": [
+              -0.116220831871033,
+              0,
+              1.67456459999084
+            ]
+          },
+          {
+            "entityId": "created-75180a8afbd05eac45bbf448",
+            "max": [
+              5.28377914428711,
+              8,
+              4.07456493377686
+            ],
+            "min": [
+              2.88377928733826,
+              0,
+              1.67456459999084
+            ]
+          },
+          {
+            "entityId": "created-fd40c8d809c37bab316d1f26",
+            "max": [
+              -2.63357043266296,
+              1.40000009536743,
+              8.22563362121582
+            ],
+            "min": [
+              -4.03357028961182,
+              5.96046447753906e-8,
+              6.82563400268555
+            ]
+          }
+        ],
+        "physicsTick": 17,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 6,
+        "target": {
+          "color": "#84a866",
+          "entityId": "created-fd40c8d809c37bab316d1f26",
+          "entityKind": "rock",
+          "entityName": "石头",
+          "normal": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -2.63357043266296,
+            0.325476765632629,
+            7.20527362823486
+          ],
+          "revision": 6,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "surface": "entity"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {
+        "wood": 1
+      },
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 2
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-10T23:56:43Z",
+    "worldId": "world-f6b800d43bbf"
+  },
+  "originalProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "wood": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.4,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 2
+      },
+      "rules": {
+        "chop-tree": {
+          "chopped": false,
+          "chops": 1,
+          "remainingFrames": 0
+        }
+      },
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-f6b800d43bbf"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-f6b800d43bbf"
+  },
+  "sourceUnchanged": true
+}

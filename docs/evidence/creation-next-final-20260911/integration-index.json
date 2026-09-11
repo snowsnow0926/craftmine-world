@@ -1,0 +1,135 @@
+{
+  "format": "craftmine.creation-next-final-evidence/1",
+  "coverageComplete": true,
+  "stageCount": 14,
+  "coreSha256": "e095121b8f799c2e55423f40ff4bdf864c626a9c2f7b53842a64754aa0359688",
+  "originalAggregate": "D:/cm-nb-root/test-results/creation-next-checks-yGNIO8/report.json",
+  "supplement": "D:/cm-nb-root/test-results/creation-next-supplement-c0d1ae53ef/report.json",
+  "finalStoryRun": "D:/cm-nb-root/test-results/creation-story-final-65e3ebca9a/run.json",
+  "failedAttemptsRetained": [
+    "D:/cm-nb-root/test-results/desktop-native-complete-srA1vY/report.json",
+    "D:/cm-nb-root/test-results/creation-story-CJWyfN/report.json"
+  ],
+  "limitations": [
+    "An evidence chain, not a rewritten successful original aggregate.",
+    "One optional native sequence unit test remained skipped; the actual Web sequence checks passed.",
+    "No live-model, physical-microphone, player, or clean Windows lifecycle claim from this verification."
+  ],
+  "stages": [
+    {
+      "name": "logic",
+      "countType": "passed tests",
+      "skipped": 1,
+      "status": "passed",
+      "count": 78,
+      "path": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\logic.log",
+      "sha256": "44962dacb15c9024f932d341dcbd7821990f7ffcb8ccd7e9b9e29e4223f30cda"
+    },
+    {
+      "name": "host",
+      "countType": "passed tests",
+      "status": "passed",
+      "count": 119,
+      "path": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\host.log",
+      "sha256": "133f48c7453dbc7fa357321f1079688c3ff45247c88e069ea64092cbbec690bb"
+    },
+    {
+      "name": "editing-ui",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 9,
+      "path": "D:\\cm-nb-root\\test-results\\creation-edit-ui-5UwBRw\\report.json",
+      "sha256": "00ca588fbccd95cf0c6ed94f4082414b6f2731608122dfc8d2eedba6acda08be"
+    },
+    {
+      "name": "voice-status-ui",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 16,
+      "path": "D:\\cm-nb-root\\test-results\\creation-voice-status-UpXppH\\report.json",
+      "sha256": "9d8613ba5566e13fc5dd034d93eb8bd11cf56d91682420aabd150bbb74e5c675"
+    },
+    {
+      "name": "editing-progress",
+      "countType": "native gameplay processes",
+      "status": "passed",
+      "count": 3,
+      "path": "D:\\cm-nb-root\\test-results\\edit-progress-HbZRiN\\report.json",
+      "sha256": "7fe5ad68887c0961f81095b940f29a27fac60ae989efbd09c0dfcbccf0a8fde7"
+    },
+    {
+      "name": "general-behavior",
+      "countType": "native gameplay processes",
+      "status": "passed",
+      "count": 2,
+      "path": "D:\\cm-nb-root\\test-results\\entity-behavior-lNI8I5\\report.json",
+      "sha256": "bda53eca7546fe9a623e09953edbe5b3ab6e3478dfe8cdcadacbd90fc1335a15"
+    },
+    {
+      "name": "requirements",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 32,
+      "path": "D:\\cm-nb-root\\test-results\\creation-requirements-web-VjT8ag\\report.json",
+      "sha256": "7c08b295fb6d0f5a0eaeaad5a1abf0b7e631334876a5c42ff1a971da16fe0bdf"
+    },
+    {
+      "name": "harvest",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 10,
+      "path": "D:\\cm-nb-root\\test-results\\creation-harvest-web-NM8GYs\\report.json",
+      "sha256": "ab8ad85dd5cd0b9340dd7990fc51ad6612fa3405dbffbd2e55a61854b557f167"
+    },
+    {
+      "name": "forged-observation",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 5,
+      "path": "D:\\cm-nb-root\\test-results\\observation-forgery-kg9E6d\\report.json",
+      "sha256": "6a5fc951ce7cb26dd6fc484dfd50660600e363f37cd7ec5907867ba711d32183"
+    },
+    {
+      "name": "exported-pack",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 8,
+      "path": "D:\\cm-nb-root\\test-results\\creation-pack-export-N5zsOH\\report.json",
+      "sha256": "db91f0a5f895a127667694e651f676b310d6be1a3b799afe55970628598f3e95"
+    },
+    {
+      "name": "managed-executor",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 15,
+      "path": "D:\\cm-nb-root\\test-results\\creation-managed-lIZmVa\\report.json",
+      "sha256": "3c1c816eb0c649fe67fb10d3c93e2e99e01313d58d3444b1b15d8baac49ecfeb"
+    },
+    {
+      "name": "direct-native",
+      "countType": "passed checks",
+      "status": "passed",
+      "count": 17,
+      "path": "D:\\cm-nb-root\\test-results\\desktop-native-complete-ad17EJ\\report.json",
+      "sha256": "743058805760b5f5479b862caae191bebab52c52b76d1fd2c1787bfb43735a15"
+    },
+    {
+      "status": "passed",
+      "name": "story",
+      "countType": "passed flow checks",
+      "nativeAssertions": 232,
+      "sha256": "216b30e0cb437bb54eff5c2403a56b5424f750f99f49543699e238a4588a7103",
+      "count": 33,
+      "path": "D:\\cm-nb-root\\test-results\\creation-story-04djeU\\report.json",
+      "nativeProcesses": 13
+    },
+    {
+      "name": "staged-materializers",
+      "countType": "passed bases",
+      "status": "passed",
+      "count": 5,
+      "path": "D:\\cm-nb-root\\test-results\\staged-materializers-3GSHNA\\report.json",
+      "sha256": "40caf577139ec9f4531daf4ee4bd424f9d78029cb6a6246e7145d3392c637af0"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "format": "craftmine.creation-next-supplement/1",
+  "out": "D:\\cm-nb-root\\test-results\\creation-next-supplement-c0d1ae53ef",
+  "previousReport": "D:/cm-nb-root/test-results/creation-next-checks-yGNIO8/report.json",
+  "testSourceCommit": "b29d8854500af55f28848db78abfd94ad1e207c8",
+  "productBuildCommit": "badd725fa70596ade7cdf336f1469652307c4159",
+  "coreSha256": "e095121b8f799c2e55423f40ff4bdf864c626a9c2f7b53842a64754aa0359688",
+  "mainSha256": "3ace0d86f9321546161d3a94cffd754698e1e04b4259e356775e2eab59d3a8bb",
+  "startedAt": "2026-09-10T22:53:12.3244430Z",
+  "passed": false,
+  "steps": [
+    {
+      "name": "direct-native",
+      "file": "tests/creation-edit-native.mjs",
+      "sourceSha256": "b5ef27c0d0a76d079946a2949b2da9f448cc8792d50b6bdc0e0c35cca73aa110",
+      "status": "passed",
+      "startedAt": "2026-09-10T22:53:12.3415172Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-supplement-c0d1ae53ef\\direct-native.log",
+      "elapsedMs": 108126,
+      "exitCode": 0,
+      "sha256": "0546c97e8dbc8a390f60b00b83f98d2b696ce774bec378bc775e82111e26381f"
+    },
+    {
+      "name": "story",
+      "file": "tests/creation-story-headless.mjs",
+      "sourceSha256": "a1079d5d1466aa015cccae364d990b1e7f45b86092a02ab1b2283b89a683bd86",
+      "status": "failed",
+      "startedAt": "2026-09-10T22:55:00.4811542Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-supplement-c0d1ae53ef\\story.log",
+      "elapsedMs": 70806,
+      "exitCode": 1,
+      "sha256": "2812f6ac8b3ffe5ca16a660c0fe5f46b1c9847f0103dcc5d1ed231a4fac5a997"
+    }
+  ],
+  "finishedAt": "2026-09-10T22:56:11.2900201Z"
+}

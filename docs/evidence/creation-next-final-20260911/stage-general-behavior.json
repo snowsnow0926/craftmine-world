@@ -1,0 +1,228 @@
+{
+  "passed": true,
+  "first": {
+    "captured": false,
+    "failures": [],
+    "headless": true,
+    "observation": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "creation": {
+        "entities": [
+          {
+            "color": "#84aa66",
+            "id": "tree-a",
+            "kind": "tree",
+            "parameters": {},
+            "position": [
+              4,
+              0,
+              4
+            ],
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": false,
+            "visible": false
+          }
+        ],
+        "obstacles": [],
+        "physicsTick": 8,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            4,
+            -2.38418579323607e-8,
+            4
+          ]
+        },
+        "revision": 2,
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            1,
+            0
+          ],
+          "position": [
+            4,
+            4.4703483581543e-8,
+            -1.6363639831543
+          ],
+          "revision": 2,
+          "surface": "ground"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          4
+        ],
+        "yaw": 0
+      },
+      "ready": true
+    },
+    "snapshot": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          4
+        ],
+        "yaw": 0
+      },
+      "rules": {
+        "toggle": {
+          "hidden": true
+        }
+      },
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "behavior-world"
+    }
+  },
+  "restarted": {
+    "captured": false,
+    "failures": [],
+    "headless": true,
+    "observation": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "creation": {
+        "entities": [
+          {
+            "color": "#84aa66",
+            "id": "tree-a",
+            "kind": "tree",
+            "parameters": {},
+            "position": [
+              4,
+              0,
+              4
+            ],
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": false,
+            "visible": false
+          }
+        ],
+        "obstacles": [],
+        "physicsTick": 8,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            4,
+            -2.38418579323607e-8,
+            4
+          ]
+        },
+        "revision": 2,
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            4,
+            1.54999995231628,
+            -31.75
+          ],
+          "revision": 2,
+          "surface": "boundary"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          4
+        ],
+        "yaw": 0
+      },
+      "ready": true
+    },
+    "snapshot": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          4
+        ],
+        "yaw": 0
+      },
+      "rules": {
+        "toggle": {
+          "hidden": true
+        }
+      },
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "behavior-world"
+    }
+  },
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 87,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 2697,
+      "exitCode": 0
+    },
+    {
+      "label": "first",
+      "elapsedMs": 769,
+      "exitCode": 0
+    },
+    {
+      "label": "restarted",
+      "elapsedMs": 444,
+      "exitCode": 0
+    }
+  ],
+  "scope": "真实通用entity-behavior交互/投影/恢复；无采集重生逻辑、无模型"
+}

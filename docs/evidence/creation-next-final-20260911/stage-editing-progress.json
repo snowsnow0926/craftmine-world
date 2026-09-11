@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "first": {
+    "captured": false,
+    "entities": [
+      "chest-a"
+    ],
+    "failures": [],
+    "headless": true,
+    "interaction": {
+      "entityId": "chest-a",
+      "interacted": true,
+      "kind": "chest"
+    },
+    "snapshot": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "kept-token": 7,
+        "wood": 3
+      },
+      "openedChests": {
+        "chest-a": true
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "edit-world"
+    }
+  },
+  "absent": {
+    "captured": false,
+    "entities": [],
+    "failures": [],
+    "headless": true,
+    "interaction": {},
+    "snapshot": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "kept-token": 7,
+        "wood": 3
+      },
+      "openedChests": {
+        "chest-a": true
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "edit-world"
+    }
+  },
+  "restored": {
+    "captured": false,
+    "entities": [
+      "chest-a"
+    ],
+    "failures": [],
+    "headless": true,
+    "interaction": {
+      "entityId": "chest-a",
+      "interacted": false,
+      "reason": "already-opened"
+    },
+    "snapshot": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "kept-token": 7,
+        "wood": 3
+      },
+      "openedChests": {
+        "chest-a": true
+      },
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          4,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "edit-world"
+    }
+  },
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 83,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 2214,
+      "exitCode": 0
+    },
+    {
+      "label": "open-chest",
+      "elapsedMs": 433,
+      "exitCode": 0
+    },
+    {
+      "label": "deleted-reopen",
+      "elapsedMs": 431,
+      "exitCode": 0
+    },
+    {
+      "label": "undo-reopen",
+      "elapsedMs": 436,
+      "exitCode": 0
+    }
+  ],
+  "scope": "真实Godot源码删除/撤销与跨进程进度，不替代host candidate采用验收"
+}

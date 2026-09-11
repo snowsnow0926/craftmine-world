@@ -1,0 +1,294 @@
+{
+  "format": "craftmine.creation-next-final-evidence-manifest/1",
+  "files": [
+    {
+      "file": "integration-index.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-story-final-65e3ebca9a\\final-evidence-index.json",
+      "bytes": 5317,
+      "sha256": "94b242e032b11974d1411868cdeabb46241c937edac78c11af8e5908848105dd"
+    },
+    {
+      "file": "integration-original.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\report.json",
+      "bytes": 7965,
+      "sha256": "f292daf0d944ec731ae58b438365770800b2983432f5465f137205e8577f972d"
+    },
+    {
+      "file": "optimized-quick.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-CEvudw\\report.json",
+      "bytes": 4226,
+      "sha256": "1f1958119316ff7a833b0b3642e00ef6b53f727f70556c80e2a0a1dbc4020a45"
+    },
+    {
+      "file": "optimized-logic.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-CEvudw\\logic.log",
+      "bytes": 8012,
+      "sha256": "3e4684c19950bb799dd019ed4bebccda0c9f20ff93abf1bd43814af00fc7301e"
+    },
+    {
+      "file": "optimized-host.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-CEvudw\\host.log",
+      "bytes": 10566,
+      "sha256": "90f6f43e5fe7c1dcbc8cb6ddf67764ab913a13cb7c9ddb919bf98fb20f4cdef6"
+    },
+    {
+      "file": "runtime-request-boundary.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-CEvudw\\runtime-request-boundary.log",
+      "bytes": 1822,
+      "sha256": "47439bfdd9089e410a824eb92a76863d8609d81db9d646896124c23837fd373a"
+    },
+    {
+      "file": "legacy-unit.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\legacy-unit.log",
+      "bytes": 27009,
+      "sha256": "84233fac3c17c0741d4ce33a91f897ef0527bbf8ab2b244d7e3a3120120bef80"
+    },
+    {
+      "file": "migration-final.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-MmmG4i\\report.json",
+      "bytes": 36655,
+      "sha256": "75fc6d5ffc0489e5b58b2272ed91762e9edc519bcf44dec7a7b06d3254ef8c75"
+    },
+    {
+      "file": "built-source.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\optimized-build-manifest.json",
+      "bytes": 1260,
+      "sha256": "9af9a1620cff8d49427820d5309241896be745ce623b240200d4ce8a6fcb11f1"
+    },
+    {
+      "file": "model-baseline-original.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-73fuxT\\report.json",
+      "bytes": 343252,
+      "sha256": "9da63ad9d767215651f99fae089f85a5ec159cb066bdfa58dcca778fb9f7920e"
+    },
+    {
+      "file": "model-comparison-original.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-nla0QX\\report.json",
+      "bytes": 1130342,
+      "sha256": "8bd14cff5c7f4c91d5c3af248e3d8cac5ad81061d0c35122deeb3c530a316dd8"
+    },
+    {
+      "file": "model-optimized-original.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-IjZqHs\\report.json",
+      "bytes": 1201645,
+      "sha256": "62444302afcf44f45d9f7a8750fe6d07e1e90e6318b11c39cf9e18c63c4497f3"
+    },
+    {
+      "file": "model-harvest-recovery.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\report.json",
+      "bytes": 2501277,
+      "sha256": "c918462c947291de9931fa9e21411910aea49b36ae2b28e255d2ac2ec737ec4e"
+    },
+    {
+      "file": "story-final.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-story-04djeU\\report.json",
+      "bytes": 1187608,
+      "sha256": "216b30e0cb437bb54eff5c2403a56b5424f750f99f49543699e238a4588a7103"
+    },
+    {
+      "file": "final-quick.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\report.json",
+      "bytes": 4439,
+      "sha256": "4bad266b601f0cc1afcfc81a9e7e383b8af17d3ef9d9b64a2391e65857682fa7"
+    },
+    {
+      "file": "final-logic.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\logic.log",
+      "bytes": 8764,
+      "sha256": "474c398d097376e43f7aff1dc302723f6e5ff70075b0d7f429bc45a59af756b2"
+    },
+    {
+      "file": "final-host.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\host.log",
+      "bytes": 10773,
+      "sha256": "4cb767f8bc05bd08ab609110ea242dd113abdcfc6b084053850d47fd10561968"
+    },
+    {
+      "file": "final-runtime-request-boundary.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\runtime-request-boundary.log",
+      "bytes": 1822,
+      "sha256": "62ca2c3de4fd0f731382b314cab8fb50b4c3f293a77bb0e84f2579f12f8dd5d4"
+    },
+    {
+      "file": "model-continuation-first.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\continuation-report.json",
+      "bytes": 193700,
+      "sha256": "0ab3906aff97b0a52acc70183f322ce9d948f5608e8b44b798c3b462a4425797"
+    },
+    {
+      "file": "model-continuation-recovered.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\continuation-recovered-report.json",
+      "bytes": 575566,
+      "sha256": "cf14c6a5aeb0d85986222e9dab9145be0917770435d15519cda1f72159db0bb0"
+    },
+    {
+      "file": "model-continuation-final.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\final-continuation-report.json",
+      "bytes": 185360,
+      "sha256": "fc56eba67b331c69c283f8b28f76f8becce2b5cd922ba7a2a75db8c3a17e8fbb"
+    },
+    {
+      "file": "model-copy-recovery.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\final-CA07-recovery.json",
+      "bytes": 18735,
+      "sha256": "e3c195c9b546c9d6273cc7ebd8c074ea631f4d8e74714742fcbc4f634c7cfeab"
+    },
+    {
+      "file": "model-shutdown-supplement.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-K7eooB\\continuation-shutdown-supplement.json",
+      "bytes": 669,
+      "sha256": "5aa977527904ebcf064bb62ee9282fd78c5196f5be0fbb4bbf6f880b21026cee"
+    },
+    {
+      "file": "model-comparison-final.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\model-comparison-final.json",
+      "bytes": 87230,
+      "sha256": "f9379ed842ee46357f5c543f650c3041a3a667b4aad8b452e5ad87e83887a8b1"
+    },
+    {
+      "file": "copy-session-ui.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-copy-session-ui-xUw6NH\\report.json",
+      "bytes": 979,
+      "sha256": "ec746adbbe990af26a45dcef2b4373a81e0694e71eb48618bc1f26cd1dd73210"
+    },
+    {
+      "file": "typecheck-final.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\typecheck-session-identity.log",
+      "bytes": 33,
+      "sha256": "d66548006c5c7c54f315f252a8864713f539323f6c6187c23bb7db83274361fa"
+    },
+    {
+      "file": "desktop-build-final.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\desktop-build-session-identity.log",
+      "bytes": 14189,
+      "sha256": "b66dc46994d33b33f0ac415b706638358a0aa35222c359041a01a0a0253cb4b0"
+    },
+    {
+      "file": "assets-final.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\assets-final.json",
+      "bytes": 107925,
+      "sha256": "0b4546d19eb623dc07089c359a0c50586d9017f30d8a0121d7c874a02e40cf05"
+    },
+    {
+      "file": "integration-supplement.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-supplement-c0d1ae53ef\\report.json",
+      "bytes": 1660,
+      "sha256": "7e93ad202a1b6f7ecaadbf5e69d3a172bc0a7e2b22873359dead63060f3ed2f7"
+    },
+    {
+      "file": "copy-native.json",
+      "source": "D:\\cm-nb-copy\\test-results\\creation-managed-Moyb0c\\report.json",
+      "bytes": 436909,
+      "sha256": "04a89b5824febc919b5443e2d3e243c5111d3091b56a5fece6bde10542bf4548"
+    },
+    {
+      "file": "stage-logic.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\logic.log",
+      "bytes": 7375,
+      "sha256": "44962dacb15c9024f932d341dcbd7821990f7ffcb8ccd7e9b9e29e4223f30cda"
+    },
+    {
+      "file": "stage-host.log",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\host.log",
+      "bytes": 10354,
+      "sha256": "133f48c7453dbc7fa357321f1079688c3ff45247c88e069ea64092cbbec690bb"
+    },
+    {
+      "file": "stage-editing-ui.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-edit-ui-5UwBRw\\report.json",
+      "bytes": 907,
+      "sha256": "00ca588fbccd95cf0c6ed94f4082414b6f2731608122dfc8d2eedba6acda08be"
+    },
+    {
+      "file": "stage-voice-status-ui.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-voice-status-UpXppH\\report.json",
+      "bytes": 1924,
+      "sha256": "9d8613ba5566e13fc5dd034d93eb8bd11cf56d91682420aabd150bbb74e5c675"
+    },
+    {
+      "file": "stage-editing-progress.json",
+      "source": "D:\\cm-nb-root\\test-results\\edit-progress-HbZRiN\\report.json",
+      "bytes": 2759,
+      "sha256": "7fe5ad68887c0961f81095b940f29a27fac60ae989efbd09c0dfcbccf0a8fde7"
+    },
+    {
+      "file": "stage-general-behavior.json",
+      "source": "D:\\cm-nb-root\\test-results\\entity-behavior-lNI8I5\\report.json",
+      "bytes": 4516,
+      "sha256": "bda53eca7546fe9a623e09953edbe5b3ab6e3478dfe8cdcadacbd90fc1335a15"
+    },
+    {
+      "file": "stage-requirements.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-requirements-web-VjT8ag\\report.json",
+      "bytes": 4330,
+      "sha256": "7c08b295fb6d0f5a0eaeaad5a1abf0b7e631334876a5c42ff1a971da16fe0bdf"
+    },
+    {
+      "file": "stage-harvest.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-harvest-web-NM8GYs\\report.json",
+      "bytes": 3591,
+      "sha256": "ab8ad85dd5cd0b9340dd7990fc51ad6612fa3405dbffbd2e55a61854b557f167"
+    },
+    {
+      "file": "stage-forged-observation.json",
+      "source": "D:\\cm-nb-root\\test-results\\observation-forgery-kg9E6d\\report.json",
+      "bytes": 10013,
+      "sha256": "6a5fc951ce7cb26dd6fc484dfd50660600e363f37cd7ec5907867ba711d32183"
+    },
+    {
+      "file": "stage-exported-pack.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-pack-export-N5zsOH\\report.json",
+      "bytes": 6462,
+      "sha256": "db91f0a5f895a127667694e651f676b310d6be1a3b799afe55970628598f3e95"
+    },
+    {
+      "file": "stage-managed-executor.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-managed-lIZmVa\\report.json",
+      "bytes": 410745,
+      "sha256": "3c1c816eb0c649fe67fb10d3c93e2e99e01313d58d3444b1b15d8baac49ecfeb"
+    },
+    {
+      "file": "stage-direct-native.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-ad17EJ\\report.json",
+      "bytes": 33068,
+      "sha256": "743058805760b5f5479b862caae191bebab52c52b76d1fd2c1787bfb43735a15"
+    },
+    {
+      "file": "stage-story.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-story-04djeU\\report.json",
+      "bytes": 1187608,
+      "sha256": "216b30e0cb437bb54eff5c2403a56b5424f750f99f49543699e238a4588a7103"
+    },
+    {
+      "file": "stage-staged-materializers.json",
+      "source": "D:\\cm-nb-root\\test-results\\staged-materializers-3GSHNA\\report.json",
+      "bytes": 81500,
+      "sha256": "40caf577139ec9f4531daf4ee4bd424f9d78029cb6a6246e7145d3392c637af0"
+    },
+    {
+      "file": "integration-failure-1.json",
+      "source": "D:\\cm-nb-root\\test-results\\desktop-native-complete-srA1vY\\report.json",
+      "bytes": 32727,
+      "sha256": "8b7b61c3d139c7b19442e669bee9ce3eae6bad2b0071d63b03545ca3c3887429"
+    },
+    {
+      "file": "integration-failure-2.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-story-CJWyfN\\report.json",
+      "bytes": 1181614,
+      "sha256": "2045fb0e47017d2cce09921351f41c37300337ba38e0a3b79b673cbfa36e395a"
+    },
+    {
+      "file": "final-build-manifest.json",
+      "source": "D:\\cm-nb-root\\test-results\\creation-next\\final-build-manifest.json",
+      "bytes": 39925,
+      "sha256": "fc352a1891f63381dc815c38a2337bb7e53288f1597671f7b1a02f4935cbd630"
+    }
+  ],
+  "notes": [
+    "原始失败报告保留，补验另列。",
+    "仅发布去敏报告，私有测试档案不进入Git。"
+  ],
+  "updatedAt": "2026-09-11T00:04:24.630Z",
+  "archiveRoot": "D:/Craftmine-NextBatch-20260911",
+  "archiveMapping": "原 source 的工作树目录名作为 raw 子目录名，例如 D:/cm-nb-root/test-results/... 对应 archiveRoot/raw/cm-nb-root/test-results/...。原报告字节不变。"
+}

@@ -1,0 +1,20 @@
+
+ RUN  v4.1.10 D:/cm-nb-root/vendor/pi-desktop/packages/agent-runtime
+
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn providerWaitMs=2 streamMs=1 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-a providerWaitMs=1 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-b providerWaitMs=0 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-a providerWaitMs=0 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-b providerWaitMs=0 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=0 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=3 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=1 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=turn-one providerWaitMs=0 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=new-turn providerWaitMs=3 streamMs=0 thinkingLevel=off outcome=ok
+[timing] kind=model model=fixture providerId=fixture sessionId=session turnId=new-turn providerWaitMs=3 outcome=error errorCode=CONTEXT_COMPACTION_FAILED
+
+ Test Files  2 passed (2)
+      Tests  34 passed (34)
+   Start at  07:00:45
+   Duration  857ms (transform 291ms, setup 0ms, import 658ms, tests 53ms, environment 0ms)
+

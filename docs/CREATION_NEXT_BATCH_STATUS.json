@@ -2,8 +2,8 @@
   "format": "craftmine.creation-next-batch/1",
   "plan": "docs/CREATION_NEXT_BATCH_PLAN_2026-09-11.md",
   "baseline": "c1660f12",
-  "status": "in_progress",
-  "updatedAt": "2026-09-10T23:07:22.612Z",
+  "status": "integrating",
+  "updatedAt": "2026-09-11T00:08:08.446Z",
   "stages": {
     "NB0": {
       "status": "complete",
@@ -33,30 +33,39 @@
       ]
     },
     "NB4": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
-        "test-results/desktop-native-complete-73fuxT/report.json"
+        "docs/evidence/creation-next-final-20260911/model-comparison-final.json",
+        "docs/CREATION_MODEL_RECOVERY_2026-09-11.md",
+        "docs/CA01_ZERO_MODEL_RECOVERY_2026-09-11.md"
       ]
     },
     "NB5": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
         "docs/CREATION_BUILD_READ_WAIT_2026-09-11.md",
         "docs/NB_GENERIC_GODOT_READ_2026-09-11.md",
-        "vendor/pi-desktop/docs/spec/creation-core-tool-catalog.md"
+        "vendor/pi-desktop/docs/spec/creation-core-tool-catalog.md",
+        "docs/evidence/creation-next-final-20260911/model-comparison-final.json",
+        "docs/CREATION_COPY_SESSION_FIX_2026-09-11.md"
       ]
     },
     "NB6": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
-        "test-results/creation-story-final-65e3ebca9a/final-evidence-index.json",
-        "test-results/desktop-native-complete-MmmG4i/report.json",
-        "test-results/creation-next-checks-CEvudw/report.json"
+        "docs/evidence/creation-next-final-20260911/integration-index.json",
+        "docs/evidence/creation-next-final-20260911/final-quick.json",
+        "docs/evidence/creation-next-final-20260911/migration-final.json",
+        "docs/evidence/creation-next-final-20260911/copy-native.json",
+        "docs/evidence/creation-next-final-20260911/final-build-manifest.json"
       ]
     },
     "NB7": {
-      "status": "pending",
-      "evidence": []
+      "status": "in_progress",
+      "evidence": [
+        "docs/CREATION_NEXT_BATCH_DELIVERY_2026-09-11.md",
+        "docs/evidence/creation-next-final-20260911/manifest.json"
+      ]
     }
   },
   "externalValidation": {
@@ -64,14 +73,14 @@
     "realPlayers": "not_run",
     "cleanWindows": "本机未发现可用Get-VM/VMware/VirtualBox隔离运行入口；不对个人安装执行生命周期测试"
   },
-  "realModelRuns": 10,
+  "realModelRuns": 13,
   "modelBaseline": {
     "provider": "deepseek",
     "model": "deepseek-flash",
     "requests": 16,
     "actualCandidatePassed": true,
     "actualFormalAdoption": true,
-    "acceptance": "首次runner误用导航保存路由，完整重开验收未完成；原始失败保留，修复runner后复验",
+    "acceptance": "原始runner路由失败保留；原模型产物已完成零新增模型请求保存重开补验，不改写原失败",
     "artifact": "test-results/desktop-native-complete-73fuxT"
   },
   "modelRounds": [
@@ -91,11 +100,29 @@
     },
     {
       "artifact": "test-results/desktop-native-complete-IjZqHs",
-      "observedRequests": 25,
-      "firstAttemptPass": 3,
-      "failed": 1,
-      "notRun": 3,
-      "note": "CA05实际编写普通脚本、检查通过且采用；runner冻结保存后未恢复运行，零新增模型补验进行中，原结果不覆写"
+      "continuation": "test-results/desktop-native-complete-K7eooB",
+      "observedRequests": 40,
+      "originalRequests": 25,
+      "continuationRequests": 15,
+      "firstAttemptPass": 4,
+      "modelRepairedPass": 0,
+      "failed": 3,
+      "realModelCases": 7,
+      "zeroRequestRecoveryChecks": {
+        "CA05": 16,
+        "CA07": 15
+      },
+      "note": "原始与续测共同40上限；CA05/CA07原产物补验另列且原失败不改写；HOLDOUT01预算内未完成。CA04仅在上一轮测试。"
     }
-  ]
+  ],
+  "observedModelRequests": 96,
+  "modelInterpretation": "三组开发运行共96次请求、13次案例执行；不能视为独立玩家样本，不宣称总体成功率、未见需求泛化或同条件整体提速。费用未知。",
+  "artifactDirectory": "D:/Craftmine-NextBatch-20260911",
+  "implementationCommit": "fd96e952",
+  "delivery": {
+    "localMerge": "pending",
+    "worktreeCleanup": "pending",
+    "pushed": false,
+    "newWindowsInstaller": false
+  }
 }

@@ -1,0 +1,95 @@
+{
+  "format": "craftmine.creation-next-checks/1",
+  "scope": "unit",
+  "sourceCommit": "fd96e9520918ee22f2f3fef0b26e51a7bf0ae609",
+  "startedAt": "2026-09-11T00:02:18.243Z",
+  "out": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx",
+  "steps": [
+    {
+      "name": "logic",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/creation-operations.test.mjs",
+        "tests/creation-source-service.test.mjs",
+        "tests/creation-progress-migration.test.mjs",
+        "tests/creation-runtime.test.mjs",
+        "tests/creation-entities.test.mjs",
+        "tests/creation-sequence-rule.test.mjs",
+        "tests/creation-model-evaluation.test.mjs",
+        "tests/creation-model-continuation.test.mjs",
+        "tests/godot-build-read-wait.test.mjs",
+        "tests/creation-pack-integrity.test.mjs",
+        "tests/godot-generic-read.test.mjs",
+        "tests/creation-guidance/guidance.test.mjs",
+        "tests/creation-guidance/packaging.test.mjs",
+        "desktop/godot/bases/creation-sandbox/tests/contract.test.mjs"
+      ],
+      "environment": {},
+      "status": "passed",
+      "startedAt": "2026-09-11T00:02:18.247Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\logic.log",
+      "exitCode": 0,
+      "elapsedMs": 801,
+      "sha256": "474c398d097376e43f7aff1dc302723f6e5ff70075b0d7f429bc45a59af756b2"
+    },
+    {
+      "name": "host",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "vendor/pi-desktop/apps/desktop/test/composer-voice-draft.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/craftmine-immersion-host-policy.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/craftmine-immersion.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-auto-apply-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-check-requirements.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-edit-guards.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-edit-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-entities-projection.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-evaluation-budget.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-evaluation-placement.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-evaluation-session.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-host-task-status.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-source-migration.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-task-status.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/immersion-pause-controller.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/voice-input.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/voice-microphone-permission.test.mjs"
+      ],
+      "environment": {},
+      "status": "passed",
+      "startedAt": "2026-09-11T00:02:19.049Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\host.log",
+      "exitCode": 0,
+      "elapsedMs": 2028,
+      "sha256": "4cb767f8bc05bd08ab609110ea242dd113abdcfc6b084053850d47fd10561968"
+    },
+    {
+      "name": "runtime-request-boundary",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "D:\\cm-nb-root\\vendor\\pi-desktop\\node_modules\\.pnpm\\vitest@4.1.10_@opentelemetr_d82bc52048d596043b7a676a159680e0\\node_modules\\vitest\\vitest.mjs",
+        "run",
+        "--root",
+        "D:\\cm-nb-root\\vendor\\pi-desktop\\packages\\agent-runtime",
+        "src/craftmine-context.test.ts",
+        "src/agent-errors.test.ts"
+      ],
+      "environment": {},
+      "status": "passed",
+      "startedAt": "2026-09-11T00:02:21.078Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-JL9fWx\\runtime-request-boundary.log",
+      "exitCode": 0,
+      "elapsedMs": 1179,
+      "sha256": "62ca2c3de4fd0f731382b314cab8fb50b4c3f293a77bb0e84f2579f12f8dd5d4"
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "No real model requests in this command; model comparison has its own report and budget.",
+    "No physical microphone, player or clean Windows lifecycle claim."
+  ],
+  "finishedAt": "2026-09-11T00:02:22.259Z"
+}

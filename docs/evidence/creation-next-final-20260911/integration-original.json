@@ -1,0 +1,200 @@
+{
+  "format": "craftmine.creation-next-checks/1",
+  "scope": "integration",
+  "sourceCommit": "badd725fa70596ade7cdf336f1469652307c4159",
+  "startedAt": "2026-09-10T22:44:51.789Z",
+  "out": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8",
+  "steps": [
+    {
+      "name": "logic",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/creation-operations.test.mjs",
+        "tests/creation-source-service.test.mjs",
+        "tests/creation-progress-migration.test.mjs",
+        "tests/creation-runtime.test.mjs",
+        "tests/creation-entities.test.mjs",
+        "tests/creation-sequence-rule.test.mjs",
+        "tests/creation-model-evaluation.test.mjs",
+        "tests/godot-build-read-wait.test.mjs",
+        "tests/creation-pack-integrity.test.mjs",
+        "tests/creation-guidance/guidance.test.mjs",
+        "tests/creation-guidance/packaging.test.mjs",
+        "desktop/godot/bases/creation-sandbox/tests/contract.test.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:44:51.790Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\logic.log",
+      "exitCode": 0,
+      "elapsedMs": 770,
+      "sha256": "44962dacb15c9024f932d341dcbd7821990f7ffcb8ccd7e9b9e29e4223f30cda"
+    },
+    {
+      "name": "host",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "vendor/pi-desktop/apps/desktop/test/composer-voice-draft.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/craftmine-immersion-host-policy.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/craftmine-immersion.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-auto-apply-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-check-requirements.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-edit-guards.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-edit-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-entities-projection.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-evaluation-budget.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-host-task-status.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-source-migration.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-task-status.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/immersion-pause-controller.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/voice-input.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/voice-microphone-permission.test.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:44:52.563Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\host.log",
+      "exitCode": 0,
+      "elapsedMs": 2245,
+      "sha256": "133f48c7453dbc7fa357321f1079688c3ff45247c88e069ea64092cbbec690bb"
+    },
+    {
+      "name": "editing-ui",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-edit-ui-headless.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:44:54.808Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\editing-ui.log",
+      "exitCode": 0,
+      "elapsedMs": 1508,
+      "sha256": "4bc88b92ba36a5fc2b180aa73458cd878add56bcbd24d3f95dfdcea27d15a41f"
+    },
+    {
+      "name": "voice-status-ui",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-voice-status-headless.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:44:56.317Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\voice-status-ui.log",
+      "exitCode": 0,
+      "elapsedMs": 1446,
+      "sha256": "dff83e3801ae4eab90a5c01bb5c8c04f90ad1934ded8356e565041e4cbadf6e7"
+    },
+    {
+      "name": "editing-progress",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-edit-progress-headless.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:44:57.764Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\editing-progress.log",
+      "exitCode": 0,
+      "elapsedMs": 3949,
+      "sha256": "c6026b8dfe704838f5a062c0726d2bbc85f4bfb1add116d8993dd683b8acae1b"
+    },
+    {
+      "name": "general-behavior",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-entity-behavior-headless.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:45:01.719Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\general-behavior.log",
+      "exitCode": 0,
+      "elapsedMs": 4319,
+      "sha256": "c3ac7525758ecf7126c10bd82797201c23e78e033e8bd3fb9c1267352bc313f1"
+    },
+    {
+      "name": "requirements",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-requirements-web.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:45:06.039Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\requirements.log",
+      "exitCode": 0,
+      "elapsedMs": 33601,
+      "sha256": "a407b0951973c05d40443e1ab980efe6d90d6bdfc60ed0949017cff9db48d71f"
+    },
+    {
+      "name": "harvest",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-harvest-web.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:45:39.641Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\harvest.log",
+      "exitCode": 0,
+      "elapsedMs": 64504,
+      "sha256": "22ab5cdb0fcdab3c7bce2a5acd8e342393c664bea13ca6d527f78ba9eade389d"
+    },
+    {
+      "name": "forged-observation",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-observation-forgery-probe.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:46:44.146Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\forged-observation.log",
+      "exitCode": 0,
+      "elapsedMs": 8783,
+      "sha256": "bc8418cdaf3b56b784fd0509b30541a0dda717d6c91470a7a98bfd2a4a687e20"
+    },
+    {
+      "name": "exported-pack",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-pack-export-headless.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:46:52.930Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\exported-pack.log",
+      "exitCode": 0,
+      "elapsedMs": 15431,
+      "sha256": "6844bca5fbc41542fbb2b47ea6d5fd112005d348acef0fbdbbc3c35a06b2a586"
+    },
+    {
+      "name": "managed-executor",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-managed-executor.mjs"
+      ],
+      "status": "passed",
+      "startedAt": "2026-09-10T22:47:08.362Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\managed-executor.log",
+      "exitCode": 0,
+      "elapsedMs": 128909,
+      "sha256": "c79595e5604383df62f099f1a59d1da0a69b288f32889b01de043312b62baed4"
+    },
+    {
+      "name": "direct-native",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-edit-native.mjs"
+      ],
+      "status": "failed",
+      "startedAt": "2026-09-10T22:49:17.271Z",
+      "log": "D:\\cm-nb-root\\test-results\\creation-next-checks-yGNIO8\\direct-native.log",
+      "exitCode": 1,
+      "elapsedMs": 112753,
+      "sha256": "a2afa3be73def6a37406112d1642ad7739500a13d05224deca2aa074a232faf1"
+    }
+  ],
+  "passed": false,
+  "limitations": [
+    "No real model requests in this command; model comparison has its own report and budget.",
+    "No physical microphone, player or clean Windows lifecycle claim."
+  ],
+  "finishedAt": "2026-09-10T22:51:10.026Z"
+}

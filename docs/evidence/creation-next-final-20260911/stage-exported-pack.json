@@ -1,0 +1,208 @@
+{
+  "format": "craftmine.creation-pack-export/1",
+  "out": "D:\\cm-nb-root\\test-results\\creation-pack-export-N5zsOH",
+  "checks": [
+    {
+      "name": "normal protected source bytes match immediately before export",
+      "passed": true
+    },
+    {
+      "name": "normal real exported PCK retains three scripts and selectors",
+      "passed": true
+    },
+    {
+      "name": "tool-script protected source bytes match immediately before export",
+      "passed": true
+    },
+    {
+      "name": "tool-script actual editor plugin ran during export",
+      "passed": true
+    },
+    {
+      "name": "tool-script real packed mutation refused before runtime checking",
+      "passed": true
+    },
+    {
+      "name": "tool-selector protected source bytes match immediately before export",
+      "passed": true
+    },
+    {
+      "name": "tool-selector actual editor plugin ran during export",
+      "passed": true
+    },
+    {
+      "name": "tool-selector real packed mutation refused before runtime checking",
+      "passed": true
+    }
+  ],
+  "cases": [
+    {
+      "variant": "normal",
+      "packSha256": "48d54ba56ca01af9282e84d292acbb452f38b58443e8db0f779ba9e31c0b8245",
+      "sourcePins": [
+        {
+          "path": "craftmine_shared/base_adapter.gd",
+          "bytes": 9456,
+          "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+        },
+        {
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "bytes": 6958,
+          "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+        },
+        {
+          "path": "craftmine_shared/state_guard.gd",
+          "bytes": 1759,
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        }
+      ],
+      "proof": {
+        "format": "craftmine.creation-pack-proof/1",
+        "packSha256": "48d54ba56ca01af9282e84d292acbb452f38b58443e8db0f779ba9e31c0b8245",
+        "packBytes": 5678580,
+        "engineVersion": "4.7.2-stable",
+        "packFormat": 4,
+        "files": [
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "bytes": 9456,
+            "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "bytes": 6958,
+            "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+          },
+          {
+            "path": "craftmine_shared/state_guard.gd",
+            "bytes": 1759,
+            "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+          }
+        ],
+        "project": {
+          "sha256": "25ef58cf3a144c043bccd546a30feb13ed3c935b784b96f69b6b883bf8294c34",
+          "selectors": {
+            "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+            "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+          }
+        }
+      }
+    },
+    {
+      "variant": "tool-script",
+      "packSha256": "56fa9fce6251f87c812965211f999e3d759cc262c595b49051963257c37f1782",
+      "sourcePins": [
+        {
+          "path": "craftmine_shared/base_adapter.gd",
+          "bytes": 9456,
+          "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+        },
+        {
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "bytes": 6958,
+          "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+        },
+        {
+          "path": "craftmine_shared/state_guard.gd",
+          "bytes": 1759,
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        }
+      ],
+      "actualProtected": [
+        {
+          "path": "craftmine_shared/base_adapter.gd",
+          "bytes": 9489,
+          "sha256": "78198383839d438c0882a6584cce1b947397e48d87cdf6c1448665e47eeac6b7"
+        },
+        {
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "bytes": 6958,
+          "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+        },
+        {
+          "path": "craftmine_shared/state_guard.gd",
+          "bytes": 1759,
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        }
+      ],
+      "rejection": "CREATION_PACK_PROTECTED_MISMATCH:craftmine_shared/base_adapter.gd"
+    },
+    {
+      "variant": "tool-selector",
+      "packSha256": "9ead94ffab5bc13c293c2771eeb044a5840b3a4f38d4381225204ba66ee767c5",
+      "sourcePins": [
+        {
+          "path": "craftmine_shared/base_adapter.gd",
+          "bytes": 9456,
+          "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+        },
+        {
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "bytes": 6958,
+          "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+        },
+        {
+          "path": "craftmine_shared/state_guard.gd",
+          "bytes": 1759,
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        }
+      ],
+      "actualProtected": [
+        {
+          "path": "craftmine_shared/base_adapter.gd",
+          "bytes": 9456,
+          "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee"
+        },
+        {
+          "path": "craftmine_shared/runtime_bridge.gd",
+          "bytes": 6958,
+          "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+        },
+        {
+          "path": "craftmine_shared/state_guard.gd",
+          "bytes": 1759,
+          "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+        }
+      ],
+      "rejection": "CREATION_PACK_SELECTOR_MISMATCH"
+    }
+  ],
+  "passed": true,
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 1472,
+      "exitCode": 0
+    },
+    {
+      "label": "normal-import",
+      "elapsedMs": 2115,
+      "exitCode": 0
+    },
+    {
+      "label": "normal-export",
+      "elapsedMs": 2294,
+      "exitCode": 0
+    },
+    {
+      "label": "tool-script-import",
+      "elapsedMs": 2032,
+      "exitCode": 0
+    },
+    {
+      "label": "tool-script-export",
+      "elapsedMs": 2108,
+      "exitCode": 0
+    },
+    {
+      "label": "tool-selector-import",
+      "elapsedMs": 2020,
+      "exitCode": 0
+    },
+    {
+      "label": "tool-selector-export",
+      "elapsedMs": 2209,
+      "exitCode": 0
+    }
+  ]
+}
