@@ -1,0 +1,13 @@
+{
+  "format": "craftmine.creation-continuity-protocol/1",
+  "sourceCommit": "b195972a",
+  "command": "node --test tests/godot-remaining/C/executor-protocol.mjs",
+  "tests": 49,
+  "passed": 48,
+  "skipped": 1,
+  "failed": 0,
+  "file": "executor-protocol.log",
+  "bytes": 4426,
+  "sha256": "9d0baa5583cb0c0d3c0a48587d9a778bf551871f18478bb5277094082ab3b254",
+  "scope": "scripted core and broker; actual createGodotExecutor and PCK parser; no real Godot"
+}

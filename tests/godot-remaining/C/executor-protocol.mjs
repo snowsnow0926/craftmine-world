@@ -14,6 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
+import {creationPackFixture,creationProjectBinary} from '../../helpers/creation-pack-fixture.mjs';
 
 const require = createRequire(import.meta.url);
 const {createGodotExecutor, classifyLog, sourceSnapshotDigest} = require('../../../plugins/craftmine-world/godot-executor.cjs');
@@ -621,7 +622,7 @@ function assertEvidenceUnchanged(before, files, why) {
  * throws refuses the call exactly like the core; returning undefined keeps the
  * default behaviour, and `commit` performs the core's own commit.
  */
-function scriptedCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), projectRoot, artifactsRoot,
+function scriptedCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), baseId = 'first-person', allowPending = false, projectRoot, artifactsRoot,
   files, inputHash = sha256('input')} = {}) {
   const jobs = new Map();
   const core = {jobs, calls:[], stages:[], hooks:{}, worldId, buildId};
@@ -635,7 +636,7 @@ function scriptedCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), p
   core.record = id => {
     const job = jobs.get(id);
     if (!job) throw Error('GODOT_JOB_NOT_FOUND');
-    return {jobId:job.jobId, worldId:job.worldId, buildId:job.buildId, kind:job.kind, status:job.status,
+    return {jobId:job.jobId, worldId:job.worldId, buildId:job.buildId, baseId, kind:job.kind, status:job.status,
       stage:job.stage, output:job.output, outputHash:job.outputHash, candidateId:job.candidateId, leaseExpiresAt:lease(job)};
   };
   function commit({jobId, token, output}) {
@@ -676,7 +677,7 @@ function scriptedCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), p
         if (!job) throw Error('GODOT_JOB_NOT_FOUND');
         if (job.status !== 'queued') throw Error(job.status === 'blocked' ? 'GODOT_EXECUTION_UNAVAILABLE' : 'GODOT_JOB_INACTIVE');
         job.token = params.token; job.status = 'claimed'; job.stage = 'claimed';
-        return {...core.record(params.jobId), baseId:'first-person', sourceRevision:3, manifestHash:sha256('manifest'),
+        return {...core.record(params.jobId), baseId, sourceRevision:3, manifestHash:sha256('manifest'),
           assetManifestHash:sha256('assets'), inputHash:job.inputHash, projectRoot, artifactsRoot,
           cacheRoot:path.join(artifactsRoot, '..', 'cache'), files:{source:files, asset:[]}};
       }
@@ -699,10 +700,10 @@ function scriptedCore({worldId = 'world-c', buildId = 'gbd-' + 'a'.repeat(64), p
         if (job) { job.status = 'cancelled'; job.stage = 'cancelled'; }
         return {jobId:params.jobId, status:'cancelled'};
       }
-      case 'world.read': return {id:worldId, world:{build:{id:'base-a', scene:{format:'craftmine.godot-scene/1', baseId:'first-person'}, godot:{}},
-        snapshot:{format:'craftmine.godot-progress/1', worldId, baseId:'first-person', baseVersion:'1.0.0', stateVersion:1, body:{coins:7}}, extensions:[]}};
+      case 'world.read': return {id:worldId, world:{build:{id:'base-a', scene:{format:'craftmine.godot-scene/1', baseId}, godot:{}},
+        snapshot:{format:'craftmine.godot-progress/1', worldId, baseId, baseVersion:'1.0.0', stateVersion:1, body:{coins:7}}, extensions:[]}};
       case 'godotJob.checkDescriptor': throw Error('UNSUPPORTED');
-      case 'godotJob.pending': throw Error('UNSUPPORTED');
+      case 'godotJob.pending': if(allowPending)return {items:[...jobs.keys()].map(core.record).filter(job=>job.status==='queued')};throw Error('UNSUPPORTED');
       default: throw Error('UNSUPPORTED_METHOD:' + method);
     }
   };
@@ -718,6 +719,114 @@ function scriptedEnvironment(t, scenario = {}) {
 }
 
 const stagedFiles = env => Object.keys(SAME_SOURCE_ARTIFACTS).map(name => path.join(env.artifactsRoot, 'web', name));
+
+const applicationContext={projectId:'creation-project',sessionId:'creation-session',turnId:'creation-turn'};
+function creationApplicationFixture(t,{allowPending=false,complete}={}){
+  const {PROTECTED_CREATION_FILES}=require('../../../plugins/craftmine-world/godot-creation-pack.cjs');
+  const projectFiles=Object.fromEntries(PROTECTED_CREATION_FILES.map(name=>[name,'extends RefCounted\n# protocol fixture '+name+'\n']));
+  projectFiles['project.godot']='config_version=5\n[autoload]\nCraftmineRuntime="*res://craftmine_shared/runtime_bridge.gd"\n[craftmine]\nruntime/adapter="res://craftmine_shared/base_adapter.gd"\n';
+  const env=environment({projectFiles});t.after(restoreEnv);
+  const pack=creationPackFixture([...Object.entries(projectFiles).filter(([name])=>name.endsWith('.gd')).map(([path,data])=>({path,data})),{path:'project.binary',data:creationProjectBinary()}]);
+  setScenario(env,{binaryArtifacts:{'index.pck':pack.toString('base64')}});
+  const core=scriptedCore({...env,baseId:'creation-sandbox',allowPending});
+  const jobId='gjob-'+'7'.repeat(64),binding={jobId,worldId:core.worldId,context:applicationContext};core.addJob(jobId);
+  const calls=[];
+  const verifier={godotCheck:async descriptor=>{assert.equal(descriptor.baseId,'creation-sandbox');return passingEvidence();},creationCheckCompleted:async input=>{
+    calls.push(structuredClone(input));return complete?complete(input):{status:'applied',worldId:core.worldId,candidateId:core.record(jobId).candidateId};
+  }};
+  const executor=makeExecutor({env,core,verifier});
+  t.after(async()=>{await executor.stop();});
+  return {env,core,executor,jobId,binding,calls,verifier,ledgerPath:path.join(env.dataPath,'godot','executor-ledger.json')};
+}
+function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};}
+async function within(promise,ms=15000){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('protocol barrier not reached')),ms);})]);}finally{clearTimeout(timer);}}
+function pauseApplicationPersistence(t,fixture){
+  const fsp=require('node:fs/promises'),rename=fsp.rename,reached=deferred(),release=deferred();let once=false;
+  fsp.rename=async(source,target)=>{
+    if(!once&&path.resolve(target)===path.resolve(fixture.ledgerPath)){
+      const pending=JSON.parse(fs.readFileSync(source,'utf8'));
+      if(pending.jobs[fixture.jobId]?.creationApplication?.status==='applying'){once=true;reached.resolve();await release.promise;}
+    }
+    return rename(source,target);
+  };
+  t.after(()=>{release.resolve();fsp.rename=rename;});
+  return {reached:reached.promise,release:()=>release.resolve(),restore:()=>{fsp.rename=rename;}};
+}
+
+test('creation completion publishes pending before finish and preserves applied proof after restart',async t=>{
+  const entered=deferred(),release=deferred();t.after(()=>release.resolve());
+  const f=creationApplicationFixture(t,{complete:async()=>{entered.resolve();await release.promise;return {status:'applied',worldId:f.core.worldId,candidateId:f.core.record(f.jobId).candidateId};}});
+  f.core.hooks.finish=()=>{const persisted=JSON.parse(fs.readFileSync(f.ledgerPath,'utf8'));assert.equal(persisted.jobs[f.jobId].creationApplication.status,'pending');};
+  assert.equal((await f.executor.start()).available,true);f.executor.enqueue({jobId:f.jobId,worldId:f.core.worldId,mode:'check'},applicationContext);
+  await within(entered.promise);
+  assert.equal(f.core.record(f.jobId).status,'passed');assert.equal(f.executor.creationCompletion(f.binding).status,'applying');
+  assert.equal(JSON.parse(fs.readFileSync(f.ledgerPath,'utf8')).jobs[f.jobId].creationApplication.status,'applying');
+  release.resolve();await settle(f.executor,f.jobId);await f.executor.stop();
+  assert.equal(f.calls.length,1);assert.deepEqual(f.calls[0],{jobId:f.jobId,context:applicationContext});
+  const completed=f.executor.creationCompletion(f.binding);assert.equal(completed.status,'applied');assert.equal(completed.candidateId,f.core.record(f.jobId).candidateId);
+  assert.equal(f.executor.ledger.jobs[f.jobId].creationPackProof.files.length,3,'the creation pack verifier actually ran');
+  const restarted=makeExecutor({env:f.env,core:f.core,verifier:f.verifier});t.after(async()=>{await restarted.stop();});
+  await restarted.start();assert.deepEqual(restarted.creationCompletion(f.binding),completed);assert.equal(f.calls.length,1,'restored diagnostics cannot invoke adoption');await restarted.stop();
+});
+
+test('creation reconcile without a live context completes its check without adoption authority',async t=>{
+  const f=creationApplicationFixture(t,{allowPending:true});f.core.jobs.delete(f.jobId);assert.equal((await f.executor.start()).available,true);f.core.addJob(f.jobId);
+  const recovered=await f.executor.reconcile();assert.equal(recovered.enqueued,1);await settle(f.executor,f.jobId);
+  assert.equal(f.core.record(f.jobId).status,'passed');assert.ok(f.core.record(f.jobId).candidateId);assert.equal(f.calls.length,0);
+  assert.equal(f.core.attempts(f.jobId,'godotJob.finish').length,1);assert.equal(f.executor.creationCompletion(f.binding),null);
+  assert.equal(f.executor.ledger.jobs[f.jobId].creationPackProof.files.length,3);
+});
+
+for(const action of ['cancel','stop'])test('creation '+action+' during applying persistence prevents the host callback',async t=>{
+  const f=creationApplicationFixture(t),gate=pauseApplicationPersistence(t,f);let stopping;
+  try{
+    assert.equal((await f.executor.start()).available,true);f.executor.enqueue({jobId:f.jobId,worldId:f.core.worldId,mode:'check'},applicationContext);
+    await within(gate.reached);assert.equal(f.core.record(f.jobId).status,'passed');
+    if(action==='cancel')await f.executor.cancel(f.jobId);else stopping=f.executor.stop();
+    gate.release();await settle(f.executor,f.jobId);await stopping;
+    assert.equal(f.calls.length,0);assert.equal(f.core.record(f.jobId).status,'passed');assert.ok(f.core.record(f.jobId).candidateId);
+    // stop deliberately cancels every live job before draining its worker.
+    assert.equal(f.executor.creationCompletion(f.binding).status,'cancelled');
+    assert.equal(JSON.parse(fs.readFileSync(f.ledgerPath,'utf8')).jobs[f.jobId].creationApplication.status,'cancelled');
+  }finally{gate.release();gate.restore();}
+});
+
+test('creation lost finish reply keeps the confirmed candidate and manual reason without replaying adoption',async t=>{
+  const f=creationApplicationFixture(t);f.core.hooks.finish=(params,_job,commit)=>{commit(params);throw Error('authored reply lost after commit');};
+  assert.equal((await f.executor.start()).available,true);f.executor.enqueue({jobId:f.jobId,worldId:f.core.worldId,mode:'check'},applicationContext);await settle(f.executor,f.jobId);
+  assert.equal(f.core.record(f.jobId).status,'passed');assert.equal(f.core.attempts(f.jobId,'godotJob.finish').length,1);assert.equal(f.calls.length,0);
+  const completion=f.executor.creationCompletion(f.binding);assert.equal(completion.status,'manual');assert.equal(completion.candidateId,f.core.record(f.jobId).candidateId);
+  assert.match(completion.reason,/CREATION_APPLICATION_FINISH_REPLY_UNCONFIRMED: authored reply lost after commit/);assert.doesNotMatch(completion.reason,/RESTARTED/);
+  assert.deepEqual(JSON.parse(fs.readFileSync(f.ledgerPath,'utf8')).jobs[f.jobId].creationApplication.context,applicationContext);
+});
+
+test('creation applied response with failed ledger writes remains unconfirmed until recovery',async t=>{
+  const f=creationApplicationFixture(t),fsp=require('node:fs/promises'),rename=fsp.rename;let failures=0;
+  fsp.rename=async(source,target)=>{
+    if(path.resolve(target)===path.resolve(f.ledgerPath)){
+      const state=JSON.parse(fs.readFileSync(source,'utf8'));
+      if(state.jobs[f.jobId]?.creationApplication?.status==='applied'){failures++;throw Error('authored disk-full after host applied');}
+    }
+    return rename(source,target);
+  };
+  t.after(()=>{fsp.rename=rename;});
+  try{
+    await f.executor.start();f.executor.enqueue({jobId:f.jobId,worldId:f.core.worldId,mode:'check'},applicationContext);await settle(f.executor,f.jobId);
+    assert.ok(failures>=1);assert.equal(f.calls.length,1);assert.equal(f.core.record(f.jobId).status,'passed');
+    const receipt=f.executor.creationCompletion(f.binding);assert.equal(receipt.status,'interrupted');assert.equal(receipt.reason,'CREATION_APPLICATION_LEDGER_UNCONFIRMED');
+    assert.equal(JSON.parse(fs.readFileSync(f.ledgerPath,'utf8')).jobs[f.jobId].creationApplication.status,'applying','failed writes do not pretend to persist the final response');
+  }finally{fsp.rename=rename;}
+  // A fresh supervisor sees an interrupted receipt and cannot replay the host transaction.
+  const restarted=makeExecutor({env:f.env,core:f.core,verifier:f.verifier});t.after(async()=>{await restarted.stop();});
+  await restarted.start();assert.equal(restarted.creationCompletion(f.binding).status,'interrupted');assert.equal(f.calls.length,1);await restarted.stop();
+});
+
+test('creation manual authorization result leaves a passed candidate without claiming adoption',async t=>{
+  const f=creationApplicationFixture(t,{complete:()=>({status:'manual',reason:'CREATION_AUTO_APPLY_NOT_AUTHORIZED'})});
+  await f.executor.start();f.executor.enqueue({jobId:f.jobId,worldId:f.core.worldId,mode:'check'},applicationContext);await settle(f.executor,f.jobId);
+  assert.equal(f.core.record(f.jobId).status,'passed');assert.equal(f.calls.length,1);const receipt=f.executor.creationCompletion(f.binding);
+  assert.equal(receipt.status,'manual');assert.equal(receipt.reason,'CREATION_AUTO_APPLY_NOT_AUTHORIZED');assert.equal(receipt.candidateId,f.core.record(f.jobId).candidateId);
+});
 
 test('a refused finish results in a core-confirmed failure that keeps the original identity', async t => {
   const {env, core, executor} = scriptedEnvironment(t);

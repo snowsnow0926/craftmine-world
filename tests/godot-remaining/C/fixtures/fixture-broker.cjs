@@ -56,7 +56,8 @@ function respond(request) {
 
   const artifacts = [];
   if (request.operation === 'exportWeb') {
-    const files = scenario.artifacts ?? {'index.html':'<!doctype html><canvas id="canvas"></canvas>', 'index.js':'// game', 'bridge.js':'// authored bridge'};
+    const files = {...(scenario.artifacts ?? {'index.html':'<!doctype html><canvas id="canvas"></canvas>', 'index.js':'// game', 'bridge.js':'// authored bridge'}),
+      ...Object.fromEntries(Object.entries(scenario.binaryArtifacts??{}).map(([name,body])=>[name,Buffer.from(body,'base64')]))};
     for (const [relative, body] of Object.entries(files)) {
       const target = path.join(artifactsRoot, relative);
       fs.mkdirSync(path.dirname(target), {recursive:true});
