@@ -43,6 +43,15 @@ test('a committed lost reply is read exactly once and does not duplicate a place
  const f=fixture(),request=f.request();f.lose();const saved=await f.run(request);assert.equal(saved.source.revision,2);
  const replay=await f.run(request);assert.equal(replay.replayed,true);assert.equal(f.current(),2);assert.equal(f.calls.filter(c=>c.method==='godotProject.patch').length,1);
 });
+
+test('source service retains recent origin through source rebasing and refuses placement before patch',async()=>{
+ const f=fixture();f.bound.source='recent';f.bound.target={surface:'entity',entityId:'selected-object',position:[12,0,4],normal:[0,1,0],revision:1};
+ const scene=JSON.parse(f.versions.get(1)['world/creation.json']);scene.entities.push({id:'selected-object',kind:'rock',position:[12,0,4],rotationY:0,scale:[1,1,1],color:'#84a866',parameters:{}});f.versions.get(1)['world/creation.json']=JSON.stringify(scene);
+ for(const fields of [{position:[9,0,4]},{offset:[3,0,0]},{position:[9,0,4],offset:[3,0,0]}])await assert.rejects(f.run({...f.request(),...fields}),/CREATION_PLACEMENT_GROUND_REQUIRED/);
+ assert.equal(f.current(),1);assert.equal(f.calls.some(call=>call.method==='godotProject.patch'),false);
+ f.bound.source='ray';const request=f.request();f.lose();await f.run(request);const replay=await f.run(request);
+ assert.equal(replay.replayed,true);assert.equal(f.calls.filter(call=>call.method==='godotProject.patch').length,1,'source propagation preserves ordinary exact lost-reply recovery');
+});
 test('forged snapshot binding, switched runtime and current player collision cannot write',async()=>{
  const f=fixture();const forged=f.request();forged.expected.targetSnapshotId='invented';await assert.rejects(f.run(forged),/TARGET_IDENTITY/);
  f.live.instanceId='replacement';await assert.rejects(f.run(f.request()),/TARGET_STALE/);f.live.instanceId='instance';

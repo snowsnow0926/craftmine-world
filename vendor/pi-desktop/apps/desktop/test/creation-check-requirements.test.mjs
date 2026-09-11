@@ -53,6 +53,13 @@ test('attribute placement binds one new entity with both color and size',()=>{
  }
 });
 
+test('recent object selection never grants a placement requirement for text or direct intents',()=>{
+ const recent={...capture,source:'recent'};
+ for(const input of ['在这里放一棵红色的树','在这里放一棵树','在这个副本的这里放一棵树，保留之前的内容',{action:'place',kind:'tree',scale:[1,1,1],color:'#84a866'}])assert.equal(freezeCreationRequirements(recent,input).status,'unverified');
+ for(const source of ['ray',undefined])assert.equal(freezeCreationRequirements({...capture,source},'在这里放一棵红色的树').status,'verifiable');
+ assert.equal(freezeCreationRequirements(recent,'把这棵树放大到两倍并改成蓝色').status,'verifiable');
+});
+
 test('wish parsing does not authorize ambiguity, conflicting changes or unconsumed clauses',()=>{
  const refused=[
   '把这棵树变大一点','把这棵树变深红','把这棵树放大两倍','把这棵树缩小到两倍','把这棵树放大到半倍',

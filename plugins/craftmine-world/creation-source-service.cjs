@@ -54,7 +54,7 @@ function createCreationSourceService({core,capture,sample,assertActive}) {
   // file is damaged source, not permission to turn an unrelated base into one.
   check(files[SCENE_PATH]?.text,'CREATION_SOURCE_FILE_MISSING');
   let document;try{document=JSON.parse(files[SCENE_PATH].text);}catch{fail('CREATION_SOURCE_JSON_INVALID');}
-  const targetSnapshot={...structuredClone(bound),sourceRevision:e.revision,manifestHash:e.manifestHash,target:{...bound.target,revision:document.revision}};
+  const targetSnapshot={...structuredClone(bound),source:bound.source??'ray',sourceRevision:e.revision,manifestHash:e.manifestHash,target:{...bound.target,revision:document.revision}};
   const source={worldId:workspace.worldId,buildId:bound.buildId,instanceId:bound.instanceId,revision:e.revision,manifestHash:e.manifestHash,files};
   const result=compileCreationOperation({source,targetSnapshot,request});
   const toolCallId='creation-'+hash(JSON.stringify([workspace.task.binding.taskId,request.operationId]));
@@ -75,6 +75,7 @@ function createCreationSourceService({core,capture,sample,assertActive}) {
   // new write's liveness. It never resubmits an uncertain patch.
   if(!result.replayed){const receipt=await previous();if(receipt){known.add(pin(receipt));advances.set(key,known);return response(receipt,true);}}
   if(result.replayed)return response(sourceIndex,true);
+  check(request.action!=='place'||bound.source!=='recent','CREATION_PLACEMENT_GROUND_REQUIRED');
   if(!known.has(pin(sourceIndex))){
    // Opening a new task can reindex the same formal bytes under a different
    // revision. Only a complete core-proven formal source identity can rebase

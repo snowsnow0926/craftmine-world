@@ -21,7 +21,7 @@ export function validCreationRequirement(value:any):value is CreationRequirement
  return value.entities.every((e:any)=>e&&Object.keys(e).every(k=>['id','kind','position','scale','color','visible','solid','absent','excludeIds'].includes(k))&&(e.id===undefined||id(e.id))&&(e.kind===undefined||kinds.includes(e.kind))&&(e.id!==undefined||e.kind!==undefined)&&(e.position===undefined||vector(e.position))&&(e.scale===undefined||vector(e.scale)&&e.scale.every((n:number)=>n>0&&n<=20))&&(e.color===undefined||/^#[a-fA-F0-9]{6}$/.test(e.color))&&(e.visible===undefined||typeof e.visible==='boolean')&&(e.solid===undefined||typeof e.solid==='boolean')&&(e.absent===undefined||e.absent===true&&id(e.id))&&(e.excludeIds===undefined||Array.isArray(e.excludeIds)&&e.excludeIds.length<=256&&e.excludeIds.every(id)))&&value.counts.every((c:any)=>c&&Object.keys(c).sort().join(',')==='count,kind'&&kinds.includes(c.kind)&&Number.isInteger(c.count)&&c.count>=0&&c.count<=256);
 }
 // Only exact, bounded sentences are recognized. A trailing extra wish is never dropped.
-export function freezeCreationRequirements(capture:{target:{entityId:string|null;position:number[]|null};entities?:CreationEntity[]},input:string|DirectCreationIntent):FrozenCreationRequirement {
+export function freezeCreationRequirements(capture:{target:{entityId:string|null;position:number[]|null};source?:'ray'|'recent';entities?:CreationEntity[]},input:string|DirectCreationIntent):FrozenCreationRequirement {
  if(typeof input!=='string'&&input.action==='undo')return freezeUndoRequirements(capture,input.formalJournal,input.undoOperationId);
  const unknown:FrozenCreationRequirement={status:'unverified',reason:'CREATION_REQUIREMENTS_NEED_REVIEW'};
  if(!Array.isArray(capture.entities)||capture.entities.length>256||capture.entities.some(e=>!id(e?.id)||!kinds.includes(e.kind)||!vector(e.position)||!vector(e.scale)))return unknown;
@@ -34,6 +34,7 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   if(text==='在这里再放一块石头，保留已有物体和游玩进度')text='在这里放一块石头';
   if(text==='在这个副本的这里放一棵树，保留之前的内容')text='在这里放一棵树';
   const wish=parseCreationWishIntent(text);
+  if(wish?.action==='place'&&capture.source==='recent')return unknown;
   if(text==='让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态'&&selected?.kind==='tree'){r.harvest={entityId:selected.id,inventoryId:'wood',reward:1,regrowFrames:300};r.entities.push({id:selected.id,kind:'tree',position:[...selected.position],scale:[...selected.scale]});}
   else if(text==='把时间设为18点'){r.timeOfDay=18;}
   else if(wish?.action==='modify'&&selected){
@@ -48,6 +49,7 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   else {const sequence=/^依次触碰([A-Za-z0-9._-]+(?:、[A-Za-z0-9._-]+){1,7})后打开([A-Za-z0-9._-]+)$/.exec(text);if(!sequence)return unknown;const steps=sequence[1].split('、'),doorId=sequence[2];if(!all.some(e=>e.id===doorId&&e.kind==='door')||!steps.every(id=>all.some(e=>e.id===id&&e.kind==='marker')))return unknown;r.doorSequence={doorId,steps};r.entities.push({id:doorId,kind:'door'},...steps.map(id=>({id,kind:'marker'})));}
  }else{
   if(input.action==='place'){
+   if(capture.source==='recent')return unknown;
    if(!kinds.includes(input.kind)||!vector(capture.target.position)||!vector(input.scale)||!/^#[a-fA-F0-9]{6}$/.test(input.color))return unknown;
    r.entities.push({kind:input.kind,position:[...capture.target.position],scale:[...input.scale],color:input.color,excludeIds:all.map(e=>e.id),visible:true,solid:true});r.counts.push({kind:input.kind,count:all.filter(e=>e.kind===input.kind).length+1});
   }else{

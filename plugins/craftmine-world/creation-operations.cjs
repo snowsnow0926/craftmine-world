@@ -94,6 +94,9 @@ function compileCreationOperation({source,targetSnapshot,request}) {
   const used=id=>next.entities.some(item=>item.id===id)||journal.operations.some(op=>(op.receipt?.createdIds??[]).includes(id));
   const selected=()=>{check(typeof request.targetId==='string'&&request.targetId===snapshot.target.entityId,'CREATION_TARGET_ID_MISMATCH');const item=next.entities.find(value=>value.id===request.targetId);check(item,'CREATION_TARGET_REMOVED');return item;};
   if(request.action==='place'){
+    // Recent selections authorize an object, never a placement point. Keep
+    // this after exact journal replay above: a receipt read cannot write.
+    check(snapshot.source!=='recent','CREATION_PLACEMENT_GROUND_REQUIRED');
     keys(request,['operationId','expected','action','kind','position','offset','id','color','scale','rotationY','parameters'],['operationId','expected','action','kind']);
     check(KINDS.has(request.kind),'CREATION_INVALID_KIND');
     let position=request.position;

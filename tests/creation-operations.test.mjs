@@ -66,6 +66,15 @@ test('explicit positions are bounded; here needs authoritative hit; player and o
   assert.equal(run(f,{position:[4,0,4]}).document.entities.length,1);
   f.targetSnapshot.obstacles=[{id:'blocker',position:[4,1,4],halfExtents:[1,1,1]}];assert.throws(()=>run(f,{position:[4,0,4]}),/OCCUPIED/);
 });
+
+test('recent captures reject every new placement even with explicit positions or offsets',()=>{
+ const f=fixture();f.targetSnapshot.source='recent';
+ for(const fields of [{},{position:[8,0,8]},{offset:[3,0,0]},{position:[8,0,8],offset:[3,0,0]}])assert.throws(()=>run(f,fields),/CREATION_PLACEMENT_GROUND_REQUIRED/);
+ for(const source of ['ray',undefined]){f.targetSnapshot.source=source;assert.equal(run(f,{position:[8,0,8]}).receipt.createdIds.length,1);}
+ const first=run(f,{});for(const op of first.operations)f.source.files[op.path]={text:op.text,sha256:hash(op.text)};
+ f.targetSnapshot.source='recent';const receipt=run(f,{});assert.equal(receipt.replayed,true);assert.deepEqual(receipt.operations,[]);assert.deepEqual(receipt.receipt,first.receipt);
+ assert.throws(()=>run(f,{color:'#123456'}),/REPLAY_CONFLICT/);
+});
 test('world/build/instance/source/manifest/snapshot mismatches and removed targets fail closed',()=>{
   for(const key of ['worldId','buildId','instanceId','revision','manifestHash','targetSnapshotId']){
     const f=fixture();f.request.expected[key]=key==='revision'?9:'different';assert.throws(()=>run(f,{}));
