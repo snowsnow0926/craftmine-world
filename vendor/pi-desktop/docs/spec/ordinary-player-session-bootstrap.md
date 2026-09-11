@@ -1,0 +1,11 @@
+# Ordinary player acceptance session bootstrap
+
+The protected headless controller now supports `playerCreateSession` with exactly `worldId` and a nonempty title of at most 80 characters. It first observes the current creation-sandbox world and invokes the same `sessionCreate` desktop IPC as the normal UI, then verifies the returned session with `sessionGet`. No provider, secret, prompt, test budget, source edit or evaluator initialization is supplied. The caller subsequently uses the existing `playerSetup` with the user-confirmed complete model configuration.
+
+The outer controller requires an isolated headless profile, hidden nonfocusable offscreen window, authenticated parent IPC and `CRAFTMINE_CREATION_EVAL !== '1'`, just like the existing ordinary-player methods. This is test infrastructure, not a new model-facing tool or production UI.
+
+Within a controller process the exact bootstrap request retains its promise and result, including failures. Changed requests are rejected. A failed or lost session-create reply is not retried, since a second session might otherwise be silently created. Process loss requires inspecting ordinary session history before continuing; no durable replay guarantee is claimed. Switching worlds during initialization rejects the result without deleting the possibly created session.
+
+The root test driver `tests/godot-agent/ordinary-player-bootstrap.mjs` creates a fresh isolated profile, invokes normal world navigation to create a blank world, then creates the ordinary session. It requires an explicit frozen package and records package identity, world/session identity, controller calls and shutdown audit. Its environment excludes evaluator/model secrets, and its RPC allowlist contains no prompt method. Startup/transport deadlines only apply to model-free initialization. Later ordinary player turns retain normal product configuration without extra token, model-call or whole-turn limits.
+
+Unit tests reproduce the previously missing bootstrap, verify ordinary IPC routing, reject wrong worlds/extra budget fields, and prove that an uncertain create is not replayed. Real packaged execution is separately required before claiming an end-to-end ordinary-player baseline.
