@@ -1,0 +1,9 @@
+# Godot source query continuation
+
+`godot_project_query` accepts an optional paired `revision` and `manifestHash`. Omission selects the latest source; all subsequent index and file reads remain pinned to that exact revision. Read responses must match the requested world, revision, manifest, path and contiguous Unicode-character offsets. Mixed identities and malformed paging fail instead of producing a combined source result.
+
+`scripts`, `resources` and `find` accept `offset` and `limit` over their eligible file selection. Nonzero offsets require an explicit source pin. Results return `identity`, `offset`, `nextOffset`, `totalFiles` and `pageComplete`. Keep the same mode/filter and returned identity when following `nextOffset`. The legacy `complete` field means the entire selection was covered in this call, starting at zero, with no remaining files or capped reads. A terminal continuation page alone cannot claim whole-project completeness.
+
+Script and resource files exceeding the read cap are listed in `skipped`. They never contribute a partial dependency or declaration result. Scene and project-settings responses expose truncation and a character continuation offset for `godot_file_read`. `provenance=static-source` identifies the evidence layer; complete source coverage is not complete semantic interpretation, successful engine import or live gameplay verification. An exact missing path is an error. Class declaration locations use their actual line numbers.
+
+Acceptance: a 30-script project finds a symbol on the second page at the original revision; a partial pin is rejected before I/O; a capped resource does not hide later dependencies behind a success flag; Unicode characters preserve offsets; foreign-world/revision/path responses fail. Existing scene/script parser tests continue to apply. These checks exercise source queries, not player-model acceptance, and add no player token, request or turn limits.

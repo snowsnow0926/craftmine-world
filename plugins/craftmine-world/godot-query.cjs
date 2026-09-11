@@ -106,7 +106,7 @@ function parseScene(text){
 
 function parseScript(text){
   const lines=text.split(/\r?\n/);
-  const result={format:'craftmine.script-parse/1',className:null,extends:null,signals:[],constants:[],exports:[],variables:[],
+  const result={format:'craftmine.script-parse/1',className:null,classLine:null,extends:null,signals:[],constants:[],exports:[],variables:[],
     functions:[],onready:[],preloads:[],runtimeLoads:[],warnings:[]};
   // @export_group/@export_category/@export_subgroup are section markers, not
   // export annotations, so they must not mark the next variable as exported.
@@ -116,7 +116,7 @@ function parseScript(text){
     const trimmed=line.trim();
     const at=index+1;
     let match;
-    if((match=trimmed.match(/^class_name\s+([A-Za-z_][A-Za-z0-9_]*)/)))result.className=match[1];
+    if((match=trimmed.match(/^class_name\s+([A-Za-z_][A-Za-z0-9_]*)/))){result.className=match[1];result.classLine=at;}
     else if((match=trimmed.match(/^extends\s+(.+)$/)))result.extends=match[1].trim();
     else if((match=trimmed.match(/^signal\s+([A-Za-z_][A-Za-z0-9_]*)\s*(\(([^)]*)\))?/)))
       result.signals.push({name:match[1],args:match[3]?match[3].split(',').map(part=>part.trim()).filter(Boolean):[],line:at});
@@ -205,11 +205,24 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
   // stays consistent with the revision it started from.
   let cachedHead=null;
 
+  function validateArgs(args={}){
+    const {revision,manifestHash,offset=0,limit=12}=args;
+    if((revision===undefined)!==(manifestHash===undefined))throw Error('PROJECT_QUERY_PIN_REQUIRED');
+    if(revision!==undefined&&(!Number.isSafeInteger(revision)||revision<1||typeof manifestHash!=='string'||!/^[a-f0-9]{64}$/.test(manifestHash)))throw Error('PROJECT_QUERY_PIN_INVALID');
+    if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(limit)||limit<1||limit>MAX_FILES_PER_CALL)throw Error('PROJECT_QUERY_PAGE_INVALID');
+    if(offset>0&&revision===undefined)throw Error('PROJECT_QUERY_PIN_REQUIRED');
+  }
+  function assertIdentity(page,pin={}){
+    if(!page||page.worldId!==worldId||!Number.isSafeInteger(page.revision)||page.revision<1||typeof page.manifestHash!=='string'||!/^[a-f0-9]{64}$/.test(page.manifestHash)||
+      (pin.revision!==undefined&&(page.revision!==pin.revision||page.manifestHash!==pin.manifestHash)))throw Error('PROJECT_QUERY_IDENTITY_MISMATCH');
+  }
+
   async function indexPage({revision,manifestHash,offset=0,limit=32}={}){
     const params={offset,limit};
     if(revision!==undefined&&revision!==null)params.revision=revision;
     if(manifestHash!==undefined&&manifestHash!==null)params.manifestHash=manifestHash;
     const page=await call('godotProject.index',params);
+    assertIdentity(page,params);
     if(revision===undefined&&manifestHash===undefined){
       cachedHead={revision:page.revision,manifestHash:page.manifestHash,worldId:page.worldId};
     }
@@ -220,9 +233,10 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     await indexPage({});
     return cachedHead;
   }
-  async function allFiles(){
+  async function allFiles(args={}){
+    validateArgs(args);
     const files=[];
-    let page=await indexPage({});
+    let page=await indexPage({revision:args.revision,manifestHash:args.manifestHash});
     const identity={worldId:page.worldId,revision:page.revision,manifestHash:page.manifestHash,baseId:page.baseId,
       engineVersion:page.engineVersion,renderer:page.renderer,target:page.target,format:page.format};
     files.push(...(page.files||[]));
@@ -240,30 +254,40 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
   }
   async function readText(path,{revision,manifestHash,cap=readLimit}={}){
     if(typeof path!=='string'||!path)throw Error('PATH_REQUIRED');
+    validateArgs({revision,manifestHash});
+    if(!Number.isSafeInteger(cap)||cap<1)throw Error('PROJECT_QUERY_PAGE_INVALID');
     const pin=(revision===undefined||manifestHash===undefined)?await head():{revision,manifestHash};
-    let offset=0,text='',meta=null,truncated=false;
+    let offset=0,text='',meta=null,truncated=false,characters=0;
     for(;;){
-      const page=await call('godotProject.read',{...pin,path,offset,limit:readLimit});
+      const page=await call('godotProject.read',{...pin,path,offset,limit:Math.min(readLimit,cap-characters)});
+      assertIdentity(page,pin);
+      if(page.path!==path)throw Error('PROJECT_QUERY_IDENTITY_MISMATCH');
+      if(typeof page.text!=='string'||page.offset!==offset||!Number.isSafeInteger(page.totalCharacters)||page.totalCharacters<offset+Array.from(page.text).length)throw Error('INVALID_PROJECT_PAGE');
+      if(meta&&(page.sha256!==meta.sha256||page.totalCharacters!==meta.totalCharacters))throw Error('PROJECT_QUERY_IDENTITY_MISMATCH');
       meta=page;
       text+=page.text;
-      if(page.nextOffset===undefined||page.nextOffset===null)break;
-      if(!Number.isInteger(page.nextOffset)||page.nextOffset<=offset)throw Error('INVALID_PROJECT_PAGE');
-      if(text.length>=cap){truncated=true;break;}
+      characters+=Array.from(page.text).length;
+      if(page.nextOffset===undefined||page.nextOffset===null){
+        if(offset+Array.from(page.text).length!==page.totalCharacters)throw Error('INVALID_PROJECT_PAGE');
+        break;
+      }
+      if(!Number.isInteger(page.nextOffset)||page.nextOffset<=offset||page.nextOffset!==offset+Array.from(page.text).length)throw Error('INVALID_PROJECT_PAGE');
+      if(characters>=cap){truncated=true;break;}
       offset=page.nextOffset;
     }
     return {path,text,sha256:meta.sha256,bytes:meta.bytes,totalCharacters:meta.totalCharacters,truncated,
-      revision:meta.revision,manifestHash:meta.manifestHash};
+      nextOffset:truncated?meta.nextOffset:null,readCharacters:characters,revision:meta.revision,manifestHash:meta.manifestHash};
   }
 
   async function summary(args={}){
-    const {identity,files,latest}=await allFiles();
+    const {identity,files,latest}=await allFiles(args);
     const kinds={};
     for(const file of files)kinds[kindOf(file.path)]=(kinds[kindOf(file.path)]||0)+1;
     const settingsFile=files.find(file=>file.path==='project.godot');
     let settings=null;
     if(settingsFile){
-      const read=await readText('project.godot',{cap:readLimit});
-      settings=parseProjectSettings(read.text);
+      const read=await readText('project.godot',{...identity,cap:readLimit});
+      settings={...parseProjectSettings(read.text),truncated:read.truncated,nextOffset:read.nextOffset};
     }
     const scriptFiles=files.filter(file=>kindOf(file.path)==='script');
     const scenes=files.filter(file=>kindOf(file.path)==='scene').map(file=>file.path);
@@ -273,67 +297,73 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
       inputActions:settings?.inputActions??[],renderer:identity.renderer,target:identity.target,engineVersion:identity.engineVersion,
       scriptCount:scriptFiles.length,scenes,resources,status:latest.status,verified:latest.verified,applied:latest.applied,
       executionAvailable:latest.executionAvailable,binaryAssetsAvailable:latest.binaryAssetsAvailable,
-      untrusted:UNTRUSTED};
+      provenance:'static-source',complete:settings?.truncated!==true,settingsCoverage:settings?{truncated:settings.truncated,nextOffset:settings.nextOffset}:null,untrusted:UNTRUSTED};
   }
 
   async function scene(args={}){
+    validateArgs(args);
     const path=args.path;
-    const read=await readText(path,{cap:readLimit});
+    const read=await readText(path,{revision:args.revision,manifestHash:args.manifestHash,cap:readLimit});
     const {format:parseFormat,...parsed}=parseScene(read.text);
     return {format:'craftmine.godot-scene-query/1',parseFormat,path,sha256:read.sha256,revision:read.revision,
-      manifestHash:read.manifestHash,truncated:read.truncated,...parsed,untrusted:UNTRUSTED};
+      manifestHash:read.manifestHash,truncated:read.truncated,nextOffset:read.nextOffset,provenance:'static-source',complete:!read.truncated,...parsed,untrusted:UNTRUSTED};
+  }
+
+  async function selectFiles(args,kind,defaultLimit=12){
+    const {files,identity}=await allFiles(args);
+    const available=args.path?files.filter(file=>file.path===args.path):files.filter(file=>kindOf(file.path)===kind);
+    if(args.path&&!available.length)throw Error('PROJECT_FILE_NOT_FOUND');
+    if(args.path&&kindOf(args.path)!==kind)throw Error('PROJECT_QUERY_FILE_KIND_MISMATCH');
+    const offset=args.offset??0,limit=args.limit??defaultLimit;
+    if(offset>available.length)throw Error('PROJECT_QUERY_PAGE_INVALID');
+    const wanted=available.slice(offset,offset+limit),nextOffset=offset+wanted.length<available.length?offset+wanted.length:null;
+    return {identity,wanted,offset,nextOffset,totalFiles:available.length};
   }
 
   async function scripts(args={}){
-    const {files}=await allFiles();
-    const wanted=typeof args.path==='string'&&args.path
-      ? files.filter(file=>file.path===args.path)
-      : files.filter(file=>kindOf(file.path)==='script').slice(0,args.limit||12);
+    const {identity,wanted,offset,nextOffset,totalFiles}=await selectFiles(args,'script');
     const parsed=[],skipped=[];
     for(const file of wanted){
-      const read=await readText(file.path,{cap:readLimit});
+      const read=await readText(file.path,{...identity,cap:readLimit});
       if(read.truncated){skipped.push({path:file.path,reason:'FILE_EXCEEDS_READ_CAP'});continue;}
       const script=parseScript(read.text);
       parsed.push({path:file.path,sha256:file.sha256,...script});
     }
-    return {format:'craftmine.godot-script-query/1',scripts:parsed,skipped,untrusted:UNTRUSTED};
+    return {format:'craftmine.godot-script-query/1',scripts:parsed,skipped,identity,offset,nextOffset,totalFiles,
+      pageComplete:skipped.length===0,complete:offset===0&&nextOffset===null&&skipped.length===0,provenance:'static-source',untrusted:UNTRUSTED};
   }
 
   async function resources(args={}){
-    const {files,identity}=await allFiles();
-    const wanted=typeof args.path==='string'&&args.path
-      ? files.filter(file=>file.path===args.path)
-      : files.filter(file=>kindOf(file.path)==='resource').slice(0,args.limit||12);
-    const parsed=[];
+    const {identity,wanted,offset,nextOffset,totalFiles}=await selectFiles(args,'resource');
+    const parsed=[],skipped=[];
     for(const file of wanted){
-      const read=await readText(file.path,{cap:readLimit});
+      const read=await readText(file.path,{...identity,cap:readLimit});
+      if(read.truncated){skipped.push({path:file.path,reason:'FILE_EXCEEDS_READ_CAP'});continue;}
       parsed.push({path:file.path,sha256:file.sha256,...parseResource(read.text)});
     }
-    return {format:'craftmine.godot-resource-query/1',resources:parsed,identity,untrusted:UNTRUSTED};
+    return {format:'craftmine.godot-resource-query/1',resources:parsed,identity,offset,nextOffset,totalFiles,skipped,
+      pageComplete:skipped.length===0,complete:offset===0&&nextOffset===null&&skipped.length===0,provenance:'static-source',untrusted:UNTRUSTED};
   }
 
   async function find(args={}){
     const name=typeof args.name==='string'?args.name.trim():'';
     if(!name||name.length>120)throw Error('INVALID_SYMBOL_NAME');
-    const {files}=await allFiles();
+    const {identity,wanted,offset,nextOffset,totalFiles}=await selectFiles(args,'script',MAX_FILES_PER_CALL);
     const matches=[],skipped=[];
     let scanned=0;
-    for(const file of files){
-      if(scanned>=MAX_FILES_PER_CALL)break;
-      if(kindOf(file.path)!=='script')continue;
+    for(const file of wanted){
       scanned++;
-      const read=await readText(file.path,{cap:readLimit});
+      const read=await readText(file.path,{...identity,cap:readLimit});
       if(read.truncated){skipped.push({path:file.path,reason:'FILE_EXCEEDS_READ_CAP'});continue;}
       const script=parseScript(read.text);
-      if(script.className===name)matches.push({path:file.path,kind:'class_name',line:1});
+      if(script.className===name)matches.push({path:file.path,kind:'class_name',line:script.classLine});
       for(const fn of script.functions)if(fn.name===name)matches.push({path:file.path,kind:'func',line:fn.line,returns:fn.returns});
       for(const signal of script.signals)if(signal.name===name)matches.push({path:file.path,kind:'signal',line:signal.line});
       for(const variable of script.variables)if(variable.name===name)matches.push({path:file.path,kind:'var',line:variable.line,exported:variable.exported});
     }
-    const scriptTotal=files.filter(file=>kindOf(file.path)==='script').length;
     return {format:'craftmine.godot-symbol-query/1',name,matches,scannedFiles:scanned,
-      skippedFiles:Math.max(0,scriptTotal-scanned),skipped,untrusted:UNTRUSTED,
-      complete:skipped.length===0&&scanned>=scriptTotal};
+      skippedFiles:Math.max(0,totalFiles-scanned),skipped,identity,offset,nextOffset,totalFiles,provenance:'static-source',untrusted:UNTRUSTED,
+      pageComplete:skipped.length===0,complete:offset===0&&nextOffset===null&&skipped.length===0};
   }
 
   return {indexPage,allFiles,readText,summary,scene,scripts,resources,find};
