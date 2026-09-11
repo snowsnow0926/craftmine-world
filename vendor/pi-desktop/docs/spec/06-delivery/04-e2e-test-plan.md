@@ -9581,3 +9581,7 @@ Only an authenticated isolated headless profile accepts godotExplore. Bind world
 ### CM-PROMO-04: restore lifecycle refusals retain safe actionable codes
 
 Use synthetic selected archives and callbacks to reject beforeRestore with the exact progress-changed, world-busy and active-task Error messages. Preserve each as a structured safe code and show the fixed save/reinspect or wait hint, including the normal Electron IPC wrapper. No backend restore/activation starts. Private paths, multiline messages, unknown uppercase text and embedded known-code substrings remain generic and do not leak. Existing archive fingerprint, expiring grant, expectedCurrentHash and explicit retry checks stay active. Reconfirm the actual native failure with a new package; a generic historical failure is not evidence of its specific cause.
+
+### 静态组件真实包安装预检（2026-09-12）
+
+用独立 Rust 数据目录及实际构建的 17 个组件 ZIP，经 createManagedPackageInstaller 顺序安装到同一小型世界；标准 creation_world.gd 作为环境要求原样保留。覆盖 scene instance 与 script-node 的显式位置、依赖、脚本 UID、所有文件字节、17 项锁清单及重复包的独立实例身份。无执行器时只能报告 source-saved-check-blocked，不得宣称引擎或游玩通过。Rust 回归还需覆盖合法最小 GLB sidecar 和恶意/缺失配对模型在 create、patch、applyFiles 上的原子拒绝。
