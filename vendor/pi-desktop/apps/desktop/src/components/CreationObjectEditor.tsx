@@ -69,13 +69,14 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
     };
     void poll();return()=>{alive=false;clearTimeout(timer);};
   },[busy,visibleStatus?.operationId,scope]);
-  const submit=async(action:"modify"|"delete"|"undo"|"place"|"duplicate")=>{
-    if(!bridge||!sessionId||!worldId||!controller.capture?.captureId||busy||visibleStatus?.phase==="interrupted"||submitted.current)return;
+  const submit=async(action:"modify"|"delete"|"undo"|"place"|"duplicate"|"upgrade-observer")=>{
+    const captureId=action==='upgrade-observer'?controller.capture?.upgradeId:controller.capture?.captureId;
+    if(!bridge||!sessionId||!worldId||!captureId||busy||visibleStatus?.phase==="interrupted"||submitted.current)return;
     submitted.current=true;setError("");
     const operationId=crypto.randomUUID(),requestScope=scope;
     const pending:Status={sessionId,worldId,operationId,phase:"preparing"};publish(pending);
     try{
-      const next=await bridge.call("godot.creationEdit",{sessionId,captureId:controller.capture.captureId,operationId,action,...(action==="modify"?{changes:{scale,color}}:{}),...(action==="undo"?{undoOperationId:undo}:{}),...(action==="place"?{kind}:{}),...(action==="duplicate"?{count,offset}:{})}) as Status;
+      const next=await bridge.call("godot.creationEdit",{sessionId,captureId,operationId,action,...(action==="modify"?{changes:{scale,color}}:{}),...(action==="undo"?{undoOperationId:undo}:{}),...(action==="place"?{kind}:{}),...(action==="duplicate"?{count,offset}:{})}) as Status;
       if(next.sessionId!==sessionId||next.operationId!==operationId||(next.worldId!==undefined&&next.worldId!==worldId))throw Error("CREATION_EDIT_CONTEXT_CHANGED");
       // The status poll may have already observed a later phase while this
       // original response was delayed. Never move that operation backwards.
@@ -91,6 +92,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
   };
   const problem=error||visibleStatus?.error;
   return <div className="creation-object-editor">
+    {controller.capture?.upgradeId&&<button type="button" disabled={!sessionId||busy||controller.loading||visibleStatus?.phase==='interrupted'} onClick={()=>void submit('upgrade-observer')}>{zh?'更新世界观察组件并检查':'Update world observer and check'}</button>}
     <div className="creation-target-row">
       <button type="button" disabled={!sessionId||!controller.capture?.captureId||target?.surface!=="ground"||(controller.capture as {source?:string}|null)?.source==="recent"||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{setPlacing(!placing);setOpen(false);}}>{zh?"在此放置":"Place here"}</button>
       <button type="button" disabled={!sessionId||!target?.entityId||!target.scale||!target.color||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{setOpen(!open);setPlacing(false);}}>{zh?"编辑对象":"Edit object"}</button>

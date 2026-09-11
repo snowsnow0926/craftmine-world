@@ -63,7 +63,10 @@ export function createCreationSourceMigration(deps:Dependencies){
   let destination:ManagedCreationMigration|undefined;
   for(const policy of compatibility){
     const candidates=policy.files.map(entry=>({...entry,...resource(entry.resource),actual:formal.files.find((f:Data)=>f.path===entry.source)}));
-    if(candidates.every(entry=>entry.to.includes(entry.sha256)))destination??=policy;
+    // Coupled legacy upgrades may need missing helpers. A newer complete-cohort
+    // policy must not hide an older reviewed destination that allows absence.
+    const helpers=candidates.filter(entry=>!targets.some(target=>target.source===entry.source));
+    if(candidates.every(entry=>entry.to.includes(entry.sha256))&&helpers.every(entry=>entry.actual?(entry.to.includes(entry.actual.sha256)||entry.from.includes(entry.actual.sha256)):entry.from.includes(null)))destination??=policy;
     if(!candidates.every(entry=>entry.to.includes(entry.sha256)&&(!entry.actual||entry.to.includes(entry.actual.sha256)||entry.from.includes(entry.actual.sha256))))continue;
     if(!candidates.every(entry=>entry.actual!==undefined||entry.from.includes(null)))continue;
     const planned=candidates.filter(entry=>!entry.actual||!entry.to.includes(entry.actual.sha256)).map(entry=>({op:'put',path:entry.source,text:entry.text,expectedHash:entry.actual?.sha256??null}));

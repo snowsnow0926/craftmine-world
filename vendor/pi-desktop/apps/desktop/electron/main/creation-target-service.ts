@@ -5,7 +5,7 @@ import {createHash, randomUUID} from "node:crypto";
 import type {CreationMigrationAdvance} from './creation-source-migration';
 import {recentCreationResults} from './creation-recent-results.ts';
 import {readSceneObjectTarget,currentSceneObjectPath,type SceneObjectTarget} from './scene-object-target.ts';
-import {hasCurrentSceneObserver,type SceneObserverPins} from './creation-observer-pins.ts';
+import {canUpgradeSceneObserver,hasCurrentSceneObserver,type SceneObserverPins} from './creation-observer-pins.ts';
 
 type Context = {projectId:string;sessionId:string;turnId:string};
 type Vector = [number,number,number];
@@ -17,6 +17,7 @@ export type CreationCapture = {
   sourceRevision:number;manifestHash:string;sampledAt:string;capturedAt:number;
   playerPosition:Vector;target:Target;source?:'ray'|'recent';autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;sourceMigration?:CreationMigrationAdvance;
   sceneObjectTarget?:SceneObjectTarget;sceneObjectLive?:{currentNodePath:string;sampledAt:string};
+  observerUpgradeOnly?:true;
 };
 type Dependencies = {
   directory:string;
@@ -121,7 +122,7 @@ export function createCreationTargetService(deps:Dependencies) {
       await assertFormal(capture);
       const sceneDataPresent=creation.sceneObjectTarget!=null||creation.sceneObjectSelection?.status==='fallback';
       let sceneTrusted=false;
-      if(sceneDataPresent){
+      if(sceneDataPresent||(deps.source&&deps.sceneObjectSourcePins)){
         if(!deps.source)fail('SCENE_OBJECT_SOURCE_UNAVAILABLE');
         const source=await deps.source(capture.worldId);
         if(source?.worldId!==capture.worldId||source.buildId!==capture.buildId||source.sourceRevision!==capture.sourceRevision||source.baseId!=='creation-sandbox'||!Array.isArray(source.files)||source.files.length>512)fail('SCENE_OBJECT_SOURCE_CHANGED');
@@ -131,6 +132,19 @@ export function createCreationTargetService(deps:Dependencies) {
           files.add(entry.path);
         }
         sceneTrusted=hasCurrentSceneObserver(source.files,deps.sceneObjectSourcePins);
+        if(canUpgradeSceneObserver(source.files,deps.sceneObjectSourcePins)){
+          // Old scene fields remain untrusted. Return a separate maintenance
+          // handle, never a usable creation target or a claim about the prop.
+          capture.observerUpgradeOnly=true;
+          capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};
+          delete capture.entities;
+          await assertFormal(capture);
+          if(captureEpochs.get(owner)!==generation)fail('CREATION_CAPTURE_SUPERSEDED');
+          for(const [key,value] of pending)if(now()-value.capture.capturedAt>300000)pending.delete(key);
+          if(pending.size>=64)pending.delete(pending.keys().next().value!);
+          pending.set(capture.snapshotId,{owner,session:{...session},capture});
+          return {captureId:null,upgradeId:capture.snapshotId,worldId:capture.worldId,target:null,reason:'SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED'};
+        }
         if(sceneTrusted&&creation.sceneObjectTarget!=null){
           capture.sceneObjectTarget=readSceneObjectTarget(creation.sceneObjectTarget,files)!;
           await confirmSceneObject(capture);
@@ -176,13 +190,14 @@ export function createCreationTargetService(deps:Dependencies) {
         target:capture.target.surface==="none"?null:creationTargetDisplay(capture.target,creation.entities),
         ...(capture.sceneObjectTarget?{sceneObjectTarget:structuredClone(capture.sceneObjectTarget)}:{})};
     },
-    async validate(owner:number,value:unknown,session:CaptureSession):Promise<CreationCapture|null> {
+    async validate(owner:number,value:unknown,session:CaptureSession,purpose?:'observer-upgrade'):Promise<CreationCapture|null> {
       if(value===undefined)return null;
       if(!value||typeof value!=="object"||Object.keys(value).length!==1)fail("CREATION_REQUEST_CONTEXT_INVALID");
       const ref=(value as any).creationTarget;
       if(!ref||Object.keys(ref).length!==1||typeof ref.captureId!=="string")fail("CREATION_REQUEST_CONTEXT_INVALID");
       const item=pending.get(ref.captureId);
       if(!item||item.owner!==owner||now()-item.capture.capturedAt>300000||item.bound)fail("CREATION_TARGET_EXPIRED");
+      if(!!item.capture.observerUpgradeOnly!==(purpose==='observer-upgrade'))fail('CREATION_OBSERVER_UPGRADE_HANDLE_REQUIRED');
       if((item.session.sessionId!==null&&item.session.sessionId!==session.sessionId)||item.session.projectId!==session.projectId)fail("CREATION_SESSION_CHANGED");
       await assertFormal(item.capture);
       await confirmSceneObject(item.capture);
@@ -203,7 +218,7 @@ export function createCreationTargetService(deps:Dependencies) {
       await assertFormal(item.capture);
       await confirmSceneObject(item.capture);
       if(item.bound||now()-item.capture.capturedAt>300000)fail("CREATION_TARGET_EXPIRED");
-      const frozen={...structuredClone(item.capture),autoApply:!item.capture.sceneObjectTarget&&(requestText===undefined||typeof requestText==="string")&&policyFor(worldId).autoApply,creationRequirements:item.capture.sceneObjectTarget?{status:'unverified' as const,reason:'SCENE_OBJECT_SOURCE_REVIEW_REQUIRED'}:freezeCreationRequirements(item.capture,requestText??"")};
+      const frozen={...structuredClone(item.capture),autoApply:!item.capture.observerUpgradeOnly&&!item.capture.sceneObjectTarget&&(requestText===undefined||typeof requestText==="string")&&policyFor(worldId).autoApply,creationRequirements:item.capture.sceneObjectTarget?{status:'unverified' as const,reason:'SCENE_OBJECT_SOURCE_REVIEW_REQUIRED'}:freezeCreationRequirements(item.capture,requestText??"")};
       write(file("turns",key),{context,capture:frozen});item.bound=key;return structuredClone(frozen);
     },
     bound(context:Context,worldId:string):CreationCapture|null {

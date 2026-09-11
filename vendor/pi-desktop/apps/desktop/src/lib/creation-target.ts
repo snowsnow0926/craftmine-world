@@ -17,6 +17,7 @@ export type CreationTargetCapture = {
   source?: 'ray' | 'recent';
   recent?: Array<{entityId:string;entityName:string;entityKind:string;operationId:string;available:boolean;reason?:string}>;
   sceneObjectTarget?:{nodePath:string;nodeClass:string};
+  upgradeId?:string;
 };
 export type CreationRequestContext = { creationTarget: { captureId: string } };
 const record = (value: unknown): Record<string, unknown> => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -26,6 +27,7 @@ const vector = (value: unknown): [number, number, number] | null => Array.isArra
 /** Display only host-observed valid entity/ground hits; a boundary is not a placement target. */
 export function parseCreationTarget(value: unknown): CreationTargetCapture {
   const raw = record(value), hit = record(raw.target);
+  if(raw.captureId===null&&raw.target===null&&raw.reason==='SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED'&&id(raw.upgradeId)&&id(raw.worldId))return {captureId:null,upgradeId:raw.upgradeId as string,worldId:raw.worldId as string,target:null,reason:raw.reason,source:'ray',recent:[]};
   const scene=record(raw.sceneObjectTarget);
   const sceneObjectTarget=typeof scene.nodePath==='string'&&scene.nodePath.length>0&&scene.nodePath.length<=512&&!/[\x00-\x1f]/.test(scene.nodePath)&&id(scene.nodeClass)&&scene.identityScope==='runtime-instance'&&scene.sourceUse==='context-only'?{nodePath:scene.nodePath,nodeClass:scene.nodeClass as string}:undefined;
   const position = vector(hit.position), normal = vector(hit.normal);

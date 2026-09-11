@@ -88,6 +88,24 @@ test('current production upgrade installs both fixed helpers and preserves exist
  assert.ok(additions.some(op=>op.path==='craftmine_shared/headless_play_action.gd'&&op.expectedHash===null));
  assert.ok(additions.some(op=>op.path==='craftmine_shared/scene_mesh_picker.gd'&&op.expectedHash===null));
 });
+
+test('released 32cd and 594f cohorts upgrade only the fixed picker and retain customized sources',async t=>{
+ for(const rev of ['32cd879d','594f698b5206'])for(const crlf of [false,true]){
+  const f=fixture(t,{production:true});
+  for(const file of CREATION_MANAGED_MIGRATIONS[0].files){let text=stock(rev,file.resource);if(crlf)text=text.replace(/\n/g,'\r\n');f.replaceFormalFile(file.source,text);}
+  const advance=await f.execute()(ctx,f.capture);assert.equal(f.patches(),1);assert.ok(advance.migrationId);
+  const patch=f.calls.find(c=>c.method==='godotProject.patch');assert.deepEqual(patch.args.operations.map(op=>op.path),['craftmine_shared/scene_mesh_picker.gd']);
+  for(const [name,text] of f.formalTexts)if(name!=='craftmine_shared/scene_mesh_picker.gd')assert.equal(f.live().get(name),text,name);
+ }
+});
+
+test('the new complete-cohort policy does not hide legacy destinations that permit absent helpers',async t=>{
+ const f=fixture(t,{production:true});for(const file of CREATION_MIGRATION_FILES)f.replaceFormalFile(file.source,stock('c1660f12',file.resource));
+ await f.execute()(ctx,f.capture);assert.equal(f.patches(),1);
+ const added=f.calls.find(c=>c.method==='godotProject.patch').args.operations.filter(op=>op.expectedHash===null).map(op=>op.path);
+ assert.ok(added.includes('craftmine_shared/headless_play_action.gd'));assert.ok(added.includes('craftmine_shared/scene_mesh_picker.gd'));
+ assert.equal(f.live().get('scripts/pet_dog.gd'),f.formalTexts.get('scripts/pet_dog.gd'));
+});
 test('new fixed helper uses expected absence and existing matching bytes are not replaced',async t=>{
  for(const helperState of ['missing','current']){
   const f=fixture(t,{helperState});await f.execute()(ctx,f.capture);assertGameplayPreserved(f);
