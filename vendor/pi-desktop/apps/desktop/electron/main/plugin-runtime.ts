@@ -1034,7 +1034,10 @@ export class PluginRuntime {
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
     const longRunning = ["backup.", "godotRuntime.", "godotApplication.", "godotWorld.", "godotProject.", "godotBuild.",
       "godotJob.", "godotStorage.", "godotAsset.", "content.", "library.", "world."]
-      .some(prefix => method.startsWith(prefix)) || method === "workbench.request";
+      .some(prefix => method.startsWith(prefix)) || method === "workbench.request"
+      // Installing a source ZIP snapshots the current project and commits a
+      // durable file transaction. Ordinary package reads retain their deadline.
+      || (method === "package.request" && (params.method === "installSource" || params.method === "installSourceProposal"));
     return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") ? 130_000 : longRunning ? 60_000 : 15_000);
   }
 
