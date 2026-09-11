@@ -55,8 +55,19 @@ func run() -> void:
  check(initial.target != null and initial.target.nodePath == "Actor", "layer8 hit excludes entire player subtree")
  check(not initial.target.has("metadata") and not initial.target.has("entityId"), "metadata never grants entity identity")
  var original_id: String = initial.target.objectId
- var same_hit: Dictionary = adapter._scene_objects({"surface":"entity", "position":initial.target.position})
- check(same_hit.target == null, "existing structured hit remains structured")
+ actor.collision_layer = 1
+ actor.set_meta("surface", "ground")
+ await physics_frame
+ var same_hit: Dictionary = adapter._scene_objects(adapter._actual_target(1, []))
+ check(same_hit.target == null, "same physical stock collider remains structured")
+ actor.collision_layer = 8
+ var behind := body(scene, "StockBehind", Vector3(0, 1, -3.0005))
+ behind.collision_layer = 1
+ behind.set_meta("surface", "ground")
+ await physics_frame
+ var near_hit: Dictionary = adapter._scene_objects(adapter._actual_target(1, []))
+ check(near_hit.target != null and near_hit.target.objectId == original_id, "near-coincident colliders do not share target identity")
+ behind.queue_free()
  actor.name = "Renamed"
  camera.rotation.y = PI / 2
  await physics_frame
@@ -105,5 +116,5 @@ try{
  await env.run('adapter-parse',['--path',project,'--check-only','--script','res://craftmine_shared/base_adapter.gd']);
  const stdout=await env.run('observe',['--path',project,'--script','res://probe.gd'],{timeout:20000});
  report.checks=Number(stdout.match(/SCENE_OBJECT_CHECKS=(\d+)/)?.[1]);
- assert.equal(report.checks,10);report.passed=true;
+ assert.equal(report.checks,11);report.passed=true;
 }finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

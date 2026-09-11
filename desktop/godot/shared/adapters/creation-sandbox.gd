@@ -35,6 +35,7 @@ func restore(body: Dictionary) -> String:
 
 var observed_physics_tick: int = 0
 var scene_object_refs: Dictionary = {}
+var observed_target_collider: int = 0
 
 func _scene_node(node: Node) -> Dictionary:
 	var script: Script = node.get_script() as Script
@@ -54,9 +55,8 @@ func _scene_objects(existing: Dictionary) -> Dictionary:
 		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty():
 			var point: Vector3 = hit.position
-			var prior: Variant = existing.get("position")
-			var stock_hit: bool = existing.get("surface") in ["ground", "entity", "boundary"] and prior is Array and prior.size() == 3 and point.distance_to(Vector3(prior[0], prior[1], prior[2])) < 0.001
 			var collider := hit.collider as Node
+			var stock_hit: bool = existing.get("surface") in ["ground", "entity", "boundary"] and collider != null and collider.get_instance_id() == observed_target_collider
 			if not stock_hit and collider != null and world().is_ancestor_of(collider):
 				var key := str(collider.get_instance_id())
 				if not scene_object_refs.has(key):
@@ -140,6 +140,7 @@ func _actual_entity(node: Node3D, declared: Dictionary) -> Dictionary:
 	return result
 
 func _actual_target(revision: int, actual: Array) -> Dictionary:
+	observed_target_collider = 0
 	var target := {"entityId": null, "position": null, "normal": null, "surface": "none", "revision": revision}
 	var camera := world().get_node_or_null("Player/CameraRig/PitchPivot/Camera3D") as Camera3D
 	var player := world().get_node_or_null("Player") as CollisionObject3D
@@ -170,6 +171,8 @@ func _actual_target(revision: int, actual: Array) -> Dictionary:
 			target.entityName = sampled.get("parameters", {}).get("label", "") if sampled.kind == "marker" else {"tree":"树", "rock":"石头", "chest":"宝箱", "door":"门", "marker":"标记"}.get(sampled.kind, sampled.kind)
 			target.scale = sampled.scale
 			target.color = sampled.color
+	if target.surface in ["ground", "entity", "boundary"]:
+		observed_target_collider = collider.get_instance_id()
 	return target
 
 func observe() -> Dictionary:
