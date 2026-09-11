@@ -1,0 +1,22 @@
+.craftmine-preview-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  max-height: 32vh;
+  overflow: auto;
+  border-bottom: 1px solid var(--ds-border-subtle);
+  background: var(--ds-bg);
+  color: var(--ds-text-primary);
+}
+.craftmine-preview-controls-copy { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.craftmine-preview-controls p { margin: 3px 0; font-size: 12px; }
+.craftmine-preview-controls small { opacity: .75; }
+.craftmine-preview-controls [role="alert"] { color: var(--ds-error); }
+.craftmine-preview-controls-actions { display: flex; flex-wrap: wrap; gap: 8px; flex: 0 0 auto; }
+.craftmine-preview-controls button { padding: 6px 10px; border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs); background: var(--ds-tile); color: var(--ds-text-primary); }
+.craftmine-preview-controls button:disabled { opacity: .5; }
+@media (max-width: 700px) {
+  .craftmine-preview-controls { align-items: flex-start; flex-direction: column; }
+}
