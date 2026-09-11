@@ -8,6 +8,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const require=createRequire(import.meta.url);
 
@@ -16,7 +17,7 @@ test('production plugin build includes exact guidance resources and serves a pin
   try {
     execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',output],
       {cwd:root,encoding:'utf8',windowsHide:true,timeout:120000,maxBuffer:2*1024*1024});
-    for(const file of ['godot-guidance.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
+    for(const file of ['godot-guidance.cjs','godot-view-capture.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
       assert.deepEqual(fs.readFileSync(path.join(output,file)),fs.readFileSync(path.join(root,'plugins/craftmine-world',file)),file);
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
@@ -69,5 +70,13 @@ test('production plugin build includes exact guidance resources and serves a pin
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
     assert.equal(exampleBody.text,fs.readFileSync(path.join(output,'guidance/references/double-press-rule.gd'),'utf8').replace(/\r\n/g,'\n'));
     assert.ok(calls.every(method=>['workspace.open','godotProject.index','godotProject.read'].includes(method)));
+    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j95sAAAAASUVORK5CYII=','base64'),sha256=createHash('sha256').update(png).digest('hex');
+    let captures=0;
+    const noCancel={cancelOtherTurns:async()=>assert.fail('A visual read must not cancel other verification or review tasks')};
+    const viewTools=createWorldTools(core,async()=>({activeWorldId:'packaged-world'}),()=>false,noCancel,noCancel,{captureView:async input=>{captures++;assert.equal(input.worldId,'packaged-world');assert.deepEqual(input.context,{projectId:'project',sessionId:'session',turnId:'turn'});return {format:'craftmine.godot-view-capture/1',status:'captured',delivery:'image-block-ready',worldId:input.worldId,buildId:input.buildId,instanceId:input.instanceId??'preview-instance',candidateId:input.candidateId??null,scope:input.candidateId?'candidate':'formal',capturedAt:'2026-09-12T00:00:00Z',width:1,height:1,sourceWidth:1,sourceHeight:1,viewWidth:1,viewHeight:1,resized:false,pngBase64:png.toString('base64'),sha256};}});
+    const capture=viewTools.find(tool=>tool.name==='godot_view_capture');assert.ok(capture);
+    const visual=await capture.execute({buildId:'build',instanceId:'instance'},context);assert.equal(visual.images[0].data,png.toString('base64'));assert.equal(JSON.parse(visual.text).sha256,sha256);assert.equal(visual.text.includes(png.toString('base64')),false);
+    const candidate=await capture.execute({buildId:'candidate-build',candidateId:'gcan-'+'a'.repeat(64)},context);assert.equal(JSON.parse(candidate.text).instanceId,'preview-instance');
+    await assert.rejects(capture.execute({buildId:'build',instanceId:'instance',worldId:'other'},context));assert.equal(captures,2);
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });

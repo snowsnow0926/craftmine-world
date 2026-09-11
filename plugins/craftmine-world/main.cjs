@@ -131,6 +131,7 @@ async function onLoad() {
   const hostProviders=createHostProviders((method,params)=>{
     if(method==='creationTarget'&&typeof pi.craftmine?.creationTarget==='function')return pi.craftmine.creationTarget(params);
     if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
+    if(method==='godotViewCapture'&&typeof pi.craftmine?.godotViewCapture==='function')return pi.craftmine.godotViewCapture(params);
     throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
   });
   const toolServices={

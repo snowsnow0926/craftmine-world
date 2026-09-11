@@ -11,3 +11,5 @@
 11 项专属回归通过，helper strict TypeScript 检查通过。另尝试原 tests/godot-remaining/P3/godot-world-capture-readiness.mjs，18 项均在构造器因旧 fixture 未注入 NO_IMMERSION 而失败（未进入截图方法）；这是该 fixture 对此前沉浸字段的依赖漂移，本轮没有混入修复或放弱测试，不能报告旧套件通过。完整 desktop TS 由桥集成 agent 合入本接口后联合检查。
 
 上述测试使用原 host 类和可审计 compositor 替身，禁止窗口/输入/JS/runtime动作；不等同真实 Electron 成品截图已验收。后续成品应走正常 UI 使视图附着，再检查新接口；detached 状态直接拒绝，不用测试专用 attach 路径绕过。
+
+总控集成时补齐旧 P3 fixture 所需的真实 `NO_IMMERSION`、`createImmersionPauseController` 和 `PRIVATE_PLAY_OPS` 导入，未改生产行为或旧断言。原 18 项随后全部通过，证明私有验收截图原有的空帧等待、超时和资源恢复未被本次新接口破坏。此前缺依赖失败仍保留为发现过程。

@@ -583,6 +583,48 @@
         }
       },
       {
+        "name": "godot_view_capture",
+        "description": "Read one real image of this session world game view. Formal capture requires actual runtime buildId and instanceId. For an already active candidate preview supply its exact candidateId and buildId; instanceId may be omitted only for this branch, and the host resolves and returns the actual preview instance. Formal and candidate identities are never interchangeable. This does not open, resize, focus, resume, move or control a game, and never captures the desktop or another app. Returns text plus an actual PNG image block with capture identity, time, source/output dimensions and SHA256. Missing views, changed identities and models declared unable to receive images are explicitly unavailable. A captured/attached image does not prove the provider accepted it or that the scene meets the player request. Inspect visible appearance and combine it with actual gameplay/state evidence before claiming success.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "buildId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9._-]{1,128}$"
+            },
+            "instanceId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9._-]{1,128}$"
+            },
+            "candidateId": {
+              "type": "string",
+              "pattern": "^gcan-[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "buildId"
+          ],
+          "additionalProperties": false,
+          "anyOf": [
+            {
+              "required": [
+                "instanceId"
+              ]
+            },
+            {
+              "required": [
+                "candidateId"
+              ]
+            }
+          ]
+        }
+      },
+      {
         "name": "godot_project_facts",
         "description": "Rebuild the authoritative durable facts for this world after a context compaction or a model switch: project revision and manifest hash, base and engine identity, candidates, runtime build, last confirmed progress, the real executor gate, durable job usage, which limit kind is exhausted, and whether the documentation corpus matches the bound engine. Call this instead of trusting a summary. Last confirmed progress is a save, not the player's current equipment; use godot_runtime_state scope=live for that.",
         "risk": "low",

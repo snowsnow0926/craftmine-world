@@ -93,6 +93,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     assertActive();
     if(definition.name==='godot_guidance')return require('./godot-guidance.cjs').queryGuidance(core,
       {context,worldId:workspace.worldId,args,assertActive});
+    if(definition.name==='godot_view_capture')return require('./godot-view-capture.cjs').captureGodotView({context,worldId:workspace.worldId,args,services:options,assertActive});
     await verifications?.cancelOtherTurns(context);
     await reviews?.cancelOtherTurns(context);
     const godotWrites={godot_project_create:true,godot_project_patch:true,godot_asset_put:true,godot_build_start:true};
