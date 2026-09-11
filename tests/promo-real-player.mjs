@@ -51,8 +51,24 @@ try{
   report.setup=await rpc('playerSetup',{payload:{...payload,config,secret}});
   report.before=await rpc('playerStatus',{payload});assert.equal(report.before.active,false);assert.equal(report.before.record.session.id,sessionId);
   await rpc('worldPanel',{channel:'godot.runtimeResume',payload:{worldId}});
+  const recoverable=await rpc('worldNavigation',{channel:'task.recoverable',payload:{worldId}});
+  report.recoverable=recoverable;
   report.submittedAt=new Date().toISOString();report.status='SUBMITTING';save();submitted=true;
-  report.submission=await rpc('playerPrompt',{payload:{...payload,text,messageId:report.messageId}});report.status='RUNNING';save();
+  if(recoverable.items?.length){
+    assert.equal(recoverable.items.length,1,'Review multiple interrupted tasks before choosing a recovery');
+    const task=recoverable.items[0];
+    report.submission=await rpc('worldNavigation',{channel:'task.resume',payload:{worldId,taskId:task.taskId??task.id,generation:task.generation}});
+    report.inputPath='ordinary-continue-creation';
+    const after=await rpc('playerStatus',{payload});
+    const oldIds=new Set(report.before.record.session.messages.map(message=>message.id));
+    const message=after.record.session.messages.find(message=>message.role==='user'&&!oldIds.has(message.id));
+    assert.ok(message,'Normal recovery must append its own player continuation');
+    report.messageId=message.id;report.actualContinuation=message.content;
+  }else{
+    report.submission=await rpc('playerPrompt',{payload:{...payload,text,messageId:report.messageId}});
+    report.inputPath='ordinary-chat-input';
+  }
+  report.status='RUNNING';save();
   while(!signal.aborted){
     const state=await rpc('playerStatus',{payload});report.latest=state;assert.equal(state.sessionId,sessionId);assert.equal(state.observation.worldId,worldId);
     seenActive ||= state.active;save();
