@@ -1,0 +1,30 @@
+{
+  "cache": "none",
+  "checks": 44,
+  "failures": [],
+  "headless": true,
+  "pixelAccurate": false,
+  "twentyMeshCounts": {
+    "candidates": 20,
+    "facesRead": 20,
+    "nodes": 22,
+    "triangles": 240
+  },
+  "twentyMeshTiming": {
+    "averageMicroseconds": 233.46,
+    "coldMicroseconds": 306
+  },
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 77,
+      "exitCode": 0
+    },
+    {
+      "label": "probe",
+      "elapsedMs": 244,
+      "exitCode": 0
+    }
+  ]
+}

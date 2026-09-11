@@ -1,0 +1,1830 @@
+{
+  "format": "craftmine.glb-picker-audit/1",
+  "out": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X",
+  "sourceReport": "D:/cm-gu6-formal-0912/test-results/desktop-native-complete-QaRnRb/report.json",
+  "formalSourcePin": {
+    "revision": 3,
+    "manifestHash": "af86817f43488c73b513dd324b070449e60477d398ddcfc69adee0df138a4b4f",
+    "commitOid": "a446aa197dc7b0bd20929f8fb82e584d90157f6e",
+    "assetLockHash": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+  },
+  "originalFiles": [
+    {
+      "path": "addons/kenney-city-building/attribution.json",
+      "bytes": 526,
+      "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+    },
+    {
+      "path": "addons/kenney-city-building/licenses/LICENSE.md",
+      "bytes": 1062,
+      "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+    },
+    {
+      "path": "addons/kenney-city-building/licenses/README.md",
+      "bytes": 3353,
+      "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+    },
+    {
+      "path": "addons/kenney-city-building/models/Textures/colormap.png",
+      "bytes": 10108,
+      "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+    },
+    {
+      "path": "addons/kenney-city-building/models/building-small-a.glb",
+      "bytes": 39660,
+      "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+    },
+    {
+      "path": "addons/kenney-city-building/module.gd",
+      "bytes": 2747,
+      "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+    },
+    {
+      "path": "addons/kenney-city-building/module.gd.uid",
+      "bytes": 19,
+      "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+    },
+    {
+      "path": "addons/kenney-city-building/module.tscn",
+      "bytes": 489,
+      "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+    },
+    {
+      "path": "addons/kenney-city-building/provenance.json",
+      "bytes": 726,
+      "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+    },
+    {
+      "path": "addons/kenney-city-road/attribution.json",
+      "bytes": 514,
+      "sha256": "4fee8aec02924920135dee8f7b16f58465e2d445bf9511ced572e45b24797fb5"
+    },
+    {
+      "path": "addons/kenney-city-road/licenses/LICENSE.md",
+      "bytes": 1062,
+      "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+    },
+    {
+      "path": "addons/kenney-city-road/licenses/README.md",
+      "bytes": 3353,
+      "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+    },
+    {
+      "path": "addons/kenney-city-road/models/Textures/colormap.png",
+      "bytes": 10108,
+      "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+    },
+    {
+      "path": "addons/kenney-city-road/models/road-straight.glb",
+      "bytes": 6148,
+      "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+    },
+    {
+      "path": "addons/kenney-city-road/module.gd",
+      "bytes": 2727,
+      "sha256": "12a73befca09b843f02d732b186a27715b07d67cdc39c4bac3f23386c4f5cd7a"
+    },
+    {
+      "path": "addons/kenney-city-road/module.gd.uid",
+      "bytes": 19,
+      "sha256": "44ae11846ab4f55a4f65774473d86938e5dea46e62c4039e236f3d61bb163872"
+    },
+    {
+      "path": "addons/kenney-city-road/module.tscn",
+      "bytes": 474,
+      "sha256": "379f322035574519600cd6c1607504765ec568568ce3f8ac4d04faff8785658a"
+    },
+    {
+      "path": "addons/kenney-city-road/provenance.json",
+      "bytes": 723,
+      "sha256": "e4f9dac83441736c84d996367add35b8b240545f50d8419ab3492a399481a433"
+    },
+    {
+      "path": "assets/ASSET_MANIFEST.json",
+      "bytes": 548,
+      "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+    },
+    {
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
+      "path": "assets/fonts/cjk-0.json",
+      "bytes": 2800055,
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "path": "assets/fonts/cjk-1.json",
+      "bytes": 2790775,
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    },
+    {
+      "path": "assets/fonts/font.json",
+      "bytes": 832,
+      "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+    },
+    {
+      "path": "craftmine.assets.lock.json",
+      "bytes": 4568,
+      "sha256": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+    },
+    {
+      "path": "craftmine.instances.json",
+      "bytes": 996,
+      "sha256": "b4ccd5559f40a80f134d3b55b625b8f6b43640779f713e8dc19b7f6e7760a8de"
+    },
+    {
+      "path": "craftmine_initial_state.json",
+      "bytes": 702,
+      "sha256": "afb6191c0a8523cbfe44f8f0bac5910a054fd546be5a52fb9b9ec32d51f45204"
+    },
+    {
+      "path": "craftmine_shared/base_adapter.gd",
+      "bytes": 15229,
+      "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+    },
+    {
+      "path": "craftmine_shared/headless_play_action.gd",
+      "bytes": 2525,
+      "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+    },
+    {
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "bytes": 7677,
+      "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+    },
+    {
+      "path": "craftmine_shared/scene_mesh_picker.gd",
+      "bytes": 13159,
+      "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+    },
+    {
+      "path": "craftmine_shared/state_guard.gd",
+      "bytes": 1759,
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "path": "creation-scene.schema.json",
+      "bytes": 6559,
+      "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+    },
+    {
+      "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "bytes": 1407,
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 2430,
+      "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1179,
+      "sha256": "0f1f04ad7fcf399e310d1fb71c8ad5daccf8b327f28febe96615b239b846ea2d"
+    },
+    {
+      "path": "scenes/creation.tscn",
+      "bytes": 1719,
+      "sha256": "a268869a27cb39f63a4a51e12757f207b84848d6b8597ab0581979d26660dfcd"
+    },
+    {
+      "path": "scripts/creation_font.gd",
+      "bytes": 1737,
+      "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+    },
+    {
+      "path": "scripts/creation_world.gd",
+      "bytes": 26597,
+      "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+    },
+    {
+      "path": "scripts/reused/camera_rig.gd",
+      "bytes": 1527,
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "path": "scripts/reused/player_controller.gd",
+      "bytes": 6089,
+      "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+    },
+    {
+      "path": "scripts/scene_contract.gd",
+      "bytes": 5289,
+      "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+    },
+    {
+      "path": "world/creation.json",
+      "bytes": 115,
+      "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+    }
+  ],
+  "request": {
+    "schemaVersion": 1,
+    "requestId": "gpa-1789166280787",
+    "taskId": "gpa-1789166280787",
+    "operation": "exportWeb",
+    "projectRoot": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\project",
+    "tasksRoot": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\tasks",
+    "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+    "sourceBinding": {
+      "worldId": "world-f58b259b9562",
+      "buildId": "gpa-1789166280787",
+      "sourceRevision": 1,
+      "sourceDigest": "ebba4010b36c92c02eee2a9e6eae6eb734d7f772aa490681205ff44f978bfc92"
+    },
+    "inputHash": "ea1638926d05e0995031965c2d3229115ebb3eff9bf47939798ef361cb632742"
+  },
+  "originalPickerSha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512",
+  "mode": "v2-base-surface-triangles",
+  "cohort": "controller-v1-plus-picker-v2",
+  "v2PickerSha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1",
+  "receipt": {
+    "schemaVersion": 1,
+    "requestId": "gpa-1789166280787",
+    "taskId": "gpa-1789166280787",
+    "operation": "exportWeb",
+    "sourceBinding": {
+      "worldId": "world-f58b259b9562",
+      "buildId": "gpa-1789166280787",
+      "sourceRevision": 1,
+      "sourceDigest": "ebba4010b36c92c02eee2a9e6eae6eb734d7f772aa490681205ff44f978bfc92"
+    },
+    "inputHash": "ea1638926d05e0995031965c2d3229115ebb3eff9bf47939798ef361cb632742",
+    "sourceSnapshotDigest": "ebba4010b36c92c02eee2a9e6eae6eb734d7f772aa490681205ff44f978bfc92",
+    "sourceFiles": [
+      {
+        "path": "addons/kenney-city-building/attribution.json",
+        "bytes": 526,
+        "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+      },
+      {
+        "path": "addons/kenney-city-building/licenses/LICENSE.md",
+        "bytes": 1062,
+        "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+      },
+      {
+        "path": "addons/kenney-city-building/licenses/README.md",
+        "bytes": 3353,
+        "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+      },
+      {
+        "path": "addons/kenney-city-building/models/Textures/colormap.png",
+        "bytes": 10108,
+        "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+      },
+      {
+        "path": "addons/kenney-city-building/models/building-small-a.glb",
+        "bytes": 39660,
+        "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+      },
+      {
+        "path": "addons/kenney-city-building/module.gd",
+        "bytes": 2747,
+        "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+      },
+      {
+        "path": "addons/kenney-city-building/module.gd.uid",
+        "bytes": 19,
+        "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+      },
+      {
+        "path": "addons/kenney-city-building/module.tscn",
+        "bytes": 489,
+        "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+      },
+      {
+        "path": "addons/kenney-city-building/provenance.json",
+        "bytes": 726,
+        "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+      },
+      {
+        "path": "addons/kenney-city-road/attribution.json",
+        "bytes": 514,
+        "sha256": "4fee8aec02924920135dee8f7b16f58465e2d445bf9511ced572e45b24797fb5"
+      },
+      {
+        "path": "addons/kenney-city-road/licenses/LICENSE.md",
+        "bytes": 1062,
+        "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+      },
+      {
+        "path": "addons/kenney-city-road/licenses/README.md",
+        "bytes": 3353,
+        "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+      },
+      {
+        "path": "addons/kenney-city-road/models/Textures/colormap.png",
+        "bytes": 10108,
+        "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+      },
+      {
+        "path": "addons/kenney-city-road/models/road-straight.glb",
+        "bytes": 6148,
+        "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+      },
+      {
+        "path": "addons/kenney-city-road/module.gd",
+        "bytes": 2727,
+        "sha256": "12a73befca09b843f02d732b186a27715b07d67cdc39c4bac3f23386c4f5cd7a"
+      },
+      {
+        "path": "addons/kenney-city-road/module.gd.uid",
+        "bytes": 19,
+        "sha256": "44ae11846ab4f55a4f65774473d86938e5dea46e62c4039e236f3d61bb163872"
+      },
+      {
+        "path": "addons/kenney-city-road/module.tscn",
+        "bytes": 474,
+        "sha256": "379f322035574519600cd6c1607504765ec568568ce3f8ac4d04faff8785658a"
+      },
+      {
+        "path": "addons/kenney-city-road/provenance.json",
+        "bytes": 723,
+        "sha256": "e4f9dac83441736c84d996367add35b8b240545f50d8419ab3492a399481a433"
+      },
+      {
+        "path": "assets/ASSET_MANIFEST.json",
+        "bytes": 548,
+        "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+      },
+      {
+        "path": "assets/fonts/OFL-NotoSansSC.txt",
+        "bytes": 4388,
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "path": "assets/fonts/cjk-0.json",
+        "bytes": 2800055,
+        "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+      },
+      {
+        "path": "assets/fonts/cjk-1.json",
+        "bytes": 2790775,
+        "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+      },
+      {
+        "path": "assets/fonts/font.json",
+        "bytes": 832,
+        "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+      },
+      {
+        "path": "craftmine.assets.lock.json",
+        "bytes": 4568,
+        "sha256": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+      },
+      {
+        "path": "craftmine.instances.json",
+        "bytes": 996,
+        "sha256": "b4ccd5559f40a80f134d3b55b625b8f6b43640779f713e8dc19b7f6e7760a8de"
+      },
+      {
+        "path": "craftmine_initial_state.json",
+        "bytes": 702,
+        "sha256": "afb6191c0a8523cbfe44f8f0bac5910a054fd546be5a52fb9b9ec32d51f45204"
+      },
+      {
+        "path": "craftmine_shared/base_adapter.gd",
+        "bytes": 1640,
+        "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+      },
+      {
+        "path": "craftmine_shared/base_adapter_legacy.gd",
+        "bytes": 15229,
+        "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+      },
+      {
+        "path": "craftmine_shared/controller_evidence.gd",
+        "bytes": 9893,
+        "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+      },
+      {
+        "path": "craftmine_shared/headless_play_action.gd",
+        "bytes": 2525,
+        "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+      },
+      {
+        "path": "craftmine_shared/runtime_bridge.gd",
+        "bytes": 7677,
+        "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+      },
+      {
+        "path": "craftmine_shared/scene_mesh_picker.gd",
+        "bytes": 13159,
+        "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+      },
+      {
+        "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+        "bytes": 15348,
+        "sha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1"
+      },
+      {
+        "path": "craftmine_shared/state_guard.gd",
+        "bytes": 1759,
+        "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+      },
+      {
+        "path": "creation-scene.schema.json",
+        "bytes": 6559,
+        "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+      },
+      {
+        "path": "export_presets.cfg",
+        "bytes": 1090,
+        "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+      },
+      {
+        "path": "glb_audit.gd",
+        "bytes": 4851,
+        "sha256": "3663e67453315d5d78b89f25dff2233e9861446399b8fa4874b8eeb45c7d2913"
+      },
+      {
+        "path": "glb_v2.gd",
+        "bytes": 13716,
+        "sha256": "035176084c8dbd31d57e5dae01e6559dea0a170a94dcf9e548434595e91f322f"
+      },
+      {
+        "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+        "bytes": 1407,
+        "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+      },
+      {
+        "path": "manifest.json",
+        "bytes": 2430,
+        "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 1207,
+        "sha256": "56742086979c9a501b658f9a4b69ef179fe910a03042513aadf4ab4026a2365f"
+      },
+      {
+        "path": "scenes/creation.tscn",
+        "bytes": 1719,
+        "sha256": "a268869a27cb39f63a4a51e12757f207b84848d6b8597ab0581979d26660dfcd"
+      },
+      {
+        "path": "scripts/creation_font.gd",
+        "bytes": 1737,
+        "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+      },
+      {
+        "path": "scripts/creation_world.gd",
+        "bytes": 26597,
+        "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+      },
+      {
+        "path": "scripts/reused/camera_rig.gd",
+        "bytes": 1527,
+        "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+      },
+      {
+        "path": "scripts/reused/player_controller.gd",
+        "bytes": 6089,
+        "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+      },
+      {
+        "path": "scripts/scene_contract.gd",
+        "bytes": 5289,
+        "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+      },
+      {
+        "path": "world/creation.json",
+        "bytes": 115,
+        "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+      }
+    ],
+    "state": "succeeded",
+    "exitCode": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 6056,
+      "creationTimeFiletime": "134336398826726907",
+      "imagePath": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\tasks\\gpa-1789166280787\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-1390862874-164310377-4174197241-4072900574-3231726199-364247088-2230306102",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "jobActiveProcesses": 0,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 21296,
+        "creationTimeFiletime": "134336398813472294",
+        "imagePath": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\tasks\\gpa-1789166280787\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-1390862874-164310377-4174197241-4072900574-3231726199-364247088-2230306102",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 50,
+      "samples": 85,
+      "maxObservedWorkBytes": 85522009,
+      "maxObservedLogBytes": 12762,
+      "enforced": false,
+      "reason": null
+    },
+    "artifacts": [
+      {
+        "path": "index.apple-touch-icon.png",
+        "bytes": 11944,
+        "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+      },
+      {
+        "path": "index.audio.position.worklet.js",
+        "bytes": 2973,
+        "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+      },
+      {
+        "path": "index.audio.worklet.js",
+        "bytes": 7298,
+        "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+      },
+      {
+        "path": "index.html",
+        "bytes": 5458,
+        "sha256": "a06868d7691ecd0b9f69f41f6c381c9477108da1b958a50cfd7ef808c68f1669"
+      },
+      {
+        "path": "index.icon.png",
+        "bytes": 5700,
+        "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+      },
+      {
+        "path": "index.js",
+        "bytes": 279815,
+        "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+      },
+      {
+        "path": "index.pck",
+        "bytes": 5750884,
+        "sha256": "b131554d9cd52b4ebe6d976c930d6b687239d15c3727f7fbef81495dec332fd6"
+      },
+      {
+        "path": "index.png",
+        "bytes": 21443,
+        "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+      },
+      {
+        "path": "index.wasm",
+        "bytes": 39514754,
+        "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+      }
+    ],
+    "artifactsRoot": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\tasks\\gpa-1789166280787\\artifacts",
+    "logsRoot": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\tasks\\gpa-1789166280787\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 12762,
+        "sha256": "508db31ce66548a6b5590ea64a8f228ba261f4171ec3c835cfca7c02a21e201b"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "D:\\cm-gu2-pick-0912\\test-results\\glb-pick-audit-wwkH5X\\tasks\\.recovery-journal\\gpa-1789166280787.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": null,
+    "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232",
+    "binRetirement": {
+      "format": "craftmine.godot-bin-retirement/1",
+      "taskId": "gpa-1789166280787",
+      "identityNonce": "19f8328de7cf0aeb1f2f25f3f1a59057c6d56f0e064159cdd3351f4ad2ec224b",
+      "engineJobActiveProcesses": 0,
+      "nativeJobActiveProcesses": 0,
+      "files": [
+        {
+          "path": "Godot_v4.7.2-stable_win64.exe",
+          "bytes": 180858888,
+          "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+        },
+        {
+          "path": "broker-preflight.exe",
+          "bytes": 812032,
+          "sha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        }
+      ]
+    }
+  },
+  "validation": {
+    "valid": true,
+    "errors": []
+  },
+  "console": [
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "GLB_PICK_V2={\"cases\":{\"aabbMiss\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":1,\"nodes\":3,\"triangles\":1,\"vertices\":3},\"distance\":2.95000028610229,\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@30\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"34879833517\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.0, -3.0)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":0,\"triangleIndex\":0},\"aabbOnlyMustMiss\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":1,\"nodes\":3,\"triangles\":1,\"vertices\":3},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"no-supported-triangle-hit\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"none\"},\"adapterBuildingObservation\":{\"entities\":[],\"obstacles\":[],\"physicsTick\":33,\"playerBounds\":{\"halfExtents\":[0.3,0.9,0.3],\"position\":[0.0,-0.0000000238418579323607,6.0]},\"revision\":1,\"sceneObjectRefs\":[{\"ancestors\":[],\"nodeClass\":\"StaticBody3D\",\"nodePath\":\"ins-7cd6d5365fb8452a2fe191fd-e0\",\"objectId\":\"29276243268\",\"scenePath\":\"res://addons/kenney-city-building/module.tscn\",\"scriptPath\":\"res://addons/kenney-city-building/module.gd\"}],\"sceneObjectSelection\":{\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":31,\"triangles\":464,\"vertices\":734},\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"nearer-or-tied-physics-hit\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"blocked\"},\"sceneObjectTarget\":{\"ancestors\":[],\"nodeClass\":\"StaticBody3D\",\"nodePath\":\"ins-7cd6d5365fb8452a2fe191fd-e0\",\"normal\":[0.0,0.0,1.0],\"objectId\":\"29276243268\",\"position\":[0.0,0.5,-3.55000019073486],\"scenePath\":\"res://addons/kenney-city-building/module.tscn\",\"scriptPath\":\"res://addons/kenney-city-building/module.gd\"},\"target\":{\"entityId\":null,\"normal\":[0.0,0.0,1.0],\"position\":[0.0,0.5,-3.55000019073486],\"revision\":1,\"surface\":\"none\"},\"timeOfDay\":12.0},\"adapterSecondObservation\":{\"entities\":[],\"obstacles\":[],\"physicsTick\":39,\"playerBounds\":{\"halfExtents\":[0.3,0.9,0.3],\"position\":[0.0,-0.0000000238418579323607,6.0]},\"revision\":1,\"sceneObjectRefs\":[{\"ancestors\":[],\"nodeClass\":\"StaticBody3D\",\"nodePath\":\"ins-7cd6d5365fb8452a2fe191fd-e0\",\"objectId\":\"29276243268\",\"scenePath\":\"res://addons/kenney-city-building/module.tscn\",\"scriptPath\":\"res://addons/kenney-city-building/module.gd\"},{\"ancestors\":[],\"nodeClass\":\"StaticBody3D\",\"nodePath\":\"KenneyModule\",\"objectId\":\"34242299294\",\"scenePath\":\"res://addons/kenney-city-building/module.tscn\",\"scriptPath\":\"res://addons/kenney-city-building/module.gd\"}],\"sceneObjectSelection\":{\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":35,\"triangles\":464,\"vertices\":734},\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"nearer-or-tied-physics-hit\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"blocked\"},\"sceneObjectTarget\":{\"ancestors\":[],\"nodeClass\":\"StaticBody3D\",\"nodePath\":\"KenneyModule\",\"normal\":[0.0,0.0,1.0],\"objectId\":\"34242299294\",\"position\":[4.0,0.5,-3.55000019073486],\"scenePath\":\"res://addons/kenney-city-building/module.tscn\",\"scriptPath\":\"res://addons/kenney-city-building/module.gd\"},\"target\":{\"entityId\":null,\"normal\":[0.0,0.0,1.0],\"position\":[4.0,0.5,-3.55000019073486],\"revision\":1,\"surface\":\"none\"},\"timeOfDay\":12.0},\"aggregateVertexBudget\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":5,\"facesRead\":0,\"nodes\":6,\"triangles\":16384,\"vertices\":61440},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"vertex-budget\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"blendShape\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"deformed-array-mesh\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"boneWeights\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"unsupported-array-format\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"buildingBaseTriangles\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":31,\"triangles\":464,\"vertices\":734},\"distance\":3.55000758171082,\"excludedObjectIds\":[\"29158802743\",\"32245810566\"],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"ins-7cd6d5365fb8452a2fe191fd-e0/Visual/building-small-a\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"29309797715\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.5, -3.600008)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":56,\"triangleIndex\":56},\"buildingPhysics\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":31,\"triangles\":464,\"vertices\":734},\"excludedObjectIds\":[\"29158802743\",\"32245810566\"],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"nearer-or-tied-physics-hit\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"blocked\"},\"coincidentInstances\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":4,\"triangles\":2,\"vertices\":6},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"ambiguous-coincident-meshes\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"customBounds\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"custom-array-bounds\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"defaultMaterialTransparency\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":1,\"facesRead\":0,\"nodes\":3,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"transparent-material\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"dynamicUpdate\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"unsupported-array-format\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"frontCulled\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":1,\"nodes\":3,\"triangles\":1,\"vertices\":3},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"no-supported-triangle-hit\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"none\"},\"globalOverride\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":2,\"nodes\":3,\"triangles\":2,\"vertices\":6},\"distance\":2.95000028610229,\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@30\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"34879833517\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.0, -3.0)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":0,\"triangleIndex\":0},\"indexedTriangle\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":1,\"nodes\":3,\"triangles\":1,\"vertices\":3},\"distance\":2.95000028610229,\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@30\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"34879833517\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.0, -3.0)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":0,\"triangleIndex\":0},\"negativeScale\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":1,\"facesRead\":0,\"nodes\":3,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"negative-scale\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"offRayBuilding\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":36,\"triangles\":24,\"vertices\":0},\"distance\":1.45000004768372,\"excludedObjectIds\":[\"29158802743\",\"32245810566\"],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@27\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"34544289193\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.5, -1.5)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":0,\"triangleIndex\":0},\"offRayShader\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"custom-material\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"scaledTriangle\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":1,\"nodes\":3,\"triangles\":1,\"vertices\":3},\"distance\":6.94999980926514,\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@31\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"35014051244\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.0, -7.0)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":0,\"triangleIndex\":0},\"scriptedResource\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"scripted-mesh-resource\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"secondBuilding\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":2,\"facesRead\":2,\"nodes\":35,\"triangles\":464,\"vertices\":734},\"distance\":3.55000758171082,\"excludedObjectIds\":[\"29158802743\",\"32245810566\"],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"KenneyModule/Visual/building-small-a\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"34275853729\",\"pixelAccurate\":false,\"position\":\"(4.0, 0.5, -3.600008)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":56,\"triangleIndex\":56},\"secondSurface\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":2,\"nodes\":3,\"triangles\":2,\"vertices\":6},\"distance\":3.95000004768372,\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@30\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"34879833517\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.0, -4.0)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":1,\"surfaceTriangleIndex\":0,\"triangleIndex\":1},\"skin\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"deformed-array-mesh\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"surfaceBudget\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"surface-budget\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"surfaceOverride\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":1,\"facesRead\":2,\"nodes\":3,\"triangles\":2,\"vertices\":6},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"no-supported-triangle-hit\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"none\"},\"transparentBehind\":{\"blockRaySelection\":false,\"counts\":{\"candidates\":2,\"facesRead\":1,\"nodes\":4,\"triangles\":1,\"vertices\":3},\"distance\":4.94999980926514,\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"nodePath\":\"@MeshInstance3D@38\",\"normal\":\"(0.0, 0.0, 1.0)\",\"objectId\":\"35601253822\",\"pixelAccurate\":false,\"position\":\"(0.0, 0.0, -5.0)\",\"reason\":\"nearest-supported-triangle\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"hit\",\"surfaceIndex\":0,\"surfaceTriangleIndex\":0,\"triangleIndex\":0},\"transparentForeground\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":2,\"facesRead\":1,\"nodes\":4,\"triangles\":1,\"vertices\":3},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"transparent-material\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"triangleBudget\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"mesh-triangle-budget\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"unknownNearSurface\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":1,\"facesRead\":0,\"nodes\":3,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"transparent-material\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"unknownPoints\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":2,\"facesRead\":1,\"nodes\":4,\"triangles\":12,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"unsupported-surface-primitive\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"},\"vertexBudget\":{\"blockRaySelection\":true,\"counts\":{\"candidates\":0,\"facesRead\":0,\"nodes\":2,\"triangles\":0,\"vertices\":0},\"excludedObjectIds\":[],\"geometryBasis\":\"base-surface-arrays\",\"pixelAccurate\":false,\"reason\":\"mesh-vertex-budget\",\"renderLodVerified\":false,\"scope\":\"bounded-static-base-mesh-triangles\",\"status\":\"fallback\"}},\"checks\":[{\"label\":\"legacy independent building negative is preserved\",\"passed\":true},{\"label\":\"V2 hits independently placed real installed GLB building triangles\",\"passed\":true},{\"label\":\"V2 preserves ordinary actual building physics tie\",\"passed\":true},{\"label\":\"ordinary adapter observe exposes imported building physics body as exact scene target\",\"passed\":true},{\"label\":\"ordinary adapter sceneObjectRefs retains exact imported building reference\",\"passed\":true},{\"label\":\"repeated ordinary observe keeps stable live building identity\",\"passed\":true},{\"label\":\"ordinary adapter physics tick remains connected and increases\",\"passed\":true},{\"label\":\"second independent instance has its own actual hit identity\",\"passed\":true},{\"label\":\"ordinary adapter targets second independent module without reusing first identity\",\"passed\":true},{\"label\":\"off-ray static GLB does not globally block ordinary BoxMesh\",\"passed\":true},{\"label\":\"indexed native ArrayMesh exact triangle hit\",\"passed\":true},{\"label\":\"base geometry evidence explicitly does not certify rendered LOD or pixels\",\"passed\":true},{\"label\":\"AABB intersection outside triangle is not a hit\",\"passed\":true},{\"label\":\"surface front culling is honored\",\"passed\":true},{\"label\":\"second surface indexed-independent material and nonindexed triangles\",\"passed\":true},{\"label\":\"surface override takes precedence over mesh material\",\"passed\":true},{\"label\":\"global material override takes precedence on every surface\",\"passed\":true},{\"label\":\"transparent foreground surface cannot select opaque geometry behind\",\"passed\":true},{\"label\":\"nonuniform positive transform uses actual triangle and normal\",\"passed\":true},{\"label\":\"negative scale remains uncertainty blocker\",\"passed\":true},{\"label\":\"unbounded shader rejected even off base AABB\",\"passed\":true},{\"label\":\"custom bounds cannot masquerade as exact static geometry\",\"passed\":true},{\"label\":\"skinned meshes rejected before array reads\",\"passed\":true},{\"label\":\"blend shape resources rejected before array reads\",\"passed\":true},{\"label\":\"surface budget enforced before array reads\",\"passed\":true},{\"label\":\"vertex budget enforced before array reads\",\"passed\":true},{\"label\":\"index triangle budget enforced before array reads\",\"passed\":true},{\"label\":\"coincident independent native instances remain ambiguous\",\"passed\":true},{\"label\":\"unknown foreground cannot select second instance behind\",\"passed\":true},{\"label\":\"bounded unknown behind nearest triangle does not block\",\"passed\":true},{\"label\":\"scripted native resource fixture compiles\",\"passed\":true},{\"label\":\"script-attached mesh never enters virtual array reads\",\"passed\":true},{\"label\":\"dynamic update arrays cannot use stale static bounds\",\"passed\":true},{\"label\":\"unsupported foreground primitive cannot expose object behind\",\"passed\":true},{\"label\":\"bone and weight arrays rejected even without a Skin resource\",\"passed\":true},{\"label\":\"null material does not hide per-instance primitive transparency\",\"passed\":true},{\"label\":\"aggregate budget completes before any surface data read\",\"passed\":true}],\"passed\":true}"
+    }
+  ],
+  "pageErrors": [],
+  "bridge": {
+    "load": {
+      "id": "load",
+      "result": {
+        "loaded": true,
+        "snapshot": {
+          "base": "creation-sandbox",
+          "state": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "world-f58b259b9562"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-f58b259b9562"
+          },
+          "worldId": "world-f58b259b9562"
+        }
+      }
+    },
+    "resume": {
+      "id": "resume",
+      "result": {
+        "paused": false
+      }
+    },
+    "observe": {
+      "id": "observe",
+      "result": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "controllerEvidence": {
+          "activeCameraId": "33436992917",
+          "cameraId": "29225911613",
+          "cameraParentId": "29209134399",
+          "fixedPlayerScriptId": "-9223372009709238975",
+          "fixedRigScriptId": "-9223372009625352894",
+          "format": "craftmine.creation-controller-evidence/1",
+          "physicsTick": 57,
+          "pivotId": "29209134399",
+          "pivotParentId": "29192357184",
+          "playerClass": "CharacterBody3D",
+          "playerId": "29158802743",
+          "playerPath": "Player",
+          "playerRigId": "29192357184",
+          "playerScriptId": "-9223372009709238975",
+          "playerScriptPath": "res://scripts/reused/player_controller.gd",
+          "profile": "creation-fixed-controller/1",
+          "reason": "CAMERA_BINDING_MISMATCH",
+          "rigCameraId": "29225911613",
+          "rigId": "29192357184",
+          "rigParentId": "29158802743",
+          "rigPath": "Player/CameraRig",
+          "rigPivotId": "29209134399",
+          "rigScriptId": "-9223372009625352894",
+          "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+          "rootPlayerId": "29158802743",
+          "status": "unsupported"
+        },
+        "creation": {
+          "entities": [],
+          "obstacles": [],
+          "physicsTick": 57,
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              6
+            ]
+          },
+          "revision": 1,
+          "sceneObjectRefs": [
+            {
+              "ancestors": [],
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-7cd6d5365fb8452a2fe191fd-e0",
+              "objectId": "29276243268",
+              "scenePath": "res://addons/kenney-city-building/module.tscn",
+              "scriptPath": "res://addons/kenney-city-building/module.gd"
+            },
+            {
+              "ancestors": [],
+              "nodeClass": "StaticBody3D",
+              "nodePath": "KenneyModule",
+              "objectId": "34242299294",
+              "scenePath": "res://addons/kenney-city-building/module.tscn",
+              "scriptPath": "res://addons/kenney-city-building/module.gd"
+            }
+          ],
+          "sceneObjectSelection": {
+            "counts": {
+              "candidates": 2,
+              "facesRead": 2,
+              "nodes": 33,
+              "triangles": 464,
+              "vertices": 734
+            },
+            "geometryBasis": "base-surface-arrays",
+            "pixelAccurate": false,
+            "reason": "nearer-or-tied-physics-hit",
+            "renderLodVerified": false,
+            "scope": "bounded-static-base-mesh-triangles",
+            "status": "blocked"
+          },
+          "sceneObjectTarget": {
+            "ancestors": [],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "ins-7cd6d5365fb8452a2fe191fd-e0",
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "objectId": "29276243268",
+            "position": [
+              0,
+              0.5,
+              -3.55000019073486
+            ],
+            "scenePath": "res://addons/kenney-city-building/module.tscn",
+            "scriptPath": "res://addons/kenney-city-building/module.gd"
+          },
+          "target": {
+            "entityId": null,
+            "normal": [
+              0,
+              0,
+              1
+            ],
+            "position": [
+              0,
+              0.5,
+              -3.55000019073486
+            ],
+            "revision": 1,
+            "surface": "none"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "ready": true
+      }
+    }
+  },
+  "result": {
+    "cases": {
+      "aabbMiss": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 1,
+          "nodes": 3,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "distance": 2.95000028610229,
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@30",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "34879833517",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.0, -3.0)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 0
+      },
+      "aabbOnlyMustMiss": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 1,
+          "nodes": 3,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "no-supported-triangle-hit",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "none"
+      },
+      "adapterBuildingObservation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 33,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [
+          {
+            "ancestors": [],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "ins-7cd6d5365fb8452a2fe191fd-e0",
+            "objectId": "29276243268",
+            "scenePath": "res://addons/kenney-city-building/module.tscn",
+            "scriptPath": "res://addons/kenney-city-building/module.gd"
+          }
+        ],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 2,
+            "facesRead": 2,
+            "nodes": 31,
+            "triangles": 464,
+            "vertices": 734
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearer-or-tied-physics-hit",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "blocked"
+        },
+        "sceneObjectTarget": {
+          "ancestors": [],
+          "nodeClass": "StaticBody3D",
+          "nodePath": "ins-7cd6d5365fb8452a2fe191fd-e0",
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "objectId": "29276243268",
+          "position": [
+            0,
+            0.5,
+            -3.55000019073486
+          ],
+          "scenePath": "res://addons/kenney-city-building/module.tscn",
+          "scriptPath": "res://addons/kenney-city-building/module.gd"
+        },
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            0,
+            0.5,
+            -3.55000019073486
+          ],
+          "revision": 1,
+          "surface": "none"
+        },
+        "timeOfDay": 12
+      },
+      "adapterSecondObservation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 39,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [
+          {
+            "ancestors": [],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "ins-7cd6d5365fb8452a2fe191fd-e0",
+            "objectId": "29276243268",
+            "scenePath": "res://addons/kenney-city-building/module.tscn",
+            "scriptPath": "res://addons/kenney-city-building/module.gd"
+          },
+          {
+            "ancestors": [],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "KenneyModule",
+            "objectId": "34242299294",
+            "scenePath": "res://addons/kenney-city-building/module.tscn",
+            "scriptPath": "res://addons/kenney-city-building/module.gd"
+          }
+        ],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 2,
+            "facesRead": 2,
+            "nodes": 35,
+            "triangles": 464,
+            "vertices": 734
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearer-or-tied-physics-hit",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "blocked"
+        },
+        "sceneObjectTarget": {
+          "ancestors": [],
+          "nodeClass": "StaticBody3D",
+          "nodePath": "KenneyModule",
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "objectId": "34242299294",
+          "position": [
+            4,
+            0.5,
+            -3.55000019073486
+          ],
+          "scenePath": "res://addons/kenney-city-building/module.tscn",
+          "scriptPath": "res://addons/kenney-city-building/module.gd"
+        },
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            4,
+            0.5,
+            -3.55000019073486
+          ],
+          "revision": 1,
+          "surface": "none"
+        },
+        "timeOfDay": 12
+      },
+      "aggregateVertexBudget": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 5,
+          "facesRead": 0,
+          "nodes": 6,
+          "triangles": 16384,
+          "vertices": 61440
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "vertex-budget",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "blendShape": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "deformed-array-mesh",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "boneWeights": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "unsupported-array-format",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "buildingBaseTriangles": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 2,
+          "nodes": 31,
+          "triangles": 464,
+          "vertices": 734
+        },
+        "distance": 3.55000758171082,
+        "excludedObjectIds": [
+          "29158802743",
+          "32245810566"
+        ],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "ins-7cd6d5365fb8452a2fe191fd-e0/Visual/building-small-a",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "29309797715",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.5, -3.600008)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 56,
+        "triangleIndex": 56
+      },
+      "buildingPhysics": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 2,
+          "nodes": 31,
+          "triangles": 464,
+          "vertices": 734
+        },
+        "excludedObjectIds": [
+          "29158802743",
+          "32245810566"
+        ],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "nearer-or-tied-physics-hit",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "blocked"
+      },
+      "coincidentInstances": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 2,
+          "nodes": 4,
+          "triangles": 2,
+          "vertices": 6
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "ambiguous-coincident-meshes",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "customBounds": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "custom-array-bounds",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "defaultMaterialTransparency": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 0,
+          "nodes": 3,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "transparent-material",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "dynamicUpdate": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "unsupported-array-format",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "frontCulled": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 1,
+          "nodes": 3,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "no-supported-triangle-hit",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "none"
+      },
+      "globalOverride": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 2,
+          "nodes": 3,
+          "triangles": 2,
+          "vertices": 6
+        },
+        "distance": 2.95000028610229,
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@30",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "34879833517",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.0, -3.0)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 0
+      },
+      "indexedTriangle": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 1,
+          "nodes": 3,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "distance": 2.95000028610229,
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@30",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "34879833517",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.0, -3.0)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 0
+      },
+      "negativeScale": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 0,
+          "nodes": 3,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "negative-scale",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "offRayBuilding": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 2,
+          "nodes": 36,
+          "triangles": 24,
+          "vertices": 0
+        },
+        "distance": 1.45000004768372,
+        "excludedObjectIds": [
+          "29158802743",
+          "32245810566"
+        ],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@27",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "34544289193",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.5, -1.5)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 0
+      },
+      "offRayShader": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "custom-material",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "scaledTriangle": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 1,
+          "nodes": 3,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "distance": 6.94999980926514,
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@31",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "35014051244",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.0, -7.0)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 0
+      },
+      "scriptedResource": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "scripted-mesh-resource",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "secondBuilding": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 2,
+          "nodes": 35,
+          "triangles": 464,
+          "vertices": 734
+        },
+        "distance": 3.55000758171082,
+        "excludedObjectIds": [
+          "29158802743",
+          "32245810566"
+        ],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "KenneyModule/Visual/building-small-a",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "34275853729",
+        "pixelAccurate": false,
+        "position": "(4.0, 0.5, -3.600008)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 56,
+        "triangleIndex": 56
+      },
+      "secondSurface": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 2,
+          "nodes": 3,
+          "triangles": 2,
+          "vertices": 6
+        },
+        "distance": 3.95000004768372,
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@30",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "34879833517",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.0, -4.0)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 1,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 1
+      },
+      "skin": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "deformed-array-mesh",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "surfaceBudget": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "surface-budget",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "surfaceOverride": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 2,
+          "nodes": 3,
+          "triangles": 2,
+          "vertices": 6
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "no-supported-triangle-hit",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "none"
+      },
+      "transparentBehind": {
+        "blockRaySelection": false,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 1,
+          "nodes": 4,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "distance": 4.94999980926514,
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "nodePath": "@MeshInstance3D@38",
+        "normal": "(0.0, 0.0, 1.0)",
+        "objectId": "35601253822",
+        "pixelAccurate": false,
+        "position": "(0.0, 0.0, -5.0)",
+        "reason": "nearest-supported-triangle",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "hit",
+        "surfaceIndex": 0,
+        "surfaceTriangleIndex": 0,
+        "triangleIndex": 0
+      },
+      "transparentForeground": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 1,
+          "nodes": 4,
+          "triangles": 1,
+          "vertices": 3
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "transparent-material",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "triangleBudget": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "mesh-triangle-budget",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "unknownNearSurface": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 1,
+          "facesRead": 0,
+          "nodes": 3,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "transparent-material",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "unknownPoints": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 2,
+          "facesRead": 1,
+          "nodes": 4,
+          "triangles": 12,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "unsupported-surface-primitive",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      },
+      "vertexBudget": {
+        "blockRaySelection": true,
+        "counts": {
+          "candidates": 0,
+          "facesRead": 0,
+          "nodes": 2,
+          "triangles": 0,
+          "vertices": 0
+        },
+        "excludedObjectIds": [],
+        "geometryBasis": "base-surface-arrays",
+        "pixelAccurate": false,
+        "reason": "mesh-vertex-budget",
+        "renderLodVerified": false,
+        "scope": "bounded-static-base-mesh-triangles",
+        "status": "fallback"
+      }
+    },
+    "checks": [
+      {
+        "label": "legacy independent building negative is preserved",
+        "passed": true
+      },
+      {
+        "label": "V2 hits independently placed real installed GLB building triangles",
+        "passed": true
+      },
+      {
+        "label": "V2 preserves ordinary actual building physics tie",
+        "passed": true
+      },
+      {
+        "label": "ordinary adapter observe exposes imported building physics body as exact scene target",
+        "passed": true
+      },
+      {
+        "label": "ordinary adapter sceneObjectRefs retains exact imported building reference",
+        "passed": true
+      },
+      {
+        "label": "repeated ordinary observe keeps stable live building identity",
+        "passed": true
+      },
+      {
+        "label": "ordinary adapter physics tick remains connected and increases",
+        "passed": true
+      },
+      {
+        "label": "second independent instance has its own actual hit identity",
+        "passed": true
+      },
+      {
+        "label": "ordinary adapter targets second independent module without reusing first identity",
+        "passed": true
+      },
+      {
+        "label": "off-ray static GLB does not globally block ordinary BoxMesh",
+        "passed": true
+      },
+      {
+        "label": "indexed native ArrayMesh exact triangle hit",
+        "passed": true
+      },
+      {
+        "label": "base geometry evidence explicitly does not certify rendered LOD or pixels",
+        "passed": true
+      },
+      {
+        "label": "AABB intersection outside triangle is not a hit",
+        "passed": true
+      },
+      {
+        "label": "surface front culling is honored",
+        "passed": true
+      },
+      {
+        "label": "second surface indexed-independent material and nonindexed triangles",
+        "passed": true
+      },
+      {
+        "label": "surface override takes precedence over mesh material",
+        "passed": true
+      },
+      {
+        "label": "global material override takes precedence on every surface",
+        "passed": true
+      },
+      {
+        "label": "transparent foreground surface cannot select opaque geometry behind",
+        "passed": true
+      },
+      {
+        "label": "nonuniform positive transform uses actual triangle and normal",
+        "passed": true
+      },
+      {
+        "label": "negative scale remains uncertainty blocker",
+        "passed": true
+      },
+      {
+        "label": "unbounded shader rejected even off base AABB",
+        "passed": true
+      },
+      {
+        "label": "custom bounds cannot masquerade as exact static geometry",
+        "passed": true
+      },
+      {
+        "label": "skinned meshes rejected before array reads",
+        "passed": true
+      },
+      {
+        "label": "blend shape resources rejected before array reads",
+        "passed": true
+      },
+      {
+        "label": "surface budget enforced before array reads",
+        "passed": true
+      },
+      {
+        "label": "vertex budget enforced before array reads",
+        "passed": true
+      },
+      {
+        "label": "index triangle budget enforced before array reads",
+        "passed": true
+      },
+      {
+        "label": "coincident independent native instances remain ambiguous",
+        "passed": true
+      },
+      {
+        "label": "unknown foreground cannot select second instance behind",
+        "passed": true
+      },
+      {
+        "label": "bounded unknown behind nearest triangle does not block",
+        "passed": true
+      },
+      {
+        "label": "scripted native resource fixture compiles",
+        "passed": true
+      },
+      {
+        "label": "script-attached mesh never enters virtual array reads",
+        "passed": true
+      },
+      {
+        "label": "dynamic update arrays cannot use stale static bounds",
+        "passed": true
+      },
+      {
+        "label": "unsupported foreground primitive cannot expose object behind",
+        "passed": true
+      },
+      {
+        "label": "bone and weight arrays rejected even without a Skin resource",
+        "passed": true
+      },
+      {
+        "label": "null material does not hide per-instance primitive transparency",
+        "passed": true
+      },
+      {
+        "label": "aggregate budget completes before any surface data read",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "guard": {
+    "pointerLock": 0,
+    "focus": 0
+  },
+  "originalSourceUnchanged": true
+}
