@@ -1,0 +1,5 @@
+{
+  "error": "CreateAppContainerProfile HRESULT 0x80070057; no existing profile reused",
+  "schemaVersion": 1,
+  "state": "failed"
+}

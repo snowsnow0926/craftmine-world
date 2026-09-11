@@ -1,0 +1,784 @@
+{
+  "schemaVersion": 1,
+  "requestId": "gu6-sample-web-1789160797966",
+  "taskId": "gu6-sample-web-1789160797966",
+  "operation": "exportWeb",
+  "sourceBinding": {
+    "worldId": "isolated-external-starter-trial",
+    "buildId": "gu6-sample-web-1789160797966",
+    "sourceRevision": 1,
+    "sourceDigest": "df05e0c3feca67caa6f70887c65840de1e5b5bf36554193ccbc57562191a30be"
+  },
+  "inputHash": "91c4ddb93d2b0cff0733b87bb8aaea7df97ad69098e2a0cb0d32e1aeba56a498",
+  "sourceSnapshotDigest": "df05e0c3feca67caa6f70887c65840de1e5b5bf36554193ccbc57562191a30be",
+  "sourceFiles": [
+    {
+      "path": ".gitattributes",
+      "bytes": 80,
+      "sha256": "21b01a606c9f85f18bb9230245f00ab104df7409cbb2fe9423f6751ca72ba754"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 263,
+      "sha256": "4f3a84c9fa9a38cf9465f52e00ea7d4f567a0c9090449db7f7c3a45de28ac5b3"
+    },
+    {
+      "path": "LICENSE.md",
+      "bytes": 1062,
+      "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3353,
+      "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+    },
+    {
+      "path": "export_presets.cfg",
+      "bytes": 1090,
+      "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+    },
+    {
+      "path": "fonts/license.txt",
+      "bytes": 4391,
+      "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+    },
+    {
+      "path": "fonts/lilita_one_regular.ttf",
+      "bytes": 26828,
+      "sha256": "4444c23631884f411aa7f2fee35061b1756a9927940c62d2a5572acf470b3ffa"
+    },
+    {
+      "path": "fonts/lilita_one_regular.ttf.import",
+      "bytes": 785,
+      "sha256": "8cc96105ae55f8f4564f6027bf2379fa1d5ace01a9d5648e6fa5c4e66ac146dd"
+    },
+    {
+      "path": "icon.png",
+      "bytes": 13472,
+      "sha256": "c662b09b3cb986395e4ae8853c1f1998669386195a55246349c43004bb7875c4"
+    },
+    {
+      "path": "icon.png.import",
+      "bytes": 916,
+      "sha256": "8afe0445cdf4c66c0c0b234eeaa824d4467bbda534cc6636863ccbb54eab148a"
+    },
+    {
+      "path": "models/Textures/colormap.png",
+      "bytes": 10108,
+      "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+    },
+    {
+      "path": "models/Textures/colormap.png.import",
+      "bytes": 942,
+      "sha256": "1233aa22c02358f4366724273ed5e258e9eb5c467aa69cc68454ca59e5426efb"
+    },
+    {
+      "path": "models/building-garage.glb",
+      "bytes": 19204,
+      "sha256": "7373b558fc9b1e27e60b60ca1ce53000af7e132d7304eeb6d49b47528a3b6806"
+    },
+    {
+      "path": "models/building-garage.glb.import",
+      "bytes": 1074,
+      "sha256": "cf253144adc070f1cf669152bf33b7effa785beabcd69b296f93a3214686614b"
+    },
+    {
+      "path": "models/building-small-a.glb",
+      "bytes": 39660,
+      "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+    },
+    {
+      "path": "models/building-small-a.glb.import",
+      "bytes": 1077,
+      "sha256": "e23b2b93ab8eb30bdab57b45707d7f745955ab818222c19d36e116652df18615"
+    },
+    {
+      "path": "models/building-small-b.glb",
+      "bytes": 49764,
+      "sha256": "0bc8459045975158524753d6b648ff77e5f91fe8c033bc4886930b6d55543a2b"
+    },
+    {
+      "path": "models/building-small-b.glb.import",
+      "bytes": 1077,
+      "sha256": "7dd34ae58c03f04b430df8d4c84150c46c883669d8f08323f78bfbf663e526c6"
+    },
+    {
+      "path": "models/building-small-c.glb",
+      "bytes": 70088,
+      "sha256": "3ea0f46fbed4e0acba7fda365cd968b3f23a6e02b9fee79dd54c99c42ffadf2f"
+    },
+    {
+      "path": "models/building-small-c.glb.import",
+      "bytes": 1076,
+      "sha256": "45afbdc970abfc1daf89cd587ea4ebfdf676d241705a6ba656e9e06130e8ff93"
+    },
+    {
+      "path": "models/building-small-d.glb",
+      "bytes": 39348,
+      "sha256": "0ab476fbd7956cea52e590a8e68e351ce2f6fc04df158aa3f5a76b7744bf37a0"
+    },
+    {
+      "path": "models/building-small-d.glb.import",
+      "bytes": 1076,
+      "sha256": "aa24813b9a64af2011d78c417de092571a29e898ab149ba121972fe8bf270080"
+    },
+    {
+      "path": "models/grass-trees-tall.glb",
+      "bytes": 47016,
+      "sha256": "d23e3b722453236bf6f4f8922b7bf64f81a7f3f804848a89c4b100ccbf13abef"
+    },
+    {
+      "path": "models/grass-trees-tall.glb.import",
+      "bytes": 1077,
+      "sha256": "ff963f2fbe791057e02359dfadfbe6045ef5e99753e709a2e89f49525b493269"
+    },
+    {
+      "path": "models/grass-trees.glb",
+      "bytes": 38160,
+      "sha256": "cb06d03cc1c64ca7e7692c0aef3628d8e7cd4afee69093025f9ddd668653a4ce"
+    },
+    {
+      "path": "models/grass-trees.glb.import",
+      "bytes": 1062,
+      "sha256": "7fcbf2dd7b152e4bed6b59ad2fa7c8f3ad48ca00d80353a5356063793bcc25e9"
+    },
+    {
+      "path": "models/grass.glb",
+      "bytes": 4604,
+      "sha256": "3e3ec91132ad8519967aa2e4c0bedbab2aeed39b5714d66068bb75648ae73a52"
+    },
+    {
+      "path": "models/grass.glb.import",
+      "bytes": 1044,
+      "sha256": "2ee34a2a54a4c1e558c2f511202b6cc43e4522e6d5dcd25152a0f6f42fd3bb56"
+    },
+    {
+      "path": "models/pavement-fountain.glb",
+      "bytes": 14076,
+      "sha256": "ea2996089e90a79ba13d764106d374486bb8137666cf1cdbaebd1927ef365185"
+    },
+    {
+      "path": "models/pavement-fountain.glb.import",
+      "bytes": 1079,
+      "sha256": "c2376154b6d047388452ca2c9bac207a7b224bfb21015e944172560ac948ad8e"
+    },
+    {
+      "path": "models/pavement.glb",
+      "bytes": 3620,
+      "sha256": "60152776325d436761a13eb0c2ec9368b393bc82cf754b63cab810d79639ade9"
+    },
+    {
+      "path": "models/pavement.glb.import",
+      "bytes": 1053,
+      "sha256": "e1f16a207070be18a0c839f56585807847642d3428594efabf3cbe6a6e488fe2"
+    },
+    {
+      "path": "models/road-corner.glb",
+      "bytes": 11096,
+      "sha256": "85aec60d66c5084bb658274a1468139a5def1e9e9575c01286ed6c2069916789"
+    },
+    {
+      "path": "models/road-corner.glb.import",
+      "bytes": 1062,
+      "sha256": "888747eed9c9dd4fa8a774016accb251e429174c915dd3539a34bc2a8382c30d"
+    },
+    {
+      "path": "models/road-intersection.glb",
+      "bytes": 13140,
+      "sha256": "0212ffe9945b933535503372855c54dee20d54ddfc07e1c72963e67558a14183"
+    },
+    {
+      "path": "models/road-intersection.glb.import",
+      "bytes": 1079,
+      "sha256": "d5c0a0155d36bfe215a88fcd29ef931b957e41556fb0cccb23ebaf7bfd7f8c69"
+    },
+    {
+      "path": "models/road-split.glb",
+      "bytes": 9400,
+      "sha256": "31bf582953db8315edfade4ba49d81145a78bda9757b6442dc417e14cc84b5ff"
+    },
+    {
+      "path": "models/road-split.glb.import",
+      "bytes": 1058,
+      "sha256": "9f37a3f9952ab0595c00e220531ae0ac2da65f1644e0c20133f3ab41a4ed72e3"
+    },
+    {
+      "path": "models/road-straight-lightposts.glb",
+      "bytes": 18216,
+      "sha256": "fc5340621fefdd43ab0bbf4bdaa41de9822dc545ce787fbfd92b75ce85d51e62"
+    },
+    {
+      "path": "models/road-straight-lightposts.glb.import",
+      "bytes": 1099,
+      "sha256": "05287fb368ffb9d5728b87ec3aa0a98e565c678d1a3de37fdedf8394e69e7fba"
+    },
+    {
+      "path": "models/road-straight.glb",
+      "bytes": 6148,
+      "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+    },
+    {
+      "path": "models/road-straight.glb.import",
+      "bytes": 1068,
+      "sha256": "fd8d336a06f80c3761e68236fdc4f3bb0f91585528b73eb469665991e0e1f5e3"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 6792,
+      "sha256": "9e8218e8983ac65237ac6c4e85c2f49d3c69782ac18ce01433771df7f23c1ae4"
+    },
+    {
+      "path": "sample map/map.res",
+      "bytes": 14103,
+      "sha256": "0c0a123ca38a8aa818829a17067784055c9ca29f9128164ccfc24322c531395c"
+    },
+    {
+      "path": "scenes/mai3F0A.tmp",
+      "bytes": 1153,
+      "sha256": "4b2db3ded0b02f7e06568691aa984a97c337e703000fedddef33092486df72e9"
+    },
+    {
+      "path": "scenes/mai591B.tmp",
+      "bytes": 1736,
+      "sha256": "f5e0a4d80a9f21016e48f1aa0959ede68200a4578436e12c78999e3457a44e63"
+    },
+    {
+      "path": "scenes/mai5A33.tmp",
+      "bytes": 1153,
+      "sha256": "4b2db3ded0b02f7e06568691aa984a97c337e703000fedddef33092486df72e9"
+    },
+    {
+      "path": "scenes/maiC9F9.tmp",
+      "bytes": 2549,
+      "sha256": "df3f9bc11b183e309dea2435d8e87267ee881f9d93d19c4821398361f900eb4b"
+    },
+    {
+      "path": "scenes/main-environment.tres",
+      "bytes": 868,
+      "sha256": "b7e2bbd9c3c03ad31d52d5fea8fa3fba1d6ac63b941a64edaa3d5c4151e13ba2"
+    },
+    {
+      "path": "scenes/main.tscn",
+      "bytes": 5922,
+      "sha256": "c081c9c6bb3f47a305ea8f906ebcd84fb921683be35cbe18c49fb5ed645ac9f9"
+    },
+    {
+      "path": "screenshots/.gdignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "screenshots/screenshot.png",
+      "bytes": 115410,
+      "sha256": "bd95124ffee827ff7f0ea9f86e8a7e92db6920abc8827a4d76d242ad9cd30c08"
+    },
+    {
+      "path": "scripts/audio.gd",
+      "bytes": 1000,
+      "sha256": "4fbad816a2efa600a1079ee27b0b05925ef4bb87abf209c948310859438b1952"
+    },
+    {
+      "path": "scripts/audio.gd.uid",
+      "bytes": 20,
+      "sha256": "dd6230e78ab4acd49edab818de3a01ca227c4397afac6ba0ed65f2116e14a1f1"
+    },
+    {
+      "path": "scripts/builder.gd",
+      "bytes": 5454,
+      "sha256": "ece92ce7036704bc0a8c0551cabc14b571cb6e5de9db0d5e2a97764c66043a4b"
+    },
+    {
+      "path": "scripts/builder.gd.uid",
+      "bytes": 19,
+      "sha256": "65ccd3518d13e4508f60cf5d6dd8a289bf4ec6ed501467042385b31982f1f70c"
+    },
+    {
+      "path": "scripts/data_map.gd",
+      "bytes": 110,
+      "sha256": "cbbcad58bf45d93e7eff5e40cf61e1f8c874d8eff7287712ed9310cc7bb40d92"
+    },
+    {
+      "path": "scripts/data_map.gd.uid",
+      "bytes": 20,
+      "sha256": "3fbe47eae0ae229b936b0bacb10972940c753d8820676eb712d471b1217e13f6"
+    },
+    {
+      "path": "scripts/data_structure.gd",
+      "bytes": 127,
+      "sha256": "ed771079e16f0b23ecd952eec66663c5be695295fe428cad727e144bc5586017"
+    },
+    {
+      "path": "scripts/data_structure.gd.uid",
+      "bytes": 19,
+      "sha256": "09055711922cae1337097fa0272d2b756f8e72aa4f8a0b9ea19de55bd9934554"
+    },
+    {
+      "path": "scripts/structure.gd",
+      "bytes": 211,
+      "sha256": "3b3204ce069926172775244a5c430355c211fcace6b2b8f084316aca4ca5c595"
+    },
+    {
+      "path": "scripts/structure.gd.uid",
+      "bytes": 20,
+      "sha256": "71dd7b90b6bf74da2c748ffae5c3e4a6fa4942eb4569d3fc2758574ec468f920"
+    },
+    {
+      "path": "scripts/view.gd",
+      "bytes": 1425,
+      "sha256": "c92f26e648947fefa0aa3fb7b8433b14997c63667c27566e7b744566c0f9937f"
+    },
+    {
+      "path": "scripts/view.gd.uid",
+      "bytes": 20,
+      "sha256": "0f1931628c39f05c3faafccd9d4ec5a8e13062794788df63cc206c3eb63a4c8e"
+    },
+    {
+      "path": "sounds/ambience.ogg",
+      "bytes": 1197592,
+      "sha256": "35697cbfde073f92df06e828fe2c8676a1f98c07404193e6477ca9202213f80a"
+    },
+    {
+      "path": "sounds/ambience.ogg.import",
+      "bytes": 386,
+      "sha256": "5047f90889142419ca8eaf9b18e50e231cb33043e7638253ed8d545887f09c81"
+    },
+    {
+      "path": "sounds/placement-a.ogg",
+      "bytes": 7021,
+      "sha256": "55e3bad35a443c0a7cc3e0079ae2d2aaae89277495e5b7f8a9c29ca312c0585f"
+    },
+    {
+      "path": "sounds/placement-a.ogg.import",
+      "bytes": 396,
+      "sha256": "c7a59beec303758e9c5f7d9908528cebffb8da8f69d79e3249a43a977f7b1240"
+    },
+    {
+      "path": "sounds/placement-b.ogg",
+      "bytes": 7030,
+      "sha256": "5313810e1bb9705634da0a4f07524a7abbe65015cbad8dc630d32947cf3ecc87"
+    },
+    {
+      "path": "sounds/placement-b.ogg.import",
+      "bytes": 396,
+      "sha256": "d7524e385da650013053228ffc6d70a06c2a95ab5eb935f87a5f36561f5a3624"
+    },
+    {
+      "path": "sounds/placement-c.ogg",
+      "bytes": 6773,
+      "sha256": "afff7bb2fdb634c91acb90b6848e752de7eccaaecb3e5dfc5720980ac8608c52"
+    },
+    {
+      "path": "sounds/placement-c.ogg.import",
+      "bytes": 396,
+      "sha256": "44c2b70e1c74e4a82bd9a43a745f68916fef9e7adafa8754c4ab4443d80b3982"
+    },
+    {
+      "path": "sounds/placement-d.ogg",
+      "bytes": 6762,
+      "sha256": "1d51fb31658bed131ebc3df59e94f8ae6dfc4336a493f60ff052c9bf80de1302"
+    },
+    {
+      "path": "sounds/placement-d.ogg.import",
+      "bytes": 396,
+      "sha256": "409e4021fe292dfffe0e32907b798d94339a924ba0aca7a076e96ad220d10363"
+    },
+    {
+      "path": "sounds/removal-a.ogg",
+      "bytes": 11203,
+      "sha256": "76301d3fccd52dca0344c63e4b56995eead7e6bc88b430d31497d58c82350f64"
+    },
+    {
+      "path": "sounds/removal-a.ogg.import",
+      "bytes": 389,
+      "sha256": "81aee806ffb530ee86a1c83af09377becbf670f58672dfa75c1099322828d874"
+    },
+    {
+      "path": "sounds/removal-b.ogg",
+      "bytes": 10397,
+      "sha256": "3b83d3870d7c23442b59ec1afd2d19eab15fed8539665b00d8448cf9cd85b68b"
+    },
+    {
+      "path": "sounds/removal-b.ogg.import",
+      "bytes": 390,
+      "sha256": "13558880dd64fb049b58aa482ab97032a20f496fc7a4ace8bc41cf2e54264bee"
+    },
+    {
+      "path": "sounds/removal-c.ogg",
+      "bytes": 10543,
+      "sha256": "b6f10f86781463c05f3fbe5de29fddbc3e941ebdc76cf3e46e1457d23ae366d9"
+    },
+    {
+      "path": "sounds/removal-c.ogg.import",
+      "bytes": 390,
+      "sha256": "4ff0dfae5e493eac55cdafefed48de0aa5b80021832b2a55ac965e77d5f4b0c8"
+    },
+    {
+      "path": "sounds/removal-d.ogg",
+      "bytes": 10781,
+      "sha256": "c6bfc126f509926ff1a031c9e573e05595c546976221ccf06e80a1b1d5951f86"
+    },
+    {
+      "path": "sounds/removal-d.ogg.import",
+      "bytes": 390,
+      "sha256": "1082f6bf349f4afceb158ef8c1187168b34e07c2fe259dd6b2e7ac0de8ddf9b5"
+    },
+    {
+      "path": "sounds/rotate.ogg",
+      "bytes": 4350,
+      "sha256": "a155b5c3300477e5a515d795328e8737cd09b2acf887ecd460c32f292cd49f95"
+    },
+    {
+      "path": "sounds/rotate.ogg.import",
+      "bytes": 381,
+      "sha256": "ef36f04d64e9f8c0451232e8fe27795f8c9491cb716ea3e4c0a0b966d5d63b39"
+    },
+    {
+      "path": "sounds/toggle.ogg",
+      "bytes": 4180,
+      "sha256": "5acba303b9adfb15fc3445801ad2501dd2b7ba57917ec797184b98e4b1c6797f"
+    },
+    {
+      "path": "sounds/toggle.ogg.import",
+      "bytes": 381,
+      "sha256": "144dad2c73d36ac2a62e5dacc59ef2b9310ed801f6a1dc7ba5b54bd39b060e4d"
+    },
+    {
+      "path": "splash-screen.png",
+      "bytes": 48657,
+      "sha256": "1d2ac9f341b2577245eb039330441b2ddda1269497bf23fa7f659d0f9c745415"
+    },
+    {
+      "path": "splash-screen.png.import",
+      "bytes": 942,
+      "sha256": "0d2e427608040b11fdeee53718417d4147d819efddbaab5cc944e1fa07e4aac3"
+    },
+    {
+      "path": "sprites/coin.png",
+      "bytes": 5062,
+      "sha256": "c1e6c0689e5c67010dd7f24125b1c13b01472b65bda97adbc53c7ae4e0c95e29"
+    },
+    {
+      "path": "sprites/coin.png.import",
+      "bytes": 924,
+      "sha256": "a203f895f1468cd70f90425a3887bdb645aee77d387865962681ebb713b4a081"
+    },
+    {
+      "path": "sprites/instructions.png",
+      "bytes": 30046,
+      "sha256": "722c14f4aebf3ddbaa1d60a17bfe0dddb66c3ad5b7932a81609ce327f5a8ee95"
+    },
+    {
+      "path": "sprites/instructions.png.import",
+      "bytes": 948,
+      "sha256": "772df0fade6b529779b0b8c550c81c5a4b389dfc345df75b47ba745c2e7d6aff"
+    },
+    {
+      "path": "sprites/selector.png",
+      "bytes": 791,
+      "sha256": "2c2caa8c9cc6ed47d9cc47d37f8a9de98689343f63f432a365517293601d2fc1"
+    },
+    {
+      "path": "sprites/selector.png.import",
+      "bytes": 984,
+      "sha256": "68193b858aa5da7cbbbc2eff4c581cca7ec26c03e26ebfa6da121c51c68302ec"
+    },
+    {
+      "path": "structures/building-garage.tres",
+      "bytes": 405,
+      "sha256": "1cdee8194995d1c1d43d4c8e37145886996edc4668224386704d3bcd2acb6b68"
+    },
+    {
+      "path": "structures/building-small-a.tres",
+      "bytes": 406,
+      "sha256": "a5ccc31aa10269e0ea7834ba48004b20eece6c93b977582e50bd8c59a02e49a2"
+    },
+    {
+      "path": "structures/building-small-b.tres",
+      "bytes": 406,
+      "sha256": "e8840f4bd88b2ff72f1be73b3274ebb19f176487cdb88dbd8481f0a6d932a659"
+    },
+    {
+      "path": "structures/building-small-c.tres",
+      "bytes": 405,
+      "sha256": "b6a5d88ab63d0dde7375ba92ac9a963d25535d36dfd9d0b620ad11c3dee99bc4"
+    },
+    {
+      "path": "structures/building-small-d.tres",
+      "bytes": 405,
+      "sha256": "46996946b8d119b471e8de155cd2e2c52c9e15798b70543f646176e8336e0cff"
+    },
+    {
+      "path": "structures/grass-trees-tall.tres",
+      "bytes": 405,
+      "sha256": "835e7d277a69370ebf3a85a56053973cc0fe90ea7e02b74eb12d19f1d60f857d"
+    },
+    {
+      "path": "structures/grass-trees.tres",
+      "bytes": 401,
+      "sha256": "2d29ecc4f066bf4171f58b13b5543c73f684223903f04e8f52f79fdb3ae8bd9b"
+    },
+    {
+      "path": "structures/grass.tres",
+      "bytes": 394,
+      "sha256": "75f4608d8ef5b97c95230e72eab8b017c4cb1cf4c73993199c226a2c7207acf2"
+    },
+    {
+      "path": "structures/pavement-fountain.tres",
+      "bytes": 406,
+      "sha256": "9852e4b5b223f68e2b91c664d3ee06b5db6751c0086a8996f0a49affbc8f09b1"
+    },
+    {
+      "path": "structures/pavement.tres",
+      "bytes": 398,
+      "sha256": "7b756bf7574e5cb30d56e3ee2cac3d5cccffb0a1a08232c7bcd340ff78cde19b"
+    },
+    {
+      "path": "structures/road-corner.tres",
+      "bytes": 401,
+      "sha256": "bb4c2c84185c31455c669b5276ababcbca783c8d1ab9dcc21ba8d7de1da6f2d3"
+    },
+    {
+      "path": "structures/road-intersection.tres",
+      "bytes": 406,
+      "sha256": "7969e8d587821372d744a608610bf5e56fac99499c6b6fc3f79da5e647d3f653"
+    },
+    {
+      "path": "structures/road-split.tres",
+      "bytes": 398,
+      "sha256": "c6536362bf6686d25d0ee2633032a191fcd2f17b0e4b7209c03fb744110512ba"
+    },
+    {
+      "path": "structures/road-straight-lightposts.tres",
+      "bytes": 411,
+      "sha256": "16c83564e4a4bf1911e33774822ae273f9e05b0ec08d13f3bf081d2095786043"
+    },
+    {
+      "path": "structures/road-straight.tres",
+      "bytes": 403,
+      "sha256": "ba2720289be42f8244f04717a0ed8e0cfee383a168028c4b7d270c07eb6d2c84"
+    },
+    {
+      "path": "vector/.gdignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "vector/sprites.fla",
+      "bytes": 74795,
+      "sha256": "af4e8ff8d11095ac1c2eb9ee342ab3e7c59063fcd0eedb56f01b4a356ee75a00"
+    }
+  ],
+  "state": "succeeded",
+  "exitCode": 0,
+  "policyVersion": "craftmine.windows.lpac-registry.v1",
+  "processVerification": {
+    "verified": true,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "pid": 31760,
+    "creationTimeFiletime": "134336343984530570",
+    "imagePath": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\gu6-sample-web-1789160797966\\bin\\Godot_v4.7.2-stable_win64.exe",
+    "appContainerSid": "S-1-15-2-619166562-1901991011-496668511-2037779717-1228022621-2489483503-3787658608",
+    "capabilitySids": [
+      "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+    ],
+    "integrityRid": 4096,
+    "isAppContainer": true,
+    "lpacQueryValue": null,
+    "lpacQueryError": 87,
+    "lpacCreationAttribute": true,
+    "jobMembershipVerified": true,
+    "jobLimitFlags": 8456,
+    "activeProcessLimit": 1,
+    "processMemoryBytes": 4294967296,
+    "verifiedBeforeResume": true,
+    "resumePreviousCount": 1
+  },
+  "networkPreflight": {
+    "verified": true,
+    "jobActiveProcesses": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "hostPositiveControls": [
+      "tcp4Echo",
+      "tcp6Echo",
+      "udp4Echo",
+      "udp6Echo"
+    ],
+    "hostReceivedCounts": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "exactTaskExempt": false,
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 61744,
+      "creationTimeFiletime": "134336343983110122",
+      "imagePath": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\gu6-sample-web-1789160797966\\bin\\broker-preflight.exe",
+      "appContainerSid": "S-1-15-2-619166562-1901991011-496668511-2037779717-1228022621-2489483503-3787658608",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "observation": {
+      "winsockStartup": 0,
+      "checks": [
+        {
+          "name": "tcp4",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "tcp6",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "tcpExternal",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udp4",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udp6",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udpExternal",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        }
+      ]
+    }
+  },
+  "resourceEnforcement": {
+    "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+    "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+    "hardFilesystemQuota": false,
+    "workBytesLimit": 1073741824,
+    "logBytesLimit": 4194304,
+    "sampleIntervalMs": 50,
+    "samples": 53,
+    "maxObservedWorkBytes": 79228466,
+    "maxObservedLogBytes": 29668,
+    "enforced": false,
+    "reason": null
+  },
+  "artifacts": [
+    {
+      "path": "index.apple-touch-icon.png",
+      "bytes": 13876,
+      "sha256": "5343f7286a49c7a0125e3e6ff28c6405280a92a4b719fa0e05dc43c36617dd58"
+    },
+    {
+      "path": "index.audio.position.worklet.js",
+      "bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "path": "index.audio.worklet.js",
+      "bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "path": "index.html",
+      "bytes": 5456,
+      "sha256": "1ad4027ac2c3981c6efb4c98a7d878aaf152f39ed0ced33e017ad2d711527fee"
+    },
+    {
+      "path": "index.icon.png",
+      "bytes": 13577,
+      "sha256": "5da47fcb67d63b0752bf9ecf1c34614f9b6c0efb153d6715dd26932ea37ecd17"
+    },
+    {
+      "path": "index.js",
+      "bytes": 279815,
+      "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+    },
+    {
+      "path": "index.pck",
+      "bytes": 1650936,
+      "sha256": "73569162571bfcd2a845b2d9bee45dee3e300ba2a873259d36ab4640d5d5d43e"
+    },
+    {
+      "path": "index.png",
+      "bytes": 48670,
+      "sha256": "06fe7f6dd03cea63d3a58237825f36374fcdd06e008ed3ff8f5e6098e4abe7fb"
+    },
+    {
+      "path": "index.wasm",
+      "bytes": 39514754,
+      "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+    }
+  ],
+  "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\gu6-sample-web-1789160797966\\artifacts",
+  "logsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\gu6-sample-web-1789160797966\\logs",
+  "logs": [
+    {
+      "path": "preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "path": "task.log",
+      "bytes": 29668,
+      "sha256": "32ae96af057ea4fe3f8aea3474e7ff99c32db63eedbefa9628e515791165f067"
+    }
+  ],
+  "cleanup": {
+    "verified": true,
+    "profileHresult": 0,
+    "workRemoved": true,
+    "error": null
+  },
+  "recoveryJournal": {
+    "path": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\.recovery-journal\\gu6-sample-web-1789160797966.json",
+    "policyVersion": "craftmine.windows.recovery-journal.v1",
+    "cleared": true,
+    "error": null
+  },
+  "error": null,
+  "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232",
+  "binRetirement": {
+    "format": "craftmine.godot-bin-retirement/1",
+    "taskId": "gu6-sample-web-1789160797966",
+    "identityNonce": "d6a2867b1ed0aa9e36ab40c3234925a3530f4fc7c7d5afce64d15d4d0d7e630f",
+    "engineJobActiveProcesses": 0,
+    "nativeJobActiveProcesses": 0,
+    "files": [
+      {
+        "path": "Godot_v4.7.2-stable_win64.exe",
+        "bytes": 180858888,
+        "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+      },
+      {
+        "path": "broker-preflight.exe",
+        "bytes": 812032,
+        "sha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+      }
+    ]
+  }
+}
