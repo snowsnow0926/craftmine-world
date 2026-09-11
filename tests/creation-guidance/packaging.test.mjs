@@ -50,8 +50,14 @@ test('production plugin build includes exact guidance resources and serves a pin
     assert.equal(creationCatalog.skills[0].id,selectedSkill.id);
     const creationBody=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:selectedSkill.sha256,
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
-    assert.equal(creationBody.text,selectedSkill.text);
-    assert.equal(creationBody.nextOffset,null);
+    let creationText=creationBody.text,nextOffset=creationBody.nextOffset;
+    while(nextOffset!==null){
+      const next=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:selectedSkill.sha256,
+        revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,offset:nextOffset,limit:8000},context);
+      assert.ok(next.nextOffset===null||next.nextOffset>nextOffset);
+      creationText+=next.text;nextOffset=next.nextOffset;
+    }
+    assert.equal(creationText,selectedSkill.text);
     const example=selectedSkill.references.find(ref=>ref.path==='examples/double-press-rule.gd');
     const exampleBody=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:example.sha256,path:example.path,
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
