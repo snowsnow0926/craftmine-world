@@ -6,6 +6,8 @@ import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {creationPackagedRoot, resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
+import {adoptionEnvironment,inspectAdoptionSource} from './helpers/promo-adoption-contract.mjs';
+import {assertProofs} from './helpers/promo-checkpoint-contract.mjs';
 
 const adoptionFile = process.argv[2];
 assert.ok(adoptionFile && path.isAbsolute(adoptionFile), 'Pass an absolute successful adoption report');
@@ -13,6 +15,7 @@ const adoption = JSON.parse(fs.readFileSync(adoptionFile));
 assert.equal(adoption.format, 'craftmine.promo-adoption/1');
 assert.equal(adoption.ok, true);
 const original = JSON.parse(fs.readFileSync(adoption.originalReport));
+const sourceProof=inspectAdoptionSource(adoption.originalReport);
 const out = path.dirname(adoption.originalReport), profile = path.join(out, 'profile');
 const marker = JSON.parse(fs.readFileSync(path.join(profile, 'headless-profile.json')));
 const packagedRoot = creationPackagedRoot();
@@ -20,7 +23,7 @@ assert.ok(packagedRoot, 'Explicit --packaged-root is required for diagnostic pro
 const client = resolveCreationNativeLaunch({root: process.cwd(), packagedRoot, requiredGuards: ['godotExplore']});
 const budgetFile = path.join(profile, 'creation-evaluation-budget.json');
 const budgetBytes = fs.readFileSync(budgetFile, 'utf8');
-assert.equal(original.budget.remaining, 0, 'Only an exhausted, isolated pilot profile is accepted');
+assertProofs(sourceProof.proofs);
 const planFlag = process.argv.indexOf('--plan');
 const steps = planFlag < 0
   ? [0, Math.PI / 2, Math.PI, -Math.PI / 2].map(yaw => ({op: 'look', args: {yaw, pitch: -0.35}, capture: true}))
@@ -38,8 +41,7 @@ let ready = false, ended = false, exitReport;
 const pending = new Map();
 const child = spawn(client.executable, client.args, {
   cwd: client.cwd, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
-  env: {...client.environment({out, profile, token: marker.token}), CRAFTMINE_CREATION_EVAL: '1',
-    CRAFTMINE_EVAL_REQUEST_LIMIT: String(original.budget.limit)},
+  env: adoptionEnvironment(client,{out,profile,token:marker.token}),
 });
 for (const stream of ['stdout', 'stderr']) {
   child[stream].on('data', data => fs.appendFileSync(path.join(directory, stream + '.log'), data));
@@ -118,6 +120,7 @@ try {
 } finally {
   if (!ended) try {await stop();} catch (error) {report.shutdownError = String(error); report.ok = false; process.exitCode = 1;}
   report.budgetUnchanged = fs.readFileSync(budgetFile, 'utf8') === budgetBytes;
+  try{assertProofs(sourceProof.proofs);}catch(error){report.integrityError=String(error);report.ok=false;process.exitCode=1;}
   for (const call of pending.values()) clearTimeout(call.timer);
   fs.writeFileSync(path.join(directory, 'report.json'), JSON.stringify(report, null, 2));
   console.log('Report: ' + directory);

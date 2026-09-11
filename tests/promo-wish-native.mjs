@@ -5,9 +5,11 @@ import {loadLocalConfig} from '../app/local-config.mjs';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 import {promoPilotProgress} from './helpers/promo-pilot-progress.mjs';
+import {evaluationRequestLimit} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-evaluation-budget.ts';
+const maxRequests=evaluationRequestLimit(process.env.CRAFTMINE_PROMO_REQUEST_LIMIT??'10');
 const group=process.env.CRAFTMINE_PROMO_GROUP??'pet';
 const plan=createPromoWishPlan({suite:'independent',selected:[group],seed:20260912}),wish=plan.stories[0].steps.find(step=>step.kind==='wish');
-if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',wish:{id:wish.id,text:wish.text},modelRequests:0,maxRequests:10,maxMinutes:10}));process.exit(0);}
+if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',wish:{id:wish.id,text:wish.text},modelRequests:0,maxRequests,maxMinutes:10}));process.exit(0);}
 const root=process.cwd(),configPath=process.env.CRAFTMINE_LIVE_CONFIG;
 assert.ok(configPath&&path.isAbsolute(configPath),'An explicit local model configuration is required');
 const config={};loadLocalConfig(configPath,config);const secret=config.CRAFTMINE_DEEPSEEK_API_KEY??config.DEEPSEEK_API_KEY??config.CRAFTMINE_EVAL_KEY;
@@ -16,9 +18,9 @@ const model=process.env.CRAFTMINE_EVAL_MODEL??'deepseek-flash',out=createComplet
 fs.mkdirSync(profile);fs.mkdirSync(legacySource);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
 const client=resolveCreationNativeLaunch({root,requiredGuards:['EVALUATION_WISH_BUSY_OR_FIXED_SUITE','CRAFTMINE_EVAL_REQUEST_LIMIT']});
 const sanitize=value=>typeof value==='string'?value.split(secret).join('[REDACTED]'):Array.isArray(value)?value.map(sanitize):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).map(([k,v])=>[k,/secret|apiKey|authorization/i.test(k)?'[REDACTED]':sanitize(v)])):value;
-const report={format:'craftmine.promo-pilot/1',startedAt:new Date().toISOString(),group,wish:{id:wish.id,text:wish.text},planSha256:plan.planSha256,model,maxRequests:10,packageIdentity:client.identity,status:'PREPARING',functional:'UNVERIFIED',visual:'UNVERIFIED',continuity:'UNVERIFIED',snapshots:[]};
+const report={format:'craftmine.promo-pilot/1',startedAt:new Date().toISOString(),group,wish:{id:wish.id,text:wish.text},planSha256:plan.planSha256,model,maxRequests,packageIdentity:client.identity,status:'PREPARING',functional:'UNVERIFIED',visual:'UNVERIFIED',continuity:'UNVERIFIED',snapshots:[]};
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(sanitize(report),null,2));save();
-const environment={...client.environment({out,profile,token}),CRAFTMINE_CREATION_EVAL:'1',CRAFTMINE_EVAL_MODEL:model,CRAFTMINE_EVAL_THINKING:'high',CRAFTMINE_EVAL_KEY:secret,CRAFTMINE_EVAL_REQUEST_LIMIT:'10'};
+const environment={...client.environment({out,profile,token}),CRAFTMINE_CREATION_EVAL:'1',CRAFTMINE_EVAL_MODEL:model,CRAFTMINE_EVAL_THINKING:'high',CRAFTMINE_EVAL_KEY:secret,CRAFTMINE_EVAL_REQUEST_LIMIT:String(maxRequests)};
 const child=spawn(client.executable,client.args,{cwd:client.cwd,env:environment,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
 let ended=false,ready=false,exitReport=null;const pending=new Map();
 for(const stream of ['stdout','stderr'])child[stream].on('data',data=>fs.appendFileSync(path.join(out,stream+'.log'),sanitize(data.toString())));
@@ -51,6 +53,8 @@ try{
   report.journal=await evaluation('wish-state');report.isolation=await native('status');
   assert.equal(report.isolation.violations.length,0);assert.equal(report.isolation.pageErrors.length,0);
   assert.ok(report.isolation.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
+  // This is the actual formal world, not an unadopted candidate's promised result.
+  try{const frame=await native('godotCaptureView');fs.writeFileSync(path.join(out,'formal-world.png'),Buffer.from(frame.pngBase64,'base64'));report.formalCapture={file:'formal-world.png',width:frame.width,height:frame.height,role:'formal-world-at-task-end'};}catch(error){report.captureError=String(error.message);}
 }catch(error){report.status='RUN_FAILED';report.error=String(error.stack??error);process.exitCode=1;console.error(error.message);}
 finally{
   if(!ended){try{await evaluation('abort');}catch{}try{await native('quit');}catch{}await Promise.race([exited,delay(15000)]);if(!ended){report.forcedStop=true;child.kill();}}
