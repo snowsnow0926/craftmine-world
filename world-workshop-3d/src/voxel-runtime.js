@@ -60,13 +60,13 @@ class VoxelRuntime{
  }
  listen(el,type,fn,opts){el.addEventListener(type,fn,opts);this.listeners.push(()=>el.removeEventListener(type,fn,opts));}
  bindInput(){
-  this.listen(document,'pointerlockchange',()=>{this.locked=document.pointerLockElement===this.canvas;this.input=this.locked||this.dragging;this.keys.clear();this.cb.onControl?.(this.locked?'locked':'idle');});
-  this.listen(document,'pointerlockerror',()=>{this.input=true;this.cb.onControl?.('drag');});
+  this.listen(document,'pointerlockchange',()=>{this.locked=document.pointerLockElement===this.canvas;if(this.locked&&(!this.active||!this.input)){this.pauseInput();return;}this.input=this.locked;this.keys.clear();this.syncCursor();this.cb.onControl?.(this.locked?'locked':'idle');});
+  this.listen(document,'pointerlockerror',()=>{if(this.active&&this.input)this.cb.onControl?.('drag');});
   this.listen(document,'mousemove',e=>{if(this.active&&(this.locked||this.dragging)&&this.input){this.p.yaw-=e.movementX*.0022;this.p.pitch=clamp(this.p.pitch-e.movementY*.0022,-1.52,1.52);}});
   this.listen(this.canvas,'pointerdown',e=>{
    if(!this.active)return;if(e.pointerType==='touch'){this.input=true;this.dragging=true;this.touchLook={id:e.pointerId,x:e.clientX,y:e.clientY};this.canvas.setPointerCapture(e.pointerId);return;}
    if(this.locked){if(e.button===0)this.breakBlock();if(e.button===2)this.placeBlock();}
-   else {this.dragging=true;this.input=true;this.canvas.focus({preventScroll:true});this.canvas.setPointerCapture(e.pointerId);this.cb.onControl?.('drag');}
+   else {this.enter();this.dragging=true;this.canvas.setPointerCapture(e.pointerId);}
   });
   this.listen(this.canvas,'pointermove',e=>{if(this.touchLook?.id===e.pointerId){this.p.yaw-=(e.clientX-this.touchLook.x)*.006;this.p.pitch=clamp(this.p.pitch-(e.clientY-this.touchLook.y)*.006,-1.52,1.52);this.touchLook.x=e.clientX;this.touchLook.y=e.clientY;}});
   const up=()=>{this.dragging=false;this.touchLook=null;};this.listen(this.canvas,'pointerup',up);this.listen(this.canvas,'pointercancel',up);this.listen(this.canvas,'lostpointercapture',up);
@@ -81,11 +81,21 @@ class VoxelRuntime{
    this.keys.add(e.code);
    if(!e.repeat){if(e.code==='KeyE')this.interact();if(e.code==='KeyQ')this.placeBlock();if(e.code==='KeyR')this.breakBlock();if(e.code==='KeyF'){this.fly=!this.fly;this.vy=0;this.cb.onNotice?.(this.fly?'创造飞行已开启 · 空格上升 / Shift 下降':'已切回步行');this.changed();}if(e.code==='KeyZ')this.undoBlock();if(/^Digit[1-6]$/.test(e.code)){this.slot=Number(e.code.slice(-1))-1;this.cb.onSlot?.(this.slot);}}
   });
-  this.listen(document,'keyup',e=>this.keys.delete(e.code));this.listen(window,'blur',()=>{this.keys.clear();this.touchMove={x:0,y:0};this.dragging=false;});this.listen(document,'visibilitychange',()=>this.keys.clear());
-  this.listen(this.canvas,'webglcontextlost',e=>{e.preventDefault();this.active=false;this.cb.onError?.('图形上下文已丢失。进度保存在本地；请刷新页面重新载入。');});
+  this.listen(document,'keyup',e=>this.keys.delete(e.code));this.listen(window,'blur',()=>this.pauseInput());this.listen(document,'visibilitychange',()=>{if(document.hidden)this.pauseInput();});
+  this.listen(this.canvas,'webglcontextlost',e=>{e.preventDefault();this.setActive(false);this.cb.onError?.('图形上下文已丢失。进度保存在本地；请刷新页面重新载入。');});
  }
- enter(){this.input=true;this.canvas.focus({preventScroll:true});if(matchMedia('(pointer:coarse)').matches){this.cb.onControl?.('touch');return;}try{const p=this.canvas.requestPointerLock?.();p?.catch?.(()=>{this.input=true;this.cb.onControl?.('drag');});if(!this.canvas.requestPointerLock)this.cb.onControl?.('drag');}catch(e){this.cb.onControl?.('drag');}}
- pauseInput(){this.input=false;this.dragging=false;this.touchMove={x:0,y:0};this.keys.clear();if(document.pointerLockElement===this.canvas)document.exitPointerLock();}
+ // Scope cursor visibility to the game canvas, so menus and host overlays keep theirs.
+ syncCursor(){this.canvas.style.cursor=this.active&&this.input?'none':'';}
+ enter(){
+  if(!this.active)return;
+  this.input=true;this.syncCursor();this.canvas.focus({preventScroll:true});
+  if(matchMedia('(pointer:coarse)').matches){this.cb.onControl?.('touch');return;}
+  // Called from the player's entry button or canvas gesture only.
+  // A delayed rejection must never reactivate input after opening a menu.
+  const fallback=()=>{if(this.active&&this.input)this.cb.onControl?.('drag');};
+  try{const p=this.canvas.requestPointerLock?.();p?.catch?.(fallback);if(!this.canvas.requestPointerLock)fallback();}catch(e){fallback();}
+ }
+ pauseInput(){this.input=false;this.dragging=false;this.touchMove={x:0,y:0};this.keys.clear();this.syncCursor();if(document.pointerLockElement===this.canvas)document.exitPointerLock();}
  setActive(v){this.active=v;if(!v)this.pauseInput();else this.resize();}
  resize(){const r=this.canvas.parentElement.getBoundingClientRect();if(!r.width||!r.height)return;const dpr=this.software?1:Math.min(devicePixelRatio||1,1.6);this.canvas.width=Math.round(r.width*dpr);this.canvas.height=Math.round(r.height*dpr);this.aspect=r.width/r.height;this.gl.viewport(0,0,this.canvas.width,this.canvas.height);}
  inside(x,y,z){return x>=-HALF&&x<HALF&&z>=-HALF&&z<HALF&&y>=0&&y<HEIGHT;}
