@@ -12,6 +12,7 @@ import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance
 import { createGodotExploration } from "./craftmine-godot-exploration";
 import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
 import {createHeadlessPlayer,unwrapPlayerDesktopResult} from './craftmine-headless-player';
+import {createHeadlessObserverUpgrade} from './craftmine-headless-observer-upgrade';
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
@@ -109,6 +110,11 @@ export function installHeadlessControl(access: {
     panel:(channel,payload)=>desktopCall(`piDesktop.pluginPanelInvoke('craftmine.world',${JSON.stringify(channel)},${JSON.stringify(payload)})`),
     observe:access.godotGameplay.observe,active:access.playerActive,latest:access.playerLatest,
   }):null;
+  const observerUpgrade=access.godotGameplay&&access.playerActive?createHeadlessObserverUpgrade({
+    invoke:async(channel,...args)=>unwrapPlayerDesktopResult(await desktopCall(`piDesktop.invoke(piDesktop.channels.invoke[${JSON.stringify(channel)}],...${JSON.stringify(args)})`)),
+    panel:(channel,payload)=>desktopCall(`piDesktop.pluginPanelInvoke('craftmine.world',${JSON.stringify(channel)},${JSON.stringify(payload)})`),
+    observe:access.godotGameplay.observe,active:access.playerActive,
+  }):null;
   const evaluateWorld = (script: string) => {
     const view = access.world();
     if (!view || view.isDestroyed()) throw new Error("World view is not ready");
@@ -119,6 +125,9 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case 'playerObserverHint':case 'playerObserverUpgrade':case 'playerObserverStatus':
+          if(!hasHeadlessController()||!observerUpgrade||process.env.CRAFTMINE_CREATION_EVAL==='1'||Object.keys(request).sort().join(',')!=='id,method,payload,type')throw Error('HEADLESS_OBSERVER_NORMAL_SESSION_REQUIRED');
+          return observerUpgrade(request.method,request.payload);
         case 'headlessPermissionPending':case 'headlessPermissionResolve':{
           const script=validateHeadlessPermissionEnvelope(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
           return desktopCall(script);
