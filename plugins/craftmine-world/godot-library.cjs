@@ -38,7 +38,7 @@ function validateAssetRef(ref){
 
 function validateSourceAssetRef(ref){
   const fixed=validateAssetRef(ref);
-  if(Buffer.byteLength(fixed.assetId,'utf8')>120||/[\x00-\x1f\x7f*?]/.test(fixed.assetId)||fixed.assetId.toLowerCase()==='latest')fail('INVALID_SOURCE_ASSET_ID');
+  if(Buffer.byteLength(fixed.assetId,'utf8')>120||/[\p{Cc}*?]/u.test(fixed.assetId)||fixed.assetId.toLowerCase()==='latest')fail('INVALID_SOURCE_ASSET_ID');
   if(fixed.version>1000000)fail('INVALID_SOURCE_ASSET_VERSION');
   return fixed;
 }

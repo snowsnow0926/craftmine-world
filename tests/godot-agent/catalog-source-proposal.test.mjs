@@ -29,7 +29,7 @@ test('proposal reads exact catalog metadata once and returns no write authority 
   assert.equal(library.proposeInstall({ref}).method,'package.install');assert.equal(calls.length,1);
 });
 test('latest, wildcard, invalid exact versions and oversized IDs fail before reads',async()=>{
-  for(const invalid of [{...ref,assetId:'latest'},{...ref,assetId:'*'},{...ref,assetId:'source-*'},{...ref,version:'latest'},{...ref,version:0},{...ref,version:1000001},{...ref,assetId:'中'.repeat(41)},{...ref,assetId:'x\u0000'},{...ref,contentHash:'B'.repeat(64)},{...ref,extra:true}]){
+  for(const invalid of [{...ref,assetId:'latest'},{...ref,assetId:'*'},{...ref,assetId:'source-*'},{...ref,version:'latest'},{...ref,version:0},{...ref,version:1000001},{...ref,assetId:'中'.repeat(41)},{...ref,assetId:'x\u0000'},{...ref,assetId:'x\u0085'},{...ref,contentHash:'B'.repeat(64)},{...ref,extra:true}]){
     const {calls,library}=fixture();await assert.rejects(library.proposeSourceInstall({ref:invalid}));assert.equal(calls.length,0);
   }
 });
