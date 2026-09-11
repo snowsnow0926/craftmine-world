@@ -159,6 +159,67 @@ describe("Craftmine authoritative request boundary", () => {
     await new Promise(resolve => setTimeout(resolve, 5));
     expect(f.calls.filter(c => c.method === "budget.settle").every(c => c.params.status === "cancelled")).toBe(true);
   });
+  it.each(["thinking", "text", "toolCall"] as const)("allows %s progress beyond 120 seconds with one physical request and one actual usage settlement", async kind => {
+    vi.useFakeTimers();
+    try {
+      const f=fixture(),inner=createAssistantMessageEventStream(),start=vi.fn(()=>inner);
+      const outer=craftmineGuardedStream(model,request,{},f.hooks,"creation",start);
+      await vi.advanceTimersByTimeAsync(0);
+      const partial={...result(),content:[]} as AssistantMessage;
+      const block:any=kind==='text'?{type:kind,text:''}:kind==='thinking'?{type:kind,thinking:''}:{type:kind,id:'tool',name:'example',arguments:{},partialJson:''};
+      partial.content.push(block);
+      for(let index=0;index<5;index++){
+        await vi.advanceTimersByTimeAsync(60000);
+        if(kind==='toolCall')block.partialJson+='x';else block[kind]+='x';
+        inner.push({type:kind==='toolCall'?'toolcall_delta':kind==='text'?'text_delta':'thinking_delta',contentIndex:0,delta:'x',partial});
+        await vi.advanceTimersByTimeAsync(0);
+      }
+      const final=result();inner.push({type:'done',reason:'stop',message:final});inner.end(final);
+      expect((await outer.result()).usage).toEqual(final.usage);expect(start).toHaveBeenCalledTimes(1);
+      expect(f.calls.filter(c=>c.method==='budget.reserve')).toHaveLength(1);
+      const settlements=f.calls.filter(c=>c.method==='budget.settle');expect(settlements).toHaveLength(1);expect(settlements[0].params.status).toBe('known');
+      await vi.advanceTimersByTimeAsync(0);expect(vi.getTimerCount()).toBe(0);
+    }finally{vi.useRealTimers();}
+  });
+  it("times out real inactivity despite empty and repeated delta events, without inventing usage or another request", async()=>{
+    vi.useFakeTimers();
+    try{
+      const f=fixture(),inner=createAssistantMessageEventStream(),start=vi.fn(()=>inner);
+      const outer=craftmineGuardedStream(model,request,{},f.hooks,"creation",start);await vi.advanceTimersByTimeAsync(0);
+      const partial={...result(),content:[{type:'thinking' as const,thinking:'one'}]};
+      await vi.advanceTimersByTimeAsync(30000);inner.push({type:'thinking_delta',contentIndex:0,delta:'one',partial});await vi.advanceTimersByTimeAsync(0);
+      for(let index=0;index<3;index++){
+        await vi.advanceTimersByTimeAsync(30000);
+        inner.push({type:'thinking_delta',contentIndex:0,delta:index===1?'':'one',partial});await vi.advanceTimersByTimeAsync(0);
+      }
+      await vi.advanceTimersByTimeAsync(30000);
+      const ended=await outer.result();expect(ended.stopReason).toBe('error');expect(ended.errorMessage).toBe('PROVIDER_IDLE_TIMEOUT');expect(start).toHaveBeenCalledTimes(1);
+      const settlements=f.calls.filter(c=>c.method==='budget.settle');expect(settlements).toHaveLength(1);expect(settlements[0].params).toMatchObject({status:'unknown',errorCode:'PROVIDER_IDLE_TIMEOUT'});expect(settlements[0].params.usage).toBeUndefined();
+      const late=result();inner.push({type:'done',reason:'stop',message:late});inner.end(late);await vi.advanceTimersByTimeAsync(0);
+      expect(f.calls.filter(c=>c.method==='budget.settle')).toHaveLength(1);
+    }finally{vi.useRealTimers();}
+  });
+  it.each(['preparation','first-response'] as const)('still bounds stalled %s without an overall generation deadline',async phase=>{
+    vi.useFakeTimers();
+    try{
+      const f=fixture(),inner=createAssistantMessageEventStream(),start=vi.fn(()=>inner);
+      if(phase==='preparation')f.hooks.beforeRequest=()=>new Promise(()=>{});
+      const outer=craftmineGuardedStream(model,request,{},f.hooks,'creation',start);await vi.advanceTimersByTimeAsync(120000);
+      expect((await outer.result()).errorMessage).toBe('PROVIDER_IDLE_TIMEOUT');expect(start).toHaveBeenCalledTimes(phase==='preparation'?0:1);
+      expect(f.calls.filter(c=>c.method==='budget.reserve')).toHaveLength(phase==='preparation'?0:1);
+    }finally{vi.useRealTimers();}
+  });
+  it('keeps user cancellation immediate and distinct from idle expiry during active output',async()=>{
+    vi.useFakeTimers();
+    try{
+      const f=fixture(),inner=createAssistantMessageEventStream(),controller=new AbortController();
+      const outer=craftmineGuardedStream(model,request,{signal:controller.signal},f.hooks,'creation',()=>inner);await vi.advanceTimersByTimeAsync(0);
+      inner.push({type:'text_delta',contentIndex:0,delta:'x',partial:result('x')});await vi.advanceTimersByTimeAsync(0);controller.abort();
+      const ended=await outer.result();expect(ended.stopReason).toBe('aborted');expect(ended.errorMessage).toBe('TURN_ABORTED');
+      expect(f.calls.filter(c=>c.method==='budget.settle')[0].params).toMatchObject({status:'cancelled',errorCode:'REQUEST_INTERRUPTED'});
+      await vi.advanceTimersByTimeAsync(120000);expect(vi.getTimerCount()).toBe(0);
+    }finally{vi.useRealTimers();}
+  });
   it("blocks generic tools at catalog and beforeToolCall boundaries", async () => {
     expect(isCraftmineToolAllowed("Bash", new Set())).toBe(false);
     const runtime = makeRuntime(fixture().hooks); const internal = runtime as any;

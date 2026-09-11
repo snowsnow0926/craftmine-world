@@ -83,6 +83,13 @@ function successfulStream(): ReturnType<typeof createAssistantMessageEventStream
 }
 
 describe("provider rate-limit retry", () => {
+  it("keeps a local idle timeout distinct and never automatically reissues it", async () => {
+    const create=vi.fn(()=>failedStream({errorMessage:'PROVIDER_IDLE_TIMEOUT'})),claim=vi.fn(()=>1);
+    const outer=createProviderRetryStream(model,context,{},create,{claim,headers:()=>undefined});
+    expect((await outer.result()).errorMessage).toBe('PROVIDER_IDLE_TIMEOUT');expect(create).toHaveBeenCalledTimes(1);expect(claim).not.toHaveBeenCalled();
+    expect(classifyProviderError('PROVIDER_IDLE_TIMEOUT',429)).toMatchObject({code:'PROVIDER_IDLE_TIMEOUT',retriable:false});
+    expect(classifyProviderError('request timeout')).toMatchObject({code:'TIMEOUT',retriable:true});
+  });
   it("uses a captured 429 status when the provider body is generic", () => {
     expect(classifyProviderError("upstream unavailable", 429)).toMatchObject({
       code: "PROVIDER_RATE_LIMITED",

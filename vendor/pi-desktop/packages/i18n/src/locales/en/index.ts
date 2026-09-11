@@ -1830,6 +1830,7 @@ export const en = {
     NETWORK_ERROR: "Can't reach the AI provider. Check your network or base URL.",
     TIMEOUT: "The request to the AI provider timed out.",
     STREAM_FAILED: "The reply was interrupted.",
+    PROVIDER_IDLE_TIMEOUT: "The model made no output progress for 120 seconds. The request was stopped. You can continue in this task.",
     MODEL_OUTPUT_LIMIT_REACHED: "The model reached the per-response output limit before producing a result. You can continue in this task.",
     EMPTY_MODEL_RESPONSE:
       "The model finished its turn without saying anything, twice in a row. Try again, or rephrase your request.",

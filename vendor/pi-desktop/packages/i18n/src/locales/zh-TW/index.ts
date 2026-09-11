@@ -1804,6 +1804,7 @@ export const zhTW = {
     NETWORK_ERROR: "無法連線 AI 服務，請檢查網路或介面地址。",
     TIMEOUT: "請求 AI 服務超時。",
     STREAM_FAILED: "回覆中斷了。",
+    PROVIDER_IDLE_TIMEOUT: "模型連續 120 秒沒有新的輸出，已停止本次請求。可以在目前任務中繼續。",
     MODEL_OUTPUT_LIMIT_REACHED: "模型達到單次輸出上限，尚未形成結果。可以在目前任務中繼續。",
     EMPTY_MODEL_RESPONSE: "模型連續兩輪都沒有輸出內容。可以重試，或換一種說法。",
     MUTATION_RETRY_BUDGET_EXHAUSTED:

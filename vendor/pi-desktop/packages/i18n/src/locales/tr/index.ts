@@ -1832,6 +1832,7 @@ export const tr = {
     NETWORK_ERROR: "AI servisine ulaşılamıyor. Ağınızı veya temel URL’yi kontrol edin.",
     TIMEOUT: "AI servisine istek zaman aşımına uğradı.",
     STREAM_FAILED: "Yanıt kesildi.",
+    PROVIDER_IDLE_TIMEOUT: "Model 120 saniye boyunca yeni çıktı üretmedi. İstek durduruldu. Bu görevde devam edebilirsiniz.",
     MODEL_OUTPUT_LIMIT_REACHED: "Model, bir sonuç üretmeden yanıt başına çıktı sınırına ulaştı. Bu görevde devam edebilirsiniz.",
     EMPTY_MODEL_RESPONSE:
       "Model iki tur üst üste hiçbir şey söylemeden bitirdi. Yeniden deneyin veya isteği başka türlü sorun.",

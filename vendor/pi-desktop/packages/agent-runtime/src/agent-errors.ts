@@ -123,6 +123,10 @@ export function classifyAgentError(err: unknown): ClassifiedAgentError {
     ...(Object.keys(details).length > 0 ? { details } : {}),
   });
 
+  // A local watchdog already stopped this physical attempt. Keep its cause
+  // distinct from user cancellation and do not silently reissue the request.
+  if (rawMessage === "PROVIDER_IDLE_TIMEOUT") return result("PROVIDER_IDLE_TIMEOUT", false);
+
   // Local task accounting cannot be repaired by another provider attempt.
   // Classify before network/status text, including wrapped RPC/stream errors.
   const taskLimit = rawMessage.match(/\b(TOKEN_BUDGET_EXHAUSTED|REQUEST_BUDGET_EXHAUSTED|COMPACTION_BUDGET_EXHAUSTED|TASK_DEADLINE_EXCEEDED|EVALUATION_REQUEST_LIMIT)\b/);
