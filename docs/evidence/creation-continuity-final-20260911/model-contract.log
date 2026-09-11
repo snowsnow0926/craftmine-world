@@ -1,0 +1,16 @@
+✔ all four frozen development inputs are independently verifiable and retain original CM04 words (2.4247ms)
+✔ one durable attempt and one case claim cannot be replayed; each fixed profile independently caps at ten (24.3403ms)
+✔ suite/profile/model/manifest changes reject; legacy default and full suite remain compatible (5.6092ms)
+✔ prepare and prompt have separate durable one-shot receipts and survive process reconstruction (5.1268ms)
+✔ two repairs follow existing semantics; ordinary successful polling does not add a repair (6.4876ms)
+✔ missing history, wrong session/turn, another user message and elapsed deadline fail closed (7.3984ms)
+✔ actual product reserve persists the request before history refusal; replay does not consume another slot (17.5341ms)
+✔ outcome requires actual color/scale, checked formal build, exact wish and full cold-restored state (0.9603ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.4636

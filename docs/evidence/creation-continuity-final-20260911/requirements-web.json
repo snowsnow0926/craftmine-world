@@ -1,0 +1,230 @@
+{
+  "format": "craftmine.creation-requirements-engine/1",
+  "out": "D:\\cm-c2-root\\test-results\\creation-requirements-web-fVEjdn",
+  "checks": [
+    {
+      "name": "correct real engine answers entities",
+      "passed": true
+    },
+    {
+      "name": "correct correct runtime target and scale",
+      "passed": true
+    },
+    {
+      "name": "correct wrong scale rejected",
+      "passed": true
+    },
+    {
+      "name": "correct wrong identity rejected",
+      "passed": true
+    },
+    {
+      "name": "correct wrong color rejected",
+      "passed": true
+    },
+    {
+      "name": "correct wrong count rejected",
+      "passed": true
+    },
+    {
+      "name": "correct compound wish matches actual material and dimensions",
+      "passed": true
+    },
+    {
+      "name": "correct compound wish rejects an unchanged material",
+      "passed": true
+    },
+    {
+      "name": "correct attributed placement matches one actual new object",
+      "passed": true
+    },
+    {
+      "name": "correct actual duplicate count, style and separated collision bounds",
+      "passed": true
+    },
+    {
+      "name": "correct wrong actual time rejected",
+      "passed": true
+    },
+    {
+      "name": "correct exact requested time observed",
+      "passed": true
+    },
+    {
+      "name": "real sequence requires ordered interactions",
+      "passed": true
+    },
+    {
+      "name": "unrelated frozen time wish accepts actual door progress while retaining visibility",
+      "passed": true
+    },
+    {
+      "name": "unconditional real engine answers entities",
+      "passed": true
+    },
+    {
+      "name": "unconditional correct runtime target and scale",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong scale rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong identity rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong color rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong count rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional compound wish matches actual material and dimensions",
+      "passed": true
+    },
+    {
+      "name": "unconditional compound wish rejects an unchanged material",
+      "passed": true
+    },
+    {
+      "name": "unconditional attributed placement matches one actual new object",
+      "passed": true
+    },
+    {
+      "name": "unconditional actual duplicate count, style and separated collision bounds",
+      "passed": true
+    },
+    {
+      "name": "unconditional wrong actual time rejected",
+      "passed": true
+    },
+    {
+      "name": "unconditional exact requested time observed",
+      "passed": true
+    },
+    {
+      "name": "runnable unconditional door candidate rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies real engine answers entities",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies correct runtime target and scale",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong scale rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong identity rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong color rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong count rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies compound wish matches actual material and dimensions",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies compound wish rejects an unchanged material",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies attributed placement matches one actual new object",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies actual duplicate count, style and separated collision bounds",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies wrong actual time rejected",
+      "passed": true
+    },
+    {
+      "name": "overlapping-copies exact requested time observed",
+      "passed": true
+    },
+    {
+      "name": "real sequence requires ordered interactions",
+      "passed": true
+    },
+    {
+      "name": "unrelated frozen time wish accepts actual door progress while retaining visibility",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 80,
+      "exitCode": 0
+    },
+    {
+      "label": "correct-import",
+      "elapsedMs": 2124,
+      "exitCode": 0
+    },
+    {
+      "label": "correct-export",
+      "elapsedMs": 2037,
+      "exitCode": 0
+    },
+    {
+      "label": "unconditional-import",
+      "elapsedMs": 2039,
+      "exitCode": 0
+    },
+    {
+      "label": "unconditional-export",
+      "elapsedMs": 2026,
+      "exitCode": 0
+    },
+    {
+      "label": "overlapping-copies-import",
+      "elapsedMs": 1937,
+      "exitCode": 0
+    },
+    {
+      "label": "overlapping-copies-export",
+      "elapsedMs": 2019,
+      "exitCode": 0
+    }
+  ],
+  "passed": true,
+  "trace": [
+    {
+      "step": "initial",
+      "doorOpen": false,
+      "interacted": false
+    },
+    {
+      "step": "marker-b",
+      "doorOpen": false,
+      "interacted": true
+    },
+    {
+      "step": "marker-a",
+      "doorOpen": false,
+      "interacted": true
+    },
+    {
+      "step": "marker-b",
+      "doorOpen": true,
+      "interacted": true
+    }
+  ]
+}

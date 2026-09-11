@@ -1,5 +1,5 @@
 // CN2: actual renderer bridge -> host durable edit -> source/check/adopt. No model or physical input.
-import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {isDeepStrictEqual} from 'node:util';
 import {spawn} from 'node:child_process';import {randomUUID,createHash} from 'node:crypto';import {setTimeout as delay} from 'node:timers/promises';
 import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 import {assertCleanHeadlessShutdown} from './player-product/shutdown-exit-audit.mjs';import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs';
@@ -50,7 +50,10 @@ try{
  check('two copies have distinct real IDs',duplicated.receipt.createdIds.length===2&&copiesBefore.length===3&&new Set(copiesBefore.map(e=>e.id)).size===3);
  const modified=await perform(await capture({worldId,entityId:copyId}),'modify',{changes:{color:'#1266cc'}}),copiesAfter=(await observe()).payload.creation.entities;
  check('only explicitly selected copy changes color',copiesAfter.every(e=>e.id===copyId?e.color.toLowerCase()==='#1266cc':JSON.stringify(e)===JSON.stringify(copiesBefore.find(old=>old.id===e.id))));
- await perform(await capture(),'undo',{undoOperationId:modified.operationId});check('undo preserves original and both copies',JSON.stringify((await observe()).payload.creation.entities)===JSON.stringify(copiesBefore));
+ await perform(await capture(),'undo',{undoOperationId:modified.operationId});
+ const undoEntities=(await observe()).payload.creation.entities;report.undoComparison={before:copiesBefore,after:undoEntities};
+ const byIdentity=entities=>[...entities].sort((a,b)=>a.id.localeCompare(b.id));
+ check('undo preserves original and both copies',isDeepStrictEqual(byIdentity(undoEntities),byIdentity(copiesBefore)));
  await native('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}},180000);const saved=completeCreationProgress(await native('godotSnapshot')),formal=await observe();
  check('placement copy and undo preserve player inventory and reward ledgers',JSON.stringify(saved.body.player.position)===JSON.stringify(progressBefore.body.player.position)&&JSON.stringify(saved.body.inventory)===JSON.stringify(progressBefore.body.inventory)&&JSON.stringify(saved.body.openedChests)===JSON.stringify(progressBefore.body.openedChests));
  check('all direct operations used zero model requests',(await edit('snapshot')).metrics.calls.observed===0);await stop();

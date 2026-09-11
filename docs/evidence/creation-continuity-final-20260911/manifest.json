@@ -1,0 +1,54 @@
+{
+  "format": "craftmine.continuity-final-evidence/1",
+  "files": [
+    {
+      "file": "native-final.json",
+      "source": "D:\\p11b\\test-results\\desktop-native-complete-nDMSbC\\report.json",
+      "bytes": 369590,
+      "sha256": "7ca4a1f828c48ec57c05080d3a63a618304a1ae6f181981592f9dd1c6f784ea6"
+    },
+    {
+      "file": "native-original-failure.json",
+      "source": "D:/p11/test-results/desktop-native-complete-X6uWRI/report.json",
+      "bytes": 357025,
+      "sha256": "d284a3388e4bce57ae7b7c9009475408db6da4d901c2e59c9340bfef1b909a1b"
+    },
+    {
+      "file": "core-float-roundtrip.log",
+      "source": "D:\\cm-c2-root\\test-results\\continuity\\float-roundtrip.log",
+      "bytes": 11068,
+      "sha256": "21a2c24bff9b14f2fcbc35f54ecc5c78e94a0d078c504812d4775f214cd238c9"
+    },
+    {
+      "file": "core-requirements.log",
+      "source": "D:\\cm-c2-root\\test-results\\continuity\\core-requirements-final.log",
+      "bytes": 10134,
+      "sha256": "118efaf5a78f9646186af491f4b670ffee5cc84b26692df1293c907322dd76cc"
+    },
+    {
+      "file": "model-contract.log",
+      "source": "D:\\cm-c2-root\\test-results\\continuity\\model-contract-final.log",
+      "bytes": 1021,
+      "sha256": "c487d43225c7dcd0c2147e94d1d3abb2eb49629e838bb58ba7be94e9ab9f4e3d"
+    },
+    {
+      "file": "package-evidence.json",
+      "source": "D:\\cm-c2-root\\desktop\\build\\releases\\cdfd175c0f6a-17947f5d-f141-4b1e-add1-3a1f9711070e\\package-evidence.json",
+      "bytes": 308400,
+      "sha256": "a085f87f66053b648b2ccc87b033fc22eeb55745945beb8aa836030845692046"
+    },
+    {
+      "file": "requirements-web.json",
+      "source": "D:\\cm-c2-root\\test-results\\creation-requirements-web-fVEjdn\\report.json",
+      "bytes": 5355,
+      "sha256": "10a59934b143e280ab062b9a867883c3cfc2c3df58ab99191d0926f8a8184e7e"
+    },
+    {
+      "file": "incremental-original.json",
+      "source": "D:/cm-c2-edit/test-results/creation-continuity-LaPyNi/report.json",
+      "bytes": 4889,
+      "sha256": "4f9c7637442c18ecc663262fd7a4e308765b2a67001d982e5cfd9c53f7c7d72f"
+    }
+  ],
+  "archive": "D:/Craftmine-Continuity-Archive-20260911"
+}

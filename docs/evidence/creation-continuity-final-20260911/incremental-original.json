@@ -1,0 +1,124 @@
+{
+  "format": "craftmine.creation-continuity-checks/1",
+  "scope": "incremental-integration",
+  "root": "D:\\cm-c2-root",
+  "out": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi",
+  "raw": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\raw",
+  "packaged": null,
+  "sourceBefore": {
+    "commit": "d6552615ce9569ea12b37a3e90a4debfe416b05e",
+    "trackedDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dirty": false
+  },
+  "startedAt": "2026-09-11T02:38:22.598Z",
+  "steps": [
+    {
+      "name": "logic",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/creation-application-completion.test.mjs",
+        "tests/creation-packaged-launch.test.mjs",
+        "tests/creation-operations.test.mjs",
+        "tests/creation-source-service.test.mjs",
+        "tests/godot-build-read-wait.test.mjs"
+      ],
+      "log": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\logic.log",
+      "status": "passed",
+      "startedAt": "2026-09-11T02:38:22.599Z",
+      "exitCode": 0,
+      "elapsedMs": 491,
+      "sha256": "9594efcb2d4497671d1ba548eefd48459fb0301465fade61c77c2a5e01c5f9c4"
+    },
+    {
+      "name": "host",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "vendor/pi-desktop/apps/desktop/test/creation-direct-placement.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-recent-results.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-edit-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-edit-guards.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-check-requirements.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-target.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-auto-apply-service.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-host-task-status.test.mjs",
+        "vendor/pi-desktop/apps/desktop/test/creation-task-status.test.mjs"
+      ],
+      "log": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\host.log",
+      "status": "passed",
+      "startedAt": "2026-09-11T02:38:23.092Z",
+      "exitCode": 0,
+      "elapsedMs": 503,
+      "sha256": "b2ce652f819e184e42dc0703045523516474ef42ad6f3321c4e4804f7f76bd34"
+    },
+    {
+      "name": "executor-protocol",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--test",
+        "tests/godot-remaining/C/executor-protocol.mjs"
+      ],
+      "log": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\executor-protocol.log",
+      "status": "passed",
+      "startedAt": "2026-09-11T02:38:23.595Z",
+      "exitCode": 0,
+      "elapsedMs": 22256,
+      "sha256": "b1f166bd1ff2b5fb42b395d4ebce16a77355b6aa39ef1d84a7c48488d244ef86"
+    },
+    {
+      "name": "editing-ui",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-edit-ui-headless.mjs"
+      ],
+      "log": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\editing-ui.log",
+      "status": "passed",
+      "startedAt": "2026-09-11T02:38:45.852Z",
+      "exitCode": 0,
+      "elapsedMs": 1303,
+      "sha256": "8850d306c7cb7ca112613e5a58249ed6152501118ba58f885f486e1d8041ba42"
+    },
+    {
+      "name": "recent-ui",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-recent-ui-headless.mjs"
+      ],
+      "log": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\recent-ui.log",
+      "status": "passed",
+      "startedAt": "2026-09-11T02:38:47.155Z",
+      "exitCode": 0,
+      "elapsedMs": 1147,
+      "sha256": "5f454f29adc9ce270d0a218d910b784b95767d1eee9cb2294026440162841f26"
+    },
+    {
+      "name": "native-story",
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/creation-place-native.mjs"
+      ],
+      "log": "D:\\cm-c2-edit\\test-results\\creation-continuity-LaPyNi\\native-story.log",
+      "status": "failed",
+      "startedAt": "2026-09-11T02:38:48.303Z",
+      "exitCode": 1,
+      "elapsedMs": 1850,
+      "sha256": "72ab61e1138526c9a96e7c4485a7f1bbc9dd81c9fe4401d9d09b5f64e057a099"
+    }
+  ],
+  "passed": false,
+  "limits": [
+    "Fixed incremental CN tests; previous NB 18-stage suite is not repeated.",
+    "No model runner, physical input, microphone or installer invocation.",
+    "Packaged mode applies only to the native EXE story; unit and UI fixtures inspect source.",
+    "No clean Windows lifecycle or real-player acceptance claim."
+  ],
+  "sourceAfter": {
+    "commit": "d6552615ce9569ea12b37a3e90a4debfe416b05e",
+    "trackedDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dirty": false
+  },
+  "sourceUnchanged": true,
+  "finishedAt": "2026-09-11T02:38:50.267Z"
+}

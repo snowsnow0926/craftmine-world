@@ -2,7 +2,7 @@
   "format": "craftmine.creation-continuity/1",
   "plan": "docs/CREATION_CONTINUITY_AND_PREVIEW11_PLAN_2026-09-11.md",
   "baseline": "fa9f7247",
-  "status": "complete_with_native_failure_and_external_pending",
+  "status": "closing_user_requested_scope",
   "stages": {
     "CN0": {
       "status": "complete",
@@ -11,37 +11,34 @@
       ]
     },
     "CN1": {
-      "status": "implemented",
+      "status": "complete",
       "evidence": [
         "docs/CREATION_CONTINUITY_CN1_2026-09-11.md"
       ]
     },
     "CN2": {
-      "status": "implemented",
+      "status": "complete",
       "evidence": [
         "docs/CREATION_CONTINUITY_CN2_2026-09-11.md"
       ]
     },
     "CN3": {
-      "status": "implemented",
+      "status": "complete",
       "evidence": [
         "docs/CREATION_CONTINUITY_CN3_2026-09-11.md"
       ]
     },
     "CN4": {
-      "status": "implemented",
+      "status": "complete",
       "evidence": [
         "docs/CREATION_CONTINUITY_CN4_2026-09-11.md",
         "docs/CREATION_CONTINUITY_CN4_PROTOCOL_2026-09-11.md"
       ]
     },
     "CN5": {
-      "status": "complete",
+      "status": "partially_validated_live_model_deferred",
       "evidence": [
-        "docs/CREATION_CONTINUITY_CN5_VERIFICATION_2026-09-11.md",
-        "docs/CREATION_CONTINUITY_MODEL_PROTOCOL_2026-09-11.md",
-        "test-results/continuity/model-contract-final.log",
-        "D:/c2d/test-results/desktop-native-complete-ADHKPh/report.json"
+        "docs/evidence/creation-continuity-final-20260911/manifest.json"
       ]
     },
     "CN6": {
@@ -52,7 +49,7 @@
       ]
     },
     "CN7": {
-      "status": "pending",
+      "status": "in_progress",
       "evidence": []
     }
   },
@@ -61,8 +58,8 @@
     "maximumRequestsPerCase": 10,
     "maximumRequestsTotal": 40,
     "observedRequests": 0,
-    "status": "not_run_budget_reserved",
-    "note": "CN5 runner契约与冻结完成；本轮未启动真实模型请求，避免在收尾时意外消耗额度。"
+    "status": "not_run_user_requested_closeout",
+    "note": "用户要求节省token并直接收尾commit/push，因此本轮不启动新增真实模型试验；无预约和实际请求，不算模型验收通过。"
   },
   "externalValidation": {
     "physicalMicrophone": "not_run",
@@ -73,11 +70,13 @@
     "targetVersion": "0.14.4-preview.11",
     "directory": "D:/Craftmine-World-preview.11",
     "status": "complete",
-    "pushed": false,
+    "pushed": true,
     "installedOnPersonalSystem": false,
     "setup": "D:/Craftmine-World-preview.11/Craftmine-World-Setup-0.14.4-preview.11.exe",
     "portable": "D:/Craftmine-World-preview.11/Craftmine-World-preview.11-portable.zip",
-    "installPayloadVerified": true
+    "installPayloadVerified": true,
+    "buildSourceCommit": "cdfd175c0f6a51366d16428b0d2b67e32951a557",
+    "packagedNativeChecks": 26
   },
-  "updatedAt": "2026-09-11T08:29:57.6967757Z"
+  "updatedAt": "2026-09-11T08:40:45.089Z"
 }
