@@ -1,0 +1,183 @@
+{
+  "format": "craftmine.player-base-conflict-evidence/1",
+  "sourceReport": {
+    "file": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/player-a5c5afd2-98cb-4059-9e36-5dbbf606b66f.json",
+    "sha256": "9a7e125c2269ecc366de43ba369587971d3c614d95b0e78db44fcec910a396ca"
+  },
+  "package": {
+    "packaged": "D:\\cm-promo-loop-0912\\desktop\\build\\releases\\12f31f17f815-01ef3d4c-4e8f-47d3-b65b-9e1780c381fe\\output\\win-unpacked",
+    "version": "0.14.4-preview.13",
+    "inventorySha256": "7aaad12db44d33cb46df9f620378b18b9355d7cc0f7c4f40e30c400f5e50cc4e"
+  },
+  "worldId": "world-dd7fa4f8fff6",
+  "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+  "wish": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。",
+  "status": "RUN_FAILED",
+  "error": "Error: Error: DRAFT_BASE_CONFLICT\n    at ChildProcess.<anonymous> (file:///D:/cm-promo-loop-0912/tests/promo-real-player.mjs:43:271)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "submittedAt": "2026-09-11T23:37:03.872Z",
+  "endedAt": "2026-09-11T23:37:12.863Z",
+  "playerBefore": {
+    "onFloor": true,
+    "pitch": 0.15,
+    "position": [
+      0,
+      0.899999976158142,
+      15.6849727630615
+    ],
+    "yaw": 0
+  },
+  "formalBuild": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+  "taskBefore": {
+    "context": {
+      "binding": {
+        "baseBuild": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+        "projectId": "pi-471be0673f2efb58f237aa3376f0d1c37060c3ac705d369d1a0c8747052bd8d8",
+        "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+        "taskId": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3",
+        "turnId": "2e94cc77-1069-4688-b126-721ccf9e8a1b"
+      },
+      "budget": {
+        "actualTokens": 942745,
+        "chargedTokens": 942745,
+        "compactionCount": 0,
+        "limits": {
+          "deadlineAt": 1789169050373,
+          "maxCompactions": 8,
+          "maxRequests": 80,
+          "maxTokens": null
+        },
+        "ownerTaskId": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3",
+        "remainingTokens": null,
+        "requestCount": 10,
+        "reservedTokens": 0,
+        "toolCallCount": 33,
+        "unknownRequestCount": 0
+      },
+      "draft": {
+        "hash": "76c2d7ba00b246e83dbde674bc0ffc2d1dc88e779210ec551288b2ad50edda43",
+        "revision": 0
+      },
+      "generation": 1,
+      "jobs": [],
+      "lease": {
+        "owned": false
+      },
+      "modifiedResources": [],
+      "receipts": [],
+      "recovery": "none",
+      "requirements": [
+        {
+          "id": "e5821b66-eaae-4618-be51-21e4c1a6a536",
+          "kind": "request",
+          "text": "在门洞两边加上城墙和塔楼，用现成素材拼成一个完整的城门入口。先一起准备好让我预览。",
+          "truncated": false
+        }
+      ],
+      "status": "finished",
+      "world": {
+        "baseId": "creation-sandbox",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "hash": "19845d21d1ba3218c6c3f48245447d2200735ff494c0042a6c95cfe549a69f4d",
+        "id": "world-dd7fa4f8fff6",
+        "revision": 9,
+        "runtimeKind": "godot"
+      }
+    },
+    "active": false
+  },
+  "recoverable": {
+    "items": [],
+    "modelReplay": false
+  },
+  "metrics": {
+    "calls": {
+      "observed": 0,
+      "pending": 0,
+      "reported": 0
+    },
+    "coverage": "unknown",
+    "endedAtMs": 1789169828147,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [],
+    "observedAtMs": 1789169828245,
+    "scope": "root-and-delegates",
+    "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+    "startedAtMs": 1789169828136,
+    "status": "error",
+    "tps": {
+      "coverage": "unknown",
+      "generationMs": null,
+      "outputTokens": null,
+      "value": null,
+      "window": "model-generation"
+    },
+    "turnId": "c98a9601-16cb-4ee2-be42-5e29eee59081",
+    "usage": null,
+    "wallTimeMs": 11
+  },
+  "newMessages": [
+    {
+      "id": "363fe039-410b-43aa-978c-5ef7154362ba",
+      "role": "user",
+      "status": "complete",
+      "content": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。"
+    }
+  ],
+  "newToolMessages": 0,
+  "newImageBlocks": 0,
+  "imageCountRecorded": null,
+  "sourceStateReadOnly": {
+    "head": {
+      "session_id": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+      "project_id": "pi-471be0673f2efb58f237aa3376f0d1c37060c3ac705d369d1a0c8747052bd8d8",
+      "world_id": "world-dd7fa4f8fff6",
+      "head_task": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3"
+    },
+    "task": {
+      "id": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3",
+      "binding": "{\"projectId\":\"pi-471be0673f2efb58f237aa3376f0d1c37060c3ac705d369d1a0c8747052bd8d8\",\"sessionId\":\"3a43c719-8616-4393-a1fb-c8f3b283a785\",\"turnId\":\"2e94cc77-1069-4688-b126-721ccf9e8a1b\",\"taskId\":\"work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3\",\"baseBuild\":\"gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15\"}",
+      "status": "finished",
+      "revision": 0,
+      "draft": "{\"scene\":{\"baseId\":\"creation-sandbox\",\"entry\":\"res://main.tscn\",\"format\":\"craftmine.godot-scene/1\",\"projectHash\":\"1e770fa01299346ca533737ec604e80fab36d4c864a2f5ad3624a1d5e017e50d\"}}",
+      "draft_hash": "76c2d7ba00b246e83dbde674bc0ffc2d1dc88e779210ec551288b2ad50edda43"
+    },
+    "runtime": {
+      "task_id": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3",
+      "generation": 1,
+      "budget_owner": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3",
+      "recovery": "none"
+    },
+    "sessionTasks": [
+      {
+        "id": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3",
+        "status": "finished",
+        "revision": 0,
+        "binding": "{\"projectId\":\"pi-471be0673f2efb58f237aa3376f0d1c37060c3ac705d369d1a0c8747052bd8d8\",\"sessionId\":\"3a43c719-8616-4393-a1fb-c8f3b283a785\",\"turnId\":\"2e94cc77-1069-4688-b126-721ccf9e8a1b\",\"taskId\":\"work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3\",\"baseBuild\":\"gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15\"}"
+      }
+    ],
+    "worldLease": [],
+    "source": {
+      "world_id": "world-dd7fa4f8fff6",
+      "revision": 4,
+      "hash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd"
+    }
+  },
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "exitReport": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  },
+  "stateIntegrityVerified": true,
+  "retry": {
+    "normalUI": "ChatSurface error retry → app-store retryLastPrompt → api.prompt with truncateFromMessageId",
+    "failedUserMessageId": "363fe039-410b-43aa-978c-5ef7154362ba",
+    "semantics": "Archive failed branch via session.saveRevision before truncating and resending original prompt. No interrupted core task was created; task.resume is not available.",
+    "performed": false
+  }
+}
