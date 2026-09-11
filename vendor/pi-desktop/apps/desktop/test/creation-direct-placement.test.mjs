@@ -33,3 +33,12 @@ test('one through eight copies freeze each distinct destination without loosenin
   assert.equal(creationEntitiesMatch(frozen.requirements,[tree,...copies.map((e,i)=>i===0?{...e,position:tree.position}:e)]),false);
  }
 });
+test('door copies use declared initial state while the original keeps its played state',()=>{
+ for(const initiallyOpen of [false,true]){
+  const door={...tree,kind:'door',solidMutable:true,parameters:{initiallyOpen},open:!initiallyOpen,solid:initiallyOpen};
+  const selected={target:{entityId:door.id,position:door.position},entities:[door]};
+  const r=freezeCreationRequirements(selected,{action:'duplicate',targetId:door.id,count:1,offset:[3,0,0]}).requirements;
+  const copy={...door,id:'door-copy',position:[5,0,0],open:initiallyOpen,solid:!initiallyOpen};
+  assert.equal(creationEntitiesMatch(r,[door,copy]),true);assert.equal(creationEntitiesMatch(r,[door,{...copy,solid:initiallyOpen}]),false);
+ }
+});

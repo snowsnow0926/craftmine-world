@@ -54,7 +54,9 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   if(!selected||input.targetId!==selected.id)return unknown;
   if(input.action==='duplicate'){
    if(!Number.isInteger(input.count)||input.count<1||input.count>8||!vector(input.offset)||input.offset.some(n=>Math.abs(n)>8)||Math.hypot(...input.offset)<.5||!selected.color)return unknown;
-   for(let i=1;i<=input.count;i++)r.entities.push({kind:selected.kind,position:selected.position.map((n,axis)=>n+input.offset[axis]*i),scale:[...selected.scale],color:selected.color,excludeIds:all.map(e=>e.id),visible:true,solid:selected.kind==='door'?selected.open!==true:true});
+   // Duplicates inherit the source declaration, not another entity's played state.
+   const initiallyOpen=(selected as CreationEntity&{parameters?:{initiallyOpen?:boolean}}).parameters?.initiallyOpen===true;
+   for(let i=1;i<=input.count;i++)r.entities.push({kind:selected.kind,position:selected.position.map((n,axis)=>n+input.offset[axis]*i),scale:[...selected.scale],color:selected.color,excludeIds:all.map(e=>e.id),visible:true,solid:selected.kind==='door'?!initiallyOpen:true});
    r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length+input.count});
   }else if(input.action==='delete'){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
   else if(input.action==='modify'&&Object.keys(input.changes).length&&Object.keys(input.changes).every(k=>['scale','color'].includes(k)))r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],scale:[...selected.scale],...(selected.color?{color:selected.color}:{}),...frozenPresence(selected),...input.changes});else return unknown;
