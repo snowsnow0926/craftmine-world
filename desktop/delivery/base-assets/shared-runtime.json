@@ -502,8 +502,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 18569,
-      "sha256": "1eb99d2da039e0ca337dc73b3a593aff509e13e317a2d4f457bc2fe3e8f299f4"
+      "bytes": 18748,
+      "sha256": "5def3e471cff15631dab28a328f108f8902b32727cfb1b54fd56add72472fe8e"
     },
     {
       "path": "standalone_bootstrap.gd",
