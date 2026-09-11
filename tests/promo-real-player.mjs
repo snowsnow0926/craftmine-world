@@ -9,6 +9,7 @@ import {checkpointSanitizer} from './helpers/promo-checkpoint-live-contract.mjs'
 import {createFileClarificationExchange} from './helpers/promo-file-clarification.mjs';
 import {reserveLoopbackPort,resumeThroughWorldUi,finishInterruptedThroughWorldUi,createSessionThroughDesktopUi} from './helpers/ordinary-world-ui.mjs';
 import {inspectPlayerSource} from './helpers/promo-player-source.mjs';
+import {sourceLibraryCallEvidence} from './helpers/promo-tool-evidence.mjs';
 
 const [sourceFile,configFile,textFile]=process.argv.slice(2);
 assert.ok([sourceFile,configFile,textFile].every(value=>value&&path.isAbsolute(value)),'Usage: <absolute previous report> <absolute player config snapshot> <absolute player text file> --packaged-root <product> [--create-session] [--live]');
@@ -94,7 +95,7 @@ try{
   while(!signal.aborted){
     const state=await rpc('playerStatus',{payload});report.latest=state;assert.equal(state.sessionId,sessionId);assert.equal(state.observation.worldId,worldId);
     const oldMessageIds=new Set(report.before.record.session.messages.map(message=>message.id));
-    report.sourceLibraryCalls=state.record.session.messages.filter(message=>!oldMessageIds.has(message.id)&&message.toolName==='godot_source_library').map(message=>({id:message.id,toolCallId:message.toolCallId,toolName:message.toolName,args:message.toolArgs,result:message.toolResult,status:message.toolStatus,isError:message.isError}));
+    report.sourceLibraryCalls=sourceLibraryCallEvidence(state.record.session.messages,oldMessageIds);
     seenActive ||= state.active;save();
     const newTurn=seenActive||state.metrics?.messageId===report.messageId||state.record?.session?.messages?.some(m=>m.id===report.messageId);
     if(newTurn&&!state.active&&!['queued','running','recovering'].includes(state.job?.status)&&state.application?.status!=='applying'&&state.application?.phase!=='applying'){
