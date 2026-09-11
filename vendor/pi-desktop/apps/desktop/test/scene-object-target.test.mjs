@@ -6,14 +6,16 @@ import path from 'node:path';
 import {createCreationTargetService} from '../electron/main/creation-target-service.ts';
 import {readSceneObjectTarget} from '../electron/main/scene-object-target.ts';
 import {parseCreationTarget} from '../src/lib/creation-target.ts';
+import {SCENE_OBSERVER_RESOURCES} from '../electron/main/creation-observer-pins.ts';
 const session={projectId:'p',sessionId:'s'},context={...session,turnId:'t'};
 const actor={objectId:'9007199254740993',nodePath:'Actor/Body',nodeClass:'StaticBody3D',scriptPath:'res://scripts/actor.gd',scenePath:'',position:[0,1,-2],normal:[0,0,1],ancestors:[]};
 function fixture(t){
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'scene-target-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
- const state={now:100000,instance:{worldId:'w',buildId:'b',instanceId:'i'},revision:3,manifestHash:'a'.repeat(64),hit:structuredClone(actor),refs:[structuredClone(actor)],stamp:null,sourcePath:'scripts/actor.gd',selection:null};
+ const state={now:100000,instance:{worldId:'w',buildId:'b',instanceId:'i'},revision:3,manifestHash:'a'.repeat(64),hit:structuredClone(actor),refs:[structuredClone(actor)],stamp:null,sourcePath:'scripts/actor.gd',selection:null,observerFiles:Object.keys(SCENE_OBSERVER_RESOURCES).map(path=>({path,bytes:10,sha256:'f'.repeat(64)}))};
  const deps={directory,now:()=>state.now,selection:async()=>state.instance.worldId,instance:()=>({...state.instance}),
  descriptor:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,manifestHash:state.manifestHash}),
- source:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,files:[{path:state.sourcePath,bytes:10,sha256:'f'.repeat(64)}]}),
+ source:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,files:[{path:state.sourcePath,bytes:10,sha256:'f'.repeat(64)},...state.observerFiles]}),
+ sceneObjectSourcePins:Object.fromEntries(Object.keys(SCENE_OBSERVER_RESOURCES).map(name=>[name,['f'.repeat(64)]])),
  sample:async()=>({...state.instance,baseId:'creation-sandbox',sampledAt:state.stamp??new Date(state.now).toISOString(),payload:{player:{position:[0,1,0]},creation:{entities:[],target:{entityId:null,position:[0,0,-6],normal:[0,1,0],surface:'ground',revision:1},sceneObjectTarget:state.hit,sceneObjectRefs:state.refs,sceneObjectSelection:state.selection}}})};
  return {state,service:createCreationTargetService(deps)};
 }
@@ -85,4 +87,18 @@ test('incomplete geometry coverage never offers the ground behind it for structu
  assert.equal(display.target,null);assert.equal(display.reason,'SCENE_OBJECT_SELECTION_UNCERTAIN');
  const frozen=await service.validate(1,ref(display),session);
  assert.equal(frozen.target.surface,'none');
+});
+
+test('older or changed observers cannot promote authored lookalike fields into host scene identity',async t=>{
+ for(const name of Object.keys(SCENE_OBSERVER_RESOURCES)){
+  const {state,service}=fixture(t);state.observerFiles.find(file=>file.path===name).sha256='e'.repeat(64);
+  const display=await service.capture(1,session);
+  assert.equal(display.sceneObjectTarget,undefined);assert.equal(display.target,null);
+  assert.equal(display.reason,'SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED');
+  const capture=await service.validate(1,ref(display),session);assert.equal(capture.sceneObjectTarget,undefined);
+ }
+ const {state,service}=fixture(t);state.observerFiles=state.observerFiles.slice(0,3);state.hit=null;state.selection={status:'fallback'};
+ assert.equal((await service.capture(1,session)).reason,'SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED');
+ state.selection=null;
+ assert.equal((await service.capture(1,session)).target.surface,'ground');
 });

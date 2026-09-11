@@ -214,6 +214,7 @@ import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
+import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
 import {readCraftminePromptContext} from "./craftmine-context-read";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
@@ -1131,6 +1132,7 @@ const creationTargets=createCreationTargetService({
   descriptor:worldId=>plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),
   sample:createCraftmineLiveSampler(()=>godotWorld),
   source:worldId=>plugins.requestCraftmineHost("godotRuntime.exportSource",{worldId}),
+  sceneObjectSourcePins:loadSceneObserverPins(godotRoot),
   journal:async capture=>(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal,
 });
 const migrateCreationSource=createCreationSourceMigration({

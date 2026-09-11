@@ -5,6 +5,7 @@ import {createHash, randomUUID} from "node:crypto";
 import type {CreationMigrationAdvance} from './creation-source-migration';
 import {recentCreationResults} from './creation-recent-results.ts';
 import {readSceneObjectTarget,currentSceneObjectPath,type SceneObjectTarget} from './scene-object-target.ts';
+import {hasCurrentSceneObserver,type SceneObserverPins} from './creation-observer-pins.ts';
 
 type Context = {projectId:string;sessionId:string;turnId:string};
 type Vector = [number,number,number];
@@ -25,6 +26,7 @@ type Dependencies = {
   sample(input:{worldId:string;buildId:string;instanceId:string}):Promise<any>;
   journal?(capture:CreationCapture):Promise<unknown>;
   source?(worldId:string):Promise<any>;
+  sceneObjectSourcePins?:SceneObserverPins;
   now?:()=>number;
 };
 const id=(value:unknown):value is string=>typeof value==="string"&&/^[a-zA-Z0-9._-]{1,128}$/.test(value);
@@ -117,7 +119,9 @@ export function createCreationTargetService(deps:Dependencies) {
         entities:Array.isArray(creation.entities)?structuredClone(creation.entities):undefined,playerPosition:[...player] as Vector,target:{entityId:target.entityId,position:target.surface==="none"?null:[...target.position] as Vector,
           normal:target.surface==="none"?null:[...target.normal] as Vector,surface:target.surface,revision:target.revision},source:'ray',autoApply:false};
       await assertFormal(capture);
-      if(creation.sceneObjectTarget!=null){
+      const sceneDataPresent=creation.sceneObjectTarget!=null||creation.sceneObjectSelection?.status==='fallback';
+      let sceneTrusted=false;
+      if(sceneDataPresent){
         if(!deps.source)fail('SCENE_OBJECT_SOURCE_UNAVAILABLE');
         const source=await deps.source(capture.worldId);
         if(source?.worldId!==capture.worldId||source.buildId!==capture.buildId||source.sourceRevision!==capture.sourceRevision||source.baseId!=='creation-sandbox'||!Array.isArray(source.files)||source.files.length>512)fail('SCENE_OBJECT_SOURCE_CHANGED');
@@ -126,8 +130,11 @@ export function createCreationTargetService(deps:Dependencies) {
           if(typeof entry?.path!=='string'||files.has(entry.path)||!Number.isSafeInteger(entry.bytes)||entry.bytes<0||!/^[a-f0-9]{64}$/.test(entry.sha256))fail('SCENE_OBJECT_SOURCE_CHANGED');
           files.add(entry.path);
         }
-        capture.sceneObjectTarget=readSceneObjectTarget(creation.sceneObjectTarget,files)!;
-        await confirmSceneObject(capture);
+        sceneTrusted=hasCurrentSceneObserver(source.files,deps.sceneObjectSourcePins);
+        if(sceneTrusted&&creation.sceneObjectTarget!=null){
+          capture.sceneObjectTarget=readSceneObjectTarget(creation.sceneObjectTarget,files)!;
+          await confirmSceneObject(capture);
+        }
       }
       const recent=recentCreationResults(capture.worldId,await deps.journal?.(capture),capture.entities);
       await assertFormal(capture);
@@ -135,7 +142,8 @@ export function createCreationTargetService(deps:Dependencies) {
       const selectionFile=file('selection',JSON.stringify([session.projectId,session.sessionId??'new-draft',capture.worldId]));
       const saved=selection===undefined?read(selectionFile):selection;
       const choice=saved?.worldId===capture.worldId&&id(saved?.entityId)?saved:null;
-      let reason:string|undefined=creation.sceneObjectSelection?.status==='fallback'?'SCENE_OBJECT_SELECTION_UNCERTAIN':undefined;
+      const sceneRayBlocked=sceneDataPresent&&(!sceneTrusted||creation.sceneObjectSelection?.status==='fallback');
+      let reason:string|undefined=sceneDataPresent&&!sceneTrusted?'SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED':sceneRayBlocked?'SCENE_OBJECT_SELECTION_UNCERTAIN':undefined;
       if(choice){
         delete capture.sceneObjectTarget;delete capture.sceneObjectLive;
         const result=recent.find(item=>item.entityId===choice.entityId);
@@ -152,7 +160,7 @@ export function createCreationTargetService(deps:Dependencies) {
       if(selection!==undefined)write(selectionFile,selection);
       // A nearer ordinary actor must not silently select the ground/tree behind it.
       // Keep structured targets unchanged when no ordinary actor was captured.
-      if(capture.sceneObjectTarget||(capture.source!=='recent'&&creation.sceneObjectSelection?.status==='fallback'))capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};
+      if(capture.sceneObjectTarget||(capture.source!=='recent'&&sceneRayBlocked))capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};
       for(const [key,value] of pending)if(now()-value.capture.capturedAt>300000)pending.delete(key);
       if(pending.size>=64)pending.delete(pending.keys().next().value!);
       pending.set(capture.snapshotId,{owner,session:{...session},capture});
