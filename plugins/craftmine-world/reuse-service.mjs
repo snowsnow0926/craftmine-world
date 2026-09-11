@@ -154,12 +154,19 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
   requireValue(typeof call==='function'&&typeof bind==='function'&&typeof enqueue==='function','PACKAGE_INSTALL_HOST_REQUIRED');
   const active=new Map();
   const installSource=async function(args){
-    exactKeys(args,['operationId','worldId','archiveBase64','scene']);operationId(args.operationId);identifier(args.worldId);
+    exactKeys(args,['operationId','worldId','archiveBase64','scene','hostProvenance']);operationId(args.operationId);identifier(args.worldId);
     requireValue(typeof args.archiveBase64==='string'&&args.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(args.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');
     if(args.scene!==undefined)requireValue(text(args.scene,240),'INVALID_SCENE_PATH');
     const fs=await import('node:fs/promises'),path=await import('node:path'),{createHash}=await import('node:crypto');
     requireValue(path.isAbsolute(stagingRoot),'PACKAGE_STAGING_ROOT_REQUIRED');
     const hash=value=>createHash('sha256').update(value).digest('hex');
+    // Only the private Main package gateway supplies this optional provenance.
+    // Legacy requests keep their original exact JSON/hash identity.
+    if(args.hostProvenance!==undefined){
+      const p=args.hostProvenance;exactKeys(p,['format','ref','archiveSha256','owner']);exactKeys(p.ref,['assetId','version','contentHash']);exactKeys(p.owner,['projectId','sessionId','worldId']);
+      requireValue(p.format==='craftmine.catalog-source-install/1'&&typeof p.ref.assetId==='string'&&!!p.ref.assetId.trim()&&Buffer.byteLength(p.ref.assetId)<=120&&!/\p{Cc}/u.test(p.ref.assetId)&&p.ref.assetId!=='latest'&&!/[*?]/.test(p.ref.assetId)&&integer(p.ref.version,1,1_000_000)&&isHash(p.ref.contentHash),'PACKAGE_CATALOG_PROVENANCE_INVALID');
+      requireValue(p.owner.worldId===args.worldId&&text(p.owner.projectId,240)&&(p.owner.sessionId===null||text(p.owner.sessionId,240))&&isHash(p.archiveSha256)&&p.archiveSha256===hash(Buffer.from(args.archiveBase64,'base64')),'PACKAGE_CATALOG_PROVENANCE_INVALID');
+    }
     const requestHash=hash(JSON.stringify(args)),key=hash(JSON.stringify([args.worldId,args.operationId]));
     const previous=active.get(key);if(previous){requireValue(previous.requestHash===requestHash,'OPERATION_CONFLICT');return previous.promise;}
     const entry={requestHash};active.set(key,entry);
@@ -173,8 +180,9 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
       const save=async value=>{const file=intentFile+'.new';const fd=await fs.open(file,'w');try{await fd.writeFile(JSON.stringify(value));await fd.sync();}finally{await fd.close();}await fs.rename(file,intentFile);};
       let intent;try{intent=JSON.parse(await fs.readFile(intentFile,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
       if(intent)requireValue(intent.requestHash===requestHash,'OPERATION_CONFLICT');
+      if(!intent&&args.hostProvenance){intent={requestHash,hostProvenance:args.hostProvenance};await save(intent);}
       if(intent?.ownsTurn)ownedContext=intent.context;
-      if(!intent){
+      if(!intent?.applyRequest){
         const bound=await bind(args.worldId,args.operationId);
         if(bound?.ownsTurn){requireValue(turns,'PACKAGE_TURN_LIFECYCLE_REQUIRED');ownedContext=bound.context;}
         requireValue(bound?.worldRecord?.id===args.worldId&&bound.operation?.worldId===args.worldId&&bound.operation?.operationId===args.operationId&&isObject(bound.context),'PACKAGE_BINDING_MISMATCH');
@@ -236,7 +244,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
         const toolCallId='package-'+key.slice(0,40);
         const applyRequest={context,worldId:args.worldId,toolCallId,revision:identity.revision,manifestHash:identity.manifestHash,operation:bound.operation,files};
         requireValue(Buffer.byteLength(JSON.stringify(applyRequest))<=8*1024*1024,'PACKAGE_INSTALL_REQUEST_TOO_LARGE');
-        intent={requestHash,applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,archiveSha256:archive.archiveSha256,instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
+        intent={requestHash,...(args.hostProvenance?{hostProvenance:args.hostProvenance}:{}),applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,archiveSha256:archive.archiveSha256,instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
       }
       if(!intent.receipt){intent.receipt=await call('godotProject.applyFiles',intent.applyRequest);requireValue(Number.isSafeInteger(intent.receipt.revision)&&typeof intent.receipt.manifestHash==='string','PACKAGE_SOURCE_RECEIPT_REQUIRED');await save(intent);}
       if(!intent.job||intent.job.status==='blocked'&&!intent.ownsTurn){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,...(intent.applyRequest.operation?.branchId?{branchId:intent.applyRequest.operation.branchId}:{}),toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}

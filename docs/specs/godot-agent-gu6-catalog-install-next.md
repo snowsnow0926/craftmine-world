@@ -1,8 +1,8 @@
 # GU6：从资源检索到源包安装的下一步
 
-2026-09-12，只读审计基于 `09f7443a`。以下是待实施增量，当前未交付。
+2026-09-12，只读审计基于 `09f7443a`。下述设计已进入集成，完整成品验收进行中。
 
-开发已开始：模型建议、作品界面和宿主接受路径分别在独立工作树实现。主集成的正式产品验收驱动新增显式 `CRAFTMINE_SOURCE_PACKAGE_MODE=catalog`；在客户端启动前用同一包的真实核心向独立库导入两份固定 ZIP，删除仅供测试的下载副本，然后计划走正常 `importCatalogSource`、检查、采用和冷开重放。种子准备、三层身份区分及原流程回归共 12 项测试通过；此时新宿主方法尚未合入，不能把驱动准备称为实际安装成功。
+模型建议、作品界面和宿主接受路径已分别实现并合入。主集成的正式产品验收驱动增加显式 `CRAFTMINE_SOURCE_PACKAGE_MODE=catalog`；在客户端启动前用同一包的真实核心向独立库导入两份固定 ZIP，删除测试下载副本，再走正常 `importCatalogSource`、检查、采用和冷开重放。种子准备及原流程回归已通过；新完整包尚待验收，不能把驱动准备称为实际安装成功。宿主契约见 [catalog source host contract](godot-agent-gu6-catalog-source-host.md)。本页保留设计范围，实际成品结果单独记录。
 
 现有 `godot_library` 能检索 ZIP，但其 `proposeInstall` 指向旧 library bundle 的 `package.install`，不是 CP0 ZIP 源安装。不能把这两条路径或三层哈希混用。最小方案沿用现有作品面板和 `createManagedPackageInstaller.installSource`，不增加安装注册表。
 

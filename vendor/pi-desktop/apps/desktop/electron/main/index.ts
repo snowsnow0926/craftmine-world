@@ -2887,7 +2887,10 @@ const craftminePanelRequest = createCraftminePanelGateway({
     await sidecar.call("agent.prompt", { ...launch.sidecarParams, craftmineWorld: true, turnId, content, userMessageId: userMessage.id });
   },
   backup: (channel, payload) => craftmineBackup.request(channel, payload),
-  packages: (channel, payload) => craftminePackages.request(channel, payload),
+  packages: (channel, payload, owner) => craftminePackages.request(channel, payload, {...owner,assertCurrent:async()=>{
+    await owner.assertCurrent();
+    if(activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error('ACTIVE_TASK_EXISTS');
+  }}),
   diagnostics: (channel, payload) => craftmineDiagnostics.request(channel, payload),
   issues: (channel, payload) => channel === "issue.export" ? craftmineIssueExports.request(channel, payload) : craftmineIssues.request(channel, payload),
 });
