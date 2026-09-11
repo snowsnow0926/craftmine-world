@@ -328,13 +328,19 @@ impl TaskJournal {
         }
         let mut resumed_from = None;
         let draft = if let Some(previous) = &prior_task {
-            // Only an atomic application receipt permits moving to the new base.
-            // A normal completed turn still owns unapplied edits.
+            // A completed turn still owns unapplied edits. A source application
+            // authored by a separate panel session may supersede only an exact
+            // untouched baseline, proven along the committed build lineage.
             if super::applications::was_applied(
                 &tx,
                 &previous.binding.task_id,
                 &previous.draft_hash,
-            )? {
+            )? || (previous.status == "finished"
+                && previous.binding.base_build != base
+                && super::godot_applications::supersedes_unmodified_draft(
+                    &tx, world_id, base, world.summary.revision,
+                    &previous.binding.base_build, &previous.draft,
+                )?) {
                 json!({"scene":world.world.build["scene"]})
             } else if previous.binding.base_build == base {
                 resumed_from = Some(previous.binding.task_id.clone());

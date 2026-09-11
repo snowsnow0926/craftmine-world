@@ -181,6 +181,138 @@ fn prepare(journal: &mut TaskJournal, candidate: &str, revision: u64) -> Result<
         "worldId":"a","revision":revision,"snapshot":world().snapshot}))
 }
 
+fn external_source_fixture(path: &std::path::Path, dirty: bool) -> Result<(TaskJournal, crate::WorkspaceContext, Value, Value, Value)> {
+    let mut journal = setup(path)?;
+    let mut original = ctx("one");
+    if dirty {
+        let workspace = journal.workspace_inspect(&original)?;
+        journal.workspace_commit(&original, &workspace.task.binding, "unfinished-scene", 0,
+            &json!({"edit":true}), &json!({"scene":{"objects":[{"id":"unfinished"}]}}))?;
+        original = ctx("inherited-dirty");
+        journal.workspace_open(&original, "a")?;
+        assert_eq!(journal.workspace_inspect(&original)?.task.revision, 0);
+    }
+    journal.workspace_end_turn(&original.session_id, &original.turn_id, "completed")?;
+    let panel = crate::WorkspaceContext {session_id:"source-panel".into(), ..ctx("install")};
+    journal.workspace_open(&panel, "a")?;
+    let project = create_project(&mut journal, &panel)?;
+    let (job, checked) = run_check(&mut journal, &panel, &project, "panel-check", true)?;
+    let prepared = prepare(&mut journal, checked["candidateId"].as_str().unwrap(), 0)?;
+    Ok((journal, original, project, job, prepared))
+}
+
+#[test]
+fn external_source_adoption_rebases_only_a_finished_unchanged_scene_draft() -> Result<()> {
+    for dirty in [false, true] {
+        let (_dir, path) = temp()?;
+        let (mut journal, original, _project, job, prepared) = external_source_fixture(&path, dirty)?;
+        let old = journal.workspace_inspect(&original)?.task;
+        journal.godot_application_commit(&evidence(&prepared, job["buildId"].as_str().unwrap(), &world().snapshot["player"]))?;
+        assert_ne!(prepared["authorTaskId"], old.binding.task_id);
+        assert!(!crate::applications::was_applied(&journal.db, &old.binding.task_id, &old.draft_hash)?);
+        let next_context = crate::WorkspaceContext {turn_id:"follow-up".into(), ..original.clone()};
+        if dirty {
+            failed(journal.workspace_open(&next_context, "a"), "DRAFT_BASE_CONFLICT");
+            assert_eq!(journal.workspace_inspect(&original)?.task.draft, old.draft);
+        } else {
+            let next = journal.workspace_open(&next_context, "a")?;
+            assert_eq!(next.task.binding.base_build, job["buildId"]);
+            assert_eq!(next.task.draft, json!({"scene":journal.world_read("a")?.world.build["scene"]}));
+            assert_eq!(next.resumed_from, None);
+            let retained = crate::read_task(&journal.db, &old.binding.task_id)?;
+            assert_eq!(retained.draft, old.draft);
+            assert_eq!(retained.binding, old.binding);
+            assert_eq!(retained.status, "finished");
+            assert!(!crate::applications::was_applied(&journal.db, &old.binding.task_id, &old.draft_hash)?);
+        }
+    }
+    Ok(())
+}
+
+#[test]
+fn external_source_rebase_preserves_pending_source_and_candidate_and_keeps_source_cas() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let (mut journal, original, project, job, prepared) = external_source_fixture(&path, false)?;
+    journal.godot_application_commit(&evidence(&prepared, job["buildId"].as_str().unwrap(), &world().snapshot["player"]))?;
+    let panel = crate::WorkspaceContext {session_id:"source-panel".into(), ..ctx("unfinished-source")};
+    journal.workspace_open(&panel, "a")?;
+    let patch = json!({"context":panel,"worldId":"a","toolCallId":"pending-patch",
+        "revision":project["revision"],"manifestHash":project["manifestHash"],
+        "operations":[{"op":"put","path":"world.gd","text":"extends Node3D\nvar damage := 27\n","expectedHash":digest(SCRIPT)}]});
+    let pending = journal.godot_project_patch(&patch)?;
+    let (_pending_job, checked) = run_check(&mut journal, &panel, &pending, "pending-check", true)?;
+    journal.workspace_end_turn(&panel.session_id, &panel.turn_id, "completed")?;
+    let next_context = crate::WorkspaceContext {turn_id:"follow-up".into(), ..original};
+    journal.workspace_open(&next_context, "a")?;
+    let read = journal.godot_project_read(&json!({"context":next_context,"worldId":"a","revision":pending["revision"],"manifestHash":pending["manifestHash"],"path":"world.gd"}))?;
+    assert!(read["text"].as_str().unwrap().contains("damage := 27"));
+    let candidate = journal.godot_candidate_read(&json!({"context":next_context,"worldId":"a","candidateId":checked["candidateId"]}))?;
+    assert_ne!(candidate["candidate"]["status"], "applied");
+    assert_eq!(journal.world_read("a")?.world.build["id"], job["buildId"]);
+    let mut stale = patch; stale["context"] = serde_json::to_value(&next_context)?; stale["toolCallId"] = json!("stale-cas");
+    failed(journal.godot_project_patch(&stale), "GODOT_PROJECT_REVISION_CONFLICT");
+    Ok(())
+}
+
+#[test]
+fn source_baseline_rebase_requires_applied_current_lineage_and_intact_receipts() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let (mut journal, original, _project, job, prepared) = external_source_fixture(&path, false)?;
+    let old = journal.workspace_inspect(&original)?.task;
+    let build = job["buildId"].as_str().unwrap();
+    assert!(!supersedes_unmodified_draft(&journal.db, "a", build, 1, "base-a", &old.draft)?);
+    journal.godot_application_commit(&evidence(&prepared, build, &world().snapshot["player"]))?;
+    assert!(supersedes_unmodified_draft(&journal.db, "a", build, 1, "base-a", &old.draft)?);
+    assert!(!supersedes_unmodified_draft(&journal.db, "b", build, 1, "base-a", &old.draft)?);
+    assert!(!supersedes_unmodified_draft(&journal.db, "a", "unrelated-current", 3, "base-a", &old.draft)?);
+    assert!(!supersedes_unmodified_draft(&journal.db, "a", build, 0, "base-a", &old.draft)?);
+    journal.db.execute("UPDATE craftmine_godot_applications SET previous_hash='invalid' WHERE id='apply-one'", [])?;
+    failed(supersedes_unmodified_draft(&journal.db, "a", build, 1, "base-a", &old.draft), "CORRUPT_APPLICATION_PREVIOUS_WORLD");
+    Ok(())
+}
+
+#[test]
+fn external_source_rebase_follows_multiple_commits_without_erasing_original_source_work() -> Result<()> {
+    let (_dir, path) = temp()?;
+    let mut journal = setup(&path)?;
+    let original = ctx("one");
+    let first_source = create_project(&mut journal, &original)?;
+    let (_, original_candidate) = run_check(&mut journal, &original, &first_source, "original-pending", true)?;
+    let old = journal.workspace_inspect(&original)?.task;
+    journal.workspace_end_turn(&original.session_id, &original.turn_id, "completed")?;
+    let mut source = first_source.clone();
+    let mut text = SCRIPT.to_owned();
+    for index in 1..=2 {
+        let panel = crate::WorkspaceContext {session_id:"source-panel".into(), ..ctx(&format!("install-{index}"))};
+        journal.workspace_open(&panel, "a")?;
+        let next_text = format!("extends Node3D\nvar damage := {}\n", 20 + index);
+        source = journal.godot_project_patch(&json!({"context":panel,"worldId":"a","toolCallId":format!("patch-{index}"),
+            "revision":source["revision"],"manifestHash":source["manifestHash"],
+            "operations":[{"op":"put","path":"world.gd","text":next_text,"expectedHash":digest(&text)}]}))?;
+        text = next_text;
+        let (job, checked) = run_check(&mut journal, &panel, &source, &format!("check-{index}"), true)?;
+        let world = journal.world_read("a")?;
+        let id = format!("apply-{index}");
+        let prepared = journal.godot_application_prepare(&json!({"id":id,"token":"panel-token","candidateId":checked["candidateId"],
+            "worldId":"a","revision":world.summary.revision,"snapshot":world.world.snapshot}))?;
+        let mut proof = evidence(&prepared, job["buildId"].as_str().unwrap(), &world.world.snapshot["player"]);
+        proof["id"] = json!(id);proof["token"] = json!("panel-token");
+        journal.godot_application_commit(&proof)?;
+    }
+    let next_context = ctx("follow-up");
+    let next = journal.workspace_open(&next_context, "a")?;
+    assert_eq!(next.task.binding.base_build, journal.world_read("a")?.world.build["id"]);
+    assert_eq!(crate::read_task(&journal.db, &old.binding.task_id)?.draft, old.draft);
+    let pending = journal.godot_candidate_read(&json!({"context":next_context,"worldId":"a","candidateId":original_candidate["candidateId"]}))?;
+    assert_ne!(pending["candidate"]["status"], "applied");
+    for (version, expected) in [(&first_source, SCRIPT), (&source, text.as_str())] {
+        let read = journal.godot_project_read(&json!({"context":next_context,"worldId":"a","revision":version["revision"],"manifestHash":version["manifestHash"],"path":"world.gd"}))?;
+        assert_eq!(read["text"], expected);
+    }
+    assert!(!crate::applications::was_applied(&journal.db, &old.binding.task_id, &old.draft_hash)?);
+    Ok(())
+}
+
 #[test]
 fn a_verified_candidate_publishes_only_after_a_real_new_instance_launch() -> Result<()> {
     let (_dir, path) = temp()?;
