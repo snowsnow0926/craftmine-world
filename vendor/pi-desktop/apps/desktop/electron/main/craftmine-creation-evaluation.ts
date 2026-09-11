@@ -1,7 +1,7 @@
 import type { MainWindow } from "./main-window";
 // Opt-in evaluator of the actual renderer -> host -> model -> product tool path.
 // It is reachable only in an already validated, isolated headless profile.
-import {createEvaluationBudget} from "./creation-evaluation-budget";
+import {createEvaluationBudget,evaluationRequestLimit} from "./creation-evaluation-budget";
 import {createEvaluationWishJournal,parseEvaluationWish} from "./creation-evaluation-wish";
 import {evaluationGroundHasSpace} from "./creation-evaluation-placement";
 import {assertEvaluationSession,recordEvaluationSession} from "./creation-evaluation-session";
@@ -25,7 +25,7 @@ type Access={enabled:boolean;window:()=>MainWindow|null;call:(method:string,inpu
 export function installCreationEvaluation(access:Access){
   if(!access.enabled||process.env.CRAFTMINE_CREATION_EVAL!=="1"||!process.send)return;
   const continuity=continuityEvaluationConfiguration(process.env);
-  requestBudget=createEvaluationBudget(process.env.CRAFTMINE_DATA_DIR??"",continuity?.limit??40);
+  requestBudget=createEvaluationBudget(process.env.CRAFTMINE_DATA_DIR??"",continuity?.limit??evaluationRequestLimit(process.env.CRAFTMINE_EVAL_REQUEST_LIMIT));
   const wishes=createEvaluationWishJournal(process.env.CRAFTMINE_DATA_DIR??"");
   let submittingWish=false;
   let sessionId="";const submitted=new Set<string>();

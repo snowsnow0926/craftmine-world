@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
+export function evaluationRequestLimit(value:string|undefined):number {
+  if(value===undefined)return 40;
+  if(!/^(?:[1-9]|[1-3][0-9]|40)$/.test(value))throw Error("EVALUATION_BUDGET_INVALID");
+  return Number(value);
+}
+
 /** Only an already validated isolated evaluator constructs this budget fence. */
 export function createEvaluationBudget(directory:string,limit=40){
   if(!path.isAbsolute(directory)||!Number.isSafeInteger(limit)||limit<1||limit>40)throw Error("EVALUATION_BUDGET_INVALID");
