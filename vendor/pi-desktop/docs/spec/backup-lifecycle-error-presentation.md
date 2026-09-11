@@ -2,6 +2,16 @@
 
 日期：2026-09-12。
 
+## 资料已激活但交接未完成
+
+领域恢复明确返回 completed + activated:true 后，若 afterRestore 失败，backup.restore 返回 `status: reconciliation-pending`、`activated:true`、`errorCode: BACKUP_RESTORED_RECONCILIATION_PENDING` 和原 operationId。backup.status 与同编号重试返回同一部分结果。它不能作为 completed 通过验收；确认资料恢复也不能代表世界重建完成。
+
+工作台固定提示：「备份资料已恢复，但世界启动或界面交接尚未完成。请重新打开应用继续，不要再次恢复这份备份。」待确认卡片依据 result 显示这一提示，不因日志 completed 改为完整成功。取消已激活操作使用 `BACKUP_ALREADY_ACTIVATED`；未知丢回执不产生 activated:true。
+
+已确认部分结果越过原世界切换的 UI 保护，因为激活可能已经换了世界；仅精确的 profile 范围、activated:true 与有限 pending 组合有这个例外。无法刷新原世界待确认列表时隐藏旧卡片，仍保留明确部分结果，不能显示过期的「再次恢复」入口。
+
+## 激活前拒绝
+
 恢复前的视图/主进程生命周期函数有时抛出没有 code 字段的 Error。原服务只读取 errorCode/code，使明确的前置拒绝变成 BACKUP_OPERATION_FAILED。本轮仅允许三个确切 message 值提升为公开 code：BACKUP_PROGRESS_CHANGED_REINSPECT、WORLD_BUSY、ACTIVE_TASK_EXISTS。
 
 已有合法结构化 code 继续原样保留。路径、任意说明、带后缀/换行的文本、未知全大写消息均不得从 message 直接透出。工作台对这些码及标准 pi-plugin-panel-invoke 的确切 Electron 错误包装显示固定短提示：先保存并重新检查备份，或等待当前操作完成。没有通过文本包含匹配推测错误类型。
