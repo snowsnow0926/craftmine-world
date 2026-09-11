@@ -8,6 +8,7 @@ import {fileProof,assertProofs,readCheckpointJson} from './helpers/promo-checkpo
 import {checkpointSanitizer} from './helpers/promo-checkpoint-live-contract.mjs';
 import {readHeadlessProfile} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless-profile.ts';
 import {createFileClarificationExchange} from './helpers/promo-file-clarification.mjs';
+import {reserveLoopbackPort,resumeThroughWorldUi} from './helpers/ordinary-world-ui.mjs';
 
 const [sourceFile,configFile,textFile]=process.argv.slice(2);
 assert.ok([sourceFile,configFile,textFile].every(value=>value&&path.isAbsolute(value)),'Usage: <absolute previous report> <absolute player config snapshot> <absolute player text file> --packaged-root <product> [--live]');
@@ -35,7 +36,8 @@ fs.writeFileSync(output,JSON.stringify(report,null,2),{flag:'wx'});const save=()
 const cancelWatch=setInterval(()=>{if(fs.existsSync(cancelFile))controller.abort();},250);
 const env=adoptionEnvironment(client,{out,profile,token:marker.token});assert.equal(env.CRAFTMINE_CREATION_EVAL,undefined);
 let ready=false,ended=false,exitReport,submitted=false,seenActive=false;const pending=new Map();
-const child=spawn(client.executable,client.args,{cwd:client.cwd,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
+const debugPort=await reserveLoopbackPort();
+const child=spawn(client.executable,[...client.args,'--remote-debugging-address=127.0.0.1','--remote-debugging-port='+debugPort],{cwd:client.cwd,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
 report.logs={stdoutBytes:0,stderrBytes:0};for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>{report.logs[stream+'Bytes']+=bytes.length;});
 const exited=new Promise(resolve=>{child.on('exit',(code,exitSignal)=>{ended=true;report.exit={code,signal:exitSignal};resolve();});child.on('error',error=>{ended=true;report.launchError=error.code;resolve();});});
 child.on('message',message=>{if(message.type==='craftmine-headless-ready')ready=true;if(message.type==='craftmine-headless-exit')exitReport=message;const call=pending.get(message.id);if(call){clearTimeout(call.timer);pending.delete(message.id);message.error?call.reject(Error(message.error)):call.resolve(message.result);}});
@@ -57,7 +59,7 @@ try{
   if(recoverable.items?.length){
     assert.equal(recoverable.items.length,1,'Review multiple interrupted tasks before choosing a recovery');
     const task=recoverable.items[0];
-    report.submission=await rpc('worldNavigation',{channel:'task.resume',payload:{worldId,taskId:task.taskId??task.id,generation:task.generation}});
+    report.submission=await resumeThroughWorldUi(debugPort,worldId,{taskId:task.taskId??task.id,generation:task.generation});
     report.inputPath='ordinary-continue-creation';
     const after=await rpc('playerStatus',{payload});
     const oldIds=new Set(report.before.record.session.messages.map(message=>message.id));
