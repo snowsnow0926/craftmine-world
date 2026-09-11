@@ -32,11 +32,14 @@ async function capture(label,identity){
  fs.writeFileSync(path.join(out,label+'.png'),png);delete frame.pngBase64;record.captures.push({label,before,after,...frame});check(label+' capture uses unchanged attached own view');return frame;
 }
 async function refused(label,identity){const before=await state();let failure;try{await rpc('godotCaptureBoundView',{payload:identity});}catch(error){failure=error.message;}assert.match(failure??'',/GODOT_VIEW_CAPTURE_/);assert.deepEqual(await state(),before);record[label]={refused:true,error:failure};check(label+' rejects without mutation');}
-async function createWorld(title){const value=await nav('world.create',{baseId:'creation-sandbox',starterId:'blank',title,operationId:randomUUID()});assert.equal(typeof value.id,'string');await until(()=>nav('world.list'),r=>r.worlds?.some(w=>w.id===value.id&&w.state==='ready'),'new world',900000);await until(()=>rpc('godotObserve'),r=>r.worldId===value.id&&r.instanceId,'formal runtime');return value.id;}
+async function createWorld(title){const value=await nav('world.create',{baseId:'creation-sandbox',starterId:'blank',title,operationId:randomUUID()});assert.equal(typeof value.id,'string');record.createdWorlds??=[];record.createdWorlds.push(value.id);save();await until(()=>nav('world.list'),r=>r.worlds?.some(w=>w.id===value.id&&w.state==='ready'),'new world',900000);await until(()=>rpc('godotObserve'),r=>r.worldId===value.id&&r.instanceId,'formal runtime');return value.id;}
 try{
  await until(async()=>ready,Boolean,'controller');record.isolation=await until(()=>rpc('status'),s=>s.windows?.length,'window');assert.deepEqual(record.isolation.violations,[]);assert.ok(record.isolation.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
- await until(()=>rpc('primaryMode'),s=>s.entry,'mode entry');await rpc('primaryMode',{payload:{action:'play'}});await until(()=>rpc('primaryMode'),s=>s.play,'ordinary play layout');await until(()=>nav('world.createOptions'),s=>s.bases?.some(b=>b.id==='creation-sandbox'),'base catalog');
+ await until(()=>rpc('primaryMode'),s=>s.entry,'mode entry');await until(()=>nav('world.createOptions'),s=>s.bases?.some(b=>b.id==='creation-sandbox'),'base catalog');
  const worldId=await createWorld('只读截图验收 · 独立世界');record.worldId=worldId;
+ // A brand-new profile has no playable world: the normal play button first
+ // opens world selection. Create a ready world before entering its play UI.
+ await rpc('primaryMode',{payload:{action:'play'}});await until(()=>rpc('primaryMode'),s=>s.play,'ordinary play layout');save();
  record.frozen=await until(()=>panel('godot.runtimeSave',{worldId,freeze:true}),r=>r?.worldId===worldId,'formal freeze');
  const formalState=await state(),formal=formalState.formal;assert.equal(formal.worldId,worldId);assert.ok(['paused','saved'].includes(formalState.state?.state),'Formal paused host state required');record.formalIdentity=formal;
  await capture('formal',formal);await refused('wrong-formal-identity',{...formal,instanceId:'wrong-instance'});
