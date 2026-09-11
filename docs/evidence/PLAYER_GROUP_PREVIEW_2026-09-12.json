@@ -1,0 +1,889 @@
+{
+  "format": "craftmine.player-group-preview-evidence/1",
+  "modelReport": {
+    "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\player-7068bc1e-3e3c-411c-9cf1-79757095260b.json",
+    "sha256": "c452bb89ab12f603163d5dd3e6851e280e495a13f99fdfd1658b85e1d85dc448"
+  },
+  "worldId": "world-dd7fa4f8fff6",
+  "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+  "wish": "在门洞两边加上城墙和塔楼，用现成素材拼成一个完整的城门入口。先一起准备好让我预览。",
+  "modelId": "deepseek-v4.1-flash-expires-on-0910",
+  "thinkingLevel": "max",
+  "modelStatus": "SETTLED_UNVERIFIED",
+  "modelEndedAt": "2026-09-11T22:59:24.616Z",
+  "metrics": {
+    "calls": {
+      "observed": 10,
+      "pending": 0,
+      "reported": 10
+    },
+    "coverage": "complete",
+    "endedAtMs": 1789167558541,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [
+      {
+        "calls": {
+          "observed": 10,
+          "pending": 0,
+          "reported": 10
+        },
+        "coverage": "complete",
+        "modelId": "deepseek-v4.1-flash-expires-on-0910",
+        "providerId": "04a0f8a7-8588-4ed3-8a50-a330b635406a",
+        "tps": {
+          "coverage": "complete",
+          "generationMs": 245094,
+          "outputTokens": 57085,
+          "value": 232.9106383673203,
+          "window": "model-generation"
+        },
+        "usage": {
+          "cacheReadTokens": 630656,
+          "inputTokens": 255004,
+          "outputTokens": 57085,
+          "reasoningTokens": 51757,
+          "totalTokens": 942745
+        }
+      }
+    ],
+    "observedAtMs": 1789167560049,
+    "scope": "root-and-delegates",
+    "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+    "startedAtMs": 1789167249062,
+    "status": "completed",
+    "tps": {
+      "coverage": "complete",
+      "generationMs": 245094,
+      "outputTokens": 57085,
+      "value": 232.9106383673203,
+      "window": "model-generation"
+    },
+    "turnId": "2e94cc77-1069-4688-b126-721ccf9e8a1b",
+    "usage": {
+      "cacheReadTokens": 630656,
+      "inputTokens": 255004,
+      "outputTokens": 57085,
+      "reasoningTokens": 51757,
+      "totalTokens": 942745
+    },
+    "wallTimeMs": 309479
+  },
+  "modelIntegrityVerified": true,
+  "modelExit": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  },
+  "clarifications": [
+    {
+      "questions": [
+        {
+          "question": "这座完整城门入口要拼在哪一处？（两处都能用同一批现成城堡件搭成，只是落点不同）",
+          "options": [
+            "在你身后的现有石拱门/门洞两侧（≈(-0.07, 0, 2.83)，门洞本身可以穿行）——把它补成完整城门【推荐】",
+            "在你准星所指的南侧边界墙那一段（≈(0, 2.5, -31.75)）——在那儿新起一座带门洞的城门；注意边界墙不能开洞，门洞只能作装饰，走进去会被边界墙挡住"
+          ]
+        },
+        {
+          "question": "顺带确认：城墙往门洞两侧延伸多长？（现成件每个直段约 3 米宽、3.93 米高，方塔为基座+中段+垛口）",
+          "options": [
+            "紧凑：两侧各 1 段城墙 + 各 1 座方塔，共 8 件，一次确认装完",
+            "更长：两侧各 2 段城墙（各约 6 米）+ 各 1 座方塔，分两批安装（第一批确认装好后我再准备第二批）",
+            "先只放两座方塔，城墙等我看到预览再定"
+          ]
+        }
+      ],
+      "answers": [
+        [
+          "在你身后的现有石拱门/门洞两侧（≈(-0.07, 0, 2.83)，门洞本身可以穿行）——把它补成完整城门【推荐】"
+        ],
+        [
+          "紧凑：两侧各 1 段城墙 + 各 1 座方塔，共 8 件，一次确认装完"
+        ]
+      ],
+      "choices": [
+        [
+          0
+        ],
+        [
+          0
+        ]
+      ]
+    }
+  ],
+  "libraryCalls": [
+    {
+      "args": {
+        "mode": "search",
+        "query": "wall tower castle gate"
+      },
+      "status": "success",
+      "resultTotal": 0
+    },
+    {
+      "args": {
+        "mode": "search",
+        "query": ""
+      },
+      "status": "success",
+      "resultTotal": 18
+    },
+    {
+      "args": {
+        "mode": "read",
+        "ref": {
+          "assetId": "cw.castle.tower-base",
+          "contentHash": "bad1efd7187734202aaafe5f064a7c012316f7e486313b5f3163bbc7c3becc0a",
+          "version": 1
+        }
+      },
+      "status": "success"
+    },
+    {
+      "args": {
+        "mode": "read",
+        "ref": {
+          "assetId": "cw.castle.wall",
+          "contentHash": "c06a8be6340f25f111b88d4a693fbdcb57056a1709662389b7e9b8fa17f74b34",
+          "version": 1
+        }
+      },
+      "status": "success"
+    },
+    {
+      "args": {
+        "mode": "read",
+        "ref": {
+          "assetId": "cw.castle.tower-top",
+          "contentHash": "f76265e62fe3db1a1700433d6d19ccae936ed02478d09290d0d9b6a6e7e08565",
+          "version": 1
+        }
+      },
+      "status": "success"
+    },
+    {
+      "args": {
+        "mode": "read",
+        "ref": {
+          "assetId": "cw.castle.tower-mid",
+          "contentHash": "47720bb5982ef3a6a8bb6390f1c6be8d5abded2d9081f243165c0aba20cb328a",
+          "version": 1
+        }
+      },
+      "status": "success"
+    },
+    {
+      "args": {
+        "items": [
+          {
+            "position": {
+              "x": -3.816,
+              "y": 0,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.wall",
+              "contentHash": "c06a8be6340f25f111b88d4a693fbdcb57056a1709662389b7e9b8fa17f74b34",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": 3.684,
+              "y": 0,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.wall",
+              "contentHash": "c06a8be6340f25f111b88d4a693fbdcb57056a1709662389b7e9b8fa17f74b34",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": -6.816,
+              "y": 0,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.tower-base",
+              "contentHash": "bad1efd7187734202aaafe5f064a7c012316f7e486313b5f3163bbc7c3becc0a",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": -6.816,
+              "y": 3.03,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.tower-mid",
+              "contentHash": "47720bb5982ef3a6a8bb6390f1c6be8d5abded2d9081f243165c0aba20cb328a",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": -6.816,
+              "y": 6.06,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.tower-top",
+              "contentHash": "f76265e62fe3db1a1700433d6d19ccae936ed02478d09290d0d9b6a6e7e08565",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": 6.684,
+              "y": 0,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.tower-base",
+              "contentHash": "bad1efd7187734202aaafe5f064a7c012316f7e486313b5f3163bbc7c3becc0a",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": 6.684,
+              "y": 3.03,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.tower-mid",
+              "contentHash": "47720bb5982ef3a6a8bb6390f1c6be8d5abded2d9081f243165c0aba20cb328a",
+              "version": 1
+            }
+          },
+          {
+            "position": {
+              "x": 6.684,
+              "y": 6.06,
+              "z": 2.458
+            },
+            "ref": {
+              "assetId": "cw.castle.tower-top",
+              "contentHash": "f76265e62fe3db1a1700433d6d19ccae936ed02478d09290d0d9b6a6e7e08565",
+              "version": 1
+            }
+          }
+        ],
+        "mode": "propose-group"
+      },
+      "status": "success",
+      "proposal": {
+        "applied": false,
+        "displayName": "城墙直段 + 城墙直段 + 方塔基座 + 方塔中段 + 方塔垛口 + 方塔基座 + 方塔中段 + 方塔垛口",
+        "items": [
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.wall",
+              "contentHash": "c06a8be6340f25f111b88d4a693fbdcb57056a1709662389b7e9b8fa17f74b34",
+              "version": 1
+            },
+            "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+            "displayName": "城墙直段",
+            "position": {
+              "x": -3.816,
+              "y": 0,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.wall",
+              "contentHash": "c06a8be6340f25f111b88d4a693fbdcb57056a1709662389b7e9b8fa17f74b34",
+              "version": 1
+            },
+            "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+            "displayName": "城墙直段",
+            "position": {
+              "x": 3.684,
+              "y": 0,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.tower-base",
+              "contentHash": "bad1efd7187734202aaafe5f064a7c012316f7e486313b5f3163bbc7c3becc0a",
+              "version": 1
+            },
+            "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+            "displayName": "方塔基座",
+            "position": {
+              "x": -6.816,
+              "y": 0,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.tower-mid",
+              "contentHash": "47720bb5982ef3a6a8bb6390f1c6be8d5abded2d9081f243165c0aba20cb328a",
+              "version": 1
+            },
+            "archiveSha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e",
+            "displayName": "方塔中段",
+            "position": {
+              "x": -6.816,
+              "y": 3.03,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.tower-top",
+              "contentHash": "f76265e62fe3db1a1700433d6d19ccae936ed02478d09290d0d9b6a6e7e08565",
+              "version": 1
+            },
+            "archiveSha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450",
+            "displayName": "方塔垛口",
+            "position": {
+              "x": -6.816,
+              "y": 6.06,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.tower-base",
+              "contentHash": "bad1efd7187734202aaafe5f064a7c012316f7e486313b5f3163bbc7c3becc0a",
+              "version": 1
+            },
+            "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+            "displayName": "方塔基座",
+            "position": {
+              "x": 6.684,
+              "y": 0,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.tower-mid",
+              "contentHash": "47720bb5982ef3a6a8bb6390f1c6be8d5abded2d9081f243165c0aba20cb328a",
+              "version": 1
+            },
+            "archiveSha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e",
+            "displayName": "方塔中段",
+            "position": {
+              "x": 6.684,
+              "y": 3.03,
+              "z": 2.458
+            }
+          },
+          {
+            "archiveRef": {
+              "assetId": "cw.castle.tower-top",
+              "contentHash": "f76265e62fe3db1a1700433d6d19ccae936ed02478d09290d0d9b6a6e7e08565",
+              "version": 1
+            },
+            "archiveSha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450",
+            "displayName": "方塔垛口",
+            "position": {
+              "x": 6.684,
+              "y": 6.06,
+              "z": 2.458
+            }
+          }
+        ],
+        "kind": "group",
+        "method": "installSourceProposal",
+        "proposalId": "source-20a92aaf8b5cb3236836cd5468246c56fee7d910bedc8378",
+        "requiresPlayerAction": true,
+        "source": {
+          "manifestHash": "1e770fa01299346ca533737ec604e80fab36d4c864a2f5ad3624a1d5e017e50d",
+          "revision": 3
+        },
+        "status": "proposed",
+        "worldId": "world-dd7fa4f8fff6"
+      }
+    }
+  ],
+  "captureCalls": [
+    {
+      "name": "plugin_craftmine_world_godot_view_capture",
+      "status": "error",
+      "contentTypes": [
+        "text"
+      ],
+      "details": {
+        "error": "GODOT_VIEW_CAPTURE_DIMENSIONS"
+      }
+    }
+  ],
+  "sourcePatchCalls": 0,
+  "reports": [
+    {
+      "proof": {
+        "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-2de7641f-4820-46e0-baab-ccaba35db04a\\report.json",
+        "sha256": "29ea9b3ac53edcd679e1a54177b40dd7e255f93d464045b5ef7f9e64a7bff742"
+      },
+      "ok": false,
+      "error": "Error: PROPOSAL_CLIENT_EXITED",
+      "launches": [
+        {
+          "number": 1,
+          "stdoutBytes": 3486,
+          "stderrBytes": 290,
+          "exit": {
+            "code": 4294967295,
+            "signal": null
+          }
+        }
+      ],
+      "counts": {
+        "status": 4,
+        "primaryMode": 436,
+        "godotObserve": 24,
+        "worldPanel:godot.runtimeResume": 1
+      },
+      "preview": null,
+      "reframe": null
+    },
+    {
+      "proof": {
+        "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-54b7c2aa-933f-4631-bd66-fff68665c3c2\\report.json",
+        "sha256": "c893c2c168a649e7708f094d68f6ac81a06c402bf0f889761862beee46b116ea"
+      },
+      "ok": true,
+      "stateIntegrityVerified": true,
+      "launches": [
+        {
+          "number": 1,
+          "stdoutBytes": 6368,
+          "stderrBytes": 1442,
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        }
+      ],
+      "counts": {
+        "status": 4,
+        "primaryMode": 5,
+        "godotObserve": 26,
+        "worldPanel:godot.runtimeResume": 1,
+        "godotCaptureBoundState": 6,
+        "godotCaptureBoundView": 3,
+        "worldPanel:package.request:sourceProposals": 1,
+        "worldPanel:package.request:sourceList": 2,
+        "worldPanel:package.request:installSourceProposal": 1,
+        "worldPanel:package.request:sourceJob": 24,
+        "worldPanel:godot.candidateList": 1,
+        "worldPanel:godot.candidateRead": 1,
+        "worldPanel:godot.candidatePreview": 1,
+        "worldPanel:godot.candidateClose": 1,
+        "quit": 1
+      },
+      "installed": {
+        "worldId": "world-dd7fa4f8fff6",
+        "applied": false,
+        "status": "check-queued",
+        "instanceIds": [
+          "ins-c26f2fc34e8f1479fc1a199a",
+          "ins-478c7fa5192e1c613f28650d",
+          "ins-9de3589fcb52dc27561e671d",
+          "ins-63ecd97c7a87b7e288db537e",
+          "ins-6f4336bd26d4fe3a03012c5c",
+          "ins-a1f69e8cda073350ed2a4419",
+          "ins-188f72d3cd26d978aaf7aee8",
+          "ins-04ac6382731adc3a91b33662"
+        ],
+        "archives": [
+          {
+            "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+            "instanceIds": [
+              "ins-c26f2fc34e8f1479fc1a199a"
+            ]
+          },
+          {
+            "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+            "instanceIds": [
+              "ins-478c7fa5192e1c613f28650d"
+            ]
+          },
+          {
+            "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+            "instanceIds": [
+              "ins-9de3589fcb52dc27561e671d"
+            ]
+          },
+          {
+            "archiveSha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e",
+            "instanceIds": [
+              "ins-63ecd97c7a87b7e288db537e"
+            ]
+          },
+          {
+            "archiveSha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450",
+            "instanceIds": [
+              "ins-6f4336bd26d4fe3a03012c5c"
+            ]
+          },
+          {
+            "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+            "instanceIds": [
+              "ins-a1f69e8cda073350ed2a4419"
+            ]
+          },
+          {
+            "archiveSha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e",
+            "instanceIds": [
+              "ins-188f72d3cd26d978aaf7aee8"
+            ]
+          },
+          {
+            "archiveSha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450",
+            "instanceIds": [
+              "ins-04ac6382731adc3a91b33662"
+            ]
+          }
+        ],
+        "source": {
+          "revision": 4,
+          "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd"
+        },
+        "job": {
+          "id": "gjob-a670805c198c8327922bc34e64d0d66bab6418315d59d2e6a0c51430de5388d4",
+          "status": "queued"
+        }
+      },
+      "checked": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+        "baseId": "creation-sandbox",
+        "buildBytes": 51186465,
+        "buildFiles": 112,
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+        "checkJobId": "gjob-a670805c198c8327922bc34e64d0d66bab6418315d59d2e6a0c51430de5388d4",
+        "checkOutputHash": "85986feafff3ce9ab927d0ffcac7e5aab9cb7ffddeb340047f08e2668e237598",
+        "content": {
+          "branchId": "main",
+          "contentOid": "0eea6a4544c9ffc945f8ad02b00a91a971e4b1ee",
+          "repoId": "world-world-dd7fa4f8fff6"
+        },
+        "createdAt": 1789168291356,
+        "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd",
+        "sourceRevision": 4,
+        "status": "ready",
+        "updatedAt": 1789168291356,
+        "worldId": "world-dd7fa4f8fff6"
+      },
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=2",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "preview": {
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-54b7c2aa-933f-4631-bd66-fff68665c3c2\\preview.png",
+          "sha256": "5a7b836af910933f9e3bb73888bf67d7bfbd3b25cd66f756c1f112cb47b7ee31"
+        },
+        "scope": "candidate",
+        "worldId": "world-dd7fa4f8fff6",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+        "instanceId": "7ebf6c30fbe1dbdddb443210",
+        "width": 1200,
+        "height": 800,
+        "hostStateAndBoundsUnchanged": true
+      },
+      "formalBuildAfter": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+      "sourceRevisionAfter": 4,
+      "sourceItemsAfter": 10,
+      "reframe": null
+    },
+    {
+      "proof": {
+        "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-599570da-479a-4763-a40f-aa5298b7fa88\\report.json",
+        "sha256": "cc1b5a18d9dfba293bc8e105e83e44b9607cefa09c2d792b4f5b81b462b261fd"
+      },
+      "ok": true,
+      "stateIntegrityVerified": true,
+      "launches": [
+        {
+          "number": 1,
+          "stdoutBytes": 5390,
+          "stderrBytes": 2638,
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "exit": {
+            "code": 0,
+            "signal": null
+          }
+        }
+      ],
+      "counts": {
+        "status": 4,
+        "primaryMode": 5,
+        "godotObserve": 26,
+        "worldPanel:godot.runtimeResume": 1,
+        "godotCaptureBoundState": 6,
+        "godotCaptureBoundView": 3,
+        "worldPanel:package.request:sourceJob": 1,
+        "worldPanel:package.request:sourceList": 2,
+        "godotExplore": 1,
+        "worldPanel:godot.candidateList": 1,
+        "worldPanel:godot.candidateRead": 1,
+        "worldPanel:godot.candidatePreview": 1,
+        "worldPanel:godot.candidateClose": 1,
+        "quit": 1
+      },
+      "installed": {
+        "worldId": "world-dd7fa4f8fff6",
+        "applied": false,
+        "status": "check-queued",
+        "instanceIds": [
+          "ins-c26f2fc34e8f1479fc1a199a",
+          "ins-478c7fa5192e1c613f28650d",
+          "ins-9de3589fcb52dc27561e671d",
+          "ins-63ecd97c7a87b7e288db537e",
+          "ins-6f4336bd26d4fe3a03012c5c",
+          "ins-a1f69e8cda073350ed2a4419",
+          "ins-188f72d3cd26d978aaf7aee8",
+          "ins-04ac6382731adc3a91b33662"
+        ],
+        "archives": [
+          {
+            "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+            "instanceIds": [
+              "ins-c26f2fc34e8f1479fc1a199a"
+            ]
+          },
+          {
+            "archiveSha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7",
+            "instanceIds": [
+              "ins-478c7fa5192e1c613f28650d"
+            ]
+          },
+          {
+            "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+            "instanceIds": [
+              "ins-9de3589fcb52dc27561e671d"
+            ]
+          },
+          {
+            "archiveSha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e",
+            "instanceIds": [
+              "ins-63ecd97c7a87b7e288db537e"
+            ]
+          },
+          {
+            "archiveSha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450",
+            "instanceIds": [
+              "ins-6f4336bd26d4fe3a03012c5c"
+            ]
+          },
+          {
+            "archiveSha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59",
+            "instanceIds": [
+              "ins-a1f69e8cda073350ed2a4419"
+            ]
+          },
+          {
+            "archiveSha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e",
+            "instanceIds": [
+              "ins-188f72d3cd26d978aaf7aee8"
+            ]
+          },
+          {
+            "archiveSha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450",
+            "instanceIds": [
+              "ins-04ac6382731adc3a91b33662"
+            ]
+          }
+        ],
+        "source": {
+          "revision": 4,
+          "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd"
+        },
+        "job": {
+          "id": "gjob-a670805c198c8327922bc34e64d0d66bab6418315d59d2e6a0c51430de5388d4",
+          "status": "queued"
+        }
+      },
+      "checked": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+        "baseId": "creation-sandbox",
+        "buildBytes": 51186465,
+        "buildFiles": 112,
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+        "checkJobId": "gjob-a670805c198c8327922bc34e64d0d66bab6418315d59d2e6a0c51430de5388d4",
+        "checkOutputHash": "85986feafff3ce9ab927d0ffcac7e5aab9cb7ffddeb340047f08e2668e237598",
+        "content": {
+          "branchId": "main",
+          "contentOid": "0eea6a4544c9ffc945f8ad02b00a91a971e4b1ee",
+          "repoId": "world-world-dd7fa4f8fff6"
+        },
+        "createdAt": 1789168291356,
+        "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd",
+        "sourceRevision": 4,
+        "status": "ready",
+        "updatedAt": 1789168291356,
+        "worldId": "world-dd7fa4f8fff6"
+      },
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=2",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "preview": {
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-599570da-479a-4763-a40f-aa5298b7fa88\\preview.png",
+          "sha256": "5a7b836af910933f9e3bb73888bf67d7bfbd3b25cd66f756c1f112cb47b7ee31"
+        },
+        "scope": "candidate",
+        "worldId": "world-dd7fa4f8fff6",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+        "instanceId": "41a532f5027b3e996a77ee46",
+        "width": 1200,
+        "height": 800,
+        "hostStateAndBoundsUnchanged": true
+      },
+      "formalBuildAfter": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+      "sourceRevisionAfter": 4,
+      "sourceItemsAfter": 10,
+      "reframe": {
+        "request": {
+          "worldId": "world-dd7fa4f8fff6",
+          "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+          "instanceId": "0a4bf6f7665b40e663849a3c",
+          "steps": [
+            {
+              "op": "look",
+              "args": {
+                "yaw": 0,
+                "pitch": 0.18
+              }
+            },
+            {
+              "op": "walk",
+              "args": {
+                "forward": -1,
+                "right": 0,
+                "frames": 120
+              }
+            },
+            {
+              "op": "walk",
+              "args": {
+                "forward": -1,
+                "right": 0,
+                "frames": 20
+              }
+            },
+            {
+              "op": "wait",
+              "args": {
+                "frames": 30
+              }
+            }
+          ]
+        },
+        "before": {
+          "onFloor": true,
+          "pitch": 0.03,
+          "position": [
+            0,
+            0.899999976158142,
+            0.0238904766738415
+          ],
+          "yaw": 0
+        },
+        "after": {
+          "onFloor": true,
+          "pitch": 0.18,
+          "position": [
+            0,
+            0.899999976158142,
+            10.8338775634766
+          ],
+          "yaw": 0
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "首次预览驱动在世界列表未ready时点了正常play按钮，卡在选世界页；无源码写入，精确停止了该后台进程。该次是harness失败，不是模型或group失败。",
+    "8件group已经正式检查并预览，但没有采用。",
+    "现有模型截图返回DIMENSIONS错误，未附图。",
+    "补取景正式玩家后退成功，但重开候选沿检查快照起点，图仍朝向林内；不能据此判断城门正面构图或候选通行。",
+    "只有一次普通模型愿望，没有设置额外评测额度或时间上限。"
+  ]
+}
