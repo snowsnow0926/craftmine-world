@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../stores/app-store";
-import { setCraftmineOverlay } from "../lib/craftmine-layout";
+import { loadCraftmineLayout, setCraftmineOverlay } from "../lib/craftmine-layout";
 import { toolWorkPanelTab } from "../lib/work-panel-tabs";
 import { FilesTab } from "./workpanel/FilesTab";
 import { ReviewTab } from "./workpanel/ReviewTab";
@@ -30,7 +30,7 @@ export function CraftmineWorkbenchSurface({ immersive, full, children }: {
     previous.current = { activeId, fileRequest };
     // A new artifact is visible immediately, including reopening the same file.
     // Entering play alone must not open a window over the world.
-    if (immersive && active && changed) setCraftmineOverlay("full");
+    if (immersive && active && changed && loadCraftmineLayout(localStorage).overlay !== "closed") setCraftmineOverlay("full");
   }, [immersive, active, activeId, fileRequest]);
 
   const showArtifacts = immersive && full;
