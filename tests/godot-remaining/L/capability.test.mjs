@@ -83,12 +83,12 @@ test('a plugin tool follows the capability flag it depends on',()=>{
   assert.equal(disabled.tools.find(tool=>tool.name==='godot_docs').reachable,true,'docs need no flag');
 });
 
-test('the history/asset contract is advertised but blocked until its adapter lands',()=>{
+test('an old core without history flags is unknown, not permanently unwired',()=>{
   const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:HANDSHAKE});
   const history=inventory.tools.find(tool=>tool.name==='godot_history');
   assert.equal(history.wired,true);
-  assert.equal(history.reachable,false);
-  assert.equal(history.blockedBy,'DEPENDENCY_NOT_WIRED');
+  assert.equal(history.reachable,null);
+  assert.equal(history.blockedBy,'CAPABILITY_FLAG_UNKNOWN');
 });
 
 test('a gap without evidence is undetermined, never a guess',()=>{
@@ -134,4 +134,57 @@ test('the capability report bundles tools, gaps and limits without inflating the
   assert.equal(report.gapClassifications[0].category,'developable-with-ordinary-script');
   assert.equal(report.limits.reason,'BUDGET_PROVIDER_NOT_WIRED');
   assert.ok(report.guidance.some(line=>/do not claim a capability outside it/.test(line)));
+});
+
+
+const FULL={...HANDSHAKE,contentHistory:true,assetCatalog:true,creationPackages:true};
+const BOUND={worldId:'alpha',repository:{registered:true}};
+function modes(name,{handshake=FULL,executionContext=BOUND,methodOverrides={}}={}){
+ return buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake,executionContext,methodOverrides})
+  .tools.find(tool=>tool.name===name).modes;
+}
+test('actual modes distinguish read routes from player-only proposals',()=>{
+ for(const name of ['godot_history','asset_library','package_library']){
+  const entries=modes(name);
+  const schema=manifest.contributes.agentTools.find(tool=>tool.name===name).schema;
+  assert.deepEqual(entries.map(entry=>entry.mode).sort(),schema.properties.mode.enum.slice().sort());
+  assert.ok(entries.every(entry=>entry.reachable===true));
+  for(const entry of entries){
+   if(entry.kind==='proposal'){assert.equal(entry.hostMethod,null);assert.equal(entry.applies,false);assert.equal(entry.requiresPlayerAction,true);}
+   else assert.equal(HOST_METHODS[entry.hostMethod].capability,entry.needs.at(-1));
+  }
+ }
+});
+test('dedicated flags override old generic flags and missing flags remain unknown',()=>{
+ for(const [name,flag] of [['asset_library','assetCatalog'],['package_library','creationPackages'],['godot_history','contentHistory']]){
+  for(const value of [false,undefined]){
+   const entries=modes(name,{handshake:{...FULL,[flag]:value}});
+   assert.ok(entries.filter(entry=>entry.kind==='read').every(entry=>entry.reachable===(value===false?false:null)));
+   assert.ok(entries.filter(entry=>entry.kind==='proposal').every(entry=>entry.applies===false));
+  }
+ }
+ assert.equal(modes('asset_library',{handshake:{...FULL,sessionDrafts:undefined,assetCatalog:false}})[0].reachable,false);
+});
+test('unbound sessions, unmigrated worlds and unavailable git are distinct from wiring',()=>{
+ assert.ok(modes('asset_library',{executionContext:{}}).every(entry=>entry.reachable===null&&entry.blockedBy==='WORLD_BINDING_UNRESOLVED'));
+ const legacy=modes('godot_history',{executionContext:{worldId:'alpha',repository:{registered:false}}});
+ assert.equal(legacy.find(entry=>entry.mode==='history').reachable,false);
+ assert.equal(legacy.find(entry=>entry.mode==='operation').reachable,true);
+ assert.equal(legacy.find(entry=>entry.mode==='checkpoint').applies,false);
+ assert.equal(modes('godot_history',{executionContext:{worldId:'alpha',repository:{registered:null,reason:'CONTENT_STATUS_UNAVAILABLE'}}})[0].reachable,null);
+});
+test('host method overrides are shown but cannot inherit unverified availability',()=>{
+ const entry=modes('godot_history',{methodOverrides:{historyMethods:{history:'custom.history'}}})[0];
+ assert.equal(entry.hostMethod,'custom.history');assert.equal(entry.reachable,null);assert.equal(entry.blockedBy,'CUSTOM_METHOD_UNVERIFIED');
+ const asset=modes('asset_library',{methodOverrides:{libraryMethods:{asset:{read:'custom.read'}}}}).find(entry=>entry.mode==='read');
+ assert.equal(asset.hostMethod,'custom.read');assert.equal(asset.reachable,null);
+});
+test('capability context uses durable session identity and never opens a workspace',async()=>{
+ const {readCapabilityContext}=require(path.join(root,'plugins/craftmine-world/godot-capability.cjs'));
+ const calls=[];
+ const core={call:async(method,params)=>{calls.push({method,params});if(method==='task.context')return {world:{id:'bound-world'}};
+  if(method==='content.status'){assert.equal(params.worldId,'bound-world');return {registered:false};}throw Error('unexpected write');}};
+ assert.deepEqual(await readCapabilityContext(core,{sessionId:'s'},FULL),{worldId:'bound-world',repository:{registered:false}});
+ assert.deepEqual(calls.map(call=>call.method),['task.context','content.status']);
+ assert.equal((await readCapabilityContext({call:async()=>{throw Error('missing');}},{},FULL)).worldId,null);
 });

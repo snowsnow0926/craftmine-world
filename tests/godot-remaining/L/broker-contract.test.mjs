@@ -52,10 +52,16 @@ const HANDSHAKE={format:'craftmine.core/1',godotProjects:true,godotExecution:fal
   publishesWorlds:true,agentPublishesWorlds:false};
 
 let sequence=0;
-function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false,noWorld=false}={}){
+function fixture({discussionOnly=false,sampler,historyMethods,settingsFlag=false,noWorld=false,registered=false}={}){
   const calls=[];
-  const core={start:async()=>HANDSHAKE,call:async(method,params)=>{
+  const core={start:async()=>({...HANDSHAKE,...(registered?{contentHistory:true,assetCatalog:true,creationPackages:true}:{})}),call:async(method,params)=>{
     calls.push({method,params});
+    if(registered){
+      if(method==='task.context')return {world:{id:'alpha'}};
+      if(method==='content.status')return {registered:true,repoId:'world-alpha'};
+      if(['content.history','content.changes','content.operation.read','asset.search','asset.read','asset.versions',
+        'package.check','package.read','package.list'].includes(method))return {items:[],method};
+    }
     if(method==='workspace.open')return {worldId:'alpha',task:{binding:{taskId:'task-1',baseBuild:'gbd-0',
       repoId:'world-alpha',branchId:'plan-1'},revision:3,draftHash:'h'.repeat(64),draft:{scene:{objects:[],systems:[],behaviors:[]}}}};
     if(method==='godotProject.index'){
@@ -132,7 +138,7 @@ test('godot_capability_report advertises what is really reachable',async()=>{
   const report=await f.call('godot_capability_report',{});
   assert.equal(report.handshake.godotBuildJobs,true);
   assert.equal(report.handshake.godotExecution,false);
-  assert.equal(report.tools.length,35,'all advertised world tools except runtime_info');
+  assert.equal(report.tools.length,36,'all advertised world tools except runtime_info');
   assert.equal(report.tools.filter(tool=>tool.wired===false).length,0);
   assert.equal(report.tools.find(tool=>tool.name==='workspace_patch').reachable,true);
   assert.equal(report.tools.find(tool=>tool.name==='godot_build_start').reachable,true);
@@ -354,3 +360,26 @@ test('the broker still rejects forged fields and ended turns for the new tools',
 });
 
 console.log('evidence_directory='+staging);
+
+
+test('current registered adapters agree with the mode report and proposals never write',async()=>{
+  const f=fixture({registered:true,discussionOnly:true});
+  const report=await f.call('godot_capability_report',{});
+  assert.deepEqual(f.calls.map(call=>call.method),['task.context','content.status']);
+  const ref={repoId:'world-alpha',commitOid:'a'.repeat(40),assetLockHash:'b'.repeat(64)};
+  const asset={assetId:'pet-model',version:1,contentHash:'c'.repeat(64)};
+  const requests={godot_history:{history:{},version:{contentRef:ref},diff:{from:ref,to:ref},operation:{operationId:'op-1'}},
+    asset_library:{search:{scope:'current-world'},read:{assetId:'pet-model'},versions:{assetId:'pet-model'}},
+    package_library:{check:{ref:asset,target:{base:'creation-sandbox',engine:'godot'}},read:{instanceId:'pet-1'},list:{}}};
+  for(const [name,modes] of Object.entries(requests))for(const [mode,args] of Object.entries(modes)){
+    const advertised=report.tools.find(tool=>tool.name===name).modes.find(entry=>entry.mode===mode);
+    assert.equal(advertised.reachable,true,name+':'+mode);
+    const result=await f.call(name,{mode,...args});
+    assert.equal(result.available,true);assert.equal(result.method,advertised.hostMethod);
+  }
+  const before=f.calls.length;
+  const proposal=await f.call('godot_history',{mode:'checkpoint',contentRef:ref});
+  assert.equal(proposal.applies,false);assert.equal(proposal.requiresPlayerAction,true);
+  assert.ok(f.calls.slice(before).every(call=>call.method==='workspace.open'));
+  assert.ok(!f.calls.some(call=>['content.checkpoint.set','content.branch.merge','package.install'].includes(call.method)));
+});
