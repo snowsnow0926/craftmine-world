@@ -45,6 +45,7 @@ func run():
    world.add_child(node)
    var record = {"id":item.id, "entry":entry, "nodes":0, "meshInstances":0, "triangles":0, "collisionTriangles":0, "texturedSurfaces":0, "surfacesWithLods":0}
    inspect(node, record)
+   assert(record.surfacesWithLods == 0, "Shipped import configuration must disable generated LODs")
    assert(record.triangles == item.geometry.triangles, "Imported triangle count changed")
    var box: AABB = record.bounds
    assert(absf(box.position.y) < 0.0001, "Wrapper must touch ground at y=0")

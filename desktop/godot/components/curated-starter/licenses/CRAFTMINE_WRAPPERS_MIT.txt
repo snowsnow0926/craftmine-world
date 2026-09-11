@@ -1,5 +1,6 @@
-Scope: the original Craftmine wrapper scenes in scenes/ and identity-only
-scripts/*.gd in this curated-starter directory. This notice
+Scope: the original Craftmine wrapper scenes in scenes/, identity-only
+scripts/*.gd and models/**/*.glb.import configurations in this curated-starter
+directory. This notice
 does not relicense the Craftmine client or the separately licensed Kenney assets.
 
 MIT License
