@@ -172,7 +172,7 @@ export function installCreationEvaluation(access:Access){
       const observation=await access.observe().catch(()=>null);
       const worldId=observation?.worldId;
       return {sessionId,budget:requestBudget?.snapshot(),active:access.active(sessionId),record:await access.call("session.get",{id:sessionId}),metrics:await access.call("session.turnMetrics",{sessionId}).catch(()=>null),observation,
-        ...(continuity?{application:await panel('godot.creationTaskStatus',{sessionId}).catch(error=>({error:String(error?.message??error)}))}:{}),
+        application:await panel('godot.creationTaskStatus',{sessionId}).catch(error=>({error:String(error?.message??error)})),
         world:worldId?await access.domain("world.read",{id:worldId}):null,
         job:worldId?await access.domain("godotBuild.latest",{worldId,sessionId}):null};
     }
