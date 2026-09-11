@@ -6,36 +6,30 @@ import {resolveCreationNativeLaunch,creationPackagedRoot} from './helpers/creati
 import {adoptionEnvironment} from './helpers/promo-adoption-contract.mjs';
 import {fileProof,assertProofs,readCheckpointJson} from './helpers/promo-checkpoint-contract.mjs';
 import {checkpointSanitizer} from './helpers/promo-checkpoint-live-contract.mjs';
-import {readHeadlessProfile} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless-profile.ts';
 import {createFileClarificationExchange} from './helpers/promo-file-clarification.mjs';
 import {reserveLoopbackPort,resumeThroughWorldUi,finishInterruptedThroughWorldUi,createSessionThroughDesktopUi} from './helpers/ordinary-world-ui.mjs';
+import {inspectPlayerSource} from './helpers/promo-player-source.mjs';
 
 const [sourceFile,configFile,textFile]=process.argv.slice(2);
 assert.ok([sourceFile,configFile,textFile].every(value=>value&&path.isAbsolute(value)),'Usage: <absolute previous report> <absolute player config snapshot> <absolute player text file> --packaged-root <product> [--create-session] [--live]');
-const source=readCheckpointJson(sourceFile),config=readCheckpointJson(configFile),text=fs.readFileSync(textFile,'utf8').trim();
+const createSession=process.argv.includes('--create-session'),input=inspectPlayerSource(sourceFile,{createSession});
+const {out,profile,marker,worldId,recoveryBinding}=input,config=readCheckpointJson(configFile),text=fs.readFileSync(textFile,'utf8').trim();
 assert.ok(text&&config.format==='craftmine.player-config-snapshot/1'&&config.credentialsIncluded===false,'Player text and non-secret config required');
-const out=path.dirname(sourceFile),profile=path.join(out,'profile'),markerFile=path.join(profile,'headless-profile.json'),marker=readCheckpointJson(markerFile);
-readHeadlessProfile({CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:out,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:marker.token});
-let sessionId=source.sessionId??source.session?.sessionId??source.latest?.record?.session?.id;
-const worldId=source.worldId,createSession=process.argv.includes('--create-session');
-assert.ok(typeof worldId==='string','Existing world required');
-if(createSession){
- assert.equal(sessionId,undefined,'Reuse the existing session instead of creating a replacement');
- assert.equal(source.format,'craftmine.builtin-prefab-demo/1');assert.equal(source.ok,true,'Complete the prefab demo before model follow-up');assert.equal(source.stateIntegrityVerified,true);
-}else assert.ok(typeof sessionId==='string','Existing session required; a completed sessionless demo may explicitly use --create-session');
+let sessionId=input.sessionId;
 const packagedRoot=creationPackagedRoot();assert.ok(packagedRoot,'Explicit frozen package required');
-if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',sourceFile,sessionId:sessionId??null,createSession,worldId,modelId:config.modelId,thinkingLevel:config.thinkingLevel,contextWindow:config.contextWindow,maxTokens:config.maxTokens,text,packagedRoot,modelRequests:0,creationEvaluation:false}));process.exit(0);}
+if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',sourceFile,profile,sourceProofs:input.proofs,sessionId:sessionId??null,createSession,worldId,recoveryBinding,modelId:config.modelId,thinkingLevel:config.thinkingLevel,contextWindow:config.contextWindow,maxTokens:config.maxTokens,text,packagedRoot,modelRequests:0,creationEvaluation:false}));process.exit(0);}
 const secretsFile=process.env.CRAFTMINE_LIVE_CONFIG;assert.ok(secretsFile&&path.isAbsolute(secretsFile),'Explicit local secrets configuration required');
 const secrets={};loadLocalConfig(secretsFile,secrets);const secret=secrets.CRAFTMINE_DEEPSEEK_API_KEY??secrets.DEEPSEEK_API_KEY??secrets.CRAFTMINE_EVAL_KEY;
 assert.ok(secret&&config.baseUrl==='https://api.deepseek.com'&&config.vendorKey==='deepseek','Only the selected DeepSeek endpoint receives this key');
 const client=resolveCreationNativeLaunch({root:process.cwd(),packagedRoot,requiredGuards:['HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED','playerSetup','playerPrompt','headlessAskPending','headlessAskResolve','headlessPermissionPending','headlessPermissionResolve']});
-const proofs=[sourceFile,markerFile,configFile,textFile].map(fileProof),sanitize=checkpointSanitizer([secret,marker.token]),runId=randomUUID();
+const proofs=[...input.proofs,...[configFile,textFile].map(fileProof)],sanitize=checkpointSanitizer([secret,marker.token]),runId=randomUUID();
 const output=path.join(out,'player-'+runId+'.json'),controller=new AbortController(),signal=controller.signal;
 const cancelFile=path.join(out,'player-'+runId+'.cancel');
 for(const event of ['SIGINT','SIGTERM'])process.on(event,()=>controller.abort());
 const exchange=createFileClarificationExchange({directory:path.join(out,'player-questions-'+runId),signal});
 const permissionDirectory=path.join(out,'player-permissions-'+runId);fs.mkdirSync(permissionDirectory);
 const report={format:'craftmine.promo-player/1',sourceReport:sourceFile,worldId,sessionId,packageIdentity:client.identity,playerConfig:config,text,messageId:randomUUID(),startedAt:new Date().toISOString(),status:'PREPARING',clarifications:[],permissions:[],permissionDirectory,questionDirectory:exchange.directory,creationEvaluation:false,sourceEditsByHarness:0};
+report.sourceProofs=input.proofs;report.sourceRecovery=recoveryBinding;
 report.cancelFile=cancelFile;
 fs.writeFileSync(output,JSON.stringify(report,null,2),{flag:'wx'});const save=()=>fs.writeFileSync(output,JSON.stringify(sanitize(report),null,2));
 const cancelWatch=setInterval(()=>{if(fs.existsSync(cancelFile))controller.abort();},250);
@@ -54,7 +48,13 @@ try{
   await until(async()=>ready,Boolean);const isolation=await until(()=>rpc('status'),value=>value.windows?.length);
   assert.deepEqual(isolation.violations,[]);assert.ok(isolation.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
   await until(()=>rpc('primaryMode'),value=>value.entry);await rpc('primaryMode',{payload:{action:'create'}});
-  await until(()=>rpc('godotObserve'),value=>{assert.equal(value.worldId,worldId,'Existing selected world changed');return value.instanceId;});
+  const initialObservation=await until(()=>rpc('godotObserve'),value=>{assert.equal(value.worldId,worldId,'Existing selected world changed');return value.instanceId;});
+  if(recoveryBinding){
+    assert.equal(initialObservation.buildId,recoveryBinding.buildId,'PLAYER_RECOVERY_FORMAL_BUILD_CHANGED');
+    const history=await rpc('worldNavigation',{channel:'godot.historyLoad',payload:{worldId,branchId:recoveryBinding.branchId}});
+    assert.equal(history.index.revision,recoveryBinding.revision);assert.equal(history.index.manifestHash,recoveryBinding.manifestHash);
+    assertProofs(proofs);
+  }
   if(createSession){
     report.sessionCreation=await createSessionThroughDesktopUi(debugPort,worldId);
     sessionId=report.sessionCreation.sessionId;payload.sessionId=sessionId;report.sessionId=sessionId;save();
