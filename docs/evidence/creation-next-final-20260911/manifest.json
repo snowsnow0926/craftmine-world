@@ -282,13 +282,19 @@
       "source": "D:\\cm-nb-root\\test-results\\creation-next\\final-build-manifest.json",
       "bytes": 39925,
       "sha256": "fc352a1891f63381dc815c38a2337bb7e53288f1597671f7b1a02f4935cbd630"
+    },
+    {
+      "file": "cleanup.json",
+      "source": "D:\\Craftmine-NextBatch-20260911\\cleanup.json",
+      "bytes": 2286,
+      "sha256": "859f323c63616eef489e78fcfff9784dacf56053ad74c6312ef06d6cd25516e4"
     }
   ],
   "notes": [
     "原始失败报告保留，补验另列。",
     "仅发布去敏报告，私有测试档案不进入Git。"
   ],
-  "updatedAt": "2026-09-11T00:04:24.630Z",
+  "updatedAt": "2026-09-11T00:19:02.240Z",
   "archiveRoot": "D:/Craftmine-NextBatch-20260911",
   "archiveMapping": "原 source 的工作树目录名作为 raw 子目录名，例如 D:/cm-nb-root/test-results/... 对应 archiveRoot/raw/cm-nb-root/test-results/...。原报告字节不变。"
 }

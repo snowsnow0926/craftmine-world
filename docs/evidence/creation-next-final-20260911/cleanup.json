@@ -1,0 +1,65 @@
+{
+  "format": "craftmine.creation-next-cleanup/1",
+  "startedAt": "2026-09-11T00:12:14.5944740Z",
+  "integratedCommit": "2ba16350445b5ecb5f31b93fdc3d4943f246a5a4",
+  "archiveRoot": "D:\\Craftmine-NextBatch-20260911",
+  "rawFiles": 33383,
+  "rawBytes": 24129530671,
+  "skippedArchiveLinks": 14,
+  "rawManifestSha256": "6f731d2735a753035c2d613d66d6fff3fa227977a98258c9f01aa3c705708677",
+  "bundleSha256": "f3f8dcbadb51b2ace21903dcc778d1a03c966776b2b2bf86dd5e4d3464d76d58",
+  "removed": [
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "5d291273c0c2ed5bf8a6561e95cc18e89d83b75e",
+      "branch": "codex/creation-next-checks-20260911",
+      "path": "D:\\cm-nb-checks"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "5f9867236b5d64e129e9e36016ea3f0a92d587a6",
+      "branch": "codex/creation-next-edit-20260911",
+      "path": "D:\\cm-nb-edit"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "264d666a8a18f53c7e92878d3b5a5c86c111b06a",
+      "branch": "codex/creation-next-voice-20260911",
+      "path": "D:\\cm-nb-voice"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "4637da768d902c4b8193afb14fbc23f0ded9c39f",
+      "branch": "codex/creation-next-host-20260911",
+      "path": "D:\\cm-nb-host"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "44fa14fbd82edd8b202921c859ae1d72085954cd",
+      "branch": "codex/creation-next-routing-20260911",
+      "path": "D:\\cm-nb-routing"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "deb5da4c762af2be4031db30ce772f12fee4b294",
+      "branch": "codex/creation-next-recovery-20260911",
+      "path": "D:\\cm-nb-recovery"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "64368c0b61c6925fc7993f2a509463b02b05a204",
+      "branch": "codex/creation-next-copy-20260911",
+      "path": "D:\\cm-nb-copy"
+    },
+    {
+      "tipRetainedInBundle": true,
+      "originalTip": "2ba16350445b5ecb5f31b93fdc3d4943f246a5a4",
+      "branch": "codex/creation-next-20260911",
+      "path": "D:\\cm-nb-root"
+    }
+  ],
+  "complete": true,
+  "unrelatedWorktreesPreserved": 78,
+  "primaryConfigUnchanged": true,
+  "finishedAt": "2026-09-11T00:18:45.6158691Z"
+}

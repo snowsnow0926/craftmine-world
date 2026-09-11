@@ -1,14 +1,14 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "NB0–NB6完成，正在完成NB7本地合并与工作树清理；最后模型预算结束，失败与零请求补验分别保留。",
+  "currentMilestone": "NB0–NB7工程开发、可用环境验证、本地合并与工作树清理完成；中文交付记录已归档，真实麦克风/真人/干净Windows仍待外部验收。preview.10仍是最近已交付安装包。",
   "baseline": "2f84da9e9779226cf153861ce5a397be1442f2b5",
-  "updated": "2026-09-11T00:08:08.446Z",
+  "updated": "2026-09-11T00:19:02.367Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "creation_next_batch_integrating",
-    "reason": "正在归档原始证据并完成本地收尾。",
-    "activeGoal": true,
+    "status": "creation_next_batch_complete",
+    "reason": "计划内实现和可用环境验证完成，外部验收边界保留；没有远端推送或新安装包。",
+    "activeGoal": false,
     "recurringDevelopment": false,
     "executionMode": "goal",
     "plan": "docs/CREATION_NEXT_BATCH_PLAN_2026-09-11.md",
@@ -23,8 +23,8 @@
       "NB6",
       "NB7"
     ],
-    "worktree": "D:/cm-nb-root",
-    "branch": "codex/creation-next-20260911",
+    "worktree": "D:/Craftmine World",
+    "branch": "master",
     "feedbackResolution": "docs/FEEDBACK_RESOLUTION_2026-09-11.md",
     "latestDeliveredVersion": "0.14.4-preview.10",
     "latestDeliveryRecord": "docs/evidence/feedback-resolution-20260911/preview10-delivery.json",
@@ -34,7 +34,7 @@
   "godotMultibasePlan": {
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",
     "developmentLog": "docs/GODOT_DEVELOPMENT_LOG.md",
-    "status": "active",
+    "status": "historical_snapshot",
     "cycle": 5,
     "currentStages": [
       "GD0",
@@ -271,7 +271,11 @@
       "candidateCoordinator": false,
       "productGodotCreation": false,
       "formalProgressMigrationRequired": true
-    }
+    },
+    "recordScope": "historical_snapshot",
+    "historicalStatus": "active",
+    "currentStatusDocument": "docs/CREATION_NEXT_BATCH_STATUS.json",
+    "snapshotNote": "以下cycle 5计数及能力状态保留为历史证据，不代表当前NB批次。"
   },
   "windowsClientPlan": {
     "document": "docs/WINDOWS_CLIENT_REUSE_PLAN.md",

@@ -2,8 +2,8 @@
   "format": "craftmine.creation-next-batch/1",
   "plan": "docs/CREATION_NEXT_BATCH_PLAN_2026-09-11.md",
   "baseline": "c1660f12",
-  "status": "integrating",
-  "updatedAt": "2026-09-11T00:08:08.446Z",
+  "status": "complete_with_external_validation_pending",
+  "updatedAt": "2026-09-11T00:19:02.367Z",
   "stages": {
     "NB0": {
       "status": "complete",
@@ -61,10 +61,11 @@
       ]
     },
     "NB7": {
-      "status": "in_progress",
+      "status": "complete",
       "evidence": [
         "docs/CREATION_NEXT_BATCH_DELIVERY_2026-09-11.md",
-        "docs/evidence/creation-next-final-20260911/manifest.json"
+        "docs/evidence/creation-next-final-20260911/manifest.json",
+        "docs/evidence/creation-next-final-20260911/cleanup.json"
       ]
     }
   },
@@ -120,9 +121,10 @@
   "artifactDirectory": "D:/Craftmine-NextBatch-20260911",
   "implementationCommit": "fd96e952",
   "delivery": {
-    "localMerge": "pending",
-    "worktreeCleanup": "pending",
+    "localMerge": "complete",
+    "worktreeCleanup": "complete",
     "pushed": false,
-    "newWindowsInstaller": false
+    "newWindowsInstaller": false,
+    "localIntegratedCommit": "2ba16350445b5ecb5f31b93fdc3d4943f246a5a4"
   }
 }
