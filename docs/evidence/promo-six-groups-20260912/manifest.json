@@ -1,0 +1,78 @@
+{
+  "createdAt": "2026-09-11T18:27:29.278Z",
+  "imagesEdited": false,
+  "entries": [
+    {
+      "id": "environment",
+      "title": "环境：树",
+      "wish": "我想生成一些树。",
+      "status": "11/40 次请求；检查、采用、保存重开通过",
+      "note": "多棵带阴影的几何树，外形简单；尚未测试花草和连续修改。",
+      "provenance": "本轮新生成 · 冻结成品 43203d8e / preview.12",
+      "source": "D:/cm-promo-loop-0912/test-results/desktop-native-complete-VburCs/exploration-7988b0d7-7b8c-4a3f-a07e-d349f0325f68/view-1.png",
+      "report": "D:/cm-promo-loop-0912/test-results/desktop-native-complete-VburCs/report.json",
+      "file": "environment.png",
+      "sha256": "b9375fc1282f96e064286f76ea53e51a5be38045c61313970be0164692437d2c"
+    },
+    {
+      "id": "pet",
+      "title": "宠物：狗",
+      "wish": "我希望有条宠物狗。",
+      "status": "原样本 10/10 请求额度停止后检查通过；本轮观察新增模型请求 0",
+      "note": "小狗能走近玩家，外观为简单方块。已采用、保存重开；白色博美改形尚未验证。",
+      "provenance": "生成成品 940c5a84；截图观察成品 43203d8e",
+      "source": "D:/cm-promo-loop-0912/test-results/desktop-native-complete-2lwsto/exploration-1e9b8edb-2976-4473-a01e-b4d03c9ec0c2/view-1.png",
+      "report": "D:/cm-promo-loop-0912/test-results/desktop-native-complete-2lwsto/report.json",
+      "file": "pet.png",
+      "sha256": "ebd5f599132ce9b32ecc8d77fdd2c55fd4ef63eb95e57b89696a6f94dafed7fb"
+    },
+    {
+      "id": "combat",
+      "title": "战斗：怪物",
+      "wish": "给我生成一些怪物。",
+      "status": "5/40 次请求；等待两项澄清，时间停止，未交付",
+      "note": "这是正式空白世界，图中没有怪物。测试控制器缺少答题入口；不能据此认定模型不会做怪物。另有 10 请求旧试验，写入源码后用尽额度、未检查，单独保留。",
+      "provenance": "本轮新隔离试验 · 冻结成品 43203d8e",
+      "source": "D:/cm-combat-effect-0912/test-results/desktop-native-complete-HZQwoI/formal-world.png",
+      "report": "D:/cm-combat-effect-0912/test-results/desktop-native-complete-HZQwoI/report.json",
+      "file": "combat.png",
+      "sha256": "9450d1c6a926b40ede4b6cfd9f8e8bc4772999c0fbe3281432e6285cd0c35957"
+    },
+    {
+      "id": "rain",
+      "title": "技能：雨停与倒流",
+      "wish": "我想要《惊天魔盗团》经典场景中让雨停在半空、然后倒流向上的技能。",
+      "status": "17/40 次请求；已采用、重开并触发雨停和倒流阶段",
+      "note": "截图为雨停阶段。雨丝稀薄、对比低，环境空旷，尚无电影观感；逐滴轨迹及遮挡没有完成专项验收。",
+      "provenance": "本轮新生成 · 冻结成品 43203d8e / preview.12",
+      "source": "D:/cm-promo-rain-test-0912/test-results/desktop-native-complete-pHRKO4/exploration-e75d1742-d3db-4774-b621-027e2cac9257/view-2.png",
+      "report": "D:/cm-promo-rain-test-0912/test-results/desktop-native-complete-pHRKO4/report.json",
+      "file": "rain.png",
+      "sha256": "7961eb8acb10fd0a8ab704b383208b6e66cfffc44326e0f5edbe2229c3e434c6"
+    },
+    {
+      "id": "flight",
+      "title": "驾驶：歼20",
+      "wish": "我想要驾驶歼20。",
+      "status": "4/40 次请求；等待四项澄清，时间停止，未交付",
+      "note": "这是正式空白世界，尚无飞机。模型询问飞机交付方式、街机或拟真手感、视角及附加功能；测试控制器无法答复，驾驶能力尚未验证。",
+      "provenance": "本轮新隔离试验 · 冻结成品 43203d8e",
+      "source": "D:/cm-promo-flight-0912/docs/dispatch-reports/promo-six-groups-20260912/flight/formal-world.png",
+      "report": "D:/cm-promo-flight-0912/test-results/desktop-native-complete-cl1y3B/report.json",
+      "file": "flight.png",
+      "sha256": "9450d1c6a926b40ede4b6cfd9f8e8bc4772999c0fbe3281432e6285cd0c35957"
+    },
+    {
+      "id": "city",
+      "title": "城市：奥格瑞玛",
+      "wish": "我想复刻奥格瑞玛。",
+      "status": "5/40 次请求；等待范围及实现方式澄清，时间停止，未交付",
+      "note": "这是正式空白世界，尚无城市。模型询问复刻范围与建筑实现方式；测试控制器无法答复。技术实现选择应由 AI 承担，后续会调整这类提问。",
+      "provenance": "本轮新隔离试验 · 冻结成品 43203d8e",
+      "source": "D:/cm-promo-city-test-0912/test-results/desktop-native-complete-DDjj6B/formal-world.png",
+      "report": "D:/cm-promo-city-test-0912/test-results/desktop-native-complete-DDjj6B/report.json",
+      "file": "city.png",
+      "sha256": "9450d1c6a926b40ede4b6cfd9f8e8bc4772999c0fbe3281432e6285cd0c35957"
+    }
+  ]
+}
