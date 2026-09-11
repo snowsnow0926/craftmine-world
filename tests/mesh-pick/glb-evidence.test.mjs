@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+import {tmpdir} from 'node:os';
+import {materializeBase} from '../../desktop/godot/shared/materialize.mjs';
 const root=path.resolve(import.meta.dirname,'../..');
 const evidence=path.join(root,'docs/evidence/gu2-arraymesh-picker-20260912');
 const read=name=>JSON.parse(fs.readFileSync(path.join(evidence,name)));
@@ -48,4 +50,12 @@ test('archived executed picker bytes match current implementation and preserve l
   assert.deepEqual(record.receipt.sourceBinding,record.request.sourceBinding);
  }
  const old=read('legacy-regression.json');assert.equal(old.checks,44);assert.deepEqual(old.failures,[]);
+});
+
+test('the integrated materializer emits all ten resources actually exercised by the GLB observation',()=>{
+ const directory=fs.mkdtempSync(path.join(tmpdir(),'craftmine-glb-cohort-'));
+ const materialized=materializeBase({baseId:'creation-sandbox',worldId:'cohort-review',out:path.join(directory,'project')});
+ const expected=read('controller-v2.json').receipt.sourceFiles.filter(f=>f.path.startsWith('craftmine_shared/')||f.path.startsWith('scripts/reused/'));
+ assert.equal(expected.length,10);
+ for(const file of expected)assert.equal(materialized.files.find(f=>f.path===file.path)?.sha256,file.sha256,file.path);
 });

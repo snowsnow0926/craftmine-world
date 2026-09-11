@@ -45,7 +45,7 @@
     {
       "id": "GU4",
       "status": "in-progress",
-      "next": "Fixed sequence-door passage frozen into core requirements and candidate verdict; normal/ghost/still-blocked fixtures pass expected outcomes; actual controller binding and later scopes remain"
+      "next": "Actual fixed controller/profile, direct locked-door interaction and continuous physics binding integrated; host/core/native regressions pass, fresh package and broader scenarios remain"
     },
     {
       "id": "GU5",
@@ -217,6 +217,13 @@
       "path": "docs/evidence/gu2-arraymesh-picker-20260912/controller-v2.json",
       "status": "passed-in-derived-engine-fixture",
       "scope": "37 real LPAC/Web checks and ordinary bridge observe, legacy 44; base surface triangles only, full controller cohort integration pending"
+    },
+    {
+      "kind": "controller-profile-integration",
+      "commit": "dcad9474",
+      "path": "test-results/controller-binding-native-n0vBli/report.json",
+      "status": "passed",
+      "scope": "27 focused integration, 38 Rust jobs + 2 cohorts, typecheck; 13 real native cases; 8 focused natural/profile and ten-file GLB identity assertions; fresh package pending"
     }
   ],
   "limitations": [

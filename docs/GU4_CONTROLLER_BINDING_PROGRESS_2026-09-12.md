@@ -51,6 +51,20 @@ ticks: `D:/cm-gu2-pick-0912/test-results/glb-pick-audit-wwkH5X/report.json` (37 
 The wrapper exposes the picker limitations: base-surface triangles, no active LOD
 verification, no pixel-accurate claim.
 
+Integration at `D:/cm-agent-godot-0912` retained the later natural-language
+resolver, frozen colors and `declaredLabel`, adding the new controller profile
+to the resolved request. Twenty-seven focused integration tests and desktop
+typecheck passed; 38 Rust job tests (including the additional declared-label
+case) and two source-cohort tests passed. Two added integration assertions also
+confirm natural requests require the new profile and all ten materialized
+resources exactly match the GLB trial's actual receipt. The focused rerun was
+eight tests, all passed. A fresh native run
+`test-results/controller-binding-native-n0vBli/report.json` independently passed
+all 13 expected cases. An initial native launch omitted the existing cache
+environment variable and failed before engine execution; rerunning with the
+recorded cache succeeded. The full new Windows package remains to be built and
+validated; these results do not update the earlier player package's coverage.
+
 ## Preserved diagnostic history
 
 Earlier implementations correctly failed when a replaced script cancelled the

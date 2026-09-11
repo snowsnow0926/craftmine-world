@@ -21,6 +21,7 @@ test('natural request enters the actual frozen requirement with original text ha
  const input='请按照红、黄、绿的顺序触发机关，然后打开这扇门。';
  const frozen=freezeCreationRequirements(capture,input);
  assert.equal(frozen.status,'verifiable');assert.equal(frozen.requirements.doorSequence.verifyPassage,true);
+ assert.equal(frozen.requirements.doorSequence.controllerProfile,'creation-fixed-controller/1');
  assert.deepEqual(frozen.requirements.doorSequence.steps,['red-mark','yellow-mark','green-mark']);
  assert.equal(frozen.requirements.entities.find(e=>e.id==='gate').kind,'door');
  const second=freezeCreationRequirements(capture,'依次触碰红、黄、绿后打开蓝门');
