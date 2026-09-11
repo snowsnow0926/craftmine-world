@@ -4,7 +4,7 @@
     "publisher": "Craftmine World bundled source",
     "sourceCommits": [
       "9469aaa487b31ea41b839c7cd4214c2c7f3f293b",
-      "19ae7af8a07360f3194e17e6f6fce4795760a711"
+      "da1f4bcdf072f39fab443bda66be83ff7607607e"
     ],
     "textNormalization": "LF; source interface matching accepts LF or CRLF only",
     "validation": "Source-derived guidance; exact reference hashes, broker routing and authored examples are tested. No real model efficiency comparison is established."
@@ -136,7 +136,7 @@
           "path": "scripts/creation_world.gd",
           "projectPath": "scripts/creation_world.gd",
           "sourcePath": "desktop/godot/bases/creation-sandbox/scripts/creation_world.gd",
-          "sourceCommit": "19ae7af8a07360f3194e17e6f6fce4795760a711",
+          "sourceCommit": "da1f4bcdf072f39fab443bda66be83ff7607607e",
           "requiredInterface": true,
           "sha256": "f599887d0ebe4c17c37fec16ac8821d1e0f97da2cbac88758ae71870c2d5ce9a",
           "acceptedSourceHashes": [
@@ -149,7 +149,7 @@
           "path": "scripts/scene_contract.gd",
           "projectPath": "scripts/scene_contract.gd",
           "sourcePath": "desktop/godot/bases/creation-sandbox/scripts/scene_contract.gd",
-          "sourceCommit": "19ae7af8a07360f3194e17e6f6fce4795760a711",
+          "sourceCommit": "da1f4bcdf072f39fab443bda66be83ff7607607e",
           "requiredInterface": true,
           "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551",
           "acceptedSourceHashes": [
@@ -162,7 +162,7 @@
           "path": "creation-scene.schema.json",
           "projectPath": "creation-scene.schema.json",
           "sourcePath": "desktop/godot/bases/creation-sandbox/creation-scene.schema.json",
-          "sourceCommit": "19ae7af8a07360f3194e17e6f6fce4795760a711",
+          "sourceCommit": "da1f4bcdf072f39fab443bda66be83ff7607607e",
           "requiredInterface": false,
           "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82",
           "acceptedSourceHashes": [
@@ -175,7 +175,7 @@
           "path": "README.md",
           "projectPath": "README.md",
           "sourcePath": "desktop/godot/bases/creation-sandbox/README.md",
-          "sourceCommit": "19ae7af8a07360f3194e17e6f6fce4795760a711",
+          "sourceCommit": "da1f4bcdf072f39fab443bda66be83ff7607607e",
           "requiredInterface": false,
           "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16",
           "acceptedSourceHashes": [
@@ -188,7 +188,7 @@
           "path": "craftmine_shared/base_adapter.gd",
           "projectPath": "craftmine_shared/base_adapter.gd",
           "sourcePath": "desktop/godot/shared/adapters/creation-sandbox.gd",
-          "sourceCommit": "19ae7af8a07360f3194e17e6f6fce4795760a711",
+          "sourceCommit": "da1f4bcdf072f39fab443bda66be83ff7607607e",
           "requiredInterface": true,
           "sha256": "edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee",
           "acceptedSourceHashes": [
@@ -208,7 +208,7 @@
             "9b8ca7dc8e4004606b8e3da4ab10721e3482ad2473d878801932b3c4bb133cee"
           ],
           "text": "extends Node\n\n# 示例源码：先操作第一个标记两次，再操作第二个标记开门。\n# 这是可阅读和修改的普通脚本，不是 creation_operation 的新 action。\nvar _host: Node\nvar _door_id: String\nvar _first: String\nvar _second: String\nvar _presses := 0\nvar _completed := false\n\nfunc configure(host: Node, definition: Dictionary) -> void:\n\t_host = host\n\t_door_id = definition.doorId\n\t_first = definition.sequence[0]\n\t_second = definition.sequence[1]\n\nfunc on_entity_interacted(entity_id: String) -> void:\n\tif _completed:\n\t\treturn\n\tif entity_id == _first:\n\t\t_presses = mini(_presses + 1, 2)\n\telif entity_id == _second and _presses == 2:\n\t\t_completed = true\n\t\t_host.set_door_open(_door_id, true)\n\telse:\n\t\t_presses = 0\n\nfunc snapshot() -> Dictionary:\n\treturn {\"presses\": _presses, \"completed\": _completed}\n\nfunc validate_state(data: Dictionary) -> String:\n\tif data.size() != 2 or not data.has(\"presses\") or not data.has(\"completed\"):\n\t\treturn \"Invalid double-press state fields\"\n\tvar presses: Variant = data.presses\n\tif not (presses is int or presses is float) or not is_finite(float(presses)) or float(presses) != floorf(float(presses)) or presses < 0 or presses > 2:\n\t\treturn \"Invalid double-press count\"\n\tif not data.completed is bool or (data.completed and presses != 2):\n\t\treturn \"Invalid double-press completion\"\n\treturn \"\"\n\nfunc restore(data: Dictionary) -> void:\n\tif not validate_state(data).is_empty():\n\t\treturn\n\t_presses = int(data.presses)\n\t_completed = data.completed\n\tif _completed:\n\t\t_host.set_door_open(_door_id, true)\n",
-          "sourceCommit": "19ae7af8a07360f3194e17e6f6fce4795760a711"
+          "sourceCommit": "da1f4bcdf072f39fab443bda66be83ff7607607e"
         }
       ],
       "text": "# 沉浸式造物世界：物件操作与普通源码玩法\n\n指导 ID：`creation-sandbox.authoring`，版本 `1.3.0`。仅匹配\n`creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及\nGodot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。\n\n这是按源码整理的接口指南。加载指南或示例不会证明模型首次成功、玩法验收或正式采用。\n\n## 从真实身份开始\n\n调用 `godot_project_facts`、`godot_capability_report` 和 `godot_guidance`\n`mode=catalog`。按返回的 ID、version、sha256、源码 revision、manifestHash\n分页读取本指南与引用；`nextOffset` 非空时继续读。源文件通过\n`godot_project_index`／`godot_project_query` 定位，再用 `godot_file_read`\n读取玩家当前文件和确切 SHA-256。接口哈希不匹配时，重新检查实际源码，不能套用指南假定。\n\n本轮上下文的 `creationTarget` 来自主机冻结的运行时观察。`这里` 使用冻结的落点，\n`这个对象` 使用冻结的 entityId；玩家之后移动不改变本轮指代。没有目标或目标过期就\n需要新的玩家捕获，不能编造目标、坐标、障碍或 snapshot ID。调用工具时不传\n`targetSnapshot`；主机通过本轮上下文取得它。\n若捕获的 `source=recent`，目标来自玩家明确选回的正式产物，可修改该对象；它不是射线落点，\n不能用于“在这里”放置新物件。多个最近结果由玩家明确选择，不按名称猜选。\n\n`creationTarget.sourceRevision` 是捕获时正式构建的源码 revision。工具请求的\n`expected.revision` 与 `expected.manifestHash` 使用当前 `godot_project_index` 的结果；\n新任务可能为相同正式源码重新编号，工具会由核心完整源码身份校验此重基准。\n同轮后续操作使用上次结果 `source.revision` 与 `source.manifestHash`，\n目标的 worldId、buildId、instanceId、snapshotId 保持原样。`creationTarget.target.revision` 是 `world/creation.json`\n内部场景 revision。两者有不同来源，不能互换。buildId、instanceId、worldId 和 snapshotId\n必须使用同一个主机捕获；只查文件得到的几何不是这种授权快照。\n\n## 结构化物件编辑\n\n`creation_operation` 顶层只有 `request`。request 必须包含唯一 operationId、action\n和完整 expected；以下为字段映射示意，不是可直接提交的虚构身份：\n\n```js\n{\n  request: {\n    operationId: \"create-tree-001\",\n    expected: {\n      worldId: creationTarget.worldId,\n      buildId: creationTarget.buildId,\n      instanceId: creationTarget.instanceId,\n      revision: sourceIndex.revision,\n      manifestHash: sourceIndex.manifestHash,\n      targetSnapshotId: creationTarget.snapshotId\n    },\n    action: \"place\",\n    kind: \"tree\"\n  }\n}\n```\n\n不传 position 时，place 使用冻结命中点。支持 tree、rock、chest、door、marker；\nposition 为世界坐标 x/y/z，rotationY 为度数，scale 为三轴倍数。\n位置 x/z 为 -28..28、底部 y 为 0..16；实体完整包围盒也必须在边界内。\nscale 各轴 0.25..4；颜色为六位 `#RRGGBB`；最多 128 个实体。\n\n- `modify`：targetId 必须等于冻结 entityId；changes 可包含 position、rotationY、scale、color、parameters，保持原 ID。\n- `duplicate`：targetId 仍须匹配冻结目标；count 为 1..8，offset 各轴 -8..8；工具检查每个新物件与其他物件、玩家的碰撞。\n- `delete`：targetId 必须是冻结选中对象，删除有规则引用的对象会明确拒绝。\n- `undo`：提供原 undoOperationId，支持本版记录的放置、修改、复制和删除；当前对象必须仍与原操作结束时一致。撤销只改内容，不回退背包、位置或已领奖历史；旧记录和规则修改不支持此快捷撤销。\n- `environment`：timeOfDay 为 0..24，通过源码默认时间变更进入候选采用。\n- `sequence-door`：为已有门和 2..16 个不同 marker 生成一份普通 GDScript 顺序规则。规则最多 8 个，工具的规则 ID 不可重复使用。\n\n参数按 kind 限定：chest 的 rewardId／rewardCount（1..99），door 的 initiallyOpen，\nmarker 的 label（最多 80 字符）；树和岩石的 parameters 为空对象。\n修改门的 initiallyOpen 是新实例的默认状态，既有门的玩家进度按稳定 ID 保留。\n\n此 Alpha 每个世界最多保存 4096 条结构化操作，日志上限 4 MiB；回执中的\n`operationLimit`、`operationsRemaining` 表示操作上限与本次之后剩余次数。旧记录不删除，\n达到上限明确拒绝新操作，不能称为无限创造。\n\n同一个愿望的相关编辑先连续写入同一草稿，完成后检查最终版本；不要对每个中间步骤重复导出。不同愿望不能为了合批而改变目标或吞掉取消。调用结果 timing 是真实分阶段耗时，可用于诊断，但不代表检查已完成。\n\n工具写入源码与操作日志，并不等于运行时已采用。重试同一请求使用同一 operationId；\n重放冲突时不能用同 ID 换请求内容。源码或目标过期时重新读取主机实际身份，保留别人的修改。\n\n### 常见中文属性愿望的完整检查\n\n宿主支持单个物件的明确颜色、尺寸以及两者组合，例如“把这棵树放大到两倍并改成蓝色”、\n“把这个对象缩小到半倍”、“在这里放一棵蓝色的两倍大小的树”、\n“在这里放一个箱子，颜色改成#abcdef并尺寸设为半倍”。颜色与尺寸须同时满足；\n同一对象用一次 modify 的 changes.color／changes.scale，新物件用一次 place 的 color／scale，\n不必先放置再修改。尺寸倍数以捕获时该对象三轴尺度为基准；新物件以默认 [1,1,1] 为基准。\n最终各轴仍须处于 0.25..4。明确支持半、一、二／两、三、四及 0.25、0.5、0.75、1.5、2.5、3.5 等数值。\n\n有限颜色词的确定值为：红 #ff0000、橙 #ffa500、黄 #ffff00、绿 #008000、蓝 #0000ff、\n紫 #800080、黑 #000000、白 #ffffff、灰 #808080；可带“色”，也可直接指定六位 #RRGGBB。\n任务中的宿主冻结要求是实际检查目标，不能另猜颜色值。颜色词不覆盖“深红”“浅蓝”等模糊色调。\n\n只支持一个新物件或同一个捕获对象的上述属性组合。模糊倍数、重复／冲突属性、跨对象组合、\n附带未知玩法都保持需求待验证；不能删掉后半句来获得自动通过。已存在物件与游玩进度仍由原检查保护。\n\n## 新增非预置逻辑：普通源码路径\n\n结构化 action 是常用编辑入口，不是所有玩法的菜单。读取当前 `.gd`、场景和合同后，\n可用 `godot_project_patch` 在绑定草稿中增加或修改普通 GDScript。每个 put 都写完整文件，\n携带当前 revision、manifestHash 与旧文件 expectedHash；新文件 expectedHash 为 null。\n引擎 API 以 `godot_docs` 和当前脚本为准。\n\n当前 creation.json 支持 `sequence-door` 与 `entity-behavior` 两种规则声明；不能凭空写其他 kind。\n该声明加载的是 `scripts/creation/rules/<规则ID>.gd` 文件，实际逻辑由该普通脚本定义。\n脚本必须扩展 Node，并提供 configure、on_entity_interacted、snapshot、validate_state、restore。\n声明的 sha256 必须是实际完整脚本 UTF-8 字节的 SHA-256。先写脚本，再从该源码版本的\nindex/read 返回值取得真实文件 sha256；用下一次 CAS patch 更新声明，全部完成后再 check。\n不能手写、猜测或沿用旧脚本哈希。\n保留既有规则身份与状态语义；修改已有快照形状需要显式兼容已有进度，不能丢字段换成默认值。\n\n引用 `examples/double-press-rule.gd` 提供一个**新规则 ID**的例子：先操作第一个标记两次，\n再操作第二个标记开门。它使用 `{presses, completed}`，而不是预置生成器的 `{cursor, completed}`。\n需要现有一个 door、两个不同 marker；声明仍用 sequence-door 和这两个 marker 的 ID。\n把样例完整写入新规则文件，并把声明加入现有 creation.json、递增场景 revision、更新 sha256。\n样例是可审查源码，不是 `creation_operation` 的新 action，也不是玩家世界已验证的证据。\n若玩法需要任意新场景节点，可以直接扩展场景/脚本；必须把需要保存的状态接入当前支持的\n容器和真实 capture/validate/restore，不能靠临时变量冒充持久进度。\n\n## 普通对象行为接口\n\n与门无关的行为使用 `{id, kind:\"entity-behavior\", entityIds:[稳定对象ID], script, sha256}`；\nentityIds 必须是 1..16 个已存在对象，一个对象只能归属一个 entity-behavior。脚本路径和哈希\n规则与上述相同。它不是预置玩法，奖励、计时和状态机必须由本次普通源码实现。\n\n除了 configure(world, declaration)、on_entity_interacted(entityId)、snapshot()、\nvalidate_state(state)、restore(state)，entity-behavior 必须实现纯读取的\n`project_entities(state)`，返回恰好每个声明 entityId 对应的 `{visible:bool, solid:bool}`。\n该投影用于恢复前的玩家碰撞验证；不得在投影中改变世界或状态。restore 后真实节点的可见与\n碰撞必须与投影一致，否则恢复失败并还原先前状态。snapshot/validate/restore 保存自定义数据，\n不能用 configure 默认覆盖已保存进度。计时可用普通 Node `_process`/`_physics_process`，继承世界暂停。\n\n树和石头只有注册了 entity-behavior 才接收真实 E 交互；on_entity_interacted 仅收到自己 entityIds\n中的对象。`world.set_entity_presence(id, visible, solid)` 更新节点可见性与真实 Body 碰撞，\n不删除实体身份；在物理信号回调中应延后调用，避免引擎正在刷新查询时改形状。`world.inventory`\n是既有背包字典；保持稳定物品 ID、非负整数和既有上限，不覆盖其他奖励。是否发放、发多少、\n何时重新可交互都由普通脚本和持久规则状态决定，运行时不内置采集/掉落/重生实现。\n\n运行观察返回实际 `visible`、`solid`、主材质 `color` 与节点 `position`/`scale`；关闭碰撞的对象\n不再列入 obstacles。行为规则仍经过真实编译、结果检查、候选采用和保存重开。\n\n## 检查、预览、采用与保留进度\n\n对最新源码身份执行 `godot_build_start`，`mode=check`；用返回 jobId 调\n`godot_build_read` 直到确有终态。build 只证明导入编译；check 才运行真实固定断言并产生候选。\n`status=passed` 只表示检查通过。造物检查还会返回 `creationApplication`：只有 `status=applied`\n表示宿主确认采用；`pending/applying` 表示仍在交接，可以继续读取同一 job；\n`manual/failed/cancelled/interrupted/unknown` 不表示世界已改变。读取最多等待 30 秒，总预算不增加。\n到达等待上限会返回实际阶段，不要重复启动相同检查，也不要在待采用时宣称愿望已完成。\n读取 `godot_candidate_read` 确认 build 身份、sourceStale、断言与可预览状态。\n检查失败时根据实际错误修复，不修改冻结断言，不把排队/阻塞解释为成功。\n\n预览和正式采用由产品与主机管理。世界的自动采用授权是主机保存的用户选择；指南和模型\n不能设置、伪造或推断授权。以实际采用结果确认，不能只凭源码回执声称世界已经改变。\n用 `godot_runtime_state` 的 live 观察确认匹配 build/instance 的实体、玩家目标与实际进度；\n旧存档快照不等于当前运行状态。通过有界 walk/look/interact/wait 控制与观察检查行为，\n随后保存、重开，确认宝箱奖励、门、规则与玩家进度仍一致。\n\n运行时进度格式是 `craftmine.creation-progress/1`，外层是完整\n`craftmine.godot-progress/1`。body 包含 worldId、baseVersion、player、timeOfDay、\nsourceTimeOfDay、inventory、openedChests、doors、rules。player.position 是胶囊中心；\n观察中的 playerBounds.position 是脚底位置。实体 position 同样是物件底部，不是包围盒中心。\n\n旧 inventory、已开宝箱账本、门和规则状态保留；新增门/规则默认必须来自真实候选的 fresh\ncapture，再由主机合并。runtime 严格拒绝缺失新默认的直接恢复；若最新玩家胶囊与候选实体重叠，恢复会在改变\n任何进度前拒绝，不能把玩家静默推走。已开门的门洞按实际待恢复状态允许通过。源码默认时间改变时，主机\n更新 timeOfDay 和 sourceTimeOfDay；默认未变则保留玩家当前时间。宝箱按稳定 ID 只发一次奖励，\n删除后重放同一 ID 也不能再次领取。受规则管理的门不能直接互动绕过规则。\n\n无额外权限：引用、示例与指南不授予文件系统、网络、发布、采用或验证权限。\n证据范围见目录 provenance 与实际检查记录；不能据此声称经过真实模型效率对照测试。\n"
