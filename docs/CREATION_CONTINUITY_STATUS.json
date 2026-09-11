@@ -2,7 +2,7 @@
   "format": "craftmine.creation-continuity/1",
   "plan": "docs/CREATION_CONTINUITY_AND_PREVIEW11_PLAN_2026-09-11.md",
   "baseline": "fa9f7247",
-  "status": "in_progress",
+  "status": "complete_with_native_failure_and_external_pending",
   "stages": {
     "CN0": {
       "status": "complete",
@@ -36,12 +36,20 @@
       ]
     },
     "CN5": {
-      "status": "in_progress",
-      "evidence": []
+      "status": "complete",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_CN5_VERIFICATION_2026-09-11.md",
+        "docs/CREATION_CONTINUITY_MODEL_PROTOCOL_2026-09-11.md",
+        "test-results/continuity/model-contract-final.log",
+        "D:/c2d/test-results/desktop-native-complete-ADHKPh/report.json"
+      ]
     },
     "CN6": {
-      "status": "in_progress",
-      "evidence": []
+      "status": "complete",
+      "evidence": [
+        "D:/cm-c2-root/desktop/build/releases/cdfd175c0f6a-17947f5d-f141-4b1e-add1-3a1f9711070e/package-evidence.json",
+        "D:/Craftmine-World-preview.11/SHA256SUMS"
+      ]
     },
     "CN7": {
       "status": "pending",
@@ -49,7 +57,7 @@
     }
   },
   "modelEvaluation": {
-    "status": "not_started",
+    "status": "not_run_budget_reserved",
     "maximumCases": 4,
     "maximumRequestsPerCase": 10,
     "maximumRequestsTotal": 40,
@@ -63,9 +71,9 @@
   "delivery": {
     "targetVersion": "0.14.4-preview.11",
     "directory": "D:/Craftmine-World-preview.11",
-    "status": "pending",
+    "status": "complete",
     "pushed": false,
     "installedOnPersonalSystem": false
   },
-  "updatedAt": "2026-09-11T02:26:14.0271763Z"
+  "updatedAt": "2026-09-11T08:29:57.6967757Z"
 }
