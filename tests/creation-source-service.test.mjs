@@ -35,6 +35,8 @@ function fixture(){
 }
 test('host-bound target uses formal build, pages real Rust limits, and advances own multi-operation source',async()=>{
  const f=fixture();const first=await f.run(f.request());assert.equal(first.source.revision,2);assert.equal(first.applied,false);
+ assert.equal(first.changeSummary.format,'craftmine.creation-change-summary/1');assert.equal(first.changeSummary.entities[0].change,'added');
+ assert.equal(first.changeSummary.source.revision,1);assert.equal(first.changeSummary.progress.written,false);
  const second=await f.run(f.request('second',2,[9,0,4]));assert.equal(second.source.revision,3);
  const scene=JSON.parse(f.versions.get(3)['world/creation.json']);assert.equal(scene.entities.length,2);
  assert.ok(f.calls.filter(c=>c.method==='godotProject.index').length>=4);assert.ok(f.calls.filter(c=>c.method==='godotProject.read').length>=4);
@@ -42,6 +44,7 @@ test('host-bound target uses formal build, pages real Rust limits, and advances 
 test('a committed lost reply is read exactly once and does not duplicate a placement',async()=>{
  const f=fixture(),request=f.request();f.lose();const saved=await f.run(request);assert.equal(saved.source.revision,2);
  const replay=await f.run(request);assert.equal(replay.replayed,true);assert.equal(f.current(),2);assert.equal(f.calls.filter(c=>c.method==='godotProject.patch').length,1);
+ assert.deepEqual(replay.changeSummary.entities,saved.changeSummary.entities);assert.deepEqual(replay.receipt,saved.receipt);
 });
 
 test('source service retains recent origin through source rebasing and refuses placement before patch',async()=>{

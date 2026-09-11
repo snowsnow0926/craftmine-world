@@ -31,7 +31,7 @@ await mkdir(shared,{recursive:true});
 // `domain.cjs` and `core-client.cjs` are deliberately absent: the test supplies
 // stubs for them below.
 const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-source-service.cjs',
+  'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-source-service.cjs','creation-change-summary.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',
   'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','creation-timing.cjs','creation-application-state.cjs','asset-service.mjs','reuse-service.mjs',

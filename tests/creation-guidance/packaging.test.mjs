@@ -17,11 +17,12 @@ test('production plugin build includes exact guidance resources and serves a pin
     execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',output],
       {cwd:root,encoding:'utf8',windowsHide:true,timeout:120000,maxBuffer:2*1024*1024});
     for(const file of ['godot-guidance.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd',
-      'godot-engine-api.cjs','godot-diagnostics.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
+      'godot-engine-api.cjs','godot-diagnostics.cjs','creation-change-summary.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
       assert.deepEqual(fs.readFileSync(path.join(output,file)),fs.readFileSync(path.join(root,'plugins/craftmine-world',file)),file);
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
     assert.equal(typeof require(path.join(output,'godot-executor.cjs')).createGodotExecutor,'function','the packaged executor must load all of its actual runtime dependencies');
+    assert.equal(typeof require(path.join(output,'creation-operations.cjs')).compileCreationOperation,'function','the actual compiler dependency closure must load from the package');
     const corpus=require(path.join(output,'guidance/catalog.json'));
     const {createWorldTools}=require(path.join(output,'world-tools.cjs'));
     let selectedSkill=corpus.skills[0];

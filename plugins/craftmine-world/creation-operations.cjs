@@ -1,6 +1,7 @@
 'use strict';
 const {createHash}=require('node:crypto');
 const {generateSequenceDoorRule}=require('./creation-sequence-rule.cjs');
+const {summarizeCreationChange}=require('./creation-change-summary.cjs');
 const {CREATION_OPERATION_LIMIT,CREATION_JOURNAL_BYTES}=require('./creation-operation-schema.cjs');
 const SCENE_PATH='world/creation.json', JOURNAL_PATH='world/creation-operations.json';
 const ID=/^[a-z][a-z0-9_-]{0,63}$/, HASH=/^[a-f0-9]{64}$/;
@@ -80,7 +81,21 @@ function compileCreationOperation({source,targetSnapshot,request}) {
   }
   const requestHash=creationOperationHash(request),previous=journal.operations.find(item=>item.operationId===request.operationId);
   check(request.expected?.worldId===source.worldId,'CREATION_WORLD_MISMATCH');
-  if(previous){check(previous.requestHash===requestHash&&previous.receipt?.worldId===source.worldId,'CREATION_OPERATION_REPLAY_CONFLICT');return {document,operations:[],receipt:previous.receipt,sourceBinding:{worldId:source.worldId,revision:source.revision,manifestHash:source.manifestHash},replayed:true};}
+  if(previous){
+    check(previous.requestHash===requestHash&&previous.receipt?.worldId===source.worldId,'CREATION_OPERATION_REPLAY_CONFLICT');
+    // Never use today's scene to reconstruct yesterday's before-state. Old
+    // non-invertible operations have no original detail and remain unknown.
+    let before,after;
+    const inverse=previous.inverse;
+    try{
+      check(inverse?.format==='craftmine.creation-inverse/1'&&Array.isArray(inverse.before)&&Array.isArray(inverse.after)&&inverse.before.length<=8&&inverse.after.length<=8,'INVALID_INVERSE');
+      for(const list of [inverse.before,inverse.after]){list.forEach(entity);check(new Set(list.map(e=>e.id)).size===list.length,'INVALID_INVERSE');}
+      const ids=new Set([...inverse.before,...inverse.after].map(e=>e.id));
+      check(Array.isArray(previous.receipt.affectedIds)&&ids.size===previous.receipt.affectedIds.length&&previous.receipt.affectedIds.every(id=>ids.has(id)),'INVALID_INVERSE');
+      before={entities:inverse.before};after={entities:inverse.after};
+    }catch{/* Missing or invalid advisory detail cannot change receipt replay. */}
+    return {document,operations:[],receipt:previous.receipt,changeSummary:summarizeCreationChange({before,after,receipt:previous.receipt,provenance:'journal-inverse'}),sourceBinding:{worldId:source.worldId,revision:source.revision,manifestHash:source.manifestHash},replayed:true};
+  }
   check(journal.operations.length<MAX_OPERATIONS,'CREATION_OPERATION_JOURNAL_FULL');
   const expected=request.expected,snapshot=targetSnapshot;
   check(object(expected)&&object(snapshot),'CREATION_TARGET_REQUIRED');
@@ -161,6 +176,6 @@ function compileCreationOperation({source,targetSnapshot,request}) {
   journal.operations.push({operationId:request.operationId,requestHash,receipt,...(inverse?{inverse}: {})});
   const operations=[{op:'put',path:SCENE_PATH,text:JSON.stringify(next,null,2)+'\n',expectedHash:sceneFile?.sha256??null},{op:'put',path:JOURNAL_PATH,text:JSON.stringify(journal,null,2)+'\n',expectedHash:journalFile?.sha256??null},...extra];
   check(operations.every(op=>Buffer.byteLength(op.text)<=(op.path===JOURNAL_PATH?CREATION_JOURNAL_BYTES:120000))&&Buffer.byteLength(JSON.stringify(operations))<=8*1024*1024,'CREATION_PATCH_TOO_LARGE');
-  return {document:next,operations,receipt,sourceBinding:{worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,revision:source.revision,manifestHash:source.manifestHash},replayed:false};
+  return {document:next,operations,receipt,changeSummary:summarizeCreationChange({before:document,after:next,receipt}),sourceBinding:{worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,revision:source.revision,manifestHash:source.manifestHash},replayed:false};
 }
 module.exports={compileCreationOperation,creationOperationHash,SCENE_PATH,JOURNAL_PATH,MAX_OPERATIONS};

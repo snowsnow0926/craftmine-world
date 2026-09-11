@@ -20,7 +20,7 @@ for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-resto
 }
 // Keep reflected metadata and pure diagnostics available in installed plugins.
 // The extractor is a developer tool and is deliberately not shipped.
-for(const file of ['godot-engine-api.cjs','godot-diagnostics.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
+for(const file of ['godot-engine-api.cjs','godot-diagnostics.cjs','creation-change-summary.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
   await fs.mkdir(path.dirname(path.join(output,file)),{recursive:true});
   await fs.copyFile(path.join(source,file),path.join(output,file));
 }
