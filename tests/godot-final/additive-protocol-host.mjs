@@ -30,7 +30,7 @@ function fixture(){
   async candidateRequest(op){if(op!=='save')return {};const state=clone(pending),snapshotText=JSON.stringify(state);return {status:'confirmed',state,runnerReceipt:{format:'craftmine.godot-runner-receipt/1',...this.candidateInstance,snapshotText,snapshotSha256:hash(snapshotText),bytes:Buffer.byteLength(snapshotText)}};},
   async discardCandidate(){pending=null;this.candidateInstance=null;events.push('discard');},
   setCandidateVisible(){},setSurfaceVisible(){},
-  async checkpoint(){formal.world.snapshot=clone(latest);formal.revision++;events.push('checkpoint');return {status:'persisted',receipt:{revision:formal.revision},snapshot:clone(latest)};},
+  async checkpoint(){formal.world.snapshot=clone(latest);formal.revision++;events.push('checkpoint');return {status:'persisted',receipt:{worldId,buildId:formal.world.build.id,revision:formal.revision},snapshot:clone(latest)};},
   async promoteCandidate(){events.push('promote');this.instance=this.candidateInstance;this.candidateInstance=null;}
  };
  const adapter={async describe(){return {phase:'formal',worldId,buildId:formal.world.build.id,revision:formal.revision,snapshot:clone(formal.world.snapshot)};},
@@ -77,7 +77,7 @@ test('apply re-derives from latest checkpoint instead of check-time or preview p
  assert.equal(result.status,'applied');assert.deepEqual(result.record.world.snapshot,expected);
  const calls=f.events.filter(event=>event?.method==='godotApplication.prepare');
  assert.equal(calls.length,2);assert.deepEqual(calls[0].args.snapshot,captured.previous);
- assert.deepEqual(calls[1].args.snapshot,latest);assert.equal(calls[1].args.revision,12);
+ assert.equal(calls[0].args.revision,12);assert.deepEqual(calls[1].args.snapshot,latest);assert.equal(calls[1].args.revision,13);
  assert.equal(result.record.world.snapshot.body.inventory.previewOnly,undefined);
  assert.deepEqual(result.record.world.snapshot.body.inventory.protocolMarker,{retained:17});
  assert.equal(f.host.instance.instanceId,'candidate-2');assert.equal(f.coordinator.blocking,false);
