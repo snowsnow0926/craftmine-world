@@ -28,6 +28,7 @@ import { Sidebar } from "./components/Sidebar";
 import { ConversationTopbar } from "./components/ConversationTopbar";
 import { WorkPanel } from "./components/workpanel/WorkPanel";
 import { ChatSurface } from "./components/ChatSurface";
+import { CraftmineWorkbenchSurface } from "./components/CraftmineWorkbenchSurface";
 import { SearchDialog } from "./components/SearchDialog";
 import { ToastHost } from "./components/Toast";
 import { UpdateBanner } from "./components/UpdateBanner";
@@ -1978,7 +1979,9 @@ function AppShell() {
                   <PluginsPage />
                 </div>
               ) : (
-                <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen} />
+                <CraftmineWorkbenchSurface immersive={craftmineImmersive} full={craftmineLayout.overlay === "full"}>
+                  <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen} />
+                </CraftmineWorkbenchSurface>
               )}
             </Suspense>
           </section>
