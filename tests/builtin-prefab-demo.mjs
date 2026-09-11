@@ -9,6 +9,8 @@ import {readHeadlessProfile} from '../vendor/pi-desktop/apps/desktop/electron/ma
 import {BUILTIN_DEMO_PLAN,readBuiltinDemoPackages,readBuiltinDemoCatalog,validateBuiltinDemoCall,inspectBuiltinDemoResume} from './helpers/builtin-demo-contract.mjs';
 const root=process.cwd(),packagedRoot=creationPackagedRoot();
 const planAt=process.argv.indexOf('--plan'),plan=planAt>=0?JSON.parse(fs.readFileSync(process.argv[planAt+1],'utf8')):BUILTIN_DEMO_PLAN;
+const forestWalkthrough=process.argv.includes('--forest-walkthrough');
+if(forestWalkthrough)assert.deepEqual(plan,[{assetId:'cw.environment.natural-daylight',version:1},{assetId:'cw.scene.forest-gateway',version:1,position:{x:0,y:0,z:0}}]);
 const resumeAt=process.argv.indexOf('--resume'),sourceReport=resumeAt>=0?process.argv[resumeAt+1]:null;
 if(sourceReport)assert.ok(path.isAbsolute(sourceReport),'Resume requires the absolute original failure report');
 const prior=sourceReport?readCheckpointJson(sourceReport):null,resume=prior?inspectBuiltinDemoResume(prior,plan):null;
@@ -47,7 +49,15 @@ async function until(read,accept,label,ms=120000){const end=Date.now()+ms;while(
 async function entry(){await until(async()=>ready,Boolean,'controller');const status=await until(()=>rpc('status'),s=>s.windows?.length,'isolation');assert.deepEqual(status.violations,[]);assert.deepEqual(status.pageErrors,[]);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await until(()=>rpc('primaryMode'),s=>s.entry,'mode entry');await rpc('primaryMode',{payload:{action:'create'}});}
 async function stop(){if(!ended){await rpc('quit');await Promise.race([exit,delay(15000)]);if(!ended){child.kill();throw Error('DEMO_SHUTDOWN_TIMEOUT');}}for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(launch.audit?.[field],[]);client.assertUnchanged();assertProofs(proofs);assert.equal(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8'),marker);}
 async function capture(name){name=runPrefix+name;const result=await rpc('godotCaptureView');assert.ok(result.width===1280&&result.height===720&&result.pngBase64.startsWith('iVBOR'));const bytes=Buffer.from(result.pngBase64,'base64');fs.writeFileSync(path.join(out,name),bytes);return {file:name,width:result.width,height:result.height,sha256:createHash('sha256').update(bytes).digest('hex')};}
-async function overview(){const current=await rpc('godotObserve');return rpc('godotExplore',{payload:{worldId,buildId:current.buildId,instanceId:current.instanceId,steps:[{op:'look',args:{yaw:0,pitch:0.03}},{op:'walk',args:{forward:-1,right:0,frames:40}},{op:'wait',args:{frames:30}}]}});}
+async function overview(){const current=await rpc('godotObserve');return rpc('godotExplore',{payload:{worldId,buildId:current.buildId,instanceId:current.instanceId,steps:[{op:'look',args:{yaw:0,pitch:0.03}},{op:'walk',args:{forward:-1,right:0,frames:forestWalkthrough?80:40}},{op:'wait',args:{frames:30}}]}});}
+async function walkCapture(name,forward,frames){
+ const before=await rpc('godotObserve');
+ const steps=[];
+ for(let remaining=frames;remaining>0;remaining-=120)steps.push({op:'walk',args:{forward,right:0,frames:Math.min(120,remaining)}});
+ steps.push({op:'wait',args:{frames:30}});
+ const movement=await rpc('godotExplore',{payload:{worldId,buildId:before.buildId,instanceId:before.instanceId,steps}});
+ return {before,movement,after:await rpc('godotObserve'),capture:await capture(name+'.png')};
+}
 try{
  start();await entry();await until(()=>nav('world.createOptions'),r=>r.bases?.some(b=>b.id==='creation-sandbox'),'base catalog');
  if(!resume){const created=await nav('world.create',{baseId:'creation-sandbox',starterId:'blank',title:'预制组件演示 · 开发者布置',operationId:randomUUID()});worldId=created.id;assert.equal(typeof worldId,'string');report.worldId=worldId;save();}
@@ -67,7 +77,14 @@ try{
  }
  const ids=report.installations.flatMap(r=>r.installed.instanceIds);assert.equal(new Set(ids).size,ids.length,'Each installation owns a distinct instance');
  report.arrangedSource=await pkg('sourceList');const oldIds=new Set(report.initialSource.items.map(i=>i.entityId)),newIds=report.arrangedSource.items.map(i=>i.entityId).filter(id=>!oldIds.has(id));assert.equal(new Set(newIds).size,packages.length,'Independent identities exist in real project source');
- await panel('godot.runtimeResume');report.overview=await overview();report.after=await rpc('godotObserve');report.afterCapture=await capture('after.png');report.saved=await panel('godot.runtimeSave',{freeze:true});await stop();save();
+ await panel('godot.runtimeResume');report.overview=await overview();report.after=await rpc('godotObserve');report.afterCapture=await capture('after.png');
+ if(forestWalkthrough){
+  report.walkthrough={method:'fixed normal walk actions; no pose assignment or source mutation'};
+  report.walkthrough.front=await walkCapture('forest-front',-1,60);save();
+  report.walkthrough.approach=await walkCapture('forest-approach',1,140);save();
+  report.walkthrough.inside=await walkCapture('forest-inside',1,75);save();
+ }
+ report.saved=await panel('godot.runtimeSave',{freeze:true});await stop();save();
  start();await entry();report.reopened=await until(()=>rpc('godotObserve'),r=>r.worldId===worldId&&r.instanceId,'cold reopen');assert.equal(report.reopened.buildId,report.after.buildId);assert.notEqual(report.reopened.instanceId,report.after.instanceId);
  report.reopenedSource=await pkg('sourceList');assert.deepEqual(report.reopenedSource.items.map(i=>i.entityId).sort(),report.arrangedSource.items.map(i=>i.entityId).sort());await panel('godot.runtimeResume');report.reopenedCapture=await capture('reopened.png');await stop();
  report.ok=true;report.stateIntegrityVerified=true;report.modelFreeBasis='new empty profile; model/eval environment stripped; only listed creation/install/check/adoption/gameplay calls; clean audits';
