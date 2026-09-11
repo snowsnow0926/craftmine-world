@@ -146,6 +146,17 @@ func run() -> void:
  label.billboard=BaseMaterial3D.BILLBOARD_ENABLED
  await process_frame
  check(pick().status=="hit","off-ray native label does not globally block selection")
+ var label_bounds:=AABB(-Vector3.ONE,Vector3.ONE*2)
+ var radius:float=Picker.new()._label_radius(label_bounds,Basis.IDENTITY)
+ check(absf(radius-sqrt(3.0))<0.00001,"orthogonal label bound has no needless sqrt3 scale multiplier")
+ var shear:=Basis(Vector3(1,0,0),Vector3(1,0.1,0),Vector3(0,0,1))
+ var shear_radius:float=Picker.new()._label_radius(label_bounds,shear)
+ var bounded:=true
+ for x in [-1,1]:
+  for y in [-1,1]:
+   for z in [-1,1]:
+    if (shear*Vector3(x,y,z)).length()>shear_radius:bounded=false
+ check(bounded and shear_radius>radius,"sheared label basis retains a conservative corner bound")
  reset()
  near=box(Vector3(0,0,-3))
  (near.mesh as BoxMesh).subdivide_width=2
@@ -194,6 +205,10 @@ func run() -> void:
  var physics_hit:=world.get_world_3d().direct_space_state.intersect_ray(query)
  check(not physics_hit.is_empty(),"real physics collider is observed")
  check(pick([],physics_hit).status=="blocked","nearer actual physics blocks mesh selection")
+ near.position=blocker.position
+ check(pick([],physics_hit).status=="blocked","tied actual physics keeps existing target priority")
+ near.position=Vector3(0,0,-1)
+ check(pick([],physics_hit).status=="hit","only a strictly closer mesh replaces physics target")
  reset()
  for index in 20: box(Vector3(0,0,-3-float(index)),Vector3(0.34,0.3,0.7))
  var started:=Time.get_ticks_usec()

@@ -18,7 +18,7 @@ var result = Picker.new().pick(world_root, actual_current_camera, exclude_nodes,
 
 - `world_root` 必须在当前场景树，camera 必须在其子树中且 `is_current()`，首版仅透视投影。不主动切换或修改相机。
 - `exclude_nodes` 最多 8 个真实子节点实例。固定 adapter 可传 Player、实际辅助 marker、selection_box，排除其整个子树；helper 返回 excludedObjectIds。不能根据项目自报 metadata 或名称任意跳过普通物件。总控负责核实辅助成员的真实对象和形状。
-- `actual_physics_hit` 来自同一当前相机中心射线的真实物理查询（排除玩家和必要辅助对象），不能传旧 UI target 的位置。较近物理命中阻止返回后方 mesh。helper 自己不新增物理体或改变玩法碰撞。
+- `actual_physics_hit` 来自同一当前相机中心射线的真实物理查询（排除玩家和必要辅助对象），不能传旧 UI target 的位置。较近或同深度的物理命中保留原物理目标优先，只有严格在物理命中前方的 mesh 才能替换。helper 自己不新增物理体或改变玩法碰撞。
 - `hit` 返回实际 MeshInstance3D 的 `node`、十进制实例 `objectId`、世界 position/normal、triangleIndex、distance。node 只在同进程供固定 adapter 即时投影；不得原样序列化成模型权限。
 - adapter 以 `_scene_node(node)`、`weakref(node)` 和 `_scene_ancestors(node)` 接入已有 sceneObjectTarget/sceneObjectRefs。脚本/祖先身份变化及跨 world/build/instance 按现有重捕获规则处理；引用仍是 runtime-instance、context-only，不变成 creation_operation entity。
 - `blocked` 表示前方真实物理体阻挡；`none` 表示在声明范围内无命中；`fallback` 表示无法完整确定最近目标，并携带 `blockRaySelection=true`。fallback 时不能使用本次已扫描子集、旧目标，或直接选未知遮挡后面的 collider 冒充最近对象。
@@ -45,8 +45,19 @@ BoxMesh 先读取内建的 subdivision 数值，设 w/h/d 为额外细分数加�
 
 ## 验证证据
 
-`tests/mesh-pick/headless.test.mjs` 使用已核验 SHA-256 的 Godot 4.7.2、独立副本和临时用户目录运行 `probe.gd`。40 项引擎断言通过：最近三角/法线、隐藏与 layer、当前 camera、显式辅助排除、父变换、共享资源与实时修改、AABB假阳性不命中、薄片与背面剔除、透明/Shader/Skin、自定义资源虚函数不执行、ArrayMesh/BlendShape/MultiMesh、未知前后遮挡、节点/候选/单mesh/总三角预算、同位置多实例歧义以及真实 StaticBody3D 物理遮挡。
+`tests/mesh-pick/headless.test.mjs` 使用已核验 SHA-256 的 Godot 4.7.2、独立副本和临时用户目录运行 `probe.gd`。44 项引擎断言通过：最近三角/法线、隐藏与 layer、当前 camera、显式辅助排除、父变换、共享资源与实时修改、AABB假阳性不命中、薄片与背面剔除、透明/Shader/Skin、自定义资源虚函数不执行、ArrayMesh/BlendShape/MultiMesh、未知前后遮挡、节点/候选/单mesh/总三角预算、同位置多实例歧义以及真实 StaticBody3D 物理遮挡。
 
-本轮最终证据目录：`D:/cm-promo-mesh-pick-0912/test-results/mesh-pick-GMvftd`。初次验证发现材质属性名是 grow 而非 grow_enabled，已按实际引擎修正。所有最终断言无失败；未使用浏览器、真实鼠标键盘、Pointer Lock、模型调用或个人存档。
+本轮最终证据目录：`D:/cm-promo-mesh-pick-0912/test-results/mesh-pick-xDBJ2g`。初次验证发现材质属性名是 grow 而非 grow_enabled，已按实际引擎修正。所有最终断言无失败；未使用浏览器、真实鼠标键盘、Pointer Lock、模型调用或个人存档。
 
 API依据：[BoxMesh细分定义](https://docs.godotengine.org/en/stable/classes/class_boxmesh.html)、[三角线段相交](https://docs.godotengine.org/en/stable/classes/class_geometry3d.html)、[材质剔除与深度设置](https://docs.godotengine.org/en/stable/classes/class_basematerial3d.html)。另已在固定引擎确认 ArrayMesh 有 surface_get_array_len/index_len，可为后续扩展做复制前预算；本轮未因此宣称支持 ArrayMesh。
+
+
+## PET02 原产物副本诊断（独立 forensic）
+
+在 test-results/desktop-native-complete-2lwsto 的实际源码副本上新增外部 probe 和 helper；未改 pet_dog.gd、creation_world.gd、场景、project.godot 或 creation.json，五项源码 SHA-256 在原目录和副本执行前后均一致。新实例使用单独 forensic build/instance 身份，不算原模型试验、采用或视觉验收。
+
+通过原 RuntimeBridge load/resume/wait120/look 运行。玩家仍在 (0,0.9,6)。look(-1.1,-0.7) 真正命中 PetDog/BodyRoot/Head/Muzzle；另一个按实际躯干方向计算的正常 look 命中 Skull，两个返回节点均由真实祖先关系确认属于 PetDog。(-1,-0.4) 因标签可能遮挡仍为 fallback，未宣称所有视角可选；另两个角度保留实际地面物理目标。
+
+Label3D 的球界改为正确最远角点长度乘缩放上界：正交 basis 用最大轴长度，不额外乘 sqrt(3)；非正交/shear basis 使用 Frobenius 上界。夹具覆盖 shear 八角点均在边界内，fixed-size 标签明确 fallback。
+
+诊断入口：tests/mesh-pick/pet-forensic.mjs，要求显式传入原产物 source 的绝对目录。最终证据 D:/cm-promo-mesh-pick-0912/test-results/mesh-pet-forensic-mQ096o/report.json。未修改原狗代码或添加 collider，没有真实模型、用户输入或像素验收。
