@@ -8,3 +8,15 @@
 - 显式拒绝与 `CRAFTMINE_CREATION_EVAL=1` 混用；不创建或更新评测账本，不添加 token、调用次数、整轮时限或输出上限。模型 contextWindow、maxTokens、thinkingLevels 和选中思考级别照实际配置快照传递。产品已有通用任务边界保持原样。
 
 4 项离线测试通过：真实配置传递、历史与权限保留、正常提交/状态/取消链、错误终点及身份变更拒绝。未调用模型。后续薄驱动只需复用原测试世界和会话，通过这些方法输入原玩家目标；真实成品验收由总控构建后进行。
+
+## 薄驱动
+
+`node tests/promo-real-player.mjs <旧报告绝对路径> <真实配置快照绝对路径> <玩家文本文件绝对路径> --packaged-root <新成品目录> [--live]`
+
+默认只准备并显示实际型号、思考级别、窗口、输出配置及原样输入；`--live` 才启动成品并读取 `CRAFTMINE_LIVE_CONFIG` 的本地密钥。没有 `CRAFTMINE_CREATION_EVAL`，不读取或写入旧评测账本，不添加整轮时长或模型次数上限。每次调用只发一次文本文件中的正常玩家输入，消息使用 UUID，使用普通任务 metrics。进程信号可正常取消；120 秒 RPC 超时仅用于失去回应的控制调用，不是整轮任务时限。
+
+实际澄清写入独立 `player-questions-UUID` 目录，等待测试 agent 依据原玩家目标提交 file-response；不选默认或首项、不自动回复。真实权限仍由产品的普通权限流程决定，没有改成 auto。
+
+报告格式为 `craftmine.promo-player/1`，位置为原 profile 父目录 `player-UUID.json`，包含 worldId、sessionId、packageIdentity、submittedAt、完整 before/latest（含 active/job/metrics/observation）、endedAt、exitReport、stateIntegrityVerified；不伪造 budget 字段。采用前仍须核对本次提交后的新检查与世界身份。原报告、marker、输入文件、配置快照和成品未被改写且退出审计干净，才将 stateIntegrityVerified 标为 true。
+
+FLIGHT 旧报告的 prepare-only 已验证能解析原会话与世界，显示保存的 `deepseek-v4.1-flash-expires-on-0910`、`max`、1,000,000 上下文和 384,000 输出配置，输入为“继续完成刚才的歼20，我要能实际驾驶它飞起来。”。仅用了旧固定目录作参数解析演示，未启动旧包或模型；live 必须使用含新入口的成品。入口及文件问答现有检查共 11 项通过，薄驱动语法检查通过。
