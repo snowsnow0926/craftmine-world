@@ -1,0 +1,75 @@
+{
+  "format": "craftmine.promo-effect-summary/1",
+  "wish": {
+    "id": "FLIGHT01",
+    "text": "我想要驾驶歼20。"
+  },
+  "status": "TIME_STOP",
+  "assessment": "BLOCKED_BY_CLARIFICATION",
+  "functional": "NOT_IMPLEMENTED",
+  "visual": "NO_AIRCRAFT",
+  "worldId": "world-6ff52d6b2745",
+  "model": "deepseek-flash",
+  "thinking": "high",
+  "budget": {
+    "limit": 40,
+    "reserved": 4,
+    "remaining": 36
+  },
+  "actualReservations": 4,
+  "modelSourceWrites": 0,
+  "adoptionAttempted": false,
+  "questions": [
+    {
+      "options": [
+        "停在出生点旁的停机坪上，走近按 E 登机，再按 E 下机",
+        "一进世界就直接坐在驾驶舱里开始飞",
+        "用按键随时召唤/收起飞机"
+      ],
+      "question": "歼20 怎么交付给你？（creation-sandbox 里现在没有任何飞机，我会用引擎基础几何体搭一架）"
+    },
+    {
+      "options": [
+        "街机式：跟手、可直接拉升俯冲，容易飞（推荐）",
+        "偏真实：需要速度/升力才能维持高度，会失速"
+      ],
+      "question": "飞行手感想要哪种？"
+    },
+    {
+      "options": [
+        "座舱第一人称（看到机头与前风挡）",
+        "第三人称追尾视角（看得见整架飞机）"
+      ],
+      "question": "驾驶时用哪个视角？"
+    },
+    {
+      "options": [
+        "只要飞行，先把飞机飞起来",
+        "加上机炮（能打靶/打物块）",
+        "加上加力推进与音爆感觉（速度特效）"
+      ],
+      "question": "除了飞行，第一版还要什么？"
+    }
+  ],
+  "answers": [
+    null,
+    null,
+    null,
+    null
+  ],
+  "clarificationWaitMs": 573395,
+  "startedAt": "2026-09-11T18:15:13.804Z",
+  "endedAt": "2026-09-11T18:25:40.730Z",
+  "packageInventory": "3b59f8d34baf393cbdda343107eff99611936a82144d99b04ad61e9809ceb967",
+  "packageRoot": "D:\\cm-promo-loop-0912\\desktop\\build\\releases\\43203d8e6202-1a5c7fd2-b609-48c2-b999-fa1bf7a4d267\\output\\win-unpacked",
+  "originalReport": "D:\\cm-promo-flight-0912\\test-results\\desktop-native-complete-cl1y3B\\report.json",
+  "originalReportSha256": "f0d69ef2ff5e233043246f702dcf0a17ed29fbb3d3a2d440ecdd5de485078004",
+  "image": "formal-world.png",
+  "imageSha256": "9450d1c6a926b40ede4b6cfd9f8e8bc4772999c0fbe3281432e6285cd0c35957",
+  "isolation": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  }
+}
