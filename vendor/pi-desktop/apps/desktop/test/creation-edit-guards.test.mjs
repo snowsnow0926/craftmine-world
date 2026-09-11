@@ -32,3 +32,11 @@ test('direct adoption rejects unfrozen requirements before reading a candidate',
  await assert.rejects(assertDirectCreationCandidate(f.domain,{projectId:'p',sessionId:'s',turnId:'t'},capture,'job-a','candidate-a'),/REQUIREMENTS_NEED_REVIEW/);
  assert.ok(!f.calls.some(call=>call.method==='godotCandidate.read'));
 });
+
+test('observer-only adoption requires the exact migration source, passed check and unchanged current branch',async()=>{
+ const upgraded={...capture,observerUpgradeOnly:true,autoApply:false,target:{surface:'none'},sourceMigration:{formalBuildId:capture.buildId,formalSourceRevision:capture.sourceRevision,formalManifestHash:capture.manifestHash,revision:5,manifestHash:'b'.repeat(64)}};
+ function ready(){const f=fixture();f.data['godotBuild.read']={worldId:'world-a',jobId:'job-a',kind:'check',status:'passed',baseId:'creation-sandbox',candidateId:'candidate-a',sourceRevision:5,manifestHash:'b'.repeat(64),sourceStale:false,buildId:'build-new',outputHash:'out',taskId:'task-a'};f.data['godotCandidate.read']={checkStatus:'passed',candidate:{status:'ready',worldId:'world-a',checkJobId:'job-a',buildId:'build-new',sourceRevision:5,manifestHash:'b'.repeat(64),checkOutputHash:'out'}};f.data['godotProject.index']={currentTaskId:'task-a',worldId:'world-a',baseId:'creation-sandbox',revision:5,manifestHash:'b'.repeat(64)};return f;}
+ await assertDirectCreationCandidate(ready().domain,{projectId:'p',sessionId:'s',turnId:'t'},upgraded,'job-a','candidate-a');
+ for(const mutate of [f=>f.data['godotBuild.read'].sourceStale=true,f=>f.data['godotBuild.read'].manifestHash='c'.repeat(64),f=>f.data['godotCandidate.read'].candidate.checkOutputHash='other',f=>f.data['godotProject.index'].revision=6]){const f=ready();mutate(f);await assert.rejects(assertDirectCreationCandidate(f.domain,{projectId:'p',sessionId:'s',turnId:'t'},upgraded,'job-a','candidate-a'));}
+ await assert.rejects(assertDirectCreationCandidate(ready().domain,{projectId:'p',sessionId:'s',turnId:'t'},{...upgraded,sceneObjectTarget:{objectId:'old'}},'job-a','candidate-a'),/UPGRADE_SOURCE_REQUIRED/);
+});

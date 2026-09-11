@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+import {SCENE_OBSERVER_UPGRADE} from './creation-managed-migrations.ts';
 
 // Runtime fields added after old retained worlds shipped need their own source
 // authority gate. An old adapter may forward authored fields it never sampled.
@@ -24,5 +25,15 @@ export function hasCurrentSceneObserver(files: unknown, pins: SceneObserverPins 
   return Object.keys(SCENE_OBSERVER_RESOURCES).every(name=>{
     const matches=files.filter(file=>file?.path===name);
     return matches.length===1&&Array.isArray(pins[name])&&pins[name].includes(matches[0].sha256);
+  });
+}
+
+/** A review hint grants maintenance only, never trust in old sampled fields. */
+export function canUpgradeSceneObserver(files: unknown, pins: SceneObserverPins | undefined): boolean {
+  if(!pins||!Array.isArray(files)||hasCurrentSceneObserver(files,pins))return false;
+  return SCENE_OBSERVER_UPGRADE.files.length===Object.keys(SCENE_OBSERVER_RESOURCES).length&&SCENE_OBSERVER_UPGRADE.files.every(file=>{
+    const matches=files.filter(entry=>entry?.path===file.source);
+    return matches.length===1&&file.from.includes(matches[0].sha256)&&file.to.every(hash=>pins[file.source]?.includes(hash))&&
+      !files.some(entry=>entry?.path!==file.source&&typeof entry?.path==='string'&&(entry.path.toLowerCase()===file.source.toLowerCase()||entry.path.toLowerCase().startsWith(file.source.toLowerCase()+'.')));
   });
 }

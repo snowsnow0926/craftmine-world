@@ -4,7 +4,7 @@ import {createHash} from "node:crypto";
 import type {CreationCapture} from "./creation-target-service";
 
 type Context={projectId:string;sessionId:string;turnId:string};
-export type CreationEditInput={sessionId:string;captureId:string;operationId:string;action:"modify"|"delete"|"undo"|"place"|"duplicate";changes?:{scale?:number[];color?:string};undoOperationId?:string;kind?:"tree"|"rock"|"chest"|"door"|"marker";count?:number;offset?:number[]};
+export type CreationEditInput={sessionId:string;captureId:string;operationId:string;action:"modify"|"delete"|"undo"|"place"|"duplicate"|"upgrade-observer";changes?:{scale?:number[];color?:string};undoOperationId?:string;kind?:"tree"|"rock"|"chest"|"door"|"marker";count?:number;offset?:number[]};
 export type CreationEditStatus={operationId:string;sessionId:string;phase:"preparing"|"editing"|"checking"|"applying"|"applied"|"failed"|"interrupted";worldId?:string;jobId?:string;candidateId?:string;receipt?:any;error?:string};
 type Bound={context:Context;capture:CreationCapture};
 type Dependencies={
@@ -36,7 +36,7 @@ export function validateCreationEdit(value:unknown):CreationEditInput {
     if(changes.color!==undefined&&(typeof changes.color!=="string"||!/^#[a-fA-F0-9]{6}$/.test(changes.color)))fail("CREATION_EDIT_INVALID");
   }else if(input.action==="undo"){
     if(input.changes!==undefined||typeof input.undoOperationId!=="string"||!/^[a-zA-Z0-9_-]{1,120}$/.test(input.undoOperationId))fail("CREATION_EDIT_INVALID");
-  }else if(input.action!=="delete"||input.changes!==undefined||input.undoOperationId!==undefined)fail("CREATION_EDIT_INVALID");
+  }else if(!["delete","upgrade-observer"].includes(input.action)||input.changes!==undefined||input.undoOperationId!==undefined)fail("CREATION_EDIT_INVALID");
   return structuredClone(input);
 }
 
@@ -78,9 +78,16 @@ export function createCreationEditService(deps:Dependencies){
       const invoke=(name:string,args:Record<string,unknown>,step:string)=>deps.execute(bound!,name,args,`edit-${input.operationId}-${step}`);
       const source=await invoke("godot_project_index",{offset:0,limit:1},"index");
       const capture=bound.capture;
-      const request={operationId:input.operationId,action:input.action,expected:{worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,revision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:capture.snapshotId},
-        ...(input.action==="undo"?{undoOperationId:input.undoOperationId}:input.action==="place"?{kind:input.kind,scale:[1,1,1],color:"#84A866"}:{targetId:capture.target.entityId}),...(input.action==="duplicate"?{count:input.count,offset:input.offset}:{}),...(input.changes?{changes:input.changes}:{})};
-      const edited=await invoke("creation_operation",{request},"source");publish({receipt:edited.receipt,phase:"checking"});
+      let edited:any;
+      if(input.action==='upgrade-observer'){
+        if(!capture.observerUpgradeOnly||!capture.sourceMigration||capture.sourceMigration.revision!==source.revision||capture.sourceMigration.manifestHash!==source.manifestHash)fail('CREATION_OBSERVER_UPGRADE_SOURCE_REQUIRED');
+        edited={source:{revision:source.revision,manifestHash:source.manifestHash}};
+      }else{
+        const request={operationId:input.operationId,action:input.action,expected:{worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,revision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:capture.snapshotId},
+          ...(input.action==="undo"?{undoOperationId:input.undoOperationId}:input.action==="place"?{kind:input.kind,scale:[1,1,1],color:"#84A866"}:{targetId:capture.target.entityId}),...(input.action==="duplicate"?{count:input.count,offset:input.offset}:{}),...(input.changes?{changes:input.changes}:{})};
+        edited=await invoke("creation_operation",{request},"source");
+      }
+      publish({receipt:edited.receipt,phase:"checking"});
       const started=await invoke("godot_build_start",{...edited.source,mode:"check"},"check");
       if(started.execution?.enqueued!==true)fail(started.execution?.reason??"CREATION_EDIT_EXECUTOR_UNAVAILABLE");
       publish({jobId:started.jobId});
