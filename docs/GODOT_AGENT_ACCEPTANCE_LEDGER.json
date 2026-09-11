@@ -1,0 +1,255 @@
+{
+  "format": "craftmine.godot-agent-acceptance-ledger/1",
+  "goalStatus": "active",
+  "plan": "docs/GODOT_AGENT_CAPABILITY_DEVELOPMENT_PLAN.md",
+  "scope": "All original GA01-GA28 remain required; source tests do not prove packaged gameplay or ordinary player completion",
+  "playerLimits": "Use actual confirmed model/product config; no added token, request or whole-turn limits. Older bounded evaluator proposals are not ordinary-player evidence.",
+  "requirements": [
+    {
+      "id": "GA01",
+      "scenario": "三项能力误报",
+      "requiredEvidence": "模式级报告与真实只读调用一致 GU1",
+      "status": "partial",
+      "evidence": [
+        "tests/godot-remaining/L/capability-modes-core.test.mjs"
+      ],
+      "next": "Mode reports and real core read routes tested; new packaged mode verification outstanding"
+    },
+    {
+      "id": "GA02",
+      "scenario": "执行器退出重启",
+      "requiredEvidence": "能力及时失效并恢复，无过期可用状态 GU1",
+      "status": "partial",
+      "evidence": [
+        "tests/godot-remaining/L/broker-contract.test.mjs"
+      ],
+      "next": "Live provider state changes covered by source tests; packaged exit/restart scenario remains"
+    },
+    {
+      "id": "GA03",
+      "scenario": "无权限及 host-only",
+      "requiredEvidence": "准确说明边界，模型不能调用私有提交 GU1",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA04",
+      "scenario": "压缩与模型切换",
+      "requiredEvidence": "需求、源码、作业、失败和预算正确恢复 GU5",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA05",
+      "scenario": "继承场景与同名实体",
+      "requiredEvidence": "定位真实对象，不改错实例 GU2",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA06",
+      "scenario": "动态节点和无法解析语法",
+      "requiredEvidence": "区分源码未知与实际运行观察 GU2",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA07",
+      "scenario": "资料与引擎版本不匹配",
+      "requiredEvidence": "拒绝伪装兼容，返回准确缺口 GU2",
+      "status": "partial",
+      "evidence": [
+        "tests/godot-agent/engine-api.test.mjs"
+      ],
+      "next": "Fixed version/corpus mismatches and metadata omissions tested; corpus is reflection not full docs"
+    },
+    {
+      "id": "GA08",
+      "scenario": "参数与共享材质",
+      "requiredEvidence": "改动范围准确，其他对象按约定保持 GU3",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA09",
+      "scenario": "冲突与丢回复",
+      "requiredEvidence": "不部分写入、不重复对象，能恢复回执 GU3",
+      "status": "partial",
+      "evidence": [
+        "tests/creation-source-service.test.mjs"
+      ],
+      "next": "Exact reply-loss recovery and conflict guards covered by compiler/service tests; packaged creation run remains"
+    },
+    {
+      "id": "GA10",
+      "scenario": "缓存污染",
+      "requiredEvidence": "任一关键身份改变即重新检查 GU3",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA11",
+      "scenario": "门与真实碰撞",
+      "requiredEvidence": "关闭阻挡、打开通行，视觉状态对应 GU4",
+      "status": "partial",
+      "evidence": [
+        "docs/GU4_DOOR_SCENARIO_PROGRESS_2026-09-12.md"
+      ],
+      "next": "Actual normal/blocked native and Web diagnostic fixtures passed; authoritative door passage extension underway"
+    },
+    {
+      "id": "GA12",
+      "scenario": "钥匙前置条件",
+      "requiredEvidence": "无钥匙失败、有钥匙成功，不能绕过 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA13",
+      "scenario": "宝箱奖励重开",
+      "requiredEvidence": "奖励一次性，保存重启后不重复 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA14",
+      "scenario": "新内容采用",
+      "requiredEvidence": "保留采用时最新背包与已有任务进度 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA15",
+      "scenario": "动画与交互时机",
+      "requiredEvidence": "门动画、碰撞和交互时序一致 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA16",
+      "scenario": "同伴绕障碍",
+      "requiredEvidence": "真实移动可达、不穿墙，失败可诊断 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA17",
+      "scenario": "商店与游戏 UI",
+      "requiredEvidence": "扣款、库存、背包、满容量和显示一致 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA18",
+      "scenario": "候选截图",
+      "requiredEvidence": "画面绑定当前候选，文本模型不冒充视觉验收 GU4",
+      "status": "partial",
+      "evidence": [
+        "docs/evidence/gu6-open-source-20260912/summary.json"
+      ],
+      "next": "External source startup screenshots have receipts; candidate-specific live/model vision acceptance remains"
+    },
+    {
+      "id": "GA19",
+      "scenario": "未支持需求",
+      "requiredEvidence": "inconclusive 或 unsupported，不能全绿 GU4",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA20",
+      "scenario": "伪造状态与弱化检查",
+      "requiredEvidence": "单一自报不足以通过，原断言不能被删除 GU4",
+      "status": "partial",
+      "evidence": [
+        "tests/godot-scenario-verdict.test.mjs"
+      ],
+      "next": "Diagnostic door negative rejects self-reported open with retained collision; core-bound physical verdict underway"
+    },
+    {
+      "id": "GA21",
+      "scenario": "真实错误修复",
+      "requiredEvidence": "原失败可复现，修复后同标准通过 GU5",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA22",
+      "scenario": "预算与重复错误",
+      "requiredEvidence": "有界停止，恢复与换模型不重置总账 GU5",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA23",
+      "scenario": "第二世界复用",
+      "requiredEvidence": "资源齐全、身份独立、不复制源进度 GU6",
+      "status": "partial",
+      "evidence": [
+        "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md"
+      ],
+      "next": "Fixed sources and LPAC/Web startup verified; real package roundtrip and two-world instance test underway"
+    },
+    {
+      "id": "GA24",
+      "scenario": "规模与性能优化",
+      "requiredEvidence": "同设备同要求实测，功能与画面不退化 GU6",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    },
+    {
+      "id": "GA25",
+      "scenario": "不抢输入",
+      "requiredEvidence": "独立进程和 profile，零真实输入与焦点抢占 GU7",
+      "status": "partial",
+      "evidence": [
+        "docs/evidence/gu6-open-source-20260912/summary.json"
+      ],
+      "next": "All recorded headless external trials have zero Pointer Lock/focus requests; each future player run still requires independent audit"
+    },
+    {
+      "id": "GA26",
+      "scenario": "取消崩溃迟到结果",
+      "requiredEvidence": "清理正确，正式版本与存档可恢复 GU7",
+      "status": "partial",
+      "evidence": [
+        "tests/godot-scenario-collector.test.mjs"
+      ],
+      "next": "Collector cancel/replacement tested incl real Web/offscreen; full formal save/crash recovery remains"
+    },
+    {
+      "id": "GA27",
+      "scenario": "旧四底座与分发",
+      "requiredEvidence": "原能力回归，打包资源与当前契约一致 GU7",
+      "status": "partial",
+      "evidence": [
+        "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json"
+      ],
+      "next": "First enhanced package source/archive/resources verified; four-base behavior regression remains"
+    },
+    {
+      "id": "GA28",
+      "scenario": "全新措辞组合需求",
+      "requiredEvidence": "真实模型独立完成，并记录失败和人工介入 GU7",
+      "status": "unproven",
+      "evidence": [],
+      "next": "Inspect current implementation and collect evidence at the requirement scope"
+    }
+  ]
+}

@@ -25,7 +25,7 @@
     {
       "id": "GU0",
       "status": "in-progress",
-      "next": "Freeze new package identity; confirmed player snapshot collected"
+      "next": "First enhanced package frozen at d4b15812; ordinary blank-world/session bootstrap passed; first confirmed-model creation is running"
     },
     {
       "id": "GU1",
@@ -35,11 +35,12 @@
     {
       "id": "GU2",
       "status": "in-progress",
-      "next": "Pinned engine metadata production routing and plugin staging passed; broader semantic source queries remain"
+      "next": "Static instance/resource/signal/InputMap associations integrated and real-core pin regression passed; runtime/expanded inheritance semantics remain explicit unknown"
     },
     {
       "id": "GU3",
-      "status": "planned"
+      "status": "in-progress",
+      "next": "Existing structured operations retained; exact advisory change summaries integrated, replay/source/save boundaries tested; generic configuration and incremental checks remain"
     },
     {
       "id": "GU4",
@@ -58,7 +59,8 @@
     },
     {
       "id": "GU7",
-      "status": "planned"
+      "status": "in-progress",
+      "next": "Frozen package d4b15812 built and integrity verified; ordinary blue-door plus one-time chest run uses confirmed DeepSeek model/max with no added task limits"
     }
   ],
   "evidence": [
@@ -123,11 +125,30 @@
       "command": "pnpm run build:js",
       "status": "passed",
       "scope": "integrated production tools and optional scenario collector; independent workspace JS and desktop build"
+    },
+    {
+      "kind": "package",
+      "commit": "d4b15812227723d37538870bb11b9fe5ebc90c31",
+      "path": "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json",
+      "status": "passed",
+      "scope": "full local unpacked Windows build and resource/source identity; no installer or user installation claim"
+    },
+    {
+      "kind": "ordinary-bootstrap",
+      "path": "test-results/desktop-native-ordinary-jHKHPj/bootstrap.json",
+      "status": "passed",
+      "scope": "new blank creation world and normal sessionCreate; zero model requests; clean no-input shutdown"
+    },
+    {
+      "kind": "ordinary-player",
+      "path": "test-results/desktop-native-ordinary-jHKHPj/player-29bc92e8-d233-4782-9806-6bcebf97de01.json",
+      "status": "running",
+      "scope": "blue door and one-time chest; confirmed DeepSeek/max; no evaluator limits; manually reviewed per-operation test approvals"
     }
   ],
   "limitations": [
     "Current installed client has not been revalidated by this goal",
     "Prior player records apply only to their recorded wishes and builds",
-    "No new player model execution has started"
+    "The first new ordinary-player run is in progress; completion and gameplay are not yet established"
   ]
 }
