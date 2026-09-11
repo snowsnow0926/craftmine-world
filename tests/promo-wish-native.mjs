@@ -4,6 +4,7 @@ import {createPromoWishPlan} from './helpers/promo-wish-plan.mjs';
 import {loadLocalConfig} from '../app/local-config.mjs';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {createCompleteOutput} from './godot-final/complete-contract.mjs';
+import {promoPilotProgress} from './helpers/promo-pilot-progress.mjs';
 const group=process.env.CRAFTMINE_PROMO_GROUP??'pet';
 const plan=createPromoWishPlan({suite:'independent',selected:[group],seed:20260912}),wish=plan.stories[0].steps.find(step=>step.kind==='wish');
 if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',wish:{id:wish.id,text:wish.text},modelRequests:0,maxRequests:10,maxMinutes:10}));process.exit(0);}
@@ -42,7 +43,8 @@ try{
     const stage={active:state.active,job:state.job?.status,stage:state.job?.stage,reserved:state.budget?.reserved};
     report.snapshots.push({at:new Date().toISOString(),...stage});save();
     if(JSON.stringify(stage)!==lastStatus){console.log(JSON.stringify(stage));lastStatus=JSON.stringify(stage);}
-    if(!state.active){report.status=state.budget?.reserved>=10?'BUDGET_STOP':'TASK_SETTLED_UNVERIFIED';break;}
+    const progress=promoPilotProgress(state);
+    if(progress.settled){report.status=progress.reason;break;}
     await delay(2000);
   }
   if(report.status==='SUBMITTED'){report.status='TIME_STOP';await evaluation('abort');}
