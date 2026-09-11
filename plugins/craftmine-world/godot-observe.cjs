@@ -37,6 +37,7 @@ async function describeRuntime(core,{worldId}){
     throw error;
   }
   if(descriptor===null||descriptor===undefined)return missing('NO_FORMAL_GODOT_RUNTIME');
+  if(descriptor.worldId!==worldId)return missing('RUNTIME_IDENTITY_UNVERIFIED');
   return {available:true,phase:descriptor.phase||null,worldId:descriptor.worldId||null,buildId:descriptor.buildId||null,
     baseId:descriptor.baseId||null,revision:present(descriptor.revision),contentHash:descriptor.contentHash||null,
     sourceRevision:present(descriptor.sourceRevision),manifestHash:descriptor.manifestHash||null,
@@ -110,7 +111,9 @@ async function projectFacts({core,context,worldId,observation,sampler}){
 
   try {
     const index=await call('godotProject.index',{limit:1});
+    if(index?.worldId!==worldId)throw Object.assign(Error('PROJECT_IDENTITY_UNVERIFIED'),{errorCode:'PROJECT_IDENTITY_UNVERIFIED'});
     facts.project={available:true,revision:index.revision,manifestHash:index.manifestHash,baseId:index.baseId,
+      worldId:index.worldId,branchId:index.content?.branchId??null,content:index.content??null,
       baseBuild:index.baseBuild,engineVersion:index.engineVersion,renderer:index.renderer,target:index.target,
       totalFiles:index.totalFiles,status:index.status,verified:index.verified,applied:index.applied,
       executionAvailable:index.executionAvailable,binaryAssetsAvailable:index.binaryAssetsAvailable};
@@ -121,8 +124,11 @@ async function projectFacts({core,context,worldId,observation,sampler}){
 
   try {
     const list=await call('godotCandidate.list',{limit:5});
-    facts.candidates={available:true,items:(list.items||[]).map(item=>({id:item.id,buildId:item.buildId,baseId:item.baseId,
-      status:item.status,checkJobId:item.checkJobId,checkOutputHash:item.checkOutputHash})),nextOffset:present(list.nextOffset)};
+    if(!Array.isArray(list?.items)||list.items.some(item=>!item||typeof item!=='object'||Array.isArray(item)||item.worldId!==undefined&&item.worldId!==worldId))throw Object.assign(Error('CANDIDATE_IDENTITY_UNVERIFIED'),{errorCode:'CANDIDATE_IDENTITY_UNVERIFIED'});
+    facts.candidates={available:true,items:list.items.map(item=>({id:item.candidateId??item.id??null,candidateId:item.candidateId??item.id??null,
+      worldId:item.worldId??null,buildId:item.buildId??null,baseId:item.baseId??null,
+      sourceRevision:item.sourceRevision??null,manifestHash:item.manifestHash??null,assetManifestHash:item.assetManifestHash??null,
+      status:item.status??null,checkJobId:item.checkJobId??null,checkOutputHash:item.checkOutputHash??null})),nextOffset:present(list.nextOffset)};
   } catch(error){
     facts.candidates=missing('CANDIDATE_READ_FAILED',{errorCode:error?.errorCode||null});
   }
@@ -132,9 +138,12 @@ async function projectFacts({core,context,worldId,observation,sampler}){
   catch(error){ descriptor=missing('RUNTIME_DESCRIBE_FAILED',{errorCode:error?.errorCode||null}); }
   facts.runtime=descriptor.available
     ? {available:true,phase:descriptor.phase,buildId:descriptor.buildId,baseId:descriptor.baseId,revision:descriptor.revision,
+       worldId:descriptor.worldId,sourceRevision:descriptor.sourceRevision,manifestHash:descriptor.manifestHash,
        engineVersion:descriptor.engineVersion,renderer:descriptor.renderer,target:descriptor.target,entry:descriptor.entry,
        applicationId:descriptor.applicationId,artifactManifestHash:descriptor.artifactManifestHash}
     : descriptor;
+
+  facts.recovery=await require('./godot-jobs.cjs').readRecoveryFacts(core,{context,worldId,project:facts.project,runtime:facts.runtime});
 
   // Durable progress is exposed under its own name. It is never equipment.
   facts.durableProgress=descriptor.available
@@ -168,6 +177,18 @@ function renderFactsBlock(facts){
   lines.push('runtime: '+runtime);
   const candidates=facts.candidates?.available?`count=${facts.candidates.items.length} latest=${facts.candidates.items[0]?facts.candidates.items[0].id+':'+facts.candidates.items[0].status:'none'}`:'unavailable('+(facts.candidates?.reason||'unknown')+')';
   lines.push('candidates: '+candidates);
+  if(facts.recovery){
+    const recovery=facts.recovery,task=recovery.currentTask,job=recovery.latestJob;
+    lines.push('recoveryTask: '+(task?.available?`id=${task.binding.taskId} generation=${task.generation??'unknown'} status=${task.status??'unknown'}`:'unavailable('+(task?.reason||'unknown')+')'));
+    lines.push('latestSessionJob: '+(job?.available?(job.found?`id=${job.jobId} scope=${job.scope} status=${job.status} source=${job.source.revision??'unknown'} sourceMatch=${job.sourceComparison.relation} formalBuildMatch=${job.formalBuildMatch??'unknown'}`:'none'):'unavailable('+(job?.reason||'unknown')+')'));
+    if(job?.found){
+      const fingerprints=(job.diagnostics?.diagnostics||[]).filter(item=>item.severity==='reported-error').slice(0,3).map(item=>item.fingerprint);
+      lines.push('diagnosticFingerprints: '+(fingerprints.length?fingerprints.join(','):'none-reported'));
+    }
+    const budget=recovery.budget?.available?recovery.budget.value:null;
+    lines.push('durableTaskBudget: '+(budget?`owner=${budget.ownerTaskId??'unknown'} requests=${budget.requestCount??'unknown'} chargedTokens=${budget.chargedTokens??'unknown'} unknownRequests=${budget.unknownRequestCount??'unknown'}`:'unknown'));
+    lines.push('applicationQueue: unknown; inspect the existing application receipt or live host status');
+  }
   const progress=facts.durableProgress?.available?`savedAt=${facts.durableProgress.savedAt} equipment=${facts.durableProgress.equipment?.active??'unknown'}`:'unavailable('+(facts.durableProgress?.reason||'unknown')+')';
   lines.push('durableProgress: '+progress);
   const live=facts.live?.available?`sampledAt=${facts.live.sampledAt} base=${facts.live.baseId} equipment=${facts.live.equipment?.active??'unknown'} camera=${facts.live.camera?'present':'absent'} stale=${facts.live.stale}`:'unavailable('+(facts.live?.reason||'unknown')+')';
