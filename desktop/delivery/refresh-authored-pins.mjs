@@ -31,6 +31,8 @@ const NEW_AUTHORED=new Set([
   'desktop/godot/bases/top-down/core/scripts/creation_renderer.gd',
   'desktop/godot/bases/top-down/worlds/blank/scripts/base/creation_renderer.gd',
   'desktop/godot/shared/adapters/creation-sandbox.gd',
+  'desktop/godot/shared/headless_play_action.gd',
+  'desktop/godot/shared/scene_mesh_picker.gd',
   'desktop/godot/shared/creation-entities.mjs',
   'desktop/godot/shared/creation-scene.mjs',
   'desktop/godot/shared/creation_runtime.mjs',
