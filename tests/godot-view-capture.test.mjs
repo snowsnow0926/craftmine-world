@@ -54,8 +54,27 @@ test('one timed-out read stays bounded and late completion cannot become a new r
  f.contents.capturePage=async()=>frame();assert.equal((await f.host.captureView(f.identity)).scope,'formal');
 });
 test('empty, mismatched or oversized captures fail; valid black pixels are accepted',async()=>{
- for(const [image,error]of [[frame({painted:false}),/EMPTY_FRAME/],[frame({width:400}),/DIMENSIONS/],[frame({pngBytes:WORLD_VIEW_CAPTURE_MAX_PNG_BYTES+1}),/PNG_LIMIT/]]){const f=fixture();f.contents.capturePage=async()=>image;await assert.rejects(f.host.captureView(f.identity),error);}
+ for(const [image,error]of [[frame({painted:false}),/EMPTY_FRAME/],[{getSize:()=>({width:0,height:240})},/DIMENSIONS/],[frame({pngBytes:WORLD_VIEW_CAPTURE_MAX_PNG_BYTES+1}),/PNG_LIMIT/]]){const f=fixture();f.contents.capturePage=async()=>image;await assert.rejects(f.host.captureView(f.identity),error);}
  const f=fixture();f.setBounds({x:0,y:0,width:8192,height:8192});await assert.rejects(f.host.captureView(f.identity),/DIMENSIONS/);assert.deepEqual(f.calls,[]);
+});
+
+test('workbench child capture preserves the owning compositor representation without changing layout',async()=>{
+ for(const [sourceWidth,sourceHeight]of [[1216,865],[1200,800],[3840,2160]]){
+  const f=fixture(),bounds={x:275,y:150,width:525,height:650};f.setBounds(bounds);
+  f.contents.capturePage=async()=>{f.calls.push('capturePage');return frame({width:sourceWidth,height:sourceHeight});};
+  const r=await f.host.captureView(f.identity);
+  assert.deepEqual([r.viewWidth,r.viewHeight,r.sourceWidth,r.sourceHeight],[525,650,sourceWidth,sourceHeight]);
+  assert.deepEqual(f.view.getBounds(),bounds);assert.deepEqual(f.calls,['capturePage']);
+  assert.ok(Math.abs(r.width*sourceHeight-r.height*sourceWidth)<=Math.max(sourceWidth,sourceHeight));
+  assert.ok(r.width<=1920&&r.height<=1080);assert.equal(r.resized,sourceWidth>1920||sourceHeight>1080);
+ }
+});
+
+test('independent source dimensions do not permit truncated bitmaps or falsely labelled PNGs',async()=>{
+ for(const mutation of [image=>({...image,toBitmap:()=>Buffer.alloc(16)}),image=>({...image,toPNG:()=>frame().toPNG()})]){
+  const f=fixture();f.setBounds({x:275,y:150,width:525,height:650});f.contents.capturePage=async()=>mutation(frame({width:1200,height:800}));
+  await assert.rejects(f.host.captureView(f.identity),/EMPTY_FRAME|INVALID_IMAGE/);
+ }
 });
 test('4K and scaled displays resize only the captured image and report original pixel/DIP dimensions',async()=>{
  for(const [viewWidth,viewHeight,width,height]of [[3840,2160,3840,2160],[1920,1080,3840,2160]]){

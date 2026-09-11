@@ -35,10 +35,10 @@ export async function captureBoundGodotView(contents:Contents,identity:GodotView
  let png:Buffer,width:number,height:number,sourceWidth:number,sourceHeight:number;
  try{
   const size=image.getSize();sourceWidth=size.width;sourceHeight=size.height;width=sourceWidth;height=sourceHeight;
-  // NativeImage pixels can differ from view DIPs on scaled displays. Preserve
-  // that representation without resizing, and reject a different aspect ratio
-  // beyond a single pixel of DPI rounding in either axis.
-  if(!bounded(width,height)||width/viewWidth<0.5||width/viewWidth>4||height/viewHeight<0.5||height/viewHeight>4||Math.abs(width*viewHeight-height*viewWidth)>Math.max(viewWidth,viewHeight))throw Error('GODOT_VIEW_CAPTURE_DIMENSIONS');
+  // The same WebContents may capture its owning offscreen compositor's pixel
+  // surface rather than the child view's layout rectangle. Record both sizes;
+  // binding/identity checks establish provenance, not a presumed DPI ratio.
+  if(!bounded(width,height))throw Error('GODOT_VIEW_CAPTURE_DIMENSIONS');
   const bitmap=image.toBitmap();if(bitmap.length!==width*height*4)throw Error('GODOT_VIEW_CAPTURE_EMPTY_FRAME');
   let painted=false;for(let i=3;i<bitmap.length;i+=4)if(bitmap[i]!==0){painted=true;break;}
   if(!painted)throw Error('GODOT_VIEW_CAPTURE_EMPTY_FRAME');
