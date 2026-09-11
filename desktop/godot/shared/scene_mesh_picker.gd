@@ -143,6 +143,8 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 		if not _finite(transform.origin) or not _finite(transform.basis.x) or not _finite(transform.basis.y) or not _finite(transform.basis.z) or absf(transform.basis.determinant()) < EPS:
 			return _answer("fallback", "invalid-transform", counts, excluded)
 		if mesh is ArrayMesh:
+			if mesh.custom_aabb != AABB() or instance.custom_aabb != AABB():
+				return _answer("fallback", "custom-array-culling-bounds", counts, excluded)
 			if instance.skin != null or mesh.get_blend_shape_count() != 0:
 				return _answer("fallback", "skinned-or-blend-shape-mesh", counts, excluded)
 			if transform.basis.determinant() < 0: return _answer("fallback", "negative-scale", counts, excluded)
@@ -178,8 +180,9 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 			if counts.candidates > MAX_CANDIDATES: return _answer("fallback", "candidate-budget", counts, excluded)
 			if counts.triangles > MAX_TRIANGLES or total_vertices > MAX_VERTICES:
 				return _answer("fallback", "triangle-or-vertex-budget", counts, excluded)
-			# ArrayMesh AABBs may be authored overrides. Never use them to skip
-			# a nearer surface or to manufacture a hit. All admitted vertices are
+			# Stored ArrayMesh AABBs never justify skipping a nearer surface or
+			# manufacturing a hit. Explicit culling overrides were refused above.
+			# All admitted vertices are
 			# bounded globally, then inspected as real triangles below.
 			candidates.append({"node": instance, "mesh": mesh, "transform": transform, "surfaces": surfaces})
 			continue
