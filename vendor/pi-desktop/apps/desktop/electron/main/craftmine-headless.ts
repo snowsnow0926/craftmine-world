@@ -9,6 +9,7 @@ import { readHeadlessProfile } from "./craftmine-headless-profile";
 import { createGodotGameplayAcceptance, type GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance";
 import { createGodotBasesAcceptance } from "./craftmine-godot-bases-acceptance";
 import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance";
+import { createGodotExploration } from "./craftmine-godot-exploration";
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -86,6 +87,7 @@ export function installHeadlessControl(access: {
   godotSave?: () => Promise<any>;
 }): void {
   if (!profile) return;
+  const godotExplore = access.godotGameplay ? createGodotExploration(access.godotGameplay) : null;
   const godotGameplay = access.godotGameplay ? createGodotGameplayAcceptance(access.godotGameplay) : null;
   const godotBases = access.godotGameplay ? createGodotBasesAcceptance({...access.godotGameplay, save: access.godotSave}) : null;
   const godotMining = access.godotGameplay && access.godotSave ? createGodotMiningAcceptance({...access.godotGameplay, save: access.godotSave}) : null;
@@ -100,6 +102,9 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case "godotExplore":
+          if (Object.keys(request).sort().join(",") !== "id,method,payload,type" || !godotExplore) throw Error("Unsupported bounded exploration request");
+          return godotExplore(request.payload);
         case "godotPlayMine":
           if (Object.keys(request).sort().join(",") !== "id,method,type" || !godotMining) throw Error("Unsupported fixed mining gameplay request");
           return godotMining(request.method);
