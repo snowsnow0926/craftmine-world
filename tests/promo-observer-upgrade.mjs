@@ -5,6 +5,7 @@ import {inspectAdoptionSource,adoptionEnvironment} from './helpers/promo-adoptio
 import {creationPackagedRoot,resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {fileProof,assertProofs} from './helpers/promo-checkpoint-contract.mjs';
 import {checkpointSanitizer} from './helpers/promo-checkpoint-live-contract.mjs';
+import portableRestore from '../plugins/craftmine-world/portable-restore-service.cjs';
 
 const sourceFile=process.argv[2];assert.ok(sourceFile&&path.isAbsolute(sourceFile),'Pass an absolute stopped player report with an adopted checked build');
 const source=inspectAdoptionSource(sourceFile),{original,out,profile,marker,selection}=source;
@@ -14,18 +15,20 @@ const plan={sourceFile,profile,sessionId,worldId,expectedOldBuild:selection.buil
 if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',...plan},null,2));process.exit(0);}
 const client=resolveCreationNativeLaunch({root:process.cwd(),packagedRoot,requiredGuards:['HEADLESS_OBSERVER_NORMAL_SESSION_REQUIRED','playerObserverHint','playerObserverUpgrade','playerObserverStatus']});
 assert.notEqual(client.identity.inventorySha256,original.packageIdentity.inventorySha256,'Observer upgrade must use an explicitly changed package');
+const activeDataRoot=await portableRestore.resolveActiveDirectory(path.join(profile,'plugins/data/craftmine.world'));
+const activeRelative=path.relative(profile,activeDataRoot);assert.ok(activeRelative&&!path.isAbsolute(activeRelative)&&!activeRelative.startsWith('..'),'Active restored data must remain in the isolated profile');
 const existingReports=fs.readdirSync(out).filter(name=>name.endsWith('.json')).map(name=>fileProof(path.join(out,name)));
 const ledger=path.join(profile,'creation-evaluation-budget.json');const proofs=[...source.proofs,...existingReports,...(fs.existsSync(ledger)?[fileProof(ledger)]:[])];
 const audit=path.join(out,'observer-upgrade-'+randomUUID());fs.mkdirSync(audit);const reportFile=path.join(audit,'report.json');
-const sanitize=checkpointSanitizer([marker.token]),report={format:'craftmine.observer-upgrade-acceptance/1',...plan,newPackageIdentity:client.identity,changedPackage:true,startedAt:new Date().toISOString(),checks:[],launches:[],modelRequestsAdded:null,sourceEditsByHarness:0,sourceProofs:proofs};
+const sanitize=checkpointSanitizer([marker.token]),report={format:'craftmine.observer-upgrade-acceptance/1',...plan,activeDataRoot,newPackageIdentity:client.identity,changedPackage:true,startedAt:new Date().toISOString(),checks:[],launches:[],modelRequestsAdded:null,sourceEditsByHarness:0,sourceProofs:proofs};
 const save=()=>fs.writeFileSync(reportFile,JSON.stringify(sanitize(report),null,2));save();console.log('Report: '+reportFile);
 const callCount=()=>{const db=new DatabaseSync(path.join(profile,'pi.sqlite'),{readOnly:true});try{return db.prepare('SELECT count(*) AS calls FROM task_metric_calls').get().calls;}finally{db.close();}};
 const sourceFiles=build=>{
- const builds=path.join(profile,'plugins/data/craftmine.world/godot-builds');const matches=fs.readdirSync(builds).map(world=>path.join(builds,world,build,'source')).filter(fs.existsSync);assert.equal(matches.length,1,'A unique actual build source is required');const directory=matches[0],files={};
+ const builds=path.join(activeDataRoot,'godot-builds');const matches=fs.readdirSync(builds).map(world=>path.join(builds,world,build,'source')).filter(fs.existsSync);assert.equal(matches.length,1,'A unique actual build source is required');const directory=matches[0],files={};
  const visit=(relative='')=>{for(const entry of fs.readdirSync(path.join(directory,relative),{withFileTypes:true})){if(entry.name==='.godot')continue;const rel=path.join(relative,entry.name),file=path.join(directory,rel),stat=fs.lstatSync(file);assert.equal(stat.isSymbolicLink(),false);if(stat.isDirectory())visit(rel);else files[rel.replaceAll('\\','/')]=createHash('sha256').update(fs.readFileSync(file)).digest('hex');}};visit();return {directory,files};
 };
 const ordinaryFiles=value=>Object.fromEntries(Object.entries(value.files).filter(([name])=>!['craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/state_guard.gd','craftmine_shared/headless_play_action.gd','craftmine_shared/scene_mesh_picker.gd'].includes(name)));
-const snapshotBody=value=>{assert.ok(value?.result?.state?.body,'Actual validated runtime snapshot required');return value.result.state.body;};
+const snapshotBody=value=>{assert.ok(value?.worldId===worldId&&value.state?.worldId===worldId&&value.state?.format==='craftmine.godot-progress/1'&&value.state.body,'Actual validated runtime snapshot required');return value.state.body;};
 let child,ended=true,ready=false,exitReport,exited;const pending=new Map();let cancelled=false;for(const event of ['SIGINT','SIGTERM'])process.on(event,()=>{cancelled=true;});
 function validate(method,fields){
  const observer=['playerObserverHint','playerObserverUpgrade','playerObserverStatus'].includes(method);
