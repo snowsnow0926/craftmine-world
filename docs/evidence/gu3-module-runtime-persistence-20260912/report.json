@@ -1,0 +1,868 @@
+{
+  "format": "craftmine.module-persistence-audit/1",
+  "out": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0",
+  "sourceReport": "D:/cm-gu6-formal-0912/test-results/desktop-native-complete-QaRnRb/report.json",
+  "formalSourcePin": {
+    "revision": 3,
+    "manifestHash": "af86817f43488c73b513dd324b070449e60477d398ddcfc69adee0df138a4b4f",
+    "commitOid": "a446aa197dc7b0bd20929f8fb82e584d90157f6e",
+    "assetLockHash": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+  },
+  "originalFiles": [
+    {
+      "path": "addons/kenney-city-building/attribution.json",
+      "bytes": 526,
+      "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+    },
+    {
+      "path": "addons/kenney-city-building/licenses/LICENSE.md",
+      "bytes": 1062,
+      "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+    },
+    {
+      "path": "addons/kenney-city-building/licenses/README.md",
+      "bytes": 3353,
+      "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+    },
+    {
+      "path": "addons/kenney-city-building/models/Textures/colormap.png",
+      "bytes": 10108,
+      "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+    },
+    {
+      "path": "addons/kenney-city-building/models/building-small-a.glb",
+      "bytes": 39660,
+      "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+    },
+    {
+      "path": "addons/kenney-city-building/module.gd",
+      "bytes": 2747,
+      "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+    },
+    {
+      "path": "addons/kenney-city-building/module.gd.uid",
+      "bytes": 19,
+      "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+    },
+    {
+      "path": "addons/kenney-city-building/module.tscn",
+      "bytes": 489,
+      "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+    },
+    {
+      "path": "addons/kenney-city-building/provenance.json",
+      "bytes": 726,
+      "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+    },
+    {
+      "path": "addons/kenney-city-road/attribution.json",
+      "bytes": 514,
+      "sha256": "4fee8aec02924920135dee8f7b16f58465e2d445bf9511ced572e45b24797fb5"
+    },
+    {
+      "path": "addons/kenney-city-road/licenses/LICENSE.md",
+      "bytes": 1062,
+      "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+    },
+    {
+      "path": "addons/kenney-city-road/licenses/README.md",
+      "bytes": 3353,
+      "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+    },
+    {
+      "path": "addons/kenney-city-road/models/Textures/colormap.png",
+      "bytes": 10108,
+      "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+    },
+    {
+      "path": "addons/kenney-city-road/models/road-straight.glb",
+      "bytes": 6148,
+      "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+    },
+    {
+      "path": "addons/kenney-city-road/module.gd",
+      "bytes": 2727,
+      "sha256": "12a73befca09b843f02d732b186a27715b07d67cdc39c4bac3f23386c4f5cd7a"
+    },
+    {
+      "path": "addons/kenney-city-road/module.gd.uid",
+      "bytes": 19,
+      "sha256": "44ae11846ab4f55a4f65774473d86938e5dea46e62c4039e236f3d61bb163872"
+    },
+    {
+      "path": "addons/kenney-city-road/module.tscn",
+      "bytes": 474,
+      "sha256": "379f322035574519600cd6c1607504765ec568568ce3f8ac4d04faff8785658a"
+    },
+    {
+      "path": "addons/kenney-city-road/provenance.json",
+      "bytes": 723,
+      "sha256": "e4f9dac83441736c84d996367add35b8b240545f50d8419ab3492a399481a433"
+    },
+    {
+      "path": "assets/ASSET_MANIFEST.json",
+      "bytes": 548,
+      "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+    },
+    {
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
+      "path": "assets/fonts/cjk-0.json",
+      "bytes": 2800055,
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "path": "assets/fonts/cjk-1.json",
+      "bytes": 2790775,
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    },
+    {
+      "path": "assets/fonts/font.json",
+      "bytes": 832,
+      "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+    },
+    {
+      "path": "craftmine.assets.lock.json",
+      "bytes": 4568,
+      "sha256": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+    },
+    {
+      "path": "craftmine.instances.json",
+      "bytes": 996,
+      "sha256": "b4ccd5559f40a80f134d3b55b625b8f6b43640779f713e8dc19b7f6e7760a8de"
+    },
+    {
+      "path": "craftmine_initial_state.json",
+      "bytes": 702,
+      "sha256": "afb6191c0a8523cbfe44f8f0bac5910a054fd546be5a52fb9b9ec32d51f45204"
+    },
+    {
+      "path": "craftmine_shared/base_adapter.gd",
+      "bytes": 15229,
+      "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+    },
+    {
+      "path": "craftmine_shared/headless_play_action.gd",
+      "bytes": 2525,
+      "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+    },
+    {
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "bytes": 7677,
+      "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+    },
+    {
+      "path": "craftmine_shared/scene_mesh_picker.gd",
+      "bytes": 13159,
+      "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+    },
+    {
+      "path": "craftmine_shared/state_guard.gd",
+      "bytes": 1759,
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "path": "creation-scene.schema.json",
+      "bytes": 6559,
+      "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+    },
+    {
+      "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "bytes": 1407,
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 2430,
+      "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 1179,
+      "sha256": "0f1f04ad7fcf399e310d1fb71c8ad5daccf8b327f28febe96615b239b846ea2d"
+    },
+    {
+      "path": "scenes/creation.tscn",
+      "bytes": 1719,
+      "sha256": "a268869a27cb39f63a4a51e12757f207b84848d6b8597ab0581979d26660dfcd"
+    },
+    {
+      "path": "scripts/creation_font.gd",
+      "bytes": 1737,
+      "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+    },
+    {
+      "path": "scripts/creation_world.gd",
+      "bytes": 26597,
+      "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+    },
+    {
+      "path": "scripts/reused/camera_rig.gd",
+      "bytes": 1527,
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "path": "scripts/reused/player_controller.gd",
+      "bytes": 6089,
+      "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+    },
+    {
+      "path": "scripts/scene_contract.gd",
+      "bytes": 5289,
+      "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+    },
+    {
+      "path": "world/creation.json",
+      "bytes": 115,
+      "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+    }
+  ],
+  "request": {
+    "schemaVersion": 1,
+    "requestId": "gmp-1789169371881",
+    "taskId": "gmp-1789169371881",
+    "operation": "exportWeb",
+    "projectRoot": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\project",
+    "tasksRoot": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\tasks",
+    "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+    "sourceBinding": {
+      "worldId": "world-f58b259b9562",
+      "buildId": "gmp-1789169371881",
+      "sourceRevision": 1,
+      "sourceDigest": "82029e82c823b65a44c60dbcc81744a16183ab2385ff2685fd1cb001c4a8fbfa"
+    },
+    "inputHash": "d909f265cdad50316ddadc67ad10a77d215177349cb482ab8b1f7b880955bc87"
+  },
+  "originalPickerSha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512",
+  "fixtureSha256": "0aca51d629f6f297f69f3011f0b7957e3ba013f162a123763cc88907fd07a5bd",
+  "moduleScriptSha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5",
+  "transportExitCode": 0,
+  "receipt": {
+    "schemaVersion": 1,
+    "requestId": "gmp-1789169371881",
+    "taskId": "gmp-1789169371881",
+    "operation": "exportWeb",
+    "sourceBinding": {
+      "worldId": "world-f58b259b9562",
+      "buildId": "gmp-1789169371881",
+      "sourceRevision": 1,
+      "sourceDigest": "82029e82c823b65a44c60dbcc81744a16183ab2385ff2685fd1cb001c4a8fbfa"
+    },
+    "inputHash": "d909f265cdad50316ddadc67ad10a77d215177349cb482ab8b1f7b880955bc87",
+    "sourceSnapshotDigest": "82029e82c823b65a44c60dbcc81744a16183ab2385ff2685fd1cb001c4a8fbfa",
+    "sourceFiles": [
+      {
+        "path": "addons/kenney-city-building/attribution.json",
+        "bytes": 526,
+        "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+      },
+      {
+        "path": "addons/kenney-city-building/licenses/LICENSE.md",
+        "bytes": 1062,
+        "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+      },
+      {
+        "path": "addons/kenney-city-building/licenses/README.md",
+        "bytes": 3353,
+        "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+      },
+      {
+        "path": "addons/kenney-city-building/models/Textures/colormap.png",
+        "bytes": 10108,
+        "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+      },
+      {
+        "path": "addons/kenney-city-building/models/building-small-a.glb",
+        "bytes": 39660,
+        "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+      },
+      {
+        "path": "addons/kenney-city-building/module.gd",
+        "bytes": 2747,
+        "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+      },
+      {
+        "path": "addons/kenney-city-building/module.gd.uid",
+        "bytes": 19,
+        "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+      },
+      {
+        "path": "addons/kenney-city-building/module.tscn",
+        "bytes": 489,
+        "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+      },
+      {
+        "path": "addons/kenney-city-building/provenance.json",
+        "bytes": 726,
+        "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+      },
+      {
+        "path": "addons/kenney-city-road/attribution.json",
+        "bytes": 514,
+        "sha256": "4fee8aec02924920135dee8f7b16f58465e2d445bf9511ced572e45b24797fb5"
+      },
+      {
+        "path": "addons/kenney-city-road/licenses/LICENSE.md",
+        "bytes": 1062,
+        "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+      },
+      {
+        "path": "addons/kenney-city-road/licenses/README.md",
+        "bytes": 3353,
+        "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+      },
+      {
+        "path": "addons/kenney-city-road/models/Textures/colormap.png",
+        "bytes": 10108,
+        "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+      },
+      {
+        "path": "addons/kenney-city-road/models/road-straight.glb",
+        "bytes": 6148,
+        "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+      },
+      {
+        "path": "addons/kenney-city-road/module.gd",
+        "bytes": 2727,
+        "sha256": "12a73befca09b843f02d732b186a27715b07d67cdc39c4bac3f23386c4f5cd7a"
+      },
+      {
+        "path": "addons/kenney-city-road/module.gd.uid",
+        "bytes": 19,
+        "sha256": "44ae11846ab4f55a4f65774473d86938e5dea46e62c4039e236f3d61bb163872"
+      },
+      {
+        "path": "addons/kenney-city-road/module.tscn",
+        "bytes": 474,
+        "sha256": "379f322035574519600cd6c1607504765ec568568ce3f8ac4d04faff8785658a"
+      },
+      {
+        "path": "addons/kenney-city-road/provenance.json",
+        "bytes": 723,
+        "sha256": "e4f9dac83441736c84d996367add35b8b240545f50d8419ab3492a399481a433"
+      },
+      {
+        "path": "assets/ASSET_MANIFEST.json",
+        "bytes": 548,
+        "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+      },
+      {
+        "path": "assets/fonts/OFL-NotoSansSC.txt",
+        "bytes": 4388,
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "path": "assets/fonts/cjk-0.json",
+        "bytes": 2800055,
+        "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+      },
+      {
+        "path": "assets/fonts/cjk-1.json",
+        "bytes": 2790775,
+        "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+      },
+      {
+        "path": "assets/fonts/font.json",
+        "bytes": 832,
+        "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+      },
+      {
+        "path": "craftmine.assets.lock.json",
+        "bytes": 4568,
+        "sha256": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+      },
+      {
+        "path": "craftmine.instances.json",
+        "bytes": 996,
+        "sha256": "b4ccd5559f40a80f134d3b55b625b8f6b43640779f713e8dc19b7f6e7760a8de"
+      },
+      {
+        "path": "craftmine_initial_state.json",
+        "bytes": 702,
+        "sha256": "afb6191c0a8523cbfe44f8f0bac5910a054fd546be5a52fb9b9ec32d51f45204"
+      },
+      {
+        "path": "craftmine_shared/base_adapter.gd",
+        "bytes": 15229,
+        "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+      },
+      {
+        "path": "craftmine_shared/headless_play_action.gd",
+        "bytes": 2525,
+        "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+      },
+      {
+        "path": "craftmine_shared/runtime_bridge.gd",
+        "bytes": 7677,
+        "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+      },
+      {
+        "path": "craftmine_shared/scene_mesh_picker.gd",
+        "bytes": 13159,
+        "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+      },
+      {
+        "path": "craftmine_shared/state_guard.gd",
+        "bytes": 1759,
+        "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+      },
+      {
+        "path": "creation-scene.schema.json",
+        "bytes": 6559,
+        "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+      },
+      {
+        "path": "export_presets.cfg",
+        "bytes": 1090,
+        "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+      },
+      {
+        "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+        "bytes": 1407,
+        "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+      },
+      {
+        "path": "manifest.json",
+        "bytes": 2430,
+        "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+      },
+      {
+        "path": "module_persistence.gd",
+        "bytes": 3968,
+        "sha256": "0aca51d629f6f297f69f3011f0b7957e3ba013f162a123763cc88907fd07a5bd"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 1228,
+        "sha256": "adfefd4774fe3851c98b4891d96ec0ecd5376603d506c75cf9f5cdfb4fa0f898"
+      },
+      {
+        "path": "scenes/creation.tscn",
+        "bytes": 1719,
+        "sha256": "a268869a27cb39f63a4a51e12757f207b84848d6b8597ab0581979d26660dfcd"
+      },
+      {
+        "path": "scripts/creation_font.gd",
+        "bytes": 1737,
+        "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+      },
+      {
+        "path": "scripts/creation_world.gd",
+        "bytes": 26597,
+        "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+      },
+      {
+        "path": "scripts/reused/camera_rig.gd",
+        "bytes": 1527,
+        "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+      },
+      {
+        "path": "scripts/reused/player_controller.gd",
+        "bytes": 6089,
+        "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+      },
+      {
+        "path": "scripts/scene_contract.gd",
+        "bytes": 5289,
+        "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+      },
+      {
+        "path": "world/creation.json",
+        "bytes": 115,
+        "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+      }
+    ],
+    "state": "succeeded",
+    "exitCode": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 93080,
+      "creationTimeFiletime": "134336429723526742",
+      "imagePath": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\tasks\\gmp-1789169371881\\bin\\Godot_v4.7.2-stable_win64.exe",
+      "appContainerSid": "S-1-15-2-3661461587-3913571633-1159931644-3666623745-2515344491-3810921765-2114872686",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "networkPreflight": {
+      "verified": true,
+      "jobActiveProcesses": 0,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "hostPositiveControls": [
+        "tcp4Echo",
+        "tcp6Echo",
+        "udp4Echo",
+        "udp6Echo"
+      ],
+      "hostReceivedCounts": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "exactTaskExempt": false,
+      "processVerification": {
+        "verified": true,
+        "policyVersion": "craftmine.windows.lpac-registry.v1",
+        "pid": 90308,
+        "creationTimeFiletime": "134336429722164543",
+        "imagePath": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\tasks\\gmp-1789169371881\\bin\\broker-preflight.exe",
+        "appContainerSid": "S-1-15-2-3661461587-3913571633-1159931644-3666623745-2515344491-3810921765-2114872686",
+        "capabilitySids": [
+          "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+        ],
+        "integrityRid": 4096,
+        "isAppContainer": true,
+        "lpacQueryValue": null,
+        "lpacQueryError": 87,
+        "lpacCreationAttribute": true,
+        "jobMembershipVerified": true,
+        "jobLimitFlags": 8456,
+        "activeProcessLimit": 1,
+        "processMemoryBytes": 4294967296,
+        "verifiedBeforeResume": true,
+        "resumePreviousCount": 1
+      },
+      "observation": {
+        "winsockStartup": 0,
+        "checks": [
+          {
+            "name": "tcp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "tcpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp4",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udp6",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          },
+          {
+            "name": "udpExternal",
+            "ok": false,
+            "rawOsError": 10013,
+            "errorKind": "PermissionDenied"
+          }
+        ]
+      }
+    },
+    "resourceEnforcement": {
+      "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+      "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+      "hardFilesystemQuota": false,
+      "workBytesLimit": 1073741824,
+      "logBytesLimit": 4194304,
+      "sampleIntervalMs": 50,
+      "samples": 44,
+      "maxObservedWorkBytes": 85447725,
+      "maxObservedLogBytes": 11686,
+      "enforced": false,
+      "reason": null
+    },
+    "artifacts": [
+      {
+        "path": "index.apple-touch-icon.png",
+        "bytes": 11944,
+        "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+      },
+      {
+        "path": "index.audio.position.worklet.js",
+        "bytes": 2973,
+        "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+      },
+      {
+        "path": "index.audio.worklet.js",
+        "bytes": 7298,
+        "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+      },
+      {
+        "path": "index.html",
+        "bytes": 5458,
+        "sha256": "177ce515f9a34501b81087d6c8a4c61ef2fab9f0a6d95011c26c0b13a313eca4"
+      },
+      {
+        "path": "index.icon.png",
+        "bytes": 5700,
+        "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+      },
+      {
+        "path": "index.js",
+        "bytes": 279815,
+        "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+      },
+      {
+        "path": "index.pck",
+        "bytes": 5718652,
+        "sha256": "7eb3d50d71af23969312b8bc47ff025516d84f43474fdf41d1dc1babb0fd39e5"
+      },
+      {
+        "path": "index.png",
+        "bytes": 21443,
+        "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+      },
+      {
+        "path": "index.wasm",
+        "bytes": 39514754,
+        "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+      }
+    ],
+    "artifactsRoot": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\tasks\\gmp-1789169371881\\artifacts",
+    "logsRoot": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\tasks\\gmp-1789169371881\\logs",
+    "logs": [
+      {
+        "path": "preflight.json",
+        "bytes": 508,
+        "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+      },
+      {
+        "path": "task.log",
+        "bytes": 11686,
+        "sha256": "df2e9c53ddfa3f91c5db939d07f4f1e74ee199ac0eb51f95344c9750563dd901"
+      }
+    ],
+    "cleanup": {
+      "verified": true,
+      "profileHresult": 0,
+      "workRemoved": true,
+      "error": null
+    },
+    "recoveryJournal": {
+      "path": "D:\\cm-gu3-module-source-0912\\test-results\\module-persistence-audit-OcJZY0\\tasks\\.recovery-journal\\gmp-1789169371881.json",
+      "policyVersion": "craftmine.windows.recovery-journal.v1",
+      "cleared": true,
+      "error": null
+    },
+    "error": null,
+    "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232",
+    "binRetirement": {
+      "format": "craftmine.godot-bin-retirement/1",
+      "taskId": "gmp-1789169371881",
+      "identityNonce": "0e5be7c7ee51d837a2ca384269422fe51b4b2d95736e1796e609e0ca4a46e7f5",
+      "engineJobActiveProcesses": 0,
+      "nativeJobActiveProcesses": 0,
+      "files": [
+        {
+          "path": "Godot_v4.7.2-stable_win64.exe",
+          "bytes": 180858888,
+          "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+        },
+        {
+          "path": "broker-preflight.exe",
+          "bytes": 812032,
+          "sha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        }
+      ]
+    }
+  },
+  "validation": {
+    "valid": true,
+    "errors": []
+  },
+  "console": [
+    {
+      "type": "log",
+      "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "MODULE_PERSISTENCE_AUDIT={\"before\":{\"collision_count\":1,\"entity_id\":\"ins-7cd6d5365fb8452a2fe191fd-e0\",\"kind\":\"building\",\"label\":\"building\",\"model_scale_percent\":100,\"quarter_turns\":0,\"solid\":true},\"checks\":[{\"label\":\"formally installed building found\",\"passed\":true},{\"label\":\"instances share imported Mesh and configure preserves resource identity\",\"passed\":true},{\"label\":\"ordinary configure changes only the selected runtime instance\",\"passed\":true},{\"label\":\"peer instance parameters remain unchanged\",\"passed\":true},{\"label\":\"selected instance has real disabled collision shapes\",\"passed\":true},{\"label\":\"normal base snapshot does not contain module configuration\",\"passed\":true},{\"label\":\"ordinary same-instance snapshot restore succeeds\",\"passed\":true},{\"label\":\"same-instance restore leaves unsaved module configuration in memory\",\"passed\":true},{\"label\":\"fresh instance from unchanged scene returns to authored defaults\",\"passed\":true},{\"label\":\"fresh node has new runtime identity with the same explicit entity_id\",\"passed\":true},{\"label\":\"normal snapshot can restore after replacing the module\",\"passed\":true},{\"label\":\"saved snapshot does not recover previous runtime-only module values\",\"passed\":true}],\"configured\":{\"collision_count\":1,\"entity_id\":\"ins-7cd6d5365fb8452a2fe191fd-e0\",\"kind\":\"building\",\"label\":\"runtime-only-audit\",\"model_scale_percent\":250,\"quarter_turns\":1,\"solid\":false},\"fresh\":{\"collision_count\":1,\"entity_id\":\"ins-7cd6d5365fb8452a2fe191fd-e0\",\"kind\":\"building\",\"label\":\"building\",\"model_scale_percent\":100,\"quarter_turns\":0,\"solid\":true},\"passed\":true,\"peer\":{\"collision_count\":1,\"entity_id\":\"audit-peer\",\"kind\":\"building\",\"label\":\"building\",\"model_scale_percent\":100,\"quarter_turns\":0,\"solid\":true},\"scope\":\"derivative LPAC runtime reconstruction diagnostic, not a cold app reopen or player acceptance\",\"snapshotKeys\":[\"format\",\"worldId\",\"baseVersion\",\"player\",\"timeOfDay\",\"sourceTimeOfDay\",\"inventory\",\"openedChests\",\"doors\",\"rules\"]}"
+    }
+  ],
+  "pageErrors": [],
+  "bridge": {
+    "load": {
+      "id": "load",
+      "result": {
+        "loaded": true,
+        "snapshot": {
+          "base": "creation-sandbox",
+          "state": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "world-f58b259b9562"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "world-f58b259b9562"
+          },
+          "worldId": "world-f58b259b9562"
+        }
+      }
+    },
+    "resume": {
+      "id": "resume",
+      "result": {
+        "paused": false
+      }
+    }
+  },
+  "result": {
+    "before": {
+      "collision_count": 1,
+      "entity_id": "ins-7cd6d5365fb8452a2fe191fd-e0",
+      "kind": "building",
+      "label": "building",
+      "model_scale_percent": 100,
+      "quarter_turns": 0,
+      "solid": true
+    },
+    "checks": [
+      {
+        "label": "formally installed building found",
+        "passed": true
+      },
+      {
+        "label": "instances share imported Mesh and configure preserves resource identity",
+        "passed": true
+      },
+      {
+        "label": "ordinary configure changes only the selected runtime instance",
+        "passed": true
+      },
+      {
+        "label": "peer instance parameters remain unchanged",
+        "passed": true
+      },
+      {
+        "label": "selected instance has real disabled collision shapes",
+        "passed": true
+      },
+      {
+        "label": "normal base snapshot does not contain module configuration",
+        "passed": true
+      },
+      {
+        "label": "ordinary same-instance snapshot restore succeeds",
+        "passed": true
+      },
+      {
+        "label": "same-instance restore leaves unsaved module configuration in memory",
+        "passed": true
+      },
+      {
+        "label": "fresh instance from unchanged scene returns to authored defaults",
+        "passed": true
+      },
+      {
+        "label": "fresh node has new runtime identity with the same explicit entity_id",
+        "passed": true
+      },
+      {
+        "label": "normal snapshot can restore after replacing the module",
+        "passed": true
+      },
+      {
+        "label": "saved snapshot does not recover previous runtime-only module values",
+        "passed": true
+      }
+    ],
+    "configured": {
+      "collision_count": 1,
+      "entity_id": "ins-7cd6d5365fb8452a2fe191fd-e0",
+      "kind": "building",
+      "label": "runtime-only-audit",
+      "model_scale_percent": 250,
+      "quarter_turns": 1,
+      "solid": false
+    },
+    "fresh": {
+      "collision_count": 1,
+      "entity_id": "ins-7cd6d5365fb8452a2fe191fd-e0",
+      "kind": "building",
+      "label": "building",
+      "model_scale_percent": 100,
+      "quarter_turns": 0,
+      "solid": true
+    },
+    "passed": true,
+    "peer": {
+      "collision_count": 1,
+      "entity_id": "audit-peer",
+      "kind": "building",
+      "label": "building",
+      "model_scale_percent": 100,
+      "quarter_turns": 0,
+      "solid": true
+    },
+    "scope": "derivative LPAC runtime reconstruction diagnostic, not a cold app reopen or player acceptance",
+    "snapshotKeys": [
+      "format",
+      "worldId",
+      "baseVersion",
+      "player",
+      "timeOfDay",
+      "sourceTimeOfDay",
+      "inventory",
+      "openedChests",
+      "doors",
+      "rules"
+    ]
+  },
+  "guard": {
+    "pointerLock": 0,
+    "focus": 0
+  },
+  "originalSourceUnchanged": true
+}
