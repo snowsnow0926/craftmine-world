@@ -9589,3 +9589,7 @@ Use synthetic selected archives and callbacks to reject beforeRestore with the e
 ### 持久源码包的慢事务回执（2026-09-12）
 
 通过真实主程 adapter/transport 的虚拟时钟测试：installSource 与 installSourceProposal 在 16.5 秒后各只取得一次正常回执；普通包读取仍于 15 秒超时。超过 60 秒后插件迟到保存的模拟结果不得触发第二次安装或被当作回滚。实际组合组件验收应保留原 operationId 和候选来源，检查后才采用。
+
+### 世界视图只读截图（2026-09-12）
+
+独立成品经正常 UI 挂接游戏视图后，分别对准确的正式/预览候选 world/build/instance/candidateId 截图。PNG 身份、尺寸、摘要可核对；暂停状态和窗口/view bounds 在调用前后不变。错误身份、未挂接、切换及候选未预览必须拒绝；测试不调用 headlessCapture、不临时挂接，不抢焦点或输入。4K 来源仅缩已捕获 NativeImage，返回原图与输出尺寸，PNG 不超过 4MiB。
