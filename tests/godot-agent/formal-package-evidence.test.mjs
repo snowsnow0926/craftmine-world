@@ -36,3 +36,20 @@ test('actual cancel.request run exits normally with no input or owned-shutdown f
   const launch=cancelled.launches[0];assert.equal(launch.exit.code,0);assert.equal(launch.forcedStop,undefined);
   for(const key of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(launch.exitAudit[key],[]);
 });
+
+test('unified controller and ZIP catalog package passes the full formal two-module chain and cold reopen',()=>{
+ const integrated=JSON.parse(fs.readFileSync(new URL('../../docs/evidence/gu6-integrated-package-20260912/formal-client-report.json',import.meta.url)));
+ assert.equal(integrated.commit,'09f7443a1aeb59307cffe01623d6ff18975578ca');assert.equal(integrated.passed,true);
+ assert.equal(integrated.steps.length,22);assert.ok(integrated.steps.every(s=>s.passed));
+ for(const entry of integrated.packages){
+  assertFormalPackageCheck(integrated.worldId,entry.imported,entry.checked);
+  const applied=integrated.steps.find(s=>s.name===entry.kind+' ordinary candidateApply').result;
+  const observed=integrated.steps.find(s=>s.name===entry.kind+' formal runtime pixels').result.viewportObservation;
+  assertFormalAdoption(integrated.worldId,entry.checked,entry.preview,applied,observed);
+  assert.equal(observed.payload.controllerEvidence.status,'supported');assert.ok(observed.payload.creation.physicsTick>0);
+  assert.equal(observed.payload.creation.sceneObjectSelection.geometryBasis,'base-surface-arrays');
+  assert.equal(observed.payload.creation.sceneObjectSelection.renderLodVerified,false);
+ }
+ assertFormalCold(integrated.beforeCold,integrated.afterCold);
+ for(const launch of integrated.launches){assert.equal(launch.exit.code,0);assert.equal(launch.forcedStop,undefined);for(const key of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(launch.exitAudit[key],[]);}
+});

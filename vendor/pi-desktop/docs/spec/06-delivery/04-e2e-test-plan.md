@@ -9594,3 +9594,16 @@ and current-world search empty. ZIP probe and desktop preview report
 ARCHIVE_REQUIRES_PACKAGE_CHECK without unpacking or executing contents, including
 malformed ZIP bytes. Normal source-package installation/check/application remains
 a separate scenario; this catalog test does not certify archive compatibility.
+
+## GU4 fixed controller and GU6 imported mesh observations
+
+New creation worlds materialize the complete versioned controller/picker cohort;
+legacy sources retain their exact resource group. Natural sequence requests bind
+existing colors/declared labels and the fixed controller profile. Actual script,
+camera or shape substitution during a walk must reject the new proof; direct
+interaction cannot bypass a locked sequence door. Legacy checks must not be
+silently upgraded. Imported static GLBs expose exact live references through
+ordinary observation, with base-triangle and unverified-LOD limits retained.
+Run source/hash/cohort tests separately from real native/Web fixtures and formal
+packaged source import/check/application/cold reopen. No fixture result alone
+establishes ordinary model completion or the entire GU4 acceptance scope.

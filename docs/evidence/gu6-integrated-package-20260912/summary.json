@@ -1,0 +1,24 @@
+{
+  "format": "craftmine.integrated-package-reuse/1",
+  "sourceReport": "test-results/desktop-native-complete-B5N3AE/report.json",
+  "reportSha256": "6f2ba0df9e5c6c815853ba9fc860ce29071afff9f75e8f85748df19d505c57db",
+  "commit": "09f7443a1aeb59307cffe01623d6ff18975578ca",
+  "packagePath": "D:/cm-agent-godot-0912/desktop/build/releases/09f7443a1aeb-53d09e91-1729-4e09-b651-a5b79dfbb5a6/output/win-unpacked",
+  "sourceArchiveHash": "4ae8f5ee7d2b11cf30965fec731e2452c6ea1b9e8f852e727f4b3266d3b16127",
+  "buildManifestSha256": "886d00978fe4808ba3ae31f8d7a16888d70a193f2008064d729b90c1bdd1efb3",
+  "payloadFiles": 1614,
+  "payloadBytes": 1018211519,
+  "signature": "unsigned-local-preview",
+  "steps": 22,
+  "passed": true,
+  "worldId": "world-f5f279a52bf3",
+  "modelCalls": 0,
+  "scope": "normal source package import, actual core check, preview, adoption and cold reopen on unified package",
+  "limits": [
+    "No player model request",
+    "Default origins overlap; no individually aimed module selection",
+    "No changed module parameter persistence",
+    "No catalog-ref installation bridge",
+    "No full GU0-GU7 acceptance"
+  ]
+}

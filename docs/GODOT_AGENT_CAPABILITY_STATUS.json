@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Formal Kenney import/check/adoption/cold reopen, isolated ZIP catalog retrieval/restart, and Beehave actual follow/stop/interruption trial completed; GLB V2 derived observe passes, unified package/model editing/parameter persistence/performance remain"
+      "next": "Unified 09f package passed 22 ordinary two-module import/check/adoption/cold steps; next bridge fixed catalog ZIP refs to original source installer, then parameters/performance and player reuse"
     },
     {
       "id": "GU7",
@@ -224,6 +224,13 @@
       "path": "test-results/controller-binding-native-n0vBli/report.json",
       "status": "passed",
       "scope": "27 focused integration, 38 Rust jobs + 2 cohorts, typecheck; 13 real native cases; 8 focused natural/profile and ten-file GLB identity assertions; fresh package pending"
+    },
+    {
+      "kind": "unified-package",
+      "commit": "09f7443a1aeb59307cffe01623d6ff18975578ca",
+      "path": "docs/evidence/gu6-integrated-package-20260912/summary.json",
+      "status": "passed-scoped-formal-reuse",
+      "scope": "1614 packaged payload files, source/archive verification; 22 actual product steps, two broker checks/adoptions and cold reopen; 10 protocol/evidence tests; no model or installer"
     }
   ],
   "limitations": [

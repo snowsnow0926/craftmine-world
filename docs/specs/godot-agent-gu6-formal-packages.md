@@ -72,3 +72,13 @@ node --test tests/godot-agent/formal-package-protocol.test.mjs tests/godot-agent
 协议与证据测试 9 项全部通过。`CRAFTMINE_DESKTOP_DEPS_ROOT` 可指向已安装 electron-builder/asar 的受信任桌面依赖目录；只用于读取 sealed archive 防护代码，不运行未审查项目。
 
 ![冷重开后的正式运行画面](../evidence/gu6-formal-packages-20260912/capture-6.png)
+
+## 整合新控制器和资源库后的同版本复验
+
+完整包 `09f7443a1aeb59307cffe01623d6ff18975578ca` 已重新构建并核验：1,614 个 payload 文件、1,018,211,519 字节，源码 ZIP SHA-256 `4ae8f5ee7d2b11cf30965fec731e2452c6ea1b9e8f852e727f4b3266d3b16127`。包含新的控制器文件组、GLB 选择器和 ZIP 资源库改动。它是未签名的本地 unpacked preview，没有安装到用户目录。
+
+新独立 profile `desktop-native-complete-B5N3AE`、世界 `world-f5f279a52bf3` 走完 22 个步骤：本版完整 runner 明确包含冷开后的 create mode 和 world.open。建筑 job `gjob-f0ed0b7ddb5031a26d5acbc60a82ab8f5b88eaaca9cc26a81fa870408ea27cb4`、道路 job `gjob-600149dc03dc45f987ae33b57d0a695b6af204cbcca5ba0b677e9efb03dc5473` 均由实际执行器检查通过。正常预览、应用、保存和冷开后，最终 build 仍为 `gbd-e2f421c7bcf627a00d9b995f3d71c18084f3376c348fd6eaadd3cc2890413e68`，新实例保持相同源码和基础状态。
+
+运行观察出现 `controllerEvidence.status=supported`、递增 physicsTick 及 V2 的 base-surface-arrays 范围。默认准星射线没有独立瞄准每个模块，因此空 `sceneObjectRefs` 不能用来证明或否定 GLB 定位；实际独立瞄准证据仍是另一个派生工程试验。两包仍使用默认原点，未新增参数修改或模型调用。两次客户端正常退出，输入、页面错误和清理审计均为空。
+
+[整合包摘要](../evidence/gu6-integrated-package-20260912/summary.json) 与 [完整原始报告](../evidence/gu6-integrated-package-20260912/formal-client-report.json) 独立归档。整合后的协议与证据测试共 10 项通过。原 `2ae18b25` 报告没有改写，也未把本轮源包应用当作资源库引用安装已实现。
