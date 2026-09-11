@@ -2,6 +2,7 @@ import {createWorkbench} from './workbench-ui.mjs';
 import {createCreationGuideUI} from './creation-guide-ui.mjs';
 import {applyPresentation} from './apply-presentation.mjs';
 import {assertPreviewControl} from './preview-control.mjs';
+import {canonicalJSON} from '../../app/canonical.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
 const gameDocument = CRAFTMINE_GAME_DOCUMENT;
 const frame = document.querySelector('iframe');
@@ -162,7 +163,7 @@ async function save({freeze=false}={}) {
   if(applicationAttempt)await reconcileApplication();
   if(!bridge||!loaded||!current?.id)return;
   const result=await snapshot({freeze});
-  const serialized=JSON.stringify(result.snapshot);
+  const serialized=canonicalJSON(result.snapshot);
   if(freeze||serialized!==lastSaved) {
     status.textContent='保存中…';
     current=await bridge.invoke('world.saveProgress',{id:current.id,revision:current.revision,baseBuild:current.world.build.id,snapshot:result.snapshot});
@@ -187,7 +188,7 @@ async function beginRestore({operationId}) {
   try {
     if(!godot&&loaded) {
       const result=await snapshot({freeze:true});
-      if(JSON.stringify(result.snapshot)!==lastSaved)throw Error('BACKUP_PROGRESS_CHANGED_REINSPECT');
+      if(canonicalJSON(result.snapshot)!==lastSaved)throw Error('BACKUP_PROGRESS_CHANGED_REINSPECT');
     }
     return {locked:true};
   } catch(error) {restoreOperation=null;cancelClose();throw error;}
@@ -239,7 +240,7 @@ function mount(record) {
   checkWorld=null;checkOffset=0;document.getElementById('check-detail').hidden=true;
   document.getElementById('checks-list').replaceChildren();setMode(false,{notify:false});
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
-  current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=JSON.stringify(record.world.snapshot);
+  current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=canonicalJSON(record.world.snapshot);
   godot=isGodotWorld(record);
   document.getElementById('import-result').hidden=true;
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
