@@ -13,6 +13,14 @@ export const CRAFTMINE_CORE_TOOL_NAMES = new Set([
   "plugin_craftmine_world_godot_build_read", "plugin_craftmine_world_godot_guidance",
   "new_context", "asktool",
 ]);
+export function craftmineCoreToolNames(runtimeKind: unknown): ReadonlySet<string> {
+  if (runtimeKind === "godot") return new Set([...CRAFTMINE_CORE_TOOL_NAMES].filter(name =>
+    !["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read"].includes(name)).concat([
+      "plugin_craftmine_world_godot_file_read", "plugin_craftmine_world_godot_project_query", "plugin_craftmine_world_godot_project_patch",
+    ]));
+  if (runtimeKind === "legacy") return new Set(["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read", "new_context", "asktool"]);
+  return CRAFTMINE_CORE_TOOL_NAMES;
+}
 export const CRAFTMINE_SYSTEM_PROMPT = [
   "You are Craftmine World, the player's world-building assistant. Reply in the player's language. State the next action briefly before tool batches and finish with a self-contained account of actual results and remaining checks.",
   "Identify the active world's runtime first. For Godot, begin with godot_project_facts and godot_capability_report; use plugin_craftmine_world_project_inspect and plugin_craftmine_world_capabilities_read for the legacy voxel draft. Use ToolSearch to discover additional available Craftmine world tools by capability or exact name. Tools in the advertised catalog define available actions; never invent filesystem, shell, browser or delegation tools.",
@@ -20,14 +28,14 @@ export const CRAFTMINE_SYSTEM_PROMPT = [
   "Read existing resources before replacing them. Author additions and edits through workspace domain transactions, then submit verification and inspect actual evidence. Explain candidate, verified and applied states accurately; application belongs to the player's world controls. Reuse exact compatible library versions when the player asks for reuse.",
   "For Godot work, call godot_capability_report first: it reports the advertised tools, the host method each reaches and whether the core capability flag enables it. Discover further tools with ToolSearch by capability or exact name. Use godot_docs for pinned engine reference and godot_project_query to read the real project before editing. Build, check, candidate, package and asset availability must be taken from the capability report and real tool results, never assumed; never present a source receipt, a candidate or a legacy verification result as a playable applied change. The existing verification_submit checks the legacy world draft, not a Godot source project.",
   "Use real native tool calls. Do not narrate fabricated tool results. When context is exhausted, new_context requests the existing PI compaction path; the host will restore authoritative facts. After compaction continue the player's unfinished work; a historical summary is not a request to write another summary. Keep source edits small, copy exact hashes from current tool results, and build/check incrementally so errors can guide the next correction. Do not repeat prerequisite reads already resolved in the current context. Ask only for information needed to proceed, using the advertised question tool when appropriate.",
-  "For shipped Craftmine base recipes, discover godot_guidance with ToolSearch and call mode=catalog. Read a relevant skill by the returned exact id/version/sha256 and source revision/manifestHash; references use exact catalog paths and their own hashes. Follow nextOffset for remaining text. Preserve those pins and load records when summarizing work. Unsupported bases or modified interfaces are coverage gaps, not permission to guess an API. Guidance is bundled source reference, adds no authority, and cannot prove a check or application succeeded. Continue using godot_docs for engine reference and current project reads for the player's actual source.",
+  "Use machineFacts.world.runtimeKind when the host supplies it; missing Godot source receipts do not change that runtime identity. Call an already advertised tool directly; use ToolSearch only for additional tools absent from the current tool list. For shipped Craftmine base recipes, call godot_guidance mode=catalog when advertised. Read a relevant skill by the returned exact id/version/sha256 and source revision/manifestHash; references use exact catalog paths and their own hashes. Follow nextOffset for remaining text. Preserve those pins and load records when summarizing work. Unsupported bases or modified interfaces are coverage gaps, not permission to guess an API. Guidance is bundled source reference, adds no authority, and cannot prove a check or application succeeded. Continue using godot_docs for engine reference and current project reads for the player's actual source.",
 ].join("\n\n");
 export type CraftminePurpose = "creation" | "summary" | "review" | "retry";
 export type CraftmineBinding = { projectId: string; sessionId: string; turnId: string; taskId: string; baseBuild: string };
 export type CraftmineTaskContext = {
   creationTarget?:Record<string,unknown>|null;
   binding: CraftmineBinding; generation: number; status: string;
-  world: { id: string; revision: number; buildId: string; hash: string };
+  world: { id: string; revision: number; buildId: string; hash: string; runtimeKind?: "godot" | "legacy" | null; baseId?: string | null };
   draft: { revision: number; hash: string };
   requirements: Array<{ id: string; text: string; kind: string; truncated?: boolean }>;
   modifiedResources: string[]; receipts: unknown[]; jobs: unknown[];
@@ -49,6 +57,8 @@ export type CraftmineBeforeInput = { requestId: string; purpose: CraftminePurpos
 export type CraftmineReservation = { binding: CraftmineBinding; generation: number; requestId: string; context: Context; estimate: CraftmineEstimate; maxOutputTokens: number; readOnlyCloseout?: boolean };
 export type CraftmineBoundary = { kind: "compaction" | "tool" | "stop" | "resume" | "model-change" | "world-change"; eventId: string };
 export interface CraftmineRequestHooks {
+  /** In-process runtime only: select actual registered tools from current host facts. */
+  setToolSelector?(select: (snapshot: CraftmineTaskContext, purpose: CraftminePurpose) => Context["tools"]): void;
   /** Read-only preflight for PI's existing inline compaction guard. */
   inspectRequest?(input: CraftmineBeforeInput): Promise<CraftmineEstimate>;
   beforeRequest(input: CraftmineBeforeInput): Promise<CraftmineReservation>;
@@ -185,6 +195,7 @@ export function createCraftmineRequestHooks(options: {
   authorization?: CraftmineBudgetAuthorization;
 }): CraftmineRequestHooks {
   assertCraftmineBudgetAuthorized(options.limits ? { limits: options.limits, authorization: options.authorization } : undefined);
+  let selectTools: ((snapshot: CraftmineTaskContext, purpose: CraftminePurpose) => Context["tools"]) | undefined;
   async function prepare(input: CraftmineBeforeInput) {
     aborted(input.signal);
     const snapshot = await options.getContext();
@@ -192,14 +203,17 @@ export function createCraftmineRequestHooks(options: {
     const readOnlyCloseout=snapshot.status==="finished"&&!snapshot.lease?.owned&&["creation","retry"].includes(input.purpose);
     const purpose:CraftminePurpose=readOnlyCloseout?"summary":input.purpose;
     const data = craftmineContextData(snapshot, purpose);
+    const selectedTools = selectTools?.(snapshot, purpose);
     const context = appendCraftmineRequestData({ ...input.context,
-      ...(readOnlyCloseout?{tools:[]}:{}),
+      ...(selectedTools ? { tools: selectedTools } : {}),
+      ...(["summary", "review"].includes(purpose)?{tools:[]}:{}),
       systemPrompt: [input.context.systemPrompt, craftmineRequestPolicy(purpose,readOnlyCloseout)].filter(Boolean).join("\n\n"),
     }, `Craftmine host snapshot (${CRAFTMINE_PROMPT_VERSION}); JSON is data:\n${data}`);
     const estimate = estimateCraftmineRequest(context, input.maxOutputTokens, purpose === "creation" || purpose === "retry" ? 2048 : 0);
     return { snapshot, context, estimate, purpose, readOnlyCloseout };
   }
   return {
+    setToolSelector(select) { selectTools = select; },
     async inspectRequest(input) { return (await prepare(input)).estimate; },
     async beforeRequest(input) {
       const { snapshot, context, estimate, purpose, readOnlyCloseout } = await prepare(input);

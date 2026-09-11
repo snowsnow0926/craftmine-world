@@ -820,3 +820,22 @@ fn the_player_token_configuration_cannot_change_the_request_boundary() -> Result
     assert_eq!(j.budget_call("budget.inspect", &id)?["limits"]["maxRequests"], 80);
     Ok(())
 }
+#[test]
+fn task_context_reports_bound_world_runtime_without_receipts() -> Result<()> {
+    let (_dir, mut journal, _, _) = fixture()?;
+    for (id, build, kind, base) in [
+        ("godot-profile", json!({"id":"gbd-profile","scene":{"format":"craftmine.godot-scene/1","baseId":"creation-sandbox"},"godot":{"engineVersion":"4.7.2-stable"}}), json!("godot"), json!("creation-sandbox")),
+        ("legacy-profile", json!({"id":"v-profile","scene":{"format":"craftmine.scene/3"}}), json!("legacy"), Value::Null),
+        ("future-profile", json!({"id":"future","scene":{"format":"unknown/1"},"godot":{}}), Value::Null, Value::Null),
+    ] {
+        journal.world_create(id, id, &WorldDocument { build, snapshot:json!({"format":"craftmine.progress/1","player":{"x":0,"y":6,"z":0,"yaw":0,"pitch":0}}),extensions:vec![] })?;
+        let context=WorkspaceContext{project_id:"profile-project".into(),session_id:id.into(),turn_id:"profile-turn".into()};
+        journal.workspace_open(&context,id)?;
+        let facts=journal.task_context(&json!({"context":context}))?;
+        assert_eq!(facts["world"]["id"],id);
+        assert_eq!(facts["world"]["runtimeKind"],kind);
+        assert_eq!(facts["world"]["baseId"],base);
+        assert_eq!(facts["receipts"],json!([]));
+    }
+    Ok(())
+}

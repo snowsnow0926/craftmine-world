@@ -231,3 +231,81 @@ function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, reco
     onEvent: () => {},
   });
 }
+
+describe("Godot task tool profile", () => {
+  const prefix="plugin_craftmine_world_";
+  const names=["project_inspect","capabilities_read","godot_project_facts","godot_capability_report","godot_guidance","godot_file_read","godot_project_query","godot_project_patch","godot_build_start","godot_build_read","godot_docs","asset_library"];
+  const plugins=names.map(name=>({name:prefix+name,description:name}));
+  it("executes read, patch and check on first native calls without discovery", async()=>{
+    const f=fixture(), current=snapshot();current.world.runtimeKind="godot";current.world.baseId="creation-sandbox";f.set(current);
+    const runtime=makeRuntime(f.hooks,[],[],plugins),internal=runtime as any;
+    internal.host.call.mockImplementation(async()=>({ok:true,content:"bounded fixture receipt"}));
+    const sequence=["godot_file_read","godot_project_patch","godot_build_start"];let index=0;
+    vi.spyOn(internal.models,"streamSimple").mockImplementation((_m:unknown,raw:unknown)=>{
+      const context=raw as Context;
+      const offered=context.tools!.map(tool=>tool.name);
+      expect(offered).toContain(prefix+"godot_project_query");
+      for(const absent of ["project_inspect","capabilities_read","asset_library","godot_docs"])expect(offered).not.toContain(prefix+absent);
+      expect(offered).not.toContain("Bash");
+      expect(internal.agent.state.tools.map((tool:any)=>tool.name)).toEqual(offered);
+      const next=sequence[index++];
+      return next?stream({...result(),stopReason:"toolUse",content:[{type:"toolCall",id:"native-"+index,name:prefix+next,arguments:{}}]}):stream();
+    });
+    await runtime.prompt("Create a companion","profile-user","profile-turn");
+    const executed=internal.host.call.mock.calls.filter((call:any[])=>call[0]==="tools.execute").map((call:any[])=>call[1].toolName);
+    expect(executed).toEqual(sequence.map(name=>prefix+name));
+    expect(internal.agent.state.messages.filter((message:any)=>message.role==="toolResult").every((message:any)=>!message.isError)).toBe(true);
+    await runtime.dispose();
+  });
+  it("recomputes profiles across prompt reset, reconstruction and bound-world changes", async()=>{
+    for(let restart=0;restart<2;restart++){
+      const f=fixture(),runtime=makeRuntime(f.hooks,[],[],plugins),internal=runtime as any,contexts:Context[]=[];
+      vi.spyOn(internal.models,"streamSimple").mockImplementation((_m:unknown,context:unknown)=>{contexts.push(context as Context);return stream();});
+      for(const [index,kind] of ["godot","legacy",undefined,"godot"].entries()){
+        const current=snapshot();current.world.id="world-"+index;current.world.runtimeKind=kind as "godot"|"legacy"|undefined;
+        current.binding.taskId="task-"+index;f.set(current);
+        await runtime.prompt("Continue","user-"+index,"turn-"+index);
+        const offered=contexts.at(-1)!.tools!.map(tool=>tool.name);
+        expect(offered.includes(prefix+"godot_project_patch")).toBe(kind==="godot");
+        if(kind==="legacy")expect(offered.some(name=>name.startsWith(prefix+"godot_"))).toBe(false);
+      }
+      expect(contexts).toHaveLength(4);await runtime.dispose();
+    }
+  });
+  it("intersects host definitions and disables summary, review and finished tools",async()=>{
+    const f=fixture(),current=snapshot();current.world.runtimeKind="godot";f.set(current);
+    const runtime=makeRuntime(f.hooks,[],[],plugins.filter(tool=>tool.name!==prefix+"godot_project_patch")),internal=runtime as any;
+    const prepare=(purpose:"creation"|"summary"|"review")=>f.hooks.beforeRequest({requestId:purpose,purpose,model,context:request,maxOutputTokens:4000});
+    let reserved=await prepare("creation");expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_project_patch")).toBe(false);
+    for(const purpose of ["summary","review"] as const){reserved=await prepare(purpose);expect(reserved.context.tools).toEqual([]);expect(internal.agent.state.tools).toEqual([]);}
+    reserved=await prepare("creation");expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_file_read")).toBe(true);
+    current.status="finished";current.lease.owned=false;f.set(current);reserved=await prepare("creation");
+    expect(reserved.context.tools).toEqual([]);expect(internal.agent.state.tools).toEqual([]);expect(reserved.readOnlyCloseout).toBe(true);
+    await runtime.dispose();
+  });
+});
+
+it("keeps provider and executor empty for finished closeout and summary, then restores the next task",async()=>{
+  const f=fixture(),current=snapshot();current.world.runtimeKind="godot";current.status="finished";current.lease.owned=false;f.set(current);
+  const tool="plugin_craftmine_world_godot_file_read";
+  const runtime=makeRuntime(f.hooks,[],[],[{name:tool,description:"Read source"}]),internal=runtime as any;
+  const contexts:Context[]=[];
+  vi.spyOn(internal.models,"streamSimple").mockImplementation((_m:unknown,raw:unknown)=>{
+    const context=raw as Context;contexts.push(context);
+    expect(context.tools).toEqual(internal.agent.state.tools);
+    return stream();
+  });
+  await runtime.prompt("Report completion","close-user","close-turn");
+  expect(contexts[0].tools).toEqual([]);expect(internal.agent.state.tools).toEqual([]);
+  const next=snapshot();next.world.runtimeKind="godot";next.world.id="next-world";next.binding.taskId="next-task";f.set(next);
+  await runtime.prompt("Continue creating","next-user","next-turn");
+  expect(contexts[1].tools!.some(entry=>entry.name===tool)).toBe(true);
+  const start=vi.fn((context:Context)=>{
+    expect(context.tools).toEqual([]);expect(internal.agent.state.tools).toEqual([]);return stream();
+  });
+  expect((await craftmineGuardedStream(model,{...request,tools:contexts[1].tools},{},f.hooks,"summary",start).result()).stopReason).toBe("stop");
+  expect(start).toHaveBeenCalledOnce();
+  await runtime.prompt("Continue after summary","summary-user","summary-turn");
+  expect(contexts[2].tools!.some(entry=>entry.name===tool)).toBe(true);
+  await runtime.dispose();
+});
