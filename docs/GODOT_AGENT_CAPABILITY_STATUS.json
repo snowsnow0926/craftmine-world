@@ -35,7 +35,7 @@
     {
       "id": "GU2",
       "status": "in-progress",
-      "next": "Pinned engine ClassDB metadata integrated; godot_docs production routing and package staging in progress"
+      "next": "Pinned engine metadata production routing and plugin staging passed; broader semantic source queries remain"
     },
     {
       "id": "GU3",
@@ -49,12 +49,12 @@
     {
       "id": "GU5",
       "status": "in-progress",
-      "next": "Structured diagnostics integrated; build-read production wrapper in progress"
+      "next": "Structured diagnostics wired into both build-read paths; closed-loop repair and integrated player validation remain"
     },
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "User requested open-source discovery and trial; three sources pinned; two Kenney projects passed isolated import/export/Web startup; reusable world packages not installed"
+      "next": "Pinned source catalog and repeatable LPAC/Web trial integrated; next adapt selected modules to existing asset/package contracts and verify gameplay plus independent-world reuse"
     },
     {
       "id": "GU7",
@@ -104,6 +104,25 @@
       "path": "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
       "status": "in-progress",
       "scope": "fixed source licenses and independent LPAC/Web trial; not ordinary player acceptance"
+    },
+    {
+      "kind": "production-tool-integration",
+      "commit": "9a200cbb24a8129b52a1a4a1b0b86123dc5e0913",
+      "status": "passed",
+      "scope": "integrator reran broker routing, execution wiring and real plugin packaging; no player model or installed-client claim"
+    },
+    {
+      "kind": "external-source-trial",
+      "commit": "90769285",
+      "path": "docs/evidence/gu6-open-source-20260912/summary.json",
+      "status": "passed",
+      "scope": "two Kenney projects, three explicitly adapted startup variants, six LPAC operations and screenshots; not player/gameplay acceptance"
+    },
+    {
+      "kind": "build",
+      "command": "pnpm run build:js",
+      "status": "passed",
+      "scope": "integrated production tools and optional scenario collector; independent workspace JS and desktop build"
     }
   ],
   "limitations": [
