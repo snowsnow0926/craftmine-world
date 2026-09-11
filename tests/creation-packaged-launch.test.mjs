@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
-import {creationPackagedRoot,creationPackageInventory,resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
+import {creationPackagedRoot,creationPackageInventory,resolveCreationNativeLaunch,installedCreationElectron} from './helpers/creation-native-launch.mjs';
 import {loadPackageAsar} from '../desktop/package-asar.mjs';
 const root=path.resolve(import.meta.dirname,'..'),desktop=path.join(root,'vendor/pi-desktop/apps/desktop');
 async function fixture(t,{pointer=true}={}){
@@ -34,4 +34,11 @@ test('missing core does not fall back to a source override; changed payload fail
 test('linked package contents are rejected without traversing or launching their target',async t=>{
  const {packaged,temporary}=await fixture(t),outside=path.join(temporary,'outside');fs.mkdirSync(outside);fs.writeFileSync(path.join(outside,'sentinel'),'untouched');
  fs.symlinkSync(outside,path.join(packaged,'linked'),'junction');assert.throws(()=>creationPackageInventory(packaged),/LINK_DENIED/);assert.equal(fs.readFileSync(path.join(outside,'sentinel'),'utf8'),'untouched');
+});
+test('development Electron is read from existing installation metadata without executing installers',t=>{
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),'creation-electron-installed-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+ fs.writeFileSync(path.join(directory,'install.js'),'throw Error("installer must never run")');assert.throws(()=>installedCreationElectron(directory),/NOT_INSTALLED/);
+ fs.mkdirSync(path.join(directory,'dist'));fs.writeFileSync(path.join(directory,'path.txt'),'electron.exe');assert.throws(()=>installedCreationElectron(directory),/NOT_INSTALLED/);
+ fs.writeFileSync(path.join(directory,'dist/electron.exe'),'synthetic, not executed');assert.equal(installedCreationElectron(directory),path.join(directory,'dist/electron.exe'));
+ fs.writeFileSync(path.join(directory,'path.txt'),'../install.js');assert.throws(()=>installedCreationElectron(directory),/NOT_INSTALLED/);
 });

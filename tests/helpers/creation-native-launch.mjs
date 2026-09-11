@@ -7,6 +7,18 @@ import {completeEnvironment} from '../godot-final/complete-contract.mjs';
 import {loadPackageAsar} from '../../desktop/package-asar.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+export function installedCreationElectron(directory){
+  const marker=path.join(directory,'path.txt');
+  if(!fs.existsSync(marker))throw Error('ELECTRON_BINARY_NOT_INSTALLED');
+  const relative=fs.readFileSync(marker,'utf8').trim(),dist=path.resolve(directory,'dist'),executable=path.resolve(dist,relative),inside=path.relative(dist,executable);
+  if(!relative||path.isAbsolute(relative)||!inside||inside==='..'||inside.startsWith('..'+path.sep)||!fs.existsSync(executable)||!fs.statSync(executable).isFile())throw Error('ELECTRON_BINARY_NOT_INSTALLED');
+  return executable;
+}
+function sourceElectron(require,inherited){
+  if(inherited.CRAFTMINE_ELECTRON_BIN!==undefined){const file=inherited.CRAFTMINE_ELECTRON_BIN;if(!path.isAbsolute(file)||!fs.existsSync(file)||!fs.statSync(file).isFile())throw Error('ELECTRON_EXPLICIT_BINARY_INVALID');return file;}
+  // Resolving package metadata does not execute Electron's install-on-require entry.
+  return installedCreationElectron(path.dirname(require.resolve('electron/package.json')));
+}
 export function creationPackagedRoot(args=process.argv.slice(2),env=process.env){
   const indices=args.flatMap((arg,index)=>arg==='--packaged-root'?[index]:[]);
   if(indices.length>1)throw Error('PACKAGED_ROOT_DUPLICATE');
@@ -50,7 +62,7 @@ export function resolveCreationNativeLaunch({root,packagedRoot=creationPackagedR
   for(const guard of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance',...requiredGuards])assert.ok(main.includes(guard),'HEADLESS_BUILD_REQUIRED: '+guard);
   assert.ok(preload.includes('requestPointerLock'),'HEADLESS_POINTER_LOCK_GUARD_REQUIRED');
   return {
-    packaged,main,identity,executable:packaged?path.join(packaged,'Craftmine World.exe'):inherited.CRAFTMINE_ELECTRON_BIN??require('electron'),args:packaged?[]:[desktop],cwd:packaged??root,
+    packaged,main,identity,executable:packaged?path.join(packaged,'Craftmine World.exe'):sourceElectron(require,inherited),args:packaged?[]:[desktop],cwd:packaged??root,
     environment({out,profile,token}){
       const env=completeEnvironment(inherited,{out,profile,token,core:packaged?path.join(resources,'bin/craftmine-core.exe'):inherited.CRAFTMINE_EVAL_CORE??path.join(root,'vendor/pi-desktop/target/release/craftmine-core.exe'),host:packaged?path.join(resources,'bin/pi-desktop-host-core.exe'):inherited.CRAFTMINE_EVAL_HOST??path.join(root,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe'),bases:packaged?undefined:inherited.CRAFTMINE_EVAL_BASES??path.join(root,'desktop/godot')});
       if(packaged)delete env.CRAFTMINE_GODOT_BASES;
