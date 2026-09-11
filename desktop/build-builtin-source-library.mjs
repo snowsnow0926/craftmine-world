@@ -57,6 +57,32 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   packages.push({file:environmentId+'.zip',bytes:environmentBytes});
   entries.push({assetId:environmentId,version:1,kind:'module',file:environmentId+'.zip',bytes:environmentBytes.length,sha256:sha(environmentBytes),rootContentHash:environmentHash,label:'自然日光与草土地面',
     tags:['builtin','prefab','environment','环境','天空','日光','草地'],source:{origin:'Craftmine World natural-daylight 1.0.0',author:'Craftmine World contributors',license:'MIT',licenseStatus:'verified'}});
+  const sceneRoot=path.join(repository,'desktop/godot/components/forest-gateway');
+  const sceneManifest=JSON.parse(fs.readFileSync(path.join(sceneRoot,'component.json'),'utf8'));
+  check(sceneManifest.id==='cw.scene.forest-gateway'&&sceneManifest.kind==='scene'&&sceneManifest.version==='1.0.0','BUILTIN_SCENE_DECLARATION_INVALID');
+  const sceneFiles={};
+  for(const entry of sceneManifest.files){
+    validatePath(entry.path);const filename=path.join(sceneRoot,entry.path),relative=path.relative(fs.realpathSync(sceneRoot),fs.realpathSync(filename));
+    check(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative),'BUILTIN_SCENE_FILE_OUTSIDE_ROOT');
+    const bytes=fs.readFileSync(filename);check(bytes.length===entry.bytes&&sha(bytes)===entry.sha256,'BUILTIN_SCENE_FILE_HASH_MISMATCH');sceneFiles[entry.path]=bytes;
+  }
+  check(sceneFiles[sceneManifest.entryScene]&&sceneFiles[sceneManifest.composition.licenseFile],'BUILTIN_SCENE_ENTRY_OR_LICENSE_MISSING');
+  for(const origin of Object.values(sceneManifest.sources))check(sceneFiles[origin.licenseFile]&&sha(sceneFiles[origin.licenseFile])===origin.licenseSha256,'BUILTIN_SCENE_LICENSE_MISMATCH');
+  const sceneContent={assetId:sceneManifest.id,version:1,kind:'scene',files:sceneManifest.files,dependencies:[],
+    entry:{entities:['scene'],sceneInstall:{mode:'instance',sceneFile:sceneManifest.entryScene,identityField:sceneManifest.identityField,identityType:sceneManifest.identityType},
+      description:sceneManifest.usage,style:'stylized-low-poly',placement:{anchor:sceneManifest.placement.anchor,dimensionsMm:sceneManifest.placement.dimensionsMm},
+      geometry:Object.fromEntries(['meshInstances','triangles','trees','treeSilhouettes','animations','skins'].map(key=>[key,sceneManifest.geometry[key]])),
+      sceneContract:{forward:sceneManifest.sceneContract.forward,
+        pathStartMm:sceneManifest.sceneContract.pathStart.map(value=>Math.round(value*1000)),pathEndMm:sceneManifest.sceneContract.pathEnd.map(value=>Math.round(value*1000)),
+        recommendedCameraMm:sceneManifest.sceneContract.recommendedCamera.map(value=>Math.round(value*1000)),recommendedLookAtMm:sceneManifest.sceneContract.recommendedLookAt.map(value=>Math.round(value*1000)),
+        approachClearWidthMm:Math.round(sceneManifest.sceneContract.approachClearWidth*1000),gateClearWidthMm:Math.round(sceneManifest.sceneContract.gateClearWidth*1000)},
+      recommendedLighting:sceneManifest.recommendedLighting},
+    interfaces:{},compatibility:{base:'creation-sandbox',baseVersion:'1.0.0',engine:'4.7.2-stable'},state:{kind:'static-scene-no-player-state'},
+    licenses:{composition:sceneManifest.composition,sources:sceneManifest.sources}};
+  const sceneHash=contentHash(sceneContent),sceneBytes=packStaticPackage({root:{id:sceneManifest.id,version:1},resources:[{manifest:{format:'craftmine.resource/1',content:sceneContent,contentHash:sceneHash},files:sceneFiles}]});
+  unpackStaticPackage(sceneBytes);packages.push({file:sceneManifest.id+'.zip',bytes:sceneBytes});
+  entries.push({assetId:sceneManifest.id,version:1,kind:'scene',file:sceneManifest.id+'.zip',bytes:sceneBytes.length,sha256:sha(sceneBytes),rootContentHash:sceneHash,label:sceneManifest.label,
+    tags:['builtin','prefab','scene','森林','风格化',...sceneManifest.tags],source:{origin:'Craftmine World forest-gateway 1.0.0',author:'Craftmine World contributors / Kenney',license:'MIT AND CC0-1.0',licenseStatus:'verified'}});
   // Stage only after every resource and archive has passed validation.
   fs.mkdirSync(output,{recursive:true});
   for(const item of packages)fs.writeFileSync(path.join(output,item.file),item.bytes);

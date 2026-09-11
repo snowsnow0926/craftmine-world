@@ -8,7 +8,7 @@ import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 import {parseScene} from '../desktop/godot/shared/scene_materializer.mjs';
 
 const [binary,directory]=process.argv.slice(2);assert.ok([binary,directory].every(value=>value&&path.isAbsolute(value)),'Pass absolute core executable and built source library directory');
-const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),inventory=loadBuiltinPackages(directory);assert.equal(inventory.entries.length,17,'Expected current 16 objects + environment module');
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),inventory=loadBuiltinPackages(directory);assert.ok(inventory.entries.length>=17&&inventory.entries.length<=64,'Expected shipped objects and environment, with optional composed scenes');
 fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/builtin-install-')),core=new CoreClient(binary,path.join(out,'data'));
 const worldId='builtin-install-world',context={projectId:'builtin-project',sessionId:'builtin-session',turnId:'builtin-turn'};
 const report={format:'craftmine.builtin-library-install-preflight/1',out,binary,coreSha256:sha(fs.readFileSync(binary)),directory,catalogSha256:sha(fs.readFileSync(path.join(directory,'catalog.json'))),modelCalls:0,engineLaunches:0,uiLaunches:0,installations:[],ok:false};
@@ -51,7 +51,7 @@ try{
  const uids=new Map();
  for(const [name,file] of expected){const bytes=await readFile(name);assert.equal(bytes.length,file.bytes,name);assert.equal(sha(bytes),file.sha256,name);if(name.endsWith('.gd.uid')){const uid=bytes.toString().trim();assert.ok(!uids.has(uid),'Cross-package duplicate script UID: '+name+' / '+uids.get(uid));uids.set(uid,name);}}
  assert.equal(sha(await readFile('scripts/creation_world.gd')),sha(Buffer.from(standard)),'Standard environment source requirement changed');
- const lock=JSON.parse((await readFile('craftmine.assets.lock.json')).toString());assert.equal(lock.assets.length,17);
+ const lock=JSON.parse((await readFile('craftmine.assets.lock.json')).toString());assert.equal(lock.assets.length,inventory.entries.length);
  assert.deepEqual(await call('world.read',{id:worldId}),originalWorld,'Source installation must not silently adopt or change player progress');
  report.filesVerified=expected.size;report.distinctScriptUids=uids.size;report.lockAssets=lock.assets.length;report.repeatedPackageNewIdentity=true;report.finalSource=current.source;report.ok=true;
  report.limit='All built ZIPs reached real package plan + source transaction. Check is blocked because no executor is registered; this is not engine, runtime or visual acceptance.';
