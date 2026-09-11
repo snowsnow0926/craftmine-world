@@ -53,6 +53,13 @@ const groups = [
 
 export const PROMO_GROUP_IDS = Object.freeze(groups.map(group => group.id));
 const evidenceSlots = ['submission','check','application','liveObservation','beforeApplyProgress','afterApplyProgress','saved','reopened','usage'];
+// Order is narrative preference; only these prerequisites are hard dependencies.
+const prerequisites = {
+  ENV01:[], ENV02:['ENV01'], PET01:[], PET02:['PET01'], PET03:['PET01'], PET04:['PET02','PET03'],
+  COM01:[], COM02:['COM01'], COM03:['COM02'], COM04:['COM02'], COM05:['COM02','COM04'],
+  RAIN01:[], RAIN02:['RAIN01'], FLIGHT01:[], FLIGHT02:['FLIGHT01'], FLIGHT03:['FLIGHT02'],
+  CITY01:[], CITY02:['CITY01'], CITY03:['CITY02'], ENTER01:[],
+};
 
 /** Same seed/group gives the same candidate even when only a subset is selected. */
 export function createPromoWishPlan({suite='independent', selected, seed=20260911} = {}) {
@@ -82,7 +89,11 @@ export function createPromoWishPlan({suite='independent', selected, seed=2026091
   }
   for (const story of stories) {
     delete story.variants;
-    story.steps = story.steps.map((item,index) => ({...item, dependsOn:index ? [story.steps[index-1].id] : [],
+    const createdContent = story.steps.filter(item => item.kind === 'wish').map(item => item.id);
+    story.steps = story.steps.map(item => ({...item,
+      dependsOn:[...(suite === 'mainline' && item.id !== 'ENTER01' ? ['ENTER01'] : []), ...(prerequisites[item.id] ?? [])],
+      // A partial story may still verify persistence of its successful content.
+      ...(item.kind === 'save-reopen' ? {dependsOnAny:createdContent,persistenceScope:'successful-wishes-only'} : {}),
       outcome:'NOT_RUN',worldId:null,buildId:null,instanceId:null,requestAttempts:null,usageRaw:null,
       submittedAt:null,playableObservedAt:null,completionPath:null,visualReview:'pending',
       evidence:Object.fromEntries(evidenceSlots.map(name => [name,null])),
@@ -103,10 +114,24 @@ export function nextWishStep(plan, storyId, results = {}) {
   if (plan?.format !== PROMO_SUITE) throw Error('INVALID_WISH_PLAN');
   const story = plan.stories.find(item => item.id === storyId);
   if (!story) throw Error('UNKNOWN_WISH_STORY');
+  const passed = new Set(), seen = new Set(), blockedSteps = [], ready = [];
   for (const item of story.steps) {
-    const result = results[item.id];
-    if (result === undefined || result === 'NOT_RUN') return {status:'PENDING',stepId:item.id};
-    if (result !== 'PASS') return {status:'DEPENDENCY_BLOCKED',stepId:item.id,result};
+    if (!item.id || seen.has(item.id) || !Array.isArray(item.dependsOn) ||
+        [...item.dependsOn,...(item.dependsOnAny ?? [])].some(id => !seen.has(id))) throw Error('INVALID_WISH_DEPENDENCIES');
+    seen.add(item.id);
+    const result = Object.hasOwn(results,item.id) ? results[item.id] : undefined;
+    const missing = item.dependsOn.filter(id => !passed.has(id));
+    const anyMissing = item.dependsOnAny?.length && !item.dependsOnAny.some(id => passed.has(id));
+    if (missing.length || anyMissing) {
+      blockedSteps.push({stepId:item.id,reason:result === 'PASS' ? 'PASS_WITH_UNMET_DEPENDENCIES' : 'UNMET_DEPENDENCIES',
+        dependencies:[...missing,...(anyMissing ? item.dependsOnAny : [])]});
+    } else if (result === 'PASS') passed.add(item.id);
+    else if (result === undefined || result === 'NOT_RUN') ready.push(item);
+    else blockedSteps.push({stepId:item.id,reason:'STEP_NOT_PASSED',result});
   }
-  return {status:'REVIEW_REQUIRED',stepId:null};
+  const next = ready[0];
+  if (next) return {status:'PENDING',stepId:next.id,blockedSteps,
+    ...(next.kind === 'save-reopen' ? {preservedStepIds:next.dependsOnAny.filter(id => passed.has(id))} : {})};
+  if (blockedSteps.length) return {status:'DEPENDENCY_BLOCKED',stepId:blockedSteps[0].stepId,blockedSteps};
+  return {status:'REVIEW_REQUIRED',stepId:null,blockedSteps};
 }
