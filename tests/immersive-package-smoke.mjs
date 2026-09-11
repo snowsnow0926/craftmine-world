@@ -6,7 +6,7 @@ import {randomUUID} from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
-const root=process.cwd(), out=fs.mkdtempSync(path.join(root,'test-results/immersive-package-'));
+const root=process.cwd(), out=fs.mkdtempSync(path.join(root,'test-results/desktop-native-immersive-package-'));
 const profile=path.join(out,'profile'),legacySource=path.join(out,'legacy'),token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(legacySource);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
@@ -22,7 +22,7 @@ child.on('message',message=>{
   if(message.type==='craftmine-headless-exit')exitReport=message;
   const call=pending.get(message.id);if(call){pending.delete(message.id);clearTimeout(call.timer);message.error?call.reject(Error(message.error)):call.resolve(message.result);}
 });
-const rpc=(method,payload)=>new Promise((resolve,reject)=>{const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('Timeout: '+method));},20000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...(payload?{payload}:{})});});
+const rpc=(method,payload,channel)=>new Promise((resolve,reject)=>{const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('Timeout: '+method));},20000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...(payload?{payload}:{}),...(channel?{channel}:{})});});
 async function until(read,accept,label){for(let i=0;i<180;i++){if(ended)throw Error('Client exited: '+label);try{const result=await read();if(accept(result))return result;}catch(error){if(i===179)throw error;}await delay(500);}throw Error('Not ready: '+label);}
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS '+name);};
 let failure;
@@ -32,6 +32,10 @@ try {
   await rpc('primaryMode',{action:'create'});
   const world=await until(()=>rpc('worldState'),s=>s.loaded,'packaged world plugin and Web world');check('bundled world plugin loads a playable world',!!world.id);
   await rpc('primaryMode',{action:'entry'});await until(()=>rpc('primaryMode'),s=>s.entry,'return entry');
+  const list=await rpc('worldNavigation',{},'world.list');
+  const current=list.worlds.find(item=>item.id===world.id);
+  assert.ok(current?.title,'Read the current world title from the actual plugin');
+  await until(()=>rpc('desktopState'),s=>s.text.includes(current.title),'world chooser data');
   await rpc('primaryMode',{action:'play'});await until(()=>rpc('primaryMode'),s=>s.play&&!s.entry,'immersive mode');
   for(const action of ['closed','compact','full','closed']){
     await rpc('primaryMode',{action});
