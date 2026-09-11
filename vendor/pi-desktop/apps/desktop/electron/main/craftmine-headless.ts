@@ -10,6 +10,7 @@ import { createGodotGameplayAcceptance, type GodotGameplayAccess } from "./craft
 import { createGodotBasesAcceptance } from "./craftmine-godot-bases-acceptance";
 import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance";
 import { createGodotExploration } from "./craftmine-godot-exploration";
+import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -104,6 +105,13 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case "headlessAskPending":
+        case "headlessAskResolve": {
+          const script=validateHeadlessAskEnvelope(request,hasHeadlessController());
+          const window=access.window();
+          if(!window||window.isDestroyed()||window.isVisible()||window.isFocusable()||!window.webContents.isOffscreen())throw Error('HEADLESS_ASK_WINDOW_UNAVAILABLE');
+          return window.webContents.executeJavaScript(script,false);
+        }
         case "godotExplore":
           if (Object.keys(request).sort().join(",") !== "id,method,payload,type" || !godotExplore) throw Error("Unsupported bounded exploration request");
           return godotExplore(request.payload);
