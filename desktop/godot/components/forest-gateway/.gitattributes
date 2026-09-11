@@ -1,1 +1,5 @@
 * -text
+*.glb binary
+*.png binary
+# Preserve original third-party license bytes, including their whitespace.
+licenses/** whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
