@@ -1,0 +1,274 @@
+{
+  "format": "craftmine.formal-package-summary/1",
+  "passed": true,
+  "sourceReport": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-QaRnRb\\report.json",
+  "sealedPackage": "D:/cm-agent-godot-0912/desktop/build/releases/2ae18b25a7cf-87f15497-e89a-4f99-ae8b-df6762a663e9/output/win-unpacked",
+  "commit": "2ae18b25a7cf88e2cf810082a84c17c09092ce3d",
+  "manifestSha256": "18f781613c17add0014eb351f8bc9c833a4ce913d0fbb6ae33e6e4df65c1e27e",
+  "worldId": "world-f58b259b9562",
+  "steps": [
+    {
+      "name": "sealed client starts offscreen in protected fresh profile",
+      "passed": true
+    },
+    {
+      "name": "ordinary creation-sandbox world creation",
+      "passed": true
+    },
+    {
+      "name": "initial world real build/check/apply settles",
+      "passed": true
+    },
+    {
+      "name": "building ordinary native importSource",
+      "passed": true
+    },
+    {
+      "name": "building actual executor job check passed",
+      "passed": true
+    },
+    {
+      "name": "building checked candidate preview",
+      "passed": true
+    },
+    {
+      "name": "building ordinary candidateApply",
+      "passed": true
+    },
+    {
+      "name": "building adopted source identities",
+      "passed": true
+    },
+    {
+      "name": "building formal runtime pixels",
+      "passed": true
+    },
+    {
+      "name": "road ordinary native importSource",
+      "passed": true
+    },
+    {
+      "name": "road actual executor job check passed",
+      "passed": true
+    },
+    {
+      "name": "road checked candidate preview",
+      "passed": true
+    },
+    {
+      "name": "road ordinary candidateApply",
+      "passed": true
+    },
+    {
+      "name": "road adopted source identities",
+      "passed": true
+    },
+    {
+      "name": "road formal runtime pixels",
+      "passed": true
+    },
+    {
+      "name": "first process shuts down cleanly",
+      "passed": true
+    },
+    {
+      "name": "same sealed build cold reopens protected profile",
+      "passed": true
+    },
+    {
+      "name": "ordinary world.open after cold launch",
+      "passed": true
+    },
+    {
+      "name": "adopted package source and build survive cold restart",
+      "passed": true
+    },
+    {
+      "name": "cold reopened formal runtime pixels",
+      "passed": true
+    }
+  ],
+  "packages": [
+    {
+      "kind": "building",
+      "archiveSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "source": {
+        "revision": 2,
+        "manifestHash": "75fc99f2fdd50033277255ab1a3b6a5cd82e3cbb45a763c608e90115810a7733",
+        "commitOid": "ce5e38cb1c402624fe7dd7a507a9ce06e9ef06d0",
+        "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+      },
+      "instanceIds": [
+        "ins-7cd6d5365fb8452a2fe191fd"
+      ],
+      "jobId": "gjob-f982ead04dc6f47bb11f6cda1344742c854b4368b7e095657650573da26e7387",
+      "jobStatus": "passed",
+      "jobKind": "check",
+      "executor": "craftmine-windows-broker-v1",
+      "candidateId": "gcan-7546855e69e37f8f8692e68a9432c583bd5e3e107ec0522859cd6723d9b27e95",
+      "buildId": "gbd-e9748ec20465f580fa957a28ac5175185c3e33bccf3ff8d2ac12dc20068419a8",
+      "adoptedBuildId": "gbd-e9748ec20465f580fa957a28ac5175185c3e33bccf3ff8d2ac12dc20068419a8",
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=1",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "coreCheckFile": "building-core-check.json"
+    },
+    {
+      "kind": "road",
+      "archiveSha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+      "source": {
+        "revision": 3,
+        "manifestHash": "af86817f43488c73b513dd324b070449e60477d398ddcfc69adee0df138a4b4f",
+        "commitOid": "a446aa197dc7b0bd20929f8fb82e584d90157f6e",
+        "assetLockHash": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+      },
+      "instanceIds": [
+        "ins-ba8a54bb32a5743ab49ace50"
+      ],
+      "jobId": "gjob-e18ea6263953f25e3ba6ef1ddc83a801cdd6272b444266db5383d554312ece03",
+      "jobStatus": "passed",
+      "jobKind": "check",
+      "executor": "craftmine-windows-broker-v1",
+      "candidateId": "gcan-aa31f1101e75c0aebdad6ccde765ddd56c04777c0ae949ffbefe0d882c58ff29",
+      "buildId": "gbd-a93ac26602fb2948f94efdb130cb94b62685b4128b0bf94e6b35f45c308a4c78",
+      "adoptedBuildId": "gbd-a93ac26602fb2948f94efdb130cb94b62685b4128b0bf94e6b35f45c308a4c78",
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=1",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "coreCheckFile": "road-core-check.json"
+    }
+  ],
+  "cold": {
+    "beforeBuild": "gbd-a93ac26602fb2948f94efdb130cb94b62685b4128b0bf94e6b35f45c308a4c78",
+    "afterBuild": "gbd-a93ac26602fb2948f94efdb130cb94b62685b4128b0bf94e6b35f45c308a4c78",
+    "beforeInstance": "d3c4b5e1ef86cff122521916",
+    "afterInstance": "ba5603a7703d7e897a2a66ca",
+    "sourceIds": [
+      "ins-7cd6d5365fb8452a2fe191fd-e0",
+      "ins-ba8a54bb32a5743ab49ace50-e0"
+    ],
+    "baseSnapshotEqual": true
+  },
+  "launches": [
+    {
+      "number": 1,
+      "pid": 92860,
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "pid": 89608,
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "cancellation": {
+    "sourceReport": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-qAq3qM\\report.json",
+    "reason": "cancel.request",
+    "launches": [
+      {
+        "number": 1,
+        "pid": 57456,
+        "exitAudit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      }
+    ],
+    "expectedAbort": true,
+    "fullChainPassed": false
+  },
+  "limits": [
+    "No model prompts or model calls",
+    "Formal core checks retain their existing base-startup scope, not arbitrary gameplay acceptance",
+    "Two static modules retain default overlapping placement; screenshot does not prove road can be separately selected",
+    "No changed module-parameter save/migration proof",
+    "One formal world, separate from prior two-world derived-fixture evidence"
+  ],
+  "diagnostics": {
+    "priorEarlyWindowProbe": "desktop-native-complete-sak5JC",
+    "priorColdMissingOpen": "desktop-native-complete-RR3YFE",
+    "note": "Prior failed driver attempts remain separate; latest helper additionally uses primaryMode create and cancellation, exercised in the independent cancellation run"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "clientExecutable": "D:\\cm-agent-godot-0912\\desktop\\build\\releases\\2ae18b25a7cf-87f15497-e89a-4f99-ae8b-df6762a663e9\\output\\win-unpacked\\Craftmine World.exe",
+  "driverPid": 60148,
+  "reason": "Cold-reopen driver omitted ordinary world.open and cannot be steered after launch; isolated test subtree stopped, this cold attempt is not passed",
+  "at": "2026-09-11T22:04:50.8588940Z",
+  "clientPid": 92500
+}
