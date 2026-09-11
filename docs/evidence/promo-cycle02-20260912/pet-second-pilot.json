@@ -1,0 +1,53 @@
+{
+  "format": "craftmine.promo-cycle-evidence/1",
+  "sourceCommit": "940c5a84702a5ac85cbaa2de583b62ad0a5cbab2",
+  "pilotReport": "test-results/desktop-native-complete-2lwsto/report.json",
+  "adoptionReport": "test-results/desktop-native-complete-2lwsto/adoption-979741fb-d230-489f-ba2f-4f901245dd05/report.json",
+  "worldId": "world-8a3c95aad901",
+  "candidateId": "gcan-bb5e12a4521855973e1e161426027aa9c9baec862697d427d477e48be4967d43",
+  "adoptedBuildId": "gbd-f0d57b9333846b58a9c29ab45dd16fc7a26206eabcca919651ed3bed5ad319ce",
+  "checkStatus": "passed",
+  "pilotStatus": "BUDGET_STOP",
+  "adoption": {
+    "ok": true,
+    "checks": [
+      "original checked candidate enters normal preview",
+      "normal adoption commits the original candidate",
+      "cold reopen preserves the adopted world and build",
+      "no additional provider requests were reserved"
+    ],
+    "launches": [
+      {
+        "number": 1,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      },
+      {
+        "number": 2,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      }
+    ],
+    "modelRequestsAdded": 0
+  },
+  "visual": "UNVERIFIED",
+  "behavior": "UNVERIFIED",
+  "sameObjectModification": "UNVERIFIED",
+  "note": "自动额度结束后已排队检查通过；正常人工采用入口及冷重开通过，不等于自主完成或宠物功能通过。"
+}
