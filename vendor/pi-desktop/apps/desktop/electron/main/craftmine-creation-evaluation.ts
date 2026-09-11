@@ -178,7 +178,9 @@ export function installCreationEvaluation(access:Access){
     }
     if(method==="abort")return invoke("agentAbort",{sessionId});
     if(method==="prompt"){
-      if(!caseId||(continuity?caseId!==continuity.entry.id:!Object.hasOwn(prompts,caseId))||submitted.has(caseId)||access.active(sessionId))throw Error("EVALUATION_CASE_DENIED");
+      if(!caseId||(continuity?caseId!==continuity.entry.id:!Object.hasOwn(prompts,caseId))||submitted.has(caseId)||submittingWish||access.active(sessionId))throw Error("EVALUATION_CASE_DENIED");
+      submittingWish=true;
+      try {
       const target=await desktop(`piDesktop.pluginPanelInvoke("craftmine.world","godot.creationTarget",${JSON.stringify({sessionId})})`);
       if(!target.captureId)throw Error("EVALUATION_TARGET_UNAVAILABLE");
       submitted.add(caseId);
@@ -187,6 +189,7 @@ export function installCreationEvaluation(access:Access){
       const content=continuity?.entry.request??prompts[caseId];
       const result=await invoke("agentPrompt",{sessionId,viewingSessionId:sessionId,messageId,content,requestContext:{creationTarget:{captureId:target.captureId}}});
       return {caseId,content,target,result};
+      }finally{submittingWish=false;}
     }
     throw Error("EVALUATION_METHOD_DENIED");
   };
