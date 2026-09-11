@@ -3,6 +3,7 @@ import {playerClarificationMode,choosePlayerClarification} from './helpers/promo
 const request={sessionId:'s',requestId:'r',toolCallId:'t',questions:[{question:'怪物行为？',options:['只装饰','会追逐（推荐）']},{question:'重开怎么办？',options:['重置','保留']}]};
 test('simulation is opt-in and accepts only a named finite policy',()=>{
  assert.equal(playerClarificationMode(), 'off');assert.equal(playerClarificationMode('off'),'off');assert.throws(()=>playerClarificationMode('auto'));
+ assert.equal(playerClarificationMode('file-response'),'file-response');assert.throws(()=>choosePlayerClarification(request,'s','file-response'),/NOT_ENABLED/);
  assert.throws(()=>choosePlayerClarification(request,'s','off'),/NOT_ENABLED/);
 });
 test('recommendation or first choice preserves complete questions and exact original answer text',()=>{

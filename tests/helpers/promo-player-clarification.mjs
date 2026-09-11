@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {projectHeadlessAsk} from '../../vendor/pi-desktop/apps/desktop/shared/headless-ask-contract.ts';
 export const MAX_PLAYER_CLARIFICATIONS=8;
 export function playerClarificationMode(value){
- const mode=value??'off';assert.ok(['off','recommended-or-first'].includes(mode),'PROMO_CLARIFICATION_MODE_INVALID');return mode;
+ const mode=value??'off';assert.ok(['off','recommended-or-first','file-response'].includes(mode),'PROMO_CLARIFICATION_MODE_INVALID');return mode;
 }
 export function choosePlayerClarification(raw,sessionId,mode){
  assert.equal(playerClarificationMode(mode),'recommended-or-first','PROMO_CLARIFICATION_NOT_ENABLED');
