@@ -22,6 +22,12 @@ test('production plugin build includes exact guidance resources and serves a pin
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
     assert.equal(typeof require(path.join(output,'godot-executor.cjs')).createGodotExecutor,'function','the packaged executor must load all of its actual runtime dependencies');
     const corpus=require(path.join(output,'guidance/catalog.json'));
+    const packedSchema=require(path.join(output,'creation-operation-schema.cjs'));
+    const packedTool=require(path.join(output,'manifest.json')).contributes.agentTools.find(tool=>tool.name==='creation_operation');
+    assert.equal(packedTool.description,packedSchema.CREATION_OPERATION_DESCRIPTION);
+    assert.deepEqual(packedTool.schema.properties.request,packedSchema.CREATION_OPERATION_SCHEMA);
+    assert.match(packedTool.description,/not an installed asset ID, GLB/);
+    assert.match(packedTool.schema.properties.request.oneOf[0].properties.kind.description,/not an AssetRef/);
     const {createWorldTools}=require(path.join(output,'world-tools.cjs'));
     let selectedSkill=corpus.skills[0];
     const calls=[];

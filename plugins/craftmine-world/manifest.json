@@ -1082,7 +1082,7 @@
       },
       {
         "name": "creation_operation",
-        "description": "Compile one bounded creation-sandbox source operation using the immutable target captured by the host for this turn. request.expected uses source revision/hash from godot_project_index and world/build/instance/snapshot identity from the host creation context. The model cannot supply coordinates as authority. Places, modifies, duplicates, deletes unreferenced objects, reverses supported durable operations, changes source time, or adds a generated sequence-door script. Deletion is refused while authored rules exist. Undo preserves played progress and rejects intervening object changes. Returns a durable draft receipt; use godot_build_start mode check and inspect actual results before player preview/application. Recapture when the source or runtime changed outside this turn.",
+        "description": "Edit the base-generator entities declared in world/creation.json using the immutable host-captured target. place kind=tree/rock/chest/door/marker selects a base generator, not an installed asset ID, GLB, or reusable scene; it does not reuse a same-named object visible in the world. duplicate copies only an existing creation.json entity and its generator parameters, not arbitrary addon nodes. For another object with the same installed appearance, inspect the actual installed scene reference and create a separate instance with a new independent entity_id through ordinary source patching, or use godot_source_library with its exact archiveRef. Matching kind or display name is not proof of matching appearance. Check the result before claiming visual equivalence. Source changes still require check and normal adoption; existing target, source and progress guards remain in force.",
         "risk": "medium",
         "schema": {
           "type": "object",
@@ -1141,7 +1141,8 @@
                     },
                     "action": {
                       "type": "string",
-                      "const": "place"
+                      "const": "place",
+                      "description": "Create a new base-generator entity. This does not instance an installed model or reuse the appearance of a similarly named scene object."
                     },
                     "kind": {
                       "type": "string",
@@ -1151,7 +1152,8 @@
                         "chest",
                         "door",
                         "marker"
-                      ]
+                      ],
+                      "description": "Base-generator category in world/creation.json; not an AssetRef, GLB name or installed scene ID. The stock tree generator creates default geometry and does not reuse a visible same-named prefab."
                     },
                     "position": {
                       "type": "array",
@@ -1283,7 +1285,8 @@
                     },
                     "targetId": {
                       "type": "string",
-                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+                      "description": "Existing entity ID declared in world/creation.json. An addon node, generic scene target or asset ID is not interchangeable with this ID."
                     },
                     "changes": {
                       "type": "object",
@@ -1405,11 +1408,13 @@
                     },
                     "action": {
                       "type": "string",
-                      "const": "duplicate"
+                      "const": "duplicate",
+                      "description": "Duplicate one creation.json entity with its generator parameters. For an installed prefab, instance its actual scene through source patching or the source-library flow instead."
                     },
                     "targetId": {
                       "type": "string",
-                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+                      "description": "Existing entity ID declared in world/creation.json. An addon node, generic scene target or asset ID is not interchangeable with this ID."
                     },
                     "count": {
                       "type": "integer",
@@ -1493,7 +1498,8 @@
                     },
                     "targetId": {
                       "type": "string",
-                      "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+                      "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+                      "description": "Existing entity ID declared in world/creation.json. An addon node, generic scene target or asset ID is not interchangeable with this ID."
                     }
                   },
                   "required": [

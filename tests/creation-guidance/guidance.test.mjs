@@ -170,6 +170,9 @@ test('造物指导按真实底座和三个接口哈希匹配，普通脚本示�
  const base=JSON.parse(fs.readFileSync(path.join(root,'desktop/godot/bases/creation-sandbox/manifest.json')));
  assert.equal(creationSkill.applicability.baseVersion,base.baseVersion);
  assert.equal(hash(creationSkill.text),creationSkill.sha256);
+ assert.equal(creationSkill.version,'1.6.4');
+ assert.match(creationSkill.text.slice(0,8000),/底座生成器和已安装素材是两类对象/);
+ assert.match(creationSkill.text.slice(0,8000),/独立 `entity_id`/);
  assert.equal(creationSkill.text,fs.readFileSync(path.join(plugin,'guidance',creationSkill.path),'utf8').replace(/\r\n/g,'\n'));
  for(const ref of creationSkill.references){
   const text=fs.readFileSync(path.join(root,ref.sourcePath),'utf8');
