@@ -95,7 +95,9 @@ try {
   const before = await until(() => rpc('godotObserve'), value => value.worldId === adoption.worldId && value.instanceId, 'world');
   assert.equal(before.buildId, adoption.after.buildId, 'The original adopted game build must remain selected');
   report.before = before;
-  report.resumed = await rpc('worldPanel', {channel: 'godot.runtimeResume', payload: {worldId: before.worldId}});
+  report.resumed = await until(
+    () => rpc('worldPanel', {channel: 'godot.runtimeResume', payload: {worldId: before.worldId}}),
+    value => value !== undefined, 'startup transaction before resume');
   const identity = {worldId: before.worldId, buildId: before.buildId, instanceId: before.instanceId};
   const exploration = await rpc('godotExplore', {payload: {...identity, steps}});
   for (const [index, capture] of exploration.captures.entries()) {

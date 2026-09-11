@@ -1,0 +1,242 @@
+{
+  "format": "craftmine.promo-observation-review/1",
+  "productSource": "9c828a5a1840b9811f53e0d0cf5e4f72271886dc",
+  "modelRequestsAdded": 0,
+  "reports": [
+    {
+      "sourceReport": "test-results/desktop-native-complete-2lwsto/exploration-08107f48-9b68-4cdf-b16b-6e5db525c79a/report.json",
+      "ok": true,
+      "changedDiagnosticProduct": true,
+      "packageInventory": "0e6888a358f9b72c993b5fcdec541df445d298840a5cf9ebf48c76966dcab5e0",
+      "identity": {
+        "worldId": "world-8a3c95aad901",
+        "buildId": "gbd-f0d57b9333846b58a9c29ab45dd16fc7a26206eabcca919651ed3bed5ad319ce",
+        "instanceId": "18c510b17fc2e698c4bf334a"
+      },
+      "actions": [
+        {
+          "op": "look",
+          "args": {
+            "yaw": 0,
+            "pitch": -0.35
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.35,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "physicsTick": 41
+        },
+        {
+          "op": "look",
+          "args": {
+            "yaw": 1.5707963267948966,
+            "pitch": -0.35
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.35,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 1.5707963267949
+          },
+          "physicsTick": 59
+        },
+        {
+          "op": "look",
+          "args": {
+            "yaw": 3.141592653589793,
+            "pitch": -0.35
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.35,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -3.14159265358979
+          },
+          "physicsTick": 66
+        },
+        {
+          "op": "look",
+          "args": {
+            "yaw": -1.5707963267948966,
+            "pitch": -0.35
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.35,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -1.5707963267949
+          },
+          "physicsTick": 74
+        }
+      ],
+      "images": [
+        {
+          "file": "scan-1.png",
+          "sha256": "e7cfa5bab4a8d7004f09791e1badc1f6766650be3821dd346ac36b5dc8023acb",
+          "afterAction": 0
+        },
+        {
+          "file": "scan-2.png",
+          "sha256": "c85a9cbc4cc2748b9e8b6ea1a8373a0230100e53a15efaf6ce83a39ff9817b27",
+          "afterAction": 1
+        },
+        {
+          "file": "scan-3.png",
+          "sha256": "befc5c6e7ff9b3872433a0e6681a2d171ee899bc89075775f787aa66ca613ab1",
+          "afterAction": 2
+        },
+        {
+          "file": "scan-4.png",
+          "sha256": "ab8b51439533dc196048e7a06699b7b34f7063101105a8b6fb29b6e7eff4c40c",
+          "afterAction": 3
+        }
+      ],
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "budgetUnchanged": true
+    },
+    {
+      "sourceReport": "test-results/desktop-native-complete-2lwsto/exploration-00309600-e36a-4bab-b917-f04929fd5e6c/report.json",
+      "ok": true,
+      "changedDiagnosticProduct": true,
+      "packageInventory": "0e6888a358f9b72c993b5fcdec541df445d298840a5cf9ebf48c76966dcab5e0",
+      "identity": {
+        "worldId": "world-8a3c95aad901",
+        "buildId": "gbd-f0d57b9333846b58a9c29ab45dd16fc7a26206eabcca919651ed3bed5ad319ce",
+        "instanceId": "6dc25e2fea43d444cea09016"
+      },
+      "actions": [
+        {
+          "op": "look",
+          "args": {
+            "yaw": -1.2,
+            "pitch": -0.55
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.55,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": -1.2
+          },
+          "physicsTick": 36
+        },
+        {
+          "op": "walk",
+          "args": {
+            "forward": -1,
+            "right": 0,
+            "frames": 90
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.55,
+            "position": [
+              -5.76392555236816,
+              0.899999976158142,
+              8.38781070709229
+            ],
+            "yaw": -1.2
+          },
+          "physicsTick": 134
+        },
+        {
+          "op": "wait",
+          "args": {
+            "frames": 120
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.55,
+            "position": [
+              -6.29126167297363,
+              0.899999976158142,
+              8.4459171295166
+            ],
+            "yaw": -1.2
+          },
+          "physicsTick": 259
+        },
+        {
+          "op": "walk",
+          "args": {
+            "forward": -1,
+            "right": 0,
+            "frames": 90
+          },
+          "player": {
+            "onFloor": true,
+            "pitch": -0.55,
+            "position": [
+              -12.055214881897,
+              0.899999976158142,
+              10.8337278366089
+            ],
+            "yaw": -1.2
+          },
+          "physicsTick": 355
+        }
+      ],
+      "images": [
+        {
+          "file": "follow-1.png",
+          "sha256": "f9f745d785e0ecd1f554c56daf08ee1aa621ccbe65cb92dbe9dcc27ef1366c63",
+          "afterAction": 0
+        },
+        {
+          "file": "follow-2.png",
+          "sha256": "1522686d0a902e9c871007a98a16f638a3103891eeebda87964b080dd7d7939a",
+          "afterAction": 1
+        },
+        {
+          "file": "follow-3.png",
+          "sha256": "19a0f07441256275c1844ec8a045db8ed502f942ba75060e6e917b7a831f1548",
+          "afterAction": 2
+        },
+        {
+          "file": "follow-4.png",
+          "sha256": "a4258098b2f5f7ac8086a50c4af8b5d8e27790eb6e76de4fae6d905518d2e5e6",
+          "afterAction": 3
+        }
+      ],
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "budgetUnchanged": true
+    }
+  ],
+  "visualReview": "真实画面可辨识棕黄色方块狗与豆豆标签；后退后距离拉开，等待后重新靠近。",
+  "limits": [
+    "更换诊断产品，未改宠物游戏构建",
+    "未验证抚摸、障碍、远距离召回、宠物位置保存或同一只狗改形",
+    "不能升级原BUDGET_STOP为模型自主完成"
+  ]
+}
