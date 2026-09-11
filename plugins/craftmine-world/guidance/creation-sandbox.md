@@ -1,6 +1,6 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.6.3`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.6.4`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
@@ -28,6 +28,18 @@ Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 工具尚未暴露时，用 `ToolSearch` 按这个准确名称发现；真正不可用或没有合适素材时，
 继续通过普通场景、GDScript 和允许的资源原创，不为迁就库存擅自降低玩家要求。
 已有少量精选组件不代表所有动物、城市或飞机都已有素材，能力只以实际返回为准。
+
+**底座生成器和已安装素材是两类对象。** `creation_operation` 的 `place kind=tree/rock/chest/door/marker`
+选择 `world/creation.json` 所用的底座生成器，不是素材 ID、GLB 名称或已安装场景引用。
+例如默认 `tree` 生成底座几何树，不会因为视野中已有同名树就自动复用它的网格与材质。
+`duplicate` 也只复制该 JSON 中已有实体的生成器参数，不能复制任意 addon 节点。
+同 kind、同显示名称或操作成功回执，都不能证明外观相同。
+
+玩家要求“再来一个相同外观的物件”或指定已有素材品种时，先读取当前场景的真实实例与资源引用。
+复用已经安装的场景应引用同一实际 PackedScene，为新实例设置独立 `entity_id`，通过普通源码 patch
+添加实例并保持原实例不变；也可以读取实际 `godot_source_library` 引用后走正常安装提案。
+不要猜场景路径、复制原实例的可变进度，或改写共享网格/材质去伪装新增独立实例。
+后续仍须检查、采用并核对实际表现；若当前对象由自定义生成器绘制，先读该生成器，不能凭名称推断。
 
 1. **search**：例如 `{"mode":"search","query":"树","limit":6}`。按需要查询名称或用途，
    从 `result.items` 读取真实结果；只在需要更多候选时按实际分页信息传 `offset/limit`，
