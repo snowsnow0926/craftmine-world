@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "requestId": "bee-imp-1789166115316",
+  "taskId": "bee-imp-1789166115316",
+  "operation": "import",
+  "projectRoot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\beehave",
+  "tasksRoot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\tasks",
+  "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+  "sourceBinding": {
+    "worldId": "isolated-external-starter-trial",
+    "buildId": "bee-imp-1789166115316",
+    "sourceRevision": 1,
+    "sourceDigest": "43e6392126c09b35397de77d27893945b460c949a195b39a79debbdb18369720"
+  },
+  "inputHash": "50450acf3df82e0fac80f55ad2b08643d090117ade690c3fa48efcf120801429"
+}

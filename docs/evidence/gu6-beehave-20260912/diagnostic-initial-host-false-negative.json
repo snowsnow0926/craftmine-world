@@ -1,0 +1,307 @@
+{
+  "format": "craftmine.external-godot-trial/1",
+  "startedAt": "2026-09-11T22:33:07.764Z",
+  "out": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm",
+  "broker": {
+    "sha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232",
+    "sourceCommit": "cdfd175c0f6a51366d16428b0d2b67e32951a557",
+    "policyVersion": "craftmine.windows.lpac-registry.v1"
+  },
+  "engineVersion": "4.7.2-stable",
+  "kits": [
+    {
+      "id": "beehave",
+      "commit": "58a0df12330114e330f47fc1469132f016c056bc",
+      "repo": "https://github.com/bitbrain/beehave",
+      "version": "2.9.4-dev",
+      "project": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\beehave",
+      "sourceDigest": "101d9c033ac53e1a053d55b5de94c85920dacb9e95b46e6e494fba59e9edf19e",
+      "modifiedDigest": "577d5366e30f08f41eeb2045adf4e558620d39983f436daf3c5482b63f813451",
+      "upstreamFiles": 832,
+      "selectedUpstreamFiles": [
+        {
+          "path": "addons/beehave/LICENSE",
+          "bytes": 1065,
+          "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+        },
+        {
+          "path": "addons/beehave/blackboard.gd",
+          "bytes": 2775,
+          "sha256": "e1b980ce875b611f5881d158c4cce4d61b92ce8f27e09101304e8014706c10b6"
+        },
+        {
+          "path": "addons/beehave/debug/debugger_messages.gd",
+          "bytes": 1234,
+          "sha256": "eca1179c6b0edf438a1cc0a24505f6d263fb7ad6fd3ccd792a3e72cababda1dd"
+        },
+        {
+          "path": "addons/beehave/debug/global_debugger.gd",
+          "bytes": 2284,
+          "sha256": "b16bf6aa5aefe14ae8bf1a1f36a193f1b283b83082d7a6124e8c20815500aa95"
+        },
+        {
+          "path": "addons/beehave/icons/action.svg",
+          "bytes": 2972,
+          "sha256": "ba828aac24fb0b0b3628584a28ab23884bd901d918f1bd752c5994f8f2c85ef7"
+        },
+        {
+          "path": "addons/beehave/icons/blackboard.svg",
+          "bytes": 1477,
+          "sha256": "7da2bb26b844fd0019291a19d546ade341a7da1165241806d2ade658f093bf17"
+        },
+        {
+          "path": "addons/beehave/icons/category_composite.svg",
+          "bytes": 3927,
+          "sha256": "0bd205e2c50fb60ef83b6623f7e517318518ed8c6630d8d6046b4c93362ce34b"
+        },
+        {
+          "path": "addons/beehave/icons/category_leaf.svg",
+          "bytes": 3922,
+          "sha256": "47036e92cfc0dc0763317436a9b479c30d19535b733372ac7f35d1299d4b19c4"
+        },
+        {
+          "path": "addons/beehave/icons/condition.svg",
+          "bytes": 2282,
+          "sha256": "b74361149c872841dea828d22df454c18a72cbaeffe349a7c4b9a557102c5825"
+        },
+        {
+          "path": "addons/beehave/icons/selector_reactive.svg",
+          "bytes": 3653,
+          "sha256": "926cd7c08bdeb393821948f4620114f482d055ef93bd3a9c5c85a24fb7136d05"
+        },
+        {
+          "path": "addons/beehave/icons/sequence_reactive.svg",
+          "bytes": 6352,
+          "sha256": "3dba15203938983dc90e4e42cb5bdbd42b702b23526e68d03900798d14fddf21"
+        },
+        {
+          "path": "addons/beehave/icons/tree.svg",
+          "bytes": 1882,
+          "sha256": "16734d9875af0369285e0325a26f86850e2ddd1ffece3d609abc9cd10b1897ba"
+        },
+        {
+          "path": "addons/beehave/metrics/beehave_global_metrics.gd",
+          "bytes": 1626,
+          "sha256": "88435469b995273f3e820e45841d8c11464173be7690a9eb5c01376167e018e8"
+        },
+        {
+          "path": "addons/beehave/nodes/beehave_node.gd",
+          "bytes": 1568,
+          "sha256": "2a3ad20306ed422f913bacd7622fc879f955c8a9038c71bfed7e6bd1c4ee8f7b"
+        },
+        {
+          "path": "addons/beehave/nodes/beehave_tree.gd",
+          "bytes": 9633,
+          "sha256": "6ed3f775c7f805a96b085201cfa9d1c675eb6b2982fb97c887cb1eb0477e3f71"
+        },
+        {
+          "path": "addons/beehave/nodes/composites/composite.gd",
+          "bytes": 1584,
+          "sha256": "ad66c856aaea30e3a30ff3ea5d946fd87c0c975e51970a6be9b82e49ff2ffeff"
+        },
+        {
+          "path": "addons/beehave/nodes/composites/selector_reactive.gd",
+          "bytes": 3080,
+          "sha256": "89f816b20017d6cae35570c9fe4dbc8208d60d91dd3a75c6d4e49ff79653a456"
+        },
+        {
+          "path": "addons/beehave/nodes/composites/sequence_reactive.gd",
+          "bytes": 2870,
+          "sha256": "88b7906adb24c513c54260902b5fb8176f42f6820f3caf0c58f94f2f6f9cd987"
+        },
+        {
+          "path": "addons/beehave/nodes/leaves/action.gd",
+          "bytes": 450,
+          "sha256": "f58cfabe40847d88527cb627b63eca3cc7f930c4678e58d3c605f2afb5892959"
+        },
+        {
+          "path": "addons/beehave/nodes/leaves/condition.gd",
+          "bytes": 348,
+          "sha256": "c7e709c0fcc3b5086c9353354e79ec92c9dff658023fae58aad54e917989b980"
+        },
+        {
+          "path": "addons/beehave/nodes/leaves/leaf.gd",
+          "bytes": 1261,
+          "sha256": "91248861a01ddd2e2b30e1786654a9063232dcc93a8c59235c72589ae38d6f5c"
+        }
+      ],
+      "licenseDirectory": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\licenses",
+      "operations": [
+        {
+          "operation": "import",
+          "taskId": "bee-imp-1789165987951",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "receiptValidation": {
+            "valid": true,
+            "errors": []
+          },
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\bee-imp-1789165987951-receipt.json",
+          "logPath": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\tasks\\bee-imp-1789165987951\\logs\\task.log",
+          "artifactsRoot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\tasks\\bee-imp-1789165987951\\artifacts",
+          "artifacts": []
+        },
+        {
+          "operation": "exportWeb",
+          "taskId": "bee-web-1789165990938",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "receiptValidation": {
+            "valid": true,
+            "errors": []
+          },
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\bee-web-1789165990938-receipt.json",
+          "logPath": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\tasks\\bee-web-1789165990938\\logs\\task.log",
+          "artifactsRoot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\tasks\\bee-web-1789165990938\\artifacts",
+          "artifacts": [
+            {
+              "path": "index.apple-touch-icon.png",
+              "bytes": 11944,
+              "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+            },
+            {
+              "path": "index.audio.position.worklet.js",
+              "bytes": 2973,
+              "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+            },
+            {
+              "path": "index.audio.worklet.js",
+              "bytes": 7298,
+              "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+            },
+            {
+              "path": "index.html",
+              "bytes": 5459,
+              "sha256": "8f029f888f72bf57380815a1f86050194eaf1099a1a62b0177a6bd52d19f7b1c"
+            },
+            {
+              "path": "index.icon.png",
+              "bytes": 5700,
+              "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+            },
+            {
+              "path": "index.js",
+              "bytes": 279815,
+              "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+            },
+            {
+              "path": "index.pck",
+              "bytes": 40808,
+              "sha256": "70bb66fe2840340569abc221edd0295af1726fa1b32681cd0c5f543f699b8755"
+            },
+            {
+              "path": "index.png",
+              "bytes": 21443,
+              "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+            },
+            {
+              "path": "index.wasm",
+              "bytes": 39514754,
+              "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+            }
+          ]
+        }
+      ],
+      "adaptation": "Selected runtime GDScripts and required icons copied unchanged; new project/autoloads and host-authored movement fixture. No editor plugin/GUT/examples. @tool remains and executes only inside LPAC during import.",
+      "audit": {
+        "processOrNetworkCalls": false,
+        "engineDebuggerApi": true,
+        "editorPlugin": false,
+        "nativeExtensions": false
+      },
+      "browser": {
+        "console": [
+          {
+            "type": "log",
+            "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "type": "log",
+            "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "type": "log",
+            "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+          }
+        ],
+        "pageErrors": [],
+        "blockedRequests": [],
+        "input": {
+          "pointerLock": 0,
+          "focus": 0,
+          "pointerLocked": false
+        },
+        "screenshot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-TrNckm\\beehave-startup.png",
+        "traceValidation": {
+          "valid": false,
+          "errors": [
+            "SETUP_EVENT_SCHEDULE"
+          ],
+          "scope": "Measured fixture positions, not generic navigation or combat",
+          "positions": {
+            "initial": 0,
+            "arrived": 3.49999809265137,
+            "beforeRevoke": 4.46666383743286,
+            "revoked": 4.49999713897705,
+            "disabled": 4.49999713897705,
+            "resumed": 6.49999523162842,
+            "blocked": 0.999872088432312,
+            "missing": 0
+          }
+        },
+        "traceSha256": "ed654f5e388d6f8fd5f442913eed497dd0e0d36aa32f322e9ba8bd7a8bc3768e",
+        "pixels": {
+          "width": 1280,
+          "height": 720,
+          "quantizedColors": 12,
+          "brightSamples": 57535
+        },
+        "runtimeErrors": [],
+        "started": false,
+        "passed": false,
+        "acceptanceScope": "Developer fixture physics displacement, reactive stop/disable and blocked-path counterexample; not ordinary-player gameplay"
+      }
+    }
+  ],
+  "scope": "Fixed Beehave runtime subset, developer-authored physical follow/stop fixture; real LPAC import/export and isolated Web execution",
+  "notVerified": [
+    "Ordinary player-model authoring",
+    "Combat/build controls and full gameplay",
+    "Craftmine world/application/save contracts",
+    "Formal-world installation",
+    "Licenses beyond retained upstream declarations"
+  ],
+  "completedAt": "2026-09-11T22:33:22.405Z",
+  "cancelled": false,
+  "passed": false
+}

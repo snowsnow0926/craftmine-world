@@ -1,0 +1,4291 @@
+{
+  "upstream": [
+    {
+      "path": ".gitattributes",
+      "bytes": 449,
+      "sha256": "fee7edf6b0390493b75c48203cf4db0865ec4303564b22e26dd083b9f2972ef0"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "bytes": 80,
+      "sha256": "45ef997a7831d5be2ee1a40b25a07f4b0c0058853636f8890198b837dc56e870"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "bytes": 870,
+      "sha256": "87aa4f4da833eb0f87aea9ce6e7428295f49846e94da4663e7cc62e849faf2ba"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "bytes": 606,
+      "sha256": "397afdf2cdee11dbbd01207b718682059f7bfa354692eb5bb2a122970a06ea1a"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "bytes": 233,
+      "sha256": "1f1fcd9b03754319a98de45a0ee7716569293edb1da4ded10870aee806515838"
+    },
+    {
+      "path": ".github/workflows/beehave-ci.yml",
+      "bytes": 1514,
+      "sha256": "9b0e360fe173491e36c8be3c867d93f51445381fe7ea4b0ee0065d7415f23980"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 163,
+      "sha256": "498a985d9b307982cd64988168c0dc32c6f31ab5fddb689ffde7ce624b54dcee"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "bytes": 5202,
+      "sha256": "88504558eb3470566208af69870487d373e6687575e8c9b9863f517f16309d81"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 99,
+      "sha256": "9328d85b6d04a31bb84cb560c9c613fbe63443bfe337693f9033ecf6ed239b3b"
+    },
+    {
+      "path": "GdUnitRunner.cfg",
+      "bytes": 81,
+      "sha256": "5dd6082d47ef46da8d7ef7575b06c0f3b45d2d31a6c2c5418d1fbd3ef1fd1787"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1065,
+      "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4491,
+      "sha256": "12ed0f6547377502f2b73984b2197bf9c101c8efce6999ee3c253e7cabf7bf25"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 366,
+      "sha256": "8b43f5a81951a740b5e33996c08a5f89a9b5b5fbc7b2dcf39f8d25a67baa6b89"
+    },
+    {
+      "path": "addons/beehave/LICENSE",
+      "bytes": 1065,
+      "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+    },
+    {
+      "path": "addons/beehave/blackboard.gd",
+      "bytes": 2775,
+      "sha256": "e1b980ce875b611f5881d158c4cce4d61b92ce8f27e09101304e8014706c10b6"
+    },
+    {
+      "path": "addons/beehave/blackboard.gd.uid",
+      "bytes": 20,
+      "sha256": "0e073bc5300dcdf42812b77597050fee9674692fb376a5f81daf7ed2711f9960"
+    },
+    {
+      "path": "addons/beehave/debug/debugger.gd",
+      "bytes": 3225,
+      "sha256": "e974539c337bd77b1a5cfc767e7c195c46fe86daff479a306871a798f5f4da12"
+    },
+    {
+      "path": "addons/beehave/debug/debugger.gd.uid",
+      "bytes": 20,
+      "sha256": "bec43a8e9e2f048405404b59ba9b3950a1d1ee5aab0f7c9c69fa17de2a41cf8e"
+    },
+    {
+      "path": "addons/beehave/debug/debugger_messages.gd",
+      "bytes": 1234,
+      "sha256": "eca1179c6b0edf438a1cc0a24505f6d263fb7ad6fd3ccd792a3e72cababda1dd"
+    },
+    {
+      "path": "addons/beehave/debug/debugger_messages.gd.uid",
+      "bytes": 19,
+      "sha256": "ba5bad62650177a8d336fd7b68de3c15e49ad7061b9c4002c95551b7977e36fc"
+    },
+    {
+      "path": "addons/beehave/debug/debugger_tab.gd",
+      "bytes": 6267,
+      "sha256": "9e7ecc3f974d8fcbb9c50e7c09f5b1a807e3348835937a8aef63fa834c878f58"
+    },
+    {
+      "path": "addons/beehave/debug/debugger_tab.gd.uid",
+      "bytes": 20,
+      "sha256": "700e1f72951d08602070da65dc0da2e70c470e836f983d631d6332f9546c0fd3"
+    },
+    {
+      "path": "addons/beehave/debug/global_debugger.gd",
+      "bytes": 2284,
+      "sha256": "b16bf6aa5aefe14ae8bf1a1f36a193f1b283b83082d7a6124e8c20815500aa95"
+    },
+    {
+      "path": "addons/beehave/debug/global_debugger.gd.uid",
+      "bytes": 20,
+      "sha256": "23037fe37c763aec447ee04d8271b3b4f7e7c0f964733f7398614c01c8c8c264"
+    },
+    {
+      "path": "addons/beehave/debug/icons/horizontal_layout.svg",
+      "bytes": 562,
+      "sha256": "6f88cbeac51f2289d28498b77fa8c12662bc847c2cf927b2ea74c7f0005a548d"
+    },
+    {
+      "path": "addons/beehave/debug/icons/horizontal_layout.svg.import",
+      "bytes": 1105,
+      "sha256": "4c7643a509625aa151949a633bc9f0ed422e59335668bfc6c29edf0f066a9039"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_bottom.svg",
+      "bytes": 222,
+      "sha256": "34734324864cb37ddf5b8017a96f64b58cc8c71555996b166e46ff7cf12e6495"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_bottom.svg.import",
+      "bytes": 1087,
+      "sha256": "9b81f2c8d1313e2e64970115f1a3683de17d4cabb8d3c11314705b79326ca486"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_left.svg",
+      "bytes": 221,
+      "sha256": "8b82e80bc45ce27aa04e66290a3e38c623bbdefe2f96342ae75810f8ac925494"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_left.svg.import",
+      "bytes": 1081,
+      "sha256": "e9743cacbb379e5bbeea17f6f37d3b2c419d34b2138bf4e216b6c571ae7ec879"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_right.svg",
+      "bytes": 231,
+      "sha256": "948baad319b14421e8ec1022db331b3a98004f6ead3ee4eb88b0fdf4a132606e"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_right.svg.import",
+      "bytes": 1084,
+      "sha256": "65271690e81cf2eb7ab99ea035383c32a320b82b6f8ab654bc1d0c7eb568098a"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_top.svg",
+      "bytes": 246,
+      "sha256": "1aa4a503bbaed4cacd4945413ab1c51a5b38bba706ff6b6f89d8289165b213f4"
+    },
+    {
+      "path": "addons/beehave/debug/icons/port_top.svg.import",
+      "bytes": 1078,
+      "sha256": "3741ce8ab5050de2aaf84e8112bda321bd385d655a6815d1ca196c660c8e816f"
+    },
+    {
+      "path": "addons/beehave/debug/icons/vertical_layout.svg",
+      "bytes": 528,
+      "sha256": "bbd1b27dcb2f1800c6357a8510df70664caa8c85e11dcdd158333336cca435c6"
+    },
+    {
+      "path": "addons/beehave/debug/icons/vertical_layout.svg.import",
+      "bytes": 1099,
+      "sha256": "db67944c2041587e9978688c4d04c3462930ad38d94bb6b2af5a011f5eef9e1c"
+    },
+    {
+      "path": "addons/beehave/debug/new_frames.gd",
+      "bytes": 1695,
+      "sha256": "9d74fb3b356fae4c358f8740e6ebebfc2b56db06beee896adfe3e70ebf2a5a88"
+    },
+    {
+      "path": "addons/beehave/debug/new_frames.gd.uid",
+      "bytes": 19,
+      "sha256": "cce81480b70710331bbde995c0c02266c3a62bf134c9f0ce492e67288211ea57"
+    },
+    {
+      "path": "addons/beehave/debug/new_graph_edit.gd",
+      "bytes": 8863,
+      "sha256": "ff0d6fe3f205f86f9660c11090e90e33a83bc27d56afd9995ddb2921df575527"
+    },
+    {
+      "path": "addons/beehave/debug/new_graph_edit.gd.uid",
+      "bytes": 19,
+      "sha256": "755dec5d9c35d2c31565164e0b1766a9bb51214dfa73d76ef4b13b1f7ba55e29"
+    },
+    {
+      "path": "addons/beehave/debug/new_graph_node.gd",
+      "bytes": 6262,
+      "sha256": "7ed2453e33a4f9636181d2820d70b2190750a0335a02eec29ef9e5d92cb6b539"
+    },
+    {
+      "path": "addons/beehave/debug/new_graph_node.gd.uid",
+      "bytes": 20,
+      "sha256": "7fc0a14059e1c3fdd63efddc15894879bca48b7fea6ea12db3294fb5659b1ee4"
+    },
+    {
+      "path": "addons/beehave/debug/new_node_blackboard.gd",
+      "bytes": 2552,
+      "sha256": "e52f158abbe4ee7ad9ab74b0096e424c7f565d61c1e67437b25e667a737fd9ca"
+    },
+    {
+      "path": "addons/beehave/debug/new_node_blackboard.gd.uid",
+      "bytes": 19,
+      "sha256": "bd702c3527e65536fae4f4afeaacc230c86cf4f7f19533480bdd80b0608f9268"
+    },
+    {
+      "path": "addons/beehave/debug/old_frames.gd",
+      "bytes": 1027,
+      "sha256": "538c1d0b7753a213c37c19eae14256ecf0dd584ca7744fcefa0ba7dc62424cf7"
+    },
+    {
+      "path": "addons/beehave/debug/old_frames.gd.uid",
+      "bytes": 20,
+      "sha256": "a457f44d21fd633d8500eab31cb3537a037081c1d477aaa62237939b2b4a8a33"
+    },
+    {
+      "path": "addons/beehave/debug/old_graph_edit.gd",
+      "bytes": 7398,
+      "sha256": "231824d4efaaa2195b1a5200272aeae74d15b422d521a4726860d7eb3477b282"
+    },
+    {
+      "path": "addons/beehave/debug/old_graph_edit.gd.uid",
+      "bytes": 19,
+      "sha256": "391991e3ab6ad4d529fc5723aa2aee57ea3a66c999ce92c36a29fce50a375b0e"
+    },
+    {
+      "path": "addons/beehave/debug/old_graph_node.gd",
+      "bytes": 4506,
+      "sha256": "20ef02d806305aaed161e19ab0773189c0d748095b1a5d51352782e0c31d3053"
+    },
+    {
+      "path": "addons/beehave/debug/old_graph_node.gd.uid",
+      "bytes": 20,
+      "sha256": "63ba61c0a0b4a10612bc962dc8e5391659a99437fea97d9e0cbdf2a54593ee82"
+    },
+    {
+      "path": "addons/beehave/debug/tree_node.gd",
+      "bytes": 7162,
+      "sha256": "44627bc9691b609133b47156d3fca074e91b900c209ee8b63440f059580662a9"
+    },
+    {
+      "path": "addons/beehave/debug/tree_node.gd.uid",
+      "bytes": 19,
+      "sha256": "820ad78b7e0d19fe4b1d267f1b1ab6455e2736c4ced37dc3b3ab812567b59bb3"
+    },
+    {
+      "path": "addons/beehave/icons/action.svg",
+      "bytes": 2972,
+      "sha256": "ba828aac24fb0b0b3628584a28ab23884bd901d918f1bd752c5994f8f2c85ef7"
+    },
+    {
+      "path": "addons/beehave/icons/action.svg.import",
+      "bytes": 1066,
+      "sha256": "88b6ed989d9b2106973b1fe0bb49b35b10f88d541ba5d060ceb3af92de4bc927"
+    },
+    {
+      "path": "addons/beehave/icons/blackboard.svg",
+      "bytes": 1477,
+      "sha256": "7da2bb26b844fd0019291a19d546ade341a7da1165241806d2ade658f093bf17"
+    },
+    {
+      "path": "addons/beehave/icons/blackboard.svg.import",
+      "bytes": 1078,
+      "sha256": "4ffb8a386c703a3f0d05d28d039561c723d4f2302a249361a43460c3240e3e85"
+    },
+    {
+      "path": "addons/beehave/icons/category_bt.svg",
+      "bytes": 3920,
+      "sha256": "ac31256014a0ba715f1da4f6f3c8043028704c624339523641b66e512d3ee7cc"
+    },
+    {
+      "path": "addons/beehave/icons/category_bt.svg.import",
+      "bytes": 1080,
+      "sha256": "4aa6809f9ee1676c0348aa3b7455df93290bae6858b648687e0a8b3c48980780"
+    },
+    {
+      "path": "addons/beehave/icons/category_composite.svg",
+      "bytes": 3927,
+      "sha256": "0bd205e2c50fb60ef83b6623f7e517318518ed8c6630d8d6046b4c93362ce34b"
+    },
+    {
+      "path": "addons/beehave/icons/category_composite.svg.import",
+      "bytes": 1101,
+      "sha256": "611ae80aea1deead328cbd291b6b09b6642ee568152ade96c09b25f326cc17d1"
+    },
+    {
+      "path": "addons/beehave/icons/category_decorator.svg",
+      "bytes": 3927,
+      "sha256": "69e38791a3e806e91d8d13b62257580690fff2746826dac9ec85b5af8f25e5ee"
+    },
+    {
+      "path": "addons/beehave/icons/category_decorator.svg.import",
+      "bytes": 1102,
+      "sha256": "db0e8801edaedc83194a1c3eb8c17b4a9ca13f4072a001e9b8c198b70f867bc9"
+    },
+    {
+      "path": "addons/beehave/icons/category_leaf.svg",
+      "bytes": 3922,
+      "sha256": "47036e92cfc0dc0763317436a9b479c30d19535b733372ac7f35d1299d4b19c4"
+    },
+    {
+      "path": "addons/beehave/icons/category_leaf.svg.import",
+      "bytes": 1086,
+      "sha256": "44b00b442cc516d7b0e8b20e99420aa28f9452486966bc5a63c65d3dfe1d8785"
+    },
+    {
+      "path": "addons/beehave/icons/condition.svg",
+      "bytes": 2282,
+      "sha256": "b74361149c872841dea828d22df454c18a72cbaeffe349a7c4b9a557102c5825"
+    },
+    {
+      "path": "addons/beehave/icons/condition.svg.import",
+      "bytes": 1075,
+      "sha256": "d055ec802c0637cabfafbe932b8debca0daa842946f7cc368608d8d6be6dfb3b"
+    },
+    {
+      "path": "addons/beehave/icons/cooldown.svg",
+      "bytes": 1439,
+      "sha256": "b7204c79cd3cf76bb8c356ba911dea61bfda58f28f7de618f5973dee5235b2c9"
+    },
+    {
+      "path": "addons/beehave/icons/delayer.svg",
+      "bytes": 1565,
+      "sha256": "732253465a4bec7824e0d4d98c627c2228e1c61d0b9e3689b3e17e438ce8a3e4"
+    },
+    {
+      "path": "addons/beehave/icons/failer.svg",
+      "bytes": 1927,
+      "sha256": "7b2b591009bd8606a887d39377643fd4d90ae5eedf02e22ff4986e13d9250d65"
+    },
+    {
+      "path": "addons/beehave/icons/failer.svg.import",
+      "bytes": 1065,
+      "sha256": "2ad53697e8a0b00104cf7309f0207e5d1b07c905b6d300a4865d469e744f44c6"
+    },
+    {
+      "path": "addons/beehave/icons/inverter.svg",
+      "bytes": 2024,
+      "sha256": "e5adff50982ae32decfe2373ef279341a58ba4086b5e999da942172f3415e132"
+    },
+    {
+      "path": "addons/beehave/icons/inverter.svg.import",
+      "bytes": 1072,
+      "sha256": "d4aa353b84800709a375f5f67451974fac3901a1f567c3280f3d59008825eca0"
+    },
+    {
+      "path": "addons/beehave/icons/limiter.svg",
+      "bytes": 1866,
+      "sha256": "030e389bb787f9d9f659ae2794b00472e330f544cf5da40bd86a14e8afb35a47"
+    },
+    {
+      "path": "addons/beehave/icons/limiter.svg.import",
+      "bytes": 1069,
+      "sha256": "a76e2e10a59d15fc1d9588d440c37da3b2935efd038d2058947f32a400b1ec7a"
+    },
+    {
+      "path": "addons/beehave/icons/repeater.svg",
+      "bytes": 2848,
+      "sha256": "7ce5054afeae4d9d85466b24353a58e0f13b5980a67cdf7c2b1f6cde3eb54d94"
+    },
+    {
+      "path": "addons/beehave/icons/selector.svg",
+      "bytes": 2257,
+      "sha256": "4fbcae98a9d420653e1b34a0824ffec3fa7829bedaede81722969e812a08ee88"
+    },
+    {
+      "path": "addons/beehave/icons/selector.svg.import",
+      "bytes": 1072,
+      "sha256": "d75259ed1047f22ac2168e7818834ad3e46f0fde96e3a3968a1a426cf518268a"
+    },
+    {
+      "path": "addons/beehave/icons/selector_random.svg",
+      "bytes": 7514,
+      "sha256": "cf616b9c598f4da62177f882c4cb614681b08972d13620092a7a3865b1594448"
+    },
+    {
+      "path": "addons/beehave/icons/selector_random.svg.import",
+      "bytes": 1093,
+      "sha256": "44a034dabc826fc1ae47db51b1a7b552f6f3cf22a35c6b358b0dc1b4369b436e"
+    },
+    {
+      "path": "addons/beehave/icons/selector_reactive.svg",
+      "bytes": 3653,
+      "sha256": "926cd7c08bdeb393821948f4620114f482d055ef93bd3a9c5c85a24fb7136d05"
+    },
+    {
+      "path": "addons/beehave/icons/selector_reactive.svg.import",
+      "bytes": 1099,
+      "sha256": "8787f812415775ed7442de5bed00e96582386b031c4e0b2b78d194cccc52cf13"
+    },
+    {
+      "path": "addons/beehave/icons/sequence.svg",
+      "bytes": 2235,
+      "sha256": "6ca1888d2d9ffced57bbef7ee8103ab348b84eeecc39f4dbabd2c3330d5c70da"
+    },
+    {
+      "path": "addons/beehave/icons/sequence.svg.import",
+      "bytes": 1072,
+      "sha256": "071e6b35f93973a09f82116fc1ef160bdcf53b07aeb5423962db3c9972868766"
+    },
+    {
+      "path": "addons/beehave/icons/sequence_random.svg",
+      "bytes": 4822,
+      "sha256": "2a9da1216c7abcd0aecc3d316a10831ed833b551c41532975563ac9a1811d0bf"
+    },
+    {
+      "path": "addons/beehave/icons/sequence_random.svg.import",
+      "bytes": 1093,
+      "sha256": "8a72533b45dbf64e2bf9d634811c7e9dd7633e24c7c73b5f79f1b0a6801dfa07"
+    },
+    {
+      "path": "addons/beehave/icons/sequence_reactive.svg",
+      "bytes": 6352,
+      "sha256": "3dba15203938983dc90e4e42cb5bdbd42b702b23526e68d03900798d14fddf21"
+    },
+    {
+      "path": "addons/beehave/icons/sequence_reactive.svg.import",
+      "bytes": 1098,
+      "sha256": "c9db92cadf2c7d2e4a67572f0e1356569eefbc756fcdffd8bacd2cbdbcd54cc7"
+    },
+    {
+      "path": "addons/beehave/icons/simple_parallel.svg",
+      "bytes": 2826,
+      "sha256": "fdc6cfecdc74b1620dff1ad46f1267e325c2e80215f730080bf67ad7009a9bc7"
+    },
+    {
+      "path": "addons/beehave/icons/succeeder.svg",
+      "bytes": 1800,
+      "sha256": "54aaa663ad746c39bfdb9e6ab041ec4081026466d053dabefb14ca22fb6aa2c8"
+    },
+    {
+      "path": "addons/beehave/icons/succeeder.svg.import",
+      "bytes": 1075,
+      "sha256": "d16626236950933eb3049cac01a6c64a489d1bcd47e1b3e970a7d27d789aa71c"
+    },
+    {
+      "path": "addons/beehave/icons/tree.svg",
+      "bytes": 1882,
+      "sha256": "16734d9875af0369285e0325a26f86850e2ddd1ffece3d609abc9cd10b1897ba"
+    },
+    {
+      "path": "addons/beehave/icons/tree.svg.import",
+      "bytes": 1060,
+      "sha256": "585a3e95bd5a48b41878febc8e821ab3e4bc46e33cc1a1f376b03e18db0d77a1"
+    },
+    {
+      "path": "addons/beehave/icons/until_fail.svg",
+      "bytes": 5142,
+      "sha256": "2207a4fb6c9042ea075b2b03927f9b99ef761119e99fcc7189089bd35e190db4"
+    },
+    {
+      "path": "addons/beehave/metrics/beehave_global_metrics.gd",
+      "bytes": 1626,
+      "sha256": "88435469b995273f3e820e45841d8c11464173be7690a9eb5c01376167e018e8"
+    },
+    {
+      "path": "addons/beehave/metrics/beehave_global_metrics.gd.uid",
+      "bytes": 20,
+      "sha256": "568277db690b35d4d85de767afd520cb8270abbde26c1ba3d3320155f3078ee3"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_node.gd",
+      "bytes": 1568,
+      "sha256": "2a3ad20306ed422f913bacd7622fc879f955c8a9038c71bfed7e6bd1c4ee8f7b"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_node.gd.uid",
+      "bytes": 19,
+      "sha256": "db29c5d500bd4867e23ecc7bdde439bb5609db168959fa9fc5ae3310ce01d78a"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_tree.gd",
+      "bytes": 9633,
+      "sha256": "6ed3f775c7f805a96b085201cfa9d1c675eb6b2982fb97c887cb1eb0477e3f71"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_tree.gd.uid",
+      "bytes": 20,
+      "sha256": "4295a88db117a5cd31d3c0982dc546c12c41606bbeda1858871071fb3d787109"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/composite.gd",
+      "bytes": 1584,
+      "sha256": "ad66c856aaea30e3a30ff3ea5d946fd87c0c975e51970a6be9b82e49ff2ffeff"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/composite.gd.uid",
+      "bytes": 19,
+      "sha256": "377365ba9162f2dfeb4412633d1fad6c84147e626c09df3fc9ad3c278e58293c"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/randomized_composite.gd",
+      "bytes": 5136,
+      "sha256": "19801855846e243e659c7889b66716405ac41e6db6f0645bc73459124fd4a6a0"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/randomized_composite.gd.uid",
+      "bytes": 20,
+      "sha256": "353d3e1ed939e315851295547bd8745eb418a617cbe9894f7a1ae481e879f342"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector.gd",
+      "bytes": 3302,
+      "sha256": "d2fa2ee76ba02bc6036ad148d912b516993bf675c4d6dfce226092280846fbcc"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector.gd.uid",
+      "bytes": 19,
+      "sha256": "4f886740f376d5a01a3a613dc5145e10333bde8ea65735f65e5a51761174d3e3"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector_random.gd",
+      "bytes": 2292,
+      "sha256": "be7fcdbe3f743fff002281ddfbad86a210c9ecf4f6f5d016c5e0dd094d788765"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector_random.gd.uid",
+      "bytes": 20,
+      "sha256": "6fb70c00eb165136322b988ac72a5da32ce639f0c79a20984deaea47826971e5"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector_reactive.gd",
+      "bytes": 3080,
+      "sha256": "89f816b20017d6cae35570c9fe4dbc8208d60d91dd3a75c6d4e49ff79653a456"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector_reactive.gd.uid",
+      "bytes": 20,
+      "sha256": "ba1a331c30ebb9a3841373e93d5764b5101eff9bc403eb46f3c66a35acf62dc8"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence.gd",
+      "bytes": 3083,
+      "sha256": "cbd23ca9bb1a0d366542f4525a1355860a4fd7bf9a5848cd36f9df601c4023e6"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence.gd.uid",
+      "bytes": 20,
+      "sha256": "77cc6817f258719eb98d7d48534ff8ec0faaef2df608c321fbb5a6409d5b00ff"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_random.gd",
+      "bytes": 2831,
+      "sha256": "1ae4c81ff842936e685167247260a6bf6b30be162e09217faca7369547c2354f"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_random.gd.uid",
+      "bytes": 20,
+      "sha256": "e952e5dc4102a3be03063f10df2231a3af28739f4b1c3a7a6108f9566b7263a7"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_reactive.gd",
+      "bytes": 2870,
+      "sha256": "88b7906adb24c513c54260902b5fb8176f42f6820f3caf0c58f94f2f6f9cd987"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_reactive.gd.uid",
+      "bytes": 20,
+      "sha256": "f2127c08072ccf3cc630b6bb16c9bf6396911f98cd74cf52cc427e4f1f001f3b"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_star.gd",
+      "bytes": 2913,
+      "sha256": "414123eb150f9af541f8f869fe9111e002ea5e9cec799f7d162f059bb3cd7a12"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_star.gd.uid",
+      "bytes": 20,
+      "sha256": "d9e34cd34d996d6dbd4e438b876e6bf0e8c81c671b00864c5086830c0b10e2d0"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/simple_parallel.gd",
+      "bytes": 3974,
+      "sha256": "86f0341f9594db5f05865e81b7cef59b746224867ceefb996bcd0e98d3c2d880"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/simple_parallel.gd.uid",
+      "bytes": 20,
+      "sha256": "a56b060ca0b961e569c57350bc7e585928a93e107a2d3af100bff1ce336d5bd0"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/cooldown.gd",
+      "bytes": 1845,
+      "sha256": "37eb7c195606ca8671c8d08c32f0b27df1635b70370b9de34f954c494f51c6a9"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/cooldown.gd.uid",
+      "bytes": 19,
+      "sha256": "1b868d545ef6caff38bbe1b45bb394543f389bac9c5265859483642929423ca3"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/decorator.gd",
+      "bytes": 876,
+      "sha256": "8dab54b9346efd51b8c58e1acff423994afb96f809f678e924ab0258e0f35bd3"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/decorator.gd.uid",
+      "bytes": 19,
+      "sha256": "315e173a7579fe10fffc38b45f45b45be0160f69a724bf90addec08f0fa76d45"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/delayer.gd",
+      "bytes": 1829,
+      "sha256": "c944411905d48839701d94cf500777fb6a342877be2917f17625c7b0860d923e"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/delayer.gd.uid",
+      "bytes": 20,
+      "sha256": "387e6319fc5696a5ea9c1b32b632c304ec1f90b408f816ea6021d681090c2772"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/failer.gd",
+      "bytes": 1019,
+      "sha256": "77d213017753fe021181ac3643992faac7d4cf33a9d351af77f41ed3bc8806f3"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/failer.gd.uid",
+      "bytes": 20,
+      "sha256": "2153cb978538f186aac482ce22efa321b04205a7fc663a26042bf91f0246e2d5"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/inverter.gd",
+      "bytes": 1249,
+      "sha256": "a4fa1827159e039378f75a641b628a0e8e9e6a3b97ba084faf9d7b0366e5bd22"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/inverter.gd.uid",
+      "bytes": 20,
+      "sha256": "2666a7d60936bce418d8e1e0c8c5690a9e96d977f220fb3e39157bd5d406dd7d"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/limiter.gd",
+      "bytes": 2570,
+      "sha256": "b641f9824c9ede97f376cc0f2d856b6b46cd786a8d3784d52912625195e628b9"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/limiter.gd.uid",
+      "bytes": 20,
+      "sha256": "2b275e18fac886a382a619880a8b6c5c99e1781797cd986107660d73fe98ae9a"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/repeater.gd",
+      "bytes": 1911,
+      "sha256": "5fc8bb57fae5fe1193d3cb3a786b0d7a64433eaa6bf2c270622dde0ab79007fc"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/repeater.gd.uid",
+      "bytes": 20,
+      "sha256": "1492027058678584c10dc35f6fa8b2cf07b66f13719360f18ec61df620766187"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/succeeder.gd",
+      "bytes": 1031,
+      "sha256": "eb2fdf26a8142a417e620b2d334241ada11761b1a0a2b2ec979b9c45b62c1dfa"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/succeeder.gd.uid",
+      "bytes": 20,
+      "sha256": "25d6b0ee3a7f9cfa60e12145de1fc6cac63a3ed5e369dbafdd0b45c2590f2e44"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/time_limiter.gd",
+      "bytes": 2283,
+      "sha256": "0c6319b7b0927b4a6cba72ca6a9e4c2743a639aa0d03bbbaf7b2510601279221"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/time_limiter.gd.uid",
+      "bytes": 19,
+      "sha256": "8bf7e669dbf213ac5538babcd3fd8de9a2b91c0d3ae281fc6955ca5d3c2838aa"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/until_fail.gd",
+      "bytes": 1057,
+      "sha256": "114c69a74e86dc5c91e2dea93799d2f7534256d6a8b60023eb2f29c4f7f839f7"
+    },
+    {
+      "path": "addons/beehave/nodes/decorators/until_fail.gd.uid",
+      "bytes": 20,
+      "sha256": "c11bd8676777c12e61d8bdf1a19c1f183687b36f6ceda62f65b3ac29037e3348"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/action.gd",
+      "bytes": 450,
+      "sha256": "f58cfabe40847d88527cb627b63eca3cc7f930c4678e58d3c605f2afb5892959"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/action.gd.uid",
+      "bytes": 20,
+      "sha256": "39e9141d12282abf4052e077183c51df65fc037a43bed06017b0aa90897523dc"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_compare.gd",
+      "bytes": 1993,
+      "sha256": "cd7008ea7deb939071a57b1765803a1614be43cc1ef5aa112cff2f160523df75"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_compare.gd.uid",
+      "bytes": 19,
+      "sha256": "31f7d003116a8da48a131a6ce5f4095de8afe67e1d41c2b32fba22118a16c84e"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_erase.gd",
+      "bytes": 681,
+      "sha256": "15a288e815fbb8d88c0732d9820d68ddfc238b2f131b8127cc06f2736bff3de6"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_erase.gd.uid",
+      "bytes": 19,
+      "sha256": "06b03efbb3f1c65322ae9767eca507fa030b8a245bc31be89aba2435cbdfec69"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_has.gd",
+      "bytes": 720,
+      "sha256": "b0319ffa55a86a65fc01cb30026e5dfb87f04dff70ac3558cac26f9cd2c0b395"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_has.gd.uid",
+      "bytes": 20,
+      "sha256": "e69af4deea3cfb61c899460e66b5a485d915e671fa3cabdf2f214e3c28d6f723"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_set.gd",
+      "bytes": 1046,
+      "sha256": "fb4fc4dde707ecf1d20998cb6d6da6d9568b73af060ecfa7e1aeb337453410e0"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/blackboard_set.gd.uid",
+      "bytes": 20,
+      "sha256": "406d85fb4b16e08cb17073a3ca8c918b9bed8bb5a852a70f1d48a05bb398bc4a"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/condition.gd",
+      "bytes": 348,
+      "sha256": "c7e709c0fcc3b5086c9353354e79ec92c9dff658023fae58aad54e917989b980"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/condition.gd.uid",
+      "bytes": 20,
+      "sha256": "ee3ac62c469f245ebadd36f433f258440446082cf973387f6e2b11586dd48b57"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/leaf.gd",
+      "bytes": 1261,
+      "sha256": "91248861a01ddd2e2b30e1786654a9063232dcc93a8c59235c72589ae38d6f5c"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/leaf.gd.uid",
+      "bytes": 19,
+      "sha256": "d95daeff53d2dcb2d696ed7f74bfb9a526ea994d8ad21262209a949f6e5f5c82"
+    },
+    {
+      "path": "addons/beehave/plugin.cfg",
+      "bytes": 138,
+      "sha256": "78f954de267ed93f8c87e2e05474cc4aab7098d32adef1ae2f3ef40a97bf4c17"
+    },
+    {
+      "path": "addons/beehave/plugin.gd",
+      "bytes": 2250,
+      "sha256": "82498c9f239ee0faae6dfc834edf9084a83e508d9332f3f817aa43c007d4bdac"
+    },
+    {
+      "path": "addons/beehave/plugin.gd.uid",
+      "bytes": 20,
+      "sha256": "c05aa613c6bbfba7957870ad500fd03fa6940a45562724ee9e3850a78a00ac5d"
+    },
+    {
+      "path": "addons/beehave/utils/utils.gd",
+      "bytes": 479,
+      "sha256": "f1ec699a886e84e1a1c43d3e2de50b8e16c20014689faaf62413749d43c7d49c"
+    },
+    {
+      "path": "addons/beehave/utils/utils.gd.uid",
+      "bytes": 20,
+      "sha256": "a9fb76d984dd8db4363ee0957b649520d054b82d597bb8c5ebb9cd83fdb601bb"
+    },
+    {
+      "path": "addons/gdUnit4/GdUnitRunner.cfg",
+      "bytes": 113879,
+      "sha256": "7ca00c5ac6869fecf9c9cff3f8c29e92f75e2a294f003a2f1d98f750f2e15f7d"
+    },
+    {
+      "path": "addons/gdUnit4/LICENSE",
+      "bytes": 1069,
+      "sha256": "b87775063bcbcb0174fb752ea35f62f24ca145935e3c2b6e055263061eefc53d"
+    },
+    {
+      "path": "addons/gdUnit4/bin/GdUnitCmdTool.gd",
+      "bytes": 546,
+      "sha256": "4ead37efdb485239c5a3f58208525b954cf263cd62bbe30fac201e2a3e6478c1"
+    },
+    {
+      "path": "addons/gdUnit4/bin/GdUnitCmdTool.gd.uid",
+      "bytes": 20,
+      "sha256": "b1cf062db9ccf3a8950118432b02ffeb04dce1331a349ba4292907ee4f8114b5"
+    },
+    {
+      "path": "addons/gdUnit4/bin/GdUnitCopyLog.gd",
+      "bytes": 5104,
+      "sha256": "00b8300a8189e8bcce34d653826931c1cc456bea367c7bb33dda7a97e4b9a175"
+    },
+    {
+      "path": "addons/gdUnit4/bin/GdUnitCopyLog.gd.uid",
+      "bytes": 20,
+      "sha256": "9d4a0b4195fd4a115f12a54ad79c48ec4be2204fd54beb19c73868bbdb0c6543"
+    },
+    {
+      "path": "addons/gdUnit4/plugin.cfg",
+      "bytes": 137,
+      "sha256": "9894d60c15e124440c795427d293f2cb8729760b4c62815e54bf0d351e869342"
+    },
+    {
+      "path": "addons/gdUnit4/plugin.gd",
+      "bytes": 3892,
+      "sha256": "4fe2ca3eb1039314caf32a5e13496400a5100578fcbe5308a3876a975f196e0d"
+    },
+    {
+      "path": "addons/gdUnit4/plugin.gd.uid",
+      "bytes": 20,
+      "sha256": "4a18ebbb7142340a0c1f2b89487152bfcb0befe6514da74859fe157203b861b1"
+    },
+    {
+      "path": "addons/gdUnit4/runtest.cmd",
+      "bytes": 2011,
+      "sha256": "c94c7c38373aff1b684874944c42c4798b33d6ecef0dd90ec004fc16dbe8f5fb"
+    },
+    {
+      "path": "addons/gdUnit4/runtest.sh",
+      "bytes": 2156,
+      "sha256": "8360070f6ac03bc3a409a189689a0231c2e2d5b4e90b22c6c3b8fbf0036c6bbe"
+    },
+    {
+      "path": "addons/gdUnit4/src/Comparator.gd",
+      "bytes": 149,
+      "sha256": "c00cdd4e440b4192b38408344abddb163a309940995fb55d5c3b779caf978fdf"
+    },
+    {
+      "path": "addons/gdUnit4/src/Comparator.gd.uid",
+      "bytes": 20,
+      "sha256": "cc9de9d8f5804abf0494b55692122c942e2f134ae84bb505329f8708964703e9"
+    },
+    {
+      "path": "addons/gdUnit4/src/Fuzzers.gd",
+      "bytes": 3379,
+      "sha256": "4add42583cbe52904ff09d177aa0442194f8af1e7b694f18696b083a0f2352b7"
+    },
+    {
+      "path": "addons/gdUnit4/src/Fuzzers.gd.uid",
+      "bytes": 20,
+      "sha256": "0dfe111f57487a348877b6a550e685fb24317f7e63632ff1d21774d01f2042ae"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitArrayAssert.gd",
+      "bytes": 5219,
+      "sha256": "04afe7669d4f7161b837517bd8d261df3544222e98714eec8b1fdbea6dd31523"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitArrayAssert.gd.uid",
+      "bytes": 19,
+      "sha256": "e8b05ac7193fceac1db4def5daedfc37a2f7717bbcd204d2e1335eedad4dc158"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitAssert.gd",
+      "bytes": 1718,
+      "sha256": "2979db5192c3800c783220450df19f0fcaedd83cc7e5718880cd154d273ee309"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "3eb315d8d2f15abfa2e0b7ba5adf976bcfbf3d1cd50f34e068066971955a665e"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitAwaiter.gd",
+      "bytes": 3537,
+      "sha256": "7839b981b4e9d06e06fb8c8bcb96201f4fe5ce44c78823ab4f88f9a287e9c905"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitAwaiter.gd.uid",
+      "bytes": 19,
+      "sha256": "6803b0b03db1efd6fbd7157b7445c1fafed9d054f1e64461d13c09f9e17254d3"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitBoolAssert.gd",
+      "bytes": 1015,
+      "sha256": "5e0cf0abc8263922025914c7ff8b6a463476fc1072d8836ea75163aa1b0df728"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitBoolAssert.gd.uid",
+      "bytes": 19,
+      "sha256": "5011e5a8a02094c9404ea220224e731913ca660bc7a9eeff5ecc2dd8de69d8bf"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitConstants.gd",
+      "bytes": 288,
+      "sha256": "189f84b1bf6000a371771a4a279d6aaa798cff91ad7f514543376ed44876b988"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitConstants.gd.uid",
+      "bytes": 20,
+      "sha256": "84b88e7a2cb1fa6f8a5e75d662d938705ebc3a724f374d31dcd6066fc74b76e0"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitDictionaryAssert.gd",
+      "bytes": 3366,
+      "sha256": "7f358e8bf847d6b659a1286df965a5eea019836a0a6c08757903c9cb983da544"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitDictionaryAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "f1645ea00d285e3b9eeb2b4253afbcd33ff0d77d37d27bb66865d6cc4c623d31"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFailureAssert.gd",
+      "bytes": 1681,
+      "sha256": "ad6f8b2cab32ab6765645cef46cfbe608de4901b340d8ef6a5ae907f95e0ad79"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFailureAssert.gd.uid",
+      "bytes": 19,
+      "sha256": "28dea4d68c3910675d5d9eb70d7e5ebaa698be90e812f670aeb5ac229f4d2b3d"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFileAssert.gd",
+      "bytes": 1002,
+      "sha256": "8b4271cb0c127182c740acc4d8caf112bc7b69aeb7702e1667544d4230251996"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFileAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "a410b27503bcb77c07620cc4d4ee43f3f54aecec6ad790f2b57f8b4619eb0168"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFloatAssert.gd",
+      "bytes": 2373,
+      "sha256": "787f0bef90c30aea6583e660f5ca3864b61606d9e7ba7edd0ecedd19952923ce"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFloatAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "2d7f234469c7f350074bcd146e1f2cf4623770126c4c9676233e2aedcdebc4b2"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFuncAssert.gd",
+      "bytes": 1359,
+      "sha256": "c73d5bcc6e244b4c8ec6d0b227eb18cacd175834c9d4dac175ab5a8622e1a929"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitFuncAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "188af569255f3ded566e5052467e7fb731827a00174b6061950fa39fafde22bf"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitGodotErrorAssert.gd",
+      "bytes": 1973,
+      "sha256": "22b08b850554dec08484be46f92598d962f8a1b7a9d4be3bcd0746d283c7edb4"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitGodotErrorAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "f2b0ecaea49358bffbd9adf01da2b9ce4301e8746eb876f809f22286e66cb4c7"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitIntAssert.gd",
+      "bytes": 2346,
+      "sha256": "d3f20783f02a4ce488c6c460fca02a9b016e6c3747040fa5289c49d3be7b8c2f"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitIntAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "b7b0f846cd1b7f6c214c45619b0a8849da8b892a333ae0e4685066b985e5ce89"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitObjectAssert.gd",
+      "bytes": 1689,
+      "sha256": "65c966424337c2812bef0fc4756723fae97e3cf0164be08f864e85c0eaffbf41"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitObjectAssert.gd.uid",
+      "bytes": 19,
+      "sha256": "9e89848248deb2294ea700f08fc6f8e18ef503ca1b8e3e599aa8f23e6a970d6f"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitResultAssert.gd",
+      "bytes": 1494,
+      "sha256": "1fb8ff612ea2beec56a7e013aa5ac97a94f9337d2fa7989c867105deddae0cad"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitResultAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "b782653b734772339d24400791e1d3f60545c681713b1ada6723f3d07efabc78"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitSceneRunner.gd",
+      "bytes": 18562,
+      "sha256": "373f6f53938aa958ec1eaecf8b2379d2fa924290c163d348008135dfd6059f59"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitSceneRunner.gd.uid",
+      "bytes": 20,
+      "sha256": "af1e59bb4dff80bdda98a8aed24b81050fc958cd525e144f7e0d72333ec4f3c2"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitSignalAssert.gd",
+      "bytes": 6295,
+      "sha256": "6dc78d9ad747f7be9661ec1e929ade78b3cd0e8506b7fa2da8f2b28373ef5602"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitSignalAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "5c44120c64cab3e0d08ac3a9a4629aafafc6f55d332d2b36c6300904737f5866"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitStringAssert.gd",
+      "bytes": 2532,
+      "sha256": "46ffc968b335f21021c678eb97b7816c91a96e1bf7f5235b8dc3526d8298bd78"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitStringAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "770f10cd916d91d3fb62b96b935eecdbe5d147050c5c98ecaeb5c8d6f6659e6b"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitTestSuite.gd",
+      "bytes": 28529,
+      "sha256": "6606277d5cbb6e89548dcbc23b9a4b624287b6523cc87fa4a3037833dbb0100b"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitTestSuite.gd.uid",
+      "bytes": 20,
+      "sha256": "cb26da4a0b111824f175d9b6c744358fd001be43080781732ef55778cad4c420"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitTuple.gd",
+      "bytes": 3347,
+      "sha256": "d5445f1f596aa7d0e3302c11eeee9863e40827e51d5650bb9177bde643945693"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitTuple.gd.uid",
+      "bytes": 20,
+      "sha256": "0d67a59532fd7d19e719d0029dcd57cf916436964e4958c39025d4637e060c38"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitValueExtractor.gd",
+      "bytes": 259,
+      "sha256": "9f897d6b2f35cebd3ae701ba963105acf29025ba4f38ce0a4eacaff550b866e5"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitValueExtractor.gd.uid",
+      "bytes": 20,
+      "sha256": "0f8923e974959059b128b5a69678ac400f9f771f30f0b08d9ec1c87c4dcea129"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitVectorAssert.gd",
+      "bytes": 1889,
+      "sha256": "e9fc80f746b92d59a4907232958c8aab0ea6eeab8873b0ce42a18c0e3513a29c"
+    },
+    {
+      "path": "addons/gdUnit4/src/GdUnitVectorAssert.gd.uid",
+      "bytes": 20,
+      "sha256": "a3296aa4ecb1ca5297f1f2bf00a031009ca9c8ed040dca2f97568cd8c9ab366e"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/CallBackValueProvider.gd",
+      "bytes": 644,
+      "sha256": "44a4a720182ded0933f36dd606392291fdf315c82eeebcec6eca7037bac09496"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/CallBackValueProvider.gd.uid",
+      "bytes": 20,
+      "sha256": "dc0b13d98845566c78a710ceff0599d0b0db67f9e8a4ab3eff67b68f15978609"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/DefaultValueProvider.gd",
+      "bytes": 234,
+      "sha256": "f7cebd6367cba77e410b6dc4a13b97a1cfe2cdf479193fc3d58e11554875131e"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/DefaultValueProvider.gd.uid",
+      "bytes": 19,
+      "sha256": "94244fb0b0aea3b4c734a23d4b48fea8e42fffc60d9d30b9f6158a19c1898b9b"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdAssertMessages.gd",
+      "bytes": 29778,
+      "sha256": "6c9a04ade3a5694a34c7558206a9e33f8c4c58a7b84317d5133072e89d3846eb"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdAssertMessages.gd.uid",
+      "bytes": 20,
+      "sha256": "85935597ba6452f5ded00d78c8cf035a6e9cfc31baa2733fba9212b0801cd3a6"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdAssertReports.gd",
+      "bytes": 1715,
+      "sha256": "a9b58992cfe4335e2862425269c6d6e544e2cc09a4c8e6e120f23fa74c7d393c"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdAssertReports.gd.uid",
+      "bytes": 20,
+      "sha256": "44f2bce91fd6126211ebb37774e9bea29a35beee26def6431c19bf2067d32e49"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd",
+      "bytes": 16846,
+      "sha256": "d305e5e217c4d551f09cf98513fe2327d819b792ab1ce3c87327862d74a8c54b"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitArrayAssertImpl.gd.uid",
+      "bytes": 19,
+      "sha256": "84b32db49ce732916267ce546d7a01b8889afe3a5a0c9ee30bf082c2f11c9cdd"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd",
+      "bytes": 2313,
+      "sha256": "fa3dafc3c993307dd50db8e5c303df130959029aaae6c5399b2474752abde6e9"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitAssertImpl.gd.uid",
+      "bytes": 19,
+      "sha256": "f85d85004fad95e54fc8a11b9006e8f7c095ebb04fc9d12524daf697ea8454c2"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitAssertions.gd",
+      "bytes": 3489,
+      "sha256": "357aaeba1d73df2dd2b54df99a1b2e8197f18c198f7c7999e7d003d8eec765d5"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitAssertions.gd.uid",
+      "bytes": 20,
+      "sha256": "c22c7e3c8e976f299319be9755a959991e15f15f43aaab7ca43285c6adb19791"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitBoolAssertImpl.gd",
+      "bytes": 2216,
+      "sha256": "81ba8ef33f5194863dfbea0f3b3462b893677a064acbd9668ee8260ba37aa8da"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitBoolAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "31fa08c81ad79e9069e22b9c6bc04a85ca9c81bc6d87e7a3a63c7ab081b8da2d"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitDictionaryAssertImpl.gd",
+      "bytes": 7633,
+      "sha256": "42cce3cecebf7f5457067f269ae10f70d7d53c55e2edeb147f16669e8bde711d"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitDictionaryAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "87e8ef47d2e3bc277673b5349dad54c038b0f68bf8b2cb54f93f3782a4888503"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFailureAssertImpl.gd",
+      "bytes": 4765,
+      "sha256": "b5c0abe827cb52a368991aaee3a2a82e5fc0a46f8b7838712ae360c4c294d7cc"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFailureAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "7fa0592c555cf203950c082efa69b26575ddcd04d22b426509c425545cf2e01a"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFileAssertImpl.gd",
+      "bytes": 3331,
+      "sha256": "3d63c362a137453f26c16f7fe97427a592c8f7b4606f1856c94f2c5ec8e6c30f"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFileAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "669abc447e947c66ce52e70f908347ab8bb6df5e4121a6fcb3272a9e31b0da7e"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFloatAssertImpl.gd",
+      "bytes": 4812,
+      "sha256": "665fb16bdd66a294f8da7bd1aa6884a9d19a569639ff0df30136cb7ec507310f"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFloatAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "f3dfd14038ae6555041f3a0f3a53aa1b3474b2534b8e59ac97901eba6347c0c0"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd",
+      "bytes": 5525,
+      "sha256": "b66de117992adb45797eb1fbdc0e0e393f1faa5abf7d20699d9e3f9e182686d3"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitFuncAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "dd378c4e116348ad16525ab35d0dc578ff54ffa719f76ba10d8fd6be69abfae8"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitGodotErrorAssertImpl.gd",
+      "bytes": 4638,
+      "sha256": "8d897b53ddbaaf2835e6c0854505e0c12c6a8eefe84b1c64d9bbfc04271b87f7"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitGodotErrorAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "b8d45cfdc64755a17d884afd1d05b7c8499e241dc027e9d52a57b404dce3d18c"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitIntAssertImpl.gd",
+      "bytes": 4813,
+      "sha256": "066136eec2faef89fdee3bddf59110c72f331dc6f283ee0fe7ce4bc0b01583f6"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitIntAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "ee1e9252dad3b56b3a78b021e9632a3f9f6fb298ef6055b38cd9a5c5fd67df76"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitObjectAssertImpl.gd",
+      "bytes": 5313,
+      "sha256": "7ff05e6a6c7650043a81298d538a9b02a94128ac17a43c008e80a5d0223f6d3b"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitObjectAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "618ba5695c3be5da1a9d7c1fd0ff6b1a5c6e3a52a922cb611eb20c302705e82a"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitResultAssertImpl.gd",
+      "bytes": 3863,
+      "sha256": "b0c1ae7d57d8a5e7aedec72a31ad300ff39194d2cb41eb65196b5f8e13e52cb2"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitResultAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "a7c4b237a087bb3ddb5c08c6f9fc2371a9aef9e65eb86c07f887244d15d4f917"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitSignalAssertImpl.gd",
+      "bytes": 5978,
+      "sha256": "bbd19d3d39d6ea5b6712da2b944482b0975dde7024e02973c7a61298a4a208b0"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitSignalAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "b68a803a5ce29f302ec677186902d01e8ca88a0a9ed529ab3e8126fe2fdab3f2"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitStringAssertImpl.gd",
+      "bytes": 7298,
+      "sha256": "427d5f4ce72cf510c3058001af0370f23c32d93e4506806520e9026318415b17"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitStringAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "974bc74440be69051f73ee5f13913ff58a2a2af628209f03a4f5729195233eec"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitVectorAssertImpl.gd",
+      "bytes": 6020,
+      "sha256": "cb9f59118966278d87c36d548982ffcd4ccfa9111c0199354f4afa74b17b5ce4"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/GdUnitVectorAssertImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "82b4d3a724da837906c7f0db4bb475611e118548da09b577ecdaf097efe444b1"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/ValueProvider.gd",
+      "bytes": 162,
+      "sha256": "7f315254f221a7c0f1a870d6d0f619ee0737d690de810b2c8948ebf0ddf8db34"
+    },
+    {
+      "path": "addons/gdUnit4/src/asserts/ValueProvider.gd.uid",
+      "bytes": 20,
+      "sha256": "158b852bd1173c5e5f9d278f1ec5ec80e9f5d2c2219e3aa00173aede164b36f3"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdArgumentParser.gd",
+      "bytes": 1709,
+      "sha256": "bf954c99dbb31cf83fc1416533f616f2d0ac451de78e22c7a3769ead37360798"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdArgumentParser.gd.uid",
+      "bytes": 20,
+      "sha256": "8301025a2aaaa1e0df00e7fa7395d17080174b84cfd4e87581d5d68d5c6683da"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdCommand.gd",
+      "bytes": 500,
+      "sha256": "7520d59a6119406853010291802eaa94c2b4cf62ff9b838c073b73b6c48287ae"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdCommand.gd.uid",
+      "bytes": 20,
+      "sha256": "5df96e64c68d2e3fd008845edaa5e53a29d647becaa1fe8715b7bbe6b5b44dc4"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdCommandHandler.gd",
+      "bytes": 4725,
+      "sha256": "de5f2d2919edf48f70146d49323b1bbc9fb3d5310ff22458a207e17900168650"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdCommandHandler.gd.uid",
+      "bytes": 19,
+      "sha256": "86b98d22bdffd3b78676fd121cde6126fff2b002e54d84484d56b8ae2e33c9c3"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdOption.gd",
+      "bytes": 1365,
+      "sha256": "79ba0d9fcbdadeb076e2eb70ec9bf4cb3c75edad43860e223e56a8fc4c227428"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdOption.gd.uid",
+      "bytes": 20,
+      "sha256": "94d07bf19da3666fc230c0342c5b598eb315dc96d32ee199a4d375ed575101f2"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdOptions.gd",
+      "bytes": 685,
+      "sha256": "5bac450830ae061b121ea6b5d22b47f1274a5e6aa435d9e3a0afe086c3aaf972"
+    },
+    {
+      "path": "addons/gdUnit4/src/cmd/CmdOptions.gd.uid",
+      "bytes": 20,
+      "sha256": "8b60779c48a5026be73c050e1434b0ee9f7aeb7282afd5f9d90f5a5d64047fb0"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdArrayTools.gd",
+      "bytes": 4022,
+      "sha256": "c7ebf8f7bf7d667db9fe7f8a9b8ed7dfef85527cb59372f69ebfd64425da3ed1"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdArrayTools.gd.uid",
+      "bytes": 20,
+      "sha256": "b690a49e41378abe9d2b0c7be5057d8668afd42b5df2cf86c82fd29d9140698c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdDiffTool.gd",
+      "bytes": 6604,
+      "sha256": "a4ce74bbe1085ba3fb160047c9676ef926c6412888af313b2dcb0fefa8525131"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdDiffTool.gd.uid",
+      "bytes": 20,
+      "sha256": "35736a8315e1dd076cb05158ef89bad1a58fac4d3dce1fd07193555aa52e5f55"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdObjects.gd",
+      "bytes": 25264,
+      "sha256": "87be8650473599babe29e7bd835cdee042c748f63ec3a10488a93725484a2da4"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdObjects.gd.uid",
+      "bytes": 20,
+      "sha256": "a18e1037c955796f3b8f040d2f02f0f68581981d00987a3683447e10fffcaaaf"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnit4Version.gd",
+      "bytes": 1942,
+      "sha256": "ffaa7f1e2ad98d992b7fba4384e2d1f9ca401b7bf955628880a641813f7c2d56"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnit4Version.gd.uid",
+      "bytes": 20,
+      "sha256": "2ed1e65d38c8f5690b44fb4be4a9e2a198eaeb2a28380369f9f92b0b0a6493d5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitFileAccess.gd",
+      "bytes": 7514,
+      "sha256": "9ea6874f394f7d19576c1573a1603bc2ca26e0abd270e5ee9f2de31c6697bfe2"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitFileAccess.gd.uid",
+      "bytes": 20,
+      "sha256": "c69e99b0dc3f1b83d7d9668547852daeee5ca0d772dd8657cd6ca24692d00984"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitProperty.gd",
+      "bytes": 1489,
+      "sha256": "80dac88a854181e361a525bcf430d6286d515a2f0a9722358e6c5c5c467bcf52"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitProperty.gd.uid",
+      "bytes": 19,
+      "sha256": "3a35df2439cdd48930ed546081917dae0ac3d0d7547d6012afa2df7be263f7b9"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitResult.gd",
+      "bytes": 2298,
+      "sha256": "61267b092896f6876410f4d625e7ee1f65941a30333c691a6170c0e278857a70"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitResult.gd.uid",
+      "bytes": 20,
+      "sha256": "73b27b754d73550c7f209d882c3e6ff5ccbe4cab0dbac697f91496334181ff70"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitRunnerConfig.gd",
+      "bytes": 4262,
+      "sha256": "87708745b6627c1267151d0bbb6e960ab3b91d7a10a31764c0151253d9183186"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitRunnerConfig.gd.uid",
+      "bytes": 20,
+      "sha256": "384fc9cdcdd52122fde63f7e5bf6e045c803e96187973a57ec6e9874669e0e65"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSceneRunnerImpl.gd",
+      "bytes": 24357,
+      "sha256": "65ab10be15fdc09602dbb97c7cece89a92bac7ae4d87e45dad7e8e655e2b7a63"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSceneRunnerImpl.gd.uid",
+      "bytes": 19,
+      "sha256": "77c797500da4937ef7803a9b37a7a18e4bd1dceface61d2dd817b4c837108579"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSettings.gd",
+      "bytes": 19615,
+      "sha256": "3d9ba9cbe39f762ee0064bd488b6221e3c9d18559e91fa350a66fcddca8aba00"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSettings.gd.uid",
+      "bytes": 19,
+      "sha256": "cb6dbf06f4bb184089638146778006765f714ab6c376905db6ca7b868c9991f7"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSignalAwaiter.gd",
+      "bytes": 2208,
+      "sha256": "7e2494eea2b29761f215ff0cf941fcfdf9ba425744980ba48d33756d0ffd7076"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSignalAwaiter.gd.uid",
+      "bytes": 19,
+      "sha256": "cef2f51e2b42f4da8e84a06cc3eebf4c3158c27b66dd672fac53291a27db622e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSignalCollector.gd",
+      "bytes": 5453,
+      "sha256": "0b206a68b5bad3330595c55858633e58c793edd1f546f71d20ee52e457dd2d34"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSignalCollector.gd.uid",
+      "bytes": 20,
+      "sha256": "d35b9cf9090d1f6f89ddac808fe50813eb7d8ca464b6519b7d0205d14adad6e0"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSignals.gd",
+      "bytes": 4015,
+      "sha256": "a67fef038c7897f89bf9f465ea93b71d42f3ad7ed5c14901ebd8ddec9c233202"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSignals.gd.uid",
+      "bytes": 20,
+      "sha256": "b9b97307ded4dfb368be1feca94e00b259cd91221789745e0c4de929b68b823c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSingleton.gd",
+      "bytes": 2520,
+      "sha256": "8791dd9421595dc7351bc81244b05a018d4adc9eb39d5298c60872cec8218e64"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitSingleton.gd.uid",
+      "bytes": 20,
+      "sha256": "28987b415874a1f34f3b8d67ea935e135155881c1005af8381491151f91ba52f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTestResourceLoader.gd",
+      "bytes": 3789,
+      "sha256": "70aefa1b8cac5527219c11ac50781c71eeeb9ceeceede0493bf707d452553f2d"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTestResourceLoader.gd.uid",
+      "bytes": 19,
+      "sha256": "aa2651f1bfeef270a43c9aecf1f9fd7043440067ee24487a40ca26a56cf8ec20"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTestSuiteBuilder.gd",
+      "bytes": 1079,
+      "sha256": "2c1ab730b7ee265203da731136c703109d38b0493db391b2cfcefb493d6cc892"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTestSuiteBuilder.gd.uid",
+      "bytes": 20,
+      "sha256": "30b7195888864597a40b7d89c26671893469513094385c62d5e6e9e17a06329a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTestSuiteScanner.gd",
+      "bytes": 15777,
+      "sha256": "989af3f75b5e9373d39477d17ae87f19aa021b320172fcc072a5ef32ad30f02e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTestSuiteScanner.gd.uid",
+      "bytes": 20,
+      "sha256": "764db43eb4cc490b3c50299f29bf70989bc1c6afa6959ca45a140ec208f42786"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTools.gd",
+      "bytes": 4899,
+      "sha256": "ea0f06e098f853652e2c3f3245d57a32d76c088e63902153b3e59525b925640e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GdUnitTools.gd.uid",
+      "bytes": 20,
+      "sha256": "e982e4cd12304a619b1b3b35fe1a0817280b4fdf7bc9fd825ba26aaf91043024"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GodotVersionFixures.gd",
+      "bytes": 545,
+      "sha256": "eb48260c37d43013619364e37da23beaf22a3129e60781a6d1d2651a8f829dd5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/GodotVersionFixures.gd.uid",
+      "bytes": 20,
+      "sha256": "fb2261aad3bd481714e9e305f1e0b376799dad6b8892a25c7a118f227381ddfb"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/LocalTime.gd",
+      "bytes": 2826,
+      "sha256": "c7de9977ba9fe522a92f7ff47ba098f4d270c781f44fd530d74f8daf9f00e165"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/LocalTime.gd.uid",
+      "bytes": 20,
+      "sha256": "8da2115178ef7ed137b5a1539e8bd4ce16bcef96c67194f5eb0dd88c6c1f1296"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/_TestCase.gd",
+      "bytes": 6891,
+      "sha256": "91687e993e453877717dd621bececdf61189355d12e4565629e5de7daa2e551c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/_TestCase.gd.uid",
+      "bytes": 19,
+      "sha256": "00b96130cc2c9dc1ea286e8e125edb4720ddef8865d8cbda01eba78f3038b7c4"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/assets/touch-button.png",
+      "bytes": 3292,
+      "sha256": "e709c40067fec99c3b59c78a5a364da8c326a94c49a56337a46c98976d3db4cb"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/attributes/TestCaseAttribute.gd",
+      "bytes": 2525,
+      "sha256": "5908f94f589eae2c8b8203bd2515d0850e5ad177d8d164757f5c4d402b9fb3b7"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/attributes/TestCaseAttribute.gd.uid",
+      "bytes": 20,
+      "sha256": "52c4bc12da64ce226f89ab350fbdd76ca584a531ebdc68e26b77b557fa4ee742"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitBaseCommand.gd",
+      "bytes": 1535,
+      "sha256": "afbc9dd5e2428cc23bc3388f0045ff3b2450eeb909dc117e3c03c84352afb688"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitBaseCommand.gd.uid",
+      "bytes": 18,
+      "sha256": "2956fddee04d6c3bf47a9a02749a3e8cf022e8e69e0063a2ddfad04b257d1f86"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandFileSystem.gd",
+      "bytes": 1562,
+      "sha256": "7b4db40c9811dda33b6afe33f76c0070b018a88a4d30facd7a7920199ace24d5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandFileSystem.gd.uid",
+      "bytes": 19,
+      "sha256": "44f3e7066d5d671441b0de5c51311c89059a3c414ec576bdeeb830312cda3d7a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandFileSystemDebugTests.gd",
+      "bytes": 483,
+      "sha256": "3f0e7e2fdf5503813a69133f6ffde7070f9e33ca4cda69b0555cf8b00cdd4c5a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandFileSystemDebugTests.gd.uid",
+      "bytes": 20,
+      "sha256": "0fbdb6449bf94efbc9f940e9d1b5255600867c577871fb1e26b9ca42c04aeb8e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandFileSystemRunTests.gd",
+      "bytes": 433,
+      "sha256": "18ec11cf730628ab71b42485fb1d25e5815f19469a96e84c407cf23afd0c1f95"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandFileSystemRunTests.gd.uid",
+      "bytes": 19,
+      "sha256": "d15af0292bd57de49f93b617cf9644fa3d4da0d91d66e64501022a19e1d2667f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandHandler.gd",
+      "bytes": 5412,
+      "sha256": "14c501bc3e0d4e4b06a4d367a31d346d0385e9f84d8c19b11ec85af345a5234c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandHandler.gd.uid",
+      "bytes": 20,
+      "sha256": "c8d448edb857f34dc2ff2129e9d209a6576ac41373a3b8c65aab514ae0239b1b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorDebugTests.gd",
+      "bytes": 916,
+      "sha256": "491e30cdf6eace45a7402924f41af5f5d8e3e0bc9a40f83d691c3c49a2853b4f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorDebugTests.gd.uid",
+      "bytes": 20,
+      "sha256": "b73b2060ee9591412c73897b8ba8cf2c7b1315ce17d6eb7456b621e72e57e2f5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorRerunTestsUntilFailure.gd",
+      "bytes": 2223,
+      "sha256": "5a554017cada3811fd9334979921d1e56d478ae9d4c57409abfe2d801f56de5d"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorRerunTestsUntilFailure.gd.uid",
+      "bytes": 20,
+      "sha256": "5dedf1f0b73af0ca34532d3b109f279961de9c5af4d0efead3d6819e5ddc3fb2"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorRunTests.gd",
+      "bytes": 900,
+      "sha256": "3c7990fc57fe3432979bc98574a501aed6e7ed0cdfc7101447b0ac33d784a0f6"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorRunTests.gd.uid",
+      "bytes": 20,
+      "sha256": "c0e2b7ef77f290374b3932de0554c4b9cb535f19db019378a6fd3b6c3a6d6f8a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorTreeCollapse.gd",
+      "bytes": 797,
+      "sha256": "542938af9518d106b75b5db1dbce15173889edb12520e5f251768e53ec83f276"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorTreeCollapse.gd.uid",
+      "bytes": 20,
+      "sha256": "b9676e3d76b9d03fa1c45893a0a2c71cbf71a11b55f65c37810892f7ecad2f73"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorTreeExpand.gd",
+      "bytes": 743,
+      "sha256": "1a7d914216f7c2c95a774510e4d2dcde781933d30236169ead3a3e9f316b0fcc"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandInspectorTreeExpand.gd.uid",
+      "bytes": 20,
+      "sha256": "aa7a999cf722f5bfc215fd26de04f815e5b987208f807972adf3b87e88e98553"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandRunTestsOverall.gd",
+      "bytes": 600,
+      "sha256": "4d08899c6ecdb6947f30d846d7483c46bbccfd1b320f268f66fb324728d57ba2"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandRunTestsOverall.gd.uid",
+      "bytes": 19,
+      "sha256": "3ad98962dba576ab690695a8ddd5fdf61558843f68ba63420f2e7fe10039f25a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditor.gd",
+      "bytes": 2039,
+      "sha256": "d19a81093a2acee42ff97f8bddc219dbbe95ba2913e64af6fb7208b449a8f775"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditor.gd.uid",
+      "bytes": 19,
+      "sha256": "313f67f41c96b2815aba7c54e6273e6b87d7c77de77ff7e942f2f764d78b188a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditorCreateTest.gd",
+      "bytes": 1133,
+      "sha256": "5ec391198f4785033e24bc17f6b0a6325c9fd7058b5425283ba0c3a851f47351"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditorCreateTest.gd.uid",
+      "bytes": 20,
+      "sha256": "5995971586a7aee7d09c65392d9f2ec0cf125646095dc0214b2956931419c5b1"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditorDebugTests.gd",
+      "bytes": 382,
+      "sha256": "80d2a6bbe66b978c8ae83fddf6cd2c93dec005600c311d813cf133ca6b135865"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditorDebugTests.gd.uid",
+      "bytes": 20,
+      "sha256": "1551131d3ab7b095028fdde6227d4459e45f378e985e3510e911e0c0bd513cad"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditorRunTests.gd",
+      "bytes": 368,
+      "sha256": "1ac34184d6bcdbbaae1e0723c1a012c48909b602967f9f25584c22ad5fff785a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandScriptEditorRunTests.gd.uid",
+      "bytes": 20,
+      "sha256": "8497e73b0ffbfc7d4d861e9fbb6aa5783867b66cd238f92b9252c861321dce2b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandStopTestSession.gd",
+      "bytes": 513,
+      "sha256": "11321c1b2a632ba18922576cd39dff7e77df77d3d9e646dd633b6c28053e7d4e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandStopTestSession.gd.uid",
+      "bytes": 19,
+      "sha256": "f012f39e1a8a7743f262b644c6043a0f3859bc34aa961fb1830c0b55715e5d8e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandTestSession.gd",
+      "bytes": 4487,
+      "sha256": "eb637d4bc94eb144aa5db8747a4484c777da8018ae99ccd2d188b797582bbac4"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitCommandTestSession.gd.uid",
+      "bytes": 20,
+      "sha256": "ace3af592959db9458f56925b09536bb760c3a2a960336cb9fbd16a313bb7ef5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitShortcut.gd",
+      "bytes": 2806,
+      "sha256": "563f3aa3022c4eef0c54bd34eee123bb99ff77831186e83596568aeb82e87c4b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/command/GdUnitShortcut.gd.uid",
+      "bytes": 20,
+      "sha256": "69e8c5cce81609a6941ab9a8872e391837ef5b16508a96c3e925456d414a1316"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitGUID.gd",
+      "bytes": 1380,
+      "sha256": "0913e50ccc92526efdea8dc6683c4cf44529ad9ef9b04c17db122861a51f96ca"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitGUID.gd.uid",
+      "bytes": 20,
+      "sha256": "34354f9fcc1eb7bd5ea5d42937abb1947a45278ba8358877de352bea521cc285"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestCase.gd",
+      "bytes": 5046,
+      "sha256": "f81dd7954c81854bcd03450b9e243d89b0aafc8fde74787dd8622c8fae8d12d8"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestCase.gd.uid",
+      "bytes": 20,
+      "sha256": "e5fa70625407ea605a14fc485e8e39797c3de1f9c66cf35095fcd0083fa2ed0e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd",
+      "bytes": 13401,
+      "sha256": "9e3044523e6b7903bac44d8e111b8bb77a1026aeed99f770475fe4d13f60e2df"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverGuard.gd.uid",
+      "bytes": 19,
+      "sha256": "6ab453151e5d13feed814fa9514481d468bd9fdc7e0c039d1156582dbc27e70b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverSink.gd",
+      "bytes": 786,
+      "sha256": "d531011dc440b8e82af39b52d982b93422d89a5f40033ca99e484f4d3f43de4c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverSink.gd.uid",
+      "bytes": 19,
+      "sha256": "19ae3ffc6426aaa8006fbbd0ce3049e8b2c16086057695437c1dbedd8680d509"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverer.gd",
+      "bytes": 7063,
+      "sha256": "9e07fb075b243b6d26ce21551fe7369e18a1ed19345f7db3050f0f0ae6d474a9"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/discovery/GdUnitTestDiscoverer.gd.uid",
+      "bytes": 20,
+      "sha256": "be775c8503b23ab84eadc49a9443b572734bc173466281c72c39a5b7cc96a01c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEvent.gd",
+      "bytes": 4943,
+      "sha256": "1acf48c18a8bef458291d66c25aed4b57b4c04ccaef2b51b5f6404adc28d7013"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEvent.gd.uid",
+      "bytes": 20,
+      "sha256": "66709b8cdc68d382076704c5908e13de689ee16d179f360ae22898141aaae344"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventInit.gd",
+      "bytes": 86,
+      "sha256": "26248c80e071ebb2e42e4b80e067283ccb6f1d0e6ce0b5e4678b5273a8c23d9e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventInit.gd.uid",
+      "bytes": 20,
+      "sha256": "b897689c53f7e2c6ed7b8bbf76e47e6ba1614abbf60d1da6b9683d42ffcbad5a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventStop.gd",
+      "bytes": 86,
+      "sha256": "7091f8890de423cb973bbdfe4c6fcc386ded11740035632493d2a29341026450"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventStop.gd.uid",
+      "bytes": 20,
+      "sha256": "14f37b75bb6234f1133987f777e9c170f81d83ad4fa895e7f24f5db0d038b130"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventTestDiscoverEnd.gd",
+      "bytes": 351,
+      "sha256": "8f6bfdb2f6c241c80b062c44f6e3d1251d2e3bbafe4ca7496f0c155ef9b312c3"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventTestDiscoverEnd.gd.uid",
+      "bytes": 20,
+      "sha256": "33406fba6c8425ede45da8b5335aaa1211048abd63599281fb120cbba1a55e2a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventTestDiscoverStart.gd",
+      "bytes": 114,
+      "sha256": "73122da72c6911277db13f4339ff99911c719399c923d147139447b8e8d79d04"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitEventTestDiscoverStart.gd.uid",
+      "bytes": 20,
+      "sha256": "6679731ba56eb1b581485e098de46cb3d1252966b2de8ce2e9805f35a1c92067"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitSessionClose.gd",
+      "bytes": 103,
+      "sha256": "7a7576860a161ce3d6ed1c33e12514f8143f9cec769f3bf5d60e3c193b5386b5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitSessionClose.gd.uid",
+      "bytes": 19,
+      "sha256": "eae97656b99cf83a3ec06cb12f4469c320344f7b5603263f3ffc28f4cb908873"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitSessionStart.gd",
+      "bytes": 103,
+      "sha256": "6337277f8ab5ac64a8de5792ad545c1fc89d1e5e598636d5d4d9d82d28d506ca"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/event/GdUnitSessionStart.gd.uid",
+      "bytes": 20,
+      "sha256": "84d3e2fa04c2d18dbb8628a54ada546be37ebf7f4eebb171be23fe64fdcb7a1f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitExecutionContext.gd",
+      "bytes": 8778,
+      "sha256": "1d01cbeb3f9feda55b6abbd23234e08da98bd671da8f9f18e1892e1b1c129c5e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitExecutionContext.gd.uid",
+      "bytes": 20,
+      "sha256": "a7c40ad710af5189dfb6aab8eabdc589a91f71eb5b42eef34ae8e54d194acd31"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitMemoryObserver.gd",
+      "bytes": 4724,
+      "sha256": "7fec462630922565fb3e11af6bc28ca13ffdabaee532dfe8a6a4847098e55f1f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitMemoryObserver.gd.uid",
+      "bytes": 20,
+      "sha256": "93472d2c8b6700f81fad0da85631721f24519903184188f9286753ce74e5dddf"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitProjectSettingsSnapshot.gd",
+      "bytes": 1358,
+      "sha256": "55a51ca5d67099e2575cfd32ebfda7c3a0da1face2dd3224d78dbaf69d116ca6"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitProjectSettingsSnapshot.gd.uid",
+      "bytes": 19,
+      "sha256": "e2a07d4e6f84ea834ddc63ba12101a65c9c2a2d341f13c8d4c02fc145166ea94"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitTestReportCollector.gd",
+      "bytes": 1842,
+      "sha256": "56bb30213ac43aef76c8645c667d77120da3d05bb3a926e3052a685dc40a9c2a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitTestReportCollector.gd.uid",
+      "bytes": 20,
+      "sha256": "216f8f7aeb9e017dff9c856cc9961fc66e60957a3c6b6a65e296c076fac63faf"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd",
+      "bytes": 2022,
+      "sha256": "aa7514eee9699dccfcce5bb0454119c5b2ea81c6067e9d7d752d0aded7d2b1da"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/GdUnitTestSuiteExecutor.gd.uid",
+      "bytes": 20,
+      "sha256": "e2c19412950e67bb4c12876ab3761c2393e841ff3180b1387b4ef69e8344d1a8"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestCaseAfterStage.gd",
+      "bytes": 559,
+      "sha256": "bf9be542ac1ab4c4b643ea800309d62b92d0c8ffb4baf73f57a94f26a41641a8"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestCaseAfterStage.gd.uid",
+      "bytes": 20,
+      "sha256": "22a3e1fe42a1e2ec62adb4adc3be9626452dc63f2250296035849a6e9529eec1"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestCaseBeforeStage.gd",
+      "bytes": 486,
+      "sha256": "d93adc7df6b16f8962d66610247c6f9cb85bcf11a7fe69f8a9cb0c4f1ba944a0"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestCaseBeforeStage.gd.uid",
+      "bytes": 19,
+      "sha256": "aa5536e3ec6e1940438fbefced8f71c0df18c2466f9bb64726a997235c140e4a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestCaseExecutionStage.gd",
+      "bytes": 1155,
+      "sha256": "aad62f35fe993e229525f9e4519bec578e154ce26d315f71c8d4af435220028c"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestCaseExecutionStage.gd.uid",
+      "bytes": 20,
+      "sha256": "5d78c7adf670a336e86c3e49f86b8ea4fa485b3645ca3dde71432b5c93e0b3be"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestSuiteAfterStage.gd",
+      "bytes": 1042,
+      "sha256": "c3d03c943a272bd5e8ad4ede24cf6594ae1d621a52bef3d17b6b04c40de94dbb"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestSuiteAfterStage.gd.uid",
+      "bytes": 19,
+      "sha256": "fd691bef2e215b4bdbed4bd483684a5cff05e5ece7676a4664808aa18dc73b83"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestSuiteBeforeStage.gd",
+      "bytes": 469,
+      "sha256": "8e8084ea4f8faf2da0e9f7013ddea47b27d869de2914f347fa65a181a333972b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestSuiteBeforeStage.gd.uid",
+      "bytes": 20,
+      "sha256": "78d9e37f9d8d8c7435cde695165628d458b6a1603164a454024e72cf2701bbc0"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestSuiteExecutionStage.gd",
+      "bytes": 5861,
+      "sha256": "892f5fb663535c3ff8d0e26357ee2042311e69db8d046e69902297f8f299b7bb"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/GdUnitTestSuiteExecutionStage.gd.uid",
+      "bytes": 19,
+      "sha256": "ce2bbc28c06c9a59dc0041e432824c59bd2b99fc4183a3f2c0462171be07ee02"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/IGdUnitExecutionStage.gd",
+      "bytes": 1258,
+      "sha256": "e3a2bc4bbafbb6c77822cd14d4f6661c12007d821d35306e90d5fcc2a02c839d"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/IGdUnitExecutionStage.gd.uid",
+      "bytes": 20,
+      "sha256": "0523908293cba409aeafeea50ee41ce8227037e3b14fe7ec36dc7afbe03d1e0a"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/fuzzed/GdUnitTestCaseFuzzedExecutionStage.gd",
+      "bytes": 2031,
+      "sha256": "b648c99bb0f5f0f801246932d41df978f6123670b15e300436d179b43645e8cd"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/fuzzed/GdUnitTestCaseFuzzedExecutionStage.gd.uid",
+      "bytes": 20,
+      "sha256": "2f864ee5993cd5ea90bd5918bd0534f80d25171c8c997908b45c21c317b87aad"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/fuzzed/GdUnitTestCaseFuzzedTestStage.gd",
+      "bytes": 1953,
+      "sha256": "4207a79c135f9ab7a89bd7c1d3d00366464f56688e99653de7f3b734c1176142"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/fuzzed/GdUnitTestCaseFuzzedTestStage.gd.uid",
+      "bytes": 20,
+      "sha256": "27ebf9be2b283afac69336092e29c9b27886a02a15e1b15e6745e3f6f6081d16"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/single/GdUnitTestCaseSingleExecutionStage.gd",
+      "bytes": 2017,
+      "sha256": "b05edce4a95f5b9c5e3728887d64b971dc607558df093a4d7dd50874609f9add"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/single/GdUnitTestCaseSingleExecutionStage.gd.uid",
+      "bytes": 20,
+      "sha256": "1c328c93eb0661998a1190fdc5d93ccaf888c2fca9a4addf3aa853aca5744fb9"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/single/GdUnitTestCaseSingleTestStage.gd",
+      "bytes": 403,
+      "sha256": "eaa863205140c6054e34eae9b08748e1c6b8af988f2f43eb935c312afb5f8e62"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/execution/stages/single/GdUnitTestCaseSingleTestStage.gd.uid",
+      "bytes": 20,
+      "sha256": "5754ea79c6b2dadcca7734087364b924a134241798836fb9a1e126479ef98d03"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitBaseReporterTestSessionHook.gd",
+      "bytes": 2668,
+      "sha256": "cf9c5481ce7e1e1998be42f11e4b5dd3eb0c4ca9db55ddbf5fd93a2b6d1d7180"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitBaseReporterTestSessionHook.gd.uid",
+      "bytes": 20,
+      "sha256": "ac5c4ec25b9db63bef9511762bf72399c45f35174bdef9dfd5f8c58cf80a4804"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitHtmlReporterTestSessionHook.gd",
+      "bytes": 348,
+      "sha256": "aece29183a7174317354ea381374d19feec8cc3cc2d1d8cc6a52708aab4c5d16"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitHtmlReporterTestSessionHook.gd.uid",
+      "bytes": 20,
+      "sha256": "d7db7d13e5ee5150d4e742aaaac286d265151eabc0b592eecd88e89dfd0cbdb8"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitTestSessionHook.gd",
+      "bytes": 4840,
+      "sha256": "f3b7e5d489d44c64aafad725abb07094358bd0d72af6a4b7d93cc3003509ecbd"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitTestSessionHook.gd.uid",
+      "bytes": 20,
+      "sha256": "abcfb610acf804d89ac901d894432d3df024c6cbe97d31fb225d6fd34b485edb"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitTestSessionHookService.gd",
+      "bytes": 6194,
+      "sha256": "1ae296355d21354280152b01b3d665af7d7c4c77c75f44ad2b0ebdca66c8dcb1"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitTestSessionHookService.gd.uid",
+      "bytes": 19,
+      "sha256": "26043ad20cf797c72dbac6d80eb7f828bb72c297a5a5c7339a828de9493d5b42"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitXMLReporterTestSessionHook.gd",
+      "bytes": 333,
+      "sha256": "02cccc3275e66a1be143d976b978d02d5307fe487f559df1145c2710ece3a9d3"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/hooks/GdUnitXMLReporterTestSessionHook.gd.uid",
+      "bytes": 19,
+      "sha256": "5bce9fa5ddc23d974477f8577025b7e35bad4f32303b0eb618e38fc00e2b793e"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdClassDescriptor.gd",
+      "bytes": 486,
+      "sha256": "2daf2fcff6fa0bdfedbaa16e5ea9e3de61dae7672b2a056c78146320a2a98f79"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdClassDescriptor.gd.uid",
+      "bytes": 20,
+      "sha256": "ea770ddb5422a04d325836395fd6ef8cf91cab92cceae0e51ccddb16997c9c34"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdDefaultValueDecoder.gd",
+      "bytes": 9318,
+      "sha256": "21080002ebd88837adc3bd6a9943f13aa7152c0a43a8b4e7e2c6ca6daaef0640"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdDefaultValueDecoder.gd.uid",
+      "bytes": 20,
+      "sha256": "e86957b31385839f8e39358d68811580c982a093ae692d9c25d987691b995ba4"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdFunctionArgument.gd",
+      "bytes": 5839,
+      "sha256": "423cc156d68866145200a5fd2d0fa2e455dbd56b6bdadcb46853d15c8428ae3b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdFunctionArgument.gd.uid",
+      "bytes": 20,
+      "sha256": "9012ddb3663ad4259f5de3cbe1e3e324ebe13e9536c2a4f8dcc3c5cdbfaa435f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdFunctionDescriptor.gd",
+      "bytes": 7807,
+      "sha256": "09e5b033e3c28bd67f451d958f0c9d5e4c06694b36c761b4a3734dcafbceb0ab"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdFunctionDescriptor.gd.uid",
+      "bytes": 20,
+      "sha256": "f635f7735677aa7ae0995cc1a39260e11da4d8147f94ca4b2e099ec254ee88ef"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdFunctionParameterSetResolver.gd",
+      "bytes": 7780,
+      "sha256": "c2b0b600169eec93c7e7f4a6f67febbbf4dcb5f22f3cf40c2f610d2ac326d17f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdFunctionParameterSetResolver.gd.uid",
+      "bytes": 20,
+      "sha256": "3292aa6a7367002c443ac32d76a9ce72aa27b066d095615b275b9c9b3f3c216d"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdScriptParser.gd",
+      "bytes": 24146,
+      "sha256": "d251448abaeea602f295cc9f1e870f2e81de03ca9612356d092736d0c032f230"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdScriptParser.gd.uid",
+      "bytes": 20,
+      "sha256": "8482af089e9567d9c26435f31ad5682bfe4f6bb54726a923c316d7fa9695c2d6"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdUnitExpressionRunner.gd",
+      "bytes": 2759,
+      "sha256": "afe96b6917d0222e88f45b5e63b30a10bec26680f283bf3ed71236f729f7e946"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdUnitExpressionRunner.gd.uid",
+      "bytes": 20,
+      "sha256": "ae9c617b016c23056216532624c7b6a61cec041d174dc922afad0eea20a5d0db"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdUnitTestParameterSetResolver.gd",
+      "bytes": 6567,
+      "sha256": "db6f79f9e96d74b2d494244a08b0fb48b44be397800a3c253189935a00fd8480"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/parse/GdUnitTestParameterSetResolver.gd.uid",
+      "bytes": 20,
+      "sha256": "f769516fc154c59b2d20814e0361df749712004b6933ad0740a63262f7d0c971"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/report/GdUnitReport.gd",
+      "bytes": 1471,
+      "sha256": "7a8517cd0722b1f815bcb7a155ced40ff97b360847f51089852bf6b3efd309b3"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/report/GdUnitReport.gd.uid",
+      "bytes": 20,
+      "sha256": "0a5bd343ac2ec9b984a0e13b4e50701e91b713119311f938b8740a3d90a8fdce"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitScriptErrorCollector.gd",
+      "bytes": 1657,
+      "sha256": "45b14f5b5fda9a1ad691fc74474cf55583052f7263be523a12575c11ca7a257d"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitScriptErrorCollector.gd.uid",
+      "bytes": 20,
+      "sha256": "81030c113083b5dd6043911c6df444d63eb61f9de9594509adc538bd7148e9e9"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestCIRunner.gd",
+      "bytes": 14114,
+      "sha256": "8075faab25055f0020d4b2c1060c752e331d821693a2647a6d0c1c5441082fc9"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestCIRunner.gd.uid",
+      "bytes": 20,
+      "sha256": "7ed3669226e0fe91a6b7d2944fb8db6bb43eb64b7f38feca5ce19ec80870fbb1"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestRunner.gd",
+      "bytes": 2785,
+      "sha256": "c712e555dc9e3447b78a807728f2a9e8da49d31baa303876ad35440598e0a1e6"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestRunner.gd.uid",
+      "bytes": 20,
+      "sha256": "735f3ba07ce9f42e6929c907308398c48e93547655d82e9858ca4fa3009f9984"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestRunner.tscn",
+      "bytes": 994,
+      "sha256": "5e896fd67e5adf60ec7eb78d11da62fd39af768f540992a4c4bf6de0972d04b8"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestSession.gd",
+      "bytes": 7038,
+      "sha256": "85ffb0423a9a475598489a83042db78338ff95fe8f82da3d6f3aaad5ce8d7415"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestSession.gd.uid",
+      "bytes": 20,
+      "sha256": "a2577fd0e3152853fbd7b90e02526ef6158bffb7ab406e6a18a6c5d8d7eaa53b"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestSessionRunner.gd",
+      "bytes": 5671,
+      "sha256": "0fc392b85a460c793558ddfc02527bbde41a61a48e7785415a8bbc97e77a25f5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/runners/GdUnitTestSessionRunner.gd.uid",
+      "bytes": 20,
+      "sha256": "5e7a9d2cb121bd0c1c53382f7843df7eb8d949d70341922c4bfe6cd6fa8b3a09"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/templates/test_suite/GdUnitTestSuiteDefaultTemplate.gd",
+      "bytes": 684,
+      "sha256": "ef8223855c1cf9def33343709b1228543e4e65f3011aa1b9539ada58ce7e64ec"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/templates/test_suite/GdUnitTestSuiteDefaultTemplate.gd.uid",
+      "bytes": 20,
+      "sha256": "180d0de71401bebd0f3c471f00bb612c72d95731328c00c6562258671405b491"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/templates/test_suite/GdUnitTestSuiteTemplate.gd",
+      "bytes": 5378,
+      "sha256": "a42d0534e8cc154c478fe253415a1e161c5881e189feeab7059453bdf682c0bc"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/templates/test_suite/GdUnitTestSuiteTemplate.gd.uid",
+      "bytes": 19,
+      "sha256": "2408b5aaa08add503dc46c613b428412ff8ef19d823710b384d8f408ef6cf018"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/thread/GdUnitThreadContext.gd",
+      "bytes": 1502,
+      "sha256": "cb49677ab31664e9253523ff49ee546927789123007ec019d8123143c7db3277"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/thread/GdUnitThreadContext.gd.uid",
+      "bytes": 19,
+      "sha256": "88a95a8bd5c4043f2be2c6857998d1a134c2bdad11cc6ba12b73f1584536d7b0"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/thread/GdUnitThreadManager.gd",
+      "bytes": 2473,
+      "sha256": "f7e19df9c01db137c85cd894bdd937f6e36eacf17a390fb9c5f88bdfa7cd5dd5"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/thread/GdUnitThreadManager.gd.uid",
+      "bytes": 20,
+      "sha256": "e02ccf090a8c724434d79ae512e9d2ce580f06644fe08a0694930d902d084066"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/writers/GdUnitCSIMessageWriter.gd",
+      "bytes": 6959,
+      "sha256": "ef285be104b5d1c5081eff655e4da21c25ada26bb6d614400ab9f91a46b9f49f"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/writers/GdUnitCSIMessageWriter.gd.uid",
+      "bytes": 19,
+      "sha256": "f4cbc419b341f4f08b6ec22645e837467b3d1d0acbe241fad51a9fd8eed6d2d3"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/writers/GdUnitMessageWriter.gd",
+      "bytes": 6514,
+      "sha256": "15357ec0d98bef5b9b855d3fb0be51b30df373efa0a288e868e749c6af322540"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/writers/GdUnitMessageWriter.gd.uid",
+      "bytes": 20,
+      "sha256": "54900332626bbbbbc5593c153982214c29ec6116e373ffc9c2bbe201e6424568"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/writers/GdUnitRichTextMessageWriter.gd",
+      "bytes": 3540,
+      "sha256": "41ca0674ab65f9bd3f6b444766f03e11e8d885bdbed6204901fda0f2f0b8abc7"
+    },
+    {
+      "path": "addons/gdUnit4/src/core/writers/GdUnitRichTextMessageWriter.gd.uid",
+      "bytes": 20,
+      "sha256": "9507dddf96310a552fbdb980a404d64fe75c7e0b7cdc2b8c19d2ac4f01cff33c"
+    },
+    {
+      "path": "addons/gdUnit4/src/dotnet/GdUnit4CSharpApi.cs",
+      "bytes": 8279,
+      "sha256": "4b54cc377fe8f1625859ee97083e3aa55309612de9c5d71edf75bc05f53c90f8"
+    },
+    {
+      "path": "addons/gdUnit4/src/dotnet/GdUnit4CSharpApiLoader.gd",
+      "bytes": 4351,
+      "sha256": "bb6aab3d24d4d9235c794e3feb17a5f61ed3e767038adc0cc76ef735d2833f0e"
+    },
+    {
+      "path": "addons/gdUnit4/src/dotnet/GdUnit4CSharpApiLoader.gd.uid",
+      "bytes": 20,
+      "sha256": "b344f7ae4a811b92400bc965f77e57a2dae4158bec05879cdee8da30581cf947"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/CallableDoubler.gd",
+      "bytes": 5324,
+      "sha256": "206d7f7d6d066e6dd848ef2b7c3aa9232a7538275242888ef1f5eb55a5149e3b"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/CallableDoubler.gd.uid",
+      "bytes": 20,
+      "sha256": "090bc6c231920b28ee048a8e4350b49abae9162db128da86bf14b5dd59902000"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdFunctionDoubler.gd",
+      "bytes": 141,
+      "sha256": "b396031a2b695ddea236e6b9944d4b77ea42875931eb7caf54f3d9bd2cf4b1ad"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdFunctionDoubler.gd.uid",
+      "bytes": 20,
+      "sha256": "c86f18045a60c24194e4218c99ca91f24a47ca450ff9be9e1ef76b6cd8f6bb81"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitClassDoubler.gd",
+      "bytes": 5274,
+      "sha256": "3a21863ed0fd29bf77495af39f776141da18fedf6711143aa5a28ffcf9064781"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitClassDoubler.gd.uid",
+      "bytes": 20,
+      "sha256": "842de9ac1b303f8ae2d13d80cf809f720ff1c2aaa056d07040d29ac3c772b7b4"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitFunctionDoublerBuilder.gd",
+      "bytes": 10304,
+      "sha256": "c4f3ead6138ea054fa751a08296aafb9809be1b44950e2f24a5ceca650ecec67"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitFunctionDoublerBuilder.gd.uid",
+      "bytes": 20,
+      "sha256": "aa39b707cb6e087e522a4cb004795625ef25f030fc61cdfbf9198a67f8abbd82"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitMockFunctionDoubler.gd",
+      "bytes": 288,
+      "sha256": "a7c2e464d2c7931100bec1b2ae2f7494ea7d0da23662902bf60e9dce602f410a"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitMockFunctionDoubler.gd.uid",
+      "bytes": 19,
+      "sha256": "633b92b5dc94dde258e262c524d5228907c59a9d7ad798142e5e5d613fa72bc6"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitObjectInteractions.gd",
+      "bytes": 1796,
+      "sha256": "7557b1c5dceef0c193153e5e51c016a6a2dcf6969c52bfddaee04ed4abfbc416"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitObjectInteractions.gd.uid",
+      "bytes": 20,
+      "sha256": "52349176a3ad4db3476eedbc9e6e1f9751afa8d6d1fe57498f5205d4b097074b"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitObjectInteractionsVerifier.gd",
+      "bytes": 3019,
+      "sha256": "d5581396941723832e8f70f4821f398e31c04c1369b2f0354ab8c6c9dc285498"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitObjectInteractionsVerifier.gd.uid",
+      "bytes": 20,
+      "sha256": "e45ec971ff50c0e40a5c734eab9fb2ea806ab05fc2304903c8052f67e3d835f1"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitSpyFunctionDoubler.gd",
+      "bytes": 231,
+      "sha256": "e1ef77b3f710264bdb75efa71320ca5abf28598a1dafa3fe6f71fadeef2d0012"
+    },
+    {
+      "path": "addons/gdUnit4/src/doubler/GdUnitSpyFunctionDoubler.gd.uid",
+      "bytes": 20,
+      "sha256": "b09ba0bb8c0ab45f4858c664c3dc37072623b9aab2f3d268f53a9b9317c7acea"
+    },
+    {
+      "path": "addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd",
+      "bytes": 2511,
+      "sha256": "174dccdaa68eddbfcfb69d24e1c39c18ba6993cf67ddf5f14536f4e02df080b0"
+    },
+    {
+      "path": "addons/gdUnit4/src/extractors/GdUnitFuncValueExtractor.gd.uid",
+      "bytes": 19,
+      "sha256": "de7e8ff8986bd4b5a8399f2bfe7441c74fbbe0d86e0f474e118de4a2e1c64c93"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/BoolFuzzer.gd",
+      "bytes": 842,
+      "sha256": "a19fca825aecbc4c70dc07608a076078be0c4e5b43177b0b7b76f8ccca72ecc6"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/BoolFuzzer.gd.uid",
+      "bytes": 20,
+      "sha256": "0c721422c6bb7ae65a8fe4515163b12992ca95f36b68fe4dc7eb7409e21a25f4"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/FloatFuzzer.gd",
+      "bytes": 1290,
+      "sha256": "4bc2d4c78b7823956902ac3026d85ae92237b2dfeff6d3ce13337f1cd6b3b5c0"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/FloatFuzzer.gd.uid",
+      "bytes": 20,
+      "sha256": "c8af106f4e1e48779a5dbb8f38ada2359df3520c90db6826c95dabb19379a460"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/Fuzzer.gd",
+      "bytes": 2842,
+      "sha256": "ee9036a04ec7e82f206a931b57cadd05da9eb3523288259c48845009f9ad2d27"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/Fuzzer.gd.uid",
+      "bytes": 20,
+      "sha256": "c1890d1be67d58aa9adc69ed8e7785a97f7cda87d0a6428e60a28b7769a33bb9"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/IntFuzzer.gd",
+      "bytes": 2522,
+      "sha256": "ccf2dae56f26fcf162e9a37a876d6a9d1bdf0b567e6bf9835f2a8bd0961ec5a5"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/IntFuzzer.gd.uid",
+      "bytes": 20,
+      "sha256": "cd05ff37302c260d1b5a3fe432ec2adedfe0623d112f455372ddd098a886c6d8"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/StringFuzzer.gd",
+      "bytes": 4205,
+      "sha256": "e0ab101309e4d293b6abc269cc392218ae2c8b637bacc0344dab3857eb097b42"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/StringFuzzer.gd.uid",
+      "bytes": 19,
+      "sha256": "42d84e705d9ef769adc6990de09ed9835ef184ae40027da0dd3f811f12c7bc48"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/Vector2Fuzzer.gd",
+      "bytes": 1664,
+      "sha256": "6d07cb1a40a5a998378d6870ea374c1d758a7d50ef815678007126a44267471c"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/Vector2Fuzzer.gd.uid",
+      "bytes": 20,
+      "sha256": "39358d5943b7f02248db996ec5c4254641e3afccef88d818e4e76875b1c22498"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/Vector3Fuzzer.gd",
+      "bytes": 1788,
+      "sha256": "7d0e3b60ecb9f1f62f32e6a5e6fef3f079623e6556685f27301d89b26cd8d43e"
+    },
+    {
+      "path": "addons/gdUnit4/src/fuzzers/Vector3Fuzzer.gd.uid",
+      "bytes": 20,
+      "sha256": "21ea6186c1497eb8edf7c6ccb70021219b85637f0792e68e3b62d400b48c15db"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/AnyArgumentMatcher.gd",
+      "bytes": 197,
+      "sha256": "ff5fef2ee448a3aeb467c7c5522b19964e27e1d9984a73498586cfb20589771a"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/AnyArgumentMatcher.gd.uid",
+      "bytes": 20,
+      "sha256": "1ecc55d829a77cfb2d88aa4f6e4b850211240e41389542c51cb3705e54306423"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/AnyBuildInTypeArgumentMatcher.gd",
+      "bytes": 1844,
+      "sha256": "febe6035e77b0adc50e4fe3861ca58c43f8f4764996425529563dd3a5c527c7e"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/AnyBuildInTypeArgumentMatcher.gd.uid",
+      "bytes": 19,
+      "sha256": "5cdc41964d86084e74afe990ff1ce5a58ed2bcecb3dbce6d1d81033e49fc1161"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/AnyClazzArgumentMatcher.gd",
+      "bytes": 883,
+      "sha256": "fbd64c037c0736fcc805d19b824c9c2d271f64c2a71dbaa1a450e5d634c88926"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/AnyClazzArgumentMatcher.gd.uid",
+      "bytes": 19,
+      "sha256": "b8479e2d45d15a4f0d562ada376372b95539ddf83c360561ca063998a748ab08"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/ChainedArgumentMatcher.gd",
+      "bytes": 493,
+      "sha256": "8a527cd1afc36e5241cde2f022e7241da0f8b3719eccc4c8b8e42ef309aff7ca"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/ChainedArgumentMatcher.gd.uid",
+      "bytes": 20,
+      "sha256": "8f4555938a9411efbdd8e01e636c342be3ca532acfd12a336b87dc09053b74ed"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/EqualsArgumentMatcher.gd",
+      "bytes": 743,
+      "sha256": "1e13335eb04a63bb3a3514755399154ae1fba13112cfc7fce1854f365d879835"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/EqualsArgumentMatcher.gd.uid",
+      "bytes": 20,
+      "sha256": "2931e7886faff2437db6508a6d32b3faf18e45080d92e76b2b8d02e426a5e222"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/GdUnitArgumentMatcher.gd",
+      "bytes": 280,
+      "sha256": "98bd03e673f194dac98b2f8ecaeba94fa5575760cca3e9fd2643dfd92dfe4fb2"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/GdUnitArgumentMatcher.gd.uid",
+      "bytes": 20,
+      "sha256": "79c69a7e344c9fbfd99a8ebc6560ef3c37ecc0ec3097dfed1c4e9783c58fa681"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/GdUnitArgumentMatchers.gd",
+      "bytes": 1389,
+      "sha256": "7f3d5bdf7900f30e1ccd544205f68b3e73918f4597f5b6a423826e4d64f40260"
+    },
+    {
+      "path": "addons/gdUnit4/src/matchers/GdUnitArgumentMatchers.gd.uid",
+      "bytes": 20,
+      "sha256": "611ac63cdd86ea250d20a930970bc58df6ec0a48d31daedbb33dcfaa0d502b9d"
+    },
+    {
+      "path": "addons/gdUnit4/src/mocking/GdUnitMock.gd",
+      "bytes": 1303,
+      "sha256": "4b7c3b142e35c556114bc552ceab48c2a653ddccc84bcad084523bf8d094a290"
+    },
+    {
+      "path": "addons/gdUnit4/src/mocking/GdUnitMock.gd.uid",
+      "bytes": 20,
+      "sha256": "1e29c70dc8a03a75ca74a97b3fe9e2b3a7c1d864c9257850bce3f8d1279a6ccd"
+    },
+    {
+      "path": "addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd",
+      "bytes": 7121,
+      "sha256": "31e017024f5c072fe9d6caed3dd50c725b096f2db8484d01d2dccac9d1ee3fa1"
+    },
+    {
+      "path": "addons/gdUnit4/src/mocking/GdUnitMockBuilder.gd.uid",
+      "bytes": 19,
+      "sha256": "9ccba04af3c0f6218a877038fc16b0b1b3dd7c05290dba4b69f465bd6db2536e"
+    },
+    {
+      "path": "addons/gdUnit4/src/mocking/GdUnitMockImpl.gd",
+      "bytes": 5192,
+      "sha256": "13b73f61263455c848fe53b7c10c78faa481274d8cbaf962244ab0a79065fff8"
+    },
+    {
+      "path": "addons/gdUnit4/src/mocking/GdUnitMockImpl.gd.uid",
+      "bytes": 20,
+      "sha256": "6735ea0368eaaddd1d951a831e2a703dbbdf57c98bdddefb021f594467b5c375"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/ErrorLogEntry.gd",
+      "bytes": 1023,
+      "sha256": "ae94471d76807df7d2ac23f463a89aa7449aab3417518a36f6de80d97f25b27b"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/ErrorLogEntry.gd.uid",
+      "bytes": 20,
+      "sha256": "1b399db13d6ba8ce6ff8c0cacd704f89897cf62f20dd6dc819862477ef190314"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GdUnitMonitor.gd",
+      "bytes": 361,
+      "sha256": "542cdccd0e97482e00546b720010ecf152d70a6b012f386ab2bcb27c1e6a348d"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GdUnitMonitor.gd.uid",
+      "bytes": 20,
+      "sha256": "51e233d3be38d9ff376e5d02577b90f2f28c520a3409b40adb5bfac2da602d01"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GdUnitOrphanNodeInfo.gd",
+      "bytes": 1827,
+      "sha256": "7889d39059ff87134dae07704c7b719d2dfa63773e845d3e6db835d71fef34ed"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GdUnitOrphanNodeInfo.gd.uid",
+      "bytes": 19,
+      "sha256": "279d51b9da2088986041ff181a4a3d6e12dc9ef7fd7d7d0bc123d51f2d558e97"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GdUnitOrphanNodesMonitor.gd",
+      "bytes": 7471,
+      "sha256": "eb26eda5189f4059495be4abcb710e3f3d68ad1acffa81491acfa8fc6b33aa58"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GdUnitOrphanNodesMonitor.gd.uid",
+      "bytes": 20,
+      "sha256": "1ab049e346e6b5953917c7375a8413a529d00a8648cc1a640f22438df1232778"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GodotGdErrorMonitor.gd",
+      "bytes": 3507,
+      "sha256": "ecfbb25ed659b51806998a672b795b417e71dd125e9842636694d61266e7641e"
+    },
+    {
+      "path": "addons/gdUnit4/src/monitor/GodotGdErrorMonitor.gd.uid",
+      "bytes": 20,
+      "sha256": "3b96ceb2f89ce3bd82d3f8442199699f13e0b86d233f92eccec304dc33776d28"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitServer.gd",
+      "bytes": 1232,
+      "sha256": "f476fae1314485c5c1769bcfda243e65c86c384b64a53cd015a2139b454baae9"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitServer.gd.uid",
+      "bytes": 20,
+      "sha256": "c3eb6c3c3a6400c3a60e14415036c36807a89c971bd9bed905d91e0657664fc2"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitServer.tscn",
+      "bytes": 382,
+      "sha256": "e48936af99ba9d83e3aa2803b666317f47592a48d6d6ee3b10a52385b3c1aced"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitServerConstants.gd",
+      "bytes": 190,
+      "sha256": "f05d802b8cd85275346d889a83029f35d724822e9923f7c92f12510b4150e2c4"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitServerConstants.gd.uid",
+      "bytes": 20,
+      "sha256": "da28a9db6b64972e818d9be5077c658aa5bc55039d528c178b5a53c5fa45d245"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTask.gd",
+      "bytes": 589,
+      "sha256": "a8daffb7a38954083d1c29cde8d673bb4118605e12a932df5f2c1c11bdd27860"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTask.gd.uid",
+      "bytes": 19,
+      "sha256": "574094f0fd48b4e2c5604ee08c44efdf075e479b6e53c1313adf35a2dde95390"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTcpClient.gd",
+      "bytes": 3382,
+      "sha256": "39aebd226eea87e54a1465ffd751c6b3ee7edfed9ea0891aba13780056aa2063"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTcpClient.gd.uid",
+      "bytes": 20,
+      "sha256": "1fcbcb464fef3f8b30ae64b6007f5f8783019ca341ae00d84004ca05dd8dba9e"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTcpNode.gd",
+      "bytes": 2456,
+      "sha256": "4afe1761d6bd7388e511c7f0dbd0da4f58506f135588c203ecb41f4aa2ad8a9d"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTcpNode.gd.uid",
+      "bytes": 20,
+      "sha256": "333ab7756b0025f9ac3a454fe0ca02fb603e71d3a120b820f609e3dc9898f06c"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTcpServer.gd",
+      "bytes": 3856,
+      "sha256": "1c96d8adfc7ce774fdc308b9ac05d1f493189262de60ebf0016b098baf4800a3"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/GdUnitTcpServer.gd.uid",
+      "bytes": 20,
+      "sha256": "b7037ca7acee3466f1f37baa1744289dc999b38197d554adb7810510b97c7d67"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPC.gd",
+      "bytes": 987,
+      "sha256": "687679341f4659de8f4d0aadfa10ac53ce64d5e88d1a8b8645081bdfd1c0ea9c"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPC.gd.uid",
+      "bytes": 20,
+      "sha256": "acc2741a8e8cef5c317724fefb5c2f6ff1f30eecb0b5e92e92b9e01b43054b1d"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCClientConnect.gd",
+      "bytes": 182,
+      "sha256": "5e0decf7807d33121a8317b7ba130446326a0dbc2047deefc1581da6f20788bb"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCClientConnect.gd.uid",
+      "bytes": 19,
+      "sha256": "859d8c9ee6407be556a9e4de4794a1bd371bb57085ee42e16e460189c2621cc5"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCClientDisconnect.gd",
+      "bytes": 188,
+      "sha256": "d794bacb508ce9c53dc266856aec416bd3da92b5609198525b9541acf0a6ceef"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCClientDisconnect.gd.uid",
+      "bytes": 20,
+      "sha256": "95cacea8510c76f921485dc1982b458f1a99b1abf1b91fedb825d4825f2b0547"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCGdUnitEvent.gd",
+      "bytes": 279,
+      "sha256": "a4eb4c6f20f0680f8a8e8adcc7385ddd3c3a5d9f54d462ad701104be9a6de4d0"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCGdUnitEvent.gd.uid",
+      "bytes": 20,
+      "sha256": "30daf7ac64020923ac1a13f34df2e52261fc8c5c173c3d0d508e3c563f28c6fb"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCMessage.gd",
+      "bytes": 272,
+      "sha256": "bf6fe19027ec497b6d49d823faf1a3cd52729d20b8dcfd55cde55f6a718159a5"
+    },
+    {
+      "path": "addons/gdUnit4/src/network/rpc/RPCMessage.gd.uid",
+      "bytes": 20,
+      "sha256": "1607b5a6801a3bb29d04112e019e839caeaa227850d71ea90d19a7e4e3f4473d"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitReportSummary.gd",
+      "bytes": 4969,
+      "sha256": "754389759d1c5c29a28216bb24e7888bb5db553d4ea60175335bb1f7e3749da8"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitReportSummary.gd.uid",
+      "bytes": 19,
+      "sha256": "fe3afd874ebf103ccd932f13ee5aa1f00b57812a387b2f4f732215dc9b9d4c57"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitReportWriter.gd",
+      "bytes": 281,
+      "sha256": "deab69a75e919885d73d8118fa00d118956fae748cb04e9c1965f9d1742fda09"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitReportWriter.gd.uid",
+      "bytes": 19,
+      "sha256": "4cc64dab89970ee6954535400019c69433e5fcdbf8b8fb752d06830febb9951d"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitTestCaseReport.gd",
+      "bytes": 1127,
+      "sha256": "ea87dc98ba4ec6491ed19b1b269e04cea9181fa8ff73a3e99eed754b567ea979"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitTestCaseReport.gd.uid",
+      "bytes": 20,
+      "sha256": "a034ad12a6409cd068354d7c041929628aedd146ed784972d7481c0f4ccd3743"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitTestReporter.gd",
+      "bytes": 2668,
+      "sha256": "8460e99dd4e4a7e8f790eda1bae540d4a815521a393cbed401c634f6df161d38"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitTestReporter.gd.uid",
+      "bytes": 20,
+      "sha256": "2d64ffd49d570846b2f11a2ef85058eb69d47147c4bc0e96ca3a4f37e96bc926"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitTestSuiteReport.gd",
+      "bytes": 2489,
+      "sha256": "4e3f9fa5249badfcc0bc279ba65d65ecb29ee1c97894f7855ed2c88eca233f2c"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/GdUnitTestSuiteReport.gd.uid",
+      "bytes": 20,
+      "sha256": "130336a348ac0888ac773b63f04cf2d36deb97653f260252d88a885e26831ced"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/console/GdUnitConsoleTestReporter.gd",
+      "bytes": 7572,
+      "sha256": "a1ffbc6a5069dde0ec5a6418b98295abb89d2bca41f1437b54c93f90a38ad70c"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/console/GdUnitConsoleTestReporter.gd.uid",
+      "bytes": 20,
+      "sha256": "c2983027e0d2e195270988b1878a2dd0e08421595361f6f4aafdf56d236767a7"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/GdUnitByPathReport.gd",
+      "bytes": 2347,
+      "sha256": "8bca0eedc018410d66b572fbf151d70241fbd4f59fab50d4eb6e652d733e4efe"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/GdUnitByPathReport.gd.uid",
+      "bytes": 20,
+      "sha256": "9f16450e121ae1ec9a13b0a71d53aa06aaf796fbcd82d81fd1ef1f1d23187f5a"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/GdUnitHtmlPatterns.gd",
+      "bytes": 8941,
+      "sha256": "4ff3e1f7f86b527bc74b20693b43a7586315c25a991ca2b3f68173da84a284d9"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/GdUnitHtmlPatterns.gd.uid",
+      "bytes": 20,
+      "sha256": "031ac566c5ee117520c9f15c748c6fd302fcdfc4cf8a183baf42fffdd35712c7"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/GdUnitHtmlReportWriter.gd",
+      "bytes": 3276,
+      "sha256": "1f4daf05bd9c9322a0914f0b044d4aa4bb0088bd0f299ffc5952e8be1a2aee15"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/GdUnitHtmlReportWriter.gd.uid",
+      "bytes": 20,
+      "sha256": "f2567b1efaf790a8c0f8533abd8c5848630fe2d0905bb9da1b74a11e21169755"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/.gdignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/css/breadcrumb.css",
+      "bytes": 1056,
+      "sha256": "68d42eb10ac6533e36378969cbaa94535ff75d7977d9d90fa5939736d04ceb3a"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/css/logo.png",
+      "bytes": 49775,
+      "sha256": "ed176306a061dff6c2a97c76e572bbbdee50cb7f5a496ba10d6898721f198351"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/css/styles.css",
+      "bytes": 6733,
+      "sha256": "03b4882981f58bce30961b5e7bb7f7b4a46fbdb12ff2c3a2ffbc56f795731c0a"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/folder_report.html",
+      "bytes": 3404,
+      "sha256": "2fe6d7d0268642cd90620e8457521ed751e4ca3e606fbfda08c2fb8fab62ed79"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/index.html",
+      "bytes": 4463,
+      "sha256": "1102d65611ad8a45fcc345c1fde8846e7a33ab0ebfd60372609e9b80401a55c9"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/html/template/suite_report.html",
+      "bytes": 5055,
+      "sha256": "895b4a57e32141de4f4ee0cfe5defc599596678c0af49bbe986d409c58f2d582"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/xml/JUnitXmlReportWriter.gd",
+      "bytes": 5388,
+      "sha256": "4aa74159523b658b945675306019874b9f9e08912957e0b93791d0a67c204f0a"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/xml/JUnitXmlReportWriter.gd.uid",
+      "bytes": 20,
+      "sha256": "fb5fe931a0923002d3e9d89f1f6693f645b19cbc5cf181d9023f47145d1b5dca"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/xml/XmlElement.gd",
+      "bytes": 1577,
+      "sha256": "511c875bee546bfa807df34b7c3ac6cd0c1cbd4dd97b4dfdfa00c4cd165e17b2"
+    },
+    {
+      "path": "addons/gdUnit4/src/reporters/xml/XmlElement.gd.uid",
+      "bytes": 19,
+      "sha256": "fbb0fb8ae778e76f5e18b140de52ab92d2488c80c10822c3ffcadfed247625a0"
+    },
+    {
+      "path": "addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd",
+      "bytes": 6305,
+      "sha256": "e30a6afa27fa78a7c8478ca57ee99e829c8717dec301b34d98046f120504b7e3"
+    },
+    {
+      "path": "addons/gdUnit4/src/spy/GdUnitSpyBuilder.gd.uid",
+      "bytes": 20,
+      "sha256": "2066df290d691265ca1194829f68f1ec17eba44a69062a586fb3d1154518bbb4"
+    },
+    {
+      "path": "addons/gdUnit4/src/spy/GdUnitSpyImpl.gd",
+      "bytes": 1313,
+      "sha256": "53b337bd196afbc563d1f02c4b4b245b65805fa1800dc4cfe6857ca8c5bb9f40"
+    },
+    {
+      "path": "addons/gdUnit4/src/spy/GdUnitSpyImpl.gd.uid",
+      "bytes": 19,
+      "sha256": "27c5a57e2c64ca490947a72f21c3fee75c5708d146b8ca4cf9562e4a7debac7d"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitConsole.gd",
+      "bytes": 4154,
+      "sha256": "285093d71e44a12f94e2766d9d378d5890ac72e33476ba51038e5a653aa24290"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitConsole.gd.uid",
+      "bytes": 20,
+      "sha256": "280195a7081bb435d783b0366c363131b50e854956dd7a7871fdd3e78b55a75f"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitConsole.tscn",
+      "bytes": 1654,
+      "sha256": "1a8a53176d29836b64fcc33cdc9b49826d750dc0c921d144559c140e36770741"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitFonts.gd",
+      "bytes": 1926,
+      "sha256": "acbee426382ea08ab15b5cb63373ff4492b9bf1714eb61c5eb2607be3a120dad"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitFonts.gd.uid",
+      "bytes": 20,
+      "sha256": "723358e53aebfa345ca4284e92ccc22caa60a70545f04a3300c538595117ca58"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitInspector.gd",
+      "bytes": 1019,
+      "sha256": "8e1183e17a6d4a0db09c856c3219d25a4532d3e8af3e9f60cf037ca555b7c530"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitInspector.gd.uid",
+      "bytes": 20,
+      "sha256": "7208d1f583448b053dd03fb697551c034c629b519f30008a55642967fa48d6c1"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitInspector.tscn",
+      "bytes": 3696,
+      "sha256": "de45d7a33234951d32f033ec2f1e30ad543e4262c53ce3b41cacda3981e160d7"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitInspectorTreeConstants.gd",
+      "bytes": 345,
+      "sha256": "426dcdf5cd4ea36326605e585e42439ee6a552dd5826abacb61aec68b5316305"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitInspectorTreeConstants.gd.uid",
+      "bytes": 20,
+      "sha256": "148ec46b09cbbf2c2507bb40a7c29174a472e2ca117ccfebe05dde8b8b610f86"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitUiTools.gd",
+      "bytes": 5642,
+      "sha256": "4f14e8964acff5568166a6f5ac5117abbe520f1cfb4382d30babcd056dd800e1"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/GdUnitUiTools.gd.uid",
+      "bytes": 19,
+      "sha256": "0c445403765bb509a89696d98036530b14f6888352e0e2973e3f16ddc925c111"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/ScriptEditorControls.gd",
+      "bytes": 3106,
+      "sha256": "44f7634f78ec4cf9bec19eb6f6f4448a9ae87ae2b4974a7d31d9df4259696097"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/ScriptEditorControls.gd.uid",
+      "bytes": 20,
+      "sha256": "2bd427d3dd94b3127282c46e20a7b7375bc3000ae1ea4496b2a8d7c85258fa94"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitContextMenuItem.gd",
+      "bytes": 996,
+      "sha256": "4fe71938b0f8fff271f89173eaf667ffc7b10aeb92689f23a8bc406e57872169"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitContextMenuItem.gd.uid",
+      "bytes": 20,
+      "sha256": "384e470eb47208c4740637968acd5b55310ba9963a3a2f9dbd423dd1123287af"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitEditorFileSystemContextMenuHandler.gd",
+      "bytes": 1475,
+      "sha256": "d7d1a228e18d477fcc810c9105a335e12a5c450b750482313929932492393ab9"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitEditorFileSystemContextMenuHandler.gd.uid",
+      "bytes": 20,
+      "sha256": "188a72dd340e3051516dc0f24e728216704183a690b0a50fa4a29e90df9903c8"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitInspectorContextMenu.gd",
+      "bytes": 2299,
+      "sha256": "b4806d23cac83d2da17e4a9d08aa18616c653ed9807ac88fb41b20a207e6d937"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitInspectorContextMenu.gd.uid",
+      "bytes": 20,
+      "sha256": "45dc4f1c76e0ee597ca79cc12cd0d271805fd53ba9f8bc868e5c484bde501d4b"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitInspectorContextMenu.tscn",
+      "bytes": 2928,
+      "sha256": "299c346654a070cbae8ba23eb95ed607703792f15b06571324a6038a228c9b84"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitScriptEditorContextMenuHandler.gd",
+      "bytes": 1165,
+      "sha256": "5d7432b78740bcf41e6f3c3aa03a4c252fdb17f228daf09fb903312c6019f254"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/menu/GdUnitScriptEditorContextMenuHandler.gd.uid",
+      "bytes": 20,
+      "sha256": "d220c159bd89fa7716ae56d77d0a28c0a5d88bc77abeb0407822ac78ea7e876b"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorMonitor.gd",
+      "bytes": 1534,
+      "sha256": "95144424d628c3ab65fcb422ad79950ef6373c038dcd6b238035e86d0c2df20e"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorMonitor.gd.uid",
+      "bytes": 20,
+      "sha256": "a396a32f2411bd7380539b4ae0a433233f5743904a66e5478e91deb145445fe9"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorMonitor.tscn",
+      "bytes": 11841,
+      "sha256": "c54ad8c365832c52ba1e07fbfa6cb07e3a74e4f29e50ec625628800945a1b264"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorProgressBar.gd",
+      "bytes": 1152,
+      "sha256": "5bd1c70169020d54fb6711c77dd06f09fac3b458e549d2b4f4ca39c46d3633a0"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorProgressBar.gd.uid",
+      "bytes": 20,
+      "sha256": "83084588c3d4fd48bbc2adc15186776a7b7ebb79744b4c0b8fffd7b2c0ea9ffe"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorProgressBar.tscn",
+      "bytes": 889,
+      "sha256": "495f81ed7bdc907e6cddf7a95b299b4b7af2eb70cd3ab1879dc15b535e762add"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorStatusBar.gd",
+      "bytes": 7434,
+      "sha256": "eda80645ca738a59b371d6b9f95d07b2e584cb9264adabe1494ff1b6d4ac23d9"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorStatusBar.gd.uid",
+      "bytes": 20,
+      "sha256": "37a78897a9143b18ce515005637cbebd91c357ca0625c0cc5ccc7305531d6db6"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorStatusBar.tscn",
+      "bytes": 55944,
+      "sha256": "723f895289de1276b75a4d949e7ced5612e96daa968eb919c5f791cce9817ebe"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorToolBar.gd",
+      "bytes": 4015,
+      "sha256": "7c5d46a4f60e92b46080a3a5893320dbf3534cde72a590b215410abcb2c59cee"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorToolBar.gd.uid",
+      "bytes": 20,
+      "sha256": "63eb4cec4b2bd3d471f7121f92cf9e2500d446ed7abaf3f3416dfd015a6fe20b"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorToolBar.tscn",
+      "bytes": 11310,
+      "sha256": "488fd0474bba8d989197e661661d1614d81991b8b7aaa00be89fe5952e4374e2"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd",
+      "bytes": 42375,
+      "sha256": "8010abe7672f3b36acdb73b800ffe16665f70c23786e004373e566f584aa988c"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorTreeMainPanel.gd.uid",
+      "bytes": 20,
+      "sha256": "cb3528402ca129b724f324e1e0bc53eea59e9d5078bde2101bb3d42b1542b289"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/parts/InspectorTreePanel.tscn",
+      "bytes": 13572,
+      "sha256": "c37996e79e63b6cffab3bac030ee69b781716f0076e897651e217d11639bb3ca"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitInputCapture.gd",
+      "bytes": 1634,
+      "sha256": "31129b6846e7c66d50b16ea815f6fa98e18b56f341e70a6ab98ef052dbcc173d"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitInputCapture.gd.uid",
+      "bytes": 20,
+      "sha256": "29c4628de8c9c50cc9f442d7c3322afe490ec603369cc420824ca88b04019978"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitInputCapture.tscn",
+      "bytes": 990,
+      "sha256": "c8626556b7a0bb25cf1fffaf764916fbfae78bf82564ad0a352c76cd4ba75494"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.gd",
+      "bytes": 12213,
+      "sha256": "79661b3e4a739d7ed0c079374f9dbda06c930bc0c2ce9e9042f9188e8c26ebcb"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.gd.uid",
+      "bytes": 20,
+      "sha256": "136e2d5cfe378c60573a96053054b27a64f0e45f2981f962b9d41a8d0a7e40ad"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitSettingsDialog.tscn",
+      "bytes": 12064,
+      "sha256": "e2ab358aacf83ff311500e5aface58436014bc12d5fd51164391731d08f8ec9d"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitSettingsTabHooks.gd",
+      "bytes": 6487,
+      "sha256": "a6651200dbe186bcf907b3a1f73867d01381490b4780bec1430241f4088e9325"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitSettingsTabHooks.gd.uid",
+      "bytes": 19,
+      "sha256": "54788be092a6e774b9d74ad71764e9bae3f76565817a00ff64325f2a3594b289"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/GdUnitSettingsTabHooks.tscn",
+      "bytes": 21872,
+      "sha256": "250685ab21910d0c64f6b84f3e3b66e5f5673af82629fec5a8270a5c655d430f"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/settings/logo.png",
+      "bytes": 49775,
+      "sha256": "ed176306a061dff6c2a97c76e572bbbdee50cb7f5a496ba10d6898721f198351"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/templates/TestSuiteTemplate.gd",
+      "bytes": 5507,
+      "sha256": "65204e0f9ef8ccf0d5dc8d4723a596eeb85f2c1a3bf7c7e441d39f6276a2bb50"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/templates/TestSuiteTemplate.gd.uid",
+      "bytes": 19,
+      "sha256": "dcf2b1ba89d640969c11a79c57fa25c07b1b69e4bb993eebc1acfb45b4ed76ab"
+    },
+    {
+      "path": "addons/gdUnit4/src/ui/templates/TestSuiteTemplate.tscn",
+      "bytes": 3920,
+      "sha256": "330d36fb080665d3d549b0cd64ecf2587d5e7697adc9e2d18d103c0fee5d3b5a"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdMarkDownReader.gd",
+      "bytes": 13788,
+      "sha256": "48ecaa044736c5f4278920818dd72ea1376a3a271ef8b64d2e481e0513cf494d"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdMarkDownReader.gd.uid",
+      "bytes": 20,
+      "sha256": "9b34d60100676b0c6e78a5f2b34a07acb78c5983966846cb343cab2eddaf9eb9"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitPatch.gd",
+      "bytes": 383,
+      "sha256": "82fa67d8bd78a00f7e9da1690f84d5336be3ade0c2661cb24a21b257a0bcccee"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitPatch.gd.uid",
+      "bytes": 20,
+      "sha256": "088306b7bebbe32025bd81a118c0bb9b92dc82a1b0f075963fb365a5294587de"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitPatcher.gd",
+      "bytes": 2315,
+      "sha256": "2cfd7c49049702d89ef090c6fe6c2618087bbf6f20541d75a96c699e6d47daef"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitPatcher.gd.uid",
+      "bytes": 20,
+      "sha256": "4350bd25c6b8cc935db86e07fa2099a2b4036e7d669a26fc56414a9924b28eeb"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdate.gd",
+      "bytes": 9524,
+      "sha256": "90cb4d5cab4cec4123e7e4bdcb272bf5558f3f7251acbdc3f2d3a5230c3e8696"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdate.gd.uid",
+      "bytes": 20,
+      "sha256": "5ab26ff4359bf63156dd86fa03915e591db5e66a1af1def924fb76c93b6a5584"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdate.tscn",
+      "bytes": 3100,
+      "sha256": "96c535f9fadb349cbe84536464fafe8424a14f71f8318ad86b133f5a8d9b0ca8"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdateClient.gd",
+      "bytes": 3060,
+      "sha256": "7964ec639e0f4baa2ed944cd261d060260f431db92bd7929a9b0a04ee533e0e0"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdateClient.gd.uid",
+      "bytes": 19,
+      "sha256": "8d9ac1e893dd449256cfb6fde23293da18ee8cfdca31948ca5b54d0cbff130d9"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdateNotify.gd",
+      "bytes": 7334,
+      "sha256": "32bf3f78f2a17a3f04135227a8e209abcfb66ce901cc90804a4890fd1e73ddd0"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdateNotify.gd.uid",
+      "bytes": 20,
+      "sha256": "79ab81d2502e4a3fc74ab452fd46bea90cb1a8ad3829483e81e30216cabed5f2"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/GdUnitUpdateNotify.tscn",
+      "bytes": 3635,
+      "sha256": "04f3115e9fb187aa397bf351cebc95d67476add0f0c7715a6fff8c4bfec3c394"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/assets/border_bottom.png",
+      "bytes": 1757,
+      "sha256": "37a40709349e82f04b542de8d17c4118d68531f6515964b0e03f28f6ee529772"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/assets/border_top.png",
+      "bytes": 1749,
+      "sha256": "ca6f5d7f59cf272dc87fc4762bd7ec82502bb1987c7803ebaea594408401ac47"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/assets/dot1.png",
+      "bytes": 730,
+      "sha256": "f37474a8d5dc0c9574cef6fad5308922841e60deb31213e2723e3dd2755bd7e5"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/assets/dot2.png",
+      "bytes": 883,
+      "sha256": "c12758bd1b0b0ef88811b50affd3957bbf9c9e6c0922c0de199a4a3649643103"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/assets/embedded.png",
+      "bytes": 287,
+      "sha256": "08cead78bbc3d7aefda91f376b1280195333d94a32222b1490876fabf0823f6b"
+    },
+    {
+      "path": "addons/gdUnit4/src/update/assets/horizontal-line2.png",
+      "bytes": 332,
+      "sha256": "fb01fb89e6b3ff826f05e772336f0cd855e1e838ef920cac9fd6a3e3504dacd9"
+    },
+    {
+      "path": "docs/.nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 3635,
+      "sha256": "0de1b60919d26b0af81c4e41592d335df3bae4a73bcf66894e9de7e0f145bd85"
+    },
+    {
+      "path": "docs/_navbar.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/_sidebar.md",
+      "bytes": 1345,
+      "sha256": "dc5fe9b24f781563eb7deef606013d03f387be841fd9ad0aa928d4fd0e792885"
+    },
+    {
+      "path": "docs/assets/beehave-demo-tree.png",
+      "bytes": 92977,
+      "sha256": "79f42b5731f8fb24aa6a806919e2f5d5d161ed4d4ed15a67ed35ee448d19d5d7"
+    },
+    {
+      "path": "docs/assets/behaviour_tree_structure.svg",
+      "bytes": 4714,
+      "sha256": "b4b2e8b8d196903208942c9392f6376f0afea91213cb822650818f55196c1edb"
+    },
+    {
+      "path": "docs/assets/blackboard-properties.png",
+      "bytes": 25380,
+      "sha256": "fd998abfb535968dee67f14dae5e6b45549afe2c9c001e5728ca4267ee1fa9fc"
+    },
+    {
+      "path": "docs/assets/bt_execution_flow.svg",
+      "bytes": 6851,
+      "sha256": "f5947d727944c752b32be9c29b30475622c09f210e258f621115de799f64b3c0"
+    },
+    {
+      "path": "docs/assets/debug-tree.gif",
+      "bytes": 257883,
+      "sha256": "d00b866c1c6b9a625e89d82a1cc3f1d6e312fe02d137c9d20130e5f384a6974c"
+    },
+    {
+      "path": "docs/assets/enable-custom-monitor.png",
+      "bytes": 38539,
+      "sha256": "ed71ee7e9457cb47c5ec01c346a43ad51879f8f272f117901e0b02f42f9456f3"
+    },
+    {
+      "path": "docs/assets/example.png",
+      "bytes": 64069,
+      "sha256": "3e17f30ad16e4ff47803f0664300f3ea570174786dec30e0796f851b6468f209"
+    },
+    {
+      "path": "docs/assets/first_bt_complete.svg",
+      "bytes": 3965,
+      "sha256": "95141d6b5b69ce075109991875953c0751f29d04ecff02bb7591e9506d7d79a6"
+    },
+    {
+      "path": "docs/assets/first_bt_debug.svg",
+      "bytes": 3446,
+      "sha256": "59527739f0638c19ed028b0e5564c7f396a4e6cda3f0225b09b9fac8ce7c9e9f"
+    },
+    {
+      "path": "docs/assets/first_bt_setup.svg",
+      "bytes": 1182,
+      "sha256": "ddd10cd7f67fdef8bf56bd7af779bf449b9458a0ae765230f298d87f5a88d275"
+    },
+    {
+      "path": "docs/assets/first_bt_structure.svg",
+      "bytes": 2048,
+      "sha256": "6e8123c1a886362167a757511f19667d9ccbebb940f1497c5a323a727522a55a"
+    },
+    {
+      "path": "docs/assets/gdunit-testrun.gif",
+      "bytes": 534328,
+      "sha256": "b846006e80b2bfa9cb5bea269caa082ec67c2e51098f60a833f3d7fa3563245a"
+    },
+    {
+      "path": "docs/assets/how-to-debug-horizontal.png",
+      "bytes": 222855,
+      "sha256": "e19650171d1057658a774e40cfc51ea4de1b7fc31d68d2f8e6a915af7874939c"
+    },
+    {
+      "path": "docs/assets/how-to-debug-popout.png",
+      "bytes": 172586,
+      "sha256": "a4040d33b32e99cfb82209a876f9c395998efff3243855cca5421da4832b4275"
+    },
+    {
+      "path": "docs/assets/how-to-debug.png",
+      "bytes": 223988,
+      "sha256": "2439472f27d983aa817629f5fdc0ffd3f790fc3411d9f8ad1a690c12d0411e2c"
+    },
+    {
+      "path": "docs/assets/icons/action.svg",
+      "bytes": 2972,
+      "sha256": "ba828aac24fb0b0b3628584a28ab23884bd901d918f1bd752c5994f8f2c85ef7"
+    },
+    {
+      "path": "docs/assets/icons/blackboard.svg",
+      "bytes": 1477,
+      "sha256": "7da2bb26b844fd0019291a19d546ade341a7da1165241806d2ade658f093bf17"
+    },
+    {
+      "path": "docs/assets/icons/category_bt.svg",
+      "bytes": 3920,
+      "sha256": "ac31256014a0ba715f1da4f6f3c8043028704c624339523641b66e512d3ee7cc"
+    },
+    {
+      "path": "docs/assets/icons/category_composite.svg",
+      "bytes": 3927,
+      "sha256": "0bd205e2c50fb60ef83b6623f7e517318518ed8c6630d8d6046b4c93362ce34b"
+    },
+    {
+      "path": "docs/assets/icons/category_decorator.svg",
+      "bytes": 3927,
+      "sha256": "69e38791a3e806e91d8d13b62257580690fff2746826dac9ec85b5af8f25e5ee"
+    },
+    {
+      "path": "docs/assets/icons/category_leaf.svg",
+      "bytes": 3922,
+      "sha256": "47036e92cfc0dc0763317436a9b479c30d19535b733372ac7f35d1299d4b19c4"
+    },
+    {
+      "path": "docs/assets/icons/condition.svg",
+      "bytes": 2282,
+      "sha256": "b74361149c872841dea828d22df454c18a72cbaeffe349a7c4b9a557102c5825"
+    },
+    {
+      "path": "docs/assets/icons/failer.svg",
+      "bytes": 1927,
+      "sha256": "7b2b591009bd8606a887d39377643fd4d90ae5eedf02e22ff4986e13d9250d65"
+    },
+    {
+      "path": "docs/assets/icons/inverter.svg",
+      "bytes": 2024,
+      "sha256": "e5adff50982ae32decfe2373ef279341a58ba4086b5e999da942172f3415e132"
+    },
+    {
+      "path": "docs/assets/icons/limiter.svg",
+      "bytes": 1866,
+      "sha256": "030e389bb787f9d9f659ae2794b00472e330f544cf5da40bd86a14e8afb35a47"
+    },
+    {
+      "path": "docs/assets/icons/selector.svg",
+      "bytes": 2257,
+      "sha256": "4fbcae98a9d420653e1b34a0824ffec3fa7829bedaede81722969e812a08ee88"
+    },
+    {
+      "path": "docs/assets/icons/selector_random.svg",
+      "bytes": 7514,
+      "sha256": "cf616b9c598f4da62177f882c4cb614681b08972d13620092a7a3865b1594448"
+    },
+    {
+      "path": "docs/assets/icons/selector_reactive.svg",
+      "bytes": 3653,
+      "sha256": "926cd7c08bdeb393821948f4620114f482d055ef93bd3a9c5c85a24fb7136d05"
+    },
+    {
+      "path": "docs/assets/icons/sequence.svg",
+      "bytes": 2235,
+      "sha256": "6ca1888d2d9ffced57bbef7ee8103ab348b84eeecc39f4dbabd2c3330d5c70da"
+    },
+    {
+      "path": "docs/assets/icons/sequence_random.svg",
+      "bytes": 4822,
+      "sha256": "2a9da1216c7abcd0aecc3d316a10831ed833b551c41532975563ac9a1811d0bf"
+    },
+    {
+      "path": "docs/assets/icons/sequence_reactive.svg",
+      "bytes": 6352,
+      "sha256": "3dba15203938983dc90e4e42cb5bdbd42b702b23526e68d03900798d14fddf21"
+    },
+    {
+      "path": "docs/assets/icons/simple_parallel.svg",
+      "bytes": 2826,
+      "sha256": "fdc6cfecdc74b1620dff1ad46f1267e325c2e80215f730080bf67ad7009a9bc7"
+    },
+    {
+      "path": "docs/assets/icons/succeeder.svg",
+      "bytes": 1800,
+      "sha256": "54aaa663ad746c39bfdb9e6ab041ec4081026466d053dabefb14ca22fb6aa2c8"
+    },
+    {
+      "path": "docs/assets/icons/tree.svg",
+      "bytes": 1882,
+      "sha256": "16734d9875af0369285e0325a26f86850e2ddd1ffece3d609abc9cd10b1897ba"
+    },
+    {
+      "path": "docs/assets/icons/until_fail.svg",
+      "bytes": 5142,
+      "sha256": "2207a4fb6c9042ea075b2b03927f9b99ef761119e99fcc7189089bd35e190db4"
+    },
+    {
+      "path": "docs/assets/logo.svg",
+      "bytes": 28644,
+      "sha256": "ddb60018c0513a882387fc656f871f29d6bb3eb0a619d294987599b5ca4358ce"
+    },
+    {
+      "path": "docs/assets/performance-monitor.gif",
+      "bytes": 459482,
+      "sha256": "df90a288157551bf0c0cb016c180d8f65e699354fe4e931169e52f25df6d1ee6"
+    },
+    {
+      "path": "docs/assets/performance-monitoring.png",
+      "bytes": 228993,
+      "sha256": "49a068e779fd6a23e83d38964e81449511e1d38d319d6b3845150a114f5ce365"
+    },
+    {
+      "path": "docs/assets/simple_bt_example.svg",
+      "bytes": 3817,
+      "sha256": "431a7a9d0c3e8ca90614a0a335e04b88fd9ef15ffea155e2164187f0733a84c9"
+    },
+    {
+      "path": "docs/assets/state_machine_example.svg",
+      "bytes": 2217,
+      "sha256": "4f29ab05a00ce09815ce713db24c613c01d52aa4797b48abe3bc6cddf67b0696"
+    },
+    {
+      "path": "docs/contribute.md",
+      "bytes": 1911,
+      "sha256": "5d2ec31c7f167ac62b82095870a70aa5f4de8c7fead85c33a1f669ad8005849f"
+    },
+    {
+      "path": "docs/index.html",
+      "bytes": 1557,
+      "sha256": "f0c623f03a1e60a58a2f14a059e71546b0948125b104b4e6553d9ea03ea9a7f5"
+    },
+    {
+      "path": "docs/manual/README.md",
+      "bytes": 4160,
+      "sha256": "4c7e1013ae7138562395ddbffb2a2d1777eef414f5c70e4c4560459e02c09416"
+    },
+    {
+      "path": "docs/manual/action_leaf.md",
+      "bytes": 1622,
+      "sha256": "1e37a6f019318b645d75b0524d4d479b4ba7842b2dfe534a343c0aa7e202776e"
+    },
+    {
+      "path": "docs/manual/behavior_trees_intro.md",
+      "bytes": 3651,
+      "sha256": "7d84b53b72a295b0f1329d188b58efd58732712f4c2ec55102e7316518cec423"
+    },
+    {
+      "path": "docs/manual/blackboard.md",
+      "bytes": 4168,
+      "sha256": "69f106566e3e5970ab71ffd00b700ab62ead32ec7c80c2ae87869d6d3139ca09"
+    },
+    {
+      "path": "docs/manual/common_patterns.md",
+      "bytes": 13723,
+      "sha256": "50b468809947228dde269ca19bb1726effe2cbd3d1c52b8ec2bda0400b8392b0"
+    },
+    {
+      "path": "docs/manual/comparison.md",
+      "bytes": 5239,
+      "sha256": "d8f902a777cdb6657a0e87b21d361c9774c489c41a9a2676cca53d519b509332"
+    },
+    {
+      "path": "docs/manual/composites.md",
+      "bytes": 3048,
+      "sha256": "f79dc236b9ddf2b7862daed254136bab30fd6ae491f7d5c8b3c254fc61a16395"
+    },
+    {
+      "path": "docs/manual/condition_leaf.md",
+      "bytes": 2306,
+      "sha256": "0d5c44e503b6e998e956e0798611e7122d3c4bd7bf234257420df930b165cea8"
+    },
+    {
+      "path": "docs/manual/core_concepts.md",
+      "bytes": 12749,
+      "sha256": "d81fc4b3241c5f607a59089505f96f68fee7ed7395b31ea83bf9a218397dbf12"
+    },
+    {
+      "path": "docs/manual/debugging.md",
+      "bytes": 1363,
+      "sha256": "7312392d3db74ff104877d9e45468162d18048bae21436a04888806ea14e5f98"
+    },
+    {
+      "path": "docs/manual/decorators.md",
+      "bytes": 8301,
+      "sha256": "0a5a301c31b2b304cf39b92c1b3ee018c20c0ff0a5ad75b977c4f51061c8cdbc"
+    },
+    {
+      "path": "docs/manual/first_behavior_tree.md",
+      "bytes": 8482,
+      "sha256": "b480f6854930f48bf4ac4e93ce04a18e9e9da04b49e09232e4344e2d57f908be"
+    },
+    {
+      "path": "docs/manual/leaf_nodes.md",
+      "bytes": 2219,
+      "sha256": "b90a4d9467a3223b06967813bff3c24add446d988dbe87027e2ecb1cd158d0d3"
+    },
+    {
+      "path": "docs/manual/performance.md",
+      "bytes": 973,
+      "sha256": "41f55d7221a3baa7ae92cf67dc457e2d2a3d8a07abf12fc7084a3bcbcfc29c4d"
+    },
+    {
+      "path": "docs/manual/selector.md",
+      "bytes": 7303,
+      "sha256": "eae3738f4cd4f036005f964280bcbfede1feab91da72d9497a7b9c9f5771be05"
+    },
+    {
+      "path": "docs/manual/sequence.md",
+      "bytes": 6098,
+      "sha256": "a0c49ea687a7891058a8a2d477b113f117ca99789feb9229b57138dd5eda80ae"
+    },
+    {
+      "path": "docs/manual/simple_parallel.md",
+      "bytes": 3363,
+      "sha256": "3a1d5907f35b9d4f316a49b33b5aecaba886c6fa7bb09497417c067cf025889e"
+    },
+    {
+      "path": "examples/ColorChangingSprite.gd",
+      "bytes": 70,
+      "sha256": "6d5e90913fc9034c8015e685859ea17b19643bde49c4daa418985a02cfeb4061"
+    },
+    {
+      "path": "examples/ColorChangingSprite.gd.uid",
+      "bytes": 20,
+      "sha256": "f624c84094249f3f212bdc181ea910008c04b6c553d33a19b78bfc98d6371fd0"
+    },
+    {
+      "path": "examples/actions/SetModulateColor.gd",
+      "bytes": 766,
+      "sha256": "ae6b23ddc51abfdab4239c3f9e382901f9b712cdfa48016aa89fc0eea979759e"
+    },
+    {
+      "path": "examples/actions/SetModulateColor.gd.uid",
+      "bytes": 20,
+      "sha256": "187f818883a73454ab88fed3e46eb43a4898fb24287c2d3bc1a5ba126224fecf"
+    },
+    {
+      "path": "examples/actions/SetModulateColor.tscn",
+      "bytes": 254,
+      "sha256": "a57fb2b6aa9c20749907a18ce386249bc6e3c8f0c59ff7f3e65d02c119e23aff"
+    },
+    {
+      "path": "examples/beehave_test_scene.gd",
+      "bytes": 1477,
+      "sha256": "ca88085efc8733152b94ad3d3d31dab88051072006116fdb7231c4cfd5a9a341"
+    },
+    {
+      "path": "examples/beehave_test_scene.gd.uid",
+      "bytes": 20,
+      "sha256": "88ce629f814f45851de3b2b8a44a6105d05ae7c47b457de514681d05b8afdba9"
+    },
+    {
+      "path": "examples/beehave_test_scene.tscn",
+      "bytes": 6581,
+      "sha256": "a20ff5b459ce5e6f9a413eebb0468012ab107e75597b61797ba1f0e253efd3d2"
+    },
+    {
+      "path": "examples/conditions/HasNegativePosition.gd",
+      "bytes": 182,
+      "sha256": "f6e70adb170dfc2cae70122354697925adb4001c04815d02f0cd89a00dc59873"
+    },
+    {
+      "path": "examples/conditions/HasNegativePosition.gd.uid",
+      "bytes": 19,
+      "sha256": "f0889171d0eafbc6f340bc4e9727e7aec9b5db5b8edf2d70e9ae04ac7f6054b9"
+    },
+    {
+      "path": "examples/conditions/HasNegativePosition.tscn",
+      "bytes": 262,
+      "sha256": "4750c8bca6978a0df0c8f3d50893c7e86da3d6192667e4f6244e310252ce3c81"
+    },
+    {
+      "path": "examples/conditions/HasPositivePosition.gd",
+      "bytes": 213,
+      "sha256": "8e3c0760ab4eea77bc1ebf071412d1a489eb1d80670bc41b29efa22679f7d265"
+    },
+    {
+      "path": "examples/conditions/HasPositivePosition.gd.uid",
+      "bytes": 19,
+      "sha256": "f9ef7b92d4f448be94d4a13ac9d38e6eac1d8bc23b8d8782a513feeb91964551"
+    },
+    {
+      "path": "examples/conditions/HasPositivePosition.tscn",
+      "bytes": 262,
+      "sha256": "720993db1e77d38b5a7f93dac210936c4083660c723e71c4c5978add0b1d0e78"
+    },
+    {
+      "path": "examples/random_tree_example/RandomAction.gd",
+      "bytes": 960,
+      "sha256": "94187fd02d53aed7ef438d128d517bdabe51a818701fb61ec171c0ab318ee2e9"
+    },
+    {
+      "path": "examples/random_tree_example/RandomAction.gd.uid",
+      "bytes": 20,
+      "sha256": "12da59432fe064dcb40c1dac497764b7245a3eed486a1eb82541ed9ad81c705b"
+    },
+    {
+      "path": "examples/random_tree_example/RandomTree.gd",
+      "bytes": 1540,
+      "sha256": "b044d16dac40a2d2bcd19742a701518950ba3dc3b998992fab60fc3b458c6bd9"
+    },
+    {
+      "path": "examples/random_tree_example/RandomTree.gd.uid",
+      "bytes": 20,
+      "sha256": "9d997a989ef730499738957653b223865a3850380f359d209b7d66199ca43d90"
+    },
+    {
+      "path": "examples/random_tree_example/RandomTreeScene.tscn",
+      "bytes": 301,
+      "sha256": "e2f7b0991a60212f0aa82356aa472689e22298f34ae1bbd6de62d53413b67d1a"
+    },
+    {
+      "path": "icon.png",
+      "bytes": 87037,
+      "sha256": "650ea44bae3eb0facc60bab467ac9203225366ef4a11dc15aea3ff50a8a752a2"
+    },
+    {
+      "path": "icon.png.import",
+      "bytes": 916,
+      "sha256": "a4e8f4c9f8c429827d06f57fdc5039ca8c958c9ddb4991ad767b5a30fa0169da"
+    },
+    {
+      "path": "icon.svg",
+      "bytes": 14895,
+      "sha256": "cb7e1ab9dbb639ee06ae527ea6a868fb7593395865fad92af8e521cb1c3608b3"
+    },
+    {
+      "path": "icon.svg.import",
+      "bytes": 1013,
+      "sha256": "17647ff53f591336e56639f308f33dd1bdccdbcb2f878c94312ba0d920cac9f4"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 4287,
+      "sha256": "bc11901e6699593d8956014d398e476337e5e87248f895733b0a7db81d0f08eb"
+    },
+    {
+      "path": "runtest.cmd",
+      "bytes": 656,
+      "sha256": "47e7269a144cf52f818071b82d9fb630ed84599771e6cb99ef50633892e8e7d0"
+    },
+    {
+      "path": "runtest.sh",
+      "bytes": 396,
+      "sha256": "e9d8da1f53e8e40f54257567f6cb09c7a4f5c671cd42d77578877b5c83479b1f"
+    },
+    {
+      "path": "script_templates/.gdignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "script_templates/BeehaveNode/default.gd",
+      "bytes": 130,
+      "sha256": "a190f643290fefbe4e4e9d43baf85b5820de0c316a346ba8ddafb2c3e70cfe5b"
+    },
+    {
+      "path": "splash.png",
+      "bytes": 27859,
+      "sha256": "2363bdff74d11c8a6b2cd756b2a007eb071038f97b7166be7cc306583ac69073"
+    },
+    {
+      "path": "splash.png.import",
+      "bytes": 921,
+      "sha256": "3fd65f8ec3d6359f1eec3b69ce4652ea8e4a6d4882f7b0f3aea21622043e8f4d"
+    },
+    {
+      "path": "test/actions/clear_count_action.gd",
+      "bytes": 241,
+      "sha256": "33d4d3e26082cca40b50bf2345f4b3ef574b57603e2266adb52397dac973b148"
+    },
+    {
+      "path": "test/actions/clear_count_action.gd.uid",
+      "bytes": 20,
+      "sha256": "9baeab2ceb10ad02fe035c881defd2f1edcb744f48a64889a64e4f78ba1f1d67"
+    },
+    {
+      "path": "test/actions/count_up_action.gd",
+      "bytes": 431,
+      "sha256": "1b52d9ba5b6279f9282747c2660b837ee38c2f02e8bd2568c6c5a51119926cad"
+    },
+    {
+      "path": "test/actions/count_up_action.gd.uid",
+      "bytes": 19,
+      "sha256": "18ab259002be23c1cf45156d675d1e054ba97553578ff0c2e1f6d54c387c38b2"
+    },
+    {
+      "path": "test/actions/mock_action.gd",
+      "bytes": 954,
+      "sha256": "381496749f2f9bf08a5d714d17b8a74c5ef24568bc63bd24be185e66a86effbc"
+    },
+    {
+      "path": "test/actions/mock_action.gd.uid",
+      "bytes": 20,
+      "sha256": "7b105e22f0b28c92dfe9a0155e0dd921d81abf3c53f69469082599490508f928"
+    },
+    {
+      "path": "test/actions/no_return_action.gd",
+      "bytes": 115,
+      "sha256": "cf41c9f48075c9091236daf721d9bdfac85c6bf0d9cfe69f426b68f268297099"
+    },
+    {
+      "path": "test/actions/no_return_action.gd.uid",
+      "bytes": 20,
+      "sha256": "688e1f4202121bf84abbbe46d3493afc58c892f8980ba0458a7f3463af1968ed"
+    },
+    {
+      "path": "test/beehave_tree_test.gd",
+      "bytes": 7758,
+      "sha256": "a34d88fe76210695b2c22ad2e34937ecc63e69f8da597cf0a7ab293b87619b08"
+    },
+    {
+      "path": "test/beehave_tree_test.gd.uid",
+      "bytes": 20,
+      "sha256": "4bdc0bf902544cba39a94e7a16544b56340315fc30d0e4a1021508e915e12d21"
+    },
+    {
+      "path": "test/before_after_run_test.gd",
+      "bytes": 1681,
+      "sha256": "75b534150f16be4ae70fb3e6c7968e96260b6f4247abf90edb6669b1bc9fd58e"
+    },
+    {
+      "path": "test/before_after_run_test.gd.uid",
+      "bytes": 20,
+      "sha256": "edbaf90b2f09ff2a2bcb0019b41e18160a2cc395da3c908f7191929cf4832094"
+    },
+    {
+      "path": "test/blackboard/blackboard_register_action.gd",
+      "bytes": 138,
+      "sha256": "26d257608c49d57b08a5c01007721301615c7a9f5acd4eedf7e846d5ab8de5b7"
+    },
+    {
+      "path": "test/blackboard/blackboard_register_action.gd.uid",
+      "bytes": 19,
+      "sha256": "aa8802d3e57841210479c0a13e2ddad09ebd560aa0b0ae61f9868f2560215289"
+    },
+    {
+      "path": "test/blackboard/blackboard_test.gd",
+      "bytes": 4408,
+      "sha256": "4b6d769bbf174d650568629ede3b36861bc4bd8a4795496d0bd887e4b27c78e4"
+    },
+    {
+      "path": "test/blackboard/blackboard_test.gd.uid",
+      "bytes": 19,
+      "sha256": "939f6282e842cc18944cf7abbc793192cd26fc9f1bddb979bc7e0f14729cded4"
+    },
+    {
+      "path": "test/blackboard/shared_blackboard_scene.gd",
+      "bytes": 195,
+      "sha256": "c61a57a0deffa17d699d4c99606dc9f3db22fb91a45d40f318a1611648a2d123"
+    },
+    {
+      "path": "test/blackboard/shared_blackboard_scene.gd.uid",
+      "bytes": 20,
+      "sha256": "bda5dd22f4078ceb5d95bf794ce97f8cb9096f7bd48c3378cf0971bd997c72e8"
+    },
+    {
+      "path": "test/blackboard/shared_blackboard_scene.tscn",
+      "bytes": 1541,
+      "sha256": "153dea55579ebe75b6d9234233187c5189797e553ea5221fb9be698e0f5d7e99"
+    },
+    {
+      "path": "test/composites/mock_composite.gd",
+      "bytes": 333,
+      "sha256": "5c5e041ee63d7a2927505135b96cf3258c6bbe203321ba2ff4947335a0ece6ff"
+    },
+    {
+      "path": "test/composites/mock_composite.gd.uid",
+      "bytes": 19,
+      "sha256": "73a01fcb648a31c65657f9c83149ae2d73ca356c435bed0c79d2e2653351ded6"
+    },
+    {
+      "path": "test/conditions/value_reached_condition.gd",
+      "bytes": 259,
+      "sha256": "1d25970bd4f759e56c350e83bc1fc76c6cf4bd3b266c0940f0d593270ac3b182"
+    },
+    {
+      "path": "test/conditions/value_reached_condition.gd.uid",
+      "bytes": 19,
+      "sha256": "c46817c8f3aa7a64c463796362002c3f1ccaf04bae905dcece35de24868daa91"
+    },
+    {
+      "path": "test/debug/debugger_test.gd",
+      "bytes": 647,
+      "sha256": "392e7c92fbe20c1fa24cb15c908bd3e1382602d89c4bd55740606f955ce4911d"
+    },
+    {
+      "path": "test/debug/debugger_test.gd.uid",
+      "bytes": 20,
+      "sha256": "6c154ad9a217b4455492c8a7bc5c3a666fd0d88e3fd9c2fa591eb5abb6a53d9b"
+    },
+    {
+      "path": "test/debug/debugger_test_scene.gd",
+      "bytes": 323,
+      "sha256": "4d5ba4e86ce0e71ce9dfdaa53a80e091cf2025211c0391c2cb7f761c37d91415"
+    },
+    {
+      "path": "test/debug/debugger_test_scene.gd.uid",
+      "bytes": 20,
+      "sha256": "b77655e1aff96801d34ed30be22f63a48e166a17024110d75f7f039d5862cced"
+    },
+    {
+      "path": "test/debug/debugger_test_scene.tscn",
+      "bytes": 2330,
+      "sha256": "2d329ff85d488d7fc84622762869d838882aa5490bdd680773164608e0c7d740"
+    },
+    {
+      "path": "test/e2e_test.gd",
+      "bytes": 1179,
+      "sha256": "3e5514ea18db30b63729c2b9ff879f0329c6bb75827818254dfb2d9818d9014f"
+    },
+    {
+      "path": "test/e2e_test.gd.uid",
+      "bytes": 20,
+      "sha256": "53604e4de95a0a5a4c3b7cbc7fc5323c3ab5c75943c4b81c949b6a9a2edc9b71"
+    },
+    {
+      "path": "test/nodes/composites/selector_random_test.gd",
+      "bytes": 2704,
+      "sha256": "12de8c636cd3d08ddc8eb4578b3803b24d3feb2e2cf2ad4b7b45f2755be8b304"
+    },
+    {
+      "path": "test/nodes/composites/selector_random_test.gd.uid",
+      "bytes": 18,
+      "sha256": "cf271252e5f9261f471fe8ddf1003a606a19803502362f67f19c2e1ef4037b80"
+    },
+    {
+      "path": "test/nodes/composites/selector_reactive_test.gd",
+      "bytes": 12221,
+      "sha256": "5ce0120e5319d88abb0eb5d22c7205f9228ef63e8cbd641d0251aa2fcda5c1d2"
+    },
+    {
+      "path": "test/nodes/composites/selector_reactive_test.gd.uid",
+      "bytes": 19,
+      "sha256": "5181b0da6d049fc2dbb1bc8341555fb85d3b05aac6a0acdd6c7a8e94eaa9507c"
+    },
+    {
+      "path": "test/nodes/composites/selector_test.gd",
+      "bytes": 17295,
+      "sha256": "a08797ec7804b4d98c2c804f748357d815380489fe8766556e028dc5db4fabc8"
+    },
+    {
+      "path": "test/nodes/composites/selector_test.gd.uid",
+      "bytes": 20,
+      "sha256": "3454eedd2e65f66e76bc6074dd3bb8fba36e4bf2be0b867bb1e7bcae67bd3983"
+    },
+    {
+      "path": "test/nodes/composites/sequence_random_test.gd",
+      "bytes": 3393,
+      "sha256": "4104a91c8d3dbc8f56b363509227dc544baf22d6e7395d5f5154955b7c59c254"
+    },
+    {
+      "path": "test/nodes/composites/sequence_random_test.gd.uid",
+      "bytes": 20,
+      "sha256": "84421d8769e9a00dccdf38da15b61e4e0962cc6f31498442b31659bf0e65d30d"
+    },
+    {
+      "path": "test/nodes/composites/sequence_reactive_test.gd",
+      "bytes": 9832,
+      "sha256": "84e01344568826187eba0761a5d279c62d300b4eb61fcd5ff0e2aad2b994a73d"
+    },
+    {
+      "path": "test/nodes/composites/sequence_reactive_test.gd.uid",
+      "bytes": 19,
+      "sha256": "b257f751d64bf50c15822c2cd6349aa58e68b297a7cf065056567756bdaaa831"
+    },
+    {
+      "path": "test/nodes/composites/sequence_star_test.gd",
+      "bytes": 10476,
+      "sha256": "a52032d5abcf7e9a8167be92c9090977736717a4a49d483dfe228ee8b9ced423"
+    },
+    {
+      "path": "test/nodes/composites/sequence_star_test.gd.uid",
+      "bytes": 19,
+      "sha256": "8c0c88f7207f07a18df69926763409826873f1d56f39e7834fcac3d457158887"
+    },
+    {
+      "path": "test/nodes/composites/sequence_test.gd",
+      "bytes": 9683,
+      "sha256": "d7fca8ed25d2646919094d70e7bbda89823821aa8298066f8ea326ec07ffc54c"
+    },
+    {
+      "path": "test/nodes/composites/sequence_test.gd.uid",
+      "bytes": 20,
+      "sha256": "c84befefb8077cc916de1c100a5dccbac898d8b4f76b527c79e0777b73d070e8"
+    },
+    {
+      "path": "test/nodes/composites/simple_parallel_test.gd",
+      "bytes": 6596,
+      "sha256": "d86c01ff6772eec5a2bebff00455fece4be21ba932a254bceec7d77a1c1e16de"
+    },
+    {
+      "path": "test/nodes/composites/simple_parallel_test.gd.uid",
+      "bytes": 19,
+      "sha256": "296b388517db4c65b8ed497ca0772c9dbf71bf42b501148a339bde65da53d876"
+    },
+    {
+      "path": "test/nodes/decorators/cooldown_test.gd",
+      "bytes": 5532,
+      "sha256": "a3a1003c5113e40dee4cfae6543f7cbbcce7bc83b27339befeff23e3c716f2de"
+    },
+    {
+      "path": "test/nodes/decorators/cooldown_test.gd.uid",
+      "bytes": 19,
+      "sha256": "e48c8640bf107a84c789ae6efd961151281620e5d0fa4ed9c692370b9a3bda0e"
+    },
+    {
+      "path": "test/nodes/decorators/delayer_test.gd",
+      "bytes": 5632,
+      "sha256": "8dce44ad37d032f00d568528e0576ee4dbe017f41f8c6abb3841998d5600cab4"
+    },
+    {
+      "path": "test/nodes/decorators/delayer_test.gd.uid",
+      "bytes": 20,
+      "sha256": "0439b379fe9e03fc1c32fdf99938332fd1c24a0325d1d889651bc11eb3305701"
+    },
+    {
+      "path": "test/nodes/decorators/failer_test.gd",
+      "bytes": 1223,
+      "sha256": "c964297324418e67865350b43a7e7ca57b5a53c3f66bdc37344f5d937b69adf4"
+    },
+    {
+      "path": "test/nodes/decorators/failer_test.gd.uid",
+      "bytes": 20,
+      "sha256": "859003dca80f4e05420554c8d7b775d65fb2d9fa4bce916d4371fa339571a4fb"
+    },
+    {
+      "path": "test/nodes/decorators/inverter_test.gd",
+      "bytes": 1400,
+      "sha256": "792656c725ef07491d185ec82af881c0658cc2487cbac1f7cae223a2bd05a383"
+    },
+    {
+      "path": "test/nodes/decorators/inverter_test.gd.uid",
+      "bytes": 19,
+      "sha256": "6cfc1f0c0f6b7226b2f5e53503744ce211e5d873ecf781b8f32df3e147e92ad8"
+    },
+    {
+      "path": "test/nodes/decorators/limiter_test.gd",
+      "bytes": 2691,
+      "sha256": "db21ad80b72fec5a8a6c4f58d63b4a5b7e3cdcec0d8a5a097f7f65843192be9d"
+    },
+    {
+      "path": "test/nodes/decorators/limiter_test.gd.uid",
+      "bytes": 20,
+      "sha256": "bdd024c9c16e65f629438b7503bde85640407520d14f4b0f593786d76346bcea"
+    },
+    {
+      "path": "test/nodes/decorators/repeater_test.gd",
+      "bytes": 3361,
+      "sha256": "15dac5edf61a20ff8ffd6a79417bf8e1c5554f7a0a316363aa51d49017863f36"
+    },
+    {
+      "path": "test/nodes/decorators/repeater_test.gd.uid",
+      "bytes": 19,
+      "sha256": "d0c565d4e46cde6aceb8fbc67747f1b6ebf9d04daaea1aa662e6c55154c4355a"
+    },
+    {
+      "path": "test/nodes/decorators/succeeder_test.gd",
+      "bytes": 1250,
+      "sha256": "c42227dab14fe4959ddab9c68946896aad4419228f38ad579278d32ea6211073"
+    },
+    {
+      "path": "test/nodes/decorators/succeeder_test.gd.uid",
+      "bytes": 19,
+      "sha256": "d55b0bf707ab06a105559d2f6dd3dc551a9b9b3d9473be97d1024794ad3d4f9d"
+    },
+    {
+      "path": "test/nodes/decorators/time_limiter_test.gd",
+      "bytes": 2616,
+      "sha256": "ab8a1d6ee0adf6f595e072172eda66f4f7a86422d438dc8ddb0a5384063e0706"
+    },
+    {
+      "path": "test/nodes/decorators/time_limiter_test.gd.uid",
+      "bytes": 20,
+      "sha256": "9e77be39dbe497cafa5c41533eb0cbf5707c129e8a79e03094163781c76d0f35"
+    },
+    {
+      "path": "test/nodes/decorators/until_fail_test.gd",
+      "bytes": 2185,
+      "sha256": "d80cc54a217d4db5707430577915ef0e288fa8c6232238083f72d83c85443924"
+    },
+    {
+      "path": "test/nodes/decorators/until_fail_test.gd.uid",
+      "bytes": 20,
+      "sha256": "4b0ac4657dc4aaf873753318afb6b0e06f38c4c9f798c9c92f3e6b849fe6b3e7"
+    },
+    {
+      "path": "test/nodes/leaves/actions/blackboard_erase_test.gd",
+      "bytes": 1252,
+      "sha256": "da1a9c0b5b25cd724e8ea46ae52753f003fdaa34cb206521ab099f37fa5c25a5"
+    },
+    {
+      "path": "test/nodes/leaves/actions/blackboard_erase_test.gd.uid",
+      "bytes": 20,
+      "sha256": "6f93dc565ea1afe53a24096b86590e97e9094e858ede4762dcecbbd4e518e87f"
+    },
+    {
+      "path": "test/nodes/leaves/actions/blackboard_set_test.gd",
+      "bytes": 2313,
+      "sha256": "e99dc026f63a16d60d0ff471186cee0ac0faa748aa8193dcc3f2165bd6d89170"
+    },
+    {
+      "path": "test/nodes/leaves/actions/blackboard_set_test.gd.uid",
+      "bytes": 20,
+      "sha256": "0d590bd3c7a30d83d71087a49c1079f97f0dc6ed3bf93aca0d7753458a27e531"
+    },
+    {
+      "path": "test/nodes/leaves/conditions/blackboard_compare_test.gd",
+      "bytes": 3671,
+      "sha256": "8129b527657d61d56cbd9510bade53be18292d56b60ef8607dce4ae23b0d8a29"
+    },
+    {
+      "path": "test/nodes/leaves/conditions/blackboard_compare_test.gd.uid",
+      "bytes": 19,
+      "sha256": "f15f6a14173684686e57946e1680ebabb12f6e6a34e4b2a244f46a7500955da2"
+    },
+    {
+      "path": "test/nodes/leaves/conditions/blackboard_has_test.gd",
+      "bytes": 1876,
+      "sha256": "c7ba680030cde1a8930f15ff5f00bfc9be91187f24608d7cc655f88ca3810019"
+    },
+    {
+      "path": "test/nodes/leaves/conditions/blackboard_has_test.gd.uid",
+      "bytes": 20,
+      "sha256": "d0646899f705bdab3718d3c9334fe82bfaac7f2c2cb86f79c51820a3e2fd978f"
+    },
+    {
+      "path": "test/randomized_composites/runtime_changes/RuntimeChangesTestScene.gd",
+      "bytes": 372,
+      "sha256": "953e5cdaa705cfb57b83bad540877eb2f56b855122f26cdfedc016c5fcac5102"
+    },
+    {
+      "path": "test/randomized_composites/runtime_changes/RuntimeChangesTestScene.gd.uid",
+      "bytes": 19,
+      "sha256": "c67ac6d9ebe00c20523b1b86e238d7b8f7355f1381251807d8ed88e2c49e5d72"
+    },
+    {
+      "path": "test/randomized_composites/runtime_changes/RuntimeChangesTestScene.tscn",
+      "bytes": 1402,
+      "sha256": "1579e7663bf6739d98fc0b79db876d37ac1cc459676b07648e2b87bcc3743efb"
+    },
+    {
+      "path": "test/randomized_composites/runtime_changes/runtime_changes_test.gd",
+      "bytes": 3940,
+      "sha256": "39eda22ac0cd7d25488fa9fc0f1b1ce9afbcc7624bd63a4e238c3d7f3aeaee46"
+    },
+    {
+      "path": "test/randomized_composites/runtime_changes/runtime_changes_test.gd.uid",
+      "bytes": 20,
+      "sha256": "02a79bb6230ba2946ed3ccc96142d81be871877a7d680b3e7b241e62e06f6694"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/selector_random/SelectorRandomWeights.tscn",
+      "bytes": 1906,
+      "sha256": "3894607f59f0f2ff95cb30bb1c40d1322d52874925c368a31df892406761d965"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/selector_random/selector_random_weights.gd",
+      "bytes": 1299,
+      "sha256": "0ba91384b501af3091576e0518cf2603c6c05b5afbeb39d7b23acbcf4456ac39"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/selector_random/selector_random_weights.gd.uid",
+      "bytes": 20,
+      "sha256": "a67b73ce025a6e33a23662f00cd130019c74c0b25d03da008c8643657df9c2f9"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/selector_random/selector_random_weights_test.gd",
+      "bytes": 1119,
+      "sha256": "675651473ee263629661a35431ebc169918a593eee40536e264c05b177a74b4a"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/selector_random/selector_random_weights_test.gd.uid",
+      "bytes": 20,
+      "sha256": "4e9414784ede63f36d21060e36e370224882074616904ba780f38368534df7be"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/sequence_random_weights/SequenceRandomWeights.tscn",
+      "bytes": 1525,
+      "sha256": "17f9e11b059f5d789a41c0d73a5935df11da875cbfdfce468d20e53c8a3b9cc9"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/sequence_random_weights/sequence_random_weights.gd",
+      "bytes": 999,
+      "sha256": "69e23c3d34f6e3d88cf0d103dde67e1df1b5f291a8ceb3679423bc7e077175c0"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/sequence_random_weights/sequence_random_weights.gd.uid",
+      "bytes": 20,
+      "sha256": "cd0bb5cf18d8a5f8e77c4e9cecb786dbf4f9b05a710972f160a3ddad32be15ce"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/sequence_random_weights/sequence_random_weights_test.gd",
+      "bytes": 1320,
+      "sha256": "71a5915cf0118277923aefea5676ca82b55db73fed3523fc6b58179b1fbbbfd0"
+    },
+    {
+      "path": "test/randomized_composites/weighted_sampling/sequence_random_weights/sequence_random_weights_test.gd.uid",
+      "bytes": 20,
+      "sha256": "1b26ab76419bf3fa1196ae2af95a64791c739570b37b3211f9f90c10ca39f244"
+    },
+    {
+      "path": "test/unit_test_scene.gd",
+      "bytes": 418,
+      "sha256": "438043839c30626dff79f8bfdf78b5cd4771a98c710f38dfa5e99b4000cc410f"
+    },
+    {
+      "path": "test/unit_test_scene.gd.uid",
+      "bytes": 20,
+      "sha256": "caa78b100fe7adab2e137fb3bd9d65b00effcc9195a26de2eab036e6fb938afa"
+    },
+    {
+      "path": "test/unit_test_scene.tscn",
+      "bytes": 6187,
+      "sha256": "fe00d02310ac4d12fb06681d11b9be2bc3f27f94b44dc5498fd1415f246f8234"
+    }
+  ],
+  "modified": [
+    {
+      "path": "addons/beehave/LICENSE",
+      "bytes": 1065,
+      "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+    },
+    {
+      "path": "addons/beehave/blackboard.gd",
+      "bytes": 2775,
+      "sha256": "e1b980ce875b611f5881d158c4cce4d61b92ce8f27e09101304e8014706c10b6"
+    },
+    {
+      "path": "addons/beehave/debug/debugger_messages.gd",
+      "bytes": 1234,
+      "sha256": "eca1179c6b0edf438a1cc0a24505f6d263fb7ad6fd3ccd792a3e72cababda1dd"
+    },
+    {
+      "path": "addons/beehave/debug/global_debugger.gd",
+      "bytes": 2284,
+      "sha256": "b16bf6aa5aefe14ae8bf1a1f36a193f1b283b83082d7a6124e8c20815500aa95"
+    },
+    {
+      "path": "addons/beehave/icons/action.svg",
+      "bytes": 2972,
+      "sha256": "ba828aac24fb0b0b3628584a28ab23884bd901d918f1bd752c5994f8f2c85ef7"
+    },
+    {
+      "path": "addons/beehave/icons/blackboard.svg",
+      "bytes": 1477,
+      "sha256": "7da2bb26b844fd0019291a19d546ade341a7da1165241806d2ade658f093bf17"
+    },
+    {
+      "path": "addons/beehave/icons/category_composite.svg",
+      "bytes": 3927,
+      "sha256": "0bd205e2c50fb60ef83b6623f7e517318518ed8c6630d8d6046b4c93362ce34b"
+    },
+    {
+      "path": "addons/beehave/icons/category_leaf.svg",
+      "bytes": 3922,
+      "sha256": "47036e92cfc0dc0763317436a9b479c30d19535b733372ac7f35d1299d4b19c4"
+    },
+    {
+      "path": "addons/beehave/icons/condition.svg",
+      "bytes": 2282,
+      "sha256": "b74361149c872841dea828d22df454c18a72cbaeffe349a7c4b9a557102c5825"
+    },
+    {
+      "path": "addons/beehave/icons/selector_reactive.svg",
+      "bytes": 3653,
+      "sha256": "926cd7c08bdeb393821948f4620114f482d055ef93bd3a9c5c85a24fb7136d05"
+    },
+    {
+      "path": "addons/beehave/icons/sequence_reactive.svg",
+      "bytes": 6352,
+      "sha256": "3dba15203938983dc90e4e42cb5bdbd42b702b23526e68d03900798d14fddf21"
+    },
+    {
+      "path": "addons/beehave/icons/tree.svg",
+      "bytes": 1882,
+      "sha256": "16734d9875af0369285e0325a26f86850e2ddd1ffece3d609abc9cd10b1897ba"
+    },
+    {
+      "path": "addons/beehave/metrics/beehave_global_metrics.gd",
+      "bytes": 1626,
+      "sha256": "88435469b995273f3e820e45841d8c11464173be7690a9eb5c01376167e018e8"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_node.gd",
+      "bytes": 1568,
+      "sha256": "2a3ad20306ed422f913bacd7622fc879f955c8a9038c71bfed7e6bd1c4ee8f7b"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_tree.gd",
+      "bytes": 9633,
+      "sha256": "6ed3f775c7f805a96b085201cfa9d1c675eb6b2982fb97c887cb1eb0477e3f71"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/composite.gd",
+      "bytes": 1584,
+      "sha256": "ad66c856aaea30e3a30ff3ea5d946fd87c0c975e51970a6be9b82e49ff2ffeff"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector_reactive.gd",
+      "bytes": 3080,
+      "sha256": "89f816b20017d6cae35570c9fe4dbc8208d60d91dd3a75c6d4e49ff79653a456"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_reactive.gd",
+      "bytes": 2870,
+      "sha256": "88b7906adb24c513c54260902b5fb8176f42f6820f3caf0c58f94f2f6f9cd987"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/action.gd",
+      "bytes": 450,
+      "sha256": "f58cfabe40847d88527cb627b63eca3cc7f930c4678e58d3c605f2afb5892959"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/condition.gd",
+      "bytes": 348,
+      "sha256": "c7e709c0fcc3b5086c9353354e79ec92c9dff658023fae58aad54e917989b980"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/leaf.gd",
+      "bytes": 1261,
+      "sha256": "91248861a01ddd2e2b30e1786654a9063232dcc93a8c59235c72589ae38d6f5c"
+    },
+    {
+      "path": "export_presets.cfg",
+      "bytes": 1090,
+      "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 453,
+      "sha256": "9c5e2cdf56e065adb6c6bd15409bd8b3b0d271d095ae38206e785287bb5ec71a"
+    },
+    {
+      "path": "trial.gd",
+      "bytes": 5592,
+      "sha256": "262525ea9339f5f451f47b5172494246ee2935e7c44cf50ce023266528a044f8"
+    },
+    {
+      "path": "trial.tscn",
+      "bytes": 151,
+      "sha256": "ce9ff8446e3530f7296db9ca4c07cb82a5c0b1270ae275d0d2dea819fa4a87ae"
+    }
+  ]
+}
