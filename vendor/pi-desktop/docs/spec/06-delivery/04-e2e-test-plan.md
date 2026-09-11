@@ -9560,3 +9560,7 @@ Hold an authorized creation application's completion while its core check is alr
 ### CM-IW-06: complete Windows installer inputs
 
 Invoke Windows electron-builder without staged resources and require a failure before installer creation. Stage the matching clean commit through desktop/build-client.ps1, then verify the generated installer payload and directory package. Missing world plugin, broker, engine, Git, source archive or build manifest is a failure. Stale plugin/client output hashes must fail beforePack even when all files exist. Installer existence and electron-builder exit status alone are insufficient.
+
+### CM-PROMO-01: one current wish through the isolated evaluator
+
+An opted-in isolated profile submits only a current player id/text through normal target capture and agentPrompt. Reject malformed requests, evaluator answer fields, concurrent submissions and fixed continuity suites. A claim survives restart and world/session changes, so a lost reply never resends the wish; read its state and original message identity. The existing whole-profile provider-request fence remains active. Journal submission alone never marks functionality, adoption, visual quality or gameplay as passed.

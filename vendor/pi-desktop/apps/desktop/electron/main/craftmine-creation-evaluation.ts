@@ -2,6 +2,7 @@ import type { MainWindow } from "./main-window";
 // Opt-in evaluator of the actual renderer -> host -> model -> product tool path.
 // It is reachable only in an already validated, isolated headless profile.
 import {createEvaluationBudget} from "./creation-evaluation-budget";
+import {createEvaluationWishJournal,parseEvaluationWish} from "./creation-evaluation-wish";
 import {evaluationGroundHasSpace} from "./creation-evaluation-placement";
 import {assertEvaluationSession,recordEvaluationSession} from "./creation-evaluation-session";
 import {continuityEvaluationConfiguration,claimContinuityAction,assertContinuityRequest} from './creation-continuity-evaluation';
@@ -25,13 +26,15 @@ export function installCreationEvaluation(access:Access){
   if(!access.enabled||process.env.CRAFTMINE_CREATION_EVAL!=="1"||!process.send)return;
   const continuity=continuityEvaluationConfiguration(process.env);
   requestBudget=createEvaluationBudget(process.env.CRAFTMINE_DATA_DIR??"",continuity?.limit??40);
+  const wishes=createEvaluationWishJournal(process.env.CRAFTMINE_DATA_DIR??"");
+  let submittingWish=false;
   let sessionId="";const submitted=new Set<string>();
   continuityRequestGuard=continuity?context=>assertContinuityRequest(continuity,context,sessionId,()=>access.call('session.get',{id:sessionId})):undefined;
   const desktop=async(source:string)=>{const window=access.window();if(!window||window.isDestroyed())throw Error("EVALUATION_WINDOW_UNAVAILABLE");return window.webContents.executeJavaScript(source,false);};
   const invoke=(name:string,args:unknown)=>desktop(`piDesktop.invoke(piDesktop.channels.invoke[${JSON.stringify(name)}],${JSON.stringify(args)})`);
   const register=async(session:any)=>{const list=await access.call("providers.list",{});const provider=list.providers?.find((item:any)=>item.id===session?.providerId);recordEvaluationSession(process.env.CRAFTMINE_DATA_DIR??"",assertEvaluationSession(session,provider,process.env.CRAFTMINE_EVAL_MODEL??"",process.env.CRAFTMINE_EVAL_THINKING??"high"));};
   const panel=(channel:string,payload:Record<string,unknown>)=>desktop(`piDesktop.pluginPanelInvoke("craftmine.world",${JSON.stringify(channel)},${JSON.stringify(payload)})`);
-  const run=async(method:string,caseId?:string):Promise<any>=>{
+  const run=async(method:string,caseId?:string,wishInput?:unknown):Promise<any>=>{
     if(method==="initialize"){
       if(sessionId)throw Error("EVALUATION_ALREADY_INITIALIZED");
       const modelId=process.env.CRAFTMINE_EVAL_MODEL??"",secret=process.env.CRAFTMINE_EVAL_KEY??"";
@@ -53,6 +56,22 @@ export function installCreationEvaluation(access:Access){
       return {sessionId,modelId};
     }
     if(!sessionId)throw Error("EVALUATION_NOT_INITIALIZED");
+    if(method==="wish-state")return {sessionId,wishes:wishes.snapshot(),budget:requestBudget?.snapshot()};
+    if(method==="wish"){
+      if(continuity||submittingWish||access.active(sessionId))throw Error("EVALUATION_WISH_BUSY_OR_FIXED_SUITE");
+      const wish=parseEvaluationWish(wishInput);
+      if(requestBudget!.snapshot().remaining===0)throw Error("EVALUATION_REQUEST_LIMIT");
+      submittingWish=true;
+      try {
+        const target=await panel('godot.creationTarget',{sessionId});
+        if(!target?.captureId||!target.worldId)throw Error("EVALUATION_TARGET_UNAVAILABLE");
+        const claim=wishes.claim(wish,sessionId,target.worldId);
+        try {
+          const result=await invoke("agentPrompt",{sessionId,viewingSessionId:sessionId,messageId:claim.messageId,content:wish.text,requestContext:{creationTarget:{captureId:target.captureId}}});
+          wishes.finish(wish.id,"submitted");return {wishId:wish.id,content:wish.text,messageId:claim.messageId,target,result};
+        }catch(error){wishes.finish(wish.id,"uncertain");throw error;}
+      }finally{submittingWish=false;}
+    }
     if(method==='prepare-continuity'){
       if(!continuity||caseId!==continuity.entry.id||access.active(sessionId)||requestBudget!.snapshot().reserved!==0)throw Error('CONTINUITY_PREPARE_DENIED');
       claimContinuityAction(continuity,'prepare');
@@ -173,7 +192,8 @@ export function installCreationEvaluation(access:Access){
   };
   process.on("message",(message:any)=>{
     if(message?.type!=="craftmine-creation-evaluation"||typeof message.id!=="string")return;
-    if(Object.keys(message).some(k=>!["type","id","method","caseId"].includes(k)))return;
-    void run(message.method,message.caseId).then(result=>process.send?.({type:message.type,id:message.id,result}),error=>process.send?.({type:message.type,id:message.id,error:String(error?.message??error)}));
+    if(Object.keys(message).some(k=>!["type","id","method","caseId","wish"].includes(k)))return;
+    if(message.wish!==undefined&&message.method!=="wish")return;
+    void run(message.method,message.caseId,message.wish).then(result=>process.send?.({type:message.type,id:message.id,result}),error=>process.send?.({type:message.type,id:message.id,error:String(error?.message??error)}));
   });
 }
