@@ -1,0 +1,45 @@
+{
+  "format": "craftmine.godot-component/1",
+  "id": "natural-daylight",
+  "version": "1.0.0",
+  "license": "MIT",
+  "origin": "Craftmine World original authored resources; no third-party imagery",
+  "engineVersion": "4.7.2-stable",
+  "renderer": "gl_compatibility",
+  "entry": "natural_daylight.gd",
+  "method": "apply_to",
+  "activation": "explicit-source-integration-only",
+  "progressMutation": false,
+  "files": [
+    {
+      "path": "natural_daylight.gd",
+      "bytes": 1397,
+      "sha256": "5e9b55208db53c25ef54f110b7a90ddc054b616ab5cbc690def1e568e9a90f25"
+    },
+    {
+      "path": "ground.tres",
+      "bytes": 695,
+      "sha256": "3eb5a9cd08353d7e09c50ce5df744e4a5b5c45f210125c10768dcd3afd1c0bda"
+    },
+    {
+      "path": "boundary.tres",
+      "bytes": 195,
+      "sha256": "c9b67111e903febc9323947b9270c99b991f50bb8f9102020e9a1037511cb33a"
+    },
+    {
+      "path": "environment.tres",
+      "bytes": 679,
+      "sha256": "82f1709aa4f4442325165fd2f556131aaf7f547178f6c45a1eb6e3a76403a9fb"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2532,
+      "sha256": "352f100f8acdfcb1dd8282083458abf5b7dd46d7275ed4be29cd19c37422ef8d"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1410,
+      "sha256": "0730faa06afabf9a87e0f971e362faf1a3cb5cd6037ab15a5553f1a632293bf5"
+    }
+  ]
+}
