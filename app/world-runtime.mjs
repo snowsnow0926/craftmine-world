@@ -45,14 +45,14 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
   const {VoxelRuntime,B,index,basis}=WorldRuntime;
   class BlankRuntime extends VoxelRuntime {
     bindInput() {
-      this.listen(document,'pointerlockchange',()=>{this.locked=document.pointerLockElement===this.canvas;this.input=this.locked;this.keys.clear();enter.hidden=this.locked;});
-      this.listen(document,'pointerlockerror',()=>{if(!isFrozen()){this.input=true;inform('按住画面拖动环顾，WASD 移动');}});
+      this.listen(document,'pointerlockchange',()=>{this.locked=document.pointerLockElement===this.canvas;if(this.locked&&(!this.active||isFrozen()||!this.input)){this.pauseInput();return;}this.input=this.locked;this.keys.clear();this.syncCursor();enter.hidden=this.locked;});
+      this.listen(document,'pointerlockerror',()=>{if(!isFrozen()&&this.active&&this.input){this.syncCursor();inform('按住画面拖动环顾，WASD 移动');}});
       this.listen(document,'mousemove',e=>{if(!isFrozen()&&this.active&&this.input&&(this.locked||this.dragging)){this.p.yaw-=e.movementX*.0022;this.p.pitch=Math.max(-1.52,Math.min(1.52,this.p.pitch-e.movementY*.0022));}});
-      this.listen(this.canvas,'pointerdown',e=>{if(isFrozen()||this.play?.dead)return;this.input=true;this.canvas.focus();if(!this.locked){this.dragging=true;this.canvas.setPointerCapture(e.pointerId);}else if(e.button===0)this.attack();enter.hidden=true;});
+      this.listen(this.canvas,'pointerdown',e=>{if(isFrozen()||!this.active||this.play?.dead)return;if(!this.locked){this.enter();this.dragging=true;this.canvas.setPointerCapture(e.pointerId);}else if(e.button===0)this.attack();enter.hidden=true;});
       for(const type of ['pointerup','pointercancel','lostpointercapture'])this.listen(this.canvas,type,()=>this.dragging=false);
       this.listen(this.canvas,'contextmenu',e=>e.preventDefault());
       this.listen(document,'keydown',e=>{
-        if(isFrozen())return;
+        if(isFrozen()||!this.active||/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;
         if(e.code==='KeyT'&&!e.repeat){e.preventDefault();this.pauseInput();enter.hidden=false;send('agent',{selected:this.target?.treeId||null});return;}
         if(e.code==='Escape'){this.pauseInput();enter.hidden=false;return;}
         if(e.code==='Enter'&&this.play?.dead){this.revive();return;}

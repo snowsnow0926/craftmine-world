@@ -82,7 +82,7 @@ func _ready() -> void:
 		rule_nodes[definition.id] = rule
 	_update_time()
 	ready_for_play = true
-	status_label.text = "WASD 移动 · E 互动 · F2 创作"
+	status_label.text = "WASD 移动 · E 互动 · F2 对话 · Shift+F2 工作台"
 
 func _fail(message: String) -> void:
 	failure = message

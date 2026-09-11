@@ -35,7 +35,14 @@ func _ready() -> void:
 		push_warning("PlayerController has no CameraRig child")
 
 
+func _notification(what: int) -> void:
+	if what in [NOTIFICATION_PAUSED, NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+		set_captured(false)
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if not input_enabled or get_tree().paused:
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and not captured:
 		if capture_mouse_on_click and input_enabled and DisplayServer.get_name() != "headless":
 			set_captured(true)
@@ -103,10 +110,13 @@ func walk(axis: Vector2, frames: int) -> void:
 
 
 func set_captured(value: bool) -> void:
+	if value and (not input_enabled or get_tree().paused or DisplayServer.get_name() == "headless"):
+		return
 	if captured == value:
 		return
 	captured = value
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if captured else Input.MOUSE_MODE_VISIBLE
+	if DisplayServer.get_name() != "headless":
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if captured else Input.MOUSE_MODE_VISIBLE
 	capture_changed.emit(captured)
 
 

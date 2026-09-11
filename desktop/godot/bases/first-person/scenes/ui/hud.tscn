@@ -91,7 +91,7 @@ offset_top = -56.0
 offset_right = 900.0
 offset_bottom = -20.0
 modulate = Color(1, 1, 1, 0.55)
-text = "WASD move  ·  Space jump  ·  LMB attack  ·  R reload  ·  E interact  ·  1 / 2 / Q switch  ·  F5 save  ·  Esc release mouse"
+text = "WASD move · Space jump · LMB attack · R reload · E interact · 1 / 2 / Q switch\nF2 chat · Shift+F2 workbench · F5 save · Esc release mouse"
 
 [node name="MessageLabel" type="Label" parent="Root"]
 anchor_left = 0.5
