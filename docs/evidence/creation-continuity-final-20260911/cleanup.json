@@ -1,0 +1,30 @@
+{
+  "format": "craftmine.continuity-cleanup/1",
+  "startedAt": "2026-09-11T08:41:48.1122411Z",
+  "archive": "D:\\Craftmine-Continuity-Archive-20260911",
+  "removed": [
+    {
+      "archivedTip": "1792bb9be78193c42a09f041e41c3cca294ba108",
+      "branch": "codex/creation-continuity-context-20260911",
+      "path": "D:\\cm-c2-context"
+    },
+    {
+      "archivedTip": "1ff93da115e68a9a13c1093056bde37b7fe8495d",
+      "branch": "codex/creation-continuity-edit-20260911",
+      "path": "D:\\cm-c2-edit"
+    },
+    {
+      "archivedTip": "fcead166f079d3c90d0e859ade3e1c72128aac11",
+      "branch": "codex/creation-continuity-wishes-20260911",
+      "path": "D:\\cm-c2-wishes"
+    },
+    {
+      "archivedTip": "03820f6c356ee49e215a4513e687207a09cb4863",
+      "branch": "codex/creation-continuity-20260911",
+      "path": "D:\\cm-c2-root"
+    }
+  ],
+  "complete": true,
+  "otherWorktreesPreserved": 78,
+  "finishedAt": "2026-09-11T08:42:32.5102911Z"
+}

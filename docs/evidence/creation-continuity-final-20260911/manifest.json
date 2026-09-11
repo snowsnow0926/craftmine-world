@@ -48,6 +48,12 @@
       "source": "D:/cm-c2-edit/test-results/creation-continuity-LaPyNi/report.json",
       "bytes": 4889,
       "sha256": "4f9c7637442c18ecc663262fd7a4e308765b2a67001d982e5cfd9c53f7c7d72f"
+    },
+    {
+      "file": "cleanup.json",
+      "source": "D:\\Craftmine-Continuity-Archive-20260911\\cleanup.json",
+      "bytes": 981,
+      "sha256": "5dcd53ded9bf57e797ae2b13cb1fa50a767dd0af92f4343412bc4e2f864fd880"
     }
   ],
   "archive": "D:/Craftmine-Continuity-Archive-20260911"

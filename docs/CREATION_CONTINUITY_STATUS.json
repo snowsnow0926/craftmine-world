@@ -2,7 +2,7 @@
   "format": "craftmine.creation-continuity/1",
   "plan": "docs/CREATION_CONTINUITY_AND_PREVIEW11_PLAN_2026-09-11.md",
   "baseline": "fa9f7247",
-  "status": "closing_user_requested_scope",
+  "status": "closed_at_user_request_with_deferred_validation",
   "stages": {
     "CN0": {
       "status": "complete",
@@ -49,8 +49,11 @@
       ]
     },
     "CN7": {
-      "status": "in_progress",
-      "evidence": []
+      "status": "complete",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_DELIVERY_2026-09-11.md",
+        "docs/evidence/creation-continuity-final-20260911/cleanup.json"
+      ]
     }
   },
   "modelEvaluation": {
@@ -76,7 +79,8 @@
     "portable": "D:/Craftmine-World-preview.11/Craftmine-World-preview.11-portable.zip",
     "installPayloadVerified": true,
     "buildSourceCommit": "cdfd175c0f6a51366d16428b0d2b67e32951a557",
-    "packagedNativeChecks": 26
+    "packagedNativeChecks": 26,
+    "worktreesRemoved": 4
   },
-  "updatedAt": "2026-09-11T08:40:45.089Z"
+  "updatedAt": "2026-09-11T08:43:09.340Z"
 }
