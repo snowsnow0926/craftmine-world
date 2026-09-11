@@ -40,7 +40,7 @@
     {
       "id": "GU3",
       "status": "in-progress",
-      "next": "Existing structured operations retained; exact advisory change summaries integrated, replay/source/save boundaries tested; generic configuration and incremental checks remain"
+      "next": "Finite natural sequence requests freeze existing IDs/colors/declared labels; nonspatial edit and undo placement fixed; generic parameters and incremental checks remain"
     },
     {
       "id": "GU4",
@@ -50,17 +50,17 @@
     {
       "id": "GU5",
       "status": "in-progress",
-      "next": "Structured diagnostics wired into both build-read paths; closed-loop repair and integrated player validation remain"
+      "next": "Durable task/session/job/candidate/budget recovery facts and real core restart test integrated; actual compaction/model-switch and closed-loop repair remain"
     },
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Kenney building/road packages cross two source worlds with texture/attribution closure and 29 separate LPAC/Web assertions; formal host adoption, persistent parameters and performance remain"
+      "next": "Kenney formal package check/adoption/cold reopen passed on sealed 2ae; GLB selection, parameter persistence, second formal world and performance remain; Beehave trial active"
     },
     {
       "id": "GU7",
       "status": "in-progress",
-      "next": "Ordinary blue-door/chest task: 13 model calls, normal manual adoption/cold reopen, actual block/pass/reclose and one-time reward across restart verified; repackage later source and continue full matrix"
+      "next": "First door/chest baseline plus same-session recolor continuation on sealed 6f preserve state across adoption/restart; generic patch did not exercise color helper; full matrix remains"
     }
   ],
   "evidence": [
@@ -163,6 +163,36 @@
       "path": "docs/evidence/gu6-kenney-modules-20260912/summary.json",
       "status": "passed",
       "scope": "five source installs in two worlds, 29 separate LPAC/Web physics/parameter assertions; source jobs themselves are still check-blocked"
+    },
+    {
+      "kind": "ordinary-continuation",
+      "path": "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
+      "status": "passed-with-separate-preservation-evidence",
+      "scope": "Sealed 6f, same-session Flash/max continuation, 7 model calls, generic patch, normal adoption/cold reopen; requirements unsupported, old failure retained"
+    },
+    {
+      "kind": "formal-module-reuse",
+      "commit": "0ce0ba9f",
+      "path": "docs/evidence/gu6-formal-packages-20260912/summary.json",
+      "status": "passed",
+      "scope": "20 ordinary product steps without model calls; two real checks/adoptions and cold reopen in one world; independent cancellation test; GLB selection unsupported"
+    },
+    {
+      "kind": "durable-recovery",
+      "commit": "12cdfa1b",
+      "status": "passed",
+      "scope": "64 integrated source tests and real core restart with synthetic executor output; no model repair-loop claim"
+    },
+    {
+      "kind": "source-tests",
+      "commits": [
+        "7d8e2df0",
+        "62a3f99b",
+        "bb0a35b1",
+        "6f1708f1"
+      ],
+      "status": "passed",
+      "scope": "Finite sequence resolution and frozen labels/colors: 8 focused JS and 16 Rust requirements tests; nonspatial placement/undo: 36 focused tests; desktop typecheck"
     }
   ],
   "limitations": [

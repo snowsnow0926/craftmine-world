@@ -37,9 +37,11 @@
       "id": "GA04",
       "scenario": "压缩与模型切换",
       "requiredEvidence": "需求、源码、作业、失败和预算正确恢复 GU5",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "tests/godot-agent/recovery-facts-core.test.mjs"
+      ],
+      "next": "Durable recovery with verified task/session and original budget tested across real core restart; model compaction and switching not yet demonstrated"
     },
     {
       "id": "GA05",
@@ -75,9 +77,10 @@
       "requiredEvidence": "改动范围准确，其他对象按约定保持 GU3",
       "status": "partial",
       "evidence": [
-        "tests/creation-change-summary.test.mjs"
+        "tests/creation-change-summary.test.mjs",
+        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json"
       ],
-      "next": "Exact field delta and declared rules tested; shared material scope across arbitrary scenes remains"
+      "next": "Ordinary recolor via generic patch preserves both known entities and progress; arbitrary shared-material edits and parameter scope remain"
     },
     {
       "id": "GA09",
@@ -130,9 +133,11 @@
       "id": "GA14",
       "scenario": "新内容采用",
       "requiredEvidence": "保留采用时最新背包与已有任务进度 GU4",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json"
+      ],
+      "next": "Same-session red-door adoption preserves token=1, opened chest, player pose and other entity fields across cold restart; arbitrary quest progress and concurrent changes remain"
     },
     {
       "id": "GA15",
@@ -198,9 +203,11 @@
       "id": "GA22",
       "scenario": "预算与重复错误",
       "requiredEvidence": "有界停止，恢复与换模型不重置总账 GU5",
-      "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "status": "partial",
+      "evidence": [
+        "tests/godot-agent/recovery-facts-core.test.mjs"
+      ],
+      "next": "Recovery facts retain task budget ownership and unknown usage; repeat-error stop and model-switch ledger still need validation using actual product limits"
     },
     {
       "id": "GA23",
@@ -209,9 +216,10 @@
       "status": "partial",
       "evidence": [
         "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
-        "docs/specs/godot-agent-gu6-kenney-modules.md"
+        "docs/specs/godot-agent-gu6-kenney-modules.md",
+        "docs/specs/godot-agent-gu6-formal-packages.md"
       ],
-      "next": "Two source worlds and real GLB/texture/license roundtrip verified; formal check/adoption and state initialization remain"
+      "next": "Two source-world reuse trials plus separate one-world formal two-package checks/adoption/cold reopen; second formal world and module state initialization remain"
     },
     {
       "id": "GA24",
@@ -237,9 +245,10 @@
       "requiredEvidence": "清理正确，正式版本与存档可恢复 GU7",
       "status": "partial",
       "evidence": [
-        "tests/godot-scenario-collector.test.mjs"
+        "tests/godot-scenario-collector.test.mjs",
+        "docs/specs/godot-agent-gu6-formal-packages.md"
       ],
-      "next": "Collector cancel/replacement tested incl real Web/offscreen; full formal save/crash recovery remains"
+      "next": "Separate actual formal-package cancel closes cleanly; full crash/late-result/formal-save recovery remains"
     },
     {
       "id": "GA27",
@@ -247,9 +256,10 @@
       "requiredEvidence": "原能力回归，打包资源与当前契约一致 GU7",
       "status": "partial",
       "evidence": [
-        "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json"
+        "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json",
+        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json"
       ],
-      "next": "First enhanced package source/archive/resources verified; four-base behavior regression remains"
+      "next": "Sealed d4/2ae/6f identities and scoped real product runs recorded; latest unified package and four-base regression remain"
     },
     {
       "id": "GA28",
