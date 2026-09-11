@@ -41,3 +41,11 @@ test('pages cannot supply an execution context or filesystem root',async()=>{
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'package-caller-')),f=fixture(root);
  await assert.rejects(f.create()({worldId:'world',operationId:'x',archiveBase64,context:{}}),/UNKNOWN_FIELD/);assert.equal(f.calls.length,0);
 });
+
+test('a source proposal cannot install after the captured source changes',async()=>{
+ const root=await fs.mkdtemp(path.join(os.tmpdir(),'package-proposal-')),f=fixture(root);
+ await assert.rejects(f.create()({worldId:'world',operationId:'stale-proposal',archiveBase64,expectedSource:{revision:0,manifestHash:'a'.repeat(64)}}),/PACKAGE_PROPOSAL_SOURCE_CHANGED/);
+ assert.equal(f.calls.includes('package.planInstall'),false);assert.equal(f.applied,undefined);
+ const result=await f.create()({worldId:'world',operationId:'current-proposal',archiveBase64,expectedSource:{revision:1,manifestHash:'a'.repeat(64)}});
+ assert.equal(result.status,'check-queued');
+});

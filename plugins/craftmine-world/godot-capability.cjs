@@ -80,6 +80,7 @@ const HOST_METHODS={
   // listed so a missing registration is reported against the exact owner.
   'asset.search':{owner:'S5',capability:'assetCatalog',kind:'read'},
   'asset.read':{owner:'S5',capability:'assetCatalog',kind:'read'},
+  'asset.bodyPath':{owner:'S5',capability:'assetCatalog',kind:'read'},
   'asset.versions':{owner:'S5',capability:'assetCatalog',kind:'read'},
   'package.check':{owner:'S3',capability:'creationPackages',kind:'read'},
   'package.read':{owner:'S3',capability:'creationPackages',kind:'read'},
@@ -136,7 +137,8 @@ function modeInventory(name,local,handshake,context,overrides){
     const needs=[...local.needs,...(entry.capability?[entry.capability]:[])];
     const state=localState({needs},handshake);
     if(state.reachable===true){
-      if(!context.worldId){state.reachable=null;state.blockedBy='WORLD_BINDING_UNRESOLVED';}
+      if(entry.blockedBy){state.reachable=false;state.blockedBy=entry.blockedBy;}
+      else if(!context.worldId){state.reachable=null;state.blockedBy='WORLD_BINDING_UNRESOLVED';}
       else if(override!==undefined&&override!==entry.method&&!entry.proposal){
         state.reachable=null;state.blockedBy='CUSTOM_METHOD_UNVERIFIED';
       } else if(entry.repository&&context.repository?.registered!==true){

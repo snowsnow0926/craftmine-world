@@ -57,7 +57,20 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
     const result=await invoke('exportSource',{revision:source.revision,manifestHash:source.manifestHash,nodePath:choices.control.value,assetId:asset.control.value.trim(),version:Number(version.control.value)});
     notice.textContent=result.status==='cancelled'?'已取消导出。':`已导出所选对象和 ${result.files??'所需'} 项文件。接收世界需要满足该作品的底座依赖。`;
   });exporter.form.prepend(choices.wrapper,asset.wrapper,version.wrapper);
-  const list=text('div',''),refresh=submit('刷新当前源码对象',()=>refreshSource());
+  const proposals=text('div','');
+  async function refreshProposals(){
+    const result=await invoke('sourceProposals');proposals.replaceChildren();
+    for(const proposal of result.items??[]){
+      const install=submit(`安装提案：${proposal.displayName}（源码 ${proposal.source.revision}）`,async()=>{
+        if(pending||installing)throw Error('请等待本次检查结束。');
+        installing=true;buttons();
+        try{showInstall(await invoke('installSourceProposal',{proposalId:proposal.proposalId}));await refreshProposals();}
+        finally{installing=false;buttons();}
+      });
+      install.button.disabled=installing||!!pending;proposals.append(text('p',proposal.position?`安装位置：${proposal.position.x}, ${proposal.position.y}, ${proposal.position.z}。确认时保持此位置。`:'按素材模板的默认位置安装；安装后可继续调整。'),install.form);
+    }
+  }
+  const list=text('div',''),refresh=submit('刷新当前源码对象与安装提案',()=>refreshSource());
   async function refreshSource() {
     const result=await invoke('sourceList');source=result;choices.control.replaceChildren();list.replaceChildren();
     for(const item of result.items??[]) {
@@ -67,6 +80,7 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
     exporter.button.disabled=!choices.control.options.length;
     if(!result.items?.length)list.append(text('p','入口场景中还没有可复用的独立对象。创建带稳定身份的门、箱子或目标后可在这里导出。'));
     if(!pending)notice.textContent=`已读取源码版本 ${result.revision}。导出不会包含玩家当前进度。${result.truncated?'当前只列出前 512 个对象。':''}`;
+    await refreshProposals();
   }
-  return {async show(){generation++;stopPolling();visible=true;source=null;installing=false;if(activeWorld!==getWorldId()){activeWorld=getWorldId();grant=null;attempt=null;pending=null;}buttons();retryQuery.form.hidden=true;gameExport.clear();gameExport.show();element.replaceChildren(text('h2','Godot 作品'),text('p','导出一个对象及其子节点，或把作品 ZIP 加入当前源码。安装后需检查、预览并应用。'),gameExportElement,notice,importer.form,repeat.form,retryQuery.form,refresh.form,list,exporter.form);if(pending)void pollJob();await refreshSource();},clear(){generation++;stopPolling();visible=false;source=null;installing=false;gameExport.clear();},refresh:refreshSource};
+  return {async show(){generation++;stopPolling();visible=true;source=null;installing=false;if(activeWorld!==getWorldId()){activeWorld=getWorldId();grant=null;attempt=null;pending=null;}buttons();retryQuery.form.hidden=true;gameExport.clear();gameExport.show();element.replaceChildren(text('h2','Godot 作品'),text('p','导出一个对象及其子节点，或把作品 ZIP 加入当前源码。安装后需检查、预览并应用。'),gameExportElement,notice,proposals,importer.form,repeat.form,retryQuery.form,refresh.form,list,exporter.form);if(pending)void pollJob();await refreshSource();},clear(){generation++;stopPolling();visible=false;source=null;installing=false;gameExport.clear();},refresh:refreshSource};
 }

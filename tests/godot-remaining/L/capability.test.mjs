@@ -21,7 +21,7 @@ test('the inventory reflects the real manifest and broker routing',()=>{
   const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:HANDSHAKE});
   assert.equal(inventory.format,'craftmine.godot-capability/1');
   const godot=inventory.tools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(godot.length,20,godot.map(tool=>tool.name).join(','));
+  assert.equal(godot.length,21,godot.map(tool=>tool.name).join(','));
   assert.ok(godot.every(tool=>tool.wired===true),'every advertised Godot tool must be routed');
   const build=godot.find(tool=>tool.name==='godot_build_start');
   assert.equal(build.hostMethod,'godotBuild.start');
@@ -144,14 +144,14 @@ function modes(name,{handshake=FULL,executionContext=BOUND,methodOverrides={}}={
   .tools.find(tool=>tool.name===name).modes;
 }
 test('actual modes distinguish read routes from player-only proposals',()=>{
- for(const name of ['godot_history','asset_library','package_library']){
+ for(const name of ['godot_history','asset_library','package_library','godot_source_library']){
   const entries=modes(name);
   const schema=manifest.contributes.agentTools.find(tool=>tool.name===name).schema;
   assert.deepEqual(entries.map(entry=>entry.mode).sort(),schema.properties.mode.enum.slice().sort());
-  assert.ok(entries.every(entry=>entry.reachable===true));
+  assert.ok(entries.every(entry=>entry.reachable===true||(name==='package_library'&&entry.mode==='check'&&entry.reachable===false&&entry.blockedBy==='LEGACY_PACKAGE_REFERENCE_ADAPTER_REQUIRED')));
   for(const entry of entries){
    if(entry.kind==='proposal'){assert.equal(entry.hostMethod,null);assert.equal(entry.applies,false);assert.equal(entry.requiresPlayerAction,true);}
-   else assert.equal(HOST_METHODS[entry.hostMethod].capability,entry.needs.at(-1));
+   else for(const method of entry.hostMethod.split('+'))assert.equal(HOST_METHODS[method].capability,entry.needs.at(-1));
   }
  }
 });
