@@ -8,7 +8,7 @@ import {fileProof,assertProofs,readCheckpointJson} from './helpers/promo-checkpo
 import {checkpointSanitizer} from './helpers/promo-checkpoint-live-contract.mjs';
 import {readHeadlessProfile} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless-profile.ts';
 import {createFileClarificationExchange} from './helpers/promo-file-clarification.mjs';
-import {reserveLoopbackPort,resumeThroughWorldUi} from './helpers/ordinary-world-ui.mjs';
+import {reserveLoopbackPort,resumeThroughWorldUi,finishInterruptedThroughWorldUi} from './helpers/ordinary-world-ui.mjs';
 
 const [sourceFile,configFile,textFile]=process.argv.slice(2);
 assert.ok([sourceFile,configFile,textFile].every(value=>value&&path.isAbsolute(value)),'Usage: <absolute previous report> <absolute player config snapshot> <absolute player text file> --packaged-root <product> [--live]');
@@ -59,6 +59,13 @@ try{
   if(recoverable.items?.length){
     assert.equal(recoverable.items.length,1,'Review multiple interrupted tasks before choosing a recovery');
     const task=recoverable.items[0];
+    if(process.argv.includes('--finish-expired-task')){
+      assert.equal(source.latest?.record?.session?.messages?.at(-1)?.error?.code,'TASK_DEADLINE_EXCEEDED','Only an observed expired interrupted task may be finished by this explicit player choice');
+      report.expiredTaskDisposition=await finishInterruptedThroughWorldUi(debugPort,worldId,{taskId:task.taskId??task.id,generation:task.generation});
+      assert.equal(report.expiredTaskDisposition.preservedDraft,true);
+      report.submission=await rpc('playerPrompt',{payload:{...payload,text,messageId:report.messageId}});
+      report.inputPath='ordinary-finish-expired-task-then-chat';
+    }else{
     report.submission=await resumeThroughWorldUi(debugPort,worldId,{taskId:task.taskId??task.id,generation:task.generation});
     report.inputPath='ordinary-continue-creation';
     const after=await rpc('playerStatus',{payload});
@@ -66,6 +73,7 @@ try{
     const message=after.record.session.messages.find(message=>message.role==='user'&&!oldIds.has(message.id));
     assert.ok(message,'Normal recovery must append its own player continuation');
     report.messageId=message.id;report.actualContinuation=message.content;
+    }
   }else{
     report.submission=await rpc('playerPrompt',{payload:{...payload,text,messageId:report.messageId}});
     report.inputPath='ordinary-chat-input';

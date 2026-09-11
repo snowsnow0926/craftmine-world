@@ -15,7 +15,7 @@ async function evaluate(url,expression){
 }
 // Only the freshly launched isolated Electron process's loopback endpoint.
 // Invoke the same workbench bridge as the ordinary Continue button; no input events.
-export async function resumeThroughWorldUi(port,worldId,task){
+async function worldTaskAction(port,worldId,task,channel){
  assert.ok(Number.isSafeInteger(port)&&port>0&&port<65536);
  assert.ok(typeof worldId==='string'&&typeof task.taskId==='string'&&Number.isSafeInteger(task.generation));
  const targets=await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
@@ -25,7 +25,9 @@ export async function resumeThroughWorldUi(port,worldId,task){
   if(url.hostname!=='127.0.0.1'&&url.hostname!=='localhost')continue;
   if(url.port!==String(port))continue;
   const match=await evaluate(url.href,`!!globalThis.__craftmineHeadless && !!globalThis.pluginBridge && document.body.dataset.worldId===${JSON.stringify(worldId)}`);
-  if(match)return evaluate(url.href,`globalThis.pluginBridge.invoke('task.resume',${JSON.stringify({worldId,taskId:task.taskId,generation:task.generation})})`);
+  if(match)return evaluate(url.href,`globalThis.pluginBridge.invoke(${JSON.stringify(channel)},${JSON.stringify({worldId,taskId:task.taskId,generation:task.generation})})`);
  }
  throw Error('OWNED_WORLD_UI_NOT_FOUND');
 }
+export const resumeThroughWorldUi=(port,worldId,task)=>worldTaskAction(port,worldId,task,'task.resume');
+export const finishInterruptedThroughWorldUi=(port,worldId,task)=>worldTaskAction(port,worldId,task,'task.discard');
