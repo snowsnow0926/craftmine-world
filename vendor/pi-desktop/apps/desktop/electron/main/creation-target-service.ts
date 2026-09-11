@@ -111,7 +111,7 @@ export function createCreationTargetService(deps:Dependencies) {
         !vec(player)||!target||!Number.isSafeInteger(target.revision)||target.revision<0||!Number.isSafeInteger(descriptor.sourceRevision)||descriptor.sourceRevision<0||
         typeof sample.sampledAt!=="string"||!Number.isFinite(Date.parse(sample.sampledAt))||
         typeof descriptor.manifestHash!=="string"||!/^[a-f0-9]{64}$/.test(descriptor.manifestHash)||
-        !["ground","entity","boundary","none"].includes(target.surface)||
+        !["ground","entity","boundary","none","prop"].includes(target.surface)||
         (target.surface!=="none"&&(!vec(target.position)||!vec(target.normal)))||
         (target.entityId!==null&&(!id(target.entityId)||target.surface!=="entity"))||(target.surface==="entity"&&!id(target.entityId)))fail("CREATION_OBSERVATION_INVALID");
       const capture:CreationCapture={format:"craftmine.creation-target/1",snapshotId:randomUUID(),worldId:instance.worldId,buildId:instance.buildId,instanceId:instance.instanceId,
@@ -135,6 +135,13 @@ export function createCreationTargetService(deps:Dependencies) {
           capture.sceneObjectTarget=readSceneObjectTarget(creation.sceneObjectTarget,files)!;
           await confirmSceneObject(capture);
         }
+      }
+      // Authored worlds may label ordinary collider hits as "prop". Admit that
+      // label only through the fixed observer and its live instance reference;
+      // it never becomes a structured entity or a placement surface.
+      if(target.surface==='prop'){
+        if(sceneDataPresent&&!sceneTrusted)fail('SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED');
+        if(!capture.sceneObjectTarget||creation.sceneObjectSelection?.status==='fallback')fail('SCENE_OBJECT_RECAPTURE_REQUIRED');
       }
       const recent=recentCreationResults(capture.worldId,await deps.journal?.(capture),capture.entities);
       await assertFormal(capture);
