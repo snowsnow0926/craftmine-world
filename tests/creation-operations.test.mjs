@@ -54,6 +54,14 @@ test('color-only edits remain possible beside a solid door while actual geometry
  const undo=compileCreationOperation({...f,request:{operationId:'undo-color-beside-door',expected:{...request.expected,revision:f.source.revision,manifestHash:f.source.manifestHash},action:'undo',undoOperationId:request.operationId}});
  assert.equal(undo.document.entities[0].color,'#0000ff');assert.deepEqual(undo.document.entities[0].position,door.position);
 });
+
+test('undo checks moved objects against unchanged peers in the complete restored set',()=>{
+ const a=entity('a','rock',[-5,0,5]),b=entity('b','rock',[0,0,5]),f=fixture([a,b]);
+ const original={operationId:'legacy-multi-modify',requestHash:'c'.repeat(64),receipt:{operationId:'legacy-multi-modify',requestHash:'c'.repeat(64),worldId:f.source.worldId,createdIds:[],affectedIds:['a','b'],action:'modify'},inverse:{format:'craftmine.creation-inverse/1',before:[{...a,position:[0,0,5]},b],after:[a,b]}};
+ f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations:[original]});
+ const request={operationId:'undo-legacy-multi',expected:f.request.expected,action:'undo',undoOperationId:original.operationId};
+ assert.throws(()=>compileCreationOperation({...f,request}),/CREATION_OCCUPIED/);
+});
 test('duplicates mint deterministic separate stable identities and reject count/occupancy limits',()=>{
   const f=fixture([entity('source','rock',[2,0,2])]);const request={operationId:'copy',expected:f.request.expected,action:'duplicate',targetId:'source',count:3,offset:[3,0,0]};
   const result=compileCreationOperation({...f,request});assert.equal(result.document.entities.length,4);assert.equal(new Set(result.document.entities.map(e=>e.id)).size,4);

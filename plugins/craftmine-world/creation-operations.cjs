@@ -163,8 +163,10 @@ function compileCreationOperation({source,targetSnapshot,request}) {
     const sorted=items=>JSON.stringify(canonical([...items].sort((a,b)=>a.id.localeCompare(b.id))));
     check(sorted(actual)===sorted(inverse.after),'CREATION_UNDO_CONFLICT');
     if(inverse.after.some(item=>!inverse.before.some(before=>before.id===item.id)))check(!(next.rules??[]).length,'CREATION_DELETE_RULE_DEPENDENCY');
-    const rest=next.entities.filter(item=>!ids.has(item.id));
-    for(const item of inverse.before){if(placementChanged(actual.find(current=>current.id===item.id),item))validatePlacement(item,rest,snapshot);rest.push(structuredClone(item));}
+    const rest=[...next.entities.filter(item=>!ids.has(item.id)),...structuredClone(inverse.before)];
+    // Validate against the complete final set, including unchanged peers which
+    // need no placement check of their own. Journal order must not hide them.
+    for(const item of inverse.before)if(placementChanged(actual.find(current=>current.id===item.id),item))validatePlacement(item,rest,snapshot);
     next.entities=rest;affectedIds.push(...ids);
   } else if(request.action==='environment'){
     keys(request,['operationId','expected','action','timeOfDay']);check(finite(request.timeOfDay,0,24),'CREATION_INVALID_DEFAULTS');next.defaults.timeOfDay=request.timeOfDay;
