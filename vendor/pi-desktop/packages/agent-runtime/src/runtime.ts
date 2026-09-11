@@ -5211,7 +5211,25 @@ Delegation rules:
             !aborted &&
             nextText.trim().length === 0 &&
             !messageRequestsTools(event.message);
-          if (silentTurn && !this.silentTurnRerunAttempted) {
+          // A normalized provider length stop is explicit truncation evidence.
+          // Do not repeat the same ceiling with the ordinary silent-turn nudge
+          // after explicit truncation. Usage and
+          // the physical request ledger have already been recorded as usual.
+          const emptyAtOutputLimit = silentTurn && stopReason === "length";
+          if (emptyAtOutputLimit) {
+            classifiedError = this.providerErrorWithDiagnostics(
+              {
+                code: "MODEL_OUTPUT_LIMIT_REACHED",
+                message: "The model reached the per-response output limit before producing text or a tool call",
+                retriable: true,
+                details: { stopReason: "length" },
+              },
+              "stream",
+              providerWaitMs,
+              streamMs,
+            );
+          }
+          if (silentTurn && !emptyAtOutputLimit && !this.silentTurnRerunAttempted) {
             this.silentTurnRerunAttempted = true;
             this.pendingSilentTurnRerun = true;
             this.suppressSilentTurnRunEnd = true;
@@ -5246,7 +5264,7 @@ Delegation rules:
             this.streamStartedAt = undefined;
             break;
           }
-          if (silentTurn) {
+          if (silentTurn && !emptyAtOutputLimit) {
             // The re-run came back silent too. Stop guessing and say so: an
             // error row with a retriable code gives the UI its "continue"
             // affordance instead of leaving the user to invent one.

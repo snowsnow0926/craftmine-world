@@ -1832,6 +1832,7 @@ export const ko = {
     NETWORK_ERROR: "AI 프로바이더에 연결할 수 없습니다. 네트워크 또는 기본 URL을 확인하세요.",
     TIMEOUT: "AI 프로바이더 요청 시간이 초과되었습니다.",
     STREAM_FAILED: "답변이 중단되었습니다.",
+    MODEL_OUTPUT_LIMIT_REACHED: "모델이 결과를 생성하기 전에 응답당 출력 한도에 도달했습니다. 현재 작업에서 계속할 수 있습니다.",
     EMPTY_MODEL_RESPONSE:
       "모델이 두 번 연속 아무 말 없이 턴을 완료했습니다. 다시 시도하거나 요청을 바꿔 표현하세요.",
     MUTATION_RETRY_BUDGET_EXHAUSTED:
