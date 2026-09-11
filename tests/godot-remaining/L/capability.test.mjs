@@ -188,3 +188,36 @@ test('capability context uses durable session identity and never opens a workspa
  assert.deepEqual(calls.map(call=>call.method),['task.context','content.status']);
  assert.equal((await readCapabilityContext({call:async()=>{throw Error('missing');}},{},FULL)).worldId,null);
 });
+
+test('execution mode contracts cover real schema modes and honor disabled or unknown registration',()=>{
+ const wired={wired:[{key:'executorEnqueue'}]};
+ const executor={source:'live-executor',status:{available:true,buildAvailable:true,checkAvailable:true}};
+ for(const flag of [true,false,undefined]){
+  const inventory=buildInventory({manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,
+   handshake:{...HANDSHAKE,godotBuildJobs:flag},services:wired,executor});
+  for(const name of ['godot_build_start','godot_jobs']){
+   const tool=inventory.tools.find(tool=>tool.name===name);
+   const schema=manifest.contributes.agentTools.find(tool=>tool.name===name).schema;
+   assert.deepEqual(tool.modes.map(entry=>entry.mode).sort(),schema.properties.mode.enum.slice().sort());
+   for(const entry of tool.modes.filter(entry=>entry.execution)){
+    assert.equal(entry.reachable,flag===undefined?null:flag);
+    assert.equal(entry.execution.available,flag===undefined?null:flag);
+   }
+  }
+ }
+});
+
+test('contract digest is canonical, responds to schema/routing edits and excludes live readings',()=>{
+ const args={manifest,routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake:HANDSHAKE};
+ const digest=buildInventory(args).contract;
+ assert.equal(digest.algorithm,'sha256');assert.match(digest.digest,/^[a-f0-9]{64}$/);
+ const reversed=Object.fromEntries(Object.entries(GODOT_METHODS).reverse());
+ assert.deepEqual(buildInventory({...args,routing:reversed}).contract,digest);
+ const changed=structuredClone(manifest);changed.contributes.agentTools[0].schema.description='changed contract';
+ assert.notEqual(buildInventory({...args,manifest:changed}).contract.digest,digest.digest);
+ assert.notEqual(buildInventory({...args,routing:{...GODOT_METHODS,godot_build_start:'different.start'}}).contract.digest,digest.digest);
+ assert.equal(buildInventory({...args,handshake:{},executor:{source:'core-registration'}}).contract.digest,digest.digest);
+ for(const entry of buildInventory(args).unreachableMethods){
+  assert.equal(entry.exposure,'host-only');assert.equal(entry.intentional,true);assert.equal(entry.agentExposureDefect,false);
+ }
+});
