@@ -1,0 +1,54 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {validateExternalReceipt} from '../../scripts/lib/godot-external-receipt.mjs';
+import {unpackStaticPackage} from '../../plugins/craftmine-world/package-zip.mjs';
+import {createTargetFeedbackService} from '../../plugins/craftmine-world/target-feedback-service.mjs';
+const require=createRequire(import.meta.url),{compileCreationOperation}=require('../../plugins/craftmine-world/creation-operations.cjs');
+const root=path.resolve(import.meta.dirname,'../..'),dir=path.join(root,'docs/evidence/gu3-module-runtime-persistence-20260912');
+const read=name=>JSON.parse(fs.readFileSync(path.join(dir,name))),report=read('report.json');
+const hash=b=>createHash('sha256').update(b).digest('hex');
+test('real LPAC diagnostic proves runtime configuration is not persisted by normal snapshot',()=>{
+ assert.equal(report.format,'craftmine.module-persistence-audit/1');
+ assert.equal(report.result.passed,true);assert.equal(report.result.checks.length,12);
+ assert.ok(report.result.checks.every(item=>item.passed));
+ assert.deepEqual(report.guard,{pointerLock:0,focus:0});assert.deepEqual(report.pageErrors,[]);
+ assert.deepEqual(report.console.filter(item=>item.type==='error'||/SCRIPT ERROR|Parse Error|ERROR:/.test(item.text)),[]);
+ const r=report.result;
+ assert.equal(r.configured.model_scale_percent,250);assert.equal(r.configured.quarter_turns,1);assert.equal(r.configured.solid,false);assert.equal(r.configured.label,'runtime-only-audit');
+ assert.equal(r.peer.model_scale_percent,100);assert.equal(r.peer.solid,true);
+ assert.deepEqual(r.fresh,r.before);assert.equal(r.fresh.entity_id,r.configured.entity_id);
+ assert.ok(!r.snapshotKeys.includes('modules'));assert.match(r.scope,/not a cold app reopen/);
+ assert.equal(report.originalSourceUnchanged,true);
+});
+test('raw receipt, staged manifest, fixture and currently delivered module match the archived execution',()=>{
+ const raw=JSON.parse(fs.readFileSync(path.join(dir,'broker.stdout'),'utf8').trim().split(/\r?\n/).at(-1));
+ assert.deepEqual(raw,report.receipt);
+ const files=read('stage-source-files.json');
+ const verified=validateExternalReceipt(report.request,raw,{brokerSha256:'88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232',transportExitCode:report.transportExitCode,expectedSourceFiles:files});
+ assert.equal(verified.valid,true,JSON.stringify(verified));
+ assert.equal(hash(fs.readFileSync(path.join(dir,'task.log'))),raw.logs.find(file=>file.path==='task.log').sha256);
+ const fixture=fs.readFileSync(path.join(root,'tests/fixtures/module-runtime-persistence.gd'),'utf8').replaceAll('\r\n','\n');
+ assert.equal(hash(fixture),report.fixtureSha256);
+ const archive=unpackStaticPackage(fs.readFileSync(path.join(root,'docs/evidence/gu6-kenney-modules-20260912/building.zip')));
+ assert.equal(hash(archive.resources[0].files.get('module.gd')),report.moduleScriptSha256);
+ assert.equal(report.moduleScriptSha256,report.originalFiles.find(file=>file.path==='addons/kenney-city-building/module.gd').sha256);
+});
+test('current structured creation compiler cannot modify the imported module through a scene object reference',()=>{
+ const document={format:'craftmine.creation-scene/1',revision:1,defaults:{timeOfDay:12},entities:[]},text=JSON.stringify(document);
+ const source={worldId:'world-audit',buildId:'build',instanceId:'runtime',revision:1,manifestHash:'a'.repeat(64),files:{'world/creation.json':{text,sha256:hash(text)}}};
+ const expected={worldId:source.worldId,buildId:source.buildId,instanceId:source.instanceId,revision:1,manifestHash:source.manifestHash,targetSnapshotId:'capture'};
+ const targetSnapshot={...expected,sourceRevision:1,snapshotId:'capture',playerPosition:[0,1,6],target:{entityId:null,revision:1,surface:'none'},sceneObjectTarget:{objectId:'123',nodePath:'ImportedBuilding'}};
+ const request={operationId:'module-parameter-audit',expected,action:'modify',targetId:'imported-building',changes:{parameters:{model_scale_percent:250}}};
+ assert.throws(()=>compileCreationOperation({source,targetSnapshot,request}),error=>error.errorCode==='CREATION_TARGET_ID_MISMATCH');
+ assert.throws(()=>compileCreationOperation({source,targetSnapshot:{...targetSnapshot,target:{...targetSnapshot.target,entityId:'imported-building'}},request}),error=>error.errorCode==='CREATION_TARGET_REMOVED');
+});
+test('current targetFeedback host route rejects creation-sandbox before a parameter edit can be submitted',async()=>{
+ const calls=[],call=async(method)=>{calls.push(method);if(method==='world.read')return{id:'world-audit',runtimeKind:'godot',world:{build:{id:'build'}}};if(method==='content.status')return{backend:'git',headOid:'head',appliedOid:'head',repoId:'repo'};if(method==='godotRuntime.exportSource')return{worldId:'world-audit',baseId:'creation-sandbox',baseVersion:'1.0.0',buildId:'build',repoId:'repo',contentOid:'head'};throw Error('Unexpected call');};
+ const service=createTargetFeedbackService({call,selected:async()=> 'world-audit',begin:async()=>assert.fail('no turn'),enqueue:async()=>assert.fail('no executor'),turns:{finish(){},watch(){},readJob(){}},stagingRoot:path.resolve('unused-module-audit-no-writes')});
+ await assert.rejects(service.describe({worldId:'world-audit'}),error=>error.code==='TARGET_FEEDBACK_FORMAL_SOURCE_REQUIRED');
+ assert.deepEqual(calls,['world.read','content.status','godotRuntime.exportSource']);
+});

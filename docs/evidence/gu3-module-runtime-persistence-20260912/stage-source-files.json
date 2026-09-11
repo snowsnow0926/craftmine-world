@@ -1,0 +1,222 @@
+[
+  {
+    "path": "addons/kenney-city-building/attribution.json",
+    "bytes": 526,
+    "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+  },
+  {
+    "path": "addons/kenney-city-building/licenses/LICENSE.md",
+    "bytes": 1062,
+    "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+  },
+  {
+    "path": "addons/kenney-city-building/licenses/README.md",
+    "bytes": 3353,
+    "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+  },
+  {
+    "path": "addons/kenney-city-building/models/Textures/colormap.png",
+    "bytes": 10108,
+    "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+  },
+  {
+    "path": "addons/kenney-city-building/models/building-small-a.glb",
+    "bytes": 39660,
+    "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+  },
+  {
+    "path": "addons/kenney-city-building/module.gd",
+    "bytes": 2747,
+    "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+  },
+  {
+    "path": "addons/kenney-city-building/module.gd.uid",
+    "bytes": 19,
+    "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+  },
+  {
+    "path": "addons/kenney-city-building/module.tscn",
+    "bytes": 489,
+    "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+  },
+  {
+    "path": "addons/kenney-city-building/provenance.json",
+    "bytes": 726,
+    "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+  },
+  {
+    "path": "addons/kenney-city-road/attribution.json",
+    "bytes": 514,
+    "sha256": "4fee8aec02924920135dee8f7b16f58465e2d445bf9511ced572e45b24797fb5"
+  },
+  {
+    "path": "addons/kenney-city-road/licenses/LICENSE.md",
+    "bytes": 1062,
+    "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+  },
+  {
+    "path": "addons/kenney-city-road/licenses/README.md",
+    "bytes": 3353,
+    "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+  },
+  {
+    "path": "addons/kenney-city-road/models/Textures/colormap.png",
+    "bytes": 10108,
+    "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+  },
+  {
+    "path": "addons/kenney-city-road/models/road-straight.glb",
+    "bytes": 6148,
+    "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+  },
+  {
+    "path": "addons/kenney-city-road/module.gd",
+    "bytes": 2727,
+    "sha256": "12a73befca09b843f02d732b186a27715b07d67cdc39c4bac3f23386c4f5cd7a"
+  },
+  {
+    "path": "addons/kenney-city-road/module.gd.uid",
+    "bytes": 19,
+    "sha256": "44ae11846ab4f55a4f65774473d86938e5dea46e62c4039e236f3d61bb163872"
+  },
+  {
+    "path": "addons/kenney-city-road/module.tscn",
+    "bytes": 474,
+    "sha256": "379f322035574519600cd6c1607504765ec568568ce3f8ac4d04faff8785658a"
+  },
+  {
+    "path": "addons/kenney-city-road/provenance.json",
+    "bytes": 723,
+    "sha256": "e4f9dac83441736c84d996367add35b8b240545f50d8419ab3492a399481a433"
+  },
+  {
+    "path": "assets/ASSET_MANIFEST.json",
+    "bytes": 548,
+    "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+  },
+  {
+    "path": "assets/fonts/OFL-NotoSansSC.txt",
+    "bytes": 4388,
+    "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+  },
+  {
+    "path": "assets/fonts/cjk-0.json",
+    "bytes": 2800055,
+    "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+  },
+  {
+    "path": "assets/fonts/cjk-1.json",
+    "bytes": 2790775,
+    "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+  },
+  {
+    "path": "assets/fonts/font.json",
+    "bytes": 832,
+    "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+  },
+  {
+    "path": "craftmine.assets.lock.json",
+    "bytes": 4568,
+    "sha256": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769"
+  },
+  {
+    "path": "craftmine.instances.json",
+    "bytes": 996,
+    "sha256": "b4ccd5559f40a80f134d3b55b625b8f6b43640779f713e8dc19b7f6e7760a8de"
+  },
+  {
+    "path": "craftmine_initial_state.json",
+    "bytes": 702,
+    "sha256": "afb6191c0a8523cbfe44f8f0bac5910a054fd546be5a52fb9b9ec32d51f45204"
+  },
+  {
+    "path": "craftmine_shared/base_adapter.gd",
+    "bytes": 15229,
+    "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+  },
+  {
+    "path": "craftmine_shared/headless_play_action.gd",
+    "bytes": 2525,
+    "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+  },
+  {
+    "path": "craftmine_shared/runtime_bridge.gd",
+    "bytes": 7677,
+    "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+  },
+  {
+    "path": "craftmine_shared/scene_mesh_picker.gd",
+    "bytes": 13159,
+    "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+  },
+  {
+    "path": "craftmine_shared/state_guard.gd",
+    "bytes": 1759,
+    "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+  },
+  {
+    "path": "creation-scene.schema.json",
+    "bytes": 6559,
+    "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+  },
+  {
+    "path": "export_presets.cfg",
+    "bytes": 1090,
+    "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+  },
+  {
+    "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+    "bytes": 1407,
+    "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+  },
+  {
+    "path": "manifest.json",
+    "bytes": 2430,
+    "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+  },
+  {
+    "path": "module_persistence.gd",
+    "bytes": 3968,
+    "sha256": "0aca51d629f6f297f69f3011f0b7957e3ba013f162a123763cc88907fd07a5bd"
+  },
+  {
+    "path": "project.godot",
+    "bytes": 1228,
+    "sha256": "adfefd4774fe3851c98b4891d96ec0ecd5376603d506c75cf9f5cdfb4fa0f898"
+  },
+  {
+    "path": "scenes/creation.tscn",
+    "bytes": 1719,
+    "sha256": "a268869a27cb39f63a4a51e12757f207b84848d6b8597ab0581979d26660dfcd"
+  },
+  {
+    "path": "scripts/creation_font.gd",
+    "bytes": 1737,
+    "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+  },
+  {
+    "path": "scripts/creation_world.gd",
+    "bytes": 26597,
+    "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+  },
+  {
+    "path": "scripts/reused/camera_rig.gd",
+    "bytes": 1527,
+    "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+  },
+  {
+    "path": "scripts/reused/player_controller.gd",
+    "bytes": 6089,
+    "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+  },
+  {
+    "path": "scripts/scene_contract.gd",
+    "bytes": 5289,
+    "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+  },
+  {
+    "path": "world/creation.json",
+    "bytes": 115,
+    "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+  }
+]
