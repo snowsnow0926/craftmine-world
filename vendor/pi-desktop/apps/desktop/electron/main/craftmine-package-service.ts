@@ -80,7 +80,17 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           fields(args,['worldId','proposalId']);identifier(args.proposalId);
           const result=await privateCall('installSourceProposal',{worldId,proposalId:args.proposalId});await selected(worldId);
           if(result.worldId!==worldId||result.applied!==false||!Array.isArray(result.instanceIds)||!Number.isSafeInteger(result.source?.revision)||!/^[a-f0-9]{64}$/.test(result.source?.manifestHash)||!/^gjob-[a-f0-9]{64}$/.test(result.job?.jobId)||!['check-queued','source-saved-check-blocked'].includes(result.status))failure('PACKAGE_INSTALL_RECEIPT_INVALID');
-          return {worldId,applied:false,status:result.status,instanceIds:result.instanceIds,archiveSha256:result.archiveSha256,source:{revision:result.source.revision,manifestHash:result.source.manifestHash},job:{id:result.job.jobId,status:result.job.status}};
+          let archives: Array<{archiveSha256:string;instanceIds:string[]}>|undefined;
+          if(result.archives!==undefined){
+            if(!Array.isArray(result.archives)||result.archives.length<2||result.archives.length>8)failure('PACKAGE_INSTALL_RECEIPT_INVALID');
+            archives=result.archives.map((item:any)=>{
+              if(!/^[a-f0-9]{64}$/.test(item?.archiveSha256)||!Array.isArray(item.instanceIds)||item.instanceIds.length>1024||item.instanceIds.some((id:any)=>typeof id!=='string'||id.length>240))failure('PACKAGE_INSTALL_RECEIPT_INVALID');
+              return {archiveSha256:item.archiveSha256,instanceIds:item.instanceIds};
+            });
+            const ids=archives!.flatMap(item=>item.instanceIds);
+            if(ids.length!==result.instanceIds.length||ids.some((id,index)=>id!==result.instanceIds[index])||new Set(ids).size!==ids.length)failure('PACKAGE_INSTALL_RECEIPT_INVALID');
+          }
+          return {worldId,applied:false,status:result.status,instanceIds:result.instanceIds,...(archives?{archives}:{archiveSha256:result.archiveSha256}),source:{revision:result.source.revision,manifestHash:result.source.manifestHash},job:{id:result.job.jobId,status:result.job.status}};
         }
         if(method==='sourceJob') {
           fields(args,['worldId','jobId']);

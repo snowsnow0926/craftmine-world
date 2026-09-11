@@ -81,7 +81,7 @@ async function onLoad() {
     pending.promise=seedBuiltinSourceLibrary({directory:require('node:path').join(__dirname,'builtin-source-library'),call}).finally(()=>{if(builtinSeed===pending)builtinSeed=null;});
     builtinSeed=pending;return pending.promise;
   };
-  const sourceLibrary=createSourceLibraryService({call,installSource,ensureBuiltin,directory:require('node:path').join(await pi.plugin.getDataPath(),'source-library-proposals')});
+  const sourceLibrary=createSourceLibraryService({call,installSource,installSourceGroup:args=>installSource.group(args),ensureBuiltin,directory:require('node:path').join(await pi.plugin.getDataPath(),'source-library-proposals')});
   reuseService.sourceProposals=args=>sourceLibrary.proposals(args);
   reuseService.installSourceProposal=args=>sourceLibrary.installProposal(args);
   // The managed executor owns the pinned engine. It registers only after a real

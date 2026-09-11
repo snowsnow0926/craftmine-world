@@ -60,3 +60,12 @@ test('unmount clears polling and ignores late terminal receipt; reopening resume
  f.state.deferred=null;f.state.job='running';await f.ui.show();await drain();assert.equal(f.button('再次安装为独立对象').disabled,true);assert.equal(f.timers.size,1);
  f.ui.clear();assert.equal(f.timers.size,0);
 });
+
+test('a group uses one explicit confirmation and one pending check without separate imports',async t=>{
+ const f=await fixture(t);f.state.proposals=[{proposalId:'source-'+'b'.repeat(48),kind:'group',displayName:'橡树 + 橡树',source:{revision:1},items:[{displayName:'橡树',position:{x:-2,y:0,z:0}},{displayName:'橡树',position:{x:2,y:0,z:0}}]}];await f.ui.refresh();
+ assert.equal(f.calls.some(c=>c.method==='installSourceProposal'),false);
+ await f.submit('一起安装 2 项并检查');
+ assert.deepEqual(f.calls.filter(c=>c.method==='installSourceProposal').map(c=>c.params),[{worldId:'alpha',proposalId:'source-'+'b'.repeat(48)}]);
+ assert.equal(f.button('导入作品 ZIP 并检查').disabled,true);
+ assert.equal(f.calls.some(c=>['importSource','repeatImportSource'].includes(c.method)),false);
+});

@@ -61,13 +61,19 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
   async function refreshProposals(){
     const result=await invoke('sourceProposals');proposals.replaceChildren();
     for(const proposal of result.items??[]){
-      const install=submit(`安装提案：${proposal.displayName}（源码 ${proposal.source.revision}）`,async()=>{
+      const grouped=proposal.kind==='group'&&Array.isArray(proposal.items);
+      const install=submit(grouped?`一起安装 ${proposal.items.length} 项并检查`:`安装提案：${proposal.displayName}（源码 ${proposal.source.revision}）`,async()=>{
         if(pending||installing)throw Error('请等待本次检查结束。');
         installing=true;buttons();
         try{showInstall(await invoke('installSourceProposal',{proposalId:proposal.proposalId}));await refreshProposals();}
         finally{installing=false;buttons();}
       });
-      install.button.disabled=installing||!!pending;proposals.append(text('p',proposal.position?`安装位置：${proposal.position.x}, ${proposal.position.y}, ${proposal.position.z}。确认时保持此位置。`:'按素材模板的默认位置安装；安装后可继续调整。'),install.form);
+      install.button.disabled=installing||!!pending;
+      if(grouped){
+        proposals.append(text('p','以下素材将一起安装并检查，检查通过后可预览和采用。'));
+        for(const item of proposal.items)proposals.append(text('p',`${item.displayName}：${item.position?`位置 ${item.position.x}, ${item.position.y}, ${item.position.z}`:'素材默认位置'}。`));
+        proposals.append(install.form);
+      }else proposals.append(text('p',proposal.position?`安装位置：${proposal.position.x}, ${proposal.position.y}, ${proposal.position.z}。确认时保持此位置。`:'按素材模板的默认位置安装；安装后可继续调整。'),install.form);
     }
   }
   const list=text('div',''),refresh=submit('刷新当前源码对象与安装提案',()=>refreshSource());

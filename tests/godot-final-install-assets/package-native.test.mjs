@@ -12,6 +12,17 @@ test('modern source proposals use only the fixed private installer route and omi
  assert.equal((await invoke('sourceProposals')).items.length,1);const result=await invoke('installSourceProposal',{proposalId});assert.equal(result.applied,false);assert.equal(JSON.stringify(result).includes('hidden'),false);assert.equal(calls[1].channel,'package.request');
  await assert.rejects(invoke('installSourceProposal',{proposalId,archiveBase64:'forged'}),/INVALID_PARAMS/);selected='beta';await assert.rejects(invoke('installSourceProposal',{proposalId}),/WORLD_CHANGED/);
 });
+
+test('group confirmation projects ordered member identities and rejects inconsistent receipts',async()=>{
+ const result={worldId:'alpha',applied:false,status:'check-queued',instanceIds:['first','second'],archives:[{archiveSha256:'a'.repeat(64),instanceIds:['first'],privatePath:'hidden'},{archiveSha256:'b'.repeat(64),instanceIds:['second']}],source:{revision:2,manifestHash:'c'.repeat(64),privatePath:'hidden'},job:{jobId:'gjob-'+'d'.repeat(64),status:'queued',request:{secret:'hidden'}}};
+ const calls=[],service=createCraftminePackageService({selection:()=> 'alpha',pickFile:async()=>{throw Error('picker forbidden');},domainCall:async(channel,input)=>{calls.push({channel,input});return result;}});
+ const invoke=()=>service.request('package.request',{worldId:'alpha',method:'installSourceProposal',params:{worldId:'alpha',proposalId:'source-'+'a'.repeat(48)}});
+ const projected=await invoke();assert.deepEqual(projected.archives,[{archiveSha256:'a'.repeat(64),instanceIds:['first']},{archiveSha256:'b'.repeat(64),instanceIds:['second']}]);assert.equal(JSON.stringify(projected).includes('hidden'),false);assert.equal('archiveSha256' in projected,false);
+ assert.deepEqual(calls[0].input.args,{worldId:'alpha',proposalId:'source-'+'a'.repeat(48)});
+ result.archives[1].instanceIds=['first'];await assert.rejects(invoke(),/INSTALL_RECEIPT_INVALID/);result.archives[1].instanceIds=['second'];
+ result.archives[1].archiveSha256='bad';await assert.rejects(invoke(),/INSTALL_RECEIPT_INVALID/);result.archives[1].archiveSha256='b'.repeat(64);
+ result.archives.reverse();await assert.rejects(invoke(),/INSTALL_RECEIPT_INVALID/);
+});
 async function fixture() {
  const dir=await fs.mkdtemp(path.join(root,'case-')),file=path.join(dir,'component.zip'),bytes=Buffer.from('fixed opaque test ZIP bytes');await fs.writeFile(file,bytes);
  const state={world:'alpha',now:0,fail:false,calls:[],pick:file,picks:0};

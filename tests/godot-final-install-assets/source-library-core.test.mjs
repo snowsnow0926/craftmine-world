@@ -6,7 +6,7 @@ import {contentHash} from '../../plugins/craftmine-world/package-format.mjs';
 import {createManagedPackageInstaller} from '../../plugins/craftmine-world/reuse-service.mjs';
 const {createSourceLibraryService}=createRequire(import.meta.url)('../../plugins/craftmine-world/source-library-service.cjs');
 const sha=b=>createHash('sha256').update(b).digest('hex');
-test('real immutable catalog registration reaches normal Godot draft installation without legacy package conversion',{skip:!process.env.CRAFTMINE_CORE_BIN},async t=>{
+for(const grouped of [false,true])test(`real immutable catalog ${grouped?'group':'single'} proposal reaches one Godot draft transaction without legacy conversion`,{skip:!process.env.CRAFTMINE_CORE_BIN},async t=>{
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'source-library-core-')),core=new CoreClient(process.env.CRAFTMINE_CORE_BIN,path.join(root,'data'));
  t.after(async()=>{await core.stop();await fs.rm(root,{recursive:true,force:true});});const calls=[];
  const call=async(method,args)=>{calls.push(method);return core.call(method,args,120000);};await core.start();
@@ -25,13 +25,16 @@ test('real immutable catalog registration reaches normal Godot draft installatio
    const worldRecord=await call('world.read',{id:worldId}),status=await call('content.status',{worldId}),index=await call('godotProject.index',{context,worldId,offset:0,limit:1});
    return {context,worldRecord,operation:{operationId,worldId,repoId:status.repoId,branchId:index.branchId,expectedHeadOid:status.branches.find(b=>b.name==='refs/heads/'+index.branchId).oid,expectedAppliedOid:status.appliedOid,expectedProgressRevision:worldRecord.revision}};
  }});
- const service=createSourceLibraryService({call,installSource:installer,directory:path.join(root,'proposals')});
+ const service=createSourceLibraryService({call,installSource:installer,installSourceGroup:args=>installer.group(args),directory:path.join(root,'proposals')});
  const found=await service.tool({mode:'search',query:'Tree'},context,worldId,'search');assert.equal(found.result.items.length,1);
- const proposed=await service.tool({mode:'propose',ref,position:{x:3,y:0,z:-4}},context,worldId,'proposal');assert.notEqual(ref.contentHash,proposed.rootRef.sha256);
+ const proposed=await service.tool(grouped?{mode:'propose-group',items:[{ref,position:{x:3,y:0,z:-4}},{ref,position:{x:-3,y:0,z:-4}}]}:{mode:'propose',ref,position:{x:3,y:0,z:-4}},context,worldId,'proposal');assert.notEqual(ref.contentHash,(grouped?proposed.items[0]:proposed).rootRef.sha256);
  const before=await call('godotProject.index',{context,worldId,offset:0,limit:1});assert.equal(before.revision,proposed.proposal.source.revision);
  const installed=await service.installProposal({worldId,proposalId:proposed.proposal.proposalId});assert.equal(installed.applied,false);assert.ok(['check-queued','source-saved-check-blocked'].includes(installed.status));
  const after=await call('godotProject.index',{context,worldId,offset:0,limit:32});assert.ok(after.files.some(f=>f.path==='addons/tree/tree.gd'));assert.ok(after.files.some(f=>f.path==='craftmine.assets.lock.json'));assert.ok(after.revision>before.revision);
  const installedScene=await call('godotProject.read',{context,worldId,revision:after.revision,manifestHash:after.manifestHash,path:'world.tscn',offset:0,limit:16000});assert.match(installedScene.text,/position = Vector3\(3, 0, -4\)/);
+ if(grouped){assert.match(installedScene.text,/position = Vector3\(-3, 0, -4\)/);assert.equal(installed.archives.length,2);assert.deepEqual(installed.archives.flatMap(a=>a.instanceIds),installed.instanceIds);assert.equal(new Set(installed.instanceIds).size,2);}
+ assert.equal(after.revision,before.revision+1);assert.equal(calls.filter(c=>c==='godotProject.applyFiles').length,1);assert.equal(calls.filter(c=>c==='godotBuild.start').length,1);
+ assert.deepEqual(await service.installProposal({worldId,proposalId:proposed.proposal.proposalId}),installed);assert.equal(calls.filter(c=>c==='godotProject.applyFiles').length,1);
  assert.equal(calls.includes('package.install'),false);assert.equal(calls.includes('package.check'),false);assert.ok(calls.includes('package.planInstall'));assert.ok(calls.includes('godotProject.applyFiles'));assert.ok(calls.includes('godotBuild.start'));
  if(installed.status==='check-queued')assert.equal(enqueued,true);
 });

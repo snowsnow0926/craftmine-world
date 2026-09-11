@@ -2232,7 +2232,7 @@
       },
       {
         "name": "godot_source_library",
-        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement.",
+        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement. propose-group freezes 2 to 8 ordered items, each with an exact ref and optional position, against one source revision. The player confirms the whole group once; all items are preflighted and written together, then checked together. Repeated refs create independent instances. It is not a series of separately installed proposals. Group proposal creation does not modify the world.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -2242,7 +2242,8 @@
               "enum": [
                 "search",
                 "read",
-                "propose"
+                "propose",
+                "propose-group"
               ]
             },
             "query": {
@@ -2308,6 +2309,71 @@
                 "z"
               ],
               "additionalProperties": false
+            },
+            "items": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 8,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ref": {
+                    "type": "object",
+                    "properties": {
+                      "assetId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "contentHash": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      }
+                    },
+                    "required": [
+                      "assetId",
+                      "version",
+                      "contentHash"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "position": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "number",
+                        "minimum": -80,
+                        "maximum": 80
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": -80,
+                        "maximum": 80
+                      },
+                      "z": {
+                        "type": "number",
+                        "minimum": -80,
+                        "maximum": 80
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y",
+                      "z"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "ref"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Only for propose-group. Ordered source archives and frozen explicit placements; omit position to keep template placement."
             }
           },
           "required": [

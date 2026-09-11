@@ -10,9 +10,10 @@ const exact=(value,keys)=>check(value&&typeof value==='object'&&!Array.isArray(v
 const id=value=>check(typeof value==='string'&&/^[a-zA-Z0-9_-]{8,100}$/.test(value),'SOURCE_LIBRARY_INVALID_PROPOSAL');
 async function atomic(file,value){const temporary=file+'.tmp';await fs.writeFile(temporary,JSON.stringify(value));await fs.rename(temporary,file);}
 
-function createSourceLibraryService({call,directory,installSource,ensureBuiltin=async()=>{}}){
+function createSourceLibraryService({call,directory,installSource,installSourceGroup,ensureBuiltin=async()=>{}}){
   check(typeof call==='function'&&path.isAbsolute(directory)&&typeof installSource==='function','SOURCE_LIBRARY_HOST_REQUIRED');
   const pending=new Map();
+  const placement=value=>{exact(value,['x','y','z']);check(['x','y','z'].every(key=>Number.isFinite(value[key])&&Math.abs(value[key])<=80),'SOURCE_LIBRARY_INVALID_POSITION');return {x:value.x,y:value.y,z:value.z};};
   async function readArchive(ref){
     await ensureBuiltin();
     ref=validateAssetRef(ref);
@@ -38,11 +39,33 @@ function createSourceLibraryService({call,directory,installSource,ensureBuiltin=
         files:manifest.content.files})),verifiedScope:'archive-integrity-only',applied:false,
       note:'Archive validity is not target compatibility, runtime success or visual verification. Installing still requires a player action, source checks and candidate adoption.'};
   }
-  const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,archiveRef:p.ref,archiveSha256:p.archiveSha256,displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),applied:false,requiresPlayerAction:true,method:'installSourceProposal',status:p.result?.status??'proposed'});
+  const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,...(p.items?{kind:'group',items:p.items.map(item=>({archiveRef:item.ref,archiveSha256:item.archiveSha256,displayName:item.displayName,...(item.position?{position:item.position}:{})}))}:{archiveRef:p.ref,archiveSha256:p.archiveSha256}),displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),applied:false,requiresPlayerAction:true,method:'installSourceProposal',status:p.result?.status??'proposed'});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
   return {
     async tool(args,context,worldId,toolCallId){
-      exact(args,['mode','query','offset','limit','ref','position']);
+      exact(args,['mode','query','offset','limit','ref','position','items']);
+      if(args.mode==='propose-group'){
+        exact(args,['mode','items']);check(typeof installSourceGroup==='function','SOURCE_LIBRARY_GROUP_UNAVAILABLE');
+        check(Array.isArray(args.items)&&args.items.length>=2&&args.items.length<=8,'SOURCE_LIBRARY_INVALID_GROUP');
+        const cache=new Map(),items=[],summaries=[];
+        for(const item of args.items){
+          exact(item,['ref','position']);const ref=validateAssetRef(item.ref),position=item.position===undefined?undefined:placement(item.position);
+          const key=JSON.stringify(ref);if(!cache.has(key))cache.set(key,await readArchive(ref));
+          const archive=cache.get(key);if(position)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
+          const summary=describe(ref,archive);if(position)summary.placement={status:'explicit-position',position,capturedPlayerTargetUsed:false};
+          summaries.push(summary);items.push({ref,archiveSha256:archive.archive.archiveSha256,displayName:summary.displayName,...(position?{position}:{})});
+        }
+        check(typeof toolCallId==='string'&&toolCallId.length>0,'SOURCE_LIBRARY_INVOCATION_REQUIRED');
+        const source=await call('godotProject.index',{context,worldId,offset:0,limit:1});
+        check(source.worldId===worldId&&Number.isSafeInteger(source.revision)&&/^[a-f0-9]{64}$/.test(source.manifestHash),'SOURCE_LIBRARY_SOURCE_IDENTITY_REQUIRED');
+        const proposalId='source-'+hash(JSON.stringify([context,toolCallId])).slice(0,48);
+        const proposal={format:'craftmine.source-group-proposal/1',proposalId,context,worldId,items,displayName:items.map(i=>i.displayName).join(' + '),source:{revision:source.revision,manifestHash:source.manifestHash}};
+        await fs.mkdir(directory,{recursive:true});
+        try{const prior=await load(proposalId);check(JSON.stringify({...prior,result:undefined})===JSON.stringify(proposal),'SOURCE_LIBRARY_PROPOSAL_CONFLICT');return {format:'craftmine.source-library-group/1',items:summaries,proposal:projection(prior),applied:false};}catch(error){if(error.code!=='ENOENT')throw error;}
+        await atomic(path.join(directory,proposalId+'.json'),proposal);
+        return {format:'craftmine.source-library-group/1',items:summaries,proposal:projection(proposal),applied:false};
+      }
+      check(args.items===undefined,'SOURCE_LIBRARY_INVALID_PARAMS');
       if(args.position!==undefined){exact(args.position,['x','y','z']);check(args.mode==='propose'&&['x','y','z'].every(key=>Number.isFinite(args.position[key])&&Math.abs(args.position[key])<=80),'SOURCE_LIBRARY_INVALID_POSITION');}
       if(args.mode==='search'){
         await ensureBuiltin();
@@ -77,6 +100,19 @@ function createSourceLibraryService({call,directory,installSource,ensureBuiltin=
       if(proposal.result)return proposal.result;
       if(pending.has(args.proposalId))return pending.get(args.proposalId);
       const run=(async()=>{
+        if(proposal.format==='craftmine.source-group-proposal/1'){
+          check(typeof installSourceGroup==='function','SOURCE_LIBRARY_GROUP_UNAVAILABLE');
+          check(Array.isArray(proposal.items)&&proposal.items.length>=2&&proposal.items.length<=8,'SOURCE_LIBRARY_INVALID_GROUP');
+          const items=[],cache=new Map();
+          for(const item of proposal.items){
+            const key=JSON.stringify(item.ref);if(!cache.has(key))cache.set(key,await readArchive(item.ref));
+            const archive=cache.get(key);check(archive.archive.archiveSha256===item.archiveSha256,'SOURCE_LIBRARY_ASSET_CHANGED');
+            items.push({archiveBase64:archive.bytes.toString('base64'),...(item.position?{position:placement(item.position)}:{})});
+          }
+          const result=await installSourceGroup({worldId:proposal.worldId,operationId:proposal.proposalId,items,expectedSource:proposal.source});
+          check(result.worldId===proposal.worldId&&result.applied===false&&Array.isArray(result.archives)&&result.archives.length===proposal.items.length&&result.archives.every((item,index)=>item.archiveSha256===proposal.items[index].archiveSha256),'SOURCE_LIBRARY_INSTALL_RECEIPT_INVALID');
+          proposal.result=result;await atomic(path.join(directory,proposal.proposalId+'.json'),proposal);return result;
+        }
         const archive=await readArchive(proposal.ref);check(archive.archive.archiveSha256===proposal.archiveSha256,'SOURCE_LIBRARY_ASSET_CHANGED');
         const result=await installSource({worldId:proposal.worldId,operationId:proposal.proposalId,archiveBase64:archive.bytes.toString('base64'),expectedSource:proposal.source,...(proposal.position?{position:proposal.position}:{})});
         check(result.worldId===proposal.worldId&&result.applied===false&&result.archiveSha256===proposal.archiveSha256,'SOURCE_LIBRARY_INSTALL_RECEIPT_INVALID');
