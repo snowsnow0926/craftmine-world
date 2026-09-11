@@ -4,7 +4,7 @@ const {fields,inspectDraft,readDraftResource,patchDraft,readCapabilities,readVer
 const docs=require('./godot-docs.cjs');
 const {createProjectQuery}=require('./godot-query.cjs');
 const {describeRuntime,normalizeLiveSample,projectFacts,readLimitAccounting}=require('./godot-observe.cjs');
-const {capabilityReport,classifyGap}=require('./godot-capability.cjs');
+const {capabilityReport,classifyGap,readCapabilityContext}=require('./godot-capability.cjs');
 const {createHistoryService}=require('./godot-history.cjs');
 const {createLibraryBinding}=require('./godot-library.cjs');
 const {executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,explainRecovery}=require('./godot-jobs.cjs');
@@ -68,7 +68,9 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       const handshake=await core.start();
       const gaps=args.request||Array.isArray(args.evidence)?[{request:args.request||null,evidence:args.evidence||[]}]:[];
       return capabilityReport({manifest:require('./manifest.json'),routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake,
-        gaps,limits:await readLimitAccounting(options.budget,context),services});
+        gaps,limits:await readLimitAccounting(options.budget,context),services,
+        executionContext:await readCapabilityContext(core,context,handshake),
+        methodOverrides:{historyMethods:options.historyMethods,libraryMethods:options.libraryMethods}});
     }
     // The executor gate is global, so it must answer even when no world is bound.
     if(definition.name==='godot_jobs'&&args.mode==='status')return executorStatus(core,options);

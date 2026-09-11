@@ -2,6 +2,8 @@
 // inventory and the tests can read them without loading the generated domain
 // bundle. This module has no host dependency of its own.
 'use strict';
+const {DEFAULT_METHODS}=require('./godot-history.cjs');
+const {ASSET_METHODS,PACKAGE_METHODS}=require('./godot-library.cjs');
 
 // Every Godot tool that reaches a host method directly.
 const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_index:'godotProject.index',
@@ -20,12 +22,20 @@ const LOCAL_TOOLS={
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
   godot_project_facts:{owner:'S6',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
   godot_capability_report:{owner:'S6',hostMethod:'hello',needs:[]},
-  godot_history:{owner:'S6',hostMethod:'content.*',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED',blockedOwner:'S1'},
+  godot_history:{owner:'S6',needs:['sessionDrafts'],modes:{
+    history:{method:DEFAULT_METHODS.history,capability:'contentHistory',repository:true},
+    version:{method:DEFAULT_METHODS.version,capability:'contentHistory',repository:true},
+    diff:{method:DEFAULT_METHODS.diff,capability:'contentHistory',repository:true},
+    operation:{method:DEFAULT_METHODS.operationResult,capability:'contentHistory'},
+    checkpoint:{proposal:true,targetMethod:DEFAULT_METHODS.checkpoint},
+    'merge-candidate':{proposal:true,targetMethod:DEFAULT_METHODS.mergeCandidate}}},
   godot_jobs:{owner:'S6',hostMethod:'godotExecutor.status+godotJob.usage+godotJob.continue',needs:[]},
   godot_draft_recovery:{owner:'S6',hostMethod:'task.recoverable+task.resume',needs:['sessionDrafts']},
   creation_operation:{owner:'S1',hostMethod:'godotProject.index+godotProject.read+godotProject.patch',needs:['godotProjects']},
-  asset_library:{owner:'S5',hostMethod:'asset.search+asset.read+asset.versions',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
-  package_library:{owner:'S3',hostMethod:'package.check+package.read+package.list',reachable:false,blockedBy:'DEPENDENCY_NOT_WIRED'},
+  asset_library:{owner:'S5',needs:['sessionDrafts'],modes:Object.fromEntries(Object.entries(ASSET_METHODS)
+    .map(([mode,method])=>[mode,{method,capability:'assetCatalog'}]))},
+  package_library:{owner:'S3',needs:['sessionDrafts'],modes:{...Object.fromEntries(Object.entries(PACKAGE_METHODS)
+    .map(([mode,method])=>[mode,{method,capability:'creationPackages'}])),propose:{proposal:true}}},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
   project_inspect:{owner:'S1',hostMethod:'workspace.open+world.read+(Godot:godotProject.index|legacy:inspect)',needs:['sessionDrafts']},
