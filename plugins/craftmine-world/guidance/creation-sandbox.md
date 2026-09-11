@@ -1,6 +1,6 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.2.0`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.3.0`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
@@ -18,6 +18,8 @@ Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 `这个对象` 使用冻结的 entityId；玩家之后移动不改变本轮指代。没有目标或目标过期就
 需要新的玩家捕获，不能编造目标、坐标、障碍或 snapshot ID。调用工具时不传
 `targetSnapshot`；主机通过本轮上下文取得它。
+若捕获的 `source=recent`，目标来自玩家明确选回的正式产物，可修改该对象；它不是射线落点，
+不能用于“在这里”放置新物件。多个最近结果由玩家明确选择，不按名称猜选。
 
 `creationTarget.sourceRevision` 是捕获时正式构建的源码 revision。工具请求的
 `expected.revision` 与 `expected.manifestHash` 使用当前 `godot_project_index` 的结果；

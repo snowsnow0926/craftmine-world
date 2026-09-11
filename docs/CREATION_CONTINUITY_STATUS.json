@@ -4,16 +4,68 @@
   "baseline": "fa9f7247",
   "status": "in_progress",
   "stages": {
-    "CN0": {"status": "in_progress", "evidence": []},
-    "CN1": {"status": "pending", "evidence": []},
-    "CN2": {"status": "pending", "evidence": []},
-    "CN3": {"status": "pending", "evidence": []},
-    "CN4": {"status": "pending", "evidence": []},
-    "CN5": {"status": "pending", "evidence": []},
-    "CN6": {"status": "pending", "evidence": []},
-    "CN7": {"status": "pending", "evidence": []}
+    "CN0": {
+      "status": "complete",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_AND_PREVIEW11_PLAN_2026-09-11.md"
+      ]
+    },
+    "CN1": {
+      "status": "implemented",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_CN1_2026-09-11.md"
+      ]
+    },
+    "CN2": {
+      "status": "implemented",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_CN2_2026-09-11.md"
+      ]
+    },
+    "CN3": {
+      "status": "implemented",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_CN3_2026-09-11.md"
+      ]
+    },
+    "CN4": {
+      "status": "implemented",
+      "evidence": [
+        "docs/CREATION_CONTINUITY_CN4_2026-09-11.md",
+        "docs/CREATION_CONTINUITY_CN4_PROTOCOL_2026-09-11.md"
+      ]
+    },
+    "CN5": {
+      "status": "in_progress",
+      "evidence": []
+    },
+    "CN6": {
+      "status": "in_progress",
+      "evidence": []
+    },
+    "CN7": {
+      "status": "pending",
+      "evidence": []
+    }
   },
-  "modelEvaluation": {"status": "not_started", "maximumCases": 4, "maximumRequestsPerCase": 10, "maximumRequestsTotal": 40, "observedRequests": 0},
-  "externalValidation": {"physicalMicrophone": "not_run", "realPlayers": "not_run", "cleanWindowsLifecycle": "not_run"},
-  "delivery": {"targetVersion": "0.14.4-preview.11", "directory": "D:/Craftmine-World-preview.11", "status": "pending", "pushed": false, "installedOnPersonalSystem": false}
+  "modelEvaluation": {
+    "status": "not_started",
+    "maximumCases": 4,
+    "maximumRequestsPerCase": 10,
+    "maximumRequestsTotal": 40,
+    "observedRequests": 0
+  },
+  "externalValidation": {
+    "physicalMicrophone": "not_run",
+    "realPlayers": "not_run",
+    "cleanWindowsLifecycle": "not_run"
+  },
+  "delivery": {
+    "targetVersion": "0.14.4-preview.11",
+    "directory": "D:/Craftmine-World-preview.11",
+    "status": "pending",
+    "pushed": false,
+    "installedOnPersonalSystem": false
+  },
+  "updatedAt": "2026-09-11T02:26:14.0271763Z"
 }

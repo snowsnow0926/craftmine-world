@@ -11,7 +11,7 @@ execFileSync(process.execPath,[path.join(root,'desktop/godot/shared/tools/build-
 const catalogPath=path.join(root,'plugins/craftmine-world/guidance/catalog.json');
 const catalog=JSON.parse(fs.readFileSync(catalogPath,'utf8'));
 const skill=catalog.skills.find(item=>item.id==='creation-sandbox.authoring');
-skill.version='1.2.0';skill.text=fs.readFileSync(path.join(root,'plugins/craftmine-world/guidance',skill.path),'utf8').replace(/\r\n/g,'\n');skill.sha256=hash(skill.text);
+skill.version='1.3.0';skill.text=fs.readFileSync(path.join(root,'plugins/craftmine-world/guidance',skill.path),'utf8').replace(/\r\n/g,'\n');skill.sha256=hash(skill.text);
 for(const ref of skill.references){
   const committed=execFileSync('git',['show',head+':'+ref.sourcePath],{cwd:root,windowsHide:true});
   const actual=fs.readFileSync(path.join(root,ref.sourcePath),'utf8').replace(/\r\n/g,'\n');
@@ -19,7 +19,7 @@ for(const ref of skill.references){
   ref.sourceCommit=head;ref.text=actual;ref.sha256=hash(actual);ref.acceptedSourceHashes=[...new Set([hash(actual),hash(actual.replace(/\n/g,'\r\n'))])];
 }
 skill.interfaceHash=hash(JSON.stringify(skill.references.filter(ref=>ref.requiredInterface).map(ref=>[ref.projectPath,ref.sha256])));
-catalog.version='1.2.0';catalog.provenance.sourceCommits=[...new Set(catalog.skills.flatMap(item=>item.references.map(ref=>ref.sourceCommit)))];
+catalog.version='1.3.0';catalog.provenance.sourceCommits=[...new Set(catalog.skills.flatMap(item=>item.references.map(ref=>ref.sourceCommit)))];
 fs.writeFileSync(catalogPath,JSON.stringify(catalog,null,2)+'\n');
 let changed=0;
 const declarations=path.join(root,'desktop/delivery/base-assets');
