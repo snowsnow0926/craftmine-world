@@ -1,4 +1,6 @@
-import { BrowserWindow, WebContentsView, session, type NativeImage, type Session, type WebContents } from "electron";
+import type { MainWindow } from "./main-window";
+import { raiseMainOverlay } from "./main-window-layers";
+import { WebContentsView, session, type NativeImage, type Session, type WebContents } from "electron";
 import { join, resolve, sep } from "node:path";
 import { realpath } from "node:fs/promises";
 import {
@@ -330,7 +332,7 @@ export class GodotWorldViewHost {
   constructor(
     private readonly options: {
       /** The window the game view is composited into. */
-      window: () => BrowserWindow | null;
+      window: () => MainWindow | null;
       /** Commits the runner confirmation through the host progress transaction. */
       progress?: (call: GodotWorldProgressCall) => Promise<GodotWorldProgressResult>;
       /** Build roots the runtime may serve. Defaults to none (everything refused). */
@@ -738,7 +740,7 @@ export class GodotWorldViewHost {
    * instead of returning a size. Nothing here shows, focuses or activates a
    * window, and no frame is ever synthesised.
    */
-  private async awaitCaptureFrame(instance: LiveInstance, owner: BrowserWindow, width: number, height: number): Promise<{
+  private async awaitCaptureFrame(instance: LiveInstance, owner: MainWindow, width: number, height: number): Promise<{
     image: NativeImage; contents: WebContents; width: number; height: number; bytes: number; sampledColors: number; attempts: number; waitedMs: number;
   }> {
     const view = instance.view, contents = view.webContents, startedAt = Date.now();
@@ -1273,11 +1275,12 @@ export class GodotWorldViewHost {
     }
     // The candidate header is 46px and its persistent application explanation
     // reserves 100px in world.html. A sibling native view must not cover it.
-    const rect = excludeImmersion(this.captureBounds ?? gameBounds(this.bounds, this.candidateVisible ? WORLD_CHROME_HEIGHT + 146 : WORLD_CHROME_HEIGHT), this.immersion);
+    const rect = excludeImmersion(this.captureBounds ?? gameBounds(this.bounds, this.immersion.active ? 0 : this.candidateVisible ? WORLD_CHROME_HEIGHT + 146 : WORLD_CHROME_HEIGHT), this.immersion);
     if (rect.width < 1 || rect.height < 1) { this.detachView(instance.view); return; }
     const children = window.contentView.children;
     if (!children.includes(instance.view)) window.contentView.addChildView(instance.view);
     instance.view.setBounds(rect);
+    raiseMainOverlay(window);
   }
 
   private detachView(view: WebContentsView): void {

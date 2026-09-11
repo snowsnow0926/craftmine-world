@@ -1,7 +1,8 @@
+import type { MainWindow } from "./main-window";
 import {randomUUID} from "node:crypto";
-import type {BrowserWindow,WebContents} from "electron";
+import type {WebContents} from "electron";
 
-type Access={enabled:boolean;window:()=>BrowserWindow|null;world:()=>WebContents|null;
+type Access={enabled:boolean;window:()=>MainWindow|null;world:()=>WebContents|null;
   call:<T=any>(method:string,args:Record<string,unknown>)=>Promise<T>;
   toolName:(name:string)=>string;begin:(sessionId:string,turnId:string)=>void;
   finish:(sessionId:string)=>Promise<void>};

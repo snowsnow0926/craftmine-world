@@ -16,19 +16,9 @@ export function parseImmersion(value: unknown): CraftmineImmersionState {
 
 export const immersionBlocksInput = (state: CraftmineImmersionState): boolean => state.active && (state.blocked === true || state.overlay !== "closed");
 
-/** Keep native child views outside the renderer's reserved bottom/right pane. */
-export function excludeImmersion(bounds: CraftmineImmersionBounds, state: CraftmineImmersionState): CraftmineImmersionBounds {
-  if (state.active && state.blocked) return {...bounds, width:0, height:0};
-  if (!state.active || state.overlay === "closed") return bounds;
-  const reserved = state.overlayBounds;
-  if (!reserved || reserved.width < 1 || reserved.height < 1) return {...bounds, width:0, height:0};
-  if (bounds.x >= reserved.x + reserved.width || bounds.x + bounds.width <= reserved.x ||
-      bounds.y >= reserved.y + reserved.height || bounds.y + bounds.height <= reserved.y) return bounds;
-  const above = {...bounds, height:Math.max(0, Math.floor(reserved.y - bounds.y))};
-  const left = {...bounds, width:Math.max(0, Math.floor(reserved.x - bounds.x))};
-  // Full presentation becomes two rows in a narrow window. Use the measured
-  // reservation, rather than assuming that "full" always means a right column.
-  return state.overlay === "compact" || above.width * above.height > left.width * left.height ? above : left;
+/** Immersion is composited above the complete world, never a layout reservation. */
+export function excludeImmersion(bounds: CraftmineImmersionBounds, _state: CraftmineImmersionState): CraftmineImmersionBounds {
+  return bounds;
 }
 
 export function immersionShortcut(input: NativeFullscreenInput, overlayOpen: boolean): CraftmineImmersionShortcut | null {

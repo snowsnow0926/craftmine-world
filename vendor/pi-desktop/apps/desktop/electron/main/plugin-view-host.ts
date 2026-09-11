@@ -1,4 +1,5 @@
-import { session, shell, WebContentsView, type BrowserWindow } from "electron";
+import { raiseMainOverlay } from "./main-window-layers";
+import { session, shell, WebContentsView, type BaseWindow } from "electron";
 import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
 import { pathToFileURL } from "node:url";
@@ -84,12 +85,13 @@ export class PluginViewHost {
     const wc = this.headlessWorldContents();
     if (wc && !wc.isDestroyed()) wc.send(IMMERSION_INPUT_CHANNEL, immersionBlocksInput(state));
     if (wc && !wc.isDestroyed()) wc.send("pi-plugin-panel-event:craftmine-immersion", immersionBlocksInput(state));
+    if (wc && !wc.isDestroyed()) wc.send("pi-plugin-panel-event:craftmine-presentation", {active: state.active, overlay: state.overlay});
   }
   private views = new Map<string, LiveView>();
   private disposed = false;
   private disposal: Promise<void> | null = null;
   private readonly retiring = new OwnedViewClose("PLUGIN_RENDERER");
-  private window: BrowserWindow | null = null;
+  private window: BaseWindow | null = null;
   /** The one view currently attached to the window, if any. */
   private visibleKey: string | null = null;
   private bounds: PluginViewBounds = { x: 0, y: 0, width: 0, height: 0 };
@@ -130,7 +132,7 @@ export class PluginViewHost {
     }
   }
 
-  setWindow(window: BrowserWindow | null): void {
+  setWindow(window: BaseWindow | null): void {
     if (this.disposed) return;
     if (this.window === window) return;
     this.detachVisible();
@@ -229,6 +231,7 @@ export class PluginViewHost {
     }
     entry.view.setBounds(this.bounds);
     this.visibleKey = key;
+    raiseMainOverlay(this.window);
     this.emitSurface();
   }
 
@@ -415,6 +418,7 @@ export class PluginViewHost {
       wc.on("did-finish-load", () => {
         if (!wc.isDestroyed()) wc.send(IMMERSION_INPUT_CHANNEL, immersionBlocksInput(this.immersion));
         if (!wc.isDestroyed()) wc.send("pi-plugin-panel-event:craftmine-immersion", immersionBlocksInput(this.immersion));
+        if (!wc.isDestroyed()) wc.send("pi-plugin-panel-event:craftmine-presentation", {active: this.immersion.active, overlay: this.immersion.overlay});
       });
       wc.ipc.on(PLUGIN_WORLD_FULLSCREEN_EXIT_CHANNEL, (event, payload: unknown) => {
         if (!current() || event.senderFrame !== wc.mainFrame || !payload || typeof payload !== "object") return;

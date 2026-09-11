@@ -1,4 +1,4 @@
-import { type BrowserWindow, type MessageBoxOptions, dialog } from "electron";
+import { type BaseWindow, type MessageBoxOptions, dialog } from "electron";
 import { catalogs, resolveLocale } from "@pi-desktop/i18n";
 import {
   MAX_DELETES_PER_WINDOW,
@@ -56,7 +56,7 @@ export function fsConsentAnswerFromResponse(response: number): PluginFsConsentAn
  *   dialog stands on its own.
  */
 export function createFsConsentService(deps: {
-  getWindow: () => BrowserWindow | null;
+  getWindow: () => BaseWindow | null;
   getLocale: () => string;
 }): (request: PluginFsConsentRequest) => Promise<PluginFsConsentAnswer> {
   return async (request) => {

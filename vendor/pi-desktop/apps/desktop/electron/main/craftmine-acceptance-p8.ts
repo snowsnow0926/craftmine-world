@@ -1,6 +1,7 @@
+import type { MainWindow } from "./main-window";
 // Explicitly enabled, finite acceptance only. Real credentials never enter Main.
 import { randomUUID } from "node:crypto";
-import type { BrowserWindow, WebContents } from "electron";
+import type { WebContents } from "electron";
 import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance.js";
 import { exerciseP8Gameplay } from "./craftmine-acceptance-p8-gameplay.js";
 
@@ -46,7 +47,7 @@ export function assertP8UnlimitedRequests(observed: { maxRequests: unknown } | n
 type Binding = { sessionId: string; worldId: string; providerId: string; submitted: boolean; continuations?: number };
 export type P8AcceptanceAccess = {
   enabled: boolean;
-  window: () => BrowserWindow | null;
+  window: () => MainWindow | null;
   world: () => WebContents | null;
   call: <T = any>(method: string, params: Record<string, unknown>) => Promise<T>;
   panel: (channel: string, payload: Record<string, unknown>) => Promise<any>;

@@ -1,4 +1,5 @@
-import { shell, WebContentsView, type BrowserWindow } from "electron";
+import { raiseMainOverlay } from "./main-window-layers";
+import { shell, WebContentsView, type BaseWindow } from "electron";
 import { OwnedViewClose } from "./owned-view-close";
 import { statSync, watch, type FSWatcher } from "node:fs";
 import { dirname, isAbsolute, resolve, sep } from "node:path";
@@ -82,7 +83,7 @@ export class BrowserPane {
   private disposed = false;
   private disposal: Promise<void> | null = null;
   private readonly retiring = new OwnedViewClose("BROWSER_RENDERER");
-  private window: BrowserWindow | null = null;
+  private window: BaseWindow | null = null;
   private visible = false;
   private bounds = { x: 0, y: 0, width: 0, height: 0 };
   private onState: (state: BrowserState) => void;
@@ -95,7 +96,7 @@ export class BrowserPane {
     this.onState = onState;
   }
 
-  setWindow(window: BrowserWindow | null): void {
+  setWindow(window: BaseWindow | null): void {
     if (this.disposed) return;
     if (this.window === window) return;
     this.detach();
@@ -266,6 +267,7 @@ export class BrowserPane {
     if (!this.window.contentView.children.includes(this.view)) {
       this.window.contentView.addChildView(this.view);
     }
+    raiseMainOverlay(this.window);
     this.view.setBounds(this.bounds);
   }
 

@@ -8,14 +8,12 @@ const world={x:100,y:40,width:1000,height:700};
 const compact={active:true,overlay:'compact',overlayBounds:{x:100,y:540,width:1000,height:200}};
 const full={active:true,overlay:'full',overlayBounds:{x:700,y:40,width:400,height:700}};
 
-test('native exclusion reserves compact/full and restores exact requested geometry',()=>{
-  assert.deepEqual(excludeImmersion(world,compact),{...world,height:500});
-  assert.deepEqual(excludeImmersion(world,full),{...world,width:600});
-  assert.deepEqual(excludeImmersion(world,{...compact,overlay:'full'}),{...world,height:500});
-  assert.deepEqual(excludeImmersion(world,NO_IMMERSION),world);
-  assert.deepEqual(excludeImmersion(world,{...compact,overlayBounds:null}),{...world,width:0,height:0});
-  assert.deepEqual(excludeImmersion(world,{...NO_IMMERSION,active:true,blocked:true}),{...world,width:0,height:0});
-  assert.deepEqual(excludeImmersion({x:0,y:0,width:60,height:60},full),{x:0,y:0,width:60,height:60});
+test('native overlays preserve the complete world rectangle including blocked and unmeasured states',()=>{
+  for (const state of [compact, full, {...compact,overlay:'full'}, NO_IMMERSION,
+    {...compact,overlayBounds:null}, {...NO_IMMERSION,active:true,blocked:true}]) {
+    assert.strictEqual(excludeImmersion(world,state),world);
+  }
+  assert.deepEqual(world,{x:100,y:40,width:1000,height:700});
 });
 test('invalid states and hostile numeric geometry fail before native mutation',()=>{
   for(const value of [null,{}, {...compact,active:'true'}, {...compact,blocked:1}, {...compact,overlay:'other'},

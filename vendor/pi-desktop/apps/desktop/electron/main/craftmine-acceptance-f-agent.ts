@@ -1,10 +1,11 @@
+import type { MainWindow } from "./main-window";
 // Fixed, opt-in native acceptance. No arbitrary RPC or renderer source is accepted.
 import { randomUUID } from "node:crypto";
-import type { BrowserWindow, WebContents } from "electron";
+import type { WebContents } from "electron";
 
 type Access = {
   enabled: boolean;
-  window: () => BrowserWindow | null;
+  window: () => MainWindow | null;
   world: () => WebContents | null;
   call: <T = any>(method: string, params: Record<string, unknown>) => Promise<T>;
   panel: (channel: string, payload: Record<string, unknown>) => Promise<any>;
