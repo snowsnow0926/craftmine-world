@@ -1792,6 +1792,7 @@ export const es = {
     "NETWORK_ERROR": "No se puede comunicar con el proveedor de IA. Verifique su red o URL base.",
     "TIMEOUT": "Se agotó el tiempo de espera de la solicitud al proveedor de IA.",
     "STREAM_FAILED": "La respuesta fue interrumpida.",
+    MODEL_OUTPUT_LIMIT_REACHED: "El modelo alcanzó el límite de salida por respuesta sin producir un resultado. Puedes continuar en esta tarea.",
     "EMPTY_MODEL_RESPONSE": "El modelo terminó su turno sin decir nada, dos veces seguidas. Inténtelo de nuevo o reformule su solicitud.",
     "MUTATION_RETRY_BUDGET_EXHAUSTED": "La misma edición falló dos veces, por lo que este turno se detuvo en lugar de volver a intentarlo a ciegas. Pregunta nuevamente para continuar.",
     "CONTEXT_TOO_LARGE": "Este chat aún dura demasiado después de la recuperación del contexto. Acorta tu mensaje o inicia un nuevo chat.",

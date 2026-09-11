@@ -2972,6 +2972,58 @@ describe("DesktopAgentRuntime assistant thinking events", () => {
     await runtime.dispose();
   });
 
+  it.each([{ content: [] }, { content: [{ type: "thinking", thinking: "private unfinished reasoning" }] }, { content: [{ type: "text", text: "  " }] }])("stops an explicitly length-truncated empty response without another request (%j)", async ({ content }) => {
+    const onEvent = vi.fn();
+    const runtime = createRuntime({ onEvent, thinkingLevel: "high" });
+    const agent = (runtime as any).agent;
+    const handleAgentEvent = (runtime as any).handleAgentEvent.bind(runtime);
+    const truncated = { ...assistantMessage({ content, stopReason: "length" }),
+      usage: { input: 80000, output: 16384, reasoning: 16384, cacheRead: 0, cacheWrite: 0, totalTokens: 96384,
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } } };
+    agent.prompt = vi.fn(async () => {
+      agent.state.messages = [{ role: "user", content: "make it", timestamp: 1 }, truncated];
+      await handleAgentEvent({ type: "message_start", message: truncated });
+      await handleAgentEvent({ type: "message_end", message: truncated });
+      await handleAgentEvent({ type: "turn_end" });
+      await handleAgentEvent({ type: "agent_end", messages: [] });
+    });
+    agent.waitForIdle = vi.fn(async () => undefined);
+    agent.continue = vi.fn(async () => { throw Error("must not request again"); });
+    await runtime.prompt("make it", "user-1");
+    expect(agent.prompt).toHaveBeenCalledOnce();
+    expect(agent.continue).not.toHaveBeenCalled();
+    expect(agent.state.systemPrompt).not.toContain("<no_output_recovery>");
+    const events = onEvent.mock.calls.map(([envelope]) => (envelope as any).event);
+    const ended = events.find(event => event.type === "message_end");
+    expect(ended.message).toMatchObject({ status: "error", isError: true,
+      usage: { inputTokens: 80000, outputTokens: 16384, totalTokens: 96384 },
+      error: { code: "MODEL_OUTPUT_LIMIT_REACHED", retriable: true, details: { stopReason: "length" } } });
+    expect(JSON.stringify(ended.message.error)).not.toContain("private unfinished reasoning");
+    expect(events.filter(event => event.type === "agent_end")).toHaveLength(1);
+    expect(events.filter(event => event.type === "error")).toHaveLength(1);
+    await runtime.dispose();
+  });
+
+  it.each([
+    { content: [{ type: "text", text: "Partial visible result" }] },
+    { content: [{ type: "toolCall", id: "call-1", name: "Read", arguments: {} }] },
+  ])("retains existing behavior for length responses with visible text or tools (%j)", async ({ content }) => {
+    const onEvent = vi.fn(), runtime = createRuntime({ onEvent });
+    const agent = (runtime as any).agent, handle = (runtime as any).handleAgentEvent.bind(runtime);
+    const message = assistantMessage({ content, stopReason: "length" });
+    agent.prompt = vi.fn(async () => {
+      await handle({ type: "message_start", message }); await handle({ type: "message_end", message });
+      await handle({ type: "turn_end" }); await handle({ type: "agent_end", messages: [] });
+    });
+    agent.waitForIdle = vi.fn(async () => undefined);agent.continue = vi.fn();
+    await runtime.prompt("continue", "user-1");
+    expect(agent.continue).not.toHaveBeenCalled();
+    const events = onEvent.mock.calls.map(([envelope]) => (envelope as any).event);
+    expect(events.some(event => event.type === "error")).toBe(false);
+    expect(events.find(event => event.type === "message_end").message.status).toBe("complete");
+    await runtime.dispose();
+  });
+
   it("recovers a silent turn with one automatic re-run", async () => {
     const onEvent = vi.fn();
     const runtime = createRuntime({ onEvent });
