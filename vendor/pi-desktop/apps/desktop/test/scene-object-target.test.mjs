@@ -11,12 +11,12 @@ const session={projectId:'p',sessionId:'s'},context={...session,turnId:'t'};
 const actor={objectId:'9007199254740993',nodePath:'Actor/Body',nodeClass:'StaticBody3D',scriptPath:'res://scripts/actor.gd',scenePath:'',position:[0,1,-2],normal:[0,0,1],ancestors:[]};
 function fixture(t){
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'scene-target-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
- const state={now:100000,instance:{worldId:'w',buildId:'b',instanceId:'i'},revision:3,manifestHash:'a'.repeat(64),hit:structuredClone(actor),refs:[structuredClone(actor)],stamp:null,sourcePath:'scripts/actor.gd',selection:null,observerFiles:Object.keys(SCENE_OBSERVER_RESOURCES).map(path=>({path,bytes:10,sha256:'f'.repeat(64)}))};
+ const state={now:100000,instance:{worldId:'w',buildId:'b',instanceId:'i'},revision:3,manifestHash:'a'.repeat(64),hit:structuredClone(actor),refs:[structuredClone(actor)],stamp:null,sourcePath:'scripts/actor.gd',selection:null,target:{entityId:null,position:[0,0,-6],normal:[0,1,0],surface:'ground',revision:1},observerFiles:Object.keys(SCENE_OBSERVER_RESOURCES).map(path=>({path,bytes:10,sha256:'f'.repeat(64)}))};
  const deps={directory,now:()=>state.now,selection:async()=>state.instance.worldId,instance:()=>({...state.instance}),
  descriptor:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,manifestHash:state.manifestHash}),
  source:async()=>({...state.instance,baseId:'creation-sandbox',sourceRevision:state.revision,files:[{path:state.sourcePath,bytes:10,sha256:'f'.repeat(64)},...state.observerFiles]}),
  sceneObjectSourcePins:Object.fromEntries(Object.keys(SCENE_OBSERVER_RESOURCES).map(name=>[name,['f'.repeat(64)]])),
- sample:async()=>({...state.instance,baseId:'creation-sandbox',sampledAt:state.stamp??new Date(state.now).toISOString(),payload:{player:{position:[0,1,0]},creation:{entities:[],target:{entityId:null,position:[0,0,-6],normal:[0,1,0],surface:'ground',revision:1},sceneObjectTarget:state.hit,sceneObjectRefs:state.refs,sceneObjectSelection:state.selection}}})};
+ sample:async()=>({...state.instance,baseId:'creation-sandbox',sampledAt:state.stamp??new Date(state.now).toISOString(),payload:{player:{position:[0,1,0]},creation:{entities:[],target:state.target,sceneObjectTarget:state.hit,sceneObjectRefs:state.refs,sceneObjectSelection:state.selection}}})};
  return {state,service:createCreationTargetService(deps)};
 }
 const ref=capture=>({creationTarget:{captureId:capture.captureId}});
@@ -101,4 +101,43 @@ test('older or changed observers cannot promote authored lookalike fields into h
  assert.equal((await service.capture(1,session)).reason,'SCENE_OBJECT_OBSERVER_UPGRADE_REQUIRED');
  state.selection=null;
  assert.equal((await service.capture(1,session)).target.surface,'ground');
+});
+
+test('the real monster prop shape enters ordinary source context, never structured placement',async t=>{
+ const {state,service}=fixture(t);
+ state.target={entityId:null,normal:[0.931707978248596,0,-0.363208264112473],position:[-0.768680155277252,0.903869271278381,3.06453347206116],revision:1,surface:'prop'};
+ state.sourcePath='scripts/monsters.gd';
+ state.hit={...state.target,objectId:'28789704090',nodePath:'Monsters/Monster_3',nodeClass:'StaticBody3D',scriptPath:'',scenePath:'',ancestors:[{objectId:'26306676017',nodePath:'Monsters',nodeClass:'Node3D',scriptPath:'res://scripts/monsters.gd',scenePath:''}]};
+ state.refs=[structuredClone(state.hit)];state.selection={status:'blocked',reason:'nearer-or-tied-physics-hit'};
+ const display=await service.capture(1,session);assert.equal(display.target,null);assert.equal(display.sceneObjectTarget.objectId,'28789704090');
+ assert.equal(display.sceneObjectTarget.ancestors[0].scriptPath,'res://scripts/monsters.gd');
+ const capture=await service.validate(1,ref(display),session);await service.policy({worldId:'w',autoApply:true});
+ const bound=await service.bind(1,capture,context,'w','这些怪物应该会追着我攻击，我要和它们战斗。');
+ assert.deepEqual(bound.target,{entityId:null,position:null,normal:null,surface:'none',revision:1});
+ assert.equal(bound.sceneObjectLive.currentNodePath,'Monsters/Monster_3');assert.equal(bound.autoApply,false);assert.equal(bound.creationRequirements.reason,'SCENE_OBJECT_SOURCE_REVIEW_REQUIRED');
+});
+
+test('prop cannot bypass missing, uncertain, malformed or unbound scene identity',async t=>{
+ for(const mutate of [s=>s.hit=null,s=>s.refs=[],s=>s.refs[0].objectId='42',s=>s.hit.objectId='0',s=>s.hit.nodePath='../escape',s=>s.selection={status:'fallback',reason:'triangle-budget'},s=>s.target.entityId='tree-a',s=>s.target.position=[NaN,0,0],s=>s.target.surface='authored-other']){
+  const {state,service}=fixture(t);state.target.surface='prop';mutate(state);
+  await assert.rejects(service.capture(1,session),/INVALID|RECAPTURE/);assert.equal(service.bound(context,'w'),null);
+ }
+});
+
+test('prop lookalikes from old or tampered observers cannot be promoted',async t=>{
+ for(const name of Object.keys(SCENE_OBSERVER_RESOURCES)){
+  const {state,service}=fixture(t);state.target.surface='prop';state.observerFiles.find(file=>file.path===name).sha256='e'.repeat(64);
+  await assert.rejects(service.capture(1,session),/OBSERVER_UPGRADE_REQUIRED/);
+ }
+ const {state,service}=fixture(t);state.target.surface='prop';state.observerFiles=state.observerFiles.slice(0,3);
+ await assert.rejects(service.capture(1,session),/OBSERVER_UPGRADE_REQUIRED/);
+});
+
+test('prop capture still rejects replacement or changed ancestry before binding',async t=>{
+ for(const mutate of [s=>s.refs[0].objectId='42',s=>s.refs[0].ancestors=[],s=>s.instance.buildId='other']){
+  const {state,service}=fixture(t),parent={objectId:'50',nodePath:'Actor',nodeClass:'Node3D',scriptPath:'res://scripts/actor.gd',scenePath:''};
+  state.target.surface='prop';state.hit.ancestors=[parent];state.refs[0].ancestors=[structuredClone(parent)];
+  const display=await service.capture(1,session),capture=await service.validate(1,ref(display),session);mutate(state);
+  await assert.rejects(service.bind(1,capture,context,'w'),/STALE|RECAPTURE/);assert.equal(service.bound(context,'w'),null);
+ }
 });
