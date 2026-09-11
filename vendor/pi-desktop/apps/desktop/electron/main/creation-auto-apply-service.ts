@@ -13,6 +13,7 @@ type Dependencies={
 /** A plugin reports only a job id. Authority and evidence are reread by the host. */
 export function createCreationAutoApplyService(deps:Dependencies){
   const running=new Map<string,Promise<Data>>();
+  const runningInputs=new Map<string,CreationCheckCompletion>();
   const completed=new Map<string,Data>();
   async function perform({jobId,context}:CreationCheckCompletion):Promise<Data>{
     const capture=await deps.capture(context);
@@ -44,6 +45,9 @@ export function createCreationAutoApplyService(deps:Dependencies){
     return deps.apply(worldId,candidateId,{buildId:capture.buildId,instanceId:capture.instanceId},guard);
   }
   return {
+    isApplying(jobId:string,sessionId:string):boolean {
+      return [...runningInputs.values()].some(input=>input.jobId===jobId&&input.context.sessionId===sessionId);
+    },
     completed(input:CreationCheckCompletion):Promise<Data>{
       if(!input||Object.keys(input).length!==2||typeof input.jobId!=="string"||!/^gjob-[a-f0-9]{64}$/.test(input.jobId)||!input.context||Object.keys(input.context).length!==3||!["projectId","sessionId","turnId"].every(key=>typeof (input.context as Data)[key]==="string"&&(input.context as Data)[key].length>0&&(input.context as Data)[key].length<=240))return Promise.reject(Error("CREATION_COMPLETION_INVALID"));
       const key=JSON.stringify([input.context.projectId,input.context.sessionId,input.context.turnId,input.jobId]);
@@ -52,8 +56,8 @@ export function createCreationAutoApplyService(deps:Dependencies){
       const task=perform(input).then(result=>{
         if(result.status==="applied"){completed.set(key,structuredClone(result));if(completed.size>64)completed.delete(completed.keys().next().value!);}
         return result;
-      }).finally(()=>running.delete(key));
-      running.set(key,task);return task;
+      }).finally(()=>{running.delete(key);runningInputs.delete(key);});
+      runningInputs.set(key,structuredClone(input));running.set(key,task);return task;
     },
   };
 }

@@ -18,6 +18,7 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
+  executorCreationCompletion:{kind:'function',owner:'CN4',hostMethod:null,optional:true,provides:'same-job recorded application state; a diagnostic receipt never grants application authority',requiredFor:['godot_build_read']},
   buildReadWaitMs:{kind:"number",owner:"NB5",hostMethod:null,optional:true,provides:"bounded model job-read waiting in milliseconds; fixture default is zero",requiredFor:["godot_build_read"]},
   creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation']},
   sampleLiveState:{

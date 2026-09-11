@@ -349,7 +349,7 @@
       },
       {
         "name": "godot_build_read",
-        "description": "Read one managed Godot job: status, stage, progress, blocked reason, executor, the exact build identity and, once terminal, the real import/compile/check output and recorded artifacts. sourceStale reports whether the job was built from a source revision that is no longer the project head. The production model tool waits up to 30 seconds for terminal status and returns actual waitedMs, lastReadAgeMs and waitReason; a deadline response remains the last observed state. Reading never starts or resumes the engine.",
+          "description": "Read one managed Godot job: actual status, stage, output, artifacts and sourceStale. For creation checks, passed proves only the checked candidate. creationApplication reports pending/applying/applied/manual/failed/cancelled/interrupted/unknown separately; only applied confirms the host adopted it. The production tool waits up to 30 seconds total for the same check and its authorized application, returning actual waitedMs, lastReadAgeMs and waitReason. application-pending or a deadline retains the last observed state: read the same job again, do not start a duplicate check or claim the world changed. Reading never starts the engine, grants adoption authority or extends a turn.",
         "risk": "low",
         "schema": {
           "type": "object",

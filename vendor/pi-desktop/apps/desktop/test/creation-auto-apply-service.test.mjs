@@ -36,6 +36,13 @@ test("missing consent never invokes application",async()=>{
   const {state,service}=fixture();state.capture.autoApply=false;
   assert.equal((await service.completed(input)).status,"manual");assert.equal(state.applies,0);
 });
+test("in-flight application state is scoped to the exact job and session and clears on settlement",async()=>{
+  const {service}=fixture();const pending=service.completed(input);
+  assert.equal(service.isApplying(input.jobId,input.context.sessionId),true);
+  assert.equal(service.isApplying(input.jobId,'other'),false);
+  assert.equal(service.isApplying('gjob-'+'2'.repeat(64),input.context.sessionId),false);
+  await pending;assert.equal(service.isApplying(input.jobId,input.context.sessionId),false);
+});
 for(const [label,change] of Object.entries({failed:s=>s.job.status="failed",cancelled:s=>s.job.status="cancelled",buildOnly:s=>s.job.kind="build",foreignTask:s=>s.source.currentTaskId="other",staleSource:s=>s.source.revision++,forgedProof:s=>s.candidate.checkOutputHash="forged",unready:s=>s.candidate.status="rejected",inactive:s=>s.active=false}))test(label+" completion never applies",async()=>{
   const {state,service}=fixture();change(state);await assert.rejects(service.completed(input));assert.equal(state.applies,0);
 });

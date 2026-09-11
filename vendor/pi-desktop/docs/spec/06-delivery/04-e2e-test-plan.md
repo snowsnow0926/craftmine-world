@@ -9506,3 +9506,7 @@ first-pass improvement requires a later measured benchmark.
 ## Godot通用只读入口回归（2026-09-11）
 
 在真实Godot场景合同与legacy体素合同上分别调用默认project_inspect和capabilities_read。Godot返回真实源码文件、身份与GDScript工具，不应触发undefined.map/objects iterable；legacy目录/schema保持。缺失源码明确不可用；跨世界与权限错误失败。tests/godot-generic-read.test.mjs与tests/godot-generic-read-core.mjs覆盖，不调用模型或用户输入。
+
+## CM-CN4: Check completion and application handoff
+
+Hold an authorized creation application's completion while its core check is already passed. A bounded model read reports applying, or waits for the matching applied receipt; a passed check alone never proves adoption. Cover cancellation and world switching, ledger uncertainty, recovery without live context, and a lost finish reply. Restarts do not replay application. The UI uses the matching host job for applying and the actual formal build for applied. Deterministic supervisor cases and actual native/package acceptance are recorded separately; no physical input or model requests are used by deterministic checks.

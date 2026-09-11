@@ -19,6 +19,7 @@ const path = require('node:path');
 const {isDeepStrictEqual} = require('node:util');
 const {captureBinRetirement} = require('./godot-task-bin-retirement.cjs');
 const {creationTiming} = require('./creation-timing.cjs');
+const {validCreationApplicationContext,normalizeCreationApplication,creationApplicationRecord,readCreationApplication}=require('./creation-application-state.cjs');
 
 const execFileAsync = (file, args, options = {}) => new Promise(resolve => {
   const settle = (error, stdout, stderr) => resolve({
@@ -1028,7 +1029,13 @@ function createGodotExecutor(core, options = {}) {
       artifacts:result.artifacts,
       engine:{version:ENGINE_VERSION, isolation:ISOLATION, evidenceHash:discovery.evidenceHash},
     };
+    const tracksApplication=kind==='check'&&entry.claim?.baseId==='creation-sandbox'&&output.passed&&validCreationApplicationContext(entry.context);
     try {
+      if(tracksApplication){
+        // Publish the pending handoff before the core can expose a passed check.
+        ledgerEntry(jobId).creationApplication=creationApplicationRecord(entry,'pending',null,null,nowIso());
+        await persistLedger();
+      }
       const record = await core.call('godotJob.finish', {jobId, token, output}, 30000);
       log('job finished', jobId, record?.status, result.reason ? 'reason=' + result.reason : '');
       const status = record?.status ?? 'unknown';
@@ -1053,19 +1060,36 @@ function createGodotExecutor(core, options = {}) {
         }
         await persistLedger();
       }
-      if(status==='passed'&&record?.candidateId&&!entry.cancelled&&!stopped&&typeof verifier?.creationCheckCompleted==='function'){
+      if(tracksApplication&&status==='passed'&&record?.candidateId&&!entry.cancelled&&!stopped&&!ledgerError&&typeof verifier?.creationCheckCompleted==='function'){
         // Application is a separate host-owned transaction. Its failure must
         // never turn a durable passed check into an executor finish failure.
         try {
-          durable.creationApplication=await entry.timing.measure('creation-application', () => verifier.creationCheckCompleted({jobId,context:entry.context}));
+          durable.creationApplication=creationApplicationRecord(entry,'applying',null,record.candidateId,nowIso());
           await persistLedger();
-        } catch(error) {warn('creation candidate awaits manual adoption:',jobId,String(error?.message??error));}
+          if(ledgerError)throw Error('CREATION_APPLICATION_LEDGER_UNCONFIRMED');
+          if(entry.cancelled||stopped)throw Error(entry.cancelled?'CREATION_APPLICATION_CANCELLED_BEFORE_START':'CREATION_APPLICATION_STOPPED_BEFORE_START');
+          const application=await entry.timing.measure('creation-application', () => verifier.creationCheckCompleted({jobId,context:entry.context}));
+          if(!application||!['applied','manual'].includes(application.status)||(application.status==='applied'&&(application.worldId!==entry.worldId||application.candidateId!==record.candidateId)))throw Error('CREATION_APPLICATION_RESPONSE_INVALID');
+          durable.creationApplication=creationApplicationRecord(entry,application.status,application.reason??null,record.candidateId,nowIso());
+          await persistLedger();
+        } catch(error) {
+          durable.creationApplication=creationApplicationRecord(entry,entry.cancelled?'cancelled':stopped?'interrupted':'failed',String(error?.message??error),record.candidateId,nowIso());
+          await persistLedger();warn('creation candidate awaits manual adoption:',jobId,String(error?.message??error));
+        }
+      }else if(tracksApplication){
+        durable.creationApplication=creationApplicationRecord(entry,entry.cancelled?'cancelled':stopped?'interrupted':'manual',status!=='passed'?'CREATION_CHECK_NOT_PASSED':ledgerError?'CREATION_APPLICATION_LEDGER_UNCONFIRMED':'CREATION_APPLICATION_NOT_STARTED',record?.candidateId??null,nowIso());
+        await persistLedger();
       }
       return {status, candidateId:record?.candidateId ?? null, reason:result.reason ?? null};
     } catch (error) {
       const originalReason = String(error?.message ?? error);
       warn('finish refused:', jobId, originalReason, result.reason ?? '');
       const durable = ledgerEntry(jobId);
+      const recordUnconfirmedApplication=async terminal=>{
+        if(!tracksApplication)return;
+        durable.creationApplication=creationApplicationRecord(entry,terminal.status==='passed'?'manual':terminal.status==='cancelled'?'cancelled':'interrupted','CREATION_APPLICATION_FINISH_REPLY_UNCONFIRMED: '+originalReason,terminal.candidateId??null,nowIso());
+        await persistLedger();
+      };
       // The refusal is the only durable explanation a model may have, so it is
       // recorded before any read-back or settlement: every later branch adds to
       // it instead of replacing it, and every return path reports it.
@@ -1096,6 +1120,7 @@ function createGodotExecutor(core, options = {}) {
           durable.state=terminal.status==='passed'?'finished':terminal.status;
           durable.outcome=terminal.status;durable.finishedAt=nowIso();
           await persistLedger();
+          await recordUnconfirmedApplication(terminal);
           return {status:terminal.status,candidateId:terminal.candidateId??null,reason:originalReason};
         }
       } catch (settlementError) {
@@ -1113,6 +1138,7 @@ function createGodotExecutor(core, options = {}) {
             durable.finishedAt=nowIso();
             durable.failureSettlement.terminalStatus=settled.status;
             await persistLedger();
+            await recordUnconfirmedApplication(settled);
             return {status:settled.status,candidateId:settled.candidateId??null,reason:originalReason};
           }
         } catch (recheckError) { durable.failureSettlement.recheckError=String(recheckError?.message??recheckError); }
@@ -1278,6 +1304,7 @@ function createGodotExecutor(core, options = {}) {
           // Historical proof is diagnostic only; new jobs always inspect the
           // actual pack again before they can submit a passed result.
           creationPackProof:entry.creationPackProof?.format==='craftmine.creation-pack-proof/1' ? entry.creationPackProof : null,
+          creationApplication:normalizeCreationApplication(entry.creationApplication,{restart:true}),
           phaseTiming:entry.phaseTiming?.format==='craftmine.creation-timing/1' && Number.isFinite(entry.phaseTiming.totalMs)
             && Array.isArray(entry.phaseTiming.stages) && entry.phaseTiming.stages.length<=2
             && entry.phaseTiming.stages.every(stage=>['runtime-check','creation-application'].includes(stage?.stage)&&Number.isFinite(stage.elapsedMs)&&stage.elapsedMs>=0&&typeof stage.passed==='boolean')
@@ -1596,7 +1623,10 @@ function createGodotExecutor(core, options = {}) {
     };
   }
 
-  return {start, stop, status, enqueue, cancel, cancelTurn, cancelOtherTurns, reconcile,
+  function creationCompletion(binding){
+    return readCreationApplication(ledger.jobs[binding?.jobId]?.creationApplication,binding,{live:jobs.has(binding?.jobId),ledgerError});
+  }
+  return {start, stop, status, enqueue, cancel, cancelTurn, cancelOtherTurns, reconcile, creationCompletion,
     recover:recoverTasks, reconcileAfterRestart, get ledger() { return ledger; },
     get executorId() { return EXECUTOR_ID; }, get registered() { return registered; }};
 }

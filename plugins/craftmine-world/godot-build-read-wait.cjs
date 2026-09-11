@@ -18,7 +18,7 @@ function guardedRead(core,params,timeoutMs,assertActive){
  });
 }
 
-async function readGodotBuildWithWait({core,params,waitMs=0,assertActive=()=>{},assertSelected=async()=>{},now=()=>performance.now(),pause=ms=>new Promise(resolve=>setTimeout(resolve,ms)),readTimeoutMs=5000}){
+async function readGodotBuildWithWait({core,params,waitMs=0,assertActive=()=>{},assertSelected=async()=>{},readCompletion,now=()=>performance.now(),pause=ms=>new Promise(resolve=>setTimeout(resolve,ms)),readTimeoutMs=5000}){
  if(!Number.isInteger(waitMs)||waitMs<0||waitMs>30000||!Number.isInteger(readTimeoutMs)||readTimeoutMs<1||readTimeoutMs>5000)throw error('GODOT_BUILD_READ_WAIT_INVALID');
  const bound=structuredClone(params);
  if(!bound||Object.keys(bound).sort().join(',')!=='context,jobId,worldId'||!bound.context||Object.keys(bound.context).sort().join(',')!=='projectId,sessionId,turnId'||![bound.worldId,bound.jobId,...Object.values(bound.context)].every(value=>typeof value==='string'&&value.length>0))throw error('GODOT_BUILD_READ_BINDING_INVALID');
@@ -27,7 +27,7 @@ async function readGodotBuildWithWait({core,params,waitMs=0,assertActive=()=>{},
  for(;;){
   assertActive();await assertSelected();assertActive();
   const remaining=waitMs-(now()-started);
-  if(previous&&remaining<=0)return result('deadline');
+  if(previous&&remaining<=0)return result(['pending','applying'].includes(previous.creationApplication?.status)?'application-pending':'deadline');
   const timeout=Math.max(1,Math.min(readTimeoutMs,waitMs>0?Math.ceil(remaining):readTimeoutMs));
   let current;
   try{current=await guardedRead(core,bound,timeout,assertActive);}catch(failure){
@@ -40,7 +40,18 @@ async function readGodotBuildWithWait({core,params,waitMs=0,assertActive=()=>{},
   const currentIdentity=JSON.stringify(IDENTITY.map(key=>current[key]??null));
   if(identity!==undefined&&identity!==currentIdentity)throw error('GODOT_BUILD_READ_IDENTITY_CHANGED');
   identity=currentIdentity;previous=structuredClone(current);lastReadAt=now();
-  if(TERMINAL.has(current.status))return result('terminal');
+  let applicationPending=false;
+  if(current.status==='passed'&&current.kind==='check'&&current.baseId==='creation-sandbox'&&typeof readCompletion==='function'){
+   const application=readCompletion(structuredClone(bound));
+   assertActive();
+   if(application!==null&&application!==undefined){
+    if(application.jobId!==current.jobId||application.worldId!==current.worldId||application.buildId!==current.buildId||!['pending','applying','applied','manual','failed','cancelled','interrupted'].includes(application.status)||(application.candidateId!==null&&application.candidateId!==current.candidateId)||(application.status==='applied'&&application.candidateId!==current.candidateId))throw error('GODOT_BUILD_APPLICATION_IDENTITY_CHANGED');
+    previous.creationApplication=structuredClone(application);
+    applicationPending=['pending','applying'].includes(application.status);
+   }else previous.creationApplication={status:'unknown',reason:'CREATION_APPLICATION_RECEIPT_UNAVAILABLE'};
+  }
+  if(TERMINAL.has(current.status)&&!applicationPending)return result('terminal');
+  if(applicationPending&&now()-started>=waitMs)return result('application-pending');
   if(now()-started>=waitMs)return result('deadline');
   await pause(Math.min(500,waitMs-(now()-started)));assertActive();
  }

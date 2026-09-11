@@ -6438,7 +6438,7 @@ function registerIpc() {
         if(!worldId)return {worldId:null,sessionId:input.sessionId,phase:"idle",requirementStatus:"not-requested"};
         const [job,formal]=await Promise.all([plugins.requestCraftmineHost("godotBuild.latest",{worldId,sessionId:input.sessionId}),plugins.requestCraftmineHost("godotRuntime.describe",{worldId})]);
         if(await godotSelection()!==worldId||notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
-        return creationTaskStatus(worldId,input.sessionId,job as any,formal as any);
+        return creationTaskStatus(worldId,input.sessionId,job as any,formal as any,creationAutoApply.isApplying((job as any)?.jobId,input.sessionId));
       }
       if(payload.channel==="godot.creationTarget"){
         if(Object.keys(input).length!==1||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
