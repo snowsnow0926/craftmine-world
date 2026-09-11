@@ -264,6 +264,6 @@
     "asar": {
       "smartUnpack": false
     },
-    "beforePack": "../../../../desktop/windows-before-pack.cjs"
+    "beforePack": "build/windows-before-pack.cjs"
   }
 }
