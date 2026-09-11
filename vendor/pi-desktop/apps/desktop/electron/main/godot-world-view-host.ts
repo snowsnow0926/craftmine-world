@@ -1065,7 +1065,12 @@ export class GodotWorldViewHost {
   }
 
   /** Freeze and durably save the current instance; successful checkpoints stay paused. */
-  async checkpoint(): Promise<GodotWorldSaveResult> {
+  async checkpoint(options: {fresh?: boolean} = {}): Promise<GodotWorldSaveResult> {
+    // Private lifecycle callers may require a new confirmation. Invalidate
+    // the previous success before starting, so a failed refresh cannot later
+    // be mistaken for that old successful checkpoint. Concurrent callers
+    // still share the same in-flight freeze/save transaction.
+    if (options.fresh === true) this.frozen = null;
     if (this.stagedRequest) return {status:"failed",error:"GODOT_CANDIDATE_ACTIVE"};
     const instance = this.current;
     if (!instance?.alive) return { status: "failed", error: "No world runtime is running" };
