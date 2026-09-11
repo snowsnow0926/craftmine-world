@@ -1,0 +1,19 @@
+{
+  "format": "craftmine.creation-continuity/1",
+  "plan": "docs/CREATION_CONTINUITY_AND_PREVIEW11_PLAN_2026-09-11.md",
+  "baseline": "fa9f7247",
+  "status": "in_progress",
+  "stages": {
+    "CN0": {"status": "in_progress", "evidence": []},
+    "CN1": {"status": "pending", "evidence": []},
+    "CN2": {"status": "pending", "evidence": []},
+    "CN3": {"status": "pending", "evidence": []},
+    "CN4": {"status": "pending", "evidence": []},
+    "CN5": {"status": "pending", "evidence": []},
+    "CN6": {"status": "pending", "evidence": []},
+    "CN7": {"status": "pending", "evidence": []}
+  },
+  "modelEvaluation": {"status": "not_started", "maximumCases": 4, "maximumRequestsPerCase": 10, "maximumRequestsTotal": 40, "observedRequests": 0},
+  "externalValidation": {"physicalMicrophone": "not_run", "realPlayers": "not_run", "cleanWindowsLifecycle": "not_run"},
+  "delivery": {"targetVersion": "0.14.4-preview.11", "directory": "D:/Craftmine-World-preview.11", "status": "pending", "pushed": false, "installedOnPersonalSystem": false}
+}
