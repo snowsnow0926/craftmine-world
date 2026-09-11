@@ -88,7 +88,7 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
   const retryQuery=submit('重试查询本次检查',()=>pollJob());retryQuery.form.hidden=true;
   const catalogArea=text('section',''),catalogQuery=field('作品名称或编号'),catalogKind=field('作品类型','select'),catalogChoice=field('资源库固定版本','select'),catalogStatus=text('p','输入名称或编号，查找资源库中已收录的作品。'),catalogDetail=text('div','');
   catalogArea.dataset.catalogSource='true';catalogQuery.control.maxLength=120;
-  for(const [value,label]of [['','全部类型'],['object','物体'],['raw','原始素材'],['creation','组合作品'],['world-template','世界模板']]){const option=text('option',label);option.value=value;catalogKind.control.append(option);}
+  for(const [value,label]of [['','全部类型'],['base','底座'],['world','世界'],['module','模块'],['object','物体'],['scene','场景'],['raw','原始素材'],['data','数据']]){const option=text('option',label);option.value=value;catalogKind.control.append(option);}
   catalogKind.control.value='';
   const catalogSearch=submit('检索资源库',()=>searchCatalog(0,{query:catalogQuery.control.value.trim(),kind:catalogKind.control.value}));
   catalogSearch.form.prepend(catalogQuery.wrapper,catalogKind.wrapper);

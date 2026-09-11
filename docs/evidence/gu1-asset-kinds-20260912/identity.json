@@ -1,0 +1,19 @@
+{
+  "baseline": "a9b4c0e2",
+  "tests": {
+    "passed": 37,
+    "failed": 0,
+    "skipped": 0
+  },
+  "scope": "Isolated Core + actual packaged model broker + UI gateway state tests; not the previous a9 25-step desktop acceptance",
+  "files": [
+    {
+      "file": "before.json",
+      "sha256": "fac516242eccae743fac3f29070fe19a8f80687b1caa1d68f8e50af024107254"
+    },
+    {
+      "file": "after.json",
+      "sha256": "2b34391fa1ff3ebc72f34f489aafba434ef7258e21d9924246ea93e79f741e21"
+    }
+  ]
+}

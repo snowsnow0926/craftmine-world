@@ -958,11 +958,17 @@
             "kind": {
               "type": "string",
               "enum": [
-                "raw",
+                "base",
+                "world",
+                "module",
                 "object",
+                "scene",
+                "raw",
+                "data",
                 "creation",
                 "world-template"
-              ]
+              ],
+              "description": "Canonical catalog kinds: base, world, module, object, scene, raw, data. Returned kinds can be reused unchanged as filters. Legacy creation and world-template filters remain accepted as module and world aliases."
             },
             "mediaKind": {
               "type": "string",

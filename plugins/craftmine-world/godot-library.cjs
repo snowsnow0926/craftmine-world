@@ -16,7 +16,9 @@ const PACKAGE_WRITE_METHODS={install:'package.install',register:'package.registe
   restore:'package.restore'};
 const OWNERS={asset:'R6',package:'R4'};
 const ASSET_SCOPES=['current-world','local-library','import-source'];
-const ASSET_KINDS=['raw','object','creation','world-template'];
+// Core asset_catalog::AssetKind canonical values, followed by accepted legacy
+// input aliases (creation -> module, world-template -> world).
+const ASSET_KINDS=['base','world','module','object','scene','raw','data','creation','world-template'];
 const ASSET_MEDIA_KINDS=['image','model','audio','package','other'];
 const HASH=/^[a-f0-9]{64}$/;
 
