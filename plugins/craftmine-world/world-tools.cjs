@@ -43,6 +43,12 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
     // Documentation needs neither the runtime nor a world binding.
     if(definition.name==='godot_docs') {
+      if(['api-info','api-class','api-search'].includes(args.mode)){
+        const mode=args.mode==='api-info'?'info':args.mode==='api-search'?'search':args.memberName!==undefined?'member':'class';
+        const result=require('./godot-engine-api.cjs').queryEngineApi({...args,mode});
+        return {...result,tool:'godot_docs',toolMode:args.mode,
+          ...(Array.isArray(result.modes)?{metadataQueryModes:result.modes,modes:['api-info','api-class','api-search']}: {})};
+      }
       if(args.mode==='info')return docs.docsInfo();
       if(args.mode==='search')return docs.searchDocs(args);
       if(args.mode==='read')return docs.readDoc(args);
@@ -235,10 +241,18 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         if(captured?.creationRequirements?.status==='verifiable')params.checkRequirements={format:'craftmine.godot-check-requirements/1',creation:captured.creationRequirements.requirements};
       }
       const method=GODOT_METHODS[definition.name];
+      const decorateBuildRead=async record=>{
+        assertActive();
+        if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');
+        assertActive();
+        if(record?.jobId!==params.jobId||record?.worldId!==params.worldId)throw Error('GODOT_BUILD_READ_IDENTITY_CHANGED');
+        return {...record,diagnostics:require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(record)};
+      };
       if(definition.name==='godot_build_read'&&((options.buildReadWaitMs??0)>0||typeof options.executorCreationCompletion==='function')){
-        return require('./godot-build-read-wait.cjs').readGodotBuildWithWait({core,params,waitMs:options.buildReadWaitMs,assertActive,
+        const record=await require('./godot-build-read-wait.cjs').readGodotBuildWithWait({core,params,waitMs:options.buildReadWaitMs,assertActive,
           readCompletion:options.executorCreationCompletion,
           assertSelected:async()=>{if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');}});
+        return decorateBuildRead(record);
       }
       if(definition.name==='godot_project_patch') {
         const source=await core.call('godotProject.index',{context,worldId:workspace.worldId,
@@ -283,7 +297,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
           const cancelled=await options.executorCancel(args.jobId).catch(error=>({cancelled:false,reason:error?.errorCode||error?.message}));
           return {...result,execution:{cancelled:cancelled?.cancelled===true,reason:cancelled?.reason??null,owner:'S2'}};
         }
-        return result;
+        return definition.name==='godot_build_read'?decorateBuildRead(result):result;
     }
     if(definition.name==='library_search')return library.search(args);
     if(definition.name==='library_read')return library.read(args);

@@ -18,6 +18,12 @@ for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-resto
   await fs.mkdir(path.dirname(path.join(output,file)),{recursive:true});
   await fs.copyFile(path.join(source,file),path.join(output,file));
 }
+// Keep reflected metadata and pure diagnostics available in installed plugins.
+// The extractor is a developer tool and is deliberately not shipped.
+for(const file of ['godot-engine-api.cjs','godot-diagnostics.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
+  await fs.mkdir(path.dirname(path.join(output,file)),{recursive:true});
+  await fs.copyFile(path.join(source,file),path.join(output,file));
+}
 // The installer consumes package parsing and draft planning from source paths;
 // bundle those modules so the staged plugin has no checkout-relative imports.
 await build({entryPoints:[path.join(source,'reuse-service.mjs')],outfile:path.join(output,'reuse-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
