@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolveCreationSequenceIntent} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-sequence-intent.ts';
-import {freezeCreationRequirements,creationRequirementsHash} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-check-requirements.ts';
+import {freezeCreationRequirements,creationRequirementsHash,creationEntitiesMatch} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-check-requirements.ts';
 const entity=(id,kind,color,label)=>({id,kind,color,position:[1,0,2],scale:[1,1,1],...(label?{parameters:{label}}:{})});
 const capture={target:{entityId:'gate',position:[0,0,0]},entities:[entity('gate','door','#0000ff'),entity('red-mark','marker','#ff0000','红'),entity('yellow-mark','marker','#ffff00','黄'),entity('green-mark','marker','#00ff00','绿')]};
 test('ordinary sequence wording resolves captured labels and selected or colored doors',()=>{
@@ -25,4 +25,11 @@ test('natural request enters the actual frozen requirement with original text ha
  assert.equal(frozen.requirements.entities.find(e=>e.id==='gate').kind,'door');
  const second=freezeCreationRequirements(capture,'依次触碰红、黄、绿后打开蓝门');
  assert.notEqual(creationRequirementsHash(frozen.requirements),creationRequirementsHash(second.requirements),'distinct original player inputs retain distinct request hashes');
+});
+test('resolved label and color meanings cannot be swapped after the player request is frozen',()=>{
+ const frozen=freezeCreationRequirements(capture,'依次触碰红、黄、绿后打开蓝门');assert.equal(frozen.status,'verifiable');
+ assert.equal(creationEntitiesMatch(frozen.requirements,capture.entities),true);
+ const changed=structuredClone(capture.entities);changed[1].parameters.label='黄';changed[2].parameters.label='红';
+ assert.equal(creationEntitiesMatch(frozen.requirements,changed),false);
+ const repainted=structuredClone(capture.entities);repainted[1].color='#ffffff';assert.equal(creationEntitiesMatch(frozen.requirements,repainted),false);
 });

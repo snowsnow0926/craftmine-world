@@ -291,6 +291,23 @@ fn creation_requirements_hash_is_identical_to_host_for_small_floats() -> Result<
  r.validate("creation-sandbox","check")?;
  assert_eq!(r.hash(),"f85e44d5f4e124c7527d53f15378a5a0dca699e08c1e14edca73a10bef061a2e");Ok(())
 }
+
+#[test]
+fn frozen_marker_label_rejects_changed_declaration_and_preserves_legacy() -> Result<()> {
+ let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("red marker"),"entities":[{"id":"red-mark","kind":"marker","declaredLabel":"红","color":"#ff0000"}],"counts":[]}});
+ let r:requirements::Requirements=serde_json::from_value(value.clone())?;r.validate("creation-sandbox","check")?;
+ let descriptor=json!({"format":"craftmine.godot-check-descriptor/1","phase":"check","checkRequirements":value,"checkRequirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build"});
+ let entity=json!({"id":"red-mark","kind":"marker","position":[0,0,0],"scale":[1,1,1],"color":"#ff0000","parameters":{"label":"红"}});
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build","instanceId":"engine","observations":[{"phase":"loaded","entities":[entity.clone()]},{"phase":"running","entities":[entity]}]});
+ assert!(requirements::evidence_matches(&r,Some(&evidence),&descriptor));
+ for label in [json!("黄"),Value::Null,json!(9)] {let mut bad=evidence.clone();bad["observations"][1]["entities"][0]["parameters"]["label"]=label;assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));}
+ let mut legacy=value.clone();legacy["creation"]["entities"][0].as_object_mut().unwrap().remove("declaredLabel");let old:requirements::Requirements=serde_json::from_value(legacy.clone())?;old.validate("creation-sandbox","check")?;
+ let mut old_descriptor=descriptor.clone();old_descriptor["checkRequirements"]=legacy;old_descriptor["checkRequirementsHash"]=json!(old.hash());
+ let mut old_evidence=evidence.clone();old_evidence["requirementsHash"]=json!(old.hash());old_evidence["observations"][1]["entities"][0]["parameters"]=Value::Null;
+ assert!(requirements::evidence_matches(&old,Some(&old_evidence),&old_descriptor));
+ for (kind,label) in [("door",json!("red")),("marker",json!("a".repeat(81))),("marker",json!(true))] {let mut bad=value.clone();bad["creation"]["entities"][0]["kind"]=json!(kind);bad["creation"]["entities"][0]["declaredLabel"]=label;let invalid:requirements::Requirements=serde_json::from_value(bad)?;assert!(invalid.validate("creation-sandbox","check").is_err());}
+ Ok(())
+}
 #[test]
 fn creation_door_trace_rejects_unconditional_open_missing_steps_and_wrong_order() -> Result<()> {
  let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("sequence"),"entities":[],"counts":[],"doorSequence":{"doorId":"door-a","steps":["marker-a","marker-b"]}}});
