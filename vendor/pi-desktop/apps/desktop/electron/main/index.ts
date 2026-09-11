@@ -9799,6 +9799,8 @@ installCreationEditAcceptance({enabled:!!headlessAcceptance,window:()=>mainWindo
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,
+  playerActive: sessionId=>activeTurns.has(sessionId),
+  playerLatest: (worldId,sessionId)=>plugins.requestCraftmineHost('godotBuild.latest',{worldId,sessionId}),
   world: () => pluginViews.headlessWorldContents(),
   godotGameplay: {
     playAction: (identity, args) => godotWorld.headlessPlayAction(identity, args),
