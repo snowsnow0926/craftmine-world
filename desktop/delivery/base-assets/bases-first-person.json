@@ -799,8 +799,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 2845,
-      "sha256": "28db3258a4e03ae95f67ea64ca56785f5446842a331089570f989c40ddefee50",
+      "bytes": 2862,
+      "sha256": "b03af0c1227803863eef0b054b531303eb6ac5a214738b1064cfa7c8987f6f9c",
       "notes": "Authored scene; no third-party model, texture or audio is referenced."
     },
     {
@@ -1158,8 +1158,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 5716,
-      "sha256": "a4669c45bb12fb0465eb8573038696bc6b25aa0727dca20929f66699daf82324",
+      "bytes": 6089,
+      "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
