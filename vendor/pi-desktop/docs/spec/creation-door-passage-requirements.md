@@ -51,7 +51,13 @@ The core still trusts its registered isolated executor to collect observations h
 
 Core SQLite tests cover new requirement persistence, descriptor propagation, authoritative finish/candidate readiness, missing/weak evidence rejection, canonical controller-file mismatch refusal and legacy compatibility. They do not test actual script binding. No full production LPAC/job/automatic-application story or installed client was rerun for this slice. Keys, one-time rewards, cold reopen, controller binding, generic scenarios and human play experience remain separate work.
 
-## Next slice design (not implemented)
+## Follow-up implementation
+
+The finite versioned implementation of this design is now specified in
+[creation-controller-binding](creation-controller-binding.md). The older protocol
+and its file-only limitations above remain unchanged for stored requirements
+without `controllerProfile`. The design below records the original implementation
+criteria; it no longer describes an entirely unimplemented next step.
 
 1. Add a finite controller-evidence profile to a core-pinned adapter revision. Resolve the actual `Player` node through the scene tree, record its instance identity/class, and compare its actual script resource with the fixed preload resource. Reject alternate scripts and inherited overrides for this profile; do not trust metadata or a script-returned profile name.
 2. Resolve the camera rig and camera independently. Check actual parent relationships, approved rig script, controller/rig references and viewport active camera. Capture the finite movement parameters, body collision layer/mask and actual shape type/dimensions/transforms/enabled state needed by the approved profile.

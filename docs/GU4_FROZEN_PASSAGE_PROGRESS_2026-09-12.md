@@ -1,5 +1,7 @@
 # GU4：把门通行接入宿主冻结要求和核心判定
 
+本页保留初始切片的历史范围。后续实际控制器绑定、逐 physics tick 身份及直接开锁负例已在有限新 profile 实现，见 [GU4 controller binding](GU4_CONTROLLER_BINDING_PROGRESS_2026-09-12.md)；本页旧无 profile 协议和限制仍适用于旧任务。
+
 基线 `e4f8504f`；工作树 `D:/cm-gu4-frozen-0912`；分支 `codex/gu4-frozen-requirements-20260912`。
 
 本批新增的通行要求进入既有核心需求链，会影响候选是否 ready。前两批的通用 `scenarioDiagnostic` 保持仅诊断，没有被直接提升为通过依据。

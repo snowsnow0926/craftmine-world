@@ -47,6 +47,7 @@ impl Requirements {
     }
     pub fn is_creation(&self)->bool {self.creation.is_some()}
     pub fn requires_passage(&self)->bool {self.creation.as_ref().is_some_and(|v|v["doorSequence"]["verifyPassage"]==true)}
+    pub fn requires_controller_profile(&self)->bool {self.creation.as_ref().is_some_and(|v|v["doorSequence"]["controllerProfile"]==crate::godot_creation_probe::CONTROLLER_PROFILE)}
     pub fn assertion(&self) -> &'static str {if self.creation.is_some(){"runtime.creation-requirements"}else{ASSERTION}}
     pub fn hash(&self) -> String {
         if let Some(creation)=&self.creation {return digest(&serde_json::to_string(&canonical_creation(creation)).unwrap_or_default());}
@@ -159,7 +160,7 @@ fn creation_matches(r:&Value,entities:&[Value])->bool {
  })
 }
 
-fn valid_door(v:Option<&Value>)->bool {v.is_none_or(|v|keys(v,&["doorId","steps","verifyPassage"])&&v.get("verifyPassage").is_none_or(|flag|flag==true)&&v["doorId"].as_str().is_some_and(identifier)&&v["steps"].as_array().is_some_and(|steps|steps.len()>=2&&steps.len()<=8&&steps.iter().all(|s|s.as_str().is_some_and(identifier))&&steps.iter().map(|s|s.as_str().unwrap()).collect::<std::collections::HashSet<_>>().len()==steps.len()))}
+fn valid_door(v:Option<&Value>)->bool {v.is_none_or(|v|keys(v,&["doorId","steps","verifyPassage","controllerProfile"])&&v.get("controllerProfile").is_none_or(|profile|profile==crate::godot_creation_probe::CONTROLLER_PROFILE&&v["verifyPassage"]==true)&&v.get("verifyPassage").is_none_or(|flag|flag==true)&&v["doorId"].as_str().is_some_and(identifier)&&v["steps"].as_array().is_some_and(|steps|steps.len()>=2&&steps.len()<=8&&steps.iter().all(|s|s.as_str().is_some_and(identifier))&&steps.iter().map(|s|s.as_str().unwrap()).collect::<std::collections::HashSet<_>>().len()==steps.len()))}
 fn door_trace_matches(r:&Value,trace:Option<&Vec<Value>>,instance:&str)->bool {
  let Some(rule)=r.get("doorSequence")else{return trace.is_none();};let Some(trace)=trace else{return false;};
  let Some(steps)=rule["steps"].as_array()else{return false;};

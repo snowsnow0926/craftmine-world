@@ -32,6 +32,9 @@ pub(super) mod requirements;
 #[cfg(test)]
 #[path = "godot_check_requirements_tests.rs"]
 mod requirements_tests;
+#[cfg(test)]
+#[path = "godot_controller_requirements_tests.rs"]
+mod controller_requirements_tests;
 
 /// Live isolation attestation of one executor process. It is intentionally not
 /// durable: a restarted core requires the executor to prove itself again.
