@@ -1,7 +1,10 @@
+import { createMainWindow, type MainWindow } from "./main-window";
+import { mainInputContents, setMainImmersion } from "./main-window-layers";
 import { createCraftmineIssueExportService } from "./craftmine-issue-export-service";
 import {
   app,
   BrowserWindow,
+  BaseWindow,
   dialog,
   globalShortcut,
   ipcMain,
@@ -383,7 +386,7 @@ const WINDOW_BOUNDS_SETTLE_MS = 300;
 const WORK_PANEL_NATIVE_RESIZE_SETTLE_MS = 180;
 const WORK_PANEL_CHAT_RESIZE_SETTLE_MS = WINDOW_BOUNDS_SETTLE_MS + 120;
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: MainWindow | null = null;
 let tray: Tray | null = null;
 let pluginLauncherWindow: BrowserWindow | null = null;
 let pluginLauncherCreationPromise: Promise<BrowserWindow> | null = null;
@@ -395,7 +398,7 @@ const isDevelopmentBuild =
   process.env.PI_DESKTOP_DEV === "1" || !app.isPackaged;
 const pendingApplicationMenuCommands: AppMenuCommand[] = [];
 type MenuRendererReadyGate = {
-  window: BrowserWindow;
+  window: MainWindow;
   ready: boolean;
   promise: Promise<void>;
   resolve: () => void;
@@ -961,8 +964,14 @@ function forwardImmersionShortcut(action: CraftmineImmersionShortcut): void {
 }
 async function setImmersionState(state: CraftmineImmersionState): Promise<void> {
   immersionState = state;
+  if (mainWindow) setMainImmersion(mainWindow, state);
   pluginViews.setImmersion(state);
   await godotWorld.setImmersion(state);
+  const window = mainWindow;
+  if (state === immersionState && !isHeadlessAcceptance() && window && !window.isDestroyed() && window.isFocused()) {
+    const contents = mainInputContents(window);
+    if (contents && !contents.isDestroyed() && !contents.isFocused()) contents.focus();
+  }
 }
 const pluginViews = new PluginViewHost(({ pluginId, url }) => {
   logger.app("plugin", "warn", "plugin.api", {
@@ -2165,7 +2174,7 @@ function trayIconPath() {
 }
 
 function hasVisibleWindow(): boolean {
-  return BrowserWindow.getAllWindows().some(
+  return BaseWindow.getAllWindows().some(
     (window) => !window.isDestroyed() && window.isVisible(),
   );
 }
@@ -2258,7 +2267,7 @@ function sendToRenderer(channel: string, payload: unknown) {
   }
 }
 
-function resetMenuRendererReady(window: BrowserWindow) {
+function resetMenuRendererReady(window: MainWindow) {
   menuRendererReadyGate?.resolve();
   let resolve: () => void = () => undefined;
   const promise = new Promise<void>((ready) => {
@@ -2272,7 +2281,7 @@ function resetMenuRendererReady(window: BrowserWindow) {
   };
 }
 
-function markMenuRendererReady(window: BrowserWindow): boolean {
+function markMenuRendererReady(window: MainWindow): boolean {
   const gate = menuRendererReadyGate;
   if (gate?.window !== window || window.isDestroyed()) return false;
   gate.ready = true;
@@ -2280,7 +2289,7 @@ function markMenuRendererReady(window: BrowserWindow): boolean {
   return true;
 }
 
-async function waitForMenuRenderer(window: BrowserWindow): Promise<boolean> {
+async function waitForMenuRenderer(window: MainWindow): Promise<boolean> {
   const gate = menuRendererReadyGate;
   if (gate?.window !== window) return false;
   await gate.promise;
@@ -2336,7 +2345,7 @@ function dispatchApplicationMenuCommand(command: AppMenuCommand) {
 
 function executeNativeMenuAction(
   action: NativeMenuAction,
-  target: BrowserWindow | null = mainWindow,
+  target: MainWindow | null = mainWindow,
 ) {
   if (!target || target.isDestroyed()) {
     return { maximized: false, fullScreen: false };
@@ -2957,7 +2966,7 @@ function applyCloseBehavior(next: CloseBehavior) {
  * can be changed later in Settings. Returns null when the user cancels.
  */
 async function askCloseBehavior(
-  window: BrowserWindow,
+  window: MainWindow,
 ): Promise<"tray" | "quit" | null> {
   const labels = catalogs[resolveLocale(updaterLocale)];
   const { response } = await dialog.showMessageBox(window, {
@@ -3285,7 +3294,7 @@ async function createWindow() {
     WINDOW_MIN_WIDTH,
     WINDOW_MIN_HEIGHT,
   );
-  mainWindow = new BrowserWindow({
+  mainWindow = createMainWindow({
     ...(savedState ?? { width: 1200, height: 800 }),
     minWidth: WINDOW_MIN_WIDTH,
     minHeight: WINDOW_MIN_HEIGHT,
@@ -4073,7 +4082,7 @@ async function createWindow() {
     clearInterval(boundsWatchdog);
   });
 
-  window.once("ready-to-show", () => {
+  window.webContents.once("did-finish-load", () => {
     if (!isLiveWindow()) return;
     if (headlessAcceptance) { bootTiming.mark("window-rendered-offscreen"); return; }
     // Capture runs need the deterministic Codex footprint; normal launches
@@ -8231,8 +8240,8 @@ function registerIpc() {
 
   ipcMain.handle(IPC.invoke.menuRendererReady, async (event) =>
     wrap(async () => {
-      const window = BrowserWindow.fromWebContents(event.sender);
-      if (!window || window !== mainWindow || !markMenuRendererReady(window)) {
+      const window = mainWindow;
+      if (!window || event.sender !== window.webContents || !markMenuRendererReady(window)) {
         throw new Error("menu renderer is not attached to the main window");
       }
       return { ready: true };

@@ -1,3 +1,4 @@
+import type { MainWindow } from "./main-window";
 // Opt-in evaluator of the actual renderer -> host -> model -> product tool path.
 // It is reachable only in an already validated, isolated headless profile.
 import {createEvaluationBudget} from "./creation-evaluation-budget";
@@ -5,7 +6,6 @@ import {evaluationGroundHasSpace} from "./creation-evaluation-placement";
 import {assertEvaluationSession,recordEvaluationSession} from "./creation-evaluation-session";
 import {continuityEvaluationConfiguration,claimContinuityAction,assertContinuityRequest} from './creation-continuity-evaluation';
 import {randomUUID} from "node:crypto";
-import type {BrowserWindow} from "electron";
 
 let requestBudget:ReturnType<typeof createEvaluationBudget>|undefined;
 let continuityRequestGuard:((context:{projectId:string;sessionId:string;turnId:string}|undefined)=>Promise<void>)|undefined;
@@ -20,7 +20,7 @@ const prompts:Record<string,string>={
   CA07:"在这个副本的这里放一棵树，保留之前的内容",
   HOLDOUT01:"这棵树的颜色改成#88bb44，其他东西保持原样",
 };
-type Access={enabled:boolean;window:()=>BrowserWindow|null;call:(method:string,input:Record<string,unknown>)=>Promise<any>;active:(sessionId:string)=>boolean;observe:()=>Promise<any>;action:(op:string,args:Record<string,unknown>)=>Promise<any>;domain:(method:string,args:Record<string,unknown>)=>Promise<any>};
+type Access={enabled:boolean;window:()=>MainWindow|null;call:(method:string,input:Record<string,unknown>)=>Promise<any>;active:(sessionId:string)=>boolean;observe:()=>Promise<any>;action:(op:string,args:Record<string,unknown>)=>Promise<any>;domain:(method:string,args:Record<string,unknown>)=>Promise<any>};
 export function installCreationEvaluation(access:Access){
   if(!access.enabled||process.env.CRAFTMINE_CREATION_EVAL!=="1"||!process.send)return;
   const continuity=continuityEvaluationConfiguration(process.env);

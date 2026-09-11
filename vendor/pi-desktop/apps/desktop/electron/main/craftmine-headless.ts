@@ -1,7 +1,8 @@
+import type { MainWindow } from "./main-window";
 import { assetsProbeScript, unwrapAssetsProbeResult } from "./craftmine-assets-acceptance";
 import { targetFeedbackProbeScript } from "./craftmine-target-feedback-acceptance";
 import { historyProbeScript } from "./craftmine-history-acceptance";
-import { app, BrowserWindow, dialog, globalShortcut, Notification, session, shell, type WebContents } from "electron";
+import { app, BaseWindow, dialog, globalShortcut, Notification, session, shell, type WebContents } from "electron";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { readHeadlessProfile } from "./craftmine-headless-profile";
@@ -24,6 +25,15 @@ let profile: Profile | null = null;
 function denied(name: string): never {
   violations.push(name);
   throw new Error(`Headless acceptance blocked ${name}`);
+}
+
+/** BaseWindow does not emit browser-window-created; its factory calls this too. */
+export function guardHeadlessWindow(window: MainWindow): void {
+  if (!isHeadlessAcceptance()) return;
+  if (window.isVisible() || window.isFocusable() || !window.webContents.isOffscreen()) throw new Error("Headless window was not created offscreen and unfocusable");
+  for (const name of ["show", "showInactive", "focus", "restore", "moveTop", "setAlwaysOnTop", "flashFrame"]) {
+    Object.defineProperty(window, name, {configurable: false, writable: false, value: () => denied(name)});
+  }
 }
 
 export function configureHeadlessAcceptance(): Profile | null {
@@ -62,16 +72,13 @@ export function configureHeadlessAcceptance(): Profile | null {
     contents.on("will-attach-webview", event => event.preventDefault());
     contents.setWindowOpenHandler(() => ({ action: "deny" }));
   });
-  app.on("browser-window-created", (_event, window) => {
-    if (window.isVisible() || window.isFocusable() || !window.webContents.isOffscreen()) throw new Error("Headless window was not created offscreen and unfocusable");
-    for (const name of ["show", "showInactive", "focus", "restore", "moveTop", "setAlwaysOnTop", "flashFrame"]) block(window, name);
-  });
+  app.on("browser-window-created", (_event, window) => guardHeadlessWindow(window));
   app.on("will-quit", () => process.send?.({ type: "craftmine-headless-exit", violations, pageErrors, shutdownFailures }));
   return profile;
 }
 
 export function installHeadlessControl(access: {
-  window: () => BrowserWindow | null;
+  window: () => MainWindow | null;
   world: () => WebContents | null;
   runtime: () => unknown;
   draftProbe: () => Promise<unknown>;
@@ -121,7 +128,7 @@ export function installHeadlessControl(access: {
           name: app.getName(), profile: app.getPath("userData"), runtime: access.runtime(), violations, pageErrors, shutdownFailures,
           processes: app.getAppMetrics().map(process => ({pid: process.pid, type: process.type,
             creationTime: process.creationTime, cpu: process.cpu, memory: process.memory})),
-          windows: BrowserWindow.getAllWindows().map(window => ({ visible: window.isVisible(), focused: window.isFocused(), focusable: window.isFocusable(), offscreen: window.webContents.isOffscreen() })),
+          windows: BaseWindow.getAllWindows().map(window => ({ visible: window.isVisible(), focused: window.isFocused(), focusable: window.isFocusable(), offscreen: (window as MainWindow).webContents?.isOffscreen() === true })),
           world: access.world()?.getURL() || null,
         };
         case "worldState": return evaluateWorld(`(async()=>({loaded:document.body.dataset.worldLoaded==='true',id:document.body.dataset.worldId,error:document.getElementById('error').textContent,status:document.getElementById('world-status').textContent,disabled:document.getElementById('save-world').disabled,guard:globalThis.__craftmineHeadless,snapshot:document.body.dataset.worldLoaded==='true'?(await craftmineView.snapshot()).snapshot:null}))()`);

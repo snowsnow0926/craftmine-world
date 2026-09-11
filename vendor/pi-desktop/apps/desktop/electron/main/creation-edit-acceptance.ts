@@ -1,5 +1,5 @@
-import type {BrowserWindow} from 'electron';
-type Access={enabled:boolean;window:()=>BrowserWindow|null;call:(method:string,args:Record<string,unknown>)=>Promise<any>;observe:()=>Promise<any>;action:(op:string,args:Record<string,unknown>)=>Promise<any>;seed:(owner:number,sessionId:string,captureId:string)=>Promise<any>;active:(sessionId:string)=>boolean};
+import type { MainWindow } from "./main-window";
+type Access={enabled:boolean;window:()=>MainWindow|null;call:(method:string,args:Record<string,unknown>)=>Promise<any>;observe:()=>Promise<any>;action:(op:string,args:Record<string,unknown>)=>Promise<any>;seed:(owner:number,sessionId:string,captureId:string)=>Promise<any>;active:(sessionId:string)=>boolean};
 /** Finite product-edit scenarios, only in a validated private headless profile. */
 export function installCreationEditAcceptance(access:Access){
   if(!access.enabled||process.env.CRAFTMINE_EDIT_ACCEPTANCE!=='1'||!process.send)return;
