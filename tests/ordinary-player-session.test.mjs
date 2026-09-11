@@ -15,7 +15,11 @@ function fixture(t,{sessions=[],world='demo'}={}){
   send(raw){const request=JSON.parse(raw);Promise.resolve().then(()=>vm.runInNewContext(request.params.expression,context)).then(value=>this.listeners.get('message')({data:JSON.stringify({id:1,result:{result:{value}}})}),error=>this.listeners.get('message')({data:JSON.stringify({id:1,result:{exceptionDetails:{exception:{description:error.message}}}})}));}
   close(){}
  }
- t.mock.method(globalThis,'fetch',async url=>{assert.equal(url,'http://127.0.0.1:12345/json/list');return{json:async()=>[{webSocketDebuggerUrl:'ws://elsewhere:12345/deny'},{webSocketDebuggerUrl:'ws://127.0.0.1:12345/main'}]};});
+ t.mock.method(globalThis,'fetch',async url=>{assert.equal(url,'http://127.0.0.1:12345/json/list');return{json:async()=>[
+  {type:'worker',url:'',webSocketDebuggerUrl:'ws://127.0.0.1:12345/must-not-connect-worker'},
+  {type:'page',url:'http://127.0.0.1:12346/web/index.html',webSocketDebuggerUrl:'ws://127.0.0.1:12345/must-not-connect-godot'},
+  {type:'page',url:'file:///product/resources/app.asar/out/renderer/index.html',webSocketDebuggerUrl:'ws://elsewhere:12345/deny'},
+  {type:'page',url:'file:///product/resources/app.asar/out/renderer/index.html',webSocketDebuggerUrl:'ws://127.0.0.1:12345/main'}]};});
  const original=globalThis.WebSocket;globalThis.WebSocket=Socket;t.after(()=>{globalThis.WebSocket=original;});
  return calls;
 }
