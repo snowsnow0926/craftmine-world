@@ -140,15 +140,14 @@ function HighlightedText({ path, content }: { path: string; content: string }) {
 
 type DirState = { entries: FsEntry[]; error?: boolean };
 
-// Module-level so a chat preview request fires once, not again on every
-// files-tab remount (the tab unmounts when another tool is selected).
-let handledFileRequestSeq = 0;
-
 export function FilesTab() {
   const { t } = useTranslation();
   const workspace = useAppStore((s) => s.workspace);
   const fileRequest = useAppStore((s) => s.workPanelFileRequest);
   const root = workspace?.path ?? null;
+  // A remounted viewer must reload its selected file; another viewer having
+  // handled this request does not mean this instance has any file content.
+  const handledFileRequestSeq = useRef<number | null>(null);
 
   const [dirs, setDirs] = useState<Record<string, DirState>>({});
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -220,8 +219,8 @@ export function FilesTab() {
   // scratch paths live outside the workspace tree.
   useEffect(() => {
     if (!fileRequest || !root) return;
-    if (fileRequest.seq === handledFileRequestSeq) return;
-    handledFileRequestSeq = fileRequest.seq;
+    if (fileRequest.seq === handledFileRequestSeq.current) return;
+    handledFileRequestSeq.current = fileRequest.seq;
     const path = fileRequest.path;
     const isExternal =
       path.startsWith("attachments/") ||

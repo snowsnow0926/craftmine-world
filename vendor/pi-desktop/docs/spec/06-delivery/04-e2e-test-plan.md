@@ -9483,6 +9483,18 @@ allows the player to click back into gameplay. Automated verification uses only
 memory input objects, headless engine import, and isolated renderer/native
 fixtures with focus, physical input and Pointer Lock requests disabled.
 
+### CM-IW-06：沉浸式完整工作台中的文件与评审
+
+打开对话中的文件或评审时，自动展开完整覆盖浮层，在同一浮层中呈现
+保留的聊天和实际 FilesTab / ReviewTab。通过内容选择器切换已打开文件及
+评审，查看内容必须随选择更新。切换轻量窗口、收起、再次展开后，文件内容
+仍能恢复，聊天草稿、任务与唯一世界视图保持不变。进入工作台模式后继续
+显示此前选择的内容。文件或评审不能替换、复制或缩小背景世界视图。
+
+宽屏采用浮层内左右分区，窄屏采用浮层内上下分区；两者都不得使世界
+重新排版。自动验证使用独立 headless React 夹具、模拟文件 IPC 和页面脚本，
+禁用 Pointer Lock、窗口激活和真实输入。夹具不代表原生 Godot 或安装包验收。
+
 ### AI1-G01: pinned creation guidance discovery and packaging
 
 For a trusted first-person 0.1.0 source on Godot 4.7.2-stable, invoke
