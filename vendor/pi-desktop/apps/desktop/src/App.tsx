@@ -37,6 +37,7 @@ import { isCraftmineWorldWorkspace } from "./lib/craftmine-layout";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
 import { enterCraftmineMode } from "./lib/craftmine-mode";
+import { craftminePresentedTabId, CRAFTMINE_WORLD_TAB_ID } from "./lib/craftmine-mode-presentation";
 import { WindowControls } from "./components/WindowControls";
 import { useAppStore } from "./stores/app-store";
 import type { ToastOptions } from "./stores/app-store";
@@ -191,6 +192,7 @@ function AppShell() {
   const closeSubagentPanel = useAppStore((s) => s.closeSubagentPanel);
   const workPanelOpen = useAppStore((s) => s.workPanelOpen);
   const activeWorkPanelTabId = useAppStore((s) => s.activeWorkPanelTabId);
+  const workPanelTabs = useAppStore((s) => s.workPanelTabs);
   const subagentPanelOpen = Boolean(
     page === "chat" &&
       subagentPanel &&
@@ -269,7 +271,9 @@ function AppShell() {
   const [presentedWorkPanelOpen, setPresentedWorkPanelOpen] = useState(false);
   const [workPanelExiting, setWorkPanelExiting] = useState(false);
   const craftmineLayout = useCraftmineLayout();
-  const craftmineWorldFirst = isCraftmineWorldWorkspace(page, presentedWorkPanelOpen && workPanelOpen, activeWorkPanelTabId, subagentPanelOpen);
+  const presentedTabId = craftminePresentedTabId(craftmineLayout.mode, activeWorkPanelTabId, workPanelTabs);
+  const worldPinned = craftmineLayout.mode === "play" && presentedTabId === CRAFTMINE_WORLD_TAB_ID;
+  const craftmineWorldFirst = isCraftmineWorldWorkspace(page, presentedWorkPanelOpen && workPanelOpen, presentedTabId, subagentPanelOpen && !worldPinned);
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
   const craftmineChatRef = useRef<HTMLElement | null>(null);
   const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen, craftmineChatRef);
@@ -1981,12 +1985,13 @@ function AppShell() {
 
           {(presentedWorkPanelOpen || workPanelExiting) && (
             <WorkPanel
+              presentedTabId={presentedTabId}
               panelBlocked={searchOpen || craftmineSheetOpen || modeEntryOpen}
               exiting={workPanelExiting}
               onExitAnimationEnd={() =>
                 finishWorkPanelExit(workPanelExitGeneration.current)
               }
-              subagentPanel={subagentPanelOpen ? subagentPanel : null}
+              subagentPanel={subagentPanelOpen && !craftmineImmersive ? subagentPanel : null}
               onCloseSubagentPanel={closeSubagentPanel}
               onCollapse={() => {
                 if (subagentPanelOpen) {

@@ -73,6 +73,7 @@ function tabLabel(
 
 export function WorkPanel({
   panelBlocked = false,
+  presentedTabId,
   onCollapse,
   exiting = false,
   onExitAnimationEnd,
@@ -85,6 +86,8 @@ export function WorkPanel({
    * blocking overlay must suppress them alike.
    */
   panelBlocked?: boolean;
+  /** Presentation override; the store retains task-opened artifacts for later. */
+  presentedTabId?: string | null;
   onCollapse?: () => void;
   /** Plays work-panel-out; parent unmounts after animationend. */
   exiting?: boolean;
@@ -96,7 +99,8 @@ export function WorkPanel({
   const { t } = useTranslation();
   const rawTabs = useAppStore((s) => s.workPanelTabs);
   const tabs = rawTabs.filter(isKnownWorkPanelTab);
-  const activeTabId = useAppStore((s) => s.activeWorkPanelTabId);
+  const storedActiveTabId = useAppStore((s) => s.activeWorkPanelTabId);
+  const activeTabId = presentedTabId === undefined ? storedActiveTabId : presentedTabId;
   const activeSessionId = useAppStore((s) => s.activeSessionId);
   const pluginViews = useAppStore((s) => s.pluginViews);
   const width = useAppStore((s) => s.workPanelWidth);

@@ -47,6 +47,7 @@
 .craftmine-mode-choice h2 { font-size: var(--text-xl); margin: 0 0 14px; font-weight: var(--font-weight-semibold); }
 .craftmine-mode-choice p { margin: 0 0 32px; color: var(--ds-text-secondary); line-height: var(--leading-prose); font-size: var(--text-sm); }
 .craftmine-mode-choice-action { margin-top: auto; font-size: var(--text-sm); }
+.craftmine-mode-current-world { margin-bottom: 16px; font-size: var(--text-md); color: var(--ds-text-secondary); overflow-wrap: anywhere; }
 .craftmine-mode-worlds { max-width: 660px; margin: auto; }
 .craftmine-mode-back, .craftmine-mode-enter-world { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-sm); background: var(--ds-bg-secondary); color: var(--ds-text-primary); cursor: pointer; }
 .craftmine-mode-back { margin-bottom: 20px; }

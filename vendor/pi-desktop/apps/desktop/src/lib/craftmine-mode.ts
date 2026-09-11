@@ -6,6 +6,7 @@ import {
   type CraftmineLayout,
 } from "./craftmine-layout";
 import { pluginWorkPanelTab } from "./work-panel-tabs";
+import { shouldOpenCraftmineWorldTab } from "./craftmine-mode-presentation";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -36,7 +37,11 @@ export function enterCraftmineMode(
   );
   saveCraftmineLayout(localStorage, next);
   state.setPage("chat");
-  state.openWorkPanelTab(WORLD);
+  if (shouldOpenCraftmineWorldTab(mode, state.activeWorkPanelTabId, state.workPanelTabs)) {
+    state.openWorkPanelTab(WORLD);
+  } else {
+    state.openWorkPanel();
+  }
   state.setWorkPanelWidth(next.widths[mode]);
   window.dispatchEvent(new CustomEvent("craftmine-layout-changed"));
   return next;

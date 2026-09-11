@@ -39,10 +39,12 @@ export function CraftmineModeEntry({ onSelect }: {
         ) : (
           <div className="craftmine-mode-choices">
             <button type="button" className="craftmine-mode-choice craftmine-mode-choice-world" data-mode="play"
+              data-active-world={canEnter ? worlds.activeWorldId : undefined}
               onClick={() => canEnter ? enterWorld() : setSelectingWorld(true)}>
               <Globe2 className="craftmine-mode-icon" size={48} aria-hidden />
               <h2>{text.immersive[lang]}</h2>
               <p>{text.immersiveDescription[lang]}</p>
+              {canEnter && <span className="craftmine-mode-current-world">{worlds.activeWorld!.title}</span>}
               <span className="craftmine-mode-choice-action">{text.enter[lang]} →</span>
             </button>
             <button type="button" className="craftmine-mode-choice craftmine-mode-choice-workbench" data-mode="create"
