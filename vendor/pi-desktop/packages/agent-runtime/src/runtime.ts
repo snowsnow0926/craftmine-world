@@ -123,6 +123,7 @@ import {
 } from "./mode-prompts.js";
 import { clampThinkingLevel } from "./thinking-level.js";
 import { visionFromModelConfig } from "./model-capabilities.js";
+import {unavailableViewDelivery,missingViewDelivery} from "./craftmine-view-delivery.js";
 import type { ProjectInstructions } from "./project-instructions.js";
 import { projectInstructionsPrompt } from "./project-instructions-prompt.js";
 import {
@@ -2022,6 +2023,8 @@ Delegation rules:
         signal,
         onUpdate,
       ) => {
+        const unavailableView=unavailableViewDelivery(toolName,visionFromModelConfig(this.provider.modelConfig));
+        if(unavailableView){this.failedHostToolCalls.add(toolCallId);return unavailableView;}
         const instructionTiming = await this.loadPathInstructions(toolName, params);
         const startedAt = Date.now();
         const isBash = toolName === "Bash";
@@ -2262,6 +2265,10 @@ Delegation rules:
           ...(terminateAfterMutationFailure ? { terminate: true } : {}),
         });
         const rawContent = result.content;
+        const undeliveredView=unavailableViewDelivery(toolName,visionFromModelConfig(this.provider.modelConfig));
+        if(undeliveredView){this.failedHostToolCalls.add(toolCallId);return undeliveredView;}
+        const missingView=result.ok?missingViewDelivery(toolName,rawContent):null;
+        if(missingView){this.failedHostToolCalls.add(toolCallId);return missingView;}
         const imageBlocks: Array<{ type: "image"; data: string; mimeType: string }> = [];
         let text: string;
         let details: unknown = rawContent;

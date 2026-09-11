@@ -212,6 +212,7 @@ import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
+import {createCraftmineViewCaptureBridge, type ViewCaptureModel} from "./craftmine-view-capture";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {loadSceneObserverPins} from "./creation-observer-pins";
@@ -1150,6 +1151,20 @@ plugins.setServices({craftmineCreationTarget:async context=>{
   if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
   return creationTargets.bound(context,binding.selectedWorld);
 }});
+plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
+  authorize:async input=>{
+    const context=input.context,binding=craftmineGateway.get(context.sessionId);
+    if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId))throw Error("GODOT_CAPTURE_ACTIVE_TURN_REQUIRED");
+    if(binding.selectedWorld!==input.worldId||await godotSelection()!==input.worldId||notificationViewingSessionId!==context.sessionId)throw Error("GODOT_CAPTURE_WORLD_CONTEXT_CHANGED");
+    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy)throw Error("WORLD_BUSY");
+    const detail=await host?.call<{session?:any}>("session.get",{id:context.sessionId});
+    if(!detail?.session||craftmineProjectIdentity(detail.session,context.sessionId)!==context.projectId||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("GODOT_CAPTURE_PROJECT_CHANGED");
+    if(activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId)||await godotSelection()!==input.worldId)throw Error("GODOT_CAPTURE_ACTIVE_TURN_REQUIRED");
+  },
+  model:async input=>resolvedCaptureModels.get(input.context.sessionId)??{providerId:"",modelId:"",declaredImages:false},
+  candidateInstance:()=>godotWorld.candidateInstance,
+  capture:input=>godotWorld.captureView(input),
+})});
 const creationAutoApply=createCreationAutoApplyService({
   capture:async context=>{
     const binding=craftmineGateway.get(context.sessionId);
@@ -2080,6 +2095,7 @@ async function resolveAgentRuntimeLaunch(
           : [],
       ),
   );
+  resolvedCaptureModels.set(sessionId,{providerId:provider.id,modelId,declaredImages:visionFromModelConfig(modelConfig)});
   return {
     providerId: provider.id,
     modelId,
@@ -2639,6 +2655,8 @@ async function importLegacyScheduled() {
 
 /** sessionId → open host turn id, for turn bookkeeping across agent events. */
 const activeTurns = new Map<string, string>();
+// Only effective launch metadata; no credential or model endpoint is retained here.
+const resolvedCaptureModels = new Map<string, ViewCaptureModel>();
 const taskMetricsAdmissionFailures = new Set<string>();
 const taskMetricsRecorder = createTaskMetricsRecorder({
   isCurrent: ({sessionId, turnId}) => activeTurns.get(sessionId) === turnId,
@@ -5713,6 +5731,7 @@ function finishTurn(
       // until the durable endTurn request has settled above.
       if (turnId && activeTurns.get(sessionId) === turnId) {
         activeTurns.delete(sessionId);
+        resolvedCaptureModels.delete(sessionId);
       }
       if (turnKey) {
         planSubmissionTurnIds.delete(turnKey);

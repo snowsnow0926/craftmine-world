@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { estimateTokens } from "@earendil-works/pi-agent-core";
+import {convertMessages} from '@earendil-works/pi-ai/api/openai-completions';
+import {buildProviderModel} from './provider-binding.js';
 import { buildSessionContext } from "./session-context.js";
 import {
   DesktopAgentRuntime,
@@ -5444,5 +5446,40 @@ describe("DesktopAgentRuntime subagents", () => {
     expect(ids).not.toContain("assistant-child");
 
     await runtime.dispose();
+  });
+});
+
+
+describe("Godot view capture image delivery", () => {
+  const name="plugin_craftmine_world_godot_view_capture";
+  const noVision={...provider,modelConfig:{...provider.modelConfig!,input:["text"] as ("text"|"image")[],modalities:{input:["text"] as ("text")[],output:["text"] as ("text")[]}}};
+  const setup=(host:any,chosen=provider)=>{const runtime=createRuntime({host,provider:chosen,pluginTools:[{name,description:"Capture",parameters:{type:"object",properties:{}}}]});return {runtime,tool:(runtime as any).toolCatalog.get(name)};};
+  const success={ok:true,content:{text:JSON.stringify({status:"captured",delivery:"image-block-ready",sha256:"a".repeat(64)}),images:[{data:"AQI=",mimeType:"image/png"}]}};
+  it("refuses declared no-image models before any host capture",async()=>{
+    const host={call:vi.fn()}, {runtime,tool}=setup(host,noVision);const result=await tool.execute("no-image",{});
+    expect(host.call).not.toHaveBeenCalled();expect(result.details).toMatchObject({delivery:"not-delivered",reason:"MODEL_IMAGE_INPUT_UNAVAILABLE"});
+    expect(result.content.every((block:any)=>block.type==="text")).toBe(true);
+    await expect((runtime as any).agent.afterToolCall({toolCall:{id:"no-image"}})).resolves.toEqual({isError:true});await runtime.dispose();
+  });
+  it("serializes captured tool pixels into an actual user image and excludes old pixels for a no-image model",async()=>{
+    const host={call:vi.fn().mockResolvedValue(success)}, {runtime,tool}=setup(host);const result=await tool.execute("view",{});
+    expect(host.call).toHaveBeenCalledTimes(1);expect(result.content[1]).toEqual({type:"image",data:"AQI=",mimeType:"image/png"});expect(result.details.imageCount).toBe(1);
+    const context:any={messages:[{role:"toolResult",toolCallId:"view",toolName:name,content:result.content,isError:false,timestamp:1}]};
+    const wire=convertMessages(buildProviderModel(provider) as any,context,{} as any);
+    expect(JSON.stringify(wire)).toContain("data:image/png;base64,AQI=");expect(wire.some((message:any)=>message.role==="user"&&Array.isArray(message.content)&&message.content.some((block:any)=>block.type==="image_url"))).toBe(true);
+    const textWire=convertMessages(buildProviderModel(noVision) as any,context,{} as any);expect(JSON.stringify(textWire)).not.toContain("image_url");expect(JSON.stringify(textWire)).not.toContain("AQI=");await runtime.dispose();
+  });
+  it("reports not-delivered when the effective model changes during capture",async()=>{
+    let runtime:any;const host={call:vi.fn().mockImplementation(async()=>{runtime.provider=noVision;return success;})};const ready=setup(host);runtime=ready.runtime;
+    const result=await ready.tool.execute("changed",{});expect(host.call).toHaveBeenCalledTimes(1);expect(result.details.delivery).toBe("not-delivered");expect(result.content).toHaveLength(1);
+    await expect(runtime.agent.afterToolCall({toolCall:{id:"changed"}})).resolves.toEqual({isError:true});await runtime.dispose();
+  });
+  it("does not call an empty image result successful",async()=>{
+    const {runtime,tool}=setup({call:vi.fn().mockResolvedValue({ok:true,content:{text:"unavailable",images:[]}})});const result=await tool.execute("empty",{});
+    expect(result.details).toMatchObject({delivery:"not-delivered",reason:"VIEW_CAPTURE_IMAGE_MISSING"});await expect((runtime as any).agent.afterToolCall({toolCall:{id:"empty"}})).resolves.toEqual({isError:true});await runtime.dispose();
+  });
+  it("does not silently discard a malformed image block",async()=>{
+    const {runtime,tool}=setup({call:vi.fn().mockResolvedValue({ok:true,content:{text:"captured",images:[{}]}})});const result=await tool.execute("malformed",{});
+    expect(result.details.delivery).toBe("not-delivered");expect(result.content).toHaveLength(1);await runtime.dispose();
   });
 });
