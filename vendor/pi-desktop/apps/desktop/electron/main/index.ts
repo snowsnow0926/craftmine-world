@@ -9803,6 +9803,13 @@ installCreationEditAcceptance({enabled:!!headlessAcceptance,window:()=>mainWindo
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
 installHeadlessControl({
   window: () => mainWindow,
+  boundCapture: identity=>godotWorld.captureView(identity),
+  boundCaptureState: ()=>{
+    const window=mainWindow,formal=godotWorld.instance;
+    return {formal:formal?{worldId:formal.worldId,buildId:formal.buildId,instanceId:formal.instanceId}:null,candidate:godotWorld.candidateInstance,state:godotWorld.state,
+      owner:window&&!window.isDestroyed()?{bounds:window.getContentBounds(),visible:window.isVisible(),focused:window.isFocused(),focusable:window.isFocusable(),
+        views:window.contentView.children.map(view=>{const contents='webContents' in view?view.webContents as Electron.WebContents:null;return{bounds:view.getBounds(),contentsId:contents?.id??null,destroyed:contents?.isDestroyed()??false};})}:null};
+  },
   playerActive: sessionId=>activeTurns.has(sessionId)||turnFinalizations.has(sessionId),
   playerLatest: (worldId,sessionId)=>plugins.requestCraftmineHost('godotBuild.latest',{worldId,sessionId}),
   world: () => pluginViews.headlessWorldContents(),
