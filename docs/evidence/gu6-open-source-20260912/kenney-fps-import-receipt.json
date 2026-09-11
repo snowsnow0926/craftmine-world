@@ -1,0 +1,698 @@
+{
+  "schemaVersion": 1,
+  "requestId": "gu6-kenney-fps-import-1789160716198",
+  "taskId": "gu6-kenney-fps-import-1789160716198",
+  "operation": "import",
+  "sourceBinding": {
+    "worldId": "isolated-external-starter-trial",
+    "buildId": "gu6-kenney-fps-import-1789160716198",
+    "sourceRevision": 1,
+    "sourceDigest": "d090ede4ea8c7717512d9ae6c3ab22ef9915d38e9cb037d45e508ed71e2b4ed8"
+  },
+  "inputHash": "c688413927257d009f1890899d5dea8d9e0aa17edcfe340422c5cc770b007005",
+  "sourceSnapshotDigest": "d090ede4ea8c7717512d9ae6c3ab22ef9915d38e9cb037d45e508ed71e2b4ed8",
+  "sourceFiles": [
+    {
+      "path": ".gitattributes",
+      "bytes": 80,
+      "sha256": "21b01a606c9f85f18bb9230245f00ab104df7409cbb2fe9423f6751ca72ba754"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 324,
+      "sha256": "90d5e3eae6f38c0d55434135db60a70ddddae86701af11886580bc243444001f"
+    },
+    {
+      "path": "LICENSE.md",
+      "bytes": 1062,
+      "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2219,
+      "sha256": "69d77c39c3c05692b6a0ddbc626615d403421ab3c7b884b0a5ad4ae90368c02a"
+    },
+    {
+      "path": "export_presets.cfg",
+      "bytes": 1090,
+      "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+    },
+    {
+      "path": "fonts/license.txt",
+      "bytes": 4391,
+      "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+    },
+    {
+      "path": "fonts/lilita_one_regular.ttf",
+      "bytes": 26828,
+      "sha256": "4444c23631884f411aa7f2fee35061b1756a9927940c62d2a5572acf470b3ffa"
+    },
+    {
+      "path": "fonts/lilita_one_regular.ttf.import",
+      "bytes": 785,
+      "sha256": "ce70e39aad6e7a6c850e5c477d8ef37875f1bbf81fffc08e69a51fcbbdca6c57"
+    },
+    {
+      "path": "icon.png",
+      "bytes": 12802,
+      "sha256": "970437a50a597459935c49b1061a3eaac1708ea4c3c16a4e981e549a98286888"
+    },
+    {
+      "path": "icon.png.import",
+      "bytes": 916,
+      "sha256": "8ab8b53408e3e54fdec671cca35d96b476d9bb3adf2e64f0453da773dffdc70c"
+    },
+    {
+      "path": "models/Textures/colormap.png",
+      "bytes": 9265,
+      "sha256": "a20683dde0ed575bf6242d68934743ccf954b28f1fc3af9ad781c94b08188f8e"
+    },
+    {
+      "path": "models/Textures/colormap.png.import",
+      "bytes": 991,
+      "sha256": "f59768d3f14eefb6df96bbfed9f717dcd7f54f2deab5489309a2a2449520eb8e"
+    },
+    {
+      "path": "models/blaster-repeater.glb",
+      "bytes": 66288,
+      "sha256": "e76220e5ad3877d879e70fe21bd5bc76a5988b8682aa5f7976739e71caf70e05"
+    },
+    {
+      "path": "models/blaster-repeater.glb.import",
+      "bytes": 1077,
+      "sha256": "47398de8d08865b2b114031fc0aa3b106af2523458d799f53a6f7843e91c551c"
+    },
+    {
+      "path": "models/blaster.glb",
+      "bytes": 59552,
+      "sha256": "9c2110d94c1bd7e01bfe6827a3d87e14962a1f721d8b300c67bdd36f492140a1"
+    },
+    {
+      "path": "models/blaster.glb.import",
+      "bytes": 1049,
+      "sha256": "6de67f23ea79124b8755992ed604da5985e8d4fbaf737671b0ec23e2553f05d3"
+    },
+    {
+      "path": "models/cloud.glb",
+      "bytes": 23784,
+      "sha256": "4c667239958ae8950b6bc2f55bdb59814b24fc9f6d8531eb09411150e09c87f2"
+    },
+    {
+      "path": "models/cloud.glb.import",
+      "bytes": 1027,
+      "sha256": "218bb021c9f472a6f3c722a9b5a44d8f38ff2a962b4370cfe6dde4028e4230b1"
+    },
+    {
+      "path": "models/enemy-flying.glb",
+      "bytes": 57828,
+      "sha256": "e4868f6d8cac2a8f728430229789206841ca64727d94de2d808b468e4f182f8c"
+    },
+    {
+      "path": "models/enemy-flying.glb.import",
+      "bytes": 1064,
+      "sha256": "e62f9a3cb95f5aa56932de6b1d07e0597e2cd2dd9fc23c3e13b688fbf65366c9"
+    },
+    {
+      "path": "models/grass-small.glb",
+      "bytes": 9052,
+      "sha256": "8dfe00761fa833daab3192148b9b3d573f2a10aa2eff2c01a8a386dd304e7fda"
+    },
+    {
+      "path": "models/grass-small.glb.import",
+      "bytes": 1062,
+      "sha256": "f33d1d36ab4942700ecb5c3a46fadf594cc3bfcafdc3dbf049adde6fc117a8f0"
+    },
+    {
+      "path": "models/grass.glb",
+      "bytes": 9032,
+      "sha256": "8e11283ca11894860a4dcb8f523165eda5de39f68fda43d892efc3a3d3eb567e"
+    },
+    {
+      "path": "models/grass.glb.import",
+      "bytes": 1044,
+      "sha256": "507399eaeadc7fb23028c42cbbd1cc5e734bad387ca24868cd49e4560c733a84"
+    },
+    {
+      "path": "models/platform-falling.glb.import",
+      "bytes": 782,
+      "sha256": "077e3aee0d504bbd4b370d4b721c7319006ee796d6313416dc92c3d07b43e89c"
+    },
+    {
+      "path": "models/platform-large-grass.glb",
+      "bytes": 17076,
+      "sha256": "19ee4b9e745f757d87d584094433e3f4d86be958bcd7eeba586874f088d2697b"
+    },
+    {
+      "path": "models/platform-large-grass.glb.import",
+      "bytes": 1088,
+      "sha256": "dee7ced331c5c03206054d10819e686f80a9b70342dc7f7894d460349d2712e7"
+    },
+    {
+      "path": "models/platform.glb",
+      "bytes": 17064,
+      "sha256": "6eac72ffbda64b4414833eb49d3b160fddf169c2caccca237a07e15a20731764"
+    },
+    {
+      "path": "models/platform.glb.import",
+      "bytes": 1053,
+      "sha256": "580b579dd6849ca70847e636e8640cec9043f8a1b9a71ecaf79e8677586052df"
+    },
+    {
+      "path": "models/wall-high.glb",
+      "bytes": 20492,
+      "sha256": "946a0f875bd515323afd883553729a29ac764b405e382bf9a30d6527dac74589"
+    },
+    {
+      "path": "models/wall-high.glb.import",
+      "bytes": 1056,
+      "sha256": "802636dde1d71c54a6f720207f9c96c59fb4f4e0070cc5d2884aba48965ce3b7"
+    },
+    {
+      "path": "models/wall-low.glb",
+      "bytes": 17456,
+      "sha256": "c42c89dead3835fde97d1ede232bf1a69d297cd41e1d6bfe7e25c87b233a2ec0"
+    },
+    {
+      "path": "models/wall-low.glb.import",
+      "bytes": 1052,
+      "sha256": "f36d556996b353a023c2a64496c3cf3136717e8d8f74557dc017231836505865"
+    },
+    {
+      "path": "objects/blaster.tscn",
+      "bytes": 275,
+      "sha256": "97ac86151ca8412a5a6c9d2b283dd96ebfd9b9c1465ce26707dc98a2d6691b2b"
+    },
+    {
+      "path": "objects/cloud.gd",
+      "bytes": 378,
+      "sha256": "56506ee2963aa9046e6a285f333d5a222821ad59b674215af7704db25c66a18c"
+    },
+    {
+      "path": "objects/cloud.gd.uid",
+      "bytes": 20,
+      "sha256": "7758e593d3426c02617ebc19e8a110d4f29ae4b401a089510779358a254f55e3"
+    },
+    {
+      "path": "objects/cloud.tscn",
+      "bytes": 448,
+      "sha256": "03852c496509aa1af2c54ff7d05b6000eaadbe6e57c5f346ce887a9dfa8944ea"
+    },
+    {
+      "path": "objects/enemy.gd",
+      "bytes": 1397,
+      "sha256": "77a893496781de3d04c0b4fbda77ea26474f850cf5d9378f8eeca15cc1499b49"
+    },
+    {
+      "path": "objects/enemy.gd.uid",
+      "bytes": 20,
+      "sha256": "dad3b1ecb091566b63ed8a9c696e53b6b359f8b7aa51a70c5a59b8f591478cb0"
+    },
+    {
+      "path": "objects/enemy.tscn",
+      "bytes": 1381,
+      "sha256": "9161f49a07f5d74dbe1274094566eabd4a8f51b17c2679c71666d530f6ee9795"
+    },
+    {
+      "path": "objects/impact.gd",
+      "bytes": 135,
+      "sha256": "e59d8e0c5f1f6f47aa3bb58c3967a496c0aaed79cfe7e483bb5e6b26298c7541"
+    },
+    {
+      "path": "objects/impact.gd.uid",
+      "bytes": 20,
+      "sha256": "b5e19ec123c3cbd4515c3b4b1748b2768c38e6f210a8bec05d483c9c8ab620a5"
+    },
+    {
+      "path": "objects/impact.tscn",
+      "bytes": 1485,
+      "sha256": "fe178f0be27f84d280e0d3142df916456fb6af63bb64c618e567f2e25720ff96"
+    },
+    {
+      "path": "objects/platform.tscn",
+      "bytes": 9852,
+      "sha256": "f6c7df9ebc677735b16bef2b86080a6b1ce806116d74242dde820a80e72af223"
+    },
+    {
+      "path": "objects/platform_large_grass.tscn",
+      "bytes": 6462,
+      "sha256": "cb3052ab3d1c18b4b8df35c7ac11bc31681b37e36643f1b179b3c9a4fdc471d9"
+    },
+    {
+      "path": "objects/player.gd",
+      "bytes": 7885,
+      "sha256": "d1d98f29efe34619409c6537234c69c9e9045c94863b96911fdd0c6a7dfc9252"
+    },
+    {
+      "path": "objects/player.gd.uid",
+      "bytes": 20,
+      "sha256": "0e2175b93d4ca4f66c8931edc13b06384d0c84a25576171aa1ac7aeb13a21cc7"
+    },
+    {
+      "path": "objects/player.tscn",
+      "bytes": 3001,
+      "sha256": "11e767f11fd9932436e24ea865d45e4c054b067f2a716b893e1ba42407f22a19"
+    },
+    {
+      "path": "objects/wall_high.tscn",
+      "bytes": 13308,
+      "sha256": "e2e3ffbcd8d46fd3039e75870327d5d543c8883ee32d2e024cf3878274f3408c"
+    },
+    {
+      "path": "objects/wall_low.tscn",
+      "bytes": 20948,
+      "sha256": "41c282cf207602810be42497493c2ebf52c3283540825cd667da7e0edf7dda1f"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 6355,
+      "sha256": "421cb654c52bce71a3b24b88653a12edf110f1ad5cddb59ad1eff6277d1f22dc"
+    },
+    {
+      "path": "scenes/main-environment.tres",
+      "bytes": 781,
+      "sha256": "0a1a69cb2ad48c04c8bedd46d6a84684497075dae23e99f2afcf19169ff92688"
+    },
+    {
+      "path": "scenes/main.tscn",
+      "bytes": 8699,
+      "sha256": "a38acf0206768aba9a10c826416885ba913cc3fa5e405befbfa5c948840bcd46"
+    },
+    {
+      "path": "screenshots/.gdignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "screenshots/screenshot.png",
+      "bytes": 287851,
+      "sha256": "79dabce87b75f47925d0b279cb399cd010d787f8c35c6176101275154347026c"
+    },
+    {
+      "path": "scripts/audio.gd",
+      "bytes": 837,
+      "sha256": "bc2d980d12a7d6f6cd3b23b18d5e1d24234ae44af75484a2068be98c7409c709"
+    },
+    {
+      "path": "scripts/audio.gd.uid",
+      "bytes": 20,
+      "sha256": "481804d9353ce538f377201260967fca1e7baf719f5ca6faac6494979e1fe4b9"
+    },
+    {
+      "path": "scripts/hud.gd",
+      "bytes": 89,
+      "sha256": "7ed154c436f33091360ae5431c1ff54c30b5af259b6c387a0239a19012d5b0e2"
+    },
+    {
+      "path": "scripts/hud.gd.uid",
+      "bytes": 20,
+      "sha256": "2072bbddadab597be3e27b19ceba92196f7ddec46a5a9154504a5f4a5a0c38f7"
+    },
+    {
+      "path": "scripts/weapon.gd",
+      "bytes": 1099,
+      "sha256": "747fedb31c73db5c131435729247b5ac1c6ac2d3882d3d1811c5c48f89a8a04f"
+    },
+    {
+      "path": "scripts/weapon.gd.uid",
+      "bytes": 20,
+      "sha256": "4bb3d9f73417e714f6abe924e68484ed59134c52e17f9b5b4bbd78467bb8df5b"
+    },
+    {
+      "path": "sounds/blaster.ogg",
+      "bytes": 14032,
+      "sha256": "9ddb14d878e6af60941f7e7f7c97563c16b1c6cb1471658bb5211fcde1897783"
+    },
+    {
+      "path": "sounds/blaster.ogg.import",
+      "bytes": 384,
+      "sha256": "f5296257363362a39ded336b094f6903b25201f6b21e12592371dd3455a8566b"
+    },
+    {
+      "path": "sounds/blaster_repeater.ogg",
+      "bytes": 13024,
+      "sha256": "cba57117005b2ebe355dc67c2c72f92ba390a24a89ef28facf23814779d0cb0d"
+    },
+    {
+      "path": "sounds/blaster_repeater.ogg.import",
+      "bytes": 411,
+      "sha256": "012295ee21d2bcdf45aae4de406f83bfbfdb3a8f1678f1a434635f458bf50b2c"
+    },
+    {
+      "path": "sounds/enemy_attack.ogg",
+      "bytes": 8989,
+      "sha256": "fdbd0e559acd5c01122f47cac2fda1ed24460a2bc130aeec91734ab67acb0411"
+    },
+    {
+      "path": "sounds/enemy_attack.ogg.import",
+      "bytes": 399,
+      "sha256": "5814a89a3f0a17917d5178af88a8fbb596baf28a88c7ecae9cf755c4739fa4c2"
+    },
+    {
+      "path": "sounds/enemy_destroy.ogg",
+      "bytes": 17737,
+      "sha256": "3205e84c18ab40eabdb70fa8a779489b666f1e452e3815b3c2b3b71fb418d006"
+    },
+    {
+      "path": "sounds/enemy_destroy.ogg.import",
+      "bytes": 402,
+      "sha256": "28dced35fa12b4dc816b31f5a12fdd588221a8cef97fedd823e12348e287f77b"
+    },
+    {
+      "path": "sounds/enemy_hurt.ogg",
+      "bytes": 6135,
+      "sha256": "59e4ed89a582a03e96086ce031ae30b46630d371fc02d2c566059bd4e0d1dab8"
+    },
+    {
+      "path": "sounds/enemy_hurt.ogg.import",
+      "bytes": 393,
+      "sha256": "dc268855604c807dba9c7f9d51c43dbbfa789c667ec8833cdb7cde29f84a5c23"
+    },
+    {
+      "path": "sounds/jump_a.ogg",
+      "bytes": 8611,
+      "sha256": "8aba76c0bedcbb0eed297d1617500b48fefc674272b168b3f06418a2ab0a940b"
+    },
+    {
+      "path": "sounds/jump_a.ogg.import",
+      "bytes": 381,
+      "sha256": "ee5d0a2e2f59a62f5d96710c51ea135fa4947bbdd75f685eb506b41b60e916fa"
+    },
+    {
+      "path": "sounds/jump_b.ogg",
+      "bytes": 9119,
+      "sha256": "47e6e32edfebfb884b9dfd6116dccf0cda81af09bd36009022cf99464837e59c"
+    },
+    {
+      "path": "sounds/jump_b.ogg.import",
+      "bytes": 380,
+      "sha256": "4f1e441992102f47e2699da49e8d83a311162e49eb2e423f3c0e6ee9b6b53a4b"
+    },
+    {
+      "path": "sounds/jump_c.ogg",
+      "bytes": 8270,
+      "sha256": "3e854bd28b41b4e8e21a1e3e84ac2325a893971969a2e3b63edf26b44d3b1e2f"
+    },
+    {
+      "path": "sounds/jump_c.ogg.import",
+      "bytes": 380,
+      "sha256": "1a205504658d6c98459c4f52b47cb7928963925fbb1c44594fe110d1a3089259"
+    },
+    {
+      "path": "sounds/land.ogg",
+      "bytes": 5885,
+      "sha256": "145a1c17125dc4d344ac135bc5073e35ea12e19700ca30ee6e1e477010b4dca0"
+    },
+    {
+      "path": "sounds/land.ogg.import",
+      "bytes": 374,
+      "sha256": "1bb3e1938680ec821756b4db6a1824edd16dfc1d0a43e4abfda00bdcc0431688"
+    },
+    {
+      "path": "sounds/walking.ogg",
+      "bytes": 53585,
+      "sha256": "51d44e4ce2e06607f7be1bb7fe60d7630c78fdbcd608e7c65d5a8910cc88680c"
+    },
+    {
+      "path": "sounds/walking.ogg.import",
+      "bytes": 387,
+      "sha256": "a061a98851ceea18d171ff8ea72714b09d81414184916e5ebb7525e82e86faf2"
+    },
+    {
+      "path": "sounds/walking.ogg.sfk",
+      "bytes": 768,
+      "sha256": "8bbdd13d193d017c90e7bd5a5758b78cdcffedf5bfcd21b251a501da2a75de87"
+    },
+    {
+      "path": "sounds/weapon_change.ogg",
+      "bytes": 11694,
+      "sha256": "0b39e0f0d733cae3c44a838d67ab8c8510cf3b245016e398a7eb9ab13cda1449"
+    },
+    {
+      "path": "sounds/weapon_change.ogg.import",
+      "bytes": 402,
+      "sha256": "b3deff1d02112a2bfbe183125a5e78d0a0065f42b92115389448406277f227be"
+    },
+    {
+      "path": "splash-screen.png",
+      "bytes": 51327,
+      "sha256": "97cd19023c79533704a1d7351b59013ea4de44fadd205d8e199aa571923b5e09"
+    },
+    {
+      "path": "splash-screen.png.import",
+      "bytes": 943,
+      "sha256": "f8570c2052e434c7dffb8ee8c1ae13d761801481c22ed86c636dcf8d725d212f"
+    },
+    {
+      "path": "sprites/blob_shadow.png",
+      "bytes": 15168,
+      "sha256": "a8866d755bac9f3115439d362a56050cd1b9a1b57d2d5cffc6f9afaf66908c3e"
+    },
+    {
+      "path": "sprites/blob_shadow.png.import",
+      "bytes": 944,
+      "sha256": "55678082ef7b3a9d8e5ab95358692964f57103b0e0702c2e55171c24a3848bd1"
+    },
+    {
+      "path": "sprites/burst.png",
+      "bytes": 6292,
+      "sha256": "7f9ff158ca312b8366f3fa07e487f47a9830e9d67f8a6e45932d1361c59af9a0"
+    },
+    {
+      "path": "sprites/burst.png.import",
+      "bytes": 927,
+      "sha256": "a83ee2308d3ed15db1a5d9167daeeffd7e1ded69dd20f947ddeefe90ba8a8e3f"
+    },
+    {
+      "path": "sprites/burst_animation.tres",
+      "bytes": 682,
+      "sha256": "1e44b9d40b8e5e8441a4475d8434a1bc2e3bbf35956f90fb095286e169fae8ee"
+    },
+    {
+      "path": "sprites/crosshair-repeater.png",
+      "bytes": 3165,
+      "sha256": "bea7d27ead2f058017fd38cee5a5b7cde9e2a4f5da0ad7469e9b789d3bb528b1"
+    },
+    {
+      "path": "sprites/crosshair-repeater.png.import",
+      "bytes": 966,
+      "sha256": "a1a97ebd77f51f57571fae55e07fbb90ba9dbf9686897fcf2c92f59eec11af24"
+    },
+    {
+      "path": "sprites/crosshair.png",
+      "bytes": 3512,
+      "sha256": "ff56263fad0c1b54bcbe9ac84b2fe0432b336ccb069701d525a34f73ccae7e3d"
+    },
+    {
+      "path": "sprites/crosshair.png.import",
+      "bytes": 986,
+      "sha256": "e14b7392a135c726be635037646d977bea7d3bdd62217f6eef0fe15e5931f69c"
+    },
+    {
+      "path": "sprites/hit.png",
+      "bytes": 3808,
+      "sha256": "bac5f33cd4fc16a3e29d9e91ab28e5d2f742c32ffe484a62e789e6b350fdffc0"
+    },
+    {
+      "path": "sprites/hit.png.import",
+      "bytes": 968,
+      "sha256": "21914fef13fa73f8feb5f11d46520c1ab94f797c759575ac6632150b1aa34aff"
+    },
+    {
+      "path": "sprites/skybox.png",
+      "bytes": 3883611,
+      "sha256": "307aa359540eb50fb931bbb04ad16d4ba184e019df0a957b7162b31c858e1103"
+    },
+    {
+      "path": "sprites/skybox.png.import",
+      "bytes": 979,
+      "sha256": "64fffa5236709a1ac6fabb48ad9ac70cee454b7ca2c48b9b735e462a5a0a1f3a"
+    },
+    {
+      "path": "vector/.gdignore",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "vector/sprites.fla",
+      "bytes": 56297,
+      "sha256": "2a817cecd27766ca67faeb8665342143a19ac7700c4cdcec544a116396d0e0e4"
+    },
+    {
+      "path": "weapons/blaster-repeater.tres",
+      "bytes": 697,
+      "sha256": "ec58f7de6575e34b18b672784cc6b0e9b05416e3cc41a5f2a1e05c0b06d46f51"
+    },
+    {
+      "path": "weapons/blaster.tres",
+      "bytes": 760,
+      "sha256": "f181f1e088830a66440b77e44523742c46ff8f6a6668a1452c87818e89fffee5"
+    }
+  ],
+  "state": "succeeded",
+  "exitCode": 0,
+  "policyVersion": "craftmine.windows.lpac-registry.v1",
+  "processVerification": {
+    "verified": true,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "pid": 86736,
+    "creationTimeFiletime": "134336343167132118",
+    "imagePath": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-fps-import-1789160716198\\bin\\Godot_v4.7.2-stable_win64.exe",
+    "appContainerSid": "S-1-15-2-1409476897-2211693159-3262828646-995496422-601361676-4038437572-3756355167",
+    "capabilitySids": [
+      "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+    ],
+    "integrityRid": 4096,
+    "isAppContainer": true,
+    "lpacQueryValue": null,
+    "lpacQueryError": 87,
+    "lpacCreationAttribute": true,
+    "jobMembershipVerified": true,
+    "jobLimitFlags": 8456,
+    "activeProcessLimit": 1,
+    "processMemoryBytes": 4294967296,
+    "verifiedBeforeResume": true,
+    "resumePreviousCount": 1
+  },
+  "networkPreflight": {
+    "verified": true,
+    "jobActiveProcesses": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "hostPositiveControls": [
+      "tcp4Echo",
+      "tcp6Echo",
+      "udp4Echo",
+      "udp6Echo"
+    ],
+    "hostReceivedCounts": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "exactTaskExempt": false,
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 25736,
+      "creationTimeFiletime": "134336343165709694",
+      "imagePath": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-fps-import-1789160716198\\bin\\broker-preflight.exe",
+      "appContainerSid": "S-1-15-2-1409476897-2211693159-3262828646-995496422-601361676-4038437572-3756355167",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "observation": {
+      "winsockStartup": 0,
+      "checks": [
+        {
+          "name": "tcp4",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "tcp6",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "tcpExternal",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udp4",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udp6",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udpExternal",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        }
+      ]
+    }
+  },
+  "resourceEnforcement": {
+    "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+    "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+    "hardFilesystemQuota": false,
+    "workBytesLimit": 1073741824,
+    "logBytesLimit": 4194304,
+    "sampleIntervalMs": 50,
+    "samples": 60,
+    "maxObservedWorkBytes": 48207707,
+    "maxObservedLogBytes": 13619,
+    "enforced": false,
+    "reason": null
+  },
+  "artifacts": [],
+  "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-fps-import-1789160716198\\artifacts",
+  "logsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-fps-import-1789160716198\\logs",
+  "logs": [
+    {
+      "path": "preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "path": "task.log",
+      "bytes": 13619,
+      "sha256": "d897c76d7a7ecdf2f13993d9822f3a6f720f01357b97d1660b3a9d89ccbe1409"
+    }
+  ],
+  "cleanup": {
+    "verified": true,
+    "profileHresult": 0,
+    "workRemoved": true,
+    "error": null
+  },
+  "recoveryJournal": {
+    "path": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\.recovery-journal\\gu6-kenney-fps-import-1789160716198.json",
+    "policyVersion": "craftmine.windows.recovery-journal.v1",
+    "cleared": true,
+    "error": null
+  },
+  "error": null,
+  "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232",
+  "binRetirement": {
+    "format": "craftmine.godot-bin-retirement/1",
+    "taskId": "gu6-kenney-fps-import-1789160716198",
+    "identityNonce": "9f1b2d680f019d4d43053c70ee9cac4f6ef044cdc5dfdebd8670e0bb2d7eb8b5",
+    "engineJobActiveProcesses": 0,
+    "nativeJobActiveProcesses": 0,
+    "files": [
+      {
+        "path": "Godot_v4.7.2-stable_win64.exe",
+        "bytes": 180858888,
+        "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+      },
+      {
+        "path": "broker-preflight.exe",
+        "bytes": 812032,
+        "sha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+      }
+    ]
+  }
+}
