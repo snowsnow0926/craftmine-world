@@ -6,23 +6,24 @@ import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {creationPackagedRoot, resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
-import {adoptionEnvironment,inspectAdoptionSource} from './helpers/promo-adoption-contract.mjs';
-import {assertProofs} from './helpers/promo-checkpoint-contract.mjs';
+import {adoptionEnvironment,inspectAdoptionSource,validateExplorationSource,validateExplorationCall,modelFreeExecutionEvidence} from './helpers/promo-adoption-contract.mjs';
+import {assertProofs,fileProof,readCheckpointJson} from './helpers/promo-checkpoint-contract.mjs';
 
 const adoptionFile = process.argv[2];
 assert.ok(adoptionFile && path.isAbsolute(adoptionFile), 'Pass an absolute successful adoption report');
-const adoption = JSON.parse(fs.readFileSync(adoptionFile));
+const adoptionProof=fileProof(adoptionFile);
+const adoption = readCheckpointJson(adoptionFile);
 assert.equal(adoption.format, 'craftmine.promo-adoption/1');
 assert.equal(adoption.ok, true);
-const original = JSON.parse(fs.readFileSync(adoption.originalReport));
 const sourceProof=inspectAdoptionSource(adoption.originalReport);
-const out = path.dirname(adoption.originalReport), profile = path.join(out, 'profile');
-const marker = JSON.parse(fs.readFileSync(path.join(profile, 'headless-profile.json')));
+sourceProof.proofs.push(adoptionProof);
+const {original,out,profile,marker}=sourceProof;
 const packagedRoot = creationPackagedRoot();
 assert.ok(packagedRoot, 'Explicit --packaged-root is required for diagnostic product identity');
 const client = resolveCreationNativeLaunch({root: process.cwd(), packagedRoot, requiredGuards: ['godotExplore']});
-const budgetFile = path.join(profile, 'creation-evaluation-budget.json');
-const budgetBytes = fs.readFileSync(budgetFile, 'utf8');
+validateExplorationSource(adoption,sourceProof,client.identity);
+const budgetFile = sourceProof.budgetFile;
+const budgetBytes = budgetFile?fs.readFileSync(budgetFile, 'utf8'):null;
 assertProofs(sourceProof.proofs);
 const planFlag = process.argv.indexOf('--plan');
 const steps = planFlag < 0
@@ -35,8 +36,9 @@ const report = {
   format: 'craftmine.promo-exploration/1', originalReport: adoption.originalReport, adoptionReport: adoptionFile,
   packageIdentity: client.identity, originalPackageInventory: original.packageIdentity.inventorySha256,
   changedDiagnosticProduct: client.identity.inventorySha256 !== original.packageIdentity.inventorySha256,
-  modelRequestsAdded: 0, sourceEdits: 0, visual: 'UNVERIFIED', checks: [],
+  sourceFormat:original.format,modelCallsAdded:null,modelRequestsAdded: null, sourceEdits: 0, visual: 'UNVERIFIED', checks: [],
 };
+const controllerCalls=[];
 let ready = false, ended = false, exitReport;
 const pending = new Map();
 const child = spawn(client.executable, client.args, {
@@ -60,6 +62,7 @@ child.on('message', message => {
 });
 function rpc(method, fields = {}) {
   return new Promise((resolve, reject) => {
+    validateExplorationCall(method,fields,sourceProof.selection);controllerCalls.push(method==='worldPanel'?method+':'+fields.channel:method);
     const id = randomUUID(), timer = setTimeout(() => {
       pending.delete(id); reject(Error('TIMEOUT ' + method));
     }, 120000);
@@ -110,16 +113,19 @@ try {
   }
   report.exploration = exploration;
   await stop();
-  assert.equal(fs.readFileSync(budgetFile, 'utf8'), budgetBytes, 'No additional provider reservations');
+  if(budgetFile)assert.equal(fs.readFileSync(budgetFile, 'utf8'), budgetBytes, 'No additional provider reservations');
+  assertProofs(sourceProof.proofs);
   client.assertUnchanged();
-  report.checks.push('original adopted build inspected', 'bounded real adapter actions and captures', 'no provider reservations', 'no package edits', 'no input/focus/shutdown violations');
+  report.noModelExecution=modelFreeExecutionEvidence(exitReport,controllerCalls);report.modelCallsAdded=0;report.modelRequestsAdded=0;
+  report.checks.push('original adopted build inspected', 'bounded real adapter actions and captures', 'only non-model controller calls', 'no package edits', 'no input/focus/shutdown violations');
   report.ok = true;
 } catch (error) {
   report.ok = false; report.error = String(error.stack ?? error); process.exitCode = 1;
   console.error(error.message);
 } finally {
   if (!ended) try {await stop();} catch (error) {report.shutdownError = String(error); report.ok = false; process.exitCode = 1;}
-  report.budgetUnchanged = fs.readFileSync(budgetFile, 'utf8') === budgetBytes;
+  if(budgetFile)report.budgetUnchanged = fs.readFileSync(budgetFile, 'utf8') === budgetBytes;
+  try{assertProofs(sourceProof.proofs);client.assertUnchanged();report.stateIntegrityVerified=true;}catch(error){report.ok=false;report.stateIntegrityVerified=false;report.integrityError=String(error.message);process.exitCode=1;}
   try{assertProofs(sourceProof.proofs);}catch(error){report.integrityError=String(error);report.ok=false;process.exitCode=1;}
   for (const call of pending.values()) clearTimeout(call.timer);
   fs.writeFileSync(path.join(directory, 'report.json'), JSON.stringify(report, null, 2));
