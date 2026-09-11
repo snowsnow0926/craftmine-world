@@ -1,6 +1,15 @@
 //! Real SQLite/core/filesystem tests with authored executor evidence. No engine
 //! is launched here; native observation is tested by the isolated verifier.
 use super::*;
+
+#[test]
+fn creation_coordinate_json_roundtrip_preserves_ieee754_identity() {
+    let source = "4.0837792158126796";
+    let number: serde_json::Value = serde_json::from_str(source).unwrap();
+    assert_eq!(number.as_f64().unwrap().to_bits(), 4.0837792158126796_f64.to_bits());
+    let restored: serde_json::Value = serde_json::from_str(&serde_json::to_string(&number).unwrap()).unwrap();
+    assert_eq!(restored.as_f64().unwrap().to_bits(), number.as_f64().unwrap().to_bits());
+}
 use crate::godot_test_support::*;
 
 fn requirement() -> Value {
