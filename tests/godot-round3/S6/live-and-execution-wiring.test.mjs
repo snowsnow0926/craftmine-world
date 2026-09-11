@@ -356,3 +356,18 @@ test('a failed live query can recover on the same broker instance without a stal
  assert.equal(modeOf(await f.call('godot_capability_report'),'godot_build_start','build').execution.available,true);
  assert.ok(!f.calls.some(call=>call.method==='godotExecutor.status'));
 });
+
+test('production project_facts reconstructs durable failure identity without a remembered job ID',async()=>{
+ const jobId='gjob-'+'f'.repeat(64),budget={ownerTaskId:'original-owner',requestCount:3,unknownRequestCount:1,chargedTokens:50,limits:{maxTokens:null,maxRequests:80,maxCompactions:8,deadlineAt:null}};
+ const f=fixture({coreOverrides:{
+  'task.context':()=>({binding:BINDING,world:{id:'alpha'},generation:2,status:'active',draft:{revision:9,hash:'d'.repeat(64)},budget}),
+  'godotBuild.latest':params=>{assert.deepEqual(params,{worldId:'alpha',sessionId:'session'});return {worldId:'alpha',jobId,taskId:'task-1',buildId:'failed-build',kind:'check',status:'failed',sourceRevision:2,manifestHash:'a'.repeat(64),sourceStale:true,candidateId:null,
+   output:{format:'craftmine.godot-job-result/1',passed:false,compile:{errors:['SCRIPT ERROR: Parse Error: Expected parameter name.']},check:{passed:false,assertions:[]}}};}
+ }});
+ const facts=await f.call('godot_project_facts');
+ assert.equal(facts.recovery.latestJob.jobId,jobId);assert.equal(facts.recovery.latestJob.scope,'current-task');
+ assert.equal(facts.recovery.latestJob.sourceComparison.relation,'different-source');
+ assert.equal(facts.recovery.latestJob.diagnostics.diagnostics[0].errorCode,'GODOT_SCRIPT_PARSE_ERROR');
+ assert.deepEqual(facts.recovery.budget.value,budget);assert.equal(facts.recovery.application.available,false);
+ assert.ok(!f.calls.some(call=>/\.start$|\.continue$|\.reserve$|\.configure$|\.finish$/.test(call.method)));
+});
