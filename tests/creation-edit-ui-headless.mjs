@@ -2,8 +2,9 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';
 import {playwright,browserOptions} from '../app/browser-tools.mjs';
+import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 const desktop=path.resolve('vendor/pi-desktop/apps/desktop'),require=createRequire(path.join(desktop,'package.json'));
-fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/creation-edit-ui-'));
+const out=createCompleteOutput(process.cwd(),process.env.CRAFTMINE_CREATION_OUTPUT_ROOT);
 const script=`import React from 'react';import{createRoot}from'react-dom/client';import i18n from'i18next';import{initReactI18next}from'react-i18next';import{CreationObjectEditor}from'./src/components/CreationObjectEditor';
 const calls=[],statuses=new Map();let refreshes=0,dropNext=false,render;globalThis.__craftmineWorldBridge={invoke:async(_,channel,payload)=>{calls.push({channel,payload});if(channel==='godot.creationEditHistory')return{latestUndoOperationId:'previous-edit'};if(channel==='godot.creationEdit'){const status={...payload,phase:'checking'};statuses.set(payload.operationId,status);if(dropNext){dropNext=false;throw Error("transport reply lost");}return status;}if(channel==='godot.creationEditStatus')return{...statuses.get(payload.operationId),phase:'applied',receipt:{operationId:payload.operationId,undoSupported:true}};return{};},onChanged:()=>()=>{}};
 const controller={sessionId:'session-a',capture:{captureId:'capture-a',worldId:'world-a',target:{entityId:'tree-a',entityName:'树',scale:[1,1,1],color:'#84a866'}},refresh:async()=>{refreshes++;}};

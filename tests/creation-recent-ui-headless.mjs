@@ -2,8 +2,9 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';
 import {playwright,browserOptions} from '../app/browser-tools.mjs';
+import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 const desktop=path.resolve('vendor/pi-desktop/apps/desktop'),require=createRequire(path.join(desktop,'package.json'));
-fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/creation-recent-ui-'));
+const out=createCompleteOutput(process.cwd(),process.env.CRAFTMINE_CREATION_OUTPUT_ROOT);
 const script=`import React,{useState} from 'react';import{createRoot}from'react-dom/client';import i18n from'i18next';import{initReactI18next}from'react-i18next';import{CreationTargetContext}from'./src/components/CreationTargetContext';import{useCreationTarget}from'./src/hooks/use-creation-target';
 let worldId='world-a',chosen=null,controller,remount;const calls=[];
 const recent=[{entityId:'tree-a',entityName:'树',entityKind:'tree',operationId:'place-a',available:true},{entityId:'tree-b',entityName:'树',entityKind:'tree',operationId:'place-b',available:true},{entityId:'tree-hidden',entityName:'树',entityKind:'tree',operationId:'place-c',available:false,reason:'CREATION_RECENT_HIDDEN'}];

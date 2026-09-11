@@ -7,7 +7,7 @@ import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs'
 const root=path.resolve(process.env.CRAFTMINE_SOURCE_ROOT??process.cwd());
 const client=resolveCreationNativeLaunch({root,requiredGuards:['craftmine-edit-acceptance']});
 const {packaged,main}=client;
-const out=createCompleteOutput(root),profile=path.join(out,'profile'),legacySource=path.join(out,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacySource);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
+const out=createCompleteOutput(root,process.env.CRAFTMINE_CREATION_OUTPUT_ROOT),profile=path.join(out,'profile'),legacySource=path.join(out,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacySource);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
 const report={scope:'Actual main-frame bridge and native placement/copy/edit/undo/save pipeline; zero model',packaged,packageIdentity:client.identity,compiledSha256:createHash('sha256').update(main).digest('hex'),out,checks:[],launches:[],operations:[]};
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));const check=(name,value)=>{report.checks.push({name,passed:!!value});save();assert.ok(value,name);console.log('PASS '+name);};
 let child,ready=false,ended=true,exit=Promise.resolve(),launch,sessionId='',worldId='';const pending=new Map();
