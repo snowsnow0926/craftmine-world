@@ -1,0 +1,15 @@
+{
+  "baseline": "662d6f05",
+  "reportSource": "D:\\cm-parameter-declarations-0912\\test-results\\parameter-core-g4nAPv\\report.json",
+  "reportSha256": "7a20ae80f559057937c460b2edc88f6f298a098fe8e9cd28c2ea145376b6a34c",
+  "fixtureSource": "tests/godot-agent/parameter-declaration-roundtrip.test.mjs",
+  "fixtureSourceSha256": "ced5065fabfa18e05c6ca83e1c3dc5817bc3be3b8dd473b5bacd4dd535126bd4",
+  "tests": {
+    "passed": 47,
+    "failed": 0,
+    "skipped": 0
+  },
+  "packaging": true,
+  "desktopTypecheck": true,
+  "scope": "Real Core source transactions and blocked check receipts, not Godot/player/runtime acceptance"
+}

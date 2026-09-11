@@ -2,6 +2,7 @@
 import {createHash} from 'node:crypto';
 import {parseScene} from '../../desktop/godot/shared/scene_materializer.mjs';
 import {contentHash} from './package-format.mjs';
+import {resolveInstanceParameterDeclaration} from './godot-instance-declaration.mjs';
 import path from 'node:path';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(Error(code),{code,errorCode:code});};
@@ -136,6 +137,7 @@ export function createManagedPackageSourceService({call,bind}) {
       const {identity,files,mainScene,bound}=await read(args),classes=classIndex(files);
       const node=parseScene(files.get(mainScene).toString('utf8')).nodes.find(node=>nodePath(node)===args.nodePath);check(node,'PACKAGE_COMPONENT_MISSING');
       const entity=identityFor(files,mainScene,node,classes);check(entity,'PACKAGE_COMPONENT_IDENTITY_REQUIRED');
+      const parameterDeclaration=resolveInstanceParameterDeclaration({worldId:args.worldId,files,mainScene,nodePath:args.nodePath});
       check(!files.has('_craftmine_component.tscn'),'PACKAGE_RESERVED_PATH');
       const component=extractSubtree(files.get(mainScene).toString('utf8'),args.nodePath),payload=new Map([['_craftmine_component.tscn',Buffer.from(component)]]),required=new Map(),queue=refs(component);
       while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');payload.set(name,bytes);if(texts.test(name)||name.toLowerCase().endsWith('.glb'))queue.push(...dependencies(name,name.toLowerCase().endsWith('.glb')?bytes:bytes.toString('utf8')));check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
@@ -171,9 +173,9 @@ export function createManagedPackageSourceService({call,bind}) {
         sourceDeclarations.set(declarationPath,{path:declarationPath,sha256:hash(rewritten[declarationPath]),status:'source-declared'});
       }
       const licenses=sourceDeclarations.size?{sourceDeclarations:[...sourceDeclarations.values()]}:{};
-      const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()]},interfaces:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:{},licenses};
+      const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()]},interfaces:parameterDeclaration.status==='source-declared'?{parameters:parameterDeclaration.parameters}:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:{},licenses};
       const archive=packStaticPackage({root:{id:args.assetId,version:args.version},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files:rewritten}]});check(archive.length<=5*1024*1024,'PACKAGE_COMPONENT_TOO_LARGE');
-      return {archiveBase64:archive.toString('base64'),archiveSha256:hash(archive),files:Object.keys(rewritten).length,bytes:archive.length,source:{worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,nodePath:args.nodePath},requiredSourceFiles:required.size};
+      return {archiveBase64:archive.toString('base64'),archiveSha256:hash(archive),files:Object.keys(rewritten).length,bytes:archive.length,source:{worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,nodePath:args.nodePath},parameterDeclaration,requiredSourceFiles:required.size};
     },
   };
 }

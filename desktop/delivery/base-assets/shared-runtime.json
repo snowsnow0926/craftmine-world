@@ -242,8 +242,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 22520,
-      "sha256": "367d85c0506c1062e5a3627fb8e4ada85b37d78d8369d5a312206e8b4275baf5"
+      "bytes": 23296,
+      "sha256": "b6c4c2eefef9d89b741ededa76ef64c55d4ea05b8bc5a8d03d8c6e7e777c247f"
     },
     {
       "path": "headless_play_action.gd",

@@ -37,6 +37,7 @@ import {
   // second copy.
 } from '../../../plugins/craftmine-world/asset-lock.mjs';
 import {applyInputActions, applySceneInsertion, planInputActions} from './scene_materializer.mjs';
+import {createInstanceSourceDeclaration} from '../../../plugins/craftmine-world/godot-instance-declaration.mjs';
 
 export const DRAFT_INSTALL_FORMAT = 'craftmine.godot-draft-install/1';
 export const DRAFT_JOURNAL_FILE = path.join('.craftmine', 'draft-operations.json');
@@ -132,6 +133,7 @@ function declaredClass(text) {
 export function planDraftInstall({
   plan,
   payload = [],
+  resourceManifests = [],
   projectDir,
   sceneEdits = [],
   inputActions = [],
@@ -251,14 +253,22 @@ export function planDraftInstall({
   const mergedInstances=new Map((oldInstances?.instances??[]).map(i=>[i.instanceId,i]));
   for(const instance of plan.instances) {
     if(mergedInstances.has(instance.instanceId)) throw fail('DRAFT_INSTANCE_ID_CONFLICT');
-    mergedInstances.set(instance.instanceId,{...instance,installPath:lockByAsset.get(instance.assetId+'@'+instance.version)?.installPath});
+    const installed={...instance,installPath:lockByAsset.get(instance.assetId+'@'+instance.version)?.installPath};
+    const manifests=resourceManifests.filter(resource=>resource.content?.assetId===instance.assetId&&resource.content?.version===instance.version);
+    if(manifests.length>1)throw fail('DRAFT_DECLARATION_RESOURCE_AMBIGUOUS');
+    const edits=sceneEdits.filter(edit=>Object.values(instance.entityMap??{}).includes(edit.identity?.entityId));
+    if(edits.length>1)throw fail('DRAFT_DECLARATION_SCENE_AMBIGUOUS');
+    installed.sourceDeclaration=createInstanceSourceDeclaration({resource:manifests[0],instance:installed,managedFiles:files,sceneEdit:edits[0]});
+    mergedInstances.set(instance.instanceId,installed);
   }
   const instancesText = stableJSON({
+    ...(oldInstances ?? {}),
     format: INSTANCES_FORMAT,
     operationId: plan.operationId,
     worldId: plan.worldId,
     assetLockHash: assetLockHash(lock),
     instances: [...mergedInstances.values()].map((instance) => ({
+      ...instance,
       instanceId: instance.instanceId,
       assetId: instance.assetId,
       version: instance.version,
