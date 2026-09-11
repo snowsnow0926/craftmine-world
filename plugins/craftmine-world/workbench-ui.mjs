@@ -2,12 +2,13 @@
 import {createGodotPackageUI} from './godot-package-ui.mjs';
 import {createIssueUI} from './issue-ui.mjs';
 import {createTargetFeedbackUI} from './target-feedback-ui.mjs';
+import {backupErrorMessage} from './backup-errors.mjs';
 const labels={proposed:'待核实',validated:'已验证',needs_revalidation:'需要复验',retired:'已停用',running:'进行中',interrupted:'已中断',cancelled:'已停止',completed:'已完成',finished:'已完成'};
 const kinds={object:'物体',gameplay:'基础玩法',creation:'组合作品','project-rule':'创作规则','verified-experience':'验证经验','task-history':'任务历史',workflow:'创作流程'};
 const text=(tag,value,className)=>{const element=document.createElement(tag);element.textContent=value??'';if(className)element.className=className;return element;};
 const button=(label,run)=>{const form=document.createElement('form'),control=text('button',label);control.type='submit';form.append(control);form.addEventListener('submit',event=>{event.preventDefault();void run();});return {form,control};};
 const field=(label,tag='input')=>{const wrapper=document.createElement('label'),control=document.createElement(tag);wrapper.append(text('span',label),control);return {wrapper,control};};
-const safeError=error=>String(error?.message||error||'操作未完成').slice(0,600);
+const safeError=error=>backupErrorMessage(error)??String(error?.message||error||'操作未完成').slice(0,600);
 const count=value=>Number.isFinite(value)?new Intl.NumberFormat('zh-CN').format(value):'未知';
 const dependency=ref=>({'geometry@2':'基础造型','health@1':'生命值','ranged@1':'射击','melee@1':'近战','resource@1':'自定义资源','assets@1':'素材'})[ref]||(ref.startsWith('ext:')?'扩展 '+ref.slice(4):ref);
 
