@@ -9798,6 +9798,7 @@ installHeadlessControl({
   window: () => mainWindow,
   world: () => pluginViews.headlessWorldContents(),
   godotGameplay: {
+    playAction: (identity, args) => godotWorld.headlessPlayAction(identity, args),
     observe: () => godotWorld.request("observe-envelope", {}),
     action: (op, args) => op === "resume" ? godotWorld.resume().then(() => ({status: "ready"}))
       : op === "pause" ? godotWorld.pause().then(() => ({status: "paused"}))

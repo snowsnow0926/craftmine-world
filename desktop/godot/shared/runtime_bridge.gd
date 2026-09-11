@@ -1,6 +1,7 @@
 extends Node
 
 const Guard = preload("res://craftmine_shared/state_guard.gd")
+const PlayAction = preload("res://craftmine_shared/headless_play_action.gd")
 const PROTOCOL := "craftmine.godot-runtime/2"
 const OPS := ["capabilities", "observe", "observe-envelope", "load", "restore-state", "snapshot", "save", "pause", "resume", "acknowledge", "exit"]
 var adapter: RefCounted
@@ -13,9 +14,12 @@ var loaded := false
 var busy := false
 var persisted_receipt: Dictionary = {}
 var latest_runner_receipt: Dictionary = {}
+var play_action: Node
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	play_action = PlayAction.new()
+	add_child(play_action)
 	adapter = load(ProjectSettings.get_setting("craftmine/runtime/adapter")).new()
 	_bootstrap.call_deferred()
 
@@ -76,9 +80,20 @@ func handle_request(request: Dictionary) -> Dictionary:
 		scope = {"worldId": request.worldId, "buildId": request.buildId, "instanceId": request.instanceId}
 	var args: Dictionary = request.get("args", {})
 	match str(request.get("op", "")):
+		"headless-play-authorize":
+			if loaded or args.size() != 1 or not args.get("token") is String:
+				return {"error": "PLAY_ACTION_AUTHORIZATION"}
+			return play_action.authorize(args.token, scope)
+		"play-action":
+			if not loaded:
+				return {"error": "Load the world before gameplay operations"}
+			return await play_action.perform(args, scope)
+		"headless-play-cancel":
+			return play_action.cancel_authorized(args, scope)
 		"capabilities":
-			return {"result": {"protocol": PROTOCOL, "ops": OPS, "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "progressFormat": Guard.FORMAT, "loaded": loaded, "paused": get_tree().paused}}
+			return {"result": {"protocol": PROTOCOL, "ops": OPS, "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "progressFormat": Guard.FORMAT, "loaded": loaded, "paused": get_tree().paused, "headlessPlayActionFormat": "craftmine.headless-play-action/1"}}
 		"load", "restore-state":
+			play_action.cancel()
 			var state: Variant = args.get("snapshot", args.get("state"))
 			if state != null:
 				var failure := Guard.validate(state, scope.worldId, adapter.BASE_ID, adapter.BASE_VERSION)
@@ -116,6 +131,7 @@ func handle_request(request: Dictionary) -> Dictionary:
 			latest_runner_receipt = receipt.duplicate(true)
 			return {"result": {"status": "confirmed", "runnerReceipt": receipt, "snapshot": current, "state": current.state}}
 		"pause":
+			play_action.cancel()
 			get_tree().paused = true
 			return {"result": {"paused": true}}
 		"resume":
@@ -135,6 +151,7 @@ func handle_request(request: Dictionary) -> Dictionary:
 			persisted_receipt = receipt.duplicate(true)
 			return {"result": {"acknowledged": true}}
 		"exit":
+			play_action.cancel()
 			get_tree().call_deferred("quit", 0)
 			return {"result": {"exitCode": 0}}
 		_:

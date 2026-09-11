@@ -9,7 +9,9 @@ import {
   type RuntimeEvent,
   type WorldRuntime,
 } from "../../../../../../desktop/godot/web/runtime.mjs";
-import { isHeadlessAcceptance } from "./craftmine-headless";
+import { isHeadlessAcceptance, hasHeadlessController } from "./craftmine-headless";
+import { randomBytes } from "node:crypto";
+import { PRIVATE_PLAY_OPS, validateHeadlessPlayAction, type PlayIdentity } from "./headless-play-action";
 import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
 import { createImmersionPauseController } from "./immersion-pause-controller";
@@ -252,6 +254,7 @@ export function gameBounds(bounds: GodotWorldBounds, chromeHeight: number = WORL
 }
 
 type LiveInstance = {
+  headlessPlayToken?: string;
   runtime: WorldRuntime;
   view: WebContentsView;
   worldId: string;
@@ -504,6 +507,16 @@ export class GodotWorldViewHost {
     try {
       await view.webContents.loadURL(runtime.url);
       await runtime.waitReady();
+      if (hasHeadlessController()) {
+        const capabilities = await runtime.request("capabilities", {});
+        // Old retained worlds remain playable but cannot claim the new test API.
+        if (capabilities.result?.headlessPlayActionFormat === "craftmine.headless-play-action/1") {
+          const token = randomBytes(32).toString("hex");
+          const authorization = await runtime.request("headless-play-authorize", { token });
+          if (authorization.error) throw Error("PLAY_ACTION_AUTHORIZATION_FAILED");
+          instance.headlessPlayToken = token;
+        }
+      }
       if (request.build !== undefined || request.snapshot !== undefined) {
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
@@ -795,6 +808,7 @@ export class GodotWorldViewHost {
 
   /** Forward one runtime operation; the base owns everything but the core ops. */
   async request(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown> | null> {
+    if (PRIVATE_PLAY_OPS.has(op)) throw Error("PLAY_ACTION_PRIVATE_ROUTE");
     const instance = this.current;
     if (!instance?.alive) throw new Error("No world runtime is running");
     // A completed checkpoint freezes mutations, while core observation stays
@@ -804,6 +818,25 @@ export class GodotWorldViewHost {
     const response = await instance.runtime.request(op, args);
     if (response.error) throw new Error(response.error);
     return (response.result ?? null) as Record<string, unknown> | null;
+  }
+
+  /** Fixed test action, only reachable from the validated headless controller. */
+  async headlessPlayAction(identity: PlayIdentity, args: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+    const instance = this.current;
+    validateHeadlessPlayAction(hasHeadlessController(), instance?.alive ? this.identityOf(instance) : null, identity, args);
+    if (!instance?.headlessPlayToken) throw Error("PLAY_ACTION_UNAVAILABLE");
+    if (this.pending || this.transitioning || this.checkpointPromise || this.frozen) throw Error("WORLD_BUSY");
+    try {
+      const response = await instance.runtime.request("play-action", { action: "interact", frames: 1, token: instance.headlessPlayToken });
+      if (response.error) throw Error(response.error);
+      if (this.current !== instance || !instance.alive) throw Error("PLAY_ACTION_IDENTITY");
+      return response.result ?? null;
+    } catch (error) {
+      // The engine also releases before pause/restore/exit. A timed-out reply
+      // still gets a bounded cleanup request on the same private instance.
+      await instance.runtime.request("headless-play-cancel", { token: instance.headlessPlayToken }, { timeoutMs: 1000 }).catch(() => undefined);
+      throw error;
+    }
   }
 
   /**
