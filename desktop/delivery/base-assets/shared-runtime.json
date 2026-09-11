@@ -28,6 +28,23 @@
       "sha256": "84ac18a03c592b7ab5be62e217f9e8678fdb765e731fac51370f987bb62ce8ec"
     },
     {
+      "path": "adapters/creation-sandbox-controller-v1.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 1640,
+      "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+    },
+    {
       "path": "adapters/creation-sandbox.gd",
       "role": "source",
       "origin": "authored",
@@ -143,6 +160,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 16837,
       "sha256": "ddc61f00c53d19554dd43ef34c042cfb2c181c664dfe9ea17bfe30a465f8bc7a"
+    },
+    {
+      "path": "controller_evidence.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 9893,
+      "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
     },
     {
       "path": "creation-entities.mjs",
@@ -388,8 +422,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 4821,
-      "sha256": "bbf2901f69932d9cb44e7af5da8b253cde79546b6a8f715b7ba44890a7e9dfb2"
+      "bytes": 5557,
+      "sha256": "0a3c4be3fc9b2c71926c3d32fa570b8f7b36742f9f023b12490f919a16498dfa"
     },
     {
       "path": "observation.d.mts",
@@ -504,6 +538,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 13159,
       "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+    },
+    {
+      "path": "scene_mesh_picker_v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 15348,
+      "sha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1"
     },
     {
       "path": "standalone_bootstrap.gd",

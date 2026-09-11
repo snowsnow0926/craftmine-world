@@ -65,6 +65,15 @@ environment variable and failed before engine execution; rerunning with the
 recorded cache succeeded. The full new Windows package remains to be built and
 validated; these results do not update the earlier player package's coverage.
 
+The first full integration build stopped during resource staging because the
+three newly authored runtime files had no distribution declarations. The exact
+committed bytes for the new adapter, controller sampler, picker V2 and changed
+materializer were added to the existing shared-runtime manifest under its
+project-authored provenance. No external code or new licence grant is included
+in that declaration. Staged-materializer validation now requires the new group
+to survive the actual package source filter; the failed staging attempt is
+retained as a packaging defect, not a successful build.
+
 ## Preserved diagnostic history
 
 Earlier implementations correctly failed when a replaced script cancelled the
