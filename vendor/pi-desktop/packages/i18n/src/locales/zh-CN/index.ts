@@ -1804,6 +1804,7 @@ export const zhCN = {
     NETWORK_ERROR: "无法连接 AI 服务，请检查网络或接口地址。",
     TIMEOUT: "请求 AI 服务超时。",
     STREAM_FAILED: "回复中断了。",
+    PROVIDER_IDLE_TIMEOUT: "模型连续 120 秒没有新的输出，已停止本次请求。可以在当前任务中继续。",
     MODEL_OUTPUT_LIMIT_REACHED: "模型达到单次输出上限，尚未形成结果。可以在当前任务中继续。",
     EMPTY_MODEL_RESPONSE: "模型连续两轮都没有输出内容。可以重试，或换一种说法。",
     MUTATION_RETRY_BUDGET_EXHAUSTED:

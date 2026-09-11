@@ -1792,6 +1792,7 @@ export const de = {
     "NETWORK_ERROR": "Der KI-Anbieter kann nicht erreicht werden. Überprüfen Sie Ihr Netzwerk oder Ihre Basis-URL.",
     "TIMEOUT": "Bei der Anfrage an den KI-Anbieter ist eine Zeitüberschreitung aufgetreten.",
     "STREAM_FAILED": "Die Antwort wurde unterbrochen.",
+    PROVIDER_IDLE_TIMEOUT: "Das Modell hat 120 Sekunden lang keine neue Ausgabe erzeugt. Die Anfrage wurde gestoppt. Du kannst in dieser Aufgabe fortfahren.",
     MODEL_OUTPUT_LIMIT_REACHED: "Das Modell hat das Ausgabelimit pro Antwort erreicht, ohne ein Ergebnis zu liefern. Du kannst in dieser Aufgabe fortfahren.",
     "EMPTY_MODEL_RESPONSE": "Das Modell beendete seinen Zug zweimal hintereinander, ohne etwas zu sagen. Versuchen Sie es erneut oder formulieren Sie Ihre Anfrage um.",
     "MUTATION_RETRY_BUDGET_EXHAUSTED": "Die gleiche Bearbeitung schlug zweimal fehl, daher wurde dieser Zug abgebrochen, anstatt es erneut zu versuchen. Bitten Sie erneut, fortzufahren.",

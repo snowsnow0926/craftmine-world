@@ -273,7 +273,14 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
   const relay = () => controller.abort();
   options?.signal?.addEventListener("abort", relay, { once: true });
   if (options?.signal?.aborted) controller.abort();
-  const timer = setTimeout(() => controller.abort(), 120000);
+  let idleExpired = false;
+  const expireIdle = () => {
+    if (controller.signal.aborted) return;
+    idleExpired = true;
+    controller.abort();
+  };
+  let timer = setTimeout(expireIdle, 120000);
+  const progress = new Map<string, number | string>();
   let reservation: CraftmineReservation | undefined;
   let settled = false;
   const run = async () => {
@@ -298,6 +305,27 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
     // success/tool-call message to the Agent. Nonterminal text still streams.
     for await (const event of stream) {
       aborted(controller.signal);
+      if ((event.type === "text_delta" || event.type === "thinking_delta" || event.type === "toolcall_delta") && event.delta.length > 0) {
+        const block = event.partial.content[event.contentIndex];
+        // PI partials are shared live objects. Compare their accumulated
+        // content, not delta text: repeated tokens can be real new output,
+        // while replaying an unchanged event must not keep a dead stream alive.
+        let measure: number | string | undefined;
+        if (event.type === "text_delta" && block?.type === "text") measure = block.text.length;
+        if (event.type === "thinking_delta" && block?.type === "thinking") measure = block.thinking.length;
+        if (event.type === "toolcall_delta" && block?.type === "toolCall") {
+          const partialJson = (block as typeof block & { partialJson?: unknown }).partialJson;
+          measure = typeof partialJson === "string" ? partialJson.length : JSON.stringify(block.arguments);
+        }
+        const key = `${event.type}:${event.contentIndex}`, previous = progress.get(key);
+        const advanced = typeof measure === "number" ? measure > (typeof previous === "number" ? previous : 0)
+          : typeof measure === "string" && measure !== previous;
+        if (advanced) {
+          progress.set(key, measure!);
+          clearTimeout(timer);
+          timer = setTimeout(expireIdle, 120000);
+        }
+      }
       if (event.type !== "done" && event.type !== "error") outer.push(event);
     }
     const result = await stream.result();
@@ -318,18 +346,18 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
   // is drained but can never finish this request or dispatch tools.
   let abortListener: (() => void) | undefined;
   const cancellation = new Promise<never>((_, reject) => {
-    abortListener = () => reject(Object.assign(new Error("TURN_ABORTED"), { name: "AbortError" }));
+    abortListener = () => reject(Object.assign(new Error(idleExpired ? "PROVIDER_IDLE_TIMEOUT" : "TURN_ABORTED"), { name: idleExpired ? "TimeoutError" : "AbortError" }));
     if (controller.signal.aborted) abortListener();
     else controller.signal.addEventListener("abort", abortListener, { once: true });
   });
   void Promise.race([run(), cancellation]).catch(async error => {
     if (reservation && !settled) {
-      try { await hooks.afterRequest({ reservation, status: controller.signal.aborted ? "cancelled" : "unknown", errorCode: "REQUEST_INTERRUPTED" }); }
+      try { await hooks.afterRequest({ reservation, status: controller.signal.aborted && !idleExpired ? "cancelled" : "unknown", errorCode: idleExpired ? "PROVIDER_IDLE_TIMEOUT" : "REQUEST_INTERRUPTED" }); }
       catch { /* The durable reservation remains unknown; never zero it locally. */ }
     }
     const result: AssistantMessage = { role: "assistant", content: [], api: model.api, provider: model.provider, model: model.id,
       usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
-      stopReason: controller.signal.aborted ? "aborted" : "error", errorMessage: error instanceof Error ? error.message : "CRAFTMINE_REQUEST_FAILED", timestamp: Date.now() };
+      stopReason: controller.signal.aborted && !idleExpired ? "aborted" : "error", errorMessage: idleExpired ? "PROVIDER_IDLE_TIMEOUT" : error instanceof Error ? error.message : "CRAFTMINE_REQUEST_FAILED", timestamp: Date.now() };
     outer.push({ type: "error", reason: result.stopReason as "error" | "aborted", error: result }); outer.end(result);
   }).finally(() => { clearTimeout(timer); options?.signal?.removeEventListener("abort", relay); if (abortListener) controller.signal.removeEventListener("abort", abortListener); });
   return outer;
