@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Unified 09f package passed 22 ordinary two-module import/check/adoption/cold steps; next bridge fixed catalog ZIP refs to original source installer, then parameters/performance and player reuse"
+      "next": "Fixed catalog suggestion/UI/host source install integrated; sealed a9 passes 25 real product steps including deleted download and cold same-op recovery; module parameter source persistence and player quality/performance remain"
     },
     {
       "id": "GU7",
@@ -231,6 +231,13 @@
       "path": "docs/evidence/gu6-integrated-package-20260912/summary.json",
       "status": "passed-scoped-formal-reuse",
       "scope": "1614 packaged payload files, source/archive verification; 22 actual product steps, two broker checks/adoptions and cold reopen; 10 protocol/evidence tests; no model or installer"
+    },
+    {
+      "kind": "catalog-source-adoption",
+      "commit": "a9b4c0e299c7a40f88c4e004f02a9fe658016159",
+      "path": "docs/evidence/gu6-catalog-adoption-20260912/summary.json",
+      "status": "passed-scoped-product-flow",
+      "scope": "25 actual product steps, real checks/adoption/cold exact-op replay; readonly SQLite has only 3 expected jobs; both exits clean; initial catalog seed is a fixture and no model was run"
     }
   ],
   "limitations": [

@@ -1,0 +1,51 @@
+{
+  "format": "craftmine.catalog-source-adoption/1",
+  "sourceReport": "test-results/desktop-native-complete-npLS0V/report.json",
+  "reportSha256": "5092eed7a31c7176800f6f8af8a4d0493c029a743f13e04ec4e7dc7ee74ea9af",
+  "commit": "a9b4c0e299c7a40f88c4e004f02a9fe658016159",
+  "packagePath": "D:/cm-agent-godot-0912/desktop/build/releases/a9b4c0e299c7-f362dff8-51bc-4b62-93e0-dc3588619234/output/win-unpacked",
+  "sourceArchiveHash": "d2b3475f2f63cc71d9accbc6a3c1d810976e3f0f98057bc3c51af03f0b4d6556",
+  "buildManifestSha256": "6b26bfdd546ce154603927141650b2d07383dc5bcb09e61399499330aadec943",
+  "payloadFiles": 1614,
+  "payloadBytes": 1018330416,
+  "signature": "unsigned-local-preview",
+  "passed": true,
+  "steps": 25,
+  "worldId": "world-24c16f4ecead",
+  "modelCalls": 0,
+  "packages": [
+    {
+      "kind": "building",
+      "catalogRef": {
+        "assetId": "gu6-catalog-building",
+        "version": 1,
+        "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b"
+      },
+      "zipSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "operationId": "a06390c6-9943-4d30-a2ad-cf960c34f203",
+      "jobId": "gjob-eda718e5447841dfacf4a6b62994fc7b4c85635db75341239f7f1bd754bc98b6",
+      "buildId": "gbd-7548f93e9b786e03a8e64f9013873d8be3e503d05f5398cbd15931ff01deeff9"
+    },
+    {
+      "kind": "road",
+      "catalogRef": {
+        "assetId": "gu6-catalog-road",
+        "version": 1,
+        "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b"
+      },
+      "zipSha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+      "operationId": "4b451486-f8a1-40a1-a724-97893635f055",
+      "jobId": "gjob-2596e34886e021f7c153452395d9c8f6563d6d7bc3fec37fc87b54ab38976418",
+      "buildId": "gbd-e8acf0f8f048310b9d2d4e1165888eb97f3d9f93a1136b42dbea7574f8e89076"
+    }
+  ],
+  "scope": "Explicit real core catalog seed before desktop launch; normal product panel catalog install, actual broker check, preview/adopt/save/cold reopen and same-operation receipt recovery",
+  "limits": [
+    "No ordinary player model request",
+    "Initial library seeding is a fixture, not Main asset UI import",
+    "No module parameter edits or state migration",
+    "No independently aimed module in this run",
+    "No full GU0-GU7 completion"
+  ],
+  "jobAuditSha256": "d2c742bd81de11bf6e82906acc9f4094492de2ad44ef6e156804477de2633b3c"
+}

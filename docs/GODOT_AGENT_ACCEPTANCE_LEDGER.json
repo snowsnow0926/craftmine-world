@@ -88,9 +88,10 @@
       "requiredEvidence": "不部分写入、不重复对象，能恢复回执 GU3",
       "status": "partial",
       "evidence": [
-        "tests/creation-source-service.test.mjs"
+        "tests/creation-source-service.test.mjs",
+        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md"
       ],
-      "next": "Exact reply-loss recovery and conflict guards covered by compiler/service tests; packaged creation run remains"
+      "next": "Durable catalog source ref/owner conflicts and reply recovery tested with real filesystem intents; actual sealed cold exact-op replay preserves original receipt/source/job"
     },
     {
       "id": "GA10",
@@ -217,9 +218,10 @@
       "evidence": [
         "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
         "docs/specs/godot-agent-gu6-kenney-modules.md",
-        "docs/specs/godot-agent-gu6-formal-packages.md"
+        "docs/specs/godot-agent-gu6-formal-packages.md",
+        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md"
       ],
-      "next": "Two source-world reuse trials plus separate one-world formal two-package checks/adoption/cold reopen; second formal world and module state initialization remain"
+      "next": "Sealed a9 source-catalog install/check/adoption/cold reopen and exact-op recovery pass; module parameters, arbitrary progress initialization and ordinary-model reuse remain"
     },
     {
       "id": "GA24",
@@ -257,9 +259,10 @@
       "status": "partial",
       "evidence": [
         "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json",
-        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json"
+        "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
+        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md"
       ],
-      "next": "Sealed d4/2ae/6f identities and scoped real product runs recorded; latest unified package and four-base regression remain"
+      "next": "Unified a9 sealed package verified and scoped actual reuse passes; four-base full behavior matrix still remains"
     },
     {
       "id": "GA28",
