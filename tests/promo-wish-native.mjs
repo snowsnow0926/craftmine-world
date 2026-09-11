@@ -6,19 +6,22 @@ import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs'
 import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 import {promoPilotProgress} from './helpers/promo-pilot-progress.mjs';
 import {evaluationRequestLimit} from '../vendor/pi-desktop/apps/desktop/electron/main/creation-evaluation-budget.ts';
+import {playerClarificationMode,choosePlayerClarification,MAX_PLAYER_CLARIFICATIONS} from './helpers/promo-player-clarification.mjs';
 const maxRequests=evaluationRequestLimit(process.env.CRAFTMINE_PROMO_REQUEST_LIMIT??'10');
+const clarificationMode=playerClarificationMode(process.env.CRAFTMINE_PROMO_CLARIFICATION_MODE);
 const group=process.env.CRAFTMINE_PROMO_GROUP??'pet';
 const plan=createPromoWishPlan({suite:'independent',selected:[group],seed:20260912}),wish=plan.stories[0].steps.find(step=>step.kind==='wish');
-if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',wish:{id:wish.id,text:wish.text},modelRequests:0,maxRequests,maxMinutes:10}));process.exit(0);}
+if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',wish:{id:wish.id,text:wish.text},modelRequests:0,maxRequests,maxMinutes:10,clarificationMode}));process.exit(0);}
 const root=process.cwd(),configPath=process.env.CRAFTMINE_LIVE_CONFIG;
 assert.ok(configPath&&path.isAbsolute(configPath),'An explicit local model configuration is required');
 const config={};loadLocalConfig(configPath,config);const secret=config.CRAFTMINE_DEEPSEEK_API_KEY??config.DEEPSEEK_API_KEY??config.CRAFTMINE_EVAL_KEY;
 assert.ok(secret&&(!config.CRAFTMINE_MODEL_PROVIDER||config.CRAFTMINE_MODEL_PROVIDER==='deepseek'),'Configured DeepSeek provider required');
 const model=process.env.CRAFTMINE_EVAL_MODEL??'deepseek-flash',out=createCompleteOutput(root),profile=path.join(out,'profile'),legacySource=path.join(out,'legacy'),token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(legacySource);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));
-const client=resolveCreationNativeLaunch({root,requiredGuards:['EVALUATION_WISH_BUSY_OR_FIXED_SUITE','CRAFTMINE_EVAL_REQUEST_LIMIT']});
+const client=resolveCreationNativeLaunch({root,requiredGuards:['EVALUATION_WISH_BUSY_OR_FIXED_SUITE','CRAFTMINE_EVAL_REQUEST_LIMIT',...(clarificationMode==='off'?[]:['headlessAskPending','headlessAskResolve'])]});
 const sanitize=value=>typeof value==='string'?value.split(secret).join('[REDACTED]'):Array.isArray(value)?value.map(sanitize):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).map(([k,v])=>[k,/secret|apiKey|authorization/i.test(k)?'[REDACTED]':sanitize(v)])):value;
 const report={format:'craftmine.promo-pilot/1',startedAt:new Date().toISOString(),group,wish:{id:wish.id,text:wish.text},planSha256:plan.planSha256,model,maxRequests,packageIdentity:client.identity,status:'PREPARING',functional:'UNVERIFIED',visual:'UNVERIFIED',continuity:'UNVERIFIED',snapshots:[]};
+report.playerClarification={mode:clarificationMode,count:0,questionCount:0,events:[]};
 const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(sanitize(report),null,2));save();
 const environment={...client.environment({out,profile,token}),CRAFTMINE_CREATION_EVAL:'1',CRAFTMINE_EVAL_MODEL:model,CRAFTMINE_EVAL_THINKING:'high',CRAFTMINE_EVAL_KEY:secret,CRAFTMINE_EVAL_REQUEST_LIMIT:String(maxRequests)};
 const child=spawn(client.executable,client.args,{cwd:client.cwd,env:environment,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});
@@ -38,7 +41,7 @@ try{
   report.session=await evaluation('initialize');await evaluation('resume-play');await evaluation('aim-ground');
   report.before=await evaluation('snapshot');
   report.submission=await evaluation('wish',{wish:report.wish});report.status='SUBMITTED';save();
-  const deadline=Date.now()+600000;let lastStatus='';
+  const deadline=Date.now()+600000;let lastStatus='';const answered=new Set();
   while(Date.now()<deadline){
     if(ended)throw Error('CLIENT_EXITED');const state=await evaluation('snapshot');
     report.latest=state;report.budget=state.budget;report.metrics=state.metrics;
@@ -47,6 +50,23 @@ try{
     if(JSON.stringify(stage)!==lastStatus){console.log(JSON.stringify(stage));lastStatus=JSON.stringify(stage);}
     const progress=promoPilotProgress(state);
     if(progress.settled){report.status=progress.reason;break;}
+    if(clarificationMode!=='off'&&state.active){
+      try{
+        const ask=await native('headlessAskPending',{payload:{sessionId:report.session.sessionId}});
+        if(ask&&!answered.has(ask.requestId)){
+          assert.ok(report.playerClarification.count<MAX_PLAYER_CLARIFICATIONS,'PROMO_CLARIFICATION_LIMIT');
+          const selected=choosePlayerClarification(ask,report.session.sessionId,clarificationMode);
+          const event={...selected.ask,answers:selected.answers,choices:selected.choices,selectionReasons:selected.selectionReasons,startedAt:new Date().toISOString(),status:'sending'};
+          report.playerClarification.events.push(event);save();
+          const receipt=await native('headlessAskResolve',{payload:{sessionId:ask.sessionId,requestId:ask.requestId,choices:selected.choices}});
+          assert.equal(receipt.status,'resolved');assert.equal(receipt.requestId,ask.requestId);assert.equal(receipt.sessionId,ask.sessionId);assert.deepEqual(receipt.answers,selected.answers);
+          event.status='resolved';event.answeredAt=new Date().toISOString();answered.add(ask.requestId);
+          report.playerClarification.count++;report.playerClarification.questionCount+=ask.questions.length;
+          report.interactionPath='player-clarified';save();
+          console.log(JSON.stringify({playerClarification:report.playerClarification.count,questions:ask.questions.length}));
+        }
+      }catch(error){report.status='CLARIFICATION_DRIVER_BLOCKED';report.clarificationError=String(error.message);const event=report.playerClarification.events.at(-1);if(event?.status==='sending')event.status='failed';await evaluation('abort');break;}
+    }
     await delay(2000);
   }
   if(report.status==='SUBMITTED'){report.status='TIME_STOP';await evaluation('abort');}
