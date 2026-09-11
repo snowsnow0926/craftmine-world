@@ -12,6 +12,100 @@ fn creation_coordinate_json_roundtrip_preserves_ieee754_identity() {
 }
 use crate::godot_test_support::*;
 
+fn passage_fixture() -> Result<(requirements::Requirements,Value,Value)> {
+ let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("passage"),"entities":[{"id":"door-a","kind":"door","position":[0,0,0],"scale":[1,1,1]}],"counts":[],"doorSequence":{"doorId":"door-a","steps":["marker-a","marker-b"],"verifyPassage":true}}});
+ let required:requirements::Requirements=serde_json::from_value(value.clone())?;required.validate("creation-sandbox","check")?;
+ let descriptor=json!({"format":"craftmine.godot-check-descriptor/1","phase":"check","checkRequirements":value,"checkRequirementsHash":required.hash(),"jobId":"job","worldId":"world","buildId":"build"});
+ let passage=json!({"format":"craftmine.creation-door-passage/1","doorId":"door-a","instanceId":"engine","setup":"snapshot-player-only","boundsSource":"collision","bounds":{"min":[-0.8,0,-0.25],"max":[0.8,2.6,0.25]},"axis":2,"frames":240,"closed":{"before":[0,0.9,1.25],"after":[0,0.9,0.55],"startedTick":10,"finishedTick":260,"targetId":"door-a"},"opened":{"before":[0,0.9,1.25],"after":[0,0.9,-16],"startedTick":400,"finishedTick":650,"targetId":null}});
+ let trace=json!([{"step":"initial","doorOpen":false,"interacted":false},{"step":"marker-b","doorOpen":false,"interacted":true},{"step":"marker-a","doorOpen":false,"interacted":true},{"step":"marker-b","doorOpen":true,"interacted":true,"passage":passage}]);
+ let entities=json!([{"id":"door-a","kind":"door","position":[0,0,0],"scale":[1,1,1]}]);
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":required.hash(),"jobId":"job","worldId":"world","buildId":"build","instanceId":"engine","observations":[{"phase":"loaded","entities":entities},{"phase":"running","entities":entities,"doorTrace":trace}]});
+ Ok((required,descriptor,evidence))
+}
+
+#[test]
+fn creation_door_passage_accepts_fixed_real_web_observations_without_rewriting_identity() -> Result<()> {
+ let fixture:Value=serde_json::from_str(include_str!("../../../../../tests/fixtures/creation-door-passage-real-evidence.json"))?;
+ let descriptor=&fixture["descriptor"];let evidence=&fixture["evidence"];
+ let required:requirements::Requirements=serde_json::from_value(descriptor["checkRequirements"].clone())?;
+ required.validate("creation-sandbox","check")?;
+ assert_eq!(descriptor["checkRequirementsHash"],required.hash());
+ assert!(requirements::evidence_matches(&required,Some(evidence),descriptor));
+ let mut changed=evidence.clone();changed["observations"][1]["doorTrace"][3]["passage"]["opened"]["after"]=json!([0,0.9,0.55]);
+ assert!(!requirements::evidence_matches(&required,Some(&changed),descriptor));
+ Ok(())
+}
+
+#[test]
+fn creation_door_passage_rejects_weakening_wrong_identity_and_nonphysical_witnesses() -> Result<()> {
+ let (required,descriptor,evidence)=passage_fixture()?;
+ assert!(requirements::evidence_matches(&required,Some(&evidence),&descriptor));
+ for case in ["missing","ghost","retained","teleport","other-door","other-instance","no-frames","replayed","wrong-axis","shifted-bounds","sideways","jumped","extra-key","no-target","fallback"] {
+  let mut bad=evidence.clone();let last=&mut bad["observations"][1]["doorTrace"][3];
+  match case {
+   "missing"=>{last.as_object_mut().unwrap().remove("passage");},
+   "ghost"=>last["passage"]["closed"]["after"]=json!([0,0.9,-16]),
+   "retained"=>last["passage"]["opened"]["after"]=json!([0,0.9,0.55]),
+   "teleport"=>last["passage"]["opened"]["before"]=json!([0,0.9,-16]),
+   "other-door"=>last["passage"]["closed"]["targetId"]=json!("door-b"),
+   "other-instance"=>last["passage"]["instanceId"]=json!("old-engine"),
+   "no-frames"=>last["passage"]["opened"]["finishedTick"]=json!(401),
+   "replayed"=>last["passage"]["opened"]["startedTick"]=json!(10),
+   "wrong-axis"=>last["passage"]["axis"]=json!(0),
+   "shifted-bounds"=>last["passage"]["bounds"]["max"][2]=json!(9),
+   "sideways"=>last["passage"]["opened"]["after"][0]=json!(2),
+   "jumped"=>last["passage"]["opened"]["after"][1]=json!(4),
+   "extra-key"=>last["passage"]["passed"]=json!(true),
+   "no-target"=>{last["passage"]["opened"].as_object_mut().unwrap().remove("targetId");},
+   "fallback"=>last["passage"]["boundsSource"]=json!("declaration-fallback"),
+   _=>unreachable!(),
+  }
+  assert!(!requirements::evidence_matches(&required,Some(&bad),&descriptor),"{case}");
+ }
+ let mut legacy=descriptor["checkRequirements"].clone();legacy["creation"]["doorSequence"].as_object_mut().unwrap().remove("verifyPassage");
+ let old:requirements::Requirements=serde_json::from_value(legacy.clone())?;old.validate("creation-sandbox","check")?;assert_ne!(old.hash(),required.hash());
+ for value in [json!(false),Value::Null,json!({"optional":true})]{let mut invalid=legacy.clone();invalid["creation"]["doorSequence"]["verifyPassage"]=value;let parsed:requirements::Requirements=serde_json::from_value(invalid)?;assert!(parsed.validate("creation-sandbox","check").is_err());}
+ let mut no_pose=descriptor["checkRequirements"].clone();no_pose["creation"]["entities"][0].as_object_mut().unwrap().remove("position");let parsed:requirements::Requirements=serde_json::from_value(no_pose)?;assert!(parsed.validate("creation-sandbox","check").is_err());
+ Ok(())
+}
+
+#[test]
+fn creation_door_passage_controls_core_finish_and_candidate_readiness() -> Result<()> {
+ for case in ["valid","missing","ghost","weakened","controller-changed","legacy-controller-changed"] {
+  let (_dir,path)=temp()?;let mut journal=setup(&path)?;
+  let mut files=project_files();for(path,text)in crate::godot_creation_probe::files(){files.as_array_mut().unwrap().push(json!({"path":path,"text":text}));}
+  for(path,text)in crate::godot_creation_probe::passage_files(){let text=if case.ends_with("controller-changed")&&path.ends_with("player_controller.gd"){format!("{text}\n# authored custom controller\n")}else{text};files.as_array_mut().unwrap().push(json!({"path":path,"text":text}));}
+  files[0]["text"]=json!(format!("{}\n[autoload]\nCraftmineRuntime=\"*res://craftmine_shared/runtime_bridge.gd\"\n[craftmine]\nruntime/adapter=\"res://craftmine_shared/base_adapter.gd\"\n",files[0]["text"].as_str().unwrap()));
+  let project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"passage","baseBuild":"base-a","baseId":"creation-sandbox","files":files}))?;
+  register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+  let (required,template,mut evidence)=passage_fixture()?;
+  let mut args=request(&project,"passage-check");args["checkRequirements"]=template["checkRequirements"].clone();
+  if case=="legacy-controller-changed"{args["checkRequirements"]["creation"]["doorSequence"].as_object_mut().unwrap().remove("verifyPassage");}
+  let started=journal.godot_build_start(&args);
+  if case=="controller-changed"{assert!(started.unwrap_err().to_string().contains("CREATION_PASSAGE_CONTROLLER_UNSUPPORTED"));assert_eq!(journal.world_read("a")?.world.snapshot,world().snapshot);continue;}
+  let job=started?;if case=="legacy-controller-changed"{assert!(job["jobId"].is_string());continue;}
+  let claimed=claim(&mut journal,&job,"token-a","executor-a")?;
+  let artifacts=write_artifact(&claimed,"web/index.html",b"<html>authored executor fixture</html>")?;
+  let descriptor=journal.godot_job_check_descriptor(&json!({"jobId":job["jobId"],"token":"token-a","artifacts":artifacts}))?;
+  assert_eq!(descriptor["checkRequirements"],template["checkRequirements"]);
+  evidence["jobId"]=job["jobId"].clone();evidence["worldId"]=json!("a");evidence["buildId"]=job["buildId"].clone();
+  match case {
+   "missing"=>{evidence["observations"][1]["doorTrace"][3].as_object_mut().unwrap().remove("passage");},
+   "ghost"=>evidence["observations"][1]["doorTrace"][3]["passage"]["closed"]["after"]=json!([0,0.9,-16]),
+   "weakened"=>{let mut weak=template["checkRequirements"].clone();weak["creation"]["doorSequence"].as_object_mut().unwrap().remove("verifyPassage");let weak:requirements::Requirements=serde_json::from_value(weak)?;evidence["requirementsHash"]=json!(weak.hash());},
+   _=>{},
+  }
+  let mut output=output(&claimed,true,json!([{"id":"runtime.creation-requirements","passed":true}]),artifacts,json!([]));output["check"]["requirementsEvidence"]=evidence;
+  let finished=finish(&mut journal,&job,"token-a",&output)?;
+  assert_eq!(finished["status"],if case=="valid"{"passed"}else{"failed"},"{case}");
+  let candidate=journal.godot_candidate_read(&json!({"worldId":"a","candidateId":finished["candidateId"]}))?;
+  assert_eq!(candidate["candidate"]["status"],if case=="valid"{"ready"}else{"rejected"},"{case}");
+  drop(journal);let journal=TaskJournal::open(&path)?;assert_eq!(requirements::read(&journal.db,job["jobId"].as_str().unwrap())?.unwrap().hash(),required.hash());
+  assert_eq!(journal.world_read("a")?.world.snapshot,world().snapshot);
+ }
+ Ok(())
+}
+
 fn requirement() -> Value {
     json!({"format":requirements::FORMAT,"targetFeedback":{"targetId":"target_a","hitFlashMilliseconds":500}})
 }

@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::digest;
+#[path = "godot_door_passage.rs"]
+mod door_passage;
 
 pub const FORMAT: &str = "craftmine.godot-check-requirements/1";
 pub const ASSERTION: &str = "runtime.target-feedback";
@@ -44,6 +46,7 @@ impl Requirements {
         Ok(())
     }
     pub fn is_creation(&self)->bool {self.creation.is_some()}
+    pub fn requires_passage(&self)->bool {self.creation.as_ref().is_some_and(|v|v["doorSequence"]["verifyPassage"]==true)}
     pub fn assertion(&self) -> &'static str {if self.creation.is_some(){"runtime.creation-requirements"}else{ASSERTION}}
     pub fn hash(&self) -> String {
         if let Some(creation)=&self.creation {return digest(&serde_json::to_string(&canonical_creation(creation)).unwrap_or_default());}
@@ -132,7 +135,7 @@ pub fn evidence_matches(requirements: &Requirements, evidence: Option<&Value>, d
         && evidence.observations.len() == 2
         && evidence.observations.iter().zip(["loaded", "running"]).all(|(actual, phase)| {
             if actual.phase != phase {return false;}
-            if let Some(creation)=&requirements.creation {return actual.target_id.is_none() && actual.hit_flash_milliseconds.is_none() && actual.entities.as_ref().is_some_and(|entities|creation_matches(creation,entities)) && creation.get("timeOfDay").is_none_or(|expected|actual.time_of_day==expected.as_f64()) && (if phase=="running" {door_trace_matches(creation,actual.door_trace.as_ref()) && harvest_trace_matches(creation,actual.harvest_trace.as_ref())}else{actual.door_trace.is_none() && actual.harvest_trace.is_none()});}
+            if let Some(creation)=&requirements.creation {return actual.target_id.is_none() && actual.hit_flash_milliseconds.is_none() && actual.entities.as_ref().is_some_and(|entities|creation_matches(creation,entities)) && creation.get("timeOfDay").is_none_or(|expected|actual.time_of_day==expected.as_f64()) && (if phase=="running" {door_trace_matches(creation,actual.door_trace.as_ref(),&evidence.instance_id) && harvest_trace_matches(creation,actual.harvest_trace.as_ref())}else{actual.door_trace.is_none() && actual.harvest_trace.is_none()});}
             let Some(target)=&requirements.target_feedback else{return false;};
             actual.entities.is_none() && actual.time_of_day.is_none() && actual.door_trace.is_none() && actual.harvest_trace.is_none() && actual.target_id.as_deref()==Some(target.target_id.as_str()) && actual.hit_flash_milliseconds.is_some_and(|value|value.is_finite()&&(value-f64::from(target.hit_flash_milliseconds)).abs()<=1e-6)
         })
@@ -143,7 +146,7 @@ fn kind(value:&Value)->bool {value.as_str().is_some_and(|s|["tree","rock","chest
 fn valid_creation(v:&Value)->bool {
  if !keys(v,&["format","requestHash","entities","counts","doorSequence","harvest","timeOfDay","duplicates"])||v["format"]!="craftmine.creation-requirements/1"||!v["requestHash"].as_str().is_some_and(|s|s.len()==64&&s.bytes().all(|c|c.is_ascii_hexdigit()&&!c.is_ascii_uppercase())) {return false;}
  let (Some(es),Some(cs))=(v["entities"].as_array(),v["counts"].as_array())else{return false;};
- v.get("timeOfDay").is_none_or(|t|t==18)&&valid_duplicates(v.get("duplicates"))&&valid_harvest(v.get("harvest"))&&valid_door(v.get("doorSequence"))&&es.len()<=256&&cs.len()<=5&&(! (es.is_empty()&&cs.is_empty())||v.get("doorSequence").is_some()||v.get("harvest").is_some()||v.get("timeOfDay").is_some()||v.get("duplicates").is_some())&&es.iter().all(|e|keys(e,&["id","kind","position","scale","color","visible","solid","absent","excludeIds"])&&(e.get("id").is_some()||e.get("kind").is_some())&&e.get("id").is_none_or(|i|i.as_str().is_some_and(identifier))&&e.get("kind").is_none_or(kind)&&e.get("position").is_none_or(vec3)&&e.get("scale").is_none_or(|s|vec3(s)&&s.as_array().unwrap().iter().all(|n|n.as_f64().is_some_and(|n|n>0.0&&n<=20.0)))&&e.get("color").is_none_or(|c|c.as_str().is_some_and(|s|s.len()==7&&s.starts_with('#')&&s[1..].bytes().all(|c|c.is_ascii_hexdigit())))&&e.get("visible").is_none_or(Value::is_boolean)&&e.get("solid").is_none_or(Value::is_boolean)&&e.get("absent").is_none_or(|a|a==true&&e["id"].as_str().is_some_and(identifier))&&e.get("excludeIds").is_none_or(|ids|ids.as_array().is_some_and(|ids|ids.len()<=256&&ids.iter().all(|id|id.as_str().is_some_and(identifier)))))&&cs.iter().all(|c|keys(c,&["kind","count"])&&kind(&c["kind"])&&c["count"].as_u64().is_some_and(|n|n<=256))
+ v.get("timeOfDay").is_none_or(|t|t==18)&&valid_duplicates(v.get("duplicates"))&&valid_harvest(v.get("harvest"))&&valid_door(v.get("doorSequence"))&&door_passage::valid_requirement(v)&&es.len()<=256&&cs.len()<=5&&(! (es.is_empty()&&cs.is_empty())||v.get("doorSequence").is_some()||v.get("harvest").is_some()||v.get("timeOfDay").is_some()||v.get("duplicates").is_some())&&es.iter().all(|e|keys(e,&["id","kind","position","scale","color","visible","solid","absent","excludeIds"])&&(e.get("id").is_some()||e.get("kind").is_some())&&e.get("id").is_none_or(|i|i.as_str().is_some_and(identifier))&&e.get("kind").is_none_or(kind)&&e.get("position").is_none_or(vec3)&&e.get("scale").is_none_or(|s|vec3(s)&&s.as_array().unwrap().iter().all(|n|n.as_f64().is_some_and(|n|n>0.0&&n<=20.0)))&&e.get("color").is_none_or(|c|c.as_str().is_some_and(|s|s.len()==7&&s.starts_with('#')&&s[1..].bytes().all(|c|c.is_ascii_hexdigit())))&&e.get("visible").is_none_or(Value::is_boolean)&&e.get("solid").is_none_or(Value::is_boolean)&&e.get("absent").is_none_or(|a|a==true&&e["id"].as_str().is_some_and(identifier))&&e.get("excludeIds").is_none_or(|ids|ids.as_array().is_some_and(|ids|ids.len()<=256&&ids.iter().all(|id|id.as_str().is_some_and(identifier)))))&&cs.iter().all(|c|keys(c,&["kind","count"])&&kind(&c["kind"])&&c["count"].as_u64().is_some_and(|n|n<=256))
 }
 fn creation_matches(r:&Value,entities:&[Value])->bool {
  if entities.len()>256||entities.iter().any(|e|!e["id"].as_str().is_some_and(identifier)||!kind(&e["kind"])||!vec3(&e["position"])||!vec3(&e["scale"])) {return false;}
@@ -156,12 +159,12 @@ fn creation_matches(r:&Value,entities:&[Value])->bool {
  })
 }
 
-fn valid_door(v:Option<&Value>)->bool {v.is_none_or(|v|keys(v,&["doorId","steps"])&&v["doorId"].as_str().is_some_and(identifier)&&v["steps"].as_array().is_some_and(|steps|steps.len()>=2&&steps.len()<=8&&steps.iter().all(|s|s.as_str().is_some_and(identifier))&&steps.iter().map(|s|s.as_str().unwrap()).collect::<std::collections::HashSet<_>>().len()==steps.len()))}
-fn door_trace_matches(r:&Value,trace:Option<&Vec<Value>>)->bool {
+fn valid_door(v:Option<&Value>)->bool {v.is_none_or(|v|keys(v,&["doorId","steps","verifyPassage"])&&v.get("verifyPassage").is_none_or(|flag|flag==true)&&v["doorId"].as_str().is_some_and(identifier)&&v["steps"].as_array().is_some_and(|steps|steps.len()>=2&&steps.len()<=8&&steps.iter().all(|s|s.as_str().is_some_and(identifier))&&steps.iter().map(|s|s.as_str().unwrap()).collect::<std::collections::HashSet<_>>().len()==steps.len()))}
+fn door_trace_matches(r:&Value,trace:Option<&Vec<Value>>,instance:&str)->bool {
  let Some(rule)=r.get("doorSequence")else{return trace.is_none();};let Some(trace)=trace else{return false;};
  let Some(steps)=rule["steps"].as_array()else{return false;};
  let mut expected=vec![json!("initial"),steps[1].clone()];expected.extend(steps.iter().cloned());
- trace.len()==expected.len()&&trace.iter().enumerate().all(|(i,e)|keys(e,&["step","doorOpen","interacted"])&&e["step"]==expected[i]&&e["doorOpen"]==json!(i==expected.len()-1)&&e["interacted"]==json!(i!=0))
+ trace.len()==expected.len()&&trace.iter().enumerate().all(|(i,e)|keys(e,&["step","doorOpen","interacted","passage"])&&e["step"]==expected[i]&&e["doorOpen"]==json!(i==expected.len()-1)&&e["interacted"]==json!(i!=0)&&(if i==expected.len()-1{door_passage::matches(r,e.get("passage"),instance)}else{e.get("passage").is_none()}))
 }
 
 fn canonical_creation(value:&Value)->Value {match value {

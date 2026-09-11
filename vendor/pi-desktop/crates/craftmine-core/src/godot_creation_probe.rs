@@ -12,6 +12,22 @@ pub(super) fn files()->Vec<(&'static str,String)>{vec![
  ("craftmine_shared/scene_mesh_picker.gd",include_str!("../../../../../desktop/godot/shared/scene_mesh_picker.gd").replace("\r\n","\n")),
 ]}
 pub(super) fn hash()->String {digest(&serde_json::to_string(&files().iter().map(|(path,text)|json!({"path":path,"sha256":digest(text)})).collect::<Vec<_>>()).unwrap())}
+// Extra requirements apply only to newly opted-in fixed-controller passage
+// checks. Unsupported custom controllers remain untouched and can still use
+// legacy checks; they need a separate future physical-action contract.
+pub(super) fn passage_files()->Vec<(&'static str,String)>{vec![
+ ("scripts/reused/player_controller.gd",include_str!("../../../../../desktop/godot/bases/creation-sandbox/scripts/reused/player_controller.gd").replace("\r\n","\n")),
+ ("scripts/reused/camera_rig.gd",include_str!("../../../../../desktop/godot/bases/creation-sandbox/scripts/reused/camera_rig.gd").replace("\r\n","\n")),
+]}
+pub(super) fn validate_passage_manifest(manifest:&Manifest)->Result<()> {
+ for(path,text)in passage_files(){
+  let expected=[digest(&text),digest(&text.replace('\n',"\r\n"))];
+  let entry=manifest.files.get(path).ok_or_else(||anyhow::anyhow!("CREATION_PASSAGE_CONTROLLER_UNSUPPORTED: {path}"))?;
+  ensure!(expected.contains(&entry.sha256),"CREATION_PASSAGE_CONTROLLER_UNSUPPORTED: {path}");
+  ensure!(!manifest.files.keys().any(|p|p!=path&&(p.eq_ignore_ascii_case(path)||p.to_ascii_lowercase().starts_with(&(path.to_owned()+".")))),"CREATION_PASSAGE_CONTROLLER_ALIAS_UNSUPPORTED: {path}");
+ }
+ Ok(())
+}
 pub(super) fn validate_manifest(manifest:&Manifest)->Result<()> {
  for (path,text) in files(){
   let expected=[digest(&text),digest(&text.replace('\n',"\r\n"))];
