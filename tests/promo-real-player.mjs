@@ -8,18 +8,23 @@ import {fileProof,assertProofs,readCheckpointJson} from './helpers/promo-checkpo
 import {checkpointSanitizer} from './helpers/promo-checkpoint-live-contract.mjs';
 import {readHeadlessProfile} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-headless-profile.ts';
 import {createFileClarificationExchange} from './helpers/promo-file-clarification.mjs';
-import {reserveLoopbackPort,resumeThroughWorldUi,finishInterruptedThroughWorldUi} from './helpers/ordinary-world-ui.mjs';
+import {reserveLoopbackPort,resumeThroughWorldUi,finishInterruptedThroughWorldUi,createSessionThroughDesktopUi} from './helpers/ordinary-world-ui.mjs';
 
 const [sourceFile,configFile,textFile]=process.argv.slice(2);
-assert.ok([sourceFile,configFile,textFile].every(value=>value&&path.isAbsolute(value)),'Usage: <absolute previous report> <absolute player config snapshot> <absolute player text file> --packaged-root <product> [--live]');
+assert.ok([sourceFile,configFile,textFile].every(value=>value&&path.isAbsolute(value)),'Usage: <absolute previous report> <absolute player config snapshot> <absolute player text file> --packaged-root <product> [--create-session] [--live]');
 const source=readCheckpointJson(sourceFile),config=readCheckpointJson(configFile),text=fs.readFileSync(textFile,'utf8').trim();
 assert.ok(text&&config.format==='craftmine.player-config-snapshot/1'&&config.credentialsIncluded===false,'Player text and non-secret config required');
 const out=path.dirname(sourceFile),profile=path.join(out,'profile'),markerFile=path.join(profile,'headless-profile.json'),marker=readCheckpointJson(markerFile);
 readHeadlessProfile({CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:out,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:marker.token});
-const sessionId=source.sessionId??source.session?.sessionId??source.latest?.record?.session?.id,worldId=source.worldId;
-assert.ok(typeof sessionId==='string'&&typeof worldId==='string','Existing world and session required');
+let sessionId=source.sessionId??source.session?.sessionId??source.latest?.record?.session?.id;
+const worldId=source.worldId,createSession=process.argv.includes('--create-session');
+assert.ok(typeof worldId==='string','Existing world required');
+if(createSession){
+ assert.equal(sessionId,undefined,'Reuse the existing session instead of creating a replacement');
+ assert.equal(source.format,'craftmine.builtin-prefab-demo/1');assert.equal(source.ok,true,'Complete the prefab demo before model follow-up');assert.equal(source.stateIntegrityVerified,true);
+}else assert.ok(typeof sessionId==='string','Existing session required; a completed sessionless demo may explicitly use --create-session');
 const packagedRoot=creationPackagedRoot();assert.ok(packagedRoot,'Explicit frozen package required');
-if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',sourceFile,sessionId,worldId,modelId:config.modelId,thinkingLevel:config.thinkingLevel,contextWindow:config.contextWindow,maxTokens:config.maxTokens,text,packagedRoot,modelRequests:0,creationEvaluation:false}));process.exit(0);}
+if(!process.argv.includes('--live')){console.log(JSON.stringify({mode:'prepare-only',sourceFile,sessionId:sessionId??null,createSession,worldId,modelId:config.modelId,thinkingLevel:config.thinkingLevel,contextWindow:config.contextWindow,maxTokens:config.maxTokens,text,packagedRoot,modelRequests:0,creationEvaluation:false}));process.exit(0);}
 const secretsFile=process.env.CRAFTMINE_LIVE_CONFIG;assert.ok(secretsFile&&path.isAbsolute(secretsFile),'Explicit local secrets configuration required');
 const secrets={};loadLocalConfig(secretsFile,secrets);const secret=secrets.CRAFTMINE_DEEPSEEK_API_KEY??secrets.DEEPSEEK_API_KEY??secrets.CRAFTMINE_EVAL_KEY;
 assert.ok(secret&&config.baseUrl==='https://api.deepseek.com'&&config.vendorKey==='deepseek','Only the selected DeepSeek endpoint receives this key');
@@ -50,8 +55,13 @@ try{
   assert.deepEqual(isolation.violations,[]);assert.ok(isolation.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
   await until(()=>rpc('primaryMode'),value=>value.entry);await rpc('primaryMode',{payload:{action:'create'}});
   await until(()=>rpc('godotObserve'),value=>{assert.equal(value.worldId,worldId,'Existing selected world changed');return value.instanceId;});
+  if(createSession){
+    report.sessionCreation=await createSessionThroughDesktopUi(debugPort,worldId);
+    sessionId=report.sessionCreation.sessionId;payload.sessionId=sessionId;report.sessionId=sessionId;save();
+  }
   report.setup=await rpc('playerSetup',{payload:{...payload,config,secret}});
   report.before=await rpc('playerStatus',{payload});assert.equal(report.before.active,false);assert.equal(report.before.record.session.id,sessionId);
+  if(createSession)report.sourceProposalsBefore=await rpc('worldPanel',{channel:'package.request',payload:{worldId,method:'sourceProposals',params:{worldId}}});
   await rpc('worldPanel',{channel:'godot.runtimeResume',payload:{worldId}});
   const recoverable=await rpc('worldNavigation',{channel:'task.recoverable',payload:{worldId}});
   report.recoverable=recoverable;
@@ -83,6 +93,8 @@ try{
   report.status='RUNNING';save();
   while(!signal.aborted){
     const state=await rpc('playerStatus',{payload});report.latest=state;assert.equal(state.sessionId,sessionId);assert.equal(state.observation.worldId,worldId);
+    const oldMessageIds=new Set(report.before.record.session.messages.map(message=>message.id));
+    report.sourceLibraryCalls=state.record.session.messages.filter(message=>!oldMessageIds.has(message.id)&&message.toolName==='godot_source_library').map(message=>({id:message.id,toolCallId:message.toolCallId,toolName:message.toolName,args:message.toolArgs,result:message.toolResult,status:message.toolStatus,isError:message.isError}));
     seenActive ||= state.active;save();
     const newTurn=seenActive||state.metrics?.messageId===report.messageId||state.record?.session?.messages?.some(m=>m.id===report.messageId);
     if(newTurn&&!state.active&&!['queued','running','recovering'].includes(state.job?.status)&&state.application?.status!=='applying'&&state.application?.phase!=='applying'){
@@ -116,6 +128,7 @@ try{
     await delay(1000);
   }
   if(signal.aborted)report.status='CANCELLED';
+  else if(createSession)report.sourceProposalsAfter=await rpc('worldPanel',{channel:'package.request',payload:{worldId,method:'sourceProposals',params:{worldId}}});
 }catch(error){report.status=signal.aborted?'CANCELLED':'RUN_FAILED';report.error=String(error.stack??error);process.exitCode=1;}
 finally{
   clearInterval(cancelWatch);
