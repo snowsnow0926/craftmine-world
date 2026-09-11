@@ -33,3 +33,15 @@ export function validateBuiltinDemoCall(method,fields,worldId){
  if(fields.channel==='package.request'){assert.ok(['importSource','sourceJob','sourceList'].includes(fields.payload.method));assert.equal(fields.payload.params.worldId,worldId);return;}
  assert.ok(['godot.candidateList','godot.candidateRead','godot.candidatePreview','godot.candidateApply','godot.runtimeSave','godot.runtimeResume'].includes(fields.channel));
 }
+export function inspectBuiltinDemoResume(prior,plan){
+ assert.equal(prior.format,'craftmine.builtin-prefab-demo/1');assert.equal(prior.role,'developer-arranged-prefab-demo');assert.equal(prior.modelCalls,0);assert.equal(prior.creationEvaluation,false);assert.equal(typeof prior.worldId,'string');assert.deepEqual(prior.plan,plan);
+ assert.ok(prior.launches.length>0);for(const launch of prior.launches)for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(launch.audit?.[field],[],'Prior run must have exited cleanly');
+ const complete=[];let failed=null;
+ for(const record of prior.installations){
+  if(record.applied?.status==='applied'){
+   assert.equal(failed,null,'Only a completed prefix may be resumed');assert.equal(record.finished?.status,'passed');assert.equal(record.installed?.applied,false);assert.equal(record.index,complete.length);assert.equal(record.assetId,plan[record.index].assetId);assert.equal(record.applied.worldId,prior.worldId);complete.push(record);
+  }else{assert.equal(failed,null);assert.equal(record.index,complete.length);assert.equal(record.installed,undefined,'An uncertain source write requires separate reconciliation');assert.match(prior.error,/PACKAGE_POSITION_REQUIRES_3D_NODE/);failed=record;}
+ }
+ assert.ok(complete.length>0&&failed,'This continuation is limited to the recorded pre-write placement failure');assert.ok(prior.initialSource?.items&&complete.at(-1).installed?.source);
+ return {completed:complete,failed,source:complete.at(-1).installed.source,buildId:complete.at(-1).checked.candidate.buildId};
+}
