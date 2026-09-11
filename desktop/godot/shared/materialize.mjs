@@ -17,7 +17,7 @@ const configs={
 const TEMPLATE_BASES=['top-down','mining-sandbox'];
 
 /** Materialize trusted authored base source in a new directory, never execute it. */
-export function materializeBase({baseId,worldId,template='blank',out}) {
+export function materializeBase({baseId,worldId,template='blank',out,controllerProfile='creation-fixed-controller/1'}) {
   const config=configs[baseId];
   if(!config || !config.examples.includes(template)) throw Error('Unknown base/template');
   if(typeof worldId!=='string'||!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error('World identity must be a portable lowercase id');
@@ -37,6 +37,15 @@ export function materializeBase({baseId,worldId,template='blank',out}) {
   fs.mkdirSync(shared,{recursive:true});
   for(const file of ['runtime_bridge.gd','state_guard.gd','headless_play_action.gd','scene_mesh_picker.gd']) fs.copyFileSync(path.join(here,file),path.join(shared,file));
   fs.copyFileSync(path.join(here,'adapters',baseId+'.gd'),path.join(shared,'base_adapter.gd'));
+  if(baseId==='creation-sandbox') {
+    if(!['legacy','creation-fixed-controller/1'].includes(controllerProfile))throw Error('Unknown creation controller profile');
+    if(controllerProfile==='creation-fixed-controller/1') {
+      fs.copyFileSync(path.join(here,'adapters/creation-sandbox.gd'),path.join(shared,'base_adapter_legacy.gd'));
+      fs.copyFileSync(path.join(here,'controller_evidence.gd'),path.join(shared,'controller_evidence.gd'));
+      fs.copyFileSync(path.join(here,'scene_mesh_picker_v2.gd'),path.join(shared,'scene_mesh_picker_v2.gd'));
+      fs.copyFileSync(path.join(here,'adapters/creation-sandbox-controller-v1.gd'),path.join(shared,'base_adapter.gd'));
+    }
+  }
   const project=path.join(out,'project.godot');
   let text=fs.readFileSync(project,'utf8');
   const autoload='CraftmineRuntime="*res://craftmine_shared/runtime_bridge.gd"';

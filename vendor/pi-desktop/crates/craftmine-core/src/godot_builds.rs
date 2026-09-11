@@ -961,6 +961,9 @@ impl TaskJournal {
         if args.check_requirements.as_ref().is_some_and(|r|r.requires_passage()) {
             super::godot_creation_probe::validate_passage_manifest(&manifest)?;
         }
+        if args.check_requirements.as_ref().is_some_and(|r|r.requires_controller_profile()) {
+            super::godot_creation_probe::validate_controller_manifest(&manifest)?;
+        }
         let (files, bytes) =
             materialize(&self.directory, &args.world_id, &identity, &manifest, &assets, &source,args.check_requirements.as_ref().is_some_and(|r|r.is_creation()))?;
         tx.execute(
