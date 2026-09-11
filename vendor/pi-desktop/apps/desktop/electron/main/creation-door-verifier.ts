@@ -1,5 +1,6 @@
 import type {CreationRequirement,CreationEntity} from './creation-check-requirements';
-export type CreationDoorTrace=Array<{step:string;doorOpen:boolean;interacted:boolean}>;
+import {measureDoorPassage,doorPassageMatches,type DoorPassage} from './creation-door-passage.ts';
+export type CreationDoorTrace=Array<{step:string;doorOpen:boolean;interacted:boolean;passage?:DoorPassage}>;
 // Gameplay commands run only inside the verifier's disposable engine. Positioning
 // uses its snapshot/restore API; interaction still needs a real raycast hit.
 export async function verifyCreationDoorSequence(runtime:any,r:CreationRequirement,defaults:any,bounded:<T>(p:Promise<T>)=>Promise<T>):Promise<CreationDoorTrace>{
@@ -32,13 +33,19 @@ export async function verifyCreationDoorSequence(runtime:any,r:CreationRequireme
  };
  await reset();await call('wait',{frames:2});await record('initial',false);
  if(trace[0].doorOpen)throw Error('CREATION_DOOR_OPEN_TOO_EARLY');
+ let passage:DoorPassage|undefined;
+ if(rule.verifyPassage){passage=await measureDoorPassage(runtime,r,bounded);await reset();}
  await interact(rule.steps[1]);if(trace.at(-1)!.doorOpen)throw Error('CREATION_DOOR_WRONG_ORDER');
  await reset();
- for(let i=0;i<rule.steps.length;i++){await interact(rule.steps[i]);if(trace.at(-1)!.doorOpen!==(i===rule.steps.length-1))throw Error('CREATION_DOOR_SEQUENCE_MISMATCH');}
+ for(let i=0;i<rule.steps.length;i++){
+  await interact(rule.steps[i]);
+  if(i===rule.steps.length-1&&passage)trace.at(-1)!.passage=await measureDoorPassage(runtime,r,bounded,passage);
+  if(trace.at(-1)!.doorOpen!==(i===rule.steps.length-1))throw Error('CREATION_DOOR_SEQUENCE_MISMATCH');
+ }
  return trace;
 }
 export function creationDoorTraceMatches(r:CreationRequirement,trace:CreationDoorTrace|undefined):boolean{
  if(!r.doorSequence)return trace===undefined;
  const steps=['initial',r.doorSequence.steps[1],...r.doorSequence.steps];
- return Array.isArray(trace)&&trace.length===steps.length&&trace.every((entry,i)=>entry.step===steps[i]&&entry.interacted===(i!==0)&&entry.doorOpen===(i===steps.length-1));
+ return Array.isArray(trace)&&trace.length===steps.length&&trace.every((entry,i)=>entry.step===steps[i]&&entry.interacted===(i!==0)&&entry.doorOpen===(i===steps.length-1)&&(i===steps.length-1?doorPassageMatches(r,entry.passage):entry.passage===undefined));
 }

@@ -1,0 +1,512 @@
+{
+  "provenance": {
+    "kind": "actual-isolated-Web-physics; authored descriptor",
+    "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+    "sourceReport": "test-results/creation-door-passage-web-hIokg6/report.json",
+    "reportSha256": "55500fa6faf7b0aaff4aa83203a00f2682200446d29f59fc99af5ed0d22bbe3a"
+  },
+  "descriptor": {
+    "format": "craftmine.godot-check-descriptor/1",
+    "phase": "check",
+    "jobId": "authored-passage-check",
+    "worldId": "passage-world",
+    "buildId": "gbd-becb6eb5855b673034b521193a830c96c60ca34a55ff6018d44ba5088b0e6abc",
+    "checkRequirements": {
+      "format": "craftmine.godot-check-requirements/1",
+      "creation": {
+        "format": "craftmine.creation-requirements/1",
+        "requestHash": "16d865a6921ce74f3ec25728cf6d5697c62ef8d35058384df4aa441e1b9ed15b",
+        "entities": [
+          {
+            "id": "door-a",
+            "kind": "door",
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "marker-a",
+            "kind": "marker",
+            "position": [
+              4,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "marker-b",
+            "kind": "marker",
+            "position": [
+              4,
+              0,
+              -4
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          }
+        ],
+        "counts": [
+          {
+            "kind": "tree",
+            "count": 0
+          },
+          {
+            "kind": "rock",
+            "count": 0
+          },
+          {
+            "kind": "chest",
+            "count": 0
+          },
+          {
+            "kind": "door",
+            "count": 1
+          },
+          {
+            "kind": "marker",
+            "count": 2
+          }
+        ],
+        "doorSequence": {
+          "doorId": "door-a",
+          "steps": [
+            "marker-a",
+            "marker-b"
+          ],
+          "verifyPassage": true
+        }
+      }
+    },
+    "checkRequirementsHash": "2f4c5e9725e142b88edc60125a9bf45f8390103e0a1fb344a6026f21af82bedf"
+  },
+  "evidence": {
+    "format": "craftmine.godot-check-requirements-evidence/1",
+    "requirementsHash": "2f4c5e9725e142b88edc60125a9bf45f8390103e0a1fb344a6026f21af82bedf",
+    "jobId": "authored-passage-check",
+    "worldId": "passage-world",
+    "buildId": "gbd-becb6eb5855b673034b521193a830c96c60ca34a55ff6018d44ba5088b0e6abc",
+    "instanceId": "cc5ffd960ea92db34919606c",
+    "observations": [
+      {
+        "phase": "loaded",
+        "timeOfDay": 12,
+        "entities": [
+          {
+            "collisionBounds": {
+              "max": [
+                0.800000011920929,
+                2.59999990463257,
+                0.25
+              ],
+              "min": [
+                -0.800000011920929,
+                0,
+                -0.25
+              ]
+            },
+            "color": "#84a866",
+            "id": "door-a",
+            "kind": "door",
+            "meshBounds": {
+              "max": [
+                0.800000011920929,
+                2.59999990463257,
+                0.360000014305115
+              ],
+              "min": [
+                -0.800000011920929,
+                0,
+                -0.25
+              ]
+            },
+            "open": false,
+            "parameters": {},
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": true,
+            "visible": true,
+            "bounds": {
+              "min": [
+                -0.800000011920929,
+                0,
+                -0.25
+              ],
+              "max": [
+                0.800000011920929,
+                2.59999990463257,
+                0.25
+              ]
+            }
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                0.300000011920929
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -0.300000011920929
+              ]
+            },
+            "color": "#84a866",
+            "id": "marker-a",
+            "kind": "marker",
+            "meshBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                0.300000011920929
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -0.300000011920929
+              ]
+            },
+            "parameters": {},
+            "position": [
+              4,
+              0,
+              0
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true,
+            "bounds": {
+              "min": [
+                3.70000004768372,
+                0,
+                -0.300000011920929
+              ],
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                0.300000011920929
+              ]
+            }
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                -3.70000004768372
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -4.30000019073486
+              ]
+            },
+            "color": "#84a866",
+            "id": "marker-b",
+            "kind": "marker",
+            "meshBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                -3.70000004768372
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -4.30000019073486
+              ]
+            },
+            "parameters": {},
+            "position": [
+              4,
+              0,
+              -4
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true,
+            "bounds": {
+              "min": [
+                3.70000004768372,
+                0,
+                -4.30000019073486
+              ],
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                -3.70000004768372
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "phase": "running",
+        "timeOfDay": 12,
+        "entities": [
+          {
+            "color": "#84a866",
+            "id": "door-a",
+            "kind": "door",
+            "meshBounds": {
+              "max": [
+                -0.550000011920929,
+                2.59999990463257,
+                1.60000002384186
+              ],
+              "min": [
+                -1.16000008583069,
+                0,
+                -1.09278470716845e-8
+              ]
+            },
+            "open": true,
+            "parameters": {},
+            "position": [
+              0,
+              0,
+              0
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": false,
+            "solidMutable": true,
+            "visible": true
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                0.300000011920929
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -0.300000011920929
+              ]
+            },
+            "color": "#84a866",
+            "id": "marker-a",
+            "kind": "marker",
+            "meshBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                0.300000011920929
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -0.300000011920929
+              ]
+            },
+            "parameters": {},
+            "position": [
+              4,
+              0,
+              0
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true,
+            "bounds": {
+              "min": [
+                3.70000004768372,
+                0,
+                -0.300000011920929
+              ],
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                0.300000011920929
+              ]
+            }
+          },
+          {
+            "collisionBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                -3.70000004768372
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -4.30000019073486
+              ]
+            },
+            "color": "#84a866",
+            "id": "marker-b",
+            "kind": "marker",
+            "meshBounds": {
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                -3.70000004768372
+              ],
+              "min": [
+                3.70000004768372,
+                0,
+                -4.30000019073486
+              ]
+            },
+            "parameters": {},
+            "position": [
+              4,
+              0,
+              -4
+            ],
+            "presenceMutable": false,
+            "rotationY": 0,
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "solid": true,
+            "solidMutable": false,
+            "visible": true,
+            "bounds": {
+              "min": [
+                3.70000004768372,
+                0,
+                -4.30000019073486
+              ],
+              "max": [
+                4.30000019073486,
+                1.39999997615814,
+                -3.70000004768372
+              ]
+            }
+          }
+        ],
+        "doorTrace": [
+          {
+            "step": "initial",
+            "doorOpen": false,
+            "interacted": false
+          },
+          {
+            "step": "marker-b",
+            "doorOpen": false,
+            "interacted": true
+          },
+          {
+            "step": "marker-a",
+            "doorOpen": false,
+            "interacted": true
+          },
+          {
+            "step": "marker-b",
+            "doorOpen": true,
+            "interacted": true,
+            "passage": {
+              "format": "craftmine.creation-door-passage/1",
+              "doorId": "door-a",
+              "instanceId": "cc5ffd960ea92db34919606c",
+              "setup": "snapshot-player-only",
+              "boundsSource": "collision",
+              "bounds": {
+                "max": [
+                  0.800000011920929,
+                  2.59999990463257,
+                  0.25
+                ],
+                "min": [
+                  -0.800000011920929,
+                  0,
+                  -0.25
+                ]
+              },
+              "axis": 2,
+              "frames": 240,
+              "closed": {
+                "before": [
+                  0,
+                  0.899999976158142,
+                  1.25
+                ],
+                "after": [
+                  0,
+                  0.899999976158142,
+                  0.550075948238373
+                ],
+                "startedTick": 65,
+                "finishedTick": 327,
+                "targetId": "door-a"
+              },
+              "opened": {
+                "before": [
+                  0,
+                  0.899999976158142,
+                  1.25
+                ],
+                "after": [
+                  0,
+                  0.899999976158142,
+                  -16.7221946716309
+                ],
+                "startedTick": 575,
+                "finishedTick": 838,
+                "targetId": null
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
