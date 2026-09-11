@@ -22,6 +22,8 @@ export function recordHeadlessShutdownFailure(service: string, error: unknown): 
 }
 type Profile = NonNullable<ReturnType<typeof readHeadlessProfile>>;
 let profile: Profile | null = null;
+/** Established only by the protected profile + parent IPC setup. */
+export const hasHeadlessController = () => isHeadlessAcceptance() && profile !== null && process.connected === true;
 
 function denied(name: string): never {
   violations.push(name);

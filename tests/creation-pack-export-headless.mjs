@@ -25,7 +25,7 @@ try{
   check(variant+' protected source bytes match immediately before export',expected.every(file=>hash(fs.readFileSync(path.join(project,file.path)))===file.sha256));
   const log=await env.run(variant+'-export',['--path',project,'--export-release','Web',path.join(web,'index.html')],{timeout:120000});
   const pack=fs.readFileSync(path.join(web,'index.pck')),entry={variant,packSha256:hash(pack),sourcePins:expected};report.cases.push(entry);
-  if(variant==='normal'){entry.proof=verifyCreationPack(pack,expected);check('normal real exported PCK retains three scripts and selectors',entry.proof.files.length===3);}
+  if(variant==='normal'){entry.proof=verifyCreationPack(pack,expected);check('normal real exported PCK retains protected scripts and selectors',entry.proof.files.length===PROTECTED_CREATION_FILES.length);}
   else{
    check(variant+' actual editor plugin ran during export',log.includes('PACK_MUTATION_EXECUTED'));
    entry.actualProtected=[...readPck4(pack).files.values()].filter(file=>PROTECTED_CREATION_FILES.includes(file.path)).map(({path,bytes,sha256})=>({path,bytes,sha256}));

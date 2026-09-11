@@ -4,7 +4,7 @@ import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance"
 // Test-controller input, not an agent tool or a new gameplay operation.
 export const GODOT_EXPLORATION_LIMITS = Object.freeze({ steps: 16, framesPerStep: 120, actionPhysicsTicks: 600, captures: 4 });
 type Identity = { worldId: string; buildId: string; instanceId: string };
-type Step = { op: "look" | "walk" | "wait" | "interact"; args: Record<string, number>; capture: boolean };
+type Step = { op: "look" | "walk" | "wait" | "interact" | "play-action"; args: Record<string, number | string>; capture: boolean };
 function fail(reason: string): never { throw Error("GODOT_EXPLORATION_" + reason); }
 function object(value: unknown): asserts value is Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) fail("INVALID_OBJECT");
@@ -31,7 +31,7 @@ function parse(input: unknown): { identity: Identity; steps: Step[]; actionPhysi
     if (entry.capture !== undefined && typeof entry.capture !== "boolean") fail("INVALID_CAPTURE");
     const capture = entry.capture === true;
     if (capture) captures++;
-    const args: Record<string, number> = {};
+    const args: Record<string, number | string> = {};
     switch (entry.op) {
       case "look":
         fields(entry.args, ["yaw", "pitch"]);
@@ -54,6 +54,12 @@ function parse(input: unknown): { identity: Identity; steps: Step[]; actionPhysi
         break;
       case "interact":
         fields(entry.args, []); actionPhysicsTicks++;
+        break;
+      case "play-action":
+        fields(entry.args, ["action", "frames"]);
+        if (entry.args.action !== "interact" || entry.args.frames !== 1) fail("UNSUPPORTED_PLAY_ACTION");
+        args.action = "interact"; args.frames = 1;
+        actionPhysicsTicks += 2; // Align, then hold through exactly one physics tick.
         break;
       default: fail("UNSUPPORTED_ACTION");
     }
@@ -83,7 +89,8 @@ export function createGodotExploration(access: GodotGameplayAccess) {
       const before = await observe(), actions = [], captures = [];
       for (const step of steps) {
         const beforeAction = await observe();
-        const result = await access.action(step.op, step.args);
+        if (step.op === "play-action" && !access.playAction) fail("PLAY_ACTION_UNAVAILABLE");
+        const result = step.op === "play-action" ? await access.playAction!(identity, step.args) : await access.action(step.op, step.args);
         const observation = await observe();
         if (!result || typeof result !== "object" || result.error) fail("ACTION_FAILED" + (result?.error ? ": " + String(result.error).slice(0, 300) : ""));
         actions.push({ op: step.op, args: step.args, before: beforeAction, result, observation });

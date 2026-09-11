@@ -3,6 +3,7 @@
 export type GodotGameplayAccess = {
   observe: () => Promise<any>;
   action: (op: string, args: Record<string, unknown>) => Promise<any>;
+  playAction?: (identity: {worldId: string; buildId: string; instanceId: string}, args: Record<string, unknown>) => Promise<any>;
   capture: (width: number, height: number) => Promise<{ pngBase64: string; width: number; height: number; viewportObservation?: unknown }>;
 };
 
