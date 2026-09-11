@@ -1,0 +1,355 @@
+{
+  "format": "craftmine.godot-component/1",
+  "id": "cw.scene.forest-gateway",
+  "version": "1.0.0",
+  "kind": "scene",
+  "label": "林间入口",
+  "tags": [
+    "树林",
+    "入口",
+    "小径",
+    "静态预制场景"
+  ],
+  "entryScene": "scenes/forest_gateway.tscn",
+  "identityField": "entity_id",
+  "identityType": "String",
+  "engineVersion": "4.7.2-stable",
+  "renderer": "gl_compatibility",
+  "files": [
+    {
+      "path": "layout.json",
+      "bytes": 10525,
+      "sha256": "d65b73137895a26c12df151df5f1f941a49ae393b4a7f3ecba326b6749fbf778"
+    },
+    {
+      "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+      "bytes": 1341,
+      "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+    },
+    {
+      "path": "licenses/kenney-castle-License.txt",
+      "bytes": 713,
+      "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+    },
+    {
+      "path": "licenses/kenney-nature-License.txt",
+      "bytes": 611,
+      "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+    },
+    {
+      "path": "models/castle/Textures/colormap.png",
+      "bytes": 7529,
+      "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+    },
+    {
+      "path": "models/castle/wall-doorway.glb",
+      "bytes": 37560,
+      "sha256": "8daf5cccceace888d51d74b0e0254e192004faf926e07f1b28e94191879af3a6"
+    },
+    {
+      "path": "models/castle/wall-doorway.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/flower_redA.glb",
+      "bytes": 7104,
+      "sha256": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020"
+    },
+    {
+      "path": "models/nature/flower_redA.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/grass.glb",
+      "bytes": 11496,
+      "sha256": "260e41d3e5f2472492ed7b475c5b92a30b13ce2bad408535b5ff50574d4575e7"
+    },
+    {
+      "path": "models/nature/grass.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/plant_bushDetailed.glb",
+      "bytes": 10172,
+      "sha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406"
+    },
+    {
+      "path": "models/nature/plant_bushDetailed.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/rock_smallA.glb",
+      "bytes": 3044,
+      "sha256": "df9fff9d711e61370e8df0caa2514c89b8f8a8dc6c6fafaf4eb2ec79c5ae07c1"
+    },
+    {
+      "path": "models/nature/rock_smallA.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/tree_oak.glb",
+      "bytes": 14644,
+      "sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3"
+    },
+    {
+      "path": "models/nature/tree_oak.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/tree_pineRoundA.glb",
+      "bytes": 14488,
+      "sha256": "7dc9711f31585eafdcb965d0649c30af5e19f2def1955f7a915081d30759ef8e"
+    },
+    {
+      "path": "models/nature/tree_pineRoundA.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "parts/bush.tscn",
+      "bytes": 309,
+      "sha256": "3c60f07133bef8d7816e2a43411302b33111051f98c2152750361b831247d254"
+    },
+    {
+      "path": "parts/flower-red.tscn",
+      "bytes": 309,
+      "sha256": "a49a62aae167cebc866e11b98d9e81d8e62d389a60bafc8b2b8965e27e660373"
+    },
+    {
+      "path": "parts/grass.tscn",
+      "bytes": 310,
+      "sha256": "481fd778e148b68c61bfa6396a83397f8a8b4ae637c768070003c63e45bc4255"
+    },
+    {
+      "path": "parts/rock.tscn",
+      "bytes": 1814,
+      "sha256": "0f5f21916556dc6fdac71f7d8877dcf1b644b1e850afcae51a4b3e254cc8bafc"
+    },
+    {
+      "path": "parts/tree-oak.tscn",
+      "bytes": 299,
+      "sha256": "5771b47f6d7b0114e8a6675acbe71c9aa6e4b861e89f60d46f0eed065763c450"
+    },
+    {
+      "path": "parts/tree-pine.tscn",
+      "bytes": 306,
+      "sha256": "555cb94dcf2bd8072896846623cd29547d9afdeee837bb60db241aa8341b2f4f"
+    },
+    {
+      "path": "parts/wall-doorway.tscn",
+      "bytes": 37480,
+      "sha256": "49cc5f2bef539d067ab7a68447d629fede514f700f8723405b3bb2a881495389"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2010,
+      "sha256": "8ecc0433c172525dd3afe08b472eb0207ae933749e228a5ac0c98754bcbc0db8"
+    },
+    {
+      "path": "scenes/forest_gateway.tscn",
+      "bytes": 10389,
+      "sha256": "d686f2e1a981e1c5a3c1963dec659fe57d4ae1e9999c31f468f8f35bac1fabea"
+    },
+    {
+      "path": "scripts/forest_gateway.gd",
+      "bytes": 126,
+      "sha256": "fcb7672ebfcbec24cedec98cd8eac1890d4ea1c6ce489aa0a2d8882d7e687e3b"
+    },
+    {
+      "path": "scripts/forest_gateway.gd.uid",
+      "bytes": 20,
+      "sha256": "a9272986579f59afbc32d07c5efda413744bb515463de2c379ff7ff8aa7e8836"
+    }
+  ],
+  "sources": {
+    "nature": {
+      "name": "Kenney Nature Kit",
+      "version": "2.1",
+      "url": "https://kenney.nl/assets/nature-kit",
+      "archive": "kenney_nature-kit.zip",
+      "prefix": "Models/GLTF format/",
+      "archiveBytes": 10537521,
+      "archiveSha256": "fa7974a0d342bfe63c38664ba9f8ec1a4aab8ea25f099bdc56870e33588c4d9d",
+      "license": "CC0-1.0",
+      "licenseFile": "licenses/kenney-nature-License.txt",
+      "licenseSha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+    },
+    "castle": {
+      "name": "Kenney Castle Kit",
+      "version": "2.0",
+      "url": "https://kenney.nl/assets/castle-kit",
+      "archive": "kenney_castle-kit.zip",
+      "prefix": "Models/GLB format/",
+      "archiveBytes": 2232589,
+      "archiveSha256": "921f3f73927bb23106cae34bc21d5ab4b033a9fc120475e96f714a406e3169df",
+      "license": "CC0-1.0",
+      "licenseFile": "licenses/kenney-castle-License.txt",
+      "licenseSha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+    }
+  },
+  "composition": {
+    "author": "Craftmine World contributors",
+    "license": "MIT",
+    "licenseFile": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+    "designedPrefab": true,
+    "modelGenerated": false
+  },
+  "sourceAssets": [
+    {
+      "path": "models/nature/tree_oak.glb",
+      "bytes": 14644,
+      "sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3"
+    },
+    {
+      "path": "models/nature/tree_oak.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "licenses/kenney-nature-License.txt",
+      "bytes": 611,
+      "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+    },
+    {
+      "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+      "bytes": 1341,
+      "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+    },
+    {
+      "path": "models/nature/tree_pineRoundA.glb",
+      "bytes": 14488,
+      "sha256": "7dc9711f31585eafdcb965d0649c30af5e19f2def1955f7a915081d30759ef8e"
+    },
+    {
+      "path": "models/nature/tree_pineRoundA.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/grass.glb",
+      "bytes": 11496,
+      "sha256": "260e41d3e5f2472492ed7b475c5b92a30b13ce2bad408535b5ff50574d4575e7"
+    },
+    {
+      "path": "models/nature/grass.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/flower_redA.glb",
+      "bytes": 7104,
+      "sha256": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020"
+    },
+    {
+      "path": "models/nature/flower_redA.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/plant_bushDetailed.glb",
+      "bytes": 10172,
+      "sha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406"
+    },
+    {
+      "path": "models/nature/plant_bushDetailed.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/nature/rock_smallA.glb",
+      "bytes": 3044,
+      "sha256": "df9fff9d711e61370e8df0caa2514c89b8f8a8dc6c6fafaf4eb2ec79c5ae07c1"
+    },
+    {
+      "path": "models/nature/rock_smallA.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "models/castle/wall-doorway.glb",
+      "bytes": 37560,
+      "sha256": "8daf5cccceace888d51d74b0e0254e192004faf926e07f1b28e94191879af3a6"
+    },
+    {
+      "path": "models/castle/wall-doorway.glb.import",
+      "bytes": 100,
+      "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+    },
+    {
+      "path": "licenses/kenney-castle-License.txt",
+      "bytes": 713,
+      "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+    },
+    {
+      "path": "models/castle/Textures/colormap.png",
+      "bytes": 7529,
+      "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+    }
+  ],
+  "placement": {
+    "anchor": "bottom-center",
+    "dimensionsMm": [
+      12807,
+      6668,
+      18374
+    ]
+  },
+  "geometry": {
+    "meshInstances": 48,
+    "triangles": 6040,
+    "trees": 7,
+    "treeSilhouettes": 2,
+    "animations": 0,
+    "skins": 0
+  },
+  "collision": {
+    "mode": "static-trimesh",
+    "triangles": 564,
+    "scope": "doorframe-and-four-rocks"
+  },
+  "sceneContract": {
+    "forward": [
+      0,
+      0,
+      -1
+    ],
+    "gateCenter": [
+      -0.0656027794,
+      0,
+      2.8334188461
+    ],
+    "pathStart": [
+      -0.0656027794,
+      0,
+      8.833418846099999
+    ],
+    "pathEnd": [
+      -0.0656027794,
+      0,
+      -5.1665811539
+    ],
+    "recommendedCamera": [
+      -0.0656027794,
+      2,
+      11.833418846099999
+    ],
+    "recommendedLookAt": [
+      -0.0656027794,
+      2,
+      1.8334188460999998
+    ],
+    "approachClearWidth": 2.4,
+    "gateClearWidth": 1.4,
+    "gateFacing": "opening faces local +Z / -Z",
+    "groundIncluded": false,
+    "lightingIncluded": false
+  },
+  "recommendedLighting": "cw.environment.natural-daylight",
+  "usage": "设计好的林间入口静态场景；沿局部-Z进入，门洞保持可通过，树木与地被为装饰。不是模型自主作品，不含开关门、成长、敌人或任务行为。"
+}
