@@ -15,6 +15,7 @@ const {createReuseService,createManagedPackageInstaller,createManagedPackageSour
 const {createTargetFeedbackService} = require('./target-feedback-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
 const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
+const {createSourceLibraryService}=require('./source-library-service.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
@@ -70,6 +71,9 @@ async function onLoad() {
   }});
   reuseService=createReuseService({call,installSource,
     sourceList:args=>packageSource.listSource(args),exportSource:args=>packageSource.exportSource(args)});
+  const sourceLibrary=createSourceLibraryService({call,installSource,directory:require('node:path').join(await pi.plugin.getDataPath(),'source-library-proposals')});
+  reuseService.sourceProposals=args=>sourceLibrary.proposals(args);
+  reuseService.installSourceProposal=args=>sourceLibrary.installProposal(args);
   // The managed executor owns the pinned engine. It registers only after a real
   // broker preflight, so the reported capability always comes from live state.
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;
@@ -121,6 +125,7 @@ async function onLoad() {
   });
   const toolServices={
     ...hostProviders,
+    sourceLibrary:(args,context,worldId,toolCallId)=>sourceLibrary.tool(args,context,worldId,toolCallId),
     buildReadWaitMs:30000,
     // The seven-kind limit ledger is read through this process's core client.
     budget:createCoreBudgetProvider(core),

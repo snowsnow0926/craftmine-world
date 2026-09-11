@@ -17,6 +17,7 @@ const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_in
 // used for a tool that does not depend on a flag.
 const LOCAL_TOOLS={
   godot_docs:{owner:'S6',hostMethod:null,needs:[]},
+  godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'}}},
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
@@ -35,7 +36,7 @@ const LOCAL_TOOLS={
   asset_library:{owner:'S5',needs:['sessionDrafts'],modes:Object.fromEntries(Object.entries(ASSET_METHODS)
     .map(([mode,method])=>[mode,{method,capability:'assetCatalog'}]))},
   package_library:{owner:'S3',needs:['sessionDrafts'],modes:{...Object.fromEntries(Object.entries(PACKAGE_METHODS)
-    .map(([mode,method])=>[mode,{method,capability:'creationPackages'}])),propose:{proposal:true}}},
+    .map(([mode,method])=>[mode,{method,capability:'creationPackages',...(mode==='check'?{blockedBy:'LEGACY_PACKAGE_REFERENCE_ADAPTER_REQUIRED'}:{})}])),propose:{proposal:true}}},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
   project_inspect:{owner:'S1',hostMethod:'workspace.open+world.read+(Godot:godotProject.index|legacy:inspect)',needs:['sessionDrafts']},

@@ -154,7 +154,9 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
   requireValue(typeof call==='function'&&typeof bind==='function'&&typeof enqueue==='function','PACKAGE_INSTALL_HOST_REQUIRED');
   const active=new Map();
   const installSource=async function(args){
-    exactKeys(args,['operationId','worldId','archiveBase64','scene']);operationId(args.operationId);identifier(args.worldId);
+    exactKeys(args,['operationId','worldId','archiveBase64','scene','expectedSource','position']);operationId(args.operationId);identifier(args.worldId);
+    if(args.position!==undefined)placement(args.position);
+    if(args.expectedSource!==undefined){exactKeys(args.expectedSource,['revision','manifestHash']);revision(args.expectedSource.revision);requireValue(isHash(args.expectedSource.manifestHash),'PACKAGE_SOURCE_IDENTITY_REQUIRED');}
     requireValue(typeof args.archiveBase64==='string'&&args.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(args.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');
     if(args.scene!==undefined)requireValue(text(args.scene,240),'INVALID_SCENE_PATH');
     const fs=await import('node:fs/promises'),path=await import('node:path'),{createHash}=await import('node:crypto');
@@ -180,12 +182,14 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
         requireValue(bound?.worldRecord?.id===args.worldId&&bound.operation?.worldId===args.worldId&&bound.operation?.operationId===args.operationId&&isObject(bound.context),'PACKAGE_BINDING_MISMATCH');
         const context=bound.context,world=bound.worldRecord.world;
         const archive=unpackStaticPackage(Buffer.from(args.archiveBase64,'base64'),{...DEFAULT_LIMITS,maxEntryBytes:4*1024*1024,maxTotalBytes:6*1024*1024,maxCompressedBytes:6*1024*1024,maxEntries:1024});
+        if(args.position!==undefined)requireValue(archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'PACKAGE_POSITION_REQUIRES_SINGLE_INSTANCE');
         const projectDir=await fs.mkdtemp(path.join(directory,'source-'));
         const safe=relative=>{requireValue(typeof relative==='string'&&!relative.includes('\\')&&!relative.includes(':')&&!relative.split('/').some(s=>!s||s==='.'||s==='..'),'PACKAGE_SOURCE_PATH_REFUSED');const full=path.resolve(projectDir,relative);requireValue(full.startsWith(projectDir+path.sep),'PACKAGE_SOURCE_PATH_REFUSED');return full;};
         let offset=0,index,identity,sourceBytes=0;const originals=new Map(),sourceFiles=new Map();
         do {
           index=await call('godotProject.index',{context,worldId:args.worldId,...(bound.operation.branchId?{branchId:bound.operation.branchId}:{}),offset,limit:32,...(identity?{revision:identity.revision,manifestHash:identity.manifestHash}:{})});
           identity??=index;
+          if(args.expectedSource)requireValue(identity.revision===args.expectedSource.revision&&identity.manifestHash===args.expectedSource.manifestHash,'PACKAGE_PROPOSAL_SOURCE_CHANGED');
           requireValue(index.worldId===args.worldId&&index.revision===identity.revision&&index.manifestHash===identity.manifestHash,'PACKAGE_SOURCE_CHANGED');
           for(const file of index.files){
             let next=0;const chunks=[];
@@ -227,7 +231,11 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
           const ids=Object.values(instance.entityMap);requireValue(ids.length===1,'PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED');
           const current=scenes.get(scene)??await fs.readFile(safe(scene),'utf8');
           const linked={...spec,parent:spec.parent??'.',script:spec.script?instance.installPath+'/'+spec.script:undefined,sceneFile:spec.sceneFile?instance.installPath+'/'+spec.sceneFile:undefined};
-          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0]});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
+          if(args.position!==undefined){
+            const nodeType=spec.mode==='script-node'?spec.nodeType:parseScene(resource.files.get(spec.sceneFile)?.toString('utf8')??'').nodes.find(n=>n.parent===null)?.type;
+            requireValue(typeof nodeType==='string'&&nodeType.endsWith('3D'),'PACKAGE_POSITION_REQUIRES_3D_NODE');
+          }
+          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0],...(args.position?{placement:{position:`Vector3(${args.position.x}, ${args.position.y}, ${args.position.z})`}}:{})});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
           sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
         }
         const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});

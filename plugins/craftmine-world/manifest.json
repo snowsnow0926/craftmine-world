@@ -349,7 +349,7 @@
       },
       {
         "name": "godot_build_read",
-          "description": "Read one managed Godot job: actual status, stage, output, artifacts and sourceStale. For creation checks, passed proves only the checked candidate. creationApplication reports pending/applying/applied/manual/failed/cancelled/interrupted/unknown separately; only applied confirms the host adopted it. The production tool waits up to 30 seconds total for the same check and its authorized application, returning actual waitedMs, lastReadAgeMs and waitReason. application-pending or a deadline retains the last observed state: read the same job again, do not start a duplicate check or claim the world changed. Reading never starts the engine, grants adoption authority or extends a turn.",
+        "description": "Read one managed Godot job: actual status, stage, output, artifacts and sourceStale. For creation checks, passed proves only the checked candidate. creationApplication reports pending/applying/applied/manual/failed/cancelled/interrupted/unknown separately; only applied confirms the host adopted it. The production tool waits up to 30 seconds total for the same check and its authorized application, returning actual waitedMs, lastReadAgeMs and waitReason. application-pending or a deadline retains the last observed state: read the same job again, do not start a duplicate check or claim the world changed. Reading never starts the engine, grants adoption authority or extends a turn.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -952,7 +952,7 @@
       },
       {
         "name": "package_library",
-        "description": "Inspect and propose creation-package changes. mode=check validates one exact package version against a target base and engine and returns the resolved dependency closure with reasons; mode=read returns one installed instance; mode=list lists instances in this world; mode=propose prepares a change for the player to confirm and never applies it. intent distinguishes changing one instance, saving a variant, upgrading the selected instances, restoring a package instance, and restoring confirmed world progress. Exact versions only: latest is refused, and every proposal names the real host method.",
+        "description": "Legacy package-store operations only; these are not modern Godot source ZIPs. Use godot_source_library for modern built-in/source components. Inspect and propose creation-package changes. mode=check validates one exact package version against a target base and engine and returns the resolved dependency closure with reasons; mode=read returns one installed instance; mode=list lists instances in this world; mode=propose prepares a change for the player to confirm and never applies it. intent distinguishes changing one instance, saving a variant, upgrading the selected instances, restoring a package instance, and restoring confirmed world progress. Exact versions only: latest is refused, and every proposal names the real host method.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -2221,6 +2221,92 @@
               "maximum": 4000
             }
           },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "godot_source_library",
+        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "search",
+                "read",
+                "propose"
+              ]
+            },
+            "query": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4096
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 24
+            },
+            "ref": {
+              "type": "object",
+              "properties": {
+                "assetId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "contentHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "assetId",
+                "version",
+                "contentHash"
+              ],
+              "additionalProperties": false
+            },
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "minimum": -80,
+                  "maximum": 80
+                },
+                "y": {
+                  "type": "number",
+                  "minimum": -80,
+                  "maximum": 80
+                },
+                "z": {
+                  "type": "number",
+                  "minimum": -80,
+                  "maximum": 80
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "mode"
+          ],
           "additionalProperties": false
         }
       }

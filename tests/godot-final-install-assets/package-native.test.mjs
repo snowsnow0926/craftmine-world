@@ -2,6 +2,16 @@ import test from 'node:test';import assert from 'node:assert/strict';import fs f
 const root=await fs.mkdtemp(path.join(os.tmpdir(),'package-native-')),{build}=createRequire(path.join(process.env.CRAFTMINE_DEPS_ROOT||path.resolve('vendor/pi-desktop/packages/agent-runtime'),'package.json'))('esbuild');
 await build({entryPoints:[path.resolve('vendor/pi-desktop/apps/desktop/electron/main/craftmine-package-service.ts')],outfile:path.join(root,'native.mjs'),bundle:true,platform:'node',format:'esm'});
 const {createCraftminePackageService}=await import(pathToFileURL(path.join(root,'native.mjs'))),sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+test('modern source proposals use only the fixed private installer route and omit private receipts',async()=>{
+ let selected='alpha';const calls=[],proposalId='source-'+'a'.repeat(48);
+ const service=createCraftminePackageService({selection:()=>selected,pickFile:async()=>{throw Error('picker forbidden');},domainCall:async(channel,input)=>{
+   calls.push({channel,input});if(input.method==='sourceProposals')return {worldId:'alpha',items:[{proposalId,worldId:'alpha',displayName:'Tree',source:{revision:1,manifestHash:'a'.repeat(64)}}]};
+   assert.equal(input.method,'installSourceProposal');return {worldId:'alpha',applied:false,status:'check-queued',instanceIds:['tree'],archiveSha256:'b'.repeat(64),source:{revision:2,manifestHash:'c'.repeat(64),privatePath:'hidden'},job:{jobId:'gjob-'+'d'.repeat(64),status:'queued',request:{secret:'hidden'}}};
+ }});
+ const invoke=(method,extra={})=>service.request('package.request',{worldId:'alpha',method,params:{worldId:'alpha',...extra}});
+ assert.equal((await invoke('sourceProposals')).items.length,1);const result=await invoke('installSourceProposal',{proposalId});assert.equal(result.applied,false);assert.equal(JSON.stringify(result).includes('hidden'),false);assert.equal(calls[1].channel,'package.request');
+ await assert.rejects(invoke('installSourceProposal',{proposalId,archiveBase64:'forged'}),/INVALID_PARAMS/);selected='beta';await assert.rejects(invoke('installSourceProposal',{proposalId}),/WORLD_CHANGED/);
+});
 async function fixture() {
  const dir=await fs.mkdtemp(path.join(root,'case-')),file=path.join(dir,'component.zip'),bytes=Buffer.from('fixed opaque test ZIP bytes');await fs.writeFile(file,bytes);
  const state={world:'alpha',now:0,fail:false,calls:[],pick:file,picks:0};

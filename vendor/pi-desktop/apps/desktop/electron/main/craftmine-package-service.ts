@@ -69,6 +69,17 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
         if(channel!=='package.request')failure('UNKNOWN_PACKAGE_CHANNEL');fields(input,['worldId','method','params']);
         const {worldId,method}=input,args=input.params??{};if(typeof worldId!=='string'||!worldId||args.worldId!==worldId)failure('PACKAGE_WORLD_MISMATCH');
         await selected(worldId);prune();
+        if(method==='sourceProposals') {
+          fields(args,['worldId']);const result=await privateCall('sourceProposals',{worldId});await selected(worldId);
+          if(result.worldId!==worldId||!Array.isArray(result.items)||result.items.length>256)failure('PACKAGE_SOURCE_RECEIPT_INVALID');
+          return result;
+        }
+        if(method==='installSourceProposal') {
+          fields(args,['worldId','proposalId']);identifier(args.proposalId);
+          const result=await privateCall('installSourceProposal',{worldId,proposalId:args.proposalId});await selected(worldId);
+          if(result.worldId!==worldId||result.applied!==false||!Array.isArray(result.instanceIds)||!Number.isSafeInteger(result.source?.revision)||!/^[a-f0-9]{64}$/.test(result.source?.manifestHash)||!/^gjob-[a-f0-9]{64}$/.test(result.job?.jobId)||!['check-queued','source-saved-check-blocked'].includes(result.status))failure('PACKAGE_INSTALL_RECEIPT_INVALID');
+          return {worldId,applied:false,status:result.status,instanceIds:result.instanceIds,archiveSha256:result.archiveSha256,source:{revision:result.source.revision,manifestHash:result.source.manifestHash},job:{id:result.job.jobId,status:result.job.status}};
+        }
         if(method==='sourceJob') {
           fields(args,['worldId','jobId']);
           if(typeof args.jobId!=='string'||!/^gjob-[a-f0-9]{64}$/.test(args.jobId))failure('INVALID_PARAMS');
