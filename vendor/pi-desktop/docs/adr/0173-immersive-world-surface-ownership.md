@@ -2,6 +2,12 @@
 
 Status: accepted for the first existing-world immersion slice, 2026-09-11.
 
+2026-09-11 修订：原生分栏方案已由同级窗口叠放替代。主窗口使用
+BaseWindow，可信应用界面与世界分别由长期保留的 WebContentsView 承载。
+打开创作浮层时，将透明应用界面置于世界之上；关闭后交还世界输入。
+世界的客户端矩形保持不变，不以截图代替真实世界。下文关于底部／右侧
+预留空间的内容仅记录历史决策，不再作为当前验收标准。
+
 ## Decision
 
 The existing chat, composer, task and world remain mounted while play mode

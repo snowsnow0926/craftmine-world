@@ -263,6 +263,7 @@
     },
     "asar": {
       "smartUnpack": false
-    }
+    },
+    "beforePack": "../../../../desktop/windows-before-pack.cjs"
   }
 }

@@ -9544,3 +9544,7 @@ first-pass improvement requires a later measured benchmark.
 ## CM-CN4: Check completion and application handoff
 
 Hold an authorized creation application's completion while its core check is already passed. A bounded model read reports applying, or waits for the matching applied receipt; a passed check alone never proves adoption. Cover cancellation and world switching, ledger uncertainty, recovery without live context, and a lost finish reply. Restarts do not replay application. The UI uses the matching host job for applying and the actual formal build for applied. Deterministic supervisor cases and actual native/package acceptance are recorded separately; no physical input or model requests are used by deterministic checks.
+
+### CM-IW-06: complete Windows installer inputs
+
+Invoke Windows electron-builder without staged resources and require a failure before installer creation. Stage the matching clean commit through desktop/build-client.ps1, then verify the generated installer payload and directory package. Missing world plugin, broker, engine, Git, source archive or build manifest is a failure. Stale plugin/client output hashes must fail beforePack even when all files exist. Installer existence and electron-builder exit status alone are insufficient.
