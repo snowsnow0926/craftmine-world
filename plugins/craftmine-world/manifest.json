@@ -1015,7 +1015,7 @@
       },
       {
         "name": "package_library",
-        "description": "Inspect and propose creation-package changes. mode=check validates one exact package version against a target base and engine and returns the resolved dependency closure with reasons; mode=read returns one installed instance; mode=list lists instances in this world; mode=propose prepares a change for the player to confirm and never applies it. intent distinguishes changing one instance, saving a variant, upgrading the selected instances, restoring a package instance, and restoring confirmed world progress. Exact versions only: latest is refused, and every proposal names the real host method.",
+        "description": "Inspect and propose creation-package changes. mode=check validates one exact package version against a target base and engine and returns the resolved dependency closure with reasons; mode=read returns one installed instance; mode=list lists instances in this world; mode=propose prepares a change for the player to confirm and never applies it. intent distinguishes changing one instance, saving a variant, upgrading the selected instances, restoring a package instance, and restoring confirmed world progress. Exact versions only: latest is refused, and every proposal names the real host method. mode=propose-source-install is a separate read-only source-ZIP suggestion: requires ref, reads that exact catalog version once, rejects mismatched catalog contentHash and anything except a single application/zip file, then returns host-bound worldId and importCatalogSource for a player action in the Godot works panel resource library. It reads no blob and performs no install. Catalog contentHash is not ZIP SHA-256 or the inner resource hash. The proposal is not authorization; host operation identity is created only after player selection. Existing mode=propose and package.install keep their library-bundle meaning.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -1026,7 +1026,8 @@
                 "check",
                 "read",
                 "list",
-                "propose"
+                "propose",
+                "propose-source-install"
               ]
             },
             "intent": {

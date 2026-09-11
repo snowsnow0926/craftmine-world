@@ -6,7 +6,7 @@ const {createProjectQuery}=require('./godot-query.cjs');
 const {describeRuntime,normalizeLiveSample,projectFacts,readLimitAccounting}=require('./godot-observe.cjs');
 const {capabilityReport,classifyGap,readCapabilityContext}=require('./godot-capability.cjs');
 const {createHistoryService}=require('./godot-history.cjs');
-const {createLibraryBinding}=require('./godot-library.cjs');
+const {createLibraryBinding,validateSourceAssetRef}=require('./godot-library.cjs');
 const {executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,explainRecovery}=require('./godot-jobs.cjs');
 const {validateToolServices,describeToolServices}=require('./tool-services.cjs');
 const {GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS}=require('./godot-routing.cjs');
@@ -56,6 +56,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     // Validate exact catalog IDs before opening the host-bound workspace.
     if(definition.name==='godot_guidance')require('./godot-guidance.cjs').validateRequest(args);
+    if(definition.name==='package_library'&&args.mode==='propose-source-install')validateSourceAssetRef(args.ref);
     // Discussion-only turns may read anything and change nothing. The host may
     // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
     // either way the refusal happens before any host call.
@@ -70,6 +71,17 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(blocked)throw Error('DISCUSSION_MODE_READ_ONLY');
     }
     await core.start();
+    if(definition.name==='package_library'&&args.mode==='propose-source-install'){
+      // Suggestions are read-only, including world resolution: do not open a
+      // workspace or acquire a draft lease just to suggest a catalog source.
+      const binding=await core.call('task.context',{context});
+      const worldId=binding?.world?.id;
+      if(typeof worldId!=='string'||!worldId)throw Error('WORLD_BINDING_UNRESOLVED');
+      assertActive();
+      const result=await createLibraryBinding({core,worldId}).proposeSourceInstall({ref:args.ref});
+      assertActive();
+      return result;
+    }
     if(definition.name==='godot_capability_report') {
       const handshake=await core.start();
       const gaps=args.request||Array.isArray(args.evidence)?[{request:args.request||null,evidence:args.evidence||[]}]:[];

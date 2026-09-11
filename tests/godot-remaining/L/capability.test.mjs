@@ -150,7 +150,7 @@ test('actual modes distinguish read routes from player-only proposals',()=>{
   assert.deepEqual(entries.map(entry=>entry.mode).sort(),schema.properties.mode.enum.slice().sort());
   assert.ok(entries.every(entry=>entry.reachable===true));
   for(const entry of entries){
-   if(entry.kind==='proposal'){assert.equal(entry.hostMethod,null);assert.equal(entry.applies,false);assert.equal(entry.requiresPlayerAction,true);}
+   if(entry.kind==='proposal'){assert.equal(entry.hostMethod,entry.mode==='propose-source-install'?'asset.read':null);assert.equal(entry.applies,false);assert.equal(entry.requiresPlayerAction,true);}
    else assert.equal(HOST_METHODS[entry.hostMethod].capability,entry.needs.at(-1));
   }
  }
