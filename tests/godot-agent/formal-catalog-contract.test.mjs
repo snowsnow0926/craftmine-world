@@ -29,7 +29,7 @@ test('real catalog fixture survives source download removal and a core restart',
 test('catalog evidence cannot replace outer identity with ZIP or inner resource identity',()=>{
  const expected={ref:{assetId:'catalog-id',version:1,contentHash:'a'.repeat(64)},zipSha256:'b'.repeat(64)};
  const receipt={catalogRef:expected.ref,archiveSha256:expected.zipSha256,applied:false};assertCatalogSourceBinding(expected,receipt);
- for(const mutate of [v=>v.catalogRef.contentHash='b'.repeat(64),v=>v.catalogRef.assetId='inner-id',v=>v.archiveSha256='a'.repeat(64),v=>v.applied=true,v=>v.archiveBase64='hidden',v=>v.context={}]){
+ for(const mutate of [v=>v.catalogRef.contentHash='b'.repeat(64),v=>v.catalogRef.assetId='inner-id',v=>v.archiveSha256='a'.repeat(64),v=>v.applied=true,v=>v.archiveBase64='hidden',v=>v.context={},v=>v.hostProvenance={}]){
   const changed=structuredClone(receipt);mutate(changed);assert.throws(()=>assertCatalogSourceBinding(expected,changed));
  }
 });

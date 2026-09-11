@@ -34,5 +34,5 @@ export function assertCatalogSourceBinding(expected,receipt){
  assert.deepEqual(receipt.catalogRef,expected.ref,'outer catalog identity must be returned unchanged');
  assert.equal(receipt.archiveSha256,expected.zipSha256,'ZIP identity is distinct from catalog identity');
  assert.equal(receipt.applied,false,'source import is not formal adoption');
- for(const field of ['blobPath','archiveBase64','context','host','sourceProvenance'])assert.equal(Object.hasOwn(receipt,field),false,'private field leaked: '+field);
+ for(const field of ['blobPath','archiveBase64','context','host','sourceProvenance','hostProvenance'])assert.equal(Object.hasOwn(receipt,field),false,'private field leaked: '+field);
 }
