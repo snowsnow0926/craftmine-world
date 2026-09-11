@@ -12,6 +12,15 @@ const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_in
   godot_build_start:'godotBuild.start',godot_build_read:'godotBuild.read',godot_build_cancel:'godotBuild.cancel',
   godot_candidate_read:'godotCandidate.read',godot_candidate_list:'godotCandidate.list'};
 
+// Registration reachability and live execution readiness are separate. These
+// modes describe dependencies only; the host still authorizes every operation.
+const EXECUTION_MODES={
+  godot_build_start:{build:{method:'godotBuild.start',executorKinds:['build']},
+    check:{method:'godotBuild.start',executorKinds:['check']}},
+  godot_jobs:{status:{method:'godotExecutor.status'},usage:{method:'godotJob.usage'},
+    resume:{method:'godotJob.continue',executorKinds:['build','check'],originKindRequired:true}}
+};
+
 // Tools implemented inside this plugin. `needs` lists the capability flags the
 // core handshake must report true for the tool to be usable; `reachable` is only
 // used for a tool that does not depend on a flag.
@@ -64,4 +73,4 @@ const CONDITIONAL_WRITE_TOOLS={godot_draft_recovery:'resume'};
 const GODOT_RECEIPTS={'godotProject.create':'godotProject.receipt','godotProject.patch':'godotProject.receipt',
   'godotAsset.put':'godotBuild.receipt','godotBuild.start':'godotBuild.receipt'};
 
-module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS};
+module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS,EXECUTION_MODES};

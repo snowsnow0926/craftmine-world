@@ -34,7 +34,7 @@ const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','g
   'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-source-service.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',
-  'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','asset-service.mjs','reuse-service.mjs',
+  'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','creation-timing.cjs','creation-application-state.cjs','asset-service.mjs','reuse-service.mjs',
   'portable-restore-service.cjs','package-turn-lifecycle.cjs','target-feedback-service.mjs','godot-package-source.mjs',
   'package-format.mjs','package-zip.mjs','asset-lock.mjs'];
 // Imported by the staged plugin modules through the repository-relative path.

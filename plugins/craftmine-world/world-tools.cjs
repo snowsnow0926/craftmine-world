@@ -67,8 +67,11 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     if(definition.name==='godot_capability_report') {
       const handshake=await core.start();
       const gaps=args.request||Array.isArray(args.evidence)?[{request:args.request||null,evidence:args.evidence||[]}]:[];
+      let executor;
+      try {executor=await executorStatus(core,options);}
+      catch(error){executor={source:'core-registration',available:false,reason:'EXECUTOR_STATUS_FAILED',errorCode:error?.errorCode||null};}
       return capabilityReport({manifest:require('./manifest.json'),routing:GODOT_METHODS,localTools:LOCAL_TOOLS,handshake,
-        gaps,limits:await readLimitAccounting(options.budget,context),services,
+        gaps,limits:await readLimitAccounting(options.budget,context),services,executor,
         executionContext:await readCapabilityContext(core,context,handshake),
         methodOverrides:{historyMethods:options.historyMethods,libraryMethods:options.libraryMethods}});
     }
