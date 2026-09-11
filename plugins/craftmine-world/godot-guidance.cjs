@@ -4,7 +4,7 @@ const {createHash}=require('node:crypto');
 const corpus=require('./guidance/catalog.json');
 const FORMAT='craftmine.godot-guidance/1';
 const hash=text=>createHash('sha256').update(text,'utf8').digest('hex');
-const fail=code=>{throw Object.assign(Error(code),{errorCode:code});};
+const fail=(code,detail)=>{throw Object.assign(Error(code+(detail?': '+detail:'')),{errorCode:code});};
 const entries=new Map(corpus.skills.map(skill=>[skill.id,skill]));
 const metadata=entry=>{const {text,...rest}=entry;return rest;};
 
@@ -54,13 +54,14 @@ async function queryGuidance(core,{context,worldId,args,assertActive=()=>{}}){
       assertActive();
       if(source.worldId!==worldId||source.revision!==index.revision||source.manifestHash!==index.manifestHash||source.path!==ref.projectPath)fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
       // The host verifies indexed file bytes; this is the hash of that exact source.
-      if(!ref.acceptedSourceHashes.includes(source.sha256))fail('GUIDANCE_INTERFACE_UNSUPPORTED');
+      if(!ref.acceptedSourceHashes.includes(source.sha256))fail('GUIDANCE_INTERFACE_UNSUPPORTED',
+        'Guidance source compatibility changed at '+ref.projectPath+'. This is not a write-permission denial. Reinspect current source and follow actual godot_project_patch/host policy; do not revert a legitimate edit just to load this recipe.');
     }
     matches.push(skill);
   }
   const envelope={format:FORMAT,catalogVersion:corpus.version,catalogHash:hash(JSON.stringify(corpus)),
     authority:'bundled-craftmine-guidance',instructionPolicy:'reference-only-no-additional-authority',
-    source:identity,provenance:corpus.provenance};
+    source:identity,provenance:corpus.provenance,requiredInterfacePolicy:corpus.requiredInterfacePolicy};
   if(!matches.length){
     if(selection)fail('GUIDANCE_BASE_UNSUPPORTED');
     return {...envelope,available:false,reason:'GUIDANCE_BASE_UNSUPPORTED',skills:[],

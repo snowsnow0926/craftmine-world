@@ -126,12 +126,42 @@ test('manifest, capabilities, initial prompt and product discovery expose the ne
   assert.match(JSON.stringify(report),/godot_guidance/);
   assert.equal(LOCAL_TOOLS.godot_guidance.hostMethod,'godotProject.index+godotProject.read');
   const prompt=fs.readFileSync(path.join(root,'vendor/pi-desktop/packages/agent-runtime/src/craftmine-context.ts'),'utf8');
-  assert.match(prompt,/discover godot_guidance with ToolSearch/);
+  assert.match(prompt,/call godot_guidance mode=catalog when advertised/);
+  assert.match(prompt,/ToolSearch only for additional tools absent from the current tool list/);
   assert.match(prompt,/Continue using godot_docs/);
   const runtime=fs.readFileSync(path.join(root,'vendor/pi-desktop/packages/agent-runtime/src/runtime.ts'),'utf8');
   assert.match(runtime,/tool\.name\.startsWith\("plugin_craftmine_world_"\)/);
   const main=fs.readFileSync(path.join(plugin,'main.cjs'),'utf8');
   assert.match(main,/for\(const tool of createWorldTools[\s\S]*?pi\.agent\.registerTool\(tool\)/);
+});
+
+test('catalog and paged guidance separate applicability from actual write authority',async()=>{
+  for(const selectedSkill of corpus.skills){
+    const f=fixture({baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,selectedSkill});
+    const catalog=await f.run({mode:'catalog'});
+    const page=await f.run({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:selectedSkill.sha256,
+      revision:catalog.source.revision,manifestHash:catalog.source.manifestHash,limit:8000});
+    assert.deepEqual(catalog.requiredInterfacePolicy,corpus.requiredInterfacePolicy);
+    assert.deepEqual(page.requiredInterfacePolicy,catalog.requiredInterfacePolicy);
+    assert.match(catalog.requiredInterfacePolicy.meaning,/not a read-only marker/);
+    assert.match(catalog.requiredInterfacePolicy.writeAuthority,/godot_project_patch/);
+    assert.ok(page.text.includes('requiredInterface: true'));
+    assert.ok(page.text.includes('`'+selectedSkill.version+'`'),'template version must match the catalog');
+    assert.ok(f.calls.every(call=>['workspace.open','godotProject.index','godotProject.read'].includes(call.method)));
+  }
+});
+
+test('changed applicability still rejects the same hash but explains it is not source protection',async()=>{
+  const creation=corpus.skills.find(entry=>entry.id==='creation-sandbox.authoring');
+  const f=fixture({baseId:creation.applicability.baseId,baseBuild:creation.applicability.baseBuild,selectedSkill:creation,modified:true});
+  await assert.rejects(f.run({mode:'catalog'}),error=>{
+    assert.equal(error.errorCode,'GUIDANCE_INTERFACE_UNSUPPORTED');
+    assert.match(error.message,/scripts\/creation_world.gd/);
+    assert.match(error.message,/not a write-permission denial/);
+    assert.match(error.message,/Reinspect current source/);
+    return true;
+  });
+  assert.ok(creation.references.filter(ref=>ref.requiredInterface).length===3);
 });
 
 test('造物指导按真实底座和三个接口哈希匹配，普通脚本示例可以分页读取',async()=>{
