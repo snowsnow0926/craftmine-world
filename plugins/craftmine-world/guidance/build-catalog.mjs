@@ -16,7 +16,7 @@ const snapshot=({sourceCommit,sourcePath,projectPath,path:referencePath=projectP
     requiredInterface,sha256:hash(text),acceptedSourceHashes:[hash(text),hash(text.replace(/\n/g,'\r\n'))],text};
 };
 const fpsCommit='9469aaa487b31ea41b839c7cd4214c2c7f3f293b';
-const creationCommit='82380309403dd2934bdbbbe03f0badf000310023';
+const creationCommit='314c27d5baf65bf6c89679fcdfb3756bc4bd3a77';
 const makeSkill=({id,title,baseId,baseVersion,file,references,version='1.0.0'})=>{
  const text=read(path.join(here,file));
  return {id,version,title,path:file,sha256:hash(text),
@@ -32,7 +32,7 @@ const creationReferences=['scripts/creation_world.gd','scripts/scene_contract.gd
 creationReferences.push(snapshot({sourceCommit:creationCommit,sourcePath:'desktop/godot/shared/adapters/creation-sandbox.gd',
  projectPath:'craftmine_shared/base_adapter.gd',requiredInterface:true}));
 creationReferences.push(snapshot({sourcePath:'plugins/craftmine-world/guidance/references/double-press-rule.gd',path:'examples/double-press-rule.gd'}));
-const catalog={version:'1.5.0',requiredInterfacePolicy:{
+const catalog={version:'1.6.0',requiredInterfacePolicy:{
  meaning:'Source-hash applicability check for this guidance only; not a read-only marker or an immutable-file list.',
  writeAuthority:'Actual godot_project_patch and host write/build policies; existing permissions, managed bridges and frozen checks are unchanged.',
  afterSourceChange:'GUIDANCE_INTERFACE_UNSUPPORTED means this recipe does not cover the current source. Reinspect that source; do not revert a legitimate edit just to regain guidance coverage.'},provenance:{publisher:'Craftmine World bundled source',
@@ -40,6 +40,6 @@ const catalog={version:'1.5.0',requiredInterfacePolicy:{
  validation:'Source-derived guidance; exact reference hashes, broker routing and authored examples are tested. No real model efficiency comparison is established.'},
  skills:[makeSkill({id:'first-person.equipment-parameters',version:'1.0.1',title:'Tune existing first-person equipment damage, cooldown or range',
    baseId:'first-person',baseVersion:'0.1.0',file:'equipment-parameters.md',references:fpsReferences}),
- makeSkill({id:'creation-sandbox.authoring',version:'1.5.0',title:'沉浸式造物：稳定对象编辑、普通源码规则与完整进度',
+ makeSkill({id:'creation-sandbox.authoring',version:'1.6.0',title:'沉浸式造物：稳定对象编辑、普通源码规则与完整进度',
    baseId:'creation-sandbox',baseVersion:'1.0.0',file:'creation-sandbox.md',references:creationReferences})]};
 fs.writeFileSync(path.join(here,'catalog.json'),JSON.stringify(catalog,null,2)+'\n');

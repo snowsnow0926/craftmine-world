@@ -17,3 +17,12 @@ Windows 定向测试实际 16 项通过（15 项常规回归＋1 项真实 PET �
 最终原始报告保留在 `test-results/managed-pet-source-RtXbeN/report.json`，不是产品引擎运行证据；没有复制测试 profile、凭据或个人数据进 Git。永久回归使用明确标记的夹具，额外真实字节回归通过 `CRAFTMINE_REAL_MIGRATION_SOURCE` 指向已导出的源码目录执行。
 
 本轮不调用模型、不启动游戏、不修改原 PET 世界，不生成安装包，不改 guidance generator。正式旧宠物世界升级后的真实检查、采用、重开仍由总控集成后验证。
+# 最终集成记录
+
+总控将生产记录更新为 `scene-selection-and-input-20260912-v2`：允许已知
+940／141 adapter 和原 runtime bridge 的确切字节升级，新增两个固定文件
+`headless_play_action.gd`、`scene_mesh_picker.gd` 时要求路径原本不存在。
+目标字节对应 `314c27d5` 集成，未知同名内容拒绝覆盖。实际 PET 来源参与
+最终迁移测试，普通世界／合同／狗源码保持，只有明确列出的托管文件更新。
+26 项迁移及指导回归通过，包含旧五文件联动迁移的独立历史夹具；这是源码
+字节和 CAS 回执验证，产品采用验证仍在后续新构建执行。

@@ -8,12 +8,12 @@ const helper='craftmine_shared/headless_play_action.gd',helperText='extends RefC
 const stock=(rev,file)=>execFileSync('git',['show',`${rev}:desktop/godot/${file}`],{encoding:'utf8',windowsHide:true}).replace(/\r\n/g,'\n');
 // Freeze this mechanism fixture independently of later production helper releases.
 const baselinePolicy={id:'fixture-observer-940-to-141',files:[{source:'craftmine_shared/base_adapter.gd',resource:'shared/adapters/creation-sandbox.gd',from:['edf0f6efe5ed9381f7fca2b7365cbba6062463a4ebb489191086e734af3765ee','b381b17a4c26176fa257a843fcd5d11e48ce0ea16252961c7d8f619ba14962c5'],to:['8b941793dd989decb5c4c7e8339e92d896db4783f414fbff47183852a485b95d','7e32ebfed318b423ec01585154d4de55ef04bfe5c1097640f20a2d055fda01c0']}]};
-function fixture(t,{helperState,loss=false,crlf=false,unknownAdapter=false,helperAllowsAbsent=true}={}){
+function fixture(t,{helperState,loss=false,crlf=false,unknownAdapter=false,helperAllowsAbsent=true,production=false}={}){
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'managed-migration-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
  const resourcesRoot=path.join(directory,'resources'),records=path.join(directory,'records'),formalTexts=new Map();
  for(const file of CREATION_MIGRATION_FILES){
-  const current=stock('141642e9',file.resource),dest=path.join(resourcesRoot,file.resource);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,current);
-  let initial=file.source==='craftmine_shared/base_adapter.gd'?stock('940c5a84',file.resource):current;
+  const current=production?fs.readFileSync(path.resolve(import.meta.dirname,'../../../../../desktop/godot',file.resource),'utf8').replace(/\r\n/g,'\n'):stock('141642e9',file.resource),dest=path.join(resourcesRoot,file.resource);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,current);
+  let initial=production||file.source==='craftmine_shared/base_adapter.gd'?stock('940c5a84',file.resource):current;
   if(file.source==='craftmine_shared/base_adapter.gd'&&unknownAdapter)initial+='\n# unknown changed observer\n';
   if(file.source.startsWith('scripts/'))initial+='\n# AI-authored gameplay extension: preserve these bytes\n';
   formalTexts.set(file.source,crlf?initial.replace(/\n/g,'\r\n'):initial);
@@ -22,7 +22,11 @@ function fixture(t,{helperState,loss=false,crlf=false,unknownAdapter=false,helpe
  formalTexts.set('scripts/pet_dog.gd','extends Node3D\n# Clearly marked authored gameplay fixture, not claimed model output.\nvar name_tag = "团子"\n');
  formalTexts.set('craftmine_shared/user_invention.gd','extends Node\n# unrelated user file must remain byte-identical\n');
  formalTexts.set('world/creation.json','{"format":"craftmine.creation-scene/1","entities":[]}');
- const policies=[structuredClone(baselinePolicy)];
+ const policies=production?structuredClone(CREATION_MANAGED_MIGRATIONS):[structuredClone(baselinePolicy)];
+ if(production)for(const file of policies.flatMap(policy=>policy.files)){
+  const dest=path.join(resourcesRoot,file.resource);fs.mkdirSync(path.dirname(dest),{recursive:true});
+  fs.copyFileSync(path.resolve(import.meta.dirname,'../../../../../desktop/godot',file.resource),dest);
+ }
  if(helperState!==undefined){
   fs.writeFileSync(path.join(resourcesRoot,'shared/headless_play_action.gd'),helperText);
   policies[0].files.push({source:helper,resource:'shared/headless_play_action.gd',from:helperAllowsAbsent?[null]:['f'.repeat(64)],to:[sha(helperText)]});
@@ -71,6 +75,19 @@ test('at least one production compatibility destination matches the actual shipp
   return fs.existsSync(resource)&&file.to.includes(sha(fs.readFileSync(resource,'utf8').replace(/\r\n/g,'\n')));
  })));
 });
+
+test('current production upgrade installs both fixed helpers and preserves existing authored content',async t=>{
+ const f=fixture(t,{production:true});await f.execute()(ctx,f.capture);
+ const managed=new Set(CREATION_MANAGED_MIGRATIONS.flatMap(policy=>policy.files.map(file=>file.source)));
+ assert.equal(f.patches(),1);
+ for(const [name,text] of f.formalTexts)if(!managed.has(name))assert.equal(f.live().get(name),text,name);
+ for(const file of CREATION_MANAGED_MIGRATIONS[0].files){
+  assert.equal(f.live().get(file.source),fs.readFileSync(path.join(f.deps.resourcesRoot,file.resource),'utf8').replace(/\r\n/g,'\n'));
+ }
+ const additions=f.calls.find(call=>call.method==='godotProject.patch').args.operations.filter(op=>!f.formalTexts.has(op.path));
+ assert.ok(additions.some(op=>op.path==='craftmine_shared/headless_play_action.gd'&&op.expectedHash===null));
+ assert.ok(additions.some(op=>op.path==='craftmine_shared/scene_mesh_picker.gd'&&op.expectedHash===null));
+});
 test('new fixed helper uses expected absence and existing matching bytes are not replaced',async t=>{
  for(const helperState of ['missing','current']){
   const f=fixture(t,{helperState});await f.execute()(ctx,f.capture);assertGameplayPreserved(f);
@@ -106,16 +123,18 @@ test('unrelated unapplied changes fail CAS before any managed write',async t=>{
  const f=fixture(t,{helperState:'missing'});f.dirty();const before=new Map(f.live());
  await assert.rejects(f.execute()(ctx,f.capture),/DRAFT_CONFLICT/);assert.equal(f.patches(),0);assert.deepEqual(f.live(),before);
 });
-if(process.env.CRAFTMINE_REAL_MIGRATION_SOURCE)test('actual adopted PET source retains all sampled script bytes through compatible migration',async t=>{
+if(process.env.CRAFTMINE_REAL_MIGRATION_SOURCE)test('actual adopted PET source preserves authored bytes while updating only reviewed managed files',async t=>{
  const source=process.env.CRAFTMINE_REAL_MIGRATION_SOURCE;assert.ok(path.isAbsolute(source));
- const f=fixture(t),sampled=[];
+ const f=fixture(t,{production:true}),sampled=[];
  for(const name of ['project.godot','craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/state_guard.gd','scripts/creation_world.gd','scripts/scene_contract.gd','scripts/pet_dog.gd']){
   const bytes=fs.readFileSync(path.join(source,name));assert.ok(bytes.length<=120000);const text=bytes.toString('utf8');assert.deepEqual(Buffer.from(text),bytes);
   f.replaceFormalFile(name,text);sampled.push({path:name,beforeSha256:sha(bytes),bytes:bytes.length});
  }
- const advance=await f.execute()(ctx,f.capture);assert.equal(f.patches(),1);assertGameplayPreserved(f);
+ const advance=await f.execute()(ctx,f.capture);assert.equal(f.patches(),1);
+ const managed=new Set(CREATION_MANAGED_MIGRATIONS.flatMap(policy=>policy.files.map(file=>file.source)));
+ for(const [name,text] of f.formalTexts)if(!managed.has(name))assert.equal(f.live().get(name),text,name);
  const rows=sampled.map(item=>({...item,afterSha256:sha(f.live().get(item.path)),preserved:item.beforeSha256===sha(f.live().get(item.path))}));
- assert.ok(rows.filter(item=>item.path!=='craftmine_shared/base_adapter.gd').every(item=>item.preserved));
+ assert.ok(rows.filter(item=>!managed.has(item.path)).every(item=>item.preserved));
  fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/managed-pet-source-'));
  fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({format:'craftmine.managed-pet-source-preservation/1',source,scope:'Actual source bytes; mocked CAS and receipt, no product launch or engine acceptance',passed:true,advance,files:rows},null,2));
  console.log(JSON.stringify({realPetSourceReport:out,passed:true,files:rows}));

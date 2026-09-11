@@ -9,7 +9,7 @@ function fixture({crlf=false,modern=false,loss=false}={}){
  const formal={worldId:'world-a',buildId:'formal-a',baseId:'creation-sandbox',sourceRevision:1,contentOid:'f'.repeat(40),files:[...texts].map(([name,text])=>meta(name,text))};let live=structuredClone(formal.files),revision=1,manifestHash='a'.repeat(64),receipt=null,patches=0,failBind=false;const calls=[],advances=[];
  const capture={worldId:'world-a',buildId:'formal-a',sourceRevision:1,manifestHash:'a'.repeat(64)};
  const source=()=>({worldId:'world-a',baseId:'creation-sandbox',revision,manifestHash,files:live,currentTaskId:'task-a',content:{repoId:'repo-a',branchId:'main',contentOid:'c'.repeat(40)},nextOffset:null});
- const deps={directory:recordRoot,resourcesRoot,assertActive:async()=>{},recordAdvance:(_,__,advance)=>{if(failBind){failBind=false;throw Error('SIMULATED_LOST_BIND');}advances.push(advance);},domain:async(method,args)=>{calls.push({method,args});
+ const deps={directory:recordRoot,resourcesRoot,managedMigrations:[],assertActive:async()=>{},recordAdvance:(_,__,advance)=>{if(failBind){failBind=false;throw Error('SIMULATED_LOST_BIND');}advances.push(advance);},domain:async(method,args)=>{calls.push({method,args});
   if(method==='godotRuntime.exportSource')return structuredClone(formal);
   if(method==='content.readFile')return {...meta(args.path,texts.get(args.path)),worldId:'world-a',rev:args.rev,text:texts.get(args.path)};
   if(method==='godotProject.index')return structuredClone(source());

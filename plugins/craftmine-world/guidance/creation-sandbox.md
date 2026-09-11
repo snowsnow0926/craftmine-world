@@ -1,6 +1,6 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.5.0`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.6.0`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
