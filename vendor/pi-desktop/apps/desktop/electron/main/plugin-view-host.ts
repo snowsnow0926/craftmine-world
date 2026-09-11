@@ -300,6 +300,17 @@ export class PluginViewHost {
     );
   }
 
+  /** Overlay controls use the same retained-page application transaction. */
+  async previewCraftmineControl(request: Record<string, unknown>): Promise<unknown> {
+    const entry = this.views.get(pluginViewKey("craftmine.world", "world"));
+    if (!entry || entry.view.webContents.isDestroyed()) throw new Error("WORLD_VIEW_UNAVAILABLE");
+    // Fixed method on the trusted product page; authored game frames receive no
+    // apply capability and no arbitrary script is accepted from the renderer.
+    return entry.view.webContents.executeJavaScript(
+      `globalThis.craftmineView.previewControl(${JSON.stringify(request)})`, false,
+    );
+  }
+
   /** Native directory grant, executed by the retained view that owns the permission. */
   async pickCraftmineDirectory(): Promise<unknown> {
     const entry = this.views.get(pluginViewKey("craftmine.world", "world"));

@@ -6413,6 +6413,7 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
+    if (payload?.channel === "world.previewControl" && (event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
     if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory"].includes(payload.channel)){
       if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
       const input=payload.payload??{};
@@ -6484,6 +6485,7 @@ function registerIpc() {
       },
       showSurface: (request) => pluginViews.showCraftmineSurface(request),
       pickDirectory: () => pluginViews.pickCraftmineDirectory(),
+      previewControl: (request) => pluginViews.previewCraftmineControl(request),
     });
   });
 

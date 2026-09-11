@@ -42,7 +42,7 @@ if(channel==='godot.candidateClose')return {status:'closed'};
 if(channel==='godot.runtimeState')return {worldId:record.id,buildId:record.world.build.id,instanceId:'fixture-instance',state:'ready'};
 if(channel==='godot.runtimeSurface'||channel==='godot.runtimeResume')return {};
 if(channel==='godot.candidatePreview')return {status:'preview',buildId:args.candidateId};
-if(channel==='godot.candidateApply'){if(fixture.rejectBeforeApply)throw Error('WORLD_BUSY');record={...record,revision:record.revision+1,world:{...record.world,build:{...record.world.build,id:args.candidateId}}};persist();godotApplied={status:'applied',record:structuredClone(record)};if(fixture.lostReply)throw Error('fixture lost reply');return godotApplied;}
+if(channel==='godot.candidateApply'){if(fixture.rejectBeforeApply)throw Error('WORLD_BUSY');if(fixture.holdGodotApply)await new Promise(resolve=>fixture.releaseGodotApply=resolve);record={...record,revision:record.revision+1,world:{...record.world,build:{...record.world.build,id:args.candidateId}}};persist();godotApplied={status:'applied',record:structuredClone(record)};if(fixture.lostReply)throw Error('fixture lost reply');return godotApplied;}
 if(channel==='godot.candidateState'){if(fixture.recoveryFailure)throw Error('receipt temporarily unavailable');if(fixture.rejectBeforeApply)return {status:'preview',worldId:fixture.wrongPreviewIdentity?'another-world':args.worldId,candidateId:args.candidateId};return godotApplied||{status:'closed'};}
 throw Error('Unexpected fixture channel '+channel);
 }};
@@ -90,6 +90,19 @@ try{
  await refresh();check('New preview still reads its own current review',(await state()).reason==='ready');
  await page.screenshot({path:path.join(out,'voxel-explanation.png')});
  await goto('godot');await page.evaluate(()=>craftmineView.preview('godot-draft'));
+ const previewRequest=await page.evaluate(()=>craftmineView.previewControl({action:'state'}));
+ check('Overlay reads exact Godot preview identity and presentation',previewRequest.worldId==='alpha'&&previewRequest.candidateId==='godot-draft'&&previewRequest.buildId==='godot-draft'&&!!previewRequest.previewId&&!previewRequest.applyDisabled);
+ const rejected=await page.evaluate(async state=>{
+   const {worldId,candidateId,buildId,previewId}=state,request={worldId,candidateId,buildId,previewId};let count=0;
+   for(const action of ['apply','close'])for(const key of Object.keys(request))try{await craftmineView.previewControl({action,...request,[key]:'stale'});}catch(error){if(error.message==='PREVIEW_CHANGED')count++;}
+   return count;
+ },previewRequest);
+ check('Overlay rejects every stale world/candidate/build/preview binding before any action',rejected===8&&await page.evaluate(()=>fixture.calls.every(c=>c.channel!=='godot.candidateApply')));
+ await page.evaluate(async state=>{const {worldId,candidateId,buildId,previewId}=state;await craftmineView.previewControl({action:'close',worldId,candidateId,buildId,previewId});await craftmineView.preview('godot-draft');},previewRequest);
+ check('Reopening the same candidate invalidates old overlay actions',await page.evaluate(async state=>{
+   const current=await craftmineView.previewControl({action:'state'});const {worldId,candidateId,buildId,previewId}=state;
+   try{await craftmineView.previewControl({action:'apply',worldId,candidateId,buildId,previewId});return false;}catch(error){return error.message==='PREVIEW_CHANGED'&&current.previewId!==previewId;}
+ },previewRequest));
  check('Godot preview explains pending formal adoption without polling mutating state', (await state()).reason==='godot-preview'&&await page.evaluate(()=>fixture.calls.every(c=>c.channel!=='godot.candidateState')));
  check('Godot explanation remains above the sibling candidate surface',await page.evaluate(()=>{const rect=document.getElementById('apply-explanation').getBoundingClientRect();return Math.round(rect.top)===122&&Math.round(rect.bottom)===222&&Math.round(rect.height)===100;}));
  await page.screenshot({path:path.join(out,'godot-explanation.png')});
@@ -100,8 +113,19 @@ try{
  await page.waitForFunction(()=>document.getElementById('apply-explanation').dataset.reason==='apply-error');
  check('Exact unchanged-preview receipt permits exit or retry after pre-transaction rejection',await page.evaluate(()=>!document.getElementById('close-preview').disabled&&fixture.record().world.build.id==='formal-1'));
  await page.evaluate(()=>{fixture.rejectBeforeApply=false;fixture.calls=[];});
- await page.evaluate(()=>{fixture.lostReply=true;fixture.recoveryFailure=true;});await submit(false);await page.waitForFunction(()=>document.getElementById('apply-explanation').dataset.reason==='confirming');
- await page.evaluate(()=>{fixture.recoveryFailure=false;});await submit(false);await page.waitForFunction(()=>document.getElementById('preview-panel').hidden);
+ await page.evaluate(async()=>{
+   fixture.lostReply=true;fixture.recoveryFailure=true;fixture.holdGodotApply=true;
+   const {worldId,candidateId,buildId,previewId}=await craftmineView.previewControl({action:'state'});
+   fixture.overlayRequest={action:'apply',worldId,candidateId,buildId,previewId};
+   fixture.overlayPending=craftmineView.previewControl(fixture.overlayRequest);
+ });
+ await page.waitForFunction(()=>!!fixture.releaseGodotApply);
+ check('Concurrent overlay apply and close are refused while original transaction is pending',await page.evaluate(async()=>{
+   let rejected=0;for(const action of ['apply','close'])try{await craftmineView.previewControl({...fixture.overlayRequest,action});}catch(error){if(error.message==='PREVIEW_BUSY')rejected++;}
+   return rejected===2&&fixture.calls.filter(c=>c.channel==='godot.candidateApply').length===1;
+ }));
+ await page.evaluate(async()=>{fixture.releaseGodotApply();await fixture.overlayPending;});await page.waitForFunction(()=>document.getElementById('apply-explanation').dataset.reason==='confirming');
+ await page.evaluate(async()=>{fixture.recoveryFailure=false;await craftmineView.previewControl(fixture.overlayRequest);});await page.waitForFunction(()=>document.getElementById('preview-panel').hidden);
  check('Godot lost reply reconciles original candidate without applying twice',await page.evaluate(()=>fixture.calls.filter(c=>c.channel==='godot.candidateApply').length===1&&fixture.record().world.build.id==='godot-draft'));
  await page.reload();await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
  check('Godot fixture adopted build and full progress survive page reload',await page.evaluate(before=>fixture.record().world.build.id==='godot-draft'&&JSON.stringify(fixture.record().world.snapshot)===JSON.stringify(before),before));

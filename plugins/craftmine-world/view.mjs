@@ -1,6 +1,7 @@
 import {createWorkbench} from './workbench-ui.mjs';
 import {createCreationGuideUI} from './creation-guide-ui.mjs';
 import {applyPresentation} from './apply-presentation.mjs';
+import {assertPreviewControl} from './preview-control.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
 const gameDocument = CRAFTMINE_GAME_DOCUMENT;
 const frame = document.querySelector('iframe');
@@ -289,7 +290,23 @@ addEventListener('message',event=>{
 
 // Only the trusted product panel owns this lifecycle surface. Authored code
 // lives in the opaque game iframe and cannot reach it.
-globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,beginRestore,finishRestore,navigate,showSurface,pickDirectory,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+globalThis.craftmineView=Object.freeze({snapshot,prepareClose,cancelClose,beginRestore,finishRestore,navigate,showSurface,pickDirectory,previewControl,showChecks:()=>setMode(true),showWorkbench:tab=>openWorkbench(tab),review:id=>action(async()=>{setMode(true);await showEvidence(id);}),preview:id=>action(()=>openPreview(id)),closePreview});
+
+function previewControlState() {
+  if(!preview?.godot||preview.worldId!==current?.id)return null;
+  const presentation=applyPresentation({busy,closing,preview,attempt:applicationAttempt,applyError});
+  return {
+    worldId:preview.worldId,candidateId:preview.candidateId,buildId:preview.buildId,previewId:preview.nonce,
+    applyDisabled:presentation.primaryDisabled,closeDisabled:busy||closing||!!applicationAttempt,
+    applyLabel:applicationAttempt?'确认应用结果':'应用到世界',reason:presentation.reason,next:presentation.next,
+    error:applyError||(!errorBox.hidden?errorBox.textContent:'')||'',
+  };
+}
+async function previewControl(request) {
+  assertPreviewControl(request,previewControlState());
+  if(request.action!=='state')await action(()=>request.action==='apply'?applyCandidate():closePreview());
+  return previewControlState();
+}
 
 // Surfaces requested by the left column. Only surfaces this page can actually
 // show are accepted; an unknown workbench tab is refused instead of silently
@@ -430,7 +447,7 @@ async function openGodotPreview(candidateId) {
   const worldId=current.id;
   const result=await bridge.invoke('godot.candidatePreview',{worldId,candidateId});
   if(current.id!==worldId)throw Error('世界已切换');
-  preview={godot:true,candidateId,worldId,buildId:result.buildId};previewReview=null;reviewError=null;applyError=null;
+  preview={godot:true,candidateId,worldId,buildId:result.buildId,nonce:crypto.randomUUID()};previewReview=null;reviewError=null;applyError=null;
   previewPanel.hidden=false;document.getElementById('preview-title').textContent='Godot 草稿预览';
   document.getElementById('preview-review').hidden=true;
   document.getElementById('apply-world-warnings').hidden=true;

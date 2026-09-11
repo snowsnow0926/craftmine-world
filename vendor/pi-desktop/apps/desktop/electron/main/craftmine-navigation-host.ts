@@ -1,3 +1,5 @@
+import { validatePreviewControl } from "../../shared/craftmine-preview-controls";
+
 /** Main-window navigation gateway. World mutations run in the retained view,
  * which owns the live snapshot and serializes save/create/switch operations. */
 export const NAVIGATION_READ_CHANNELS = new Set([
@@ -21,6 +23,7 @@ type Dependencies = {
   showSurface: (request: Record<string, unknown>) => Promise<unknown>;
   /** Host-owned directory grant, performed by the retained view. */
   pickDirectory: () => Promise<unknown>;
+  previewControl?: (request: Record<string, unknown>) => Promise<unknown>;
 };
 
 const SURFACE_KINDS = new Set(["workbench", "checks", "world"]);
@@ -36,6 +39,11 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
+  if (channel === "world.previewControl") {
+    const request = validatePreviewControl(payload);
+    if (!deps.previewControl) throw Error("WORLD_VIEW_UNAVAILABLE");
+    return deps.previewControl(request);
+  }
   if (channel === "world.creationRetry") {
     if (Object.keys(payload).some(key=>key!=="worldId") || typeof payload.worldId!=="string" || !/^[a-z0-9][a-z0-9-]{1,47}$/.test(payload.worldId)) throw Error("INVALID_WORLD_ID");
     return deps.invoke(channel,{worldId:payload.worldId});
