@@ -1,0 +1,161 @@
+{
+  "format": "craftmine.godot-reuse-research-catalog/1",
+  "date": "2026-09-12",
+  "authority": "research-only",
+  "productInstalled": false,
+  "report": "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
+  "fileInventory": {
+    "path": "test-results/external-resources-20260912/provenance.json",
+    "sha256": "7277381796c40acdb11196a6fbe4140e9dc61ba5c1c3e0bbe8c6d9bce21c91b0"
+  },
+  "candidates": [
+    {
+      "id": "kenney-fps",
+      "upstream": "https://github.com/KenneyNL/Starter-Kit-FPS.git",
+      "commit": "185fd2326d74a5cf858cffc616f87cf9696f9cc0",
+      "trackedFiles": 102,
+      "trackedBytes": 4935522,
+      "upstreamWorkingTreeClean": true,
+      "licenseEvidence": [
+        {
+          "path": "LICENSE.md",
+          "bytes": 1062,
+          "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+        },
+        {
+          "path": "README.md",
+          "bytes": 2219,
+          "sha256": "69d77c39c3c05692b6a0ddbc626615d403421ab3c7b884b0a5ad4ae90368c02a"
+        },
+        {
+          "path": "fonts/license.txt",
+          "bytes": 4391,
+          "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+        }
+      ],
+      "priority": 1,
+      "kind": "weapons-and-combat-components",
+      "license": {
+        "code": "MIT",
+        "modelsSpritesSounds": "CC0 per upstream README",
+        "font": "OFL-1.1"
+      },
+      "verified": [
+        "source-inspection",
+        "lpac-import",
+        "lpac-web-export",
+        "headless-web-startup",
+        "startup-visual"
+      ],
+      "missing": [
+        "chase-and-navigation",
+        "host-world-integration",
+        "gameplay-acceptance",
+        "save-roundtrip",
+        "second-world-reuse"
+      ]
+    },
+    {
+      "id": "kenney-city",
+      "upstream": "https://github.com/KenneyNL/Starter-Kit-City-Builder.git",
+      "commit": "4535092b740b378b700efd9df9e27a631815b84a",
+      "trackedFiles": 110,
+      "trackedBytes": 2069806,
+      "upstreamWorkingTreeClean": true,
+      "licenseEvidence": [
+        {
+          "path": "LICENSE.md",
+          "bytes": 1062,
+          "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+        },
+        {
+          "path": "README.md",
+          "bytes": 3353,
+          "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+        },
+        {
+          "path": "fonts/license.txt",
+          "bytes": 4391,
+          "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+        }
+      ],
+      "priority": 1,
+      "kind": "buildings-and-layout",
+      "license": {
+        "code": "MIT",
+        "modelsSpritesSounds": "CC0 per upstream README",
+        "font": "OFL-1.1"
+      },
+      "verified": [
+        "source-inspection",
+        "lpac-import",
+        "lpac-web-export",
+        "headless-web-startup",
+        "sample-map-visual-in-adapted-fixture"
+      ],
+      "missing": [
+        "walkable-collision",
+        "navigation",
+        "host-world-integration",
+        "gameplay-acceptance",
+        "save-roundtrip",
+        "second-world-reuse"
+      ]
+    },
+    {
+      "id": "beehave",
+      "upstream": "https://github.com/bitbrain/beehave.git",
+      "commit": "58a0df12330114e330f47fc1469132f016c056bc",
+      "trackedFiles": 832,
+      "trackedBytes": 4400300,
+      "upstreamWorkingTreeClean": true,
+      "licenseEvidence": [
+        {
+          "path": "LICENSE",
+          "bytes": 1065,
+          "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+        },
+        {
+          "path": "README.md",
+          "bytes": 4491,
+          "sha256": "12ed0f6547377502f2b73984b2197bf9c101c8efce6999ee3c253e7cabf7bf25"
+        },
+        {
+          "path": "addons/beehave/LICENSE",
+          "bytes": 1065,
+          "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+        },
+        {
+          "path": "addons/gdUnit4/LICENSE",
+          "bytes": 1069,
+          "sha256": "b87775063bcbcb0174fb752ea35f62f24ca145935e3c2b6e055263061eefc53d"
+        },
+        {
+          "path": "docs/README.md",
+          "bytes": 3635,
+          "sha256": "0de1b60919d26b0af81c4e41592d335df3bae4a73bcf66894e9de7e0f145bd85"
+        },
+        {
+          "path": "docs/manual/README.md",
+          "bytes": 4160,
+          "sha256": "4c7e1013ae7138562395ddbffb2a2d1777eef414f5c70e4c4560459e02c09416"
+        }
+      ],
+      "priority": 2,
+      "kind": "behavior-tree-runtime",
+      "license": {
+        "code": "MIT"
+      },
+      "verified": [
+        "source-inspection"
+      ],
+      "missing": [
+        "stable-release-selection",
+        "minimal-runtime-dependencies",
+        "lpac-import",
+        "web-export",
+        "runtime-and-gameplay-acceptance"
+      ]
+    }
+  ]
+}

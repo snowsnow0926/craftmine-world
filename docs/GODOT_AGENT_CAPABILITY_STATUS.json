@@ -35,7 +35,7 @@
     {
       "id": "GU2",
       "status": "in-progress",
-      "next": "Pinned continuation and incomplete evidence fixed; real core passed; engine API metadata underway"
+      "next": "Pinned engine ClassDB metadata integrated; godot_docs production routing and package staging in progress"
     },
     {
       "id": "GU3",
@@ -44,16 +44,17 @@
     {
       "id": "GU4",
       "status": "in-progress",
-      "next": "True door collision fixture passed, negative defect rejected; isolated candidate diagnostic collector underway"
+      "next": "Optional host-only collector integrated; real Web and offscreen verifier evidence passed; core-authoritative candidate integration remains"
     },
     {
       "id": "GU5",
       "status": "in-progress",
-      "next": "Structured diagnostics from actual job output underway"
+      "next": "Structured diagnostics integrated; build-read production wrapper in progress"
     },
     {
       "id": "GU6",
-      "status": "planned"
+      "status": "in-progress",
+      "next": "User requested open-source discovery and trial; three sources pinned; two Kenney projects passed isolated import/export/Web startup; reusable world packages not installed"
     },
     {
       "id": "GU7",
@@ -90,6 +91,19 @@
       "command": "pnpm run build:js",
       "status": "passed",
       "scope": "independent workspace packages and desktop, before next candidate collector integration"
+    },
+    {
+      "kind": "source-tests",
+      "command": "node --test tests/godot-scenario-verdict.test.mjs tests/godot-scenario-collector.test.mjs tests/godot-diagnostics.test.mjs tests/godot-agent/engine-api.test.mjs",
+      "status": "passed",
+      "tests": 37,
+      "scope": "integrated helpers; production routes under development"
+    },
+    {
+      "kind": "external-source-research",
+      "path": "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
+      "status": "in-progress",
+      "scope": "fixed source licenses and independent LPAC/Web trial; not ordinary player acceptance"
     }
   ],
   "limitations": [
