@@ -9585,3 +9585,7 @@ Use synthetic selected archives and callbacks to reject beforeRestore with the e
 ### 静态组件真实包安装预检（2026-09-12）
 
 用独立 Rust 数据目录及实际构建的 17 个组件 ZIP，经 createManagedPackageInstaller 顺序安装到同一小型世界；标准 creation_world.gd 作为环境要求原样保留。覆盖 scene instance 与 script-node 的显式位置、依赖、脚本 UID、所有文件字节、17 项锁清单及重复包的独立实例身份。无执行器时只能报告 source-saved-check-blocked，不得宣称引擎或游玩通过。Rust 回归还需覆盖合法最小 GLB sidecar 和恶意/缺失配对模型在 create、patch、applyFiles 上的原子拒绝。
+
+### 持久源码包的慢事务回执（2026-09-12）
+
+通过真实主程 adapter/transport 的虚拟时钟测试：installSource 与 installSourceProposal 在 16.5 秒后各只取得一次正常回执；普通包读取仍于 15 秒超时。超过 60 秒后插件迟到保存的模拟结果不得触发第二次安装或被当作回滚。实际组合组件验收应保留原 operationId 和候选来源，检查后才采用。
