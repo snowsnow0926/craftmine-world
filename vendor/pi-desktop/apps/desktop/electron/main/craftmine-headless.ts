@@ -155,6 +155,31 @@ export function installHeadlessControl(access: {
           const window = access.window(); if (!window) throw new Error("Window is not ready");
           return window.webContents.executeJavaScript(`(async()=>({title:document.title,text:document.body.innerText,version:globalThis.piDesktop?await piDesktop.invoke(piDesktop.channels.invoke.appGetVersion):null,guard:globalThis.__craftmineHeadless}))()`, false);
         }
+        case "primaryMode": {
+          const action = request.payload?.action ?? "inspect";
+          if (!["inspect", "entry", "create", "play", "closed", "compact", "full"].includes(String(action))) throw Error("INVALID_MODE_PROBE");
+          const window = access.window(); if (!window) throw Error("Window is not ready");
+          return window.webContents.executeJavaScript(`(() => {
+            const action = ${JSON.stringify(action)};
+            if (action === 'entry') window.dispatchEvent(new CustomEvent('craftmine-mode-entry-open'));
+            if (action === 'create' || action === 'play') {
+              const button = document.querySelector('[data-mode="'+action+'"]');
+              const key = button && Object.keys(button).find(key => key.startsWith('__reactProps$'));
+              if (!key) throw Error('Mode entry is not ready');
+              button[key].onClick();
+            }
+            if (['closed','compact','full'].includes(action)) {
+              const key = 'craftmine.desktop.layout.v1';
+              const layout = JSON.parse(localStorage.getItem(key));
+              if (layout.mode !== 'play') throw Error('World is not immersive');
+              localStorage.setItem(key, JSON.stringify({...layout, overlay:action}));
+              window.dispatchEvent(new CustomEvent('craftmine-layout-changed'));
+            }
+            const bounds = selector => { const r = document.querySelector(selector)?.getBoundingClientRect(); return r ? {x:r.x,y:r.y,width:r.width,height:r.height} : null; };
+            return {entry:!!document.querySelector('[data-mode-entry]'),play:!!document.querySelector('.craftmine-play'),
+              world:bounds('.work-plugin-view-surface'),dialog:bounds('.main-pane[role="dialog"]'),width:innerWidth,height:innerHeight};
+          })()`, false);
+        }
         case "targetFeedbackView": {
           if (Object.keys(request).sort().join(",") !== "id,method,payload,type") throw Error("INVALID_TARGET_FEEDBACK_PROBE");
           return evaluateWorld(targetFeedbackProbeScript(request.payload));
