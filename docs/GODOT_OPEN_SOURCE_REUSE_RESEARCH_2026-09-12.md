@@ -12,7 +12,7 @@
 
 后续进展：建筑和道路已抽成现有格式的独立源包，保留 GLB 外部纹理、原许可和来源摘要。在两个源码世界完成导入及导出往返后，又在独立 sealed 客户端中走通普通源包导入、真实核心检查、候选预览、应用、保存与冷开，20 个流程步骤通过。该正式流程没有调用玩家模型。详见 [模块试验](specs/godot-agent-gu6-kenney-modules.md) 与 [正式检查和应用](specs/godot-agent-gu6-formal-packages.md)。
 
-实际接入还暴露了一个影响 Agent 编辑的缺口：GLB 使用的 ArrayMesh 被现有准星选择器拒绝，`sceneObjectRefs` 为空。建筑和道路在正式试验中默认位置重叠，尚未证明两个模块独立选取、参数修改和存档迁移。新版选择器正在开发；Beehave 最小运行时也进入实际试跑。这些工作尚未完成，不能把可导入扩大为可自动复用，更没有数据支持节省时间的百分比。
+实际接入还暴露了一个影响 Agent 编辑的缺口：GLB 使用的 ArrayMesh 被旧准星选择器拒绝，`sceneObjectRefs` 为空。新版已在独立放置建筑的派生工程中通过 37 项真实 LPAC/Web 检查，普通 `observe` 能返回准确对象引用和不同实例身份；旧版 44 项回归也通过。新版只声明静态基准三角形，未验证当前渲染 LOD 或逐像素一致。正式包重新验收、模型编辑及模块参数存档仍未覆盖，详见 [选择器试验](spec/godot-arraymesh-picker-v2.md)。
 
 资源检索补充：真实核心复现了本地库拒绝 `application/zip`、目录扫描忽略 ZIP 的问题。已在开发分支补齐现有库的 ZIP 入库与检索，原始字节不解包、不执行。两个固定源包经显式宿主入库后，可被模型现有的搜索、读取和版本接口找到，核心重启后保持，错误版本覆盖被拒绝。它们仍显示未预览、未检查、未应用；界面提示走已有作品检查流程。该测试不是普通玩家自动找包安装，检索引用直接安装的衔接仍需继续实现。详见 [资源库 ZIP 说明](../vendor/pi-desktop/docs/spec/asset-library-source-archives.md)。
 
@@ -22,7 +22,7 @@
 | --- | --- | --- | --- |
 | [Kenney Starter Kit FPS](https://github.com/KenneyNL/Starter-Kit-FPS) | 武器资源、切枪、命中和生命值、第一人称示例、配套模型 | 映射现有玩家与装备；补追逐/寻路、阵营、任务与存档；示例敌人主要原地攻击，不能充当完整战斗系统 | 固定源码检查；LPAC 导入/导出、Web 启动与画面 |
 | [Kenney City Builder](https://github.com/KenneyNL/Starter-Kit-City-Builder) | 建筑模型、格网放置/删除、价格、地图保存与样例布局 | 可行走道路与建筑碰撞、导航、稳定实体 ID、独立实例状态；俯视编辑器不能直接代替主世界 | 固定源码检查；LPAC 导入/导出、Web UI 启动；追加自动加载样例的副本已显示城市画面 |
-| [Beehave](https://github.com/bitbrain/beehave) | 行为树结构，适合组织巡逻、追逐、战斗、同伴跟随 | 抽取运行时依赖；实现各行为的具体动作、感知和导航；调试器与开发测试插件不直接装进玩家作品 | 固定源码与依赖检查，尚未运行 |
+| [Beehave](https://github.com/bitbrain/beehave) | 行为树结构，适合组织巡逻、追逐、战斗、同伴跟随 | 实现各行为的具体动作、感知和导航；运行闭包仍依赖 global debugger/metrics，未启用编辑插件 | 固定源码、LPAC/Web 与 391 帧实际追随/停止/中断试验通过；墙体反例不能绕路 |
 | [Godot 官方示例](https://github.com/godotengine/godot-demo-projects) | 导航、物理、动画、视角、交互等较小且专注的实现 | 选匹配引擎的稳定分支/提交，逐例验证 Web 与我们协议 | 官方文档筛选，尚未下载运行 |
 | [Kenney Racing](https://github.com/KenneyNL/Starter-Kit-Racing) | 街机车辆控制、车型、赛道拼块、轮胎烟雾 | 与现有上下车、输入、任务和车辆状态对接；不是飞行系统 | README 标明 Godot 4.6；尚未运行 |
 | [Kenney 3D Platformer](https://github.com/KenneyNL/Starter-Kit-3D-Platformer) | 双跳、金币、下落平台、第三人称相机 | 与玩家移动模式和奖励账本对接，避免复制控制器导致冲突 | README 标明 Godot 4.6；尚未运行 |
@@ -40,7 +40,7 @@
 | --- | --- | --- | --- |
 | kenney-fps | `185fd2326d74a5cf858cffc616f87cf9696f9cc0` | 代码 MIT；README 将模型/精灵/音效列为 CC0；Lilita 字体另有 OFL 1.1 | 优先抽取武器/目标及模型包，补真实追逐战斗验收 |
 | kenney-city | `4535092b740b378b700efd9df9e27a631815b84a` | 代码 MIT；README 将模型/精灵/音效列为 CC0；Lilita 字体另有 OFL 1.1 | 优先抽建筑和布局，补碰撞与第一人称道路验收 |
-| beehave | `58a0df12330114e330f47fc1469132f016c056bc` | MIT；保留实际随包许可与归属 | 先验证最小运行时；本次分支 plugin.cfg 为 2.9.4-dev，不能冒称稳定发布版 |
+| beehave | `58a0df12330114e330f47fc1469132f016c056bc` | MIT；保留实际随包许可与归属 | 最小运行时已验证；本次分支 plugin.cfg 为 2.9.4-dev，不能冒称稳定发布版 |
 
 原始克隆位于 `test-results/external-resources-20260912/`，未执行仓库安装脚本、Git hooks 或子模块。原文件逐项摘要见同目录生成的 provenance 清单；开发者试验中使用副本，适配差异与日志另存。
 
@@ -66,6 +66,8 @@
 详细最终结果见 [完整试验报告](specs/godot-agent-gu6-kenney-trial.md)，截图、许可证与回执已归档至 [证据目录](evidence/gu6-open-source-20260912/summary.json)。成功判定的独立 review 发现并修复了请求/源码绑定校验缺口；新增 4 项测试覆盖错误身份、stage 后源码变化和失败退出，6 份历史真实回执由新判定复核均通过。
 
 启动通过只证明这一固定副本在测试环境走通相应阶段。尚未证明自主 Agent 检索/安装成功、完整玩法、碰撞和存档、冷启动恢复、第二世界独立复用或性能收益。
+
+Beehave 后续试验已经实际运行，而非仅阅读代码。原样复制 12 个运行脚本、8 个图标和 MIT 文件，加上宿主编写的目标条件、物理移动及停止动作。真实 391 帧轨迹证明追随、到距停止、目标撤销中断、运动中停用和重新启用；阻墙角色持续碰撞并停在墙前，明确没有自动导航。11 项证据测试覆盖错误位移、传送、停止漂移和归档身份。整合时发现两份原始日志被 Git 换行转换，已恢复原字节并逐项复核，未改摘要来接受变化。详见 [Beehave 完整试验](specs/godot-agent-gu6-beehave-trial.md)。它是可复用的行为调度底座，仍需动作、感知、导航和产品状态协议适配。
 
 ## 暂不作为第一批底座
 

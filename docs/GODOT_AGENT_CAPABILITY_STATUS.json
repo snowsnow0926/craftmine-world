@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Kenney formal package check/adoption/cold reopen passed on sealed 2ae; GLB selection, parameter persistence, second formal world and performance remain; Beehave trial active"
+      "next": "Formal Kenney import/check/adoption/cold reopen, isolated ZIP catalog retrieval/restart, and Beehave actual follow/stop/interruption trial completed; GLB V2 derived observe passes, unified package/model editing/parameter persistence/performance remain"
     },
     {
       "id": "GU7",
@@ -193,6 +193,30 @@
       ],
       "status": "passed",
       "scope": "Finite sequence resolution and frozen labels/colors: 8 focused JS and 16 Rust requirements tests; nonspatial placement/undo: 36 focused tests; desktop typecheck"
+    },
+    {
+      "kind": "resource-catalog",
+      "commit": "7a610be9",
+      "path": "docs/evidence/gu6-library-20260912/report.json",
+      "status": "passed",
+      "scope": "Two actual ZIP bodies indexed/read/searchable across real core restart; 21 preview/core plus 20 UI and 37 Rust catalog tests; no install or compatibility claim"
+    },
+    {
+      "kind": "external-behavior-runtime",
+      "commit": "0bd38267",
+      "path": "docs/evidence/gu6-beehave-20260912/report.json",
+      "status": "passed",
+      "scope": "391 physics samples follow/stop/interrupt, wall and missing target negatives; 11 evidence tests independently rerun; original log byte repair 1cc82320"
+    },
+    {
+      "kind": "arraymesh-observation",
+      "commits": [
+        "aebaf705",
+        "decd888d"
+      ],
+      "path": "docs/evidence/gu2-arraymesh-picker-20260912/controller-v2.json",
+      "status": "passed-in-derived-engine-fixture",
+      "scope": "37 real LPAC/Web checks and ordinary bridge observe, legacy 44; base surface triangles only, full controller cohort integration pending"
     }
   ],
   "limitations": [
