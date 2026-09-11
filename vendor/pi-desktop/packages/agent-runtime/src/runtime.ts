@@ -2,7 +2,7 @@ import { requireCompleteSummary, CRAFTMINE_SUMMARY_FOCUS } from "./compaction-co
 import { randomUUID } from "node:crypto";
 import { completedGodotReadFiles } from "./craftmine-godot-read-files.js";
 import { observeModelStream } from "./task-metrics-stream.js";
-import { CRAFTMINE_SYSTEM_PROMPT, CRAFTMINE_CORE_TOOL_NAMES, appendCraftmineRequestData, craftmineAuthorizedBudget, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks } from "./craftmine-context.js";
+import { CRAFTMINE_SYSTEM_PROMPT, craftmineCoreToolNames, appendCraftmineRequestData, craftmineAuthorizedBudget, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks, type CraftmineTaskContext, type CraftminePurpose } from "./craftmine-context.js";
 import {
   Agent,
   BACKGROUND_CONTEXT,
@@ -1313,6 +1313,8 @@ export class DesktopAgentRuntime {
   private activeToolProgressCleanups = new Set<(flush: boolean) => void>();
   private hostCloseUnsubscribe?: () => void;
   private turnSubagentUsage?: MessageUsage;
+  private craftmineRuntimeKind: unknown;
+  private craftmineToolBinding = "";
   private readonly craftmineWorld: boolean;
   private readonly craftmineHooks?: CraftmineRequestHooks;
 
@@ -1327,6 +1329,7 @@ export class DesktopAgentRuntime {
       // requests. No model argument and no model-visible tool reaches this.
       craftmineAuthorizedBudget(opts.craftmineBudgetEnv ?? process.env),
     ) : undefined);
+    if (this.craftmineWorld) this.craftmineHooks?.setToolSelector?.((snapshot, purpose) => this.selectCraftmineTools(snapshot, purpose));
     this.sessionId = opts.sessionId;
     this.hostTurnId = opts.turnId;
     this.turnId = opts.turnId;
@@ -2514,7 +2517,7 @@ Delegation rules:
   }
 
   private isCoreTool(name: string): boolean {
-    if (this.craftmineWorld) return CRAFTMINE_CORE_TOOL_NAMES.has(name);
+    if (this.craftmineWorld) return craftmineCoreToolNames(this.craftmineRuntimeKind).has(name);
     return (
       name === CONTEXT_COMPACTION_TOOL_NAME ||
       MODE_TRANSITION_TOOL_NAMES.has(name) ||
@@ -2538,6 +2541,19 @@ Delegation rules:
             ]).has(name)
           : CHAT_CORE_TOOL_NAMES.has(name))
     );
+  }
+
+  private selectCraftmineTools(snapshot: CraftmineTaskContext, purpose: CraftminePurpose): AgentTool[] {
+    const binding = JSON.stringify([snapshot.binding.taskId, snapshot.world.id, snapshot.world.runtimeKind]);
+    if (binding !== this.craftmineToolBinding) {
+      this.craftmineToolBinding = binding;
+      this.craftmineRuntimeKind = snapshot.world.runtimeKind;
+      this.activeDeferredToolNames.clear();
+      this.rebuildToolCatalog();
+    }
+    const tools = purpose === "summary" || purpose === "review" ? [] : this.activeTools();
+    this.agent.state.tools = tools;
+    return tools;
   }
 
   private activeTools(): AgentTool[] {

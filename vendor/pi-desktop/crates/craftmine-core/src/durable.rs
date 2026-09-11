@@ -806,7 +806,7 @@ impl TaskJournal {
             |r| r.get(0),
         )?;
         Ok(
-            json!({"binding":task.binding,"generation":generation,"status":task.status,"recovery":recovery,"world":{"id":snapshot.world_id,"revision":world.summary.revision,"buildId":world.world.build["id"],"hash":world.content_hash},"draft":{"revision":task.revision,"hash":task.draft_hash},"modifiedResources":modified,"requirements":requirements,"receipts":receipts,"jobs":jobs,"lease":{"owned":owned},"budget":budget(&self.db,&owner)?}),
+            json!({"binding":task.binding,"generation":generation,"status":task.status,"recovery":recovery,"world":{"id":snapshot.world_id,"revision":world.summary.revision,"buildId":world.world.build["id"],"hash":world.content_hash,"runtimeKind":world.summary.runtime_kind,"baseId":world.summary.base_id},"draft":{"revision":task.revision,"hash":task.draft_hash},"modifiedResources":modified,"requirements":requirements,"receipts":receipts,"jobs":jobs,"lease":{"owned":owned},"budget":budget(&self.db,&owner)?}),
         )
     }
     /// Read original host-journaled requirements for this exact workspace.
