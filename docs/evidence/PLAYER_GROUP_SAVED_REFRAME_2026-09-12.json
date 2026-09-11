@@ -1,0 +1,1608 @@
+{
+  "format": "craftmine.player-group-saved-reframe/1",
+  "report": {
+    "file": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/source-proposal-adoption-3950ed30-1a29-4998-9eb8-0057b62fe8d5/report.json",
+    "sha256": "2cf9e6c1c453d322c2a169c3c2e4294cfdaf5c8af399681accf6a9ecbbc14b9a"
+  },
+  "sourceReport": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/source-proposal-adoption-599570da-479a-4763-a40f-aa5298b7fa88/report.json",
+  "ok": true,
+  "stateIntegrityVerified": true,
+  "worldId": "world-dd7fa4f8fff6",
+  "proposalId": "source-20a92aaf8b5cb3236836cd5468246c56fee7d910bedc8378",
+  "modelCallsAdded": 0,
+  "installationsIssued": 0,
+  "checksIssued": 0,
+  "applied": false,
+  "savedForReframe": {
+    "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+    "contentHash": "dcdad770c2d1eb66cdee41f557e7d9ab5366db1b4ffcd8a880b33692964e3fa3",
+    "format": "craftmine.godot-progress-receipt/1",
+    "instanceId": "ff83113c7c09f66ff177d748",
+    "persistedAt": 1789168439370,
+    "revision": 6,
+    "snapshotHash": "5240aa5e13a09829046f28e09ed6cf622b30a6458c129d70deef784d59c6dac6",
+    "snapshotSha256": "8d0821f0374dd3147bceaab1ffbf9796a16c4bcb7c292c48c3be86d2ba4703e7",
+    "worldId": "world-dd7fa4f8fff6"
+  },
+  "reframe": {
+    "method": "normal formal-world walk/look before reopening the same checked candidate",
+    "before": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "ff83113c7c09f66ff177d748",
+      "payload": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "creation": {
+          "entities": [],
+          "obstacles": [],
+          "physicsTick": 37,
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              10.8338775634766
+            ]
+          },
+          "revision": 1,
+          "sceneObjectRefs": [
+            {
+              "ancestors": [
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                  "objectId": "30836524446",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                  "objectId": "30819747229",
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                  "objectId": "30433871185",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                  "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                }
+              ],
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+              "objectId": "30886856097",
+              "scenePath": "",
+              "scriptPath": ""
+            }
+          ],
+          "sceneObjectSelection": {
+            "counts": {
+              "candidates": 48,
+              "facesRead": 69,
+              "nodes": 186,
+              "triangles": 6040
+            },
+            "reason": "nearer-or-tied-physics-hit",
+            "status": "blocked"
+          },
+          "sceneObjectTarget": {
+            "ancestors": [
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                "objectId": "30836524446",
+                "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                "scriptPath": ""
+              },
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                "objectId": "30819747229",
+                "scenePath": "",
+                "scriptPath": ""
+              },
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                "objectId": "30433871185",
+                "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+              }
+            ],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+            "normal": [
+              4.37113847340243e-8,
+              0,
+              1
+            ],
+            "objectId": "30886856097",
+            "position": [
+              7.45058059692383e-9,
+              2.80112385749817,
+              3.95841884613037
+            ],
+            "scenePath": "",
+            "scriptPath": ""
+          },
+          "target": {
+            "entityId": null,
+            "normal": [
+              4.37113847340243e-8,
+              0,
+              1
+            ],
+            "position": [
+              7.45058059692383e-9,
+              2.80112385749817,
+              3.95841884613037
+            ],
+            "revision": 1,
+            "surface": "none"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "logicalViewportSize": [
+          1200,
+          800
+        ],
+        "player": {
+          "onFloor": true,
+          "pitch": 0.18,
+          "position": [
+            0,
+            0.899999976158142,
+            10.8338775634766
+          ],
+          "yaw": 0
+        },
+        "ready": true,
+        "surfaceSize": [
+          1200,
+          800
+        ]
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-11T23:17:58Z",
+      "worldId": "world-dd7fa4f8fff6"
+    },
+    "request": {
+      "worldId": "world-dd7fa4f8fff6",
+      "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+      "instanceId": "ff83113c7c09f66ff177d748",
+      "steps": [
+        {
+          "op": "look",
+          "args": {
+            "yaw": 0,
+            "pitch": 0.18
+          }
+        },
+        {
+          "op": "wait",
+          "args": {
+            "frames": 30
+          }
+        }
+      ]
+    },
+    "result": {
+      "format": "craftmine.godot-exploration/1",
+      "identity": {
+        "worldId": "world-dd7fa4f8fff6",
+        "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+        "instanceId": "ff83113c7c09f66ff177d748"
+      },
+      "baseId": "creation-sandbox",
+      "before": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "ff83113c7c09f66ff177d748",
+        "payload": {
+          "base": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "creation": {
+            "entities": [],
+            "obstacles": [],
+            "physicsTick": 872,
+            "playerBounds": {
+              "halfExtents": [
+                0.3,
+                0.9,
+                0.3
+              ],
+              "position": [
+                0,
+                -2.38418579323607e-8,
+                10.8338775634766
+              ]
+            },
+            "revision": 1,
+            "sceneObjectRefs": [
+              {
+                "ancestors": [
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                    "objectId": "30836524446",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                    "objectId": "30819747229",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                    "objectId": "30433871185",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                    "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                  }
+                ],
+                "nodeClass": "StaticBody3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                "objectId": "30886856097",
+                "scenePath": "",
+                "scriptPath": ""
+              }
+            ],
+            "sceneObjectSelection": {
+              "counts": {
+                "candidates": 48,
+                "facesRead": 69,
+                "nodes": 186,
+                "triangles": 6040
+              },
+              "reason": "nearer-or-tied-physics-hit",
+              "status": "blocked"
+            },
+            "sceneObjectTarget": {
+              "ancestors": [
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                  "objectId": "30836524446",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                  "objectId": "30819747229",
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                  "objectId": "30433871185",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                  "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                }
+              ],
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+              "normal": [
+                4.37113847340243e-8,
+                0,
+                1
+              ],
+              "objectId": "30886856097",
+              "position": [
+                7.45058059692383e-9,
+                2.80112385749817,
+                3.95841884613037
+              ],
+              "scenePath": "",
+              "scriptPath": ""
+            },
+            "target": {
+              "entityId": null,
+              "normal": [
+                4.37113847340243e-8,
+                0,
+                1
+              ],
+              "position": [
+                7.45058059692383e-9,
+                2.80112385749817,
+                3.95841884613037
+              ],
+              "revision": 1,
+              "surface": "none"
+            },
+            "timeOfDay": 12
+          },
+          "error": "",
+          "inventory": {},
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "player": {
+            "onFloor": true,
+            "pitch": 0.18,
+            "position": [
+              0,
+              0.899999976158142,
+              10.8338775634766
+            ],
+            "yaw": 0
+          },
+          "ready": true,
+          "surfaceSize": [
+            1200,
+            800
+          ]
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-11T23:18:12Z",
+        "worldId": "world-dd7fa4f8fff6"
+      },
+      "after": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+        "format": "craftmine.godot-observation/1",
+        "instanceId": "ff83113c7c09f66ff177d748",
+        "payload": {
+          "base": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "creation": {
+            "entities": [],
+            "obstacles": [],
+            "physicsTick": 918,
+            "playerBounds": {
+              "halfExtents": [
+                0.3,
+                0.9,
+                0.3
+              ],
+              "position": [
+                0,
+                -2.38418579323607e-8,
+                10.8338775634766
+              ]
+            },
+            "revision": 1,
+            "sceneObjectRefs": [
+              {
+                "ancestors": [
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                    "objectId": "30836524446",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                    "objectId": "30819747229",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                    "objectId": "30433871185",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                    "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                  }
+                ],
+                "nodeClass": "StaticBody3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                "objectId": "30886856097",
+                "scenePath": "",
+                "scriptPath": ""
+              }
+            ],
+            "sceneObjectSelection": {
+              "counts": {
+                "candidates": 48,
+                "facesRead": 69,
+                "nodes": 186,
+                "triangles": 6040
+              },
+              "reason": "nearer-or-tied-physics-hit",
+              "status": "blocked"
+            },
+            "sceneObjectTarget": {
+              "ancestors": [
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                  "objectId": "30836524446",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                  "objectId": "30819747229",
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                  "objectId": "30433871185",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                  "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                }
+              ],
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+              "normal": [
+                4.37113847340243e-8,
+                0,
+                1
+              ],
+              "objectId": "30886856097",
+              "position": [
+                7.45058059692383e-9,
+                2.80112385749817,
+                3.95841884613037
+              ],
+              "scenePath": "",
+              "scriptPath": ""
+            },
+            "target": {
+              "entityId": null,
+              "normal": [
+                4.37113847340243e-8,
+                0,
+                1
+              ],
+              "position": [
+                7.45058059692383e-9,
+                2.80112385749817,
+                3.95841884613037
+              ],
+              "revision": 1,
+              "surface": "none"
+            },
+            "timeOfDay": 12
+          },
+          "error": "",
+          "inventory": {},
+          "logicalViewportSize": [
+            1200,
+            800
+          ],
+          "player": {
+            "onFloor": true,
+            "pitch": 0.18,
+            "position": [
+              0,
+              0.899999976158142,
+              10.8338775634766
+            ],
+            "yaw": 0
+          },
+          "ready": true,
+          "surfaceSize": [
+            1200,
+            800
+          ]
+        },
+        "protocol": "craftmine.godot-runtime/2",
+        "sampledAt": "2026-09-11T23:18:12Z",
+        "worldId": "world-dd7fa4f8fff6"
+      },
+      "actions": [
+        {
+          "op": "look",
+          "args": {
+            "yaw": 0,
+            "pitch": 0.18
+          },
+          "before": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+            "format": "craftmine.godot-observation/1",
+            "instanceId": "ff83113c7c09f66ff177d748",
+            "payload": {
+              "base": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "creation": {
+                "entities": [],
+                "obstacles": [],
+                "physicsTick": 874,
+                "playerBounds": {
+                  "halfExtents": [
+                    0.3,
+                    0.9,
+                    0.3
+                  ],
+                  "position": [
+                    0,
+                    -2.38418579323607e-8,
+                    10.8338775634766
+                  ]
+                },
+                "revision": 1,
+                "sceneObjectRefs": [
+                  {
+                    "ancestors": [
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                        "objectId": "30836524446",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                        "objectId": "30819747229",
+                        "scenePath": "",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                        "objectId": "30433871185",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                        "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                      }
+                    ],
+                    "nodeClass": "StaticBody3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                    "objectId": "30886856097",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  }
+                ],
+                "sceneObjectSelection": {
+                  "counts": {
+                    "candidates": 48,
+                    "facesRead": 69,
+                    "nodes": 186,
+                    "triangles": 6040
+                  },
+                  "reason": "nearer-or-tied-physics-hit",
+                  "status": "blocked"
+                },
+                "sceneObjectTarget": {
+                  "ancestors": [
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                      "objectId": "30836524446",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                      "objectId": "30819747229",
+                      "scenePath": "",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                      "objectId": "30433871185",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                      "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                    }
+                  ],
+                  "nodeClass": "StaticBody3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "objectId": "30886856097",
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                "target": {
+                  "entityId": null,
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "revision": 1,
+                  "surface": "none"
+                },
+                "timeOfDay": 12
+              },
+              "error": "",
+              "inventory": {},
+              "logicalViewportSize": [
+                1200,
+                800
+              ],
+              "player": {
+                "onFloor": true,
+                "pitch": 0.18,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  10.8338775634766
+                ],
+                "yaw": 0
+              },
+              "ready": true,
+              "surfaceSize": [
+                1200,
+                800
+              ]
+            },
+            "protocol": "craftmine.godot-runtime/2",
+            "sampledAt": "2026-09-11T23:18:12Z",
+            "worldId": "world-dd7fa4f8fff6"
+          },
+          "result": {
+            "base": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "creation": {
+              "entities": [],
+              "obstacles": [],
+              "physicsTick": 876,
+              "playerBounds": {
+                "halfExtents": [
+                  0.3,
+                  0.9,
+                  0.3
+                ],
+                "position": [
+                  0,
+                  -2.38418579323607e-8,
+                  10.8338775634766
+                ]
+              },
+              "revision": 1,
+              "sceneObjectRefs": [
+                {
+                  "ancestors": [
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                      "objectId": "30836524446",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                      "objectId": "30819747229",
+                      "scenePath": "",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                      "objectId": "30433871185",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                      "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                    }
+                  ],
+                  "nodeClass": "StaticBody3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                  "objectId": "30886856097",
+                  "scenePath": "",
+                  "scriptPath": ""
+                }
+              ],
+              "sceneObjectSelection": {
+                "counts": {
+                  "candidates": 48,
+                  "facesRead": 69,
+                  "nodes": 186,
+                  "triangles": 6040
+                },
+                "reason": "nearer-or-tied-physics-hit",
+                "status": "blocked"
+              },
+              "sceneObjectTarget": {
+                "ancestors": [
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                    "objectId": "30836524446",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                    "objectId": "30819747229",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                    "objectId": "30433871185",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                    "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                  }
+                ],
+                "nodeClass": "StaticBody3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                "normal": [
+                  4.37113847340243e-8,
+                  0,
+                  1
+                ],
+                "objectId": "30886856097",
+                "position": [
+                  7.45058059692383e-9,
+                  2.80112385749817,
+                  3.95841884613037
+                ],
+                "scenePath": "",
+                "scriptPath": ""
+              },
+              "target": {
+                "entityId": null,
+                "normal": [
+                  4.37113847340243e-8,
+                  0,
+                  1
+                ],
+                "position": [
+                  7.45058059692383e-9,
+                  2.80112385749817,
+                  3.95841884613037
+                ],
+                "revision": 1,
+                "surface": "none"
+              },
+              "timeOfDay": 12
+            },
+            "error": "",
+            "inventory": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0.18,
+              "position": [
+                0,
+                0.899999976158142,
+                10.8338775634766
+              ],
+              "yaw": 0
+            },
+            "ready": true
+          },
+          "observation": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+            "format": "craftmine.godot-observation/1",
+            "instanceId": "ff83113c7c09f66ff177d748",
+            "payload": {
+              "base": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "creation": {
+                "entities": [],
+                "obstacles": [],
+                "physicsTick": 879,
+                "playerBounds": {
+                  "halfExtents": [
+                    0.3,
+                    0.9,
+                    0.3
+                  ],
+                  "position": [
+                    0,
+                    -2.38418579323607e-8,
+                    10.8338775634766
+                  ]
+                },
+                "revision": 1,
+                "sceneObjectRefs": [
+                  {
+                    "ancestors": [
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                        "objectId": "30836524446",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                        "objectId": "30819747229",
+                        "scenePath": "",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                        "objectId": "30433871185",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                        "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                      }
+                    ],
+                    "nodeClass": "StaticBody3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                    "objectId": "30886856097",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  }
+                ],
+                "sceneObjectSelection": {
+                  "counts": {
+                    "candidates": 48,
+                    "facesRead": 69,
+                    "nodes": 186,
+                    "triangles": 6040
+                  },
+                  "reason": "nearer-or-tied-physics-hit",
+                  "status": "blocked"
+                },
+                "sceneObjectTarget": {
+                  "ancestors": [
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                      "objectId": "30836524446",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                      "objectId": "30819747229",
+                      "scenePath": "",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                      "objectId": "30433871185",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                      "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                    }
+                  ],
+                  "nodeClass": "StaticBody3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "objectId": "30886856097",
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                "target": {
+                  "entityId": null,
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "revision": 1,
+                  "surface": "none"
+                },
+                "timeOfDay": 12
+              },
+              "error": "",
+              "inventory": {},
+              "logicalViewportSize": [
+                1200,
+                800
+              ],
+              "player": {
+                "onFloor": true,
+                "pitch": 0.18,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  10.8338775634766
+                ],
+                "yaw": 0
+              },
+              "ready": true,
+              "surfaceSize": [
+                1200,
+                800
+              ]
+            },
+            "protocol": "craftmine.godot-runtime/2",
+            "sampledAt": "2026-09-11T23:18:12Z",
+            "worldId": "world-dd7fa4f8fff6"
+          }
+        },
+        {
+          "op": "wait",
+          "args": {
+            "frames": 30
+          },
+          "before": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+            "format": "craftmine.godot-observation/1",
+            "instanceId": "ff83113c7c09f66ff177d748",
+            "payload": {
+              "base": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "creation": {
+                "entities": [],
+                "obstacles": [],
+                "physicsTick": 881,
+                "playerBounds": {
+                  "halfExtents": [
+                    0.3,
+                    0.9,
+                    0.3
+                  ],
+                  "position": [
+                    0,
+                    -2.38418579323607e-8,
+                    10.8338775634766
+                  ]
+                },
+                "revision": 1,
+                "sceneObjectRefs": [
+                  {
+                    "ancestors": [
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                        "objectId": "30836524446",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                        "objectId": "30819747229",
+                        "scenePath": "",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                        "objectId": "30433871185",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                        "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                      }
+                    ],
+                    "nodeClass": "StaticBody3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                    "objectId": "30886856097",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  }
+                ],
+                "sceneObjectSelection": {
+                  "counts": {
+                    "candidates": 48,
+                    "facesRead": 69,
+                    "nodes": 186,
+                    "triangles": 6040
+                  },
+                  "reason": "nearer-or-tied-physics-hit",
+                  "status": "blocked"
+                },
+                "sceneObjectTarget": {
+                  "ancestors": [
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                      "objectId": "30836524446",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                      "objectId": "30819747229",
+                      "scenePath": "",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                      "objectId": "30433871185",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                      "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                    }
+                  ],
+                  "nodeClass": "StaticBody3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "objectId": "30886856097",
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                "target": {
+                  "entityId": null,
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "revision": 1,
+                  "surface": "none"
+                },
+                "timeOfDay": 12
+              },
+              "error": "",
+              "inventory": {},
+              "logicalViewportSize": [
+                1200,
+                800
+              ],
+              "player": {
+                "onFloor": true,
+                "pitch": 0.18,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  10.8338775634766
+                ],
+                "yaw": 0
+              },
+              "ready": true,
+              "surfaceSize": [
+                1200,
+                800
+              ]
+            },
+            "protocol": "craftmine.godot-runtime/2",
+            "sampledAt": "2026-09-11T23:18:12Z",
+            "worldId": "world-dd7fa4f8fff6"
+          },
+          "result": {
+            "base": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "creation": {
+              "entities": [],
+              "obstacles": [],
+              "physicsTick": 914,
+              "playerBounds": {
+                "halfExtents": [
+                  0.3,
+                  0.9,
+                  0.3
+                ],
+                "position": [
+                  0,
+                  -2.38418579323607e-8,
+                  10.8338775634766
+                ]
+              },
+              "revision": 1,
+              "sceneObjectRefs": [
+                {
+                  "ancestors": [
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                      "objectId": "30836524446",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                      "objectId": "30819747229",
+                      "scenePath": "",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                      "objectId": "30433871185",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                      "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                    }
+                  ],
+                  "nodeClass": "StaticBody3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                  "objectId": "30886856097",
+                  "scenePath": "",
+                  "scriptPath": ""
+                }
+              ],
+              "sceneObjectSelection": {
+                "counts": {
+                  "candidates": 48,
+                  "facesRead": 69,
+                  "nodes": 186,
+                  "triangles": 6040
+                },
+                "reason": "nearer-or-tied-physics-hit",
+                "status": "blocked"
+              },
+              "sceneObjectTarget": {
+                "ancestors": [
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                    "objectId": "30836524446",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                    "objectId": "30819747229",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  },
+                  {
+                    "nodeClass": "Node3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                    "objectId": "30433871185",
+                    "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                    "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                  }
+                ],
+                "nodeClass": "StaticBody3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                "normal": [
+                  4.37113847340243e-8,
+                  0,
+                  1
+                ],
+                "objectId": "30886856097",
+                "position": [
+                  7.45058059692383e-9,
+                  2.80112385749817,
+                  3.95841884613037
+                ],
+                "scenePath": "",
+                "scriptPath": ""
+              },
+              "target": {
+                "entityId": null,
+                "normal": [
+                  4.37113847340243e-8,
+                  0,
+                  1
+                ],
+                "position": [
+                  7.45058059692383e-9,
+                  2.80112385749817,
+                  3.95841884613037
+                ],
+                "revision": 1,
+                "surface": "none"
+              },
+              "timeOfDay": 12
+            },
+            "error": "",
+            "inventory": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0.18,
+              "position": [
+                0,
+                0.899999976158142,
+                10.8338775634766
+              ],
+              "yaw": 0
+            },
+            "ready": true
+          },
+          "observation": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+            "format": "craftmine.godot-observation/1",
+            "instanceId": "ff83113c7c09f66ff177d748",
+            "payload": {
+              "base": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "creation": {
+                "entities": [],
+                "obstacles": [],
+                "physicsTick": 914,
+                "playerBounds": {
+                  "halfExtents": [
+                    0.3,
+                    0.9,
+                    0.3
+                  ],
+                  "position": [
+                    0,
+                    -2.38418579323607e-8,
+                    10.8338775634766
+                  ]
+                },
+                "revision": 1,
+                "sceneObjectRefs": [
+                  {
+                    "ancestors": [
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                        "objectId": "30836524446",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                        "objectId": "30819747229",
+                        "scenePath": "",
+                        "scriptPath": ""
+                      },
+                      {
+                        "nodeClass": "Node3D",
+                        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                        "objectId": "30433871185",
+                        "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                        "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                      }
+                    ],
+                    "nodeClass": "StaticBody3D",
+                    "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                    "objectId": "30886856097",
+                    "scenePath": "",
+                    "scriptPath": ""
+                  }
+                ],
+                "sceneObjectSelection": {
+                  "counts": {
+                    "candidates": 48,
+                    "facesRead": 69,
+                    "nodes": 186,
+                    "triangles": 6040
+                  },
+                  "reason": "nearer-or-tied-physics-hit",
+                  "status": "blocked"
+                },
+                "sceneObjectTarget": {
+                  "ancestors": [
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                      "objectId": "30836524446",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                      "objectId": "30819747229",
+                      "scenePath": "",
+                      "scriptPath": ""
+                    },
+                    {
+                      "nodeClass": "Node3D",
+                      "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                      "objectId": "30433871185",
+                      "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                      "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                    }
+                  ],
+                  "nodeClass": "StaticBody3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "objectId": "30886856097",
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                "target": {
+                  "entityId": null,
+                  "normal": [
+                    4.37113847340243e-8,
+                    0,
+                    1
+                  ],
+                  "position": [
+                    7.45058059692383e-9,
+                    2.80112385749817,
+                    3.95841884613037
+                  ],
+                  "revision": 1,
+                  "surface": "none"
+                },
+                "timeOfDay": 12
+              },
+              "error": "",
+              "inventory": {},
+              "logicalViewportSize": [
+                1200,
+                800
+              ],
+              "player": {
+                "onFloor": true,
+                "pitch": 0.18,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  10.8338775634766
+                ],
+                "yaw": 0
+              },
+              "ready": true,
+              "surfaceSize": [
+                1200,
+                800
+              ]
+            },
+            "protocol": "craftmine.godot-runtime/2",
+            "sampledAt": "2026-09-11T23:18:12Z",
+            "worldId": "world-dd7fa4f8fff6"
+          }
+        }
+      ],
+      "captures": [],
+      "actionPhysicsTicks": 31,
+      "limits": {
+        "steps": 16,
+        "framesPerStep": 120,
+        "actionPhysicsTicks": 600,
+        "captures": 4
+      },
+      "note": "Observed gameplay and pixels only; no automatic claim of wish acceptance, visual quality or adoption. Tick budget bounds scheduled actions, not elapsed physics during observation/capture."
+    },
+    "after": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+      "format": "craftmine.godot-observation/1",
+      "instanceId": "ff83113c7c09f66ff177d748",
+      "payload": {
+        "base": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "creation": {
+          "entities": [],
+          "obstacles": [],
+          "physicsTick": 922,
+          "playerBounds": {
+            "halfExtents": [
+              0.3,
+              0.9,
+              0.3
+            ],
+            "position": [
+              0,
+              -2.38418579323607e-8,
+              10.8338775634766
+            ]
+          },
+          "revision": 1,
+          "sceneObjectRefs": [
+            {
+              "ancestors": [
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                  "objectId": "30836524446",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                  "objectId": "30819747229",
+                  "scenePath": "",
+                  "scriptPath": ""
+                },
+                {
+                  "nodeClass": "Node3D",
+                  "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                  "objectId": "30433871185",
+                  "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                  "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+                }
+              ],
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+              "objectId": "30886856097",
+              "scenePath": "",
+              "scriptPath": ""
+            }
+          ],
+          "sceneObjectSelection": {
+            "counts": {
+              "candidates": 48,
+              "facesRead": 69,
+              "nodes": 186,
+              "triangles": 6040
+            },
+            "reason": "nearer-or-tied-physics-hit",
+            "status": "blocked"
+          },
+          "sceneObjectTarget": {
+            "ancestors": [
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway",
+                "objectId": "30836524446",
+                "scenePath": "res://addons/cw.scene.forest-gateway/parts/wall-doorway.tscn",
+                "scriptPath": ""
+              },
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway",
+                "objectId": "30819747229",
+                "scenePath": "",
+                "scriptPath": ""
+              },
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+                "objectId": "30433871185",
+                "scenePath": "res://addons/cw.scene.forest-gateway/scenes/forest_gateway.tscn",
+                "scriptPath": "res://addons/cw.scene.forest-gateway/scripts/forest_gateway.gd"
+              }
+            ],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "ins-544a40bb5763677b245fa53f-e0/Gateway/OpenStoneGateway/StaticCollision",
+            "normal": [
+              4.37113847340243e-8,
+              0,
+              1
+            ],
+            "objectId": "30886856097",
+            "position": [
+              7.45058059692383e-9,
+              2.80112385749817,
+              3.95841884613037
+            ],
+            "scenePath": "",
+            "scriptPath": ""
+          },
+          "target": {
+            "entityId": null,
+            "normal": [
+              4.37113847340243e-8,
+              0,
+              1
+            ],
+            "position": [
+              7.45058059692383e-9,
+              2.80112385749817,
+              3.95841884613037
+            ],
+            "revision": 1,
+            "surface": "none"
+          },
+          "timeOfDay": 12
+        },
+        "error": "",
+        "inventory": {},
+        "logicalViewportSize": [
+          1200,
+          800
+        ],
+        "player": {
+          "onFloor": true,
+          "pitch": 0.18,
+          "position": [
+            0,
+            0.899999976158142,
+            10.8338775634766
+          ],
+          "yaw": 0
+        },
+        "ready": true,
+        "surfaceSize": [
+          1200,
+          800
+        ]
+      },
+      "protocol": "craftmine.godot-runtime/2",
+      "sampledAt": "2026-09-11T23:18:12Z",
+      "worldId": "world-dd7fa4f8fff6"
+    },
+    "note": "Explicit normal save of actual player progress before preview; no source adoption. Old product preview reads last saved progress."
+  },
+  "preview": {
+    "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-3950ed30-1a29-4998-9eb8-0057b62fe8d5\\preview.png",
+    "sha256": "01cb3a2bbb4a00815d59bb80f092ea80ee8128aba74ec96f59b788001c5e1b8f",
+    "scope": "candidate",
+    "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+    "instanceId": "4f8b04fa7c522a3bb9dab78e",
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "width": 1200,
+    "height": 800,
+    "hostStateAndBoundsUnchanged": true
+  },
+  "formalAfter": {
+    "buildId": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+    "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-3950ed30-1a29-4998-9eb8-0057b62fe8d5\\formal-after.png",
+    "sha256": "4bb6442281c8e0695dd2cde7397277a3a1c4dfcddbe59fa8025b2073516802b3"
+  },
+  "launches": [
+    {
+      "number": 1,
+      "stdoutBytes": 5382,
+      "stderrBytes": 2638,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "counts": {
+    "status": 4,
+    "primaryMode": 5,
+    "godotObserve": 27,
+    "worldPanel:godot.runtimeResume": 1,
+    "godotCaptureBoundState": 6,
+    "godotCaptureBoundView": 3,
+    "worldPanel:package.request:sourceJob": 1,
+    "worldPanel:package.request:sourceList": 2,
+    "godotExplore": 1,
+    "worldPanel:godot.runtimeSave": 1,
+    "worldPanel:godot.candidateList": 1,
+    "worldPanel:godot.candidateRead": 1,
+    "worldPanel:godot.candidatePreview": 1,
+    "worldPanel:godot.candidateClose": 1,
+    "quit": 1
+  }
+}

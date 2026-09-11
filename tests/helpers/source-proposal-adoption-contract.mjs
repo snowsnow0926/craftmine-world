@@ -19,6 +19,7 @@ export function validateSourceProposalAdoptionCall(method,fields={},binding){
  if(method==='godotCaptureBoundView'){assert.deepEqual(Object.keys(fields),['payload']);assert.equal(fields.payload.worldId,binding.worldId);assert.equal(fields.payload.buildId,binding.captureIdentity?.buildId);assert.deepEqual(fields.payload,binding.captureIdentity);return;}
  if(method==='godotExplore'){assert.deepEqual(Object.keys(fields),['payload']);assert.deepEqual(fields.payload,binding.exploreRequest);assert.equal(fields.payload.worldId,binding.worldId);assert.equal(fields.payload.buildId,binding.formalBuildId);assert.ok(Array.isArray(fields.payload.steps)&&fields.payload.steps.length<=8&&fields.payload.steps.every(s=>['walk','look','wait'].includes(s.op)));return;}
  assert.deepEqual(Object.keys(fields).sort(),['channel','payload']);assert.equal(method,'worldPanel');assert.equal(fields.payload.worldId,binding.worldId);
+ if(fields.channel==='godot.runtimeSave'){assert.equal(binding.allowReframeSave,true);assert.equal(binding.reframeOnly,true);assert.deepEqual(fields.payload,{worldId:binding.worldId,freeze:true});return;}
  if(fields.channel==='package.request'){
   const {method,params}=fields.payload;assert.deepEqual(Object.keys(fields.payload).sort(),['method','params','worldId']);
   const expected=method==='installSourceProposal'?{worldId:binding.worldId,proposalId:binding.proposalId}:method==='sourceJob'?{worldId:binding.worldId,jobId:binding.jobId}:{worldId:binding.worldId};
