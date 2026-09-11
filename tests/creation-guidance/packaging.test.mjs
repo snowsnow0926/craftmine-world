@@ -16,7 +16,8 @@ test('production plugin build includes exact guidance resources and serves a pin
   try {
     execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',output],
       {cwd:root,encoding:'utf8',windowsHide:true,timeout:120000,maxBuffer:2*1024*1024});
-    for(const file of ['godot-guidance.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
+    for(const file of ['godot-guidance.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd',
+      'godot-engine-api.cjs','godot-diagnostics.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
       assert.deepEqual(fs.readFileSync(path.join(output,file)),fs.readFileSync(path.join(root,'plugins/craftmine-world',file)),file);
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
@@ -25,9 +26,13 @@ test('production plugin build includes exact guidance resources and serves a pin
     const {createWorldTools}=require(path.join(output,'world-tools.cjs'));
     let selectedSkill=corpus.skills[0];
     const calls=[];
+    const failedJob={jobId:'gjob-'+'a'.repeat(64),worldId:'packaged-world',buildId:'gbd-fixture',sourceRevision:1,
+      manifestHash:'b'.repeat(64),outputHash:'c'.repeat(64),status:'failed',candidateId:null,
+      output:{format:'craftmine.godot-job-result/1',passed:false,compile:{errors:['SCRIPT ERROR: Parse Error: Expected parameter name.']},check:{passed:false,assertions:[]}}};
     const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
       calls.push(method);
       if(method==='workspace.open')return {worldId:'packaged-world'};
+      if(method==='godotBuild.read')return failedJob;
       if(method==='godotProject.index')return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
         baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable'};
       if(method==='godotProject.read')return {...args,sha256:selectedSkill.references.find(ref=>ref.projectPath===args.path).sha256};
@@ -36,6 +41,18 @@ test('production plugin build includes exact guidance resources and serves a pin
     const tools=createWorldTools(core,async()=>({activeWorldId:'packaged-world'}));
     const tool=tools.find(entry=>entry.name==='godot_guidance');assert.ok(tool);
     const context={projectId:'project',sessionId:'session',turnId:'turn',toolCallId:'call',executionId:'execution'};
+    const docs=tools.find(entry=>entry.name==='godot_docs');
+    const metadata=await docs.execute({mode:'api-info'},context);
+    assert.equal(metadata.status,'known');assert.equal(metadata.pin.engineVersion,'4.7.2-stable');
+    const member=await docs.execute({mode:'api-class',className:'CharacterBody3D',memberName:'move_and_slide'},context);
+    assert.equal(member.items[0].metadata.return.typeName,'bool');
+    assert.ok(metadata.limitations.some(text=>text.includes('Web')));
+    assert.equal(typeof require(path.join(output,'godot-diagnostics.cjs')).diagnoseGodotBuildRead,'function');
+    assert.deepEqual(calls,[],'engine API metadata must not request world or engine execution');
+    const checked=await tools.find(entry=>entry.name==='godot_build_read').execute({jobId:failedJob.jobId},context);
+    assert.deepEqual(checked.output,failedJob.output);assert.equal(checked.outputHash,failedJob.outputHash);
+    assert.equal(checked.diagnostics.diagnostics[0].errorCode,'GODOT_SCRIPT_PARSE_ERROR');
+    assert.equal(checked.diagnostics.source.buildId,failedJob.buildId);assert.equal(checked.candidateId,null);
     const catalog=await tool.execute({mode:'catalog'},context);
     const skill=catalog.skills[0];
     const body=await tool.execute({mode:'read',id:skill.id,version:skill.version,sha256:skill.sha256,
@@ -62,6 +79,6 @@ test('production plugin build includes exact guidance resources and serves a pin
     const exampleBody=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:example.sha256,path:example.path,
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
     assert.equal(exampleBody.text,fs.readFileSync(path.join(output,'guidance/references/double-press-rule.gd'),'utf8').replace(/\r\n/g,'\n'));
-    assert.ok(calls.every(method=>['workspace.open','godotProject.index','godotProject.read'].includes(method)));
+    assert.ok(calls.every(method=>['workspace.open','godotProject.index','godotProject.read','godotBuild.read'].includes(method)));
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });

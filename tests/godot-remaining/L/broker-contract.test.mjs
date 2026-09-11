@@ -7,7 +7,7 @@
 // No engine, no browser, no input simulation.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,copyFile,writeFile,readFile} from 'node:fs/promises';
+import {mkdtemp,mkdir,copyFile,writeFile,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -18,8 +18,9 @@ const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-remaining-L-broker-'));
 const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs'];
-for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
+  'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
+  'godot-engine-api.cjs','godot-diagnostics.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json'];
+for(const file of FILES){await mkdir(path.dirname(path.join(staging,file)),{recursive:true});await copyFile(path.join(source,file),path.join(staging,file));}
 
 // Minimal stand-in for the generated domain bundle. Only the names the broker
 // destructures, with the same field-allowlist semantics it relies on.
@@ -131,6 +132,28 @@ test('godot_docs answers without a world binding or any host mutation',async()=>
   assert.equal(read.untrusted.trust,'untrusted-reference-data');
   await assert.rejects(f.call('godot_docs',{mode:'nonsense'}),/INVALID_DOCS_MODE/);
   assert.deepEqual(f.calls.map(entry=>entry.method),[],'documentation must not touch the world store');
+});
+
+test('godot_docs exposes measured API class/member/search with pins and no world access',async()=>{
+  const f=fixture({noWorld:true});
+  const info=await f.call('godot_docs',{mode:'api-info'});
+  assert.equal(info.status,'known');assert.ok(info.coverage.classes>0);
+  assert.deepEqual(info.modes,['api-info','api-class','api-search']);assert.ok(info.metadataQueryModes.includes('member'));
+  assert.ok(info.limitations.some(text=>text.includes('Web')));
+  const member=await f.call('godot_docs',{mode:'api-class',className:'CharacterBody3D',memberName:'move_and_slide',kind:'method'});
+  assert.equal(member.items.length,1);assert.equal(member.items[0].metadata.return.typeName,'bool');
+  const first=await f.call('godot_docs',{mode:'api-class',className:'Node',limit:1,inherited:false});
+  assert.equal(first.items.length,1);assert.ok(first.nextOffset>0);
+  const second=await f.call('godot_docs',{mode:'api-class',className:'Node',limit:1,inherited:false,offset:first.nextOffset,...first.pin});
+  assert.equal(second.status,'known');assert.equal(second.offset,first.nextOffset);
+  const search=await f.call('godot_docs',{mode:'api-search',query:'velocity',className:'CharacterBody3D',kind:'property'});
+  assert.ok(search.items.some(item=>item.name==='velocity'));
+  assert.equal((await f.call('godot_docs',{mode:'api-class',className:'MissingProjectClass'})).status,'unknown');
+  await assert.rejects(f.call('godot_docs',{mode:'api-class',className:'Node',limit:101}),/ENGINE_API_QUERY_INVALID/);
+  await assert.rejects(f.call('godot_docs',{mode:'api-class',className:'Node',offset:1}),/ENGINE_API_CONTINUATION_PIN_REQUIRED/);
+  await assert.rejects(f.call('godot_docs',{mode:'api-info',id:'digest-id'}),/ENGINE_API_QUERY_UNKNOWN_FIELD/);
+  await assert.rejects(f.call('godot_docs',{mode:'api-info',directory:'C:/private'}),/UNKNOWN_FIELD/);
+  assert.deepEqual(f.calls,[]);
 });
 
 test('godot_capability_report advertises what is really reachable',async()=>{
