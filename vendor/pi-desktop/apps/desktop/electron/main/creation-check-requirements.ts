@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto';
+import {parseCreationWishIntent} from './creation-wish-intent.ts';
 export type CreationEntity = {id:string;kind:string;position:number[];scale:number[];color?:string;open?:boolean;visible?:boolean;solid?:boolean;presenceMutable?:boolean;solidMutable?:boolean;bounds?:{min:number[];max:number[]}};
 export type CreationRequirement = {format:'craftmine.creation-requirements/1';requestHash:string;entities:Array<{id?:string;kind?:string;position?:number[];scale?:number[];color?:string;visible?:boolean;solid?:boolean;absent?:boolean;excludeIds?:string[]}>;counts:Array<{kind:string;count:number}>;doorSequence?:{doorId:string;steps:string[]};harvest?:{entityId:string;inventoryId:"wood";reward:1;regrowFrames:300};timeOfDay?:18;duplicates?:{kind:string;count:2;scale:number[];color:string;priorIds:string[]}};
 export type FrozenCreationRequirement = {status:'verifiable';requirements:CreationRequirement}|{status:'unverified';reason:string};
@@ -32,15 +33,17 @@ export function freezeCreationRequirements(capture:{target:{entityId:string|null
   if(text.includes('这棵树')&&selected?.kind!=='tree')return unknown;
   if(text==='在这里再放一块石头，保留已有物体和游玩进度')text='在这里放一块石头';
   if(text==='在这个副本的这里放一棵树，保留之前的内容')text='在这里放一棵树';
-  const color=/^这棵树的颜色改成(#[a-fA-F0-9]{6})，其他东西保持原样$/.exec(text);
-  const place=/^(?:请)?在这里放(?:置)?(?:一棵树|一块石头|一个箱子|一扇门|一个标记)$/.exec(text);
-  const enlarge=/^(?:请)?把(?:这棵树|这个对象|它)(?:放大到|变为)([2-9])倍$/.exec(text);
+  const wish=parseCreationWishIntent(text);
   if(text==='让这棵树可以按E砍伐，砍掉时给背包增加一块木头，5秒后重新长出来。保存重开后保留木头和树的生长状态'&&selected?.kind==='tree'){r.harvest={entityId:selected.id,inventoryId:'wood',reward:1,regrowFrames:300};r.entities.push({id:selected.id,kind:'tree',position:[...selected.position],scale:[...selected.scale]});}
   else if(text==='把时间设为18点'){r.timeOfDay=18;}
-  else if(color&&selected?.kind==='tree'){r.entities.push({id:selected.id,kind:'tree',position:selected.position,scale:selected.scale,color:color[1],...frozenPresence(selected)});}
+  else if(wish?.action==='modify'&&selected){
+   if(wish.referenceKind!==undefined&&selected.kind!==wish.referenceKind)return unknown;
+   const scale=wish.scaleFactor===undefined?[...selected.scale]:selected.scale.map(n=>n*wish.scaleFactor!);
+   if(scale.some(n=>n<.25||n>4))return unknown;
+   r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],scale,...(selected.color?{color:selected.color}:{}),...(wish.color?{color:wish.color}:{}),...frozenPresence(selected)});
+  }
   else if(text==='复制这棵树两个，排开一点'&&selected?.kind==='tree'&&selected.color){r.duplicates={kind:'tree',count:2,scale:[...selected.scale],color:selected.color,priorIds:all.map(e=>e.id)};r.counts.push({kind:'tree',count:all.filter(e=>e.kind==='tree').length+2});}
-  else if(place&&capture.target.position){const kind=text.endsWith('树')?'tree':text.endsWith('石头')?'rock':text.endsWith('箱子')?'chest':text.endsWith('门')?'door':'marker';r.entities.push({kind,position:capture.target.position.map(n=>Math.round(n*1000)/1000),excludeIds:all.map(e=>e.id),visible:true,solid:true});r.counts.push({kind,count:all.filter(e=>e.kind===kind).length+1});}
-  else if(enlarge&&selected){r.entities.push({id:selected.id,kind:selected.kind,position:[...selected.position],...(selected.color?{color:selected.color}:{}),...frozenPresence(selected),scale:selected.scale.map(n=>n*Number(enlarge[1]))});}
+  else if(wish?.action==='place'&&capture.target.position){const kind=wish.kind;r.entities.push({kind,position:capture.target.position.map(n=>Math.round(n*1000)/1000),...(wish.color?{color:wish.color}:{}),...(wish.scale?{scale:wish.scale}:{}),excludeIds:all.map(e=>e.id),visible:true,solid:true});r.counts.push({kind,count:all.filter(e=>e.kind===kind).length+1});}
   else if(/^(?:请)?删除(?:这个对象|这棵树|它)$/.test(text)&&selected){r.entities.push({id:selected.id,absent:true});r.counts.push({kind:selected.kind,count:all.filter(e=>e.kind===selected.kind).length-1});}
   else {const sequence=/^依次触碰([A-Za-z0-9._-]+(?:、[A-Za-z0-9._-]+){1,7})后打开([A-Za-z0-9._-]+)$/.exec(text);if(!sequence)return unknown;const steps=sequence[1].split('、'),doorId=sequence[2];if(!all.some(e=>e.id===doorId&&e.kind==='door')||!steps.every(id=>all.some(e=>e.id===id&&e.kind==='marker')))return unknown;r.doorSequence={doorId,steps};r.entities.push({id:doorId,kind:'door'},...steps.map(id=>({id,kind:'marker'})));}
  }else{

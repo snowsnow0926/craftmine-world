@@ -11,12 +11,65 @@ test('freezes exact placement and validates actual new identity/count/location',
  assert.equal(creationEntitiesMatch(r,[tree,added]),true);
  for(const entities of [[tree],[tree,{...added,position:[4,0,0]}],[tree,{...added,kind:'rock'}],[tree,added,{...added,id:'tree-c'}],[{...added,id:'tree-a'}]])assert.equal(creationEntitiesMatch(r,entities),false);
 });
-test('exact scale targets original object; compound wishes remain unverified',()=>{
+test('exact scale targets original object; unsupported compound wishes remain unverified',()=>{
  const r=freezeCreationRequirements(capture,'把这棵树放大到2倍').requirements;
  assert.equal(creationEntitiesMatch(r,[{...tree,scale:[2,2,2]}]),true);
  assert.equal(creationEntitiesMatch(r,[tree,{...tree,id:'other',scale:[2,2,2]}]),false);
  assert.equal(creationEntitiesMatch(r,[{...tree,scale:[1.5,1.5,1.5]}]),false);
  for(const text of ['把这棵树变大','在这里放一棵树然后变成红色','在这里放一棵树，不要石头','做一个砍树重生机关'])assert.equal(freezeCreationRequirements(capture,text).status,'unverified');
+});
+
+test('bounded color and scale wishes freeze the entire same-object change',()=>{
+ const other={...tree,id:'untouched',position:[9,0,0],color:'#abcdef'};
+ for(const text of ['把这棵树放大到两倍并改成蓝色','这棵树变蓝，同时尺寸设为2倍','请把这个对象的颜色改成#0000FF并且放大到原来的二倍。']){
+  const frozen=freezeCreationRequirements({...capture,entities:[tree,other]},text);
+  assert.equal(frozen.status,'verifiable',text);
+  const actual=[{...tree,scale:[2,2,2],color:'#0000ff'},other];
+  assert.equal(creationEntitiesMatch(frozen.requirements,actual),true,text);
+  for(const change of [{scale:[1,1,1]},{color:'#ff0000'},{id:'replacement'},{position:[3,0,0]},{visible:false}])assert.equal(creationEntitiesMatch(frozen.requirements,[{...actual[0],...change},other]),false,text);
+  assert.equal(creationEntitiesMatch(frozen.requirements,[actual[0],{...other,color:'#0000ff'}]),false,text);
+ }
+ for(const [text,scale] of [['把这棵树缩小到半倍',[.5,.5,.5]],['把这棵树调整到1.5倍',[1.5,1.5,1.5]],['把这棵树设为四倍',[4,4,4]]]){
+  const frozen=freezeCreationRequirements(capture,text);assert.equal(frozen.status,'verifiable',text);assert.equal(creationEntitiesMatch(frozen.requirements,[{...tree,scale}]),true,text);
+ }
+ const large={...tree,scale:[3,3,3]};assert.equal(freezeCreationRequirements({...capture,entities:[large]},'把这棵树放大到两倍并改成蓝色').status,'unverified');
+});
+
+test('attribute placement binds one new entity with both color and size',()=>{
+ const requests=[
+  ['在这里放一棵蓝色的2倍大小的树','tree','#0000ff',2],
+  ['请在这里放置一块二倍大小的红色石头','rock','#ff0000',2],
+  ['在这里放一个#ABCDEF的箱子，尺寸设为半倍','chest','#abcdef',.5],
+  ['在这里放一扇门，颜色改成黄色并放大到2倍','door','#ffff00',2],
+  ['在这里放一个灰色的标记','marker','#808080',1],
+ ];
+ for(const [text,kind,color,size] of requests){
+  const frozen=freezeCreationRequirements(capture,text);assert.equal(frozen.status,'verifiable',text);
+  const created={id:'new-entity',kind,color,scale:[size,size,size],position:[3,0,0],visible:true,solid:true};
+  assert.equal(creationEntitiesMatch(frozen.requirements,[tree,created]),true,text);
+  assert.equal(creationEntitiesMatch(frozen.requirements,[tree,{...created,color:'#123456'}]),false,text);
+  if(size!==1)assert.equal(creationEntitiesMatch(frozen.requirements,[tree,{...created,scale:[1,1,1]}]),false,text);
+  for(const entities of [[tree],[tree,{...created,position:[4,0,0]}],[tree,created,{...created,id:'extra'}],[{...tree,color},created]])assert.equal(creationEntitiesMatch(frozen.requirements,entities),false,text);
+ }
+});
+
+test('wish parsing does not authorize ambiguity, conflicting changes or unconsumed clauses',()=>{
+ const refused=[
+  '把这棵树变大一点','把这棵树变深红','把这棵树放大两倍','把这棵树缩小到两倍','把这棵树放大到半倍',
+  '把这棵树改成蓝色并改成红色','把这棵树改成蓝色并改成蓝色','把这棵树放大到2倍并缩小到半倍',
+  '把这棵树改成红色然后砍掉','把这棵树改成红色，不改变颜色','把这棵树改成红色并把石头变蓝',
+  '把这棵树改成红色并放大到2倍并且发出声音','把这棵树改成#fff','把这棵树改成#ff000080',
+  '在这里放两棵红色的树','在这里放一棵红色的树和一块石头','在这里放一棵红色的蓝色的树',
+  '在这里放一棵红色的树，颜色改成红色','在这里放一棵树，变红，放大到2倍',
+  '在这里放一棵树然后变成红色','在这里放一棵能砍伐的红色树','在这里放一棵树，其他东西保持原样，然后开门',
+  '把这棵树改成红色，并','把这棵树设为NaN倍','把这棵树设为0倍',
+ ];
+ for(const text of refused)assert.equal(freezeCreationRequirements(capture,text).status,'unverified',text);
+ const rock={...tree,kind:'rock'};
+ assert.equal(freezeCreationRequirements({...capture,entities:[rock]},'把这棵树改成红色').status,'unverified');
+ assert.equal(freezeCreationRequirements({...capture,entities:[rock]},'把这块石头改成红色').status,'verifiable');
+ assert.equal(freezeCreationRequirements({...capture,target:{entityId:null,position:null}},'把它改成红色').status,'unverified');
+ assert.equal(freezeCreationRequirements({...capture,target:{entityId:null,position:null}},'在这里放一棵红色的树').status,'unverified');
 });
 test('direct changes and delete have frozen values; mutated requirements cannot pass job binding',()=>{
  const creationRequirements=freezeCreationRequirements(capture,{action:'modify',targetId:'tree-a',changes:{color:'#aabbcc',scale:[2,2,2]}});

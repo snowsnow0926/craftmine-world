@@ -13,6 +13,7 @@ try{
  browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),args:['--enable-unsafe-swiftshader','--use-angle=swiftshader']});
  const entity=(id,kind,position,scale=[1,1,1])=>({id,kind,position,scale,rotationY:0,color:'#84a866',parameters:{}});
  const entities=[entity('tree-a','tree',[4,0,0],[2,2,2]),entity('door-a','door',[-4,0,0]),entity('marker-a','marker',[0,0,0]),entity('marker-b','marker',[0,0,-4]),entity('copy-a','tree',[8,0,0],[2,2,2]),entity('copy-b','tree',[12,0,0],[2,2,2])];
+ for(const item of entities)if(item.kind==='tree')item.color='#0000ff';
  for(const variant of ['correct','unconditional','overlapping-copies']){
   entities[5].position=variant==='overlapping-copies'?[8,0,0]:[12,0,0];
   const project=path.join(out,variant),exportRoot=path.join(out,variant+'-web');fs.mkdirSync(exportRoot);materializeBase({baseId:'creation-sandbox',worldId:'requirement-world',out:project});
@@ -29,6 +30,13 @@ try{
   const captured={target:{entityId:'tree-a',position:[4,0,0]},entities:[{...entities[0],scale:[1,1,1]},...entities.slice(1)]};const enlarged=freezeCreationRequirements(captured,'把这棵树放大到2倍').requirements;
   check(variant+' correct runtime target and scale',creationEntitiesMatch(enlarged,actual));check(variant+' wrong scale rejected',!creationEntitiesMatch({...enlarged,entities:[{id:'tree-a',scale:[3,3,3]}]},actual));check(variant+' wrong identity rejected',!creationEntitiesMatch({...enlarged,entities:[{id:'tree-wrong',scale:[2,2,2]}]},actual));check(variant+' wrong color rejected',!creationEntitiesMatch({...enlarged,entities:[{id:'tree-a',color:'#ff0000'}]},actual));check(variant+' wrong count rejected',!creationEntitiesMatch({...enlarged,counts:[{kind:'tree',count:2}]},actual));
   const observation=readGodotCreationObservation(raw,runtime,'running');
+  const beforeCompound={target:{entityId:'tree-a',position:[4,0,0]},entities:observation.entities.map(item=>item.id==='tree-a'?{...item,scale:[1,1,1],color:'#ff0000'}:item)};
+  const compound=freezeCreationRequirements(beforeCompound,'把这棵树放大到两倍并改成蓝色').requirements;
+  check(variant+' compound wish matches actual material and dimensions',godotCreationMatches(observation,{format:'craftmine.godot-check-requirements/1',creation:compound}));
+  const wrongCompound=freezeCreationRequirements(beforeCompound,'把这棵树放大到两倍并改成红色').requirements;
+  check(variant+' compound wish rejects an unchanged material',!godotCreationMatches(observation,{format:'craftmine.godot-check-requirements/1',creation:wrongCompound}));
+  const attributePlace=freezeCreationRequirements({target:{entityId:null,position:[4,0,0]},entities:observation.entities.filter(item=>item.id!=='tree-a')},'在这里放一棵蓝色的两倍大小的树').requirements;
+  check(variant+' attributed placement matches one actual new object',godotCreationMatches(observation,{format:'craftmine.godot-check-requirements/1',creation:attributePlace}));
   const copyRequired=freezeCreationRequirements({target:{entityId:'tree-a',position:[4,0,0]},entities:entities.slice(0,4)},'复制这棵树两个，排开一点').requirements;
   check(variant+' actual duplicate count, style and separated collision bounds',creationEntitiesMatch(copyRequired,observation.entities)===(variant!=='overlapping-copies'));
   const timeRequired={format:'craftmine.godot-check-requirements/1',creation:freezeCreationRequirements({target:{entityId:null,position:null},entities:observation.entities},'把时间设为18点').requirements};
