@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../stores/app-store";
 import { loadCraftmineLayout, resetCraftmineLayout } from "../lib/craftmine-layout";
-import { enterCraftmineMode } from "../lib/craftmine-mode";
+import { enterCraftmineMode, openCraftmineModeEntry } from "../lib/craftmine-mode";
+import { CRAFTMINE_MODE_TEXT } from "../lib/craftmine-mode-text";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import { api } from "../lib/api";
 import { CraftmineOverlayControls } from "./CraftmineOverlayControls";
@@ -47,6 +48,7 @@ export function CraftmineLayoutControls() {
       aria-label={chinese ? "工作台布局" : "Workspace layout"}
       data-craftmine-layout={layout.mode}
     >
+      <button type="button" data-action="choose-mode" onClick={openCraftmineModeEntry}>{CRAFTMINE_MODE_TEXT.chooseMode[lang]}</button>
       <form onSubmit={(event) => { event.preventDefault(); choose("create"); }}><button type="submit" aria-pressed={layout.mode === "create"} title={chinese ? "保留聊天与作品工作面板" : "Chat and world side by side"}>{layout.mode === "play" ? (chinese ? "回到创作" : "Back to create") : (chinese ? "创作" : "Create")}</button></form>
       <form onSubmit={(event) => { event.preventDefault(); choose("play"); }}><button type="submit" aria-pressed={layout.mode === "play"} title={chinese ? "世界占满工作区；保留当前对话与标签" : "Fill the workspace; preserve your conversation and tabs"}>{chinese ? "游玩" : "Play"}</button></form>
       {layout.mode === "play" && layout.overlay === "closed" && <CraftmineOverlayControls />}

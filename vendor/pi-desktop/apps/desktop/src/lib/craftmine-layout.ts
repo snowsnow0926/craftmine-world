@@ -101,6 +101,7 @@ export function resetCraftmineLayout(
   const value: CraftmineLayout = {
     ...CRAFTMINE_LAYOUT_DEFAULTS,
     mode,
+    playWhenWorldActivates: mode === "play",
     widths: { ...CRAFTMINE_LAYOUT_DEFAULTS.widths },
     aux: {},
   };
