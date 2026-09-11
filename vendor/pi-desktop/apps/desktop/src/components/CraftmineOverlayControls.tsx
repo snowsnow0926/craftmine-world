@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../stores/app-store";
 import { setCraftmineOverlay } from "../lib/craftmine-layout";
+import { enterCraftmineMode } from "../lib/craftmine-mode";
 import { useCraftmineLayout } from "../lib/use-craftmine-immersion";
 import { useCreationTaskStatus } from "../hooks/use-creation-task-status";
 import { creationTaskLabel } from "../lib/creation-task-status";
@@ -33,6 +34,11 @@ export function CraftmineOverlayControls() {
       {overlay !== "closed" && <button type="button" onClick={() => setCraftmineOverlay("closed")} title="Escape">
         {chinese ? "收起" : "Close"}
       </button>}
+      {/* Every state that can be reached by keyboard is reachable by mouse too. */}
+      <button type="button" data-action="exit-play" onClick={() => enterCraftmineMode("create", { explicit: true })}
+        title={chinese ? "Escape（面板收起后再按一次）" : "Escape again once the panel is closed"}>
+        {chinese ? "回到创作" : "Back to create"}
+      </button>
       {(creation.status?.phase !== "idle" && creation.status) || creation.unavailable || running ? <span className="craftmine-overlay-task" role="status" aria-live="polite"
         data-task-stage={status?.pendingToolConfirmations ? "approval" : showHost ? creation.status!.phase : showUnavailable ? "unavailable" : activity?.phase ?? "running"}
         title={showHost ? creation.status?.error : undefined}>

@@ -4,6 +4,11 @@ The existing world workspace has `create` and `play` presentation modes. Play
 adds `closed`, `compact`, and `full` creation states. Entering either mode closes
 the overlay. Existing stored layouts migrate to `closed`; the create/play choice,
 chat width, world-panel widths and auxiliary expansion preferences remain intact.
+A world becoming active enters play by default, once per world: the automatic
+switch is recorded against that world and states no preference, so a reload, an
+ordinary re-render or an explicit return to create is never overridden by the
+same activation. The visible 游玩/创作 controls are the only writers of the
+stored preference.
 
 The existing `ChatSurface`, its composer draft, retained transcript panes and
 `WorkPanel` stay mounted when changing overlay levels. No overlay transition
@@ -31,10 +36,13 @@ short windows cannot send negative native coordinates.
 
 F2 toggles compact chat; Shift+F2 toggles the full workbench. Escape dismisses
 an open creation surface only after IME, pointer lock, menus, pickers and other
-dialogs have yielded. Consumed keys and repeats do nothing. Main forwards these
-finite shortcuts from native child surfaces through
-`onCraftmineImmersionShortcut`; they are application scoped, never global.
-Visible compact, full, close and return-to-create controls remain available.
+dialogs have yielded, and a further Escape with no overlay left returns to the
+workbench (`exit-play`). Leaving play is a presentation change: it keeps the
+world, conversation, draft and a running task, and it states no preference.
+Consumed keys and repeats do nothing. Main forwards these finite shortcuts from
+native child surfaces through `onCraftmineImmersionShortcut`; they are
+application scoped, never global. Visible compact, full, close and
+return-to-create controls remain available in every state that a key can reach.
 
 The shared composer includes the reusable `VoiceInput` control while a world
 creation surface is visible. A final transcript appends plain text to the same

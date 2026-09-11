@@ -1,7 +1,8 @@
 import { useEffect, useState, type RefObject } from "react";
-import { isCraftmineWorldWorkspace, loadCraftmineLayout, setCraftmineOverlay, toggleCraftmineOverlay, type CraftmineOverlay } from "./craftmine-layout";
+import { isCraftmineWorldWorkspace, loadCraftmineLayout, setCraftmineOverlay, type CraftmineOverlay } from "./craftmine-layout";
 import { api } from "./api";
-import { immersionKeyAction } from "./craftmine-immersion-keys";
+import { applyImmersionKey, immersionKeyAction, immersionShortcutAction } from "./craftmine-immersion-keys";
+import { enterCraftmineMode } from "./craftmine-mode";
 import { fullscreenEscapeContext } from "../../shared/world-fullscreen-shortcuts";
 
 export function useCraftmineLayout() {
@@ -89,6 +90,10 @@ export function useCraftmineImmersionSurface(
     if (!active || blocked) return;
     let composing = false;
     const layers = new WeakMap<KeyboardEvent, boolean>();
+    // Leaving play is a presentation change like any other: it keeps the world,
+    // the conversation and a running task, and it states no preference, so the
+    // next world still opens filling the workspace.
+    const exitPlay = () => { enterCraftmineMode("create"); };
     const capture = (event: KeyboardEvent) => {
       const context = fullscreenEscapeContext(document, composing);
       const voiceActive = event.key === "Escape" && !!document.querySelector('.voice-input[data-voice-state="starting"],.voice-input[data-voice-state="recording"],.voice-input[data-voice-state="transcribing"]');
@@ -96,9 +101,8 @@ export function useCraftmineImmersionSurface(
     };
     const bubble = (event: KeyboardEvent) => {
       const next = immersionKeyAction(event, loadCraftmineLayout(localStorage).overlay, composing || layers.get(event) === true);
-      if (next === null) return;
+      if (!applyImmersionKey(next, { setOverlay: setCraftmineOverlay, exitPlay })) return;
       event.preventDefault();
-      setCraftmineOverlay(next);
     };
     const begin = () => { composing = true; };
     const end = () => { composing = false; };
@@ -106,7 +110,7 @@ export function useCraftmineImmersionSurface(
       const context = fullscreenEscapeContext(document, composing);
       if (context.composing || context.overlayOpen || context.editing || context.pointerLocked) return;
       const current = loadCraftmineLayout(localStorage).overlay;
-      setCraftmineOverlay(action === "escape" ? "closed" : toggleCraftmineOverlay(current, action));
+      applyImmersionKey(immersionShortcutAction(action, current), { setOverlay: setCraftmineOverlay, exitPlay });
     });
     window.addEventListener("keydown", capture, true);
     window.addEventListener("keydown", bubble);

@@ -8,6 +8,18 @@ export type CraftmineLayout = {
    * so a layout saved before the world list existed keeps working.
    */
   aux: Record<string, boolean>;
+  /**
+   * Enter play — the world filling the whole workspace — when a world becomes
+   * active. On by default, and only the visible 游玩/回到创作 controls state it;
+   * an automatic switch never rewrites it.
+   */
+  playWhenWorldActivates: boolean;
+  /**
+   * The world the automatic switch already ran for. Remembering it keeps a
+   * reload, an ordinary re-render or an explicit return to create from being
+   * overridden by the same activation again.
+   */
+  enteredWorldId: string | null;
 };
 
 export type CraftmineOverlay = "closed" | "compact" | "full";
@@ -25,6 +37,8 @@ export const CRAFTMINE_LAYOUT_DEFAULTS: CraftmineLayout = {
   widths: { create: CRAFTMINE_CREATE_DEFAULT_WIDTH, play: CRAFTMINE_PLAY_DEFAULT_WIDTH },
   chatWidth: CRAFTMINE_CHAT_DEFAULT_WIDTH,
   aux: {},
+  playWhenWorldActivates: true,
+  enteredWorldId: null,
 };
 export function clampCraftmineChatWidth(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value)
@@ -45,6 +59,9 @@ const parseAux = (value: unknown): Record<string, boolean> =>
       ) as Record<string, boolean>
     : {};
 
+const parseWorldId = (value: unknown): string | null =>
+  typeof value === "string" && value.length > 0 ? value : null;
+
 export function loadCraftmineLayout(storage: Pick<Storage, "getItem">): CraftmineLayout {
   try {
     const value = JSON.parse(storage.getItem(KEY) ?? "null");
@@ -58,6 +75,10 @@ export function loadCraftmineLayout(storage: Pick<Storage, "getItem">): Craftmin
         create: boundedWidth(value?.widths?.create, CRAFTMINE_CREATE_DEFAULT_WIDTH),
         play: boundedWidth(value?.widths?.play, CRAFTMINE_PLAY_DEFAULT_WIDTH),
       },
+      // Entering a world fills the workspace unless the player turned it off
+      // with 创作; a stored layout from before this option keeps the default.
+      playWhenWorldActivates: value?.playWhenWorldActivates !== false,
+      enteredWorldId: parseWorldId(value?.enteredWorldId),
     };
   } catch {
     return { ...CRAFTMINE_LAYOUT_DEFAULTS, widths: { ...CRAFTMINE_LAYOUT_DEFAULTS.widths } };
@@ -87,8 +108,50 @@ export function resetCraftmineLayout(
   return value;
 }
 
-export function changeCraftmineLayout(value: CraftmineLayout, mode: CraftmineLayout["mode"], currentWidth: number): CraftmineLayout {
-  return { ...value, mode, overlay: "closed", widths: { ...value.widths, [value.mode]: boundedWidth(currentWidth, value.widths[value.mode]) } };
+export function changeCraftmineLayout(
+  value: CraftmineLayout,
+  mode: CraftmineLayout["mode"],
+  currentWidth: number,
+  options: { explicit?: boolean } = {},
+): CraftmineLayout {
+  return {
+    ...value,
+    mode,
+    overlay: "closed",
+    widths: { ...value.widths, [value.mode]: boundedWidth(currentWidth, value.widths[value.mode]) },
+    // Only a visible control states the preference; entering play for a new
+    // world must not silently become "always enter play".
+    ...(options.explicit ? { playWhenWorldActivates: mode === "play" } : {}),
+  };
+}
+
+export type CraftmineActivationDecision = {
+  /** Switch the workspace into play now. */
+  switchToPlay: boolean;
+  /** The activation marker to store, or the previous one when nothing changed. */
+  enteredWorldId: string | null;
+};
+
+/**
+ * A world becoming active is the only event that may change the workspace on
+ * its own, and it may do so once per world. The decision is pure so the
+ * automatic switch is checkable without a renderer: entering a world fills the
+ * workspace by default, an explicit return to create is not re-applied, and an
+ * already playing workspace is left alone.
+ */
+export function decideCraftmineActivation(input: {
+  worldId: string | null;
+  enteredWorldId: string | null;
+  playWhenWorldActivates: boolean;
+  playing: boolean;
+}): CraftmineActivationDecision {
+  if (!input.worldId || input.worldId === input.enteredWorldId) {
+    return { switchToPlay: false, enteredWorldId: input.enteredWorldId };
+  }
+  return {
+    switchToPlay: input.playWhenWorldActivates && !input.playing,
+    enteredWorldId: input.worldId,
+  };
 }
 
 /** Presentation only: never creates sessions, submits prompts, or stops tasks. */

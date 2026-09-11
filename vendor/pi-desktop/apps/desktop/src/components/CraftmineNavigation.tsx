@@ -4,11 +4,12 @@ import { Box } from "lucide-react";
 import { useAppStore, createCopiedWorldSession } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
-import { loadCraftmineLayout } from "../lib/craftmine-layout";
+import { decideCraftmineActivation, loadCraftmineLayout, saveCraftmineLayout } from "../lib/craftmine-layout";
 import { craftmineLang, worldErrorMessage } from "../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import type { CraftmineAuxSurface } from "../lib/craftmine-aux";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
+import { enterCraftmineMode } from "../lib/craftmine-mode";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
@@ -59,6 +60,24 @@ export function CraftmineNavigation() {
       state.setWorkPanelWidth(layout.widths[layout.mode]);
     }
   }, [ready, available]);
+
+  // Entering a world fills the workspace by default. The automatic switch runs
+  // once per activated world, states no preference, and leaves an already
+  // playing workspace alone: the visible 游玩/创作 controls remain the only way
+  // to change what gets stored.
+  useEffect(() => {
+    if (!available || !active || !controller.activeWorldId) return;
+    const layout = loadCraftmineLayout(localStorage);
+    const decision = decideCraftmineActivation({
+      worldId: controller.activeWorldId,
+      enteredWorldId: layout.enteredWorldId,
+      playWhenWorldActivates: layout.playWhenWorldActivates,
+      playing: layout.mode === "play",
+    });
+    if (decision.enteredWorldId === layout.enteredWorldId) return;
+    saveCraftmineLayout(localStorage, { ...layout, enteredWorldId: decision.enteredWorldId });
+    if (decision.switchToPlay) enterCraftmineMode("play");
+  }, [available, active, controller.activeWorldId]);
 
   const sessionTitle = useMemo(() => {
     if (!activeSessionId) return "";

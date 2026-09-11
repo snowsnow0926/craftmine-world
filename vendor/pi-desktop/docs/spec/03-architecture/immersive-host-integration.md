@@ -4,8 +4,12 @@ The renderer sends `{ active, overlay, overlayBounds, blocked? }` through the
 allowlisted `pi-desktop/craftmine/setImmersion` channel. Only the exact main
 WebContents main frame is accepted. Booleans, enum values and finite nonnegative
 viewport bounds are validated before applying native geometry. The response
-uses the standard `Result` envelope. Main emits only `compact`, `full` or
-`escape` on `pi-desktop/craftmine/immersionShortcut`.
+uses the standard `Result` envelope. Main emits only `compact`, `full`,
+`escape` or `exit-play` on `pi-desktop/craftmine/immersionShortcut`. The same
+finite decision runs for a native child surface and for the main frame: F2 and
+Shift+F2 request an overlay, Escape with an overlay open dismisses it, and
+Escape with no overlay left (including from the focused game view) asks the
+renderer to return to the workbench rather than being swallowed.
 
 Native rectangles exclude the measured renderer pane, including visible picker
 overflow and the narrow full layout. Requested plugin bounds are retained so

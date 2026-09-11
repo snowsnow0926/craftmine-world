@@ -1,0 +1,38 @@
+import { useAppStore } from "../stores/app-store";
+import {
+  changeCraftmineLayout,
+  loadCraftmineLayout,
+  saveCraftmineLayout,
+  type CraftmineLayout,
+} from "./craftmine-layout";
+import { pluginWorkPanelTab } from "./work-panel-tabs";
+
+const WORLD = pluginWorkPanelTab("craftmine.world", "world");
+
+/**
+ * Switches the workspace presentation only. Like every other layout change it
+ * never creates a session, submits a prompt or stops a running task: the world,
+ * its conversation and its progress stay bound to the same context.
+ *
+ * `explicit` records a player's stated preference instead of a transient one.
+ * Automatic entry into play (see `decideCraftmineActivation`) never sets it, so
+ * an automatic switch can never turn the default on or off by itself.
+ */
+export function enterCraftmineMode(
+  mode: CraftmineLayout["mode"],
+  options: { explicit?: boolean } = {},
+): CraftmineLayout {
+  const state = useAppStore.getState();
+  const next = changeCraftmineLayout(
+    loadCraftmineLayout(localStorage),
+    mode,
+    state.workPanelWidth,
+    options,
+  );
+  saveCraftmineLayout(localStorage, next);
+  state.setPage("chat");
+  state.openWorkPanelTab(WORLD);
+  state.setWorkPanelWidth(next.widths[mode]);
+  window.dispatchEvent(new CustomEvent("craftmine-layout-changed"));
+  return next;
+}

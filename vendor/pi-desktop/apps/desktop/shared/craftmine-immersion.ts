@@ -34,7 +34,9 @@ export function excludeImmersion(bounds: CraftmineImmersionBounds, state: Craftm
 export function immersionShortcut(input: NativeFullscreenInput, overlayOpen: boolean): CraftmineImmersionShortcut | null {
   if (input.type !== "keyDown" || input.isAutoRepeat || input.isComposing || input.keyCode === 229 || input.alt || input.control || input.meta) return null;
   if (input.key === "F2") return input.shift ? "full" : "compact";
-  if (overlayOpen && input.key === "Escape" && !input.shift) return "escape";
+  // Escape layers outward: an open overlay closes first, and only a closed one
+  // returns to the workbench, before any later Escape leaves OS fullscreen.
+  if (input.key === "Escape" && !input.shift) return overlayOpen ? "escape" : "exit-play";
   return null;
 }
 

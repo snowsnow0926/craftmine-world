@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../stores/app-store";
-import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
-import {
-  changeCraftmineLayout,
-  loadCraftmineLayout,
-  resetCraftmineLayout,
-  saveCraftmineLayout,
-} from "../lib/craftmine-layout";
+import { loadCraftmineLayout, resetCraftmineLayout } from "../lib/craftmine-layout";
+import { enterCraftmineMode } from "../lib/craftmine-mode";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import { api } from "../lib/api";
 import { CraftmineOverlayControls } from "./CraftmineOverlayControls";
-
-const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
 export function CraftmineLayoutControls() {
   const { i18n } = useTranslation();
@@ -35,16 +28,9 @@ export function CraftmineLayoutControls() {
     window.addEventListener("craftmine-layout-changed", sync);
     return () => window.removeEventListener("craftmine-layout-changed", sync);
   }, []);
-  const choose = (mode: "create" | "play") => {
-    const state = useAppStore.getState();
-    const next = changeCraftmineLayout(loadCraftmineLayout(localStorage), mode, state.workPanelWidth);
-    saveCraftmineLayout(localStorage, next);
-    state.setPage("chat");
-    state.openWorkPanelTab(WORLD);
-    state.setWorkPanelWidth(next.widths[mode]);
-    setLayout(next);
-    window.dispatchEvent(new CustomEvent("craftmine-layout-changed"));
-  };
+  // 游玩/创作 are the player's stated preference for entering a world, so this
+  // is the one entry point that records it.
+  const choose = (mode: "create" | "play") => setLayout(enterCraftmineMode(mode, { explicit: true }));
   // Reset returns every remembered width and expansion to the documented
   // defaults, and keeps the workspace in the mode the player is already in.
   const reset = () => {
@@ -73,7 +59,7 @@ export function CraftmineLayoutControls() {
         </button>
       </form>
       <span role="note" style={{ alignSelf: "center", fontSize: "var(--text-2xs)" }}>
-        {chinese ? "F11 全屏切换 · Esc 逐层返回后退出全屏" : "F11 fullscreen · Esc dismisses a layer before exiting fullscreen"}
+        {chinese ? "F11 全屏切换 · Esc 逐层返回：浮层 → 回到创作 → 退出全屏" : "F11 fullscreen · Esc dismisses a layer first: overlay, then play, then fullscreen"}
       </span>
       {fullscreenError && <span role="alert">{fullscreenError}</span>}
     </div>

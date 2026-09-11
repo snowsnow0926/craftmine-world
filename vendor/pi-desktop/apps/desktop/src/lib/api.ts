@@ -289,7 +289,7 @@ export const api = {
   craftmineSetImmersion: (state: CraftmineImmersionState) => invoke<void>(IPC.invoke.craftmineSetImmersion, state),
   onCraftmineImmersionShortcut: (listener: (action: CraftmineImmersionShortcut) => void) =>
     window.piDesktop?.on(IPC.event.craftmineImmersionShortcut, (action) => {
-      if (action === "compact" || action === "full" || action === "escape") listener(action);
+      if (action === "compact" || action === "full" || action === "escape" || action === "exit-play") listener(action);
     }) ?? (() => {}),
   getVersion: () => invoke<AppVersionInfo>(IPC.invoke.appGetVersion),
   health: () => invoke<HostHealth>(IPC.invoke.appHealth),

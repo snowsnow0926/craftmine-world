@@ -8805,7 +8805,7 @@ error over the real stdio protocol, never `UNKNOWN_METHOD`, and that `hello`
 advertises the corresponding capabilities.
 
 No actual input, focus activation, Pointer Lock or user browser is permitted.
-## CRAFTMINE-GODOT-023 �� Live observation, durable budget and executor hand-off
+## CRAFTMINE-GODOT-023 �� Live observation, durable budget and executor hand-off
 
 Run `tests/godot-round3/S6/*.test.mjs` with the plugin modules staged beside a
 stub domain bundle, and `node desktop/build-world-plugin.mjs` to prove the
@@ -9448,6 +9448,22 @@ document may consume one audio grant within 10 seconds; other frames, camera,
 mixed media and expired grants remain denied. Main clipboard copy still works.
 No audio file, remote request or transcript log is produced. Synthetic audio and
 fake-device permission probes do not establish live recognition accuracy.
+
+### CM-IW-04: entering a world and returning to the workbench
+
+Open a world from the world list and require the workspace to fill with the world
+on its own: side columns removed, world surface at full width, and no session,
+prompt or task created by the change. F2 must reserve a real bottom strip and
+Shift+F2 a side column, both leaving the world visible and the same conversation
+draft behind. Escape closes an open overlay first; with no overlay left, the same
+key returns to the workbench, and the visible "回到创作" control does the same in
+every state a key can reach. The return keeps the world view, session, tabs,
+draft and a running task, and it states the stored preference so a later world
+stays in the workbench; the 游玩 control re-enables filling the workspace and
+applies it immediately. A reload and an ordinary re-render must not replay the
+automatic switch for a world that was already entered, and a layout stored by an
+earlier build must keep working. Native Godot rectangle exclusion, the installed
+client, physical input and player comfort remain separate acceptance items.
 
 ### AI1-G01: pinned creation guidance discovery and packaging
 

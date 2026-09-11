@@ -25,11 +25,15 @@ test('invalid states and hostile numeric geometry fail before native mutation',(
   assert.equal(immersionBlocksInput({...NO_IMMERSION,active:true,blocked:true}),true);
   assert.equal(immersionBlocksInput({...compact,active:false}),false);
 });
-test('finite native shortcuts reject IME repeats modifiers and key releases',()=>{
+test('finite native shortcuts layer Escape from overlay to workbench',()=>{
   assert.equal(immersionShortcut({type:'keyDown',key:'F2'},false),'compact');
   assert.equal(immersionShortcut({type:'keyDown',key:'F2',shift:true},false),'full');
   assert.equal(immersionShortcut({type:'keyDown',key:'Escape'},true),'escape');
-  assert.equal(immersionShortcut({type:'keyDown',key:'Escape'},false),null);
+  // A closed overlay has nothing left to dismiss, so the same key returns to
+  // the workbench instead of being swallowed.
+  assert.equal(immersionShortcut({type:'keyDown',key:'Escape'},false),'exit-play');
+  assert.equal(immersionShortcut({type:'keyDown',key:'Escape',shift:true},false),null);
+  assert.equal(immersionShortcut({type:'keyDown',key:'F11'},false),null);
   for(const patch of [{isAutoRepeat:true},{isComposing:true},{keyCode:229},{control:true},{meta:true},{alt:true},{type:'keyUp'}])
     assert.equal(immersionShortcut({type:'keyDown',key:'F2',...patch},true),null);
 });
