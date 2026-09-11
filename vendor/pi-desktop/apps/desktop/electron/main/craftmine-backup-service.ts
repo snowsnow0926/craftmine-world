@@ -7,6 +7,16 @@ export type CraftmineDomainCall = (method: string, params: Record<string, unknow
 export type CraftmineFilePicker = (request: { kind: "save-backup" | "open-backup" | "save-diagnostics" | "save-issue"; suggestedName?: string }) => Promise<string | null>;
 export const CRAFTMINE_BACKUP_LIMIT = 256 * 1024 * 1024 * 1024;
 export function desktopServiceError(code: string): Error { return Object.assign(new Error(code), { code }); }
+// Lifecycle callbacks cross an Electron view boundary and may lose custom Error
+// fields. Only these exact, source-defined messages can become public codes.
+const BACKUP_LIFECYCLE_MESSAGES = new Set(["BACKUP_PROGRESS_CHANGED_REINSPECT", "WORLD_BUSY", "ACTIVE_TASK_EXISTS"]);
+export function backupServiceErrorCode(error: unknown): string {
+  const candidate = error && typeof error === "object" ? error as { code?: unknown; errorCode?: unknown; message?: unknown } : {};
+  const code = candidate.errorCode ?? candidate.code;
+  if (typeof code === "string" && /^[A-Z][A-Z0-9_]{0,79}$/.test(code)) return code;
+  return typeof candidate.message === "string" && BACKUP_LIFECYCLE_MESSAGES.has(candidate.message)
+    ? candidate.message : "BACKUP_OPERATION_FAILED";
+}
 function fields(input: Record<string, unknown>, allowed: string[]) {
   if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).some(key => !allowed.includes(key))) throw desktopServiceError("INVALID_PARAMS");
 }
@@ -145,9 +155,7 @@ export function createCraftmineBackupService(options: { domainCall: CraftmineDom
       }
       throw desktopServiceError("UNKNOWN_BACKUP_CHANNEL");
       } catch (error) {
-        const candidate = error as { code?: unknown; errorCode?: unknown };
-        const code = candidate.errorCode ?? candidate.code;
-        throw desktopServiceError(typeof code === "string" && /^[A-Z][A-Z0-9_]{0,79}$/.test(code) ? code : "BACKUP_OPERATION_FAILED");
+        throw desktopServiceError(backupServiceErrorCode(error));
       }
     },
     dispose() { grants.clear(); for (const entry of operations.values()) entry.cancelled = true; },

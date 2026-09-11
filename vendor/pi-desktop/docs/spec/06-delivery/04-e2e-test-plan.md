@@ -9577,3 +9577,7 @@ Only an authenticated isolated headless profile accepts godotExplore. Bind world
 隔离测试中捕获普通碰撞体：模型上下文应保留真实节点与来源，禁止将它
 转成五类操作实体或自动采用。捕获后改名可继续；删除、同路径替换、换脚本
 或更换祖先须重新捕获。近乎重叠的两个不同碰撞体不能因交点接近而混淆。
+
+### CM-PROMO-04: restore lifecycle refusals retain safe actionable codes
+
+Use synthetic selected archives and callbacks to reject beforeRestore with the exact progress-changed, world-busy and active-task Error messages. Preserve each as a structured safe code and show the fixed save/reinspect or wait hint, including the normal Electron IPC wrapper. No backend restore/activation starts. Private paths, multiline messages, unknown uppercase text and embedded known-code substrings remain generic and do not leak. Existing archive fingerprint, expiring grant, expectedCurrentHash and explicit retry checks stay active. Reconfirm the actual native failure with a new package; a generic historical failure is not evidence of its specific cause.
