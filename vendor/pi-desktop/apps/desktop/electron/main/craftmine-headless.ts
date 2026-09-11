@@ -12,6 +12,7 @@ import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance
 import { createGodotExploration } from "./craftmine-godot-exploration";
 import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
 import {createHeadlessPlayer} from './craftmine-headless-player';
+import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -118,6 +119,10 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case 'headlessPermissionPending':case 'headlessPermissionResolve':{
+          const script=validateHeadlessPermissionEnvelope(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
+          return desktopCall(script);
+        }
         case 'playerSetup':case 'playerPrompt':case 'playerStatus':case 'playerAbort':
           if(!hasHeadlessController()||!player||process.env.CRAFTMINE_CREATION_EVAL==='1'||Object.keys(request).sort().join(',')!=='id,method,payload,type')throw Error('HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED');
           return player(request.method,request.payload);

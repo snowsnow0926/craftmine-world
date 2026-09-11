@@ -10,9 +10,15 @@ import { installScrollbarReveal } from "./lib/scrollbar-reveal";
 import {installHeadlessAskBridge} from './lib/headless-ask';
 import {useAppStore} from './stores/app-store';
 import {headAsk} from './lib/pending-asks';
+import {installHeadlessPermissionBridge} from './lib/headless-permission';
+import {headPermission} from './lib/pending-permissions';
 import "./styles/globals.css";
 
 const rendererSurface = new URLSearchParams(window.location.search).get("surface");
+installHeadlessPermissionBridge(globalThis as unknown as Record<string,unknown>,{
+  head:sessionId=>headPermission(useAppStore.getState().pendingPermissions,sessionId),
+  resolve:(sessionId,requestId,decision)=>useAppStore.getState().resolvePermission(sessionId,requestId,decision),
+});
 installHeadlessAskBridge(globalThis as unknown as Record<string,unknown>,{
   head:sessionId=>headAsk(useAppStore.getState().pendingAsks,sessionId),
   resolve:(sessionId,resolution)=>useAppStore.getState().resolveAsk(sessionId,resolution),
