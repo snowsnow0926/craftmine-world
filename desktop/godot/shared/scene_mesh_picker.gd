@@ -31,6 +31,15 @@ func _entry(box: AABB, from: Vector3, to: Vector3) -> float:
 func _answer(status: String, reason: String, counts: Dictionary, excluded: Array) -> Dictionary:
 	return {"status": status, "reason": reason, "scope": "bounded-static-mesh-triangles", "counts": counts.duplicate(), "excludedObjectIds": excluded.duplicate(), "blockRaySelection": status == "fallback", "pixelAccurate": false}
 
+func _label_radius(bounds: AABB, basis: Basis) -> float:
+	var far_corner := Vector3(maxf(absf(bounds.position.x), absf(bounds.end.x)), maxf(absf(bounds.position.y), absf(bounds.end.y)), maxf(absf(bounds.position.z), absf(bounds.end.z)))
+	var lengths := Vector3(basis.x.length(), basis.y.length(), basis.z.length())
+	var orthogonal := absf(basis.x.dot(basis.y)) <= EPS * lengths.x * lengths.y and absf(basis.x.dot(basis.z)) <= EPS * lengths.x * lengths.z and absf(basis.y.dot(basis.z)) <= EPS * lengths.y * lengths.z
+	# Orthogonal axes use the tight maximum scale. A sheared basis requires the
+	# conservative Frobenius bound; max axis length is not a spectral-norm bound.
+	var scale_bound := maxf(lengths.x, maxf(lengths.y, lengths.z)) if orthogonal else lengths.length()
+	return far_corner.length() * scale_bound
+
 func _material(node: MeshInstance3D) -> Dictionary:
 	if node.material_overlay != null: return {"reason": "material-overlay", "unbounded": true}
 	var material: Material = node.material_override
@@ -110,8 +119,10 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 			if node is Label3D:
 				var label := node as Label3D
 				if label.font != null and (label.font.get_script() != null or not label.font.get_class() in ["FontFile", "SystemFont"]): return _answer("fallback", "custom-label-font", counts, excluded)
+				if label.fixed_size: return _answer("fallback", "fixed-size-label", counts, excluded)
 				var bounds := label.get_aabb()
-				var radius := maxf(bounds.position.length(), bounds.end.length()) * label.global_basis.get_scale().abs().length()
+				if not _finite(bounds.position) or not _finite(bounds.size) or not _finite(label.global_position) or not _finite(label.global_basis.x) or not _finite(label.global_basis.y) or not _finite(label.global_basis.z): return _answer("fallback", "invalid-label-bounds", counts, excluded)
+				var radius := _label_radius(bounds, label.global_basis)
 				var distance := _entry(AABB(label.global_position - Vector3.ONE * radius, Vector3.ONE * radius * 2), origin, endpoint)
 				if distance != INF: unknown.append({"distance": distance, "reason": "label-geometry"})
 				continue
@@ -190,7 +201,7 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 				ambiguous = true
 	for item in unknown:
 		if item.distance <= minf(nearest_distance, physics_distance) + EPS: return _answer("fallback", item.reason, counts, excluded)
-	if physics_distance < nearest_distance - EPS: return _answer("blocked", "nearer-physics-hit", counts, excluded)
+	if physics_distance != INF and physics_distance <= nearest_distance + EPS: return _answer("blocked", "nearer-or-tied-physics-hit", counts, excluded)
 	if ambiguous: return _answer("fallback", "ambiguous-coincident-meshes", counts, excluded)
 	if nearest.is_empty(): return _answer("none", "no-supported-triangle-hit", counts, excluded)
 	var answer := _answer("hit", "nearest-supported-triangle", counts, excluded)
