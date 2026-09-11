@@ -229,6 +229,7 @@ export function installHeadlessControl(access: {
             }
             const bounds = selector => { const r = document.querySelector(selector)?.getBoundingClientRect(); return r ? {x:r.x,y:r.y,width:r.width,height:r.height} : null; };
             return {entry:!!document.querySelector('[data-mode-entry]'),play:!!document.querySelector('.craftmine-play'),
+              playWorldId:document.querySelector('[data-mode="play"]')?.getAttribute('data-active-world')??null,
               world:bounds('.work-plugin-view-surface'),dialog:bounds('.main-pane[role="dialog"]'),width:innerWidth,height:innerHeight};
           })()`, false);
         }
