@@ -1,8 +1,8 @@
 # craftmine world 交付运行手册（首次创作 / 底座区别 / 作品复用 / 导出 / 升级与恢复）
 
 状态：**本机预览版。未签名、无隔离 Windows 机器、安装生命周期（A17）未验收。**
-本文件是交付与说明材料，不是安装验收记录；每条都标明“已验证”或“待验证”。
-写作日期 2026-09-10，代码基线 `e4621478`（K 分支 `codex/godot-remaining-k-20260910`）。
+本文件是交付与说明材料，具体通过情况以随包校验清单和本轮交付报告为准。
+更新日期 2026-09-11，目标版本 `0.14.4-preview.11`，开发基线 `fa9f7247`。
 
 配套文档：`desktop/windows-USER_GUIDE.zh-CN.md`（面向玩家的完整说明）、
 `desktop/delivery/README.md`（发行预检）、`desktop/delivery/RELEASE_MANIFEST.md`
@@ -23,7 +23,7 @@
 `docs/GODOT_CYCLE_05.md`（Godot 世界部分为固定样本与 headless 证据）。
 待验证：可见窗口里的合成与操作手感由玩家自主试玩确认，自动测试不抢输入。
 
-## 2 三个底座的区别与选择
+## 2 五种底座的区别与选择
 
 | | 3D 第一人称 | 2D 横版 | 2D 俯视 |
 | --- | --- | --- | --- |
@@ -36,8 +36,11 @@
 | 素材来源 | 项目自有几何体与材质（MIT，`licenses/ORIGINAL_ASSETS_LICENSE.txt`） | 无素材文件，全部代码绘制 | 程序生成的像素图（`tools/make-assets.mjs`） |
 | 状态格式 | `craftmine.godot-base-state/1` | `craftmine.godot-sideview-state/1` | `craftmine.godot-topdown-state/1` |
 
-选择建议：要做武器、装备、射击类原型选第一人称；要做平台跳跃、房间机关选横版；
-要做采集、商店、任务、地图探索选俯视。三个底座共享同一套宿主协议，切换底座不会
+此外，`creation-sandbox` 是空白 3D 造物起点，支持目标选择、直接放置、最近结果、参数调整及源码玩法；
+`mining-sandbox` 提供挖掘与采集起点。具体版本和可用能力以包内底座目录为准。
+
+选择建议：连续创造与本版试玩优先选造物世界；武器、装备、射击类原型选第一人称；
+平台跳跃、房间机关选横版；采集、商店、任务、地图探索选俯视。底座共享宿主协议，切换底座不会
 自动迁移旧世界的玩法状态，旧进度按第 5 节的恢复流程处理。
 
 各底座的来源与权利声明：`desktop/delivery/base-assets/rights/*.md`；
@@ -53,12 +56,11 @@
 
 ## 4 导出
 
-当前状态（必须如实说明）：
+当前客户端提供“导出 Windows 游戏”：先保存游玩进度，再导出已采用的 Godot 版本，
+输出 `game.exe`、`game.pck`、独立存档支持及来源/许可材料。未采用的草稿不会被当作正式作品导出。
+请保留整个导出目录，实际完成状态以导出回执和生成文件为准。仓库固定样本探针仅作为额外工具，
+不代替包内客户端导出玩家世界的验收。
 
-- 已实现并验证的是**固定样本导出**：`desktop/godot/export-probes.mjs` 只导出仓库
-  自有的 `first-person` / `top-down` 样本工程，用于证明引擎接入与许可随包；
-  它不是“导出玩家作品”。
-- 玩家作品的一键导出仍在 GD6/GD7 范围内，**尚未交付**。
 - 导出物必须携带：`licenses/GODOT_LICENSE.txt`、`licenses/GODOT_COPYRIGHT.txt`
   （哈希固定在 `desktop/godot/toolchain.lock.json`），以及项目自有导出运行时与示例
   脚本的目标 MIT 许可文本（见 `desktop/delivery/licensing/drafts/EXPORT_LICENSE_NOTES.md`）。
@@ -98,8 +100,8 @@
 | 条目 | 状态 | 下一步 |
 | --- | --- | --- |
 | A17 安装生命周期 | 未验收 | 在隔离 Windows 机器执行 `desktop/delivery/windows-lifecycle-acceptance.ps1 -Execute`（需要隔离标记与绝对安装目录） |
-| 同包验收（客户端 + Godot + 模板 + broker + 底座 + 桥接 + 许可） | 待集成 | 集成后执行 `release-manifest.mjs create --package <包>` 再 `verify`，并与 I 在同一包上重跑真实创作与保存恢复 |
-| 玩家作品导出 | 未交付 | GD6/GD7 实现后补 `preflight.mjs export` 与 `licensing-check.mjs --export` |
-| M 配置隔离 / 源码历史恢复 | 未集成 | 按 `docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md` 集成后由发行清单固定 |
-| N 资源库 / 搜索 / 预览 | 未集成 | 按 `docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md` 集成后测量 P50/P95 |
+| 同包验收（客户端 + Godot + 模板 + broker + 底座 + 桥接 + 许可） | 本轮按实际成品复验 | 执行 `release-manifest.mjs create --package <包>` 再 `verify`，在包内 EXE 重跑造物、编辑、保存重开与副本故事 |
+| 玩家 Windows 作品导出 | 已有产品入口，本轮同包复验 | 运行真实导出及 `preflight.mjs export`，不能仅用固定样本证明 |
+| 配置隔离 / 源码历史恢复 | 已有工程验收记录 | 以 `docs/CREATION_NEXT_BATCH_DELIVERY_2026-09-11.md` 和本轮交付身份核对；个人安装不代替隔离环境 |
+| 资源库 / 搜索 / 预览 | 依实际底座能力开放 | 固定版本、来源及依赖；缺失能力明确说明，不声称全部模块或性能指标均通过 |
 | 干净 Windows 首装 | 未验证 | 同上，需独立环境 |
