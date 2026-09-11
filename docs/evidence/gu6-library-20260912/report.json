@@ -1,0 +1,634 @@
+{
+  "format": "craftmine.gu6-library-trial/1",
+  "binarySha256": "a33db70c1ac69f27f8f638c7b8e9ca4bf1d697f8c28e48e29c15d8b9e7b925fa",
+  "directory": "D:\\cm-agent-godot-0912\\test-results\\gu6-library-rhuxsl",
+  "modelCalls": 0,
+  "godotExecutions": 0,
+  "imports": [
+    {
+      "name": "building",
+      "zipSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "result": {
+        "assetId": "kenney-city-building-trial",
+        "bytes": 23409,
+        "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b",
+        "deduplicated": false,
+        "existing": false,
+        "fileCount": 1,
+        "kind": "object",
+        "mediaKind": "package",
+        "method": "asset.import",
+        "operationId": "catalog-building",
+        "preview": {
+          "state": "pending"
+        },
+        "replayed": false,
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version": 1,
+        "version_": {
+          "assetId": "kenney-city-building-trial",
+          "bytes": 23409,
+          "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b",
+          "createdAt": 1789166242801,
+          "displayName": "Kenney 城市建筑",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 23409,
+              "mediaType": "application/zip",
+              "path": "building.zip",
+              "sha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5"
+            }
+          ],
+          "kind": "object",
+          "mediaKind": "package",
+          "source": {
+            "author": "Kenney; Craftmine trial adapter",
+            "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+            "licenseStatus": "unverified",
+            "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+          },
+          "version": 1
+        }
+      }
+    },
+    {
+      "name": "road",
+      "zipSha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+      "result": {
+        "assetId": "kenney-city-road-trial",
+        "bytes": 18350,
+        "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b",
+        "deduplicated": false,
+        "existing": false,
+        "fileCount": 1,
+        "kind": "object",
+        "mediaKind": "package",
+        "method": "asset.import",
+        "operationId": "catalog-road",
+        "preview": {
+          "state": "pending"
+        },
+        "replayed": false,
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "version": 1,
+        "version_": {
+          "assetId": "kenney-city-road-trial",
+          "bytes": 18350,
+          "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b",
+          "createdAt": 1789166242810,
+          "displayName": "Kenney 城市道路",
+          "fileCount": 1,
+          "files": [
+            {
+              "bytes": 18350,
+              "mediaType": "application/zip",
+              "path": "road.zip",
+              "sha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314"
+            }
+          ],
+          "kind": "object",
+          "mediaKind": "package",
+          "source": {
+            "author": "Kenney; Craftmine trial adapter",
+            "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+            "licenseStatus": "unverified",
+            "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+          },
+          "version": 1
+        }
+      }
+    }
+  ],
+  "reads": [
+    {
+      "name": "building",
+      "search": {
+        "format": "craftmine.godot-library/1",
+        "group": "asset",
+        "method": "asset.search",
+        "available": true,
+        "result": {
+          "items": [
+            {
+              "assetId": "kenney-city-building-trial",
+              "bytes": 23409,
+              "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b",
+              "createdAt": 1789166242801,
+              "displayName": "Kenney 城市建筑",
+              "favorite": false,
+              "fileCount": 1,
+              "kind": "object",
+              "mediaKind": "package",
+              "source": {
+                "author": "Kenney; Craftmine trial adapter",
+                "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+                "licenseStatus": "unverified",
+                "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+              },
+              "state": {
+                "appliedToSource": null,
+                "baseChecked": null,
+                "indexed": true,
+                "previewable": false
+              },
+              "tags": [
+                "Kenney",
+                "城市",
+                "建筑"
+              ],
+              "version": 1
+            }
+          ],
+          "method": "asset.search",
+          "nextOffset": null,
+          "scope": "local-library",
+          "total": 1,
+          "truncated": false
+        }
+      },
+      "read": {
+        "format": "craftmine.godot-library/1",
+        "group": "asset",
+        "method": "asset.read",
+        "available": true,
+        "result": {
+          "state": {
+            "appliedToSource": null,
+            "baseChecked": null,
+            "indexed": true,
+            "previewable": false
+          },
+          "version_": {
+            "assetId": "kenney-city-building-trial",
+            "bytes": 23409,
+            "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b",
+            "createdAt": 1789166242801,
+            "displayName": "Kenney 城市建筑",
+            "fileCount": 1,
+            "files": [
+              {
+                "bytes": 23409,
+                "mediaType": "application/zip",
+                "path": "building.zip",
+                "sha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5"
+              }
+            ],
+            "kind": "object",
+            "mediaKind": "package",
+            "source": {
+              "author": "Kenney; Craftmine trial adapter",
+              "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+              "licenseStatus": "unverified",
+              "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+            },
+            "version": 1
+          }
+        }
+      },
+      "versions": {
+        "format": "craftmine.godot-library/1",
+        "group": "asset",
+        "method": "asset.versions",
+        "available": true,
+        "result": {
+          "assetId": "kenney-city-building-trial",
+          "items": [
+            {
+              "state": {
+                "appliedToSource": null,
+                "baseChecked": null,
+                "indexed": true,
+                "previewable": false
+              },
+              "version_": {
+                "assetId": "kenney-city-building-trial",
+                "bytes": 23409,
+                "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b",
+                "createdAt": 1789166242801,
+                "displayName": "Kenney 城市建筑",
+                "fileCount": 1,
+                "files": [
+                  {
+                    "bytes": 23409,
+                    "mediaType": "application/zip",
+                    "path": "building.zip",
+                    "sha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5"
+                  }
+                ],
+                "kind": "object",
+                "mediaKind": "package",
+                "source": {
+                  "author": "Kenney; Craftmine trial adapter",
+                  "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+                  "licenseStatus": "unverified",
+                  "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+                },
+                "version": 1
+              }
+            }
+          ],
+          "nextOffset": null,
+          "total": 1
+        }
+      },
+      "probe": {
+        "bytes": 23409,
+        "decoder": "rust-probe/1",
+        "facts": {
+          "archiveValidated": false,
+          "executed": false
+        },
+        "format": "zip",
+        "mediaType": "application/zip",
+        "path": "building.zip",
+        "pixelDecoded": false,
+        "probeOk": false,
+        "reason": "ARCHIVE_REQUIRES_PACKAGE_CHECK"
+      }
+    },
+    {
+      "name": "road",
+      "search": {
+        "format": "craftmine.godot-library/1",
+        "group": "asset",
+        "method": "asset.search",
+        "available": true,
+        "result": {
+          "items": [
+            {
+              "assetId": "kenney-city-road-trial",
+              "bytes": 18350,
+              "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b",
+              "createdAt": 1789166242810,
+              "displayName": "Kenney 城市道路",
+              "favorite": false,
+              "fileCount": 1,
+              "kind": "object",
+              "mediaKind": "package",
+              "source": {
+                "author": "Kenney; Craftmine trial adapter",
+                "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+                "licenseStatus": "unverified",
+                "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+              },
+              "state": {
+                "appliedToSource": null,
+                "baseChecked": null,
+                "indexed": true,
+                "previewable": false
+              },
+              "tags": [
+                "Kenney",
+                "城市",
+                "道路"
+              ],
+              "version": 1
+            }
+          ],
+          "method": "asset.search",
+          "nextOffset": null,
+          "scope": "local-library",
+          "total": 1,
+          "truncated": false
+        }
+      },
+      "read": {
+        "format": "craftmine.godot-library/1",
+        "group": "asset",
+        "method": "asset.read",
+        "available": true,
+        "result": {
+          "state": {
+            "appliedToSource": null,
+            "baseChecked": null,
+            "indexed": true,
+            "previewable": false
+          },
+          "version_": {
+            "assetId": "kenney-city-road-trial",
+            "bytes": 18350,
+            "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b",
+            "createdAt": 1789166242810,
+            "displayName": "Kenney 城市道路",
+            "fileCount": 1,
+            "files": [
+              {
+                "bytes": 18350,
+                "mediaType": "application/zip",
+                "path": "road.zip",
+                "sha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314"
+              }
+            ],
+            "kind": "object",
+            "mediaKind": "package",
+            "source": {
+              "author": "Kenney; Craftmine trial adapter",
+              "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+              "licenseStatus": "unverified",
+              "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+            },
+            "version": 1
+          }
+        }
+      },
+      "versions": {
+        "format": "craftmine.godot-library/1",
+        "group": "asset",
+        "method": "asset.versions",
+        "available": true,
+        "result": {
+          "assetId": "kenney-city-road-trial",
+          "items": [
+            {
+              "state": {
+                "appliedToSource": null,
+                "baseChecked": null,
+                "indexed": true,
+                "previewable": false
+              },
+              "version_": {
+                "assetId": "kenney-city-road-trial",
+                "bytes": 18350,
+                "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b",
+                "createdAt": 1789166242810,
+                "displayName": "Kenney 城市道路",
+                "fileCount": 1,
+                "files": [
+                  {
+                    "bytes": 18350,
+                    "mediaType": "application/zip",
+                    "path": "road.zip",
+                    "sha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314"
+                  }
+                ],
+                "kind": "object",
+                "mediaKind": "package",
+                "source": {
+                  "author": "Kenney; Craftmine trial adapter",
+                  "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+                  "licenseStatus": "unverified",
+                  "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+                },
+                "version": 1
+              }
+            }
+          ],
+          "nextOffset": null,
+          "total": 1
+        }
+      },
+      "probe": {
+        "bytes": 18350,
+        "decoder": "rust-probe/1",
+        "facts": {
+          "archiveValidated": false,
+          "executed": false
+        },
+        "format": "zip",
+        "mediaType": "application/zip",
+        "path": "road.zip",
+        "pixelDecoded": false,
+        "probeOk": false,
+        "reason": "ARCHIVE_REQUIRES_PACKAGE_CHECK"
+      }
+    }
+  ],
+  "scope": "explicit host import into isolated real catalog, then model-facing read bindings; no player or install claim",
+  "scan": {
+    "bytes": 512797,
+    "hints": {
+      "newVersions": 5,
+      "unchanged": 0,
+      "unsupported": 8
+    },
+    "issues": [
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": ".gitattributes"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "city-a-native.log"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "city-a-receipt.json"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "city-a-request.json"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "city-b-native.log"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "city-b-receipt.json"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "city-b-request.json"
+      },
+      {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "path": "summary.json"
+      }
+    ],
+    "items": [
+      {
+        "bytes": 112,
+        "mediaType": null,
+        "path": ".gitattributes",
+        "supported": false
+      },
+      {
+        "bytes": 24432,
+        "known": false,
+        "mediaType": "application/zip",
+        "path": "building-roundtrip.zip",
+        "sha256": "1de9fb46cc7f6b9d3e5d848979f9f2f5879fd3cdb1e690cba5769e0d3d04e958",
+        "supported": true
+      },
+      {
+        "bytes": 23409,
+        "known": false,
+        "mediaType": "application/zip",
+        "path": "building.zip",
+        "sha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+        "supported": true
+      },
+      {
+        "bytes": 11672,
+        "mediaType": null,
+        "path": "city-a-native.log",
+        "supported": false
+      },
+      {
+        "bytes": 14823,
+        "mediaType": null,
+        "path": "city-a-receipt.json",
+        "supported": false
+      },
+      {
+        "bytes": 669,
+        "mediaType": null,
+        "path": "city-a-request.json",
+        "supported": false
+      },
+      {
+        "bytes": 183104,
+        "known": false,
+        "mediaType": "image/png",
+        "path": "city-a.png",
+        "sha256": "af67a5d35abbc4e0bb15ddc523e8e074ede1da30992a33b53813d2615bc323b1",
+        "supported": true
+      },
+      {
+        "bytes": 12201,
+        "mediaType": null,
+        "path": "city-b-native.log",
+        "supported": false
+      },
+      {
+        "bytes": 15311,
+        "mediaType": null,
+        "path": "city-b-receipt.json",
+        "supported": false
+      },
+      {
+        "bytes": 669,
+        "mediaType": null,
+        "path": "city-b-request.json",
+        "supported": false
+      },
+      {
+        "bytes": 171538,
+        "known": false,
+        "mediaType": "image/png",
+        "path": "city-b.png",
+        "sha256": "30f6603073abc02b9ba98418325d5aa8450404da09414c41a459eb37f6faebdc",
+        "supported": true
+      },
+      {
+        "bytes": 18350,
+        "known": false,
+        "mediaType": "application/zip",
+        "path": "road.zip",
+        "sha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+        "supported": true
+      },
+      {
+        "bytes": 36507,
+        "mediaType": null,
+        "path": "summary.json",
+        "supported": false
+      }
+    ],
+    "maxBytes": 4294967296,
+    "maxFiles": 20000,
+    "root": "\\\\?\\D:\\cm-agent-godot-0912\\docs\\evidence\\gu6-kenney-modules-20260912",
+    "scanned": 13,
+    "truncated": false,
+    "worldUpdated": false
+  },
+  "cold": {
+    "format": "craftmine.godot-library/1",
+    "group": "asset",
+    "method": "asset.search",
+    "available": true,
+    "result": {
+      "items": [
+        {
+          "assetId": "kenney-city-building-trial",
+          "bytes": 23409,
+          "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b",
+          "createdAt": 1789166242801,
+          "displayName": "Kenney 城市建筑",
+          "favorite": false,
+          "fileCount": 1,
+          "kind": "object",
+          "mediaKind": "package",
+          "source": {
+            "author": "Kenney; Craftmine trial adapter",
+            "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+            "licenseStatus": "unverified",
+            "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+          },
+          "state": {
+            "appliedToSource": null,
+            "baseChecked": null,
+            "indexed": true,
+            "previewable": false
+          },
+          "tags": [
+            "Kenney",
+            "城市",
+            "建筑"
+          ],
+          "version": 1
+        },
+        {
+          "assetId": "kenney-city-road-trial",
+          "bytes": 18350,
+          "contentHash": "751a3be65bea2807ebfcbd60633c854335fcf59cde6e4dfbb4c7749d1157946b",
+          "createdAt": 1789166242810,
+          "displayName": "Kenney 城市道路",
+          "favorite": false,
+          "fileCount": 1,
+          "kind": "object",
+          "mediaKind": "package",
+          "source": {
+            "author": "Kenney; Craftmine trial adapter",
+            "license": "Upstream code MIT; models CC0; adapter and detailed attribution retained inside ZIP",
+            "licenseStatus": "unverified",
+            "origin": "https://github.com/KenneyNL/Starter-Kit-City-Builder"
+          },
+          "state": {
+            "appliedToSource": null,
+            "baseChecked": null,
+            "indexed": true,
+            "previewable": false
+          },
+          "tags": [
+            "Kenney",
+            "城市",
+            "道路"
+          ],
+          "version": 1
+        }
+      ],
+      "method": "asset.search",
+      "nextOffset": null,
+      "scope": "local-library",
+      "total": 2,
+      "truncated": false
+    }
+  },
+  "currentWorld": {
+    "format": "craftmine.godot-library/1",
+    "group": "asset",
+    "method": "asset.search",
+    "available": true,
+    "result": {
+      "items": [],
+      "method": "asset.search",
+      "nextOffset": null,
+      "scope": "current-world",
+      "total": 0,
+      "truncated": false
+    }
+  },
+  "passed": true
+}

@@ -389,7 +389,7 @@ export function mediaKindForType(mediaType: string): AssetMediaKind {
   if (mediaType === "image/png" || mediaType === "image/jpeg") return "image";
   if (mediaType === "model/gltf-binary") return "model";
   if (mediaType === "audio/wav" || mediaType === "audio/ogg") return "audio";
-  if (mediaType === "application/x-godot-package") return "package";
+  if (mediaType === "application/x-godot-package" || mediaType === "application/zip") return "package";
   return "other";
 }
 
@@ -650,6 +650,12 @@ export function describePreview(
   const base = { canRetry: canRetry(preview), picture, playable };
   const detail = preview.detail ?? "";
 
+  if (preview.status === "failed" && detail === "ARCHIVE_REQUIRES_PACKAGE_CHECK") {
+    return { tone: "neutral", label: text({ zh: "需要作品检查", en: "Package check required" }, lang),
+      detail: text({ zh: "在世界的 Godot 作品中导入 ZIP 并检查。", en: "Import and check the ZIP in the world's Godot creations panel." }, lang),
+      canRetry: false, picture: false, playable: false };
+  }
+
   switch (preview.status) {
     case "pending":
       return {
@@ -733,9 +739,10 @@ export function describePreview(
   }
 }
 
-/** Mirrors the host rule: a finished success is cached; everything else reruns. */
+/** Retrying cannot add the missing archive checker; other failures may rerun. */
 export function canRetry(preview: AssetPreview | null | undefined): boolean {
   if (!preview) return true;
+  if (preview.status === "failed" && preview.detail === "ARCHIVE_REQUIRES_PACKAGE_CHECK") return false;
   return (
     preview.status === "failed" ||
     preview.status === "timeout" ||

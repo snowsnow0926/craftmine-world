@@ -125,6 +125,10 @@ export function previewAsset(request) {
   } = request;
   const cache = cacheKey({ ...request, settingsHash, engineVersion });
   try {
+    if (mediaType === 'application/zip') {
+      return { cacheKey: cache, status: 'failed', detail: 'ARCHIVE_REQUIRES_PACKAGE_CHECK',
+        facts: { picture: false, playable: false, executed: false, archiveValidated: false } };
+    }
     const needsBytes = mediaType !== 'application/x-godot-package';
     if (needsBytes && !(bytes instanceof Uint8Array)) throw new Error('ASSET_BODY_REQUIRED');
     if (mediaType === 'image/png' || mediaType === 'image/jpeg') {

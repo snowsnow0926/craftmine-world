@@ -9581,3 +9581,16 @@ Only an authenticated isolated headless profile accepts godotExplore. Bind world
 ### CM-PROMO-04: restore lifecycle refusals retain safe actionable codes
 
 Use synthetic selected archives and callbacks to reject beforeRestore with the exact progress-changed, world-busy and active-task Error messages. Preserve each as a structured safe code and show the fixed save/reinspect or wait hint, including the normal Electron IPC wrapper. No backend restore/activation starts. Private paths, multiline messages, unknown uppercase text and embedded known-code substrings remain generic and do not leak. Existing archive fingerprint, expiring grant, expectedCurrentHash and explicit retry checks stay active. Reconfirm the actual native failure with a new package; a generic historical failure is not evidence of its specific cause.
+
+## GU6 opaque source archive discovery
+
+Given an explicitly selected resource directory containing a source-package ZIP,
+scan reports it as application/zip without importing it. Explicit host import
+adds one immutable catalog version. Existing model-facing search/read/versions
+find the exact bytes and provenance after a core restart. Replaying the same
+operation creates no duplicate; different bytes at the same version fail.
+Indexing alone keeps previewable=false, baseChecked=null, appliedToSource=null,
+and current-world search empty. ZIP probe and desktop preview report
+ARCHIVE_REQUIRES_PACKAGE_CHECK without unpacking or executing contents, including
+malformed ZIP bytes. Normal source-package installation/check/application remains
+a separate scenario; this catalog test does not certify archive compatibility.

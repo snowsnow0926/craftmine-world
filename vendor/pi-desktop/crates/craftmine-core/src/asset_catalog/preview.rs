@@ -348,6 +348,7 @@ fn probe(media_type: &str, bytes: &[u8]) -> Value {
         "audio/wav" => probe_wav(bytes),
         "audio/ogg" => probe_ogg(bytes),
         "application/x-godot-package" => probe_package(bytes),
+        "application/zip" => json!({"probeOk": false, "format": "zip", "reason": "ARCHIVE_REQUIRES_PACKAGE_CHECK", "facts": {"executed": false, "archiveValidated": false}}),
         _ => json!({"probeOk": false, "reason": "UNSUPPORTED_MEDIA_TYPE"}),
     }
 }
