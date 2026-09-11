@@ -9,25 +9,92 @@
   "integrationBranch": "codex/agent-godot-capability-20260912",
   "playerAcceptance": {
     "entry": "ordinary-player-creation",
-    "configuration": "read-selected-session-before-run",
+    "configuration": "user-confirmed-model-and-thinking; saved-session-binding-refreshed",
     "extraTokenLimit": null,
     "extraModelCallLimit": null,
     "extraTurnDeadline": null,
     "preserveOriginalWish": true,
     "isolatedBackground": true,
     "cancellable": true,
-    "physicalInputAllowed": false
+    "physicalInputAllowed": false,
+    "modelId": "deepseek-v4.1-flash-expires-on-0910",
+    "thinkingLevel": "max",
+    "confirmation": "2026-09-12 user confirmed continued use of this model and max thinking"
   },
   "packages": [
-    {"id":"GU0","status":"in-progress","next":"Freeze current source, non-secret player configuration, runtime and prior evidence"},
-    {"id":"GU1","status":"in-progress","next":"Validate existing mode capabilities and add live execution availability"},
-    {"id":"GU2","status":"in-progress","next":"Repair query completeness, exact revision identity and continuation"},
-    {"id":"GU3","status":"planned"},
-    {"id":"GU4","status":"planned"},
-    {"id":"GU5","status":"planned"},
-    {"id":"GU6","status":"planned"},
-    {"id":"GU7","status":"planned"}
+    {
+      "id": "GU0",
+      "status": "in-progress",
+      "next": "Freeze new package identity; confirmed player snapshot collected"
+    },
+    {
+      "id": "GU1",
+      "status": "in-progress",
+      "next": "Live readiness increment integrated and tested; pending broader registry/permission and packaged validation"
+    },
+    {
+      "id": "GU2",
+      "status": "in-progress",
+      "next": "Pinned continuation and incomplete evidence fixed; real core passed; engine API metadata underway"
+    },
+    {
+      "id": "GU3",
+      "status": "planned"
+    },
+    {
+      "id": "GU4",
+      "status": "in-progress",
+      "next": "True door collision fixture passed, negative defect rejected; isolated candidate diagnostic collector underway"
+    },
+    {
+      "id": "GU5",
+      "status": "in-progress",
+      "next": "Structured diagnostics from actual job output underway"
+    },
+    {
+      "id": "GU6",
+      "status": "planned"
+    },
+    {
+      "id": "GU7",
+      "status": "planned"
+    }
   ],
-  "evidence": [],
-  "limitations": ["Current installed client has not been revalidated by this goal", "Prior player records apply only to their recorded wishes and builds", "No new player model execution has started"]
+  "evidence": [
+    {
+      "kind": "real-core",
+      "test": "tests/godot-agent/query-core.test.mjs",
+      "status": "passed",
+      "scope": "source continuation after HEAD advances; existing explicit core binary"
+    },
+    {
+      "kind": "real-core",
+      "test": "tests/godot-remaining/L/capability-modes-core.test.mjs",
+      "status": "passed",
+      "scope": "actual asset/package/history read routes"
+    },
+    {
+      "kind": "real-engine",
+      "path": "D:/cm-agent-godot-0912/test-results/godot-door-scenario-YeZTaJ/report.json",
+      "status": "passed",
+      "scope": "trusted headless door fixture and blocked-collision negative"
+    },
+    {
+      "kind": "configuration",
+      "path": "D:/cm-agent-godot-0912/test-results/gu0-confirmed-player-20260912/baseline.json",
+      "sha256": "2b39c122469f186c319b01651838ba719a90206cb914719c7cf156b1f7496805",
+      "scope": "user confirmed model and thinking, exact saved model binding, no model requests"
+    },
+    {
+      "kind": "build",
+      "command": "pnpm run build:js",
+      "status": "passed",
+      "scope": "independent workspace packages and desktop, before next candidate collector integration"
+    }
+  ],
+  "limitations": [
+    "Current installed client has not been revalidated by this goal",
+    "Prior player records apply only to their recorded wishes and builds",
+    "No new player model execution has started"
+  ]
 }
