@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+export function acceptCurrentPreviewReceipt(binding,receipt){assert.equal(receipt?.status,'preview');assert.equal(receipt.worldId,binding.worldId);assert.equal(receipt.candidateId,binding.candidateId);assert.equal(receipt.buildId,binding.candidateBuildId);binding.activePreviewCandidateId=receipt.candidateId;}
+export function clearCurrentPreview(binding){delete binding.activePreviewCandidateId;}
 export function inspectModelSourceProposal(report,proposalId){
  assert.equal(report?.format,'craftmine.promo-player/1');assert.equal(report.status,'SETTLED_UNVERIFIED');assert.equal(report.stateIntegrityVerified,true);assert.equal(report.latest?.active,false);assert.equal(report.forcedStop,undefined);assert.equal(report.closeoutError,undefined);assert.ok(Number.isFinite(Date.parse(report.endedAt))&&Date.parse(report.endedAt)>=Date.parse(report.submittedAt));
  for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(report.exitReport?.[field],[]);
@@ -19,7 +21,8 @@ export function validateSourceProposalAdoptionCall(method,fields={},binding){
  if(method==='godotCaptureBoundView'){assert.deepEqual(Object.keys(fields),['payload']);assert.equal(fields.payload.worldId,binding.worldId);assert.equal(fields.payload.buildId,binding.captureIdentity?.buildId);assert.deepEqual(fields.payload,binding.captureIdentity);return;}
  if(method==='godotExplore'){assert.deepEqual(Object.keys(fields),['payload']);assert.deepEqual(fields.payload,binding.exploreRequest);assert.equal(fields.payload.worldId,binding.worldId);assert.equal(fields.payload.buildId,binding.formalBuildId);assert.ok(Array.isArray(fields.payload.steps)&&fields.payload.steps.length<=8&&fields.payload.steps.every(s=>['walk','look','wait'].includes(s.op)));return;}
  assert.deepEqual(Object.keys(fields).sort(),['channel','payload']);assert.equal(method,'worldPanel');assert.equal(fields.payload.worldId,binding.worldId);
- if(fields.channel==='godot.runtimeSave'){assert.equal(binding.allowReframeSave,true);assert.equal(binding.reframeOnly,true);assert.deepEqual(fields.payload,{worldId:binding.worldId,freeze:true});return;}
+ if(fields.channel==='godot.runtimeSave'){assert.ok(binding.adoptOnly===true||binding.allowReframeSave===true&&binding.reframeOnly===true);assert.deepEqual(fields.payload,{worldId:binding.worldId,freeze:true});return;}
+ if(fields.channel==='godot.candidateApply'){assert.equal(binding.adoptOnly,true);assert.equal(typeof binding.candidateId,'string');assert.equal(binding.activePreviewCandidateId,binding.candidateId,'CURRENT_PREVIEW_REQUIRED');assert.deepEqual(fields.payload,{worldId:binding.worldId,candidateId:binding.candidateId});return;}
  if(fields.channel==='package.request'){
   const {method,params}=fields.payload;assert.deepEqual(Object.keys(fields.payload).sort(),['method','params','worldId']);
   const expected=method==='installSourceProposal'?{worldId:binding.worldId,proposalId:binding.proposalId}:method==='sourceJob'?{worldId:binding.worldId,jobId:binding.jobId}:{worldId:binding.worldId};

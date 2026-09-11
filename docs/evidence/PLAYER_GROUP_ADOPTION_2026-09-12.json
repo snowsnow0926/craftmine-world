@@ -1,0 +1,469 @@
+{
+  "format": "craftmine.player-group-adoption-evidence/1",
+  "report": {
+    "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-7272f689-9956-43d3-a49c-30b7efa2b624\\report.json",
+    "sha256": "053f2e21e6c00589791e978ae0f0459125420548d7e5bc25deaec9602cf610b3"
+  },
+  "sourceReport": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/source-proposal-adoption-3950ed30-1a29-4998-9eb8-0057b62fe8d5/report.json",
+  "originalReport": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/player-7068bc1e-3e3c-411c-9cf1-79757095260b.json",
+  "ok": true,
+  "stateIntegrityVerified": true,
+  "worldId": "world-dd7fa4f8fff6",
+  "proposalId": "source-20a92aaf8b5cb3236836cd5468246c56fee7d910bedc8378",
+  "modelCallsAdded": 0,
+  "installationsIssued": 0,
+  "checksIssued": 0,
+  "approvedCurrentPreview": {
+    "status": "preview",
+    "worldId": "world-dd7fa4f8fff6",
+    "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a"
+  },
+  "adoption": {
+    "status": "applied",
+    "worldId": "world-dd7fa4f8fff6",
+    "candidateId": "gcan-7677a6b803605a0ca0f4fcf01f081ec171e3cf0925ded160af320170b2057211",
+    "record": {
+      "baseId": "creation-sandbox",
+      "contentHash": "59684a3703dbd746f526b8cd1510b18839416e59d5122bfcb735c799482096bb",
+      "id": "world-dd7fa4f8fff6",
+      "revision": 7,
+      "runtimeKind": "godot",
+      "title": "预制组件演示 · 开发者布置",
+      "updatedAt": 1789169037914,
+      "world": {
+        "build": {
+          "godot": {
+            "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "baseBuild": "gbd-266a02b8cfd1c29283174c3ad7a908b85af788440ea25b786b72b1dceb9aac15",
+            "engineVersion": "4.7.2-stable",
+            "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd",
+            "renderer": "gl_compatibility",
+            "sourceRevision": 4,
+            "target": "web"
+          },
+          "id": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+          "scene": {
+            "baseId": "creation-sandbox",
+            "entry": "res://main.tscn",
+            "format": "craftmine.godot-scene/1",
+            "projectHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd"
+          }
+        },
+        "extensions": [],
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0.18,
+              "position": [
+                0,
+                0.899999976158142,
+                10.8338775634766
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-dd7fa4f8fff6"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-dd7fa4f8fff6"
+        }
+      }
+    }
+  },
+  "adoptedCapture": {
+    "proof": {
+      "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-7272f689-9956-43d3-a49c-30b7efa2b624\\adopted.png",
+      "sha256": "01cb3a2bbb4a00815d59bb80f092ea80ee8128aba74ec96f59b788001c5e1b8f"
+    },
+    "scope": "formal",
+    "worldId": "world-dd7fa4f8fff6",
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "candidateId": null,
+    "instanceId": "c4ae2e39abb8b1464140dec2",
+    "width": 1200,
+    "height": 800
+  },
+  "walkthrough": {
+    "method": "normal fixed look/walk on adopted formal runtime; no pose assignment",
+    "before": {
+      "onFloor": true,
+      "pitch": 0.18,
+      "position": [
+        0,
+        0.899999976158142,
+        10.8338775634766
+      ],
+      "yaw": 0
+    },
+    "stages": [
+      {
+        "name": "approach",
+        "request": {
+          "worldId": "world-dd7fa4f8fff6",
+          "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+          "instanceId": "c4ae2e39abb8b1464140dec2",
+          "steps": [
+            {
+              "op": "look",
+              "args": {
+                "yaw": 0,
+                "pitch": 0.03
+              }
+            },
+            {
+              "op": "walk",
+              "args": {
+                "forward": 1,
+                "right": 0,
+                "frames": 80
+              }
+            },
+            {
+              "op": "wait",
+              "args": {
+                "frames": 30
+              }
+            }
+          ]
+        },
+        "after": {
+          "onFloor": true,
+          "pitch": 0.03,
+          "position": [
+            0,
+            0.899999976158142,
+            4.83388805389404
+          ],
+          "yaw": 0
+        },
+        "capture": {
+          "proof": {
+            "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-7272f689-9956-43d3-a49c-30b7efa2b624\\approach.png",
+            "sha256": "0d70fe4f1bcd3baede03474d1b061d2037b990f178f237be5dd18f7d486fda5c"
+          },
+          "scope": "formal",
+          "worldId": "world-dd7fa4f8fff6",
+          "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+          "candidateId": null,
+          "instanceId": "c4ae2e39abb8b1464140dec2",
+          "width": 1200,
+          "height": 800
+        }
+      },
+      {
+        "name": "inside",
+        "request": {
+          "worldId": "world-dd7fa4f8fff6",
+          "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+          "instanceId": "c4ae2e39abb8b1464140dec2",
+          "steps": [
+            {
+              "op": "look",
+              "args": {
+                "yaw": 0,
+                "pitch": 0.03
+              }
+            },
+            {
+              "op": "walk",
+              "args": {
+                "forward": 1,
+                "right": 0,
+                "frames": 60
+              }
+            },
+            {
+              "op": "wait",
+              "args": {
+                "frames": 30
+              }
+            }
+          ]
+        },
+        "after": {
+          "onFloor": true,
+          "pitch": 0.03,
+          "position": [
+            0,
+            0.899999976158142,
+            0.333885878324509
+          ],
+          "yaw": 0
+        },
+        "capture": {
+          "proof": {
+            "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-7272f689-9956-43d3-a49c-30b7efa2b624\\inside.png",
+            "sha256": "65ec022fc77636bd0609a48cab5b61b76109bdc84e92083867c31ecf17ad5d5b"
+          },
+          "scope": "formal",
+          "worldId": "world-dd7fa4f8fff6",
+          "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+          "candidateId": null,
+          "instanceId": "c4ae2e39abb8b1464140dec2",
+          "width": 1200,
+          "height": 800
+        }
+      }
+    ],
+    "centerCrossed": true
+  },
+  "saved": {
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "contentHash": "cc2deb9585af40336fcb7d4827bc7e5bd13dec4ce2653ea7ed78d63279c0c280",
+    "format": "craftmine.godot-progress-receipt/1",
+    "instanceId": "c4ae2e39abb8b1464140dec2",
+    "persistedAt": 1789169046415,
+    "revision": 8,
+    "snapshotHash": "39e2037002344a66416a98fc4081d009b03d058321cf49d55ff76f21c2f2b534",
+    "snapshotSha256": "5323d12e2ce17c557e04483c1c5568241fd70c51e9c8599ad47b1a2858f19f53",
+    "worldId": "world-dd7fa4f8fff6"
+  },
+  "reopened": {
+    "worldId": "world-dd7fa4f8fff6",
+    "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+    "instanceId": "1eee9488fee70f17b3a91353",
+    "player": {
+      "onFloor": true,
+      "pitch": 0.03,
+      "position": [
+        0,
+        0.899999976158142,
+        0.333885878324509
+      ],
+      "yaw": 0
+    },
+    "capture": {
+      "proof": {
+        "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-7272f689-9956-43d3-a49c-30b7efa2b624\\reopened.png",
+        "sha256": "65ec022fc77636bd0609a48cab5b61b76109bdc84e92083867c31ecf17ad5d5b"
+      },
+      "scope": "formal",
+      "worldId": "world-dd7fa4f8fff6",
+      "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+      "candidateId": null,
+      "instanceId": "1eee9488fee70f17b3a91353",
+      "width": 1200,
+      "height": 800
+    }
+  },
+  "sourceAfter": {
+    "revision": 4,
+    "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd",
+    "items": [
+      {
+        "nodePath": "ins-efa91144106606cbe17ac721-e0",
+        "name": "ins-efa91144106606cbe17ac721-e0",
+        "entityId": "ins-efa91144106606cbe17ac721-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+        "name": "ins-544a40bb5763677b245fa53f-e0",
+        "entityId": "ins-544a40bb5763677b245fa53f-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "name": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "entityId": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-478c7fa5192e1c613f28650d-e0",
+        "name": "ins-478c7fa5192e1c613f28650d-e0",
+        "entityId": "ins-478c7fa5192e1c613f28650d-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-9de3589fcb52dc27561e671d-e0",
+        "name": "ins-9de3589fcb52dc27561e671d-e0",
+        "entityId": "ins-9de3589fcb52dc27561e671d-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-63ecd97c7a87b7e288db537e-e0",
+        "name": "ins-63ecd97c7a87b7e288db537e-e0",
+        "entityId": "ins-63ecd97c7a87b7e288db537e-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "name": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "entityId": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-a1f69e8cda073350ed2a4419-e0",
+        "name": "ins-a1f69e8cda073350ed2a4419-e0",
+        "entityId": "ins-a1f69e8cda073350ed2a4419-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "name": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "entityId": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-04ac6382731adc3a91b33662-e0",
+        "name": "ins-04ac6382731adc3a91b33662-e0",
+        "entityId": "ins-04ac6382731adc3a91b33662-e0",
+        "supported": true
+      }
+    ]
+  },
+  "reopenedSource": {
+    "revision": 4,
+    "manifestHash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd",
+    "items": [
+      {
+        "nodePath": "ins-efa91144106606cbe17ac721-e0",
+        "name": "ins-efa91144106606cbe17ac721-e0",
+        "entityId": "ins-efa91144106606cbe17ac721-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-544a40bb5763677b245fa53f-e0",
+        "name": "ins-544a40bb5763677b245fa53f-e0",
+        "entityId": "ins-544a40bb5763677b245fa53f-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "name": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "entityId": "ins-c26f2fc34e8f1479fc1a199a-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-478c7fa5192e1c613f28650d-e0",
+        "name": "ins-478c7fa5192e1c613f28650d-e0",
+        "entityId": "ins-478c7fa5192e1c613f28650d-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-9de3589fcb52dc27561e671d-e0",
+        "name": "ins-9de3589fcb52dc27561e671d-e0",
+        "entityId": "ins-9de3589fcb52dc27561e671d-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-63ecd97c7a87b7e288db537e-e0",
+        "name": "ins-63ecd97c7a87b7e288db537e-e0",
+        "entityId": "ins-63ecd97c7a87b7e288db537e-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "name": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "entityId": "ins-6f4336bd26d4fe3a03012c5c-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-a1f69e8cda073350ed2a4419-e0",
+        "name": "ins-a1f69e8cda073350ed2a4419-e0",
+        "entityId": "ins-a1f69e8cda073350ed2a4419-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "name": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "entityId": "ins-188f72d3cd26d978aaf7aee8-e0",
+        "supported": true
+      },
+      {
+        "nodePath": "ins-04ac6382731adc3a91b33662-e0",
+        "name": "ins-04ac6382731adc3a91b33662-e0",
+        "entityId": "ins-04ac6382731adc3a91b33662-e0",
+        "supported": true
+      }
+    ]
+  },
+  "launches": [
+    {
+      "number": 1,
+      "stdoutBytes": 10335,
+      "stderrBytes": 1442,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "stdoutBytes": 3917,
+      "stderrBytes": 246,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "counts": {
+    "status": 8,
+    "primaryMode": 10,
+    "godotObserve": 55,
+    "worldPanel:godot.runtimeResume": 3,
+    "godotCaptureBoundState": 12,
+    "godotCaptureBoundView": 6,
+    "worldPanel:package.request:sourceJob": 1,
+    "worldPanel:package.request:sourceList": 3,
+    "worldPanel:godot.candidateList": 1,
+    "worldPanel:godot.candidateRead": 1,
+    "worldPanel:godot.candidatePreview": 1,
+    "worldPanel:godot.candidateApply": 1,
+    "godotExplore": 2,
+    "worldPanel:godot.runtimeSave": 1,
+    "quit": 2
+  },
+  "guardFailure": {
+    "report": {
+      "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\source-proposal-adoption-4ad6d438-bc32-430b-ab68-84ea0532dfc8\\report.json",
+      "sha256": "7dbb5a88ec4db969686dde7339280ac304d4017950ae4070cfb1a48a41714097"
+    },
+    "error": "Error: Error: Error invoking remote method 'pi-plugin-panel-invoke': Error: GODOT_PREVIEW_REQUIRED\n    at ChildProcess.<anonymous> (file:///D:/cm-group-source-install-0912/tests/source-proposal-preview.mjs:30:275)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+    "applied": false,
+    "launches": [
+      {
+        "number": 1,
+        "stdoutBytes": 3916,
+        "stderrBytes": 1015,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      }
+    ],
+    "reason": "Harness tried historical preview approval without current active preview; product refused, no application occurred."
+  },
+  "scope": "One approved candidate, one centerline walk across existing gate. No model/source edits/reinstallation/recheck; no claim of complete collision/visual acceptance."
+}
