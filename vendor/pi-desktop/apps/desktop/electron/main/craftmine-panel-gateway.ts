@@ -69,6 +69,7 @@ export function createCraftminePanelGateway(options: {
         // committed restore before attempting to consume that grant again.
         let result: any;
         try { result = await options.backup("backup.status", { operationId: record.operationId }); } catch { /* A missing receipt is not success. */ }
+        if (result?.status === "reconciliation-pending" && result.activated === true && result.errorCode === "BACKUP_RESTORED_RECONCILIATION_PENDING") return result;
         if (result?.status === "completed" || result?.status === "cancelled") return { operationId: record.operationId, status: result.status, ...(result.currentHash ? { currentHash: result.currentHash } : {}), scope: "profile", modelReplay: false };
       }
       return request(record.channel, { ...record.payload, worldId, operationId: record.operationId }, { token: internal, owner: operationOwner });

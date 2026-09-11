@@ -3,7 +3,15 @@ const messages = {
   WORLD_BUSY: '世界正在处理其他操作，请等待完成后再试。',
   ACTIVE_TASK_EXISTS: '创作或世界操作仍在进行，请等待完成后再试。',
   BACKUP_OPERATION_FAILED: '备份操作未完成，请重新检查备份后再试。',
+  BACKUP_RESTORED_RECONCILIATION_PENDING: '备份资料已恢复，但世界启动或界面交接尚未完成。请重新打开应用继续，不要再次恢复这份备份。',
+  BACKUP_ALREADY_ACTIVATED: '备份资料已经恢复，不能取消这次恢复。世界启动或界面交接如未完成，请重新打开应用继续。',
 };
+
+/** Only the host's confirmed activation result permits this partial outcome. */
+export function backupRestorePendingMessage(result) {
+  return result?.status === 'reconciliation-pending' && result?.activated === true && result?.errorCode === 'BACKUP_RESTORED_RECONCILIATION_PENDING'
+    ? messages.BACKUP_RESTORED_RECONCILIATION_PENDING : null;
+}
 
 /** Fixed hints only; never extract a code from arbitrary private error text. */
 export function backupErrorMessage(error) {

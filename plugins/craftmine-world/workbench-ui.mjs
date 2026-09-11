@@ -2,7 +2,7 @@
 import {createGodotPackageUI} from './godot-package-ui.mjs';
 import {createIssueUI} from './issue-ui.mjs';
 import {createTargetFeedbackUI} from './target-feedback-ui.mjs';
-import {backupErrorMessage} from './backup-errors.mjs';
+import {backupErrorMessage,backupRestorePendingMessage} from './backup-errors.mjs';
 const labels={proposed:'待核实',validated:'已验证',needs_revalidation:'需要复验',retired:'已停用',running:'进行中',interrupted:'已中断',cancelled:'已停止',completed:'已完成',finished:'已完成'};
 const kinds={object:'物体',gameplay:'基础玩法',creation:'组合作品','project-rule':'创作规则','verified-experience':'验证经验','task-history':'任务历史',workflow:'创作流程'};
 const text=(tag,value,className)=>{const element=document.createElement(tag);element.textContent=value??'';if(className)element.className=className;return element;};
@@ -21,6 +21,12 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     const prepared=await call('workbench.prepare',{channel,payload});
     await refreshPending();
     const result=await call('workbench.execute',{operationId:prepared.operationId});
+    // The profile may already have switched. Keep the confirmed partial result
+    // even if refreshing the previous world's operation list is now unavailable.
+    if(channel==='backup.restore'&&backupRestorePendingMessage(result)){
+      try{await refreshPending();}catch{pendingArea.replaceChildren();pendingArea.hidden=true;}
+      return result;
+    }
     if(channel==='library.install'&&!result?.receipt)throw Error('安装回执尚未确认，请查询任务后重试。');
     await refreshPending();return result;
   }
@@ -49,11 +55,14 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
       row.append(text('h3',({'library.install':'加入作品草稿','library.capture':'保存作品','memory.propose':'保存创作记忆','backup.export':'导出全部世界和作品','backup.restore':'恢复全部世界和作品','draft.recheck':'重新检查草稿','task.budget':'设置任务累计额度'})[item.channel]||'待确认操作'));
       if(item.channel==='memory.propose')row.append(text('p',item.payload.claim));
       if(item.payload.ref)row.append(text('p',`${item.payload.ref.id} · v${item.payload.ref.version}`));
-      row.append(text('p',item.state==='completed'?'服务已返回完成结果，等待你确认。':'结果尚未确认；重启不会自动再次写入。','workbench-meta'));
+      const restorePending=item.channel==='backup.restore'?backupRestorePendingMessage(item.result):null;
+      row.append(text('p',restorePending??(item.state==='completed'?'服务已返回完成结果，等待你确认。':'结果尚未确认；重启不会自动再次写入。'),'workbench-meta'));
       if(item.channel==='backup.restore'&&item.state!=='completed')row.append(text('p','继续恢复将替换此客户端的全部世界资料。授权过期时须重新选择备份。','workbench-meta'));
-      const control=button(item.state==='completed'?'确认已完成':'查询并继续原操作',()=>action(async()=>{
+      const control=button(restorePending?'知道了':item.state==='completed'?'确认已完成':'查询并继续原操作',()=>action(async()=>{
         const result=await call('workbench.execute',{operationId:item.operationId});
         if(item.state==='completed')await call('workbench.acknowledge',{operationId:item.operationId});
+        const pendingMessage=item.channel==='backup.restore'?backupRestorePendingMessage(result):null;
+        if(pendingMessage){await refreshPending();status(pendingMessage,true);return;}
         if(item.channel==='backup.restore'&&result.status==='completed')await reloadWorld();
         await refreshPending();await refreshTask();
         status(item.channel==='library.install'?'作品已加入原草稿，仍需检查、评审并应用。':item.channel==='draft.recheck'?'草稿检查已提交，请查看检查记录。':result.status==='cancelled'?'这项操作已取消。':'原操作结果已确认。');
@@ -74,7 +83,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     if(!has(channel))throw Error('这个功能尚未连接，请完成桌面服务更新后重试。');
     const generation=epoch,worldId=getWorld()?.id;if(!worldId)throw Error('请先打开世界');
     const result=await request(channel,{worldId,...payload});
-    const restored=channel==='workbench.execute'&&result?.scope==='profile'&&result?.status==='completed'&&result?.activated===true;
+    const restored=channel==='workbench.execute'&&result?.scope==='profile'&&result?.activated===true&&(result?.status==='completed'||!!backupRestorePendingMessage(result));
     if(!restored&&(generation!==epoch||getWorld()?.id!==worldId))throw Error('WORLD_CHANGED');return result;
   }
   async function action(fn){
@@ -258,6 +267,8 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
       if(!confirmation.control.checked)throw Error('请先核对并确认备份内容。');
       renderInspection();
       const result=await durableCall('backup.restore',{grantId:inspection.grantId,expectedCurrentHash:inspection.expectedCurrentHash});
+      const pendingMessage=backupRestorePendingMessage(result);
+      if(pendingMessage){inspection=null;renderInspection();status(pendingMessage,true);return;}
       if(result?.record)replaceWorld(result.record);
       status(result?.status==='completed'||result?.restored?'备份已恢复。':'恢复结果尚未确认，请刷新状态。');
       if(result?.status==='completed'||result?.restored){inspection=null;await reloadWorld();}

@@ -133,13 +133,22 @@ export function createCraftmineBackupService(options: { domainCall: CraftmineDom
             catch { throw desktopServiceError("BACKUP_LIFECYCLE_RECOVERY_FAILED"); }
             throw error;
           }
-          await options.afterRestore({operationId, activated: true, result});
           grants.delete(grantId);
-          return { id: result.id, operationId, status: result.status, activated: true, currentHash: result.currentHash, rebuildRequired: result.rebuildRequired, modelReplay: false, scope: "profile" };
+          const restored = { id: result.id, operationId, status: result.status, activated: true, currentHash: result.currentHash, rebuildRequired: result.rebuildRequired, modelReplay: false, scope: "profile" };
+          try {
+            await options.afterRestore({operationId, activated: true, result});
+          } catch {
+            // Activation is already confirmed. Never replay restore, invoke the
+            // pre-activation recovery path, or describe this as unchanged data.
+            // Cache this finite result so status and same-operation retry agree.
+            return { ...restored, status: "reconciliation-pending", errorCode: "BACKUP_RESTORED_RECONCILIATION_PENDING" };
+          }
+          return restored;
         });
       }
       if (channel === "backup.cancel") {
         fields(input, ["operationId"]); const operationId = id(input.operationId), entry = operations.get(operationId);
+        if (entry?.result?.activated === true) throw desktopServiceError("BACKUP_ALREADY_ACTIVATED");
         if (entry?.result?.status === "completed") throw desktopServiceError("BACKUP_ALREADY_COMPLETED");
         if (entry?.started && entry.pending) throw desktopServiceError("BACKUP_OPERATION_NOT_CANCELLABLE");
         if (entry) entry.cancelled = true;
