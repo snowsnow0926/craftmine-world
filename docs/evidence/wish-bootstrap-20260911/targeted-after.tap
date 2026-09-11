@@ -1,0 +1,158 @@
+
+> craftmine-world@0.8.0 test:wish-evaluation
+> node --test tests/creation-model-evaluation.test.mjs tests/creation-model-metrics.test.mjs tests/promo-wish-plan.test.mjs
+
+TAP version 13
+# Subtest: fixed next-batch suite has bounded distinct original inputs
+ok 1 - fixed next-batch suite has bounded distinct original inputs
+  ---
+  duration_ms: 2.042597
+  type: 'test'
+  ...
+# Subtest: model completion text and empty evidence cannot pass a real-model evaluation
+ok 2 - model completion text and empty evidence cannot pass a real-model evaluation
+  ---
+  duration_ms: 0.489288
+  type: 'test'
+  ...
+# Subtest: first attempt repair human intervention and environment failures are separate classes
+ok 3 - first attempt repair human intervention and environment failures are separate classes
+  ---
+  duration_ms: 0.164598
+  type: 'test'
+  ...
+# Subtest: aggregate keeps environment failures in denominators and leaves unreported cost unknown
+ok 4 - aggregate keeps environment failures in denominators and leaves unreported cost unknown
+  ---
+  duration_ms: 0.403278
+  type: 'test'
+  ...
+# Subtest: polling is not a repair and duplicate transcript rows are not counted twice
+ok 5 - polling is not a repair and duplicate transcript rows are not counted twice
+  ---
+  duration_ms: 0.445271
+  type: 'test'
+  ...
+# Subtest: CA01 needs actual candidate identity collision matching target and complete fresh-process state
+ok 6 - CA01 needs actual candidate identity collision matching target and complete fresh-process state
+  ---
+  duration_ms: 1.721553
+  type: 'test'
+  ...
+# Subtest: CA02 checks same object and actual double collision height, not prose or declared scale alone
+ok 7 - CA02 checks same object and actual double collision height, not prose or declared scale alone
+  ---
+  duration_ms: 0.449778
+  type: 'test'
+  ...
+# Subtest: observation-only state can never substitute for complete progress
+ok 8 - observation-only state can never substitute for complete progress
+  ---
+  duration_ms: 0.383578
+  type: 'test'
+  ...
+# Subtest: human-assisted real model cases remain in the autonomous denominator
+ok 9 - human-assisted real model cases remain in the autonomous denominator
+  ---
+  duration_ms: 1.768154
+  type: 'test'
+  ...
+# Subtest: an all-human-assisted run has zero autonomous success, not null
+ok 10 - an all-human-assisted run has zero autonomous success, not null
+  ---
+  duration_ms: 0.199911
+  type: 'test'
+  ...
+# Subtest: a contradictory pass label never overrides recorded human intervention
+ok 11 - a contradictory pass label never overrides recorded human intervention
+  ---
+  duration_ms: 0.110958
+  type: 'test'
+  ...
+# Subtest: environment failures before and after a model request retain distinct denominators
+ok 12 - environment failures before and after a model request retain distinct denominators
+  ---
+  duration_ms: 0.142905
+  type: 'test'
+  ...
+# Subtest: no observed model calls cannot count as autonomous success
+ok 13 - no observed model calls cannot count as autonomous success
+  ---
+  duration_ms: 0.194282
+  type: 'test'
+  ...
+# Subtest: empty reports have no invented rate or price
+ok 14 - empty reports have no invented rate or price
+  ---
+  duration_ms: 0.100341
+  type: 'test'
+  ...
+# Subtest: six independent groups start with no fabricated evidence or model authorization
+ok 15 - six independent groups start with no fabricated evidence or model authorization
+  ---
+  duration_ms: 3.115684
+  type: 'test'
+  ...
+# Subtest: mainline is one world and does not splice independent scenario results
+ok 16 - mainline is one world and does not splice independent scenario results
+  ---
+  duration_ms: 0.664682
+  type: 'test'
+  ...
+# Subtest: same seed gives stable prompts and subset-independent follow-up choices
+ok 17 - same seed gives stable prompts and subset-independent follow-up choices
+  ---
+  duration_ms: 1.886632
+  type: 'test'
+  ...
+# Subtest: plan objects never share mutable scenario or evidence data
+ok 18 - plan objects never share mutable scenario or evidence data
+  ---
+  duration_ms: 1.064964
+  type: 'test'
+  ...
+# Subtest: reject invalid suites, selections, duplicate groups and seeds
+ok 19 - reject invalid suites, selections, duplicate groups and seeds
+  ---
+  duration_ms: 0.261163
+  type: 'test'
+  ...
+# Subtest: failure blocks its own story but not another independent world
+ok 20 - failure blocks its own story but not another independent world
+  ---
+  duration_ms: 0.565502
+  type: 'test'
+  ...
+# Subtest: even a completed supplied checklist cannot issue an automatic pass
+ok 21 - even a completed supplied checklist cannot issue an automatic pass
+  ---
+  duration_ms: 0.281805
+  type: 'test'
+  ...
+# Subtest: CLI rejects live flags, duplicated switches, malformed seeds and missing values
+ok 22 - CLI rejects live flags, duplicated switches, malformed seeds and missing values
+  ---
+  duration_ms: 0.294975
+  type: 'test'
+  ...
+# Subtest: CLI prints a plan without credentials or a repository checkout
+ok 23 - CLI prints a plan without credentials or a repository checkout
+  ---
+  duration_ms: 36.639968
+  type: 'test'
+  ...
+# Subtest: CLI writes only a new directory and refuses to overwrite an old run
+ok 24 - CLI writes only a new directory and refuses to overwrite an old run
+  ---
+  duration_ms: 74.515428
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 186.683651
