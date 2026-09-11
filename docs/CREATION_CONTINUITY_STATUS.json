@@ -57,11 +57,12 @@
     }
   },
   "modelEvaluation": {
-    "status": "not_run_budget_reserved",
     "maximumCases": 4,
     "maximumRequestsPerCase": 10,
     "maximumRequestsTotal": 40,
-    "observedRequests": 0
+    "observedRequests": 0,
+    "status": "not_run_budget_reserved",
+    "note": "CN5 runner契约与冻结完成；本轮未启动真实模型请求，避免在收尾时意外消耗额度。"
   },
   "externalValidation": {
     "physicalMicrophone": "not_run",
@@ -73,7 +74,10 @@
     "directory": "D:/Craftmine-World-preview.11",
     "status": "complete",
     "pushed": false,
-    "installedOnPersonalSystem": false
+    "installedOnPersonalSystem": false,
+    "setup": "D:/Craftmine-World-preview.11/Craftmine-World-Setup-0.14.4-preview.11.exe",
+    "portable": "D:/Craftmine-World-preview.11/Craftmine-World-preview.11-portable.zip",
+    "installPayloadVerified": true
   },
   "updatedAt": "2026-09-11T08:29:57.6967757Z"
 }
