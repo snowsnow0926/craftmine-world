@@ -1,11 +1,21 @@
 # Tune an existing first-person equipment item
 
-Skill: `first-person.equipment-parameters`, version `1.0.0`.
+Skill: `first-person.equipment-parameters`, version `1.0.1`.
 
 Use for changing damage, cooldown or range on an existing equipment resource in
 the shipped first-person base `0.1.0`, engine `4.7.2-stable`. The catalog checks
 the exact shipped equipment definition, catalog and state script hashes. This
 is a parameter edit recipe, not an installer or a new gameplay executor.
+
+`requiredInterface: true` is a source-hash applicability check for this recipe,
+not a read-only marker or a list of files the project cannot edit. Ordinary
+project changes remain subject to the actual `godot_project_patch` and host
+write/build policies. A legitimate edit can make this recipe report
+`GUIDANCE_INTERFACE_UNSUPPORTED`; inspect the current source and reason from it,
+rather than reverting the edit just to regain recipe coverage. This does not
+permit changing host-owned bridges, frozen checks or application authority.
+Persist requested behavior through actual authored source and supported state
+capture/validation/restore; temporary runtime variables are not saved progress.
 
 Do not use for adding or removing equipment IDs, changing ammunition capacity,
 new attack modes, custom equipment scripts, other bases, state migration or a

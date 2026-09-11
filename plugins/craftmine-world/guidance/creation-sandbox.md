@@ -1,10 +1,25 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.3.0`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.5.0`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
 这是按源码整理的接口指南。加载指南或示例不会证明模型首次成功、玩法验收或正式采用。
+
+## 指导适用性与源码权限
+
+目录的 `requiredInterface: true` 仅表示“加载这份指导时，要核对该源文件哈希是否匹配”。
+它不是只读标记，也不是不可修改文件清单。普通场景与 GDScript 可以按实际
+`godot_project_patch` 和宿主写入策略修改；既有任务租约、源码版本、expectedHash、路径和构建检查仍须满足。
+修改后若出现 `GUIDANCE_INTERFACE_UNSUPPORTED`，表示这版指导不再覆盖当前源码，
+应重新读取实际源码继续判断；不表示合法修改失败，也不要求仅为加载指南而还原修改。
+
+真正的托管边界独立于这个标记：宿主注入的导出预设、Web shell/bridge 不能由项目替换。
+带造物要求的检查还固定校验 `craftmine_shared/base_adapter.gd`、`runtime_bridge.gd`、
+`state_guard.gd` 及 `project.godot` 中的运行时桥接入口。不能改弱或绕过这些检查；
+这不等于整个 `project.godot` 或所有普通脚本都只读。具体可写范围以当前宿主策略与实际调用结果为准。
+需要重开保留的变化，应进入实际源码及受支持的 capture/validate/restore 进度路径；
+临时附加节点或运行时变量不能代替持久化实现。
 
 ## 从真实身份开始
 
