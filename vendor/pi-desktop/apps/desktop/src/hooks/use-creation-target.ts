@@ -13,14 +13,14 @@ export function useCreationTarget(enabled: boolean, sessionKey: string, sessionI
   const [policyError, setPolicyError] = useState("");
   const epoch = useRef(0);
   const policyEpoch = useRef(0);
-  const refresh = useCallback(async () => {
+  const readTarget = useCallback(async (selection?:{worldId:string;entityId:string}|null) => {
     const generation = ++epoch.current;
     ++policyEpoch.current;
     setCapture(null); setPolicy(null); setError(""); setPolicyError(""); setPolicyBusy(false);
     if (!enabled || !bridge) { setLoading(false); return; }
     setLoading(true);
     try {
-      const next = parseCreationTarget(await bridge.call("godot.creationTarget", {sessionId}));
+      const next = parseCreationTarget(await bridge.call("godot.creationTarget", {sessionId,...(selection!==undefined?{selection}:{})}));
       if (generation !== epoch.current) return;
       setCapture(next);
       setCaptureSessionKey(sessionKey);
@@ -34,6 +34,12 @@ export function useCreationTarget(enabled: boolean, sessionKey: string, sessionI
       if (generation === epoch.current) setLoading(false);
     }
   }, [bridge, enabled, sessionKey, sessionId]);
+  const refresh=useCallback(()=>readTarget(),[readTarget]);
+  const useRay=useCallback(()=>readTarget(null),[readTarget]);
+  const selectRecent=useCallback((entityId:string)=>{
+    if(!capture?.worldId||loading)return Promise.resolve();
+    return readTarget({worldId:capture.worldId,entityId});
+  },[capture?.worldId,loading,readTarget]);
   useEffect(() => {
     void refresh();
     const changed = () => void refresh();
@@ -54,5 +60,5 @@ export function useCreationTarget(enabled: boolean, sessionKey: string, sessionI
       if (generation === policyEpoch.current) setPolicyError(failure instanceof Error ? failure.message : String(failure));
     } finally { if (generation === policyEpoch.current) setPolicyBusy(false); }
   };
-  return { sessionId, capture: enabled && captureSessionKey === sessionKey ? capture : null, loading, error, available: !!bridge, refresh, policy: enabled && captureSessionKey === sessionKey ? policy : null, policyBusy, policyError, changePolicy };
+  return { sessionId, capture: enabled && captureSessionKey === sessionKey ? capture : null, loading, error, available: !!bridge, refresh, useRay, selectRecent, policy: enabled && captureSessionKey === sessionKey ? policy : null, policyBusy, policyError, changePolicy };
 }

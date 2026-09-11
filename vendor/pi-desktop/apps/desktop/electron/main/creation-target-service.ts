@@ -3,15 +3,17 @@ import fs from "node:fs";
 import path from "node:path";
 import {createHash, randomUUID} from "node:crypto";
 import type {CreationMigrationAdvance} from './creation-source-migration';
+import {recentCreationResults} from './creation-recent-results.ts';
 
 type Context = {projectId:string;sessionId:string;turnId:string};
 type Vector = [number,number,number];
 type Target = {entityId:string|null;position:Vector|null;normal:Vector|null;surface:string;revision:number};
 type CaptureSession = {projectId:string;sessionId:string|null};
+export type CreationTargetSelection={worldId:string;entityId:string}|null;
 export type CreationCapture = {
   format:"craftmine.creation-target/1";snapshotId:string;worldId:string;buildId:string;instanceId:string;
   sourceRevision:number;manifestHash:string;sampledAt:string;capturedAt:number;
-  playerPosition:Vector;target:Target;autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;sourceMigration?:CreationMigrationAdvance;
+  playerPosition:Vector;target:Target;source?:'ray'|'recent';autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;sourceMigration?:CreationMigrationAdvance;
 };
 type Dependencies = {
   directory:string;
@@ -19,6 +21,7 @@ type Dependencies = {
   instance():{worldId:string;buildId:string;instanceId:string}|null;
   descriptor(worldId:string):Promise<any>;
   sample(input:{worldId:string;buildId:string;instanceId:string}):Promise<any>;
+  journal?(capture:CreationCapture):Promise<unknown>;
   now?:()=>number;
 };
 const id=(value:unknown):value is string=>typeof value==="string"&&/^[a-zA-Z0-9._-]{1,128}$/.test(value);
@@ -41,6 +44,7 @@ export function creationTargetDisplay(target:Target,entities:unknown){
 export function createCreationTargetService(deps:Dependencies) {
   const now=deps.now??Date.now;
   const pending=new Map<string,{owner:number;session:CaptureSession;capture:CreationCapture;bound?:string}>();
+  const captureEpochs=new Map<number,number>();
   const file=(kind:string,key:string)=>path.join(deps.directory,kind,digest(key)+".json");
   const read=(target:string):any=>{try{if(fs.statSync(target).size>131072)fail("CREATION_CONTEXT_TOO_LARGE");return JSON.parse(fs.readFileSync(target,"utf8"));}catch(error){if((error as NodeJS.ErrnoException).code==="ENOENT")return null;throw error;}};
   const write=(target:string,value:unknown)=>{
@@ -77,10 +81,13 @@ export function createCreationTargetService(deps:Dependencies) {
       }
       return policyFor(worldId);
     },
-    async capture(owner:number,session:CaptureSession) {
+    async capture(owner:number,session:CaptureSession,selection?:CreationTargetSelection) {
       contextKey({...session,sessionId:session.sessionId??"new-draft",turnId:"capture"});
+      if(selection!==undefined&&selection!==null&&(!selection||Object.keys(selection).sort().join(',')!=='entityId,worldId'||!id(selection.worldId)||!id(selection.entityId)))fail('CREATION_SELECTION_INVALID');
+      const generation=(captureEpochs.get(owner)??0)+1;captureEpochs.set(owner,generation);
       const instance=deps.instance(),selected=await deps.selection();
       if(!instance||instance.worldId!==selected)return {captureId:null,target:null,reason:"CREATION_WORLD_UNAVAILABLE"};
+      if(selection&&selection.worldId!==instance.worldId)fail('CREATION_SELECTION_WORLD_CHANGED');
       const descriptor=await deps.descriptor(instance.worldId);
       if(descriptor?.baseId!=="creation-sandbox")return {captureId:null,target:null,reason:"CREATION_BASE_UNSUPPORTED"};
       const sample=await deps.sample(instance);
@@ -96,13 +103,33 @@ export function createCreationTargetService(deps:Dependencies) {
       const capture:CreationCapture={format:"craftmine.creation-target/1",snapshotId:randomUUID(),worldId:instance.worldId,buildId:instance.buildId,instanceId:instance.instanceId,
         sourceRevision:descriptor.sourceRevision,manifestHash:descriptor.manifestHash,sampledAt:sample.sampledAt,capturedAt:now(),
         entities:Array.isArray(creation.entities)?structuredClone(creation.entities):undefined,playerPosition:[...player] as Vector,target:{entityId:target.entityId,position:target.surface==="none"?null:[...target.position] as Vector,
-          normal:target.surface==="none"?null:[...target.normal] as Vector,surface:target.surface,revision:target.revision},autoApply:false};
+          normal:target.surface==="none"?null:[...target.normal] as Vector,surface:target.surface,revision:target.revision},source:'ray',autoApply:false};
       await assertFormal(capture);
+      const recent=recentCreationResults(capture.worldId,await deps.journal?.(capture),capture.entities);
+      await assertFormal(capture);
+      if(captureEpochs.get(owner)!==generation)fail('CREATION_CAPTURE_SUPERSEDED');
+      const selectionFile=file('selection',JSON.stringify([session.projectId,session.sessionId??'new-draft',capture.worldId]));
+      const saved=selection===undefined?read(selectionFile):selection;
+      const choice=saved?.worldId===capture.worldId&&id(saved?.entityId)?saved:null;
+      let reason:string|undefined;
+      if(choice){
+        const result=recent.find(item=>item.entityId===choice.entityId);
+        if(selection&&(!result||!result.available))fail(result?.reason??'CREATION_RECENT_UNAVAILABLE');
+        capture.source='recent';
+        if(result?.available){
+          const entity=capture.entities!.find(item=>item.id===choice.entityId)!;
+          // An explicit object selection has an observed origin, not a ray hit.
+          // The normal is only an object-up convention; placement must require ray source.
+          capture.target={entityId:entity.id,position:[...entity.position] as Vector,normal:[0,1,0],surface:'entity',revision:target.revision};
+        }else{reason=result?.reason??'CREATION_RECENT_UNAVAILABLE';capture.target={entityId:null,position:null,normal:null,surface:'none',revision:target.revision};}
+      }
+      if(selection!==undefined)write(selectionFile,selection);
       for(const [key,value] of pending)if(now()-value.capture.capturedAt>300000)pending.delete(key);
       if(pending.size>=64)pending.delete(pending.keys().next().value!);
       pending.set(capture.snapshotId,{owner,session:{...session},capture});
       return {captureId:capture.snapshotId,worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,
-        sourceRevision:capture.sourceRevision,manifestHash:capture.manifestHash,sampledAt:capture.sampledAt,target:target.surface==="none"?null:creationTargetDisplay(capture.target,creation.entities)};
+        sourceRevision:capture.sourceRevision,manifestHash:capture.manifestHash,sampledAt:capture.sampledAt,source:capture.source,recent,reason,
+        target:capture.target.surface==="none"?null:creationTargetDisplay(capture.target,creation.entities)};
     },
     async validate(owner:number,value:unknown,session:CaptureSession):Promise<CreationCapture|null> {
       if(value===undefined)return null;
@@ -115,7 +142,10 @@ export function createCreationTargetService(deps:Dependencies) {
       await assertFormal(item.capture);
       // The first send materializes a new chat. Claim its host-resolved session
       // once, without allowing a previously existing session capture to move.
-      if(item.session.sessionId===null)item.session.sessionId=session.sessionId;
+      if(item.session.sessionId===null){
+        item.session.sessionId=session.sessionId;
+        if(item.capture.source==='recent'&&item.capture.target.entityId)write(file('selection',JSON.stringify([session.projectId,session.sessionId,item.capture.worldId])),{worldId:item.capture.worldId,entityId:item.capture.target.entityId});
+      }
       if(item.session.sessionId!==session.sessionId)fail("CREATION_SESSION_CHANGED");
       return structuredClone(item.capture);
     },
@@ -141,6 +171,6 @@ export function createCreationTargetService(deps:Dependencies) {
       write(name,{...record,capture:{...record.capture,sourceMigration:structuredClone(advance)}});
     },
     policyFor,
-    revokeOwner(owner:number){for(const [key,item]of pending)if(item.owner===owner&&!item.bound)pending.delete(key);},
+    revokeOwner(owner:number){captureEpochs.set(owner,(captureEpochs.get(owner)??0)+1);for(const [key,item]of pending)if(item.owner===owner&&!item.bound)pending.delete(key);},
   };
 }

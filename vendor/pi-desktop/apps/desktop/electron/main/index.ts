@@ -1121,6 +1121,7 @@ const creationTargets=createCreationTargetService({
   directory:join(dataDir,"creation-context"),selection:godotSelection,instance:()=>godotWorld.instance,
   descriptor:worldId=>plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),
   sample:createCraftmineLiveSampler(()=>godotWorld),
+  journal:async capture=>(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal,
 });
 const migrateCreationSource=createCreationSourceMigration({
   directory:join(dataDir,"creation-migrations"),resourcesRoot:godotRoot,
@@ -6441,16 +6442,16 @@ function registerIpc() {
         return creationTaskStatus(worldId,input.sessionId,job as any,formal as any,creationAutoApply.isApplying((job as any)?.jobId,input.sessionId));
       }
       if(payload.channel==="godot.creationTarget"){
-        if(Object.keys(input).length!==1||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
+        if(!Object.hasOwn(input,"sessionId")||Object.keys(input).some(key=>!['sessionId','selection'].includes(key))||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
         if(input.sessionId===null){
           const projectPath=currentWorkspacePath();
           if(!projectPath)return {captureId:null,target:null,reason:"CREATION_PROJECT_REQUIRED"};
           const draftId="new-creation-draft";
-          return creationTargets.capture(event.sender.id,{sessionId:null,projectId:craftmineProjectIdentity({id:draftId,projectPath},draftId)});
+          return creationTargets.capture(event.sender.id,{sessionId:null,projectId:craftmineProjectIdentity({id:draftId,projectPath},draftId)},input.selection);
         }
         const detail=await host?.call<{session?:any}>("session.get",{id:input.sessionId});
         if(!detail?.session)throw Error("CREATION_SESSION_REQUIRED");
-        return creationTargets.capture(event.sender.id,{sessionId:input.sessionId,projectId:craftmineProjectIdentity(detail.session,input.sessionId)});
+        return creationTargets.capture(event.sender.id,{sessionId:input.sessionId,projectId:craftmineProjectIdentity(detail.session,input.sessionId)},input.selection);
       }
       return creationTargets.policy(input);
     }
