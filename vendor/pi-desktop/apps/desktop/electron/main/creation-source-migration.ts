@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import type {CreationCapture} from './creation-target-service';
+import {CREATION_MANAGED_MIGRATIONS,type ManagedCreationMigration} from './creation-managed-migrations.ts';
 type Data=Record<string,any>;
 type Context={projectId:string;sessionId:string;turnId:string};
 export type CreationMigrationAdvance={format:'craftmine.creation-migration-advance/1';revision:number;manifestHash:string;formalBuildId:string;formalSourceRevision:number;formalManifestHash:string;migrationId:string;receiptRevision:number;receiptManifestHash:string};
@@ -25,9 +26,18 @@ export function creationProjectSelectorsSafe(text:string){
  }
  return runtime===1&&selector===1;
 }
-type Dependencies={directory:string;resourcesRoot:string;domain:(method:string,args:Data)=>Promise<any>;assertActive:(context:Context,capture:CreationCapture)=>Promise<void>;recordAdvance:(context:Context,capture:CreationCapture,advance:CreationMigrationAdvance)=>void;};
+type Dependencies={directory:string;resourcesRoot:string;domain:(method:string,args:Data)=>Promise<any>;assertActive:(context:Context,capture:CreationCapture)=>Promise<void>;recordAdvance:(context:Context,capture:CreationCapture,advance:CreationMigrationAdvance)=>void;
+ // Trusted construction-time seam for deterministic tests; never a tool argument.
+ managedMigrations?:readonly ManagedCreationMigration[];};
 /** Host-only stock upgrade. The formal world is never changed by this service. */
 export function createCreationSourceMigration(deps:Dependencies){
+ const compatibility=deps.managedMigrations??CREATION_MANAGED_MIGRATIONS;
+ const safePath=(value:string)=>typeof value==='string'&&value.length<=240&&/^[a-zA-Z0-9_./-]+$/.test(value)&&!value.startsWith('/')&&value.split('/').every(part=>part&&part!=='.'&&part!=='..');
+ if(compatibility.length>32||new Set(compatibility.map(p=>p.id)).size!==compatibility.length)fail('CREATION_MIGRATION_POLICY_INVALID');
+ for(const policy of compatibility){
+  if(!/^[a-z0-9-]{1,96}$/.test(policy.id)||!policy.files.length||policy.files.length>16||new Set(policy.files.map(f=>f.source)).size!==policy.files.length)fail('CREATION_MIGRATION_POLICY_INVALID');
+  for(const file of policy.files)if(!safePath(file.source)||!file.source.startsWith('craftmine_shared/')||!safePath(file.resource)||!file.resource.startsWith('shared/')||!file.from.length||!file.to.length||file.from.some(h=>h!==null&&!/^[a-f0-9]{64}$/.test(h))||file.to.some(h=>!/^[a-f0-9]{64}$/.test(h)))fail('CREATION_MIGRATION_POLICY_INVALID');
+ }
  const write=(file:string,value:any)=>{fs.mkdirSync(deps.directory,{recursive:true});const tmp=file+'.'+randomUUID()+'.tmp';try{fs.writeFileSync(tmp,JSON.stringify(value));fs.renameSync(tmp,file);}finally{try{fs.unlinkSync(tmp);}catch{}}};
  const sameFiles=(a:Data[],b:Data[])=>a.length===b.length&&new Set(a.map(f=>f.path)).size===a.length&&a.every(file=>b.some(other=>other.path===file.path&&other.sha256===file.sha256&&other.bytes===file.bytes));
  async function readFormal(worldId:string,formal:Data,name:string){
@@ -45,8 +55,25 @@ export function createCreationSourceMigration(deps:Dependencies){
   await deps.assertActive(context,capture);const worldId=capture.worldId;
   const formal=await deps.domain('godotRuntime.exportSource',{worldId});
   if(formal?.worldId!==worldId||formal.buildId!==capture.buildId||formal.baseId!=='creation-sandbox'||formal.sourceRevision!==capture.sourceRevision||!Array.isArray(formal.files)||typeof formal.contentOid!=='string')fail('CREATION_MIGRATION_FORMAL_CHANGED');
-  const targets=CREATION_MIGRATION_FILES.map(entry=>{const text=fs.readFileSync(path.join(deps.resourcesRoot,entry.resource),'utf8').replace(/\r\n/g,'\n');if(Buffer.byteLength(text)>120000)fail('CREATION_MIGRATION_RESOURCE_INVALID');return {...entry,text,sha256:sha(text),bytes:Buffer.byteLength(text),accepted:[sha(text),sha(text.replace(/\n/g,'\r\n'))]};});
+  const resources=new Map<string,{text:string;sha256:string;bytes:number;accepted:string[]}>();
+  const resource=(name:string)=>{let value=resources.get(name);if(!value){const text=fs.readFileSync(path.join(deps.resourcesRoot,name),'utf8').replace(/\r\n/g,'\n');if(Buffer.byteLength(text)>120000)fail('CREATION_MIGRATION_RESOURCE_INVALID');value={text,sha256:sha(text),bytes:Buffer.byteLength(text),accepted:[sha(text),sha(text.replace(/\n/g,'\r\n'))]};resources.set(name,value);}return value;};
+  const targets=CREATION_MIGRATION_FILES.map(entry=>({...entry,...resource(entry.resource)}));
   const operations:Data[]=[];
+  let managed:ManagedCreationMigration|undefined;
+  let destination:ManagedCreationMigration|undefined;
+  for(const policy of compatibility){
+    const candidates=policy.files.map(entry=>({...entry,...resource(entry.resource),actual:formal.files.find((f:Data)=>f.path===entry.source)}));
+    if(candidates.every(entry=>entry.to.includes(entry.sha256)))destination??=policy;
+    if(!candidates.every(entry=>entry.to.includes(entry.sha256)&&(!entry.actual||entry.to.includes(entry.actual.sha256)||entry.from.includes(entry.actual.sha256))))continue;
+    if(!candidates.every(entry=>entry.actual!==undefined||entry.from.includes(null)))continue;
+    const planned=candidates.filter(entry=>!entry.actual||!entry.to.includes(entry.actual.sha256)).map(entry=>({op:'put',path:entry.source,text:entry.text,expectedHash:entry.actual?.sha256??null}));
+    if(!planned.length)continue;
+    // A compatibility record upgrades only its named files. Other protected
+    // files must already match the installed resource; ordinary sources differ freely.
+    if(!targets.slice(0,3).every(target=>policy.files.some(f=>f.source===target.source)||target.accepted.includes(formal.files.find((f:Data)=>f.path===target.source)?.sha256)))continue;
+    managed=policy;operations.push(...planned);break;
+  }
+  if(!managed){
   for(const target of targets.slice(0,3)){const file=formal.files.find((f:Data)=>f.path===target.source);if(!file)fail('CREATION_MIGRATION_NEEDED');if(target.accepted.includes(file.sha256))continue;if(!(target.old as readonly string[]).includes(file.sha256))fail('CREATION_MIGRATION_NEEDED');operations.push({op:'put',path:target.source,text:target.text,expectedHash:file.sha256});}
   const protectedUpgrade=operations.length>0,mutableOperations:Data[]=[];let customizedMutable=false;
   for(const target of targets.slice(3)){
@@ -58,10 +85,23 @@ export function createCreationSourceMigration(deps:Dependencies){
   // With the protected observer already current, authored world/contract code
   // remains editable. Avoid changing its coupled stock counterpart implicitly.
   if(!customizedMutable)operations.push(...mutableOperations);
+  // Legacy coupled upgrades still need explicitly declared destination helpers.
+  // Their absence is an allowed input only when the reviewed record says null.
+  for(const entry of destination?.files??[]){
+    if(targets.some(target=>target.source===entry.source))continue;
+    const file=formal.files.find((f:Data)=>f.path===entry.source),target=resource(entry.resource);
+    if(file&&entry.to.includes(file.sha256))continue;
+    if(!entry.from.includes(file?.sha256??null))fail('CREATION_MIGRATION_NEEDED');
+    operations.push({op:'put',path:entry.source,text:target.text,expectedHash:file?.sha256??null});
+  }
+  }
   if(!operations.length)return null;
   if(!creationProjectSelectorsSafe(await readFormal(worldId,formal,'project.godot')))fail('CREATION_MIGRATION_NEEDED');
   const expected=formal.files.map((file:Data)=>{const operation=operations.find(op=>op.path===file.path);return operation?{...file,sha256:sha(operation.text),bytes:Buffer.byteLength(operation.text)}:file;});
-  const migrationId=sha(JSON.stringify([worldId,capture.buildId,targets.map(t=>[t.source,t.sha256])])),recordPath=path.join(deps.directory,migrationId+'.json');
+  for(const op of operations)if(!formal.files.some((file:Data)=>file.path===op.path))expected.push({path:op.path,sha256:sha(op.text),bytes:Buffer.byteLength(op.text)});
+  const legacyHelpers=destination?.files.some(entry=>!targets.some(target=>target.source===entry.source));
+  const migrationIdentity=managed?[worldId,capture.buildId,'managed-compatible',managed]:[worldId,capture.buildId,targets.map(t=>[t.source,t.sha256]),...(legacyHelpers?[destination]:[])];
+  const migrationId=sha(JSON.stringify(migrationIdentity)),recordPath=path.join(deps.directory,migrationId+'.json');
   let record:any=null;if(fs.existsSync(recordPath)){if(fs.statSync(recordPath).size>1024*1024)fail('CREATION_MIGRATION_RECORD_INVALID');record=JSON.parse(fs.readFileSync(recordPath,'utf8'));if(record?.format!=='craftmine.creation-source-migration/1'||record.worldId!==worldId||record.migrationId!==migrationId||record.formalBuildId!==capture.buildId)fail('CREATION_MIGRATION_RECORD_INVALID');}
   const source=await currentIndex(context,worldId);await deps.assertActive(context,capture);
   const receiptLookup=async()=>record?deps.domain('godotProject.receipt',{binding:record.binding,worldId,toolCallId:record.request.toolCallId,method:'godotProject.patch',request:record.request}):null;
@@ -75,7 +115,7 @@ export function createCreationSourceMigration(deps:Dependencies){
     const toolCallId='host-stock-upgrade-'+migrationId;
     const request:Data={context,worldId,toolCallId,revision:source.revision,manifestHash:source.manifestHash,operations};
     if(source.content){const c=source.content;if(c.branchId!=='main'||typeof c.repoId!=='string'||!/^[a-f0-9]{40,64}$/.test(c.contentOid))fail('CREATION_MIGRATION_SOURCE_MISMATCH');request.operation={operationId:toolCallId,worldId,repoId:c.repoId,branchId:'main',expectedHeadOid:c.contentOid,expectedAppliedOid:null,expectedProgressRevision:null};}
-    record={format:'craftmine.creation-source-migration/1',worldId,migrationId,formalBuildId:capture.buildId,binding:task.binding,request};write(recordPath,record);
+    record={format:'craftmine.creation-source-migration/1',worldId,migrationId,formalBuildId:capture.buildId,...(destination?{migrationMode:managed?'managed-compatible':'legacy-coupled',compatibilityId:(managed??destination).id,compatibility:managed??destination}:{}),binding:task.binding,request};write(recordPath,record);
     try{await deps.assertActive(context,capture);receipt=await deps.domain('godotProject.patch',request);}catch(error){receipt=await receiptLookup();if(!receipt)throw error;}
   }
   const after=await currentIndex(context,worldId);await deps.assertActive(context,capture);
