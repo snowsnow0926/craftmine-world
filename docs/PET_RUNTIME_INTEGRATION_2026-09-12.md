@@ -23,4 +23,16 @@
 
 因此 **Native 集成通过不等于 Native→Web 恢复通过**；本轮尚无成功的 Web 集成反馈截图，不能以先前独立外观 viewer 图片替代。具体差异字段待后续独立诊断，当前未确认原因，未放宽组件校验或改状态救结果。
 
+### 字段级取证补充
+
+独立 forensic Web 副本仅在 `component_state.gd` 的实际 `snapshot()` 返回后、原严格比较前追加一行 JSON 打印，记录 expected/actual；原比较、回滚和错误返回没有修改。副本改动前后 SHA 在报告中声明，不能把它当作未改源码的正式通过结果。
+
+报告：`D:/cm-pet-integration-0912/test-results/pet-integration-GzyhBv/web-2eTlxk/report.json`，仍为 `ok:false`。`restoreTrace[0]` 保存两份完整实际状态，唯一差异为 `pet-first/yaw`：
+
+| 字段 | Native 保存 / Web 输入 | Web 恢复后的实际 snapshot |
+| --- | ---: | ---: |
+| yaw | 0.0421812161803246 | 0.0421812199056149 |
+
+entityId、position、settings、sourceSettings、interactionCount 均精确相同。当前组件 snapshot 读取 `global_rotation.y`，restore 再设置 `global_rotation.y`；本次数据证实该 Native→WASM 往返改变了所编码的朝向数值。已把精确差异交给产品修复负责人，不加数值容差，不将旧输入改成回读值，也不掩盖失败后继续截图。
+
 全部检查0模型、无OS键鼠/Pointer Lock/窗口抢焦点。普通犬保守碰撞直径1.5米，可能通过不了森林1.4米门洞；本结果只覆盖本次平地跟随、互动与Native保存恢复，不代表寻路、所有地形或窄门通行完成。
