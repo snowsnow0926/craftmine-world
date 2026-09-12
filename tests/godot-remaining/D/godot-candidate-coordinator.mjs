@@ -59,8 +59,40 @@ function fixture({cold=false,formalBuild=!cold,git=false,paused=false}={}){
  };
  const coordinator=createGodotCandidateCoordinator({host,adapter,domain,selection:async()=>selected});
  const args={worldId:'alpha',candidateId:'candidate-a'};
- return {coordinator,args,events,host,formal,records,setFault:v=>fault=v,setLatest:v=>latest.body.coins=v,setLatestBody:v=>latest.body=clone(v),readPreview:()=>clone(pending),mutatePreview:()=>pending.body.coins=999,setSelection:v=>selected=v};
+ return {coordinator,args,events,host,formal,records,adapter,domain,setFault:v=>fault=v,setLatest:v=>latest.body.coins=v,setLatestBody:v=>latest.body=clone(v),readPreview:()=>clone(pending),mutatePreview:()=>pending.body.coins=999,setSelection:v=>selected=v};
 }
+
+const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
+test('initialization cancel interrupts only its exact in-flight native stage and does not record bad source',async()=>{
+ const f=fixture({cold:true}),entered=deferred(),load=deferred();f.host.stageCandidate=async()=>{entered.resolve();await load.promise;};
+ f.host.cancelStaging=async world=>{assert.equal(world,'alpha');load.reject(Error('World startup was cancelled'));return true;};
+ const work=f.coordinator.firstLoad('alpha','candidate-a');const rejected=assert.rejects(work,/cancelled/);await entered.promise;
+ assert.equal((await f.coordinator.cancelFirstLoad('different')).status,'idle');assert.equal(f.coordinator.blocking,true);
+ await f.coordinator.cancelFirstLoad('alpha');await rejected;assert.equal(f.coordinator.blocking,false);assert.equal(f.host.instance,null);
+ assert.ok(!f.events.includes('godotWorld.initLaunchFailed'));assert.ok(!f.events.includes('godotApplication.commit'));assert.equal([...f.records.values()][0].status,'aborted');
+});
+for(const phase of ['prepare','confirm','commit'])test('first-load cancellation at '+phase+' keeps transaction ownership and honors an already durable commit',async()=>{
+ const f=fixture({cold:true}),entered=deferred(),release=deferred();f.host.cancelStaging=async()=>false;
+ const originalRequest=f.host.candidateRequest.bind(f.host);
+ if(phase==='confirm')f.host.candidateRequest=async op=>{const value=await originalRequest(op);if(op==='save'){entered.resolve();await release.promise;}return value;};
+ const coordinator=createGodotCandidateCoordinator({host:f.host,adapter:f.adapter,selection:async()=> 'alpha',domain:async(method,args)=>{const result=await f.domain(method,args);if(method==='godotApplication.'+phase){entered.resolve();await release.promise;}return result;}});
+ const work=coordinator.firstLoad('alpha','candidate-a');const result=work.then(value=>({value}),error=>({error}));await entered.promise;
+ const cancelled=coordinator.cancelFirstLoad('alpha');release.resolve();await cancelled;const outcome=await result;
+ if(phase==='commit'){assert.equal(outcome.value.status,'applied');assert.equal(f.host.instance.buildId,'build-new');}
+ else {assert.match(String(outcome.error),/GODOT_INITIALIZATION_CANCELLED/);assert.ok(!f.events.includes('godotApplication.commit'));assert.equal(f.host.instance,null);}
+ assert.equal(coordinator.blocking,false);assert.ok(!f.events.includes('godotWorld.initLaunchFailed'));
+});
+test('cancel may reconcile its own uncertain first-load abort on retry without touching another preview',async()=>{
+ const f=fixture({cold:true}),entered=deferred(),load=deferred();let failedAbort=false;
+ f.host.stageCandidate=async()=>{entered.resolve();await load.promise;};f.host.cancelStaging=async()=>{load.reject(Error('cancelled'));return true;};
+ const coordinator=createGodotCandidateCoordinator({host:f.host,adapter:f.adapter,selection:async()=> 'alpha',domain:async(method,args)=>{if(method==='godotApplication.abort'&&!failedAbort){failedAbort=true;throw Error('abort reply unavailable');}return f.domain(method,args);}});
+ const work=coordinator.firstLoad('alpha','candidate-a').catch(error=>error);await entered.promise;
+ await assert.rejects(coordinator.cancelFirstLoad('alpha'),/recovery pending/);await work;assert.equal(coordinator.blocking,true);
+ assert.equal((await coordinator.cancelFirstLoad('alpha')).status,'aborted');assert.equal(coordinator.blocking,false);
+ const ordinary=fixture();ordinary.host.cancelStaging=async()=>{throw Error('MUST_NOT_CANCEL_ORDINARY_PREVIEW');};await ordinary.coordinator.invoke('godot.candidatePreview',ordinary.args);
+ assert.equal((await ordinary.coordinator.cancelFirstLoad('alpha')).status,'idle');assert.equal(ordinary.coordinator.blocking,true);assert.ok(ordinary.host.candidateInstance);
+ await ordinary.coordinator.closeForDeparture();
+});
 test('saved maintenance verifies the unchanged durable snapshot in a fresh candidate without requiring the broken old runtime',async()=>{
  const f=fixture({cold:true,formalBuild:true,git:true}),snapshot=clone(f.formal.world.snapshot);let checks=0;
  f.host.resume=async()=>{throw Error('NO_RUNTIME_TO_RESUME');};

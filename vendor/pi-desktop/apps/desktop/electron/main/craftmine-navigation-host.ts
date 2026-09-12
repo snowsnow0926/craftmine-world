@@ -57,7 +57,7 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
     if (!deps.previewControl) throw Error("WORLD_VIEW_UNAVAILABLE");
     return deps.previewControl(request);
   }
-  if (channel === "world.creationRetry") {
+  if (channel === "world.creationRetry" || channel === "world.creationCancel") {
     if (Object.keys(payload).some(key=>key!=="worldId") || typeof payload.worldId!=="string" || !/^[a-z0-9][a-z0-9-]{1,47}$/.test(payload.worldId)) throw Error("INVALID_WORLD_ID");
     return deps.invoke(channel,{worldId:payload.worldId});
   }
