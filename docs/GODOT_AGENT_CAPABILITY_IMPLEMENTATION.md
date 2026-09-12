@@ -32,6 +32,29 @@ the two new modes. It is now explicit: disabled means unavailable, absent means
 unknown, while ordinary static query modes keep their original dependency.
 The reviewer closed the finding after independently passing 30 focused tests.
 
+`e5500ff3` adds the actual Core/packed-broker integration runner. After the final
+plugin rebuild and current Core compilation, the integrator passed all 18 source
+checks in `module-parameters-core-HtRHFh`: complete paged index, chunked text,
+single-A ordinary patch, unchanged B/shared data, stale rejection, real Core
+restart and no-op label. Host capture remains explicitly synthetic. This proves
+the source route, not live runtime selection or game cold reopen.
+
+`c3b7f423` introduces the immutable `creation-player-collision/1` cohort for new
+creation worlds. The integrator reran 17 actual native cases, 18 source/PCK/
+distribution tests, three Rust cohort tests, the desktop typecheck and all five
+staged materializers. The agent's actual Web verifier/latest-progress staging
+report is archived alongside the root native and Core results. All twelve
+current materialized resources match all three actual exported PCK proofs.
+Three archive/cross-source/negative-verdict tests pass. The initial archive test
+used an already-created output directory; it was corrected to pass a fresh child
+directory required by the existing materializer, with no product change.
+
+The collision guard rejects real penetration without relocating the player.
+Contact, disabled solids and saved-open-door cases pass. Old v1 sources remain
+unchanged and unverified for this guard. The Web fixture uses real production
+classes with authored descriptors, not a Core-issued application commit. Latest
+source integration evidence is `docs/evidence/gu3-gu4-module-integration-20260912`.
+
 The original runtime-only persistence audit is retained as the defect
 reproduction. Full parameter adoption, shared-material editing and player-model
 reuse remain open; none of GA01–GA28 is completed by these source-only checks.

@@ -9632,3 +9632,15 @@ peer/shared bytes separately from actual candidate application and cold-open
 behavior. Source-only Core tests must keep blocked engine checks explicit.
 Missing legacy parameter metadata stays unknown; preserved declarations do not
 grant setter or application authority.
+
+## GU4 creation v2 collision restore
+
+Require the complete twelve-resource cohort in source, PCK and observer pins.
+Real full-capsule tests distinguish floor/wall/slope contact from penetration,
+saved-open-door state from closed collision, and hollow-room clearance from
+surface intersection. Budget exhaustion and changed controller/shape/pose must
+reject. With production verifier and candidate-host classes, first check a
+candidate at a clear old pose, then walk the actual formal player into its future
+geometry and stage with latest progress. Require rejection and unchanged formal
+instance/snapshot. Label authored-descriptor fixtures explicitly; repeat the
+complete Core-issued commit flow in a sealed package before claiming adoption.

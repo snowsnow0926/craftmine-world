@@ -1,0 +1,2904 @@
+{
+  "format": "craftmine.module-parameters-core/1",
+  "out": "D:\\cm-agent-godot-0912\\test-results\\module-parameters-core-HtRHFh",
+  "coreBinary": "D:/cm-agent-godot-0912/vendor/pi-desktop/target/release/craftmine-core.exe",
+  "coreSha256": "465d13c901f47cd65ebd05c2f452c44f5b2acdffbc235761e7f9120e96c5a458",
+  "scope": "real Core and existing ZIP installer; synthetic host capture/live refs; no engine/model/player/physical/candidate/apply/cold-runtime claim",
+  "engineCalls": 0,
+  "modelCalls": 0,
+  "checks": [
+    {
+      "passed": true,
+      "label": "actual source install first recorded, engine check explicitly blocked"
+    },
+    {
+      "passed": true,
+      "label": "actual source install second recorded, engine check explicitly blocked"
+    },
+    {
+      "passed": true,
+      "label": "two real installer entity maps have independent identities"
+    },
+    {
+      "passed": true,
+      "label": "real indexed instance source values captured"
+    },
+    {
+      "passed": true,
+      "label": "actual full source index crossed page boundary"
+    },
+    {
+      "passed": true,
+      "label": "actual parent scene read crossed chunk boundary"
+    },
+    {
+      "passed": true,
+      "label": "query loaded only required text, no GLB/texture bytes"
+    },
+    {
+      "passed": true,
+      "label": "preview emits one ordinary parent source patch only"
+    },
+    {
+      "passed": true,
+      "label": "same-value preview does not invent a write or required check"
+    },
+    {
+      "passed": true,
+      "label": "query modes did not read settings or open workspace"
+    },
+    {
+      "passed": true,
+      "label": "ordinary Core patch changed A authored source parameters"
+    },
+    {
+      "passed": true,
+      "label": "peer B parent block unchanged"
+    },
+    {
+      "passed": true,
+      "label": "only parent source file changed; registry, lock and all shared payload unchanged"
+    },
+    {
+      "passed": true,
+      "label": "stale source capture rejected after ordinary patch"
+    },
+    {
+      "passed": true,
+      "label": "old preview binding rejected after refreshed source capture"
+    },
+    {
+      "passed": true,
+      "label": "fresh synthetic capture reads persisted source overrides"
+    },
+    {
+      "passed": true,
+      "label": "same label after actual Core restart produces no source write or job"
+    },
+    {
+      "passed": true,
+      "label": "formal runnable build was never adopted by this source test"
+    }
+  ],
+  "installs": [
+    {
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "worldId": "module-query-world",
+      "archiveSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "instanceIds": [
+        "ins-f0217690e708c9dc468116b4"
+      ],
+      "source": {
+        "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+        "baseBuild": "base-a",
+        "branchId": "main",
+        "commitOid": "a9f26c7eec75fd32c9c415cddc7e44fcdbe5348f",
+        "currentTaskId": "work-96f84b8e68c149fa2577acaa6cecbe680a648213f9be08464189d538fe5e90cb",
+        "fileCount": 79,
+        "lastWriter": {
+          "baseBuild": "base-a",
+          "projectId": "module-query-project",
+          "sessionId": "module-query-session",
+          "taskId": "work-96f84b8e68c149fa2577acaa6cecbe680a648213f9be08464189d538fe5e90cb",
+          "turnId": "source-test"
+        },
+        "manifestHash": "6ef316aadb99a23fd6c71ad3133419359190f5bbd4d55f7b3365443b57641f5a",
+        "revision": 5
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-a",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-a40b68fcb4698003a88210f41d18e7d7d04035398812a8d6bd6a785a0e0a3e3a",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-3bdcdb2e9c757d1938057cf88957b11d3bb38fa1f91eb8ab65fabacf75a94b00",
+        "kind": "check",
+        "manifestHash": "6ef316aadb99a23fd6c71ad3133419359190f5bbd4d55f7b3365443b57641f5a",
+        "materialized": {
+          "bytes": 5831074,
+          "files": 82
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 5,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "module-query-world"
+      }
+    },
+    {
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "worldId": "module-query-world",
+      "archiveSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "instanceIds": [
+        "ins-34c89cf6eaa5c0f80b2d7790"
+      ],
+      "source": {
+        "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+        "baseBuild": "base-a",
+        "branchId": "main",
+        "commitOid": "455d5daf781599dec293e7f02e464cb18e2e2d52",
+        "currentTaskId": "work-96f84b8e68c149fa2577acaa6cecbe680a648213f9be08464189d538fe5e90cb",
+        "fileCount": 79,
+        "lastWriter": {
+          "baseBuild": "base-a",
+          "projectId": "module-query-project",
+          "sessionId": "module-query-session",
+          "taskId": "work-96f84b8e68c149fa2577acaa6cecbe680a648213f9be08464189d538fe5e90cb",
+          "turnId": "source-test"
+        },
+        "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+        "revision": 6
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-a",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-281fbab2ef8a76bf3bc0f827d276a6d7b19b79de2d46aae8f54378e68ff87d70",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-2e8e4260ac3c043da964dc08244c4b0f638ed573a7e6c699b7abf18aca7a4627",
+        "kind": "check",
+        "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+        "materialized": {
+          "bytes": 5838421,
+          "files": 82
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 6,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "module-query-world"
+      }
+    }
+  ],
+  "queries": [
+    {
+      "label": "capture",
+      "args": {
+        "mode": "module-parameters"
+      },
+      "trace": [
+        {
+          "method": "task.context",
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "capture",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 32,
+          "phase": "capture",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 32
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 32,
+          "limit": 32,
+          "phase": "capture",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 64
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 64,
+          "limit": 32,
+          "phase": "capture",
+          "totalFiles": 79,
+          "files": 15,
+          "nextOffset": null
+        },
+        {
+          "method": "godotProject.read",
+          "path": "project.godot",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 16000,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.instances.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.assets.lock.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.gd",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "capture"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "capture",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        }
+      ],
+      "result": {
+        "format": "craftmine.module-parameters/1",
+        "status": "supported",
+        "scope": "audited-kenney-instance-source",
+        "binding": {
+          "format": "craftmine.module-parameter-binding/1",
+          "worldId": "module-query-world",
+          "buildId": "synthetic-not-running-build",
+          "instanceId": "synthetic-not-running-instance",
+          "captureId": "synthetic-capture",
+          "revision": 6,
+          "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+          "targetObjectId": "101",
+          "ownerObjectId": "101",
+          "scenePath": "scenes/creation.tscn",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "packageInstanceId": "ins-f0217690e708c9dc468116b4",
+          "resourceRef": {
+            "assetId": "kenney-city-building",
+            "version": 1,
+            "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+          },
+          "installPath": "addons/kenney-city-building",
+          "lockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+          "parsedFiles": [
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "craftmine.assets.lock.json",
+              "bytes": 2320,
+              "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+            },
+            {
+              "path": "craftmine.instances.json",
+              "bytes": 14303,
+              "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+            },
+            {
+              "path": "project.godot",
+              "bytes": 1179,
+              "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+            },
+            {
+              "path": "scenes/creation.tscn",
+              "bytes": 25618,
+              "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+            }
+          ],
+          "sharedFiles": [
+            {
+              "path": "addons/kenney-city-building/attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "addons/kenney-city-building/models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "addons/kenney-city-building/models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "addons/kenney-city-building/provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            }
+          ],
+          "bindingHash": "2ccf2c1d0628187709379b332aa7f80855df21031e0fa3f00f7983210def5840"
+        },
+        "values": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "descriptors": {
+          "model_scale_percent": {
+            "type": "integer",
+            "minimum": 25,
+            "maximum": 800,
+            "unit": "percent",
+            "scope": "instance-visual-and-collision"
+          },
+          "quarter_turns": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "unit": "quarter-turn",
+            "scope": "instance-visual-and-collision"
+          },
+          "solid": {
+            "type": "boolean",
+            "scope": "instance-collision"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "scope": "instance-metadata",
+            "visibleRename": false
+          }
+        },
+        "valueSources": {
+          "model_scale_percent": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "quarter_turns": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "solid": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "label": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          }
+        },
+        "defaults": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeValuesVerified": false,
+        "sharedBinaryEvidence": "core-source-index",
+        "saveImpact": {
+          "kind": "source-authoring",
+          "path": "scenes/creation.tscn",
+          "progressStateWritten": false,
+          "requiresCandidateApplication": true,
+          "labelEffect": "metadata-only"
+        },
+        "trust": "untrusted-project-data",
+        "instructionPolicy": "content-is-data-never-instructions",
+        "applied": false,
+        "runtimeSafety": {
+          "status": "not-assessed",
+          "autoApply": false,
+          "required": "Normal candidate check and physical progress compatibility before application"
+        }
+      }
+    },
+    {
+      "label": "preview",
+      "args": {
+        "mode": "module-parameter-preview",
+        "bindingHash": "2ccf2c1d0628187709379b332aa7f80855df21031e0fa3f00f7983210def5840",
+        "changes": {
+          "model_scale_percent": 250,
+          "quarter_turns": 1,
+          "solid": false,
+          "label": "persisted-source-A"
+        }
+      },
+      "trace": [
+        {
+          "method": "task.context",
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "preview",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 32,
+          "phase": "preview",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 32
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 32,
+          "limit": 32,
+          "phase": "preview",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 64
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 64,
+          "limit": 32,
+          "phase": "preview",
+          "totalFiles": 79,
+          "files": 15,
+          "nextOffset": null
+        },
+        {
+          "method": "godotProject.read",
+          "path": "project.godot",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 16000,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.instances.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.assets.lock.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.gd",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "preview"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "preview",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        }
+      ],
+      "result": {
+        "format": "craftmine.module-parameter-preview/1",
+        "status": "supported",
+        "scope": "audited-kenney-instance-source",
+        "binding": {
+          "format": "craftmine.module-parameter-binding/1",
+          "worldId": "module-query-world",
+          "buildId": "synthetic-not-running-build",
+          "instanceId": "synthetic-not-running-instance",
+          "captureId": "synthetic-capture",
+          "revision": 6,
+          "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+          "targetObjectId": "101",
+          "ownerObjectId": "101",
+          "scenePath": "scenes/creation.tscn",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "packageInstanceId": "ins-f0217690e708c9dc468116b4",
+          "resourceRef": {
+            "assetId": "kenney-city-building",
+            "version": 1,
+            "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+          },
+          "installPath": "addons/kenney-city-building",
+          "lockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+          "parsedFiles": [
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "craftmine.assets.lock.json",
+              "bytes": 2320,
+              "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+            },
+            {
+              "path": "craftmine.instances.json",
+              "bytes": 14303,
+              "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+            },
+            {
+              "path": "project.godot",
+              "bytes": 1179,
+              "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+            },
+            {
+              "path": "scenes/creation.tscn",
+              "bytes": 25618,
+              "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+            }
+          ],
+          "sharedFiles": [
+            {
+              "path": "addons/kenney-city-building/attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "addons/kenney-city-building/models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "addons/kenney-city-building/models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "addons/kenney-city-building/provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            }
+          ],
+          "bindingHash": "2ccf2c1d0628187709379b332aa7f80855df21031e0fa3f00f7983210def5840"
+        },
+        "values": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "descriptors": {
+          "model_scale_percent": {
+            "type": "integer",
+            "minimum": 25,
+            "maximum": 800,
+            "unit": "percent",
+            "scope": "instance-visual-and-collision"
+          },
+          "quarter_turns": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "unit": "quarter-turn",
+            "scope": "instance-visual-and-collision"
+          },
+          "solid": {
+            "type": "boolean",
+            "scope": "instance-collision"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "scope": "instance-metadata",
+            "visibleRename": false
+          }
+        },
+        "valueSources": {
+          "model_scale_percent": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "quarter_turns": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "solid": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "label": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          }
+        },
+        "defaults": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeValuesVerified": false,
+        "sharedBinaryEvidence": "core-source-index",
+        "saveImpact": {
+          "kind": "source-authoring",
+          "path": "scenes/creation.tscn",
+          "progressStateWritten": false,
+          "requiresCandidateApplication": true,
+          "labelEffect": "metadata-only"
+        },
+        "trust": "untrusted-project-data",
+        "instructionPolicy": "content-is-data-never-instructions",
+        "applied": false,
+        "changed": true,
+        "checkRequired": true,
+        "operations": [
+          {
+            "op": "put",
+            "path": "scenes/creation.tscn",
+            "text": "[gd_scene load_steps=5 format=3]\n\n[ext_resource type=\"Script\" path=\"res://scripts/creation_world.gd\" id=\"1_world\"]\n[ext_resource type=\"Script\" path=\"res://scripts/reused/player_controller.gd\" id=\"2_player\"]\n[ext_resource type=\"Script\" path=\"res://scripts/reused/camera_rig.gd\" id=\"3_camera\"]\n[ext_resource type=\"PackedScene\" path=\"res://addons/kenney-city-building/module.tscn\" id=\"4_module\"]\n[ext_resource type=\"PackedScene\" path=\"res://addons/kenney-city-building/module.tscn\" id=\"5_module\"]\n[sub_resource type=\"CapsuleShape3D\" id=\"PlayerShape\"]\nradius = 0.3\nheight = 1.8\n\n[node name=\"CreationWorld\" type=\"Node3D\"]\nscript = ExtResource(\"1_world\")\n\n[node name=\"Player\" type=\"CharacterBody3D\" parent=\".\"]\nposition = Vector3(0, 0.9, 6)\ncollision_layer = 8\ncollision_mask = 3\nscript = ExtResource(\"2_player\")\n\n[node name=\"CollisionShape3D\" type=\"CollisionShape3D\" parent=\"Player\"]\nshape = SubResource(\"PlayerShape\")\n\n[node name=\"CameraRig\" type=\"Node3D\" parent=\"Player\"]\nposition = Vector3(0, 0.65, 0)\nscript = ExtResource(\"3_camera\")\n\n[node name=\"PitchPivot\" type=\"Node3D\" parent=\"Player/CameraRig\"]\n\n[node name=\"Camera3D\" type=\"Camera3D\" parent=\"Player/CameraRig/PitchPivot\"]\ncurrent = true\nfov = 75.0\nfar = 140.0\n\n[node name=\"WeaponMount\" type=\"Node3D\" parent=\"Player/CameraRig/PitchPivot/Camera3D\"]\n\n; bounded paging fixture 0 ..................................................................................................................................................................................................................\n; bounded paging fixture 1 ..................................................................................................................................................................................................................\n; bounded paging fixture 2 ..................................................................................................................................................................................................................\n; bounded paging fixture 3 ..................................................................................................................................................................................................................\n; bounded paging fixture 4 ..................................................................................................................................................................................................................\n; bounded paging fixture 5 ..................................................................................................................................................................................................................\n; bounded paging fixture 6 ..................................................................................................................................................................................................................\n; bounded paging fixture 7 ..................................................................................................................................................................................................................\n; bounded paging fixture 8 ..................................................................................................................................................................................................................\n; bounded paging fixture 9 ..................................................................................................................................................................................................................\n; bounded paging fixture 10 ..................................................................................................................................................................................................................\n; bounded paging fixture 11 ..................................................................................................................................................................................................................\n; bounded paging fixture 12 ..................................................................................................................................................................................................................\n; bounded paging fixture 13 ..................................................................................................................................................................................................................\n; bounded paging fixture 14 ..................................................................................................................................................................................................................\n; bounded paging fixture 15 ..................................................................................................................................................................................................................\n; bounded paging fixture 16 ..................................................................................................................................................................................................................\n; bounded paging fixture 17 ..................................................................................................................................................................................................................\n; bounded paging fixture 18 ..................................................................................................................................................................................................................\n; bounded paging fixture 19 ..................................................................................................................................................................................................................\n; bounded paging fixture 20 ..................................................................................................................................................................................................................\n; bounded paging fixture 21 ..................................................................................................................................................................................................................\n; bounded paging fixture 22 ..................................................................................................................................................................................................................\n; bounded paging fixture 23 ..................................................................................................................................................................................................................\n; bounded paging fixture 24 ..................................................................................................................................................................................................................\n; bounded paging fixture 25 ..................................................................................................................................................................................................................\n; bounded paging fixture 26 ..................................................................................................................................................................................................................\n; bounded paging fixture 27 ..................................................................................................................................................................................................................\n; bounded paging fixture 28 ..................................................................................................................................................................................................................\n; bounded paging fixture 29 ..................................................................................................................................................................................................................\n; bounded paging fixture 30 ..................................................................................................................................................................................................................\n; bounded paging fixture 31 ..................................................................................................................................................................................................................\n; bounded paging fixture 32 ..................................................................................................................................................................................................................\n; bounded paging fixture 33 ..................................................................................................................................................................................................................\n; bounded paging fixture 34 ..................................................................................................................................................................................................................\n; bounded paging fixture 35 ..................................................................................................................................................................................................................\n; bounded paging fixture 36 ..................................................................................................................................................................................................................\n; bounded paging fixture 37 ..................................................................................................................................................................................................................\n; bounded paging fixture 38 ..................................................................................................................................................................................................................\n; bounded paging fixture 39 ..................................................................................................................................................................................................................\n; bounded paging fixture 40 ..................................................................................................................................................................................................................\n; bounded paging fixture 41 ..................................................................................................................................................................................................................\n; bounded paging fixture 42 ..................................................................................................................................................................................................................\n; bounded paging fixture 43 ..................................................................................................................................................................................................................\n; bounded paging fixture 44 ..................................................................................................................................................................................................................\n; bounded paging fixture 45 ..................................................................................................................................................................................................................\n; bounded paging fixture 46 ..................................................................................................................................................................................................................\n; bounded paging fixture 47 ..................................................................................................................................................................................................................\n; bounded paging fixture 48 ..................................................................................................................................................................................................................\n; bounded paging fixture 49 ..................................................................................................................................................................................................................\n; bounded paging fixture 50 ..................................................................................................................................................................................................................\n; bounded paging fixture 51 ..................................................................................................................................................................................................................\n; bounded paging fixture 52 ..................................................................................................................................................................................................................\n; bounded paging fixture 53 ..................................................................................................................................................................................................................\n; bounded paging fixture 54 ..................................................................................................................................................................................................................\n; bounded paging fixture 55 ..................................................................................................................................................................................................................\n; bounded paging fixture 56 ..................................................................................................................................................................................................................\n; bounded paging fixture 57 ..................................................................................................................................................................................................................\n; bounded paging fixture 58 ..................................................................................................................................................................................................................\n; bounded paging fixture 59 ..................................................................................................................................................................................................................\n; bounded paging fixture 60 ..................................................................................................................................................................................................................\n; bounded paging fixture 61 ..................................................................................................................................................................................................................\n; bounded paging fixture 62 ..................................................................................................................................................................................................................\n; bounded paging fixture 63 ..................................................................................................................................................................................................................\n; bounded paging fixture 64 ..................................................................................................................................................................................................................\n; bounded paging fixture 65 ..................................................................................................................................................................................................................\n; bounded paging fixture 66 ..................................................................................................................................................................................................................\n; bounded paging fixture 67 ..................................................................................................................................................................................................................\n; bounded paging fixture 68 ..................................................................................................................................................................................................................\n; bounded paging fixture 69 ..................................................................................................................................................................................................................\n; bounded paging fixture 70 ..................................................................................................................................................................................................................\n; bounded paging fixture 71 ..................................................................................................................................................................................................................\n; bounded paging fixture 72 ..................................................................................................................................................................................................................\n; bounded paging fixture 73 ..................................................................................................................................................................................................................\n; bounded paging fixture 74 ..................................................................................................................................................................................................................\n; bounded paging fixture 75 ..................................................................................................................................................................................................................\n; bounded paging fixture 76 ..................................................................................................................................................................................................................\n; bounded paging fixture 77 ..................................................................................................................................................................................................................\n; bounded paging fixture 78 ..................................................................................................................................................................................................................\n; bounded paging fixture 79 ..................................................................................................................................................................................................................\n; bounded paging fixture 80 ..................................................................................................................................................................................................................\n; bounded paging fixture 81 ..................................................................................................................................................................................................................\n; bounded paging fixture 82 ..................................................................................................................................................................................................................\n; bounded paging fixture 83 ..................................................................................................................................................................................................................\n; bounded paging fixture 84 ..................................................................................................................................................................................................................\n; bounded paging fixture 85 ..................................................................................................................................................................................................................\n; bounded paging fixture 86 ..................................................................................................................................................................................................................\n; bounded paging fixture 87 ..................................................................................................................................................................................................................\n; bounded paging fixture 88 ..................................................................................................................................................................................................................\n; bounded paging fixture 89 ..................................................................................................................................................................................................................\n; bounded paging fixture 90 ..................................................................................................................................................................................................................\n; bounded paging fixture 91 ..................................................................................................................................................................................................................\n; bounded paging fixture 92 ..................................................................................................................................................................................................................\n; bounded paging fixture 93 ..................................................................................................................................................................................................................\n; bounded paging fixture 94 ..................................................................................................................................................................................................................\n; bounded paging fixture 95 ..................................................................................................................................................................................................................\n; bounded paging fixture 96 ..................................................................................................................................................................................................................\n; bounded paging fixture 97 ..................................................................................................................................................................................................................\n; bounded paging fixture 98 ..................................................................................................................................................................................................................\n; bounded paging fixture 99 ..................................................................................................................................................................................................................\n\n[node name=\"ins-f0217690e708c9dc468116b4-e0\" parent=\".\" instance=ExtResource(\"4_module\")]\nentity_id = \"ins-f0217690e708c9dc468116b4-e0\"\nlabel = \"persisted-source-A\"\nmodel_scale_percent = 250\nquarter_turns = 1\nsolid = false\n\n[node name=\"ins-34c89cf6eaa5c0f80b2d7790-e0\" parent=\".\" instance=ExtResource(\"5_module\")]\nentity_id = \"ins-34c89cf6eaa5c0f80b2d7790-e0\"\nlabel = \"building\"\nmodel_scale_percent = 100\nquarter_turns = 0\nsolid = true\n",
+            "expectedHash": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          }
+        ],
+        "changeSummary": {
+          "scope": "single-source-instance",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "changes": [
+            {
+              "property": "model_scale_percent",
+              "before": 100,
+              "after": 250
+            },
+            {
+              "property": "quarter_turns",
+              "before": 0,
+              "after": 1
+            },
+            {
+              "property": "solid",
+              "before": true,
+              "after": false
+            },
+            {
+              "property": "label",
+              "before": "building",
+              "after": "persisted-source-A"
+            }
+          ],
+          "sharedResourcesModified": false,
+          "progressStateWritten": false
+        },
+        "proposedValues": {
+          "model_scale_percent": 250,
+          "quarter_turns": 1,
+          "solid": false,
+          "label": "persisted-source-A"
+        },
+        "runtimeSafety": {
+          "status": "not-assessed",
+          "autoApply": false,
+          "required": "Normal candidate check and physical progress compatibility before application"
+        }
+      }
+    },
+    {
+      "label": "no-op",
+      "args": {
+        "mode": "module-parameter-preview",
+        "bindingHash": "2ccf2c1d0628187709379b332aa7f80855df21031e0fa3f00f7983210def5840",
+        "changes": {
+          "model_scale_percent": 100
+        }
+      },
+      "trace": [
+        {
+          "method": "task.context",
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "no-op",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 32,
+          "phase": "no-op",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 32
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 32,
+          "limit": 32,
+          "phase": "no-op",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 64
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 64,
+          "limit": 32,
+          "phase": "no-op",
+          "totalFiles": 79,
+          "files": 15,
+          "nextOffset": null
+        },
+        {
+          "method": "godotProject.read",
+          "path": "project.godot",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 16000,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.instances.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.assets.lock.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.gd",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "no-op"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "no-op",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        }
+      ],
+      "result": {
+        "format": "craftmine.module-parameter-preview/1",
+        "status": "supported",
+        "scope": "audited-kenney-instance-source",
+        "binding": {
+          "format": "craftmine.module-parameter-binding/1",
+          "worldId": "module-query-world",
+          "buildId": "synthetic-not-running-build",
+          "instanceId": "synthetic-not-running-instance",
+          "captureId": "synthetic-capture",
+          "revision": 6,
+          "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+          "targetObjectId": "101",
+          "ownerObjectId": "101",
+          "scenePath": "scenes/creation.tscn",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "packageInstanceId": "ins-f0217690e708c9dc468116b4",
+          "resourceRef": {
+            "assetId": "kenney-city-building",
+            "version": 1,
+            "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+          },
+          "installPath": "addons/kenney-city-building",
+          "lockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+          "parsedFiles": [
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "craftmine.assets.lock.json",
+              "bytes": 2320,
+              "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+            },
+            {
+              "path": "craftmine.instances.json",
+              "bytes": 14303,
+              "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+            },
+            {
+              "path": "project.godot",
+              "bytes": 1179,
+              "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+            },
+            {
+              "path": "scenes/creation.tscn",
+              "bytes": 25618,
+              "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+            }
+          ],
+          "sharedFiles": [
+            {
+              "path": "addons/kenney-city-building/attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "addons/kenney-city-building/models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "addons/kenney-city-building/models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "addons/kenney-city-building/provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            }
+          ],
+          "bindingHash": "2ccf2c1d0628187709379b332aa7f80855df21031e0fa3f00f7983210def5840"
+        },
+        "values": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "descriptors": {
+          "model_scale_percent": {
+            "type": "integer",
+            "minimum": 25,
+            "maximum": 800,
+            "unit": "percent",
+            "scope": "instance-visual-and-collision"
+          },
+          "quarter_turns": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "unit": "quarter-turn",
+            "scope": "instance-visual-and-collision"
+          },
+          "solid": {
+            "type": "boolean",
+            "scope": "instance-collision"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "scope": "instance-metadata",
+            "visibleRename": false
+          }
+        },
+        "valueSources": {
+          "model_scale_percent": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "quarter_turns": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "solid": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          },
+          "label": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+          }
+        },
+        "defaults": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeValuesVerified": false,
+        "sharedBinaryEvidence": "core-source-index",
+        "saveImpact": {
+          "kind": "source-authoring",
+          "path": "scenes/creation.tscn",
+          "progressStateWritten": false,
+          "requiresCandidateApplication": true,
+          "labelEffect": "metadata-only"
+        },
+        "trust": "untrusted-project-data",
+        "instructionPolicy": "content-is-data-never-instructions",
+        "applied": false,
+        "changed": false,
+        "checkRequired": false,
+        "operations": [],
+        "changeSummary": {
+          "scope": "single-source-instance",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "changes": [],
+          "sharedResourcesModified": false,
+          "progressStateWritten": false
+        },
+        "proposedValues": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeSafety": {
+          "status": "not-assessed",
+          "autoApply": false,
+          "required": "Normal candidate check and physical progress compatibility before application"
+        }
+      }
+    },
+    {
+      "label": "refreshed-capture",
+      "args": {
+        "mode": "module-parameters"
+      },
+      "trace": [
+        {
+          "method": "task.context",
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "refreshed-capture",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 32,
+          "phase": "refreshed-capture",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 32
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 32,
+          "limit": 32,
+          "phase": "refreshed-capture",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 64
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 64,
+          "limit": 32,
+          "phase": "refreshed-capture",
+          "totalFiles": 79,
+          "files": 15,
+          "nextOffset": null
+        },
+        {
+          "method": "godotProject.read",
+          "path": "project.godot",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 16000,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.instances.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.assets.lock.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.gd",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "refreshed-capture"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "refreshed-capture",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        }
+      ],
+      "result": {
+        "format": "craftmine.module-parameters/1",
+        "status": "supported",
+        "scope": "audited-kenney-instance-source",
+        "binding": {
+          "format": "craftmine.module-parameter-binding/1",
+          "worldId": "module-query-world",
+          "buildId": "synthetic-not-running-build",
+          "instanceId": "synthetic-not-running-instance",
+          "captureId": "synthetic-capture",
+          "revision": 7,
+          "manifestHash": "75174f8d0b186ea1ed26df75542c0a7fa98de1a99e36afa613321206dc3252ec",
+          "targetObjectId": "101",
+          "ownerObjectId": "101",
+          "scenePath": "scenes/creation.tscn",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "packageInstanceId": "ins-f0217690e708c9dc468116b4",
+          "resourceRef": {
+            "assetId": "kenney-city-building",
+            "version": 1,
+            "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+          },
+          "installPath": "addons/kenney-city-building",
+          "lockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+          "parsedFiles": [
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "craftmine.assets.lock.json",
+              "bytes": 2320,
+              "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+            },
+            {
+              "path": "craftmine.instances.json",
+              "bytes": 14303,
+              "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+            },
+            {
+              "path": "project.godot",
+              "bytes": 1179,
+              "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+            },
+            {
+              "path": "scenes/creation.tscn",
+              "bytes": 25629,
+              "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+            }
+          ],
+          "sharedFiles": [
+            {
+              "path": "addons/kenney-city-building/attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "addons/kenney-city-building/models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "addons/kenney-city-building/models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "addons/kenney-city-building/provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            }
+          ],
+          "bindingHash": "8e24e9b91e2b87b35ad2e9b7d886f895e3c7d616a2fa90d76b2d9c163c690989"
+        },
+        "values": {
+          "model_scale_percent": 250,
+          "quarter_turns": 1,
+          "solid": false,
+          "label": "persisted-source-A"
+        },
+        "descriptors": {
+          "model_scale_percent": {
+            "type": "integer",
+            "minimum": 25,
+            "maximum": 800,
+            "unit": "percent",
+            "scope": "instance-visual-and-collision"
+          },
+          "quarter_turns": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "unit": "quarter-turn",
+            "scope": "instance-visual-and-collision"
+          },
+          "solid": {
+            "type": "boolean",
+            "scope": "instance-collision"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "scope": "instance-metadata",
+            "visibleRename": false
+          }
+        },
+        "valueSources": {
+          "model_scale_percent": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "quarter_turns": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "solid": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "label": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          }
+        },
+        "defaults": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeValuesVerified": false,
+        "sharedBinaryEvidence": "core-source-index",
+        "saveImpact": {
+          "kind": "source-authoring",
+          "path": "scenes/creation.tscn",
+          "progressStateWritten": false,
+          "requiresCandidateApplication": true,
+          "labelEffect": "metadata-only"
+        },
+        "trust": "untrusted-project-data",
+        "instructionPolicy": "content-is-data-never-instructions",
+        "applied": false,
+        "runtimeSafety": {
+          "status": "not-assessed",
+          "autoApply": false,
+          "required": "Normal candidate check and physical progress compatibility before application"
+        }
+      }
+    },
+    {
+      "label": "core-reopened-capture",
+      "args": {
+        "mode": "module-parameters"
+      },
+      "trace": [
+        {
+          "method": "task.context",
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "core-reopened-capture",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 32,
+          "phase": "core-reopened-capture",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 32
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 32,
+          "limit": 32,
+          "phase": "core-reopened-capture",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 64
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 64,
+          "limit": 32,
+          "phase": "core-reopened-capture",
+          "totalFiles": 79,
+          "files": 15,
+          "nextOffset": null
+        },
+        {
+          "method": "godotProject.read",
+          "path": "project.godot",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 16000,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.instances.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.assets.lock.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.gd",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-capture"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "core-reopened-capture",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        }
+      ],
+      "result": {
+        "format": "craftmine.module-parameters/1",
+        "status": "supported",
+        "scope": "audited-kenney-instance-source",
+        "binding": {
+          "format": "craftmine.module-parameter-binding/1",
+          "worldId": "module-query-world",
+          "buildId": "synthetic-not-running-build",
+          "instanceId": "synthetic-not-running-instance",
+          "captureId": "synthetic-capture",
+          "revision": 7,
+          "manifestHash": "75174f8d0b186ea1ed26df75542c0a7fa98de1a99e36afa613321206dc3252ec",
+          "targetObjectId": "101",
+          "ownerObjectId": "101",
+          "scenePath": "scenes/creation.tscn",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "packageInstanceId": "ins-f0217690e708c9dc468116b4",
+          "resourceRef": {
+            "assetId": "kenney-city-building",
+            "version": 1,
+            "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+          },
+          "installPath": "addons/kenney-city-building",
+          "lockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+          "parsedFiles": [
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "craftmine.assets.lock.json",
+              "bytes": 2320,
+              "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+            },
+            {
+              "path": "craftmine.instances.json",
+              "bytes": 14303,
+              "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+            },
+            {
+              "path": "project.godot",
+              "bytes": 1179,
+              "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+            },
+            {
+              "path": "scenes/creation.tscn",
+              "bytes": 25629,
+              "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+            }
+          ],
+          "sharedFiles": [
+            {
+              "path": "addons/kenney-city-building/attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "addons/kenney-city-building/models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "addons/kenney-city-building/models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "addons/kenney-city-building/provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            }
+          ],
+          "bindingHash": "8e24e9b91e2b87b35ad2e9b7d886f895e3c7d616a2fa90d76b2d9c163c690989"
+        },
+        "values": {
+          "model_scale_percent": 250,
+          "quarter_turns": 1,
+          "solid": false,
+          "label": "persisted-source-A"
+        },
+        "descriptors": {
+          "model_scale_percent": {
+            "type": "integer",
+            "minimum": 25,
+            "maximum": 800,
+            "unit": "percent",
+            "scope": "instance-visual-and-collision"
+          },
+          "quarter_turns": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "unit": "quarter-turn",
+            "scope": "instance-visual-and-collision"
+          },
+          "solid": {
+            "type": "boolean",
+            "scope": "instance-collision"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "scope": "instance-metadata",
+            "visibleRename": false
+          }
+        },
+        "valueSources": {
+          "model_scale_percent": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "quarter_turns": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "solid": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "label": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          }
+        },
+        "defaults": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeValuesVerified": false,
+        "sharedBinaryEvidence": "core-source-index",
+        "saveImpact": {
+          "kind": "source-authoring",
+          "path": "scenes/creation.tscn",
+          "progressStateWritten": false,
+          "requiresCandidateApplication": true,
+          "labelEffect": "metadata-only"
+        },
+        "trust": "untrusted-project-data",
+        "instructionPolicy": "content-is-data-never-instructions",
+        "applied": false,
+        "runtimeSafety": {
+          "status": "not-assessed",
+          "autoApply": false,
+          "required": "Normal candidate check and physical progress compatibility before application"
+        }
+      }
+    },
+    {
+      "label": "core-reopened-label-noop",
+      "args": {
+        "mode": "module-parameter-preview",
+        "bindingHash": "8e24e9b91e2b87b35ad2e9b7d886f895e3c7d616a2fa90d76b2d9c163c690989",
+        "changes": {
+          "label": "persisted-source-A"
+        }
+      },
+      "trace": [
+        {
+          "method": "task.context",
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "core-reopened-label-noop",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 32,
+          "phase": "core-reopened-label-noop",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 32
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 32,
+          "limit": 32,
+          "phase": "core-reopened-label-noop",
+          "totalFiles": 79,
+          "files": 32,
+          "nextOffset": 64
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 64,
+          "limit": 32,
+          "phase": "core-reopened-label-noop",
+          "totalFiles": 79,
+          "files": 15,
+          "nextOffset": null
+        },
+        {
+          "method": "godotProject.read",
+          "path": "project.godot",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "scenes/creation.tscn",
+          "offset": 16000,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.instances.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "craftmine.assets.lock.json",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.tscn",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.read",
+          "path": "addons/kenney-city-building/module.gd",
+          "offset": 0,
+          "limit": 16000,
+          "phase": "core-reopened-label-noop"
+        },
+        {
+          "method": "godotProject.index",
+          "offset": 0,
+          "limit": 1,
+          "phase": "core-reopened-label-noop",
+          "totalFiles": 79,
+          "files": 1,
+          "nextOffset": 1
+        }
+      ],
+      "result": {
+        "format": "craftmine.module-parameter-preview/1",
+        "status": "supported",
+        "scope": "audited-kenney-instance-source",
+        "binding": {
+          "format": "craftmine.module-parameter-binding/1",
+          "worldId": "module-query-world",
+          "buildId": "synthetic-not-running-build",
+          "instanceId": "synthetic-not-running-instance",
+          "captureId": "synthetic-capture",
+          "revision": 7,
+          "manifestHash": "75174f8d0b186ea1ed26df75542c0a7fa98de1a99e36afa613321206dc3252ec",
+          "targetObjectId": "101",
+          "ownerObjectId": "101",
+          "scenePath": "scenes/creation.tscn",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "packageInstanceId": "ins-f0217690e708c9dc468116b4",
+          "resourceRef": {
+            "assetId": "kenney-city-building",
+            "version": 1,
+            "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+          },
+          "installPath": "addons/kenney-city-building",
+          "lockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+          "parsedFiles": [
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "craftmine.assets.lock.json",
+              "bytes": 2320,
+              "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+            },
+            {
+              "path": "craftmine.instances.json",
+              "bytes": 14303,
+              "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+            },
+            {
+              "path": "project.godot",
+              "bytes": 1179,
+              "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+            },
+            {
+              "path": "scenes/creation.tscn",
+              "bytes": 25629,
+              "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+            }
+          ],
+          "sharedFiles": [
+            {
+              "path": "addons/kenney-city-building/attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "addons/kenney-city-building/licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "addons/kenney-city-building/models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "addons/kenney-city-building/models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "addons/kenney-city-building/module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "addons/kenney-city-building/module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            },
+            {
+              "path": "addons/kenney-city-building/provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            }
+          ],
+          "bindingHash": "8e24e9b91e2b87b35ad2e9b7d886f895e3c7d616a2fa90d76b2d9c163c690989"
+        },
+        "values": {
+          "model_scale_percent": 250,
+          "quarter_turns": 1,
+          "solid": false,
+          "label": "persisted-source-A"
+        },
+        "descriptors": {
+          "model_scale_percent": {
+            "type": "integer",
+            "minimum": 25,
+            "maximum": 800,
+            "unit": "percent",
+            "scope": "instance-visual-and-collision"
+          },
+          "quarter_turns": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3,
+            "unit": "quarter-turn",
+            "scope": "instance-visual-and-collision"
+          },
+          "solid": {
+            "type": "boolean",
+            "scope": "instance-collision"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "scope": "instance-metadata",
+            "visibleRename": false
+          }
+        },
+        "valueSources": {
+          "model_scale_percent": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "quarter_turns": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "solid": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          },
+          "label": {
+            "kind": "instance-override",
+            "path": "scenes/creation.tscn",
+            "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+          }
+        },
+        "defaults": {
+          "model_scale_percent": 100,
+          "quarter_turns": 0,
+          "solid": true,
+          "label": "building"
+        },
+        "runtimeValuesVerified": false,
+        "sharedBinaryEvidence": "core-source-index",
+        "saveImpact": {
+          "kind": "source-authoring",
+          "path": "scenes/creation.tscn",
+          "progressStateWritten": false,
+          "requiresCandidateApplication": true,
+          "labelEffect": "metadata-only"
+        },
+        "trust": "untrusted-project-data",
+        "instructionPolicy": "content-is-data-never-instructions",
+        "applied": false,
+        "changed": false,
+        "checkRequired": false,
+        "operations": [],
+        "changeSummary": {
+          "scope": "single-source-instance",
+          "entityId": "ins-f0217690e708c9dc468116b4-e0",
+          "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+          "changes": [],
+          "sharedResourcesModified": false,
+          "progressStateWritten": false
+        },
+        "proposedValues": {
+          "model_scale_percent": 250,
+          "quarter_turns": 1,
+          "solid": false,
+          "label": "persisted-source-A"
+        },
+        "runtimeSafety": {
+          "status": "not-assessed",
+          "autoApply": false,
+          "required": "Normal candidate check and physical progress compatibility before application"
+        }
+      }
+    }
+  ],
+  "pluginRoot": "D:/cm-agent-godot-0912/desktop/build/craftmine.world",
+  "zipSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+  "syntheticCapture": {
+    "format": "craftmine.creation-target/1",
+    "snapshotId": "synthetic-capture",
+    "worldId": "module-query-world",
+    "buildId": "synthetic-not-running-build",
+    "instanceId": "synthetic-not-running-instance",
+    "sourceRevision": 6,
+    "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+    "sceneObjectTarget": {
+      "objectId": "101",
+      "nodePath": "ins-f0217690e708c9dc468116b4-e0",
+      "nodeClass": "StaticBody3D",
+      "scriptPath": "res://addons/kenney-city-building/module.gd",
+      "scenePath": "res://addons/kenney-city-building/module.tscn",
+      "position": [
+        -4,
+        0.5,
+        -4
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "ancestors": [],
+      "identityScope": "runtime-instance",
+      "sourceUse": "context-only"
+    },
+    "synthetic": true
+  },
+  "initialSource": {
+    "revision": 6,
+    "manifestHash": "d39bd9f526687ff1b4e6bd0bd42973473882c9bd2469bbdb4d89a1b034be7b28",
+    "files": [
+      {
+        "bytes": 1677,
+        "path": "README.md",
+        "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+      },
+      {
+        "bytes": 526,
+        "path": "addons/kenney-city-building/attribution.json",
+        "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+      },
+      {
+        "bytes": 1062,
+        "path": "addons/kenney-city-building/licenses/LICENSE.md",
+        "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+      },
+      {
+        "bytes": 3353,
+        "path": "addons/kenney-city-building/licenses/README.md",
+        "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+      },
+      {
+        "bytes": 10108,
+        "path": "addons/kenney-city-building/models/Textures/colormap.png",
+        "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+      },
+      {
+        "bytes": 39660,
+        "path": "addons/kenney-city-building/models/building-small-a.glb",
+        "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+      },
+      {
+        "bytes": 2747,
+        "path": "addons/kenney-city-building/module.gd",
+        "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+      },
+      {
+        "bytes": 19,
+        "path": "addons/kenney-city-building/module.gd.uid",
+        "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+      },
+      {
+        "bytes": 489,
+        "path": "addons/kenney-city-building/module.tscn",
+        "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+      },
+      {
+        "bytes": 726,
+        "path": "addons/kenney-city-building/provenance.json",
+        "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+      },
+      {
+        "bytes": 548,
+        "path": "assets/ASSET_MANIFEST.json",
+        "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+      },
+      {
+        "bytes": 4388,
+        "path": "assets/fonts/OFL-NotoSansSC.txt",
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "bytes": 2800055,
+        "path": "assets/fonts/cjk-0.json",
+        "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+      },
+      {
+        "bytes": 2790775,
+        "path": "assets/fonts/cjk-1.json",
+        "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+      },
+      {
+        "bytes": 832,
+        "path": "assets/fonts/font.json",
+        "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-00.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-01.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-02.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-03.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-04.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-05.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-06.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-07.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-08.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-09.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-10.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-11.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-12.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-13.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-14.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-15.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-16.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-17.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-18.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-19.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-20.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-21.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-22.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-23.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-24.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-25.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-26.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-27.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-28.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-29.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-30.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-31.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-32.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-33.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-34.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-35.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-36.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-37.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-38.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-39.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 2320,
+        "path": "craftmine.assets.lock.json",
+        "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+      },
+      {
+        "bytes": 14303,
+        "path": "craftmine.instances.json",
+        "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+      },
+      {
+        "bytes": 702,
+        "path": "craftmine_initial_state.json",
+        "sha256": "59022c11f49ee64bb8146ce27917524847e6e8e99ae9ec211391cf7ec7df618e"
+      },
+      {
+        "bytes": 3380,
+        "path": "craftmine_shared/base_adapter.gd",
+        "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+      },
+      {
+        "bytes": 1640,
+        "path": "craftmine_shared/base_adapter_controller_v1.gd",
+        "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+      },
+      {
+        "bytes": 15229,
+        "path": "craftmine_shared/base_adapter_legacy.gd",
+        "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+      },
+      {
+        "bytes": 9893,
+        "path": "craftmine_shared/controller_evidence.gd",
+        "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+      },
+      {
+        "bytes": 2525,
+        "path": "craftmine_shared/headless_play_action.gd",
+        "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+      },
+      {
+        "bytes": 3811,
+        "path": "craftmine_shared/progress_collision.gd",
+        "sha256": "c194946727f3d382821f04038614d0a38f7f7b66afdb94a3e01a6c0d787c9098"
+      },
+      {
+        "bytes": 7677,
+        "path": "craftmine_shared/runtime_bridge.gd",
+        "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+      },
+      {
+        "bytes": 13159,
+        "path": "craftmine_shared/scene_mesh_picker.gd",
+        "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+      },
+      {
+        "bytes": 15348,
+        "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+        "sha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1"
+      },
+      {
+        "bytes": 1759,
+        "path": "craftmine_shared/state_guard.gd",
+        "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+      },
+      {
+        "bytes": 6559,
+        "path": "creation-scene.schema.json",
+        "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+      },
+      {
+        "bytes": 1407,
+        "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+        "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+      },
+      {
+        "bytes": 2430,
+        "path": "manifest.json",
+        "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+      },
+      {
+        "bytes": 1179,
+        "path": "project.godot",
+        "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+      },
+      {
+        "bytes": 25618,
+        "path": "scenes/creation.tscn",
+        "sha256": "43300afa714f87c8880d277ecd339982d3a0616aacec7544f47262857edc453a"
+      },
+      {
+        "bytes": 1737,
+        "path": "scripts/creation_font.gd",
+        "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+      },
+      {
+        "bytes": 26597,
+        "path": "scripts/creation_world.gd",
+        "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+      },
+      {
+        "bytes": 1527,
+        "path": "scripts/reused/camera_rig.gd",
+        "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+      },
+      {
+        "bytes": 6089,
+        "path": "scripts/reused/player_controller.gd",
+        "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+      },
+      {
+        "bytes": 5289,
+        "path": "scripts/scene_contract.gd",
+        "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+      },
+      {
+        "bytes": 115,
+        "path": "world/creation.json",
+        "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+      }
+    ]
+  },
+  "packedFiles": {
+    "world-tools.cjs": "6558c2f85a67cf885295e54eb621af2462e43275a13d2bfdc23357b4c42ab11e",
+    "godot-module-parameter-query.cjs": "55855839a01a0a3914a452ac3e83ae9b64d263368d8056a6347e301f05c2a5c7",
+    "godot-module-parameters.mjs": "4d0f323a0cad8c6226a169ae0ded7ea465908ed4d7714a4ae3a5e6c67b3f5a64",
+    "manifest.json": "5557693ee5166f237a9c460c3ebf6ae64b2246f93a6011cda3e7ec920a2e8fe1"
+  },
+  "patch": {
+    "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+    "baseBuild": "base-a",
+    "branchId": "main",
+    "commitOid": "7b511ebade404b89a9e175bd92bf7039042e5a23",
+    "currentTaskId": "work-96f84b8e68c149fa2577acaa6cecbe680a648213f9be08464189d538fe5e90cb",
+    "fileCount": 79,
+    "lastWriter": {
+      "baseBuild": "base-a",
+      "projectId": "module-query-project",
+      "sessionId": "module-query-session",
+      "taskId": "work-96f84b8e68c149fa2577acaa6cecbe680a648213f9be08464189d538fe5e90cb",
+      "turnId": "source-test"
+    },
+    "manifestHash": "75174f8d0b186ea1ed26df75542c0a7fa98de1a99e36afa613321206dc3252ec",
+    "revision": 7
+  },
+  "finalSource": {
+    "revision": 7,
+    "manifestHash": "75174f8d0b186ea1ed26df75542c0a7fa98de1a99e36afa613321206dc3252ec",
+    "files": [
+      {
+        "bytes": 1677,
+        "path": "README.md",
+        "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+      },
+      {
+        "bytes": 526,
+        "path": "addons/kenney-city-building/attribution.json",
+        "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+      },
+      {
+        "bytes": 1062,
+        "path": "addons/kenney-city-building/licenses/LICENSE.md",
+        "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+      },
+      {
+        "bytes": 3353,
+        "path": "addons/kenney-city-building/licenses/README.md",
+        "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+      },
+      {
+        "bytes": 10108,
+        "path": "addons/kenney-city-building/models/Textures/colormap.png",
+        "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+      },
+      {
+        "bytes": 39660,
+        "path": "addons/kenney-city-building/models/building-small-a.glb",
+        "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+      },
+      {
+        "bytes": 2747,
+        "path": "addons/kenney-city-building/module.gd",
+        "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+      },
+      {
+        "bytes": 19,
+        "path": "addons/kenney-city-building/module.gd.uid",
+        "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+      },
+      {
+        "bytes": 489,
+        "path": "addons/kenney-city-building/module.tscn",
+        "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+      },
+      {
+        "bytes": 726,
+        "path": "addons/kenney-city-building/provenance.json",
+        "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+      },
+      {
+        "bytes": 548,
+        "path": "assets/ASSET_MANIFEST.json",
+        "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+      },
+      {
+        "bytes": 4388,
+        "path": "assets/fonts/OFL-NotoSansSC.txt",
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "bytes": 2800055,
+        "path": "assets/fonts/cjk-0.json",
+        "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+      },
+      {
+        "bytes": 2790775,
+        "path": "assets/fonts/cjk-1.json",
+        "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+      },
+      {
+        "bytes": 832,
+        "path": "assets/fonts/font.json",
+        "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-00.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-01.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-02.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-03.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-04.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-05.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-06.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-07.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-08.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-09.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-10.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-11.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-12.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-13.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-14.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-15.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-16.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-17.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-18.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-19.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-20.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-21.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-22.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-23.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-24.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-25.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-26.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-27.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-28.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-29.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-30.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-31.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-32.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-33.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-34.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-35.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-36.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-37.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-38.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 3,
+        "path": "audit/padding-39.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "bytes": 2320,
+        "path": "craftmine.assets.lock.json",
+        "sha256": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074"
+      },
+      {
+        "bytes": 14303,
+        "path": "craftmine.instances.json",
+        "sha256": "33b5becb9d262c7b741b64d33bcd4b29f6b2c5491f2db3cb2795848251afdbcb"
+      },
+      {
+        "bytes": 702,
+        "path": "craftmine_initial_state.json",
+        "sha256": "59022c11f49ee64bb8146ce27917524847e6e8e99ae9ec211391cf7ec7df618e"
+      },
+      {
+        "bytes": 3380,
+        "path": "craftmine_shared/base_adapter.gd",
+        "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+      },
+      {
+        "bytes": 1640,
+        "path": "craftmine_shared/base_adapter_controller_v1.gd",
+        "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+      },
+      {
+        "bytes": 15229,
+        "path": "craftmine_shared/base_adapter_legacy.gd",
+        "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+      },
+      {
+        "bytes": 9893,
+        "path": "craftmine_shared/controller_evidence.gd",
+        "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+      },
+      {
+        "bytes": 2525,
+        "path": "craftmine_shared/headless_play_action.gd",
+        "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+      },
+      {
+        "bytes": 3811,
+        "path": "craftmine_shared/progress_collision.gd",
+        "sha256": "c194946727f3d382821f04038614d0a38f7f7b66afdb94a3e01a6c0d787c9098"
+      },
+      {
+        "bytes": 7677,
+        "path": "craftmine_shared/runtime_bridge.gd",
+        "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+      },
+      {
+        "bytes": 13159,
+        "path": "craftmine_shared/scene_mesh_picker.gd",
+        "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+      },
+      {
+        "bytes": 15348,
+        "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+        "sha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1"
+      },
+      {
+        "bytes": 1759,
+        "path": "craftmine_shared/state_guard.gd",
+        "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+      },
+      {
+        "bytes": 6559,
+        "path": "creation-scene.schema.json",
+        "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+      },
+      {
+        "bytes": 1407,
+        "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+        "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+      },
+      {
+        "bytes": 2430,
+        "path": "manifest.json",
+        "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+      },
+      {
+        "bytes": 1179,
+        "path": "project.godot",
+        "sha256": "eaf3e496c2c152799db5cb03c12007a85f5e552ad4bd8d065998dfba91a6530a"
+      },
+      {
+        "bytes": 25629,
+        "path": "scenes/creation.tscn",
+        "sha256": "024fd97c444bc1066b10e739d1cfede46456f21c3e0dc50ca56ad2555659fc6a"
+      },
+      {
+        "bytes": 1737,
+        "path": "scripts/creation_font.gd",
+        "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+      },
+      {
+        "bytes": 26597,
+        "path": "scripts/creation_world.gd",
+        "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+      },
+      {
+        "bytes": 1527,
+        "path": "scripts/reused/camera_rig.gd",
+        "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+      },
+      {
+        "bytes": 6089,
+        "path": "scripts/reused/player_controller.gd",
+        "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+      },
+      {
+        "bytes": 5289,
+        "path": "scripts/scene_contract.gd",
+        "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+      },
+      {
+        "bytes": 115,
+        "path": "world/creation.json",
+        "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+      }
+    ]
+  },
+  "formalWorld": {
+    "contentHash": "33ee0b0cc3d1b9e03cc16a200f30da1f04ac8b318b252bddf331a2d9b6837eb9",
+    "id": "module-query-world",
+    "revision": 0,
+    "runtimeKind": "legacy",
+    "title": "Synthetic module query source fixture",
+    "updatedAt": 1789171592196,
+    "world": {
+      "build": {
+        "id": "base-a",
+        "scene": {
+          "format": "craftmine.scene/3",
+          "objects": []
+        }
+      },
+      "extensions": [],
+      "snapshot": {
+        "baseVersion": "1.0.0",
+        "format": "craftmine.progress/1",
+        "player": {
+          "pitch": 0,
+          "x": 0.5,
+          "y": 7.6,
+          "yaw": 0,
+          "z": 0.5
+        }
+      }
+    }
+  },
+  "passed": true
+}

@@ -40,12 +40,12 @@
     {
       "id": "GU3",
       "status": "in-progress",
-      "next": "Audited module source capture/preview and CP0 declaration preservation integrated; verify the actual packed broker/Core route, then real parameter check/adoption/cold proof and broader property scopes"
+      "next": "Audited module query/preview, declaration preservation and final packed broker/current Core 18-step source test passed; actual live capture/parameter check/adoption/cold proof and broader property scopes remain"
     },
     {
       "id": "GU4",
       "status": "in-progress",
-      "next": "Actual fixed controller/profile, direct locked-door interaction and continuous physics binding integrated; host/core/native regressions pass, fresh package and broader scenarios remain"
+      "next": "New immutable v2 progress collision guard integrated: 17 native cases and real Web verifier/latest-progress staging pass, complete12 source/PCK/observer pins; old v1 migration, sealed Core commit and broader scenarios remain"
     },
     {
       "id": "GU5",
@@ -64,6 +64,13 @@
     }
   ],
   "evidence": [
+    {
+      "kind": "module-source-and-physics-integration",
+      "commit": "c3b7f423",
+      "path": "docs/evidence/gu3-gu4-module-integration-20260912/summary.json",
+      "status": "passed-scoped-integration",
+      "scope": "Root final packed broker/current Core 18 source checks with synthetic capture; root actual native17; actual Web production verifier/latest stage with authored descriptors; full12 materialized/PCK bytes match; no sealed parameter adoption or player-model claim"
+    },
     {
       "kind": "real-core-source-only",
       "test": "tests/godot-agent/parameter-declaration-roundtrip.test.mjs",
