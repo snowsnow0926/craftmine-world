@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
 const [broker,runtimeRoot,outputRoot]=process.argv.slice(2);
 if(!broker||!runtimeRoot)throw Error('usage: blender-smoke.mjs broker.exe resources/blender [evidenceDir]');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'cm-bl-'));
@@ -31,6 +32,11 @@ const code=await new Promise((resolve,reject)=>{child.on('error',reject);child.o
 clearInterval(cancelPoll);
 child.stdin.destroy();
 const response=JSON.parse(stdout.trim().split('\n').at(-1));
+if(response.state==='succeeded'){
+  const log=fs.readFileSync(path.join(response.logsRoot,'task.log'),'utf8');
+  assert.doesNotMatch(log,/Could not generate a temp|OpenImageIO write failed/,
+    'Blender background temp and source-save paths must work inside the task');
+}
 const evidence={root,request,response,brokerExitCode:code,stderr};
 if(outputRoot){fs.mkdirSync(outputRoot,{recursive:true});fs.writeFileSync(path.join(outputRoot,'native-smoke.json'),JSON.stringify(evidence,null,2)+'\n');}
 console.log(JSON.stringify(evidence,null,2));

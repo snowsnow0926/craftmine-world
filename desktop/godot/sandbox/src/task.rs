@@ -564,6 +564,13 @@ impl Task {
     /// exports/cache use writable work. Called before preflight, never in-flight.
     pub(crate) fn configure_blender(&mut self) -> Result<()> {
         if self.status.state != TaskState::Prepared { return Err("Task has already been run".into()); }
+        // Windows rewrites TEMP/TMP inside an AppContainer even when the host
+        // supplies them. Blender validates that redirected path at startup;
+        // create it under this task's writable grant before loading the engine.
+        fs::create_dir_all(self.layout.work.join("Packages").join(&self.profile_name).join("AC").join("Temp"))?;
+        for name in ["tmp", "cache", "config", "scripts", "datafiles"] {
+            fs::create_dir_all(self.layout.work.join(name))?;
+        }
         self.kind = TaskKind::Blender;
         self.layout.project = self.layout.bin.clone();
         Ok(())
@@ -631,6 +638,8 @@ impl Task {
             environment.extend([
                 ("PYTHONDONTWRITEBYTECODE".into(), "1".into()),
                 ("PYTHONNOUSERSITE".into(), "1".into()),
+                ("HOME".into(), self.layout.work.to_string_lossy().into_owned()),
+                ("XDG_CACHE_HOME".into(), self.layout.work.join("cache").to_string_lossy().into_owned()),
                 ("BLENDER_USER_CONFIG".into(), self.layout.work.join("config").to_string_lossy().into_owned()),
                 ("BLENDER_USER_SCRIPTS".into(), self.layout.work.join("scripts").to_string_lossy().into_owned()),
                 ("BLENDER_USER_DATAFILES".into(), self.layout.work.join("datafiles").to_string_lossy().into_owned()),

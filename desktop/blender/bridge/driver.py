@@ -22,6 +22,11 @@ def main():
         bpy.ops.wm.open_mainfile(filepath=str(previous), load_ui=False, use_scripts=False)
     else:
         bpy.ops.wm.read_factory_settings(use_empty=True)
+    # Native preparation creates these writable paths before Blender startup.
+    # Factory startup/preferences reloads can otherwise choose an unavailable
+    # Windows shell profile thumbnail cache inside AppContainer.
+    bpy.context.preferences.filepaths.temporary_directory = str(output.parent / "tmp")
+    bpy.context.preferences.filepaths.file_preview_type = "NONE"
     # Script authors use normal bpy and can edit the previous .blend scene.
     exec(compile(script, str(source / "script.py"), "exec"), {
         "__name__": "__main__", "__file__": str(source / "script.py"), "bpy": bpy,
@@ -38,6 +43,9 @@ def main():
     # artifact; unsupported Blender effects require explicit baking by authors.
     bpy.ops.file.pack_all()
     bpy.context.preferences.filepaths.save_version = 0
+    # A model script may have reset preferences. Background source preservation
+    # needs no UI screenshot/camera thumbnail or Windows shell profile access.
+    bpy.context.preferences.filepaths.file_preview_type = "NONE"
     bpy.ops.wm.save_as_mainfile(filepath=str(output / "source.blend"), compress=False)
     result = bpy.ops.export_scene.gltf(
         filepath=str(output / "model.glb"), export_format="GLB",
