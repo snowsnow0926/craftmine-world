@@ -272,7 +272,8 @@
       "licenseFile": null,
       "redistribution": "permitted",
       "distribution": [
-        "app-bundle"
+        "app-bundle",
+        "user-export"
       ],
       "outstanding": "Project-authored fixed monitor collector resource; not yet installed by the materializer or accepted as trusted engine data by the host. Existing provenance inventory only, not a new license grant.",
       "bytes": 3959,
@@ -455,8 +456,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 6004,
-      "sha256": "01ead70a69030cbcb1743e19820a046a22f66a75a90d95b719ac81284412b8bd"
+      "bytes": 6667,
+      "sha256": "bb246849cc70199ef562099985f4598813fe2af05fb5b742a3f382635657a871"
     },
     {
       "path": "observation.d.mts",
@@ -587,6 +588,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 7677,
       "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+    },
+    {
+      "path": "runtime_bridge_engine_v1.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored opt-in engine-monitor/1 wrapper; default worlds retain the original bridge. Existing provenance inventory only.",
+      "bytes": 2755,
+      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
     },
     {
       "path": "scene_materializer.mjs",
