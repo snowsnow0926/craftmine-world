@@ -39,11 +39,6 @@ func execute(op: String, args: Dictionary = {}) -> Dictionary:
 			if world.inventory == null or not args.get("id", "") is String:
 				return {"error": "Invalid inventory removal"}
 			return {"result": {"removed": world.inventory.remove(StringName(args.id), int(args.get("amount", 1))), "snapshot": world.snapshot()}}
-		"test-set-inventory-capacity":
-			if not OS.is_debug_build() or world.inventory == null:
-				return {"error": "Test seam unavailable"}
-			world.inventory.capacity = maxi(1, int(args.get("capacity", 16)))
-			return {"result": world.snapshot()}
 		"equip":
 			return await _equip(args)
 		"next-equipment":
