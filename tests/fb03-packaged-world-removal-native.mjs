@@ -73,7 +73,7 @@ async function launch(label){
   const exit=new Promise(resolve=>child.on('exit',(code,signal)=>{exited=true;record.exit={code,signal};resolve();}));
   const rpc=(method,fields={})=>new Promise((resolve,reject)=>{const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('RPC_TIMEOUT:'+method));},120000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});});
   let seq=0;
-  const inspect=expression=>new Promise((resolve,reject)=>{const id=++seq;inspectorPending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method:'Runtime.evaluate',params:{expression,returnByValue:true}}));});
+  const inspect=expression=>new Promise((resolve,reject)=>{const id=++seq;inspectorPending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method:'Runtime.evaluate',params:{expression,returnByValue:true,awaitPromise:true}}));});
   const native=async()=>inspect(`(async()=>{const e=process.mainModule.require('electron');const windows=e.BaseWindow.getAllWindows();if(process.env.CRAFTMINE_DATA_DIR!==${JSON.stringify(profile)}||windows.some(w=>w.isVisible()||w.isFocusable()))throw Error('HEADLESS_OWNERSHIP');const pages=await Promise.all(e.webContents.getAllWebContents().filter(w=>!w.isDestroyed()).map(async w=>({id:w.id,url:w.getURL(),offscreen:w.isOffscreen(),scope:w.getURL().startsWith('http://127.0.0.1:')?await w.executeJavaScript('globalThis.craftmineRuntime?.scope??null',false):null})));if(pages.some(p=>(p.url.includes('/out/renderer/')||p.scope)&&p.offscreen))throw Error('EXPECTED_NORMAL_RENDERING');return {windows:windows.map(w=>({visible:w.isVisible(),focusable:w.isFocusable(),fullscreen:w.isFullScreen(),children:w.contentView.children.map(v=>({id:v.webContents?.id,bounds:v.getBounds()}))})),pages};})()`);
   const stop=async()=>{
     socket?.close();if(!exited)await rpc('quit').catch(()=>{});await Promise.race([exit,delay(20000,undefined,{ref:false})]);
@@ -164,28 +164,28 @@ async function launch(label){
 let active;
 try {
  active=await launch('delete-and-restore');
- const click=selector=>active.action(selector);
+ const click=selector=>active.action('[data-mode-entry] '+selector);
  await active.panel('godot.runtimeSave',{worldId,freeze:true});
  await active.openWorldList();
- await active.appPage.waitForSelector('[data-world-delete]',{timeout:30000});
+ await active.appPage.waitForSelector('[data-mode-entry] [data-world-delete]',{timeout:30000});
  const targetId=await active.appPage.evaluate(()=>document.querySelector('[data-mode-entry] [data-world-delete]').getAttribute('data-world-delete'));
  assert.ok(targetId&&targetId!==worldId,'the copied profile contains a genuinely failed, unselected world');report.targetId=targetId;
  report.before={target:await active.panel('world.read',{id:targetId}),healthy:await active.formal()};
  report.before.retainedContent=retainedContent(targetId);
  assert.ok(Object.keys(report.before.retainedContent.files).length,'failed world retains real authored source/history files');
  await assert.rejects(active.navigation('world.archiveFailed',{worldId:targetId,deleteFiles:true}),/INVALID_WORLD_ID/);
- const normalCount=await active.appPage.locator('[data-world-id="'+targetId+'"]').count();assert.ok(normalCount);
+ const normalCount=await active.appPage.locator('[data-mode-entry] [data-world-id="'+targetId+'"]').count();assert.ok(normalCount);
  await click('[data-world-delete="'+targetId+'"]');
- await active.appPage.waitForSelector('[data-deleted-world-id="'+targetId+'"]',{state:'attached',timeout:30000});
- assert.equal(await active.appPage.locator('[data-world-id="'+targetId+'"]').count(),0);
+ await active.appPage.waitForSelector('[data-mode-entry] [data-deleted-world-id="'+targetId+'"]',{state:'attached',timeout:30000});
+ assert.equal(await active.appPage.locator('[data-mode-entry] [data-world-id="'+targetId+'"]').count(),0);
  assert.deepEqual(await active.panel('world.read',{id:targetId}),report.before.target);
  assert.deepEqual(retainedContent(targetId),report.before.retainedContent);
  check('actual Delete button removes the failed row durably while preserving the complete original world record',true);
  await assert.rejects(active.navigation('world.switch',{id:targetId}),/WORLD_ARCHIVED/);
  assert.equal((await active.panel('world.list')).activeWorldId,worldId);
  check('archived world cannot be reopened through a stale direct navigation request',true);
- await active.appPage.evaluate(()=>{document.querySelector('[data-recently-deleted]').open=true;});
- await click('[data-world-restore="'+targetId+'"]');await active.appPage.waitForSelector('[data-world-delete="'+targetId+'"]',{timeout:30000});
+ await active.appPage.evaluate(()=>{document.querySelector('[data-mode-entry] [data-recently-deleted]').open=true;});
+ await click('[data-world-restore="'+targetId+'"]');await active.appPage.waitForSelector('[data-mode-entry] [data-world-delete="'+targetId+'"]',{timeout:30000});
  assert.deepEqual(await active.panel('world.read',{id:targetId}),report.before.target);assert.equal((await active.panel('world.list')).activeWorldId,worldId);
  assert.deepEqual(retainedContent(targetId),report.before.retainedContent);
  check('Recently deleted Restore returns the same failed row without changing its world, progress or selected world',true);
@@ -193,17 +193,19 @@ try {
  // path, without triggering initialization retry or editing its source.
  await active.navigation('world.switch',{id:targetId});
  assert.equal((await active.panel('world.list')).activeWorldId,targetId);
- await active.appPage.waitForSelector('[data-world-id="'+targetId+'"][data-world-active="true"]',{timeout:30000});
+ await active.appPage.waitForSelector('[data-mode-entry] [data-world-id="'+targetId+'"][data-world-active="true"]',{timeout:30000});
  await click('[data-world-delete="'+targetId+'"]');
- await active.appPage.waitForSelector('[data-deleted-world-id="'+targetId+'"]',{state:'attached',timeout:30000});
+ await active.appPage.waitForSelector('[data-mode-entry] [data-deleted-world-id="'+targetId+'"]',{state:'attached',timeout:30000});
  const afterList=await active.panel('world.list');report.after={list:afterList,target:await active.panel('world.read',{id:targetId}),healthy:await active.formal()};
  assert.ok(afterList.activeWorldId&&afterList.activeWorldId!==targetId);assert.ok(!afterList.worlds.some(world=>world.id===targetId));
  assert.deepEqual(report.after.target,report.before.target);assert.deepEqual(report.after.healthy.world.snapshot,report.before.healthy.world.snapshot);
  assert.deepEqual(retainedContent(targetId),report.before.retainedContent);
  check('deleting a selected failed placeholder uses real retained-view navigation to a usable world and preserves both saved worlds',true);
- await active.appPage.evaluate(()=>{document.querySelector('[data-recently-deleted]').open=true;});
- try {await active.appPage.screenshot({path:path.join(directory,'recently-deleted-native.png')});report.listPixels={verified:true};}
- catch(error){if(!String(error).includes('UnknownVizError'))throw error;report.listPixels={verified:false,error:String(error)};}
+ await active.appPage.evaluate(()=>{document.querySelector('[data-mode-entry] [data-recently-deleted]').open=true;});
+ // A hidden normal renderer may not expose readable pixels. Do not use an
+ // optional capture to wake layout after the operation whose attachment is
+ // being verified below; this run claims DOM/native ownership, not pixels.
+ report.listPixels={verified:false,requested:false,reason:'Normal hidden run verifies DOM, durable records and actual native attachment without post-action capture assistance'};
  await active.enterWorld(afterList.activeWorldId);
  await active.attached(afterList.activeWorldId,'selected-world deletion returns to a real attached normal native world');
  await active.stop();active=null;
