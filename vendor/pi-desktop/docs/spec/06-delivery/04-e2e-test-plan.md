@@ -9640,3 +9640,21 @@ Use synthetic selected archives and callbacks to reject beforeRestore with the e
 Source fixtures and pure callbacks prove their respective boundaries only.
 Do not substitute offscreen success for normal native rendering or engineering
 verification for the player's next acceptance result.
+
+### FB03 ordinary-player completion criteria
+
+Both world-entry paths default only an unconfigured world session to Auto;
+explicit session or global permission choices remain intact. Preserve each
+entry's actual model and reasoning selection. Exercise the real store rather
+than setting Auto in the verifier. A successful ordinary creation must reach a
+matching applied receipt and playable formal runtime without manual Check or
+Apply. Only a live, current-world result may return a compact conversation to
+play. Historical results, another world/session, explicit full workbench mode,
+and new text or attachments must not take over the player's input. The dialogue
+flow offers Enter world when new draft input postpones automatic entry.
+
+The dialogue preparation error itself exposes Retry preparation, retaining the
+world, session and description. A retry racing cancellation must cancel its new
+owned attempt before returning. The ordinary WorldCreatePanel Cancel follows
+the same scoped backend cancellation and preserves its form if cancellation or
+return fails; closing a form alone is not successful cancellation.
