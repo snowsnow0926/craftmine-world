@@ -1113,12 +1113,31 @@ pub fn create_session_with_thinking(
     project_path: Option<String>,
     thinking_level: Option<String>,
 ) -> Result<SessionSummary> {
+    create_session_with_configuration(
+        db, title, mode, provider_id, model_id, project_path, thinking_level, None,
+    )
+}
+
+/// Persist the initial permission together with the session, before it can be
+/// selected or receive its first prompt. Legacy callers still default to inherit.
+pub fn create_session_with_configuration(
+    db: &Database,
+    title: Option<String>,
+    mode: Option<String>,
+    provider_id: Option<String>,
+    model_id: Option<String>,
+    project_path: Option<String>,
+    thinking_level: Option<String>,
+    permission_mode: Option<String>,
+) -> Result<SessionSummary> {
     let now = now_ms();
     let id = Uuid::new_v4().to_string();
     let title = title.unwrap_or_else(|| "New task".into());
     let mode = normalize_mode(mode.as_deref());
     let thinking_level = thinking_level.unwrap_or_else(default_thinking_level);
     validate_thinking_level(&thinking_level)?;
+    let permission_mode = permission_mode.unwrap_or_else(default_permission_mode);
+    validate_permission_mode(&permission_mode)?;
     let project_id = match project_path
         .as_deref()
         .filter(|path| !path.trim().is_empty())
@@ -1133,9 +1152,9 @@ pub fn create_session_with_thinking(
     db.conn()
         .prepare_cached(
             "INSERT INTO sessions (
-                id, title, project_id, provider_id, model_id, mode, thinking_level,
+                id, title, project_id, provider_id, model_id, mode, thinking_level, permission_mode,
                 created_at, updated_at
-             ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?8)",
+             ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?9)",
         )?
         .execute(params![
             id,
@@ -1145,6 +1164,7 @@ pub fn create_session_with_thinking(
             model_id,
             mode,
             thinking_level,
+            permission_mode,
             now
         ])?;
     Ok(SessionSummary {
@@ -1156,7 +1176,7 @@ pub fn create_session_with_thinking(
         provider_id,
         mode,
         thinking_level,
-        permission_mode: default_permission_mode(),
+        permission_mode,
         updated_at: ms_to_ts(now),
         created_at: ms_to_ts(now),
     })
