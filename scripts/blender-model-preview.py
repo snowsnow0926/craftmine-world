@@ -26,7 +26,15 @@ bpy.ops.object.camera_add(location=center + directions[view].normalized() * size
 camera = bpy.context.object
 camera.rotation_euler = (center - camera.location).to_track_quat('-Z', 'Y').to_euler()
 camera.data.type = 'ORTHO'
-camera.data.ortho_scale = size * 1.32
+bpy.context.view_layer.update()
+camera_inverse = camera.matrix_world.inverted()
+projected = [camera_inverse @ corner for corner in corners]
+projected_width = max(point.x for point in projected) - min(point.x for point in projected)
+projected_height = max(point.y for point in projected) - min(point.y for point in projected)
+projected_center = Vector(((max(point.x for point in projected) + min(point.x for point in projected)) / 2,
+                           (max(point.y for point in projected) + min(point.y for point in projected)) / 2, 0))
+camera.location += camera.rotation_euler.to_quaternion() @ projected_center
+camera.data.ortho_scale = max(projected_width, projected_height) * 1.15
 camera.data.clip_end = size * 100
 scene.camera = camera
 bpy.ops.mesh.primitive_plane_add(size=size * 200, location=(center.x, center.y, lower.z - size * 0.001))
@@ -37,7 +45,7 @@ mat.use_nodes = True
 mat.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value = (0.095, 0.14, 0.18, 1)
 mat.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value = 0.85
 floor.data.materials.append(mat)
-for label, direction, energy in [('Key', (-1.5, -2, 3), 1000), ('Fill', (2, -0.5, 1.5), 650), ('Rim', (0.5, 2, 2.6), 1300)]:
+for label, direction, energy in [('Key', (-1.5, -2, 3), 100), ('Fill', (2, -0.5, 1.5), 65), ('Rim', (0.5, 2, 2.6), 130)]:
     location = center + Vector(direction) * size
     bpy.ops.object.light_add(type='AREA', location=location)
     light = bpy.context.object

@@ -13,6 +13,18 @@
         "side",
         "rear"
       ]
+    },
+    {
+      "file": "j20-reference.png",
+      "sha256": "0b45f027c109e19e9cdaa7b0211cf2b3fd74860d30b5ce4bc1abc1309e3b0b9b",
+      "generator": "built-in imagegen",
+      "role": "AI-generated exterior design reference, not a model render or technical drawing",
+      "views": [
+        "hero",
+        "top",
+        "side",
+        "rear"
+      ]
     }
   ],
   "modeling": {

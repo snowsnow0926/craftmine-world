@@ -1,0 +1,206 @@
+{
+  "format": "craftmine.reference-guided-model-demo/1",
+  "checkedAt": "2026-09-12T21:38:25.201Z",
+  "worktree": "D:\\Craftmine Worktrees\\blender-models-20260913",
+  "branch": "codex/blender-models-20260913",
+  "workflow": [
+    "Built-in AI image generation",
+    "Codex CLI with image attachment",
+    "Bundled Blender broker executes authored Python",
+    "Normal Rust GLB project import",
+    "Actual GLB rendering and headless Godot import"
+  ],
+  "models": [
+    {
+      "name": "pomeranian-cute",
+      "cli": {
+        "cli": "codex-cli 0.154.0-alpha.6.2",
+        "sessionId": "01a0975c-3c96-7060-9163-219b35ef6243",
+        "contexts": [
+          {
+            "timestamp": "2026-09-12T20:43:21.646Z",
+            "model": "gpt-6-astra",
+            "effort": "xhigh",
+            "cwd": "D:\\Craftmine Worktrees\\blender-models-20260913"
+          }
+        ],
+        "userInputImageCount": 1,
+        "referenceImage": "examples/blender-models/references/pomeranian-cute-reference.png",
+        "referenceSha256": "3a797aadcd28faf4d770e4e8847de24d4c7251eed4d7466b7937c2a3dd4e4419",
+        "completion": {
+          "exitCode": 0,
+          "finishedAt": "2026-09-12T21:05:35.373Z"
+        }
+      },
+      "jobId": "8d1d4212-4747-4164-a690-47b945afb758",
+      "importedRevision": 1,
+      "modelSha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b",
+      "artifacts": [
+        {
+          "path": "model.glb",
+          "bytes": 3753144,
+          "sha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b"
+        },
+        {
+          "path": "report.json",
+          "bytes": 546,
+          "sha256": "fde9b7152962dc628b125dd0c32b77b36f974f52f2b98d60fc4c45ed7c7527e8"
+        },
+        {
+          "path": "script.py",
+          "bytes": 21586,
+          "sha256": "590381e6cfcac62e10cad48f9e40a94788d5a12006ec765cb01f4f86bff11037"
+        },
+        {
+          "path": "source.blend",
+          "bytes": 7310528,
+          "sha256": "e2cc1f955dd8d63c456fa562f86fc19d8e3b01f1be0b526df08686af0768706e"
+        }
+      ],
+      "godot": {
+        "boundsSize": [
+          0.164975017309189,
+          0.25717356801033,
+          0.317633837461472
+        ],
+        "headless": true,
+        "materials": 11,
+        "materialsWithNormalMap": 1,
+        "meshes": 19,
+        "scope": "actual Godot GLB data import; no gameplay or visual-quality claim",
+        "surfaces": 25,
+        "triangles": 104101,
+        "vertices": 117315
+      },
+      "previews": [
+        {
+          "view": "hero",
+          "sha256": "7badeb402522724d7ba0f66317a2548c4e9471e2d665062e97730c01880ea2c6"
+        },
+        {
+          "view": "front",
+          "sha256": "bfb3a324157fd0f54da12ed4b2331c0e6b96915423462e87f9c7d9149798d74b"
+        },
+        {
+          "view": "side",
+          "sha256": "6a5aeac2cd0742b4ee57cb831ec3b91c07434714188f55c121bcdfa8dbe7a77f"
+        },
+        {
+          "view": "back",
+          "sha256": "5afa7fa2b6606d75b0a1393ad502996d6a40963058f85b76712ccea8c029f1ee"
+        }
+      ],
+      "limitations": [
+        "Stylized plush appearance; natural long fur is not fully reproduced",
+        "104101 triangles, not optimized for large crowds",
+        "No rig, animation or world placement"
+      ]
+    },
+    {
+      "name": "j20",
+      "cli": {
+        "cli": "codex-cli 0.154.0-alpha.6.2",
+        "sessionId": "01a09771-24fc-7f91-b0cd-1186c42a4ee3",
+        "contexts": [
+          {
+            "timestamp": "2026-09-12T21:06:11.906Z",
+            "model": "gpt-6-astra",
+            "effort": "xhigh",
+            "cwd": "D:\\Craftmine Worktrees\\blender-models-20260913"
+          }
+        ],
+        "userInputImageCount": 1,
+        "referenceImage": "examples/blender-models/references/j20-reference.png",
+        "referenceSha256": "0b45f027c109e19e9cdaa7b0211cf2b3fd74860d30b5ce4bc1abc1309e3b0b9b",
+        "completion": {
+          "exitCode": 0,
+          "finishedAt": "2026-09-12T21:33:50.931Z"
+        }
+      },
+      "jobId": "c425b0a9-1dfa-45fd-835c-a7d4bb3421d8",
+      "importedRevision": 1,
+      "modelSha256": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe",
+      "artifacts": [
+        {
+          "path": "model.glb",
+          "bytes": 1130080,
+          "sha256": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe"
+        },
+        {
+          "path": "report.json",
+          "bytes": 521,
+          "sha256": "46ef31bd4524e79643e11583cb147157e66f9d85c35bd5deacc1ef9af359afca"
+        },
+        {
+          "path": "script.py",
+          "bytes": 36670,
+          "sha256": "cf149651695f49569decf39fb47369e79508ed4e26cd6aac33c46cf585111a64"
+        },
+        {
+          "path": "source.blend",
+          "bytes": 2866787,
+          "sha256": "8f7c01ba08209c1f57a5ce9686ccdd59a1abf73c236a16beeaef390f70a5aca1"
+        }
+      ],
+      "godot": {
+        "boundsSize": [
+          12.960000038147,
+          4.63000011444092,
+          20.8019065856934
+        ],
+        "headless": true,
+        "materials": 25,
+        "materialsWithNormalMap": 0,
+        "meshes": 21,
+        "scope": "actual Godot GLB data import; no gameplay or visual-quality claim",
+        "surfaces": 83,
+        "triangles": 41884,
+        "vertices": 36307
+      },
+      "previews": [
+        {
+          "view": "hero",
+          "sha256": "a2b7b08bcab3278d1f7cfafcefdf8c01d6975547da180fac834e6459abc42ddf"
+        },
+        {
+          "view": "top",
+          "sha256": "58d87fd7c412e617174e498cd422fb80f68272ba0b1b0a13c2e74c1ee1af7642"
+        },
+        {
+          "view": "side",
+          "sha256": "33c93e8533095e0cc89e0f56210fc5497240bfd9f5a223da11dbc9a4c357477f"
+        },
+        {
+          "view": "back",
+          "sha256": "0d5387ecb7d30f1840408d0a4779e3c88e4d885f75d207f65a96feb9b4b226b4"
+        },
+        {
+          "view": "front",
+          "sha256": "6f4974a147f8da4861c09c393d0f2134348d6e5f45c57492d7e0c02d0528cc6b"
+        }
+      ],
+      "limitations": [
+        "Exterior interpretation of an AI reference, not measured aircraft geometry",
+        "Simplified reflective cockpit and dark intake/nozzle interiors",
+        "No animation, flight systems or world placement"
+      ]
+    }
+  ],
+  "scope": "Static model demo in independent test projects. Player-world placement, animation, gameplay and normal player UI workflow are not verified.",
+  "releaseSeal": {
+    "checkedAt": "2026-09-12T21:36:26.830Z",
+    "status": "passed",
+    "check": "original packaged release seal unchanged after CLI generation and headless previews",
+    "files": 8222,
+    "runFile": "D:\\Craftmine Worktrees\\blender-integration-20260913\\desktop\\build\\releases\\04b18aafc8fd-d56bef63-9bd7-4685-9e81-5f6ef5f611f4\\run.json"
+  },
+  "deliveryZip": "test-results/codex-models/blender-ai-models-20260913.zip",
+  "archive": {
+    "status": "passed",
+    "path": "D:\\Craftmine Worktrees\\blender-models-20260913\\test-results\\codex-models\\blender-ai-models-20260913.zip",
+    "bytes": 26719775,
+    "sha256": "c1587a58bdac90b98669754758389649d486bb7a8bcd651e4988d63e590934f8",
+    "files": 37,
+    "checkedAt": "2026-09-12T21:38:51.6245549Z"
+  }
+}

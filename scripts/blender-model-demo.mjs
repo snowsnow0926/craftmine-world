@@ -24,6 +24,7 @@ await fs.mkdir(workRoot, {recursive: true});
 const artifactRoot = path.join(workRoot, 'artifacts', name);
 
 if (mode === 'generate') {
+  console.log(JSON.stringify({previewProfile: 'studio-v2', lighting: 'Coordinator reduced the original preview lamp power tenfold to avoid overexposure; material data is unchanged', framing: 'Preview now fits the projected object bounds'}));
   if (!scriptArg) throw Error('Modeling script path required');
   const scriptPath = path.resolve(root, scriptArg);
   if (path.relative(root, scriptPath).startsWith('..')) throw Error('Script must be in this request worktree');
@@ -84,7 +85,8 @@ if (mode === 'generate') {
   if (!['hero', 'front', 'side', 'back', 'top'].includes(view)) throw Error('Unknown preview view');
   const model = path.join(artifactRoot, 'model.glb');
   await fs.access(model);
-  const preview = path.join(artifactRoot, view + '.png');
+  if (variantArg !== undefined && variantArg !== 'studio') throw Error('Unknown preview variant');
+  const preview = path.join(artifactRoot, view + (variantArg ? '-studio' : '') + '.png');
   const previewRoot = await fs.mkdtemp(path.join(workRoot, 'preview-'));
   // Blender's Python importer cannot reliably import long module filenames from
   // deeply nested release directories on Windows. This coordinator-prepared
@@ -105,5 +107,5 @@ if (mode === 'generate') {
   const code = await new Promise((resolve, reject) => {child.on('error', reject); child.on('close', resolve);});
   await fs.writeFile(path.join(previewRoot, 'render.log'), log);
   if (code !== 0) {console.error(log.slice(-12000)); process.exitCode = 1;}
-  else console.log(JSON.stringify({preview, view, renderer: 'bundled Blender Cycles CPU', log: path.join(previewRoot, 'render.log')}));
+  else console.log(JSON.stringify({preview, view, renderer: 'bundled Blender Cycles CPU', previewProfile: 'studio-v2: calibrated lights and fitted framing', log: path.join(previewRoot, 'render.log')}));
 }
