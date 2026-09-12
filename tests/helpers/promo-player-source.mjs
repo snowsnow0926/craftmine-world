@@ -14,6 +14,38 @@ export function inspectPlayerSource(sourceFile,{createSession=false}={}){
  const files=new Set(),read=file=>{assert.ok(path.isAbsolute(file));files.add(file);return readCheckpointJson(file);};
  const source=read(sourceFile),worldId=source.worldId;
  let out=path.dirname(sourceFile),recoveryBinding;
+ if(source.format==='craftmine.pet-product-continuation/2'){
+  assert.equal(createSession,true,'PLAYER_PET_CREATE_SESSION_REQUIRED');
+  assert.equal(source.ok,true,'PLAYER_PET_CONTINUATION_INCOMPLETE');clean(source);
+  assert.equal(source.modelCalls,0);assert.equal(source.error,undefined);
+  const original=read(source.sourceReport);out=path.dirname(source.sourceReport);contained(out,sourceFile);
+  assert.equal(original.format,'craftmine.pet-product-demo/1');assert.equal(original.worldId,worldId);
+  assert.equal(original.modelCalls,0);assert.equal(original.creationEvaluation,false);
+  assert.equal(original.check?.status,'passed');assert.equal(original.checked?.checkStatus,'passed');
+  assert.ok(original.checked.check.assertions.length&&original.checked.check.assertions.every(value=>value.passed===true));
+  const candidate=original.checked.candidate;
+  assert.equal(candidate.worldId,worldId);assert.equal(candidate.checkJobId,original.check.jobId);
+  assert.equal(original.applied?.status,'applied');assert.equal(original.applied.worldId,worldId);
+  assert.equal(original.applied.candidateId,candidate.candidateId);
+  assert.equal(original.applied.record.world.build.id,candidate.buildId);
+  assert.match(original.packageIdentity.inventorySha256,/^[a-f0-9]{64}$/);
+  assert.equal(source.packageInventorySha256,original.packageIdentity.inventorySha256);
+  observe(source.opened,worldId,candidate.buildId);observe(source.reopened,worldId,candidate.buildId);
+  assert.notEqual(source.opened.instanceId,source.reopened.instanceId);
+  assert.equal(source.saved?.format,'craftmine.godot-progress-receipt/1');
+  observe(source.saved,worldId,candidate.buildId);assert.equal(source.saved.instanceId,source.opened.instanceId);
+  assert.deepEqual(source.reopenedSnapshot,source.savedSnapshot,'PLAYER_PET_REOPEN_CHANGED');
+  assert.equal(source.savedSnapshot.worldId,worldId);assert.equal(source.savedSnapshot.body.worldId,worldId);
+  const items=original.source.items.filter(item=>item.supported);assert.equal(items.length,1);
+  assert.equal(source.entityId,items[0].entityId);
+  const component=source.savedSnapshot.body.components[source.entityId];
+  assert.equal(component?.entityId,source.entityId);assert.equal(component.format,'craftmine.pet-companion-state/1');
+  assert.ok(Number.isSafeInteger(component.interactionCount)&&component.interactionCount>0);
+  const identity=sourceIdentity(original.source);
+  assert.equal(candidate.sourceRevision,identity.revision);assert.equal(candidate.manifestHash,identity.manifestHash);
+  assert.equal(typeof candidate.content?.branchId,'string');
+  recoveryBinding={originalReport:source.sourceReport,worldId,buildId:candidate.buildId,branchId:candidate.content.branchId,...identity};
+ }
  if(['craftmine.prefab-check-recovery/1','craftmine.prefab-reopen-verification/1'].includes(source.format)){
   assert.equal(createSession,true,'PLAYER_RECOVERY_CREATE_SESSION_REQUIRED');
   const reopened=source.format==='craftmine.prefab-reopen-verification/1'?source:null;

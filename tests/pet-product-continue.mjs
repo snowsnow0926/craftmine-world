@@ -6,7 +6,7 @@ import { spawn } from 'node:child_process';
 import { randomUUID, createHash } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { resolveCreationNativeLaunch } from './helpers/creation-native-launch.mjs';
-import { adoptionEnvironment } from './helpers/promo-adoption-contract.mjs';
+import { adoptionEnvironment, validateAdoptionReport, validateExplorationSource } from './helpers/promo-adoption-contract.mjs';
 import { completeCreationProgress } from './helpers/creation-model-evaluation.mjs';
 import { assertPetProgress, assertPetSaveReceipt, validatePetProductCall } from './helpers/pet-product-contract.mjs';
 
@@ -28,6 +28,27 @@ const binding = { worldId: source.worldId, formalIdentity: null, captureIdentity
 const entities = source.source.items.filter(item => item.supported);
 assert.equal(entities.length, 1);
 const entityId = entities[0].entityId;
+const adoptionIndex = process.argv.indexOf('--adoption-report');
+const expectedIndex = process.argv.indexOf('--expected-settings');
+assert.equal(adoptionIndex >= 0, expectedIndex >= 0, 'Adoption report and explicit expected pet settings must be supplied together');
+const expectedSettings = expectedIndex < 0 ? { name: '小伙伴', appearanceKey: 'dog', following: true } : JSON.parse(process.argv[expectedIndex + 1]);
+assert.deepEqual(Object.keys(expectedSettings).sort(), ['appearanceKey', 'following', 'name']);
+assert.ok(['dog', 'pomeranian-white'].includes(expectedSettings.appearanceKey) && typeof expectedSettings.name === 'string' && typeof expectedSettings.following === 'boolean');
+const extraProofs = [];
+let adoption;
+if (adoptionIndex >= 0) {
+  const adoptionFile = process.argv[adoptionIndex + 1];
+  assert.ok(path.isAbsolute(adoptionFile));
+  const bytes = fs.readFileSync(adoptionFile); adoption = JSON.parse(bytes);
+  const playerBytes = fs.readFileSync(adoption.originalReport), playerReport = JSON.parse(playerBytes);
+  validateExplorationSource(adoption, { original: playerReport, selection: validateAdoptionReport(playerReport) }, client.identity);
+  assert.equal(path.resolve(playerReport.sourceRecovery.originalReport), path.resolve(sourceFile));
+  assert.equal(adoption.worldId, binding.worldId);
+  assert.deepEqual(adoption.savedSnapshot, adoption.reopenedSnapshot);
+  assertPetProgress(adoption.savedSnapshot, binding.worldId, entityId, expectedSettings);
+  extraProofs.push([adoptionFile, bytes], [adoption.originalReport, playerBytes]);
+}
+const petProgress = state => assertPetProgress(state, binding.worldId, entityId, expectedSettings);
 const report = { format: 'craftmine.pet-product-continuation/2', sourceReport: sourceFile, worldId: binding.worldId, entityId, packageInventorySha256: client.identity.inventorySha256, modelCalls: 0, launches: [], calls: [], captures: [], ok: false };
 const saveReport = () => fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
 const env = adoptionEnvironment(client, { out: sourceRoot, profile, token: marker.token });
@@ -120,19 +141,21 @@ async function close() {
 try {
   report.opened = await enter();
   report.before = await snapshot();
-  const originalPet = assertPetProgress(report.before, binding.worldId, entityId);
+  if (adoption) assert.deepEqual(report.before, adoption.reopenedSnapshot, 'Adopted checkpoint changed before follow-up');
+  const originalPet = petProgress(report.before);
   await panel('godot.runtimeResume');
   report.walk = await explore([{ op: 'walk', args: { forward: -1, right: 0, frames: 15 } }, { op: 'wait', args: { frames: 120 } }]);
   report.afterWalk = await snapshot();
-  const pet = assertPetProgress(report.afterWalk, binding.worldId, entityId), player = report.afterWalk.body.player.position;
+  const pet = petProgress(report.afterWalk), player = report.afterWalk.body.player.position;
   const dx = pet.position[0] - player[0], dz = pet.position[2] - player[2];
-  // Frozen creation.tscn CameraRig Y=.65; published dog Cylinder height=.77.
-  const yaw = Math.atan2(-dx, -dz), pitch = Math.atan2(pet.position[1] + .385 - player[1] - .65, Math.hypot(dx, dz));
+  // Frozen creation.tscn CameraRig Y=.65; published dog/pom Cylinder heights .77/.48.
+  const halfHeight = expectedSettings.appearanceKey === 'dog' ? .385 : .24;
+  const yaw = Math.atan2(-dx, -dz), pitch = Math.atan2(pet.position[1] + halfHeight - player[1] - .65, Math.hypot(dx, dz));
   report.aim = { yaw, pitch, player, pet: pet.position };
   assert.ok(pitch < 0, 'DOG_REQUIRES_DOWNWARD_AIM');
   report.interaction = await explore([{ op: 'look', args: { yaw, pitch } }, { op: 'play-action', args: { action: 'interact', frames: 1 } }]);
   report.afterInteract = await snapshot();
-  assert.equal(assertPetProgress(report.afterInteract, binding.worldId, entityId).interactionCount, originalPet.interactionCount + 1);
+  assert.equal(petProgress(report.afterInteract).interactionCount, originalPet.interactionCount + 1);
   await capture('interaction');
   report.saved = await panel('godot.runtimeSave', { freeze: true });
   assertPetSaveReceipt(report.saved, binding.formalIdentity);
@@ -144,12 +167,13 @@ try {
   assert.equal(binding.formalIdentity.buildId, oldIdentity.buildId);
   report.reopenedSnapshot = await snapshot();
   assert.deepEqual(report.reopenedSnapshot, report.savedSnapshot);
-  assertPetProgress(report.reopenedSnapshot, binding.worldId, entityId);
+  petProgress(report.reopenedSnapshot);
   await capture('reopened');
   await close();
   client.assertUnchanged();
   assert.deepEqual(fs.readFileSync(sourceFile), sourceBytes);
   assert.deepEqual(fs.readFileSync(markerFile), markerBytes);
+  for (const [file, bytes] of extraProofs) assert.deepEqual(fs.readFileSync(file), bytes);
   report.ok = true;
 } catch (error) {
   report.error = String(error.stack ?? error);

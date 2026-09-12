@@ -143,7 +143,7 @@ finally{
   clearInterval(cancelWatch);
   if(!ended){
     if(submitted){try{await rpc('playerAbort',{payload});report.latest=await rpc('playerStatus',{payload});assert.equal(report.latest.active,false);}catch(error){report.closeoutError=String(error.message);}}
-    try{const frame=await rpc('godotCaptureView');const imageFile='player-'+runId+'-formal-world.png';fs.writeFileSync(path.join(out,imageFile),Buffer.from(frame.pngBase64,'base64'),{flag:'wx'});report.formalCapture={file:imageFile,width:frame.width,height:frame.height};}catch(error){report.captureError=String(error.message);}
+    try{const bound=await rpc('godotCaptureBoundState');assert.equal(bound.formal.worldId,worldId);const frame=await rpc('godotCaptureBoundView',{payload:bound.formal});const imageFile='player-'+runId+'-formal-world.png';fs.writeFileSync(path.join(out,imageFile),Buffer.from(frame.pngBase64,'base64'),{flag:'wx'});report.formalCapture={file:imageFile,width:frame.width,height:frame.height,identity:bound.formal};}catch(error){report.captureError=String(error.message);}
     try{await rpc('quit');}catch{}await Promise.race([exited,delay(15000)]);if(!ended){report.forcedStop=true;child.kill();}
   }
   report.exitReport=exitReport;for(const call of pending.values())clearTimeout(call.timer);

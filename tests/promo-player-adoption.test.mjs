@@ -42,3 +42,13 @@ test('model-free claim depends on clean audit and strictly non-model controller 
  assert.throws(()=>validateExplorationCall('worldPanel',{channel:'world.create',payload:{}},selection));
  const env=adoptionEnvironment({environment:()=>({CRAFTMINE_HEADLESS_TOKEN:'fixture',CRAFTMINE_CREATION_EVAL:'1',CRAFTMINE_PLAYER_MODEL:'provider',CRAFTMINE_NORMAL_PLAYER:'1',OPENAI_API_KEY:'secret'})},{});assert.deepEqual(env,{CRAFTMINE_HEADLESS_TOKEN:'fixture'});
 });
+
+test('adoption captures require the currently bound world and checked build',()=>{
+ const selection=validateAdoptionReport(report());
+ assert.throws(()=>validateAdoptionCall('godotCaptureBoundView',{payload:{}},selection));
+ selection.captureIdentity={worldId:'world-a',buildId:'new-build',instanceId:'current'};
+ validateAdoptionCall('godotCaptureBoundView',{payload:selection.captureIdentity},selection);
+ assert.throws(()=>validateAdoptionCall('godotCaptureBoundView',{payload:{...selection.captureIdentity,instanceId:'previous'}},selection));
+ selection.captureIdentity={worldId:'other',buildId:'new-build',instanceId:'current'};
+ assert.throws(()=>validateAdoptionCall('godotCaptureBoundView',{payload:selection.captureIdentity},selection));
+});

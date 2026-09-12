@@ -30,9 +30,9 @@ export function validatePetProductCall(method, fields, binding) {
   if(fields.channel==='godot.candidateApply')assert.equal(binding.activePreview,true,'CURRENT_PREVIEW_REQUIRED');
   if(fields.channel==='godot.runtimeSave')assert.equal(fields.payload.freeze,true);
 }
-export function assertPetProgress(state, worldId, entityId) {
+export function assertPetProgress(state, worldId, entityId, expectedSettings={name:'小伙伴',appearanceKey:'dog',following:true}) {
   assert.equal(state.worldId,worldId);assert.equal(state.body.worldId,worldId);assert.deepEqual(Object.keys(state.body.components),[entityId]);
   const pet=state.body.components[entityId];assert.equal(pet.format,'craftmine.pet-companion-state/1');assert.equal(pet.entityId,entityId);
-  assert.deepEqual(pet.settings,{name:'小伙伴',appearanceKey:'dog',following:true});assert.deepEqual(pet.sourceSettings,pet.settings);
+  assert.deepEqual(pet.settings,expectedSettings);assert.deepEqual(pet.sourceSettings,pet.settings);
   assert.ok(pet.position.length===3&&pet.position.every(Number.isFinite));assert.ok(Number.isFinite(pet.yaw));assert.ok(Number.isSafeInteger(pet.interactionCount));return pet;
 }
