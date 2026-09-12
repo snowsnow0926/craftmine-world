@@ -1011,6 +1011,7 @@ export class PluginRuntime {
     for (const operation of [
       "godotWorld.initialize", "godotWorld.initStatus", "godotWorld.copy", "godotWorld.copyStatus", "godotWorld.rebuildPlan", "godotWorld.prepareRebuildSource", "godotWorld.prepareCopyRuntime", "godotRuntime.exportSource",
       "godotWorld.initLaunchFailed", "godotWorld.initLaunchRetry",
+      "godotWorld.initCancel", "godotWorld.initCancelClear",
       "godotWorld.backupSnapshot", "godotWorld.verifySnapshot",
       "godotProject.create", "godotProject.index", "godotProject.read", "godotProject.patch", "godotProject.receipt",
       "godotProject.applyFiles",
@@ -1030,6 +1031,7 @@ export class PluginRuntime {
       "content.reclaim.plan", "content.reclaim.prune", "content.verify", "content.bundle",
       "library.search", "library.read", "library.capture",
       "world.list", "world.create", "world.saveProgress",
+      "world.archiveStatus", "world.archiveFailed", "world.archivedList", "world.restoreArchived",
       "workspace.endTurn", "asset.bodyPath",
       "asset.request", "package.request",
     ]) allowed.add(operation);
