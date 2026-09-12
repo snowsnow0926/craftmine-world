@@ -36,3 +36,19 @@
 - 报告：`D:/cm-pet-source-package-0912/test-results/builtin-install-pjEYQ6/report.json`。该轮宠物 ZIP SHA-256 为 `56fab71d15274813d576cb879442ca4f8fc7c5dff22c00c27f7f4ab406ae3a06`，使用状态 `ea214236`、行为 `f1f3da44`、视觉 `2c17f2e1`。
 
 这一完整安装预检发生在“互动 HUD 反馈、无效配置早注册”后续修正之前，不是最终 Windows 成品证明。后续源码冻结后重新构建，并可用同一驱动的 `--asset cw.module.pet-companion` 仅重验该包两次安装与拒绝用例；无需重复其余 18 包的真实安装。
+
+## 最后小修后的聚焦复验
+
+已纳入行为 `4a22cd5b` 与 HUD 适配器 `db0a42ea`，并确认隔离树的宠物脚本及三份运行要求文件 SHA-256 与总控树一致。重新执行上述 12 项测试全过，旧 18 个 ZIP 仍不变。
+
+最终本轮库共 19 包、357213 字节。宠物包 51913 字节，ZIP SHA-256：`f0fc1963e80e00d94548b6270dc42fdf153045957f0cf62d424d1ba7a711dd7b`；资源内容哈希：`c79d24583de1084c25a9fd4966025441b207d192d766d888a009f8314578bd73`。
+
+使用总控重新编译的 debug core，运行：
+
+```powershell
+node tests/builtin-source-library-install-native.mjs D:/cm-source-adoption-baseline-0912/test-results/source-adoption-cargo/debug/craftmine-core.exe D:/cm-pet-source-package-0912/test-results/builtin-playable-pet-final --asset cw.module.pet-companion
+```
+
+两次宠物安装生成不同实例，8 个实际包文件通过读取与哈希检查；不兼容运行代码要求仍被拒绝、源码不变；世界正式内容与进度不变。报告 `D:/cm-pet-source-package-0912/test-results/builtin-install-SrOZ5B/report.json`，SHA-256 为 `dfdeb13300547e4ae46e1a981385d544980d93715ca0407f8786b1781dd8e79a`。core SHA-256 为 `fe197502292904b7c308d9e9447493a1f745fccfd23cb7dbc52e26e9144ee590`。
+
+本结果仍是零模型、零引擎、零窗口的源码事务预检，不代替总控的实际组件行为与成品测试。
