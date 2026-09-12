@@ -17,9 +17,11 @@ const configs={
 const TEMPLATE_BASES=['top-down','mining-sandbox'];
 
 /** Materialize trusted authored base source in a new directory, never execute it. */
-export function materializeBase({baseId,worldId,template='blank',out,controllerProfile='creation-player-collision/1'}) {
+export function materializeBase({baseId,worldId,template='blank',out,controllerProfile='creation-player-collision/1',enginePerformanceProfile}) {
   const config=configs[baseId];
   if(!config || !config.examples.includes(template)) throw Error('Unknown base/template');
+  if(enginePerformanceProfile!==undefined&&enginePerformanceProfile!=='engine-monitor/1')throw Error('Unknown engine performance profile');
+  if(baseId==='creation-sandbox'&&!['legacy','creation-fixed-controller/1','creation-player-collision/1'].includes(controllerProfile))throw Error('Unknown creation controller profile');
   if(typeof worldId!=='string'||!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error('World identity must be a portable lowercase id');
   if(!path.isAbsolute(out)) throw Error('Output must be absolute');
   if(fs.existsSync(out)) throw Error('Output must be a fresh managed directory');
@@ -36,9 +38,13 @@ export function materializeBase({baseId,worldId,template='blank',out,controllerP
   const shared=path.join(out,'craftmine_shared');
   fs.mkdirSync(shared,{recursive:true});
   for(const file of ['runtime_bridge.gd','state_guard.gd','headless_play_action.gd','scene_mesh_picker.gd']) fs.copyFileSync(path.join(here,file),path.join(shared,file));
+  if(enginePerformanceProfile==='engine-monitor/1') {
+    fs.copyFileSync(path.join(here,'runtime_bridge.gd'),path.join(shared,'runtime_bridge_base.gd'));
+    fs.copyFileSync(path.join(here,'runtime_bridge_engine_v1.gd'),path.join(shared,'runtime_bridge.gd'));
+    fs.copyFileSync(path.join(here,'engine_performance.gd'),path.join(shared,'engine_performance.gd'));
+  }
   fs.copyFileSync(path.join(here,'adapters',baseId+'.gd'),path.join(shared,'base_adapter.gd'));
   if(baseId==='creation-sandbox') {
-    if(!['legacy','creation-fixed-controller/1','creation-player-collision/1'].includes(controllerProfile))throw Error('Unknown creation controller profile');
     if(controllerProfile!=='legacy') {
       fs.copyFileSync(path.join(here,'adapters/creation-sandbox.gd'),path.join(shared,'base_adapter_legacy.gd'));
       fs.copyFileSync(path.join(here,'controller_evidence.gd'),path.join(shared,'controller_evidence.gd'));
@@ -80,6 +86,7 @@ export function materializeBase({baseId,worldId,template='blank',out,controllerP
     if(fs.statSync(file).isFile()) {const bytes=fs.readFileSync(file);files.push({path:relative.replaceAll('\\','/'),bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});}
   }
   const manifest={format:'craftmine.managed-base-source/1',baseId,baseVersion:config.version,worldId,template,protocol:'craftmine.godot-runtime/2',progressFormat:'craftmine.godot-progress/1',stateVersion:1,files};
+  if(enginePerformanceProfile!==undefined)manifest.enginePerformanceProfile=enginePerformanceProfile;
   fs.writeFileSync(path.join(out,'managed-base.json'),JSON.stringify(manifest,null,2)+'\n');
   return manifest;
 }

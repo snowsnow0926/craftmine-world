@@ -1,2 +1,3 @@
 engine-performance-native.gd -text
 engine-performance-scene.gd -text
+engine-performance-bridge.gd -text
