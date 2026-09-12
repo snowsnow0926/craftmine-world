@@ -14,6 +14,8 @@ export function createGodotCandidateCoordinator(options:{
   domain:(method:string,params:Data)=>Promise<unknown>;selection:()=>Promise<string|null>;
 }) {
   let active:Session|null=null, busy=false, release:(()=>void)|null=null;
+  type FirstAttempt={worldId:string;candidateId:string;sessionId?:string;cancelled:boolean;settled:boolean;work:Promise<Data>;abort?:Promise<boolean>};
+  let firstAttempt:FirstAttempt|null=null;
   const completed=new Map<string,{worldId:string;candidateId:string;buildId:string}>();
   const completionKey=(worldId:string,candidateId:string)=>JSON.stringify([worldId,candidateId]);
   const rpc=async(method:string,args:Data):Promise<Data>=>{
@@ -25,24 +27,29 @@ export function createGodotCandidateCoordinator(options:{
     if(!current){if(!allowEmpty)throw new Error("GODOT_WORLD_CHANGED");return;}
     if(current.worldId!==worldId)throw new Error("GODOT_WORLD_CHANGED");
   };
-  const drop=()=>{active=null;release?.();release=null;};
+  const drop=()=>{const previous=active;active=null;release?.();release=null;if(firstAttempt?.settled&&firstAttempt.sessionId===previous?.id)firstAttempt=null;};
   const applicationMatches=(session:Session,result:Data)=>{
     if(result.id!==session.id||result.worldId!==session.worldId||result.candidateId!==session.candidateId||
        (session.prepared&&(result.inputHash!==session.prepared.inputHash||result.buildId!==session.prepared.buildId||!isDeepStrictEqual(result.input,session.prepared.input))))throw new Error("GODOT_APPLICATION_RECEIPT_MISMATCH");
     return result;
   };
-  async function prepare(worldId:string,candidateId:string,revision:number,snapshot:unknown,phase:Session["phase"],first=false) {
+  async function prepare(worldId:string,candidateId:string,revision:number,snapshot:unknown,phase:Session["phase"],first=false,authorize?:()=>Promise<void>) {
     const candidate=await rpc("godotCandidate.read",{worldId,candidateId});
+    await authorize?.();
     const defaults=candidate.job?.check?.defaultsSnapshot;
     const expected=defaults ? deriveAdditiveProgress(snapshot,defaults).snapshot : snapshot;
     const session:Session={worldId,candidateId,id:randomUUID(),token:randomUUID(),phase};active=session;
+    if(first&&firstAttempt&&!firstAttempt.settled&&firstAttempt.worldId===worldId&&firstAttempt.candidateId===candidateId)firstAttempt.sessionId=session.id;
     const prepared=applicationMatches(session,await rpc("godotApplication.prepare",{id:session.id,token:session.token,candidateId,worldId,revision,snapshot}));
     if(prepared.status!=="prepared"||!isDeepStrictEqual(prepared.input.snapshot,expected)||(defaults&&!isDeepStrictEqual(prepared.input.previousSnapshot,snapshot))||prepared.input.revision!==revision||!/^[a-f0-9]{64}$/.test(prepared.inputHash))throw new Error("GODOT_APPLICATION_PREPARE_MISMATCH");
     session.prepared=prepared;
+    await authorize?.();
     const descriptor=await options.adapter.describeCandidate(worldId,session.id,session.token);
     if(descriptor.buildId!==prepared.buildId||descriptor.applicationInputHash!==prepared.inputHash||!isDeepStrictEqual(descriptor.snapshot,expected))throw new Error("GODOT_CANDIDATE_DESCRIPTOR_MISMATCH");
     session.descriptor=descriptor;
+    await authorize?.();
     await options.host.stageCandidate(descriptor,{first,candidateId});
+    await authorize?.();
     return session;
   }
   async function confirm(session:Session) {
@@ -166,7 +173,8 @@ export function createGodotCandidateCoordinator(options:{
    * yet. It uses the world record itself as the prepared input, so the creation
    * flow never deadlocks on a formal world that only a commit could create.
    */
-  async function firstLoadInner(worldId:string,candidateId:string) {
+  async function firstLoadInner(worldId:string,candidateId:string,attempt:FirstAttempt) {
+    const authorize=async()=>{if(attempt.cancelled)throw Error("GODOT_INITIALIZATION_CANCELLED");await identity(worldId,true);if(attempt.cancelled)throw Error("GODOT_INITIALIZATION_CANCELLED");};
     if(active)throw new Error("GODOT_CANDIDATE_ACTIVE");
     await identity(worldId,true);
     if(options.host.instance?.worldId===worldId)throw new Error("GODOT_WORLD_ALREADY_RUNNING");
@@ -182,20 +190,23 @@ export function createGodotCandidateCoordinator(options:{
     if (initialization.worldId !== worldId || typeof initialization.initId !== "string" || initialization.playable !== false)
       throw Error("GODOT_WORLD_NOT_INITIALIZING");
     if (initialization.launchFailure) throw Error("GODOT_INITIAL_LOAD_RETRY_REQUIRED");
+    await authorize();
     release=await options.host.holdSelectionSync();
     try {
       const record=await rpc("world.read",{id:worldId});
       if(record.id!==worldId||!Number.isSafeInteger(record.revision)||record.revision<0||!object(record.world))throw new Error("GODOT_WORLD_RECORD_INVALID");
-      const session=await prepare(worldId,candidateId,record.revision,record.world.snapshot,"applying",true);
+      await authorize();
+      const session=await prepare(worldId,candidateId,record.revision,record.world.snapshot,"applying",true,authorize);
       session.evidence=await confirm(session);
-      return await commit(session);
+      await authorize();
+      return await commit(session,authorize);
     }catch(error){
       // prepare assigns active across an await; preserve the actual session
       // before recovery can drop it.
       const attempted = active as Session | null;
       let failure: unknown;
       try { return await failed(error); } catch (recovered) { failure = recovered; }
-      if (attempted?.prepared) {
+      if (attempted?.prepared && !attempt.cancelled) {
         try {
           const receipt = await rpc("godotWorld.initLaunchFailed", {worldId, initId: initialization.initId,
             candidateId, applicationId: attempted.id});
@@ -269,9 +280,24 @@ export function createGodotCandidateCoordinator(options:{
     /** Private first-load entry for the initialization transaction; not a page route. */
     async firstLoad(worldId:string,candidateId:string) {
       if(typeof worldId!=="string"||typeof candidateId!=="string")throw new Error("INVALID_GODOT_CANDIDATE_ACTION");
-      if(busy)throw new Error("WORLD_BUSY");
+      if(busy||active)throw new Error("WORLD_BUSY");
       busy=true;
-      try{return await firstLoadInner(worldId,candidateId);}finally{busy=false;}
+      const attempt:FirstAttempt={worldId,candidateId,cancelled:false,settled:false,work:Promise.resolve({})};firstAttempt=attempt;
+      attempt.work=firstLoadInner(worldId,candidateId,attempt).finally(()=>{attempt.settled=true;busy=false;if(!active&&firstAttempt===attempt)firstAttempt=null;});
+      return attempt.work;
+    },
+    /** Cancel only this initializer's first-load transaction, even while its
+     * normal mutex is held waiting for load. Ordinary previews are untouched. */
+    async cancelFirstLoad(worldId:string) {
+      const attempt=firstAttempt;if(!attempt||attempt.worldId!==worldId)return {worldId,status:"idle"};
+      attempt.cancelled=true;
+      if(attempt.settled){
+        if(!active||active.id!==attempt.sessionId){firstAttempt=null;return {worldId,status:"idle"};}
+        if(busy)throw Error("WORLD_BUSY");busy=true;
+        try{const result=await recover(active);firstAttempt=null;return result;}finally{busy=false;}
+      }
+      attempt.abort??=options.host.cancelStaging(worldId);await attempt.abort;
+      try{return await attempt.work;}catch(error){if(active?.id===attempt.sessionId)throw error;return {worldId,status:"cancelled"};}
     },
     /** Only the native restore service can replace a missing export cache. */
     async restoreLoad(worldId:string,candidateId:string) {

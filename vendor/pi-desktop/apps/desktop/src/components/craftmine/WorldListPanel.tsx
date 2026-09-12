@@ -191,8 +191,9 @@ function WorldRow({
   const [details, setDetails] = useState(false);
   const check = worldCheckLabel(entry.check, lang);
   const playable = isWorldPlayable(entry);
-  const stage = creationStageText(entry.creation, lang);
-  const progress = creationProgressText(entry.creation, lang);
+  const cancelled = entry.creation?.error?.code === "GODOT_INITIALIZATION_CANCELLED";
+  const stage = cancelled ? "" : creationStageText(entry.creation, lang);
+  const progress = cancelled ? "" : creationProgressText(entry.creation, lang);
   // Only the actions the host reported are rendered; an unsupported recovery
   // path is not shown as a button that would fail on click.
   const actions = createActionsSupported ? creationActions(entry.creation) : [];
@@ -228,7 +229,7 @@ function WorldRow({
                 className={`craftmine-world-item-creation is-${entry.state}`}
                 data-world-creation-stage={entry.creation?.stage ?? ""}
               >
-                {worldStateLabel(entry.state, lang)}
+                {cancelled ? (lang === "zh" ? "已取消" : "Cancelled") : worldStateLabel(entry.state, lang)}
                 {stage ? ` · ${stage}` : ""}
                 {progress ? ` · ${progress}` : ""}
               </span>

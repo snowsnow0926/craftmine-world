@@ -200,7 +200,7 @@ impl TaskJournal {
             return self.world_archive_status(&input.id);
         }
         let initialization = self.godot_world_init_status(&serde_json::json!({"worldId":input.id}))?;
-        ensure!(matches!(initialization["status"].as_str(),Some("failed"|"blocked")), "WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION");
+        ensure!(matches!(initialization["status"].as_str(),Some("failed"|"blocked"|"cancelled")), "WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION");
         let tx = self.db.transaction_with_behavior(TransactionBehavior::Immediate)?;
         let world = read(&tx, &input.id)?;
         ensure!(world.summary.revision == input.revision, "WORLD_REVISION_CONFLICT");
@@ -211,7 +211,7 @@ impl TaskJournal {
             OR EXISTS(SELECT 1 FROM craftmine_godot_jobs WHERE world_id=?1 AND status IN ('queued','claimed','running'))", [&input.id], |row| row.get(0))?;
         ensure!(!busy, "WORLD_REMOVAL_BUSY");
         // Re-check the stored init row within the same write transaction.
-        let failed: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_world_init WHERE world_id=?1 AND status IN ('failed','blocked'))", [&input.id], |row| row.get(0))?;
+        let failed: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_world_init WHERE world_id=?1 AND status IN ('failed','blocked')) OR EXISTS(SELECT 1 FROM craftmine_godot_init_cancellations c JOIN craftmine_godot_world_init i ON c.init_id=i.id AND c.world_id=i.world_id WHERE c.world_id=?1)", [&input.id], |row| row.get(0))?;
         ensure!(failed, "WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION");
         tx.execute("INSERT INTO craftmine_world_archives(world_id,archived_at) VALUES(?1,?2)",params![input.id,timestamp()?])?;
         tx.commit()?;
