@@ -17,7 +17,7 @@ const configs={
 const TEMPLATE_BASES=['top-down','mining-sandbox'];
 
 /** Materialize trusted authored base source in a new directory, never execute it. */
-export function materializeBase({baseId,worldId,template='blank',out,enginePerformanceProfile}) {
+export function materializeBase({baseId,worldId,template='blank',out,controllerProfile='creation-player-collision/1',enginePerformanceProfile}) {
   const config=configs[baseId];
   if(!config || !config.examples.includes(template)) throw Error('Unknown base/template');
   if(enginePerformanceProfile!==undefined&&enginePerformanceProfile!=='engine-monitor/1')throw Error('Unknown engine performance profile');
@@ -43,6 +43,20 @@ export function materializeBase({baseId,worldId,template='blank',out,enginePerfo
     fs.copyFileSync(path.join(here,'engine_performance.gd'),path.join(shared,'engine_performance.gd'));
   }
   fs.copyFileSync(path.join(here,'adapters',baseId+'.gd'),path.join(shared,'base_adapter.gd'));
+  if(baseId==='creation-sandbox') {
+    if(!['legacy','creation-fixed-controller/1','creation-player-collision/1'].includes(controllerProfile))throw Error('Unknown creation controller profile');
+    if(controllerProfile!=='legacy') {
+      fs.copyFileSync(path.join(here,'adapters/creation-sandbox.gd'),path.join(shared,'base_adapter_legacy.gd'));
+      fs.copyFileSync(path.join(here,'controller_evidence.gd'),path.join(shared,'controller_evidence.gd'));
+      fs.copyFileSync(path.join(here,'scene_mesh_picker_v2.gd'),path.join(shared,'scene_mesh_picker_v2.gd'));
+      fs.copyFileSync(path.join(here,'adapters/creation-sandbox-controller-v1.gd'),path.join(shared,'base_adapter.gd'));
+      if(controllerProfile==='creation-player-collision/1') {
+        fs.copyFileSync(path.join(here,'adapters/creation-sandbox-controller-v1.gd'),path.join(shared,'base_adapter_controller_v1.gd'));
+        fs.copyFileSync(path.join(here,'progress_collision.gd'),path.join(shared,'progress_collision.gd'));
+        fs.copyFileSync(path.join(here,'adapters/creation-sandbox-controller-v2.gd'),path.join(shared,'base_adapter.gd'));
+      }
+    }
+  }
   const project=path.join(out,'project.godot');
   let text=fs.readFileSync(project,'utf8');
   const autoload='CraftmineRuntime="*res://craftmine_shared/runtime_bridge.gd"';
