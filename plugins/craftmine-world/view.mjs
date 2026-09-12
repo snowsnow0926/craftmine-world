@@ -68,10 +68,11 @@ if(bridge) {
     // Showing the world changes presentation only; never discard a candidate
     // application or preview that the player is still deciding on.
     if(entering&&!preview&&!applicationAttempt)setMode(false);
+    if(!godot&&current)send('immersion',{paused:immersionHeld,active});
   });
   bridge.on?.('craftmine-immersion',value=>{
     immersionHeld=value===true;
-    if(!godot&&current)send('immersion',{paused:immersionHeld});
+    if(!godot&&current)send('immersion',{paused:immersionHeld,active:document.body.dataset.immersive==='true'});
     if(previewFrame&&preview)previewFrame.contentWindow.postMessage({channel:'craftmine-host/1',nonce:preview.nonce,type:'immersion',paused:immersionHeld},'*');
   });
 }
@@ -387,7 +388,7 @@ addEventListener('message',event=>{
   const message=event.data;
   if(godot)return;
   if(event.source!==frame.contentWindow||message?.channel!=='craftmine-game/1'||message.nonce!==nonce)return;
-  if(message.type==='ready')send('load',{...current.world,worldId:current.id,immersionPaused:immersionHeld});
+  if(message.type==='ready')send('load',{...current.world,worldId:current.id,immersionPaused:immersionHeld,immersionActive:document.body.dataset.immersive==='true'});
   if(message.type==='selection')void workbench?.setSelection(message);
   if(message.type==='loaded') {
     if(message.version!==current.world.build.id){showError(Error('载入版本不一致'));return;}

@@ -44,6 +44,12 @@ function playSound(sound,volume){
 export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
   const {VoxelRuntime,B,index,basis}=WorldRuntime;
   class BlankRuntime extends VoxelRuntime {
+    // The trusted desktop already selected this world. Enable its keyboard
+    // controls without a second entry gesture, focus change or pointer lock.
+    activateKeyboardInput() {
+      if(!this.active||isFrozen()||this.play?.dead)return;
+      if(!this.input)this.keys.clear();this.input=true;this.syncCursor();enter.hidden=true;
+    }
     bindInput() {
       this.listen(document,'pointerlockchange',()=>{this.locked=document.pointerLockElement===this.canvas;if(this.locked&&(!this.active||isFrozen()||!this.input)){this.pauseInput();return;}this.input=this.locked;this.keys.clear();this.syncCursor();enter.hidden=this.locked;});
       this.listen(document,'pointerlockerror',()=>{if(!isFrozen()&&this.active&&this.input){this.syncCursor();inform('按住画面拖动环顾，WASD 移动');}});
