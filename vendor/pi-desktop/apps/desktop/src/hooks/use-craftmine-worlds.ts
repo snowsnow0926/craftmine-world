@@ -267,6 +267,20 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       setActionError(null);
       setNotice(null);
       try {
+        if (action === "retry") {
+          const list = await bridge.list();
+          if (!list.worlds.some(world => world.id === worldId)) throw Error("CREATED_WORLD_NOT_FOUND");
+          if (list.activeWorldId !== worldId) {
+            // Explicit recovery may select a failed placeholder. Use the
+            // retained view's save-then-open transaction; ordinary selection
+            // still refuses unfinished worlds and the host still scopes retry.
+            const selected = await bridge.switchWorld(worldId);
+            if (!selected.ok) throw Error(selected.error);
+            if (selected.activeWorldId !== worldId) throw Error("GODOT_WORLD_CHANGED");
+            setActiveWorldId(worldId);
+            window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
+          }
+        }
         await bridge.creationAction(worldId, action);
       } catch (failure) {
         setActionError(worldErrorMessage(failure, lang));

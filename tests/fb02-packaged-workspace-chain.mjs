@@ -120,7 +120,7 @@ try{
     const worldId=pause.state.layout.enteredWorldId;
     report.pausedRuntime=await rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}});
     assert.equal(report.pausedRuntime.state,'paused','native runtime acknowledges pause');
-    const click = selector => appPage.evaluate(selector=>{const node=document.querySelector(selector);if(!node)throw Error('MISSING_CONTROL:'+selector);if(node.disabled)throw Error('DISABLED_CONTROL:'+selector);return node[Object.keys(node).find(k=>k.startsWith('__reactProps$'))].onClick();},selector);
+    const click = async selector => {await appPage.waitForFunction(selector=>[...document.querySelectorAll(selector)].some(node=>node.getClientRects().length>0&&getComputedStyle(node).visibility!=='hidden'&&!node.closest('[hidden],[inert],[aria-hidden="true"]')&&!node.disabled),selector);return appPage.evaluate(selector=>{const node=[...document.querySelectorAll(selector)].find(node=>node.getClientRects().length>0&&getComputedStyle(node).visibility!=='hidden'&&!node.closest('[hidden],[inert],[aria-hidden="true"]')&&!node.disabled);if(!node)throw Error('CONTROL_CHANGED:'+selector);return node[Object.keys(node).find(k=>k.startsWith('__reactProps$'))].onClick();},selector);};
     const layoutBeforeSettings=JSON.stringify(pause.state.layout);const nativeBeforeSettings=await inspect(statusExpression);
     await click('[data-pause-action="settings"]');await appPage.waitForSelector('[data-game-settings] .settings-back');await delay(1000);
     report.settingsOpened=await snapshot();report.settingsNative=await inspect(statusExpression);report.settingsRuntime=await rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}});
