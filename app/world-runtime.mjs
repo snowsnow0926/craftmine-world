@@ -57,7 +57,15 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
       this.listen(this.canvas,'pointerdown',e=>{if(isFrozen()||!this.active||this.play?.dead)return;if(!this.locked){this.enter();this.dragging=true;this.canvas.setPointerCapture(e.pointerId);}else if(e.button===0)this.attack();enter.hidden=true;});
       for(const type of ['pointerup','pointercancel','lostpointercapture'])this.listen(this.canvas,type,()=>this.dragging=false);
       this.listen(this.canvas,'contextmenu',e=>e.preventDefault());
-      this.listen(document,'keydown',e=>{
+      this.listen(document,'keydown',e=>this.handleKeyboardEvent(e));
+      this.listen(document,'keyup',e=>this.handleKeyboardEvent(e));
+      this.listen(window,'blur',()=>{this.pauseInput();enter.hidden=false;});
+      this.listen(document,'visibilitychange',()=>{if(document.hidden)this.pauseInput();});
+      this.listen(this.canvas,'webglcontextlost',e=>{e.preventDefault();this.setActive(false);send('error',{message:'图形上下文丢失，请刷新以恢复已保存的世界。'});});
+    }
+    handleKeyboardEvent(e) {
+      if(e.type==='keyup'){this.keys.delete(e.code);return;}
+
         if(isFrozen()||!this.active||/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;
         if(e.code==='KeyT'&&!e.repeat){e.preventDefault();this.pauseInput();enter.hidden=false;send('agent',{selected:this.target?.treeId||null});return;}
         if(e.code==='Escape'){this.pauseInput();enter.hidden=false;return;}
@@ -71,11 +79,7 @@ export function makeWorldRuntime({send,inform,enter,isFrozen=()=>false}){
         }
         if(this.input&&!e.repeat&&this.behaviorKeys?.has(e.code)){e.preventDefault();this.behaviors.dispatch('key',null,0,e.code);}
         if(this.input&&['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight'].includes(e.code)){e.preventDefault();this.keys.add(e.code);}
-      });
-      this.listen(document,'keyup',e=>this.keys.delete(e.code));
-      this.listen(window,'blur',()=>{this.pauseInput();enter.hidden=false;});
-      this.listen(document,'visibilitychange',()=>{if(document.hidden)this.pauseInput();});
-      this.listen(this.canvas,'webglcontextlost',e=>{e.preventDefault();this.setActive(false);send('error',{message:'图形上下文丢失，请刷新以恢复已保存的世界。'});});
+
     }
     async generateBuild(value,snapshot,{extensions=null}={}) {
       const wasActive=this.active;this.setActive(false);this.worldAssets=new WorldAssets(this);await this.worldAssets.load(value);

@@ -4,6 +4,7 @@ import {applyPresentation} from './apply-presentation.mjs';
 import {candidateIdentity} from './godot-candidate-view.mjs';
 import {assertPreviewControl} from './preview-control.mjs';
 import {canonicalJSON} from '../../app/canonical.mjs';
+import {createWorldKeyboardRelay} from '../../app/world-keyboard.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
 const gameDocument = CRAFTMINE_GAME_DOCUMENT;
 const frame = document.querySelector('iframe');
@@ -42,6 +43,16 @@ let openingWorldId=null;
 let recoverySequence=0;
 let loadRecovery=null;
 let immersionHeld=false;
+const keyboardRelay=createWorldKeyboardRelay({
+  state:()=>({worldId:current?.id,nonce,enabled:!!bridge&&!!current&&loaded&&!godot&&!closing&&!backupFrozen&&!immersionHeld
+    &&document.body.dataset.immersive==='true'&&!preview&&!applicationAttempt&&!workbench?.tab&&checksPanel.hidden,
+    editing:!!document.activeElement?.closest('input,textarea,select,[contenteditable="true"],[role="textbox"]')}),
+  send:(type,payload)=>send(type,payload),
+});
+document.addEventListener('keydown',keyboardRelay.handle);
+document.addEventListener('keyup',keyboardRelay.handle);
+addEventListener('blur',keyboardRelay.reset);
+addEventListener('pagehide',keyboardRelay.reset);
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
 const godotLoadingStates=new Set(['loading','failed']);
 function isGodotWorld(record) {
@@ -65,6 +76,7 @@ if(bridge) {
     const active=value?.active===true;
     const entering=active&&document.body.dataset.immersive!=='true';
     document.body.dataset.immersive=String(active);
+    keyboardRelay.sync();
     // Showing the world changes presentation only; never discard a candidate
     // application or preview that the player is still deciding on.
     if(entering&&!preview&&!applicationAttempt)setMode(false);
@@ -72,6 +84,7 @@ if(bridge) {
   });
   bridge.on?.('craftmine-immersion',value=>{
     immersionHeld=value===true;
+    keyboardRelay.sync();
     if(!godot&&current)send('immersion',{paused:immersionHeld,active:document.body.dataset.immersive==='true'});
     if(previewFrame&&preview)previewFrame.contentWindow.postMessage({channel:'craftmine-host/1',nonce:preview.nonce,type:'immersion',paused:immersionHeld},'*');
   });
@@ -210,6 +223,7 @@ function showError(error) {
 }
 
 function controls() {
+  keyboardRelay.sync();
   document.getElementById('godot-loading-retry').disabled=busy||closing;
   document.getElementById('godot-loading-back').disabled=busy||closing;
   select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
