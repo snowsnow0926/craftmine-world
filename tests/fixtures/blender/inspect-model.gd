@@ -5,10 +5,17 @@ func _initialize() -> void:
 	call_deferred("inspect_model")
 
 func inspect_model() -> void:
-	var document := GLTFDocument.new()
-	var state := GLTFState.new()
-	assert(document.append_from_file("res://model.glb", state) == OK)
-	var model := document.generate_scene(state)
+	var editor_import := "--editor-import" in OS.get_cmdline_user_args()
+	var model: Node3D
+	if editor_import:
+		var packed := load("res://model.glb") as PackedScene
+		assert(packed != null)
+		model = packed.instantiate() as Node3D
+	else:
+		var document := GLTFDocument.new()
+		var state := GLTFState.new()
+		assert(document.append_from_file("res://model.glb", state) == OK)
+		model = document.generate_scene(state) as Node3D
 	assert(model != null)
 	root.add_child(model)
 	var meshes := model.find_children("*", "MeshInstance3D", true, false)
@@ -50,6 +57,7 @@ func inspect_model() -> void:
 		"meshes": meshes.size(), "vertices": vertices, "animations": animations,
 		"doorMoved": door_moved, "collision": not collision.is_empty(),
 		"hasBluePaint": has_blue_paint,
+		"editorImport": editor_import,
 		"scope": "authored-fixture-runtime-import-and-physics-not-player-quality"
 	}))
 	quit(0)

@@ -93,10 +93,17 @@ try {
     await fs.writeFile(path.join(project, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Model validation"\n');
     await fs.writeFile(path.join(project, 'model.glb'), bytes);
     await fs.copyFile(path.join(root, 'tests/fixtures/blender/inspect-model.gd'), path.join(project, 'inspect-model.gd'));
-    const stdout = await godot.run(label, ['--path', project, '--script', 'inspect-model.gd']);
-    const line = stdout.split(/\r?\n/).find(value => value.startsWith('CRAFTMINE_BLENDER_INTEGRATION='));
-    assert.ok(line, 'Godot must report measured model behavior');
-    return JSON.parse(line.slice('CRAFTMINE_BLENDER_INTEGRATION='.length));
+    const parse = stdout => {
+      const line = stdout.split(/\r?\n/).find(value => value.startsWith('CRAFTMINE_BLENDER_INTEGRATION='));
+      assert.ok(line, 'Godot must report measured model behavior');
+      return JSON.parse(line.slice('CRAFTMINE_BLENDER_INTEGRATION='.length));
+    };
+    const runtime = parse(await godot.run(label, ['--path', project, '--script', 'inspect-model.gd']));
+    await godot.run(label + '-import', ['--path', project, '--editor', '--import']);
+    const imported = parse(await godot.run(label + '-packed', ['--path', project, '--script', 'inspect-model.gd', '--', '--editor-import']));
+    assert.ok(imported.editorImport && imported.doorMoved && imported.collision);
+    assert.equal(imported.meshes, runtime.meshes);
+    return {...runtime, packedSceneImport: imported};
   }
   const firstInspection = await inspect('house-original', firstModel); report.firstInspection = firstInspection;
   check('Godot loads generated geometry, plays the door animation and detects collision', firstInspection.headless && firstInspection.doorMoved && firstInspection.collision);
