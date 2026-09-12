@@ -47,3 +47,16 @@ test('ordinary existing-session reports and complete direct demos keep their ori
  const demo=f.file('complete-demo.json',{format:'craftmine.builtin-prefab-demo/1',worldId:'world',ok:true,stateIntegrityVerified:true});
  assert.equal(inspectPlayerSource(demo,{createSession:true}).profile,f.profile);
 });
+
+test('packaged pet continuation requires adopted provenance and exact cold-reopened progress',t=>{
+ const f=fixture(t),worldId='world',buildId='build',candidate={worldId,buildId,candidateId:'candidate',checkJobId:'job',sourceRevision:2,manifestHash:'a'.repeat(64),content:{branchId:'main'}};
+ const original={format:'craftmine.pet-product-demo/1',worldId,modelCalls:0,creationEvaluation:false,check:{status:'passed',jobId:'job'},checked:{checkStatus:'passed',check:{assertions:[{passed:true}]},candidate},applied:{status:'applied',worldId,candidateId:'candidate',record:{world:{build:{id:buildId}}}},packageIdentity:{inventorySha256:'b'.repeat(64)},source:{revision:2,manifestHash:'a'.repeat(64),items:[{supported:true,entityId:'pet'}]}};
+ const originalFile=f.file('pet.json',original),snapshot={worldId,body:{worldId,components:{pet:{entityId:'pet',format:'craftmine.pet-companion-state/1',interactionCount:2}}}};
+ const continuation={format:'craftmine.pet-product-continuation/2',sourceReport:originalFile,worldId,entityId:'pet',ok:true,modelCalls:0,launches:f.reopened.launches,packageInventorySha256:'b'.repeat(64),opened:{worldId,buildId,instanceId:'first'},reopened:{worldId,buildId,instanceId:'second'},saved:{format:'craftmine.godot-progress-receipt/1',worldId,buildId,instanceId:'first'},savedSnapshot:snapshot,reopenedSnapshot:snapshot};
+ const input=f.file('pet-continuation/report.json',continuation),inspected=inspectPlayerSource(input,{createSession:true});
+ assert.equal(inspected.profile,f.profile);assert.equal(inspected.recoveryBinding.revision,2);assert.equal(inspected.proofs.length,3);
+ for(const mutate of [r=>r.ok=false,r=>r.savedSnapshot.body.components.pet.interactionCount=0,r=>r.reopenedSnapshot.worldId='other',r=>r.packageInventorySha256='c'.repeat(64),r=>r.reopened.instanceId='first',r=>r.entityId='different']){
+  const invalid=structuredClone(continuation);mutate(invalid);f.file('pet-continuation/report.json',invalid);assert.throws(()=>inspectPlayerSource(input,{createSession:true}));
+ }
+ f.file('pet-continuation/report.json',continuation);original.check.status='failed';f.file('pet.json',original);assert.throws(()=>inspectPlayerSource(input,{createSession:true}));
+});

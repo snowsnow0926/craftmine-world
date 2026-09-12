@@ -97,14 +97,15 @@ fn candidates(db: &Connection) -> Result<Vec<Candidate>> {
 }
 
 fn matches_text(candidate: &Candidate, query: &str) -> bool {
-    let needle = query.to_lowercase();
-    candidate.name.to_lowercase().contains(&needle)
-        || candidate.row.asset_id.to_lowercase().contains(&needle)
-        || candidate.notes.to_lowercase().contains(&needle)
-        || candidate
-            .tags
-            .iter()
-            .any(|tag| tag.to_lowercase().contains(&needle))
+    let haystack = format!(
+        "{} {} {} {}",
+        candidate.name, candidate.row.asset_id, candidate.notes, candidate.tags.join(" ")
+    )
+    .to_lowercase();
+    query
+        .split_whitespace()
+        .map(str::to_lowercase)
+        .all(|token| haystack.contains(&token))
 }
 
 fn item_json(db: &Connection, candidate: &Candidate) -> Result<Value> {

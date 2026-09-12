@@ -3,6 +3,7 @@ import fs from 'node:fs';import path from 'node:path';import assert from 'node:a
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {inspectAdoptionSource,adoptionEnvironment,validateAdoptionCall,modelFreeExecutionEvidence} from './helpers/promo-adoption-contract.mjs';
 import {assertProofs} from './helpers/promo-checkpoint-contract.mjs';
+import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs';
 const file=process.argv[2];assert.ok(file&&path.isAbsolute(file),'Pass the absolute completed pilot report');
 const {original,out,profile,marker,selection,proofs}=inspectAdoptionSource(file);
 const client=resolveCreationNativeLaunch({root:process.cwd(),packagedRoot:original.packageIdentity.packaged});
@@ -23,19 +24,21 @@ function boot(){
 }
 const rpc=(method,fields={})=>new Promise((resolve,reject)=>{validateAdoptionCall(method,fields,selection);controllerCalls.push(method==='worldPanel'?method+':'+fields.channel:method);const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('TIMEOUT '+method));},120000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});});
 const panel=(channel,payload={})=>rpc('worldPanel',{channel,payload});
+const snapshot=()=>rpc('godotSnapshot').then(completeCreationProgress);
+async function capture(name){const bound=await rpc('godotCaptureBoundState');selection.captureIdentity=bound.formal;const frame=await rpc('godotCaptureBoundView',{payload:bound.formal});fs.writeFileSync(path.join(auditDir,name+'.png'),Buffer.from(frame.pngBase64,'base64'));return {width:frame.width,height:frame.height,identity:bound.formal};}
 async function until(read,accept,label){const deadline=Date.now()+120000;while(Date.now()<deadline){if(ended)throw Error('CLIENT_EXITED '+label);try{const r=await read();if(accept(r))return r;}catch(error){if(!/not ready|UNAVAILABLE|WORLD_BUSY|No world runtime is running/.test(error.message))throw error;}await delay(500);}throw Error('TIMEOUT '+label);}
 async function start(){boot();await until(async()=>ready,Boolean,'controller');const isolation=await until(()=>rpc('status'),r=>r.windows?.length,'isolation');assert.deepEqual(isolation.violations,[]);assert.ok(isolation.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));await until(()=>rpc('primaryMode'),r=>r.entry,'entry');await rpc('primaryMode',{payload:{action:'create'}});await until(()=>rpc('godotObserve'),r=>r.worldId===original.worldId&&r.instanceId,'world');}
 async function stop(){if(!ended){try{await rpc('quit');}catch{}await Promise.race([exit,delay(15000)]);if(!ended){child.kill();throw Error('SHUTDOWN_TIMEOUT');}}assert.deepEqual(exitReport?.violations,[]);assert.deepEqual(exitReport?.pageErrors,[]);assert.deepEqual(exitReport?.shutdownFailures,[]);assertProofs(proofs);client.assertUnchanged();}
 const check=(name,yes)=>{assert.ok(yes,name);record.checks.push(name);console.log('PASS '+name);};
 try{
-  await start();record.before=await rpc('godotObserve');
+  await start();record.before=await rpc('godotObserve');record.beforeSnapshot=await snapshot();
   record.preview=await panel('godot.candidatePreview',{worldId:original.worldId,candidateId:record.candidateId});check('original checked candidate enters normal preview',record.preview.status==='preview');
   record.applied=await panel('godot.candidateApply',{worldId:original.worldId,candidateId:record.candidateId});check('normal adoption commits the original candidate',record.applied.status==='applied');
   const after=await until(()=>rpc('godotObserve'),r=>r.worldId===original.worldId&&r.buildId===selection.buildId,'adopted runtime');record.after=after;
-  const capture=await rpc('godotCaptureView');fs.writeFileSync(path.join(auditDir,'adopted.png'),Buffer.from(capture.pngBase64,'base64'));record.capture={width:capture.width,height:capture.height};
-  record.saved=await panel('godot.runtimeSave',{worldId:original.worldId,freeze:true});await stop();
+  record.capture=await capture('adopted');
+  record.saved=await panel('godot.runtimeSave',{worldId:original.worldId,freeze:true});record.savedSnapshot=await snapshot();await stop();
   await start();record.reopened=await rpc('godotObserve');check('cold reopen preserves the adopted world and build',record.reopened.worldId===after.worldId&&record.reopened.buildId===after.buildId&&record.reopened.instanceId!==after.instanceId);
-  const reopened=await rpc('godotCaptureView');fs.writeFileSync(path.join(auditDir,'reopened.png'),Buffer.from(reopened.pngBase64,'base64'));
+  record.reopenedSnapshot=await snapshot();assert.deepEqual(record.reopenedSnapshot,record.savedSnapshot,'Cold reopen must preserve the full saved state');await capture('reopened');
   await stop();assertProofs(proofs);check(selection.budget?'original report and request ledger remain byte-identical':'original player report and marker remain byte-identical',true);
   if(selection.budget)record.budgetAfter={...selection.budget};record.noModelExecution=modelFreeExecutionEvidence(exitReport,controllerCalls);record.modelCallsAdded=0;record.modelRequestsAdded=0;record.ok=true;
 }catch(error){record.ok=false;record.error=String(error.stack??error);process.exitCode=1;console.error(error.message);}

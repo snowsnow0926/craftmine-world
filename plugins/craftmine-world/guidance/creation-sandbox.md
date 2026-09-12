@@ -1,10 +1,29 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.8.0`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.8.1`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
 这是按源码整理的接口指南。加载指南或示例不会证明模型首次成功、玩法验收或正式采用。
+
+## 已安装伙伴：改名、换外观的短流程
+
+玩家指着现有伙伴要求改名或换外观时，先读真实实例场景和该模块声明的 `editableSettings`。
+已安装 `cw.module.pet-companion@1` 的三个导出字段为 `companion_name`、`appearance_key`、
+`following`，分别对应 `settings.name`、`settings.appearanceKey`、`settings.following`。
+已验证的外观值为 `dog` 与 `pomeranian-white`；其他模块或其他版本仍以实际声明为准。
+
+保留原节点和 `entity_id`，只改这次要求的实例字段，然后走正常 `check`、预览和采用。
+例如“小伙伴变白色博美并叫雪球”只需设置同一实例的 `companion_name = "雪球"` 和
+`appearance_key = "pomeranian-white"`；沿用现有真实 PackedScene 和 GLB 引用。
+宿主候选迁移会比较新旧 `sourceSettings`，把确实改过的默认设置合入旧进度，保留位置、
+朝向、互动次数和未改的设置。不要为此在模块脚本中枚举旧名字、放宽 `validate_state`，
+或延迟强制覆盖恢复结果。严格校验发现来源变化，是正常迁移的输入，不代表需要绕开校验。
+若正常检查或采用失败，保留错误并按具体原因排查；未经实际跟随、互动和重开，不能宣称玩法保持成功。
+
+`requiredInterface` 是加载指导时由工具核验的哈希条件，不要求模型每轮全文重读所有参考脚本。
+仅改上述已声明实例设置时，先使用本节合同和实际场景；只有需要新增行为或具体错误指向内部实现时，
+再按需读取相应方法。修改已安装实例不需要重新搜索或重新安装同一资源。
 
 ## 指导适用性与源码权限
 
