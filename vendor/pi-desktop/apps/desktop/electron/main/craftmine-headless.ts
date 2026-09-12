@@ -5,7 +5,7 @@ import { historyProbeScript } from "./craftmine-history-acceptance";
 import { app, BaseWindow, dialog, globalShortcut, Notification, session, shell, type WebContents } from "electron";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { readHeadlessProfile } from "./craftmine-headless-profile";
+import { readHeadlessProfile, usesNormalAcceptanceRendering, assertAcceptanceWindow } from "./craftmine-headless-profile";
 import { createGodotGameplayAcceptance, type GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance";
 import { createGodotBasesAcceptance } from "./craftmine-godot-bases-acceptance";
 import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance";
@@ -30,6 +30,8 @@ type Profile = NonNullable<ReturnType<typeof readHeadlessProfile>>;
 let profile: Profile | null = null;
 /** Established only by the protected profile + parent IPC setup. */
 export const hasHeadlessController = () => isHeadlessAcceptance() && profile !== null && process.connected === true;
+/** Rendering only: normal acceptance retains every headless isolation/input guard. */
+export const isOffscreenAcceptance = () => isHeadlessAcceptance() && !usesNormalAcceptanceRendering(profile, process.connected === true);
 
 function denied(name: string): never {
   violations.push(name);
@@ -39,7 +41,7 @@ function denied(name: string): never {
 /** BaseWindow does not emit browser-window-created; its factory calls this too. */
 export function guardHeadlessWindow(window: MainWindow): void {
   if (!isHeadlessAcceptance()) return;
-  if (window.isVisible() || window.isFocusable() || !window.webContents.isOffscreen()) throw new Error("Headless window was not created offscreen and unfocusable");
+  assertAcceptanceWindow(profile, process.connected === true, {visible: window.isVisible(), focusable: window.isFocusable(), offscreen: window.webContents.isOffscreen()});
   for (const name of ["show", "showInactive", "focus", "restore", "moveTop", "setAlwaysOnTop", "flashFrame"]) {
     Object.defineProperty(window, name, {configurable: false, writable: false, value: () => denied(name)});
   }

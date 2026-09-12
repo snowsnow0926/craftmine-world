@@ -1,7 +1,20 @@
 import { readFileSync, realpathSync } from "node:fs";
 import { basename, isAbsolute, join, relative, resolve } from "node:path";
 
-export function readHeadlessProfile(env: Record<string, string | undefined>): { root: string; profile: string; legacySource: string } | null {
+export type HeadlessProfile = { root: string; profile: string; legacySource: string; rendering?: "normal" | "offscreen" };
+
+/** Normal compositing is allowed only after profile validation and parent IPC setup. */
+export function usesNormalAcceptanceRendering(profile: HeadlessProfile | null, parentConnected: boolean): boolean {
+  return parentConnected && profile?.rendering === "normal";
+}
+
+export function assertAcceptanceWindow(profile: HeadlessProfile | null, parentConnected: boolean, window: {visible: boolean; focusable: boolean; offscreen: boolean}): void {
+  if (window.visible || window.focusable || (!window.offscreen && !usesNormalAcceptanceRendering(profile, parentConnected))) {
+    throw new Error("Acceptance window must stay hidden and unfocusable with authorized rendering");
+  }
+}
+
+export function readHeadlessProfile(env: Record<string, string | undefined>): HeadlessProfile | null {
   if (env.CRAFTMINE_HEADLESS_TEST !== "1") return null;
   const root = env.CRAFTMINE_HEADLESS_ROOT, profile = env.CRAFTMINE_DATA_DIR;
   if (!root || !profile || !isAbsolute(root) || !isAbsolute(profile)) throw new Error("Headless acceptance requires absolute isolated paths");
@@ -19,5 +32,6 @@ export function readHeadlessProfile(env: Record<string, string | undefined>): { 
   if (typeof marker.legacySource !== "string" || !isAbsolute(marker.legacySource) || !inside(root, marker.legacySource)) {
     throw new Error("Headless import fixture must belong to the same isolated test directory");
   }
-  return { root: realpathSync(root), profile: realpathSync(profile), legacySource: realpathSync(marker.legacySource) };
+  if (marker.rendering !== undefined && marker.rendering !== "normal" && marker.rendering !== "offscreen") throw new Error("Invalid acceptance rendering mode");
+  return { root: realpathSync(root), profile: realpathSync(profile), legacySource: realpathSync(marker.legacySource), ...(marker.rendering === undefined ? {} : {rendering: marker.rendering}) };
 }

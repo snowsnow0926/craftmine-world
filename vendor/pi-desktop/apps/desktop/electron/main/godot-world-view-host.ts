@@ -9,7 +9,7 @@ import {
   type RuntimeEvent,
   type WorldRuntime,
 } from "../../../../../../desktop/godot/web/runtime.mjs";
-import { isHeadlessAcceptance, hasHeadlessController } from "./craftmine-headless";
+import { isHeadlessAcceptance, isOffscreenAcceptance, hasHeadlessController } from "./craftmine-headless";
 import { randomBytes } from "node:crypto";
 import { readEnginePerformance } from "./engine-performance-request";
 import { PRIVATE_PLAY_OPS, validateHeadlessPlayAction, type PlayIdentity } from "./headless-play-action";
@@ -1475,7 +1475,7 @@ export class GodotWorldViewHost {
     const view = new WebContentsView({
       webPreferences: {
         session: ses,
-        offscreen: isHeadlessAcceptance(),
+        offscreen: isOffscreenAcceptance(),
         backgroundThrottling: false,
         preload: join(__dirname, "../preload/godot-world.cjs"),
         contextIsolation: true,

@@ -9,7 +9,7 @@ import { OwnedViewClose } from "./owned-view-close";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { parseAllowedExternalUrl } from "./safe-open-external";
 import { prepareWorldViewsForQuit } from "./craftmine-lifecycle";
-import { isHeadlessAcceptance } from "./craftmine-headless";
+import { isOffscreenAcceptance } from "./craftmine-headless";
 import {
   applyPluginEgressPolicy,
   pluginSessionPartition,
@@ -396,7 +396,7 @@ export class PluginViewHost {
     const view = new WebContentsView({
       webPreferences: {
         session: ses,
-        offscreen: isHeadlessAcceptance(),
+        offscreen: isOffscreenAcceptance(),
         preload: join(__dirname, "../preload/plugin-panel.js"),
         contextIsolation: true,
         nodeIntegration: false,
