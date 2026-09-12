@@ -1,6 +1,7 @@
 import {createWorkbench} from './workbench-ui.mjs';
 import {createCreationGuideUI} from './creation-guide-ui.mjs';
 import {applyPresentation} from './apply-presentation.mjs';
+import {candidateIdentity} from './godot-candidate-view.mjs';
 import {assertPreviewControl} from './preview-control.mjs';
 import {canonicalJSON} from '../../app/canonical.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
@@ -38,6 +39,7 @@ document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+
 let godot=false;
 let immersionHeld=false;
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
+const godotLoadingStates=new Set(['loading','failed']);
 function isGodotWorld(record) {
   return record?.world?.build?.engine?.kind==='godot-web' ||
     record?.world?.build?.scene?.format==='craftmine.godot-scene/1';
@@ -78,6 +80,16 @@ function onGodotState(payload) {
   if(state==='ready')backupFrozen=false;
   const label=godotStateLabels[state]||state;
   document.body.dataset.godotState=state;
+  const loading=document.getElementById('godot-loading');
+  if(loading) {
+    const visible=godotLoadingStates.has(state);
+    loading.setAttribute('aria-hidden',String(!visible));
+    loading.dataset.state=state;
+    const title=document.getElementById('godot-loading-title');
+    const detail=document.getElementById('godot-loading-detail');
+    if(title)title.textContent=state==='failed'?'世界加载失败':'正在加载世界…';
+    if(detail)detail.textContent=state==='failed' ? String(payload.error||'运行时没有完成初始化。请返回工作台检查错误并重试。') : payload.initializing ? '正在初始化世界并确认首次构建，请稍候。' : '世界正在准备场景和运行资源，请稍候。首次加载可能需要更长时间。';
+  }
   status.textContent=label;
   if(state==='failed') {
     // Reuse the shared error banner, but keep the state label in the status.
@@ -251,6 +263,8 @@ function mount(record) {
     document.body.dataset.godot='true';
     frame.removeAttribute('srcdoc');
     status.textContent='载入中';
+    const loading=document.getElementById('godot-loading');
+    if(loading){loading.setAttribute('aria-hidden','false');loading.dataset.state='loading';}
     void bridge.invoke('godot.candidateClose',{worldId:record.id}).then(result=>{
       if(current?.id!==record.id)return null;
       if(result.status==='applied'){mount(result.record);return null;}
@@ -434,10 +448,11 @@ async function refreshGodotCandidates(worldId,reset) {
   if(current?.id!==worldId)return;
   const list=document.getElementById('checks-list');if(reset||!checkOffset)list.replaceChildren();
   for(const candidate of result.items){
-    const row=document.createElement('article');row.className='check-row';row.dataset.candidateId=candidate.id;
+    const candidateId=candidateIdentity(candidate);
+    const row=document.createElement('article');row.className='check-row';row.dataset.candidateId=candidateId;
     const title=document.createElement('h3');title.textContent=`Godot 草稿 ${candidate.sourceRevision}`;
     const state=document.createElement('p');state.textContent=({ready:'检查通过 · 可以预览',applied:'已应用',stale:'草稿已更新'})[candidate.status]||candidate.status;
-    const button=document.createElement('button');button.textContent='预览副本';button.disabled=candidate.status!=='ready';button.onclick=()=>void action(()=>openGodotPreview(candidate.id));
+    const button=document.createElement('button');button.textContent='预览副本';button.disabled=candidate.status!=='ready';button.onclick=()=>void action(()=>openGodotPreview(candidateId));
     row.append(title,state,button);list.append(row);
   }
   document.getElementById('checks-empty').hidden=list.children.length>0;

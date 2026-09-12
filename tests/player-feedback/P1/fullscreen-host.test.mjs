@@ -15,7 +15,7 @@ const channel='pi-desktop/godot-world/fullscreen-exit';
 function fixture(){
  const actions=[],immersion=[],messages=[],window={contentView:{children:[],addChildView(view){this.children.push(view);},removeChildView(view){this.children=this.children.filter(entry=>entry!==view);}},isDestroyed:()=>false};
  class View { constructor(){this.webContents=Object.assign(new EventEmitter(),{ipc:new EventEmitter(),mainFrame:{},send:(...args)=>messages.push(args),isDestroyed:()=>false,setWindowOpenHandler(){}});} setBounds(bounds){this.bounds=structuredClone(bounds);} }
- const Host=vm.runInNewContext(hostSource+'\nGodotWorldViewHost',{join,resolve,sep,console,...immersionTools,__dirname:'owned',isHeadlessAcceptance:()=>true,WebContentsView:View,WORLD_CHROME_HEIGHT:76,nativeFullscreenKeyDecision,godotWorldScopeArgument:()=>'',GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL:channel});
+ const Host=vm.runInNewContext(hostSource+'\nGodotWorldViewHost',{join,resolve,sep,console,...immersionTools,raiseMainOverlay:()=>{},__dirname:'owned',isHeadlessAcceptance:()=>true,WebContentsView:View,WORLD_CHROME_HEIGHT:76,nativeFullscreenKeyDecision,godotWorldScopeArgument:()=>'',GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL:channel});
  const host=new Host({window:()=>window,onFullscreenShortcut:action=>actions.push(action),onImmersionShortcut:action=>immersion.push(action)});
  host.prepareSession=()=>({});
  const runtime={protocol:'craftmine.godot-runtime/2',worldId:'alpha',buildId:'build-alpha',instanceId:'instance-alpha',receive(){}};
@@ -39,15 +39,15 @@ test('Godot immersion preserves host shortcuts, blocks gameplay and restores geo
  assert.equal(f.key({type:'keyDown',key:'F2'}),1);assert.deepEqual(f.immersion,['compact']);
  assert.equal(f.key({type:'keyDown',key:'F2',shift:true}),1);assert.deepEqual(f.immersion,['compact','full']);
  await f.host.setImmersion({active:true,overlay:'compact',overlayBounds:{x:0,y:400,width:800,height:200}});
- assert.deepEqual(f.view.bounds,{x:0,y:76,width:800,height:324});
+ assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:600});
  assert.equal(f.key({type:'keyDown',key:'Escape'}),1);assert.equal(f.immersion.at(-1),'escape');
  assert.equal(f.key(),1);assert.deepEqual(f.actions,['toggle']);
  assert.equal(f.key({type:'keyDown',key:'w'}),1);assert.equal(f.key({type:'keyUp',key:'w'}),0);
  await f.host.setImmersion({active:true,overlay:'full',overlayBounds:{x:600,y:0,width:200,height:600}});
- assert.deepEqual(f.view.bounds,{x:0,y:76,width:600,height:524});
+ assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:600});
  f.view.webContents.emit('did-finish-load');assert.deepEqual(f.messages.at(-1),[immersionTools.IMMERSION_INPUT_CHANNEL,true]);
  await f.host.setImmersion({active:true,overlay:'closed',overlayBounds:null});
- assert.deepEqual(f.view.bounds,{x:0,y:76,width:800,height:524});
+ assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:600});
  assert.deepEqual(f.messages.at(-1),[immersionTools.IMMERSION_INPUT_CHANNEL,false]);
 });
 

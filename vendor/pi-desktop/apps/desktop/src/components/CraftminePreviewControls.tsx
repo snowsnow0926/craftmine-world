@@ -8,7 +8,7 @@ const request = (payload: Record<string, unknown>) =>
   api.pluginPanelInvoke("craftmine.world", "world.previewControl", payload) as Promise<CraftminePreviewState | null>;
 
 /** Mounted inside the retained immersion surface even while it is closed. */
-export function CraftminePreviewControls() {
+export function CraftminePreviewControls({ autoOpen = true }: { autoOpen?: boolean }) {
   const [preview, setPreview] = useState<CraftminePreviewState | null>(null);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -28,7 +28,7 @@ export function CraftminePreviewControls() {
           const state = await request({ action: "state" });
           if (!disposed && current === generation.current) {
             setPreview(state); setError("");
-            if (state && seen.current !== state.previewId) {
+            if (autoOpen && state && seen.current !== state.previewId) {
               seen.current = state.previewId;
               // Open a real overlay above the candidate; native game geometry
               // stays untouched. The player can close it with F2 to try the draft.
@@ -43,7 +43,7 @@ export function CraftminePreviewControls() {
     };
     void read();
     return () => { disposed = true; mounted.current = false; generation.current++; clearTimeout(timer); };
-  }, []);
+  }, [autoOpen]);
 
   const run = async (action: "apply" | "close") => {
     if (!preview || locked.current || error) return;

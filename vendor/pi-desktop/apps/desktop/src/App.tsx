@@ -35,7 +35,7 @@ import { UpdateBanner } from "./components/UpdateBanner";
 import { useCraftmineLayout, useCraftmineImmersionSurface } from "./lib/use-craftmine-immersion";
 import { CraftmineOverlayControls } from "./components/CraftmineOverlayControls";
 import { CraftminePreviewControls } from "./components/CraftminePreviewControls";
-import { isCraftmineWorldWorkspace } from "./lib/craftmine-layout";
+import { isCraftmineWorldWorkspace, loadCraftmineLayout } from "./lib/craftmine-layout";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
 import { enterCraftmineMode } from "./lib/craftmine-mode";
@@ -206,7 +206,10 @@ function AppShell() {
   const projectPath = useAppStore((s) => s.workspace?.path ?? null);
 
   const [searchOpen, setSearchOpen] = useState(false);
-  const [modeChosen, setModeChosen] = useState(false);
+  // A persisted play layout is already an explicit player choice. Keeping the
+  // shortcut gate closed until the mode-entry dialog is selected made F2 and
+  // Escape inert after relaunching directly into an existing world.
+  const [modeChosen, setModeChosen] = useState(() => loadCraftmineLayout(localStorage).mode === "play");
   const [modeEntryOpen, setModeEntryOpen] = useState(true);
   const modeEntryOpenRef = useRef(true);
   modeEntryOpenRef.current = modeEntryOpen;
@@ -1910,7 +1913,7 @@ function AppShell() {
             inert={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}
             aria-hidden={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}>
             {craftmineImmersive && craftmineLayout.overlay !== "closed" && <CraftmineOverlayControls />}
-            {craftmineImmersive && <CraftminePreviewControls />}
+            {craftmineWorldFirst && <CraftminePreviewControls autoOpen={craftmineImmersive} />}
             {craftmineImmersive && craftmineImmersionError && <div role="alert" className="craftmine-immersion-error">{craftmineImmersionError}</div>}
             {craftmineWorldFirst && !craftmineImmersive && <CraftmineChatResize width={craftmineLayout.chatWidth} />}
             <WindowControls contained />

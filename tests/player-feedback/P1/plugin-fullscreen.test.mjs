@@ -20,7 +20,7 @@ const constants={PLUGIN_PANEL_EMBEDDED_ARGUMENT:'--embedded',PLUGIN_PANEL_LOCALE
 function fixture(pluginId='craftmine.world',viewId='world'){
  const views=[],actions=[],immersion=[],messages=[],window={isDestroyed:()=>false,contentView:{children:[],addChildView(v){this.children.push(v);},removeChildView(v){this.children=this.children.filter(x=>x!==v);}}};
  class View{constructor(options){this.options=options;this.webContents=Object.assign(new EventEmitter(),{ipc:new EventEmitter(),mainFrame:{},send:(...args)=>messages.push(args),isDestroyed:()=>false,loadURL:async()=>{},setWindowOpenHandler(){},close(){this.emit('destroyed');}});views.push(this);}setBounds(bounds){this.bounds=structuredClone(bounds);}}
- const Host=vm.runInNewContext(source+'\nPluginViewHost',{...constants,...immersionTools,OwnedViewClose,randomUUID,pathToFileURL,join,__dirname:'owned',WebContentsView:View,isHeadlessAcceptance:()=>true,session:{fromPartition:()=>({})},pluginSessionPartition:id=>id,applyPluginEgressPolicy(){},nativeFullscreenKeyDecision:vm.runInNewContext(helper+'\nnativeFullscreenKeyDecision')});
+ const Host=vm.runInNewContext(source+'\nPluginViewHost',{...constants,...immersionTools,raiseMainOverlay:()=>{},OwnedViewClose,randomUUID,pathToFileURL,join,__dirname:'owned',WebContentsView:View,isHeadlessAcceptance:()=>true,session:{fromPartition:()=>({})},pluginSessionPartition:id=>id,applyPluginEgressPolicy(){},nativeFullscreenKeyDecision:vm.runInNewContext(helper+'\nnativeFullscreenKeyDecision')});
  const host=new Host();host.onWorldFullscreenShortcut=a=>actions.push(a);host.onImmersionShortcut=a=>immersion.push(a);host.setWindow(window);host.setBounds({x:0,y:0,width:100,height:100});
  const request={pluginId,viewId,htmlPath:'D:/owned/world.html',locale:'en',theme:'dark'};host.open(request);host.setVisible(pluginId,viewId,true);
  const view=views[0],wc=view.webContents,scope=view.options.webPreferences.additionalArguments.find(x=>x.startsWith('--scope='))?.slice(8);
@@ -40,13 +40,13 @@ test('legacy immersion routes F2 Escape and F11 while reserving compact/full geo
  assert.equal(f.key({type:'keyDown',key:'F2'}),1);assert.deepEqual(f.immersion,['compact']);
  assert.equal(f.key({type:'keyDown',key:'F2',shift:true}),1);assert.deepEqual(f.immersion,['compact','full']);
  f.host.setImmersion({active:true,overlay:'compact',overlayBounds:{x:0,y:400,width:800,height:200}});
- assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:400});
+ assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:600});
  assert.equal(f.key({type:'keyDown',key:'Escape'}),0,'plugin menus handle Escape before the scoped preload exit');
  f.escape();assert.equal(f.immersion.at(-1),'escape');
  assert.equal(f.key(),1);assert.deepEqual(f.actions,['toggle']);
  assert.equal(f.key({type:'keyDown',key:'w'}),0,'workbench keys remain usable');assert.equal(f.key({type:'keyUp',key:'w'}),0);
  f.host.setImmersion({active:true,overlay:'full',overlayBounds:{x:600,y:0,width:200,height:600}});
- assert.deepEqual(f.view.bounds,{x:0,y:0,width:600,height:600});
+ assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:600});
  f.wc.emit('did-finish-load');assert.deepEqual(f.messages.filter(entry=>entry[0]===immersionTools.IMMERSION_INPUT_CHANNEL).at(-1),[immersionTools.IMMERSION_INPUT_CHANNEL,true]);
  f.host.setImmersion({active:true,overlay:'closed',overlayBounds:null});
  assert.deepEqual(f.view.bounds,{x:0,y:0,width:800,height:600});
