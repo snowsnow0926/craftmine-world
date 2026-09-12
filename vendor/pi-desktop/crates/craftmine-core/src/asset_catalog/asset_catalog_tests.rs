@@ -689,6 +689,24 @@ fn al2_search_filters_by_scope_kind_tags_and_paginates() -> Result<()> {
 }
 
 #[test]
+fn al2_search_multiword_is_case_insensitive_and_all_terms() -> Result<()> {
+    let (dir, _path, mut journal) = journal()?;
+    let root = source_root(dir.path())?;
+    let file = write_source(&root, "dog.glb", b"pet")?;
+    journal.asset_import(&import_args(&root, &file, "pet-import", "cw.module.pet-companion", 1, "pet/dog.glb", "model/gltf-binary", "model"))?;
+    journal.asset_annotate(&json!({"operationId":"pet-tags","assetId":"cw.module.pet-companion","displayName":"中文宠物伙伴","tags":["pet","companion"]}))?;
+    for query in ["pet companion", "  PET   companion  ", "中文 宠物"] {
+        let result = journal.asset_search(&json!({"scope":"local-library","query":query,"offset":0,"limit":10}))?;
+        assert_eq!(result["total"], 1, "query {query}");
+    }
+    let missing = journal.asset_search(&json!({"scope":"local-library","query":"pet missing","offset":0,"limit":10}))?;
+    assert_eq!(missing["total"], 0);
+    let page = journal.asset_search(&json!({"scope":"local-library","query":"pet","offset":0,"limit":1}))?;
+    assert_eq!(page["items"].as_array().unwrap().len(), 1);
+    Ok(())
+}
+
+#[test]
 fn al2_probe_and_preview_states_never_conflate() -> Result<()> {
     let (dir, _path, mut journal) = journal()?;
     let root = source_root(dir.path())?;
