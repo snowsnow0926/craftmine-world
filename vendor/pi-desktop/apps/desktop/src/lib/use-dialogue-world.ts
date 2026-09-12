@@ -4,9 +4,9 @@ import { craftmineWorldBridge, isWorldPlayable } from "./craftmine-worlds";
 import { enterCraftmineMode, openCraftmineModeEntry } from "./craftmine-mode";
 import { loadCraftmineLayout, saveCraftmineLayout } from "./craftmine-layout";
 import { pluginWorkPanelTab } from "./work-panel-tabs";
-import { writeComposerDraft } from "./composer-draft-cache";
+import { readLiveComposerDraft, writeComposerDraft } from "./composer-draft-cache";
 
-type DialogueWorld = { phase: "preparing" | "chat" | "error"; worldId?: string; sessionId?: string; error?: string; draft: string; queued: boolean; cancelling?: boolean; submitting?: boolean };
+type DialogueWorld = { phase: "preparing" | "chat" | "error"; worldId?: string; sessionId?: string; error?: string; draft: string; queued: boolean; cancelling?: boolean; submitting?: boolean; resultReady?:boolean };
 const DRAFT_KEY = "craftmine.dialogue-preparation-draft.v1";
 function retainedDraft(): string { try { return localStorage.getItem(DRAFT_KEY) ?? ""; } catch { return ""; } }
 function retainDraft(text: string): void { try { if(text)localStorage.setItem(DRAFT_KEY,text);else localStorage.removeItem(DRAFT_KEY); } catch { /* The live draft still survives cancellation. */ } }
@@ -160,16 +160,27 @@ export function useDialogueWorld() {
     })();
     preparing.current=task;await task;if(preparing.current===task)preparing.current=null;
   };
+  const enterResult = () => {
+    if(!state?.resultReady||state.phase!=="chat"||operation.current?.cancelled||useAppStore.getState().activeSessionId!==state.sessionId)return;
+    if(state.sessionId)readLiveComposerDraft(state.sessionId);
+    operation.current=null;setState(null);enterCraftmineMode("play",{explicit:true});
+    useAppStore.getState().showToast("世界已生成，F2 可继续对话",{variant:"success"});
+  };
   useEffect(() => {
     const applied = (event: Event) => {
       const detail = (event as CustomEvent).detail;
       if (state?.phase !== "chat" || operation.current?.cancelled || detail?.worldId !== state.worldId || detail?.sessionId !== state.sessionId || useAppStore.getState().activeSessionId !== state.sessionId) return;
       event.preventDefault();
+      const draft=state.sessionId?readLiveComposerDraft(state.sessionId):undefined;
+      if(!draft||draft.text.trim()||draft.fileReferences.length){
+        setState(value=>value&&!value.resultReady?{...value,resultReady:true}:value);
+        return;
+      }
       operation.current = null; setState(null); enterCraftmineMode("play", {explicit:true});
       useAppStore.getState().showToast("世界已生成，已进入试玩；F2 查看创作结果", {variant:"success"});
     };
     window.addEventListener("craftmine-dialogue-world-applied", applied);
     return () => window.removeEventListener("craftmine-dialogue-world-applied", applied);
   }, [state]);
-  return { state, start, cancel, setDraft, queue, editQueued, retry, canRetry:state?.phase==="error"&&!operation.current?.cancelled };
+  return { state, start, cancel, setDraft, queue, editQueued, retry, enterResult, canRetry:state?.phase==="error"&&!operation.current?.cancelled };
 }
