@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import type {CreationCapture} from './creation-target-service';
 import {CREATION_MANAGED_MIGRATIONS,type ManagedCreationMigration} from './creation-managed-migrations.ts';
+import {currentSceneObserverProfile,hasVersionedSceneObserverFiles,loadSceneObserverPins} from './creation-observer-pins.ts';
 type Data=Record<string,any>;
 type Context={projectId:string;sessionId:string;turnId:string};
 export type CreationMigrationAdvance={format:'craftmine.creation-migration-advance/1';revision:number;manifestHash:string;formalBuildId:string;formalSourceRevision:number;formalManifestHash:string;migrationId:string;receiptRevision:number;receiptManifestHash:string};
@@ -55,6 +56,19 @@ export function createCreationSourceMigration(deps:Dependencies){
   await deps.assertActive(context,capture);const worldId=capture.worldId;
   const formal=await deps.domain('godotRuntime.exportSource',{worldId});
   if(formal?.worldId!==worldId||formal.buildId!==capture.buildId||formal.baseId!=='creation-sandbox'||formal.sourceRevision!==capture.sourceRevision||!Array.isArray(formal.files)||typeof formal.contentOid!=='string')fail('CREATION_MIGRATION_FORMAL_CHANGED');
+  if(hasVersionedSceneObserverFiles(formal.files)){
+    const profile=currentSceneObserverProfile(formal.files,loadSceneObserverPins(deps.resourcesRoot));
+    // Never downgrade a mixed or incomplete versioned cohort through a legacy
+    // migration, including a legacy adapter accompanied by modern helpers.
+    if(!profile||profile==='legacy')fail('CREATION_MIGRATION_NEEDED');
+    // Current controller cohorts are not inputs to the legacy stock upgrader.
+    // Their complete source authority uses the same pins as live observations.
+    if(!creationProjectSelectorsSafe(await readFormal(worldId,formal,'project.godot')))fail('CREATION_MIGRATION_NEEDED');
+    await deps.assertActive(context,capture);
+    // No migration means no source write: an ordinary unadopted draft remains
+    // repairable through the normal source pin/check flow, as for legacy no-op.
+    return null;
+  }
   const resources=new Map<string,{text:string;sha256:string;bytes:number;accepted:string[]}>();
   const resource=(name:string)=>{let value=resources.get(name);if(!value){const text=fs.readFileSync(path.join(deps.resourcesRoot,name),'utf8').replace(/\r\n/g,'\n');if(Buffer.byteLength(text)>120000)fail('CREATION_MIGRATION_RESOURCE_INVALID');value={text,sha256:sha(text),bytes:Buffer.byteLength(text),accepted:[sha(text),sha(text.replace(/\n/g,'\r\n'))]};resources.set(name,value);}return value;};
   const targets=CREATION_MIGRATION_FILES.map(entry=>({...entry,...resource(entry.resource)}));
