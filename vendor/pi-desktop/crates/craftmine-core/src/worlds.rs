@@ -48,6 +48,10 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
         id TEXT PRIMARY KEY, title TEXT NOT NULL,
         revision INTEGER NOT NULL CHECK(revision >= 0),
         updated_at INTEGER NOT NULL, document TEXT NOT NULL, content_hash TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS craftmine_world_archives (
+        world_id TEXT PRIMARY KEY REFERENCES craftmine_worlds(id),
+        archived_at INTEGER NOT NULL
     );",
     )?;
     Ok(())
@@ -62,6 +66,12 @@ pub(super) fn validate_id(id: &str) -> Result<()> {
                 .all(|c| c.is_ascii_alphanumeric() || c == b'-' || c == b'_'),
         "INVALID_WORLD_ID"
     );
+    Ok(())
+}
+
+pub(super) fn assert_not_archived(db: &Connection, id: &str) -> Result<()> {
+    let archived: bool = db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_world_archives WHERE world_id=?1)", [id], |row| row.get(0))?;
+    ensure!(!archived, "WORLD_ARCHIVED");
     Ok(())
 }
 
@@ -166,7 +176,52 @@ impl TaskJournal {
     }
 
     pub fn world_list(&self) -> Result<Vec<WorldSummary>> {
-        list(&self.db)
+        list(&self.db, false)
+    }
+
+    pub fn world_archived_list(&self) -> Result<Vec<WorldSummary>> {
+        list(&self.db, true)
+    }
+
+    pub fn world_archive_status(&self, id: &str) -> Result<Value> {
+        read(&self.db, id)?;
+        let archived: bool = self.db.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_world_archives WHERE world_id=?1)", [id], |row| row.get(0))?;
+        Ok(serde_json::json!({"worldId":id,"archived":archived}))
+    }
+
+    /// Reversible player removal. No world, source, session, job or Git history
+    /// is deleted. Admission and CAS run against durable facts, not UI labels.
+    pub fn world_archive_failed(&mut self, args: &Value) -> Result<Value> {
+        #[derive(Deserialize)]
+        #[serde(rename_all="camelCase", deny_unknown_fields)]
+        struct Input { id: String, revision: u64, base_build: String }
+        let input: Input = serde_json::from_value(args.clone())?;
+        if self.world_archive_status(&input.id)?["archived"] == true {
+            return self.world_archive_status(&input.id);
+        }
+        let initialization = self.godot_world_init_status(&serde_json::json!({"worldId":input.id}))?;
+        ensure!(matches!(initialization["status"].as_str(),Some("failed"|"blocked")), "WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION");
+        let tx = self.db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        let world = read(&tx, &input.id)?;
+        ensure!(world.summary.revision == input.revision, "WORLD_REVISION_CONFLICT");
+        ensure!(world.world.build["id"] == input.base_build, "WORLD_BUILD_CONFLICT");
+        super::applications::assert_idle(&tx, &input.id)?;
+        super::godot_applications::assert_idle(&tx, &input.id)?;
+        let busy: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_world_leases WHERE world_id=?1)
+            OR EXISTS(SELECT 1 FROM craftmine_godot_jobs WHERE world_id=?1 AND status IN ('queued','claimed','running'))", [&input.id], |row| row.get(0))?;
+        ensure!(!busy, "WORLD_REMOVAL_BUSY");
+        // Re-check the stored init row within the same write transaction.
+        let failed: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_world_init WHERE world_id=?1 AND status IN ('failed','blocked'))", [&input.id], |row| row.get(0))?;
+        ensure!(failed, "WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION");
+        tx.execute("INSERT INTO craftmine_world_archives(world_id,archived_at) VALUES(?1,?2)",params![input.id,timestamp()?])?;
+        tx.commit()?;
+        self.world_archive_status(&input.id)
+    }
+
+    pub fn world_restore_archived(&mut self, id: &str) -> Result<Value> {
+        read(&self.db, id)?;
+        self.db.execute("DELETE FROM craftmine_world_archives WHERE world_id=?1", [id])?;
+        self.world_archive_status(id)
     }
 }
 
@@ -184,11 +239,12 @@ pub(super) fn insert(db: &Connection, id: &str, title: &str, world: &WorldDocume
     Ok(())
 }
 
-fn list(db: &Connection) -> Result<Vec<WorldSummary>> {
+fn list(db: &Connection, archived: bool) -> Result<Vec<WorldSummary>> {
     let mut statement = db.prepare(
-        "SELECT id,title,revision,updated_at,document,content_hash FROM craftmine_worlds ORDER BY updated_at DESC,id",
+        "SELECT id,title,revision,updated_at,document,content_hash FROM craftmine_worlds
+         WHERE EXISTS(SELECT 1 FROM craftmine_world_archives WHERE world_id=craftmine_worlds.id)=?1 ORDER BY updated_at DESC,id",
     )?;
-    let rows = statement.query_map([], |row| {
+    let rows = statement.query_map([archived], |row| {
         Ok((
             row.get::<_, String>(0)?,
             row.get::<_, String>(1)?,
@@ -234,6 +290,7 @@ impl TaskJournal {
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         let mut current = read(&tx, id)?;
+        assert_not_archived(&tx, id)?;
         super::applications::assert_idle(&tx, id)?;
         if current.world.snapshot["format"] == super::godot_runtime::PROGRESS_FORMAT {
             super::godot_applications::assert_idle(&tx, id)?;
@@ -283,6 +340,10 @@ impl TaskJournal {
         Ok(result)
     }
 }
+
+#[cfg(test)]
+#[path = "world_archive_tests.rs"]
+mod archive_tests;
 
 #[cfg(test)]
 mod tests {

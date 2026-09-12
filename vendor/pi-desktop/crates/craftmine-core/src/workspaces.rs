@@ -123,6 +123,7 @@ pub(super) fn inspect(db: &Connection, ctx: &WorkspaceContext) -> Result<Workspa
 }
 
 pub(super) fn assert_live(db: &Connection, snapshot: &WorkspaceSnapshot) -> Result<()> {
+    worlds::assert_not_archived(db, &snapshot.world_id)?;
     super::applications::assert_idle(db, &snapshot.world_id)?;
     ensure!(snapshot.task.status == "running", "TASK_INACTIVE");
     let binding = &snapshot.task.binding;
@@ -289,6 +290,7 @@ impl TaskJournal {
             .map(|p| p.1.as_str())
             .unwrap_or(selected_world);
         let world = worlds::read(&tx, world_id)?;
+        worlds::assert_not_archived(&tx, world_id)?;
         super::applications::assert_idle(&tx, world_id)?;
         let base = world.world.build["id"]
             .as_str()

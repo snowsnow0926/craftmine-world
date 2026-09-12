@@ -143,6 +143,7 @@ export type CraftmineWorldCapabilities = {
   switch: boolean | null;
   /** true only when the host reports it can run creation recovery actions. */
   createActions: boolean;
+  archiveFailed?: boolean;
 };
 
 export type CraftmineWorldCreateInput = {
@@ -399,6 +400,7 @@ export function parseWorldCapabilities(value: unknown): CraftmineWorldCapabiliti
     create: raw.create !== false,
     switch: typeof raw.switch === "boolean" ? raw.switch : null,
     createActions: raw.createActions === true,
+    archiveFailed: raw.archiveFailed === true,
   };
 }
 
@@ -723,6 +725,7 @@ export function worldErrorMessage(raw: unknown, lang: CraftmineLang): string {
       "The panel selection and the host world disagree.",
     ],
     WORLD_NOT_FOUND: ["这个世界已不存在。", "That world no longer exists."],
+    WORLD_ARCHIVED: ["这个世界已删除，可在“最近删除”中恢复。", "This world was deleted. Restore it from Recently deleted."],
     CRAFTMINE_WORLD_BINDING_MISMATCH: [
       "任务绑定的世界与请求的世界不一致，未做改动。",
       "The task world and the requested world differ; nothing changed.",

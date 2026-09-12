@@ -218,6 +218,7 @@ import { registerPluginDevTools } from "./plugin-dev-tools";
 import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
+import { createCraftmineWorldRemoval } from "./craftmine-world-removal";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import {createCraftmineViewCaptureBridge, type ViewCaptureModel} from "./craftmine-view-capture";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
@@ -619,6 +620,9 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 
 const pluginPanels = new PluginPanelHost(
   async (pluginId, channel, payload) => {
+    if (pluginId === "craftmine.world" && worldRemoval.busy && ["world.open", "world.create", "world.copy", "world.creationRetry", "world.importLegacy"].includes(channel)
+      && !(channel === "world.open" && worldRemoval.permitsOpen((payload as any)?.id))) throw Error("WORLD_REMOVAL_BUSY");
+    if (pluginId === "craftmine.world" && channel === "world.open" && (await plugins.requestCraftmineHost("world.archiveStatus", {id: (payload as any)?.id}) as any).archived) throw Error("WORLD_ARCHIVED");
     if (pluginId === "craftmine.world" && channel === "world.open") rearmCollisionMaintenance((payload as any)?.id);
     if (pluginId === "craftmine.world" && channel === "world.creationRetry") rearmCollisionMaintenance((payload as any)?.worldId);
     if (pluginId === "craftmine.world" && interruptsCreationGroundMaintenance(channel, payload as any, godotWorld.instance?.worldId ?? null)) {
@@ -1549,6 +1553,27 @@ godotCreation = createGodotWorldFactory({
     if (!materializeBase) throw new Error("GODOT_MATERIALIZER_UNAVAILABLE");
     return materializeBase(input);
   },
+});
+async function navigateCraftmineManagedWorld(request: Record<string, unknown>): Promise<unknown> {
+  const loaded = plugins.getLoaded("craftmine.world");
+  const view = loaded?.manifest.contributes?.views?.find(candidate => candidate.id === "world");
+  if (!loaded) throw Error("WORLD_PLUGIN_NOT_LOADED");
+  if (!view) throw Error("WORLD_VIEW_DECLARATION_MISSING");
+  if (!loaded.permissions.has("ui.view")) throw Error("WORLD_VIEW_PERMISSION_REQUIRED");
+  if (!pluginActiveInProject("craftmine.world", currentWorkspacePath())) throw Error("WORLD_PLUGIN_SCOPE_DISABLED");
+  pluginViews.open({pluginId: "craftmine.world", viewId: "world", locale: updaterLocale,
+    theme: pluginPanelTheme, htmlPath: join(loaded.path, view.entry), netDomains: loaded.manifest.net?.domains});
+  return pluginViews.navigateCraftmine(request);
+}
+const worldRemoval = createCraftmineWorldRemoval({
+  domain: (method, payload) => plugins.requestCraftmineHost(method, payload),
+  list: async () => await godotPanel.invoke("world.list", {}) as any,
+  selection: godotSelection,
+  navigate: worldId => navigateCraftmineManagedWorld({operation: "switch", id: worldId}),
+  createFallback: async () => await plugins.invokePanelBridge("craftmine.world", "world.create", {title: updaterLocale === "zh-CN" ? "我的新世界" : "My new world", baseId: "craftmine-web/5", starterId: "blank", activate: false}) as any,
+  blocked: worldId => activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotCopies.busy || godotExportBusy || profileRestore || godotRestores.running(worldId) || godotInitializer.running(worldId) ? "WORLD_REMOVAL_BUSY" : null,
+  settleMaintenance: stopWorldMaintenance,
+  changed: () => {sendToRenderer(IPC.event.craftmineWorldChanged, {});pluginViews.broadcast("craftmine-world-list-changed", {});},
 });
 const bootTiming = new BootTiming((message, data) => {
   logger.app("timing", "info", message, data ? { data } : undefined);
@@ -6761,25 +6786,20 @@ function registerIpc() {
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
       invoke: async (channel, params) => {
+        if (["world.archiveFailed", "world.restoreArchived", "world.archivedList"].includes(channel)) return worldRemoval.invoke(channel, params);
+        if (channel === "world.createOptions") return {...await godotPanel.invoke(channel, params) as any, archiveFailed: true};
         if (channel === "world.creationRetry") rearmCollisionMaintenance(params.worldId);
         if (["world.creationRetry", "godot.historyCreateBranch", "godot.historySaveSource", "godot.historyCheck"].includes(channel)) await stopWorldMaintenance();
         return channel === "world.copyStatus" ? godotCopies.status(params) : channel.startsWith("godot.history")
           ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params);
       },
       navigate: async (request) => {
+        if (worldRemoval.busy) throw Error("WORLD_REMOVAL_BUSY");
         if (request.operation === "switch") rearmCollisionMaintenance(request.id);
         if (interruptsCreationGroundMaintenance(`world.${request.operation === "switch" ? "open" : request.operation}`, request, godotWorld.instance?.worldId ?? null)) await stopWorldMaintenance();
         // World creation from the main sidebar also works before its work panel
         // has mounted. The retained view still owns the save/switch sequence.
-        const loaded = plugins.getLoaded("craftmine.world");
-        const view = loaded?.manifest.contributes?.views?.find(candidate => candidate.id === "world");
-        if (!loaded) throw Error("WORLD_PLUGIN_NOT_LOADED");
-        if (!view) throw Error("WORLD_VIEW_DECLARATION_MISSING");
-        if (!loaded.permissions.has("ui.view")) throw Error("WORLD_VIEW_PERMISSION_REQUIRED");
-        if (!pluginActiveInProject("craftmine.world", currentWorkspacePath())) throw Error("WORLD_PLUGIN_SCOPE_DISABLED");
-        pluginViews.open({pluginId: "craftmine.world", viewId: "world", locale: updaterLocale,
-          theme: pluginPanelTheme, htmlPath: join(loaded.path, view.entry), netDomains: loaded.manifest.net?.domains});
-        return pluginViews.navigateCraftmine(request);
+        return navigateCraftmineManagedWorld(request);
       },
       showSurface: (request) => pluginViews.showCraftmineSurface(request),
       pickDirectory: () => pluginViews.pickCraftmineDirectory(),

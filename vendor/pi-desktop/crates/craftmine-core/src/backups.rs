@@ -31,6 +31,7 @@ const PACKAGE_TABLES: &[&str] = &[
 ];
 const TABLES: &[&str] = &[
     "craftmine_worlds",
+    "craftmine_world_archives",
     "craftmine_tasks",
     "craftmine_receipts",
     "craftmine_session_worlds",
@@ -104,6 +105,7 @@ const TABLES: &[&str] = &[
 /// archive is padded with the exact live column list and no rows, so restoring
 /// it keeps the current shape instead of failing the whole restore.
 const ADDITIVE_TABLES: &[&str] = &[
+    "craftmine_world_archives",
     "craftmine_godot_projects",
     "craftmine_godot_revisions",
     "craftmine_godot_receipts",
