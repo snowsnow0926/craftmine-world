@@ -60,7 +60,7 @@ import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
-import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance } from "./craftmine-headless";
+import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
 import { NO_IMMERSION, parseImmersion, immersionShortcut } from "../../shared/craftmine-immersion";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { LocalVoiceInputService } from "./local-voice-input";
@@ -238,6 +238,7 @@ import {
 } from "./godot-world-creation";
 import {createGodotWorldInitializer} from "./godot-world-initialization";
 import {initialLoadBridgeResource} from "./godot-initial-load-repair";
+import {creationAllowsFullAuto} from "./creation-permission-mode";
 import {createAssetPreviewHost} from "../craftmine-assets/host-service.mjs";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { pathToFileURL } from "node:url";
@@ -1176,12 +1177,10 @@ const dataDir =
   process.env.PI_DESKTOP_DATA_DIR || join(homedir(), ".pi-desktop");
 
 async function creationFullAuto(sessionId:string|null):Promise<boolean>{
-  if(!host)return false;
+  if(!host || !sessionId)return false;
   const settings=await host.call<any>("settings.get");
-  if(settings.defaultPermissionMode==="auto")return true;
-  if(!sessionId)return false;
   const detail=await host.call<{session?:any}>("session.get",{id:sessionId});
-  return detail.session?.permissionMode==="auto";
+  return creationAllowsFullAuto(detail.session, settings.defaultPermissionMode);
 }
 const creationTargets=createCreationTargetService({
   fullAuto:session=>creationFullAuto(session.sessionId),
@@ -3406,7 +3405,7 @@ function createPluginLauncherWindow(): Promise<BrowserWindow> {
       ...(process.platform === "darwin" ? { type: "panel" as const } : {}),
       webPreferences: {
         preload: join(__dirname, "../preload/index.cjs"),
-        offscreen: !!headlessAcceptance,
+        offscreen: isOffscreenAcceptance(),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
@@ -3628,7 +3627,7 @@ async function createWindow() {
         }),
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),
-      offscreen: !!headlessAcceptance,
+      offscreen: isOffscreenAcceptance(),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,

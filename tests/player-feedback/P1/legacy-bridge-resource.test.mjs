@@ -9,7 +9,7 @@ register(new URL('../../../vendor/pi-desktop/apps/desktop/test/helpers/ts-import
 const {initialLoadBridgeRepair:repair,initialLoadBridgeResource:resource}=await import('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-initial-load-repair.ts');
 import {loadRuntimeDistribution,stageRuntimeSourceSnapshot} from '../../../desktop/delivery/lib/runtime-distribution.mjs';
 const root=path.resolve(import.meta.dirname,'../../..'),sha=b=>createHash('sha256').update(b).digest('hex');
-const old='318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76',fixed='faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2',current='418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3';
+const old='318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76',fixed='faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2',current='58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3';
 const bytes=hash=>fs.readFileSync(path.join(root,'desktop/godot',resource(hash)));
 test('old source selects the exact historical dependency-compatible resource; current source is a checked no-op',()=>{
  assert.equal(sha(bytes(old)),fixed);assert.deepEqual(bytes(old),execFileSync('git',['show','487dc779:desktop/godot/shared/runtime_bridge.gd'],{cwd:root,windowsHide:true}));

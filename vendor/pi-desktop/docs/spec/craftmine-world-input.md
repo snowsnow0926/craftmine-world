@@ -50,6 +50,8 @@ updates preserve this background attachment. Preparing worlds are excluded from
 native input ownership and remain below the application renderer, including when
 closed play normally lowers the application renderer. Explicit preview or
 promotion releases that background designation. Disposal removes the native view.
+World navigation also sets `focusOnNavigation: false`: Chromium's internal
+navigation focus cannot bypass the host's later displayed-owner handoff.
 
 `cancelStaging(worldId)` only cancels an in-flight stage attempt for that world.
 It marks cancellation before runtime creation, aborts an owned runtime's pending
@@ -67,3 +69,32 @@ layout changes during restore, exact snapshot recovery, preview, promotion, and
 native retirement. `--cancel-on-load` additionally proves early cancellation,
 cancellation during real load, preserved formal instance/snapshot, and successful
 retry. No original player profile writes occur.
+
+## Full application normal-rendering acceptance
+
+The already protected `headless-profile.json` marker may opt into
+`rendering: "normal"`. The same isolated-directory, token, and connected parent
+IPC requirements still apply. Only renderer construction changes: the application,
+plugin view, and formal/candidate world use normal compositing. Build verifiers
+retain their independent offscreen rendering. Omitted rendering preserves the
+existing offscreen test behavior; unknown rendering values are rejected.
+
+Normal acceptance does not disable any activation, focus, keyboard/mouse,
+external dialog, notification, or Pointer Lock guard. Every window remains
+hidden and unfocusable. It does not force continuous frames on the application
+renderer: overlay tests must still tolerate an occluded application's suspended
+animation callbacks. An offscreen-only capture API remains offscreen-only; use
+the ordinary scope-checked product capture route for normal-rendering evidence.
+
+`tests/fb03-input-normal-native.mjs <app> <isolated-run> [--development]` verifies
+the complete application's selected FB03 world, actual native attachment,
+Godot-originated F2, main-originated Shift+F2, Escape, retained runtime identity,
+cursor restoration, and ordered shutdown. The truly hidden normal window may
+need its initial layout painted before this test can begin: it records one
+`capturePage({stayHidden:true})` attempt while temporarily disabling the main
+renderer throttle, then restores the original policy. A failed image readback
+is reported as such; it is never counted as pixel evidence. Actual native world
+attachment is required separately. After that prerequisite, main animation
+callbacks are deliberately held and no capture or wake-up assists F2's native
+layer transition. This isolates the overlay scheduling regression from the
+hidden test window's lack of normal display-driven startup paints.

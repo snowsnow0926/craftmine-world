@@ -4,6 +4,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import type {CreationCapture} from './creation-target-service';
 import {CREATION_MANAGED_MIGRATIONS,type ManagedCreationMigration} from './creation-managed-migrations.ts';
 import {currentSceneObserverProfile,hasVersionedSceneObserverFiles,loadSceneObserverPins} from './creation-observer-pins.ts';
+import {CREATION_GROUND_CURRENT_PINS,planCreationGroundUpgrade} from './creation-ground-upgrade.ts';
 type Data=Record<string,any>;
 type Context={projectId:string;sessionId:string;turnId:string};
 export type CreationMigrationAdvance={format:'craftmine.creation-migration-advance/1';revision:number;manifestHash:string;formalBuildId:string;formalSourceRevision:number;formalManifestHash:string;migrationId:string;receiptRevision:number;receiptManifestHash:string};
@@ -114,25 +115,61 @@ export function createCreationSourceMigration(deps:Dependencies){
   }
   if(!operations.length)return null;
   if(!creationProjectSelectorsSafe(await readFormal(worldId,formal,'project.godot')))fail('CREATION_MIGRATION_NEEDED');
-  const expected=formal.files.map((file:Data)=>{const operation=operations.find(op=>op.path===file.path);return operation?{...file,sha256:sha(operation.text),bytes:Buffer.byteLength(operation.text)}:file;});
-  for(const op of operations)if(!formal.files.some((file:Data)=>file.path===op.path))expected.push({path:op.path,sha256:sha(op.text),bytes:Buffer.byteLength(op.text)});
   const legacyHelpers=destination?.files.some(entry=>!targets.some(target=>target.source===entry.source));
   const migrationIdentity=managed?[worldId,capture.buildId,'managed-compatible',managed]:[worldId,capture.buildId,targets.map(t=>[t.source,t.sha256]),...(legacyHelpers?[destination]:[])];
   const migrationId=sha(JSON.stringify(migrationIdentity)),recordPath=path.join(deps.directory,migrationId+'.json');
   let record:any=null;if(fs.existsSync(recordPath)){if(fs.statSync(recordPath).size>1024*1024)fail('CREATION_MIGRATION_RECORD_INVALID');record=JSON.parse(fs.readFileSync(recordPath,'utf8'));if(record?.format!=='craftmine.creation-source-migration/1'||record.worldId!==worldId||record.migrationId!==migrationId||record.formalBuildId!==capture.buildId)fail('CREATION_MIGRATION_RECORD_INVALID');}
   const source=await currentIndex(context,worldId);await deps.assertActive(context,capture);
+  // Maintenance intentionally advances formal on an isolated branch while
+  // retaining the player's main draft. Requiring both entire trees to match
+  // would make the next ordinary request impossible. Merge only trusted file
+  // operations into the current draft, with a CAS for every affected path.
+  const protectedPaths=new Set([...targets.slice(0,3).map(entry=>entry.source),...compatibility.flatMap(policy=>policy.files.map(entry=>entry.source))]);
+  for(const name of [...protectedPaths,'project.godot']){
+    if(operations.some(op=>op.path===name))continue;
+    const before=formal.files.find((file:Data)=>file.path===name),draft=source.files.find((file:Data)=>file.path===name);
+    if(before?.sha256!==draft?.sha256||before?.bytes!==draft?.bytes)fail('CREATION_MIGRATION_DRAFT_CONFLICT');
+  }
+  // Carry an already-adopted stock lighting repair into an older stock draft.
+  // This is exact released-file recognition, never a text/snippet replacement
+  // in authored gameplay code. Other draft files (including pets) are retained.
+  const formalGround=formal.files.find((file:Data)=>file.path==='scripts/creation_world.gd');
+  if(formalGround&&CREATION_GROUND_CURRENT_PINS.includes(formalGround.sha256)&&!operations.some(op=>op.path===formalGround.path)){
+    const ground=planCreationGroundUpgrade({baseId:'creation-sandbox',formalFiles:source.files,draftFiles:source.files,resourcesRoot:deps.resourcesRoot});
+    if(ground.status==='planned')operations.push(...ground.operations);
+  }
+  const expected=source.files.map((file:Data)=>{
+    const operation=operations.find(op=>op.path===file.path);
+    if(!operation)return file;
+    const destinationHash=sha(operation.text),destinationBytes=Buffer.byteLength(operation.text);
+    if(file.sha256!==operation.expectedHash&&(file.sha256!==destinationHash||file.bytes!==destinationBytes))fail('CREATION_MIGRATION_DRAFT_CONFLICT');
+    return {...file,sha256:destinationHash,bytes:destinationBytes};
+  });
+  for(const op of operations)if(!source.files.some((file:Data)=>file.path===op.path)){
+    if(op.expectedHash!==null)fail('CREATION_MIGRATION_DRAFT_CONFLICT');
+    expected.push({path:op.path,sha256:sha(op.text),bytes:Buffer.byteLength(op.text)});
+  }
+  // A standalone observer-upgrade action does not authorize adopting unrelated
+  // player draft work. Only an ordinary creative request continues that draft.
+  if(capture.observerUpgradeOnly){
+    const formalExpected=formal.files.map((file:Data)=>{const op=operations.find(operation=>operation.path===file.path);return op?{...file,sha256:sha(op.text),bytes:Buffer.byteLength(op.text)}:file;});
+    for(const op of operations)if(!formal.files.some((file:Data)=>file.path===op.path))formalExpected.push({path:op.path,sha256:sha(op.text),bytes:Buffer.byteLength(op.text)});
+    if(!sameFiles(expected,formalExpected))fail('CREATION_MIGRATION_DRAFT_CONFLICT');
+  }
   const receiptLookup=async()=>record?deps.domain('godotProject.receipt',{binding:record.binding,worldId,toolCallId:record.request.toolCallId,method:'godotProject.patch',request:record.request}):null;
   let receipt=await receiptLookup();
   if(sameFiles(source.files,expected)){
     if(!receipt)fail('CREATION_MIGRATION_RECEIPT_REQUIRED');
   }else{
-    if(!sameFiles(source.files,formal.files))fail('CREATION_MIGRATION_DRAFT_CONFLICT');
+    // An atomic migration cannot have partly appeared without its original
+    // receipt. Every write still starts at its pinned source hash.
+    if(operations.some(op=>source.files.find((file:Data)=>file.path===op.path)?.sha256!==op.expectedHash&&!(op.expectedHash===null&&!source.files.some((file:Data)=>file.path===op.path))))fail('CREATION_MIGRATION_DRAFT_CONFLICT');
     if(receipt)fail('CREATION_MIGRATION_RECEIPT_SOURCE_CHANGED');
     const task=await deps.domain('task.context',{context});if(!task?.binding||task.binding.taskId!==source.currentTaskId)fail('CREATION_MIGRATION_TASK_CHANGED');
     const toolCallId='host-stock-upgrade-'+migrationId;
     const request:Data={context,worldId,toolCallId,revision:source.revision,manifestHash:source.manifestHash,operations};
     if(source.content){const c=source.content;if(c.branchId!=='main'||typeof c.repoId!=='string'||!/^[a-f0-9]{40,64}$/.test(c.contentOid))fail('CREATION_MIGRATION_SOURCE_MISMATCH');request.operation={operationId:toolCallId,worldId,repoId:c.repoId,branchId:'main',expectedHeadOid:c.contentOid,expectedAppliedOid:null,expectedProgressRevision:null};}
-    record={format:'craftmine.creation-source-migration/1',worldId,migrationId,formalBuildId:capture.buildId,...(destination?{migrationMode:managed?'managed-compatible':'legacy-coupled',compatibilityId:(managed??destination).id,compatibility:managed??destination}:{}),binding:task.binding,request};write(recordPath,record);
+    record={format:'craftmine.creation-source-migration/1',worldId,migrationId,formalBuildId:capture.buildId,sourceBaseline:{revision:source.revision,manifestHash:source.manifestHash,content:source.content??null,files:source.files},expectedFiles:expected,...(destination?{migrationMode:managed?'managed-compatible':'legacy-coupled',compatibilityId:(managed??destination).id,compatibility:managed??destination}:{}),binding:task.binding,request};write(recordPath,record);
     try{await deps.assertActive(context,capture);receipt=await deps.domain('godotProject.patch',request);}catch(error){receipt=await receiptLookup();if(!receipt)throw error;}
   }
   const after=await currentIndex(context,worldId);await deps.assertActive(context,capture);
