@@ -6,6 +6,7 @@ import {createRequire,register} from 'node:module';import {playwright,browserOpt
 import {createCraftmineWorldRemoval} from '../vendor/pi-desktop/apps/desktop/electron/main/craftmine-world-removal.ts';
 register(new URL('../vendor/pi-desktop/apps/desktop/test/helpers/ts-import-hooks.mjs',import.meta.url));
 const {invokeCraftmineNavigation}=await import('../vendor/pi-desktop/apps/desktop/electron/main/craftmine-navigation-host.ts');
+const {PluginRuntime}=await import('../vendor/pi-desktop/apps/desktop/electron/main/plugin-runtime.ts');
 const root=path.resolve(import.meta.dirname,'..'),desktop=path.join(root,'vendor/pi-desktop/apps/desktop'),require=createRequire(path.join(desktop,'package.json'));
 const out=fs.mkdtempSync(path.join(root,'test-results/fb03-world-removal-')),report={out,checks:[],errors:[],scope:'actual React list/controller, navigation service and Rust persistence; no native engine claim'};
 const coreFile=path.resolve(process.env.CRAFTMINE_CORE_BINARY??path.join(root,'test-results/cargo-target/debug/craftmine-core.exe'));
@@ -15,7 +16,12 @@ const {createHostRequests}=createRequire(import.meta.url)(path.join(out,'host-ro
 const core=new CoreClient(coreFile,path.join(out,'domain'));await core.start();
 let selected='healthy',blocked=false;const calls=[],selectionFile=path.join(out,'selection.json');
 const select=id=>{selected=id;fs.writeFileSync(selectionFile,JSON.stringify({activeWorldId:id}));};select(selected);
-const host=createHostRequests(core,{getSettings:async()=>({activeWorldId:selected})});
+const privateRouter=createHostRequests(core,{getSettings:async()=>({activeWorldId:selected})});
+const pluginRuntime=new PluginRuntime({});
+const loaded={manifest:{id:'craftmine.world'},pending:new Map(),nextCallId:1,child:{postMessage(message){
+  Promise.resolve().then(()=>privateRouter(message.payload.method,message.payload.params)).then(value=>pluginRuntime.handleChildMessage(loaded,{t:'res',id:message.id,ok:true,value}),error=>pluginRuntime.handleChildMessage(loaded,{t:'res',id:message.id,ok:false,error:{code:error.code??'FAILED',message:error.message}}));
+}}};pluginRuntime.loaded.set('craftmine.world',loaded);
+const host=(method,params)=>pluginRuntime.requestCraftmineHost(method,params);
 const worldId='failed-world',context={projectId:'archive-test',sessionId:'failed-session',turnId:'failed-turn'};
 const snapshot={format:'craftmine.godot-progress/1',worldId,baseId:'first-person',baseVersion:'0.1.0',stateVersion:1,body:{worldId,player:{position:[0,0,0]},inventory:{}}};
 const healthyWorld={build:{id:'healthy-build',scene:{format:'craftmine.scene/3',objects:[]}},snapshot:{format:'craftmine.progress/1',player:{x:.5,y:6,z:12.5,yaw:0,pitch:0}},extensions:[]};
