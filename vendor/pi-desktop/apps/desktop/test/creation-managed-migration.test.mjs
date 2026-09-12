@@ -136,11 +136,11 @@ test('compatible migration with added helper recovers lost reply and subsequent 
  await assert.rejects(f.execute()(ctx,f.capture),/LOST_BIND/);
  const advance=await f.execute()({...ctx,turnId:'turn-b'},f.capture);
  assert.equal(f.patches(),1);assert.equal(advance.revision,11);assertGameplayPreserved(f);
- f.dirty();await assert.rejects(f.execute()({...ctx,turnId:'turn-c'},f.capture),/DRAFT_CONFLICT/);assert.equal(f.patches(),1);
+ f.dirty();const before=new Map(f.live());await f.execute()({...ctx,turnId:'turn-c'},f.capture);assert.deepEqual(f.live(),before);assert.equal(f.patches(),1);
 });
-test('unrelated unapplied changes fail CAS before any managed write',async t=>{
+test('unrelated unapplied changes remain intact when exact managed files are migrated',async t=>{
  const f=fixture(t,{helperState:'missing'});f.dirty();const before=new Map(f.live());
- await assert.rejects(f.execute()(ctx,f.capture),/DRAFT_CONFLICT/);assert.equal(f.patches(),0);assert.deepEqual(f.live(),before);
+ await f.execute()(ctx,f.capture);assert.equal(f.patches(),1);for(const [name,text]of before)if(name!=='craftmine_shared/base_adapter.gd')assert.equal(f.live().get(name),text);
 });
 if(process.env.CRAFTMINE_REAL_MIGRATION_SOURCE)test('actual adopted PET source preserves authored bytes while updating only reviewed managed files',async t=>{
  const source=process.env.CRAFTMINE_REAL_MIGRATION_SOURCE;assert.ok(path.isAbsolute(source));
