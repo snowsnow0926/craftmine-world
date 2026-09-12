@@ -79,9 +79,10 @@
       "evidence": [
         "tests/creation-change-summary.test.mjs",
         "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
-        "docs/spec/godot-module-instance-persistence-audit.md"
+        "docs/spec/godot-module-instance-persistence-audit.md",
+        "docs/GODOT_AGENT_MODULE_PLAYER_RESULT_2026-09-12.md"
       ],
-      "next": "Native recolor preservation already observed; imported module configure is transient in real reconstruction diagnostic, needs instance source persistence plus independent shared-material scope validation"
+      "next": "Ordinary model changed only A's three source parameters; real adoption/cold and peer blocking/local A traversal passed. Shared-material scope and native numeric runtime transform observation remain."
     },
     {
       "id": "GA09",
@@ -220,9 +221,11 @@
         "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
         "docs/specs/godot-agent-gu6-kenney-modules.md",
         "docs/specs/godot-agent-gu6-formal-packages.md",
-        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md"
+        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md",
+        "docs/specs/godot-agent-gu6-parameter-declarations.md",
+        "docs/GODOT_AGENT_MODULE_PLAYER_RESULT_2026-09-12.md"
       ],
-      "next": "Sealed a9 source-catalog install/check/adoption/cold reopen and exact-op recovery pass; module parameters, arbitrary progress initialization and ordinary-model reuse remain"
+      "next": "Original CP0 declarations survive actual Core second-world source roundtrip; ordinary model edits adopted modules in one world. Full second-world runtime/state initialization and ordinary-model package selection remain."
     },
     {
       "id": "GA24",
@@ -249,9 +252,10 @@
       "status": "partial",
       "evidence": [
         "tests/godot-scenario-collector.test.mjs",
-        "docs/specs/godot-agent-gu6-formal-packages.md"
+        "docs/specs/godot-agent-gu6-formal-packages.md",
+        "docs/GODOT_ORIGINAL_WORLD_RECOVERY_2026-09-12.md"
       ],
-      "next": "Separate actual formal-package cancel closes cleanly; full crash/late-result/formal-save recovery remains"
+      "next": "Original failed ruins world recovered by normal retry on sealed05ad with same source, preserved failed output and full save/cold. Native crash cause unknown; broader cancellation/late-result recovery remains."
     },
     {
       "id": "GA27",
@@ -261,9 +265,10 @@
       "evidence": [
         "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json",
         "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
-        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md"
+        "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md",
+        "docs/GODOT_ORIGINAL_WORLD_RECOVERY_2026-09-12.md"
       ],
-      "next": "Sealed2a scoped old-base matrix ran: first-person/top-down/mining gameplay and full save/cold passed, side-view failed two native imports0xc0000005. See docs/evidence/ga27-legacy-bases-20260912/archive.json; same-source diagnosis and recovery remain, not all templates or all gameplay proven"
+      "next": "Original sealed2a matrix remains3/4. Side-view recovered in sealed05ad with actual gameplay/full cold equality; complete same-latest-package four-base matrix and all-template scope remain."
     },
     {
       "id": "GA28",
