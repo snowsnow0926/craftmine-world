@@ -16,10 +16,8 @@ import { enterCraftmineMode } from "../../lib/craftmine-mode";
 /**
  * Create flow: base, start point, name. Only options the host reports as
  * delivered are selectable; planned or unreported choices stay visible but
- * disabled so the screen never promises an unavailable base. Submitting a base
- * that needs initialization closes the form once the host registered the world;
- * the world list then shows the host's real initialization progress, and the
- * world is opened only after the host reports it ready.
+ * disabled so the screen never promises an unavailable base. Keep registered
+ * attributes fixed while retrying preparation or entering the same world.
  */
 export function WorldCreatePanel({
   controller,
@@ -33,18 +31,20 @@ export function WorldCreatePanel({
   onCreated?: (worldId: string) => Promise<void>;
 }) {
   const bases = controller.capabilities?.bases ?? [];
-  const [baseId, setBaseId] = useState(() => bases.find((base) => base.delivered)?.id ?? "");
+  const retainedAttempt = controller.createAttempt;
+  const [baseId, setBaseId] = useState(() => retainedAttempt?.input.baseId ?? bases.find((base) => base.delivered)?.id ?? "");
   const starters = worldStartersForBase(controller.capabilities, baseId);
-  const [starterId, setStarterId] = useState("");
-  const [title, setTitle] = useState("");
+  const [starterId, setStarterId] = useState(retainedAttempt?.input.starterId ?? "");
+  const [title, setTitle] = useState(retainedAttempt?.input.title ?? "");
   const [localError, setLocalError] = useState<string | null>(null);
   // One stable identity for this dialog. Retrying after a lost reply targets
   // the same world instead of creating a second one.
   const operationId = useRef<string>(
-    globalThis.crypto?.randomUUID?.() ?? `create-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    retainedAttempt?.input.operationId ?? globalThis.crypto?.randomUUID?.() ?? `create-${Date.now()}-${Math.random().toString(36).slice(2)}`,
   );
 
   const deliveredBase = bases.some((base) => base.delivered);
+  const fixedAttributes = controller.busy || !!retainedAttempt;
   const submit = async () => {
     const invalid = validateWorldTitle(title, lang);
     if (invalid) {
@@ -78,7 +78,7 @@ export function WorldCreatePanel({
     >
       <span className="craftmine-world-create-title">{CRAFTMINE_WORLD_TEXT.createTitle[lang]}</span>
 
-      <fieldset className="craftmine-world-create-group" disabled={controller.busy}>
+      <fieldset className="craftmine-world-create-group" disabled={fixedAttributes}>
         <legend>{CRAFTMINE_WORLD_TEXT.createBase[lang]}</legend>
         {bases.length === 0 ? (
           <p className="craftmine-world-note-hint" data-world-create="base-unreported">
@@ -115,7 +115,7 @@ export function WorldCreatePanel({
         )}
       </fieldset>
 
-      <fieldset className="craftmine-world-create-group" disabled={controller.busy}>
+      <fieldset className="craftmine-world-create-group" disabled={fixedAttributes}>
         <legend>{CRAFTMINE_WORLD_TEXT.createStarter[lang]}</legend>
         <label className="craftmine-world-choice" data-world-starter-option="blank">
           <input
@@ -161,7 +161,7 @@ export function WorldCreatePanel({
           maxLength={CRAFTMINE_WORLD_TITLE_MAX}
           placeholder={CRAFTMINE_WORLD_TEXT.createNamePlaceholder[lang]}
           data-world-create="name"
-          disabled={controller.busy}
+          disabled={fixedAttributes}
           onChange={(event) => {
             setTitle(event.target.value);
             if (localError) setLocalError(null);
@@ -175,9 +175,13 @@ export function WorldCreatePanel({
         <button
           type="submit"
           data-world-create="submit"
-          disabled={controller.busy || (bases.length > 0 && !deliveredBase)}
+          disabled={controller.busy || (!retainedAttempt && bases.length > 0 && !deliveredBase)}
         >
-          {controller.busy ? CRAFTMINE_WORLD_TEXT.creating[lang] : CRAFTMINE_WORLD_TEXT.createSubmit[lang]}
+          {controller.busy ? CRAFTMINE_WORLD_TEXT.creating[lang] : retainedAttempt
+            ? retainedAttempt.worldId
+              ? lang === "zh" ? "重试准备并进入" : "Retry preparation and enter"
+              : lang === "zh" ? "重试并确认创建结果" : "Retry and confirm creation"
+            : CRAFTMINE_WORLD_TEXT.createSubmit[lang]}
         </button>
         <button type="button" data-action="cancel-world-create" disabled={controller.busy && !controller.canCancelCreate} onClick={() => { void Promise.resolve(controller.cancelCreate?.()).then(closed => {if (closed !== false) onClose();}); }}>
           {CRAFTMINE_WORLD_TEXT.createCancel[lang]}
