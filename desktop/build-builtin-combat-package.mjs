@@ -20,3 +20,4 @@ export function buildBuiltinCombatPackage({repository=process.cwd()}={}){
  const archive=unpackStaticPackage(bytes); if(archive.resources[0].contentHash!==manifest.contentHash) throw Error('COMBAT_PACKAGE_ROUNDTRIP_FAILED');
  return {file:COMBAT_ASSET_ID+'.zip',bytes,entry:{assetId:COMBAT_ASSET_ID,version:COMBAT_VERSION,kind:'module',file:COMBAT_ASSET_ID+'.zip',bytes:bytes.length,sha256:sha(bytes),rootContentHash:manifest.contentHash,label:content.entry.label,tags:['builtin','prefab','playable','战斗','武器','怪物'],source:{origin:'Craftmine World sandbox combat 1.0.0',author:'Craftmine World contributors',license:'MIT',licenseStatus:'verified'}}};
 }
+
