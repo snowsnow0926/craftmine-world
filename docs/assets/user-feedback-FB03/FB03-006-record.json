@@ -1,0 +1,38 @@
+{
+  "id": "FB03-006",
+  "batch": "FB03",
+  "title": "建立新世界选择造物世界后创建失败",
+  "receivedAt": "2026-09-12 23:10:17 +08:00（本次收件记录时间，Asia/Shanghai）",
+  "updatedAt": "2026-09-12 23:10:17 +08:00",
+  "occurredAt": "未提供",
+  "testedVersion": "未提供；不从前条截图回填",
+  "reviewVersion": "未提供",
+  "environment": "中文工作台界面；附件原图2560×1440，不据此推断实际屏幕分辨率",
+  "mode": "新建世界 / 造物世界 / 空白起点；名称为空白世界（截图可见）",
+  "rawFeedback": "点击建立新世界  造物世界 创建失败",
+  "observations": [
+    "用户报告点击建立新世界并选择造物世界后创建失败",
+    "截图新建世界面板选中“造物世界”、起点“空白”，名称为“空白世界”",
+    "中央显示“世界加载失败”及“Error: GODOT_WORLD_NOT_INITIALIZED”，可见“重试加载”“返回原世界”按钮",
+    "左侧空白世界条目显示初始化失败，阶段为确认可加载(4/4)，进度90%；顶部显示运行失败"
+  ],
+  "expectation": "能够成功创建并进入造物世界（依据反馈整理）",
+  "proposedSolution": "未提供",
+  "category": "世界创建 / 造物世界 / 初始化与加载失败",
+  "reproducibility": "本次报告一次，实际复现次数未提供",
+  "impact": "本次新建造物世界无法正常加载进入",
+  "workaround": "未提供；截图可见重试入口，不代表已尝试或有效",
+  "status": "待讨论",
+  "conclusion": "仅记录，未排查原因或进行开发；不根据错误码判定根因",
+  "related": "FB03-001、FB03-002、FB03-005 涉及世界创建流程；本条为新建造物世界入口的独立记录，是否同根因待判断",
+  "screenshot": {
+    "sha256": "F136DCCE0485275606AD687B7C1B799BD3E1D48B508ABFA2336A98FB9EF6A931",
+    "capturedAt": "未提供",
+    "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-cef87c71-cc42-498a-86ec-e3fa501b734c.png",
+    "embed": "![建立造物世界后初始化及加载失败](assets/user-feedback-FB03/FB03-006-create-world-failure.png)",
+    "file": "FB03-006-create-world-failure.png"
+  },
+  "errorText": "Error: GODOT_WORLD_NOT_INITIALIZED",
+  "otherEvidence": "视频、存档、日志未提供",
+  "count": 1
+}

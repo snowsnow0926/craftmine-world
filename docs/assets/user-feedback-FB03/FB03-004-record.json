@@ -1,0 +1,37 @@
+{
+  "id": "FB03-004",
+  "batch": "FB03",
+  "title": "F2 无法呼出对话窗，Shift+F2 同样无效，Esc 有效",
+  "receivedAt": "2026-09-12 23:08:01 +08:00（本次收件记录时间，Asia/Shanghai）",
+  "updatedAt": "2026-09-12 23:08:18 +08:00",
+  "occurredAt": "未提供",
+  "testedVersion": "未提供",
+  "reviewVersion": "未提供",
+  "environment": "前条用户明确当前已全屏；本条沿用同一游玩场景仅为对话上下文推断；平台、分辨率及输入设备详情未提供",
+  "mode": "进入第一个世界后的游玩场景（对话上下文推断）",
+  "rawFeedback": "F2还是完全不能呼出对话窗",
+  "observations": [
+    "用户报告 F2 仍完全无法呼出对话窗",
+    "本次没有新增截图；未进行按键测试或原因排查",
+    "用户补充：Shift+F2 同样无效，但 Esc 有效；未说明 Esc 触发的具体界面或行为。"
+  ],
+  "expectation": "按 F2 能正常呼出对话窗",
+  "proposedSolution": "未提供",
+  "category": "世界游玩 / F2 快捷键 / 对话入口",
+  "reproducibility": "本次报告一次，实际重复次数未提供",
+  "impact": "无法通过 F2 打开对话窗",
+  "workaround": "未提供",
+  "status": "待讨论",
+  "conclusion": "用户报告问题仍存在；当前测试版本未提供，不推断具体版本回归或修复状态",
+  "related": "FB02-003（首次问题 ID）：F2 提示创作但按下无反应。本条为该问题在 FB03 的新反馈证据，不作为全新缺陷重复计数；FB03-003 提供当前全屏场景补充",
+  "screenshot": "本条未提供",
+  "otherEvidence": "视频、存档、日志、错误文本均未提供",
+  "count": 1,
+  "supplements": [
+    {
+      "receivedAt": "2026-09-12 23:08:18 +08:00（本次补充收件记录时间，Asia/Shanghai）",
+      "rawFeedback": "shift +F2也是一样没用 但是esc是有用的",
+      "interpretation": "补充 FB03-004，不新增条目、不增加复现次数；Esc 有效仅为当前场景的用户反馈，不外推其他退出功能已验收"
+    }
+  ]
+}

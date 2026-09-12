@@ -1,0 +1,39 @@
+{
+  "id": "FB03-007",
+  "batch": "FB03",
+  "title": "世界对话输入生成AK47后直接失败",
+  "receivedAt": "2026-09-12 23:11:34 +08:00（本次收件记录时间，Asia/Shanghai）",
+  "updatedAt": "2026-09-12 23:11:34 +08:00",
+  "occurredAt": "未提供",
+  "testedVersion": "未提供",
+  "reviewVersion": "未提供",
+  "environment": "中文世界对话界面；截图中本次操作的模型与用量均为未报告，不推断实际选用模型",
+  "mode": "世界对话窗；具体世界与存档未提供",
+  "rawFeedback": "尝试在世界对话窗写给我生成一个AK47   直接失败",
+  "playerInput": "给我生成一个AK47",
+  "observations": [
+    "用户报告在世界对话窗输入生成请求后直接失败",
+    "截图显示用户消息“给我生成一个AK47”",
+    "错误卡显示“助手没能完成这次回复。”，错误码为 CREATION_MIGRATION_DRAFT_CONFLICT",
+    "另有“这次任务需要处理一下”提示，说明这一轮在完成前停下，已有内容仍在；界面提供“继续”按钮"
+  ],
+  "expectation": "提交世界创作请求后能够正常完成生成（依据反馈整理；未提供外观或交互功能细节）",
+  "proposedSolution": "未提供",
+  "category": "世界对话创作 / 生成失败 / 草稿冲突错误提示",
+  "reproducibility": "本次报告一次，实际复现次数未提供",
+  "impact": "本次创作请求未完成",
+  "workaround": "未提供；截图可见继续按钮，未确认尝试或有效",
+  "status": "待讨论",
+  "conclusion": "仅记录，未执行生成、点击继续、排查或开发；错误码不作为根因结论",
+  "related": "FB03-001 涉及世界对话入口，本条为已提交消息后的生成失败，分别记录",
+  "screenshot": {
+    "file": "FB03-007-world-chat-generation-failure.png",
+    "capturedAt": "未提供",
+    "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-f7a6f306-dfe1-40a9-a855-639ac6c250e3.png",
+    "embed": "![世界对话生成请求直接失败及错误码](assets/user-feedback-FB03/FB03-007-world-chat-generation-failure.png)",
+    "sha256": "1297FD7378513CCB1D9DC73E600CBEA033D37A62A85AC2E7E9DEBFA242398740"
+  },
+  "errorText": "CREATION_MIGRATION_DRAFT_CONFLICT",
+  "otherEvidence": "视频、存档、日志未提供",
+  "count": 1
+}

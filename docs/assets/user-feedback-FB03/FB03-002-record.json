@@ -1,0 +1,36 @@
+{
+  "id": "FB03-002",
+  "batch": "FB03",
+  "title": "点击返回原世界显示错误",
+  "receivedAt": "2026-09-12 23:06:18 +08:00（本次收件记录时间，Asia/Shanghai）",
+  "updatedAt": "2026-09-12 23:06:18 +08:00",
+  "occurredAt": "未提供",
+  "testedVersion": "未提供",
+  "reviewVersion": "未提供",
+  "environment": "截图为中文界面；其他环境参数未提供",
+  "mode": "通过对话生成世界",
+  "rawFeedback": "点击返回原世界显示错误",
+  "observations": [
+    "用户报告点击“返回原世界”后显示错误",
+    "截图仍显示“通过对话生成世界”界面及“返回原世界”入口，顶部显示 GODOT_CANDIDATE_ACTIVE 错误"
+  ],
+  "expectation": "点击返回原世界能够正常返回（依据反馈整理）",
+  "proposedSolution": "未提供",
+  "category": "返回原世界 / 导航失败 / 错误提示",
+  "reproducibility": "本次报告一次，重复复现情况未提供",
+  "impact": "返回原世界操作受阻",
+  "workaround": "未提供",
+  "status": "待讨论",
+  "conclusion": "仅记录，未排查原因或开发；错误码不作为根因结论",
+  "related": "FB03-001：同一对话创建新世界流程，前条为无法输入，本条为返回时报错",
+  "screenshot": {
+    "capturedAt": "未提供",
+    "file": "FB03-002-return-world-error.png",
+    "embed": "![点击返回原世界后显示错误](assets/user-feedback-FB03/FB03-002-return-world-error.png)",
+    "sha256": "DA11E517C3F41961B6858EFB99BD5EDF5F2D57878B210FA9DCFD585045485527",
+    "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-da7c7b4b-92b9-47b9-be18-d9fe6c7a99dd.png"
+  },
+  "errorText": "Error: Error invoking remote method 'pi-plugin-panel-invoke': Error: GODOT_CANDIDATE_ACTIVE",
+  "otherEvidence": "视频、存档、日志未提供",
+  "count": 1
+}

@@ -1,0 +1,35 @@
+{
+  "id": "FB03-001",
+  "batch": "FB03",
+  "title": "对话创建新世界时对话窗无法输入",
+  "receivedAt": "2026-09-12 23:04 Asia/Shanghai（本次收件记录时间）",
+  "updatedAt": "2026-09-12T23:05:17.8962267+08:00",
+  "occurredAt": "未提供",
+  "testedVersion": "未提供",
+  "reviewVersion": "未提供",
+  "environment": "截图为中文界面；其他环境参数未提供",
+  "mode": "对话创建新世界",
+  "rawFeedback": "点击对话创建新的世界的时候对话窗无法输入",
+  "observations": [
+    "用户报告点击对话创建新世界后无法在对话窗输入",
+    "截图显示“正在准备新世界…”及“原世界和存档会保留。”",
+    "截图输入区域上方显示“指向暂不可用，可继续输入文字”，与用户报告的无法输入体验不一致；静态截图不能独立验证输入行为"
+  ],
+  "expectation": "能够在对话窗输入文字以创建新世界（依据反馈整理）",
+  "proposedSolution": "未提供",
+  "category": "对话创建世界 / 输入受阻",
+  "reproducibility": "本次报告一次，重复复现情况未提供",
+  "impact": "玩家无法通过对话输入继续创建世界",
+  "workaround": "未提供",
+  "status": "待讨论",
+  "conclusion": "仅记录，未排查原因或开发",
+  "related": "FB02-004 涉及对话生成世界入口；本条为新批次独立输入故障，不判定重复",
+  "screenshot": {
+    "embed": "![对话创建新世界时无法输入](assets/user-feedback-FB03/FB03-001-dialog-create-world-input.png)",
+    "file": "FB03-001-dialog-create-world-input.png",
+    "sha256": "5F7F0B608C14B47BD4D5062C8AA3CA40B65E875A1EA88B9E0F04EFCA008897D5",
+    "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-7a853847-9420-4057-93b4-b7760a8af3b3.png",
+    "capturedAt": "未提供"
+  },
+  "otherEvidence": "未提供"
+}

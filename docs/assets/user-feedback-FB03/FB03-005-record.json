@@ -1,0 +1,36 @@
+{
+  "id": "FB03-005",
+  "batch": "FB03",
+  "title": "左侧对话生成失败的世界应支持删除",
+  "receivedAt": "2026-09-12 23:09:04 +08:00（本次收件记录时间，Asia/Shanghai）",
+  "updatedAt": "2026-09-12 23:09:04 +08:00",
+  "occurredAt": "未提供",
+  "testedVersion": "截图左下角显示 v0.14.4-preview.17（截图证据，用户未另行说明）；不回填其他条目版本",
+  "reviewVersion": "未提供",
+  "environment": "中文工作台界面；原图2560×1440（附件元数据），不推断实际屏幕分辨率或窗口模式",
+  "mode": "工作台 / 左侧世界列表",
+  "rawFeedback": "左侧对话生成的世界失败了 应该可以删除才对",
+  "observations": [
+    "用户报告左侧对话生成的世界失败，并希望可以删除",
+    "截图左侧有两个“对话生成的世界”条目，均带红色警告及初始化失败信息",
+    "截图可见“重试初始化”“查看详情”等入口，当前可见区域未见删除入口；未检查其他菜单"
+  ],
+  "expectation": "玩家能够删除左侧列表中生成失败的世界",
+  "proposedSolution": "提供删除生成失败世界的操作",
+  "category": "世界管理 / 失败世界清理 / 删除入口",
+  "reproducibility": "本次报告一次，实际复现次数未提供",
+  "impact": "玩家无法按意愿清理失败的世界条目（依据反馈整理）",
+  "workaround": "未提供",
+  "status": "待讨论",
+  "conclusion": "仅记录诉求，未删除世界、修改存档或进行开发",
+  "related": "FB03-001、FB03-002 同属对话创建世界流程；不推断共同根因",
+  "screenshot": {
+    "embed": "![左侧生成失败的世界条目及当前可见操作](assets/user-feedback-FB03/FB03-005-failed-world-delete.png)",
+    "file": "FB03-005-failed-world-delete.png",
+    "sha256": "3F2F5C74717A6ADF6EE6B4D549DCB386063A81C9AFBCD64E810FBAD8134F88C2",
+    "capturedAt": "未提供",
+    "source": "C:/Users/WINDOWS/AppData/Local/Temp/codex-clipboard-c1ebe3e6-40df-438d-b246-361e2f1bfee8.png"
+  },
+  "otherEvidence": "视频、存档、日志未提供；截图中的初始化失败提示保留在原图",
+  "count": 1
+}
