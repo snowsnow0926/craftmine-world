@@ -46,6 +46,23 @@ function createBlenderJobs(core,options={}) {
       guidance:await fs.readFile(path.join(__dirname,'guidance','blender-modeling.md'),'utf8')};}
   async function load(jobId,binding){check(ID.test(jobId),'BLENDER_JOB_ID_INVALID');await init();const record=JSON.parse(await readOrdinary(path.join(root,jobId,'record.json'),256*1024));
     check(record.format===FORMAT&&record.jobId===jobId&&bindingEqual(record,binding)&&record.storeDirectory===path.resolve(core.directory??options.dataPath),'BLENDER_JOB_BINDING_MISMATCH');return record;}
+  async function history(args,binding){
+    const storeDirectory=path.resolve(core.directory??options.dataPath);
+    const offset=args.offset??0,limit=args.limit??10;
+    check(Number.isSafeInteger(offset)&&offset>=0&&Number.isSafeInteger(limit)&&limit>=1&&limit<=20,'BLENDER_HISTORY_PAGE_INVALID');
+    check(args.name===undefined||(typeof args.name==='string'&&/^[a-z][a-z0-9-]{0,63}$/.test(args.name)),'BLENDER_NAME_INVALID');
+    await init();const records=[];
+    for(const entry of await fs.readdir(root,{withFileTypes:true}))if(entry.isDirectory()&&!entry.isSymbolicLink()&&ID.test(entry.name)){
+      try{const record=await load(entry.name,binding);const match=/^assets\/blender\/([a-z][a-z0-9-]{0,63})\.glb$/.exec(record.modelPath);
+        if(match&&(args.name===undefined||match[1]===args.name))records.push(record);
+      }catch{/* Missing, foreign, corrupt and linked records grant no discovery access. */}
+    }
+    records.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))||b.jobId.localeCompare(a.jobId));
+    await assertActive(binding.context);check(storeDirectory===path.resolve(core.directory??options.dataPath),'BLENDER_STORE_CHANGED');
+    const end=Math.min(records.length,offset+limit);
+    return {worldId:binding.worldId,offset,limit,total:records.length,nextOffset:end<records.length?end:null,
+      items:records.slice(offset,end).map(record=>{const {diagnostics,next,...item}=publicRecord(record);return item;})};
+  }
   async function stage(receipt,request,record) {
     const artifactRoot=path.join(tasksRoot,record.nativeTaskId,'artifacts');
     check(path.resolve(receipt.artifactsRoot??'')===artifactRoot,'BLENDER_ARTIFACT_ROOT_MISMATCH');await ordinary(artifactRoot,'directory');
@@ -118,7 +135,7 @@ function createBlenderJobs(core,options={}) {
     entry.promise=(async()=>{let brokerReceipt;try{
       record.status='running';await persist(record);const receipt=brokerReceipt=await (options.runBroker??native.runBroker)(discovery,request,controller.signal);
       check(!controller.signal.aborted,'BLENDER_JOB_CANCELLED');native.validateReceipt(receipt,request,discovery);await stage(receipt,request,record);
-      record.status='generated';await persist(record);await importModel(record,context,controller.signal);
+      record.status='importing';await persist(record);await importModel(record,context,controller.signal);
     }catch(error){record.reason=/^[A-Z][A-Z0-9_:.-]{0,160}$/.test(error.message)?error.message:'BLENDER_JOB_FAILED';
       try{native.validateEnvelope(brokerReceipt,request,discovery);
         const logsRoot=path.join(tasksRoot,record.nativeTaskId,'logs');check(path.resolve(brokerReceipt.logsRoot??'')===logsRoot,'BLENDER_LOG_ROOT_MISMATCH');
@@ -147,7 +164,7 @@ function createBlenderJobs(core,options={}) {
   async function stop(){closed=true;for(const entry of running.values())entry.controller.abort();await Promise.allSettled([...starting.values()]);
     const entries=[...running.values()];for(const entry of entries)entry.controller.abort();await Promise.allSettled(entries.map(entry=>entry.promise));recovered=null;initialized=null;}
   async function tool(name,args,binding){const identity={...binding,projectId:binding.context.projectId};
-    if(name==='blender_status')return status();if(name==='blender_generate')return generate(args,binding);if(name==='blender_job_read')return read(args,identity);if(name==='blender_cancel')return cancel(args,identity);throw Error('BLENDER_TOOL_UNKNOWN');}
+    if(name==='blender_status'){const jobs=await history(args,identity);return {...await status(),jobs};}if(name==='blender_generate')return generate(args,binding);if(name==='blender_job_read')return read(args,identity);if(name==='blender_cancel')return cancel(args,identity);throw Error('BLENDER_TOOL_UNKNOWN');}
   return {tool,status,cancelTurn,stop,start:async()=>{closed=false;await status();},drain:stop};
 }
 module.exports={createBlenderJobs};
