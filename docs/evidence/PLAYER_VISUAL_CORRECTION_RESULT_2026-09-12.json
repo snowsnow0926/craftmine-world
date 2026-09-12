@@ -1,0 +1,851 @@
+{
+  "format": "craftmine.player-visual-correction-result/1",
+  "modelReport": {
+    "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\player-869be80c-e09f-4820-873d-9acaf104b846.json",
+    "sha256": "c13abcee3f77f69b04b886b8e5130b269716fd085c6de497e07f9c442165e0ee"
+  },
+  "package": {
+    "version": "0.14.4-preview.14",
+    "packaged": "D:\\cm-promo-loop-0912\\desktop\\build\\releases\\f33d37f9cc9b-cdcaf54b-8437-47a6-b661-a929caed6e8f\\output\\win-unpacked",
+    "inventorySha256": "0498aa8f3ac1fae497da70b232f2abf25ae26f8c686fba983cf4eb71f59c5c9b"
+  },
+  "worldId": "world-dd7fa4f8fff6",
+  "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+  "wish": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。",
+  "retry": {
+    "failedMessageId": "363fe039-410b-43aa-978c-5ef7154362ba",
+    "failedTurnId": "c98a9601-16cb-4ee2-be42-5e29eee59081",
+    "text": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。",
+    "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+    "worldId": "world-dd7fa4f8fff6",
+    "sourceReport": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/player-a5c5afd2-98cb-4059-9e36-5dbbf606b66f.json",
+    "method": "ordinary-retry-last-failed-prompt"
+  },
+  "historyBefore": {
+    "format": "craftmine.failed-player-retry-baseline/1",
+    "readOnly": true,
+    "recordedAt": "2026-09-11T23:51:11.836Z",
+    "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+    "failedMessageId": "363fe039-410b-43aa-978c-5ef7154362ba",
+    "wish": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。",
+    "lastMessage": {
+      "id": "363fe039-410b-43aa-978c-5ef7154362ba",
+      "turn_id": "c98a9601-16cb-4ee2-be42-5e29eee59081",
+      "seq": 44,
+      "role": "user",
+      "text": "看看现在的城门效果，把挡住墙和塔的树挪开，门洞和花草保留。"
+    },
+    "matchingActiveMessages": [
+      {
+        "id": "363fe039-410b-43aa-978c-5ef7154362ba",
+        "turn_id": "c98a9601-16cb-4ee2-be42-5e29eee59081",
+        "seq": 44,
+        "role": "user"
+      }
+    ],
+    "revisions": [],
+    "failedTurn": {
+      "id": "c98a9601-16cb-4ee2-be42-5e29eee59081",
+      "status": "error",
+      "error_code": null
+    },
+    "head": {
+      "session_id": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+      "project_id": "pi-471be0673f2efb58f237aa3376f0d1c37060c3ac705d369d1a0c8747052bd8d8",
+      "world_id": "world-dd7fa4f8fff6",
+      "head_task": "work-498d645f9d721db1cf37e429308b45a7f04de63c2f246aa766152fbc6dcd94e3"
+    },
+    "source": {
+      "world_id": "world-dd7fa4f8fff6",
+      "revision": 4,
+      "hash": "8199b2c46a261ade3685a186e9166c4d74af42f0cd5378fdc00d7e9b3bbf26bd"
+    },
+    "proofs": [
+      {
+        "file": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/player-a5c5afd2-98cb-4059-9e36-5dbbf606b66f.json",
+        "sha256": "9a7e125c2269ecc366de43ba369587971d3c614d95b0e78db44fcec910a396ca"
+      },
+      {
+        "file": "D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/profile/headless-profile.json",
+        "sha256": "77645c3377437f0f08d6d943c3f4ff0b6b881ed3889cc74efeebc74180dd47db"
+      }
+    ],
+    "modelCalls": 0
+  },
+  "historyAfterRetry": {
+    "recordedAt": "2026-09-11T23:56:38.072Z",
+    "readOnly": true,
+    "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+    "failedMessageId": "363fe039-410b-43aa-978c-5ef7154362ba",
+    "activeMatchingUsers": [
+      {
+        "id": "4c31bf92-85b5-47c4-b9e1-cfa5179b550b",
+        "turn_id": "370398df-c3a6-4cb5-a6dc-8cfc38282d17",
+        "seq": 44,
+        "role": "user"
+      }
+    ],
+    "archivedFailedBranches": [
+      {
+        "root_user_id": "363fe039-410b-43aa-978c-5ef7154362ba",
+        "revision_index": 1,
+        "is_active": 0,
+        "message_count": 1
+      }
+    ],
+    "workspaceHead": {
+      "id": "work-d72314b930d211fa680b7d3f10ea06f9c60e118cf4d8561c44bc5b803fd70903",
+      "binding": {
+        "projectId": "pi-471be0673f2efb58f237aa3376f0d1c37060c3ac705d369d1a0c8747052bd8d8",
+        "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+        "turnId": "370398df-c3a6-4cb5-a6dc-8cfc38282d17",
+        "taskId": "work-d72314b930d211fa680b7d3f10ea06f9c60e118cf4d8561c44bc5b803fd70903",
+        "baseBuild": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a"
+      },
+      "status": "running",
+      "revision": 0
+    }
+  },
+  "metrics": {
+    "calls": {
+      "observed": 15,
+      "pending": 0,
+      "reported": 15
+    },
+    "coverage": "complete",
+    "endedAtMs": 1789171416993,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [
+      {
+        "calls": {
+          "observed": 15,
+          "pending": 0,
+          "reported": 15
+        },
+        "coverage": "complete",
+        "modelId": "deepseek-v4.1-flash-expires-on-0910",
+        "providerId": "4b5ca149-1d6a-4226-9add-9a71f9614077",
+        "tps": {
+          "coverage": "complete",
+          "generationMs": 187801,
+          "outputTokens": 44868,
+          "value": 238.9124658548144,
+          "window": "model-generation"
+        },
+        "usage": {
+          "cacheReadTokens": 528768,
+          "inputTokens": 495544,
+          "outputTokens": 44868,
+          "reasoningTokens": 33139,
+          "totalTokens": 1069180
+        }
+      }
+    ],
+    "observedAtMs": 1789171417793,
+    "scope": "root-and-delegates",
+    "sessionId": "3a43c719-8616-4393-a1fb-c8f3b283a785",
+    "startedAtMs": 1789170974410,
+    "status": "completed",
+    "tps": {
+      "coverage": "complete",
+      "generationMs": 187801,
+      "outputTokens": 44868,
+      "value": 238.9124658548144,
+      "window": "model-generation"
+    },
+    "turnId": "370398df-c3a6-4cb5-a6dc-8cfc38282d17",
+    "usage": {
+      "cacheReadTokens": 528768,
+      "inputTokens": 495544,
+      "outputTokens": 44868,
+      "reasoningTokens": 33139,
+      "totalTokens": 1069180
+    },
+    "wallTimeMs": 442583
+  },
+  "modelStatus": "SETTLED_UNVERIFIED",
+  "modelIntegrity": true,
+  "modelExit": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  },
+  "captures": [
+    {
+      "messageId": "call_00_OWzJgWrPSDqXsxbypx6G3977",
+      "status": "error",
+      "imageCount": null,
+      "types": [
+        "text"
+      ],
+      "result": {
+        "content": [
+          {
+            "text": "Tool plugin_craftmine_world_godot_view_capture not found",
+            "type": "text"
+          }
+        ],
+        "details": {}
+      }
+    },
+    {
+      "messageId": "call_00_0EZzKRqptf3IUqJXzb6Y8465",
+      "status": "success",
+      "imageCount": 1,
+      "types": [
+        "text",
+        "image"
+      ],
+      "png": {
+        "file": "D:\\cm-player-retry-0912\\test-results\\retry-preparation\\images\\capture-12.png",
+        "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce"
+      },
+      "metadata": {
+        "format": "craftmine.godot-view-capture/1",
+        "status": "captured",
+        "delivery": "image-block-ready",
+        "worldId": "world-dd7fa4f8fff6",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "instanceId": "9844b8b33d486eda9a48aec1",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-11T23:57:04.976Z",
+        "width": 1200,
+        "height": 800,
+        "sourceWidth": 1200,
+        "sourceHeight": 800,
+        "viewWidth": 525,
+        "viewHeight": 650,
+        "resized": false,
+        "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce",
+        "model": {
+          "providerId": "4b5ca149-1d6a-4226-9add-9a71f9614077",
+          "modelId": "deepseek-v4.1-flash-expires-on-0910",
+          "declaredImages": true,
+          "serviceVisionVerified": false
+        },
+        "note": "Real game view; pixels are not proof of gameplay correctness or provider vision support. No same-tick observation is claimed."
+      },
+      "followingAssistant": "I'll rebuild the exact source state and take a real look at the current gate before moving anything."
+    },
+    {
+      "messageId": "call_02_bZoljbcfo7nqb9bMfn061797",
+      "status": "success",
+      "imageCount": 1,
+      "types": [
+        "text",
+        "image"
+      ],
+      "png": {
+        "file": "D:\\cm-player-retry-0912\\test-results\\retry-preparation\\images\\capture-18.png",
+        "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce"
+      },
+      "metadata": {
+        "format": "craftmine.godot-view-capture/1",
+        "status": "captured",
+        "delivery": "image-block-ready",
+        "worldId": "world-dd7fa4f8fff6",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "instanceId": "9844b8b33d486eda9a48aec1",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-11T23:57:39.060Z",
+        "width": 1200,
+        "height": 800,
+        "sourceWidth": 1200,
+        "sourceHeight": 800,
+        "viewWidth": 525,
+        "viewHeight": 650,
+        "resized": false,
+        "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce",
+        "model": {
+          "providerId": "4b5ca149-1d6a-4226-9add-9a71f9614077",
+          "modelId": "deepseek-v4.1-flash-expires-on-0910",
+          "declaredImages": true,
+          "serviceVisionVerified": false
+        },
+        "note": "Real game view; pixels are not proof of gameplay correctness or provider vision support. No same-tick observation is claimed."
+      },
+      "followingAssistant": "I can see the assembled gate clearly now. Before moving anything, let me check the actual tree part scenes so the new spots are provably clear of the towers."
+    },
+    {
+      "messageId": "call_01_gPd4AGBdp6IKrm30p9K63384",
+      "status": "error",
+      "imageCount": null,
+      "types": [
+        "text"
+      ],
+      "result": {
+        "content": [
+          {
+            "text": "{\n  \"error\": \"GODOT_CAPTURE_CANDIDATE_IDENTITY_CHANGED\"\n}",
+            "type": "text"
+          }
+        ],
+        "details": {
+          "error": "GODOT_CAPTURE_CANDIDATE_IDENTITY_CHANGED"
+        },
+        "isError": true
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "tool": "plugin_craftmine_world_godot_project_patch",
+      "decision": "allow-once"
+    },
+    {
+      "tool": "plugin_craftmine_world_godot_build_start",
+      "decision": "allow-once"
+    }
+  ],
+  "clarifications": [
+    {
+      "questions": [
+        {
+          "question": "预览后如果还有树挤着城墙/塔，你希望怎么处理？（我按你的选择再调）",
+          "options": [
+            "就这样：四棵树现在的位置合适，直接确认应用",
+            "再往外挪：把四棵都推到 x=±15 左右，离城墙更远、正门视野更空",
+            "只调整某一棵：告诉我树名，我单独挪那一棵",
+            "往后挪：四棵都退到城门后方做背景林，正面只剩门洞和花草"
+          ]
+        },
+        {
+          "question": "墙体内的两丛草（Grass06、Grass17）现在被新城墙罩住，要不要处理？",
+          "options": [
+            "不用管，被墙罩住也不影响",
+            "挪到墙外露出来",
+            "删掉这两丛"
+          ]
+        }
+      ],
+      "answers": [
+        null,
+        [
+          "不用管，被墙罩住也不影响"
+        ]
+      ],
+      "choices": [
+        null,
+        [
+          0
+        ]
+      ]
+    }
+  ],
+  "sourceDiff": {
+    "beforeSha256": "d686f2e1a981e1c5a3c1963dec659fe57d4ae1e9999c31f468f8f35bac1fabea",
+    "afterSha256": "993f416d355bdcfcdd8f5220250dac7b2be952749053428a7b9a719354cdcabe",
+    "moves": [
+      {
+        "name": "OakFrontLeft",
+        "before": "Vector3(-4.36560278, 0, 7.03341885)",
+        "after": "Vector3(-9, 0, 6.4)"
+      },
+      {
+        "name": "PineFrontRight",
+        "before": "Vector3(4.43439722, 0, 6.23341885)",
+        "after": "Vector3(9, 0, 5.9)"
+      },
+      {
+        "name": "OakMiddleLeft",
+        "before": "Vector3(-3.86560278, 0, 1.33341885)",
+        "after": "Vector3(-13, 0, -1)"
+      },
+      {
+        "name": "OakMiddleRight",
+        "before": "Vector3(4.13439722, 0, 1.03341885)",
+        "after": "Vector3(13, 0, -1)"
+      }
+    ],
+    "otherBytesUnchanged": true
+  },
+  "check": {
+    "jobId": "gjob-b2d150a95cd171b3643f4486767b1c6bf4168f47c51e83f5852cdc8737240078",
+    "status": "passed",
+    "sourceStale": false,
+    "candidateId": "gcan-19d6a6fbf5bf0cd3bec7ce796f8b5de391c8f94a33535df52171802238437423",
+    "sourceRevision": 5,
+    "manifestHash": "e727d076e490bfda5d7f628f3aa246c9b0c3c7286f030f1c3ad1fb9600daf512",
+    "assertions": [
+      {
+        "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+        "id": "runtime.ready",
+        "passed": true
+      },
+      {
+        "detail": "frames=3 distinct=2",
+        "id": "runtime.frame",
+        "passed": true
+      },
+      {
+        "detail": null,
+        "id": "runtime.no-errors",
+        "passed": true
+      },
+      {
+        "detail": "formal progress unchanged",
+        "id": "runtime.snapshot",
+        "passed": true
+      },
+      {
+        "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+        "id": "runtime.isolation",
+        "passed": true
+      },
+      {
+        "detail": "graceful=true",
+        "id": "runtime.recovery",
+        "passed": true
+      }
+    ]
+  },
+  "preview": {
+    "report": {
+      "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-preview-1a20505c-e925-490b-a697-9de8d02c59b2\\report.json",
+      "sha256": "15d4b60c38841e487fc15a1ecded8010e27d2aea175c3fdd432b9521d070093a"
+    },
+    "format": "craftmine.player-candidate-preview/1",
+    "ok": true,
+    "stateIntegrityVerified": true,
+    "applications": 0,
+    "sourceBefore": {
+      "revision": 5,
+      "manifestHash": "e727d076e490bfda5d7f628f3aa246c9b0c3c7286f030f1c3ad1fb9600daf512",
+      "count": 10
+    },
+    "sourceAfter": {
+      "revision": 5,
+      "manifestHash": "e727d076e490bfda5d7f628f3aa246c9b0c3c7286f030f1c3ad1fb9600daf512",
+      "count": 10
+    },
+    "images": [
+      {
+        "kind": "formalCapture",
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-preview-1a20505c-e925-490b-a697-9de8d02c59b2\\formal-before.png",
+          "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce"
+        },
+        "scope": "formal",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "instanceId": "899d2866e09ca82ac9a05049",
+        "candidateId": null
+      },
+      {
+        "kind": "previewCapture",
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-preview-1a20505c-e925-490b-a697-9de8d02c59b2\\candidate.png",
+          "sha256": "508f714bc21cc80895bf3f47948f77f8722ac3f2099f65da82a433e3d9b4db35"
+        },
+        "scope": "candidate",
+        "buildId": "gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802",
+        "instanceId": "5f9c9bfbda98672ab606d40e",
+        "candidateId": "gcan-19d6a6fbf5bf0cd3bec7ce796f8b5de391c8f94a33535df52171802238437423"
+      }
+    ],
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "exitReport": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    },
+    "calls": [
+      "status",
+      "status",
+      "status",
+      "status",
+      "primaryMode",
+      "primaryMode",
+      "primaryMode",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotCaptureBoundState",
+      "godotCaptureBoundView",
+      "godotCaptureBoundState",
+      "worldPanel:package.request",
+      "worldPanel:godot.candidateRead",
+      "worldPanel:godot.candidatePreview",
+      "godotCaptureBoundState",
+      "godotCaptureBoundView",
+      "godotCaptureBoundState",
+      "worldPanel:godot.candidateClose",
+      "godotObserve",
+      "worldPanel:package.request",
+      "quit"
+    ]
+  },
+  "adoption": {
+    "report": {
+      "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-adoption-ec144605-194a-4cee-a9c1-ddabd796b5ea\\report.json",
+      "sha256": "670a7f68a4c246ae1fd3a963778c4036af0a0067d7e73e38775e23eb8e4b9e3b"
+    },
+    "format": "craftmine.player-candidate-adoption/1",
+    "ok": true,
+    "stateIntegrityVerified": true,
+    "applications": 1,
+    "sourceBefore": {
+      "revision": 5,
+      "manifestHash": "e727d076e490bfda5d7f628f3aa246c9b0c3c7286f030f1c3ad1fb9600daf512",
+      "count": 10
+    },
+    "sourceAfter": {
+      "revision": 5,
+      "manifestHash": "e727d076e490bfda5d7f628f3aa246c9b0c3c7286f030f1c3ad1fb9600daf512",
+      "count": 10
+    },
+    "reopened": {
+      "worldId": "world-dd7fa4f8fff6",
+      "buildId": "gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802",
+      "instanceId": "eb024ea92d71c7d9234c84af",
+      "player": {
+        "onFloor": true,
+        "pitch": 0.15,
+        "position": [
+          0,
+          0.899999976158142,
+          15.6849727630615
+        ],
+        "yaw": 0
+      }
+    },
+    "saved": {
+      "buildId": "gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802",
+      "contentHash": "499b93bac57ec3051d26b4b100ede48406821b2ac4466de6c9686da2c7a7724c",
+      "format": "craftmine.godot-progress-receipt/1",
+      "instanceId": "b13b1f29ddc79ce683af60da",
+      "persistedAt": 1789171979115,
+      "revision": 10,
+      "snapshotHash": "54288f10394eda144d6dae9427c2eee448c67c792714e8bbbc29d158029f3ddf",
+      "snapshotSha256": "ba25c375d9e1bed301d91ccd5c540b1a512ce907e57400f82f014055ea057f7f",
+      "worldId": "world-dd7fa4f8fff6"
+    },
+    "images": [
+      {
+        "kind": "formalCapture",
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-adoption-ec144605-194a-4cee-a9c1-ddabd796b5ea\\formal-before.png",
+          "sha256": "db6c48a66f1e89a68c2511def0c7d3e0e59d142913079ac442a000ff6487e5ce"
+        },
+        "scope": "formal",
+        "buildId": "gbd-a96e9793c0958690aeb912d4fac14dbe8bd6b5359c9f020e43d29c09cc0bbf1a",
+        "instanceId": "9d01eb568df7c5382e1bc001",
+        "candidateId": null
+      },
+      {
+        "kind": "previewCapture",
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-adoption-ec144605-194a-4cee-a9c1-ddabd796b5ea\\candidate.png",
+          "sha256": "508f714bc21cc80895bf3f47948f77f8722ac3f2099f65da82a433e3d9b4db35"
+        },
+        "scope": "candidate",
+        "buildId": "gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802",
+        "instanceId": "314d875517cc846d9cbfcca1",
+        "candidateId": "gcan-19d6a6fbf5bf0cd3bec7ce796f8b5de391c8f94a33535df52171802238437423"
+      },
+      {
+        "kind": "adoptedCapture",
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-adoption-ec144605-194a-4cee-a9c1-ddabd796b5ea\\adopted.png",
+          "sha256": "508f714bc21cc80895bf3f47948f77f8722ac3f2099f65da82a433e3d9b4db35"
+        },
+        "scope": "formal",
+        "buildId": "gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802",
+        "instanceId": "b13b1f29ddc79ce683af60da",
+        "candidateId": null
+      },
+      {
+        "kind": "reopenedCapture",
+        "proof": {
+          "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-adoption-ec144605-194a-4cee-a9c1-ddabd796b5ea\\reopened.png",
+          "sha256": "508f714bc21cc80895bf3f47948f77f8722ac3f2099f65da82a433e3d9b4db35"
+        },
+        "scope": "formal",
+        "buildId": "gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802",
+        "instanceId": "eb024ea92d71c7d9234c84af",
+        "candidateId": null
+      }
+    ],
+    "launches": [
+      {
+        "number": 1,
+        "stdoutBytes": 11202,
+        "stderrBytes": 1442,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      },
+      {
+        "number": 2,
+        "stdoutBytes": 4206,
+        "stderrBytes": 246,
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        "exit": {
+          "code": 0,
+          "signal": null
+        }
+      }
+    ],
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "exitReport": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    },
+    "calls": [
+      "status",
+      "status",
+      "status",
+      "status",
+      "primaryMode",
+      "primaryMode",
+      "primaryMode",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotCaptureBoundState",
+      "godotCaptureBoundView",
+      "godotCaptureBoundState",
+      "worldPanel:package.request",
+      "worldPanel:godot.candidateRead",
+      "worldPanel:godot.candidatePreview",
+      "godotCaptureBoundState",
+      "godotCaptureBoundView",
+      "godotCaptureBoundState",
+      "worldPanel:godot.candidateApply",
+      "godotObserve",
+      "worldPanel:godot.runtimeResume",
+      "godotCaptureBoundState",
+      "godotCaptureBoundView",
+      "godotCaptureBoundState",
+      "worldPanel:package.request",
+      "worldPanel:godot.runtimeSave",
+      "quit",
+      "primaryMode",
+      "primaryMode",
+      "primaryMode",
+      "primaryMode",
+      "primaryMode",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "godotObserve",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:package.request",
+      "godotCaptureBoundState",
+      "godotCaptureBoundView",
+      "godotCaptureBoundState",
+      "quit"
+    ]
+  },
+  "harnessCancelled": {
+    "report": {
+      "file": "D:\\cm-forest-product-demo-0912\\test-results\\desktop-native-complete-qQcut9\\candidate-preview-4ba3bba3-ebf1-4aa9-9d0e-361277fb937f\\report.json",
+      "sha256": "9fcd5b5e8e38ccaa2691e56c4d0eeb3e8de6a84f698103104bc684f2fe0eb1c1"
+    },
+    "format": "craftmine.player-candidate-preview/1",
+    "ok": false,
+    "stateIntegrityVerified": true,
+    "error": "Error: CANDIDATE_PREVIEW_CANCELLED\n    at until (file:///D:/cm-player-retry-0912/tests/player-candidate-preview.mjs:18:318)\n    at async file:///D:/cm-player-retry-0912/tests/player-candidate-preview.mjs:21:38",
+    "applications": 0,
+    "sourceBefore": null,
+    "sourceAfter": null,
+    "images": [],
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "exitReport": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    },
+    "calls": [
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "worldPanel:godot.runtimeResume",
+      "quit"
+    ]
+  },
+  "scope": "One ordinary failed-prompt retry. Real image blocks and subsequent provider replies observed; no direct packet capture or claim that prose alone proves image comprehension. Independent checked preview and adoption show improvement. No model-generated source was manually edited."
+}
