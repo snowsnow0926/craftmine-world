@@ -25,3 +25,15 @@ AnimationMixer、AnimationPlayer 和 Skeleton3D 节点本身不绘制表面，�
 64 个候选/512 节点/16,384 三角形等预算原样保留。完整森林已有 48 个 mesh，加底座约 49 个候选；若要求两犬同场，资产需合并不独立运动的细节，避免仅候选数量就超限。真实犬导入的最终规模与同场验收另行记录。
 
 发布集成需按既有机制刷新固定 helper 的哈希与打包材料，并将创作指导里的笼统“动画不支持”改为本轮精确覆盖范围；由总控与底座状态改动统一更新。不得降低旧世界 observer 的完整性门槛。
+
+## 双犬与完整森林的实际导入补验
+
+使用 `D:/cm-canine-resource-0912/desktop/godot/components/canine-visuals/` 的原始 `dog.glb` 与 `pomeranian-white.glb`，逐项核对其来源清单哈希并复制到独立项目；保留无 LOD sidecar。首轮犬文件分别为 SHA256 `529799983061ea770a81f7edb463ce252b256a7fc6f1bd3af15c88d07bd643e5`、`0d195c4be4638d56702f67b9c45a9990828f3a304b6a20a0ed25ce8e112299c7`，该旧报告保留。
+
+真实锁定引擎将两犬、完整林间入口和一个夹具地面共同加载。每犬恰好 7 个 MeshInstance，无 skin/blend shape；通过实际导入的 AnimationPlayer 播放 idle/walk 并推进。四个犬样本均命中对应犬的真实部件表面，普通犬尾巴遮住身体时命中 TailMesh；博美分别命中 Torso 和 TailMesh。不能为了固定命中部件而忽略更近的尾巴。两个动画角色同时存在时，森林橡树仍命中 `Trees/OakFrontLeft/Visual/tree_oak`。
+
+实际遍历 197 个节点，62 个 ArrayMesh 候选、9,480 三角形，预算保持原值。全场另有地面 Box，总 mesh 数 63；该水平射线不穿地面，所以 Box 没被计入候选。未使用粗略 AABB 命中、未隐藏宠物或森林、未修改资源字节、行为或保存状态。
+
+报告：`D:/cm-dynamic-mesh-selection-0912/test-results/canine-forest-pick-Z3SQCL/report.json`。复验运行 `node tests/mesh-pick/canine-forest.mjs`；尚未合入犬资源的工作树可显式设置 `CRAFTMINE_CANINE_COMPONENT_ROOT` 为上述资源目录。原始导入依赖、哈希与过程记录保留在报告中。这仍是实际引擎目标拾取验证，不替代完整成品中的外观、跟随、抚摸和持久化验收。
+
+资源作者随后仅调整共用白色色板，几何、节点和动画未变。对最终两文件重新完整导入并重跑同一夹具，通过结果和预算计数一致。最终 SHA256 为 `a305eaec457e271f4516b51c2025702805aba16750d326c9398421e6d895fdf1`（dog）和 `fb7f21450918c8c15868b1127bb715ebb867639c956cd104687a333247a6720d`（pomeranian-white）；最终报告为 `D:/cm-dynamic-mesh-selection-0912/test-results/canine-forest-pick-ZOAnV5/report.json`。没有把首轮文件哈希冒充最终资源证明。
