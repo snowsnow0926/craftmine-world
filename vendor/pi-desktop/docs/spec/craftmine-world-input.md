@@ -85,3 +85,16 @@ hidden and unfocusable. It does not force continuous frames on the application
 renderer: overlay tests must still tolerate an occluded application's suspended
 animation callbacks. An offscreen-only capture API remains offscreen-only; use
 the ordinary scope-checked product capture route for normal-rendering evidence.
+
+`tests/fb03-input-normal-native.mjs <app> <isolated-run> [--development]` verifies
+the complete application's selected FB03 world, actual native attachment,
+Godot-originated F2, main-originated Shift+F2, Escape, retained runtime identity,
+cursor restoration, and ordered shutdown. The truly hidden normal window may
+need its initial layout painted before this test can begin: it records one
+`capturePage({stayHidden:true})` attempt while temporarily disabling the main
+renderer throttle, then restores the original policy. A failed image readback
+is reported as such; it is never counted as pixel evidence. Actual native world
+attachment is required separately. After that prerequisite, main animation
+callbacks are deliberately held and no capture or wake-up assists F2's native
+layer transition. This isolates the overlay scheduling regression from the
+hidden test window's lack of normal display-driven startup paints.
