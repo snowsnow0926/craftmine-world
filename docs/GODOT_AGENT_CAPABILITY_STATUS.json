@@ -40,7 +40,7 @@
     {
       "id": "GU3",
       "status": "in-progress",
-      "next": "Sealed2a double-module bootstrap passed, but ordinary layout prompt failed before model execution: legacy migration gate rejects modern cohort; fix complete-cohort no-op recognition, then continue same-session layout/parameter/adoption/cold proof"
+      "next": "Sealed863 ordinary model layout and three local module parameters passed actual checks/adoption/cold plus right-wall blocking and left-wall bidirectional traversal; raw source tools used, typed-query use, native matrix facts and broader material/property scopes remain"
     },
     {
       "id": "GU4",
@@ -50,7 +50,7 @@
     {
       "id": "GU5",
       "status": "in-progress",
-      "next": "Durable task/session/job/candidate/budget recovery facts and real core restart test integrated; actual compaction/model-switch and closed-loop repair remain"
+      "next": "Private verified native-import evidence now reaches build-read diagnostics; ordinary saved parameter draft survived permission interruption and continuation; exact legacy bridge repair and Core retry tests passed, original failed-world sealed recovery and broader compaction/model-switch repair remain"
     },
     {
       "id": "GU6",
@@ -64,6 +64,13 @@
     }
   ],
   "evidence": [
+    {
+      "kind": "ordinary-module-creation-and-physics",
+      "commit": "863622e9c9465bf2b00d3f0ec9964ad3ac36d295",
+      "path": "docs/GODOT_AGENT_MODULE_PLAYER_RESULT_2026-09-12.md",
+      "status": "passed-scoped-with-recorded-interruptions",
+      "scope": "Confirmed Flash/max, ordinary layout14 calls; local3 parameter patch, expired check permission then ordinary continuation4 calls; actual check/adoption/cold and bilateral local traversal, raw tools not typed query; original false model explanations retained"
+    },
     {
       "kind": "sealed-v2-product-and-entry",
       "commit": "2a584796a9da32f6c8c5e597804d03fdefff638a",

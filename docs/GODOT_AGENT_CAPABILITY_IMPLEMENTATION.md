@@ -12,6 +12,35 @@ Player acceptance uses the selected session model, thinking level and ordinary p
 
 ## Module source parameters and declaration preservation
 
+The ordinary module wishes now have actual sealed `863622e9` evidence. Layout
+completed in 14 model calls; only the two existing instance positions changed.
+The second wish saved three left-instance parameters, then its check permission
+expired because the test operator did not answer in time. Ordinary continuation
+preserved the draft and completed the check in four further calls. Both candidates
+were adopted and cold-opened through normal product paths. Real traversal then
+proved the right wall remained blocking and the left building could be crossed
+front-to-back and, after another cold open, back-to-front. Raw source tools were
+chosen; typed query usage is not proven. All original reports, false model
+explanations and interventions remain in `gu3-player-layout-20260912` and
+`gu3-player-parameters-20260912`. See the module player result document.
+
+`002036d4` exposes private validated historical native-import crash evidence
+through existing build-read diagnostics, without altering the failed outcome or
+claiming a root cause. `599c64a5` makes current complete source cohorts usable in
+the existing guidance and supports safe read-only `res://` aliases.
+`42f3d4e1` clarifies visual selection versus collision, probe-local frame counts
+and unmeasured bounds. The integrator passed 48 focused diagnostics/cohort tests
+after packaging and five observation-semantics checks.
+
+`48b615ee` corrects the initial-load repair dependency closure: original bridges
+use the exact historical frame-independent replacement; the current bridge is a
+validated no-op. `85ac8499` fixes the private continuation argument whitelist.
+Actual Core testing contradicted a proposed initializer scheduler rewrite, so
+that rewrite was removed and the existing start path retained. Eleven bridge/
+legacy tests, five staged materializers, real Core retry testing and full desktop
+typecheck passed. Original failed-world recovery in a new sealed package remains
+pending; source tests alone do not establish it.
+
 The subsequent sealed `2a584796` package contains 1,619 payload files totaling
 1,018,834,353 bytes, with source ZIP hash
 `d675fa37c1c479509c9dc470d90c54436e9845a71c4abe7bbeebc6f416510d36`.
