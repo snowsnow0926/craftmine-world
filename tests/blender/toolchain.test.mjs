@@ -5,6 +5,7 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {blenderLock,blenderInventory,verifyBlenderArtifact,verifyBlenderRuntime,safeBlenderPath} from '../../desktop/blender/toolchain.mjs';
 import {extractBlenderArchive} from '../../desktop/blender/extract-toolchain.mjs';
+import {verifyBlenderBrokerInputs,fileHash} from '../../desktop/prepare-runtime-resources.mjs';
 
 test('checked-in full runtime pins cover executable, Python, GLB exporter and upstream notices',()=>{
   assert.equal(blenderLock.archive.sha256,'0e631dad7d0cad6d5d18abdd2e2550f6c0213215334eda00ddbd3d22b96ecb2c');
@@ -63,4 +64,16 @@ test('ZIP extraction handles long paths and rejects traversal, wrong root, alias
   const directory=await fs.mkdtemp(path.join(tmpdir(),'craftmine-blender-zip-long-')),out=path.join(directory,'out');await fs.mkdir(out);
   const name='blender/'+('nested-folder/'.repeat(25))+'empty.py',archive=path.join(directory,'fixture.zip');await fs.writeFile(archive,zipFixture([name]));
   await extractBlenderArchive(archive,out,'blender',safeBlenderPath);assert.equal((await fs.stat(path.join(out,name))).size,0);
+});
+
+test('packaged driver and lock must match broker build source identity, including line endings',async()=>{
+  const directory=await fs.mkdtemp(path.join(tmpdir(),'craftmine-blender-bridge-'));await fs.mkdir(path.join(directory,'blender/bridge'),{recursive:true});
+  const sourceFiles=[];
+  for(const name of ['bridge/driver.py','toolchain.lock.json']){
+    const target=path.join(directory,'blender',name);await fs.writeFile(target,'source\n');sourceFiles.push({path:name,sha256:await fileHash(target)});
+  }
+  const identity={format:'craftmine.blender-broker-identity/1',sourceFiles};
+  assert.equal((await verifyBlenderBrokerInputs(directory,identity)).length,2);
+  await fs.writeFile(path.join(directory,'blender/bridge/driver.py'),'source\r\n');
+  await assert.rejects(verifyBlenderBrokerInputs(directory,identity),/BLENDER_BROKER_SOURCE_MISMATCH/);
 });

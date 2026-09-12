@@ -58,6 +58,18 @@ export async function verifyWindowsHostInputs(directory,brokerIdentity,sourceDis
   }
   return records;
 }
+export async function verifyBlenderBrokerInputs(directory,brokerIdentity){
+  if(brokerIdentity?.format!=='craftmine.blender-broker-identity/1')throw Error('BLENDER_BROKER_IDENTITY_INVALID');
+  const records=[];
+  for(const name of ['bridge/driver.py','toolchain.lock.json']){
+    const target=path.join(directory,'blender',name);await ordinaryAncestors(path.dirname(target));
+    const stat=await fs.lstat(target);if(!stat.isFile()||stat.isSymbolicLink())throw Error('BLENDER_BROKER_INPUT_NOT_REGULAR:'+name);
+    const sha256=await fileHash(target),embedded=brokerIdentity.sourceFiles?.find(item=>item.path===name);
+    if(!embedded||embedded.sha256!==sha256)throw Error('BLENDER_BROKER_SOURCE_MISMATCH:'+name);
+    records.push({path:'blender/'+name,bytes:stat.size,sha256});
+  }
+  return records;
+}
 export async function verifyRuntimeResources(directory,expectedCommit,{packaged=false}={}){
   await ordinaryAncestors(directory);
   const manifest=JSON.parse(await fs.readFile(path.join(directory,'runtime-resources.json'),'utf8'));
@@ -65,6 +77,10 @@ export async function verifyRuntimeResources(directory,expectedCommit,{packaged=
   const files=packaged?(await Promise.all(['blender','git','godot','licenses/blender','licenses/godot','licenses/gpl'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
   if(JSON.stringify(files)!==JSON.stringify(manifest.files))throw Error('RUNTIME_RESOURCE_HASH_MISMATCH');
   if(hash(JSON.stringify(files))!==manifest.filesDigest)throw Error('RUNTIME_RESOURCE_DIGEST_MISMATCH');
+  if(manifest.blenderBrokerInputs){
+    const identity=JSON.parse(await fs.readFile(path.join(directory,'blender/broker/broker-identity.json'),'utf8'));
+    if(JSON.stringify(await verifyBlenderBrokerInputs(directory,identity))!==JSON.stringify(manifest.blenderBrokerInputs))throw Error('BLENDER_BROKER_INPUT_INVENTORY_MISMATCH');
+  }
   if(manifest.windowsExportInputs||files.some(file=>['godot/shared/standalone_bootstrap.gd','godot/shared/windows-export.cfg'].includes(file.path))){
     const brokerIdentity=JSON.parse(await fs.readFile(path.join(directory,'godot/broker/broker-identity.json'),'utf8'));
     const inputs=await verifyWindowsHostInputs(directory,brokerIdentity,manifest.sourceDistribution);
@@ -147,6 +163,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin,blend
   const blenderBrokerIdentity=JSON.parse(command(process.execPath,[path.join(root,'desktop/blender/broker-identity.mjs'),blenderBroker],{
     env:{...process.env,CRAFTMINE_BROKER_PROFILE:'release',CRAFTMINE_BROKER_SOURCE_COMMIT:commit}}));
   await fs.writeFile(path.join(blenderRoot,'broker/broker-identity.json'),JSON.stringify(blenderBrokerIdentity,null,2)+'\n');
+  const blenderBrokerInputs=await verifyBlenderBrokerInputs(staging,blenderBrokerIdentity);
   // A failed attempt is retained with its owner marker for diagnosis.
   const engine=path.join(staging,'godot/engine',lock.version);
   await verifiedCopy(path.join(godotCache,'editor',lock.editor.executable),path.join(engine,'editor',lock.editor.executable),{sha256:lock.editor.executableSha256});
@@ -185,7 +202,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin,blend
     totalBytes:gitFiles.reduce((sum,file)=>sum+file.bytes,0)},null,2)+'\n');
   const files=await resourceInventory(staging);
   const manifest={format:FORMAT,sourceCommit:commit,sourceDate:command('git',['show','-s','--format=%cI','HEAD']),
-    sourceDistribution,windowsExportInputs,
+    sourceDistribution,windowsExportInputs,blenderBrokerInputs,
     toolchain:{blender:blenderLock.version,blenderArchiveSha256:blenderLock.archive.sha256,blenderSourceSha256:blenderLock.source.sha256,blenderBrokerSha256:blenderBrokerIdentity.sha256,godot:lock.version,templatesArchiveSha256:lock.exportTemplates.sha256,git:git.version,gitArchiveSha256:git.archive.sha256,
       brokerSha256:brokerIdentity.sha256,brokerSourceDigest:brokerIdentity.sourceDigest},
     files,filesDigest:hash(JSON.stringify(files)),totalBytes:files.reduce((sum,file)=>sum+file.bytes,0),
