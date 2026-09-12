@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {register} from 'node:module';
 register(new URL('./helpers/ts-import-hooks.mjs',import.meta.url));
 const {deliverImmersionShortcut}=await import('../electron/main/immersion-shortcut-dispatch.ts');
-const {registerMainLayers,setMainImmersion,raiseMainOverlay,mainInputContents,syncMainInputFocus}=await import('../electron/main/main-window-layers.ts');
+const {registerMainLayers,setMainImmersion,raiseMainOverlay,mainInputContents,syncMainInputFocus,setMainViewBackground}=await import('../electron/main/main-window-layers.ts');
 const state=(overlay='closed',blocked=false)=>({active:true,overlay,blocked,overlayBounds:null});
 function fixture(headless=false) {
   const calls=[];let focused=null;
@@ -106,4 +106,20 @@ test('shortcut dispatch cannot escape blocked, inactive or destroyed host scope'
  const f=fixture();f.window.webContents=f.ui.webContents;const send=()=>assert.fail('out of scope dispatch');
  for(const current of [state('closed',true),{...state(),active:false}])assert.equal(deliverImmersionShortcut('compact',{state:current,window:f.window,send}),false);
  f.ui.webContents.destroyed=true;assert.equal(deliverImmersionShortcut('full',{state:state(),window:f.window,send}),false);
+});
+
+test('paintable staging stays behind the trusted UI and never owns input across immersion changes',()=>{
+ const f=fixture();f.window.focused=true;const pending=f.view('pending');
+ setMainViewBackground(pending,true);f.window.contentView.addChildView(pending,0);
+ for(const current of [state(),state('compact'),state('full'),state('closed',true),{...state(),active:false}]) {
+  setMainImmersion(f.window,current);
+  assert.equal(f.window.contentView.children[0],pending);
+  assert.notEqual(mainInputContents(f.window),pending.webContents);
+ }
+ assert.equal(f.calls.includes('pending'),false);
+ f.window.contentView.removeChildView(f.world);setMainImmersion(f.window,state());
+ assert.deepEqual(f.window.contentView.children,[pending,f.ui]);assert.equal(mainInputContents(f.window),f.ui.webContents);
+ setMainViewBackground(pending,false);raiseMainOverlay(f.window);
+ assert.deepEqual(f.window.contentView.children,[f.ui,pending]);assert.equal(mainInputContents(f.window),pending.webContents);
+ assert.equal(f.calls.at(-1),'pending','only explicit promotion releases background ownership');
 });

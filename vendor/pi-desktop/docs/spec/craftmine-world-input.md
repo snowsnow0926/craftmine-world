@@ -38,3 +38,32 @@ These regressions cover the normal scheduling branch that offscreen native
 tests previously missed. They are not a claim of physical keyboard/mouse player
 acceptance. Final integrated package verification and player retest remain
 separate evidence layers.
+
+## Normal world staging
+
+A normal world renderer stays attached behind the trusted application renderer
+with a nonzero viewport while its retained snapshot is restored. After navigation
+the host explicitly applies `setBackgroundThrottling(false)` to the loaded
+RenderWidget; constructor preferences alone did not restart that widget in the
+normal hidden-window reproduction. Layout, surface visibility, and immersion
+updates preserve this background attachment. Preparing worlds are excluded from
+native input ownership and remain below the application renderer, including when
+closed play normally lowers the application renderer. Explicit preview or
+promotion releases that background designation. Disposal removes the native view.
+
+`cancelStaging(worldId)` only cancels an in-flight stage attempt for that world.
+It marks cancellation before runtime creation, aborts an owned runtime's pending
+startup request when present, and waits for that attempt's cleanup. It does not
+close the formal world, adopt a candidate, cancel another world, or perform the
+coordinator's durable transaction recovery. A completed stage is outside this
+API's scope and returns `false`; its coordinator still checks cancellation before
+confirmation.
+
+The root-level `tests/fb03-normal-staging.mjs <read-only-profile>` fixture copies
+the player's FB03 world export and snapshot into its own directory. It uses a
+hidden, non-focusable `BaseWindow` with normal `WebContentsView` rendering and
+forbids focus, activation, physical input, and Pointer Lock. It exercises repeated
+layout changes during restore, exact snapshot recovery, preview, promotion, and
+native retirement. `--cancel-on-load` additionally proves early cancellation,
+cancellation during real load, preserved formal instance/snapshot, and successful
+retry. No original player profile writes occur.

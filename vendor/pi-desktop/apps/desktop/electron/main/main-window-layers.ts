@@ -3,6 +3,13 @@ import type { CraftmineImmersionState } from "@pi-desktop/shared";
 import { immersionBlocksInput, NO_IMMERSION } from "../../shared/craftmine-immersion";
 
 const owners = new WeakMap<BaseWindow, {renderer: WebContentsView; state: CraftmineImmersionState; input: Electron.WebContents | null; headless: boolean}>();
+const backgroundViews = new WeakSet<WebContentsView>();
+
+/** Preparing worlds need compositor frames but never own presentation or input. */
+export function setMainViewBackground(view: WebContentsView, background: boolean): void {
+  if (background) backgroundViews.add(view);
+  else backgroundViews.delete(view);
+}
 
 /** Only the trusted application renderer may occupy the native overlay layer. */
 export function registerMainLayers(window: BaseWindow, renderer: WebContentsView, options: {headless: boolean}): void {
@@ -13,8 +20,16 @@ export function setMainImmersion(window: BaseWindow, state: CraftmineImmersionSt
   const owner = owners.get(window);
   if (!owner || window.isDestroyed()) return;
   owner.state = state;
+  // Keep staging behind the trusted renderer even when closed play normally
+  // lowers that renderer. Staging must not become the last native input child.
+  let prefix = 0;
+  for (const view of [...window.contentView.children] as WebContentsView[]) {
+    if (!backgroundViews.has(view)) continue;
+    if (window.contentView.children[prefix] !== view) window.contentView.addChildView(view, prefix);
+    prefix++;
+  }
   const children = window.contentView.children;
-  const index = immersionBlocksInput(state) ? children.length - 1 : 0;
+  const index = immersionBlocksInput(state) ? children.length - 1 : prefix;
   if (children[index] !== owner.renderer) window.contentView.addChildView(owner.renderer, index);
   syncMainInputFocus(window);
 }
@@ -22,7 +37,7 @@ export function setMainImmersion(window: BaseWindow, state: CraftmineImmersionSt
 /** A newly attached world/candidate must stay underneath an already open overlay. */
 export function raiseMainOverlay(window: BaseWindow): void {
   const owner = owners.get(window);
-  if (owner && immersionBlocksInput(owner.state)) setMainImmersion(window, owner.state);
+  if (owner) setMainImmersion(window, owner.state);
   else syncMainInputFocus(window);
 }
 
@@ -32,7 +47,7 @@ export function mainInputContents(window: BaseWindow): Electron.WebContents | nu
   if (!owner || window.isDestroyed()) return null;
   if (!owner.state.active || immersionBlocksInput(owner.state)) return owner.renderer.webContents;
   const views = window.contentView.children as WebContentsView[];
-  return [...views].reverse().find(view => view.webContents && !view.webContents.isDestroyed())?.webContents ?? null;
+  return [...views].reverse().find(view => !backgroundViews.has(view) && view.webContents && !view.webContents.isDestroyed())?.webContents ?? null;
 }
 
 /**

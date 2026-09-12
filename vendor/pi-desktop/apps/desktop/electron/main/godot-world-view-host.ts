@@ -1,5 +1,5 @@
 import type { MainWindow } from "./main-window";
-import { raiseMainOverlay, syncMainInputFocus } from "./main-window-layers";
+import { raiseMainOverlay, syncMainInputFocus, setMainViewBackground } from "./main-window-layers";
 import { WebContentsView, session, type NativeImage, type Session, type WebContents } from "electron";
 import { join, resolve, sep } from "node:path";
 import { realpath } from "node:fs/promises";
@@ -311,6 +311,7 @@ export class GodotWorldViewHost {
   private current: LiveInstance | null = null;
   /** Replacement instance that has not finished starting yet. */
   private pending: LiveInstance | null = null;
+  private stagingAttempt: {worldId: string; cancelled: boolean; instance?: LiveInstance; settled: Promise<void>; finish(): void} | null = null;
   private stagedRequest: GodotWorldOpenRequest | null = null;
   /** Supplied only by the trusted candidate coordinator at staging time. */
   private stagedCandidateId: string | null = null;
@@ -466,9 +467,9 @@ export class GodotWorldViewHost {
     }
   }
 
-  private startReplacement(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged = false): Promise<GodotWorldState> {
+  private startReplacement(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged = false, attempt: typeof this.stagingAttempt = null): Promise<GodotWorldState> {
     if (this.disposed) return Promise.reject(new Error("World startup was cancelled"));
-    const completion = this.startReplacementInner(request, root, worldId, buildId, previous, staged);
+    const completion = this.startReplacementInner(request, root, worldId, buildId, previous, staged, attempt);
     // Track from before the factory returns, not only after pending is set.
     // A failed creation remains an error for its caller; shutdown waits for its
     // completion and any owned cleanup, rather than treating cancellation as a
@@ -479,11 +480,11 @@ export class GodotWorldViewHost {
     return completion;
   }
 
-  private async startReplacementInner(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged: boolean): Promise<GodotWorldState> {
+  private async startReplacementInner(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged: boolean, attempt: typeof this.stagingAttempt): Promise<GodotWorldState> {
     const generation = this.generation;
-    // The pending native view is deliberately detached until loaded. The
-    // product panel owns startup progress, including retained exports whose
-    // HTML predates the loading shell. Never depend on that export's UI.
+    // The product panel owns startup progress. A pending native world remains
+    // behind it with a real compositor surface while restore crosses physics
+    // frames, including retained exports whose HTML predates the loading shell.
     const startupState=(loadingStage: GodotWorldState["loadingStage"],instanceId="")=>{
       if(!previous&&!staged)this.publish({worldId,buildId,instanceId,state:"loading",loadingStage});
     };
@@ -499,7 +500,7 @@ export class GodotWorldViewHost {
     });
     let view: WebContentsView;
     try {
-      if (this.disposed || generation !== this.generation) throw new Error("World startup was cancelled");
+      if (this.disposed || generation !== this.generation || attempt?.cancelled) throw new Error("World startup was cancelled");
       view = this.createView(runtime);
     } catch (error) {
       // A view that cannot be created must not leave a listening server behind.
@@ -519,6 +520,7 @@ export class GodotWorldViewHost {
       faults: [],
     };
     this.pending = instance;
+    if (attempt) attempt.instance = instance;
     instance.detach = runtime.attach((message) => {
       if (!instance.alive || instance.view.webContents.isDestroyed()) return;
       instance.view.webContents.send(GODOT_WORLD_MESSAGE_CHANNEL, message);
@@ -552,9 +554,15 @@ export class GodotWorldViewHost {
     });
     view.webContents.on("destroyed", () => { this.recordFault(instance, "renderer-destroyed"); });
     try {
+      if (attempt?.cancelled) throw new Error("World startup was cancelled");
       startupState("engine",runtime.instanceId);
+      this.attachStagingView(instance);
       await view.webContents.loadURL(runtime.url);
+      // Constructor preferences do not resynchronize the hidden RenderWidget
+      // created during navigation. Apply the policy to that loaded widget too.
+      view.webContents.setBackgroundThrottling(false);
       await runtime.waitReady();
+      if (attempt?.cancelled) throw new Error("World startup was cancelled");
       if (hasHeadlessController()) {
         const capabilities = await runtime.request("capabilities", {});
         // Old retained worlds remain playable but cannot claim the new test API.
@@ -570,7 +578,7 @@ export class GodotWorldViewHost {
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
       }
-      if (this.disposed || generation !== this.generation || !instance.alive) throw new Error("World startup was cancelled");
+      if (this.disposed || generation !== this.generation || !instance.alive || attempt?.cancelled) throw new Error("World startup was cancelled");
       await this.pauseController.attach(instance, {
         pause: async () => { const result = await runtime.pause(); if (result.error) throw new Error(result.error); },
         resume: async () => { const result = await runtime.resume(); if (result.error) throw new Error(result.error); },
@@ -593,7 +601,7 @@ export class GodotWorldViewHost {
       }
       throw new Error(`${reason}${previous?.alive ? " (previous world kept running)" : ""}`);
     }
-    if (this.disposed || generation !== this.generation || !instance.alive) {
+    if (this.disposed || generation !== this.generation || !instance.alive || attempt?.cancelled) {
       this.pending = null;
       this.stagedRequest = null;
       this.stagedCandidateId = null;
@@ -644,9 +652,12 @@ export class GodotWorldViewHost {
    */
   async stageCandidate(request: GodotWorldOpenRequest, options: { first?: boolean; candidateId?: string } = {}): Promise<GodotWorldState> {
     if (this.disposed || this.transitioning || this.pending || this.stagedRequest) throw new Error("WORLD_BUSY");
+    const worldId = requireId("world identity", request.worldId);
+    let finish!: () => void;
+    const attempt = {worldId, cancelled: false, settled: new Promise<void>(resolve => { finish = resolve; }), finish: () => finish()};
+    this.stagingAttempt = attempt;
     this.transitioning = true;
     try {
-      const worldId = requireId("world identity", request.worldId);
       const buildId = requireId("build identity", request.buildId);
       if (options.first) {
         if (this.current?.alive) throw new Error("GODOT_WORLD_ALREADY_RUNNING");
@@ -658,11 +669,27 @@ export class GodotWorldViewHost {
       const roots = (await Promise.all((this.options.allowedRoots?.() ?? []).map(item=>realpath(resolve(item)).catch(()=>null)))).filter((item):item is string=>item!==null);
       if (!isInsideAllowedRoot(root, roots)) throw new Error("Candidate build is outside the allowed build roots");
       const candidateId = options.candidateId === undefined ? null : requireId("candidate identity", options.candidateId);
+      if (attempt.cancelled) throw new Error("World startup was cancelled");
       if (!options.first) await this.pause();
-      const result = await this.startReplacement(request, root, worldId, buildId, this.current, true);
+      if (attempt.cancelled) throw new Error("World startup was cancelled");
+      const result = await this.startReplacement(request, root, worldId, buildId, this.current, true, attempt);
       this.stagedCandidateId = candidateId;
       return result;
-    } finally { this.transitioning = false; }
+    } finally {
+      this.transitioning = false;
+      if (this.stagingAttempt === attempt) this.stagingAttempt = null;
+      attempt.finish();
+    }
+  }
+
+  /** Abort only this world's in-flight stage; callers retain their own transaction recovery. */
+  async cancelStaging(worldId: string): Promise<boolean> {
+    const attempt = this.stagingAttempt;
+    if (!attempt || attempt.worldId !== worldId) return false;
+    attempt.cancelled = true;
+    attempt.instance?.runtime.abortStartup("World startup was cancelled");
+    await attempt.settled;
+    return true;
   }
 
   get candidateInstance(): {worldId:string;buildId:string;instanceId:string} | null {
@@ -1289,6 +1316,7 @@ export class GodotWorldViewHost {
   /** Close a view at most once; `webContents.close()` is asynchronous. */
   private closeView(instance: LiveInstance): Promise<void> {
     if (instance.closePromise) return instance.closePromise;
+    this.detachView(instance.view);
     instance.closed = true;
     const contents = instance.view.webContents;
     instance.closePromise = new Promise<void>((resolve, reject) => {
@@ -1404,9 +1432,11 @@ export class GodotWorldViewHost {
   private applyBounds(): void {
     const instance = this.candidateVisible && this.stagedRequest ? this.pending : this.current;
     const other = instance === this.current ? this.pending : this.current;
-    if (other) this.detachView(other.view);
+    if (other === this.pending && other?.alive) this.attachStagingView(other);
+    else if (other) this.detachView(other.view);
     const window = this.options.window();
     if (!instance || !instance.alive || !window || window.isDestroyed()) return;
+    setMainViewBackground(instance.view, false);
     if (!this.visible || !this.surfaceVisible) {
       this.detachView(instance.view);
       return;
@@ -1422,6 +1452,7 @@ export class GodotWorldViewHost {
   }
 
   private detachView(view: WebContentsView): void {
+    setMainViewBackground(view, false);
     const window = this.options.window();
     if (!window || window.isDestroyed()) return;
     const children = window.contentView.children;
@@ -1431,12 +1462,21 @@ export class GodotWorldViewHost {
     }
   }
 
+  private attachStagingView(instance: LiveInstance): void {
+    const window = this.options.window();
+    if (!instance.alive || instance.view.webContents.isDestroyed() || !window || window.isDestroyed()) return;
+    setMainViewBackground(instance.view, true);
+    if (!window.contentView.children.includes(instance.view)) window.contentView.addChildView(instance.view, 0);
+    raiseMainOverlay(window);
+  }
+
   private createView(runtime: WorldRuntime): WebContentsView {
     const ses = this.prepareSession(runtime.instanceId, runtime.origin);
     const view = new WebContentsView({
       webPreferences: {
         session: ses,
         offscreen: isHeadlessAcceptance(),
+        backgroundThrottling: false,
         preload: join(__dirname, "../preload/godot-world.cjs"),
         contextIsolation: true,
         nodeIntegration: false,
