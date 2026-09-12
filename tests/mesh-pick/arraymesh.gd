@@ -134,7 +134,7 @@ func run() -> void:
 	surface(mesh,triangle())
 	instance(mesh)
 	world.add_child(AnimationPlayer.new())
-	check(pick().reason == "animation-or-skeleton" and pick().counts.facesRead == 0, "declared animation mixer does not masquerade as static geometry")
+	check(pick().status == "hit" and pick().counts.facesRead == 1, "non-rendering AnimationPlayer does not erase supported rigid geometry")
 	reset()
 	mesh = ArrayMesh.new()
 	surface(mesh,triangle())
