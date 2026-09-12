@@ -52,8 +52,8 @@ function runBroker(discovery,request,signal) {
       clearTimeout(cancelTimer);signal.removeEventListener('abort',cancel);
       if(failure)return reject(failure);
       if(signal.aborted)return reject(Error('BLENDER_JOB_CANCELLED'));
-      if(code!==0)return reject(Error('BLENDER_BROKER_EXIT_FAILED'));
-      try {const lines=stdout.trim().split(/\r?\n/);check(lines.length===1,'BLENDER_BROKER_RESPONSE_INVALID');resolve(JSON.parse(lines[0]));}
+      try {const lines=stdout.trim().split(/\r?\n/);check(lines.length===1,'BLENDER_BROKER_RESPONSE_INVALID');const receipt=JSON.parse(lines[0]);
+        check(code===0||receipt.state==='failed','BLENDER_BROKER_EXIT_FAILED');resolve(receipt);}
       catch(error){reject(error);}
     });
     child.stdin.write(JSON.stringify(request)+'\n');
@@ -66,20 +66,26 @@ async function recover(discovery,tasksRoot){
   let report;try{report=JSON.parse(result.stdout);}catch{throw Error('BLENDER_RECOVERY_REPORT_INVALID');}
   const plain=value=>typeof value==='string'?value.replace(/^\\\\\?\\/,''):'';
   check(report.policyVersion==='craftmine.windows.recovery-journal.v1'&&path.resolve(plain(report.tasksRoot))===path.resolve(tasksRoot)&&Array.isArray(report.entries)&&Array.isArray(report.unreadable),'BLENDER_RECOVERY_REPORT_INVALID');
-  check(!result.error&&report.unreadable.length===0&&report.entries.every(entry=>entry.identityVerified===true&&entry.journalRemoved===true&&entry.finalReceiptObserved!==true),'BLENDER_RECOVERY_INCOMPLETE');
+  check(!result.error&&report.unreadable.length===0&&report.skippedCount===0&&report.reconciledCount===report.entries.length&&report.entries.every(entry=>entry.identityVerified===true&&entry.journalRemoved===true&&entry.finalReceiptObserved===false&&entry.profileDeleted===true&&entry.taskRootRemoved===true),'BLENDER_RECOVERY_INCOMPLETE');
   return {verified:true,reclaimed:report.entries.length};
 }
-function validateReceipt(receipt,request,discovery) {
+function validateEnvelope(receipt,request,discovery) {
   check(receipt?.schemaVersion===1&&receipt.requestId===request.requestId&&receipt.taskId===request.taskId&&receipt.operation==='model','BLENDER_BROKER_IDENTITY_MISMATCH');
   check(receipt.inputHash===request.inputHash&&isDeepStrictEqual(receipt.sourceBinding,request.sourceBinding),'BLENDER_BROKER_BINDING_MISMATCH');
-  check(receipt.state==='succeeded'&&receipt.exitCode===0,'BLENDER_BROKER_TASK_FAILED');
-  check(receipt.policyVersion==='craftmine.windows.lpac-registry.v1'&&receipt.processVerification?.verified===true&&receipt.networkPreflight?.verified===true&&receipt.cleanup?.verified===true&&receipt.resourceEnforcement?.enforced===false,'BLENDER_OS_ISOLATION_UNVERIFIED');
-  const process=receipt.processVerification,network=receipt.networkPreflight;
-  check(process.verifiedBeforeResume===true&&process.jobMembershipVerified===true&&process.isAppContainer===true&&process.activeProcessLimit===1&&receipt.jobActiveProcesses===0&&network.jobActiveProcesses===0&&network.exactTaskExempt===false&&Array.isArray(network.hostReceivedCounts)&&network.hostReceivedCounts.length===4&&network.hostReceivedCounts.every(value=>value===0),'BLENDER_OS_ISOLATION_UNVERIFIED');
-  check(receipt.cleanup.workRemoved===true&&receipt.cleanup.profileHresult===0&&receipt.cleanup.error===null&&receipt.binRemoved===true&&receipt.recoveryJournal?.cleared===true&&receipt.recoveryJournal.error===null&&receipt.recoveryJournal.policyVersion==='craftmine.windows.recovery-journal.v1','BLENDER_CLEANUP_UNVERIFIED');
   check(receipt.brokerSha256===discovery.brokerSha256,'BLENDER_BROKER_PIN_MISMATCH');
   check(Array.isArray(receipt.sourceFiles)&&digest(receipt.sourceFiles)===request.inputHash&&receipt.sourceSnapshotDigest===request.inputHash,'BLENDER_INPUT_CHANGED');
   check(receipt.runtimeVersion===discovery.runtimeVersion&&receipt.runtimeInventoryDigest===discovery.runtimeInventoryDigest,'BLENDER_RUNTIME_UNVERIFIED');
   return receipt;
 }
-module.exports={discover,runBroker,recover,validateReceipt,ordinary,readOrdinary,hash,digest,check};
+function validateReceipt(receipt,request,discovery) {
+  validateEnvelope(receipt,request,discovery);
+  check(receipt.state==='succeeded'&&receipt.exitCode===0,'BLENDER_BROKER_TASK_FAILED');
+  check(receipt.policyVersion==='craftmine.windows.lpac-registry.v1'&&receipt.processVerification?.verified===true&&receipt.networkPreflight?.verified===true&&receipt.cleanup?.verified===true&&receipt.resourceEnforcement?.enforced===false,'BLENDER_OS_ISOLATION_UNVERIFIED');
+  const process=receipt.processVerification,network=receipt.networkPreflight;
+  check(process.verifiedBeforeResume===true&&process.jobMembershipVerified===true&&process.isAppContainer===true&&process.activeProcessLimit===1&&receipt.jobActiveProcesses===0&&network.jobActiveProcesses===0&&network.exactTaskExempt===false&&Array.isArray(network.hostReceivedCounts)&&network.hostReceivedCounts.length===4&&network.hostReceivedCounts.every(value=>value===0),'BLENDER_OS_ISOLATION_UNVERIFIED');
+  const preflight=network.processVerification;
+  check(typeof process.appContainerSid==='string'&&preflight?.appContainerSid===process.appContainerSid&&preflight.verified===true&&preflight.verifiedBeforeResume===true&&preflight.jobMembershipVerified===true&&preflight.isAppContainer===true&&preflight.activeProcessLimit===1,'BLENDER_OS_ISOLATION_UNVERIFIED');
+  check(receipt.cleanup.workRemoved===true&&receipt.cleanup.profileHresult===0&&receipt.cleanup.error===null&&receipt.binRemoved===true&&receipt.recoveryJournal?.cleared===true&&receipt.recoveryJournal.error===null&&receipt.recoveryJournal.policyVersion==='craftmine.windows.recovery-journal.v1','BLENDER_CLEANUP_UNVERIFIED');
+  return receipt;
+}
+module.exports={discover,runBroker,recover,validateEnvelope,validateReceipt,ordinary,readOrdinary,hash,digest,check};

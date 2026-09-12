@@ -84,7 +84,11 @@ function createBlenderJobs(core,options={}) {
       if(!error.errorCode){try{result=await core.call('godotProject.receipt',{binding:record.taskBinding,worldId:record.worldId,toolCallId:params.toolCallId,method:'godotProject.patch',request:params});}catch{}}
       if(!result)throw error;
     }
-    check(result?.worldId===record.worldId&&Number.isSafeInteger(result.revision)&&SHA.test(result.manifestHash),'BLENDER_IMPORT_RECEIPT_INVALID');
+    check(result&&(result.worldId===undefined||result.worldId===record.worldId)&&Number.isSafeInteger(result.revision)&&result.revision>record.revision&&SHA.test(result.manifestHash),'BLENDER_IMPORT_RECEIPT_INVALID');
+    // Git-backed patches intentionally omit worldId. Verify the committed file
+    // at the returned immutable source pins instead of assuming receipt shape.
+    const imported=await core.call('godotProject.read',{context,worldId:record.worldId,revision:result.revision,manifestHash:result.manifestHash,path:record.modelPath,offset:0,limit:1});
+    check(imported.worldId===record.worldId&&imported.revision===result.revision&&imported.manifestHash===result.manifestHash&&imported.path===record.modelPath&&imported.sha256===model.sha256&&imported.bytes===model.bytes,'BLENDER_IMPORT_SOURCE_MISMATCH');
     record.status='imported';record.imported={revision:result.revision,manifestHash:result.manifestHash,modelSha256:model.sha256};record.reason=null;
   }
   async function generateNew(args,{context,worldId,workspace,toolCallId}){
@@ -111,13 +115,16 @@ function createBlenderJobs(core,options={}) {
       sourceBinding:{worldId,buildId:source.baseBuild??workspace.task.binding.baseBuild,sourceRevision:args.revision,sourceDigest:args.manifestHash},inputHash:digest(files)};
     await persist(record);receipts.set(invocationKey(context,toolCallId,record.storeDirectory),{jobId,requestHash:record.requestHash});await assertActive(context);
     const controller=new AbortController();const entry={record,controller,promise:null};running.set(jobId,entry);
-    entry.promise=(async()=>{try{
-      record.status='running';await persist(record);const receipt=await (options.runBroker??native.runBroker)(discovery,request,controller.signal);
+    entry.promise=(async()=>{let brokerReceipt;try{
+      record.status='running';await persist(record);const receipt=brokerReceipt=await (options.runBroker??native.runBroker)(discovery,request,controller.signal);
       check(!controller.signal.aborted,'BLENDER_JOB_CANCELLED');native.validateReceipt(receipt,request,discovery);await stage(receipt,request,record);
       record.status='generated';await persist(record);await importModel(record,context,controller.signal);
     }catch(error){record.reason=/^[A-Z][A-Z0-9_:.-]{0,160}$/.test(error.message)?error.message:'BLENDER_JOB_FAILED';
-      try{let log=(await readOrdinary(path.join(tasksRoot,record.nativeTaskId,'logs','task.log'),4*1024*1024)).toString('utf8').slice(-6000);
-        for(const [prefix,label]of [[options.dataPath,'<managed>'],[discovery.toolchain.runtimeRoot,'<runtime>']])log=log.replaceAll(prefix,label).replaceAll(prefix.replaceAll('\\','/'),label);
+      try{native.validateEnvelope(brokerReceipt,request,discovery);
+        const logsRoot=path.join(tasksRoot,record.nativeTaskId,'logs');check(path.resolve(brokerReceipt.logsRoot??'')===logsRoot,'BLENDER_LOG_ROOT_MISMATCH');
+        const logs=brokerReceipt.logs?.filter(item=>item.path==='task.log');check(logs?.length===1,'BLENDER_LOG_IDENTITY_MISSING');
+        const bytes=await readOrdinary(path.join(logsRoot,'task.log'),4*1024*1024);check(bytes.length===logs[0].bytes&&hash(bytes)===logs[0].sha256,'BLENDER_LOG_HASH_MISMATCH');let log=bytes.toString('utf8').slice(-6000);
+        for(const [prefix,label]of [[options.dataPath,'<managed>'],[discovery.toolchain.runtimeRoot,'<runtime>']])for(const form of [prefix,prefix.replaceAll('\\','/')])log=log.replace(new RegExp(form.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),label);
         record.diagnostics={source:'untrusted-script-log',text:log};}catch{/* A missing or linked log supplies no evidence. */}
       record.status=controller.signal.aborted?'cancelled':record.artifacts?'generated':'failed';
     }finally{await persist(record);running.delete(jobId);}})();entry.promise.catch(()=>{});
