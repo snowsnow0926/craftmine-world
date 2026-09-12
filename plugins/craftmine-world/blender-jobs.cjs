@@ -25,7 +25,7 @@ function createBlenderJobs(core,options={}) {
   const running=new Map(),receipts=new Map(),starting=new Map();let initialized=null,recovered=null,closed=false,capability={available:false,reason:'BLENDER_NOT_CHECKED'};
   const requestHash=args=>hash(JSON.stringify([args.name,args.script,args.revision,args.manifestHash,args.expectedHash,args.previousJobId??null]));
   const invocationKey=(context,toolCallId,storeDirectory)=>hash(JSON.stringify([context.projectId,context.sessionId,context.turnId,toolCallId,storeDirectory]));
-  const assertActive=async context=>{check(!closed,'BLENDER_SERVICE_STOPPED');await options.assertActive?.(context);};
+  const assertActive=async context=>{check(!closed,'BLENDER_SERVICE_STOPPED');await options.assertActive?.(context);check(!closed,'BLENDER_SERVICE_STOPPED');};
   async function persist(record){record.updatedAt=now();const directory=path.join(root,record.jobId);await ordinary(directory,'directory');const temporary=path.join(directory,'record-'+randomUUID()+'.tmp');await fs.writeFile(temporary,JSON.stringify(record),{flag:'wx'});await fs.rename(temporary,path.join(directory,'record.json'));}
   function init(){return initialized??=(async()=>{
     await fs.mkdir(root,{recursive:true});await fs.mkdir(tasksRoot,{recursive:true});await ordinary(root,'directory');await ordinary(tasksRoot,'directory');
@@ -78,6 +78,7 @@ function createBlenderJobs(core,options={}) {
     await assertActive(context);check(!signal.aborted,'BLENDER_JOB_CANCELLED');
     // Persist the exact request identity before crossing the transactional core.
     record.status='importing';await persist(record);
+    await assertActive(context);check(!signal.aborted,'BLENDER_JOB_CANCELLED');
     let result;
     try{result=await core.call('godotProject.patch',params,30000);}catch(error){
       if(!error.errorCode){try{result=await core.call('godotProject.receipt',{binding:record.taskBinding,worldId:record.worldId,toolCallId:params.toolCallId,method:'godotProject.patch',request:params});}catch{}}
@@ -136,7 +137,8 @@ function createBlenderJobs(core,options={}) {
     check(record.context.sessionId===binding.context.sessionId&&record.context.turnId===binding.context.turnId,'BLENDER_CANCEL_SCOPE_MISMATCH');
     if(entry){entry.controller.abort();await entry.promise;}return publicRecord(await load(jobId,binding));}
   async function cancelTurn(context){const entries=[...running.values()].filter(entry=>entry.record.context.sessionId===context.sessionId&&entry.record.context.turnId===context.turnId);for(const entry of entries)entry.controller.abort();await Promise.allSettled(entries.map(entry=>entry.promise));}
-  async function stop(){closed=true;const entries=[...running.values()];for(const entry of entries)entry.controller.abort();await Promise.allSettled(entries.map(entry=>entry.promise));recovered=null;initialized=null;}
+  async function stop(){closed=true;for(const entry of running.values())entry.controller.abort();await Promise.allSettled([...starting.values()]);
+    const entries=[...running.values()];for(const entry of entries)entry.controller.abort();await Promise.allSettled(entries.map(entry=>entry.promise));recovered=null;initialized=null;}
   async function tool(name,args,binding){const identity={...binding,projectId:binding.context.projectId};
     if(name==='blender_status')return status();if(name==='blender_generate')return generate(args,binding);if(name==='blender_job_read')return read(args,identity);if(name==='blender_cancel')return cancel(args,identity);throw Error('BLENDER_TOOL_UNKNOWN');}
   return {tool,status,cancelTurn,stop,start:async()=>{closed=false;await status();},drain:stop};

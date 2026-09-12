@@ -93,7 +93,8 @@ async function onLoad() {
     toolchain:typeof pi.craftmine?.getBlenderToolchain==='function'?await pi.craftmine.getBlenderToolchain():null,
     assertActive:async context=>{if(endedTurns.has(turnKey(context)))throw Error('TURN_ENDED');
       const bound=await core.call('task.context',{context});
-      if(bound?.world?.id!==(await pi.plugin.getSettings()).activeWorldId)throw Error('GODOT_WORLD_CHANGED');}});
+      if(bound?.world?.id!==(await pi.plugin.getSettings()).activeWorldId)throw Error('GODOT_WORLD_CHANGED');
+      if(endedTurns.has(turnKey(context)))throw Error('TURN_ENDED');}});
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
   const portableRestore={restore:async params=>{await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();await blenderJobs.start();}}};
   hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback});
