@@ -200,6 +200,7 @@ func show_message(text: String) -> void:
 
 func snapshot() -> Dictionary:
 	return {
+		"health": health_label.text if health_label != null else "",
 		"equipment": equipment_label.text if equipment_label != null else "",
 		"ammo": ammo_label.text if ammo_label != null else "",
 		"status": status_label.text if status_label != null else "",
