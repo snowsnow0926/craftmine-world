@@ -50,11 +50,14 @@ app.whenReady().then(async()=>{
       throw Error('Unexpected host request: '+method);
     }).sampleLiveState}).find(t=>t.name==='godot_performance_observe');
   const invocation={projectId:'fixture-project',sessionId:'fixture-session',turnId:phase,toolCallId:'performance',executionId:'fixture-execution'};
-  report.broker=await broker(async identity=>{report.brokerHostSample=await sample(identity);return report.brokerHostSample;}).execute({},invocation);
+  report.performanceCallIdentities=[];
+  report.broker=await broker(async identity=>{report.performanceCallIdentities.push(identity);report.brokerHostSample=await sample(identity);return report.brokerHostSample;}).execute({},invocation);
   assert.equal(report.broker.available,true,JSON.stringify(report.broker));
   assert.equal(report.broker.measured.memoryWorkingSetMb.value,report.brokerHostSample.memoryWorkingSetMb);
   assert.equal(report.broker.scope.instanceId,host.instance.instanceId);
   assert.equal(report.broker.measured.memoryWorkingSetMb.unit,'MiB');
+  assert.deepEqual(report.performanceCallIdentities,[{worldId:descriptor.worldId,buildId:descriptor.buildId},
+    {worldId:descriptor.worldId,buildId:descriptor.buildId,instanceId:host.instance.instanceId}]);
   for(const key of ['frameTimeMs','physicsStepMs','objectCount','gpuTimeMs'])assert.equal(report.broker.measured[key].status,'unknown');
   assert.deepEqual(report.coreFixtureCalls,['task.context','godotRuntime.describe','task.context','godotRuntime.describe']);
   report.snapshot=(await host.snapshot()).state;
