@@ -57,6 +57,12 @@ unless the player edits it; no request sends while the error is unresolved.
 A cancellation failure only offers cancellation retry, not initialization
 restart of an operation the player has cancelled.
 
+Completion checks the live ordinary composer before handing input back to the
+world. A new text or attachment draft keeps dialogue visible and exposes
+**Enter world**; that explicit entry snapshots the draft before changing the
+presentation. With no new draft, ordinary completion still enters play
+automatically. Missing live-editor evidence is treated conservatively.
+
 ## Evidence scope
 
 `tests/fb03-dialogue-preparation-headless.mjs` renders the actual preparation

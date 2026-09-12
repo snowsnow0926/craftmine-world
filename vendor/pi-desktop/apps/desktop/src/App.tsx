@@ -1977,10 +1977,11 @@ function AppShell() {
             {page === "chat" && <CraftmineCreationResult autoOpen={craftmineImmersive} />}
             {dialogueWorld.state && <div className="craftmine-dialogue-status no-drag" data-dialogue-phase={dialogueWorld.state.phase}>
               <strong>{dialogueWorld.state.phase === "preparing" ? "正在准备新世界…" : "通过对话生成世界"}</strong>
-              <p>{dialogueWorld.state.phase === "chat" ? "描述你想进入的世界；生成完成后会自动进入。" : "原世界和存档会保留。"}</p>
+              <p>{dialogueWorld.state.resultReady ? "世界已生成，当前输入会保留。" : dialogueWorld.state.phase === "chat" ? "描述你想进入的世界；生成完成后会自动进入。" : "原世界和存档会保留。"}</p>
               {dialogueWorld.state.phase === "preparing" && <progress aria-label="正在准备新世界" />}
               {dialogueWorld.state.error && <p role="alert">{dialogueWorld.state.error}</p>}
               <button type="button" onClick={() => void dialogueWorld.cancel()}>返回原世界</button>
+              {dialogueWorld.state.resultReady&&<button type="button" onClick={dialogueWorld.enterResult}>进入世界</button>}
             </div>}
             {craftmineWorldFirst && <CraftminePreviewControls autoOpen={craftmineImmersive} />}
             </div>
