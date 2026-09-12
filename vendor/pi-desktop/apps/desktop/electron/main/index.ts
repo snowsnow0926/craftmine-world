@@ -9803,8 +9803,35 @@ installCreationEditAcceptance({enabled:!!headlessAcceptance,window:()=>mainWindo
     }finally{await finishTurn(sessionId,outcome,undefined,{createNotification:false,expectedTurnId:turnId});}
   }});
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
+let headlessPerformanceBusy=false;
 installHeadlessControl({
   window: () => mainWindow,
+  performanceTool:async({sessionId,worldId})=>{
+    if(!headlessAcceptance||!host||headlessPerformanceBusy||activeTurns.size||turnFinalizations.size)throw Error('HEADLESS_PERFORMANCE_IDLE_REQUIRED');
+    headlessPerformanceBusy=true;
+    try{
+    const before=godotWorld.instance;
+    if(!before||before.worldId!==worldId||await godotSelection()!==worldId)throw Error('HEADLESS_PERFORMANCE_WORLD_CHANGED');
+    const detail=await host.call<{session:any}>('session.get',{id:sessionId});
+    if(detail.session?.id!==sessionId||!pluginActiveInProject('craftmine.world',detail.session.projectPath??null))throw Error('HEADLESS_PERFORMANCE_SESSION_REQUIRED');
+    const tool=plugins.getTools().find(entry=>entry.pluginId==='craftmine.world'&&entry.name==='godot_performance_observe');
+    if(!tool||tool.risk!=='low')throw Error('HEADLESS_PERFORMANCE_REGISTERED_TOOL_REQUIRED');
+    const {turnId}=await host.call<{turnId:string}>('session.beginTurn',{sessionId});
+    if(!turnId)throw Error('HEADLESS_PERFORMANCE_TURN_REQUIRED');
+    activeTurns.set(sessionId,turnId);let outcome:'completed'|'error'='error';
+    try{
+      // Bind through the real domain turn flow, without creation intent or source migration.
+      if(!await bindCraftmineTurn(sessionId,turnId,detail.session,{id:crypto.randomUUID(),text:'读取当前世界的性能观测'}))throw Error('HEADLESS_PERFORMANCE_BINDING_REQUIRED');
+      const binding=craftmineGateway.get(sessionId);
+      if(binding?.selectedWorld!==worldId||godotWorld.instance?.instanceId!==before.instanceId)throw Error('HEADLESS_PERFORMANCE_WORLD_CHANGED');
+      const context={projectId:binding.projectId,sessionId,turnId};
+      const result=await tool.execute({},{...context,toolCallId:crypto.randomUUID(),executionId:crypto.randomUUID()});
+      const after=godotWorld.instance;
+      if(!after||after.worldId!==worldId||after.buildId!==before.buildId||after.instanceId!==before.instanceId)throw Error('HEADLESS_PERFORMANCE_WORLD_CHANGED');
+      outcome='completed';return {format:'craftmine.registered-performance-probe/1',pluginId:tool.pluginId,toolName:tool.name,fullName:tool.fullName,context,before,after,result,modelRequestsStarted:0};
+    }finally{await finishTurn(sessionId,outcome,undefined,{createNotification:false,expectedTurnId:turnId});}
+    }finally{headlessPerformanceBusy=false;}
+  },
   playerActive: sessionId=>activeTurns.has(sessionId)||turnFinalizations.has(sessionId),
   playerLatest: (worldId,sessionId)=>plugins.requestCraftmineHost('godotBuild.latest',{worldId,sessionId}),
   world: () => pluginViews.headlessWorldContents(),

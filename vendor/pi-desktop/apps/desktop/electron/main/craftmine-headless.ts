@@ -13,6 +13,7 @@ import { createGodotExploration } from "./craftmine-godot-exploration";
 import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
 import {createHeadlessPlayer,unwrapPlayerDesktopResult} from './craftmine-headless-player';
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
+import {validatePerformanceAcceptance} from './craftmine-performance-acceptance';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -92,6 +93,7 @@ export function installHeadlessControl(access: {
   godotSave?: () => Promise<any>;
   playerActive?: (sessionId:string)=>boolean;
   playerLatest?: (worldId:string,sessionId:string)=>Promise<any>;
+  performanceTool?: (input:{sessionId:string;worldId:string})=>Promise<unknown>;
 }): void {
   if (!profile) return;
   const godotExplore = access.godotGameplay ? createGodotExploration(access.godotGameplay) : null;
@@ -142,6 +144,13 @@ export function installHeadlessControl(access: {
         case "godotObserve":
           if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
           return access.godotGameplay.observe();
+        case "godotPerformanceTool": {
+          const input=validatePerformanceAcceptance(request,hasHeadlessController());
+          if(!access.performanceTool)throw Error('HEADLESS_PERFORMANCE_UNAVAILABLE');
+          const window=access.window();
+          if(!window||window.isDestroyed()||window.isVisible()||window.isFocusable()||!window.webContents.isOffscreen())throw Error('HEADLESS_PERFORMANCE_WINDOW_UNAVAILABLE');
+          return access.performanceTool(input);
+        }
         case "godotSnapshot":
           if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
           return access.godotGameplay.action("snapshot", {});
