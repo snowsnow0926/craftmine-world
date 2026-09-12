@@ -234,8 +234,8 @@
       "scenario": "规模与性能优化",
       "requiredEvidence": "同设备同要求实测，功能与画面不退化 GU6",
       "status": "unproven",
-      "evidence": ["docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md"],
-      "next": "Actual Godot Web/host/live adapter/packaged broker measures OS process memory and rejects cold old instances; Core descriptors/local-file progress are fixtures. Engine monitor channel, real Core+plugin IPC chain, same-device scaled optimization and preserved gameplay/visuals remain unproven."
+      "evidence": ["docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md", "vendor/pi-desktop/docs/spec/godot-performance-product-acceptance.md"],
+      "next": "Sealed56b5 actual Core/plugin IPC performance memory and cold persistence pass. Engine monitor channel, ordinary model use, same-device scaled optimization and preserved gameplay/visuals remain unproven."
     },
     {
       "id": "GA25",

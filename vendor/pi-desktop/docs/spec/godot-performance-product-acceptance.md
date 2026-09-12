@@ -51,6 +51,23 @@ The original isolated profile is at
 `D:/cm-gu7-performance-product-0912/test-results/desktop-native-complete-PWS1PH/profile`.
 It can be audited after shutdown without touching a personal profile.
 
+The integrator verified both application PIDs were no longer running, then opened
+the actual test databases read-only with `performance-product-audit.mjs`.
+`database-audit.json` confirms exactly the two recorded completed session turns,
+zero model metric calls and zero Core budget requests, one source project at
+revision 1, and only its original passed initialization check. Database bytes
+were identical before and after this audit. This supplies independent evidence
+for the driver's no-model/no-source-edit statements.
+
+`package-identity.json` records the build/run/seal evidence hashes, 1,622 packaged
+files totaling 1,022,733,104 bytes, and the source ZIP identity. The integrator
+verified the entire release seal again after product testing. Initial full
+source-to-binary verification occurred at clean build commit `56b5aeca`; later
+test/document commits do not change or replace that package identity.
+
+After integration, the protected entry, packed broker/projection and OS sampler
+tests passed 14/14, and the complete desktop `pnpm exec tsc --noEmit` passed.
+
 Run with an explicitly verified package path and full commit:
 
 ```

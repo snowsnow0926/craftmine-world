@@ -55,15 +55,22 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Actual Godot Web/host/live adapter/OS sampler/packed broker integration and cold new-instance rejection pass, with fixture Core descriptors and local-file snapshot store;42 focused tests pass. Engine frame/physics/object/GPU collectors, real Core+plugin IPC sealed full-chain acceptance, player-scale benchmarks and semantic optimization remain"
+      "next": "Sealed56b5 actual registered plugin IPC tool, Core task binding/save, Godot OS renderer memory and full cold reopen pass; post-stop databases show two completed no-model turns, zero requests and only initial source revision/check. Engine frame/physics/object/GPU collectors, ordinary model usage, player-scale benchmarks and semantic optimization remain"
     },
     {
       "id": "GU7",
       "status": "in-progress",
-      "next": "Historical sealed2a old-base matrix remains3/4; newer05ad normal retry recovered the original side-view world, and sealed863 ordinary module edits passed checks with separate adoption/cold/physics evidence. Latest performance source is not yet sealed or player-validated; full same-version matrix remains"
+      "next": "Sealed56b5 performance registered-tool/Core-save/cold path passes without model; broad same-version matrix remains. Historical2a old-base matrix stays3/4,05ad recovered original side-view and863 ordinary module edits passed scoped checks/adoption/physics; these are not one-version full acceptance."
     }
   ],
   "evidence": [
+    {
+      "kind": "sealed-performance-product",
+      "commit": "56b5aeca298c20d6575c66bdf60dd25479358651",
+      "path": "vendor/pi-desktop/docs/spec/godot-performance-product-acceptance.md",
+      "status": "passed-scoped-sealed-product",
+      "scope": "Two complete desktop launches, ordinary world/session creation, registered plugin IPC tool and actual Core save/cold equal snapshot; clean exits, post-stop DB no model requests/source changes, package seal unchanged. No model-choice or scaled optimization claim."
+    },
     {
       "kind": "renderer-performance-host-and-broker",
       "path": "docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md",

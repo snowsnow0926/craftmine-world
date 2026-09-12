@@ -1,5 +1,7 @@
 # GU6 性能观察切片（2026-09-12）
 
+最新进展：完整封存包 `56b5aeca` 已完成真实 Core、生产插件 IPC 注册工具及完整客户端冷重开验收，见 [完整产品证据](../vendor/pi-desktop/docs/spec/godot-performance-product-acceptance.md)。下文保留此前逐层验证的范围；早期夹具不能代替这份后续产品证据，产品通过也不代表规模优化完成。
+
 ## 已实现
 
 新增 `plugins/craftmine-world/godot-performance-observation.mjs`，提供只读的身份绑定投影。观察必须同时匹配 `worldId/buildId/instanceId`，否则拒绝；数值必须是非负有限数。输出固定字段的 `measured/unknown` 状态和 `measurementHash`，不会把缺失数据补成零。
