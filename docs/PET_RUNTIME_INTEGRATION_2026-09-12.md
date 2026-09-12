@@ -2,6 +2,8 @@
 
 基线 `91a61dbe`，独立工作区 `D:/cm-pet-integration-0912`。使用该源码的正式 `buildBuiltinPetPackage` 构建并保留原始 `cw.module.pet-companion.zip`，核对来源要求后解包到 `materializeBase` 新造物世界。薄场景仅在同根添加 FirstPet/SecondPet、各自 entity_id 与 `../Player` 绑定；不修改包内行为/视觉文件，不打开用户、qQ 或 VO 档案。
 
+最新结论：Native 整链通过；发现并交由产品负责人修复跨平台 yaw 回读问题后，**原 Native 存档字节不变的 Web 恢复与真实反馈截图也通过**。原失败记录全部保留，修复及复验见末节。
+
 ## Native 主要整链通过
 
 真实 Godot 4.7.2 headless 引擎与生产 runtime bridge 执行 load/resume/look/walk/interact/pause/save，未直接改演员位置或传送追赶。玩家通过 walk 移动，两犬从 `(±2,0,4)` 跟随到约 `(±0.7505,0.0001,0.6074)`。对准 FirstPet 后正常 bridge interact 返回 pet-first，计数变为1、第二只保持0；直接调用生产 `runtime._input(InputEventAction)` 的正常 E 分支后第一只计数变为2、第二只仍为0。这是纯引擎函数路由检查，**没有发送真实 E 键，没有调用 Input.parse_input_event，也不称硬件试玩**。
@@ -21,7 +23,7 @@
 
 随后将成功 Native cold-save 放入同包同薄场景的真实 Compatibility Web 导出，通过生产 `createWorldRuntime` 和 bridge load 恢复，返回：**Component restore did not preserve state: pet-first**。报告：`D:/cm-pet-integration-0912/test-results/pet-integration-GzyhBv/web-pNNkIM/report.json`。
 
-因此 **Native 集成通过不等于 Native→Web 恢复通过**；本轮尚无成功的 Web 集成反馈截图，不能以先前独立外观 viewer 图片替代。具体差异字段待后续独立诊断，当前未确认原因，未放宽组件校验或改状态救结果。
+因此该阶段 **Native 集成通过不等于 Native→Web 恢复通过**；当时没有成功的 Web 集成反馈截图，不能以先前独立外观 viewer 图片替代。当时具体差异字段尚待独立诊断，未放宽组件校验或改状态救结果。
 
 ### 字段级取证补充
 
@@ -34,5 +36,20 @@
 | yaw | 0.0421812161803246 | 0.0421812199056149 |
 
 entityId、position、settings、sourceSettings、interactionCount 均精确相同。当前组件 snapshot 读取 `global_rotation.y`，restore 再设置 `global_rotation.y`；本次数据证实该 Native→WASM 往返改变了所编码的朝向数值。已把精确差异交给产品修复负责人，不加数值容差，不将旧输入改成回读值，也不掩盖失败后继续截图。
+
+### 产品修复后的正式包复验通过
+
+产品负责人提交 `a042f655`，本独立树 cherry-pick 为 `dbf4925b`：保存明确的 heading 值，并在自身/父变换实际发生变化时重新采样；不改 registry 比较、不扩大数值容差。本任务没有自行修改产品判断。
+
+Web 复验通过正式 builder 重新生成真实 ZIP，SHA-256 为 `dd620a0178e4156b919c64a105b5ce7cf9a367d5fa27e9b55fd0ceb3afa45716`，只替换新的独立 Web 副本内完整 addon 正文，并核对包的 sourceRequirements。**没有复用 forensic 打印版 registry，也没有修改原 `GzyhBv/cold-save.json`**。
+
+成功报告：`D:/cm-pet-integration-0912/test-results/pet-integration-GzyhBv/web-pjCVHR/report.json`，`ok:true`、`loadedExact:true`、errors为空、正常关闭。原第一只 yaw 保持 `0.0421812161803246`，整份状态严格相等。实际 bridge look/interact 后第一只计数2→3，第二只始终0；following=false保持。已查看以下两张实际1280×720游戏画面：
+
+- 同目录 `white-pomeranian-feedback.png`：显示“雪球开心地回应了你的抚摸”，白博美与普通犬同处实际世界。
+- 同目录 `feedback-restored.png`：恢复 WASD/E/F2 原提示。
+
+使用原游玩相机，根据保存的真实玩家/宠物位置和已核对的相机/碰撞偏移瞄准；没有更换 viewer、改场景布光或为展示移动演员。
+
+产品修复改变了运动/存档路径，因此最后用新 ZIP 完整重跑一次 Native 集成，未复用早期失败 gameplay。报告：`D:/cm-pet-integration-0912/test-results/pet-integration-0jfN65/report.json`，gameplay26 + defaults7 + migrated13 + cold13，共 **59项通过**。原ZIP/包正文完整性再次通过，正常退出。它与旧存档→新Web的兼容性复验分别记录，不冒称同基线A/B试验。
 
 全部检查0模型、无OS键鼠/Pointer Lock/窗口抢焦点。普通犬保守碰撞直径1.5米，可能通过不了森林1.4米门洞；本结果只覆盖本次平地跟随、互动与Native保存恢复，不代表寻路、所有地形或窄门通行完成。

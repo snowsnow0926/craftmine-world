@@ -1,9 +1,17 @@
 // Render a successful isolated native integration using the real Web bridge.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
 import {createGodotProbeEnvironment} from '../../desktop/godot/toolchain.mjs';import {createWorldRuntime} from '../../desktop/godot/web/runtime.mjs';import {playwright,browserOptions} from '../../app/browser-tools.mjs';
+import {buildBuiltinPetPackage} from '../../desktop/build-builtin-pet-package.mjs';import {unpackStaticPackage} from '../../plugins/craftmine-world/package-zip.mjs';
 const file=process.argv[2];assert.ok(file&&path.isAbsolute(file));const source=JSON.parse(fs.readFileSync(file));assert.equal(source.format,'craftmine.pet-runtime-integration/1');assert.equal(source.ok,true);assert.equal(source.modelCalls,0);const originalRoot=path.dirname(file),originalBytes=fs.readFileSync(file),out=fs.mkdtempSync(path.join(originalRoot,'web-')),project=path.join(out,'project'),web=path.join(out,'web');fs.mkdirSync(web);
 fs.cpSync(path.join(originalRoot,'project'),project,{recursive:true,filter:p=>path.basename(p)!=='.godot'});const config=path.join(project,'project.godot');fs.writeFileSync(config,fs.readFileSync(config,'utf8').replace('run/main_scene="res://scenes/creation.tscn"','run/main_scene="res://pet-world.tscn"'));
 const state=JSON.parse(fs.readFileSync(source.phases.find(p=>p.name==='cold').saveFile));const report={format:'craftmine.pet-integration-web/1',sourceReport:file,modelCalls:0,captures:[],errors:[],ok:false};let browser,runtime;
+if(process.argv.includes('--use-current-pet-package')){
+ assert.equal(process.argv.includes('--trace-restore'),false,'Product fix validation must not use forensic instrumentation');
+ const replacement=buildBuiltinPetPackage({repository:process.cwd()});fs.writeFileSync(path.join(out,replacement.file),replacement.bytes);const resource=unpackStaticPackage(replacement.bytes).resources[0];
+ for(const [relative,bytes]of resource.files){const target=path.join(project,'addons/cw.module.pet-companion',relative);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,bytes);}
+ for(const required of resource.manifest.content.entry.sourceRequirements)assert.equal(createHash('sha256').update(fs.readFileSync(path.join(project,required.path))).digest('hex'),required.sha256);
+ report.replacementPackage=replacement.entry;
+}
 if(process.argv.includes('--trace-restore')){
  const target=path.join(project,'craftmine_shared/component_state.gd'),before=fs.readFileSync(target),text=before.toString().replaceAll('\r\n','\n'),needle='\n\t\tvar actual: Variant = found.nodes[id].snapshot()\n';assert.equal(text.split(needle).length,2);
  const after=text.replace(needle,needle+'\t\tprint("COMPONENT_RESTORE_TRACE=" + JSON.stringify({"id":id,"expected":states[id],"actual":actual}))\n');fs.writeFileSync(target,after);report.forensicOnly=true;report.restoreTrace=[];report.instrumentation={file:'craftmine_shared/component_state.gd',change:'Print actual and expected state after restore; original comparison, rollback and error unchanged',beforeSha256:createHash('sha256').update(before).digest('hex'),afterSha256:createHash('sha256').update(after).digest('hex')};
