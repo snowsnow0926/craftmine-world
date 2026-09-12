@@ -48,3 +48,17 @@ with controlled host slot receipts: both directions, delayed preparation, second
 entry confirmation, failures, cancellation, mismatched identity, typed-text races,
 home attachments, old conversation isolation and legacy presentation. Separate
 native package acceptance must prove both real renderers enter, save and reopen.
+
+The prepared `tests/two-player-worlds-normal-native.mjs EXTRACTED_APP_DIR` driver
+creates an independent short-path profile under `D:/CMR`, uses the actual cards
+and pause callbacks, and runs Web then Godot followed by save/restart and return
+to Web. Web requires an attached normal plugin view and a positive-size actual
+iframe canvas; Godot requires the exact formal runtime identity attached with
+nonzero native bounds. Each launch permits only one initial hidden prepaint.
+F2/Shift+F2 are exercised with the main animation-frame callback stalled.
+
+Because the profile has no account and issues no model request, conversation
+checks require empty target home and an authoritative null binding; they do not
+manufacture a task or claim restored generated conversation history. Existing
+bound-conversation and real-model acceptance remain separate. Commit and syntax
+checking of this harness do not imply it has run against a final package.
