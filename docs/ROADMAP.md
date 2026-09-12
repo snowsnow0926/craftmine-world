@@ -2,6 +2,8 @@
 
 更新日期：2026-09-09。本文是**能力演进的总路线图**，把产品愿景、已有的 P0–P7 计划、H1–H3 差距基线和「L0–L4 分层」整合成一条可执行、可机器验收的路径。
 
+2026-09-11 阅读说明：本文的能力数量、完成标记和阶段安排保留其历史基线。当前 C / D / L 定义、难度评估、模型分工及社区复用统一见 [总体方案](WISH_CDL_FRAMEWORK_AND_NORTH_STAR_PROPOSAL.md)；实际交付另查对应版本的开发记录。本次整理不重新编号历史阶段，也不把旧“缺失”标记直接当作当前状态。
+
 配套文档：
 - 目标体验：[PRODUCT_VISION.md](PRODUCT_VISION.md)
 - 差距基线：[HARNESS_GAP_ASSESSMENT.md](HARNESS_GAP_ASSESSMENT.md)

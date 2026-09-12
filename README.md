@@ -142,7 +142,7 @@ npm run test:live-assets
 - [Codex、Claude Code 与 DeepSeek Harness 参考研究](docs/HARNESS_REFERENCE_RESEARCH.md)
 - [Harness 差距评估与优先级](docs/HARNESS_GAP_ASSESSMENT.md)
 - [Agent 分层与架构评估（2026-09-11）](docs/AGENT_LAYERS_ARCHITECTURE_REVIEW_2026-09-11.md)（L0–L4、文档差异、真实引擎诊断与修正顺序）
-- [一句话愿望的 C / D / L 框架与北极星提案](docs/WISH_CDL_FRAMEWORK_AND_NORTH_STAR_PROPOSAL.md)（创造能力、难度、技术范围与有效愿望；讨论稿）
+- [C / D / L 愿望框架、模型分工与社区复用总体方案](docs/WISH_CDL_FRAMEWORK_AND_NORTH_STAR_PROPOSAL.md)（北极星、难度评估、小模型、社区检索与效果验证）
 - [创作循环：愿景、实测证据与决策记录](docs/CREATION_LOOP.md)
 - [历史目标与持续开发记录（已停止）](docs/CONTINUOUS_DEVELOPMENT.md)
 - [开发进度记录](docs/DEVELOPMENT_STATUS.json)
