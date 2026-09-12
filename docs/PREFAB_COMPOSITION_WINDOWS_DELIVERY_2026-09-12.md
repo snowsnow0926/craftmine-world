@@ -24,7 +24,7 @@
 
 该候选已正常采用、保存 progress revision 10 并冷重开；新实例 `eb024ea92d71c7d9234c84af` 恢复同一正式构建 `gbd-909bc88ecaeac64999bdbfc6e6d7cff10baf62da3c4e1ea46b352bd65c280802`，源码及组件清单与采用后完全一致。两次启动均退出 0，隔离、页面和关闭审计为空，完整性通过；采用及重开阶段没有额外模型调用、安装或重检。见 [原始回执](D:/cm-forest-product-demo-0912/test-results/desktop-native-complete-qQcut9/candidate-adoption-ec144605-194a-4cee-a9c1-ddabd796b5ea/report.json)。
 
-本批也修复工作台截图误拒绝、预览沿用旧保存视角，以及素材采用后原会话出现 `DRAFT_BASE_CONFLICT` 的问题。失败输入经正常归档重试，新工作区绑定已采用构建，主历史没有重复愿望。详细过程与失败记录见 [开发记录](SOURCE_GROUP_AND_VISUAL_FEEDBACK_2026-09-12.md)。
+本批也修复工作台截图误拒绝、预览沿用旧保存视角，以及素材采用后原会话出现 `DRAFT_BASE_CONFLICT` 的问题。失败输入经正常归档重试，新工作区绑定已采用构建，主历史没有重复愿望。详细过程与失败记录见 [开发记录](SOURCE_GROUP_AND_VISUAL_FEEDBACK_2026-09-12.md)；模型的真实图像、用量、源码差异及人工预览边界见 [视觉纠正实测](PLAYER_VISUAL_CORRECTION_RESULT_2026-09-12.md)。
 
 ## 下一阶段
 
