@@ -1,0 +1,74 @@
+{
+  "format": "craftmine.canine-visual-motion-evidence/1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "geometryAndAnimationSource": [
+    {
+      "appearanceKey": "dog",
+      "sha256": "2bbaba864551620b8b5029476a26e92b138c52e7cfec2c4f20d350c18f720723"
+    },
+    {
+      "appearanceKey": "pomeranian-white",
+      "sha256": "bde68ac018214c1af54c77f24b292ba77e80d4c74d5bc86debf39130cfd66fd6"
+    }
+  ],
+  "sampleMethod": "all imported key times, adjacent-key midpoints and uniform 1/240 second samples",
+  "measurements": [
+    {
+      "appearanceKey": "dog",
+      "clips": [
+        {
+          "clip": "idle",
+          "originalKeyTimes": 47,
+          "radiusMax": 0.721100389957428,
+          "samples": 664,
+          "yMax": 0.758147895336151,
+          "yMin": 0
+        },
+        {
+          "clip": "walk",
+          "originalKeyTimes": 25,
+          "radiusMax": 0.720873117446899,
+          "samples": 239,
+          "yMax": 0.758147895336151,
+          "yMin": 0.00066143274307251
+        }
+      ],
+      "method": "all imported key times, adjacent-key midpoints and uniform 1/240 second samples",
+      "radiusMax": 0.721100389957428,
+      "rootYaw": "any (radial bound invariant)",
+      "vertexSamples": 3987648,
+      "visualPivot": "identity",
+      "yMax": 0.758147895336151,
+      "yMin": 0
+    },
+    {
+      "appearanceKey": "pomeranian-white",
+      "clips": [
+        {
+          "clip": "idle",
+          "originalKeyTimes": 47,
+          "radiusMax": 0.34576678276062,
+          "samples": 664,
+          "yMax": 0.467997968196869,
+          "yMin": 0
+        },
+        {
+          "clip": "walk",
+          "originalKeyTimes": 25,
+          "radiusMax": 0.34576678276062,
+          "samples": 239,
+          "yMax": 0.467997968196869,
+          "yMin": 0.000659346580505371
+        }
+      ],
+      "method": "all imported key times, adjacent-key midpoints and uniform 1/240 second samples",
+      "radiusMax": 0.34576678276062,
+      "rootYaw": "any (radial bound invariant)",
+      "vertexSamples": 4486104,
+      "visualPivot": "identity",
+      "yMax": 0.467997968196869,
+      "yMin": 0
+    }
+  ],
+  "scope": "Only idle/walk within each clip; VisualPivot identity, root yaw only. No gameplay or blend-state claim."
+}
