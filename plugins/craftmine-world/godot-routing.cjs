@@ -11,6 +11,10 @@ const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_in
   godot_asset_put:'godotAsset.put',godot_asset_list:'godotAsset.list',
   godot_build_start:'godotBuild.start',godot_build_read:'godotBuild.read',godot_build_cancel:'godotBuild.cancel',
   godot_candidate_read:'godotCandidate.read',godot_candidate_list:'godotCandidate.list'};
+const EXECUTION_MODES={
+  godot_build_start:{build:{method:'godotBuild.start',executorKinds:['build']},check:{method:'godotBuild.start',executorKinds:['check']}},
+  godot_jobs:{status:{method:'godotExecutor.status'},usage:{method:'godotJob.usage'},resume:{method:'godotJob.continue',executorKinds:['build','check'],originKindRequired:true}}
+};
 
 // Tools implemented inside this plugin. `needs` lists the capability flags the
 // core handshake must report true for the tool to be usable; `reachable` is only
@@ -21,6 +25,7 @@ const LOCAL_TOOLS={
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
+  godot_performance_observe:{owner:'S6',hostMethod:'task.context+godotRuntime.describe',needs:['godotProjects','sessionDrafts'],requiredServices:['samplePerformance','sampleLiveState']},
   godot_view_capture:{owner:'R2',hostMethod:'craftmine.godotViewCapture',needs:['godotProjects']},
   godot_project_facts:{owner:'S6',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
   godot_capability_report:{owner:'S6',hostMethod:'hello',needs:[]},
@@ -66,4 +71,4 @@ const CONDITIONAL_WRITE_TOOLS={godot_draft_recovery:'resume'};
 const GODOT_RECEIPTS={'godotProject.create':'godotProject.receipt','godotProject.patch':'godotProject.receipt',
   'godotAsset.put':'godotBuild.receipt','godotBuild.start':'godotBuild.receipt'};
 
-module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS};
+module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS,EXECUTION_MODES};
