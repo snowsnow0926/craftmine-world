@@ -40,6 +40,15 @@ try{
  const after=await call('workspace.current',{projectId,sessionId});assert.deepEqual(after.task.draft,original.task.draft);assert.equal(after.resumedFrom,original.task.binding.taskId);assert.deepEqual(await call('world.read',{id:worldId}),world);
  check('new user continuation resumes exact retained draft, budget and world under the new turn');
  const replay=await router('turn.begin',{...request,resumeInterrupted:true});assert.equal(replay.binding.taskId,result.binding.taskId);assert.equal(replay.generation,result.generation);check('lost acknowledgement replay cannot create another task or reset the generation');
+ assert.ok(!result.requirements.some(item=>item.id===request.request.id),'continued request is outside the bounded first-request projection');
+ const refreshed=await router('task.context',{context,request:request.request});assert.equal(refreshed.binding.taskId,result.binding.taskId);
+ await assert.rejects(router('task.context',{context,request:{...request.request,text:request.request.text+' changed'}}),/REPLAY_MISMATCH/);
+ const correction={id:randomUUID(),text:'A newly supplied correction remains a correction'};
+ await router('task.context',{context,request:correction});
+ const requirementDb=new DatabaseSync(path.join(directory,'tasks.sqlite'),{readOnly:true});
+ assert.equal(requirementDb.prepare('SELECT kind FROM craftmine_task_requirements WHERE task_id=? AND request_id=?').get(result.binding.taskId,request.request.id).kind,'request');
+ assert.equal(requirementDb.prepare('SELECT kind FROM craftmine_task_requirements WHERE task_id=? AND request_id=?').get(result.binding.taskId,correction.id).kind,'correction');requirementDb.close();
+ check('request preflight preserves the full journal kind outside bounded context, rejects changed text, and records only new corrections');
  await assert.rejects(router('turn.begin',{...request,context:{projectId,sessionId,turnId:original.task.binding.turnId},resumeInterrupted:true}),/TURN_ENDED/);check('the ended original turn remains revoked');
  await call('workspace.endTurn',{sessionId,turnId:context.turnId,status:'completed'});report.passed=true;
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}finally{await core.stop();report.methods=calls.map(x=>x.method);fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({out,passed:report.passed,error:report.error}));}
