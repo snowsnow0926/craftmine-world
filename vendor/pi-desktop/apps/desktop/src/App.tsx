@@ -210,8 +210,12 @@ function AppShell() {
   // shortcut gate closed until the mode-entry dialog is selected made F2 and
   // Escape inert after relaunching directly into an existing world.
   const [modeChosen, setModeChosen] = useState(() => loadCraftmineLayout(localStorage).mode === "play");
-  const [modeEntryOpen, setModeEntryOpen] = useState(true);
-  const modeEntryOpenRef = useRef(true);
+  // A persisted play layout is already an explicit mode choice. Keeping the
+  // entry sheet open on every relaunch leaves the immersion shortcut handler
+  // blocked, so F2/Esc/F11 appear inert until the player makes the same choice
+  // again. Only show the entry sheet for a fresh/default create layout.
+  const [modeEntryOpen, setModeEntryOpen] = useState(() => loadCraftmineLayout(localStorage).mode !== "play");
+  const modeEntryOpenRef = useRef(modeEntryOpen);
   modeEntryOpenRef.current = modeEntryOpen;
   useEffect(() => {
     const open = () => { setSearchOpen(false); setModeEntryOpen(true); };

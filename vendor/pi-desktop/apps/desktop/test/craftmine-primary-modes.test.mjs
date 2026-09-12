@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 import { build } from "esbuild";
 import { fileURLToPath } from "node:url";
 import { register } from "node:module";
 register(new URL("./helpers/ts-import-hooks.mjs", import.meta.url));
 const layout = await import("../src/lib/craftmine-layout.ts");
 const presentation = await import("../src/lib/craftmine-mode-presentation.ts");
+const appSource = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
 
 const bundled = await build({
   entryPoints: [fileURLToPath(new URL("../src/lib/craftmine-mode.ts", import.meta.url))],
@@ -40,6 +42,11 @@ test("explicit workbench entry overrides a stored play preference and keeps the 
   assert.equal(globalThis.modeStoreFixture.activeSessionId, "retained-session");
   assert.equal(globalThis.modeStoreFixture.running, true);
   assert.equal(layout.decideCraftmineActivation({ worldId: "new-world", enteredWorldId: null, playing: false, playWhenWorldActivates: next.playWhenWorldActivates }).switchToPlay, false);
+});
+
+test("a persisted play layout does not reopen the mode gate on relaunch", () => {
+  assert.match(appSource, /const \[modeEntryOpen, setModeEntryOpen\] = useState\(\(\) => loadCraftmineLayout\(localStorage\)\.mode !== "play"\)/);
+  assert.match(appSource, /const modeEntryOpenRef = useRef\(modeEntryOpen\)/);
 });
 
 test("immersive entry closes a previously expanded chat and preserves layout widths", () => {
