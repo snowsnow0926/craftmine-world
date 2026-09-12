@@ -78,7 +78,24 @@ export function usePlayerWorlds() {
     // initializer cancellation and restoration before re-enabling the cards.
     operation.current++;
     try {await bridge.call("world.playerCancel",{kind:pending});await refresh();setPending(null);setCanCancel(false);busy.current=false;}
-    catch(failure){setError(failure instanceof Error?failure.message:String(failure));}
+    catch(failure){
+      const message=failure instanceof Error?failure.message:String(failure);
+      try {
+        // A lost reply or an outside selection change may leave no operation
+        // to cancel. Only a fresh host read can establish that the target is
+        // no longer initializing; do not convert an unreadable outcome into
+        // successful cancellation or pretend the original world was restored.
+        const actual=parsePlayerWorlds(await bridge.call("world.playerWorlds"));
+        const target=actual.slots.find(slot=>slot.kind===pending);
+        if(alive.current){
+          setWorlds(actual);
+          if(target&&(target.state!=="initializing"||actual.activeWorldId!==target.worldId)){
+            busy.current=false;setPending(null);setCanCancel(false);
+          }
+        }
+      } catch { /* Unknown state keeps the explicit cancellation retry. */ }
+      if(alive.current)setError(message);
+    }
     finally{setCancelling(false);}
   };
   return {worlds,error,pending,canCancel,cancelling,cancel,refresh,enter};
