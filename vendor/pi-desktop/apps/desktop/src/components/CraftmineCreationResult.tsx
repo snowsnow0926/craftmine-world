@@ -20,13 +20,18 @@ export function CraftmineCreationResult({autoOpen = false}: {autoOpen?: boolean}
   const seen = useRef("");
   const observedSession = useRef<string | null>(null);
   const hasInitialStatus = useRef(false);
-  const automaticLive = useRef<{sessionId:string|null;worldId?:string;jobId?:string;started:boolean;consumed?:string}>({sessionId:null,started:false});
+  const automaticLive = useRef<{sessionId:string|null;worldId?:string;jobId?:string;started:boolean;running?:boolean;consumed?:string}>({sessionId:null,started:false});
   useEffect(() => {setError("");}, [sessionId, status?.jobId]);
   useEffect(() => {
     if(automaticLive.current.sessionId!==sessionId)automaticLive.current={sessionId,started:false};
     const live=automaticLive.current;
+    if(running&&!live.running){live.started=true;live.worldId=undefined;live.jobId=undefined;}
+    live.running=running;
     if(running&&status?.worldId&&status.selectedWorldId===status.worldId){live.started=true;live.worldId=status.worldId;}
-    if(live.started&&live.worldId===status?.worldId&&status?.jobId&&["editing","checking","deferred","repairing","applying"].includes(status.phase))live.jobId=status.jobId;
+    if(status?.resultRequestRelation==="previous-request")return;
+    if(live.started&&status?.resultRequestRelation==="current-request"&&status.selectedWorldId===status.worldId)live.worldId=status.worldId;
+    if(live.started&&live.worldId===status?.worldId&&status?.jobId&&(["editing","checking","deferred","repairing","applying"].includes(status.phase)
+      ||status.resultRequestRelation==="current-request"&&status.phase==="applied"))live.jobId=status.jobId;
     if(status?.phase === "applied") {
       const consumed = !window.dispatchEvent(new CustomEvent("craftmine-dialogue-world-applied", {
         cancelable: true, detail:{worldId:status.worldId,sessionId:status.sessionId,jobId:status.jobId},
@@ -75,7 +80,7 @@ export function CraftmineCreationResult({autoOpen = false}: {autoOpen?: boolean}
     // A live automatic result belongs in the playable world. Its earlier
     // conversation remains available through F2, without reopening it here.
     if(status.phase==="applied"&&status.automaticallyApplied&&automaticLive.current.jobId===status.jobId)return;
-    if (!autoOpen || !["ready", "applied", "failed"].includes(status.phase)) return;
+    if (!autoOpen || status.resultRequestRelation==="previous-request" || !["ready", "applied", "failed"].includes(status.phase)) return;
     if (loadCraftmineLayout(localStorage).overlay === "closed") setCraftmineOverlay("compact");
   }, [autoOpen, status, sessionId]);
   const refresh = () => window.dispatchEvent(new Event("craftmine-creation-edit-status"));
@@ -99,11 +104,13 @@ export function CraftmineCreationResult({autoOpen = false}: {autoOpen?: boolean}
   const actionable = status?.phase === "ready" && !!status.candidateId && !!status.buildId && !!status.jobId && !status.sourceStale;
   return <section className="craftmine-preview-controls craftmine-creation-result no-drag" aria-label="世界创作结果"
     data-session-id={sessionId ?? ""} data-world-id={status?.worldId} data-job-id={status?.jobId}
-    data-candidate-id={status?.candidateId} data-build-id={status?.buildId} data-phase={status?.phase ?? "unavailable"}>
+    data-candidate-id={status?.candidateId} data-build-id={status?.buildId} data-phase={status?.phase ?? "unavailable"}
+    data-request-relation={status?.resultRequestRelation} data-request-turn-id={status?.latestRequest?.turnId}>
     <div className="craftmine-preview-controls-copy">
       <strong>{status && status.phase !== "idle" ? creationTaskLabel(status, true) : running ? "正在创作世界…" : "创作结果暂时无法读取"}</strong>
       {status?.worldTitle && <p>目标世界：{status.worldTitle}</p>}
-      {status?.phase === "applied" && <p role="status">{status.laterVersion ? "结果已采用，当前世界还包含后续更新。" : "结果已进入正式世界，世界进度已保留。"}</p>}
+      {status?.resultRequestRelation === "previous-request" && <p role="status">这是之前的创作结果，本轮尚无新的检查回执。</p>}
+      {status?.phase === "applied" && status.resultRequestRelation !== "previous-request" && <p role="status">{status.laterVersion ? "结果已采用，当前世界还包含后续更新。" : "结果已进入正式世界，世界进度已保留。"}</p>}
       {status?.phase === "applying" && <p role="status">正在保存当前进度、验证并采用结果，请稍候。</p>}
       {status?.phase === "deferred" && <p role="status">当前操作结束、目标世界可用后将自动继续，无需再次点击采用。</p>}
       {status?.phase === "repairing" && <p role="status">正在根据检查结果修复草稿，随后会重新检查并继续。原世界保持可用。</p>}

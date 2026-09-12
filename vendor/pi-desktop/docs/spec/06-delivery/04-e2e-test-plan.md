@@ -9698,3 +9698,43 @@ Keep the receipt deferred until the host applies it. An explicit Ask choice,
 lost capture, or changed identity must not promise automatic application.
 Verify the following ordinary model response and matching application receipt;
 tool-guidance tests alone do not prove the player's final prose is correct.
+
+## Godot repeated creation, entry and saving reliability (2026-09-13)
+
+Use the player's actual latest package and a read-only copy of its failing
+world. Preserve the selected model, reasoning and ordinary permission flow.
+Check interaction in the applied PCK before interpreting a passed build as
+playable; then make the ordinary repair, interact, save, exit and reopen.
+
+- A ready world list remains usable while capabilities, archived-list or task
+  reads stall or fail. A failed save during entry releases the control for an
+  explicit retry, and a late auxiliary result cannot overwrite another world.
+- A registered failed creation retries its original initializer from the same
+  form and operation identity. Unknown acknowledgement is resolved using the
+  identical request before retry; no title-based inference or duplicate world.
+  Cancel retains the original return world and the failed draft.
+- Save and exit remains visibly pending after its early IPC acknowledgement.
+  Duplicate clicks, Escape and navigation cannot resume play while saving.
+  Confirmation cancellation and checkpoint failure restore a usable retry.
+  A repeated quit while the first native confirmation is pending never skips
+  that confirmation. Old lifecycle events cannot release a newer attempt.
+- If Core commits a snapshot but its reply and the follow-up read are lost,
+  the next explicit save may reconcile only the exact pending snapshot in the
+  same world, build and instance. Different durable progress, another writer
+  or an absent pending receipt remains a conflict. Test actual Core persistence
+  and host checkpoint/quit recovery separately.
+- An earlier applied job is labelled as a previous request's result. A later
+  interrupted or read-only turn does not announce it as a new repair or close
+  the dialogue. A matching current check and exact automatic-repair capture
+  still support ordinary automatic handoff, including fast completed checks.
+- Quit while the author is between a read and its intended patch. Deliver the
+  real aborted assistant message and agent_end in either order after the explicit
+  shutdown intent; durable turn status remains interrupted/aborted, the partial
+  reply remains available, and the draft is retained. Normal completion, tool
+  failures followed by repair, provider retry and explicit overflow compaction
+  recovery must still settle correctly. Old-turn and child-agent endings cannot
+  settle a newer parent request.
+
+Keep ordinary model creation, normal compositor input routes, original source
+engine checks and actual packaged gameplay evidence separately identified.
+No physical input, focus activation, Pointer Lock or synthetic source fixes.

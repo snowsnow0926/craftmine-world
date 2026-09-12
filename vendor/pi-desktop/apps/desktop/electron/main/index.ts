@@ -24,6 +24,10 @@ import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { readWorldConversation } from "./world-conversation";
+import { createCraftmineQuitState } from "./craftmine-quit-state";
+import { creationRequestStatus } from "./creation-request-status";
+import { ActiveTurns } from "./active-turns";
+import { createTurnTerminalOutcomes } from "./turn-terminal-outcome";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
@@ -2929,7 +2933,7 @@ async function importLegacyScheduled() {
 }
 
 /** sessionId → open host turn id, for turn bookkeeping across agent events. */
-const activeTurns = new Map<string, string>();
+const activeTurns = new ActiveTurns();
 // Only effective launch metadata; no credential or model endpoint is retained here.
 const resolvedCaptureModels = new Map<string, ViewCaptureModel>();
 const taskMetricsAdmissionFailures = new Set<string>();
@@ -3018,6 +3022,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
 /** sessionId -> last assistant usage recorded for active turn */
 const activeTurnUsages = new Map<string, MessageUsage>();
 const creationStopIntents = createCreationStopIntents();
+const turnTerminalOutcomes = createTurnTerminalOutcomes();
 
 function addActiveTurnUsage(sessionId: string, usage: MessageUsage | undefined) {
   if (!usage) return;
@@ -5924,6 +5929,7 @@ function finishTurn(
 
   const finalization = (async () => {
     const turnId = activeTurns.get(sessionId);
+    if(turnId){const outcome=turnTerminalOutcomes.resolve(sessionId,turnId,status,errorCode);status=outcome.status;errorCode=outcome.errorCode;}
     const turnKey = turnId
       ? planSubmissionTurnKey(sessionId, turnId)
       : undefined;
@@ -6017,6 +6023,7 @@ function finishTurn(
     } finally {
       if (turnId) {
         creationStopIntents.release(sessionId, turnId);
+        turnTerminalOutcomes.release(sessionId, turnId);
         taskMetricsRecorder.release({ sessionId, turnId });
         taskMetricsAdmissionFailures.delete(JSON.stringify([sessionId, turnId]));
       }
@@ -6295,6 +6302,8 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
   const turnId = envelope.turnId;
   const ownsActiveTurn = !envelope.parentToolCallId && !!turnId &&
     turnId === activeTurns.get(envelope.sessionId);
+  if(ownsActiveTurn&&event.type==="message_end")turnTerminalOutcomes.observeMessage(envelope.sessionId,turnId,event.message);
+  if(ownsActiveTurn&&event.type==="compaction_end")turnTerminalOutcomes.observeRecovery(envelope.sessionId,turnId,event);
   const executionId = (() => {
     const candidate = approvedExecutionIdsBySession.get(envelope.sessionId);
     if (!candidate) return undefined;
@@ -6421,13 +6430,14 @@ function persistAgentEvent(envelope: AgentEventEnvelope): UiMessage | undefined 
         });
       }
     };
-    const turnFinalization = finishTurn(envelope.sessionId, "completed", undefined, {
+    const outcome=turnTerminalOutcomes.resolve(envelope.sessionId,turnId,"completed");
+    const turnFinalization = finishTurn(envelope.sessionId, outcome.status, outcome.errorCode, {
       expectedTurnId: turnId,
       beforeRelease: archiveCompletedRevision,
     });
     if (executionId) {
       void turnFinalization.then(() =>
-        finishApprovedExecution(executionId, "completed"),
+        finishApprovedExecution(executionId, outcome.status==="completed"?"completed":"interrupted",outcome.errorCode),
       );
     }
     return;
@@ -6778,16 +6788,27 @@ function registerIpc() {
       if(payload.channel==="godot.creationTaskStatus"){
         if(Object.keys(input).length!==1||typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)throw Error("CREATION_REQUEST_INVALID");
         if(notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+        const requestGeneration=activeTurns.generation(input.sessionId);
+        const observedTurn=activeTurns.get(input.sessionId);
         const detail=await host?.call<{session?:any}>("session.get",{id:input.sessionId});
         if(!detail?.session||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_SESSION_REQUIRED");
         const selectedWorldId=await godotSelection();
+        const lastUser=(detail.session.messages??[]).filter((message:any)=>message.role==="user").at(-1);
+        const latestRequest=lastUser?.id?await host?.call<any>("session.turnMetrics",{sessionId:input.sessionId,messageId:lastUser.id}):null;
+        if(activeTurns.generation(input.sessionId)!==requestGeneration || observedTurn&&latestRequest?.turnId!==observedTurn)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
         const job=await plugins.requestCraftmineHost("godotBuild.latest",{sessionId:input.sessionId}) as any;
         const worldId=job?.worldId??selectedWorldId;
         if(!worldId)return {worldId:"",selectedWorldId,sessionId:input.sessionId,phase:"idle",requirementStatus:"not-requested"};
         const [formal,world]=await Promise.all([plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),plugins.requestCraftmineHost("world.read",{id:worldId})]) as any[];
-        if(await godotSelection()!==selectedWorldId||notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+        if(await godotSelection()!==selectedWorldId||notificationViewingSessionId!==input.sessionId||activeTurns.get(input.sessionId)!==observedTurn||activeTurns.generation(input.sessionId)!==requestGeneration)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
         const adoption=job?.candidateId?(await plugins.requestCraftmineHost("godotCandidate.read",{worldId,candidateId:job.candidateId}) as any)?.adoption:null;
-        return {...creationTaskStatus(worldId,input.sessionId,job,formal,creationAutoApply.isApplying(job?.jobId,input.sessionId),creationAutoQueue.status(job?.jobId,input.sessionId),adoption),selectedWorldId,worldTitle:world?.title};
+        const automatic=creationAutoQueue.status(job?.jobId,input.sessionId);
+        const projectId=craftmineProjectIdentity(detail.session,input.sessionId);
+        const currentCapture=latestRequest?.turnId?creationTargets.owned({projectId,sessionId:input.sessionId,turnId:latestRequest.turnId}):null;
+        const jobCapture=automatic?.context?creationTargets.owned(automatic.context):null;
+        if(await godotSelection()!==selectedWorldId||notificationViewingSessionId!==input.sessionId||activeTurns.get(input.sessionId)!==observedTurn||activeTurns.generation(input.sessionId)!==requestGeneration)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+        return {...creationTaskStatus(worldId,input.sessionId,job,formal,creationAutoApply.isApplying(job?.jobId,input.sessionId),automatic,adoption),
+          ...creationRequestStatus(input.sessionId,job,latestRequest,currentCapture,jobCapture),selectedWorldId,worldTitle:world?.title};
       }
       if(payload.channel==="godot.creationTarget"){
         if(!Object.hasOwn(input,"sessionId")||Object.keys(input).some(key=>!['sessionId','selection'].includes(key))||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
@@ -9154,6 +9175,7 @@ function registerIpc() {
     const cancelledTurn = activeTurns.get(req.sessionId);
     if (cancelledTurn) {
       creationStopIntents.user(req.sessionId, cancelledTurn);
+      turnTerminalOutcomes.markAbort(req.sessionId,cancelledTurn,"TURN_ABORTED");
       // Revoke before the first awaited abort so an in-flight bind/repair
       // cannot publish fresh authority after the player has cancelled.
       creationTargets.cancel(req.sessionId, cancelledTurn); creationAutoQueue.cancel(req.sessionId, cancelledTurn);
@@ -9171,7 +9193,7 @@ function registerIpc() {
       });
       result = await sidecar.call("agent.abort", req);
     } finally {
-      await finishTurn(req.sessionId, "aborted", "TURN_ABORTED");
+      if(cancelledTurn)await finishTurn(req.sessionId, "aborted", "TURN_ABORTED", {expectedTurnId:cancelledTurn});
       if (executionId) {
         await finishApprovedExecution(
           executionId,
@@ -10430,6 +10452,9 @@ const QUIT_TURN_SETTLE_BUDGET_MS = 2_000;
 async function settleRunningTurnsForQuit(): Promise<void> {
   const sessions = [...activeTurns.keys()];
   creationStopIntents.shutdown(activeTurns);
+  // agent_end is also emitted after abort; record the explicit interruption
+  // before flushing or awaiting the sidecar so it cannot win as completed.
+  for(const [sessionId,turnId] of activeTurns)turnTerminalOutcomes.markAbort(sessionId,turnId,"APP_SHUTDOWN_INTERRUPTED");
   const deadline = Date.now() + QUIT_TURN_SETTLE_BUDGET_MS;
   // The newest snapshot of every streaming reply lands first: it is the
   // fallback if the abort below does not produce a final row in time.
@@ -10466,6 +10491,8 @@ async function settleRunningTurnsForQuit(): Promise<void> {
 
 let craftmineQuitPrepared = false;
 let craftmineQuitPreparation: Promise<void> | null = null;
+let craftmineQuitConfirmationPending = false;
+const craftmineQuitState = createCraftmineQuitState(state => sendToRenderer(IPC.event.craftmineQuitState, state));
 
 app.on("before-quit", (event) => {
   // A duplicate launch has no host, sidecar, panel, or outbox of its own, and
@@ -10475,6 +10502,8 @@ app.on("before-quit", (event) => {
   if (shutdownComplete) return;
   event.preventDefault();
   if (shutdownPromise) return;
+  // A second quit must not treat an unanswered confirmation as consent.
+  if (craftmineQuitConfirmationPending) return;
 
   // Show a confirmation dialog on the first explicit quit (Cmd+Q, tray quit,
   // application-menu Quit). The data-saving shutdown runs after confirmation.
@@ -10486,20 +10515,31 @@ app.on("before-quit", (event) => {
     process.env.PI_DESKTOP_SUPERVISION_PROBE === "1" ||
     process.env.PI_DESKTOP_CAPTURE === "1";
   if (!quitConfirmed && !isAutomatedMode) {
-    quitConfirmed = true;
+    const attemptId = craftmineQuitState.begin("confirming");
+    craftmineQuitConfirmationPending = true;
     void confirmQuitDialog().then((confirmed) => {
+      craftmineQuitConfirmationPending = false;
       if (confirmed) {
+        quitConfirmed = true;
         app.quit();
       } else {
         // User cancelled: allow future quit requests to prompt again.
         quitConfirmed = false;
+        craftmineQuitState.finish(attemptId, "cancelled");
       }
+    }, (error) => {
+      craftmineQuitConfirmationPending = false;
+      quitConfirmed = false;
+      logger.app("lifecycle", "error", "quit confirmation failed", {data:String(error)});
+      craftmineQuitState.finish(attemptId, "failed", updaterLocale.startsWith("zh")
+        ? "未能确认退出，请重试。" : "Could not confirm quitting. Please try again.");
     });
     return;
   }
 
   if (!craftmineQuitPrepared) {
     if (craftmineQuitPreparation) return;
+    const attemptId = craftmineQuitState.saving();
     craftmineQuitPreparation = (async () => {
       if (godotCopies.busy || godotExportBusy) throw Error("Wait for world copy or export to finish, or cancel the export before quitting");
       groundMaintenanceScheduler.suspend();
@@ -10513,17 +10553,23 @@ app.on("before-quit", (event) => {
       if (!godot.ok) throw new Error(godot.error ?? "Godot progress was not saved");
     })();
     void craftmineQuitPreparation.then(() => {
+      craftmineQuitPreparation = null;
       craftmineQuitPrepared = true;
       app.quit();
     }, (error) => {
+      // Release the attempt before reporting failure, so a visible retry can
+      // start a new checkpoint rather than joining this rejected promise.
+      craftmineQuitPreparation = null;
       quitConfirmed = false;
       groundMaintenanceScheduler.resume();
       void creationAutoQueue.continue().catch(error => logger.app("plugin", "warn", "creation recovery after cancelled shutdown", {data: String(error)}));
       logger.app("persistence", "error", "world checkpoint blocked application quit", { data: String(error) });
-      sendToRenderer(IPC.event.toast, { message: updaterLocale.startsWith("zh")
-        ? "世界尚未保存，已暂停退出。请检查世界面板后重试。"
-        : "Your world has not been saved. Check the World panel and retry quitting." });
-    }).finally(() => { craftmineQuitPreparation = null; });
+      const message = updaterLocale.startsWith("zh")
+        ? "世界尚未保存，已暂停退出。可以再次尝试保存并退出。"
+        : "Your world has not been saved. You can retry saving and quitting.";
+      craftmineQuitState.finish(attemptId, "failed", message);
+      sendToRenderer(IPC.event.toast, { message });
+    });
     return;
   }
 

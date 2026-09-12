@@ -23,7 +23,7 @@ await build({stdin:{contents:entry,resolveDir:desktop,loader:'tsx'},outfile:path
   b.onResolve({filter:/(^|\/)api$/},()=>({path:'api',namespace:'fixture'}));
   b.onResolve({filter:/stores\/app-store$/},()=>({path:'store',namespace:'fixture'}));
   b.onResolve({filter:/^react-i18next$/},()=>({path:'i18n',namespace:'fixture'}));
-  b.onLoad({filter:/.*/,namespace:'fixture'},({path:kind})=>({loader:'js',contents:kind==='api'?`export const api={craftmineSetImmersion:async state=>{fixture.hostStates.push(state)},onCraftmineImmersionShortcut:fn=>{fixture.listener=fn;return()=>{fixture.listener=null}},nativeMenuAction:async action=>{fixture.actions.push(action)}};`:kind==='i18n'?`export const useTranslation=()=>({i18n:{language:'zh-CN'}});`:`export const useAppStore={getState:()=>({workPanelWidth:500,setPage(){},openWorkPanel(){},setWorkPanelWidth(){},workPanelTabs:[]})};`}));
+  b.onLoad({filter:/.*/,namespace:'fixture'},({path:kind})=>({loader:'js',contents:kind==='api'?`export const api={craftmineSetImmersion:async state=>{fixture.hostStates.push(state)},onCraftmineImmersionShortcut:fn=>{fixture.listener=fn;return()=>{fixture.listener=null}},onCraftmineQuitState:fn=>{fixture.quitListener=fn;return()=>{fixture.quitListener=null}},nativeMenuAction:async action=>{fixture.actions.push(action)}};`:kind==='i18n'?`export const useTranslation=()=>({i18n:{language:'zh-CN'}});`:`export const useAppStore={getState:()=>({workPanelWidth:500,setPage(){},openWorkPanel(){},setWorkPanelWidth(){},workPanelTabs:[]})};`}));
 }}]});
 fs.writeFileSync(path.join(out,'index.html'),'<html><meta charset="utf-8"><link rel="stylesheet" href="fixture.css"><style>body{background:#315940}</style><div id="root"></div><script src="fixture.js"></script></html>');
 let browser;
@@ -43,6 +43,7 @@ try{
   await page.screenshot({path:path.join(out,'pause-menu.png')});
   for(const name of ['settings','workbench','exit'])await page.evaluate(name=>{const b=document.querySelector('[data-pause-action="'+name+'"]');b[Object.keys(b).find(k=>k.startsWith('__reactProps$'))].onClick();},name);
   check('settings/workbench are finite callbacks and exit uses ordered quit',await page.evaluate(()=>fixture.actions.join(',')==='settings,workbench,quit'));
+  await page.evaluate(()=>fixture.quitListener({attemptId:1,phase:'cancelled'}));
   await page.evaluate(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})));
   await page.waitForFunction(()=>!document.querySelector('[data-craftmine-pause]')&&fixture.hostStates.at(-1)?.blocked===false);
   check('Escape resumes gameplay without changing the retained play layout',await page.evaluate(()=>JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1')).mode==='play'));

@@ -1,4 +1,5 @@
 import type {
+  CraftmineQuitState,
   CraftmineImmersionState,
   CraftmineImmersionShortcut,
   ActivationScope,
@@ -847,6 +848,10 @@ export const api = {
       IPC.invoke.nativeMenuAction,
       { action },
     ),
+  onCraftmineQuitState: (listener: (state: CraftmineQuitState) => void) => {
+    if (!window.piDesktop?.on) return () => undefined;
+    return window.piDesktop.on(IPC.event.craftmineQuitState, payload => listener(payload as CraftmineQuitState));
+  },
   onWindowMaximized: (listener: (event: { maximized: boolean }) => void) => {
     if (!window.piDesktop?.on) return () => undefined;
     return window.piDesktop.on(IPC.event.windowMaximized, (payload) =>
