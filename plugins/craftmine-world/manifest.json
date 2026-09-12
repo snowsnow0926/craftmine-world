@@ -676,6 +676,17 @@
         }
       },
       {
+        "name": "godot_performance_observe",
+        "description": "Read-only performance observation for the bound Godot build. Returns identity-bound frame and process metrics; unavailable runtime channels remain unknown. No source or world state is changed.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      {
         "name": "godot_project_facts",
         "description": "Rebuild the authoritative durable facts for this world after a context compaction or a model switch: project revision and manifest hash, base and engine identity, candidates, runtime build, last confirmed progress, the real executor gate, durable job usage, which limit kind is exhausted, and whether the documentation corpus matches the bound engine. Call this instead of trusting a summary. Last confirmed progress is a save, not the player's current equipment; use godot_runtime_state scope=live for that.",
         "risk": "low",

@@ -32,7 +32,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
   // Last accepted live instance per world, so a restarted game process
   // invalidates the previous sample instead of being read as the same one.
   const liveInstances=new Map();
-  let creationExecute,moduleParameterQuery;
+  let creationExecute,moduleParameterQuery,performanceObservation;
   return definitions.map(definition=>({...definition,execute:async(args,invocation)=>{
     const context=hostContext(invocation);
     const assertActive=()=>{if(isEnded(context))throw Error('TURN_ENDED');};
@@ -174,6 +174,14 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(live.available&&!live.stale)liveInstances.set(workspace.worldId,{instanceId:live.instanceId,sampledAt:live.sampledAt});
       return {format:'craftmine.godot-runtime-state/1',scope:'live',descriptor:descriptorOnly,live,docsCompatibility,
         previousInstance:previous,durableProgress:{source:'last-confirmed-save',savedAt:durableProgress?.savedAt??null}};
+    }
+    if(definition.name==='godot_performance_observe') {
+      const descriptor=await describeRuntime(core,{worldId:workspace.worldId});
+      if(!descriptor.available)return {format:'craftmine.godot-performance-observation/1',available:false,reason:'NO_RUNNABLE_BUILD',descriptor};
+      if(typeof options.samplePerformance!=='function')return {format:'craftmine.godot-performance-observation/1',available:false,reason:'PERFORMANCE_OBSERVATION_NOT_WIRED',descriptor,measured:{frameTimeMs:{status:'unknown',unit:'ms',source:'not-observed'},physicsStepMs:{status:'unknown',unit:'ms',source:'not-observed'},objectCount:{status:'unknown',unit:'count',source:'not-observed'},memoryWorkingSetMb:{status:'unknown',unit:'MB',source:'not-observed'},gpuTimeMs:{status:'unknown',unit:'ms',source:'unavailable'}}};
+      const sample=await options.samplePerformance({worldId:workspace.worldId,buildId:descriptor.buildId});
+      performanceObservation??=await import('./godot-performance-observation.mjs');
+      return performanceObservation.observeGodotPerformance({scope:{worldId:workspace.worldId,buildId:descriptor.buildId,instanceId:sample.instanceId},sample});
     }
     if(definition.name==='godot_project_facts') {
       const facts=await projectFacts({core,context,worldId:workspace.worldId,sampler:options.sampleLiveState});

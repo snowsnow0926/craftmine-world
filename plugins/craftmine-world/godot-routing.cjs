@@ -31,6 +31,7 @@ const LOCAL_TOOLS={
     ...Object.fromEntries(['summary','scene','scripts','resources','find'].map(mode=>[mode,{method:'godotProject.index+godotProject.read'}])),
     ...Object.fromEntries(['module-parameters','module-parameter-preview'].map(mode=>[mode,{method:'task.context+godotProject.index+godotProject.read',capability:'sessionDrafts',requiredServices:['creationTarget','sampleLiveState'],requiresCapture:true}]))}},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
+  godot_performance_observe:{owner:'S6',hostMethod:'godotRuntime.describe+hostPerformanceSampler',needs:['godotProjects']},
   godot_project_facts:{owner:'S6',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
   godot_capability_report:{owner:'S6',hostMethod:'hello',needs:[]},
   godot_history:{owner:'S6',needs:['sessionDrafts'],modes:{
