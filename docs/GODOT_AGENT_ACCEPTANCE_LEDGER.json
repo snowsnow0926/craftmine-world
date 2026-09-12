@@ -199,8 +199,10 @@
       "scenario": "真实错误修复",
       "requiredEvidence": "原失败可复现，修复后同标准通过 GU5",
       "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "evidence": [
+        "docs/GODOT_ORIGINAL_WORLD_RECOVERY_2026-09-12.md"
+      ],
+      "next": "Original side-view native import failure was retained, then same world recovered through normal retry and passed identical gameplay/save/cold checks; root cause of original access violation remains unknown."
     },
     {
       "id": "GA22",
@@ -266,9 +268,10 @@
         "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json",
         "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
         "docs/GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md",
-        "docs/GODOT_ORIGINAL_WORLD_RECOVERY_2026-09-12.md"
+        "docs/GODOT_ORIGINAL_WORLD_RECOVERY_2026-09-12.md",
+        "docs/specs/godot-ga27-legacy-bases-20260912.md"
       ],
-      "next": "Original sealed2a matrix remains3/4. Side-view recovered in sealed05ad with actual gameplay/full cold equality; complete same-latest-package four-base matrix and all-template scope remain."
+      "next": "Three-base sealed matrix passed; side-view failed twice in old 2a but original world recovered on newer 05ad with gameplay/save/cold. Same-version full matrix and all-template behavior remain."
     },
     {
       "id": "GA28",
@@ -276,9 +279,10 @@
       "requiredEvidence": "真实模型独立完成，并记录失败和人工介入 GU7",
       "status": "partial",
       "evidence": [
-        "docs/GODOT_AGENT_ORDINARY_PLAYER_BASELINE_2026-09-12.md"
+        "docs/GODOT_AGENT_ORDINARY_PLAYER_BASELINE_2026-09-12.md",
+        "docs/GODOT_AGENT_MODULE_PLAYER_RESULT_2026-09-12.md"
       ],
-      "next": "One combined ordinary request completed with manual permissions/adoption and separate gameplay checks; holdout and broader compositions remain"
+      "next": "Confirmed model completed layout and a three-parameter local edit with ordinary approvals, interruptions and continuation; typed route, broader combined holdout and no-manual-intervention completion remain."
     }
   ]
 }
