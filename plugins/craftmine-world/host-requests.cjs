@@ -151,6 +151,8 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'world.archiveFailed':['id','revision','baseBuild'],
       'world.restoreArchived':['id'],
       'world.archivedList':[],
+      'godotWorld.initCancel':['worldId'],
+      'godotWorld.initCancelClear':['worldId'],
     };
     if(Object.hasOwn(applicationFields,method)){
       fields(params,applicationFields[method]);

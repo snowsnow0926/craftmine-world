@@ -17,6 +17,9 @@ mod tests;
 #[cfg(test)]
 #[path = "godot_mining_copy_tests.rs"]
 mod mining_copy_tests;
+#[cfg(test)]
+#[path = "godot_init_cancellation_tests.rs"]
+mod cancellation_tests;
 
 const BASES: [&str; 5] = ["first-person", "top-down", "side-view", "mining-sandbox", "creation-sandbox"];
 
@@ -234,6 +237,11 @@ pub(super) fn migrate(db: &Connection) -> Result<()> {
             source_build_id TEXT NOT NULL, source_revision INTEGER NOT NULL,
             manifest_hash TEXT NOT NULL, asset_manifest_hash TEXT NOT NULL,
             progress_mode TEXT NOT NULL, created_at INTEGER NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS craftmine_godot_init_cancellations (
+            world_id TEXT PRIMARY KEY REFERENCES craftmine_worlds(id),
+            init_id TEXT NOT NULL REFERENCES craftmine_godot_world_init(id),
+            created_at INTEGER NOT NULL
         );
         CREATE TABLE IF NOT EXISTS craftmine_godot_init_launch_failures (
             application_id TEXT PRIMARY KEY REFERENCES craftmine_godot_applications(id),
@@ -523,6 +531,11 @@ impl TaskJournal {
             "worldRevision":world.summary.revision,"formalBuildId":world.world.build["id"],
             "initialSnapshotHash":init["initialSnapshotHash"],"createdAt":init["createdAt"]
         });
+        let cancelled: bool = tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_godot_init_cancellations WHERE world_id=?1 AND init_id=?2)",params![args.world_id,init["initId"].as_str()],|row|row.get(0))?;
+        if cancelled && !playable {
+            result["status"]=json!("cancelled");result["reason"]=json!("GODOT_INITIALIZATION_CANCELLED");
+            result["cancelled"]=json!(true);
+        }
         tx.commit()?;
         if playable {
             if let Err(error) = self.godot_runtime_describe(&json!({"worldId":args.world_id})) {
@@ -532,6 +545,30 @@ impl TaskJournal {
             }
         }
         Ok(result)
+    }
+
+    /// A cancellation is scheduling intent, not evidence that source or the
+    /// checked candidate is invalid. Persist it only after owned work settles.
+    pub fn godot_world_init_cancel(&mut self, args: &Value) -> Result<Value> {
+        let args: StatusArgs = serde_json::from_value(args.clone())?;
+        let status=self.godot_world_init_status(&json!({"worldId":args.world_id}))?;
+        if status["status"]=="confirmed" {return Ok(json!({"worldId":args.world_id,"status":"ready","cancelled":false}));}
+        let tx=self.db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+        super::godot_applications::assert_idle(&tx,&args.world_id)?;
+        let busy:bool=tx.query_row("SELECT EXISTS(SELECT 1 FROM craftmine_world_leases WHERE world_id=?1) OR EXISTS(SELECT 1 FROM craftmine_godot_jobs WHERE world_id=?1 AND status IN ('queued','claimed','running'))",[&args.world_id],|row|row.get(0))?;
+        ensure!(!busy,"GODOT_INITIALIZATION_CANCEL_BUSY");
+        let init=read(&tx,&args.world_id)?.context("GODOT_WORLD_NOT_INITIALIZING")?;
+        ensure!(init["initId"]==status["initId"],"GODOT_INIT_LAUNCH_IDENTITY_MISMATCH");
+        tx.execute("INSERT INTO craftmine_godot_init_cancellations(world_id,init_id,created_at) VALUES(?1,?2,?3) ON CONFLICT(world_id) DO UPDATE SET init_id=excluded.init_id",params![args.world_id,init["initId"].as_str(),worlds::timestamp()?])?;
+        tx.commit()?;Ok(json!({"worldId":args.world_id,"status":"cancelled","cancelled":true}))
+    }
+
+    pub fn godot_world_init_cancel_clear(&mut self, args: &Value) -> Result<Value> {
+        let args: StatusArgs=serde_json::from_value(args.clone())?;
+        worlds::assert_not_archived(&self.db,&args.world_id)?;
+        let init=read(&self.db,&args.world_id)?.context("GODOT_WORLD_NOT_INITIALIZING")?;
+        self.db.execute("DELETE FROM craftmine_godot_init_cancellations WHERE world_id=?1 AND init_id=?2",params![args.world_id,init["initId"].as_str()])?;
+        Ok(json!({"worldId":args.world_id,"cleared":true}))
     }
 
     /// Copy a formal Godot world into a new identity. The applied build is shared

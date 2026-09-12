@@ -1427,6 +1427,7 @@ const logger = new Logger(
 const godotInitializer = createGodotWorldInitializer({
   worldsRoot: join(dataDir, "godot-worlds"), domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
+  cancelFirstLoad: worldId => godotCandidates.cancelFirstLoad(worldId),
   initialLoadBridge: existingHash => readFileSync(join(godotRoot, initialLoadBridgeResource(existingHash))),
 });
 const godotRestores = createGodotRestoreRebuildService({
@@ -1546,6 +1547,9 @@ godotCreation = createGodotWorldFactory({
       } else await godotInitializer.start(worldId, settings);
     },
     running: worldId => godotInitializer.running(worldId) || godotRestores.running(worldId),
+    preparation: worldId => godotInitializer.preparation(worldId),
+    cancel: worldId => godotInitializer.cancel(worldId),
+    stopAll: () => godotInitializer.stopAll(),
     error: worldId => godotRestores.status(worldId)?.status === "failed" ? godotRestores.status(worldId)!.reason : godotInitializer.error(worldId),
   },
   materialize: input => {
@@ -6787,6 +6791,7 @@ function registerIpc() {
       invoke: async (channel, params) => {
         if (["world.archiveFailed", "world.restoreArchived", "world.archivedList"].includes(channel)) return worldRemoval.invoke(channel, params);
         if (channel === "world.createOptions") return {...await godotPanel.invoke(channel, params) as any, archiveFailed: true};
+        if (channel === "world.creationCancel") {const result = await godotPanel.invoke(channel, params);sendToRenderer(IPC.event.craftmineWorldChanged, {});return result;}
         if (channel === "world.creationRetry") rearmCollisionMaintenance(params.worldId);
         if (["world.creationRetry", "godot.historyCreateBranch", "godot.historySaveSource", "godot.historyCheck"].includes(channel)) await stopWorldMaintenance();
         return channel === "world.copyStatus" ? godotCopies.status(params) : channel.startsWith("godot.history")
@@ -10482,6 +10487,7 @@ app.on("before-quit", (event) => {
       groundMaintenanceScheduler.suspend();
       await creationAutoQueue.suspend();
       await stopWorldMaintenance();
+      await godotCreation?.stopAll();
       await godotCandidates.closeForDeparture();
       godotVerifier.cancelAll();
       await pluginViews.prepareCraftmineForQuit();

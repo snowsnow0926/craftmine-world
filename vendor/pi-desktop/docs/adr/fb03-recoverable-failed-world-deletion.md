@@ -17,7 +17,7 @@ a concise explanation that original files are retained. This is a reversible
 core-owned archive marker, not filesystem reclamation. No automatic expiry or
 permanent deletion is introduced.
 
-Only a world whose durable initialization status is failed or blocked may enter
+Only a world whose durable initialization status is failed, blocked or explicitly cancelled may enter
 the archive. Rust verifies the exact world revision and formal build and rejects
 active world leases, queued or running jobs, and prepared applications. The host
 also refuses while initialization, candidate transactions, model work or profile
