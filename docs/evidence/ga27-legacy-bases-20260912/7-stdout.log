@@ -1,0 +1,62 @@
+
+[app/timing] [timing] kind=boot phase=when-ready elapsedMs=91
+[app/lifecycle] app boot craftmine world 0.14.4-preview.12
+[app/timing] [timing] kind=boot phase=backends-start elapsedMs=94
+[app/timing] [timing] kind=boot phase=host elapsedMs=171 spawnedMs=3 handshakeMs=74 durationMs=77 ok=true
+[app/runtime] host-core handshake ok
+[agent/runtime] [agent-sidecar] ready (host-proxy mode)
+[app/timing] [timing] kind=boot phase=sidecar elapsedMs=267 spawnedMs=6 configureMs=88 durationMs=94 ok=true
+[app/runtime] agent sidecar configured
+[app/plugin] plugin.service
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1382 pluginId=craftmine.world durationMs=1114 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1417 pluginId=pi.browser durationMs=35 ok=true
+[app/plugin] plugin restored
+[app/plugin] plugin.api
+[app/timing] [timing] kind=boot phase=plugin-restore elapsedMs=1452 pluginId=pi.files durationMs=35 ok=true
+[app/plugin] plugin restored
+[app/timing] [timing] kind=boot phase=mcp-refresh elapsedMs=1454 durationMs=2 ok=true
+[app/timing] [timing] kind=boot phase=backends-ready elapsedMs=1455
+[app/timing] [timing] kind=boot phase=window-created elapsedMs=1467
+[app/timing] [timing] kind=boot phase=window-rendered-offscreen elapsedMs=1569
+[app/timing] [timing] kind=boot phase=window-loaded elapsedMs=1570 durationMs=103 ok=true
+[app/timing] [timing] kind=boot phase=window-ready elapsedMs=1570
+HEADLESS PAGE 1: [timing] kind=boot phase=renderer-bootstrap durationMs=8 ok=true
+[app/timing] [timing] kind=boot phase=renderer-bootstrap durationMs=8 ok=true
+HEADLESS PAGE 3: Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+HEADLESS PAGE 3: OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL
+HEADLESS PAGE 3: Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glClear: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glDrawArrays: Framebuffer is incomplete: Attachment has zero size.
+HEADLESS PAGE 3: [.WebGL-0x28ec0e551400] GL_INVALID_FRAMEBUFFER_OPERATION: glBlitFramebuffer: Framebuffer is incomplete: Attachment has zero size.
+[app/lifecycle] app shutdown
+[app/plugin] plugin.service
+[app/plugin] plugin.api
+[app/plugin] plugin.service
+[app/plugin] plugin.api

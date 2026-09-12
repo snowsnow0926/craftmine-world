@@ -1,0 +1,117 @@
+{
+  "format": "craftmine.godot-executor-ledger/1",
+  "executorId": "craftmine-windows-broker-v1",
+  "updatedAt": "2026-09-12T00:22:49.762Z",
+  "jobs": {
+    "gjob-e2cf1872e38556c0fc3ae90add0bedeeb082904357c74225a7395ed25c9866d6": {
+      "jobId": "gjob-e2cf1872e38556c0fc3ae90add0bedeeb082904357c74225a7395ed25c9866d6",
+      "worldId": "world-fd55cf940cd2",
+      "mode": "check",
+      "state": "failed",
+      "attempts": [
+        {
+          "requestId": "im-8da9c139ecd5472c9cfdb320",
+          "operation": "import",
+          "startedAt": "2026-09-12T00:22:43.887Z",
+          "outcome": "no-final-receipt:failed",
+          "transport": "failed",
+          "recovery": {
+            "trigger": "broker-exit",
+            "ok": true,
+            "parseError": null,
+            "reclaimed": [],
+            "skipped": 0,
+            "unreadable": 0
+          },
+          "finishedAt": "2026-09-12T00:22:46.819Z",
+          "journalRetired": true,
+          "failure": {
+            "exitCode": 0,
+            "engineExitCode": 3221225477,
+            "error": "exit exit=0xc0000005 job_active_processes=Some(0)",
+            "parseError": null,
+            "cleanup": {
+              "verified": true,
+              "profileHresult": 0,
+              "workRemoved": true,
+              "error": null
+            },
+            "resources": {
+              "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+              "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+              "hardFilesystemQuota": false,
+              "workBytesLimit": 1073741824,
+              "logBytesLimit": 4194304,
+              "sampleIntervalMs": 50,
+              "samples": 39,
+              "maxObservedWorkBytes": 34207451,
+              "maxObservedLogBytes": 4215,
+              "enforced": false,
+              "reason": null
+            },
+            "stderr": "private_desktop_station=SessionDefault name=Service-0x0-65c03$ visible=false default_desktop_acl_modified=false\nprivate_desktop_cleanup restored=true desktop_closed=true station_closed=true\n"
+          },
+          "retryDecision": {
+            "reason": "VERIFIED_NATIVE_IMPORT_CRASH",
+            "logSha256": "4f83836d523b1f453044c47bbb5fb9b630102d59e08f705f5217b44adeca416c",
+            "sourceDigest": "56fc3ef5a0563cb553557704eed4ebb6672398bb8409560266a4fb943306b7aa",
+            "brokerSha256": "36fafb48717429560d60b818d02e4d8bbea9e1ed26454206bb8733720ab7a12c"
+          }
+        },
+        {
+          "requestId": "im-d68fa341115745e8a6cf8314",
+          "operation": "import",
+          "startedAt": "2026-09-12T00:22:46.822Z",
+          "outcome": "no-final-receipt:failed",
+          "transport": "failed",
+          "recovery": {
+            "trigger": "broker-exit",
+            "ok": true,
+            "parseError": null,
+            "reclaimed": [],
+            "skipped": 0,
+            "unreadable": 0
+          },
+          "finishedAt": "2026-09-12T00:22:49.757Z",
+          "journalRetired": true,
+          "failure": {
+            "exitCode": 0,
+            "engineExitCode": 3221225477,
+            "error": "exit exit=0xc0000005 job_active_processes=Some(0)",
+            "parseError": null,
+            "cleanup": {
+              "verified": true,
+              "profileHresult": 0,
+              "workRemoved": true,
+              "error": null
+            },
+            "resources": {
+              "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+              "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+              "hardFilesystemQuota": false,
+              "workBytesLimit": 1073741824,
+              "logBytesLimit": 4194304,
+              "sampleIntervalMs": 50,
+              "samples": 39,
+              "maxObservedWorkBytes": 34207451,
+              "maxObservedLogBytes": 4215,
+              "enforced": false,
+              "reason": null
+            },
+            "stderr": "private_desktop_station=SessionDefault name=Service-0x0-65c03$ visible=false default_desktop_acl_modified=false\nprivate_desktop_cleanup restored=true desktop_closed=true station_closed=true\n"
+          }
+        }
+      ],
+      "startedAt": "2026-09-12T00:22:43.886Z",
+      "finishedAt": "2026-09-12T00:22:49.761Z",
+      "outcome": "failed",
+      "reason": "GODOT_BROKER_TASK_FAILED",
+      "importCrashRetries": 1,
+      "phaseTiming": {
+        "format": "craftmine.creation-timing/1",
+        "totalMs": 5881.772,
+        "stages": []
+      }
+    }
+  }
+}

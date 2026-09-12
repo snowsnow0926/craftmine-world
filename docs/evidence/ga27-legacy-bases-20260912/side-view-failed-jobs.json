@@ -1,0 +1,53 @@
+{
+  "source": "read-only isolated closed profile tasks.sqlite; no run tokens selected",
+  "database": "test-results/desktop-native-complete-O5Cj5p/side-view/profile/plugins/data/craftmine.world/tasks.sqlite",
+  "jobs": [
+    {
+      "id": "gjob-e2cf1872e38556c0fc3ae90add0bedeeb082904357c74225a7395ed25c9866d6",
+      "world_id": "world-fd55cf940cd2",
+      "task_id": "work-6c0bf53d355b9f0092f10ef8dfb7dc11ee9808a6f04ef5a72334bfd37982ff95",
+      "kind": "check",
+      "build_id": "gbd-8836ede78aff6173d3d0e4721e5599585962f676d32aa8c23fe8c1eab0ce2dbb",
+      "source_revision": 1,
+      "manifest_hash": "29112926d99d0463a816ea802a7aba6c041c4e9773145332748399b33711f0c5",
+      "base_id": "side-view",
+      "status": "failed",
+      "blocked_reason": null,
+      "executor_id": "craftmine-windows-broker-v1",
+      "stage": "failed",
+      "output": {
+        "format": "craftmine.godot-job-result/1",
+        "inputHash": "4b53f84094016e3bf02d3ccfd368ccca5e41c94517be8b723da799251b72d3ef",
+        "passed": false,
+        "import": {
+          "passed": false,
+          "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Call to GetAdaptersAddresses failed with error 5.\r\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started 项目初始化 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在扫描文件结构……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在加载全局类名……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在校验 GDExtension……\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在创建自动加载脚本……\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在初始化插件……\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在启动文件扫描……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started 正在注册全局类…… (23 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[   4% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  12% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  20% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | HumanInputSource\u001b[39m\u001b[0m\r\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | InputSource\u001b[39m\u001b[0m\r\n[  29% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ManagedInputSource\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | ScriptedInputSource\u001b[39m\u001b[0m\r\n[  37% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewPlayer\u001b[39m\u001b[0m\r\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  45% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SaveStore\u001b[39m\u001b[0m\r\n[  54% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewConfig\u001b[39m\u001b[0m\r\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  62% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | WorldState\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewCheckpoint\u001b[39m\u001b[0m\r\n[  70% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewHazard\u001b[39m\u001b[0m\r\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewPickup\u001b[39m\u001b[0m\r\n[  79% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewRoom\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewDoor\u001b[39m\u001b[0m\r\n[  87% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewRoomManager\u001b[39m\u001b[0m\r\n[  91% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | SideViewTarget\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started 正在加载编辑器 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载编辑器布局……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载停靠面板……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\r\n\u001b[0m\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n"
+        },
+        "compile": {
+          "passed": false,
+          "errors": [
+            "GODOT_BROKER_TASK_FAILED"
+          ],
+          "warnings": []
+        },
+        "check": {
+          "passed": false,
+          "assertions": [
+            {
+              "id": "runtime.not-run",
+              "passed": false,
+              "detail": "GODOT_BROKER_TASK_FAILED"
+            }
+          ]
+        },
+        "artifacts": [],
+        "engine": {
+          "version": "4.7.2-stable",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "evidenceHash": "24ae8022ea5a3ffcb267b500e1b45117dc35a2ad862cfb610bf1cf2dfc764c84"
+        }
+      },
+      "output_hash": "346d3011d0cbf87a18489913b04c1846f28184e4cd546d3d7b48d7aec7e970aa"
+    }
+  ]
+}
