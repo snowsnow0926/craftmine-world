@@ -3,7 +3,7 @@
 Date: 2026-09-13
 Request branch: `codex/blender-integration-20260913`
 Base: `5dd84194`
-Status: implementation in progress
+Status: implemented; component and authored integration validation passed
 
 ## Intended player experience
 
@@ -64,7 +64,8 @@ They are not committed. Every release records the actual bundled bytes.
 ## Tool contract
 
 - `blender_status`: actual component availability and explicit missing/invalid
-  dependency reasons; no constant success flag.
+  dependency reasons, with name-filtered and paginated same-world source jobs.
+  Global runtime status contains no world job history.
 - `blender_generate`: source-bound asynchronous generation using Python, a
   managed destination, and optional verified previous job for editing.
 - `blender_job_read`: job state, bounded diagnostics, generated model facts,
@@ -105,6 +106,39 @@ All browser verification, if needed, uses a separate headless process/profile,
 with Pointer Lock disabled before scripts and no mouse/keyboard input simulation.
 No test activates the player's application. Synthetic integration fixtures are
 reported as such, not as ordinary-player AI quality acceptance.
+
+## Implementation acceptance
+
+The implementation is retained on the requested independent branch/worktree.
+The primary checkout has not received these commits and nothing was pushed.
+The final real-component test at implementation commit `07123daa` passed 14
+assertions, using the complete pinned Blender runtime, freshly built native
+broker and Rust core, the built plugin, and Godot 4.7.2. It covers original
+generation, discoverable editable source, an actual source edit, runtime GLB and
+editor PackedScene import, door animation, collision, Python error diagnostics,
+live Python cancellation, historical source reads and unchanged formal progress.
+
+Targeted checks passed: 45 Node tests, 44 native tests and 34 agent context tests.
+Agent and desktop builds, strict desktop typechecking, built-in plugin preparation,
+and complete runtime resource staging/hash verification passed. Runtime resources
+include the full Blender distribution, the pinned upstream source archive, the
+GPL bridge source and third-party notices.
+
+Machine-readable results: [acceptance summary](../evidence/blender-integration-20260913/summary.json).
+The raw local report is retained at `test-results/bi-Ik3SXH/report.json`.
+The ordinary-player model's visual quality, visible interaction, signed installer
+and clean-machine installation have not been evaluated by these fixture tests.
+Generated GLBs use the existing 4 MiB Godot source-file policy; larger outputs
+remain available as generation artifacts with an explicit import failure.
+
+Reproduce the real integration after preparing the bundled runtime and plugin:
+
+```powershell
+$env:CRAFTMINE_CORE_BIN = '<absolute freshly built craftmine-core.exe>'
+$env:CRAFTMINE_BLENDER_TEST_ROOT = '<absolute desktop/build/runtime-resources/blender>'
+$env:CRAFTMINE_GODOT_CACHE_DIR = '<absolute pinned Godot cache>'
+node tests/blender/integration.mjs
+```
 
 ## Primary references
 
