@@ -30,6 +30,32 @@
         "yMin": 0,
         "yMax": 0.7581579122813215
       },
+      "axisEnvelope": {
+        "method": "continuous per-axis extrema over authored rigid rotation intervals; no radial or discrete-sample approximation",
+        "rotationIntervalsRadians": {
+          "head": 0.055,
+          "tail": 0.23,
+          "legs": 0.42
+        },
+        "walkBodyTranslationLocalMetres": 0.014001,
+        "visualPivot": "identity",
+        "rootYaw": "arbitrary",
+        "min": [
+          -0.1950909558357708,
+          0.0006513461108451179,
+          -0.6780603313200642
+        ],
+        "max": [
+          0.1950909558357708,
+          0.7581579122813215,
+          0.7200099999999999
+        ],
+        "size": [
+          0.3901819116715416,
+          0.7575065661704764,
+          1.3980703313200642
+        ]
+      },
       "restBoundsMetres": {
         "min": [
           -0.194,
@@ -128,6 +154,32 @@
         "radiusMax": 0.345776804198116,
         "yMin": 0,
         "yMax": 0.46800797293595503
+      },
+      "axisEnvelope": {
+        "method": "continuous per-axis extrema over authored rigid rotation intervals; no radial or discrete-sample approximation",
+        "rotationIntervalsRadians": {
+          "head": 0.055,
+          "tail": 0.17,
+          "legs": 0.42
+        },
+        "walkBodyTranslationLocalMetres": 0.014001,
+        "visualPivot": "identity",
+        "rootYaw": "arbitrary",
+        "min": [
+          -0.18151000000000003,
+          0.0006434506635671663,
+          -0.345776804198116
+        ],
+        "max": [
+          0.18151000000000003,
+          0.46800797293595503,
+          0.27658266605933474
+        ],
+        "size": [
+          0.36302000000000006,
+          0.4673645222723879,
+          0.6223594702574508
+        ]
       },
       "restBoundsMetres": {
         "min": [
