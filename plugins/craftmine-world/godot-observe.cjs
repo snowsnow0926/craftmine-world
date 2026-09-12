@@ -193,6 +193,12 @@ function renderFactsBlock(facts){
   lines.push('durableProgress: '+progress);
   const live=facts.live?.available?`sampledAt=${facts.live.sampledAt} base=${facts.live.baseId} equipment=${facts.live.equipment?.active??'unknown'} camera=${facts.live.camera?'present':'absent'} stale=${facts.live.stale}`:'unavailable('+(facts.live?.reason||'unknown')+')';
   lines.push('live: '+live);
+  if(facts.live?.available&&facts.live.baseId==='creation-sandbox'){
+    const creation=facts.live.creation,selection=creation?.sceneObjectSelection,target=creation?.sceneObjectTarget;
+    lines.push('sceneSelection(sample): status='+JSON.stringify(selection?.status??'unknown')+' targetClass='+JSON.stringify(target?.nodeClass??null)+' targetPath='+JSON.stringify(target?.nodePath??null)+' stale='+String(facts.live.stale));
+    lines.push('selectionSemantics: collision disabled does not imply visual selection disabled; read this sample target, refs and ancestors together. A hit does not certify pixel accuracy or other viewpoints.');
+    lines.push('boundsSemantics: playerBounds describes the player. Object world bounds and cross-axis reach remain unknown without actual geometry bounds and composed transforms; a hit point or scale factor alone is insufficient.');
+  }
   return lines.join('\n');
 }
 

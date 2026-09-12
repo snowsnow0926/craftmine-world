@@ -1,0 +1,2 @@
+# Preserve the original archived report bytes and its recorded SHA-256.
+adoption-report.json -text
