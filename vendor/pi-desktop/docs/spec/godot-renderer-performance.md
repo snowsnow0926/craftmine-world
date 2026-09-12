@@ -130,6 +130,15 @@ An intervening harness attempt `performance-godot-fSU2wG` incorrectly assumed th
 failure is retained. The final fixture explicitly injects the real performance
 sampler and uses the packaged adapter for the live observation provider.
 
+After integration commit `97cf43b7` added an instance-constrained final sample
+following durable descriptor reads, `performance-godot-e1Ztsw` verified the latest
+packaged broker in both fresh processes. The fixture now records and asserts both
+performance requests: initial world/build narrowing, then final
+world/build/instance narrowing. The projected numeric value equals that final
+real OS sample. All earlier guards and cold-instance rejection still pass.
+`final-instance-report.json` records this final result and exact packaged hashes;
+earlier successful reports remain historical evidence for their recorded code.
+
 Desktop `node node_modules/typescript/bin/tsc --noEmit` passed. Direct invocation
 used existing dependency junctions; `pnpm exec` requested a dependency refresh
 and was refused before installation, so no dependency refresh was performed.
