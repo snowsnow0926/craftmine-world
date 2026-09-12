@@ -10,10 +10,31 @@ const {createGodotWorldInitializer} = await import('../../../vendor/pi-desktop/a
 const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return {promise, resolve, reject}; };
 const failed = () => ({worldId: 'retry-world', initId: 'init-one', status: 'failed', playable: false,
   reason: 'GODOT_JOB_FAILED'});
-const setup = (initialization, read = () => failed()) => createGodotWorldFactory({
+const setup = (initialization, read = () => failed(), changed) => createGodotWorldFactory({
   worldsRoot: 'D:/not-accessed', catalogFile: 'D:/not-accessed', basesRoot: 'D:/not-accessed',
   domain: async method => { assert.equal(method, 'godotWorld.initStatus'); return structuredClone(read()); },
-  materialize: () => assert.fail('retry must preserve the managed source'), initialization,
+  materialize: () => assert.fail('retry must preserve the managed source'), initialization, changed,
+});
+
+test('cancelled retry stays preparing through host preflight, null baseline and marker-clear reply races',async()=>{
+  const gate=deferred(),cancelled={...failed(),status:'cancelled',cancelled:true,reason:'GODOT_INITIALIZATION_CANCELLED'};
+  let current=cancelled,preparation={attempt:1,pending:false,error:null,status:cancelled,cancelled:true};
+  const notifications=[];
+  const factory=setup({running:()=>false,error:()=>null,start:()=>gate.promise,preparation:()=>preparation},()=>current,
+    id=>notifications.push({id,status:factory.status(id)}));
+  const work=factory.retry('retry-world');await new Promise(resolve=>setImmediate(resolve));
+  assert.equal((await factory.status('retry-world')).creation.stage,'retry','wrapper preflight has not started a new initializer');
+  preparation={attempt:2,pending:true,error:null,status:null};
+  assert.equal((await factory.status('retry-world')).creation.stage,'retry','new initializer is awaiting its first Core reply');
+  preparation.previousStatus=cancelled;preparation.status=failed();
+  assert.equal((await factory.status('retry-world')).creation.stage,'retry','an earlier status read may finish after cancellation was cleared');
+  current={...failed(),reason:'GODOT_TASK_PATH_TOO_LONG',projectRevision:3};preparation.pending=false;
+  assert.equal((await factory.status('retry-world')).creation.error.code,'GODOT_TASK_PATH_TOO_LONG','actual new terminal is never hidden');
+  current={...current,status:'confirmed',playable:true,reason:null};
+  assert.equal((await factory.status('retry-world')).state,'ready','durable confirmation wins before scheduler settlement');
+  gate.resolve();await work;
+  assert.equal(notifications.length,2,'start and final settlement notify all observing lists');
+  assert.equal((await notifications.at(-1).status).state,'ready','final notification runs after pending retry is removed');
 });
 
 test('an acknowledged retry displays preparation until Core publishes a new attempt', async () => {
