@@ -115,6 +115,7 @@ function buildApi() {
       assetPreview: (input) => call("craftmine.assetPreview", [input]),
       cancelAssetPreview: (input) => call("craftmine.cancelAssetPreview", [input]),
       getGodotToolchain: () => call("craftmine.getGodotToolchain", []),
+      getBlenderToolchain: () => call("craftmine.getBlenderToolchain", []),
       sampleLiveState: (input) => call("craftmine.sampleLiveState", [input]),
       // Live observation of the running instance (task S6). Returns the host's
       // observation envelope, or null when no formal instance is running.

@@ -210,6 +210,10 @@ export type PluginHostServices = {
   craftmineGodotToolchain?: {
     broker: string; brokerIdentity: string; engineRoot: string; toolchainLock: string; bridgePath: string;
   };
+  /** Separate modeling process; only the trusted world plugin receives these paths. */
+  craftmineBlenderToolchain?: {
+    broker: string; brokerIdentity: string; runtimeRoot: string; toolchainLock: string;
+  };
   /**
    * Live observation of the running Godot instance. The plugin may ask for a
    * sample of the world it is bound to; the host supplies the instance identity
@@ -1618,6 +1622,15 @@ export class PluginRuntime {
         const value = this.services.craftmineGodotToolchain;
         if (!value) return null;
         const keys = ["broker", "brokerIdentity", "engineRoot", "toolchainLock", "bridgePath"] as const;
+        if (keys.some(key => typeof value[key] !== "string" || !isAbsolute(value[key])))
+          throw apiError("INVALID_ARGUMENT", "Toolchain resources must be host-owned absolute paths");
+        return Object.fromEntries(keys.map(key => [key, value[key]]));
+      }
+      case "craftmine.getBlenderToolchain": {
+        if (pluginId !== "craftmine.world" || args.length !== 0) throw apiError("UNSUPPORTED", "Private toolchain configuration required");
+        const value = this.services.craftmineBlenderToolchain;
+        if (!value) return null;
+        const keys = ["broker", "brokerIdentity", "runtimeRoot", "toolchainLock"] as const;
         if (keys.some(key => typeof value[key] !== "string" || !isAbsolute(value[key])))
           throw apiError("INVALID_ARGUMENT", "Toolchain resources must be host-owned absolute paths");
         return Object.fromEntries(keys.map(key => [key, value[key]]));
