@@ -20,6 +20,7 @@ var player: PlayerController
 @onready var cooldown_bar: ProgressBar = get_node_or_null("Root/CooldownBar")
 @onready var damage_popup: Label = get_node_or_null("Root/DamagePopup")
 @onready var message_label: Label = get_node_or_null("Root/MessageLabel")
+@onready var health_label: Label = get_node_or_null("Root/HealthLabel")
 
 var last_damage_amount := 0.0
 var last_message := ""
@@ -57,17 +58,25 @@ func bind_world(world: BaseWorld) -> void:
 
 
 func _process(_delta: float) -> void:
+	_refresh_health()
 	_refresh_prompt()
 	_refresh_cooldown()
 
 
 func _refresh_all() -> void:
+	_refresh_health()
 	if equipment_state != null:
 		_on_equipment_changed(equipment_state.active_id, equipment_state.definition())
 		_on_ammo_changed(equipment_state.active_id, equipment_state.magazine(), equipment_state.capacity(), equipment_state.reserve())
 		_on_cooldown_changed(equipment_state.active_id, equipment_state.cooldown_remaining(), 0.0)
 	_refresh_quests()
 	_refresh_inventory()
+
+func _refresh_health() -> void:
+	if health_label == null or player == null:
+		return
+	health_label.text = "生命 %d / %d%s" % [int(roundf(player.health)), int(roundf(player.max_health)), "  ·  已倒下" if player.dead else ""]
+	health_label.modulate = Color(1.0, 0.35, 0.3) if player.dead else Color(0.7, 1.0, 0.7)
 
 
 func _on_equipment_changed(_id: StringName, definition: EquipmentDefinition) -> void:
@@ -191,6 +200,7 @@ func show_message(text: String) -> void:
 
 func snapshot() -> Dictionary:
 	return {
+		"health": health_label.text if health_label != null else "",
 		"equipment": equipment_label.text if equipment_label != null else "",
 		"ammo": ammo_label.text if ammo_label != null else "",
 		"status": status_label.text if status_label != null else "",

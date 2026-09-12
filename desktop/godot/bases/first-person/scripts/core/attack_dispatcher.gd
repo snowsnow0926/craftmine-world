@@ -17,12 +17,14 @@ signal damage_dealt(target: Object, amount: float, point: Vector3)
 @onready var melee: MeleeAttack = get_node_or_null("MeleeAttack")
 
 var equipment_state: EquipmentState
+var player: PlayerController
 var attack_count := 0
 var last_result: Dictionary = {}
 
 
 func bind_world(world: BaseWorld) -> void:
 	equipment_state = world.equipment_state
+	player = world.player
 	if ranged != null:
 		ranged.camera_rig = world.camera_rig()
 		if not ranged.hit_landed.is_connected(_on_hit_landed):
@@ -39,6 +41,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func try_attack() -> Dictionary:
+	if player != null and player.dead:
+		var dead_result := {"fired": false, "reason": "player-dead", "hits": [], "damage": 0.0}
+		attack_blocked.emit("player-dead")
+		last_result = dead_result
+		attack_resolved.emit(dead_result)
+		return dead_result
 	if equipment_state == null:
 		return {"fired": false, "reason": "no-equipment-state", "hits": []}
 	var attempt := equipment_state.try_begin_attack()
