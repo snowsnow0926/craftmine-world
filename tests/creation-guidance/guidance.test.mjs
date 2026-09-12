@@ -33,8 +33,12 @@ function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVer
   const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
     calls.push({method,args});
     if(method==='workspace.open')return {worldId:'bound-world'};
-    if(method==='godotProject.index')return {worldId:'bound-world',revision:args.revision??7,
-      manifestHash:args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion};
+    if(method==='godotProject.index'){
+      const files=selectedSkill.references.filter(ref=>ref.requiredInterface).map(ref=>({path:ref.projectPath,sha256:modified?'f'.repeat(64):ref.sha256}));
+      const offset=args.offset??0,limit=args.limit??32;
+      return {worldId:'bound-world',revision:args.revision??7,
+        manifestHash:args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion,files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
+    }
     if(method==='godotProject.read'){
       if(missing)throw Error('PROJECT_FILE_NOT_FOUND');
       const ref=selectedSkill.references.find(ref=>ref.projectPath===args.path);

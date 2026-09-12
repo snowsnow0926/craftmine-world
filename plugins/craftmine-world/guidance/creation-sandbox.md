@@ -1,10 +1,21 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.6.1`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.7.0`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
 这是按源码整理的接口指南。加载指南或示例不会证明模型首次成功、玩法验收或正式采用。
+
+新版固定控制器 `creation-fixed-controller/1` 与碰撞控制器 `creation-player-collision/1`
+须分别匹配目录固定的完整 10/12 文件源接口组合；只有适配器哈希匹配仍不足。
+`interfaceMatches` 返回本次匹配的 profile 与引用的实际源路径。新版通过继承保留旧接口，
+指南中的旧 `base_adapter.gd` 引用对应当前 `base_adapter_legacy.gd`；查看当前顶层适配器时
+仍须读取实际源码。world/scene contract 原函数与哈希条件保持，不对任意改写脚本承诺配方适用。
+这些条件仅证明本指南覆盖其源接口，不证明运行、碰撞、模型效果或正式采用已经通过。
+
+`godot_project_query` 的只读路径可使用规范相对路径或 `res://` 路径；返回路径规范化为
+相对路径。summary 的 `mainScene` 保留 Godot 原设置，`mainSceneSourcePath` 仅在该场景
+明确存在于当前源清单时返回可直接查询的相对路径，UID/未知路径返回 null。不会解析任意文件或 URL。
 
 ## 指导适用性与源码权限
 
