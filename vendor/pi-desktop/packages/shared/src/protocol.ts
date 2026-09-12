@@ -4,6 +4,13 @@ export const APP_ID = "world.craftmine.desktop";
 export const APP_NAME = "craftmine world";
 export const APP_VERSION = "0.14.4-preview.18";
 
+export type CraftmineQuitState = {
+  attemptId: number;
+  phase: "confirming" | "saving" | "failed" | "cancelled";
+  /** Safe player-facing explanation, never a stack trace or project path. */
+  error?: string;
+};
+
 export const APP_MENU_COMMANDS = [
   "newTask",
   "openProject",
@@ -223,6 +230,7 @@ export const IPC = {
     nativeMenuAction: "pi-desktop/menu/nativeAction",
   },
   event: {
+    craftmineQuitState: "pi-desktop/craftmine/quitState",
     craftmineImmersionShortcut: "pi-desktop/craftmine/immersionShortcut",
     pluginChanged: "pi-desktop/event/pluginChanged",
     craftmineWorldChanged: "pi-desktop/event/craftmineWorldChanged",
