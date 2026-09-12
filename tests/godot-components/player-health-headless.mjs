@@ -12,6 +12,7 @@ const project=path.join(out,'project'); fs.cpSync(base,project,{recursive:true,f
 const commands=[
  {op:'snapshot'},
  {op:'damage-player',args:{amount:35}},
+	{op:'wait',args:{frames:2}},
  {op:'hud'},
  {op:'snapshot'},
  {op:'damage-player',args:{amount:100}},
