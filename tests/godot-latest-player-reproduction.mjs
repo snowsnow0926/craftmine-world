@@ -8,6 +8,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {loadPackageAsar} from '../desktop/package-asar.mjs';
 import {playwright} from '../app/browser-tools.mjs';
+import {enterRetainedPlayerWorld} from './helpers/player-world-entry.mjs';
 const root=path.resolve(import.meta.dirname,'..'),pack=path.resolve(process.argv[2]),evidenceFile=path.resolve(process.argv[3]);
 const evidenceBytes=fs.readFileSync(evidenceFile),evidence=JSON.parse(evidenceBytes),original='C:/Users/WINDOWS/AppData/Local/CraftmineWorld';
 const worldId=evidence.world.id,sessionId=evidence.session.id;
@@ -39,7 +40,7 @@ try{
  await until(async()=>ready&&ws,Boolean);browser=await playwright().chromium.connectOverCDP(ws,{noDefaults:true});
  const page=await until(async()=>browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('/out/renderer/index.html')),Boolean);
  await until(()=>rpc('primaryMode'),m=>m.width>0);
- if((await rpc('primaryMode')).entry){await rpc('primaryMode',{payload:{action:'play'}});if((await rpc('primaryMode')).entry)await rpc('primaryMode',{payload:{action:'play'}});}
+ report.playerEntry=await enterRetainedPlayerWorld(page,worldId,until);save();
  report.before=await until(()=>rpc('godotObserve').catch(()=>null),r=>r?.worldId===worldId);
  check('loaded the actual player formal PCK',report.before.buildId===evidence.world.document.build.id);
  await rpc('primaryMode',{payload:{action:'closed'}});await until(()=>rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}}).catch(e=>{if(/WORLD_BUSY/.test(e.message))return null;throw e;}),state=>state?.state==='ready');
