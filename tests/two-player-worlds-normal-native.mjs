@@ -3,7 +3,7 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{spawn}from'node:child_process';import{randomUUID,createHash}from'node:crypto';import{setTimeout as delay}from'node:timers/promises';import{playwright}from'../app/browser-tools.mjs';
 assert.ok(process.argv[2],'Usage: node tests/two-player-worlds-normal-native.mjs EXTRACTED_APP_DIR');
 const pack=path.resolve(process.argv[2]);assert.ok(fs.existsSync(path.join(pack,'Craftmine World.exe')));
-fs.mkdirSync('D:/CMR',{recursive:true});const directory=fs.mkdtempSync('D:/CMR/two-normal-'),profile=path.join(directory,'profile'),legacy=path.join(directory,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);
+fs.mkdirSync('D:/CMR/test-results',{recursive:true});const directory=fs.mkdtempSync('D:/CMR/test-results/desktop-native-two-'),profile=path.join(directory,'profile'),legacy=path.join(directory,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy,rendering:'normal'}));
 const report={directory,profile,package:pack,checks:[],launches:[],attachments:[],scope:'Fresh no-account normal-renderer Web/Godot entry, F2, slot isolation, save and restart. No generated content or bound-conversation claim.',limits:['No OS mouse/keyboard/focus/activation/PointerLock','Only original product callbacks and read/diagnostic APIs','One initial hidden prepaint per launch; no later repaint/bounds assistance']};
 const write=()=>fs.writeFileSync(path.join(directory,'two-world-normal-report.json'),JSON.stringify(report,null,2));const check=(name,value,evidence)=>{assert.ok(value,name);report.checks.push({name,evidence});write();console.log('PASS '+name);};
@@ -45,16 +45,35 @@ async function launch(label){
   const chat=async(kind,id)=>{await page.evaluate(()=>{window.__twoOriginalRaf=requestAnimationFrame;window.requestAnimationFrame=()=>0;});await shortcut(kind,'F2');await wait(()=>JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1')).overlay==='compact');await wait(()=>!document.querySelector('[data-world-conversation-restoring]'));const conversation=await navigation('world.conversation',{worldId:id});assert.equal(conversation.sessionId,null,'fresh profile has no fabricated bound session');const selected=await page.evaluate(()=>document.querySelector('[data-session-pane][data-visible="true"]')?.dataset.sessionPane??null);assert.ok(!selected,'fresh slot stays on home');await shortcut('main','F2',true);await wait(()=>JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1')).overlay==='full');await escape();await wait(()=>JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1')).overlay==='closed');await page.evaluate(()=>{window.requestAnimationFrame=__twoOriginalRaf;});return{conversation,selected};};
   const switchCards=async()=>{await escape();await wait(()=>!!document.querySelector('[data-craftmine-pause]'));await action('[data-pause-action="workbench"]');await wait(()=>document.querySelectorAll('[data-player-world]').length===2);};
   const quit=async()=>{await escape();await wait(()=>!!document.querySelector('[data-craftmine-pause]'));await action('[data-pause-action="exit"]');await stop(false);assert.ok(record.quitEvents.some(event=>event.phase==='saving'));assert.ok(record.uiSamples.some(sample=>sample.phase==='saving'&&sample.buttons.length===4&&sample.buttons.every(button=>button.disabled)));};
-  return{page,record,rpc,native,action,navigation,panel,initialPaint,enter,attached,chat,switchCards,quit,stop};
+  const visual=async(kind,id)=>{
+    try {
+    const before=await native();
+    const filename=path.join(directory,label+'-'+kind+'-post-verification.png');
+    if(kind==='godot'){
+      const bound=await rpc('godotCaptureBoundState');assert.equal(bound.formal?.worldId,id);assert.ok(!bound.candidate);
+      const capture=await rpc('godotCaptureBoundView',{payload:{worldId:id,buildId:bound.formal.buildId,instanceId:bound.formal.instanceId}});
+      fs.writeFileSync(filename,Buffer.from(capture.pngBase64,'base64'));const{pngBase64,...metadata}=capture;
+      (report.visuals??=[]).push({filename,kind,worldId:id,postVerification:true,notTransitionEvidence:true,metadata,before,after:await native()});
+    }else{
+      const capture=await inspect(`(async()=>{${guard}const wc=e.webContents.getAllWebContents().find(w=>w.getURL().includes('/views/world.html'));const image=await wc.capturePage(undefined,{stayHidden:true});return{png:image.toPNG().toString('base64'),width:image.getSize().width,height:image.getSize().height};})()`);
+      fs.writeFileSync(filename,Buffer.from(capture.png,'base64'));
+      (report.visuals??=[]).push({filename,kind,worldId:id,postVerification:true,notTransitionEvidence:true,width:capture.width,height:capture.height,before,after:await native()});
+    }
+    write();
+    } catch(error) {
+      (report.visuals??=[]).push({kind,worldId:id,postVerification:true,notTransitionEvidence:true,pixelsVerified:false,error:String(error)});write();
+    }
+  };
+  return{page,record,rpc,native,action,navigation,panel,initialPaint,enter,attached,chat,switchCards,quit,stop,visual};
  }catch(error){await stop().catch(()=>{});throw error;}
 }
 try{
  active=await launch('fresh-web-godot');
  const initial=await active.navigation('world.playerWorlds');report.initialSlots=initial;check('fresh profile exposes exactly two host slots without requiring a model account',initial.slots.length===2&&new Set(initial.slots.map(slot=>slot.kind)).size===2);
  const webId=await active.enter('web');report.webId=webId;await active.initialPaint();await active.attached('web',webId);check('Web card enters a real visible-size normal runtime',true);
- const webBefore=await active.panel('world.read',{id:webId});report.webBefore={buildId:webBefore.world.build.id,snapshot:webBefore.world.snapshot};check('Web F2 and Shift+F2 open and close the world conversation without a fabricated session',true,await active.chat('web',webId));
+ const webBefore=await active.panel('world.read',{id:webId});report.webBefore={buildId:webBefore.world.build.id,snapshot:webBefore.world.snapshot};check('Web F2 and Shift+F2 open and close the world conversation without a fabricated session',true,await active.chat('web',webId));await active.visual('web',webId);
  await active.switchCards();const godotId=await active.enter('godot');report.godotId=godotId;await active.attached('godot',godotId);check('Godot card prepares and attaches a real normal native world',true);const webSaved=await active.panel('world.read',{id:webId});report.webSavedOnSwitch={buildId:webSaved.world.build.id,snapshot:webSaved.world.snapshot};
- check('Godot uses the same F2 home flow without reusing Web conversation state',true,await active.chat('godot',godotId));
+ check('Godot uses the same F2 home flow without reusing Web conversation state',true,await active.chat('godot',godotId));await active.visual('godot',godotId);
  await active.panel('godot.runtimeSave',{worldId:godotId,freeze:true});const before=await active.panel('world.read',{id:godotId});report.godotBefore={buildId:before.world.build.id,snapshot:before.world.snapshot,sha256:digest(before.world.snapshot)};
  await active.quit();check('normal Save and exit waits for saving and exits without violations',true);active=null;
  active=await launch('restart-and-web-return');await active.initialPaint();const selected=await active.navigation('world.playerWorlds');assert.equal(selected.activeKind,'godot');assert.equal(selected.activeWorldId,godotId);await active.attached('godot',godotId);
