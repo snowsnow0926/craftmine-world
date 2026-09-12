@@ -60,7 +60,7 @@ test('scene materialization preserves two independent identities and reuses the 
 
 test('whole library is deterministic and appends one playable module without reclassifying old resources',()=>{
  const output=tmp(),other=tmp(),a=buildBuiltinSourceLibrary({output}),b=buildBuiltinSourceLibrary({output:other});
- assert.equal(a.entries.length,19);assert.deepEqual(a,b);assert.equal(a.entries.at(-1).assetId,PET_ASSET_ID);
+ assert.equal(a.entries.length,20);assert.deepEqual(a,b);assert.equal(a.entries.at(-2).assetId,PET_ASSET_ID);assert.equal(a.entries.at(-1).assetId,'cw.module.sandbox-combat');
  for(const entry of a.entries)assert.deepEqual(fs.readFileSync(path.join(output,entry.file)),fs.readFileSync(path.join(other,entry.file)));
  assert.equal(a.entries.filter(entry=>entry.kind==='object').length,16);
  assert.equal(a.entries.filter(entry=>entry.kind==='scene').length,1);
