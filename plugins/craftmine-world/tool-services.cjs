@@ -20,11 +20,11 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 const SERVICE_PROVIDERS={
   executorCreationCompletion:{kind:'function',owner:'CN4',hostMethod:null,optional:true,provides:'same-job recorded application state; a diagnostic receipt never grants application authority',requiredFor:['godot_build_read']},
   buildReadWaitMs:{kind:"number",owner:"NB5",hostMethod:null,optional:true,provides:"bounded model job-read waiting in milliseconds; fixture default is zero",requiredFor:["godot_build_read"]},
-  creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation']},
+  creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation','godot_project_query module parameter modes']},
   sampleLiveState:{
     kind:'function',owner:'R2',hostMethod:'godotLiveState',
     provides:'a timestamped sample of the running instance: world, build, instance, camera, equipment, entities, quests',
-    requiredFor:['godot_runtime_state scope=live','godot_project_facts.live']},
+    requiredFor:['godot_runtime_state scope=live','godot_project_facts.live','godot_project_query module parameter modes']},
   budget:{
     kind:'function',owner:'R2+S1',hostMethod:'budgetSnapshot',
     provides:'the seven limit kinds (tokens, context, requests, compactions, service, wallClock, resource) from the durable ledger',

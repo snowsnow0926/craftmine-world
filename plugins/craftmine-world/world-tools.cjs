@@ -7,6 +7,7 @@ const {describeRuntime,normalizeLiveSample,projectFacts,readLimitAccounting}=req
 const {capabilityReport,classifyGap,readCapabilityContext}=require('./godot-capability.cjs');
 const {createHistoryService}=require('./godot-history.cjs');
 const {createLibraryBinding,validateSourceAssetRef}=require('./godot-library.cjs');
+const {MODES:MODULE_PARAMETER_MODES,validateModuleParameterQuery,createModuleParameterQuery}=require('./godot-module-parameter-query.cjs');
 const {executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,explainRecovery}=require('./godot-jobs.cjs');
 const {validateToolServices,describeToolServices}=require('./tool-services.cjs');
 const {GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS}=require('./godot-routing.cjs');
@@ -31,7 +32,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
   // Last accepted live instance per world, so a restarted game process
   // invalidates the previous sample instead of being read as the same one.
   const liveInstances=new Map();
-  let creationExecute;
+  let creationExecute,moduleParameterQuery;
   return definitions.map(definition=>({...definition,execute:async(args,invocation)=>{
     const context=hostContext(invocation);
     const assertActive=()=>{if(isEnded(context))throw Error('TURN_ENDED');};
@@ -57,6 +58,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // Validate exact catalog IDs before opening the host-bound workspace.
     if(definition.name==='godot_guidance')require('./godot-guidance.cjs').validateRequest(args);
     if(definition.name==='package_library'&&args.mode==='propose-source-install')validateSourceAssetRef(args.ref);
+    if(definition.name==='godot_project_query'&&MODULE_PARAMETER_MODES.includes(args.mode))validateModuleParameterQuery(args);
     // Discussion-only turns may read anything and change nothing. The host may
     // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
     // either way the refusal happens before any host call.
@@ -71,6 +73,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       if(blocked)throw Error('DISCUSSION_MODE_READ_ONLY');
     }
     await core.start();
+    if(definition.name==='godot_project_query'&&MODULE_PARAMETER_MODES.includes(args.mode)){
+      moduleParameterQuery??=createModuleParameterQuery({core,capture:options.creationTarget,sample:options.sampleLiveState,assertActive:activeContext=>{if(isEnded(activeContext))throw Error('TURN_ENDED');}});
+      return moduleParameterQuery({context,args});
+    }
     if(definition.name==='package_library'&&args.mode==='propose-source-install'){
       // Suggestions are read-only, including world resolution: do not open a
       // workspace or acquire a draft lease just to suggest a catalog source.

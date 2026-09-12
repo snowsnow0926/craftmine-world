@@ -27,7 +27,9 @@ const EXECUTION_MODES={
 const LOCAL_TOOLS={
   godot_docs:{owner:'S6',hostMethod:null,needs:[]},
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
-  godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
+  godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects'],modes:{
+    ...Object.fromEntries(['summary','scene','scripts','resources','find'].map(mode=>[mode,{method:'godotProject.index+godotProject.read'}])),
+    ...Object.fromEntries(['module-parameters','module-parameter-preview'].map(mode=>[mode,{method:'task.context+godotProject.index+godotProject.read',capability:'sessionDrafts',requiredServices:['creationTarget','sampleLiveState'],requiresCapture:true}]))}},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
   godot_project_facts:{owner:'S6',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
   godot_capability_report:{owner:'S6',hostMethod:'hello',needs:[]},

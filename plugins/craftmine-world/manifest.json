@@ -575,7 +575,7 @@
       },
       {
         "name": "godot_project_query",
-        "description": "Query static Godot source at an exact revision. mode=summary reads project settings; scene returns a .tscn node tree; scripts lists declarations; resources lists dependencies; find locates symbols. Supply revision and manifestHash together or omit both for the latest. For scripts/resources/find follow nextOffset with the returned identity pin and the same filter; offset counts eligible files. complete covers the entire requested selection only when queried from offset zero without omissions. Capped files are disclosed; read their remaining source with godot_file_read. Static source declarations never prove imported resources, live nodes, successful checks or applied changes.",
+        "description": "Query static Godot source at an exact revision. mode=summary reads project settings; scene returns a .tscn node tree; scripts lists declarations; resources lists dependencies; find locates symbols. Supply revision and manifestHash together or omit both for the latest. For scripts/resources/find follow nextOffset with the returned identity pin and the same filter; offset counts eligible files. complete covers the entire requested selection only when queried from offset zero without omissions. Capped files are disclosed; read their remaining source with godot_file_read. Static source declarations never prove imported resources, live nodes, successful checks or applied changes. mode=module-parameters reads source values and typed ranges for the host-captured imported Kenney module instance. It uses the frozen source/scene reference and fresh live identity, not caller-supplied coordinates. mode=module-parameter-preview requires the returned bindingHash and changes; it generates a single-instance parent-scene patch proposal only. These two modes take no path, revision, offsets or other ordinary-query fields, acquire no draft lease, and never call configure or write source. Use the existing godot_project_patch with the returned source identity and operations, then normal check/preview/application. Runtime values, physical progress compatibility and persistence remain unverified until actual candidate checks; label is a source parameter, not proof of visible renaming. Unrecognized wrappers or ambiguous/inherited instances are explicitly unsupported.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -587,7 +587,9 @@
                 "scene",
                 "scripts",
                 "resources",
-                "find"
+                "find",
+                "module-parameters",
+                "module-parameter-preview"
               ]
             },
             "path": {
@@ -616,6 +618,34 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 24
+            },
+            "bindingHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "changes": {
+              "type": "object",
+              "properties": {
+                "model_scale_percent": {
+                  "type": "integer",
+                  "minimum": 25,
+                  "maximum": 800
+                },
+                "quarter_turns": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "solid": {
+                  "type": "boolean"
+                },
+                "label": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "minProperties": 1,
+              "additionalProperties": false
             }
           },
           "required": [

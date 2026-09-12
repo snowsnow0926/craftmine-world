@@ -9623,3 +9623,12 @@ catalog refs through the normal panel channel, checks and applies them, cold
 reopens, and repeats the exact operations to recover original receipts without
 new source or jobs. Fixture setup and model-free flow must remain labeled; a
 separate ordinary player sample is still required for player-creation claims.
+
+## GU3 module source parameters
+
+Follow [module parameter acceptance](godot-module-parameters-e2e.md). Test the
+read-only host capture/source binding, one-instance patch preview and unchanged
+peer/shared bytes separately from actual candidate application and cold-open
+behavior. Source-only Core tests must keep blocked engine checks explicit.
+Missing legacy parameter metadata stays unknown; preserved declarations do not
+grant setter or application authority.

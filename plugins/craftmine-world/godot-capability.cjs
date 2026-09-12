@@ -130,14 +130,16 @@ function localState(local,handshake){
 }
 
 // Proposals describe a player action; they never grant permission to perform it.
-function modeInventory(name,local,handshake,context,overrides){
+function modeInventory(name,local,handshake,context,overrides,services){
   const modes=Object.entries(local.modes).map(([mode,entry])=>{
     const historyKey={operation:'operationResult','merge-candidate':'mergeCandidate'}[mode]||mode;
     const override=name==='package_library'&&mode==='propose-source-install'?undefined:name==='godot_history'?overrides.historyMethods?.[historyKey]
-      :overrides.libraryMethods?.[name==='asset_library'?'asset':'package']?.[mode];
+      :['asset_library','package_library'].includes(name)?overrides.libraryMethods?.[name==='asset_library'?'asset':'package']?.[mode]:undefined;
     const hostMethod=entry.method?(override??entry.method):null;
     const needs=[...local.needs,...(entry.capability?[entry.capability]:[])];
     const state=localState({needs},handshake);
+    const missingServices=(entry.requiredServices||[]).filter(key=>!services?.wired?.some(provider=>provider.key===key));
+    if(state.reachable===true&&missingServices.length){state.reachable=services?false:null;state.blockedBy=services?'MODULE_CAPTURE_PROVIDER_UNAVAILABLE':'MODULE_CAPTURE_WIRING_UNKNOWN';}
     if(state.reachable===true){
       if(!context.worldId){state.reachable=null;state.blockedBy='WORLD_BINDING_UNRESOLVED';}
       else if(override!==undefined&&override!==entry.method&&!entry.proposal){
@@ -150,6 +152,7 @@ function modeInventory(name,local,handshake,context,overrides){
     return {mode,kind:entry.proposal?'proposal':'read',hostMethod,
       ...(entry.targetMethod?{proposedHostMethod:override??entry.targetMethod}:{}),
       reachable:state.reachable,blockedBy:state.blockedBy,
+      ...(entry.requiresCapture?{requiresValidatedCapture:true,missingServices,executionReadiness:{state:state.reachable===false?'blocked':'unknown',available:state.reachable===false?false:null,reason:state.reachable!==true?state.blockedBy:'FRESH_CAPTURE_AND_SOURCE_VALIDATED_PER_CALL'}}:{}),
       ...(entry.proposal?{applies:false,requiresPlayerAction:true}:{}),needs};
   });
   const reads=modes.filter(mode=>mode.hostMethod!==null);
@@ -239,7 +242,7 @@ function buildInventory({manifest,routing={},handshake=null,localTools={},execut
     const local=localTools[definition.name];
     const modes=EXECUTION_MODES[definition.name]?executionModes(definition.name,handshake,executor,services):null;
     if(local){
-      const state=local.modes?modeInventory(definition.name,local,handshake,executionContext,methodOverrides):localState(local,handshake);
+      const state=local.modes?modeInventory(definition.name,local,handshake,executionContext,methodOverrides,services):localState(local,handshake);
       return {name:definition.name,risk:definition.risk||'unknown',hostMethod:local.hostMethod||[...new Set((state.modes||[]).map(mode=>mode.hostMethod).filter(Boolean))].join('+')||null,advertised:true,
         wired:true,reachable:state.reachable,blockedBy:state.blockedBy,owner:local.owner||null,local:true,...(state.modes||modes?{modes:state.modes||modes}: {})};
     }

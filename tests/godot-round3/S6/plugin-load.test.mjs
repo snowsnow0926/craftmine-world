@@ -30,7 +30,7 @@ await mkdir(shared,{recursive:true});
 // runs, so this list must cover the real entry point's local require closure.
 // `domain.cjs` and `core-client.cjs` are deliberately absent: the test supplies
 // stubs for them below.
-const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
+const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
   'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-source-service.cjs','creation-change-summary.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',

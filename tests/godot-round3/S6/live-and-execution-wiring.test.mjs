@@ -16,7 +16,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..')
 const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-wiring-'));
-const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
+const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
   'godot-observe.cjs','godot-build-read-wait.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs','godot-engine-api.cjs','godot-diagnostics.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 await writeFile(path.join(staging,'domain.cjs'),`

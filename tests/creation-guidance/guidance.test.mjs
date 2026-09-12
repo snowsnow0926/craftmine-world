@@ -14,7 +14,7 @@ const require=createRequire(import.meta.url);
 const corpus=require(path.join(plugin,'guidance/catalog.json'));
 const hash=text=>createHash('sha256').update(text).digest('hex');
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'craftmine-guidance-'));
-for(const file of ['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
+for(const file of ['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs',
   'tool-services.cjs','godot-guidance.cjs','creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-change-summary.cjs'])fs.copyFileSync(path.join(plugin,file),path.join(temp,file));
 fs.cpSync(path.join(plugin,'guidance'),path.join(temp,'guidance'),{recursive:true});
