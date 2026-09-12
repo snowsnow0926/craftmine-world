@@ -56,3 +56,27 @@ fresh C: temporary directory can be used without deleting prior evidence.
 This is authored native protocol validation, not a sealed product, ordinary model
 or Web rendering test. Existing worlds gain no implied support until they opt in
 and the host verifies the corresponding runtime/source authority.
+
+## Actual Web transport follow-up
+
+`engine-performance-bridge-web.mjs` exported the opt-in creation world with the
+fixed Godot threaded Web release template and ran it through the production
+`GodotWorldViewHost` in an isolated offscreen Electron process. Run
+`engine-bridge-web-FD58pV` passed capability discovery, paused/active envelopes,
+world/build/instance/nonce matching, invalid challenge refusal, snapshot
+preservation, and sequence progression. The Web binary reported
+`debugBuild: false`; the player controls were never used and Pointer Lock/focus
+guards remained zero. GPU time remained unknown.
+
+The original result, opt-in source hashes, actual Web artifact manifest and
+stdout/stderr/import/export logs are archived under
+`docs/evidence/gu6-engine-bridge-web-20260912/`.
+This run used the pre-host-service generic request path from this test's baseline;
+it proves the actual bridge/Web protocol, not the later private host service.
+When the dedicated host method is integrated, callers must use that method and
+generic requests must remain denied. Core-issued source authority and ordinary
+model use are outside this authored fixture.
+
+The runner accepts `CRAFTMINE_ENGINE_BRIDGE_OUTPUT_ROOT` for a fresh absolute
+temporary location and `CRAFTMINE_ENGINE_BRIDGE_DEPS` for an existing desktop
+dependency directory. It never modifies the verified engine/template cache.
