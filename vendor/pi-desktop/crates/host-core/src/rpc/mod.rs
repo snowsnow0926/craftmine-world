@@ -2367,25 +2367,25 @@ async fn handle_request(
                     // (ADR 0089), which resolves the call under that mode
                     // instead; external-path gating and the contract modes'
                     // hard deny are untouched by the override.
+                    let global_pm = st
+                        .db
+                        .get_setting("app")
+                        .ok()
+                        .flatten()
+                        .and_then(|s| {
+                            s.get("defaultPermissionMode")
+                                .and_then(|v| v.as_str())
+                                .map(str::to_string)
+                        })
+                        .filter(|m| sessions::is_valid_permission_mode(m) && m != "inherit");
                     let session_pm = sessions::session_permission_mode(&st.db, &p.session_id)
                         .map_err(|e| rpc_err(1000, e.to_string(), "INTERNAL"))?
                         .filter(|m| m != "inherit");
                     let effective_pm = match session_pm {
                         Some(m) => m,
-                        None => st
-                            .db
-                            .get_setting("app")
-                            .ok()
-                            .flatten()
-                            .and_then(|s| {
-                                s.get("defaultPermissionMode")
-                                    .and_then(|v| v.as_str())
-                                    .map(str::to_string)
-                            })
-                            .filter(|m| sessions::is_valid_permission_mode(m) && m != "inherit")
-                            .unwrap_or_else(|| "ask".to_string()),
+                        None => global_pm.clone().unwrap_or_else(|| "ask".to_string()),
                     };
-                    let effective_pm = match p.permission_scope.as_deref() {
+                    let mut effective_pm = match p.permission_scope.as_deref() {
                         Some(scope)
                             if sessions::is_valid_permission_mode(scope) && scope != "inherit" =>
                         {
@@ -2393,6 +2393,19 @@ async fn handle_request(
                         }
                         _ => effective_pm,
                     };
+                    // The global Full Auto setting is an explicit opt-in for
+                    // the built-in Craftmine patch tool. Existing sessions may
+                    // retain an older per-session `ask` value; letting that
+                    // stale value reopen a card defeats the global setting and
+                    // blocked the player's zero-click creation flow. Keep the
+                    // exception narrow: only this built-in tool is covered,
+                    // while other plugins and high-risk tools keep normal
+                    // per-session semantics.
+                    if global_pm.as_deref() == Some("auto")
+                        && p.tool_name == "plugin_craftmine_world_godot_project_patch"
+                    {
+                        effective_pm = "auto".to_string();
+                    }
                     // Resolve the tool root from the persisted session instead of
                     // the mutable global workspace. This keeps background turns
                     // isolated when the renderer switches between project tabs.
