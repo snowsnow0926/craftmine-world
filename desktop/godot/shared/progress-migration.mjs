@@ -75,7 +75,8 @@ function deriveCreationProgress(previous,defaults){
  for(const value of [previous,defaults]){
   if(!exact(value,['format','worldId','baseId','baseVersion','stateVersion','body'])||value.format!=='craftmine.godot-progress/1'||value.baseId!=='creation-sandbox'||value.baseVersion!=='1.0.0'||value.stateVersion!==1||typeof value.worldId!=='string'||!value.worldId)fail('MIGRATION_UNSUPPORTED_BASE');
   const b=value.body;
-  if(!exact(b,['format','worldId','baseVersion','player','timeOfDay','sourceTimeOfDay','inventory','openedChests','doors','rules'])||b.format!=='craftmine.creation-progress/1'||b.worldId!==value.worldId||b.baseVersion!==value.baseVersion)fail('MIGRATION_UNKNOWN_NATIVE_SHAPE');
+  if(!exact(b,['format','worldId','baseVersion','player','timeOfDay','sourceTimeOfDay','inventory','openedChests','doors','rules',...(Object.hasOwn(b??{},'components')?['components']:[])])||b.format!=='craftmine.creation-progress/1'||b.worldId!==value.worldId||b.baseVersion!==value.baseVersion)fail('MIGRATION_UNKNOWN_NATIVE_SHAPE');
+  validateComponentLedger(Object.hasOwn(b,'components')?b.components:{});
   if(!exact(b.player,['position','yaw','pitch','onFloor'])||!Array.isArray(b.player.position)||b.player.position.length!==3||!b.player.position.every((n,i)=>number(n,i===1?0:-32,32))||!number(b.player.yaw,-Math.PI,Math.PI)||!number(b.player.pitch,-89*Math.PI/180,89*Math.PI/180)||typeof b.player.onFloor!=='boolean'||!number(b.timeOfDay,0,24)||!number(b.sourceTimeOfDay,0,24))fail('MIGRATION_CREATION_STATE_INVALID');
   if(!ledger(b.inventory,n=>Number.isSafeInteger(n)&&n>=0&&n<=999999)||!ledger(b.openedChests,n=>n===true)||!ledger(b.doors,n=>typeof n==='boolean')||!ledger(b.rules,object))fail('MIGRATION_CREATION_STATE_INVALID');
   if(Buffer.byteLength(canonicalProgressJson(value))>1048576)fail('MIGRATION_SIZE_LIMIT');
@@ -85,7 +86,32 @@ function deriveCreationProgress(previous,defaults){
  for(const key of ['doors','rules'])for(const id of Object.keys(defaults.body[key]).sort()){
   if(!Object.hasOwn(snapshot.body[key],id)){snapshot.body[key][id]=structuredClone(defaults.body[key][id]);added.push({path:'/body/'+key,id});}
  }
+ if(Object.hasOwn(previous.body,'components')||Object.hasOwn(defaults.body,'components')){
+  snapshot.body.components=structuredClone(previous.body.components??{});
+  for(const [id,fresh] of Object.entries(defaults.body.components??{}).sort(([a],[b])=>a<b?-1:a>b?1:0)){
+   const old=Object.hasOwn(snapshot.body.components,id)?snapshot.body.components[id]:null;
+   if(!old){snapshot.body.components[id]=structuredClone(fresh);added.push({path:'/body/components',id});continue;}
+   if(old.format!==fresh.format||canonicalProgressJson(Object.keys(old.sourceSettings).sort())!==canonicalProgressJson(Object.keys(fresh.sourceSettings).sort()))fail('MIGRATION_COMPONENT_SCHEMA_CHANGED');
+   for(const key of Object.keys(fresh.sourceSettings)){
+    if(typeof old.sourceSettings[key]!==typeof fresh.sourceSettings[key])fail('MIGRATION_COMPONENT_SCHEMA_CHANGED');
+    if(canonicalProgressJson(old.sourceSettings[key])!==canonicalProgressJson(fresh.sourceSettings[key]))old.settings[key]=structuredClone(fresh.settings[key]);
+   }
+   old.sourceSettings=structuredClone(fresh.sourceSettings);
+  }
+  validateComponentLedger(snapshot.body.components);
+ }
  if(previous.body.sourceTimeOfDay!==defaults.body.sourceTimeOfDay){snapshot.body.timeOfDay=defaults.body.sourceTimeOfDay;snapshot.body.sourceTimeOfDay=defaults.body.sourceTimeOfDay;}
  if(Buffer.byteLength(canonicalProgressJson(snapshot))>1048576)fail('MIGRATION_SIZE_LIMIT');
  return {format:'craftmine.godot-additive-progress/1',previousSnapshotHash:hashProgress(previous),defaultsSnapshotHash:hashProgress(defaults),snapshotHash:hashProgress(snapshot),added,snapshot};
+}
+
+function validateComponentLedger(ledger){
+ const validId=id=>typeof id==='string'&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(id);
+ const textFits=(v,max)=>v.length<=max*2&&[...v].length<=max;
+ const safe=(v,depth=0)=>depth<=8&&(v===null||typeof v==='boolean'||typeof v==='string'&&textFits(v,4096)||typeof v==='number'&&Number.isFinite(v)||Array.isArray(v)&&v.length<=1024&&v.every(x=>safe(x,depth+1))||object(v)&&Object.keys(v).length<=128&&Object.entries(v).every(([k,x])=>textFits(k,128)&&safe(x,depth+1)));
+ if(!object(ledger)||Object.keys(ledger).length>64)fail('MIGRATION_COMPONENT_STATE_INVALID');
+ for(const [id,state]of Object.entries(ledger)){
+  if(!validId(id)||!object(state)||!safe(state)||Buffer.byteLength(canonicalProgressJson(state))>65536||state.entityId!==id||typeof state.format!=='string'||!state.format||!textFits(state.format,128)||!object(state.settings)||!object(state.sourceSettings)||Object.keys(state.sourceSettings).length>16||canonicalProgressJson(Object.keys(state.settings).sort())!==canonicalProgressJson(Object.keys(state.sourceSettings).sort()))fail('MIGRATION_COMPONENT_STATE_INVALID');
+  for(const key of Object.keys(state.sourceSettings))if(!validId(key)||object(state.sourceSettings[key])||Array.isArray(state.sourceSettings[key])||object(state.settings[key])||Array.isArray(state.settings[key])||typeof state.sourceSettings[key]!==typeof state.settings[key])fail('MIGRATION_COMPONENT_STATE_INVALID');
+ }
 }

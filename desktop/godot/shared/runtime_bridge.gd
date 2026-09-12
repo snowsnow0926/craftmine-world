@@ -50,6 +50,14 @@ func receive(arguments: Array) -> void:
 func _process(_delta: float) -> void:
 	_drain_queue()
 
+# The normal key and managed interact operation share the adapter dispatch.
+# Consume only a real component hit; stock world interaction remains unchanged.
+func _input(event: InputEvent) -> void:
+	if not loaded or get_tree().paused or not event.is_action_pressed("interact") or event.is_echo(): return
+	if adapter.has_method("interact_component"):
+		var result: Dictionary = adapter.interact_component()
+		if result.handled: get_viewport().set_input_as_handled()
+
 func _drain_queue() -> void:
 	if busy or queue.is_empty() or browser == null:
 		return
@@ -102,9 +110,11 @@ func handle_request(request: Dictionary) -> Dictionary:
 				failure = await adapter.restore(state.body)
 				if not failure.is_empty():
 					return {"error": failure}
+			var restored := snapshot()
+			if restored.has("error"): return restored
 			loaded = true
 			latest_runner_receipt = {}
-			return {"result": {"loaded": true, "snapshot": snapshot()}}
+			return {"result": {"loaded": true, "snapshot": restored}}
 		"observe":
 			return {"result": adapter.observe()}
 		"observe-envelope":
@@ -118,12 +128,16 @@ func handle_request(request: Dictionary) -> Dictionary:
 			return {"result": {"format": "craftmine.godot-observation/1", "worldId": scope.worldId, "buildId": scope.buildId, "instanceId": scope.instanceId, "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "sampledAt": Time.get_datetime_string_from_system(true) + "Z", "protocol": PROTOCOL, "payload": payload}}
 		"snapshot":
 			var current := snapshot()
+			if current.has("error"): return current
 			var failure := Guard.validate(current.state, scope.worldId, adapter.BASE_ID, adapter.BASE_VERSION)
 			return {"result": current} if failure.is_empty() else {"error": failure}
 		"save":
 			if not loaded:
 				return {"error": "Load the world before confirming progress"}
 			var current := snapshot()
+			if current.has("error"):
+				latest_runner_receipt = {}
+				return current
 			var text := JSON.stringify(current.state)
 			if text.to_utf8_buffer().size() > Guard.LIMIT:
 				return {"error": "Complete progress exceeds 1 MiB"}
@@ -160,4 +174,8 @@ func handle_request(request: Dictionary) -> Dictionary:
 			return await adapter.command(str(request.get("op", "")), args)
 
 func snapshot() -> Dictionary:
-	return {"base": adapter.BASE_ID, "worldId": scope.get("worldId", ""), "state": {"format": Guard.FORMAT, "worldId": scope.get("worldId", ""), "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "stateVersion": 1, "body": adapter.capture()}}
+	var body: Dictionary = adapter.capture()
+	if adapter.has_method("capture_error"):
+		var failure: String = adapter.capture_error()
+		if not failure.is_empty(): return {"error": failure}
+	return {"base": adapter.BASE_ID, "worldId": scope.get("worldId", ""), "state": {"format": Guard.FORMAT, "worldId": scope.get("worldId", ""), "baseId": adapter.BASE_ID, "baseVersion": adapter.BASE_VERSION, "stateVersion": 1, "body": body}}
