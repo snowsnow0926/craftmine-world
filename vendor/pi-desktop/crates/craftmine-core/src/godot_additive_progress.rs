@@ -68,7 +68,8 @@ fn derive_creation(previous: &Value, defaults: &Value) -> Result<Value> {
     let num = |v: &Value, min: f64, max: f64| v.as_f64().is_some_and(|n|n.is_finite() && n>=min && n<=max);
     for value in [previous,defaults] {
         let b=&value["body"];
-        ensure!(b.as_object().is_some_and(|m|m.len()==keys.len() && keys.iter().all(|k|m.contains_key(*k))) && b["format"]=="craftmine.creation-progress/1" && b["worldId"]==value["worldId"] && b["baseVersion"]==value["baseVersion"],"GODOT_ADDITIVE_UNSUPPORTED_SHAPE");
+        ensure!(b.as_object().is_some_and(|m|m.len()==keys.len()+usize::from(m.contains_key("components")) && keys.iter().all(|k|m.contains_key(*k))) && b["format"]=="craftmine.creation-progress/1" && b["worldId"]==value["worldId"] && b["baseVersion"]==value["baseVersion"],"GODOT_ADDITIVE_UNSUPPORTED_SHAPE");
+        if let Some(components)=b.get("components") {validate_components(components)?;}
         let p=&b["player"];
         ensure!(p.as_object().is_some_and(|m|m.len()==4 && ["position","yaw","pitch","onFloor"].iter().all(|k|m.contains_key(*k))) && p["position"].as_array().is_some_and(|a|a.len()==3 && a.iter().enumerate().all(|(i,v)|num(v,if i==1 {0.0} else {-32.0},32.0))) && num(&p["yaw"],-std::f64::consts::PI,std::f64::consts::PI) && num(&p["pitch"],-89.0*std::f64::consts::PI/180.0,89.0*std::f64::consts::PI/180.0) && p["onFloor"].is_boolean() && num(&b["timeOfDay"],0.0,24.0) && num(&b["sourceTimeOfDay"],0.0,24.0),"GODOT_ADDITIVE_CREATION_STATE_INVALID");
         for key in ["inventory","openedChests","doors","rules"] {
@@ -94,12 +95,61 @@ fn derive_creation(previous: &Value, defaults: &Value) -> Result<Value> {
             if !target.contains_key(id) {target.insert(id.clone(),value.clone());added.push(json!({"path":format!("/body/{key}"),"id":id}));}
         }
     }
+    if previous["body"].get("components").is_some() || defaults["body"].get("components").is_some() {
+        let mut components=previous["body"].get("components").cloned().unwrap_or(json!({}));
+        if let Some(fresh)=defaults["body"].get("components").and_then(Value::as_object) {
+            for (id,state) in fresh {
+                if let Some(old)=components.get_mut(id) {
+                    let a=old["sourceSettings"].as_object().unwrap();
+                    let b=state["sourceSettings"].as_object().unwrap();
+                    ensure!(old["format"]==state["format"] && a.len()==b.len() && a.iter().all(|(key,v)|b.get(key).is_some_and(|n|kind(n)==kind(v))),"GODOT_ADDITIVE_COMPONENT_SCHEMA_CHANGED");
+                    for (key,value) in b {
+                        if !super::super::godot_runtime::same_json(&old["sourceSettings"][key],value) {old["settings"][key]=state["settings"][key].clone();}
+                    }
+                    old["sourceSettings"]=state["sourceSettings"].clone();
+                } else {
+                    components.as_object_mut().unwrap().insert(id.clone(),state.clone());
+                    added.push(json!({"path":"/body/components","id":id}));
+                }
+            }
+        }
+        validate_components(&components)?;
+        snapshot["body"]["components"]=components;
+    }
     if !super::super::godot_runtime::same_json(&previous["body"]["sourceTimeOfDay"],&defaults["body"]["sourceTimeOfDay"]) {
         snapshot["body"]["timeOfDay"]=defaults["body"]["sourceTimeOfDay"].clone();
         snapshot["body"]["sourceTimeOfDay"]=defaults["body"]["sourceTimeOfDay"].clone();
     }
     super::super::godot_runtime::validate_progress(&snapshot)?;
     Ok(json!({"format":"craftmine.godot-additive-progress/1","hashEncoding":"serde-json/1","previousSnapshotHash":digest(&serde_json::to_string(previous)?),"defaultsSnapshotHash":digest(&serde_json::to_string(defaults)?),"snapshotHash":digest(&serde_json::to_string(&snapshot)?),"added":added,"snapshot":snapshot}))
+}
+
+fn component_id(id:&str)->bool {
+    !id.is_empty() && id.len()<=128 && id.as_bytes()[0].is_ascii_alphanumeric() && id.bytes().all(|c|c.is_ascii_alphanumeric()||matches!(c,b'.'|b'_'|b'-'))
+}
+fn component_json(value:&Value,depth:usize)->bool {
+    if depth>8 {return false;}
+    match value {
+        Value::Object(map)=>map.len()<=128 && map.iter().all(|(key,v)|key.chars().count()<=128 && component_json(v,depth+1)),
+        Value::Array(items)=>items.len()<=1024 && items.iter().all(|v|component_json(v,depth+1)),
+        Value::String(s)=>s.chars().count()<=4096,
+        Value::Number(n)=>n.as_f64().is_some_and(f64::is_finite),
+        _=>true,
+    }
+}
+fn validate_components(value:&Value)->Result<()> {
+    let ledger=value.as_object().context("GODOT_ADDITIVE_COMPONENT_STATE_INVALID")?;
+    ensure!(ledger.len()<=64,"GODOT_ADDITIVE_COMPONENT_STATE_INVALID");
+    for (id,state) in ledger {
+        ensure!(component_id(id) && state.is_object() && component_json(state,0) && serde_json::to_vec(state)?.len()<=65536 && state["entityId"]==*id && state["format"].as_str().is_some_and(|s|!s.is_empty()&&s.chars().count()<=128),"GODOT_ADDITIVE_COMPONENT_STATE_INVALID");
+        let settings=state["settings"].as_object().context("GODOT_ADDITIVE_COMPONENT_STATE_INVALID")?;
+        let source=state["sourceSettings"].as_object().context("GODOT_ADDITIVE_COMPONENT_STATE_INVALID")?;
+        ensure!(source.len()<=16 && source.len()==settings.len(),"GODOT_ADDITIVE_COMPONENT_STATE_INVALID");
+        for (key,v) in source {
+            ensure!(component_id(key) && !v.is_array() && !v.is_object() && settings.get(key).is_some_and(|n|!n.is_array()&&!n.is_object()&&kind(n)==kind(v)),"GODOT_ADDITIVE_COMPONENT_STATE_INVALID");
+        }
+    }
+    Ok(())
 }
 
 fn entries(value: &Value) -> Result<BTreeMap<&str, &Value>> {
@@ -159,6 +209,53 @@ pub(crate) fn validate_prepared(db: &Connection, candidate: &Value, before: &wor
 mod equipment_tests {
     use super::*;
     use crate::godot_test_support::failed;
+
+    fn component_world() -> Value {
+        json!({"format":"craftmine.godot-progress/1","worldId":"alpha","baseId":"creation-sandbox","baseVersion":"1.0.0","stateVersion":1,"body":{"format":"craftmine.creation-progress/1","worldId":"alpha","baseVersion":"1.0.0","player":{"position":[2,0.9,6],"yaw":1,"pitch":0.1,"onFloor":true},"timeOfDay":18,"sourceTimeOfDay":12,"inventory":{"token":3},"openedChests":{"chest":true},"doors":{},"rules":{}}})
+    }
+    fn pet(id:&str)->Value {
+        json!({"format":"craftmine.pet-companion-state/1","entityId":id,"settings":{"name":"小白","appearanceKey":"dog","following":true},"sourceSettings":{"name":"小白","appearanceKey":"dog","following":true},"position":[2,0,1],"yaw":1,"interactionCount":7})
+    }
+    #[test]
+    fn component_defaults_and_settings_changes_preserve_identity_progress_and_other_instances()->Result<()> {
+        let empty=component_world();
+        assert_eq!(derive(&empty,&empty)?["snapshot"],empty);
+        let mut defaults=empty.clone();defaults["body"]["components"]=json!({"dog-1":pet("dog-1"),"dog-2":pet("dog-2")});
+        let first=derive(&empty,&defaults)?;
+        assert_eq!(first["snapshot"]["body"]["components"],defaults["body"]["components"]);
+        verify_proof(&empty,&defaults,&first)?;
+        let mut previous=first["snapshot"].clone();
+        previous["body"]["components"]["dog-1"]["settings"]["following"]=json!(false);
+        defaults["body"]["components"]["dog-1"]["settings"]["appearanceKey"]=json!("pomeranian-white");
+        defaults["body"]["components"]["dog-1"]["sourceSettings"]["appearanceKey"]=json!("pomeranian-white");
+        defaults["body"]["components"]["dog-1"]["position"]=json!([9,0,9]);
+        defaults["body"]["components"]["dog-1"]["interactionCount"]=json!(0);
+        let result=derive(&previous,&defaults)?;
+        let dog=&result["snapshot"]["body"]["components"]["dog-1"];
+        assert_eq!(dog["settings"]["appearanceKey"],"pomeranian-white");
+        assert_eq!(dog["settings"]["following"],false);
+        assert_eq!(dog["position"],json!([2,0,1]));assert_eq!(dog["interactionCount"],7);
+        assert_eq!(result["snapshot"]["body"]["components"]["dog-2"],previous["body"]["components"]["dog-2"]);
+        assert_eq!(result["snapshot"]["body"]["player"],previous["body"]["player"]);
+        verify_proof(&previous,&defaults,&result)?;
+        let mut forged=result.clone();forged["snapshot"]["body"]["components"]["dog-1"]["interactionCount"]=json!(999);
+        assert!(verify_proof(&previous,&defaults,&forged).is_err());
+        Ok(())
+    }
+    #[test]
+    fn removed_component_ledgers_survive_and_malformed_or_new_schema_states_are_rejected()->Result<()> {
+        let empty=component_world();let mut old=empty.clone();old["body"]["components"]=json!({"dog-1":pet("dog-1")});
+        let removed=derive(&old,&empty)?["snapshot"].clone();assert_eq!(removed["body"]["components"],old["body"]["components"]);
+        let mut fresh=old.clone();fresh["body"]["components"]["dog-1"]["interactionCount"]=json!(0);
+        assert_eq!(derive(&removed,&fresh)?["snapshot"]["body"]["components"]["dog-1"]["interactionCount"],7);
+        for invalid in [Value::Null,json!([]),json!({"dog-1":{}})] {
+            let mut bad=old.clone();bad["body"]["components"]=invalid;assert!(derive(&old,&bad).is_err());
+        }
+        for (field,value) in [("entityId",json!("foreign")),("format",json!("future/2")),("sourceSettings",json!({"added":true})),("settings",json!({"name":"pet","appearanceKey":"dog","following":"yes"}))] {
+            let mut bad=old.clone();bad["body"]["components"]["dog-1"][field]=value;assert!(derive(&old,&bad).is_err());
+        }
+        Ok(())
+    }
 
     #[test]
     fn creation_additions_keep_old_ledgers_and_apply_only_explicit_time_changes() -> Result<()> {
