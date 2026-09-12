@@ -16,6 +16,8 @@ for(const controllerProfile of ['legacy','creation-fixed-controller/1','creation
     assert.equal(currentSceneObserverProfile(manifest.files.filter(entry=>entry.path!==file),pins),null);
     assert.equal(currentSceneObserverProfile(manifest.files.map(entry=>entry.path===file?{...entry,sha256:'f'.repeat(64)}:entry),pins),null);
     assert.equal(currentSceneObserverProfile([...manifest.files,manifest.files.find(entry=>entry.path===file)],pins),null);
+    for(const alias of [file.toUpperCase(),file+'.remap',file.replace('.gd','.gdc')])
+      assert.equal(currentSceneObserverProfile([...manifest.files,{path:alias,sha256:'a'.repeat(64)}],pins),null);
   }
   const oldPins={...pins};delete oldPins['@engineBridge'];
   assert.equal(currentSceneObserverProfile(manifest.files,oldPins),null);

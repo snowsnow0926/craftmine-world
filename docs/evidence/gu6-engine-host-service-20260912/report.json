@@ -1,0 +1,669 @@
+{
+  "passed": true,
+  "out": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\craftmine-engine-service-0912\\engine-bridge-web-HcBqsU",
+  "scope": "Actual pinned opt-in Web export, production runtime host and protocol; independent offscreen profile, no Core candidate authority or model calls",
+  "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+  "editorSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "sourceManifest": {
+    "format": "craftmine.managed-base-source/1",
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "worldId": "engine-web-world",
+    "template": "blank",
+    "protocol": "craftmine.godot-runtime/2",
+    "progressFormat": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 1677,
+        "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+      },
+      {
+        "path": "assets/ASSET_MANIFEST.json",
+        "bytes": 548,
+        "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+      },
+      {
+        "path": "assets/fonts/OFL-NotoSansSC.txt",
+        "bytes": 4388,
+        "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+      },
+      {
+        "path": "assets/fonts/cjk-0.json",
+        "bytes": 2800055,
+        "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+      },
+      {
+        "path": "assets/fonts/cjk-1.json",
+        "bytes": 2790775,
+        "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+      },
+      {
+        "path": "assets/fonts/font.json",
+        "bytes": 832,
+        "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+      },
+      {
+        "path": "craftmine_initial_state.json",
+        "bytes": 698,
+        "sha256": "99ac21d21c71963a1aa1a5d628d4120588d7670547ae3b79910efa7897f6cc99"
+      },
+      {
+        "path": "craftmine_shared/base_adapter.gd",
+        "bytes": 3380,
+        "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+      },
+      {
+        "path": "craftmine_shared/base_adapter_controller_v1.gd",
+        "bytes": 1640,
+        "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+      },
+      {
+        "path": "craftmine_shared/base_adapter_legacy.gd",
+        "bytes": 15229,
+        "sha256": "723e8a5b4a87101c77f3510687c2000b768ba2f0e89ad2f3ec2a9bb864e69bbb"
+      },
+      {
+        "path": "craftmine_shared/controller_evidence.gd",
+        "bytes": 9893,
+        "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+      },
+      {
+        "path": "craftmine_shared/engine_performance.gd",
+        "bytes": 3959,
+        "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+      },
+      {
+        "path": "craftmine_shared/headless_play_action.gd",
+        "bytes": 2525,
+        "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+      },
+      {
+        "path": "craftmine_shared/progress_collision.gd",
+        "bytes": 3811,
+        "sha256": "c194946727f3d382821f04038614d0a38f7f7b66afdb94a3e01a6c0d787c9098"
+      },
+      {
+        "path": "craftmine_shared/runtime_bridge.gd",
+        "bytes": 2755,
+        "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+      },
+      {
+        "path": "craftmine_shared/runtime_bridge_base.gd",
+        "bytes": 7677,
+        "sha256": "418bbb6f2a87b3092fb542b35a8c2007fef4725f554216f01fa48414c40ef6d3"
+      },
+      {
+        "path": "craftmine_shared/scene_mesh_picker.gd",
+        "bytes": 13159,
+        "sha256": "d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512"
+      },
+      {
+        "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+        "bytes": 15348,
+        "sha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1"
+      },
+      {
+        "path": "craftmine_shared/state_guard.gd",
+        "bytes": 1759,
+        "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+      },
+      {
+        "path": "creation-scene.schema.json",
+        "bytes": 6559,
+        "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+      },
+      {
+        "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+        "bytes": 1407,
+        "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+      },
+      {
+        "path": "manifest.json",
+        "bytes": 2430,
+        "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+      },
+      {
+        "path": "project.godot",
+        "bytes": 1177,
+        "sha256": "6876c97804e69d69d36e86bb9f86f4749a4504dc825ae3b7b6dfd38140cb9162"
+      },
+      {
+        "path": "scenes/creation.tscn",
+        "bytes": 1099,
+        "sha256": "bac1347d32bb5736043ecb3d3e4794e40d22654dc0ae354f270ab09a4bbcab88"
+      },
+      {
+        "path": "scripts/creation_font.gd",
+        "bytes": 1737,
+        "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+      },
+      {
+        "path": "scripts/creation_world.gd",
+        "bytes": 26597,
+        "sha256": "459c4fe1af2d7a93847614bec93a994b7a0772abaf48c15b07b818e57592c1ff"
+      },
+      {
+        "path": "scripts/reused/camera_rig.gd",
+        "bytes": 1527,
+        "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+      },
+      {
+        "path": "scripts/reused/player_controller.gd",
+        "bytes": 6089,
+        "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+      },
+      {
+        "path": "scripts/scene_contract.gd",
+        "bytes": 5289,
+        "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+      },
+      {
+        "path": "world/creation.json",
+        "bytes": 115,
+        "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+      }
+    ],
+    "enginePerformanceProfile": "engine-monitor/1"
+  },
+  "descriptor": {
+    "worldId": "engine-web-world",
+    "buildId": "gbd-3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+    "revision": 0,
+    "root": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\craftmine-engine-service-0912\\engine-bridge-web-HcBqsU\\artifacts",
+    "entry": "web/index.html",
+    "threads": true,
+    "artifacts": [
+      {
+        "path": "web/bridge.js",
+        "bytes": 9919,
+        "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+      },
+      {
+        "path": "web/index.apple-touch-icon.png",
+        "bytes": 11944,
+        "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+      },
+      {
+        "path": "web/index.audio.position.worklet.js",
+        "bytes": 2973,
+        "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+      },
+      {
+        "path": "web/index.audio.worklet.js",
+        "bytes": 7298,
+        "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+      },
+      {
+        "path": "web/index.html",
+        "bytes": 965,
+        "sha256": "cb998ab920028ee91a42398da0e914e381c654e677b1570fe83c10982ae04bd6"
+      },
+      {
+        "path": "web/index.icon.png",
+        "bytes": 5700,
+        "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+      },
+      {
+        "path": "web/index.js",
+        "bytes": 314653,
+        "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+      },
+      {
+        "path": "web/index.pck",
+        "bytes": 5744924,
+        "sha256": "1f38012e70d411985c6bbfec8dd6fcc297b70d08457c3bcaaba62887cf3e4dc4"
+      },
+      {
+        "path": "web/index.png",
+        "bytes": 21443,
+        "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+      },
+      {
+        "path": "web/index.wasm",
+        "bytes": 38820072,
+        "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+      }
+    ],
+    "snapshot": {
+      "format": "craftmine.godot-progress/1",
+      "worldId": "engine-web-world",
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "stateVersion": 1,
+      "body": {
+        "baseVersion": "1.0.0",
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {},
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "engine-web-world"
+      }
+    }
+  },
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "stdoutSha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+  "stderrSha256": "b5e1e8178d9c23d3f8aabd9d78fedcb28505ee7011ec1a230c786911e52a5b79",
+  "result": {
+    "passed": true,
+    "scope": "Actual opt-in Godot Web export and production host/transport; authored descriptor, not Core-issued authority or model benchmark",
+    "capabilities": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "enginePerformanceFormat": "craftmine.godot-engine-performance-envelope/1",
+      "enginePerformanceNonce": "hex-64",
+      "enginePerformanceProfile": "engine-monitor/1",
+      "headlessPlayActionFormat": "craftmine.headless-play-action/1",
+      "loaded": true,
+      "ops": [
+        "capabilities",
+        "observe",
+        "observe-envelope",
+        "load",
+        "restore-state",
+        "snapshot",
+        "save",
+        "pause",
+        "resume",
+        "acknowledge",
+        "exit",
+        "engine-performance"
+      ],
+      "paused": true,
+      "progressFormat": "craftmine.godot-progress/1",
+      "protocol": "craftmine.godot-runtime/2"
+    },
+    "paused": {
+      "buildId": "gbd-3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+      "format": "craftmine.godot-engine-performance-envelope/1",
+      "instanceId": "5b73da5b75d12256461b881f",
+      "nonce": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "profile": "engine-monitor/1",
+      "sample": {
+        "debugBuild": false,
+        "editorHint": false,
+        "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+        "format": "craftmine.godot-engine-performance/1",
+        "framesDrawn": 5,
+        "headless": false,
+        "metrics": {
+          "drawCalls": {
+            "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+            "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+            "rawValue": 13,
+            "status": "measured",
+            "unit": "count"
+          },
+          "fps": {
+            "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+            "monitor": "TIME_FPS",
+            "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+            "status": "unknown",
+            "unit": "fps"
+          },
+          "gpuTime": {
+            "meaning": "GPU execution duration.",
+            "monitor": null,
+            "reason": "NO_TRUSTED_GPU_TIMER",
+            "status": "unknown",
+            "unit": "s"
+          },
+          "nodeCount": {
+            "meaning": "Engine-wide node count in the scene tree, including its root.",
+            "monitor": "OBJECT_NODE_COUNT",
+            "rawValue": 33,
+            "status": "measured",
+            "unit": "count"
+          },
+          "objectCount": {
+            "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+            "monitor": "OBJECT_COUNT",
+            "rawValue": 1417,
+            "status": "measured",
+            "unit": "count"
+          },
+          "physicsTime": {
+            "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+            "monitor": "TIME_PHYSICS_PROCESS",
+            "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+            "status": "unknown",
+            "unit": "s"
+          },
+          "primitives": {
+            "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+            "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+            "rawValue": 8612,
+            "status": "measured",
+            "unit": "count"
+          },
+          "processTime": {
+            "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+            "monitor": "TIME_PROCESS",
+            "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+            "status": "unknown",
+            "unit": "s"
+          }
+        },
+        "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+        "monotonicUsec": 1002840,
+        "paused": true,
+        "physicsFrame": 18,
+        "processFrame": 5,
+        "profile": "engine-monitor/1",
+        "renderingDriver": "opengl3",
+        "renderingMethod": "gl_compatibility",
+        "sampledAt": "2026-09-12T04:53:37Z",
+        "sequence": 1
+      },
+      "worldId": "engine-web-world"
+    },
+    "snapshotUnchanged": true,
+    "servicePaused": {
+      "format": "craftmine.host-engine-performance/1",
+      "available": true,
+      "worldId": "engine-web-world",
+      "buildId": "gbd-3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+      "instanceId": "5b73da5b75d12256461b881f",
+      "profile": "engine-monitor/1",
+      "nonce": "c89738d54dfb7d596e6f5c300157a3a0b753eb7c54e6e355e8ff68cdf55a1a4d",
+      "sourceRevision": 1,
+      "manifestHash": "ebeacd956fe1d214c3472df05738106f7a7fd5d9a958676ace297f388dd03003",
+      "sourceContentOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourceFilesHash": "9037b3df8013a4fdd72758e222eb3178f2d78610efa07065e4fef096df20b479",
+      "artifactManifestHash": "3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+      "packSha256": "1f38012e70d411985c6bbfec8dd6fcc297b70d08457c3bcaaba62887cf3e4dc4",
+      "hostSampledAt": "2026-09-12T04:53:37.274Z",
+      "observation": {
+        "format": "craftmine.validated-engine-performance/1",
+        "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+        "profile": "engine-monitor/1",
+        "sequence": 2,
+        "sampledAt": "2026-09-12T04:53:37Z",
+        "monotonicUsec": 1021660,
+        "processFrame": 6,
+        "physicsFrame": 19,
+        "framesDrawn": 6,
+        "paused": true,
+        "headless": false,
+        "debugBuild": false,
+        "editorHint": false,
+        "renderingMethod": "gl_compatibility",
+        "renderingDriver": "opengl3",
+        "metrics": {
+          "processTime": {
+            "status": "unknown",
+            "monitor": "TIME_PROCESS",
+            "unit": "ms"
+          },
+          "physicsTime": {
+            "status": "unknown",
+            "monitor": "TIME_PHYSICS_PROCESS",
+            "unit": "ms"
+          },
+          "fps": {
+            "status": "unknown",
+            "monitor": "TIME_FPS",
+            "unit": "fps"
+          },
+          "objectCount": {
+            "status": "measured",
+            "monitor": "OBJECT_COUNT",
+            "rawValue": 1417,
+            "rawUnit": "count",
+            "value": 1417,
+            "unit": "count"
+          },
+          "nodeCount": {
+            "status": "measured",
+            "monitor": "OBJECT_NODE_COUNT",
+            "rawValue": 33,
+            "rawUnit": "count",
+            "value": 33,
+            "unit": "count"
+          },
+          "drawCalls": {
+            "status": "measured",
+            "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+            "rawValue": 17,
+            "rawUnit": "count",
+            "value": 17,
+            "unit": "count"
+          },
+          "primitives": {
+            "status": "measured",
+            "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+            "rawValue": 8660,
+            "rawUnit": "count",
+            "value": 8660,
+            "unit": "count"
+          },
+          "gpuTime": {
+            "status": "unknown",
+            "monitor": null,
+            "unit": "ms"
+          }
+        },
+        "authority": "not-attested-by-structural-validation",
+        "limitations": [
+          "Engine process/physics monitor durations are not OS process CPU time or rendered frame intervals.",
+          "FPS monitor refresh may lag sampling; sequence changes do not prove monitor refresh.",
+          "Host instance, source and PCK checks are required before accepting this as a current runtime observation."
+        ]
+      },
+      "authority": "host-bound-source-and-pack-verified",
+      "boundary": "Fixed source/PCK and host instance binding; not isolation from arbitrary scripts sharing the engine process."
+    },
+    "active": {
+      "buildId": "gbd-3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+      "format": "craftmine.godot-engine-performance-envelope/1",
+      "instanceId": "5b73da5b75d12256461b881f",
+      "nonce": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "profile": "engine-monitor/1",
+      "sample": {
+        "debugBuild": false,
+        "editorHint": false,
+        "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+        "format": "craftmine.godot-engine-performance/1",
+        "framesDrawn": 53,
+        "headless": false,
+        "metrics": {
+          "drawCalls": {
+            "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+            "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+            "rawValue": 17,
+            "status": "measured",
+            "unit": "count"
+          },
+          "fps": {
+            "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+            "monitor": "TIME_FPS",
+            "rawValue": 30,
+            "status": "measured",
+            "unit": "fps"
+          },
+          "gpuTime": {
+            "meaning": "GPU execution duration.",
+            "monitor": null,
+            "reason": "NO_TRUSTED_GPU_TIMER",
+            "status": "unknown",
+            "unit": "s"
+          },
+          "nodeCount": {
+            "meaning": "Engine-wide node count in the scene tree, including its root.",
+            "monitor": "OBJECT_NODE_COUNT",
+            "rawValue": 33,
+            "status": "measured",
+            "unit": "count"
+          },
+          "objectCount": {
+            "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+            "monitor": "OBJECT_COUNT",
+            "rawValue": 1417,
+            "status": "measured",
+            "unit": "count"
+          },
+          "physicsTime": {
+            "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+            "monitor": "TIME_PHYSICS_PROCESS",
+            "rawValue": 0.000891,
+            "status": "measured",
+            "unit": "s"
+          },
+          "primitives": {
+            "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+            "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+            "rawValue": 8660,
+            "status": "measured",
+            "unit": "count"
+          },
+          "processTime": {
+            "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+            "monitor": "TIME_PROCESS",
+            "rawValue": 0.056775,
+            "status": "measured",
+            "unit": "s"
+          }
+        },
+        "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+        "monotonicUsec": 2674065,
+        "paused": false,
+        "physicsFrame": 116,
+        "processFrame": 53,
+        "profile": "engine-monitor/1",
+        "renderingDriver": "opengl3",
+        "renderingMethod": "gl_compatibility",
+        "sampledAt": "2026-09-12T04:53:38Z",
+        "sequence": 3
+      },
+      "worldId": "engine-web-world"
+    },
+    "serviceActive": {
+      "format": "craftmine.host-engine-performance/1",
+      "available": true,
+      "worldId": "engine-web-world",
+      "buildId": "gbd-3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+      "instanceId": "5b73da5b75d12256461b881f",
+      "profile": "engine-monitor/1",
+      "nonce": "3e71386c9a91b65739f95a53b676e508e689f2470ad5b54975647f3c994f43e0",
+      "sourceRevision": 1,
+      "manifestHash": "ebeacd956fe1d214c3472df05738106f7a7fd5d9a958676ace297f388dd03003",
+      "sourceContentOid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sourceFilesHash": "9037b3df8013a4fdd72758e222eb3178f2d78610efa07065e4fef096df20b479",
+      "artifactManifestHash": "3b607e6f2211d7b808c0af5a031ee31571fd80d12aa45d660048c3b5d0730444",
+      "packSha256": "1f38012e70d411985c6bbfec8dd6fcc297b70d08457c3bcaaba62887cf3e4dc4",
+      "hostSampledAt": "2026-09-12T04:53:38.966Z",
+      "observation": {
+        "format": "craftmine.validated-engine-performance/1",
+        "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+        "profile": "engine-monitor/1",
+        "sequence": 4,
+        "sampledAt": "2026-09-12T04:53:38Z",
+        "monotonicUsec": 2710840,
+        "processFrame": 54,
+        "physicsFrame": 118,
+        "framesDrawn": 54,
+        "paused": false,
+        "headless": false,
+        "debugBuild": false,
+        "editorHint": false,
+        "renderingMethod": "gl_compatibility",
+        "renderingDriver": "opengl3",
+        "metrics": {
+          "processTime": {
+            "status": "measured",
+            "monitor": "TIME_PROCESS",
+            "rawValue": 0.056775,
+            "rawUnit": "s",
+            "value": 56.775,
+            "unit": "ms"
+          },
+          "physicsTime": {
+            "status": "measured",
+            "monitor": "TIME_PHYSICS_PROCESS",
+            "rawValue": 0.000891,
+            "rawUnit": "s",
+            "value": 0.891,
+            "unit": "ms"
+          },
+          "fps": {
+            "status": "measured",
+            "monitor": "TIME_FPS",
+            "rawValue": 30,
+            "rawUnit": "fps",
+            "value": 30,
+            "unit": "fps"
+          },
+          "objectCount": {
+            "status": "measured",
+            "monitor": "OBJECT_COUNT",
+            "rawValue": 1417,
+            "rawUnit": "count",
+            "value": 1417,
+            "unit": "count"
+          },
+          "nodeCount": {
+            "status": "measured",
+            "monitor": "OBJECT_NODE_COUNT",
+            "rawValue": 33,
+            "rawUnit": "count",
+            "value": 33,
+            "unit": "count"
+          },
+          "drawCalls": {
+            "status": "measured",
+            "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+            "rawValue": 17,
+            "rawUnit": "count",
+            "value": 17,
+            "unit": "count"
+          },
+          "primitives": {
+            "status": "measured",
+            "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+            "rawValue": 8660,
+            "rawUnit": "count",
+            "value": 8660,
+            "unit": "count"
+          },
+          "gpuTime": {
+            "status": "unknown",
+            "monitor": null,
+            "unit": "ms"
+          }
+        },
+        "authority": "not-attested-by-structural-validation",
+        "limitations": [
+          "Engine process/physics monitor durations are not OS process CPU time or rendered frame intervals.",
+          "FPS monitor refresh may lag sampling; sequence changes do not prove monitor refresh.",
+          "Host instance, source and PCK checks are required before accepting this as a current runtime observation."
+        ]
+      },
+      "authority": "host-bound-source-and-pack-verified",
+      "boundary": "Fixed source/PCK and host instance binding; not isolation from arbitrary scripts sharing the engine process."
+    },
+    "serviceScope": "Real production service, app source pins and exported PCK; Core descriptor/source responses are fixtures, no model or product IPC.",
+    "guards": [
+      {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    ]
+  }
+}

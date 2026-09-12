@@ -57,9 +57,11 @@ export function currentSceneObserverProfile(input: unknown, pins: SceneObserverP
     for(const name of ['craftmine_shared/runtime_bridge.gd',...members]){
       const found=files.filter(file=>file?.path===name);
       if(found.length!==1||!pins[name==='craftmine_shared/runtime_bridge.gd'?'@engineBridge':name]?.includes(found[0].sha256))return null;
+      if(files.some(file=>typeof file?.path==='string'&&file.path!==name&&
+        (file.path.toLowerCase()===name||file.path.toLowerCase().startsWith(name+'.remap')||file.path.toLowerCase().startsWith(name.slice(0,-3)+'.gdc'))))return null;
     }
-    const inherited=files.find(file=>file.path==='craftmine_shared/runtime_bridge_base.gd');
-    files=files.filter(file=>file.path!=='craftmine_shared/runtime_bridge.gd'&&!members.includes(file.path))
+    const inherited=files.find(file=>file?.path==='craftmine_shared/runtime_bridge_base.gd');
+    files=files.filter(file=>file?.path!=='craftmine_shared/runtime_bridge.gd'&&!members.includes(file?.path))
       .concat({...inherited,path:'craftmine_shared/runtime_bridge.gd'});
   }
   const adapter=files.filter(file=>file?.path==='craftmine_shared/base_adapter.gd');

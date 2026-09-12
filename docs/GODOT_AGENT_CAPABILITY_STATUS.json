@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Sealed56b5 registered tool/Core/cold memory path passed. Fixed engine collector and strict parser now pass native editor and actual Windows release tests with count changes; these newer resources are not wired into ordinary worlds/tools. Versioned bridge plus source/PCK/host authority, Web behavior, timing calibration, ordinary model usage, scaled benchmarks and semantic optimization remain; GPU remains unknown."
+      "next": "Sealed56b5 memory product path passed. Opt-in engine-monitor bridge, app source/PCK authority and strict host service now pass actual Web sampling plus35 targeted checks; Core replies are fixtures in this latest test. Main provider/tool engine-metric wiring, sealed opt-in world validation, timing calibration, ordinary model usage and same-scale semantic optimization remain."
     },
     {
       "id": "GU7",
@@ -64,6 +64,12 @@
     }
   ],
   "evidence": [
+    {
+      "kind": "engine-monitor-versioned-host-service",
+      "path": "docs/GODOT_ENGINE_HOST_SERVICE_2026-09-12.md",
+      "status": "passed-scoped-web-host-integration",
+      "scope": "Actual opt-in Web release, strict host route, app resource/source/PCK validation before and after sampling;35 checks and tsc pass. Core descriptor/source are test fixtures; service not registered in production provider/tool. Existing default base bytes and old observer profiles remain compatible."
+    },
     {
       "kind": "engine-monitor-native-release-prototype",
       "path": "docs/GODOT_ENGINE_MONITOR_COLLECTOR_2026-09-12.md",
