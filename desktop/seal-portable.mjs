@@ -139,7 +139,9 @@ export async function sealPortable(root,runFile){
     const zip=path.join(directory,'Craftmine-World-portable-'+inputs.identity.commit.slice(0,12)+'.zip');
     report.source=inputs.identity;
     report.steps.push('input identities verified');
-    invoke(['a','-tzip','-mx=5','-bd','-y','--',zip,'.'],inputs.packageRoot);
+    // Keep nested Godot ZIP templates byte-for-byte intact. The pinned
+    // Windows 7-Zip can corrupt nested ZIP CRCs when recompressing them.
+    invoke(['a','-tzip','-mx=0','-bd','-y','--',zip,'.'],inputs.packageRoot);
     await regular(zip);const zipBefore=await fileHash(zip);
     const listing=invoke(['l','-slt','-sccUTF-8','--',zip]);
     verifyPortableListing(listing,inputs.files);report.steps.push('archive entries verified before extraction');
