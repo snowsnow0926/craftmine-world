@@ -28,7 +28,7 @@ export function initializationJobFailure(current: Data): string {
 export function createGodotWorldInitializer(options: {
   worldsRoot: string; domain: Domain; selection: () => Promise<string | null>;
   firstLoad: (worldId: string, candidateId: string) => Promise<unknown>;
-  initialLoadBridge?: () => Buffer;
+  initialLoadBridge?: (existingHash: string | undefined) => Buffer;
 }) {
   const running = new Map<string, Promise<void>>();
   const failures = new Map<string, string>();
@@ -119,7 +119,8 @@ export function createGodotWorldInitializer(options: {
     // managed-base directory stays immutable; this is a new Core/Git draft
     // revision and therefore requires a fresh build/candidate before adoption.
     if (recover && options.initialLoadBridge) {
-      const repair = initialLoadBridgeRepair(existing.get(INITIAL_LOAD_BRIDGE_PATH), options.initialLoadBridge());
+      const existingBridgeHash = existing.get(INITIAL_LOAD_BRIDGE_PATH);
+      const repair = initialLoadBridgeRepair(existingBridgeHash, options.initialLoadBridge(existingBridgeHash));
       if (repair) {
         const latest = await domain("godotWorld.initStatus", {worldId});
         if (latest.playable || latest.status === "confirmed" || latest.initId !== status.initId) {

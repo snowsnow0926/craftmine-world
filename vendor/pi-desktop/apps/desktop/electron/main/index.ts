@@ -223,6 +223,7 @@ import {
   createGodotWorldFactory, loadMaterializer, resolveGodotRoot, type GodotCreationDependencies,
 } from "./godot-world-creation";
 import {createGodotWorldInitializer} from "./godot-world-initialization";
+import {initialLoadBridgeResource} from "./godot-initial-load-repair";
 import {createAssetPreviewHost} from "../craftmine-assets/host-service.mjs";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { pathToFileURL } from "node:url";
@@ -1244,7 +1245,7 @@ const logger = new Logger(
 const godotInitializer = createGodotWorldInitializer({
   worldsRoot: join(dataDir, "godot-worlds"), domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
-  initialLoadBridge: () => readFileSync(join(godotRoot, "shared", "runtime_bridge.gd")),
+  initialLoadBridge: existingHash => readFileSync(join(godotRoot, initialLoadBridgeResource(existingHash))),
 });
 const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
