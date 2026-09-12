@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "scope": "Production sampler and actual isolated Electron renderer OS metric; no Godot engine or player benchmark",
+  "sample": {
+    "worldId": "fixture-world",
+    "buildId": "fixture-build",
+    "instanceId": "fixture-instance",
+    "rendererProcessId": 22080,
+    "webContentsId": 1,
+    "sampledAt": "2026-09-12T01:53:49.072Z",
+    "provenance": "electron-app-metrics",
+    "measurementScope": "renderer-process",
+    "memoryUnit": "MiB",
+    "memoryWorkingSetMb": 61.09765625,
+    "unavailable": {
+      "frameTimeMs": "Engine frame timing is not exposed by the current runtime protocol.",
+      "physicsStepMs": "Engine physics timing is not exposed by the current runtime protocol.",
+      "objectCount": "Engine object count is not exposed by the current runtime protocol."
+    }
+  },
+  "windows": 0,
+  "inputEvents": 0,
+  "focusEvents": 0
+}

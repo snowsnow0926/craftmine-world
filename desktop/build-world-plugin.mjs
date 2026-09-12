@@ -15,7 +15,13 @@ const output = args.length ? path.resolve(args[1]) : path.join(root,'desktop/bui
 const require = createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
 const {build} = require('esbuild');
 await fs.mkdir(path.join(output,'views'), {recursive:true});
-for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-restore-service.cjs','package-turn-lifecycle.cjs','world-tools.cjs','creation-source-service.cjs','creation-timing.cjs','creation-application-state.cjs','creation-operation-schema.cjs','creation-operations.cjs','creation-sequence-rule.cjs','verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs','workbench-service.cjs','godot-executor.cjs','godot-creation-pack.cjs','godot-task-bin-retirement.cjs','godot-routing.cjs','godot-generic-read.cjs','godot-docs.cjs','godot-guidance.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd','godot-query.cjs','godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','asset-service.mjs','reuse-service.mjs','tool-services.cjs','godot-build-read-wait.cjs']) {
+for (const file of ['manifest.json','main.cjs','core-client.cjs','portable-restore-service.cjs','package-turn-lifecycle.cjs','world-tools.cjs','creation-source-service.cjs','creation-timing.cjs','creation-application-state.cjs','creation-operation-schema.cjs','creation-operations.cjs','creation-sequence-rule.cjs','verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs','workbench-service.cjs','godot-executor.cjs','godot-creation-pack.cjs','godot-task-bin-retirement.cjs','godot-routing.cjs','godot-generic-read.cjs','godot-docs.cjs','godot-guidance.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd','godot-query.cjs','godot-module-parameter-query.cjs','godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','asset-service.mjs','reuse-service.mjs','tool-services.cjs','godot-build-read-wait.cjs']) {
+  await fs.mkdir(path.dirname(path.join(output,file)),{recursive:true});
+  await fs.copyFile(path.join(source,file),path.join(output,file));
+}
+// Keep reflected metadata and pure diagnostics available in installed plugins.
+// The extractor is a developer tool and is deliberately not shipped.
+for(const file of ['godot-engine-profile.cjs','godot-engine-performance.mjs','godot-performance-query.cjs','godot-performance-observation.mjs','godot-engine-api.cjs','godot-diagnostics.cjs','creation-change-summary.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
   await fs.mkdir(path.dirname(path.join(output,file)),{recursive:true});
   await fs.copyFile(path.join(source,file),path.join(output,file));
 }
@@ -27,6 +33,8 @@ buildBuiltinSourceLibrary({output:path.join(output,'builtin-source-library')});
 await build({entryPoints:[path.join(source,'source-library-service.cjs')],outfile:path.join(output,'source-library-service.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',external:['./package-zip.mjs']});
 await build({entryPoints:[path.join(source,'package-zip.mjs')],outfile:path.join(output,'package-zip.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'reuse-service.mjs')],outfile:path.join(output,'reuse-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
+await build({entryPoints:[path.join(source,'godot-instance-declaration.mjs')],outfile:path.join(output,'godot-instance-declaration.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
+await build({entryPoints:[path.join(source,'godot-module-parameters.mjs')],outfile:path.join(output,'godot-module-parameters.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'target-feedback-service.mjs')],outfile:path.join(output,'target-feedback-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await fs.rm(path.join(output,'main.js'), {force:true});
 await build({entryPoints:[path.join(source,'domain-adapter.mjs')],outfile:path.join(output,'domain.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',

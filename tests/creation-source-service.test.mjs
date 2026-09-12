@@ -35,6 +35,8 @@ function fixture(){
 }
 test('host-bound target uses formal build, pages real Rust limits, and advances own multi-operation source',async()=>{
  const f=fixture();const first=await f.run(f.request());assert.equal(first.source.revision,2);assert.equal(first.applied,false);
+ assert.equal(first.changeSummary.format,'craftmine.creation-change-summary/1');assert.equal(first.changeSummary.entities[0].change,'added');
+ assert.equal(first.changeSummary.source.revision,1);assert.equal(first.changeSummary.progress.written,false);
  const second=await f.run(f.request('second',2,[9,0,4]));assert.equal(second.source.revision,3);
  const scene=JSON.parse(f.versions.get(3)['world/creation.json']);assert.equal(scene.entities.length,2);
  assert.ok(f.calls.filter(c=>c.method==='godotProject.index').length>=4);assert.ok(f.calls.filter(c=>c.method==='godotProject.read').length>=4);
@@ -42,6 +44,15 @@ test('host-bound target uses formal build, pages real Rust limits, and advances 
 test('a committed lost reply is read exactly once and does not duplicate a placement',async()=>{
  const f=fixture(),request=f.request();f.lose();const saved=await f.run(request);assert.equal(saved.source.revision,2);
  const replay=await f.run(request);assert.equal(replay.replayed,true);assert.equal(f.current(),2);assert.equal(f.calls.filter(c=>c.method==='godotProject.patch').length,1);
+ assert.deepEqual(replay.changeSummary.entities,saved.changeSummary.entities);assert.deepEqual(replay.receipt,saved.receipt);
+});
+
+test('normal source service permits color-only edits beside a door and retains live/source checks',async()=>{
+ const f=fixture(),doc=JSON.parse(f.versions.get(1)['world/creation.json']);doc.entities.push({id:'door',kind:'door',position:[0,0,2],rotationY:0,scale:[1,1,1],color:'#0000ff',parameters:{initiallyOpen:false}});f.versions.get(1)['world/creation.json']=JSON.stringify(doc);
+ f.bound.target={surface:'entity',entityId:'door',position:[0,1.5,1.75],normal:[0,0,-1],revision:1};f.bound.playerPosition=[0,.90084,1.44912];f.live.player.position=[...f.bound.playerPosition];
+ const request={operationId:'recolor-at-door',expected:f.request().expected,action:'modify',targetId:'door',changes:{color:'#ff0000'}};
+ const result=await f.run(request);assert.equal(result.source.revision,2);assert.equal(result.applied,false);assert.equal(result.changeSummary.entities[0].fields[0].field,'color');
+ const wrong=fixture();wrong.live.instanceId='changed';await assert.rejects(wrong.run(wrong.request()),/CREATION_TARGET_STALE/);
 });
 
 test('source service retains recent origin through source rebasing and refuses placement before patch',async()=>{

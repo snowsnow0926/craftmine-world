@@ -21,6 +21,7 @@ try{
     if(baseId==='creation-sandbox'){
       assert.equal(JSON.parse(fs.readFileSync(path.join(out,'world/creation.json'),'utf8')).format,'craftmine.creation-scene/1');
       assert.ok(fs.existsSync(path.join(out,'scripts/scene_contract.gd')));
+      for(const resource of ['base_adapter_legacy.gd','controller_evidence.gd','scene_mesh_picker_v2.gd'])assert.ok(fs.existsSync(path.join(out,'craftmine_shared',resource)),'controller cohort retained in actual staged materializer: '+resource);
       assert.equal(fs.existsSync(path.join(out,'tests')),false);
     }
     report.cases.push({baseId,files:world.files.length,initialState:fs.existsSync(path.join(out,'craftmine_initial_state.json')),passed:true});

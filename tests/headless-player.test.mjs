@@ -3,6 +3,23 @@ import {createHeadlessPlayer,unwrapPlayerDesktopResult} from '../vendor/pi-deskt
 const config={format:'craftmine.player-config-snapshot/1',credentialsIncluded:false,modelId:'deepseek-v4.1-flash-expires-on-0910',thinkingLevel:'max',thinkingLevels:['medium','high','max','off'],contextWindow:1000000,maxTokens:384000,vendorKey:'deepseek',baseUrl:'https://api.deepseek.com',protocol:'openai_compatible',apiStyle:'chat_completions'};
 config.mode='agent';config.permissionMode='inherit';config.modelBinding={id:config.modelId,contextWindow:config.contextWindow,maxTokens:config.maxTokens,thinkingLevels:config.thinkingLevels,defaultThinkingLevel:'max',supportsImages:true,supportsDocuments:true,availableForSubagents:true};
 const identity={sessionId:'session-a',worldId:'world-a'};
+
+test('fresh ordinary session bootstrap uses normal sessionCreate without model, provider, budget or evaluation setup',async()=>{
+ const calls=[];const player=createHeadlessPlayer({invoke:async(channel,...args)=>{calls.push([channel,...args]);return {session:{id:'fresh-session'}};},panel:async()=>{throw Error('Unexpected panel');},observe:async()=>({worldId:'world-a',baseId:'creation-sandbox'}),active:()=>false,latest:async()=>null});
+ const request={worldId:'world-a',title:'Ordinary creation acceptance'};
+ const first=await player('playerCreateSession',request),again=await player('playerCreateSession',request);
+ assert.deepEqual(first,again);assert.equal(first.sessionId,'fresh-session');assert.equal(first.worldId,'world-a');
+ assert.deepEqual(calls,[['sessionCreate',{title:request.title}],['sessionGet','fresh-session']]);
+ await assert.rejects(player('playerCreateSession',{...request,title:'Another'}),/SESSION_CREATE_ALREADY_REQUESTED/);
+});
+test('bootstrap refuses wrong worlds, evaluator fields and uncertain creation retries',async()=>{
+ let creates=0;const player=createHeadlessPlayer({invoke:async()=>{creates++;throw Error('transport lost');},panel:async()=>({}),observe:async()=>({worldId:'world-a',baseId:'creation-sandbox'}),active:()=>false,latest:async()=>null});
+ await assert.rejects(player('playerCreateSession',{worldId:'other',title:'Fresh'}),/WORLD_CHANGED/);
+ await assert.rejects(player('playerCreateSession',{worldId:'world-a',title:'Fresh',maxRequests:1}),/FIELDS_DENIED/);
+ await assert.rejects(player('playerCreateSession',{worldId:'world-a',title:'Fresh'}),/transport lost/);
+ await assert.rejects(player('playerCreateSession',{worldId:'world-a',title:'Fresh'}),/transport lost/);
+ assert.equal(creates,1);
+});
 test('ordinary UI result envelopes are unwrapped before session identity checks',async()=>{
  const session={id:identity.sessionId};
  const player=createHeadlessPlayer({

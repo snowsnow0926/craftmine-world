@@ -4,8 +4,8 @@
 // a precise dependency gap instead of fabricated content.
 //
 // Read-only retrieval is exposed to the model. Install, upgrade, variant and
-// restore are PROPOSALS: they name the real host method, carry a host-bound
-// OperationContext, and never apply anything.
+// restore are PROPOSALS: they name the host action and bound world, but carry
+// no OperationContext or authorization and never apply anything.
 'use strict';
 const {validateChangeIntent,CHANGE_INTENTS}=require('./godot-history.cjs');
 
@@ -16,7 +16,9 @@ const PACKAGE_WRITE_METHODS={install:'package.install',register:'package.registe
   restore:'package.restore'};
 const OWNERS={asset:'R6',package:'R4'};
 const ASSET_SCOPES=['current-world','local-library','import-source'];
-const ASSET_KINDS=['raw','object','creation','world-template'];
+// Core asset_catalog::AssetKind canonical values, followed by accepted legacy
+// input aliases (creation -> module, world-template -> world).
+const ASSET_KINDS=['base','world','module','object','scene','raw','data','creation','world-template'];
 const ASSET_MEDIA_KINDS=['image','model','audio','package','other'];
 const HASH=/^[a-f0-9]{64}$/;
 
@@ -34,6 +36,13 @@ function validateAssetRef(ref){
   if(!Number.isSafeInteger(ref.version)||ref.version<1)fail('INVALID_ASSET_VERSION');
   if(typeof ref.contentHash!=='string'||!HASH.test(ref.contentHash))fail('INVALID_ASSET_CONTENT_HASH');
   return {assetId,version:ref.version,contentHash:ref.contentHash};
+}
+
+function validateSourceAssetRef(ref){
+  const fixed=validateAssetRef(ref);
+  if(Buffer.byteLength(fixed.assetId,'utf8')>120||/[\p{Cc}*?]/u.test(fixed.assetId)||fixed.assetId.toLowerCase()==='latest')fail('INVALID_SOURCE_ASSET_ID');
+  if(fixed.version>1000000)fail('INVALID_SOURCE_ASSET_VERSION');
+  return fixed;
 }
 
 function validateTarget(target){
@@ -99,6 +108,28 @@ function createLibraryBinding({core,context,worldId,methods={}}){
     packageList(args={}){
       return probe('package','list',{worldId,offset:args.offset??0,limit:args.limit??20,...(args.status?{status:args.status}:{})},OWNERS.package);
     },
+    async proposeSourceInstall({ref}={}){
+      const fixedRef=validateSourceAssetRef(ref);
+      // A catalog ZIP is not an old library bundle. Read canonical catalog
+      // metadata once; never resolve a blob, inspect its contents or install it.
+      let record;
+      try {record=await core.call(ASSET_METHODS.read,{assetId:fixedRef.assetId,version:fixedRef.version});}
+      catch(error){
+        if(error?.errorCode==='UNKNOWN_METHOD')return {format:LIBRARY_FORMAT,available:false,
+          reason:'DEPENDENCY_NOT_WIRED',requiredHostMethod:ASSET_METHODS.read,owner:OWNERS.asset,
+          applies:false,requiresPlayerAction:true};
+        throw error;
+      }
+      const version=record?.version_;
+      if(!isPlain(version)||version.assetId!==fixedRef.assetId||version.version!==fixedRef.version||version.contentHash!==fixedRef.contentHash)fail('SOURCE_CATALOG_REF_MISMATCH');
+      if(!Array.isArray(version.files)||version.files.length!==1||version.fileCount!==1)fail('SOURCE_CATALOG_SINGLE_FILE_REQUIRED');
+      if(version.files[0]?.mediaType!=='application/zip')fail('SOURCE_CATALOG_ZIP_REQUIRED');
+      const file=version.files[0];
+      if(!Number.isSafeInteger(file.bytes)||file.bytes<1||file.bytes>5*1024*1024||version.bytes!==file.bytes||typeof file.sha256!=='string'||!HASH.test(file.sha256))fail('SOURCE_CATALOG_FILE_METADATA_INVALID');
+      return {format:LIBRARY_FORMAT,proposal:'source-install',method:'importCatalogSource',ref:fixedRef,worldId,
+        applies:false,requiresPlayerAction:true,
+        note:'In the Godot works panel resource library, the player can select this exact asset ID, version and catalog contentHash for checking. The host creates a fresh operation and revalidates the catalog ZIP. This suggestion carries no authorization; archive validity, inner resource identity, compatibility and application remain unverified. Do not use package.install for this source ZIP.'};
+    },
     // Proposals only. Each names the real host method and its exact arguments.
     proposeInstall({ref,mode='initial',sourceInstanceId,position,operationId}={}){
       const fixedRef=validateAssetRef(ref);
@@ -148,4 +179,4 @@ function createLibraryBinding({core,context,worldId,methods={}}){
 }
 
 module.exports={LIBRARY_FORMAT,ASSET_METHODS,PACKAGE_METHODS,PACKAGE_WRITE_METHODS,OWNERS,ASSET_SCOPES,
-  ASSET_KINDS,ASSET_MEDIA_KINDS,CHANGE_INTENTS,validateAssetRef,validateTarget,createLibraryBinding};
+  ASSET_KINDS,ASSET_MEDIA_KINDS,CHANGE_INTENTS,validateAssetRef,validateSourceAssetRef,validateTarget,createLibraryBinding};

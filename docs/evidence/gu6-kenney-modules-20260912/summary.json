@@ -1,0 +1,992 @@
+{
+  "format": "craftmine.kenney-module-reuse/1",
+  "out": "D:\\cm-gu6-module-0912\\test-results\\kenney-module-ZG50OC",
+  "coreSha256": "8e3ecdc67475d32992c1c6cd9e649a1ee59edbc8ba32eb71212e966cdc0f05f0",
+  "packages": [
+    {
+      "kind": "building",
+      "assetId": "kenney-city-building",
+      "archiveSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "bytes": 23409,
+      "manifest": {
+        "format": "craftmine.resource/1",
+        "content": {
+          "assetId": "kenney-city-building",
+          "version": 1,
+          "kind": "object",
+          "files": [
+            {
+              "path": "models/building-small-a.glb",
+              "bytes": 39660,
+              "sha256": "22ce989013bd16b1732e81798e343cf85f947e92b6c93825b18131feded48e07"
+            },
+            {
+              "path": "models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "provenance.json",
+              "bytes": 726,
+              "sha256": "80cbd6ec5f56c5d4a7089dd216b004dc8d9f30e934f8e7616dca8a0e44738309"
+            },
+            {
+              "path": "attribution.json",
+              "bytes": 526,
+              "sha256": "a8e2a43e28a147214c36e51f5885e8e2a11167e96ade05722d1908d6a2286662"
+            },
+            {
+              "path": "module.gd",
+              "bytes": 2747,
+              "sha256": "e2341b41e564ddd2b573039aa82f9dbdc9d4637ad4c7e004d527216f3bece4b5"
+            },
+            {
+              "path": "module.gd.uid",
+              "bytes": 19,
+              "sha256": "b0bde5480874c54feea077805c5682053d6c8a129c1a8b150c63df74c9a3549c"
+            },
+            {
+              "path": "module.tscn",
+              "bytes": 489,
+              "sha256": "cb3ed0aa6602a50b0f63f8a2ec357a0d460ec3d114172415692030b8b671244f"
+            }
+          ],
+          "dependencies": [],
+          "entry": {
+            "entities": [
+              "building"
+            ],
+            "sceneInstall": {
+              "mode": "instance",
+              "sceneFile": "module.tscn",
+              "identityField": "entity_id",
+              "identityType": "string",
+              "exports": {
+                "model_scale_percent": 100,
+                "quarter_turns": 0,
+                "solid": true,
+                "label": "building"
+              }
+            }
+          },
+          "interfaces": {
+            "parameters": {
+              "model_scale_percent": {
+                "type": "integer",
+                "minimum": 25,
+                "maximum": 800
+              },
+              "quarter_turns": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "solid": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 80
+              }
+            }
+          },
+          "compatibility": {
+            "base": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "engine": "4.7.2-stable"
+          },
+          "state": {},
+          "licenses": {
+            "code": {
+              "spdx": "MIT",
+              "path": "licenses/LICENSE.md"
+            },
+            "assets": {
+              "spdx": "CC0-1.0",
+              "declaration": "licenses/README.md"
+            },
+            "provenance": "provenance.json"
+          }
+        },
+        "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598"
+      }
+    },
+    {
+      "kind": "road",
+      "assetId": "kenney-city-road",
+      "archiveSha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+      "bytes": 18350,
+      "manifest": {
+        "format": "craftmine.resource/1",
+        "content": {
+          "assetId": "kenney-city-road",
+          "version": 1,
+          "kind": "object",
+          "files": [
+            {
+              "path": "models/road-straight.glb",
+              "bytes": 6148,
+              "sha256": "008a6305de778439d1a99be78a3e0945c72a9bc9cc0bade1b51a666d5db01d0b"
+            },
+            {
+              "path": "models/Textures/colormap.png",
+              "bytes": 10108,
+              "sha256": "106cf02e0d6dccded6d9f90c2ae6a51eb94c6301645fea159e834c44ed4708a3"
+            },
+            {
+              "path": "licenses/LICENSE.md",
+              "bytes": 1062,
+              "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+            },
+            {
+              "path": "licenses/README.md",
+              "bytes": 3353,
+              "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+            },
+            {
+              "path": "provenance.json",
+              "bytes": 723,
+              "sha256": "e4f9dac83441736c84d996367add35b8b240545f50d8419ab3492a399481a433"
+            },
+            {
+              "path": "attribution.json",
+              "bytes": 514,
+              "sha256": "4fee8aec02924920135dee8f7b16f58465e2d445bf9511ced572e45b24797fb5"
+            },
+            {
+              "path": "module.gd",
+              "bytes": 2727,
+              "sha256": "12a73befca09b843f02d732b186a27715b07d67cdc39c4bac3f23386c4f5cd7a"
+            },
+            {
+              "path": "module.gd.uid",
+              "bytes": 19,
+              "sha256": "44ae11846ab4f55a4f65774473d86938e5dea46e62c4039e236f3d61bb163872"
+            },
+            {
+              "path": "module.tscn",
+              "bytes": 474,
+              "sha256": "379f322035574519600cd6c1607504765ec568568ce3f8ac4d04faff8785658a"
+            }
+          ],
+          "dependencies": [],
+          "entry": {
+            "entities": [
+              "road"
+            ],
+            "sceneInstall": {
+              "mode": "instance",
+              "sceneFile": "module.tscn",
+              "identityField": "entity_id",
+              "identityType": "string",
+              "exports": {
+                "model_scale_percent": 100,
+                "quarter_turns": 0,
+                "solid": true,
+                "label": "road"
+              }
+            }
+          },
+          "interfaces": {
+            "parameters": {
+              "model_scale_percent": {
+                "type": "integer",
+                "minimum": 25,
+                "maximum": 800
+              },
+              "quarter_turns": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              },
+              "solid": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 80
+              }
+            }
+          },
+          "compatibility": {
+            "base": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "engine": "4.7.2-stable"
+          },
+          "state": {},
+          "licenses": {
+            "code": {
+              "spdx": "MIT",
+              "path": "licenses/LICENSE.md"
+            },
+            "assets": {
+              "spdx": "CC0-1.0",
+              "declaration": "licenses/README.md"
+            },
+            "provenance": "provenance.json"
+          }
+        },
+        "contentHash": "f1e90f5d5ba7b749555933a7d1672944c9999e0c0df38f6428e00b249fce7a79"
+      }
+    }
+  ],
+  "installs": [
+    {
+      "worldId": "city-a",
+      "name": "building-one",
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "archiveSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "instanceIds": [
+        "ins-2e0992673c7baff44251c0fe"
+      ],
+      "source": {
+        "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+        "baseBuild": "base-city-a",
+        "branchId": "main",
+        "commitOid": "6b7c5bc3adc420dce2d60942b4c95b9794896f0d",
+        "currentTaskId": "work-570a32933aed999fa4a460e89a7f3ac8d1ac1ddd1bc7cb69539cbc8f3669eba9",
+        "fileCount": 34,
+        "lastWriter": {
+          "baseBuild": "base-city-a",
+          "projectId": "module-city-a",
+          "sessionId": "session-city-a",
+          "taskId": "work-570a32933aed999fa4a460e89a7f3ac8d1ac1ddd1bc7cb69539cbc8f3669eba9",
+          "turnId": "module-reuse"
+        },
+        "manifestHash": "16babe3573631ad79aa5fec2d3350e453ab3be8b4d5a2daab397edd311b923b8",
+        "revision": 2
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-city-a",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-9e12f28cf648c7c5ea44cd0c1f05ca640f361ef50d1b533550b5c23b27119d71",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-300aab83aa729ea2d4241a9eef6ba355a10d52768517bdb2b8c909e031bbe7ca",
+        "kind": "check",
+        "manifestHash": "16babe3573631ad79aa5fec2d3350e453ab3be8b4d5a2daab397edd311b923b8",
+        "materialized": {
+          "bytes": 5766286,
+          "files": 37
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 2,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "city-a"
+      }
+    },
+    {
+      "worldId": "city-a",
+      "name": "building-two",
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "archiveSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+      "instanceIds": [
+        "ins-d12a89c72594107461e138eb"
+      ],
+      "source": {
+        "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+        "baseBuild": "base-city-a",
+        "branchId": "main",
+        "commitOid": "53dfe05627ddd1fd2db6c1041bbe8e019664c54a",
+        "currentTaskId": "work-570a32933aed999fa4a460e89a7f3ac8d1ac1ddd1bc7cb69539cbc8f3669eba9",
+        "fileCount": 34,
+        "lastWriter": {
+          "baseBuild": "base-city-a",
+          "projectId": "module-city-a",
+          "sessionId": "session-city-a",
+          "taskId": "work-570a32933aed999fa4a460e89a7f3ac8d1ac1ddd1bc7cb69539cbc8f3669eba9",
+          "turnId": "module-reuse"
+        },
+        "manifestHash": "585704506b8f4d1149fe30dc28664617ebacb4661d27b1120dde87f6c6233a54",
+        "revision": 3
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-city-a",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-916983f6425d913bc49e844df80c460fe4aaf3ccf6db4c9765c6e5d3e855ad94",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-506801ec9adccb7e581e5e19752337e01852436aa9bc7f2e5827dc037f334597",
+        "kind": "check",
+        "manifestHash": "585704506b8f4d1149fe30dc28664617ebacb4661d27b1120dde87f6c6233a54",
+        "materialized": {
+          "bytes": 5766978,
+          "files": 37
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 3,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "city-a"
+      }
+    },
+    {
+      "worldId": "city-a",
+      "name": "road",
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "archiveSha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+      "instanceIds": [
+        "ins-5a314ed458b7fcbb4e31acb3"
+      ],
+      "source": {
+        "assetLockHash": "514af36537dd50b9f21ca81c2a035196b000be24a79a3b9abe92bcb1c2095769",
+        "baseBuild": "base-city-a",
+        "branchId": "main",
+        "commitOid": "1ece2cead5af81ab754c938ded272593403761ff",
+        "currentTaskId": "work-570a32933aed999fa4a460e89a7f3ac8d1ac1ddd1bc7cb69539cbc8f3669eba9",
+        "fileCount": 43,
+        "lastWriter": {
+          "baseBuild": "base-city-a",
+          "projectId": "module-city-a",
+          "sessionId": "session-city-a",
+          "taskId": "work-570a32933aed999fa4a460e89a7f3ac8d1ac1ddd1bc7cb69539cbc8f3669eba9",
+          "turnId": "module-reuse"
+        },
+        "manifestHash": "6c84d675de1e399733b3702f07b15a0a58a3b27086fea1265af838ee33741580",
+        "revision": 4
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-city-a",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-1f34e8ac31d7e3107ab5e2f75d316093df8751fbfac705f3d83c982d7cc84435",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-bb6431a55f73c5ec5d524ff89b81c66231e59e9f8509d74334e165e9e53a45d6",
+        "kind": "check",
+        "manifestHash": "6c84d675de1e399733b3702f07b15a0a58a3b27086fea1265af838ee33741580",
+        "materialized": {
+          "bytes": 5795018,
+          "files": 46
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 4,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "city-a"
+      }
+    },
+    {
+      "worldId": "city-b",
+      "name": "roundtrip-building",
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "archiveSha256": "1de9fb46cc7f6b9d3e5d848979f9f2f5879fd3cdb1e690cba5769e0d3d04e958",
+      "instanceIds": [
+        "ins-72489cd79d58cabd78a03857"
+      ],
+      "source": {
+        "assetLockHash": "ca840650449446ccdc5c01ad01f3a341f57b88ae9e4f77ab0fe3bc5ada104bdb",
+        "baseBuild": "base-city-b",
+        "branchId": "main",
+        "commitOid": "03adce2d391ae90515dd4c564e5320dbd5007ff0",
+        "currentTaskId": "work-4fad9b8a8ca46ae3f33a3c9c54dab2d908161cbb9ae23d59cd82c1f7393dee1c",
+        "fileCount": 35,
+        "lastWriter": {
+          "baseBuild": "base-city-b",
+          "projectId": "module-city-b",
+          "sessionId": "session-city-b",
+          "taskId": "work-4fad9b8a8ca46ae3f33a3c9c54dab2d908161cbb9ae23d59cd82c1f7393dee1c",
+          "turnId": "module-reuse"
+        },
+        "manifestHash": "9ccd242ae0c8c345fade44a5f90168a4b994a6c7c8e859fdece00ac9c36af9d7",
+        "revision": 2
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-city-b",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-b12711482c55d965ed73a4cc96ec6a4f55043d102ea3d92919cc8e11b341fcef",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-a5a2b000ca89a44169809f6c0735ed6dde5cec6467899199af405d571d20ec04",
+        "kind": "check",
+        "manifestHash": "9ccd242ae0c8c345fade44a5f90168a4b994a6c7c8e859fdece00ac9c36af9d7",
+        "materialized": {
+          "bytes": 5767455,
+          "files": 38
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 2,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "city-b"
+      }
+    },
+    {
+      "worldId": "city-b",
+      "name": "road",
+      "status": "source-saved-check-blocked",
+      "applied": false,
+      "archiveSha256": "3144cb5dedd450677282045f9aae9d78dbea84989fe940e55888b4b722537314",
+      "instanceIds": [
+        "ins-1119d575198c1ff9a6817c97"
+      ],
+      "source": {
+        "assetLockHash": "0b915d4a2f4707502adc31a4b2925e49b8efe20363e3ca0b22c82732e79c6481",
+        "baseBuild": "base-city-b",
+        "branchId": "main",
+        "commitOid": "deb578ec038f0a416635f0dd292029642edb2711",
+        "currentTaskId": "work-4fad9b8a8ca46ae3f33a3c9c54dab2d908161cbb9ae23d59cd82c1f7393dee1c",
+        "fileCount": 44,
+        "lastWriter": {
+          "baseBuild": "base-city-b",
+          "projectId": "module-city-b",
+          "sessionId": "session-city-b",
+          "taskId": "work-4fad9b8a8ca46ae3f33a3c9c54dab2d908161cbb9ae23d59cd82c1f7393dee1c",
+          "turnId": "module-reuse"
+        },
+        "manifestHash": "651830234931eb327e3762c93543c17ca33f4f76bcaabd6d490e61a74c52cff3",
+        "revision": 3
+      },
+      "job": {
+        "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "baseBuild": "base-city-b",
+        "baseId": "creation-sandbox",
+        "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+        "buildId": "gbd-d854563f76202f059ea12c964eb690d9d0adf63cdb02eb741823ddc19e97fe2b",
+        "engineVersion": "4.7.2-stable",
+        "executionAvailable": false,
+        "jobId": "gjob-610ac05d92b3446077dab15f6a09ed3942c6e5530dcd95351074bfda3d9a1984",
+        "kind": "check",
+        "manifestHash": "651830234931eb327e3762c93543c17ca33f4f76bcaabd6d490e61a74c52cff3",
+        "materialized": {
+          "bytes": 5795489,
+          "files": 47
+        },
+        "renderer": "gl_compatibility",
+        "replayed": false,
+        "sourceRevision": 3,
+        "status": "blocked",
+        "target": "web",
+        "worldId": "city-b"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "same package installs twice with different stable instance IDs",
+      "passed": true
+    },
+    {
+      "name": "managed source extraction retains external GLB texture",
+      "passed": true
+    },
+    {
+      "name": "managed source extraction preserves referenced CC0 declaration",
+      "passed": true
+    },
+    {
+      "name": "roundtrip license bytes unchanged: LICENSE.md",
+      "passed": true
+    },
+    {
+      "name": "roundtrip license bytes unchanged: README.md",
+      "passed": true
+    },
+    {
+      "name": "roundtrip preserves explicit machine-readable attribution reference",
+      "passed": true
+    },
+    {
+      "name": "roundtrip attribution reference hash matches packaged bytes",
+      "passed": true
+    },
+    {
+      "name": "formal world remains unapplied: city-a",
+      "passed": true
+    },
+    {
+      "name": "existing instance registry count: city-a",
+      "passed": true
+    },
+    {
+      "name": "formal world remains unapplied: city-b",
+      "passed": true
+    },
+    {
+      "name": "existing instance registry count: city-b",
+      "passed": true
+    }
+  ],
+  "worlds": [
+    {
+      "worldId": "city-a",
+      "execution": {
+        "taskId": "km-city-a-1789162331373",
+        "receipt": "city-a-receipt.json",
+        "validation": {
+          "valid": true,
+          "errors": []
+        },
+        "artifactsRoot": "D:\\cm-gu6-module-0912\\test-results\\kenney-module-ZG50OC\\tasks\\km-city-a-1789162331373\\artifacts",
+        "error": null,
+        "request": "city-a-request.json"
+      },
+      "sourcePin": {
+        "revision": 4,
+        "manifestHash": "6c84d675de1e399733b3702f07b15a0a58a3b27086fea1265af838ee33741580"
+      },
+      "instances": [
+        {
+          "instanceId": "ins-2e0992673c7baff44251c0fe",
+          "assetId": "kenney-city-building",
+          "version": 1,
+          "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598",
+          "installPath": "addons/kenney-city-building",
+          "entityMap": {
+            "building": "ins-2e0992673c7baff44251c0fe-e0"
+          },
+          "localOverrides": []
+        },
+        {
+          "instanceId": "ins-d12a89c72594107461e138eb",
+          "assetId": "kenney-city-building",
+          "version": 1,
+          "contentHash": "0ae7883b4548e9ec46e7219696f8dc40875322b2d36bd5a3ece9238b3731e598",
+          "installPath": "addons/kenney-city-building",
+          "entityMap": {
+            "building": "ins-d12a89c72594107461e138eb-e0"
+          },
+          "localOverrides": []
+        },
+        {
+          "instanceId": "ins-5a314ed458b7fcbb4e31acb3",
+          "assetId": "kenney-city-road",
+          "version": 1,
+          "contentHash": "f1e90f5d5ba7b749555933a7d1672944c9999e0c0df38f6428e00b249fce7a79",
+          "installPath": "addons/kenney-city-road",
+          "entityMap": {
+            "road": "ins-5a314ed458b7fcbb4e31acb3-e0"
+          },
+          "localOverrides": []
+        }
+      ],
+      "browser": {
+        "console": [
+          {
+            "type": "log",
+            "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "type": "log",
+            "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "type": "log",
+            "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+          },
+          {
+            "type": "log",
+            "text": "KENNEY_REUSE={\"checks\":[{\"name\":\"expected package instances exist\",\"passed\":true},{\"name\":\"unique remapped entity ID\",\"passed\":true},{\"name\":\"unique remapped entity ID\",\"passed\":true},{\"name\":\"unique remapped entity ID\",\"passed\":true},{\"name\":\"configure building\",\"passed\":true},{\"name\":\"configure building\",\"passed\":true},{\"name\":\"configure road\",\"passed\":true},{\"name\":\"building and road both installed\",\"passed\":true},{\"name\":\"second instance parameters remain independent\",\"passed\":true},{\"name\":\"parameters cannot rewrite installed identity\",\"passed\":true},{\"name\":\"real mesh collision created\",\"passed\":true},{\"name\":\"physics ray hits installed module\",\"passed\":true},{\"name\":\"real mesh collision created\",\"passed\":true},{\"name\":\"physics ray hits installed module\",\"passed\":true},{\"name\":\"real mesh collision created\",\"passed\":true},{\"name\":\"physics ray hits installed module\",\"passed\":true},{\"name\":\"solid=false changes actual physics\",\"passed\":true}],\"passed\":true,\"scope\":\"host-authored fixture semantics; not player acceptance\",\"states\":[{\"collision_count\":1,\"entity_id\":\"ins-2e0992673c7baff44251c0fe-e0\",\"kind\":\"building\",\"label\":\"building\",\"model_scale_percent\":400,\"quarter_turns\":2,\"solid\":true},{\"collision_count\":1,\"entity_id\":\"ins-d12a89c72594107461e138eb-e0\",\"kind\":\"building\",\"label\":\"building\",\"model_scale_percent\":300,\"quarter_turns\":1,\"solid\":true},{\"collision_count\":1,\"entity_id\":\"ins-5a314ed458b7fcbb4e31acb3-e0\",\"kind\":\"road\",\"label\":\"road\",\"model_scale_percent\":300,\"quarter_turns\":0,\"solid\":true}]}"
+          }
+        ],
+        "pageErrors": [],
+        "bridge": {
+          "load": {
+            "id": "fixture-load",
+            "result": {
+              "loaded": true,
+              "snapshot": {
+                "base": "creation-sandbox",
+                "state": {
+                  "baseId": "creation-sandbox",
+                  "baseVersion": "1.0.0",
+                  "body": {
+                    "baseVersion": "1.0.0",
+                    "doors": {},
+                    "format": "craftmine.creation-progress/1",
+                    "inventory": {},
+                    "openedChests": {},
+                    "player": {
+                      "onFloor": true,
+                      "pitch": 0,
+                      "position": [
+                        0,
+                        0.899999976158142,
+                        6
+                      ],
+                      "yaw": 0
+                    },
+                    "rules": {},
+                    "sourceTimeOfDay": 12,
+                    "timeOfDay": 12,
+                    "worldId": "city-a"
+                  },
+                  "format": "craftmine.godot-progress/1",
+                  "stateVersion": 1,
+                  "worldId": "city-a"
+                },
+                "worldId": "city-a"
+              }
+            }
+          },
+          "resume": {
+            "id": "fixture-resume",
+            "result": {
+              "paused": false
+            }
+          }
+        },
+        "probe": {
+          "checks": [
+            {
+              "name": "expected package instances exist",
+              "passed": true
+            },
+            {
+              "name": "unique remapped entity ID",
+              "passed": true
+            },
+            {
+              "name": "unique remapped entity ID",
+              "passed": true
+            },
+            {
+              "name": "unique remapped entity ID",
+              "passed": true
+            },
+            {
+              "name": "configure building",
+              "passed": true
+            },
+            {
+              "name": "configure building",
+              "passed": true
+            },
+            {
+              "name": "configure road",
+              "passed": true
+            },
+            {
+              "name": "building and road both installed",
+              "passed": true
+            },
+            {
+              "name": "second instance parameters remain independent",
+              "passed": true
+            },
+            {
+              "name": "parameters cannot rewrite installed identity",
+              "passed": true
+            },
+            {
+              "name": "real mesh collision created",
+              "passed": true
+            },
+            {
+              "name": "physics ray hits installed module",
+              "passed": true
+            },
+            {
+              "name": "real mesh collision created",
+              "passed": true
+            },
+            {
+              "name": "physics ray hits installed module",
+              "passed": true
+            },
+            {
+              "name": "real mesh collision created",
+              "passed": true
+            },
+            {
+              "name": "physics ray hits installed module",
+              "passed": true
+            },
+            {
+              "name": "solid=false changes actual physics",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "scope": "host-authored fixture semantics; not player acceptance",
+          "states": [
+            {
+              "collision_count": 1,
+              "entity_id": "ins-2e0992673c7baff44251c0fe-e0",
+              "kind": "building",
+              "label": "building",
+              "model_scale_percent": 400,
+              "quarter_turns": 2,
+              "solid": true
+            },
+            {
+              "collision_count": 1,
+              "entity_id": "ins-d12a89c72594107461e138eb-e0",
+              "kind": "building",
+              "label": "building",
+              "model_scale_percent": 300,
+              "quarter_turns": 1,
+              "solid": true
+            },
+            {
+              "collision_count": 1,
+              "entity_id": "ins-5a314ed458b7fcbb4e31acb3-e0",
+              "kind": "road",
+              "label": "road",
+              "model_scale_percent": 300,
+              "quarter_turns": 0,
+              "solid": true
+            }
+          ]
+        },
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "screenshot": "city-a.png",
+        "screenshotSha256": "af67a5d35abbc4e0bb15ddc523e8e074ede1da30992a33b53813d2615bc323b1"
+      }
+    },
+    {
+      "worldId": "city-b",
+      "execution": {
+        "taskId": "km-city-b-1789162357231",
+        "receipt": "city-b-receipt.json",
+        "validation": {
+          "valid": true,
+          "errors": []
+        },
+        "artifactsRoot": "D:\\cm-gu6-module-0912\\test-results\\kenney-module-ZG50OC\\tasks\\km-city-b-1789162357231\\artifacts",
+        "error": null,
+        "request": "city-b-request.json"
+      },
+      "sourcePin": {
+        "revision": 3,
+        "manifestHash": "651830234931eb327e3762c93543c17ca33f4f76bcaabd6d490e61a74c52cff3"
+      },
+      "instances": [
+        {
+          "instanceId": "ins-72489cd79d58cabd78a03857",
+          "assetId": "kenney-building-roundtrip",
+          "version": 1,
+          "contentHash": "2437762ec3072ee264204839da078da5df9ef0e5638d289f8cb9359c9e422ca9",
+          "installPath": "addons/kenney-building-roundtrip",
+          "entityMap": {
+            "ins-2e0992673c7baff44251c0fe-e0": "ins-72489cd79d58cabd78a03857-e0"
+          },
+          "localOverrides": []
+        },
+        {
+          "instanceId": "ins-1119d575198c1ff9a6817c97",
+          "assetId": "kenney-city-road",
+          "version": 1,
+          "contentHash": "f1e90f5d5ba7b749555933a7d1672944c9999e0c0df38f6428e00b249fce7a79",
+          "installPath": "addons/kenney-city-road",
+          "entityMap": {
+            "road": "ins-1119d575198c1ff9a6817c97-e0"
+          },
+          "localOverrides": []
+        }
+      ],
+      "browser": {
+        "console": [
+          {
+            "type": "log",
+            "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "type": "log",
+            "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "type": "log",
+            "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+          },
+          {
+            "type": "log",
+            "text": "KENNEY_REUSE={\"checks\":[{\"name\":\"expected package instances exist\",\"passed\":true},{\"name\":\"unique remapped entity ID\",\"passed\":true},{\"name\":\"unique remapped entity ID\",\"passed\":true},{\"name\":\"configure building\",\"passed\":true},{\"name\":\"configure road\",\"passed\":true},{\"name\":\"building and road both installed\",\"passed\":true},{\"name\":\"parameters cannot rewrite installed identity\",\"passed\":true},{\"name\":\"real mesh collision created\",\"passed\":true},{\"name\":\"physics ray hits installed module\",\"passed\":true},{\"name\":\"real mesh collision created\",\"passed\":true},{\"name\":\"physics ray hits installed module\",\"passed\":true},{\"name\":\"solid=false changes actual physics\",\"passed\":true}],\"passed\":true,\"scope\":\"host-authored fixture semantics; not player acceptance\",\"states\":[{\"collision_count\":1,\"entity_id\":\"ins-72489cd79d58cabd78a03857-e0\",\"kind\":\"building\",\"label\":\"building\",\"model_scale_percent\":300,\"quarter_turns\":0,\"solid\":true},{\"collision_count\":1,\"entity_id\":\"ins-1119d575198c1ff9a6817c97-e0\",\"kind\":\"road\",\"label\":\"road\",\"model_scale_percent\":300,\"quarter_turns\":0,\"solid\":true}]}"
+          }
+        ],
+        "pageErrors": [],
+        "bridge": {
+          "load": {
+            "id": "fixture-load",
+            "result": {
+              "loaded": true,
+              "snapshot": {
+                "base": "creation-sandbox",
+                "state": {
+                  "baseId": "creation-sandbox",
+                  "baseVersion": "1.0.0",
+                  "body": {
+                    "baseVersion": "1.0.0",
+                    "doors": {},
+                    "format": "craftmine.creation-progress/1",
+                    "inventory": {},
+                    "openedChests": {},
+                    "player": {
+                      "onFloor": true,
+                      "pitch": 0,
+                      "position": [
+                        0,
+                        0.899999976158142,
+                        6
+                      ],
+                      "yaw": 0
+                    },
+                    "rules": {},
+                    "sourceTimeOfDay": 12,
+                    "timeOfDay": 12,
+                    "worldId": "city-b"
+                  },
+                  "format": "craftmine.godot-progress/1",
+                  "stateVersion": 1,
+                  "worldId": "city-b"
+                },
+                "worldId": "city-b"
+              }
+            }
+          },
+          "resume": {
+            "id": "fixture-resume",
+            "result": {
+              "paused": false
+            }
+          }
+        },
+        "probe": {
+          "checks": [
+            {
+              "name": "expected package instances exist",
+              "passed": true
+            },
+            {
+              "name": "unique remapped entity ID",
+              "passed": true
+            },
+            {
+              "name": "unique remapped entity ID",
+              "passed": true
+            },
+            {
+              "name": "configure building",
+              "passed": true
+            },
+            {
+              "name": "configure road",
+              "passed": true
+            },
+            {
+              "name": "building and road both installed",
+              "passed": true
+            },
+            {
+              "name": "parameters cannot rewrite installed identity",
+              "passed": true
+            },
+            {
+              "name": "real mesh collision created",
+              "passed": true
+            },
+            {
+              "name": "physics ray hits installed module",
+              "passed": true
+            },
+            {
+              "name": "real mesh collision created",
+              "passed": true
+            },
+            {
+              "name": "physics ray hits installed module",
+              "passed": true
+            },
+            {
+              "name": "solid=false changes actual physics",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "scope": "host-authored fixture semantics; not player acceptance",
+          "states": [
+            {
+              "collision_count": 1,
+              "entity_id": "ins-72489cd79d58cabd78a03857-e0",
+              "kind": "building",
+              "label": "building",
+              "model_scale_percent": 300,
+              "quarter_turns": 0,
+              "solid": true
+            },
+            {
+              "collision_count": 1,
+              "entity_id": "ins-1119d575198c1ff9a6817c97-e0",
+              "kind": "road",
+              "label": "road",
+              "model_scale_percent": 300,
+              "quarter_turns": 0,
+              "solid": true
+            }
+          ]
+        },
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "screenshot": "city-b.png",
+        "screenshotSha256": "30f6603073abc02b9ba98418325d5aa8450404da09414c41a459eb37f6faebdc"
+      }
+    }
+  ],
+  "roundtrip": {
+    "archiveSha256": "1de9fb46cc7f6b9d3e5d848979f9f2f5879fd3cdb1e690cba5769e0d3d04e958",
+    "files": [
+      "_craftmine_component.tscn",
+      "addons/kenney-city-building/module.tscn",
+      "addons/kenney-city-building/module.gd",
+      "addons/kenney-city-building/models/building-small-a.glb",
+      "addons/kenney-city-building/attribution.json",
+      "addons/kenney-city-building/provenance.json",
+      "addons/kenney-city-building/licenses/LICENSE.md",
+      "addons/kenney-city-building/licenses/README.md",
+      "addons/kenney-city-building/models/Textures/colormap.png",
+      "addons/kenney-city-building/module.gd.uid"
+    ],
+    "bytes": 24432,
+    "source": {
+      "worldId": "city-a",
+      "revision": 4,
+      "manifestHash": "6c84d675de1e399733b3702f07b15a0a58a3b27086fea1265af838ee33741580",
+      "mainScene": "scenes/creation.tscn",
+      "nodePath": "ins-2e0992673c7baff44251c0fe-e0"
+    },
+    "requiredSourceFiles": 0
+  },
+  "passed": true,
+  "archivedChecks": {
+    "allFiveRuntimeEntityIdsDistinct": true,
+    "originalManagedSourceAndDerivativeProbeAreSeparate": true
+  },
+  "limitations": [
+    "Host-authored package/physics fixture, not player-model acceptance",
+    "Core check jobs remain truthfully blocked without a registered core executor; LPAC/Web probe is separately recorded",
+    "Probe project derives from the recorded managed source pin and adds trusted trial autoload/export preset; broker sourceRevision=1 identifies the derivative fixture",
+    "No formal world application, progress migration or module-state save persistence claim",
+    "Fixture models raised one meter above ground to isolate collision rays; layout is not player-authored"
+  ]
+}

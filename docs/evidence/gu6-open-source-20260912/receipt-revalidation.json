@@ -1,0 +1,55 @@
+{
+  "format": "craftmine.external-receipt-revalidation/1",
+  "verified": true,
+  "source": "Archived real receipts versus independently recorded host trial identity and audited source manifest",
+  "results": [
+    {
+      "kit": "kenney-fps",
+      "operation": "import",
+      "taskId": "gu6-kenney-fps-import-1789160716198",
+      "receipt": "kenney-fps-import-receipt.json",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "kit": "kenney-fps",
+      "operation": "exportWeb",
+      "taskId": "gu6-kenney-fps-exportweb-1789160720669",
+      "receipt": "kenney-fps-exportWeb-receipt.json",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "kit": "kenney-city",
+      "operation": "import",
+      "taskId": "gu6-kenney-city-import-1789160732143",
+      "receipt": "kenney-city-import-receipt.json",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "kit": "kenney-city",
+      "operation": "exportWeb",
+      "taskId": "gu6-kenney-city-exportweb-1789160735934",
+      "receipt": "kenney-city-exportWeb-receipt.json",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "kit": "kenney-city-sample",
+      "operation": "import",
+      "taskId": "gu6-sample-imp-1789160794227",
+      "receipt": "kenney-city-sample-import-receipt.json",
+      "valid": true,
+      "errors": []
+    },
+    {
+      "kit": "kenney-city-sample",
+      "operation": "exportWeb",
+      "taskId": "gu6-sample-web-1789160797966",
+      "receipt": "kenney-city-sample-exportWeb-receipt.json",
+      "valid": true,
+      "errors": []
+    }
+  ]
+}

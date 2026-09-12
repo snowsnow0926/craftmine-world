@@ -14,9 +14,9 @@ const require=createRequire(import.meta.url);
 const corpus=require(path.join(plugin,'guidance/catalog.json'));
 const hash=text=>createHash('sha256').update(text).digest('hex');
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'craftmine-guidance-'));
-for(const file of ['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
+for(const file of ['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs',
-  'tool-services.cjs','godot-guidance.cjs','creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs'])fs.copyFileSync(path.join(plugin,file),path.join(temp,file));
+  'tool-services.cjs','godot-guidance.cjs','creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-change-summary.cjs'])fs.copyFileSync(path.join(plugin,file),path.join(temp,file));
 fs.cpSync(path.join(plugin,'guidance'),path.join(temp,'guidance'),{recursive:true});
 fs.writeFileSync(path.join(temp,'domain.cjs'),`module.exports={
   fields(args,required,optional){for(const k of required)if(!Object.hasOwn(args,k))throw Error('MISSING_FIELD');
@@ -33,8 +33,12 @@ function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVer
   const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
     calls.push({method,args});
     if(method==='workspace.open')return {worldId:'bound-world'};
-    if(method==='godotProject.index')return {worldId:'bound-world',revision:args.revision??7,
-      manifestHash:args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion};
+    if(method==='godotProject.index'){
+      const files=selectedSkill.references.filter(ref=>ref.requiredInterface).map(ref=>({path:ref.projectPath,sha256:modified?'f'.repeat(64):ref.sha256}));
+      const offset=args.offset??0,limit=args.limit??32;
+      return {worldId:'bound-world',revision:args.revision??7,
+        manifestHash:args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion,files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
+    }
     if(method==='godotProject.read'){
       if(missing)throw Error('PROJECT_FILE_NOT_FOUND');
       const ref=selectedSkill.references.find(ref=>ref.projectPath===args.path);

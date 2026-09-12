@@ -221,6 +221,8 @@ export type PluginHostServices = {
     buildId?: string | null;
     instanceId?: string | null;
   }) => Promise<Record<string, unknown> | null>;
+  craftminePerformanceSample?: (input:{worldId?:string|null;buildId?:string|null;instanceId?:string|null})=>Promise<Record<string,unknown>|null>;
+  craftmineEnginePerformanceSample?: (input:{worldId?:string|null;buildId?:string|null;instanceId?:string|null})=>Promise<Record<string,unknown>|null>;
   craftmineCreationTarget?: (input:{projectId:string;sessionId:string;turnId:string}) => Promise<Record<string, unknown>|null>;
   craftmineViewCapture?: (input:unknown) => Promise<Record<string,unknown>>;
   craftmineCreationCheckCompleted?: (input:{jobId:string;context:{projectId:string;sessionId:string;turnId:string}}) => Promise<Record<string,unknown>>;
@@ -1634,6 +1636,14 @@ export class PluginRuntime {
           buildId: idOrNull(input.buildId),
           instanceId: idOrNull(input.instanceId),
         });
+      }
+      case "craftmine.godotPerformance": {
+        if(pluginId!=="craftmine.world"||!this.services.craftminePerformanceSample)throw apiError("UNSUPPORTED","Performance observation unavailable");
+        return this.services.craftminePerformanceSample(args[0]??{});
+      }
+      case "craftmine.godotEnginePerformance": {
+        if(pluginId!=="craftmine.world"||!this.services.craftmineEnginePerformanceSample)throw apiError("UNSUPPORTED","Engine performance observation unavailable");
+        return this.services.craftmineEnginePerformanceSample(args[0]??{});
       }
       case "craftmine.godotViewCapture": {
         if(pluginId!=="craftmine.world"||!this.services.craftmineViewCapture)throw apiError("UNSUPPORTED","Game view capture unavailable");

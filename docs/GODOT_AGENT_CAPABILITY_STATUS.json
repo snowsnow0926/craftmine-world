@@ -1,0 +1,343 @@
+{
+  "format": "craftmine.godot-agent-plan-status/1",
+  "planVersion": "1.1",
+  "plan": "docs/GODOT_AGENT_CAPABILITY_DEVELOPMENT_PLAN.md",
+  "goalStatus": "active",
+  "startedAt": "2026-09-12",
+  "baselineCommit": "2cf285fe87d53537435aa59783abd72bc5f56a63",
+  "integrationWorktree": "D:/cm-agent-godot-0912",
+  "integrationBranch": "codex/agent-godot-capability-20260912",
+  "playerAcceptance": {
+    "entry": "ordinary-player-creation",
+    "configuration": "user-confirmed-model-and-thinking; saved-session-binding-refreshed",
+    "extraTokenLimit": null,
+    "extraModelCallLimit": null,
+    "extraTurnDeadline": null,
+    "preserveOriginalWish": true,
+    "isolatedBackground": true,
+    "cancellable": true,
+    "physicalInputAllowed": false,
+    "modelId": "deepseek-v4.1-flash-expires-on-0910",
+    "thinkingLevel": "max",
+    "confirmation": "2026-09-12 user confirmed continued use of this model and max thinking"
+  },
+  "packages": [
+    {
+      "id": "GU0",
+      "status": "in-progress",
+      "next": "First ordinary player baseline completed on frozen d4b15812 package; comparative task set and latest-package coverage remain"
+    },
+    {
+      "id": "GU1",
+      "status": "in-progress",
+      "next": "Live readiness plus canonical asset kind/schema/UI alignment integrated; actual returned kinds round-trip through model filters, broader mode/permission/package coverage remains"
+    },
+    {
+      "id": "GU2",
+      "status": "in-progress",
+      "next": "Static instance/resource/signal/InputMap associations integrated and real-core pin regression passed; runtime/expanded inheritance semantics remain explicit unknown"
+    },
+    {
+      "id": "GU3",
+      "status": "in-progress",
+      "next": "Sealed863 ordinary model layout and three local module parameters passed actual checks/adoption/cold plus right-wall blocking and left-wall bidirectional traversal; raw source tools used, typed-query use, native matrix facts and broader material/property scopes remain"
+    },
+    {
+      "id": "GU4",
+      "status": "in-progress",
+      "next": "New immutable v2 progress collision guard integrated: 17 native cases and real Web verifier/latest-progress staging pass, complete12 source/PCK/observer pins; old v1 migration, sealed Core commit and broader scenarios remain"
+    },
+    {
+      "id": "GU5",
+      "status": "in-progress",
+      "next": "Sealed05ad normal retry recovered original failed ruins world with unchanged source and preserved original failed job, actual gameplay/full save/cold passed; native crash cause remains unknown; broader compaction/model-switch repair remains"
+    },
+    {
+      "id": "GU6",
+      "status": "in-progress",
+      "next": "Sealed56b5 memory product path passed. Opt-in engine-monitor bridge, app source/PCK authority and strict host service now pass actual Web sampling plus35 targeted checks; Core replies are fixtures in this latest test. Main provider/tool engine-metric wiring, sealed opt-in world validation, timing calibration, ordinary model usage and same-scale semantic optimization remain."
+    },
+    {
+      "id": "GU7",
+      "status": "in-progress",
+      "next": "Sealed56b5 performance registered-tool/Core-save/cold path passes without model; broad same-version matrix remains. Historical2a old-base matrix stays3/4,05ad recovered original side-view and863 ordinary module edits passed scoped checks/adoption/physics; these are not one-version full acceptance."
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "engine-monitor-versioned-host-service",
+      "path": "docs/GODOT_ENGINE_HOST_SERVICE_2026-09-12.md",
+      "status": "passed-scoped-web-host-integration",
+      "scope": "Actual opt-in Web release, strict host route, app resource/source/PCK validation before and after sampling;35 checks and tsc pass. Core descriptor/source are test fixtures; service not registered in production provider/tool. Existing default base bytes and old observer profiles remain compatible."
+    },
+    {
+      "kind": "engine-monitor-native-release-prototype",
+      "path": "docs/GODOT_ENGINE_MONITOR_COLLECTOR_2026-09-12.md",
+      "status": "passed-scoped-fixed-engine-prototype",
+      "scope": "Pinned editor and real Windows release PCK, five samples each with exact256-node growth/removal, paused/headless/GPU unknown and no custom monitor calls;12 parser/broker tests and5 staged bases pass. Not wired to player worlds or tool, no timing calibration/scaled optimization claim."
+    },
+    {
+      "kind": "sealed-performance-product",
+      "commit": "56b5aeca298c20d6575c66bdf60dd25479358651",
+      "path": "vendor/pi-desktop/docs/spec/godot-performance-product-acceptance.md",
+      "status": "passed-scoped-sealed-product",
+      "scope": "Two complete desktop launches, ordinary world/session creation, registered plugin IPC tool and actual Core save/cold equal snapshot; clean exits, post-stop DB no model requests/source changes, package seal unchanged. No model-choice or scaled optimization claim."
+    },
+    {
+      "kind": "renderer-performance-host-and-broker",
+      "path": "docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md",
+      "status": "passed-scoped-source-integration",
+      "scope": "42 focused tests; actual Godot Web+host+live adapter+packed broker OS memory in two independent processes, cold snapshot via local-file fixture, old-instance rejection and zero input/focus. Core task/runtime are fixtures, plugin IPC/model/sealed client/player-scale benchmarking remain unverified."
+    },
+    {
+      "kind": "original-failed-world-recovery",
+      "commit": "05adf239d88862cba44dad27f8d33e3641a28c99",
+      "path": "docs/evidence/gu7-original-ruins-recovery-20260912/summary.json",
+      "status": "passed-scoped-normal-recovery",
+      "scope": "One normal retry, original world and source unchanged, new actual check, old failed output preserved,12 semantic actions20 checks and complete progress cold equality,2 clean exits; root cause unknown"
+    },
+    {
+      "kind": "ordinary-module-creation-and-physics",
+      "commit": "863622e9c9465bf2b00d3f0ec9964ad3ac36d295",
+      "path": "docs/GODOT_AGENT_MODULE_PLAYER_RESULT_2026-09-12.md",
+      "status": "passed-scoped-with-recorded-interruptions",
+      "scope": "Confirmed Flash/max, ordinary layout14 calls; local3 parameter patch, expired check permission then ordinary continuation4 calls; actual check/adoption/cold and bilateral local traversal, raw tools not typed query; original false model explanations retained"
+    },
+    {
+      "kind": "sealed-v2-product-and-entry",
+      "commit": "2a584796a9da32f6c8c5e597804d03fdefff638a",
+      "path": "docs/evidence/gu7-sealed-2a584796-20260912/summary.json",
+      "status": "mixed-scoped-results",
+      "scope": "1619 payload files; catalog25 and double-module bootstrap passed; ordinary entry migration refused before any model call; earlier two cold scheduling failures preserved"
+    },
+    {
+      "kind": "sealed-four-base-regression",
+      "commit": "2a584796a9da32f6c8c5e597804d03fdefff638a",
+      "path": "docs/evidence/ga27-legacy-bases-20260912/archive.json",
+      "status": "failed-three-of-four-passed",
+      "scope": "First-person/top-down/mining measured existing gameplay and full save/cold passed; side-view failed two native imports0xc0000005, no runtime result; seven clients clean"
+    },
+    {
+      "kind": "module-source-and-physics-integration",
+      "commit": "c3b7f423",
+      "path": "docs/evidence/gu3-gu4-module-integration-20260912/summary.json",
+      "status": "passed-scoped-integration",
+      "scope": "Root final packed broker/current Core 18 source checks with synthetic capture; root actual native17; actual Web production verifier/latest stage with authored descriptors; full12 materialized/PCK bytes match; no sealed parameter adoption or player-model claim"
+    },
+    {
+      "kind": "real-core-source-only",
+      "test": "tests/godot-agent/parameter-declaration-roundtrip.test.mjs",
+      "path": "D:/cm-agent-godot-0912/test-results/parameter-core-XvvG2w/report.json",
+      "status": "passed",
+      "scope": "Current Core rerun: CP0 declarations/local override survive export/install/re-export; build check intentionally blocked in source test"
+    },
+    {
+      "kind": "real-core",
+      "test": "tests/godot-agent/query-core.test.mjs",
+      "status": "passed",
+      "scope": "source continuation after HEAD advances; existing explicit core binary"
+    },
+    {
+      "kind": "real-core",
+      "test": "tests/godot-remaining/L/capability-modes-core.test.mjs",
+      "status": "passed",
+      "scope": "actual asset/package/history read routes"
+    },
+    {
+      "kind": "real-engine",
+      "path": "D:/cm-agent-godot-0912/test-results/godot-door-scenario-YeZTaJ/report.json",
+      "status": "passed",
+      "scope": "trusted headless door fixture and blocked-collision negative"
+    },
+    {
+      "kind": "configuration",
+      "path": "D:/cm-agent-godot-0912/test-results/gu0-confirmed-player-20260912/baseline.json",
+      "sha256": "2b39c122469f186c319b01651838ba719a90206cb914719c7cf156b1f7496805",
+      "scope": "user confirmed model and thinking, exact saved model binding, no model requests"
+    },
+    {
+      "kind": "build",
+      "command": "pnpm run build:js",
+      "status": "passed",
+      "scope": "independent workspace packages and desktop, before next candidate collector integration"
+    },
+    {
+      "kind": "source-tests",
+      "command": "node --test tests/godot-scenario-verdict.test.mjs tests/godot-scenario-collector.test.mjs tests/godot-diagnostics.test.mjs tests/godot-agent/engine-api.test.mjs",
+      "status": "passed",
+      "tests": 37,
+      "scope": "integrated helpers; production routes under development"
+    },
+    {
+      "kind": "external-source-research",
+      "path": "docs/GODOT_OPEN_SOURCE_REUSE_RESEARCH_2026-09-12.md",
+      "status": "in-progress",
+      "scope": "fixed source licenses and independent LPAC/Web trial; not ordinary player acceptance"
+    },
+    {
+      "kind": "production-tool-integration",
+      "commit": "9a200cbb24a8129b52a1a4a1b0b86123dc5e0913",
+      "status": "passed",
+      "scope": "integrator reran broker routing, execution wiring and real plugin packaging; no player model or installed-client claim"
+    },
+    {
+      "kind": "external-source-trial",
+      "commit": "90769285",
+      "path": "docs/evidence/gu6-open-source-20260912/summary.json",
+      "status": "passed",
+      "scope": "two Kenney projects, three explicitly adapted startup variants, six LPAC operations and screenshots; not player/gameplay acceptance"
+    },
+    {
+      "kind": "build",
+      "command": "pnpm run build:js",
+      "status": "passed",
+      "scope": "integrated production tools and optional scenario collector; independent workspace JS and desktop build"
+    },
+    {
+      "kind": "package",
+      "commit": "d4b15812227723d37538870bb11b9fe5ebc90c31",
+      "path": "desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/package-evidence.json",
+      "status": "passed",
+      "scope": "full local unpacked Windows build and resource/source identity; no installer or user installation claim"
+    },
+    {
+      "kind": "ordinary-bootstrap",
+      "path": "test-results/desktop-native-ordinary-jHKHPj/bootstrap.json",
+      "status": "passed",
+      "scope": "new blank creation world and normal sessionCreate; zero model requests; clean no-input shutdown"
+    },
+    {
+      "kind": "ordinary-player",
+      "path": "test-results/desktop-native-ordinary-jHKHPj/player-29bc92e8-d233-4782-9806-6bcebf97de01.json",
+      "status": "completed-with-separate-gameplay-evidence",
+      "scope": "blue door and one-time chest; confirmed DeepSeek/max; no evaluator limits; manually reviewed per-operation test approvals"
+    },
+    {
+      "kind": "ordinary-gameplay",
+      "path": "docs/evidence/gu7-ordinary-player-20260912/summary.json",
+      "status": "passed",
+      "scope": "one blue-door/chest wish; normal model draft and manual adoption; five independent background exploration attempts including two retained aim failures"
+    },
+    {
+      "kind": "frozen-passage-core",
+      "commit": "0337cbac",
+      "status": "passed",
+      "scope": "15 real Rust requirements tests and desktop typecheck; actual controller-binding limitations remain"
+    },
+    {
+      "kind": "module-reuse",
+      "commit": "ee6003e3",
+      "path": "docs/evidence/gu6-kenney-modules-20260912/summary.json",
+      "status": "passed",
+      "scope": "five source installs in two worlds, 29 separate LPAC/Web physics/parameter assertions; source jobs themselves are still check-blocked"
+    },
+    {
+      "kind": "ordinary-continuation",
+      "path": "docs/evidence/gu7-ordinary-player-20260912/recolor-preservation-review.json",
+      "status": "passed-with-separate-preservation-evidence",
+      "scope": "Sealed 6f, same-session Flash/max continuation, 7 model calls, generic patch, normal adoption/cold reopen; requirements unsupported, old failure retained"
+    },
+    {
+      "kind": "formal-module-reuse",
+      "commit": "0ce0ba9f",
+      "path": "docs/evidence/gu6-formal-packages-20260912/summary.json",
+      "status": "passed",
+      "scope": "20 ordinary product steps without model calls; two real checks/adoptions and cold reopen in one world; independent cancellation test; GLB selection unsupported"
+    },
+    {
+      "kind": "durable-recovery",
+      "commit": "12cdfa1b",
+      "status": "passed",
+      "scope": "64 integrated source tests and real core restart with synthetic executor output; no model repair-loop claim"
+    },
+    {
+      "kind": "source-tests",
+      "commits": [
+        "7d8e2df0",
+        "62a3f99b",
+        "bb0a35b1",
+        "6f1708f1"
+      ],
+      "status": "passed",
+      "scope": "Finite sequence resolution and frozen labels/colors: 8 focused JS and 16 Rust requirements tests; nonspatial placement/undo: 36 focused tests; desktop typecheck"
+    },
+    {
+      "kind": "resource-catalog",
+      "commit": "7a610be9",
+      "path": "docs/evidence/gu6-library-20260912/report.json",
+      "status": "passed",
+      "scope": "Two actual ZIP bodies indexed/read/searchable across real core restart; 21 preview/core plus 20 UI and 37 Rust catalog tests; no install or compatibility claim"
+    },
+    {
+      "kind": "external-behavior-runtime",
+      "commit": "0bd38267",
+      "path": "docs/evidence/gu6-beehave-20260912/report.json",
+      "status": "passed",
+      "scope": "391 physics samples follow/stop/interrupt, wall and missing target negatives; 11 evidence tests independently rerun; original log byte repair 1cc82320"
+    },
+    {
+      "kind": "arraymesh-observation",
+      "commits": [
+        "aebaf705",
+        "decd888d"
+      ],
+      "path": "docs/evidence/gu2-arraymesh-picker-20260912/controller-v2.json",
+      "status": "passed-in-derived-engine-fixture",
+      "scope": "37 real LPAC/Web checks and ordinary bridge observe, legacy 44; base surface triangles only, full controller cohort integration pending"
+    },
+    {
+      "kind": "controller-profile-integration",
+      "commit": "dcad9474",
+      "path": "test-results/controller-binding-native-n0vBli/report.json",
+      "status": "passed",
+      "scope": "27 focused integration, 38 Rust jobs + 2 cohorts, typecheck; 13 real native cases; 8 focused natural/profile and ten-file GLB identity assertions; fresh package pending"
+    },
+    {
+      "kind": "unified-package",
+      "commit": "09f7443a1aeb59307cffe01623d6ff18975578ca",
+      "path": "docs/evidence/gu6-integrated-package-20260912/summary.json",
+      "status": "passed-scoped-formal-reuse",
+      "scope": "1614 packaged payload files, source/archive verification; 22 actual product steps, two broker checks/adoptions and cold reopen; 10 protocol/evidence tests; no model or installer"
+    },
+    {
+      "kind": "catalog-source-adoption",
+      "commit": "a9b4c0e299c7a40f88c4e004f02a9fe658016159",
+      "path": "docs/evidence/gu6-catalog-adoption-20260912/summary.json",
+      "status": "passed-scoped-product-flow",
+      "scope": "25 actual product steps, real checks/adoption/cold exact-op replay; readonly SQLite has only 3 expected jobs; both exits clean; initial catalog seed is a fixture and no model was run"
+    },
+    {
+      "kind": "asset-kind-alignment",
+      "commit": "b49b1ec8",
+      "path": "docs/evidence/gu1-asset-kinds-20260912/identity.json",
+      "status": "passed-in-real-core-and-bundled-tool",
+      "scope": "Core canonical7 plus legacy2 aliases, UI canonical filters; later than a9 sealed trial"
+    },
+    {
+      "kind": "module-parameter-persistence",
+      "commit": "1e7a6041",
+      "path": "docs/evidence/gu3-module-runtime-persistence-20260912/report.json",
+      "status": "gap-reproduced",
+      "scope": "12 real LPAC/Web assertions, explicit reconstructed instance not cold product; configure is transient, current snapshot omits module fields; implementation still required"
+    },
+    {
+      "kind": "initialization-retry-core",
+      "test": "tests/godot-agent/initialization-retry-core.test.mjs",
+      "path": "D:/cm-agent-godot-0912/test-results/initialization-retry-core-0wLVQc/report.json",
+      "status": "passed-real-core",
+      "scope": "Fresh retry check and explicit continuation across real Core transactions/restart; synthetic executor outputs, no Godot/player"
+    },
+    {
+      "kind": "godot-performance-observation",
+      "commit": "0a8f70c9",
+      "path": "docs/evidence/gu6-performance-observation-20260912/summary.json",
+      "status": "passed-scoped-real-headless-sample",
+      "scope": "Independent Godot 4.7.2 stable headless scratch scene, 300 frames; identity-bound world/build/instance and measurement hash; unavailable GPU/physics/object-count fields preserved as unknown"
+    }
+  ],
+  "limitations": [
+    "Current installed client has not been revalidated by this goal",
+    "Prior player records apply only to their recorded wishes and builds",
+    "The first player package predates query-relations, core passage and GLB/attribution integration; latest package revalidation remains"
+  ]
+}

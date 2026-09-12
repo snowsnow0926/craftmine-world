@@ -30,13 +30,13 @@ await mkdir(shared,{recursive:true});
 // runs, so this list must cover the real entry point's local require closure.
 // `domain.cjs` and `core-client.cjs` are deliberately absent: the test supplies
 // stubs for them below.
-const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-source-service.cjs',
+const FILES=['manifest.json','main.cjs','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
+  'creation-operations.cjs','creation-sequence-rule.cjs','creation-operation-schema.cjs','creation-source-service.cjs','creation-change-summary.cjs',
   'godot-observe.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs',
   'verification-jobs.cjs','review-jobs.cjs','applications.cjs','host-requests.cjs','context-review.cjs',
-  'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','asset-service.mjs','reuse-service.mjs',
+  'workbench-service.cjs','godot-executor.cjs','godot-task-bin-retirement.cjs','creation-timing.cjs','creation-application-state.cjs','asset-service.mjs','reuse-service.mjs',
   'portable-restore-service.cjs','package-turn-lifecycle.cjs','target-feedback-service.mjs','godot-package-source.mjs',
-  'package-format.mjs','package-zip.mjs','asset-lock.mjs'];
+  'package-format.mjs','package-zip.mjs','asset-lock.mjs','godot-instance-declaration.mjs'];
 // Imported by the staged plugin modules through the repository-relative path.
 const SHARED=['draft_install.mjs','scene_materializer.mjs','target-feedback-configuration.mjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));

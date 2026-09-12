@@ -1,0 +1,1541 @@
+{
+  "format": "craftmine.formal-package-client/1",
+  "out": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-qAq3qM",
+  "packaged": "D:/cm-agent-godot-0912/desktop/build/releases/2ae18b25a7cf-87f15497-e89a-4f99-ae8b-df6762a663e9/output/win-unpacked",
+  "commit": "2ae18b25a7cf88e2cf810082a84c17c09092ce3d",
+  "manifestSha256": "18f781613c17add0014eb351f8bc9c833a4ce913d0fbb6ae33e6e4df65c1e27e",
+  "startedAt": "2026-09-11T22:08:28.017Z",
+  "launches": [
+    {
+      "number": 1,
+      "pid": 57456,
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "steps": [
+    {
+      "name": "sealed client starts offscreen in protected fresh profile",
+      "passed": true,
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-qAq3qM\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world",
+            "pi.browser",
+            "pi.files"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 57456,
+            "type": "Browser",
+            "creationTime": 1789164508025.154,
+            "cpu": {
+              "cumulativeCPUUsage": 0.583028,
+              "percentCPUUsage": 0.34320217002820835,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 296120,
+              "peakWorkingSetSize": 299876,
+              "privateBytes": 229760
+            }
+          },
+          {
+            "pid": 53064,
+            "type": "GPU",
+            "creationTime": 1789164508231.824,
+            "cpu": {
+              "cumulativeCPUUsage": 0.410736,
+              "percentCPUUsage": 0.9170281906416032,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 180928,
+              "peakWorkingSetSize": 185076,
+              "privateBytes": 131012
+            }
+          },
+          {
+            "pid": 85864,
+            "type": "Utility",
+            "creationTime": 1789164508234.67,
+            "cpu": {
+              "cumulativeCPUUsage": 0.067238,
+              "percentCPUUsage": 0.00679377926125035,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 99908,
+              "peakWorkingSetSize": 100832,
+              "privateBytes": 12708
+            }
+          },
+          {
+            "pid": 77296,
+            "type": "Utility",
+            "creationTime": 1789164509030.443,
+            "cpu": {
+              "cumulativeCPUUsage": 0.42167,
+              "percentCPUUsage": 0.64099877177594,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 297216,
+              "peakWorkingSetSize": 316436,
+              "privateBytes": 247276
+            }
+          },
+          {
+            "pid": 71424,
+            "type": "Utility",
+            "creationTime": 1789164510592.448,
+            "cpu": {
+              "cumulativeCPUUsage": 0.039205,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 106592,
+              "peakWorkingSetSize": 106596,
+              "privateBytes": 23132
+            }
+          },
+          {
+            "pid": 33820,
+            "type": "Utility",
+            "creationTime": 1789164510628.922,
+            "cpu": {
+              "cumulativeCPUUsage": 0.037103,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 109376,
+              "peakWorkingSetSize": 109380,
+              "privateBytes": 28784
+            }
+          },
+          {
+            "pid": 40588,
+            "type": "Tab",
+            "creationTime": 1789164510678.47,
+            "cpu": {
+              "cumulativeCPUUsage": 0.192641,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 138828,
+              "peakWorkingSetSize": 138832,
+              "privateBytes": 58984
+            }
+          }
+        ],
+        "windows": [
+          {
+            "visible": false,
+            "focused": false,
+            "focusable": false,
+            "offscreen": true
+          }
+        ],
+        "world": null
+      }
+    },
+    {
+      "name": "ordinary create mode opens product surface",
+      "passed": true,
+      "result": {
+        "entry": true,
+        "play": false,
+        "world": null,
+        "dialog": null,
+        "width": 1200,
+        "height": 800
+      }
+    },
+    {
+      "name": "ordinary creation-sandbox world creation",
+      "passed": true,
+      "result": {
+        "id": "world-52464d3f4889",
+        "title": "GU6 formal package adoption"
+      }
+    },
+    {
+      "name": "initial world real build/check/apply settles",
+      "passed": false,
+      "error": "Error: TRIAL_STOPPED"
+    }
+  ],
+  "calls": [
+    {
+      "launch": 1,
+      "method": "status",
+      "payload": {},
+      "at": "2026-09-11T22:08:29.034Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-qAq3qM\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 57456,
+            "type": "Browser",
+            "creationTime": 1789164508025.154,
+            "cpu": {
+              "cumulativeCPUUsage": 0.40625,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 238852,
+              "peakWorkingSetSize": 238856,
+              "privateBytes": 176108
+            }
+          },
+          {
+            "pid": 53064,
+            "type": "GPU",
+            "creationTime": 1789164508231.824,
+            "cpu": {
+              "cumulativeCPUUsage": 0.15625,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 126848,
+              "peakWorkingSetSize": 126852,
+              "privateBytes": 67748
+            }
+          },
+          {
+            "pid": 85864,
+            "type": "Utility",
+            "creationTime": 1789164508234.67,
+            "cpu": {
+              "cumulativeCPUUsage": 0.203125,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 99764,
+              "peakWorkingSetSize": 100104,
+              "privateBytes": 12604
+            }
+          },
+          {
+            "pid": 77296,
+            "type": "Utility",
+            "creationTime": 1789164509030.443,
+            "cpu": {
+              "cumulativeCPUUsage": 0.015625,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 90648,
+              "peakWorkingSetSize": 90652,
+              "privateBytes": 8448
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      }
+    },
+    {
+      "launch": 1,
+      "method": "status",
+      "payload": {},
+      "at": "2026-09-11T22:08:30.049Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-qAq3qM\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 57456,
+            "type": "Browser",
+            "creationTime": 1789164508025.154,
+            "cpu": {
+              "cumulativeCPUUsage": 0.485427,
+              "percentCPUUsage": 0.27889941374657756,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 240376,
+              "peakWorkingSetSize": 241004,
+              "privateBytes": 176500
+            }
+          },
+          {
+            "pid": 53064,
+            "type": "GPU",
+            "creationTime": 1789164508231.824,
+            "cpu": {
+              "cumulativeCPUUsage": 0.149952,
+              "percentCPUUsage": -0.022182895543428813,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 126848,
+              "peakWorkingSetSize": 126852,
+              "privateBytes": 67748
+            }
+          },
+          {
+            "pid": 85864,
+            "type": "Utility",
+            "creationTime": 1789164508234.67,
+            "cpu": {
+              "cumulativeCPUUsage": 0.065306,
+              "percentCPUUsage": -0.4853943218243351,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 100588,
+              "peakWorkingSetSize": 100832,
+              "privateBytes": 13436
+            }
+          },
+          {
+            "pid": 77296,
+            "type": "Utility",
+            "creationTime": 1789164509030.443,
+            "cpu": {
+              "cumulativeCPUUsage": 0.239384,
+              "percentCPUUsage": 0.7880109944506536,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 312188,
+              "peakWorkingSetSize": 312260,
+              "privateBytes": 262384
+            }
+          }
+        ],
+        "windows": [],
+        "world": null
+      }
+    },
+    {
+      "launch": 1,
+      "method": "status",
+      "payload": {},
+      "at": "2026-09-11T22:08:31.064Z",
+      "result": {
+        "name": "craftmine world",
+        "profile": "D:\\cm-gu6-formal-0912\\test-results\\desktop-native-complete-qAq3qM\\profile\\desktop",
+        "runtime": {
+          "hostAvailable": true,
+          "plugins": [
+            "craftmine.world",
+            "pi.browser",
+            "pi.files"
+          ]
+        },
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": [],
+        "processes": [
+          {
+            "pid": 57456,
+            "type": "Browser",
+            "creationTime": 1789164508025.154,
+            "cpu": {
+              "cumulativeCPUUsage": 0.583028,
+              "percentCPUUsage": 0.34320217002820835,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 296120,
+              "peakWorkingSetSize": 299876,
+              "privateBytes": 229760
+            }
+          },
+          {
+            "pid": 53064,
+            "type": "GPU",
+            "creationTime": 1789164508231.824,
+            "cpu": {
+              "cumulativeCPUUsage": 0.410736,
+              "percentCPUUsage": 0.9170281906416032,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 180928,
+              "peakWorkingSetSize": 185076,
+              "privateBytes": 131012
+            }
+          },
+          {
+            "pid": 85864,
+            "type": "Utility",
+            "creationTime": 1789164508234.67,
+            "cpu": {
+              "cumulativeCPUUsage": 0.067238,
+              "percentCPUUsage": 0.00679377926125035,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 99908,
+              "peakWorkingSetSize": 100832,
+              "privateBytes": 12708
+            }
+          },
+          {
+            "pid": 77296,
+            "type": "Utility",
+            "creationTime": 1789164509030.443,
+            "cpu": {
+              "cumulativeCPUUsage": 0.42167,
+              "percentCPUUsage": 0.64099877177594,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 297216,
+              "peakWorkingSetSize": 316436,
+              "privateBytes": 247276
+            }
+          },
+          {
+            "pid": 71424,
+            "type": "Utility",
+            "creationTime": 1789164510592.448,
+            "cpu": {
+              "cumulativeCPUUsage": 0.039205,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 106592,
+              "peakWorkingSetSize": 106596,
+              "privateBytes": 23132
+            }
+          },
+          {
+            "pid": 33820,
+            "type": "Utility",
+            "creationTime": 1789164510628.922,
+            "cpu": {
+              "cumulativeCPUUsage": 0.037103,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 109376,
+              "peakWorkingSetSize": 109380,
+              "privateBytes": 28784
+            }
+          },
+          {
+            "pid": 40588,
+            "type": "Tab",
+            "creationTime": 1789164510678.47,
+            "cpu": {
+              "cumulativeCPUUsage": 0.192641,
+              "percentCPUUsage": 0,
+              "idleWakeupsPerSecond": 0
+            },
+            "memory": {
+              "workingSetSize": 138828,
+              "peakWorkingSetSize": 138832,
+              "privateBytes": 58984
+            }
+          }
+        ],
+        "windows": [
+          {
+            "visible": false,
+            "focused": false,
+            "focusable": false,
+            "offscreen": true
+          }
+        ],
+        "world": null
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.createOptions",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:31.066Z",
+      "result": {
+        "create": true,
+        "switch": true,
+        "bases": [
+          {
+            "id": "craftmine-web/5",
+            "label": "网页体素",
+            "delivered": true
+          },
+          {
+            "id": "creation-sandbox",
+            "label": "造物世界 · 3D",
+            "description": "空白创造场地、物体布置、交互与连续创作",
+            "delivered": true,
+            "starters": [
+              {
+                "id": "blank",
+                "label": "空白造物世界",
+                "description": "有边界的 3D 空白地面，可行走、瞄准并持续创造物件与玩法。",
+                "delivered": true
+              }
+            ]
+          },
+          {
+            "id": "first-person",
+            "label": "3D 第一人称",
+            "description": "摄像机、碰撞、装备与指向交互",
+            "delivered": true,
+            "starters": [
+              {
+                "id": "blank",
+                "label": "Blank start",
+                "description": "One room with floor, walls, player, HUD and the base runtime only. No targets, no pickups, no quest and no reward ledger.",
+                "delivered": true
+              },
+              {
+                "id": "training-range",
+                "label": "Training range",
+                "description": "Short playable sample: three targets, cover crates, one ammo crate, one one-time pickup and the range_basic quest.",
+                "delivered": true
+              }
+            ]
+          },
+          {
+            "id": "mining-sandbox",
+            "label": "2D 挖掘沙盒",
+            "description": "可挖掘地形、材料合成、建造与分块存档",
+            "delivered": true,
+            "starters": [
+              {
+                "id": "blank",
+                "label": "Blank start",
+                "description": "Finite 48x24 generated map with dig, place, inventory and saving only. No recipes, no rewards, no tools and an empty inventory.",
+                "delivered": true
+              },
+              {
+                "id": "mine-camp",
+                "label": "Mining camp",
+                "description": "Finite 96x48 mining camp: dig soil and stone by hand, craft a stone pickaxe, mine coal and iron, smelt an iron ingot at the camp forge, craft an iron pickaxe, then build with stone bricks.",
+                "delivered": true
+              }
+            ]
+          },
+          {
+            "id": "side-view",
+            "label": "2D 横版",
+            "description": "重力、跳跃、平台碰撞与检查点",
+            "delivered": true,
+            "starters": [
+              {
+                "id": "blank",
+                "label": "Blank start",
+                "description": "One flat room with the base runtime only: run, jump, platform collision, camera, basic attack and one save file. No checkpoint, target, reward or ability.",
+                "delivered": true
+              },
+              {
+                "id": "ruins",
+                "label": "Small ruins",
+                "description": "Three connected rooms with return paths, a one-time cache, a training dummy, a breakable crate, a double-jump pickup and a 190 px high ledge that only a double jump can clear.",
+                "delivered": true
+              }
+            ]
+          },
+          {
+            "id": "top-down",
+            "label": "2D 俯视",
+            "description": "瓦片地图、人物碰撞、区域交互与背包",
+            "delivered": true,
+            "starters": [
+              {
+                "id": "blank",
+                "label": "Blank start",
+                "description": "Empty walkable room with the base runtime only: movement, collision, camera and save.",
+                "delivered": true
+              },
+              {
+                "id": "town",
+                "label": "Town",
+                "description": "One road, one shop, one NPC and one collect-and-deliver quest.",
+                "delivered": true
+              }
+            ]
+          }
+        ],
+        "starters": [
+          {
+            "id": "blank",
+            "label": "空白世界",
+            "delivered": true
+          },
+          {
+            "id": "blank",
+            "label": "空白造物世界",
+            "description": "有边界的 3D 空白地面，可行走、瞄准并持续创造物件与玩法。",
+            "delivered": true
+          }
+        ],
+        "createActions": true
+      }
+    },
+    {
+      "launch": 1,
+      "method": "primaryMode",
+      "payload": {
+        "payload": {
+          "action": "create"
+        }
+      },
+      "at": "2026-09-11T22:08:31.068Z",
+      "result": {
+        "entry": true,
+        "play": false,
+        "world": null,
+        "dialog": null,
+        "width": 1200,
+        "height": 800
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.create",
+        "payload": {
+          "title": "GU6 formal package adoption",
+          "baseId": "creation-sandbox",
+          "starterId": "blank",
+          "operationId": "e103e081-a4f1-4fd3-af0d-1a113bff0c54"
+        }
+      },
+      "at": "2026-09-11T22:08:31.105Z",
+      "result": {
+        "id": "world-52464d3f4889",
+        "title": "GU6 formal package adoption"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:31.728Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 50,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:34.466Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:35.533Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:36.541Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:37.558Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:38.578Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:39.583Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:40.601Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:41.619Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:42.694Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:43.709Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "worldNavigation",
+      "payload": {
+        "channel": "world.list",
+        "payload": {}
+      },
+      "at": "2026-09-11T22:08:44.723Z",
+      "result": {
+        "worlds": [
+          {
+            "baseId": "creation-sandbox",
+            "id": "world-52464d3f4889",
+            "revision": 0,
+            "runtimeKind": "godot",
+            "title": "GU6 formal package adoption",
+            "updatedAt": 1789164511596,
+            "base": {
+              "id": "creation-sandbox",
+              "label": "Godot",
+              "delivered": false
+            },
+            "state": "initializing",
+            "creation": {
+              "operationId": "gwinit-8ccbdc3e93d9bbd00b7115ec94436872800632f14efbed71469ebbdda3eaf69e",
+              "stage": "build",
+              "stages": [
+                {
+                  "id": "materialize",
+                  "label": "复制底座与登记世界",
+                  "status": "passed"
+                },
+                {
+                  "id": "project",
+                  "label": "建立工程源码",
+                  "status": "passed"
+                },
+                {
+                  "id": "build",
+                  "label": "首次构建",
+                  "status": "running"
+                },
+                {
+                  "id": "confirm",
+                  "label": "确认可加载",
+                  "status": "pending"
+                }
+              ],
+              "progress": 75,
+              "error": null,
+              "actions": [
+                "details"
+              ]
+            }
+          },
+          {
+            "id": "7c07c7b4-4ada-48ef-817a-f0983b7c166b",
+            "revision": 1,
+            "runtimeKind": "legacy",
+            "title": "我的第一个世界",
+            "updatedAt": 1789164511557,
+            "base": {
+              "id": "craftmine-web/5",
+              "label": "网页体素",
+              "delivered": true
+            }
+          }
+        ],
+        "activeWorldId": "world-52464d3f4889"
+      }
+    },
+    {
+      "launch": 1,
+      "method": "quit",
+      "payload": {},
+      "at": "2026-09-11T22:08:45.032Z",
+      "result": {
+        "requested": true
+      }
+    },
+    {
+      "launch": 1,
+      "method": "quit",
+      "payload": {},
+      "at": "2026-09-11T22:08:45.742Z",
+      "result": {
+        "requested": true
+      }
+    }
+  ],
+  "packages": [],
+  "scope": "Model-free protected ordinary source-package import/check/candidate/apply/restart",
+  "notVerified": [
+    "Player-model authorship",
+    "Module parameter progress persistence",
+    "Player controls and gameplay",
+    "Second formal world"
+  ],
+  "worldId": "world-52464d3f4889",
+  "cancelled": {
+    "reason": "cancel.request",
+    "at": "2026-09-11T22:08:45.032Z"
+  },
+  "failure": "Error: TRIAL_STOPPED\n    at until (file:///D:/cm-gu6-formal-0912/tests/godot-agent/formal-package-client.mjs:45:164)\n    at async settled (file:///D:/cm-gu6-formal-0912/tests/godot-agent/formal-package-client.mjs:56:33)\n    at async step (file:///D:/cm-gu6-formal-0912/tests/godot-agent/formal-package-client.mjs:46:48)\n    at async file:///D:/cm-gu6-formal-0912/tests/godot-agent/formal-package-client.mjs:64:3",
+  "passed": false,
+  "finishedAt": "2026-09-11T22:08:48.272Z"
+}

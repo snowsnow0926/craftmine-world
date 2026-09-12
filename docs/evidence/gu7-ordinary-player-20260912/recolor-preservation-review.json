@@ -1,0 +1,94 @@
+{
+  "format": "craftmine.player-recolor-preservation-review/1",
+  "reviewedAt": "2026-09-11T22:27:59.525Z",
+  "ok": true,
+  "checks": [
+    "confirmed flash/max, ordinary continuation, no harness source edit",
+    "current revision 4 formal check binds adopted build",
+    "after: exact preservation except door red and revision",
+    "reopened: exact preservation except door red and revision",
+    "cold instance differs with same adopted build",
+    "all three client launches ended normally with clean audits"
+  ],
+  "sourceEvidence": [
+    {
+      "file": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\player-67f7cca6-ad07-4bb9-ac6b-557962559484.json",
+      "sha256": "757a8318a7357034f8aa7797380afcc17eab2ad5594b86a30dbf579b7e662093"
+    },
+    {
+      "file": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\player-5e1a52cf-e544-455a-817f-b58c44b213ef.json",
+      "sha256": "87d5d4b4a12513b1a863ac67988867ed040f627660b414ff28e1bf9ece9981ba"
+    },
+    {
+      "file": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\adoption-1dd8e9ab-c5cd-49fd-a9ed-f182a2d8735c\\report.json",
+      "sha256": "1b4f2bf3cee2c9a1d809f5c963042e881a750fa473da68e6cdf884d442845889"
+    }
+  ],
+  "package": {
+    "sourceCommit": "6f1708f11f79",
+    "inventorySha256": "2965b4a1459c8ba55bac60d4033fda11654bd60367c955d0603d01960cc14f91",
+    "packaged": "D:\\cm-agent-godot-0912\\desktop\\build\\releases\\6f1708f11f79-dfb27b00-755c-4522-9fb7-f73623537c27\\output\\win-unpacked"
+  },
+  "worldId": "world-ff3a1a4c8a75",
+  "sessionId": "a64b6340-e1e1-4558-b38d-4b3158405850",
+  "jobId": "gjob-e9bb7e389fbf5053a1f1e9c484513ab8f9b1c4437705665705604dfbcfa92d68",
+  "buildId": "gbd-d7f0e94877c17eb764d05d8bb163ed433311a6d143e057ae0714770cf3e128e7",
+  "candidateId": "gcan-527782e99ecf1ebc7c2bf4692698d61bd26ccf3c322f86b6150cfddde5dc1525",
+  "sourceRevision": 4,
+  "manifestHash": "407a1225a3a95c3202f6d61a2925f132f3839e49bb08098ed379ed86d632f7a9",
+  "inputPath": "ordinary-continue-creation",
+  "originalGoal": "把这扇门改成红色，其他东西保持原样。",
+  "actualContinuation": "继续完成被中断的创作，保留已保存的改动。",
+  "model": {
+    "id": "deepseek-v4.1-flash-expires-on-0910",
+    "thinking": "max",
+    "calls": {
+      "observed": 7,
+      "pending": 0,
+      "reported": 7
+    },
+    "usage": {
+      "cacheReadTokens": 742144,
+      "inputTokens": 53470,
+      "outputTokens": 7822,
+      "reasoningTokens": 5598,
+      "totalTokens": 803436
+    },
+    "wallTimeMs": 243587
+  },
+  "permissions": [
+    {
+      "tool": "plugin_craftmine_world_godot_project_patch",
+      "requestId": "18f98d36-9b38-4529-a30a-02919e53d35e",
+      "decision": "allow-once",
+      "receipt": "resolved"
+    },
+    {
+      "tool": "plugin_craftmine_world_godot_build_start",
+      "requestId": "191b254f-67ae-4add-9745-e2b79456eae5",
+      "decision": "allow-once",
+      "receipt": "resolved"
+    }
+  ],
+  "clarifications": 0,
+  "sourceEditsByHarness": 0,
+  "adoptionModelCalls": 0,
+  "errors": {
+    "driver": null,
+    "adoption": null,
+    "pageErrors": [],
+    "shutdownFailures": [],
+    "toolErrorCount": "not derived from saved conversation; current check passed"
+  },
+  "visual": {
+    "file": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\adoption-1dd8e9ab-c5cd-49fd-a9ed-f182a2d8735c\\reopened.png",
+    "review": "Visible red close-up door and blue-door target label; chest and token preservation established by runtime observation, not screenshot"
+  },
+  "limitations": [
+    "Model independently selected generic godot_project_patch; this run does not directly exercise creation_operation color-only placement helper.",
+    "Input is ordinary continuation of original same-session interrupted recolor goal, not a new standalone submission of that sentence.",
+    "Prior 2ae RUN_FAILED report remains unchanged and is not reclassified by this success.",
+    "Formal application requirementStatus is unsupported; preservation success comes from explicit after/cold observation comparisons, not a frozen requirement verdict."
+  ],
+  "reviewScriptCorrection": "Initial offline comparison used mismatched path separator literals; rerun compares path.resolve. No client rerun or source mutation."
+}

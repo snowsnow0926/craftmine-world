@@ -1,0 +1,2 @@
+# Preserve raw engine logs, measured JSON and package bytes exactly.
+* -text whitespace=-blank-at-eol,cr-at-eol

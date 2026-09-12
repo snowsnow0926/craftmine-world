@@ -18,6 +18,8 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
+  samplePerformance:{kind:'function',owner:'GU6',hostMethod:'godotPerformance',provides:'current host-bound renderer process working set; unavailable fields remain unknown',requiredFor:['godot_performance_observe']},
+  sampleEnginePerformance:{kind:'function',owner:'GU6',hostMethod:'godotEnginePerformance',optional:true,provides:'opt-in source/PCK-pinned Godot Performance monitors through the versioned engine bridge',requiredFor:['godot_performance_observe engine metrics']},
   captureView:{kind:'function',owner:'R2',hostMethod:'godotViewCapture',provides:'one real bound game-view PNG for a declared image-capable session; never desktop capture',requiredFor:['godot_view_capture']},
   sourceLibrary:{kind:'function',owner:'S3',hostMethod:'asset.search+asset.read+asset.bodyPath',provides:'modern source ZIP discovery and host-bound proposals; player installation uses package.installSource',requiredFor:['godot_source_library']},
   executorCreationCompletion:{kind:'function',owner:'CN4',hostMethod:null,optional:true,provides:'same-job recorded application state; a diagnostic receipt never grants application authority',requiredFor:['godot_build_read']},

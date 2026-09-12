@@ -1,0 +1,183 @@
+{
+  "passed": true,
+  "binary": "D:/cm-agent-godot-0912/desktop/build/releases/a9b4c0e299c7-f362dff8-51bc-4b62-93e0-dc3588619234/output/win-unpacked/resources/bin/craftmine-core.exe",
+  "coreSha256": "2363c06d8dc715a7f5551be2fe602ea5239c4a4a1a23ea7743512e6dcd93e71d",
+  "originalResourceHash": "9fb03c89b3d8c889ddead96256c00d159b30dbe920ad6185edaa7c79120e1dcc",
+  "first": {
+    "status": "source-saved-check-blocked",
+    "applied": false,
+    "worldId": "a",
+    "archiveSha256": "694785bd02c4cecb22e599d4d7839b4957d750194b30b866b5b6501669ce2fc7",
+    "instanceIds": [
+      "ins-a8ad4fb1c751b04f03bddbe0"
+    ],
+    "source": {
+      "assetLockHash": "b473e2ab74fb2938ea7c5de0852dcc9069722eba460d49ef5c09996c79aefba1",
+      "baseBuild": "base-a",
+      "branchId": "main",
+      "commitOid": "9c91b688ec8237733da4518fc825bace60f580d3",
+      "currentTaskId": "work-3898bd7aadf61a143d6bc8ef590d8519aff460d9270824b83152022f90029744",
+      "fileCount": 7,
+      "lastWriter": {
+        "baseBuild": "base-a",
+        "projectId": "decl-a",
+        "sessionId": "decl-a",
+        "taskId": "work-3898bd7aadf61a143d6bc8ef590d8519aff460d9270824b83152022f90029744",
+        "turnId": "one"
+      },
+      "manifestHash": "22237ffbdc309842d2cedb537ea1c20a5b1d9a4ad18f5c0bff19d34d23955149",
+      "revision": 1
+    },
+    "job": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "base-a",
+      "baseId": "first-person",
+      "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+      "buildId": "gbd-18c2824f3eda98bd5a3be5b1282b3154dc837ddfdb088fda6f7e3c48fa487380",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "jobId": "gjob-a5ca73ace561c491a6d979f6aaca1011a4d4936f182abd76c27e1df205c56acc",
+      "kind": "check",
+      "manifestHash": "22237ffbdc309842d2cedb537ea1c20a5b1d9a4ad18f5c0bff19d34d23955149",
+      "materialized": {
+        "bytes": 16502,
+        "files": 10
+      },
+      "renderer": "gl_compatibility",
+      "replayed": false,
+      "sourceRevision": 1,
+      "status": "blocked",
+      "target": "web",
+      "worldId": "a"
+    }
+  },
+  "modified": {
+    "assetLockHash": "b473e2ab74fb2938ea7c5de0852dcc9069722eba460d49ef5c09996c79aefba1",
+    "baseBuild": "base-a",
+    "branchId": "main",
+    "commitOid": "80a4f485bd6ca35de533d3ea0b51607af54bb87d",
+    "currentTaskId": "work-3898bd7aadf61a143d6bc8ef590d8519aff460d9270824b83152022f90029744",
+    "fileCount": 7,
+    "lastWriter": {
+      "baseBuild": "base-a",
+      "projectId": "decl-a",
+      "sessionId": "decl-a",
+      "taskId": "work-3898bd7aadf61a143d6bc8ef590d8519aff460d9270824b83152022f90029744",
+      "turnId": "one"
+    },
+    "manifestHash": "a18328e5b3c56f9db5dd7cd0f4d846022df5d3fded8f5d737266ebf890aceab4",
+    "revision": 2
+  },
+  "exported": {
+    "archiveSha256": "821500bb4d6c3abc5f08666197690608d04b9befe0d154900ac18e6dc9e50bca",
+    "parameterDeclaration": {
+      "status": "source-declared",
+      "parameters": {
+        "label": {
+          "description": "State label; not a visible name guarantee",
+          "maxLength": 80,
+          "type": "string"
+        },
+        "percent": {
+          "description": "Scale percentage declared by source",
+          "maximum": 800,
+          "minimum": 25,
+          "type": "integer"
+        }
+      },
+      "resourceRef": {
+        "assetId": "declared-module",
+        "version": 1,
+        "contentHash": "9fb03c89b3d8c889ddead96256c00d159b30dbe920ad6185edaa7c79120e1dcc"
+      },
+      "instanceId": "ins-a8ad4fb1c751b04f03bddbe0",
+      "sourceBinding": {
+        "worldId": "a",
+        "mainScene": "world.tscn",
+        "nodePath": "ins-a8ad4fb1c751b04f03bddbe0-e0",
+        "entityId": "ins-a8ad4fb1c751b04f03bddbe0-e0",
+        "resourcePath": "addons/declared-module/module.tscn"
+      },
+      "note": "Original CP0 parameter declarations match the installed source; no setter, permission or runtime behavior is inferred."
+    }
+  },
+  "second": {
+    "status": "source-saved-check-blocked",
+    "applied": false,
+    "worldId": "b",
+    "archiveSha256": "821500bb4d6c3abc5f08666197690608d04b9befe0d154900ac18e6dc9e50bca",
+    "instanceIds": [
+      "ins-ba732e0d7cef55d00b02208e"
+    ],
+    "source": {
+      "assetLockHash": "eb6bd27c5b545c803957cb6337ff386f3a09f398b9d1fa61de740a033025236d",
+      "baseBuild": "base-b",
+      "branchId": "main",
+      "commitOid": "af675f7a6f56ccf7982b587aecd4395ddddcbfb6",
+      "currentTaskId": "work-ac72b1169cac1bb953da69301b19fc66c95affb3cb18353c34d5ca4c2785bf4f",
+      "fileCount": 8,
+      "lastWriter": {
+        "baseBuild": "base-b",
+        "projectId": "decl-b",
+        "sessionId": "decl-b",
+        "taskId": "work-ac72b1169cac1bb953da69301b19fc66c95affb3cb18353c34d5ca4c2785bf4f",
+        "turnId": "one"
+      },
+      "manifestHash": "676d033c1ca2068bb24c217dd768d1134f0e40afb361fa3ba0b1eb181618af6c",
+      "revision": 1
+    },
+    "job": {
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "baseBuild": "base-b",
+      "baseId": "first-person",
+      "blockedReason": "GODOT_EXECUTION_UNAVAILABLE",
+      "buildId": "gbd-ab1b934f8bd2298693d25347b4d1014ac47ca3c2a7a19ab1d94d6f99345310e0",
+      "engineVersion": "4.7.2-stable",
+      "executionAvailable": false,
+      "jobId": "gjob-f4d5ad7c1ff52129d16c9b8313b3b987baebd46ef19b42483ea744d9c6a5d949",
+      "kind": "check",
+      "manifestHash": "676d033c1ca2068bb24c217dd768d1134f0e40afb361fa3ba0b1eb181618af6c",
+      "materialized": {
+        "bytes": 17926,
+        "files": 11
+      },
+      "renderer": "gl_compatibility",
+      "replayed": false,
+      "sourceRevision": 1,
+      "status": "blocked",
+      "target": "web",
+      "worldId": "b"
+    }
+  },
+  "secondDeclaration": {
+    "status": "source-declared",
+    "parameters": {
+      "label": {
+        "description": "State label; not a visible name guarantee",
+        "maxLength": 80,
+        "type": "string"
+      },
+      "percent": {
+        "description": "Scale percentage declared by source",
+        "maximum": 800,
+        "minimum": 25,
+        "type": "integer"
+      }
+    },
+    "resourceRef": {
+      "assetId": "core-exported",
+      "version": 1,
+      "contentHash": "dd757d6190130b36c25a94686c9a3b8a3faa02839346545defb79451ffbfd5bb"
+    },
+    "instanceId": "ins-ba732e0d7cef55d00b02208e",
+    "sourceBinding": {
+      "worldId": "b",
+      "mainScene": "world.tscn",
+      "nodePath": "ins-ba732e0d7cef55d00b02208e-e0",
+      "entityId": "ins-ba732e0d7cef55d00b02208e-e0",
+      "resourcePath": "addons/core-exported/_craftmine_component.tscn"
+    },
+    "note": "Original CP0 parameter declarations match the installed source; no setter, permission or runtime behavior is inferred."
+  },
+  "scope": "Real Core source transactions; checks blocked without executor; no engine, model, runtime or player acceptance"
+}

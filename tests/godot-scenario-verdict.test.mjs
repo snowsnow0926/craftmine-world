@@ -1,0 +1,18 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {adjudicateGodotScenario,scenarioRequirementsHash} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-scenario-verdict.ts';
+const identity={worldId:'world',buildId:'build',instanceId:'instance'};
+const plan={format:'craftmine.godot-scenario/1',fixtureRef:'host-fixture-v1',steps:[{op:'walk',args:{forward:1,right:0,frames:60}}],assertions:[{id:'passed-door',step:0,path:['player','z'],range:[-4,-2]},{id:'door-open',step:0,path:['door','open'],equals:true}]};
+function fixture(){const hash=scenarioRequirementsHash(plan);return {format:'craftmine.godot-scenario-transcript/1',identity,fixtureRef:plan.fixtureRef,requirementsHash:hash,steps:[{action:plan.steps[0],identity,requirementsHash:hash,physicsTick:61,ok:true,observation:{player:{z:-3},door:{open:true}}}]};}
+test('all frozen assertions and exact action transcript are necessary',()=>{assert.equal(adjudicateGodotScenario(plan,identity,fixture()).status,'passed');});
+test('self-reported open cannot compensate for blocked movement',()=>{const t=fixture();t.steps[0].observation.player.z=0.55;const v=adjudicateGodotScenario(plan,identity,t);assert.equal(v.status,'failed');assert.equal(v.assertions[1].status,'passed');});
+test('missing, null, object, NaN and wrong-typed fields never pass',()=>{for(const value of [undefined,null,{},NaN,'-3']){const t=fixture();t.steps[0].observation.player.z=value;assert.equal(adjudicateGodotScenario(plan,identity,t).status,'inconclusive');}});
+test('world, build, instance and frozen requirements mismatch are inconclusive',()=>{for(const key of Object.keys(identity)){const t=fixture();t.identity={...identity,[key]:'other'};assert.equal(adjudicateGodotScenario(plan,identity,t).status,'inconclusive');}const t=fixture();t.requirementsHash='0'.repeat(64);assert.equal(adjudicateGodotScenario(plan,identity,t).status,'inconclusive');});
+test('partial, extra, replaced actions, missing acknowledgment and wrong step identity never pass',()=>{for(const mutate of [t=>t.steps=[],t=>t.steps.push(t.steps[0]),t=>t.steps[0].action={op:'wait',args:{frames:60}},t=>delete t.steps[0].ok,t=>t.steps[0].identity={...identity,instanceId:'restarted'},t=>t.steps[0].requirementsHash='other',t=>t.steps[0].physicsTick=-1]){const t=fixture();mutate(t);assert.equal(adjudicateGodotScenario(plan,identity,t).status,'inconclusive');}});
+test('failed real action is retained',()=>{const t=fixture();t.steps[0].ok=false;assert.equal(adjudicateGodotScenario(plan,identity,t).status,'failed');});
+test('replayed or backward physics samples do not complete a scenario',()=>{
+ const p=structuredClone(plan);p.steps.push({op:'wait',args:{frames:2}});
+ for(const tick of [61,60]){const t=fixture();t.requirementsHash=scenarioRequirementsHash(p);t.steps[0].requirementsHash=t.requirementsHash;t.steps.push({...t.steps[0],action:p.steps[1],physicsTick:tick});assert.equal(adjudicateGodotScenario(p,identity,t).status,'inconclusive');}
+});
+test('plans reject arbitrary code, setup mutations, unsafe paths and weakened duplicate IDs',()=>{for(const mutate of [p=>p.steps[0]={op:'teleport',args:{z:-3}},p=>p.assertions=[],p=>p.assertions[0].path=['__proto__','z'],p=>p.assertions[1].id=p.assertions[0].id,p=>p.steps[0].args.script='return true',p=>p.assertions[0].range=[NaN,3]]){const p=structuredClone(plan);mutate(p);assert.throws(()=>scenarioRequirementsHash(p));}});
+test('changing frozen requirements changes hash; returned data remains untrusted',()=>{const p=structuredClone(plan);p.assertions[0].range=[-5,-1];assert.notEqual(scenarioRequirementsHash(p),scenarioRequirementsHash(plan));assert.equal(adjudicateGodotScenario(plan,identity,fixture()).trust,'untrusted-project-data');});

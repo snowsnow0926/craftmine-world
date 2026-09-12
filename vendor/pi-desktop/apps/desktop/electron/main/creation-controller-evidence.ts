@@ -1,0 +1,28 @@
+export const CREATION_CONTROLLER_PROFILE='creation-fixed-controller/1';
+const own=(v:any,k:string)=>v!==null&&typeof v==='object'&&Object.prototype.hasOwnProperty.call(v,k);
+const exact=(v:any,keys:string[])=>v!==null&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===keys.length&&keys.every(k=>own(v,k));
+const id=(v:any)=>typeof v==='string'&&/^-?[1-9][0-9]{0,19}$/.test(v);
+const finite=(v:any)=>typeof v==='number'&&Number.isFinite(v);
+const tick=(v:any)=>Number.isSafeInteger(v)&&v>=0;
+const vector=(v:any,expected:number[])=>Array.isArray(v)&&v.length===expected.length&&v.every((n,i)=>finite(n)&&Math.abs(n-expected[i])<=.00001);
+const SAMPLE_KEYS=['format','profile','status','reason','physicsTick','playerPath','playerId','playerClass','playerScriptId','fixedPlayerScriptId','playerScriptPath','rootPlayerId','rigPath','rigId','rigScriptId','fixedRigScriptId','rigScriptPath','playerRigId','rigParentId','pivotId','pivotParentId','cameraId','cameraParentId','rigCameraId','rigPivotId','activeCameraId','parameters','physicsRate','body','shape','cameraTransform'];
+export function validControllerEvidence(v:any):boolean{
+ if(!exact(v,SAMPLE_KEYS)||v.format!=='craftmine.creation-controller-evidence/1'||v.profile!==CREATION_CONTROLLER_PROFILE||v.status!=='supported'||v.reason!==''||!tick(v.physicsTick)||v.playerPath!=='Player'||v.playerClass!=='CharacterBody3D'||v.playerScriptPath!=='res://scripts/reused/player_controller.gd'||v.rigPath!=='Player/CameraRig'||v.rigScriptPath!=='res://scripts/reused/camera_rig.gd')return false;
+ const ids=['playerId','playerScriptId','fixedPlayerScriptId','rootPlayerId','rigId','rigScriptId','fixedRigScriptId','playerRigId','rigParentId','pivotId','pivotParentId','cameraId','cameraParentId','rigCameraId','rigPivotId','activeCameraId'];
+ if(!ids.every(k=>id(v[k])))return false;
+ for(const [a,b]of [['playerScriptId','fixedPlayerScriptId'],['rigScriptId','fixedRigScriptId'],['playerId','rootPlayerId'],['rigId','playerRigId'],['playerId','rigParentId'],['rigId','pivotParentId'],['pivotId','cameraParentId'],['cameraId','rigCameraId'],['pivotId','rigPivotId'],['cameraId','activeCameraId']])if(v[a]!==v[b])return false;
+ if(new Set([v.playerId,v.rigId,v.pivotId,v.cameraId]).size!==4||v.physicsRate!==60||!vector(v.parameters,[4.5,1.7,4.2,14,3,1,30,9.8]))return false;
+ const b=v.body,s=v.shape,c=v.cameraTransform;
+ if(!exact(b,['layer','mask','scale','rotation','globalScale','physicsProcessing','processMode'])||b.layer!==8||b.mask!==3||b.physicsProcessing!==true||b.processMode!==0||!vector(b.scale,[1,1,1])||!vector(b.globalScale,[1,1,1])||!vector(b.rotation,[0,0,0]))return false;
+ if(!exact(s,['id','resourceId','bodyResourceId','kind','radius','height','disabled','ownerDisabled','ownerCount','shapeCount','ownerNodeId','position','rotation','scale'])||!['id','resourceId','bodyResourceId','ownerNodeId'].every(k=>id(s[k]))||s.id!==s.ownerNodeId||s.resourceId!==s.bodyResourceId||s.kind!=='CapsuleShape3D'||!finite(s.radius)||Math.abs(s.radius-.3)>.00001||!finite(s.height)||Math.abs(s.height-1.8)>.00001||s.disabled!==false||s.ownerDisabled!==false||s.ownerCount!==1||s.shapeCount!==1||!vector(s.position,[0,0,0])||!vector(s.rotation,[0,0,0])||!vector(s.scale,[1,1,1]))return false;
+ if(!exact(c,['rigPosition','rigRotation','rigScale','pivotPosition','pivotRotation','pivotScale','cameraPosition','cameraRotation','cameraScale','pitchLimit','yaw','pitch'])||!finite(c.yaw)||Math.abs(c.yaw)>Math.PI+.00001||!finite(c.pitch)||Math.abs(c.pitch)>Math.PI/2||c.pitchLimit!==89)return false;
+ return vector(c.rigPosition,[0,.65,0])&&vector(c.rigRotation,[0,c.yaw,0])&&vector(c.rigScale,[1,1,1])&&vector(c.pivotPosition,[0,0,0])&&vector(c.pivotRotation,[c.pitch,0,0])&&vector(c.pivotScale,[1,1,1])&&vector(c.cameraPosition,[0,0,0])&&vector(c.cameraRotation,[0,0,0])&&vector(c.cameraScale,[1,1,1]);
+}
+export function sameControllerBinding(a:any,b:any):boolean{return validControllerEvidence(a)&&validControllerEvidence(b)&&['playerId','playerScriptId','rigId','rigScriptId','pivotId','cameraId'].every(k=>a[k]===b[k])&&a.shape.id===b.shape.id&&a.shape.resourceId===b.shape.resourceId;}
+export function validControllerWalk(w:any,before:any,after:any,frames=240):boolean{
+ if(!exact(w,['format','profile','playerId','cameraId','shapeId','requestedFrames','completedFrames','checkedTicks','bindingTrace','startedTick','finishedTick','before','after'])||w.format!=='craftmine.creation-controller-walk/1'||w.profile!==CREATION_CONTROLLER_PROFILE||w.requestedFrames!==frames||w.completedFrames!==frames||!tick(w.startedTick)||!tick(w.finishedTick)||!Array.isArray(w.checkedTicks)||(w.checkedTicks.length<frames+1||w.checkedTicks.length>frames+4)||!w.checkedTicks.every((t:any,i:number)=>tick(t)&&(i===0||t===w.checkedTicks[i-1]+1)))return false;
+ if(!sameControllerBinding(before,w.before)||!sameControllerBinding(w.before,w.after)||!sameControllerBinding(w.after,after))return false;
+ const ids=[before.playerId,before.playerScriptId,before.rigId,before.rigScriptId,before.cameraId,before.activeCameraId,before.shape.id,before.shape.resourceId];
+ if(!Array.isArray(w.bindingTrace)||w.bindingTrace.length!==w.checkedTicks.length||!w.bindingTrace.every((row:any,i:number)=>Array.isArray(row)&&row.length===9&&row[0]===w.checkedTicks[i]&&ids.every((value,j)=>row[j+1]===value)))return false;
+ return w.checkedTicks[0]===w.startedTick&&w.checkedTicks.at(-1)===w.finishedTick&&w.before.physicsTick===w.startedTick&&w.after.physicsTick===w.finishedTick&&w.startedTick>=before.physicsTick&&w.finishedTick<=after.physicsTick&&w.playerId===before.playerId&&w.cameraId===before.cameraId&&w.shapeId===before.shape.id;
+}

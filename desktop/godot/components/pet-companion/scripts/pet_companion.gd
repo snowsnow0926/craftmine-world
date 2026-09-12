@@ -96,12 +96,21 @@ func _physics_process(delta: float) -> void:
 
 func _apply_appearance() -> void:
 	_visual.transform = Transform3D.IDENTITY
-	var cylinder := CylinderShape3D.new()
 	var small: bool = _settings.appearanceKey == "pomeranian-white"
-	cylinder.radius = pomeranian_collision_radius if small else collision_radius
-	cylinder.height = pomeranian_collision_height if small else collision_height
-	_shape.shape = cylinder # Every instance owns its own mutable collision shape.
-	_shape.position = Vector3(0, cylinder.height / 2.0, 0)
+	if small:
+		var cylinder := CylinderShape3D.new()
+		cylinder.radius = pomeranian_collision_radius
+		cylinder.height = pomeranian_collision_height
+		_shape.shape = cylinder
+		_shape.position = Vector3(0, cylinder.height / 2.0, 0)
+	else:
+		# Dog visual motionEnvelope: X radius .737791133, Y .758157913,
+		# Z extent 1.398m. Box follows local -Z and fully covers rigid-part
+		# animation; the extra 2mm per axis is a fixed conservative margin.
+		var box := BoxShape3D.new()
+		box.size = Vector3(1.479582266, 0.762157913, 1.402)
+		_shape.shape = box
+		_shape.position = Vector3(0, box.size.y / 2.0, 0)
 	_animation = null
 	for child in _visual.get_children():
 		_visual.remove_child(child)
@@ -231,7 +240,7 @@ func restore(data: Dictionary) -> String:
 	return ""
 
 func validate_restored_state() -> String:
-	if not is_inside_tree() or not configuration_error.is_empty() or not is_instance_valid(_shape) or not _shape.shape is CylinderShape3D:
+	if not is_inside_tree() or not configuration_error.is_empty() or not is_instance_valid(_shape) or not (_shape.shape is CylinderShape3D or _shape.shape is BoxShape3D):
 		return "PET_RESTORE_PHYSICS_UNAVAILABLE"
 	# Called only after the registry restores every component and the player.
 	force_update_transform()
@@ -244,10 +253,12 @@ func validate_restored_state() -> String:
 			restored_bodies.append(peer)
 	if restored_bodies.size() > 128 or not _upright_unit(_shape.global_transform):
 		return "PET_RESTORE_TRANSFORM_UNSUPPORTED"
-	var actual := _shape.shape as CylinderShape3D
-	var inset := CylinderShape3D.new()
-	inset.radius = actual.radius - 0.002
-	inset.height = actual.height - 0.004
+	var actual := _shape.shape
+	var inset: Shape3D
+	if actual is BoxShape3D:
+		var box := BoxShape3D.new();box.size = actual.size - Vector3(0.004, 0.004, 0.004);inset = box
+	else:
+		var cylinder := CylinderShape3D.new();cylinder.radius = actual.radius - 0.002;cylinder.height = actual.height - 0.004;inset = cylinder
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = inset
 	query.transform = _shape.global_transform
@@ -271,7 +282,7 @@ func _upright_unit(transform_value: Transform3D) -> bool:
 	var basis := transform_value.basis
 	return basis.is_equal_approx(basis.orthonormalized()) and basis.y.distance_to(Vector3.UP) < 0.00001 and basis.determinant() > 0.0
 
-func _restored_body_overlap(own: CylinderShape3D, own_transform: Transform3D, body: PhysicsBody3D) -> String:
+func _restored_body_overlap(own: Shape3D, own_transform: Transform3D, body: PhysicsBody3D) -> String:
 	for owner_id in body.get_shape_owners():
 		if body.is_shape_owner_disabled(owner_id):
 			continue
@@ -284,20 +295,35 @@ func _restored_body_overlap(own: CylinderShape3D, own_transform: Transform3D, bo
 			var a := own_transform.origin
 			var b := shape_transform.origin
 			var horizontal := Vector2(a.x - b.x, a.z - b.z).length()
-			if shape is CylinderShape3D:
-				if horizontal < own.radius + shape.radius and absf(a.y - b.y) < (own.height + shape.height) / 2.0:
+			var own_radius := _shape_horizontal_radius(own)
+			var own_height := _shape_height(own)
+			var peer_radius := _shape_horizontal_radius(shape)
+			var peer_height := _shape_height(shape)
+			if own_radius >= 0.0 and peer_radius >= 0.0 and horizontal < own_radius + peer_radius and absf(a.y - b.y) < (own_height + peer_height) / 2.0:
 					return "PET_RESTORE_OVERLAP"
-			elif shape is CapsuleShape3D:
+			elif shape is CapsuleShape3D and own_radius >= 0.0:
 				# Exact distance from the vertical capsule segment to a solid
 				# vertical cylinder, compared with the capsule's real sphere radius.
 				var segment_half := maxf(0.0, shape.height / 2.0 - shape.radius)
-				var vertical := maxf(0.0, maxf((a.y - own.height / 2.0) - (b.y + segment_half), (b.y - segment_half) - (a.y + own.height / 2.0)))
-				var radial := maxf(0.0, horizontal - own.radius)
+				var own_height_for_capsule := _shape_height(own)
+				var vertical := maxf(0.0, maxf((a.y - own_height_for_capsule / 2.0) - (b.y + segment_half), (b.y - segment_half) - (a.y + own_height_for_capsule / 2.0)))
+				var radial := maxf(0.0, horizontal - own_radius)
 				if radial * radial + vertical * vertical < shape.radius * shape.radius:
 					return "PET_RESTORE_OVERLAP"
 			else:
 				return "PET_RESTORE_SHAPE_UNSUPPORTED"
 	return ""
+
+func _shape_horizontal_radius(shape: Shape3D) -> float:
+	if shape is CylinderShape3D: return shape.radius
+	if shape is BoxShape3D: return Vector2(shape.size.x, shape.size.z).length() / 2.0
+	if shape is CapsuleShape3D: return shape.radius
+	return -1.0
+
+func _shape_height(shape: Shape3D) -> float:
+	if shape is CylinderShape3D or shape is CapsuleShape3D: return shape.height
+	if shape is BoxShape3D: return shape.size.y
+	return -1.0
 
 func _valid_motion_configuration() -> bool:
 	return _finite(move_speed, 0.1, 12) and _finite(acceleration, 0.1, 60) and _finite(stop_distance, 1.1, 8) and _finite(interaction_distance, 0.1, 3.5) and _finite(collision_radius, 0.05, 2) and _finite(collision_height, 0.05, 4) and _finite(pomeranian_collision_radius, 0.05, 2) and _finite(pomeranian_collision_height, 0.05, 4)

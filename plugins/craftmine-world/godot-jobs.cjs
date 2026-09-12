@@ -85,7 +85,80 @@ async function usageSummary(core,{context,worldId}){
     totals:{executions:totals.executions??items.length,wallClockMillis:totals.wallClockMillis??null,
       sourceBytes:totals.sourceBytes??null,assetBytes:totals.assetBytes??null,hostBytes:totals.hostBytes??null,
       artifactBytes:totals.artifactBytes??null,artifactCount:totals.artifactCount??null},
+    limits:usage?.limits??null,unknown:Array.isArray(usage?.unknown)?usage.unknown:null,
+    limitsScope:'last-recorded-job-usage',
     note:'Durable job usage only. Model token/cache accounting is separate and is never merged into these numbers.'};
+}
+
+const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
+const text=value=>typeof value==='string'&&value.length>0?value:null;
+const number=value=>Number.isSafeInteger(value)&&value>=0?value:null;
+const clone=value=>JSON.parse(JSON.stringify(value));
+const gap=(reason,error)=>({available:false,reason,...(error?{errorCode:error.errorCode??error.code??null}:{})});
+const sourceIdentity=value=>({revision:number(value?.sourceRevision),manifestHash:text(value?.manifestHash),branchId:text(value?.branchId??value?.content?.branchId)});
+function sourceRelation(a,b){
+  if(a.revision===null||b.revision===null||a.manifestHash===null||b.manifestHash===null)return 'unknown';
+  if(a.branchId!==null&&b.branchId!==null&&a.branchId!==b.branchId)return 'different-branch';
+  return a.revision===b.revision&&a.manifestHash===b.manifestHash?'same-source':'different-source';
+}
+
+/** Rebuild facts after lost model context, exclusively from existing core rows.
+ * Latest is explicitly session-filtered by godotBuild.latest's durable JOIN;
+ * it is never a world-latest fallback or an invented current-turn failure. */
+async function readRecoveryFacts(core,{context,worldId,project,runtime}){
+  if(!core||typeof core.call!=='function')throw Error('CORE_REQUIRED');
+  const result={format:'craftmine.godot-recovery-facts/1',provenance:'core-durable-records',
+    snapshotConsistency:'independent-core-reads',currentTask:gap('TASK_CONTEXT_NOT_READ'),budget:gap('TASK_BUDGET_UNKNOWN'),
+    latestJob:gap('LATEST_SESSION_JOB_NOT_READ'),
+    application:{available:false,reason:'PENDING_APPLICATION_NOT_DISCOVERABLE_FROM_CORE_JOB',
+      formalBuildId:runtime?.available?text(runtime.buildId):null,formalSource:runtime?.available?sourceIdentity(runtime):null},
+    coverage:{jobSelection:'latest-in-verified-session',olderFailureHistory:'not-scanned',applicationQueue:'unknown'},
+    limitations:['No model-written summaries or new persistence ledger are used.',
+      'A previous task in the same session is historical evidence; its failure is not charged to the current task.',
+      'A passed check or matching source does not prove application, gameplay or the current live instance.']};
+  let task;
+  try{
+    task=await core.call('task.context',{context});
+    if(!record(task)||task.world?.id!==worldId||!record(task.binding)||!text(task.binding.taskId)||
+      !['projectId','sessionId','turnId'].every(key=>text(context?.[key])&&task.binding[key]===context[key]))throw Object.assign(Error('RECOVERY_TASK_IDENTITY_MISMATCH'),{errorCode:'RECOVERY_TASK_IDENTITY_MISMATCH'});
+    result.currentTask={available:true,binding:Object.fromEntries(['projectId','sessionId','turnId','taskId','baseBuild'].map(key=>[key,text(task.binding[key])])),
+      generation:number(task.generation),status:text(task.status),
+      draft:{revision:number(task.draft?.revision),hash:text(task.draft?.hash),scope:'task-draft-not-godot-source'},recovery:text(task.recovery)};
+    // ownerTaskId may legitimately be an older task after resume. Preserve the
+    // entire core budget, nulls and unknown counters; add no limits or stops.
+    if(record(task.budget))result.budget={available:true,source:'task.context.budget',value:clone(task.budget)};
+  }catch(error){
+    result.currentTask=gap(error?.errorCode==='RECOVERY_TASK_IDENTITY_MISMATCH'?'RECOVERY_TASK_IDENTITY_MISMATCH':'TASK_CONTEXT_UNAVAILABLE',error);
+    result.latestJob=gap('VERIFIED_SESSION_CONTEXT_REQUIRED');return result;
+  }
+  try{
+    const latest=await core.call('godotBuild.latest',{worldId,sessionId:task.binding.sessionId});
+    if(latest===null){result.latestJob={available:true,found:false,scope:'verified-session',selection:'core-session-latest'};return result;}
+    if(!record(latest)||latest.worldId!==worldId||latest.sessionId!==undefined&&latest.sessionId!==task.binding.sessionId||!text(latest.jobId)||!text(latest.buildId))throw Object.assign(Error('RECOVERY_JOB_IDENTITY_MISMATCH'),{errorCode:'RECOVERY_JOB_IDENTITY_MISMATCH'});
+    const currentTaskMatch=text(latest.taskId)?latest.taskId===task.binding.taskId:null;
+    const jobSource=sourceIdentity(latest),projectSource=project?.available?sourceIdentity({...project,sourceRevision:project.revision}):{revision:null,manifestHash:null,branchId:null};
+    const diagnostics=require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(latest);
+    result.latestJob={available:true,found:true,selection:'core-session-latest',
+      scope:currentTaskMatch===true?'current-task':currentTaskMatch===false?'same-session-other-task':'task-identity-unknown',currentTaskMatch,
+      jobId:latest.jobId,worldId,taskId:text(latest.taskId),buildId:latest.buildId,kind:text(latest.kind),status:diagnostics.reportedStatus,
+      stage:text(latest.stage),source:jobSource,sourceStale:typeof latest.sourceStale==='boolean'?latest.sourceStale:null,
+      outputHash:text(latest.outputHash),checkRequirementsHash:text(latest.checkRequirementsHash),originJobId:text(latest.originJobId),candidateId:text(latest.candidateId),
+      createdAt:number(latest.createdAt),updatedAt:number(latest.updatedAt),
+      sourceComparison:{job:jobSource,projectSnapshot:projectSource,relation:sourceRelation(jobSource,projectSource)},diagnostics,
+      candidate:gap(text(latest.candidateId)?'CANDIDATE_NOT_READ':'NO_CANDIDATE_RECORDED'),
+      formalBuildMatch:runtime?.available&&text(runtime.buildId)?latest.buildId===runtime.buildId:null};
+    if(text(latest.candidateId)){
+      try{
+        const response=await core.call('godotCandidate.read',{context,worldId,candidateId:latest.candidateId}),candidate=response?.candidate;
+        if(!record(candidate)||candidate.worldId!==worldId||candidate.candidateId!==latest.candidateId||candidate.buildId!==latest.buildId||candidate.checkJobId!==latest.jobId||
+          (text(latest.outputHash)&&candidate.checkOutputHash!==latest.outputHash)||
+          ['sourceRevision','manifestHash'].some(key=>latest[key]!=null&&candidate[key]!=null&&latest[key]!==candidate[key]))throw Object.assign(Error('RECOVERY_CANDIDATE_IDENTITY_MISMATCH'),{errorCode:'RECOVERY_CANDIDATE_IDENTITY_MISMATCH'});
+        result.latestJob.candidate={available:true,candidateId:candidate.candidateId,buildId:candidate.buildId,checkJobId:candidate.checkJobId,
+          status:text(candidate.status),source:sourceIdentity(candidate),checkOutputHash:text(candidate.checkOutputHash)};
+      }catch(error){result.latestJob.candidate=gap('CANDIDATE_RECOVERY_UNAVAILABLE',error);}
+    }
+  }catch(error){result.latestJob=gap(error?.errorCode==='RECOVERY_JOB_IDENTITY_MISMATCH'?'RECOVERY_JOB_IDENTITY_MISMATCH':'LATEST_SESSION_JOB_UNAVAILABLE',error);}
+  return result;
 }
 
 // Continue an interrupted, cancelled or failed job. Identity is host-bound; the
@@ -155,4 +228,4 @@ async function resumeDraft(core,{context,worldId,taskId,generation}){
 }
 
 module.exports={JOBS_FORMAT,RECOVERY_FORMAT,MODEL_SAFE_METHODS,TOKEN_GATED_METHODS,RECOVERY_REASONS,
-  explainRecovery,executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft};
+  explainRecovery,executorStatus,usageSummary,continueJob,listRecoverable,resumeDraft,readRecoveryFacts};

@@ -1,0 +1,46 @@
+{
+  "format": "craftmine.performance-product-database-audit/1",
+  "passed": true,
+  "reportPath": "D:/cm-gu7-performance-product-0912/test-results/desktop-native-complete-PWS1PH/report.json",
+  "reportSha256": "00955070ac37fd2422cb1a3aede4de4f2c9a747edcdbd91138d173f10a47321d",
+  "turns": [
+    {
+      "id": "d1987acd-c70e-447c-98d9-e87fce23c17d",
+      "session_id": "bcc83564-a1d6-4088-ba21-e8f369e5c685",
+      "status": "completed",
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    {
+      "id": "6e00e94b-47c1-4476-a5d0-ed3e6fd11cc8",
+      "session_id": "bcc83564-a1d6-4088-ba21-e8f369e5c685",
+      "status": "completed",
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  ],
+  "modelCallCount": 0,
+  "budgetRequestCount": 0,
+  "projects": [
+    {
+      "world_id": "world-d49ea0d8b78c",
+      "revision": 1,
+      "hash": "51e6afdd5d168278f97f0f1d07944d44d9813e8e16de84991175b09ad8801a57"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "gjob-aa96df5875a74612f64def55d7a5caaba6001cf6406445bc5f95d9912133cc05",
+      "kind": "check",
+      "status": "passed",
+      "world_id": "world-d49ea0d8b78c",
+      "source_revision": 1,
+      "build_id": "gbd-57915623d4ce79f8524441bd687f2f8465fb0172b90feb9fa25334cac1010819"
+    }
+  ],
+  "databaseSha256": {
+    "pi.sqlite": "da63a52bdf62b3fc863995d79f497584be3ba97c1de4c55d1d301afbafab6cfc",
+    "plugins/data/craftmine.world/tasks.sqlite": "afb6bb0d931de9af0d0de486f8cb37ee38a3db25d928ba74aed87572d2ebf7a4"
+  },
+  "databaseBytesUnchanged": true
+}

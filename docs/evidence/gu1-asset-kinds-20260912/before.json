@@ -1,0 +1,108 @@
+{
+  "format": "craftmine.asset-kinds-core-trial/1",
+  "binary": "D:/cm-agent-godot-0912/desktop/build/releases/a9b4c0e299c7-f362dff8-51bc-4b62-93e0-dc3588619234/output/win-unpacked/resources/bin/craftmine-core.exe",
+  "binarySha256": "2363c06d8dc715a7f5551be2fe602ea5239c4a4a1a23ea7743512e6dcd93e71d",
+  "modelCalls": 0,
+  "godotExecutions": 0,
+  "imports": [
+    {
+      "requestedKind": "base",
+      "assetId": "kind-base"
+    },
+    {
+      "requestedKind": "world",
+      "assetId": "kind-world"
+    },
+    {
+      "requestedKind": "module",
+      "assetId": "kind-module"
+    },
+    {
+      "requestedKind": "object",
+      "assetId": "kind-object"
+    },
+    {
+      "requestedKind": "scene",
+      "assetId": "kind-scene"
+    },
+    {
+      "requestedKind": "raw",
+      "assetId": "kind-raw"
+    },
+    {
+      "requestedKind": "data",
+      "assetId": "kind-data"
+    },
+    {
+      "requestedKind": "creation",
+      "assetId": "kind-creation"
+    },
+    {
+      "requestedKind": "world-template",
+      "assetId": "kind-world-template"
+    }
+  ],
+  "reads": [],
+  "scope": "Explicit isolated catalog/world setup; real packaged read tool; no installation or player acceptance",
+  "directModule": {
+    "items": [
+      {
+        "assetId": "kind-creation",
+        "bytes": 23409,
+        "contentHash": "636d2d67f275fc5489192380a9e4406a5ad50d9dd836f64df99c6e36ed895a81",
+        "createdAt": 1789169168570,
+        "displayName": "Kind creation",
+        "favorite": false,
+        "fileCount": 1,
+        "kind": "module",
+        "mediaKind": "package",
+        "source": {
+          "author": "Craftmine diagnostic",
+          "license": "Original attribution retained in audited fixture ZIP",
+          "licenseStatus": "unverified",
+          "origin": "local fixture"
+        },
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "tags": [],
+        "version": 1
+      },
+      {
+        "assetId": "kind-module",
+        "bytes": 23409,
+        "contentHash": "636d2d67f275fc5489192380a9e4406a5ad50d9dd836f64df99c6e36ed895a81",
+        "createdAt": 1789169168559,
+        "displayName": "Kind module",
+        "favorite": false,
+        "fileCount": 1,
+        "kind": "module",
+        "mediaKind": "package",
+        "source": {
+          "author": "Craftmine diagnostic",
+          "license": "Original attribution retained in audited fixture ZIP",
+          "licenseStatus": "unverified",
+          "origin": "local fixture"
+        },
+        "state": {
+          "appliedToSource": null,
+          "baseChecked": null,
+          "indexed": true,
+          "previewable": false
+        },
+        "tags": [],
+        "version": 1
+      }
+    ],
+    "method": "asset.search",
+    "nextOffset": null,
+    "scope": "local-library",
+    "total": 2,
+    "truncated": false
+  },
+  "passed": false,
+  "error": "INVALID_ASSET_KIND"
+}

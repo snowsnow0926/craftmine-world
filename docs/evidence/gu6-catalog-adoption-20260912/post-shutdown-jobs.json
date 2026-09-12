@@ -1,0 +1,37 @@
+{
+  "format": "craftmine.catalog-source-post-shutdown-jobs/1",
+  "scope": "Read-only SQLite after both normal client exits; no Core restart or database mutation",
+  "database": "test-results/desktop-native-complete-npLS0V/profile/plugins/data/craftmine.world/tasks.sqlite",
+  "databaseSha256": "0f74a45af174e6bc44d33b489a8b87a82a7e486ce21802a9af0a951975aff197",
+  "worldId": "world-24c16f4ecead",
+  "jobs": [
+    {
+      "id": "gjob-202565fef20736f634f5796c526e680f02194b305362c81d6a0bc2e154584726",
+      "worldId": "world-24c16f4ecead",
+      "buildId": "gbd-f5ba42dfc974ea5a3e548d051b494bef4294336929911d19b0e1da38af0d6f3c",
+      "sourceRevision": 1,
+      "manifestHash": "d851452129eb635cb745252d0f1c7cdd19ccd699d2ba0bdc9a65b25d1428f74e",
+      "kind": "check",
+      "status": "passed"
+    },
+    {
+      "id": "gjob-eda718e5447841dfacf4a6b62994fc7b4c85635db75341239f7f1bd754bc98b6",
+      "worldId": "world-24c16f4ecead",
+      "buildId": "gbd-7548f93e9b786e03a8e64f9013873d8be3e503d05f5398cbd15931ff01deeff9",
+      "sourceRevision": 2,
+      "manifestHash": "609332894d688ece8a3cfc041f3f211a14c0ce2899bf8e89047b09fb8d33a8c6",
+      "kind": "check",
+      "status": "passed"
+    },
+    {
+      "id": "gjob-2596e34886e021f7c153452395d9c8f6563d6d7bc3fec37fc87b54ab38976418",
+      "worldId": "world-24c16f4ecead",
+      "buildId": "gbd-e8acf0f8f048310b9d2d4e1165888eb97f3d9f93a1136b42dbea7574f8e89076",
+      "sourceRevision": 3,
+      "manifestHash": "84db92a813c77f210366c407a5d34a8cd3c6bfa8cb8b5d97a7a06d62b41dfcd2",
+      "kind": "check",
+      "status": "passed"
+    }
+  ],
+  "passed": true
+}

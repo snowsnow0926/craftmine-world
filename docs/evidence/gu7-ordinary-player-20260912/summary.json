@@ -1,0 +1,1052 @@
+{
+  "format": "craftmine.ordinary-player-baseline-evidence/1",
+  "sourceCommit": "d4b15812227723d37538870bb11b9fe5ebc90c31",
+  "model": "deepseek-v4.1-flash-expires-on-0910",
+  "thinking": "max",
+  "mode": "agent",
+  "permission": "inherit",
+  "extraModelLimits": null,
+  "request": "在我前方做一扇可以交互开关的蓝色门，关上时必须挡住人，打开后能走过去。门旁边放一个宝箱，打开给我一枚代币，每个宝箱只能领一次，退出重进也不能重复领取。保留已有内容。",
+  "worldId": "world-ff3a1a4c8a75",
+  "sessionId": "a64b6340-e1e1-4558-b38d-4b3158405850",
+  "packageInventory": "b5da7e0fc3ea1823fa11226fc66f3aaa713d6e964a65c77dfc94e957b702431b",
+  "metrics": {
+    "calls": {
+      "observed": 13,
+      "pending": 0,
+      "reported": 13
+    },
+    "coverage": "complete",
+    "endedAtMs": 1789162582722,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [
+      {
+        "calls": {
+          "observed": 13,
+          "pending": 0,
+          "reported": 13
+        },
+        "coverage": "complete",
+        "modelId": "deepseek-v4.1-flash-expires-on-0910",
+        "providerId": "3597da6e-ee87-4842-891a-e3c2ec4d5fca",
+        "tps": {
+          "coverage": "complete",
+          "generationMs": 81673,
+          "outputTokens": 19005,
+          "value": 232.6962398834376,
+          "window": "model-generation"
+        },
+        "usage": {
+          "cacheReadTokens": 614144,
+          "inputTokens": 212955,
+          "outputTokens": 19005,
+          "reasoningTokens": 14009,
+          "totalTokens": 846104
+        }
+      }
+    ],
+    "observedAtMs": 1789162583665,
+    "scope": "root-and-delegates",
+    "sessionId": "a64b6340-e1e1-4558-b38d-4b3158405850",
+    "startedAtMs": 1789162241722,
+    "status": "completed",
+    "tps": {
+      "coverage": "complete",
+      "generationMs": 81673,
+      "outputTokens": 19005,
+      "value": 232.6962398834376,
+      "window": "model-generation"
+    },
+    "turnId": "a79aa677-5f75-4d20-a1a6-c08a9960ff0e",
+    "usage": {
+      "cacheReadTokens": 614144,
+      "inputTokens": 212955,
+      "outputTokens": 19005,
+      "reasoningTokens": 14009,
+      "totalTokens": 846104
+    },
+    "wallTimeMs": 341000
+  },
+  "modelResult": "SETTLED_UNVERIFIED",
+  "applicationAtModelEnd": {
+    "worldId": "world-ff3a1a4c8a75",
+    "sessionId": "a64b6340-e1e1-4558-b38d-4b3158405850",
+    "taskId": "work-bbe88d4e901419a46ede7ef87c194a5c98acf424eda57aaeb4413c967404c7bf",
+    "jobId": "gjob-c93dc93637750801d07929283bde846a62084e7e556fc6aada75944cd093e5fb",
+    "phase": "ready",
+    "stage": "passed",
+    "requirementStatus": "unsupported",
+    "sourceStale": false,
+    "updatedAt": 1789162548880
+  },
+  "job": {
+    "jobId": "gjob-c93dc93637750801d07929283bde846a62084e7e556fc6aada75944cd093e5fb",
+    "candidateId": "gcan-8e15bbfab76947a5eb42386c20ea30a2b362ba8c17dde5697b7367b4338010aa",
+    "buildId": "gbd-33dc81d8bb60ca9f421d6720f045da9b21d61631518774b4196e25dc99707ee9",
+    "status": "passed",
+    "outputHash": "897c8ea160eb96cad895ae581ac3676fdc848b70ab246b867b00bf4738cd9762",
+    "requirements": null
+  },
+  "permissions": [
+    {
+      "toolName": "plugin_craftmine_world_creation_operation",
+      "argsPreview": {
+        "request": {
+          "action": "place",
+          "color": "#0000ff",
+          "expected": {
+            "buildId": "gbd-53ed01e2cbbac43a0a90e53e71aac1b1d3677330d96d351f964f2c4600bfc5a9",
+            "instanceId": "c815616215f0f4183f675c31",
+            "manifestHash": "8b38f834fbb92adc1ad2f801bd9f63df22bf80df9f05f0aac517310df30ee005",
+            "revision": 1,
+            "targetSnapshotId": "b5ef70fd-7782-4099-a6ad-875ef77adbe9",
+            "worldId": "world-ff3a1a4c8a75"
+          },
+          "id": "blue-door",
+          "kind": "door",
+          "operationId": "blue-door-in-front-001",
+          "parameters": {
+            "initiallyOpen": false
+          },
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "decision": "allow-once"
+    },
+    {
+      "toolName": "plugin_craftmine_world_creation_operation",
+      "argsPreview": {
+        "request": {
+          "action": "place",
+          "expected": {
+            "buildId": "gbd-53ed01e2cbbac43a0a90e53e71aac1b1d3677330d96d351f964f2c4600bfc5a9",
+            "instanceId": "c815616215f0f4183f675c31",
+            "manifestHash": "ea39075350e0e1a57fe48652af8200e78b8e022ffc2138e0ba041211e80f44ef",
+            "revision": 2,
+            "targetSnapshotId": "b5ef70fd-7782-4099-a6ad-875ef77adbe9",
+            "worldId": "world-ff3a1a4c8a75"
+          },
+          "id": "token-chest",
+          "kind": "chest",
+          "operationId": "token-chest-beside-door-001",
+          "parameters": {
+            "rewardCount": 1,
+            "rewardId": "token"
+          },
+          "position": [
+            1.8,
+            0,
+            2
+          ],
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "decision": "allow-once"
+    },
+    {
+      "toolName": "plugin_craftmine_world_godot_build_start",
+      "argsPreview": {
+        "manifestHash": "87915a161f8f7f5746f3f7c144b83f375726d1d25db86d1670e85c430b65da56",
+        "mode": "check",
+        "revision": 3
+      },
+      "decision": "allow-once"
+    }
+  ],
+  "adoption": {
+    "ok": true,
+    "checks": [
+      "original checked candidate enters normal preview",
+      "normal adoption commits the original candidate",
+      "cold reopen preserves the adopted world and build",
+      "original player report and marker remain byte-identical"
+    ]
+  },
+  "doorActions": [
+    {
+      "op": "look",
+      "args": {
+        "yaw": 0,
+        "pitch": 0
+      },
+      "position": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "tick": 34,
+      "inventory": {},
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": false,
+          "solid": true
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "walk",
+      "args": {
+        "forward": 1,
+        "right": 0,
+        "frames": 60
+      },
+      "position": [
+        0,
+        0.899999976158142,
+        2.55333518981934
+      ],
+      "tick": 106,
+      "inventory": {},
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": false,
+          "solid": true
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "interact",
+      "args": {},
+      "position": [
+        0,
+        0.899999976158142,
+        2.55333518981934
+      ],
+      "tick": 112,
+      "inventory": {},
+      "interaction": {
+        "entityId": "blue-door",
+        "interacted": true,
+        "kind": "door"
+      },
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": false,
+          "solid": true
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "walk",
+      "args": {
+        "forward": 1,
+        "right": 0,
+        "frames": 60
+      },
+      "position": [
+        0,
+        0.90012401342392,
+        -1.25666522979736
+      ],
+      "tick": 173,
+      "inventory": {},
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "walk",
+      "args": {
+        "forward": -1,
+        "right": 0,
+        "frames": 60
+      },
+      "position": [
+        0,
+        0.90012401342392,
+        1.31722342967987
+      ],
+      "tick": 243,
+      "inventory": {},
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "look",
+      "args": {
+        "yaw": -1.2742505177251962,
+        "pitch": -0.5862464994391193
+      },
+      "position": [
+        0,
+        0.90012401342392,
+        1.31722342967987
+      ],
+      "tick": 243,
+      "inventory": {},
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "interact",
+      "args": {},
+      "position": [
+        0,
+        0.90012401342392,
+        1.31722342967987
+      ],
+      "tick": 243,
+      "inventory": {},
+      "interaction": {
+        "interacted": false,
+        "reason": "no-entity"
+      },
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    },
+    {
+      "op": "interact",
+      "args": {},
+      "position": [
+        0,
+        0.90012401342392,
+        1.6622234582901
+      ],
+      "tick": 249,
+      "inventory": {},
+      "interaction": {
+        "interacted": false,
+        "reason": "no-entity"
+      },
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": false
+        }
+      ]
+    }
+  ],
+  "chestActions": [
+    {
+      "op": "interact",
+      "args": {},
+      "position": [
+        0,
+        0.900106072425842,
+        1.45336771011353
+      ],
+      "tick": 63,
+      "inventory": {
+        "token": 1
+      },
+      "interaction": {
+        "entityId": "token-chest",
+        "interacted": true,
+        "kind": "chest"
+      },
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": true
+        }
+      ]
+    },
+    {
+      "op": "wait",
+      "args": {
+        "frames": 4
+      },
+      "position": [
+        0,
+        0.900106072425842,
+        1.45336771011353
+      ],
+      "tick": 76,
+      "inventory": {
+        "token": 1
+      },
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": true
+        }
+      ]
+    },
+    {
+      "op": "interact",
+      "args": {},
+      "position": [
+        0,
+        0.900106072425842,
+        1.45336771011353
+      ],
+      "tick": 76,
+      "inventory": {
+        "token": 1
+      },
+      "interaction": {
+        "entityId": "token-chest",
+        "interacted": false,
+        "reason": "already-opened"
+      },
+      "entities": [
+        {
+          "id": "blue-door",
+          "kind": "door",
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "color": "#0000ff",
+          "open": true,
+          "solid": false
+        },
+        {
+          "id": "token-chest",
+          "kind": "chest",
+          "position": [
+            1.79999995231628,
+            0,
+            2
+          ],
+          "color": "#84a866",
+          "opened": true
+        }
+      ]
+    }
+  ],
+  "restart": {
+    "before": {
+      "token": 1
+    },
+    "actions": [
+      {
+        "op": "interact",
+        "args": {},
+        "position": [
+          0,
+          0.900840580463409,
+          1.44912254810333
+        ],
+        "tick": 70,
+        "inventory": {
+          "token": 1
+        },
+        "interaction": {
+          "entityId": "token-chest",
+          "interacted": false,
+          "reason": "already-opened"
+        },
+        "entities": [
+          {
+            "id": "blue-door",
+            "kind": "door",
+            "position": [
+              0,
+              0,
+              2
+            ],
+            "color": "#0000ff",
+            "open": true,
+            "solid": false
+          },
+          {
+            "id": "token-chest",
+            "kind": "chest",
+            "position": [
+              1.79999995231628,
+              0,
+              2
+            ],
+            "color": "#84a866",
+            "opened": true
+          }
+        ]
+      },
+      {
+        "op": "wait",
+        "args": {
+          "frames": 4
+        },
+        "position": [
+          0,
+          0.900840580463409,
+          1.44912254810333
+        ],
+        "tick": 83,
+        "inventory": {
+          "token": 1
+        },
+        "entities": [
+          {
+            "id": "blue-door",
+            "kind": "door",
+            "position": [
+              0,
+              0,
+              2
+            ],
+            "color": "#0000ff",
+            "open": true,
+            "solid": false
+          },
+          {
+            "id": "token-chest",
+            "kind": "chest",
+            "position": [
+              1.79999995231628,
+              0,
+              2
+            ],
+            "color": "#84a866",
+            "opened": true
+          }
+        ]
+      },
+      {
+        "op": "interact",
+        "args": {},
+        "position": [
+          0,
+          0.900840580463409,
+          1.44912254810333
+        ],
+        "tick": 83,
+        "inventory": {
+          "token": 1
+        },
+        "interaction": {
+          "entityId": "token-chest",
+          "interacted": false,
+          "reason": "already-opened"
+        },
+        "entities": [
+          {
+            "id": "blue-door",
+            "kind": "door",
+            "position": [
+              0,
+              0,
+              2
+            ],
+            "color": "#0000ff",
+            "open": true,
+            "solid": false
+          },
+          {
+            "id": "token-chest",
+            "kind": "chest",
+            "position": [
+              1.79999995231628,
+              0,
+              2
+            ],
+            "color": "#84a866",
+            "opened": true
+          }
+        ]
+      }
+    ]
+  },
+  "sources": {
+    "bootstrap": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\bootstrap.json",
+      "sha256": "3ee820554df78b60901d7a6199586f6de63aad508ac83b1027e9bb3c14bde359"
+    },
+    "player": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\player-29bc92e8-d233-4782-9806-6bcebf97de01.json",
+      "sha256": "8e10d43d4431dc435b54f7b19da6095e69375d79129913a0589d7dc0086279ef"
+    },
+    "adoption": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\adoption-b0faec8b-5184-46fe-bb1d-885d581dcb6c\\report.json",
+      "sha256": "c40745ca051ed87e652b2f3c610b3a7e0875a304c285e4791db0d86ea0b7a5db"
+    },
+    "doorAndMissedAim": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\exploration-0d7eac67-5cd1-4bab-b898-644f18a96336\\report.json",
+      "sha256": "5ce1e404ebd598de6e2b5dff6aeb27e755d6bf7b54cf1a7ab4b0b126be709b3d"
+    },
+    "chest": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\exploration-9b8ebef5-7fd7-48ae-a175-d14c26e28e9b\\report.json",
+      "sha256": "12ded207a6da725880a5ed04c5553745041d9b7cced855f72dc2ab7e9cf90364"
+    },
+    "chestAfterRestart": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\exploration-c4856360-f65c-45d6-96ae-bc01dd459d5d\\report.json",
+      "sha256": "5315f028ceff152d487cc6e53c4edee3c0994c85c7c617d766ee7eddf6097383"
+    },
+    "openDoorAimMiss": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\exploration-6b9f6aea-68c1-438f-bec9-257426c35a4a\\report.json",
+      "sha256": "ae9065d89d66d9972ddc1ddc51a578cefc341e830ae4ee9e2d050552ce27651c"
+    },
+    "doorCloseAgain": {
+      "path": "D:\\cm-agent-godot-0912\\test-results\\desktop-native-ordinary-jHKHPj\\exploration-fdd07876-f2b1-4617-b12b-27a6183d0e9e\\report.json",
+      "sha256": "6bfc666e05b2078111898637e2c11a851d8e572892828ae193fdba74d9abc486"
+    }
+  },
+  "limitations": [
+    "One ordinary model creation request, not a success-rate comparison.",
+    "Candidate requirements status was unsupported for this combined wish; independent gameplay evidence is separate.",
+    "Three source/check approvals and manual player adoption were performed by the test agent.",
+    "First chest aim missed; corrected test aims at freshly observed geometry and requires an actual ray hit.",
+    "Frozen player package predates the later query relations, core passage and Kenney-module increments.",
+    "An initial reclose aim used the original doorway center and missed the hinge-mounted open-door aim area; correction uses observed mesh bounds and requires a real ray hit."
+  ],
+  "openDoorAimMiss": {
+    "ok": false,
+    "error": "AssertionError [ERR_ASSERTION]: Actual ray must hit intended entity before interaction\n+ actual - expected\n\n+ null\n- 'blue-door'\n\n    at file:///D:/cm-agent-godot-0912/tests/promo-wish-exploration.mjs:131:12\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  "doorCloseAgain": {
+    "ok": true,
+    "actions": [
+      {
+        "op": "interact",
+        "args": {},
+        "position": [
+          0,
+          0.900840580463409,
+          1.44912254810333
+        ],
+        "inventory": {
+          "token": 1
+        },
+        "interacted": true,
+        "door": {
+          "color": "#0000ff",
+          "id": "blue-door",
+          "kind": "door",
+          "meshBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.35999989509583
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "open": false,
+          "parameters": {
+            "initiallyOpen": false
+          },
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "solid": false,
+          "solidMutable": true,
+          "visible": true
+        }
+      },
+      {
+        "op": "wait",
+        "args": {
+          "frames": 4
+        },
+        "position": [
+          0,
+          0.900840580463409,
+          1.44912254810333
+        ],
+        "inventory": {
+          "token": 1
+        },
+        "door": {
+          "collisionBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.25
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "color": "#0000ff",
+          "id": "blue-door",
+          "kind": "door",
+          "meshBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.35999989509583
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "open": false,
+          "parameters": {
+            "initiallyOpen": false
+          },
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "solid": true,
+          "solidMutable": true,
+          "visible": true
+        }
+      },
+      {
+        "op": "look",
+        "args": {
+          "yaw": 3.141592653589793,
+          "pitch": 0
+        },
+        "position": [
+          0,
+          0.900840580463409,
+          1.44912254810333
+        ],
+        "inventory": {
+          "token": 1
+        },
+        "door": {
+          "collisionBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.25
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "color": "#0000ff",
+          "id": "blue-door",
+          "kind": "door",
+          "meshBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.35999989509583
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "open": false,
+          "parameters": {
+            "initiallyOpen": false
+          },
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "solid": true,
+          "solidMutable": true,
+          "visible": true
+        }
+      },
+      {
+        "op": "walk",
+        "args": {
+          "forward": 1,
+          "right": 0,
+          "frames": 60
+        },
+        "position": [
+          0,
+          0.899373352527618,
+          1.44912254810333
+        ],
+        "inventory": {
+          "token": 1
+        },
+        "door": {
+          "collisionBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.25
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "color": "#0000ff",
+          "id": "blue-door",
+          "kind": "door",
+          "meshBounds": {
+            "max": [
+              0.800000011920929,
+              2.59999990463257,
+              2.35999989509583
+            ],
+            "min": [
+              -0.800000011920929,
+              0,
+              1.75
+            ]
+          },
+          "open": false,
+          "parameters": {
+            "initiallyOpen": false
+          },
+          "position": [
+            0,
+            0,
+            2
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "solid": true,
+          "solidMutable": true,
+          "visible": true
+        }
+      }
+    ]
+  }
+}

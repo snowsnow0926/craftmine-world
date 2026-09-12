@@ -9,8 +9,30 @@ export function unwrapPlayerDesktopResult(result:any){
 /** Ordinary desktop APIs inside the existing protected headless controller. */
 export function createHeadlessPlayer(access:Access){
   let binding:{sessionId:string;worldId:string}|null=null,busy=false,lastMessageId:string|undefined;
+  let creationKey:string|undefined,creationAttempt:Promise<any>|undefined;
   const sent=new Set<string>();
   return async(method:string,payload:unknown)=>{
+    if(method==='playerCreateSession'){
+      if(!object(payload)||!id(payload.worldId)||typeof payload.title!=='string'||!payload.title.trim()||payload.title.length>80)throw Error('HEADLESS_PLAYER_SESSION_CREATE_INVALID');
+      if(Object.keys(payload).sort().join(',')!=='title,worldId')throw Error('HEADLESS_PLAYER_FIELDS_DENIED');
+      const worldId=payload.worldId,title=payload.title.trim(),key=JSON.stringify([worldId,title]);
+      const observed=await access.observe();
+      if(observed?.worldId!==worldId||observed?.baseId!=='creation-sandbox')throw Error('HEADLESS_PLAYER_WORLD_CHANGED');
+      if(creationAttempt){if(creationKey!==key)throw Error('HEADLESS_PLAYER_SESSION_CREATE_ALREADY_REQUESTED');return creationAttempt;}
+      if(binding||busy)throw Error('HEADLESS_PLAYER_BUSY');
+      creationKey=key;busy=true;
+      // Retain a failed attempt too: a lost reply must never trigger another
+      // session.create. After process loss, inspect ordinary session history.
+      creationAttempt=(async()=>{
+        const created=await access.invoke('sessionCreate',{title});
+        if(!id(created?.session?.id))throw Error('HEADLESS_PLAYER_CREATED_SESSION_INVALID');
+        const sessionId=created.session.id,record=await access.invoke('sessionGet',sessionId);
+        if(record?.session?.id!==sessionId)throw Error('HEADLESS_PLAYER_CREATED_SESSION_INVALID');
+        if((await access.observe())?.worldId!==worldId)throw Error('HEADLESS_PLAYER_WORLD_CHANGED');
+        return {format:'craftmine.ordinary-player-session/1',worldId,sessionId,creation:'ordinary-sessionCreate',modelRequestsStarted:0};
+      })().finally(()=>{busy=false;});
+      return creationAttempt;
+    }
     if(!object(payload)||!id(payload.sessionId)||!id(payload.worldId))throw Error('HEADLESS_PLAYER_IDENTITY_REQUIRED');
     const {sessionId,worldId}=payload;
     if(!['playerSetup','playerPrompt','playerRetryFailedPrompt','playerStatus','playerAbort'].includes(method))throw Error('HEADLESS_PLAYER_METHOD_DENIED');

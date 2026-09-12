@@ -1,0 +1,81 @@
+{
+  "format": "craftmine.beehave-trial-archive/1",
+  "sourceRun": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7",
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 43,
+      "sha256": "50524bc54be6323af4266e11f2ca0b4d574bad39253c8c5293eca7d3173fa822"
+    },
+    {
+      "file": "Beehave-MIT.txt",
+      "bytes": 1065,
+      "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+    },
+    {
+      "file": "beehave-source-files.json",
+      "bytes": 154978,
+      "sha256": "3267aaed7129e7042a954a1478edbccddcea90252335115c65a48d931db875c1"
+    },
+    {
+      "file": "beehave-startup.png",
+      "bytes": 7926,
+      "sha256": "a15bcd05b01901ee4ca964f575d94d1a37c2fc9e75c8d86075bcedb35b8daf7f"
+    },
+    {
+      "file": "beehave-trace.json",
+      "bytes": 572942,
+      "sha256": "9384ef16d86123f23f78e99641222908149492133635ca46499d24e4337a8ed0"
+    },
+    {
+      "file": "diagnostic-initial-host-false-negative.json",
+      "bytes": 12919,
+      "sha256": "8b46ac2d46a35afb1af5dcb975933dde4ab2ad515a4553c51099e3529c677688"
+    },
+    {
+      "file": "diagnostic-stop-before-disable.json",
+      "bytes": 12869,
+      "sha256": "2a389c108a5cf9b8540021411c3403c3f1e3364c04ed1a4583832883ccf3f5c8"
+    },
+    {
+      "file": "exportWeb-receipt.json",
+      "bytes": 11517,
+      "sha256": "50b24546ae1272ff832d7dfacf5953d4f098b50b818444080bfa2c0fd98f3c5c"
+    },
+    {
+      "file": "exportWeb-request.json",
+      "bytes": 681,
+      "sha256": "5ec6b995498515294171c8a61875dbe2424e01ec69aae776a37dce7beeca6f88"
+    },
+    {
+      "file": "exportWeb.log",
+      "bytes": 11279,
+      "sha256": "65852ccea4ef7a77f87ee034a05d73e8564a89a64b2f30eff6d0a72703cfe36a"
+    },
+    {
+      "file": "import-receipt.json",
+      "bytes": 10145,
+      "sha256": "6d1b69fd64ca770edc3d97fb7ec7eee29030ccef8c647854176b7df9ef853461"
+    },
+    {
+      "file": "import-request.json",
+      "bytes": 678,
+      "sha256": "b6621d1f46827835d61dbe93f1b062d4381f3f01595d3f4f0a4a01ca949f9edf"
+    },
+    {
+      "file": "import.log",
+      "bytes": 5958,
+      "sha256": "1e4d8ea0f131638cee208e0c7e8e1c374ca1e46e676a60a6c6bd7346731de065"
+    },
+    {
+      "file": "provenance.json",
+      "bytes": 808,
+      "sha256": "036f354240a40ae48f2700d169e37ce0706ad96d7e37ef58f924362832dd3749"
+    },
+    {
+      "file": "report.json",
+      "bytes": 12981,
+      "sha256": "29b31ce5bcc7d11a8058e8744625cf17bc86b8fafd30937a414be8256cda1bec"
+    }
+  ]
+}

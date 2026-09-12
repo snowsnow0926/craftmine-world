@@ -11,6 +11,7 @@ import {
 } from "../../../../../../desktop/godot/web/runtime.mjs";
 import { isHeadlessAcceptance, hasHeadlessController } from "./craftmine-headless";
 import { randomBytes } from "node:crypto";
+import { readEnginePerformance } from "./engine-performance-request";
 import { PRIVATE_PLAY_OPS, validateHeadlessPlayAction, type PlayIdentity } from "./headless-play-action";
 import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
@@ -379,6 +380,18 @@ export class GodotWorldViewHost {
       buildId: this.current.buildId,
       instanceId: this.current.instanceId,
       url: this.current.runtime.url,
+    };
+  }
+
+  /** OS process ownership only. No page script, focus, or runtime mutation. */
+  get performanceProcess() {
+    const instance = this.current;
+    if (!instance?.alive || instance.view.webContents.isDestroyed()) return null;
+    if (this.pending || this.transitioning || this.checkpointPromise) throw Error("WORLD_BUSY");
+    return {
+      worldId: instance.worldId, buildId: instance.buildId, instanceId: instance.instanceId,
+      rendererProcessId: instance.view.webContents.getOSProcessId(),
+      webContentsId: instance.view.webContents.id,
     };
   }
 
@@ -847,6 +860,7 @@ export class GodotWorldViewHost {
   /** Forward one runtime operation; the base owns everything but the core ops. */
   async request(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown> | null> {
     if (PRIVATE_PLAY_OPS.has(op)) throw Error("PLAY_ACTION_PRIVATE_ROUTE");
+    if (op === "engine-performance") throw Error("ENGINE_PERFORMANCE_PRIVATE_ROUTE");
     const instance = this.current;
     if (!instance?.alive) throw new Error("No world runtime is running");
     // A completed checkpoint freezes mutations, while core observation stays
@@ -856,6 +870,11 @@ export class GodotWorldViewHost {
     const response = await instance.runtime.request(op, args);
     if (response.error) throw new Error(response.error);
     return (response.result ?? null) as Record<string, unknown> | null;
+  }
+
+  /** Only the source/PCK-verified Main service may dispatch this fixed read. */
+  async enginePerformance(identity: {worldId:string;buildId:string;instanceId:string}, nonce: string): Promise<Record<string, unknown> | null> {
+    return readEnginePerformance({current:()=>this.current,busy:()=>Boolean(this.pending||this.transitioning||this.checkpointPromise)},identity,nonce);
   }
 
   /** Fixed test action, only reachable from the validated headless controller. */

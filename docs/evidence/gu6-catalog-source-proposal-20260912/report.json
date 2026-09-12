@@ -1,0 +1,70 @@
+{
+  "format": "craftmine.catalog-source-proposal-trial/1",
+  "binary": "D:/cm-agent-godot-0912/desktop/build/releases/09f7443a1aeb-53d09e91-1729-4e09-b651-a5b79dfbb5a6/output/win-unpacked/resources/bin/craftmine-core.exe",
+  "coreSha256": "2363c06d8dc715a7f5551be2fe602ea5239c4a4a1a23ea7743512e6dcd93e71d",
+  "result": {
+    "format": "craftmine.godot-library/1",
+    "proposal": "source-install",
+    "method": "importCatalogSource",
+    "ref": {
+      "assetId": "kenney-building-proposal",
+      "version": 1,
+      "contentHash": "515544d08bb75a09be84440f75b7f61d33699a8b9d00f385fbea8887e71a399b"
+    },
+    "worldId": "proposal-world",
+    "applies": false,
+    "requiresPlayerAction": true,
+    "note": "In the Godot works panel resource library, the player can select this exact asset ID, version and catalog contentHash for checking. The host creates a fresh operation and revalidates the catalog ZIP. This suggestion carries no authorization; archive validity, inner resource identity, compatibility and application remain unverified. Do not use package.install for this source ZIP."
+  },
+  "attempts": [
+    {
+      "case": "exact-catalog-ref",
+      "calls": [
+        {
+          "method": "task.context",
+          "params": {
+            "context": {
+              "projectId": "proposal-project",
+              "sessionId": "proposal-session",
+              "turnId": "proposal-turn"
+            }
+          }
+        },
+        {
+          "method": "asset.read",
+          "params": {
+            "assetId": "kenney-building-proposal",
+            "version": 1
+          }
+        }
+      ]
+    },
+    {
+      "case": "zip-hash-instead-of-catalog-hash",
+      "rejected": true,
+      "calls": [
+        {
+          "method": "task.context",
+          "params": {
+            "context": {
+              "projectId": "proposal-project",
+              "sessionId": "proposal-session",
+              "turnId": "proposal-turn"
+            }
+          }
+        },
+        {
+          "method": "asset.read",
+          "params": {
+            "assetId": "kenney-building-proposal",
+            "version": 1
+          }
+        }
+      ]
+    }
+  ],
+  "zipSha256": "351f4774db7a9c9fb8154bd79b96609267b15f7b3de05f52341b3629278766d5",
+  "modelCalls": 0,
+  "modelRouteWrites": 0,
+  "scope": "Explicit diagnostic world/catalog setup; each actual packaged proposal invocation only reads task.context and asset.read; no install or Godot execution"
+}

@@ -1,0 +1,325 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Call to GetAdaptersAddresses failed with error 5.
+   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 项目初始化 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 正在扫描文件结构……[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 正在加载全局类名……[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | 正在校验 GDExtension……[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 正在创建自动加载脚本……[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 正在初始化插件……[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | 正在启动文件扫描……[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started 正在注册全局类…… (7 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  12% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  37% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  62% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  75% ] [90m[1mupdate_scripts_classes[22m | Weapon[39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started 正在扫描动作…… (31 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | lilita_one_regular.ttf[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | colormap.png[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | blaster-repeater.glb[39m[0m
+[   9% ] [90m[1m_update_scan_actions[22m | blaster.glb[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | cloud.glb[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | enemy-flying.glb[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | grass-small.glb[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | grass.glb[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | platform-large-grass.glb[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | platform.glb[39m[0m
+[  31% ] [90m[1m_update_scan_actions[22m | wall-high.glb[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | wall-low.glb[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | blaster.ogg[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | blaster_repeater.ogg[39m[0m
+[  43% ] [90m[1m_update_scan_actions[22m | enemy_attack.ogg[39m[0m
+[  46% ] [90m[1m_update_scan_actions[22m | enemy_destroy.ogg[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | enemy_hurt.ogg[39m[0m
+[  53% ] [90m[1m_update_scan_actions[22m | jump_a.ogg[39m[0m
+[  56% ] [90m[1m_update_scan_actions[22m | jump_b.ogg[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | jump_c.ogg[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | land.ogg[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | walking.ogg[39m[0m
+[  68% ] [90m[1m_update_scan_actions[22m | weapon_change.ogg[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | blob_shadow.png[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | burst.png[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | crosshair-repeater.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | crosshair.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | hit.png[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | skybox.png[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | icon.png[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | splash-screen.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 正在导入或重新导入资产 (31 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[   3% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[   6% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[   9% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  12% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  15% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  18% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  21% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  25% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  28% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  31% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  34% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  37% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  40% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  43% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  46% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  50% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  53% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  56% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  59% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  62% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  65% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  68% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  71% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  75% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  78% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  81% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  84% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  87% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  90% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  93% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在执行重新导入的前置操作……[39m[0m
+[   0% ] [90m[1mpreload_reimporting_scene[22m | Started 正在准备重新加载场景 (1 steps)[39m[0m
+[   0% ] [90m[1mpreload_reimporting_scene[22m | 正在分析场景 [空][39m[0m
+[  50% ] [90m[1mpreload_reimporting_scene[22m | 准备完成。[39m[0m
+[92m[ DONE ][39m [1mpreload_reimporting_scene[22m
+[0m
+[   0% ] [90m[1mreimport[22m | lilita_one_regular.ttf[39m[0m
+[   3% ] [90m[1mreimport[22m | lilita_one_regular.ttf[39m[0m
+[   6% ] [90m[1mreimport[22m | weapon_change.ogg[39m[0m
+[   9% ] [90m[1mreimport[22m | walking.ogg[39m[0m
+[  12% ] [90m[1mreimport[22m | land.ogg[39m[0m
+[  15% ] [90m[1mreimport[22m | jump_c.ogg[39m[0m
+[  18% ] [90m[1mreimport[22m | jump_b.ogg[39m[0m
+[  21% ] [90m[1mreimport[22m | jump_a.ogg[39m[0m
+[  25% ] [90m[1mreimport[22m | enemy_hurt.ogg[39m[0m
+[  28% ] [90m[1mreimport[22m | enemy_destroy.ogg[39m[0m
+[  31% ] [90m[1mreimport[22m | enemy_attack.ogg[39m[0m
+[  34% ] [90m[1mreimport[22m | blaster_repeater.ogg[39m[0m
+[  37% ] [90m[1mreimport[22m | lilita_one_regular.ttf[39m[0m
+[  40% ] [90m[1mreimport[22m | weapon_change.ogg[39m[0m
+[  43% ] [90m[1mreimport[22m | walking.ogg[39m[0m
+[  46% ] [90m[1mreimport[22m | land.ogg[39m[0m
+[  50% ] [90m[1mreimport[22m | jump_c.ogg[39m[0m
+[  53% ] [90m[1mreimport[22m | jump_b.ogg[39m[0m
+[  56% ] [90m[1mreimport[22m | jump_a.ogg[39m[0m
+[  59% ] [90m[1mreimport[22m | enemy_hurt.ogg[39m[0m
+[  62% ] [90m[1mreimport[22m | enemy_destroy.ogg[39m[0m
+[  65% ] [90m[1mreimport[22m | blaster-repeater.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  68% ] [90m[1mreimport[22m | blaster.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  71% ] [90m[1mreimport[22m | cloud.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  75% ] [90m[1mreimport[22m | enemy-flying.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  78% ] [90m[1mreimport[22m | grass-small.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  81% ] [90m[1mreimport[22m | grass.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  84% ] [90m[1mreimport[22m | platform-large-grass.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  87% ] [90m[1mreimport[22m | platform.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  90% ] [90m[1mreimport[22m | wall-high.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  93% ] [90m[1mreimport[22m | wall-low.glb[39m[0m
+[   0% ] [90m[1mimport[22m | Started 导入场景 (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | 导入场景中...[39m[0m
+[   1% ] [90m[1mimport[22m | 执行自定义脚本...[39m[0m
+[  99% ] [90m[1mimport[22m | 保存中...[39m[0m
+[92m[ DONE ][39m [1mimport[22m
+[0m
+[  96% ] [90m[1mreimport[22m | 正在结束资产导入……[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 正在导入或重新导入资产 (31 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在执行重新导入的后置操作……[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started 打包中 (102 steps)[39m[0m
+[   1% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/lilita_one_regular.ttf-68cc4ab6825bdd499d1ad608190f5213.fontdata[39m[0m
+[   1% ] [90m[1msavepack[22m | 正在保存文件：res://fonts/lilita_one_regular.ttf.import[39m[0m
+[   2% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/colormap.png-c1bc3c3aabeec406ff4b53328583776a.bptc.ctex[39m[0m
+[   2% ] [90m[1msavepack[22m | 正在保存文件：res://models/Textures/colormap.png.import[39m[0m
+[   4% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/blaster-repeater.glb-5f1125651aecb8bf54890e793b8c6da4.scn[39m[0m
+[   4% ] [90m[1msavepack[22m | 正在保存文件：res://models/blaster-repeater.glb.import[39m[0m
+[   6% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/blaster.glb-865d95bc6d15a20a70b45829eaeb4dc5.scn[39m[0m
+[   6% ] [90m[1msavepack[22m | 正在保存文件：res://models/blaster.glb.import[39m[0m
+[   8% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/cloud.glb-53daedc24f8d7f4baa42baf232c66643.scn[39m[0m
+[   8% ] [90m[1msavepack[22m | 正在保存文件：res://models/cloud.glb.import[39m[0m
+[  10% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/enemy-flying.glb-6120572f403485a0abe68ce33d56638b.scn[39m[0m
+[  10% ] [90m[1msavepack[22m | 正在保存文件：res://models/enemy-flying.glb.import[39m[0m
+[  12% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/grass-small.glb-0be1c06405ef2ce478dc00acb5be5be8.scn[39m[0m
+[  12% ] [90m[1msavepack[22m | 正在保存文件：res://models/grass-small.glb.import[39m[0m
+[  14% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/grass.glb-0ce858eae1c69c894a569863f13e24f1.scn[39m[0m
+[  14% ] [90m[1msavepack[22m | 正在保存文件：res://models/grass.glb.import[39m[0m
+[  16% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/platform-large-grass.glb-eba1099445789c9c9ba0b37fc57bd13f.scn[39m[0m
+[  16% ] [90m[1msavepack[22m | 正在保存文件：res://models/platform-large-grass.glb.import[39m[0m
+[  18% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/platform.glb-3476c7cd272116fb58fd5d0a0eddb703.scn[39m[0m
+[  18% ] [90m[1msavepack[22m | 正在保存文件：res://models/platform.glb.import[39m[0m
+[  20% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/wall-high.glb-74f2e81af43ef5254fe14637810326a5.scn[39m[0m
+[  20% ] [90m[1msavepack[22m | 正在保存文件：res://models/wall-high.glb.import[39m[0m
+[  22% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/wall-low.glb-de080c69f0eef8b51181d363ed18f581.scn[39m[0m
+[  22% ] [90m[1msavepack[22m | 正在保存文件：res://models/wall-low.glb.import[39m[0m
+[  24% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-ec9b84e071c304767b5f1d2592f9665e-blaster.scn[39m[0m
+[  26% ] [90m[1msavepack[22m | 正在保存文件：res://objects/cloud.gdc[39m[0m
+[  27% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-ec26967ad75336a0fcef924f1b0aae70-cloud.scn[39m[0m
+[  29% ] [90m[1msavepack[22m | 正在保存文件：res://objects/enemy.gdc[39m[0m
+[  31% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-539ab7062105ab9c30236f617caf2ef4-enemy.scn[39m[0m
+[  33% ] [90m[1msavepack[22m | 正在保存文件：res://objects/impact.gdc[39m[0m
+[  34% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-65d371f72ad0f55ab4bbce27e81f5cec-impact.scn[39m[0m
+[  36% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-ec4b609243bec5305e015680eaee199e-platform.scn[39m[0m
+[  38% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-0de445f8e18004040aa3ad84da63301e-platform_large_grass.scn[39m[0m
+[  40% ] [90m[1msavepack[22m | 正在保存文件：res://objects/player.gdc[39m[0m
+[  42% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-fd917217c4a5592248a679abd5f3a5fe-player.scn[39m[0m
+[  44% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-34d040ecc6e7b7210bd4c8b3bdb63737-wall_high.scn[39m[0m
+[  46% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-90de8b30645667cee463e4cff89304ea-wall_low.scn[39m[0m
+[  48% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-28bf1ccc4abadd0ff8843f0750409a65-main-environment.res[39m[0m
+[  50% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-3ad5c15c4f3250da0cc7c1af1770d85f-main.scn[39m[0m
+[  51% ] [90m[1msavepack[22m | 正在保存文件：res://scripts/audio.gdc[39m[0m
+[  53% ] [90m[1msavepack[22m | 正在保存文件：res://scripts/hud.gdc[39m[0m
+[  55% ] [90m[1msavepack[22m | 正在保存文件：res://scripts/weapon.gdc[39m[0m
+[  57% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/blaster.ogg-1527ec84d518b60bb9fbaad97656d870.oggvorbisstr[39m[0m
+[  57% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/blaster.ogg.import[39m[0m
+[  59% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/blaster_repeater.ogg-a46ceca73f68a6e3e41e971b07cb8de8.oggvorbisstr[39m[0m
+[  59% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/blaster_repeater.ogg.import[39m[0m
+[  61% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/enemy_attack.ogg-ad3c73e6e91698e3fc81bd6423d8fca2.oggvorbisstr[39m[0m
+[  61% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/enemy_attack.ogg.import[39m[0m
+[  63% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/enemy_destroy.ogg-feb8f111abab93d5fc30ec838c975232.oggvorbisstr[39m[0m
+[  63% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/enemy_destroy.ogg.import[39m[0m
+[  65% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/enemy_hurt.ogg-64e07bfa21b7ae57b8a0bf7357a95008.oggvorbisstr[39m[0m
+[  65% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/enemy_hurt.ogg.import[39m[0m
+[  66% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/jump_a.ogg-df3a87b422b8537163b811137ab76d0c.oggvorbisstr[39m[0m
+[  66% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/jump_a.ogg.import[39m[0m
+[  68% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/jump_b.ogg-f0989d7351debef348a67b21be8b7bd0.oggvorbisstr[39m[0m
+[  68% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/jump_b.ogg.import[39m[0m
+[  70% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/jump_c.ogg-6a4808f519ad4af845e78fe92b3da78c.oggvorbisstr[39m[0m
+[  70% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/jump_c.ogg.import[39m[0m
+[  72% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/land.ogg-7222ba872273a4a7535937ef5cfdffd0.oggvorbisstr[39m[0m
+[  72% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/land.ogg.import[39m[0m
+[  74% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/walking.ogg-bf61e9916135189ff0d5c06a148b02ab.oggvorbisstr[39m[0m
+[  74% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/walking.ogg.import[39m[0m
+[  75% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/weapon_change.ogg-7ebfd5dcd3026b79e24db351d30b1a1b.oggvorbisstr[39m[0m
+[  75% ] [90m[1msavepack[22m | 正在保存文件：res://sounds/weapon_change.ogg.import[39m[0m
+[  77% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/blob_shadow.png-d19f4ffceb1d99dd3331acec2dc6d7df.ctex[39m[0m
+[  77% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/blob_shadow.png.import[39m[0m
+[  79% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/burst.png-0ca3a873296b113f4396e0bdead4beff.ctex[39m[0m
+[  79% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/burst.png.import[39m[0m
+[  81% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-b81c55040a70507c361ffd0c77fe7752-burst_animation.res[39m[0m
+[  83% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/crosshair-repeater.png-ec408225e689b23875963003728cb016.ctex[39m[0m
+[  83% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/crosshair-repeater.png.import[39m[0m
+[  85% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/crosshair.png-1281ee32d6777347e0f43a202c603c1b.s3tc.ctex[39m[0m
+[  85% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/crosshair.png.import[39m[0m
+[  87% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/hit.png-32857f07c817e04581303953f2545db0.s3tc.ctex[39m[0m
+[  87% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/hit.png.import[39m[0m
+[  89% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/skybox.png-3a75a15c5dbffccdaa926738885bd0eb.bptc.ctex[39m[0m
+[  89% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/skybox.png.import[39m[0m
+[  91% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-997f5be228c6f364bdd4a182947aa6dd-blaster-repeater.res[39m[0m
+[  93% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-6ffbc668a74edc8979bd866d675c3cda-blaster.res[39m[0m
+[  95% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex[39m[0m
+[  95% ] [90m[1msavepack[22m | 正在保存文件：res://icon.png.import[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/splash-screen.png-ae6c8b07e185ee8a074576008d9ccc5a.ctex[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://splash-screen.png.import[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/blaster.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/cloud.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/cloud.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/enemy.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/enemy.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/impact.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/impact.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/platform.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/platform_large_grass.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/player.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/player.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/wall_high.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://objects/wall_low.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://scenes/main-environment.tres.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://scenes/main.tscn.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://scripts/audio.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://scripts/hud.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://scripts/weapon.gd.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://sprites/burst_animation.tres.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://weapons/blaster-repeater.tres.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://weapons/blaster.tres.remap[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/global_script_class_cache.cfg[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://icon.png[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://splash-screen.png[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/uid_cache.bin[39m[0m
+[  97% ] [90m[1msavepack[22m | 正在保存文件：res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)

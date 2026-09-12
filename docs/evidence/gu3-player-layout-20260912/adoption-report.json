@@ -1,0 +1,905 @@
+{
+  "format": "craftmine.promo-adoption/1",
+  "sourceFormat": "craftmine.promo-player/1",
+  "originalReport": "D:/cm-agent-godot-0912/test-results/desktop-native-complete-TDnqnw/player-f20f44fe-f621-4fef-9f22-5e3edba0052e.json",
+  "worldId": "world-6bc73235fe55",
+  "candidateId": "gcan-b5bac11fadbcca7d15a85876b71d9f473e229027154e6012964c9c54acb8b04e",
+  "checkedBuildId": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+  "modelCallsAdded": 0,
+  "modelRequestsAdded": 0,
+  "sourceEdits": 0,
+  "checks": [
+    "original checked candidate enters normal preview",
+    "normal adoption commits the original candidate",
+    "cold reopen preserves the adopted world and build",
+    "original player report and marker remain byte-identical"
+  ],
+  "launches": [
+    {
+      "number": 1,
+      "stdoutBytes": 11327,
+      "stderrBytes": 2127,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "stdoutBytes": 4189,
+      "stderrBytes": 146,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "visual": "UNVERIFIED",
+  "before": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-024a9ee8b41d580b9249a3dd4eb60863a8289acf6d9ad8aee72549d8a426862f",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "10867d9ce7b615ef32fbeb3b",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "controllerEvidence": {
+        "activeCameraId": "26893878581",
+        "body": {
+          "globalScale": [
+            1,
+            1,
+            1
+          ],
+          "layer": 8,
+          "mask": 3,
+          "physicsProcessing": true,
+          "processMode": 0,
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cameraId": "26893878581",
+        "cameraParentId": "26877101367",
+        "cameraTransform": {
+          "cameraPosition": [
+            0,
+            0,
+            0
+          ],
+          "cameraRotation": [
+            0,
+            0,
+            0
+          ],
+          "cameraScale": [
+            1,
+            1,
+            1
+          ],
+          "pitch": 0,
+          "pitchLimit": 89,
+          "pivotPosition": [
+            0,
+            0,
+            0
+          ],
+          "pivotRotation": [
+            0,
+            0,
+            0
+          ],
+          "pivotScale": [
+            1,
+            1,
+            1
+          ],
+          "rigPosition": [
+            0,
+            0.649999976158142,
+            0
+          ],
+          "rigRotation": [
+            0,
+            0,
+            0
+          ],
+          "rigScale": [
+            1,
+            1,
+            1
+          ],
+          "yaw": 0
+        },
+        "fixedPlayerScriptId": "-9223372011202411205",
+        "fixedRigScriptId": "-9223372011084970692",
+        "format": "craftmine.creation-controller-evidence/1",
+        "parameters": [
+          4.5,
+          1.7,
+          4.2,
+          14,
+          3,
+          1,
+          30,
+          9.8
+        ],
+        "physicsRate": 60,
+        "physicsTick": 11,
+        "pivotId": "26877101367",
+        "pivotParentId": "26860324153",
+        "playerClass": "CharacterBody3D",
+        "playerId": "26826769713",
+        "playerPath": "Player",
+        "playerRigId": "26860324153",
+        "playerScriptId": "-9223372011202411205",
+        "playerScriptPath": "res://scripts/reused/player_controller.gd",
+        "profile": "creation-fixed-controller/1",
+        "reason": "",
+        "rigCameraId": "26893878581",
+        "rigId": "26860324153",
+        "rigParentId": "26826769713",
+        "rigPath": "Player/CameraRig",
+        "rigPivotId": "26877101367",
+        "rigScriptId": "-9223372011084970692",
+        "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+        "rootPlayerId": "26826769713",
+        "shape": {
+          "bodyResourceId": "-9223372010095114950",
+          "disabled": false,
+          "height": 1.79999995231628,
+          "id": "26843546930",
+          "kind": "CapsuleShape3D",
+          "ownerCount": 1,
+          "ownerDisabled": false,
+          "ownerNodeId": "26843546930",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.300000011920929,
+          "resourceId": "-9223372010095114950",
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "shapeCount": 1
+        },
+        "status": "supported"
+      },
+      "creation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 11,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 1,
+            "facesRead": 1,
+            "nodes": 33,
+            "triangles": 12,
+            "vertices": 0
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearer-or-tied-physics-hit",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "blocked"
+        },
+        "sceneObjectTarget": null,
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            0,
+            1.54999995231628,
+            -31.75
+          ],
+          "revision": 1,
+          "surface": "boundary"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "progressCollisionGuard": {
+        "bodies": [
+          {
+            "id": "30400316772",
+            "nodePath": "@StaticBody3D@7",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "26826769713",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "26843546930",
+        "shapeResourceId": "-9223372010095114950",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 20,
+          "paused": true,
+          "startedFrame": 18
+        }
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-12T00:51:56Z",
+    "worldId": "world-6bc73235fe55"
+  },
+  "preview": {
+    "status": "preview",
+    "worldId": "world-6bc73235fe55",
+    "candidateId": "gcan-b5bac11fadbcca7d15a85876b71d9f473e229027154e6012964c9c54acb8b04e",
+    "buildId": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0"
+  },
+  "applied": {
+    "status": "applied",
+    "worldId": "world-6bc73235fe55",
+    "candidateId": "gcan-b5bac11fadbcca7d15a85876b71d9f473e229027154e6012964c9c54acb8b04e",
+    "record": {
+      "baseId": "creation-sandbox",
+      "contentHash": "166c75fc67789873f4092be7e2f683363306ba829bdc63461262b33ff9c5cd2b",
+      "id": "world-6bc73235fe55",
+      "revision": 4,
+      "runtimeKind": "godot",
+      "title": "两栋导入建筑参数验收",
+      "updatedAt": 1789174320526,
+      "world": {
+        "build": {
+          "godot": {
+            "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "baseBuild": "gbd-024a9ee8b41d580b9249a3dd4eb60863a8289acf6d9ad8aee72549d8a426862f",
+            "engineVersion": "4.7.2-stable",
+            "manifestHash": "09e5b7bd799c1de0d9dd6f76e1f7177596770bd6ae1a4ce1552eceb97ef6298f",
+            "renderer": "gl_compatibility",
+            "sourceRevision": 4,
+            "target": "web"
+          },
+          "id": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+          "scene": {
+            "baseId": "creation-sandbox",
+            "entry": "res://main.tscn",
+            "format": "craftmine.godot-scene/1",
+            "projectHash": "09e5b7bd799c1de0d9dd6f76e1f7177596770bd6ae1a4ce1552eceb97ef6298f"
+          }
+        },
+        "extensions": [],
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-6bc73235fe55"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-6bc73235fe55"
+        }
+      }
+    }
+  },
+  "after": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "7de224d47e9707a24451e542",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "controllerEvidence": {
+        "activeCameraId": "26893878581",
+        "body": {
+          "globalScale": [
+            1,
+            1,
+            1
+          ],
+          "layer": 8,
+          "mask": 3,
+          "physicsProcessing": true,
+          "processMode": 0,
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cameraId": "26893878581",
+        "cameraParentId": "26877101367",
+        "cameraTransform": {
+          "cameraPosition": [
+            0,
+            0,
+            0
+          ],
+          "cameraRotation": [
+            0,
+            0,
+            0
+          ],
+          "cameraScale": [
+            1,
+            1,
+            1
+          ],
+          "pitch": 0,
+          "pitchLimit": 89,
+          "pivotPosition": [
+            0,
+            0,
+            0
+          ],
+          "pivotRotation": [
+            0,
+            0,
+            0
+          ],
+          "pivotScale": [
+            1,
+            1,
+            1
+          ],
+          "rigPosition": [
+            0,
+            0.649999976158142,
+            0
+          ],
+          "rigRotation": [
+            0,
+            0,
+            0
+          ],
+          "rigScale": [
+            1,
+            1,
+            1
+          ],
+          "yaw": 0
+        },
+        "fixedPlayerScriptId": "-9223372011202411205",
+        "fixedRigScriptId": "-9223372011084970692",
+        "format": "craftmine.creation-controller-evidence/1",
+        "parameters": [
+          4.5,
+          1.7,
+          4.2,
+          14,
+          3,
+          1,
+          30,
+          9.8
+        ],
+        "physicsRate": 60,
+        "physicsTick": 9,
+        "pivotId": "26877101367",
+        "pivotParentId": "26860324153",
+        "playerClass": "CharacterBody3D",
+        "playerId": "26826769713",
+        "playerPath": "Player",
+        "playerRigId": "26860324153",
+        "playerScriptId": "-9223372011202411205",
+        "playerScriptPath": "res://scripts/reused/player_controller.gd",
+        "profile": "creation-fixed-controller/1",
+        "reason": "",
+        "rigCameraId": "26893878581",
+        "rigId": "26860324153",
+        "rigParentId": "26826769713",
+        "rigPath": "Player/CameraRig",
+        "rigPivotId": "26877101367",
+        "rigScriptId": "-9223372011084970692",
+        "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+        "rootPlayerId": "26826769713",
+        "shape": {
+          "bodyResourceId": "-9223372010095114950",
+          "disabled": false,
+          "height": 1.79999995231628,
+          "id": "26843546930",
+          "kind": "CapsuleShape3D",
+          "ownerCount": 1,
+          "ownerDisabled": false,
+          "ownerNodeId": "26843546930",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.300000011920929,
+          "resourceId": "-9223372010095114950",
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "shapeCount": 1
+        },
+        "status": "supported"
+      },
+      "creation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 9,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 1,
+            "facesRead": 1,
+            "nodes": 33,
+            "triangles": 12,
+            "vertices": 0
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearer-or-tied-physics-hit",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "blocked"
+        },
+        "sceneObjectTarget": null,
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            0,
+            1.54999995231628,
+            -31.75
+          ],
+          "revision": 1,
+          "surface": "boundary"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "progressCollisionGuard": {
+        "bodies": [
+          {
+            "id": "30400316772",
+            "nodePath": "@StaticBody3D@7",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "26826769713",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "26843546930",
+        "shapeResourceId": "-9223372010095114950",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 19,
+          "paused": true,
+          "startedFrame": 17
+        }
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-12T00:52:00Z",
+    "worldId": "world-6bc73235fe55"
+  },
+  "capture": {
+    "width": 1280,
+    "height": 720
+  },
+  "saved": {
+    "buildId": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+    "contentHash": "166c75fc67789873f4092be7e2f683363306ba829bdc63461262b33ff9c5cd2b",
+    "format": "craftmine.godot-progress-receipt/1",
+    "instanceId": "7de224d47e9707a24451e542",
+    "persistedAt": 1789174320526,
+    "revision": 4,
+    "snapshotHash": "3a633f610b400bff6b3551158a49317ffa1a551e37faa1d0e02034ba37c483ef",
+    "snapshotSha256": "25255a7fdb6f95f966649a2738c8b420a89d9d128b077f0aeccdaa53b986fb52",
+    "worldId": "world-6bc73235fe55"
+  },
+  "reopened": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "2bf508d2944bfaf8c13c167f",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "controllerEvidence": {
+        "activeCameraId": "26893878581",
+        "body": {
+          "globalScale": [
+            1,
+            1,
+            1
+          ],
+          "layer": 8,
+          "mask": 3,
+          "physicsProcessing": true,
+          "processMode": 0,
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cameraId": "26893878581",
+        "cameraParentId": "26877101367",
+        "cameraTransform": {
+          "cameraPosition": [
+            0,
+            0,
+            0
+          ],
+          "cameraRotation": [
+            0,
+            0,
+            0
+          ],
+          "cameraScale": [
+            1,
+            1,
+            1
+          ],
+          "pitch": 0,
+          "pitchLimit": 89,
+          "pivotPosition": [
+            0,
+            0,
+            0
+          ],
+          "pivotRotation": [
+            0,
+            0,
+            0
+          ],
+          "pivotScale": [
+            1,
+            1,
+            1
+          ],
+          "rigPosition": [
+            0,
+            0.649999976158142,
+            0
+          ],
+          "rigRotation": [
+            0,
+            0,
+            0
+          ],
+          "rigScale": [
+            1,
+            1,
+            1
+          ],
+          "yaw": 0
+        },
+        "fixedPlayerScriptId": "-9223372011202411205",
+        "fixedRigScriptId": "-9223372011084970692",
+        "format": "craftmine.creation-controller-evidence/1",
+        "parameters": [
+          4.5,
+          1.7,
+          4.2,
+          14,
+          3,
+          1,
+          30,
+          9.8
+        ],
+        "physicsRate": 60,
+        "physicsTick": 12,
+        "pivotId": "26877101367",
+        "pivotParentId": "26860324153",
+        "playerClass": "CharacterBody3D",
+        "playerId": "26826769713",
+        "playerPath": "Player",
+        "playerRigId": "26860324153",
+        "playerScriptId": "-9223372011202411205",
+        "playerScriptPath": "res://scripts/reused/player_controller.gd",
+        "profile": "creation-fixed-controller/1",
+        "reason": "",
+        "rigCameraId": "26893878581",
+        "rigId": "26860324153",
+        "rigParentId": "26826769713",
+        "rigPath": "Player/CameraRig",
+        "rigPivotId": "26877101367",
+        "rigScriptId": "-9223372011084970692",
+        "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+        "rootPlayerId": "26826769713",
+        "shape": {
+          "bodyResourceId": "-9223372010095114950",
+          "disabled": false,
+          "height": 1.79999995231628,
+          "id": "26843546930",
+          "kind": "CapsuleShape3D",
+          "ownerCount": 1,
+          "ownerDisabled": false,
+          "ownerNodeId": "26843546930",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.300000011920929,
+          "resourceId": "-9223372010095114950",
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "shapeCount": 1
+        },
+        "status": "supported"
+      },
+      "creation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 12,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 1,
+            "facesRead": 1,
+            "nodes": 33,
+            "triangles": 12,
+            "vertices": 0
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearer-or-tied-physics-hit",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "blocked"
+        },
+        "sceneObjectTarget": null,
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            0,
+            1.54999995231628,
+            -31.75
+          ],
+          "revision": 1,
+          "surface": "boundary"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "progressCollisionGuard": {
+        "bodies": [
+          {
+            "id": "30400316772",
+            "nodePath": "@StaticBody3D@7",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "26826769713",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "26843546930",
+        "shapeResourceId": "-9223372010095114950",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 20,
+          "paused": true,
+          "startedFrame": 18
+        }
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-12T00:52:15Z",
+    "worldId": "world-6bc73235fe55"
+  },
+  "noModelExecution": {
+    "modelCallsAdded": 0,
+    "basis": "model/eval configuration stripped; only validated non-model controller calls; clean shutdown audit",
+    "controllerCalls": [
+      "status",
+      "primaryMode",
+      "godotObserve",
+      "worldPanel:godot.candidatePreview",
+      "worldPanel:godot.candidateApply",
+      "godotCaptureView",
+      "worldPanel:godot.runtimeSave",
+      "quit"
+    ]
+  },
+  "ok": true
+}

@@ -271,7 +271,7 @@ test('only the player application transaction can publish a candidate',async t=>
 test('tool catalogue declares managed build tools without host identity',async()=>{
   const manifest=JSON.parse(await readFile(path.join(root,'plugins/craftmine-world/manifest.json'),'utf8'));
   const tools=manifest.contributes.agentTools.filter(tool=>tool.name.startsWith('godot_'));
-  assert.equal(tools.length,19);
+  assert.equal(tools.length,21);
   for(const tool of tools)for(const key of ['worldId','context','toolCallId','baseBuild'])
     assert.ok(!Object.hasOwn(tool.schema.properties,key),`${tool.name} must not accept ${key}`);
   assert.ok(tools.every(tool=>tool.schema.additionalProperties===false));
@@ -280,5 +280,7 @@ test('tool catalogue declares managed build tools without host identity',async()
   assert.equal(build.schema.properties.manifestHash.pattern,'^[0-9a-f]{64}$');
   assert.equal(tools.find(tool=>tool.name==='godot_asset_put').schema.properties.bytesBase64.maxLength,131136);
   assert.equal(tools.find(tool=>tool.name==='godot_build_read').schema.properties.jobId.pattern,'^gjob-[0-9a-f]{64}$');
+  const performance=tools.find(tool=>tool.name==='godot_performance_observe');
+  assert.ok(performance&&performance.risk==='low');
 });
 console.log('evidence_directory='+output);

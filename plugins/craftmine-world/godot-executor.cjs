@@ -1626,7 +1626,39 @@ function createGodotExecutor(core, options = {}) {
   function creationCompletion(binding){
     return readCreationApplication(ledger.jobs[binding?.jobId]?.creationApplication,binding,{live:jobs.has(binding?.jobId),ledgerError});
   }
-  return {start, stop, status, enqueue, cancel, cancelTurn, cancelOtherTurns, reconcile, creationCompletion,
+  // Read-only diagnostic projection. No start/recovery/claim or ledger writes.
+  // Paths are derived from the host data root and the already core-bound job;
+  // neither the page nor model supplies a path, native receipt or ledger body.
+  async function nativeDiagnosticEvidence(record){
+    const unknown=reason=>({status:'unknown',reason});
+    if(!dataPath||record?.status!=='failed'||typeof record.worldId!=='string'
+      ||!/^gbd-[a-f0-9]{64}$/.test(record.buildId??'')||!/^gjob-[a-f0-9]{64}$/.test(record.jobId??''))return unknown('NATIVE_EVIDENCE_UNAVAILABLE');
+    async function privateJson(components,limit){
+      let current=path.resolve(dataPath);
+      if(!ordinaryDirectory(current))throw Error('NATIVE_EVIDENCE_ROOT');
+      for(const component of components.slice(0,-1)){
+        current=path.join(current,component);
+        if(!ordinaryDirectory(current))throw Error('NATIVE_EVIDENCE_DIRECTORY');
+      }
+      const file=path.join(current,components.at(-1)),info=await fsp.lstat(file);
+      if(!info.isFile()||info.isSymbolicLink()||info.size<1||info.size>limit)throw Error('NATIVE_EVIDENCE_FILE');
+      const bytes=await fsp.readFile(file);
+      if(bytes.length!==info.size)throw Error('NATIVE_EVIDENCE_CHANGED');
+      return JSON.parse(bytes.toString('utf8'));
+    }
+    try{
+      await ledgerWrite;
+      if(ledgerError)return unknown('NATIVE_LEDGER_UNAVAILABLE');
+      const saved=await privateJson(['godot','executor-ledger.json'],64*1024*1024);
+      if(saved?.format!==LEDGER_FORMAT||saved.executorId!==EXECUTOR_ID)return unknown('NATIVE_LEDGER_UNVERIFIED');
+      const entry=saved.jobs?.[record.jobId];
+      if(!entry?.attempts?.some(attempt=>attempt?.retryDecision?.reason==='VERIFIED_NATIVE_IMPORT_CRASH'))return unknown('VALIDATED_NATIVE_RECEIPT_UNAVAILABLE');
+      const manifest=await privateJson(['godot-builds',sha256(record.worldId),record.buildId,'manifest.json'],2*1024*1024);
+      return require('./godot-diagnostics.cjs').projectNativeImportEvidence(record,{entry,manifest,
+        brokerSha256:pinnedBroker(null)?.sha256??null});
+    }catch{return unknown('NATIVE_EVIDENCE_UNAVAILABLE');}
+  }
+  return {start, stop, status, enqueue, cancel, cancelTurn, cancelOtherTurns, reconcile, creationCompletion,nativeDiagnosticEvidence,
     recover:recoverTasks, reconcileAfterRestart, get ledger() { return ledger; },
     get executorId() { return EXECUTOR_ID; }, get registered() { return registered; }};
 }

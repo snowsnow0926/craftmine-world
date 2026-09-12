@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "requestId": "bee-imp-1789166115316",
+  "taskId": "bee-imp-1789166115316",
+  "operation": "import",
+  "sourceBinding": {
+    "worldId": "isolated-external-starter-trial",
+    "buildId": "bee-imp-1789166115316",
+    "sourceRevision": 1,
+    "sourceDigest": "43e6392126c09b35397de77d27893945b460c949a195b39a79debbdb18369720"
+  },
+  "inputHash": "50450acf3df82e0fac80f55ad2b08643d090117ade690c3fa48efcf120801429",
+  "sourceSnapshotDigest": "43e6392126c09b35397de77d27893945b460c949a195b39a79debbdb18369720",
+  "sourceFiles": [
+    {
+      "path": "addons/beehave/LICENSE",
+      "bytes": 1065,
+      "sha256": "b7b01f5f34016e8be5ba15ec3cbf88d64de580727647e6789986f11686e7a299"
+    },
+    {
+      "path": "addons/beehave/blackboard.gd",
+      "bytes": 2775,
+      "sha256": "e1b980ce875b611f5881d158c4cce4d61b92ce8f27e09101304e8014706c10b6"
+    },
+    {
+      "path": "addons/beehave/debug/debugger_messages.gd",
+      "bytes": 1234,
+      "sha256": "eca1179c6b0edf438a1cc0a24505f6d263fb7ad6fd3ccd792a3e72cababda1dd"
+    },
+    {
+      "path": "addons/beehave/debug/global_debugger.gd",
+      "bytes": 2284,
+      "sha256": "b16bf6aa5aefe14ae8bf1a1f36a193f1b283b83082d7a6124e8c20815500aa95"
+    },
+    {
+      "path": "addons/beehave/icons/action.svg",
+      "bytes": 2972,
+      "sha256": "ba828aac24fb0b0b3628584a28ab23884bd901d918f1bd752c5994f8f2c85ef7"
+    },
+    {
+      "path": "addons/beehave/icons/blackboard.svg",
+      "bytes": 1477,
+      "sha256": "7da2bb26b844fd0019291a19d546ade341a7da1165241806d2ade658f093bf17"
+    },
+    {
+      "path": "addons/beehave/icons/category_composite.svg",
+      "bytes": 3927,
+      "sha256": "0bd205e2c50fb60ef83b6623f7e517318518ed8c6630d8d6046b4c93362ce34b"
+    },
+    {
+      "path": "addons/beehave/icons/category_leaf.svg",
+      "bytes": 3922,
+      "sha256": "47036e92cfc0dc0763317436a9b479c30d19535b733372ac7f35d1299d4b19c4"
+    },
+    {
+      "path": "addons/beehave/icons/condition.svg",
+      "bytes": 2282,
+      "sha256": "b74361149c872841dea828d22df454c18a72cbaeffe349a7c4b9a557102c5825"
+    },
+    {
+      "path": "addons/beehave/icons/selector_reactive.svg",
+      "bytes": 3653,
+      "sha256": "926cd7c08bdeb393821948f4620114f482d055ef93bd3a9c5c85a24fb7136d05"
+    },
+    {
+      "path": "addons/beehave/icons/sequence_reactive.svg",
+      "bytes": 6352,
+      "sha256": "3dba15203938983dc90e4e42cb5bdbd42b702b23526e68d03900798d14fddf21"
+    },
+    {
+      "path": "addons/beehave/icons/tree.svg",
+      "bytes": 1882,
+      "sha256": "16734d9875af0369285e0325a26f86850e2ddd1ffece3d609abc9cd10b1897ba"
+    },
+    {
+      "path": "addons/beehave/metrics/beehave_global_metrics.gd",
+      "bytes": 1626,
+      "sha256": "88435469b995273f3e820e45841d8c11464173be7690a9eb5c01376167e018e8"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_node.gd",
+      "bytes": 1568,
+      "sha256": "2a3ad20306ed422f913bacd7622fc879f955c8a9038c71bfed7e6bd1c4ee8f7b"
+    },
+    {
+      "path": "addons/beehave/nodes/beehave_tree.gd",
+      "bytes": 9633,
+      "sha256": "6ed3f775c7f805a96b085201cfa9d1c675eb6b2982fb97c887cb1eb0477e3f71"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/composite.gd",
+      "bytes": 1584,
+      "sha256": "ad66c856aaea30e3a30ff3ea5d946fd87c0c975e51970a6be9b82e49ff2ffeff"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/selector_reactive.gd",
+      "bytes": 3080,
+      "sha256": "89f816b20017d6cae35570c9fe4dbc8208d60d91dd3a75c6d4e49ff79653a456"
+    },
+    {
+      "path": "addons/beehave/nodes/composites/sequence_reactive.gd",
+      "bytes": 2870,
+      "sha256": "88b7906adb24c513c54260902b5fb8176f42f6820f3caf0c58f94f2f6f9cd987"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/action.gd",
+      "bytes": 450,
+      "sha256": "f58cfabe40847d88527cb627b63eca3cc7f930c4678e58d3c605f2afb5892959"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/condition.gd",
+      "bytes": 348,
+      "sha256": "c7e709c0fcc3b5086c9353354e79ec92c9dff658023fae58aad54e917989b980"
+    },
+    {
+      "path": "addons/beehave/nodes/leaves/leaf.gd",
+      "bytes": 1261,
+      "sha256": "91248861a01ddd2e2b30e1786654a9063232dcc93a8c59235c72589ae38d6f5c"
+    },
+    {
+      "path": "export_presets.cfg",
+      "bytes": 1090,
+      "sha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 453,
+      "sha256": "9c5e2cdf56e065adb6c6bd15409bd8b3b0d271d095ae38206e785287bb5ec71a"
+    },
+    {
+      "path": "trial.gd",
+      "bytes": 5592,
+      "sha256": "262525ea9339f5f451f47b5172494246ee2935e7c44cf50ce023266528a044f8"
+    },
+    {
+      "path": "trial.tscn",
+      "bytes": 151,
+      "sha256": "ce9ff8446e3530f7296db9ca4c07cb82a5c0b1270ae275d0d2dea819fa4a87ae"
+    }
+  ],
+  "state": "succeeded",
+  "exitCode": 0,
+  "policyVersion": "craftmine.windows.lpac-registry.v1",
+  "processVerification": {
+    "verified": true,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "pid": 43288,
+    "creationTimeFiletime": "134336397157993205",
+    "imagePath": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\tasks\\bee-imp-1789166115316\\bin\\Godot_v4.7.2-stable_win64.exe",
+    "appContainerSid": "S-1-15-2-2917425169-1619537946-2929320360-1541359083-900945614-2012339051-667041431",
+    "capabilitySids": [
+      "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+    ],
+    "integrityRid": 4096,
+    "isAppContainer": true,
+    "lpacQueryValue": null,
+    "lpacQueryError": 87,
+    "lpacCreationAttribute": true,
+    "jobMembershipVerified": true,
+    "jobLimitFlags": 8456,
+    "activeProcessLimit": 1,
+    "processMemoryBytes": 4294967296,
+    "verifiedBeforeResume": true,
+    "resumePreviousCount": 1
+  },
+  "networkPreflight": {
+    "verified": true,
+    "jobActiveProcesses": 0,
+    "policyVersion": "craftmine.windows.lpac-registry.v1",
+    "hostPositiveControls": [
+      "tcp4Echo",
+      "tcp6Echo",
+      "udp4Echo",
+      "udp6Echo"
+    ],
+    "hostReceivedCounts": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "exactTaskExempt": false,
+    "processVerification": {
+      "verified": true,
+      "policyVersion": "craftmine.windows.lpac-registry.v1",
+      "pid": 67136,
+      "creationTimeFiletime": "134336397156559449",
+      "imagePath": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\tasks\\bee-imp-1789166115316\\bin\\broker-preflight.exe",
+      "appContainerSid": "S-1-15-2-2917425169-1619537946-2929320360-1541359083-900945614-2012339051-667041431",
+      "capabilitySids": [
+        "S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681"
+      ],
+      "integrityRid": 4096,
+      "isAppContainer": true,
+      "lpacQueryValue": null,
+      "lpacQueryError": 87,
+      "lpacCreationAttribute": true,
+      "jobMembershipVerified": true,
+      "jobLimitFlags": 8456,
+      "activeProcessLimit": 1,
+      "processMemoryBytes": 4294967296,
+      "verifiedBeforeResume": true,
+      "resumePreviousCount": 1
+    },
+    "observation": {
+      "winsockStartup": 0,
+      "checks": [
+        {
+          "name": "tcp4",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "tcp6",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "tcpExternal",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udp4",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udp6",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        },
+        {
+          "name": "udpExternal",
+          "ok": false,
+          "rawOsError": 10013,
+          "errorKind": "PermissionDenied"
+        }
+      ]
+    }
+  },
+  "resourceEnforcement": {
+    "policyVersion": "craftmine.windows.sampled-work-budget.v1",
+    "scope": "sampled-task-work-directory-and-log-size; parent terminates the job on breach",
+    "hardFilesystemQuota": false,
+    "workBytesLimit": 1073741824,
+    "logBytesLimit": 4194304,
+    "sampleIntervalMs": 50,
+    "samples": 41,
+    "maxObservedWorkBytes": 34140747,
+    "maxObservedLogBytes": 5958,
+    "enforced": false,
+    "reason": null
+  },
+  "artifacts": [],
+  "artifactsRoot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\tasks\\bee-imp-1789166115316\\artifacts",
+  "logsRoot": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\tasks\\bee-imp-1789166115316\\logs",
+  "logs": [
+    {
+      "path": "preflight.json",
+      "bytes": 508,
+      "sha256": "91f055eeb6e9e2dd808b34c0b779790c6f849666740fb8e442a437a9b2c9f289"
+    },
+    {
+      "path": "task.log",
+      "bytes": 5958,
+      "sha256": "1e4d8ea0f131638cee208e0c7e8e1c374ca1e46e676a60a6c6bd7346731de065"
+    }
+  ],
+  "cleanup": {
+    "verified": true,
+    "profileHresult": 0,
+    "workRemoved": true,
+    "error": null
+  },
+  "recoveryJournal": {
+    "path": "D:\\cm-gu6-beehave-0912\\test-results\\gu6-beehave-lcVbY7\\tasks\\.recovery-journal\\bee-imp-1789166115316.json",
+    "policyVersion": "craftmine.windows.recovery-journal.v1",
+    "cleared": true,
+    "error": null
+  },
+  "error": null,
+  "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232",
+  "binRetirement": {
+    "format": "craftmine.godot-bin-retirement/1",
+    "taskId": "bee-imp-1789166115316",
+    "identityNonce": "b646a1d0254fd5d36de06eb24684617e5d7eac1402c9838227a605fdbc6c9a0c",
+    "engineJobActiveProcesses": 0,
+    "nativeJobActiveProcesses": 0,
+    "files": [
+      {
+        "path": "Godot_v4.7.2-stable_win64.exe",
+        "bytes": 180858888,
+        "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+      },
+      {
+        "path": "broker-preflight.exe",
+        "bytes": 812032,
+        "sha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+      }
+    ]
+  }
+}

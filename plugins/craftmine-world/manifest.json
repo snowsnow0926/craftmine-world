@@ -2423,6 +2423,17 @@
           ],
           "additionalProperties": false
         }
+      },
+      {
+        "name": "godot_performance_observe",
+        "description": "Read current bound Godot performance observations. Renderer process memory and optional fixed engine monitor fields are identity-bound; unavailable fields remain unknown. Read-only.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
       }
     ]
   },

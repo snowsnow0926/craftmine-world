@@ -1,6 +1,7 @@
 import { ASSET_PANEL_CHANNELS, requestAssetPanel } from "./craftmine-asset-panel";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { PERSISTENT_WORKBENCH_CHANNELS, type CraftmineOperationJournal, type OperationOwner, type PendingOperation } from "./craftmine-operation-journal";
+import type {PackageRequestOwner} from './craftmine-package-service';
 
 export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "workbench.capabilities", "task.current", "task.recoverable", "task.resume", "task.discard", "task.stop",
@@ -35,7 +36,7 @@ export function createCraftminePanelGateway(options: {
   diagnostics: (channel: string, payload: Record<string, any>) => Promise<any>;
   issues?: (channel: string, payload: Record<string, any>) => Promise<any>;
   targetFeedback?: (channel: string, payload: Record<string, any>) => Promise<any>;
-  packages?: (channel: string, payload: Record<string, any>) => Promise<any>;
+  packages?: (channel: string, payload: Record<string, any>, owner:PackageRequestOwner) => Promise<any>;
   authorizeAssetSource?: (sourceRoot: string, sourcePath?: string) => Promise<void>;
   operations?: CraftmineOperationJournal;
 }) {
@@ -99,7 +100,19 @@ export function createCraftminePanelGateway(options: {
     if (channel === "package.request") {
       if (!options.packages) throw Error("PACKAGE_SERVICE_UNAVAILABLE");
       if (owner.active) throw Error("ACTIVE_TASK_EXISTS");
-      return options.packages(channel, payload);
+      const assertCurrent=async()=>{
+        if(options.viewingSession()!==sessionId)throw Error('PACKAGE_OWNER_CHANGED');
+        const selected=await options.domain('selection.read',{});
+        if(selected.worldId!==worldId||options.viewingSession()!==sessionId)throw Error('PACKAGE_OWNER_CHANGED');
+        const current=sessionId?await options.session(sessionId):null;
+        if(options.viewingSession()!==sessionId||(sessionId&&(current?.id!==sessionId||craftmineProjectIdentity(current,sessionId)!==owner.projectId)))throw Error('PACKAGE_OWNER_CHANGED');
+        if(sessionId&&options.activeTurn(sessionId))throw Error('ACTIVE_TASK_EXISTS');
+        const final=await options.domain('selection.read',{});
+        if(final.worldId!==worldId||options.viewingSession()!==sessionId)throw Error('PACKAGE_OWNER_CHANGED');
+        if(sessionId&&options.activeTurn(sessionId))throw Error('ACTIVE_TASK_EXISTS');
+      };
+      const packageOwner={...operationOwner,assertCurrent};
+      await assertCurrent();const result=await options.packages(channel,payload,packageOwner);await assertCurrent();return result;
     }
     if (channel.startsWith("backup.")) {
       const { worldId: _worldId, ...input } = payload;

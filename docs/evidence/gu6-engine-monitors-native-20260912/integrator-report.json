@@ -1,0 +1,428 @@
+{
+  "format": "craftmine.engine-performance-native-test/1",
+  "passed": true,
+  "out": "D:\\cm-agent-godot-0912\\test-results\\engine-performance-native-1Kdk6e",
+  "collectorSha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945",
+  "fixtureSha256": "978d83a5b4a1081c3dc94303db58b0f98077b7bb85b5bd49068ad14c83bc7660",
+  "classdbVersion": "4.7.2.stable.official.ed1daf0bf",
+  "enumEvidence": {
+    "TIME_FPS": 0,
+    "TIME_PROCESS": 1,
+    "TIME_PHYSICS_PROCESS": 2,
+    "OBJECT_COUNT": 7,
+    "OBJECT_NODE_COUNT": 9,
+    "RENDER_TOTAL_PRIMITIVES_IN_FRAME": 12,
+    "RENDER_TOTAL_DRAW_CALLS_IN_FRAME": 13
+  },
+  "scope": "Pinned native editor binary running an authored empty tree then 256 inert nodes, paused removal and resume; not a shipped world, renderer workload, optimization or model benchmark",
+  "checks": [
+    "Pinned engine and enum identities",
+    "Real positive process/physics/FPS readings after publication",
+    "Exact 256 scene-node increase and removal",
+    "Engine object count increases with authored nodes",
+    "Paused timings and headless render/GPU remain unknown",
+    "No custom monitor invoked",
+    "Monotonic collector/frame identities"
+  ],
+  "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+  "engineSha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "arguments": [
+    "--headless",
+    "--language",
+    "en",
+    "--path",
+    "D:\\cm-agent-godot-0912\\test-results\\engine-performance-native-1Kdk6e\\project",
+    "--script",
+    "res://probe.gd"
+  ],
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "stdoutSha256": "35ad7ec3edca8238ea7610bb592bcdd265be6ae57610a4272e531369190e2ec8",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "samples": {
+    "addedNodes": 256,
+    "customMonitorCalls": 0,
+    "empty": {
+      "debugBuild": true,
+      "editorHint": false,
+      "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+      "format": "craftmine.godot-engine-performance/1",
+      "framesDrawn": 0,
+      "headless": true,
+      "metrics": {
+        "drawCalls": {
+          "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+          "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "fps": {
+          "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+          "monitor": "TIME_FPS",
+          "rawValue": 136,
+          "status": "measured",
+          "unit": "fps"
+        },
+        "gpuTime": {
+          "meaning": "GPU execution duration.",
+          "monitor": null,
+          "reason": "NO_TRUSTED_GPU_TIMER",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "nodeCount": {
+          "meaning": "Engine-wide node count in the scene tree, including its root.",
+          "monitor": "OBJECT_NODE_COUNT",
+          "rawValue": 2,
+          "status": "measured",
+          "unit": "count"
+        },
+        "objectCount": {
+          "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+          "monitor": "OBJECT_COUNT",
+          "rawValue": 1487,
+          "status": "measured",
+          "unit": "count"
+        },
+        "physicsTime": {
+          "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+          "monitor": "TIME_PHYSICS_PROCESS",
+          "rawValue": 0.000391,
+          "status": "measured",
+          "unit": "s"
+        },
+        "primitives": {
+          "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+          "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "processTime": {
+          "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+          "monitor": "TIME_PROCESS",
+          "rawValue": 0.000017,
+          "status": "measured",
+          "unit": "s"
+        }
+      },
+      "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+      "monotonicUsec": 1378213,
+      "paused": false,
+      "physicsFrame": 78,
+      "processFrame": 189,
+      "profile": "engine-monitor/1",
+      "renderingDriver": "opengl3",
+      "renderingMethod": "gl_compatibility",
+      "sampledAt": "2026-09-12T02:27:42Z",
+      "sequence": 1
+    },
+    "loaded": {
+      "debugBuild": true,
+      "editorHint": false,
+      "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+      "format": "craftmine.godot-engine-performance/1",
+      "framesDrawn": 0,
+      "headless": true,
+      "metrics": {
+        "drawCalls": {
+          "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+          "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "fps": {
+          "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+          "monitor": "TIME_FPS",
+          "rawValue": 145,
+          "status": "measured",
+          "unit": "fps"
+        },
+        "gpuTime": {
+          "meaning": "GPU execution duration.",
+          "monitor": null,
+          "reason": "NO_TRUSTED_GPU_TIMER",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "nodeCount": {
+          "meaning": "Engine-wide node count in the scene tree, including its root.",
+          "monitor": "OBJECT_NODE_COUNT",
+          "rawValue": 258,
+          "status": "measured",
+          "unit": "count"
+        },
+        "objectCount": {
+          "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+          "monitor": "OBJECT_COUNT",
+          "rawValue": 1743,
+          "status": "measured",
+          "unit": "count"
+        },
+        "physicsTime": {
+          "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+          "monitor": "TIME_PHYSICS_PROCESS",
+          "rawValue": 0.000027,
+          "status": "measured",
+          "unit": "s"
+        },
+        "primitives": {
+          "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+          "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "processTime": {
+          "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+          "monitor": "TIME_PROCESS",
+          "rawValue": 0.000705,
+          "status": "measured",
+          "unit": "s"
+        }
+      },
+      "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+      "monotonicUsec": 2682201,
+      "paused": false,
+      "physicsFrame": 156,
+      "processFrame": 378,
+      "profile": "engine-monitor/1",
+      "renderingDriver": "opengl3",
+      "renderingMethod": "gl_compatibility",
+      "sampledAt": "2026-09-12T02:27:43Z",
+      "sequence": 2
+    },
+    "paused": {
+      "debugBuild": true,
+      "editorHint": false,
+      "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+      "format": "craftmine.godot-engine-performance/1",
+      "framesDrawn": 0,
+      "headless": true,
+      "metrics": {
+        "drawCalls": {
+          "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+          "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "fps": {
+          "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+          "monitor": "TIME_FPS",
+          "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+          "status": "unknown",
+          "unit": "fps"
+        },
+        "gpuTime": {
+          "meaning": "GPU execution duration.",
+          "monitor": null,
+          "reason": "NO_TRUSTED_GPU_TIMER",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "nodeCount": {
+          "meaning": "Engine-wide node count in the scene tree, including its root.",
+          "monitor": "OBJECT_NODE_COUNT",
+          "rawValue": 258,
+          "status": "measured",
+          "unit": "count"
+        },
+        "objectCount": {
+          "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+          "monitor": "OBJECT_COUNT",
+          "rawValue": 1743,
+          "status": "measured",
+          "unit": "count"
+        },
+        "physicsTime": {
+          "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+          "monitor": "TIME_PHYSICS_PROCESS",
+          "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "primitives": {
+          "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+          "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "processTime": {
+          "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+          "monitor": "TIME_PROCESS",
+          "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+          "status": "unknown",
+          "unit": "s"
+        }
+      },
+      "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+      "monotonicUsec": 2682310,
+      "paused": true,
+      "physicsFrame": 156,
+      "processFrame": 378,
+      "profile": "engine-monitor/1",
+      "renderingDriver": "opengl3",
+      "renderingMethod": "gl_compatibility",
+      "sampledAt": "2026-09-12T02:27:43Z",
+      "sequence": 3
+    },
+    "removed": {
+      "debugBuild": true,
+      "editorHint": false,
+      "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+      "format": "craftmine.godot-engine-performance/1",
+      "framesDrawn": 0,
+      "headless": true,
+      "metrics": {
+        "drawCalls": {
+          "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+          "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "fps": {
+          "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+          "monitor": "TIME_FPS",
+          "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+          "status": "unknown",
+          "unit": "fps"
+        },
+        "gpuTime": {
+          "meaning": "GPU execution duration.",
+          "monitor": null,
+          "reason": "NO_TRUSTED_GPU_TIMER",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "nodeCount": {
+          "meaning": "Engine-wide node count in the scene tree, including its root.",
+          "monitor": "OBJECT_NODE_COUNT",
+          "rawValue": 2,
+          "status": "measured",
+          "unit": "count"
+        },
+        "objectCount": {
+          "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+          "monitor": "OBJECT_COUNT",
+          "rawValue": 1487,
+          "status": "measured",
+          "unit": "count"
+        },
+        "physicsTime": {
+          "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+          "monitor": "TIME_PHYSICS_PROCESS",
+          "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "primitives": {
+          "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+          "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "processTime": {
+          "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+          "monitor": "TIME_PROCESS",
+          "reason": "SCENE_TREE_PAUSED_NOT_ACTIVE_GAMEPLAY",
+          "status": "unknown",
+          "unit": "s"
+        }
+      },
+      "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+      "monotonicUsec": 2682423,
+      "paused": true,
+      "physicsFrame": 156,
+      "processFrame": 378,
+      "profile": "engine-monitor/1",
+      "renderingDriver": "opengl3",
+      "renderingMethod": "gl_compatibility",
+      "sampledAt": "2026-09-12T02:27:43Z",
+      "sequence": 4
+    },
+    "resumed": {
+      "debugBuild": true,
+      "editorHint": false,
+      "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+      "format": "craftmine.godot-engine-performance/1",
+      "framesDrawn": 0,
+      "headless": true,
+      "metrics": {
+        "drawCalls": {
+          "meaning": "Draw calls in the last rendered frame; not GPU execution time.",
+          "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "fps": {
+          "meaning": "Engine-published frame rate; refreshed approximately once per second, not a per-frame timer.",
+          "monitor": "TIME_FPS",
+          "rawValue": 145,
+          "status": "measured",
+          "unit": "fps"
+        },
+        "gpuTime": {
+          "meaning": "GPU execution duration.",
+          "monitor": null,
+          "reason": "NO_TRUSTED_GPU_TIMER",
+          "status": "unknown",
+          "unit": "s"
+        },
+        "nodeCount": {
+          "meaning": "Engine-wide node count in the scene tree, including its root.",
+          "monitor": "OBJECT_NODE_COUNT",
+          "rawValue": 2,
+          "status": "measured",
+          "unit": "count"
+        },
+        "objectCount": {
+          "meaning": "Engine-wide instantiated Object count, including nodes and runtime overhead.",
+          "monitor": "OBJECT_COUNT",
+          "rawValue": 1487,
+          "status": "measured",
+          "unit": "count"
+        },
+        "physicsTime": {
+          "meaning": "Engine-published time to complete a physics frame; not the physics step interval.",
+          "monitor": "TIME_PHYSICS_PROCESS",
+          "rawValue": 0.000023,
+          "status": "measured",
+          "unit": "s"
+        },
+        "primitives": {
+          "meaning": "Vertices or indices submitted in the last rendered frame, including rendering passes.",
+          "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+          "reason": "RENDERER_NOT_DRAWING",
+          "status": "unknown",
+          "unit": "count"
+        },
+        "processTime": {
+          "meaning": "Engine-published time to complete a frame; not OS CPU usage or script-only time.",
+          "monitor": "TIME_PROCESS",
+          "rawValue": 0.000302,
+          "status": "measured",
+          "unit": "s"
+        }
+      },
+      "monitorFreshness": "Engine monitors may be cached for about one second; request sequence is not an engine refresh sequence.",
+      "monotonicUsec": 3986300,
+      "paused": false,
+      "physicsFrame": 234,
+      "processFrame": 567,
+      "profile": "engine-monitor/1",
+      "renderingDriver": "opengl3",
+      "renderingMethod": "gl_compatibility",
+      "sampledAt": "2026-09-12T02:27:45Z",
+      "sequence": 5
+    }
+  }
+}

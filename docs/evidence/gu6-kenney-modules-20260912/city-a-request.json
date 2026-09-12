@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "requestId": "km-city-a-1789162331373",
+  "taskId": "km-city-a-1789162331373",
+  "operation": "exportWeb",
+  "projectRoot": "D:\\cm-gu6-module-0912\\test-results\\kenney-module-ZG50OC\\city-a-probe",
+  "tasksRoot": "D:\\cm-gu6-module-0912\\test-results\\kenney-module-ZG50OC\\tasks",
+  "engineRoot": "D:/Craftmine World/desktop/build/godot/4.7.2-stable",
+  "sourceBinding": {
+    "worldId": "city-a",
+    "buildId": "km-city-a-1789162331373",
+    "sourceRevision": 1,
+    "sourceDigest": "cb49bb8e964a2b219f47d3410facfd08f80ee62f11fd5bff301a6254ee0b072b"
+  },
+  "inputHash": "0609ffe7963a74fd7f74467b96b4aaa0984dc03b19767de18a294bf5ab8b85bc"
+}

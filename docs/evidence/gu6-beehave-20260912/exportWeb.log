@@ -1,0 +1,135 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Call to GetAdaptersAddresses failed with error 5.
+   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Method/function failed. Returning: ""
+   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started 项目初始化 (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | 正在扫描文件结构……[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | 正在加载全局类名……[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | 正在校验 GDExtension……[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | 正在创建自动加载脚本……[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | 正在初始化插件……[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | 正在启动文件扫描……[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started 正在注册全局类…… (13 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | BeehaveDebuggerMessages[39m[0m
+[   7% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  14% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  21% ] [90m[1mupdate_scripts_classes[22m | Composite[39m[0m
+[  28% ] [90m[1mupdate_scripts_classes[22m | SelectorReactiveComposite[39m[0m
+[  35% ] [90m[1mupdate_scripts_classes[22m | SequenceReactiveComposite[39m[0m
+[  42% ] [90m[1mupdate_scripts_classes[22m | ActionLeaf[39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | ConditionLeaf[39m[0m
+[  57% ] [90m[1mupdate_scripts_classes[22m | Leaf[39m[0m
+[  64% ] [90m[1mupdate_scripts_classes[22m | BeehaveNode[39m[0m
+[  71% ] [90m[1mupdate_scripts_classes[22m | BeehaveTree[39m[0m
+[  78% ] [90m[1mupdate_scripts_classes[22m | Blackboard[39m[0m
+[  85% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started 正在扫描动作…… (8 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | action.svg[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | blackboard.svg[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | category_composite.svg[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | category_leaf.svg[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | condition.svg[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | selector_reactive.svg[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | sequence_reactive.svg[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | tree.svg[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 正在导入或重新导入资产 (8 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  11% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  22% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  33% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  44% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  55% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  66% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[  77% ] [90m[1mreimport[22m | 正在准备重新导入文件……[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在执行重新导入的前置操作……[39m[0m
+[   0% ] [90m[1mreimport[22m | action.svg[39m[0m
+[  11% ] [90m[1mreimport[22m | blackboard.svg[39m[0m
+[  22% ] [90m[1mreimport[22m | category_composite.svg[39m[0m
+[  33% ] [90m[1mreimport[22m | category_leaf.svg[39m[0m
+[  44% ] [90m[1mreimport[22m | condition.svg[39m[0m
+[  55% ] [90m[1mreimport[22m | selector_reactive.svg[39m[0m
+[  66% ] [90m[1mreimport[22m | sequence_reactive.svg[39m[0m
+[  77% ] [90m[1mreimport[22m | tree.svg[39m[0m
+[  88% ] [90m[1mreimport[22m | 正在结束资产导入……[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started 正在导入或重新导入资产 (8 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | 正在执行重新导入的后置操作……[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started 打包中 (102 steps)[39m[0m
+[   1% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/debug/debugger_messages.gdc[39m[0m
+[   5% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/debug/global_debugger.gdc[39m[0m
+[  10% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/action.svg-e8a91246d0ba9ba3cf84290d65648f06.ctex[39m[0m
+[  10% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/action.svg.import[39m[0m
+[  14% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/blackboard.svg-18d4dfd4f6de558de250b67251ff1e69.ctex[39m[0m
+[  14% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/blackboard.svg.import[39m[0m
+[  19% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/category_composite.svg-43f66e63a7ccfa5ac8ec6da0583b3246.ctex[39m[0m
+[  19% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/category_composite.svg.import[39m[0m
+[  23% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/category_leaf.svg-c740ecab6cfae632574ca5e39e46fd2e.ctex[39m[0m
+[  23% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/category_leaf.svg.import[39m[0m
+[  28% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/condition.svg-57892684b10a64086f68c09c388b17e5.ctex[39m[0m
+[  28% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/condition.svg.import[39m[0m
+[  32% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/selector_reactive.svg-dd3b8fb8cd2ffe331605aaad1e021cc0.ctex[39m[0m
+[  32% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/selector_reactive.svg.import[39m[0m
+[  36% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/sequence_reactive.svg-7d384ca290f7934adb9e17d9e7116b6c.ctex[39m[0m
+[  36% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/sequence_reactive.svg.import[39m[0m
+[  40% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/imported/tree.svg-c0b20ed88b2fe300c0296f7236049076.ctex[39m[0m
+[  40% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/icons/tree.svg.import[39m[0m
+[  45% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/metrics/beehave_global_metrics.gdc[39m[0m
+[  50% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/composites/composite.gdc[39m[0m
+[  54% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/composites/selector_reactive.gdc[39m[0m
+[  59% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/composites/sequence_reactive.gdc[39m[0m
+[  63% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/leaves/action.gdc[39m[0m
+[  67% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/leaves/condition.gdc[39m[0m
+[  71% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/leaves/leaf.gdc[39m[0m
+[  76% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/beehave_node.gdc[39m[0m
+[  80% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/beehave_tree.gdc[39m[0m
+[  85% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/blackboard.gdc[39m[0m
+[  89% ] [90m[1msavepack[22m | 正在保存文件：res://trial.gdc[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/exported/133200997/export-06e364a0c95fe2acc67a376e4e51c96e-trial.scn[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/debug/debugger_messages.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/debug/global_debugger.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/metrics/beehave_global_metrics.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/composites/composite.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/composites/selector_reactive.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/composites/sequence_reactive.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/leaves/action.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/leaves/condition.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/leaves/leaf.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/beehave_node.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/nodes/beehave_tree.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://addons/beehave/blackboard.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://trial.gd.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://trial.tscn.remap[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/global_script_class_cache.cfg[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://.godot/uid_cache.bin[39m[0m
+[  94% ] [90m[1msavepack[22m | 正在保存文件：res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m
+ERROR: Condition "_sock == (SOCKET)(~0)" is true. Returning: FAILED
+   at: open (drivers/windows/net_socket_winsock.cpp:238)
+ERROR: Condition "err != OK" is true. Returning: ERR_CANT_CREATE
+   at: listen (core/io/tcp_server.cpp:56)

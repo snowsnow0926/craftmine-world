@@ -1,0 +1,701 @@
+{
+  "format": "craftmine.external-godot-archived-evidence/1",
+  "engineVersion": "4.7.2-stable",
+  "kits": [
+    {
+      "id": "kenney-fps",
+      "commit": "185fd2326d74a5cf858cffc616f87cf9696f9cc0",
+      "repo": "https://github.com/KenneyNL/Starter-Kit-FPS",
+      "project": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\kenney-fps",
+      "upstreamFiles": 102,
+      "sourceDigest": "dee33f92e1735b6fffd9c64035f1c91485f7997201c17af509624991cf97e39c",
+      "modifiedDigest": "d090ede4ea8c7717512d9ae6c3ab22ef9915d38e9cb037d45e508ed71e2b4ed8",
+      "scripts": [
+        {
+          "path": "objects/cloud.gd",
+          "sha256": "56506ee2963aa9046e6a285f333d5a222821ad59b674215af7704db25c66a18c"
+        },
+        {
+          "path": "objects/enemy.gd",
+          "sha256": "77a893496781de3d04c0b4fbda77ea26474f850cf5d9378f8eeca15cc1499b49"
+        },
+        {
+          "path": "objects/impact.gd",
+          "sha256": "e59d8e0c5f1f6f47aa3bb58c3967a496c0aaed79cfe7e483bb5e6b26298c7541"
+        },
+        {
+          "path": "objects/player.gd",
+          "sha256": "1ec541ac2fdb9c85f6d5327ba68fda119a6db95826b5eb1633f2dc6fa314e6c3"
+        },
+        {
+          "path": "scripts/audio.gd",
+          "sha256": "bc2d980d12a7d6f6cd3b23b18d5e1d24234ae44af75484a2068be98c7409c709"
+        },
+        {
+          "path": "scripts/hud.gd",
+          "sha256": "7ed154c436f33091360ae5431c1ff54c30b5af259b6c387a0239a19012d5b0e2"
+        },
+        {
+          "path": "scripts/weapon.gd",
+          "sha256": "747fedb31c73db5c131435729247b5ac1c6ac2d3882d3d1811c5c48f89a8a04f"
+        }
+      ],
+      "patches": [
+        {
+          "path": "objects/player.gd",
+          "beforeSha256": "1ec541ac2fdb9c85f6d5327ba68fda119a6db95826b5eb1633f2dc6fa314e6c3",
+          "afterSha256": "d1d98f29efe34619409c6537234c69c9e9045c94863b96911fdd0c6a7dfc9252"
+        },
+        {
+          "path": "project.godot",
+          "beforeSha256": "c5a7d4c134b386edaccdfb2ec9abf59d4086ef0c6773957f06e6e5c71052c41c",
+          "afterSha256": "421cb654c52bce71a3b24b88653a12edf110f1ad5cddb59ad1eff6277d1f22dc"
+        },
+        {
+          "path": "export_presets.cfg",
+          "source": "trusted Web fixture, focus=false, no threads",
+          "afterSha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+        }
+      ],
+      "mouseAssignments": [
+        {
+          "line": 49,
+          "original": "Input.mouse_mode = Input.MOUSE_MODE_CAPTURED",
+          "after": "Input.mouse_mode = Input.MOUSE_MODE_VISIBLE",
+          "changed": true
+        },
+        {
+          "line": 107,
+          "original": "Input.mouse_mode = Input.MOUSE_MODE_CAPTURED",
+          "after": "Input.mouse_mode = Input.MOUSE_MODE_VISIBLE",
+          "changed": true
+        },
+        {
+          "line": 111,
+          "original": "Input.mouse_mode = Input.MOUSE_MODE_VISIBLE",
+          "after": "Input.mouse_mode = Input.MOUSE_MODE_VISIBLE",
+          "changed": false
+        }
+      ],
+      "licenses": [
+        {
+          "path": "LICENSE.md",
+          "bytes": 1062,
+          "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+        },
+        {
+          "path": "README.md",
+          "bytes": 2219,
+          "sha256": "69d77c39c3c05692b6a0ddbc626615d403421ab3c7b884b0a5ad4ae90368c02a"
+        },
+        {
+          "path": "fonts/license.txt",
+          "bytes": 4391,
+          "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+        }
+      ],
+      "licenseDirectory": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\kenney-fps-licenses",
+      "audit": {
+        "nativePlugins": false,
+        "toolScripts": false,
+        "processOrNetworkCalls": false,
+        "persistence": "No upstream persistent save adapter"
+      },
+      "operations": [
+        {
+          "operation": "import",
+          "taskId": "gu6-kenney-fps-import-1789160716198",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "kenney-fps-import-receipt.json",
+          "logPath": "kenney-fps-import.log",
+          "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-fps-import-1789160716198\\artifacts",
+          "artifacts": [],
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        },
+        {
+          "operation": "exportWeb",
+          "taskId": "gu6-kenney-fps-exportweb-1789160720669",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "kenney-fps-exportWeb-receipt.json",
+          "logPath": "kenney-fps-exportWeb.log",
+          "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-fps-exportweb-1789160720669\\artifacts",
+          "artifacts": [
+            {
+              "path": "index.apple-touch-icon.png",
+              "bytes": 12932,
+              "sha256": "b8464ddfe01e4a8e9685670cfcd4aa9c87f25bd1905b770ec307bb301917b603"
+            },
+            {
+              "path": "index.audio.position.worklet.js",
+              "bytes": 2973,
+              "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+            },
+            {
+              "path": "index.audio.worklet.js",
+              "bytes": 7298,
+              "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+            },
+            {
+              "path": "index.html",
+              "bytes": 5447,
+              "sha256": "a475892bc6404017b957ea2d2662891cbab332e73bf549054bf12e1737cafaa0"
+            },
+            {
+              "path": "index.icon.png",
+              "bytes": 12893,
+              "sha256": "8af0de035ce2c5878d42e082c5ba03a1fab6c339706e4917ea545929a2f9546a"
+            },
+            {
+              "path": "index.js",
+              "bytes": 279815,
+              "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+            },
+            {
+              "path": "index.pck",
+              "bytes": 9348948,
+              "sha256": "7a8ef0a56b84b6478db63d9e934364c0e43b98f8a021c63795a5376c35532f99"
+            },
+            {
+              "path": "index.png",
+              "bytes": 51340,
+              "sha256": "1f4d3ae046c0f7b273bd4b2de87f35b6edaf8cf765de319f55f1af83b9091f7b"
+            },
+            {
+              "path": "index.wasm",
+              "bytes": 39514754,
+              "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+            }
+          ],
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        }
+      ],
+      "browser": {
+        "console": [
+          {
+            "type": "log",
+            "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "type": "log",
+            "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "type": "log",
+            "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+          }
+        ],
+        "pageErrors": [],
+        "blockedRequests": [],
+        "input": {
+          "pointerLock": 0,
+          "focus": 0,
+          "pointerLocked": false
+        },
+        "screenshot": "kenney-fps.png",
+        "pixels": {
+          "width": 1280,
+          "height": 720,
+          "quantizedColors": 184,
+          "brightSamples": 57600
+        },
+        "runtimeErrors": [],
+        "started": true,
+        "passed": true,
+        "acceptanceScope": "startup-only; visualAssessment records separate screenshot review",
+        "screenshotSha256": "3b59ce654bdbf900a1da421df01a8614abaa96613c0f4e5efd9d8ad2b3e688c9"
+      },
+      "visualAssessment": "scene-visible",
+      "rawReport": "test-results\\gu6-open-source-xR6rQy\\report.json"
+    },
+    {
+      "id": "kenney-city",
+      "commit": "4535092b740b378b700efd9df9e27a631815b84a",
+      "repo": "https://github.com/KenneyNL/Starter-Kit-City-Builder",
+      "project": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\kenney-city",
+      "upstreamFiles": 110,
+      "sourceDigest": "170ff3676d188ba09d2fea672480300c762cd6ae904be4e031cb1c5b8563b257",
+      "modifiedDigest": "e4c15e56a6e187bba5e69eeae0c69b80899753ef4c4593cc61d8c04e5629096a",
+      "scripts": [
+        {
+          "path": "scripts/audio.gd",
+          "sha256": "4fbad816a2efa600a1079ee27b0b05925ef4bb87abf209c948310859438b1952"
+        },
+        {
+          "path": "scripts/builder.gd",
+          "sha256": "4fdf906ed15124c257a464b955be2d85cc99a7fa24419de094c1c775cc00bdbb"
+        },
+        {
+          "path": "scripts/data_map.gd",
+          "sha256": "cbbcad58bf45d93e7eff5e40cf61e1f8c874d8eff7287712ed9310cc7bb40d92"
+        },
+        {
+          "path": "scripts/data_structure.gd",
+          "sha256": "ed771079e16f0b23ecd952eec66663c5be695295fe428cad727e144bc5586017"
+        },
+        {
+          "path": "scripts/structure.gd",
+          "sha256": "3b3204ce069926172775244a5c430355c211fcace6b2b8f084316aca4ca5c595"
+        },
+        {
+          "path": "scripts/view.gd",
+          "sha256": "c92f26e648947fefa0aa3fb7b8433b14997c63667c27566e7b744566c0f9937f"
+        }
+      ],
+      "patches": [
+        {
+          "path": "project.godot",
+          "beforeSha256": "ab538e83127fd60e13800991b7eeb0078e2a47fbcbd9642199ab7370930cca61",
+          "afterSha256": "9e8218e8983ac65237ac6c4e85c2f49d3c69782ac18ce01433771df7f23c1ae4"
+        },
+        {
+          "path": "export_presets.cfg",
+          "source": "trusted Web fixture, focus=false, no threads",
+          "afterSha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+        }
+      ],
+      "mouseAssignments": [],
+      "licenses": [
+        {
+          "path": "LICENSE.md",
+          "bytes": 1062,
+          "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+        },
+        {
+          "path": "README.md",
+          "bytes": 3353,
+          "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+        },
+        {
+          "path": "fonts/license.txt",
+          "bytes": 4391,
+          "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+        }
+      ],
+      "licenseDirectory": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\kenney-city-licenses",
+      "audit": {
+        "nativePlugins": false,
+        "toolScripts": false,
+        "processOrNetworkCalls": false,
+        "persistence": "ResourceSaver/ResourceLoader user://map.res; not exercised"
+      },
+      "operations": [
+        {
+          "operation": "import",
+          "taskId": "gu6-kenney-city-import-1789160732143",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "kenney-city-import-receipt.json",
+          "logPath": "kenney-city-import.log",
+          "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-city-import-1789160732143\\artifacts",
+          "artifacts": [],
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        },
+        {
+          "operation": "exportWeb",
+          "taskId": "gu6-kenney-city-exportweb-1789160735934",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "kenney-city-exportWeb-receipt.json",
+          "logPath": "kenney-city-exportWeb.log",
+          "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-xR6rQy\\tasks\\gu6-kenney-city-exportweb-1789160735934\\artifacts",
+          "artifacts": [
+            {
+              "path": "index.apple-touch-icon.png",
+              "bytes": 13876,
+              "sha256": "5343f7286a49c7a0125e3e6ff28c6405280a92a4b719fa0e05dc43c36617dd58"
+            },
+            {
+              "path": "index.audio.position.worklet.js",
+              "bytes": 2973,
+              "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+            },
+            {
+              "path": "index.audio.worklet.js",
+              "bytes": 7298,
+              "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+            },
+            {
+              "path": "index.html",
+              "bytes": 5456,
+              "sha256": "f4721a65244a509f0a779694dfcec44f1633a72c107acfe9f6ac03ce7795e1a2"
+            },
+            {
+              "path": "index.icon.png",
+              "bytes": 13577,
+              "sha256": "5da47fcb67d63b0752bf9ecf1c34614f9b6c0efb153d6715dd26932ea37ecd17"
+            },
+            {
+              "path": "index.js",
+              "bytes": 279815,
+              "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+            },
+            {
+              "path": "index.pck",
+              "bytes": 1650872,
+              "sha256": "b63905211d6a67a497f86f262f41cf772ea013ec540839efb52660e93a89858f"
+            },
+            {
+              "path": "index.png",
+              "bytes": 48670,
+              "sha256": "06fe7f6dd03cea63d3a58237825f36374fcdd06e008ed3ff8f5e6098e4abe7fb"
+            },
+            {
+              "path": "index.wasm",
+              "bytes": 39514754,
+              "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+            }
+          ],
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        }
+      ],
+      "browser": {
+        "console": [
+          {
+            "type": "log",
+            "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "type": "log",
+            "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "type": "log",
+            "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+          }
+        ],
+        "pageErrors": [],
+        "blockedRequests": [],
+        "input": {
+          "pointerLock": 0,
+          "focus": 0,
+          "pointerLocked": false
+        },
+        "screenshot": "kenney-city.png",
+        "pixels": {
+          "width": 1280,
+          "height": 720,
+          "quantizedColors": 46,
+          "brightSamples": 57600
+        },
+        "runtimeErrors": [],
+        "started": true,
+        "passed": true,
+        "acceptanceScope": "startup-only; visualAssessment records separate screenshot review",
+        "screenshotSha256": "40d3728d3e68834f4a056bd543a4a3726e9a3e1d01680ba8798afde6367a8466"
+      },
+      "visualAssessment": "startup-only-empty-builder",
+      "rawReport": "test-results\\gu6-open-source-xR6rQy\\report.json"
+    },
+    {
+      "id": "kenney-city-sample",
+      "sourceId": "kenney-city",
+      "loadSample": true,
+      "commit": "4535092b740b378b700efd9df9e27a631815b84a",
+      "repo": "https://github.com/KenneyNL/Starter-Kit-City-Builder",
+      "project": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\kenney-city-sample",
+      "upstreamFiles": 110,
+      "sourceDigest": "170ff3676d188ba09d2fea672480300c762cd6ae904be4e031cb1c5b8563b257",
+      "modifiedDigest": "df05e0c3feca67caa6f70887c65840de1e5b5bf36554193ccbc57562191a30be",
+      "scripts": [
+        {
+          "path": "scripts/audio.gd",
+          "sha256": "4fbad816a2efa600a1079ee27b0b05925ef4bb87abf209c948310859438b1952"
+        },
+        {
+          "path": "scripts/builder.gd",
+          "sha256": "4fdf906ed15124c257a464b955be2d85cc99a7fa24419de094c1c775cc00bdbb"
+        },
+        {
+          "path": "scripts/data_map.gd",
+          "sha256": "cbbcad58bf45d93e7eff5e40cf61e1f8c874d8eff7287712ed9310cc7bb40d92"
+        },
+        {
+          "path": "scripts/data_structure.gd",
+          "sha256": "ed771079e16f0b23ecd952eec66663c5be695295fe428cad727e144bc5586017"
+        },
+        {
+          "path": "scripts/structure.gd",
+          "sha256": "3b3204ce069926172775244a5c430355c211fcace6b2b8f084316aca4ca5c595"
+        },
+        {
+          "path": "scripts/view.gd",
+          "sha256": "c92f26e648947fefa0aa3fb7b8433b14997c63667c27566e7b744566c0f9937f"
+        }
+      ],
+      "patches": [
+        {
+          "path": "scripts/builder.gd",
+          "beforeSha256": "4fdf906ed15124c257a464b955be2d85cc99a7fa24419de094c1c775cc00bdbb",
+          "afterSha256": "ece92ce7036704bc0a8c0551cabc14b571cb6e5de9db0d5e2a97764c66043a4b"
+        },
+        {
+          "path": "project.godot",
+          "beforeSha256": "ab538e83127fd60e13800991b7eeb0078e2a47fbcbd9642199ab7370930cca61",
+          "afterSha256": "9e8218e8983ac65237ac6c4e85c2f49d3c69782ac18ce01433771df7f23c1ae4"
+        },
+        {
+          "path": "export_presets.cfg",
+          "source": "trusted Web fixture, focus=false, no threads",
+          "afterSha256": "87863a704cb323418151b697a151bd9bb7b576c71461eb2602f9c919f6787e7d"
+        }
+      ],
+      "mouseAssignments": [],
+      "licenses": [
+        {
+          "path": "LICENSE.md",
+          "bytes": 1062,
+          "sha256": "8e99e4045f71bb96d77a1765c815511c63c9f9185bfada2b8917e041ced00754"
+        },
+        {
+          "path": "README.md",
+          "bytes": 3353,
+          "sha256": "0d6f9a90d2177658b56c47d4cbc4d759b151f8c3a09b24586da450c969de697d"
+        },
+        {
+          "path": "fonts/license.txt",
+          "bytes": 4391,
+          "sha256": "31d45880a38de46bc81835329c0c7d964609751e65add92769ea0095ad92c05b"
+        }
+      ],
+      "licenseDirectory": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\kenney-city-sample-licenses",
+      "audit": {
+        "nativePlugins": false,
+        "toolScripts": false,
+        "processOrNetworkCalls": false,
+        "persistence": "ResourceSaver/ResourceLoader user://map.res; not exercised"
+      },
+      "operations": [
+        {
+          "operation": "import",
+          "taskId": "gu6-sample-imp-1789160794227",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "kenney-city-sample-import-receipt.json",
+          "logPath": "kenney-city-sample-import.log",
+          "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\gu6-sample-imp-1789160794227\\artifacts",
+          "artifacts": [],
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        },
+        {
+          "operation": "exportWeb",
+          "taskId": "gu6-sample-web-1789160797966",
+          "transportExitCode": 0,
+          "state": "succeeded",
+          "error": null,
+          "verified": true,
+          "errors": [
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Call to GetAdaptersAddresses failed with error 5.",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Method/function failed. Returning: \"\"",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE",
+            "ERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED",
+            "ERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE"
+          ],
+          "receipt": "kenney-city-sample-exportWeb-receipt.json",
+          "logPath": "kenney-city-sample-exportWeb.log",
+          "artifactsRoot": "D:\\cm-gu6-open-source-0912\\test-results\\gu6-open-source-Orq3hk\\tasks\\gu6-sample-web-1789160797966\\artifacts",
+          "artifacts": [
+            {
+              "path": "index.apple-touch-icon.png",
+              "bytes": 13876,
+              "sha256": "5343f7286a49c7a0125e3e6ff28c6405280a92a4b719fa0e05dc43c36617dd58"
+            },
+            {
+              "path": "index.audio.position.worklet.js",
+              "bytes": 2973,
+              "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+            },
+            {
+              "path": "index.audio.worklet.js",
+              "bytes": 7298,
+              "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+            },
+            {
+              "path": "index.html",
+              "bytes": 5456,
+              "sha256": "1ad4027ac2c3981c6efb4c98a7d878aaf152f39ed0ced33e017ad2d711527fee"
+            },
+            {
+              "path": "index.icon.png",
+              "bytes": 13577,
+              "sha256": "5da47fcb67d63b0752bf9ecf1c34614f9b6c0efb153d6715dd26932ea37ecd17"
+            },
+            {
+              "path": "index.js",
+              "bytes": 279815,
+              "sha256": "33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba"
+            },
+            {
+              "path": "index.pck",
+              "bytes": 1650936,
+              "sha256": "73569162571bfcd2a845b2d9bee45dee3e300ba2a873259d36ab4640d5d5d43e"
+            },
+            {
+              "path": "index.png",
+              "bytes": 48670,
+              "sha256": "06fe7f6dd03cea63d3a58237825f36374fcdd06e008ed3ff8f5e6098e4abe7fb"
+            },
+            {
+              "path": "index.wasm",
+              "bytes": 39514754,
+              "sha256": "fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0"
+            }
+          ],
+          "processVerified": true,
+          "networkVerified": true,
+          "cleanupVerified": true,
+          "brokerSha256": "88f3ee05b68fae0c413bbec936b4d68ef38a49c18661f15d6f9ac2f163a06232"
+        }
+      ],
+      "browser": {
+        "console": [
+          {
+            "type": "log",
+            "text": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org"
+          },
+          {
+            "type": "log",
+            "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+          },
+          {
+            "type": "log",
+            "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+          },
+          {
+            "type": "log",
+            "text": "Loading map..."
+          }
+        ],
+        "pageErrors": [],
+        "blockedRequests": [],
+        "input": {
+          "pointerLock": 0,
+          "focus": 0,
+          "pointerLocked": false
+        },
+        "screenshot": "kenney-city-sample.png",
+        "pixels": {
+          "width": 1280,
+          "height": 720,
+          "quantizedColors": 458,
+          "brightSamples": 57600
+        },
+        "runtimeErrors": [],
+        "started": true,
+        "passed": true,
+        "acceptanceScope": "startup-only; visualAssessment records separate screenshot review",
+        "screenshotSha256": "a6c30c7be1c76e0b722f16b9ee33c29a7ecffa6edcc491745d5e658dabe0473d"
+      },
+      "visualAssessment": "upstream-sample-visible-host-authored-fixture",
+      "rawReport": "test-results\\gu6-open-source-Orq3hk\\report.json"
+    }
+  ],
+  "retainedDiagnostics": [
+    "test-results/gu6-open-source-272ti3 (FPS prior to disabling unsupported SSAA)",
+    "test-results/gu6-open-source-SQKC6W (original city startup)",
+    "test-results/gu6-open-source-FUAywn (long task ID sample export failed at CreateAppContainerProfile)"
+  ],
+  "notVerified": [
+    "Player-model authorship or autonomous resource selection",
+    "Player input gameplay",
+    "Formal Craftmine application/save contract",
+    "City building/saving/loading user progress"
+  ]
+}

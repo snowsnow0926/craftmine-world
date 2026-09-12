@@ -1,0 +1,904 @@
+{
+  "passed": true,
+  "source": "D:/cm-gu4-collision-guard-0912/test-results/creation-module-collision-web-zAdOHi/cases.json",
+  "path": "D:\\cm-gu6-performance-host-0912\\test-results\\performance-godot-JrLSwz",
+  "pluginRoot": "D:/cm-agent-godot-0912",
+  "pluginCommit": "7e39e41be8e62362d740b3830f76f46c70288e33",
+  "pluginFiles": [
+    {
+      "path": "world-tools.cjs",
+      "bytes": 27138,
+      "sha256": "6a1479ee0496ec99445f3f0275f1a002ec4e5be7f8d7b1a63b832b3416401001"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 88878,
+      "sha256": "c71c319b77d7d2b069b06049ad47ec6e6189ce86994be098b7f1fc5366ea5ea2"
+    },
+    {
+      "path": "godot-performance-query.cjs",
+      "bytes": 2191,
+      "sha256": "25cecb5c806d76574bdce5d9cf9076ef689b61486cc91777169244bfbf60fdec"
+    },
+    {
+      "path": "godot-performance-observation.mjs",
+      "bytes": 2776,
+      "sha256": "0dc86a06c89faef69a45d5c60323a0bf02155d6f69eeb202a674c1facd450245"
+    },
+    {
+      "path": "godot-observe.cjs",
+      "bytes": 18471,
+      "sha256": "801798eaa992920cd5f33afe9584b4f17b843362f134c922e3e62ee7768f3334"
+    },
+    {
+      "path": "tool-services.cjs",
+      "bytes": 13317,
+      "sha256": "7d6b96c7d14540c5db89a47df630adcf1c7f9af17d26be8181765cf1f750e995"
+    }
+  ],
+  "sourceArtifactsUnchanged": true,
+  "phases": [
+    {
+      "phase": "first",
+      "code": 0,
+      "result": {
+        "phase": "first",
+        "passed": true,
+        "scope": "Actual exported Godot Web scene, production host/live/OS samplers and packaged broker; Core task/runtime descriptors and local progress store are fixtures; no plugin IPC/model/player benchmark",
+        "observation": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "abd3f185640e5b276084fdc8",
+          "payload": {
+            "base": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "controllerEvidence": {
+              "activeCameraId": "26105349427",
+              "body": {
+                "globalScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "layer": 8,
+                "mask": 3,
+                "physicsProcessing": true,
+                "processMode": 0,
+                "rotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "scale": [
+                  1,
+                  1,
+                  1
+                ]
+              },
+              "cameraId": "26105349427",
+              "cameraParentId": "26088572213",
+              "cameraTransform": {
+                "cameraPosition": [
+                  0,
+                  0,
+                  0
+                ],
+                "cameraRotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "cameraScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "pitch": 0,
+                "pitchLimit": 89,
+                "pivotPosition": [
+                  0,
+                  0,
+                  0
+                ],
+                "pivotRotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "pivotScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "rigPosition": [
+                  0,
+                  0.649999976158142,
+                  0
+                ],
+                "rigRotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "rigScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "yaw": 0
+              },
+              "fixedPlayerScriptId": "-9223372011202411205",
+              "fixedRigScriptId": "-9223372011084970692",
+              "format": "craftmine.creation-controller-evidence/1",
+              "parameters": [
+                4.5,
+                1.7,
+                4.2,
+                14,
+                3,
+                1,
+                30,
+                9.8
+              ],
+              "physicsRate": 60,
+              "physicsTick": 8,
+              "pivotId": "26088572213",
+              "pivotParentId": "26071794999",
+              "playerClass": "CharacterBody3D",
+              "playerId": "26038240561",
+              "playerPath": "Player",
+              "playerRigId": "26071794999",
+              "playerScriptId": "-9223372011202411205",
+              "playerScriptPath": "res://scripts/reused/player_controller.gd",
+              "profile": "creation-fixed-controller/1",
+              "reason": "",
+              "rigCameraId": "26105349427",
+              "rigId": "26071794999",
+              "rigParentId": "26038240561",
+              "rigPath": "Player/CameraRig",
+              "rigPivotId": "26088572213",
+              "rigScriptId": "-9223372011084970692",
+              "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+              "rootPlayerId": "26038240561",
+              "shape": {
+                "bodyResourceId": "-9223372010883644103",
+                "disabled": false,
+                "height": 1.79999995231628,
+                "id": "26055017778",
+                "kind": "CapsuleShape3D",
+                "ownerCount": 1,
+                "ownerDisabled": false,
+                "ownerNodeId": "26055017778",
+                "position": [
+                  0,
+                  0,
+                  0
+                ],
+                "radius": 0.300000011920929,
+                "resourceId": "-9223372010883644103",
+                "rotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "scale": [
+                  1,
+                  1,
+                  1
+                ],
+                "shapeCount": 1
+              },
+              "status": "supported"
+            },
+            "creation": {
+              "entities": [],
+              "obstacles": [],
+              "physicsTick": 8,
+              "playerBounds": {
+                "halfExtents": [
+                  0.3,
+                  0.9,
+                  0.3
+                ],
+                "position": [
+                  0,
+                  -2.38418579323607e-8,
+                  6
+                ]
+              },
+              "revision": 1,
+              "sceneObjectRefs": [],
+              "sceneObjectSelection": {
+                "counts": {
+                  "candidates": 1,
+                  "facesRead": 1,
+                  "nodes": 25,
+                  "triangles": 12,
+                  "vertices": 0
+                },
+                "geometryBasis": "base-surface-arrays",
+                "pixelAccurate": false,
+                "reason": "nearer-or-tied-physics-hit",
+                "renderLodVerified": false,
+                "scope": "bounded-static-base-mesh-triangles",
+                "status": "blocked"
+              },
+              "sceneObjectTarget": null,
+              "target": {
+                "entityId": null,
+                "normal": [
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0,
+                  1.54999995231628,
+                  -31.75
+                ],
+                "revision": 1,
+                "surface": "boundary"
+              },
+              "timeOfDay": 12
+            },
+            "error": "",
+            "inventory": {},
+            "logicalViewportSize": [
+              64,
+              64
+            ],
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "progressCollisionGuard": {
+              "bodies": [
+                {
+                  "id": "29427238228",
+                  "nodePath": "@StaticBody3D@7",
+                  "shape": 0
+                }
+              ],
+              "contactTolerance": 0.001,
+              "maxContactDepth": 0,
+              "playerId": "26038240561",
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "profile": "creation-player-collision/1",
+              "reason": "",
+              "shapeId": "26055017778",
+              "shapeResourceId": "-9223372010883644103",
+              "status": "passed",
+              "synchronization": {
+                "boundaries": 2,
+                "finishedFrame": 18,
+                "paused": true,
+                "startedFrame": 16
+              }
+            },
+            "ready": true,
+            "surfaceSize": [
+              0,
+              0
+            ]
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-12T01:59:24Z",
+          "worldId": "collision-web-world"
+        },
+        "sample": {
+          "worldId": "collision-web-world",
+          "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+          "instanceId": "abd3f185640e5b276084fdc8",
+          "rendererProcessId": 91932,
+          "webContentsId": 2,
+          "sampledAt": "2026-09-12T01:59:24.545Z",
+          "provenance": "electron-app-metrics",
+          "measurementScope": "renderer-process",
+          "memoryUnit": "MiB",
+          "memoryWorkingSetMb": 396.90234375,
+          "unavailable": {
+            "frameTimeMs": "Engine frame timing is not exposed by the current runtime protocol.",
+            "physicsStepMs": "Engine physics timing is not exposed by the current runtime protocol.",
+            "objectCount": "Engine object count is not exposed by the current runtime protocol."
+          }
+        },
+        "coreFixtureCalls": [
+          "task.context",
+          "godotRuntime.describe",
+          "task.context",
+          "godotRuntime.describe"
+        ],
+        "brokerHostSample": {
+          "worldId": "collision-web-world",
+          "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+          "instanceId": "abd3f185640e5b276084fdc8",
+          "rendererProcessId": 91932,
+          "webContentsId": 2,
+          "sampledAt": "2026-09-12T01:59:24.567Z",
+          "provenance": "electron-app-metrics",
+          "measurementScope": "renderer-process",
+          "memoryUnit": "MiB",
+          "memoryWorkingSetMb": 397.625,
+          "unavailable": {
+            "frameTimeMs": "Engine frame timing is not exposed by the current runtime protocol.",
+            "physicsStepMs": "Engine physics timing is not exposed by the current runtime protocol.",
+            "objectCount": "Engine object count is not exposed by the current runtime protocol."
+          }
+        },
+        "broker": {
+          "format": "craftmine.godot-performance-observation/1",
+          "available": true,
+          "scope": {
+            "worldId": "collision-web-world",
+            "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+            "instanceId": "abd3f185640e5b276084fdc8"
+          },
+          "sampledAt": "2026-09-12T01:59:24.567Z",
+          "rendererProcessId": 91932,
+          "measured": {
+            "frameTimeMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "physicsStepMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "objectCount": {
+              "status": "unknown",
+              "unit": "count",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "memoryWorkingSetMb": {
+              "status": "measured",
+              "value": 397.625,
+              "unit": "MiB",
+              "source": "electron-app-metrics",
+              "measurementScope": "renderer-process",
+              "note": "Whole OS renderer process working set including runtime overhead; not exclusive world or GPU memory"
+            },
+            "gpuTimeMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            }
+          },
+          "observedAt": "2026-09-12T01:59:24.569Z",
+          "measurementHash": "deed47b31980e5a61f2210c88021b52afb51b23a46a52008fc3ef69b231a89cf"
+        },
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "collision-web-world"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "collision-web-world"
+        },
+        "save": {
+          "status": "persisted",
+          "runnerReceipt": {
+            "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+            "bytes": 424,
+            "format": "craftmine.godot-runner-receipt/1",
+            "instanceId": "abd3f185640e5b276084fdc8",
+            "snapshotSha256": "9a3216af7462b316ce3f30cea85d01c5b4bd21fa0ebef90fef7d9387d76b5821",
+            "snapshotText": "{\"baseId\":\"creation-sandbox\",\"baseVersion\":\"1.0.0\",\"body\":{\"baseVersion\":\"1.0.0\",\"doors\":{},\"format\":\"craftmine.creation-progress/1\",\"inventory\":{},\"openedChests\":{},\"player\":{\"onFloor\":true,\"pitch\":0.0,\"position\":[0.0,0.899999976158142,6.0],\"yaw\":0.0},\"rules\":{},\"sourceTimeOfDay\":12.0,\"timeOfDay\":12.0,\"worldId\":\"collision-web-world\"},\"format\":\"craftmine.godot-progress/1\",\"stateVersion\":1,\"worldId\":\"collision-web-world\"}",
+            "worldId": "collision-web-world"
+          },
+          "receipt": {
+            "format": "craftmine.godot-progress-receipt/1",
+            "worldId": "collision-web-world",
+            "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+            "revision": 1,
+            "contentHash": "c43781faaf3dafe8bfaa8d7778b61cf04fe9f8b87b7a153f8e27f3e6deb3a290",
+            "persistedAt": 1789178364573
+          },
+          "snapshot": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "collision-web-world"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "collision-web-world"
+          }
+        },
+        "guards": [
+          {
+            "pointerLock": 0,
+            "focus": 0
+          }
+        ],
+        "inputEvents": 0,
+        "ownerVisible": false,
+        "ownerFocusable": false,
+        "disposalDuringSampleRejected": true
+      }
+    },
+    {
+      "phase": "reopen",
+      "code": 0,
+      "result": {
+        "phase": "reopen",
+        "passed": true,
+        "scope": "Actual exported Godot Web scene, production host/live/OS samplers and packaged broker; Core task/runtime descriptors and local progress store are fixtures; no plugin IPC/model/player benchmark",
+        "observation": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+          "format": "craftmine.godot-observation/1",
+          "instanceId": "61c4904ed959b526bfdb8599",
+          "payload": {
+            "base": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "controllerEvidence": {
+              "activeCameraId": "26105349427",
+              "body": {
+                "globalScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "layer": 8,
+                "mask": 3,
+                "physicsProcessing": true,
+                "processMode": 0,
+                "rotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "scale": [
+                  1,
+                  1,
+                  1
+                ]
+              },
+              "cameraId": "26105349427",
+              "cameraParentId": "26088572213",
+              "cameraTransform": {
+                "cameraPosition": [
+                  0,
+                  0,
+                  0
+                ],
+                "cameraRotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "cameraScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "pitch": 0,
+                "pitchLimit": 89,
+                "pivotPosition": [
+                  0,
+                  0,
+                  0
+                ],
+                "pivotRotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "pivotScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "rigPosition": [
+                  0,
+                  0.649999976158142,
+                  0
+                ],
+                "rigRotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "rigScale": [
+                  1,
+                  1,
+                  1
+                ],
+                "yaw": 0
+              },
+              "fixedPlayerScriptId": "-9223372011202411205",
+              "fixedRigScriptId": "-9223372011084970692",
+              "format": "craftmine.creation-controller-evidence/1",
+              "parameters": [
+                4.5,
+                1.7,
+                4.2,
+                14,
+                3,
+                1,
+                30,
+                9.8
+              ],
+              "physicsRate": 60,
+              "physicsTick": 8,
+              "pivotId": "26088572213",
+              "pivotParentId": "26071794999",
+              "playerClass": "CharacterBody3D",
+              "playerId": "26038240561",
+              "playerPath": "Player",
+              "playerRigId": "26071794999",
+              "playerScriptId": "-9223372011202411205",
+              "playerScriptPath": "res://scripts/reused/player_controller.gd",
+              "profile": "creation-fixed-controller/1",
+              "reason": "",
+              "rigCameraId": "26105349427",
+              "rigId": "26071794999",
+              "rigParentId": "26038240561",
+              "rigPath": "Player/CameraRig",
+              "rigPivotId": "26088572213",
+              "rigScriptId": "-9223372011084970692",
+              "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+              "rootPlayerId": "26038240561",
+              "shape": {
+                "bodyResourceId": "-9223372010883644103",
+                "disabled": false,
+                "height": 1.79999995231628,
+                "id": "26055017778",
+                "kind": "CapsuleShape3D",
+                "ownerCount": 1,
+                "ownerDisabled": false,
+                "ownerNodeId": "26055017778",
+                "position": [
+                  0,
+                  0,
+                  0
+                ],
+                "radius": 0.300000011920929,
+                "resourceId": "-9223372010883644103",
+                "rotation": [
+                  0,
+                  0,
+                  0
+                ],
+                "scale": [
+                  1,
+                  1,
+                  1
+                ],
+                "shapeCount": 1
+              },
+              "status": "supported"
+            },
+            "creation": {
+              "entities": [],
+              "obstacles": [],
+              "physicsTick": 8,
+              "playerBounds": {
+                "halfExtents": [
+                  0.3,
+                  0.9,
+                  0.3
+                ],
+                "position": [
+                  0,
+                  -2.38418579323607e-8,
+                  6
+                ]
+              },
+              "revision": 1,
+              "sceneObjectRefs": [],
+              "sceneObjectSelection": {
+                "counts": {
+                  "candidates": 1,
+                  "facesRead": 1,
+                  "nodes": 25,
+                  "triangles": 12,
+                  "vertices": 0
+                },
+                "geometryBasis": "base-surface-arrays",
+                "pixelAccurate": false,
+                "reason": "nearer-or-tied-physics-hit",
+                "renderLodVerified": false,
+                "scope": "bounded-static-base-mesh-triangles",
+                "status": "blocked"
+              },
+              "sceneObjectTarget": null,
+              "target": {
+                "entityId": null,
+                "normal": [
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0,
+                  1.54999995231628,
+                  -31.75
+                ],
+                "revision": 1,
+                "surface": "boundary"
+              },
+              "timeOfDay": 12
+            },
+            "error": "",
+            "inventory": {},
+            "logicalViewportSize": [
+              64,
+              64
+            ],
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "progressCollisionGuard": {
+              "bodies": [
+                {
+                  "id": "29427238228",
+                  "nodePath": "@StaticBody3D@7",
+                  "shape": 0
+                }
+              ],
+              "contactTolerance": 0.001,
+              "maxContactDepth": 0,
+              "playerId": "26038240561",
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "profile": "creation-player-collision/1",
+              "reason": "",
+              "shapeId": "26055017778",
+              "shapeResourceId": "-9223372010883644103",
+              "status": "passed",
+              "synchronization": {
+                "boundaries": 2,
+                "finishedFrame": 18,
+                "paused": true,
+                "startedFrame": 16
+              }
+            },
+            "ready": true,
+            "surfaceSize": [
+              0,
+              0
+            ]
+          },
+          "protocol": "craftmine.godot-runtime/2",
+          "sampledAt": "2026-09-12T01:59:26Z",
+          "worldId": "collision-web-world"
+        },
+        "sample": {
+          "worldId": "collision-web-world",
+          "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+          "instanceId": "61c4904ed959b526bfdb8599",
+          "rendererProcessId": 29704,
+          "webContentsId": 2,
+          "sampledAt": "2026-09-12T01:59:26.945Z",
+          "provenance": "electron-app-metrics",
+          "measurementScope": "renderer-process",
+          "memoryUnit": "MiB",
+          "memoryWorkingSetMb": 401.4921875,
+          "unavailable": {
+            "frameTimeMs": "Engine frame timing is not exposed by the current runtime protocol.",
+            "physicsStepMs": "Engine physics timing is not exposed by the current runtime protocol.",
+            "objectCount": "Engine object count is not exposed by the current runtime protocol."
+          }
+        },
+        "coreFixtureCalls": [
+          "task.context",
+          "godotRuntime.describe",
+          "task.context",
+          "godotRuntime.describe",
+          "task.context",
+          "godotRuntime.describe",
+          "task.context",
+          "godotRuntime.describe"
+        ],
+        "brokerHostSample": {
+          "worldId": "collision-web-world",
+          "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+          "instanceId": "61c4904ed959b526bfdb8599",
+          "rendererProcessId": 29704,
+          "webContentsId": 2,
+          "sampledAt": "2026-09-12T01:59:26.971Z",
+          "provenance": "electron-app-metrics",
+          "measurementScope": "renderer-process",
+          "memoryUnit": "MiB",
+          "memoryWorkingSetMb": 402.3046875,
+          "unavailable": {
+            "frameTimeMs": "Engine frame timing is not exposed by the current runtime protocol.",
+            "physicsStepMs": "Engine physics timing is not exposed by the current runtime protocol.",
+            "objectCount": "Engine object count is not exposed by the current runtime protocol."
+          }
+        },
+        "broker": {
+          "format": "craftmine.godot-performance-observation/1",
+          "available": true,
+          "scope": {
+            "worldId": "collision-web-world",
+            "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+            "instanceId": "61c4904ed959b526bfdb8599"
+          },
+          "sampledAt": "2026-09-12T01:59:26.971Z",
+          "rendererProcessId": 29704,
+          "measured": {
+            "frameTimeMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "physicsStepMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "objectCount": {
+              "status": "unknown",
+              "unit": "count",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "memoryWorkingSetMb": {
+              "status": "measured",
+              "value": 402.3046875,
+              "unit": "MiB",
+              "source": "electron-app-metrics",
+              "measurementScope": "renderer-process",
+              "note": "Whole OS renderer process working set including runtime overhead; not exclusive world or GPU memory"
+            },
+            "gpuTimeMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            }
+          },
+          "observedAt": "2026-09-12T01:59:26.975Z",
+          "measurementHash": "048fa5d909a1f4e220a045aa993fcd47ea00c289a5b7f9bc7409855cde471a85"
+        },
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "collision-web-world"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "collision-web-world"
+        },
+        "staleInstanceRejected": true,
+        "oldSampleBrokerResult": {
+          "format": "craftmine.godot-performance-observation/1",
+          "available": false,
+          "reason": "PERFORMANCE_SAMPLE_INVALID",
+          "measured": {
+            "frameTimeMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "physicsStepMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "objectCount": {
+              "status": "unknown",
+              "unit": "count",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "memoryWorkingSetMb": {
+              "status": "unknown",
+              "unit": "MiB",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            },
+            "gpuTimeMs": {
+              "status": "unknown",
+              "unit": "ms",
+              "source": "not-observed",
+              "reason": "No trusted runtime measurement channel is available for this field"
+            }
+          }
+        },
+        "guards": [
+          {
+            "pointerLock": 0,
+            "focus": 0
+          }
+        ],
+        "inputEvents": 0,
+        "ownerVisible": false,
+        "ownerFocusable": false,
+        "disposalDuringSampleRejected": true
+      }
+    }
+  ]
+}

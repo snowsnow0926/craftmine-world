@@ -677,6 +677,7 @@ test("scanSummary and importRequestFor produce the import payload", async () => 
     "D:/picked/a.glb", "an explicit file picker path remains unchanged");
   assert.equal(mediaKindForType("audio/ogg"), "audio");
   assert.equal(mediaKindForType("application/x-godot-package"), "package");
+  assert.equal(mediaKindForType("application/zip"), "package");
   assert.equal(assetIdFromName("Crate (v2)!"), "crate-v2");
 
   const host = fakeHost({

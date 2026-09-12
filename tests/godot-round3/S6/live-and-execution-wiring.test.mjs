@@ -16,8 +16,8 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..')
 const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-wiring-'));
-const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs',
-  'godot-observe.cjs','godot-build-read-wait.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs'];
+const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
+  'godot-observe.cjs','godot-build-read-wait.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs','godot-engine-api.cjs','godot-diagnostics.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 await writeFile(path.join(staging,'domain.cjs'),`
 function fields(args,required,optional){
@@ -234,5 +234,140 @@ test('production-style model read waits through a running job to terminal',async
  let reads=0;const f=fixture({options:{buildReadWaitMs:1000},coreOverrides:{'godotBuild.read':params=>({...params,kind:'check',buildId:'same-build',status:++reads===1?'running':'passed'})}});
  const result=await f.call('godot_build_read',{jobId:'gjob-'+'a'.repeat(64)});
  assert.equal(result.status,'passed');assert.equal(result.waitReason,'terminal');assert.ok(result.waitedMs>=450&&result.waitedMs<1500);assert.equal(reads,2);
+ assert.equal(result.diagnostics.format,'craftmine.godot-diagnostics/1');assert.equal(result.diagnostics.reportedStatus,'passed');
  assert.equal(f.calls.filter(call=>call.method==='godotBuild.start').length,0);
+});
+
+test('API metadata absent from this private plugin is unknown while legacy digest remains available',async()=>{
+ const f=fixture();
+ assert.equal((await f.call('godot_docs',{mode:'info'})).engineVersion,'4.7.2-stable');
+ const result=await f.call('godot_docs',{mode:'api-info'});
+ assert.equal(result.status,'unknown');assert.equal(result.available,false);assert.equal(result.reason,'ENGINE_API_METADATA_MISSING');
+ assert.deepEqual(f.calls,[]);
+});
+
+for(const waitMs of [0,1000])test(`diagnostics wraps ${waitMs?'wait':'direct'} reads without changing original output, hashes or candidate`,async()=>{
+ const jobId='gjob-'+'a'.repeat(64),output={format:'craftmine.godot-job-result/1',inputHash:'c'.repeat(64),passed:false,
+   import:{passed:false,log:'SCRIPT ERROR: Parse Error: Expected parameter name.\n   at: GDScript::reload (res://actor.gd:2)'},
+   compile:{passed:false,errors:['SCRIPT ERROR: Parse Error: Expected parameter name.'],warnings:[]},check:{passed:false,assertions:[{id:'runtime.not-run',passed:false,detail:'GODOT_COMPILE_FAILED'}]}};
+ const record={jobId,worldId:'alpha',buildId:'gbd-test',sourceRevision:3,manifestHash:'b'.repeat(64),outputHash:'d'.repeat(64),kind:'check',status:'failed',sourceStale:false,candidateId:null,output};
+ const before=JSON.stringify(record),f=fixture({options:{buildReadWaitMs:waitMs},coreOverrides:{'godotBuild.read':()=>record}});
+ const result=await f.call('godot_build_read',{jobId});
+ for(const key of Object.keys(record))assert.deepEqual(result[key],record[key],key);
+ assert.equal(JSON.stringify(record),before);assert.equal(Object.hasOwn(record,'diagnostics'),false);
+ assert.equal(result.diagnostics.source.jobId,jobId);assert.equal(result.diagnostics.source.outputHash,record.outputHash);
+ assert.equal(result.diagnostics.diagnostics[0].file,'res://actor.gd');assert.equal(result.diagnostics.diagnostics[0].line,2);
+ assert.equal(result.diagnostics.acceptance,'not-assessed');
+ assert.deepEqual(f.calls.map(call=>call.method),['workspace.open','godotBuild.read']);
+});
+
+for(const waitMs of [0,1000])test(`identity and world changes reject ${waitMs?'wait':'direct'} results before decoration`,async()=>{
+ const jobId='gjob-'+'a'.repeat(64);
+ const wrong=fixture({options:{buildReadWaitMs:waitMs},coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'foreign',status:'failed'})}});
+ await assert.rejects(wrong.call('godot_build_read',{jobId}),/GODOT_BUILD_READ_IDENTITY_CHANGED/);
+ const settings={activeWorldId:'alpha'};
+ const switched=fixture({settings,options:{buildReadWaitMs:waitMs},coreOverrides:{'godotBuild.read':()=>{settings.activeWorldId='other';return {jobId,worldId:'alpha',status:'failed'};}}});
+ await assert.rejects(switched.call('godot_build_read',{jobId}),/GODOT_BUILD_READ_WORLD_CHANGED/);
+});
+
+test('diagnostics preserves a completed creation check and its separate application receipt',async()=>{
+ const jobId='gjob-'+'a'.repeat(64),candidateId='gcan-test',buildId='gbd-test';
+ const application={jobId,worldId:'alpha',buildId,candidateId,status:'applied',reason:null};
+ const f=fixture({options:{buildReadWaitMs:1000,executorCreationCompletion:()=>application},
+   coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'alpha',buildId,candidateId,kind:'check',baseId:'creation-sandbox',status:'passed',output:{format:'craftmine.godot-job-result/1',passed:true,check:{passed:true,assertions:[]}}})}});
+ const result=await f.call('godot_build_read',{jobId});
+ assert.deepEqual(result.creationApplication,application);assert.equal(result.status,'passed');assert.equal(result.diagnostics.acceptance,'not-assessed');
+});
+
+const modeOf=(report,name,mode)=>report.tools.find(tool=>tool.name===name).modes.find(entry=>entry.mode===mode);
+
+test('capability report refreshes live build/check/resume readiness through the real broker',async()=>{
+ let sample={format:'craftmine.godot-executor-status/1',state:'registered',available:true,
+   buildAvailable:true,checkAvailable:true,reason:null};
+ let reads=0;
+ const f=fixture({options:{executorStatus:async()=>{reads+=1;return sample;},executorEnqueue:async()=>({enqueued:true})}});
+ const available=await f.call('godot_capability_report');
+ for(const [tool,mode] of [['godot_build_start','build'],['godot_build_start','check'],['godot_jobs','resume']]){
+  const entry=modeOf(available,tool,mode);assert.equal(entry.reachable,true);assert.equal(entry.execution.state,'available');
+ }
+ sample={...sample,checkAvailable:false};
+ const buildOnly=await f.call('godot_capability_report');
+ assert.equal(modeOf(buildOnly,'godot_build_start','build').execution.available,true);
+ assert.equal(modeOf(buildOnly,'godot_build_start','check').execution.state,'blocked');
+ const resume=modeOf(buildOnly,'godot_jobs','resume').execution;
+ assert.equal(resume.available,null);assert.equal(resume.reason,'ORIGIN_JOB_KIND_REQUIRED');
+ assert.equal(resume.byJobKind.build.available,true);assert.equal(resume.byJobKind.check.available,false);
+ sample={...sample,state:'stopped',available:false,buildAvailable:false,reason:'GODOT_EXECUTOR_STOPPED'};
+ const offline=await f.call('godot_capability_report');
+ assert.equal(modeOf(offline,'godot_build_start','build').execution.state,'blocked');
+ assert.equal(modeOf(offline,'godot_jobs','resume').execution.state,'blocked');
+ assert.equal(offline.tools.find(tool=>tool.name==='godot_build_start').reachable,true,'registration is not execution');
+ assert.equal(modeOf(offline,'godot_jobs','usage').reachable,true);
+ assert.equal(modeOf(offline,'godot_jobs','status').reachable,true);
+ for(const name of ['godot_build_read','godot_build_cancel'])assert.equal(offline.tools.find(tool=>tool.name===name).reachable,true);
+ sample={...sample,state:'registered',available:true,buildAvailable:true,checkAvailable:true,reason:null};
+ const recovered=await f.call('godot_capability_report');
+ assert.equal(modeOf(recovered,'godot_jobs','resume').execution.available,true);
+ assert.equal(reads,4,'no cached live gate survives another report');
+ assert.equal(available.contract.digest,recovered.contract.digest);
+ assert.equal(offline.contract.digest,recovered.contract.digest,'dynamic status is outside contract identity');
+ assert.ok(!f.calls.some(call=>call.method==='workspace.open'||call.method==='godotExecutor.status'));
+});
+
+test('missing, failed, malformed and registration-only executor evidence stays unknown',async()=>{
+ const scenarios=[
+  {options:{},reason:'LIVE_EXECUTOR_STATUS_UNAVAILABLE'},
+  {options:{executorStatus:async()=>{throw Error('offline transport');}},reason:'EXECUTOR_STATUS_FAILED'},
+  {options:{executorStatus:async()=>{throw Object.assign(Error('unavailable'),{errorCode:'GODOT_EXECUTOR_UNAVAILABLE'});}},reason:'GODOT_EXECUTOR_UNAVAILABLE'},
+  {options:{executorStatus:async()=>null},reason:'EXECUTOR_STATUS_INVALID'},
+  {options:{executorStatus:async()=>({available:true})},reason:'EXECUTOR_STATUS_INVALID'},
+  {options:{executorStatus:async()=>({available:true,buildAvailable:true,checkAvailable:true})},reason:'EXECUTOR_PROVIDER_NOT_WIRED'},
+  {options:{},coreOverrides:{'godotExecutor.status':()=>{throw Error('registration failure');}},reason:'LIVE_EXECUTOR_STATUS_UNAVAILABLE'},
+  {options:{},coreOverrides:{'godotExecutor.status':()=>({build:true,check:true,executors:[{executorId:'stale'}]})},reason:'LIVE_EXECUTOR_STATUS_UNAVAILABLE'}
+ ];
+ for(const scenario of scenarios){
+  const f=fixture(scenario);const report=await f.call('godot_capability_report');
+  for(const [tool,mode] of [['godot_build_start','build'],['godot_build_start','check'],['godot_jobs','resume']]){
+   const execution=modeOf(report,tool,mode).execution;
+   assert.equal(execution.state,'unknown',scenario.reason);assert.equal(execution.available,null);
+   assert.equal(execution.reason,scenario.reason);
+  }
+ }
+});
+
+test('an offline executor does not intercept reads or cancellation',async()=>{
+ let statusReads=0;let cancellations=0;
+ const f=fixture({options:{executorStatus:async()=>{statusReads+=1;return {available:false,reason:'STOPPED'};},
+  executorCancel:async()=>{cancellations+=1;return {cancelled:true};}},
+  coreOverrides:{'godotBuild.read':params=>({jobId:params.jobId,worldId:params.worldId,status:'cancelled',kind:'build'})}});
+ await f.call('godot_capability_report');
+ assert.equal((await f.call('godot_jobs',{mode:'usage'})).scope,'usage');
+ assert.equal((await f.call('godot_build_read',{jobId:'gjob-1'})).status,'cancelled');
+ assert.equal((await f.call('godot_build_cancel',{jobId:'gjob-1'})).cancelled,true);
+ assert.equal(statusReads,1);assert.equal(cancellations,1);
+});
+
+test('a failed live query can recover on the same broker instance without a stale registration fallback',async()=>{
+ let fails=true;
+ const f=fixture({options:{executorStatus:async()=>{if(fails)throw Error('temporary');return {available:true,buildAvailable:true,checkAvailable:true};},
+  executorEnqueue:async()=>({enqueued:true})}});
+ assert.equal(modeOf(await f.call('godot_capability_report'),'godot_build_start','build').execution.available,null);
+ fails=false;
+ assert.equal(modeOf(await f.call('godot_capability_report'),'godot_build_start','build').execution.available,true);
+ assert.ok(!f.calls.some(call=>call.method==='godotExecutor.status'));
+});
+
+test('production project_facts reconstructs durable failure identity without a remembered job ID',async()=>{
+ const jobId='gjob-'+'f'.repeat(64),budget={ownerTaskId:'original-owner',requestCount:3,unknownRequestCount:1,chargedTokens:50,limits:{maxTokens:null,maxRequests:80,maxCompactions:8,deadlineAt:null}};
+ const f=fixture({coreOverrides:{
+  'task.context':()=>({binding:BINDING,world:{id:'alpha'},generation:2,status:'active',draft:{revision:9,hash:'d'.repeat(64)},budget}),
+  'godotBuild.latest':params=>{assert.deepEqual(params,{worldId:'alpha',sessionId:'session'});return {worldId:'alpha',jobId,taskId:'task-1',buildId:'failed-build',kind:'check',status:'failed',sourceRevision:2,manifestHash:'a'.repeat(64),sourceStale:true,candidateId:null,
+   output:{format:'craftmine.godot-job-result/1',passed:false,compile:{errors:['SCRIPT ERROR: Parse Error: Expected parameter name.']},check:{passed:false,assertions:[]}}};}
+ }});
+ const facts=await f.call('godot_project_facts');
+ assert.equal(facts.recovery.latestJob.jobId,jobId);assert.equal(facts.recovery.latestJob.scope,'current-task');
+ assert.equal(facts.recovery.latestJob.sourceComparison.relation,'different-source');
+ assert.equal(facts.recovery.latestJob.diagnostics.diagnostics[0].errorCode,'GODOT_SCRIPT_PARSE_ERROR');
+ assert.deepEqual(facts.recovery.budget.value,budget);assert.equal(facts.recovery.application.available,false);
+ assert.ok(!f.calls.some(call=>/\.start$|\.continue$|\.reserve$|\.configure$|\.finish$/.test(call.method)));
 });

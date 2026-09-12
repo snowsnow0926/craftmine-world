@@ -11,6 +11,9 @@
 // available.
 'use strict';
 
+const {createHash}=require('node:crypto');
+const {EXECUTION_MODES}=require('./godot-routing.cjs');
+
 const INVENTORY_FORMAT='craftmine.godot-capability/1';
 
 const GAP_CATEGORIES={
@@ -98,8 +101,8 @@ const HOST_METHODS={
   'budget.inspect':{owner:'S1',capability:'sessionDrafts',kind:'read'}
 };
 
-// Methods the core advertises but no agent tool reaches today. This is the
-// "engine can do it, the AI cannot" list that the model must be told about.
+// Methods reserved for host execution, application and backup workflows.
+// Their absence from agent tools is an intentional authority boundary.
 const UNREACHABLE_METHODS=['godotRuntime.describeCandidate','godotApplication.prepare','godotApplication.commit',
   'godotApplication.read','godotApplication.abort','godotJob.claim','godotJob.progress','godotJob.heartbeat',
   'godotJob.finish','backup.export','backup.inspect','backup.restore','backup.status','backup.cancel'];
@@ -128,14 +131,16 @@ function localState(local,handshake){
 }
 
 // Proposals describe a player action; they never grant permission to perform it.
-function modeInventory(name,local,handshake,context,overrides){
+function modeInventory(name,local,handshake,context,overrides,services){
   const modes=Object.entries(local.modes).map(([mode,entry])=>{
     const historyKey={operation:'operationResult','merge-candidate':'mergeCandidate'}[mode]||mode;
-    const override=name==='godot_history'?overrides.historyMethods?.[historyKey]
-      :overrides.libraryMethods?.[name==='asset_library'?'asset':'package']?.[mode];
-    const hostMethod=entry.proposal?null:(override??entry.method);
+    const override=name==='package_library'&&mode==='propose-source-install'?undefined:name==='godot_history'?overrides.historyMethods?.[historyKey]
+      :['asset_library','package_library'].includes(name)?overrides.libraryMethods?.[name==='asset_library'?'asset':'package']?.[mode]:undefined;
+    const hostMethod=entry.method?(override??entry.method):null;
     const needs=[...local.needs,...(entry.capability?[entry.capability]:[])];
     const state=localState({needs},handshake);
+    const missingServices=(entry.requiredServices||[]).filter(key=>!services?.wired?.some(provider=>provider.key===key));
+    if(state.reachable===true&&missingServices.length){state.reachable=services?false:null;state.blockedBy=services?'MODULE_CAPTURE_PROVIDER_UNAVAILABLE':'MODULE_CAPTURE_WIRING_UNKNOWN';}
     if(state.reachable===true){
       if(entry.blockedBy){state.reachable=false;state.blockedBy=entry.blockedBy;}
       else if(!context.worldId){state.reachable=null;state.blockedBy='WORLD_BINDING_UNRESOLVED';}
@@ -149,9 +154,10 @@ function modeInventory(name,local,handshake,context,overrides){
     return {mode,kind:entry.proposal?'proposal':'read',hostMethod,
       ...(entry.targetMethod?{proposedHostMethod:override??entry.targetMethod}:{}),
       reachable:state.reachable,blockedBy:state.blockedBy,
+      ...(entry.requiresCapture?{requiresValidatedCapture:true,missingServices,executionReadiness:{state:state.reachable===false?'blocked':'unknown',available:state.reachable===false?false:null,reason:state.reachable!==true?state.blockedBy:'FRESH_CAPTURE_AND_SOURCE_VALIDATED_PER_CALL'}}:{}),
       ...(entry.proposal?{applies:false,requiresPlayerAction:true}:{}),needs};
   });
-  const reads=modes.filter(mode=>mode.kind==='read');
+  const reads=modes.filter(mode=>mode.hostMethod!==null);
   const considered=reads.length?reads:modes;
   const reachable=considered.some(mode=>mode.reachable===true)?true:considered.some(mode=>mode.reachable===null)?null:false;
   return {reachable,blockedBy:reachable===true?null:(considered.find(mode=>mode.reachable===reachable)?.blockedBy||null),modes};
@@ -174,33 +180,96 @@ async function readCapabilityContext(core,context,handshake){
   return result;
 }
 
-function buildInventory({manifest,routing={},handshake=null,localTools={},executionContext={},methodOverrides={}}={}){
+function executionState(available,reason,source){
+  return {state:available===true?'available':available===false?'blocked':'unknown',available,reason,source};
+}
+
+// Consume the actual godot-jobs executorStatus envelope, not core capability
+// flags. A registration row cannot prove this process can execute a job now.
+function executorReadiness(executor,services,kind){
+  const source=executor?.source||null;
+  if(source!=='live-executor')return executionState(null,'LIVE_EXECUTOR_STATUS_UNAVAILABLE',source);
+  if(!executor.status)return executionState(null,executor.reason||'EXECUTOR_STATUS_INVALID',source);
+  const status=executor.status;
+  if(status.available===false)return executionState(false,status.reason||'GODOT_EXECUTOR_UNAVAILABLE',source);
+  if(status.available!==true)return executionState(null,'EXECUTOR_STATUS_INVALID',source);
+  const value=status[kind+'Available'];
+  if(value===false)return executionState(false,status.reason||`GODOT_${kind.toUpperCase()}_UNAVAILABLE`,source);
+  if(value!==true)return executionState(null,'EXECUTOR_STATUS_INVALID',source);
+  if(!services?.wired?.some(entry=>entry.key==='executorEnqueue'))
+    return executionState(null,'EXECUTOR_PROVIDER_NOT_WIRED',source);
+  return executionState(true,null,source);
+}
+
+function executionModes(name,handshake,executor,services){
+  return Object.entries(EXECUTION_MODES[name]).map(([mode,entry])=>{
+    const state=capabilityState(entry.method,handshake);
+    const result={mode,kind:HOST_METHODS[entry.method].kind,hostMethod:entry.method,
+      reachable:state.reachable,blockedBy:state.reason};
+    if(!entry.executorKinds)return result;
+    const byJobKind=Object.fromEntries(entry.executorKinds.map(kind=>[kind,executorReadiness(executor,services,kind)]));
+    const values=Object.values(byJobKind);
+    let execution=values[0];
+    if(entry.originKindRequired){
+      execution=values.every(item=>item.available===execution.available&&item.reason===execution.reason)?execution
+        :values.every(item=>item.available===true)?executionState(true,null,executor?.source||null)
+        :values.every(item=>item.available===false)?executionState(false,'EXECUTOR_UNAVAILABLE_FOR_ALL_JOB_KINDS',executor?.source||null)
+        :executionState(null,'ORIGIN_JOB_KIND_REQUIRED',executor?.source||null);
+    }
+    if(state.reachable!==true)execution=executionState(state.reachable===false?false:null,state.reason,'core-handshake');
+    result.execution={...execution,byJobKind,
+      ...(entry.originKindRequired?{dependsOn:'originJob.kind'}:{})};
+    return result;
+  });
+}
+
+function canonical(value){
+  if(Array.isArray(value))return value.map(canonical);
+  if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort()
+    .filter(key=>value[key]!==undefined).map(key=>[key,canonical(value[key])]));
+  return value;
+}
+
+function contractDigest(manifest,routing,localTools){
+  // Static interface identity only: dynamic availability never changes this hash.
+  const contract={tools:manifest?.contributes?.agentTools||[],routing,localTools,
+    executionModes:EXECUTION_MODES,hostMethods:HOST_METHODS};
+  return {format:'craftmine.godot-capability-contract/1',algorithm:'sha256',
+    digest:createHash('sha256').update(JSON.stringify(canonical(contract))).digest('hex')};
+}
+
+function buildInventory({manifest,routing={},handshake=null,localTools={},executionContext={},methodOverrides={},executor=null,services=null}={}){
   const definitions=(manifest?.contributes?.agentTools||[]).filter(tool=>tool.name!=='runtime_info');
   const tools=definitions.map(definition=>{
     const local=localTools[definition.name];
+    const modes=EXECUTION_MODES[definition.name]?executionModes(definition.name,handshake,executor,services):null;
     if(local){
-      const state=local.modes?modeInventory(definition.name,local,handshake,executionContext,methodOverrides):localState(local,handshake);
+      const state=local.modes?modeInventory(definition.name,local,handshake,executionContext,methodOverrides,services):localState(local,handshake);
+      const missingServices=(local.requiredServices||[]).filter(key=>!services?.wired?.some(provider=>provider.key===key));
+      if(state.reachable===true&&missingServices.length){state.reachable=services?false:null;state.blockedBy=services?'TOOL_SERVICE_UNAVAILABLE':'TOOL_SERVICE_WIRING_UNKNOWN';}
       return {name:definition.name,risk:definition.risk||'unknown',hostMethod:local.hostMethod||[...new Set((state.modes||[]).map(mode=>mode.hostMethod).filter(Boolean))].join('+')||null,advertised:true,
-        wired:true,reachable:state.reachable,blockedBy:state.blockedBy,owner:local.owner||null,local:true,...(state.modes?{modes:state.modes}: {})};
+        wired:true,reachable:state.reachable,blockedBy:state.blockedBy,owner:local.owner||null,local:true,...(state.modes||modes?{modes:state.modes||modes}: {})};
     }
     const method=routing[definition.name]||null;
     const state=method?capabilityState(method,handshake):{known:false};
     return {name:definition.name,risk:definition.risk||'unknown',hostMethod:method,advertised:true,
       wired:Boolean(method),reachable:method?state.reachable:null,
       blockedBy:method&&state.reachable===false?state.reason:null,
-      owner:method?(HOST_METHODS[method]?.owner||null):null};
+      owner:method?(HOST_METHODS[method]?.owner||null):null,...(modes?{modes}: {})};
   });
   // These methods are genuinely not reachable from any agent tool today. The
   // capability flag is reported separately so `reachable` cannot be misread.
   const unreachable=UNREACHABLE_METHODS.map(method=>{
     const state=capabilityState(method,handshake);
     return {method,owner:HOST_METHODS[method]?.owner||null,kind:HOST_METHODS[method]?.kind||null,
-      reachable:false,capabilityEnabled:state.reachable,reason:'NO_AGENT_TOOL_ROUTES_THIS_METHOD'};
+      reachable:false,capabilityEnabled:state.reachable,reason:'NO_AGENT_TOOL_ROUTES_THIS_METHOD',
+      exposure:'host-only',intentional:true,agentExposureDefect:false};
   });
   return {format:INVENTORY_FORMAT,toolCount:tools.length,tools,executionContext,
+    contract:contractDigest(manifest,routing,localTools),executor,
     handshake:handshake?{...handshake}:{available:false,reason:'CORE_HANDSHAKE_UNAVAILABLE'},
     unreachableMethods:unreachable,
-    note:'Tool reachability summarizes direct read modes when present. Consult modes for context and proposal-only limits; true does not guarantee arguments or content exist. null means unknown and is never reported as available.'};
+    note:'Tool reachability summarizes registration and direct read modes when present. Consult modes.execution for current executor readiness and modes for context and proposal-only limits; true does not guarantee arguments or content exist. null means unknown and is never reported as available. Host-only methods are intentional authority boundaries, not missing agent tools.'};
 }
 
 // Evidence-driven classification. Each evidence item is a fact with a source.
@@ -252,8 +321,8 @@ function classifyGap({request,evidence=[]}={}){
       :'Open a separate development item and preserve the existing world and draft.'};
 }
 
-function capabilityReport({manifest,routing,handshake,localTools,gaps,limits,services,executionContext,methodOverrides}={}){
-  const inventory=buildInventory({manifest,routing,handshake,localTools,executionContext,methodOverrides});
+function capabilityReport({manifest,routing,handshake,localTools,gaps,limits,services,executionContext,methodOverrides,executor}={}){
+  const inventory=buildInventory({manifest,routing,handshake,localTools,executionContext,methodOverrides,executor,services});
   return {format:INVENTORY_FORMAT,...inventory,
     gapClassifications:(gaps||[]).map(gap=>classifyGap(gap)),
     limits:limits||{available:false,reason:'BUDGET_PROVIDER_NOT_WIRED'},
@@ -262,6 +331,7 @@ function capabilityReport({manifest,routing,handshake,localTools,gaps,limits,ser
     services:services||{format:'craftmine.tool-services/1',wired:[],missing:[],complete:false,
       reason:'SERVICE_DESCRIPTION_UNAVAILABLE'},
     guidance:['Tools in this inventory define what is actually available; do not claim a capability outside it.',
+      'For build, check and resume, inspect modes.execution as well as reachable; refresh this report after an executor restart. Read and cancel do not depend on executor readiness.',
       'A wired tool whose capability flag is false is disabled, not broken: report the reason and the owner.',
       'services.missing names a provider this process did not receive; its value is unknown, never zero or saved state.',
       'Ordinary gameplay, scenes, UI and GDScript are developable without a new host command.',

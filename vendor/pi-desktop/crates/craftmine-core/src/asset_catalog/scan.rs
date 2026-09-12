@@ -39,6 +39,7 @@ fn media_type_of(name: &str) -> Option<&'static str> {
         "wav" => Some("audio/wav"),
         "ogg" => Some("audio/ogg"),
         "tscn" | "tres" | "gd" => Some("application/x-godot-package"),
+        "zip" => Some("application/zip"),
         _ => None,
     }
 }

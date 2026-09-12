@@ -214,7 +214,7 @@ pub(super) fn media_kind_of(media_type: &str) -> MediaKind {
         "image/png" | "image/jpeg" => MediaKind::Image,
         "model/gltf-binary" => MediaKind::Model,
         "audio/wav" | "audio/ogg" => MediaKind::Audio,
-        "application/x-godot-package" => MediaKind::Package,
+        "application/x-godot-package" | "application/zip" => MediaKind::Package,
         _ => MediaKind::Other,
     }
 }
@@ -228,5 +228,6 @@ pub(super) fn supported_media_type(media_type: &str) -> bool {
             | "audio/wav"
             | "audio/ogg"
             | "application/x-godot-package"
+            | "application/zip"
     )
 }

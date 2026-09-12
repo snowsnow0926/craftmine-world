@@ -1,0 +1,257 @@
+{
+  "artifacts": [
+    {
+      "bytes": 9919,
+      "kind": "artifact",
+      "path": "web/bridge.js",
+      "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+    },
+    {
+      "bytes": 11944,
+      "kind": "artifact",
+      "path": "web/index.apple-touch-icon.png",
+      "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+    },
+    {
+      "bytes": 2973,
+      "kind": "artifact",
+      "path": "web/index.audio.position.worklet.js",
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "bytes": 7298,
+      "kind": "artifact",
+      "path": "web/index.audio.worklet.js",
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "bytes": 965,
+      "kind": "artifact",
+      "path": "web/index.html",
+      "sha256": "979c55fb13c7ad74d4e109c3c97c6848f73516a90cc3e602a73d25cefa705b2b"
+    },
+    {
+      "bytes": 5700,
+      "kind": "artifact",
+      "path": "web/index.icon.png",
+      "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+    },
+    {
+      "bytes": 314653,
+      "kind": "artifact",
+      "path": "web/index.js",
+      "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+    },
+    {
+      "bytes": 5721920,
+      "kind": "artifact",
+      "path": "web/index.pck",
+      "sha256": "4f7ad5c8e8e92024ddef20eab2dff23734c11af1623859704340aee2a7ecbc68"
+    },
+    {
+      "bytes": 21443,
+      "kind": "artifact",
+      "path": "web/index.png",
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "bytes": 38820072,
+      "kind": "artifact",
+      "path": "web/index.wasm",
+      "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+    }
+  ],
+  "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "baseBuild": "gbd-6f10bc34f279892afa8fa11ae141c2b325810331132cccaca0815e8901a77fac",
+  "baseId": "creation-sandbox",
+  "blockedReason": null,
+  "branchId": "main",
+  "buildId": "gbd-e9748ec20465f580fa957a28ac5175185c3e33bccf3ff8d2ac12dc20068419a8",
+  "candidateId": "gcan-7546855e69e37f8f8692e68a9432c583bd5e3e107ec0522859cd6723d9b27e95",
+  "createdAt": 1789164328142,
+  "executorId": "craftmine-windows-broker-v1",
+  "interruptReason": null,
+  "jobId": "gjob-f982ead04dc6f47bb11f6cda1344742c854b4368b7e095657650573da26e7387",
+  "kind": "check",
+  "leaseExpiresAt": null,
+  "manifestHash": "75fc99f2fdd50033277255ab1a3b6a5cd82e3cbb45a763c608e90115810a7733",
+  "originJobId": null,
+  "output": {
+    "artifacts": [
+      {
+        "bytes": 9919,
+        "path": "web/bridge.js",
+        "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+      },
+      {
+        "bytes": 11944,
+        "path": "web/index.apple-touch-icon.png",
+        "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+      },
+      {
+        "bytes": 2973,
+        "path": "web/index.audio.position.worklet.js",
+        "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+      },
+      {
+        "bytes": 7298,
+        "path": "web/index.audio.worklet.js",
+        "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+      },
+      {
+        "bytes": 965,
+        "path": "web/index.html",
+        "sha256": "979c55fb13c7ad74d4e109c3c97c6848f73516a90cc3e602a73d25cefa705b2b"
+      },
+      {
+        "bytes": 5700,
+        "path": "web/index.icon.png",
+        "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+      },
+      {
+        "bytes": 314653,
+        "path": "web/index.js",
+        "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+      },
+      {
+        "bytes": 5721920,
+        "path": "web/index.pck",
+        "sha256": "4f7ad5c8e8e92024ddef20eab2dff23734c11af1623859704340aee2a7ecbc68"
+      },
+      {
+        "bytes": 21443,
+        "path": "web/index.png",
+        "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+      },
+      {
+        "bytes": 38820072,
+        "path": "web/index.wasm",
+        "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+      }
+    ],
+    "check": {
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=1",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "defaultsSnapshot": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {},
+          "format": "craftmine.creation-progress/1",
+          "inventory": {},
+          "openedChests": {},
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "rules": {},
+          "sourceTimeOfDay": 12,
+          "timeOfDay": 12,
+          "worldId": "world-f58b259b9562"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "world-f58b259b9562"
+      },
+      "passed": true,
+      "progressMigration": {
+        "added": [],
+        "defaultsSnapshotHash": "7537dd9145a5635548f36a962fb97ebd1edec14db6f72942d407dbe8c3a1a455",
+        "format": "craftmine.godot-additive-progress/1",
+        "previousSnapshotHash": "7537dd9145a5635548f36a962fb97ebd1edec14db6f72942d407dbe8c3a1a455",
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-f58b259b9562"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-f58b259b9562"
+        },
+        "snapshotHash": "7537dd9145a5635548f36a962fb97ebd1edec14db6f72942d407dbe8c3a1a455"
+      }
+    },
+    "compile": {
+      "errors": [],
+      "passed": true,
+      "warnings": []
+    },
+    "engine": {
+      "evidenceHash": "24ae8022ea5a3ffcb267b500e1b45117dc35a2ad862cfb610bf1cf2dfc764c84",
+      "isolation": "craftmine.windows.lpac-registry.v1",
+      "version": "4.7.2-stable"
+    },
+    "format": "craftmine.godot-job-result/1",
+    "import": {
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Call to GetAdaptersAddresses failed with error 5.\r\n   at: get_local_interfaces (drivers/windows/ip_windows.cpp:117)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Method/function failed. Returning: \"\"\r\n   at: get_filesystem_type (drivers/windows/dir_access_windows.cpp:412)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"res != ((HRESULT)0x00000000)\" is true. Returning: String()\r\n   at: get_system_dir (platform/windows/os_windows.cpp:2502)\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | Started 项目初始化 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在扫描文件结构……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在加载全局类名……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在校验 GDExtension……\u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在创建自动加载脚本……\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在初始化插件……\u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mfirst_scan_filesystem\u001b[22m | 正在启动文件扫描……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mfirst_scan_filesystem\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | Started 正在注册全局类…… (11 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[   8% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  25% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  41% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  50% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | CameraRig\u001b[39m\u001b[0m\r\n[  58% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | PlayerController\u001b[39m\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  75% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n[  83% ] \u001b[90m\u001b[1mupdate_scripts_classes\u001b[22m | \u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mupdate_scripts_classes\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | Started 正在扫描动作…… (2 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | colormap.png\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1m_update_scan_actions\u001b[22m | building-small-a.glb\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1m_update_scan_actions\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started 正在导入或重新导入资产 (2 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在准备重新导入文件……\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在执行重新导入的前置操作……\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | colormap.png\u001b[39m\u001b[0m\r\n[  33% ] \u001b[90m\u001b[1mreimport\u001b[22m | building-small-a.glb\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started 导入场景 (104 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | 导入场景中...\u001b[39m\u001b[0m\r\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | 执行自定义脚本...\u001b[39m\u001b[0m\r\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | 保存中...\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\r\n\u001b[0m\r\n[  66% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在结束资产导入……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started 正在导入或重新导入资产 (2 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | 正在执行重新导入的后置操作……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\r\n\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started 正在加载编辑器 (5 steps)\u001b[39m\u001b[0m\r\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载编辑器布局……\u001b[39m\u001b[0m\r\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | 正在加载停靠面板……\u001b[39m\u001b[0m\r\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\r\n\u001b[0m\r\nERROR: Condition \"_sock == (SOCKET)(~0)\" is true. Returning: FAILED\r\n   at: open (drivers/windows/net_socket_winsock.cpp:238)\r\nERROR: Condition \"err != OK\" is true. Returning: ERR_CANT_CREATE\r\n   at: listen (core/io/tcp_server.cpp:56)\r\n",
+      "passed": true
+    },
+    "inputHash": "93b8d354cb5eb45b60a2d0f819d0e683b93cd98c54d360189be2bfd32db9faea",
+    "passed": true
+  },
+  "outputHash": "cc34ba28d55af0b44d337250e5398e0a45f2b8c626b514ddf2f111894999f1ab",
+  "progress": 100,
+  "sourceRevision": 2,
+  "sourceStale": false,
+  "stage": "passed",
+  "status": "passed",
+  "taskId": "work-e92b50ae56e92743412777990553e6b96df29368f53244fabfeadf406f445b93",
+  "updatedAt": 1789164340060,
+  "worldId": "world-f58b259b9562"
+}

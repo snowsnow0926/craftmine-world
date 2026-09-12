@@ -240,11 +240,13 @@ test('scene query reports its own format and keeps the parse format',async()=>{
   assert.equal(scene.parseFormat,'craftmine.scene-parse/1');
 });
 
-test('a second parentless node is reported instead of adopting the root children',()=>{
+test('ambiguous parentless roots leave child ownership unresolved',()=>{
   const scene=parseScene('[gd_scene format=3]\n[node name="A" type="Node"]\n[node name="B" type="Node"]\n[node name="C" type="Node" parent="."]\n');
   assert.ok(scene.warnings.some(warning=>warning.reason==='EXTRA_SCENE_ROOT:B'));
-  assert.equal(scene.tree[0].children.length,1);
-  assert.equal(scene.tree[0].children[0].name,'C');
+  assert.equal(scene.tree[0].children.length,0);
+  assert.equal(scene.tree[1].children.length,0);
+  assert.equal(scene.detached[0].name,'C');
+  assert.ok(scene.warnings.some(warning=>warning.reason==='AMBIGUOUS_NODE_PATH:.'));
 });
 
 test('multi-page project listing stays pinned to the first revision',async()=>{

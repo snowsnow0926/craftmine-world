@@ -2,6 +2,7 @@
 import {createHash} from 'node:crypto';
 import {parseScene} from '../../desktop/godot/shared/scene_materializer.mjs';
 import {contentHash} from './package-format.mjs';
+import {resolveInstanceParameterDeclaration} from './godot-instance-declaration.mjs';
 import path from 'node:path';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(Error(code),{code,errorCode:code});};
@@ -10,7 +11,39 @@ const fields=(input,keys)=>check(input&&typeof input==='object'&&!Array.isArray(
 const texts=/\.(gd|tscn|tres|json|svg|obj|mtl)$/;
 const literal=value=>/^&?"([^"\\]*)"$/.exec(value??'')?.[1];
 const refs=value=>[...value.matchAll(/res:\/\/([^"'\s)]+)/g)].map(match=>match[1]);
+// Only the bounded GLB 2 container and standard images/buffers URI surfaces.
+// External buffers are identified but rejected: managed source has no .bin
+// file kind. Embedded BIN/image bufferViews remain inside the measured GLB.
+export function glbDependencies(name,input){
+  const bytes=Buffer.from(input);check(bytes.length>=20&&bytes.length<=4*1024*1024&&bytes.readUInt32LE(0)===0x46546c67&&bytes.readUInt32LE(4)===2&&bytes.readUInt32LE(8)===bytes.length,'PACKAGE_GLB_INVALID');
+  let offset=12,json=null,bin=false;
+  while(offset<bytes.length){
+    check(offset+8<=bytes.length,'PACKAGE_GLB_INVALID');const length=bytes.readUInt32LE(offset),type=bytes.readUInt32LE(offset+4);offset+=8;
+    check(length%4===0&&offset+length<=bytes.length,'PACKAGE_GLB_INVALID');
+    if(type===0x4e4f534a){check(json===null&&offset===20,'PACKAGE_GLB_INVALID');try{json=JSON.parse(bytes.subarray(offset,offset+length).toString('utf8'));}catch{fail('PACKAGE_GLB_INVALID');}}
+    else if(type===0x004e4942){check(json!==null&&!bin,'PACKAGE_GLB_INVALID');bin=true;}
+    else fail('PACKAGE_GLB_CHUNK_UNSUPPORTED');
+    offset+=length;
+  }
+  check(json&&json.asset?.version==='2.0','PACKAGE_GLB_INVALID');const result=[];
+  for(const kind of ['images','buffers']){
+    const entries=json[kind]??[];check(Array.isArray(entries)&&entries.length<=256,'PACKAGE_GLB_INVALID');
+    for(const entry of entries){
+      check(entry&&typeof entry==='object'&&!Array.isArray(entry),'PACKAGE_GLB_INVALID');
+      if(entry.uri===undefined)continue;
+      const uri=entry.uri;check(typeof uri==='string'&&uri.length>0&&uri.length<=240,'PACKAGE_GLB_URI_INVALID');
+      check(!uri.startsWith('data:'),'PACKAGE_GLB_DATA_URI_UNSUPPORTED');
+      check(!/^[\/\\]|[:\\%?#\x00-\x20]/.test(uri),'PACKAGE_GLB_URI_UNSAFE');
+      const resolved=path.posix.normalize(path.posix.join(path.posix.dirname(name),uri));
+      check(!resolved.startsWith('../')&&!path.posix.isAbsolute(resolved)&&resolved.split('/').every(part=>/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(part)),'PACKAGE_GLB_URI_UNSAFE');
+      if(kind==='buffers')fail('PACKAGE_GLB_EXTERNAL_BUFFER_UNSUPPORTED');
+      check(/\.(png|jpg|jpeg|webp|svg)$/i.test(resolved),'PACKAGE_GLB_IMAGE_FORMAT_UNSUPPORTED');result.push(resolved);
+    }
+  }
+  return [...new Set(result)];
+}
 function dependencies(name,body) {
+  if(name.toLowerCase().endsWith('.glb'))return glbDependencies(name,body);
   const result=refs(body);
   if(name.endsWith('.obj'))for(const match of body.matchAll(/^mtllib\s+([^\r\n]+)$/gm))result.push(path.posix.normalize(path.posix.join(path.posix.dirname(name),match[1].trim())));
   if(name.endsWith('.mtl'))for(const match of body.matchAll(/^map_\w+\s+([^\r\n]+)$/gm)){check(!match[1].startsWith('-'),'PACKAGE_MATERIAL_OPTIONS_UNSUPPORTED');result.push(path.posix.normalize(path.posix.join(path.posix.dirname(name),match[1].trim())));}
@@ -104,15 +137,18 @@ export function createManagedPackageSourceService({call,bind}) {
       const {identity,files,mainScene,bound}=await read(args),classes=classIndex(files);
       const node=parseScene(files.get(mainScene).toString('utf8')).nodes.find(node=>nodePath(node)===args.nodePath);check(node,'PACKAGE_COMPONENT_MISSING');
       const entity=identityFor(files,mainScene,node,classes);check(entity,'PACKAGE_COMPONENT_IDENTITY_REQUIRED');
+      const parameterDeclaration=resolveInstanceParameterDeclaration({worldId:args.worldId,files,mainScene,nodePath:args.nodePath});
       check(!files.has('_craftmine_component.tscn'),'PACKAGE_RESERVED_PATH');
       const component=extractSubtree(files.get(mainScene).toString('utf8'),args.nodePath),payload=new Map([['_craftmine_component.tscn',Buffer.from(component)]]),required=new Map(),queue=refs(component);
-      while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');payload.set(name,bytes);if(texts.test(name))queue.push(...dependencies(name,bytes.toString('utf8')));check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
+      while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');payload.set(name,bytes);if(texts.test(name)||name.toLowerCase().endsWith('.glb'))queue.push(...dependencies(name,name.toLowerCase().endsWith('.glb')?bytes:bytes.toString('utf8')));check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
       // Named base classes remain exact, externally required source files. This
       // avoids copying another Interactable global class into a receiving base.
       const globalQueue=[];
       for(const [name,bytes]of payload)if(/^scripts\/(core|base)\/.+\.gd$/.test(name)&&/^\s*class_name\s+\w+/m.test(bytes.toString('utf8'))){payload.delete(name);globalQueue.push(name);}
       for(const [name,bytes]of payload)if(name.endsWith('.gd')) {const body=bytes.toString('utf8'),own=/^\s*class_name\s+(\w+)/m.exec(body)?.[1];for(const [className,classPath]of classes)if(className!==own&&new RegExp('\\b'+className+'\\b').test(body)&&!payload.has(classPath))globalQueue.push(classPath);}
-      while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name)||payload.has(name))continue;const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');required.set(name,{path:name,sha256:hash(bytes)});if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
+      // A namespaced payload copy cannot satisfy an unchanged shared base's
+      // original res:// path. Keep both records for dual-use dependencies.
+      while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name))continue;const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');required.set(name,{path:name,sha256:hash(bytes)});if(name.toLowerCase().endsWith('.glb'))globalQueue.push(...dependencies(name,bytes));else if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
       const rewritten={},inputActions=new Set();let total=0;
       for(const [name,bytes]of payload) {
         let output=bytes;
@@ -125,9 +161,21 @@ export function createManagedPackageSourceService({call,bind}) {
         const uid=Buffer.from('uid://b'+hash(args.assetId+'/'+name).slice(0,11)+'\n');rewritten[name+'.uid']=uid;total+=uid.length;
       }
       check(total<=4*1024*1024,'PACKAGE_COMPONENT_TOO_LARGE');
-      const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()]},interfaces:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:{},licenses:{}};
+      // Preserve only explicit scene attribution references, never infer rights
+      // from an image, a filename or unreferenced sidecars. The declaration is
+      // source-authored data; hashing its bytes does not verify a legal claim.
+      const sourceDeclarations=new Map();
+      for(const [name,bytes]of payload)if(name.endsWith('.tscn'))for(const candidate of parseScene(bytes.toString('utf8')).nodes){
+        const value=candidate.properties['metadata/craftmine_attribution'];if(value===undefined)continue;
+        const ref=literal(value);check(ref?.startsWith('res://'),'PACKAGE_ATTRIBUTION_REFERENCE_INVALID');const declarationPath=ref.slice(6),original=payload.get(declarationPath);
+        check(original&&original.length<=65536,'PACKAGE_ATTRIBUTION_MISSING');let declaration;try{declaration=JSON.parse(original.toString('utf8'));}catch{fail('PACKAGE_ATTRIBUTION_INVALID');}
+        check(declaration?.format==='craftmine.resource-attribution/1'&&declaration.licenses&&typeof declaration.licenses==='object'&&!Array.isArray(declaration.licenses),'PACKAGE_ATTRIBUTION_INVALID');
+        sourceDeclarations.set(declarationPath,{path:declarationPath,sha256:hash(rewritten[declarationPath]),status:'source-declared'});
+      }
+      const licenses=sourceDeclarations.size?{sourceDeclarations:[...sourceDeclarations.values()]}:{};
+      const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()]},interfaces:parameterDeclaration.status==='source-declared'?{parameters:parameterDeclaration.parameters}:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:{},licenses};
       const archive=packStaticPackage({root:{id:args.assetId,version:args.version},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files:rewritten}]});check(archive.length<=5*1024*1024,'PACKAGE_COMPONENT_TOO_LARGE');
-      return {archiveBase64:archive.toString('base64'),archiveSha256:hash(archive),files:Object.keys(rewritten).length,bytes:archive.length,source:{worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,nodePath:args.nodePath},requiredSourceFiles:required.size};
+      return {archiveBase64:archive.toString('base64'),archiveSha256:hash(archive),files:Object.keys(rewritten).length,bytes:archive.length,source:{worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,nodePath:args.nodePath},parameterDeclaration,requiredSourceFiles:required.size};
     },
   };
 }

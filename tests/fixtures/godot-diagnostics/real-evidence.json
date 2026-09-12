@@ -1,0 +1,113 @@
+{
+  "format": "craftmine.godot-diagnostic-fixtures/1",
+  "note": "Real excerpts and a projected real failed job; no new engine or model run.",
+  "fragments": [
+    {
+      "name": "syntax",
+      "source": {
+        "file": "docs/dispatch-reports/player-feedback-20260910/P7/evidence/native-final/im-c264c5e7b1ea489daa694ae7/task.log",
+        "sha256": "38eae263ac81cb75f77e7f13edd0310d6d939bd1af5262842cddb183baf79718",
+        "startLine": 26,
+        "endLine": 27
+      },
+      "text": "SCRIPT ERROR: Parse Error: Expected parameter name.\n   at: GDScript::reload (res://p7_failure.gd:2)"
+    },
+    {
+      "name": "type",
+      "source": {
+        "file": "docs/dispatch-reports/godot-final/install-assets/windows-service/failure-bootstrap-task-1.log",
+        "sha256": "d9854c7678fd91a86553dcc59f0e8b395dda59083e382bd103907200ab33ccab",
+        "startLine": 28,
+        "endLine": 29
+      },
+      "text": "SCRIPT ERROR: Parse Error: Cannot infer the type of \"location\" variable because the value doesn't have a set type.\n   at: GDScript::reload (res://_craftmine_standalone/bootstrap.gd:111)"
+    },
+    {
+      "name": "resource",
+      "source": {
+        "file": "docs/dispatch-reports/godot-final/install-assets/windows-game/broker-export-task.log",
+        "sha256": "6820598dc7698417935591e496932e964b055538230356e8dbdd7d81f1cc975e",
+        "startLine": 84,
+        "endLine": 85
+      },
+      "text": "ERROR: Failed loading resource: res://assets/meshes/weapon_pistol.obj.\n   at: _load (core/io/resource_loader.cpp:317)"
+    }
+  ],
+  "runtime": {
+    "source": {
+      "file": "docs/evidence/immersive-20260911/root-managed-chain.json",
+      "sha256": "a1ebc205446d62f2be727d865e2ca0a43de67d1868e031dcd653240303640dce",
+      "pointer": "/cases/2/terminal"
+    },
+    "projection": {
+      "jobId": "gjob-853e2a3c6c2a663d00f02a0944e3ad4f03a998357b429856938778f965f33983",
+      "worldId": "managed-creation",
+      "taskId": "work-99f3834784f74dd86f46de3ddcef2e9f3ec38f88fea048556f0d7e07f223b7ac",
+      "buildId": "gbd-6ceab8b9380decb0abfc0b9f61d103f957aad5097fe5b30a7301063a05748e98",
+      "branchId": "main",
+      "baseId": "creation-sandbox",
+      "baseBuild": "gbd-dd9902fe5247c7002bb5f63b6f58e84d25c2ddf280a8a2b41e0a336741c59c2b",
+      "sourceRevision": 7,
+      "manifestHash": "90d31c307a52bd10a717c2a4c00bb7b926112cdeedfd340f374bafeb125f07e0",
+      "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "outputHash": "af9bbe9d0f9eddfa187676064eb66e3ab4e683076ec306c361200a12fe35a63a",
+      "candidateId": "gcan-7e287f5e6cac5a471875052403ba5afca71747522ba32751494e820c629bf2c9",
+      "status": "failed",
+      "sourceStale": false,
+      "stage": "failed",
+      "output": {
+        "format": "craftmine.godot-job-result/1",
+        "inputHash": "05b7463ea01e3cb291f0296cefb9962afb834225a52f2b7fb1c90021b00b4be1",
+        "passed": false,
+        "import": {
+          "passed": true
+        },
+        "compile": {
+          "errors": [],
+          "passed": true,
+          "warnings": []
+        },
+        "check": {
+          "passed": false,
+          "assertions": [
+            {
+              "detail": "ops=",
+              "id": "runtime.ready",
+              "passed": false
+            },
+            {
+              "detail": "frames=0 distinct=0",
+              "id": "runtime.frame",
+              "passed": false
+            },
+            {
+              "detail": "ERROR: Authored rule source hash mismatch: ordered-door |    at: push_error (core/variant/variant_utility.cpp:1023)",
+              "id": "runtime.no-errors",
+              "passed": false
+            },
+            {
+              "detail": "snapshot not confirmed",
+              "id": "runtime.snapshot",
+              "passed": false
+            },
+            {
+              "detail": "guard=null",
+              "id": "runtime.isolation",
+              "passed": false
+            },
+            {
+              "detail": "graceful=false",
+              "id": "runtime.recovery",
+              "passed": false
+            }
+          ]
+        },
+        "engine": {
+          "evidenceHash": "d556ab80657cff4db1ce1799a1730b8b3f8cd9f56ba6aeb80ee095dbd2fffcd3",
+          "isolation": "craftmine.windows.lpac-registry.v1",
+          "version": "4.7.2-stable"
+        }
+      }
+    }
+  }
+}

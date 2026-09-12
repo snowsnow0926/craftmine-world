@@ -1,0 +1,17 @@
+{
+  "format": "craftmine.sealed-performance-package/1",
+  "commit": "56b5aeca298c20d6575c66bdf60dd25479358651",
+  "packageRoot": "D:\\cm-agent-godot-0912\\desktop\\build\\releases\\56b5aeca298c-b11d2313-eeed-4cae-868a-31613895317e\\output\\win-unpacked",
+  "sealVerifiedAfterProduct": true,
+  "sealedFiles": 1624,
+  "packageFiles": 1622,
+  "totalBytes": 1022733104,
+  "sourceArchiveHash": "5e9391fdac87215f0a21e4b86e2d5219fc2c9fc08a6deac9ef31125fa9e59c6b",
+  "hashes": {
+    "run.json": "fd738a28bf9b95ded3b4e65b709ce11f91c296bd69a8b24e1b1e7e553fa00b67",
+    "seal.json": "c28c77b3e6622a44bf3fdc590988608614d096f32a35165ca01c660393b44756",
+    "package-evidence.json": "005cb90b249c093c4e161e4f4b5b5ab211df1faea931167b95489be1fda75b47"
+  },
+  "signature": "unsigned-local-preview",
+  "installerExecuted": false
+}

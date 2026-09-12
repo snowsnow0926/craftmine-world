@@ -1,0 +1,207 @@
+# Godot Agent capability implementation
+
+## 2026 09 12 Start
+
+The user authorized an isolated worktree and continued implementation of GU0 through GU7. The task goal is active. Integration starts from `2cf285fe87d53537435aa59783abd72bc5f56a63` in `D:/cm-agent-godot-0912` on `codex/agent-godot-capability-20260912`. Existing uncommitted main-checkout documents are preserved; the requested plan was copied into this worktree and amended for the latest player-acceptance instructions.
+
+Two read-only Codex agents audit runtime capabilities and actual player configuration. A third implementation agent owns live executor capability reporting in its own branch and worktree. The integrator owns the plan, baseline records, project-query completeness and integration acceptance.
+
+The initial audit found existing mode-specific history, asset and package capability work in `ca9a2ef2`; the earlier fixed-false defect must not be reported as current without checking that implementation. The query service still scans at most 24 scripts without a continuation offset, omits source identity in script/symbol responses, and silently parses capped resource text. These are the first GU2 issues to reproduce and repair.
+
+Player acceptance uses the selected session model, thinking level and ordinary product configuration. There are no additional test token, model-request or whole-turn limits. Diagnostic bounded scenarios and older evaluator runs remain distinct from player acceptance. Every test must remain isolated, hidden/headless, cancellable and free of physical mouse/keyboard or focus manipulation.
+
+## Module source parameters and declaration preservation
+
+The sealed `05adf239` client completed normal retry on the original failed GA27
+ruins world in `desktop-native-complete-FGX9jS`. All 12 steps passed: unchanged
+source and original-world identity, independent successful check, existing ruins
+gameplay (12 actions/20 checks), save and complete progress equality after cold
+reopen. Both exits are clean; original failure reports/logs/source bytes and old
+failed job output remain unchanged. No substitute world or direct source/DB
+repair was used. Two archive/negative-verdict tests pass. This validates recovery
+entry repair, not the unknown cause of the original native crashes, and does not
+rewrite the older 3/4 matrix into a full pass.
+
+The ordinary module wishes now have actual sealed `863622e9` evidence. Layout
+completed in 14 model calls; only the two existing instance positions changed.
+The second wish saved three left-instance parameters, then its check permission
+expired because the test operator did not answer in time. Ordinary continuation
+preserved the draft and completed the check in four further calls. Both candidates
+were adopted and cold-opened through normal product paths. Real traversal then
+proved the right wall remained blocking and the left building could be crossed
+front-to-back and, after another cold open, back-to-front. Raw source tools were
+chosen; typed query usage is not proven. All original reports, false model
+explanations and interventions remain in `gu3-player-layout-20260912` and
+`gu3-player-parameters-20260912`. See the module player result document.
+
+`002036d4` exposes private validated historical native-import crash evidence
+through existing build-read diagnostics, without altering the failed outcome or
+claiming a root cause. `599c64a5` makes current complete source cohorts usable in
+the existing guidance and supports safe read-only `res://` aliases.
+`42f3d4e1` clarifies visual selection versus collision, probe-local frame counts
+and unmeasured bounds. The integrator passed 48 focused diagnostics/cohort tests
+after packaging and five observation-semantics checks.
+
+`48b615ee` corrects the initial-load repair dependency closure: original bridges
+use the exact historical frame-independent replacement; the current bridge is a
+validated no-op. `85ac8499` fixes the private continuation argument whitelist.
+Actual Core testing contradicted a proposed initializer scheduler rewrite, so
+that rewrite was removed and the existing start path retained. Eleven bridge/
+legacy tests, five staged materializers, real Core retry testing and full desktop
+typecheck passed. Original failed-world recovery in a new sealed package remains
+pending; source tests alone do not establish it.
+
+The subsequent sealed `2a584796` package contains 1,619 payload files totaling
+1,018,834,353 bytes, with source ZIP hash
+`d675fa37c1c479509c9dc470d90c54436e9845a71c4abe7bbeebc6f416510d36`.
+The catalog trial passed all 25 steps in `desktop-native-complete-Z3SDxP` after
+two earlier full trials hit cold navigation scheduling failures. Both failures
+and their clean exits remain recorded; the test now waits for pending read-only
+view observations and retries only explicit busy open refusals, never uncertain
+operations. Read-only post-shutdown SQLite inspection confirmed exactly three
+successful jobs, with no replay-generated jobs.
+
+`06da67c6` adds a normal two-building bootstrap. Its actual sealed run
+`desktop-native-complete-TDnqnw` passed both imports/checks/adoptions and created
+an ordinary session. The user's selected configuration was refreshed read-only
+and applied exactly. However, the first ordinary layout wish was rejected by
+`CREATION_MIGRATION_NEEDED` before any model call. The migration gate recognizes
+legacy adapter bytes but not the modern complete cohort. This is a product entry
+failure, not a failed model attempt. The world/session and original wish remain
+available for continuation after the gate is corrected.
+
+`2ec3e0e4` records the separate same-package old-base matrix. Three of four
+scoped gameplay/save/cold cases passed; side-view ruins failed two native import
+attempts with `0xc0000005`. All seven clients closed cleanly. Same-source
+diagnosis is underway; a later successful independent import must not erase the
+original failed matrix or be described as a source fix without evidence.
+
+Evidence: `docs/evidence/gu7-sealed-2a584796-20260912` and
+`docs/evidence/ga27-legacy-bases-20260912`. Twelve combined archive/bootstrap
+tests pass while preserving the mixed actual outcomes. No goal requirement is
+completed merely because those evidence tests pass.
+
+`9fc9a7b2` adds a pure source capture/preview compiler for the two audited Kenney
+wrappers. `6dba01da` preserves original CP0 declarations in existing instance
+records and through source export, with byte/ref/lock/scene validation. Root
+replayed the actual Core second-world round trip successfully in
+`test-results/parameter-core-SPP3t0/report.json`; its build checks remain blocked
+because this source-only test deliberately has no executor.
+
+`f6c064ba` adds the query routes `module-parameters` and
+`module-parameter-preview` to the existing tool. They use the host capture and
+immutable Core source, return source values or one parent-scene patch proposal,
+and perform no writes, runtime setters or adoption. The plugin bundles both
+modules independently of checkout paths. Nine pure compiler tests, four loader
+tests and 52 affected broker/guidance/wiring regressions pass. This is not yet
+live host capture, physical parameter validation or cold-open evidence.
+
+Independent review found a missing `sessionDrafts` capability dependency for
+the two new modes. It is now explicit: disabled means unavailable, absent means
+unknown, while ordinary static query modes keep their original dependency.
+The reviewer closed the finding after independently passing 30 focused tests.
+
+`e5500ff3` adds the actual Core/packed-broker integration runner. After the final
+plugin rebuild and current Core compilation, the integrator passed all 18 source
+checks in `module-parameters-core-HtRHFh`: complete paged index, chunked text,
+single-A ordinary patch, unchanged B/shared data, stale rejection, real Core
+restart and no-op label. Host capture remains explicitly synthetic. This proves
+the source route, not live runtime selection or game cold reopen.
+
+`c3b7f423` introduces the immutable `creation-player-collision/1` cohort for new
+creation worlds. The integrator reran 17 actual native cases, 18 source/PCK/
+distribution tests, three Rust cohort tests, the desktop typecheck and all five
+staged materializers. The agent's actual Web verifier/latest-progress staging
+report is archived alongside the root native and Core results. All twelve
+current materialized resources match all three actual exported PCK proofs.
+Three archive/cross-source/negative-verdict tests pass. The initial archive test
+used an already-created output directory; it was corrected to pass a fresh child
+directory required by the existing materializer, with no product change.
+
+The collision guard rejects real penetration without relocating the player.
+Contact, disabled solids and saved-open-door cases pass. Old v1 sources remain
+unchanged and unverified for this guard. The Web fixture uses real production
+classes with authored descriptors, not a Core-issued application commit. Latest
+source integration evidence is `docs/evidence/gu3-gu4-module-integration-20260912`.
+
+The original runtime-only persistence audit is retained as the defect
+reproduction. Full parameter adoption, shared-material editing and player-model
+reuse remain open; none of GA01–GA28 is completed by these source-only checks.
+
+## First integrated increments (earlier work)
+
+`7ff9bef9` and `b648c0e2` add immutable query continuation, source identity, actual class declaration lines, explicit incomplete resources, Unicode paging, index coverage and file-hash cross-checking. Six new tests reproduced missing behavior before the fix. Query/broker regression passed 41 tests after review fixes. A real Rust core test creates 30 scripts in valid source transactions, advances source HEAD and confirms that continuation still finds the original symbol at its old revision. A mistaken initial test fixture exceeded the core's 16-file create transaction; the fixture was corrected to use normal create/patch transactions rather than changing the product limit.
+
+`63ed2074` integrates GU1 live build/check/resume readiness and a deterministic tool-contract digest. Tests exercise the actual broker with changing executor providers; registration-only evidence remains unknown. The isolated real-core capability test also passed against actual asset/package/history read adapters. Source tests are not a packaged-client or player completion claim.
+
+`9484f7db` adds the read-only baseline collector. It distinguishes saved session candidates from an explicitly chosen session and never reads messages or credentials. The user confirmed the saved `deepseek-v4.1-flash-expires-on-0910` / `max` configuration for subsequent ordinary player tests. The refreshed exact binding is recorded at `test-results/gu0-confirmed-player-20260912/player-config-snapshot.json`; inherited effective permission and current task protections still require the ordinary product runtime.
+
+`b518c544` integrates the first finite scenario verdict and trusted door fixture. The integrator independently reran `tests/godot-door-scenario-headless.mjs` with the pinned engine cache. The correct door passes actual traversal; the defect that reports open while keeping collision is rejected. Evidence: `test-results/godot-door-scenario-YeZTaJ/report.json`. This is isolated native fixture evidence, not an Agent tool or arbitrary-candidate acceptance.
+
+Dependencies were installed into this worktree from the existing offline pnpm store with lifecycle scripts disabled. `pnpm run build:js` passed for workspace packages and the desktop. The next increments add fixed-engine API metadata, structured job diagnostics and isolated candidate scenario collection. GU0–GU7 remain active until their declared exits are met.
+
+## Engine metadata, diagnostics and open-source trial
+
+`c91630c2` integrates metadata reflected from the pinned engine: 1,054 ClassDB classes, version and corpus pins, declaration ownership and explicit coverage limits. `6d7c9754` adds structured build diagnostics without rejudging the reported result. Production broker routing and plugin staging are a separate integration increment. `e08ecf34` adds the default-disabled, host-only scenario diagnostic collector and cancellation handling; extension verdicts do not authorize candidate readiness. The integrator reran 37 combined metadata, diagnostic and scenario tests successfully.
+
+The user requested GitHub project and asset discovery with actual trials. Three source revisions are pinned, clean and inventoried in `test-results/external-resources-20260912/provenance.json`. Two Kenney projects passed real LPAC import/export and isolated headless Web startup. FPS renders its authored scene; an explicit sample-loading City fixture renders buildings and roads. Initial blank City startup, rendering warnings and a test task-ID/AppContainer failure are retained separately. The research report and compact catalog identify license scopes, proven stages and gaps. No external project is installed into the player's world, and no new player-model call has been made.
+
+`9a200cbb` connects metadata to the existing `godot_docs` tool using `api-info`, `api-class` and `api-search`, adds diagnostics to both validated build-read paths, and stages both modules plus metadata into the actual plugin artifact. The integrator reran broker routing, execution wiring and plugin packaging successfully. The tool count is unchanged; metadata remains offline declaration evidence and diagnostics do not change build/check outcomes.
+
+`90769285` archives the three explicit Kenney trial variants with source inventories, license files, six native receipts/logs and screenshots. Review identified a missing request/source-binding check in the initial harness. The fixed validator rejects mismatched identities and a changed staged source even when a new broker snapshot digest is supplied. Four tests pass, including independent revalidation of all six real receipts; the reviewer closed the finding. The integrator reran those tests after cherry-pick. A fresh `pnpm run build:js` also passed with the integrated tools and scenario collector. GU6 gameplay/package reuse and GU7 ordinary player acceptance remain outstanding.
+
+## Structured changes and first ordinary player run
+
+`fc5d145a` retains the existing high-level creation operations and adds source-only field deltas, rule-dependency scope and explicit unassessed progress effects. Original durable receipts/journal sizes remain unchanged; replay uses original inverse records rather than the current scene. Forty-eight combined operation/service/guidance/plugin tests passed after six new cases reproduced the missing summary and covered replay omissions.
+
+`d4b15812` adds a protected ordinary `sessionCreate` bootstrap. Seven ordinary-player bridge tests and the full desktop TypeScript check passed. A fresh release build at this commit completed in `desktop/build/releases/d4b158122277-ddabde42-a1ca-46d1-baec-f96c9240eafe/`; its source ZIP hash is `1fa24d5542b5bee1f941467d7cd2385406caf654c2ec3ad7944b931827e6ddb4`. The unpacked package has 1,611 inventoried payload files, 1,015,911,254 bytes, and source/resource verification passed. This is a local preview artifact, not an installer or update to the user's installation.
+
+The actual frozen package successfully created a fresh isolated blank world and normal session with zero model calls. Bootstrap evidence `test-results/desktop-native-ordinary-jHKHPj/bootstrap.json` records hidden/nonfocusable/offscreen state, zero violations/page errors/shutdown failures and package integrity. The confirmed DeepSeek Flash/max configuration is now running a normal player request for an interactive blue door that blocks when closed and permits passage when open, plus a chest granting one token only once across restart. The initial boundary-wall capture was not changed by the harness; the model chose a playable placement itself. Per-operation approval remains the normal product flow, reviewed against this request; no blanket permission or additional token/request/turn cap is introduced.
+
+`1db378e1` integrates static scene/resource/signal/InputMap relationships with ambiguous paths and unexpanded inheritance explicitly unknown. The integrator reran its real-core pin test against the newly compiled core (`3341edbeb1d15c36621b6db9c594b626b45e4f608f84d3f40504f96ebf4a24e8`). This later query increment is not present in the frozen `d4b15812` player package. All GA01–GA28 remain tracked in `GODOT_AGENT_ACCEPTANCE_LEDGER.json`; partial evidence is not full completion.
+
+## Frozen passage, resource modules and completed baseline sample
+
+`0337cbac` adds fixed sequence-door passage to the existing core requirement/hash/job/descriptor/evidence/candidate chain. The integrator ran the correct Rust `requirements_tests` filter: 15 passed, and desktop typecheck passed. An initial full filename filter selected zero tests and is not counted. Separate real Web normal/ghost/still-blocked variants are recorded in `GU4_FROZEN_PASSAGE_PROGRESS_2026-09-12.md`. The controller/camera hash gate only checks fixed-path source files; actual script binding, active camera and runtime controller substitution are not established by that gate and remain a follow-up.
+
+`ee6003e3` turns audited Kenney building/road assets into existing-format source packages and fixes GLB texture closure, including shared-base and dual-reference branches found during independent review. Five source installs across two worlds and a real source export/import preserve texture, source declarations and original license bytes. Twenty-nine independent LPAC/Web assertions verify rendering, collisions, parameter isolation and stable IDs. Those derived trials do not change the real source-install jobs' `check-blocked` state or prove formal application/persistence. The integrator reran the focused GLB/attribution and passage tests after integration.
+
+The first ordinary-player sample finished after 13 model requests and three individually reviewed source/check permissions. The model truthfully stopped at manual application. Normal preview/application and cold reopening then succeeded. Independent real actions verified closed-door blocking, open-door passage, later reclosure, chest reward once, repeat refusal and persistence across process restart. Two failed test aiming assumptions were retained and corrected by deriving aim from current observed collision/mesh bounds and requiring a real target ray hit before interaction. No model code/source was repaired by the harness. See `GODOT_AGENT_ORDINARY_PLAYER_BASELINE_2026-09-12.md` and its compact evidence. All processes closed cleanly; the goal remains active for the unproven matrix and latest-package checks.
+
+## Natural sequence requests, recovery facts and formal module reuse
+
+`7d8e2df0` and `62a3f99b` resolve a finite set of complete natural sequence-door requests against captured existing entities. IDs, declared labels and fixed color vocabulary must resolve uniquely; negation, ambiguity, repeated markers and extra wishes remain unsupported. Resolved colors and source `parameters.label` are frozen into host/core requirements; rendered label appearance is not claimed. Eight focused sequence/passage tests, 16 actual Rust requirements tests and desktop typecheck passed. Actual controller binding is still being developed separately.
+
+`12cdfa1b` adds durable recovery facts to existing observations: formal and draft pins, verified task/session ownership, latest job diagnostics, candidate identity and stale comparisons. It preserves original budget ownership and unknown historical usage. The integrator reran 64 combined source tests and a real SQLite/core restart test; the latter uses synthetic executor output and does not prove a model repair loop.
+
+The first ordinary recolor attempt in the `2ae18b25` package exposed a placement defect: a color-only change near an existing door was rejected as player overlap. `bb0a35b1` and `6f1708f1` validate placement only for actual spatial changes, while retaining source/entity/transaction checks. Review reproduced a multi-entity undo ordering defect; the final implementation checks changed geometry against the entire restored peer set. Thirty-six focused operation/service/summary tests passed.
+
+A clean sealed `6f1708f1` package then resumed the same interrupted player goal using the confirmed Flash/max settings and ordinary continuation, without extra limits. The model independently chose a generic source patch, so this run does not directly cover the repaired high-level color helper. Seven model calls and two normal approvals produced revision 4. Normal application/save/cold reopen preserved both entities except door color, the entire observed player object, chest opened state and token count 1. Three clean launches are recorded. Requirements remained unsupported; preservation is independently observed. The old permission-expiry failure is retained. See the baseline document and archived recolor review.
+
+`0ce0ba9f` adds actual formal Kenney package evidence on the sealed `2ae18b25` package. Twenty steps cover ordinary importSource/file grants, both real broker checks, candidate preview/application, save and cold reopen. Nine contract/evidence tests passed, and a separate cancellation run shut down cleanly. The formal run is one world and imports at overlapping default positions; earlier two-world source evidence is distinct. Actual ArrayMesh selection failed, so reliable GLB targeting and parameter persistence remain open. New picker and controller-cohort work proceed in separate Codex agent worktrees; a Beehave runtime trial has also started. GU0–GU7 and all 28 acceptance requirements remain active.
+
+## Searchable archives, imported-mesh observation and behavior reuse
+
+`7a610be9` closes a reproduced catalog intake gap: `application/zip` was refused and scans omitted ZIPs. Existing catalog import/search/read/version methods now accept opaque ZIP bytes under the original identity and import controls. Core probe and desktop preview explicitly require the separate package checker; the import UI maps the correct media kind. Actual fixed building/road packages remain searchable across core restart without claiming preview/check/application. Twenty-one core/preview tests, 20 UI/model tests, 37 Rust catalog tests and desktop typecheck passed. Catalog-ref-to-source-install remains a separate follow-up; no model write authority was added.
+
+`0bd38267` records the fixed Beehave subset's real LPAC/Web trial: 391 physics samples establish follow displacement, arrival stopping, target revocation, interruption while moving, disable/enable, and a wall counterexample that remains blocked. Actions and perception are fixture code; Beehave schedules and interrupts them, without providing navigation. Integration caught normalized CRLF in two archived native logs. `1cc82320` restores their original bytes without altering the manifest; all 11 combined evidence/receipt tests then passed. The integrator inspected the three-lane diagnostic screenshot; it is not gameplay or visual-quality evidence.
+
+`aebaf705` and `decd888d` add a versioned ArrayMesh picker and derived real-engine evidence. Thirty-seven checks and the actual bridge observe expose exact imported building body references, including a distinct second instance; 44 legacy checks pass. The integrator reran three archive/current-picker-identity checks. Coverage is static base-surface triangles with active LOD and pixel accuracy explicitly unverified. The full controller cohort still needs integration and current-package validation before attributing this to an ordinary player run.
+
+`dcad9474` integrates the complete controller profile. The conflict was resolved by preserving the newer natural-language resolver, frozen color/declared-label meaning, and adding controllerProfile to its requirements. Twenty-seven focused integration tests, 38 Rust job tests, two Rust cohort tests and desktop typecheck passed. Added integration assertions bind natural requests to the new profile and compare all ten materialized resources to the actual GLB trial receipt; the focused eight-test rerun passed. The integrator independently ran 13 actual native cases in `controller-binding-native-n0vBli`, including script/camera/shape replacement during movement. An initial launch without the existing cache variable failed before engine execution and was corrected. Full newly packaged product acceptance remains outstanding.
+
+The initial full package staging failed on undeclared new runtime resources. `09f7443a` adds the three authored files and refreshed materializer pin to the existing distribution inventory. All five staged materializers and five distribution checks passed. The full sealed Windows preview at this commit then passed source/archive verification: 1,614 payload files, 1,018,211,519 bytes, source ZIP hash `4ae8f5ee7d2b11cf30965fec731e2452c6ea1b9e8f852e727f4b3266d3b16127`. It is unsigned and not installed into the user profile.
+
+The integrator ran the complete formal package driver on that exact package in `desktop-native-complete-B5N3AE`: 22 steps passed, both actual Kenney jobs passed, normal preview/adoption/save/cold reopen preserved source/build/base state, and both launches exited cleanly. Observations include supported controller facts and V2 limits; default aim does not establish an individually selected module. Ten formal protocol/evidence tests passed. Raw report and compact package identities are archived in `gu6-integrated-package-20260912`. No model was called. A read-only audit identifies the next catalog-ref-to-source-installer bridge in `godot-agent-gu6-catalog-install-next.md`; it remains unimplemented. The goal and all GU0–GU7 exits remain active.
+
+## Catalog suggestion, explicit acceptance and restart recovery
+
+`80b26fad` adds a read-only fixed ZIP suggestion mode; `6bdfc0ad` aligns control-character validation. `03c178b6` adds explicit fixed-version selection in the existing creations panel, including older versions and uncertain-operation retry. `53f95150` adds the host catalog/blob verification path and optional provenance in the existing durable installer intent. It neither uses the older library-bundle installer nor creates an installation registry. Independent review reproduced an expired-grant/lost-reply recovery defect; explicit retry now revalidates the same ref/body/owner and recovers the original operation. Known first-attempt preflight refusal is distinguished from an uncertain operation that may already have committed.
+
+The integrator reran 53 model-route/library/capability tests with the actual packaged plugin and real core, 10 UI/pending tests, and 27 combined host/UI/file-protocol tests. These groups overlap. Desktop typecheck and plugin packaging passed. Host filesystem tests use fixture core responses; the independent reviewer ran 29 relevant cases. Full product evidence is separate.
+
+Sealed package `a9b4c0e299c7a40f88c4e004f02a9fe658016159` verified 1,614 payload files and 1,018,330,416 bytes. In `desktop-native-complete-npLS0V`, explicit core fixture imports preceded client startup and only the test download copies were deleted. Twenty-five product steps passed: both catalog refs were installed through the actual panel bridge, checked by the real executor, previewed/applied/saved, cold reopened, and retried with their exact original operation IDs. The original receipts and source lists were unchanged. Both launches exited normally with empty input/page/shutdown audits. A separate read-only SQLite audit after shutdown found exactly the three expected passed jobs: world initialization and the two modules. Raw reports and hashes are archived under `gu6-catalog-adoption-20260912`; 12 formal evidence/protocol tests passed, and the added post-shutdown assertion passed in the focused two-test rerun.
+
+This does not establish an ordinary player model authoring/reuse sample, module parameter persistence, or the remaining GU0–GU7 matrix. Read-only follow-up work reproduced transient module configure values and a mismatch between Core's seven asset kinds and the older model filter vocabulary; both guide subsequent increments. See `GODOT_AGENT_CATALOG_REUSE_PROGRESS_2026-09-12.md`.
+
+`b49b1ec8` fixes the reproduced asset-kind mismatch: the real Core returned `module`, but the older model tool rejected that same value as a filter. Canonical base/world/module/object/scene/raw/data are now accepted, with creation/world-template retained as legacy aliases; the UI shows canonical choices. `1e7a6041` archives 12 actual LPAC/Web module diagnostics proving runtime configure values disappear when an instance is reconstructed from unchanged source, plus four evidence/interface tests. The integrator reran 41 combined actual-core/bundled-tool/UI/capability and module-evidence tests, all passed, after rebuilding the plugin. These increments are later than the sealed a9 package and are not attributed to its 25-step result. The next implementation should use existing per-instance source overrides and preserve typed parameter declarations, with actual check/application/cold-open evidence; runtime configure alone is insufficient.

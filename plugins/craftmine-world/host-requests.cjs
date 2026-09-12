@@ -183,7 +183,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'godotBuild.read':[['worldId','jobId'],['context']],
       'godotBuild.cancel':[['worldId','jobId'],['context']],
       'godotBuild.receipt':[['binding','worldId','toolCallId','method','request'],[]],
-      'godotJob.continue':[['jobId','token'],[]],
+      'godotJob.continue':[['context','worldId','originJobId','toolCallId'],[]],
       'godotJob.usage':[['worldId'],['context']],
       'godotCandidate.list':[['worldId'],['offset','limit']],
       'godotCandidate.read':[['worldId','candidateId'],[]],
