@@ -94,8 +94,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 715,
-      "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39",
+      "bytes": 1167,
+      "sha256": "df256380341429db5b73a837109f5d7d3110e1e7a0b3f7cf6b9c595fb12984ec",
       "outstanding": "Formal licence text for authored export runtime/example scripts is pending the per-module review in docs/LICENSING_STRATEGY.md; the project owns this file.",
       "notes": "Custom Web export shell loaded by the exported game."
     }
