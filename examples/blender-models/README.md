@@ -39,3 +39,17 @@ with bytecode writing disabled, keeping the original package bytes unchanged.
 The inherited product GLB import ceiling is 4 MiB per file. Generation failures,
 import failures and visual limitations must be reported from actual outputs;
 they must not be hidden by substituting a different model or a flat image.
+
+## User correction: image reference before modeling
+
+The user rejected the initial procedural dog as scary and requested an
+AI-image-first workflow. Its script and review history remain available as an
+honest record; stopping that refinement was a user-directed change of visual
+target, not a token/time limit or a model capability failure.
+
+`references/pomeranian-cute-reference.png` is a generated design target, explicitly
+separate from actual model renders. A new Codex CLI invocation receives that image
+via `--image`, still using `gpt-6-astra` and `xhigh`, and writes
+`pomeranian-cute.py`/`pomeranian-cute` artifacts without overwriting the old model.
+Reference provenance and hashes are recorded beside the image. The same
+image-reference-first workflow will be used for the subsequent J-20 model.

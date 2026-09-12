@@ -3,17 +3,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 const root = path.resolve(import.meta.dirname, '..');
-const [name, promptFile, resume] = process.argv.slice(2);
+const [name, promptFile, resumeArg, imageArg] = process.argv.slice(2);
+const resume = resumeArg === 'new' ? undefined : resumeArg;
 if (!/^[a-z0-9-]+$/.test(name ?? '') || !promptFile) throw Error('run-blender-codex NAME PROMPT_FILE [SESSION_ID]');
 const directory = path.join(root, 'test-results/codex-models/cli', name);
 fs.mkdirSync(directory, {recursive: true});
 const cli = 'C:/Users/WINDOWS/AppData/Local/OpenAI/Codex/bin/bffc5354119c8421/codex.exe';
 const args = ['exec', ...(resume ? ['resume', resume] : ['--sandbox', 'danger-full-access', '--cd', root]),
   '--model', 'gpt-6-astra', '--config', 'model_reasoning_effort="xhigh"', '--config', 'approval_policy="never"',
+  ...(imageArg ? ['--image', path.resolve(root, imageArg)] : []),
   '--json', '--output-last-message', path.join(directory, 'last-message.md'), '-'];
 const prompt = fs.readFileSync(path.resolve(root, promptFile), 'utf8');
 fs.writeFileSync(path.join(directory, 'invocation.json'), JSON.stringify({cli, args, cwd: root, model: 'gpt-6-astra',
-  reasoningEffort: 'xhigh', startedAt: new Date().toISOString(), resume: resume ?? null, noAddedModelOrTurnBudgets: true}, null, 2));
+  reasoningEffort: 'xhigh', startedAt: new Date().toISOString(), resume: resume ?? null,
+  referenceImage: imageArg ? path.resolve(root, imageArg) : null, noAddedModelOrTurnBudgets: true}, null, 2));
 const stdout = fs.createWriteStream(path.join(directory, 'events.jsonl'));
 const stderr = fs.createWriteStream(path.join(directory, 'stderr.log'));
 const child = spawn(cli, args, {cwd: root, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe']});

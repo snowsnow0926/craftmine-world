@@ -1,0 +1,24 @@
+{
+  "format": "craftmine.model-visual-references/1",
+  "images": [
+    {
+      "file": "pomeranian-cute-reference.png",
+      "sha256": "3a797aadcd28faf4d770e4e8847de24d4c7251eed4d7466b7937c2a3dd4e4419",
+      "generator": "built-in imagegen",
+      "role": "AI-generated design target; not a model render",
+      "requestedTraits": "Cute compact white Pomeranian, rounded head/body, recessed eyes, short muzzle/legs, soft fine fur",
+      "views": [
+        "hero",
+        "front",
+        "side",
+        "rear"
+      ]
+    }
+  ],
+  "modeling": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "transport": "Codex CLI"
+  },
+  "userCorrection": "Original procedural dog looked scary and not cute"
+}

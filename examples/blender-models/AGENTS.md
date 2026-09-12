@@ -25,8 +25,11 @@ The separate trusted render command imports the actual generated GLB into bundle
 Blender and renders PNGs without executing the modeling script. It uses Blender
 Z-up and looks toward +Y: create the animal's face or aircraft nose toward -Y.
 Supported views: hero, front, side, back, top. Inspect previews and revise geometry
-as needed. No AI image generation, flat image stand-ins or downloaded finished
-models. No mouse/keyboard simulation, GUI launch, Pointer Lock or user browser.
+as needed. The user has now explicitly requested AI-generated visual references
+before modeling and rejected the original dog as scary. Coordinator-provided
+reference images are allowed and must guide the next model. They must never be
+presented as renders of the actual model. No flat image stand-ins or downloaded
+finished models. No mouse/keyboard simulation, GUI launch, Pointer Lock or user browser.
 
 Keep code/comments English. The coordinator owns setup scripts and final commits;
 do not commit unrelated files or edit outside this request worktree.
