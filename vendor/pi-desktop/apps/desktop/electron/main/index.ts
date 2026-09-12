@@ -24,6 +24,7 @@ import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { readWorldConversation } from "./world-conversation";
+import { createPlayerWorlds } from "./player-worlds";
 import { createCraftmineQuitState } from "./craftmine-quit-state";
 import { creationRequestStatus } from "./creation-request-status";
 import { ActiveTurns } from "./active-turns";
@@ -1576,8 +1577,33 @@ async function navigateCraftmineManagedWorld(request: Record<string, unknown>): 
   if (!pluginActiveInProject("craftmine.world", currentWorkspacePath())) throw Error("WORLD_PLUGIN_SCOPE_DISABLED");
   pluginViews.open({pluginId: "craftmine.world", viewId: "world", locale: updaterLocale,
     theme: pluginPanelTheme, htmlPath: join(loaded.path, view.entry), netDomains: loaded.manifest.net?.domains});
-  return pluginViews.navigateCraftmine(request);
+  const result=await pluginViews.navigateCraftmine(request);
+  const selected=await godotSelection();
+  if(selected)await playerWorlds.remember(selected).catch(error=>logger.app('plugin','warn','player world preference could not be retained',{data:String(error)}));
+  return result;
 }
+const playerWorlds=createPlayerWorlds({
+  directory:dataDir,
+  list:async()=>await plugins.invokePanelBridge('craftmine.world','world.list',{}) as any,
+  inspect:async row=>{
+    if(row.runtimeKind!=='godot')return row;
+    const status=await godotCreation?.status(row.id,{resume:false});
+    if(!status)throw Error('PLAYER_WORLD_STATUS_UNAVAILABLE');
+    return {...row,...status};
+  },
+  navigate:async request=>{
+    if(worldRemoval.busy)throw Error('WORLD_REMOVAL_BUSY');
+    if(request.operation==='switch')rearmCollisionMaintenance(request.id as string);
+    if(interruptsCreationGroundMaintenance(`world.${request.operation==='switch'?'open':request.operation}`,request,godotWorld.instance?.worldId??null))await stopWorldMaintenance();
+    return navigateCraftmineManagedWorld(request);
+  },
+  retry:async worldId=>{
+    if(activeTurns.size||turnFinalizations.size||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotRestores.busy)throw Error('ACTIVE_TASK_EXISTS');
+    await stopWorldMaintenance();rearmCollisionMaintenance(worldId);return godotPanel.invoke('world.creationRetry',{worldId});
+  },
+  cancel:worldId=>godotPanel.invoke('world.creationCancel',{worldId}),
+  changed:()=>sendToRenderer(IPC.event.craftmineWorldChanged,{}),
+});
 const worldRemoval = createCraftmineWorldRemoval({
   domain: (method, payload) => plugins.requestCraftmineHost(method, payload),
   list: async () => await godotPanel.invoke("world.list", {}) as any,
@@ -3011,6 +3037,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
   const projectId = craftmineProjectIdentity(session, sessionId);
   const result = await plugins.requestCraftmineHost("turn.begin", {
     context: { projectId, sessionId, turnId }, selectedWorld, request,
+    ...(!target?.continuationContext?{resumeInterrupted:true}:{}),
   }) as { world: { id: string } };
   craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
   if(target?.continuationContext)await creationTargets.bindContinuation({projectId,sessionId,turnId},target.continuationContext,result.world.id);
@@ -6742,6 +6769,17 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
+    if(payload?.pluginId==='craftmine.world'&&['world.playerWorlds','world.playerEnter','world.playerCancel'].includes(payload.channel)){
+      if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error('PERMISSION_DENIED');
+      if(profileRestore)throw Error('PROFILE_RESTORE_IN_PROGRESS');
+      if(!plugins.getLoaded('craftmine.world')||!pluginActiveInProject('craftmine.world',currentWorkspacePath()))throw Error('WORLD_PLUGIN_NOT_LOADED');
+      if(payload.channel==='world.playerWorlds'){
+        if(!payload.payload||typeof payload.payload!=='object'||Object.keys(payload.payload).length)throw Error('PLAYER_WORLD_REQUEST_INVALID');
+        return playerWorlds.read();
+      }
+      if(quitting||craftmineQuitPreparation||craftmineQuitPrepared||worldRemoval.busy)throw Error('WORLD_BUSY');
+      return payload.channel==='world.playerCancel'?playerWorlds.cancel(payload.payload):playerWorlds.enter(payload.payload);
+    }
     if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.conversation") {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
       return readWorldConversation(payload.payload, {
@@ -9100,7 +9138,10 @@ function registerIpc() {
         },
       );
     } catch (e) {
-      await finishTurn(req.sessionId, "error", (e as any)?.errorCode);
+      const raw=(e as any)?.errorCode??(e as any)?.code??(e as any)?.message;
+      const code=typeof raw==='string'&&/^[A-Z][A-Z0-9_]{2,100}$/.test(raw)?raw:'PROMPT_ADMISSION_FAILED';
+      logger.app('session','error','world prompt admission failed',{sessionId:req.sessionId,turnId:durableTurnId,code,data:{message:String((e as Error)?.message??e)}});
+      await finishTurn(req.sessionId, "error", code, {expectedTurnId:durableTurnId});
       throw e;
     }
     logger.app("session", "info", "prompt accepted", {

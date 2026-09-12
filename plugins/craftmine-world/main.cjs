@@ -3,6 +3,7 @@ const {CoreClient} = require('./core-client.cjs');
 const {createPortableRestoreService} = require('./portable-restore-service.cjs');
 const {createPackageTurnLifecycle,createPackageInstallBinding} = require('./package-turn-lifecycle.cjs');
 const {randomUUID} = require('node:crypto');
+const {createLegacyWorld} = require('./legacy-world-create.cjs');
 const {createWorldTools} = require('./world-tools.cjs');
 const {createVerificationJobs} = require('./verification-jobs.cjs');
 const {createReviewJobs} = require('./review-jobs.cjs');
@@ -231,7 +232,7 @@ async function onPanelInvoke(channel, payload={}) {
     if(payload.baseId && payload.baseId!=='craftmine-web/5')throw Error('WORLD_BASE_UNAVAILABLE');
     if(payload.starterId && payload.starterId!=='blank')throw Error('WORLD_STARTER_UNAVAILABLE');
     const title=String(payload.title??'').trim();
-    const record=await core.call('world.create',{id:randomUUID(),title,world:emptyWorld(title)});
+    const record=await createLegacyWorld({directory:await pi.plugin.getDataPath(),call:(method,args)=>core.call(method,args),emptyWorld},{...payload,title});
     if(payload.activate!==false)await pi.plugin.setSettings({activeWorldId:record.id});
     return record;
   }

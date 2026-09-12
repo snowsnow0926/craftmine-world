@@ -9738,3 +9738,27 @@ playable; then make the ordinary repair, interact, save, exit and reopen.
 Keep ordinary model creation, normal compositor input routes, original source
 engine checks and actual packaged gameplay evidence separately identified.
 No physical input, focus activation, Pointer Lock or synthetic source fixes.
+
+## Two fixed player world slots
+
+From a fresh profile without provider configuration, show only Godot 3D and Web
+entries. Read-only entry does not create worlds or model requests. Enter each
+slot, observe real initialization and wait for actual navigation. Re-enter and
+restart repeatedly: each slot retains the same world, content and progress.
+Recover a lost Web creation response with the same operation; no duplicate.
+Use the current compatible old world, keep ambiguous archives accessible and
+never convert another Godot base merely by changing its identifier.
+
+During preparation, cancel to the recorded prior world and retain the unfinished
+slot. Retry from the same card, through the owned initializer. Save failure does
+not announce entry; an explicit retry remains possible. A missing pinned record
+or corrupt preference index cannot silently open a replacement empty world.
+Actual UI switches must retain the previous conversation's drafts and restore
+only the target world's verified conversation. Late navigation or new input wins.
+
+An ordinary new player message may explicitly continue the same session/world's
+interrupted draft through the private resumeInterrupted flag. Preserve the
+source, budget owner/count, requirements and old ended-turn markers. Other
+callers retain their strict recovery policy; cross-world and busy leases reject.
+Retest the actual TURN_ENDED/EXPLICIT_RECOVERY_REQUIRED admission failure in a
+short isolated directory before declaring model continuation fixed.

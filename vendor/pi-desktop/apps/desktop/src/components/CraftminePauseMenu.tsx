@@ -57,7 +57,7 @@ export function CraftminePauseMenu({ onResume, onWorkbench, onSettings, runtimeE
     <section className="craftmine-pause-menu no-drag" role="dialog" aria-modal="true" aria-labelledby="craftmine-pause-title">
       <h1 id="craftmine-pause-title">{chinese ? "已暂停" : "Paused"}</h1>
       <button type="button" data-pause-action="resume" disabled={!!quitPhase} onClick={() => {if (!pending.current) onResume();}}>{chinese ? "继续游玩" : "Resume"}</button>
-      <button type="button" data-pause-action="workbench" disabled={!!quitPhase} onClick={() => {if (!pending.current) onWorkbench();}}>{chinese ? "回到工作台" : "Back to workbench"}</button>
+      <button type="button" data-pause-action="workbench" disabled={!!quitPhase} onClick={() => {if (!pending.current) onWorkbench();}}>{chinese ? "切换世界" : "Switch world"}</button>
       <button type="button" data-pause-action="settings" disabled={!!quitPhase} onClick={() => {if (!pending.current) onSettings();}}>{chinese ? "设置" : "Settings"}</button>
       <button type="button" data-pause-action="exit" disabled={!!quitPhase} onClick={quit}>{chinese ? "保存并退出" : "Save and exit"}</button>
       {quitPhase && <p role="status" data-quit-phase={quitPhase}>{quitPhase === "saving"

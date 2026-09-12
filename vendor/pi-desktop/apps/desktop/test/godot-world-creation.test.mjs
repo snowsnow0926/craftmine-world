@@ -207,6 +207,21 @@ test("the factory registers through the core and releases only an unregistered c
   }).status("world-test3"), null, "a missing route reports unknown, never a fake ready");
 });
 
+test("passive slot status does not resume initialization before the player enters", async () => {
+  const worldsRoot=tmp(),worldId='world-passive';
+  fs.mkdirSync(path.join(worldsRoot,worldId));
+  fs.writeFileSync(path.join(worldsRoot,worldId,'.creation-owner.json'),'{}');
+  const starts=[];
+  const factory=creation.createGodotWorldFactory({worldsRoot,catalogFile,basesRoot,
+    domain:async()=>({status:'pending',playable:false}),
+    initialization:{running:()=>false,start:async id=>{starts.push(id);},error:()=>null},
+  });
+  assert.equal((await factory.status(worldId,{resume:false})).state,'initializing');
+  assert.deepEqual(starts,[]);
+  await factory.status(worldId);
+  assert.deepEqual(starts,[worldId]);
+});
+
 test("the main process injects the isolated Godot build verifier", () => {
   const index = fs.readFileSync(path.join(desktop, "electron/main/index.ts"), "utf8");
   assert.match(index, /import \{ GodotBuildVerifier \} from "\.\/godot-build-verifier"/);

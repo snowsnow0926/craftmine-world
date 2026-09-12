@@ -56,6 +56,7 @@ import { ProjectsPage } from "./ProjectsPage";
 import { AgentSkillsPage } from "../components/settings/AgentSkillsPage";
 import { AgentMcpPage } from "../components/settings/AgentMcpPage";
 import { AgentSubagentsPage } from "../components/settings/AgentSubagentsPage";
+import { AdvancedWorldSaves } from "../components/craftmine/AdvancedWorldSaves";
 
 type SettingsTab = ReturnType<typeof useAppStore.getState>["settingsTab"];
 
@@ -1356,6 +1357,7 @@ export function SettingsPage() {
 
           {tab === "general" && settings && (
             <div className="settings-stack">
+              <AdvancedWorldSaves />
               <SettingsCard title={t("settings.appearance")}>
                 <ThemeRow settings={settings} saveSettings={saveSettings} />
                 <LanguageRow settings={settings} saveSettings={saveSettings} />

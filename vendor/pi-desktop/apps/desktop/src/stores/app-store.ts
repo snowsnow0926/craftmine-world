@@ -4788,7 +4788,7 @@ export async function materializeDraftSession(
 const copiedWorldSessions = new Map<string, string>();
 
 /** Restore only an existing host-bound world conversation into an untouched home. */
-export async function restoreWorldConversation(worldId: string, stillCurrent: () => boolean = () => true): Promise<boolean> {
+export async function restoreWorldConversation(worldId: string, stillCurrent: () => boolean = () => true, allowClosed = false): Promise<boolean> {
   const hasHomeDraft = () => {
     const draft = readLiveComposerDraft(HOME_DRAFT_KEY) ?? readComposerDraft(HOME_DRAFT_KEY);
     return !!draft && (!!draft.text || draft.fileReferences.length > 0);
@@ -4796,7 +4796,7 @@ export async function restoreWorldConversation(worldId: string, stillCurrent: ()
   const idleHome = () => {
     const state = useAppStore.getState(), layout = loadCraftmineLayout(localStorage);
     return state.ready && state.page === "chat" && !state.activeSessionId && !state.selectingSessionId && !state.isRunning
-      && !pendingNewSessionRequests.size && layout.mode === "play" && layout.overlay !== "closed" && !hasHomeDraft() && stillCurrent();
+      && !pendingNewSessionRequests.size && layout.mode === "play" && (allowClosed || layout.overlay !== "closed") && !hasHomeDraft() && stillCurrent();
   };
   if (!idleHome()) return false;
   const intent = beginNavigationIntent();
@@ -4808,13 +4808,13 @@ export async function restoreWorldConversation(worldId: string, stillCurrent: ()
   const valid = async () => {
     const state = useAppStore.getState(), layout = loadCraftmineLayout(localStorage);
     if (!navigationIntentIsCurrent(intent) || !stillCurrent() || state.activeSessionId || state.selectingSessionId !== sessionId
-      || sessionIsArchived(sessionId, state.sessionMeta) || state.page !== "chat" || layout.mode !== "play" || layout.overlay === "closed" || hasHomeDraft()) return false;
+      || sessionIsArchived(sessionId, state.sessionMeta) || state.page !== "chat" || layout.mode !== "play" || (!allowClosed && layout.overlay === "closed") || hasHomeDraft()) return false;
     const bound = await resolve(sessionId);
     const current = useAppStore.getState();
     const presentation = loadCraftmineLayout(localStorage);
     return navigationIntentIsCurrent(intent) && stillCurrent() && !hasHomeDraft() && !current.activeSessionId && current.selectingSessionId === sessionId
       && !sessionIsArchived(sessionId, current.sessionMeta)
-      && current.page === "chat" && presentation.mode === "play" && presentation.overlay !== "closed"
+      && current.page === "chat" && presentation.mode === "play" && (allowClosed || presentation.overlay !== "closed")
       && bound.worldId === worldId && bound.sessionId === sessionId;
   };
   await useAppStore.getState().selectSession(sessionId, {navigationIntent: intent, validateSelection: valid});
@@ -4823,6 +4823,40 @@ export async function restoreWorldConversation(worldId: string, stillCurrent: ()
     return true;
   }
   return false;
+}
+
+/** Explicit slot navigation preserves old drafts and refuses late UI ownership. */
+export async function beginPlayerWorldEntry() {
+  const intent=beginNavigationIntent();
+  const initial=useAppStore.getState(),sessionId=initial.activeSessionId;
+  const draftKey=sessionId??HOME_DRAFT_KEY;
+  const draft=()=>JSON.stringify(readLiveComposerDraft(draftKey)??readComposerDraft(draftKey)??null);
+  const originalDraft=draft();
+  const untouched=()=>navigationIntentIsCurrent(intent)&&useAppStore.getState().activeSessionId===sessionId
+    &&!useAppStore.getState().selectingSessionId&&draft()===originalDraft;
+  await api.pluginPanelInvoke("craftmine.world","world.list",{});
+  if(!untouched())throw Error("PLAYER_WORLD_CONVERSATION_CHANGED");
+  return async(worldId:string,present:()=>void)=>{
+    const selected=await api.pluginPanelInvoke("craftmine.world","world.list",{}) as {activeWorldId?:string|null};
+    if(selected.activeWorldId!==worldId||!untouched())return false;
+    const bound=sessionId?await api.pluginPanelInvoke("craftmine.world","world.conversation",{worldId,sessionId}) as {worldId?:string;sessionId?:string|null}:null;
+    if(!untouched())return false;
+    // The host can already be on the destination after an interrupted UI
+    // handoff. Its active world alone does not prove the visible chat owns it.
+    const keepSession=!!sessionId&&bound?.worldId===worldId&&bound.sessionId===sessionId;
+    if(!keepSession){
+      // readLiveComposerDraft persists through the existing reader; only the
+      // visible selection changes, never the old conversation's draft/files.
+      useAppStore.setState(state=>({...switchWorkPanelSession(state,undefined),...clearSessionPanes(),
+        activeSessionId:undefined,selectingSessionId:undefined,messages:[],page:"chat",isRunning:false}));
+    }
+    present();
+    if(!keepSession){
+      // A home draft wins over automatic selection, even after explicit entry.
+      await restoreWorldConversation(worldId,()=>loadCraftmineLayout(localStorage).enteredWorldId===worldId,true);
+    }
+    return true;
+  };
 }
 /** Return from world creation without reusing its newly bound conversation. */
 export async function restoreWorldEntrySession(sessionId?: string): Promise<void> {

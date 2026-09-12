@@ -382,7 +382,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       }
     },
     /** Real initialization status for one world, or null when the core is silent. */
-    async status(worldId: string): Promise<{state: string; creation: WorldCreation | null} | null> {
+    async status(worldId: string, options: {resume?: boolean} = {}): Promise<{state: string; creation: WorldCreation | null} | null> {
       try {
         const status = await deps.domain("godotWorld.initStatus", {worldId});
         const mapped = initStatusToCreation(status);
@@ -431,7 +431,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
           }
           return {state: "failed", creation: {...mapped.creation, error: {code: "GODOT_INITIALIZATION_FAILED", message, stage: mapped.creation.stage, recoverable: true}, actions: ["retry", "details"]}};
         }
-        if (canAutomaticallyInitialize(status) && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
+        if (options.resume !== false && canAutomaticallyInitialize(status) && !deps.initialization?.running(worldId) && fs.existsSync(path.join(deps.worldsRoot, worldId, ".creation-owner.json"))) void deps.initialization?.start(worldId);
         return mapped;
       } catch {
         return null;
