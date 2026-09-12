@@ -26,6 +26,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {sha256} from '../lib/preflight-core.mjs';
 
@@ -73,6 +74,7 @@ const fail = (code, message) => {
 };
 
 const root = path.resolve(option('root') ?? DEFAULT_ROOT);
+const sha256Bytes = bytes => createHash('sha256').update(bytes).digest('hex');
 if (!fs.existsSync(root)) fail('ROOT_ABSENT', root);
 
 const selected = options('base');
@@ -87,6 +89,7 @@ const exists = file => fs.existsSync(file);
 function walkFiles(directory, prefix = '') {
   const found = [];
   for (const name of fs.readdirSync(directory).sort()) {
+    if (name === '.godot') continue;
     const target = path.join(directory, name);
     const info = fs.lstatSync(target);
     const relativePath = (prefix ? prefix + '/' : '') + name;
@@ -95,6 +98,14 @@ function walkFiles(directory, prefix = '') {
     else if (info.isFile()) found.push(relativePath);
   }
   return found;
+}
+
+function committedBytes(root, relativePath) {
+  try {
+    return execFileSync('git', ['show', `HEAD:${relativePath}`], {cwd: root, windowsHide: true, maxBuffer: 64 * 1024 * 1024});
+  } catch {
+    throw new Error('SOURCE_NOT_COMMITTED: ' + relativePath);
+  }
 }
 
 function readBaseIdentity(base, directory) {
@@ -216,6 +227,7 @@ function buildManifest(root, baseId) {
   const identity = readBaseIdentity(base, directory);
   const entries = walkFiles(directory).map(relativePath => {
     const file = path.join(directory, relativePath);
+    const committed = committedBytes(root, base.directory + '/' + relativePath);
     const facts = classify(baseId, relativePath);
     return {
       path: relativePath,
@@ -229,8 +241,8 @@ function buildManifest(root, baseId) {
       targetLicense: facts.targetLicense,
       redistribution: facts.redistribution,
       distribution: facts.distribution,
-      bytes: fs.statSync(file).size,
-      sha256: sha256(file),
+      bytes: committed.length,
+      sha256: sha256Bytes(committed),
       notes: facts.notes
     };
   });

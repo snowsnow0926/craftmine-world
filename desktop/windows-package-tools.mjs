@@ -97,7 +97,14 @@ if(mode==='begin-release'){
   const installers=pair?[pair.installer,pair.blockmap]:[];
   const evidence={format:'craftmine.package-evidence/2',runFile:relative(run.runFile),commit:manifest.commit,sourceArchiveHash:manifest.sourceArchiveHash,buildManifestSha256:run.buildManifestSha256,files,installers,extraction,totalBytes:files.reduce((n,f)=>n+f.bytes,0),installerExecuted:false,cleanWindowsVerified:false,signature:'unsigned-local-preview',blockmapVerification:pair?'Paired output of this sealed build; byte hash only, differential update operation untested':'not-produced'};
   const evidenceFile=path.join(path.dirname(run.runFile),'package-evidence.json');
-  await fs.writeFile(evidenceFile,JSON.stringify(evidence,null,2)+'\n',{flag:'wx'});
+  try {
+    const existing=JSON.parse(await fs.readFile(evidenceFile,'utf8'));
+    const stable=value=>JSON.stringify({format:value.format,runFile:value.runFile,commit:value.commit,sourceArchiveHash:value.sourceArchiveHash,buildManifestSha256:value.buildManifestSha256,files:value.files,installers:value.installers,totalBytes:value.totalBytes,signature:value.signature});
+    if(stable(existing)!==stable(evidence))throw Error('PACKAGE_EXISTING_EVIDENCE_MISMATCH');
+  } catch(error) {
+    if(error?.code!=='ENOENT')throw error;
+    await fs.writeFile(evidenceFile,JSON.stringify(evidence,null,2)+'\n',{flag:'wx'});
+  }
   console.log(JSON.stringify({commit:manifest.commit,evidenceFile,files:files.length,totalBytes:evidence.totalBytes,installers,installerPayloadVerified:extraction?.verified===true}));
 }else if(mode==='pin'||mode==='stage'||mode==='diff'){
   const {PACKAGE_REQUIRED_FILES}=await import('./delivery/lib/preflight-core.mjs');
