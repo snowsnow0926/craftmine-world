@@ -39,6 +39,12 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
+  if (["world.archiveFailed", "world.restoreArchived", "world.archivedList"].includes(channel)) {
+    if (channel === "world.archivedList") {
+      if (Object.keys(payload).length) throw Error("INVALID_WORLD_REMOVAL_REQUEST");
+    } else if (Object.keys(payload).length !== 1 || typeof payload.worldId !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(payload.worldId)) throw Error("INVALID_WORLD_ID");
+    return deps.invoke(channel, payload);
+  }
   if (channel === "godot.runtimeState") {
     // Readiness is a main-renderer read, not authority to open or alter a
     // runtime. The coordinator still checks the currently selected identity.
@@ -51,7 +57,7 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
     if (!deps.previewControl) throw Error("WORLD_VIEW_UNAVAILABLE");
     return deps.previewControl(request);
   }
-  if (channel === "world.creationRetry") {
+  if (channel === "world.creationRetry" || channel === "world.creationCancel") {
     if (Object.keys(payload).some(key=>key!=="worldId") || typeof payload.worldId!=="string" || !/^[a-z0-9][a-z0-9-]{1,47}$/.test(payload.worldId)) throw Error("INVALID_WORLD_ID");
     return deps.invoke(channel,{worldId:payload.worldId});
   }

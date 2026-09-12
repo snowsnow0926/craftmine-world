@@ -39,6 +39,7 @@ import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout }
 import { CraftminePauseMenu } from "./components/CraftminePauseMenu";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { useDialogueWorld } from "./lib/use-dialogue-world";
+import { DialoguePreparationComposer } from "./components/DialoguePreparationComposer";
 import { CraftmineCreationResult } from "./components/CraftmineCreationResult";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
 import { enterCraftmineMode } from "./lib/craftmine-mode";
@@ -1976,10 +1977,11 @@ function AppShell() {
             {page === "chat" && <CraftmineCreationResult autoOpen={craftmineImmersive} />}
             {dialogueWorld.state && <div className="craftmine-dialogue-status no-drag" data-dialogue-phase={dialogueWorld.state.phase}>
               <strong>{dialogueWorld.state.phase === "preparing" ? "正在准备新世界…" : "通过对话生成世界"}</strong>
-              <p>{dialogueWorld.state.phase === "chat" ? "描述你想进入的世界；生成完成后会自动进入。" : "原世界和存档会保留。"}</p>
+              <p>{dialogueWorld.state.resultReady ? "世界已生成，当前输入会保留。" : dialogueWorld.state.phase === "chat" ? "描述你想进入的世界；生成完成后会自动进入。" : "原世界和存档会保留。"}</p>
               {dialogueWorld.state.phase === "preparing" && <progress aria-label="正在准备新世界" />}
               {dialogueWorld.state.error && <p role="alert">{dialogueWorld.state.error}</p>}
               <button type="button" onClick={() => void dialogueWorld.cancel()}>返回原世界</button>
+              {dialogueWorld.state.resultReady&&<button type="button" onClick={dialogueWorld.enterResult}>进入世界</button>}
             </div>}
             {craftmineWorldFirst && <CraftminePreviewControls autoOpen={craftmineImmersive} />}
             </div>
@@ -2025,8 +2027,21 @@ function AppShell() {
                 </div>
               ) : (
                 <CraftmineWorkbenchSurface immersive={craftmineImmersive} full={craftmineLayout.overlay === "full"}>
-                  <div className="craftmine-chat-flow" inert={dialogueWorld.state && dialogueWorld.state.phase !== "chat" ? true : undefined}>
-                  <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />
+                  <div className="craftmine-chat-flow">
+                  {dialogueWorld.state && dialogueWorld.state.phase !== "chat" ? (
+                    <DialoguePreparationComposer
+                      draft={dialogueWorld.state.draft}
+                      queued={dialogueWorld.state.queued}
+                      failed={dialogueWorld.state.phase === "error"}
+                      cancelling={dialogueWorld.state.cancelling || dialogueWorld.state.submitting}
+                      onDraft={dialogueWorld.setDraft}
+                      onQueue={dialogueWorld.queue}
+                      onEdit={dialogueWorld.editQueued}
+                      onRetry={dialogueWorld.canRetry?()=>void dialogueWorld.retry():undefined}
+                    />
+                  ) : (
+                    <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />
+                  )}
                   </div>
                 </CraftmineWorkbenchSurface>
               )}

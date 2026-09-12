@@ -179,7 +179,7 @@ export function WorldCreatePanel({
         >
           {controller.busy ? CRAFTMINE_WORLD_TEXT.creating[lang] : CRAFTMINE_WORLD_TEXT.createSubmit[lang]}
         </button>
-        <button type="button" disabled={controller.busy && !controller.canCancelCreate} onClick={() => { controller.cancelCreate?.(); onClose(); }}>
+        <button type="button" data-action="cancel-world-create" disabled={controller.busy && !controller.canCancelCreate} onClick={() => { void Promise.resolve(controller.cancelCreate?.()).then(closed => {if (closed !== false) onClose();}); }}>
           {CRAFTMINE_WORLD_TEXT.createCancel[lang]}
         </button>
       </div>

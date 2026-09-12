@@ -100,6 +100,11 @@ export function createGodotPanelCoordinator(options: Options) {
       }
       if (channel === "world.createOptions") return mergedCreateOptions();
       if (channel === "world.list") return augmentWorldList(await options.invoke(channel, payload));
+      if (channel === "world.creationCancel") {
+        if (typeof payload.worldId !== "string" || !/^[a-z0-9][a-z0-9-]{1,47}$/.test(payload.worldId) || Object.keys(payload).some(key => key !== "worldId")) throw Error("INVALID_GODOT_PANEL_ACTION");
+        const creation = currentCreation();if (!creation) throw Error("GODOT_BASES_UNAVAILABLE");
+        return creation.cancel(payload.worldId);
+      }
       if (channel === "world.creationRetry") {
         if (typeof payload.worldId !== "string" || Object.keys(payload).some(key => key !== "worldId")) throw Error("INVALID_GODOT_PANEL_ACTION");
         if (switching || await options.selection()!==payload.worldId) throw Error("GODOT_WORLD_CHANGED");

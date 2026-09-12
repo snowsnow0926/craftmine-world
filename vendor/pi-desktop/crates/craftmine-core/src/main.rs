@@ -64,6 +64,8 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         "godotStorage.reclaimCommit" => return journal.godot_storage_reclaim_commit(params),
         "godotWorld.initialize" => return journal.godot_world_initialize(params),
         "godotWorld.initStatus" => return journal.godot_world_init_status(params),
+        "godotWorld.initCancel" => return journal.godot_world_init_cancel(params),
+        "godotWorld.initCancelClear" => return journal.godot_world_init_cancel_clear(params),
         "godotWorld.initLaunchFailed" => return journal.godot_world_init_launch_failed(params),
         "godotWorld.initLaunchRetry" => return journal.godot_world_init_launch_retry(params),
         "godotWorld.rebuildPlan" => return journal.godot_world_rebuild_plan(params),
@@ -339,6 +341,10 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
             )?)?);
         }
         "world.list" => return Ok(serde_json::to_value(journal.world_list()?)?),
+        "world.archivedList" => return Ok(serde_json::to_value(journal.world_archived_list()?)?),
+        "world.archiveStatus" => return journal.world_archive_status(params["id"].as_str().context("WORLD_ID_REQUIRED")?),
+        "world.archiveFailed" => return journal.world_archive_failed(&params),
+        "world.restoreArchived" => return journal.world_restore_archived(params["id"].as_str().context("WORLD_ID_REQUIRED")?),
         "world.read" => {
             return Ok(serde_json::to_value(journal.world_read(
                 params["id"].as_str().context("WORLD_ID_REQUIRED")?,

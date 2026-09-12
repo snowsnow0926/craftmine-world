@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { useCreationTaskStatus } from "../hooks/use-creation-task-status";
 import { creationTaskLabel } from "../lib/creation-task-status";
 import { loadCraftmineLayout, setCraftmineOverlay } from "../lib/craftmine-layout";
+import { readLiveComposerDraft } from "../lib/composer-draft-cache";
 import "./CraftminePreviewControls.css";
 
 /** Re-read persisted job facts on every session entry; model prose never supplies an action identity. */
@@ -19,17 +20,45 @@ export function CraftmineCreationResult({autoOpen = false}: {autoOpen?: boolean}
   const seen = useRef("");
   const observedSession = useRef<string | null>(null);
   const hasInitialStatus = useRef(false);
+  const automaticLive = useRef<{sessionId:string|null;worldId?:string;jobId?:string;started:boolean;consumed?:string}>({sessionId:null,started:false});
   useEffect(() => {setError("");}, [sessionId, status?.jobId]);
   useEffect(() => {
+    if(automaticLive.current.sessionId!==sessionId)automaticLive.current={sessionId,started:false};
+    const live=automaticLive.current;
+    if(running&&status?.worldId&&status.selectedWorldId===status.worldId){live.started=true;live.worldId=status.worldId;}
+    if(live.started&&live.worldId===status?.worldId&&status?.jobId&&["editing","checking","deferred","repairing","applying"].includes(status.phase))live.jobId=status.jobId;
     if(status?.phase === "applied") {
       const consumed = !window.dispatchEvent(new CustomEvent("craftmine-dialogue-world-applied", {
         cancelable: true, detail:{worldId:status.worldId,sessionId:status.sessionId,jobId:status.jobId},
       }));
       // The dialogue flow deliberately enters a playable, closed-overlay world.
       // Record that handoff before autoOpen becomes true on the next render.
-      if (consumed) seen.current = `${status.sessionId}:${status.jobId}:${status.phase}`;
+      if (consumed) {seen.current = `${status.sessionId}:${status.jobId}:${status.phase}`;return;}
     }
-  }, [status?.phase, status?.worldId, status?.sessionId, status?.jobId]);
+    if(!status||status.phase!=="applied"||status.automaticallyApplied!==true||running||!live.started||live.jobId!==status.jobId||live.worldId!==status.worldId||live.consumed===status.jobId||status.error)return;
+    let cancelled=false;
+    const invalidate=()=>{cancelled=true;};
+    window.addEventListener("craftmine-world-changed",invalidate);
+    window.addEventListener("craftmine-layout-changed",invalidate);
+    const stillOwned=()=>{
+      const state=useAppStore.getState(),session=state.sessions.find(item=>item.id===sessionId),layout=loadCraftmineLayout(localStorage);
+      const permission=session?.permissionMode&&session.permissionMode!=="inherit"?session.permissionMode:state.settings?.defaultPermissionMode;
+      const draft=sessionId?readLiveComposerDraft(sessionId):undefined;
+      return !cancelled&&automaticLive.current===live&&state.activeSessionId===sessionId&&!state.isRunning&&permission==="auto"&&status.selectedWorldId===status.worldId
+        &&layout.mode==="play"&&layout.overlay==="compact"&&!!draft&&!draft.text.trim()&&draft.fileReferences.length===0;
+    };
+    if(stillOwned())void (async()=>{
+      try{
+        const runtime=await api.pluginPanelInvoke("craftmine.world","godot.runtimeState",{worldId:status.worldId}) as {worldId?:string;buildId?:string;state?:string};
+        const selection=await api.pluginPanelInvoke("craftmine.world","world.list",{}) as {activeWorldId?:string};
+        if(selection.activeWorldId!==status.worldId)return;
+        if(!stillOwned()||runtime?.worldId!==status.worldId||runtime.buildId!==status.buildId||!["ready","paused","saved"].includes(runtime.state??""))return;
+        live.consumed=status.jobId;seen.current=`${status.sessionId}:${status.jobId}:${status.phase}`;
+        setCraftmineOverlay("closed");useAppStore.getState().showToast("已放入世界，F2 可查看对话",{variant:"success"});
+      }catch{/* Preserve the conversation when the real runtime cannot confirm handoff. */}
+    })();
+    return ()=>{cancelled=true;window.removeEventListener("craftmine-world-changed",invalidate);window.removeEventListener("craftmine-layout-changed",invalidate);};
+  }, [status, sessionId, running]);
   useEffect(() => {
     if (observedSession.current !== sessionId) {
       observedSession.current = sessionId;
@@ -43,6 +72,9 @@ export function CraftmineCreationResult({autoOpen = false}: {autoOpen?: boolean}
     if (!hasInitialStatus.current) { hasInitialStatus.current = true; seen.current = key; return; }
     if (seen.current === key) return;
     seen.current = key;
+    // A live automatic result belongs in the playable world. Its earlier
+    // conversation remains available through F2, without reopening it here.
+    if(status.phase==="applied"&&status.automaticallyApplied&&automaticLive.current.jobId===status.jobId)return;
     if (!autoOpen || !["ready", "applied", "failed"].includes(status.phase)) return;
     if (loadCraftmineLayout(localStorage).overlay === "closed") setCraftmineOverlay("compact");
   }, [autoOpen, status, sessionId]);

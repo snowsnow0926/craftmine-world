@@ -2,6 +2,8 @@ export type CreationTaskStatus = {
   worldId: string; selectedWorldId?: string | null; worldTitle?: string; sessionId: string; taskId?: string; jobId?: string; candidateId?: string; buildId?: string; sourceStale?: boolean;
   phase: "idle" | "editing" | "checking" | "ready" | "applying" | "repairing" | "deferred" | "applied" | "historical" | "failed" | "interrupted" | "cancelled" | "recovered";
   laterVersion?: boolean;
+  /** Only the host's matching durable automatic-application receipt sets this. */
+  automaticallyApplied?: boolean;
   stage?: string; requirementStatus: "not-requested" | "pending" | "passed" | "failed" | "unsupported";
   error?: string; updatedAt?: number;
 };

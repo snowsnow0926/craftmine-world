@@ -9593,3 +9593,68 @@ Use synthetic selected archives and callbacks to reject beforeRestore with the e
 ### 世界视图只读截图（2026-09-12）
 
 独立成品经正常 UI 挂接游戏视图后，分别对准确的正式/预览候选 world/build/instance/candidateId 截图。PNG 身份、尺寸、摘要可核对；暂停状态和窗口/view bounds 在调用前后不变。错误身份、未挂接、切换及候选未预览必须拒绝；测试不调用 headlessCapture、不临时挂接，不抢焦点或输入。4K 来源仅缩已捕获 NativeImage，返回原图与输出尺寸，PNG 不超过 4MiB。
+
+## FB03: blocked player creation and navigation
+
+- **Preparation input (001):** use the actual React preparation input before
+  world creation acknowledges. Typing alone makes no request. Only the explicit
+  queue action may send once, after the new world, session and native runtime
+  identities agree. Cover late creation/session/capture replies, editing a queued
+  draft, rejected submission and cancellation. Preserve the original session's
+  draft and retain the new description on errors and return.
+- **Return and cancellation (002/006):** cancel only the initializing world,
+  drain its owned check and staged first load, then restore the original world,
+  session and layout. Exercise early cancellation and cancellation during real
+  load, unrelated candidates, a completed application, repeated cancellation,
+  shutdown and restart. Persist cancellation so status polling does not resume
+  it; explicit retry remains available. Never destroy the original formal view
+  or infer successful application from a passed check alone.
+- **Native input presentation (003/004):** run the normal, non-offscreen native
+  owner and world view under the isolated hidden/unfocusable guards. Stop main
+  renderer animation frames and invoke the original shortcut handler for F2,
+  Shift+F2 and Escape. Check actual native sibling ordering and React overlay
+  state. Verify scoped cursor hiding in play and restoring it for overlays,
+  blocked controls, blur and hidden documents. No OS input or Pointer Lock.
+- **Failed-world deletion (005):** invoke the actual list Delete, Recently
+  deleted and Restore actions against an isolated copy of retained failed
+  worlds through the real Rust domain. Current-world removal first completes
+  normal navigation. Preserve complete source, progress and session history;
+  reject stale archived opens/writes and busy or changed worlds. Restart and
+  backup restoration retain the archive marker; restoring never starts a job.
+- **Normal initial load and retry (006):** copy the actual player's failed
+  build artifacts and initial snapshot, without rebuilding the fixture. Require
+  real Godot restore and an identical snapshot with offscreen disabled. Exercise
+  repeated bounds/visibility/overlay changes during staging, promotion and
+  retirement. Check cancellation while loading. Current and previous stock
+  bridges are checked no-ops; only the pinned historical bridge is patched.
+  Unknown source and modified bundled repair bytes still fail.
+- **Retained creative draft (007):** migrate the actual divergent formal/main
+  source copy without changing the retained pet or scene. Bring forward only
+  exact recognized stock ground and managed files. Check idempotent receipt
+  recovery and protected-file conflicts. Follow with the ordinary AK47 request
+  using the retained session's selected model and reasoning. Record permission
+  decisions, model outcome, check, application and gameplay evidence separately;
+  a migration-only test never proves generated weapon behavior. Explicit session
+  Ask overrides global Auto, and missing defaults remain Ask.
+
+Source fixtures and pure callbacks prove their respective boundaries only.
+Do not substitute offscreen success for normal native rendering or engineering
+verification for the player's next acceptance result.
+
+### FB03 ordinary-player completion criteria
+
+Both world-entry paths default only an unconfigured world session to Auto;
+explicit session or global permission choices remain intact. Preserve each
+entry's actual model and reasoning selection. Exercise the real store rather
+than setting Auto in the verifier. A successful ordinary creation must reach a
+matching applied receipt and playable formal runtime without manual Check or
+Apply. Only a live, current-world result may return a compact conversation to
+play. Historical results, another world/session, explicit full workbench mode,
+and new text or attachments must not take over the player's input. The dialogue
+flow offers Enter world when new draft input postpones automatic entry.
+
+The dialogue preparation error itself exposes Retry preparation, retaining the
+world, session and description. A retry racing cancellation must cancel its new
+owned attempt before returning. The ordinary WorldCreatePanel Cancel follows
+the same scoped backend cancellation and preserves its form if cancellation or
+return fails; closing a form alone is not successful cancellation.

@@ -237,6 +237,7 @@ async function onPanelInvoke(channel, payload={}) {
   }
   if(channel==='world.read')return core.call('world.read',{id:payload.id});
   if(channel==='world.open') {
+    if((await core.call('world.archiveStatus',{id:payload.id})).archived)throw Error('WORLD_ARCHIVED');
     const record=await core.call('world.read',{id:payload.id});
     await pi.plugin.setSettings({activeWorldId:record.id});
     return record;

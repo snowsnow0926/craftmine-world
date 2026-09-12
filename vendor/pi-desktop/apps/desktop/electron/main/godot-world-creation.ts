@@ -217,6 +217,10 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
   const raw = String(status.status ?? "");
   const reason = status.reason == null ? "" : String(status.reason);
   const playable = status.playable === true;
+  if (!playable && raw === "cancelled" && reason === "GODOT_INITIALIZATION_CANCELLED") return {
+    state: "failed", creation: {operationId: String(status.initId ?? ""), stage: "cancelled", stages: [], progress: 0,
+      error: {code: reason, message: "已取消准备。你的世界和创作内容已保留，可以重新准备。", stage: "cancelled", recoverable: true}, actions: ["retry", "details"]},
+  };
   const order: Array<keyof typeof STAGE_LABELS> = ["materialize", "project", "build", "confirm"];
   // `pending` means the durable world record exists but no project head yet:
   // copying and registering already happened, the project source has not.
@@ -253,7 +257,7 @@ export function initStatusToCreation(status: Record<string, any> | null | undefi
       stages,
       progress,
       error: failed
-        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_INITIAL_LOAD_FAILED" ? "首次进入世界失败。重新初始化会修复可识别的旧版加载组件并重新检查；原始源码和存档会保留。" : reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
+        ? {code: reason || "GODOT_WORLD_INIT_FAILED", message: reason === "GODOT_INITIALIZATION_CANCELLED" ? "已取消准备。你的世界和创作内容已保留，可以重新准备。" : reason === "GODOT_INITIAL_LOAD_FAILED" ? "首次进入世界失败。重新初始化会修复可识别的旧版加载组件并重新检查；原始源码和存档会保留。" : reason === "GODOT_TASK_PATH_TOO_LONG" ? "任务目录路径过长，无法开始构建。请在较短的数据目录中重试。" : reason || "初始化未完成", stage: stages.find((s) => s.status === "failed")?.id ?? "build", recoverable: true}
         : null,
       // Only actions this module can actually perform are advertised.
       actions: failed ? ["retry", "details"] : ["details"],
@@ -277,6 +281,7 @@ export type GodotCreationDependencies = {
   materialize: (input: {baseId: string; worldId: string; template: string; out: string}) => unknown;
   makeWorldId?: () => string;
   initialization?: {start: (worldId: string, settings?: {recover?:boolean}) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean;
+    cancel?: (worldId: string) => Promise<unknown>; stopAll?: () => Promise<void>;
     preparation?: (worldId: string) => import("./godot-world-initialization").InitializationPreparation | null};
 };
 
@@ -299,7 +304,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
   const options = readGodotCreateOptions({catalogFile: deps.catalogFile, basesRoot: deps.basesRoot});
   // A retry is scheduled before Core publishes its new build state. Keep that
   // interval visible without changing or discarding Core's previous failure.
-  const retries = new Map<string, {work: Promise<void>; waiting: boolean}>();
+  const retries = new Map<string, {work: Promise<void>; waiting: boolean; cancelled: boolean}>();
   const retryFailures = new Map<string, {attempt: number; statusKey: string; error: string}>();
   const baseOf = (baseId: string): GodotBaseOption => {
     const base = options.bases.find((candidate) => candidate.id === baseId);
@@ -436,7 +441,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const pending = retries.get(worldId);
       if (pending) return pending.work;
       retryFailures.delete(worldId);
-      const retry = {work: Promise.resolve(), waiting: true};
+      const retry = {work: Promise.resolve(), waiting: true, cancelled: false};
       const rememberPreparationFailure = () => {
         const preparation = initialization.preparation?.(worldId);
         if (preparation?.error && preparation.status) retryFailures.set(worldId, {
@@ -446,7 +451,9 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       // Install the shared record before invoking any initializer callbacks.
       retries.set(worldId, retry);
       retry.work = Promise.resolve().then(async () => {
+        if (retry.cancelled) return;
         if (initialization.running(worldId)) await initialization.start(worldId);
+        if (retry.cancelled) return;
         retry.waiting = false;
         await initialization.start(worldId, {recover: true});
         // The production initializer resolves on failure and exposes its error.
@@ -457,6 +464,18 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         rememberPreparationFailure();
       }).finally(() => retries.delete(worldId));
       return retry.work;
+    },
+    async cancel(worldId: string) {
+      if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
+      const initialization = deps.initialization;if (!initialization?.cancel) throw Error("GODOT_INITIALIZATION_CANCEL_UNAVAILABLE");
+      const retry = retries.get(worldId);if (retry) retry.cancelled = true;
+      await initialization.cancel(worldId);await retry?.work;
+      retryFailures.delete(worldId);return {worldId, status: "cancelled"};
+    },
+    async stopAll() {
+      for (const retry of retries.values()) retry.cancelled = true;
+      await deps.initialization?.stopAll?.();
+      await Promise.all([...retries.values()].map(retry => retry.work));
     },
   };
 }

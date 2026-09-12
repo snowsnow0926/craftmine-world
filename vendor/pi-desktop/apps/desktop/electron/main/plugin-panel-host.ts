@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain, session } from "electron";
-import { isHeadlessAcceptance } from "./craftmine-headless";
+import { isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
 import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { isNetUrlAllowed } from "@pi-desktop/plugin-sdk";
@@ -276,7 +276,7 @@ export class PluginPanelHost {
       frame: false,
       webPreferences: {
         session: ses,
-        offscreen: isHeadlessAcceptance(),
+        offscreen: isOffscreenAcceptance(),
         preload: join(__dirname, "../preload/plugin-panel.js"),
         contextIsolation: true,
         nodeIntegration: false,

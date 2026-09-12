@@ -1029,6 +1029,7 @@ impl TaskJournal {
             "GODOT_EXECUTOR_CAPABILITY_MISSING"
         );
         let world = record["worldId"].as_str().context("INVALID_GODOT_JOB")?;
+        worlds::assert_not_archived(&tx, world)?;
         let build = record["buildId"].as_str().context("INVALID_GODOT_JOB")?;
         let root = build_root(&self.directory, world, build, false)?.join("source");
         verify_project(&tx, world, build, &root)?;

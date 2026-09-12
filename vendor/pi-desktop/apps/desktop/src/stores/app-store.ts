@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { loadCraftmineLayout, rememberCraftmineWidth } from "../lib/craftmine-layout";
 import { copyCreationRequestContext, type CreationRequestContext } from "../lib/creation-target";
+import { creationSessionPermission, immersiveCreationContext } from "../lib/creation-session-permission";
 import i18n from "i18next";
 import type {
   AgentEventEnvelope,
@@ -2179,6 +2180,34 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (get().runningSessions[sessionId]) {
       get().enqueuePrompt(content, draft, sessionId, submittedRequestContext);
       return true;
+    }
+    // Older world conversations may still carry the historical implicit Ask
+    // fallback. Adopt the world-entry default before ordinary submission only
+    // when neither the session nor global settings states a permission choice.
+    const entryState = get();
+    const entrySession = entryState.sessions.find(session => session.id === sessionId);
+    if (entrySession && entryState.activeSessionId === sessionId &&
+        creationSessionPermission({
+          worldFlow: immersiveCreationContext(loadCraftmineLayout(localStorage).mode, entryState.workPanelTabs),
+          sessionPermission: entrySession.permissionMode,
+          globalPermission: entryState.settings?.defaultPermissionMode,
+        }) === "auto" && entrySession.permissionMode !== "auto") {
+      try {
+        const configured = await api.configureSession(sessionId, {
+          mode: entrySession.mode, thinkingLevel: entrySession.thinkingLevel,
+          providerId: entrySession.providerId, modelId: entrySession.modelId,
+          permissionMode: "auto",
+        });
+        const latest = get().sessions.find(session => session.id === sessionId);
+        // A player navigation or explicit choice arriving during the reply is
+        // not permission to continue a queued send under a different context.
+        if (get().activeSessionId !== sessionId || latest?.permissionMode !== entrySession.permissionMode ||
+            get().settings?.defaultPermissionMode !== entryState.settings?.defaultPermissionMode) return false;
+        set(state => ({sessions:state.sessions.map(session => session.id === sessionId ? {...session,...configured.session} : session)}));
+      } catch (error) {
+        set({error:error instanceof Error ? error.message : String(error)});
+        return false;
+      }
     }
     const startedIn = sessionId;
     const messageCountBeforeSend =
@@ -4551,6 +4580,8 @@ type PersistSessionOptions = {
   intent?: number;
   projectPath?: string | null;
   draftConfiguration?: DraftSessionConfiguration | null;
+  creationWorldId?: string;
+  creationPermission?: PermissionMode;
 };
 
 /**
@@ -4687,7 +4718,11 @@ async function persistSessionAndSelect(
       title: untitledTaskTitle(),
       mode: draftConfig?.mode ?? normalizeMode(settings?.defaultMode),
       thinkingLevel: draftConfig?.thinkingLevel ?? defaultThinkingLevel,
-      permissionMode: draftConfig?.permissionMode,
+      permissionMode: creationSessionPermission({
+        worldFlow: !!options.creationWorldId || immersiveCreationContext(loadCraftmineLayout(localStorage).mode, state.workPanelTabs),
+        sessionPermission: draftConfig?.permissionMode ?? options.creationPermission,
+        globalPermission: settings?.defaultPermissionMode,
+      }),
       providerId: draftConfig?.providerId,
       modelId: draftConfig?.modelId,
       projectPath: projectPath ?? undefined,
@@ -4756,7 +4791,8 @@ export async function createCopiedWorldSession(worldId: string, sourceSessionId?
   if (state.activeSessionId !== sourceSessionId || state.isRunning) throw Error("COPY_SESSION_CONTEXT_CHANGED");
   // Deliberately bypass reusable-empty-session lookup: even an empty chat may
   // already own a durable task in the original world.
-  const id = await persistSessionAndSelect({projectPath: state.workspace?.path ?? null, draftConfiguration: null});
+  const sourcePermission = state.draftConfiguration?.permissionMode ?? state.sessions.find(session=>session.id===sourceSessionId)?.permissionMode;
+  const id = await persistSessionAndSelect({projectPath: state.workspace?.path ?? null, draftConfiguration: null, creationWorldId:worldId, creationPermission:sourcePermission});
   if (!id || useAppStore.getState().activeSessionId !== id) throw Error("COPY_SESSION_SELECTION_SUPERSEDED");
   copiedWorldSessions.set(worldId, id);
   return id;

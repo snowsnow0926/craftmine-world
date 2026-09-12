@@ -317,6 +317,7 @@ impl TaskJournal {
         workspaces::call_id(&args.id)?;
         workspaces::call_id(&args.token)?;
         worlds::validate_id(&args.world_id)?;
+        worlds::assert_not_archived(&self.db, &args.world_id)?;
         let request = json!({"candidateId":args.candidate_id,"worldId":args.world_id,
             "revision":args.revision,"snapshot":args.snapshot});
         let request_hash = digest(&serde_json::to_string(&request)?);

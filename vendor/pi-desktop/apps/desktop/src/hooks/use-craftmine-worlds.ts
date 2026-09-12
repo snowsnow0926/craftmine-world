@@ -4,6 +4,7 @@ import {
   hasInitializingWorld,
   isWorldPlayable,
   planWorldSwitch,
+  parseWorldList,
   worldErrorMessage,
   type CraftmineActiveTask,
   type CraftmineCreationAction,
@@ -20,6 +21,9 @@ export type CraftmineWorldsStatus = "loading" | "ready" | "unavailable" | "error
 export type CraftmineWorldsController = {
   status: CraftmineWorldsStatus;
   worlds: CraftmineWorldEntry[];
+  archivedWorlds: CraftmineWorldEntry[];
+  removeFailedWorld: (id: string) => Promise<void>;
+  restoreWorld: (id: string) => Promise<void>;
   activeWorldId: string | null;
   activeWorld: CraftmineWorldEntry | null;
   capabilities: CraftmineWorldCapabilities | null;
@@ -34,7 +38,7 @@ export type CraftmineWorldsController = {
   create: (input: CraftmineWorldCreateInput, onReady?: (worldId: string) => Promise<void>) => Promise<boolean>;
   creationAction: (worldId: string, action: CraftmineCreationAction) => Promise<void>;
   clearMessages: () => void;
-  cancelCreate: () => void;
+  cancelCreate: () => Promise<boolean>;
   canCancelCreate: boolean;
 };
 
@@ -51,6 +55,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   const bridge = useMemo(() => craftmineWorldBridge(), []);
   const [status, setStatus] = useState<CraftmineWorldsStatus>("loading");
   const [worlds, setWorlds] = useState<CraftmineWorldEntry[]>([]);
+  const [archivedWorlds, setArchivedWorlds] = useState<CraftmineWorldEntry[]>([]);
   const [activeWorldId, setActiveWorldId] = useState<string | null>(null);
   const [capabilities, setCapabilities] = useState<CraftmineWorldCapabilities | null>(null);
   const [activeTask, setActiveTask] = useState<CraftmineActiveTask | null>(null);
@@ -64,6 +69,9 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   // read `busy === false`. The ref is set before the first await.
   const busyRef = useRef(false);
   const createCancelled = useRef(false);
+  type CreateOperation = {worldId: string | null; previous: string | null; needsCancel: boolean; done: Promise<boolean>; finish: (result: boolean) => void};
+  const pendingCreate = useRef<CreateOperation | null>(null);
+  const cancelRetry = useRef<CreateOperation | null>(null);
   const [canCancelCreate, setCanCancelCreate] = useState(false);
   const epoch = useRef(0);
   const alive = useRef(true);
@@ -92,11 +100,14 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       // still offer the bases the host actually delivered.
       const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
       if (!current()) return;
+      const archived = caps?.archiveFailed ? parseWorldList(await bridge.call("world.archivedList")).worlds : [];
+      if (!current()) return;
       const task = list.activeWorldId
         ? await bridge.activeTask(list.activeWorldId).catch(() => null)
         : null;
       if (!current()) return;
       setWorlds(list.worlds);
+      setArchivedWorlds(archived);
       setActiveWorldId(list.activeWorldId);
       setCapabilities(caps);
       setActiveTask(task);
@@ -184,6 +195,21 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     [activeTask, activeWorldId, bridge, capabilities, lang, refresh, worlds],
   );
 
+  const cancelCreatedWorld = useCallback(async (operation: CreateOperation): Promise<boolean> => {
+    try {
+      if (!bridge || !operation.worldId) throw Error(CRAFTMINE_WORLD_TEXT.createCancelUnconfirmed[lang]);
+      if (operation.needsCancel) await bridge.call("world.creationCancel", {worldId: operation.worldId});
+      if (operation.previous) {
+        const restored = await bridge.switchWorld(operation.previous);
+        if (!restored.ok) throw Error(restored.error);
+        window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
+      }
+      cancelRetry.current = null;setCanCancelCreate(false);setNotice(CRAFTMINE_WORLD_TEXT.createCancelled[lang]);return true;
+    } catch (failure) {
+      cancelRetry.current = operation;setCanCancelCreate(true);setActionError(worldErrorMessage(failure, lang));return false;
+    }
+  }, [bridge, lang]);
+
   const create = useCallback(
     async (input: CraftmineWorldCreateInput, onReady?: (worldId: string) => Promise<void>) => {
       if (!bridge || busyRef.current) return false;
@@ -195,8 +221,12 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       createCancelled.current = false;
       setCanCancelCreate(true);
       let completed = false;
+      let finish!: (result: boolean) => void;
+      const operation: CreateOperation = {worldId: null, previous, needsCancel: true, done: new Promise(resolve => {finish = resolve;}), finish: result => finish(result)};
+      pendingCreate.current = operation;cancelRetry.current = null;
       try {
         const receipt = await bridge.create(input);
+        operation.worldId = receipt.id;operation.needsCancel = receipt.state !== "ready";
         const createdList = await bridge.list();
         const created = createdList.worlds.find(world => world.id === receipt.id);
         if (!created) throw Error("CREATED_WORLD_NOT_FOUND");
@@ -227,6 +257,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
           // keep the form open with the real host error.
           if (previous) await bridge.call("world.open", { id: previous }).catch(() => {});
           setActionError(`${CRAFTMINE_WORLD_TEXT.switchFailed[lang]} ${worldErrorMessage(result.error, lang)}`);
+          cancelRetry.current = operation;
           return false;
         }
         setActiveWorldId(result.activeWorldId);
@@ -235,16 +266,16 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         completed = true;
         return true;
       } catch (failure) {
+        if (operation.worldId) cancelRetry.current = operation;
         setActionError(worldErrorMessage(failure, lang));
         return false;
       } finally {
-        setCanCancelCreate(false);
+        setCanCancelCreate(cancelRetry.current === operation);
+        let cancelledSafely = true;
         // world.create may already select the new identity on the host. A
         // cancelled form must restore the original running world as well.
-        if (!completed && previous && (createCancelled.current || !alive.current)) {
-          const restored = await bridge.switchWorld(previous);
-          if (!restored.ok) setActionError(worldErrorMessage(restored.error, lang));
-          else window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
+        if (!completed && (createCancelled.current || !alive.current)) {
+          cancelledSafely = await cancelCreatedWorld(operation);
         }
         // Stay busy until the refreshed list reflects the result, so the panel
         // never re-enables against stale state.
@@ -253,10 +284,12 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         } finally {
           busyRef.current = false;
           setBusy(false);
+          if (pendingCreate.current === operation) pendingCreate.current = null;
+          operation.finish(cancelledSafely);
         }
       }
     },
-    [bridge, lang, refresh],
+    [bridge, lang, refresh, cancelCreatedWorld],
   );
 
   const creationAction = useCallback(
@@ -301,6 +334,25 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     setNotice(null);
   }, []);
 
+  const archiveAction = useCallback(async (worldId: string, restore: boolean) => {
+    if (!bridge || busyRef.current || !capabilities?.archiveFailed) return;
+    if (!restore && worlds.find(world => world.id === worldId)?.state !== "failed") return;
+    busyRef.current = true;setBusy(true);setActionError(null);setNotice(null);
+    try {
+      await bridge.call(restore ? "world.restoreArchived" : "world.archiveFailed", {worldId});
+      await refresh();
+      if (alive.current) setNotice(CRAFTMINE_WORLD_TEXT[restore ? "worldRestored" : "worldRemoved"][lang]);
+    } catch (failure) {
+      if (alive.current) {
+        const code = String(failure);
+        setActionError(code.includes("WORLD_REMOVAL_BUSY") || code.includes("WORLD_APPLICATION_BUSY") ? CRAFTMINE_WORLD_TEXT.removeBusy[lang]
+          : code.includes("WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION") ? CRAFTMINE_WORLD_TEXT.removeFailedOnly[lang]
+          : worldErrorMessage(failure, lang));
+      }
+      await refresh();
+    } finally {busyRef.current = false;if (alive.current) setBusy(false);}
+  }, [bridge, capabilities?.archiveFailed, worlds, refresh, lang]);
+
   // A world that is initializing changes on the host, not in this renderer.
   // Poll the same read channel the list uses, with a hard bound, so the row can
   // show real progress and stop on its own instead of spinning forever.
@@ -329,6 +381,9 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   return {
     status,
     worlds,
+    archivedWorlds,
+    removeFailedWorld: id => archiveAction(id, false),
+    restoreWorld: id => archiveAction(id, true),
     activeWorldId,
     activeWorld: worlds.find((entry) => entry.id === activeWorldId) ?? null,
     capabilities,
@@ -343,7 +398,16 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     create,
     creationAction,
     clearMessages,
-    cancelCreate: () => { createCancelled.current = true; },
+    cancelCreate: async () => {
+      createCancelled.current = true;
+      const pending = pendingCreate.current;
+      if (pending) {setNotice(CRAFTMINE_WORLD_TEXT.createCancelling[lang]);return pending.done;}
+      const retry = cancelRetry.current;if (!retry) return true;
+      if (busyRef.current) return false;
+      busyRef.current = true;setBusy(true);setActionError(null);setNotice(CRAFTMINE_WORLD_TEXT.createCancelling[lang]);
+      try {const result = await cancelCreatedWorld(retry);await refresh();return result;}
+      finally {busyRef.current = false;setBusy(false);}
+    },
     canCancelCreate,
   };
 }
