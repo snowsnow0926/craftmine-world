@@ -18,6 +18,10 @@ signal capture_changed(captured: bool)
 ## request pointer lock.
 @export var capture_mouse_on_click := true
 @export var input_enabled := true
+@export var max_health := 100.0
+var health := 100.0
+var dead: bool:
+	get: return health <= 0.0
 
 @onready var camera_rig: CameraRig = get_node_or_null("CameraRig")
 
@@ -30,6 +34,7 @@ var _restored_floor: Variant = null
 
 
 func _ready() -> void:
+	health = max_health
 	_gravity = float(ProjectSettings.get_setting("physics/3d/default_gravity", 9.8))
 	if camera_rig == null:
 		push_warning("PlayerController has no CameraRig child")
@@ -78,6 +83,8 @@ func _physics_process(delta: float) -> void:
 ## real key actions are read, so scripted acceptance exercises the same movement
 ## and collision code as a player.
 func _read_move_axis() -> Vector2:
+	if dead:
+		return Vector2.ZERO
 	if _override_remaining > 0:
 		_override_remaining -= 1
 		return _override_axis
@@ -137,6 +144,8 @@ func snapshot() -> Dictionary:
 		"yaw": camera_rig.yaw if camera_rig != null else 0.0,
 		"pitch": camera_rig.pitch if camera_rig != null else 0.0,
 		"onFloor": is_on_floor() if _restored_floor == null else _restored_floor,
+		"health": health,
+		"maxHealth": max_health,
 	}
 
 
@@ -156,8 +165,22 @@ func restore(data: Dictionary) -> String:
 		return "Player pitch is invalid"
 	if data.has("onFloor") and not data.onFloor is bool:
 		return "Player floor contact is invalid"
+	if data.has("health") and (not (data.health is float or data.health is int) or not is_finite(float(data.health)) or float(data.health) < 0.0 or float(data.health) > max_health):
+		return "Player health is invalid"
 	_restored_floor = data.get("onFloor")
 	global_position = Vector3(float(position[0]), float(position[1]), float(position[2]))
 	velocity = Vector3.ZERO
 	set_look(float(yaw), float(pitch))
+	if data.has("health"):
+		health = float(data.health)
 	return ""
+
+func take_damage(amount: float) -> float:
+	if dead or amount <= 0.0 or not is_finite(amount):
+		return 0.0
+	var applied := minf(health, amount)
+	health -= applied
+	return applied
+
+func revive() -> void:
+	health = max_health
