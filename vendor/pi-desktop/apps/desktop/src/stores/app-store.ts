@@ -4808,11 +4808,12 @@ export async function restoreWorldConversation(worldId: string, stillCurrent: ()
   const valid = async () => {
     const state = useAppStore.getState(), layout = loadCraftmineLayout(localStorage);
     if (!navigationIntentIsCurrent(intent) || !stillCurrent() || state.activeSessionId || state.selectingSessionId !== sessionId
-      || state.page !== "chat" || layout.mode !== "play" || layout.overlay === "closed" || hasHomeDraft()) return false;
+      || sessionIsArchived(sessionId, state.sessionMeta) || state.page !== "chat" || layout.mode !== "play" || layout.overlay === "closed" || hasHomeDraft()) return false;
     const bound = await resolve(sessionId);
     const current = useAppStore.getState();
     const presentation = loadCraftmineLayout(localStorage);
     return navigationIntentIsCurrent(intent) && stillCurrent() && !hasHomeDraft() && !current.activeSessionId && current.selectingSessionId === sessionId
+      && !sessionIsArchived(sessionId, current.sessionMeta)
       && current.page === "chat" && presentation.mode === "play" && presentation.overlay !== "closed"
       && bound.worldId === worldId && bound.sessionId === sessionId;
   };

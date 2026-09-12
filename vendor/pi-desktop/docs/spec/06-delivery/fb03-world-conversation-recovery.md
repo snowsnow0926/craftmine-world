@@ -26,6 +26,11 @@ caches cannot optimistically commit a recovered session before those checks.
 The binding is revalidated after loading and workspace alignment, before the
 normal selection commits. No new session or model prompt is submitted.
 
+Archive changes also win even though they do not create a navigation intent.
+Recovery rechecks local archive metadata before and after each asynchronous
+binding validation; archiving during transcript loading or host validation
+cannot activate the archived conversation when the delayed response arrives.
+
 A bounded local world-to-session preference is written only after the host
 verifies the binding; it is never a global last-session fallback. Returning from
 history to play preserves the selection navigation intent. If that selection
