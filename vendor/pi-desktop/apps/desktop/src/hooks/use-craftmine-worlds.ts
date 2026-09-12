@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   craftmineWorldBridge,
+  creationActions,
   hasInitializingWorld,
   isWorldPlayable,
   planWorldSwitch,
@@ -40,6 +41,7 @@ export type CraftmineWorldsController = {
   clearMessages: () => void;
   cancelCreate: () => Promise<boolean>;
   canCancelCreate: boolean;
+  createAttempt: { worldId: string | null; input: CraftmineWorldCreateInput } | null;
 };
 
 /** Bounded polling while a world initializes: ~5 minutes, then the player refreshes. */
@@ -62,6 +64,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   // A load failure and an action failure are different: a successful re-list
   // must not erase the reason a create or switch failed.
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -73,6 +76,8 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   const pendingCreate = useRef<CreateOperation | null>(null);
   const cancelRetry = useRef<CreateOperation | null>(null);
   const [canCancelCreate, setCanCancelCreate] = useState(false);
+  const [createAttempt, setCreateAttempt] = useState<{worldId:string|null;input:CraftmineWorldCreateInput} | null>(null);
+  const createAttemptRef = useRef<{input:CraftmineWorldCreateInput;worldId:string|null;previous:string|null} | null>(null);
   const epoch = useRef(0);
   const alive = useRef(true);
   const activeWorldIdRef = useRef<string | null>(null);
@@ -96,23 +101,36 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     try {
       const list = await bridge.list();
       if (!current()) return;
-      // Capabilities load even with no world yet, so the first creation can
-      // still offer the bases the host actually delivered.
-      const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
-      if (!current()) return;
-      const archived = caps?.archiveFailed ? parseWorldList(await bridge.call("world.archivedList")).worlds : [];
-      if (!current()) return;
-      const task = list.activeWorldId
-        ? await bridge.activeTask(list.activeWorldId).catch(() => null)
-        : null;
-      if (!current()) return;
+      // The playable list is authoritative on its own. Optional task/archive
+      // reads must not hold entry, cancellation or a failed switch's busy lock.
+      if (activeWorldIdRef.current !== list.activeWorldId) {
+        setActiveTask(null);
+        setCapabilities(null);
+      }
+      activeWorldIdRef.current = list.activeWorldId;
       setWorlds(list.worlds);
-      setArchivedWorlds(archived);
       setActiveWorldId(list.activeWorldId);
-      setCapabilities(caps);
-      setActiveTask(task);
       setStatus("ready");
       setLoadError(null);
+      setDetailError(null);
+      // Metadata remains scoped to this exact refresh/selection. Starting a
+      // newer read invalidates late replies without withholding the world list.
+      void (async () => {
+        const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
+        if (!current()) return;
+        setCapabilities(caps);
+        try {
+          const archived = caps?.archiveFailed ? parseWorldList(await bridge.call("world.archivedList")).worlds : [];
+          if (current()) setArchivedWorlds(archived);
+        } catch (failure) {
+          if (current()) setDetailError(worldErrorMessage(failure, lang));
+        }
+      })();
+      if (list.activeWorldId) {
+        void bridge.activeTask(list.activeWorldId).catch(() => null).then(task => {
+          if (current()) setActiveTask(task);
+        });
+      }
     } catch (failure) {
       if (!current()) return;
       setStatus("error");
@@ -204,7 +222,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         if (!restored.ok) throw Error(restored.error);
         window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
       }
-      cancelRetry.current = null;setCanCancelCreate(false);setNotice(CRAFTMINE_WORLD_TEXT.createCancelled[lang]);return true;
+      cancelRetry.current = null;createAttemptRef.current=null;setCreateAttempt(null);setCanCancelCreate(false);setNotice(CRAFTMINE_WORLD_TEXT.createCancelled[lang]);return true;
     } catch (failure) {
       cancelRetry.current = operation;setCanCancelCreate(true);setActionError(worldErrorMessage(failure, lang));return false;
     }
@@ -217,19 +235,45 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       setBusy(true);
       setActionError(null);
       setNotice(null);
-      const previous = activeWorldIdRef.current;
+      const retained = createAttemptRef.current;
+      const retrying = !!retained;
+      const attempt = retained ?? {input:{...input},worldId:null,previous:activeWorldIdRef.current};
+      createAttemptRef.current = attempt;
+      setCreateAttempt({worldId:attempt.worldId,input:attempt.input});
+      const previous = attempt.previous;
       createCancelled.current = false;
       setCanCancelCreate(true);
       let completed = false;
       let finish!: (result: boolean) => void;
-      const operation: CreateOperation = {worldId: null, previous, needsCancel: true, done: new Promise(resolve => {finish = resolve;}), finish: result => finish(result)};
+      const operation: CreateOperation = {worldId: attempt.worldId, previous, needsCancel: true, done: new Promise(resolve => {finish = resolve;}), finish: result => finish(result)};
       pendingCreate.current = operation;cancelRetry.current = null;
       try {
-        const receipt = await bridge.create(input);
-        operation.worldId = receipt.id;operation.needsCancel = receipt.state !== "ready";
-        const createdList = await bridge.list();
-        const created = createdList.worlds.find(world => world.id === receipt.id);
+        if (!attempt.worldId) {
+          // An uncertain acknowledgement is recovered using the exact original
+          // operation. Only the host can confirm its registered world identity.
+          const receipt = await bridge.create(attempt.input);
+          operation.worldId = attempt.worldId = receipt.id;
+          operation.needsCancel = receipt.state !== "ready";
+          setCreateAttempt({worldId:receipt.id,input:attempt.input});
+        }
+        let createdList = await bridge.list();
+        let created = createdList.worlds.find(world => world.id === attempt.worldId);
         if (!created) throw Error("CREATED_WORLD_NOT_FOUND");
+        if (retrying && created.state === "failed" && !createCancelled.current) {
+          if (!creationActions(created.creation).includes("retry")) throw Error("WORLD_RETRY_UNAVAILABLE");
+          // Retry is a separate explicit initialization action, never another
+          // world.create call with edited attributes on an existing operation.
+          if (createdList.activeWorldId !== created.id) {
+            const selected = await bridge.switchWorld(created.id);
+            if (!selected.ok) throw Error(selected.error);
+            if (selected.activeWorldId !== created.id) throw Error("GODOT_WORLD_CHANGED");
+          }
+          if (createCancelled.current) return false;
+          await bridge.creationAction(created.id, "retry");
+          createdList = await bridge.list();
+          created = createdList.worlds.find(world => world.id === attempt.worldId);
+          if (!created) throw Error("CREATED_WORLD_NOT_FOUND");
+        }
         // A world that is still initializing (or failed to initialize) is
         // registered but not playable. Do not switch the running view into it:
         // the row keeps showing the host's real progress until it is ready.
@@ -249,6 +293,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
           }
         }
         if (!alive.current || createCancelled.current) return false;
+        operation.needsCancel = false;
         setCanCancelCreate(false);
         const result = await bridge.switchWorld(created.id);
         if (!result.ok) {
@@ -263,10 +308,16 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         setActiveWorldId(result.activeWorldId);
         window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
         await onReady?.(result.activeWorldId);
+        createAttemptRef.current=null;setCreateAttempt(null);
         completed = true;
         return true;
       } catch (failure) {
-        if (operation.worldId) cancelRetry.current = operation;
+        // These validations run before host registration. Other errors can
+        // hide a committed create and must retain the original request.
+        if (!retrying && !attempt.worldId && /^(Error: )?(INVALID_WORLD_TITLE|WORLD_BASE_UNAVAILABLE|WORLD_STARTER_UNAVAILABLE|INVALID_OPERATION_ID)$/.test(String(failure))) {
+          createAttemptRef.current=null;setCreateAttempt(null);
+        }
+        if (createAttemptRef.current === attempt) cancelRetry.current = operation;
         setActionError(worldErrorMessage(failure, lang));
         return false;
       } finally {
@@ -388,7 +439,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     activeWorld: worlds.find((entry) => entry.id === activeWorldId) ?? null,
     capabilities,
     activeTask,
-    error: actionError ?? loadError,
+    error: actionError ?? loadError ?? detailError,
     notice,
     busy,
     bridge,
@@ -409,5 +460,6 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       finally {busyRef.current = false;setBusy(false);}
     },
     canCancelCreate,
+    createAttempt,
   };
 }

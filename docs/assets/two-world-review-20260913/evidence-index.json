@@ -1,0 +1,95 @@
+{
+  "format": "craftmine.two-world-review/1",
+  "createdAt": "2026-09-12T20:18:30.126Z",
+  "sourceCommit": "7c01617a69ff4986476afffde4697a78fe398b29",
+  "scope": "Read-only product and architecture review with a proposed development plan. No two-world code removal or new player acceptance performed.",
+  "interpretation": "Two fixed main worlds, one existing Web/voxel engine and one Godot 3D creation-sandbox, with old works retained in archive management.",
+  "candidate": {
+    "version": "0.14.4-preview.19",
+    "commit": "7c01617a69ff4986476afffde4697a78fe398b29",
+    "archive": {
+      "path": "Craftmine-World-portable-7c01617a69ff.zip",
+      "bytes": 1035807701,
+      "sha256": "dd6523a66b504e93bc4c817762772c90d1d94359333252ae6453df4f3e2c1c64"
+    },
+    "payloadFiles": 1657,
+    "finalNativeAcceptance": false,
+    "portableEvidence": "D:/Craftmine World/desktop/build/releases/7c01617a69ff-9a204c57-56a6-414f-abec-9e0944344d12/portable-91789b92-adf1-4938-a2d1-01396b17beff/portable-evidence.json",
+    "portableEvidenceSha256": "c3d90ae981c5e2075779785734aa15b5a20ccc3dc71866e151d64cf3b2140d9a"
+  },
+  "observedScale": {
+    "source": [
+      {
+        "file": "vendor/pi-desktop/apps/desktop/electron/main/index.ts",
+        "lines": 10670
+      },
+      {
+        "file": "vendor/pi-desktop/apps/desktop/src/App.tsx",
+        "lines": 2129
+      },
+      {
+        "file": "vendor/pi-desktop/apps/desktop/src/stores/app-store.ts",
+        "lines": 4863
+      }
+    ],
+    "tools": 40
+  },
+  "artifacts": [
+    {
+      "name": "Actual player pickup failure",
+      "file": "D:/Craftmine Worktrees/godot-player-loops-20260913/test-results/desktop-native-latest-player-3H30WO/report.json",
+      "sha256": "e7e802b6a12e3414daa732608294aaaf5f511bde17b5fd85f859c0858f452ee1",
+      "scope": "Reproduced the original applied PCK with engine interact. No model call or source edit."
+    },
+    {
+      "name": "Interrupted original request lifecycle",
+      "file": "D:/Craftmine Worktrees/godot-player-loops-20260913/test-results/latest-player-evidence-D4cB5a/request-lifecycle.json",
+      "sha256": "d66d18c46fa1138214f634bcc1daf33f79cac742df693355f790ec067234b2dd",
+      "scope": "The later model response was interrupted at shutdown; lack of patch is not proof the model chose to stop."
+    },
+    {
+      "name": "Continuation admission failure",
+      "file": "D:/CMR/pickup-f2a524/test-results/desktop-native-a/ordinary-followup-QFfYue/prompt-ipc-results.jsonl",
+      "sha256": "3769a95356b65a800a91f3c8da1bfdaafb3bacc0b9458f64434d0c8328681038",
+      "scope": "Actual IPC rejection INTERNAL / TURN_ENDED. Root cause and player recovery remain open."
+    },
+    {
+      "name": "Integrated world entry regression",
+      "file": "D:\\Craftmine Worktrees\\godot-reliability-20260913\\test-results\\entry-integration.log",
+      "sha256": "d12c511dd82b17e2542ec1146ab6939e3cd8c7676358a314ef3bf822ed209801",
+      "scope": "Targeted React regression, not packaged native acceptance."
+    },
+    {
+      "name": "Integrated pause/save regression",
+      "file": "D:\\Craftmine Worktrees\\godot-reliability-20260913\\test-results\\pause-integration.log",
+      "sha256": "6f668e13995d50f925541253f3b233f2ebd68b7aa0854bb572c3a70b9a666157",
+      "scope": "Targeted React lifecycle regression, not proof of real native save."
+    },
+    {
+      "name": "Integrated creation retry regression",
+      "file": "D:\\Craftmine Worktrees\\godot-reliability-20260913\\test-results\\create-retry-integration.log",
+      "sha256": "d5a4694092e506d268f883ec3ba59268a2bbcaaca9cf12e70563e5ebf554fa16",
+      "scope": "Targeted React registered-create recovery regression."
+    },
+    {
+      "name": "Terminal and identity regressions",
+      "file": "D:\\Craftmine Worktrees\\godot-reliability-20260913\\test-results\\outcomes-tests.log",
+      "sha256": "4aff0d3f641c3c9993790c9f435a94f2273fd49f335cea72782c11c19c9f6168",
+      "scope": "17 targeted tests passed before candidate packaging."
+    },
+    {
+      "name": "Delayed status and automatic handoff",
+      "file": "D:\\Craftmine Worktrees\\godot-reliability-20260913\\test-results\\handoff-with-delayed-status.log",
+      "sha256": "b8d01ddf7ad7455e7ffe14164649030ed62ee95bd40296f44c751de6fc09425a",
+      "scope": "13 actual React checks passed before candidate packaging."
+    }
+  ],
+  "openItems": [
+    "Original applied pickup remains broken until a newly applied repair passes actual interaction/save/reopen.",
+    "TURN_ENDED continuation rejection needs diagnosis.",
+    "Preview 19 native entry and interrupted-quit drivers were prepared, not executed.",
+    "Two-world UI and orchestration consolidation is proposed, not implemented."
+  ],
+  "processObservation": "No Craftmine World.exe process was found at this review checkpoint. No user application was stopped.",
+  "privacy": "Raw player databases and model credentials are not copied into this index."
+}

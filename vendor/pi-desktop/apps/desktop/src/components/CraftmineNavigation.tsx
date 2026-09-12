@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Box } from "lucide-react";
-import { useAppStore, createCopiedWorldSession } from "../stores/app-store";
+import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
 import { decideCraftmineActivation, loadCraftmineLayout, saveCraftmineLayout } from "../lib/craftmine-layout";
@@ -9,12 +9,10 @@ import { craftmineLang, worldErrorMessage } from "../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
 import type { CraftmineAuxSurface } from "../lib/craftmine-aux";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
-import { enterCraftmineMode } from "../lib/craftmine-mode";
-import { WorldListPanel } from "./craftmine/WorldListPanel";
+import { enterCraftmineMode, openCraftmineModeEntry } from "../lib/craftmine-mode";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
 import { GodotHistoryPanel } from "./craftmine/GodotHistoryPanel";
-import { CopyWorldButton } from "./craftmine/CopyWorldButton";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -33,15 +31,6 @@ export function CraftmineNavigation() {
   const sessions = useAppStore((s) => s.sessions);
   const initialized = useRef(false);
   const controller = useCraftmineWorlds(lang);
-
-  const copied = async (worldId: string, sourceSessionId?: string) => {
-    const selected = await controller.bridge?.list();
-    if (selected?.activeWorldId !== worldId) throw Error("COPY_WORLD_SELECTION_CHANGED");
-    const sessionId = await createCopiedWorldSession(worldId, sourceSessionId);
-    if ((await controller.bridge?.list())?.activeWorldId !== worldId) throw Error("COPY_WORLD_SELECTION_CHANGED");
-    open();
-    return sessionId;
-  };
 
   const open = () => {
     const state = useAppStore.getState();
@@ -119,13 +108,13 @@ export function CraftmineNavigation() {
       <button
         type="button"
         className={`craftmine-world-nav ${active ? "active" : ""}`}
-        onClick={open}
+        onClick={openCraftmineModeEntry}
         disabled={!available}
         data-nav="world"
         aria-current={active ? "page" : undefined}
       >
         <Box size={16} aria-hidden />
-        <span>{CRAFTMINE_WORLD_TEXT.worldsTitle[lang]}</span>
+        <span>{lang==="zh"?"切换世界":"Switch world"}</span>
         <span className="craftmine-world-nav-hint">
           {available ? CRAFTMINE_WORLD_TEXT.openWorld[lang] : CRAFTMINE_WORLD_TEXT.loading[lang]}
         </span>
@@ -133,9 +122,6 @@ export function CraftmineNavigation() {
 
       {available && (
         <>
-          <WorldListPanel controller={controller} lang={lang} onOpenWorld={open} />
-          <CopyWorldButton bridge={controller.bridge} worldId={controller.activeWorldId} sessionId={activeSessionId} onCopied={copied} />
-
           {activeSessionId && (
             <div className="craftmine-world-session" data-world-session={activeSessionId}>
               <span className="craftmine-world-session-label">{CRAFTMINE_WORLD_TEXT.sessionTitle[lang]}</span>
@@ -145,7 +131,7 @@ export function CraftmineNavigation() {
             </div>
           )}
 
-          <WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} />
+          <details><summary>{lang==="zh"?"更多工具":"More tools"}</summary><WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} /></details>
           <form data-history-open-form onSubmit={event => { event.preventDefault(); if (controller.activeWorldId) setHistoryOpen(true); }}><button type="submit" data-godot-history-open disabled={!controller.activeWorldId}>版本与创作分支</button></form>
           {historyOpen && <div className="craftmine-asset-sheet" role="dialog" aria-label="版本与创作分支" data-history-sheet>
             <div className="craftmine-asset-sheet-head"><span>版本与创作分支</span><form data-history-close-form onSubmit={event => { event.preventDefault(); setHistoryOpen(false); }}><button type="submit">关闭</button></form></div>
@@ -154,7 +140,7 @@ export function CraftmineNavigation() {
           {surfaceError && (
             <p className="craftmine-world-error" role="alert" data-surface-error="true">{surfaceError}</p>
           )}
-          <CraftmineLayoutControls />
+          <details><summary>{lang==="zh"?"高级布局":"Advanced layout"}</summary><CraftmineLayoutControls /></details>
           {assetsOpen && (
             <div className="craftmine-asset-sheet" role="dialog" aria-modal="true"
               aria-label={CRAFTMINE_WORLD_TEXT.assetsTitle[lang]} data-asset-sheet="true" data-asset-owner={controller.activeWorldId ?? ""}>

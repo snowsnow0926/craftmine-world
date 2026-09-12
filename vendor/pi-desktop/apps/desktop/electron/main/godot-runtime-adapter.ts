@@ -15,6 +15,10 @@ export function createGodotRuntimeAdapter(options: {
   instance: () => { worldId: string; buildId: string; instanceId: string } | null;
 }) {
   const roots = new Set<string>();
+  type UncertainSave = {worldId: string; buildId: string; instanceId: string; revision: number; snapshot: unknown};
+  // An unavailable reconciliation read must not forget the exact write whose
+  // reply was lost. This is evidence for a later explicit save, not a retry job.
+  const uncertainSaves = new Map<string, UncertainSave>();
   function descriptor(value: unknown, worldId: string, phase = "formal"): GodotRuntimeDescriptor | null {
     if (value === null) return null;
     if (!object(value) || value.format !== "craftmine.godot-runtime-descriptor/1" || value.phase !== phase || value.worldId !== worldId ||
@@ -59,23 +63,49 @@ export function createGodotRuntimeAdapter(options: {
       let state;
       try { state = JSON.parse(receipt.snapshotText); } catch { return { failed: true, error: "INVALID_GODOT_PROGRESS" }; }
       if (!object(state) || state.format !== "craftmine.godot-progress/1" || state.worldId !== call.worldId || !isDeepStrictEqual(state, call.snapshot)) return { failed: true, error: "GODOT_SNAPSHOT_MISMATCH" };
-      let result;
-      try { result = await options.domain("godotRuntime.saveProgress", { worldId: call.worldId, buildId: call.buildId, revision: call.revision, runnerReceipt: receipt, snapshot: state }); }
-      catch (error) {
-        // Never repeat an uncertain mutation. Only an exact Rust-persisted state
-        // at this build/revision can resolve a missing transport reply.
-        if (object(error) && error.errorCode) throw error;
+      const key = JSON.stringify([call.worldId, call.buildId, receipt.instanceId]);
+      const ownsInstance = () => {const live=options.instance();return live?.worldId===call.worldId&&live.buildId===call.buildId&&live.instanceId===receipt.instanceId;};
+      const readExact = async (pending: UncertainSave) => {
+        // Saving is a durable-world fact. A missing/corrupt rebuildable Web
+        // artifact must not make an already committed snapshot unknowable.
+        const saved = await options.domain("world.read", {id: pending.worldId});
+        if (!ownsInstance() || !object(saved) || saved.id!==pending.worldId || saved.world?.build?.id!==pending.buildId ||
+          !Number.isSafeInteger(saved.revision) || saved.revision<pending.revision || !HASH.test(saved.contentHash) ||
+          !isDeepStrictEqual(saved.world?.snapshot,pending.snapshot)) return null;
+        return saved;
+      };
+      const confirmed = (saved: Record<string, any>) => durable({receipt:{
+        format:"craftmine.godot-progress-receipt/1",worldId:saved.id,buildId:saved.world.build.id,
+        revision:saved.revision,contentHash:saved.contentHash,instanceId:receipt.instanceId,snapshotSha256:receipt.snapshotSha256,
+      }},call);
+      const persist = async (revision: number, mayRecover: boolean): Promise<GodotWorldProgressResult> => {
         try {
-          const saved = await describe(call.worldId);
-          if (saved && saved.buildId === call.buildId && saved.revision >= call.revision && isDeepStrictEqual(saved.snapshot, state)) return durable({ receipt: {
-            format: "craftmine.godot-progress-receipt/1", worldId: saved.worldId, buildId: saved.buildId,
-            revision: saved.revision, contentHash: saved.contentHash,
-            instanceId: receipt.instanceId, snapshotSha256: receipt.snapshotSha256,
-          } }, call);
-        } catch { /* Keep the original uncertain error. */ }
-        throw error;
-      }
-      return durable(result, call);
+          if (!ownsInstance()) return {failed:true,error:"GODOT_RUNNER_RECEIPT_MISMATCH"};
+          const result=durable(await options.domain("godotRuntime.saveProgress",{worldId:call.worldId,buildId:call.buildId,revision,runnerReceipt:receipt,snapshot:state}),call);
+          uncertainSaves.delete(key);return result;
+        } catch(error) {
+          const pending=uncertainSaves.get(key);
+          if (mayRecover && object(error) && error.errorCode==="WORLD_REVISION_CONFLICT" && pending && call.revision<=pending.revision) {
+            let saved=null;try {saved=await readExact(pending);} catch {/* Preserve the actual conflict if evidence is unavailable. */}
+            if (saved) {
+              if (isDeepStrictEqual(saved.world.snapshot,state)) {const result=confirmed(saved);uncertainSaves.delete(key);return result;}
+              // Only this instance's exact earlier uncertain snapshot permits
+              // rebasing a new save. CAS still rejects every intervening write.
+              return persist(saved.revision,false);
+            }
+          }
+          if (object(error) && error.errorCode) throw error;
+          const uncertain:UncertainSave={worldId:call.worldId,buildId:call.buildId,instanceId:String(receipt.instanceId),revision,snapshot:structuredClone(state)};
+          uncertainSaves.set(key,uncertain);
+          if (uncertainSaves.size>8) uncertainSaves.delete(uncertainSaves.keys().next().value!);
+          try {
+            const saved=await readExact(uncertain);
+            if (saved) {const result=confirmed(saved);uncertainSaves.delete(key);return result;}
+          } catch {/* Keep both the original error and the exact pending save evidence. */}
+          throw error;
+        }
+      };
+      return persist(call.revision,true);
     },
   };
 }
