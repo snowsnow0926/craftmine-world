@@ -23,6 +23,7 @@ export function observeGodotPerformance({scope,sample,now=()=>new Date().toISOSt
   if(currentTime-sampleTime>30000||sampleTime-currentTime>5000)throw Error('PERFORMANCE_SAMPLE_STALE');
   if(sample.provenance!=='electron-app-metrics'||sample.measurementScope!=='renderer-process'||!Number.isSafeInteger(sample.rendererProcessId)||sample.rendererProcessId<=0)throw Error('PERFORMANCE_PROVENANCE_UNVERIFIED');
   const measured=unknowns(),value=sample.memoryWorkingSetMb;
+  if(value===undefined)return unavailablePerformance('PERFORMANCE_MEMORY_UNAVAILABLE');
   if(typeof value!=='number'||!Number.isFinite(value)||value<0)throw Error('INVALID_PERFORMANCE_VALUE:memoryWorkingSetMb');
   measured.memoryWorkingSetMb={status:'measured',value,unit:'MiB',source:'electron-app-metrics',
     measurementScope:'renderer-process',note:'Whole OS renderer process working set including runtime overhead; not exclusive world or GPU memory'};

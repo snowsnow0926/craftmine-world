@@ -17,6 +17,9 @@ test('only actual process channel is projected; invented engine metrics stay unk
 });
 
 test('rejects foreign identities, stale times, invalid values and untrusted measurement origins',()=>{
+  const missing=project({memoryWorkingSetMb:undefined});
+  assert.equal(missing.reason,'PERFORMANCE_MEMORY_UNAVAILABLE');
+  assert.ok(Object.values(missing.measured).every(field=>field.status==='unknown'));
   for(const key of ['worldId','buildId','instanceId'])assert.throws(()=>project({[key]:'other'}),/SCOPE_MISMATCH/);
   for(const value of [-1,NaN,Infinity,null,'120'])assert.throws(()=>project({memoryWorkingSetMb:value}),/INVALID_PERFORMANCE_VALUE/);
   assert.throws(()=>project({sampledAt:'x'}),/SAMPLE_TIME/);
