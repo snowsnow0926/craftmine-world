@@ -506,8 +506,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 3811,
-      "sha256": "c194946727f3d382821f04038614d0a38f7f7b66afdb94a3e01a6c0d787c9098"
+      "bytes": 4781,
+      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
     },
     {
       "path": "progress-migration.d.mts",

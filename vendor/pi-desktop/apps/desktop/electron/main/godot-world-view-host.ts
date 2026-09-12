@@ -326,6 +326,8 @@ export class GodotWorldViewHost {
   private syncing = false;
   private syncPromise: Promise<GodotWorldState | null> = Promise.resolve(null);
   private lastSync = 0;
+  /** A failed durable selection waits for an explicit retry or changed input. */
+  private failedSyncKey: string | null = null;
   private poll?: ReturnType<typeof setInterval>;
   private disposed = false;
   private closing: Promise<void> | null = null;
@@ -397,10 +399,27 @@ export class GodotWorldViewHost {
   }
 
   async ensure(request: GodotWorldOpenRequest): Promise<GodotWorldState> {
-    if (this.transitioning) throw new Error("WORLD_BUSY");
+    if (this.transitioning || this.pending || this.stagedRequest) throw new Error("WORLD_BUSY");
+    const requestKey = this.selectionKey(request);
+    // Explicit open/retry is allowed to attempt the same saved selection again.
+    this.failedSyncKey = null;
     this.transitioning = true;
     try { return await this.ensureInner(request); }
+    catch (error) {
+      if (!this.disposed && !/WORLD_BUSY|GODOT_CANDIDATE_ACTIVE|cancelled/i.test(String(error))) this.failedSyncKey = requestKey;
+      throw error;
+    }
     finally { this.transitioning = false; }
+  }
+
+  private selectionKey(request: GodotWorldOpenRequest): string | null {
+    try {
+      // Include actual restore inputs, not just worldId: maintenance may replace
+      // the build, and a newly saved revision must remain eligible to load.
+      return JSON.stringify([request.worldId, request.buildId, request.revision,
+        request.root, request.entry, request.threads, request.artifacts,
+        request.snapshot, request.build]);
+    } catch { return null; }
   }
 
   private async ensureInner(request: GodotWorldOpenRequest): Promise<GodotWorldState> {
@@ -931,8 +950,9 @@ export class GodotWorldViewHost {
         if (this.current) this.publish({ ...this.identityOf(this.current), state: this.currentState?.state ?? "ready", error: String(error) });
         return this.currentState;
       }
-      if (this.syncHolds) return this.currentState;
+      if (this.syncHolds || this.pending || this.stagedRequest || this.transitioning) return this.currentState;
       if (!request) {
+        this.failedSyncKey = null;
         await this.switchWorld(null).catch((error) => {
           if (this.current) this.publish({ ...this.identityOf(this.current), state: this.currentState?.state ?? "ready", error: String(error) });
         });
@@ -941,6 +961,10 @@ export class GodotWorldViewHost {
       if (this.current && this.current.alive && this.current.worldId === request.worldId && this.current.buildId === request.buildId) {
         return this.currentState;
       }
+      const requestKey = this.selectionKey(request);
+      // force bypasses descriptor throttling, including the periodic poll. It
+      // is not a player retry and cannot continually recreate a broken world.
+      if (requestKey && requestKey === this.failedSyncKey) return this.currentState;
       return this.ensure(request).catch((error) => {
         // A world that cannot start must not take the panel down with it.
         if (this.current?.alive) this.publish({ ...this.identityOf(this.current), state: this.currentState?.state ?? "ready", error: String(error?.message ?? error) });

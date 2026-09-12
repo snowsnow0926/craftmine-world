@@ -2,6 +2,11 @@ extends RefCounted
 
 const PROFILE := "creation-player-collision/1"
 const CONTACT_TOLERANCE := 0.001
+# The pinned Web physics solver can leave a resting capsule 0.001028657 m
+# below a flat support. Keep the one-millimetre wall limit; permit at most
+# another 0.1 mm only at the real capsule's bottom pole, pointing straight up.
+# This neither shrinks the query shape nor relocates saved progress.
+const FLOOR_NUMERIC_ALLOWANCE := 0.0001
 const MAX_HITS := 64
 
 func _failure(reason: String) -> Dictionary:
@@ -45,13 +50,24 @@ func inspect(scene: Node3D, saved_player: Dictionary, before: Dictionary, curren
 	if points.size() >= MAX_HITS * 2 or points.size() % 2 != 0: return _failure("CONTACT_BUDGET")
 	if not hits.is_empty() and points.is_empty(): return _failure("CONTACTS_UNAVAILABLE")
 	var depth := 0.0
+	var support_depth := 0.0
+	var penetration := false
+	var foot: Vector3 = native_transform.origin - Vector3.UP * (shape_node.shape.height * 0.5)
 	for i in range(0, points.size(), 2):
-		var distance: float = points[i].distance_to(points[i + 1])
+		var separation: Vector3 = points[i + 1] - points[i]
+		var distance: float = separation.length()
 		if not is_finite(distance): return _failure("CONTACTS_INVALID")
 		depth = maxf(depth, distance)
+		if distance <= CONTACT_TOLERANCE: continue
+		var pole_offset: Vector3 = points[i] - foot
+		var flat_support := separation.normalized().dot(Vector3.UP) >= 0.99999 and pole_offset.length() <= FLOOR_NUMERIC_ALLOWANCE
+		if flat_support and distance <= CONTACT_TOLERANCE + FLOOR_NUMERIC_ALLOWANCE:
+			support_depth = maxf(support_depth, distance)
+		else:
+			penetration = true
 	var bodies: Array = []
 	for hit in hits:
 		var body: Variant = hit.get("collider")
 		if not body is CollisionObject3D or not is_instance_valid(body) or not scene.is_ancestor_of(body): return _failure("COLLIDER_UNAVAILABLE")
 		bodies.append({"id":str(body.get_instance_id()),"nodePath":str(scene.get_path_to(body)),"shape":hit.shape})
-	return {"profile":PROFILE,"status":"failed" if depth > CONTACT_TOLERANCE else "passed","reason":"PLAYER_PENETRATION" if depth > CONTACT_TOLERANCE else "","playerId":current.playerId,"shapeId":current.shape.id,"shapeResourceId":current.shape.resourceId,"position":[player.global_position.x,player.global_position.y,player.global_position.z],"maxContactDepth":depth,"contactTolerance":CONTACT_TOLERANCE,"bodies":bodies}
+	return {"profile":PROFILE,"status":"failed" if penetration else "passed","reason":"PLAYER_PENETRATION" if penetration else "","playerId":current.playerId,"shapeId":current.shape.id,"shapeResourceId":current.shape.resourceId,"position":[player.global_position.x,player.global_position.y,player.global_position.z],"maxContactDepth":depth,"contactTolerance":CONTACT_TOLERANCE,"flatSupportTolerance":CONTACT_TOLERANCE + FLOOR_NUMERIC_ALLOWANCE,"maxNumericSupportDepth":support_depth,"bodies":bodies}

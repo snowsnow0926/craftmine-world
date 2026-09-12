@@ -14,6 +14,9 @@ try{
  for(const variant of ['formal','candidate','blocked']){
   const project=path.join(out,variant),artifactsRoot=path.join(out,variant+'-artifacts'),web=path.join(artifactsRoot,'web');fs.mkdirSync(web,{recursive:true});materializeBase({baseId:'creation-sandbox',worldId:'collision-web-world',out:project});
   snapshot??={format:'craftmine.godot-progress/1',worldId:'collision-web-world',baseId:'creation-sandbox',baseVersion:'1.0.0',stateVersion:1,body:JSON.parse(fs.readFileSync(path.join(project,'craftmine_initial_state.json'))).initialProgress};
+  // Actual packaged play produced this resting height. Verify its exact
+  // restoration in Web, not only an idealized y=0.9 initial pose.
+  snapshot.body.player.position[1]=0.898971319198608;
   if(variant!=='formal'){
    const scene=path.join(project,'scenes/creation.tscn');let text=fs.readFileSync(scene,'utf8');
    // The negative candidate has a different authored initial spawn. Its saved

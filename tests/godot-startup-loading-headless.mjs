@@ -36,11 +36,13 @@ try {
       releaseOpen:()=>{opened=opening;resolveOpen(opening);},failOpen:()=>rejectOpen(Error('加载资源失败')),
       state:(state,loadingStage)=>listeners.get('godot-world:state')?.({worldId:opening.id,buildId:'retained-build',instanceId:'real-instance',state,loadingStage}),
       immersive:()=>listeners.get('craftmine-presentation')?.({active:true}),
+      recovered:(id=opening.id)=>{opened=opening;listeners.get('craftmine-runtime-recovered')?.({worldId:id});},
+      restoreOther:async()=>{await craftmineView.beginRestore({operationId:'restore-recovery-test'});opened=second;await craftmineView.finishRestore({operationId:'restore-recovery-test',record:second});},
     };
     globalThis.pluginBridge={on:(event,callback)=>listeners.set(event,callback),invoke:async (channel,args)=>{
       if(channel==='app.getAppearance')return{base:'dark'};
-      if(channel==='world.list'){if(listCalls++)return{worlds:[world],activeWorldId:world.id};return new Promise(resolve=>{resolveList=resolve;});}
-      if(channel==='world.read')return args.id===second.id?second:world;
+      if(channel==='world.list'){if(listCalls++){if(fixture.holdRecoveryList)return new Promise(resolve=>{fixture.resolveRecoveryList=()=>resolve({worlds:[opened],activeWorldId:opened.id});});return{worlds:[opened],activeWorldId:opened.id};}return new Promise(resolve=>{resolveList=resolve;});}
+      if(channel==='world.read'){const record=args.id===second.id?second:world;if(fixture.holdRecoveryRead)return new Promise(resolve=>{fixture.resolveRecoveryRead=()=>resolve(record);});return record;}
       if(channel==='world.create'){fixture.creates=(fixture.creates||0)+1;return {...second,state:'initializing',creation:{operationId:'stable-create-test',stage:'import',progress:10}};}
       if(channel==='world.open'){opening=args.id===second.id?second:world;fixture.openPending=args.id;return new Promise((resolve,reject)=>{resolveOpen=resolve;rejectOpen=reject;});}
       if(channel==='godot.runtimeSave'){
@@ -54,7 +56,7 @@ try {
         return{status:'none'};
       }
       if(channel==='godot.runtimeSurface'){fixture.surfaces.push({...args});if(fixture.rejectSurface)throw Error('GODOT_WORLD_CHANGED');return {}; }
-      if(channel==='godot.runtimeState')return{worldId:opened.id,buildId:'retained-build',instanceId:'real-instance',state:fixture.initializing?'loading':'ready',initializing:fixture.initializing};
+      if(channel==='godot.runtimeState')return{worldId:opened.id,buildId:'retained-build',instanceId:'real-instance',state:fixture.runtimeFailed?'failed':fixture.initializing?'loading':'ready',initializing:fixture.initializing};
       return{};
     }};
   });
@@ -139,6 +141,27 @@ try {
   }
   const recoveredClose=await page.evaluate(async()=>{fixture.failSave=null;return craftmineView.prepareClose();});
   check('quit can retry the actual checkpoint after its cause is resolved',recoveredClose.loaded===true&&recoveredClose.worldId==='retained-world');
+  await page.goto(url);await page.evaluate(()=>fixture.releaseList());await page.waitForFunction(()=>fixture.openPending);
+  await page.evaluate(()=>fixture.recovered());
+  check('maintenance recovery does not discard or overwrite an active first open',await visible()&&await page.evaluate(()=>document.body.dataset.worldLoaded!=='true'));
+  await page.evaluate(()=>fixture.failOpen());
+  await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
+  check('queued maintenance recovery mounts after the original open rejects and clears its error',!await visible()&&await page.locator('#error').isHidden());
+  await page.goto(url);await page.evaluate(()=>fixture.releaseList());await page.waitForFunction(()=>fixture.openPending);await page.evaluate(()=>fixture.failOpen());
+  await page.waitForFunction(()=>document.querySelector('#godot-loading').dataset.state==='failed');
+  await page.evaluate(()=>{fixture.holdRecoveryList=true;fixture.recovered();});await page.waitForFunction(()=>fixture.resolveRecoveryList);
+  await page.evaluate(()=>{fixture.closePromise=craftmineView.prepareClose();fixture.resolveRecoveryList();});await page.evaluate(()=>fixture.closePromise);
+  check('shutdown during asynchronous recovery prevents a late mount',await page.evaluate(()=>document.body.dataset.worldLoaded!=='true'));
+  await page.goto(url);await page.evaluate(()=>fixture.releaseList());await page.waitForFunction(()=>fixture.openPending);await page.evaluate(()=>fixture.failOpen());
+  await page.waitForFunction(()=>document.querySelector('#godot-loading').dataset.state==='failed');
+  await page.evaluate(()=>{fixture.holdRecoveryRead=true;fixture.recovered();});await page.waitForFunction(()=>fixture.resolveRecoveryRead);
+  await page.evaluate(()=>fixture.restoreOther());await page.evaluate(()=>{fixture.holdRecoveryRead=false;fixture.resolveRecoveryRead();});
+  await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
+  check('a trusted restore during recovery read invalidates the stale mount and retains its new world',await page.evaluate(()=>document.body.dataset.worldId==='second-world'));
+  await page.evaluate(()=>{fixture.runtimeFailed=true;fixture.openPending=null;fixture.retrySame=craftmineView.navigate({operation:'switch',id:'second-world'});});
+  await page.waitForFunction(()=>fixture.openPending==='second-world');
+  check('explicit same-world failed selection performs a real scoped open',await visible());
+  await page.evaluate(()=>{fixture.runtimeFailed=false;fixture.releaseOpen();});await page.evaluate(()=>fixture.retrySame);await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
   await page.goto(url+'?placeholder');await page.evaluate(()=>fixture.releaseList());await page.waitForFunction(()=>fixture.openPending);await page.evaluate(()=>fixture.releaseOpen());await page.waitForFunction(()=>document.body.dataset.godotState==='loading');
   await page.evaluate(()=>craftmineView.navigate({operation:'switch',id:'retained-world'}));
   check('same-world selection never reveals an unfinished placeholder',await page.evaluate(()=>!fixture.surfaces.some(value=>value.visible===true)));

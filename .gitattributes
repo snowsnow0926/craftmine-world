@@ -35,5 +35,6 @@ docs/dispatch-prompts/player-feedback-20260910/ALL_PROMPTS.md whitespace=cr-at-e
 tests/godot-remaining/C/fixtures/native-import-task.log -text whitespace=cr-at-eol
 docs/evidence/next-batch-nb1/** -text whitespace=cr-at-eol,-blank-at-eof
 docs/evidence/gu6-performance-host-20260912/** -text
+docs/evidence/fb02-floor-contact-20260912/** -text
 desktop/godot/shared/engine_performance.gd -text
 desktop/godot/shared/runtime_bridge_engine_v1.gd -text

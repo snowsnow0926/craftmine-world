@@ -1,0 +1,709 @@
+{
+  "out": "D:\\Craftmine World\\test-results\\creation-floor-save-restore-Auzurq",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 75,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 2025,
+      "exitCode": 0
+    },
+    {
+      "label": "run",
+      "elapsedMs": 4213,
+      "exitCode": 0
+    }
+  ],
+  "cases": [
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "case": "initial-floor",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              0,
+              6
+            ],
+            "b": [
+              0,
+              0,
+              6
+            ],
+            "depth": 0,
+            "normal": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 11,
+          "paused": true,
+          "startedFrame": 9
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    },
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "case": "natural-walk-save",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "b": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "depth": 0,
+            "normal": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 170,
+          "paused": true,
+          "startedFrame": 168
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    },
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "case": "packaged-saved-pose",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              -0.00102865695953369,
+              -0.684998571872711
+            ],
+            "b": [
+              0,
+              0,
+              -0.684998571872711
+            ],
+            "depth": 0.00102865695953369,
+            "normal": [
+              0,
+              1,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0.00102865695953369,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.898971319198608,
+          -0.684998571872711
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 178,
+          "paused": true,
+          "startedFrame": 176
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.898971319198608,
+          -0.684998571872711
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    },
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "case": "two-mm-floor",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              -0.00199997425079346,
+              -0.684998571872711
+            ],
+            "b": [
+              0,
+              0,
+              -0.684998571872711
+            ],
+            "depth": 0.00199997425079346,
+            "normal": [
+              0,
+              1,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0.00199997425079346,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.898000001907349,
+          -0.684998571872711
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 188,
+          "paused": true,
+          "startedFrame": 186
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.898,
+          -0.684998571872711
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    },
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "case": "wall-0.00105",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6",
+          "@StaticBody3D@25"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "b": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "depth": 0,
+            "normal": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "a": [
+              0.300000011920929,
+              1.5,
+              -0.749999165534973
+            ],
+            "b": [
+              0.298949956893921,
+              1.5,
+              -0.749999165534973
+            ],
+            "depth": 0.00105005502700806,
+            "normal": [
+              -1,
+              0,
+              0
+            ]
+          },
+          {
+            "a": [
+              0.300000011920929,
+              0.300000011920929,
+              -0.749999165534973
+            ],
+            "b": [
+              0.298949956893921,
+              0.300000011920929,
+              -0.749999165534973
+            ],
+            "depth": 0.00105005502700806,
+            "normal": [
+              -1,
+              0,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "39980107308",
+            "nodePath": "@StaticBody3D@25",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0.00105005502700806,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 201,
+          "paused": true,
+          "startedFrame": 199
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    },
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "case": "wall-0.002",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6",
+          "@StaticBody3D@25"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "b": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "depth": 0,
+            "normal": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "a": [
+              0.300000011920929,
+              1.5,
+              -0.749999165534973
+            ],
+            "b": [
+              0.297999978065491,
+              1.5,
+              -0.749999165534973
+            ],
+            "depth": 0.00200003385543823,
+            "normal": [
+              -1,
+              0,
+              0
+            ]
+          },
+          {
+            "a": [
+              0.300000011920929,
+              0.300000011920929,
+              -0.749999165534973
+            ],
+            "b": [
+              0.297999978065491,
+              0.300000011920929,
+              -0.749999165534973
+            ],
+            "depth": 0.00200003385543823,
+            "normal": [
+              -1,
+              0,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "39980107308",
+            "nodePath": "@StaticBody3D@25",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0.00200003385543823,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 214,
+          "paused": true,
+          "startedFrame": 212
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    },
+    {
+      "after": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "case": "wall-0.15",
+      "contacts": {
+        "floorMaxAngle": 0.785398185253143,
+        "hits": [
+          "@StaticBody3D@6",
+          "@StaticBody3D@25"
+        ],
+        "pairs": [
+          {
+            "a": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "b": [
+              0,
+              0,
+              -0.749999165534973
+            ],
+            "depth": 0,
+            "normal": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "a": [
+              0.300000011920929,
+              1.5,
+              -0.749999165534973
+            ],
+            "b": [
+              0.149999976158142,
+              1.5,
+              -0.749999165534973
+            ],
+            "depth": 0.150000035762787,
+            "normal": [
+              -1,
+              0,
+              0
+            ]
+          },
+          {
+            "a": [
+              0.300000011920929,
+              0.300000011920929,
+              -0.749999165534973
+            ],
+            "b": [
+              0.149999976158142,
+              0.300000011920929,
+              -0.749999165534973
+            ],
+            "depth": 0.150000035762787,
+            "normal": [
+              -1,
+              0,
+              0
+            ]
+          }
+        ],
+        "safeMargin": 0.00100000004749745
+      },
+      "error": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "39980107308",
+            "nodePath": "@StaticBody3D@25",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0.150000035762787,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 227,
+          "paused": true,
+          "startedFrame": 225
+        }
+      },
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          -0.749999165534973
+        ],
+        "yaw": 0
+      },
+      "rollbackEqual": true
+    }
+  ]
+}

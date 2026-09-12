@@ -31,6 +31,7 @@ import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
 import { createCreationGroundMaintenance, interruptsCreationGroundMaintenance } from "./creation-ground-maintenance";
+import {planCreationCollisionUpgrade} from "./creation-collision-upgrade";
 import { createCreationGroundScheduler } from "./creation-ground-scheduler";
 import { createCreationRepairDispatcher, repairFollowsLatestRequest, repairOwnsUncheckedWork, type CreationRepairInput } from "./creation-repair-dispatch";
 import { createCreationStopIntents } from "./creation-stop-intent";
@@ -617,8 +618,10 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 
 const pluginPanels = new PluginPanelHost(
   async (pluginId, channel, payload) => {
+    if (pluginId === "craftmine.world" && channel === "world.open") rearmCollisionMaintenance((payload as any)?.id);
+    if (pluginId === "craftmine.world" && channel === "world.creationRetry") rearmCollisionMaintenance((payload as any)?.worldId);
     if (pluginId === "craftmine.world" && interruptsCreationGroundMaintenance(channel, payload as any, godotWorld.instance?.worldId ?? null)) {
-      await groundMaintenance.stopAll();
+      await stopWorldMaintenance();
     }
     if (pluginId === "craftmine.world" && ["godot.exportWindows", "godot.exportWindows.status", "godot.exportWindows.cancel"].includes(channel)) {
       if (channel !== "godot.exportWindows") return godotExports.request(channel, payload as any);
@@ -1017,6 +1020,7 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
   progress: godotAdapter.progress,
   onState: state => {
     pluginViews.broadcast("godot-world:state", state);
+    if (["ready", "failed"].includes(state.state)) scheduleCollisionMaintenance();
     if (state.state === "ready" && state.instanceId) scheduleGroundMaintenance(state.worldId, state.instanceId);
   },
   onFullscreenShortcut: action => {
@@ -1214,7 +1218,7 @@ const creationAutoApply=createCreationAutoApplyService({
     const capture=creationTargets.owned(context);if(!capture)return null;
     if(!capture.autoApply)return capture;
     if(capture.authorization==="full-auto"&&!await creationFullAuto(context.sessionId))return {...capture,autoApply:false};
-    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy)throw Error("WORLD_BUSY");
+    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy||collisionMaintenance.busy)throw Error("WORLD_BUSY");
     if(turnFinalizations.has(context.sessionId))throw Error("CREATION_FINALIZING");
     if(activeTurns.size)throw Error("CREATION_TURN_BUSY");
     if(!mainWindow||mainWindow.isDestroyed()||mainWindow.webContents.isDestroyed()||immersionState.blocked)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
@@ -1260,7 +1264,7 @@ const creationAutoQueue=createCreationAutoQueue({
       if(capture.authorization!=="full-auto"||!await creationFullAuto(input.context.sessionId))return {status:"manual",reason:"CREATION_AUTO_APPLY_NOT_AUTHORIZED"};
       if(activeTurns.size||turnFinalizations.size)throw Error("CREATION_TURN_BUSY");
       if(await godotSelection()!==capture.worldId)throw Error("CREATION_WORLD_DEFERRED");
-      if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy||immersionState.blocked)throw Error("WORLD_BUSY");
+      if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy||collisionMaintenance.busy||immersionState.blocked)throw Error("WORLD_BUSY");
       const formal=await plugins.requestCraftmineHost("godotRuntime.describe",{worldId:capture.worldId}) as any;
       if(formal?.buildId!==capture.buildId||formal.manifestHash!==capture.manifestHash||formal.sourceRevision!==capture.sourceRevision)throw Error("CREATION_TARGET_STALE");
       const reason=applicationRepair??job.blockedReason??job.interruptReason??job.output?.check?.reason??"CREATION_CHECK_FAILED";
@@ -1290,7 +1294,7 @@ const creationRepairDispatcher = createCreationRepairDispatcher({
     const capture = creationTargets.owned(input.context);
     if (!capture?.autoApply || capture.authorization !== "full-auto" || capture.worldId !== input.worldId || !await creationFullAuto(input.context.sessionId)) throw Error("CREATION_AUTO_APPLY_NOT_AUTHORIZED");
     if (activeTurns.size || turnFinalizations.size) throw Error("CREATION_TURN_BUSY");
-    if (quitting || craftmineQuitPreparation || craftmineQuitPrepared || profileRestore || godotCopies.busy || godotExportBusy || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy || immersionState.blocked) throw Error("WORLD_BUSY");
+    if (quitting || craftmineQuitPreparation || craftmineQuitPrepared || profileRestore || godotCopies.busy || godotExportBusy || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy || collisionMaintenance.busy || immersionState.blocked) throw Error("WORLD_BUSY");
     if (await godotSelection() !== input.worldId) throw Error("CREATION_WORLD_DEFERRED");
     const detail = await host.call<{session?: any}>("session.get", {id: input.context.sessionId});
     if (!detail.session || craftmineProjectIdentity(detail.session, input.context.sessionId) !== input.context.projectId || !pluginActiveInProject("craftmine.world", detail.session.projectPath ?? null)) throw Error("CREATION_PROJECT_CHANGED");
@@ -1327,7 +1331,7 @@ async function submitCreationAutomaticRepair(input: CreationRepairInput) {
   return creationRepairDispatcher.dispatch(input);
 }
 plugins.setServices({craftmineCreationCheckCompleted:async input=>{
-  if(groundMaintenance.ownsCompletion(input))return {status:"manual",reason:"HOST_MAINTENANCE_OWNS_APPLICATION"};
+  if(groundMaintenance.ownsCompletion(input)||collisionMaintenance.ownsCompletion(input))return {status:"manual",reason:"HOST_MAINTENANCE_OWNS_APPLICATION"};
   return creationAutoQueue.completed(input);
 }});
 
@@ -1348,7 +1352,7 @@ async function creationEditCapture(owner:number,sessionId:string,captureId:strin
 const creationEdits=createCreationEditService({
   directory:join(dataDir,"creation-edits"),
   begin:async(owner,input)=>{
-    await groundMaintenance.stopAll();
+    await stopWorldMaintenance();
     if(creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
     try{
@@ -1426,10 +1430,57 @@ const groundMaintenance = createCreationGroundMaintenance({
     if (status.status === "applied") sendToRenderer(IPC.event.craftmineWorldChanged, {});
   },
 });
+const collisionMaintenance = createCreationGroundMaintenance({
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  selection: godotSelection, instance: () => godotWorld.instance, resourcesRoot: godotRoot,
+  sourceUpgrade: {plan: planCreationCollisionUpgrade, branchPrefix: "host-collision-", projectId: "craftmine-collision-maintenance",
+    description: "Upgrade the exact released collision support-contact guard on a separate formal branch, retaining every authored file, draft, history and saved progress value."},
+  shouldYield: () => !!(activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy),
+  applyVerified: (worldId, candidateId, expected, authorize) => godotCandidates.autoApplyVerified(worldId, candidateId, expected, authorize),
+  applySavedVerified: (worldId, candidateId, expected, authorize) => godotCandidates.applySavedMaintenance(worldId, candidateId, expected, authorize),
+  changed: (worldId, status) => {
+    logger.app("plugin", status.status === "failed" ? "warn" : "info", "collision guard maintenance", {data: {worldId, ...status}});
+    if (status.status === "upgrading") pluginViews.broadcast("godot-world:state", {worldId, state: "loading", initializing: true, loadingStage: "scene"});
+    if (status.status === "applied") {
+      sendToRenderer(IPC.event.craftmineWorldChanged, {});
+      pluginViews.broadcast("craftmine-runtime-recovered", {worldId});
+    }
+    if (status.status === "failed") pluginViews.broadcast("godot-world:state", {worldId, state: "failed", error: status.reason});
+  },
+});
+const collisionMaintenanceAttempts = new Map<string, string>();
+let collisionMaintenanceStarting = false;
+/** Player-requested retry, shared by the retained panel and main navigation.
+ * Polling/status reads never rearm a failed maintenance attempt. */
+function rearmCollisionMaintenance(worldId: unknown): void {
+  if (typeof worldId !== "string" || !/^[A-Za-z0-9._-]{1,128}$/.test(worldId)) return;
+  if (!collisionMaintenance.busy && collisionMaintenance.status(worldId)?.status === "failed") collisionMaintenanceAttempts.delete(worldId);
+}
+function scheduleCollisionMaintenance(): void {
+  if (collisionMaintenanceStarting || collisionMaintenance.busy) return;
+  collisionMaintenanceStarting = true;
+  setTimeout(() => { void (async () => {
+    const state=godotWorld.state;
+    if (!state || !["ready","paused","saved","failed"].includes(state.state) || quitting || craftmineQuitPreparation || craftmineQuitPrepared
+      || activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy || godotCandidates.blocking) return;
+    if (await godotSelection() !== state.worldId || collisionMaintenanceAttempts.get(state.worldId) === state.buildId) return;
+    collisionMaintenanceAttempts.set(state.worldId, state.buildId);
+    if (collisionMaintenanceAttempts.size > 64) collisionMaintenanceAttempts.delete(collisionMaintenanceAttempts.keys().next().value!);
+    try { await collisionMaintenance.start(state.worldId); }
+    catch(error) {
+      if (/CANCELLED|PLAYER_WORK_STARTED|SELECTION_CHANGED|FORMAL_CHANGED/.test(String(error))) collisionMaintenanceAttempts.delete(state.worldId);
+      logger.app("plugin", "warn", "collision guard maintenance stopped", {data: String(error)});
+    }
+  })().finally(() => {collisionMaintenanceStarting=false;}); }, 0);
+}
+const collisionMaintenanceTimer=setInterval(scheduleCollisionMaintenance,2000);collisionMaintenanceTimer.unref();
+async function stopWorldMaintenance(): Promise<void> {
+  await Promise.all([groundMaintenance.stopAll(),collisionMaintenance.stopAll()]);
+}
 const groundMaintenanceScheduler = createCreationGroundScheduler({
   current: () => godotWorld.instance,
   blocked: () => !!(quitting || craftmineQuitPreparation || craftmineQuitPrepared ||
-    groundMaintenance.busy || activeTurns.size || turnFinalizations.size || profileRestore ||
+    groundMaintenance.busy || collisionMaintenance.busy || collisionMaintenanceStarting || activeTurns.size || turnFinalizations.size || profileRestore ||
     godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy || godotExportBusy ||
     !["ready", "paused", "saved"].includes(godotWorld.state?.state ?? "")),
   start: async worldId => { const result = await groundMaintenance.start(worldId); return {status: result.status, reason: result.reason}; },
@@ -2903,7 +2954,7 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
   }
   // Player authoring takes priority over automatic maintenance, including a
   // check already running on an isolated maintenance branch.
-  await groundMaintenance.stopAll();
+  await stopWorldMaintenance();
   const selection = await plugins.requestCraftmineHost("selection.read", {}) as { worldId: string | null };
   const selectedWorld = selection.worldId;
   if (typeof selectedWorld !== "string" || !selectedWorld) {
@@ -2948,7 +2999,7 @@ let profileRestore: ProfileRestoreOperation | null = null;
 const craftmineBackup = createCraftmineBackupService({
   domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker,
   beforeRestore: async ({operationId}) => {
-    await groundMaintenance.stopAll();
+    await stopWorldMaintenance();
     if (profileRestore || godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
     const operation: ProfileRestoreOperation = {operationId, previous: null, release: () => undefined};
     profileRestore = operation;
@@ -6700,12 +6751,14 @@ function registerIpc() {
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
       invoke: async (channel, params) => {
-        if (["world.creationRetry", "godot.historyCreateBranch", "godot.historySaveSource", "godot.historyCheck"].includes(channel)) await groundMaintenance.stopAll();
+        if (channel === "world.creationRetry") rearmCollisionMaintenance(params.worldId);
+        if (["world.creationRetry", "godot.historyCreateBranch", "godot.historySaveSource", "godot.historyCheck"].includes(channel)) await stopWorldMaintenance();
         return channel === "world.copyStatus" ? godotCopies.status(params) : channel.startsWith("godot.history")
           ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params);
       },
       navigate: async (request) => {
-        if (interruptsCreationGroundMaintenance(`world.${request.operation === "switch" ? "open" : request.operation}`, request, godotWorld.instance?.worldId ?? null)) await groundMaintenance.stopAll();
+        if (request.operation === "switch") rearmCollisionMaintenance(request.id);
+        if (interruptsCreationGroundMaintenance(`world.${request.operation === "switch" ? "open" : request.operation}`, request, godotWorld.instance?.worldId ?? null)) await stopWorldMaintenance();
         // World creation from the main sidebar also works before its work panel
         // has mounted. The retained view still owns the save/switch sequence.
         const loaded = plugins.getLoaded("craftmine.world");
@@ -10399,7 +10452,7 @@ app.on("before-quit", (event) => {
       if (godotCopies.busy || godotExportBusy) throw Error("Wait for world copy or export to finish, or cancel the export before quitting");
       groundMaintenanceScheduler.suspend();
       await creationAutoQueue.suspend();
-      await groundMaintenance.stopAll();
+      await stopWorldMaintenance();
       await godotCandidates.closeForDeparture();
       godotVerifier.cancelAll();
       await pluginViews.prepareCraftmineForQuit();

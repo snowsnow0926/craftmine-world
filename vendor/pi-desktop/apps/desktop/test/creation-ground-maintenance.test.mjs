@@ -9,11 +9,13 @@ function fixture(settings={}){
  let branch=null,oid=branchOid,applied=false,patches=0,applies=0;
  const formal={worldId,baseId:'creation-sandbox',buildId:'old-build',contentOid:oldOid,files:structuredClone(files)};
  const instance={worldId,buildId:'old-build',instanceId:'live-instance'};
+ const saved={id:worldId,revision:7,world:{build:{id:'old-build'},snapshot:{player:{x:2,y:.898971319,z:3},entities:{valuable:{open:true}}}}};
  const index=()=>({worldId,branchId:branch,revision:patches?3:2,manifestHash:patches?'2'.repeat(64):'1'.repeat(64),files:structuredClone(files),nextOffset:null,content:{repoId:'repo',branchId:branch,contentOid:oid}});
  const candidate=()=>({candidateId:'candidate',status:'ready',manifestHash:index().manifestHash,content:{repoId:'repo',branchId:branch,contentOid:oid}});
  const domain=async(method,args)=>{calls.push({method,args});switch(method){
   case 'content.status':return {backend:'git',repoId:'repo',headOid:mainOid,appliedOid:applied?newOid:oldOid};
-  case 'godotRuntime.describe':return {baseId:'creation-sandbox'};
+  case 'godotRuntime.describe':return {baseId:'creation-sandbox',buildId:'old-build',revision:7,snapshot:structuredClone(saved.world.snapshot)};
+  case 'world.read':return {...structuredClone(saved),revision:settings.savedChanges?8:7};
   case 'godotRuntime.exportSource':return applied?{...formal,buildId:'new-build',contentOid:newOid,files:structuredClone(files)}:structuredClone(formal);
   case 'content.branch.create':if(branch)throw Error('already exists');branch=args.branchId;assert.equal(args.fromRev,oldOid);return {branchId:branch};
   case 'content.branch.list':return {branches:[{name:'refs/heads/'+branch,oid}]};
@@ -27,7 +29,9 @@ function fixture(settings={}){
   case 'godotCandidate.read':return {candidate:settings.wrongCandidate?{...candidate(),content:{...candidate().content,branchId:'main'}}:candidate()};
   default:throw Error('unexpected '+method);
  }};
- const service=createCreationGroundMaintenance({domain,selection:async()=>worldId,instance:()=>instance,resourcesRoot,pause:async()=>{},shouldYield:()=>settings.playerWork===true,applyVerified:async(world,id,expected,authorize)=>{
+ const service=createCreationGroundMaintenance({domain,selection:async()=>worldId,instance:()=>settings.noLive?null:instance,resourcesRoot,pause:async()=>{},shouldYield:()=>settings.playerWork===true,
+ applySavedVerified:async(world,id,expected,authorize)=>{assert.equal(settings.noLive,true);assert.deepEqual(expected,{buildId:'old-build',revision:7,snapshot:saved.world.snapshot});if(settings.changeBeforeApply)settings.savedChanges=true;await authorize();applies++;applied=true;return {status:'applied'};},
+ applyVerified:async(world,id,expected,authorize)=>{
   assert.deepEqual(expected,{buildId:'old-build',instanceId:'live-instance'});
   if(settings.branchChanges)files.push(pin('unreviewed.txt','changed after check'));
   await authorize();applies++;applied=true;instance.buildId='new-build';return {status:'applied'};
@@ -45,3 +49,7 @@ test('failed checks retain precise errors and available failed-assertion detail'
 test('only exactly owned completion bypasses ordinary creation dispatch; ownership survives finish',async()=>{const f=fixture();await f.service.start(f.worldId);const context=f.calls.find(c=>c.method==='godotBuild.start').args.context;assert.equal(f.service.ownsCompletion({jobId:'checked-job',context}),true);assert.equal(f.service.ownsCompletion({jobId:'other-job',context}),false);for(const key of ['projectId','sessionId','turnId'])assert.equal(f.service.ownsCompletion({jobId:'checked-job',context:{...context,[key]:'forged'}}),false);assert.equal(f.service.ownsCompletion({jobId:'checked-job',context:{...context,extra:true}}),false);});
 test('ordinary player work preempts background check through normal cancellation',async()=>{const options={holdBuild:true},f=fixture(options);options.onBuildRead=()=>{options.playerWork=true;};await assert.rejects(f.service.start(f.worldId),/PLAYER_WORK_STARTED/);assert.equal(f.applies,0);assert.ok(f.calls.some(c=>c.method==='godotBuild.cancel'));assert.equal(f.calls.at(-1).args.status,'aborted');});
 test('mount reconciliation and same-world reopening do not interrupt maintenance',()=>{for(const channel of ['godot.candidateClose','godot.candidateState','godot.candidateList','godot.candidateRead','world.open','world.switch'])assert.equal(interruptsCreationGroundMaintenance(channel,{id:'a',worldId:'a'},'a'),false,channel);for(const channel of ['world.create','world.copy','godot.exportWindows','godot.candidatePreview','godot.candidateApply'])assert.equal(interruptsCreationGroundMaintenance(channel,{},'a'),true,channel);assert.equal(interruptsCreationGroundMaintenance('world.open',{id:'b'},'a'),true);});
+test('native-less maintenance passes the unchanged saved snapshot and exact revision to private adoption',async()=>{const f=fixture({noLive:true});assert.equal((await f.service.start(f.worldId)).status,'applied');assert.equal(f.applies,1);assert.equal(f.patches,1);assert.ok(f.calls.filter(c=>c.method==='world.read').length>3);assert.ok(!f.calls.some(c=>c.method==='world.write'));assert.deepEqual(f.files.slice(1),[pin('world/creation.json','precious authored entities'),pin('scripts/custom.gd','precious custom rules')]);});
+test('native-less maintenance fails safely on changed durable progress immediately before adoption',async()=>{const f=fixture({noLive:true,changeBeforeApply:true});await assert.rejects(f.service.start(f.worldId),/SAVED_PROGRESS_CHANGED/);assert.equal(f.applies,0);assert.equal(f.calls.at(-1).args.status,'error');});
+test('native-less failed check preserves formal and reuses its isolated source on explicit retry',async()=>{const options={noLive:true,buildFails:true},f=fixture(options);await assert.rejects(f.service.start(f.worldId),/PARSE_FAILED/);assert.equal(f.applies,0);options.buildFails=false;assert.equal((await f.service.start(f.worldId)).status,'applied');assert.equal(f.patches,1);});
+test('native-less shutdown cancels its check without adopting or requiring a runtime',async()=>{const options={noLive:true,holdBuild:true},f=fixture(options);let stopped;options.onBuildRead=()=>{stopped=f.service.stopAll();};await assert.rejects(f.service.start(f.worldId),/CANCELLED/);await stopped;assert.equal(f.applies,0);assert.equal(f.service.busy,false);assert.ok(f.calls.some(c=>c.method==='godotBuild.cancel'));assert.equal(f.calls.at(-1).args.status,'aborted');});

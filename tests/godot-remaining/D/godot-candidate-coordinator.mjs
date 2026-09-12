@@ -61,6 +61,24 @@ function fixture({cold=false,formalBuild=!cold,git=false,paused=false}={}){
  const args={worldId:'alpha',candidateId:'candidate-a'};
  return {coordinator,args,events,host,formal,records,setFault:v=>fault=v,setLatest:v=>latest.body.coins=v,setLatestBody:v=>latest.body=clone(v),readPreview:()=>clone(pending),mutatePreview:()=>pending.body.coins=999,setSelection:v=>selected=v};
 }
+test('saved maintenance verifies the unchanged durable snapshot in a fresh candidate without requiring the broken old runtime',async()=>{
+ const f=fixture({cold:true,formalBuild:true,git:true}),snapshot=clone(f.formal.world.snapshot);let checks=0;
+ f.host.resume=async()=>{throw Error('NO_RUNTIME_TO_RESUME');};
+ const result=await f.coordinator.applySavedMaintenance('alpha','candidate-a',{buildId:'build-old',revision:3,snapshot},async()=>{checks++;});
+ assert.equal(result.status,'applied');assert.deepEqual(f.formal.world.snapshot,snapshot);assert.ok(checks>=4);assert.ok(f.events.includes('stage:first'));assert.ok(!f.events.includes('checkpoint'));assert.equal(f.coordinator.blocking,false);
+});
+for(const fault of ['prepare','descriptor','load','state','commit-before'])test('saved maintenance '+fault+' failure rolls back without trying to resume a nonexistent old runtime',async()=>{
+ const f=fixture({cold:true,formalBuild:true,git:true}),before=clone(f.formal);f.setFault(fault);f.host.resume=async()=>{throw Error('NO_RUNTIME_TO_RESUME');};
+ await assert.rejects(f.coordinator.applySavedMaintenance('alpha','candidate-a',{buildId:'build-old',revision:3,snapshot:before.world.snapshot},async()=>{}),error=>!String(error).includes('NO_RUNTIME_TO_RESUME'));
+ assert.deepEqual(f.formal,before);assert.equal(f.coordinator.blocking,false);assert.equal(f.host.instance,null);assert.ok(!f.events.includes('promote'));
+});
+test('saved maintenance refuses concurrent progress changes and cancellation before commit without restoring stale data',async()=>{
+ const f=fixture({cold:true,formalBuild:true,git:true}),snapshot=clone(f.formal.world.snapshot);let checks=0;
+ await assert.rejects(f.coordinator.applySavedMaintenance('alpha','candidate-a',{buildId:'build-old',revision:3,snapshot},async()=>{if(++checks===3)throw Error('PLAYER_CANCELLED');}),/PLAYER_CANCELLED/);
+ assert.equal(f.formal.world.build.id,'build-old');assert.deepEqual(f.formal.world.snapshot,snapshot);assert.equal(f.coordinator.blocking,false);
+ await assert.rejects(f.coordinator.applySavedMaintenance('alpha','candidate-a',{buildId:'build-old',revision:2,snapshot},async()=>{}),/SAVED_PROGRESS_CHANGED/);
+ assert.equal(f.events.filter(x=>x==='godotApplication.commit').length,0);
+});
 test('preview checkpoints current progress without adopting content and cancel retains original native identity',async()=>{const f=fixture({git:true});await f.coordinator.invoke('godot.candidatePreview',f.args);f.mutatePreview();assert.equal(f.formal.world.snapshot.body.coins,4);assert.equal(f.events.filter(x=>x==='checkpoint').length,1);assert.equal(f.formal.world.build.id,'build-old');assert.ok(!f.events.includes('content.apply.prepare'));assert.ok(!f.events.includes('godotApplication.commit'));await f.coordinator.invoke('godot.candidateClose',{worldId:'alpha'});assert.equal(f.host.instance.instanceId,'original');assert.ok(!f.events.includes('promote'));assert.equal(f.coordinator.blocking,false);});
 test('unsaved camera position and ordinary progress become the exact prepared preview input',async()=>{
  const f=fixture(),body={coins:23,quests:{one:2},player:{position:[0,0.9,10.83],yaw:0.3,pitch:0.05},inventory:{flowers:5}};

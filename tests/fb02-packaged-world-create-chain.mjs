@@ -201,6 +201,10 @@ try{
       await beginForm('FB02 取消初始化保留草稿 '+Date.now());await submit();
       await appPage.waitForFunction(()=>document.querySelector('[data-world-create="submit"]')?.disabled===true&&document.querySelector('[data-world-create="form"] button[type="button"]')?.disabled===false);
       await click('[data-world-create="form"] button[type="button"]');
+      // Registration can precede the create ACK's selected-world transition.
+      // The controller keeps this button busy through ACK + restoration; only
+      // its enabled state proves cancellation has actually settled.
+      await appPage.waitForFunction(()=>{const back=document.querySelector('[data-mode-entry] > .craftmine-mode-back');return back&&!back.disabled;});
       let afterCancel;for(let i=0;i<120;i++){afterCancel=await readWorlds();if(afterCancel.activeWorldId===created.id&&afterCancel.worlds.some(w=>!previousIds.has(w.id))&&!await appPage.evaluate(()=>!!document.querySelector('[data-world-create="form"]')))break;await delay(500);}
       report.cancelledInitialization={selected:afterCancel.activeWorldId,retainedDrafts:afterCancel.worlds.filter(w=>!previousIds.has(w.id))};assert.equal(afterCancel.activeWorldId,created.id,'cancel restores previous formal world selection');assert.equal(report.cancelledInitialization.retainedDrafts.length,1,'cancel preserves the newly registered draft');
       report.cancelledRuntime=await readRuntime(created.id);assert.equal(report.cancelledRuntime.buildId,report.normalCreatedRuntime.buildId,'cancel does not replace original formal build');await appPage.waitForFunction(()=>{const back=document.querySelector('[data-mode-entry] > .craftmine-mode-back');return back&&!back.disabled;});await click('[data-mode-entry] > .craftmine-mode-back');await delay(500);assert.equal((await snapshot()).session,originalSession,'cancel does not bind the draft to the original conversation');

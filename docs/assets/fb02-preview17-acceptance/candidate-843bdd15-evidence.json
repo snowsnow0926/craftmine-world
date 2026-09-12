@@ -1,0 +1,547 @@
+{
+  "format": "craftmine.fb02-curated-acceptance/1",
+  "createdAt": "2026-09-12T13:34:02.565Z",
+  "package": {
+    "format": "craftmine.fb02-final-package/1",
+    "version": "0.14.4-preview.17",
+    "commit": "843bdd15a8b2ac09da8ccc2c08326b5724d74c6c",
+    "archive": {
+      "path": "D:\\Craftmine World\\desktop\\build\\releases\\843bdd15a8b2-85ef22f4-964d-42e2-b300-508f081655e3\\portable-f558efdb-d48c-485c-9f94-e058abbb751c\\Craftmine-World-portable-843bdd15a8b2.zip",
+      "bytes": 1029434344,
+      "sha256": "f07591809a21162d56de384520b55184f2096793d527cb230b3a11e422979501"
+    },
+    "extracted": "D:\\Craftmine World\\desktop\\build\\releases\\843bdd15a8b2-85ef22f4-964d-42e2-b300-508f081655e3\\portable-f558efdb-d48c-485c-9f94-e058abbb751c\\extracted",
+    "files": 1656,
+    "source": {
+      "commit": "843bdd15a8b2ac09da8ccc2c08326b5724d74c6c",
+      "runSha256": "e24d7fb74aa3354b5bd8d7749d01238144deb73c68887fe03cfd07e32a4c2c30",
+      "releaseSealSha256": "61ec552759abdc9fd740602885eaf76a623542de48912e26640d391c7c8f4952",
+      "packageEvidenceSha256": "c43017275998269e7a40f53899f0ff45a04cca9e8ea1f56cf201ff62491e1910",
+      "buildManifestSha256": "104b155a04614ec2a7a4071bc2d2c0bf7341966cb22152d2ebba9822b4c84266",
+      "sourceArchiveHash": "f72e574c255bf35b0afed8cce2904a847ec099704ba8c4be4283128b9dc8df24",
+      "payloadDigest": "133b6415a349a164852d655dea009f3b020da0658c81f642e32a0c38c7be99ad"
+    }
+  },
+  "reports": [
+    {
+      "label": "loadingAndGround",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-fb02-ttPt5L\\retained-world-report.json",
+      "sha256": "f25ef6739d3ccfac51279e6074895113bc16db3f79150373c8b19348e126fcde",
+      "passed": true,
+      "checks": [],
+      "launches": [
+        {
+          "label": "loadingAndGround",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "worldId": "world-e2b39ed23ff7",
+      "limits": [
+        "No physical keyboard/mouse or visible OS window activation"
+      ]
+    },
+    {
+      "label": "shortcuts",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-fb02-ttPt5L\\shortcuts-package-report.json",
+      "sha256": "0bb8bebc729f1168bb36a687336f335e27e39722cb87e8af3b4fb84b136aa2f6",
+      "passed": true,
+      "checks": [
+        {
+          "target": "main-native",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "main-dom",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "main-dom",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "main-dom",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "plugin",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "plugin",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": true
+        },
+        {
+          "target": "main-dom",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": true
+        }
+      ],
+      "launches": [
+        {
+          "label": "shortcuts",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "limits": [
+        "Finite native callbacks and page script events; no OS keyboard/mouse injection or activation",
+        "Renderer pixels plus actual native sibling order; no visible OS-composited screenshot",
+        "Requires a previously prepared isolated headless profile, never a player profile"
+      ]
+    },
+    {
+      "label": "workspace",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-fb02-ttPt5L\\workspace-chain-package-report.json",
+      "sha256": "c8233c4a0948c6dd684b3cb261be0f4813ce7c990367a0157081bea8e862e2f3",
+      "passed": true,
+      "checks": [
+        {
+          "target": "main-native",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "main-dom",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "main-dom",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "main-dom",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "plugin",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "plugin",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "F2",
+          "overlay": "compact",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": true
+        },
+        {
+          "target": "main-dom",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": false
+        },
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": true
+        }
+      ],
+      "launches": [
+        {
+          "label": "workspace",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "limits": [
+        "Finite native callbacks and page script events; no OS keyboard/mouse injection or activation",
+        "Renderer pixels plus actual native sibling order; no visible OS-composited screenshot",
+        "Requires a previously prepared isolated headless profile, never a player profile",
+        "Dialogue capture invokes the actual host captureView on its bound native instance; ordinary model tool authorization is validated separately"
+      ]
+    },
+    {
+      "label": "worldCreation",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-fb02-ttPt5L\\world-create-chain-package-report.json",
+      "sha256": "9b03b4ffa5b970df2bff63df20883aafedb6f0c211721acf7bb72f163cba9aed",
+      "passed": true,
+      "checks": [
+        {
+          "target": "godot",
+          "key": "Escape",
+          "overlay": "closed",
+          "pause": true
+        }
+      ],
+      "launches": [
+        {
+          "label": "worldCreation",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "limits": [
+        "Finite native callbacks and page script events; no OS keyboard/mouse injection or activation",
+        "Renderer pixels plus actual native sibling order; no visible OS-composited screenshot",
+        "Requires a previously prepared isolated headless profile, never a player profile"
+      ]
+    },
+    {
+      "label": "candidateLifecycle",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-candidate-ai6CDu\\candidate-lifecycle-report.json",
+      "sha256": "adb7a5fe195bbb447d4001ef9a60887657f5c9da0bba566c59ec7800976627c3",
+      "passed": true,
+      "checks": [
+        {
+          "name": "wrong-world candidate request cannot change the retained formal build",
+          "passed": true
+        },
+        {
+          "name": "original checks-list preview button opens the real retained-world candidate without adopting it",
+          "passed": true
+        },
+        {
+          "name": "return to original world preserves formal build and complete progress",
+          "passed": true
+        },
+        {
+          "name": "preview title is drawn below the conversation topbar without clipping",
+          "passed": true
+        },
+        {
+          "name": "actual native adoption preserves latest progress and the retained draft head",
+          "passed": true
+        },
+        {
+          "name": "adopted build content identity and full saved progress survive native app and Rust restart",
+          "passed": true
+        },
+        {
+          "name": "ground recovery preserves the newly adopted player draft files and all progress",
+          "passed": true
+        },
+        {
+          "name": "stable recovered ground and retained draft survive a further complete app restart",
+          "passed": true
+        }
+      ],
+      "launches": [
+        {
+          "label": "first",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "label": "restart",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "label": "settled-restart",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "worldId": "world-e2b39ed23ff7",
+      "limits": [
+        "No real keyboard/mouse, no visible OS window activation",
+        "Original source profile is only read during the initial copy; subsequent user changes are not attributed to this run"
+      ]
+    },
+    {
+      "label": "maintenanceRecovery",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-candidate-deDKZQ\\candidate-lifecycle-report.json",
+      "sha256": "34d6b35adbd0b3fee37403fbe8348598c2a518fd2137c3d0ed51fc53307c5c54",
+      "passed": true,
+      "checks": [
+        {
+          "name": "original candidate preview cancels background maintenance while retaining the original formal world",
+          "passed": true
+        },
+        {
+          "name": "leaving preview restores the same formal native instance without reopening the world",
+          "passed": true
+        },
+        {
+          "name": "resumed real check and adoption fixes the stock ground while keeping all progress and the unapplied main draft",
+          "passed": true
+        }
+      ],
+      "launches": [
+        {
+          "label": "first",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "worldId": "world-e2b39ed23ff7",
+      "limits": [
+        "No real keyboard/mouse, no visible OS window activation",
+        "Original source profile is only read during the initial copy; subsequent user changes are not attributed to this run"
+      ]
+    },
+    {
+      "label": "ordinaryPlayer",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-TVYVZj\\ordinary-player-report.json",
+      "sha256": "e10552fcef234eef657b9c377e87c0a216ff03e8fe808c31b433151147e833b3",
+      "passed": true,
+      "checks": [
+        "new dialogue session resolves the selected provider, model, thinking and auto permission",
+        "new ordinary session has no model messages before the player submits",
+        "dialogue submission waits for the real initialized native Godot world",
+        "visible dialogue target and real runtime share the exact formal build",
+        "automatic completion leaves the actual world directly playable with no chat overlay",
+        "actual visible result card identifies the complete world title and adopted outcome",
+        "actual runtime metrics used exactly the selected model",
+        "ordinary model result was formally applied without permission acceptance or manual adopt",
+        "dialogue completion enters actual native fullscreen",
+        "first normal save and quit has no guard or shutdown failure",
+        "reopening adds no model calls",
+        "save and reopen retains the exact generated formal build"
+      ],
+      "launches": [
+        {
+          "label": "first",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "label": "reopen",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "worldId": "world-f98029e88552",
+      "model": {
+        "binding": {
+          "providerId": "c4a3c980-0433-4a15-b751-48656601d076",
+          "modelId": "deepseek-v4.1-flash-expires-on-0910",
+          "thinkingLevel": "max",
+          "permissionMode": "auto"
+        },
+        "calls": {
+          "observed": 19,
+          "pending": 0,
+          "reported": 19
+        },
+        "limits": {
+          "roundDeadline": null,
+          "modelCallLimit": null,
+          "automaticRepairLimit": null
+        },
+        "permissionDecisions": 0,
+        "manualAdoptions": 0,
+        "checks": [
+          "new dialogue session resolves the selected provider, model, thinking and auto permission",
+          "new ordinary session has no model messages before the player submits",
+          "dialogue submission waits for the real initialized native Godot world",
+          "visible dialogue target and real runtime share the exact formal build",
+          "automatic completion leaves the actual world directly playable with no chat overlay",
+          "actual visible result card identifies the complete world title and adopted outcome",
+          "actual runtime metrics used exactly the selected model",
+          "ordinary model result was formally applied without permission acceptance or manual adopt",
+          "dialogue completion enters actual native fullscreen",
+          "first normal save and quit has no guard or shutdown failure",
+          "reopening adds no model calls",
+          "save and reopen retains the exact generated formal build"
+        ],
+        "worldId": "world-f98029e88552",
+        "formalBuild": "gbd-3aadd26d4cd13c5a53d0f0b440112e4a241cce8a558ca229141084f87d52be5e"
+      },
+      "limits": {
+        "roundDeadline": null,
+        "modelCallLimit": null,
+        "automaticRepairLimit": null
+      }
+    },
+    {
+      "label": "firstGameplay",
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-TVYVZj\\gameplay-ef60b002-3fc3-45fb-afac-86d1b316f28d\\report.json",
+      "sha256": "75dd54abc76c2bf2f2bdc11b1ceb61831edac22e3dd1e9331dbcce0f40fa616d",
+      "passed": true,
+      "checks": [],
+      "launches": [
+        {
+          "label": "firstGameplay",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "worldId": "world-f98029e88552",
+      "sourceEdits": 0,
+      "noModelExecution": {
+        "modelCallsAdded": 0,
+        "basis": "model/eval configuration stripped; only validated non-model controller calls; clean shutdown audit",
+        "controllerCalls": [
+          "primaryMode",
+          "godotObserve",
+          "worldPanel:godot.runtimeResume",
+          "godotExplore",
+          "godotCaptureBoundState",
+          "godotCaptureBoundView",
+          "godotSnapshot",
+          "worldPanel:godot.runtimeSave",
+          "quit"
+        ]
+      }
+    }
+  ],
+  "images": [
+    {
+      "path": "candidate-843bdd15-generated-world.png",
+      "source": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-TVYVZj\\generated-world.png",
+      "sha256": "16dc74cb4a680c738c6606b29711b6acec32e0f58516e36bb5c22547dc86daea"
+    }
+  ],
+  "failures": [
+    {
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-TVYVZj\\gameplay-f47d079d-33f9-4595-b891-f1b35563e4cc\\report.json",
+      "sha256": "2e39881262fde45046fd33493cd068e414a17fb831b8d8b267fc1a4317c9977b",
+      "note": "Reopening after real movement hit PLAYER_PENETRATION; root stopped identified isolated app after repeated unrecoverable loads. This candidate is not final acceptance."
+    }
+  ],
+  "boundary": "Isolated background native app, software callbacks and protected engine actions. No physical input, focus stealing, Pointer Lock, original player profile mutation or claim of human confirmation.",
+  "finalAcceptance": false
+}

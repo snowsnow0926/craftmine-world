@@ -1,9 +1,12 @@
 import {createHash,randomUUID} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
 import {planCreationGroundUpgrade,verifyCreationGroundUpgrade} from './creation-ground-upgrade.ts';
 type Data=Record<string,any>;
 type Instance={worldId:string;buildId:string;instanceId:string};
 type Dependencies={domain:(method:string,args:Data)=>Promise<any>;selection:()=>Promise<string|null>;instance:()=>Instance|null;resourcesRoot:string;
  applyVerified:(worldId:string,candidateId:string,expected:{buildId:string;instanceId:string},authorize:()=>Promise<void>)=>Promise<any>;
+ applySavedVerified?:(worldId:string,candidateId:string,expected:{buildId:string;revision:number;snapshot:unknown},authorize:()=>Promise<void>)=>Promise<any>;
+ sourceUpgrade?:{plan:typeof planCreationGroundUpgrade;branchPrefix:string;projectId:string;description:string};
  changed?:(worldId:string,status:Data)=>void;shouldYield?:()=>boolean;pause?:(ms:number)=>Promise<void>;deadlineMs?:number};
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex');
 /** Lifecycle reconciliation (close/state) and reopening the current world are
@@ -30,6 +33,7 @@ export function createCreationGroundMaintenance(deps:Dependencies){
  const controls=new Map<string,Control>();
  const ownedChecks=new Map<string,{projectId:string;sessionId:string;turnId:string}>();
  const {domain}=deps,pause=deps.pause??(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
+ const planner=deps.sourceUpgrade?.plan??planCreationGroundUpgrade;
  const publish=(worldId:string,value:Data)=>{const state={worldId,...value};states.set(worldId,state);deps.changed?.(worldId,state);return state;};
  const cancelJob=async(worldId:string,control:Control)=>{
   if(!control.jobId||control.checkComplete)return;
@@ -39,35 +43,38 @@ export function createCreationGroundMaintenance(deps:Dependencies){
  async function maintain(worldId:string,control:Control):Promise<Data>{
   if(await deps.selection()!==worldId)throw Error('GROUND_UPGRADE_SELECTION_CHANGED');
   const instance=deps.instance();
-  if(!instance||instance.worldId!==worldId)throw Error('GROUND_UPGRADE_RUNTIME_REQUIRED');
+  if(instance?instance.worldId!==worldId:!deps.applySavedVerified)throw Error('GROUND_UPGRADE_RUNTIME_REQUIRED');
   const descriptor=await domain('godotRuntime.describe',{worldId});
   if(descriptor?.baseId!=='creation-sandbox')return publish(worldId,{status:'skipped',reason:'different-base'});
   if(control.cancelled)throw Error('GROUND_UPGRADE_CANCELLED');
   let content=await domain('content.status',{worldId});
   if(content.backend!=='git'){await domain('content.migrate.apply',{worldId});content=await domain('content.status',{worldId});}
   const formal=await domain('godotRuntime.exportSource',{worldId});
-  if(formal.worldId!==worldId||formal.buildId!==instance.buildId||!Array.isArray(formal.files)||!/^[a-f0-9]{40,64}$/.test(formal.contentOid??''))throw Error('GROUND_UPGRADE_FORMAL_CHANGED');
+  if(formal.worldId!==worldId||formal.buildId!==(instance?.buildId??descriptor?.buildId)||!Array.isArray(formal.files)||!/^[a-f0-9]{40,64}$/.test(formal.contentOid??''))throw Error('GROUND_UPGRADE_FORMAL_CHANGED');
+  const saved=instance?null:await domain('world.read',{id:worldId});
+  if(saved&&(saved.id!==worldId||saved.world?.build?.id!==formal.buildId||saved.revision!==descriptor.revision||!isDeepStrictEqual(saved.world.snapshot,descriptor.snapshot)))throw Error('GROUND_UPGRADE_SAVED_PROGRESS_CHANGED');
   // The planner compares the isolated branch baseline with formal, NOT main.
   // A player's unadopted main draft must remain untouched and need not block.
-  const plan=planCreationGroundUpgrade({baseId:formal.baseId,formalFiles:formal.files,draftFiles:formal.files,resourcesRoot:deps.resourcesRoot});
+  const plan=planner({baseId:formal.baseId,formalFiles:formal.files,draftFiles:formal.files,resourcesRoot:deps.resourcesRoot});
   if(plan.status==='skipped')return publish(worldId,plan);
-  const branchId='host-ground-'+hash(JSON.stringify([plan.id,worldId,formal.contentOid])).slice(0,32);
+  const branchId=(deps.sourceUpgrade?.branchPrefix??'host-ground-')+hash(JSON.stringify([plan.id,worldId,formal.contentOid])).slice(0,32);
   const guard=async()=>{
    if(control.cancelled)throw Error('GROUND_UPGRADE_CANCELLED');
    if(deps.shouldYield?.()){control.cancelled=true;throw Error('GROUND_UPGRADE_PLAYER_WORK_STARTED');}
    if(await deps.selection()!==worldId)throw Error('GROUND_UPGRADE_SELECTION_CHANGED');
    const live=deps.instance(),current=await domain('godotRuntime.exportSource',{worldId});
-   if(!live||live.worldId!==worldId||live.buildId!==instance.buildId||live.instanceId!==instance.instanceId||current.buildId!==formal.buildId||current.contentOid!==formal.contentOid)throw Error('GROUND_UPGRADE_FORMAL_CHANGED');
+   if((instance?(!live||live.worldId!==worldId||live.buildId!==instance.buildId||live.instanceId!==instance.instanceId):!!live)||current.buildId!==formal.buildId||current.contentOid!==formal.contentOid)throw Error('GROUND_UPGRADE_FORMAL_CHANGED');
+   if(saved){const currentSaved=await domain('world.read',{id:worldId});if(currentSaved.revision!==saved.revision||!isDeepStrictEqual(currentSaved.world,saved.world))throw Error('GROUND_UPGRADE_SAVED_PROGRESS_CHANGED');}
    const fresh=await domain('content.status',{worldId});
    if(fresh.repoId!==content.repoId||fresh.headOid!==content.headOid)throw Error('GROUND_UPGRADE_DRAFT_CHANGED');
   };
   await guard();publish(worldId,{status:'upgrading',stage:'source',branchId});
   // A stable branch identity supports retry after an interrupted/lost reply.
   // Existing branch content is verified below before it can be reused.
-  try{await domain('content.branch.create',{worldId,branchId,fromRev:formal.contentOid,requestId:plan.id,taskId:'host-ground-maintenance',title:'Repair stock ground lighting while retaining player drafts'});}
+  try{await domain('content.branch.create',{worldId,branchId,fromRev:formal.contentOid,requestId:plan.id,taskId:deps.sourceUpgrade?.projectId??'host-ground-maintenance',title:deps.sourceUpgrade?.description??'Repair stock ground lighting while retaining player drafts'});}
   catch(error){const branches=await domain('content.branch.list',{worldId});if(!(branches.branches??[]).some((b:Data)=>b.branchId===branchId||b.name===branchId||b.name==='refs/heads/'+branchId))throw error;}
-  const id=randomUUID(),context={projectId:'craftmine-ground-maintenance',sessionId:'ground-'+id,turnId:id};
-  await domain('turn.begin',{context,selectedWorld:worldId,request:{id,text:'Repair the released stock ground lighting on a separate branch, preserving all player content, drafts, history and progress.'}});
+  const id=randomUUID(),context={projectId:deps.sourceUpgrade?.projectId??'craftmine-ground-maintenance',sessionId:(deps.sourceUpgrade?.branchPrefix??'ground-')+id,turnId:id};
+  await domain('turn.begin',{context,selectedWorld:worldId,request:{id,text:deps.sourceUpgrade?.description??'Repair the released stock ground lighting on a separate branch, preserving all player content, drafts, history and progress.'}});
   control.context=context;
   let completed=false;
   const index=async()=>{
@@ -83,7 +90,7 @@ export function createCreationGroundMaintenance(deps:Dependencies){
    let project=await index();let alreadyPatched=false;
    try{verifyCreationGroundUpgrade(plan,project.files);alreadyPatched=true;}catch{}
    if(!alreadyPatched){
-    const branchPlan=planCreationGroundUpgrade({baseId:formal.baseId,formalFiles:formal.files,draftFiles:project.files,resourcesRoot:deps.resourcesRoot});
+    const branchPlan=planner({baseId:formal.baseId,formalFiles:formal.files,draftFiles:project.files,resourcesRoot:deps.resourcesRoot});
     if(branchPlan.status!=='planned')throw Error('GROUND_UPGRADE_BRANCH_CONFLICT');
     if(project.content?.branchId!==branchId||project.content?.repoId!==content.repoId)throw Error('GROUND_UPGRADE_BRANCH_INVALID');
     await guard();const operationId='ground-'+hash(JSON.stringify([branchId,project.content.contentOid])).slice(0,40);
@@ -116,7 +123,8 @@ export function createCreationGroundMaintenance(deps:Dependencies){
    if(candidate.content?.repoId!==content.repoId||candidate.content?.branchId!==branchId||candidate.content?.contentOid!==contentOid||candidate.manifestHash!==project.manifestHash)throw Error('GROUND_UPGRADE_CANDIDATE_MISMATCH');
    const authorize=async()=>{await guard();const fresh=await index();verifyCreationGroundUpgrade(plan,fresh.files);if(fresh.content?.contentOid!==contentOid)throw Error('GROUND_UPGRADE_BRANCH_CHANGED');};
    await authorize();publish(worldId,{status:'upgrading',stage:'apply',branchId,jobId,candidateId});
-   const applied=await deps.applyVerified(worldId,candidateId,{buildId:instance.buildId,instanceId:instance.instanceId},authorize);
+   const applied=instance?await deps.applyVerified(worldId,candidateId,{buildId:instance.buildId,instanceId:instance.instanceId},authorize)
+    :await deps.applySavedVerified!(worldId,candidateId,{buildId:formal.buildId,revision:saved.revision,snapshot:saved.world.snapshot},authorize);
    if(applied?.status!=='applied')throw Error('GROUND_UPGRADE_APPLY_UNCONFIRMED');
    const after=await domain('content.status',{worldId});if(after.headOid!==content.headOid)throw Error('GROUND_UPGRADE_DRAFT_CHANGED');
    completed=true;return publish(worldId,{status:'applied',branchId,jobId,candidateId});

@@ -120,6 +120,42 @@ test('temporary descriptor failure never closes or saves current world',async()=
   const f=fixture();await f.host.ensure(f.request());f.events.length=0;f.setFault('descriptor');await f.host.sync({force:true});
   assert.equal(f.host.instance.worldId,'alpha');assert.deepEqual(f.events,[]);
 });
+
+test('failed saved selection is not recreated by forced polling; explicit retry still runs',async()=>{
+  const f=fixture();f.setDescriptor(f.request());f.setFault('startup');
+  await f.host.sync({force:true});assert.equal(f.host.state.state,'failed');
+  for(let i=0;i<5;i++)await f.host.sync({force:true});
+  assert.equal(f.events.filter(e=>e==='start:alpha').length,1);
+  f.setFault(null);await f.host.ensure(f.request());
+  assert.equal(f.events.filter(e=>e==='start:alpha').length,2);assert.equal(f.host.state.state,'ready');
+  await f.host.dispose();
+});
+
+test('explicit failed open suppresses automatic retries, but changed saved inputs can recover',async()=>{
+  for(const changed of [r=>({...r,revision:r.revision+1}),r=>({...r,buildId:'build-fixed'}),r=>({...r,snapshot:{player:{position:[0,.9,6]}}}),r=>({...r,artifacts:[{path:'index.html',sha256:'c'.repeat(64),bytes:1}]})]){
+    const f=fixture(),request=f.request();f.setDescriptor(request);f.setFault('startup');
+    await assert.rejects(f.host.ensure(request),/broken candidate/);await f.host.sync({force:true});
+    assert.equal(f.runtimes.length,1);f.setFault(null);f.setDescriptor(changed(request));
+    await f.host.sync({force:true});assert.equal(f.runtimes.length,2);assert.equal(f.host.state.state,'ready');await f.host.dispose();
+  }
+});
+
+test('failed replacement polling preserves the old live instance and does not resave it repeatedly',async()=>{
+  const f=fixture();await f.host.ensure(f.request());const original=f.host.instance.instanceId;
+  f.setDescriptor(f.request('beta'));f.setFault('startup');await f.host.sync({force:true});
+  const attempts=f.events.length;for(let i=0;i<3;i++)await f.host.sync({force:true});
+  assert.equal(f.events.length,attempts);assert.equal(f.host.instance.instanceId,original);
+  f.setFault(null);f.setDescriptor(null);await f.host.sync({force:true});
+  f.setDescriptor(f.request('beta'));await f.host.sync({force:true});assert.equal(f.host.instance.worldId,'beta');await f.host.dispose();
+});
+
+test('polling while a first candidate is staged cannot poison the formal selection after discard',async()=>{
+  const f=fixture(),formal=f.request();f.setDescriptor(formal);
+  await f.host.stageCandidate({...formal,buildId:'candidate-build'},{first:true,candidateId:'candidate-proof'});
+  await f.host.sync({force:true});assert.equal(f.runtimes.length,1);assert.notEqual(f.host.state?.state,'failed');
+  await f.host.discardCandidate();await f.host.sync({force:true});
+  assert.equal(f.runtimes.length,2);assert.equal(f.host.instance.buildId,formal.buildId);assert.equal(f.host.state.state,'ready');await f.host.dispose();
+});
 test('null descriptor safely checkpoints then departs; failure keeps old world',async()=>{
   const f=fixture();await f.host.ensure(f.request());f.setFault('persist');await f.host.sync({force:true});assert.equal(f.host.instance.worldId,'alpha');
   f.setFault(null);await f.host.sync({force:true});assert.equal(f.host.instance,null);assert.ok(f.events.indexOf('persist:alpha:8')<f.events.indexOf('dispose:alpha'));

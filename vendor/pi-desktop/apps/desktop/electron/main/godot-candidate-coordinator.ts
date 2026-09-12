@@ -98,7 +98,7 @@ export function createGodotCandidateCoordinator(options:{
     try { raw=await rpc("godotApplication.read",{id:session.id}); }
     catch(error) {
       if(object(error)&&error.errorCode==="GODOT_APPLICATION_NOT_FOUND"&&!session.prepared) {
-        await options.host.discardCandidate();drop();await options.host.resume();return {status:"aborted",worldId:session.worldId};
+        await options.host.discardCandidate();drop();if(options.host.instance)await options.host.resume();return {status:"aborted",worldId:session.worldId};
       }
       throw error;
     }
@@ -113,13 +113,13 @@ export function createGodotCandidateCoordinator(options:{
       const operation=await rpc("content.operation.read",{worldId:session.worldId,operationId:session.contentOperation});
       if(operation.state!=="aborted")await rpc("content.apply.rollback",{operationId:session.contentOperation,reason:"Godot deployment was not committed."});
     }
-    await options.host.discardCandidate();drop();await options.host.resume();return {status:"aborted",worldId:session.worldId};
+    await options.host.discardCandidate();drop();if(options.host.instance)await options.host.resume();return {status:"aborted",worldId:session.worldId};
   }
   async function failed(error:unknown):Promise<Data> {
     const session=active;
     if(session) {
       try {const result=await recover(session);if(result.status==="applied")return result;}catch(recovery){session.phase="uncertain";await options.host.candidateRequest("pause").catch(()=>undefined);options.host.setCandidateVisible(false);options.host.setSurfaceVisible(false);throw new Error(`${String(error)}; application recovery pending: ${String(recovery)}`);}
-    } else {release?.();release=null;await options.host.resume().catch(()=>undefined);}
+    } else {release?.();release=null;if(options.host.instance)await options.host.resume().catch(()=>undefined);}
     throw error;
   }
   async function open(worldId:string,candidateId:string) {
@@ -240,6 +240,29 @@ export function createGodotCandidateCoordinator(options:{
         // Recheck immediately before entering the existing durable transaction.
         await guard();
         return await commit(session,guard);
+      }catch(error){if(active||release)return failed(error);throw error;}finally{busy=false;}
+    },
+    /** Exact host-owned source maintenance after a retained runtime cannot
+     * restore. Uses only the durable original snapshot; no page route or
+     * invented checkpoint can call this entry. The normal trial/commit path
+     * still proves the complete snapshot with the repaired runtime. */
+    async applySavedMaintenance(worldId:string,candidateId:string,expected:{buildId:string;revision:number;snapshot:unknown},authorize:()=>Promise<void>) {
+      if(busy||active)throw Error('GODOT_CANDIDATE_ACTIVE');
+      busy=true;
+      const guard=async()=>{
+        await identity(worldId,true);
+        if(options.host.instance)throw Error('GODOT_WORLD_ALREADY_RUNNING');
+        const formal=await options.adapter.describe(worldId),record=await rpc('world.read',{id:worldId});
+        if(!formal||formal.buildId!==expected.buildId||formal.revision!==expected.revision||!isDeepStrictEqual(formal.snapshot,expected.snapshot)
+          ||record.id!==worldId||record.world?.build?.id!==expected.buildId||record.revision!==expected.revision||!isDeepStrictEqual(record.world?.snapshot,expected.snapshot))throw Error('GODOT_MAINTENANCE_SAVED_PROGRESS_CHANGED');
+        await authorize();
+      };
+      try {
+        await guard();release=await options.host.holdSelectionSync();await guard();
+        const session=await prepare(worldId,candidateId,expected.revision,expected.snapshot,'applying',true);
+        if(!isDeepStrictEqual(session.descriptor?.snapshot,expected.snapshot))throw Error('GODOT_MAINTENANCE_PROGRESS_CHANGED');
+        session.evidence=await confirm(session);
+        await guard();return await commit(session,guard);
       }catch(error){if(active||release)return failed(error);throw error;}finally{busy=false;}
     },
     async closeForDeparture(){if(busy)throw new Error("WORLD_BUSY");busy=true;try{return await close();}finally{busy=false;}},

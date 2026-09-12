@@ -1,0 +1,974 @@
+{
+  "out": "D:\\Craftmine World\\test-results\\creation-module-collision-web-Crwrh2",
+  "passed": true,
+  "scope": "trusted authored source, actual pinned exports and production runtime classes; no core-issued application or external asset execution",
+  "projects": [
+    {
+      "variant": "formal",
+      "packProof": {
+        "format": "craftmine.creation-pack-proof/1",
+        "packSha256": "b31a327756919e96995d3534478a7531e40357e4a0e9f5e14cc21ef1507dc433",
+        "packBytes": 5759992,
+        "engineVersion": "4.7.2-stable",
+        "packFormat": 4,
+        "files": [
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "bytes": 3380,
+            "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "bytes": 8556,
+            "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+          },
+          {
+            "path": "craftmine_shared/state_guard.gd",
+            "bytes": 1800,
+            "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+          },
+          {
+            "path": "craftmine_shared/headless_play_action.gd",
+            "bytes": 2525,
+            "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker.gd",
+            "bytes": 18909,
+            "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_legacy.gd",
+            "bytes": 19410,
+            "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+          },
+          {
+            "path": "craftmine_shared/controller_evidence.gd",
+            "bytes": 9893,
+            "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+            "bytes": 15366,
+            "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+          },
+          {
+            "path": "scripts/reused/player_controller.gd",
+            "bytes": 7079,
+            "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+          },
+          {
+            "path": "scripts/reused/camera_rig.gd",
+            "bytes": 1527,
+            "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_controller_v1.gd",
+            "bytes": 1640,
+            "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+          },
+          {
+            "path": "craftmine_shared/progress_collision.gd",
+            "bytes": 4781,
+            "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+          }
+        ],
+        "project": {
+          "sha256": "2fd6e62d9229f47700344cf81bd8c53b75096c2b6888c188d41469cdff4f42e9",
+          "selectors": {
+            "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+            "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+          }
+        },
+        "observerContract": {
+          "profileId": "creation-player-collision/1",
+          "historical": false
+        }
+      },
+      "descriptor": {
+        "worldId": "collision-web-world",
+        "baseId": "creation-sandbox",
+        "buildId": "gbd-10d58618df7bae5e1bc3737c1ab4b87f3afa0511661aa817212248d95da09b86",
+        "root": "D:\\Craftmine World\\test-results\\creation-module-collision-web-Crwrh2\\formal-artifacts",
+        "entry": "web/index.html",
+        "threads": true,
+        "artifacts": [
+          {
+            "path": "web/bridge.js",
+            "bytes": 10824,
+            "sha256": "c0da1d77a9ba2046e2459d07e572f28d251807f33757fd26f8ab4eaf4bac2b5b"
+          },
+          {
+            "path": "web/index.apple-touch-icon.png",
+            "bytes": 11944,
+            "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+          },
+          {
+            "path": "web/index.audio.position.worklet.js",
+            "bytes": 2973,
+            "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+          },
+          {
+            "path": "web/index.audio.worklet.js",
+            "bytes": 7298,
+            "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+          },
+          {
+            "path": "web/index.html",
+            "bytes": 1417,
+            "sha256": "c9c81e04a8bd918fa5950b84dbd36b4239a08a0993f2990a99805b6f1f6d6b2f"
+          },
+          {
+            "path": "web/index.icon.png",
+            "bytes": 5700,
+            "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+          },
+          {
+            "path": "web/index.js",
+            "bytes": 314653,
+            "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+          },
+          {
+            "path": "web/index.pck",
+            "bytes": 5759992,
+            "sha256": "b31a327756919e96995d3534478a7531e40357e4a0e9f5e14cc21ef1507dc433"
+          },
+          {
+            "path": "web/index.png",
+            "bytes": 21443,
+            "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+          },
+          {
+            "path": "web/index.wasm",
+            "bytes": 38820072,
+            "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+          }
+        ],
+        "snapshot": {
+          "format": "craftmine.godot-progress/1",
+          "worldId": "collision-web-world",
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "stateVersion": 1,
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.898971319198608,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "collision-web-world"
+          }
+        },
+        "revision": 0
+      }
+    },
+    {
+      "variant": "candidate",
+      "packProof": {
+        "format": "craftmine.creation-pack-proof/1",
+        "packSha256": "ddaf7a96b6ff06c68a1182f90dfbe2e38fcd922de5071652949c9a24979260c1",
+        "packBytes": 5760280,
+        "engineVersion": "4.7.2-stable",
+        "packFormat": 4,
+        "files": [
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "bytes": 3380,
+            "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "bytes": 8556,
+            "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+          },
+          {
+            "path": "craftmine_shared/state_guard.gd",
+            "bytes": 1800,
+            "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+          },
+          {
+            "path": "craftmine_shared/headless_play_action.gd",
+            "bytes": 2525,
+            "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker.gd",
+            "bytes": 18909,
+            "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_legacy.gd",
+            "bytes": 19410,
+            "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+          },
+          {
+            "path": "craftmine_shared/controller_evidence.gd",
+            "bytes": 9893,
+            "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+            "bytes": 15366,
+            "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+          },
+          {
+            "path": "scripts/reused/player_controller.gd",
+            "bytes": 7079,
+            "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+          },
+          {
+            "path": "scripts/reused/camera_rig.gd",
+            "bytes": 1527,
+            "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_controller_v1.gd",
+            "bytes": 1640,
+            "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+          },
+          {
+            "path": "craftmine_shared/progress_collision.gd",
+            "bytes": 4781,
+            "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+          }
+        ],
+        "project": {
+          "sha256": "2fd6e62d9229f47700344cf81bd8c53b75096c2b6888c188d41469cdff4f42e9",
+          "selectors": {
+            "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+            "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+          }
+        },
+        "observerContract": {
+          "profileId": "creation-player-collision/1",
+          "historical": false
+        }
+      },
+      "descriptor": {
+        "worldId": "collision-web-world",
+        "baseId": "creation-sandbox",
+        "buildId": "gbd-5122f3aa252660e08bff2e927e084b7bbbda72cdf2d56679bdd577ad84d65cb7",
+        "root": "D:\\Craftmine World\\test-results\\creation-module-collision-web-Crwrh2\\candidate-artifacts",
+        "entry": "web/index.html",
+        "threads": true,
+        "artifacts": [
+          {
+            "path": "web/bridge.js",
+            "bytes": 10824,
+            "sha256": "c0da1d77a9ba2046e2459d07e572f28d251807f33757fd26f8ab4eaf4bac2b5b"
+          },
+          {
+            "path": "web/index.apple-touch-icon.png",
+            "bytes": 11944,
+            "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+          },
+          {
+            "path": "web/index.audio.position.worklet.js",
+            "bytes": 2973,
+            "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+          },
+          {
+            "path": "web/index.audio.worklet.js",
+            "bytes": 7298,
+            "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+          },
+          {
+            "path": "web/index.html",
+            "bytes": 1417,
+            "sha256": "f2edb40207c9430235fcf69bb3e23745c86d9d907c9b048ac9b9a612a2227c78"
+          },
+          {
+            "path": "web/index.icon.png",
+            "bytes": 5700,
+            "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+          },
+          {
+            "path": "web/index.js",
+            "bytes": 314653,
+            "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+          },
+          {
+            "path": "web/index.pck",
+            "bytes": 5760280,
+            "sha256": "ddaf7a96b6ff06c68a1182f90dfbe2e38fcd922de5071652949c9a24979260c1"
+          },
+          {
+            "path": "web/index.png",
+            "bytes": 21443,
+            "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+          },
+          {
+            "path": "web/index.wasm",
+            "bytes": 38820072,
+            "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+          }
+        ],
+        "snapshot": {
+          "format": "craftmine.godot-progress/1",
+          "worldId": "collision-web-world",
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "stateVersion": 1,
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.898971319198608,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "collision-web-world"
+          }
+        },
+        "revision": 0
+      }
+    },
+    {
+      "variant": "blocked",
+      "packProof": {
+        "format": "craftmine.creation-pack-proof/1",
+        "packSha256": "9b4b9ba35e37bb13bfc4fb6ab6e89458190c459054afe2c39d97b2ba7c49d23d",
+        "packBytes": 5760280,
+        "engineVersion": "4.7.2-stable",
+        "packFormat": 4,
+        "files": [
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "bytes": 3380,
+            "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "bytes": 8556,
+            "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+          },
+          {
+            "path": "craftmine_shared/state_guard.gd",
+            "bytes": 1800,
+            "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+          },
+          {
+            "path": "craftmine_shared/headless_play_action.gd",
+            "bytes": 2525,
+            "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker.gd",
+            "bytes": 18909,
+            "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_legacy.gd",
+            "bytes": 19410,
+            "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+          },
+          {
+            "path": "craftmine_shared/controller_evidence.gd",
+            "bytes": 9893,
+            "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+            "bytes": 15366,
+            "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+          },
+          {
+            "path": "scripts/reused/player_controller.gd",
+            "bytes": 7079,
+            "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+          },
+          {
+            "path": "scripts/reused/camera_rig.gd",
+            "bytes": 1527,
+            "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_controller_v1.gd",
+            "bytes": 1640,
+            "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+          },
+          {
+            "path": "craftmine_shared/progress_collision.gd",
+            "bytes": 4781,
+            "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+          }
+        ],
+        "project": {
+          "sha256": "2fd6e62d9229f47700344cf81bd8c53b75096c2b6888c188d41469cdff4f42e9",
+          "selectors": {
+            "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+            "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+          }
+        },
+        "observerContract": {
+          "profileId": "creation-player-collision/1",
+          "historical": false
+        }
+      },
+      "descriptor": {
+        "worldId": "collision-web-world",
+        "baseId": "creation-sandbox",
+        "buildId": "gbd-7203afd35f3815dc4b17e1441fc4a3202e78786f9fa096ab7df4c8a90335a849",
+        "root": "D:\\Craftmine World\\test-results\\creation-module-collision-web-Crwrh2\\blocked-artifacts",
+        "entry": "web/index.html",
+        "threads": true,
+        "artifacts": [
+          {
+            "path": "web/bridge.js",
+            "bytes": 10824,
+            "sha256": "c0da1d77a9ba2046e2459d07e572f28d251807f33757fd26f8ab4eaf4bac2b5b"
+          },
+          {
+            "path": "web/index.apple-touch-icon.png",
+            "bytes": 11944,
+            "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+          },
+          {
+            "path": "web/index.audio.position.worklet.js",
+            "bytes": 2973,
+            "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+          },
+          {
+            "path": "web/index.audio.worklet.js",
+            "bytes": 7298,
+            "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+          },
+          {
+            "path": "web/index.html",
+            "bytes": 1417,
+            "sha256": "f2edb40207c9430235fcf69bb3e23745c86d9d907c9b048ac9b9a612a2227c78"
+          },
+          {
+            "path": "web/index.icon.png",
+            "bytes": 5700,
+            "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+          },
+          {
+            "path": "web/index.js",
+            "bytes": 314653,
+            "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+          },
+          {
+            "path": "web/index.pck",
+            "bytes": 5760280,
+            "sha256": "9b4b9ba35e37bb13bfc4fb6ab6e89458190c459054afe2c39d97b2ba7c49d23d"
+          },
+          {
+            "path": "web/index.png",
+            "bytes": 21443,
+            "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+          },
+          {
+            "path": "web/index.wasm",
+            "bytes": 38820072,
+            "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+          }
+        ],
+        "snapshot": {
+          "format": "craftmine.godot-progress/1",
+          "worldId": "collision-web-world",
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "stateVersion": 1,
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.898971319198608,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "collision-web-world"
+          }
+        },
+        "revision": 0
+      }
+    }
+  ],
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 84,
+      "exitCode": 0
+    },
+    {
+      "label": "formal-import",
+      "elapsedMs": 2320,
+      "exitCode": 0
+    },
+    {
+      "label": "formal-export",
+      "elapsedMs": 2019,
+      "exitCode": 0
+    },
+    {
+      "label": "candidate-import",
+      "elapsedMs": 1924,
+      "exitCode": 0
+    },
+    {
+      "label": "candidate-export",
+      "elapsedMs": 2014,
+      "exitCode": 0
+    },
+    {
+      "label": "blocked-import",
+      "elapsedMs": 1925,
+      "exitCode": 0
+    },
+    {
+      "label": "blocked-export",
+      "elapsedMs": 2015,
+      "exitCode": 0
+    }
+  ],
+  "electron": {
+    "passed": true,
+    "checks": [
+      {
+        "case": "candidate",
+        "evidence": {
+          "format": "craftmine.godot-runtime-check/1",
+          "scope": "base-startup",
+          "jobId": "gjob-dda18a0e21ae47c53b4309434cbc02ae8bf764fa83a6defbb719431242722aa7",
+          "buildId": "gbd-5122f3aa252660e08bff2e927e084b7bbbda72cdf2d56679bdd577ad84d65cb7",
+          "worldId": "collision-web-world",
+          "inputHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "passed": true,
+          "startedAt": "2026-09-12T13:37:36.669Z",
+          "elapsedMs": 3584,
+          "ready": {
+            "ok": true,
+            "ops": [
+              "capabilities",
+              "load",
+              "snapshot",
+              "save",
+              "pause",
+              "resume",
+              "acknowledge",
+              "cancel",
+              "exit"
+            ],
+            "instanceId": "e3ecb4c7c889fec90d48cf23",
+            "elapsedMs": 1298
+          },
+          "render": {
+            "ok": true,
+            "frames": 3,
+            "distinctFrames": 2,
+            "captures": [
+              {
+                "sha256": "dfaeeb6d715df822a23bd80d711f55261e2083a452f23df3609f93b9024db38f",
+                "width": 960,
+                "height": 640,
+                "coloredSamples": 35,
+                "samples": 35
+              },
+              {
+                "sha256": "f020306ed2a4fb0aa522d927916e3d9d17a2001258431cb1017474a37fbe1237",
+                "width": 960,
+                "height": 640,
+                "coloredSamples": 35,
+                "samples": 35
+              },
+              {
+                "sha256": "f020306ed2a4fb0aa522d927916e3d9d17a2001258431cb1017474a37fbe1237",
+                "width": 960,
+                "height": 640,
+                "coloredSamples": 35,
+                "samples": 35
+              }
+            ]
+          },
+          "errors": {
+            "ok": true,
+            "runtime": [],
+            "console": [],
+            "renderer": null
+          },
+          "snapshot": {
+            "ok": true,
+            "equal": true,
+            "expectedHash": "2da72d8ad2bce5a650e20a0c304f47ea4289c69b8b9d37edab3db197629fb6ba",
+            "actualHash": "2da72d8ad2bce5a650e20a0c304f47ea4289c69b8b9d37edab3db197629fb6ba",
+            "keys": [
+              "baseId",
+              "baseVersion",
+              "body",
+              "format",
+              "stateVersion",
+              "worldId"
+            ]
+          },
+          "isolation": {
+            "ok": true,
+            "offscreen": true,
+            "focusable": false,
+            "visible": false,
+            "guard": {
+              "focus": 0,
+              "pointerLock": 0
+            },
+            "networkBlocked": 0,
+            "navigationBlocked": 0,
+            "popupsBlocked": 0,
+            "sessionCleared": true
+          },
+          "recovery": {
+            "ok": true,
+            "gracefulExit": true,
+            "windowDestroyed": true,
+            "serverClosed": true
+          },
+          "assertions": [
+            {
+              "id": "runtime.ready",
+              "passed": true
+            },
+            {
+              "id": "runtime.frame",
+              "passed": true
+            },
+            {
+              "id": "runtime.no-errors",
+              "passed": true
+            },
+            {
+              "id": "runtime.snapshot",
+              "passed": true
+            },
+            {
+              "id": "runtime.isolation",
+              "passed": true
+            },
+            {
+              "id": "runtime.recovery",
+              "passed": true
+            }
+          ],
+          "diagnostics": [
+            "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+            "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+            "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+          ],
+          "error": null,
+          "defaultsSnapshot": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  6
+                ],
+                "yaw": 0
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "collision-web-world"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "collision-web-world"
+          },
+          "progressMigration": {
+            "format": "craftmine.godot-additive-progress/1",
+            "previousSnapshotHash": "2da72d8ad2bce5a650e20a0c304f47ea4289c69b8b9d37edab3db197629fb6ba",
+            "defaultsSnapshotHash": "c43781faaf3dafe8bfaa8d7778b61cf04fe9f8b87b7a153f8e27f3e6deb3a290",
+            "snapshotHash": "2da72d8ad2bce5a650e20a0c304f47ea4289c69b8b9d37edab3db197629fb6ba",
+            "added": [],
+            "snapshot": {
+              "baseId": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "body": {
+                "baseVersion": "1.0.0",
+                "doors": {},
+                "format": "craftmine.creation-progress/1",
+                "inventory": {},
+                "openedChests": {},
+                "player": {
+                  "onFloor": true,
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    0.898971319198608,
+                    6
+                  ],
+                  "yaw": 0
+                },
+                "rules": {},
+                "sourceTimeOfDay": 12,
+                "timeOfDay": 12,
+                "worldId": "collision-web-world"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "collision-web-world"
+            }
+          }
+        }
+      },
+      {
+        "case": "blocked",
+        "evidence": {
+          "format": "craftmine.godot-runtime-check/1",
+          "scope": "base-startup",
+          "jobId": "gjob-6973dddd3ef9cb6a2932702f31777faad9c9bf3124d147a84f31aadb6d139546",
+          "buildId": "gbd-7203afd35f3815dc4b17e1441fc4a3202e78786f9fa096ab7df4c8a90335a849",
+          "worldId": "collision-web-world",
+          "inputHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "passed": false,
+          "startedAt": "2026-09-12T13:37:40.254Z",
+          "elapsedMs": 1721,
+          "ready": {
+            "ok": true,
+            "ops": [
+              "capabilities",
+              "load",
+              "snapshot",
+              "save",
+              "pause",
+              "resume",
+              "acknowledge",
+              "cancel",
+              "exit"
+            ],
+            "instanceId": "10cd94ce9c26be029689e5e5",
+            "elapsedMs": 1147
+          },
+          "render": {
+            "ok": false,
+            "frames": 0,
+            "distinctFrames": 0,
+            "captures": []
+          },
+          "errors": {
+            "ok": false,
+            "runtime": [
+              "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION"
+            ],
+            "console": [],
+            "renderer": null
+          },
+          "snapshot": {
+            "ok": false,
+            "equal": false,
+            "expectedHash": null,
+            "actualHash": null,
+            "keys": []
+          },
+          "isolation": {
+            "ok": false,
+            "offscreen": true,
+            "focusable": false,
+            "visible": false,
+            "guard": null,
+            "networkBlocked": 0,
+            "navigationBlocked": 0,
+            "popupsBlocked": 0,
+            "sessionCleared": true
+          },
+          "recovery": {
+            "ok": true,
+            "gracefulExit": true,
+            "windowDestroyed": true,
+            "serverClosed": true
+          },
+          "assertions": [
+            {
+              "id": "runtime.ready",
+              "passed": true
+            },
+            {
+              "id": "runtime.frame",
+              "passed": false
+            },
+            {
+              "id": "runtime.no-errors",
+              "passed": false
+            },
+            {
+              "id": "runtime.snapshot",
+              "passed": false
+            },
+            {
+              "id": "runtime.isolation",
+              "passed": false
+            },
+            {
+              "id": "runtime.recovery",
+              "passed": true
+            }
+          ],
+          "diagnostics": [
+            "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+            "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+            "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support."
+          ],
+          "error": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+          "defaultsSnapshot": {
+            "baseId": "creation-sandbox",
+            "baseVersion": "1.0.0",
+            "body": {
+              "baseVersion": "1.0.0",
+              "doors": {},
+              "format": "craftmine.creation-progress/1",
+              "inventory": {},
+              "openedChests": {},
+              "player": {
+                "onFloor": true,
+                "pitch": 0,
+                "position": [
+                  0,
+                  0.899999976158142,
+                  12
+                ],
+                "yaw": 0
+              },
+              "rules": {},
+              "sourceTimeOfDay": 12,
+              "timeOfDay": 12,
+              "worldId": "collision-web-world"
+            },
+            "format": "craftmine.godot-progress/1",
+            "stateVersion": 1,
+            "worldId": "collision-web-world"
+          },
+          "progressMigration": {
+            "format": "craftmine.godot-additive-progress/1",
+            "previousSnapshotHash": "2da72d8ad2bce5a650e20a0c304f47ea4289c69b8b9d37edab3db197629fb6ba",
+            "defaultsSnapshotHash": "0c4f7a133c7a0b64521581b1c94b9b7e69cd0e66410f7875119163efc904d598",
+            "snapshotHash": "2da72d8ad2bce5a650e20a0c304f47ea4289c69b8b9d37edab3db197629fb6ba",
+            "added": [],
+            "snapshot": {
+              "baseId": "creation-sandbox",
+              "baseVersion": "1.0.0",
+              "body": {
+                "baseVersion": "1.0.0",
+                "doors": {},
+                "format": "craftmine.creation-progress/1",
+                "inventory": {},
+                "openedChests": {},
+                "player": {
+                  "onFloor": true,
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    0.898971319198608,
+                    6
+                  ],
+                  "yaw": 0
+                },
+                "rules": {},
+                "sourceTimeOfDay": 12,
+                "timeOfDay": 12,
+                "worldId": "collision-web-world"
+              },
+              "format": "craftmine.godot-progress/1",
+              "stateVersion": 1,
+              "worldId": "collision-web-world"
+            }
+          }
+        }
+      }
+    ],
+    "scope": "actual production verifier and latest-progress candidate stage; authored descriptors and no core commit",
+    "savedFloor": {
+      "requested": [
+        0,
+        0.898971319198608,
+        6
+      ],
+      "restored": [
+        0,
+        0.898971319198608,
+        6
+      ]
+    },
+    "latestProgress": {
+      "position": [
+        0,
+        0.898971319198608,
+        2.04777932167053
+      ],
+      "stageRejected": true,
+      "formalInstanceRetained": true,
+      "formalSnapshotUnchanged": true
+    },
+    "reopenedProgress": {
+      "requested": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.898971319198608,
+          2.04777932167053
+        ],
+        "yaw": 0
+      },
+      "restored": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.898971319198608,
+          2.04777932167053
+        ],
+        "yaw": 0
+      },
+      "exactSnapshot": true
+    },
+    "guards": [
+      {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    ]
+  }
+}

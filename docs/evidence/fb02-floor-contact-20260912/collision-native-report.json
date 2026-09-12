@@ -1,0 +1,1039 @@
+{
+  "out": "D:\\Craftmine World\\test-results\\creation-module-collision-xQliZP",
+  "scope": "trusted authored candidate physics; no actual external asset executed",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 88,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 2121,
+      "exitCode": 0
+    },
+    {
+      "label": "run",
+      "elapsedMs": 1999,
+      "exitCode": 0
+    }
+  ],
+  "cases": [
+    {
+      "case": "normal-floor-contact",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 11,
+          "paused": true,
+          "startedFrame": 9
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": true
+    },
+    {
+      "case": "wall-contact",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 5.96046447753906e-8,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 15,
+          "paused": true,
+          "startedFrame": 13
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          5.96046447753906e-8,
+          5.96046447753906e-8
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": true
+    },
+    {
+      "case": "wall-penetration",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0.150000035762787,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 19,
+          "paused": true,
+          "startedFrame": 17
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          0.150000035762787,
+          0.150000035762787
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "rollbackEqual": true
+    },
+    {
+      "case": "inside-convex-building",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 1.29999995231628,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 25,
+          "paused": true,
+          "startedFrame": 23
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          1.29999995231628,
+          1.29999995231628
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "rollbackEqual": true
+    },
+    {
+      "case": "non-solid-building",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 31,
+          "paused": true,
+          "startedFrame": 29
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": true
+    },
+    {
+      "case": "saved-open-door",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 35,
+          "paused": true,
+          "startedFrame": 33
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": false
+    },
+    {
+      "case": "two-mm-wall-penetration",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0.00200003385543823,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 39,
+          "paused": true,
+          "startedFrame": 37
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          0.00200003385543823,
+          0.00200003385543823
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "rollbackEqual": true
+    },
+    {
+      "case": "corner-contact",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 7.45058059692383e-8,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 45,
+          "paused": true,
+          "startedFrame": 43
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          7.45058059692383e-8,
+          7.45058059692383e-8
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": true
+    },
+    {
+      "case": "corner-penetration",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0.00999998301267624,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 49,
+          "paused": true,
+          "startedFrame": 47
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          0.00999998301267624,
+          0.00999998301267624
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "rollbackEqual": true
+    },
+    {
+      "case": "slope-contact",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 3.00342506420748e-8,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 55,
+          "paused": true,
+          "startedFrame": 53
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          3.00342506420748e-8
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": true
+    },
+    {
+      "case": "slope-penetration",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0.0200000107288361,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 59,
+          "paused": true,
+          "startedFrame": 57
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          0.0200000107288361
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "rollbackEqual": true
+    },
+    {
+      "case": "trimesh-wall-penetration",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0.150000035762787,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "PLAYER_PENETRATION",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "failed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 65,
+          "paused": true,
+          "startedFrame": 63
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0,
+          0.150000035762787,
+          0.150000035762787,
+          0.150000035762787,
+          0.150000035762787
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "33856423482",
+            "nodePath": "ImportedModule/BuildingBody",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_FAILED:PLAYER_PENETRATION",
+      "rollbackEqual": true
+    },
+    {
+      "case": "trimesh-room-clearance",
+      "guard": {
+        "bodies": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "flatSupportTolerance": 0.0011,
+        "maxContactDepth": 0,
+        "maxNumericSupportDepth": 0,
+        "playerId": "28051506641",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "28068283858",
+        "shapeResourceId": "-9223372008903932456",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 71,
+          "paused": true,
+          "startedFrame": 69
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "",
+      "rollbackEqual": true
+    },
+    {
+      "case": "collision-budget",
+      "guard": {
+        "profile": "creation-player-collision/1",
+        "reason": "HIT_BUDGET",
+        "status": "inconclusive",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 75,
+          "paused": true,
+          "startedFrame": 73
+        }
+      },
+      "legacyValidation": "",
+      "native": {
+        "depths": [
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "hits": [
+          {
+            "id": "28454159848",
+            "nodePath": "@StaticBody3D@6",
+            "shape": 0
+          },
+          {
+            "id": "42010150656",
+            "nodePath": "@StaticBody3D@160",
+            "shape": 0
+          },
+          {
+            "id": "41959819005",
+            "nodePath": "@StaticBody3D@158",
+            "shape": 0
+          },
+          {
+            "id": "41909487354",
+            "nodePath": "@StaticBody3D@156",
+            "shape": 0
+          },
+          {
+            "id": "41859155703",
+            "nodePath": "@StaticBody3D@154",
+            "shape": 0
+          },
+          {
+            "id": "41808824052",
+            "nodePath": "@StaticBody3D@152",
+            "shape": 0
+          },
+          {
+            "id": "41758492401",
+            "nodePath": "@StaticBody3D@150",
+            "shape": 0
+          },
+          {
+            "id": "41708160750",
+            "nodePath": "@StaticBody3D@148",
+            "shape": 0
+          },
+          {
+            "id": "41657829099",
+            "nodePath": "@StaticBody3D@146",
+            "shape": 0
+          },
+          {
+            "id": "41607497448",
+            "nodePath": "@StaticBody3D@144",
+            "shape": 0
+          },
+          {
+            "id": "41557165797",
+            "nodePath": "@StaticBody3D@142",
+            "shape": 0
+          },
+          {
+            "id": "41506834146",
+            "nodePath": "@StaticBody3D@140",
+            "shape": 0
+          },
+          {
+            "id": "41456502495",
+            "nodePath": "@StaticBody3D@138",
+            "shape": 0
+          },
+          {
+            "id": "41406170844",
+            "nodePath": "@StaticBody3D@136",
+            "shape": 0
+          },
+          {
+            "id": "41355839193",
+            "nodePath": "@StaticBody3D@134",
+            "shape": 0
+          },
+          {
+            "id": "41305507542",
+            "nodePath": "@StaticBody3D@132",
+            "shape": 0
+          }
+        ]
+      },
+      "playerPosition": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "restoreError": "CREATION_COLLISION_GUARD_UNSUPPORTED:HIT_BUDGET:ROLLBACK_UNCONFIRMED",
+      "rollbackEqual": true
+    },
+    {
+      "case": "restore-lies-about-pose",
+      "guard": {
+        "profile": "creation-player-collision/1",
+        "reason": "RESTORED_POSE_MISMATCH",
+        "status": "inconclusive",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 87,
+          "paused": true,
+          "startedFrame": 85
+        }
+      },
+      "restoreError": "CREATION_COLLISION_GUARD_UNSUPPORTED:RESTORED_POSE_MISMATCH"
+    },
+    {
+      "case": "shape-replaced-during-sync",
+      "guard": {
+        "profile": "creation-player-collision/1",
+        "reason": "SHAPE_CHANGED",
+        "status": "inconclusive",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 91,
+          "paused": true,
+          "startedFrame": 89
+        }
+      },
+      "restoreError": "CREATION_COLLISION_GUARD_UNSUPPORTED:SHAPE_CHANGED:ROLLBACK_UNCONFIRMED"
+    },
+    {
+      "case": "native-shape-owner-transform",
+      "guard": {
+        "profile": "creation-player-collision/1",
+        "reason": "NATIVE_SHAPE_TRANSFORM_MISMATCH",
+        "status": "inconclusive",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 95,
+          "paused": true,
+          "startedFrame": 93
+        }
+      },
+      "restoreError": "CREATION_COLLISION_GUARD_UNSUPPORTED:NATIVE_SHAPE_TRANSFORM_MISMATCH:ROLLBACK_UNCONFIRMED"
+    }
+  ],
+  "reproduced": true
+}

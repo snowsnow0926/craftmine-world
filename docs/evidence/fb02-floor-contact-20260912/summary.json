@@ -1,0 +1,88 @@
+{
+  "format": "craftmine.floor-contact-evidence/1",
+  "scope": "Current fixed capsule flat-support numeric contact rule, actual pinned native physics and Web PCK; no core migration transaction in these fixtures",
+  "records": {
+    "collision-native-report.json": {
+      "source": "test-results/creation-module-collision-xQliZP/report.json",
+      "bytes": 25815,
+      "sha256": "bd15545d87284faaabb973a216147e16868def3c3073d8d7e7ac60356ae1ba49"
+    },
+    "floor-native-report.json": {
+      "source": "test-results/creation-floor-save-restore-uCa1RE/report.json",
+      "bytes": 23695,
+      "sha256": "1a658d8c7dd9a72cefe3b587eb12af8c77bed01a71fd2976299b5d42e89c09dc"
+    },
+    "collision-web-report.json": {
+      "source": "test-results/creation-module-collision-web-Crwrh2/report.json",
+      "bytes": 32631,
+      "sha256": "2fd8f65c8f1265b1dbed10a1bbdb86c315eebfb3ea61555a4a18b5fa52d5cafc"
+    },
+    "legacy-failure-report.json": {
+      "source": "test-results/creation-floor-save-restore-Auzurq/report.json",
+      "bytes": 15922,
+      "sha256": "b66a2a85f48602cc583d30e6376e7ced11d472dd844a3fd1c0925ebfbb62928a"
+    }
+  },
+  "protectedFiles": [
+    {
+      "path": "craftmine_shared/base_adapter.gd",
+      "bytes": 3380,
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+    },
+    {
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "bytes": 8556,
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+    },
+    {
+      "path": "craftmine_shared/state_guard.gd",
+      "bytes": 1800,
+      "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+    },
+    {
+      "path": "craftmine_shared/headless_play_action.gd",
+      "bytes": 2525,
+      "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+    },
+    {
+      "path": "craftmine_shared/scene_mesh_picker.gd",
+      "bytes": 18909,
+      "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "path": "craftmine_shared/base_adapter_legacy.gd",
+      "bytes": 19410,
+      "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+    },
+    {
+      "path": "craftmine_shared/controller_evidence.gd",
+      "bytes": 9893,
+      "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+    },
+    {
+      "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+    },
+    {
+      "path": "scripts/reused/player_controller.gd",
+      "bytes": 7079,
+      "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+    },
+    {
+      "path": "scripts/reused/camera_rig.gd",
+      "bytes": 1527,
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "path": "craftmine_shared/base_adapter_controller_v1.gd",
+      "bytes": 1640,
+      "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+    },
+    {
+      "path": "craftmine_shared/progress_collision.gd",
+      "bytes": 4781,
+      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+    }
+  ]
+}

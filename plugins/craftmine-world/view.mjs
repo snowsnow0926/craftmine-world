@@ -39,6 +39,7 @@ document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+
 let godot=false;
 let initializingSurfaceWorld=null;
 let openingWorldId=null;
+let recoverySequence=0;
 let loadRecovery=null;
 let immersionHeld=false;
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
@@ -58,6 +59,7 @@ if(bridge) {
   void bridge.invoke('app.getAppearance').then(applyAppearance).catch(()=>{});
   bridge.on?.('appearance:changed',applyAppearance);
   bridge.on?.('godot-world:state',onGodotState);
+  bridge.on?.('craftmine-runtime-recovered',value=>{void recoverMaintainedWorld(value?.worldId).catch(showError);});
   bridge.on?.('craftmine-presentation',value=>{
     const active=value?.active===true;
     const entering=active&&document.body.dataset.immersive!=='true';
@@ -70,6 +72,35 @@ if(bridge) {
     immersionHeld=value===true;
     if(!godot&&current)send('immersion',{paused:immersionHeld});
     if(previewFrame&&preview)previewFrame.contentWindow.postMessage({channel:'craftmine-host/1',nonce:preview.nonce,type:'immersion',paused:immersionHeld},'*');
+  });
+}
+
+async function recoverMaintainedWorld(worldId) {
+  const targetsWorld=()=>openingWorldId?openingWorldId===worldId:current?.id===worldId;
+  if(typeof worldId!=='string'||!targetsWorld())return;
+  const sequence=++recoverySequence,generation=closeGeneration;
+  const eligible=()=>sequence===recoverySequence&&generation===closeGeneration&&!closing&&!preview&&!applicationAttempt&&
+    !restoreOperation&&targetsWorld();
+  // A successful host repair may overtake the rejected first open. Preserve
+  // that request's error, then reconcile after its normal finally releases busy.
+  while(busy&&eligible())await activeOperation.catch(()=>{});
+  if(!eligible()||(loaded&&current?.id===worldId&&!openingWorldId))return;
+  await action(async()=>{
+    const before=current,opening=openingWorldId;
+    const unchanged=()=>eligible()&&current===before&&openingWorldId===opening;
+    if(!unchanged())return;
+    const selected=await bridge.invoke('world.list');
+    if(!unchanged()||selected.activeWorldId!==worldId)return;
+    const state=await bridge.invoke('godot.runtimeState',{worldId});
+    if(!unchanged()||!['ready','paused','saved'].includes(state?.state)||state.worldId!==worldId)return;
+    const record=await bridge.invoke('world.read',{id:worldId});
+    if(!unchanged())return;
+    if(record.id!==worldId||record.world?.build?.id!==state.buildId)throw Error('WORLD_RECOVERY_IDENTITY_CHANGED');
+    const selectedAfter=await bridge.invoke('world.list');
+    if(!unchanged()||selectedAfter.activeWorldId!==worldId)return;
+    const stateAfter=await bridge.invoke('godot.runtimeState',{worldId});
+    if(!unchanged()||stateAfter?.worldId!==worldId||stateAfter.buildId!==state.buildId||stateAfter.instanceId!==state.instanceId||!['ready','paused','saved'].includes(stateAfter.state))return;
+    mount(record);errorBox.hidden=true;
   });
 }
 
@@ -133,6 +164,7 @@ function renderWorldLoading(payload) {
 }
 
 async function openWorldWithLoading(id,{previous=current?.id||null}={}) {
+  recoverySequence++;
   loadRecovery={id,previous:previous!==id?previous:null};openingWorldId=id;
   renderWorldLoading({state:'loading'});
   // The native game is a sibling above this page; reveal the loading layer
@@ -258,7 +290,7 @@ async function beginRestore({operationId}) {
   if(restoreOperation||closing||applicationAttempt||preview)throw Error('WORLD_BUSY');
   // This is invoked by Main while the backup action is awaiting its IPC reply.
   // Waiting for activeOperation here would wait on that very same reply.
-  restoreOperation=operationId;closing=true;controls();send('pause');
+  recoverySequence++;restoreOperation=operationId;closing=true;controls();send('pause');
   try {
     if(!godot&&loaded) {
       const result=await snapshot({freeze:true});
@@ -442,6 +474,10 @@ async function navigate(request) {
     activeOperation=(async()=>{
       const worldId=current.id;
       const runtime=await bridge.invoke('godot.runtimeState',{worldId});
+      if(runtime?.worldId===worldId&&runtime.state==='failed') {
+        await openWorldWithLoading(worldId,{previous:loadRecovery?.previous||null});
+        return {ok:true,activeWorldId:worldId};
+      }
       if(['ready','paused','saved'].includes(runtime?.state)&&!runtime.initializing){
         setMode(false,{notify:false});
         await bridge.invoke('godot.runtimeSurface',{worldId,visible:true});
