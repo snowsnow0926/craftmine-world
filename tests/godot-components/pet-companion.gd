@@ -96,6 +96,15 @@ func differential(value: CharacterBody3D, body: PhysicsBody3D, positions: Array[
 func _run() -> void:
 	world = Node3D.new()
 	root.add_child(world)
+	for config in [{"entity_id": ""}, {"entity_id": "bad:id"}, {"entity_id": "bad\n"}, {"appearance_key": "unknown"}, {"move_speed": -1.0}]:
+		var invalid_pet := Pet.new()
+		invalid_pet.entity_id = "invalid-config-test"
+		for field in config:
+			invalid_pet.set(field, config[field])
+		world.add_child(invalid_pet)
+		verify(invalid_pet in get_nodes_in_group("craftmine_persistent_components"), "invalid configuration remains discoverable by persistent registry: " + str(config))
+		verify(invalid_pet.configuration_error == "PET_CONFIGURATION_INVALID" and not invalid_pet.validate_state(invalid_pet.snapshot()).is_empty(), "invalid configuration cannot validate its own snapshot: " + str(config))
+		invalid_pet.free()
 	solid(Vector3(80, 1, 80), Vector3(0, -0.5, 0))
 	player = CharacterBody3D.new()
 	player.name = "Player"
