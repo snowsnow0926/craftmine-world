@@ -2,9 +2,9 @@ extends "res://craftmine_shared/scene_mesh_picker.gd"
 
 # Versioned observer: base surface triangles, never rendered pixels or active LOD.
 # The legacy file remains a dependency so old adapter type inference stays valid.
-const MAX_SURFACES := 16
-const MAX_MESH_VERTICES := 12288
-const MAX_VERTICES := 49152
+const V2_MAX_SURFACES := 16
+const V2_MAX_MESH_VERTICES := 12288
+const V2_MAX_VERTICES := 49152
 
 func _answer(status: String, reason: String, counts: Dictionary, excluded: Array) -> Dictionary:
 	var result := super._answer(status, reason, counts, excluded)
@@ -34,7 +34,7 @@ func _array_spec(instance: MeshInstance3D) -> Dictionary:
 	if instance.skin != null or mesh.get_blend_shape_count() != 0: return {"reason": "deformed-array-mesh", "unbounded": true}
 	if mesh.custom_aabb != AABB() or instance.custom_aabb != AABB(): return {"reason": "custom-array-bounds", "unbounded": true}
 	var count := mesh.get_surface_count()
-	if count > MAX_SURFACES: return {"reason": "surface-budget", "unbounded": true}
+	if count > V2_MAX_SURFACES: return {"reason": "surface-budget", "unbounded": true}
 	var specs := []
 	var triangles := 0
 	var vertices := 0
@@ -47,7 +47,7 @@ func _array_spec(instance: MeshInstance3D) -> Dictionary:
 		var length := mesh.surface_get_array_len(index)
 		var indices := mesh.surface_get_array_index_len(index)
 		vertices += length
-		if length < 0 or indices < 0 or vertices > MAX_MESH_VERTICES: return {"reason": "mesh-vertex-budget", "unbounded": true}
+		if length < 0 or indices < 0 or vertices > V2_MAX_MESH_VERTICES: return {"reason": "mesh-vertex-budget", "unbounded": true}
 		var elements := indices if indices > 0 else length
 		if elements > MAX_MESH_TRIANGLES * 3: return {"reason": "mesh-triangle-budget", "unbounded": true}
 		if mesh.surface_get_primitive_type(index) != Mesh.PRIMITIVE_TRIANGLES or elements % 3 != 0: reason = "unsupported-surface-primitive"
@@ -184,7 +184,7 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 			unknown.append({"distance": distance, "reason": reason})
 			continue
 		counts.vertices += int(spec.get("vertices", 0))
-		if counts.vertices > MAX_VERTICES: return _answer("fallback", "vertex-budget", counts, excluded)
+		if counts.vertices > V2_MAX_VERTICES: return _answer("fallback", "vertex-budget", counts, excluded)
 		counts.triangles += triangles
 		if counts.triangles > MAX_TRIANGLES: return _answer("fallback", "triangle-budget", counts, excluded)
 		candidates.append({"node": instance, "mesh": mesh, "transform": transform, "triangles": triangles, "cull": material.cull, "surfaces": spec.get("surfaces", [])})

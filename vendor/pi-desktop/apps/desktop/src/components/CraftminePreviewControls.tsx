@@ -46,7 +46,7 @@ export function CraftminePreviewControls({ autoOpen = true }: { autoOpen?: boole
   }, [autoOpen]);
 
   const run = async (action: "apply" | "close") => {
-    if (!preview || locked.current || error) return;
+    if (!preview || locked.current) return;
     locked.current = true; setPending(true);
     const current = ++generation.current;
     const { worldId, candidateId, buildId, previewId } = preview;
@@ -71,8 +71,8 @@ export function CraftminePreviewControls({ autoOpen = true }: { autoOpen?: boole
       {(error || preview.error) && <p role="alert">{error || preview.error}</p>}
     </div>
     <div className="craftmine-preview-controls-actions">
-      <button type="button" disabled={pending || !!error || preview.applyDisabled} onClick={() => void run("apply")}>{preview.applyLabel}</button>
-      <button type="button" disabled={pending || !!error || preview.closeDisabled} onClick={() => void run("close")}>返回原世界</button>
+      <button type="button" disabled={pending || preview.applyDisabled} onClick={() => void run("apply")}>{preview.applyLabel}</button>
+      <button type="button" disabled={pending || preview.closeDisabled} onClick={() => void run("close")}>返回原世界</button>
     </div>
   </section>;
 }

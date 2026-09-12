@@ -28,6 +28,7 @@ export function useCraftmineImmersionSurface(
   blocked: boolean,
   surfaceRef: RefObject<HTMLElement | null>,
   onPause?: () => void,
+  covered = false,
 ) {
   const [hostError, setHostError] = useState("");
   useEffect(() => () => {
@@ -67,6 +68,7 @@ export function useCraftmineImmersionSurface(
           overlay,
           overlayBounds,
           blocked,
+          covered,
         }).then(() => { if (!disposed) setHostError(""); }, error => {
           if (!disposed) setHostError(error instanceof Error ? error.message : String(error));
         });
@@ -85,7 +87,7 @@ export function useCraftmineImmersionSurface(
       layers.disconnect();
       window.removeEventListener("resize", report);
     };
-  }, [active, overlay, blocked, surfaceRef]);
+  }, [active, overlay, blocked, covered, surfaceRef]);
 
   useEffect(() => {
     if (!active || overlay === "closed" || blocked) return;

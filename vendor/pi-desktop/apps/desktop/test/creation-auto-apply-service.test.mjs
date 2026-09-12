@@ -16,12 +16,12 @@ function fixture(){
   const state={capture:{snapshotId:"capture",worldId:"world",buildId:"formal",instanceId:"live",sourceRevision:1,manifestHash:"old",autoApply:true,creationRequirements:{status:"verifiable",requirements}},
     job:{checkRequirements:{format:"craftmine.godot-check-requirements/1",creation:requirements},checkRequirementsHash:creationRequirementsHash(requirements),worldId:"world",jobId:input.jobId,kind:"check",status:"passed",baseId:"creation-sandbox",candidateId:"candidate",buildId:"new",sourceRevision:2,manifestHash:"new",outputHash:"proof",taskId:"task",branchId:"main"},
     candidate:{status:"ready",worldId:"world",checkJobId:input.jobId,buildId:"new",sourceRevision:2,manifestHash:"new",checkOutputHash:"proof"},
-    source:{currentTaskId:"task",worldId:"world",baseId:"creation-sandbox",revision:2,manifestHash:"new"},checkStatus:"passed",active:true,applies:0,commits:0,beforeCommit:()=>{}};
+    source:{currentTaskId:"task",worldId:"world",baseId:"creation-sandbox",revision:2,manifestHash:"new"},check:{assertions:["runtime.ready","runtime.frame","runtime.no-errors","runtime.snapshot","runtime.isolation","runtime.recovery"].map(id=>({id,passed:true}))},checkStatus:"passed",active:true,applies:0,commits:0,beforeCommit:()=>{}};
   const service=createCreationAutoApplyService({capture:async()=>{if(!state.active)throw Error("CREATION_ACTIVE_TURN_REQUIRED");return structuredClone(state.capture);},
     domain:createHostRequests({start:async()=>{},call:async method=>{
       if(method==="godotRuntime.describe")return {worldId:"world",baseId:"creation-sandbox",buildId:"formal",sourceRevision:1,manifestHash:"old"};
       if(method==="godotBuild.read")return structuredClone(state.job);
-      if(method==="godotCandidate.read")return {candidate:structuredClone(state.candidate),checkStatus:state.checkStatus};
+      if(method==="godotCandidate.read")return {candidate:structuredClone(state.candidate),checkStatus:state.checkStatus,check:state.check};
       if(method==="godotProject.index")return structuredClone(state.source);
       throw Error(method);
     }},{}),apply:async(worldId,candidateId,expected,guard)=>{state.applies++;assert.deepEqual(expected,{buildId:"formal",instanceId:"live"});state.beforeCommit();await guard();state.commits++;return {status:"applied",worldId,candidateId};}});
@@ -56,3 +56,14 @@ test("model-supplied proof and unbounded arguments are rejected",async()=>{
 
 test("unknown wishes stay manual and cannot silently auto-apply startup proof",async()=>{const {state,service}=fixture();state.capture.creationRequirements={status:"unverified",reason:"unknown"};assert.equal((await service.completed(input)).status,"manual");assert.equal(state.applies,0);});
 test("downgraded or omitted wish check cannot auto-apply",async()=>{const {state,service}=fixture();delete state.job.checkRequirements;await assert.rejects(service.completed(input),/REQUIREMENTS_NOT_BOUND/);assert.equal(state.applies,0);});
+
+test("full-auto general project wishes use complete runtime and progress evidence without a vocabulary gate",async()=>{
+ const {state,service}=fixture();state.capture.authorization='full-auto';state.capture.requestHash='a'.repeat(64);state.capture.creationRequirements={status:'unverified',reason:'general'};
+ delete state.job.checkRequirements;delete state.job.checkRequirementsHash;
+ assert.equal((await service.completed(input)).status,'applied');assert.equal(state.commits,1);
+});
+for(const missing of ['runtime.frame','runtime.snapshot','runtime.recovery'])test('general full-auto rejects missing '+missing,async()=>{
+ const {state,service}=fixture();Object.assign(state.capture,{authorization:'full-auto',requestHash:'a'.repeat(64),creationRequirements:{status:'unverified'}});
+ state.check.assertions=state.check.assertions.filter(x=>x.id!==missing);
+ await assert.rejects(service.completed(input),/RUNTIME_EVIDENCE_REQUIRED/);assert.equal(state.commits,0);
+});

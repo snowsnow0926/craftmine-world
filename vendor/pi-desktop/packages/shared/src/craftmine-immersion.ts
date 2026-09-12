@@ -5,6 +5,8 @@ export type CraftmineImmersionBounds = { x: number; y: number; width: number; he
 export type CraftmineImmersionState = {
   active: boolean;
   blocked?: boolean;
+  /** Trusted chat covers an attached world; input pauses, authoring may continue. */
+  covered?: boolean;
   overlay: CraftmineImmersionOverlay;
   overlayBounds: CraftmineImmersionBounds | null;
 };

@@ -11,6 +11,7 @@ export const SCENE_OBSERVER_RESOURCES = Object.freeze({
   'craftmine_shared/state_guard.gd': 'shared/state_guard.gd',
   'craftmine_shared/headless_play_action.gd': 'shared/headless_play_action.gd',
   'craftmine_shared/scene_mesh_picker.gd': 'shared/scene_mesh_picker.gd',
+  'craftmine_shared/component_state.gd': 'shared/component_state.gd',
 });
 export type SceneObserverPins = Readonly<Record<string, readonly string[]>>;
 const CONTROLLER_OBSERVER_RESOURCES=Object.freeze({
@@ -90,7 +91,7 @@ export function canUpgradeSceneObserver(files: unknown, pins: SceneObserverPins 
   if(!pins||!Array.isArray(files)||hasCurrentSceneObserver(files,pins))return false;
   return SCENE_OBSERVER_UPGRADE.files.length===Object.keys(SCENE_OBSERVER_RESOURCES).length&&SCENE_OBSERVER_UPGRADE.files.every(file=>{
     const matches=files.filter(entry=>entry?.path===file.source);
-    return matches.length===1&&file.from.includes(matches[0].sha256)&&file.to.every(hash=>pins[file.source]?.includes(hash))&&
+    return (matches.length===1&&(file.from.includes(matches[0].sha256)||file.to.includes(matches[0].sha256))||matches.length===0&&file.from.includes(null))&&file.to.every(hash=>pins[file.source]?.includes(hash))&&
       !files.some(entry=>entry?.path!==file.source&&typeof entry?.path==='string'&&(entry.path.toLowerCase()===file.source.toLowerCase()||entry.path.toLowerCase().startsWith(file.source.toLowerCase()+'.')));
   });
 }

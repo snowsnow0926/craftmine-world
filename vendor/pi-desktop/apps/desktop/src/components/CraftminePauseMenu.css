@@ -21,3 +21,5 @@
 .craftmine-pause-menu h1 { margin: 0 0 8px; font-size: 24px; }
 .craftmine-pause-menu button { min-height: 44px; padding: 10px 16px; border-radius: 8px; }
 .craftmine-pause-menu small { text-align: center; color: var(--ds-text-secondary); }
+
+.craftmine-game-settings { position: absolute; inset: 0; z-index: 100; display: flex; background: var(--ds-bg, #171717); }

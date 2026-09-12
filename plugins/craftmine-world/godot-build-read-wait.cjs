@@ -45,7 +45,7 @@ async function readGodotBuildWithWait({core,params,waitMs=0,assertActive=()=>{},
    const application=readCompletion(structuredClone(bound));
    assertActive();
    if(application!==null&&application!==undefined){
-    if(application.jobId!==current.jobId||application.worldId!==current.worldId||application.buildId!==current.buildId||!['pending','applying','applied','manual','failed','cancelled','interrupted'].includes(application.status)||(application.candidateId!==null&&application.candidateId!==current.candidateId)||(application.status==='applied'&&application.candidateId!==current.candidateId))throw error('GODOT_BUILD_APPLICATION_IDENTITY_CHANGED');
+    if(application.jobId!==current.jobId||application.worldId!==current.worldId||application.buildId!==current.buildId||!['pending','applying','deferred','repairing','applied','manual','failed','cancelled','interrupted'].includes(application.status)||(application.candidateId!==null&&application.candidateId!==current.candidateId)||(application.status==='applied'&&application.candidateId!==current.candidateId))throw error('GODOT_BUILD_APPLICATION_IDENTITY_CHANGED');
     previous.creationApplication=structuredClone(application);
     applicationPending=['pending','applying'].includes(application.status);
    }else previous.creationApplication={status:'unknown',reason:'CREATION_APPLICATION_RECEIPT_UNAVAILABLE'};

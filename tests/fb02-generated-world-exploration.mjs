@@ -1,0 +1,53 @@
+// Inspect a completed ordinary player run through protected runtime actions.
+// The model's files remain untouched; controller actions never use OS input.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {createHash,randomUUID} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
+import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
+import {adoptionEnvironment,modelFreeExecutionEvidence} from './helpers/promo-adoption-contract.mjs';
+const sourceFile=path.resolve(process.argv[2]),sourceBytes=fs.readFileSync(sourceFile),source=JSON.parse(sourceBytes);
+assert.equal(source.format,'craftmine.fb02-ordinary-player/1');assert.equal(source.status,'PASSED_PRODUCT_FLOW');
+const root=path.resolve(import.meta.dirname,'..'),out=path.resolve(source.directory),profile=path.join(out,'profile');
+assert.ok(out.startsWith(path.join(root,'test-results')+path.sep));assert.equal(path.resolve(source.profile),profile);
+const marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json')));
+const client=resolveCreationNativeLaunch({root,packagedRoot:source.development?null:source.package,requiredGuards:['godotExplore']});
+assert.equal(createHash('sha256').update(client.main).digest('hex'),source.mainBundleSha256,'Inspect the same product which generated the result');
+const queue=path.join(profile,'creation-auto-queue');
+for(const name of fs.existsSync(queue)?fs.readdirSync(queue):[]){if(/^[a-f0-9]{64}\.json$/.test(name))assert.ok(!['queued','applying','deferred','repairing'].includes(JSON.parse(fs.readFileSync(path.join(queue,name))).status),'Finish pending automatic work before model-free exploration');}
+const steps=process.argv[3]?JSON.parse(fs.readFileSync(path.resolve(process.argv[3]))):[{op:'wait',args:{frames:30},capture:true}];
+assert.ok(Array.isArray(steps));
+const directory=path.join(out,'gameplay-'+randomUUID());fs.mkdirSync(directory);
+const report={format:'craftmine.fb02-generated-gameplay/1',sourceFile,product:source.package,mainBundleSha256:source.mainBundleSha256,directory,steps,sourceEdits:0,semanticAcceptance:'REQUIRES_REVIEW_OF_OBSERVATIONS_AND_PIXELS',calls:[]};
+let ready=false,ended=false;const pending=new Map();
+const child=spawn(client.executable,client.args,{cwd:directory,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:adoptionEnvironment(client,{out,profile,token:marker.token})});
+for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(directory,stream+'.log'),bytes));
+const exit=new Promise(resolve=>child.on('exit',(code,signal)=>{ended=true;report.exit={code,signal};resolve();}));
+child.on('message',message=>{if(message.type==='craftmine-headless-ready')ready=true;if(message.type==='craftmine-headless-exit')report.audit=message;const call=pending.get(message.id);if(call){clearTimeout(call.timer);pending.delete(message.id);message.error?call.reject(Error(message.error)):call.resolve(message.result);}});
+const rpc=(method,fields={})=>{
+  const key=method==='worldPanel'?method+':'+fields.channel:method;
+  assert.ok(['status','primaryMode','godotObserve','godotSnapshot','godotExplore','godotCaptureView','quit','worldPanel:godot.runtimeResume','worldPanel:godot.runtimeSave'].includes(key));
+  if(method==='godotExplore'||method==='worldPanel')assert.equal(fields.payload.worldId,source.worldId);
+  report.calls.push(key);return new Promise((resolve,reject)=>{if(ended)return reject(Error('APP_EXITED'));const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('RPC_TIMEOUT:'+method));},120000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});});
+};
+const until=async(read,accept)=>{for(let count=0;count<240;count++){if(ended)throw Error('APP_EXITED');try{const value=await read();if(accept(value))return value;}catch(error){if(!/not ready|WORLD_BUSY|No world runtime is running/.test(error.message))throw error;}await delay(500);}throw Error('RUNTIME_NOT_READY');};
+const stop=async()=>{if(!ended){await rpc('quit');await Promise.race([exit,delay(20000,undefined,{ref:false})]);if(!ended){child.kill();await exit;throw Error('SHUTDOWN_TIMEOUT');}}assert.equal(report.exit.code,0);for(const key of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(report.audit?.[key],[]);};
+try{
+  await until(async()=>ready,Boolean);const initial=await until(()=>rpc('primaryMode'),state=>state.width>0);
+  if(initial.entry)await rpc('primaryMode',{payload:{action:'create'}});
+  report.before=await until(()=>rpc('godotObserve'),value=>value.worldId===source.worldId&&value.instanceId);
+  assert.equal(report.before.buildId,source.after.formal.world.build.id);
+  await until(()=>rpc('worldPanel',{channel:'godot.runtimeResume',payload:{worldId:source.worldId}}),value=>value!==undefined);
+  const identity=Object.fromEntries(['worldId','buildId','instanceId'].map(key=>[key,report.before[key]]));
+  report.exploration=await rpc('godotExplore',{payload:{...identity,steps}});
+  for(const [index,capture] of report.exploration.captures.entries()){
+    const file=path.join(directory,'view-'+(index+1)+'.png');fs.writeFileSync(file,Buffer.from(capture.image.pngBase64,'base64'));
+    delete capture.image.pngBase64;capture.image.file=file;
+  }
+  report.snapshot=await rpc('godotSnapshot');report.saved=await rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId:source.worldId,freeze:true}});
+  await stop();client.assertUnchanged();assert.ok(fs.readFileSync(sourceFile).equals(sourceBytes));
+  report.noModelExecution=modelFreeExecutionEvidence(report.audit,report.calls);report.passed=true;
+}catch(error){report.passed=false;report.error=String(error.stack??error);process.exitCode=1;}
+finally{if(!ended)try{await stop();}catch(error){report.shutdownError=String(error);report.passed=false;process.exitCode=1;}for(const call of pending.values())clearTimeout(call.timer);fs.writeFileSync(path.join(directory,'report.json'),JSON.stringify(report,null,2));console.log(path.join(directory,'report.json'));}

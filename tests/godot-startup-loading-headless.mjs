@@ -28,22 +28,24 @@ try {
     window.focus=()=>{inputRequests++;};
     const listeners=new Map();let resolveList,resolveOpen,rejectOpen;
     const world={id:'retained-world',title:'第一个世界',world:{build:{id:'retained-build',engine:{kind:'godot-web'}},snapshot:{}}};
-    let listCalls=0;
+    const second={...world,id:'second-world',title:'第二个世界'};let opened=world,opening=world;let listCalls=0;
     globalThis.fixture={
       releaseList:()=>resolveList({worlds:[{id:world.id,title:world.title}],activeWorldId:world.id}),
-      releaseOpen:()=>resolveOpen(world),failOpen:()=>rejectOpen(Error('加载资源失败')),
-      state:(state,loadingStage)=>listeners.get('godot-world:state')?.({worldId:world.id,buildId:'retained-build',instanceId:'real-instance',state,loadingStage}),
+      releaseOpen:()=>{opened=opening;resolveOpen(opening);},failOpen:()=>rejectOpen(Error('加载资源失败')),
+      state:(state,loadingStage)=>listeners.get('godot-world:state')?.({worldId:opening.id,buildId:'retained-build',instanceId:'real-instance',state,loadingStage}),
       immersive:()=>listeners.get('craftmine-presentation')?.({active:true}),
     };
-    globalThis.pluginBridge={on:(event,callback)=>listeners.set(event,callback),invoke:async channel=>{
+    globalThis.pluginBridge={on:(event,callback)=>listeners.set(event,callback),invoke:async (channel,args)=>{
       if(channel==='app.getAppearance')return{base:'dark'};
       if(channel==='world.list'){if(listCalls++)return{worlds:[world],activeWorldId:world.id};return new Promise(resolve=>{resolveList=resolve;});}
-      if(channel==='world.open'){fixture.openPending=true;return new Promise((resolve,reject)=>{resolveOpen=resolve;rejectOpen=reject;});}
+      if(channel==='world.read')return args.id===second.id?second:world;
+      if(channel==='world.create'){fixture.creates=(fixture.creates||0)+1;return {...second,state:'initializing',creation:{operationId:'stable-create-test',stage:'import',progress:10}};}
+      if(channel==='world.open'){opening=args.id===second.id?second:world;fixture.openPending=args.id;return new Promise((resolve,reject)=>{resolveOpen=resolve;rejectOpen=reject;});}
       if(channel==='godot.candidateClose'){
         if(location.search==='?fail-mounted-state')throw Error('读取运行状态失败');
         return{status:'none'};
       }
-      if(channel==='godot.runtimeState')return{worldId:world.id,buildId:'retained-build',instanceId:'real-instance',state:'ready'};
+      if(channel==='godot.runtimeState')return{worldId:opened.id,buildId:'retained-build',instanceId:'real-instance',state:'ready'};
       return{};
     }};
   });
@@ -67,6 +69,32 @@ try {
   await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
   check('loader closes after mounted runtime is confirmed ready',!await visible());
   check('successful mount has no product error',await page.locator('#error').isHidden());
+  await page.evaluate(()=>{fixture.switchPromise=craftmineView.navigate({operation:'switch',id:'second-world'}).catch(error=>fixture.switchError=error.message);});
+  await page.waitForFunction(()=>fixture.openPending==='second-world');
+  check('switching worlds shows loading before world.open resolves',await visible());
+  await page.evaluate(()=>fixture.state('loading','engine'));
+  check('new-world loading stage survives the retained old record',(await page.locator('#godot-loading-detail').textContent()).includes('启动图形'));
+  await page.evaluate(()=>fixture.failOpen());
+  await page.waitForFunction(()=>!document.querySelector('#godot-loading-back').hidden&&!document.querySelector('#godot-loading-back').disabled);
+  check('failed switch offers retry and return to original world',await page.locator('#godot-loading-retry').isVisible()&&await page.locator('#godot-loading-back').isVisible());
+  await page.evaluate(()=>document.querySelector('#godot-loading-back').onclick());
+  await page.waitForFunction(()=>fixture.openPending==='retained-world');await page.evaluate(()=>fixture.releaseOpen());
+  await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true'&&document.body.dataset.worldId==='retained-world');
+  check('return after failed switch restores original world',!await visible());
+  await page.evaluate(()=>{fixture.switchPromise=craftmineView.navigate({operation:'switch',id:'second-world'}).catch(error=>fixture.switchError=error.message);});
+  await page.waitForFunction(()=>fixture.openPending==='second-world');await page.evaluate(()=>fixture.failOpen());
+  await page.waitForFunction(()=>document.querySelector('#godot-loading').dataset.state==='failed'&&!document.querySelector('#godot-loading-retry').disabled);
+  await page.evaluate(()=>{fixture.openPending=null;document.querySelector('#godot-loading-retry').onclick();});
+  await page.waitForFunction(()=>fixture.openPending==='second-world');
+  check('retry uses failed world identity and restores animation',await visible()&&await page.locator('progress').isVisible());
+  await page.evaluate(()=>fixture.releaseOpen());await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true'&&document.body.dataset.worldId==='second-world');
+  check('retry completes in the correct world',!await visible());
+  await page.evaluate(()=>{fixture.openPending=null;fixture.createPromise=craftmineView.navigate({operation:'create',title:'新世界',operationId:'stable-create-test'}).catch(error=>fixture.switchError=error.message);});
+  await page.waitForFunction(()=>fixture.openPending==='second-world');
+  check('newly created world remains covered until its runtime is ready',await visible());
+  await page.evaluate(()=>fixture.releaseOpen());await page.waitForFunction(()=>document.body.dataset.worldLoaded==='true');
+  const createResult=await page.evaluate(()=>fixture.createPromise);
+  check('creation ACK preserves real initializing state and recovery metadata instead of implying ready',createResult.state==='initializing'&&createResult.creation?.stage==='import'&&createResult.creation?.operationId==='stable-create-test');
   await page.goto(url);await page.evaluate(()=>fixture.releaseList());await page.waitForFunction(()=>fixture.openPending);
   await page.evaluate(()=>fixture.failOpen());
   await page.waitForFunction(()=>document.querySelector('#godot-loading').dataset.state==='failed');

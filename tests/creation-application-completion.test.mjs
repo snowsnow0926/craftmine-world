@@ -49,3 +49,8 @@ test('receipts are bound to original owner and corrupted or uncertain records ne
  assert.equal(view(record(entry,'applying'),params).status,'interrupted');
  assert.equal(normalize({...applied,context:{...context,script:'untrusted'}}),null);
 });
+
+for(const status of ['deferred','repairing'])test('host '+status+' is visible and never misreported as applied',async()=>{
+ const f=fixture();f.state=status;const result=await read(f.options);assert.equal(result.creationApplication.status,status);assert.equal(result.waitReason,'terminal');
+ assert.equal(normalize(record(entry,status),{restart:true}).status,status);
+});

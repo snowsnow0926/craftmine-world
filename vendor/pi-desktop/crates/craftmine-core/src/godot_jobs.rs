@@ -1313,8 +1313,28 @@ impl TaskJournal {
             "PROJECT_WORLD_BINDING_MISMATCH"
         );
         let job = read_job(&self.db, candidate["checkJobId"].as_str().context("INVALID_GODOT_JOB")?)?;
+        // A maintenance deployment can succeed the player's adopted candidate.
+        // Keep the durable adoption fact separate from the currently displayed
+        // build; never offer an applied historical candidate as a fresh result.
+        let formal = self.world_read(&args.world_id)?;
+        let current_build = formal.world.build["id"].as_str().context("BUILD_ID_REQUIRED")?;
+        let was_applied = candidate["status"] == "applied";
+        let mut in_current_lineage = was_applied && candidate["buildId"] == current_build;
+        if was_applied && !in_current_lineage && self.is_git_backed(&args.world_id)? {
+            let (store, layout) = self.content_layout(&args.world_id)?;
+            let current_oid: Option<String> = self.db.query_row(
+                "SELECT content_oid FROM craftmine_godot_builds WHERE world_id=?1 AND build_id=?2",
+                params![&args.world_id,current_build], |row| row.get(0)).optional()?.flatten();
+            if let (Some(candidate_oid), Some(current_oid)) = (candidate["content"]["contentOid"].as_str(), current_oid) {
+                if store.applied(&layout, &args.world_id)?.as_deref() == Some(current_oid.as_str()) {
+                    in_current_lineage = store.git().is_ancestor(&layout.git_dir, candidate_oid, &current_oid)?;
+                }
+            }
+        }
         Ok(json!({"candidate":candidate,"check":job["output"]["check"],"job":job["output"],
-            "checkStatus":job["status"],"buildId":candidate["buildId"]}))
+            "checkStatus":job["status"],"buildId":candidate["buildId"],
+            "adoption":{"worldId":args.world_id,"candidateId":args.candidate_id,"buildId":candidate["buildId"],
+                "currentBuildId":current_build,"wasApplied":was_applied,"inCurrentLineage":in_current_lineage}}))
     }
 
     pub fn godot_candidate_list(&self, args: &Value) -> Result<Value> {

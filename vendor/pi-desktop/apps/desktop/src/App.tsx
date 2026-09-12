@@ -38,6 +38,8 @@ import { CraftminePreviewControls } from "./components/CraftminePreviewControls"
 import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout } from "./lib/craftmine-layout";
 import { CraftminePauseMenu } from "./components/CraftminePauseMenu";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
+import { useDialogueWorld } from "./lib/use-dialogue-world";
+import { CraftmineCreationResult } from "./components/CraftmineCreationResult";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
 import { enterCraftmineMode } from "./lib/craftmine-mode";
 import { craftminePresentedTabId, CRAFTMINE_WORLD_TAB_ID } from "./lib/craftmine-mode-presentation";
@@ -103,7 +105,7 @@ const PluginsPage = lazy(() =>
 const PLUGIN_THEME_STYLE_ID = "pi-plugin-theme";
 
 class ErrorBoundary extends Component<
-  { children: ReactNode },
+  { children: ReactNode; recover?: () => void },
   { error: Error | null }
 > {
   state = { error: null as Error | null };
@@ -122,6 +124,7 @@ class ErrorBoundary extends Component<
             <pre className="whitespace-pre-wrap text-sm-plus text-error">
               {this.state.error.message}
             </pre>
+            {this.props.recover && <button type="button" onClick={this.props.recover}>返回游戏</button>}
           </div>
         </div>
       );
@@ -207,7 +210,11 @@ function AppShell() {
   const projectPath = useAppStore((s) => s.workspace?.path ?? null);
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const dialogueWorld = useDialogueWorld();
   const [pauseOpen, setPauseOpen] = useState(false);
+  const [settingsFromPlay, setSettingsFromPlay] = useState(false);
+  const gameSettingsOpen = settingsFromPlay && page === "settings";
+  useEffect(() => { if (page !== "settings") setSettingsFromPlay(false); }, [page]);
   const openPause = useCallback(() => setPauseOpen(true), []);
   const resumePlay = useCallback(() => setPauseOpen(false), []);
   // Resume a saved create or play workspace. A fresh profile still sees the
@@ -281,10 +288,10 @@ function AppShell() {
   const craftmineLayout = useCraftmineLayout();
   const presentedTabId = craftminePresentedTabId(craftmineLayout.mode, activeWorkPanelTabId, workPanelTabs);
   const worldPinned = craftmineLayout.mode === "play" && presentedTabId === CRAFTMINE_WORLD_TAB_ID;
-  const craftmineWorldFirst = isCraftmineWorldWorkspace(page, presentedWorkPanelOpen && workPanelOpen, presentedTabId, subagentPanelOpen && !worldPinned);
+  const craftmineWorldFirst = isCraftmineWorldWorkspace(gameSettingsOpen ? "chat" : page, presentedWorkPanelOpen && workPanelOpen, presentedTabId, subagentPanelOpen && !worldPinned);
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
   const craftmineChatRef = useRef<HTMLElement | null>(null);
-  const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen, craftmineChatRef, openPause);
+  const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen || gameSettingsOpen || (!!dialogueWorld.state && dialogueWorld.state.phase !== "chat"), craftmineChatRef, openPause, dialogueWorld.state?.phase === "chat");
   useEffect(() => { if (!craftmineImmersive) setPauseOpen(false); }, [craftmineImmersive]);
   const immersionFullscreenEntered = useRef(false);
   useEffect(() => {
@@ -366,7 +373,7 @@ function AppShell() {
 
   useEffect(() => {
     const shouldPresent =
-      ready && page !== "settings" && (workPanelOpen || subagentPanelOpen);
+      ready && (page !== "settings" || gameSettingsOpen) && (workPanelOpen || subagentPanelOpen);
     const request = ++workPanelReservationRequest.current;
 
     if (shouldPresent) {
@@ -402,7 +409,7 @@ function AppShell() {
       isCurrent: () => request === workPanelReservationRequest.current,
       commit: () => setPresentedWorkPanelOpen(shouldPresent),
     });
-  }, [page, ready, subagentPanelOpen, workPanelOpen]);
+  }, [page, ready, subagentPanelOpen, workPanelOpen, gameSettingsOpen]);
 
   // Fallback if animationend is skipped (display:none mid-flight, etc.).
   useEffect(() => {
@@ -1894,7 +1901,7 @@ function AppShell() {
 
   let shell: ReactNode = null;
   if (ready && modeChosen) {
-    if (page === "settings") {
+    if (page === "settings" && !gameSettingsOpen) {
       shell = (
         <>
           <WindowControls />
@@ -1931,7 +1938,6 @@ function AppShell() {
             inert={modeEntryOpen || pauseOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}
             aria-hidden={modeEntryOpen || pauseOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}>
             {craftmineImmersive && craftmineLayout.overlay !== "closed" && <CraftmineOverlayControls />}
-            {craftmineWorldFirst && <CraftminePreviewControls autoOpen={craftmineImmersive} />}
             {craftmineImmersive && craftmineImmersionError && <div role="alert" className="craftmine-immersion-error">{craftmineImmersionError}</div>}
             {craftmineWorldFirst && !craftmineImmersive && <CraftmineChatResize width={craftmineLayout.chatWidth} />}
             <WindowControls contained />
@@ -1961,6 +1967,17 @@ function AppShell() {
                 )}
               </div>
             )}
+            <div className="craftmine-conversation-notices">
+            {page === "chat" && <CraftmineCreationResult autoOpen={craftmineImmersive} />}
+            {dialogueWorld.state && <div className="craftmine-dialogue-status no-drag" data-dialogue-phase={dialogueWorld.state.phase}>
+              <strong>{dialogueWorld.state.phase === "preparing" ? "正在准备新世界…" : "通过对话生成世界"}</strong>
+              <p>{dialogueWorld.state.phase === "chat" ? "描述你想进入的世界；生成完成后会自动进入。" : "原世界和存档会保留。"}</p>
+              {dialogueWorld.state.phase === "preparing" && <progress aria-label="正在准备新世界" />}
+              {dialogueWorld.state.error && <p role="alert">{dialogueWorld.state.error}</p>}
+              <button type="button" onClick={() => void dialogueWorld.cancel()}>返回原世界</button>
+            </div>}
+            {craftmineWorldFirst && <CraftminePreviewControls autoOpen={craftmineImmersive} />}
+            </div>
             <UpdateBanner />
 
             {backendDown && (
@@ -2003,7 +2020,9 @@ function AppShell() {
                 </div>
               ) : (
                 <CraftmineWorkbenchSurface immersive={craftmineImmersive} full={craftmineLayout.overlay === "full"}>
+                  <div className="craftmine-chat-flow" inert={dialogueWorld.state && dialogueWorld.state.phase !== "chat" ? true : undefined}>
                   <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />
+                  </div>
                 </CraftmineWorkbenchSurface>
               )}
             </Suspense>
@@ -2012,7 +2031,7 @@ function AppShell() {
           {(presentedWorkPanelOpen || workPanelExiting) && (
             <WorkPanel
               presentedTabId={presentedTabId}
-              panelBlocked={searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen}
+              panelBlocked={searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen || gameSettingsOpen || (!!dialogueWorld.state && dialogueWorld.state.phase !== "chat")}
               exiting={workPanelExiting}
               onExitAnimationEnd={() =>
                 finishWorkPanelExit(workPanelExitGeneration.current)
@@ -2043,6 +2062,8 @@ function AppShell() {
         "app-shell",
         modeEntryOpen && "craftmine-mode-entry-open",
         craftmineWorldFirst && "craftmine-world-first",
+        !!dialogueWorld.state && "craftmine-dialogue-only",
+        !!dialogueWorld.state && dialogueWorld.state.phase !== "chat" && "craftmine-dialogue-preparing",
         craftmineImmersive && "craftmine-play",
         craftmineImmersive && `craftmine-overlay-${craftmineLayout.overlay}`,
         !ready && "app-shell-boot",
@@ -2053,12 +2074,19 @@ function AppShell() {
       style={{ "--ds-sidebar-width": `${sidebarWidth}px`, "--craftmine-chat-width": `${craftmineLayout.chatWidth}px` } as CSSProperties}
     >
       {shell}
-      {ready && modeEntryOpen && <CraftmineModeEntry onSelect={selectPrimaryMode} />}
-      {ready && craftmineImmersive && pauseOpen && <CraftminePauseMenu
+      {ready && modeEntryOpen && <CraftmineModeEntry onSelect={selectPrimaryMode} onCancel={modeChosen ? () => setModeEntryOpen(false) : undefined} onDialogue={() => { setModeChosen(true); setModeEntryOpen(false); void dialogueWorld.start(); }} />}
+      {ready && gameSettingsOpen && <div className="craftmine-game-settings" data-game-settings>
+        <ErrorBoundary recover={() => useAppStore.getState().setPage("chat")}>
+        <Suspense fallback={<div role="status">正在打开设置…<button type="button" onClick={() => useAppStore.getState().setPage("chat")}>返回游戏</button></div>}>
+          <SettingsPage />
+        </Suspense>
+        </ErrorBoundary>
+      </div>}
+      {ready && craftmineImmersive && pauseOpen && !gameSettingsOpen && <CraftminePauseMenu
         runtimeError={craftmineImmersionError}
         onResume={resumePlay}
         onWorkbench={() => { setPauseOpen(false); enterCraftmineMode("create", { explicit: true }); }}
-        onSettings={() => { setPauseOpen(false); enterCraftmineMode("create", { explicit: true }); useAppStore.getState().setSettingsTab("general"); }}
+        onSettings={() => { setSettingsFromPlay(true); useAppStore.getState().setSettingsTab("general"); }}
       />}
       {splash}
     </div>

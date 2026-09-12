@@ -40,6 +40,14 @@ try{
   // the product's hidden verifier, invalidating its document.hasFocus proof.
   browser=await playwright().chromium.connectOverCDP(chromeWs,{noDefaults:true});
   for(let i=0;i<100;i++){const state=await rpc('primaryMode').catch(()=>null);if(state?.width>0&&(state.play||state.playWorldId)){if(state.entry)await rpc('primaryMode',{payload:{action:'play'}});break;}await delay(150);}
+  // preview.17 deliberately retains the entry until the second-level world
+  // choice is confirmed. Exercise that real callback before testing play keys.
+  await delay(300);
+  const entryPage=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('/out/renderer/index.html'));
+  if(await entryPage.evaluate(()=>!!document.querySelector('[data-mode-entry] [data-world-list-state]'))){
+    const selected=await rpc('primaryMode');assert.ok(selected.playWorldId,'retained playable world is selected in the second-level chooser');
+    await rpc('primaryMode',{payload:{action:'play'}});
+  }
   for(let i=0;i<160;i++){const state=await inspect(statusExpression);if(state.pages.some(p=>p.url.startsWith('http://127.0.0.1:')))break;await delay(150);}
   await delay(10000);
   report.before=await inspect(statusExpression);console.log(JSON.stringify(report.before));

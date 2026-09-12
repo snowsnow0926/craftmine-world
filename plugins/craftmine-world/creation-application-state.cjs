@@ -1,6 +1,6 @@
 'use strict';
 const FORMAT='craftmine.creation-application-state/1';
-const STATES=new Set(['pending','applying','applied','manual','failed','cancelled','interrupted']);
+const STATES=new Set(['pending','applying','deferred','repairing','applied','manual','failed','cancelled','interrupted']);
 const text=value=>typeof value==='string'&&value.length>0&&value.length<=240&&!/[\x00-\x1f]/.test(value);
 const context=value=>value&&Object.keys(value).sort().join(',')==='projectId,sessionId,turnId'&&Object.values(value).every(text);
 const sameContext=(a,b)=>context(a)&&context(b)&&['projectId','sessionId','turnId'].every(key=>a[key]===b[key]);

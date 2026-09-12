@@ -20,3 +20,7 @@
 @media (max-width: 700px) {
   .craftmine-preview-controls { align-items: flex-start; flex-direction: column; }
 }
+
+.craftmine-conversation-notices { flex: 0 0 auto; max-height: 42vh; overflow: auto; }
+.craftmine-conversation-notices:empty { display: none; }
+.app-shell:not(.craftmine-play) .main-pane > .craftmine-conversation-notices:not(:empty) { margin-top: var(--ds-toolbar-height, 46px); }

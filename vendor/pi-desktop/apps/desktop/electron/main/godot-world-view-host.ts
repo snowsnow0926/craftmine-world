@@ -746,6 +746,7 @@ export class GodotWorldViewHost {
     const owner = this.options.window();
     if (!owner || owner.isDestroyed() || owner.isVisible() || owner.isFocusable() || !owner.webContents.isOffscreen()) throw Error("GODOT_CAPTURE_OWNER_NOT_ISOLATED");
     const previousSize = owner.getContentSize(), minimumSize = owner.getMinimumSize();
+    const previousFullscreen = owner.isFullScreen();
     const wasAttached = owner.contentView.children.includes(instance.view);
     if (this.captureBounds) throw Error("GODOT_CAPTURE_ALREADY_RUNNING");
     this.captureBounds = {x: 0, y: 0, width, height};
@@ -754,6 +755,10 @@ export class GodotWorldViewHost {
     try {
       // Electron's offscreen child compositor follows its owning window's
       // viewport. Resize this hidden test window as well as the game view.
+      // Windows ignores setContentSize while fullscreen. This owner is already
+      // verified hidden and unfocusable; leave fullscreen only for this capture
+      // and restore it even if reading the frame fails.
+      if (previousFullscreen) owner.setFullScreen(false);
       owner.setMinimumSize(1, 1); owner.setContentSize(width, height, false);
       // A detached WebContentsView can run its page but has no compositor
       // surface: capturePage keeps returning 0x0 even while isPainting is true.
@@ -794,6 +799,9 @@ export class GodotWorldViewHost {
       try {
         if (!wasAttached && !owner.isDestroyed() && owner.contentView.children.includes(instance.view)) owner.contentView.removeChildView(instance.view);
       } catch (error) { restoreFailures.push(`view attachment: ${error instanceof Error ? error.message : String(error)}`); }
+      try {
+        if (previousFullscreen && !owner.isDestroyed()) owner.setFullScreen(true);
+      } catch (error) { restoreFailures.push(`fullscreen: ${error instanceof Error ? error.message : String(error)}`); }
       --this.syncHolds;
       try { this.applyBounds(); } catch (error) { restoreFailures.push(`applyBounds: ${error instanceof Error ? error.message : String(error)}`); }
       if (restoreFailures.length > 0 && !failed) throw new Error(`GODOT_CAPTURE_RESTORE_FAILED: ${restoreFailures.join("; ")}`);

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { rememberCraftmineWidth } from "../lib/craftmine-layout";
+import { loadCraftmineLayout, rememberCraftmineWidth } from "../lib/craftmine-layout";
 import { copyCreationRequestContext, type CreationRequestContext } from "../lib/creation-target";
 import i18n from "i18next";
 import type {
@@ -111,6 +111,7 @@ import {
   fileWorkPanelTab,
   HOME_WORK_PANEL_CONTEXT,
   openWorkPanelTabState,
+  inheritWorldWorkPanelContext,
   sanitizeWorkPanelTabsState,
   shouldOpenReviewArtifact,
   switchWorkPanelContextState,
@@ -1017,7 +1018,7 @@ export type AppState = {
   /** Flip the work panel between revealed and collapsed for the active session. */
   toggleWorkPanel: () => void;
   openWorkPanelTab: (tab: WorkPanelTab) => void;
-  openWorkPanelTabForSession: (sessionId: string, tab: WorkPanelTab) => void;
+  openWorkPanelTabForSession: (sessionId: string, tab: WorkPanelTab, options?: { background?: boolean }) => void;
   activateWorkPanelTab: (tabId: string) => void;
   closeWorkPanelTab: (tabId: string) => void;
   collapseWorkPanel: () => void;
@@ -1039,6 +1040,7 @@ function openPlanArtifact(
   openWorkPanelTabForSession(
     proposal.sessionId,
     fileWorkPanelTab(relativePath),
+    { background: true },
   );
 }
 
@@ -3752,6 +3754,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         get().openWorkPanelTabForSession(
           envelope.sessionId,
           toolWorkPanelTab("review"),
+          { background: true },
         );
       }
     }
@@ -4248,7 +4251,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     state.openWorkPanel();
   },
 
-  openWorkPanelTabForSession: (sessionId, tab) => {
+  openWorkPanelTabForSession: (sessionId, tab, options) => {
     if (!sessionId) return;
     set((state) => {
       const affectsVisibleSession =
@@ -4265,6 +4268,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         },
         tab,
       );
+      // Automatic artifacts remain reachable without replacing the visible world.
+      if (options?.background && context.open && context.activeTabId === "plugin:craftmine.world/world") {
+        next.activeTabId = context.activeTabId;
+      }
       const fileRequest =
         tab.kind === "file" && tab.resource
           ? {
@@ -4575,7 +4582,7 @@ function revealEmptyCreatingSession(intent: number): void {
 
 function commitCreatedEmptySession(
   summary: SessionSummary,
-  options: { activate: boolean },
+  options: { activate: boolean; worldContext?: WorkPanelContext },
 ): void {
   const messages: UiMessage[] = [];
   cacheSessionTranscript(summary.id, messages, EMPTY_SESSION_WINDOW);
@@ -4597,7 +4604,11 @@ function commitCreatedEmptySession(
     };
     if (!commit.activated) return shared;
     return {
-      ...switchWorkPanelSession(current, summary.id),
+      ...switchWorkPanelSession({
+        ...current,
+        workPanelContexts: { ...current.workPanelContexts,
+          [summary.id]: options.worldContext ?? emptyWorkPanelContext() },
+      }, summary.id),
       ...shared,
       ...retainSessionPane(current, summary.id, messages),
       activeSessionId: summary.id,
@@ -4661,7 +4672,15 @@ async function persistSessionAndSelect(
     defaultProvider?.supportedThinkingLevels,
   );
   const previousSessionId = state.activeSessionId;
+  const worldContext = inheritWorldWorkPanelContext(currentWorkPanelContext(state), loadCraftmineLayout(localStorage).mode === "play");
   revealEmptyCreatingSession(active);
+  if (previousSessionId && worldContext.open && navigationIntentIsCurrent(active)) {
+    useAppStore.setState(current => ({
+      workPanelOpen: true, workPanelTabs: worldContext.tabs,
+      activeWorkPanelTabId: worldContext.activeTabId, workPanelFileRequest: null,
+      workPanelContexts: current.workPanelContexts,
+    }));
+  }
   let created: Awaited<ReturnType<typeof api.createSession>>;
   try {
     created = await api.createSession({
@@ -4686,7 +4705,7 @@ async function persistSessionAndSelect(
     commitCreatedEmptySession(created.session, { activate: false });
     return null;
   }
-  commitCreatedEmptySession(created.session, { activate: true });
+  commitCreatedEmptySession(created.session, { activate: true, worldContext });
   return sessionId;
 }
 
@@ -4711,6 +4730,21 @@ export async function materializeDraftSession(
 
 
 const copiedWorldSessions = new Map<string, string>();
+/** Return from world creation without reusing its newly bound conversation. */
+export async function restoreWorldEntrySession(sessionId?: string): Promise<void> {
+  if (sessionId) {
+    await useAppStore.getState().selectSession(sessionId);
+    return;
+  }
+  beginNavigationIntent();
+  useAppStore.setState(state => ({
+    ...switchWorkPanelSession(state, undefined),
+    ...clearSessionPanes(),
+    activeSessionId: undefined, selectingSessionId: undefined,
+    messages: [], page: "chat", isRunning: false,
+  }));
+}
+
 /** A copied world gets a fresh conversation; existing session/world bindings never move. */
 export async function createCopiedWorldSession(worldId: string, sourceSessionId?: string): Promise<string> {
   const known = copiedWorldSessions.get(worldId);

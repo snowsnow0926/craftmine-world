@@ -1029,7 +1029,7 @@ function createGodotExecutor(core, options = {}) {
       artifacts:result.artifacts,
       engine:{version:ENGINE_VERSION, isolation:ISOLATION, evidenceHash:discovery.evidenceHash},
     };
-    const tracksApplication=kind==='check'&&entry.claim?.baseId==='creation-sandbox'&&output.passed&&validCreationApplicationContext(entry.context);
+    const tracksApplication=kind==='check'&&entry.claim?.baseId==='creation-sandbox'&&validCreationApplicationContext(entry.context);
     try {
       if(tracksApplication){
         // Publish the pending handoff before the core can expose a passed check.
@@ -1060,7 +1060,7 @@ function createGodotExecutor(core, options = {}) {
         }
         await persistLedger();
       }
-      if(tracksApplication&&status==='passed'&&record?.candidateId&&!entry.cancelled&&!stopped&&!ledgerError&&typeof verifier?.creationCheckCompleted==='function'){
+      if(tracksApplication&&((status==='passed'&&record?.candidateId)||status==='failed')&&!entry.cancelled&&!stopped&&!ledgerError&&typeof verifier?.creationCheckCompleted==='function'){
         // Application is a separate host-owned transaction. Its failure must
         // never turn a durable passed check into an executor finish failure.
         try {
@@ -1069,12 +1069,12 @@ function createGodotExecutor(core, options = {}) {
           if(ledgerError)throw Error('CREATION_APPLICATION_LEDGER_UNCONFIRMED');
           if(entry.cancelled||stopped)throw Error(entry.cancelled?'CREATION_APPLICATION_CANCELLED_BEFORE_START':'CREATION_APPLICATION_STOPPED_BEFORE_START');
           const application=await entry.timing.measure('creation-application', () => verifier.creationCheckCompleted({jobId,context:entry.context}));
-          if(!application||!['applied','manual'].includes(application.status)||(application.status==='applied'&&(application.worldId!==entry.worldId||application.candidateId!==record.candidateId)))throw Error('CREATION_APPLICATION_RESPONSE_INVALID');
+          if(!application||!['applied','manual','deferred','repairing','failed','cancelled'].includes(application.status)||(application.status==='applied'&&(application.worldId!==entry.worldId||application.candidateId!==record.candidateId)))throw Error('CREATION_APPLICATION_RESPONSE_INVALID');
           durable.creationApplication=creationApplicationRecord(entry,application.status,application.reason??null,record.candidateId,nowIso());
           await persistLedger();
         } catch(error) {
           durable.creationApplication=creationApplicationRecord(entry,entry.cancelled?'cancelled':stopped?'interrupted':'failed',String(error?.message??error),record.candidateId,nowIso());
-          await persistLedger();warn('creation candidate awaits manual adoption:',jobId,String(error?.message??error));
+          await persistLedger();warn('creation application recovery pending:',jobId,String(error?.message??error));
         }
       }else if(tracksApplication){
         durable.creationApplication=creationApplicationRecord(entry,entry.cancelled?'cancelled':stopped?'interrupted':'manual',status!=='passed'?'CREATION_CHECK_NOT_PASSED':ledgerError?'CREATION_APPLICATION_LEDGER_UNCONFIRMED':'CREATION_APPLICATION_NOT_STARTED',record?.candidateId??null,nowIso());

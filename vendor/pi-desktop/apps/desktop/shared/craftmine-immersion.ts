@@ -8,13 +8,14 @@ export function parseImmersion(value: unknown): CraftmineImmersionState {
   if (!value || typeof value !== "object") throw new Error("Invalid immersion state");
   const input = value as CraftmineImmersionState;
   if (input.blocked !== undefined && typeof input.blocked !== "boolean") throw new Error("Invalid immersion block state");
+  if (input.covered !== undefined && typeof input.covered !== "boolean") throw new Error("Invalid immersion cover state");
   if (typeof input.active !== "boolean" || !["closed", "compact", "full"].includes(input.overlay)) throw new Error("Invalid immersion state");
   const rect = input.overlayBounds;
   if (rect !== null && (!rect || ![rect.x, rect.y, rect.width, rect.height].every(n => Number.isFinite(n) && n >= 0 && n <= 100000))) throw new Error("Invalid immersion bounds");
-  return { active: input.active, blocked:input.blocked === true, overlay: input.overlay, overlayBounds: rect ? {x:rect.x,y:rect.y,width:rect.width,height:rect.height} : null };
+  return { active: input.active, blocked:input.blocked === true, covered:input.covered === true, overlay: input.overlay, overlayBounds: rect ? {x:rect.x,y:rect.y,width:rect.width,height:rect.height} : null };
 }
 
-export const immersionBlocksInput = (state: CraftmineImmersionState): boolean => state.active && (state.blocked === true || state.overlay !== "closed");
+export const immersionBlocksInput = (state: CraftmineImmersionState): boolean => state.covered === true || (state.active && (state.blocked === true || state.overlay !== "closed"));
 
 /** Immersion is composited above the complete world, never a layout reservation. */
 export function excludeImmersion(bounds: CraftmineImmersionBounds, _state: CraftmineImmersionState): CraftmineImmersionBounds {

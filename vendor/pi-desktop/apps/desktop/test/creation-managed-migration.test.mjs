@@ -89,13 +89,14 @@ test('current production upgrade installs both fixed helpers and preserves exist
  assert.ok(additions.some(op=>op.path==='craftmine_shared/scene_mesh_picker.gd'&&op.expectedHash===null));
 });
 
-test('released 32cd and 594f cohorts upgrade only the fixed picker and retain customized sources',async t=>{
+test('released 32cd and 594f cohorts upgrade the complete current observer and required component helper while retaining authored sources',async t=>{
  for(const rev of ['32cd879d','594f698b5206'])for(const crlf of [false,true]){
   const f=fixture(t,{production:true});
-  for(const file of CREATION_MANAGED_MIGRATIONS[0].files){let text=stock(rev,file.resource);if(crlf)text=text.replace(/\n/g,'\r\n');f.replaceFormalFile(file.source,text);}
+  for(const file of CREATION_MANAGED_MIGRATIONS[0].files){if(file.from.length===1&&file.from[0]===null)continue;let text=stock(rev,file.resource);if(crlf)text=text.replace(/\n/g,'\r\n');f.replaceFormalFile(file.source,text);}
   const advance=await f.execute()(ctx,f.capture);assert.equal(f.patches(),1);assert.ok(advance.migrationId);
-  const patch=f.calls.find(c=>c.method==='godotProject.patch');assert.deepEqual(patch.args.operations.map(op=>op.path),['craftmine_shared/scene_mesh_picker.gd']);
-  for(const [name,text] of f.formalTexts)if(name!=='craftmine_shared/scene_mesh_picker.gd')assert.equal(f.live().get(name),text,name);
+  const patch=f.calls.find(c=>c.method==='godotProject.patch');assert.deepEqual(patch.args.operations.map(op=>op.path),['craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/scene_mesh_picker.gd','craftmine_shared/component_state.gd']);
+  assert.equal(patch.args.operations.find(op=>op.path==='craftmine_shared/component_state.gd').expectedHash,null);
+  for(const [name,text] of f.formalTexts)if(!patch.args.operations.some(op=>op.path===name))assert.equal(f.live().get(name),text,name);
  }
 });
 

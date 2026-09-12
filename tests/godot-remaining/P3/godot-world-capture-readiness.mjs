@@ -53,7 +53,7 @@ function image(width, height, {painted = true, tag = 'frame'} = {}) {
   return {tag, getSize: () => ({width, height}), toBitmap: () => bytes, toPNG: () => Buffer.from(`${tag}:${width}x${height}`)};
 }
 
-function fixture({captureReadyMs = 400, frames = [], failContentSizeAt = null} = {}) {
+function fixture({captureReadyMs = 400, frames = [], failContentSizeAt = null, fullscreen = false} = {}) {
   const events = [], hooks = {onCapture: null, onRequest: null};
   const contents = new EventEmitter();
   const queued = [...frames];
@@ -91,6 +91,8 @@ function fixture({captureReadyMs = 400, frames = [], failContentSizeAt = null} =
     isVisible: () => false,
     isFocusable: () => false,
     isFocused: () => false,
+    isFullScreen: () => fullscreen,
+    setFullScreen: value => { fullscreen=value; events.push(`fullscreen:${value}`); },
     show: refuse('show'),
     showInactive: refuse('showInactive'),
     focus: refuse('focus'),
@@ -102,6 +104,7 @@ function fixture({captureReadyMs = 400, frames = [], failContentSizeAt = null} =
     getContentSize: () => [...contentSize],
     setContentSize: (width, height) => {
       sizeCalls += 1;
+      if (fullscreen) return; // Windows keeps the fullscreen compositor size.
       // `failContentSizeAt` targets one call, so the restore path can be the one
       // that fails without the capture itself failing first.
       if (sizeCalls === failContentSizeAt) throw new Error('the window refused to resize');
@@ -140,7 +143,8 @@ function fixture({captureReadyMs = 400, frames = [], failContentSizeAt = null} =
     join: (...parts) => parts.join('/'), resolve: value => value, sep: '/', realpath: async value => value,
     WORLD_CHROME_HEIGHT: 76, GODOT_WORLD_MESSAGE_CHANNEL: 'message', GODOT_WORLD_DETACH_CHANNEL: 'detach',
     GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL: 'fullscreen', godotWorldScopeArgument: () => '--scope', isHeadlessAcceptance: () => true,
-    createWorldRuntime: async () => instance.runtime};
+    createWorldRuntime: async () => instance.runtime,
+    syncMainInputFocus: () => {}, raiseMainOverlay: () => {}};
   vm.runInNewContext(`${compiled}\nmodule.exports={GodotWorldViewHost};`, context);
   const host = new context.module.exports.GodotWorldViewHost({window: () => owner, allowedRoots: () => ['/tmp'], captureReadyMs});
   host.current = instance;
@@ -405,4 +409,18 @@ test('an owner that becomes visible mid-capture fails instead of accepting a fra
   await assert.rejects(f.host.headlessCapture(WIDTH, HEIGHT), /GODOT_CAPTURE_OWNER_NOT_ISOLATED/);
   assert.equal(f.state().reads, 1, 'a violated owner isolation must not keep reading');
   assertRestored(f, 'owner-visible');
+});
+
+test('fullscreen hidden capture uses the requested compositor size and restores fullscreen', async () => {
+  const f=fixture({fullscreen:true});
+  f.contents.capturePage=async()=>image(...f.state().contentSize,{tag:'actual-compositor'});
+  const captured=await f.host.headlessCapture(WIDTH,HEIGHT);
+  assert.equal(captured.width,WIDTH);assert.equal(captured.height,HEIGHT);assert.equal(f.owner.isFullScreen(),true);
+  assert.deepEqual(f.events.filter(event=>event.startsWith('fullscreen:')),['fullscreen:false','fullscreen:true']);
+  assertRestored(f,'fullscreen-success');
+});
+test('fullscreen is restored even when the hidden owner cannot be resized', async () => {
+  const f=fixture({fullscreen:true,failContentSizeAt:1});
+  await assert.rejects(f.host.headlessCapture(WIDTH,HEIGHT),/window refused to resize/);
+  assert.equal(f.owner.isFullScreen(),true);assertRestored(f,'fullscreen-failure');
 });

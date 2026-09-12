@@ -7,11 +7,14 @@ import { CRAFTMINE_MODE_TEXT } from "../lib/craftmine-mode-text";
 import type { CraftmineLayout } from "../lib/craftmine-layout";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WindowControls } from "./WindowControls";
+import { createCopiedWorldSession, useAppStore } from "../stores/app-store";
 import "../styles/craftmine-mode-entry.css";
 
 /** First-launch choice, also available explicitly from the mode controls. */
-export function CraftmineModeEntry({ onSelect }: {
+export function CraftmineModeEntry({ onSelect, onDialogue, onCancel }: {
   onSelect: (mode: CraftmineLayout["mode"]) => void;
+  onDialogue: () => void;
+  onCancel?: () => void;
 }) {
   const { i18n } = useTranslation();
   const lang = craftmineLang(i18n.language);
@@ -28,10 +31,16 @@ export function CraftmineModeEntry({ onSelect }: {
         <h1 id="craftmine-mode-entry-title">{text[selectingWorld ? "chooseWorld" : "chooseMode"][lang]}</h1>
         {selectingWorld ? (
           <div className="craftmine-mode-worlds">
-            <button type="button" className="craftmine-mode-back" onClick={() => setSelectingWorld(false)}>
+            <button type="button" className="craftmine-mode-back" disabled={worlds.busy} onClick={() => setSelectingWorld(false)}>
               <ArrowLeft size={16} aria-hidden />{text.chooseMode[lang]}
             </button>
-            <WorldListPanel controller={worlds} lang={lang} onOpenWorld={enterWorld} />
+            <WorldListPanel controller={worlds} lang={lang} onOpenWorld={enterWorld} onCreated={async worldId => {
+              await createCopiedWorldSession(worldId, useAppStore.getState().activeSessionId);
+              onSelect("create");
+            }} />
+            <button type="button" data-mode="dialogue" onClick={onDialogue} disabled={worlds.busy}>
+              {lang === "zh" ? "通过对话生成新世界" : "Generate a new world through chat"}
+            </button>
             <button type="button" className="craftmine-mode-enter-world" data-mode="play"
               data-active-world={canEnter ? worlds.activeWorldId : undefined} disabled={!canEnter} onClick={enterWorld}>
               {text.enterWorld[lang]}
@@ -41,7 +50,7 @@ export function CraftmineModeEntry({ onSelect }: {
           <div className="craftmine-mode-choices">
             <button type="button" className="craftmine-mode-choice craftmine-mode-choice-world" data-mode="play"
               data-active-world={canEnter ? worlds.activeWorldId : undefined}
-              onClick={() => canEnter ? enterWorld() : setSelectingWorld(true)}>
+              onClick={() => setSelectingWorld(true)}>
               <Globe2 className="craftmine-mode-icon" size={48} aria-hidden />
               <h2>{text.immersive[lang]}</h2>
               <p>{text.immersiveDescription[lang]}</p>
@@ -58,6 +67,7 @@ export function CraftmineModeEntry({ onSelect }: {
           </div>
         )}
       </div>
+      {onCancel && <button type="button" className="craftmine-mode-back no-drag" disabled={worlds.busy} onClick={onCancel}>{lang === "zh" ? "返回当前世界" : "Return to current world"}</button>}
     </main>
   );
 }

@@ -38,6 +38,7 @@ document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+
 // Godot worlds run in the sibling Electron view, not in the voxel srcdoc iframe.
 let godot=false;
 let openingWorldId=null;
+let loadRecovery=null;
 let immersionHeld=false;
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
 const godotLoadingStates=new Set(['loading','failed']);
@@ -76,10 +77,11 @@ function onGodotState(payload) {
   if(!payload)return;
   // world.open awaits the native runtime. Before mount there is no current
   // record, but its startup events must already update the visible loader.
-  if(!current&&payload.worldId===openingWorldId) {
+  if(openingWorldId&&payload.worldId===openingWorldId) {
     if(payload.state==='loading'||payload.state==='failed')renderWorldLoading(payload);
     return;
   }
+  if(openingWorldId)return;
   if(!godot||payload.worldId!==current?.id)return;
   // The live instance identity is host-owned; keep the last one so readers can
   // see exactly which world/build/instance they observed.
@@ -115,8 +117,37 @@ function renderWorldLoading(payload) {
     if(title)title.textContent=state==='failed'?'世界加载失败':'正在加载世界…';
     const stageDetails={resources:'正在读取并校验世界资源…',engine:'正在启动图形引擎…',scene:'正在载入场景和恢复世界进度…'};
     if(detail)detail.textContent=state==='failed' ? String(payload.error||'运行时没有完成初始化。请返回工作台检查错误并重试。') : payload.initializing ? '正在初始化世界并确认首次构建，请稍候。' : stageDetails[payload.loadingStage]||'世界正在准备场景和运行资源，请稍候。首次加载可能需要更长时间。';
+    document.getElementById('godot-loading-actions').hidden=state!=='failed';
+    document.getElementById('godot-loading-back').hidden=!loadRecovery?.previous;
   }
 }
+
+async function openWorldWithLoading(id,{previous=current?.id||null}={}) {
+  loadRecovery={id,previous:previous!==id?previous:null};openingWorldId=id;
+  renderWorldLoading({state:'loading'});
+  // The native game is a sibling above this page; reveal the loading layer
+  // before waiting for save/open/engine completion.
+  try {
+    if(godot&&current?.id) {
+      try {await bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false});}
+      catch(error){if(!String(error?.message||error).includes('GODOT_WORLD_CHANGED'))throw error;}
+    }
+    const record=await bridge.invoke('world.open',{id});
+    mount(record);
+    return record;
+  }catch(error){renderWorldLoading({state:'failed',error:String(error?.message||error)});throw error;}
+}
+
+document.getElementById('godot-loading-retry').onclick=()=>{
+  if(loadRecovery?.request){void navigate(loadRecovery.request).catch(()=>{});return;}
+  void action(async()=>{
+  if(loadRecovery?.id)await openWorldWithLoading(loadRecovery.id,{previous:loadRecovery.previous});
+  else await initializeWorld();
+  });
+};
+document.getElementById('godot-loading-back').onclick=()=>void action(async()=>{
+  if(loadRecovery?.previous)await openWorldWithLoading(loadRecovery.previous,{previous:null});
+});
 
 function send(type, value = {}) {
   if(type==='resume')backupFrozen=false;
@@ -129,12 +160,14 @@ function send(type, value = {}) {
 }
 
 function showError(error) {
-  if(!current||!loaded)renderWorldLoading({state:'failed',error:String(error.message||error)});
+  if(openingWorldId||!current||!loaded)renderWorldLoading({state:'failed',error:String(error.message||error)});
   errorBox.textContent=String(error.message||error);errorBox.hidden=false;
   status.textContent='操作未完成';status.dataset.error='true';
 }
 
 function controls() {
+  document.getElementById('godot-loading-retry').disabled=busy||closing;
+  document.getElementById('godot-loading-back').disabled=busy||closing;
   select.disabled=!bridge||busy||closing||!!preview||!!applicationAttempt||!!workbench?.busy;newButton.disabled=select.disabled;saveButton.disabled=select.disabled||!loaded;
   if(godot){saveButton.title='保存世界进度';saveButton.setAttribute('aria-label','保存世界进度');}
   else {saveButton.removeAttribute('title');saveButton.removeAttribute('aria-label');}
@@ -338,7 +371,24 @@ function previewControlState() {
 }
 async function previewControl(request) {
   assertPreviewControl(request,previewControlState());
-  if(request.action!=='state')await action(()=>request.action==='apply'?applyCandidate():closePreview());
+  if(request.action!=='state') {
+    if(busy||closing||workbench?.busy)throw Error('PREVIEW_BUSY');
+    busy=true;controls();errorBox.hidden=true;
+    activeOperation=(async()=>{
+      try {
+        if(['open','adopt'].includes(request.action)) {
+          if(request.worldId!==current?.id||!godot||!loaded)throw Error('CREATION_RESULT_CONTEXT_CHANGED');
+          await openGodotPreview(request.candidateId,request.buildId);
+          if(request.action==='adopt')await applyCandidate();
+        } else if(request.action==='apply')await applyCandidate();
+        else await closePreview();
+      } catch(error){showError(error);throw error;}
+      finally{busy=false;controls();}
+    })();
+    await activeOperation;
+    // applyCandidate retains an uncertain transaction for reconciliation.
+    if(applicationAttempt||applyError)throw Error(applyError||'应用结果尚待确认，请在预览操作中重试确认');
+  }
   return previewControlState();
 }
 
@@ -373,6 +423,8 @@ async function navigate(request) {
   if(!bridge||(!loaded&&!godot)||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
   if(!['switch','create','copy'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
   if(request.operation==='switch'&&request.id===current.id)return {ok:true,activeWorldId:current.id};
+  if(request.operation==='create'&&!request.operationId)request={...request,operationId:crypto.randomUUID()};
+  const retryingCreate=request.operation==='create'&&loadRecovery?.request?.operationId===request.operationId;
   busy=true;controls();errorBox.hidden=true;
   const previous=current.id;
   activeOperation=(async()=>{
@@ -389,17 +441,23 @@ async function navigate(request) {
       if(request.operation==='switch') {
         target=await bridge.invoke('world.read',{id:request.id});
       }
-      if(loaded)await save({freeze:true});
+      if(loaded&&!retryingCreate)await save({freeze:true});
+      loadRecovery={previous,request};
+      renderWorldLoading({state:'loading',initializing:request.operation==='create'});
+      if(godot&&!retryingCreate)await bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false});
+      if(request.operation==='create')openingWorldId='__creating__';
       if(request.operation==='create')target=await bridge.invoke('world.create',{
         title:request.title,baseId:request.baseId,starterId:request.starterId,operationId:request.operationId,activate:false,
       });
-      const record=await bridge.invoke('world.open',{id:target.id});
-      mount(record);
+      const record=await openWorldWithLoading(target.id,{previous});
       // A failed list refresh cannot undo a completed switch.
       await refreshList().catch(showError);
-      return request.operation==='create'?{id:record.id,title:record.title}:{ok:true,activeWorldId:record.id};
+      // Factory state is authoritative: opening the durable placeholder does
+      // not mean its first build/check has completed. Keep creation recovery
+      // metadata intact so callers wait for actual readiness.
+      return request.operation==='create'?{...target,id:record.id,title:record.title}:{ok:true,activeWorldId:record.id};
     } catch(error) {
-      if(current?.id===previous)send('resume');
+      if(current?.id===previous&&!openingWorldId){send('resume');renderWorldLoading({state:'failed',error:String(error?.message||error)});}
       showError(error);throw error;
     } finally {busy=false;controls();select.value=current?.id||'';}
   })();
@@ -477,11 +535,12 @@ async function refreshGodotCandidates(worldId,reset) {
   document.getElementById('checks-empty').hidden=list.children.length>0;
   document.getElementById('checks-more').hidden=result.nextOffset===null;
 }
-async function openGodotPreview(candidateId) {
+async function openGodotPreview(candidateId,expectedBuildId=null) {
   if(preview)await closePreview();
   const worldId=current.id;
   const result=await bridge.invoke('godot.candidatePreview',{worldId,candidateId});
   if(current.id!==worldId)throw Error('世界已切换');
+  if(expectedBuildId&&result.buildId!==expectedBuildId){await bridge.invoke('godot.candidateClose',{worldId});throw Error('CREATION_RESULT_STALE');}
   preview={godot:true,candidateId,worldId,buildId:result.buildId,nonce:crypto.randomUUID()};previewReview=null;reviewError=null;applyError=null;
   previewPanel.hidden=false;document.getElementById('preview-title').textContent='Godot 草稿预览';
   document.getElementById('preview-review').hidden=true;
@@ -644,7 +703,7 @@ workbench=createWorkbench({
   request:(channel,payload)=>bridge?bridge.invoke(channel,payload):Promise.reject(Error('桌面服务尚未连接')),
   getWorld:()=>current,pause:()=>send('pause'),isLocked:()=>busy||closing||!!applicationAttempt||!!preview,
   onChange:controls,replaceWorld:mount,saveBeforeBackup:async()=>{const receipt=await save({freeze:true});backupFrozen=true;return receipt;},
-  reloadWorld:async()=>{const result=await bridge.invoke('world.list');const next=result.worlds.find(item=>item.id===result.activeWorldId)||result.worlds[0];if(next){mount(await bridge.invoke('world.open',{id:next.id}));await refreshList();}},
+  reloadWorld:async()=>{const result=await bridge.invoke('world.list');const next=result.worlds.find(item=>item.id===result.activeWorldId)||result.worlds[0];if(next){await openWorldWithLoading(next.id);await refreshList();}},
   run:async fn=>{
     if(busy||closing||applicationAttempt||preview)throw Error('请先完成当前世界操作');
     busy=true;controls();activeOperation=Promise.resolve().then(fn);
@@ -691,11 +750,17 @@ select.addEventListener('change',()=>{
 });
 setInterval(()=>{if(loaded&&!busy&&!closing&&!preview&&!backupFrozen&&bridge)void action(save);},10000);
 
-void action(async()=>{
+async function initializeWorld(){
+  renderWorldLoading({state:'loading'});
   if(!bridge) {mount({title:initialWorld.build.scene.title,world:initialWorld});select.options[0].textContent=initialWorld.build.scene.title;return;}
   const state=await bridge.invoke('world.list');
   const selected=state.worlds.find(world=>world.id===state.activeWorldId)||state.worlds[0];
-  openingWorldId=selected?.id||null;
-  const record=selected?await bridge.invoke('world.open',{id:selected.id}):await bridge.invoke('world.create',{title:'我的第一个世界'});
-  mount(record);await refreshList();
-});
+  if(selected)await openWorldWithLoading(selected.id,{previous:null});
+  else {
+    renderWorldLoading({state:'loading',initializing:true});
+    const record=await bridge.invoke('world.create',{title:'我的第一个世界',activate:false});
+    await openWorldWithLoading(record.id,{previous:null});
+  }
+  await refreshList();
+}
+void action(initializeWorld);

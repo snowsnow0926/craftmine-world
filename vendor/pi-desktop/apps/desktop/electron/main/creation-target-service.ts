@@ -17,7 +17,7 @@ export type CreationCapture = {
   sourceRevision:number;manifestHash:string;sampledAt:string;capturedAt:number;
   playerPosition:Vector;target:Target;source?:'ray'|'recent';autoApply:boolean;entities?:CreationEntity[];creationRequirements?:FrozenCreationRequirement;sourceMigration?:CreationMigrationAdvance;
   sceneObjectTarget?:SceneObjectTarget;sceneObjectLive?:{currentNodePath:string;sampledAt:string};
-  observerUpgradeOnly?:true;
+  observerUpgradeOnly?:true; authorization?:'full-auto'|'world-policy'; requestHash?:string; supersededBy?:Context;
 };
 type Dependencies = {
   directory:string;
@@ -28,6 +28,7 @@ type Dependencies = {
   journal?(capture:CreationCapture):Promise<unknown>;
   source?(worldId:string):Promise<any>;
   sceneObjectSourcePins?:SceneObserverPins;
+  fullAuto?(session:CaptureSession):Promise<boolean>;
   now?:()=>number;
 };
 const id=(value:unknown):value is string=>typeof value==="string"&&/^[a-zA-Z0-9._-]{1,128}$/.test(value);
@@ -50,6 +51,7 @@ export function creationTargetDisplay(target:Target,entities:unknown){
 export function createCreationTargetService(deps:Dependencies) {
   const now=deps.now??Date.now;
   const pending=new Map<string,{owner:number;session:CaptureSession;capture:CreationCapture;bound?:string}>();
+  const continuing=new Map<string,{context:Context;original:Context}>();
   const captureEpochs=new Map<number,number>();
   const file=(kind:string,key:string)=>path.join(deps.directory,kind,digest(key)+".json");
   const read=(target:string):any=>{try{if(fs.statSync(target).size>131072)fail("CREATION_CONTEXT_TOO_LARGE");return JSON.parse(fs.readFileSync(target,"utf8"));}catch(error){if((error as NodeJS.ErrnoException).code==="ENOENT")return null;throw error;}};
@@ -64,6 +66,11 @@ export function createCreationTargetService(deps:Dependencies) {
     return JSON.stringify([context.projectId,context.sessionId,context.turnId]);
   };
   const policyFor=(worldId:string)=>{if(!id(worldId))fail("CREATION_WORLD_INVALID");const record=read(file("policy",worldId));return {worldId,autoApply:record?.worldId===worldId&&record.autoApply===true};};
+  const sessionIntent=(context:Context)=>file("session-intent",JSON.stringify([context.projectId,context.sessionId]));
+  const cancellation=(sessionId:string,turnId:string)=>file("cancelled-turns",JSON.stringify([sessionId,turnId]));
+  const isCancelled=(context:Context)=>read(cancellation(context.sessionId,context.turnId))!==null;
+  const supersededBy=(record:any):Context|undefined=>{const latest=read(sessionIntent(record.context));return latest&&latest.snapshotId!==record.capture.snapshotId?latest.context:undefined;};
+  const ownIntent=(context:Context,capture:CreationCapture)=>write(sessionIntent(context),{context,snapshotId:capture.snapshotId});
   const assertLive=(capture:CreationCapture)=>{
     const current=deps.instance();
     if(!current||current.worldId!==capture.worldId||current.buildId!==capture.buildId||current.instanceId!==capture.instanceId)fail("CREATION_TARGET_STALE");
@@ -87,14 +94,15 @@ export function createCreationTargetService(deps:Dependencies) {
   return {
     async policy(input:Record<string,unknown>={}) {
       const worldId=await deps.selection();if(!worldId)fail("CREATION_WORLD_UNAVAILABLE");
-      if(Object.keys(input).some(key=>key!=="worldId"&&key!=="autoApply"))fail("CREATION_POLICY_INVALID");
+      if(Object.keys(input).some(key=>key!=="worldId"&&key!=="autoApply"&&key!=="sessionId"))fail("CREATION_POLICY_INVALID");
       if(Object.hasOwn(input,"autoApply")){
         if(input.worldId!==worldId||typeof input.autoApply!=="boolean")fail("CREATION_POLICY_WORLD_CHANGED");
         const descriptor=await deps.descriptor(worldId);
         if(descriptor?.baseId!=="creation-sandbox"||await deps.selection()!==worldId)fail("CREATION_WORLD_UNAVAILABLE");
         write(file("policy",worldId),{worldId,autoApply:input.autoApply,updatedAt:now()});
       }
-      return policyFor(worldId);
+      const fullAuto=await deps.fullAuto?.({projectId:"",sessionId:typeof input.sessionId==="string"?input.sessionId:null})??false;
+      return {...policyFor(worldId),...(fullAuto?{autoApply:true,fullAuto:true}:{fullAuto:false})};
     },
     async capture(owner:number,session:CaptureSession,selection?:CreationTargetSelection) {
       contextKey({...session,sessionId:session.sessionId??"new-draft",turnId:"capture"});
@@ -215,17 +223,70 @@ export function createCreationTargetService(deps:Dependencies) {
       const key=contextKey(context),item=pending.get(capture.snapshotId);
       if(!item||item.owner!==owner||item.bound||capture.worldId!==worldId)fail("CREATION_TARGET_STALE");
       if(item.session.sessionId!==context.sessionId||item.session.projectId!==context.projectId)fail("CREATION_SESSION_CHANGED");
+      if(isCancelled(context))fail("CREATION_USER_CANCELLED");
+      ownIntent(context,item.capture);
       await assertFormal(item.capture);
       await confirmSceneObject(item.capture);
       if(item.bound||now()-item.capture.capturedAt>300000)fail("CREATION_TARGET_EXPIRED");
-      const frozen={...structuredClone(item.capture),autoApply:!item.capture.observerUpgradeOnly&&!item.capture.sceneObjectTarget&&(requestText===undefined||typeof requestText==="string")&&policyFor(worldId).autoApply,creationRequirements:item.capture.sceneObjectTarget?{status:'unverified' as const,reason:'SCENE_OBJECT_SOURCE_REVIEW_REQUIRED'}:freezeCreationRequirements(item.capture,requestText??"")};
-      write(file("turns",key),{context,capture:frozen});item.bound=key;return structuredClone(frozen);
+      const fullAuto=await deps.fullAuto?.(context)??false;
+      if(item.bound||now()-item.capture.capturedAt>300000)fail("CREATION_TARGET_EXPIRED");
+      if(isCancelled(context))fail("CREATION_USER_CANCELLED");
+      if(supersededBy({context,capture:item.capture}))fail("CREATION_REQUEST_SUPERSEDED");
+      const frozen={...structuredClone(item.capture),requestHash:digest(typeof requestText==="string"?requestText:JSON.stringify(requestText??"")),authorization:fullAuto?"full-auto" as const:"world-policy" as const,autoApply:!item.capture.observerUpgradeOnly&&(requestText===undefined||typeof requestText==="string")&&(fullAuto||(!item.capture.sceneObjectTarget&&policyFor(worldId).autoApply)),creationRequirements:item.capture.sceneObjectTarget?{status:'unverified' as const,reason:'SCENE_OBJECT_SOURCE_REVIEW_REQUIRED'}:freezeCreationRequirements(item.capture,requestText??"")};
+      write(file("turns",key),{context,capture:frozen});ownIntent(context,frozen);item.bound=key;return structuredClone(frozen);
     },
     bound(context:Context,worldId:string):CreationCapture|null {
       const record=read(file("turns",contextKey(context)));
       if(!record)return null;
       if(contextKey(record.context)!==contextKey(context)||record.capture?.worldId!==worldId||record.capture?.format!=="craftmine.creation-target/1")fail("CREATION_CONTEXT_INVALID");
-      return {...structuredClone(record.capture),autoApply:record.capture.autoApply===true&&policyFor(worldId).autoApply};
+      const newer=supersededBy(record);return {...structuredClone(record.capture),...(newer?{supersededBy:newer}:{}),autoApply:!newer&&!record.cancelled&&!isCancelled(context)&&record.capture.autoApply===true&&(record.capture.authorization==="full-auto"||policyFor(worldId).autoApply)};
+    },
+    async bindWorld(context:Context,worldId:string,requestText:string) {
+      if(isCancelled(context))fail("CREATION_USER_CANCELLED");
+      const snapshotId=randomUUID();write(sessionIntent(context),{context,snapshotId});
+      const instance=deps.instance(),formal=await deps.descriptor(worldId);
+      if(!instance||instance.worldId!==worldId||formal?.baseId!=="creation-sandbox"||formal.buildId!==instance.buildId||await deps.selection()!==worldId)return null;
+      const fullAuto=await deps.fullAuto?.(context)??false;
+      const capture:CreationCapture={format:"craftmine.creation-target/1",snapshotId,worldId,buildId:formal.buildId,instanceId:instance.instanceId,
+        sourceRevision:formal.sourceRevision,manifestHash:formal.manifestHash,sampledAt:new Date(now()).toISOString(),capturedAt:now(),playerPosition:[0,0,0],
+        target:{entityId:null,position:null,normal:null,surface:"none",revision:0},autoApply:fullAuto,authorization:fullAuto?"full-auto":"world-policy",requestHash:digest(requestText),
+        creationRequirements:{status:"unverified",reason:"CREATION_GENERAL_REQUEST_RUNTIME_CHECK"}};
+      await assertFormal(capture);if(isCancelled(context))fail("CREATION_USER_CANCELLED");if(supersededBy({context,capture}))fail("CREATION_REQUEST_SUPERSEDED");write(file("turns",contextKey(context)),{context,capture});ownIntent(context,capture);return structuredClone(capture);
+    },
+    async bindContinuation(context:Context,original:Context,worldId:string) {
+      const key=contextKey(context);continuing.set(key,{context,original});
+      try{
+      const record=read(file("turns",contextKey(original)));
+      if(!record||record.cancelled||isCancelled(context)||isCancelled(original)||supersededBy(record)||record.capture?.worldId!==worldId||!record.capture.autoApply||record.capture.authorization!=="full-auto"||context.projectId!==original.projectId||context.sessionId!==original.sessionId)fail("CREATION_AUTO_APPLY_NOT_AUTHORIZED");
+      const instance=deps.instance();if(!instance||instance.worldId!==worldId)fail("CREATION_RUNTIME_NOT_READY");
+      const capture={...structuredClone(record.capture),instanceId:instance.instanceId};await assertFormal(capture);
+      if(!await deps.fullAuto?.(context))fail("CREATION_AUTO_APPLY_NOT_AUTHORIZED");
+      const latest=read(file("turns",contextKey(original)));
+      if(!latest||latest.cancelled||isCancelled(context)||isCancelled(original)||supersededBy(latest)||latest.capture?.snapshotId!==record.capture.snapshotId||latest.capture?.autoApply!==true)fail("CREATION_AUTO_APPLY_NOT_AUTHORIZED");
+      write(file("turns",contextKey(context)),{context,capture,continuationOf:original,repairRoot:record.repairRoot??original});return structuredClone(capture) as CreationCapture;
+      }finally{continuing.delete(key);}
+    },
+    owned(context:Context):CreationCapture|null {
+      const record=read(file("turns",contextKey(context)));
+      if(!record)return null;
+      if(contextKey(record.context)!==contextKey(context)||record.capture?.format!=="craftmine.creation-target/1")fail("CREATION_CONTEXT_INVALID");
+      const newer=supersededBy(record);return {...structuredClone(record.capture),...(newer?{supersededBy:newer}:{}),autoApply:!newer&&!record.cancelled&&!isCancelled(context)&&record.capture.autoApply===true&&(record.capture.authorization==="full-auto"||policyFor(record.capture.worldId).autoApply)};
+    },
+    authorizedTurns():Array<{context:Context;capture:CreationCapture}> {
+      const dir=path.join(deps.directory,"turns"),result:Array<{context:Context;capture:CreationCapture}>=[];
+      if(!fs.existsSync(dir))return result;
+      for(const entry of fs.readdirSync(dir)){if(!/^[a-f0-9]{64}\.json$/.test(entry))continue;const record=read(path.join(dir,entry));
+        if(record?.capture?.autoApply&&!record.cancelled&&!isCancelled(record.context)&&record.capture.format==="craftmine.creation-target/1"&&!supersededBy(record))result.push({context:record.context,capture:record.capture});}
+      return result;
+    },
+    cancel(sessionId:string,turnId:string) {
+      write(cancellation(sessionId,turnId),{sessionId,turnId,cancelled:true});
+      const dir=path.join(deps.directory,"turns");if(!fs.existsSync(dir))return;
+      const records=fs.readdirSync(dir).filter(entry=>/^[a-f0-9]{64}\.json$/.test(entry)).map(entry=>{const name=path.join(dir,entry);return {name,record:read(name)};});
+      const origin=[...continuing.values()].find(value=>value.context.sessionId===sessionId&&value.context.turnId===turnId)?.original;
+      const source=records.find(({record})=>record?.context?.sessionId===(origin?.sessionId??sessionId)&&record.context.turnId===(origin?.turnId??turnId))?.record;
+      if(!source)return;
+      for(const {name,record} of records)if(record?.context?.sessionId===sessionId&&record.capture?.snapshotId===source.capture?.snapshotId)write(name,{...record,cancelled:true});
     },
     recordSourceMigration(context:Context,capture:CreationCapture,advance:CreationMigrationAdvance){
       const name=file("turns",contextKey(context)),record=read(name);

@@ -72,7 +72,13 @@ try {
   browser=await playwright().chromium.connectOverCDP(websocket,{noDefaults:true});
   for(let i=0;i<160;i++){
     const state=await rpc('primaryMode').catch(()=>null);
-    if(state?.width>0){if(state.entry)report.enter=await rpc('primaryMode',{payload:{action:'play'}});break;}
+    if(state?.width>0){if(state.entry){report.enter=await rpc('primaryMode',{payload:{action:'play'}});await delay(300);
+      const entryPage=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('/out/renderer/index.html'));
+      if(await entryPage.evaluate(()=>!!document.querySelector('[data-mode-entry] [data-world-list-state]'))){
+        const selected=await rpc('primaryMode');assert.equal(selected.playWorldId,worldId,'retained source world is selected');
+        await rpc('primaryMode',{payload:{action:'play'}});
+      }
+    }break;}
     await delay(150);
   }
   const started=Date.now();

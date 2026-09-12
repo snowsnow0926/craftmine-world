@@ -10,6 +10,8 @@ import {
 } from "../../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../../lib/craftmine-worlds-text";
 import type { CraftmineWorldsController } from "../../hooks/use-craftmine-worlds";
+import { createCopiedWorldSession, useAppStore } from "../../stores/app-store";
+import { enterCraftmineMode } from "../../lib/craftmine-mode";
 
 /**
  * Create flow: base, start point, name. Only options the host reports as
@@ -23,10 +25,12 @@ export function WorldCreatePanel({
   controller,
   lang,
   onClose,
+  onCreated,
 }: {
   controller: CraftmineWorldsController;
   lang: CraftmineLang;
   onClose: () => void;
+  onCreated?: (worldId: string) => Promise<void>;
 }) {
   const bases = controller.capabilities?.bases ?? [];
   const [baseId, setBaseId] = useState(() => bases.find((base) => base.delivered)?.id ?? "");
@@ -56,7 +60,10 @@ export function WorldCreatePanel({
       operationId: operationId.current,
       ...(chosenBase ? { baseId: chosenBase } : {}),
       ...(chosenStarter ? { starterId: chosenStarter } : {}),
-    });
+    }, onCreated ?? (async worldId => {
+      await createCopiedWorldSession(worldId, useAppStore.getState().activeSessionId);
+      enterCraftmineMode("create", { explicit: true });
+    }));
     if (created) onClose();
   };
 
@@ -172,7 +179,7 @@ export function WorldCreatePanel({
         >
           {controller.busy ? CRAFTMINE_WORLD_TEXT.creating[lang] : CRAFTMINE_WORLD_TEXT.createSubmit[lang]}
         </button>
-        <button type="button" onClick={onClose} disabled={controller.busy}>
+        <button type="button" disabled={controller.busy && !controller.canCancelCreate} onClick={() => { controller.cancelCreate?.(); onClose(); }}>
           {CRAFTMINE_WORLD_TEXT.createCancel[lang]}
         </button>
       </div>

@@ -116,3 +116,54 @@ test("editable target uses the same sampled entity values and rejects mismatched
  const entity={id:'tree-a',kind:'tree',scale:[2,3,1.5],color:'#123456'};
  assert.deepEqual(creationTargetDisplay(target,[{...entity,id:'other'}]),target);assert.deepEqual(creationTargetDisplay(target,[entity,entity]),target);assert.deepEqual(creationTargetDisplay(target,[{...entity,scale:[NaN,1,1]}]),target);
 });
+
+test('full-auto permission binds general edits without an extra world opt-in and survives UI/turn teardown',async t=>{
+ const {deps}=fixture(t);const service=createCreationTargetService({...deps,fullAuto:async()=>true});
+ assert.equal((await service.policy({sessionId:session.sessionId})).fullAuto,true);
+ const display=await service.capture(11,session),capture=await service.validate(11,ref(display),session);
+ await service.bind(11,capture,context,'world-a','生成一个会跟着我的博美犬');
+ assert.equal(service.owned(context).autoApply,true);assert.equal(service.owned(context).authorization,'full-auto');
+ assert.equal(createCreationTargetService(deps).owned(context).autoApply,true);
+ service.cancel(context.sessionId,context.turnId);assert.equal(service.owned(context).autoApply,false);
+});
+test('dialogue creation without a ray still binds exact host world and full-auto authorization',async t=>{
+ const {deps}=fixture(t);const service=createCreationTargetService({...deps,fullAuto:async()=>true});
+ const capture=await service.bindWorld(context,'world-a','创建一个小镇');
+ assert.equal(capture.target.surface,'none');assert.equal(capture.autoApply,true);assert.equal(service.owned(context).worldId,'world-a');
+});
+
+test('automatic repair preserves the original request and cancelling a repair revokes its ancestry',async t=>{
+ const {deps}=fixture(t);const service=createCreationTargetService({...deps,fullAuto:async()=>true});
+ const original=await service.bindWorld(context,'world-a','保留存档并做一条会追人的龙');const next={...context,turnId:'repair'};
+ const repair=await service.bindContinuation(next,context,'world-a');assert.equal(repair.requestHash,original.requestHash);assert.equal(repair.snapshotId,original.snapshotId);
+ service.cancel(next.sessionId,next.turnId);assert.equal(service.owned(context).autoApply,false);assert.equal(service.owned(next).autoApply,false);
+ await assert.rejects(service.bindContinuation({...next,turnId:'another'},context,'world-a'),/NOT_AUTHORIZED/);
+});
+test('repair cannot silently rebase onto a different formal build',async t=>{
+ const {deps,state}=fixture(t);const service=createCreationTargetService({...deps,fullAuto:async()=>true});await service.bindWorld(context,'world-a','建一个城镇');
+ state.descriptor.buildId='changed';await assert.rejects(service.bindContinuation({...context,turnId:'repair'},context,'world-a'),/STALE/);
+});
+
+test('a new ordinary user turn supersedes prior auto intent even without a new check, while repair continuations retain their root',async t=>{
+ const {deps}=fixture(t);const service=createCreationTargetService({...deps,fullAuto:async()=>true});
+ await service.bindWorld(context,'world-a','第一项意图');const repair={...context,turnId:'repair'};await service.bindContinuation(repair,context,'world-a');
+ assert.equal(service.owned(context).autoApply,true);assert.equal(service.owned(repair).autoApply,true);
+ const next={...context,turnId:'new-player-request'};await service.bindWorld(next,'world-a','更改目标的新意图');
+ assert.equal(service.owned(context).autoApply,false);assert.deepEqual(service.owned(context).supersededBy,next);assert.equal(service.owned(repair).autoApply,false);assert.equal(service.owned(next).autoApply,true);
+ const restarted=createCreationTargetService(deps);assert.equal(restarted.owned(context).autoApply,false);assert.deepEqual(restarted.authorizedTurns().map(x=>x.context.turnId),[next.turnId]);
+ await assert.rejects(service.bindContinuation({...context,turnId:'late-repair'},context,'world-a'),/NOT_AUTHORIZED/);
+});
+
+for(const cancelRepair of [false,true])test('cancellation during continuation permission read cannot resurrect its original capture or repair ('+cancelRepair+')',async t=>{
+ const {deps}=fixture(t);let release,entered;let block=false;const waiting=new Promise(r=>entered=r),gate=new Promise(r=>release=r);
+ const service=createCreationTargetService({...deps,fullAuto:async()=>{if(block){entered();await gate;}return true;}});
+ await service.bindWorld(context,'world-a','原完整目标');block=true;const next={...context,turnId:'repair-race'};
+ const pending=service.bindContinuation(next,context,'world-a');await waiting;service.cancel(context.sessionId,cancelRepair?next.turnId:context.turnId);release();
+ await assert.rejects(pending,/NOT_AUTHORIZED/);assert.equal(service.owned(context).autoApply,false);assert.equal(service.owned(next),null);
+});
+for(const mode of ['world','capture'])test('cancellation during initial '+mode+' binding is durable before a turn record exists',async t=>{
+ const {deps}=fixture(t);let release,entered;const waiting=new Promise(r=>entered=r),gate=new Promise(r=>release=r);
+ const service=createCreationTargetService({...deps,fullAuto:async()=>{entered();await gate;return true;}});
+ let pending;if(mode==='world')pending=service.bindWorld(context,'world-a','目标');else{const display=await service.capture(11,session),capture=await service.validate(11,ref(display),session);pending=service.bind(11,capture,context,'world-a','目标');}
+ await waiting;service.cancel(context.sessionId,context.turnId);release();await assert.rejects(pending,/CANCELLED/);assert.equal(service.owned(context),null);
+});

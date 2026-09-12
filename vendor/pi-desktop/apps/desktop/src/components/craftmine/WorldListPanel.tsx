@@ -32,10 +32,12 @@ export function WorldListPanel({
   controller,
   lang,
   onOpenWorld,
+  onCreated,
 }: {
   controller: CraftmineWorldsController;
   lang: CraftmineLang;
   onOpenWorld: () => void;
+  onCreated?: (worldId: string) => Promise<void>;
 }) {
   const [creating, setCreating] = useState(false);
   const [now, setNow] = useState(() => Date.now());
@@ -79,7 +81,7 @@ export function WorldListPanel({
         </button>
       </div>
 
-      {creating && <WorldCreatePanel controller={controller} lang={lang} onClose={() => setCreating(false)} />}
+      {creating && <WorldCreatePanel controller={controller} lang={lang} onClose={() => setCreating(false)} onCreated={onCreated} />}
 
       {controller.status === "loading" && (
         <p className="craftmine-world-note" data-world-state="loading">{CRAFTMINE_WORLD_TEXT.loading[lang]}</p>

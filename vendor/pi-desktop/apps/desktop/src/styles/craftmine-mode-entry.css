@@ -59,3 +59,14 @@
   .craftmine-mode-choice { padding: 20px 16px; min-height: 300px; }
 }
 @media (prefers-reduced-motion: reduce) { .craftmine-mode-choice { transition: none; } }
+
+.craftmine-dialogue-only { background: #080808; }
+.craftmine-dialogue-only > .sidebar, .craftmine-dialogue-preparing > .work-panel { visibility: hidden; pointer-events: none; }
+.craftmine-dialogue-only > .main-pane { position: absolute; inset: 0; width: 100%; background: #080808; z-index: 10; }
+.craftmine-dialogue-status { padding: 12px 24px; color: #eee; background: #080808; }
+.craftmine-dialogue-status p { margin: 6px 0; }
+
+.craftmine-chat-flow { display: contents; }
+.app-shell.craftmine-dialogue-only { --ds-bg-primary: #080808; --ds-bg-secondary: #151515; --ds-text-primary: #eeeeee; --ds-text-secondary: #b5b5b5; --ds-text-muted: #999999; }
+.app-shell.craftmine-world-first.craftmine-dialogue-only > .main-pane { grid-row: 1 / -1; grid-column: 1 / -1; min-width: 0; border: 0; }
+.craftmine-dialogue-only .craftmine-chat-resize { display: none; }

@@ -82,3 +82,7 @@ test('destroyed contents are not selected and a destroyed owner cannot hand off 
   f.window.isDestroyed=()=>true;const candidate=f.view('candidate');f.window.contentView.addChildView(candidate);syncMainInputFocus(f.window,'window-focus');
   assert.deepEqual(f.calls,['ui']);
 });
+
+test('dialogue coverage keeps native worlds attached below the trusted chat without entering play',()=>{
+ const f=fixture(true);const covered={active:false,overlay:'closed',overlayBounds:null,blocked:false,covered:true};setMainImmersion(f.window,covered);assert.deepEqual(f.window.contentView.children,[f.world,f.ui]);assert.equal(mainInputContents(f.window),f.ui.webContents);const candidate=f.view('candidate');f.window.contentView.addChildView(candidate);raiseMainOverlay(f.window);assert.deepEqual(f.window.contentView.children,[f.world,candidate,f.ui]);assert.deepEqual(f.calls,[]);setMainImmersion(f.window,{...covered,covered:false,active:true});assert.deepEqual(f.window.contentView.children,[f.ui,f.world,candidate]);assert.equal(mainInputContents(f.window),candidate.webContents);
+});

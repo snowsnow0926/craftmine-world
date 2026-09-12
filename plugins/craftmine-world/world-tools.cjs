@@ -280,6 +280,14 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
           if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');
           assertActive();
         }
+        // A deferred host queue may apply after the executor wrote its last
+        // receipt. Reconcile only against the exact durable formal build.
+        if(record.status==='passed'&&record.kind==='check'&&record.candidateId){
+          const formal=await core.call('godotRuntime.describe',{worldId:record.worldId});assertActive();
+          if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');
+          if(formal?.format==='craftmine.godot-runtime-descriptor/1'&&formal.phase==='formal'&&formal.worldId===record.worldId&&formal.buildId===record.buildId&&formal.sourceRevision===record.sourceRevision&&formal.manifestHash===record.manifestHash)
+            record={...record,creationApplication:{...record.creationApplication,status:'applied',jobId:record.jobId,worldId:record.worldId,buildId:record.buildId,candidateId:record.candidateId,reason:null}};
+        }
         return {...record,diagnostics:require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(record,nativeEvidence)};
       };
       if(definition.name==='godot_build_read'&&((options.buildReadWaitMs??0)>0||typeof options.executorCreationCompletion==='function')){

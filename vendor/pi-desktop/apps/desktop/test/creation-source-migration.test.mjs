@@ -1,5 +1,6 @@
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';import test from 'node:test';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {createHash}from'node:crypto';import {execFileSync}from'node:child_process';import {build}from'esbuild';
-const file=new URL('../electron/main/creation-source-migration.ts',import.meta.url).pathname.replace(/^\/(\w:)/,'$1');const bundled=await build({entryPoints:[file],bundle:true,write:false,format:'esm',platform:'node'});const {createCreationSourceMigration,CREATION_MIGRATION_FILES,creationProjectSelectorsSafe}=await import(`data:text/javascript;base64,${Buffer.from(bundled.outputFiles[0].text).toString('base64')}`);
+const file=fileURLToPath(new URL('../electron/main/creation-source-migration.ts',import.meta.url));const bundled=await build({entryPoints:[file],bundle:true,write:false,format:'esm',platform:'node'});const {createCreationSourceMigration,CREATION_MIGRATION_FILES,creationProjectSelectorsSafe}=await import(`data:text/javascript;base64,${Buffer.from(bundled.outputFiles[0].text).toString('base64')}`);
 const sha=text=>createHash('sha256').update(text).digest('hex'),meta=(name,text)=>({path:name,bytes:Buffer.byteLength(text),sha256:sha(text)});
 const project='[autoload]\nCraftmineRuntime="*res://craftmine_shared/runtime_bridge.gd"\n[craftmine]\nruntime/adapter="res://craftmine_shared/base_adapter.gd"\n';
 const ctx={projectId:'project-a',sessionId:'session-a',turnId:'turn-a'};

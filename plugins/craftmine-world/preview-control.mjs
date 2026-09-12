@@ -4,6 +4,12 @@
 export function assertPreviewControl(request, state) {
   if (!request || typeof request !== 'object' || Array.isArray(request)) throw Error('INVALID_PREVIEW_CONTROL');
   if (request.action === 'state' && Object.keys(request).length === 1) return;
+  if (['open','adopt'].includes(request.action)) {
+    if(Object.keys(request).sort().join(',')!=='action,buildId,candidateId,jobId,sessionId,worldId'
+      || !['worldId','candidateId','buildId','jobId','sessionId'].every(key=>typeof request[key]==='string'&&request[key].length>0&&request[key].length<=240))throw Error('INVALID_PREVIEW_CONTROL');
+    if(state)throw Error('PREVIEW_BUSY');
+    return;
+  }
   if (!['apply', 'close'].includes(request.action) || Object.keys(request).sort().join(',') !== 'action,buildId,candidateId,previewId,worldId') throw Error('INVALID_PREVIEW_CONTROL');
   if (!state || !['worldId', 'candidateId', 'buildId', 'previewId'].every(key => typeof request[key] === 'string' && request[key] === state[key])) throw Error('PREVIEW_CHANGED');
   if (request.action === 'apply' ? state.applyDisabled : state.closeDisabled) throw Error('PREVIEW_BUSY');

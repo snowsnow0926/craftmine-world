@@ -653,8 +653,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 15348,
-      "sha256": "aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1"
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "scene_mesh_picker.gd",

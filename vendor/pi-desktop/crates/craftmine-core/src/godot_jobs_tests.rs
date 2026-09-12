@@ -602,5 +602,10 @@ fn latest_world_job_is_filtered_by_the_host_session_without_starting_a_task() ->
     assert_eq!(journal.godot_build_latest(&json!({"worldId":"a","sessionId":context.session_id}))?["jobId"],job["jobId"]);
     assert!(journal.godot_build_latest(&json!({"worldId":"a","sessionId":"other-session"}))?.is_null());
     assert!(journal.godot_build_latest(&json!({"worldId":"b","sessionId":context.session_id}))?.is_null());
+    // Reopening the session after selecting another world recovers its exact job.
+    assert_eq!(journal.godot_build_latest(&json!({"sessionId":context.session_id}))?["jobId"],job["jobId"]);
+    assert!(journal.godot_build_latest(&json!({"sessionId":"other-session"}))?.is_null());
+    assert!(journal.godot_build_latest(&json!({})).is_err());
+    assert!(journal.godot_build_latest(&json!({"sessionId":""})).is_err());
     Ok(())
 }

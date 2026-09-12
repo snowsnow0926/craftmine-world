@@ -36,6 +36,14 @@ export function emptyWorkPanelContext(): WorkPanelContext {
   return { open: false, tabs: [], activeTabId: null, fileRequest: null };
 }
 
+/** Only the visible world follows a newly materialized conversation. */
+export function inheritWorldWorkPanelContext(context: WorkPanelContext, worldPinned = false): WorkPanelContext {
+  const world = context.tabs.find(tab => tab.id === "plugin:craftmine.world/world");
+  return context.open && world && (worldPinned || context.activeTabId === world.id)
+    ? { open: true, tabs: [world], activeTabId: world.id, fileRequest: null }
+    : emptyWorkPanelContext();
+}
+
 export function switchWorkPanelContextState(
   contexts: Record<string, WorkPanelContext>,
   currentSessionId: string | undefined,

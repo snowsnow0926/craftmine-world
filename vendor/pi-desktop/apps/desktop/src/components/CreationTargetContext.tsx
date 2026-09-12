@@ -22,7 +22,8 @@ export function CreationTargetContext({ controller }: { controller: ReturnType<t
         <button type="button" disabled={controller.loading||!item.available} aria-pressed={fromRecent&&target?.entityId===item.entityId} title={item.entityId} onClick={()=>void controller.selectRecent(item.entityId)}>{item.entityName} · {item.entityId}{!item.available?(zh?(item.reason==='CREATION_RECENT_HIDDEN'?"（暂不可见）":"（已移除或不可用）"):" (unavailable)"):''}</button>
       </div>)}</div>
     </details>}
-    {controller.policy && <label className="creation-policy">
+    {controller.policy?.fullAuto && <span className="creation-target-note">{zh ? "全自动：检查通过后自动更新世界，无需再次确认" : "Full Auto: checked changes update this world automatically"}</span>}
+    {controller.policy && !controller.policy.fullAuto && <label className="creation-policy">
       <input type="checkbox" checked={controller.policy.autoApply} disabled={controller.policyBusy} onChange={event => void controller.changePolicy(event.target.checked)} />
       <span>{zh ? "此世界自动应用通过检查的安全改动" : "Automatically apply checked safe changes in this world"}</span>
     </label>}

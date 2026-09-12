@@ -37,6 +37,8 @@
     #godot-loading[data-state="failed"] #godot-loading-spinner { display:none; }
     #godot-loading-progress { display:block; width:100%; height:7px; margin-top:16px; accent-color:#b2d2bd; }
     #godot-loading[data-state="failed"] #godot-loading-progress { display:none; }
+    #godot-loading-actions { display:flex; gap:8px; justify-content:center; margin-top:16px; pointer-events:auto; }
+    #godot-loading-actions[hidden] { display:none; }
     @keyframes godot-loading-spin { to { transform:rotate(360deg); } }
     .modes { display:flex; flex-wrap:wrap; gap:4px; padding:6px 12px; border-bottom:1px solid light-dark(#e3e3e3,#333); }
     .modes button { border-color:transparent; background:transparent; font-size:12px; }
@@ -135,7 +137,7 @@
   <main id="surface">
     <span id="immersion-hint" aria-hidden="true">F2 对话 · Shift+F2 工作台</span>
     <div id="godot-loading" aria-hidden="false" data-state="loading" role="status" aria-live="polite">
-      <div id="godot-loading-card"><div id="godot-loading-spinner" aria-hidden="true"></div><p id="godot-loading-title">正在加载世界…</p><p id="godot-loading-detail">正在读取世界列表和启动资源，请稍候。</p><progress id="godot-loading-progress" aria-label="世界加载进度"></progress></div>
+      <div id="godot-loading-card"><div id="godot-loading-spinner" aria-hidden="true"></div><p id="godot-loading-title">正在加载世界…</p><p id="godot-loading-detail">正在读取世界列表和启动资源，请稍候。</p><progress id="godot-loading-progress" aria-label="世界加载进度"></progress><div id="godot-loading-actions" hidden><button id="godot-loading-retry" type="button">重试加载</button><button id="godot-loading-back" type="button" hidden>返回原世界</button></div></div>
     </div>
     <div id="godot-surface" role="region" aria-label="Godot 世界画面区域"></div>
     <iframe title="可游玩的世界" sandbox="allow-scripts allow-pointer-lock"></iframe>

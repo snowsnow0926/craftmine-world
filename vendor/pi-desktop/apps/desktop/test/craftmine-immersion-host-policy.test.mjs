@@ -56,3 +56,7 @@ test('plugin guard blocks opaque game frames while preserving workbench controls
   const f=inputFixture(true);f.notify(true);assert.equal(f.frame.inert,true);assert.equal(f.invoke('click'),0);assert.equal(f.invoke('keydown'),0);
   f.dispose();assert.equal(f.frame.inert,false);assert.equal(f.frame.style.pointerEvents,'auto');
 });
+
+test('covered chat blocks game input while preserving authoring authorization and geometry',()=>{
+ const covered=parseImmersion({...NO_IMMERSION,covered:true,blocked:false});assert.equal(covered.active,false);assert.equal(covered.blocked,false);assert.equal(immersionBlocksInput(covered),true);assert.strictEqual(excludeImmersion(world,covered),world);assert.throws(()=>parseImmersion({...NO_IMMERSION,covered:'true'}));assert.equal(immersionBlocksInput({...covered,covered:false}),false);
+});

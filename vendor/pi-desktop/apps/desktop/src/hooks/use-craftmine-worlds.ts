@@ -30,9 +30,11 @@ export type CraftmineWorldsController = {
   bridge: CraftmineWorldBridge | null;
   refresh: () => Promise<void>;
   select: (id: string) => Promise<void>;
-  create: (input: CraftmineWorldCreateInput) => Promise<boolean>;
+  create: (input: CraftmineWorldCreateInput, onReady?: (worldId: string) => Promise<void>) => Promise<boolean>;
   creationAction: (worldId: string, action: CraftmineCreationAction) => Promise<void>;
   clearMessages: () => void;
+  cancelCreate: () => void;
+  canCancelCreate: boolean;
 };
 
 /** Bounded polling while a world initializes: ~5 minutes, then the player refreshes. */
@@ -60,6 +62,8 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   // React state is not synchronous: two dispatches in the same task would both
   // read `busy === false`. The ref is set before the first await.
   const busyRef = useRef(false);
+  const createCancelled = useRef(false);
+  const [canCancelCreate, setCanCancelCreate] = useState(false);
   const epoch = useRef(0);
   const alive = useRef(true);
   const activeWorldIdRef = useRef<string | null>(null);
@@ -178,22 +182,41 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   );
 
   const create = useCallback(
-    async (input: CraftmineWorldCreateInput) => {
+    async (input: CraftmineWorldCreateInput, onReady?: (worldId: string) => Promise<void>) => {
       if (!bridge || busyRef.current) return false;
       busyRef.current = true;
       setBusy(true);
       setActionError(null);
       setNotice(null);
       const previous = activeWorldIdRef.current;
+      createCancelled.current = false;
+      setCanCancelCreate(true);
+      let completed = false;
       try {
-        const created = await bridge.create(input);
+        const receipt = await bridge.create(input);
+        const createdList = await bridge.list();
+        const created = createdList.worlds.find(world => world.id === receipt.id);
+        if (!created) throw Error("CREATED_WORLD_NOT_FOUND");
         // A world that is still initializing (or failed to initialize) is
         // registered but not playable. Do not switch the running view into it:
         // the row keeps showing the host's real progress until it is ready.
         if (created.state !== "ready") {
           setNotice(CRAFTMINE_WORLD_TEXT.createInitializing[lang]);
-          return true;
+          let entry = created;
+          while (entry.state !== "ready") {
+            if (!alive.current || createCancelled.current) return false;
+            if (entry.state === "failed") throw Error(entry.creation?.error?.message || "WORLD_INITIALIZATION_FAILED");
+            await new Promise(resolve => setTimeout(resolve, CRAFTMINE_CREATION_POLL_MS));
+            if (!alive.current || createCancelled.current) return false;
+            const list = await bridge.list();
+            const found = list.worlds.find(world => world.id === created.id);
+            if (!found) throw Error("CREATED_WORLD_NOT_FOUND");
+            entry = found;
+            await refresh();
+          }
         }
+        if (!alive.current || createCancelled.current) return false;
+        setCanCancelCreate(false);
         const result = await bridge.switchWorld(created.id);
         if (!result.ok) {
           // The world exists, but the running view could not switch to it.
@@ -205,11 +228,21 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
         }
         setActiveWorldId(result.activeWorldId);
         window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
+        await onReady?.(result.activeWorldId);
+        completed = true;
         return true;
       } catch (failure) {
         setActionError(worldErrorMessage(failure, lang));
         return false;
       } finally {
+        setCanCancelCreate(false);
+        // world.create may already select the new identity on the host. A
+        // cancelled form must restore the original running world as well.
+        if (!completed && previous && (createCancelled.current || !alive.current)) {
+          const restored = await bridge.switchWorld(previous);
+          if (!restored.ok) setActionError(worldErrorMessage(restored.error, lang));
+          else window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
+        }
         // Stay busy until the refreshed list reflects the result, so the panel
         // never re-enables against stale state.
         try {
@@ -292,5 +325,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     create,
     creationAction,
     clearMessages,
+    cancelCreate: () => { createCancelled.current = true; },
+    canCancelCreate,
   };
 }

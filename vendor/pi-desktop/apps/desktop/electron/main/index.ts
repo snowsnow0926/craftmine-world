@@ -31,6 +31,9 @@ import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
 import { createCreationGroundMaintenance, interruptsCreationGroundMaintenance } from "./creation-ground-maintenance";
+import { createCreationGroundScheduler } from "./creation-ground-scheduler";
+import { createCreationRepairDispatcher, repairFollowsLatestRequest, repairOwnsUncheckedWork, type CreationRepairInput } from "./creation-repair-dispatch";
+import { createCreationStopIntents } from "./creation-stop-intent";
 import { createGodotWorldCopyService } from "./godot-world-copy-service";
 import { createGodotWindowsExportService } from "./godot-windows-export-service.mjs";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
@@ -45,6 +48,7 @@ import { GodotBuildVerifier } from "./godot-build-verifier";
 import { checkCraftmineFrame } from "./craftmine-frame-check";
 import {installCreationEvaluation,reserveCreationEvaluationRequest} from "./craftmine-creation-evaluation";
 import {creationTaskStatus} from "./creation-task-status";
+import {assertCreationResultAccess} from "./creation-result-access";
 import {createCreationEditService,validateCreationEdit,type CreationEditInput} from "./creation-edit-service";
 import {readFormalCreationJournal,assertDirectCreationCandidate,directCreationEditIntent} from "./creation-edit-guards";
 import {installCreationEditAcceptance} from "./creation-edit-acceptance";
@@ -221,6 +225,8 @@ import { createCraftmineEnginePerformanceSampler } from "./craftmine-engine-perf
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
+import {createCreationAutoQueue} from "./creation-auto-queue";
+import {creationApplicationRepairReason,CREATION_APPLICATION_REPAIR_PREFIX} from "./creation-application-repair";
 import {readCraftminePromptContext} from "./craftmine-context-read";
 import { createGodotRuntimeAdapter } from "./godot-runtime-adapter";
 import { createGodotCandidateCoordinator } from "./godot-candidate-coordinator";
@@ -1151,7 +1157,16 @@ const IMPORT_SOURCES = new Set<ExternalSource>([
 const dataDir =
   process.env.PI_DESKTOP_DATA_DIR || join(homedir(), ".pi-desktop");
 
+async function creationFullAuto(sessionId:string|null):Promise<boolean>{
+  if(!host)return false;
+  const settings=await host.call<any>("settings.get");
+  if(settings.defaultPermissionMode==="auto")return true;
+  if(!sessionId)return false;
+  const detail=await host.call<{session?:any}>("session.get",{id:sessionId});
+  return detail.session?.permissionMode==="auto";
+}
 const creationTargets=createCreationTargetService({
+  fullAuto:session=>creationFullAuto(session.sessionId),
   directory:join(dataDir,"creation-context"),selection:godotSelection,instance:()=>godotWorld.instance,
   descriptor:worldId=>plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),
   sample:createCraftmineLiveSampler(()=>godotWorld),
@@ -1178,7 +1193,11 @@ plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
   authorize:async input=>{
     const context=input.context,binding=craftmineGateway.get(context.sessionId);
     if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId))throw Error("GODOT_CAPTURE_ACTIVE_TURN_REQUIRED");
-    if(binding.selectedWorld!==input.worldId||await godotSelection()!==input.worldId||notificationViewingSessionId!==context.sessionId)throw Error("GODOT_CAPTURE_WORLD_CONTEXT_CHANGED");
+    if(binding.selectedWorld!==input.worldId||await godotSelection()!==input.worldId)throw Error("GODOT_CAPTURE_WORLD_CONTEXT_CHANGED");
+    if(notificationViewingSessionId!==context.sessionId){
+      const owned=creationTargets.owned(context);
+      if(!owned?.autoApply||owned.authorization!=="full-auto"||owned.worldId!==input.worldId||!await creationFullAuto(context.sessionId))throw Error("GODOT_CAPTURE_WORLD_CONTEXT_CHANGED");
+    }
     if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy)throw Error("WORLD_BUSY");
     const detail=await host?.call<{session?:any}>("session.get",{id:context.sessionId});
     if(!detail?.session||craftmineProjectIdentity(detail.session,context.sessionId)!==context.projectId||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("GODOT_CAPTURE_PROJECT_CHANGED");
@@ -1190,23 +1209,125 @@ plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
 })});
 const creationAutoApply=createCreationAutoApplyService({
   capture:async context=>{
-    const binding=craftmineGateway.get(context.sessionId);
-    if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId))throw Error("CREATION_ACTIVE_TURN_REQUIRED");
-    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy)throw Error("WORLD_BUSY");
-    if(!mainWindow||mainWindow.isDestroyed()||mainWindow.webContents.isDestroyed()||immersionState.blocked||notificationViewingSessionId!==context.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
-    const detail=await host?.call<{session?:any}>("session.get",{id:context.sessionId});
+    if(!host)throw Error("CREATION_HOST_UNAVAILABLE");
+    const capture=creationTargets.owned(context);if(!capture)return null;
+    if(!capture.autoApply)return capture;
+    if(capture.authorization==="full-auto"&&!await creationFullAuto(context.sessionId))return {...capture,autoApply:false};
+    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy)throw Error("WORLD_BUSY");
+    if(turnFinalizations.has(context.sessionId))throw Error("CREATION_FINALIZING");
+    if([...activeTurns].some(([sessionId,turnId])=>sessionId!==context.sessionId||turnId!==context.turnId))throw Error("CREATION_TURN_BUSY");
+    if(!mainWindow||mainWindow.isDestroyed()||mainWindow.webContents.isDestroyed()||immersionState.blocked)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+    const detail=await host.call<{session?:any}>("session.get",{id:context.sessionId});
     if(!detail?.session||craftmineProjectIdentity(detail.session,context.sessionId)!==context.projectId||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_PROJECT_CHANGED");
-    if(await godotSelection()!==binding.selectedWorld)throw Error("CREATION_TARGET_STALE");
-    return creationTargets.bound(context,binding.selectedWorld);
+    if(await godotSelection()!==capture.worldId)throw Error("CREATION_WORLD_DEFERRED");
+    const instance=godotWorld.instance;if(!instance||instance.worldId!==capture.worldId)throw Error("CREATION_RUNTIME_NOT_READY");
+    return {...capture,instanceId:instance.instanceId};
   },
   domain:(method,input)=>plugins.requestCraftmineHost(method,input),
   apply:(worldId,candidateId,expected,guard)=>godotCandidates.autoApplyVerified(worldId,candidateId,expected,guard),
 });
+const creationAutoQueue=createCreationAutoQueue({
+  directory:join(dataDir,"creation-auto-queue"),
+  world:async input=>{const capture=creationTargets.owned(input.context);return capture?.autoApply||capture?.supersededBy?capture.worldId:null;},
+  discover:async()=>{
+    if(!host||!plugins.getLoaded("craftmine.world"))return [];
+    const found=[],latestJobs=new Map<string,any>();
+    for(const {context,capture} of creationTargets.authorizedTurns()){
+      const lookup=JSON.stringify([capture.worldId,context.sessionId]);
+      if(!latestJobs.has(lookup))latestJobs.set(lookup,await plugins.requestCraftmineHost("godotBuild.latest",{worldId:capture.worldId,sessionId:context.sessionId}));
+      const job=latestJobs.get(lookup);
+      const taskId="work-"+createHash("sha256").update(JSON.stringify([context.sessionId,context.turnId])).digest("hex");
+      if(job?.taskId===taskId&&job.kind==="check"&&["passed","failed","interrupted"].includes(job.status))found.push({context,worldId:capture.worldId,jobId:job.jobId});
+    }
+    return found;
+  },
+  perform:async input=>{
+    const capture=creationTargets.owned(input.context);
+    if(!capture?.autoApply)return {status:"manual",reason:capture?.supersededBy?"CREATION_REQUEST_SUPERSEDED":"CREATION_AUTO_APPLY_NOT_AUTHORIZED"};
+    const job=await plugins.requestCraftmineHost("godotBuild.read",{context:input.context,worldId:capture.worldId,jobId:input.jobId}) as any;
+    const expectedTaskId="work-"+createHash("sha256").update(JSON.stringify([input.context.sessionId,input.context.turnId])).digest("hex");
+    if(job?.worldId!==capture.worldId||job.jobId!==input.jobId||job.taskId!==expectedTaskId)throw Error("CREATION_CHECK_OWNER_CHANGED");
+    const applicationRepair=job.status==="passed"?creationAutoQueue.status(input.jobId,input.context.sessionId)?.repairReason??null:null;
+    if(job?.kind==="check"&&(["failed","interrupted"].includes(job.status)||applicationRepair)){
+      const latest=await plugins.requestCraftmineHost("godotBuild.latest",{worldId:capture.worldId,sessionId:input.context.sessionId}) as any;
+      if(latest?.jobId!==input.jobId){
+        // A repair may build/import before requesting its check. Keep the
+        // original recovery alive only within the same host-owned intent.
+        const sameRepair=repairOwnsUncheckedWork({...input,worldId:capture.worldId,reason:""},capture.snapshotId,latest,creationTargets.authorizedTurns());
+        if(!sameRepair)return {status:"manual",reason:"CREATION_CHECK_SUPERSEDED"};
+      }
+      if(capture.authorization!=="full-auto"||!await creationFullAuto(input.context.sessionId))return {status:"manual",reason:"CREATION_AUTO_APPLY_NOT_AUTHORIZED"};
+      if(activeTurns.size||turnFinalizations.size)throw Error("CREATION_TURN_BUSY");
+      if(await godotSelection()!==capture.worldId)throw Error("CREATION_WORLD_DEFERRED");
+      if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy||immersionState.blocked)throw Error("WORLD_BUSY");
+      const formal=await plugins.requestCraftmineHost("godotRuntime.describe",{worldId:capture.worldId}) as any;
+      if(formal?.buildId!==capture.buildId||formal.manifestHash!==capture.manifestHash||formal.sourceRevision!==capture.sourceRevision)throw Error("CREATION_TARGET_STALE");
+      const reason=applicationRepair??job.blockedReason??job.interruptReason??job.output?.check?.reason??"CREATION_CHECK_FAILED";
+      const result=await submitCreationAutomaticRepair({...input,worldId:capture.worldId,reason:String(reason)});
+      return result.accepted?{status:"repairing",reason:applicationRepair?CREATION_APPLICATION_REPAIR_PREFIX+applicationRepair:"CREATION_AUTOMATIC_REPAIR_STARTED"}:{status:"deferred",reason:applicationRepair?CREATION_APPLICATION_REPAIR_PREFIX+applicationRepair:"CREATION_AUTOMATIC_REPAIR_WAITING"};
+    }
+    try{return await creationAutoApply.completed(input);}catch(error){
+      if(String((error as Error)?.message)==="CREATION_TARGET_STALE"){
+        const formal=await plugins.requestCraftmineHost("godotRuntime.describe",{worldId:capture.worldId}) as any;
+        if(formal?.buildId===capture.buildId&&formal.manifestHash===capture.manifestHash&&formal.sourceRevision===capture.sourceRevision)throw Error("CREATION_WORLD_DEFERRED");
+      }
+      const formal=await plugins.requestCraftmineHost("godotRuntime.describe",{worldId:capture.worldId}) as any;
+      const repair=creationApplicationRepairReason(error,!godotCandidates.blocking,formal?.buildId===capture.buildId&&formal.manifestHash===capture.manifestHash&&formal.sourceRevision===capture.sourceRevision);
+      if(repair&&capture.authorization==="full-auto")return {status:"deferred",reason:CREATION_APPLICATION_REPAIR_PREFIX+repair,repairReason:repair};
+      throw error;
+    }
+  },
+  changed:record=>{logger.app("plugin",record.status==="failed"?"warn":"info","creation automatic application",{sessionId:record.context.sessionId,data:record});sendToRenderer(IPC.event.craftmineWorldChanged,{});},
+});
+const creationAutoResumeTimer=setInterval(()=>{void creationAutoQueue.resume().catch(error=>logger.app("plugin","warn","creation automatic recovery deferred",{data:String(error)}));},2000);
+creationAutoResumeTimer.unref();
+let creationAutomaticPrompt: ((input: CreationRepairInput, request: {messageId: string; content: string; retryFrom?: string}) => Promise<{accepted: boolean; turnId: string}>) | null = null;
+const creationRepairDispatcher = createCreationRepairDispatcher({
+  directory: join(dataDir, "creation-repair-receipts"),
+  authorize: async input => {
+    if (!host || !sidecar || !creationAutomaticPrompt || !mainWindow || mainWindow.isDestroyed() || mainWindow.webContents.isDestroyed()) throw Error("CREATION_HOST_UNAVAILABLE");
+    const capture = creationTargets.owned(input.context);
+    if (!capture?.autoApply || capture.authorization !== "full-auto" || capture.worldId !== input.worldId || !await creationFullAuto(input.context.sessionId)) throw Error("CREATION_AUTO_APPLY_NOT_AUTHORIZED");
+    if (activeTurns.size || turnFinalizations.size) throw Error("CREATION_TURN_BUSY");
+    if (quitting || craftmineQuitPreparation || craftmineQuitPrepared || profileRestore || godotCopies.busy || godotExportBusy || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy || immersionState.blocked) throw Error("WORLD_BUSY");
+    if (await godotSelection() !== input.worldId) throw Error("CREATION_WORLD_DEFERRED");
+    const detail = await host.call<{session?: any}>("session.get", {id: input.context.sessionId});
+    if (!detail.session || craftmineProjectIdentity(detail.session, input.context.sessionId) !== input.context.projectId || !pluginActiveInProject("craftmine.world", detail.session.projectPath ?? null)) throw Error("CREATION_PROJECT_CHANGED");
+    const lastUser = (detail.session.messages ?? []).filter((message: any) => message.role === "user").at(-1);
+    if (!lastUser?.id) throw Error("CREATION_CHECK_SUPERSEDED");
+    const latestMetrics = await host.call<any>("session.turnMetrics", {sessionId: input.context.sessionId, messageId: lastUser.id});
+    const latestCapture = typeof latestMetrics?.turnId === "string" ? creationTargets.owned({...input.context, turnId: latestMetrics.turnId}) : null;
+    if (!repairFollowsLatestRequest(input.context.turnId, capture.snapshotId, latestMetrics?.turnId, latestCapture)) throw Error("CREATION_CHECK_SUPERSEDED");
+    const formal = await plugins.requestCraftmineHost("godotRuntime.describe", {worldId: input.worldId}) as any;
+    if (formal?.buildId !== capture.buildId || formal.manifestHash !== capture.manifestHash || formal.sourceRevision !== capture.sourceRevision) throw Error("CREATION_TARGET_STALE");
+  },
+  lookup: async (input, messageId) => {
+    const detail = await host!.call<{session?: any}>("session.get", {id: input.context.sessionId});
+    const messages: any[] = detail.session?.messages ?? [];
+    const message = messages.find(value => value.id === messageId);
+    if (!message) return {state: "absent"};
+    if (message.role !== "user" || !String(message.content).includes(`检查任务：${input.jobId}`)) throw Error("CREATION_REPAIR_HISTORY_CHANGED");
+    const metrics = await host!.call<any>("session.turnMetrics", {sessionId: input.context.sessionId, messageId});
+    if (!metrics?.turnId) throw Error("CREATION_REPAIR_RECEIPT_UNCONFIRMED");
+    const latest = await plugins.requestCraftmineHost("godotBuild.latest", {worldId: input.worldId, sessionId: input.context.sessionId}) as any;
+    const taskId = "work-" + createHash("sha256").update(JSON.stringify([input.context.sessionId, metrics.turnId])).digest("hex");
+    if (latest?.taskId === taskId && latest.kind === "check") return {state: "checked", turnId: metrics.turnId};
+    if (messages.filter(value => value.role === "user").at(-1)?.id !== messageId) return {state: "superseded", turnId: metrics.turnId};
+    if (activeTurns.get(input.context.sessionId) === metrics.turnId) return {state: "running", turnId: metrics.turnId};
+    if (["running", "error", "aborted", "interrupted"].includes(metrics.status)) return {state: "retry", turnId: metrics.turnId};
+    return {state: "no-check", turnId: metrics.turnId};
+  },
+  submit: (input, request) => {
+    if (!creationAutomaticPrompt) throw Error("CREATION_HOST_UNAVAILABLE");
+    return creationAutomaticPrompt(input, request);
+  },
+});
+async function submitCreationAutomaticRepair(input: CreationRepairInput) {
+  return creationRepairDispatcher.dispatch(input);
+}
 plugins.setServices({craftmineCreationCheckCompleted:async input=>{
   if(groundMaintenance.ownsCompletion(input))return {status:"manual",reason:"HOST_MAINTENANCE_OWNS_APPLICATION"};
-  const result=await creationAutoApply.completed(input);
-  if(result.status==="applied")sendToRenderer(IPC.event.craftmineWorldChanged,{});
-  return result;
+  return creationAutoQueue.completed(input);
 }});
 
 let creationEditStarting=false;
@@ -1294,7 +1415,6 @@ const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
   restoreLoad: (worldId, candidateId) => godotCandidates.restoreLoad(worldId, candidateId),
 });
-const groundMaintenanceAttempts = new Set<string>();
 const groundMaintenance = createCreationGroundMaintenance({
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, instance: () => godotWorld.instance, resourcesRoot: godotRoot,
@@ -1305,19 +1425,20 @@ const groundMaintenance = createCreationGroundMaintenance({
     if (status.status === "applied") sendToRenderer(IPC.event.craftmineWorldChanged, {});
   },
 });
+const groundMaintenanceScheduler = createCreationGroundScheduler({
+  current: () => godotWorld.instance,
+  blocked: () => !!(quitting || craftmineQuitPreparation || craftmineQuitPrepared ||
+    groundMaintenance.busy || activeTurns.size || turnFinalizations.size || profileRestore ||
+    godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy || godotExportBusy ||
+    !["ready", "paused", "saved"].includes(godotWorld.state?.state ?? "")),
+  start: async worldId => { const result = await groundMaintenance.start(worldId); return {status: result.status, reason: result.reason}; },
+  lastStatus: worldId => groundMaintenance.status(worldId) as {status: string; reason?: string} | null,
+  changed: state => {
+    if (state.phase === "retrying") logger.app("plugin", "warn", "stock ground maintenance will retry", { data: state });
+  },
+});
 function scheduleGroundMaintenance(worldId: string, instanceId: string): void {
-  if (groundMaintenanceAttempts.has(instanceId)) return;
-  // Leave the current startup transition before inspecting a retained world.
-  // All writes go through a separate Core/Git branch; no player draft is used.
-  setTimeout(() => {
-    if (godotWorld.instance?.instanceId !== instanceId || groundMaintenanceAttempts.has(instanceId) ||
-        quitting || craftmineQuitPreparation || craftmineQuitPrepared ||
-        groundMaintenance.busy || activeTurns.size || turnFinalizations.size || profileRestore ||
-        godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy || godotExportBusy) return;
-    groundMaintenanceAttempts.add(instanceId);
-    if (groundMaintenanceAttempts.size > 64) groundMaintenanceAttempts.delete(groundMaintenanceAttempts.values().next().value!);
-    void groundMaintenance.start(worldId).catch(() => undefined);
-  }, 0);
+  groundMaintenanceScheduler.schedule(worldId, instanceId);
 }
 const godotCopies = createGodotWorldCopyService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
@@ -2774,7 +2895,7 @@ const craftmineGateway = new CraftmineTurnGateway(
 );
 
 async function bindCraftmineTurn(sessionId: string, turnId: string, session: any,
-  request: { id: string; text: string },target?:{owner:number;capture:CreationCapture|null;intent?:DirectCreationIntent}): Promise<boolean> {
+  request: { id: string; text: string },target?:{owner:number;capture:CreationCapture|null;intent?:DirectCreationIntent;continuationContext?:{projectId:string;sessionId:string;turnId:string}}): Promise<boolean> {
   if (!plugins.getLoaded("craftmine.world") || !pluginActiveInProject("craftmine.world", session.projectPath ?? null)) {
     if(target?.capture)throw Error("CREATION_PROJECT_CHANGED");
     craftmineGateway.beginGeneric(sessionId, turnId); return false;
@@ -2792,12 +2913,15 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
     context: { projectId, sessionId, turnId }, selectedWorld, request,
   }) as { world: { id: string } };
   craftmineGateway.bind({ projectId, sessionId, turnId, selectedWorld: result.world.id });
-  if(target)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id,target.intent??request.text);
-  if(target?.capture)await migrateCreationSource({projectId,sessionId,turnId},target.capture);
+  if(target?.continuationContext)await creationTargets.bindContinuation({projectId,sessionId,turnId},target.continuationContext,result.world.id);
+  else if(target?.capture)await creationTargets.bind(target.owner,target.capture,{projectId,sessionId,turnId},result.world.id,target.intent??request.text);
+  else await creationTargets.bindWorld({projectId,sessionId,turnId},result.world.id,request.text);
+  if(!target?.continuationContext){const bound=creationTargets.owned({projectId,sessionId,turnId});if(bound)await migrateCreationSource({projectId,sessionId,turnId},bound);}
   return true;
 }
 /** sessionId -> last assistant usage recorded for active turn */
 const activeTurnUsages = new Map<string, MessageUsage>();
+const creationStopIntents = createCreationStopIntents();
 
 function addActiveTurnUsage(sessionId: string, usage: MessageUsage | undefined) {
   if (!usage) return;
@@ -5714,6 +5838,11 @@ function finishTurn(
     try {
       if (host && turnId) {
         craftmineTelemetry.finishAgentJob(sessionId, turnId, status === "error" ? "failed" : status === "aborted" ? "aborted" : "completed");
+        if (status === "aborted" && !creationStopIntents.shouldPreserve(sessionId, turnId)) {
+          creationTargets.cancel(sessionId, turnId); creationAutoQueue.cancel(sessionId, turnId);
+        } else if (status === "aborted") {
+          errorCode = "APP_SHUTDOWN_INTERRUPTED";
+        }
         craftmineGateway.end(sessionId, turnId);
         if (!craftmineMaintenanceContexts.has(sessionId, turnId)) await plugins.endCraftmineTurn({ sessionId, turnId, status }).catch((error) => {
           logger.app("persistence", "error", "Craftmine draft turn end failed", { sessionId, data: String(error) });
@@ -5791,6 +5920,7 @@ function finishTurn(
       await options.beforeRelease?.();
     } finally {
       if (turnId) {
+        creationStopIntents.release(sessionId, turnId);
         taskMetricsRecorder.release({ sessionId, turnId });
         taskMetricsAdmissionFailures.delete(JSON.stringify([sessionId, turnId]));
       }
@@ -6507,6 +6637,10 @@ function registerIpc() {
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
     if (payload?.channel === "world.previewControl" && (event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+    if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.previewControl") {
+      await assertCreationResultAccess(payload.payload ?? {}, {viewingSession:()=>notificationViewingSessionId,
+        selectedWorld:godotSelection, domain:(method,args)=>plugins.requestCraftmineHost(method,args)});
+    }
     if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory"].includes(payload.channel)){
       if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
       const input=payload.payload??{};
@@ -6538,11 +6672,14 @@ function registerIpc() {
         if(notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
         const detail=await host?.call<{session?:any}>("session.get",{id:input.sessionId});
         if(!detail?.session||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_SESSION_REQUIRED");
-        const worldId=await godotSelection();
-        if(!worldId)return {worldId:null,sessionId:input.sessionId,phase:"idle",requirementStatus:"not-requested"};
-        const [job,formal]=await Promise.all([plugins.requestCraftmineHost("godotBuild.latest",{worldId,sessionId:input.sessionId}),plugins.requestCraftmineHost("godotRuntime.describe",{worldId})]);
-        if(await godotSelection()!==worldId||notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
-        return creationTaskStatus(worldId,input.sessionId,job as any,formal as any,creationAutoApply.isApplying((job as any)?.jobId,input.sessionId));
+        const selectedWorldId=await godotSelection();
+        const job=await plugins.requestCraftmineHost("godotBuild.latest",{sessionId:input.sessionId}) as any;
+        const worldId=job?.worldId??selectedWorldId;
+        if(!worldId)return {worldId:"",selectedWorldId,sessionId:input.sessionId,phase:"idle",requirementStatus:"not-requested"};
+        const [formal,world]=await Promise.all([plugins.requestCraftmineHost("godotRuntime.describe",{worldId}),plugins.requestCraftmineHost("world.read",{id:worldId})]) as any[];
+        if(await godotSelection()!==selectedWorldId||notificationViewingSessionId!==input.sessionId)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
+        const adoption=job?.candidateId?(await plugins.requestCraftmineHost("godotCandidate.read",{worldId,candidateId:job.candidateId}) as any)?.adoption:null;
+        return {...creationTaskStatus(worldId,input.sessionId,job,formal,creationAutoApply.isApplying(job?.jobId,input.sessionId),creationAutoQueue.status(job?.jobId,input.sessionId),adoption),selectedWorldId,worldTitle:world?.title};
       }
       if(payload.channel==="godot.creationTarget"){
         if(!Object.hasOwn(input,"sessionId")||Object.keys(input).some(key=>!['sessionId','selection'].includes(key))||(input.sessionId!==null&&(typeof input.sessionId!=="string"||!input.sessionId||input.sessionId.length>240)))throw Error("CREATION_REQUEST_INVALID");
@@ -8555,7 +8692,7 @@ function registerIpc() {
     return { title };
   });
 
-  handleWithEvent(IPC.invoke.agentPrompt, async (event, req: AgentPromptRequest) => {
+  const submitAgentPrompt = async (event: {sender: {id: number}}, req: AgentPromptRequest, automaticRepair?: CreationRepairInput) => {
     assertMainWindowSender(event);
     if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
@@ -8567,7 +8704,7 @@ function registerIpc() {
     // context is deliberately fail-safe.
     const requestedViewingSessionId =
       typeof req.viewingSessionId === "string" ? req.viewingSessionId.trim() : "";
-    notificationViewingSessionId =
+    if (!automaticRepair) notificationViewingSessionId =
       requestedViewingSessionId && requestedViewingSessionId === req.sessionId
         ? requestedViewingSessionId
         : null;
@@ -8812,7 +8949,7 @@ function registerIpc() {
     let result: { accepted: boolean; turnId: string };
     try {
       const craftmineWorld = await bindCraftmineTurn(req.sessionId, durableTurnId, session,
-        { id: userMessage.id, text: userMessage.content },{owner:event.sender.id,capture:creationCapture});
+        { id: userMessage.id, text: userMessage.content },{owner:event.sender.id,capture:creationCapture,...(automaticRepair?{continuationContext:automaticRepair.context}:{})});
       result = await sidecar.call<{ accepted: boolean; turnId: string }>(
         "agent.prompt",
         {
@@ -8845,7 +8982,18 @@ function registerIpc() {
       data: { providerId: launch.providerId, modelId: launch.modelId },
     });
     return result;
-  });
+  };
+  // The public IPC deliberately accepts only the player's request. A renderer
+  // cannot supply the host-only continuation context through extra arguments.
+  handleWithEvent(IPC.invoke.agentPrompt, (event, req: AgentPromptRequest) => submitAgentPrompt(event, req));
+  creationAutomaticPrompt = async (input, request) => {
+    if (!mainWindow || mainWindow.isDestroyed()) throw Error("CREATION_HOST_UNAVAILABLE");
+    const event = {sender: mainWindow.webContents, senderFrame: mainWindow.webContents.mainFrame};
+    return submitAgentPrompt(event, {
+      sessionId: input.context.sessionId, content: request.content, messageId: request.messageId,
+      ...(request.retryFrom ? {truncateFromMessageId: request.retryFrom} : {}),
+    }, input);
+  };
 
   handle(IPC.invoke.agentCompact, async (req: { sessionId: string }) => {
     if (!host || !sidecar) throw new Error("backend unavailable");
@@ -8897,6 +9045,13 @@ function registerIpc() {
   handle(IPC.invoke.agentAbort, async (req: { sessionId: string }) => {
     if (!sidecar) throw new Error("sidecar unavailable");
     logger.app("session", "info", "prompt aborted", { sessionId: req.sessionId });
+    const cancelledTurn = activeTurns.get(req.sessionId);
+    if (cancelledTurn) {
+      creationStopIntents.user(req.sessionId, cancelledTurn);
+      // Revoke before the first awaited abort so an in-flight bind/repair
+      // cannot publish fresh authority after the player has cancelled.
+      creationTargets.cancel(req.sessionId, cancelledTurn); creationAutoQueue.cancel(req.sessionId, cancelledTurn);
+    }
     const executionId =
       approvedExecutionIdsBySession.get(req.sessionId) ??
       [...claimedExecutionSessions].find(
@@ -10168,6 +10323,7 @@ const QUIT_TURN_SETTLE_BUDGET_MS = 2_000;
 
 async function settleRunningTurnsForQuit(): Promise<void> {
   const sessions = [...activeTurns.keys()];
+  creationStopIntents.shutdown(activeTurns);
   const deadline = Date.now() + QUIT_TURN_SETTLE_BUDGET_MS;
   // The newest snapshot of every streaming reply lands first: it is the
   // fallback if the abort below does not produce a final row in time.
@@ -10240,6 +10396,8 @@ app.on("before-quit", (event) => {
     if (craftmineQuitPreparation) return;
     craftmineQuitPreparation = (async () => {
       if (godotCopies.busy || godotExportBusy) throw Error("Wait for world copy or export to finish, or cancel the export before quitting");
+      groundMaintenanceScheduler.suspend();
+      await creationAutoQueue.suspend();
       await groundMaintenance.stopAll();
       await godotCandidates.closeForDeparture();
       godotVerifier.cancelAll();
@@ -10252,6 +10410,8 @@ app.on("before-quit", (event) => {
       app.quit();
     }, (error) => {
       quitConfirmed = false;
+      groundMaintenanceScheduler.resume();
+      void creationAutoQueue.continue().catch(error => logger.app("plugin", "warn", "creation recovery after cancelled shutdown", {data: String(error)}));
       logger.app("persistence", "error", "world checkpoint blocked application quit", { data: String(error) });
       sendToRenderer(IPC.event.toast, { message: updaterLocale.startsWith("zh")
         ? "世界尚未保存，已暂停退出。请检查世界面板后重试。"
@@ -10261,6 +10421,7 @@ app.on("before-quit", (event) => {
   }
 
   quitting = true;
+  groundMaintenanceScheduler.dispose();
   tray?.destroy();
   tray = null;
   if (pluginLauncherAccelerator) {

@@ -158,7 +158,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     // channel and no model tool exposes it. Routes that the core does not
     // implement are deliberately absent rather than opened as generic RPC.
     const godotRoutes={
-      'godotBuild.latest':[['worldId'],['sessionId']],
+      'godotBuild.latest':[[],['worldId','sessionId']],
       'task.recoverable':[['projectId','worldId'],[]],
       'godotWorld.initialize':[['worldId','title','baseId','baseBuild','snapshot'],[]],
       'godotWorld.initStatus':[['worldId'],[]],
@@ -231,6 +231,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     if(Object.hasOwn(godotRoutes,method)){
       const [required,optional]=godotRoutes[method];
       fields(params,required,optional);
+      if(method==='godotBuild.latest'){
+        if(!Object.hasOwn(params,'worldId')&&!Object.hasOwn(params,'sessionId'))throw Error('SESSION_OR_WORLD_ID_REQUIRED');
+        if(Object.hasOwn(params,'worldId'))boundedText(params.worldId,128);
+        if(Object.hasOwn(params,'sessionId'))boundedText(params.sessionId,240);
+      }
       const result=await core.call(method,params,method.startsWith('backup.')?120000:60000);
       // The existing authorized build route performs the same dispatch as the
       // model tool. No additional renderer or generic executor route is opened.
