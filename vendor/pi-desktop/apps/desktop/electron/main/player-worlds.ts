@@ -3,11 +3,12 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 
 export type PlayerWorldKind='web'|'godot';
-type Row={id:string;title?:string;runtimeKind?:string;baseId?:string;base?:{id?:string};state?:string;creation?:{progress?:number;error?:{message?:string};actions?:string[]}|null};
+type Row={id:string;title?:string;runtimeKind?:string;baseId?:string;base?:{id?:string};state?:string;creation?:{progress?:number;error?:{message?:string}|null;actions?:string[]}|null};
 type Link={operationId:string;worldId?:string;returnWorldId?:string|null};
 type Index={format:'craftmine.player-worlds/1';slots:Partial<Record<PlayerWorldKind,Link>>};
 type Slot={kind:PlayerWorldKind;worldId:string|null;title:string;state:'empty'|'ready'|'initializing'|'failed';error?:string;progress?:number};
 type Dependencies={directory:string;list():Promise<{worlds:Row[];activeWorldId:string|null}>;
+  inspect?(row:Row):Promise<Row>;
   navigate(request:Record<string,unknown>):Promise<unknown>;retry(worldId:string):Promise<unknown>;cancel(worldId:string):Promise<unknown>;changed():void};
 const kinds:PlayerWorldKind[]=['godot','web'];
 const title=(kind:PlayerWorldKind)=>kind==='godot'?'Godot 3D 世界':'Web 世界';
@@ -51,10 +52,15 @@ export function createPlayerWorlds(deps:Dependencies){
       ...(row.creation?.error?.message?{error:row.creation.error.message}:{}),
       ...(typeof row.creation?.progress==='number'?{progress:row.creation.progress}:{})};
   }
+  const inspect=async(row?:Row)=>row&&deps.inspect?deps.inspect(row):row;
   const api={
     async read(){
       const list=await deps.list(),index=readIndex();
-      return {slots:kinds.map(kind=>present(kind,choose(kind,index,list),index.slots[kind]?.worldId)),
+      return {slots:await Promise.all(kinds.map(async kind=>{
+        const row=choose(kind,index,list);
+        try{return present(kind,await inspect(row),index.slots[kind]?.worldId);}
+        catch{return {...present(kind,row,index.slots[kind]?.worldId),state:'failed' as const,error:'暂时无法读取这个世界的状态，请重试。'};}
+      })),
         activeKind:playerWorldKind(list.worlds.find(row=>row.id===list.activeWorldId)??{id:''}),activeWorldId:list.activeWorldId};
     },
     /** Called only after successful explicit navigation; old bases remain untouched. */
@@ -71,14 +77,14 @@ export function createPlayerWorlds(deps:Dependencies){
       const work=(async()=>{
       const index=readIndex(),link=index.slots[kind];
       if(!link?.worldId)throw Error('PLAYER_WORLD_UNAVAILABLE');
-      const list=await deps.list(),row=list.worlds.find(value=>value.id===link.worldId);
+      const list=await deps.list(),row=await inspect(list.worlds.find(value=>value.id===link.worldId));
       if(!row||list.activeWorldId!==link.worldId)throw Error('PLAYER_WORLD_CHANGED');
       if(kind==='godot'&&row.state==='initializing')await deps.cancel(link.worldId);
       // Other explicit navigation can occur outside this service. Do not
       // overwrite it after an asynchronous initializer cancellation.
       if((await deps.list()).activeWorldId!==link.worldId)throw Error('PLAYER_WORLD_CHANGED');
       if(link.returnWorldId&&link.returnWorldId!==link.worldId)await deps.navigate({operation:'switch',id:link.returnWorldId});
-      const current=await deps.list();return {...present(kind,current.worlds.find(value=>value.id===link.worldId),link.worldId),activeWorldId:current.activeWorldId};
+      const current=await deps.list();return {...present(kind,await inspect(current.worlds.find(value=>value.id===link.worldId)),link.worldId),activeWorldId:current.activeWorldId};
       })().finally(()=>{pending=null;});
       pending={kind,action:'cancel',work};return work;
     },
@@ -100,6 +106,7 @@ export function createPlayerWorlds(deps:Dependencies){
           list=await deps.list();row=choose(kind,index,list);
           if(!row)throw Error('PLAYER_WORLD_CREATE_UNCONFIRMED');
         }else if(index.slots[kind]?.worldId!==row.id){index.slots[kind]={operationId:index.slots[kind]?.operationId??randomUUID(),worldId:row.id};write(index);}
+        row=(await inspect(row))!;
         const slot=present(kind,row);
         if((slot.state==='initializing'||slot.state==='failed')&&list.activeWorldId!==row.id){
           index=readIndex();index.slots[kind]={...index.slots[kind]!,returnWorldId:list.activeWorldId};write(index);
@@ -110,13 +117,13 @@ export function createPlayerWorlds(deps:Dependencies){
           await deps.retry(row.id);
           const current=await deps.list();
           if(current.activeWorldId!==row.id)throw Error('PLAYER_WORLD_ENTRY_UNCONFIRMED');
-          return present(kind,current.worlds.find(value=>value.id===row!.id),row.id);
+          return present(kind,await inspect(current.worlds.find(value=>value.id===row!.id)),row.id);
         }
         if(slot.state==='initializing'&&list.activeWorldId===row.id)return slot;
         await deps.navigate({operation:'switch',id:row.id});
         const confirmed=await deps.list();
         if(confirmed.activeWorldId!==row.id)throw Error('PLAYER_WORLD_ENTRY_UNCONFIRMED');
-        return present(kind,confirmed.worlds.find(value=>value.id===row!.id),row.id);
+        return present(kind,await inspect(confirmed.worlds.find(value=>value.id===row!.id)),row.id);
       })().finally(()=>{pending=null;});
       pending={kind,action:'enter',work};return work;
     },

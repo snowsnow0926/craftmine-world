@@ -10,6 +10,10 @@ active world ID. It never creates a world or starts a model. A slot contains
 kind, title, nullable worldId, state (empty/initializing/ready/failed), and real
 progress or failure details when available. Ready means durable playability;
 the UI still awaits `world.playerEnter({kind})` before completing navigation.
+The raw world index is read first; only the two chosen records are enriched
+with initialization status. This read disables automatic initialization resume,
+so opening the cards does not build unrelated archived worlds. Explicit entry
+uses the normal lifecycle to select and resume an initializing world.
 
 Slot preferences and stable creation-operation IDs live in `player-worlds.json`
 within the selected application data directory. This is an index of Core-owned
@@ -25,6 +29,8 @@ initializing and is observed until ready; retry uses that world's existing
 initializer, never another world. Cancel ends only owned initialization, retains
 the slot/draft and returns to the recorded original world when possible. Missing
 pinned worlds and corrupt indexes require recovery, never silent replacement.
+Cancel holds the same mutation lock as entry. After asynchronous cancellation,
+it rechecks selection before restoring the origin; outside navigation wins.
 
 Web creation with an operationId now journals its chosen world ID before the
 Core create. An identical request recovers the same durable record after a lost

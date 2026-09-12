@@ -1584,7 +1584,13 @@ async function navigateCraftmineManagedWorld(request: Record<string, unknown>): 
 }
 const playerWorlds=createPlayerWorlds({
   directory:dataDir,
-  list:async()=>await godotPanel.invoke('world.list',{}) as any,
+  list:async()=>await plugins.invokePanelBridge('craftmine.world','world.list',{}) as any,
+  inspect:async row=>{
+    if(row.runtimeKind!=='godot')return row;
+    const status=await godotCreation?.status(row.id,{resume:false});
+    if(!status)throw Error('PLAYER_WORLD_STATUS_UNAVAILABLE');
+    return {...row,...status};
+  },
   navigate:async request=>{
     if(worldRemoval.busy)throw Error('WORLD_REMOVAL_BUSY');
     if(request.operation==='switch')rearmCollisionMaintenance(request.id as string);
