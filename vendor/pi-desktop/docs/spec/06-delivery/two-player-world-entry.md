@@ -62,3 +62,11 @@ checks require empty target home and an authoritative null binding; they do not
 manufacture a task or claim restored generated conversation history. Existing
 bound-conversation and real-model acceptance remain separate. Commit and syntax
 checking of this harness do not imply it has run against a final package.
+
+When a hidden normal Windows capture cannot provide pixels, the same driver can
+run `--web-visual-only` in a separate fresh offscreen profile. This mode enters
+only Web, verifies the original iframe/canvas and attached view, saves a PNG and
+quits. It does not run or claim normal-renderer shortcut/transition acceptance.
+Its report explicitly separates offscreen visual observation from the strict
+normal interaction run. No model call, physical input or window activation is
+permitted in either mode.
