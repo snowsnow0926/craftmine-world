@@ -1,13 +1,13 @@
 {
   "format": "craftmine.development/1",
   "objective": "按 Godot 多底座计划循环开发：中央世界、右侧对话、真实工程创作、多底座、保存恢复、作品复用与 Windows 交付",
-  "currentMilestone": "preview.11成品已生成并通过26项包内验收；按用户要求收尾commit/push，新增真实模型试验延期。",
+  "currentMilestone": "preview.15成品已生成并通过安装器 payload、便携包完整性与回归测试；当前进入真实玩家和干净 Windows 生命周期验收阶段。",
   "baseline": "2f84da9e9779226cf153861ce5a397be1442f2b5",
-  "updated": "2026-09-11T08:43:09.340Z",
+  "updated": "2026-09-12T00:00:00.000Z",
   "execution": {
     "scope": "current_codex_thread",
-    "status": "creation_continuity_closed_at_user_request",
-    "reason": "用户明确要求节省token，完成手头工作后直接commit/push；保留未运行模型与外部验收边界。",
+    "status": "audit_complete_next_acceptance",
+    "reason": "已完成项目复盘；代码与包验证通过，待真实玩家、干净 Windows 生命周期和正式授权边界验收。",
     "activeGoal": false,
     "recurringDevelopment": false,
     "executionMode": "goal",
@@ -26,10 +26,13 @@
     "worktree": "D:/Craftmine World",
     "branch": "master",
     "feedbackResolution": "docs/FEEDBACK_RESOLUTION_2026-09-11.md",
-    "latestDeliveredVersion": "0.14.4-preview.11",
-    "latestDeliveryRecord": "docs/evidence/creation-continuity-final-20260911/package-evidence.json",
+    "latestDeliveredVersion": "0.14.4-preview.15",
+    "latestDeliveryRecord": "docs/evidence/package-preview15-20260912.json",
     "pushAuthorizedForCurrentBatch": true,
-    "developmentDeliveryRecord": "docs/CREATION_CONTINUITY_DELIVERY_2026-09-11.md"
+    "developmentDeliveryRecord": "docs/CREATION_CONTINUITY_DELIVERY_2026-09-11.md",
+    "latestPackageCommit": "ab381fe8d5fef9af6bbc4899722b7c8989a4c299",
+    "latestPackageEvidenceLocal": "desktop/build/releases/ab381fe8d5fe-800e46ce-288a-422a-a1f7-87f45e452727/package-evidence.json",
+    "projectReview": "docs/PROJECT_REVIEW_2026-09-12.md"
   },
   "godotMultibasePlan": {
     "document": "docs/GODOT_MULTIBASE_DEVELOPMENT_PLAN.md",

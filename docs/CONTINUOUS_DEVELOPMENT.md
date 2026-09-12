@@ -1,8 +1,8 @@
 # craftmine world / 最中幻想：目标与持续开发路线
 
-更新：2026-09-09。用户已重新授权按 Windows 客户端计划 v2.1 持续开发，采用 Rust 创作核心并保留完整 PI 桌面体验。
+更新：2026-09-12。当前源码与 Windows preview.15 成品已完成一次项目复盘；采用 Rust 创作核心并保留完整 PI 桌面体验。下一阶段先做真实玩家和干净 Windows 生命周期验收，再继续扩展 M5。
 
-**本线程执行状态：持续开发中。** 当前目标覆盖 [Windows 客户端计划 v2.1](<D:/Craftmine World/docs/WINDOWS_CLIENT_REUSE_PLAN.md>) 的 W0–W5，自动接续为 `craftmine-windows`。W0 接入探针已通过，W1 完成首批 Rust 世界存储、完整桌面外壳适配与打包组件验证，后续验收仍在进行。具体进度见 [执行状态](<D:/Craftmine World/docs/DEVELOPMENT_STATUS.json>)、[开发记录](<D:/Craftmine World/docs/WINDOWS_DEVELOPMENT_LOG.md>) 与 [第一批报告](<D:/Craftmine World/docs/WINDOWS_BATCH_01.md>)。以下保留历史产品目标与证据；旧网页阶段的通过不能替代新桌面阶段的验收。
+**本线程执行状态：审计完成，等待验收输入。** 当前源码基线为 `ab381fe8d5fef9af6bbc4899722b7c8989a4c299`，Windows 成品为 `0.14.4-preview.15`。具体进度见 [执行状态](<D:/Craftmine World/docs/DEVELOPMENT_STATUS.json>)、[项目复盘](<D:/Craftmine World/docs/PROJECT_REVIEW_2026-09-12.md>)、[开发记录](<D:/Craftmine World/docs/WINDOWS_DEVELOPMENT_LOG.md>) 与 [第一批报告](<D:/Craftmine World/docs/WINDOWS_BATCH_01.md>)。以下保留历史产品目标与证据；旧网页阶段的通过不能替代新桌面阶段的验收。
 
 ## 产品目标
 

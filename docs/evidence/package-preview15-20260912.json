@@ -1,0 +1,29 @@
+{
+  "format": "craftmine.package-summary/1",
+  "version": "0.14.4-preview.15",
+  "commit": "ab381fe8d5fef9af6bbc4899722b7c8989a4c299",
+  "installer": {
+    "path": "desktop/build/releases/ab381fe8d5fe-800e46ce-288a-422a-a1f7-87f45e452727/output/Craftmine-World-Setup-0.14.4-preview.15.exe",
+    "bytes": 373282127,
+    "sha256": "94e8ee93eff1d5e494433edc6367489513f7a5971a60ace1f8bbe9d81a1602ee",
+    "payloadVerified": true
+  },
+  "portable": {
+    "path": "desktop/build/releases/ab381fe8d5fe-800e46ce-288a-422a-a1f7-87f45e452727/portable-c6e3a13a-e56b-4e61-adcf-9f1e44280d6b/Craftmine-World-portable-ab381fe8d5fe.zip",
+    "bytes": 1025579370,
+    "sha256": "87c0925672266f94ddbe8300c011cc2b023422fece7467ddce349fd14c97d811",
+    "sealVerified": true
+  },
+  "checks": {
+    "rootNpmTest": { "passed": 304, "failed": 0 },
+    "craftmineCoreCargoTest": { "passed": 336, "failed": 0, "ignored": 7 },
+    "desktopTypecheck": "passed",
+    "styleTokens": "passed",
+    "manifestDrift": "passed"
+  },
+  "acceptanceBoundary": {
+    "cleanWindowsLifecycle": "not_verified",
+    "latestRealPlayerM5Story": "not_verified",
+    "formalLicensing": "pending"
+  }
+}
