@@ -339,6 +339,10 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
             )?)?);
         }
         "world.list" => return Ok(serde_json::to_value(journal.world_list()?)?),
+        "world.archivedList" => return Ok(serde_json::to_value(journal.world_archived_list()?)?),
+        "world.archiveStatus" => return journal.world_archive_status(params["id"].as_str().context("WORLD_ID_REQUIRED")?),
+        "world.archiveFailed" => return journal.world_archive_failed(&params),
+        "world.restoreArchived" => return journal.world_restore_archived(params["id"].as_str().context("WORLD_ID_REQUIRED")?),
         "world.read" => {
             return Ok(serde_json::to_value(journal.world_read(
                 params["id"].as_str().context("WORLD_ID_REQUIRED")?,

@@ -59,6 +59,7 @@ if(bridge) {
   void bridge.invoke('app.getAppearance').then(applyAppearance).catch(()=>{});
   bridge.on?.('appearance:changed',applyAppearance);
   bridge.on?.('godot-world:state',onGodotState);
+  bridge.on?.('craftmine-world-list-changed',()=>{void refreshList().catch(showError);});
   bridge.on?.('craftmine-runtime-recovered',value=>{void recoverMaintainedWorld(value?.worldId).catch(showError);});
   bridge.on?.('craftmine-presentation',value=>{
     const active=value?.active===true;
