@@ -7,6 +7,7 @@ import {execFileSync} from 'node:child_process';
 const root=path.resolve(import.meta.dirname,'..');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const head=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8',windowsHide:true}).trim();
+const committedBytes=relative=>execFileSync('git',['show',head+':'+relative],{cwd:root,windowsHide:true,maxBuffer:64*1024*1024});
 execFileSync(process.execPath,[path.join(root,'desktop/godot/shared/tools/build-base-catalog.mjs')],{cwd:root,stdio:'pipe',windowsHide:true});
 const catalogPath=path.join(root,'plugins/craftmine-world/guidance/catalog.json');
 const catalog=JSON.parse(fs.readFileSync(catalogPath,'utf8'));
@@ -29,7 +30,7 @@ for(const name of fs.readdirSync(declarations).filter(name=>name.endsWith('.json
   for(const [entries,prefix]of [[manifest.entries,manifest.sourceDirectory+'/'],[manifest.externalEntries,'']])for(const entry of entries??[]){
     const source=path.join(root,prefix+entry.path),info=fs.lstatSync(source);
     if(!info.isFile()||info.isSymbolicLink())throw Error('Declared source is not a regular file: '+source);
-    const bytes=fs.readFileSync(source),digest=hash(bytes);
+    const bytes=committedBytes(prefix+entry.path),digest=hash(bytes);
     if(entry.bytes!==bytes.length||entry.sha256!==digest){entry.bytes=bytes.length;entry.sha256=digest;dirty=true;changed++;}
   }
   if(dirty)fs.writeFileSync(file,JSON.stringify(manifest,null,2)+'\n');
