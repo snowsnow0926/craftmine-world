@@ -52,3 +52,9 @@ node tests/builtin-source-library-install-native.mjs D:/cm-source-adoption-basel
 两次宠物安装生成不同实例，8 个实际包文件通过读取与哈希检查；不兼容运行代码要求仍被拒绝、源码不变；世界正式内容与进度不变。报告 `D:/cm-pet-source-package-0912/test-results/builtin-install-SrOZ5B/report.json`，SHA-256 为 `dfdeb13300547e4ae46e1a981385d544980d93715ca0407f8786b1781dd8e79a`。core SHA-256 为 `fe197502292904b7c308d9e9447493a1f745fccfd23cb7dbc52e26e9144ee590`。
 
 本结果仍是零模型、零引擎、零窗口的源码事务预检，不代替总控的实际组件行为与成品测试。
+
+## preview.15 成品
+
+Windows 成品源码 `9c15948da1c89aa3b6e5d8774d53466c5369d517` 已构建，安装载荷核验通过。安装包为 `D:/cm-promo-loop-0912/desktop/build/releases/9c15948da1c8-d6d615ce-dec4-4906-b535-83cfb57844ab/output/Craftmine-World-Setup-0.14.4-preview.15.exe`，366364698 字节，SHA-256 `bc378099974d8ab965f1416e4774da0ba5d8e56ea5a0783ebb197edc67969b09`。便携目录同 release 的 `output/win-unpacked`。
+
+成品内已完成一只宠物的正常安装、源码检查、候选预览和采用，实际预览图见 `D:/cm-pet-product-demo-0912/test-results/desktop-native-complete-jBieXB/pet-preview.png`。首次续验驱动曾把安装器实例 ID误当作场景 `entity_id`，因此该报告只归类为测试脚本身份映射失败；实际安装、检查、预览和采用均已发生，狗已随玩家移动。修正版续验脚本已提交，保存重开仍需独立完成后再把成品宠物链标为全部通过。
