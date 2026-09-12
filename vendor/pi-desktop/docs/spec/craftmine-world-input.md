@@ -50,6 +50,8 @@ updates preserve this background attachment. Preparing worlds are excluded from
 native input ownership and remain below the application renderer, including when
 closed play normally lowers the application renderer. Explicit preview or
 promotion releases that background designation. Disposal removes the native view.
+World navigation also sets `focusOnNavigation: false`: Chromium's internal
+navigation focus cannot bypass the host's later displayed-owner handoff.
 
 `cancelStaging(worldId)` only cancels an in-flight stage attempt for that world.
 It marks cancellation before runtime creation, aborts an owned runtime's pending
