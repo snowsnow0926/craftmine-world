@@ -62,6 +62,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   // A load failure and an action failure are different: a successful re-list
   // must not erase the reason a create or switch failed.
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -96,23 +97,36 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     try {
       const list = await bridge.list();
       if (!current()) return;
-      // Capabilities load even with no world yet, so the first creation can
-      // still offer the bases the host actually delivered.
-      const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
-      if (!current()) return;
-      const archived = caps?.archiveFailed ? parseWorldList(await bridge.call("world.archivedList")).worlds : [];
-      if (!current()) return;
-      const task = list.activeWorldId
-        ? await bridge.activeTask(list.activeWorldId).catch(() => null)
-        : null;
-      if (!current()) return;
+      // The playable list is authoritative on its own. Optional task/archive
+      // reads must not hold entry, cancellation or a failed switch's busy lock.
+      if (activeWorldIdRef.current !== list.activeWorldId) {
+        setActiveTask(null);
+        setCapabilities(null);
+      }
+      activeWorldIdRef.current = list.activeWorldId;
       setWorlds(list.worlds);
-      setArchivedWorlds(archived);
       setActiveWorldId(list.activeWorldId);
-      setCapabilities(caps);
-      setActiveTask(task);
       setStatus("ready");
       setLoadError(null);
+      setDetailError(null);
+      // Metadata remains scoped to this exact refresh/selection. Starting a
+      // newer read invalidates late replies without withholding the world list.
+      void (async () => {
+        const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
+        if (!current()) return;
+        setCapabilities(caps);
+        try {
+          const archived = caps?.archiveFailed ? parseWorldList(await bridge.call("world.archivedList")).worlds : [];
+          if (current()) setArchivedWorlds(archived);
+        } catch (failure) {
+          if (current()) setDetailError(worldErrorMessage(failure, lang));
+        }
+      })();
+      if (list.activeWorldId) {
+        void bridge.activeTask(list.activeWorldId).catch(() => null).then(task => {
+          if (current()) setActiveTask(task);
+        });
+      }
     } catch (failure) {
       if (!current()) return;
       setStatus("error");
@@ -388,7 +402,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     activeWorld: worlds.find((entry) => entry.id === activeWorldId) ?? null,
     capabilities,
     activeTask,
-    error: actionError ?? loadError,
+    error: actionError ?? loadError ?? detailError,
     notice,
     busy,
     bridge,
