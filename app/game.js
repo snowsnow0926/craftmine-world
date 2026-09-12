@@ -3,6 +3,7 @@ import { makeWorldRuntime } from './world-runtime.mjs';
 import { createExtensionTable, disposeExtensionTable } from './extension-runtime.mjs';
 import { observePreview, stepPreview } from './preview-probe.mjs';
 import { installNativeGameAcceptance } from './craftmine-acceptance-game.mjs';
+import { worldKeyboardInput } from './world-keyboard.mjs';
 (() => {
   const nonce = location.hash.slice(1) || document.querySelector('meta[name="craftmine-nonce"]')?.content || '', parentOrigin = new URL(location.href).origin;
   const replyOrigin = parentOrigin === 'null' ? '*' : parentOrigin;
@@ -56,6 +57,14 @@ import { installNativeGameAcceptance } from './craftmine-acceptance-game.mjs';
         send('loaded',{snapshot:snapshot(),version:build.id,renderer:engine.software?'兼容 3D':'WebGL'});
       }
       if(!engine)return;
+      if(m.type==='keyboard-reset'&&m.worldId===worldId&&!preview){engine.pauseInput();enter.hidden=immersionActive;}
+      if(m.type==='keyboard'&&m.worldId===worldId&&!preview&&immersionActive){
+        const input=worldKeyboardInput(m.input);
+        if(input&&(input.type==='keyup'||(!frozen&&!immersionPaused))){
+          if(input.type==='keydown')engine.activateKeyboardInput();
+          engine.handleKeyboardEvent({...input,preventDefault(){}});
+        }
+      }
       if(m.type==='request-observe'||m.type==='request-step'){
         if(!preview)throw Error('需求检查仅适用于独立预览');
         frozen=true;engine.pauseInput();engine.setActive(false);await engine.behaviors.flush();

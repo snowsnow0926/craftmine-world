@@ -12,3 +12,11 @@ ownership independently from mouse capture. Enable keyboard input without focus
 or Pointer Lock, and revoke it on dialogue/pause/leave transitions. Preserve the
 manual gate outside immersive desktop play. This changes the actual engine input
 state rather than simulating a click or adding test-only activation.
+
+Input activation alone did not guarantee key delivery: the desktop focuses the
+parent WebContents, while the game originally listened only inside its iframe.
+Forward trusted parent gameplay keys through the existing scoped message channel
+instead of introducing focus manipulation. The child invokes the same engine
+handler, with its own state and world checks. This preserves native child-key
+handling and application shortcuts while ensuring the outer entry can route W/E
+without relying on an accidental prior iframe focus.
