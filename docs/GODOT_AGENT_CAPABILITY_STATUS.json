@@ -40,7 +40,7 @@
     {
       "id": "GU3",
       "status": "in-progress",
-      "next": "Actual module configure persistence gap reproduced: same-instance restore retains only memory, reconstructed instance resets; implement existing per-instance source overrides with typed declaration preservation, then actual check/adoption/cold proof"
+      "next": "Audited module source capture/preview and CP0 declaration preservation integrated; verify the actual packed broker/Core route, then real parameter check/adoption/cold proof and broader property scopes"
     },
     {
       "id": "GU4",
@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Fixed catalog suggestion/UI/host source install integrated; sealed a9 passes 25 real product steps including deleted download and cold same-op recovery; module parameter source persistence and player quality/performance remain"
+      "next": "Fixed catalog source reuse passed 25 sealed a9 product steps; CP0 parameter declarations now survive actual Core second-world export/import, with engine checks explicitly blocked in that source test; player quality/performance and full parameter adoption remain"
     },
     {
       "id": "GU7",
@@ -64,6 +64,13 @@
     }
   ],
   "evidence": [
+    {
+      "kind": "real-core-source-only",
+      "test": "tests/godot-agent/parameter-declaration-roundtrip.test.mjs",
+      "path": "D:/cm-agent-godot-0912/test-results/parameter-core-SPP3t0/report.json",
+      "status": "passed",
+      "scope": "Root rerun with sealed a9 Core: original CP0 declarations and local overrides survive export/install/re-export into second world; checks blocked without engine, no player model"
+    },
     {
       "kind": "real-core",
       "test": "tests/godot-agent/query-core.test.mjs",

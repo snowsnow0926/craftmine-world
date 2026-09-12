@@ -10,7 +10,33 @@ The initial audit found existing mode-specific history, asset and package capabi
 
 Player acceptance uses the selected session model, thinking level and ordinary product configuration. There are no additional test token, model-request or whole-turn limits. Diagnostic bounded scenarios and older evaluator runs remain distinct from player acceptance. Every test must remain isolated, hidden/headless, cancellable and free of physical mouse/keyboard or focus manipulation.
 
-## First integrated increments
+## Module source parameters and declaration preservation
+
+`9fc9a7b2` adds a pure source capture/preview compiler for the two audited Kenney
+wrappers. `6dba01da` preserves original CP0 declarations in existing instance
+records and through source export, with byte/ref/lock/scene validation. Root
+replayed the actual Core second-world round trip successfully in
+`test-results/parameter-core-SPP3t0/report.json`; its build checks remain blocked
+because this source-only test deliberately has no executor.
+
+`f6c064ba` adds the query routes `module-parameters` and
+`module-parameter-preview` to the existing tool. They use the host capture and
+immutable Core source, return source values or one parent-scene patch proposal,
+and perform no writes, runtime setters or adoption. The plugin bundles both
+modules independently of checkout paths. Nine pure compiler tests, four loader
+tests and 52 affected broker/guidance/wiring regressions pass. This is not yet
+live host capture, physical parameter validation or cold-open evidence.
+
+Independent review found a missing `sessionDrafts` capability dependency for
+the two new modes. It is now explicit: disabled means unavailable, absent means
+unknown, while ordinary static query modes keep their original dependency.
+The reviewer closed the finding after independently passing 30 focused tests.
+
+The original runtime-only persistence audit is retained as the defect
+reproduction. Full parameter adoption, shared-material editing and player-model
+reuse remain open; none of GA01–GA28 is completed by these source-only checks.
+
+## First integrated increments (earlier work)
 
 `7ff9bef9` and `b648c0e2` add immutable query continuation, source identity, actual class declaration lines, explicit incomplete resources, Unicode paging, index coverage and file-hash cross-checking. Six new tests reproduced missing behavior before the fix. Query/broker regression passed 41 tests after review fixes. A real Rust core test creates 30 scripts in valid source transactions, advances source HEAD and confirms that continuation still finds the original symbol at its old revision. A mistaken initial test fixture exceeded the core's 16-file create transaction; the fixture was corrected to use normal create/patch transactions rather than changing the product limit.
 
