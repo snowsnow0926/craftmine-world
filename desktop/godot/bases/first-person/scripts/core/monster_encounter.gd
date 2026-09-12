@@ -22,6 +22,11 @@ func _physics_process(delta: float) -> void:
 	var player := get_node_or_null(player_path) as PlayerController
 	if player == null or global_position.distance_to(player.global_position) > 3.0:
 		return
+	var space := get_world_3d().direct_space_state
+	var query := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP, player.global_position + Vector3.UP, 1)
+	query.exclude = [get_rid(), player.get_rid()]
+	if not space.intersect_ray(query).is_empty():
+		return
 	attack_remaining = attack_cooldown
 	player.take_damage(attack_damage)
 
@@ -40,7 +45,8 @@ func interact() -> Dictionary:
 		for item in loot:
 			if inventory.add(item, 1) > 0:
 				received.append(item)
-	loot_taken = true
+	if received.size() == loot.size():
+		loot_taken = true
 	loot_collected.emit(received)
 	return {"handled": true, "items": received}
 
@@ -49,18 +55,26 @@ func respawn() -> bool:
 		return false
 	reset()
 	loot_taken = false
+	attack_remaining = 0.0
 	return true
 
 func snapshot() -> Dictionary:
 	var value := super.snapshot()
 	value["lootTaken"] = loot_taken
+	value["attackRemaining"] = attack_remaining
 	return value
 
 func restore(data: Dictionary) -> String:
+	if data.has("lootTaken") and not data.lootTaken is bool:
+		return String(target_id) + ": lootTaken 无效"
+	var saved_attack = data.get("attackRemaining", 0.0)
+	if not (saved_attack is float or saved_attack is int) or not is_finite(float(saved_attack)) or float(saved_attack) < 0.0 or float(saved_attack) > attack_cooldown:
+		return String(target_id) + ": attackRemaining 无效"
 	var problem := super.restore(data)
 	if not problem.is_empty():
 		return problem
-	if data.has("lootTaken") and not data.lootTaken is bool:
-		return String(target_id) + ": lootTaken 无效"
-	loot_taken = bool(data.get("lootTaken", false))
+	# Old TargetDummy saves have no loot marker; a dead legacy target is treated
+	# as already settled, preventing an invented retroactive reward.
+	loot_taken = bool(data.lootTaken) if data.has("lootTaken") else is_destroyed
+	attack_remaining = float(saved_attack)
 	return ""
