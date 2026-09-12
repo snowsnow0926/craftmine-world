@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Fixed catalog source reuse passed 25 sealed a9 product steps; CP0 parameter declarations now survive actual Core second-world export/import, with engine checks explicitly blocked in that source test; player quality/performance and full parameter adoption remain"
+      "next": "Identity-bound real Godot 4.7.2 headless frame observation integrated (300 frames: p50 6.899ms, p95 6.964ms, max 6.997ms); GPU/physics/object-count channels remain explicit unknown; player-scale benchmarks and optimization loop remain"
     },
     {
       "id": "GU7",
@@ -301,6 +301,13 @@
       "path": "D:/cm-agent-godot-0912/test-results/initialization-retry-core-0wLVQc/report.json",
       "status": "passed-real-core",
       "scope": "Fresh retry check and explicit continuation across real Core transactions/restart; synthetic executor outputs, no Godot/player"
+    },
+    {
+      "kind": "godot-performance-observation",
+      "commit": "0a8f70c9",
+      "path": "docs/evidence/gu6-performance-observation-20260912/summary.json",
+      "status": "passed-scoped-real-headless-sample",
+      "scope": "Independent Godot 4.7.2 stable headless scratch scene, 300 frames; identity-bound world/build/instance and measurement hash; unavailable GPU/physics/object-count fields preserved as unknown"
     }
   ],
   "limitations": [
