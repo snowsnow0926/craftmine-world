@@ -7,6 +7,8 @@ type Data = Record<string, any>;
 type Domain = (method: string, args: Data) => Promise<any>;
 export type InitializationPreparation = {
   attempt: number; pending: boolean; error: string | null; status: Data | null; cancelled?: boolean;
+  /** Exact durable state before this attempt clears its own cancel marker. */
+  previousStatus?: Data;
 };
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 const SOURCE = new Set([".godot", ".gd", ".tscn", ".tres", ".gdshader", ".gdshaderinc", ".json", ".cfg", ".txt", ".md", ".csv", ".svg", ".obj", ".mtl", ".uid", ".png", ".jpg", ".jpeg", ".webp", ".glb", ".ogg", ".wav"]);
@@ -63,6 +65,7 @@ export function createGodotWorldInitializer(options: {
     };
     if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId)) throw Error("INVALID_WORLD_ID");
     let status = await call("godotWorld.initStatus", {worldId});
+    preparation.previousStatus = status;
     if (recover && status.cancelled === true) {
       await call("godotWorld.initCancelClear", {worldId});
       status = await call("godotWorld.initStatus", {worldId});

@@ -1539,6 +1539,10 @@ godotCreation = createGodotWorldFactory({
   catalogFile: join(godotRoot, "bases", "base-catalog.json"),
   basesRoot: join(godotRoot, "bases"),
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  changed: worldId => {
+    sendToRenderer(IPC.event.craftmineWorldChanged, {worldId});
+    pluginViews.broadcast("craftmine-world-list-changed", {worldId});
+  },
   initialization: {
     start: async (worldId, settings) => {
       const init = await plugins.requestCraftmineHost("godotWorld.initStatus", {worldId}) as any;

@@ -33,3 +33,31 @@ and cancellation methods. Tests that call only the deletion service or private
 router are insufficient to prove this main-process boundary. The UI/Rust harness
 now executes PluginRuntime as well; native normal-rendering acceptance remains a
 separate required product test and must not be inferred from headless fixtures.
+
+## Retry acknowledgement and observer settlement
+
+The `a2c228e7` packaged acceptance exposed a real visible-list race: the new
+check and application passed, and the direct world list reported ready, while
+the renderer retained its earlier cancelled row. A retry acknowledgement can
+arrive before host preflight creates a new initializer preparation. Returning
+the old terminal row at that point also stops list polling; the dialogue retry
+loop would treat it as an immediate new failure.
+
+While the acknowledged retry has not advanced past preparation, the factory
+reports preparation for the previous attempt, a new attempt with no first
+status reply yet, and exact retained replies from before its cancellation-marker
+clear. The initializer preserves that earlier status identity solely for this
+comparison. A newer terminal result after submission is still authoritative;
+durable playable confirmation always takes precedence. The factory removes its
+retry record before notifying both main-renderer and retained-view observers to
+reread state. Notifications carry no invented completion or progress values.
+
+`tests/fb03-retry-observer-headless.mjs` runs the actual list and dialogue hooks,
+navigation coordinator and factory against delayed lifecycle replies. It covers
+both entry points through the acknowledgement gaps and eventual confirmed chat
+or playable row; it does not claim an engine or model run.
+`tests/fb03-confirmed-retry-core.mjs` separately accepts a read-only real confirmed
+profile and world ID, copies the data, and verifies its actual Rust receipt
+through PluginRuntime, the private router, factory and world-list projection
+without altering the saved world. Native packaged acceptance must still rerun
+the original cancellation, restart and retry sequence on the revised build.

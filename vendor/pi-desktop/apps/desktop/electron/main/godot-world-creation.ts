@@ -280,6 +280,8 @@ export type GodotCreationDependencies = {
   domain: (method: string, params: Record<string, unknown>) => Promise<any>;
   materialize: (input: {baseId: string; worldId: string; template: string; out: string}) => unknown;
   makeWorldId?: () => string;
+  /** Tell all world lists to reread durable state after retry scheduling/settlement. */
+  changed?: (worldId: string) => void;
   initialization?: {start: (worldId: string, settings?: {recover?:boolean}) => Promise<void>; error: (worldId: string) => string | null; running: (worldId: string) => boolean;
     cancel?: (worldId: string) => Promise<unknown>; stopAll?: () => Promise<void>;
     preparation?: (worldId: string) => import("./godot-world-initialization").InitializationPreparation | null};
@@ -304,7 +306,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
   const options = readGodotCreateOptions({catalogFile: deps.catalogFile, basesRoot: deps.basesRoot});
   // A retry is scheduled before Core publishes its new build state. Keep that
   // interval visible without changing or discarding Core's previous failure.
-  const retries = new Map<string, {work: Promise<void>; waiting: boolean; cancelled: boolean}>();
+  const retries = new Map<string, {work: Promise<void>; waiting: boolean; cancelled: boolean; previousAttempt: number | undefined}>();
   const retryFailures = new Map<string, {attempt: number; statusKey: string; error: string}>();
   const baseOf = (baseId: string): GodotBaseOption => {
     const base = options.bases.find((candidate) => candidate.id === baseId);
@@ -387,8 +389,9 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         const retry = retries.get(worldId);
         const preparation = deps.initialization?.preparation?.(worldId);
         if (!status.playable && mapped.state === "failed" && retry
-          && (retry.waiting || (preparation?.pending === true
-            && preparationStatusKey(preparation.status) === preparationStatusKey(status)))) {
+          && (retry.waiting || preparation?.attempt === retry.previousAttempt || (preparation?.pending === true
+            && (preparation.status == null || preparationStatusKey(preparation.status) === preparationStatusKey(status)
+              || preparationStatusKey(preparation.previousStatus ?? null) === preparationStatusKey(status))))) {
           return {state: "initializing", creation: {
             operationId: mapped.creation?.operationId ?? "", stage: "retry", progress: 0,
             stages: [{id: "retry", label: "准备重新初始化", status: "running" as const}],
@@ -441,7 +444,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const pending = retries.get(worldId);
       if (pending) return pending.work;
       retryFailures.delete(worldId);
-      const retry = {work: Promise.resolve(), waiting: true, cancelled: false};
+      const retry = {work: Promise.resolve(), waiting: true, cancelled: false, previousAttempt: initialization.preparation?.(worldId)?.attempt};
       const rememberPreparationFailure = () => {
         const preparation = initialization.preparation?.(worldId);
         if (preparation?.error && preparation.status) retryFailures.set(worldId, {
@@ -462,7 +465,8 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
         // The panel acknowledges scheduling; an asynchronous preparation error
         // must appear on its next status read, not become an unhandled rejection.
         rememberPreparationFailure();
-      }).finally(() => retries.delete(worldId));
+      }).finally(() => {retries.delete(worldId);deps.changed?.(worldId);});
+      deps.changed?.(worldId);
       return retry.work;
     },
     async cancel(worldId: string) {
