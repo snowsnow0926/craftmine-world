@@ -72,14 +72,15 @@ export function usePlayerWorlds() {
     } finally {if(operation.current===ticket){busy.current=false;if(alive.current){setPending(null);setCanCancel(false);}}}
   }, [bridge]);
   const cancel=async()=>{
-    if(!bridge||!pending||!canCancel||cancelling)return;
+    if(!bridge||!pending||!canCancel||cancelling)return false;
     setCancelling(true);setError("");
     // Invalidate only the waiting presentation, then await the host-owned
     // initializer cancellation and restoration before re-enabling the cards.
     operation.current++;
-    try {await bridge.call("world.playerCancel",{kind:pending});await refresh();setPending(null);setCanCancel(false);busy.current=false;}
+    try {await bridge.call("world.playerCancel",{kind:pending});await refresh();setPending(null);setCanCancel(false);busy.current=false;return true;}
     catch(failure){
       const message=failure instanceof Error?failure.message:String(failure);
+      let released=false;
       try {
         // A lost reply or an outside selection change may leave no operation
         // to cancel. Only a fresh host read can establish that the target is
@@ -91,10 +92,12 @@ export function usePlayerWorlds() {
           setWorlds(actual);
           if(target&&(target.state!=="initializing"||actual.activeWorldId!==target.worldId)){
             busy.current=false;setPending(null);setCanCancel(false);
+            released=true;
           }
         }
       } catch { /* Unknown state keeps the explicit cancellation retry. */ }
       if(alive.current)setError(message);
+      return released;
     }
     finally{setCancelling(false);}
   };

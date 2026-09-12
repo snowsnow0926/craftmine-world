@@ -25,6 +25,10 @@ while retaining the failure explanation; do not call that proof of successful
 cancellation or restoration. If the read fails or the same initialization is
 still selected, retain the explicit cancellation retry. Return-to-world is only
 offered for a host-reported ready active slot, never an unfinished placeholder.
+Releasing cancellation also releases the corresponding card operation guard.
+The first enabled retry click must work even if the superseded initialization
+poll is still asleep. Operation tickets prevent that older completion from
+clearing the guard of a newer entry. No delay or repeated click is required.
 
 Switching slots is explicit conversation navigation. Capture the prior live
 draft and navigation intent before entering. If typing or session navigation
