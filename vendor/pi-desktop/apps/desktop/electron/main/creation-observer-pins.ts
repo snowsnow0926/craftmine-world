@@ -18,9 +18,16 @@ const CONTROLLER_OBSERVER_RESOURCES=Object.freeze({
   'craftmine_shared/controller_evidence.gd':'shared/controller_evidence.gd',
   'craftmine_shared/scene_mesh_picker_v2.gd':'shared/scene_mesh_picker_v2.gd',
 });
+const COLLISION_OBSERVER_RESOURCES=Object.freeze({
+  '@collisionAdapter':'shared/adapters/creation-sandbox-controller-v2.gd',
+  'craftmine_shared/base_adapter_controller_v1.gd':'shared/adapters/creation-sandbox-controller-v1.gd',
+  'craftmine_shared/progress_collision.gd':'shared/progress_collision.gd',
+  'scripts/reused/player_controller.gd':'bases/creation-sandbox/scripts/reused/player_controller.gd',
+  'scripts/reused/camera_rig.gd':'bases/creation-sandbox/scripts/reused/camera_rig.gd',
+});
 export function loadSceneObserverPins(resourcesRoot: string): SceneObserverPins {
   const hash=(text:string)=>createHash('sha256').update(text).digest('hex');
-  const resources={...SCENE_OBSERVER_RESOURCES,...(Object.values(CONTROLLER_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?CONTROLLER_OBSERVER_RESOURCES:{})};
+  const resources={...SCENE_OBSERVER_RESOURCES,...(Object.values(CONTROLLER_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?CONTROLLER_OBSERVER_RESOURCES:{}),...(Object.values(COLLISION_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?COLLISION_OBSERVER_RESOURCES:{})};
   return Object.freeze(Object.fromEntries(Object.entries(resources).map(([name,relative])=>{
     const text=fs.readFileSync(path.join(resourcesRoot,relative),'utf8').replace(/\r\n/g,'\n');
     return [name,Object.freeze([hash(text),hash(text.replace(/\n/g,'\r\n'))])];
@@ -29,12 +36,18 @@ export function loadSceneObserverPins(resourcesRoot: string): SceneObserverPins 
 export function hasCurrentSceneObserver(files: unknown, pins: SceneObserverPins | undefined): boolean {
   if(!pins||!Array.isArray(files))return false;
   const adapter=files.filter(file=>file?.path==='craftmine_shared/base_adapter.gd');
-  const controller=adapter.length===1&&pins['@controllerAdapter']?.includes(adapter[0].sha256);
+  const collision=adapter.length===1&&pins['@collisionAdapter']?.includes(adapter[0].sha256);
+  const controller=collision||adapter.length===1&&pins['@controllerAdapter']?.includes(adapter[0].sha256);
   const extra=['craftmine_shared/base_adapter_legacy.gd','craftmine_shared/controller_evidence.gd','craftmine_shared/scene_mesh_picker_v2.gd'];
+  const collisionExtra=['craftmine_shared/base_adapter_controller_v1.gd','craftmine_shared/progress_collision.gd','scripts/reused/player_controller.gd','scripts/reused/camera_rig.gd'];
+  if(!collision&&files.some(file=>collisionExtra.slice(0,2).includes(file?.path)))return false;
   if(!controller&&files.some(file=>extra.includes(file?.path)))return false;
-  return [...Object.keys(SCENE_OBSERVER_RESOURCES),...(controller?extra:[])].every(name=>{
+  return [...Object.keys(SCENE_OBSERVER_RESOURCES),...(controller?extra:[]),...(collision?collisionExtra:[])].every(name=>{
     const matches=files.filter(file=>file?.path===name);
-    const expected=pins[controller&&name==='craftmine_shared/base_adapter.gd'?'@controllerAdapter':name];
+    const expected=pins[controller&&name==='craftmine_shared/base_adapter.gd'?(collision?'@collisionAdapter':'@controllerAdapter'):name];
     return matches.length===1&&Array.isArray(expected)&&expected.includes(matches[0].sha256);
   });
+}
+export function hasCurrentCollisionGuard(files:unknown,pins:SceneObserverPins|undefined):boolean {
+  return hasCurrentSceneObserver(files,pins)&&Array.isArray(files)&&files.some(file=>file?.path==='craftmine_shared/base_adapter.gd'&&pins?.['@collisionAdapter']?.includes(file.sha256));
 }

@@ -45,6 +45,23 @@
       "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
     },
     {
+      "path": "adapters/creation-sandbox-controller-v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 3380,
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+    },
+    {
       "path": "adapters/creation-sandbox.gd",
       "role": "source",
       "origin": "authored",
@@ -422,8 +439,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 5557,
-      "sha256": "0a3c4be3fc9b2c71926c3d32fa570b8f7b36742f9f023b12490f919a16498dfa"
+      "bytes": 6004,
+      "sha256": "01ead70a69030cbcb1743e19820a046a22f66a75a90d95b719ac81284412b8bd"
     },
     {
       "path": "observation.d.mts",
@@ -488,6 +505,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 9996,
       "sha256": "366d6d7d0c383bf99ae5927572b19b3db83e8c3c2324bb3d0f439946559cb893"
+    },
+    {
+      "path": "progress_collision.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 3811,
+      "sha256": "c194946727f3d382821f04038614d0a38f7f7b66afdb94a3e01a6c0d787c9098"
     },
     {
       "path": "runtime_bridge.gd",

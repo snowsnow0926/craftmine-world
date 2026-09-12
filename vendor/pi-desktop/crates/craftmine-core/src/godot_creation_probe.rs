@@ -23,8 +23,23 @@ pub(super) fn controller_files()->Vec<(&'static str,String)>{
  ]);profile
 }
 pub(super) fn controller_hash()->String {digest(&serde_json::to_string(&controller_files().iter().map(|(path,text)|json!({"path":path,"sha256":digest(text)})).collect::<Vec<_>>()).unwrap())}
+pub(super) fn collision_files()->Vec<(&'static str,String)>{
+ let mut profile=controller_files();profile.retain(|(path,_)|*path!="craftmine_shared/base_adapter.gd");
+ profile.extend([
+  ("craftmine_shared/base_adapter.gd",include_str!("../../../../../desktop/godot/shared/adapters/creation-sandbox-controller-v2.gd").replace("\r\n","\n")),
+  ("craftmine_shared/base_adapter_controller_v1.gd",include_str!("../../../../../desktop/godot/shared/adapters/creation-sandbox-controller-v1.gd").replace("\r\n","\n")),
+  ("craftmine_shared/progress_collision.gd",include_str!("../../../../../desktop/godot/shared/progress_collision.gd").replace("\r\n","\n")),
+ ]);profile.extend(passage_files());profile
+}
+pub(super) fn collision_hash()->String {digest(&serde_json::to_string(&collision_files().iter().map(|(path,text)|json!({"path":path,"sha256":digest(text)})).collect::<Vec<_>>()).unwrap())}
+fn collision_wrapper(manifest:&Manifest)->bool {
+ let wrapper=collision_files().into_iter().find(|(path,_)|*path=="craftmine_shared/base_adapter.gd").unwrap().1;
+ manifest.files.get("craftmine_shared/base_adapter.gd").is_some_and(|entry|[digest(&wrapper),digest(&wrapper.replace('\n',"\r\n"))].contains(&entry.sha256))
+}
 pub(super) fn validate_controller_manifest(manifest:&Manifest)->Result<()> {
- for(path,text)in controller_files(){
+ let collision=collision_wrapper(manifest);
+ if !collision{ensure!(!manifest.files.keys().any(|p|["craftmine_shared/base_adapter_controller_v1.gd","craftmine_shared/progress_collision.gd"].iter().any(|name|p.eq_ignore_ascii_case(name)||p.to_ascii_lowercase().starts_with(&format!("{name}.")))),"CREATION_COLLISION_PROFILE_MIXED");}
+ for(path,text)in if collision{collision_files()}else{controller_files()}{
   let entry=manifest.files.get(path).ok_or_else(||anyhow::anyhow!("CREATION_CONTROLLER_PROBE_UNSUPPORTED: {path}"))?;
   ensure!([digest(&text),digest(&text.replace('\n',"\r\n"))].contains(&entry.sha256),"CREATION_CONTROLLER_PROBE_UNSUPPORTED: {path}");
   ensure!(!manifest.files.keys().any(|p|p!=path&&(p.eq_ignore_ascii_case(path)||p.to_ascii_lowercase().starts_with(&(path.to_owned()+".")))),"CREATION_CONTROLLER_PROBE_ALIAS: {path}");
@@ -48,8 +63,8 @@ pub(super) fn validate_passage_manifest(manifest:&Manifest)->Result<()> {
 }
 pub(super) fn validate_manifest(manifest:&Manifest)->Result<()> {
  let wrapper=controller_files().into_iter().find(|(path,_)|*path=="craftmine_shared/base_adapter.gd").unwrap().1;
- if manifest.files.get("craftmine_shared/base_adapter.gd").is_some_and(|entry|[digest(&wrapper),digest(&wrapper.replace('\n',"\r\n"))].contains(&entry.sha256)) {return validate_controller_manifest(manifest);}
- ensure!(!manifest.files.keys().any(|p|["craftmine_shared/base_adapter_legacy.gd","craftmine_shared/controller_evidence.gd","craftmine_shared/scene_mesh_picker_v2.gd"].iter().any(|name|p.eq_ignore_ascii_case(name)||p.to_ascii_lowercase().starts_with(&format!("{name}.")))),"CREATION_CONTROLLER_PROFILE_MIXED");
+ if collision_wrapper(manifest)||manifest.files.get("craftmine_shared/base_adapter.gd").is_some_and(|entry|[digest(&wrapper),digest(&wrapper.replace('\n',"\r\n"))].contains(&entry.sha256)) {return validate_controller_manifest(manifest);}
+ ensure!(!manifest.files.keys().any(|p|["craftmine_shared/base_adapter_legacy.gd","craftmine_shared/controller_evidence.gd","craftmine_shared/scene_mesh_picker_v2.gd","craftmine_shared/base_adapter_controller_v1.gd","craftmine_shared/progress_collision.gd"].iter().any(|name|p.eq_ignore_ascii_case(name)||p.to_ascii_lowercase().starts_with(&format!("{name}.")))),"CREATION_CONTROLLER_PROFILE_MIXED");
  for (path,text) in files(){
   let expected=[digest(&text),digest(&text.replace('\n',"\r\n"))];
   let entry=manifest.files.get(path).ok_or_else(||anyhow::anyhow!("CREATION_PROBE_SOURCE_MISSING: {path}"))?;
@@ -72,6 +87,14 @@ pub(super) fn validate_project(bytes:&[u8])->Result<()> {
 
 #[cfg(test)]mod tests{
  use super::*;use super::super::godot_projects::FileEntry;use std::collections::BTreeMap;
+ #[test]fn collision_cohort_requires_every_new_and_inherited_source(){
+  let entries:BTreeMap<String,FileEntry>=collision_files().into_iter().map(|(path,text)|(path.into(),FileEntry{bytes:text.len()as u64,sha256:digest(&text)})).collect();
+  let value=json!({"format":"craftmine.godot-project/1","worldId":"world","baseBuild":"base","baseId":"creation-sandbox","engineVersion":"4.7.2-stable","language":"gdscript","renderer":"gl_compatibility","target":"web","revision":1,"task":{"projectId":"project","sessionId":"session","turnId":"turn","taskId":"task","baseBuild":"base"},"files":entries});
+  let mut manifest:Manifest=serde_json::from_value(value).unwrap();assert!(validate_manifest(&manifest).is_ok());assert!(validate_controller_manifest(&manifest).is_ok());
+  for(path,_)in collision_files(){let entry=manifest.files.remove(path).unwrap();assert!(validate_manifest(&manifest).is_err(),"missing {path}");manifest.files.insert(path.into(),entry.clone());manifest.files.get_mut(path).unwrap().sha256=digest("modified");assert!(validate_manifest(&manifest).is_err(),"modified {path}");manifest.files.insert(path.into(),entry);}
+  for(path,text)in controller_files(){manifest.files.insert(path.into(),FileEntry{bytes:text.len()as u64,sha256:digest(&text)});}
+  assert!(validate_manifest(&manifest).is_err());manifest.files.remove("craftmine_shared/base_adapter_controller_v1.gd");manifest.files.remove("craftmine_shared/progress_collision.gd");assert!(validate_manifest(&manifest).is_ok());
+ }
  #[test]fn controller_cohort_keeps_legacy_and_rejects_missing_changed_or_mixed_resources(){
   let mut entries:BTreeMap<String,FileEntry>=BTreeMap::new();
   for(path,text)in controller_files(){entries.insert(path.into(),FileEntry{bytes:text.len()as u64,sha256:digest(&text)});}

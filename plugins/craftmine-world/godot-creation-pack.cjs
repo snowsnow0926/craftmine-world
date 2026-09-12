@@ -2,6 +2,7 @@
 const {createHash}=require('node:crypto');
 const PROTECTED_CREATION_FILES=Object.freeze(['craftmine_shared/base_adapter.gd','craftmine_shared/runtime_bridge.gd','craftmine_shared/state_guard.gd','craftmine_shared/headless_play_action.gd','craftmine_shared/scene_mesh_picker.gd']);
 const CONTROLLER_PROTECTED_FILES=Object.freeze([...PROTECTED_CREATION_FILES,'craftmine_shared/base_adapter_legacy.gd','craftmine_shared/controller_evidence.gd','craftmine_shared/scene_mesh_picker_v2.gd','scripts/reused/player_controller.gd','scripts/reused/camera_rig.gd']);
+const COLLISION_PROTECTED_FILES=Object.freeze([...CONTROLLER_PROTECTED_FILES,'craftmine_shared/base_adapter_controller_v1.gd','craftmine_shared/progress_collision.gd']);
 // Reviewed historical cohort, never selected by a request argument or file count.
 // Only exact LF/CRLF bytes from this commit are admitted; no runtime git access.
 const HISTORICAL_CREATION_PROFILE=Object.freeze({
@@ -32,6 +33,11 @@ function sourceContract(sourceFiles,pack){
   return found.length===1&&expected.variants.some(variant=>variant.sha256===found[0].sha256&&variant.bytes===found[0].bytes);
  });
  if(!historical){
+  const hasCollision=files.some(file=>['craftmine_shared/base_adapter_controller_v1.gd','craftmine_shared/progress_collision.gd'].includes(file?.path));
+  if(hasCollision){
+   if(!COLLISION_PROTECTED_FILES.every(name=>files.filter(file=>file?.path===name).length===1))fail('CREATION_PACK_COLLISION_PROFILE_INCOMPLETE');
+   return {names:COLLISION_PROTECTED_FILES,proof:{profileId:'creation-player-collision/1',historical:false}};
+  }
   const hasController=files.some(file=>['craftmine_shared/base_adapter_legacy.gd','craftmine_shared/controller_evidence.gd','craftmine_shared/scene_mesh_picker_v2.gd'].includes(file?.path));
   if(hasController){
    if(!CONTROLLER_PROTECTED_FILES.every(name=>files.filter(file=>file?.path===name).length===1))fail('CREATION_PACK_CONTROLLER_PROFILE_INCOMPLETE');
@@ -41,7 +47,7 @@ function sourceContract(sourceFiles,pack){
  }
  // Do not accept a complete old sampler plus newly introduced helpers, even
  // when those helpers would make the ordinary five-file source list complete.
- if([...old.absent,'craftmine_shared/base_adapter_legacy.gd','craftmine_shared/controller_evidence.gd','craftmine_shared/scene_mesh_picker_v2.gd'].some(name=>files.some(file=>reservedAlias(file?.path,name))||[...pack.files.keys()].some(path=>reservedAlias(path,name))))fail('CREATION_PACK_HISTORICAL_PROFILE_MIXED');
+ if([...old.absent,'craftmine_shared/base_adapter_legacy.gd','craftmine_shared/controller_evidence.gd','craftmine_shared/scene_mesh_picker_v2.gd','craftmine_shared/base_adapter_controller_v1.gd','craftmine_shared/progress_collision.gd'].some(name=>files.some(file=>reservedAlias(file?.path,name))||[...pack.files.keys()].some(path=>reservedAlias(path,name))))fail('CREATION_PACK_HISTORICAL_PROFILE_MIXED');
  for(const expected of old.files){
   if(files.some(file=>file?.path!==expected.path&&reservedAlias(file?.path,expected.path))||[...pack.files.keys()].some(path=>path!==expected.path&&reservedAlias(path,expected.path)))fail('CREATION_PACK_PROTECTED_ALIAS');
  }
@@ -113,4 +119,4 @@ function verifyCreationPack(buffer,sourceFiles){
  const selectors=readCreationProjectSelectors(project.data);
  return {format:'craftmine.creation-pack-proof/1',packSha256:digest(buffer),packBytes:buffer.length,engineVersion:'4.7.2-stable',packFormat:4,files:verified,project:{sha256:project.sha256,selectors},observerContract:contract.proof};
 }
-module.exports={PROTECTED_CREATION_FILES,CONTROLLER_PROTECTED_FILES,HISTORICAL_CREATION_PROFILE,readPck4,readCreationProjectSelectors,verifyCreationPack};
+module.exports={PROTECTED_CREATION_FILES,CONTROLLER_PROTECTED_FILES,COLLISION_PROTECTED_FILES,HISTORICAL_CREATION_PROFILE,readPck4,readCreationProjectSelectors,verifyCreationPack};
