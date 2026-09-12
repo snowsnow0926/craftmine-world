@@ -17,3 +17,16 @@ The renderer owns whether to restore after this read and must defer to explicit
 navigation and new drafts. This separates discovery from selection and allows
 old profiles, including the tested preview.18 AK47 profile, to recover without
 inventing a renderer index retroactively.
+
+The observed continuation failure also exposed a navigation race: a sidebar may
+highlight a pending selection before its transcript arrives. Entering play used
+to call `setPage("chat")` even on chat, invalidating that pending selection. Only
+actual page changes now create that navigation intent; presentation changes keep
+the selection alive. A late selection preserves the world surface while using
+the destination conversation's own file context.
+
+Automatic recovery uses the same selection path with an additional asynchronous
+binding guard and no optimistic transcript commit. It checks current navigation,
+world, layout and the live home draft before and after host reads. New player
+input or explicit navigation always takes precedence. This avoids hiding a
+player's in-progress draft behind an automatically restored conversation.

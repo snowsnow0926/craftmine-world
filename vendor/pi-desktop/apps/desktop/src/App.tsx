@@ -39,6 +39,7 @@ import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout }
 import { CraftminePauseMenu } from "./components/CraftminePauseMenu";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { useDialogueWorld } from "./lib/use-dialogue-world";
+import { useWorldConversation } from "./lib/use-world-conversation";
 import { DialoguePreparationComposer } from "./components/DialoguePreparationComposer";
 import { CraftmineCreationResult } from "./components/CraftmineCreationResult";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
@@ -291,6 +292,8 @@ function AppShell() {
   const worldPinned = craftmineLayout.mode === "play" && presentedTabId === CRAFTMINE_WORLD_TAB_ID;
   const craftmineWorldFirst = isCraftmineWorldWorkspace(gameSettingsOpen ? "chat" : page, presentedWorkPanelOpen && workPanelOpen, presentedTabId, subagentPanelOpen && !worldPinned);
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
+  const worldConversation = useWorldConversation(ready && modeChosen && craftmineImmersive
+    && !modeEntryOpen && !pauseOpen && !gameSettingsOpen && !searchOpen && !craftmineSheetOpen && !dialogueWorld.state, craftmineLayout.overlay !== "closed");
   const craftmineChatRef = useRef<HTMLElement | null>(null);
   const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen || gameSettingsOpen || (!!dialogueWorld.state && dialogueWorld.state.phase !== "chat"), craftmineChatRef, openPause, dialogueWorld.state?.phase === "chat");
   useEffect(() => { if (!craftmineImmersive) setPauseOpen(false); }, [craftmineImmersive]);
@@ -1974,6 +1977,8 @@ function AppShell() {
               </div>
             )}
             <div className="craftmine-conversation-notices">
+            {worldConversation.restoring && <p role="status" data-world-conversation-restoring>正在恢复这个世界的对话…</p>}
+            {worldConversation.error && <p role="status" data-world-conversation-error>{worldConversation.error}</p>}
             {page === "chat" && <CraftmineCreationResult autoOpen={craftmineImmersive} />}
             {dialogueWorld.state && <div className="craftmine-dialogue-status no-drag" data-dialogue-phase={dialogueWorld.state.phase}>
               <strong>{dialogueWorld.state.phase === "preparing" ? "正在准备新世界…" : "通过对话生成世界"}</strong>

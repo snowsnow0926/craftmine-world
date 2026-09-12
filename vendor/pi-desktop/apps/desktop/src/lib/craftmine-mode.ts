@@ -36,7 +36,10 @@ export function enterCraftmineMode(
     options,
   );
   saveCraftmineLayout(localStorage, next);
-  state.setPage("chat");
+  // This is presentation within the current conversation. Starting a new
+  // navigation intent here would cancel an in-flight history selection whose
+  // sidebar highlight is already visible but whose transcript is still loading.
+  if (state.page !== "chat") state.setPage("chat");
   if (shouldOpenCraftmineWorldTab(mode, state.activeWorkPanelTabId, state.workPanelTabs)) {
     state.openWorkPanelTab(WORLD);
   } else {
