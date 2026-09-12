@@ -86,3 +86,37 @@ node tests/godot-agent/engine-performance-native.mjs
 
 Set `CRAFTMINE_GODOT_CACHE_DIR` to an absolute verified cache if needed. The fixture
 copies the engine and uses fresh independent profile directories with `--headless`.
+
+## Native release template follow-up
+
+Run `engine-performance-native-wJr8rF` also passed using the actual Windows release
+template (`debugBuild: false`) from the sealed 56b5aeca package. The source template
+was read-only, verified against `WINDOWS_TEMPLATE` SHA-256
+`d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562`,
+copied into independent scratch, and verified unchanged afterward. No archive was
+re-extracted and no installed/sealed executable was modified.
+
+The fixed editor exports a PCK containing the collector and an explicit Node main
+scene fixture; the copied release binary starts that adjacent pack with only
+`--headless --language en`. The release template forbids `--path` overrides, so
+the editor-style test invocation is not used. The fixture's one additional main
+node is a known structural difference from the editor SceneTree script fixture;
+the node/object comparisons are within each process, not between editor/release.
+
+The same exact 256-node increase/removal, positive unpaused engine monitor values,
+paused/headless unknown semantics, sequence/counter checks, and zero custom
+monitor callbacks passed. Raw samples, stdout/stderr, import/export logs, release
+binary/pack/collector/fixture hashes are archived under
+`docs/evidence/gu6-engine-monitors-release-20260912/`. Release availability of this
+fixed whitelist is therefore directly tested. Render/GPU availability and Web
+release behavior remain unproven by this headless native run.
+
+Earlier attempts are retained: `5WRMxj` received the genuine release path-override
+rejection; `IBWK6X` loaded a pack without an executable main scene and was stopped
+after the native fixture timeout; `B7ynl3` failed in the JS harness before execution
+because fixture setup referenced an uninitialized variable. These are not evidence
+that release monitors are unavailable, and are not ordinary player failures.
+
+To reproduce release mode, set `CRAFTMINE_ENGINE_MONITOR_RELEASE_BIN` to an absolute
+copy/source of the already verified Windows release template, then run the same
+native test command. The runner checks its exact pinned hash before execution.
