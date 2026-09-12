@@ -7,6 +7,10 @@ const MeshPicker = preload("res://craftmine_shared/scene_mesh_picker.gd")
 const ComponentState = preload("res://craftmine_shared/component_state.gd")
 var component_state := ComponentState.new()
 var component_capture_error := ""
+var component_feedback_label: WeakRef
+var component_feedback_original := ""
+var component_feedback_text := ""
+var component_feedback_until := 0
 
 func world() -> Node:
 	return Engine.get_main_loop().current_scene
@@ -48,9 +52,21 @@ func interact_component() -> Dictionary:
 		if owner in found.nodes.values():
 			if not owner.has_method("interact"): return {"handled": true, "result": {"interacted": false, "reason": "not-interactive"}}
 			var result: Variant = owner.interact(player)
+			if result is Dictionary and result.get("interacted") == true and result.get("feedback") is String:
+				_show_component_feedback(result.feedback)
 			return {"handled": true, "result": result if result is Dictionary else {"interacted": false, "reason": "invalid-component-interaction"}}
 		owner = owner.get_parent()
 	return {"handled": false}
+
+func _show_component_feedback(message: String) -> void:
+	var label: Variant = world().get("status_label")
+	if not label is Label or not world().is_ancestor_of(label): return
+	if component_feedback_label == null or component_feedback_label.get_ref() != label or label.text != component_feedback_text:
+		component_feedback_original = label.text
+	component_feedback_label = weakref(label)
+	component_feedback_text = message.left(160)
+	component_feedback_until = observed_physics_tick + 120
+	label.text = component_feedback_text
 
 func restore(body: Dictionary) -> String:
 	var before := capture()
@@ -180,6 +196,12 @@ func _observe_physics_tick() -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null and not tree.paused:
 		observed_physics_tick += 1
+		if component_feedback_label != null and observed_physics_tick >= component_feedback_until:
+			var label: Variant = component_feedback_label.get_ref()
+			# Never overwrite a later error or another system's HUD message.
+			if is_instance_valid(label) and label.text == component_feedback_text:
+				label.text = component_feedback_original
+			component_feedback_label = null
 
 func _actual_entity(node: Node3D, declared: Dictionary) -> Dictionary:
 	var result := declared.duplicate(true)
