@@ -135,6 +135,7 @@ try{
   await active.appPage.screenshot({path:path.join(directory,'retained-before-submit.png')});
   report.previousApplication=await active.panel('godot.creationTaskStatus',{sessionId});report.previousConversation=await active.surface();save();
   report.submittedAt=new Date().toISOString();report.status='ORDINARY_MODEL_RUNNING';save();if(!queuedByPreparation)await active.submitText(text);
+  report.admission=await until(async()=>{const file=path.join(directory,'prompt-ipc-results.jsonl');if(!fs.existsSync(file))return null;return fs.readFileSync(file,'utf8').split(/\\n|\r?\n/).filter(Boolean).map(JSON.parse).at(-1);},Boolean);save();if(report.admission.ok!==true)throw Error('ORDINARY_PROMPT_ADMISSION:'+JSON.stringify(report.admission.error??report.admission.thrown));
   sessionId??=(await until(()=>active.surface(),value=>!!value.sessionId)).sessionId;report.sessionId=sessionId;
   report.before=await active.api('sessionGet',{id:sessionId});const bound=report.before.session;
   report.effectiveBinding={providerId:bound.providerId??report.settings.defaultProviderId,modelId:bound.modelId??report.settings.defaultModelId,thinkingLevel:bound.thinkingLevel,permissionMode:!bound.permissionMode||bound.permissionMode==='inherit'?(report.settings.defaultPermissionMode??'ask'):bound.permissionMode};
@@ -147,13 +148,14 @@ try{
     if(permission){report.permissionFailure=permission;save();throw Error('DEFAULT_CREATION_DISPLAYED_PERMISSION_CARD');}
     const ask=await active.rpc('headlessAskPending',{payload:{sessionId}});
     if(ask){const ticket=exchange.publish(ask,sessionId);report.pendingQuestion=ticket;report.status='AWAITING_REVIEWED_CLARIFICATION';save();console.log('PLAYER_CLARIFICATION '+ticket.requestFile);const answer=await exchange.waitForResponse(ticket);const receipt=await active.rpc('headlessAskResolve',{payload:{sessionId,requestId:ask.requestId,choices:answer.choices}});report.clarifications.push({ticket,answer,receipt});delete report.pendingQuestion;}
-    const [record,metrics,application,surface]=await Promise.all([active.api('sessionGet',{id:sessionId}),active.api('sessionTurnMetrics',{sessionId}),active.panel('godot.creationTaskStatus',{sessionId}),active.surface()]);
+    const [record,metrics,application,surface]=await Promise.all([active.api('sessionGet',{id:sessionId}),active.api('sessionTurnMetrics',{sessionId}),active.panel('godot.creationTaskStatus',{sessionId}).catch(error=>{if(String(error).includes('CREATION_PLAYER_CONTEXT_CHANGED'))return {phase:'binding',waitingReason:'CREATION_PLAYER_CONTEXT_CHANGED'};throw error;}),active.surface()]);
     const queueDirectory=path.join(profile,'creation-auto-queue');
     const automatic=fs.existsSync(queueDirectory)?fs.readdirSync(queueDirectory).filter(name=>/^[a-f0-9]{64}\.json$/.test(name)).map(name=>JSON.parse(fs.readFileSync(path.join(queueDirectory,name),'utf8'))).find(item=>item.jobId===application?.jobId&&item.context?.sessionId===sessionId):null;
     report.latest={record,metrics,application,surface,automatic};report.status='ORDINARY_MODEL_RUNNING';
     const phase=JSON.stringify([metrics?.status,application?.phase,surface.dialogue]);
     if(phase!==lastPhase||Date.now()-lastNotice>30000){lastPhase=phase;lastNotice=Date.now();console.log(redact({at:new Date().toISOString(),sessionId,worldId,turnStatus:metrics?.status,phase:application?.phase,dialogue:surface.dialogue}));}
     save();
+    if(application?.phase==='binding'){await delay(300,undefined,{signal});continue;}
     if(application?.phase==='applied'&&metrics?.status==='completed'&&(!surface.dialogue&&surface.layout?.mode==='play'&&surface.layout?.overlay==='closed'))break;
     if(['error','aborted'].includes(metrics?.status)&&(!application?.jobId||['manual','failed','cancelled'].includes(automatic?.status)))throw Error('ORDINARY_MODEL_'+metrics.status.toUpperCase());
     if(metrics?.status==='completed'&&application?.phase==='idle'){
@@ -174,8 +176,16 @@ try{
     if(['manual','failed','cancelled'].includes(automatic?.status)&&metrics?.status!=='running')throw Error('ORDINARY_CREATION_FAILED_WITHOUT_AUTOMATIC_RECOVERY');
     await delay(1000,undefined,{signal});
   }
-  report.directPlayableRuntime=await until(()=>active.rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}}),value=>value.state==='ready');
-  check('automatic completion leaves the actual world directly playable with no chat overlay',report.latest.surface.layout.overlay==='closed'&&report.directPlayableRuntime.state==='ready');
+  report.directPlayableRuntime=await until(async()=>{
+    const state=await active.rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}});
+    if(!['ready','saved'].includes(state.state))return null;
+    const before=await active.rpc('godotObserve');await delay(200,undefined,{signal});const after=await active.rpc('godotObserve');
+    const same=['worldId','buildId','instanceId'].every(key=>before[key]===after[key])&&after.worldId===worldId&&after.buildId===report.latest.application.buildId;
+    const beforeTick=before.payload?.controllerEvidence?.physicsTick,afterTick=after.payload?.controllerEvidence?.physicsTick;
+    if(!same||!Number.isFinite(beforeTick)||!Number.isFinite(afterTick)||afterTick<=beforeTick)return null;
+    report.directPlayableEvidence={before,after,manualResumeCalls:0};return state;
+  },Boolean);
+  check('automatic completion leaves the actual world directly playable with no chat overlay',report.latest.surface.layout.overlay==='closed'&&['ready','saved'].includes(report.directPlayableRuntime.state));
   report.verificationUiActions=[{purpose:'Inspect the saved result after creation already completed',key:'F2',receipt:await active.shortcut('F2')}];
   report.visibleResult=await until(()=>active.surface(),value=>value.results.some(card=>card.visible&&card.phase==='applied'&&card.worldId===worldId&&card.sessionId===sessionId));
   const resultCard=report.visibleResult.results.find(card=>card.visible&&card.phase==='applied'&&card.worldId===worldId&&card.sessionId===sessionId);
