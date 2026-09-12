@@ -7,7 +7,7 @@
 - `attack(player: Node3D) -> Dictionary`：返回 `fired/reason/entityId/hit/targetId/damage/ammo/remainingCooldown/shotsFired`。`hit` 表示选中合规伤害目标，不等于实际扣血；实际扣血读 `damage`。
 - 目标必须在最近实际碰撞节点或其祖先，属于 `craftmine_damageable_targets`，且实现 `apply_damage(amount: float, player: Node3D) -> {applied: 数值}`。有效 applied 范围是 0..本次 damage。不穿过其他碰撞体，不通过标签名称、静态元数据或脚本名猜测宠物为怪物。
 - 同玩家必须有唯一 `craftmine_player_vitals` 节点（`_player` 绑定、`health` 数值）。暂停、死亡、空弹匣、冷却、未知玩家相机均拒绝，拒绝不扣弹。射线从当前玩家 Camera3D 画面中心发出；未命中或被阻挡仍消耗一次已开火的弹药和冷却。
-- 鼠标入口仅在玩家已捕获鼠标时调用同一 `attack`；组件不请求捕获、不发送输入。简洁原创 BoxMesh 外观挂到已有 Camera3D/WeaponMount；未提供完整枪械动画或音效。
+- 鼠标入口仅在玩家已捕获鼠标时调用同一 `attack`；组件不请求捕获、不发送输入。枪身、圆柱枪管和握把由三个原创 PrimitiveMesh 组成，延后到 current_scene 绑定后挂到已有 Camera3D/WeaponMount；初始化幂等。未提供完整枪械动画或音效。
 
 `craftmine.sandbox-weapon-state/1` 保存 `format/entityId/settings/sourceSettings/ammo/remainingCooldown/shotsFired`。所有数字通过 JSON 往返规范化；`validate_state` 无副作用，`restore` 完整校验后一次性赋值。`settings`、`sourceSettings` 为已绑定源码配置，变更源码时需显式迁移，不能用旧存档覆盖新伤害参数。不提供宿主补弹/修改容量入口。
 

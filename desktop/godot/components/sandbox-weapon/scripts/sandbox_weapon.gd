@@ -14,7 +14,7 @@ var shots_fired := 0
 var _player: Node3D
 var _identity := ""
 var _source: Dictionary = {}
-var _visual: MeshInstance3D
+var _visual: Node3D
 
 func _ready() -> void:
 	_identity = entity_id
@@ -24,19 +24,47 @@ func _ready() -> void:
 	_player = get_node_or_null(player_path) as Node3D
 	add_to_group(GROUP)
 	add_to_group("craftmine_persistent_components")
+	# PackedScene children become ready before the host assigns current_scene.
+	call_deferred("_initialize_visual")
+
+func _initialize_visual() -> void:
+	if is_instance_valid(_visual): return
 	if not _configuration_error().is_empty(): return
 	var mount := _player.get_node_or_null("CameraRig/PitchPivot/Camera3D/WeaponMount")
 	if mount != null:
-		_visual = MeshInstance3D.new()
-		var mesh := BoxMesh.new()
-		mesh.size = Vector3(0.13, 0.15, 0.45)
-		_visual.mesh = mesh
+		_visual = Node3D.new()
+		_visual.name = "SandboxWeaponVisual"
 		var material := StandardMaterial3D.new()
 		material.albedo_color = Color(0.18, 0.24, 0.3)
 		material.metallic = 0.5
-		_visual.material_override = material
 		_visual.position = Vector3(0.22, -0.18, -0.45)
 		mount.add_child(_visual)
+		var receiver := BoxMesh.new()
+		receiver.size = Vector3(0.13, 0.12, 0.23)
+		_visual_part("Receiver", receiver, material, Vector3.ZERO)
+		var barrel := CylinderMesh.new()
+		barrel.top_radius = 0.03
+		barrel.bottom_radius = 0.035
+		barrel.height = 0.32
+		barrel.radial_segments = 12
+		var barrel_node := _visual_part("Barrel", barrel, material, Vector3(0, 0.015, -0.2))
+		barrel_node.rotation.x = PI / 2.0
+		var grip := BoxMesh.new()
+		grip.size = Vector3(0.09, 0.18, 0.085)
+		var grip_material := StandardMaterial3D.new()
+		grip_material.albedo_color = Color(0.08, 0.1, 0.12)
+		grip_material.roughness = 0.9
+		var grip_node := _visual_part("Grip", grip, grip_material, Vector3(0, -0.11, 0.055))
+		grip_node.rotation.x = -0.18
+
+func _visual_part(label: String, mesh: Mesh, material: Material, offset: Vector3) -> MeshInstance3D:
+	var part := MeshInstance3D.new()
+	part.name = label
+	part.mesh = mesh
+	part.material_override = material
+	part.position = offset
+	_visual.add_child(part)
+	return part
 
 func _configuration() -> Dictionary:
 	return JSON.parse_string(JSON.stringify({"damage": damage, "range": range_meters, "cooldown": cooldown_seconds, "maxAmmo": max_ammo}))
@@ -97,7 +125,9 @@ func attack(player: Node3D) -> Dictionary:
 	remaining_cooldown = cooldown_seconds
 	if hit.is_empty(): return _result(true, "miss")
 	var target := hit.collider as Node
+	if target == null or not get_parent().is_ancestor_of(target): return _result(true, "foreign-world")
 	while target != null and target != get_parent():
+		if not get_parent().is_ancestor_of(target): return _result(true, "foreign-world")
 		if target == player or player.is_ancestor_of(target) or target == self: break
 		if target.is_in_group("craftmine_damageable_targets") and target.has_method("apply_damage"):
 			var target_id: Variant = target.get("entity_id")

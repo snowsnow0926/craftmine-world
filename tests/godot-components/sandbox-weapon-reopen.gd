@@ -11,12 +11,7 @@ func run() -> void:
 	root.add_child(world)
 	current_scene = world
 	await process_frame
-	var vitals: Node3D = load("res://combat_vitals.gd").new()
-	vitals.set("entity_id", "vitals-1")
-	world.add_child(vitals)
-	var weapon: Node3D = load("res://sandbox_weapon.gd").new()
-	weapon.set("entity_id", "weapon-1")
-	world.add_child(weapon)
+	var weapon := world.get_node("Weapon") as Node3D
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("user://weapon.json"))
 	var ledger: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("user://ledger.json"))
 	var registry: RefCounted = load("res://component_state.gd").new()
