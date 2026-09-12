@@ -8,12 +8,17 @@ import {stripTypeScriptTypes} from 'node:module';
 import vm from 'node:vm';
 import test from 'node:test';
 import {EventEmitter} from 'node:events';
+import {createHash} from 'node:crypto';
 import {createWorldRuntime} from '../desktop/godot/web/runtime.mjs';
+import {createGodotRuntimeAdapter} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-runtime-adapter.ts';
 import * as immersionTools from './helpers/immersion-host-tools.mjs';
 import {PRIVATE_PLAY_OPS} from '../vendor/pi-desktop/apps/desktop/electron/main/headless-play-action.ts';
+import {WORLD_CURSOR_CHANNEL} from '../vendor/pi-desktop/apps/desktop/shared/world-cursor-presentation.ts';
 
 const source = await readFile(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts',import.meta.url),'utf8');
 const compiled = stripTypeScriptTypes(source,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
+const layers=stripTypeScriptTypes(await readFile(new URL('../vendor/pi-desktop/apps/desktop/electron/main/main-window-layers.ts',import.meta.url),'utf8'),{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
+const {setMainViewBackground}=vm.runInNewContext(layers+'\n({setMainViewBackground})',immersionTools);
 const directory = await mkdtemp(join(tmpdir(),'godot-host-lifecycle-'));
 const root = join(directory,'builds'); await mkdir(root);
 const deferred=()=>{let resolve,reject; const promise=new Promise((r,j)=>{resolve=r;reject=j;}); return {promise,resolve,reject};};
@@ -21,7 +26,7 @@ function fixture(clock={setTimeout,clearTimeout}) {
   const events=[], runtimes=[];
   let fault=null, descriptor=null, startupGate=null, callback=null, runtimeSetup=null, factory=null;
   const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,...clock,console,...immersionTools,
-    hasHeadlessController:()=>false,PRIVATE_PLAY_OPS,
+    hasHeadlessController:()=>false,PRIVATE_PLAY_OPS,setMainViewBackground,WORLD_CURSOR_CHANNEL,
     WORLD_CHROME_HEIGHT:76,GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_DETACH_CHANNEL:'detach',
     async createWorldRuntime(options){
       events.push('start:'+options.worldId);
@@ -51,7 +56,7 @@ function fixture(clock={setTimeout,clearTimeout}) {
       if(fault==='revision')receipt.revision=call.revision-1;
       return {receipt};
     }});
-  host.createView=()=>{const contents=new EventEmitter();let destroyed=false;return {webContents:Object.assign(contents,{async loadURL(){},send(){},isDestroyed(){return destroyed;},close(){events.push('close-view');destroyed=true;contents.emit('destroyed');}})};};
+  host.createView=()=>{const contents=new EventEmitter();let destroyed=false,backgroundThrottling=true;return {webContents:Object.assign(contents,{async loadURL(){},send(){},setBackgroundThrottling(value){backgroundThrottling=value;},getBackgroundThrottling(){return backgroundThrottling;},isDestroyed(){return destroyed;},close(){events.push('close-view');destroyed=true;contents.emit('destroyed');}})};};
   const request=(worldId='alpha',revision=8)=>({worldId,buildId:'build-'+worldId,revision,root,artifacts:[{path:'index.html',sha256:'a'.repeat(64),bytes:0}]});
   return {host,events,runtimes,request,metadata:context.module.exports.godotEngineOf,setFault:x=>fault=x,setDescriptor:x=>descriptor=x,setGate:x=>startupGate=x,setProgress:x=>callback=x,setRuntime:x=>runtimeSetup=x,setFactory:x=>factory=x};
 }
@@ -81,6 +86,27 @@ test('failed pause acknowledgement cannot trigger automatic checkpoint resume',a
   assert.equal((await f.host.checkpoint()).status,'failed');
   assert.deepEqual(f.events,['pause:alpha']);
   assert.equal(f.host.pauseController.manualPaused(f.host.current),true);
+});
+
+test('save and quit recover a committed snapshot whose reply and first reconciliation were lost',async()=>{
+  const f=fixture(),hash=text=>createHash('sha256').update(text).digest('hex');
+  let state={format:'craftmine.godot-progress/1',worldId:'alpha',body:{coins:7,quest:{complete:false}}},stored=structuredClone(state),revision=8,lose=true,readsUnavailable=true;
+  f.setRuntime(runtime=>{runtime.save=async()=>{const snapshot=structuredClone(state),snapshotText=JSON.stringify(snapshot);return {result:{status:'confirmed',state:snapshot,runnerReceipt:{format:'craftmine.godot-runner-receipt/1',worldId:runtime.worldId,buildId:runtime.buildId,instanceId:runtime.instanceId,snapshotText,snapshotSha256:hash(snapshotText),bytes:Buffer.byteLength(snapshotText)}}};};});
+  const adapter=createGodotRuntimeAdapter({selection:async()=> 'alpha',instance:()=>f.host.instance,domain:async(method,args)=>{
+    if(method==='world.read'){if(readsUnavailable)throw Error('read transport unavailable');return {id:'alpha',world:{build:{id:'build-alpha'},snapshot:structuredClone(stored)},revision,contentHash:'c'.repeat(64)};}
+    assert.equal(method,'godotRuntime.saveProgress');
+    if(args.revision!==revision)throw Object.assign(Error('WORLD_REVISION_CONFLICT'),{errorCode:'WORLD_REVISION_CONFLICT'});
+    stored=structuredClone(args.snapshot);revision++;
+    if(lose){lose=false;throw Error('reply lost after commit');}
+    return {receipt:{format:'craftmine.godot-progress-receipt/1',worldId:'alpha',buildId:'build-alpha',instanceId:args.runnerReceipt.instanceId,snapshotSha256:args.runnerReceipt.snapshotSha256,revision,contentHash:'c'.repeat(64)}};
+  }});
+  f.setProgress(call=>adapter.progress(call));await f.host.ensure(f.request());
+  state.body.coins=8;assert.equal((await f.host.checkpoint()).status,'failed');assert.equal(f.host.revision,8);assert.equal(stored.body.coins,8);
+  assert.equal(f.host.instance.worldId,'alpha','failed acknowledgement leaves the live original world available');
+  readsUnavailable=false;state.body.quest.complete=true;
+  const saved=await f.host.checkpoint();assert.equal(saved.status,'persisted');assert.equal(f.host.revision,10);assert.deepEqual(stored,state);
+  const quit=await f.host.prepareForQuit();assert.equal(quit.ok,true);assert.equal(revision,10,'quit uses the now-confirmed frozen snapshot');
+  assert.ok(f.events.includes('exit:alpha'));await f.host.dispose();
 });
 
 test('exited and fatally failed runtimes receive no subsequent overlay commands',async()=>{
