@@ -379,6 +379,18 @@ export class GodotWorldViewHost {
     };
   }
 
+  /** OS process ownership only. No page script, focus, or runtime mutation. */
+  get performanceProcess() {
+    const instance = this.current;
+    if (!instance?.alive || instance.view.webContents.isDestroyed()) return null;
+    if (this.pending || this.transitioning || this.checkpointPromise) throw Error("WORLD_BUSY");
+    return {
+      worldId: instance.worldId, buildId: instance.buildId, instanceId: instance.instanceId,
+      rendererProcessId: instance.view.webContents.getOSProcessId(),
+      webContentsId: instance.view.webContents.id,
+    };
+  }
+
   async ensure(request: GodotWorldOpenRequest): Promise<GodotWorldState> {
     if (this.transitioning) throw new Error("WORLD_BUSY");
     this.transitioning = true;

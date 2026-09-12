@@ -213,6 +213,7 @@ import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
+import { createCraftminePerformanceSampler } from "./craftmine-performance-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
@@ -1015,6 +1016,7 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
 // instance only, and every envelope carries the host's own world/build/instance
 // identity; the plugin may narrow the request but never redirect it.
 plugins.setServices({ craftmineLiveSample: createCraftmineLiveSampler(() => godotWorld) });
+plugins.setServices({ craftminePerformanceSample: createCraftminePerformanceSampler(() => godotWorld.performanceProcess, () => app.getAppMetrics()) });
 const godotCandidates = createGodotCandidateCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
