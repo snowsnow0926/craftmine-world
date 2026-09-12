@@ -80,11 +80,32 @@ try {
     const sample={atMs:Date.now()-started,status:await rpc('status'),mode:await rpc('primaryMode'),pages:[]};
     if(browser)for(const page of browser.contexts().flatMap(c=>c.pages())){
       if(!page.url().includes('/views/world.html')&&!page.url().includes('/out/renderer/index.html'))continue;
-      const state=await page.evaluate(()=>({url:location.href,body:document.body?.innerText.slice(0,1800),
-        dataset:{...document.body?.dataset},viewport:[innerWidth,innerHeight],
-        loading:document.getElementById('godot-loading')?.outerHTML,guard:globalThis.__craftmineHeadless}));
+      const state=await page.evaluate(()=>{
+        const loading=document.getElementById('godot-loading'),progress=document.getElementById('godot-loading-progress');
+        const inspect=element=>{
+          if(!element)return null;
+          const rect=element.getBoundingClientRect(),style=getComputedStyle(element);
+          let ancestorsVisible=true;
+          for(let parent=element;parent;parent=parent.parentElement){
+            const parentStyle=getComputedStyle(parent);
+            if(parentStyle.display==='none'||parentStyle.visibility!=='visible'||Number(parentStyle.opacity)===0){ancestorsVisible=false;break;}
+          }
+          return {rect:{x:rect.x,y:rect.y,width:rect.width,height:rect.height},display:style.display,visibility:style.visibility,opacity:style.opacity,
+            visible:ancestorsVisible&&rect.width>0&&rect.height>0&&rect.right>0&&rect.bottom>0&&rect.left<innerWidth&&rect.top<innerHeight};
+        };
+        const card=inspect(loading),bar=inspect(progress),ariaHidden=loading?.getAttribute('aria-hidden');
+        return {url:location.href,body:document.body?.innerText.slice(0,1800),
+          dataset:{...document.body?.dataset},viewport:[innerWidth,innerHeight],loading:loading?.outerHTML,
+          loadingVisibility:{ariaHidden,card,progress:bar,visible:ariaHidden==='false'&&card?.visible===true&&bar?.visible===true},
+          guard:globalThis.__craftmineHeadless};
+      });
       sample.pages.push(state);
       if(i===0)await page.screenshot({path:path.join(directory,'startup-'+sample.pages.length+'.png')});
+      if(!report.loadingCapture&&state.url.includes('/views/world.html')&&state.loadingVisibility.visible){
+        const screenshot=path.join(directory,'world-loading.png');
+        await page.screenshot({path:screenshot});
+        report.loadingCapture={screenshot,atMs:Date.now()-started,visibility:state.loadingVisibility,url:state.url};
+      }
     }
     report.snapshots.push(sample);
     const file=path.join(profile,'logs/app/plugin.log');
@@ -99,8 +120,8 @@ try {
   report.world=await rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}});
   report.snapshot=await rpc('godotSnapshot');
   report.guards=await rpc('guards');
-  assert.ok(report.snapshots.some(s=>s.pages.some(p=>p.loading?.includes('aria-hidden="false"')&&p.loading.includes('<progress'))),
-    'actual pre-mount retained-world loading page paints a progress indicator');
+  assert.ok(report.loadingCapture?.visibility.visible&&fs.existsSync(report.loadingCapture.screenshot),
+    'actual retained-world plugin has a visible loading card and progress bar, with captured pixels');
   if(browser){
     const game=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().startsWith('http://127.0.0.1:'));
     assert.ok(game,'native Godot page exists after adoption');

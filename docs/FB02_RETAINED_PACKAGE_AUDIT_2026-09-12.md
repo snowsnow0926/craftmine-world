@@ -34,3 +34,31 @@ node tests/fb02-packaged-shortcuts-native.mjs APP_DIRECTORY ISOLATED_TEST_DIRECT
 ```
 
 第一条从只读副本验证保留世界首次加载、真实自动修复和最终渲染；第二条使用同一个已完成升级的隔离副本验证快捷键、全屏、暂停和保存退出。最终包路径及结果另行追加。反馈状态保持“工程修复，待真人复测”，不自行登记为玩家验收通过。
+
+## preview.16 最终成品结果
+
+- 产品源码提交：`6fb1dc01b4e364227d01e8ac47ca323131b93d0b`。本节与测试截图是封装后的审计证据，不改该成品。
+- 发布目录：`D:\Craftmine World\desktop\build\releases\6fb1dc01b4e3-de84cc42-3599-4468-a3cf-c6bf493bb23f`。
+- ZIP：该目录下 `portable-72b75b74-1834-40db-9e61-21619ce29ed4\Craftmine-World-portable-6fb1dc01b4e3.zip`，1,028,083,279 字节，SHA256 `62d8b8fd803a1b235a0e18efbd9722554d468d231cdf3398cfd8f012a44194c0`。
+- 安装包：`output\Craftmine-World-Setup-0.14.4-preview.16.exe`，SHA256 `a0f42be2a196688c8f21b04044e36a32fb2cbcf5c8ecd91c2fc88f3b8866153e`。
+- 安装包完整载荷校验通过；ZIP 全部 1,656 个载荷文件在解压后与封装证据一致。测试启动的是这个 ZIP 的 `extracted\Craftmine World.exe`。
+- 81 项相关单元/事务/焦点策略测试、TypeScript 检查通过；加载 HTML/控制器 13 项、独立 React 暂停菜单验证另行通过。这些数字不包含旧版 304 项历史结果。
+
+**真实旧世界首次运行**：`test-results/desktop-native-fb02-ZNyMrV/retained-world-report.json` 为 `passed:true`，真实加载进度可见，维护构建通过并自动采用，新正式构建 `gbd-fef3d5fdc40ab26f3b398ce3dddc722f8aae36bc39ca3edfddf3f122573791dc`；世界状态 `ready`，2560×1440，焦点/Pointer Lock 请求为零，正常退出。地面截图已逐图检查，原相机视角保留，地面为柔和绿色。
+
+**存档与草稿**：同副本的 `profile/ground-retained-audit.json` 确认 gameplay snapshot 和 extensions 完全相等；两个 main 分支 head 不变，全部 7 个旧提交仍在。原玩家 profile 未被启动或修改。首次打开精确旧 stock 世界时会自动做一次构建升级；自定义脚本保持不动。
+
+**F2 / Esc / 全屏 / 保存退出**：`test-results/desktop-native-fb02-rBgZJn/shortcuts-package-report.json` 为 `passed:true`。四条 F2 路径均显示实际对话并正确排列原生子视图；Esc 菜单让宿主 `paused → ready`；菜单保存退出 code 0。页面错误、焦点违例和保存失败均为空。物理键盘和可见系统合成窗口仍未通过自动输入验收，不能将有限回调测试写成真人验收。
+
+**实际加载卡截图补验**：`test-results/desktop-native-fb02-VYzlfG/retained-world-report.json` 再次为 `passed:true`。2184ms 捕获实际插件加载页：加载层 2560×1440、display:flex、visible、opacity:1、aria-hidden:false；进度条 370×7，祖先与 viewport 交集检查通过。该次也完成旧世界自动升级和正常退出，未修改成品。
+
+成品截图：[加载画面](assets/user-feedback-20260912/FB02-preview16-loading-verified.png)、[地面](assets/user-feedback-20260912/FB02-preview16-ground-verified.png)、[F2 对话](assets/user-feedback-20260912/FB02-preview16-f2-verified.png)、[Esc 暂停菜单](assets/user-feedback-20260912/FB02-preview16-pause-verified.png)。菜单截图仅含主渲染图层，黑色透明背景不代表底层游戏画面消失。
+
+## 本次复盘仍保留的开发事项
+
+- **FB02-007：完整全自动尚未贯通。** 内置工具免权限卡已有修复，但 `creation-target-service.ts` 的每世界自动采用策略默认 false，`creation-auto-apply-service.ts` 会因此进入 manual；当前 UI 仍提供独立勾选。下一步需将用户所选全自动含义贯通到检查与正式应用，再走实际选中模型的普通创作流程验证。不得重复询问已经明确的授权，也不能称本次包实现了全部零操作。
+- **FB02-005：工作台输入后世界消失** 仍需复现并定位布局/原生视图切换；此次系统全屏和子视图焦点修复不能替代该项验收。
+- **FB02-004：世界入口的信息架构** 仍是待开发项。
+- **FB02-008/009：预览与应用** 已有控制条和候选身份修正，仍需最终包完整预览→采用→返回路径证据。
+
+因此本次结论仅覆盖上述已实测项目，FB02 批次整体没有结案。
