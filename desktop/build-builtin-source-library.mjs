@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {packStaticPackage,unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 import {contentHash,validatePath} from '../plugins/craftmine-world/package-format.mjs';
+import {buildBuiltinPetPackage} from './build-builtin-pet-package.mjs';
 const repository=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
@@ -83,6 +84,8 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   unpackStaticPackage(sceneBytes);packages.push({file:sceneManifest.id+'.zip',bytes:sceneBytes});
   entries.push({assetId:sceneManifest.id,version:1,kind:'scene',file:sceneManifest.id+'.zip',bytes:sceneBytes.length,sha256:sha(sceneBytes),rootContentHash:sceneHash,label:sceneManifest.label,
     tags:['builtin','prefab','scene','森林','风格化',...sceneManifest.tags],source:{origin:'Craftmine World forest-gateway 1.0.0',author:'Craftmine World contributors / Kenney',license:'MIT AND CC0-1.0',licenseStatus:'verified'}});
+  const pet=buildBuiltinPetPackage({repository});
+  packages.push({file:pet.file,bytes:pet.bytes});entries.push(pet.entry);
   // Stage only after every resource and archive has passed validation.
   fs.mkdirSync(output,{recursive:true});
   for(const item of packages)fs.writeFileSync(path.join(output,item.file),item.bytes);
