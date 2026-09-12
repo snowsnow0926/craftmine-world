@@ -23,6 +23,94 @@ fn reserve(journal: &mut TaskJournal, context: &WorkspaceContext, id: &str) -> R
     journal.budget_call("budget.reserve",&json!({"binding":facts["binding"],"generation":facts["generation"],"requestId":id,"purpose":"creation","estimatedInputTokens":70,"maxOutputTokens":30}))
 }
 
+/// Model elapsed wall-clock time in an authored fixture only. No production
+/// caller may write a deadline or clear an already charged request.
+fn expire_fixture_window(journal: &mut TaskJournal, owner: &str) -> Result<()> {
+    journal.db.execute("UPDATE craftmine_budget_limits SET limits=json_set(limits,'$.deadlineAt',1) WHERE owner=?1",[owner])?;
+    Ok(())
+}
+
+#[test]
+fn explicit_new_message_window_preserves_budget_history_and_is_transactional() -> Result<()> {
+    let (_directory, mut journal, context) = fixture()?;
+    let before = journal.task_context(&json!({"context":context}))?;
+    let owner = before["binding"]["taskId"].as_str().unwrap().to_string();
+    let binding = before["binding"].clone();
+    journal.budget_call("budget.reserve",&json!({"binding":binding,"generation":1,"requestId":"first","purpose":"creation","estimatedInputTokens":70,"maxOutputTokens":30,"limits":{"maxRequests":2,"maxTokens":500,"maxCompactions":2,"deadlineAt":worlds::timestamp()?+1_800_000}}))?;
+    journal.budget_call("budget.settle",&json!({"binding":binding,"generation":1,"requestId":"first","status":"known","usage":{"inputTokens":10,"outputTokens":20}}))?;
+    journal.budget_call("budget.boundary",&json!({"binding":binding,"generation":1,"eventId":"compression","kind":"compaction"}))?;
+    journal.task_record_context(&json!({"context":context,"requestId":"goal","text":"Keep the original creation","kind":"request"}))?;
+    expire_fixture_window(&mut journal,&owner)?;
+    assert!(reserve(&mut journal,&context,"expired").unwrap_err().to_string().contains("TASK_DEADLINE_EXCEEDED"));
+    journal.workspace_end_turn(&context.session_id,&context.turn_id,"aborted")?;
+    let retained = journal.task_context(&json!({"context":context}))?;
+    let original = journal.workspace_inspect(&context)?;
+    let original_request: String = journal.db.query_row("SELECT settlement FROM craftmine_budget_requests WHERE owner=?1 AND request_id='first'",[&owner],|r|r.get(0))?;
+    let mut next=context.clone();next.turn_id="explicit-continue".into();
+    let mut other=context.clone();other.session_id="other-session".into();other.turn_id="other-turn".into();
+    journal.workspace_open(&other,"world-a")?;
+    let args=json!({"context":next,"taskId":owner,"generation":1,"renewRequestWindow":true});
+    assert!(journal.task_resume(&args).unwrap_err().to_string().contains("WORLD_BUSY"));
+    assert_eq!(journal.task_context(&json!({"context":context}))?["budget"],retained["budget"]);
+    journal.workspace_end_turn(&other.session_id,&other.turn_id,"completed")?;
+    assert!(journal.task_resume(&json!({"context":next,"taskId":owner,"generation":99,"renewRequestWindow":true})).is_err());
+    let start=worlds::timestamp()?;
+    let resumed=journal.task_resume(&args)?;
+    let deadline=resumed["budget"]["limits"]["deadlineAt"].as_i64().unwrap();
+    assert!(deadline>=start+1_800_000 && deadline<=worlds::timestamp()?+1_800_000);
+    let mut expected=retained["budget"].clone();expected["limits"]["deadlineAt"]=json!(deadline);
+    assert_eq!(resumed["budget"],expected);
+    assert_eq!(journal.workspace_inspect(&next)?.task.draft,original.task.draft);
+    assert_eq!(journal.task_context(&json!({"context":next}))?["requirements"],retained["requirements"]);
+    assert_eq!(journal.task_resume(&args)?["budget"]["limits"]["deadlineAt"],deadline);
+    assert_eq!(journal.db.query_row("SELECT settlement FROM craftmine_budget_requests WHERE owner=?1 AND request_id='first'",[&owner],|r|r.get::<_,String>(0))?,original_request);
+    let next_id=journal.workspace_inspect(&next)?.task.binding.task_id;
+    let receipt:String=journal.db.query_row("SELECT result FROM craftmine_receipts WHERE task_id=?1 AND tool_call_id='@host:resume-request-window'",[next_id],|r|r.get(0))?;
+    assert_eq!(serde_json::from_str::<Value>(&receipt)?["previousLimits"],retained["budget"]["limits"]);
+    let second=reserve(&mut journal,&next,"second")?;
+    assert_eq!(second["budget"]["requestCount"],2);
+    assert_eq!(second["budget"]["actualTokens"],30);
+    assert_eq!(second["budget"]["compactionCount"],1);
+    assert!(reserve(&mut journal,&next,"third").unwrap_err().to_string().contains("REQUEST_BUDGET_EXHAUSTED"));
+    Ok(())
+}
+
+#[test]
+fn generic_resume_and_replay_cannot_renew_an_expired_window() -> Result<()> {
+    let (_directory,mut journal,context)=fixture()?;
+    reserve(&mut journal,&context,"first")?;
+    let before=journal.task_context(&json!({"context":context}))?;
+    let owner=before["binding"]["taskId"].as_str().unwrap().to_string();
+    expire_fixture_window(&mut journal,&owner)?;
+    journal.workspace_end_turn(&context.session_id,&context.turn_id,"aborted")?;
+    let mut next=context.clone();next.turn_id="generic-resume".into();
+    let args=json!({"context":next,"taskId":owner,"generation":1});
+    let resumed=journal.task_resume(&args)?;
+    assert_eq!(resumed["budget"]["limits"]["deadlineAt"],1);
+    // Adding the intent to an already completed resume is not a new message.
+    let mut replay=args.clone();replay["renewRequestWindow"]=json!(true);
+    assert_eq!(journal.task_resume(&replay)?["budget"]["limits"]["deadlineAt"],1);
+    assert!(reserve(&mut journal,&next,"blocked").unwrap_err().to_string().contains("TASK_DEADLINE_EXCEEDED"));
+    Ok(())
+}
+
+#[test]
+fn renewal_preserves_null_policy_and_rejects_raw_deadlines() -> Result<()> {
+    let (_directory,mut journal,context)=fixture()?;
+    let original=journal.task_context(&json!({"context":context}))?;
+    journal.budget_call("budget.reserve",&json!({"binding":original["binding"],"generation":1,"requestId":"first","purpose":"creation","estimatedInputTokens":70,"maxOutputTokens":30,"limits":{"maxRequests":null,"maxTokens":null,"maxCompactions":8,"deadlineAt":null}}))?;
+    journal.workspace_end_turn(&context.session_id,&context.turn_id,"aborted")?;
+    let old=journal.task_context(&json!({"context":context}))?;
+    let mut next=context.clone();next.turn_id="continue-null".into();
+    let args=json!({"context":next,"taskId":original["binding"]["taskId"],"generation":1,"renewRequestWindow":true});
+    let mut invalid=args.clone();invalid["renewRequestWindow"]=json!(9_999_999);
+    assert!(journal.task_resume(&invalid).unwrap_err().to_string().contains("INVALID_REQUEST_WINDOW_INTENT"));
+    invalid=args.clone();invalid["deadlineAt"]=json!(9_999_999);
+    assert!(journal.task_resume(&invalid).is_err());
+    assert_eq!(journal.task_resume(&args)?["budget"],old["budget"]);
+    Ok(())
+}
+
 #[test]
 fn failed_resume_launch_can_resume_again_without_resetting_budget_draft_or_goal() -> Result<()> {
     let (_directory, mut journal, context) = fixture()?;

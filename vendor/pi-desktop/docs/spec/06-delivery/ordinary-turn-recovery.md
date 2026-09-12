@@ -44,3 +44,20 @@ shutdown and partial recovery passed, but the next preflight changed the inferre
 kind and failed with `REPLAY_MISMATCH` before its first provider request. The
 actual Core regression additionally exercises `task.context` after `turn.begin`,
 including altered-text rejection and genuinely new correction insertion.
+
+## Finite request windows
+
+Trusted ordinary-message recovery passes the private boolean
+`renewRequestWindow` to Core. For a new interrupted-task successor only, the
+head/lease transaction retains all accounting and limits and advances a finite
+deadline to at least now plus 30 minutes. Null deadlines remain null; replay,
+generic resume, and failed recovery cannot renew it. The previous and new limits
+are recorded in a durable successor receipt. No caller-supplied timestamp is
+accepted, and exhausted request/token budgets remain exhausted.
+
+`recovery::tests` covers finite expired recovery, ownership-failure rollback,
+generation checks, replay, exhausted request count, null policy, and rejected
+raw intent/timestamp values. `tests/ordinary-turn-recovery-core.mjs` additionally
+uses the actual private host router and standalone Core binary to prove the
+ordinary message path admits a new reservation after expiry without changing
+the prior count, tokens, budget owner, or limits.
