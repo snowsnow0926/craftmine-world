@@ -59,7 +59,8 @@ export function resolveCreationNativeLaunch({root,packagedRoot=creationPackagedR
     const metadata=JSON.parse(asar.extractFile(archive,'package.json').toString('utf8'));
     identity={format:'craftmine.creation-package-identity/1',packaged,version:metadata.version,mainSha256:sha(main),preloadSha256:sha(preload),files,inventorySha256:sha(JSON.stringify(files))};
   }else{main=fs.readFileSync(path.join(desktop,'out/main/index.js'),'utf8');preload=fs.readFileSync(path.join(desktop,'out/preload/craftmine-headless.cjs'),'utf8');}
-  for(const guard of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance',...requiredGuards])assert.ok(main.includes(guard),'HEADLESS_BUILD_REQUIRED: '+guard);
+  assert.ok(main.includes('offscreen: !!headlessAcceptance')||main.includes('offscreen: isOffscreenAcceptance()'),'HEADLESS_BUILD_REQUIRED: offscreen guard');
+  for(const guard of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance',...requiredGuards])assert.ok(main.includes(guard),'HEADLESS_BUILD_REQUIRED: '+guard);
   assert.ok(preload.includes('requestPointerLock'),'HEADLESS_POINTER_LOCK_GUARD_REQUIRED');
   return {
     packaged,main,identity,executable:packaged?path.join(packaged,'Craftmine World.exe'):sourceElectron(require,inherited),args:packaged?[]:[desktop],cwd:packaged??root,
