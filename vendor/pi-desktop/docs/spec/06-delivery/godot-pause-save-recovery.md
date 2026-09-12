@@ -29,3 +29,11 @@ blocked Escape/navigation, confirmation cancellation, stale attempt, checkpoint
 failure/retry and delayed transport failure. The immersion/pause regression also
 checks that Escape resumes normally after confirmation cancellation. Main-process
 event wiring and real native persistence need separate integration evidence.
+
+Main assigns one monotonically increasing attempt identity across confirmation
+and checkpoint preparation. A second quit while confirmation is unresolved
+cannot skip consent or start preparation. Confirmation rejection publishes
+`cancelled`; a dialog error publishes `failed`. The preparation promise is
+cleared before publishing a failed checkpoint, so an immediate explicit retry
+cannot accidentally join the old rejected promise. Only safe localized error
+text is sent to the player; detailed errors remain in diagnostic logs.
