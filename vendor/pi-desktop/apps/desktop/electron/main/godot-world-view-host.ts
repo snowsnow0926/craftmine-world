@@ -1477,6 +1477,9 @@ export class GodotWorldViewHost {
         session: ses,
         offscreen: isOffscreenAcceptance(),
         backgroundThrottling: false,
+        // Pending views are attached for frames, not eligible to take input.
+        // Native layer ownership performs the later displayed-view handoff.
+        focusOnNavigation: false,
         preload: join(__dirname, "../preload/godot-world.cjs"),
         contextIsolation: true,
         nodeIntegration: false,
