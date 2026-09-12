@@ -3,7 +3,14 @@
 export async function openWorldAfterNavigationReady({worldId,readReady,open,wait,assertActive=()=>{},record=()=>{},now=Date.now,timeoutMs=90000}){
  const deadline=now()+timeoutMs;
  while(now()<deadline){
-  assertActive();const ready=await readReady();assertActive();
+  assertActive();let ready;
+  try{ready=await readReady();}catch(error){
+   // The read-only view may not exist yet while create mode is mounting. No
+   // open was dispatched, so retrying this observation cannot replay a change.
+   record({kind:'world-navigation-observation-pending',worldId,error:String(error)});
+   assertActive();await wait();continue;
+  }
+  assertActive();
   if(ready?.ready!==true){await wait();continue;}
   try{return await open(worldId);}catch(error){
    // The coordinator/selection-sync guard refuses before opening a new world.

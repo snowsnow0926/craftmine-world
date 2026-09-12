@@ -14,7 +14,14 @@ commits or uncertain operations. Timeouts, lost replies and other failures still
 stop the trial. The startup wait remains cancellable and finite, unrelated to
 ordinary player model token/call/whole-turn limits.
 
-Three tests cover selector readiness, explicit busy scheduling, rejection of
+The second run, `desktop-native-complete-wXBsVL`, again completed both actual
+adoptions and clean exits but found the view itself not yet mounted during the
+new readiness read. The helper now records and retries pending read-only
+observations before any open dispatch. Persistent observation errors still reach
+the startup deadline; no uncertain open is replayed. This failure remains in its
+original report.
+
+Four tests cover selector readiness, pending view observations, explicit busy scheduling, rejection of
 uncertain retry, cancellation and deadline exhaustion. Actual cold-open success
 still requires a new completed sealed-client report; the scheduling tests alone
 do not establish it. No product guard was removed or weakened.

@@ -13,6 +13,12 @@ test('lost replies and non-busy failures never cause a second world-open dispatc
  }
 });
 
+test('a not-yet-mounted world view is a pending read, not another world-open request',async()=>{
+ let reads=0,opens=0;const records=[];
+ await openWorldAfterNavigationReady({worldId:'world',readReady:async()=>{if(++reads===1)throw Error('World view is not ready');return {ready:true};},open:async()=>{opens++;return {};},wait:async()=>{},record:value=>records.push(value)});
+ assert.equal(reads,2);assert.equal(opens,1);assert.equal(records[0].kind,'world-navigation-observation-pending');
+});
+
 test('cancellation or an exhausted startup deadline cannot issue another open',async()=>{
  let cancelled=false,calls=0;
  await assert.rejects(openWorldAfterNavigationReady({worldId:'world',readReady:async()=>({ready:false}),open:async()=>{calls++;},wait:async()=>{cancelled=true;},assertActive:()=>{if(cancelled)throw Error('CANCELLED');}}),/CANCELLED/);assert.equal(calls,0);
