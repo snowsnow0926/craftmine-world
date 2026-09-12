@@ -43,8 +43,12 @@ app.whenReady().then(async()=>{
     throw Error('Unexpected broker side effect: '+method);
   }};
   const live=createCraftmineLiveSampler(()=>host);
+  const {createHostProviders}=createRequire(path.join(out,'plugin/tool-services.cjs'))(path.join(out,'plugin/tool-services.cjs'));
   const broker=performance=>createWorldTools(core,async()=>{throw Error('SETTINGS_FORBIDDEN');},()=>false,undefined,undefined,
-    {samplePerformance:performance,sampleLiveState:live}).find(t=>t.name==='godot_performance_observe');
+    {samplePerformance:performance,sampleLiveState:createHostProviders((method,args)=>{
+      if(method==='godotLiveState')return live(args);
+      throw Error('Unexpected host request: '+method);
+    }).sampleLiveState}).find(t=>t.name==='godot_performance_observe');
   const invocation={projectId:'fixture-project',sessionId:'fixture-session',turnId:phase,toolCallId:'performance',executionId:'fixture-execution'};
   report.broker=await broker(async identity=>{report.brokerHostSample=await sample(identity);return report.brokerHostSample;}).execute({},invocation);
   assert.equal(report.broker.available,true,JSON.stringify(report.broker));

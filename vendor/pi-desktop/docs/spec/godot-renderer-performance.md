@@ -121,6 +121,15 @@ When testing against a different integration checkout, explicitly set
 recorded as context; the hashes describe the actual loaded bytes. Do not interpret
 this fixture as sealed desktop release or ordinary player acceptance.
 
+The final adapter-inclusive run `performance-godot-xWlS9T` additionally uses the
+packaged `createHostProviders(...).sampleLiveState` to validate and flatten the
+real engine envelope exactly as the plugin does. Both phases passed; the report
+is retained as `adapter-report.json` beside the previous raw-envelope broker run.
+An intervening harness attempt `performance-godot-fSU2wG` incorrectly assumed that
+`createHostProviders` also returns a performance provider; its expected NOT_WIRED
+failure is retained. The final fixture explicitly injects the real performance
+sampler and uses the packaged adapter for the live observation provider.
+
 Desktop `node node_modules/typescript/bin/tsc --noEmit` passed. Direct invocation
 used existing dependency junctions; `pnpm exec` requested a dependency refresh
 and was refused before installation, so no dependency refresh was performed.
