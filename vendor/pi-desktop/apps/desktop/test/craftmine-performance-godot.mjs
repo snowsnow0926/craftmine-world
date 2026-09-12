@@ -1,7 +1,7 @@
 // Requires an existing verified Godot Web descriptor (or cases.json with a formal variant).
 // Read-only reuse of its artifacts; two fresh offscreen Electron processes and profiles.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';import {createRequire} from 'node:module';import {spawn} from 'node:child_process';import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';import {createRequire} from 'node:module';import {spawn,execFileSync} from 'node:child_process';import {fileURLToPath} from 'node:url';
 const root=path.resolve(fileURLToPath(new URL('../../../../..',import.meta.url)));
 const deps=process.env.CRAFTMINE_PERFORMANCE_DEPS||path.join(root,'vendor/pi-desktop/apps/desktop');
 const require=createRequire(path.join(deps,'package.json'));
@@ -12,13 +12,18 @@ const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 function verify(){for(const item of descriptor.artifacts){const absolute=path.resolve(descriptor.root,item.path);assert.ok(absolute.startsWith(path.resolve(descriptor.root)+path.sep));const bytes=fs.readFileSync(absolute);assert.equal(bytes.length,item.bytes);assert.equal(hash(bytes),item.sha256);}}
 verify();fs.mkdirSync(path.join(root,'test-results'),{recursive:true});const out=fs.mkdtempSync(path.join(root,'test-results/performance-godot-'));
 fs.writeFileSync(path.join(out,'descriptor.json'),JSON.stringify(descriptor,null,2));
+const pluginRoot=process.env.CRAFTMINE_PERFORMANCE_PLUGIN_ROOT||root;
+execFileSync(process.execPath,[path.join(pluginRoot,'desktop/build-world-plugin.mjs'),'--output',path.join(out,'plugin')],{cwd:pluginRoot,windowsHide:true,stdio:'pipe'});
 const appRoot=path.join(out,'electron');fs.mkdirSync(path.join(appRoot,'main'),{recursive:true});fs.mkdirSync(path.join(appRoot,'preload'));
 fs.writeFileSync(path.join(appRoot,'package.json'),JSON.stringify({name:'godot-performance-fixture',main:'main/index.cjs'}));
 fs.writeFileSync(path.join(appRoot,'main/owner.html'),'<!doctype html><title>Isolated Godot performance fixture</title>');
 const desktop=path.join(root,'vendor/pi-desktop/apps/desktop');
 for(const [entry,target] of [['test/craftmine-performance-godot-main.mjs','main/index.cjs'],['electron/preload/godot-world.ts','preload/godot-world.cjs'],['electron/preload/craftmine-headless.ts','preload/craftmine-headless.cjs']])
   await require('esbuild').build({entryPoints:[path.join(desktop,entry)],outfile:path.join(appRoot,target),bundle:true,platform:'node',format:'cjs',external:['electron'],target:'node22',nodePaths:[path.join(deps,'node_modules')],logLevel:'warning'});
-const report={passed:false,source,path:out,sourceArtifactsUnchanged:false,phases:[]};
+const pluginFiles=['world-tools.cjs','manifest.json','godot-performance-query.cjs','godot-performance-observation.mjs','godot-observe.cjs','tool-services.cjs'].map(file=>{
+  const bytes=fs.readFileSync(path.join(out,'plugin',file));return {path:file,bytes:bytes.length,sha256:hash(bytes)};
+});
+const report={passed:false,source,path:out,pluginRoot,pluginCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:pluginRoot,encoding:'utf8',windowsHide:true}).trim(),pluginFiles,sourceArtifactsUnchanged:false,phases:[]};
 try{
   for(const phase of ['first','reopen']){
     const env={...process.env,CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_PERFORMANCE_OUT:out,CRAFTMINE_PERFORMANCE_PHASE:phase};delete env.ELECTRON_RUN_AS_NODE;

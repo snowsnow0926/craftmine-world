@@ -90,6 +90,37 @@ Optionally set `CRAFTMINE_PERFORMANCE_DEPS` to an existing desktop dependency
 directory. The test reads export assets only and writes a new test-results folder
 with two independent Electron profiles; it never changes source/export files.
 
+### Packaged broker follow-up
+
+The same test now builds a real plugin with `desktop/build-world-plugin.mjs` and
+loads its `createWorldTools` broker. It injects the production performance sampler
+and `createCraftmineLiveSampler`, which reads a fresh engine `observe-envelope`
+from the actual running Godot host. Core start, `task.context`, and
+`godotRuntime.describe` are explicitly controlled fixture responses. No RPC other
+than those expected read operations is allowed. This tests the packaged broker
+with real runtime/OS data; plugin IPC and actual Core persistence remain outside
+the fixture.
+
+Both load and cold reopen returned `available: true` and preserved the exact
+numeric memory value collected during that broker call. Frame/physics/object/GPU
+metrics stayed unknown. On cold reopen, replaying the previous process's actual
+sample was rejected by the broker as `PERFORMANCE_SAMPLE_INVALID`. The new report
+includes exact hashes of the packaged broker, manifest, projection/query helpers,
+observation and service modules, plus the immutable Godot export descriptor path.
+It is archived under
+`vendor/pi-desktop/docs/evidence/gu6-packed-godot-performance-20260912/report.json`.
+
+The verified final run is `test-results/performance-godot-JrLSwz`. An earlier
+successful run `performance-godot-25xRV9` lacked the package file hash list. Two
+earlier harness attempts (`L6jaFO`, `jO93bp`) failed respectively on bundled
+`import.meta.url` and missing fixture `core.start`; neither was a product failure,
+and their original failure records remain in test-results.
+
+When testing against a different integration checkout, explicitly set
+`CRAFTMINE_PERFORMANCE_PLUGIN_ROOT` to that checkout. The plugin's commit is
+recorded as context; the hashes describe the actual loaded bytes. Do not interpret
+this fixture as sealed desktop release or ordinary player acceptance.
+
 Desktop `node node_modules/typescript/bin/tsc --noEmit` passed. Direct invocation
 used existing dependency junctions; `pnpm exec` requested a dependency refresh
 and was refused before installation, so no dependency refresh was performed.
