@@ -31,6 +31,9 @@ var _interaction_count := 0
 var _feedback_seconds := 0.0
 var feedback_text := ""
 var configuration_error := ""
+var _heading := 0.0
+var _heading_basis := Basis.IDENTITY
+var _heading_known := false
 
 func _ready() -> void:
 	# Invalid components must remain discoverable so the host refuses saving them.
@@ -85,7 +88,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	var horizontal := Vector2(get_real_velocity().x, get_real_velocity().z)
 	if horizontal.length() > 0.08:
-		rotation.y = lerp_angle(rotation.y, atan2(-horizontal.x, -horizontal.y), minf(1.0, delta * 8.0))
+		_set_heading(wrapf(lerp_angle(_current_heading(), atan2(-horizontal.x, -horizontal.y), minf(1.0, delta * 8.0)), -PI, PI))
 	_update_animation(horizontal.length() > 0.08)
 	_feedback_seconds = maxf(0.0, _feedback_seconds - delta)
 	if is_zero_approx(_feedback_seconds):
@@ -174,8 +177,25 @@ func set_appearance_key(value: String) -> String:
 func set_following(value: bool) -> void:
 	_settings.following = value
 
+func _current_heading() -> float:
+	# Preserve the authoritative angle, as the player camera does. Repeated Euler
+	# decomposition can change one float32 bit between native and WASM engines.
+	# An external node or ancestor rotation still invalidates the cached basis.
+	var actual := global_basis
+	if not _heading_known or actual != _heading_basis:
+		_heading = global_rotation.y
+		_heading_basis = actual
+		_heading_known = true
+	return _heading
+
+func _set_heading(value: float) -> void:
+	global_rotation.y = value
+	_heading = value
+	_heading_basis = global_basis
+	_heading_known = true
+
 func snapshot() -> Dictionary:
-	var body := {"format": STATE_FORMAT, "entityId": _identity, "settings": _settings.duplicate(true), "sourceSettings": _source_settings.duplicate(true), "position": [global_position.x, global_position.y, global_position.z], "yaw": global_rotation.y, "interactionCount": _interaction_count}
+	var body := {"format": STATE_FORMAT, "entityId": _identity, "settings": _settings.duplicate(true), "sourceSettings": _source_settings.duplicate(true), "position": [global_position.x, global_position.y, global_position.z], "yaw": _current_heading(), "interactionCount": _interaction_count}
 	# Compare the actual Godot wire representation, not in-memory Vector3 floats
 	# against JSON's decimal representation. No field validation is relaxed.
 	return JSON.parse_string(JSON.stringify(body))
@@ -202,7 +222,7 @@ func restore(data: Dictionary) -> String:
 		return problem
 	_settings = data.settings.duplicate(true)
 	global_position = Vector3(data.position[0], data.position[1], data.position[2])
-	global_rotation.y = float(data.yaw)
+	_set_heading(float(data.yaw))
 	velocity = Vector3.ZERO
 	_interaction_count = int(data.interactionCount)
 	feedback_text = ""
