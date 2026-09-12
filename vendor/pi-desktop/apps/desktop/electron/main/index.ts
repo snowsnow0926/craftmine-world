@@ -1,5 +1,6 @@
 import { createMainWindow, type MainWindow } from "./main-window";
 import { mainInputContents, setMainImmersion, syncMainInputFocus } from "./main-window-layers";
+import { deliverImmersionShortcut } from "./immersion-shortcut-dispatch";
 import { createCraftmineIssueExportService } from "./craftmine-issue-export-service";
 import {
   app,
@@ -979,12 +980,10 @@ const voicePermission = new VoiceMicrophonePermissionGate(() => {
     ? { ownerId: window.webContents.id, documentUrl: window.webContents.getURL() } : undefined;
 });
 function forwardImmersionShortcut(action: CraftmineImmersionShortcut): void {
-  const window = mainWindow;
-  if (!immersionState.active || immersionState.blocked || !window || window.isDestroyed() || window.webContents.isDestroyed()) return;
-  // Called only by a trusted key event from the currently displayed world.
-  // Transfer child-content focus within the user's already focused window.
-  if (!isHeadlessAcceptance() && window.isFocused()) window.webContents.focus();
-  sendToRenderer(IPC.event.craftmineImmersionShortcut, action);
+  deliverImmersionShortcut(action, {
+    state: immersionState, window: mainWindow,
+    send: value => sendToRenderer(IPC.event.craftmineImmersionShortcut, value),
+  });
 }
 async function setImmersionState(state: CraftmineImmersionState): Promise<void> {
   immersionState = state;

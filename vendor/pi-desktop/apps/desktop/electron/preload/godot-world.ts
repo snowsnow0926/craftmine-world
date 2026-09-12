@@ -7,6 +7,7 @@ import {
   parseGodotWorldScopeArgument,
 } from "../shared/godot-world-chrome";
 import { attachFullscreenEscape } from "../../shared/world-fullscreen-shortcuts";
+import { attachWorldCursor, WORLD_CURSOR_CHANNEL } from "../../shared/world-cursor-presentation";
 
 /**
  * Transport for the Godot world runtime page (`craftmine.godot-runtime/2`).
@@ -22,6 +23,13 @@ const scope = process.argv
   .find((value): value is NonNullable<typeof value> => value !== null);
 
 if (scope) {
+  const disposeCursor = attachWorldCursor(window, listener => {
+    const wrapped = (_event: unknown, hide: boolean) => listener(hide);
+    ipcRenderer.on(WORLD_CURSOR_CHANNEL, wrapped);
+    return () => ipcRenderer.removeListener(WORLD_CURSOR_CHANNEL, wrapped);
+  });
+  ipcRenderer.once(GODOT_WORLD_DETACH_CHANNEL, disposeCursor);
+  window.addEventListener("pagehide", disposeCursor, {once: true});
   const disposeInput = attachImmersionInput(window, listener => {
     const wrapped = (_event: unknown, blocked: boolean) => listener(blocked);
     ipcRenderer.on(IMMERSION_INPUT_CHANNEL, wrapped);
