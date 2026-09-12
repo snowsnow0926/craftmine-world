@@ -2,8 +2,10 @@ import {app,BrowserWindow,webContents} from 'electron';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
 import {GodotWorldViewHost} from '../electron/main/godot-world-view-host';
 import {createCraftminePerformanceSampler} from '../electron/main/craftmine-performance-sample';
+import {createCraftmineLiveSampler} from '../electron/main/craftmine-live-sample';
+import {createRequire} from 'node:module';
 const out=process.env.CRAFTMINE_PERFORMANCE_OUT,phase=process.env.CRAFTMINE_PERFORMANCE_PHASE;
-const report={phase,passed:false,scope:'Actual exported Godot Web scene, production GodotWorldViewHost and OS sampler; local fixture progress store, no Core/plugin/model/player benchmark'};
+const report={phase,passed:false,scope:'Actual exported Godot Web scene, production host/live/OS samplers and packaged broker; Core task/runtime descriptors and local progress store are fixtures; no plugin IPC/model/player benchmark'};
 let host,owner;
 const write=()=>fs.writeFileSync(path.join(out,phase+'-report.json'),JSON.stringify(report,null,2));
 const finish=async error=>{if(error)report.error=String(error.stack||error);write();try{await host?.dispose();owner?.destroy();}finally{app.exit(error?1:0);}};
@@ -32,6 +34,25 @@ app.whenReady().then(async()=>{
   for(const key of ['worldId','buildId','instanceId'])assert.equal(report.sample[key],report.observation[key]);
   assert.ok(report.sample.memoryWorkingSetMb>0);assert.equal(report.sample.measurementScope,'renderer-process');
   for(const key of ['frameTimeMs','physicsStepMs','objectCount'])assert.equal(report.sample[key],undefined);
+  const {createWorldTools}=createRequire(path.join(out,'plugin/world-tools.cjs'))(path.join(out,'plugin/world-tools.cjs'));
+  report.coreFixtureCalls=[];
+  const core={start:async()=>({godotProjects:true,sessionDrafts:true}),call:async(method,args)=>{
+    report.coreFixtureCalls.push(method);
+    if(method==='task.context')return {world:{id:descriptor.worldId}};
+    if(method==='godotRuntime.describe'){assert.equal(args.worldId,descriptor.worldId);return descriptor;}
+    throw Error('Unexpected broker side effect: '+method);
+  }};
+  const live=createCraftmineLiveSampler(()=>host);
+  const broker=performance=>createWorldTools(core,async()=>{throw Error('SETTINGS_FORBIDDEN');},()=>false,undefined,undefined,
+    {samplePerformance:performance,sampleLiveState:live}).find(t=>t.name==='godot_performance_observe');
+  const invocation={projectId:'fixture-project',sessionId:'fixture-session',turnId:phase,toolCallId:'performance',executionId:'fixture-execution'};
+  report.broker=await broker(async identity=>{report.brokerHostSample=await sample(identity);return report.brokerHostSample;}).execute({},invocation);
+  assert.equal(report.broker.available,true,JSON.stringify(report.broker));
+  assert.equal(report.broker.measured.memoryWorkingSetMb.value,report.brokerHostSample.memoryWorkingSetMb);
+  assert.equal(report.broker.scope.instanceId,host.instance.instanceId);
+  assert.equal(report.broker.measured.memoryWorkingSetMb.unit,'MiB');
+  for(const key of ['frameTimeMs','physicsStepMs','objectCount','gpuTimeMs'])assert.equal(report.broker.measured[key].status,'unknown');
+  assert.deepEqual(report.coreFixtureCalls,['task.context','godotRuntime.describe','task.context','godotRuntime.describe']);
   report.snapshot=(await host.snapshot()).state;
   if(phase==='first'){
     report.save=await host.save();assert.equal(report.save.status,'persisted');
@@ -41,6 +62,8 @@ app.whenReady().then(async()=>{
     assert.notEqual(report.sample.instanceId,previous.sample.instanceId);
     assert.deepEqual(report.snapshot,JSON.parse(fs.readFileSync(savedPath)).snapshot);
     await assert.rejects(sample({instanceId:previous.sample.instanceId}),/MISMATCH/);report.staleInstanceRejected=true;
+    report.oldSampleBrokerResult=await broker(async()=>previous.brokerHostSample).execute({},invocation);
+    assert.equal(report.oldSampleBrokerResult.available,false);assert.equal(report.oldSampleBrokerResult.reason,'PERFORMANCE_SAMPLE_INVALID');
   }
   report.guards=[];
   for(const contents of webContents.getAllWebContents()){
