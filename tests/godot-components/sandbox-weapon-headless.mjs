@@ -15,6 +15,11 @@ for(const [src,dest] of [
  ['tests/godot-components/sandbox-weapon.gd','test.gd'],
  ['tests/godot-components/sandbox-weapon-reopen.gd','reopen.gd'],
 ]) fs.copyFileSync(path.join(root,src),path.join(project,dest));
+const sceneFile=path.join(project,'scenes/creation.tscn');
+let scene=fs.readFileSync(sceneFile,'utf8').replace('load_steps=5','load_steps=7');
+scene=scene.replace('[sub_resource type="CapsuleShape3D"', '[ext_resource type="Script" path="res://sandbox_weapon.gd" id="test_weapon"]\n[ext_resource type="Script" path="res://combat_vitals.gd" id="test_vitals"]\n[sub_resource type="CapsuleShape3D"');
+scene+='\n[node name="Vitals" type="Node3D" parent="."]\nscript = ExtResource("test_vitals")\nentity_id = "vitals-1"\n\n[node name="Weapon" type="Node3D" parent="."]\nscript = ExtResource("test_weapon")\nentity_id = "weapon-1"\n';
+fs.writeFileSync(sceneFile,scene);
 const env=await createGodotProbeEnvironment(out);
 await env.run('import',['--path',project,'--editor','--import']);
 const run=await env.run('weapon',['--path',project,'--script','res://test.gd']);

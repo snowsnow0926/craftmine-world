@@ -37,16 +37,14 @@ func run() -> void:
 	var player := world.get_node("Player") as Node3D
 	player.set("capture_mouse_on_click", false)
 	player.set("input_enabled", false)
+	var vitals := world.get_node("Vitals") as Node3D
+	var weapon := world.get_node("Weapon") as Node3D
+	# Mimic a fully authored PackedScene: components enter before current_scene
+	# is assigned by the loader, so visuals must wait for deferred initialization.
 	root.add_child(world)
 	current_scene = world
 	await process_frame
 	await physics_frame
-	var vitals: Node3D = load("res://combat_vitals.gd").new()
-	vitals.set("entity_id", "vitals-1")
-	world.add_child(vitals)
-	var weapon: Node3D = load("res://sandbox_weapon.gd").new()
-	weapon.set("entity_id", "weapon-1")
-	world.add_child(weapon)
 	var registry: RefCounted = load("res://component_state.gd").new()
 	check(registry.capture(world).error == "", "real registry accepts vitals and weapon snapshots")
 	var camera := player.get_node("CameraRig/PitchPivot/Camera3D") as Camera3D
@@ -128,6 +126,21 @@ func run() -> void:
 	target_body.free()
 	await physics_frame
 	await physics_frame
+	var foreign_world := Node3D.new()
+	root.add_child(foreign_world)
+	var foreign_target := DamageTarget.new()
+	foreign_target.entity_id = "foreign-target"
+	foreign_target.add_to_group("craftmine_damageable_targets")
+	foreign_world.add_child(foreign_target)
+	body_at(foreign_target, camera.global_position + direction * 4)
+	await physics_frame
+	await physics_frame
+	var foreign: Dictionary = weapon.attack(player)
+	check(foreign.fired and foreign.reason == "foreign-world" and foreign_target.calls == 0, "physical hit from another world never receives damage")
+	foreign_world.free()
+	weapon.restore(initial)
+	await physics_frame
+	await physics_frame
 	var miss: Dictionary = weapon.attack(player)
 	check(miss.fired and miss.damage == 0 and target.calls == 2, "no target ray consumes a shot without damage")
 	weapon.restore(initial)
@@ -139,8 +152,11 @@ func run() -> void:
 	distant.free()
 	weapon.restore(initial)
 	var camera_before := camera.global_transform
-	var gun_visual: MeshInstance3D = weapon.get("_visual")
+	var gun_visual: Node3D = weapon.get("_visual")
 	check(is_instance_valid(gun_visual) and camera.is_ancestor_of(gun_visual), "weapon visual uses actual camera mount")
+	check(gun_visual.get_child_count() == 3 and gun_visual.get_node("Receiver") is MeshInstance3D and gun_visual.get_node("Barrel").mesh is CylinderMesh and gun_visual.get_node("Grip").mesh is BoxMesh, "whole-scene deferred load creates receiver barrel and grip meshes")
+	weapon.call("_initialize_visual")
+	check(camera.get_node("WeaponMount").get_child_count() == 1 and gun_visual.get_child_count() == 3, "visual initialization remains idempotent")
 	var other_camera := Camera3D.new()
 	world.add_child(other_camera)
 	other_camera.make_current()
