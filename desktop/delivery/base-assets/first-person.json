@@ -117,8 +117,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 9919,
-      "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5",
+      "bytes": 10308,
+      "sha256": "2b38782a7c3afb3d309a8712ea752a1790fe22f53d134440c7ad12dc50358f5a",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Host-side bridge script shipped beside the exported Web build."
     },
