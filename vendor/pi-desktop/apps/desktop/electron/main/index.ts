@@ -236,6 +236,7 @@ import {
 } from "./godot-world-creation";
 import {createGodotWorldInitializer} from "./godot-world-initialization";
 import {initialLoadBridgeResource} from "./godot-initial-load-repair";
+import {creationAllowsFullAuto} from "./creation-permission-mode";
 import {createAssetPreviewHost} from "../craftmine-assets/host-service.mjs";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { pathToFileURL } from "node:url";
@@ -1173,12 +1174,10 @@ const dataDir =
   process.env.PI_DESKTOP_DATA_DIR || join(homedir(), ".pi-desktop");
 
 async function creationFullAuto(sessionId:string|null):Promise<boolean>{
-  if(!host)return false;
+  if(!host || !sessionId)return false;
   const settings=await host.call<any>("settings.get");
-  if(settings.defaultPermissionMode==="auto")return true;
-  if(!sessionId)return false;
   const detail=await host.call<{session?:any}>("session.get",{id:sessionId});
-  return detail.session?.permissionMode==="auto";
+  return creationAllowsFullAuto(detail.session, settings.defaultPermissionMode);
 }
 const creationTargets=createCreationTargetService({
   fullAuto:session=>creationFullAuto(session.sessionId),
