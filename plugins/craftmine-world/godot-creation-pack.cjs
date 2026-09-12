@@ -107,6 +107,12 @@ function readCreationProjectSelectors(buffer){
 /** Claims were pinned by core before export; @tool cannot rewrite the actual packed sampler. */
 function verifyCreationPack(buffer,sourceFiles){
  const pack=readPck4(buffer),verified=[],contract=sourceContract(sourceFiles,pack);
+ const engineMembers=['craftmine_shared/runtime_bridge_base.gd','craftmine_shared/engine_performance.gd'];
+ if(engineMembers.some(name=>sourceFiles.some(file=>reservedAlias(file?.path,name))||[...pack.files.keys()].some(file=>reservedAlias(file,name)))){
+  if(contract.proof.historical||!engineMembers.every(name=>sourceFiles.filter(file=>file?.path===name).length===1))fail('CREATION_PACK_ENGINE_PROFILE_INCOMPLETE');
+  contract.names=[...contract.names,...engineMembers];
+  contract.proof={...contract.proof,enginePerformanceProfile:'engine-monitor/1',engineAuthority:'requires-app-source-pins'};
+ }
  for(const name of contract.names){
   const expected=Array.isArray(sourceFiles)?sourceFiles.filter(file=>file.path===name):[];
   if(expected.length!==1||!/^[a-f0-9]{64}$/.test(expected[0].sha256)||!Number.isSafeInteger(expected[0].bytes))fail('CREATION_PACK_SOURCE_PIN_MISSING');

@@ -32,6 +32,21 @@ test('collision cohort protects v2, inherited v1 and full native shape guard wit
  for(const name of ['craftmine_shared/base_adapter_controller_v1.gd','craftmine_shared/progress_collision.gd'])assert.throws(()=>verifyCreationPack(pack(entries),expected.filter(e=>e.path!==name)),/COLLISION_PROFILE_INCOMPLETE/);
 });
 test('PCK independently binds actual packed scripts and compiled selectors to claimed source bytes',()=>{const entries=files(),result=verifyCreationPack(pack(entries),pins(entries));assert.equal(result.files.length,PROTECTED_CREATION_FILES.length);assert.equal(result.project.selectors['craftmine/runtime/adapter'],selectors[1][1]);});
+
+test('opt-in monitor dependency closure is checked during normal creation export',()=>{
+ const extras=['craftmine_shared/runtime_bridge_base.gd','craftmine_shared/engine_performance.gd'];
+ const entries=[...files(),...extras.map(path=>({path,data:'extends RefCounted\n# '+path}))];
+ const expected=entries.filter(e=>e.path!=='project.binary').map(e=>({path:e.path,bytes:Buffer.byteLength(e.data),sha256:hash(e.data).toString('hex')}));
+ const proof=verifyCreationPack(pack(entries),expected);
+ assert.equal(proof.files.length,7);assert.equal(proof.observerContract.enginePerformanceProfile,'engine-monitor/1');
+ assert.equal(proof.observerContract.engineAuthority,'requires-app-source-pins');
+ for(const name of extras){
+  assert.throws(()=>verifyCreationPack(pack(entries),expected.filter(e=>e.path!==name)),/ENGINE_PROFILE_INCOMPLETE/);
+  const changed=entries.map(e=>e.path===name?{...e,data:e.data+'changed'}:e);
+  assert.throws(()=>verifyCreationPack(pack(changed),expected),/PROTECTED_MISMATCH/);
+  assert.throws(()=>verifyCreationPack(pack([...entries,{path:name+'.remap',data:'res://fake'}]),expected),/PROTECTED_ALIAS/);
+ }
+});
 test('exported script changes fail even with a freshly valid MD5 and unchanged source pin list',()=>{const entries=files(),expected=pins(entries);entries[0].data+='\n# tool changed this only in export copy\n';assert.throws(()=>verifyCreationPack(pack(entries),expected),/PROTECTED_MISMATCH/);});
 test('compiled selector changes fail even when all protected scripts match source',()=>{const entries=files();entries.at(-1).data=project([[selectors[0][0],'*res://forged.gd'],selectors[1]]);assert.throws(()=>verifyCreationPack(pack(entries),pins(entries)),/SELECTOR_MISMATCH/);});
 test('resource remaps, duplicate paths, traversal, encrypted entries and format changes fail closed',()=>{
