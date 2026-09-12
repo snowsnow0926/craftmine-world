@@ -5,6 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
+import {openWorldAfterNavigationReady} from '../helpers/ordinary-world-open.mjs';
 import {createRequire} from 'node:module';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createCompleteOutput,completeEnvironment} from '../godot-final/complete-contract.mjs';
@@ -94,7 +95,7 @@ try{
   await panel(world.id,'godot.runtimeSave',{freeze:true});const beforeCold={observation:await rpc('godotObserve'),snapshot:await rpc('godotSnapshot'),sources:await packageCall(world.id,'sourceList')};report.beforeCold=evidence(beforeCold);save();
   await step('first process shuts down cleanly',stop);start();await step('same sealed build cold reopens protected profile',started);
   await step('ordinary create mode after cold launch',()=>rpc('primaryMode',{payload:{action:'create'}}));
-  await step('ordinary world.open after cold launch',()=>nav('world.open',{id:world.id}));await settled(world.id);
+  await step('ordinary world.open after cold launch',()=>openWorldAfterNavigationReady({worldId:world.id,readReady:()=>rpc('worldNavigationReady'),open:id=>nav('world.open',{id}),wait:()=>delay(1000),assertActive:()=>{if(stopping||ended)throw Error('TRIAL_STOPPED');},record:item=>{(report.navigationWaits??=[]).push(item);save();}}));await settled(world.id);
   const afterCold=await step('adopted package source and build survive cold restart',async()=>{const observed=await rpc('godotObserve'),sources=await packageCall(world.id,'sourceList');assert.equal(observed.worldId,world.id);assert.equal(observed.buildId,beforeCold.observation.buildId);assert.deepEqual(ids(sources),ids(beforeCold.sources));return {observed,sources,snapshot:await rpc('godotSnapshot')};});report.afterCold=evidence(afterCold);
   assertFormalCold(beforeCold,afterCold);
   if(sourceMode==='catalog'){
