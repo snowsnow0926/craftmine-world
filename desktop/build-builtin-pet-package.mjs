@@ -7,6 +7,9 @@ import {contentHash,validatePath} from '../plugins/craftmine-world/package-forma
 import {packStaticPackage,unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 
 export const PET_ASSET_ID='cw.module.pet-companion';
+// v2 binds the managed sandbox adapter with ordinary weapon dispatch. v1 is
+// immutable in released products; never rebuild those bytes with new hashes.
+export const PET_VERSION=2;
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(ok,code)=>{if(!ok)throw Error(code);};
 export const PET_SOURCE_REQUIREMENTS=[
@@ -44,7 +47,7 @@ export function buildBuiltinPetPackage({repository,petRoot=path.join(repository,
   const prefix='res://addons/'+PET_ASSET_ID+'/';
   files['scenes/pet_companion.tscn']=Buffer.from(`[gd_scene load_steps=4 format=3]\n\n[ext_resource type="Script" path="${prefix}scripts/pet_companion.gd" id="1_behavior"]\n[ext_resource type="PackedScene" path="${prefix}visuals/dog.glb" id="2_dog"]\n[ext_resource type="PackedScene" path="${prefix}visuals/pomeranian-white.glb" id="3_pomeranian"]\n\n[node name="PetCompanion" type="CharacterBody3D"]\nscript = ExtResource("1_behavior")\nentity_id = "pet"\nappearance_key = "dog"\ndog_visual = ExtResource("2_dog")\npomeranian_visual = ExtResource("3_pomeranian")\n`);
   const sourceRequirements=PET_SOURCE_REQUIREMENTS.map(([projectPath,sourcePath])=>({path:projectPath,sha256:sha(read(repository,sourcePath))}));
-  const content={assetId:PET_ASSET_ID,version:1,kind:'module',files:Object.entries(files).sort(([a],[b])=>a.localeCompare(b,'en')).map(([name,bytes])=>({path:name,bytes:bytes.length,sha256:sha(bytes)})),dependencies:[],
+  const content={assetId:PET_ASSET_ID,version:PET_VERSION,kind:'module',files:Object.entries(files).sort(([a],[b])=>a.localeCompare(b,'en')).map(([name,bytes])=>({path:name,bytes:bytes.length,sha256:sha(bytes)})),dependencies:[],
     entry:{entities:['pet'],sceneInstall:{mode:'instance',sceneFile:'scenes/pet_companion.tscn',identityField:'entity_id',identityType:'String'},sourceRequirements,
       label:'宠物伙伴：小狗与白色博美',description:'可跟随、近距离抚摸并保存进度的宠物。重复安装得到独立伙伴；修改同一根节点的 appearance_key 可在小狗与白色博美之间换外观，保留身份和进度。首版沿平地跟随，遇障碍停留，不提供寻路、驾驶或战斗。',
       placement:{anchor:'feet',dimensionsMm:[1500,770,1500]},appearances,
@@ -56,10 +59,10 @@ export function buildBuiltinPetPackage({repository,petRoot=path.join(repository,
     state:{kind:'persistent-component',format:'craftmine.pet-companion-state/1',ledger:'/body/components',identity:'entityId',settings:['name','appearanceKey','following'],sourceSettings:['name','appearanceKey','following'],runtimeFields:['position','yaw','interactionCount'],removedIdentity:'retain-last-saved-state',sourceSettingsMigration:'changed-source-defaults-only'},
     licenses:{author:'Craftmine World contributors',license:'MIT',licenseFile:'LICENSE.txt',visualSource:'Original canine-visuals 1',visualManifestSha256:sha(read(visualRoot,'manifest.json'))}};
   const manifest={format:'craftmine.resource/1',content,contentHash:contentHash(content)};
-  const bytes=packStaticPackage({root:{id:PET_ASSET_ID,version:1},resources:[{manifest,files}]});
+  const bytes=packStaticPackage({root:{id:PET_ASSET_ID,version:PET_VERSION},resources:[{manifest,files}]});
   const archive=unpackStaticPackage(bytes);
   check(archive.resources.length===1&&archive.resources[0].contentHash===manifest.contentHash,'PET_PACKAGE_ROUNDTRIP_FAILED');
   const file=PET_ASSET_ID+'.zip';
-  return {file,bytes,entry:{assetId:PET_ASSET_ID,version:1,kind:'module',file,bytes:bytes.length,sha256:sha(bytes),rootContentHash:manifest.contentHash,label:content.entry.label,
-    tags:['builtin','prefab','playable','宠物','小狗','博美','跟随','抚摸'],source:{origin:'Craftmine World pet-companion 1.0.0',author:'Craftmine World contributors',license:'MIT',licenseStatus:'verified'}}};
+  return {file,bytes,entry:{assetId:PET_ASSET_ID,version:PET_VERSION,kind:'module',file,bytes:bytes.length,sha256:sha(bytes),rootContentHash:manifest.contentHash,label:content.entry.label,
+    tags:['builtin','prefab','playable','宠物','小狗','博美','跟随','抚摸'],source:{origin:'Craftmine World pet-companion 2.0.0',author:'Craftmine World contributors',license:'MIT',licenseStatus:'verified'}}};
 }

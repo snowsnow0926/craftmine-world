@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
-import {buildBuiltinPetPackage,PET_ASSET_ID,PET_SOURCE_REQUIREMENTS} from '../desktop/build-builtin-pet-package.mjs';
+import {buildBuiltinPetPackage,PET_ASSET_ID,PET_VERSION,PET_SOURCE_REQUIREMENTS} from '../desktop/build-builtin-pet-package.mjs';
 import {buildBuiltinSourceLibrary} from '../desktop/build-builtin-source-library.mjs';
 import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 import {planSceneInsertion,applySceneInsertion,parseScene} from '../desktop/godot/shared/scene_materializer.mjs';
@@ -16,6 +16,7 @@ function resource(){const result=buildBuiltinPetPackage({repository});return {re
 
 test('playable module binds one behavior root and both final visual byte streams',()=>{
  const {result,resource:r}=resource(),c=r.manifest.content;
+ assert.equal(PET_VERSION,2);assert.equal(result.entry.version,2);assert.equal(c.version,2);
  assert.equal(result.entry.kind,'module');assert.equal(c.state.kind,'persistent-component');assert.equal(c.state.format,'craftmine.pet-companion-state/1');
  assert.deepEqual(c.entry.entities,['pet']);assert.equal(c.entry.sceneInstall.identityField,'entity_id');
  const scene=r.files.get(c.entry.sceneInstall.sceneFile).toString();

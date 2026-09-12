@@ -4,7 +4,7 @@ import type { GodotGameplayAccess } from "./craftmine-godot-gameplay-acceptance"
 // Test-controller input, not an agent tool or a new gameplay operation.
 export const GODOT_EXPLORATION_LIMITS = Object.freeze({ steps: 16, framesPerStep: 120, actionPhysicsTicks: 600, captures: 4 });
 type Identity = { worldId: string; buildId: string; instanceId: string };
-type Step = { op: "look" | "walk" | "wait" | "interact" | "play-action"; args: Record<string, number | string>; capture: boolean };
+type Step = { op: "look" | "walk" | "wait" | "interact" | "attack" | "play-action"; args: Record<string, number | string>; capture: boolean };
 function fail(reason: string): never { throw Error("GODOT_EXPLORATION_" + reason); }
 function object(value: unknown): asserts value is Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) fail("INVALID_OBJECT");
@@ -53,6 +53,7 @@ function parse(input: unknown): { identity: Identity; steps: Step[]; actionPhysi
         actionPhysicsTicks += args.frames;
         break;
       case "interact":
+      case "attack":
         fields(entry.args, []); actionPhysicsTicks++;
         break;
       case "play-action":

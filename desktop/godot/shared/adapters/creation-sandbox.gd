@@ -341,12 +341,21 @@ func observe() -> Dictionary:
 	return result
 
 func command(op: String, args: Dictionary) -> Dictionary:
-	var allowed := {"walk": ["forward", "right", "frames"], "wait": ["frames"], "look": ["yaw", "pitch"], "interact": [], "set-time": ["hours"]}
+	var allowed := {"walk": ["forward", "right", "frames"], "wait": ["frames"], "look": ["yaw", "pitch"], "interact": [], "attack": [], "set-time": ["hours"]}
 	if not allowed.has(op) or not Contract.fields(args, [], allowed[op]):
 		return {"error": "Unsupported creation operation or argument"}
 	if not is_ready():
 		return {"error": "Creation world is not ready"}
 	match op:
+		"attack":
+			var weapons: Array[Node] = []
+			for node in world().get_tree().get_nodes_in_group("craftmine_player_weapons"):
+				if world().is_ancestor_of(node) and not node.is_queued_for_deletion() and node.get("_player") == world().player:
+					weapons.append(node)
+			if weapons.size() != 1 or not weapons[0].has_method("attack"):
+				return {"error": "Creation attack requires one configured player weapon"}
+			var attacked: Variant = weapons[0].attack(world().player)
+			return {"result": attacked} if attacked is Dictionary else {"error": "Invalid weapon result"}
 		"walk", "wait":
 			var frames: Variant = args.get("frames", 30 if op == "walk" else 1)
 			if not Contract.integer(frames, 1, 600):
