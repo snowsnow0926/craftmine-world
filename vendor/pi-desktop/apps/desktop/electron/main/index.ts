@@ -23,6 +23,7 @@ import { createHash } from "node:crypto";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
+import { readWorldConversation } from "./world-conversation";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
@@ -66,7 +67,7 @@ import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-short
 import { LocalVoiceInputService } from "./local-voice-input";
 import { VoiceMicrophonePermissionGate } from "./voice-microphone-permission";
 import { VOICE_INPUT_CHANNELS } from "@pi-desktop/shared";
-import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
+import type { CraftmineImmersionState, CraftmineImmersionShortcut, SessionSummary } from "@pi-desktop/shared";
 import {
   existsSync,
   mkdirSync,
@@ -6731,6 +6732,18 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
+    if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.conversation") {
+      if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      return readWorldConversation(payload.payload, {
+        selectedWorld: godotSelection,
+        sessions: async () => {
+          if (!host) throw Error("HOST_UNAVAILABLE");
+          return (await host.call<{sessions: SessionSummary[]}>("session.list")).sessions;
+        },
+        pluginEnabled: path => pluginActiveInProject("craftmine.world", path),
+        domain: (method, input) => plugins.requestCraftmineHost(method, input),
+      });
+    }
     if (payload?.channel === "world.previewControl" && (event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
     if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.previewControl") {
       await assertCreationResultAccess(payload.payload ?? {}, {viewingSession:()=>notificationViewingSessionId,
