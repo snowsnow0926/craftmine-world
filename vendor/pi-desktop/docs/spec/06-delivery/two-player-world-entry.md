@@ -19,6 +19,12 @@ to play. A failed entry leaves retry available and never invents a ready state.
 Cancellation becomes available only after an initializing receipt. Await
 `world.playerCancel({kind})` before unlocking the cards. Unconfirmed cancellation
 keeps its retry control visible; cancellation preserves the registered world.
+After a cancellation failure, a fresh slot read may show that the target has
+stopped initializing or is no longer selected. In that case unlock the cards
+while retaining the failure explanation; do not call that proof of successful
+cancellation or restoration. If the read fails or the same initialization is
+still selected, retain the explicit cancellation retry. Return-to-world is only
+offered for a host-reported ready active slot, never an unfinished placeholder.
 
 Switching slots is explicit conversation navigation. Capture the prior live
 draft and navigation intent before entering. If typing or session navigation

@@ -67,6 +67,6 @@ export function CraftmineModeEntry({onSelect,onCancel,onManage}: {
       {worlds?.activeWorldId&&!worlds.activeKind&&<p role="status">{chinese?"当前打开的是旧作品，可在高级存档管理中继续访问。":"The current world is a legacy project. It remains available in advanced save management."}</p>}
       <button type="button" className="craftmine-mode-manage" disabled={!!pending} onClick={manage}>{chinese?"设置与高级存档管理":"Settings and advanced saves"}</button>
     </div>
-    {onCancel&&<button type="button" className="craftmine-mode-back no-drag" disabled={!!pending} onClick={onCancel}>{chinese?"返回当前世界":"Return to current world"}</button>}
+    {onCancel&&worlds?.activeKind&&worlds.slots.some(slot=>slot.kind===worlds.activeKind&&slot.worldId===worlds.activeWorldId&&slot.state==="ready")&&<button type="button" className="craftmine-mode-back no-drag" disabled={!!pending} onClick={onCancel}>{chinese?"返回当前世界":"Return to current world"}</button>}
   </main>;
 }
