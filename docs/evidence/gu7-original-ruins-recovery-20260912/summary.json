@@ -1,0 +1,79 @@
+{
+  "format": "craftmine.original-ruins-recovery/1",
+  "commit": "05adf239d88862cba44dad27f8d33e3641a28c99",
+  "packaged": "D:/cm-agent-godot-0912/desktop/build/releases/05adf239d888-49b23293-1c58-4089-97b2-455cca8dd2b8/output/win-unpacked",
+  "records": {
+    "report.json": {
+      "source": "test-results/desktop-native-complete-FGX9jS/report.json",
+      "bytes": 420521,
+      "sha256": "91d73af8b47e4be92025e38031bd58ec350b71eb4e631a03462d222f38d07799"
+    },
+    "package-inventory.json": {
+      "source": "test-results/desktop-native-complete-FGX9jS/package-inventory.json",
+      "bytes": 293364,
+      "sha256": "bc6347aa79972b9b81b83e7f8f73bed5d139258e95acc799f085823f23aafe7c"
+    },
+    "capture-1.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-1.png",
+      "bytes": 4586,
+      "sha256": "14342fa20782ab4a42115ed29a0d2824430d520a7c454086e8107afd7ff1d146"
+    },
+    "capture-2.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-2.png",
+      "bytes": 4586,
+      "sha256": "14342fa20782ab4a42115ed29a0d2824430d520a7c454086e8107afd7ff1d146"
+    },
+    "capture-3.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-3.png",
+      "bytes": 4463,
+      "sha256": "9a9b4986da5341662d723915c68ca8b0eb9c0ad6575906c8bd57e696b5d02caf"
+    },
+    "capture-4.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-4.png",
+      "bytes": 4447,
+      "sha256": "22c2dd65910e25ec486e0a95c110e370919e9f411464e820095ccb6bea356bb1"
+    },
+    "capture-5.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-5.png",
+      "bytes": 4463,
+      "sha256": "9a9b4986da5341662d723915c68ca8b0eb9c0ad6575906c8bd57e696b5d02caf"
+    },
+    "capture-6.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-6.png",
+      "bytes": 4447,
+      "sha256": "22c2dd65910e25ec486e0a95c110e370919e9f411464e820095ccb6bea356bb1"
+    },
+    "capture-7.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-7.png",
+      "bytes": 4447,
+      "sha256": "22c2dd65910e25ec486e0a95c110e370919e9f411464e820095ccb6bea356bb1"
+    },
+    "capture-8.png": {
+      "source": "test-results/desktop-native-complete-FGX9jS/capture-8.png",
+      "bytes": 4447,
+      "sha256": "22c2dd65910e25ec486e0a95c110e370919e9f411464e820095ccb6bea356bb1"
+    }
+  },
+  "worldId": "world-fd55cf940cd2",
+  "originalJobId": "gjob-e2cf1872e38556c0fc3ae90add0bedeeb082904357c74225a7395ed25c9866d6",
+  "originalOutputHash": "346d3011d0cbf87a18489913b04c1846f28184e4cd546d3d7b48d7aec7e970aa",
+  "recoveredJobId": "gjob-c3b7d4395fbfd8a3a0a0d8584dfdd2c43b14fb9f3ad605b230c2b107b1e7fc41",
+  "buildId": "gbd-8836ede78aff6173d3d0e4721e5599585962f676d32aa8c23fe8c1eab0ce2dbb",
+  "manifestHash": "29112926d99d0463a816ea802a7aba6c041c4e9773145332748399b33711f0c5",
+  "sourceRevision": 1,
+  "gameplay": {
+    "actions": 12,
+    "checks": 20,
+    "ok": true
+  },
+  "passed": true,
+  "coldProgressEqual": true,
+  "originalImmutableFiles": 63,
+  "scope": "Normal world.creationRetry of the original failed GA27 isolated world; new sealed repair product, original world and source; no model or input",
+  "limits": [
+    "Native crash root cause remains unknown",
+    "Original GA27 four-base2a run remains3/4 failed; recovery uses new05ad package",
+    "No model, source rewrite, substitute world or blanket retry",
+    "Complete old318 bridge LPAC compatibility is a separate test"
+  ]
+}

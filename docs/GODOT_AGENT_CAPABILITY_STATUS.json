@@ -50,7 +50,7 @@
     {
       "id": "GU5",
       "status": "in-progress",
-      "next": "Private verified native-import evidence now reaches build-read diagnostics; ordinary saved parameter draft survived permission interruption and continuation; exact legacy bridge repair and Core retry tests passed, original failed-world sealed recovery and broader compaction/model-switch repair remain"
+      "next": "Sealed05ad normal retry recovered original failed ruins world with unchanged source and preserved original failed job, actual gameplay/full save/cold passed; native crash cause remains unknown; broader compaction/model-switch repair remains"
     },
     {
       "id": "GU6",
@@ -64,6 +64,13 @@
     }
   ],
   "evidence": [
+    {
+      "kind": "original-failed-world-recovery",
+      "commit": "05adf239d88862cba44dad27f8d33e3641a28c99",
+      "path": "docs/evidence/gu7-original-ruins-recovery-20260912/summary.json",
+      "status": "passed-scoped-normal-recovery",
+      "scope": "One normal retry, original world and source unchanged, new actual check, old failed output preserved,12 semantic actions20 checks and complete progress cold equality,2 clean exits; root cause unknown"
+    },
     {
       "kind": "ordinary-module-creation-and-physics",
       "commit": "863622e9c9465bf2b00d3f0ec9964ad3ac36d295",

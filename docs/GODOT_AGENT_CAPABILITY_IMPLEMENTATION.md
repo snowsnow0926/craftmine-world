@@ -12,6 +12,16 @@ Player acceptance uses the selected session model, thinking level and ordinary p
 
 ## Module source parameters and declaration preservation
 
+The sealed `05adf239` client completed normal retry on the original failed GA27
+ruins world in `desktop-native-complete-FGX9jS`. All 12 steps passed: unchanged
+source and original-world identity, independent successful check, existing ruins
+gameplay (12 actions/20 checks), save and complete progress equality after cold
+reopen. Both exits are clean; original failure reports/logs/source bytes and old
+failed job output remain unchanged. No substitute world or direct source/DB
+repair was used. Two archive/negative-verdict tests pass. This validates recovery
+entry repair, not the unknown cause of the original native crashes, and does not
+rewrite the older 3/4 matrix into a full pass.
+
 The ordinary module wishes now have actual sealed `863622e9` evidence. Layout
 completed in 14 model calls; only the two existing instance positions changed.
 The second wish saved three left-instance parameters, then its check permission
