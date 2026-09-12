@@ -18,6 +18,10 @@ uses the original global/default-provider Pro/medium binding. Context and
 output configuration are unchanged. The runner installs only that selected
 provider through the ordinary API; it does not copy a credential database or
 modify the original profile. Secret values are redacted and never printed.
+The retained domain settings are copied intact, overriding only its selected
+world ID. The launch preflight accepts both the legacy headless offscreen
+guard and the explicit `isOffscreenAcceptance()` guard; runtime ownership
+checks still require hidden, non-focusable windows and offscreen content.
 
 The setup preserves the missing global permission preference. Auto must appear
 through product session creation/defaulting, not a harness permission override.

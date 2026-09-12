@@ -40,7 +40,10 @@ for(const name of ['settings.json','asset-catalog','content-history','godot-sour
 fs.cpSync(path.join(sourceProfile,'godot-worlds'),path.join(profile,'godot-worlds'),{recursive:true});
 const copiedDatabase=new DatabaseSync(path.join(from,'tasks.sqlite'),{readOnly:true});await backup(copiedDatabase,path.join(to,'tasks.sqlite'));copiedDatabase.close();
 // Only domain data is copied. Provider credentials are installed through the normal API.
-fs.writeFileSync(path.join(to,'settings.json'),JSON.stringify({activeWorldId:retainedWorldId}));
+const copiedSettingsFile=path.join(to,'settings.json');
+const copiedSettings=fs.existsSync(copiedSettingsFile)?JSON.parse(fs.readFileSync(copiedSettingsFile,'utf8')):{};
+assert.ok(copiedSettings&&typeof copiedSettings==='object'&&!Array.isArray(copiedSettings),'Original domain settings must be an object');
+fs.writeFileSync(copiedSettingsFile,JSON.stringify({...copiedSettings,activeWorldId:retainedWorldId}));
 }fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
 const secrets={};loadLocalConfig(secretsFile,secrets);const secret=secrets.CRAFTMINE_DEEPSEEK_API_KEY??secrets.DEEPSEEK_API_KEY??secrets.CRAFTMINE_EVAL_KEY;
 assert.ok(typeof secret==='string'&&secret.length,'Selected provider credential is unavailable');
@@ -48,7 +51,8 @@ const redact=value=>{let text=typeof value==='string'?value:JSON.stringify(value
 const development=fs.existsSync(path.join(pack,'package.json'));
 const asar=loadPackageAsar(path.join(repo,'vendor/pi-desktop/apps/desktop'));
 const main=development?fs.readFileSync(path.join(pack,'out/main/index.js'),'utf8'):asar.extractFile(path.join(pack,'resources/app.asar'),path.normalize('out/main/index.js')).toString();
-for(const guard of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance','offscreen: !!headlessAcceptance'])assert.ok(main.includes(guard),'UNSAFE_APP:'+guard);
+for(const guard of ['configureHeadlessAcceptance()','focusable: !headlessAcceptance'])assert.ok(main.includes(guard),'UNSAFE_APP:'+guard);
+assert.ok(main.includes('offscreen: isOffscreenAcceptance()')||main.includes('offscreen: !!headlessAcceptance'),'UNSAFE_APP: guarded offscreen window');
 const controller=new AbortController(),signal=controller.signal,cancelFile=path.join(directory,'cancel');
 for(const event of ['SIGINT','SIGTERM'])process.on(event,()=>controller.abort());
 const cancelWatch=setInterval(()=>{if(fs.existsSync(cancelFile))controller.abort();},250);
