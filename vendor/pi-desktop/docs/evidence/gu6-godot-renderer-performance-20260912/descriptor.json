@@ -1,0 +1,89 @@
+{
+  "worldId": "collision-web-world",
+  "baseId": "creation-sandbox",
+  "buildId": "gbd-b27afa72694246ed1c39fa9a3a8514de031693bc3c1d6da2c5c516f353cefd9e",
+  "root": "D:\\cm-gu4-collision-guard-0912\\test-results\\creation-module-collision-web-zAdOHi\\formal-artifacts",
+  "entry": "web/index.html",
+  "threads": true,
+  "artifacts": [
+    {
+      "path": "web/bridge.js",
+      "bytes": 9919,
+      "sha256": "a9666dfcb156e3eacd869b9ca10a17aa01600747f4550569b4fa79005e44ffe5"
+    },
+    {
+      "path": "web/index.apple-touch-icon.png",
+      "bytes": 11944,
+      "sha256": "01d4f63e525941e06ce74f5187dad030d20a8d52a07ce365ae4e94af97a3b1f5"
+    },
+    {
+      "path": "web/index.audio.position.worklet.js",
+      "bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "path": "web/index.audio.worklet.js",
+      "bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "path": "web/index.html",
+      "bytes": 965,
+      "sha256": "7172ed07c8e5403e1e29f4aa7d702ac36d7a1c1e018ea51e100e058ff7c79a14"
+    },
+    {
+      "path": "web/index.icon.png",
+      "bytes": 5700,
+      "sha256": "ad3c35ad0facf487c618204bd98db543034fc95224eadc7f08c7a9ff38d5b3b5"
+    },
+    {
+      "path": "web/index.js",
+      "bytes": 314653,
+      "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+    },
+    {
+      "path": "web/index.pck",
+      "bytes": 5737532,
+      "sha256": "cf9b823d29cc71dcab02b26cab40e7c88d2f968bffdd3c74b536e6f4791f5511"
+    },
+    {
+      "path": "web/index.png",
+      "bytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "path": "web/index.wasm",
+      "bytes": 38820072,
+      "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+    }
+  ],
+  "snapshot": {
+    "format": "craftmine.godot-progress/1",
+    "worldId": "collision-web-world",
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "stateVersion": 1,
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "collision-web-world"
+    }
+  },
+  "revision": 0
+}
