@@ -20,6 +20,10 @@ const EXECUTION_MODES={
 // core handshake must report true for the tool to be usable; `reachable` is only
 // used for a tool that does not depend on a flag.
 const LOCAL_TOOLS={
+  blender_status:{owner:'Blender',hostMethod:'managed Blender toolchain discovery',needs:['godotProjects'],requiredServices:['blenderTool']},
+  blender_generate:{owner:'Blender',hostMethod:'native Blender broker+godotProject.patch',needs:['godotProjects','sessionDrafts'],requiredServices:['blenderTool']},
+  blender_job_read:{owner:'Blender',hostMethod:'managed Blender job records',needs:['godotProjects'],requiredServices:['blenderTool']},
+  blender_cancel:{owner:'Blender',hostMethod:'native Blender broker cancellation',needs:['godotProjects'],requiredServices:['blenderTool']},
   godot_docs:{owner:'S6',hostMethod:null,needs:[]},
   godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'},'propose-group':{proposal:true,targetMethod:'package.installSourceProposal'}}},
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
@@ -62,6 +66,7 @@ const LOCAL_TOOLS={
 // Only these calls change durable state; a discussion turn must not run them.
 // Cancelling a job also mutates durable state and is included.
 const WRITE_TOOLS=new Set(['godot_project_create','godot_project_patch','godot_asset_put','godot_build_start',
+  'blender_generate','blender_cancel',
   'godot_build_cancel','workspace_patch','library_install','verification_submit','verification_cancel',
   'memory_propose','creation_operation']);
 // `godot_draft_recovery` mode=resume reopens a durable task: it is a write, not a
