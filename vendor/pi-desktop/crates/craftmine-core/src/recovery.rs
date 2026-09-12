@@ -157,7 +157,12 @@ impl TaskJournal {
         Ok(json!({"items":items,"modelReplay":false}))
     }
     pub fn task_resume(&mut self, args: &Value) -> Result<Value> {
-        fields(args, &["taskId", "context", "generation"])?;
+        fields(args, &["taskId", "context", "generation", "renewRequestWindow"])?;
+        let renew_request_window = match args.get("renewRequestWindow") {
+            None => false,
+            Some(Value::Bool(value)) => *value,
+            _ => anyhow::bail!("INVALID_REQUEST_WINDOW_INTENT"),
+        };
         let id = text(args, "taskId", 240)?;
         let ctx: WorkspaceContext = serde_json::from_value(args["context"].clone())?;
         ctx.validate()?;
@@ -184,7 +189,7 @@ impl TaskJournal {
             "TASK_BINDING_MISMATCH"
         );
         ensure!(ctx.turn_id != old.binding.turn_id, "NEW_TURN_REQUIRED");
-        let snapshot = self.workspace_open_recovery(&ctx, "", Some((id, generation, &owner)))?;
+        let snapshot = self.workspace_open_recovery(&ctx, "", Some((id, generation, &owner, renew_request_window)))?;
         Ok(
             json!({"workspace":snapshot,"generation":generation+1,"budget":budget(&self.db,&owner)?,"modelReplay":false}),
         )

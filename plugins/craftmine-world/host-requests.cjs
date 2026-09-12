@@ -304,7 +304,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
         if(previous?.worldId!==params.selectedWorld||binding?.projectId!==projectId||binding?.sessionId!==sessionId||binding?.turnId===turnId)throw Error('RECOVERY_WORLD_BINDING_MISMATCH');
         const retained=await core.call('task.context',{context:contextOf(binding)});
         if(!sameBinding(retained?.binding,binding)||retained.world?.id!==params.selectedWorld||retained.recovery!=='interrupted'||!Number.isSafeInteger(retained.generation)||retained.generation<0)throw Error('RECOVERY_CONFLICT');
-        const resumed=await core.call('task.resume',{context:params.context,taskId:binding.taskId,generation:retained.generation});
+        const resumed=await core.call('task.resume',{context:params.context,taskId:binding.taskId,generation:retained.generation,renewRequestWindow:true});
         workspace=resumed?.workspace;
         if(workspace?.worldId!==params.selectedWorld||workspace.task?.binding?.projectId!==projectId||workspace.task?.binding?.sessionId!==sessionId||workspace.task?.binding?.turnId!==turnId||resumed.generation!==retained.generation+1||resumed.budget?.ownerTaskId!==retained.budget?.ownerTaskId)throw Error('RECOVERY_BINDING_UNCONFIRMED');
       }

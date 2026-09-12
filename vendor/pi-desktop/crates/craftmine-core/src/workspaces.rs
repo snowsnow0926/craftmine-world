@@ -254,7 +254,7 @@ impl TaskJournal {
         &mut self,
         ctx: &WorkspaceContext,
         selected_world: &str,
-        recovery_request: Option<(&str, u64, &str)>,
+        recovery_request: Option<(&str, u64, &str, bool)>,
     ) -> Result<WorkspaceSnapshot> {
         ctx.validate()?;
         let tx = self
@@ -299,7 +299,7 @@ impl TaskJournal {
         if let Some(previous) = &prior_task {
             let (generation, owner, recovery) =
                 super::durable::runtime(&tx, &previous.binding.task_id)?;
-            if let Some((expected_id, expected_generation, expected_owner)) = recovery_request {
+            if let Some((expected_id, expected_generation, expected_owner, _)) = recovery_request {
                 ensure!(
                     expected_id == previous.binding.task_id
                         && expected_generation == generation
@@ -385,7 +385,7 @@ impl TaskJournal {
             "INSERT INTO craftmine_world_leases(world_id,task_id) VALUES(?1,?2)",
             params![world_id, id],
         )?;
-        if let Some((old_id, generation, owner)) = recovery_request {
+        if let Some((old_id, generation, owner, renew_request_window)) = recovery_request {
             tx.execute("INSERT INTO craftmine_task_runtime(task_id,generation,budget_owner,recovery) VALUES(?1,?2,?3,'none')",params![id,i64::try_from(generation.checked_add(1).context("GENERATION_LIMIT")?)?,owner])?;
             tx.execute(
                 "UPDATE craftmine_task_runtime SET recovery='resumed' WHERE task_id=?1",
@@ -394,6 +394,23 @@ impl TaskJournal {
             let old = prior_task.as_ref().context("RECOVERY_CONFLICT")?;
             tx.execute("INSERT OR IGNORE INTO craftmine_ended_turns(session_id,turn_id,status) VALUES(?1,?2,'aborted')",params![old.binding.session_id,old.binding.turn_id])?;
             tx.execute("INSERT INTO craftmine_task_requirements(task_id,request_id,kind,text,created_at) SELECT ?2,request_id,kind,text,created_at FROM craftmine_task_requirements WHERE task_id=?1",params![old_id,id])?;
+            if renew_request_window {
+                // This flag is supplied only by the private host's ordinary
+                // new-message recovery path. It never accepts a raw deadline.
+                // Keep the renewal in the same transaction as head/lease CAS.
+                let budget = super::durable::budget(&tx, owner)?;
+                let previous = budget["limits"].clone();
+                if let Some(deadline) = previous["deadlineAt"].as_i64() {
+                    let now = worlds::timestamp()?;
+                    let next = now.checked_add(30 * 60 * 1000).context("DEADLINE_LIMIT")?.max(deadline);
+                    let mut updated = previous.clone();
+                    updated["deadlineAt"] = json!(next);
+                    ensure!(tx.execute("UPDATE craftmine_budget_limits SET limits=?2 WHERE owner=?1",params![owner,document(&updated)?])? == 1,"CORRUPT_BUDGET");
+                    let request = json!({"context":ctx,"previousTaskId":old_id,"generation":generation,"renewRequestWindow":true});
+                    let receipt = json!({"kind":"request-window-renewal","taskId":id,"budgetOwner":owner,"previousLimits":previous,"limits":updated,"renewedAt":now});
+                    tx.execute("INSERT INTO craftmine_receipts(task_id,tool_call_id,request_hash,result) VALUES(?1,'@host:resume-request-window',?2,?3)",params![id,digest(&document(&request)?),document(&receipt)?])?;
+                }
+            }
         }
         tx.commit()?;
         self.workspace_inspect(ctx)
