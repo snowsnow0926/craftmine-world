@@ -37,11 +37,24 @@ export function useCraftmineImmersionSurface(
   useEffect(() => {
     let disposed = false;
     let frame = 0;
+    const publish = (overlayBounds: {x: number; y: number; width: number; height: number} | null) => {
+      void api.craftmineSetImmersion({active, overlay, overlayBounds, blocked, covered}).then(
+        () => { if (!disposed) setHostError(""); },
+        error => { if (!disposed) setHostError(error instanceof Error ? error.message : String(error)); },
+      );
+    };
+    // A normal renderer fully covered by the native world can stop receiving
+    // animation frames. Publish ownership first so the host can reveal it;
+    // only measurement is allowed to wait for a paint. Offscreen tests alone
+    // do not reproduce this production compositor scheduling boundary.
+    publish(null);
     const report = () => {
+      if (!active || overlay === "closed") return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        if (disposed) return;
         const surface = surfaceRef.current;
-        const rect = active && overlay !== "closed" ? surface?.getBoundingClientRect() : null;
+        const rect = surface?.getBoundingClientRect();
         let overlayBounds = rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null;
         if (overlayBounds && surface) {
           // Composer pickers can extend above the compact strip. Their actual
@@ -63,15 +76,7 @@ export function useCraftmineImmersionSurface(
             height: Math.max(0, Math.min(window.innerHeight, overlayBounds.y + overlayBounds.height) - y),
           };
         }
-        void api.craftmineSetImmersion({
-          active,
-          overlay,
-          overlayBounds,
-          blocked,
-          covered,
-        }).then(() => { if (!disposed) setHostError(""); }, error => {
-          if (!disposed) setHostError(error instanceof Error ? error.message : String(error));
-        });
+        publish(overlayBounds);
       });
     };
     const observer = new ResizeObserver(report);
