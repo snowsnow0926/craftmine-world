@@ -1,6 +1,7 @@
 # Fixed trusted GLB preview renderer. Does not execute authored modeling scripts.
-import bpy
 import sys
+sys.dont_write_bytecode = True
+import bpy
 import math
 from mathutils import Vector
 
@@ -28,7 +29,7 @@ camera.data.type = 'ORTHO'
 camera.data.ortho_scale = size * 1.32
 camera.data.clip_end = size * 100
 scene.camera = camera
-bpy.ops.mesh.primitive_plane_add(size=size * 200, location=(center.x, center.y, lower.z - size * 0.014))
+bpy.ops.mesh.primitive_plane_add(size=size * 200, location=(center.x, center.y, lower.z - size * 0.001))
 floor = bpy.context.object
 mat = bpy.data.materials.new('PreviewBackdrop')
 mat.diffuse_color = (0.095, 0.14, 0.18, 1)
