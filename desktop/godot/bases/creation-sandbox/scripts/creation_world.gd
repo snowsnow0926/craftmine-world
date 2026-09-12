@@ -136,13 +136,13 @@ func _build_environment() -> void:
 	settings.sky = sky
 	settings.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	settings.ambient_light_color = Color("c8dfed")
-	settings.ambient_light_energy = 0.7
+	settings.ambient_light_energy = 0.55
 	environment.environment = settings
 	add_child(environment)
 	sun = DirectionalLight3D.new()
 	sun.shadow_enabled = true
 	add_child(sun)
-	_box(self, Vector3(64, 0.4, 64), Vector3(0, -0.2, 0), Color("6e9580"))
+	_box(self, Vector3(64, 0.4, 64), Vector3(0, -0.2, 0), Color("4f6b5a"))
 	_solid(self, Vector3(64, 0.4, 64), Vector3(0, -0.2, 0), "ground")
 	for edge in [-1, 1]:
 		var center := Vector3(edge * 32, 1.5, 0)
