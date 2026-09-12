@@ -9,7 +9,7 @@ import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WindowControls } from "./WindowControls";
 import "../styles/craftmine-mode-entry.css";
 
-/** A launch choice, never a saved preference that bypasses the next launch. */
+/** First-launch choice, also available explicitly from the mode controls. */
 export function CraftmineModeEntry({ onSelect }: {
   onSelect: (mode: CraftmineLayout["mode"]) => void;
 }) {

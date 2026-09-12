@@ -1,5 +1,8 @@
 // Actual Electron-independent helpers shared by controlled host VM tests.
 export * from '../../vendor/pi-desktop/apps/desktop/shared/craftmine-immersion.ts';
+// These host VM fixtures have no native window; focus policy is exercised by
+// main-window-layers.test.mjs using inert objects and call counters.
+export const syncMainInputFocus=()=>{};
 export {createImmersionPauseController} from '../../vendor/pi-desktop/apps/desktop/electron/main/immersion-pause-controller.ts';
 import fs from 'node:fs';
 import vm from 'node:vm';

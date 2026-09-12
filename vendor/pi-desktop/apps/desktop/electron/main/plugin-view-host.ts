@@ -1,4 +1,4 @@
-import { raiseMainOverlay } from "./main-window-layers";
+import { raiseMainOverlay, syncMainInputFocus } from "./main-window-layers";
 import { session, shell, WebContentsView, type BaseWindow } from "electron";
 import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
@@ -345,6 +345,7 @@ export class PluginViewHost {
       const children = this.window.contentView.children;
       if (children.includes(entry.view)) {
         this.window.contentView.removeChildView(entry.view);
+        syncMainInputFocus(this.window);
       }
     }
     this.emitSurface();

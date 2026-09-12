@@ -37,6 +37,7 @@ const GODOT_CHROME_HEIGHT = 76;
 document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+'px');
 // Godot worlds run in the sibling Electron view, not in the voxel srcdoc iframe.
 let godot=false;
+let openingWorldId=null;
 let immersionHeld=false;
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
 const godotLoadingStates=new Set(['loading','failed']);
@@ -72,14 +73,38 @@ if(bridge) {
 
 // State is broadcast by the Electron host; this page never infers it.
 function onGodotState(payload) {
-  if(!godot||!payload||payload.worldId!==current?.id)return;
+  if(!payload)return;
+  // world.open awaits the native runtime. Before mount there is no current
+  // record, but its startup events must already update the visible loader.
+  if(!current&&payload.worldId===openingWorldId) {
+    if(payload.state==='loading'||payload.state==='failed')renderWorldLoading(payload);
+    return;
+  }
+  if(!godot||payload.worldId!==current?.id)return;
   // The live instance identity is host-owned; keep the last one so readers can
   // see exactly which world/build/instance they observed.
   if(typeof payload.instanceId==='string')godotIdentity={worldId:payload.worldId,buildId:String(payload.buildId||''),instanceId:payload.instanceId};
   const state=String(payload.state||'');
   if(state==='ready')backupFrozen=false;
   const label=godotStateLabels[state]||state;
+  const recoveringLoadError=document.getElementById('godot-loading')?.dataset.state==='failed';
   document.body.dataset.godotState=state;
+  renderWorldLoading(payload);
+  status.textContent=label;
+  if(state==='failed') {
+    // Reuse the shared error banner, but keep the state label in the status.
+    showError(Error(payload.error||'Godot 世界运行失败'));
+    status.textContent=label;
+  } else delete status.dataset.error;
+  if(state==='ready'||state==='saved'||state==='paused'){
+    if(recoveringLoadError)errorBox.hidden=true;
+    loaded=true;document.body.dataset.worldLoaded='true';controls();
+  }
+  else if(state==='loading'||state==='failed'||state==='closed'){loaded=false;delete document.body.dataset.worldLoaded;controls();}
+}
+
+function renderWorldLoading(payload) {
+  const state=String(payload.state||'loading');
   const loading=document.getElementById('godot-loading');
   if(loading) {
     const visible=godotLoadingStates.has(state);
@@ -88,16 +113,9 @@ function onGodotState(payload) {
     const title=document.getElementById('godot-loading-title');
     const detail=document.getElementById('godot-loading-detail');
     if(title)title.textContent=state==='failed'?'世界加载失败':'正在加载世界…';
-    if(detail)detail.textContent=state==='failed' ? String(payload.error||'运行时没有完成初始化。请返回工作台检查错误并重试。') : payload.initializing ? '正在初始化世界并确认首次构建，请稍候。' : '世界正在准备场景和运行资源，请稍候。首次加载可能需要更长时间。';
+    const stageDetails={resources:'正在读取并校验世界资源…',engine:'正在启动图形引擎…',scene:'正在载入场景和恢复世界进度…'};
+    if(detail)detail.textContent=state==='failed' ? String(payload.error||'运行时没有完成初始化。请返回工作台检查错误并重试。') : payload.initializing ? '正在初始化世界并确认首次构建，请稍候。' : stageDetails[payload.loadingStage]||'世界正在准备场景和运行资源，请稍候。首次加载可能需要更长时间。';
   }
-  status.textContent=label;
-  if(state==='failed') {
-    // Reuse the shared error banner, but keep the state label in the status.
-    showError(Error(payload.error||'Godot 世界运行失败'));
-    status.textContent=label;
-  } else delete status.dataset.error;
-  if(state==='ready'||state==='saved'||state==='paused'){loaded=true;document.body.dataset.worldLoaded='true';controls();}
-  else if(state==='loading'||state==='failed'||state==='closed')delete document.body.dataset.worldLoaded;
 }
 
 function send(type, value = {}) {
@@ -111,6 +129,7 @@ function send(type, value = {}) {
 }
 
 function showError(error) {
+  if(!current||!loaded)renderWorldLoading({state:'failed',error:String(error.message||error)});
   errorBox.textContent=String(error.message||error);errorBox.hidden=false;
   status.textContent='操作未完成';status.dataset.error='true';
 }
@@ -252,7 +271,7 @@ function mount(record) {
   checkWorld=null;checkOffset=0;document.getElementById('check-detail').hidden=true;
   document.getElementById('checks-list').replaceChildren();setMode(false,{notify:false});
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
-  current=record;loaded=false;nonce=crypto.randomUUID();lastSaved=canonicalJSON(record.world.snapshot);
+  current=record;openingWorldId=null;loaded=false;nonce=crypto.randomUUID();lastSaved=canonicalJSON(record.world.snapshot);
   godot=isGodotWorld(record);
   document.getElementById('import-result').hidden=true;
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
@@ -263,8 +282,7 @@ function mount(record) {
     document.body.dataset.godot='true';
     frame.removeAttribute('srcdoc');
     status.textContent='载入中';
-    const loading=document.getElementById('godot-loading');
-    if(loading){loading.setAttribute('aria-hidden','false');loading.dataset.state='loading';}
+    renderWorldLoading({state:'loading'});
     void bridge.invoke('godot.candidateClose',{worldId:record.id}).then(result=>{
       if(current?.id!==record.id)return null;
       if(result.status==='applied'){mount(result.record);return null;}
@@ -294,6 +312,7 @@ addEventListener('message',event=>{
   if(message.type==='loaded') {
     if(message.version!==current.world.build.id){showError(Error('载入版本不一致'));return;}
     loaded=true;status.textContent=bridge?'已保存':'本地预览';
+    renderWorldLoading({state:'ready'});
     document.body.dataset.worldLoaded='true';controls();
   }
   if(message.type==='error') {
@@ -676,6 +695,7 @@ void action(async()=>{
   if(!bridge) {mount({title:initialWorld.build.scene.title,world:initialWorld});select.options[0].textContent=initialWorld.build.scene.title;return;}
   const state=await bridge.invoke('world.list');
   const selected=state.worlds.find(world=>world.id===state.activeWorldId)||state.worlds[0];
+  openingWorldId=selected?.id||null;
   const record=selected?await bridge.invoke('world.open',{id:selected.id}):await bridge.invoke('world.create',{title:'我的第一个世界'});
   mount(record);await refreshList();
 });

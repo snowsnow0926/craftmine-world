@@ -74,8 +74,9 @@ export function CraftmineNavigation() {
       playWhenWorldActivates: layout.playWhenWorldActivates,
       playing: layout.mode === "play",
     });
-    if (decision.enteredWorldId === layout.enteredWorldId) return;
-    saveCraftmineLayout(localStorage, { ...layout, enteredWorldId: decision.enteredWorldId });
+    if (decision.enteredWorldId !== layout.enteredWorldId) {
+      saveCraftmineLayout(localStorage, { ...layout, enteredWorldId: decision.enteredWorldId });
+    }
     if (decision.switchToPlay) enterCraftmineMode("play");
   }, [available, active, controller.activeWorldId]);
 

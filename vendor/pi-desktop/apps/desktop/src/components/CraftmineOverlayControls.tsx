@@ -36,7 +36,7 @@ export function CraftmineOverlayControls() {
       </button>}
       {/* Every state that can be reached by keyboard is reachable by mouse too. */}
       <button type="button" data-action="exit-play" onClick={() => enterCraftmineMode("create", { explicit: true })}
-        title={chinese ? "Escape（面板收起后再按一次）" : "Escape again once the panel is closed"}>
+        title={chinese ? "返回工作台，保留当前世界和任务" : "Return to the workbench, keeping the current world and task"}>
         {chinese ? "回到创作" : "Back to create"}
       </button>
       <button type="button" data-action="choose-mode" onClick={openCraftmineModeEntry}>

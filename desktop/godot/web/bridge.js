@@ -17,11 +17,19 @@
   const bytes = value => new TextEncoder().encode(value).byteLength;
   const adapter = globalThis.craftmineRuntime || globalThis.__craftmineRuntimeHost || null;
   let port, scope, callback, engine, started = false, exited = false, quitting, exitRequested = false, detached = false;
-  const active = new Set();
+  const active = new Map();
+  let loadVisualError = false;
   const status = document.getElementById('status');
   const send = message => { if (detached || !port) return; port.postMessage({ ...scope, ...message }); };
-  const ready = () => { if (started && callback && !exited && !detached) send({ type: 'ready', ops: runtimeOps }); };
-  const error = message => { status.textContent = String(message); status.hidden = false; send({ type: 'runtime-error', error: String(message).slice(0, 2000) }); };
+  const ready = () => {
+    if (started && callback && !exited && !detached) {
+      // Fixed preview scenes boot their own authored content and never receive
+      // a host load transaction. Production always waits for its load reply.
+      if (scope?.protocol === previewProtocol && !loadVisualError) status.hidden = true;
+      send({ type: 'ready', ops: runtimeOps });
+    }
+  };
+  const error = message => { loadVisualError = true; status.textContent = String(message); status.hidden = false; send({ type: 'runtime-error', error: String(message).slice(0, 2000) }); };
   /**
    * Godot's Web audio driver calls `AudioWorklet.addModule()` while the engine
    * starts and only builds the worklet node in a continuation it chains on the
@@ -94,26 +102,15 @@
       }
     });
   };
-  let loadVisualGeneration = 0;
-  const markLoaded = result => {
-    // Engine startup only means the WebAssembly runtime exists. Keep the
-    // loading layer visible until the first world load (including a restored
-    // snapshot) has completed successfully; otherwise a slow restore presents
-    // a black canvas with no feedback.
-    if (result && result.loaded === true) {
-      const generation = ++loadVisualGeneration;
-      const hide = () => { if (generation === loadVisualGeneration) status.hidden = true; };
-      // The runtime acknowledgement can arrive before Godot has painted its
-      // first visible frame. Keep the status card through two compositor
-      // frames so a slow WebGL scene never presents a black gap.
-      if (typeof globalThis.requestAnimationFrame === "function") {
-        globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(hide));
-      } else setTimeout(hide, 0);
-    }
-  };
   const reply = (id, result, failure) => {
+    const op = active.get(id);
     if (!active.delete(id)) return;
-    if (!failure) markLoaded(result);
+    if (op === 'load' || op === 'restore-state') {
+      if (failure) error(failure);
+      // This is a successful transaction acknowledgement, not evidence that
+      // WebGL painted a frame. No delayed callback may hide a subsequent error.
+      else if (result?.loaded === true && !loadVisualError) status.hidden = true;
+    }
     send({ type: 'response', id, ...(failure ? { error: failure } : { result }) });
     finishQuit();
   };
@@ -125,7 +122,7 @@
     try {
       if (typeof request.op !== 'string' || bytes(JSON.stringify(request)) > limit || active.size >= 16) throw Error('Invalid, oversized or busy runtime request');
     } catch { send({type:'response',id:request.id,error:'Invalid, oversized or busy runtime request'}); return; }
-    active.add(request.id);
+    active.set(request.id, request.op);
     if (request.op === 'cancel') {
       const target = request.args?.id;
       if (Number.isSafeInteger(target) && target !== request.id && active.has(target)) reply(target, null, 'Request cancelled');
@@ -137,6 +134,11 @@
       quitting = request.id;
       finishQuit();
     } else {
+      if (request.op === 'load' || request.op === 'restore-state') {
+        loadVisualError = false;
+        status.textContent = '正在载入场景和恢复世界进度…';
+        status.hidden = false;
+      }
       try { callback(JSON.stringify({ id: request.id, worldId: scope.worldId, buildId: scope.buildId, instanceId: scope.instanceId, op: request.op, args: request.args ?? {} })); }
       catch { reply(request.id,null,'Runtime callback rejected the request'); }
     }
@@ -175,8 +177,8 @@
   const api = Object.freeze({
     register(value) { if (typeof value !== 'function' || callback) throw Error('Runtime already registered'); callback = value; ready(); },
     complete(value) {
-      if (typeof value !== 'string' || bytes(value) > limit) { for (const id of [...active]) reply(id,null,'Invalid or oversized runtime response'); return; }
-      let response; try { response = JSON.parse(value); } catch { for (const id of [...active]) reply(id,null,'Invalid runtime response JSON'); return; }
+      if (typeof value !== 'string' || bytes(value) > limit) { for (const id of [...active.keys()]) reply(id,null,'Invalid or oversized runtime response'); return; }
+      let response; try { response = JSON.parse(value); } catch { for (const id of [...active.keys()]) reply(id,null,'Invalid runtime response JSON'); return; }
       reply(response.id, response.result, response.error);
     },
     start(value) {

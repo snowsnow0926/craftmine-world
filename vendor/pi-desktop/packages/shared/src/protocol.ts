@@ -2,7 +2,7 @@ export const PROTOCOL_VERSION = 11 as const;
 export const SCHEMA_VERSION = 13 as const;
 export const APP_ID = "world.craftmine.desktop";
 export const APP_NAME = "craftmine world";
-export const APP_VERSION = "0.14.4-preview.12";
+export const APP_VERSION = "0.14.4-preview.16";
 
 export const APP_MENU_COMMANDS = [
   "newTask",
@@ -30,10 +30,12 @@ export const NATIVE_MENU_ACTIONS = [
   "zoomOut",
   "resetZoom",
   "toggleFullScreen",
+  "enterFullScreen",
   "exitFullScreen",
   "minimize",
   "toggleMaximize",
   "close",
+  "quit",
 ] as const;
 
 export type NativeMenuAction = (typeof NATIVE_MENU_ACTIONS)[number];

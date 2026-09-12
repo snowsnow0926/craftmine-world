@@ -27,6 +27,7 @@ export function useCraftmineImmersionSurface(
   overlay: CraftmineOverlay,
   blocked: boolean,
   surfaceRef: RefObject<HTMLElement | null>,
+  onPause?: () => void,
 ) {
   const [hostError, setHostError] = useState("");
   useEffect(() => () => {
@@ -117,10 +118,9 @@ export function useCraftmineImmersionSurface(
     if (!active || blocked) return;
     let composing = false;
     const layers = new WeakMap<KeyboardEvent, boolean>();
-    // Leaving play is a presentation change like any other: it keeps the world,
-    // the conversation and a running task, and it states no preference, so the
-    // next world still opens filling the workspace.
-    const exitPlay = () => { enterCraftmineMode("create"); };
+    // Closed-world Escape opens the application's pause menu. Embedded callers
+    // without that menu retain the earlier workbench transition.
+    const exitPlay = () => { if (onPause) onPause(); else enterCraftmineMode("create"); };
     const capture = (event: KeyboardEvent) => {
       const context = fullscreenEscapeContext(document, composing, surfaceRef.current);
       const voiceActive = event.key === "Escape" && !!document.querySelector('.voice-input[data-voice-state="starting"],.voice-input[data-voice-state="recording"],.voice-input[data-voice-state="transcribing"]');
@@ -152,6 +152,6 @@ export function useCraftmineImmersionSurface(
       window.removeEventListener("compositionend", end, true);
       window.removeEventListener("blur", end);
     };
-  }, [active, blocked]);
+  }, [active, blocked, onPause]);
   return hostError;
 }

@@ -35,7 +35,8 @@ import { UpdateBanner } from "./components/UpdateBanner";
 import { useCraftmineLayout, useCraftmineImmersionSurface } from "./lib/use-craftmine-immersion";
 import { CraftmineOverlayControls } from "./components/CraftmineOverlayControls";
 import { CraftminePreviewControls } from "./components/CraftminePreviewControls";
-import { isCraftmineWorldWorkspace, loadCraftmineLayout } from "./lib/craftmine-layout";
+import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout } from "./lib/craftmine-layout";
+import { CraftminePauseMenu } from "./components/CraftminePauseMenu";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
 import { enterCraftmineMode } from "./lib/craftmine-mode";
@@ -206,12 +207,13 @@ function AppShell() {
   const projectPath = useAppStore((s) => s.workspace?.path ?? null);
 
   const [searchOpen, setSearchOpen] = useState(false);
-  // The world surface is an interactive product surface as soon as it is
-  // restored. Requiring a second mode-choice click after relaunch leaves the
-  // native shortcut bridge disconnected, so F2/Esc/F11 appear inert. The
-  // chooser remains available when explicitly opened from the mode controls.
-  const [modeChosen, setModeChosen] = useState(true);
-  const [modeEntryOpen, setModeEntryOpen] = useState(false);
+  const [pauseOpen, setPauseOpen] = useState(false);
+  const openPause = useCallback(() => setPauseOpen(true), []);
+  const resumePlay = useCallback(() => setPauseOpen(false), []);
+  // Resume a saved create or play workspace. A fresh profile still sees the
+  // primary-mode chooser, while restored worlds have no hidden entry gate.
+  const [modeChosen, setModeChosen] = useState(() => hasSavedCraftmineMode(localStorage));
+  const [modeEntryOpen, setModeEntryOpen] = useState(() => !hasSavedCraftmineMode(localStorage));
   const modeEntryOpenRef = useRef(modeEntryOpen);
   modeEntryOpenRef.current = modeEntryOpen;
   useEffect(() => {
@@ -282,20 +284,22 @@ function AppShell() {
   const craftmineWorldFirst = isCraftmineWorldWorkspace(page, presentedWorkPanelOpen && workPanelOpen, presentedTabId, subagentPanelOpen && !worldPinned);
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
   const craftmineChatRef = useRef<HTMLElement | null>(null);
-  const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen, craftmineChatRef);
+  const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen, craftmineChatRef, openPause);
+  useEffect(() => { if (!craftmineImmersive) setPauseOpen(false); }, [craftmineImmersive]);
   const immersionFullscreenEntered = useRef(false);
-  const [windowFullScreen, setWindowFullScreen] = useState(false);
-  const [windowFullScreenKnown, setWindowFullScreenKnown] = useState(false);
   useEffect(() => {
-    if (!craftmineImmersive) {
+    if (!modeChosen || modeEntryOpen || !craftmineImmersive) {
       immersionFullscreenEntered.current = false;
       return;
     }
-    if (!windowFullScreenKnown) return;
     if (immersionFullscreenEntered.current) return;
     immersionFullscreenEntered.current = true;
-    if (!windowFullScreen) void api.nativeMenuAction("toggleFullScreen").catch(() => undefined);
-  }, [craftmineImmersive, windowFullScreen, windowFullScreenKnown]);
+    // did-finish-load can precede React's event subscription. Entering is
+    // idempotent and must not wait for a window-state event it may have missed.
+    void api.nativeMenuAction("enterFullScreen").catch(() => {
+      immersionFullscreenEntered.current = false;
+    });
+  }, [craftmineImmersive, modeChosen, modeEntryOpen]);
   useEffect(() => {
     if (!craftmineWorldFirst) return;
     const narrow = window.matchMedia("(max-width: 1100px)");
@@ -471,8 +475,6 @@ function AppShell() {
     // Fullscreen hides the macOS traffic lights; CSS shifts titlebar
     // controls left via this attribute.
     const off = api.onWindowFullScreen(({ fullScreen }) => {
-      setWindowFullScreen(fullScreen);
-      setWindowFullScreenKnown(true);
       document.documentElement.dataset.fullscreen = fullScreen ? "true" : "false";
     });
     return off;
@@ -1926,8 +1928,8 @@ function AppShell() {
             aria-modal={craftmineImmersive && craftmineLayout.overlay !== "closed" ? true : undefined}
             aria-label={craftmineImmersive && craftmineLayout.overlay !== "closed" ? (i18n.language.startsWith("zh") ? "游戏内创作" : "Create in world") : undefined}
             tabIndex={craftmineImmersive ? -1 : undefined}
-            inert={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}
-            aria-hidden={modeEntryOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}>
+            inert={modeEntryOpen || pauseOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}
+            aria-hidden={modeEntryOpen || pauseOpen || (craftmineImmersive && craftmineLayout.overlay === "closed") ? true : undefined}>
             {craftmineImmersive && craftmineLayout.overlay !== "closed" && <CraftmineOverlayControls />}
             {craftmineWorldFirst && <CraftminePreviewControls autoOpen={craftmineImmersive} />}
             {craftmineImmersive && craftmineImmersionError && <div role="alert" className="craftmine-immersion-error">{craftmineImmersionError}</div>}
@@ -2001,7 +2003,7 @@ function AppShell() {
                 </div>
               ) : (
                 <CraftmineWorkbenchSurface immersive={craftmineImmersive} full={craftmineLayout.overlay === "full"}>
-                  <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen} />
+                  <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />
                 </CraftmineWorkbenchSurface>
               )}
             </Suspense>
@@ -2010,7 +2012,7 @@ function AppShell() {
           {(presentedWorkPanelOpen || workPanelExiting) && (
             <WorkPanel
               presentedTabId={presentedTabId}
-              panelBlocked={searchOpen || craftmineSheetOpen || modeEntryOpen}
+              panelBlocked={searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen}
               exiting={workPanelExiting}
               onExitAnimationEnd={() =>
                 finishWorkPanelExit(workPanelExitGeneration.current)
@@ -2052,6 +2054,12 @@ function AppShell() {
     >
       {shell}
       {ready && modeEntryOpen && <CraftmineModeEntry onSelect={selectPrimaryMode} />}
+      {ready && craftmineImmersive && pauseOpen && <CraftminePauseMenu
+        runtimeError={craftmineImmersionError}
+        onResume={resumePlay}
+        onWorkbench={() => { setPauseOpen(false); enterCraftmineMode("create", { explicit: true }); }}
+        onSettings={() => { setPauseOpen(false); enterCraftmineMode("create", { explicit: true }); useAppStore.getState().setSettingsTab("general"); }}
+      />}
       {splash}
     </div>
   );

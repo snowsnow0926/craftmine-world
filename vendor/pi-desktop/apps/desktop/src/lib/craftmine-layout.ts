@@ -25,6 +25,15 @@ export type CraftmineLayout = {
 export type CraftmineOverlay = "closed" | "compact" | "full";
 
 const KEY = "craftmine.desktop.layout.v1";
+/** A retained workspace can resume either mode; only a fresh profile needs the chooser. */
+export function hasSavedCraftmineMode(storage: Pick<Storage, "getItem">): boolean {
+  try {
+    const value = JSON.parse(storage.getItem(KEY) ?? "null");
+    return value?.mode === "play" || value?.mode === "create";
+  } catch {
+    return false;
+  }
+}
 export const CRAFTMINE_CHAT_MIN_WIDTH = 360;
 export const CRAFTMINE_CHAT_MAX_WIDTH = 640;
 export const CRAFTMINE_CHAT_DEFAULT_WIDTH = 400;

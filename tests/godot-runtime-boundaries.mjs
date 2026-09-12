@@ -39,7 +39,8 @@ test('native transport rejects uncloneable/oversize responses and remains usable
 test('page bridge explicitly rejects malformed/oversized completion and callback exceptions',async()=>{
  const messages=[];let receive;const status={hidden:false,textContent:''};
  const scope={protocol:'craftmine.godot-runtime/2',worldId:'alpha',buildId:'build-a',instanceId:'one'};
- const context={TextEncoder,console,requestAnimationFrame:callback=>{callback();return 1;},document:{getElementById:()=>status},craftmineRuntime:{scope,post:x=>messages.push(x),on:fn=>receive=fn}};context.window=context;
+ // VM assertions cover transaction state only; no compositor or first-frame claim.
+ const context={TextEncoder,console,requestAnimationFrame:()=>{throw Error('Frame scheduling is not readiness evidence');},document:{getElementById:()=>status},craftmineRuntime:{scope,post:x=>messages.push(x),on:fn=>receive=fn}};context.window=context;
  vm.runInNewContext(await fs.readFile('desktop/godot/web/bridge.js','utf8'),context);
  let throwing=false;context.CraftmineGame.register(()=>{if(throwing)throw Error('callback failure');});context.CraftmineGame.start({startGame:async()=>{},requestQuit(){}});await Promise.resolve();
  assert.equal(status.hidden,false,'engine startup must not hide the loading layer');
@@ -49,6 +50,32 @@ test('page bridge explicitly rejects malformed/oversized completion and callback
  receive({...scope,id:2,op:'save',args:{}});context.CraftmineGame.complete('{');assert.match(messages.find(x=>x.id===2).error,/JSON/);
  throwing=true;receive({...scope,id:3,op:'save',args:{}});assert.match(messages.find(x=>x.id===3).error,/callback/);
  throwing=false;receive({...scope,id:4,op:'save',args:{}});context.CraftmineGame.complete(JSON.stringify({id:4,result:{okay:true}}));assert.equal(messages.find(x=>x.id===4).result.okay,true);
+});
+test('loading status is scoped to load replies and errors cannot be hidden by capabilities or late success',async()=>{
+ const messages=[],status={hidden:false,textContent:''};let receive,engineOptions;
+ const scope={protocol:'craftmine.godot-runtime/2',worldId:'alpha',buildId:'build-a',instanceId:'one'};
+ const context={TextEncoder,console:{log(){},error(){}},document:{getElementById:()=>status},craftmineRuntime:{scope,post:value=>messages.push(value),on:value=>receive=value}};context.window=context;
+ vm.runInNewContext(await fs.readFile('desktop/godot/web/bridge.js','utf8'),context);
+ context.CraftmineGame.register(()=>{});context.CraftmineGame.start({startGame:async options=>{engineOptions=options;},requestQuit(){}});await Promise.resolve();
+ const request=(id,op)=>receive({...scope,id,op,args:{}}),complete=(id,result,error)=>context.CraftmineGame.complete(JSON.stringify({id,result,error}));
+ request(1,'capabilities');complete(1,{loaded:true});assert.equal(status.hidden,false,'capabilities.loaded is not a load acknowledgement');
+ request(2,'load');request(3,'capabilities');complete(3,{loaded:true});assert.equal(status.hidden,false);
+ complete(2,null,'snapshot restore failed');assert.equal(status.hidden,false);assert.equal(status.textContent,'snapshot restore failed');
+ request(4,'capabilities');complete(4,{loaded:true});assert.equal(status.hidden,false);assert.equal(status.textContent,'snapshot restore failed');
+ request(5,'load');engineOptions.onPrintError('renderer failed');complete(5,{loaded:true});assert.equal(status.hidden,false);assert.equal(status.textContent,'renderer failed');
+ request(6,'restore-state');complete(6,{loaded:true});assert.equal(status.hidden,true,'explicit successful retry clears the previous load failure');
+ engineOptions.onPrintError('failure after acknowledgement');await Promise.resolve();assert.equal(status.hidden,false);assert.equal(status.textContent,'failure after acknowledgement');
+});
+test('fixed preview transport shows its self-starting scene without a production load request',async()=>{
+ const status={hidden:false,textContent:''},messages=[],parent={};let connect;
+ const context={TextEncoder,console,document:{getElementById:()=>status},location:{origin:'http://game'},parent,addEventListener:(_name,callback)=>connect=callback};context.window=context;
+ vm.runInNewContext(await fs.readFile('desktop/godot/web/bridge.js','utf8'),context);
+ context.CraftmineGame.register(()=>{});context.CraftmineGame.start({startGame:async()=>{},requestQuit(){}});await Promise.resolve();
+ const port={postMessage:value=>messages.push(value),start(){}};
+ const scope={protocol:'craftmine.godot-preview/1',worldId:'fixed-scene',buildId:'fixed-build',session:'preview-session'};
+ connect({source:parent,origin:'http://host',ports:[port],data:{...scope,type:'connect'}});
+ assert.ok(messages.some(message=>message.type==='ready'));assert.equal(status.hidden,true);
+ port.onmessage({data:{...scope,id:1,op:'save',args:{}}});context.CraftmineGame.complete(JSON.stringify({id:1,result:{snapshot:{}}}));assert.equal(status.hidden,true);
 });
 const adapterSource=await fs.readFile('vendor/pi-desktop/apps/desktop/electron/main/godot-runtime-adapter.ts','utf8');
 const {createGodotRuntimeAdapter}=await import('data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(adapterSource,{mode:'transform'})).toString('base64'));

@@ -44,9 +44,13 @@ test("explicit workbench entry overrides a stored play preference and keeps the 
   assert.equal(layout.decideCraftmineActivation({ worldId: "new-world", enteredWorldId: null, playing: false, playWhenWorldActivates: next.playWhenWorldActivates }).switchToPlay, false);
 });
 
-test("a persisted play layout does not reopen the mode gate on relaunch", () => {
-  assert.match(appSource, /const \[modeChosen, setModeChosen\] = useState\(true\)/);
-  assert.match(appSource, /const \[modeEntryOpen, setModeEntryOpen\] = useState\(false\)/);
+test("persisted modes resume while a fresh profile retains the primary chooser", () => {
+  for (const mode of ["play", "create"]) {
+    assert.equal(layout.hasSavedCraftmineMode({ getItem: () => JSON.stringify({ mode }) }), true);
+  }
+  assert.equal(layout.hasSavedCraftmineMode({ getItem: () => null }), false);
+  assert.match(appSource, /const \[modeChosen, setModeChosen\] = useState\(\(\) => hasSavedCraftmineMode\(localStorage\)\)/);
+  assert.match(appSource, /const \[modeEntryOpen, setModeEntryOpen\] = useState\(\(\) => !hasSavedCraftmineMode\(localStorage\)\)/);
   assert.match(appSource, /const modeEntryOpenRef = useRef\(modeEntryOpen\)/);
 });
 

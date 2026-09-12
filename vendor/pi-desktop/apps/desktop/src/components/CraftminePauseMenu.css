@@ -1,0 +1,23 @@
+.craftmine-pause-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 58%);
+}
+.craftmine-pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(360px, calc(100vw - 48px));
+  padding: 28px;
+  border: 1px solid var(--ds-border-subtle);
+  border-radius: 16px;
+  background: var(--ds-bg-primary, #191919);
+  color: var(--ds-text-primary, #f3f3f3);
+  box-shadow: 0 18px 64px rgb(0 0 0 / 35%);
+}
+.craftmine-pause-menu h1 { margin: 0 0 8px; font-size: 24px; }
+.craftmine-pause-menu button { min-height: 44px; padding: 10px 16px; border-radius: 8px; }
+.craftmine-pause-menu small { text-align: center; color: var(--ds-text-secondary); }

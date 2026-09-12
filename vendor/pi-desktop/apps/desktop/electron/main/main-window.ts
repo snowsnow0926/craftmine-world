@@ -1,5 +1,5 @@
 import { BaseWindow, WebContentsView, type BrowserWindowConstructorOptions, type WebContents } from "electron";
-import { mainInputContents, registerMainLayers } from "./main-window-layers";
+import { registerMainLayers, syncMainInputFocus } from "./main-window-layers";
 import { guardHeadlessWindow, isHeadlessAcceptance } from "./craftmine-headless";
 
 /** Native owner and the one stable application renderer; popup windows remain BrowserWindows. */
@@ -26,7 +26,7 @@ export function createMainWindow(options: BrowserWindowConstructorOptions): Main
     loadURL: contents.loadURL.bind(contents),
     loadFile: contents.loadFile.bind(contents),
   });
-  registerMainLayers(owner, renderer);
+  registerMainLayers(owner, renderer, {headless: isHeadlessAcceptance()});
   guardHeadlessWindow(owner);
   const resize = () => {
     if (owner.isDestroyed() || contents.isDestroyed()) return;
@@ -43,9 +43,7 @@ export function createMainWindow(options: BrowserWindowConstructorOptions): Main
   });
   contents.once("destroyed", () => { if (!owner.isDestroyed()) owner.destroy(); });
   owner.on("focus", () => {
-    if (isHeadlessAcceptance() || owner.isDestroyed()) return;
-    const contents = mainInputContents(owner);
-    if (contents && !contents.isDestroyed()) contents.focus();
+    syncMainInputFocus(owner, "window-focus");
   });
   return owner;
 }

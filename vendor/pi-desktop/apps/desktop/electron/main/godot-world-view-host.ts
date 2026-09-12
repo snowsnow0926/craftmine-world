@@ -1,5 +1,5 @@
 import type { MainWindow } from "./main-window";
-import { raiseMainOverlay } from "./main-window-layers";
+import { raiseMainOverlay, syncMainInputFocus } from "./main-window-layers";
 import { WebContentsView, session, type NativeImage, type Session, type WebContents } from "electron";
 import { join, resolve, sep } from "node:path";
 import { realpath } from "node:fs/promises";
@@ -88,6 +88,7 @@ export type GodotWorldState = {
   instanceId: string;
   state: "closed" | "loading" | "ready" | "paused" | "saving" | "saved" | "failed";
   error?: string;
+  loadingStage?: "resources" | "engine" | "scene";
 };
 
 export type GodotWorldSaveResult =
@@ -457,6 +458,13 @@ export class GodotWorldViewHost {
 
   private async startReplacementInner(request: GodotWorldOpenRequest, root: string, worldId: string, buildId: string, previous: LiveInstance | null, staged: boolean): Promise<GodotWorldState> {
     const generation = this.generation;
+    // The pending native view is deliberately detached until loaded. The
+    // product panel owns startup progress, including retained exports whose
+    // HTML predates the loading shell. Never depend on that export's UI.
+    const startupState=(loadingStage: GodotWorldState["loadingStage"],instanceId="")=>{
+      if(!previous&&!staged)this.publish({worldId,buildId,instanceId,state:"loading",loadingStage});
+    };
+    startupState("resources");
     const runtime = await createWorldRuntime({
       worldId,
       buildId,
@@ -521,6 +529,7 @@ export class GodotWorldViewHost {
     });
     view.webContents.on("destroyed", () => { this.recordFault(instance, "renderer-destroyed"); });
     try {
+      startupState("engine",runtime.instanceId);
       await view.webContents.loadURL(runtime.url);
       await runtime.waitReady();
       if (hasHeadlessController()) {
@@ -534,6 +543,7 @@ export class GodotWorldViewHost {
         }
       }
       if (request.build !== undefined || request.snapshot !== undefined) {
+        startupState("scene",runtime.instanceId);
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
       }
@@ -1383,7 +1393,10 @@ export class GodotWorldViewHost {
     const window = this.options.window();
     if (!window || window.isDestroyed()) return;
     const children = window.contentView.children;
-    if (children.includes(view)) window.contentView.removeChildView(view);
+    if (children.includes(view)) {
+      window.contentView.removeChildView(view);
+      syncMainInputFocus(window);
+    }
   }
 
   private createView(runtime: WorldRuntime): WebContentsView {

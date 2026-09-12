@@ -1,5 +1,5 @@
 import { createMainWindow, type MainWindow } from "./main-window";
-import { mainInputContents, setMainImmersion } from "./main-window-layers";
+import { mainInputContents, setMainImmersion, syncMainInputFocus } from "./main-window-layers";
 import { createCraftmineIssueExportService } from "./craftmine-issue-export-service";
 import {
   app,
@@ -30,6 +30,7 @@ import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftm
 import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
+import { createCreationGroundMaintenance, interruptsCreationGroundMaintenance } from "./creation-ground-maintenance";
 import { createGodotWorldCopyService } from "./godot-world-copy-service";
 import { createGodotWindowsExportService } from "./godot-windows-export-service.mjs";
 import { createCraftmineDiagnosticsService } from "./craftmine-diagnostics-service";
@@ -54,7 +55,7 @@ import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
 import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance } from "./craftmine-headless";
-import { NO_IMMERSION, parseImmersion } from "../../shared/craftmine-immersion";
+import { NO_IMMERSION, parseImmersion, immersionShortcut } from "../../shared/craftmine-immersion";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { LocalVoiceInputService } from "./local-voice-input";
 import { VoiceMicrophonePermissionGate } from "./voice-microphone-permission";
@@ -610,6 +611,9 @@ async function safeOpenExternal(rawUrl: unknown): Promise<void> {
 
 const pluginPanels = new PluginPanelHost(
   async (pluginId, channel, payload) => {
+    if (pluginId === "craftmine.world" && interruptsCreationGroundMaintenance(channel, payload as any, godotWorld.instance?.worldId ?? null)) {
+      await groundMaintenance.stopAll();
+    }
     if (pluginId === "craftmine.world" && ["godot.exportWindows", "godot.exportWindows.status", "godot.exportWindows.cancel"].includes(channel)) {
       if (channel !== "godot.exportWindows") return godotExports.request(channel, payload as any);
       if (profileRestore || godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
@@ -974,10 +978,7 @@ async function setImmersionState(state: CraftmineImmersionState): Promise<void> 
   pluginViews.setImmersion(state);
   await godotWorld.setImmersion(state);
   const window = mainWindow;
-  if (state === immersionState && !isHeadlessAcceptance() && window && !window.isDestroyed() && window.isFocused()) {
-    const contents = mainInputContents(window);
-    if (contents && !contents.isDestroyed() && !contents.isFocused()) contents.focus();
-  }
+  if (state === immersionState && window) syncMainInputFocus(window);
 }
 const pluginViews = new PluginViewHost(({ pluginId, url }) => {
   logger.app("plugin", "warn", "plugin.api", {
@@ -1008,7 +1009,10 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
   allowedRoots: godotAdapter.allowedRoots,
   descriptor: godotAdapter.descriptor,
   progress: godotAdapter.progress,
-  onState: state => pluginViews.broadcast("godot-world:state", state),
+  onState: state => {
+    pluginViews.broadcast("godot-world:state", state);
+    if (state.state === "ready" && state.instanceId) scheduleGroundMaintenance(state.worldId, state.instanceId);
+  },
   onFullscreenShortcut: action => {
     const owner = mainWindow;
     if (!owner || owner.isDestroyed()) return;
@@ -1199,6 +1203,7 @@ const creationAutoApply=createCreationAutoApplyService({
   apply:(worldId,candidateId,expected,guard)=>godotCandidates.autoApplyVerified(worldId,candidateId,expected,guard),
 });
 plugins.setServices({craftmineCreationCheckCompleted:async input=>{
+  if(groundMaintenance.ownsCompletion(input))return {status:"manual",reason:"HOST_MAINTENANCE_OWNS_APPLICATION"};
   const result=await creationAutoApply.completed(input);
   if(result.status==="applied")sendToRenderer(IPC.event.craftmineWorldChanged,{});
   return result;
@@ -1221,6 +1226,7 @@ async function creationEditCapture(owner:number,sessionId:string,captureId:strin
 const creationEdits=createCreationEditService({
   directory:join(dataDir,"creation-edits"),
   begin:async(owner,input)=>{
+    await groundMaintenance.stopAll();
     if(creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
     try{
@@ -1288,6 +1294,31 @@ const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
   restoreLoad: (worldId, candidateId) => godotCandidates.restoreLoad(worldId, candidateId),
 });
+const groundMaintenanceAttempts = new Set<string>();
+const groundMaintenance = createCreationGroundMaintenance({
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  selection: godotSelection, instance: () => godotWorld.instance, resourcesRoot: godotRoot,
+  shouldYield: () => !!(activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy),
+  applyVerified: (worldId, candidateId, expected, authorize) => godotCandidates.autoApplyVerified(worldId, candidateId, expected, authorize),
+  changed: (worldId, status) => {
+    logger.app("plugin", status.status === "failed" ? "warn" : "info", "stock ground maintenance", { data: { worldId, ...status } });
+    if (status.status === "applied") sendToRenderer(IPC.event.craftmineWorldChanged, {});
+  },
+});
+function scheduleGroundMaintenance(worldId: string, instanceId: string): void {
+  if (groundMaintenanceAttempts.has(instanceId)) return;
+  // Leave the current startup transition before inspecting a retained world.
+  // All writes go through a separate Core/Git branch; no player draft is used.
+  setTimeout(() => {
+    if (godotWorld.instance?.instanceId !== instanceId || groundMaintenanceAttempts.has(instanceId) ||
+        quitting || craftmineQuitPreparation || craftmineQuitPrepared ||
+        groundMaintenance.busy || activeTurns.size || turnFinalizations.size || profileRestore ||
+        godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy || godotExportBusy) return;
+    groundMaintenanceAttempts.add(instanceId);
+    if (groundMaintenanceAttempts.size > 64) groundMaintenanceAttempts.delete(groundMaintenanceAttempts.values().next().value!);
+    void groundMaintenance.start(worldId).catch(() => undefined);
+  }, 0);
+}
 const godotCopies = createGodotWorldCopyService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
   checkpoint: () => godotWorld.checkpoint(),
@@ -2428,6 +2459,9 @@ function executeNativeMenuAction(
     case "toggleFullScreen":
       target.setFullScreen(!target.isFullScreen());
       break;
+    case "enterFullScreen":
+      target.setFullScreen(true);
+      break;
     case "exitFullScreen":
       target.setFullScreen(false);
       break;
@@ -2440,6 +2474,11 @@ function executeNativeMenuAction(
       break;
     case "close":
       target.close();
+      break;
+    case "quit":
+      // An explicit game-menu exit must not inherit close-to-tray behavior.
+      // app.quit() enters the existing ordered save/shutdown lifecycle.
+      app.quit();
       break;
   }
 
@@ -2740,6 +2779,9 @@ async function bindCraftmineTurn(sessionId: string, turnId: string, session: any
     if(target?.capture)throw Error("CREATION_PROJECT_CHANGED");
     craftmineGateway.beginGeneric(sessionId, turnId); return false;
   }
+  // Player authoring takes priority over automatic maintenance, including a
+  // check already running on an isolated maintenance branch.
+  await groundMaintenance.stopAll();
   const selection = await plugins.requestCraftmineHost("selection.read", {}) as { worldId: string | null };
   const selectedWorld = selection.worldId;
   if (typeof selectedWorld !== "string" || !selectedWorld) {
@@ -2781,6 +2823,7 @@ let profileRestore: ProfileRestoreOperation | null = null;
 const craftmineBackup = createCraftmineBackupService({
   domainCall: (method, params) => plugins.requestCraftmineHost(method, params), pickFile: craftmineFilePicker,
   beforeRestore: async ({operationId}) => {
+    await groundMaintenance.stopAll();
     if (profileRestore || godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy) throw Error("ACTIVE_TASK_EXISTS");
     const operation: ProfileRestoreOperation = {operationId, previous: null, release: () => undefined};
     profileRestore = operation;
@@ -3660,6 +3703,11 @@ async function createWindow() {
   // the View menu role (see application-menu.ts).
   window.webContents.on("before-input-event", (event, input) => {
     if (immersionState.active && !immersionState.blocked) {
+      // F2 uses the same finite route whichever native child owns focus.
+      // Prevent the downstream DOM key so the overlay cannot toggle twice.
+      // Escape remains in the renderer, where menus and IME own its layering.
+      const creation = input.key === "F2" ? immersionShortcut(input, immersionState.overlay !== "closed") : null;
+      if (creation) { event.preventDefault(); forwardImmersionShortcut(creation); return; }
       const fullscreen = nativeFullscreenKeyDecision(input);
       if (fullscreen.preventDefault) event.preventDefault();
       if (fullscreen.action) window.setFullScreen(!window.isFullScreen());
@@ -6513,9 +6561,13 @@ function registerIpc() {
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
-      invoke: (channel, params) => channel === "world.copyStatus" ? Promise.resolve(godotCopies.status(params)) : channel.startsWith("godot.history")
-        ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params),
+      invoke: async (channel, params) => {
+        if (["world.creationRetry", "godot.historyCreateBranch", "godot.historySaveSource", "godot.historyCheck"].includes(channel)) await groundMaintenance.stopAll();
+        return channel === "world.copyStatus" ? godotCopies.status(params) : channel.startsWith("godot.history")
+          ? godotHistory.invoke(channel, params) : godotPanel.invoke(channel, params);
+      },
       navigate: async (request) => {
+        if (interruptsCreationGroundMaintenance(`world.${request.operation === "switch" ? "open" : request.operation}`, request, godotWorld.instance?.worldId ?? null)) await groundMaintenance.stopAll();
         // World creation from the main sidebar also works before its work panel
         // has mounted. The retained view still owns the save/switch sequence.
         const loaded = plugins.getLoaded("craftmine.world");
@@ -10188,6 +10240,7 @@ app.on("before-quit", (event) => {
     if (craftmineQuitPreparation) return;
     craftmineQuitPreparation = (async () => {
       if (godotCopies.busy || godotExportBusy) throw Error("Wait for world copy or export to finish, or cancel the export before quitting");
+      await groundMaintenance.stopAll();
       await godotCandidates.closeForDeparture();
       godotVerifier.cancelAll();
       await pluginViews.prepareCraftmineForQuit();

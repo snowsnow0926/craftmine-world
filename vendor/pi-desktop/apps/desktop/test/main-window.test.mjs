@@ -6,16 +6,18 @@ const fixture={headless:false,guards:[],views:[]};
 class Contents extends EventEmitter {
   destroyed=false;focusCount=0;loads=[];
   isDestroyed(){return this.destroyed;}
-  focus(){this.focusCount++;}
+  isFocused(){return fixture.focusedContents===this;}
+  focus(){this.focusCount++;fixture.focusedContents=this;}
   close(options){this.closeOptions=options;this.destroyed=true;this.emit('destroyed');}
   loadURL(...args){this.loads.push(['url',...args]);return Promise.resolve();}
   loadFile(...args){this.loads.push(['file',...args]);return Promise.resolve();}
 }
 class BaseWindow extends EventEmitter {
-  destroyed=false;size=[1280,800];
+  destroyed=false;focused=false;size=[1280,800];
   contentView={children:[],addChildView(view,index=this.children.length){const old=this.children.indexOf(view);if(old>=0)this.children.splice(old,1);this.children.splice(index,0,view);}};
   constructor(options){super();this.options=options;}
   isDestroyed(){return this.destroyed;}
+  isFocused(){return this.focused;}
   getContentSize(){return this.size;}
   destroy(){this.destroyed=true;this.emit('closed');}
 }
@@ -55,7 +57,7 @@ test('actual window resize updates UI bounds, closing releases renderer, and ren
 test('user window focus follows overlay ownership while headless validation cannot focus any renderer',()=>{
   const window=createMainWindow({show:false});const game=new WebContentsView({});window.contentView.addChildView(game);
   const active={active:true,overlay:'closed',overlayBounds:null};setMainImmersion(window,active);
-  window.emit('focus');assert.equal(game.webContents.focusCount,1);assert.equal(window.webContents.focusCount,0);
+  window.focused=true;window.emit('focus');assert.equal(game.webContents.focusCount,1);assert.equal(window.webContents.focusCount,0);
   setMainImmersion(window,{...active,overlay:'compact'});window.emit('focus');assert.equal(window.webContents.focusCount,1);
-  fixture.headless=true;window.emit('focus');assert.equal(window.webContents.focusCount,1);fixture.headless=false;
+  fixture.headless=true;const hidden=createMainWindow({show:false,focusable:false});hidden.focused=true;hidden.emit('focus');assert.equal(hidden.webContents.focusCount,0);fixture.headless=false;
 });
