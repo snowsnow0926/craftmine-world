@@ -264,7 +264,15 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
         if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');
         assertActive();
         if(record?.jobId!==params.jobId||record?.worldId!==params.worldId)throw Error('GODOT_BUILD_READ_IDENTITY_CHANGED');
-        return {...record,diagnostics:require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(record)};
+        let nativeEvidence={status:'unknown',reason:'NATIVE_EVIDENCE_NOT_WIRED'};
+        if(typeof options.executorNativeDiagnosticEvidence==='function'){
+          try{nativeEvidence=await options.executorNativeDiagnosticEvidence(structuredClone(record));}
+          catch{nativeEvidence={status:'unknown',reason:'NATIVE_EVIDENCE_UNAVAILABLE'};}
+          assertActive();
+          if((await getSettings()).activeWorldId!==selectedWorld)throw Error('GODOT_BUILD_READ_WORLD_CHANGED');
+          assertActive();
+        }
+        return {...record,diagnostics:require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(record,nativeEvidence)};
       };
       if(definition.name==='godot_build_read'&&((options.buildReadWaitMs??0)>0||typeof options.executorCreationCompletion==='function')){
         const record=await require('./godot-build-read-wait.cjs').readGodotBuildWithWait({core,params,waitMs:options.buildReadWaitMs,assertActive,
