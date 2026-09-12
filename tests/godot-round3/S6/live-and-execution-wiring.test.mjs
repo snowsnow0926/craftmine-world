@@ -371,3 +371,11 @@ test('production project_facts reconstructs durable failure identity without a r
  assert.deepEqual(facts.recovery.budget.value,budget);assert.equal(facts.recovery.application.available,false);
  assert.ok(!f.calls.some(call=>/\.start$|\.continue$|\.reserve$|\.configure$|\.finish$/.test(call.method)));
 });
+
+test('ordinary registered build-read returns passed/deferred immediately while the author turn remains active',async()=>{
+ const jobId='gjob-'+'a'.repeat(64),candidateId='candidate-final',buildId='build-final';
+ const application={jobId,worldId:'alpha',buildId,candidateId,status:'deferred',reason:'CREATION_AWAITING_TURN_FINISH'};
+ const f=fixture({options:{buildReadWaitMs:1000,executorCreationCompletion:()=>application},coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'alpha',buildId,candidateId,kind:'check',baseId:'creation-sandbox',status:'passed',output:{passed:true,check:{passed:true,assertions:[]}}})}});
+ const result=await f.call('godot_build_read',{jobId});assert.equal(result.status,'passed');assert.equal(result.creationApplication.status,'deferred');assert.equal(result.waitReason,'terminal');
+ assert.equal(f.calls.filter(call=>call.method==='godotBuild.read').length,1,'Does not wait for its own turn-end event and deadlock the model');
+});

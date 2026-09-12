@@ -8,8 +8,15 @@ import {createHash,randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {adoptionEnvironment,modelFreeExecutionEvidence} from './helpers/promo-adoption-contract.mjs';
-const sourceFile=path.resolve(process.argv[2]),sourceBytes=fs.readFileSync(sourceFile),source=JSON.parse(sourceBytes);
-assert.equal(source.format,'craftmine.fb02-ordinary-player/1');assert.equal(source.status,'PASSED_PRODUCT_FLOW');
+const sourceFile=path.resolve(process.argv[2]),sourceBytes=fs.readFileSync(sourceFile),record=JSON.parse(sourceBytes);
+assert.equal(record.status,'PASSED_PRODUCT_FLOW');
+let source=record;
+if(record.format==='craftmine.fb02-ordinary-player-continuation/1'){
+  const originalBytes=fs.readFileSync(record.continuedFrom),original=JSON.parse(originalBytes);
+  assert.equal(createHash('sha256').update(originalBytes).digest('hex'),record.originalReport.sha256);
+  assert.equal(original.latest.application.phase,'applied');assert.equal(original.latest.metrics.status,'completed');assert.equal(record.modelCallsAdded,0);
+  source={...original,...record,directory:path.dirname(record.profile),after:original.after};
+}else assert.equal(record.format,'craftmine.fb02-ordinary-player/1');
 const root=path.resolve(import.meta.dirname,'..'),out=path.resolve(source.directory),profile=path.join(out,'profile');
 assert.ok(out.startsWith(path.join(root,'test-results')+path.sep));assert.equal(path.resolve(source.profile),profile);
 const marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json')));
@@ -28,7 +35,7 @@ const exit=new Promise(resolve=>child.on('exit',(code,signal)=>{ended=true;repor
 child.on('message',message=>{if(message.type==='craftmine-headless-ready')ready=true;if(message.type==='craftmine-headless-exit')report.audit=message;const call=pending.get(message.id);if(call){clearTimeout(call.timer);pending.delete(message.id);message.error?call.reject(Error(message.error)):call.resolve(message.result);}});
 const rpc=(method,fields={})=>{
   const key=method==='worldPanel'?method+':'+fields.channel:method;
-  assert.ok(['status','primaryMode','godotObserve','godotSnapshot','godotExplore','godotCaptureView','quit','worldPanel:godot.runtimeResume','worldPanel:godot.runtimeSave'].includes(key));
+  assert.ok(['status','primaryMode','godotObserve','godotSnapshot','godotExplore','godotCaptureBoundState','godotCaptureBoundView','quit','worldPanel:godot.runtimeResume','worldPanel:godot.runtimeSave'].includes(key));
   if(method==='godotExplore'||method==='worldPanel')assert.equal(fields.payload.worldId,source.worldId);
   report.calls.push(key);return new Promise((resolve,reject)=>{if(ended)return reject(Error('APP_EXITED'));const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('RPC_TIMEOUT:'+method));},120000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});});
 };
@@ -37,14 +44,23 @@ const stop=async()=>{if(!ended){await rpc('quit');await Promise.race([exit,delay
 try{
   await until(async()=>ready,Boolean);const initial=await until(()=>rpc('primaryMode'),state=>state.width>0);
   if(initial.entry)await rpc('primaryMode',{payload:{action:'create'}});
+  if((await rpc('primaryMode')).play)await rpc('primaryMode',{payload:{action:'closed'}});
   report.before=await until(()=>rpc('godotObserve'),value=>value.worldId===source.worldId&&value.instanceId);
   assert.equal(report.before.buildId,source.after.formal.world.build.id);
   await until(()=>rpc('worldPanel',{channel:'godot.runtimeResume',payload:{worldId:source.worldId}}),value=>value!==undefined);
   const identity=Object.fromEntries(['worldId','buildId','instanceId'].map(key=>[key,report.before[key]]));
-  report.exploration=await rpc('godotExplore',{payload:{...identity,steps}});
-  for(const [index,capture] of report.exploration.captures.entries()){
-    const file=path.join(directory,'view-'+(index+1)+'.png');fs.writeFileSync(file,Buffer.from(capture.image.pngBase64,'base64'));
-    delete capture.image.pngBase64;capture.image.file=file;
+  report.exploration={actions:[],captures:[]};assert.ok(steps.length>0&&steps.length<=16);
+  for(const [index,step] of steps.entries()){
+    const result=await rpc('godotExplore',{payload:{...identity,steps:[{...step,capture:false}]}});
+    report.exploration.actions.push(...result.actions);report.exploration.after=result.after;
+    if(step.capture){
+      const before=await rpc('godotCaptureBoundState'),image=await rpc('godotCaptureBoundView',{payload:identity});
+      assert.deepEqual(await rpc('godotCaptureBoundState'),before,'read-only capture preserves native world and window state');
+      for(const key of ['worldId','buildId','instanceId'])assert.equal(image[key],identity[key]);
+      const bytes=Buffer.from(image.pngBase64,'base64');assert.equal(createHash('sha256').update(bytes).digest('hex'),image.sha256);
+      const file=path.join(directory,'view-'+(index+1)+'.png');fs.writeFileSync(file,bytes);
+      delete image.pngBase64;report.exploration.captures.push({afterAction:index,image:{...image,file}});
+    }
   }
   report.snapshot=await rpc('godotSnapshot');report.saved=await rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId:source.worldId,freeze:true}});
   await stop();client.assertUnchanged();assert.ok(fs.readFileSync(sourceFile).equals(sourceBytes));

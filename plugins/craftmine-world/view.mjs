@@ -37,6 +37,7 @@ const GODOT_CHROME_HEIGHT = 76;
 document.documentElement.style.setProperty('--godot-chrome',GODOT_CHROME_HEIGHT+'px');
 // Godot worlds run in the sibling Electron view, not in the voxel srcdoc iframe.
 let godot=false;
+let initializingSurfaceWorld=null;
 let openingWorldId=null;
 let loadRecovery=null;
 let immersionHeld=false;
@@ -101,6 +102,15 @@ function onGodotState(payload) {
   if(state==='ready'||state==='saved'||state==='paused'){
     if(recoveringLoadError)errorBox.hidden=true;
     loaded=true;document.body.dataset.worldLoaded='true';controls();
+    // A placeholder was mounted before its first runtime existed. Only this
+    // initial readiness transition releases the loading surface; later pause/
+    // save events must not reveal a world hidden by a preview or another sheet.
+    if(initializingSurfaceWorld===current.id&&!openingWorldId&&!preview&&!applicationAttempt&&!closing&&checksPanel.hidden&&!workbench?.tab){
+      const worldId=current.id;initializingSurfaceWorld=null;
+      void bridge.invoke('godot.runtimeSurface',{worldId,visible:true}).catch(error=>{
+        if(current?.id===worldId){initializingSurfaceWorld=worldId;showError(error);}
+      });
+    }
   }
   else if(state==='loading'||state==='failed'||state==='closed'){loaded=false;delete document.body.dataset.worldLoaded;controls();}
 }
@@ -273,7 +283,10 @@ function prepareClose() {
   closing=true;controls();
   closeOperation=(async()=>{
     try {
-      await previous;
+      // Wait for the prior transaction to settle, but do not replay an error
+      // already delivered to its caller/loading UI as a new shutdown failure.
+      // Current reconciliation and checkpoint below retain their own errors.
+      await previous.catch(()=>{});
       if(applicationAttempt)await reconcileApplication();
       if(generation!==closeGeneration)throw Error('退出已取消');
       busy=true;controls();
@@ -306,6 +319,7 @@ function mount(record) {
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
   current=record;openingWorldId=null;loaded=false;nonce=crypto.randomUUID();lastSaved=canonicalJSON(record.world.snapshot);
   godot=isGodotWorld(record);
+  initializingSurfaceWorld=godot&&record?.world?.build?.godot?.initializing===true?record.id:null;
   document.getElementById('import-result').hidden=true;
   document.body.dataset.worldId=record.id||'';delete document.body.dataset.worldLoaded;delete document.body.dataset.worldError;
   delete document.body.dataset.godotState;
@@ -422,7 +436,21 @@ async function navigate(request) {
   if(busy||closing||preview||applicationAttempt||workbench?.busy)throw Error('WORLD_BUSY');
   if(!bridge||(!loaded&&!godot)||!current?.id)throw Error('WORLD_VIEW_UNAVAILABLE');
   if(!['switch','create','copy'].includes(request?.operation))throw Error('INVALID_NAVIGATION_REQUEST');
-  if(request.operation==='switch'&&request.id===current.id)return {ok:true,activeWorldId:current.id};
+  if(request.operation==='switch'&&request.id===current.id){
+    if(!godot)return {ok:true,activeWorldId:current.id};
+    busy=true;controls();
+    activeOperation=(async()=>{
+      const worldId=current.id;
+      const runtime=await bridge.invoke('godot.runtimeState',{worldId});
+      if(['ready','paused','saved'].includes(runtime?.state)&&!runtime.initializing){
+        setMode(false,{notify:false});
+        await bridge.invoke('godot.runtimeSurface',{worldId,visible:true});
+        initializingSurfaceWorld=null;
+      }
+      return {ok:true,activeWorldId:worldId};
+    })().finally(()=>{busy=false;controls();});
+    return activeOperation;
+  }
   if(request.operation==='create'&&!request.operationId)request={...request,operationId:crypto.randomUUID()};
   const retryingCreate=request.operation==='create'&&loadRecovery?.request?.operationId===request.operationId;
   busy=true;controls();errorBox.hidden=true;
@@ -444,7 +472,10 @@ async function navigate(request) {
       if(loaded&&!retryingCreate)await save({freeze:true});
       loadRecovery={previous,request};
       renderWorldLoading({state:'loading',initializing:request.operation==='create'});
-      if(godot&&!retryingCreate)await bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false});
+      // The durable initialization placeholder has no native instance yet.
+      // Cancelling its creation must still reach world.open for the previous
+      // world; requireCurrent intentionally rejects a surface write here.
+      if(godot&&!retryingCreate&&!(initializingSurfaceWorld===current.id&&!loaded))await bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false});
       if(request.operation==='create')openingWorldId='__creating__';
       if(request.operation==='create')target=await bridge.invoke('world.create',{
         title:request.title,baseId:request.baseId,starterId:request.starterId,operationId:request.operationId,activate:false,

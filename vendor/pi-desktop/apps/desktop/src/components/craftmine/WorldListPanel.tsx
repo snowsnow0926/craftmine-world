@@ -111,6 +111,7 @@ export function WorldListPanel({
                 taskHere={entry.id === taskWorldId}
                 busy={controller.busy}
                 createActionsSupported={controller.capabilities?.createActions === true}
+                onContinuePreparation={controller.capabilities?.switch === true ? () => void controller.continuePreparation(entry.id) : undefined}
                 onSelect={() => {
                   // An unfinished world cannot be opened; asking the controller
                   // anyway lets it show the host-independent reason instead of
@@ -159,6 +160,7 @@ function WorldRow({
   createActionsSupported,
   onSelect,
   onCreationAction,
+  onContinuePreparation,
 }: {
   entry: CraftmineWorldEntry;
   lang: CraftmineLang;
@@ -169,6 +171,7 @@ function WorldRow({
   createActionsSupported: boolean;
   onSelect: () => void;
   onCreationAction: (action: CraftmineCreationAction) => void;
+  onContinuePreparation?: () => void;
 }) {
   const [details, setDetails] = useState(false);
   const check = worldCheckLabel(entry.check, lang);
@@ -223,6 +226,13 @@ function WorldRow({
           </span>
         </span>
       </button>
+
+      {!active && entry.state === "initializing" && onContinuePreparation && (
+        <button type="button" className="craftmine-world-item-actions" data-world-continue={entry.id}
+          disabled={busy} onClick={onContinuePreparation}>
+          {lang === "zh" ? "继续准备世界" : "Continue preparing world"}
+        </button>
+      )}
 
       {!playable && (actions.length > 0 || entry.creation?.error) && (
         <div className="craftmine-world-item-recovery" data-world-recovery={entry.id}>

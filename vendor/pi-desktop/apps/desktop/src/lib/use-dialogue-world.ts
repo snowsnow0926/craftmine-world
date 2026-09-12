@@ -76,8 +76,10 @@ export function useDialogueWorld() {
   useEffect(() => {
     const applied = (event: Event) => {
       const detail = (event as CustomEvent).detail;
-      if (state?.phase !== "chat" || detail?.worldId !== state.worldId || detail?.sessionId !== state.sessionId || useAppStore.getState().activeSessionId !== state.sessionId) return;
+      if (state?.phase !== "chat" || operation.current?.cancelled || detail?.worldId !== state.worldId || detail?.sessionId !== state.sessionId || useAppStore.getState().activeSessionId !== state.sessionId) return;
+      event.preventDefault();
       operation.current = null; setState(null); enterCraftmineMode("play", {explicit:true});
+      useAppStore.getState().showToast("世界已生成，已进入试玩；F2 查看创作结果", {variant:"success"});
     };
     window.addEventListener("craftmine-dialogue-world-applied", applied);
     return () => window.removeEventListener("craftmine-dialogue-world-applied", applied);

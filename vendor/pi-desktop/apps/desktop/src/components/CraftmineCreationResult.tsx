@@ -17,17 +17,35 @@ export function CraftmineCreationResult({autoOpen = false}: {autoOpen?: boolean}
   const locked = useRef(false);
   const context = useRef(sessionId); context.current = sessionId;
   const seen = useRef("");
+  const observedSession = useRef<string | null>(null);
+  const hasInitialStatus = useRef(false);
   useEffect(() => {setError("");}, [sessionId, status?.jobId]);
   useEffect(() => {
-    if(status?.phase === "applied") window.dispatchEvent(new CustomEvent("craftmine-dialogue-world-applied", {detail:{worldId:status.worldId,sessionId:status.sessionId}}));
+    if(status?.phase === "applied") {
+      const consumed = !window.dispatchEvent(new CustomEvent("craftmine-dialogue-world-applied", {
+        cancelable: true, detail:{worldId:status.worldId,sessionId:status.sessionId,jobId:status.jobId},
+      }));
+      // The dialogue flow deliberately enters a playable, closed-overlay world.
+      // Record that handoff before autoOpen becomes true on the next render.
+      if (consumed) seen.current = `${status.sessionId}:${status.jobId}:${status.phase}`;
+    }
   }, [status?.phase, status?.worldId, status?.sessionId, status?.jobId]);
   useEffect(() => {
-    if (!autoOpen || !status || !["ready", "applied", "failed"].includes(status.phase)) return;
+    if (observedSession.current !== sessionId) {
+      observedSession.current = sessionId;
+      hasInitialStatus.current = false;
+      seen.current = "";
+    }
+    if (!status) return;
     const key = `${status.sessionId}:${status.jobId}:${status.phase}`;
+    // First read after mount/session entry is persisted history. Keep its card
+    // available, but do not pause a resumed game to announce an old result.
+    if (!hasInitialStatus.current) { hasInitialStatus.current = true; seen.current = key; return; }
     if (seen.current === key) return;
     seen.current = key;
+    if (!autoOpen || !["ready", "applied", "failed"].includes(status.phase)) return;
     if (loadCraftmineLayout(localStorage).overlay === "closed") setCraftmineOverlay("compact");
-  }, [autoOpen, status]);
+  }, [autoOpen, status, sessionId]);
   const refresh = () => window.dispatchEvent(new Event("craftmine-creation-edit-status"));
   const run = async (action: "open" | "adopt" | "switch") => {
     if (!status || !sessionId || locked.current) return;

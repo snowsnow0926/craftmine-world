@@ -21,6 +21,7 @@ function fixture(){
     domain:createHostRequests({start:async()=>{},call:async method=>{
       if(method==="godotRuntime.describe")return {worldId:"world",baseId:"creation-sandbox",buildId:"formal",sourceRevision:1,manifestHash:"old"};
       if(method==="godotBuild.read")return structuredClone(state.job);
+      if(method==="godotBuild.latest")return structuredClone(state.latest??state.job);
       if(method==="godotCandidate.read")return {candidate:structuredClone(state.candidate),checkStatus:state.checkStatus,check:state.check};
       if(method==="godotProject.index")return structuredClone(state.source);
       throw Error(method);

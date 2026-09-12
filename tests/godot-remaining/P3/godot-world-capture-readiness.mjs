@@ -411,16 +411,9 @@ test('an owner that becomes visible mid-capture fails instead of accepting a fra
   assertRestored(f, 'owner-visible');
 });
 
-test('fullscreen hidden capture uses the requested compositor size and restores fullscreen', async () => {
+test('fullscreen capture refuses resizing and leaves the real owner unchanged', async () => {
   const f=fixture({fullscreen:true});
-  f.contents.capturePage=async()=>image(...f.state().contentSize,{tag:'actual-compositor'});
-  const captured=await f.host.headlessCapture(WIDTH,HEIGHT);
-  assert.equal(captured.width,WIDTH);assert.equal(captured.height,HEIGHT);assert.equal(f.owner.isFullScreen(),true);
-  assert.deepEqual(f.events.filter(event=>event.startsWith('fullscreen:')),['fullscreen:false','fullscreen:true']);
-  assertRestored(f,'fullscreen-success');
-});
-test('fullscreen is restored even when the hidden owner cannot be resized', async () => {
-  const f=fixture({fullscreen:true,failContentSizeAt:1});
-  await assert.rejects(f.host.headlessCapture(WIDTH,HEIGHT),/window refused to resize/);
-  assert.equal(f.owner.isFullScreen(),true);assertRestored(f,'fullscreen-failure');
+  await assert.rejects(f.host.headlessCapture(WIDTH,HEIGHT),/GODOT_HEADLESS_CAPTURE_FULLSCREEN_USE_BOUND_VIEW/);
+  assert.equal(f.owner.isFullScreen(),true);assert.equal(f.state().reads,0);
+  assert.deepEqual(f.events,[]);assertRestored(f,'fullscreen-read-only-required');
 });

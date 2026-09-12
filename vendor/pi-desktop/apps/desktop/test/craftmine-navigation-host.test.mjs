@@ -77,3 +77,12 @@ test('the tasks summary may read recoverable drafts but no other new channel',as
   assert.deepEqual(seen,['task.recoverable']);
   await assert.rejects(invokeCraftmineNavigation(request('task.resume',{taskId:'t'}),deps),/PERMISSION_DENIED/);
 });
+
+test('main dialogue reads runtime readiness using only the selected-world identity',async()=>{
+ const seen=[],deps={invoke:async(channel,payload)=>{seen.push({channel,payload});if(payload.worldId!=='world-selected')throw Error('GODOT_WORLD_CHANGED');return {worldId:payload.worldId,state:'paused',instanceId:'actual-instance'};}};
+ assert.equal((await invokeCraftmineNavigation(request('godot.runtimeState',{worldId:'world-selected'}),deps)).state,'paused');
+ await assert.rejects(invokeCraftmineNavigation(request('godot.runtimeState',{worldId:'world-other'}),deps),/GODOT_WORLD_CHANGED/);
+ for(const payload of [{},{worldId:'../world'},{worldId:'world-selected',visible:true},{worldId:'world-selected',instanceId:'forged'}])await assert.rejects(invokeCraftmineNavigation(request('godot.runtimeState',payload),deps),/INVALID_WORLD_ID/);
+ for(const channel of ['godot.runtimeSurface','godot.runtimeSave','godot.runtimeResume'])await assert.rejects(invokeCraftmineNavigation(request(channel,{worldId:'world-selected'}),deps),/PERMISSION_DENIED/);
+ assert.equal(seen.length,2);
+});

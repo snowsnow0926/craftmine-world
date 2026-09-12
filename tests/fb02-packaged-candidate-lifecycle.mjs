@@ -85,15 +85,23 @@ async function launch(label){
     const formal=()=>panel('world.read',{id:worldId});
     const content=()=>navigation('godot.historyLoad',{worldId,branchId:'main'});
     const captureNative=async name=>{
-      const state=await native();
-      const attached=new Set(state.windows.flatMap(window=>window.children));
-      const selected=state.pages.find(page=>attached.has(page.id)&&page.url.startsWith('http://127.0.0.1:'));
-      assert.ok(selected,'actual attached native Godot page');
-      const page=browser.contexts().flatMap(context=>context.pages()).find(page=>page.url()===selected.url);assert.ok(page);
-      const observation=await page.evaluate(()=>({viewport:[innerWidth,innerHeight],devicePixelRatio,focus:document.hasFocus(),guard:globalThis.__craftmineHeadless}));
-      assert.equal(observation.focus,false,'capture never emulates focus');
-      const screenshot=path.join(directory,name+'.png');await page.screenshot({path:screenshot});
-      return {screenshot,native:selected,observation,method:'CDP noDefaults screenshot of the actual attached native page; no viewport resize'};
+      const before=await rpc('godotCaptureBoundState');
+      assert.equal(before.formal?.worldId,worldId,'capture owns the exact retained formal world');
+      assert.ok(!before.candidate,'final ground evidence never substitutes a candidate view');
+      const identity={worldId:before.formal.worldId,buildId:before.formal.buildId,instanceId:before.formal.instanceId};
+      const frame=await rpc('godotCaptureBoundView',{payload:identity});
+      const after=await rpc('godotCaptureBoundState');
+      assert.deepEqual(after,before,'capture leaves all host identities, state, native view bounds and owner fullscreen unchanged');
+      for(const key of ['worldId','buildId','instanceId'])assert.equal(frame[key],identity[key]);
+      assert.equal(frame.candidateId,null);assert.equal(frame.scope,'formal');assert.equal(frame.format,'craftmine.godot-view-capture/1');
+      const png=Buffer.from(frame.pngBase64,'base64');assert.ok(png.length<=4*1024*1024);
+      assert.equal(createHash('sha256').update(png).digest('hex'),frame.sha256);
+      assert.equal(png.readUInt32BE(16),frame.width);assert.equal(png.readUInt32BE(20),frame.height);
+      assert.ok(frame.width>0&&frame.width<=1920&&frame.height>0&&frame.height<=1080);
+      for(const key of ['sourceWidth','sourceHeight','viewWidth','viewHeight'])assert.ok(Number.isFinite(frame[key])&&frame[key]>0,key+' is actual positive capture metadata');
+      const screenshot=path.join(directory,name+'.png');fs.writeFileSync(screenshot,png);
+      const {pngBase64,...metadata}=frame;
+      return {screenshot,before,after,...metadata,method:'identity-bound capture of existing native view; source, CSS view and output image dimensions remain distinct; no owner fullscreen or bounds mutation'};
     };
     return {rpc,panel,navigation,product,appPage,formal,content,native,captureNative,stop,record};
   }catch(error){await stop().catch(()=>{});throw error;}

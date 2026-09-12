@@ -495,10 +495,15 @@ function AppShell() {
   }), [showToast]);
 
   useEffect(() => {
+    let current = true;
     const viewingSessionId = page === "chat" ? activeSessionId ?? null : null;
     void api
       .setNotificationViewingSession(viewingSessionId)
+      .then(() => {
+        if (current) window.dispatchEvent(new CustomEvent("craftmine-viewing-session-ready", {detail: {sessionId: viewingSessionId}}));
+      })
       .catch(() => undefined);
+    return () => { current = false; };
   }, [activeSessionId, page]);
 
   useEffect(() => {

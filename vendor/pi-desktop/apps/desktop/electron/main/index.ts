@@ -1208,6 +1208,7 @@ plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
   capture:input=>godotWorld.captureView(input),
 })});
 const creationAutoApply=createCreationAutoApplyService({
+  settled:async()=>activeTurns.size===0&&turnFinalizations.size===0,
   capture:async context=>{
     if(!host)throw Error("CREATION_HOST_UNAVAILABLE");
     const capture=creationTargets.owned(context);if(!capture)return null;
@@ -1215,7 +1216,7 @@ const creationAutoApply=createCreationAutoApplyService({
     if(capture.authorization==="full-auto"&&!await creationFullAuto(context.sessionId))return {...capture,autoApply:false};
     if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy||groundMaintenance.busy)throw Error("WORLD_BUSY");
     if(turnFinalizations.has(context.sessionId))throw Error("CREATION_FINALIZING");
-    if([...activeTurns].some(([sessionId,turnId])=>sessionId!==context.sessionId||turnId!==context.turnId))throw Error("CREATION_TURN_BUSY");
+    if(activeTurns.size)throw Error("CREATION_TURN_BUSY");
     if(!mainWindow||mainWindow.isDestroyed()||mainWindow.webContents.isDestroyed()||immersionState.blocked)throw Error("CREATION_PLAYER_CONTEXT_CHANGED");
     const detail=await host.call<{session?:any}>("session.get",{id:context.sessionId});
     if(!detail?.session||craftmineProjectIdentity(detail.session,context.sessionId)!==context.projectId||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_PROJECT_CHANGED");

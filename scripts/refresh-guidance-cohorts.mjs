@@ -15,7 +15,7 @@ try{
   const out=path.join(temp,String(index)),manifest=materializeBase({baseId:'creation-sandbox',worldId:'guidance-cohort',out,controllerProfile:profile});
   if(currentSceneObserverProfile(manifest.files,loadSceneObserverPins(path.join(root,'desktop/godot')))!==profile)throw Error('Observer cohort mismatch');
   // Include all materialized shared scripts and both native controller scripts:
-  // 10 source files for v1, 12 for v2, rather than only the top-level adapter.
+  // Include the component-state interface as well as the top-level adapter.
   const files=manifest.files.filter(file=>file.path.startsWith('craftmine_shared/')||['scripts/reused/player_controller.gd','scripts/reused/camera_rig.gd'].includes(file.path)).sort((a,b)=>a.path.localeCompare(b.path)).map(file=>{
    const text=fs.readFileSync(path.join(out,file.path),'utf8').replace(/\r\n/g,'\n');
    return {path:file.path,acceptedSourceHashes:[...new Set([hash(text),hash(text.replace(/\n/g,'\r\n'))])]};
@@ -25,7 +25,7 @@ try{
   if(!inherited.acceptedSourceHashes.every(h=>ref.acceptedSourceHashes.includes(h)))throw Error('Guidance inherited interface is no longer identical');
   return {profile,files,referencePaths:{'craftmine_shared/base_adapter.gd':'craftmine_shared/base_adapter_legacy.gd'}};
  });
- const legacyNames=['base_adapter.gd','runtime_bridge.gd','state_guard.gd','headless_play_action.gd','scene_mesh_picker.gd'].map(name=>'craftmine_shared/'+name);
+ const legacyNames=['base_adapter.gd','runtime_bridge.gd','state_guard.gd','headless_play_action.gd','scene_mesh_picker.gd','component_state.gd'].map(name=>'craftmine_shared/'+name);
  const cohorts={format:'craftmine.guidance-interface-cohorts/1',scope:'source-applicability-not-runtime-evidence',variants,
   reservedPaths:[...new Set(variants.flatMap(v=>v.files.map(f=>f.path)))].filter(name=>name.startsWith('craftmine_shared/')&&!legacyNames.includes(name)).sort()};
  const interfaceHash=hash(JSON.stringify({references:skill.references.filter(ref=>ref.requiredInterface).map(ref=>[ref.projectPath,ref.sha256]),cohorts}));

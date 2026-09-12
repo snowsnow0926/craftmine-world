@@ -30,6 +30,7 @@ export type CraftmineWorldsController = {
   bridge: CraftmineWorldBridge | null;
   refresh: () => Promise<void>;
   select: (id: string) => Promise<void>;
+  continuePreparation: (id: string) => Promise<void>;
   create: (input: CraftmineWorldCreateInput, onReady?: (worldId: string) => Promise<void>) => Promise<boolean>;
   creationAction: (worldId: string, action: CraftmineCreationAction) => Promise<void>;
   clearMessages: () => void;
@@ -125,12 +126,13 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   }, [bridge, refresh]);
 
   const select = useCallback(
-    async (id: string) => {
+    async (id: string, resumeInitialization = false) => {
       if (!bridge || busyRef.current) return;
       setNotice(null);
       setActionError(null);
       const target = worlds.find((entry) => entry.id === id);
-      if (target && !isWorldPlayable(target)) {
+      if (resumeInitialization && (!target || target.state !== "initializing" || id === activeWorldId)) return;
+      if (target && !isWorldPlayable(target) && !resumeInitialization) {
         // The host registered the world but has not finished initializing it;
         // opening it would leave the view on a world it cannot run.
         setNotice(CRAFTMINE_WORLD_TEXT.creationNotPlayable[lang]);
@@ -164,6 +166,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
           return;
         }
         setActiveWorldId(result.activeWorldId);
+        if (resumeInitialization) setNotice(lang === "zh" ? "已继续准备这个世界，完成后即可进入。" : "Preparation resumed. You can enter when this world is ready.");
         window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
       } catch (failure) {
         setActionError(`${CRAFTMINE_WORLD_TEXT.switchFailed[lang]} ${worldErrorMessage(failure, lang)}`);
@@ -322,6 +325,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     bridge,
     refresh,
     select,
+    continuePreparation: id => select(id, true),
     create,
     creationAction,
     clearMessages,

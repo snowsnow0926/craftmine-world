@@ -245,10 +245,13 @@ export function createCreationTargetService(deps:Dependencies) {
       if(isCancelled(context))fail("CREATION_USER_CANCELLED");
       const snapshotId=randomUUID();write(sessionIntent(context),{context,snapshotId});
       const instance=deps.instance(),formal=await deps.descriptor(worldId);
-      if(!instance||instance.worldId!==worldId||formal?.baseId!=="creation-sandbox"||formal.buildId!==instance.buildId||await deps.selection()!==worldId)return null;
+      if(!instance||instance.worldId!==worldId||formal?.worldId!==worldId||formal?.baseId!=="creation-sandbox"||formal.buildId!==instance.buildId||await deps.selection()!==worldId)return null;
+      const sample=await deps.sample(instance),player=sample?.payload?.player?.position??sample?.payload?.creation?.playerPosition;
+      const age=now()-Date.parse(sample?.sampledAt);
+      if(sample?.worldId!==worldId||sample?.buildId!==instance.buildId||sample?.instanceId!==instance.instanceId||sample?.baseId!=="creation-sandbox"||!vec(player)||!Number.isFinite(age)||age< -5000||age>30000||!Number.isSafeInteger(formal.sourceRevision)||formal.sourceRevision<0||!/^[a-f0-9]{64}$/.test(formal.manifestHash??""))fail("CREATION_OBSERVATION_INVALID");
       const fullAuto=await deps.fullAuto?.(context)??false;
       const capture:CreationCapture={format:"craftmine.creation-target/1",snapshotId,worldId,buildId:formal.buildId,instanceId:instance.instanceId,
-        sourceRevision:formal.sourceRevision,manifestHash:formal.manifestHash,sampledAt:new Date(now()).toISOString(),capturedAt:now(),playerPosition:[0,0,0],
+        sourceRevision:formal.sourceRevision,manifestHash:formal.manifestHash,sampledAt:sample.sampledAt,capturedAt:now(),playerPosition:[...player],
         target:{entityId:null,position:null,normal:null,surface:"none",revision:0},autoApply:fullAuto,authorization:fullAuto?"full-auto":"world-policy",requestHash:digest(requestText),
         creationRequirements:{status:"unverified",reason:"CREATION_GENERAL_REQUEST_RUNTIME_CHECK"}};
       await assertFormal(capture);if(isCancelled(context))fail("CREATION_USER_CANCELLED");if(supersededBy({context,capture}))fail("CREATION_REQUEST_SUPERSEDED");write(file("turns",contextKey(context)),{context,capture});ownIntent(context,capture);return structuredClone(capture);

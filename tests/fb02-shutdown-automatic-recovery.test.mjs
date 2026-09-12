@@ -13,7 +13,8 @@ const identity={projectId:'project',sessionId:'session',turnId:'repair-turn'},jo
 async function fixture(t){
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'fb02-shutdown-recovery-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
   const targetDeps={directory:path.join(directory,'targets'),selection:async()=> 'world',instance:()=>({worldId:'world',buildId:'build',instanceId:'native'}),
-    descriptor:async()=>({worldId:'world',buildId:'build',baseId:'creation-sandbox',sourceRevision:1,manifestHash:'a'.repeat(64)}),sample:async()=>({}),fullAuto:async()=>true};
+    descriptor:async()=>({worldId:'world',buildId:'build',baseId:'creation-sandbox',sourceRevision:1,manifestHash:'a'.repeat(64)}),
+    sample:async()=>({worldId:'world',buildId:'build',instanceId:'native',baseId:'creation-sandbox',sampledAt:new Date().toISOString(),payload:{player:{position:[0,.9,6]}}}),fullAuto:async()=>true};
   const targets=createCreationTargetService(targetDeps);await targets.bindWorld(identity,'world','Keep the original player creation request');
   let performed=0;
   const queueDeps={directory:path.join(directory,'queue'),world:async()=> 'world',perform:async()=>{performed++;return {status:'repairing'};}};

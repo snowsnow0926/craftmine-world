@@ -50,7 +50,7 @@ test.after(()=>fs.rmSync(temporary,{recursive:true,force:true}));
 
 test('cohort corpus deterministically matches the current real materializer and shared observer authority',()=>{
  execFileSync(process.execPath,[path.join(root,'scripts/refresh-guidance-cohorts.mjs'),'--check'],{cwd:root,windowsHide:true,stdio:'pipe'});
- assert.deepEqual(skill.interfaceCohorts.variants.map(v=>v.files.length),[10,12]);
+ assert.deepEqual(skill.interfaceCohorts.variants.map(v=>v.files.length),[11,13]);
 });
 
 for(const profile of ['legacy','creation-fixed-controller/1','creation-player-collision/1'])test('real '+profile+' catalog and pinned recipe/reference work through '+(process.env.CRAFTMINE_GUIDANCE_PLUGIN_ROOT?'packaged':'source')+' broker',async()=>{

@@ -39,6 +39,13 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
+  if (channel === "godot.runtimeState") {
+    // Readiness is a main-renderer read, not authority to open or alter a
+    // runtime. The coordinator still checks the currently selected identity.
+    if (Object.keys(payload).length !== 1 || typeof payload.worldId !== "string"
+      || !/^[A-Za-z0-9._-]{1,128}$/.test(payload.worldId)) throw Error("INVALID_WORLD_ID");
+    return deps.invoke(channel, {worldId: payload.worldId});
+  }
   if (channel === "world.previewControl") {
     const request = validatePreviewControl(payload);
     if (!deps.previewControl) throw Error("WORLD_VIEW_UNAVAILABLE");

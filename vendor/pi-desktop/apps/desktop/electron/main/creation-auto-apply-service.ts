@@ -6,6 +6,7 @@ type Data=Record<string,any>;
 export type CreationCheckCompletion={jobId:string;context:Context};
 type Dependencies={
   capture(context:Context):Promise<CreationCapture|null>;
+  settled?(context:Context):Promise<boolean>;
   domain(method:string,input:Data):Promise<any>;
   apply(worldId:string,candidateId:string,expected:{buildId:string;instanceId:string},guard:()=>Promise<void>):Promise<Data>;
 };
@@ -36,10 +37,19 @@ export function createCreationAutoApplyService(deps:Dependencies){
       const verified=await deps.domain("godotCandidate.read",{worldId,candidateId:priorJob.candidateId});
       if(verified?.checkStatus==="passed"&&verified.candidate?.worldId===worldId&&verified.candidate.checkJobId===jobId&&verified.candidate.buildId===priorJob.buildId&&verified.candidate.checkOutputHash===priorJob.outputHash)return {status:"applied",worldId,candidateId:priorJob.candidateId,recovered:true};
     }
+    const newest=await deps.domain("godotBuild.latest",{worldId,sessionId:context.sessionId});
+    if(newest?.worldId!==worldId)throw Error("CREATION_CHECK_OWNER_CHANGED");
+    if(newest.jobId!==jobId)return {status:"manual",worldId,candidateId:priorJob?.candidateId,reason:"CREATION_CHECK_SUPERSEDED"};
+    // Core adoption completes the author task and releases its world lease.
+    // Keep the model's current turn writable until it has finished all edits.
+    if(deps.settled&&!await deps.settled(context))return {status:"deferred",worldId,candidateId:priorJob?.candidateId,reason:"CREATION_AWAITING_TURN_FINISH"};
     let candidateId="";
     const guard=async()=>{
       const latest=await deps.capture(context);
       if(!latest?.autoApply||latest.snapshotId!==capture.snapshotId)throw Error("CREATION_AUTO_APPLY_NOT_AUTHORIZED");
+      if(deps.settled&&!await deps.settled(context))throw Error("CREATION_TURN_BUSY");
+      const newest=await deps.domain("godotBuild.latest",{worldId,sessionId:context.sessionId});
+      if(newest?.worldId!==worldId||newest.jobId!==jobId)throw Error("CREATION_CHECK_SUPERSEDED");
       const formal=await deps.domain("godotRuntime.describe",{worldId});
       if(formal?.baseId!=="creation-sandbox"||formal.worldId!==worldId||formal.buildId!==capture.buildId||formal.sourceRevision!==capture.sourceRevision||formal.manifestHash!==capture.manifestHash)throw Error("CREATION_TARGET_STALE");
       const job=await deps.domain("godotBuild.read",{context,worldId,jobId});

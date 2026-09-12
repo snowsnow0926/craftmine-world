@@ -16,7 +16,7 @@ const snapshot=({sourceCommit,sourcePath,projectPath,path:referencePath=projectP
     requiredInterface,sha256:hash(text),acceptedSourceHashes:[hash(text),hash(text.replace(/\n/g,'\r\n'))],text};
 };
 const fpsCommit='9469aaa487b31ea41b839c7cd4214c2c7f3f293b';
-const creationCommit='314c27d5baf65bf6c89679fcdfb3756bc4bd3a77';
+const creationCommit='4209ef2a5538283199acd10d134f440f9d3f7372';
 const creationManagedCommit='3742ffa425d588e49b1b763ef20d0901a496ea38';
 const makeSkill=({id,title,baseId,baseVersion,file,references,version='1.0.0'})=>{
  const text=read(path.join(here,file));
@@ -46,3 +46,6 @@ const catalog={version:'1.8.1',requiredInterfacePolicy:{
  makeSkill({id:'creation-sandbox.authoring',version:'1.8.1',title:'沉浸式造物：稳定对象编辑、普通源码规则与完整进度',
    baseId:'creation-sandbox',baseVersion:'1.0.0',file:'creation-sandbox.md',references:creationReferences})]};
 fs.writeFileSync(path.join(here,'catalog.json'),JSON.stringify(catalog,null,2)+'\n');
+// Runtime creation uses the reviewed controller cohorts, whose wrapper adapter
+// intentionally differs from the inherited recipe adapter. Publish both gates.
+execFileSync(process.execPath,[path.join(root,'scripts/refresh-guidance-cohorts.mjs')],{cwd:root,stdio:'inherit',windowsHide:true});

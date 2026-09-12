@@ -29,7 +29,7 @@ export function createCreationAutoQueue(deps:{directory:string;world(input:Creat
     let result:Data;
     try{result=await deps.perform({jobId:record.jobId,context:record.context});}
     catch(error){const reason=String((error as Error)?.message??error),code=(error as any)?.errorCode??(error as any)?.code;
-      result={status:deferred.has(reason)||code==='HOST_UNAVAILABLE'?'deferred':'failed',reason:code==='HOST_UNAVAILABLE'?'HOST_UNAVAILABLE':reason};}
+      result={status:reason==='CREATION_CHECK_SUPERSEDED'?'manual':deferred.has(reason)||code==='HOST_UNAVAILABLE'?'deferred':'failed',reason:code==='HOST_UNAVAILABLE'?'HOST_UNAVAILABLE':reason};}
     const latest=records.get(identity(record));if(latest?.status==='cancelled')return;
     const status=record.status==='repairing'&&result.status==='deferred'?'repairing':['applied','manual','deferred','repairing','failed'].includes(result.status)?result.status:'failed';
     save({...record,status,candidateId:result.candidateId??record.candidateId,reason:result.reason,repairReason:result.repairReason??record.repairReason,updatedAt:new Date().toISOString()});

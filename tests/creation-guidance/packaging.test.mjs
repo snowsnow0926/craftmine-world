@@ -35,8 +35,13 @@ test('production plugin build includes exact guidance resources and serves a pin
     const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
       calls.push(method);
       if(method==='workspace.open')return {worldId:'packaged-world'};
-      if(method==='godotProject.index')return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
-        baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable'};
+      if(method==='godotProject.index'){
+        const files=selectedSkill.references.filter(ref=>ref.requiredInterface).map(ref=>({path:ref.projectPath,sha256:ref.sha256}));
+        const offset=args.offset??0,limit=args.limit??32;
+        return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
+          baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable',
+          files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
+      }
       if(method==='godotProject.read')return {...args,sha256:selectedSkill.references.find(ref=>ref.projectPath===args.path).sha256};
       throw Error(`Unexpected packaged host call ${method}`);
     }};

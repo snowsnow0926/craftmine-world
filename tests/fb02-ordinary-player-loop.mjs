@@ -78,6 +78,12 @@ async function launch(label){
     record.native=await native();assert.ok(record.native.windows.length>0,'actual native owner exists before any setup or model work');
     const api=(method,...args)=>appPage.evaluate(async({channel,args})=>{const result=await window.piDesktop.invoke(channel,...args);if(!result?.ok)throw Error(result?.error?.message??'DESKTOP_REQUEST_FAILED');return result.data;},{channel:channels[method],args});
     const panel=(channel,payload={})=>appPage.evaluate(({channel,payload})=>window.piDesktop.pluginPanelInvoke('craftmine.world',channel,payload),{channel,payload});
+    const shortcut=async key=>{
+      await native();
+      if(key==='F2')return inspect(`(()=>{const e=process.mainModule.require('electron');if(process.env.CRAFTMINE_DATA_DIR!==${JSON.stringify(profile)}||e.BaseWindow.getAllWindows().some(w=>w.isVisible()||w.isFocusable()))throw Error('HEADLESS_OWNERSHIP');const page=e.webContents.getAllWebContents().find(w=>w.getURL().includes('/out/renderer/index.html'));if(!page?.isOffscreen())throw Error('HEADLESS_MAIN_REQUIRED');let prevented=0;page.emit('before-input-event',{preventDefault(){prevented++;}},{type:'keyDown',key:'F2',code:'F2'});return {prevented};})()`);
+      if(key==='Escape')return appPage.evaluate(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true,cancelable:true})));
+      throw Error('UNSUPPORTED_VERIFICATION_SHORTCUT');
+    };
     const worldPanel=async(channel,payload={})=>{const product=await until(async()=>browser.contexts().flatMap(context=>context.pages()).find(page=>page.url().includes('/views/world.html')),Boolean);return product.evaluate(({channel,payload})=>window.pluginBridge.invoke(channel,payload),{channel,payload});};
     const react=selector=>appPage.evaluate(selector=>{const node=[...document.querySelectorAll(selector)].find(el=>el.getClientRects().length&&!el.closest('[hidden],[inert],[aria-hidden="true"]'));if(!node||node.disabled)throw Error('CONTROL_UNAVAILABLE:'+selector);const props=node[Object.keys(node).find(key=>key.startsWith('__reactProps$'))];if(typeof props?.onClick!=='function')throw Error('CONTROL_CALLBACK_MISSING');return props.onClick();},selector);
     const submitText=async content=>{
@@ -86,7 +92,7 @@ async function launch(label){
       await react('.send-btn');
     };
     const surface=()=>appPage.evaluate(()=>({dialogue:document.querySelector('[data-dialogue-phase]')?.dataset.dialoguePhase??null,dialogueError:document.querySelector('[data-dialogue-phase="error"] p:last-of-type')?.textContent??null,layout:JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1')??'null'),sessionId:document.querySelector('[data-sidebar-session-row].active')?.dataset.sidebarSessionRow??document.querySelector('[data-session-pane][data-visible="true"]')?.dataset.sessionPane??null,stopVisible:!![...document.querySelectorAll('.stop-btn')].find(el=>el.getClientRects().length),results:[...document.querySelectorAll('.craftmine-creation-result[data-phase]')].map(el=>{const rect=el.getBoundingClientRect();return {text:el.textContent,title:el.querySelector('strong')?.textContent,phase:el.dataset.phase,worldId:el.dataset.worldId,sessionId:el.dataset.sessionId,buildId:el.dataset.buildId,visible:rect.width>0&&rect.height>0&&rect.bottom>0&&rect.top<innerHeight&&!el.closest('[hidden],[inert],[aria-hidden="true"]'),bounds:{x:rect.x,y:rect.y,width:rect.width,height:rect.height}};})}));
-    return {record,rpc,native,api,panel,worldPanel,react,submitText,surface,appPage,stop};
+    return {record,rpc,native,api,panel,worldPanel,react,submitText,shortcut,surface,appPage,stop};
   }catch(error){await stop().catch(()=>{});throw error;}
 }
 try{
@@ -134,7 +140,7 @@ try{
     const phase=JSON.stringify([metrics?.status,application?.phase,surface.dialogue]);
     if(phase!==lastPhase||Date.now()-lastNotice>30000){lastPhase=phase;lastNotice=Date.now();console.log(redact({at:new Date().toISOString(),sessionId,worldId,turnStatus:metrics?.status,phase:application?.phase,dialogue:surface.dialogue}));}
     save();
-    if(application?.phase==='applied'&&metrics?.status==='completed'&&!surface.dialogue&&surface.layout?.mode==='play')break;
+    if(application?.phase==='applied'&&metrics?.status==='completed'&&!surface.dialogue&&surface.layout?.mode==='play'&&surface.layout?.overlay==='closed')break;
     if(['error','aborted'].includes(metrics?.status)&&(!application?.jobId||['manual','failed','cancelled'].includes(automatic?.status)))throw Error('ORDINARY_MODEL_'+metrics.status.toUpperCase());
     if(metrics?.status==='completed'&&application?.phase==='idle'){
       const last=record.session.messages.filter(message=>message.role==='assistant').at(-1);
@@ -154,18 +160,28 @@ try{
     if(['manual','failed','cancelled'].includes(automatic?.status)&&metrics?.status!=='running')throw Error('ORDINARY_CREATION_FAILED_WITHOUT_AUTOMATIC_RECOVERY');
     await delay(1000,undefined,{signal});
   }
+  report.directPlayableRuntime=await until(()=>active.rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}}),value=>value.state==='ready');
+  check('automatic completion leaves the actual world directly playable with no chat overlay',report.latest.surface.layout.overlay==='closed'&&report.directPlayableRuntime.state==='ready');
+  report.verificationUiActions=[{purpose:'Inspect the saved result after creation already completed',key:'F2',receipt:await active.shortcut('F2')}];
   report.visibleResult=await until(()=>active.surface(),value=>value.results.some(card=>card.visible&&card.phase==='applied'&&card.worldId===worldId&&card.sessionId===sessionId));
   const resultCard=report.visibleResult.results.find(card=>card.visible&&card.phase==='applied'&&card.worldId===worldId&&card.sessionId===sessionId);
   check('actual visible result card identifies the complete world title and adopted outcome',resultCard.title.startsWith('已采用')&&typeof report.latest.application.worldTitle==='string'&&report.latest.application.worldTitle.length>0&&resultCard.text.includes('目标世界：'+report.latest.application.worldTitle)&&(resultCard.text.includes('结果已进入正式世界')||resultCard.text.includes('结果已采用，当前世界还包含后续更新')));
+  report.verificationUiActions.push({purpose:'Return to the already generated playable world',key:'Escape',receipt:await active.shortcut('Escape')});
+  await until(()=>active.surface(),value=>value.layout?.overlay==='closed');
+  await until(()=>active.rpc('worldPanel',{channel:'godot.runtimeState',payload:{worldId}}),value=>value.state==='ready');
   check('actual runtime metrics used exactly the selected model',report.latest.metrics.models.length>0&&report.latest.metrics.models.every(model=>model.modelId===config.modelId&&model.providerId===providerId));
   report.after={formal:await active.worldPanel('world.read',{id:worldId}),snapshot:await active.rpc('godotSnapshot'),observation:await active.rpc('godotObserve'),native:await active.native(),guards:await active.rpc('guards')};
   check('ordinary model result was formally applied without permission acceptance or manual adopt',report.after.formal.world?.build?.id!==report.initialFormal.world?.build?.id&&report.permissionDecisions===0&&report.manualAdoptions===0);
   check('dialogue completion enters actual native fullscreen',report.after.native.windows.some(window=>window.fullscreen));
   await active.appPage.screenshot({path:path.join(directory,'automatic-result.png')});
-  const image=await active.rpc('godotCaptureView');if(image?.pngBase64){fs.writeFileSync(path.join(directory,'generated-world.png'),Buffer.from(image.pngBase64,'base64'));report.capture={...image,pngBase64:undefined};}
+  report.captureFreeze=await active.rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId,freeze:true}});
+  const captureBefore=await active.rpc('godotCaptureBoundState'),image=await active.rpc('godotCaptureBoundView',{payload:captureBefore.formal}),captureAfter=await active.rpc('godotCaptureBoundState');
+  assert.deepEqual(captureAfter,captureBefore,'Read-only bound capture leaves native owner and world unchanged');
+  const png=Buffer.from(image.pngBase64,'base64');assert.equal(createHash('sha256').update(png).digest('hex'),image.sha256);fs.writeFileSync(path.join(directory,'generated-world.png'),png);report.capture={...image,pngBase64:undefined,before:captureBefore,after:captureAfter};
   await active.stop();check('first normal save and quit has no guard or shutdown failure',active.record.exit?.code===0&&!active.record.forced&&!active.record.exitAudit?.violations?.length&&!active.record.exitAudit?.shutdownFailures?.length);active=null;
   active=await launch('reopen');await until(()=>active.rpc('godotObserve').catch(()=>null),value=>value?.worldId===worldId&&value?.buildId===report.after.formal.world.build.id);
   report.reopened={formal:await active.worldPanel('world.read',{id:worldId}),snapshot:await active.rpc('godotSnapshot'),observation:await active.rpc('godotObserve'),native:await active.native(),guards:await active.rpc('guards')};
+  report.reopened.metrics=await active.api('sessionTurnMetrics',{sessionId});check('reopening adds no model calls',report.reopened.metrics.calls.observed===report.latest.metrics.calls.observed);
   check('save and reopen retains the exact generated formal build',report.reopened.formal.world?.build?.id===report.after.formal.world?.build?.id);
   report.status='PASSED_PRODUCT_FLOW';report.completedAt=new Date().toISOString();save();
 }catch(error){report.error=redact(String(error.stack??error));if(signal.aborted)report.status='CANCELLED';else if(report.status!=='UNEXPECTED_PERMISSION_CARD')report.status='FAILED';process.exitCode=1;console.log(report.error);}

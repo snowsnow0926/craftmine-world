@@ -167,3 +167,12 @@ for(const mode of ['world','capture'])test('cancellation during initial '+mode+'
  let pending;if(mode==='world')pending=service.bindWorld(context,'world-a','目标');else{const display=await service.capture(11,session),capture=await service.validate(11,ref(display),session);pending=service.bind(11,capture,context,'world-a','目标');}
  await waiting;service.cancel(context.sessionId,context.turnId);release();await assert.rejects(pending,/CANCELLED/);assert.equal(service.owned(context),null);
 });
+
+test('world-only dialogue capture uses the real player position and still has no invented ray target',async t=>{
+ const {deps}=fixture(t),sample=await deps.sample();sample.payload.player.position=[0,.9,6];const service=createCreationTargetService({...deps,fullAuto:async()=>true,sample:async()=>structuredClone(sample)});
+ const capture=await service.bindWorld(context,'world-a','造一扇红门');assert.deepEqual(capture.playerPosition,[0,.9,6]);assert.equal(capture.sampledAt,sample.sampledAt);assert.equal(capture.target.position,null);assert.equal(capture.target.surface,'none');
+});
+for(const corrupt of [sample=>sample.worldId='other',sample=>sample.buildId='other',sample=>sample.instanceId='other',sample=>sample.payload.player.position=[NaN,0,0],sample=>delete sample.payload.player.position,sample=>sample.sampledAt='invalid'])test('world-only binding refuses invalid or foreign live player evidence '+corrupt.toString(),async t=>{
+ const {deps}=fixture(t),sample=await deps.sample();corrupt(sample);const service=createCreationTargetService({...deps,fullAuto:async()=>true,sample:async()=>sample});
+ await assert.rejects(service.bindWorld(context,'world-a','造一扇红门'),/OBSERVATION_INVALID/);assert.equal(service.owned(context),null);
+});

@@ -30,3 +30,24 @@
 只读核对用户截图所示“生成博美犬”会话 `7eed797a-61a3-4a01-9e9b-94d950d8fa7b`：模型 `deepseek-v4.1-flash-expires-on-0910`，思考 `max`，权限 `auto`，产品模型绑定 contextWindow 1,000,000、maxTokens 384,000。这是玩家现有产品配置，不额外削减；不使用旧 `CRAFTMINE_CREATION_EVAL` 的次数/时长限制。凭据仅由已授权本地秘密配置读取，不打印或写入报告。
 
 准备证据：`test-results/fb02-goal-player-baseline/`。当前用户程序未运行，未声称读取实时前台选择；模型来自与反馈一致的保存会话。
+
+## 中间集成记录（不是最终交付验收）
+
+`188e65eb` 已提交并推送，版本号预留为 `0.14.4-preview.17`。该提交保存本轮集成开发，不表示 Windows 成品或全部真实模型流程已经通过。最终检查结果须在全部交付后另行记录。
+
+- `desktop-native-candidate-FOdVEY`：原候选列表→预览→返回→采用→保存重开→地面维护→再重开，正式后继正确；其余 20 个文件、存档和 main 草稿保留。
+- `desktop-native-candidate-J8xoAB`：维护被预览打断→返回同一实例→空闲自动恢复。
+- `adoption-lineage-core-gB9jO0`：实际 JS 私有路由→Rust 的 session-only latest 查询及身份边界；实际 Git 后继、历史候选采用状态。
+- `desktop-native-fb02-EFYHkk`（开发构建 4）：旧世界副本加载进度条截图、实际绿色地面、系统全屏；四条软件输入路径 F2/Esc、暂停恢复、保存退出。无真实物理键盘测试。
+- `fb02-goal-root-recovery-final.log`：41 项退出、取消、调度及捕获恢复检查；后续修复续作专项已扩展为 8 项。
+- `fb02-goal-precommit-tests.log`：52 项相关修复、取消、队列、旧观察器升级检查通过。
+
+本轮连续运行找出的额外断点及处理：
+
+1. 创建 ACK 遗失真实初始化状态，前端过早进入聊天。已透传完整状态，并从真实世界列表再次核对、等待实际 runtime。
+2. `godotBuild.latest` Rust 支持 session-only，但私有 JS 路由仍强制 worldId。已跨层修正并跑实际 core 集成测试。
+3. 新固定控制器模板的 `scene_mesh_picker_v2.gd` 重复父类常量，真实 Godot 编译失败。已使用 v2 独立常量名，保留原数值；更新精确资源哈希。`fb02-creation-base-compile-t3zPbs` 六组配置、共 12 次实际编译/场景运行通过。
+4. 自动修复只完成构建、未发起检查时会停在 failed/manual。已让同一可信意图继续普通修复，保留已完成消息；不把 build 当作 check，不跨越玩家的新要求或取消。
+5. 新纯对话入口主界面读取 runtimeState 被导航白名单拒绝。已补窄只读路由，继续验证实际新建流程。
+
+失败记录同样保留：`desktop-native-ordinary-player-9FOJ9Z` 是模型调用前的新模板编译错误；`7Kp9Fo` 是模型调用前的主界面路由拒绝。它们不代表玩家模型能力失败，也没有换模型或用脚本生成作品冒充模型结果。工作台测试曾把未附着的后台 verifier 页面当成正式世界，`9NGC1W` 中已保存反例并修正测试为核对实际 native owner。
