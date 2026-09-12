@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Identity-bound real Godot 4.7.2 headless frame observation integrated (300 frames: p50 6.899ms, p95 6.964ms, max 6.997ms); GPU/physics/object-count channels remain explicit unknown; player-scale benchmarks and optimization loop remain"
+      "next": "Read-only godot_performance_observe tool now exposes identity-bound observations; 300-frame Godot 4.7.2 sample recorded (p50 6.899ms, p95 6.964ms, max 6.997ms); GPU/physics/object-count channels remain explicit unknown; player-scale benchmarks and optimization loop remain"
     },
     {
       "id": "GU7",
