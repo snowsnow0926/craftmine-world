@@ -16,6 +16,9 @@ so opening the cards does not build unrelated archived worlds. Explicit entry
 uses the normal lifecycle to select and resume an initializing world.
 This also applies when the unfinished world was already selected at shutdown;
 selection alone never proves that its initializer is running after restart.
+The legacy sidebar/archive list uses passive status enrichment as well. Opening
+or polling a list does not resume archived initialization; explicit world open
+and the selected world's runtime status retain their existing recovery path.
 
 Slot preferences and stable creation-operation IDs live in `player-worlds.json`
 within the selected application data directory. This is an index of Core-owned

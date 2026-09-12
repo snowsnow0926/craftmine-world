@@ -65,7 +65,7 @@ export function createGodotPanelCoordinator(options: Options) {
     if (!Array.isArray(list.worlds)) return result;
     const worlds = await Promise.all(list.worlds.slice(0, 64).map(async world => {
       if (world?.runtimeKind !== "godot" || typeof world.id !== "string") return world;
-      const status = await creation.status(world.id);
+      const status = await creation.status(world.id, {resume: false});
       if (!status) return world;
       return {...world, state: status.state, creation: status.creation};
     }));

@@ -262,6 +262,7 @@ test("the shipped Godot root resolves from the compiled main process directory",
 
 test("the panel coordinator serves Godot bases, creation and real world state", async () => {
   const forwarded = [];
+  const statusReads = [];
   const host = {instance: null, state: {state: "closed"}, setSurfaceVisible: () => {}, resume: async () => {}, pause: async () => {},
     holdSelectionSync: async () => () => {}, switchWorld: async (value) => {forwarded.push(["switchWorld", value]);},
     save: async () => ({status: "persisted", receipt: {}}), checkpoint: async () => ({status: "persisted", receipt: {}})};
@@ -270,8 +271,8 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
     options: {create: true, createActions: true, bases: [{id: "top-down", baseVersion: "1.0.0", label: "2D 俯视", description: "d", delivered: true,
       templates: [{id: "blank", label: "空白", kind: "blank-start", description: "", delivered: true}]}]},
     create: async (payload) => { forwarded.push(["create", payload]); return {id: "world-x", title: payload.title, state: "initializing", creation: {operationId: "o", stage: "project", stages: [], progress: 25, error: null, actions: ["details"]}}; },
-    status: async (worldId) => worldId === "godot1" ? {state: "failed", creation: {operationId: "o2", stage: "build", stages: [], progress: 60,
-      error: {code: "GODOT_EXECUTION_UNAVAILABLE", message: "no executor", stage: "build", recoverable: true}, actions: ["retry"]}} : null,
+    status: async (worldId, options) => {statusReads.push({worldId, options});return worldId === "godot1" ? {state: "failed", creation: {operationId: "o2", stage: "build", stages: [], progress: 60,
+      error: {code: "GODOT_EXECUTION_UNAVAILABLE", message: "no executor", stage: "build", recoverable: true}, actions: ["retry"]}} : null;},
   };
   const coordinator = createGodotPanelCoordinator({
     host, adapter, selection: async () => "godot1", creation: () => factory,
@@ -302,4 +303,5 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
   assert.equal(godot.creation.error.code, "GODOT_EXECUTION_UNAVAILABLE");
   assert.equal(list.worlds.find((world) => world.id === "web1").state, undefined);
   assert.equal(list.activeWorldId, "godot1");
+  assert.deepEqual(statusReads, [{worldId: "godot1", options: {resume: false}}]);
 });
