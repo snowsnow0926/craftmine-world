@@ -1071,6 +1071,13 @@ const craftmineEnginePerformance = createCraftmineEnginePerformanceSampler({
 });
 plugins.setServices({ craftmineEnginePerformanceSample: input => craftmineEnginePerformance(input as any) });
 const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
+const blenderToolchainRoot = join(godotToolchainRoot, "..", "blender");
+plugins.setServices({craftmineBlenderToolchain: {
+  broker: join(blenderToolchainRoot, "broker", "blender-host-broker.exe"),
+  brokerIdentity: join(blenderToolchainRoot, "broker", "broker-identity.json"),
+  runtimeRoot: blenderToolchainRoot,
+  toolchainLock: join(blenderToolchainRoot, "toolchain.lock.json"),
+}});
 plugins.setServices({craftmineGodotToolchain: {
   broker: join(godotToolchainRoot, "broker", "godot-host-broker.exe"),
   brokerIdentity: join(godotToolchainRoot, "broker", "broker-identity.json"),

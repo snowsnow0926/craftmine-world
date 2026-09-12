@@ -18,6 +18,7 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
+  blenderTool:{kind:'function',owner:'Blender',hostMethod:'managed Blender broker',optional:true,provides:'host-bound asynchronous modeling, verified source import and scoped cancellation',requiredFor:['blender_status','blender_generate','blender_job_read','blender_cancel']},
   samplePerformance:{kind:'function',owner:'GU6',hostMethod:'godotPerformance',provides:'current host-bound renderer process working set; unavailable fields remain unknown',requiredFor:['godot_performance_observe']},
   sampleEnginePerformance:{kind:'function',owner:'GU6',hostMethod:'godotEnginePerformance',optional:true,provides:'opt-in source/PCK-pinned Godot Performance monitors through the versioned engine bridge',requiredFor:['godot_performance_observe engine metrics']},
   captureView:{kind:'function',owner:'R2',hostMethod:'godotViewCapture',provides:'one real bound game-view PNG for a declared image-capable session; never desktop capture',requiredFor:['godot_view_capture']},

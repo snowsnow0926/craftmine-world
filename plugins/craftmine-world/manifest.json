@@ -2434,6 +2434,112 @@
           "required": [],
           "additionalProperties": false
         }
+      },
+      {
+        "name": "blender_status",
+        "description": "Inspect bundled Blender availability, modeling guidance and retained jobs in the bound world. Find sourceJobId for edits across conversations using optional exact asset name or paginated offset/limit. Generated geometry still needs Godot placement and gameplay.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "blender_generate",
+        "description": "Generate or edit a 3D model with a bpy Python script in isolated bundled Blender. Async job; imports verified GLB to assets/blender/<name>.glb only at exact source revision/manifestHash and expectedHash. previousJobId reuses verified source.blend from this world. Does not apply or prove gameplay.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            },
+            "script": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160000
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "manifestHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "expectedHash": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "previousJobId": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "script",
+            "revision",
+            "manifestHash",
+            "expectedHash"
+          ]
+        }
+      },
+      {
+        "name": "blender_job_read",
+        "description": "Read one host-bound world Blender job and its actual generation/import state. Includes artifact hashes, preserved source identity and model stats. imported means source-only; placement, behavior, build/check and application remain.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "jobId": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "jobId"
+          ]
+        }
+      },
+      {
+        "name": "blender_cancel",
+        "description": "Cancel a background Blender job owned by the current host-bound turn. Verified output already committed remains recorded.",
+        "risk": "medium",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "jobId": {
+              "type": "string",
+              "pattern": "^[a-f0-9-]{36}$"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "jobId"
+          ]
+        }
       }
     ]
   },

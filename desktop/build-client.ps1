@@ -2,6 +2,7 @@ param(
     [switch]$Installer,
     [Parameter(Mandatory=$true)][string]$GodotCache,
     [Parameter(Mandatory=$true)][string]$GitArchive,
+    [Parameter(Mandatory=$true)][string]$BlenderCache,
     [string]$ArchiveTool,
     [string]$ArchiveToolSha256,
     [string]$ArchiveLibrarySha256
@@ -18,10 +19,11 @@ try {
     $craftmineBuildCommit = git rev-parse HEAD
     $craftmineGodotCache = (Resolve-Path -LiteralPath $GodotCache).Path
     $craftmineGitArchive = (Resolve-Path -LiteralPath $GitArchive).Path
+    $craftmineBlenderCache = (Resolve-Path -LiteralPath $BlenderCache).Path
     $craftmineBrokerTarget = Join-Path $craftmineRoot 'desktop/godot/sandbox/target'
-    cargo build --manifest-path desktop/godot/sandbox/Cargo.toml --target-dir $craftmineBrokerTarget --release --locked --bin godot-host-broker
+    cargo build --manifest-path desktop/godot/sandbox/Cargo.toml --target-dir $craftmineBrokerTarget --release --locked --bin godot-host-broker --bin blender-host-broker
     if ($LASTEXITCODE -ne 0) { throw 'Release Godot broker build failed' }
-    node desktop/prepare-runtime-resources.mjs --godot-cache $craftmineGodotCache --git-zip $craftmineGitArchive --broker-bin (Join-Path $craftmineBrokerTarget 'release/godot-host-broker.exe')
+    node desktop/prepare-runtime-resources.mjs --godot-cache $craftmineGodotCache --git-zip $craftmineGitArchive --broker-bin (Join-Path $craftmineBrokerTarget 'release/godot-host-broker.exe') --blender-cache $craftmineBlenderCache --blender-broker-bin (Join-Path $craftmineBrokerTarget 'release/blender-host-broker.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Pinned runtime resource staging failed' }
     node desktop/prepare-client.mjs
     if ($LASTEXITCODE -ne 0) { throw 'World plugin build failed' }

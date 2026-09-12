@@ -15,6 +15,7 @@ pub mod task;
 pub mod verification;
 pub mod preflight;
 pub mod broker;
+pub mod blender;
 pub mod recovery;
 
 use std::ffi::OsStr;

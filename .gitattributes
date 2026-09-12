@@ -1,6 +1,9 @@
 # Runtime integrity hashes use the same source bytes on Windows and Unix.
 *.mjs text eol=lf
 *.js text eol=lf
+# Blender embeds these bytes into the broker and stages the same Git source.
+desktop/blender/bridge/** text eol=lf
+desktop/blender/toolchain.lock.json text eol=lf
 # Release source pins refer to the exact Git blob bytes, including line endings.
 desktop/godot/bases/** text=auto eol=lf
 desktop/godot/shared/** text=auto eol=lf

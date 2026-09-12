@@ -9,22 +9,24 @@ Use Windows x64, Node.js 24, pnpm 11 and a Rust MSVC toolchain with Visual Studi
 1. Extract the source archive to a directory with a reasonably short path.
 2. Run `pnpm install --frozen-lockfile` from `vendor/pi-desktop`.
 3. Use a clean Git checkout. For an extracted source archive without Git metadata, initialize a local Git repository and commit the extracted sources first. This produces a new local build identity; it does not reproduce the original release commit. Preserve `UPSTREAM.json` and the supplied release evidence.
-4. Provide the pinned Godot cache and MinGit ZIP explicitly. `desktop/godot/toolchain.lock.json` defines the required editor, complete export-template TPZ and extracted Web templates; `desktop/delivery/git-bundle.json` defines the MinGit ZIP identity. The build does not download these inputs or discover a user's Git installation for the bundled runtime.
+4. Provide the pinned Godot cache, Blender cache and MinGit ZIP explicitly. `desktop/godot/toolchain.lock.json` defines the required editor, complete export-template TPZ and extracted Web templates; `desktop/blender/toolchain.lock.json` pins the complete Blender 5.2.1 runtime and source archive; `desktop/delivery/git-bundle.json` defines the MinGit ZIP identity. Prepare Blender with `node desktop/blender/toolchain.mjs --cache <absolute-cache-directory>`. The application build does not download these inputs or discover a user's installed tools.
 5. From the repository root, run the following directory build, substituting existing absolute paths:
 
 ```powershell
 powershell -NoProfile -File desktop/build-client.ps1 `
   -GodotCache '<Godot 4.7.2-stable cache directory>' `
+  -BlenderCache '<Blender 5.2.1 cache directory>' `
   -GitArchive '<MinGit-2.53.0-64-bit.zip>'
 ```
 
-The script rebuilds the broker, stages verified runtime resources, builds the plugin and desktop/native services, archives clean HEAD, and reserves a fresh `desktop/build/releases/<commit-prefix>-<uuid>/` run. Its application is `output/win-unpacked/Craftmine World.exe` within that run. `run.json`, `seal.json` and `package-evidence.json` identify the actual output. The generated `desktop/build/CraftmineWorld-source.zip` is also included at `output/win-unpacked/resources/source/CraftmineWorld-source.zip`.
+The script rebuilds the Godot and Blender brokers, stages verified runtime resources, builds the plugin and desktop/native services, archives clean HEAD, and reserves a fresh `desktop/build/releases/<commit-prefix>-<uuid>/` run. Its application is `output/win-unpacked/Craftmine World.exe` within that run. `run.json`, `seal.json` and `package-evidence.json` identify the actual output. The generated `desktop/build/CraftmineWorld-source.zip` is also included at `output/win-unpacked/resources/source/CraftmineWorld-source.zip`. Blender runs in the background through a restricted native job and needs no separate user installation; its source and notices remain separate bundled resources.
 
 For a new NSIS installer, add `-Installer` and the pinned **full** 7-Zip extractor arguments:
 
 ```powershell
 powershell -NoProfile -File desktop/build-client.ps1 -Installer `
   -GodotCache '<Godot 4.7.2-stable cache directory>' `
+  -BlenderCache '<Blender 5.2.1 cache directory>' `
   -GitArchive '<MinGit-2.53.0-64-bit.zip>' `
   -ArchiveTool '<full 7-Zip directory>/7z.exe' `
   -ArchiveToolSha256 '<64 lowercase hex for 7z.exe>' `

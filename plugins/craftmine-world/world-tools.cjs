@@ -121,6 +121,12 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     assertActive();
     const workspace=await core.call('workspace.open',{context,selectedWorld});
     assertActive();
+    if(definition.name.startsWith('blender_')) {
+      if(typeof options.blenderTool!=='function')return {available:false,reason:'BLENDER_SERVICE_NOT_WIRED'};
+      const world=await core.call('world.read',{id:workspace.worldId});assertActive();
+      if(world.runtimeKind!=='godot')throw Error('GODOT_WORLD_REQUIRED');
+      return options.blenderTool(definition.name,args,{context,worldId:workspace.worldId,workspace,toolCallId:invocation.toolCallId});
+    }
     if(definition.name==='godot_guidance')return require('./godot-guidance.cjs').queryGuidance(core,
       {context,worldId:workspace.worldId,args,assertActive});
     if(definition.name==='godot_view_capture')return require('./godot-view-capture.cjs').captureGodotView({context,worldId:workspace.worldId,args,services:options,assertActive});

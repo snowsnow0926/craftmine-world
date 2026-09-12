@@ -11,6 +11,7 @@ const {createApplications} = require('./applications.cjs');
 const {createHostRequests} = require('./host-requests.cjs');
 const {createWorkbenchService} = require('./workbench-service.cjs');
 const {createGodotExecutor} = require('./godot-executor.cjs');
+const {createBlenderJobs} = require('./blender-jobs.cjs');
 const {createAssetService} = require('./asset-service.mjs');
 const {createReuseService,createManagedPackageInstaller,createManagedPackageSourceService} = require('./reuse-service.mjs');
 const {createTargetFeedbackService} = require('./target-feedback-service.mjs');
@@ -18,7 +19,7 @@ const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verific
 const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
 const {createSourceLibraryService}=require('./source-library-service.cjs');
 const {seedBuiltinSourceLibrary}=require('./builtin-source-library.cjs');
-let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
+let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService,blenderJobs;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
 const importErrors={
@@ -89,10 +90,16 @@ async function onLoad() {
   // broker preflight, so the reported capability always comes from live state.
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;
   godotExecutor=createGodotExecutor(core,{dataPath:await pi.plugin.getDataPath(),verifier:pi.craftmine,logger:console,toolchain});
+  blenderJobs=createBlenderJobs(core,{dataPath:await pi.plugin.getDataPath(),
+    toolchain:typeof pi.craftmine?.getBlenderToolchain==='function'?await pi.craftmine.getBlenderToolchain():null,
+    assertActive:async context=>{if(endedTurns.has(turnKey(context)))throw Error('TURN_ENDED');
+      const bound=await core.call('task.context',{context});
+      if(bound?.world?.id!==(await pi.plugin.getSettings()).activeWorldId)throw Error('GODOT_WORLD_CHANGED');
+      if(endedTurns.has(turnKey(context)))throw Error('TURN_ENDED');}});
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
-  const portableRestore={restore:async params=>{await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();}}};
+  const portableRestore={restore:async params=>{await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();await blenderJobs.start();}}};
   hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback});
-  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
+  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();await blenderJobs.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
@@ -118,6 +125,7 @@ async function onLoad() {
         brokerSha256:executor.broker?.sha256??null,bridgeSha256:executor.bridge?.sha256??null,
         preflight:executor.preflight??null,jobs:executor.jobs??[]},
       godotExecutionInCore: info.godotExecution===true,
+      blender:await blenderJobs.status(),
       verificationJobsAvailable: info.verificationJobs===true,
       playerApplicationsAvailable: info.playerApplications===true,
       core: info,
@@ -137,6 +145,7 @@ async function onLoad() {
     throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
   });
   const toolServices={
+    blenderTool:(name,args,binding)=>blenderJobs.tool(name,args,binding),
     ...hostProviders,
     sourceLibrary:(args,context,worldId,toolCallId)=>sourceLibrary.tool(args,context,worldId,toolCallId),
     ...(typeof pi.craftmine?.godotPerformance==='function'?{samplePerformance:input=>pi.craftmine.godotPerformance(input)}:{}),
@@ -157,6 +166,7 @@ async function onLoad() {
 // Private parent-process lifecycle. There is no panel channel for this method.
 async function onHostTurnEnd(payload) {
   endedTurns.add(turnKey(payload));
+  await blenderJobs?.cancelTurn(payload);
   if(payload.status!=='completed'){await verifications.cancelTurn(payload);await reviews.cancelTurn(payload);}
   await core.start();
   await core.call('workspace.endTurn',payload);
@@ -250,6 +260,7 @@ async function onPanelInvoke(channel, payload={}) {
 }
 
 async function onUnload() {
+  await blenderJobs?.stop();
   await godotExecutor?.stop();
   await verifications?.stop();
   await reviews?.stop();

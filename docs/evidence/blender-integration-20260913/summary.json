@@ -1,0 +1,291 @@
+{
+  "format": "craftmine.blender-acceptance/1",
+  "date": "2026-09-13",
+  "implementationCommit": "07123daa4f89accae840801d60c50f8d1aed2fcb",
+  "passed": true,
+  "scope": "authored-fixture-real-components",
+  "modelCalls": 0,
+  "inputSimulation": false,
+  "checks": [
+    {
+      "name": "actual bundled toolchain is available",
+      "passed": true
+    },
+    {
+      "name": "restricted Blender output is committed through the real Rust source transaction",
+      "passed": true
+    },
+    {
+      "name": "generation preserves the editable source and original script",
+      "passed": true
+    },
+    {
+      "name": "model generation makes no false application claim",
+      "passed": true
+    },
+    {
+      "name": "retained editable source is discoverable through the world-bound tool",
+      "passed": true
+    },
+    {
+      "name": "global runtime status does not expose world job history",
+      "passed": true
+    },
+    {
+      "name": "Godot loads generated geometry, plays the door animation and detects collision",
+      "passed": true
+    },
+    {
+      "name": "a second job edits the verified prior blend source and imports a new revision",
+      "passed": true
+    },
+    {
+      "name": "the model changes while the previous source revision remains readable",
+      "passed": true
+    },
+    {
+      "name": "the source edit reaches Godot with changed paint and retained animated door/collision",
+      "passed": true
+    },
+    {
+      "name": "a real Python failure reaches the AI as bounded untrusted diagnostics",
+      "passed": true
+    },
+    {
+      "name": "the actual running Python task is cancelled through the ordinary tool",
+      "passed": true
+    },
+    {
+      "name": "failed and cancelled modeling tasks leave the Godot source revision unchanged",
+      "passed": true
+    },
+    {
+      "name": "source import leaves formal world and player progress unchanged before application",
+      "passed": true
+    }
+  ],
+  "jobs": [
+    {
+      "jobId": "d4fb1c91-8654-4fe8-8f31-ced30ca7ea17",
+      "status": "imported",
+      "modelPath": "assets/blender/house.glb",
+      "source": {
+        "revision": 0,
+        "manifestHash": "a457df19d50ed0725ea45c08c0b52b0c776bf8d6da8e1ed1742485c3a4c3e5ed"
+      },
+      "imported": {
+        "revision": 1,
+        "manifestHash": "163e45a5876e1289a255d8f848ab6d3736e6e7c3cfbbfc554b580d1a5135d803",
+        "modelSha256": "ae16cf80ed11ef38bcdb1ec10300a552200223684067b327fc331853dd33fad3"
+      },
+      "artifacts": [
+        {
+          "path": "model.glb",
+          "bytes": 15188,
+          "sha256": "ae16cf80ed11ef38bcdb1ec10300a552200223684067b327fc331853dd33fad3"
+        },
+        {
+          "path": "report.json",
+          "bytes": 521,
+          "sha256": "61928e15dda2edce679f9b1407abf9d09bf8899a2cf9017c4c65e265d992ea63"
+        },
+        {
+          "path": "script.py",
+          "bytes": 1940,
+          "sha256": "829664a0ca83445baadd9903f006a5c2e9964a25583d746e419fa8e80b8e62cd"
+        },
+        {
+          "path": "source.blend",
+          "bytes": 571041,
+          "sha256": "da394949352dd1e814ac7b56c4d5dd6897fdf91b04d19787ac144867c4dce705"
+        }
+      ],
+      "reason": null
+    },
+    {
+      "jobId": "a89819f4-468d-40e6-8545-053ddabe0625",
+      "status": "imported",
+      "modelPath": "assets/blender/house.glb",
+      "source": {
+        "revision": 1,
+        "manifestHash": "163e45a5876e1289a255d8f848ab6d3736e6e7c3cfbbfc554b580d1a5135d803"
+      },
+      "imported": {
+        "revision": 2,
+        "manifestHash": "329037bca3e2c56245c0f38375b83b2cfa63c5b12ee1d6efe1694c1f9b2f82cc",
+        "modelSha256": "23b0625114d79b2bfa68cdff04ca21e3d098541c2db0573f3b1240661e64b707"
+      },
+      "artifacts": [
+        {
+          "path": "model.glb",
+          "bytes": 15208,
+          "sha256": "23b0625114d79b2bfa68cdff04ca21e3d098541c2db0573f3b1240661e64b707"
+        },
+        {
+          "path": "report.json",
+          "bytes": 521,
+          "sha256": "030d5d9a39e41e3eba396cf7954a131237a58b4e1e4c2fbac6e0ec4e23215ae3"
+        },
+        {
+          "path": "script.py",
+          "bytes": 554,
+          "sha256": "c2efd55c039c129a85a4c2acbafc8cf6210cfd23c2742ef014499019abe11994"
+        },
+        {
+          "path": "source.blend",
+          "bytes": 571241,
+          "sha256": "ab8479bce8a828c39e63b814e5b6c27ec4e13c3eda7a0b424cd57c0540a13590"
+        }
+      ],
+      "reason": null
+    },
+    {
+      "jobId": "b9b7fef7-9061-4286-8f07-8efcba0603c3",
+      "status": "failed",
+      "modelPath": "assets/blender/broken.glb",
+      "source": {
+        "revision": 2,
+        "manifestHash": "329037bca3e2c56245c0f38375b83b2cfa63c5b12ee1d6efe1694c1f9b2f82cc"
+      },
+      "imported": null,
+      "artifacts": [],
+      "reason": "BLENDER_BROKER_TASK_FAILED"
+    },
+    {
+      "jobId": "74f6ec9b-4163-4fb8-8c1a-f17d093b9bcf",
+      "status": "cancelled",
+      "modelPath": "assets/blender/cancelled.glb",
+      "source": {
+        "revision": 2,
+        "manifestHash": "329037bca3e2c56245c0f38375b83b2cfa63c5b12ee1d6efe1694c1f9b2f82cc"
+      },
+      "imported": null,
+      "artifacts": [],
+      "reason": "BLENDER_JOB_CANCELLED"
+    }
+  ],
+  "firstInspection": {
+    "animations": [
+      "DoorOpen"
+    ],
+    "collision": true,
+    "doorMoved": true,
+    "editorImport": false,
+    "hasBluePaint": false,
+    "headless": true,
+    "meshes": 9,
+    "scope": "authored-fixture-runtime-import-and-physics-not-player-quality",
+    "vertices": 216,
+    "packedSceneImport": {
+      "animations": [
+        "DoorOpen"
+      ],
+      "collision": true,
+      "doorMoved": true,
+      "editorImport": true,
+      "hasBluePaint": false,
+      "headless": true,
+      "meshes": 9,
+      "scope": "authored-fixture-runtime-import-and-physics-not-player-quality",
+      "vertices": 216
+    }
+  },
+  "secondInspection": {
+    "animations": [
+      "DoorOpen"
+    ],
+    "collision": true,
+    "doorMoved": true,
+    "editorImport": false,
+    "hasBluePaint": true,
+    "headless": true,
+    "meshes": 9,
+    "scope": "authored-fixture-runtime-import-and-physics-not-player-quality",
+    "vertices": 216,
+    "packedSceneImport": {
+      "animations": [
+        "DoorOpen"
+      ],
+      "collision": true,
+      "doorMoved": true,
+      "editorImport": true,
+      "hasBluePaint": true,
+      "headless": true,
+      "meshes": 9,
+      "scope": "authored-fixture-runtime-import-and-physics-not-player-quality",
+      "vertices": 216
+    }
+  },
+  "godotVersion": "4.7.2.stable.official.ed1daf0bf",
+  "godotRuns": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 78,
+      "exitCode": 0
+    },
+    {
+      "label": "house-original",
+      "elapsedMs": 257,
+      "exitCode": 0
+    },
+    {
+      "label": "house-original-import",
+      "elapsedMs": 2026,
+      "exitCode": 0
+    },
+    {
+      "label": "house-original-packed",
+      "elapsedMs": 239,
+      "exitCode": 0
+    },
+    {
+      "label": "house-edited",
+      "elapsedMs": 242,
+      "exitCode": 0
+    },
+    {
+      "label": "house-edited-import",
+      "elapsedMs": 1737,
+      "exitCode": 0
+    },
+    {
+      "label": "house-edited-packed",
+      "elapsedMs": 240,
+      "exitCode": 0
+    }
+  ],
+  "brokerSha256": "d3d6d35e1d65aceebdd7a79b8309c05ba09224c7ff2b6a58e6e77196cac4f6f0",
+  "runtimeResources": {
+    "sourceCommit": "07123daa4f89accae840801d60c50f8d1aed2fcb",
+    "files": 7323,
+    "bytes": 1583440660,
+    "filesDigest": "60a34702bd541954c7429adc1629e2157ae386f1749fcdf7457159e5845c7c6a"
+  },
+  "testSuites": {
+    "node": {
+      "passed": 45
+    },
+    "native": {
+      "passed": 44
+    },
+    "agentContext": {
+      "passed": 34
+    }
+  },
+  "builds": [
+    "fresh craftmine-core debug",
+    "Godot and Blender release brokers",
+    "agent runtime TypeScript",
+    "desktop strict TypeScript",
+    "desktop Electron main/preload/renderer",
+    "built-in plugin",
+    "complete runtime resource staging and hash verification"
+  ],
+  "notVerified": [
+    "ordinary-player AI model quality",
+    "visible player interaction",
+    "signed installer or clean-machine installation",
+    "public redistribution source availability review"
+  ],
+  "rawReport": "test-results/bi-Ik3SXH/report.json"
+}

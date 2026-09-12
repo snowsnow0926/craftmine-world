@@ -42,11 +42,14 @@ pub enum TaskKind {
     Import,
     ExportWeb,
     ExportWindows,
+    /// Host-owned Blender driver and job manifest; never user CLI arguments.
+    Blender,
 }
 
 impl TaskKind {
     fn args(&self, project: &Path, export_dir: &Path) -> Vec<String> {
         match self {
+            TaskKind::Blender => crate::blender::fixed_args(project),
             TaskKind::Version => vec!["--headless".into(), "--version".into()],
             TaskKind::Import => vec![
                 "--headless".into(),
@@ -477,7 +480,7 @@ impl Task {
         // --version never initializes the editor cache. Discovery must still
         // attest the actual process/network policy on a long data root; the
         // subsequent import fails as a durable job before engine startup.
-        if !matches!(kind, TaskKind::Version) {
+        if !matches!(kind, TaskKind::Version | TaskKind::Blender) {
             validate_editor_cache_path(tasks_root, task_id)?;
         }
         let layout = TaskLayout::create(tasks_root, task_id)?;
@@ -557,6 +560,22 @@ impl Task {
         &self.sid
     }
 
+    /// Blender's source and fixed driver live under read-only bin, while only
+    /// exports/cache use writable work. Called before preflight, never in-flight.
+    pub(crate) fn configure_blender(&mut self) -> Result<()> {
+        if self.status.state != TaskState::Prepared { return Err("Task has already been run".into()); }
+        // Windows rewrites TEMP/TMP inside an AppContainer even when the host
+        // supplies them. Blender validates that redirected path at startup;
+        // create it under this task's writable grant before loading the engine.
+        fs::create_dir_all(self.layout.work.join("Packages").join(&self.profile_name).join("AC").join("Temp"))?;
+        for name in ["tmp", "cache", "config", "scripts", "datafiles"] {
+            fs::create_dir_all(self.layout.work.join(name))?;
+        }
+        self.kind = TaskKind::Blender;
+        self.layout.project = self.layout.bin.clone();
+        Ok(())
+    }
+
     pub fn status(&self) -> &TaskStatus {
         &self.status
     }
@@ -614,6 +633,18 @@ impl Task {
         };
         let engine = self.engine.clone();
         let system_root = std::env::var("SystemRoot")?;
+        let mut environment = minimal_environment(&self.layout.work, &system_root);
+        if self.kind == TaskKind::Blender {
+            environment.extend([
+                ("PYTHONDONTWRITEBYTECODE".into(), "1".into()),
+                ("PYTHONNOUSERSITE".into(), "1".into()),
+                ("HOME".into(), self.layout.work.to_string_lossy().into_owned()),
+                ("XDG_CACHE_HOME".into(), self.layout.work.join("cache").to_string_lossy().into_owned()),
+                ("BLENDER_USER_CONFIG".into(), self.layout.work.join("config").to_string_lossy().into_owned()),
+                ("BLENDER_USER_SCRIPTS".into(), self.layout.work.join("scripts").to_string_lossy().into_owned()),
+                ("BLENDER_USER_DATAFILES".into(), self.layout.work.join("datafiles").to_string_lossy().into_owned()),
+            ]);
+        }
         let running = start_unless_cancelled(cancel.as_deref(), || crate::launch::start_verified(&LaunchSpec {
             executable: engine,
             args: self.kind.args(&self.layout.project, &self.layout.export_dir),
@@ -624,7 +655,7 @@ impl Task {
             job: Some(self.budget.job),
             child_process_policy: None,
             handle_list: true,
-            environment: Some(minimal_environment(&self.layout.work, &system_root)),
+            environment: Some(environment),
             timeout: self.budget.timeout,
             diagnose: false,
         }))?;

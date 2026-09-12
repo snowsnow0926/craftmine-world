@@ -9,6 +9,7 @@ import {execFileSync} from 'node:child_process';
 import {readGitSnapshot} from './delivery/lib/source-bytes.mjs';
 import {loadRuntimeDistribution,stageRuntimeSourceSnapshot} from './delivery/lib/runtime-distribution.mjs';
 import {GPL3_TEXT} from './delivery/lib/gpl-text-pin.mjs';
+import {blenderLock,verifyBlenderArtifact,verifyBlenderRuntime} from './blender/toolchain.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const OWNER='.craftmine-runtime-stage.json';
@@ -57,13 +58,29 @@ export async function verifyWindowsHostInputs(directory,brokerIdentity,sourceDis
   }
   return records;
 }
+export async function verifyBlenderBrokerInputs(directory,brokerIdentity){
+  if(brokerIdentity?.format!=='craftmine.blender-broker-identity/1')throw Error('BLENDER_BROKER_IDENTITY_INVALID');
+  const records=[];
+  for(const name of ['bridge/driver.py','toolchain.lock.json']){
+    const target=path.join(directory,'blender',name);await ordinaryAncestors(path.dirname(target));
+    const stat=await fs.lstat(target);if(!stat.isFile()||stat.isSymbolicLink())throw Error('BLENDER_BROKER_INPUT_NOT_REGULAR:'+name);
+    const sha256=await fileHash(target),embedded=brokerIdentity.sourceFiles?.find(item=>item.path===name);
+    if(!embedded||embedded.sha256!==sha256)throw Error('BLENDER_BROKER_SOURCE_MISMATCH:'+name);
+    records.push({path:'blender/'+name,bytes:stat.size,sha256});
+  }
+  return records;
+}
 export async function verifyRuntimeResources(directory,expectedCommit,{packaged=false}={}){
   await ordinaryAncestors(directory);
   const manifest=JSON.parse(await fs.readFile(path.join(directory,'runtime-resources.json'),'utf8'));
   if(manifest.format!==FORMAT||manifest.sourceCommit!==expectedCommit)throw Error('RUNTIME_SOURCE_IDENTITY_MISMATCH');
-  const files=packaged?(await Promise.all(['git','godot','licenses/godot','licenses/gpl'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
+  const files=packaged?(await Promise.all(['blender','git','godot','licenses/blender','licenses/godot','licenses/gpl'].map(async prefix=>resourceInventory(path.join(directory,prefix),prefix)))).flat():await resourceInventory(directory);
   if(JSON.stringify(files)!==JSON.stringify(manifest.files))throw Error('RUNTIME_RESOURCE_HASH_MISMATCH');
   if(hash(JSON.stringify(files))!==manifest.filesDigest)throw Error('RUNTIME_RESOURCE_DIGEST_MISMATCH');
+  if(manifest.blenderBrokerInputs){
+    const identity=JSON.parse(await fs.readFile(path.join(directory,'blender/broker/broker-identity.json'),'utf8'));
+    if(JSON.stringify(await verifyBlenderBrokerInputs(directory,identity))!==JSON.stringify(manifest.blenderBrokerInputs))throw Error('BLENDER_BROKER_INPUT_INVENTORY_MISMATCH');
+  }
   if(manifest.windowsExportInputs||files.some(file=>['godot/shared/standalone_bootstrap.gd','godot/shared/windows-export.cfg'].includes(file.path))){
     const brokerIdentity=JSON.parse(await fs.readFile(path.join(directory,'godot/broker/broker-identity.json'),'utf8'));
     const inputs=await verifyWindowsHostInputs(directory,brokerIdentity,manifest.sourceDistribution);
@@ -119,10 +136,10 @@ async function replaceOwned(staging,output,commit){
   if(sourceCommit()!==commit)throw Error('RUNTIME_SOURCE_CHANGED');
   await fs.rename(staging,output);
 }
-export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
+export async function prepareRuntimeResources({godotCache,gitZip,brokerBin,blenderCache,blenderBrokerBin}){
   if(process.platform!=='win32')throw Error('WINDOWS_BUILD_REQUIRED');
   const commit=sourceCommit();
-  for(const value of [godotCache,gitZip,brokerBin])if(typeof value!=='string'||!path.isAbsolute(value))throw Error('ABSOLUTE_BUILD_INPUT_REQUIRED');
+  for(const value of [godotCache,gitZip,brokerBin,blenderCache,blenderBrokerBin])if(typeof value!=='string'||!path.isAbsolute(value))throw Error('ABSOLUTE_BUILD_INPUT_REQUIRED');
   const lock=JSON.parse(await fs.readFile(path.join(root,'desktop/godot/toolchain.lock.json'),'utf8'));
   const git=JSON.parse(await fs.readFile(path.join(root,'desktop/delivery/git-bundle.json'),'utf8'));
   const tpz=path.join(godotCache,lock.exportTemplates.file);
@@ -130,6 +147,23 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
   const build=path.join(root,'desktop/build');await fs.mkdir(build,{recursive:true});await ordinaryAncestors(build);
   const staging=path.join(build,'runtime-resources.pending-'+randomUUID());await fs.mkdir(staging);
   await fs.writeFile(path.join(staging,OWNER),JSON.stringify({format:FORMAT,workspace:await fs.realpath(root),sourceCommit:commit}));
+  await verifyBlenderArtifact(path.join(blenderCache,blenderLock.archive.file),blenderLock.archive);
+  await verifyBlenderArtifact(path.join(blenderCache,blenderLock.source.file),blenderLock.source);
+  await verifyBlenderRuntime(path.join(blenderCache,'runtime'));
+  const blenderRoot=path.join(staging,'blender');await fs.mkdir(blenderRoot);
+  await fs.cp(path.join(blenderCache,'runtime'),path.join(blenderRoot,'runtime'),{recursive:true,errorOnExist:true,force:false});
+  await verifyBlenderRuntime(path.join(blenderRoot,'runtime'));
+  await verifiedCopy(path.join(root,'desktop/blender/toolchain.lock.json'),path.join(blenderRoot,'toolchain.lock.json'));
+  await copyTracked('desktop/blender/bridge',path.join(blenderRoot,'bridge'));
+  await copyTracked('desktop/blender/licenses',path.join(staging,'licenses/blender'));
+  await fs.cp(path.join(blenderRoot,'runtime/license'),path.join(staging,'licenses/blender/upstream'),{recursive:true,errorOnExist:true,force:false});
+  await verifiedCopy(path.join(blenderRoot,'runtime/copyright.txt'),path.join(staging,'licenses/blender/copyright.txt'));
+  await verifiedCopy(path.join(blenderCache,blenderLock.source.file),path.join(blenderRoot,'source',blenderLock.source.file),blenderLock.source);
+  const blenderBroker=path.join(blenderRoot,'broker/blender-host-broker.exe');await verifiedCopy(blenderBrokerBin,blenderBroker);
+  const blenderBrokerIdentity=JSON.parse(command(process.execPath,[path.join(root,'desktop/blender/broker-identity.mjs'),blenderBroker],{
+    env:{...process.env,CRAFTMINE_BROKER_PROFILE:'release',CRAFTMINE_BROKER_SOURCE_COMMIT:commit}}));
+  await fs.writeFile(path.join(blenderRoot,'broker/broker-identity.json'),JSON.stringify(blenderBrokerIdentity,null,2)+'\n');
+  const blenderBrokerInputs=await verifyBlenderBrokerInputs(staging,blenderBrokerIdentity);
   // A failed attempt is retained with its owner marker for diagnosis.
   const engine=path.join(staging,'godot/engine',lock.version);
   await verifiedCopy(path.join(godotCache,'editor',lock.editor.executable),path.join(engine,'editor',lock.editor.executable),{sha256:lock.editor.executableSha256});
@@ -168,8 +202,8 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
     totalBytes:gitFiles.reduce((sum,file)=>sum+file.bytes,0)},null,2)+'\n');
   const files=await resourceInventory(staging);
   const manifest={format:FORMAT,sourceCommit:commit,sourceDate:command('git',['show','-s','--format=%cI','HEAD']),
-    sourceDistribution,windowsExportInputs,
-    toolchain:{godot:lock.version,templatesArchiveSha256:lock.exportTemplates.sha256,git:git.version,gitArchiveSha256:git.archive.sha256,
+    sourceDistribution,windowsExportInputs,blenderBrokerInputs,
+    toolchain:{blender:blenderLock.version,blenderArchiveSha256:blenderLock.archive.sha256,blenderSourceSha256:blenderLock.source.sha256,blenderBrokerSha256:blenderBrokerIdentity.sha256,godot:lock.version,templatesArchiveSha256:lock.exportTemplates.sha256,git:git.version,gitArchiveSha256:git.archive.sha256,
       brokerSha256:brokerIdentity.sha256,brokerSourceDigest:brokerIdentity.sourceDigest},
     files,filesDigest:hash(JSON.stringify(files)),totalBytes:files.reduce((sum,file)=>sum+file.bytes,0),
     limits:['Resource byte/source identity; no claim of install, clean-machine, model or game acceptance.']};
@@ -180,7 +214,7 @@ export async function prepareRuntimeResources({godotCache,gitZip,brokerBin}){
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const args=process.argv.slice(2),options={};
-  const names={'--godot-cache':'godotCache','--git-zip':'gitZip','--broker-bin':'brokerBin'};
+  const names={'--godot-cache':'godotCache','--git-zip':'gitZip','--broker-bin':'brokerBin','--blender-cache':'blenderCache','--blender-broker-bin':'blenderBrokerBin'};
   for(let i=0;i<args.length;i+=2){if(!names[args[i]]||!args[i+1]||Object.hasOwn(options,names[args[i]]))throw Error('INVALID_RUNTIME_BUILD_ARGUMENT');options[names[args[i]]]=path.resolve(args[i+1]);}
   console.log(JSON.stringify(await prepareRuntimeResources(options)));
 }
