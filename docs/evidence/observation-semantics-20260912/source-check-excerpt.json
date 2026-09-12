@@ -1,0 +1,56 @@
+{
+  "format": "craftmine.archived-source-check-excerpt/1",
+  "sourceReport": "D:/cm-agent-godot-0912/test-results/desktop-native-complete-TDnqnw/player-df2b988c-ade0-426d-8272-5648c2ebd208.json",
+  "sourceReportSha256": "1729268edca80a853317899544ada4b7a2671f1ed9a793183ef9111be4c17650",
+  "adoptionReport": "D:/cm-agent-godot-0912/test-results/desktop-native-complete-TDnqnw/adoption-1b431c7e-c60e-4e43-ba3e-4fe4d3915e2c/report.json",
+  "adoptionReportSha256": "d0e759a2df8d3145b189623ded84e38c307edf057745cdde4bf665ad338fb546",
+  "scope": "Selected original tool arguments/receipt fields only; not a replay or new runtime evidence.",
+  "patch": {
+    "toolCallId": "call_00_2C8XUaxoObgCNEXPVYZ11802",
+    "toolName": "plugin_craftmine_world_godot_project_patch",
+    "toolArgs": {
+      "manifestHash": "09e5b7bd799c1de0d9dd6f76e1f7177596770bd6ae1a4ce1552eceb97ef6298f",
+      "operations": [
+        {
+          "expectedHash": "64707d532c64a76fb2e9009e30d0d59b43436547b1aadb4ae1306d6f10326773",
+          "op": "put",
+          "path": "scenes/creation.tscn",
+          "text": "[gd_scene load_steps=5 format=3]\n\n[ext_resource type=\"Script\" path=\"res://scripts/creation_world.gd\" id=\"1_world\"]\n[ext_resource type=\"Script\" path=\"res://scripts/reused/player_controller.gd\" id=\"2_player\"]\n[ext_resource type=\"Script\" path=\"res://scripts/reused/camera_rig.gd\" id=\"3_camera\"]\n[ext_resource type=\"PackedScene\" path=\"res://addons/kenney-city-building/module.tscn\" id=\"4_module\"]\n[ext_resource type=\"PackedScene\" path=\"res://addons/kenney-city-building/module.tscn\" id=\"5_module\"]\n[sub_resource type=\"CapsuleShape3D\" id=\"PlayerShape\"]\nradius = 0.3\nheight = 1.8\n\n[node name=\"CreationWorld\" type=\"Node3D\"]\nscript = ExtResource(\"1_world\")\n\n[node name=\"Player\" type=\"CharacterBody3D\" parent=\".\"]\nposition = Vector3(0, 0.9, 6)\ncollision_layer = 8\ncollision_mask = 3\nscript = ExtResource(\"2_player\")\n\n[node name=\"CollisionShape3D\" type=\"CollisionShape3D\" parent=\"Player\"]\nshape = SubResource(\"PlayerShape\")\n\n[node name=\"CameraRig\" type=\"Node3D\" parent=\"Player\"]\nposition = Vector3(0, 0.65, 0)\nscript = ExtResource(\"3_camera\")\n\n[node name=\"PitchPivot\" type=\"Node3D\" parent=\"Player/CameraRig\"]\n\n[node name=\"Camera3D\" type=\"Camera3D\" parent=\"Player/CameraRig/PitchPivot\"]\ncurrent = true\nfov = 75.0\nfar = 140.0\n\n[node name=\"WeaponMount\" type=\"Node3D\" parent=\"Player/CameraRig/PitchPivot/Camera3D\"]\n\n[node name=\"ins-882b440ff2217a2e7519b1fc-e0\" parent=\".\" instance=ExtResource(\"4_module\")]\nposition = Vector3(-5, 0, 0)\nentity_id = \"ins-882b440ff2217a2e7519b1fc-e0\"\nlabel = \"building\"\nmodel_scale_percent = 250\nquarter_turns = 1\nsolid = false\n\n[node name=\"ins-436135d4a8aec10753b36e19-e0\" parent=\".\" instance=ExtResource(\"5_module\")]\nposition = Vector3(5, 0, 0)\nentity_id = \"ins-436135d4a8aec10753b36e19-e0\"\nlabel = \"building\"\nmodel_scale_percent = 100\nquarter_turns = 0\nsolid = true\n"
+        }
+      ],
+      "revision": 4
+    },
+    "toolResult": {
+      "assetLockHash": "c82dc4fa467051f9bc268726c14aafde881b2b0ef9c1723e1ec8a5ad62ac9074",
+      "baseBuild": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+      "branchId": "main",
+      "commitOid": "ae34c1e1b290f58b4c7b8dd7fbfea9e3652972b4",
+      "currentTaskId": "work-012b28188b89a60314b0b0177f5d8bcf14f4a28c6c6c3f7ef79e59fcbac088dc",
+      "fileCount": 38,
+      "lastWriter": {
+        "baseBuild": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+        "projectId": "pi-f533d7df5e1dd805f31a4dd8770f5d54aa50d247ee081f6de3c95f216571b4c5",
+        "sessionId": "0fabed78-e6fe-40fc-9f81-26921feb9900",
+        "taskId": "work-012b28188b89a60314b0b0177f5d8bcf14f4a28c6c6c3f7ef79e59fcbac088dc",
+        "turnId": "b238d199-6b6a-4fa3-a937-aa1b5a309971"
+      },
+      "manifestHash": "bdb5c0c2ac2b5496f6b010edae9bc669be65fec06a2b6b99e1f36c4c1b2d291f",
+      "revision": 5
+    }
+  },
+  "checkedJob": {
+    "worldId": "world-6bc73235fe55",
+    "jobId": "gjob-fffb63d59e0f147c32bba288e5825f70a37f2fc367f449c1ff86e3687b741e09",
+    "buildId": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e",
+    "candidateId": "gcan-e1fa7712cc56df7b2586b0f1ab8b04ca9b372a107109cb0790d0c228315f53b4",
+    "sourceRevision": 5,
+    "manifestHash": "bdb5c0c2ac2b5496f6b010edae9bc669be65fec06a2b6b99e1f36c4c1b2d291f",
+    "outputHash": "890424f719c677e46861b119d5faef77e9ddb3d4f3231b6d14d526951be70587",
+    "status": "passed",
+    "runtimeFrame": {
+      "detail": "frames=3 distinct=2",
+      "id": "runtime.frame",
+      "passed": true
+    }
+  }
+}

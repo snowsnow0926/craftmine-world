@@ -1,0 +1,1043 @@
+{
+  "format": "craftmine.promo-adoption/1",
+  "sourceFormat": "craftmine.promo-player/1",
+  "originalReport": "D:/cm-agent-godot-0912/test-results/desktop-native-complete-TDnqnw/player-df2b988c-ade0-426d-8272-5648c2ebd208.json",
+  "worldId": "world-6bc73235fe55",
+  "candidateId": "gcan-e1fa7712cc56df7b2586b0f1ab8b04ca9b372a107109cb0790d0c228315f53b4",
+  "checkedBuildId": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e",
+  "modelCallsAdded": 0,
+  "modelRequestsAdded": 0,
+  "sourceEdits": 0,
+  "checks": [
+    "original checked candidate enters normal preview",
+    "normal adoption commits the original candidate",
+    "cold reopen preserves the adopted world and build",
+    "original player report and marker remain byte-identical"
+  ],
+  "launches": [
+    {
+      "number": 1,
+      "stdoutBytes": 11600,
+      "stderrBytes": 2127,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "number": 2,
+      "stdoutBytes": 4478,
+      "stderrBytes": 146,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "visual": "UNVERIFIED",
+  "before": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "058a6fda794a74a2a968972c",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "controllerEvidence": {
+        "activeCameraId": "26893878581",
+        "body": {
+          "globalScale": [
+            1,
+            1,
+            1
+          ],
+          "layer": 8,
+          "mask": 3,
+          "physicsProcessing": true,
+          "processMode": 0,
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cameraId": "26893878581",
+        "cameraParentId": "26877101367",
+        "cameraTransform": {
+          "cameraPosition": [
+            0,
+            0,
+            0
+          ],
+          "cameraRotation": [
+            0,
+            0,
+            0
+          ],
+          "cameraScale": [
+            1,
+            1,
+            1
+          ],
+          "pitch": -0.11,
+          "pitchLimit": 89,
+          "pivotPosition": [
+            0,
+            0,
+            0
+          ],
+          "pivotRotation": [
+            -0.109999999403954,
+            0,
+            0
+          ],
+          "pivotScale": [
+            1,
+            1,
+            1
+          ],
+          "rigPosition": [
+            0,
+            0.649999976158142,
+            0
+          ],
+          "rigRotation": [
+            0,
+            0.694738268852234,
+            0
+          ],
+          "rigScale": [
+            1,
+            1,
+            1
+          ],
+          "yaw": 0.694738276196703
+        },
+        "fixedPlayerScriptId": "-9223372011202411205",
+        "fixedRigScriptId": "-9223372011084970692",
+        "format": "craftmine.creation-controller-evidence/1",
+        "parameters": [
+          4.5,
+          1.7,
+          4.2,
+          14,
+          3,
+          1,
+          30,
+          9.8
+        ],
+        "physicsRate": 60,
+        "physicsTick": 11,
+        "pivotId": "26877101367",
+        "pivotParentId": "26860324153",
+        "playerClass": "CharacterBody3D",
+        "playerId": "26826769713",
+        "playerPath": "Player",
+        "playerRigId": "26860324153",
+        "playerScriptId": "-9223372011202411205",
+        "playerScriptPath": "res://scripts/reused/player_controller.gd",
+        "profile": "creation-fixed-controller/1",
+        "reason": "",
+        "rigCameraId": "26893878581",
+        "rigId": "26860324153",
+        "rigParentId": "26826769713",
+        "rigPath": "Player/CameraRig",
+        "rigPivotId": "26877101367",
+        "rigScriptId": "-9223372011084970692",
+        "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+        "rootPlayerId": "26826769713",
+        "shape": {
+          "bodyResourceId": "-9223372010095114950",
+          "disabled": false,
+          "height": 1.79999995231628,
+          "id": "26843546930",
+          "kind": "CapsuleShape3D",
+          "ownerCount": 1,
+          "ownerDisabled": false,
+          "ownerNodeId": "26843546930",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.300000011920929,
+          "resourceId": "-9223372010095114950",
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "shapeCount": 1
+        },
+        "status": "supported"
+      },
+      "creation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 11,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [
+          {
+            "ancestors": [],
+            "nodeClass": "StaticBody3D",
+            "nodePath": "ins-882b440ff2217a2e7519b1fc-e0",
+            "objectId": "26944210244",
+            "scenePath": "res://addons/kenney-city-building/module.tscn",
+            "scriptPath": "res://addons/kenney-city-building/module.gd"
+          }
+        ],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 2,
+            "facesRead": 2,
+            "nodes": 33,
+            "triangles": 464,
+            "vertices": 734
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearer-or-tied-physics-hit",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "blocked"
+        },
+        "sceneObjectTarget": {
+          "ancestors": [],
+          "nodeClass": "StaticBody3D",
+          "nodePath": "ins-882b440ff2217a2e7519b1fc-e0",
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "objectId": "26944210244",
+          "position": [
+            -4.66666650772095,
+            0.744897782802582,
+            0.400000095367432
+          ],
+          "scenePath": "res://addons/kenney-city-building/module.tscn",
+          "scriptPath": "res://addons/kenney-city-building/module.gd"
+        },
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "position": [
+            -4.66666650772095,
+            0.744897782802582,
+            0.400000095367432
+          ],
+          "revision": 1,
+          "surface": "none"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.11,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.694738276196703
+      },
+      "progressCollisionGuard": {
+        "bodies": [
+          {
+            "id": "30400316772",
+            "nodePath": "@StaticBody3D@7",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "26826769713",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "26843546930",
+        "shapeResourceId": "-9223372010095114950",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 20,
+          "paused": true,
+          "startedFrame": 18
+        }
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-12T01:05:44Z",
+    "worldId": "world-6bc73235fe55"
+  },
+  "preview": {
+    "status": "preview",
+    "worldId": "world-6bc73235fe55",
+    "candidateId": "gcan-e1fa7712cc56df7b2586b0f1ab8b04ca9b372a107109cb0790d0c228315f53b4",
+    "buildId": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e"
+  },
+  "applied": {
+    "status": "applied",
+    "worldId": "world-6bc73235fe55",
+    "candidateId": "gcan-e1fa7712cc56df7b2586b0f1ab8b04ca9b372a107109cb0790d0c228315f53b4",
+    "record": {
+      "baseId": "creation-sandbox",
+      "contentHash": "5f9291cde3582a7cf2e1588d587d36bc578555048e841e6679d5cc7b2ebd4ff6",
+      "id": "world-6bc73235fe55",
+      "revision": 6,
+      "runtimeKind": "godot",
+      "title": "两栋导入建筑参数验收",
+      "updatedAt": 1789175149015,
+      "world": {
+        "build": {
+          "godot": {
+            "assetManifestHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "baseBuild": "gbd-57fa5fd6463ccaedd2c3c62979b0c65b7ca1d1e470604e74cab200b20946ccf0",
+            "engineVersion": "4.7.2-stable",
+            "manifestHash": "bdb5c0c2ac2b5496f6b010edae9bc669be65fec06a2b6b99e1f36c4c1b2d291f",
+            "renderer": "gl_compatibility",
+            "sourceRevision": 5,
+            "target": "web"
+          },
+          "id": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e",
+          "scene": {
+            "baseId": "creation-sandbox",
+            "entry": "res://main.tscn",
+            "format": "craftmine.godot-scene/1",
+            "projectHash": "bdb5c0c2ac2b5496f6b010edae9bc669be65fec06a2b6b99e1f36c4c1b2d291f"
+          }
+        },
+        "extensions": [],
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": -0.11,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0.694738276196703
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-6bc73235fe55"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-6bc73235fe55"
+        }
+      }
+    }
+  },
+  "after": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "4f773c3a0987e812320d94bf",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "controllerEvidence": {
+        "activeCameraId": "26893878581",
+        "body": {
+          "globalScale": [
+            1,
+            1,
+            1
+          ],
+          "layer": 8,
+          "mask": 3,
+          "physicsProcessing": true,
+          "processMode": 0,
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cameraId": "26893878581",
+        "cameraParentId": "26877101367",
+        "cameraTransform": {
+          "cameraPosition": [
+            0,
+            0,
+            0
+          ],
+          "cameraRotation": [
+            0,
+            0,
+            0
+          ],
+          "cameraScale": [
+            1,
+            1,
+            1
+          ],
+          "pitch": -0.11,
+          "pitchLimit": 89,
+          "pivotPosition": [
+            0,
+            0,
+            0
+          ],
+          "pivotRotation": [
+            -0.109999999403954,
+            0,
+            0
+          ],
+          "pivotScale": [
+            1,
+            1,
+            1
+          ],
+          "rigPosition": [
+            0,
+            0.649999976158142,
+            0
+          ],
+          "rigRotation": [
+            0,
+            0.694738268852234,
+            0
+          ],
+          "rigScale": [
+            1,
+            1,
+            1
+          ],
+          "yaw": 0.694738276196703
+        },
+        "fixedPlayerScriptId": "-9223372011202411205",
+        "fixedRigScriptId": "-9223372011084970692",
+        "format": "craftmine.creation-controller-evidence/1",
+        "parameters": [
+          4.5,
+          1.7,
+          4.2,
+          14,
+          3,
+          1,
+          30,
+          9.8
+        ],
+        "physicsRate": 60,
+        "physicsTick": 9,
+        "pivotId": "26877101367",
+        "pivotParentId": "26860324153",
+        "playerClass": "CharacterBody3D",
+        "playerId": "26826769713",
+        "playerPath": "Player",
+        "playerRigId": "26860324153",
+        "playerScriptId": "-9223372011202411205",
+        "playerScriptPath": "res://scripts/reused/player_controller.gd",
+        "profile": "creation-fixed-controller/1",
+        "reason": "",
+        "rigCameraId": "26893878581",
+        "rigId": "26860324153",
+        "rigParentId": "26826769713",
+        "rigPath": "Player/CameraRig",
+        "rigPivotId": "26877101367",
+        "rigScriptId": "-9223372011084970692",
+        "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+        "rootPlayerId": "26826769713",
+        "shape": {
+          "bodyResourceId": "-9223372010095114950",
+          "disabled": false,
+          "height": 1.79999995231628,
+          "id": "26843546930",
+          "kind": "CapsuleShape3D",
+          "ownerCount": 1,
+          "ownerDisabled": false,
+          "ownerNodeId": "26843546930",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.300000011920929,
+          "resourceId": "-9223372010095114950",
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "shapeCount": 1
+        },
+        "status": "supported"
+      },
+      "creation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 9,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [
+          {
+            "ancestors": [
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual",
+                "objectId": "26960987459",
+                "scenePath": "res://addons/kenney-city-building/models/building-small-a.glb",
+                "scriptPath": ""
+              },
+              {
+                "nodeClass": "StaticBody3D",
+                "nodePath": "ins-882b440ff2217a2e7519b1fc-e0",
+                "objectId": "26944210244",
+                "scenePath": "res://addons/kenney-city-building/module.tscn",
+                "scriptPath": "res://addons/kenney-city-building/module.gd"
+              }
+            ],
+            "nodeClass": "MeshInstance3D",
+            "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual/building-small-a",
+            "objectId": "26977764683",
+            "scenePath": "",
+            "scriptPath": ""
+          }
+        ],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 2,
+            "facesRead": 2,
+            "nodes": 33,
+            "triangles": 464,
+            "vertices": 734
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearest-supported-triangle",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "hit"
+        },
+        "sceneObjectTarget": {
+          "ancestors": [
+            {
+              "nodeClass": "Node3D",
+              "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual",
+              "objectId": "26960987459",
+              "scenePath": "res://addons/kenney-city-building/models/building-small-a.glb",
+              "scriptPath": ""
+            },
+            {
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-882b440ff2217a2e7519b1fc-e0",
+              "objectId": "26944210244",
+              "scenePath": "res://addons/kenney-city-building/module.tscn",
+              "scriptPath": "res://addons/kenney-city-building/module.gd"
+            }
+          ],
+          "nodeClass": "MeshInstance3D",
+          "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual/building-small-a",
+          "normal": [
+            4.37113882867379e-8,
+            0,
+            1
+          ],
+          "objectId": "26977764683",
+          "position": [
+            -4.16665172576904,
+            0.831161439418793,
+            1.00001871585846
+          ],
+          "scenePath": "",
+          "scriptPath": ""
+        },
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            1,
+            0
+          ],
+          "position": [
+            -8.98436737060547,
+            4.4703483581543e-8,
+            -4.78123998641968
+          ],
+          "revision": 1,
+          "surface": "ground"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.11,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.694738276196703
+      },
+      "progressCollisionGuard": {
+        "bodies": [
+          {
+            "id": "30400316772",
+            "nodePath": "@StaticBody3D@7",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "26826769713",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "26843546930",
+        "shapeResourceId": "-9223372010095114950",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 19,
+          "paused": true,
+          "startedFrame": 17
+        }
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-12T01:05:49Z",
+    "worldId": "world-6bc73235fe55"
+  },
+  "capture": {
+    "width": 1280,
+    "height": 720
+  },
+  "saved": {
+    "buildId": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e",
+    "contentHash": "5f9291cde3582a7cf2e1588d587d36bc578555048e841e6679d5cc7b2ebd4ff6",
+    "format": "craftmine.godot-progress-receipt/1",
+    "instanceId": "4f773c3a0987e812320d94bf",
+    "persistedAt": 1789175149015,
+    "revision": 6,
+    "snapshotHash": "d74f2dfd35256c75774ecdc34fb4094636eb4a29b675db2f611305d1bb9ea451",
+    "snapshotSha256": "111489c21077ade68271f5dcc43ea08aa7d6a16b0b3cc4c22bd46dc742449187",
+    "worldId": "world-6bc73235fe55"
+  },
+  "reopened": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "buildId": "gbd-989ba90c5608bbc02b8c6e9f3cba593d2cccd287e03ed3c57f196b2d91071b9e",
+    "format": "craftmine.godot-observation/1",
+    "instanceId": "b148ead325e8818bc24822e5",
+    "payload": {
+      "base": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "controllerEvidence": {
+        "activeCameraId": "26893878581",
+        "body": {
+          "globalScale": [
+            1,
+            1,
+            1
+          ],
+          "layer": 8,
+          "mask": 3,
+          "physicsProcessing": true,
+          "processMode": 0,
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cameraId": "26893878581",
+        "cameraParentId": "26877101367",
+        "cameraTransform": {
+          "cameraPosition": [
+            0,
+            0,
+            0
+          ],
+          "cameraRotation": [
+            0,
+            0,
+            0
+          ],
+          "cameraScale": [
+            1,
+            1,
+            1
+          ],
+          "pitch": -0.11,
+          "pitchLimit": 89,
+          "pivotPosition": [
+            0,
+            0,
+            0
+          ],
+          "pivotRotation": [
+            -0.109999999403954,
+            0,
+            0
+          ],
+          "pivotScale": [
+            1,
+            1,
+            1
+          ],
+          "rigPosition": [
+            0,
+            0.649999976158142,
+            0
+          ],
+          "rigRotation": [
+            0,
+            0.694738268852234,
+            0
+          ],
+          "rigScale": [
+            1,
+            1,
+            1
+          ],
+          "yaw": 0.694738276196703
+        },
+        "fixedPlayerScriptId": "-9223372011202411205",
+        "fixedRigScriptId": "-9223372011084970692",
+        "format": "craftmine.creation-controller-evidence/1",
+        "parameters": [
+          4.5,
+          1.7,
+          4.2,
+          14,
+          3,
+          1,
+          30,
+          9.8
+        ],
+        "physicsRate": 60,
+        "physicsTick": 15,
+        "pivotId": "26877101367",
+        "pivotParentId": "26860324153",
+        "playerClass": "CharacterBody3D",
+        "playerId": "26826769713",
+        "playerPath": "Player",
+        "playerRigId": "26860324153",
+        "playerScriptId": "-9223372011202411205",
+        "playerScriptPath": "res://scripts/reused/player_controller.gd",
+        "profile": "creation-fixed-controller/1",
+        "reason": "",
+        "rigCameraId": "26893878581",
+        "rigId": "26860324153",
+        "rigParentId": "26826769713",
+        "rigPath": "Player/CameraRig",
+        "rigPivotId": "26877101367",
+        "rigScriptId": "-9223372011084970692",
+        "rigScriptPath": "res://scripts/reused/camera_rig.gd",
+        "rootPlayerId": "26826769713",
+        "shape": {
+          "bodyResourceId": "-9223372010095114950",
+          "disabled": false,
+          "height": 1.79999995231628,
+          "id": "26843546930",
+          "kind": "CapsuleShape3D",
+          "ownerCount": 1,
+          "ownerDisabled": false,
+          "ownerNodeId": "26843546930",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "radius": 0.300000011920929,
+          "resourceId": "-9223372010095114950",
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "shapeCount": 1
+        },
+        "status": "supported"
+      },
+      "creation": {
+        "entities": [],
+        "obstacles": [],
+        "physicsTick": 15,
+        "playerBounds": {
+          "halfExtents": [
+            0.3,
+            0.9,
+            0.3
+          ],
+          "position": [
+            0,
+            -2.38418579323607e-8,
+            6
+          ]
+        },
+        "revision": 1,
+        "sceneObjectRefs": [
+          {
+            "ancestors": [
+              {
+                "nodeClass": "Node3D",
+                "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual",
+                "objectId": "26960987459",
+                "scenePath": "res://addons/kenney-city-building/models/building-small-a.glb",
+                "scriptPath": ""
+              },
+              {
+                "nodeClass": "StaticBody3D",
+                "nodePath": "ins-882b440ff2217a2e7519b1fc-e0",
+                "objectId": "26944210244",
+                "scenePath": "res://addons/kenney-city-building/module.tscn",
+                "scriptPath": "res://addons/kenney-city-building/module.gd"
+              }
+            ],
+            "nodeClass": "MeshInstance3D",
+            "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual/building-small-a",
+            "objectId": "26977764683",
+            "scenePath": "",
+            "scriptPath": ""
+          }
+        ],
+        "sceneObjectSelection": {
+          "counts": {
+            "candidates": 2,
+            "facesRead": 2,
+            "nodes": 33,
+            "triangles": 464,
+            "vertices": 734
+          },
+          "geometryBasis": "base-surface-arrays",
+          "pixelAccurate": false,
+          "reason": "nearest-supported-triangle",
+          "renderLodVerified": false,
+          "scope": "bounded-static-base-mesh-triangles",
+          "status": "hit"
+        },
+        "sceneObjectTarget": {
+          "ancestors": [
+            {
+              "nodeClass": "Node3D",
+              "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual",
+              "objectId": "26960987459",
+              "scenePath": "res://addons/kenney-city-building/models/building-small-a.glb",
+              "scriptPath": ""
+            },
+            {
+              "nodeClass": "StaticBody3D",
+              "nodePath": "ins-882b440ff2217a2e7519b1fc-e0",
+              "objectId": "26944210244",
+              "scenePath": "res://addons/kenney-city-building/module.tscn",
+              "scriptPath": "res://addons/kenney-city-building/module.gd"
+            }
+          ],
+          "nodeClass": "MeshInstance3D",
+          "nodePath": "ins-882b440ff2217a2e7519b1fc-e0/Visual/building-small-a",
+          "normal": [
+            4.37113882867379e-8,
+            0,
+            1
+          ],
+          "objectId": "26977764683",
+          "position": [
+            -4.16665172576904,
+            0.831161439418793,
+            1.00001871585846
+          ],
+          "scenePath": "",
+          "scriptPath": ""
+        },
+        "target": {
+          "entityId": null,
+          "normal": [
+            0,
+            1,
+            0
+          ],
+          "position": [
+            -8.98436737060547,
+            4.4703483581543e-8,
+            -4.78123998641968
+          ],
+          "revision": 1,
+          "surface": "ground"
+        },
+        "timeOfDay": 12
+      },
+      "error": "",
+      "inventory": {},
+      "logicalViewportSize": [
+        1200,
+        800
+      ],
+      "player": {
+        "onFloor": true,
+        "pitch": -0.11,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0.694738276196703
+      },
+      "progressCollisionGuard": {
+        "bodies": [
+          {
+            "id": "30400316772",
+            "nodePath": "@StaticBody3D@7",
+            "shape": 0
+          }
+        ],
+        "contactTolerance": 0.001,
+        "maxContactDepth": 0,
+        "playerId": "26826769713",
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "profile": "creation-player-collision/1",
+        "reason": "",
+        "shapeId": "26843546930",
+        "shapeResourceId": "-9223372010095114950",
+        "status": "passed",
+        "synchronization": {
+          "boundaries": 2,
+          "finishedFrame": 20,
+          "paused": true,
+          "startedFrame": 18
+        }
+      },
+      "ready": true,
+      "surfaceSize": [
+        1200,
+        800
+      ]
+    },
+    "protocol": "craftmine.godot-runtime/2",
+    "sampledAt": "2026-09-12T01:06:04Z",
+    "worldId": "world-6bc73235fe55"
+  },
+  "noModelExecution": {
+    "modelCallsAdded": 0,
+    "basis": "model/eval configuration stripped; only validated non-model controller calls; clean shutdown audit",
+    "controllerCalls": [
+      "status",
+      "primaryMode",
+      "godotObserve",
+      "worldPanel:godot.candidatePreview",
+      "worldPanel:godot.candidateApply",
+      "godotCaptureView",
+      "worldPanel:godot.runtimeSave",
+      "quit"
+    ]
+  },
+  "ok": true
+}
