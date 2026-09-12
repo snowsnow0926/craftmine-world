@@ -23,9 +23,9 @@ function validate(method,fields){
   if(method==='godotPerformanceTool')assert.deepEqual(fields.payload,{worldId:report.worldId,sessionId:report.sessionId});
 }
 function rpc(method,fields={},timeout=120000){
-  validate(method,fields);report.calls.push({method,fields});save();
+  validate(method,fields);const record={method,fields,startedAt:new Date().toISOString()};report.calls.push(record);save();
   if(ended||(cancelled&&method!=='quit'))return Promise.reject(Error('TEST_STOPPED'));
-  return new Promise((resolve,reject)=>{const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('TIMEOUT '+method));},timeout);pending.set(id,{timer,resolve,reject});child.send({type:'craftmine-headless',id,method,...fields});});
+  return new Promise((resolve,reject)=>{const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);record.error='TIMEOUT '+method;save();reject(Error(record.error));},timeout);pending.set(id,{timer,resolve,reject,record});child.send({type:'craftmine-headless',id,method,...fields});});
 }
 const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload});
 async function until(read,accept,label,timeout=120000){
@@ -41,7 +41,7 @@ async function boot(){
   child=spawn(client.executable,client.args,{cwd:client.cwd,env,windowsHide:true,stdio:['ignore','pipe','pipe','ipc']});launch.pid=child.pid;
   for(const name of ['stdout','stderr'])child[name].on('data',bytes=>fs.appendFileSync(path.join(out,launch.number+'-'+name+'.log'),bytes));
   exitPromise=new Promise(resolve=>{child.once('error',error=>{launch.error=String(error);ended=true;resolve();});child.once('exit',(code,signal)=>{ended=true;launch.exit={code,signal};for(const task of pending.values()){clearTimeout(task.timer);task.reject(Error('CLIENT_EXITED'));}pending.clear();resolve();});});
-  child.on('message',message=>{if(message?.type==='craftmine-headless-ready')ready=true;if(message?.type==='craftmine-headless-exit'){exitAudit=message;launch.audit=message;}const task=pending.get(message?.id);if(task){clearTimeout(task.timer);pending.delete(message.id);message.error?task.reject(Error(message.error)):task.resolve(message.result);}});
+  child.on('message',message=>{if(message?.type==='craftmine-headless-ready')ready=true;if(message?.type==='craftmine-headless-exit'){exitAudit=message;launch.audit=message;}const task=pending.get(message?.id);if(task){clearTimeout(task.timer);pending.delete(message.id);task.record.finishedAt=new Date().toISOString();if(message.error)task.record.error=message.error;else task.record.result=message.result;save();message.error?task.reject(Error(message.error)):task.resolve(message.result);}});
   await until(async()=>ready,Boolean,'controller');
   const status=await until(()=>rpc('status'),r=>r.windows?.length,'offscreen window');launch.status=status;
   assert.deepEqual(status.violations,[]);assert.ok(status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
