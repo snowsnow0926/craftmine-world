@@ -26,3 +26,9 @@
 本记录证明组件级真实引擎行为和网格包络，未声称产品完整 E 路径、保存事务、成品画面或模型自主创造已验收。首版仍是保守圆形占地、平地跟随，不扩展寻路。
 
 后续根审核发现无效配置曾在注册持久组件组之前返回，导致宿主可能漏掉坏组件。现将注册放在 `_ready` 最前，仍由 `configuration_error` 阻止状态验证；ID 使用与 registry 一致的 1–128 位字母数字/点/下划线/连字符，完整匹配，不允许冒号和尾随换行。新增空 ID、冒号、换行、未知外观、非法速度五类检查，均可被组枚举发现且不能验证自身 snapshot；只补合同回归，未扩展视觉或物理范围。
+
+## Native → Web 严格恢复的朝向修复
+
+实际完整 native 存档冷重开通过后，Web `runtime.load` 因 `pet-first` 状态不一致拒绝。原失败报告：`D:/cm-pet-integration-0912/test-results/pet-integration-GzyhBv/web-pNNkIM/report.json`；只加诊断输出、保留原比较及回滚的 `web-2eTlxk/report.json` 证实唯一差异为 yaw：`0.0421812161803246` → `0.0421812199056149`，其他字段完全相同。原因是恢复赋值后的 `global_rotation.y` 再次从实际矩阵分解，native 与 WASM 产生一个 float32 位差异。
+
+修复以朝向标量驱动真实旋转，运动和恢复统一入口，并记录设置后的实际 global basis。snapshot 返回原朝向标量；若外部节点或父节点改变实际 basis，就重新读取实际朝向。没有接受误差、伪造坐标或放宽 registry 比较，也没有修改原存档。99 项 native 检查通过（`D:/cm-pet-behavior-0912/test-results/pet-companion-cDo54v/report.json`），包含原失败值、非零及邻近 ±π 的精确恢复、真实 basis 设置和外部/祖先旋转失效检测。完整原存档至 Web 的复验由集成 agent 使用未改比较的真实 runtime 继续完成，单元结果不冒充该复验已通过。

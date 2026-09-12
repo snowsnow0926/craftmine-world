@@ -199,6 +199,18 @@ func _run() -> void:
 		first.rotation.y = angle
 		var turned: Dictionary = first.snapshot()
 		verify(first.restore(turned).is_empty() and first.snapshot() == turned, "non-axis yaw survives exact wire restore")
+	for angle in [0.0421812161803246, -0.0421651713550091, 0.734833762, PI - 0.0000001, -PI + 0.0000001]:
+		var heading_state := saved.duplicate(true)
+		heading_state.yaw = angle
+		heading_state = JSON.parse_string(JSON.stringify(heading_state))
+		verify(first.restore(heading_state).is_empty() and first.snapshot() == heading_state, "authoritative heading restores exact native/Web input " + str(angle))
+		var actual_expected := Basis.from_euler(Vector3(0, angle, 0))
+		verify(first.global_basis.is_equal_approx(actual_expected), "restored heading actually sets the node basis")
+	first.global_rotation.y = 0.5
+	verify(first.snapshot().yaw == JSON.parse_string(JSON.stringify(first.global_rotation.y)), "external rotation invalidates the heading cache")
+	world.rotation.y = 0.3
+	verify(first.snapshot().yaw == JSON.parse_string(JSON.stringify(first.global_rotation.y)), "ancestor rotation invalidates the heading cache")
+	world.rotation.y = 0
 	first.free()
 	var reopened := pet("pet-a", "团子", "dog", Vector3(-7, 0, 7))
 	var parsed: Dictionary = JSON.parse_string(JSON.stringify(saved))
