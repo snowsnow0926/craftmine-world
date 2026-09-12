@@ -135,8 +135,8 @@
         "app-bundle",
         "user-export"
       ],
-      "bytes": 730,
-      "sha256": "cbbfbd2c680b9f31883d5c0b0ffa330e732ba584bc51d9b91e04ca4c710c7a4a",
+      "bytes": 715,
+      "sha256": "c00d4ddbd4c3c1003a7dc83527f353f1e1e7f95ce4dda3eac16ef9fd45872b39",
       "outstanding": "Same authored-code licence decision as project.godot.",
       "notes": "Custom Web export shell; no third-party script, font or image is loaded."
     }

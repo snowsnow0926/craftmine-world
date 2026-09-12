@@ -405,8 +405,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 5448,
-      "sha256": "bfe659debede0be537e26f735efaeffb366a18f5759c1d16beae295d603022fd"
+      "bytes": 6631,
+      "sha256": "3fdf66ead134b6600dfd798c00b67b8f2f3be62278065d4e71957f2325969faf"
     },
     {
       "path": "observation.d.mts",
@@ -553,8 +553,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 1800,
-      "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
+      "bytes": 1759,
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
     },
     {
       "path": "target-feedback-configuration.d.mts",
@@ -601,8 +601,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 1478,
-      "sha256": "5eca427b07860e6bc4b2f0d8ca6901ec59212e63624e6e5f5d8bf0182e249123"
+      "bytes": 1444,
+      "sha256": "fa2ff2a84569fa80d4180850ec73be79c92655cca1db1a9f1986a33ea6a3c499"
     },
     {
       "path": "tests/progress.mjs",
