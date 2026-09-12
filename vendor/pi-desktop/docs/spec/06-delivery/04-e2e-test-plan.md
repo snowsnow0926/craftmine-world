@@ -9762,3 +9762,24 @@ source, budget owner/count, requirements and old ended-turn markers. Other
 callers retain their strict recovery policy; cross-world and busy leases reject.
 Retest the actual TURN_ENDED/EXPLICIT_RECOVERY_REQUIRED admission failure in a
 short isolated directory before declaring model continuation fixed.
+### Two-world continuation and complete input acceptance
+
+- Close the packaged app while its real provider stream is incomplete. The
+  durable host turn remains aborted, the domain draft remains interrupted, and
+  partial text survives restart. An ordinary new message continues the same
+  world/draft and budget owner; request preflight uses the durable request kind
+  even when that request is absent from the bounded prompt projection.
+- Repeat with an already expired finite request window in an independent copy
+  of the retained player profile. Explicit new-message recovery renews only the
+  finite window; request/token accounting and other limits remain unchanged.
+  Replaying the same resume does not extend it again. Generic recovery cannot
+  opt into that trusted intent through model arguments.
+- Web entry needs no second inner entry button to enable keyboard gameplay.
+  Validate the actual host-to-game key path as well as the engine input gate;
+  direct iframe event injection alone does not prove parent-view routing.
+  Dialogue, pause, switching, focus loss and key release must clear held keys.
+  Tests remain isolated and never acquire OS focus or request Pointer Lock.
+- Wait for two consecutive natural samples where the attached view, Web iframe
+  and canvas cover the available viewport before judging its screenshot.
+  Nonzero bounds or an early resize-frame capture are not sufficient. Keep
+  offscreen visual evidence separate from normal-renderer interaction evidence.
