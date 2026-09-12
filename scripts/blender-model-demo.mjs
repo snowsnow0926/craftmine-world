@@ -98,7 +98,7 @@ if (mode === 'generate') {
     BLENDER_USER_CONFIG: previewRoot, PYTHONDONTWRITEBYTECODE: '1', PYTHONNOUSERSITE: '1'};
   // A fixed trusted renderer loads only the generated data-format GLB. It never
   // opens/executes model-authored Python or .blend embedded scripts.
-  const child = spawn(executable, ['--background', '--factory-startup', '--disable-autoexec', '--python-use-system-env', '--python-exit-code', '1', '--python',
+  const child = spawn(executable, ['--background', '--factory-startup', '--threads', '4', '--disable-autoexec', '--python-use-system-env', '--python-exit-code', '1', '--python',
     path.join(root, 'scripts/blender-model-preview.py'), '--', model, preview, view], {cwd: previewRoot, env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe']});
   let log = ''; child.stdout.on('data', chunk => {log += chunk;}); child.stderr.on('data', chunk => {log += chunk;});
   process.once('SIGINT', () => child.kill()); process.once('SIGTERM', () => child.kill());
