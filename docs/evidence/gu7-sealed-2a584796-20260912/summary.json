@@ -1,0 +1,77 @@
+{
+  "format": "craftmine.sealed-module-readiness/1",
+  "commit": "2a584796a9da32f6c8c5e597804d03fdefff638a",
+  "packagePath": "D:/cm-agent-godot-0912/desktop/build/releases/2a584796a9da-2d754b04-1fd9-42af-a01c-6cb274b58219/output/win-unpacked",
+  "packageEvidence": "desktop/build/releases/2a584796a9da-2d754b04-1fd9-42af-a01c-6cb274b58219/package-evidence.json",
+  "packageEvidenceSha256": "963cc769075bc2398231d1e1e4e9cdf1b9a126c332b5287fa68770ad689ca62f",
+  "sourceArchiveHash": "d675fa37c1c479509c9dc470d90c54436e9845a71c4abe7bbeebc6f416510d36",
+  "buildManifestSha256": "404ba34f1757c5ff6cd91d0c533da167b9b0bf4fb57bc986864f62ad5506d283",
+  "payloadFiles": 1619,
+  "payloadBytes": 1018834353,
+  "signature": "unsigned-local-preview",
+  "records": {
+    "catalog-pass.json": {
+      "source": "test-results/desktop-native-complete-Z3SDxP/report.json",
+      "bytes": 448268,
+      "sha256": "a9f9adb4f0912541ba6df31d2acbc1993495b15992c6b3bd46518143f01b9808"
+    },
+    "catalog-busy.json": {
+      "source": "test-results/desktop-native-complete-KBwIZW/report.json",
+      "bytes": 358314,
+      "sha256": "496537825091eb139e5166080511ac4405c0da8c3ef5f6ad1a2336e467a4c732"
+    },
+    "catalog-view-pending.json": {
+      "source": "test-results/desktop-native-complete-wXBsVL/report.json",
+      "bytes": 363033,
+      "sha256": "7e370ad782fd3b913d6178724ab3b347868f0282d0aabd3e7d28cf28f54d8092"
+    },
+    "module-bootstrap.json": {
+      "source": "test-results/desktop-native-complete-TDnqnw/bootstrap.json",
+      "bytes": 433348,
+      "sha256": "795c804bc521a0d170d7364e7923eb9c384d899e797015bb6a623b5e7d8545a7"
+    },
+    "player-entry-failure.json": {
+      "source": "test-results/desktop-native-complete-TDnqnw/player-9fe3987f-2250-43da-a659-9d8d3b889818.json",
+      "bytes": 346603,
+      "sha256": "b98451e1ddffaa410a9fd5dc60c0305e2e1360aa320bc3471323ecc178bb69a2"
+    },
+    "player-config.json": {
+      "source": "test-results/gu3-confirmed-player-2a584796/player-config-snapshot.json",
+      "bytes": 1551,
+      "sha256": "f8dcb786a26fd0c04ed81adaa993339d534bf88050784be25f919196be2d6d1c"
+    },
+    "post-shutdown-jobs.json": {
+      "source": "test-results/desktop-native-complete-Z3SDxP/profile/plugins/data/craftmine.world/tasks.sqlite",
+      "bytes": 1597,
+      "sha256": "d69929140479518dd9f37d5dee39695d5e2a26987f53ab4f5dedc07d59111b90"
+    }
+  },
+  "catalog": {
+    "passed": true,
+    "steps": 25,
+    "worldId": "world-0f69a8446a38",
+    "jobs": [
+      "gjob-558326afc4b15142d4bac5cf1fae840d745fa22d3c0598d7972e1527429e93c7",
+      "gjob-cf98ca107407ac723d2ac0eaa7e04209406f10e0ac40c62bbf9ec630f8cd2e05",
+      "gjob-37caf81404b048fd85db8bd16bdef346e752cc46fa5a4e66e3a8aa5ce51ff9e3"
+    ]
+  },
+  "bootstrap": {
+    "passed": true,
+    "steps": 12,
+    "worldId": "world-6bc73235fe55",
+    "sessionId": "0fabed78-e6fe-40fc-9f81-26921feb9900"
+  },
+  "ordinaryPlayer": {
+    "status": "RUN_FAILED",
+    "reason": "CREATION_MIGRATION_NEEDED",
+    "observedModelCalls": 0,
+    "scope": "Ordinary entry rejected before model execution; not a model capability verdict"
+  },
+  "limits": [
+    "Both earlier full catalog attempts remain failed reports",
+    "Module layout and parameter wishes have not completed",
+    "Current runtime cohort was rejected by legacy source migration gate",
+    "No full GU0-GU7 completion"
+  ]
+}

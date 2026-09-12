@@ -40,7 +40,7 @@
     {
       "id": "GU3",
       "status": "in-progress",
-      "next": "Audited module query/preview, declaration preservation and final packed broker/current Core 18-step source test passed; actual live capture/parameter check/adoption/cold proof and broader property scopes remain"
+      "next": "Sealed2a double-module bootstrap passed, but ordinary layout prompt failed before model execution: legacy migration gate rejects modern cohort; fix complete-cohort no-op recognition, then continue same-session layout/parameter/adoption/cold proof"
     },
     {
       "id": "GU4",
@@ -60,10 +60,24 @@
     {
       "id": "GU7",
       "status": "in-progress",
-      "next": "First door/chest baseline plus same-session recolor continuation on sealed 6f preserve state across adoption/restart; generic patch did not exercise color helper; full matrix remains"
+      "next": "Sealed2a catalog25 passed; old-base gameplay/save/cold passed3/4, side-view native import crashed twice and is under same-source investigation; module ordinary entry failed with0 model calls; full matrix remains"
     }
   ],
   "evidence": [
+    {
+      "kind": "sealed-v2-product-and-entry",
+      "commit": "2a584796a9da32f6c8c5e597804d03fdefff638a",
+      "path": "docs/evidence/gu7-sealed-2a584796-20260912/summary.json",
+      "status": "mixed-scoped-results",
+      "scope": "1619 payload files; catalog25 and double-module bootstrap passed; ordinary entry migration refused before any model call; earlier two cold scheduling failures preserved"
+    },
+    {
+      "kind": "sealed-four-base-regression",
+      "commit": "2a584796a9da32f6c8c5e597804d03fdefff638a",
+      "path": "docs/evidence/ga27-legacy-bases-20260912/archive.json",
+      "status": "failed-three-of-four-passed",
+      "scope": "First-person/top-down/mining measured existing gameplay and full save/cold passed; side-view failed two native imports0xc0000005, no runtime result; seven clients clean"
+    },
     {
       "kind": "module-source-and-physics-integration",
       "commit": "c3b7f423",

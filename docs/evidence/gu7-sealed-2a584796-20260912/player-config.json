@@ -1,0 +1,51 @@
+{
+  "format": "craftmine.player-config-snapshot/1",
+  "credentialsIncluded": false,
+  "selectionBasis": "explicitly-selected-session",
+  "selectedSessionUnverified": false,
+  "foregroundSelectionObserved": false,
+  "sampledAt": "2026-09-12T00:15:52.988Z",
+  "sourceDatabase": "C:/Users/WINDOWS/AppData/Local/CraftmineWorld/pi.sqlite",
+  "sourceSession": {
+    "id": "68309eb2-26ad-46b9-8404-ef6ffac6a76c",
+    "updatedAtMs": 1789131876828,
+    "updatedAtUTC": "2026-09-11T13:04:36.828Z"
+  },
+  "sourceBinding": "providers.config_json.models entry matching sessions.provider_id + sessions.model_id",
+  "providerId": "1b71496e-2152-4cbe-ab0b-93be2ddeee48",
+  "vendorKey": "deepseek",
+  "baseUrl": "https://api.deepseek.com",
+  "protocol": "openai_compatible",
+  "apiStyle": "chat_completions",
+  "providerDefaultModelId": "deepseek-v4-pro",
+  "selectedIsProviderDefault": false,
+  "modelId": "deepseek-v4.1-flash-expires-on-0910",
+  "thinkingLevel": "max",
+  "contextWindow": 1000000,
+  "maxTokens": 384000,
+  "thinkingLevels": [
+    "medium",
+    "high",
+    "max",
+    "off"
+  ],
+  "modelBinding": {
+    "availableForSubagents": true,
+    "contextWindow": 1000000,
+    "defaultThinkingLevel": "max",
+    "id": "deepseek-v4.1-flash-expires-on-0910",
+    "maxTokens": 384000,
+    "supportsDocuments": true,
+    "supportsImages": true,
+    "thinkingLevels": [
+      "medium",
+      "high",
+      "max",
+      "off"
+    ]
+  },
+  "mode": "agent",
+  "permissionMode": "inherit",
+  "effectivePermissionUnverified": true,
+  "ordinaryDriverCompatible": true
+}

@@ -12,6 +12,36 @@ Player acceptance uses the selected session model, thinking level and ordinary p
 
 ## Module source parameters and declaration preservation
 
+The subsequent sealed `2a584796` package contains 1,619 payload files totaling
+1,018,834,353 bytes, with source ZIP hash
+`d675fa37c1c479509c9dc470d90c54436e9845a71c4abe7bbeebc6f416510d36`.
+The catalog trial passed all 25 steps in `desktop-native-complete-Z3SDxP` after
+two earlier full trials hit cold navigation scheduling failures. Both failures
+and their clean exits remain recorded; the test now waits for pending read-only
+view observations and retries only explicit busy open refusals, never uncertain
+operations. Read-only post-shutdown SQLite inspection confirmed exactly three
+successful jobs, with no replay-generated jobs.
+
+`06da67c6` adds a normal two-building bootstrap. Its actual sealed run
+`desktop-native-complete-TDnqnw` passed both imports/checks/adoptions and created
+an ordinary session. The user's selected configuration was refreshed read-only
+and applied exactly. However, the first ordinary layout wish was rejected by
+`CREATION_MIGRATION_NEEDED` before any model call. The migration gate recognizes
+legacy adapter bytes but not the modern complete cohort. This is a product entry
+failure, not a failed model attempt. The world/session and original wish remain
+available for continuation after the gate is corrected.
+
+`2ec3e0e4` records the separate same-package old-base matrix. Three of four
+scoped gameplay/save/cold cases passed; side-view ruins failed two native import
+attempts with `0xc0000005`. All seven clients closed cleanly. Same-source
+diagnosis is underway; a later successful independent import must not erase the
+original failed matrix or be described as a source fix without evidence.
+
+Evidence: `docs/evidence/gu7-sealed-2a584796-20260912` and
+`docs/evidence/ga27-legacy-bases-20260912`. Twelve combined archive/bootstrap
+tests pass while preserving the mixed actual outcomes. No goal requirement is
+completed merely because those evidence tests pass.
+
 `9fc9a7b2` adds a pure source capture/preview compiler for the two audited Kenney
 wrappers. `6dba01da` preserves original CP0 declarations in existing instance
 records and through source export, with byte/ref/lock/scene validation. Root
