@@ -1,0 +1,16 @@
+{
+  "format": "craftmine.fb03-final-package-byte-recheck/1",
+  "createdAt": "2026-09-12T18:26:35.498Z",
+  "commit": "125f1814df7ea32245a89723f9211f955d6bcbbf",
+  "archive": {
+    "path": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\Craftmine-World-portable-125f1814df7e.zip",
+    "bytes": 1033885106,
+    "sha256": "c15ee2ea1b1077f4f54d651b460ed7965b9f5c36567eb08c5ed6c3d821eb168b"
+  },
+  "extracted": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\extracted",
+  "files": 1657,
+  "payloadDigest": "fa786606f8484c052831fb7e50f4da2107b1300cadc7af4c6fd6f831106f3fcc",
+  "sealedMetadataUnchanged": true,
+  "payloadUnchanged": true,
+  "scope": "Byte verification after final isolated runtime tests; does not imply clean-machine installation or physical-input acceptance."
+}

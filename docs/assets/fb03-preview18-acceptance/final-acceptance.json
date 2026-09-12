@@ -1,0 +1,901 @@
+{
+  "format": "craftmine.fb03-curated-acceptance/1",
+  "createdAt": "2026-09-12T18:32:01.275Z",
+  "state": "engineering-acceptance-complete",
+  "package": {
+    "version": "0.14.4-preview.18",
+    "commit": "125f1814df7ea32245a89723f9211f955d6bcbbf",
+    "source": {
+      "commit": "125f1814df7ea32245a89723f9211f955d6bcbbf",
+      "runSha256": "f3fe5105f1d402dd81cd2104a33fdbb154866d31d6cc730a5741182828880a04",
+      "releaseSealSha256": "2bd389b36c3134e26de19dfb271c3361d21d93a55e62f9d5d9b59010793f777a",
+      "packageEvidenceSha256": "391615478d44ce4f11c607347d9c492581ae578df89ad2b768bb20250184aa9f",
+      "buildManifestSha256": "b59e973f955a2132ce968e80d56c7a75c2ec87fd53170ba3b8fa4bdf1fcccd41",
+      "sourceArchiveHash": "9ebe005a7192a918b12a06bd084dde802a7beac4014c848005284235cac1a8b8",
+      "payloadDigest": "fa786606f8484c052831fb7e50f4da2107b1300cadc7af4c6fd6f831106f3fcc"
+    },
+    "archive": {
+      "path": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\Craftmine-World-portable-125f1814df7e.zip",
+      "bytes": 1033885106,
+      "sha256": "c15ee2ea1b1077f4f54d651b460ed7965b9f5c36567eb08c5ed6c3d821eb168b"
+    },
+    "extracted": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\extracted",
+    "files": 1657,
+    "totalBytes": 1033470850,
+    "installers": [
+      {
+        "path": "Craftmine-World-Setup-0.14.4-preview.18.exe",
+        "bytes": 382032853,
+        "sha256": "9c802ee1896a529d6ec2a773a36925d31d872fd9a2358e0d4970bc4f21bd421c"
+      },
+      {
+        "path": "Craftmine-World-Setup-0.14.4-preview.18.exe.blockmap",
+        "bytes": 397264,
+        "sha256": "ef80754d5e1100f4bf6f39b5e098ed916584e0ae067017d407f74d4704c89470"
+      }
+    ],
+    "signature": "unsigned-local-preview"
+  },
+  "limits": [
+    "Isolated profiles only; original player profile was read-only.",
+    "No physical input, focus activation, or Pointer Lock. Normal native routes and offscreen model/gameplay checks have separate evidence.",
+    "Hidden normal windows require a recorded initial paint assist; F2 checks then use frozen animation frames without another paint assist.",
+    "Installer payload is verified; clean-machine installation and player physical-input confirmation remain untested."
+  ],
+  "reports": [
+    {
+      "label": "Normal creation cancellation and retained retry",
+      "scope": "2e6f5b64 native package; earlier candidate evidence",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-input/test-results/desktop-native-fb03-creation-C3aEkk/creation-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/input/test-results/desktop-native-fb03-creation-C3aEkk/creation-report.json",
+      "sourceReportSha256": "08e8c584e79f7acd2902a9f4dc80344979beb4b3a3a234e6b4f870193c08f405",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\2e6f5b64c2a4-ff1636d1-897e-423f-9de4-be69c2d076da\\portable-9d89adaf-6e87-4f24-9a73-b3880b00ba68\\extracted",
+      "development": false,
+      "checks": [
+        {
+          "name": "actual preparation UI accepts the player description while showing preparation progress",
+          "passed": true
+        },
+        {
+          "name": "return cancels only the new initialization, restores the original world and retains the description",
+          "passed": true
+        },
+        {
+          "name": "ordinary create Cancel returns to the original world and retains its failed draft",
+          "passed": true
+        },
+        {
+          "name": "world-list polling does not restart either cancelled initializer or enqueue new builds",
+          "passed": true
+        },
+        {
+          "name": "normal restart keeps both cancellations and the typed description without new jobs",
+          "passed": true
+        },
+        {
+          "name": "UI retry completes real initialization and explicit entry attaches the new native world",
+          "passed": true
+        },
+        {
+          "name": "the actual retained FB03 blank world retries and enters through the normal renderer",
+          "passed": true
+        },
+        {
+          "name": "both retry paths preserve the complete durable and actual Godot progress envelopes",
+          "passed": true
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "notes": [
+        "8 checks and 8 actual native attachments; complete retained progress preserved."
+      ]
+    },
+    {
+      "label": "Normal shortcut and cursor handling",
+      "scope": "2e6f5b64 native package; earlier candidate evidence",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-input/test-results/desktop-native-fb03-input-DCpvFM/fb03-input-normal-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/input/test-results/desktop-native-fb03-input-DCpvFM/fb03-input-normal-report.json",
+      "sourceReportSha256": "ae559327a90d7952a8cf30878bb77fa5ea5b5a19b4436e2dc8575f52d8bcfdd4",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": null,
+      "development": null,
+      "checks": [
+        {
+          "name": "main, plugin, and displayed world use normal rendering",
+          "passed": null
+        },
+        {
+          "name": "play retains actual fullscreen without activating the owner",
+          "passed": null
+        },
+        {
+          "name": "godot F2 raises the real native app layer with rAF stalled",
+          "passed": null
+        },
+        {
+          "name": "main-native Shift+F2 raises the real native app layer with rAF stalled",
+          "passed": null
+        },
+        {
+          "name": "Escape closes the full conversation",
+          "passed": null
+        },
+        {
+          "name": "closed-world Escape still opens pause",
+          "passed": null
+        },
+        {
+          "name": "all shortcuts retain the same world/build/instance",
+          "passed": null
+        },
+        {
+          "name": "real preload restores cursor while unfocused/paused and never requests lock",
+          "passed": null
+        }
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "launches": [],
+      "notes": []
+    },
+    {
+      "label": "Reversible failed-world removal",
+      "scope": "a2c228e7 native package; earlier candidate evidence",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-input/test-results/desktop-native-world-removal-mW1qkf/world-removal-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/input/test-results/desktop-native-world-removal-mW1qkf/world-removal-report.json",
+      "sourceReportSha256": "a47fd3aaee36d966926687901c39dfb083937fd021164ae86494a00b11f7653f",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\a2c228e7eb46-54979fdb-e1fd-4d8c-961c-b02dafe066e4\\portable-a56181f7-54c8-4b11-9e1b-63772ace4f32\\extracted",
+      "development": false,
+      "checks": [
+        {
+          "name": "actual Delete button removes the failed row durably while preserving the complete original world record",
+          "passed": true
+        },
+        {
+          "name": "archived world cannot be reopened through a stale direct navigation request",
+          "passed": true
+        },
+        {
+          "name": "Recently deleted Restore returns the same failed row without changing its world, progress or selected world",
+          "passed": true
+        },
+        {
+          "name": "deleting a selected failed placeholder uses real retained-view navigation to a usable world and preserves both saved worlds",
+          "passed": true
+        },
+        {
+          "name": "normal app and Rust restart preserve Recently deleted and the original recoverable world record",
+          "passed": true
+        },
+        {
+          "name": "source bytes, Git objects and refs, drafts and content revision records are unchanged through delete, restore and restart",
+          "passed": true
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "notes": [
+        "Test target is retained blank world-b7608e2da8e8. Source, Git, history and full world record preserved."
+      ]
+    },
+    {
+      "label": "Rejected retry UI candidate",
+      "scope": "a2c228e7 real failure retained",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-input/test-results/desktop-native-fb03-creation-JojGEq/creation-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/input/test-results/desktop-native-fb03-creation-JojGEq/creation-report.json",
+      "sourceReportSha256": "c5e0ec73ee84f3523b1abb8025c3dde8f911698439d7750afcb0543f19810256",
+      "sourceStatus": "FAILED",
+      "passed": false,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\a2c228e7eb46-54979fdb-e1fd-4d8c-961c-b02dafe066e4\\portable-a56181f7-54c8-4b11-9e1b-63772ace4f32\\extracted",
+      "development": false,
+      "checks": [
+        {
+          "name": "actual preparation UI accepts the player description while showing preparation progress",
+          "passed": true
+        },
+        {
+          "name": "return cancels only the new initialization, restores the original world and retains the description",
+          "passed": true
+        },
+        {
+          "name": "ordinary create Cancel returns to the original world and retains its failed draft",
+          "passed": true
+        },
+        {
+          "name": "world-list polling does not restart either cancelled initializer or enqueue new builds",
+          "passed": true
+        },
+        {
+          "name": "normal restart keeps both cancellations and the typed description without new jobs",
+          "passed": true
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "notes": []
+    },
+    {
+      "label": "First ordinary AK47 creation",
+      "scope": "2e6f5b64 actual Flash/max model; passed application only, later gameplay found gaps",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/ordinary-player-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/ordinary-player-report.json",
+      "sourceReportSha256": "7de01d02fd0d276df232fa45ca7bf93d4c2eaf2b04aa113b9f54d714c9c50c50",
+      "sourceStatus": "PASSED_PRODUCT_FLOW",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\2e6f5b64c2a4-ff1636d1-897e-423f-9de4-be69c2d076da\\portable-9d89adaf-6e87-4f24-9a73-b3880b00ba68\\extracted",
+      "development": false,
+      "checks": [
+        {
+          "name": "retained submission waits for the real initialized native Godot world"
+        },
+        {
+          "name": "visible dialogue target and real runtime share the exact formal build"
+        },
+        {
+          "name": "ordinary entry preserves its original model and thinking while the product resolves permission"
+        },
+        {
+          "name": "test setup never silently sets the global permission to Auto"
+        },
+        {
+          "name": "automatic completion leaves the actual world directly playable with no chat overlay"
+        },
+        {
+          "name": "actual visible result card identifies the complete world title and adopted outcome"
+        },
+        {
+          "name": "actual runtime metrics used exactly the selected model"
+        },
+        {
+          "name": "the retained Pomeranian script remains byte-identical after ordinary creation"
+        },
+        {
+          "name": "the original scene still contains its retained Pomeranian node"
+        },
+        {
+          "name": "ordinary model result was formally applied without permission acceptance or manual adopt"
+        },
+        {
+          "name": "ordinary creation finishes in actual native fullscreen"
+        },
+        {
+          "name": "first normal save and quit has no guard or shutdown failure"
+        },
+        {
+          "name": "reopening adds no model calls"
+        },
+        {
+          "name": "save and reopen retains the exact generated formal build"
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "notes": [
+        "12 real model requests; natural gameplay/style clarification; no manual permission or application.",
+        "The final model prose incorrectly suggested manual application despite a real automatically applied receipt."
+      ]
+    },
+    {
+      "label": "First generated weapon gameplay",
+      "scope": "Unmodified exported source from the generated 2e6f5b64 world in the real Godot engine",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/weapon-engine-Eeq90q/report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/weapon-engine-Eeq90q/report.json",
+      "sourceReportSha256": "f1c9638d2404dd1a7ce27cd2e9c6c10cf9e3e240559750c3e5bb8f9c7348124a",
+      "sourceStatus": "FAILED",
+      "passed": false,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\2e6f5b64c2a4-ff1636d1-897e-423f-9de4-be69c2d076da\\portable-9d89adaf-6e87-4f24-9a73-b3880b00ba68\\extracted",
+      "development": null,
+      "checks": [],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [],
+      "notes": [
+        "Actual firing, burst, cooldown, recoil, impact, tracer, casing, reload and aim passed.",
+        "Ammo did not participate in the save ledger; HUD clipping was separately visible in the generated-world image. Not accepted as complete."
+      ]
+    },
+    {
+      "label": "Bound conversation through real Core",
+      "scope": "Real retained AK47 profile copy through PluginRuntime/private router/Rust; no model or engine",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-integration/test-results/fb03-world-conversation-EwMBzr/report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/integration/test-results/fb03-world-conversation-EwMBzr/report.json",
+      "sourceReportSha256": "2b241513384cb40e1b4fff551d5dfab93efaec03f13dc9aa39bb3c08b4222250",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": null,
+      "development": null,
+      "checks": [],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [],
+      "notes": []
+    },
+    {
+      "label": "Permission provenance regression",
+      "scope": "Actual store in isolated headless browser; 20 checks",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-integration/test-results/fb03-default-permission-bPoqqH/report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/integration/test-results/fb03-default-permission-bPoqqH/report.json",
+      "sourceReportSha256": "6c73bcecb011647cc26446c3467268d0546da1af518670ccc86940df46a081c6",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": null,
+      "development": null,
+      "checks": [
+        {
+          "name": "first immersive world message materializes Auto naturally with original model thinking"
+        },
+        {
+          "name": "pure dialogue new-world entry creates Auto even while its presentation is preparing"
+        },
+        {
+          "name": "copied world retains explicit ask"
+        },
+        {
+          "name": "copied world retains explicit accept-edits"
+        },
+        {
+          "name": "history ask owns copied permission despite unrelated home configuration"
+        },
+        {
+          "name": "history accept-edits owns copied permission despite unrelated home configuration"
+        },
+        {
+          "name": "history auto owns copied permission despite unrelated home configuration"
+        },
+        {
+          "name": "history inherit retains global ask selection despite home Auto"
+        },
+        {
+          "name": "history inherit retains global accept-edits selection despite home Auto"
+        },
+        {
+          "name": "history inherit retains global auto selection despite home Auto"
+        },
+        {
+          "name": "unconfigured inherited world default does not use unrelated home Ask"
+        },
+        {
+          "name": "home-only copied world consumes its own ask choice"
+        },
+        {
+          "name": "home-only copied world consumes its own auto choice"
+        },
+        {
+          "name": "global ask remains inherited"
+        },
+        {
+          "name": "global accept-edits remains inherited"
+        },
+        {
+          "name": "ordinary workbench creation does not change its permission default"
+        },
+        {
+          "name": "legacy inherited world conversation becomes Auto before its ordinary prompt reaches the host"
+        },
+        {
+          "name": "an explicit Ask conversation is never changed by send"
+        },
+        {
+          "name": "a newer explicit choice cancels the pending defaulted send"
+        },
+        {
+          "name": "no input ownership request or unhandled page errors"
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [],
+      "notes": []
+    },
+    {
+      "label": "Conversation recovery race regression",
+      "scope": "Actual React/store in isolated headless browser; 17 checks",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-integration/test-results/fb03-conversation-recovery-VJKJno/report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/integration/test-results/fb03-conversation-recovery-VJKJno/report.json",
+      "sourceReportSha256": "8ff389f3cbfea11fc7cc445ac7d15825eda0ff17d1e45d0207e7c04e8e3e0b7e",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": null,
+      "development": null,
+      "checks": [
+        {
+          "name": "F2 recovers the existing world conversation without creating or sending anything"
+        },
+        {
+          "name": "only the verified world session becomes the saved preference"
+        },
+        {
+          "name": "a remembered session from another world cannot override host binding"
+        },
+        {
+          "name": "player text during host lookup prevents late restoration and stays untouched"
+        },
+        {
+          "name": "player attachment during host lookup prevents late restoration and stays untouched"
+        },
+        {
+          "name": "cached transcript is not revealed before guarded recovery completes"
+        },
+        {
+          "name": "late session.get cannot replace new home text"
+        },
+        {
+          "name": "manual history selection takes priority over late recovery"
+        },
+        {
+          "name": "explicit New Task takes priority without duplicate sessions"
+        },
+        {
+          "name": "navigation away cancels a late recovery result"
+        },
+        {
+          "name": "a different selected world invalidates the pending session restore"
+        },
+        {
+          "name": "an already active conversation is never replaced automatically"
+        },
+        {
+          "name": "a world without a real bound conversation remains an untouched home"
+        },
+        {
+          "name": "a removed session cannot be activated as an empty phantom conversation"
+        },
+        {
+          "name": "archiving during session.get prevents late recovery without a new navigation intent"
+        },
+        {
+          "name": "archiving during binding revalidation also prevents activation"
+        },
+        {
+          "name": "no focus, pointer lock or renderer errors"
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [],
+      "notes": []
+    },
+    {
+      "label": "Ordinary AK47 follow-up and restart",
+      "scope": "125f1814 actual Flash/max model; final generated gameplay is separately checked",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/ordinary-followup-NdWDsK/ordinary-player-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/ordinary-followup-NdWDsK/ordinary-player-report.json",
+      "sourceReportSha256": "a5a40c0664f67daf5e588bf19380f1cf5fa978b8e5257c68d924a35dcfe145a1",
+      "sourceStatus": "PASSED_PRODUCT_FLOW",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\extracted",
+      "development": false,
+      "checks": [
+        {
+          "name": "normal F2 restores the original world-bound conversation without manual selection"
+        },
+        {
+          "name": "retained submission waits for the real initialized native Godot world"
+        },
+        {
+          "name": "visible dialogue target and real runtime share the exact formal build"
+        },
+        {
+          "name": "ordinary entry preserves its original model and thinking while the product resolves permission"
+        },
+        {
+          "name": "test setup never silently sets the global permission to Auto"
+        },
+        {
+          "name": "automatic completion leaves the actual world directly playable with no chat overlay"
+        },
+        {
+          "name": "actual visible result card identifies the complete world title and adopted outcome"
+        },
+        {
+          "name": "actual runtime metrics used exactly the selected model"
+        },
+        {
+          "name": "the retained Pomeranian script remains byte-identical after ordinary creation"
+        },
+        {
+          "name": "the original scene still contains its retained Pomeranian node"
+        },
+        {
+          "name": "ordinary model result was formally applied without permission acceptance or manual adopt"
+        },
+        {
+          "name": "ordinary creation finishes in actual native fullscreen"
+        },
+        {
+          "name": "first normal save and quit has no guard or shutdown failure"
+        },
+        {
+          "name": "reopening adds no model calls"
+        },
+        {
+          "name": "save and reopen retains the exact generated formal build"
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "notes": [
+        "15 product-flow checks; 19 real model requests, including automatic repair of an actual compile error.",
+        "F2 restored the original bound conversation, automatic application reached a new formal build, and restart preserved it without another model request.",
+        "Final model prose correctly described automatic handoff after the turn; it did not require manual application.",
+        "The actual generated-world PNG was visually inspected by both the integration and model-flow agents; all three HUD lines are fully inside the viewport."
+      ]
+    },
+    {
+      "label": "Revised AK47 gameplay and noninitial save restore",
+      "scope": "Unmodified 29-file generated source manifest from the final package's formal build, in the pinned Godot engine",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/ordinary-followup-NdWDsK/weapon-engine-WAtNCM/report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/migration/test-results/desktop-native-fb03-ordinary-pq0eJJ/ordinary-followup-NdWDsK/weapon-engine-WAtNCM/report.json",
+      "sourceReportSha256": "2e9e35429fc3f8fcef37439918684b71d823a44207b9be2c3a72f7e8159403dc",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\extracted",
+      "development": null,
+      "checks": [],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [],
+      "notes": [
+        "16 gameplay checks plus independent-process restoration passed; all 4 engine subprocesses exited 0.",
+        "Real firing and reload produced rounds=29, reserve=206, shotsFired=5, reloads=1. Actual adapter capture was written and loaded by a new process; adapter restore reproduced the complete snapshot.",
+        "All 29 generated source hashes remained unchanged. This proves the original generated scripts in Godot, separate from packaged Web PCK firing or physical keyboard/mouse verification."
+      ]
+    },
+    {
+      "label": "Ordinary dialogue forest creation",
+      "scope": "125f1814 isolated offscreen package, actual Pro/medium model; exploration separately checked",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-migration/test-results/desktop-native-fb03-ordinary-Q4pV4h/ordinary-player-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/migration/test-results/desktop-native-fb03-ordinary-Q4pV4h/ordinary-player-report.json",
+      "sourceReportSha256": "289dbce8e18108e8ce74779a1b82b20c5cbf082cad6885959d98aa7d37be5ee7",
+      "sourceStatus": "PASSED_PRODUCT_FLOW",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\extracted",
+      "development": false,
+      "checks": [
+        {
+          "name": "retained submission waits for the real initialized native Godot world"
+        },
+        {
+          "name": "visible dialogue target and real runtime share the exact formal build"
+        },
+        {
+          "name": "ordinary entry preserves its original model and thinking while the product resolves permission"
+        },
+        {
+          "name": "test setup never silently sets the global permission to Auto"
+        },
+        {
+          "name": "automatic completion leaves the actual world directly playable with no chat overlay"
+        },
+        {
+          "name": "actual visible result card identifies the complete world title and adopted outcome"
+        },
+        {
+          "name": "actual runtime metrics used exactly the selected model"
+        },
+        {
+          "name": "ordinary model result was formally applied without permission acceptance or manual adopt"
+        },
+        {
+          "name": "ordinary creation finishes in actual native fullscreen"
+        },
+        {
+          "name": "first normal save and quit has no guard or shutdown failure"
+        },
+        {
+          "name": "reopening adds no model calls"
+        },
+        {
+          "name": "save and reopen retains the exact generated formal build"
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "exitAudit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "notes": [
+        "15 real model calls; naturally persisted Auto, no permission confirmation or manual adoption.",
+        "An actual runtime entity-transform check failure was repaired in the ordinary author turn; the result then auto-applied and reopened without new model calls.",
+        "Actual screenshot independently inspected by integration agent: a simplified forest with tree groups, rocks, signposts and chests."
+      ]
+    },
+    {
+      "label": "Forest exploration, collisions and retained progress",
+      "scope": "125f1814 actual packaged Web/Godot scene, protected engine movement and native bound captures; no OS input",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-migration/test-results/desktop-native-fb03-ordinary-Q4pV4h/forest-semantic-acceptance.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/migration/test-results/desktop-native-fb03-ordinary-Q4pV4h/forest-semantic-acceptance.json",
+      "sourceReportSha256": "44979569cf985fb4cb24f00c829c97f3f6dddb5ea096e557d84e0a8ea02754ec",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": "D:\\Craftmine World\\desktop\\build\\releases\\125f1814df7e-d63fc183-881a-4366-afad-4779d86c156d\\portable-2ff03a85-58d2-4d3c-8222-7a98e26f12ff\\extracted",
+      "development": null,
+      "checks": [
+        {
+          "name": "ordinary new-world creation completed naturally with Pro/medium and session Auto"
+        },
+        {
+          "name": "native gameplay launch 1 uses same formal build and exits without guard errors"
+        },
+        {
+          "name": "native gameplay launch 2 uses same formal build and exits without guard errors"
+        },
+        {
+          "name": "saved complete snapshot restores exactly at gameplay launch 2"
+        },
+        {
+          "name": "native gameplay launch 3 uses same formal build and exits without guard errors"
+        },
+        {
+          "name": "saved complete snapshot restores exactly at gameplay launch 3"
+        },
+        {
+          "name": "native gameplay launch 4 uses same formal build and exits without guard errors"
+        },
+        {
+          "name": "saved complete snapshot restores exactly at gameplay launch 4"
+        },
+        {
+          "name": "player walks more than 23 metres from the original clearing into the forest"
+        },
+        {
+          "name": "rock blocks a full forward movement segment"
+        },
+        {
+          "name": "backing out and choosing a different route advances farther into the forest"
+        },
+        {
+          "name": "a second sustained forward input against the tree produces no horizontal penetration"
+        },
+        {
+          "name": "player can back away from the solid tree"
+        },
+        {
+          "name": "final saved snapshot remains identical after reopening and waiting"
+        }
+      ],
+      "exit": null,
+      "exitAudit": null,
+      "launches": [],
+      "notes": [
+        "14 checks, four gameplay launches; all exited 0 with empty input/page/shutdown audits, and no new model calls.",
+        "Walked over 23 metres into the forest. A rock and a tree blocked sustained forward movement; backing out and selecting a different route worked.",
+        "Each new launch restored the preceding complete snapshot exactly. The final position and snapshot remained identical after reopening and waiting.",
+        "Generated, near-tree and final-reopen PNGs were independently viewed by the integration agent."
+      ]
+    },
+    {
+      "label": "Final normal compositor shortcuts and bound conversation recovery",
+      "scope": "125f1814 normal compositor, hidden and unfocusable, exact original shortcut software route",
+      "sourceReport": "D:/Craftmine Worktrees/fb03-input/test-results/desktop-native-fb03-final-input-9Bkupb/fb03-input-normal-report.json",
+      "retainedReport": "D:/Craftmine World/test-results/fb03-preserved/input/test-results/desktop-native-fb03-final-input-9Bkupb/fb03-input-normal-report.json",
+      "sourceReportSha256": "9fd1fdf3a263af2cea79999a88f557e6cb6051ecd77f76f5609cf386d7dda0f2",
+      "sourceStatus": "PASSED",
+      "passed": true,
+      "product": null,
+      "development": null,
+      "checks": [
+        {
+          "name": "main, plugin, and displayed world use normal rendering",
+          "passed": null
+        },
+        {
+          "name": "play retains actual fullscreen without activating the owner",
+          "passed": null
+        },
+        {
+          "name": "normal Godot F2 recovers the bound AK47 transcript with main rAF still stalled",
+          "passed": null
+        },
+        {
+          "name": "godot F2 raises the real native app layer with rAF stalled",
+          "passed": null
+        },
+        {
+          "name": "main-native Shift+F2 raises the real native app layer with rAF stalled",
+          "passed": null
+        },
+        {
+          "name": "Escape closes the full conversation",
+          "passed": null
+        },
+        {
+          "name": "closed-world Escape still opens pause",
+          "passed": null
+        },
+        {
+          "name": "all shortcuts retain the same world/build/instance",
+          "passed": null
+        },
+        {
+          "name": "real preload restores cursor while unfocused/paused and never requests lock",
+          "passed": null
+        }
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "launches": [],
+      "notes": [
+        "9 checks passed, exit 0, empty input/page/shutdown audits and no remaining process.",
+        "Actual attached AK47 formal build and instance, fullscreen, F2, Shift+F2, Escape and cursor restoration verified.",
+        "While main requestAnimationFrame remained frozen, F2 restored the real bound 7fe02795 conversation and its visible original transcript; no forced store/session or model call.",
+        "One initial hidden-paint assist returned UnknownVizError and restored background throttling. No later capture or animation-frame unfreezing assisted F2 recovery. Pixel verification and physical input remain separate."
+      ]
+    }
+  ]
+}
