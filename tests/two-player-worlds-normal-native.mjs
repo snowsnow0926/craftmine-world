@@ -1,11 +1,13 @@
 // Fresh real application, two original product cards, normal rendering.
 // This driver never issues OS input, shows a window, submits a model or binds a task.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{spawn}from'node:child_process';import{randomUUID,createHash}from'node:crypto';import{setTimeout as delay}from'node:timers/promises';import{playwright}from'../app/browser-tools.mjs';
-assert.ok(process.argv[2],'Usage: node tests/two-player-worlds-normal-native.mjs EXTRACTED_APP_DIR');
+assert.ok(process.argv[2],'Usage: node tests/two-player-worlds-normal-native.mjs EXTRACTED_APP_DIR [--web-visual-only]');
+const visualOnly=process.argv.includes('--web-visual-only');
 const pack=path.resolve(process.argv[2]);assert.ok(fs.existsSync(path.join(pack,'Craftmine World.exe')));
 fs.mkdirSync('D:/CMR/test-results',{recursive:true});const directory=fs.mkdtempSync('D:/CMR/test-results/desktop-native-two-'),profile=path.join(directory,'profile'),legacy=path.join(directory,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);
-fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy,rendering:'normal'}));
+fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy,rendering:visualOnly?'offscreen':'normal'}));
 const report={directory,profile,package:pack,checks:[],launches:[],attachments:[],scope:'Fresh no-account normal-renderer Web/Godot entry, F2, slot isolation, save and restart. No generated content or bound-conversation claim.',limits:['No OS mouse/keyboard/focus/activation/PointerLock','Only original product callbacks and read/diagnostic APIs','One initial hidden prepaint per launch; no later repaint/bounds assistance']};
+if(visualOnly){report.scope='Separate offscreen Web visual observation only; not proof of normal-compositor transitions, input or gameplay.';report.limits=['No model, OS input, focus, activation or PointerLock','Offscreen paint differs from the normal hidden-window acceptance; never substitutes for that evidence','One Web slot entry, screenshot and ordered quit only'];}
 const write=()=>fs.writeFileSync(path.join(directory,'two-world-normal-report.json'),JSON.stringify(report,null,2));const check=(name,value,evidence)=>{assert.ok(value,name);report.checks.push({name,evidence});write();console.log('PASS '+name);};
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const until=async(read,accept)=>{let value;for(let i=0;i<600;i++){value=await read();if(accept(value))return value;await delay(250);}report.lastUnsettled=value;write();throw Error('STATE_DID_NOT_SETTLE');};
@@ -64,10 +66,36 @@ async function launch(label){
       (report.visuals??=[]).push({kind,worldId:id,postVerification:true,notTransitionEvidence:true,pixelsVerified:false,error:String(error)});write();
     }
   };
-  return{page,record,rpc,native,action,navigation,panel,initialPaint,enter,attached,chat,switchCards,quit,stop,visual};
+  const webVisualState=async()=>{
+    const game=await getProduct();
+    const state=await game.evaluate(()=>({worldId:document.body.dataset.worldId,loaded:document.body.dataset.worldLoaded==='true',godot:document.body.dataset.godot==='true'}));
+    for(const frame of game.frames().filter(frame=>frame!==game.mainFrame())){
+      const canvas=await frame.evaluate(()=>{const node=document.querySelector('canvas'),rect=node?.getBoundingClientRect();return node&&rect?{width:rect.width,height:rect.height,pixelWidth:node.width,pixelHeight:node.height}:null;}).catch(()=>null);
+      if(canvas)return{...state,canvas};
+    }
+    return{...state,canvas:null};
+  };
+  return{page,record,rpc,native,action,navigation,panel,initialPaint,enter,attached,chat,switchCards,quit,stop,visual,webVisualState};
  }catch(error){await stop().catch(()=>{});throw error;}
 }
 try{
+ if(visualOnly){
+  active=await launch('offscreen-web-visual');
+  const id=await active.enter('web');report.webId=id;
+  const observed=await until(async()=>{
+    const views=await active.native(),world=views.pages.find(page=>page.url.includes('/views/world.html'));
+    const owner=views.windows.find(window=>window.children.some(child=>child.id===world?.id));
+    const surface=await active.webVisualState();
+    const attached=owner?.children.find(child=>child.id===world?.id);
+    return {views,surface,attached,ok:!!world?.offscreen&&attached?.bounds.width>0&&attached?.bounds.height>0&&surface.worldId===id&&surface.loaded&&!surface.godot&&surface.canvas?.width>0&&surface.canvas?.height>0};
+  },value=>value.ok);
+  check('the separate visual pass uses the actual Web slot in an attached offscreen view',true,observed);
+  await active.visual('web',id);
+  const picture=report.visuals?.at(-1);assert.ok(picture?.filename&&fs.existsSync(picture.filename),'offscreen Web capture is available');
+  const png=fs.readFileSync(picture.filename);assert.ok(png.length>1000&&png.readUInt32BE(16)>0&&png.readUInt32BE(20)>0);
+  check('offscreen Web pixels are saved for a separate human-readable visual review',true,{filename:picture.filename,sha256:createHash('sha256').update(png).digest('hex'),width:png.readUInt32BE(16),height:png.readUInt32BE(20)});
+  await active.stop();active=null;report.passed=true;
+ }else{
  active=await launch('fresh-web-godot');
  const initial=await active.navigation('world.playerWorlds');report.initialSlots=initial;check('fresh profile exposes exactly two host slots without requiring a model account',initial.slots.length===2&&new Set(initial.slots.map(slot=>slot.kind)).size===2);
  const webId=await active.enter('web');report.webId=webId;await active.initialPaint();await active.attached('web',webId);check('Web card enters a real visible-size normal runtime',true);
@@ -80,5 +108,6 @@ try{
  const after=await active.panel('world.read',{id:godotId});assert.equal(after.world.build.id,report.godotBefore.buildId);assert.deepEqual(after.world.snapshot,report.godotBefore.snapshot);check('restart restores selected Godot build and complete committed progress',true);
  await active.chat('godot',godotId);const webStored=await active.panel('world.read',{id:webId});assert.deepEqual(webStored.world.snapshot,report.webSavedOnSwitch.snapshot);await active.switchCards();const returned=await active.enter('web');assert.equal(returned,webId);await active.attached('web',webId);const webAfter=await active.panel('world.read',{id:webId});assert.equal(webAfter.world.build.id,report.webBefore.buildId);assert.equal(webAfter.world.build.id,report.webSavedOnSwitch.buildId);check('switching back enters the same Web slot with preserved progress',true);
  await active.chat('web',webId);await active.quit();check('Web Save and exit also completes through the ordered lifecycle',true);active=null;report.passed=true;
+ }
 }catch(error){report.error=String(error.stack??error);if(active){report.failureSlots=await active.navigation('world.playerWorlds').catch(()=>null);report.failureDOM=await active.page.evaluate(()=>document.body.innerText.slice(-14000)).catch(()=>null);}process.exitCode=1;}
 finally{if(active)await active.stop().catch(error=>report.cleanupError=String(error));write();console.log(JSON.stringify({directory,passed:report.passed,error:report.error}));}
