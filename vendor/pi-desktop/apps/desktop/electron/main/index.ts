@@ -1083,6 +1083,17 @@ const godotCreationFactory = () => godotCreation;
 const godotPanel = createGodotPanelCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
   creation: godotCreationFactory,
+  compatibility: {
+    required: async worldId => {
+      const formal = await plugins.requestCraftmineHost("godotRuntime.exportSource", {worldId}) as any;
+      if (formal.worldId !== worldId) throw Error("COLLISION_UPGRADE_FORMAL_CHANGED");
+      return planCreationCollisionUpgrade({baseId: formal.baseId, formalFiles: formal.files, draftFiles: formal.files, resourcesRoot: godotRoot}).status === "planned";
+    },
+    apply: async worldId => {
+      const result = await collisionMaintenance.start(worldId);
+      return {status: result.status, reason: result.reason};
+    },
+  },
   resumeRestored: async worldId => {
     const init = await plugins.requestCraftmineHost("godotWorld.initStatus", {worldId}) as any;
     if (init.rebuildRequired) await godotRestores.start(worldId);

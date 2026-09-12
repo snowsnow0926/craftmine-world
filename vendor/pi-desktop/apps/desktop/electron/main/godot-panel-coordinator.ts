@@ -10,6 +10,11 @@ type Options = {
   /** Client-side Godot creation. Absent only in tests that never create worlds. */
   creation?: (() => ReturnType<typeof createGodotWorldFactory> | null) | null;
   resumeRestored?: (worldId: string) => Promise<void>;
+  /** Host-owned exact-source compatibility work; never accepts player patches. */
+  compatibility?: {
+    required: (worldId: string) => Promise<boolean>;
+    apply: (worldId: string) => Promise<{status: string; reason?: string}>;
+  };
 };
 /** Authenticated panel actions may choose a world; they never supply runtime data or paths. */
 export function createGodotPanelCoordinator(options: Options) {
@@ -73,6 +78,7 @@ export function createGodotPanelCoordinator(options: Options) {
         if (!options.host.instance && await options.selection() === payload.worldId) {
           const initialization = await currentCreation()?.status(payload.worldId);
           if (initialization && initialization.state !== "ready") return {worldId: payload.worldId, state: "loading", initializing: true};
+          if (options.host.state?.worldId === payload.worldId && options.host.state.state === "failed") return options.host.state;
         }
         await requireCurrent(payload, ["worldId"]); return options.host.state;
       }
@@ -122,6 +128,7 @@ export function createGodotPanelCoordinator(options: Options) {
       if (switching || typeof payload.id !== "string" || Object.keys(payload).some(key => key !== "id")) throw new Error("WORLD_BUSY");
       switching = true;
       let previous: string | null = null;
+      let compatibilitySelection = false;
       let release: (() => void) | undefined;
       try {
         release = await options.host.holdSelectionSync();
@@ -135,7 +142,22 @@ export function createGodotPanelCoordinator(options: Options) {
         }
         // The descriptor resolves only a verified applied artifact; errors are
         // not a legacy fallback and do not change the saved selection.
-        const next = await options.adapter.describe(payload.id);
+        let next = await options.adapter.describe(payload.id);
+        if (next && await options.compatibility?.required(payload.id)) {
+          // Save the healthy world through its normal checkpoint before
+          // selecting an old world whose PCK cannot restore its saved state.
+          if (await options.selection() !== previous) throw Error("GODOT_SELECTION_CHANGED_DURING_COMPATIBILITY");
+          await options.host.switchWorld(null);
+          if (await options.selection() !== previous) throw Error("GODOT_SELECTION_CHANGED_DURING_COMPATIBILITY");
+          compatibilitySelection = true;
+          await options.invoke("world.open", {id: payload.id});
+          if (await options.selection() !== payload.id) throw Error("GODOT_SELECTION_CHANGED_DURING_COMPATIBILITY");
+          const result = await options.compatibility!.apply(payload.id);
+          if (result.status !== "applied" && !(result.status === "skipped" && result.reason === "already-current")) throw Error("GODOT_COMPATIBILITY_APPLY_UNCONFIRMED");
+          if (await options.selection() !== payload.id) throw Error("GODOT_SELECTION_CHANGED_DURING_COMPATIBILITY");
+          next = await options.adapter.describe(payload.id);
+          if (await options.selection() !== payload.id) throw Error("GODOT_SELECTION_CHANGED_DURING_COMPATIBILITY");
+        }
         await options.host.switchWorld(next);
         const result = await options.invoke("world.open", {id:payload.id});
         options.host.setSurfaceVisible(true);
@@ -145,12 +167,20 @@ export function createGodotPanelCoordinator(options: Options) {
         // Never run a view whose identity is uncertain relative to the panel.
         let recoveryError: unknown;
         try {
-          const actual = await options.selection();
+          let actual = await options.selection();
+          if (compatibilitySelection && actual === payload.id && previous && actual !== previous) {
+            // Restore only the selection this transaction owns. A newer
+            // third-world selection must never be overwritten by rollback.
+            if (options.host.instance?.worldId === payload.id) await options.host.switchWorld(null);
+            if (await options.selection() !== payload.id) throw Error("GODOT_SELECTION_CHANGED_DURING_FAILED_OPEN");
+            await options.invoke("world.open", {id: previous});
+            actual = await options.selection();
+          }
           if (actual !== previous) throw new Error("GODOT_SELECTION_CHANGED_DURING_FAILED_OPEN");
           if (options.host.instance?.worldId !== previous) {
             await options.host.switchWorld(previous ? await options.adapter.describe(previous) : null);
           }
-          await options.host.resume();
+          if (options.host.instance) await options.host.resume();
         } catch (failure) {
           recoveryError = failure;
           options.host.setSurfaceVisible(false);

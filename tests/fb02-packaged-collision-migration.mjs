@@ -14,6 +14,7 @@ import {deriveAdditiveProgress} from '../desktop/godot/shared/progress-migration
 assert.ok(process.argv[2]&&process.argv[3]&&process.argv[4],
   'Usage: node tests/fb02-packaged-candidate-lifecycle.mjs APP_DIR READONLY_SOURCE_PROFILE WORLD_ID [--fresh-check]');
 const repo=path.resolve(import.meta.dirname,'..'),pack=path.resolve(process.argv[2]),source=path.resolve(process.argv[3]),worldId=process.argv[4];
+const viaOtherWorld=process.argv.includes('--via-other-world');
 assert.match(worldId,/^[a-z0-9][a-z0-9-]{1,47}$/);
 const directory=fs.mkdtempSync(path.join(repo,'test-results/desktop-native-collision-migration-')),profile=path.join(directory,'profile'),legacy=path.join(directory,'legacy'),token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(legacy);
@@ -28,6 +29,7 @@ for(const name of ['settings.json','asset-catalog','content-history','godot-sour
 for(const name of ['godot-worlds','desktop/Local Storage'])if(fs.existsSync(path.join(source,name)))fs.cpSync(path.join(source,name),path.join(profile,name),{recursive:true,filter:file=>path.basename(file)!=='LOCK'});
 const sourceDb=new DatabaseSync(path.join(from,'tasks.sqlite'),{readOnly:true});await backup(sourceDb,path.join(to,'tasks.sqlite'));sourceDb.close();
 const settingsPath=path.join(to,'settings.json'),settings=JSON.parse(fs.readFileSync(settingsPath,'utf8'));settings.activeWorldId=worldId;fs.writeFileSync(settingsPath,JSON.stringify(settings));
+if(viaOtherWorld){const db=new DatabaseSync(path.join(to,'tasks.sqlite'),{readOnly:true});try{const seed=db.prepare('SELECT id,document FROM craftmine_worlds WHERE id<>?').all(worldId).find(row=>!JSON.parse(row.document).build.godot);assert.ok(seed,'an existing non-Godot seed world can open without repairing the target first');settings.activeWorldId=seed.id;fs.writeFileSync(settingsPath,JSON.stringify(settings));}finally{db.close();}}
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
 const development=fs.existsSync(path.join(pack,'package.json'));
 const asar=loadPackageAsar(path.join(repo,'vendor/pi-desktop/apps/desktop'));
@@ -77,8 +79,9 @@ async function launch(label){
       await delay(250);
     }
     assert.ok(product,'retained product view exists');await product.waitForFunction(()=>document.body.dataset.worldLoaded==='true',{},{timeout:120000});
-    if(await product.evaluate(()=>document.body.dataset.worldId)!==worldId)await product.evaluate(worldId=>craftmineView.navigate({operation:'switch',id:worldId}),worldId);
-    await product.waitForFunction(id=>document.body.dataset.worldId===id&&document.body.dataset.worldLoaded==='true',worldId,{timeout:120000});
+    const expectedWorldId=viaOtherWorld&&label==='cold-old-guard'?settings.activeWorldId:worldId;
+    if(await product.evaluate(()=>document.body.dataset.worldId)!==expectedWorldId)await product.evaluate(worldId=>craftmineView.navigate({operation:'switch',id:worldId}),expectedWorldId);
+    await product.waitForFunction(id=>document.body.dataset.worldId===id&&document.body.dataset.worldLoaded==='true',expectedWorldId,{timeout:120000});
     // Let finite startup maintenance settle before touching candidate transactions.
     await delay(process.argv.includes('--maintenance-interrupt')?100:2000);
     const panel=(channel,payload={})=>product.evaluate(({channel,payload})=>pluginBridge.invoke(channel,payload),{channel,payload});
@@ -130,13 +133,26 @@ assert.equal(report.original.world.snapshot.body.player.position[1],0.8989713191
 let active;
 try{
  active=await launch('cold-old-guard');
+ if(viaOtherWorld){
+  assert.equal(maintenance().filter(row=>row.data.status==='applied').length,0,'the actual old target must remain unrepaired before the player switches');
+  const options=await active.navigation('world.createOptions');
+  const base=options.bases.find(base=>base.id==='creation-sandbox');assert.ok(base);
+  const created=await active.navigation('world.create',{title:'兼容性切换验收健康世界',baseId:base.id,starterId:base.starters[0].id,operationId:'healthy-'+randomUUID()});
+  await active.product.waitForFunction(id=>document.body.dataset.worldId===id&&document.body.dataset.worldLoaded==='true',created.id,{timeout:900000});
+  report.healthyBefore={world:await active.panel('world.read',{id:created.id}),snapshot:await active.rpc('godotSnapshot')};
+  report.targetBeforeSwitch=await active.formal();assert.equal(report.targetBeforeSwitch.world.build.id,report.original.world.build.id);assert.deepEqual(report.targetBeforeSwitch.world.snapshot,report.original.world.snapshot);
+  await active.navigation('world.switch',{id:worldId});
+  await active.product.waitForFunction(id=>document.body.dataset.worldId===id&&document.body.dataset.worldLoaded==='true',worldId,{timeout:900000});
+  report.healthyAfter=await active.panel('world.read',{id:created.id});assert.deepEqual(report.healthyAfter.world.snapshot,report.healthyBefore.snapshot.state);
+  check('selecting an unrepaired old world from a newly created healthy native world automatically saves, migrates and enters it',true);
+ }
  report.maintenance=maintenance();const applied=report.maintenance.find(row=>row.data.status==='applied')?.data;
  assert.ok(applied,'automatic startup adopted the checked collision compatibility source');
  report.after={formal:await active.formal(),content:await active.content(),snapshot:await active.rpc('godotSnapshot')};
  assert.notEqual(report.after.formal.world.build.id,report.original.world.build.id);
  assert.deepEqual(report.after.formal.world.snapshot,report.original.world.snapshot);
  assert.deepEqual(report.after.snapshot.state,report.original.world.snapshot);
- check('cold old-PCK failure automatically recovers the exact complete saved snapshot without a player retry or coordinate edit',true);
+ check('the legacy saved pose automatically recovers with its exact complete snapshot and no player retry or coordinate edit',true);
  report.newManifest=buildManifest(report.after.formal.world.build.id);
  const retained=manifest=>manifest.files.filter(f=>f.kind==='source'&&f.path!==guardPath);
  assert.deepEqual(retained(report.newManifest),retained(report.originalManifest));
