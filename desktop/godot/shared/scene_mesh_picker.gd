@@ -1,6 +1,6 @@
 extends RefCounted
 
-# Fixed static observer. No collider creation, script calls, state mutation,
+# Fixed rigid-mesh observer. No collider creation, script calls, state mutation,
 # resource cache or claims about rendered pixels. Integration must pin this file.
 const MAX_NODES := 512
 const MAX_CANDIDATES := 64
@@ -32,7 +32,7 @@ func _entry(box: AABB, from: Vector3, to: Vector3) -> float:
 	return low * delta.length()
 
 func _answer(status: String, reason: String, counts: Dictionary, excluded: Array) -> Dictionary:
-	return {"status": status, "reason": reason, "scope": "bounded-static-mesh-triangles", "counts": counts.duplicate(), "excludedObjectIds": excluded.duplicate(), "blockRaySelection": status == "fallback", "pixelAccurate": false}
+	return {"status": status, "reason": reason, "scope": "bounded-rigid-mesh-triangles", "counts": counts.duplicate(), "excludedObjectIds": excluded.duplicate(), "blockRaySelection": status == "fallback", "pixelAccurate": false}
 
 func _label_radius(bounds: AABB, basis: Basis) -> float:
 	var far_corner := Vector3(maxf(absf(bounds.position.x), absf(bounds.end.x)), maxf(absf(bounds.position.y), absf(bounds.end.y)), maxf(absf(bounds.position.z), absf(bounds.end.z)))
@@ -114,8 +114,10 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 		var children := node.get_child_count()
 		if counts.nodes + queue.size() + children > MAX_NODES: return _answer("fallback", "node-budget", counts, excluded)
 		for index in children: queue.append(node.get_child(index))
-		if node is AnimationMixer or node is Skeleton3D:
-			return _answer("fallback", "animation-or-skeleton", counts, excluded)
+		# Animation/Skeleton nodes render no surface themselves. Rigid parts
+		# use their current native global transforms below; no animation is
+		# advanced or sampled by this observer. Skin, blend shapes and other
+		# unsupported actual geometry still fail closed at the mesh checks.
 		if not node is GeometryInstance3D: continue
 		var geometry := node as GeometryInstance3D
 		if geometry.layers & camera.cull_mask == 0 or geometry.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY: continue
