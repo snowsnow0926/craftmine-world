@@ -677,7 +677,7 @@
       },
       {
         "name": "godot_performance_observe",
-        "description": "Read-only performance observation for the bound Godot build. Returns identity-bound frame and process metrics; unavailable runtime channels remain unknown. No source or world state is changed.",
+        "description": "Read current Godot renderer process working-set memory in MiB, bound to this task's world, formal build and independently verified live instance. This is whole-process memory including runtime overhead, not exclusive world or GPU memory. Engine frame time, physics time, object count and GPU time remain unknown until trusted collectors exist. No workspace lease, source edits, job cancellation or save changes.",
         "risk": "low",
         "schema": {
           "type": "object",

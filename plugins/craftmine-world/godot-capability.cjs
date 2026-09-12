@@ -243,6 +243,8 @@ function buildInventory({manifest,routing={},handshake=null,localTools={},execut
     const modes=EXECUTION_MODES[definition.name]?executionModes(definition.name,handshake,executor,services):null;
     if(local){
       const state=local.modes?modeInventory(definition.name,local,handshake,executionContext,methodOverrides,services):localState(local,handshake);
+      const missingServices=(local.requiredServices||[]).filter(key=>!services?.wired?.some(provider=>provider.key===key));
+      if(state.reachable===true&&missingServices.length){state.reachable=services?false:null;state.blockedBy=services?'TOOL_SERVICE_UNAVAILABLE':'TOOL_SERVICE_WIRING_UNKNOWN';}
       return {name:definition.name,risk:definition.risk||'unknown',hostMethod:local.hostMethod||[...new Set((state.modes||[]).map(mode=>mode.hostMethod).filter(Boolean))].join('+')||null,advertised:true,
         wired:true,reachable:state.reachable,blockedBy:state.blockedBy,owner:local.owner||null,local:true,...(state.modes||modes?{modes:state.modes||modes}: {})};
     }

@@ -1,4 +1,25 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {observeGodotPerformance} from '../../plugins/craftmine-world/godot-performance-observation.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {observeGodotPerformance} from '../../plugins/craftmine-world/godot-performance-observation.mjs';
 const scope={worldId:'w1',buildId:'b1',instanceId:'i1'};
-test('projects only identity-bound real observations and explicit unknowns',()=>{const r=observeGodotPerformance({scope,sample:{...scope,sampledAt:'2026-09-12T00:00:00Z',frameTimeMs:6.2,objectCount:14},now:()=> '2026-09-12T00:00:01Z'});assert.equal(r.measured.frameTimeMs.source,'real-engine');assert.equal(r.measured.objectCount.value,14);assert.equal(r.measured.physicsStepMs.status,'unknown');assert.equal(r.measured.gpuTimeMs.status,'unknown');assert.match(r.measurementHash,/^[a-f0-9]{64}$/)});
-test('rejects foreign scope and invalid values',()=>{assert.throws(()=>observeGodotPerformance({scope,sample:{worldId:'other',buildId:'b1',instanceId:'i1',sampledAt:'x'}}),/SCOPE_MISMATCH/);assert.throws(()=>observeGodotPerformance({scope,sample:{...scope,sampledAt:'x',frameTimeMs:-1}}),/INVALID_PERFORMANCE_VALUE/)})
+const sample={...scope,sampledAt:'2026-09-12T00:00:00Z',memoryWorkingSetMb:120.5,provenance:'electron-app-metrics',measurementScope:'renderer-process',rendererProcessId:42};
+const project=(patch={},expected=scope)=>observeGodotPerformance({scope:expected,sample:{...sample,...patch},now:()=> '2026-09-12T00:00:01Z'});
+
+test('only actual process channel is projected; invented engine metrics stay unknown',()=>{
+  const r=project({frameTimeMs:6.2,physicsStepMs:0,objectCount:14,gpuTimeMs:0});
+  assert.equal(r.available,true);assert.equal(r.measured.memoryWorkingSetMb.value,120.5);
+  assert.equal(r.measured.memoryWorkingSetMb.unit,'MiB');
+  for(const key of ['frameTimeMs','objectCount','physicsStepMs','gpuTimeMs'])assert.equal(r.measured[key].status,'unknown');
+  assert.match(r.measurementHash,/^[a-f0-9]{64}$/);
+  assert.notEqual(project({rendererProcessId:43}).measurementHash,r.measurementHash);
+  assert.notEqual(project({memoryWorkingSetMb:121}).measurementHash,r.measurementHash);
+  assert.deepEqual(project({}, {...scope,secret:'not forwarded'}).scope,scope);
+});
+
+test('rejects foreign identities, stale times, invalid values and untrusted measurement origins',()=>{
+  for(const key of ['worldId','buildId','instanceId'])assert.throws(()=>project({[key]:'other'}),/SCOPE_MISMATCH/);
+  for(const value of [-1,NaN,Infinity,null,'120'])assert.throws(()=>project({memoryWorkingSetMb:value}),/INVALID_PERFORMANCE_VALUE/);
+  assert.throws(()=>project({sampledAt:'x'}),/SAMPLE_TIME/);
+  for(const sampledAt of ['2026-09-11T23:59:00Z','2026-09-12T00:01:00Z'])assert.throws(()=>project({sampledAt}),/STALE/);
+  for(const patch of [{provenance:'game-payload'},{measurementScope:'world'},{rendererProcessId:0},{rendererProcessId:1.5}])assert.throws(()=>project(patch),/PROVENANCE_UNVERIFIED/);
+});

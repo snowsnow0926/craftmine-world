@@ -121,6 +121,7 @@ async function onLoad() {
   });
   const toolServices={
     ...hostProviders,
+    ...(typeof pi.craftmine?.godotPerformance==='function'?{samplePerformance:input=>pi.craftmine.godotPerformance(input)}:{}),
     buildReadWaitMs:30000,
     // The seven-kind limit ledger is read through this process's core client.
     budget:createCoreBudgetProvider(core),

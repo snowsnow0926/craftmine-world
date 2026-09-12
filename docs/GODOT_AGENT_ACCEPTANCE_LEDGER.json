@@ -234,8 +234,8 @@
       "scenario": "规模与性能优化",
       "requiredEvidence": "同设备同要求实测，功能与画面不退化 GU6",
       "status": "unproven",
-      "evidence": [],
-      "next": "Inspect current implementation and collect evidence at the requirement scope"
+      "evidence": ["docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md"],
+      "next": "Renderer process collector and packaged broker lifecycle tests are implemented; isolated HTML renderer OS metric is measured. Actual Godot-world performance, same-device scaled comparison and preserved gameplay/visuals remain unproven."
     },
     {
       "id": "GA25",
