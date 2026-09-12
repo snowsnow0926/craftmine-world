@@ -45,6 +45,27 @@ instead of becoming fabricated zero measurements.
 
 ## Trust and integration boundary
 
+The integrator added `godot-engine-performance.mjs` to validate the exact fixed
+engine version, monitor names, raw units, finite values, integer counters,
+sampling sequence and environment constraints. It preserves seconds as raw units
+and exposes separate millisecond values; it refuses measured timings while paused,
+draw statistics before any rendered frame or in headless/dummy mode, fabricated
+GPU measurements, and values attached to unknown fields. Its output explicitly
+says structural validation does not attest source/transport authority.
+
+Eleven parser/packaged-broker tests passed, including validation of all five real
+native collector samples and their retained stdout/stderr hashes. The integrator
+also reran the native experiment in `engine-performance-native-1Kdk6e`; its exact
+report and logs are archived alongside the first native result with `integrator-`
+prefixes. An earlier local run `vTkioF` used equivalent CRLF fixture bytes and is
+kept separately in test-results; the final run uses the exact committed fixture.
+
+The collector is declared as an app-bundle resource with its byte hash; it is not
+copied into ordinary generated worlds yet. The parser is included in plugin
+packaging but not called by the production performance tool. All five staged
+base materializers still pass. The existing runtime bridge and source cohorts
+have not been changed by this increment.
+
 The format is `craftmine.godot-engine-performance/1`, profile `engine-monitor/1`.
 Sequence, process/physics frame counts and timestamps provide sampling context;
 request sequence increments do not prove monitors themselves refreshed. Paused
