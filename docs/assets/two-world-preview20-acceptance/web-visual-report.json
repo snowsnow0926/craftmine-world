@@ -1,0 +1,434 @@
+{
+  "directory": "D:/CMR/test-results/desktop-native-two-9fKUmu",
+  "profile": "D:\\CMR\\test-results\\desktop-native-two-9fKUmu\\profile",
+  "package": "D:\\Craftmine World\\desktop\\build\\releases\\03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18\\portable-3f274a64-aae8-4a36-b630-ec14ce905b46\\extracted",
+  "checks": [
+    {
+      "name": "the separate visual pass uses the actual Web slot in an attached offscreen view",
+      "evidence": {
+        "views": {
+          "windows": [
+            {
+              "visible": false,
+              "focusable": false,
+              "fullscreen": true,
+              "children": [
+                {
+                  "id": 1,
+                  "bounds": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2560,
+                    "height": 1440
+                  }
+                },
+                {
+                  "id": 2,
+                  "bounds": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2560,
+                    "height": 1440
+                  }
+                }
+              ]
+            }
+          ],
+          "pages": [
+            {
+              "id": 2,
+              "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+              "offscreen": true,
+              "scope": null
+            },
+            {
+              "id": 1,
+              "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+              "offscreen": true,
+              "scope": null
+            }
+          ]
+        },
+        "surface": {
+          "worldId": "b6c89f6a-7af1-4c14-a5fa-f6c4e2ed0b1e",
+          "loaded": true,
+          "godot": false,
+          "viewport": {
+            "width": 2560,
+            "height": 1440,
+            "dpr": 1
+          },
+          "geometry": [
+            {
+              "tag": "HTML",
+              "id": "",
+              "width": 2560,
+              "height": 1440,
+              "cssWidth": "2560px",
+              "cssHeight": "1440px",
+              "position": "static",
+              "display": "block"
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "width": 2560,
+              "height": 1440,
+              "cssWidth": "2560px",
+              "cssHeight": "1440px",
+              "position": "relative",
+              "display": "flex"
+            },
+            {
+              "tag": "MAIN",
+              "id": "surface",
+              "width": 2560,
+              "height": 1440,
+              "cssWidth": "2560px",
+              "cssHeight": "1440px",
+              "position": "absolute",
+              "display": "flex"
+            },
+            {
+              "tag": "IFRAME",
+              "id": "",
+              "width": 2560,
+              "height": 1440,
+              "cssWidth": "2560px",
+              "cssHeight": "1440px",
+              "position": "static",
+              "display": "block"
+            }
+          ],
+          "canvas": {
+            "width": 2560,
+            "height": 1440,
+            "pixelWidth": 2560,
+            "pixelHeight": 1440,
+            "viewport": {
+              "width": 2560,
+              "height": 1440
+            },
+            "enter": {
+              "hidden": true
+            }
+          }
+        },
+        "attached": {
+          "id": 2,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 2560,
+            "height": 1440
+          }
+        },
+        "ok": true
+      }
+    },
+    {
+      "name": "offscreen Web pixels are saved for a separate human-readable visual review",
+      "evidence": {
+        "filename": "D:\\CMR\\test-results\\desktop-native-two-9fKUmu\\offscreen-web-visual-web-post-verification.png",
+        "sha256": "afd966e4793839322ed18ff6567f29588b15f83593474d15feedd2dc82ebb4e0",
+        "width": 2560,
+        "height": 1440
+      }
+    }
+  ],
+  "launches": [
+    {
+      "label": "offscreen-web-visual",
+      "quitEvents": [
+        {
+          "attemptId": 1,
+          "phase": "saving"
+        }
+      ],
+      "uiSamples": [
+        {
+          "buttons": []
+        },
+        {
+          "buttons": []
+        },
+        {
+          "buttons": []
+        }
+      ],
+      "pid": 105144,
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "attachments": [],
+  "scope": "Separate offscreen Web visual observation only; not proof of normal-compositor transitions, input or gameplay.",
+  "limits": [
+    "No model, OS input, focus, activation or PointerLock",
+    "Offscreen paint differs from the normal hidden-window acceptance; never substitutes for that evidence",
+    "One Web slot entry, screenshot and ordered quit only"
+  ],
+  "webId": "b6c89f6a-7af1-4c14-a5fa-f6c4e2ed0b1e",
+  "visualLayoutSamples": [
+    {
+      "at": "2026-09-12T21:51:33.042Z",
+      "surface": {
+        "worldId": "b6c89f6a-7af1-4c14-a5fa-f6c4e2ed0b1e",
+        "loaded": true,
+        "godot": false,
+        "viewport": {
+          "width": 2560,
+          "height": 1440,
+          "dpr": 1
+        },
+        "geometry": [
+          {
+            "tag": "HTML",
+            "id": "",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "static",
+            "display": "block"
+          },
+          {
+            "tag": "BODY",
+            "id": "",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "relative",
+            "display": "flex"
+          },
+          {
+            "tag": "MAIN",
+            "id": "surface",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "absolute",
+            "display": "flex"
+          },
+          {
+            "tag": "IFRAME",
+            "id": "",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "static",
+            "display": "block"
+          }
+        ],
+        "canvas": {
+          "width": 2560,
+          "height": 1440,
+          "pixelWidth": 2560,
+          "pixelHeight": 1440,
+          "viewport": {
+            "width": 2560,
+            "height": 1440
+          },
+          "enter": {
+            "hidden": true
+          }
+        }
+      },
+      "attached": {
+        "id": 2,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        }
+      }
+    },
+    {
+      "at": "2026-09-12T21:51:33.306Z",
+      "surface": {
+        "worldId": "b6c89f6a-7af1-4c14-a5fa-f6c4e2ed0b1e",
+        "loaded": true,
+        "godot": false,
+        "viewport": {
+          "width": 2560,
+          "height": 1440,
+          "dpr": 1
+        },
+        "geometry": [
+          {
+            "tag": "HTML",
+            "id": "",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "static",
+            "display": "block"
+          },
+          {
+            "tag": "BODY",
+            "id": "",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "relative",
+            "display": "flex"
+          },
+          {
+            "tag": "MAIN",
+            "id": "surface",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "absolute",
+            "display": "flex"
+          },
+          {
+            "tag": "IFRAME",
+            "id": "",
+            "width": 2560,
+            "height": 1440,
+            "cssWidth": "2560px",
+            "cssHeight": "1440px",
+            "position": "static",
+            "display": "block"
+          }
+        ],
+        "canvas": {
+          "width": 2560,
+          "height": 1440,
+          "pixelWidth": 2560,
+          "pixelHeight": 1440,
+          "viewport": {
+            "width": 2560,
+            "height": 1440
+          },
+          "enter": {
+            "hidden": true
+          }
+        }
+      },
+      "attached": {
+        "id": 2,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        }
+      }
+    }
+  ],
+  "visuals": [
+    {
+      "filename": "D:\\CMR\\test-results\\desktop-native-two-9fKUmu\\offscreen-web-visual-web-post-verification.png",
+      "kind": "web",
+      "worldId": "b6c89f6a-7af1-4c14-a5fa-f6c4e2ed0b1e",
+      "postVerification": true,
+      "notTransitionEvidence": true,
+      "width": 2560,
+      "height": 1440,
+      "before": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": true,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": true,
+            "scope": null
+          }
+        ]
+      },
+      "after": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": true,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": true,
+            "scope": null
+          }
+        ]
+      }
+    }
+  ],
+  "passed": true
+}

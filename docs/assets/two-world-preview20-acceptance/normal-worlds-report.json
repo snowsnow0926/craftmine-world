@@ -1,0 +1,1004 @@
+{
+  "directory": "D:/CMR/test-results/desktop-native-two-XgrphW",
+  "profile": "D:\\CMR\\test-results\\desktop-native-two-XgrphW\\profile",
+  "package": "D:\\Craftmine World\\desktop\\build\\releases\\03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18\\portable-3f274a64-aae8-4a36-b630-ec14ce905b46\\extracted",
+  "checks": [
+    {
+      "name": "fresh profile exposes exactly two host slots without requiring a model account"
+    },
+    {
+      "name": "Web card enters a real visible-size normal runtime"
+    },
+    {
+      "name": "Web F2 and Shift+F2 open and close the world conversation without a fabricated session",
+      "evidence": {
+        "conversation": {
+          "worldId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+          "sessionId": null
+        },
+        "selected": null
+      }
+    },
+    {
+      "name": "real Godot preparation cancels back to Web and the same card retries the retained identity",
+      "evidence": {
+        "worldId": "world-44e0382d9ab5",
+        "stage": "cancelled"
+      }
+    },
+    {
+      "name": "Godot card prepares and attaches a real normal native world"
+    },
+    {
+      "name": "Godot uses the same F2 home flow without reusing Web conversation state",
+      "evidence": {
+        "conversation": {
+          "worldId": "world-44e0382d9ab5",
+          "sessionId": null
+        },
+        "selected": null
+      }
+    },
+    {
+      "name": "normal Save and exit waits for saving and exits without violations"
+    },
+    {
+      "name": "restart restores selected Godot build and complete committed progress"
+    },
+    {
+      "name": "switching back enters the same Web slot with preserved progress"
+    },
+    {
+      "name": "Web Save and exit also completes through the ordered lifecycle"
+    }
+  ],
+  "launches": [
+    {
+      "label": "fresh-web-godot",
+      "quitEvents": [
+        {
+          "attemptId": 1,
+          "phase": "saving"
+        }
+      ],
+      "uiSamples": [
+        {
+          "phase": "confirming",
+          "buttons": [
+            {
+              "action": "resume",
+              "disabled": true
+            },
+            {
+              "action": "workbench",
+              "disabled": true
+            },
+            {
+              "action": "settings",
+              "disabled": true
+            },
+            {
+              "action": "exit",
+              "disabled": true
+            }
+          ]
+        },
+        {
+          "phase": "saving",
+          "buttons": [
+            {
+              "action": "resume",
+              "disabled": true
+            },
+            {
+              "action": "workbench",
+              "disabled": true
+            },
+            {
+              "action": "settings",
+              "disabled": true
+            },
+            {
+              "action": "exit",
+              "disabled": true
+            }
+          ]
+        },
+        {
+          "phase": "saving",
+          "buttons": [
+            {
+              "action": "resume",
+              "disabled": true
+            },
+            {
+              "action": "workbench",
+              "disabled": true
+            },
+            {
+              "action": "settings",
+              "disabled": true
+            },
+            {
+              "action": "exit",
+              "disabled": true
+            }
+          ]
+        }
+      ],
+      "pid": 85812,
+      "initialPaint": {
+        "count": 1,
+        "error": "Error: UnknownVizError",
+        "pixelsVerified": false,
+        "previousThrottling": true
+      },
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "label": "restart-and-web-return",
+      "quitEvents": [
+        {
+          "attemptId": 1,
+          "phase": "saving"
+        }
+      ],
+      "uiSamples": [
+        {
+          "phase": "confirming",
+          "buttons": [
+            {
+              "action": "resume",
+              "disabled": true
+            },
+            {
+              "action": "workbench",
+              "disabled": true
+            },
+            {
+              "action": "settings",
+              "disabled": true
+            },
+            {
+              "action": "exit",
+              "disabled": true
+            }
+          ]
+        },
+        {
+          "phase": "saving",
+          "buttons": [
+            {
+              "action": "resume",
+              "disabled": true
+            },
+            {
+              "action": "workbench",
+              "disabled": true
+            },
+            {
+              "action": "settings",
+              "disabled": true
+            },
+            {
+              "action": "exit",
+              "disabled": true
+            }
+          ]
+        },
+        {
+          "phase": "saving",
+          "buttons": [
+            {
+              "action": "resume",
+              "disabled": true
+            },
+            {
+              "action": "workbench",
+              "disabled": true
+            },
+            {
+              "action": "settings",
+              "disabled": true
+            },
+            {
+              "action": "exit",
+              "disabled": true
+            }
+          ]
+        }
+      ],
+      "pid": 48852,
+      "initialPaint": {
+        "count": 1,
+        "error": "Error: UnknownVizError",
+        "pixelsVerified": false,
+        "previousThrottling": true
+      },
+      "exitAudit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "kind": "web",
+      "worldId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+      "views": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": false,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": false,
+            "scope": null
+          }
+        ]
+      },
+      "surface": {
+        "id": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+        "loaded": true,
+        "godot": false,
+        "bounds": {
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "canvas": {
+        "width": 2560,
+        "height": 1440,
+        "pixelWidth": 300,
+        "pixelHeight": 150,
+        "entryGateHidden": true
+      },
+      "child": {
+        "id": 2,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "ok": true
+    },
+    {
+      "kind": "godot",
+      "worldId": "world-44e0382d9ab5",
+      "views": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 4,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:58290/w/4b38979cb679239bc7ea692ee11b0bcb854e50641d4916fc079fe10a3444491d/web/index.html",
+            "offscreen": false,
+            "scope": {
+              "protocol": "craftmine.godot-runtime/2",
+              "worldId": "world-44e0382d9ab5",
+              "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+              "instanceId": "fb46e72f0c97e07f123944b0"
+            }
+          },
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": false,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": false,
+            "scope": null
+          }
+        ]
+      },
+      "surface": {
+        "id": "world-44e0382d9ab5",
+        "loaded": true,
+        "godot": true,
+        "bounds": {
+          "width": 0,
+          "height": 0
+        }
+      },
+      "bound": {
+        "formal": {
+          "worldId": "world-44e0382d9ab5",
+          "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+          "instanceId": "fb46e72f0c97e07f123944b0"
+        },
+        "candidate": null,
+        "state": {
+          "worldId": "world-44e0382d9ab5",
+          "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+          "instanceId": "fb46e72f0c97e07f123944b0",
+          "state": "ready"
+        },
+        "owner": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 2560,
+            "height": 1440
+          },
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "views": [
+            {
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 2560,
+                "height": 1440
+              },
+              "contentsId": 1,
+              "destroyed": false
+            },
+            {
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 2560,
+                "height": 1440
+              },
+              "contentsId": 2,
+              "destroyed": false
+            },
+            {
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 2560,
+                "height": 1440
+              },
+              "contentsId": 4,
+              "destroyed": false
+            }
+          ]
+        }
+      },
+      "child": {
+        "id": 4,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "ok": true
+    },
+    {
+      "kind": "godot",
+      "worldId": "world-44e0382d9ab5",
+      "views": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 3,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 3,
+            "url": "http://127.0.0.1:58329/w/814fed874b9c59e4f81492abbde87843ebc95ab808ee6e2df41ac42fad880cc3/web/index.html",
+            "offscreen": false,
+            "scope": {
+              "protocol": "craftmine.godot-runtime/2",
+              "worldId": "world-44e0382d9ab5",
+              "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+              "instanceId": "96d980705d5c2f76676a62e1"
+            }
+          },
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": false,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": false,
+            "scope": null
+          }
+        ]
+      },
+      "surface": {
+        "id": "world-44e0382d9ab5",
+        "loaded": true,
+        "godot": true,
+        "bounds": {
+          "width": 0,
+          "height": 0
+        }
+      },
+      "bound": {
+        "formal": {
+          "worldId": "world-44e0382d9ab5",
+          "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+          "instanceId": "96d980705d5c2f76676a62e1"
+        },
+        "candidate": null,
+        "state": {
+          "worldId": "world-44e0382d9ab5",
+          "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+          "instanceId": "96d980705d5c2f76676a62e1",
+          "state": "ready"
+        },
+        "owner": {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 2560,
+            "height": 1440
+          },
+          "visible": false,
+          "focused": false,
+          "focusable": false,
+          "views": [
+            {
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 2560,
+                "height": 1440
+              },
+              "contentsId": 1,
+              "destroyed": false
+            },
+            {
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 2560,
+                "height": 1440
+              },
+              "contentsId": 3,
+              "destroyed": false
+            },
+            {
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 2560,
+                "height": 1440
+              },
+              "contentsId": 2,
+              "destroyed": false
+            }
+          ]
+        }
+      },
+      "child": {
+        "id": 3,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "ok": true
+    },
+    {
+      "kind": "web",
+      "worldId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+      "views": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": false,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": false,
+            "scope": null
+          }
+        ]
+      },
+      "surface": {
+        "id": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+        "loaded": true,
+        "godot": false,
+        "bounds": {
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "canvas": {
+        "width": 2560,
+        "height": 1440,
+        "pixelWidth": 300,
+        "pixelHeight": 150,
+        "entryGateHidden": true
+      },
+      "child": {
+        "id": 2,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        }
+      },
+      "ok": true
+    }
+  ],
+  "scope": "Fresh no-account normal-renderer Web/Godot entry, F2, slot isolation, save and restart. No generated content or bound-conversation claim.",
+  "limits": [
+    "No OS mouse/keyboard/focus/activation/PointerLock",
+    "Only original product callbacks and read/diagnostic APIs",
+    "One initial hidden prepaint per launch; no later repaint/bounds assistance"
+  ],
+  "initialSlots": {
+    "slots": [
+      {
+        "kind": "godot",
+        "worldId": null,
+        "title": "Godot 3D 世界",
+        "state": "empty"
+      },
+      {
+        "kind": "web",
+        "worldId": null,
+        "title": "Web 世界",
+        "state": "empty"
+      }
+    ],
+    "activeKind": null
+  },
+  "webId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+  "webBefore": {
+    "buildId": "v-f7650db93f0de87cbf9d",
+    "snapshot": {
+      "format": "craftmine.progress/1",
+      "player": {
+        "pitch": 0,
+        "x": 0.5,
+        "y": 6,
+        "yaw": 0,
+        "z": 12.5
+      }
+    }
+  },
+  "visuals": [
+    {
+      "kind": "web",
+      "worldId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+      "postVerification": true,
+      "notTransitionEvidence": true,
+      "pixelsVerified": false,
+      "error": "Error: {\"id\":8,\"result\":{\"result\":{\"type\":\"object\",\"value\":{}},\"exceptionDetails\":{\"exceptionId\":1,\"text\":\"Uncaught (in promise) Error: UnknownVizError\",\"lineNumber\":0,\"columnNumber\":0,\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"Error\",\"description\":\"Error: UnknownVizError\",\"objectId\":\"7552902036260354720.1.1\"}}}}"
+    },
+    {
+      "filename": "D:\\CMR\\test-results\\desktop-native-two-XgrphW\\fresh-web-godot-godot-post-verification.png",
+      "kind": "godot",
+      "worldId": "world-44e0382d9ab5",
+      "postVerification": true,
+      "notTransitionEvidence": true,
+      "metadata": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "world-44e0382d9ab5",
+        "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+        "instanceId": "fb46e72f0c97e07f123944b0",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-12T21:50:53.996Z",
+        "viewWidth": 2560,
+        "viewHeight": 1440,
+        "sourceWidth": 2560,
+        "sourceHeight": 1440,
+        "width": 1920,
+        "height": 1080,
+        "resized": true,
+        "sha256": "fa0dd7902629b64aab597d02fbceb54b9603d450af96d3e31092e36305db1084"
+      },
+      "before": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 4,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:58290/w/4b38979cb679239bc7ea692ee11b0bcb854e50641d4916fc079fe10a3444491d/web/index.html",
+            "offscreen": false,
+            "scope": {
+              "protocol": "craftmine.godot-runtime/2",
+              "worldId": "world-44e0382d9ab5",
+              "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+              "instanceId": "fb46e72f0c97e07f123944b0"
+            }
+          },
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": false,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": false,
+            "scope": null
+          }
+        ]
+      },
+      "after": {
+        "windows": [
+          {
+            "visible": false,
+            "focusable": false,
+            "fullscreen": true,
+            "children": [
+              {
+                "id": 1,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 2,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              },
+              {
+                "id": 4,
+                "bounds": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2560,
+                  "height": 1440
+                }
+              }
+            ]
+          }
+        ],
+        "pages": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:58290/w/4b38979cb679239bc7ea692ee11b0bcb854e50641d4916fc079fe10a3444491d/web/index.html",
+            "offscreen": false,
+            "scope": {
+              "protocol": "craftmine.godot-runtime/2",
+              "worldId": "world-44e0382d9ab5",
+              "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+              "instanceId": "fb46e72f0c97e07f123944b0"
+            }
+          },
+          {
+            "id": 2,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/plugins/craftmine.world/views/world.html",
+            "offscreen": false,
+            "scope": null
+          },
+          {
+            "id": 1,
+            "url": "file:///D:/Craftmine%20World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted/resources/app.asar/out/renderer/index.html",
+            "offscreen": false,
+            "scope": null
+          }
+        ]
+      }
+    }
+  ],
+  "initializationCancellation": {
+    "covered": true,
+    "before": {
+      "slots": [
+        {
+          "kind": "godot",
+          "worldId": "world-44e0382d9ab5",
+          "title": "Godot 3D 世界",
+          "state": "initializing",
+          "progress": 75
+        },
+        {
+          "kind": "web",
+          "worldId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+          "title": "Web 世界",
+          "state": "ready"
+        }
+      ],
+      "activeKind": "godot",
+      "activeWorldId": "world-44e0382d9ab5"
+    },
+    "worldId": "world-44e0382d9ab5",
+    "after": {
+      "slots": [
+        {
+          "kind": "godot",
+          "worldId": "world-44e0382d9ab5",
+          "title": "Godot 3D 世界",
+          "state": "failed",
+          "error": "已取消准备。你的世界和创作内容已保留，可以重新准备。",
+          "progress": 0
+        },
+        {
+          "kind": "web",
+          "worldId": "292f146e-0d4e-4553-a388-fbfcbcf60729",
+          "title": "Web 世界",
+          "state": "ready"
+        }
+      ],
+      "activeKind": "web",
+      "activeWorldId": "292f146e-0d4e-4553-a388-fbfcbcf60729"
+    },
+    "draft": {
+      "baseId": "creation-sandbox",
+      "id": "world-44e0382d9ab5",
+      "revision": 0,
+      "runtimeKind": "godot",
+      "title": "Godot 3D 世界",
+      "updatedAt": 1789249832971,
+      "base": {
+        "id": "creation-sandbox",
+        "label": "Godot",
+        "delivered": false
+      },
+      "state": "failed",
+      "creation": {
+        "operationId": "gwinit-9677c93a46206104795a8d826a43cae4a06f4c191fcd6a51d2e2c1367e58af63",
+        "stage": "cancelled",
+        "stages": [],
+        "progress": 0,
+        "error": {
+          "code": "GODOT_INITIALIZATION_CANCELLED",
+          "message": "已取消准备。你的世界和创作内容已保留，可以重新准备。",
+          "stage": "cancelled",
+          "recoverable": true
+        },
+        "actions": [
+          "retry",
+          "details"
+        ]
+      }
+    }
+  },
+  "godotId": "world-44e0382d9ab5",
+  "webSavedOnSwitch": {
+    "buildId": "v-f7650db93f0de87cbf9d",
+    "snapshot": {
+      "behaviors": {
+        "archive": [],
+        "format": "craftmine.behavior-state/2",
+        "inventory": {},
+        "modules": {},
+        "time": 0
+      },
+      "format": "craftmine.progress/3",
+      "gameplay": {
+        "archivedTargets": {},
+        "cooldown": 0,
+        "equipped": null,
+        "systems": {},
+        "targets": {}
+      },
+      "player": {
+        "pitch": 0,
+        "x": 0.5,
+        "y": 6,
+        "yaw": 0,
+        "z": 12.5
+      }
+    }
+  },
+  "godotBefore": {
+    "buildId": "gbd-c85cb10c541e8649df35edd02deb9daee70eb60d2611bfdc13130a4bd435ad9c",
+    "snapshot": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseVersion": "1.0.0",
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {},
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": 0,
+          "position": [
+            0,
+            0.899999976158142,
+            6
+          ],
+          "yaw": 0
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-44e0382d9ab5"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "world-44e0382d9ab5"
+    },
+    "sha256": "1230e430a213376c4bc7180b1444a39f09ddd1acac04b60f95f5491ffa80b7b5"
+  },
+  "passed": true
+}

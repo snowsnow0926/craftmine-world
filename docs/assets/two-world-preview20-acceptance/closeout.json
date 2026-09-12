@@ -1,0 +1,53 @@
+{
+  "format": "craftmine.two-world-delivery-closeout/1",
+  "productCommit": "03bc893a0243a4845ef1865164dab26dcffcaeed",
+  "integrationCommitBeforeReport": "20695092318f2fe824274fe64d33f868800a1078",
+  "remote": "https://github.com/snowsnow0926/craftmine-world.git",
+  "branch": "master",
+  "originalPlayerProfileModified": false,
+  "repairedProfile": "D:/CMR/pickup-f2a524/test-results/desktop-native-a/profile",
+  "worktrees": {
+    "entry": {
+      "registered": false,
+      "branchDeleted": true,
+      "archivedFiles": 4804,
+      "archivedBytes": 361186690,
+      "archive": "D:/Craftmine World/test-results/two-world-preserved/entry/archive-manifest.json",
+      "residualDirectoryRetained": true,
+      "reason": "Standard git removal reported Directory not empty; no forced residual deletion."
+    },
+    "save": {
+      "registered": false,
+      "branchDeleted": true,
+      "archivedFiles": 132,
+      "archivedBytes": 37369874,
+      "archive": "D:/Craftmine World/test-results/two-world-preserved/save/preservation-manifest.json",
+      "residualDirectoryRetained": true,
+      "reason": "Standard git removal encountered long paths. Automatic approval review rejected residual Remove-Item with 'blocked by policy', without a more specific reason; not retried or bypassed."
+    },
+    "player": {
+      "registered": true,
+      "branchRetained": true,
+      "archivedFiles": 4762,
+      "archivedBytes": 1894262396,
+      "archive": "D:/Craftmine World/test-results/two-world-preserved/player/manifest.json",
+      "reason": "The repaired profile's historical project 1 refers to an empty legacy directory in this worktree. The normal API cannot change its path while preserving identity; preserve it to avoid a dangling project reference.",
+      "currentSessionUsesProjectNull": true,
+      "normalAPIMigrationPerformed": false
+    },
+    "root": {
+      "archivedFiles": 2059,
+      "archivedBytes": 149360323,
+      "archive": "D:/Craftmine World/test-results/two-world-preserved/root/manifest.json",
+      "finalRemovalRecord": "D:/Craftmine World/test-results/two-world-closeout-final.json"
+    }
+  },
+  "retainedOutsideWorktrees": [
+    "D:/CMR",
+    "D:/Craftmine World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18",
+    "D:/Craftmine World/desktop/build/player-test-03bc893a"
+  ],
+  "independentBlenderWorktreesUntouched": true,
+  "diskCleanupFullyComplete": false,
+  "finalGitAndRootCleanupRecord": "D:/Craftmine World/test-results/two-world-closeout-final.json"
+}

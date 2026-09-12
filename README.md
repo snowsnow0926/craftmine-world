@@ -2,7 +2,7 @@
 
 **Windows 双世界版本：** 默认玩家入口收敛为一个 Godot 3D 世界和一个 Web 世界。进入后通过 F2 对话创作，Esc 暂停、切换世界或保存退出。旧作品保留在设置中的高级存档管理。
 
-[双世界玩家操作说明](docs/TWO_WORLD_PLAYER_GUIDE.md) · [收敛方案与范围](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。成品验收与源码实现分开记录，构建成功不等于玩法或真人验收通过。
+[当前 Windows 交付与复盘](docs/CURRENT_WINDOWS_DELIVERY.md) · [双世界玩家操作说明](docs/TWO_WORLD_PLAYER_GUIDE.md) · [收敛方案与范围](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。成品验收与源码实现分开记录，构建成功不等于玩法或真人验收通过。
 
 2026-09-10 的 `8276b45` 四底座客户端是历史快照，其 [当时验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) 和 [Git 归档说明](docs/GIT_CLOSEOUT_2026-09-10.md) 保留供追溯。下文是早期独立 Web 运行器的开发启动与使用资料；Windows 成品玩家请使用上面的双世界操作说明。
 

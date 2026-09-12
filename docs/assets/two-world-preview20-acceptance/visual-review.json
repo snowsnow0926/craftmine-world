@@ -1,0 +1,27 @@
+{
+  "nativeSlotReleased": true,
+  "godotId": "world-44e0382d9ab5",
+  "focusOrPointerLockRequested": false,
+  "cancelledAndRetriedWorldId": "world-44e0382d9ab5",
+  "physicalKeyboardTested": false,
+  "reviewedAt": "2026-09-13T05:52:16.2791537+08:00",
+  "normalReport": "D:\\CMR\\test-results\\desktop-native-two-XgrphW\\two-world-normal-report.json",
+  "normalChecks": 10,
+  "visualReport": "D:\\CMR\\test-results\\desktop-native-two-9fKUmu\\two-world-normal-report.json",
+  "visualChecks": 2,
+  "cancelCovered": true,
+  "images": [
+    {
+      "review": "Full-frame sky, muted green ground and perimeter; readable world-control hint; no black startup frame.",
+      "path": "D:\\CMR\\test-results\\desktop-native-two-XgrphW\\fresh-web-godot-godot-post-verification.png",
+      "scope": "Normal engine post-verification capture"
+    },
+    {
+      "review": "Full viewport sky/clouds/grass; no outer black area or duplicate Enter world gate. Does not substitute for normal input evidence.",
+      "path": "D:\\CMR\\test-results\\desktop-native-two-9fKUmu\\offscreen-web-visual-web-post-verification.png",
+      "scope": "Separate offscreen visual only"
+    }
+  ],
+  "productCommit": "03bc893a0243",
+  "webId": "292f146e-0d4e-4553-a388-fbfcbcf60729"
+}

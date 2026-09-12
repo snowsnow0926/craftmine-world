@@ -1,0 +1,32 @@
+{
+  "format": "craftmine.quit-protocol-acceptance-summary/1",
+  "productCommit": "03bc893a0243a4845ef1865164dab26dcffcaeed",
+  "passed": true,
+  "sourceReport": "D:/CMR/quit-protocol-ZZiGqM/test-results/desktop-native-a/report.json",
+  "sourceSha256": "b22b3cc5cf0158fca0acf238734f91600d627f0400d09b3e9f0f516679fd29f5",
+  "mainSha256": "c990555be1a99a87b601d07160a747ac4e5c038f969619db635d3d76892e400f",
+  "scope": "offscreen native protocol fault injection, fresh Web world, no real model or Godot gameplay claim",
+  "checks": [
+    "mid-response native menu Save Exit persists an aborted turn and interrupted draft, never completed",
+    "partial assistant text survives actual app shutdown and restart",
+    "ordinary new-message prompt resumes the preserved task budget and draft, then finishes normally"
+  ],
+  "launches": [
+    {
+      "label": "stream-and-quit",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "exitAudit": null
+    },
+    {
+      "label": "resume-and-finish",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "exitAudit": null
+    }
+  ]
+}

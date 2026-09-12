@@ -1,0 +1,16 @@
+{
+  "format": "craftmine.final-tested-package-recheck/1",
+  "checkedAt": "2026-09-12T21:58:03.582Z",
+  "passed": true,
+  "productCommit": "03bc893a0243a4845ef1865164dab26dcffcaeed",
+  "directory": "D:\\Craftmine World\\desktop\\build\\releases\\03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18\\portable-3f274a64-aae8-4a36-b630-ec14ce905b46",
+  "files": 1658,
+  "totalBytes": 1035540261,
+  "payloadDigest": "669df038ba9a6f0ba17abce3bf49206b2fb8f57e12b26a2c737dee5fe8812fb8",
+  "archive": {
+    "path": "Craftmine-World-portable-03bc893a0243.zip",
+    "bytes": 1035954743,
+    "sha256": "7cfa508d0d8daca6ad052ebb1238dc59591eb58b4eebf2d42af00f2aa4c5252b"
+  },
+  "testsPrecededRecheck": true
+}

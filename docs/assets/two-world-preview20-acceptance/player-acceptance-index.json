@@ -1,0 +1,203 @@
+{
+  "format": "craftmine.pickup-acceptance-index/1",
+  "sourceWorldId": "world-2e4f85375427",
+  "profile": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\profile",
+  "originalPlayerProfileModified": false,
+  "ordinaryModel": {
+    "calls": 4,
+    "configuration": {
+      "providerId": "1b71496e-2152-4cbe-ab0b-93be2ddeee48",
+      "modelId": "deepseek-v4.1-flash-expires-on-0910",
+      "thinkingLevel": "max",
+      "permissionMode": "auto"
+    },
+    "product": "D:\\Craftmine World\\desktop\\build\\releases\\eebaa1bd24e5-393dcb2b-d2e7-4295-84bb-dedcdc0593a0\\portable-71fe6afb-4224-447c-aac8-351206dd4512\\extracted",
+    "report": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\ordinary-player-report.json",
+    "manualAdoptions": 0,
+    "permissionDecisions": 0
+  },
+  "finalPackage": {
+    "path": "D:/Craftmine World/desktop/build/releases/03bc893a0243-646b1ec8-cf9a-4891-8402-63a7247f1d18/portable-3f274a64-aae8-4a36-b630-ec14ce905b46/extracted",
+    "mainBundleSha256": "c990555be1a99a87b601d07160a747ac4e5c038f969619db635d3d76892e400f",
+    "launches": 2,
+    "exits": [
+      {
+        "code": 0,
+        "signal": null
+      },
+      {
+        "code": 0,
+        "signal": null
+      }
+    ],
+    "inventory": {
+      "ak47": 1,
+      "ak47-ammo": 120,
+      "ak47-mag": 30
+    },
+    "completeSnapshotEqualAcrossRestart": true,
+    "pausedInteraction": {
+      "rejected": "Error: Error: PLAY_ACTION_PAUSED"
+    },
+    "manualResumeCalls": 0
+  },
+  "sourceEngine": {
+    "buildId": "gbd-8e42b6e55634eedef34e1d9d8d286d7998a071ddfa4edf14c3b78bf3fec99a78",
+    "manifestHash": "d8a81835023db76789d62333451510220ec64080af2c18225c489ceaa2e9c76f",
+    "checks": 14,
+    "reopenPassed": true,
+    "savedAmmo": {
+      "equipped": true,
+      "hits": 5,
+      "inMagazine": 29,
+      "reloading": false,
+      "reserve": 116,
+      "shots": 5,
+      "spreadDegrees": 0.4
+    },
+    "reopenedAmmo": {
+      "equipped": true,
+      "hits": 0,
+      "inMagazine": 29,
+      "reloading": false,
+      "reserve": 116,
+      "shots": 0,
+      "spreadDegrees": 0
+    },
+    "sourceEdits": 0,
+    "boundary": "Exact exported authored source in separate pinned headless engine; engine actions only, no OS input or pointer lock. Packaged E/save/reopen is separate evidence; this does not claim packaged physical firing."
+  },
+  "delivery": {
+    "format": "craftmine.repaired-player-portable-delivery/1",
+    "sourceReport": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\ordinary-player-report.json",
+    "sourceProfile": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\profile",
+    "worldId": "world-2e4f85375427",
+    "originalPlayerProfileModified": false,
+    "generatedSourceEdits": 0,
+    "operationId": "pickup-delivery-7fe7eaf2-59f8-41bd-b48a-3d1166eb73b2",
+    "archivePath": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\portable-delivery-DD9Ot5\\Repaired-AK47-World.cmarchive",
+    "receipt": {
+      "archivePath": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\portable-delivery-DD9Ot5\\Repaired-AK47-World.cmarchive",
+      "consistency": {
+        "assetBlobs": 20,
+        "boundary": "one immediate transaction over the domain database; every body is immutable content-addressed or sealed data read after that snapshot, and each body is re-hashed while streaming",
+        "builds": 12,
+        "contentRoots": [
+          "R1",
+          "R6"
+        ],
+        "credentialsIncluded": false,
+        "gitRefs": 22,
+        "legacyImports": 0,
+        "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+        "sessionRowsIncluded": true,
+        "snapshotHash": "ccaddd25cf52ef5725e24fde6c7b5ba8aa888ed97a5d0032e28cc7586c6fd117",
+        "sourceBlobs": 197,
+        "tables": 66
+      },
+      "content": {
+        "assetBlobs": 20,
+        "files": 553,
+        "gitObjects": 329,
+        "gitRefs": 22,
+        "godotAssetBodies": 0,
+        "legacyImports": 0,
+        "sourceBlobs": 197
+      },
+      "credentialsIncluded": false,
+      "id": "pickup-delivery-7fe7eaf2-59f8-41bd-b48a-3d1166eb73b2",
+      "kind": "export-portable",
+      "manifest": {
+        "bytes": 62656546,
+        "contentBytes": 62402145,
+        "domainHash": "ccaddd25cf52ef5725e24fde6c7b5ba8aa888ed97a5d0032e28cc7586c6fd117",
+        "entries": 553,
+        "hash": "0dca4882b5be9e245396afef13be03baf858abc04f5c919ab0c00a1a11732340",
+        "schemaVersion": 1,
+        "streamSha256": "a6586ac21f70b0d6cca47998cbcbdfbf69a5f5e28d64483db0b533f921ea2152"
+      },
+      "protectedRefs": {
+        "builds": 12,
+        "gitRefs": 22
+      },
+      "rebuildableExcluded": [
+        {
+          "excluded": true,
+          "kind": "godot-builds/<worldKey>/<buildId>/source",
+          "reason": "materialized project source, rebuilt from the archived source blobs"
+        },
+        {
+          "excluded": true,
+          "kind": "godot-builds/<worldKey>/<buildId>/artifacts",
+          "reason": "export artifacts, rebuilt by the managed build job from the archived source and the fixed toolchain"
+        },
+        {
+          "excluded": true,
+          "kind": "godot-builds/<worldKey>/<buildId>/cache",
+          "reason": "per-build scratch space, never a source of truth"
+        },
+        {
+          "excluded": true,
+          "kind": "content-history/repos/<repoKey>/copies",
+          "reason": "materialized worktrees, rebuilt from the archived Git objects"
+        },
+        {
+          "excluded": true,
+          "kind": "git-config",
+          "reason": "local Git configuration, recreated by the Git adapter"
+        }
+      ],
+      "sessionNote": "local session and world-lease routing rows travel with the domain snapshot; they hold no credentials or tokens",
+      "sessionRowsIncluded": true,
+      "status": "completed"
+    },
+    "sha256": "a6586ac21f70b0d6cca47998cbcbdfbf69a5f5e28d64483db0b533f921ea2152",
+    "bytes": 62656546,
+    "passed": true
+  },
+  "evidence": [
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\ordinary-player-report.json",
+      "sha256": "a7e232514d14c9e541cbbc2600dc3e09b0706c88ea883dc0f1ea807bff6f3fb9"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\saved-label-playability.json",
+      "sha256": "c17aaa65210c1c45cf66125d0e07a60b44ba082dac82bf77eca5351c67125b01"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\post-playability-inspection.json",
+      "sha256": "1743dcd9ae95a784c5b71279f2664298071aac16f9e74594c2f13d38350f4623"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\gameplay-5a3d585d-fc6a-43b5-b86d-23acaa138b53\\report.json",
+      "sha256": "4a6f73887d7d887d0c27171dabad4d2ab484ee66b21e865da94e6c1cb8c3dc2a"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\gameplay-4404f06e-07fc-4b7a-a965-c4e49da7df36\\report.json",
+      "sha256": "2d1663241131bdc1fb5cadf2ae023cfedb1a048494a8b1ac1441e94be5255201"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\pickup-engine-Rze7pE\\report.json",
+      "sha256": "b5b266c4321f5c95c1346b3c8dbd7866ea1433d80042654f058629cfcd03a972"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\portable-delivery-DD9Ot5\\report.json",
+      "sha256": "0603b457b90991ef2087e66bd956f42b351da19c65ff0a5d3c09b5b62d13c358"
+    },
+    {
+      "path": "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\portable-delivery-DD9Ot5\\restore-proof-restored-pickup-SuVTPx.json",
+      "sha256": "a0baf4ed367491ae43e023750343d9c59cc7f5a481ee3d52324d0bebb54eb87d"
+    }
+  ],
+  "preservedDiagnosticFailures": [
+    "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\gameplay-88672872-fe85-401f-ba04-f978ec5261e2\\report.json",
+    "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\pickup-engine-D1TQmF\\report.json",
+    "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\pickup-engine-W6zuTL\\report.json",
+    "D:\\CMR\\pickup-f2a524\\test-results\\desktop-native-a\\ordinary-followup-GwAWlm\\portable-delivery-DD9Ot5\\restore-proof.json"
+  ],
+  "limitations": [
+    "No physical OS input, focus activation or Pointer Lock was used.",
+    "Custom weapon fire/reload is demonstrated by unchanged source in pinned Godot; the packaged controller only exercises protected E, pause, capture, save and reopen.",
+    "The original player profile was never updated. The delivered archive contains the repaired isolated domain and can be restored through the product backup workflow."
+  ]
+}
