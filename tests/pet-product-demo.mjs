@@ -5,7 +5,7 @@ import {creationPackagedRoot,resolveCreationNativeLaunch} from './helpers/creati
 import {createCompleteOutput} from './godot-final/complete-contract.mjs';import {adoptionEnvironment} from './helpers/promo-adoption-contract.mjs';
 import {readBuiltinDemoPackages,readBuiltinDemoCatalog} from './helpers/builtin-demo-contract.mjs';
 import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs';
-import {PET_PRODUCT_PLAN,validatePetProductCall,assertPetProgress} from './helpers/pet-product-contract.mjs';
+import {PET_PRODUCT_PLAN,validatePetProductCall,assertPetProgress,assertPetSaveReceipt} from './helpers/pet-product-contract.mjs';
 
 const root=process.cwd(),packagedRoot=creationPackagedRoot();
 const catalogAt=process.argv.indexOf('--catalog-root'),catalogRoot=catalogAt<0?null:process.argv[catalogAt+1];
@@ -70,10 +70,9 @@ try{
  const player=report.afterWalk.body.player.position,delta=[followedPet.position[0]-player[0],followedPet.position[1]+0.77/2-player[1]-0.65,followedPet.position[2]-player[2]];
  report.aim={basis:'actual snapshot pet/player positions; packaged dog cylinder height 0.77m and base CameraRig eye offset 0.65m',yaw:Math.atan2(-delta[0],-delta[2]),pitch:Math.atan2(delta[1],Math.hypot(delta[0],delta[2]))};
  report.look=await explore([{op:'look',args:{yaw:report.aim.yaw,pitch:report.aim.pitch}}]);report.interaction=await explore([{op:'play-action',args:{action:'interact',frames:1}}]);report.feedbackCapture=await capture('pet-interaction');report.afterInteraction=await snapshot();const interactedPet=assertPetProgress(report.afterInteraction,binding.worldId,report.entityId);assert.equal(interactedPet.interactionCount,1);save();
- report.saved=await panel('godot.runtimeSave',{freeze:true});assert.equal(report.saved.status,'persisted');assert.equal(report.saved.buildId,binding.formalIdentity.buildId);report.savedSnapshot=await snapshot();assertPetProgress(report.savedSnapshot,binding.worldId,report.entityId);report.persisted=stored();assert.deepEqual(report.persisted.document.snapshot,report.savedSnapshot);report.savedCapture=await capture('pet-saved');await stop();
+ report.saved=await panel('godot.runtimeSave',{freeze:true});assertPetSaveReceipt(report.saved,binding.formalIdentity);report.savedSnapshot=await snapshot();assertPetProgress(report.savedSnapshot,binding.worldId,report.entityId);report.persisted=stored();assert.deepEqual(report.persisted.document.snapshot,report.savedSnapshot);report.savedCapture=await capture('pet-saved');await stop();
  boot();await entry();await until(()=>rpc('godotObserve'),r=>r.worldId===binding.worldId&&r.instanceId,'cold restored world');await readyWorld();report.reopenedIdentity={...binding.formalIdentity};assert.equal(report.reopenedIdentity.buildId,report.adoptedIdentity.buildId);assert.notEqual(report.reopenedIdentity.instanceId,report.adoptedIdentity.instanceId);
  report.reopenedSnapshot=await snapshot();assert.deepEqual(report.reopenedSnapshot,report.savedSnapshot,'Full saved component/player progress must restore exactly before gameplay resumes');report.reopenedSource=await pkg('sourceList');assert.deepEqual(report.reopenedSource,report.source);assertPetProgress(report.reopenedSnapshot,binding.worldId,report.entityId);
  await play();await readyWorld();report.reopenedCapture=await capture('pet-reopened');await stop();report.ok=true;report.stateIntegrityVerified=true;report.modelFreeBasis='new empty isolated profile; model/eval environment stripped; finite allowlisted controller; clean audits';
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}
 finally{if(!ended)try{await stop();}catch(error){report.shutdownError=String(error);report.ok=false;process.exitCode=1;}report.endedAt=new Date().toISOString();save();console.log('Report: '+file);}
-

@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 
 export const PET_PRODUCT_PLAN = Object.freeze([{assetId:'cw.module.pet-companion',version:1,position:{x:0,y:0,z:2}}]);
+export function assertPetSaveReceipt(receipt, identity) {
+  assert.equal(receipt.format, 'craftmine.godot-progress-receipt/1');
+  for (const field of ['worldId', 'buildId', 'instanceId']) assert.equal(receipt[field], identity[field]);
+  assert.match(receipt.snapshotSha256, /^[a-f0-9]{64}$/);
+  assert.ok(Number.isSafeInteger(receipt.revision) && receipt.revision > 0);
+}
 export function validatePetProductCall(method, fields, binding) {
   if (['status','godotObserve','godotSnapshot','godotCaptureBoundState','quit'].includes(method)) {assert.deepEqual(fields,{});return;}
   if (method==='primaryMode') {assert.ok(fields.payload===undefined||['play','entry'].includes(fields.payload.action));return;}

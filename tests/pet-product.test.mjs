@@ -1,6 +1,11 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {validatePetProductCall as validate,PET_PRODUCT_PLAN} from './helpers/pet-product-contract.mjs';
+import {validatePetProductCall as validate,PET_PRODUCT_PLAN,assertPetSaveReceipt} from './helpers/pet-product-contract.mjs';
 const binding={worldId:'world',operationId:'install',jobId:'job',candidateId:'candidate',activePreview:false,formalIdentity:{worldId:'world',buildId:'build',instanceId:'instance'},captureIdentity:{worldId:'world',buildId:'build',instanceId:'instance'}};
+test('save acceptance binds the actual durable receipt rather than a fictional status field',()=>{
+ const receipt={format:'craftmine.godot-progress-receipt/1',...binding.formalIdentity,snapshotSha256:'a'.repeat(64),revision:16};
+ assertPetSaveReceipt(receipt,binding.formalIdentity);
+ for(const patch of [{worldId:'other'},{instanceId:'previous'},{buildId:'other'},{snapshotSha256:''},{revision:0},{format:'persisted'}])assert.throws(()=>assertPetSaveReceipt({...receipt,...patch},binding.formalIdentity));
+});
 test('final product controller refuses old captures, model calls and cross-instance input',()=>{
  for(const method of ['godotCaptureView','playerPrompt','rawCore'])assert.throws(()=>validate(method,{},binding));
  assert.throws(()=>validate('godotExplore',{payload:{...binding.formalIdentity,instanceId:'other',steps:[{op:'wait',args:{frames:1},capture:false}]}},binding));
