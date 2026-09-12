@@ -16,7 +16,7 @@ const {createGodotRuntimeAdapter}=await import('data:text/javascript;base64,'+Bu
 let core=new CoreClient(binary,path.join(out,'data'));await core.start();
 const call=(method,params)=>core.call(method,params);
 const state=id=>({format:'craftmine.godot-progress/1',worldId:id,baseId:'first-person',baseVersion:'0.1.0',stateVersion:1,body:{worldId:id,inventory:{ore:12},room:{unlocked:true},quests:{q1:3},position:[1200,0,-98],custom:{天气:'晴'}}});
-const checks=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,passed:true});};
+const checks=[];let failure=null;const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,passed:true});};
 try{
   for(const id of ['alpha','beta'])await call('world.create',{id,title:id,world:{build:{id:'base-a',scene:{format:'craftmine.godot-scene/1',baseId:'first-person'},godot:{}},snapshot:state(id),extensions:[]}});
   const context={projectId:'project-a',sessionId:'session-a',turnId:'one'};
@@ -30,8 +30,13 @@ try{
   const finished=await call('godotJob.finish',{jobId:job.jobId,token:'fixture-token',output:{format:'craftmine.godot-job-result/1',inputHash:claimed.inputHash,passed:true,import:{passed:true,log:'authored fixture; no engine executed'},compile:{passed:true,errors:[],warnings:[]},check:{passed:true,assertions:[{id:'fixture',passed:true}]},artifacts:[artifact],engine:{version:'4.7.2-stable',isolation:'authored-test-fixture',evidenceHash:claimed.evidenceHash}}});
   const prepared=await call('godotApplication.prepare',{id:'fixture-apply',token:'apply-token',worldId:'alpha',candidateId:finished.candidateId,revision:0,snapshot:state('alpha')});
   await call('godotApplication.commit',{id:'fixture-apply',token:'apply-token',evidence:{format:'craftmine.godot-application/2',inputHash:prepared.inputHash,launch:{passed:true,buildId:prepared.buildId,instanceId:'fixture-observed',stateHash:hash('authored-fixture')},player:null,snapshot:state('alpha')}});
-  let selection='alpha',live={worldId:'alpha',buildId:prepared.buildId,instanceId:'native-one'},loseReply=false;
-  const adapter=createGodotRuntimeAdapter({selection:async()=>selection,instance:()=>live,domain:async(method,args)=>{const result=await call(method,args);if(loseReply&&method==='godotRuntime.saveProgress'){loseReply=false;throw Error('injected lost reply after real commit');}return result;}});
+  let selection='alpha',live={worldId:'alpha',buildId:prepared.buildId,instanceId:'native-one'},loseReply=false,readUnavailable=false;
+  const writes=[];
+  const adapter=createGodotRuntimeAdapter({selection:async()=>selection,instance:()=>live,domain:async(method,args)=>{
+    if(readUnavailable&&['world.read','godotRuntime.describe'].includes(method))throw Error('injected temporary read outage');
+    if(method==='godotRuntime.saveProgress')writes.push(structuredClone(args));
+    const result=await call(method,args);if(loseReply&&method==='godotRuntime.saveProgress'){loseReply=false;throw Error('injected lost reply after real commit');}return result;
+  }});
   const descriptor=await adapter.descriptor();check('descriptor comes from real applied artifact store',descriptor.root===claimed.artifactsRoot&&descriptor.entry==='web/index.html'&&descriptor.artifacts[0].sha256===artifact.sha256);
   const snapshot=state('alpha');snapshot.body.inventory.ore=27;snapshot.body.custom.extra='草'.repeat(100000);
   const request=(snapshot,revision)=>{const text=JSON.stringify(snapshot);return {worldId:'alpha',buildId:prepared.buildId,revision,snapshot,runnerReceipt:{format:'craftmine.godot-runner-receipt/1',worldId:'alpha',buildId:prepared.buildId,instanceId:'native-one',snapshotText:text,snapshotSha256:hash(text),bytes:Buffer.byteLength(text)}};};
@@ -39,9 +44,35 @@ try{
   const noop=await adapter.progress(request(snapshot,saved.receipt.revision));check('no-op save accepts same real durable revision',noop.receipt.revision===saved.receipt.revision);
   const forged=request(snapshot,saved.receipt.revision);forged.runnerReceipt.instanceId='old-instance';check('old native instance denied before persistence',(await adapter.progress(forged)).failed===true);
   selection='beta';check('selected world cannot redirect instance-bound save',(await adapter.progress(request(snapshot,saved.receipt.revision))).receipt.worldId==='alpha');selection='alpha';
-  snapshot.body.quests.q1=4;loseReply=true;const recovered=await adapter.progress(request(snapshot,saved.receipt.revision));check('lost save reply recovered by exact real describe without replay',recovered.receipt.revision===saved.receipt.revision+1&&recovered.receipt.instanceId==='native-one'&&recovered.receipt.snapshotSha256===hash(JSON.stringify(snapshot)));
+  snapshot.body.quests.q1=4;loseReply=true;const recovered=await adapter.progress(request(snapshot,saved.receipt.revision));check('lost save reply recovered by exact durable state without replay',recovered.receipt.revision===saved.receipt.revision+1&&recovered.receipt.instanceId==='native-one'&&recovered.receipt.snapshotSha256===hash(JSON.stringify(snapshot)));
+  snapshot.body.quests.q1=5;loseReply=true;readUnavailable=true;
+  await assert.rejects(adapter.progress(request(snapshot,recovered.receipt.revision)),/injected lost reply/);
+  assert.deepEqual((await call('world.read',{id:'alpha'})).world.snapshot,snapshot,'the uncertain write really committed before its reply was lost');
+  readUnavailable=false;snapshot.body.quests.q1=6;const beforeRetry=writes.length;
+  const retry=await adapter.progress(request(snapshot,recovered.receipt.revision));
+  check('explicit save after lost commit and failed reconciliation recovers the exact earlier save revision',retry.receipt.revision===recovered.receipt.revision+2);
+  assert.deepEqual((await call('world.read',{id:'alpha'})).world.snapshot,snapshot);
+  check('recovery saves the new complete snapshot without replaying the older uncertain write',writes.slice(beforeRetry).every(write=>write.snapshot.body.quests.q1===6));
+  snapshot.body.quests.q1=7;loseReply=true;readUnavailable=true;
+  await assert.rejects(adapter.progress(request(snapshot,retry.receipt.revision)),/injected lost reply/);readUnavailable=false;
+  const pendingSaved=await call('world.read',{id:'alpha'}),external=structuredClone(snapshot);external.body.inventory.ore=99;external.body.quests.q1=9;
+  const separate=request(external,pendingSaved.revision);separate.runnerReceipt.instanceId='separate-owner';
+  await call('godotRuntime.saveProgress',separate);
+  snapshot.body.quests.q1=8;const blockedWrites=writes.length;
+  await assert.rejects(adapter.progress(request(snapshot,retry.receipt.revision)),/WORLD_REVISION_CONFLICT/);
+  assert.deepEqual((await call('world.read',{id:'alpha'})).world.snapshot,external);
+  check('a different complete durable snapshot refuses rebase and remains untouched',writes.length===blockedWrites+1);
+  const fresh=createGodotRuntimeAdapter({selection:async()=>selection,instance:()=>live,domain:call});
+  await assert.rejects(fresh.progress(request(external,retry.receipt.revision)),/WORLD_REVISION_CONFLICT/);
+  check('a stale caller without an earlier uncertain write cannot rebase even onto identical saved data',true);
+  live={...live,instanceId:'different-instance'};check('a replaced runtime cannot reuse the old instance recovery proof',(await adapter.progress(request(snapshot,retry.receipt.revision))).failed===true);live={...live,instanceId:'native-one'};
+  Object.assign(snapshot,external);
   await core.stop();core=new CoreClient(binary,path.join(out,'data'));await core.start();
   const restored=await adapter.describe('alpha');assert.deepEqual(restored.snapshot,snapshot);check('full state survives actual core process restart',true);
   const other=await call('world.read',{id:'beta'});assert.deepEqual(other.world.snapshot,state('beta'));check('other world progress unchanged',true);
   fs.writeFileSync(path.join(claimed.artifactsRoot,'web/index.html'),'corrupt');await assert.rejects(adapter.describe('alpha'),/CORRUPT_GODOT_ARTIFACT/);check('changed artifact blocks trusted descriptor',true);
-}finally{await core.stop();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({kind:'real-rust-godot-runtime-adapter',binary,checks,limits:['authored artifact/executor/application fixture; no real model or OS-isolated builder claim','native Electron validation is separate']},null,2));console.log(JSON.stringify({out,passed:checks.length}));}
+  snapshot.body.inventory.ore=100;loseReply=true;
+  const prior=await call('world.read',{id:'alpha'}),artifactIndependent=await adapter.progress(request(snapshot,prior.revision));
+  assert.deepEqual((await call('world.read',{id:'alpha'})).world.snapshot,snapshot);
+  check('rebuildable artifact corruption cannot hide a successfully committed save',artifactIndependent.receipt.revision===prior.revision+1);
+}catch(error){failure=String(error.stack??error);throw error;}finally{await core.stop();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({kind:'real-rust-godot-runtime-adapter',binary,checks,passed:failure===null,error:failure,limits:['authored artifact/executor/application fixture; no real model or OS-isolated builder claim','native Electron validation is separate']},null,2));console.log(JSON.stringify({out,passed:failure===null,checks:checks.length}));}
