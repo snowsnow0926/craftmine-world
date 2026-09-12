@@ -27,6 +27,13 @@ async function queryPerformance({core,context,samplePerformance,sampleLiveState,
   if(finalBinding?.world?.id!==worldId)return unavailable('PERFORMANCE_WORLD_CHANGED');
   const current=await describeRuntime(core,{worldId});assertActive();
   if(!current.available||current.buildId!==identity.buildId)return unavailable('PERFORMANCE_BUILD_CHANGED');
+  // Core describes a durable build, not its current OS process. Recollect last
+  // with the independently observed instance constraint so a same-build restart
+  // during those Core reads cannot return the old renderer's measurement.
+  try{
+    sample=await samplePerformance({...identity,instanceId:live.instanceId});assertActive();
+    if(!sample||sample.available===false)return unavailable('PERFORMANCE_SAMPLE_UNAVAILABLE');
+  }catch(error){assertActive();return unavailable('PERFORMANCE_INSTANCE_RECHECK_FAILED');}
   try{
     return helper.observeGodotPerformance({scope:{...identity,instanceId:live.instanceId},sample});
   }catch(error){return unavailable('PERFORMANCE_SAMPLE_INVALID');}

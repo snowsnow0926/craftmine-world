@@ -21,13 +21,13 @@ const context={projectId:'project',sessionId:'session',turnId:'turn',executionId
 test.after(()=>fs.rmSync(output,{recursive:true,force:true}));
 
 function fixture(change={}){
-  const calls=[];let ended=false,world='bound-world',build='build-a';
-  const identity=()=>({worldId:world,buildId:build,instanceId:'instance-a',sampledAt:new Date().toISOString()});
-  const state={end:()=>{ended=true;},world:value=>{world=value;},build:value=>{build=value;}};
+  const calls=[];let ended=false,world='bound-world',build='build-a',instance='instance-a',onDescribe=()=>{};
+  const identity=()=>({worldId:world,buildId:build,instanceId:instance,sampledAt:new Date().toISOString()});
+  const state={end:()=>{ended=true;},world:value=>{world=value;},build:value=>{build=value;},instance:value=>{instance=value;},onDescribe:fn=>{onDescribe=fn;}};
   const core={start:async()=>({godotProjects:true,sessionDrafts:true}),call:async(method,args)=>{
     calls.push(method);
     if(method==='task.context')return {world:{id:world}};
-    if(method==='godotRuntime.describe')return {worldId:args.worldId,buildId:build,snapshot:{secret:'SAVE_BODY_DO_NOT_FORWARD'}};
+    if(method==='godotRuntime.describe'){onDescribe();return {worldId:args.worldId,buildId:build,snapshot:{secret:'SAVE_BODY_DO_NOT_FORWARD'}};}
     throw Error('Unexpected side effect '+method);
   }};
   const options={samplePerformance:async()=>({...identity(),memoryWorkingSetMb:256.25,rendererProcessId:42,provenance:'electron-app-metrics',measurementScope:'renderer-process'}),sampleLiveState:async()=>identity(),...change};
@@ -82,4 +82,17 @@ test('capability inventory reflects actual provider wiring',()=>{
   assert.equal(read(null).reachable,null);
   assert.equal(read(describeToolServices({})).reachable,false);
   assert.equal(read(describeToolServices({samplePerformance:()=>{},sampleLiveState:()=>{}})).reachable,true);
+});
+
+test('same-build restart during final Core read rejects the old process; final host query narrows instance',async()=>{
+  const f=fixture(),queries=[],original=f.options.samplePerformance;let describes=0;
+  f.state.onDescribe(()=>{if(++describes===2)f.state.instance('restarted-instance');});
+  f.options.samplePerformance=async expected=>{
+    queries.push(expected);
+    const sample=await original();
+    if(expected.instanceId&&expected.instanceId!==sample.instanceId)throw Error('PERFORMANCE_INSTANCEID_MISMATCH');
+    return sample;
+  };
+  assert.equal((await f.run()).reason,'PERFORMANCE_INSTANCE_RECHECK_FAILED');
+  assert.equal(queries.length,2);assert.equal(queries[1].instanceId,'instance-a');
 });

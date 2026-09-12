@@ -13,6 +13,7 @@
 - `GodotWorldViewHost.performanceProcess` 提供当前实例的 PID 和 WebContents ID，宿主在 OS 采样前后核对世界、构建、实例、PID、WebContents，过渡中拒绝采样。
 - `craftmine.godotPerformance` RPC 限定 Craftmine 插件，`main.cjs` 将实际存在的 provider 传给工具；能力报告在 provider 缺失时显示不可用，未知接线显示未知。
 - 工具从 `task.context` 取得世界，复核当前正式构建和独立 live 实例。30 秒以前或超前超过 5 秒的测量不会作为当前数据；这是采样新鲜度条件，不是玩家任务时长限制。
+- 最后一次 Core 复核之后，宿主按已确认的实例 ID 再采样，随后直接返回该次结果；同构建在 Core 读取期间重启也会被拒绝，避免返回旧 renderer 读数。
 - 工具只读，不打开 workspace、不读 UI 选中世界、不取消其他作业，不返回存档体。每次异步返回后检查 turn 是否结束。
 - 打包后的生产 broker 测试实际加载投影文件并调用工具，覆盖切换实例、任务世界和构建、失效数据、取消、无 provider 和能力报告。
 
