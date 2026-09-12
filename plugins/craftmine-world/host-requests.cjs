@@ -319,10 +319,20 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       const before=await snapshot(params.context);
       if(params.request){
         fields(params.request,['id','text']);
-        const known=before.requirements.find(item=>item.id===params.request.id);
-        // Context contains a bounded projection. Compare the full request in
-        // Rust's durable journal, never against a potentially truncated view.
-        await core.call('task.recordContext',{context:params.context,requestId:boundedText(params.request.id,240),text:boundedText(params.request.text,16000),kind:known?.kind||'correction'});
+        const requestId=boundedText(params.request.id,240),text=boundedText(params.request.text,16000);
+        let known=before.requirements.find(item=>item.id===requestId);
+        // A resumed turn can contain several original requests; the prompt
+        // projection includes only the first. Absence there is not absence
+        // from the durable journal. Read just the exact record's kind, then
+        // leave full-text replay validation to Rust as before.
+        if(!known){
+          try{
+            const journal=await core.call('task.readRequirements',{context:params.context,requestId,start:0,limit:1});
+            if(!sameBinding(journal.binding,before.binding)||journal.worldId!==before.world.id||journal.totalRecords!==1||journal.items?.length!==1||journal.items[0].id!==requestId||!['request','correction'].includes(journal.items[0].kind))throw Error('CRAFTMINE_REQUIREMENT_BINDING_MISMATCH');
+            known=journal.items[0];
+          }catch(error){if((error?.errorCode??error?.code??error?.message)!=='REQUIREMENT_NOT_FOUND')throw error;}
+        }
+        await core.call('task.recordContext',{context:params.context,requestId,text,kind:known?.kind||'correction'});
       }
       return params.request? snapshot(params.context):before;
     }
