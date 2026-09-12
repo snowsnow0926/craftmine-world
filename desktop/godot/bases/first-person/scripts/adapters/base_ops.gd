@@ -35,6 +35,10 @@ func execute(op: String, args: Dictionary = {}) -> Dictionary:
 				if node.has_method("respawn") and String(node.state_id()) == wanted:
 					return {"result": {"respawned": node.respawn(), "snapshot": world.snapshot()}}
 			return {"error": "Target cannot respawn"}
+		"inventory-remove":
+			if world.inventory == null or not args.get("id", "") is String:
+				return {"error": "Invalid inventory removal"}
+			return {"result": {"removed": world.inventory.remove(StringName(args.id), int(args.get("amount", 1))), "snapshot": world.snapshot()}}
 		"equip":
 			return await _equip(args)
 		"next-equipment":

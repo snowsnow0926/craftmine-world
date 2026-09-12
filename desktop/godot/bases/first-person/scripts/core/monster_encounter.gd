@@ -40,11 +40,32 @@ func interact() -> Dictionary:
 	if not can_interact():
 		return {"handled": false, "reason": "loot-unavailable"}
 	var inventory := get_tree().current_scene.get_node_or_null("Inventory") as Inventory
+	if inventory == null:
+		return {"handled": false, "reason": "no-inventory"}
+	var before := inventory.snapshot()
+	var slots: Array = before.get("slots", []).duplicate(true)
+	var by_id := {}
+	for slot in slots:
+		by_id[String(slot.id)] = int(slot.count)
+	for item in loot:
+		var key := String(item)
+		if key.is_empty():
+			return {"handled": false, "reason": "invalid-loot"}
+		by_id[key] = int(by_id.get(key, 0)) + 1
+	for key in by_id:
+		if by_id[key] > 9999:
+			return {"handled": false, "reason": "inventory-stack-full"}
+	if by_id.size() > inventory.capacity:
+		return {"handled": false, "reason": "inventory-full"}
+	var next := {"slots": []}
+	for key in by_id:
+		next.slots.append({"id": key, "count": by_id[key]})
+	var restore_problem := inventory.restore(next)
+	if not restore_problem.is_empty():
+		return {"handled": false, "reason": restore_problem}
 	var received: Array[StringName] = []
-	if inventory != null:
-		for item in loot:
-			if inventory.add(item, 1) > 0:
-				received.append(item)
+	for item in loot:
+		received.append(item)
 	if received.size() == loot.size():
 		loot_taken = true
 	loot_collected.emit(received)
