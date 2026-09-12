@@ -19,6 +19,13 @@ function kindOf(path){
   return at<0?'other':(SOURCE_KINDS[path.slice(at).toLowerCase()]||'other');
 }
 function isTextKind(path){ return kindOf(path)!=='other'; }
+// Resource aliases are source-manifest keys, never filesystem paths or URLs.
+function sourcePath(value){
+  if(typeof value!=='string'||!value)throw Error('PATH_REQUIRED');
+  const path=value.startsWith('res://')?value.slice(6):value;
+  if(/[\\:\x00-\x1f\x7f]/.test(path)||path.split('/').some(part=>!part||part==='.'||part==='..'))throw Error('PROJECT_QUERY_PATH_INVALID');
+  return path;
+}
 
 // ---- pure parsers (unit-testable without a core) -------------------------
 
@@ -380,7 +387,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     return {identity,files,latest:page};
   }
   async function readText(path,{revision,manifestHash,cap=readLimit,expectedHash}={}){
-    if(typeof path!=='string'||!path)throw Error('PATH_REQUIRED');
+    path=sourcePath(path);
     validateArgs({revision,manifestHash});
     if(!Number.isSafeInteger(cap)||cap<1)throw Error('PROJECT_QUERY_PAGE_INVALID');
     const pin=(revision===undefined||manifestHash===undefined)?await head():{revision,manifestHash};
@@ -420,8 +427,10 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
     const scriptFiles=files.filter(file=>kindOf(file.path)==='script');
     const scenes=files.filter(file=>kindOf(file.path)==='scene').map(file=>file.path);
     const resources=files.filter(file=>kindOf(file.path)==='resource').map(file=>file.path);
+    const mainSceneReference=sourceReference(settings?.mainScene,files);
     return {format:'craftmine.godot-project-summary/1',identity,totalFiles:latest.totalFiles,kinds,
       mainScene:settings?.mainScene??null,projectName:settings?.name??null,autoloads:settings?.autoloads??[],
+      mainSceneSourcePath:mainSceneReference.status==='manifest-entry'&&mainSceneReference.kind==='scene'?mainSceneReference.path:null,
       inputActions:settings?.inputActions??[],renderer:identity.renderer,target:identity.target,engineVersion:identity.engineVersion,
       inputActionDefinitions:settings?.inputActionDefinitions??[],settingsSource:settingsFile?{path:settingsFile.path,sha256:settingsFile.sha256}:null,
       scriptCount:scriptFiles.length,scenes,resources,status:latest.status,verified:latest.verified,applied:latest.applied,
@@ -432,7 +441,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
 
   async function scene(args={}){
     validateArgs(args);
-    const path=args.path;
+    const path=sourcePath(args.path);
     const {identity,files}=await allFiles(args),file=files.find(item=>item.path===path);
     if(!file)throw Error('PROJECT_FILE_NOT_FOUND');
     if(kindOf(path)!=='scene')throw Error('PROJECT_QUERY_FILE_KIND_MISMATCH');
@@ -443,6 +452,7 @@ function createProjectQuery({core,context,worldId,readLimit=MAX_READ_CHARS}){
   }
 
   async function selectFiles(args,kind,defaultLimit=12){
+    if(args.path!==undefined)args={...args,path:sourcePath(args.path)};
     const {files,identity}=await allFiles(args);
     const available=args.path?files.filter(file=>file.path===args.path):files.filter(file=>kindOf(file.path)===kind);
     if(args.path&&!available.length)throw Error('PROJECT_FILE_NOT_FOUND');

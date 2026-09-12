@@ -7,6 +7,8 @@ const hash=text=>createHash('sha256').update(text,'utf8').digest('hex');
 const fail=(code,detail)=>{throw Object.assign(Error(code+(detail?': '+detail:'')),{errorCode:code});};
 const entries=new Map(corpus.skills.map(skill=>[skill.id,skill]));
 const metadata=entry=>{const {text,...rest}=entry;return rest;};
+const unsupported=path=>fail('GUIDANCE_INTERFACE_UNSUPPORTED',
+  'Guidance source compatibility changed at '+path+'. This is not a write-permission denial. Reinspect current source and follow actual godot_project_patch/host policy; do not revert a legitimate edit just to load this recipe.');
 
 function validateRequest(args){
   if(!['catalog','read'].includes(args.mode))fail('INVALID_GUIDANCE_MODE');
@@ -39,29 +41,45 @@ async function queryGuidance(core,{context,worldId,args,assertActive=()=>{}}){
   if(index.worldId!==worldId||!Number.isSafeInteger(index.revision)||!/^[a-f0-9]{64}$/.test(index.manifestHash))fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
   if(args.revision!==undefined&&(args.revision!==index.revision||args.manifestHash!==index.manifestHash))fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
   const candidates=selection?[selection.skill]:corpus.skills;
-  const matches=[];
+  const matches=[],interfaceMatches=[];
   for(const skill of candidates){
     const target=skill.applicability;
     // Core advances baseBuild to the applied build after adoption. Exact
     // interface hashes below retain the version gate across that lineage.
     const knownBuild=index.baseBuild===target.baseBuild||(/^gbd-[a-f0-9]{64}$/.test(index.baseBuild)&&skill.references.some(ref=>ref.requiredInterface));
     if(index.baseId!==target.baseId||!knownBuild||index.engineVersion!==target.engineVersion)continue;
+    let interfaceMatch={skillId:skill.id,profile:'legacy-reference-hashes',referencePaths:{}};
+    if(skill.interfaceCohorts){
+      const {createProjectQuery}=require('./godot-query.cjs');
+      const query=createProjectQuery({core:{call:async(method,args)=>{const result=await core.call(method,args);assertActive();return result;}},context,worldId});
+      const {files,identity:cohortIdentity}=await query.allFiles({revision:index.revision,manifestHash:index.manifestHash});
+      if(cohortIdentity.baseId!==index.baseId||cohortIdentity.engineVersion!==index.engineVersion)fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
+      const {variants,reservedPaths}=skill.interfaceCohorts;
+      const adapter=files.find(file=>file.path==='craftmine_shared/base_adapter.gd');
+      const modern=files.some(file=>reservedPaths.includes(file.path))||variants.some(v=>v.files.find(file=>file.path===adapter?.path)?.acceptedSourceHashes.includes(adapter?.sha256));
+      if(modern){
+        const cohort=variants.find(v=>v.files.every(expected=>files.some(file=>file.path===expected.path&&expected.acceptedSourceHashes.includes(file.sha256)))&&
+          !files.some(file=>reservedPaths.includes(file.path)&&!v.files.some(expected=>expected.path===file.path)));
+        if(!cohort)unsupported('craftmine_shared/base_adapter.gd (complete guidance interface cohort required)');
+        interfaceMatch={skillId:skill.id,profile:cohort.profile,referencePaths:cohort.referencePaths};
+      }
+    }
     for(const ref of skill.references.filter(ref=>ref.requiredInterface)){
+      const projectPath=interfaceMatch.referencePaths[ref.projectPath]??ref.projectPath;
       let source;
       try {source=await core.call('godotProject.read',{context,worldId,revision:index.revision,
-        manifestHash:index.manifestHash,path:ref.projectPath,offset:0,limit:1});}
+        manifestHash:index.manifestHash,path:projectPath,offset:0,limit:1});}
       catch(error){if(String(error?.errorCode||error?.message).includes('PROJECT_FILE_NOT_FOUND'))fail('GUIDANCE_INTERFACE_MISSING');throw error;}
       assertActive();
-      if(source.worldId!==worldId||source.revision!==index.revision||source.manifestHash!==index.manifestHash||source.path!==ref.projectPath)fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
+      if(source.worldId!==worldId||source.revision!==index.revision||source.manifestHash!==index.manifestHash||source.path!==projectPath)fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
       // The host verifies indexed file bytes; this is the hash of that exact source.
-      if(!ref.acceptedSourceHashes.includes(source.sha256))fail('GUIDANCE_INTERFACE_UNSUPPORTED',
-        'Guidance source compatibility changed at '+ref.projectPath+'. This is not a write-permission denial. Reinspect current source and follow actual godot_project_patch/host policy; do not revert a legitimate edit just to load this recipe.');
+      if(!ref.acceptedSourceHashes.includes(source.sha256))unsupported(projectPath);
     }
-    matches.push(skill);
+    matches.push(skill);interfaceMatches.push(interfaceMatch);
   }
   const envelope={format:FORMAT,catalogVersion:corpus.version,catalogHash:hash(JSON.stringify(corpus)),
     authority:'bundled-craftmine-guidance',instructionPolicy:'reference-only-no-additional-authority',
-    source:identity,provenance:corpus.provenance,requiredInterfacePolicy:corpus.requiredInterfacePolicy};
+    source:identity,provenance:corpus.provenance,requiredInterfacePolicy:corpus.requiredInterfacePolicy,interfaceMatches};
   if(!matches.length){
     if(selection)fail('GUIDANCE_BASE_UNSUPPORTED');
     return {...envelope,available:false,reason:'GUIDANCE_BASE_UNSUPPORTED',skills:[],

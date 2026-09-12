@@ -34,8 +34,11 @@ test('production plugin build includes exact guidance resources and serves a pin
       calls.push(method);
       if(method==='workspace.open')return {worldId:'packaged-world'};
       if(method==='godotBuild.read')return failedJob;
-      if(method==='godotProject.index')return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
-        baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable'};
+      if(method==='godotProject.index'){
+        const files=selectedSkill.references.filter(ref=>ref.requiredInterface).map(ref=>({path:ref.projectPath,sha256:ref.sha256})),offset=args.offset??0,limit=args.limit??32;
+        return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
+          baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable',files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
+      }
       if(method==='godotProject.read')return {...args,sha256:selectedSkill.references.find(ref=>ref.projectPath===args.path).sha256};
       throw Error(`Unexpected packaged host call ${method}`);
     }};
@@ -81,5 +84,11 @@ test('production plugin build includes exact guidance resources and serves a pin
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
     assert.equal(exampleBody.text,fs.readFileSync(path.join(output,'guidance/references/double-press-rule.gd'),'utf8').replace(/\r\n/g,'\n'));
     assert.ok(calls.every(method=>['workspace.open','godotProject.index','godotProject.read','godotBuild.read'].includes(method)));
+    // Exercise the same real materialized v1/v2 source, complete-cohort negative
+    // cases and res:// query calls through this actual packaged broker closure.
+    const childEnv={...process.env,CRAFTMINE_GUIDANCE_PLUGIN_ROOT:output};delete childEnv.NODE_TEST_CONTEXT;
+    const cohortOutput=execFileSync(process.execPath,['--test','--test-reporter=tap',path.join(root,'tests/creation-guidance/current-cohorts.test.mjs')],
+      {cwd:root,env:childEnv,windowsHide:true,encoding:'utf8',timeout:120000,maxBuffer:2*1024*1024});
+    assert.match(cohortOutput,/# tests 7\b/);assert.match(cohortOutput,/# pass 7\b/);assert.match(cohortOutput,/# fail 0\b/);
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });
