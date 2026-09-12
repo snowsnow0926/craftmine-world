@@ -25,6 +25,10 @@ while retaining the failure explanation; do not call that proof of successful
 cancellation or restoration. If the read fails or the same initialization is
 still selected, retain the explicit cancellation retry. Return-to-world is only
 offered for a host-reported ready active slot, never an unfinished placeholder.
+Releasing cancellation also releases the corresponding card operation guard.
+The first enabled retry click must work even if the superseded initialization
+poll is still asleep. Operation tickets prevent that older completion from
+clearing the guard of a newer entry. No delay or repeated click is required.
 
 Switching slots is explicit conversation navigation. Capture the prior live
 draft and navigation intent before entering. If typing or session navigation
@@ -70,3 +74,10 @@ quits. It does not run or claim normal-renderer shortcut/transition acceptance.
 Its report explicitly separates offscreen visual observation from the strict
 normal interaction run. No model call, physical input or window activation is
 permitted in either mode.
+
+The normal fresh-profile chain also attempts cancellation when the real Godot
+preparation control becomes available. It verifies return to Web, a retained
+cancelled draft and retry through the same Godot card/world identity before
+continuing attachment and save/restart checks. If initialization naturally
+finishes before cancellation is possible, the report records this scenario as
+uncovered rather than inventing a failure or slowing product initialization.

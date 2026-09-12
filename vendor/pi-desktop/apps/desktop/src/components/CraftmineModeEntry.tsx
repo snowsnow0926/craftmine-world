@@ -16,18 +16,20 @@ export function CraftmineModeEntry({onSelect,onCancel,onManage}: {
   const {i18n}=useTranslation();
   const chinese=i18n.language.startsWith("zh");
   const {worlds,error,pending,canCancel,cancelling,cancel,refresh,enter}=usePlayerWorlds();
-  const opening=useRef(false);
+  const opening=useRef<number|null>(null);
+  const entrySequence=useRef(0);
   const [entryError,setEntryError]=useState("");
   const choose=async(kind:PlayerWorldKind)=>{
     if(opening.current)return;
-    opening.current=true;
+    const ticket=++entrySequence.current;
+    opening.current=ticket;
     setEntryError("");
     try {
       const complete=await beginPlayerWorldEntry();
       const id=await enter(kind);
       if(id&&!await complete(id,()=>onSelect("play",id)))setEntryError(chinese?"对话或输入已改变。内容已保留，请再次选择世界。":"Your conversation or input changed. It was preserved; choose the world again.");
     } catch(failure){setEntryError(failure instanceof Error?failure.message:String(failure));}
-    finally {opening.current=false;}
+    finally {if(opening.current===ticket)opening.current=null;}
   };
   const manage=()=>{
     const state=useAppStore.getState();state.setSettingsTab("general");state.setPage("settings");
@@ -60,7 +62,7 @@ export function CraftmineModeEntry({onSelect,onCancel,onManage}: {
         })}
       </div>
       {pending&&<p role="status" data-player-world-pending={pending}>{chinese?"正在保存当前进度并打开所选世界…":"Saving current progress and opening the selected world…"}</p>}
-      {canCancel&&<button type="button" data-player-world-cancel disabled={cancelling} onClick={()=>void cancel()}>{cancelling?(chinese?"正在取消准备…":"Cancelling preparation…"):(chinese?"取消准备，保留世界":"Cancel preparation and keep world")}</button>}
+      {canCancel&&<button type="button" data-player-world-cancel disabled={cancelling} onClick={()=>{void cancel().then(released=>{if(released)opening.current=null;});}}>{cancelling?(chinese?"正在取消准备…":"Cancelling preparation…"):(chinese?"取消准备，保留世界":"Cancel preparation and keep world")}</button>}
       {(error||entryError)&&<p role="alert" data-player-world-error>{entryError||error}</p>}
       {!worlds&&!error&&<p role="status">{chinese?"正在读取世界…":"Loading your worlds…"}</p>}
       {error&&<button type="button" disabled={!!pending} onClick={()=>void refresh()}>{chinese?"重新读取":"Refresh"}</button>}
