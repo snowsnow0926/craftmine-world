@@ -486,8 +486,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 8508,
-      "sha256": "925a566d1c319e51cebce2141d6f0982182348858041faa5f7339cf603215866"
+      "bytes": 8556,
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
     },
     {
       "path": "scene_materializer.mjs",
