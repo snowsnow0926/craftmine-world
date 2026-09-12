@@ -170,7 +170,7 @@ test('造物指导按真实底座和组件状态接口哈希匹配，普通脚�
  const base=JSON.parse(fs.readFileSync(path.join(root,'desktop/godot/bases/creation-sandbox/manifest.json')));
  assert.equal(creationSkill.applicability.baseVersion,base.baseVersion);
  assert.equal(hash(creationSkill.text),creationSkill.sha256);
- assert.equal(creationSkill.version,'1.8.0');
+ assert.equal(creationSkill.version,'1.8.1');
  assert.match(creationSkill.text.slice(0,8000),/propose-group/);
  assert.match(creationSkill.text.slice(0,8000),/底座生成器和已安装素材是两类对象/);
  assert.match(creationSkill.text.slice(0,8000),/独立 `entity_id`/);
