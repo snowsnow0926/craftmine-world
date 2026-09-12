@@ -16,7 +16,8 @@ await require('esbuild').build({entryPoints:[path.join(desktop,'electron/main/go
 const {createGodotWorldInitializer}=require(bundle);
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const oldBridge=execFileSync('git',['show','eae279915094f09d987ef0eb747eba20ef92cd0e:desktop/godot/shared/runtime_bridge.gd'],{cwd:root,windowsHide:true});
-const newBridge=fs.readFileSync(path.join(root,'desktop/godot/shared/runtime_bridge.gd'));
+const newBridge=fs.readFileSync(path.join(root,'desktop/godot/shared/repairs/runtime_bridge-frame-independent.gd'));
+assert.equal(hash(newBridge),'faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2');
 assert.equal(hash(oldBridge),'318fdb30c40a6165a2080ff12190571fada156ba321f83c3264bae91e4052c76');
 function fixture({custom=false,missing=false,playable=false,changedOwner=false,failCheck=false,replacement=newBridge}={}){
  const worldsRoot=fs.mkdtempSync(path.join(output,'worlds-')),worldId='legacy-test';
