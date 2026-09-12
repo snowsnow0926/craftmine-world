@@ -60,7 +60,7 @@ import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
-import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance } from "./craftmine-headless";
+import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
 import { NO_IMMERSION, parseImmersion, immersionShortcut } from "../../shared/craftmine-immersion";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { LocalVoiceInputService } from "./local-voice-input";
@@ -3373,7 +3373,7 @@ function createPluginLauncherWindow(): Promise<BrowserWindow> {
       ...(process.platform === "darwin" ? { type: "panel" as const } : {}),
       webPreferences: {
         preload: join(__dirname, "../preload/index.cjs"),
-        offscreen: !!headlessAcceptance,
+        offscreen: isOffscreenAcceptance(),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
@@ -3595,7 +3595,7 @@ async function createWindow() {
         }),
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),
-      offscreen: !!headlessAcceptance,
+      offscreen: isOffscreenAcceptance(),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,

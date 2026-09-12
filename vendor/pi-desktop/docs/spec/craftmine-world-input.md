@@ -67,3 +67,19 @@ layout changes during restore, exact snapshot recovery, preview, promotion, and
 native retirement. `--cancel-on-load` additionally proves early cancellation,
 cancellation during real load, preserved formal instance/snapshot, and successful
 retry. No original player profile writes occur.
+
+## Full application normal-rendering acceptance
+
+The already protected `headless-profile.json` marker may opt into
+`rendering: "normal"`. The same isolated-directory, token, and connected parent
+IPC requirements still apply. Only renderer construction changes: the application,
+plugin view, and formal/candidate world use normal compositing. Build verifiers
+retain their independent offscreen rendering. Omitted rendering preserves the
+existing offscreen test behavior; unknown rendering values are rejected.
+
+Normal acceptance does not disable any activation, focus, keyboard/mouse,
+external dialog, notification, or Pointer Lock guard. Every window remains
+hidden and unfocusable. It does not force continuous frames on the application
+renderer: overlay tests must still tolerate an occluded application's suspended
+animation callbacks. An offscreen-only capture API remains offscreen-only; use
+the ordinary scope-checked product capture route for normal-rendering evidence.
