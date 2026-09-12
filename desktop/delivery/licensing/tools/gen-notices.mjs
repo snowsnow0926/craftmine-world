@@ -85,6 +85,8 @@ export function generate({inventoryPath = DEFAULT_INVENTORY, outDirectory = DEFA
     'Decision record: `docs/LICENSING_STRATEGY.md` (decision only; not an applied licence).',
     'Inventory: `desktop/delivery/licensing/inventory.json`. Offline entry: `desktop/delivery/licensing/offline-entry.json`.',
     'Official texts fetched from their publishers: see `desktop/delivery/licensing/texts/SOURCES.json`.',
+    '',
+    'Bundled Blender 5.2.1 LTS is GPL-3.0-or-later. See `blender/README.md` for its complete upstream notices, pinned source archive, dependency build/source pointers and the separate GPL Python adapter scope. The GPL text is `gpl/GPL-3.0.txt`. Bundling the upstream source tar alone is not a claim of complete third-party Corresponding Source compliance. This Blender declaration does not relicense the host or generated assets.',
     ''
   ].join('\n');
 
