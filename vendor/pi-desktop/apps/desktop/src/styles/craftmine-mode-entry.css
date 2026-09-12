@@ -67,6 +67,10 @@
 .craftmine-dialogue-status p { margin: 6px 0; }
 
 .craftmine-chat-flow { display: contents; }
+.dialogue-preparation-composer { width: min(760px, calc(100% - 48px)); margin: auto; display: flex; flex-direction: column; gap: 12px; padding: 20px; color: #eee; background: #151515; border: 1px solid #383838; border-radius: 12px; }
+.dialogue-preparation-composer textarea { width: 100%; min-height: 160px; resize: vertical; padding: 12px; color: inherit; background: #202020; border: 1px solid #555; border-radius: 8px; font: inherit; }
+.dialogue-preparation-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.dialogue-preparation-actions span { color: #bbb; font-size: 13px; }
 .app-shell.craftmine-dialogue-only { --ds-bg-primary: #080808; --ds-bg-secondary: #151515; --ds-text-primary: #eeeeee; --ds-text-secondary: #b5b5b5; --ds-text-muted: #999999; }
 .app-shell.craftmine-world-first.craftmine-dialogue-only > .main-pane { grid-row: 1 / -1; grid-column: 1 / -1; min-width: 0; border: 0; }
 .craftmine-dialogue-only .craftmine-chat-resize { display: none; }

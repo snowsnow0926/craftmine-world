@@ -8,6 +8,14 @@ type Copy = Record<CraftmineLang, string>;
 
 export const CRAFTMINE_WORLD_TEXT = {
   worldsTitle: { zh: "世界", en: "Worlds" },
+  deleteWorld: { zh: "删除", en: "Delete" },
+  recentlyDeleted: { zh: "最近删除", en: "Recently deleted" },
+  restoreWorld: { zh: "恢复", en: "Restore" },
+  removeHint: { zh: "从列表删除，原文件暂保留，可在“最近删除”恢复。", en: "Remove from the list. Files are retained and can be restored from Recently deleted." },
+  worldRemoved: { zh: "已删除，可在“最近删除”恢复。原文件暂保留。", en: "Deleted. Original files are retained; restore from Recently deleted." },
+  worldRestored: { zh: "已恢复到世界列表。可查看详情或重新初始化。", en: "Restored to the world list. Review details or retry initialization." },
+  removeBusy: { zh: "世界仍有创作、初始化或候选操作，请等待完成后再删除。", en: "Wait for creation, initialization or candidate operations to finish before deleting." },
+  removeFailedOnly: { zh: "世界状态已变化，只有初始化失败的世界可以在这里删除。", en: "The world state changed. Only worlds with failed initialization can be deleted here." },
   newWorld: { zh: "新建世界", en: "New world" },
   loading: { zh: "正在读取世界…", en: "Loading worlds…" },
   refresh: { zh: "刷新", en: "Refresh" },

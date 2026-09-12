@@ -147,6 +147,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       'godotApplication.read':['id'],
       'godotApplication.abort':['id'],
       'world.read':['id'],
+      'world.archiveStatus':['id'],
+      'world.archiveFailed':['id','revision','baseBuild'],
+      'world.restoreArchived':['id'],
+      'world.archivedList':[],
     };
     if(Object.hasOwn(applicationFields,method)){
       fields(params,applicationFields[method]);

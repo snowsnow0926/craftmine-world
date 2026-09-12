@@ -4,6 +4,7 @@ import {
   hasInitializingWorld,
   isWorldPlayable,
   planWorldSwitch,
+  parseWorldList,
   worldErrorMessage,
   type CraftmineActiveTask,
   type CraftmineCreationAction,
@@ -20,6 +21,9 @@ export type CraftmineWorldsStatus = "loading" | "ready" | "unavailable" | "error
 export type CraftmineWorldsController = {
   status: CraftmineWorldsStatus;
   worlds: CraftmineWorldEntry[];
+  archivedWorlds: CraftmineWorldEntry[];
+  removeFailedWorld: (id: string) => Promise<void>;
+  restoreWorld: (id: string) => Promise<void>;
   activeWorldId: string | null;
   activeWorld: CraftmineWorldEntry | null;
   capabilities: CraftmineWorldCapabilities | null;
@@ -51,6 +55,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   const bridge = useMemo(() => craftmineWorldBridge(), []);
   const [status, setStatus] = useState<CraftmineWorldsStatus>("loading");
   const [worlds, setWorlds] = useState<CraftmineWorldEntry[]>([]);
+  const [archivedWorlds, setArchivedWorlds] = useState<CraftmineWorldEntry[]>([]);
   const [activeWorldId, setActiveWorldId] = useState<string | null>(null);
   const [capabilities, setCapabilities] = useState<CraftmineWorldCapabilities | null>(null);
   const [activeTask, setActiveTask] = useState<CraftmineActiveTask | null>(null);
@@ -92,11 +97,14 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       // still offer the bases the host actually delivered.
       const caps = await bridge.capabilities(list.activeWorldId).catch(() => null);
       if (!current()) return;
+      const archived = caps?.archiveFailed ? parseWorldList(await bridge.call("world.archivedList")).worlds : [];
+      if (!current()) return;
       const task = list.activeWorldId
         ? await bridge.activeTask(list.activeWorldId).catch(() => null)
         : null;
       if (!current()) return;
       setWorlds(list.worlds);
+      setArchivedWorlds(archived);
       setActiveWorldId(list.activeWorldId);
       setCapabilities(caps);
       setActiveTask(task);
@@ -301,6 +309,25 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
     setNotice(null);
   }, []);
 
+  const archiveAction = useCallback(async (worldId: string, restore: boolean) => {
+    if (!bridge || busyRef.current || !capabilities?.archiveFailed) return;
+    if (!restore && worlds.find(world => world.id === worldId)?.state !== "failed") return;
+    busyRef.current = true;setBusy(true);setActionError(null);setNotice(null);
+    try {
+      await bridge.call(restore ? "world.restoreArchived" : "world.archiveFailed", {worldId});
+      await refresh();
+      if (alive.current) setNotice(CRAFTMINE_WORLD_TEXT[restore ? "worldRestored" : "worldRemoved"][lang]);
+    } catch (failure) {
+      if (alive.current) {
+        const code = String(failure);
+        setActionError(code.includes("WORLD_REMOVAL_BUSY") || code.includes("WORLD_APPLICATION_BUSY") ? CRAFTMINE_WORLD_TEXT.removeBusy[lang]
+          : code.includes("WORLD_REMOVAL_REQUIRES_FAILED_INITIALIZATION") ? CRAFTMINE_WORLD_TEXT.removeFailedOnly[lang]
+          : worldErrorMessage(failure, lang));
+      }
+      await refresh();
+    } finally {busyRef.current = false;if (alive.current) setBusy(false);}
+  }, [bridge, capabilities?.archiveFailed, worlds, refresh, lang]);
+
   // A world that is initializing changes on the host, not in this renderer.
   // Poll the same read channel the list uses, with a hard bound, so the row can
   // show real progress and stop on its own instead of spinning forever.
@@ -329,6 +356,9 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
   return {
     status,
     worlds,
+    archivedWorlds,
+    removeFailedWorld: id => archiveAction(id, false),
+    restoreWorld: id => archiveAction(id, true),
     activeWorldId,
     activeWorld: worlds.find((entry) => entry.id === activeWorldId) ?? null,
     capabilities,
