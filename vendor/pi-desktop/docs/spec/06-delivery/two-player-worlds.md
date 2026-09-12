@@ -14,6 +14,8 @@ The raw world index is read first; only the two chosen records are enriched
 with initialization status. This read disables automatic initialization resume,
 so opening the cards does not build unrelated archived worlds. Explicit entry
 uses the normal lifecycle to select and resume an initializing world.
+This also applies when the unfinished world was already selected at shutdown;
+selection alone never proves that its initializer is running after restart.
 
 Slot preferences and stable creation-operation IDs live in `player-worlds.json`
 within the selected application data directory. This is an index of Core-owned

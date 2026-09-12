@@ -119,7 +119,8 @@ export function createPlayerWorlds(deps:Dependencies){
           if(current.activeWorldId!==row.id)throw Error('PLAYER_WORLD_ENTRY_UNCONFIRMED');
           return present(kind,await inspect(current.worlds.find(value=>value.id===row!.id)),row.id);
         }
-        if(slot.state==='initializing'&&list.activeWorldId===row.id)return slot;
+        // Even an already-selected placeholder must cross the explicit open
+        // lifecycle: passive status reads cannot restart a stopped initializer.
         await deps.navigate({operation:'switch',id:row.id});
         const confirmed=await deps.list();
         if(confirmed.activeWorldId!==row.id)throw Error('PLAYER_WORLD_ENTRY_UNCONFIRMED');
