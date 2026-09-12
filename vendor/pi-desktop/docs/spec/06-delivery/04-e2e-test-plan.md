@@ -9698,3 +9698,35 @@ Keep the receipt deferred until the host applies it. An explicit Ask choice,
 lost capture, or changed identity must not promise automatic application.
 Verify the following ordinary model response and matching application receipt;
 tool-guidance tests alone do not prove the player's final prose is correct.
+
+## Craftmine bundled Blender modeling
+
+In an isolated profile with the normal selected model/provider/thinking settings,
+ask for a modeled object in a Godot world. The existing creation conversation
+must discover the bundled Blender tools, obtain current source pins, submit a
+background script, and observe its job until it is terminal. The normal creator
+then instances the imported GLB and implements the requested interactions through
+the ordinary Godot build/check/application flow. A generated model or imported
+source receipt alone must not be reported as a changed playable world.
+
+Retain the job's editable source. In a later turn, locate that model's source job,
+change its geometry or material, and verify a new source revision while the old
+revision remains readable. Another world's job or a job from a replaced active
+storage root must not supply an editable source. A source revision or destination
+hash race must preserve the generated artifacts and leave newer source untouched.
+
+Cancel while Blender is running and while source import is waiting. Repeat after
+ending the owning turn or unloading the plugin; no late world-source mutation is
+allowed. Restart after terminating the broker and verify actual job/process/profile
+cleanup, an interrupted job record and no automatic Python replay. Remove or
+modify bundled runtime files, the broker, or its source identity: the capability
+must fail explicitly, without selecting another executable or an unrestricted
+execution path. A Python error must return bounded, clearly untrusted diagnostics
+from the matching native run so the agent can repair its script.
+
+The authored integration fixture in `tests/blender/integration.mjs` measures real
+Blender generation, Rust source import, both Godot GLB import paths, door animation,
+collision, source editing and preserved progress. It uses no model calls and is
+not a substitute for ordinary-player visual quality or final response acceptance.
+All automatic verification stays headless, uses independent data directories,
+and never activates windows, sends mouse/keyboard input, or obtains Pointer Lock.
