@@ -67,4 +67,3 @@ try {
  check('no input ownership changes or page exceptions',await page.evaluate(()=>violations.length===0)&&report.errors.length===0);report.passed=true;
 } catch(error){report.error=String(error.stack??error);report.lastState=await page?.evaluate(()=>({dialogue:fixture.dialogue.state,worlds:fixture.controller.worlds,text:document.body.innerText})).catch(()=>null);process.exitCode=1;}
 finally{await browser?.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({out,passed:report.passed,error:report.error}));}
-

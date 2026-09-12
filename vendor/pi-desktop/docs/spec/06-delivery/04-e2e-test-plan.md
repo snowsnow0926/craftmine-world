@@ -9658,3 +9658,12 @@ world, session and description. A retry racing cancellation must cancel its new
 owned attempt before returning. The ordinary WorldCreatePanel Cancel follows
 the same scoped backend cancellation and preserves its form if cancellation or
 return fails; closing a form alone is not successful cancellation.
+
+After cancellation and restart, invoke Retry through the visible world row.
+Delay the wrapper's first status read, the initializer's baseline publication,
+and cancellation-marker clearing separately. Both the list controller and the
+dialogue preparation hook must remain observant until the new durable outcome;
+an old cancelled response must not stop polling or terminate preparation.
+After retry settlement, both renderers reread real state through the host
+notification. A confirmed Core/world-list result with a still-cancelled visible
+row is a release failure, even when the engine already loaded successfully.
