@@ -37,6 +37,7 @@ import {
   flushScheduledHomeDraftAdopt,
   pruneComposerDrafts,
   readComposerDraft,
+  registerComposerDraftReader,
   writeComposerDraft,
 } from "../lib/composer-draft-cache";
 import { api } from "../lib/api";
@@ -794,6 +795,7 @@ export function Composer({
 
   const persistDraft = (key = draftKeyRef.current) =>
     captureComposerDraft(key, liveDraftText(), fileReferencesRef.current);
+  useLayoutEffect(() => registerComposerDraftReader(() => draftKeyRef.current, () => persistDraft()), []);
 
   const paintCurrentDraft = (el: HTMLElement, nextValue: string) => {
     paintEditorValue(

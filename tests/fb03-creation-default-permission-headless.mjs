@@ -1,0 +1,37 @@
+// Production store entry/send functions with controlled API receipts; no model.
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createRequire}from'node:module';import {pathToFileURL}from'node:url';import {playwright,browserOptions}from'../app/browser-tools.mjs';
+const root=path.resolve(import.meta.dirname,'..'),desktop=path.join(root,'vendor/pi-desktop/apps/desktop'),require=createRequire(path.join(desktop,'package.json'));
+fs.mkdirSync(path.join(root,'test-results'),{recursive:true});const out=fs.mkdtempSync(path.join(root,'test-results/fb03-default-permission-'));
+const code=`import i18n from 'i18next';i18n.init({lng:'en',resources:{en:{translation:{}}},initImmediate:false});import {useAppStore,materializeDraftSession,createCopiedWorldSession}from'./src/stores/app-store';import {api}from'./src/lib/api';
+let serial=0;const fixture={creates:[],configures:[],prompts:[],gate:null};globalThis.fixture=fixture;
+const row=(id,values={})=>({id,title:'Existing world dialogue',mode:'agent',thinkingLevel:'max',providerId:'player-provider',modelId:'player-model',permissionMode:'inherit',createdAt:1,updatedAt:1,...values});
+api.createSession=async input=>{fixture.creates.push(input);return {session:row('new-'+(++serial),input)};};
+api.configureSession=async(id,config)=>{fixture.configures.push({id,config});if(fixture.gate)await fixture.gate;return {session:row(id,config)};};
+api.prompt=async input=>{fixture.prompts.push({input,permission:useAppStore.getState().sessions.find(s=>s.id===input.sessionId)?.permissionMode});};
+api.renameSession=async()=>({});
+fixture.reset=({mode='play',sessionPermission='inherit',globalPermission,existing=false,worldTab=true}={})=>{
+ const id='existing-'+(++serial);fixture.creates=[];fixture.configures=[];fixture.prompts=[];fixture.gate=null;
+ localStorage.setItem('craftmine.desktop.layout.v1',JSON.stringify({mode,overlay:'compact'}));
+ useAppStore.setState({ready:true,activeSessionId:existing?id:undefined,selectingSessionId:undefined,sessions:existing?[row(id,{permissionMode:sessionPermission})]:[],messages:[],settings:{defaultMode:'agent',defaultProviderId:'player-provider',defaultModelId:'player-model',...(globalPermission?{defaultPermissionMode:globalPermission}:{})},workspace:{path:'D:/isolated-fixture'},providers:[{id:'player-provider',defaultModelId:'player-model',models:[{id:'player-model',defaultThinkingLevel:'max',thinkingLevels:['medium','max']}]}],isRunning:false,runningSessions:{},pendingPlans:{},draftConfiguration:null,workPanelTabs:worldTab?[{id:'plugin:craftmine.world/world',kind:'plugin'}]:[],activeWorkPanelTabId:worldTab?'plugin:craftmine.world/world':null,workPanelOpen:worldTab,refreshSessions:async()=>{},sessionMeta:{},sessionOutcomes:{}});
+ return id;
+};
+fixture.materialize=()=>materializeDraftSession();fixture.copied=()=>createCopiedWorldSession('new-world-'+serial,useAppStore.getState().activeSessionId);fixture.send=()=>useAppStore.getState().sendPrompt('create a playable object');fixture.state=()=>useAppStore.getState();fixture.choose=permission=>useAppStore.setState(s=>({sessions:s.sessions.map(v=>({...v,permissionMode:permission}))}));
+fixture.waitConfigure=()=>{fixture.gate=new Promise(r=>fixture.release=r);};fixture.reset();`;
+await require('esbuild').build({stdin:{contents:code,resolveDir:desktop,loader:'js'},outfile:path.join(out,'fixture.js'),bundle:true,platform:'browser',format:'iife',define:{'process.env.NODE_ENV':'"production"'}});
+fs.writeFileSync(path.join(out,'index.html'),'<meta charset="utf-8"><script src="fixture.js"></script>');const report={checks:[],errors:[],scope:'Production store with finite API receipts, no model/native application claim'};let browser;
+const check=(name,value)=>{assert.ok(value,name);report.checks.push(name);console.log('PASS '+name);};
+try{
+ browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),browserOptions());await browser.addInitScript(()=>{globalThis.violations=[];window.focus=()=>violations.push('focus');Element.prototype.requestPointerLock=()=>{violations.push('pointer');throw Error('disabled');};window.piDesktop={platform:'win32',on:()=>()=>{},invoke:async()=>({ok:true,data:{}})};});const page=await browser.newPage();page.on('pageerror',e=>report.errors.push(String(e)));await page.goto(pathToFileURL(path.join(out,'index.html')).href);await page.waitForFunction(()=>fixture.materialize);
+ await page.evaluate(()=>fixture.materialize());
+ check('first immersive world message materializes Auto naturally with original model thinking',await page.evaluate(()=>fixture.creates[0].permissionMode==='auto'&&fixture.creates[0].thinkingLevel==='max'&&fixture.state().settings.defaultPermissionMode===undefined));
+ await page.evaluate(()=>{fixture.reset({mode:'create',existing:true});return fixture.copied();});
+ check('pure dialogue new-world entry creates Auto even while its presentation is preparing',await page.evaluate(()=>fixture.creates[0].permissionMode==='auto'));
+ for(const sessionPermission of ['ask','accept-edits']){await page.evaluate(sessionPermission=>{fixture.reset({existing:true,sessionPermission});return fixture.copied();},sessionPermission);check('copied world retains explicit '+sessionPermission,await page.evaluate(mode=>fixture.creates[0].permissionMode===mode,sessionPermission));}
+ for(const globalPermission of ['ask','accept-edits']){await page.evaluate(globalPermission=>{fixture.reset({globalPermission});return fixture.materialize();},globalPermission);check('global '+globalPermission+' remains inherited',await page.evaluate(()=>fixture.creates[0].permissionMode===undefined));}
+ await page.evaluate(()=>{fixture.reset({mode:'create'});return fixture.materialize();});check('ordinary workbench creation does not change its permission default',await page.evaluate(()=>fixture.creates[0].permissionMode===undefined));
+ await page.evaluate(()=>{fixture.reset({existing:true});return fixture.send();});
+ check('legacy inherited world conversation becomes Auto before its ordinary prompt reaches the host',await page.evaluate(()=>fixture.configures.length===1&&fixture.configures[0].config.permissionMode==='auto'&&fixture.configures[0].config.modelId==='player-model'&&fixture.configures[0].config.thinkingLevel==='max'&&fixture.prompts.length===1&&fixture.prompts[0].permission==='auto'));
+ await page.evaluate(()=>{fixture.reset({existing:true,sessionPermission:'ask'});return fixture.send();});check('an explicit Ask conversation is never changed by send',await page.evaluate(()=>fixture.configures.length===0&&fixture.prompts.length===1&&fixture.prompts[0].permission==='ask'));
+ await page.evaluate(()=>{fixture.reset({existing:true});fixture.waitConfigure();fixture.sending=fixture.send();});await page.waitForFunction(()=>fixture.configures.length===1);await page.evaluate(()=>{fixture.choose('ask');fixture.release();});const accepted=await page.evaluate(()=>fixture.sending);check('a newer explicit choice cancels the pending defaulted send',!accepted&&await page.evaluate(()=>fixture.prompts.length===0&&fixture.state().sessions[0].permissionMode==='ask'));
+ check('no input ownership request or unhandled page errors',await page.evaluate(()=>violations.length===0)&&report.errors.length===0);report.passed=true;
+}catch(error){report.error=String(error.stack??error);process.exitCode=1;}finally{await browser?.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(out);}
