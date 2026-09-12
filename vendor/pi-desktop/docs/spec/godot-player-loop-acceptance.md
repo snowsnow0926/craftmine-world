@@ -24,6 +24,15 @@ complete a modification-flow report. Generated gameplay still needs separate
 actual interaction evidence; a build check or model statement alone is not
 proof that E pickup, equipment, or persistent ammunition works.
 
+With the two-card entry, retained acceptance selects a card only if its
+host-provided world ID exactly matches the expected existing world. Otherwise
+it returns to the current legacy world or opens that exact world through
+advanced saves. It must not select a same-engine replacement slot or create
+a new world and lose the retained draft. The driver records which visible
+entry route it used and checks the actual runtime world/build afterwards.
+Independent decision tests cover exact identity, loading, legacy, and return
+paths. Native integration remains pending the next package and exclusive slot.
+
 The prompt-response diagnostic wraps the existing main IPC handler only to
 record its returned error. It forwards the original arguments and result,
 does not modify authorization, and runs only in the isolated hidden owner.

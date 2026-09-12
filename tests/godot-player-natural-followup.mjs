@@ -12,6 +12,7 @@ import {playwright} from '../app/browser-tools.mjs';
 import {loadPackageAsar} from '../desktop/package-asar.mjs';
 import {loadLocalConfig} from '../app/local-config.mjs';
 import {createFileClarificationExchange} from './helpers/promo-file-clarification.mjs';
+import {enterRetainedPlayerWorld} from './helpers/player-world-entry.mjs';
 
 const repo=path.resolve(import.meta.dirname,'..');
 const originalFile=path.resolve(process.argv[2]),originalBytes=fs.readFileSync(originalFile),original=JSON.parse(originalBytes);assert.ok(['REPRODUCED','PASSED_PRODUCT_FLOW','READY_FOR_DIAGNOSTIC_RESUME'].includes(original.status));
@@ -114,6 +115,7 @@ async function launch(label){
 try{
   active=await launch('first');
   const providerId=config.providerId;report.providerId=providerId;await active.appPage.evaluate(async({id,secret})=>{const result=await window.piDesktop.invoke('pi-desktop/providers/update',{id,secretValue:secret});if(!result?.ok)throw Error(result?.error?.message??'PROVIDER_UPDATE_FAILED');},{id:providerId,secret});report.settings=await active.api('settingsGet');await active.stop();active=await launch('configured');report.promptTrace=await active.installPromptTrace();save();
+  report.playerEntry=await enterRetainedPlayerWorld(active.appPage,worldId,until);save();
   await until(()=>active.rpc('godotObserve').catch(()=>null),value=>value?.worldId===worldId);
   await active.shortcut('F2');
   await until(()=>active.appPage.evaluate(()=>[...document.querySelectorAll('.composer-input')].some(el=>el.getClientRects().length&&!el.closest('[hidden],[inert]'))),Boolean);
@@ -198,7 +200,7 @@ try{
   assert.deepEqual(captureAfter,captureBefore,'Read-only bound capture leaves native owner and world unchanged');
   const png=Buffer.from(image.pngBase64,'base64');assert.equal(createHash('sha256').update(png).digest('hex'),image.sha256);fs.writeFileSync(path.join(directory,'generated-world.png'),png);report.capture={...image,pngBase64:undefined,before:captureBefore,after:captureAfter};
   await active.stop();check('first normal save and quit has no guard or shutdown failure',active.record.exit?.code===0&&!active.record.forced&&!active.record.exitAudit?.violations?.length&&!active.record.exitAudit?.shutdownFailures?.length);active=null;
-  active=await launch('reopen');await until(()=>active.rpc('godotObserve').catch(()=>null),value=>value?.worldId===worldId&&value?.buildId===report.after.formal.world.build.id);
+  active=await launch('reopen');report.reopenEntry=await enterRetainedPlayerWorld(active.appPage,worldId,until);await until(()=>active.rpc('godotObserve').catch(()=>null),value=>value?.worldId===worldId&&value?.buildId===report.after.formal.world.build.id);
   report.reopened={formal:await active.worldPanel('world.read',{id:worldId}),snapshot:await active.rpc('godotSnapshot'),observation:await active.rpc('godotObserve'),native:await active.native(),guards:await active.rpc('guards')};
   report.reopened.metrics=await active.api('sessionTurnMetrics',{sessionId});check('reopening adds no model calls',report.reopened.metrics.calls.observed===report.latest.metrics.calls.observed);
   check('save and reopen retains the exact generated formal build',report.reopened.formal.world?.build?.id===report.after.formal.world?.build?.id);
