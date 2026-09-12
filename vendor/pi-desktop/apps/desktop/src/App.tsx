@@ -206,15 +206,12 @@ function AppShell() {
   const projectPath = useAppStore((s) => s.workspace?.path ?? null);
 
   const [searchOpen, setSearchOpen] = useState(false);
-  // A persisted play layout is already an explicit player choice. Keeping the
-  // shortcut gate closed until the mode-entry dialog is selected made F2 and
-  // Escape inert after relaunching directly into an existing world.
-  const [modeChosen, setModeChosen] = useState(() => loadCraftmineLayout(localStorage).mode === "play");
-  // A persisted play layout is already an explicit mode choice. Keeping the
-  // entry sheet open on every relaunch leaves the immersion shortcut handler
-  // blocked, so F2/Esc/F11 appear inert until the player makes the same choice
-  // again. Only show the entry sheet for a fresh/default create layout.
-  const [modeEntryOpen, setModeEntryOpen] = useState(() => loadCraftmineLayout(localStorage).mode !== "play");
+  // The world surface is an interactive product surface as soon as it is
+  // restored. Requiring a second mode-choice click after relaunch leaves the
+  // native shortcut bridge disconnected, so F2/Esc/F11 appear inert. The
+  // chooser remains available when explicitly opened from the mode controls.
+  const [modeChosen, setModeChosen] = useState(true);
+  const [modeEntryOpen, setModeEntryOpen] = useState(false);
   const modeEntryOpenRef = useRef(modeEntryOpen);
   modeEntryOpenRef.current = modeEntryOpen;
   useEffect(() => {
@@ -286,6 +283,19 @@ function AppShell() {
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
   const craftmineChatRef = useRef<HTMLElement | null>(null);
   const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen, craftmineChatRef);
+  const immersionFullscreenEntered = useRef(false);
+  const [windowFullScreen, setWindowFullScreen] = useState(false);
+  const [windowFullScreenKnown, setWindowFullScreenKnown] = useState(false);
+  useEffect(() => {
+    if (!craftmineImmersive) {
+      immersionFullscreenEntered.current = false;
+      return;
+    }
+    if (!windowFullScreenKnown) return;
+    if (immersionFullscreenEntered.current) return;
+    immersionFullscreenEntered.current = true;
+    if (!windowFullScreen) void api.nativeMenuAction("toggleFullScreen").catch(() => undefined);
+  }, [craftmineImmersive, windowFullScreen, windowFullScreenKnown]);
   useEffect(() => {
     if (!craftmineWorldFirst) return;
     const narrow = window.matchMedia("(max-width: 1100px)");
@@ -461,6 +471,8 @@ function AppShell() {
     // Fullscreen hides the macOS traffic lights; CSS shifts titlebar
     // controls left via this attribute.
     const off = api.onWindowFullScreen(({ fullScreen }) => {
+      setWindowFullScreen(fullScreen);
+      setWindowFullScreenKnown(true);
       document.documentElement.dataset.fullscreen = fullScreen ? "true" : "false";
     });
     return off;

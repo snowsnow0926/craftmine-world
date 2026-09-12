@@ -39,7 +39,7 @@ test('native transport rejects uncloneable/oversize responses and remains usable
 test('page bridge explicitly rejects malformed/oversized completion and callback exceptions',async()=>{
  const messages=[];let receive;const status={hidden:false,textContent:''};
  const scope={protocol:'craftmine.godot-runtime/2',worldId:'alpha',buildId:'build-a',instanceId:'one'};
- const context={TextEncoder,console,document:{getElementById:()=>status},craftmineRuntime:{scope,post:x=>messages.push(x),on:fn=>receive=fn}};context.window=context;
+ const context={TextEncoder,console,requestAnimationFrame:callback=>{callback();return 1;},document:{getElementById:()=>status},craftmineRuntime:{scope,post:x=>messages.push(x),on:fn=>receive=fn}};context.window=context;
  vm.runInNewContext(await fs.readFile('desktop/godot/web/bridge.js','utf8'),context);
  let throwing=false;context.CraftmineGame.register(()=>{if(throwing)throw Error('callback failure');});context.CraftmineGame.start({startGame:async()=>{},requestQuit(){}});await Promise.resolve();
  assert.equal(status.hidden,false,'engine startup must not hide the loading layer');

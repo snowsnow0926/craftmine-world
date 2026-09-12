@@ -146,8 +146,15 @@ export function decideCraftmineActivation(input: {
   playWhenWorldActivates: boolean;
   playing: boolean;
 }): CraftmineActivationDecision {
-  if (!input.worldId || input.worldId === input.enteredWorldId) {
+  if (!input.worldId) {
     return { switchToPlay: false, enteredWorldId: input.enteredWorldId };
+  }
+  if (input.worldId === input.enteredWorldId) {
+    // A persisted automatic-play preference should restore the immersive
+    // presentation after relaunch when the world is still in create mode.
+    // An explicit return to create stores playWhenWorldActivates=false, so it
+    // remains a deliberate choice and is not overridden here.
+    return { switchToPlay: input.playWhenWorldActivates && !input.playing, enteredWorldId: input.enteredWorldId };
   }
   return {
     switchToPlay: input.playWhenWorldActivates && !input.playing,

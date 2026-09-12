@@ -94,12 +94,22 @@
       }
     });
   };
+  let loadVisualGeneration = 0;
   const markLoaded = result => {
     // Engine startup only means the WebAssembly runtime exists. Keep the
     // loading layer visible until the first world load (including a restored
     // snapshot) has completed successfully; otherwise a slow restore presents
     // a black canvas with no feedback.
-    if (result && result.loaded === true) status.hidden = true;
+    if (result && result.loaded === true) {
+      const generation = ++loadVisualGeneration;
+      const hide = () => { if (generation === loadVisualGeneration) status.hidden = true; };
+      // The runtime acknowledgement can arrive before Godot has painted its
+      // first visible frame. Keep the status card through two compositor
+      // frames so a slow WebGL scene never presents a black gap.
+      if (typeof globalThis.requestAnimationFrame === "function") {
+        globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(hide));
+      } else setTimeout(hide, 0);
+    }
   };
   const reply = (id, result, failure) => {
     if (!active.delete(id)) return;

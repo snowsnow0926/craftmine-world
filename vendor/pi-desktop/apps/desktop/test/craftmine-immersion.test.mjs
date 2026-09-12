@@ -51,7 +51,8 @@ test("activating a world fills the workspace once and never overrides a return",
   const base = { enteredWorldId: null, playWhenWorldActivates: true, playing: false };
   assert.deepEqual(layout.decideCraftmineActivation({ ...base, worldId: "world-a" }), { switchToPlay: true, enteredWorldId: "world-a" });
   // The same activation is not replayed after a reload or an explicit return.
-  assert.deepEqual(layout.decideCraftmineActivation({ ...base, worldId: "world-a", enteredWorldId: "world-a" }), { switchToPlay: false, enteredWorldId: "world-a" });
+  assert.deepEqual(layout.decideCraftmineActivation({ ...base, worldId: "world-a", enteredWorldId: "world-a" }), { switchToPlay: true, enteredWorldId: "world-a" });
+  assert.deepEqual(layout.decideCraftmineActivation({ ...base, worldId: "world-a", enteredWorldId: "world-a", playWhenWorldActivates: false }), { switchToPlay: false, enteredWorldId: "world-a" });
   assert.deepEqual(layout.decideCraftmineActivation({ ...base, worldId: "world-b", enteredWorldId: "world-a" }), { switchToPlay: true, enteredWorldId: "world-b" });
   // No world, an already playing workspace, and a stored "keep the workbench"
   // preference all leave the presentation alone while still marking the world.

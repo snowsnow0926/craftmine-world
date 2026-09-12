@@ -45,7 +45,8 @@ test("explicit workbench entry overrides a stored play preference and keeps the 
 });
 
 test("a persisted play layout does not reopen the mode gate on relaunch", () => {
-  assert.match(appSource, /const \[modeEntryOpen, setModeEntryOpen\] = useState\(\(\) => loadCraftmineLayout\(localStorage\)\.mode !== "play"\)/);
+  assert.match(appSource, /const \[modeChosen, setModeChosen\] = useState\(true\)/);
+  assert.match(appSource, /const \[modeEntryOpen, setModeEntryOpen\] = useState\(false\)/);
   assert.match(appSource, /const modeEntryOpenRef = useRef\(modeEntryOpen\)/);
 });
 
