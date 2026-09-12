@@ -13,7 +13,7 @@ function retainDraft(text: string): void { try { if(text)localStorage.setItem(DR
 /** A real independent world and ordinary session; only its presentation is hidden. */
 export function useDialogueWorld() {
   const [state, setState] = useState<DialogueWorld | null>(null);
-  type Operation = { cancelled: boolean; originalWorld: string | null; originalSession?: string; layout: ReturnType<typeof loadCraftmineLayout>; id: string; worldId?: string; sessionId?: string; draft: string; queued: boolean; submitting?: boolean; cancellation?: Promise<unknown>; cancelError?: unknown };
+  type Operation = { cancelled: boolean; originalWorld: string | null; originalCaptured?:boolean; originalSession?: string; layout: ReturnType<typeof loadCraftmineLayout>; id: string; worldId?: string; sessionId?: string; draft: string; queued: boolean; submitting?: boolean; cancellation?: Promise<unknown>; cancelError?: unknown; prepare?:()=>Promise<void> };
   const operation = useRef<Operation | null>(null);
   const preparing = useRef<Promise<void> | null>(null);
   const savedDraft = useRef(retainedDraft());
@@ -74,14 +74,14 @@ export function useDialogueWorld() {
     enterCraftmineMode("create", {explicit:true});
     const prepare = async () => {
     try {
-      op.originalWorld = (await bridge.list()).activeWorldId;
+      if(!op.originalCaptured){op.originalWorld = (await bridge.list()).activeWorldId;op.originalCaptured=true;}
       if (op.cancelled) return;
-      const created = await bridge.create({title:"对话生成的世界", baseId:"creation-sandbox", operationId:op.id});
+      const created = op.worldId?{id:op.worldId}:await bridge.create({title:"对话生成的世界", baseId:"creation-sandbox", operationId:op.id});
       op.worldId=created.id;
       if(op.cancelled){await cancelInitialization(op);return;}
       // Give the new world its own conversation before preparation completes.
       // The independent input below never borrows the old session's composer.
-      op.sessionId=await createCopiedWorldSession(created.id,op.originalSession);
+      op.sessionId??=await createCopiedWorldSession(created.id,op.originalSession);
       if(op.cancelled){await cancelInitialization(op);return;}
       setState(value=>value?{...value,worldId:op.worldId,sessionId:op.sessionId}:value);
       // A navigation reply may only acknowledge creation. The world list
@@ -128,10 +128,37 @@ export function useDialogueWorld() {
       op.draft="";preserveDraft("");
     } catch (error) { if(!op.cancelled) setState(value => ({...value,draft:op.draft,queued:op.queued,submitting:false, phase:"error", error:String(error)})); }
     };
+    op.prepare=prepare;
     const task = prepare();
     preparing.current = task;
     await task;
     if (preparing.current === task) preparing.current = null;
+  };
+  const retry = async () => {
+    const op=operation.current;
+    if(!op||op.cancelled||!op.prepare||preparing.current||!bridge||state?.phase!=="error")return;
+    setState(value=>value?{...value,phase:"preparing",error:undefined}:value);
+    const task=(async()=>{
+      try{
+        if(op.worldId){
+          const selection=await bridge.list();
+          if(op.cancelled)return;
+          if(selection.activeWorldId!==op.worldId){
+            // Selecting a failed placeholder is a host-owned navigation, not
+            // an instruction to load its unverified runtime.
+            const selected=await bridge.switchWorld(op.worldId);
+            if(!selected.ok||selected.activeWorldId!==op.worldId)throw Error(selected.ok?"DIALOGUE_RETRY_SELECTION_CHANGED":selected.error);
+            window.dispatchEvent(new CustomEvent("craftmine-world-changed"));
+          }
+          if(op.cancelled)return;
+          op.cancellation=undefined;
+          await bridge.creationAction(op.worldId,"retry");
+        }
+        if(op.cancelled){op.cancellation=undefined;await cancelInitialization(op);return;}
+        await op.prepare!();
+      }catch(error){if(!op.cancelled)setState(value=>value?{...value,phase:"error",error:String(error)}:value);}
+    })();
+    preparing.current=task;await task;if(preparing.current===task)preparing.current=null;
   };
   useEffect(() => {
     const applied = (event: Event) => {
@@ -144,5 +171,5 @@ export function useDialogueWorld() {
     window.addEventListener("craftmine-dialogue-world-applied", applied);
     return () => window.removeEventListener("craftmine-dialogue-world-applied", applied);
   }, [state]);
-  return { state, start, cancel, setDraft, queue, editQueued };
+  return { state, start, cancel, setDraft, queue, editQueued, retry, canRetry:state?.phase==="error"&&!operation.current?.cancelled };
 }

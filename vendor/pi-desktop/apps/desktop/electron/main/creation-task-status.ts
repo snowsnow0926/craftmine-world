@@ -23,7 +23,10 @@ export function creationTaskStatus(worldId:string,sessionId:string,job:RecordVal
   }
   const requirementStatus=hasRequirements?(job.status==="passed"?"passed":terminal?"failed":"pending")
     :formal.baseId==="creation-sandbox"?"unsupported":"not-requested";
+  const automaticallyApplied=phase==="applied"&&automatic?.worldId===worldId&&automatic?.jobId===job.jobId
+    &&automatic?.context?.sessionId===sessionId&&automatic?.status==="applied";
   return {worldId,sessionId,taskId:job.taskId,jobId:job.jobId,candidateId:job.candidateId??undefined,buildId:job.buildId,phase,stage:job.stage??undefined,
+    ...(automaticallyApplied?{automaticallyApplied:true}:{}),
     requirementStatus,sourceStale:job.sourceStale===true,laterVersion:retainedAdoption&&formal.buildId!==job.buildId,
     error:automatic?.reason&&["failed","deferred"].includes(phase)?automatic.reason:typeof job.blockedReason==="string"?job.blockedReason:typeof job.interruptReason==="string"?job.interruptReason:undefined,
     updatedAt:job.updatedAt};

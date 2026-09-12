@@ -2036,6 +2036,7 @@ function AppShell() {
                       onDraft={dialogueWorld.setDraft}
                       onQueue={dialogueWorld.queue}
                       onEdit={dialogueWorld.editQueued}
+                      onRetry={dialogueWorld.canRetry?()=>void dialogueWorld.retry():undefined}
                     />
                   ) : (
                     <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />

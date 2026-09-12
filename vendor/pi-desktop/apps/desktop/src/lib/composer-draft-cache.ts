@@ -21,6 +21,16 @@ export type ComposerDraftFileInput = {
 };
 
 const cache = new Map<string, ComposerDraftSnapshot>();
+const readers = new Set<{key:()=>string;read:()=>ComposerDraftSnapshot}>();
+
+/** Read the live editor before changing its presentation, without focusing it. */
+export function registerComposerDraftReader(key:()=>string,read:()=>ComposerDraftSnapshot):()=>void {
+  const reader={key,read};readers.add(reader);return ()=>{readers.delete(reader);};
+}
+export function readLiveComposerDraft(key:string):ComposerDraftSnapshot|undefined {
+  const reader=[...readers].find(value=>value.key()===key);
+  return reader?.read();
+}
 
 export function draftKeyForSession(sessionId: string | null | undefined): string {
   return sessionId ?? HOME_DRAFT_KEY;

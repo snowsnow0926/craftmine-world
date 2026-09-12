@@ -48,6 +48,15 @@ memory fallback. Cancelling retains it for the next preparation entry;
 storage failure must not lose the live text. Once handed to the ordinary
 composer, the existing per-session draft lifecycle applies.
 
+An initialization error exposes **Retry preparation** directly next to the
+retained editor. Retry uses the same world, session and creation operation;
+it does not create a replacement world or replace the original return target.
+For an acknowledged world it calls the existing scoped `world.creationRetry`
+action before waiting for real readiness again. Queued intent remains queued
+unless the player edits it; no request sends while the error is unresolved.
+A cancellation failure only offers cancellation retry, not initialization
+restart of an operation the player has cancelled.
+
 ## Evidence scope
 
 `tests/fb03-dialogue-preparation-headless.mjs` renders the actual preparation
