@@ -85,6 +85,9 @@ try {
   check('restricted Blender output is committed through the real Rust source transaction', generated.status === 'imported');
   check('generation preserves the editable source and original script', ['source.blend', 'script.py'].every(name => generated.artifacts.some(item => item.path === name && item.bytes > 0)));
   check('model generation makes no false application claim', generated.applied === false && generated.playableVerified === false);
+  const history = await call('blender_status', {name: 'house', limit: 1});
+  check('retained editable source is discoverable through the world-bound tool', history.jobs.items[0]?.sourceJobId === generated.jobId);
+  check('global runtime status does not expose world job history', !Object.hasOwn(await jobs.status(), 'jobs'));
   const firstModel = await readModel(generated);
   const godot = await createGodotProbeEnvironment(path.join(out, 'godot'));
   report.godotVersion = godot.actualVersion; report.godotRuns = godot.runs;
@@ -117,6 +120,28 @@ try {
   check('the model changes while the previous source revision remains readable', hash(secondModel) !== hash(firstModel) && hash(await readModel(generated)) === hash(firstModel));
   const secondInspection = await inspect('house-edited', secondModel); report.secondInspection = secondInspection;
   check('the source edit reaches Godot with changed paint and retained animated door/collision', secondInspection.hasBluePaint && secondInspection.doorMoved && secondInspection.collision);
+  index = await call('godot_project_index');
+  const failedStart = await call('blender_generate', {name: 'broken', script: 'raise RuntimeError("CRAFTMINE_MODEL_FIXTURE_FAILURE")',
+    revision: index.revision, manifestHash: index.manifestHash, expectedHash: null});
+  const failed = await waitForJob(failedStart.jobId); report.jobs.push(failed);
+  check('a real Python failure reaches the AI as bounded untrusted diagnostics', failed.status === 'failed' &&
+    failed.diagnostics?.source === 'untrusted-script-log' && failed.diagnostics.text.includes('CRAFTMINE_MODEL_FIXTURE_FAILURE'));
+  const cancelStart = await call('blender_generate', {name: 'cancelled', script: 'import time\nprint("CRAFTMINE_CANCEL_READY", flush=True)\nwhile True:\n    time.sleep(0.1)\n',
+    revision: index.revision, manifestHash: index.manifestHash, expectedHash: null});
+  // Observe only this test-owned job log to cancel actual Python execution,
+  // rather than merely cancelling the initial filesystem staging operation.
+  const record = JSON.parse(await fs.readFile(path.join(out, 'data/blender-jobs', cancelStart.jobId, 'record.json'), 'utf8'));
+  const logPath = path.join(out, 'data/bt', record.nativeTaskId, 'logs/task.log');
+  for (;;) {
+    let text = ''; try {text = await fs.readFile(logPath, 'utf8');} catch (error) {if (error.code !== 'ENOENT') throw error;}
+    if (text.includes('CRAFTMINE_CANCEL_READY')) break;
+    const state = await call('blender_job_read', {jobId: cancelStart.jobId});
+    assert.ok(!terminal.has(state.status), 'Cancellation fixture must reach actual Python execution');
+  }
+  const cancelled = await call('blender_cancel', {jobId: cancelStart.jobId}); report.jobs.push(cancelled);
+  check('the actual running Python task is cancelled through the ordinary tool', cancelled.status === 'cancelled');
+  const finalIndex = await call('godot_project_index');
+  check('failed and cancelled modeling tasks leave the Godot source revision unchanged', finalIndex.revision === index.revision && finalIndex.manifestHash === index.manifestHash);
   check('source import leaves formal world and player progress unchanged before application', JSON.stringify(await core.call('world.read', {id: worldId})) === JSON.stringify(originalWorld));
   report.passed = true;
 } catch (error) {
