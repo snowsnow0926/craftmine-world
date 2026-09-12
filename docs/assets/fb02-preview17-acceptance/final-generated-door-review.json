@@ -1,0 +1,42 @@
+{
+  "format": "craftmine.fb02-generated-door-review/1",
+  "passed": true,
+  "sourceReports": [
+    {
+      "file": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-yJzgua\\gameplay-6a466225-46f2-4b75-bb27-8829d5a7682b\\report.json",
+      "sha256": "159c964da4d73e3a2bf149ca1eeb64f7022758ef8ff8459669387f42f91a2126"
+    },
+    {
+      "file": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-yJzgua\\gameplay-9e29afdb-f039-4af0-a2ec-322751989b0d\\report.json",
+      "sha256": "5030dabcd140dcad100cabadcd4621c59523871add9114b9de1ebfd8a373dc6f"
+    }
+  ],
+  "worldId": "world-ab57c0ba5a7b",
+  "buildId": "gbd-f1dcc0942c651e01be78251ae82d35cb3047c435b1411f87e9b669ea7d0965c3",
+  "observations": {
+    "doorId": "red_gate",
+    "trees": [
+      "gate_tree_front",
+      "gate_tree_left",
+      "gate_tree_right"
+    ],
+    "color": "#c62828",
+    "closedColliderFront": 1.25,
+    "playerRadius": 0.3,
+    "closedStopZ": 1.56500148773193,
+    "openCrossedZ": -0.684998571872711,
+    "savedClosed": true
+  },
+  "checks": [
+    "real closed-door collision",
+    "actual engine interact action opens",
+    "walking passes through opened door",
+    "aimed interact closes again",
+    "three trees retained",
+    "closed state saved with clean exit"
+  ],
+  "limits": [
+    "Engine play-action mapped to interact; no physical E key was sent",
+    "Images require visual review; this script validates actual runtime facts, not aesthetic quality"
+  ]
+}

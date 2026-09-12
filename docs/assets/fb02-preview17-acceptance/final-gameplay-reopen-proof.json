@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "worldId": "world-ab57c0ba5a7b",
+  "buildId": "gbd-f1dcc0942c651e01be78251ae82d35cb3047c435b1411f87e9b669ea7d0965c3",
+  "checks": [
+    "closed door retained after complete native restart",
+    "complete saved snapshot unchanged after real walking and door interactions",
+    "no additional model calls",
+    "normal exit with empty guard arrays"
+  ],
+  "position": [
+    0,
+    0.898971319198608,
+    -0.684998571872711
+  ],
+  "exit": {
+    "code": 0,
+    "signal": null
+  },
+  "audit": {
+    "type": "craftmine-headless-exit",
+    "violations": [],
+    "pageErrors": [],
+    "shutdownFailures": []
+  },
+  "reports": [
+    {
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-yJzgua\\gameplay-9e29afdb-f039-4af0-a2ec-322751989b0d\\report.json",
+      "sha256": "5030dabcd140dcad100cabadcd4621c59523871add9114b9de1ebfd8a373dc6f"
+    },
+    {
+      "path": "D:\\Craftmine World\\test-results\\desktop-native-ordinary-player-yJzgua\\gameplay-81deedcb-4f5b-4f9a-b125-6ea1553f0d52\\report.json",
+      "sha256": "eed3fbdc80a1e944f5f7b8bd29c3db8190bab0b3a373744c04d1b8ca101440ca"
+    }
+  ]
+}

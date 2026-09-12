@@ -7,22 +7,24 @@ for(const report of [walk,close]){
   for(const key of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(report.audit[key],[]);
 }
 assert.equal(walk.sourceFile,close.sourceFile);assert.equal(walk.before.worldId,close.before.worldId);assert.equal(walk.before.buildId,close.before.buildId);
-const door=observation=>observation.payload.creation.entities.find(entity=>entity.id==='red-gate');
+const generatedDoors=walk.before.payload.creation.entities.filter(entity=>entity.kind==='door');assert.equal(generatedDoors.length,1);
+const doorId=generatedDoors[0].id;
+const door=observation=>observation.payload.creation.entities.find(entity=>entity.id===doorId);
 const actions=walk.exploration.actions,closed=actions[2].observation,opened=actions[3].observation,passed=actions[6].observation;
 assert.equal(actions[1].op,'walk');assert.equal(actions[1].args.frames,60);assert.equal(door(closed).open,false);assert.equal(door(closed).solid,true);
 const front=door(closed).collisionBounds.max[2],radius=closed.payload.creation.playerBounds.halfExtents[2],stoppedZ=closed.payload.player.position[2];
 assert.ok(stoppedZ>=front+radius-.01&&stoppedZ<front+radius+.1,'real forward movement stops at the closed door collider');
-assert.equal(actions[3].op,'play-action');assert.equal(actions[3].args.action,'interact');assert.equal(actions[3].before.payload.creation.target.entityId,'red-gate');
+assert.equal(actions[3].op,'play-action');assert.equal(actions[3].args.action,'interact');assert.equal(actions[3].before.payload.creation.target.entityId,doorId);
 assert.equal(door(opened).open,true);assert.equal(door(opened).solid,false);assert.ok(passed.payload.player.position[2]<door(closed).collisionBounds.min[2]-radius,'real movement crosses to the far side when opened');
-const closing=close.exploration.actions.find(action=>action.op==='play-action');assert.ok(closing);assert.equal(closing.before.payload.creation.target.entityId,'red-gate');
-assert.equal(door(closing.before).open,true);assert.equal(door(closing.observation).open,false);assert.equal(door(closing.observation).solid,true);assert.equal(close.snapshot.state.body.doors['red-gate'],false);
+const closing=close.exploration.actions.find(action=>action.op==='play-action');assert.ok(closing);assert.equal(closing.before.payload.creation.target.entityId,doorId);
+assert.equal(door(closing.before).open,true);assert.equal(door(closing.observation).open,false);assert.equal(door(closing.observation).solid,true);assert.equal(close.snapshot.state.body.doors[doorId],false);
 const originalTrees=walk.before.payload.creation.entities.filter(entity=>entity.kind==='tree').map(entity=>entity.id).sort();assert.equal(originalTrees.length,3);
 const color=door(walk.before).color;assert.match(color,/^#[0-9a-f]{6}$/i);
 const [red,green,blue]=[1,3,5].map(offset=>parseInt(color.slice(offset,offset+2),16));
 assert.ok(red>=128&&red>green*2&&red>blue*2,'red-dominant runtime material, supplemented by actual image review');
 for(const action of [...walk.exploration.actions,...close.exploration.actions])assert.deepEqual(action.observation.payload.creation.entities.filter(entity=>entity.kind==='tree').map(entity=>entity.id).sort(),originalTrees);
 const report={format:'craftmine.fb02-generated-door-review/1',passed:true,sourceReports:files.map(file=>({file,sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')})),worldId:walk.before.worldId,buildId:walk.before.buildId,
-  observations:{trees:originalTrees,color:door(walk.before).color,closedColliderFront:front,playerRadius:radius,closedStopZ:stoppedZ,openCrossedZ:passed.payload.player.position[2],savedClosed:true},
+  observations:{doorId,trees:originalTrees,color:door(walk.before).color,closedColliderFront:front,playerRadius:radius,closedStopZ:stoppedZ,openCrossedZ:passed.payload.player.position[2],savedClosed:true},
   checks:['real closed-door collision','actual engine interact action opens','walking passes through opened door','aimed interact closes again','three trees retained','closed state saved with clean exit'],
   limits:['Engine play-action mapped to interact; no physical E key was sent','Images require visual review; this script validates actual runtime facts, not aesthetic quality']};
 const output=path.join(path.dirname(files[1]),'semantic-review.json');fs.writeFileSync(output,JSON.stringify(report,null,2));console.log(output);

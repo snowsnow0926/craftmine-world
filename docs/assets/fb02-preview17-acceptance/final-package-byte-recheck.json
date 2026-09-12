@@ -1,0 +1,16 @@
+{
+  "format": "craftmine.fb02-final-byte-recheck/1",
+  "checkedAt": "2026-09-12T14:32:33.285Z",
+  "passed": true,
+  "packageManifest": "D:\\Craftmine World\\test-results\\fb02-preview17-revised-evidence-compact.json",
+  "manifestSha256": "6a75581ef8bc10dc4e7fdb050209e5156cf733bd1da78a3bac95e8be341c8e2e",
+  "portableEvidence": "D:\\Craftmine World\\desktop\\build\\releases\\8e8ec5348d94-16b6424a-cdaa-475c-88b7-06d346f122e1\\portable-0b61c14f-b296-45ed-af50-47351f73ff21\\portable-evidence.json",
+  "portableEvidenceSha256": "8d96c47e44b988270ee19f5fc746880f3fee3c13e259cc08d62f8746caf6beb1",
+  "archive": {
+    "path": "D:\\Craftmine World\\desktop\\build\\releases\\8e8ec5348d94-16b6424a-cdaa-475c-88b7-06d346f122e1\\portable-0b61c14f-b296-45ed-af50-47351f73ff21\\Craftmine-World-portable-8e8ec5348d94.zip",
+    "bytes": 1031105827,
+    "sha256": "872082cc1ef0a6ce4d8bcd5b9450a841eee22c923f76eb27764fb689fd27c090"
+  },
+  "files": 1656,
+  "extracted": "D:\\Craftmine World\\desktop\\build\\releases\\8e8ec5348d94-16b6424a-cdaa-475c-88b7-06d346f122e1\\portable-0b61c14f-b296-45ed-af50-47351f73ff21\\extracted"
+}
