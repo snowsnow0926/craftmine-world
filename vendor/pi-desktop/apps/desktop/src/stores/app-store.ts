@@ -48,7 +48,8 @@ import {
 import { api } from "../lib/api";
 import type { SettingsTabId } from "../lib/settings-search";
 import { createNavigationIntentController } from "../lib/navigation-intent";
-import { scheduleHomeDraftAdopt } from "../lib/composer-draft-cache";
+import { scheduleHomeDraftAdopt, readComposerDraft, readLiveComposerDraft, HOME_DRAFT_KEY } from "../lib/composer-draft-cache";
+import { rememberWorldConversation, rememberedWorldConversation } from "../lib/world-conversation-memory";
 import {
   commitForkedSessionState,
   forkedSessionMessages,
@@ -882,7 +883,7 @@ export type AppState = {
   loadOlderMessages: (sessionId: string) => Promise<void>;
   selectSession: (
     id: string,
-    opts?: { record?: boolean } & NavigationOptions,
+    opts?: { record?: boolean; validateSelection?: () => Promise<boolean> } & NavigationOptions,
   ) => Promise<void>;
   newSession: (options?: { projectPath?: string | null }) => Promise<void>;
   forkSession: (id: string) => Promise<void>;
@@ -1081,6 +1082,21 @@ function switchWorkPanelSession(
     currentWorkPanelContext(state),
     nextSessionId ?? HOME_WORK_PANEL_CONTEXT,
   );
+  // A history selection can finish after the player entered play. Preserve
+  // only the shared world surface in the destination's own panel context;
+  // never inherit another conversation's files, artifacts or file request.
+  const world = loadCraftmineLayout(localStorage).mode === "play"
+    ? inheritWorldWorkPanelContext(currentWorkPanelContext(state), true)
+    : emptyWorkPanelContext();
+  if (world.open) {
+    const tab = world.tabs[0];
+    switched.visible = {
+      ...switched.visible, open: true,
+      tabs: switched.visible.tabs.some(item => item.id === tab.id) ? switched.visible.tabs : [...switched.visible.tabs, tab],
+      activeTabId: switched.visible.activeTabId ?? tab.id,
+    };
+    switched.contexts = {...switched.contexts, [nextSessionId ?? HOME_WORK_PANEL_CONTEXT]: switched.visible};
+  }
   return {
     workPanelContexts: switched.contexts,
     workPanelOpen: switched.visible.open,
@@ -1787,16 +1803,20 @@ export const useAppStore = create<AppState>((set, get) => ({
         contentLimit: SESSION_TRANSCRIPT_CONTENT_LIMIT,
       });
       let detail: Awaited<typeof detailPromise> | undefined;
+      if (opts?.validateSelection) {
+        detail = await detailPromise;
+        if (!navigationIntentIsCurrent(intent) || !detail.session || !await opts.validateSelection() || !navigationIntentIsCurrent(intent)) return;
+      }
       // A retained pane already holds this session's painted transcript
       // (ADR 0137). Reveal it before awaiting workspace alignment so a warm
       // switch shows the destination on its first frame; the revalidated
       // transcript lands in the same pane afterwards.
       const retainedMessages =
         sessionTranscriptCache.get(id) ?? get().retainedTranscripts[id];
-      if (retainedMessages && get().activeSessionId !== id && summary) {
+      if (!opts?.validateSelection && retainedMessages && get().activeSessionId !== id && summary) {
         commitSelection(retainedMessages, true);
       } else if (
-        summary &&
+        !opts?.validateSelection && summary &&
         get().activeSessionId !== id &&
         sessionIsReusableEmpty(summary, {
           running: runningAtSelection,
@@ -1818,13 +1838,14 @@ export const useAppStore = create<AppState>((set, get) => ({
       }
 
       const cachedMessages = sessionTranscriptCache.get(id);
-      if (cachedMessages && navigationIntentIsCurrent(intent)) {
+      if (!opts?.validateSelection && cachedMessages && navigationIntentIsCurrent(intent)) {
         cacheSessionTranscript(id, cachedMessages, sessionHistoryCache.get(id));
         commitSelection(cachedMessages, true, sessionHistoryCache.get(id));
       }
 
       detail ??= await detailPromise;
       if (!navigationIntentIsCurrent(intent)) return;
+      if (opts?.validateSelection && (!await opts.validateSelection() || !navigationIntentIsCurrent(intent))) return;
       const historyWindow = detail.session
         ? {
             messageStart: detail.session.messageStart ?? 0,
@@ -4765,6 +4786,43 @@ export async function materializeDraftSession(
 
 
 const copiedWorldSessions = new Map<string, string>();
+
+/** Restore only an existing host-bound world conversation into an untouched home. */
+export async function restoreWorldConversation(worldId: string, stillCurrent: () => boolean = () => true): Promise<boolean> {
+  const hasHomeDraft = () => {
+    const draft = readLiveComposerDraft(HOME_DRAFT_KEY) ?? readComposerDraft(HOME_DRAFT_KEY);
+    return !!draft && (!!draft.text || draft.fileReferences.length > 0);
+  };
+  const idleHome = () => {
+    const state = useAppStore.getState(), layout = loadCraftmineLayout(localStorage);
+    return state.ready && state.page === "chat" && !state.activeSessionId && !state.selectingSessionId && !state.isRunning
+      && !pendingNewSessionRequests.size && layout.mode === "play" && layout.overlay !== "closed" && !hasHomeDraft() && stillCurrent();
+  };
+  if (!idleHome()) return false;
+  const intent = beginNavigationIntent();
+  const resolve = (sessionId?: string) => api.pluginPanelInvoke("craftmine.world", "world.conversation", {worldId, ...(sessionId ? {sessionId} : {})}) as Promise<{worldId?: string; sessionId?: string | null}>;
+  const result = await resolve(rememberedWorldConversation(worldId));
+  if (!navigationIntentIsCurrent(intent) || !idleHome() || result.worldId !== worldId || !result.sessionId) return false;
+  const sessionId = result.sessionId;
+  if (sessionIsArchived(sessionId, useAppStore.getState().sessionMeta)) return false;
+  const valid = async () => {
+    const state = useAppStore.getState(), layout = loadCraftmineLayout(localStorage);
+    if (!navigationIntentIsCurrent(intent) || !stillCurrent() || state.activeSessionId || state.selectingSessionId !== sessionId
+      || state.page !== "chat" || layout.mode !== "play" || layout.overlay === "closed" || hasHomeDraft()) return false;
+    const bound = await resolve(sessionId);
+    const current = useAppStore.getState();
+    const presentation = loadCraftmineLayout(localStorage);
+    return navigationIntentIsCurrent(intent) && stillCurrent() && !hasHomeDraft() && !current.activeSessionId && current.selectingSessionId === sessionId
+      && current.page === "chat" && presentation.mode === "play" && presentation.overlay !== "closed"
+      && bound.worldId === worldId && bound.sessionId === sessionId;
+  };
+  await useAppStore.getState().selectSession(sessionId, {navigationIntent: intent, validateSelection: valid});
+  if (navigationIntentIsCurrent(intent) && stillCurrent() && useAppStore.getState().activeSessionId === sessionId) {
+    rememberWorldConversation(worldId, sessionId);
+    return true;
+  }
+  return false;
+}
 /** Return from world creation without reusing its newly bound conversation. */
 export async function restoreWorldEntrySession(sessionId?: string): Promise<void> {
   if (sessionId) {

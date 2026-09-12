@@ -362,6 +362,20 @@ fn thinking_level_param(params: &Value) -> Result<Option<String>, JsonRpcError> 
     Ok(Some(level.to_string()))
 }
 
+fn initial_permission_mode_param(params: &Value) -> Result<Option<String>, JsonRpcError> {
+    match params.get("permissionMode") {
+        None | Some(Value::Null) => Ok(None),
+        Some(Value::String(mode)) if sessions::is_valid_permission_mode(mode) => {
+            Ok(Some(mode.clone()))
+        }
+        Some(_) => Err(rpc_err(
+            1002,
+            format!("permissionMode must be one of {}", sessions::PERMISSION_MODES.join(", ")),
+            "INVALID_PARAMS",
+        )),
+    }
+}
+
 const DEFAULT_LARGE_PASTE_THRESHOLD: i64 = 600;
 const MIN_LARGE_PASTE_THRESHOLD: i64 = 1;
 const MAX_LARGE_PASTE_THRESHOLD: i64 = 1_000_000;
@@ -1278,8 +1292,9 @@ async fn handle_request(
         }
         "session.create" => {
             let thinking_level = thinking_level_param(&params)?;
+            let permission_mode = initial_permission_mode_param(&params)?;
             let st = state.lock().await;
-            let session = sessions::create_session_with_thinking(
+            let session = sessions::create_session_with_configuration(
                 &st.db,
                 params
                     .get("title")
@@ -1302,6 +1317,7 @@ async fn handle_request(
                     .and_then(|v| v.as_str())
                     .map(str::to_string),
                 thinking_level,
+                permission_mode,
             )
             .map_err(|e| rpc_err(1000, e.to_string(), "INTERNAL"))?;
             Ok(json!({ "session": session }))
@@ -3578,6 +3594,51 @@ mod tests {
     use crate::scheduled;
     use crate::sessions;
     use crate::state::AppState;
+
+    #[tokio::test]
+    async fn session_create_permission_survives_rpc_get_and_database_reopen() {
+        let data_dir = tempfile::tempdir().unwrap();
+        let mut app_state = AppState::open(data_dir.path()).unwrap();
+        app_state.handshook = true;
+        let state = Arc::new(Mutex::new(app_state));
+        let (tx, _rx) = mpsc::unbounded_channel();
+        let mut created = Vec::new();
+        for permission in [None, Some("inherit"), Some("ask"), Some("accept-edits"), Some("auto")] {
+            let mut input = json!({"title":"World conversation", "mode":"agent", "thinkingLevel":"medium"});
+            if let Some(value) = permission { input["permissionMode"] = json!(value); }
+            let result = handle_request(state.clone(), "session.create", input, tx.clone()).await.unwrap();
+            let expected = permission.unwrap_or("inherit");
+            assert_eq!(result["session"]["permissionMode"], expected);
+            let id = result["session"]["id"].as_str().unwrap().to_owned();
+            let read = handle_request(state.clone(), "session.get", json!({"id":id}), tx.clone()).await.unwrap();
+            assert_eq!(read["session"]["permissionMode"], expected);
+            assert_eq!(read["session"]["thinkingLevel"], "medium");
+            created.push((id, expected));
+        }
+        drop(state);
+        let reopened = AppState::open(data_dir.path()).unwrap();
+        for (id, expected) in created {
+            assert_eq!(sessions::session_permission_mode(&reopened.db, &id).unwrap().as_deref(), Some(expected));
+            assert_eq!(sessions::get_session(&reopened.db, &id).unwrap().unwrap().summary.permission_mode, expected);
+        }
+    }
+
+    #[tokio::test]
+    async fn session_create_rejects_invalid_permission_before_any_insert() {
+        let data_dir = tempfile::tempdir().unwrap();
+        let mut app_state = AppState::open(data_dir.path()).unwrap();
+        app_state.handshook = true;
+        let state = Arc::new(Mutex::new(app_state));
+        let (tx, _rx) = mpsc::unbounded_channel();
+        for value in [json!("AUTO"), json!(""), json!("unknown"), json!(false), json!(3), json!([]), json!({})] {
+            let error = handle_request(state.clone(), "session.create", json!({"permissionMode":value}), tx.clone()).await.unwrap_err();
+            assert_eq!(error.data.unwrap()["errorCode"], "INVALID_PARAMS");
+            let count: i64 = state.lock().await.db.conn().query_row("SELECT COUNT(*) FROM sessions", [], |row| row.get(0)).unwrap();
+            assert_eq!(count, 0);
+        }
+        let result = handle_request(state, "session.create", json!({"permissionMode":null}), tx).await.unwrap();
+        assert_eq!(result["session"]["permissionMode"], "inherit");
+    }
 
     #[test]
     fn capability_errors_keep_their_protocol_code() {

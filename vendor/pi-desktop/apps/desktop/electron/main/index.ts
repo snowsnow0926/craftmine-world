@@ -23,6 +23,7 @@ import { createHash } from "node:crypto";
 import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
+import { readWorldConversation } from "./world-conversation";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
@@ -66,7 +67,7 @@ import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-short
 import { LocalVoiceInputService } from "./local-voice-input";
 import { VoiceMicrophonePermissionGate } from "./voice-microphone-permission";
 import { VOICE_INPUT_CHANNELS } from "@pi-desktop/shared";
-import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
+import type { CraftmineImmersionState, CraftmineImmersionShortcut, SessionSummary } from "@pi-desktop/shared";
 import {
   existsSync,
   mkdirSync,
@@ -226,6 +227,7 @@ import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import { createCraftminePerformanceSampler } from "./craftmine-performance-sample";
 import { createCraftmineEnginePerformanceSampler } from "./craftmine-engine-performance-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
+import {readCurrentCreationCapture} from "./creation-current-capture";
 import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
 import {createCreationAutoQueue} from "./creation-auto-queue";
@@ -1204,7 +1206,7 @@ const migrateCreationSource=createCreationSourceMigration({
 plugins.setServices({craftmineCreationTarget:async context=>{
   const binding=craftmineGateway.get(context.sessionId);
   if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
-  return creationTargets.bound(context,binding.selectedWorld);
+  return readCurrentCreationCapture(context,binding.selectedWorld,{bound:creationTargets.bound,fullAuto:creationFullAuto});
 }});
 plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
   authorize:async input=>{
@@ -2981,7 +2983,7 @@ const craftmineGateway = new CraftmineTurnGateway(
       const latest = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
       if (!latest) throw new Error("CRAFTMINE_USER_REQUEST_REQUIRED");
       const result=await readCraftminePromptContext((method,args)=>plugins.requestCraftmineHost(method,args),context,{id:latest.id,text:latest.content});
-      return {...result,creationTarget:creationTargets.bound(context,binding.selectedWorld)};
+      return {...result,creationTarget:await readCurrentCreationCapture(context,binding.selectedWorld,{bound:creationTargets.bound,fullAuto:creationFullAuto})};
     }
     return plugins.requestCraftmineHost(operation, { ...input, context });
   },
@@ -6730,6 +6732,18 @@ function registerIpc() {
 
   handleWithEvent(IPC.invoke.pluginPanelInvoke, async (event, payload) => {
     assertMainWindowSender(event);
+    if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.conversation") {
+      if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      return readWorldConversation(payload.payload, {
+        selectedWorld: godotSelection,
+        sessions: async () => {
+          if (!host) throw Error("HOST_UNAVAILABLE");
+          return (await host.call<{sessions: SessionSummary[]}>("session.list")).sessions;
+        },
+        pluginEnabled: path => pluginActiveInProject("craftmine.world", path),
+        domain: (method, input) => plugins.requestCraftmineHost(method, input),
+      });
+    }
     if (payload?.channel === "world.previewControl" && (event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
     if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.previewControl") {
       await assertCreationResultAccess(payload.payload ?? {}, {viewingSession:()=>notificationViewingSessionId,

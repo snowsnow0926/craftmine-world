@@ -285,8 +285,9 @@ validate_state(state)、restore(state)，entity-behavior 必须实现纯读取�
 `godot_build_read` 直到确有终态。build 只证明导入编译；check 才运行真实固定断言并产生候选。
 `status=passed` 只表示检查通过。造物检查还会返回 `creationApplication`：只有 `status=applied`
 表示宿主确认采用；`pending/applying` 表示仍在交接，可以继续读取同一 job；
-`deferred` 表示主机将在本轮创作结束且正确世界空闲后自动采用最后一次通过的检查，`repairing` 表示已接续普通模型修复，均不需要玩家手动采用。
-正式采用会结束核心写入任务，因此模型仍在本轮补功能时，宿主不会提前采用。检查 `passed` 且采用 `deferred` 是可正常收尾的状态：确认所有修改均包含在最后一次通过的检查里后，说明“检查通过，正在由应用自动采用”并结束本轮，不要循环等到 `applied` 才结束。需要继续补改就直接修改同一草稿、再检查；旧检查不会抢在新的检查或构建前采用。
+读取同次回执的 `applicationGuidance`：它按当前主机捕获授权和同一作业身份解释采用状态，不能授予权限。
+只有当前 `full-auto` 授权仍有效时，`deferred` 才表示等待主机自动继续，`repairing` 才表示已接续自动修复；不需要玩家进入技术面板或手动采用。Ask、缺失捕获、切换权限或身份变化不能沿用这一承诺。
+正式采用会结束核心写入任务，因此模型仍在本轮补功能时，宿主不会提前采用。检查 `passed` 且自动采用 `deferred` 的原因是 `CREATION_TURN_BUSY` / `CREATION_AWAITING_TURN_FINISH` 时，确认所有修改均包含在最后一次通过的检查里后，说明“检查通过，应用会在本轮创作结束后自动放入世界，无需另外操作”并结束本轮。不要循环等到 `applied` 才结束，也不要宣称已经放入。其他等待原因应按真实世界状态解释；失败、取消或需要确认时如实说明。需要继续补改就直接修改同一草稿、再检查；旧检查不会抢在新的检查或构建前采用。
 `manual/failed/cancelled/interrupted/unknown` 不表示世界已改变。读取最多等待 30 秒，总预算不增加。
 到达等待上限会返回实际阶段，不要重复启动相同检查，也不要在待采用时宣称愿望已完成。
 读取 `godot_candidate_read` 确认 build 身份、sourceStale、断言与可预览状态。

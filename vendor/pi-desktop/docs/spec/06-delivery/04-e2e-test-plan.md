@@ -9667,3 +9667,27 @@ an old cancelled response must not stop polling or terminate preparation.
 After retry settlement, both renderers reread real state through the host
 notification. A confirmed Core/world-list result with a still-cancelled visible
 row is a release failure, even when the engine already loaded successfully.
+
+Create a world conversation through the actual session.create RPC and reopen
+the database: an explicit initial permission mode must survive creation and
+session.get. Omitted or null modes retain inheritance, and invalid values fail
+before a session is inserted. Recheck the ordinary fresh-world UI without
+setting permissions from the verifier; an inherited Ask session is a failure
+when the unconfigured creator entry requested Auto.
+
+Restart an existing created world, open its compact conversation with F2 and
+resolve only a real desktop session with a matching durable world/task binding.
+Use an isolated copy of the real AK47 profile. Stale hints, disabled plugins,
+synthetic maintenance sessions and another world's conversations do not restore.
+Delay both lookup and session history loading. A pure Play layout transition
+must preserve a pending selection; newer navigation, world changes, typed text
+or attachments must prevent a late recovery from replacing the player's work.
+Submit a normal follow-up to the recovered conversation and verify the target
+world and retained content rather than forcing store or task identities.
+
+In an authorized automatic creation turn, the model's actual registered build
+read and project context explain deferred application after the turn ends.
+Keep the receipt deferred until the host applies it. An explicit Ask choice,
+lost capture, or changed identity must not promise automatic application.
+Verify the following ordinary model response and matching application receipt;
+tool-guidance tests alone do not prove the player's final prose is correct.
