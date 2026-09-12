@@ -4,6 +4,8 @@ export type CreationTaskStatus = {
   laterVersion?: boolean;
   /** Only the host's matching durable automatic-application receipt sets this. */
   automaticallyApplied?: boolean;
+  latestRequest?: {turnId:string;taskId:string;status:string};
+  resultRequestRelation?: "current-request"|"previous-request"|"unresolved";
   stage?: string; requirementStatus: "not-requested" | "pending" | "passed" | "failed" | "unsupported";
   error?: string; updatedAt?: number;
 };
@@ -35,7 +37,7 @@ export function creationTaskLabel(status: CreationTaskStatus, chinese: boolean):
     else if (status.requirementStatus === "failed") text += chinese ? " · 愿望检查未通过" : " · requirements failed";
     else text += chinese ? " · 愿望结果待验证" : " · requirements unverified";
   }
-  return text;
+  return status.resultRequestRelation==="previous-request"?(chinese?"上次创作结果 · ":"Previous creation · ")+text:text;
 }
 
 /** One mounted observer; persisted host facts remain recoverable across late checks and restarts. */
