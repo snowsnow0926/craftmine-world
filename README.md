@@ -1,8 +1,10 @@
 # 最中幻想 · craftmine world
 
-**2026-09-10 客户端交付快照：** 已有内置 Godot 的四底座 Windows 预览版，交付源码为 `8276b45`。同一发行包通过 121 项本地功能检查；真实模型创作、安装器实际执行和干净 Windows 安装验收仍未完成。
+**Windows 双世界版本：** 默认玩家入口收敛为一个 Godot 3D 世界和一个 Web 世界。进入后通过 F2 对话创作，Esc 暂停、切换世界或保存退出。旧作品保留在设置中的高级存档管理。
 
-[Windows 客户端构建说明](desktop/README.md) · [已验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) · [主线、后续集成与历史归档说明](docs/GIT_CLOSEOUT_2026-09-10.md)。后续功能保存在 `codex/integration-next-20260910`，尚未进入这份试玩包。下文保留早期 Web 运行器的使用说明。
+[双世界玩家操作说明](docs/TWO_WORLD_PLAYER_GUIDE.md) · [收敛方案与范围](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。成品验收与源码实现分开记录，构建成功不等于玩法或真人验收通过。
+
+2026-09-10 的 `8276b45` 四底座客户端是历史快照，其 [当时验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) 和 [Git 归档说明](docs/GIT_CLOSEOUT_2026-09-10.md) 保留供追溯。下文是早期独立 Web 运行器的开发启动与使用资料；Windows 成品玩家请使用上面的双世界操作说明。
 
 从一个能走动的空白 3D 世界开始，用自然语言逐步创造内容。
 
