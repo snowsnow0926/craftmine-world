@@ -4849,7 +4849,11 @@ export async function createCopiedWorldSession(worldId: string, sourceSessionId?
   if (state.activeSessionId !== sourceSessionId || state.isRunning) throw Error("COPY_SESSION_CONTEXT_CHANGED");
   // Deliberately bypass reusable-empty-session lookup: even an empty chat may
   // already own a durable task in the original world.
-  const sourcePermission = state.draftConfiguration?.permissionMode ?? state.sessions.find(session=>session.id===sourceSessionId)?.permissionMode;
+  // The home configuration belongs to its draft, not to a selected history
+  // conversation. In particular, a leftover home Auto cannot replace Ask.
+  const sourcePermission = sourceSessionId
+    ? state.sessions.find(session=>session.id===sourceSessionId)?.permissionMode
+    : state.draftConfiguration?.permissionMode;
   const id = await persistSessionAndSelect({projectPath: state.workspace?.path ?? null, draftConfiguration: null, creationWorldId:worldId, creationPermission:sourcePermission});
   if (!id || useAppStore.getState().activeSessionId !== id) throw Error("COPY_SESSION_SELECTION_SUPERSEDED");
   copiedWorldSessions.set(worldId, id);
