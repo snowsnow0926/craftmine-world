@@ -17,7 +17,7 @@ const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-wiring-'));
 const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
-  'godot-observe.cjs','godot-build-read-wait.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs','godot-engine-api.cjs','godot-diagnostics.cjs'];
+  'godot-observe.cjs','godot-build-read-wait.cjs','creation-application-guidance.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs','godot-engine-api.cjs','godot-diagnostics.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 await writeFile(path.join(staging,'domain.cjs'),`
 function fields(args,required,optional){
@@ -149,8 +149,9 @@ test('the capability report exposes the real wiring state and the durable ledger
   assert.deepEqual(report.limits.kinds.tokens,{known:true,limit:10000,used:1500,remaining:8500,exhausted:false,source:'durable-ledger'});
   assert.equal(report.limits.kinds.context.known,false);
   assert.equal(report.limits.ledger.ownerTaskId,'task-1');
-  // The installed guidance catalog adds AI1 alongside the original S owners.
-  assert.ok(report.tools.every(tool=>tool.owner===null||/^(S\d|AI1)$/.test(tool.owner)),'tool owners must name an installed module owner');
+  // Guidance and identity-bound view capture have installed AI1/R2 owners.
+  assert.equal(report.tools.find(tool=>tool.name==='godot_view_capture').owner,'R2');
+  assert.ok(report.tools.every(tool=>tool.owner===null||/^(S\d|AI1|R2)$/.test(tool.owner)),'tool owners must name an installed module owner');
 });
 
 test('godot_jobs mode=status prefers the live executor over the durable registration row',async()=>{
@@ -378,4 +379,29 @@ test('ordinary registered build-read returns passed/deferred immediately while t
  const f=fixture({options:{buildReadWaitMs:1000,executorCreationCompletion:()=>application},coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'alpha',buildId,candidateId,kind:'check',baseId:'creation-sandbox',status:'passed',output:{passed:true,check:{passed:true,assertions:[]}}})}});
  const result=await f.call('godot_build_read',{jobId});assert.equal(result.status,'passed');assert.equal(result.creationApplication.status,'deferred');assert.equal(result.waitReason,'terminal');
  assert.equal(f.calls.filter(call=>call.method==='godotBuild.read').length,1,'Does not wait for its own turn-end event and deadlock the model');
+});
+
+for(const reason of ['CREATION_TURN_BUSY','CREATION_AWAITING_TURN_FINISH'])test('registered full-auto read explains its actual after-turn handoff: '+reason,async()=>{
+ const jobId='gjob-'+'a'.repeat(64),candidateId='candidate-final',buildId='build-final';
+ const application={jobId,worldId:'alpha',buildId,candidateId,status:'deferred',reason};
+ const capture={format:'craftmine.creation-target/1',worldId:'alpha',snapshotId:'snapshot-owned',authorization:'full-auto',autoApply:true};
+ const f=fixture({options:{buildReadWaitMs:1000,creationTarget:async context=>{assert.deepEqual(context,{projectId:'project',sessionId:'session',turnId:'turn'});return capture;},executorCreationCompletion:()=>application},coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'alpha',buildId,candidateId,kind:'check',baseId:'creation-sandbox',status:'passed'})}});
+ const result=await f.call('godot_build_read',{jobId});assert.deepEqual(result.creationApplication,application);
+ assert.equal(result.applicationGuidance.adoptionConfirmed,false);assert.equal(result.applicationGuidance.playerActionRequired,false);
+ assert.equal(result.applicationGuidance.nextAction,'finish-current-turn-if-work-complete');assert.equal(result.applicationGuidance.timing,'after-current-turn-settles');
+ assert.equal(result.applicationGuidance.owner.sessionId,'session');assert.equal(result.applicationGuidance.jobId,jobId);
+ assert.match(result.applicationGuidance.playerMessage,/本轮创作结束后自动放入世界/);assert.equal(f.calls.filter(c=>c.method==='godotBuild.read').length,1);
+});
+
+for(const capture of [null,{worldId:'foreign',authorization:'full-auto',autoApply:true},{worldId:'alpha',authorization:'full-auto',autoApply:false},{worldId:'alpha',authorization:'world-policy',autoApply:true},{worldId:'alpha',authorization:'full-auto',autoApply:true,supersededBy:{turnId:'new'}}])test('registered read does not promise automatic handoff from missing, foreign or revoked capture: '+JSON.stringify(capture),async()=>{
+ const jobId='gjob-'+'a'.repeat(64),candidateId='candidate-final',buildId='build-final',application={jobId,worldId:'alpha',buildId,candidateId,status:'deferred',reason:'CREATION_TURN_BUSY'};
+ const f=fixture({options:{creationTarget:async()=>capture&&{format:'craftmine.creation-target/1',snapshotId:'snapshot-owned',...capture},executorCreationCompletion:()=>application},coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'alpha',buildId,candidateId,kind:'check',baseId:'creation-sandbox',status:'passed'})}});
+ const result=await f.call('godot_build_read',{jobId});assert.deepEqual(result.creationApplication,application);assert.equal(result.applicationGuidance.mode,'manual-or-unavailable');assert.equal(result.applicationGuidance.playerActionRequired,null);assert.notEqual(result.applicationGuidance.nextAction,'finish-current-turn-if-work-complete');
+});
+
+test('registered Ask/manual check still requests ordinary result confirmation without changing its receipt',async()=>{
+ const jobId='gjob-'+'a'.repeat(64),candidateId='candidate-final',buildId='build-final',application={jobId,worldId:'alpha',buildId,candidateId,status:'manual',reason:'CREATION_AUTO_APPLY_NOT_AUTHORIZED'};
+ const f=fixture({options:{creationTarget:async()=>({format:'craftmine.creation-target/1',worldId:'alpha',snapshotId:'snapshot-owned',authorization:'world-policy',autoApply:false}),executorCreationCompletion:()=>application},coreOverrides:{'godotBuild.read':()=>({jobId,worldId:'alpha',buildId,candidateId,kind:'check',baseId:'creation-sandbox',status:'passed'})}});
+ const result=await f.call('godot_build_read',{jobId});assert.deepEqual(result.creationApplication,application);
+ assert.equal(result.applicationGuidance.playerActionRequired,true);assert.equal(result.applicationGuidance.adoptionConfirmed,false);assert.match(result.applicationGuidance.playerMessage,/确认采用/);
 });

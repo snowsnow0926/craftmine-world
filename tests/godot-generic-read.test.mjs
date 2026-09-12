@@ -7,7 +7,7 @@ const {inspectDraft,draftPackages}=require(path.join(out,'domain.cjs'));
 const context={projectId:'project-a',sessionId:'session-a',turnId:'turn-a'};
 const bytes=Buffer.from('extends Node3D\n'),sha256=createHash('sha256').update(bytes).digest('hex');
 const legacy={format:'craftmine.scene/3',title:'Legacy',night:false,objects:[],systems:[],behaviors:[]};
-function fixture({baseId='creation-sandbox',legacyWorld=false,missing=false,indexError,worldMismatch=false,sourceMismatch=false,discussionOnly=false,sceneObjectTarget}={}){
+function fixture({baseId='creation-sandbox',legacyWorld=false,missing=false,indexError,worldMismatch=false,sourceMismatch=false,discussionOnly=false,sceneObjectTarget,captureFields={}}={}){
  const scene=legacyWorld?structuredClone(legacy):{format:'craftmine.godot-scene/1',baseId};
  const workspace={worldId:'world-a',task:{binding:{...context,taskId:'task-a',baseBuild:'build-a'},revision:9,status:'active',draft:{scene}}};
  const record={id:worldMismatch?'other-world':'world-a',runtimeKind:legacyWorld?'legacy':'godot',baseId,world:{build:{id:'build-a',scene},extensions:[]}};
@@ -20,7 +20,7 @@ function fixture({baseId='creation-sandbox',legacyWorld=false,missing=false,inde
   }
   throw Error('Unexpected method '+method);
  }};
- const toolset=createWorldTools(core,async()=>({activeWorldId:'world-a',discussionOnly}),()=>false,undefined,undefined,{creationTarget:async()=>({format:'craftmine.creation-target/1',worldId:'world-a',snapshotId:'capture-a',...(sceneObjectTarget?{sceneObjectTarget}:{})})});
+ const toolset=createWorldTools(core,async()=>({activeWorldId:'world-a',discussionOnly}),()=>false,undefined,undefined,{creationTarget:async()=>({format:'craftmine.creation-target/1',worldId:'world-a',snapshotId:'capture-a',...(sceneObjectTarget?{sceneObjectTarget}:{}),...captureFields})});
  return {workspace,record,calls,invoke:(name,args={})=>toolset.find(tool=>tool.name===name).execute(args,{...context,toolCallId:'read-a',executionId:'execution-a'})};
 }
 test('the actual old domain reproduces both Godot wrong-format failures',()=>{const f=fixture();assert.throws(()=>inspectDraft(f.workspace,{}),/map|undefined/);assert.throws(()=>draftPackages(f.workspace.task.draft,f.record.world),/objects|iterable/);});
@@ -42,6 +42,13 @@ test('generic source inspection exposes frozen scene context without widening cr
  assert.equal(read.sceneObjectContext.use,'ordinary-source-editing-only');
  assert.equal(read.creationTarget.snapshotId,'capture-a');
  assert.equal(read.sceneObjectContext.current,null);
+});
+
+test('actual project_inspect exposes current automatic handoff context before paginated source guidance',async()=>{
+ const automatic=await fixture({captureFields:{autoApply:true,authorization:'full-auto'}}).invoke('project_inspect');
+ assert.equal(automatic.applicationGuidance.mode,'full-auto');assert.equal(automatic.applicationGuidance.owner.sessionId,context.sessionId);
+ assert.equal(automatic.applicationGuidance.nextAction,'complete-edit-check-then-finish-turn');assert.equal(automatic.applicationGuidance.adoptionConfirmed,false);
+ const ask=await fixture({captureFields:{autoApply:false,authorization:'full-auto'}}).invoke('project_inspect');assert.equal(ask.applicationGuidance.mode,'manual-or-unavailable');
 });
 test('capability text pagination preserves exact complete Unicode data',async()=>{const f=fixture(),whole=await f.invoke('capabilities_read',{section:'behaviors'});let text='',start=0;do{const part=await f.invoke('capabilities_read',{section:'behaviors',start,limit:97});text+=part.text;start=part.next;}while(start!==null);assert.equal(text,whole.text);});
 test('missing Godot project is explicit and never manufactures an empty valid world',async()=>{const f=fixture({missing:true});const read=await f.invoke('project_inspect');assert.equal(read.project.available,false);assert.equal(read.project.reason,'GODOT_PROJECT_NOT_FOUND');assert.ok(read.nextTools.includes('godot_project_create'));assert.ok(!Object.hasOwn(read.project,'files'));const caps=JSON.parse((await f.invoke('capabilities_read')).text);assert.equal(caps.project.available,false);});
