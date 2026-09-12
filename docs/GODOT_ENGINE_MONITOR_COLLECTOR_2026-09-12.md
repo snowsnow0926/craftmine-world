@@ -45,6 +45,19 @@ instead of becoming fabricated zero measurements.
 
 ## Trust and integration boundary
 
+The final native and release evidence both pass the strict parser (five samples
+each); combined parser and packaged-broker tests passed 12/12. The integrator
+also ran the real release fixture as `engine-performance-native-l0obV1`, with
+its report/stdout/stderr archived using `integrator-` prefixes in the release
+evidence directory. The pinned source release executable is unchanged.
+
+Independent review found no blocking implementation issue. It verified exact
+monitor identifiers and method signatures from local ClassDB, but ClassDB does
+not encode units or refresh-period semantics. These tests demonstrate value
+availability, controlled count changes and declared-unit conversion; they do
+not independently calibrate timing units or prove an exact one-second refresh.
+Positive headless FPS is an engine counter, never proof of rendered FPS.
+
 The integrator added `godot-engine-performance.mjs` to validate the exact fixed
 engine version, monitor names, raw units, finite values, integer counters,
 sampling sequence and environment constraints. It preserves seconds as raw units

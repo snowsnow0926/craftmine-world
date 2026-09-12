@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Sealed56b5 actual registered plugin IPC tool, Core task binding/save, Godot OS renderer memory and full cold reopen pass; post-stop databases show two completed no-model turns, zero requests and only initial source revision/check. Engine frame/physics/object/GPU collectors, ordinary model usage, player-scale benchmarks and semantic optimization remain"
+      "next": "Sealed56b5 registered tool/Core/cold memory path passed. Fixed engine collector and strict parser now pass native editor and actual Windows release tests with count changes; these newer resources are not wired into ordinary worlds/tools. Versioned bridge plus source/PCK/host authority, Web behavior, timing calibration, ordinary model usage, scaled benchmarks and semantic optimization remain; GPU remains unknown."
     },
     {
       "id": "GU7",
@@ -64,6 +64,12 @@
     }
   ],
   "evidence": [
+    {
+      "kind": "engine-monitor-native-release-prototype",
+      "path": "docs/GODOT_ENGINE_MONITOR_COLLECTOR_2026-09-12.md",
+      "status": "passed-scoped-fixed-engine-prototype",
+      "scope": "Pinned editor and real Windows release PCK, five samples each with exact256-node growth/removal, paused/headless/GPU unknown and no custom monitor calls;12 parser/broker tests and5 staged bases pass. Not wired to player worlds or tool, no timing calibration/scaled optimization claim."
+    },
     {
       "kind": "sealed-performance-product",
       "commit": "56b5aeca298c20d6575c66bdf60dd25479358651",

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {validateEnginePerformance} from '../../plugins/craftmine-world/godot-engine-performance.mjs';
+import {WINDOWS_TEMPLATE} from '../../desktop/godot/sandbox/windows-toolchain.mjs';
 const metadata=JSON.parse(fs.readFileSync(new URL('../../plugins/craftmine-world/engine-api/4.7.2-stable/classdb.json',import.meta.url)));
 const actualVersion=metadata.actualVersion;
 const entry=(monitor,unit,rawValue)=>({status:'measured',monitor,unit,rawValue});
@@ -55,16 +56,19 @@ test('refuses unit confusion, invented monitor values and unsupported measuremen
   assert.throws(()=>validateEnginePerformance(unrendered,{actualVersion}),/UNSUPPORTED_MEASUREMENT/);
 });
 
-test('validates the actual native collector sequence and retained raw evidence',()=>{
-  const directory=new URL('../../docs/evidence/gu6-engine-monitors-native-20260912/',import.meta.url);
+for(const kind of ['native','release'])test('validates actual '+kind+' collector sequence and retained raw evidence',()=>{
+  const directory=new URL('../../docs/evidence/gu6-engine-monitors-'+kind+'-20260912/',import.meta.url);
   const report=JSON.parse(fs.readFileSync(new URL('report.json',directory)));
   const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
-  assert.equal(report.engineSha256,metadata.engineSha256);assert.equal(report.exit.code,0);
+  assert.equal(report.engineSha256,kind==='release'?WINDOWS_TEMPLATE.sha256:metadata.engineSha256);assert.equal(report.exit.code,0);
   for(const stream of ['stdout','stderr'])assert.equal(digest(fs.readFileSync(new URL(stream+'.log',directory))),report[stream+'Sha256']);
   assert.equal(digest(fs.readFileSync(new URL('../../desktop/godot/shared/engine_performance.gd',import.meta.url))),report.collectorSha256);
+  const fixture=kind==='release'?'engine-performance-scene.gd':'engine-performance-native.gd';
+  assert.equal(digest(fs.readFileSync(new URL('./fixtures/'+fixture,import.meta.url))),report.fixtureSha256);
   let previousSequence=0;
   for(const name of ['empty','loaded','paused','removed','resumed']){
     const result=validateEnginePerformance(report.samples[name],{actualVersion,previousSequence});previousSequence=result.sequence;
+    assert.equal(result.debugBuild,kind!=='release');
     assert.equal(result.metrics.objectCount.status,'measured');assert.equal(result.metrics.gpuTime.status,'unknown');
     if(result.paused)assert.equal(result.metrics.processTime.status,'unknown');
   }

@@ -234,8 +234,8 @@
       "scenario": "规模与性能优化",
       "requiredEvidence": "同设备同要求实测，功能与画面不退化 GU6",
       "status": "unproven",
-      "evidence": ["docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md", "vendor/pi-desktop/docs/spec/godot-performance-product-acceptance.md"],
-      "next": "Sealed56b5 actual Core/plugin IPC performance memory and cold persistence pass. Engine monitor channel, ordinary model use, same-device scaled optimization and preserved gameplay/visuals remain unproven."
+      "evidence": ["docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md", "vendor/pi-desktop/docs/spec/godot-performance-product-acceptance.md", "docs/GODOT_ENGINE_MONITOR_COLLECTOR_2026-09-12.md"],
+      "next": "Sealed56b5 Core/plugin IPC memory and cold persistence pass; newer fixed monitor prototype has native/release evidence. Versioned engine transport/authority, timing calibration, ordinary model use, same-device scaled optimization and preserved gameplay/visuals remain unproven."
     },
     {
       "id": "GA25",
