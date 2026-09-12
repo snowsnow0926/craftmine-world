@@ -117,11 +117,13 @@ async function onLoad() {
   const hostProviders=createHostProviders((method,params)=>{
     if(method==='creationTarget'&&typeof pi.craftmine?.creationTarget==='function')return pi.craftmine.creationTarget(params);
     if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
+    if(method==='godotEnginePerformance'&&typeof pi.craftmine?.godotEnginePerformance==='function')return pi.craftmine.godotEnginePerformance(params);
     throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
   });
   const toolServices={
     ...hostProviders,
     ...(typeof pi.craftmine?.godotPerformance==='function'?{samplePerformance:input=>pi.craftmine.godotPerformance(input)}:{}),
+    ...(typeof pi.craftmine?.godotEnginePerformance==='function'?{sampleEnginePerformance:input=>pi.craftmine.godotEnginePerformance(input)}:{}),
     buildReadWaitMs:30000,
     // The seven-kind limit ledger is read through this process's core client.
     budget:createCoreBudgetProvider(core),

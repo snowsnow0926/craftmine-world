@@ -223,6 +223,7 @@ export type PluginHostServices = {
   craftminePerformanceSample?: (input: {
     worldId?: string | null; buildId?: string | null; instanceId?: string | null;
   }) => Promise<Record<string, unknown> | null>;
+  craftmineEnginePerformanceSample?: (input: {worldId?: string|null;buildId?: string|null;instanceId?: string|null}) => Promise<Record<string,unknown>|null>;
   craftmineCreationTarget?: (input:{projectId:string;sessionId:string;turnId:string}) => Promise<Record<string, unknown>|null>;
   craftmineCreationCheckCompleted?: (input:{jobId:string;context:{projectId:string;sessionId:string;turnId:string}}) => Promise<Record<string,unknown>>;
   getWorkspacePath: () => string | null;
@@ -1642,6 +1643,14 @@ export class PluginRuntime {
             (value !== null && (typeof value !== "string" || !/^[a-zA-Z0-9._-]{1,128}$/.test(value)))))
           throw apiError("INVALID_ARGUMENT", "Invalid performance observation identity");
         return this.services.craftminePerformanceSample(input);
+      }
+      case "craftmine.godotEnginePerformance": {
+        if (pluginId !== "craftmine.world" || !this.services.craftmineEnginePerformanceSample)
+          throw apiError("UNSUPPORTED", "Godot engine performance sampling unavailable");
+        const input=args[0]??{};
+        if(args.length>1||!input||typeof input!=="object"||Array.isArray(input)||Object.entries(input).some(([key,value])=>!["worldId","buildId","instanceId"].includes(key)||(value!==null&&(typeof value!=="string"||!/^[a-zA-Z0-9._-]{1,128}$/.test(value as string)))))
+          throw apiError("INVALID_ARGUMENT","Invalid engine performance observation identity");
+        return this.services.craftmineEnginePerformanceSample(input);
       }
       case "craftmine.creationTarget": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineCreationTarget) throw apiError("UNSUPPORTED", "Creation target unavailable");

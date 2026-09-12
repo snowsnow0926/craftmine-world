@@ -19,6 +19,7 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
   samplePerformance:{kind:'function',owner:'GU6',hostMethod:'godotPerformance',provides:'current host-bound renderer process working set; engine frame, physics and GPU channels remain unknown',requiredFor:['godot_performance_observe']},
+  sampleEnginePerformance:{kind:'function',owner:'GU6',hostMethod:'godotEnginePerformance',optional:true,provides:'opt-in source/PCK-pinned Godot Performance monitors through the versioned engine bridge',requiredFor:['godot_performance_observe engine metrics']},
   executorNativeDiagnosticEvidence:{kind:'function',owner:'GU5',hostMethod:null,provides:'private read-only projection of validated native import evidence bound to the exact core job result; missing evidence remains unknown',requiredFor:['godot_build_read native diagnostics']},
   executorCreationCompletion:{kind:'function',owner:'CN4',hostMethod:null,optional:true,provides:'same-job recorded application state; a diagnostic receipt never grants application authority',requiredFor:['godot_build_read']},
   buildReadWaitMs:{kind:"number",owner:"NB5",hostMethod:null,optional:true,provides:"bounded model job-read waiting in milliseconds; fixture default is zero",requiredFor:["godot_build_read"]},

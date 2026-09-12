@@ -64,6 +64,7 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  realpathSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -214,6 +215,7 @@ import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import { createCraftminePerformanceSampler } from "./craftmine-performance-sample";
+import { createCraftmineEnginePerformanceSampler } from "./craftmine-engine-performance-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
@@ -1028,6 +1030,23 @@ const godotRoot = resolveGodotRoot({
   startDir: __dirname,
   override: process.env.CRAFTMINE_GODOT_BASES,
 });
+const craftmineEnginePerformance = createCraftmineEnginePerformanceSampler({
+  host: () => godotWorld,
+  resourcesRoot: godotRoot,
+  actualVersion: "4.7.2.stable.official.ed1daf0bf",
+  describe: worldId => godotAdapter.describe(worldId),
+  exportSource: worldId => plugins.requestCraftmineHost("godotRuntime.exportSource", {worldId}),
+  readPack: (descriptor, artifact) => {
+    const root = resolve(String(descriptor.root));
+    if (!godotAdapter.allowedRoots().some(candidate => resolve(candidate) === root)) throw Error("ENGINE_PERFORMANCE_ROOT_UNAUTHORIZED");
+    if (!artifact.path.startsWith("web/") || artifact.path.includes("..") || /[\\:\x00-\x1f\x7f]/.test(artifact.path)) throw Error("ENGINE_PERFORMANCE_ARTIFACT_PATH");
+    const file = resolve(root, artifact.path);
+    if (!file.startsWith(root + "/") && !file.startsWith(root + "\\")) throw Error("ENGINE_PERFORMANCE_ARTIFACT_ESCAPE");
+    if (realpathSync(file) !== file) throw Error("ENGINE_PERFORMANCE_ARTIFACT_LINK");
+    return Promise.resolve(readFileSync(file));
+  },
+});
+plugins.setServices({ craftmineEnginePerformanceSample: input => craftmineEnginePerformance(input as any) });
 const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
 plugins.setServices({craftmineGodotToolchain: {
   broker: join(godotToolchainRoot, "broker", "godot-host-broker.exe"),

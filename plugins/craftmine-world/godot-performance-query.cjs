@@ -3,7 +3,7 @@ const {describeRuntime,normalizeLiveSample}=require('./godot-observe.cjs');
 
 // Read the task binding without opening a workspace or cancelling other jobs.
 // Neither game payloads nor durable snapshots belong in performance responses.
-async function queryPerformance({core,context,samplePerformance,sampleLiveState,assertActive=()=>{}}){
+async function queryPerformance({core,context,samplePerformance,sampleLiveState,sampleEnginePerformance,assertActive=()=>{}}){
   const helper=await import('./godot-performance-observation.mjs');
   const unavailable=reason=>helper.unavailablePerformance(reason);
   assertActive();
@@ -34,8 +34,14 @@ async function queryPerformance({core,context,samplePerformance,sampleLiveState,
     sample=await samplePerformance({...identity,instanceId:live.instanceId});assertActive();
     if(!sample||sample.available===false)return unavailable('PERFORMANCE_SAMPLE_UNAVAILABLE');
   }catch(error){assertActive();return unavailable('PERFORMANCE_INSTANCE_RECHECK_FAILED');}
+  let engine=null;
+  if(typeof sampleEnginePerformance==='function'){
+    try { engine=await sampleEnginePerformance({...identity,instanceId:live.instanceId});assertActive(); }
+    catch(error){ assertActive(); engine={available:false,format:'craftmine.host-engine-performance/1',status:'unknown',reason:'ENGINE_MONITOR_SAMPLE_FAILED'}; }
+  }
   try{
-    return helper.observeGodotPerformance({scope:{...identity,instanceId:live.instanceId},sample});
+    const projected=helper.observeGodotPerformance({scope:{...identity,instanceId:live.instanceId},sample});
+    return engine===null?projected:{...projected,engineObservation:engine};
   }catch(error){return unavailable('PERFORMANCE_SAMPLE_INVALID');}
 }
 module.exports={queryPerformance};

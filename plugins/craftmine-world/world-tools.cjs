@@ -74,7 +74,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     await core.start();
     if(definition.name==='godot_performance_observe')return require('./godot-performance-query.cjs').queryPerformance({
-      core,context,samplePerformance:options.samplePerformance,sampleLiveState:options.sampleLiveState,assertActive});
+      core,context,samplePerformance:options.samplePerformance,sampleLiveState:options.sampleLiveState,
+      sampleEnginePerformance:options.sampleEnginePerformance,assertActive});
     if(definition.name==='godot_project_query'&&MODULE_PARAMETER_MODES.includes(args.mode)){
       moduleParameterQuery??=createModuleParameterQuery({core,capture:options.creationTarget,sample:options.sampleLiveState,assertActive:activeContext=>{if(isEnded(activeContext))throw Error('TURN_ENDED');}});
       return moduleParameterQuery({context,args});
