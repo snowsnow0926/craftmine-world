@@ -17,7 +17,7 @@
 - 工具只读，不打开 workspace、不读 UI 选中世界、不取消其他作业，不返回存档体。每次异步返回后检查 turn 是否结束。
 - 打包后的生产 broker 测试实际加载投影文件并调用工具，覆盖切换实例、任务世界和构建、失效数据、取消、无 provider 和能力报告。
 
-当前源码和测试接通了上述路径，尚未重新封存桌面完整包并完成实际 Godot 世界中的端到端性能验收。
+当前源码和测试接通了上述路径。实际 Godot Web 导出也已通过生产宿主、live adapter、OS sampler 与打包后 broker 的组合验证；Core/task 描述与快照存储为夹具，没有运行插件 IPC、完整封存桌面包或玩家模型。
 
 ## 4.7.2 实测
 
@@ -31,6 +31,19 @@
 
 ## 验证
 
-`node --test tests/godot-agent/performance-broker.test.mjs tests/godot-agent/godot-performance-observation.test.mjs tests/godot-round3/S6/tool-services.test.mjs tests/godot-round3/S6/live-and-execution-wiring.test.mjs vendor/pi-desktop/apps/desktop/test/craftmine-performance-sample.test.mjs`：41/41 通过。broker/Core 返回使用受控替身，此检查不构成玩家性能基准。
+`node --test tests/godot-agent/performance-broker.test.mjs tests/godot-agent/godot-performance-observation.test.mjs tests/godot-round3/S6/tool-services.test.mjs tests/godot-round3/S6/live-and-execution-wiring.test.mjs vendor/pi-desktop/apps/desktop/test/craftmine-performance-sample.test.mjs`：42/42 通过。broker/Core 返回使用受控替身，此检查不构成玩家性能基准。
 
-总控另运行生产宿主采样器与独立无窗口 Electron renderer，真实测得工作集 **61.09765625 MiB**，窗口、输入事件、焦点事件均为 0。报告归档到 `docs/evidence/gu6-performance-host-20260912/report.json`。测试页面是最小 HTML，**没有运行 Godot 游戏**。桌面 `pnpm exec tsc --noEmit` 通过。仍需实际 Godot 世界、玩家规模、三次同条件采样及保语义优化回归。
+总控另运行生产宿主采样器与独立无窗口 Electron renderer，真实测得工作集 **61.09765625 MiB**，窗口、输入事件、焦点事件均为 0。报告归档到 `docs/evidence/gu6-performance-host-20260912/report.json`。这份测试页面是最小 HTML，**没有运行 Godot 游戏**；真实 Godot 组合验证另见下节。桌面 `pnpm exec tsc --noEmit` 通过。仍需完整客户端链路、玩家规模、三次同条件采样及保语义优化回归。
+
+## 实际 Godot 与打包工具的组合验证
+
+总控在提交 `9f6cce6c21a3f52996cfd2cade575839b7b25e94` 的干净源码构建插件，运行 `vendor/pi-desktop/apps/desktop/test/craftmine-performance-godot.mjs`，输入既有固定 collision-v2 Web 导出。结果归档于 `docs/evidence/gu6-performance-host-20260912/godot-broker-report.json`。
+
+- 两次独立 Electron 进程、各自测试 profile 中，真实 Godot 实例运行、暂停后采样；broker 最终输出与同次真实宿主内存测量相等，分别为 **402.23046875 MiB**、**398.87109375 MiB**。它们是运行时进程读数，不是性能提升或工作负载对照。
+- 冷重开产生不同实例，原始存档快照在本地文件夹具中完整保持；旧实例的请求与旧样本经 sampler/broker 拒绝。采样期间真实 dispose 也拒绝迟到结果。
+- 源导出文件的字节数与 SHA-256 在运行前后验证不变；owner 窗口始终隐藏且不可聚焦，输入、Pointer Lock、focus 计数均为 0。
+- 使用生产 GodotWorldViewHost、宿主采样器、打包后的 live adapter 和 broker；**Core 的 task/runtime 描述、本地文件快照持久化是夹具**，因此不是 Core 正式存档、插件 RPC 或完整客户端验收。
+
+8 项真实 Core 构建工具回归也通过（`test-results/godot-build-tools-jJWSHg`），但那是独立回归组，不能与上述夹具组合宣称真实 Core 性能闭环。GA24 仍未证明：引擎指标采集、玩家规模的同条件测量和保语义优化均需继续开发。
+
+独立只读复审确认 `97cf43b7` 关闭同构建重启竞态，未发现新的阻断问题。另一次真实 Godot 组合测试记录并断言两次采样参数：先 world/build，再 world/build/instance；最后一次宿主样本与 broker 输出完全一致，归档在 `vendor/pi-desktop/docs/evidence/gu6-packed-godot-performance-20260912/final-instance-report.json`。

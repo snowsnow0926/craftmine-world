@@ -55,7 +55,7 @@
     {
       "id": "GU6",
       "status": "in-progress",
-      "next": "Source host and packaged broker now collect OS renderer working set with independent identity/freshness checks and accurate service readiness; 41 focused tests and isolated Electron memory sample pass. Engine frame/physics/object/GPU collectors, actual Godot-world full-chain acceptance, sealed package, player-scale benchmarks and semantic optimization remain"
+      "next": "Actual Godot Web/host/live adapter/OS sampler/packed broker integration and cold new-instance rejection pass, with fixture Core descriptors and local-file snapshot store;42 focused tests pass. Engine frame/physics/object/GPU collectors, real Core+plugin IPC sealed full-chain acceptance, player-scale benchmarks and semantic optimization remain"
     },
     {
       "id": "GU7",
@@ -68,7 +68,7 @@
       "kind": "renderer-performance-host-and-broker",
       "path": "docs/GODOT_AGENT_GU6_PERFORMANCE_OBSERVATION_2026-09-12.md",
       "status": "passed-scoped-source-integration",
-      "scope": "41 focused tests include actual plugin packaging with mocked host/Core; separate production sampler reads real OS memory from an isolated no-window HTML renderer. No actual Godot-world/player benchmark or new sealed desktop package yet."
+      "scope": "42 focused tests; actual Godot Web+host+live adapter+packed broker OS memory in two independent processes, cold snapshot via local-file fixture, old-instance rejection and zero input/focus. Core task/runtime are fixtures, plugin IPC/model/sealed client/player-scale benchmarking remain unverified."
     },
     {
       "kind": "original-failed-world-recovery",
