@@ -37,11 +37,14 @@ test('native transport rejects uncloneable/oversize responses and remains usable
  try{for(const payload of [1n,'草'.repeat(3*1024*1024),(()=>{const x={};x.x=x;return x;})()]){const promise=runtime.request('snapshot');runtime.receive({...scope,id:latest.id,type:'response',result:payload});await assert.rejects(promise,/Invalid or oversized/);}let promise=runtime.request('snapshot');runtime.receive({...scope,worldId:'beta',id:latest.id,type:'response',result:'foreign'});runtime.receive({...scope,id:latest.id,type:'response',result:'valid'});assert.equal((await promise).result,'valid');await assert.rejects(runtime.request('snapshot',{}, {timeoutMs:Infinity}),/timeout/);await assert.rejects(runtime.request('snapshot',{}, {timeoutMs:1}),/timed out/);promise=runtime.request('snapshot');runtime.receive({...scope,type:'exited',exitCode:0});await assert.rejects(promise,/exited/);}finally{await runtime.dispose({graceful:false});}
 });
 test('page bridge explicitly rejects malformed/oversized completion and callback exceptions',async()=>{
- const messages=[];let receive;
+ const messages=[];let receive;const status={hidden:false,textContent:''};
  const scope={protocol:'craftmine.godot-runtime/2',worldId:'alpha',buildId:'build-a',instanceId:'one'};
- const context={TextEncoder,console,document:{getElementById:()=>({})},craftmineRuntime:{scope,post:x=>messages.push(x),on:fn=>receive=fn}};context.window=context;
+ const context={TextEncoder,console,document:{getElementById:()=>status},craftmineRuntime:{scope,post:x=>messages.push(x),on:fn=>receive=fn}};context.window=context;
  vm.runInNewContext(await fs.readFile('desktop/godot/web/bridge.js','utf8'),context);
  let throwing=false;context.CraftmineGame.register(()=>{if(throwing)throw Error('callback failure');});context.CraftmineGame.start({startGame:async()=>{},requestQuit(){}});await Promise.resolve();
+ assert.equal(status.hidden,false,'engine startup must not hide the loading layer');
+ receive({...scope,id:5,op:'load',args:{}});assert.equal(status.hidden,false,'load keeps the layer until its response');context.CraftmineGame.complete(JSON.stringify({id:5,result:{loaded:true,snapshot:{}}}));assert.equal(status.hidden,true,'successful load hides the layer');
+ status.hidden=false;receive({...scope,id:6,op:'restore-state',args:{}});context.CraftmineGame.complete(JSON.stringify({id:6,result:{loaded:true,snapshot:{}}}));assert.equal(status.hidden,true,'successful restore hides the layer');
  receive({...scope,id:1,op:'save',args:{}});context.CraftmineGame.complete('草'.repeat(3*1024*1024));assert.match(messages.find(x=>x.id===1).error,/oversized/);
  receive({...scope,id:2,op:'save',args:{}});context.CraftmineGame.complete('{');assert.match(messages.find(x=>x.id===2).error,/JSON/);
  throwing=true;receive({...scope,id:3,op:'save',args:{}});assert.match(messages.find(x=>x.id===3).error,/callback/);

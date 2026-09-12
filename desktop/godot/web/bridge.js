@@ -94,8 +94,16 @@
       }
     });
   };
+  const markLoaded = result => {
+    // Engine startup only means the WebAssembly runtime exists. Keep the
+    // loading layer visible until the first world load (including a restored
+    // snapshot) has completed successfully; otherwise a slow restore presents
+    // a black canvas with no feedback.
+    if (result && result.loaded === true) status.hidden = true;
+  };
   const reply = (id, result, failure) => {
     if (!active.delete(id)) return;
+    if (!failure) markLoaded(result);
     send({ type: 'response', id, ...(failure ? { error: failure } : { result }) });
     finishQuit();
   };
@@ -168,7 +176,7 @@
         onPrint: (...args) => console.log(...args),
         onPrintError: (...args) => { console.error(...args); error(args.join(' ')); },
         onExit: code => { exited = true; if (quitting) reply(quitting, { exitCode: code }); send({ type: 'exited', exitCode: code }); },
-      }).then(() => { started = true; status.hidden = true; ready(); }).catch(error);
+      }).then(() => { started = true; ready(); }).catch(error);
     },
   });
   Object.defineProperty(window, 'CraftmineGame', { value: api, writable: false, configurable: false });
