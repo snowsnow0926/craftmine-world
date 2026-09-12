@@ -265,8 +265,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 6089,
-      "sha256": "becf8053455fbea745eb6767b53840c47a98de5ef4bb03d9f4b3d596bd3300ac"
+      "bytes": 7079,
+      "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
     },
     {
       "path": "scripts/scene_contract.gd",

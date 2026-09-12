@@ -41,8 +41,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 18824,
-      "sha256": "563fc8ed417da7e21d0cef835b549108ad889b0c6817dce1922dd2b9d258ee41"
+      "bytes": 19410,
+      "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
     },
     {
       "path": "adapters/first-person.gd",
@@ -225,8 +225,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 22520,
-      "sha256": "367d85c0506c1062e5a3627fb8e4ada85b37d78d8369d5a312206e8b4275baf5"
+      "bytes": 23296,
+      "sha256": "b6c4c2eefef9d89b741ededa76ef64c55d4ea05b8bc5a8d03d8c6e7e777c247f"
     },
     {
       "path": "headless_play_action.gd",
@@ -405,8 +405,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 4842,
-      "sha256": "9645b3b51a393a83c338c08439e41fd8330e62f3a6519797f359ffa7c6c9635b"
+      "bytes": 5448,
+      "sha256": "bfe659debede0be537e26f735efaeffb366a18f5759c1d16beae295d603022fd"
     },
     {
       "path": "observation.d.mts",
@@ -437,8 +437,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 15594,
-      "sha256": "cb9c814fed3a8c3c7048b883413aa87f2202d79b677afb8b3d1ab6b1e65117ea"
+      "bytes": 15612,
+      "sha256": "2f9143390f71f72ba0849b240366b767f903c09886f415e0caa058bdcbcf0113"
     },
     {
       "path": "progress-migration.d.mts",
@@ -553,8 +553,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 1759,
-      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+      "bytes": 1800,
+      "sha256": "9b3bb64b8515b0937e9e884999cfe10684d16d4a2b0af53140cc2a81dcc11293"
     },
     {
       "path": "target-feedback-configuration.d.mts",
@@ -601,8 +601,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 1444,
-      "sha256": "fa2ff2a84569fa80d4180850ec73be79c92655cca1db1a9f1986a33ea6a3c499"
+      "bytes": 1478,
+      "sha256": "5eca427b07860e6bc4b2f0d8ca6901ec59212e63624e6e5f5d8bf0182e249123"
     },
     {
       "path": "tests/progress.mjs",
@@ -716,7 +716,7 @@
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 20897,
-      "sha256": "1f05e929d0989fe37782792fb95130998617102896c9349636f5ea962751e34d"
+      "sha256": "9bcb5cbce2a218a57dd9631b7996a3f61d542adafd68991e9e0c2e373a096831"
     },
     {
       "path": "desktop/godot/bases/component-catalog.json",
@@ -732,7 +732,7 @@
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 32549,
-      "sha256": "b183a7a82c99a06f9e81c3d26b75b5e7f4215d384af93a0e9df57ee56218b085"
+      "sha256": "290525ea51c635293160a37bb45b27b07380225c494ebb9aa6ed10b992e91411"
     },
     {
       "path": "desktop/godot/bases/README.md",

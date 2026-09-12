@@ -52,7 +52,7 @@
         "manifest": "assets/ASSET_MANIFEST.json",
         "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt"
       },
-      "contentHash": "429f16c2e7f38d11081f583b70ccf551e43df759214e62735eec22cfdbd87d14",
+      "contentHash": "96daa6fbfce4156cafeceb93208922a578f2e059b35e464f09c6ed38a94e54bf",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": null,
       "capabilities": [
@@ -155,7 +155,7 @@
         "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
         "generator": "tools/generate_meshes.mjs"
       },
-      "contentHash": "e36a128da5b14e88b25a06aebba055bbb38db6ba26d60fad002204539e51408f",
+      "contentHash": "9dc88bdc28ac1baffbc386773a42756779ae982e5967741f8f6fe252b9c19c7d",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": null,
       "capabilities": [],
@@ -437,7 +437,7 @@
         "license": "docs/assets-and-provenance.md",
         "generator": null
       },
-      "contentHash": "c916550ae1478f9fb2d7f6196adfbe754df59d3d10d4cb87ecf80b2b55eaa28f",
+      "contentHash": "76b4f72a23153caa208c818c42be1dedbe63c686b4e4304a7cac626ecabfeebb",
       "worldIdPattern": "^[a-z0-9][a-z0-9-]{1,47}$",
       "entityIdScheme": "stable string id declared in world data, never a node path",
       "capabilities": [
