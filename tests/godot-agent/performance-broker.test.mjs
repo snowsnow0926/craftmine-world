@@ -37,6 +37,7 @@ function fixture(change={}){
 }
 
 test('packaged broker uses read-only task binding and projects the independently identified process',async()=>{
+  assert.deepEqual(fs.readFileSync(path.join(output,'godot-engine-performance.mjs')),fs.readFileSync(path.join(root,'plugins/craftmine-world/godot-engine-performance.mjs')));
   const f=fixture();
   const result=await f.run();
   assert.equal(result.available,true);assert.equal(result.scope.worldId,'bound-world');

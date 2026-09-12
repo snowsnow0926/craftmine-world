@@ -263,6 +263,22 @@
       "sha256": "b6c4c2eefef9d89b741ededa76ef64c55d4ea05b8bc5a8d03d8c6e7e777c247f"
     },
     {
+      "path": "engine_performance.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Project-authored fixed monitor collector resource; not yet installed by the materializer or accepted as trusted engine data by the host. Existing provenance inventory only, not a new license grant.",
+      "bytes": 3959,
+      "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+    },
+    {
       "path": "headless_play_action.gd",
       "role": "source",
       "origin": "authored",
@@ -524,6 +540,38 @@
       "sha256": "c194946727f3d382821f04038614d0a38f7f7b66afdb94a3e01a6c0d787c9098"
     },
     {
+      "path": "repairs/.gitattributes",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Preserves historical resource bytes; no license change.",
+      "bytes": 11,
+      "sha256": "84213554f704ac5cfd73217d80f6ecbb681daf0cfd51667b0153f27c5954b043"
+    },
+    {
+      "path": "repairs/runtime_bridge-frame-independent.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle"
+      ],
+      "outstanding": "Exact project-authored frame-independent bridge from 487dc779; host-only legacy repair resource. Existing provenance inventory only, not a new license grant.",
+      "bytes": 6958,
+      "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
+    },
+    {
       "path": "runtime_bridge.gd",
       "role": "source",
       "origin": "authored",
@@ -735,38 +783,6 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 643,
       "sha256": "b7a6371150ef720f6e9ef8dcbae3dc02ff05150e4078868872b81d4ee1170d22"
-    },
-    {
-      "path": "repairs/.gitattributes",
-      "role": "data",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "development-only"
-      ],
-      "outstanding": "Preserves historical resource bytes; no license change.",
-      "bytes": 11,
-      "sha256": "84213554f704ac5cfd73217d80f6ecbb681daf0cfd51667b0153f27c5954b043"
-    },
-    {
-      "path": "repairs/runtime_bridge-frame-independent.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle"
-      ],
-      "outstanding": "Exact project-authored frame-independent bridge from 487dc779; host-only legacy repair resource. Existing provenance inventory only, not a new license grant.",
-      "bytes": 6958,
-      "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
     }
   ],
   "externalEntries": [
