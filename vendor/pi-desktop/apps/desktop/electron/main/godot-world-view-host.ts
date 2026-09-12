@@ -18,6 +18,7 @@ import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShort
 import { createImmersionPauseController } from "./immersion-pause-controller";
 import {captureBoundGodotView,validateGodotViewCaptureIdentity,type GodotViewCaptureIdentity,type GodotViewCapture} from "./godot-view-capture";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
+import { WORLD_CURSOR_CHANNEL } from "../../shared/world-cursor-presentation";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
   GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL,
@@ -295,7 +296,10 @@ export class GodotWorldViewHost {
     this.immersion = state;
     const blocked = immersionBlocksInput(state);
     for (const instance of [this.current, this.pending]) {
-      if (instance?.alive && !instance.view.webContents.isDestroyed()) instance.view.webContents.send(IMMERSION_INPUT_CHANNEL, blocked);
+      if (instance?.alive && !instance.view.webContents.isDestroyed()) {
+        instance.view.webContents.send(IMMERSION_INPUT_CHANNEL, blocked);
+        instance.view.webContents.send(WORLD_CURSOR_CHANNEL, state.active && !blocked);
+      }
     }
     this.applyBounds();
     await this.pauseController.setOverlay(blocked);
@@ -1482,7 +1486,11 @@ export class GodotWorldViewHost {
       if (!decision.preventDefault && immersionBlocksInput(this.immersion) && input.type !== "keyUp") event.preventDefault();
     });
     view.webContents.on("did-finish-load", () => {
-      if (!view.webContents.isDestroyed()) view.webContents.send(IMMERSION_INPUT_CHANNEL, immersionBlocksInput(this.immersion));
+      if (!view.webContents.isDestroyed()) {
+        const blocked = immersionBlocksInput(this.immersion);
+        view.webContents.send(IMMERSION_INPUT_CHANNEL, blocked);
+        view.webContents.send(WORLD_CURSOR_CHANNEL, this.immersion.active && !blocked);
+      }
     });
     view.webContents.ipc.on(GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL, (event, payload: unknown) => {
       if (!displayed() || event.senderFrame !== view.webContents.mainFrame || !payload || typeof payload !== "object") return;

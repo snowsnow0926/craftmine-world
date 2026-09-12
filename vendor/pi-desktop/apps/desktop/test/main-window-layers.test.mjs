@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {register} from 'node:module';
 register(new URL('./helpers/ts-import-hooks.mjs',import.meta.url));
+const {deliverImmersionShortcut}=await import('../electron/main/immersion-shortcut-dispatch.ts');
 const {registerMainLayers,setMainImmersion,raiseMainOverlay,mainInputContents,syncMainInputFocus}=await import('../electron/main/main-window-layers.ts');
 const state=(overlay='closed',blocked=false)=>({active:true,overlay,blocked,overlayBounds:null});
 function fixture(headless=false) {
@@ -85,4 +86,24 @@ test('destroyed contents are not selected and a destroyed owner cannot hand off 
 
 test('dialogue coverage keeps native worlds attached below the trusted chat without entering play',()=>{
  const f=fixture(true);const covered={active:false,overlay:'closed',overlayBounds:null,blocked:false,covered:true};setMainImmersion(f.window,covered);assert.deepEqual(f.window.contentView.children,[f.world,f.ui]);assert.equal(mainInputContents(f.window),f.ui.webContents);const candidate=f.view('candidate');f.window.contentView.addChildView(candidate);raiseMainOverlay(f.window);assert.deepEqual(f.window.contentView.children,[f.world,candidate,f.ui]);assert.deepEqual(f.calls,[]);setMainImmersion(f.window,{...covered,covered:false,active:true});assert.deepEqual(f.window.contentView.children,[f.ui,f.world,candidate]);assert.equal(mainInputContents(f.window),candidate.webContents);
+});
+
+test('normal F2 dispatch leaves world input alone until the renderer commits the visible overlay',()=>{
+ const f=fixture();f.window.focused=true;f.window.webContents=f.ui.webContents;setMainImmersion(f.window,state());
+ const messages=[];
+ const dispatch=action=>deliverImmersionShortcut(action,{state:state(),window:f.window,send:value=>messages.push(value)});
+ assert.equal(dispatch('compact'),true);assert.deepEqual(messages,['compact']);
+ assert.deepEqual(f.calls,['world'],'IPC delivery must not focus a still-covered UI');
+ assert.equal(f.window.contentView.children.at(-1),f.world);
+ setMainImmersion(f.window,state('compact'));
+ assert.equal(f.window.contentView.children.at(-1),f.ui);assert.deepEqual(f.calls,['world','ui']);
+ setMainImmersion(f.window,state());assert.deepEqual(f.calls,['world','ui','world']);
+ assert.equal(dispatch('full'),true);assert.deepEqual(f.calls,['world','ui','world']);
+ setMainImmersion(f.window,state('full'));assert.deepEqual(f.calls,['world','ui','world','ui']);
+});
+
+test('shortcut dispatch cannot escape blocked, inactive or destroyed host scope',()=>{
+ const f=fixture();f.window.webContents=f.ui.webContents;const send=()=>assert.fail('out of scope dispatch');
+ for(const current of [state('closed',true),{...state(),active:false}])assert.equal(deliverImmersionShortcut('compact',{state:current,window:f.window,send}),false);
+ f.ui.webContents.destroyed=true;assert.equal(deliverImmersionShortcut('full',{state:state(),window:f.window,send}),false);
 });
