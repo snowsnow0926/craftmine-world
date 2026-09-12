@@ -33,13 +33,16 @@ var feedback_text := ""
 var configuration_error := ""
 
 func _ready() -> void:
+	# Invalid components must remain discoverable so the host refuses saving them.
+	add_to_group("craftmine_persistent_components")
 	_identity = entity_id
 	_source_settings = {"name": companion_name, "appearanceKey": appearance_key, "following": following}
 	_source_settings.make_read_only()
 	_settings = _source_settings.duplicate(true)
 	var identifier := RegEx.new()
-	identifier.compile("^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
-	if identifier.search(_identity) == null or not _valid_settings(_settings) or not _valid_motion_configuration():
+	identifier.compile("^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
+	var matched := identifier.search(_identity)
+	if matched == null or matched.get_string() != _identity or not _valid_settings(_settings) or not _valid_motion_configuration():
 		configuration_error = "PET_CONFIGURATION_INVALID"
 		set_physics_process(false)
 		return
@@ -58,7 +61,6 @@ func _ready() -> void:
 	collision_mask = 11 # ground/objects, other companions, and the actual player
 	floor_snap_length = 0.15
 	_apply_appearance()
-	add_to_group("craftmine_persistent_components")
 
 func _physics_process(delta: float) -> void:
 	if not configuration_error.is_empty():
