@@ -70,3 +70,10 @@ quits. It does not run or claim normal-renderer shortcut/transition acceptance.
 Its report explicitly separates offscreen visual observation from the strict
 normal interaction run. No model call, physical input or window activation is
 permitted in either mode.
+
+The normal fresh-profile chain also attempts cancellation when the real Godot
+preparation control becomes available. It verifies return to Web, a retained
+cancelled draft and retry through the same Godot card/world identity before
+continuing attachment and save/restart checks. If initialization naturally
+finishes before cancellation is possible, the report records this scenario as
+uncovered rather than inventing a failure or slowing product initialization.
