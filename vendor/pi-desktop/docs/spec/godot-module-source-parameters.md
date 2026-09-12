@@ -43,3 +43,12 @@ source installer and exporter in `craftmine.instances.json`. They describe the
 source; they do not extend this tool's setter allowlist. Legacy missing metadata
 stays unknown. See the root module-source-preview and parameter-declaration
 specifications for exact binding and re-export validation.
+
+Ordinary turn entry also invokes the legacy source migration service. It must
+recognize complete current observer cohorts before planning any legacy upgrade:
+the existing v1 observer has eight pinned members and v2 has twelve. This gate
+does not add a new physical-controller proof for v1. It checks the applied source,
+capture identity and exact project selectors, then returns no migration without
+reading or restricting an ordinary unadopted draft. Mixed, incomplete, duplicate
+or changed protected members remain refused. Actual legacy migrations retain
+their existing source/draft/receipt checks and must not downgrade a modern cohort.
