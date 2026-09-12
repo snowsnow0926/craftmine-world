@@ -9674,6 +9674,10 @@ session.get. Omitted or null modes retain inheritance, and invalid values fail
 before a session is inserted. Recheck the ordinary fresh-world UI without
 setting permissions from the verifier; an inherited Ask session is a failure
 when the unconfigured creator entry requested Auto.
+Retain a home draft configured as Auto, then select a historical session with
+explicit Ask and create a world conversation. The new session must inherit the
+selected conversation's choice, never the unrelated home draft. Also cover
+inheritance with each explicit global mode and ordinary home creation.
 
 Restart an existing created world, open its compact conversation with F2 and
 resolve only a real desktop session with a matching durable world/task binding.
@@ -9684,6 +9688,9 @@ must preserve a pending selection; newer navigation, world changes, typed text
 or attachments must prevent a late recovery from replacing the player's work.
 Submit a normal follow-up to the recovered conversation and verify the target
 world and retained content rather than forcing store or task identities.
+Archive the proposed session while its history or final binding read is delayed;
+automatic recovery must stop without reactivating it. Recheck archive state at
+both sides of the final asynchronous binding validation.
 
 In an authorized automatic creation turn, the model's actual registered build
 read and project context explain deferred application after the turn ends.
