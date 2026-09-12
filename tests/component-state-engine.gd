@@ -39,6 +39,20 @@ func run():
 	for _frame in 6: await process_frame
 	var loaded := await request("load")
 	check(not loaded.has("error"), "empty stock world loads")
+	var bridge := root.get_node("CraftmineRuntime")
+	var original_adapter: RefCounted = bridge.adapter
+	var interaction_events := InputMap.action_get_events("interact")
+	var deadzone := InputMap.action_get_deadzone("interact")
+	InputMap.erase_action("interact")
+	bridge.adapter = RefCounted.new()
+	paused = false
+	bridge._input(InputEventAction.new()) # Pure handler call, no OS or global input injection.
+	bridge.adapter = original_adapter
+	bridge._input(InputEventAction.new())
+	paused = true
+	InputMap.add_action("interact", deadzone)
+	for event in interaction_events: InputMap.action_add_event("interact", event)
+	check(true, "bases without component interaction or action binding ignore the handler safely")
 	var baseline: Dictionary = loaded.result.snapshot.state
 	check(not baseline.body.has("components"), "old world snapshot gains no empty extension")
 	check(not (await request("restore-state", {"state": baseline})).has("error"), "old snapshot round trip unchanged")

@@ -53,10 +53,10 @@ func _process(_delta: float) -> void:
 # The normal key and managed interact operation share the adapter dispatch.
 # Consume only a real component hit; stock world interaction remains unchanged.
 func _input(event: InputEvent) -> void:
-	if not loaded or get_tree().paused or not event.is_action_pressed("interact") or event.is_echo(): return
-	if adapter.has_method("interact_component"):
-		var result: Dictionary = adapter.interact_component()
-		if result.handled: get_viewport().set_input_as_handled()
+	if not loaded or get_tree().paused or not adapter.has_method("interact_component"): return
+	if not InputMap.has_action("interact") or not event.is_action_pressed("interact") or event.is_echo(): return
+	var result: Dictionary = adapter.interact_component()
+	if result.handled: get_viewport().set_input_as_handled()
 
 func _drain_queue() -> void:
 	if busy or queue.is_empty() or browser == null:
