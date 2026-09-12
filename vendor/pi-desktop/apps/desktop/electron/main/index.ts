@@ -226,6 +226,7 @@ import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import { createCraftminePerformanceSampler } from "./craftmine-performance-sample";
 import { createCraftmineEnginePerformanceSampler } from "./craftmine-engine-performance-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
+import {readCurrentCreationCapture} from "./creation-current-capture";
 import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
 import {createCreationAutoQueue} from "./creation-auto-queue";
@@ -1204,7 +1205,7 @@ const migrateCreationSource=createCreationSourceMigration({
 plugins.setServices({craftmineCreationTarget:async context=>{
   const binding=craftmineGateway.get(context.sessionId);
   if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
-  return creationTargets.bound(context,binding.selectedWorld);
+  return readCurrentCreationCapture(context,binding.selectedWorld,{bound:creationTargets.bound,fullAuto:creationFullAuto});
 }});
 plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
   authorize:async input=>{
@@ -2981,7 +2982,7 @@ const craftmineGateway = new CraftmineTurnGateway(
       const latest = detail.session.messages?.findLast((message: UiMessage) => message.role === "user");
       if (!latest) throw new Error("CRAFTMINE_USER_REQUEST_REQUIRED");
       const result=await readCraftminePromptContext((method,args)=>plugins.requestCraftmineHost(method,args),context,{id:latest.id,text:latest.content});
-      return {...result,creationTarget:creationTargets.bound(context,binding.selectedWorld)};
+      return {...result,creationTarget:await readCurrentCreationCapture(context,binding.selectedWorld,{bound:creationTargets.bound,fullAuto:creationFullAuto})};
     }
     return plugins.requestCraftmineHost(operation, { ...input, context });
   },
