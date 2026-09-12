@@ -102,9 +102,9 @@
     {
       "kind": "real-core-source-only",
       "test": "tests/godot-agent/parameter-declaration-roundtrip.test.mjs",
-      "path": "D:/cm-agent-godot-0912/test-results/parameter-core-SPP3t0/report.json",
+      "path": "D:/cm-agent-godot-0912/test-results/parameter-core-XvvG2w/report.json",
       "status": "passed",
-      "scope": "Root rerun with sealed a9 Core: original CP0 declarations and local overrides survive export/install/re-export into second world; checks blocked without engine, no player model"
+      "scope": "Current Core rerun: CP0 declarations/local override survive export/install/re-export; build check intentionally blocked in source test"
     },
     {
       "kind": "real-core",
@@ -294,6 +294,13 @@
       "path": "docs/evidence/gu3-module-runtime-persistence-20260912/report.json",
       "status": "gap-reproduced",
       "scope": "12 real LPAC/Web assertions, explicit reconstructed instance not cold product; configure is transient, current snapshot omits module fields; implementation still required"
+    },
+    {
+      "kind": "initialization-retry-core",
+      "test": "tests/godot-agent/initialization-retry-core.test.mjs",
+      "path": "D:/cm-agent-godot-0912/test-results/initialization-retry-core-0wLVQc/report.json",
+      "status": "passed-real-core",
+      "scope": "Fresh retry check and explicit continuation across real Core transactions/restart; synthetic executor outputs, no Godot/player"
     }
   ],
   "limitations": [
