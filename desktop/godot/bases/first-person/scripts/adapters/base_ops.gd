@@ -29,6 +29,12 @@ func execute(op: String, args: Dictionary = {}) -> Dictionary:
 				return {"error": "No player"}
 			world.player.revive()
 			return {"result": world.snapshot()}
+		"respawn-target":
+			var wanted := str(args.get("id", ""))
+			for node in world.get_tree().get_nodes_in_group("base_targets"):
+				if node.has_method("respawn") and String(node.state_id()) == wanted:
+					return {"result": {"respawned": node.respawn(), "snapshot": world.snapshot()}}
+			return {"error": "Target cannot respawn"}
 		"equip":
 			return await _equip(args)
 		"next-equipment":
