@@ -20,6 +20,7 @@ node tests/godot-headless.mjs
 
 - `D:/cm-promo-loop-0912/test-results/player-health-kb9aJj/report.json`：受伤 HUD、受伤保存后第二进程恢复、死亡保存后第三进程恢复、死亡拒绝攻击与移动、复活、缺失伤害参数拒绝通过；真实节点测试覆盖无效恢复原子性、旧档恢复、死亡途中取消移动及复活后移动。
 - `D:/cm-promo-loop-0912/test-results/godot-headless-mbTBuG`：第一人称与俯视底座原有真实摄像机、射线、物理交互及冷重开回归通过。
+- `D:/cm-promo-loop-0912/test-results/godot-managed-progress-EiYHOR`：四种底座共 26 项托管状态、完整进度、保存回执、冷重开及无效状态拒绝回归通过。
 - 新测试无论成功或失败均写入报告，保留原始日志。
 
 这些证据是开发者驱动的真实引擎检查，不是模型自然输入成功率，也不是新 Windows 成品验收。怪物、掉落、资源外观和模型调用仍按各自流程独立验收。
