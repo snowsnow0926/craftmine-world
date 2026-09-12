@@ -39,6 +39,7 @@ import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout }
 import { CraftminePauseMenu } from "./components/CraftminePauseMenu";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { useDialogueWorld } from "./lib/use-dialogue-world";
+import { DialoguePreparationComposer } from "./components/DialoguePreparationComposer";
 import { CraftmineCreationResult } from "./components/CraftmineCreationResult";
 import { CraftmineModeEntry } from "./components/CraftmineModeEntry";
 import { enterCraftmineMode } from "./lib/craftmine-mode";
@@ -2025,8 +2026,20 @@ function AppShell() {
                 </div>
               ) : (
                 <CraftmineWorkbenchSurface immersive={craftmineImmersive} full={craftmineLayout.overlay === "full"}>
-                  <div className="craftmine-chat-flow" inert={dialogueWorld.state && dialogueWorld.state.phase !== "chat" ? true : undefined}>
-                  <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />
+                  <div className="craftmine-chat-flow">
+                  {dialogueWorld.state && dialogueWorld.state.phase !== "chat" ? (
+                    <DialoguePreparationComposer
+                      draft={dialogueWorld.state.draft}
+                      queued={dialogueWorld.state.queued}
+                      failed={dialogueWorld.state.phase === "error"}
+                      cancelling={dialogueWorld.state.cancelling || dialogueWorld.state.submitting}
+                      onDraft={dialogueWorld.setDraft}
+                      onQueue={dialogueWorld.queue}
+                      onEdit={dialogueWorld.editQueued}
+                    />
+                  ) : (
+                    <ChatSurface voiceEnabled={craftmineWorldFirst && (!craftmineImmersive || craftmineLayout.overlay !== "closed") && !searchOpen && !craftmineSheetOpen && !modeEntryOpen && !pauseOpen} />
+                  )}
                   </div>
                 </CraftmineWorkbenchSurface>
               )}
