@@ -35,7 +35,7 @@ import { UpdateBanner } from "./components/UpdateBanner";
 import { useCraftmineLayout, useCraftmineImmersionSurface } from "./lib/use-craftmine-immersion";
 import { CraftmineOverlayControls } from "./components/CraftmineOverlayControls";
 import { CraftminePreviewControls } from "./components/CraftminePreviewControls";
-import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout } from "./lib/craftmine-layout";
+import { hasSavedCraftmineMode, isCraftmineWorldWorkspace, loadCraftmineLayout, saveCraftmineLayout } from "./lib/craftmine-layout";
 import { CraftminePauseMenu } from "./components/CraftminePauseMenu";
 import { CraftmineChatResize } from "./components/CraftmineChatResize";
 import { useDialogueWorld } from "./lib/use-dialogue-world";
@@ -219,10 +219,10 @@ function AppShell() {
   useEffect(() => { if (page !== "settings") setSettingsFromPlay(false); }, [page]);
   const openPause = useCallback(() => setPauseOpen(true), []);
   const resumePlay = useCallback(() => setPauseOpen(false), []);
-  // Resume a saved create or play workspace. A fresh profile still sees the
-  // primary-mode chooser, while restored worlds have no hidden entry gate.
+  // Existing play sessions can resume. A fresh or legacy workbench profile
+  // starts at the two fixed worlds instead of asking for an editor mode.
   const [modeChosen, setModeChosen] = useState(() => hasSavedCraftmineMode(localStorage));
-  const [modeEntryOpen, setModeEntryOpen] = useState(() => !hasSavedCraftmineMode(localStorage));
+  const [modeEntryOpen, setModeEntryOpen] = useState(() => !hasSavedCraftmineMode(localStorage) || loadCraftmineLayout(localStorage).mode !== "play");
   const modeEntryOpenRef = useRef(modeEntryOpen);
   modeEntryOpenRef.current = modeEntryOpen;
   useEffect(() => {
@@ -230,7 +230,8 @@ function AppShell() {
     window.addEventListener("craftmine-mode-entry-open", open);
     return () => window.removeEventListener("craftmine-mode-entry-open", open);
   }, []);
-  const selectPrimaryMode = (mode: "create" | "play") => {
+  const selectPrimaryMode = (mode: "create" | "play", worldId?: string) => {
+    if (worldId) saveCraftmineLayout(localStorage, {...loadCraftmineLayout(localStorage),enteredWorldId:worldId});
     enterCraftmineMode(mode, { explicit: true });
     setModeChosen(true);
     setModeEntryOpen(false);
@@ -2099,7 +2100,7 @@ function AppShell() {
       style={{ "--ds-sidebar-width": `${sidebarWidth}px`, "--craftmine-chat-width": `${craftmineLayout.chatWidth}px` } as CSSProperties}
     >
       {shell}
-      {ready && modeEntryOpen && <CraftmineModeEntry onSelect={selectPrimaryMode} onCancel={modeChosen ? () => setModeEntryOpen(false) : undefined} onDialogue={() => { setModeChosen(true); setModeEntryOpen(false); void dialogueWorld.start(); }} />}
+      {ready && modeEntryOpen && <CraftmineModeEntry onSelect={selectPrimaryMode} onCancel={modeChosen ? () => setModeEntryOpen(false) : undefined} onManage={() => setModeEntryOpen(false)} />}
       {ready && gameSettingsOpen && <div className="craftmine-game-settings" data-game-settings>
         <ErrorBoundary recover={() => useAppStore.getState().setPage("chat")}>
         <Suspense fallback={<div role="status">正在打开设置…<button type="button" onClick={() => useAppStore.getState().setPage("chat")}>返回游戏</button></div>}>
@@ -2110,7 +2111,7 @@ function AppShell() {
       {ready && craftmineImmersive && pauseOpen && !gameSettingsOpen && <CraftminePauseMenu
         runtimeError={craftmineImmersionError}
         onResume={resumePlay}
-        onWorkbench={() => { setPauseOpen(false); enterCraftmineMode("create", { explicit: true }); }}
+        onWorkbench={() => { setPauseOpen(false); setModeEntryOpen(true); }}
         onSettings={() => { setSettingsFromPlay(true); useAppStore.getState().setSettingsTab("general"); }}
       />}
       {splash}

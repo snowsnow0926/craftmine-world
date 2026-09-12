@@ -42,6 +42,8 @@
   transition: border-color 160ms, background 160ms;
 }
 .craftmine-mode-choice:hover { border-color: var(--ds-text-secondary); background: var(--ds-bg-active); }
+.craftmine-mode-choice:disabled { cursor: wait; opacity: .65; }
+.craftmine-mode-manage { margin-top: 28px; padding: 10px 0; background: transparent; color: var(--ds-text-secondary); border: 0; cursor: pointer; text-decoration: underline; }
 .craftmine-mode-choice:focus-visible, .craftmine-mode-entry button:focus-visible { outline: 2px solid var(--ds-text-primary); outline-offset: 4px; }
 .craftmine-mode-icon { margin-bottom: 28px; }
 .craftmine-mode-choice h2 { font-size: var(--text-xl); margin: 0 0 14px; font-weight: var(--font-weight-semibold); }
