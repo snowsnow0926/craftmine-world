@@ -2394,15 +2394,15 @@ async fn handle_request(
                         _ => effective_pm,
                     };
                     // The global Full Auto setting is an explicit opt-in for
-                    // the built-in Craftmine patch tool. Existing sessions may
+                    // the built-in Craftmine tool family. Existing sessions may
                     // retain an older per-session `ask` value; letting that
                     // stale value reopen a card defeats the global setting and
                     // blocked the player's zero-click creation flow. Keep the
-                    // exception narrow: only this built-in tool is covered,
+                    // exception narrow: only the reserved built-in plugin ID is covered,
                     // while other plugins and high-risk tools keep normal
                     // per-session semantics.
                     if global_pm.as_deref() == Some("auto")
-                        && p.tool_name == "plugin_craftmine_world_godot_project_patch"
+                        && PermissionManager::is_builtin_craftmine_tool(&p.tool_name)
                     {
                         effective_pm = "auto".to_string();
                     }

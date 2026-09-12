@@ -90,6 +90,12 @@ pub struct PermissionManager {
 }
 
 impl PermissionManager {
+    /// Built-in Craftmine tools are explicitly covered by the product's
+    /// global Full Auto setting. The prefix is tied to the reserved plugin ID;
+    /// third-party `plugin_*` tools never match it.
+    pub fn is_builtin_craftmine_tool(tool_name: &str) -> bool {
+        tool_name.starts_with("plugin_craftmine_world_")
+    }
     pub fn tool_risk_with_declared(tool_name: &str, declared: Option<&str>) -> Risk {
         match tool_name {
             "Read" | "Glob" | "Grep" => Risk::Low,
@@ -355,6 +361,18 @@ mod tests {
 
     fn no_grants() -> HashMap<String, Vec<String>> {
         HashMap::new()
+    }
+
+    #[test]
+    fn built_in_craftmine_tool_scope_is_narrow() {
+        assert!(PermissionManager::is_builtin_craftmine_tool(
+            "plugin_craftmine_world_godot_project_patch"
+        ));
+        assert!(PermissionManager::is_builtin_craftmine_tool(
+            "plugin_craftmine_world_godot_build_start"
+        ));
+        assert!(!PermissionManager::is_builtin_craftmine_tool("plugin_other_run"));
+        assert!(!PermissionManager::is_builtin_craftmine_tool("godot_project_patch"));
     }
 
     #[test]
