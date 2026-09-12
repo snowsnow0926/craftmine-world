@@ -30,6 +30,9 @@ static TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 #[path = "godot_projects_tests.rs"]
 mod tests;
 
+#[path = "godot_import_policy.rs"]
+mod import_policy;
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(super) struct FileEntry {
@@ -263,7 +266,7 @@ fn source_path(path: &str) -> Result<()> {
                 | "mtl"
                 | "uid"
                 | "png" | "jpg" | "jpeg" | "webp" | "wav" | "ogg" | "glb"
-        ),
+        ) || import_policy::is_sidecar(path),
         "UNSUPPORTED_PROJECT_FILE"
     );
     Ok(())
@@ -275,6 +278,7 @@ fn source_entry(path: &str, text: &str) -> Result<FileEntry> {
         text.len() <= FILE_LIMIT && !text.contains('\0'),
         "INVALID_PROJECT_TEXT"
     );
+    if import_policy::is_sidecar(path) { import_policy::validate_text(text)?; }
     Ok(FileEntry {
         sha256: digest(text),
         bytes: text.len() as u64,
@@ -310,6 +314,9 @@ fn validate_manifest(manifest: &Manifest) -> Result<()> {
     let mut bytes = 0u64;
     for (path, entry) in &manifest.files {
         source_path(path)?;
+        if import_policy::is_sidecar(path) {
+            ensure!(manifest.files.contains_key(path.strip_suffix(".import").unwrap()), "GLB_IMPORT_MODEL_REQUIRED");
+        }
         valid_hash(&entry.sha256)?;
         ensure!(entry.bytes <= FILE_LIMIT as u64, "PROJECT_FILE_TOO_LARGE");
         bytes = bytes
@@ -975,6 +982,10 @@ impl TaskJournal {
             ensure!(!files.contains_key(&file.path), "PROJECT_PATH_COLLISION");
             files.insert(file.path.clone(), source_entry(&file.path, &file.text)?);
         }
+        for file in args.files.iter().filter(|file| import_policy::is_sidecar(&file.path)) {
+            let model = args.files.iter().find(|model| Some(model.path.as_str()) == file.path.strip_suffix(".import")).context("GLB_IMPORT_MODEL_REQUIRED")?;
+            import_policy::validate_glb(model.text.as_bytes())?;
+        }
         ensure!(
             files.values().map(|entry| entry.bytes).sum::<u64>() <= PATCH_LIMIT as u64,
             "PROJECT_REQUEST_TOO_LARGE"
@@ -1183,6 +1194,16 @@ impl TaskJournal {
         // its SQLite index row; the Git CAS below is the real write guard.
         let branch=args.operation.as_ref().map(|op|op.branch_id.as_str()).unwrap_or(repo::MAIN_BRANCH);
         let (mut manifest, hash) = self.project_manifest_for(&args.world_id, None,branch)?;
+        // Read retained paired models before the SQLite write transaction. The
+        // domain lock and revision CAS keep these bytes tied to the same source.
+        let mut import_models = BTreeSet::new();
+        for name in manifest.files.keys() { if import_policy::is_sidecar(name) { import_models.insert(name.strip_suffix(".import").unwrap().to_owned()); } }
+        for operation in &args.operations {
+            let name = match operation { Operation::Put {path,..} | Operation::PutBytes {path,..} | Operation::Remove {path,..} => path };
+            if import_policy::is_sidecar(name) { import_models.insert(name.strip_suffix(".import").unwrap().to_owned()); }
+        }
+        let mut retained_models = BTreeMap::new();
+        for name in import_models { if let Some(entry) = manifest.files.get(&name) { retained_models.insert(name.clone(), read_indexed_bytes(self,&args.world_id,manifest.revision,&name,entry)?); } }
         let tx = self
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -1305,6 +1326,12 @@ impl TaskJournal {
             "PROJECT_REQUEST_TOO_LARGE"
         );
         ensure!(manifest.files != original_files, "NO_CHANGE");
+        for name in manifest.files.keys().filter(|name| import_policy::is_sidecar(name)) {
+            let model = name.strip_suffix(".import").unwrap();
+            ensure!(manifest.files.contains_key(model), "GLB_IMPORT_MODEL_REQUIRED");
+            let bytes = text_files.get(model).or_else(|| retained_models.get(model)).context("GLB_IMPORT_MODEL_REQUIRED")?;
+            import_policy::validate_glb(bytes)?;
+        }
         let previous_revision=manifest.revision;
         manifest.revision = if git_backed {next_git_revision(&tx,&args.world_id)?} else {manifest.revision.checked_add(1).context("REVISION_LIMIT")?};
         manifest.task = workspace.task.binding;

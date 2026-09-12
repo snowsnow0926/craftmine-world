@@ -9582,65 +9582,14 @@ Only an authenticated isolated headless profile accepts godotExplore. Bind world
 
 Use synthetic selected archives and callbacks to reject beforeRestore with the exact progress-changed, world-busy and active-task Error messages. Preserve each as a structured safe code and show the fixed save/reinspect or wait hint, including the normal Electron IPC wrapper. No backend restore/activation starts. Private paths, multiline messages, unknown uppercase text and embedded known-code substrings remain generic and do not leak. Existing archive fingerprint, expiring grant, expectedCurrentHash and explicit retry checks stay active. Reconfirm the actual native failure with a new package; a generic historical failure is not evidence of its specific cause.
 
-## GU6 opaque source archive discovery
+### 静态组件真实包安装预检（2026-09-12）
 
-Given an explicitly selected resource directory containing a source-package ZIP,
-scan reports it as application/zip without importing it. Explicit host import
-adds one immutable catalog version. Existing model-facing search/read/versions
-find the exact bytes and provenance after a core restart. Replaying the same
-operation creates no duplicate; different bytes at the same version fail.
-Indexing alone keeps previewable=false, baseChecked=null, appliedToSource=null,
-and current-world search empty. ZIP probe and desktop preview report
-ARCHIVE_REQUIRES_PACKAGE_CHECK without unpacking or executing contents, including
-malformed ZIP bytes. Normal source-package installation/check/application remains
-a separate scenario; this catalog test does not certify archive compatibility.
+用独立 Rust 数据目录及实际构建的 17 个组件 ZIP，经 createManagedPackageInstaller 顺序安装到同一小型世界；标准 creation_world.gd 作为环境要求原样保留。覆盖 scene instance 与 script-node 的显式位置、依赖、脚本 UID、所有文件字节、17 项锁清单及重复包的独立实例身份。无执行器时只能报告 source-saved-check-blocked，不得宣称引擎或游玩通过。Rust 回归还需覆盖合法最小 GLB sidecar 和恶意/缺失配对模型在 create、patch、applyFiles 上的原子拒绝。
 
-## GU4 fixed controller and GU6 imported mesh observations
+### 持久源码包的慢事务回执（2026-09-12）
 
-New creation worlds materialize the complete versioned controller/picker cohort;
-legacy sources retain their exact resource group. Natural sequence requests bind
-existing colors/declared labels and the fixed controller profile. Actual script,
-camera or shape substitution during a walk must reject the new proof; direct
-interaction cannot bypass a locked sequence door. Legacy checks must not be
-silently upgraded. Imported static GLBs expose exact live references through
-ordinary observation, with base-triangle and unverified-LOD limits retained.
-Run source/hash/cohort tests separately from real native/Web fixtures and formal
-packaged source import/check/application/cold reopen. No fixture result alone
-establishes ordinary model completion or the entire GU4 acceptance scope.
+通过真实主程 adapter/transport 的虚拟时钟测试：installSource 与 installSourceProposal 在 16.5 秒后各只取得一次正常回执；普通包读取仍于 15 秒超时。超过 60 秒后插件迟到保存的模拟结果不得触发第二次安装或被当作回滚。实际组合组件验收应保留原 operationId 和候选来源，检查后才采用。
 
-## GU6 fixed catalog source acceptance
+### 世界视图只读截图（2026-09-12）
 
-With two fixed ZIP versions in an isolated real catalog, model suggestions read
-only task identity and exact metadata, without a lease or install. The creations
-panel can explicitly select an older version, preserves an uncertain operation
-for exact retry, and never promotes indexing to a compatibility claim. Main
-rejects wrong catalog/file/inner hashes and owner changes before acceptance.
-After dispatch, it preserves the original-world result without confirming it for
-a new owner. Real intent-store tests cover same-ZIP/different-ref collisions,
-lost replies, renewed authorization after expiry and no duplicate source/job.
-The sealed-client scenario removes only fixture download copies, installs both
-catalog refs through the normal panel channel, checks and applies them, cold
-reopens, and repeats the exact operations to recover original receipts without
-new source or jobs. Fixture setup and model-free flow must remain labeled; a
-separate ordinary player sample is still required for player-creation claims.
-
-## GU3 module source parameters
-
-Follow [module parameter acceptance](godot-module-parameters-e2e.md). Test the
-read-only host capture/source binding, one-instance patch preview and unchanged
-peer/shared bytes separately from actual candidate application and cold-open
-behavior. Source-only Core tests must keep blocked engine checks explicit.
-Missing legacy parameter metadata stays unknown; preserved declarations do not
-grant setter or application authority.
-
-## GU4 creation v2 collision restore
-
-Require the complete twelve-resource cohort in source, PCK and observer pins.
-Real full-capsule tests distinguish floor/wall/slope contact from penetration,
-saved-open-door state from closed collision, and hollow-room clearance from
-surface intersection. Budget exhaustion and changed controller/shape/pose must
-reject. With production verifier and candidate-host classes, first check a
-candidate at a clear old pose, then walk the actual formal player into its future
-geometry and stage with latest progress. Require rejection and unchanged formal
-instance/snapshot. Label authored-descriptor fixtures explicitly; repeat the
-complete Core-issued commit flow in a sealed package before claiming adoption.
+独立成品经正常 UI 挂接游戏视图后，分别对准确的正式/预览候选 world/build/instance/candidateId 截图。PNG 身份、尺寸、摘要可核对；暂停状态和窗口/view bounds 在调用前后不变。错误身份、未挂接、切换及候选未预览必须拒绝；测试不调用 headlessCapture、不临时挂接，不抢焦点或输入。4K 来源仅缩已捕获 NativeImage，返回原图与输出尺寸，PNG 不超过 4MiB。

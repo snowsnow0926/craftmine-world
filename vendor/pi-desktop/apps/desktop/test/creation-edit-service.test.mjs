@@ -25,6 +25,17 @@ test("replay does not start a second task and another owner cannot inspect statu
 test("failed check keeps candidate unadopted and closes the editing turn",async()=>{
  const {service,calls}=fixture({readJob:async()=>({status:"failed",errorCode:"REQUIREMENT_SIZE_MISMATCH"})});service.start(1,input);const status=await terminal(service);assert.equal(status.phase,"failed");assert.match(status.error,/SIZE_MISMATCH/);assert.ok(!calls.some(c=>c.name==="apply"));assert.equal(calls.at(-1).name,"finish");
 });
+
+test('explicit observer maintenance reuses check/apply without issuing a creation operation or model request',async()=>{
+ const capture={worldId:'world-a',buildId:'formal-a',instanceId:'instance-a',snapshotId:'capture-a',target:{entityId:null,surface:'none'},observerUpgradeOnly:true,sourceMigration:{revision:4,manifestHash:'a'.repeat(64)}};
+ const {service,calls}=fixture({begin:async()=>({capture,context:{projectId:'project-a',sessionId:'session-a',turnId:'turn-a'}})});
+ service.start(1,{sessionId:'session-a',captureId:'capture-a',operationId:'edit-a',action:'upgrade-observer'});assert.equal((await terminal(service)).phase,'applied');
+ assert.deepEqual(calls.map(c=>c.name),['godot_project_index','godot_build_start','apply','finish']);assert.equal(calls[1].args.mode,'check');
+ assert.throws(()=>validateCreationEdit({sessionId:'session-a',captureId:'capture-a',operationId:'edit-a',action:'upgrade-observer',changes:{color:'#ffffff'}}),/INVALID/);
+});
+test('maintenance without the trusted migration receipt cannot check or apply',async()=>{
+ const {service,calls}=fixture();service.start(1,{sessionId:'session-a',captureId:'capture-a',operationId:'edit-a',action:'upgrade-observer'});assert.match((await terminal(service)).error,/UPGRADE_SOURCE_REQUIRED/);assert.deepEqual(calls.map(c=>c.name),['godot_project_index','finish']);
+});
 test("unavailable execution never applies unchecked edits",async()=>{
  const {service,calls}=fixture({execute:async(_,name)=>name==="godot_project_index"?{revision:4,manifestHash:"a".repeat(64)}:name==="creation_operation"?{source:{revision:5,manifestHash:"b".repeat(64)}}:{execution:{enqueued:false,reason:"EXECUTOR_UNAVAILABLE"}}});service.start(1,input);assert.match((await terminal(service)).error,/EXECUTOR_UNAVAILABLE/);assert.ok(!calls.some(c=>c.name==="apply"));
 });

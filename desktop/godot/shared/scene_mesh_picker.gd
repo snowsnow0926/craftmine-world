@@ -1,11 +1,14 @@
 extends RefCounted
 
-# Fixed observer prototype. No collider creation, script calls, state mutation,
+# Fixed rigid-mesh observer. No collider creation, script calls, state mutation,
 # resource cache or claims about rendered pixels. Integration must pin this file.
 const MAX_NODES := 512
 const MAX_CANDIDATES := 64
 const MAX_MESH_TRIANGLES := 4096
 const MAX_TRIANGLES := 16384
+const MAX_SURFACES := 8
+const MAX_MESH_VERTICES := 12288
+const MAX_VERTICES := 49152
 const MAX_EXCLUSIONS := 8
 const EPS := 0.00001
 const MAX_DISTANCE := 80.0
@@ -29,7 +32,7 @@ func _entry(box: AABB, from: Vector3, to: Vector3) -> float:
 	return low * delta.length()
 
 func _answer(status: String, reason: String, counts: Dictionary, excluded: Array) -> Dictionary:
-	return {"status": status, "reason": reason, "scope": "bounded-static-mesh-triangles", "counts": counts.duplicate(), "excludedObjectIds": excluded.duplicate(), "blockRaySelection": status == "fallback", "pixelAccurate": false}
+	return {"status": status, "reason": reason, "scope": "bounded-rigid-mesh-triangles", "counts": counts.duplicate(), "excludedObjectIds": excluded.duplicate(), "blockRaySelection": status == "fallback", "pixelAccurate": false}
 
 func _label_radius(bounds: AABB, basis: Basis) -> float:
 	var far_corner := Vector3(maxf(absf(bounds.position.x), absf(bounds.end.x)), maxf(absf(bounds.position.y), absf(bounds.end.y)), maxf(absf(bounds.position.z), absf(bounds.end.z)))
@@ -40,11 +43,12 @@ func _label_radius(bounds: AABB, basis: Basis) -> float:
 	var scale_bound := maxf(lengths.x, maxf(lengths.y, lengths.z)) if orthogonal else lengths.length()
 	return far_corner.length() * scale_bound
 
-func _material(node: MeshInstance3D) -> Dictionary:
+func _material(node: MeshInstance3D, surface := 0) -> Dictionary:
 	if node.material_overlay != null: return {"reason": "material-overlay", "unbounded": true}
 	var material: Material = node.material_override
-	if material == null: material = node.get_surface_override_material(0)
-	if material == null: material = (node.mesh as PrimitiveMesh).material
+	if material == null: material = node.get_surface_override_material(surface)
+	if material == null:
+		material = node.mesh.surface_get_material(surface) if node.mesh is ArrayMesh else (node.mesh as PrimitiveMesh).material
 	if material == null: return {"cull": BaseMaterial3D.CULL_BACK}
 	# Never run virtual methods on a project-authored script resource.
 	if material.get_script() != null or material.get_class() != "StandardMaterial3D": return {"reason": "custom-material", "unbounded": true}
@@ -100,6 +104,7 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 	var queue: Array[Node] = [world_root]
 	var candidates := []
 	var unknown := []
+	var total_vertices := 0
 	while not queue.is_empty():
 		var node: Node = queue.pop_back()
 		counts.nodes += 1
@@ -109,6 +114,10 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 		var children := node.get_child_count()
 		if counts.nodes + queue.size() + children > MAX_NODES: return _answer("fallback", "node-budget", counts, excluded)
 		for index in children: queue.append(node.get_child(index))
+		# Animation/Skeleton nodes render no surface themselves. Rigid parts
+		# use their current native global transforms below; no animation is
+		# advanced or sampled by this observer. Skin, blend shapes and other
+		# unsupported actual geometry still fail closed at the mesh checks.
 		if not node is GeometryInstance3D: continue
 		var geometry := node as GeometryInstance3D
 		if geometry.layers & camera.cull_mask == 0 or geometry.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY: continue
@@ -131,8 +140,54 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 		var mesh := instance.mesh
 		if mesh == null: continue
 		if mesh.get_script() != null: return _answer("fallback", "scripted-mesh-resource", counts, excluded)
-		# Multi-surface/LOD/material cases are not certified by this prototype.
-		if not mesh.get_class() in ["BoxMesh", "SphereMesh", "CapsuleMesh", "CylinderMesh"]: return _answer("fallback", "unsupported-mesh-type", counts, excluded)
+		if not mesh.get_class() in ["BoxMesh", "SphereMesh", "CapsuleMesh", "CylinderMesh", "ArrayMesh"]: return _answer("fallback", "unsupported-mesh-type", counts, excluded)
+		var transform := instance.global_transform
+		if not _finite(transform.origin) or not _finite(transform.basis.x) or not _finite(transform.basis.y) or not _finite(transform.basis.z) or absf(transform.basis.determinant()) < EPS:
+			return _answer("fallback", "invalid-transform", counts, excluded)
+		if mesh is ArrayMesh:
+			if mesh.custom_aabb != AABB() or instance.custom_aabb != AABB():
+				return _answer("fallback", "custom-array-culling-bounds", counts, excluded)
+			if instance.skin != null or mesh.get_blend_shape_count() != 0:
+				return _answer("fallback", "skinned-or-blend-shape-mesh", counts, excluded)
+			if transform.basis.determinant() < 0: return _answer("fallback", "negative-scale", counts, excluded)
+			if instance.visibility_range_begin != 0 or instance.visibility_range_end != 0 or instance.get_visibility_parent() != NodePath(""):
+				return _answer("fallback", "visibility-range-or-parent", counts, excluded)
+			var surface_count: int = mesh.get_surface_count()
+			if surface_count < 1 or surface_count > MAX_SURFACES: return _answer("fallback", "surface-budget", counts, excluded)
+			var surfaces := []
+			var mesh_triangles := 0
+			var mesh_vertices := 0
+			for surface in surface_count:
+				# Native length/format metadata only; no array or face copies yet.
+				var vertices: int = mesh.surface_get_array_len(surface)
+				var indices: int = mesh.surface_get_array_index_len(surface)
+				var format: int = mesh.surface_get_format(surface)
+				if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
+					return _answer("fallback", "unsupported-array-primitive", counts, excluded)
+				if format & (Mesh.ARRAY_FORMAT_BONES | Mesh.ARRAY_FORMAT_WEIGHTS | Mesh.ARRAY_FLAG_USE_2D_VERTICES | Mesh.ARRAY_FLAG_USE_DYNAMIC_UPDATE):
+					return _answer("fallback", "deformed-or-dynamic-array-mesh", counts, excluded)
+				var elements: int = indices if indices > 0 else vertices
+				if vertices < 3 or indices < 0 or elements < 3 or elements % 3 != 0:
+					return _answer("fallback", "invalid-array-lengths", counts, excluded)
+				mesh_triangles += elements / 3
+				mesh_vertices += vertices
+				if mesh_triangles > MAX_MESH_TRIANGLES or mesh_vertices > MAX_MESH_VERTICES:
+					return _answer("fallback", "mesh-triangle-or-vertex-budget", counts, excluded)
+				var material := _material(instance, surface)
+				if material.has("reason"): return _answer("fallback", material.reason, counts, excluded)
+				surfaces.append({"index": surface, "vertices": vertices, "indices": indices, "format": format, "triangles": elements / 3, "cull": material.cull})
+			counts.candidates += 1
+			counts.triangles += mesh_triangles
+			total_vertices += mesh_vertices
+			if counts.candidates > MAX_CANDIDATES: return _answer("fallback", "candidate-budget", counts, excluded)
+			if counts.triangles > MAX_TRIANGLES or total_vertices > MAX_VERTICES:
+				return _answer("fallback", "triangle-or-vertex-budget", counts, excluded)
+			# Stored ArrayMesh AABBs never justify skipping a nearer surface or
+			# manufacturing a hit. Explicit culling overrides were refused above.
+			# All admitted vertices are
+			# bounded globally, then inspected as real triangles below.
+			candidates.append({"node": instance, "mesh": mesh, "transform": transform, "surfaces": surfaces})
+			continue
 		var triangles := 0
 		if mesh.get_class() == "BoxMesh":
 			var box := mesh as BoxMesh
@@ -145,9 +200,6 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 		var bounds: Variant = _bounds(mesh)
 		if bounds == null: return _answer("fallback", "unsupported-mesh-bounds", counts, excluded)
 		if not _finite(bounds.position) or not _finite(bounds.size): return _answer("fallback", "invalid-mesh-bounds", counts, excluded)
-		var transform := instance.global_transform
-		if not _finite(transform.origin) or not _finite(transform.basis.x) or not _finite(transform.basis.y) or not _finite(transform.basis.z) or absf(transform.basis.determinant()) < EPS:
-			return _answer("fallback", "invalid-transform", counts, excluded)
 		var material := _material(instance)
 		if material.get("unbounded", false): return _answer("fallback", material.reason, counts, excluded)
 		var world_bounds: AABB = transform * (bounds as AABB)
@@ -168,37 +220,73 @@ func pick(world_root: Node3D, camera: Camera3D, exclude_nodes: Array[Node], phys
 		counts.triangles += triangles
 		if counts.triangles > MAX_TRIANGLES: return _answer("fallback", "triangle-budget", counts, excluded)
 		candidates.append({"node": instance, "mesh": mesh, "transform": transform, "triangles": triangles, "cull": material.cull})
-	# No faces are fetched until the entire candidate/budget preflight completes.
+	# The public ArrayMesh API exposes lengths but no LOD getter. Query native
+	# RenderingServer metadata only after the full traversal/budget preflight.
+	# This returns native surface storage; base vertex/index sizes must already
+	# be bounded. LOD-bearing surfaces are refused, not decoded as base geometry.
+	for candidate in candidates:
+		if not candidate.mesh is ArrayMesh: continue
+		for surface in candidate.surfaces:
+			var metadata := RenderingServer.mesh_get_surface(candidate.mesh.get_rid(), surface.index)
+			if metadata.get("vertex_count") != surface.vertices or int(metadata.get("index_count", 0)) != surface.indices or metadata.get("format") != surface.format:
+				return _answer("fallback", "array-metadata-changed", counts, excluded)
+			if not metadata.get("lods", []).is_empty(): return _answer("fallback", "array-mesh-lod", counts, excluded)
+	# No faces are fetched until every candidate passes budgets and LOD checks.
 	var nearest: Dictionary = {}
 	var nearest_distance := INF
 	var ambiguous := false
 	for candidate in candidates:
-		var faces: PackedVector3Array = candidate.mesh.get_faces()
-		counts.facesRead += 1
-		if faces.size() != candidate.triangles * 3: return _answer("fallback", "mesh-changed-or-count-mismatch", counts, excluded)
+		var batches := []
+		if candidate.mesh is ArrayMesh:
+			for surface in candidate.surfaces:
+				var arrays: Array = candidate.mesh.surface_get_arrays(surface.index)
+				counts.facesRead += 1
+				if arrays.size() != Mesh.ARRAY_MAX or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array:
+					return _answer("fallback", "invalid-array-vertices", counts, excluded)
+				var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+				if vertices.size() != surface.vertices: return _answer("fallback", "array-length-changed", counts, excluded)
+				for vertex in vertices:
+					if not _finite(vertex) or not _finite(candidate.transform * vertex): return _answer("fallback", "invalid-array-vertices", counts, excluded)
+				var faces := PackedVector3Array()
+				if surface.indices > 0:
+					if not arrays[Mesh.ARRAY_INDEX] is PackedInt32Array or arrays[Mesh.ARRAY_INDEX].size() != surface.indices:
+						return _answer("fallback", "invalid-array-indices", counts, excluded)
+					for index in arrays[Mesh.ARRAY_INDEX]:
+						if index < 0 or index >= vertices.size(): return _answer("fallback", "invalid-array-indices", counts, excluded)
+						faces.append(vertices[index])
+				else:
+					faces = vertices
+				batches.append({"faces": faces, "cull": surface.cull, "surface": surface.index})
+		else:
+			var faces: PackedVector3Array = candidate.mesh.get_faces()
+			counts.facesRead += 1
+			if faces.size() != candidate.triangles * 3: return _answer("fallback", "mesh-changed-or-count-mismatch", counts, excluded)
+			batches.append({"faces": faces, "cull": candidate.cull, "surface": 0})
 		var transform: Transform3D = candidate.transform
 		var inverse := transform.affine_inverse()
 		var local_from := inverse * origin
 		var local_to := inverse * endpoint
-		for index in range(0, faces.size(), 3):
-			var cross := (faces[index + 1] - faces[index]).cross(faces[index + 2] - faces[index])
-			if cross.length_squared() <= 0.000000000001: continue
-			# Godot considers clockwise winding front-facing.
-			var front := cross.dot(local_to - local_from) > 0.0
-			if candidate.cull == BaseMaterial3D.CULL_BACK and not front: continue
-			if candidate.cull == BaseMaterial3D.CULL_FRONT and front: continue
-			var hit: Variant = Geometry3D.segment_intersects_triangle(local_from, local_to, faces[index], faces[index + 1], faces[index + 2])
-			if hit == null: continue
-			var position: Vector3 = transform * (hit as Vector3)
-			var distance := origin.distance_to(position)
-			if distance < nearest_distance - EPS:
-				var normal: Vector3 = (inverse.basis.transposed() * -cross).normalized()
-				if normal.dot(direction) > 0: normal = -normal
-				nearest = {"node": candidate.node, "objectId": str(candidate.node.get_instance_id()), "position": position, "normal": normal, "triangleIndex": index / 3}
-				nearest_distance = distance
-				ambiguous = false
-			elif absf(distance - nearest_distance) <= EPS and candidate.node != nearest.get("node"):
-				ambiguous = true
+		for batch in batches:
+			var faces: PackedVector3Array = batch.faces
+			for index in range(0, faces.size(), 3):
+				var cross := (faces[index + 1] - faces[index]).cross(faces[index + 2] - faces[index])
+				if cross.length_squared() <= 0.000000000001: continue
+				# Godot considers clockwise winding front-facing.
+				var front := cross.dot(local_to - local_from) > 0.0
+				if batch.cull == BaseMaterial3D.CULL_BACK and not front: continue
+				if batch.cull == BaseMaterial3D.CULL_FRONT and front: continue
+				var hit: Variant = Geometry3D.segment_intersects_triangle(local_from, local_to, faces[index], faces[index + 1], faces[index + 2])
+				if hit == null: continue
+				var position: Vector3 = transform * (hit as Vector3)
+				var distance := origin.distance_to(position)
+				if distance < nearest_distance - EPS:
+					var normal: Vector3 = (inverse.basis.transposed() * -cross).normalized()
+					if normal.dot(direction) > 0: normal = -normal
+					nearest = {"node": candidate.node, "objectId": str(candidate.node.get_instance_id()), "position": position, "normal": normal, "triangleIndex": index / 3, "surfaceIndex": batch.surface}
+					nearest_distance = distance
+					ambiguous = false
+				elif absf(distance - nearest_distance) <= EPS and candidate.node != nearest.get("node"):
+					ambiguous = true
 	for item in unknown:
 		if item.distance <= minf(nearest_distance, physics_distance) + EPS: return _answer("fallback", item.reason, counts, excluded)
 	if physics_distance != INF and physics_distance <= nearest_distance + EPS: return _answer("blocked", "nearer-or-tied-physics-hit", counts, excluded)

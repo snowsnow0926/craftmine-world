@@ -35,8 +35,9 @@ export function createHeadlessPlayer(access:Access){
     }
     if(!object(payload)||!id(payload.sessionId)||!id(payload.worldId))throw Error('HEADLESS_PLAYER_IDENTITY_REQUIRED');
     const {sessionId,worldId}=payload;
-    if(!['playerSetup','playerPrompt','playerStatus','playerAbort'].includes(method))throw Error('HEADLESS_PLAYER_METHOD_DENIED');
-    const allowed=method==='playerSetup'?['sessionId','worldId','config','secret']:method==='playerPrompt'?['sessionId','worldId','text','messageId']:['sessionId','worldId'];
+    if(!['playerSetup','playerPrompt','playerRetryFailedPrompt','playerStatus','playerAbort'].includes(method))throw Error('HEADLESS_PLAYER_METHOD_DENIED');
+    const retry=method==='playerRetryFailedPrompt';
+    const allowed=method==='playerSetup'?['sessionId','worldId','config','secret']:method==='playerPrompt'||retry?['sessionId','worldId','text','messageId',...(retry?['failedMessageId']:[])]:['sessionId','worldId'];
     if(Object.keys(payload).some(key=>!allowed.includes(key)))throw Error('HEADLESS_PLAYER_FIELDS_DENIED');
     if(method!=='playerSetup'&&(!binding||binding.sessionId!==sessionId||binding.worldId!==worldId))throw Error('HEADLESS_PLAYER_BINDING_CHANGED');
     if(method==='playerAbort')return access.invoke('agentAbort',{sessionId});
@@ -60,12 +61,27 @@ export function createHeadlessPlayer(access:Access){
       }
       if(typeof payload.text!=='string'||!payload.text.trim()||!id(payload.messageId))throw Error('HEADLESS_PLAYER_PROMPT_REQUIRED');
       if(sent.has(payload.messageId))throw Error('HEADLESS_PLAYER_ALREADY_SENT');
+      const assertLastFailedUser=(record:any)=>{const last=record?.session?.messages?.at(-1);if(!id(payload.failedMessageId)||payload.failedMessageId===payload.messageId||last?.id!==payload.failedMessageId||last.role!=='user'||last.content!==payload.text||last.status!=='complete'||last.attachments?.length)throw Error('HEADLESS_PLAYER_RETRY_TAIL_CHANGED');};
+      let failure:any;
+      if(retry){
+        assertLastFailedUser(existing);
+        failure=await access.invoke('sessionTurnMetrics',{sessionId,messageId:payload.failedMessageId});
+        if(failure?.sessionId!==sessionId||failure.status!=='error'||!id(failure.turnId)||!Number.isFinite(failure.endedAtMs)||failure.calls?.pending!==0)throw Error('HEADLESS_PLAYER_RETRY_NOT_FAILED');
+      }
       const target=await access.panel('godot.creationTarget',{sessionId});
       if(!target?.captureId||target.worldId!==worldId)throw Error('HEADLESS_PLAYER_TARGET_CHANGED');
+      if(retry){
+        if(access.active(sessionId)||(await access.observe())?.worldId!==worldId)throw Error('HEADLESS_PLAYER_BUSY');
+        const currentFailure=await access.invoke('sessionTurnMetrics',{sessionId,messageId:payload.failedMessageId});
+        if(currentFailure?.turnId!==failure.turnId||currentFailure.status!=='error'||currentFailure.calls?.pending!==0)throw Error('HEADLESS_PLAYER_RETRY_NOT_FAILED');
+        assertLastFailedUser(await access.invoke('sessionGet',sessionId));
+      }
       sent.add(payload.messageId);
       lastMessageId=payload.messageId;
-      const result=await access.invoke('agentPrompt',{sessionId,viewingSessionId:sessionId,messageId:payload.messageId,content:payload.text,requestContext:{creationTarget:{captureId:target.captureId}}});
-      return {sessionId,worldId,messageId:payload.messageId,text:payload.text,target,result};
+      // Same public API as retryLastPrompt: main archives the discarded branch
+      // with session.saveRevision before truncating. Never mutate history here.
+      const result=await access.invoke('agentPrompt',{sessionId,viewingSessionId:sessionId,messageId:payload.messageId,content:payload.text,...(retry?{truncateFromMessageId:payload.failedMessageId}:{}),requestContext:{creationTarget:{captureId:target.captureId}}});
+      return {sessionId,worldId,messageId:payload.messageId,text:payload.text,...(retry?{retryOf:payload.failedMessageId,failedTurnId:failure.turnId}:{}),target,result};
     }finally{busy=false;}
   };
 }

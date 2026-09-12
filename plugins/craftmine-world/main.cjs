@@ -15,6 +15,8 @@ const {createReuseService,createManagedPackageInstaller,createManagedPackageSour
 const {createTargetFeedbackService} = require('./target-feedback-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
 const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
+const {createSourceLibraryService}=require('./source-library-service.cjs');
+const {seedBuiltinSourceLibrary}=require('./builtin-source-library.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
@@ -70,6 +72,18 @@ async function onLoad() {
   }});
   reuseService=createReuseService({call,installSource,
     sourceList:args=>packageSource.listSource(args),exportSource:args=>packageSource.exportSource(args)});
+  let builtinSeed;
+  const ensureBuiltin=()=>{
+    // Do not cache across a restored core directory or leave concurrent imports.
+    const directory=core.directory;
+    if(builtinSeed?.directory===directory)return builtinSeed.promise;
+    const pending={directory,promise:null};
+    pending.promise=seedBuiltinSourceLibrary({directory:require('node:path').join(__dirname,'builtin-source-library'),call}).finally(()=>{if(builtinSeed===pending)builtinSeed=null;});
+    builtinSeed=pending;return pending.promise;
+  };
+  const sourceLibrary=createSourceLibraryService({call,installSource,installSourceGroup:args=>installSource.group(args),ensureBuiltin,directory:require('node:path').join(await pi.plugin.getDataPath(),'source-library-proposals')});
+  reuseService.sourceProposals=args=>sourceLibrary.proposals(args);
+  reuseService.installSourceProposal=args=>sourceLibrary.installProposal(args);
   // The managed executor owns the pinned engine. It registers only after a real
   // broker preflight, so the reported capability always comes from live state.
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;
@@ -77,7 +91,7 @@ async function onLoad() {
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
   const portableRestore={restore:async params=>{await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();}}};
   hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback});
-  pi.services.register({id:'world-core',start:()=>{packageTurns.start();return core.start();},stop:async()=>{await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
+  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',
@@ -117,13 +131,12 @@ async function onLoad() {
   const hostProviders=createHostProviders((method,params)=>{
     if(method==='creationTarget'&&typeof pi.craftmine?.creationTarget==='function')return pi.craftmine.creationTarget(params);
     if(method==='godotLiveState'&&typeof pi.craftmine?.godotLiveState==='function')return pi.craftmine.godotLiveState(params);
-    if(method==='godotEnginePerformance'&&typeof pi.craftmine?.godotEnginePerformance==='function')return pi.craftmine.godotEnginePerformance(params);
+    if(method==='godotViewCapture'&&typeof pi.craftmine?.godotViewCapture==='function')return pi.craftmine.godotViewCapture(params);
     throw Object.assign(Error('HOST_PROVIDER_NOT_WIRED'),{errorCode:'HOST_PROVIDER_NOT_WIRED'});
   });
   const toolServices={
     ...hostProviders,
-    ...(typeof pi.craftmine?.godotPerformance==='function'?{samplePerformance:input=>pi.craftmine.godotPerformance(input)}:{}),
-    ...(typeof pi.craftmine?.godotEnginePerformance==='function'?{sampleEnginePerformance:input=>pi.craftmine.godotEnginePerformance(input)}:{}),
+    sourceLibrary:(args,context,worldId,toolCallId)=>sourceLibrary.tool(args,context,worldId,toolCallId),
     buildReadWaitMs:30000,
     // The seven-kind limit ledger is read through this process's core client.
     budget:createCoreBudgetProvider(core),
@@ -131,7 +144,6 @@ async function onLoad() {
     // and it is the service that actually runs a queued build or check job.
     executorStatus:()=>godotExecutor.status(),
     executorCreationCompletion:binding=>godotExecutor.creationCompletion(binding),
-    executorNativeDiagnosticEvidence:record=>godotExecutor.nativeDiagnosticEvidence(record),
     executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
     executorCancel:jobId=>godotExecutor.cancel(jobId),
   };

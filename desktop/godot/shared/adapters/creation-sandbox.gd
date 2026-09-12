@@ -4,6 +4,13 @@ const BASE_VERSION := "1.0.0"
 const Guard = preload("res://craftmine_shared/state_guard.gd")
 const Contract = preload("res://scripts/scene_contract.gd")
 const MeshPicker = preload("res://craftmine_shared/scene_mesh_picker.gd")
+const ComponentState = preload("res://craftmine_shared/component_state.gd")
+var component_state := ComponentState.new()
+var component_capture_error := ""
+var component_feedback_label: WeakRef
+var component_feedback_original := ""
+var component_feedback_text := ""
+var component_feedback_until := 0
 
 func world() -> Node:
 	return Engine.get_main_loop().current_scene
@@ -21,17 +28,70 @@ func bind_world(id: String) -> String:
 	return ""
 
 func capture() -> Dictionary:
-	return world().capture()
+	var result: Dictionary = world().capture()
+	var components := component_state.capture(world())
+	component_capture_error = components.error
+	if not component_capture_error.is_empty(): return {}
+	if components.present: result["components"] = components.states
+	return result
+
+func capture_error() -> String:
+	return component_capture_error
+
+func interact_component() -> Dictionary:
+	var found := component_state.nodes(world())
+	if not found.error.is_empty(): return {"handled": true, "result": {"interacted": false, "reason": found.error}}
+	if found.nodes.is_empty(): return {"handled": false}
+	var player := world().get_node_or_null("Player")
+	var camera := _target_camera()
+	if player == null or camera == null: return {"handled": false}
+	var hit := _ray_hit(camera, player, 4294967295)
+	if hit.is_empty(): return {"handled": false}
+	var owner := hit.collider as Node
+	while owner != null and owner != world():
+		if owner in found.nodes.values():
+			if not owner.has_method("interact"): return {"handled": true, "result": {"interacted": false, "reason": "not-interactive"}}
+			var result: Variant = owner.interact(player)
+			if result is Dictionary and result.get("interacted") == true and result.get("feedback") is String:
+				_show_component_feedback(result.feedback)
+			return {"handled": true, "result": result if result is Dictionary else {"interacted": false, "reason": "invalid-component-interaction"}}
+		owner = owner.get_parent()
+	return {"handled": false}
+
+func _show_component_feedback(message: String) -> void:
+	var label: Variant = world().get("status_label")
+	if not label is Label or not world().is_ancestor_of(label): return
+	if component_feedback_label == null or component_feedback_label.get_ref() != label or label.text != component_feedback_text:
+		component_feedback_original = label.text
+	component_feedback_label = weakref(label)
+	component_feedback_text = message.left(160)
+	component_feedback_until = observed_physics_tick + 120
+	label.text = component_feedback_text
 
 func restore(body: Dictionary) -> String:
 	var before := capture()
-	var failure: String = world().restore(body)
+	if not component_capture_error.is_empty(): return component_capture_error
+	var states: Variant = body.get("components", {})
+	var failure: String = component_state.validate(world(), states)
+	if not failure.is_empty(): return failure
+	var native := body.duplicate(true)
+	native.erase("components")
+	failure = world().restore(native)
 	if not failure.is_empty():
 		return failure
+	failure = component_state.restore(world(), states, body.has("components"))
+	if not failure.is_empty():
+		var rollback := before.duplicate(true)
+		rollback.erase("components")
+		var rollback_error: String = world().restore(rollback)
+		return failure + ("; native rollback: " + rollback_error if not rollback_error.is_empty() else "")
 	var missing := Guard.omitted(body, capture())
-	if not missing.is_empty():
-		world().restore(before)
-		return "Unsupported creation progress field: " + missing
+	if not missing.is_empty() or not component_capture_error.is_empty():
+		var rollback := before.duplicate(true)
+		rollback.erase("components")
+		world().restore(rollback)
+		component_state.restore(world(), before.get("components", {}), before.has("components"))
+		return "Unsupported creation progress field: " + missing + component_capture_error
 	return ""
 
 var observed_physics_tick: int = 0
@@ -136,6 +196,12 @@ func _observe_physics_tick() -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null and not tree.paused:
 		observed_physics_tick += 1
+		if component_feedback_label != null and observed_physics_tick >= component_feedback_until:
+			var label: Variant = component_feedback_label.get_ref()
+			# Never overwrite a later error or another system's HUD message.
+			if is_instance_valid(label) and label.text == component_feedback_text:
+				label.text = component_feedback_original
+			component_feedback_label = null
 
 func _actual_entity(node: Node3D, declared: Dictionary) -> Dictionary:
 	var result := declared.duplicate(true)
@@ -275,12 +341,21 @@ func observe() -> Dictionary:
 	return result
 
 func command(op: String, args: Dictionary) -> Dictionary:
-	var allowed := {"walk": ["forward", "right", "frames"], "wait": ["frames"], "look": ["yaw", "pitch"], "interact": [], "set-time": ["hours"]}
+	var allowed := {"walk": ["forward", "right", "frames"], "wait": ["frames"], "look": ["yaw", "pitch"], "interact": [], "attack": [], "set-time": ["hours"]}
 	if not allowed.has(op) or not Contract.fields(args, [], allowed[op]):
 		return {"error": "Unsupported creation operation or argument"}
 	if not is_ready():
 		return {"error": "Creation world is not ready"}
 	match op:
+		"attack":
+			var weapons: Array[Node] = []
+			for node in world().get_tree().get_nodes_in_group("craftmine_player_weapons"):
+				if world().is_ancestor_of(node) and not node.is_queued_for_deletion() and node.get("_player") == world().player:
+					weapons.append(node)
+			if weapons.size() != 1 or not weapons[0].has_method("attack"):
+				return {"error": "Creation attack requires one configured player weapon"}
+			var attacked: Variant = weapons[0].attack(world().player)
+			return {"result": attacked} if attacked is Dictionary else {"error": "Invalid weapon result"}
 		"walk", "wait":
 			var frames: Variant = args.get("frames", 30 if op == "walk" else 1)
 			if not Contract.integer(frames, 1, 600):
@@ -302,6 +377,8 @@ func command(op: String, args: Dictionary) -> Dictionary:
 				return {"error": "Look angles must be bounded radians"}
 			world().player.set_look(float(yaw), float(pitch))
 		"interact":
+			var component := interact_component()
+			if component.handled: return {"result": component.result}
 			return {"result": world().interact_target()}
 		"set-time":
 			if not args.has("hours") or not Contract.finite(args.hours, 0, 24):

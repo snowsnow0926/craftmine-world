@@ -153,20 +153,19 @@ export function migrationReport(receipt){
 export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,turns}) {
   requireValue(typeof call==='function'&&typeof bind==='function'&&typeof enqueue==='function','PACKAGE_INSTALL_HOST_REQUIRED');
   const active=new Map();
-  const installSource=async function(args){
-    exactKeys(args,['operationId','worldId','archiveBase64','scene','hostProvenance']);operationId(args.operationId);identifier(args.worldId);
-    requireValue(typeof args.archiveBase64==='string'&&args.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(args.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');
+  const executeInstall=async function(args,group=false){
+    exactKeys(args,group?['operationId','worldId','items','scene','expectedSource']:['operationId','worldId','archiveBase64','scene','expectedSource','position']);operationId(args.operationId);identifier(args.worldId);
+    if(args.position!==undefined)placement(args.position);
+    if(group)requireValue(isObject(args.expectedSource),'PACKAGE_SOURCE_IDENTITY_REQUIRED');
+    if(args.expectedSource!==undefined){exactKeys(args.expectedSource,['revision','manifestHash']);revision(args.expectedSource.revision);requireValue(isHash(args.expectedSource.manifestHash),'PACKAGE_SOURCE_IDENTITY_REQUIRED');}
+    const items=group?args.items:[{archiveBase64:args.archiveBase64,...(args.position?{position:args.position}:{})}];
+    if(group)requireValue(Array.isArray(items)&&items.length>=2&&items.length<=8,'PACKAGE_GROUP_ITEM_LIMIT');
+    for(const item of items){exactKeys(item,['archiveBase64','position']);if(item.position!==undefined)placement(item.position);requireValue(typeof item.archiveBase64==='string'&&item.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(item.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');}
+    if(group)requireValue(items.reduce((total,item)=>total+Buffer.byteLength(item.archiveBase64,'base64'),0)<=6*1024*1024,'PACKAGE_GROUP_ARCHIVE_TOO_LARGE');
     if(args.scene!==undefined)requireValue(text(args.scene,240),'INVALID_SCENE_PATH');
     const fs=await import('node:fs/promises'),path=await import('node:path'),{createHash}=await import('node:crypto');
     requireValue(path.isAbsolute(stagingRoot),'PACKAGE_STAGING_ROOT_REQUIRED');
     const hash=value=>createHash('sha256').update(value).digest('hex');
-    // Only the private Main package gateway supplies this optional provenance.
-    // Legacy requests keep their original exact JSON/hash identity.
-    if(args.hostProvenance!==undefined){
-      const p=args.hostProvenance;exactKeys(p,['format','ref','archiveSha256','owner']);exactKeys(p.ref,['assetId','version','contentHash']);exactKeys(p.owner,['projectId','sessionId','worldId']);
-      requireValue(p.format==='craftmine.catalog-source-install/1'&&typeof p.ref.assetId==='string'&&!!p.ref.assetId.trim()&&Buffer.byteLength(p.ref.assetId)<=120&&!/\p{Cc}/u.test(p.ref.assetId)&&p.ref.assetId!=='latest'&&!/[*?]/.test(p.ref.assetId)&&integer(p.ref.version,1,1_000_000)&&isHash(p.ref.contentHash),'PACKAGE_CATALOG_PROVENANCE_INVALID');
-      requireValue(p.owner.worldId===args.worldId&&text(p.owner.projectId,240)&&(p.owner.sessionId===null||text(p.owner.sessionId,240))&&isHash(p.archiveSha256)&&p.archiveSha256===hash(Buffer.from(args.archiveBase64,'base64')),'PACKAGE_CATALOG_PROVENANCE_INVALID');
-    }
     const requestHash=hash(JSON.stringify(args)),key=hash(JSON.stringify([args.worldId,args.operationId]));
     const previous=active.get(key);if(previous){requireValue(previous.requestHash===requestHash,'OPERATION_CONFLICT');return previous.promise;}
     const entry={requestHash};active.set(key,entry);
@@ -180,20 +179,25 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
       const save=async value=>{const file=intentFile+'.new';const fd=await fs.open(file,'w');try{await fd.writeFile(JSON.stringify(value));await fd.sync();}finally{await fd.close();}await fs.rename(file,intentFile);};
       let intent;try{intent=JSON.parse(await fs.readFile(intentFile,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
       if(intent)requireValue(intent.requestHash===requestHash,'OPERATION_CONFLICT');
-      if(!intent&&args.hostProvenance){intent={requestHash,hostProvenance:args.hostProvenance};await save(intent);}
       if(intent?.ownsTurn)ownedContext=intent.context;
-      if(!intent?.applyRequest){
+      if(!intent){
         const bound=await bind(args.worldId,args.operationId);
         if(bound?.ownsTurn){requireValue(turns,'PACKAGE_TURN_LIFECYCLE_REQUIRED');ownedContext=bound.context;}
         requireValue(bound?.worldRecord?.id===args.worldId&&bound.operation?.worldId===args.worldId&&bound.operation?.operationId===args.operationId&&isObject(bound.context),'PACKAGE_BINDING_MISMATCH');
         const context=bound.context,world=bound.worldRecord.world;
-        const archive=unpackStaticPackage(Buffer.from(args.archiveBase64,'base64'),{...DEFAULT_LIMITS,maxEntryBytes:4*1024*1024,maxTotalBytes:6*1024*1024,maxCompressedBytes:6*1024*1024,maxEntries:1024});
+        const archives=[];let groupBytes=0;
+        for(const item of items){
+          const archive=unpackStaticPackage(Buffer.from(item.archiveBase64,'base64'),{...DEFAULT_LIMITS,maxEntryBytes:4*1024*1024,maxTotalBytes:6*1024*1024,maxCompressedBytes:6*1024*1024,maxEntries:1024});
+          if(item.position!==undefined)requireValue(archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'PACKAGE_POSITION_REQUIRES_SINGLE_INSTANCE');
+          groupBytes+=archive.packageJson.files.reduce((sum,file)=>sum+file.bytes,0);if(group)requireValue(groupBytes<=6*1024*1024,'PACKAGE_GROUP_PAYLOAD_TOO_LARGE');archives.push(archive);
+        }
         const projectDir=await fs.mkdtemp(path.join(directory,'source-'));
         const safe=relative=>{requireValue(typeof relative==='string'&&!relative.includes('\\')&&!relative.includes(':')&&!relative.split('/').some(s=>!s||s==='.'||s==='..'),'PACKAGE_SOURCE_PATH_REFUSED');const full=path.resolve(projectDir,relative);requireValue(full.startsWith(projectDir+path.sep),'PACKAGE_SOURCE_PATH_REFUSED');return full;};
         let offset=0,index,identity,sourceBytes=0;const originals=new Map(),sourceFiles=new Map();
         do {
           index=await call('godotProject.index',{context,worldId:args.worldId,...(bound.operation.branchId?{branchId:bound.operation.branchId}:{}),offset,limit:32,...(identity?{revision:identity.revision,manifestHash:identity.manifestHash}:{})});
           identity??=index;
+          if(args.expectedSource)requireValue(identity.revision===args.expectedSource.revision&&identity.manifestHash===args.expectedSource.manifestHash,'PACKAGE_PROPOSAL_SOURCE_CHANGED');
           requireValue(index.worldId===args.worldId&&index.revision===identity.revision&&index.manifestHash===identity.manifestHash,'PACKAGE_SOURCE_CHANGED');
           for(const file of index.files){
             let next=0;const chunks=[];
@@ -216,47 +220,59 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
           for(const line of lines){if(line.startsWith('[')){inside=line==='['+section+']';continue;}if(inside){const match=/^([A-Za-z_][A-Za-z0-9_]*)\s*=/.exec(line);if(match)inventory[key].push(match[1]);}}
         }
         const target={worldId:args.worldId,base:identity.baseId,baseVersion:world.snapshot?.baseVersion??'1.0.0',engine:identity.engineVersion,stateFormat:world.snapshot?.format??'craftmine.godot-progress/1',inventory};
-        for(const resource of archive.resources) {
+        for(const resource of archives.flatMap(archive=>archive.resources)) {
           const requirements=resource.manifest.content.entry?.sourceRequirements??[];requireValue(Array.isArray(requirements)&&requirements.length<=256,'PACKAGE_BASE_REQUIREMENTS_INVALID');
           for(const required of requirements) {
           exactKeys(required,['path','sha256']);requireValue(isHash(required.sha256)&&originals.get(required.path)===required.sha256,'PACKAGE_BASE_SOURCE_MISMATCH');
           }
         }
-        const plan=await call('package.planInstall',{operationId:args.operationId,resources:archive.resources.map(r=>r.manifest),target,options:{allowInputActionRemap:false}});
-        if(plan.ok!==true)throw Object.assign(Error('PACKAGE_PLAN_CONFLICT: '+JSON.stringify(plan.conflicts??[])),{code:'PACKAGE_PLAN_CONFLICT',conflicts:plan.conflicts??[]});
-        const payload=[],sceneEdits=[],inputActions=[],scenes=new Map();
-        for(const resource of archive.resources){
-          for(const [file,bytes]of resource.files)payload.push({contentHash:resource.contentHash,path:file,bytes});
+        const plans=[];
+        for(const [index,archive]of archives.entries()){
+          const plan=await call('package.planInstall',{operationId:group?'group-'+hash(JSON.stringify([args.worldId,args.operationId,index])):args.operationId,resources:archive.resources.map(r=>r.manifest),target,options:{allowInputActionRemap:false}});
+          if(plan.ok!==true)throw Object.assign(Error('PACKAGE_PLAN_CONFLICT: '+JSON.stringify(plan.conflicts??[])),{code:'PACKAGE_PLAN_CONFLICT',conflicts:plan.conflicts??[]});plans.push(plan);
+        }
+        const merged=group?(await import('./group-source-install.mjs')).mergeSourceInstallPlans({archives,plans,operationId:args.operationId,worldId:args.worldId,sourceFiles}):null;
+        const plan=merged?.plan??plans[0],payload=merged?.payload??[],sceneEdits=[],inputActions=[],scenes=new Map();
+        for(const [itemIndex,archive]of archives.entries())for(const resource of archive.resources){
+          if(!group)for(const [file,bytes]of resource.files)payload.push({contentHash:resource.contentHash,path:file,bytes});
           const spec=resource.manifest.content.entry?.sceneInstall;
           if(!spec){requireValue(!['object','scene','module'].includes(resource.manifest.content.kind),'PACKAGE_INSTALL_DECLARATION_REQUIRED');continue;}
           requireValue(scene,'PACKAGE_TARGET_SCENE_REQUIRED');safe(scene);
-          const instance=plan.instances.find(i=>i.assetId===resource.manifest.content.assetId&&i.version===resource.manifest.content.version);
+          const instance=plans[itemIndex].instances.find(i=>i.assetId===resource.manifest.content.assetId&&i.version===resource.manifest.content.version);
           requireValue(instance,'PACKAGE_INSTANCE_REQUIRED');
           const ids=Object.values(instance.entityMap);requireValue(ids.length===1,'PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED');
           const current=scenes.get(scene)??await fs.readFile(safe(scene),'utf8');
           const linked={...spec,parent:spec.parent??'.',script:spec.script?instance.installPath+'/'+spec.script:undefined,sceneFile:spec.sceneFile?instance.installPath+'/'+spec.sceneFile:undefined};
-          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0]});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
+          const itemPosition=items[itemIndex].position;
+          if(itemPosition!==undefined){
+            const sceneRoot=spec.mode==='instance'?parseScene(resource.files.get(spec.sceneFile)?.toString('utf8')??'').nodes.find(n=>n.parent===null):null;
+            const nodeType=spec.mode==='script-node'?spec.nodeType:/(?:^|\s)type="([^"]+)"(?:\s|$)/.exec(sceneRoot?.attributes??'')?.[1];
+            requireValue(typeof nodeType==='string'&&nodeType.endsWith('3D'),'PACKAGE_POSITION_REQUIRES_3D_NODE');
+          }
+          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0],...(itemPosition?{placement:{position:`Vector3(${itemPosition.x}, ${itemPosition.y}, ${itemPosition.z})`}}:{})});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
           sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
         }
-        const draft=planDraftInstall({plan,payload,resourceManifests:archive.resources.map(resource=>resource.manifest),projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
+        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
         const files=draft.files.filter(f=>originals.get(f.path)!==f.sha256).map(f=>({path:f.path,bytesBase64:f.bytes.toString('base64'),expectedHash:originals.get(f.path)??null}));
         requireValue(files.length>0,'PACKAGE_NO_CHANGES');
         const toolCallId='package-'+key.slice(0,40);
         const applyRequest={context,worldId:args.worldId,toolCallId,revision:identity.revision,manifestHash:identity.manifestHash,operation:bound.operation,files};
         requireValue(Buffer.byteLength(JSON.stringify(applyRequest))<=8*1024*1024,'PACKAGE_INSTALL_REQUEST_TOO_LARGE');
-        intent={requestHash,...(args.hostProvenance?{hostProvenance:args.hostProvenance}:{}),applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,archiveSha256:archive.archiveSha256,instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
+        intent={requestHash,applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,...(group?{archives:merged.archives}:{archiveSha256:archives[0].archiveSha256}),instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
       }
       if(!intent.receipt){intent.receipt=await call('godotProject.applyFiles',intent.applyRequest);requireValue(Number.isSafeInteger(intent.receipt.revision)&&typeof intent.receipt.manifestHash==='string','PACKAGE_SOURCE_RECEIPT_REQUIRED');await save(intent);}
-      if(!intent.job||intent.job.status==='blocked'&&!intent.ownsTurn){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,...(intent.applyRequest.operation?.branchId?{branchId:intent.applyRequest.operation.branchId}:{}),toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}
+      if(!intent.job||!group&&intent.job.status==='blocked'&&!intent.ownsTurn){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,...(intent.applyRequest.operation?.branchId?{branchId:intent.applyRequest.operation.branchId}:{}),toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}
       if(intent.job.status!=='blocked'){
         if(ownedContext){turns.watch({...intent.job,worldId:intent.worldId},ownedContext);handedOff=true;}
         await enqueue(intent.job,intent.context);
       }
       completed=true;
-      return {status:intent.job.status==='blocked'?'source-saved-check-blocked':'check-queued',applied:false,worldId:intent.worldId,archiveSha256:intent.archiveSha256,instanceIds:intent.instanceIds,source:intent.receipt,job:intent.job};
+      return {status:intent.job.status==='blocked'?'source-saved-check-blocked':'check-queued',applied:false,worldId:intent.worldId,...(intent.archives?{archives:intent.archives}:{archiveSha256:intent.archiveSha256}),instanceIds:intent.instanceIds,source:intent.receipt,job:intent.job};
     })().finally(async()=>{try{if(ownedContext&&!handedOff)await turns.finish(ownedContext,completed?'completed':'error');}finally{if(active.get(key)===entry)active.delete(key);}});
     return entry.promise;
   };
+  const installSource=args=>executeInstall(args);
+  installSource.group=args=>executeInstall(args,true);
   installSource.drain=()=>Promise.allSettled([...active.values()].map(entry=>entry.promise));
   return installSource;
 }

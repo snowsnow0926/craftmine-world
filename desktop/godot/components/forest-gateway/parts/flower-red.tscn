@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://addons/cw.scene.forest-gateway/models/nature/flower_redA.glb" id="2"]
+
+[node name="Component" type="Node3D"]
+
+[node name="Visual" parent="." instance=ExtResource("2")]
+position = Vector3(0.049971, 0.1, 0)
+scale = Vector3(2, 2, 2)

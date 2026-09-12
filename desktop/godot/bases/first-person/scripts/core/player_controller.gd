@@ -18,6 +18,10 @@ signal capture_changed(captured: bool)
 ## request pointer lock.
 @export var capture_mouse_on_click := true
 @export var input_enabled := true
+@export var max_health := 100.0
+var health := 100.0
+var dead: bool:
+	get: return health <= 0.0
 
 @onready var camera_rig: CameraRig = get_node_or_null("CameraRig")
 
@@ -30,6 +34,7 @@ var _restored_floor: Variant = null
 
 
 func _ready() -> void:
+	health = max_health
 	_gravity = float(ProjectSettings.get_setting("physics/3d/default_gravity", 9.8))
 	if camera_rig == null:
 		push_warning("PlayerController has no CameraRig child")
@@ -60,7 +65,7 @@ func _physics_process(delta: float) -> void:
 
 	var axis := _read_move_axis()
 	var wish := movement_direction(axis)
-	if is_on_floor() and _override_remaining <= 0 and input_enabled and Input.is_action_pressed("jump"):
+	if not dead and is_on_floor() and _override_remaining <= 0 and input_enabled and Input.is_action_pressed("jump"):
 		velocity.y = jump_velocity
 
 	var speed := move_speed
@@ -70,6 +75,9 @@ func _physics_process(delta: float) -> void:
 	var rate := acceleration if is_on_floor() else air_acceleration
 	velocity.x = move_toward(velocity.x, target.x, rate * delta)
 	velocity.z = move_toward(velocity.z, target.z, rate * delta)
+	if dead:
+		velocity.x = 0.0
+		velocity.z = 0.0
 	move_and_slide()
 	_restored_floor = null
 
@@ -78,6 +86,9 @@ func _physics_process(delta: float) -> void:
 ## real key actions are read, so scripted acceptance exercises the same movement
 ## and collision code as a player.
 func _read_move_axis() -> Vector2:
+	if dead:
+		_override_remaining = 0
+		return Vector2.ZERO
 	if _override_remaining > 0:
 		_override_remaining -= 1
 		return _override_axis
@@ -102,6 +113,8 @@ func movement_direction(axis: Vector2) -> Vector3:
 ## Feeds a movement axis through the real controller for a number of physics
 ## frames. Used by scripted acceptance; it still accelerates and collides.
 func walk(axis: Vector2, frames: int) -> void:
+	if dead:
+		return
 	_override_axis = axis
 	_override_remaining = maxi(0, frames)
 	while _override_remaining > 0:
@@ -137,6 +150,8 @@ func snapshot() -> Dictionary:
 		"yaw": camera_rig.yaw if camera_rig != null else 0.0,
 		"pitch": camera_rig.pitch if camera_rig != null else 0.0,
 		"onFloor": is_on_floor() if _restored_floor == null else _restored_floor,
+		"health": health,
+		"maxHealth": max_health,
 	}
 
 
@@ -156,8 +171,33 @@ func restore(data: Dictionary) -> String:
 		return "Player pitch is invalid"
 	if data.has("onFloor") and not data.onFloor is bool:
 		return "Player floor contact is invalid"
+	if data.has("health") != data.has("maxHealth"):
+		return "Player health fields must appear together"
+	if data.has("maxHealth") and (not (data.maxHealth is float or data.maxHealth is int) or not is_finite(float(data.maxHealth)) or float(data.maxHealth) != max_health or float(data.maxHealth) <= 0.0):
+		return "Player maximum health does not match this world"
+	if data.has("health") and (not (data.health is float or data.health is int) or not is_finite(float(data.health)) or float(data.health) < 0.0 or float(data.health) > max_health):
+		return "Player health is invalid"
 	_restored_floor = data.get("onFloor")
 	global_position = Vector3(float(position[0]), float(position[1]), float(position[2]))
 	velocity = Vector3.ZERO
 	set_look(float(yaw), float(pitch))
+	# Legacy saves predate health; loading one always starts at the source maximum.
+	health = float(data.get("health", max_health))
+	_override_remaining = 0
+	_override_axis = Vector2.ZERO
 	return ""
+
+func take_damage(amount: float) -> float:
+	if dead or amount <= 0.0 or not is_finite(amount):
+		return 0.0
+	var applied := minf(health, amount)
+	health -= applied
+	if dead:
+		_override_remaining = 0
+		_override_axis = Vector2.ZERO
+		velocity.x = 0.0
+		velocity.z = 0.0
+	return applied
+
+func revive() -> void:
+	health = max_health

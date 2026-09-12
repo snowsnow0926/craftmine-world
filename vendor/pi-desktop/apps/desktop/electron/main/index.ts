@@ -64,7 +64,6 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  realpathSync,
   statSync,
   writeFileSync,
 } from "node:fs";
@@ -213,9 +212,8 @@ import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
 import { GodotWorldViewHost } from "./godot-world-view-host";
+import {createCraftmineViewCaptureBridge, type ViewCaptureModel} from "./craftmine-view-capture";
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
-import { createCraftminePerformanceSampler } from "./craftmine-performance-sample";
-import { createCraftmineEnginePerformanceSampler } from "./craftmine-engine-performance-sample";
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {loadSceneObserverPins} from "./creation-observer-pins";
 import {createCreationAutoApplyService} from "./creation-auto-apply-service";
@@ -226,7 +224,6 @@ import {
   createGodotWorldFactory, loadMaterializer, resolveGodotRoot, type GodotCreationDependencies,
 } from "./godot-world-creation";
 import {createGodotWorldInitializer} from "./godot-world-initialization";
-import {initialLoadBridgeResource} from "./godot-initial-load-repair";
 import {createAssetPreviewHost} from "../craftmine-assets/host-service.mjs";
 import { createGodotPanelCoordinator } from "./godot-panel-coordinator";
 import { pathToFileURL } from "node:url";
@@ -1018,7 +1015,6 @@ const godotWorld: GodotWorldViewHost = new GodotWorldViewHost({
 // instance only, and every envelope carries the host's own world/build/instance
 // identity; the plugin may narrow the request but never redirect it.
 plugins.setServices({ craftmineLiveSample: createCraftmineLiveSampler(() => godotWorld) });
-plugins.setServices({ craftminePerformanceSample: createCraftminePerformanceSampler(() => godotWorld.performanceProcess, () => app.getAppMetrics()) });
 const godotCandidates = createGodotCandidateCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
@@ -1030,23 +1026,6 @@ const godotRoot = resolveGodotRoot({
   startDir: __dirname,
   override: process.env.CRAFTMINE_GODOT_BASES,
 });
-const craftmineEnginePerformance = createCraftmineEnginePerformanceSampler({
-  host: () => godotWorld,
-  resourcesRoot: godotRoot,
-  actualVersion: "4.7.2.stable.official.ed1daf0bf",
-  describe: worldId => godotAdapter.describe(worldId),
-  exportSource: worldId => plugins.requestCraftmineHost("godotRuntime.exportSource", {worldId}),
-  readPack: (descriptor, artifact) => {
-    const root = resolve(String(descriptor.root));
-    if (!godotAdapter.allowedRoots().some(candidate => resolve(candidate) === root)) throw Error("ENGINE_PERFORMANCE_ROOT_UNAUTHORIZED");
-    if (!artifact.path.startsWith("web/") || artifact.path.includes("..") || /[\\:\x00-\x1f\x7f]/.test(artifact.path)) throw Error("ENGINE_PERFORMANCE_ARTIFACT_PATH");
-    const file = resolve(root, artifact.path);
-    if (!file.startsWith(root + "/") && !file.startsWith(root + "\\")) throw Error("ENGINE_PERFORMANCE_ARTIFACT_ESCAPE");
-    if (realpathSync(file) !== file) throw Error("ENGINE_PERFORMANCE_ARTIFACT_LINK");
-    return Promise.resolve(readFileSync(file));
-  },
-});
-plugins.setServices({ craftmineEnginePerformanceSample: input => craftmineEnginePerformance(input as any) });
 const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
 plugins.setServices({craftmineGodotToolchain: {
   broker: join(godotToolchainRoot, "broker", "godot-host-broker.exe"),
@@ -1172,6 +1151,20 @@ plugins.setServices({craftmineCreationTarget:async context=>{
   if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId)throw Error("CREATION_ACTIVE_TURN_REQUIRED");
   return creationTargets.bound(context,binding.selectedWorld);
 }});
+plugins.setServices({craftmineViewCapture:createCraftmineViewCaptureBridge({
+  authorize:async input=>{
+    const context=input.context,binding=craftmineGateway.get(context.sessionId);
+    if(!binding||binding.turnId!==context.turnId||binding.projectId!==context.projectId||activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId))throw Error("GODOT_CAPTURE_ACTIVE_TURN_REQUIRED");
+    if(binding.selectedWorld!==input.worldId||await godotSelection()!==input.worldId||notificationViewingSessionId!==context.sessionId)throw Error("GODOT_CAPTURE_WORLD_CONTEXT_CHANGED");
+    if(profileRestore||godotCopies.busy||godotExportBusy||godotInitializer.busy||godotRestores.busy)throw Error("WORLD_BUSY");
+    const detail=await host?.call<{session?:any}>("session.get",{id:context.sessionId});
+    if(!detail?.session||craftmineProjectIdentity(detail.session,context.sessionId)!==context.projectId||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("GODOT_CAPTURE_PROJECT_CHANGED");
+    if(activeTurns.get(context.sessionId)!==context.turnId||turnFinalizations.has(context.sessionId)||await godotSelection()!==input.worldId)throw Error("GODOT_CAPTURE_ACTIVE_TURN_REQUIRED");
+  },
+  model:async input=>resolvedCaptureModels.get(input.context.sessionId)??{providerId:"",modelId:"",declaredImages:false},
+  candidateInstance:()=>godotWorld.candidateInstance,
+  capture:input=>godotWorld.captureView(input),
+})});
 const creationAutoApply=createCreationAutoApplyService({
   capture:async context=>{
     const binding=craftmineGateway.get(context.sessionId);
@@ -1200,9 +1193,9 @@ async function assertCreationEditor(owner:number,sessionId:string){
   if(!detail.session||!pluginActiveInProject("craftmine.world",detail.session.projectPath??null))throw Error("CREATION_SESSION_REQUIRED");
   return detail.session;
 }
-async function creationEditCapture(owner:number,sessionId:string,captureId:string){
+async function creationEditCapture(owner:number,sessionId:string,captureId:string,purpose?:'observer-upgrade'){
   const session=await assertCreationEditor(owner,sessionId),projectId=craftmineProjectIdentity(session,sessionId);
-  const capture=await creationTargets.validate(owner,{creationTarget:{captureId}},{sessionId,projectId});
+  const capture=await creationTargets.validate(owner,{creationTarget:{captureId}},{sessionId,projectId},purpose);
   if(!capture)throw Error("CREATION_TARGET_REQUIRED");
   return {session,projectId,capture};
 }
@@ -1212,20 +1205,22 @@ const creationEdits=createCreationEditService({
     if(creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
     try{
-      const {session,projectId,capture}=await creationEditCapture(owner,input.sessionId,input.captureId);
-      let intent:DirectCreationIntent;
-      if(input.action==="undo")intent={action:"undo",undoOperationId:input.undoOperationId!,formalJournal:(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal};
+      const upgrade=input.action==='upgrade-observer';
+      const {session,projectId,capture}=await creationEditCapture(owner,input.sessionId,input.captureId,upgrade?'observer-upgrade':undefined);
+      let intent:DirectCreationIntent|undefined;
+      if(upgrade){if(!capture.observerUpgradeOnly)throw Error('CREATION_OBSERVER_UPGRADE_HANDLE_REQUIRED');}
+      else if(input.action==="undo")intent={action:"undo",undoOperationId:input.undoOperationId!,formalJournal:(await readFormalCreationJournal((method,args)=>plugins.requestCraftmineHost(method,args),capture)).journal};
       else intent=directCreationEditIntent(capture,input);
       if(activeTurns.size||turnFinalizations.size)throw Error("ACTIVE_TASK_EXISTS");
       await assertCreationEditor(owner,input.sessionId);
       const turn=await host!.call<{turnId:string}>("session.beginTurn",{sessionId:input.sessionId});turnId=turn.turnId;
       if(!turnId)throw Error("CREATION_EDIT_TURN_REQUIRED");activeTurns.set(input.sessionId,turnId);activeTurnUsages.delete(input.sessionId);
-      const content=input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      const content=upgrade?"升级世界观察组件，保留当前作品和进度":input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
       const message={id:crypto.randomUUID(),role:"user",content,createdAt:new Date().toISOString(),status:"complete"};
       await host!.call("session.appendMessage",{sessionId:input.sessionId,turnId,message});
       if(!await bindCraftmineTurn(input.sessionId,turnId,session,{id:message.id,text:content},{owner,capture,intent}))throw Error("CREATION_SESSION_REQUIRED");
       const context={projectId,sessionId:input.sessionId,turnId},bound=creationTargets.bound(context,capture.worldId);
-      if(!bound||bound.autoApply||bound.creationRequirements?.status!=="verifiable")throw Error("CREATION_REQUIREMENTS_NEED_REVIEW");
+      if(!bound||bound.autoApply||(upgrade?(!bound.observerUpgradeOnly||!bound.sourceMigration):bound.creationRequirements?.status!=="verifiable"))throw Error("CREATION_REQUIREMENTS_NEED_REVIEW");
       creationEditOwners.set(turnId,owner);sendToRenderer(IPC.event.craftmineWorldChanged,{});return {context,capture:bound};
     }catch(error){if(turnId)await finishTurn(input.sessionId,"error","CREATION_EDIT_BEGIN_FAILED",{createNotification:false,expectedTurnId:turnId});throw error;}
     finally{creationEditStarting=false;}
@@ -1249,7 +1244,9 @@ const creationEdits=createCreationEditService({
   },
   finish:async(bound,status)=>{
     try{
-      await host!.call("session.appendMessage",{sessionId:bound.context.sessionId,turnId:bound.context.turnId,message:{id:crypto.randomUUID(),role:"assistant",content:status.phase==="applied"?"物体编辑已检查并采用。":`物体编辑未完成：${status.error??"请查看检查结果"}`,createdAt:new Date().toISOString(),status:"complete"}});
+      const label=bound.capture.observerUpgradeOnly?'世界观察组件更新':'物体编辑';
+      const content=status.phase==='applied'?(bound.capture.observerUpgradeOnly?'世界观察组件已更新，原作品和进度已保留。请重新选中对象。':'物体编辑已检查并采用。'):`${label}未完成：${status.error??'请查看检查结果'}`;
+      await host!.call("session.appendMessage",{sessionId:bound.context.sessionId,turnId:bound.context.turnId,message:{id:crypto.randomUUID(),role:"assistant",content,createdAt:new Date().toISOString(),status:"complete"}});
     }finally{
       await finishTurn(bound.context.sessionId,status.phase==="applied"?"completed":"error",status.error,{createNotification:false,expectedTurnId:bound.context.turnId});
       creationEditOwners.delete(bound.context.turnId);sendToRenderer(IPC.event.craftmineWorldChanged,{});
@@ -1266,7 +1263,7 @@ const logger = new Logger(
 const godotInitializer = createGodotWorldInitializer({
   worldsRoot: join(dataDir, "godot-worlds"), domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, firstLoad: (worldId, candidateId) => godotCandidates.firstLoad(worldId, candidateId),
-  initialLoadBridge: existingHash => readFileSync(join(godotRoot, initialLoadBridgeResource(existingHash))),
+  initialLoadBridge: () => readFileSync(join(godotRoot, "shared", "runtime_bridge.gd")),
 });
 const godotRestores = createGodotRestoreRebuildService({
   domain: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
@@ -2098,6 +2095,7 @@ async function resolveAgentRuntimeLaunch(
           : [],
       ),
   );
+  resolvedCaptureModels.set(sessionId,{providerId:provider.id,modelId,declaredImages:visionFromModelConfig(modelConfig)});
   return {
     providerId: provider.id,
     modelId,
@@ -2657,6 +2655,8 @@ async function importLegacyScheduled() {
 
 /** sessionId → open host turn id, for turn bookkeeping across agent events. */
 const activeTurns = new Map<string, string>();
+// Only effective launch metadata; no credential or model endpoint is retained here.
+const resolvedCaptureModels = new Map<string, ViewCaptureModel>();
 const taskMetricsAdmissionFailures = new Set<string>();
 const taskMetricsRecorder = createTaskMetricsRecorder({
   isCurrent: ({sessionId, turnId}) => activeTurns.get(sessionId) === turnId,
@@ -2909,10 +2909,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
     await sidecar.call("agent.prompt", { ...launch.sidecarParams, craftmineWorld: true, turnId, content, userMessageId: userMessage.id });
   },
   backup: (channel, payload) => craftmineBackup.request(channel, payload),
-  packages: (channel, payload, owner) => craftminePackages.request(channel, payload, {...owner,assertCurrent:async()=>{
-    await owner.assertCurrent();
-    if(activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error('ACTIVE_TASK_EXISTS');
-  }}),
+  packages: (channel, payload) => craftminePackages.request(channel, payload),
   diagnostics: (channel, payload) => craftmineDiagnostics.request(channel, payload),
   issues: (channel, payload) => channel === "issue.export" ? craftmineIssueExports.request(channel, payload) : craftmineIssues.request(channel, payload),
 });
@@ -5734,6 +5731,7 @@ function finishTurn(
       // until the durable endTurn request has settled above.
       if (turnId && activeTurns.get(sessionId) === turnId) {
         activeTurns.delete(sessionId);
+        resolvedCaptureModels.delete(sessionId);
       }
       if (turnKey) {
         planSubmissionTurnIds.delete(turnKey);
@@ -9822,34 +9820,14 @@ installCreationEditAcceptance({enabled:!!headlessAcceptance,window:()=>mainWindo
     }finally{await finishTurn(sessionId,outcome,undefined,{createNotification:false,expectedTurnId:turnId});}
   }});
 installBatch07NativeAcceptance({ enabled: !!headlessAcceptance, window: () => mainWindow, world: () => pluginViews.headlessWorldContents(), call: (method, params) => host!.call(method, params), toolName: name => { const tool = plugins.getTools().find(entry => entry.pluginId === "craftmine.world" && entry.name === name); if (!tool) throw Error("Missing world tool: " + name); return tool.fullName; }, begin: (sessionId, turnId) => activeTurns.set(sessionId, turnId), finish: sessionId => finishTurn(sessionId, "completed", undefined, { createNotification: false }) });
-let headlessPerformanceBusy=false;
 installHeadlessControl({
   window: () => mainWindow,
-  performanceTool:async({sessionId,worldId})=>{
-    if(!headlessAcceptance||!host||headlessPerformanceBusy||activeTurns.size||turnFinalizations.size)throw Error('HEADLESS_PERFORMANCE_IDLE_REQUIRED');
-    headlessPerformanceBusy=true;
-    try{
-    const before=godotWorld.instance;
-    if(!before||before.worldId!==worldId||await godotSelection()!==worldId)throw Error('HEADLESS_PERFORMANCE_WORLD_CHANGED');
-    const detail=await host.call<{session:any}>('session.get',{id:sessionId});
-    if(detail.session?.id!==sessionId||!pluginActiveInProject('craftmine.world',detail.session.projectPath??null))throw Error('HEADLESS_PERFORMANCE_SESSION_REQUIRED');
-    const tool=plugins.getTools().find(entry=>entry.pluginId==='craftmine.world'&&entry.name==='godot_performance_observe');
-    if(!tool||tool.risk!=='low')throw Error('HEADLESS_PERFORMANCE_REGISTERED_TOOL_REQUIRED');
-    const {turnId}=await host.call<{turnId:string}>('session.beginTurn',{sessionId});
-    if(!turnId)throw Error('HEADLESS_PERFORMANCE_TURN_REQUIRED');
-    activeTurns.set(sessionId,turnId);let outcome:'completed'|'error'='error';
-    try{
-      // Bind through the real domain turn flow, without creation intent or source migration.
-      if(!await bindCraftmineTurn(sessionId,turnId,detail.session,{id:crypto.randomUUID(),text:'读取当前世界的性能观测'}))throw Error('HEADLESS_PERFORMANCE_BINDING_REQUIRED');
-      const binding=craftmineGateway.get(sessionId);
-      if(binding?.selectedWorld!==worldId||godotWorld.instance?.instanceId!==before.instanceId)throw Error('HEADLESS_PERFORMANCE_WORLD_CHANGED');
-      const context={projectId:binding.projectId,sessionId,turnId};
-      const result=await tool.execute({},{...context,toolCallId:crypto.randomUUID(),executionId:crypto.randomUUID()});
-      const after=godotWorld.instance;
-      if(!after||after.worldId!==worldId||after.buildId!==before.buildId||after.instanceId!==before.instanceId)throw Error('HEADLESS_PERFORMANCE_WORLD_CHANGED');
-      outcome='completed';return {format:'craftmine.registered-performance-probe/1',pluginId:tool.pluginId,toolName:tool.name,fullName:tool.fullName,context,before,after,result,modelRequestsStarted:0};
-    }finally{await finishTurn(sessionId,outcome,undefined,{createNotification:false,expectedTurnId:turnId});}
-    }finally{headlessPerformanceBusy=false;}
+  boundCapture: identity=>godotWorld.captureView(identity),
+  boundCaptureState: ()=>{
+    const window=mainWindow,formal=godotWorld.instance;
+    return {formal:formal?{worldId:formal.worldId,buildId:formal.buildId,instanceId:formal.instanceId}:null,candidate:godotWorld.candidateInstance,state:godotWorld.state,
+      owner:window&&!window.isDestroyed()?{bounds:window.getContentBounds(),visible:window.isVisible(),focused:window.isFocused(),focusable:window.isFocusable(),
+        views:window.contentView.children.map(view=>{const contents='webContents' in view?view.webContents as Electron.WebContents:null;return{bounds:view.getBounds(),contentsId:contents?.id??null,destroyed:contents?.isDestroyed()??false};})}:null};
   },
   playerActive: sessionId=>activeTurns.has(sessionId)||turnFinalizations.has(sessionId),
   playerLatest: (worldId,sessionId)=>plugins.requestCraftmineHost('godotBuild.latest',{worldId,sessionId}),

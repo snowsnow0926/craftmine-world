@@ -50,10 +50,14 @@ export function inspectAdoptionSource(file){
 const RUNTIME_ENV=new Set(['SYSTEMROOT','WINDIR','COMSPEC','PATH','PATHEXT','TEMP','TMP','USERPROFILE','HOMEDRIVE','HOMEPATH','HOME','APPDATA','LOCALAPPDATA','PROGRAMDATA','PROGRAMFILES','PROGRAMFILES(X86)','COMMONPROGRAMFILES','COMMONPROGRAMFILES(X86)','NUMBER_OF_PROCESSORS','PROCESSOR_ARCHITECTURE','PROCESSOR_IDENTIFIER','LANG','LC_ALL','TZ','CRAFTMINE_HEADLESS_TEST','CRAFTMINE_HEADLESS_ROOT','CRAFTMINE_DATA_DIR','CRAFTMINE_HEADLESS_TOKEN','CRAFTMINE_CORE_BIN','CRAFTMINE_GODOT_BASES','PI_DESKTOP_HOST_BIN']);
 export function adoptionEnvironment(client,paths){return Object.fromEntries(Object.entries(checkpointEnvironment(client,paths)).filter(([key])=>RUNTIME_ENV.has(key.toUpperCase())));}
 export function validateAdoptionCall(method,fields={},selection){
- assert.ok(['status','primaryMode','godotObserve','godotCaptureView','worldPanel','quit'].includes(method),'ADOPTION_METHOD_DENIED');
- const allowed=method==='worldPanel'?['channel','payload']:method==='primaryMode'?['payload']:[];
+ assert.ok(['status','primaryMode','godotObserve','godotCaptureView','godotCaptureBoundState','godotCaptureBoundView','godotSnapshot','worldPanel','quit'].includes(method),'ADOPTION_METHOD_DENIED');
+ const allowed=method==='worldPanel'?['channel','payload']:['primaryMode','godotCaptureBoundView'].includes(method)?['payload']:[];
  assert.ok(fields&&typeof fields==='object'&&!Array.isArray(fields)&&Object.keys(fields).every(key=>allowed.includes(key)),'ADOPTION_ENVELOPE_DENIED');
  if(method==='primaryMode'&&fields.payload!==undefined)assert.deepEqual(fields.payload,{action:'create'},'ADOPTION_MODE_DENIED');
+ if(method==='godotCaptureBoundView'){
+  assert.ok(selection.captureIdentity);assert.deepEqual(fields,{payload:selection.captureIdentity});
+  assert.equal(fields.payload.worldId,selection.worldId);assert.equal(fields.payload.buildId,selection.buildId);
+ }
  if(method==='worldPanel'){
   assert.ok(['godot.candidatePreview','godot.candidateApply','godot.runtimeSave'].includes(fields.channel),'ADOPTION_PANEL_DENIED');
   assert.deepEqual(fields.payload,fields.channel==='godot.runtimeSave'?{worldId:selection.worldId,freeze:true}:{worldId:selection.worldId,candidateId:selection.candidateId},'ADOPTION_TARGET_CHANGED');
@@ -75,7 +79,7 @@ export function validateExplorationCall(method,fields={},selection){
 }
 export function modelFreeExecutionEvidence(audit,calls){
  for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(audit?.[field],[],'MODEL_FREE_AUDIT_REQUIRED');
- const allowed=new Set(['status','primaryMode','godotObserve','godotCaptureView','godotExplore','quit','worldPanel:godot.candidatePreview','worldPanel:godot.candidateApply','worldPanel:godot.runtimeSave','worldPanel:godot.runtimeResume']);
+ const allowed=new Set(['status','primaryMode','godotObserve','godotCaptureView','godotCaptureBoundState','godotCaptureBoundView','godotSnapshot','godotExplore','quit','worldPanel:godot.candidatePreview','worldPanel:godot.candidateApply','worldPanel:godot.runtimeSave','worldPanel:godot.runtimeResume']);
  assert.ok(Array.isArray(calls)&&calls.length>0&&calls.every(call=>allowed.has(call)),'MODEL_FREE_CONTROL_REQUIRED');
  return {modelCallsAdded:0,basis:'model/eval configuration stripped; only validated non-model controller calls; clean shutdown audit',controllerCalls:[...new Set(calls)]};
 }

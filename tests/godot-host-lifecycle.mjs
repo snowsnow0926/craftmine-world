@@ -10,6 +10,7 @@ import test from 'node:test';
 import {EventEmitter} from 'node:events';
 import {createWorldRuntime} from '../desktop/godot/web/runtime.mjs';
 import * as immersionTools from './helpers/immersion-host-tools.mjs';
+import {PRIVATE_PLAY_OPS} from '../vendor/pi-desktop/apps/desktop/electron/main/headless-play-action.ts';
 
 const source = await readFile(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts',import.meta.url),'utf8');
 const compiled = stripTypeScriptTypes(source,{mode:'transform'}).replace(/^import[\s\S]*?from ["'][^"']+["'];\s*/gm,'').replace(/^export /gm,'');
@@ -20,6 +21,7 @@ function fixture(clock={setTimeout,clearTimeout}) {
   const events=[], runtimes=[];
   let fault=null, descriptor=null, startupGate=null, callback=null, runtimeSetup=null, factory=null;
   const context={module:{exports:{}},join,resolve,sep,realpath,setInterval,clearInterval,...clock,console,...immersionTools,
+    hasHeadlessController:()=>false,PRIVATE_PLAY_OPS,
     WORLD_CHROME_HEIGHT:76,GODOT_WORLD_MESSAGE_CHANNEL:'message',GODOT_WORLD_DETACH_CHANNEL:'detach',
     async createWorldRuntime(options){
       events.push('start:'+options.worldId);

@@ -42,7 +42,7 @@ export function createGodotCandidateCoordinator(options:{
     const descriptor=await options.adapter.describeCandidate(worldId,session.id,session.token);
     if(descriptor.buildId!==prepared.buildId||descriptor.applicationInputHash!==prepared.inputHash||!isDeepStrictEqual(descriptor.snapshot,expected))throw new Error("GODOT_CANDIDATE_DESCRIPTOR_MISMATCH");
     session.descriptor=descriptor;
-    await options.host.stageCandidate(descriptor,{first});
+    await options.host.stageCandidate(descriptor,{first,candidateId});
     return session;
   }
   async function confirm(session:Session) {
@@ -124,13 +124,27 @@ export function createGodotCandidateCoordinator(options:{
   }
   async function open(worldId:string,candidateId:string) {
     if(active)throw new Error("GODOT_CANDIDATE_ACTIVE");await identity(worldId);release=await options.host.holdSelectionSync();
+    let checkpointPersisted=false;
     try {
-      await options.host.pause();const formal=await options.adapter.describe(worldId);if(!formal)throw new Error("GODOT_FORMAL_WORLD_REQUIRED");
+      await identity(worldId);
+      const instance=options.host.instance!;
+      // Preview must start from the player's current progress, not the last
+      // autosave. Checkpoint persists progress without adopting candidate code.
+      const checkpoint=await options.host.checkpoint({fresh:true});if(checkpoint.status!=="persisted")throw new Error(checkpoint.error);
+      checkpointPersisted=true;
+      const formal=await options.adapter.describe(worldId);await identity(worldId);
+      const current=options.host.instance;
+      if(!formal||formal.worldId!==worldId||formal.buildId!==instance.buildId||checkpoint.receipt.worldId!==worldId||checkpoint.receipt.buildId!==instance.buildId||formal.revision!==checkpoint.receipt.revision||!isDeepStrictEqual(formal.snapshot,checkpoint.snapshot)||current?.buildId!==instance.buildId||current.instanceId!==instance.instanceId)throw new Error("GODOT_LATEST_PROGRESS_REQUIRED");
       const session=await prepare(worldId,candidateId,formal.revision,formal.snapshot,"preparing");
       await confirm(session);await options.host.candidateRequest("resume");session.phase="preview";
       options.host.setSurfaceVisible(true);options.host.setCandidateVisible(true);
       return {status:"preview",worldId,candidateId,buildId:session.prepared!.buildId};
-    }catch(error){return failed(error);}
+    }catch(error){
+      // A failed checkpoint owns restoration of its original pause intent.
+      // No candidate exists yet; do not override that decision with resume().
+      if(!checkpointPersisted){release?.();release=null;throw error;}
+      return failed(error);
+    }
   }
   async function apply(worldId:string,candidateId:string) {
     const preview=active;if(!preview||preview.phase!=="preview"||preview.worldId!==worldId||preview.candidateId!==candidateId)throw new Error("GODOT_PREVIEW_REQUIRED");
@@ -140,7 +154,7 @@ export function createGodotCandidateCoordinator(options:{
       const aborted=applicationMatches(preview,await rpc("godotApplication.abort",{id:preview.id}));
       if(aborted.status!=="aborted")throw new Error("GODOT_PREVIEW_ABORT_REQUIRED");
       await options.host.discardCandidate();active=null;
-      const checkpoint=await options.host.checkpoint();if(checkpoint.status!=="persisted")throw new Error(checkpoint.error);
+      const checkpoint=await options.host.checkpoint({fresh:true});if(checkpoint.status!=="persisted")throw new Error(checkpoint.error);
       const formal=await options.adapter.describe(worldId);if(!formal||formal.revision!==checkpoint.receipt.revision||!isDeepStrictEqual(formal.snapshot,checkpoint.snapshot))throw new Error("GODOT_LATEST_PROGRESS_REQUIRED");
       const session=await prepare(worldId,candidateId,formal.revision,formal.snapshot,"applying");
       session.evidence=await confirm(session);

@@ -1,5 +1,6 @@
 import { ASSET_PANEL_CHANNELS } from "./craftmine-asset-panel";
 import { craftmineAuthorizedBudget } from "@pi-desktop/agent-runtime";
+import {authorizeViewCaptureCaller} from "./craftmine-view-capture";
 import {
   readFileSync,
   existsSync,
@@ -220,11 +221,8 @@ export type PluginHostServices = {
     buildId?: string | null;
     instanceId?: string | null;
   }) => Promise<Record<string, unknown> | null>;
-  craftminePerformanceSample?: (input: {
-    worldId?: string | null; buildId?: string | null; instanceId?: string | null;
-  }) => Promise<Record<string, unknown> | null>;
-  craftmineEnginePerformanceSample?: (input: {worldId?: string|null;buildId?: string|null;instanceId?: string|null}) => Promise<Record<string,unknown>|null>;
   craftmineCreationTarget?: (input:{projectId:string;sessionId:string;turnId:string}) => Promise<Record<string, unknown>|null>;
+  craftmineViewCapture?: (input:unknown) => Promise<Record<string,unknown>>;
   craftmineCreationCheckCompleted?: (input:{jobId:string;context:{projectId:string;sessionId:string;turnId:string}}) => Promise<Record<string,unknown>>;
   getWorkspacePath: () => string | null;
   getLocale?: () => string;
@@ -1038,7 +1036,10 @@ export class PluginRuntime {
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
     const longRunning = ["backup.", "godotRuntime.", "godotApplication.", "godotWorld.", "godotProject.", "godotBuild.",
       "godotJob.", "godotStorage.", "godotAsset.", "content.", "library.", "world."]
-      .some(prefix => method.startsWith(prefix)) || method === "workbench.request";
+      .some(prefix => method.startsWith(prefix)) || method === "workbench.request"
+      // Installing a source ZIP snapshots the current project and commits a
+      // durable file transaction. Ordinary package reads retain their deadline.
+      || (method === "package.request" && (params.method === "installSource" || params.method === "installSourceProposal"));
     return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") ? 130_000 : longRunning ? 60_000 : 15_000);
   }
 
@@ -1634,23 +1635,11 @@ export class PluginRuntime {
           instanceId: idOrNull(input.instanceId),
         });
       }
-      case "craftmine.godotPerformance": {
-        if (pluginId !== "craftmine.world" || !this.services.craftminePerformanceSample)
-          throw apiError("UNSUPPORTED", "Godot renderer performance sampling unavailable");
-        const input = args[0] ?? {};
-        if (args.length > 1 || !input || typeof input !== "object" || Array.isArray(input) ||
-          Object.entries(input).some(([key, value]) => !["worldId", "buildId", "instanceId"].includes(key) ||
-            (value !== null && (typeof value !== "string" || !/^[a-zA-Z0-9._-]{1,128}$/.test(value)))))
-          throw apiError("INVALID_ARGUMENT", "Invalid performance observation identity");
-        return this.services.craftminePerformanceSample(input);
-      }
-      case "craftmine.godotEnginePerformance": {
-        if (pluginId !== "craftmine.world" || !this.services.craftmineEnginePerformanceSample)
-          throw apiError("UNSUPPORTED", "Godot engine performance sampling unavailable");
-        const input=args[0]??{};
-        if(args.length>1||!input||typeof input!=="object"||Array.isArray(input)||Object.entries(input).some(([key,value])=>!["worldId","buildId","instanceId"].includes(key)||(value!==null&&(typeof value!=="string"||!/^[a-zA-Z0-9._-]{1,128}$/.test(value as string)))))
-          throw apiError("INVALID_ARGUMENT","Invalid engine performance observation identity");
-        return this.services.craftmineEnginePerformanceSample(input);
+      case "craftmine.godotViewCapture": {
+        if(pluginId!=="craftmine.world"||!this.services.craftmineViewCapture)throw apiError("UNSUPPORTED","Game view capture unavailable");
+        if(args.length!==1)throw apiError("INVALID_ARGUMENT","One bound capture request required");
+        const input=authorizeViewCaptureCaller(args[0],this.inFlightTool(pluginId));
+        return this.services.craftmineViewCapture(input);
       }
       case "craftmine.creationTarget": {
         if (pluginId !== "craftmine.world" || !this.services.craftmineCreationTarget) throw apiError("UNSUPPORTED", "Creation target unavailable");

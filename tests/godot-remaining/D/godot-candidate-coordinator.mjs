@@ -5,17 +5,21 @@ import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 const {createGodotCandidateCoordinator}=await import('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-candidate-coordinator.ts');
 const clone=x=>JSON.parse(JSON.stringify(x)),hash=x=>createHash('sha256').update(x).digest('hex');
-function fixture({cold=false,formalBuild=!cold,git=false}={}){
+function fixture({cold=false,formalBuild=!cold,git=false,paused=false}={}){
  const events=[],records=new Map();let selected='alpha',fault='',sequence=0,formalExists=formalBuild;
  const formal={id:'alpha',revision:3,world:{build:{id:'build-old'},snapshot:{format:'craftmine.godot-progress/1',worldId:'alpha',baseId:'first-person',body:{coins:4,quests:{one:1}}}}};
- let latest=clone(formal.world.snapshot),pending=null;
- const host={instance:cold?null:{worldId:'alpha',buildId:'build-old',instanceId:'original'},candidateInstance:null,
-  async holdSelectionSync(){events.push('hold');return()=>events.push('release');},async pause(){events.push('pause');},async resume(){events.push('resume');},
+ let latest=clone(formal.world.snapshot),pending=null,frozen=null;
+ const host={instance:cold?null:{worldId:'alpha',buildId:'build-old',instanceId:'original'},candidateInstance:null,paused,
+  async holdSelectionSync(){events.push('hold');return()=>events.push('release');},async pause(){events.push('pause');this.paused=true;},async resume(){events.push('resume');this.paused=false;frozen=null;},
   async stageCandidate(descriptor,options){events.push(options?.first?'stage:first':'stage');if(fault.startsWith('load'))throw Error('bad launch');this.candidateInstance={worldId:'alpha',buildId:descriptor.buildId,instanceId:'candidate-'+(++sequence)};pending=clone(descriptor.snapshot);},
   async candidateRequest(op){events.push('candidate:'+op);if(op!=='save')return {};const state=clone(pending);if(fault==='state')state.body.coins++;const snapshotText=JSON.stringify(state);return {status:'confirmed',state,runnerReceipt:{format:'craftmine.godot-runner-receipt/1',...this.candidateInstance,snapshotText,snapshotSha256:hash(snapshotText),bytes:Buffer.byteLength(snapshotText)}};},
   setCandidateVisible(v){events.push('candidate-visible:'+v);},setSurfaceVisible(v){events.push('surface:'+v);},
   async discardCandidate(){events.push('discard');pending=null;this.candidateInstance=null;},
-  async checkpoint(){events.push('checkpoint');if(fault==='storage')return {status:'failed',error:'storage failed'};formal.world.snapshot=clone(latest);formal.revision++;return {status:'persisted',receipt:{revision:formal.revision},snapshot:clone(latest)};},
+  async checkpoint(options={}){events.push('checkpoint');if(options.fresh)frozen=null;if(frozen)return clone(frozen);const prior=this.paused;await this.pause();if(fault==='storage'){if(!prior)await this.resume();return {status:'failed',error:'storage failed'};}formal.world.snapshot=clone(latest);formal.revision++;
+   const receipt={worldId:'alpha',buildId:formal.world.build.id,revision:formal.revision};let snapshot=clone(latest);
+   if(fault==='checkpoint-world')receipt.worldId='foreign';if(fault==='checkpoint-build')receipt.buildId='foreign';if(fault==='checkpoint-revision')receipt.revision++;
+   if(fault==='checkpoint-snapshot')snapshot.body.coins++;if(fault==='checkpoint-instance')this.instance={...this.instance,instanceId:'replaced'};
+   frozen={status:'persisted',receipt,snapshot};return clone(frozen);},
   async promoteCandidate(descriptor){events.push('promote');this.instance=this.candidateInstance;this.candidateInstance=null;pending=null;}
  };
  const adapter={async describe(){events.push('describe-formal');if(!formalExists)return null;return {phase:'formal',worldId:'alpha',buildId:formal.world.build.id,revision:formal.revision,snapshot:clone(formal.world.snapshot)};},async describeCandidate(worldId,id){events.push('describe-candidate');if(fault==='descriptor')throw Error('artifact missing');const r=records.get(id);return {phase:'candidate',worldId,buildId:r.buildId,applicationId:id,applicationInputHash:r.inputHash,revision:formal.revision,snapshot:clone(formal.world.snapshot)};}};
@@ -55,9 +59,25 @@ function fixture({cold=false,formalBuild=!cold,git=false}={}){
  };
  const coordinator=createGodotCandidateCoordinator({host,adapter,domain,selection:async()=>selected});
  const args={worldId:'alpha',candidateId:'candidate-a'};
- return {coordinator,args,events,host,formal,records,setFault:v=>fault=v,setLatest:v=>latest.body.coins=v,mutatePreview:()=>pending.body.coins=999,setSelection:v=>selected=v};
+ return {coordinator,args,events,host,formal,records,setFault:v=>fault=v,setLatest:v=>latest.body.coins=v,setLatestBody:v=>latest.body=clone(v),readPreview:()=>clone(pending),mutatePreview:()=>pending.body.coins=999,setSelection:v=>selected=v};
 }
-test('preview independently stages without writing formal state and cancel retains original native identity',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.mutatePreview();assert.equal(f.formal.world.snapshot.body.coins,4);assert.ok(!f.events.includes('checkpoint'));await f.coordinator.invoke('godot.candidateClose',{worldId:'alpha'});assert.equal(f.host.instance.instanceId,'original');assert.ok(!f.events.includes('promote'));assert.equal(f.coordinator.blocking,false);});
+test('preview checkpoints current progress without adopting content and cancel retains original native identity',async()=>{const f=fixture({git:true});await f.coordinator.invoke('godot.candidatePreview',f.args);f.mutatePreview();assert.equal(f.formal.world.snapshot.body.coins,4);assert.equal(f.events.filter(x=>x==='checkpoint').length,1);assert.equal(f.formal.world.build.id,'build-old');assert.ok(!f.events.includes('content.apply.prepare'));assert.ok(!f.events.includes('godotApplication.commit'));await f.coordinator.invoke('godot.candidateClose',{worldId:'alpha'});assert.equal(f.host.instance.instanceId,'original');assert.ok(!f.events.includes('promote'));assert.equal(f.coordinator.blocking,false);});
+test('unsaved camera position and ordinary progress become the exact prepared preview input',async()=>{
+ const f=fixture(),body={coins:23,quests:{one:2},player:{position:[0,0.9,10.83],yaw:0.3,pitch:0.05},inventory:{flowers:5}};
+ f.setLatestBody(body);await f.coordinator.invoke('godot.candidatePreview',f.args);
+ assert.deepEqual(f.readPreview().body,body);assert.deepEqual([...f.records.values()][0].input.snapshot.body,body);assert.deepEqual(f.formal.world.snapshot.body,body);
+ assert.ok(f.events.indexOf('hold')<f.events.indexOf('checkpoint'));assert.ok(f.events.indexOf('checkpoint')<f.events.indexOf('pause'));assert.ok(f.events.indexOf('pause')<f.events.indexOf('godotApplication.prepare'));
+ await f.coordinator.invoke('godot.candidateClose',{worldId:'alpha'});assert.deepEqual(f.formal.world.snapshot.body,body);assert.equal(f.formal.world.build.id,'build-old');
+});
+for(const paused of [false,true])test('preview checkpoint failure preserves prior '+(paused?'paused':'playing')+' intent without coordinator resume',async()=>{
+ const f=fixture({paused});f.setFault('storage');await assert.rejects(f.coordinator.invoke('godot.candidatePreview',f.args),/storage failed/);
+ assert.equal(f.host.paused,paused);assert.equal(f.events.filter(event=>event==='resume').length,paused?0:1);assert.equal(f.records.size,0);assert.equal(f.coordinator.blocking,false);
+});
+for(const fault of ['storage','checkpoint-world','checkpoint-build','checkpoint-revision','checkpoint-snapshot','checkpoint-instance'])test('preview '+fault+' refuses before candidate preparation and never restores stale progress',async()=>{
+ const f=fixture();f.setLatest(29);f.setFault(fault);await assert.rejects(f.coordinator.invoke('godot.candidatePreview',f.args));
+ assert.equal(f.records.size,0);assert.ok(!f.events.includes('stage'));assert.ok(!f.events.includes('godotApplication.prepare'));assert.ok(!f.events.includes('godotApplication.commit'));assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.coordinator.blocking,false);assert.ok(f.events.includes('release'));
+ assert.equal(f.formal.world.snapshot.body.coins,fault==='storage'?4:29);
+});
 test('apply discards played preview, checkpoints latest formal state and launches fresh exact state before commit',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.mutatePreview();f.setLatest(27);const result=await f.coordinator.invoke('godot.candidateApply',f.args);assert.equal(result.status,'applied');assert.equal(result.record.world.snapshot.body.coins,27);assert.equal(f.host.instance.instanceId,'candidate-2');assert.equal(f.events.filter(x=>x==='stage').length,2);assert.ok(f.events.indexOf('godotApplication.commit')<f.events.indexOf('promote'));});
 
 test('automatic adoption checkpoints latest progress and never shows a preview',async()=>{

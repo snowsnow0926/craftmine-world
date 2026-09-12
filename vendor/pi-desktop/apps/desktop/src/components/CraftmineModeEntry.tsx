@@ -32,7 +32,8 @@ export function CraftmineModeEntry({ onSelect }: {
               <ArrowLeft size={16} aria-hidden />{text.chooseMode[lang]}
             </button>
             <WorldListPanel controller={worlds} lang={lang} onOpenWorld={enterWorld} />
-            <button type="button" className="craftmine-mode-enter-world" disabled={!canEnter} onClick={enterWorld}>
+            <button type="button" className="craftmine-mode-enter-world" data-mode="play"
+              data-active-world={canEnter ? worlds.activeWorldId : undefined} disabled={!canEnter} onClick={enterWorld}>
               {text.enterWorld[lang]}
             </button>
           </div>

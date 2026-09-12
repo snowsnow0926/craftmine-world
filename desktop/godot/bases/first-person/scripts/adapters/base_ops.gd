@@ -19,6 +19,16 @@ func execute(op: String, args: Dictionary = {}) -> Dictionary:
 	match op:
 		"snapshot":
 			return {"result": world.snapshot()}
+		"damage-player":
+			if world.player == null or not _is_finite_number(args.get("amount")) or float(args.amount) <= 0.0:
+				return {"error": "Invalid player damage"}
+			var applied := world.player.take_damage(float(args.amount))
+			return {"result": {"applied": applied, "dead": world.player.dead, "snapshot": world.snapshot()}}
+		"revive-player":
+			if world.player == null:
+				return {"error": "No player"}
+			world.player.revive()
+			return {"result": world.snapshot()}
 		"equip":
 			return await _equip(args)
 		"next-equipment":

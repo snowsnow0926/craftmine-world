@@ -1,0 +1,213 @@
+{
+  "format": "craftmine.canine-visual-source/1",
+  "version": 1,
+  "license": "MIT",
+  "source": "Original editable polygon construction in scripts/generate-canine-visuals.mjs; no reused third-party meshes",
+  "units": "metres",
+  "forward": "-Z",
+  "anchor": "feet Y=0 at rest",
+  "animationType": "rigid-part-node-keyframes (not skinning)",
+  "animationLoopHandling": "Imported clips are not automatically looping; module must set Animation.LOOP_LINEAR for idle/walk",
+  "motionEvidence": "motion-evidence.json",
+  "productRegistration": false,
+  "items": [
+    {
+      "motionEnvelope": {
+        "method": "analytic rigid axis bounds; tail Y uses exact extrema within authored angle range; no sampled claim",
+        "assumptions": {
+          "visualPivot": "identity",
+          "rootRotation": "yaw only",
+          "rootScale": "1; original GLB scale retained",
+          "headAxis": "Y",
+          "tailAxis": "Z",
+          "tailAngleMaxRadians": 0.23,
+          "legAxis": "X",
+          "bodyTranslationYMax": 0.014001,
+          "walkLegLiftLocalMetres": 0.003
+        },
+        "numericalMarginMetres": 0.00001,
+        "radiusMax": 0.7377911328571638,
+        "yMin": 0,
+        "yMax": 0.7581579122813215
+      },
+      "restBoundsMetres": {
+        "min": [
+          -0.194,
+          0,
+          -0.678
+        ],
+        "size": [
+          0.388,
+          0.7581479122813215,
+          1.3980000000000001
+        ]
+      },
+      "dimensionsMm": [
+        388,
+        758,
+        1398
+      ],
+      "appearanceKey": "dog",
+      "file": "dog.glb",
+      "bytes": 126696,
+      "sha256": "2bbaba864551620b8b5029476a26e92b138c52e7cfec2c4f20d350c18f720723",
+      "triangles": 1472,
+      "meshParts": [
+        {
+          "name": "Torso",
+          "triangles": 180,
+          "surfaces": 2
+        },
+        {
+          "name": "Face",
+          "triangles": 636,
+          "surfaces": 6
+        },
+        {
+          "name": "LegMesh5",
+          "triangles": 144,
+          "surfaces": 2
+        },
+        {
+          "name": "LegMesh7",
+          "triangles": 144,
+          "surfaces": 2
+        },
+        {
+          "name": "LegMesh9",
+          "triangles": 144,
+          "surfaces": 2
+        },
+        {
+          "name": "LegMesh11",
+          "triangles": 144,
+          "surfaces": 2
+        },
+        {
+          "name": "TailMesh",
+          "triangles": 80,
+          "surfaces": 1
+        }
+      ],
+      "animations": [
+        {
+          "name": "idle",
+          "channels": 3,
+          "durationSeconds": 2.4,
+          "loopRequested": true,
+          "inPlace": true
+        },
+        {
+          "name": "walk",
+          "channels": 11,
+          "durationSeconds": 0.8,
+          "loopRequested": true,
+          "inPlace": true
+        }
+      ],
+      "skeleton": false,
+      "embeddedMaterials": true,
+      "externalResources": [],
+      "approximateHeightMetres": 0.759
+    },
+    {
+      "motionEnvelope": {
+        "method": "analytic rigid axis bounds; tail Y uses exact extrema within authored angle range; no sampled claim",
+        "assumptions": {
+          "visualPivot": "identity",
+          "rootRotation": "yaw only",
+          "rootScale": "1; original GLB scale retained",
+          "headAxis": "Y",
+          "tailAxis": "Z",
+          "tailAngleMaxRadians": 0.17,
+          "legAxis": "X",
+          "bodyTranslationYMax": 0.014001,
+          "walkLegLiftLocalMetres": 0.008
+        },
+        "numericalMarginMetres": 0.00001,
+        "radiusMax": 0.345776804198116,
+        "yMin": 0,
+        "yMax": 0.46800797293595503
+      },
+      "restBoundsMetres": {
+        "min": [
+          -0.18150000000000002,
+          0,
+          -0.34575
+        ],
+        "size": [
+          0.36300000000000004,
+          0.467997972935955,
+          0.6223226660593347
+        ]
+      },
+      "dimensionsMm": [
+        363,
+        468,
+        622
+      ],
+      "appearanceKey": "pomeranian-white",
+      "file": "pomeranian-white.glb",
+      "bytes": 137208,
+      "sha256": "bde68ac018214c1af54c77f24b292ba77e80d4c74d5bc86debf39130cfd66fd6",
+      "triangles": 1656,
+      "meshParts": [
+        {
+          "name": "Torso",
+          "triangles": 216,
+          "surfaces": 1
+        },
+        {
+          "name": "Face",
+          "triangles": 696,
+          "surfaces": 5
+        },
+        {
+          "name": "LegMesh5",
+          "triangles": 144,
+          "surfaces": 1
+        },
+        {
+          "name": "LegMesh7",
+          "triangles": 144,
+          "surfaces": 1
+        },
+        {
+          "name": "LegMesh9",
+          "triangles": 144,
+          "surfaces": 1
+        },
+        {
+          "name": "LegMesh11",
+          "triangles": 144,
+          "surfaces": 1
+        },
+        {
+          "name": "TailMesh",
+          "triangles": 168,
+          "surfaces": 1
+        }
+      ],
+      "animations": [
+        {
+          "name": "idle",
+          "channels": 3,
+          "durationSeconds": 2.4,
+          "loopRequested": true,
+          "inPlace": true
+        },
+        {
+          "name": "walk",
+          "channels": 11,
+          "durationSeconds": 0.8,
+          "loopRequested": true,
+          "inPlace": true
+        }
+      ],
+      "skeleton": false,
+      "embeddedMaterials": true,
+      "externalResources": [],
+      "approximateHeightMetres": 0.468
+    }
+  ]
+}

@@ -46,3 +46,9 @@ checks pass through native export, native file grant, real source/ZIP/Rust
 transactions and hash-pinned headless Godot interaction with two independent
 authored doors. There is no test executor registration and the real check job
 is explicitly blocked. This does not claim final product/model acceptance.
+
+## 持久源码安装请求期限（2026-09-12）
+
+私有 `package.request` 中，只有 `installSource` 与 `installSourceProposal` 使用现有源码事务的 60 秒传输等待期限。普通包读取、查询和导出保持原来的 15 秒；不改变模型预算、权限或安装语义。原生 `importSource`/`repeatImportSource` 会正常映射到私有 installSource。
+
+请求超时仅表示调用方没有及时取得回执，不证明底层未保存、未排队或已回滚。禁止据此自动重复安装；保留原 operationId、源码版本和检查任务，先通过正常状态/历史入口核对。本次调整解决已复现的约 16.5 秒安装超过旧 15 秒传输期限，不能承诺任意规模项目都在 60 秒内完成。

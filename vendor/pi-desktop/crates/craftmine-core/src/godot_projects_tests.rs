@@ -1,6 +1,67 @@
 use super::*;
 use crate::WorldDocument;
 
+const STATIC_IMPORT: &str = "[remap]\nimporter=\"scene\"\nimporter_version=1\ntype=\"PackedScene\"\n\n[params]\nmeshes/generate_lods=false\n";
+fn import_glb() -> Vec<u8> {
+    let mut json = br#"{"asset":{"version":"2.0"}}"#.to_vec();
+    while json.len() % 4 != 0 { json.push(b' '); }
+    let mut bytes = b"glTF".to_vec(); bytes.extend(2u32.to_le_bytes());
+    bytes.extend(((20 + json.len()) as u32).to_le_bytes());
+    bytes.extend((json.len() as u32).to_le_bytes()); bytes.extend(0x4e4f534au32.to_le_bytes()); bytes.extend(json); bytes
+}
+
+#[test]
+fn static_glb_import_policy_rejects_executable_or_cache_configuration() -> Result<()> {
+    source_entry("addons/tree/tree.glb.import", STATIC_IMPORT)?;
+    source_entry("addons/tree/tree.glb.import", &STATIC_IMPORT.replace('\n', "\r\n"))?;
+    failed(source_entry("addons/tree/tree.import", STATIC_IMPORT), "UNSUPPORTED_PROJECT_FILE");
+    for text in [STATIC_IMPORT.replace("false", "true"), STATIC_IMPORT.replace("\"scene\"", "\"custom\""),
+        format!("{STATIC_IMPORT}import_script/path=\"res://script.gd\"\n"),
+        format!("{STATIC_IMPORT}[deps]\nsource_file=\"C:/outside.glb\"\n"),
+        STATIC_IMPORT.replace("importer_version=1", "path=\"res://.godot/imported/tree.scn\""),
+        format!("{STATIC_IMPORT}meshes/generate_lods=false\n"),
+        STATIC_IMPORT.replace("type=\"PackedScene\"", "type=\"Script\""),
+        STATIC_IMPORT.replace("meshes/generate_lods=false", ""),
+        format!("{STATIC_IMPORT}nodes/root_script=\"res://script.gd\"\n")] {
+        failed(source_entry("tree.glb.import", &text), "INVALID_GLB_IMPORT_POLICY");
+    }
+    import_policy::validate_glb(&import_glb())?;
+    failed(import_policy::validate_glb(b"not a GLB container"), "GLB_IMPORT_MODEL_INVALID");
+    Ok(())
+}
+
+#[test]
+fn static_glb_import_all_source_transactions_validate_policy_and_paired_model() -> Result<()> {
+    for git in [false, true] {
+        let dir=tempfile::tempdir()?; let mut journal=setup(&dir.path().join("tasks.sqlite"))?; let context=ctx("one");
+        let mut creation=create_request(&context); creation["files"].as_array_mut().unwrap().push(json!({"path":"tree.glb.import","text":STATIC_IMPORT}));
+        failed(journal.godot_project_create(&creation), "GLB_IMPORT_MODEL_REQUIRED");
+        creation["files"][3]["text"]=json!(format!("{STATIC_IMPORT}import_script/path=\"res://bad.gd\"\n"));
+        failed(journal.godot_project_create(&creation), "INVALID_GLB_IMPORT_POLICY");
+        let version=journal.godot_project_create(&create_request(&context))?;
+        let operation=if git { journal.content_migrate_apply(&json!({"worldId":"a"}))?;let status=journal.content_status(&json!({"worldId":"a"}))?;
+            json!({"operationId":"import-sidecar","worldId":"a","repoId":status["repoId"],"branchId":"main","expectedHeadOid":status["headOid"],"expectedAppliedOid":status["appliedOid"],"expectedProgressRevision":0}) } else { Value::Null };
+        let bad=STATIC_IMPORT.replace("false", "true");
+        for op in [json!({"op":"put","path":"tree.glb.import","text":bad,"expectedHash":null}),json!({"op":"putBytes","path":"tree.glb.import","bytesBase64":STANDARD.encode(bad.as_bytes()),"expectedHash":null})] {
+            failed(journal.godot_project_patch(&json!({"context":context,"worldId":"a","toolCallId":"bad-policy","revision":version["revision"],"manifestHash":version["manifestHash"],"operation":operation,"operations":[op]})), "INVALID_GLB_IMPORT_POLICY");
+        }
+        let mut request=json!({"context":context,"worldId":"a","toolCallId":"import-files","revision":version["revision"],"manifestHash":version["manifestHash"],"operation":operation,"files":[
+            {"path":"tree.glb","bytesBase64":STANDARD.encode(import_glb()),"expectedHash":null},
+            {"path":"tree.glb.import","bytesBase64":STANDARD.encode(bad.as_bytes()),"expectedHash":null}]});
+        failed(journal.godot_project_apply_files(&request), "INVALID_GLB_IMPORT_POLICY");
+        assert_eq!(journal.godot_project_index(&index_request(&context))?["manifestHash"],version["manifestHash"]);
+        request["files"][1]["bytesBase64"]=json!(STANDARD.encode(STATIC_IMPORT));
+        let installed=journal.godot_project_apply_files(&request)?;
+        assert_eq!(journal.godot_project_read(&read_request(&context,&installed,"tree.glb.import"))?["text"],STATIC_IMPORT);
+        for op in [json!({"op":"remove","path":"tree.glb","expectedHash":digest_bytes(&import_glb())}),json!({"op":"putBytes","path":"tree.glb","expectedHash":digest_bytes(&import_glb()),"bytesBase64":STANDARD.encode(b"not-glb")})] {
+            let result=journal.godot_project_patch(&json!({"context":context,"worldId":"a","toolCallId":"break-pair","revision":installed["revision"],"manifestHash":installed["manifestHash"],"operation":operation,"operations":[op]}));
+            assert!(result.unwrap_err().to_string().contains("GLB_IMPORT_MODEL_"));
+        }
+        assert_eq!(journal.godot_project_index(&index_request(&context))?["manifestHash"],installed["manifestHash"]);
+    }
+    Ok(())
+}
+
 #[test]
 fn private_source_context_reads_an_existing_finished_workspace_without_writing() -> Result<()> {
     let dir=tempfile::tempdir()?;let path=dir.path().join("tasks.sqlite");let mut journal=setup(&path)?;

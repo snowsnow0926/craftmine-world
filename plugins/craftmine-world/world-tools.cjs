@@ -123,6 +123,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     assertActive();
     if(definition.name==='godot_guidance')return require('./godot-guidance.cjs').queryGuidance(core,
       {context,worldId:workspace.worldId,args,assertActive});
+    if(definition.name==='godot_view_capture')return require('./godot-view-capture.cjs').captureGodotView({context,worldId:workspace.worldId,args,services:options,assertActive});
     await verifications?.cancelOtherTurns(context);
     await reviews?.cancelOtherTurns(context);
     const godotWrites={godot_project_create:true,godot_project_patch:true,godot_asset_put:true,godot_build_start:true};
@@ -219,6 +220,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     if(definition.name==='creation_operation'){
       creationExecute??=require('./creation-source-service.cjs').createCreationSourceService({core,capture:options.creationTarget,sample:options.sampleLiveState,assertActive:context=>{if(isEnded(context))throw Error('TURN_ENDED');}});
       return creationExecute({context,workspace,request:args.request});
+    }
+    if(definition.name==='godot_source_library') {
+      if(typeof options.sourceLibrary!=='function')return {available:false,reason:'SOURCE_LIBRARY_NOT_WIRED'};
+      const result=await options.sourceLibrary(args,context,workspace.worldId,invocation.toolCallId);assertActive();return result;
     }
     if(definition.name==='asset_library') {
       const library=createLibraryBinding({core,context,worldId:workspace.worldId,methods:options.libraryMethods});

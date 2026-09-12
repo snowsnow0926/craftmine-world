@@ -31,3 +31,33 @@ async function worldTaskAction(port,worldId,task,channel){
 }
 export const resumeThroughWorldUi=(port,worldId,task)=>worldTaskAction(port,worldId,task,'task.resume');
 export const finishInterruptedThroughWorldUi=(port,worldId,task)=>worldTaskAction(port,worldId,task,'task.discard');
+// Use the ordinary Session API on the main renderer of our owned headless
+// Electron. The first ordinary prompt binds this new session to selected world.
+export async function createSessionThroughDesktopUi(port,worldId){
+ assert.ok(Number.isSafeInteger(port)&&port>0&&port<65536);
+ assert.ok(typeof worldId==='string'&&worldId.length>0);
+ const targets=await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+ const matches=[];
+ for(const target of targets){
+  // Only the ordinary packaged desktop renderer owns Session IPC. Godot pages
+  // and WASM worker targets may not service Runtime.evaluate while executing.
+  if(target.type!=='page'||typeof target.url!=='string')continue;
+  const page=new URL(target.url);
+  if(page.protocol!=='file:'||!page.pathname.endsWith('/out/renderer/index.html'))continue;
+  if(!target.webSocketDebuggerUrl)continue;
+  const url=new URL(target.webSocketDebuggerUrl);
+  if(!['127.0.0.1','localhost'].includes(url.hostname)||url.port!==String(port))continue;
+  if(await evaluate(url.href,'!!globalThis.__craftmineHeadless && !!globalThis.piDesktop && !new URLSearchParams(location.search).get("surface")'))matches.push(url.href);
+ }
+ assert.equal(matches.length,1,'OWNED_PLAYER_RENDERER_REQUIRED');
+ return evaluate(matches[0],`(async()=>{
+  const api=globalThis.piDesktop;
+  const invoke=async(name,...args)=>{const result=await api.invoke(api.channels.invoke[name],...args);if(!result?.ok)throw Error(result?.error?.message??'Player session API failed');return result.data;};
+  await api.pluginPanelInvoke('craftmine.world','workbench.capabilities',{worldId:${JSON.stringify(worldId)}});
+  const existing=await invoke('sessionList');
+  if(!Array.isArray(existing.sessions)||existing.sessions.length!==0)throw Error('PLAYER_EXISTING_SESSION_REVIEW_REQUIRED');
+  const created=await invoke('sessionCreate',{title:'预制世界继续创造',mode:'agent',permissionMode:'inherit'});
+  if(typeof created.session?.id!=='string')throw Error('PLAYER_SESSION_CREATE_FAILED');
+  return {sessionId:created.session.id,worldId:${JSON.stringify(worldId)},method:'sessionCreate',existingSessions:0};
+ })()`);
+}

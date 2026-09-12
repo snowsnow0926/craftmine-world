@@ -119,8 +119,7 @@ function buildApi() {
       // Live observation of the running instance (task S6). Returns the host's
       // observation envelope, or null when no formal instance is running.
       godotLiveState: (input) => call("craftmine.godotLiveState", [input]),
-      godotPerformance: (input) => call("craftmine.godotPerformance", [input]),
-      godotEnginePerformance: (input) => call("craftmine.godotEnginePerformance", [input]),
+      godotViewCapture: (input) => call("craftmine.godotViewCapture", [input]),
       creationTarget: (input) => call("craftmine.creationTarget", [input]),
       creationCheckCompleted: (input) => call("craftmine.creationCheckCompleted", [input]),
     } } : {}),

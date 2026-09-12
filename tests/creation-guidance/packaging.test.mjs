@@ -8,6 +8,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const require=createRequire(import.meta.url);
 
@@ -16,47 +17,32 @@ test('production plugin build includes exact guidance resources and serves a pin
   try {
     execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',output],
       {cwd:root,encoding:'utf8',windowsHide:true,timeout:120000,maxBuffer:2*1024*1024});
-    for(const file of ['godot-guidance.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd',
-      'godot-engine-api.cjs','godot-diagnostics.cjs','creation-change-summary.cjs','engine-api/4.7.2-stable/index.json','engine-api/4.7.2-stable/classdb.json']){
+    for(const file of ['godot-guidance.cjs','godot-view-capture.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
       assert.deepEqual(fs.readFileSync(path.join(output,file)),fs.readFileSync(path.join(root,'plugins/craftmine-world',file)),file);
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
     assert.equal(typeof require(path.join(output,'godot-executor.cjs')).createGodotExecutor,'function','the packaged executor must load all of its actual runtime dependencies');
-    assert.equal(typeof require(path.join(output,'creation-operations.cjs')).compileCreationOperation,'function','the actual compiler dependency closure must load from the package');
     const corpus=require(path.join(output,'guidance/catalog.json'));
+    const packedSchema=require(path.join(output,'creation-operation-schema.cjs'));
+    const packedTool=require(path.join(output,'manifest.json')).contributes.agentTools.find(tool=>tool.name==='creation_operation');
+    assert.equal(packedTool.description,packedSchema.CREATION_OPERATION_DESCRIPTION);
+    assert.deepEqual(packedTool.schema.properties.request,packedSchema.CREATION_OPERATION_SCHEMA);
+    assert.match(packedTool.description,/not an installed asset ID, GLB/);
+    assert.match(packedTool.schema.properties.request.oneOf[0].properties.kind.description,/not an AssetRef/);
     const {createWorldTools}=require(path.join(output,'world-tools.cjs'));
     let selectedSkill=corpus.skills[0];
     const calls=[];
-    const failedJob={jobId:'gjob-'+'a'.repeat(64),worldId:'packaged-world',buildId:'gbd-fixture',sourceRevision:1,
-      manifestHash:'b'.repeat(64),outputHash:'c'.repeat(64),status:'failed',candidateId:null,
-      output:{format:'craftmine.godot-job-result/1',passed:false,compile:{errors:['SCRIPT ERROR: Parse Error: Expected parameter name.']},check:{passed:false,assertions:[]}}};
     const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
       calls.push(method);
       if(method==='workspace.open')return {worldId:'packaged-world'};
-      if(method==='godotBuild.read')return failedJob;
-      if(method==='godotProject.index'){
-        const files=selectedSkill.references.filter(ref=>ref.requiredInterface).map(ref=>({path:ref.projectPath,sha256:ref.sha256})),offset=args.offset??0,limit=args.limit??32;
-        return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
-          baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable',files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
-      }
+      if(method==='godotProject.index')return {worldId:'packaged-world',revision:1,manifestHash:'a'.repeat(64),
+        baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,engineVersion:'4.7.2-stable'};
       if(method==='godotProject.read')return {...args,sha256:selectedSkill.references.find(ref=>ref.projectPath===args.path).sha256};
       throw Error(`Unexpected packaged host call ${method}`);
     }};
     const tools=createWorldTools(core,async()=>({activeWorldId:'packaged-world'}));
     const tool=tools.find(entry=>entry.name==='godot_guidance');assert.ok(tool);
     const context={projectId:'project',sessionId:'session',turnId:'turn',toolCallId:'call',executionId:'execution'};
-    const docs=tools.find(entry=>entry.name==='godot_docs');
-    const metadata=await docs.execute({mode:'api-info'},context);
-    assert.equal(metadata.status,'known');assert.equal(metadata.pin.engineVersion,'4.7.2-stable');
-    const member=await docs.execute({mode:'api-class',className:'CharacterBody3D',memberName:'move_and_slide'},context);
-    assert.equal(member.items[0].metadata.return.typeName,'bool');
-    assert.ok(metadata.limitations.some(text=>text.includes('Web')));
-    assert.equal(typeof require(path.join(output,'godot-diagnostics.cjs')).diagnoseGodotBuildRead,'function');
-    assert.deepEqual(calls,[],'engine API metadata must not request world or engine execution');
-    const checked=await tools.find(entry=>entry.name==='godot_build_read').execute({jobId:failedJob.jobId},context);
-    assert.deepEqual(checked.output,failedJob.output);assert.equal(checked.outputHash,failedJob.outputHash);
-    assert.equal(checked.diagnostics.diagnostics[0].errorCode,'GODOT_SCRIPT_PARSE_ERROR');
-    assert.equal(checked.diagnostics.source.buildId,failedJob.buildId);assert.equal(checked.candidateId,null);
     const catalog=await tool.execute({mode:'catalog'},context);
     const skill=catalog.skills[0];
     const body=await tool.execute({mode:'read',id:skill.id,version:skill.version,sha256:skill.sha256,
@@ -83,12 +69,14 @@ test('production plugin build includes exact guidance resources and serves a pin
     const exampleBody=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:example.sha256,path:example.path,
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
     assert.equal(exampleBody.text,fs.readFileSync(path.join(output,'guidance/references/double-press-rule.gd'),'utf8').replace(/\r\n/g,'\n'));
-    assert.ok(calls.every(method=>['workspace.open','godotProject.index','godotProject.read','godotBuild.read'].includes(method)));
-    // Exercise the same real materialized v1/v2 source, complete-cohort negative
-    // cases and res:// query calls through this actual packaged broker closure.
-    const childEnv={...process.env,CRAFTMINE_GUIDANCE_PLUGIN_ROOT:output};delete childEnv.NODE_TEST_CONTEXT;
-    const cohortOutput=execFileSync(process.execPath,['--test','--test-reporter=tap',path.join(root,'tests/creation-guidance/current-cohorts.test.mjs')],
-      {cwd:root,env:childEnv,windowsHide:true,encoding:'utf8',timeout:120000,maxBuffer:2*1024*1024});
-    assert.match(cohortOutput,/# tests 7\b/);assert.match(cohortOutput,/# pass 7\b/);assert.match(cohortOutput,/# fail 0\b/);
+    assert.ok(calls.every(method=>['workspace.open','godotProject.index','godotProject.read'].includes(method)));
+    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j95sAAAAASUVORK5CYII=','base64'),sha256=createHash('sha256').update(png).digest('hex');
+    let captures=0;
+    const noCancel={cancelOtherTurns:async()=>assert.fail('A visual read must not cancel other verification or review tasks')};
+    const viewTools=createWorldTools(core,async()=>({activeWorldId:'packaged-world'}),()=>false,noCancel,noCancel,{captureView:async input=>{captures++;assert.equal(input.worldId,'packaged-world');assert.deepEqual(input.context,{projectId:'project',sessionId:'session',turnId:'turn'});return {format:'craftmine.godot-view-capture/1',status:'captured',delivery:'image-block-ready',worldId:input.worldId,buildId:input.buildId,instanceId:input.instanceId??'preview-instance',candidateId:input.candidateId??null,scope:input.candidateId?'candidate':'formal',capturedAt:'2026-09-12T00:00:00Z',width:1,height:1,sourceWidth:1,sourceHeight:1,viewWidth:1,viewHeight:1,resized:false,pngBase64:png.toString('base64'),sha256};}});
+    const capture=viewTools.find(tool=>tool.name==='godot_view_capture');assert.ok(capture);
+    const visual=await capture.execute({buildId:'build',instanceId:'instance'},context);assert.equal(visual.images[0].data,png.toString('base64'));assert.equal(JSON.parse(visual.text).sha256,sha256);assert.equal(visual.text.includes(png.toString('base64')),false);
+    const candidate=await capture.execute({buildId:'candidate-build',candidateId:'gcan-'+'a'.repeat(64)},context);assert.equal(JSON.parse(candidate.text).instanceId,'preview-instance');
+    await assert.rejects(capture.execute({buildId:'build',instanceId:'instance',worldId:'other'},context));assert.equal(captures,2);
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });

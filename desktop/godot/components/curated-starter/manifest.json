@@ -1,0 +1,1981 @@
+{
+  "format": "craftmine.curated-source-manifest/1",
+  "id": "curated-starter",
+  "version": "1.0.0",
+  "purpose": "内部精选原始素材清单，供既有 packStaticPackage 使用；不是新公共包格式。",
+  "sources": {
+    "nature": {
+      "name": "Kenney Nature Kit",
+      "version": "2.1",
+      "url": "https://kenney.nl/assets/nature-kit",
+      "archive": "kenney_nature-kit.zip",
+      "prefix": "Models/GLTF format/",
+      "archiveBytes": 10537521,
+      "archiveSha256": "fa7974a0d342bfe63c38664ba9f8ec1a4aab8ea25f099bdc56870e33588c4d9d",
+      "license": "CC0-1.0",
+      "licenseFile": "licenses/kenney-nature-License.txt",
+      "licenseSha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+    },
+    "castle": {
+      "name": "Kenney Castle Kit",
+      "version": "2.0",
+      "url": "https://kenney.nl/assets/castle-kit",
+      "archive": "kenney_castle-kit.zip",
+      "prefix": "Models/GLB format/",
+      "archiveBytes": 2232589,
+      "archiveSha256": "921f3f73927bb23106cae34bc21d5ab4b033a9fc120475e96f714a406e3169df",
+      "license": "CC0-1.0",
+      "licenseFile": "licenses/kenney-castle-License.txt",
+      "licenseSha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+    }
+  },
+  "items": [
+    {
+      "id": "cw.nature.tree-oak",
+      "label": "橡树",
+      "tags": [
+        "树木",
+        "阔叶",
+        "自然"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/tree_oak.glb",
+      "sourceFile": "models/nature/tree_oak.glb",
+      "sourceSha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3",
+      "entryScene": "scenes/cw.nature.tree-oak.tscn",
+      "visualScene": "scenes/cw.nature.tree-oak.tscn",
+      "files": [
+        {
+          "path": "models/nature/tree_oak.glb",
+          "bytes": 14644,
+          "sha256": "d7fd8773674928c50c11b66d12c636d49bdcc15a8b1c7fbb98e6f63a3439a3f3"
+        },
+        {
+          "path": "models/nature/tree_oak.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.tree-oak.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.tree-oak.gd.uid",
+          "bytes": 20,
+          "sha256": "ee4800c5f7b7f3a9c43b801f177433f39a96dee27f9005f7af718bf9767b6bff"
+        },
+        {
+          "path": "scenes/cw.nature.tree-oak.tscn",
+          "bytes": 425,
+          "sha256": "f0b5828fcba333380fa56fcd131ee9de0987461c42a053812968647aade33841"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/tree_oak.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
+      "placement": {
+        "units": "metres",
+        "scale": 4,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          2562,
+          4905,
+          2959
+        ],
+        "visualOffsetMm": [
+          0,
+          200,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.32027706503868103,
+            -0.05,
+            -0.36982399225234985
+          ],
+          "max": [
+            0.3202769458293915,
+            1.1762399196624755,
+            0.36982399225234985
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 2,
+        "meshInstances": 1,
+        "triangles": 196,
+        "materials": 2,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "none",
+        "visualOnlyScene": "scenes/cw.nature.tree-oak.tscn",
+        "triangles": 0,
+        "notes": "草木装饰不阻挡玩家，未添加粗略整冠碰撞。"
+      }
+    },
+    {
+      "id": "cw.nature.tree-detailed",
+      "label": "繁茂阔叶树",
+      "tags": [
+        "树木",
+        "阔叶",
+        "自然"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/tree_detailed.glb",
+      "sourceFile": "models/nature/tree_detailed.glb",
+      "sourceSha256": "c041daf2f0fb1d49e4325227cbcd58667adbe51e9b55e8c1f0a94b74cc521b3b",
+      "entryScene": "scenes/cw.nature.tree-detailed.tscn",
+      "visualScene": "scenes/cw.nature.tree-detailed.tscn",
+      "files": [
+        {
+          "path": "models/nature/tree_detailed.glb",
+          "bytes": 31412,
+          "sha256": "c041daf2f0fb1d49e4325227cbcd58667adbe51e9b55e8c1f0a94b74cc521b3b"
+        },
+        {
+          "path": "models/nature/tree_detailed.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.tree-detailed.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.tree-detailed.gd.uid",
+          "bytes": 20,
+          "sha256": "c8c9f8d3d829412f7ddca0a9778114162cb54f9bc6a94a2625e656e2e51e3bf2"
+        },
+        {
+          "path": "scenes/cw.nature.tree-detailed.tscn",
+          "bytes": 458,
+          "sha256": "630092053befcf0bc678d79bc171171d37b7cae18df87cf988a4dbcc0b96c773"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/tree_detailed.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
+      "placement": {
+        "units": "metres",
+        "scale": 4,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3388,
+          5330,
+          3046
+        ],
+        "visualOffsetMm": [
+          36,
+          200,
+          -35
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.43248260021209717,
+            -0.05,
+            -0.3721359670162201
+          ],
+          "max": [
+            0.4146324396133423,
+            1.2824170112609863,
+            0.3894665241241455
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 3,
+        "meshInstances": 1,
+        "triangles": 402,
+        "materials": 3,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "none",
+        "visualOnlyScene": "scenes/cw.nature.tree-detailed.tscn",
+        "triangles": 0,
+        "notes": "草木装饰不阻挡玩家，未添加粗略整冠碰撞。"
+      }
+    },
+    {
+      "id": "cw.nature.tree-pine",
+      "label": "圆冠松树",
+      "tags": [
+        "树木",
+        "针叶",
+        "自然"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/tree_pineRoundA.glb",
+      "sourceFile": "models/nature/tree_pineRoundA.glb",
+      "sourceSha256": "7dc9711f31585eafdcb965d0649c30af5e19f2def1955f7a915081d30759ef8e",
+      "entryScene": "scenes/cw.nature.tree-pine.tscn",
+      "visualScene": "scenes/cw.nature.tree-pine.tscn",
+      "files": [
+        {
+          "path": "models/nature/tree_pineRoundA.glb",
+          "bytes": 14488,
+          "sha256": "7dc9711f31585eafdcb965d0649c30af5e19f2def1955f7a915081d30759ef8e"
+        },
+        {
+          "path": "models/nature/tree_pineRoundA.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.tree-pine.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.tree-pine.gd.uid",
+          "bytes": 20,
+          "sha256": "ce3e3c2d076b1882bc34b7d48066d05851b6246aa78219c0d5474fad8464a7e3"
+        },
+        {
+          "path": "scenes/cw.nature.tree-pine.tscn",
+          "bytes": 435,
+          "sha256": "0efd8f288d78739c844a5d08077c3b0c5f42bd9f956f9cdbc2444192ab967756"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/tree_pineRoundA.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
+      "placement": {
+        "units": "metres",
+        "scale": 4,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          2468,
+          5466,
+          2850
+        ],
+        "visualOffsetMm": [
+          0,
+          200,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.3085094094276428,
+            -0.050000000000000065,
+            -0.3562360107898712
+          ],
+          "max": [
+            0.3085094094276428,
+            1.3164371967315673,
+            0.3562360107898712
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 2,
+        "meshInstances": 1,
+        "triangles": 204,
+        "materials": 2,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "none",
+        "visualOnlyScene": "scenes/cw.nature.tree-pine.tscn",
+        "triangles": 0,
+        "notes": "草木装饰不阻挡玩家，未添加粗略整冠碰撞。"
+      }
+    },
+    {
+      "id": "cw.nature.grass",
+      "label": "草丛",
+      "tags": [
+        "草地",
+        "地表点缀"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/grass.glb",
+      "sourceFile": "models/nature/grass.glb",
+      "sourceSha256": "260e41d3e5f2472492ed7b475c5b92a30b13ce2bad408535b5ff50574d4575e7",
+      "entryScene": "scenes/cw.nature.grass.tscn",
+      "visualScene": "scenes/cw.nature.grass.tscn",
+      "files": [
+        {
+          "path": "models/nature/grass.glb",
+          "bytes": 11496,
+          "sha256": "260e41d3e5f2472492ed7b475c5b92a30b13ce2bad408535b5ff50574d4575e7"
+        },
+        {
+          "path": "models/nature/grass.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.grass.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.grass.gd.uid",
+          "bytes": 20,
+          "sha256": "d60774d475396f2c45cd8bdb4fe2d12ce4276224152377e64ad565ac13636073"
+        },
+        {
+          "path": "scenes/cw.nature.grass.tscn",
+          "bytes": 427,
+          "sha256": "592ef9c786a753e71486cd0703351a421619144ea3b641d460e3792001555a3b"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/grass.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
+      "placement": {
+        "units": "metres",
+        "scale": 2,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          762,
+          508,
+          784
+        ],
+        "visualOffsetMm": [
+          17,
+          100,
+          86
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.19883659482002258,
+            -0.05,
+            -0.23933875560760498
+          ],
+          "max": [
+            0.1822374016046524,
+            0.2040000081062317,
+            0.15284404158592224
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 132,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "none",
+        "visualOnlyScene": "scenes/cw.nature.grass.tscn",
+        "triangles": 0,
+        "notes": "草木装饰不阻挡玩家，未添加粗略整冠碰撞。"
+      }
+    },
+    {
+      "id": "cw.nature.flower-red",
+      "label": "红色花丛",
+      "tags": [
+        "花",
+        "地表点缀"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/flower_redA.glb",
+      "sourceFile": "models/nature/flower_redA.glb",
+      "sourceSha256": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020",
+      "entryScene": "scenes/cw.nature.flower-red.tscn",
+      "visualScene": "scenes/cw.nature.flower-red.tscn",
+      "files": [
+        {
+          "path": "models/nature/flower_redA.glb",
+          "bytes": 7104,
+          "sha256": "171930b7789ddbf735af3745576b5393750beb9133b9ff4a444bb6bb2986c020"
+        },
+        {
+          "path": "models/nature/flower_redA.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.flower-red.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.flower-red.gd.uid",
+          "bytes": 19,
+          "sha256": "936c659b1848a1748dfc98e4cf124703b641f11bf320b9d207f328e6613b2341"
+        },
+        {
+          "path": "scenes/cw.nature.flower-red.tscn",
+          "bytes": 441,
+          "sha256": "ae53a8d48002ce861821e69bd414ab242cdd092debcd8266eed34b7656a89870"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/flower_redA.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
+      "placement": {
+        "units": "metres",
+        "scale": 2,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          318,
+          585,
+          362
+        ],
+        "visualOffsetMm": [
+          50,
+          100,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.10453449934720993,
+            -0.05,
+            -0.09052953124046326
+          ],
+          "max": [
+            0.054563019424676895,
+            0.24249998927116395,
+            0.09052953124046326
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 2,
+        "meshInstances": 1,
+        "triangles": 76,
+        "materials": 2,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "none",
+        "visualOnlyScene": "scenes/cw.nature.flower-red.tscn",
+        "triangles": 0,
+        "notes": "草木装饰不阻挡玩家，未添加粗略整冠碰撞。"
+      }
+    },
+    {
+      "id": "cw.nature.bush",
+      "label": "浓密灌木",
+      "tags": [
+        "灌木",
+        "地表点缀"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/plant_bushDetailed.glb",
+      "sourceFile": "models/nature/plant_bushDetailed.glb",
+      "sourceSha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406",
+      "entryScene": "scenes/cw.nature.bush.tscn",
+      "visualScene": "scenes/cw.nature.bush.tscn",
+      "files": [
+        {
+          "path": "models/nature/plant_bushDetailed.glb",
+          "bytes": 10172,
+          "sha256": "2e0487020d68ccf664435db9d829c78ae00e6d2785ee3ec10b9f89cc70a10406"
+        },
+        {
+          "path": "models/nature/plant_bushDetailed.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.bush.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.bush.gd.uid",
+          "bytes": 19,
+          "sha256": "be2fe221a2e76e53b218e92c260d4661388d89f290b4f8482be4830456b0b5c3"
+        },
+        {
+          "path": "scenes/cw.nature.bush.tscn",
+          "bytes": 423,
+          "sha256": "6d706ff9b437cd67cedacbb74633b3a687dbf22906db97a2db9b3c7563b16a2f"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/plant_bushDetailed.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态自然装饰，可通过；没有采集、成长或战斗行为。",
+      "placement": {
+        "units": "metres",
+        "scale": 2,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          1205,
+          721,
+          1205
+        ],
+        "visualOffsetMm": [
+          0,
+          100,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.30127185583114624,
+            -0.05,
+            -0.30127185583114624
+          ],
+          "max": [
+            0.30127185583114624,
+            0.3104109287261963,
+            0.30127185583114624
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 104,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "none",
+        "visualOnlyScene": "scenes/cw.nature.bush.tscn",
+        "triangles": 0,
+        "notes": "草木装饰不阻挡玩家，未添加粗略整冠碰撞。"
+      }
+    },
+    {
+      "id": "cw.nature.rock",
+      "label": "小型岩石",
+      "tags": [
+        "岩石",
+        "自然"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/rock_smallA.glb",
+      "sourceFile": "models/nature/rock_smallA.glb",
+      "sourceSha256": "df9fff9d711e61370e8df0caa2514c89b8f8a8dc6c6fafaf4eb2ec79c5ae07c1",
+      "entryScene": "scenes/cw.nature.rock.tscn",
+      "visualScene": "scenes/cw.nature.rock-visual.tscn",
+      "files": [
+        {
+          "path": "models/nature/rock_smallA.glb",
+          "bytes": 3044,
+          "sha256": "df9fff9d711e61370e8df0caa2514c89b8f8a8dc6c6fafaf4eb2ec79c5ae07c1"
+        },
+        {
+          "path": "models/nature/rock_smallA.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.rock.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.rock.gd.uid",
+          "bytes": 20,
+          "sha256": "503254c8938e2e88b60070f54c4bcb535167f7937452d5f8564f0e0fab602567"
+        },
+        {
+          "path": "scenes/cw.nature.rock.tscn",
+          "bytes": 1928,
+          "sha256": "27f85b3b31db3c646cbb5096658ccd6eaff5a8055de4fd3a694ecba81b8c5c25"
+        },
+        {
+          "path": "scenes/cw.nature.rock-visual.tscn",
+          "bytes": 417,
+          "sha256": "173240d007d9f83757866fe838627fec3fbf3fd3ff8bcfc0b69e9c90fc031bd1"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/rock_smallA.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          1082,
+          574,
+          1082
+        ],
+        "visualOffsetMm": [
+          0,
+          150,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.18039999902248383,
+            -0.04999999999999998,
+            -0.18039999902248383
+          ],
+          "max": [
+            0.18039999902248383,
+            0.14122400879859925,
+            0.18039999902248383
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 2,
+        "meshInstances": 1,
+        "triangles": 16,
+        "materials": 2,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.nature.rock-visual.tscn",
+        "triangles": 16,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.nature.bridge-wood",
+      "label": "木桥",
+      "tags": [
+        "桥",
+        "道路",
+        "静态地形"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/bridge_wood.glb",
+      "sourceFile": "models/nature/bridge_wood.glb",
+      "sourceSha256": "3da4c208b0f72b7f2ba42db521b62ec4b0278050c75256a6982c40d21aab5701",
+      "entryScene": "scenes/cw.nature.bridge-wood.tscn",
+      "visualScene": "scenes/cw.nature.bridge-wood-visual.tscn",
+      "files": [
+        {
+          "path": "models/nature/bridge_wood.glb",
+          "bytes": 15692,
+          "sha256": "3da4c208b0f72b7f2ba42db521b62ec4b0278050c75256a6982c40d21aab5701"
+        },
+        {
+          "path": "models/nature/bridge_wood.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.bridge-wood.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.bridge-wood.gd.uid",
+          "bytes": 20,
+          "sha256": "362240589f26408141aaaffaaa541a7f27eb0048a0e74864a3f186095c4febe3"
+        },
+        {
+          "path": "scenes/cw.nature.bridge-wood.tscn",
+          "bytes": 12007,
+          "sha256": "a340e885a02f889a3627b17a3f713b15a7c7d9029e04dd1c19c2a30b4711248e"
+        },
+        {
+          "path": "scenes/cw.nature.bridge-wood-visual.tscn",
+          "bytes": 438,
+          "sha256": "97cf3620c0b36884af87182d6841fe5da87cab6cee9f02127a2db1fb0b5888b7"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/bridge_wood.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3120,
+          1200,
+          3120
+        ],
+        "visualOffsetMm": [
+          0,
+          150,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5199999809265137,
+            -0.05,
+            -0.5199999809265137
+          ],
+          "max": [
+            0.5199999809265137,
+            0.3500000059604645,
+            0.5199999809265137
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 3,
+        "meshInstances": 1,
+        "triangles": 220,
+        "materials": 3,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.nature.bridge-wood-visual.tscn",
+        "triangles": 220,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.nature.fence-wood",
+      "label": "木围栏",
+      "tags": [
+        "围栏",
+        "边界",
+        "静态地形"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "nature",
+      "sourcePath": "Models/GLTF format/fence_simple.glb",
+      "sourceFile": "models/nature/fence_simple.glb",
+      "sourceSha256": "ecaf6c29532aa9fd305a8ef71df769d60748bd797f2eb1c63bdefc4edb8062a7",
+      "entryScene": "scenes/cw.nature.fence-wood.tscn",
+      "visualScene": "scenes/cw.nature.fence-wood-visual.tscn",
+      "files": [
+        {
+          "path": "models/nature/fence_simple.glb",
+          "bytes": 5712,
+          "sha256": "ecaf6c29532aa9fd305a8ef71df769d60748bd797f2eb1c63bdefc4edb8062a7"
+        },
+        {
+          "path": "models/nature/fence_simple.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.nature.fence-wood.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.nature.fence-wood.gd.uid",
+          "bytes": 18,
+          "sha256": "c97104c45a22d5f179e16114e669abd07a9319a7682fb32151cbaafc0e783de4"
+        },
+        {
+          "path": "scenes/cw.nature.fence-wood.tscn",
+          "bytes": 5220,
+          "sha256": "9aff66468101e13f51d62ad4851832f12ffdecd5e0fd96303a529243c1400c51"
+        },
+        {
+          "path": "scenes/cw.nature.fence-wood-visual.tscn",
+          "bytes": 440,
+          "sha256": "a117bf7c5b646260bcab3a4570bde9fe6c948f0525134bee659b1b9fe05b22e3"
+        },
+        {
+          "path": "licenses/kenney-nature-License.txt",
+          "bytes": 611,
+          "sha256": "cb96b75e3560ac78d7a53ce6f083f4cdb5c53faea6141b62d63458dcfe1e4b9d"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/nature/fence_simple.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3000,
+          1035,
+          210
+        ],
+        "visualOffsetMm": [
+          0,
+          150,
+          1395
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5,
+            -0.05,
+            -0.5
+          ],
+          "max": [
+            0.5,
+            0.29502729773521424,
+            -0.4300000071525574
+          ]
+        },
+        "notes": "接地高度已在包装场景修正，原GLB字节未变。"
+      },
+      "geometry": {
+        "declaredNodes": 2,
+        "activeNodes": 1,
+        "primitives": 2,
+        "meshInstances": 1,
+        "triangles": 64,
+        "materials": 2,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": true,
+        "external": [],
+        "extensions": [
+          "KHR_materials_unlit"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.nature.fence-wood-visual.tscn",
+        "triangles": 64,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.wall",
+      "label": "城墙直段",
+      "tags": [
+        "城墙",
+        "模块",
+        "静态地形"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/wall.glb",
+      "sourceFile": "models/castle/wall.glb",
+      "sourceSha256": "b2ea00acbf4ba91ff0d4b8b942edf9fa12d821abd0b2c945c57a2b9b3153cfe3",
+      "entryScene": "scenes/cw.castle.wall.tscn",
+      "visualScene": "scenes/cw.castle.wall-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/wall.glb",
+          "bytes": 16552,
+          "sha256": "b2ea00acbf4ba91ff0d4b8b942edf9fa12d821abd0b2c945c57a2b9b3153cfe3"
+        },
+        {
+          "path": "models/castle/wall.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.wall.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.wall.gd.uid",
+          "bytes": 20,
+          "sha256": "61a057299f381c2652b772f6c0fe8cbd3cd1ec71a2e8dfd6d04804b26ef1c1ec"
+        },
+        {
+          "path": "scenes/cw.castle.wall.tscn",
+          "bytes": 11955,
+          "sha256": "e5ee1cd0023159c0829cacf764708b78689b9ebc5010674a2eacc8d10bd81417"
+        },
+        {
+          "path": "scenes/cw.castle.wall-visual.tscn",
+          "bytes": 407,
+          "sha256": "f367dbd6c0d8b6163b14da33c7983ada15e40bd0e5ecbc3b768d88162a452467"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/wall.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3000,
+          3930,
+          3000
+        ],
+        "visualOffsetMm": [
+          0,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5,
+            0,
+            -0.5
+          ],
+          "max": [
+            0.5,
+            1.309999942779541,
+            0.5
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 178,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.wall-visual.tscn",
+        "triangles": 178,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.wall-corner",
+      "label": "城墙转角",
+      "tags": [
+        "城墙",
+        "转角",
+        "模块"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/wall-corner.glb",
+      "sourceFile": "models/castle/wall-corner.glb",
+      "sourceSha256": "82d27b869162b6a9ee19b0d7480913f56928b6620708f3b3899131495803cc9a",
+      "entryScene": "scenes/cw.castle.wall-corner.tscn",
+      "visualScene": "scenes/cw.castle.wall-corner-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/wall-corner.glb",
+          "bytes": 15264,
+          "sha256": "82d27b869162b6a9ee19b0d7480913f56928b6620708f3b3899131495803cc9a"
+        },
+        {
+          "path": "models/castle/wall-corner.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.wall-corner.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.wall-corner.gd.uid",
+          "bytes": 20,
+          "sha256": "149ee0a0b38ceb21ee3c287cadc25ba8ddc126f314f7386b369f45b7247ca18c"
+        },
+        {
+          "path": "scenes/cw.castle.wall-corner.tscn",
+          "bytes": 11069,
+          "sha256": "df271175e18db9d808e29392ff855a97e40bfed54ee6127abcbf3de549699633"
+        },
+        {
+          "path": "scenes/cw.castle.wall-corner-visual.tscn",
+          "bytes": 435,
+          "sha256": "98a7554d6792fd8afb1fde8b905d8350977047f6865f84544d04e7feef5b9092"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/wall-corner.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3000,
+          3930,
+          3000
+        ],
+        "visualOffsetMm": [
+          0,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5,
+            0,
+            -0.5
+          ],
+          "max": [
+            0.5,
+            1.309999942779541,
+            0.5
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 168,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.wall-corner-visual.tscn",
+        "triangles": 168,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.wall-doorway",
+      "label": "城墙门洞",
+      "tags": [
+        "城墙",
+        "通道",
+        "模块"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/wall-doorway.glb",
+      "sourceFile": "models/castle/wall-doorway.glb",
+      "sourceSha256": "8daf5cccceace888d51d74b0e0254e192004faf926e07f1b28e94191879af3a6",
+      "entryScene": "scenes/cw.castle.wall-doorway.tscn",
+      "visualScene": "scenes/cw.castle.wall-doorway-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/wall-doorway.glb",
+          "bytes": 37560,
+          "sha256": "8daf5cccceace888d51d74b0e0254e192004faf926e07f1b28e94191879af3a6"
+        },
+        {
+          "path": "models/castle/wall-doorway.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.wall-doorway.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.wall-doorway.gd.uid",
+          "bytes": 20,
+          "sha256": "bac8f80dd8def83ea128a1555536616138108da549edd3bd0dd66d067c9a07ee"
+        },
+        {
+          "path": "scenes/cw.castle.wall-doorway.tscn",
+          "bytes": 37618,
+          "sha256": "1bea29d6fc40c4d9fa4296e455a6265e135eb0c4be41fe2792287a702b4f4227"
+        },
+        {
+          "path": "scenes/cw.castle.wall-doorway-visual.tscn",
+          "bytes": 442,
+          "sha256": "76cb2e0a6a7efdcbc5b860dd174765674a2b6f930592625c9237fbae03df7d27"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/wall-doorway.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          1500,
+          3930,
+          3000
+        ],
+        "visualOffsetMm": [
+          750,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5,
+            -4.515340735910563e-17,
+            -0.5
+          ],
+          "max": [
+            5.197762115464674e-14,
+            1.309999942779541,
+            0.5
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 500,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.wall-doorway-visual.tscn",
+        "triangles": 500,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.door",
+      "label": "木门静态模型",
+      "tags": [
+        "门",
+        "装饰",
+        "静态模型"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/door.glb",
+      "sourceFile": "models/castle/door.glb",
+      "sourceSha256": "d9bc817e776e34fc24ad5b448b8cfc2c02603e79f6d90597de8936dc65a07359",
+      "entryScene": "scenes/cw.castle.door.tscn",
+      "visualScene": "scenes/cw.castle.door-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/door.glb",
+          "bytes": 16968,
+          "sha256": "d9bc817e776e34fc24ad5b448b8cfc2c02603e79f6d90597de8936dc65a07359"
+        },
+        {
+          "path": "models/castle/door.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.door.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.door.gd.uid",
+          "bytes": 20,
+          "sha256": "637a7afca0f1f9613c0c589c1235c0923d6431c4f5fc7051b91be8bb2bb274bd"
+        },
+        {
+          "path": "scenes/cw.castle.door.tscn",
+          "bytes": 15677,
+          "sha256": "bdec2c29c35897d4de4438c881687537ce9a0670138bb36337ae2ac2bf146c6e"
+        },
+        {
+          "path": "scenes/cw.castle.door-visual.tscn",
+          "bytes": 407,
+          "sha256": "502b7ee4e9f017f6232db17c8ffcca610195f018086bc9a6627038a68afdcf87"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/door.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          450,
+          1816,
+          1078
+        ],
+        "visualOffsetMm": [
+          0,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.07500000298023224,
+            0,
+            -0.1796867996454239
+          ],
+          "max": [
+            0.07500000298023224,
+            0.6053400039672852,
+            0.1796867996454239
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 188,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.door-visual.tscn",
+        "triangles": 188,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.tower-base",
+      "label": "方塔基座",
+      "tags": [
+        "塔楼",
+        "基座",
+        "模块"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/tower-square-base.glb",
+      "sourceFile": "models/castle/tower-square-base.glb",
+      "sourceSha256": "996887e98957eeea2ba7b5d14f0d17877c91e4e99e1c5b8ee57d87b7f7c9d5e8",
+      "entryScene": "scenes/cw.castle.tower-base.tscn",
+      "visualScene": "scenes/cw.castle.tower-base-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/tower-square-base.glb",
+          "bytes": 4456,
+          "sha256": "996887e98957eeea2ba7b5d14f0d17877c91e4e99e1c5b8ee57d87b7f7c9d5e8"
+        },
+        {
+          "path": "models/castle/tower-square-base.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.tower-base.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.tower-base.gd.uid",
+          "bytes": 19,
+          "sha256": "ae55547f795d5f64d0cf2b0e4f0ae796664a8e81308bb46cbb47e5b8fbd27dc0"
+        },
+        {
+          "path": "scenes/cw.castle.tower-base.tscn",
+          "bytes": 2288,
+          "sha256": "2c8a212d940796fef9d2655e8e9fd1b911e1da64a90f9b7fb6cc56187d1238b3"
+        },
+        {
+          "path": "scenes/cw.castle.tower-base-visual.tscn",
+          "bytes": 438,
+          "sha256": "fd830bf9942631e99034b8c9a9968ec5833365baa44b8789e29c4f2633e73216"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/tower-square-base.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3000,
+          3030,
+          3000
+        ],
+        "visualOffsetMm": [
+          0,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5,
+            0,
+            -0.5
+          ],
+          "max": [
+            0.5,
+            1.0099999904632568,
+            0.5
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 28,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.tower-base-visual.tscn",
+        "triangles": 28,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.tower-mid",
+      "label": "方塔中段",
+      "tags": [
+        "塔楼",
+        "中段",
+        "模块"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/tower-square-mid.glb",
+      "sourceFile": "models/castle/tower-square-mid.glb",
+      "sourceSha256": "34a43b162b0984df0c691cb12fcd169ff374412deca0de5fdfdd702a9fa0c98f",
+      "entryScene": "scenes/cw.castle.tower-mid.tscn",
+      "visualScene": "scenes/cw.castle.tower-mid-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/tower-square-mid.glb",
+          "bytes": 7744,
+          "sha256": "34a43b162b0984df0c691cb12fcd169ff374412deca0de5fdfdd702a9fa0c98f"
+        },
+        {
+          "path": "models/castle/tower-square-mid.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.tower-mid.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.tower-mid.gd.uid",
+          "bytes": 20,
+          "sha256": "6d22c556379a31f322659d735bbd4df536a41d5611fb58b1c53703ffa3b859b3"
+        },
+        {
+          "path": "scenes/cw.castle.tower-mid.tscn",
+          "bytes": 5876,
+          "sha256": "7617703263fcf2bbe7dcc4382ad4524d2a49aa50c2c38e95557a57e581b3d067"
+        },
+        {
+          "path": "scenes/cw.castle.tower-mid-visual.tscn",
+          "bytes": 434,
+          "sha256": "a0622a57d32cb2d0c41824163fb92f165a759b79475807619b5bef971582fbfc"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/tower-square-mid.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          2790,
+          3030,
+          2790
+        ],
+        "visualOffsetMm": [
+          0,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.4650000035762787,
+            0,
+            -0.4650000035762787
+          ],
+          "max": [
+            0.4650000035762787,
+            1.0099999904632568,
+            0.4650000035762787
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 76,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.tower-mid-visual.tscn",
+        "triangles": 76,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    },
+    {
+      "id": "cw.castle.tower-top",
+      "label": "方塔垛口",
+      "tags": [
+        "塔楼",
+        "顶部",
+        "模块"
+      ],
+      "kind": "object",
+      "version": "1.0.0",
+      "source": "castle",
+      "sourcePath": "Models/GLB format/tower-square-top.glb",
+      "sourceFile": "models/castle/tower-square-top.glb",
+      "sourceSha256": "5e98cdf2bf4d885edc3fa514719f80d63872e11c54ee629c11859223dad8489c",
+      "entryScene": "scenes/cw.castle.tower-top.tscn",
+      "visualScene": "scenes/cw.castle.tower-top-visual.tscn",
+      "files": [
+        {
+          "path": "models/castle/tower-square-top.glb",
+          "bytes": 13276,
+          "sha256": "5e98cdf2bf4d885edc3fa514719f80d63872e11c54ee629c11859223dad8489c"
+        },
+        {
+          "path": "models/castle/tower-square-top.glb.import",
+          "bytes": 100,
+          "sha256": "326f6ae4cf5d7f0f6700070936e3977b2c87fcf9b7b7e3cbadca5d4de2bcdea0"
+        },
+        {
+          "path": "scripts/cw.castle.tower-top.gd",
+          "bytes": 122,
+          "sha256": "1ccd6ec06d85ec0bc6a80cfd69ea85b8ba57668048772f9b9494e53cb294112b"
+        },
+        {
+          "path": "scripts/cw.castle.tower-top.gd.uid",
+          "bytes": 20,
+          "sha256": "b8568b367d6da02cb0b5f7e7f47210c00124b463b4aa5cc9dfefb317f8036f77"
+        },
+        {
+          "path": "scenes/cw.castle.tower-top.tscn",
+          "bytes": 10396,
+          "sha256": "54e0329ea73e44f1b898027c1a997b8258d46c0497dad9c4c81b761ef6a3fff2"
+        },
+        {
+          "path": "scenes/cw.castle.tower-top-visual.tscn",
+          "bytes": 434,
+          "sha256": "f293d8d11f5ab602bed12170d6b49a7d9d44ea2dc5257dd42658765535f37345"
+        },
+        {
+          "path": "licenses/kenney-castle-License.txt",
+          "bytes": 713,
+          "sha256": "aac944f18106b3a3e29c6fdeec02523d4cab4c735abc01f5a8fa88a79ae173ef"
+        },
+        {
+          "path": "licenses/CRAFTMINE_WRAPPERS_MIT.txt",
+          "bytes": 1341,
+          "sha256": "7207ac1bc90f01dcc97d521aed2609e4e568806ef6e87afe01ed81bf412151d4"
+        },
+        {
+          "path": "models/castle/Textures/colormap.png",
+          "bytes": 7529,
+          "sha256": "66fd49be148f32e88f6c8cace67120250d1943a7856601158ad0ff24651db0b0"
+        }
+      ],
+      "importConfiguration": {
+        "path": "models/castle/tower-square-top.glb.import",
+        "format": "godot-scene-import",
+        "parameters": {
+          "meshes/generate_lods": false
+        },
+        "sourceGlbUnchanged": true,
+        "cacheTargetsIncluded": false
+      },
+      "usage": "静态场景结构；可选无碰撞visual场景。不是可开关门、机关或战斗角色。",
+      "placement": {
+        "units": "metres",
+        "scale": 3,
+        "anchor": "bottom-center",
+        "dimensionsMm": [
+          3000,
+          900,
+          3000
+        ],
+        "visualOffsetMm": [
+          0,
+          0,
+          0
+        ],
+        "sourceBounds": {
+          "min": [
+            -0.5,
+            0,
+            -0.5
+          ],
+          "max": [
+            0.5,
+            0.30000001192092896,
+            0.5
+          ]
+        },
+        "notes": "模块原模型轴向保留；平移、旋转后拼接。门洞不被包围盒封死。"
+      },
+      "geometry": {
+        "declaredNodes": 1,
+        "activeNodes": 1,
+        "primitives": 1,
+        "meshInstances": 1,
+        "triangles": 148,
+        "materials": 1,
+        "animations": 0,
+        "skins": 0
+      },
+      "dependencies": {
+        "selfContained": false,
+        "external": [
+          "Textures/colormap.png"
+        ],
+        "extensions": [
+          "KHR_texture_transform"
+        ]
+      },
+      "collision": {
+        "mode": "static-trimesh",
+        "visualOnlyScene": "scenes/cw.castle.tower-top-visual.tscn",
+        "triangles": 148,
+        "notes": "仅静态关卡使用，碰撞由原三角形变换后生成；不用于动态刚体。"
+      }
+    }
+  ],
+  "totals": {
+    "items": 16,
+    "files": 94,
+    "sourceGlbBytes": 225584,
+    "uniquePayloadBytes": 360580,
+    "triangles": 2700
+  },
+  "limits": [
+    "静态素材，不含机关/AI/战斗功能。",
+    "ArrayMesh在当前普通对象拾取器中尚有覆盖限制，不宣称精准选择已通过。",
+    "尺寸来自原始三角形与节点变换，接地/碰撞仍须引擎验证。"
+  ]
+}

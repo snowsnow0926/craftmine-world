@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/monster_encounter.gd" id="1"]
+[ext_resource type="Mesh" path="res://assets/meshes/target_dummy.obj" id="2"]
+[ext_resource type="Material" path="res://assets/materials/target_plate.tres" id="3"]
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(1.24, 2.1, 0.4)
+
+[node name="MonsterEncounter" type="StaticBody3D"]
+collision_layer = 2
+script = ExtResource("1")
+target_id = &"monster-one"
+display_name = "训练怪物"
+max_health = 60.0
+attack_damage = 8.0
+attack_cooldown = 1.0
+loot = [&"coin", &"fang"]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2")
+material_override = ExtResource("3")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1,0,0,0,1,0,0,0,1,0,1.05,0)
+shape = SubResource("shape")

@@ -86,6 +86,7 @@ export const BOUNDED_OPERATIONS = Object.freeze({
       wait: {frames:argSpec('integer',{min:1,max:600})},
       look: {yaw:argSpec('number',{min:-Math.PI,max:Math.PI,optional:true}),pitch:argSpec('number',{min:-1.55,max:1.55,optional:true})},
       interact: {},
+      attack: {},
       'set-time': {hours:argSpec('number',{min:0,max:24})},
     },
   },

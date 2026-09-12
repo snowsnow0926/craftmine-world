@@ -25,6 +25,7 @@ var captured := false
 var _gravity := 9.8
 var _override_axis := Vector2.ZERO
 var _override_remaining := 0
+var _movement_locks: Dictionary = {}
 # Preserve the last sampled contact while paused; real physics refreshes it on resume.
 var _restored_floor: Variant = null
 
@@ -60,7 +61,7 @@ func _physics_process(delta: float) -> void:
 
 	var axis := _read_move_axis()
 	var wish := movement_direction(axis)
-	if is_on_floor() and _override_remaining <= 0 and input_enabled and Input.is_action_pressed("jump"):
+	if not movement_locked() and is_on_floor() and _override_remaining <= 0 and input_enabled and Input.is_action_pressed("jump"):
 		velocity.y = jump_velocity
 
 	var speed := move_speed
@@ -70,6 +71,9 @@ func _physics_process(delta: float) -> void:
 	var rate := acceleration if is_on_floor() else air_acceleration
 	velocity.x = move_toward(velocity.x, target.x, rate * delta)
 	velocity.z = move_toward(velocity.z, target.z, rate * delta)
+	if movement_locked():
+		velocity.x = 0.0
+		velocity.z = 0.0
 	move_and_slide()
 	_restored_floor = null
 
@@ -78,6 +82,9 @@ func _physics_process(delta: float) -> void:
 ## real key actions are read, so scripted acceptance exercises the same movement
 ## and collision code as a player.
 func _read_move_axis() -> Vector2:
+	if movement_locked():
+		_override_remaining = 0
+		return Vector2.ZERO
 	if _override_remaining > 0:
 		_override_remaining -= 1
 		return _override_axis
@@ -102,11 +109,34 @@ func movement_direction(axis: Vector2) -> Vector3:
 ## Feeds a movement axis through the real controller for a number of physics
 ## frames. Used by scripted acceptance; it still accelerates and collides.
 func walk(axis: Vector2, frames: int) -> void:
+	if movement_locked():
+		return
 	_override_axis = axis
 	_override_remaining = maxi(0, frames)
 	while _override_remaining > 0:
 		await get_tree().physics_frame
 	_override_axis = Vector2.ZERO
+
+
+## A gameplay component owns its lock. Removing it cannot leave movement stuck,
+## and releasing one lock never releases another component's lock.
+func set_movement_lock(owner: Node, blocked: bool) -> void:
+	if not is_instance_valid(owner): return
+	if blocked:
+		_movement_locks[owner.get_instance_id()] = weakref(owner)
+		_override_remaining = 0
+		_override_axis = Vector2.ZERO
+		velocity.x = 0.0
+		velocity.z = 0.0
+	else:
+		_movement_locks.erase(owner.get_instance_id())
+
+func movement_locked() -> bool:
+	for id in _movement_locks.keys():
+		var owner: Variant = _movement_locks[id].get_ref()
+		if not is_instance_valid(owner) or not owner.is_inside_tree() or owner.is_queued_for_deletion():
+			_movement_locks.erase(id)
+	return not _movement_locks.is_empty()
 
 
 func set_captured(value: bool) -> void:

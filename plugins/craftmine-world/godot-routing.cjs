@@ -12,26 +12,16 @@ const GODOT_METHODS={godot_project_create:'godotProject.create',godot_project_in
   godot_build_start:'godotBuild.start',godot_build_read:'godotBuild.read',godot_build_cancel:'godotBuild.cancel',
   godot_candidate_read:'godotCandidate.read',godot_candidate_list:'godotCandidate.list'};
 
-// Registration reachability and live execution readiness are separate. These
-// modes describe dependencies only; the host still authorizes every operation.
-const EXECUTION_MODES={
-  godot_build_start:{build:{method:'godotBuild.start',executorKinds:['build']},
-    check:{method:'godotBuild.start',executorKinds:['check']}},
-  godot_jobs:{status:{method:'godotExecutor.status'},usage:{method:'godotJob.usage'},
-    resume:{method:'godotJob.continue',executorKinds:['build','check'],originKindRequired:true}}
-};
-
 // Tools implemented inside this plugin. `needs` lists the capability flags the
 // core handshake must report true for the tool to be usable; `reachable` is only
 // used for a tool that does not depend on a flag.
 const LOCAL_TOOLS={
   godot_docs:{owner:'S6',hostMethod:null,needs:[]},
+  godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'},'propose-group':{proposal:true,targetMethod:'package.installSourceProposal'}}},
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
-  godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects'],modes:{
-    ...Object.fromEntries(['summary','scene','scripts','resources','find'].map(mode=>[mode,{method:'godotProject.index+godotProject.read'}])),
-    ...Object.fromEntries(['module-parameters','module-parameter-preview'].map(mode=>[mode,{method:'task.context+godotProject.index+godotProject.read',capability:'sessionDrafts',requiredServices:['creationTarget','sampleLiveState'],requiresCapture:true}]))}},
+  godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},
-  godot_performance_observe:{owner:'S6',hostMethod:'task.context+godotRuntime.describe',needs:['godotProjects','sessionDrafts'],requiredServices:['samplePerformance','sampleLiveState']},
+  godot_view_capture:{owner:'R2',hostMethod:'craftmine.godotViewCapture',needs:['godotProjects']},
   godot_project_facts:{owner:'S6',hostMethod:'godotProject.index+godotCandidate.list+godotRuntime.describe',needs:['godotProjects']},
   godot_capability_report:{owner:'S6',hostMethod:'hello',needs:[]},
   godot_history:{owner:'S6',needs:['sessionDrafts'],modes:{
@@ -47,8 +37,7 @@ const LOCAL_TOOLS={
   asset_library:{owner:'S5',needs:['sessionDrafts'],modes:Object.fromEntries(Object.entries(ASSET_METHODS)
     .map(([mode,method])=>[mode,{method,capability:'assetCatalog'}]))},
   package_library:{owner:'S3',needs:['sessionDrafts'],modes:{...Object.fromEntries(Object.entries(PACKAGE_METHODS)
-    .map(([mode,method])=>[mode,{method,capability:'creationPackages'}])),propose:{proposal:true},
-    'propose-source-install':{proposal:true,method:ASSET_METHODS.read,capability:'assetCatalog',targetMethod:'importCatalogSource'}}},
+    .map(([mode,method])=>[mode,{method,capability:'creationPackages',...(mode==='check'?{blockedBy:'LEGACY_PACKAGE_REFERENCE_ADAPTER_REQUIRED'}:{})}])),propose:{proposal:true}}},
   // Pre-existing world tools. They are advertised by the same catalogue, so the
   // inventory must report them truthfully instead of as unwired.
   project_inspect:{owner:'S1',hostMethod:'workspace.open+world.read+(Godot:godotProject.index|legacy:inspect)',needs:['sessionDrafts']},
@@ -77,4 +66,4 @@ const CONDITIONAL_WRITE_TOOLS={godot_draft_recovery:'resume'};
 const GODOT_RECEIPTS={'godotProject.create':'godotProject.receipt','godotProject.patch':'godotProject.receipt',
   'godotAsset.put':'godotBuild.receipt','godotBuild.start':'godotBuild.receipt'};
 
-module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS,EXECUTION_MODES};
+module.exports={GODOT_METHODS,LOCAL_TOOLS,WRITE_TOOLS,CONDITIONAL_WRITE_TOOLS,GODOT_RECEIPTS};

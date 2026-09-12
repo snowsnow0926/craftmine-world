@@ -16,6 +16,7 @@ import { PRIVATE_PLAY_OPS, validateHeadlessPlayAction, type PlayIdentity } from 
 import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
 import { createImmersionPauseController } from "./immersion-pause-controller";
+import {captureBoundGodotView,validateGodotViewCaptureIdentity,type GodotViewCaptureIdentity,type GodotViewCapture} from "./godot-view-capture";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
@@ -306,6 +307,8 @@ export class GodotWorldViewHost {
   /** Replacement instance that has not finished starting yet. */
   private pending: LiveInstance | null = null;
   private stagedRequest: GodotWorldOpenRequest | null = null;
+  /** Supplied only by the trusted candidate coordinator at staging time. */
+  private stagedCandidateId: string | null = null;
   private candidateVisible = false;
   private bounds: GodotWorldBounds = { x: 0, y: 0, width: 0, height: 0 };
   private visible = false;
@@ -560,6 +563,7 @@ export class GodotWorldViewHost {
     if (this.disposed || generation !== this.generation || !instance.alive) {
       this.pending = null;
       this.stagedRequest = null;
+      this.stagedCandidateId = null;
       instance.alive = false;
       instance.detach();
       await this.retireInstance(instance, false).catch(() => undefined);
@@ -605,7 +609,7 @@ export class GodotWorldViewHost {
    * formal runtime yet, so the creation flow is not blocked on a world that
    * only a confirmed application can produce.
    */
-  async stageCandidate(request: GodotWorldOpenRequest, options: { first?: boolean } = {}): Promise<GodotWorldState> {
+  async stageCandidate(request: GodotWorldOpenRequest, options: { first?: boolean; candidateId?: string } = {}): Promise<GodotWorldState> {
     if (this.disposed || this.transitioning || this.pending || this.stagedRequest) throw new Error("WORLD_BUSY");
     this.transitioning = true;
     try {
@@ -620,8 +624,11 @@ export class GodotWorldViewHost {
       const root = await realpath(resolve(request.root));
       const roots = (await Promise.all((this.options.allowedRoots?.() ?? []).map(item=>realpath(resolve(item)).catch(()=>null)))).filter((item):item is string=>item!==null);
       if (!isInsideAllowedRoot(root, roots)) throw new Error("Candidate build is outside the allowed build roots");
+      const candidateId = options.candidateId === undefined ? null : requireId("candidate identity", options.candidateId);
       if (!options.first) await this.pause();
-      return await this.startReplacement(request, root, worldId, buildId, this.current, true);
+      const result = await this.startReplacement(request, root, worldId, buildId, this.current, true);
+      this.stagedCandidateId = candidateId;
+      return result;
     } finally { this.transitioning = false; }
   }
 
@@ -647,6 +654,7 @@ export class GodotWorldViewHost {
     const candidate = this.pending;
     this.pending = null;
     this.stagedRequest = null;
+    this.stagedCandidateId = null;
     this.candidateVisible = false;
     if (candidate) {
       candidate.alive = false;
@@ -665,6 +673,7 @@ export class GodotWorldViewHost {
         JSON.stringify(staged.artifacts) !== JSON.stringify(request.artifacts)) throw new Error("GODOT_CANDIDATE_PROMOTION_MISMATCH");
     const previous = this.current;
     this.pending = null; this.stagedRequest = null; this.candidateVisible = false;
+    this.stagedCandidateId = null;
     this.current = candidate; this.revision = request.revision; this.frozen = null;
     candidate.runtime.onEvent(event=>this.handleEvent(candidate,event));
     this.publish({...this.identityOf(candidate),state:"paused"});
@@ -675,6 +684,35 @@ export class GodotWorldViewHost {
     }
     await this.resume();
     return this.currentState!;
+  }
+
+  /** Read only the named, already attached world view; never opens or resizes it. */
+  async captureView(input: GodotViewCaptureIdentity): Promise<GodotViewCapture> {
+    validateGodotViewCaptureIdentity(input);
+    input = {...input};
+    const candidate = input.candidateId !== undefined;
+    const instance = candidate ? this.pending : this.current;
+    const owner = this.options.window();
+    if (!instance?.alive || !owner || owner.isDestroyed()) throw Error("GODOT_VIEW_CAPTURE_UNAVAILABLE");
+    const view = instance.view, contents = view.webContents, bounds = {...view.getBounds()}, staged = this.stagedRequest;
+    const generation = this.generation;
+    const verify = () => {
+      if (this.disposed || this.closing || this.transitioning || this.starting.size || this.checkpointPromise || this.savePromise || this.captureBounds) throw Error("GODOT_VIEW_CAPTURE_BUSY");
+      if (this.generation !== generation || (candidate ? this.pending : this.current) !== instance || !instance.alive || instance.closed ||
+          instance.worldId !== input.worldId || instance.buildId !== input.buildId || instance.instanceId !== input.instanceId) throw Error("GODOT_VIEW_CAPTURE_IDENTITY_CHANGED");
+      if (candidate) {
+        if (!staged || this.stagedRequest !== staged || !this.candidateVisible || this.stagedCandidateId !== input.candidateId ||
+            staged.worldId !== input.worldId || staged.buildId !== input.buildId) throw Error("GODOT_VIEW_CAPTURE_CANDIDATE_CHANGED");
+      } else {
+        if (this.pending || this.stagedRequest || this.candidateVisible) throw Error("GODOT_VIEW_CAPTURE_BUSY");
+        if (!["ready", "paused", "saved"].includes(this.currentState?.state ?? "")) throw Error("GODOT_VIEW_CAPTURE_UNAVAILABLE");
+      }
+      if (this.options.window() !== owner || owner.isDestroyed() || instance.view !== view || view.webContents !== contents || contents.isDestroyed() ||
+          !this.visible || !this.surfaceVisible || !owner.contentView.children.includes(view)) throw Error("GODOT_VIEW_CAPTURE_DETACHED");
+      const current = view.getBounds();
+      if (["x", "y", "width", "height"].some(key => current[key as keyof GodotWorldBounds] !== bounds[key as keyof GodotWorldBounds])) throw Error("GODOT_VIEW_CAPTURE_DIMENSIONS_CHANGED");
+    };
+    return captureBoundGodotView(contents, input, bounds.width, bounds.height, verify);
   }
 
   /** Current world state as the runtime reports it; used by the progress transaction. */
@@ -1046,7 +1084,12 @@ export class GodotWorldViewHost {
   }
 
   /** Freeze and durably save the current instance; successful checkpoints stay paused. */
-  async checkpoint(): Promise<GodotWorldSaveResult> {
+  async checkpoint(options: {fresh?: boolean} = {}): Promise<GodotWorldSaveResult> {
+    // Private lifecycle callers may require a new confirmation. Invalidate
+    // the previous success before starting, so a failed refresh cannot later
+    // be mistaken for that old successful checkpoint. Concurrent callers
+    // still share the same in-flight freeze/save transaction.
+    if (options.fresh === true) this.frozen = null;
     if (this.stagedRequest) return {status:"failed",error:"GODOT_CANDIDATE_ACTIVE"};
     const instance = this.current;
     if (!instance?.alive) return { status: "failed", error: "No world runtime is running" };
@@ -1124,6 +1167,7 @@ export class GodotWorldViewHost {
     this.current = null;
     this.pending = null;
     this.stagedRequest = null;
+    this.stagedCandidateId = null;
     this.candidateVisible = false;
     this.frozen = null;
     this.revision = null;

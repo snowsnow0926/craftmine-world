@@ -24,6 +24,9 @@ import {readFile} from 'node:fs/promises';
 import {stripTypeScriptTypes} from 'node:module';
 import {EventEmitter} from 'node:events';
 import vm from 'node:vm';
+import {NO_IMMERSION} from '../../../vendor/pi-desktop/apps/desktop/shared/craftmine-immersion.ts';
+import {createImmersionPauseController} from '../../../vendor/pi-desktop/apps/desktop/electron/main/immersion-pause-controller.ts';
+import {PRIVATE_PLAY_OPS} from '../../../vendor/pi-desktop/apps/desktop/electron/main/headless-play-action.ts';
 
 const source = await readFile(new URL('../../../vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts', import.meta.url), 'utf8');
 const compiled = stripTypeScriptTypes(source, {mode: 'transform'})
@@ -132,7 +135,7 @@ function fixture({captureReadyMs = 400, frames = [], failContentSizeAt = null} =
       snapshot: async () => ({result: {state: {coins: 1}}})},
   };
 
-  const context = {module: {exports: {}}, Error, setTimeout, clearTimeout, setInterval, clearInterval, console,
+  const context = {module: {exports: {}}, Error, setTimeout, clearTimeout, setInterval, clearInterval, console,NO_IMMERSION,createImmersionPauseController,PRIVATE_PLAY_OPS,
     process: {env: {CRAFTMINE_HEADLESS_TEST: '1'}},
     join: (...parts) => parts.join('/'), resolve: value => value, sep: '/', realpath: async value => value,
     WORLD_CHROME_HEIGHT: 76, GODOT_WORLD_MESSAGE_CHANNEL: 'message', GODOT_WORLD_DETACH_CHANNEL: 'detach',

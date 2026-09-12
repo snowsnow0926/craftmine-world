@@ -132,6 +132,11 @@ test('operation ledger is bounded and schema advertises precisely supported acti
   const f=fixture();f.source.files['world/creation-operations.json']=file({format:'craftmine.creation-operations/1',operations:[null]});assert.throws(()=>run(f,{}),/JOURNAL_INVALID/);
   assert.deepEqual(CREATION_OPERATION_SCHEMA.oneOf.map(branch=>branch.properties.action.const),['place','modify','duplicate','delete','undo','environment','sequence-door']);
   for(const branch of CREATION_OPERATION_SCHEMA.oneOf)assert.equal(branch.additionalProperties,false);
+  const place=CREATION_OPERATION_SCHEMA.oneOf.find(branch=>branch.properties.action.const==='place');
+  const duplicate=CREATION_OPERATION_SCHEMA.oneOf.find(branch=>branch.properties.action.const==='duplicate');
+  assert.match(place.properties.kind.description,/Base-generator/);
+  assert.match(duplicate.properties.action.description,/not|instead/);
+  assert.deepEqual(place.properties.kind.enum,['tree','rock','chest','door','marker']);
 });
 test('full ledger rejects new operations without pruning replay identity',()=>{
   const f=fixture();const operations=Array.from({length:MAX_OPERATIONS},(_,index)=>({operationId:`old-${index}`,requestHash:'c'.repeat(64),receipt:{operationId:`old-${index}`,requestHash:'c'.repeat(64),worldId:f.source.worldId,createdIds:[]}}));

@@ -12,8 +12,10 @@ import { createGodotMiningAcceptance } from "./craftmine-godot-mining-acceptance
 import { createGodotExploration } from "./craftmine-godot-exploration";
 import {validateHeadlessAskEnvelope} from './craftmine-headless-ask';
 import {createHeadlessPlayer,unwrapPlayerDesktopResult} from './craftmine-headless-player';
+import {createHeadlessObserverUpgrade} from './craftmine-headless-observer-upgrade';
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
-import {validatePerformanceAcceptance} from './craftmine-performance-acceptance';
+import {runHeadlessBoundCapture} from './craftmine-headless-bound-capture';
+import type {GodotViewCaptureIdentity} from './godot-view-capture';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -93,7 +95,8 @@ export function installHeadlessControl(access: {
   godotSave?: () => Promise<any>;
   playerActive?: (sessionId:string)=>boolean;
   playerLatest?: (worldId:string,sessionId:string)=>Promise<any>;
-  performanceTool?: (input:{sessionId:string;worldId:string})=>Promise<unknown>;
+  boundCapture?: (identity:GodotViewCaptureIdentity)=>Promise<unknown>;
+  boundCaptureState?: ()=>unknown;
 }): void {
   if (!profile) return;
   const godotExplore = access.godotGameplay ? createGodotExploration(access.godotGameplay) : null;
@@ -111,6 +114,11 @@ export function installHeadlessControl(access: {
     panel:(channel,payload)=>desktopCall(`piDesktop.pluginPanelInvoke('craftmine.world',${JSON.stringify(channel)},${JSON.stringify(payload)})`),
     observe:access.godotGameplay.observe,active:access.playerActive,latest:access.playerLatest,
   }):null;
+  const observerUpgrade=access.godotGameplay&&access.playerActive?createHeadlessObserverUpgrade({
+    invoke:async(channel,...args)=>unwrapPlayerDesktopResult(await desktopCall(`piDesktop.invoke(piDesktop.channels.invoke[${JSON.stringify(channel)}],...${JSON.stringify(args)})`)),
+    panel:(channel,payload)=>desktopCall(`piDesktop.pluginPanelInvoke('craftmine.world',${JSON.stringify(channel)},${JSON.stringify(payload)})`),
+    observe:access.godotGameplay.observe,active:access.playerActive,
+  }):null;
   const evaluateWorld = (script: string) => {
     const view = access.world();
     if (!view || view.isDestroyed()) throw new Error("World view is not ready");
@@ -121,11 +129,17 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case 'godotCaptureBoundView':case 'godotCaptureBoundState':
+          if(!access.boundCapture||!access.boundCaptureState)throw Error('HEADLESS_BOUND_CAPTURE_UNAVAILABLE');
+          return runHeadlessBoundCapture(request,{enabled:hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1',capture:access.boundCapture,state:access.boundCaptureState});
+        case 'playerObserverHint':case 'playerObserverUpgrade':case 'playerObserverStatus':
+          if(!hasHeadlessController()||!observerUpgrade||process.env.CRAFTMINE_CREATION_EVAL==='1'||Object.keys(request).sort().join(',')!=='id,method,payload,type')throw Error('HEADLESS_OBSERVER_NORMAL_SESSION_REQUIRED');
+          return observerUpgrade(request.method,request.payload);
         case 'headlessPermissionPending':case 'headlessPermissionResolve':{
           const script=validateHeadlessPermissionEnvelope(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
           return desktopCall(script);
         }
-        case 'playerCreateSession':case 'playerSetup':case 'playerPrompt':case 'playerStatus':case 'playerAbort':
+        case 'playerSetup':case 'playerPrompt':case 'playerRetryFailedPrompt':case 'playerStatus':case 'playerAbort':
           if(!hasHeadlessController()||!player||process.env.CRAFTMINE_CREATION_EVAL==='1'||Object.keys(request).sort().join(',')!=='id,method,payload,type')throw Error('HEADLESS_PLAYER_NORMAL_SESSION_REQUIRED');
           return player(request.method,request.payload);
         case "headlessAskPending":
@@ -144,13 +158,6 @@ export function installHeadlessControl(access: {
         case "godotObserve":
           if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
           return access.godotGameplay.observe();
-        case "godotPerformanceTool": {
-          const input=validatePerformanceAcceptance(request,hasHeadlessController());
-          if(!access.performanceTool)throw Error('HEADLESS_PERFORMANCE_UNAVAILABLE');
-          const window=access.window();
-          if(!window||window.isDestroyed()||window.isVisible()||window.isFocusable()||!window.webContents.isOffscreen())throw Error('HEADLESS_PERFORMANCE_WINDOW_UNAVAILABLE');
-          return access.performanceTool(input);
-        }
         case "godotSnapshot":
           if (!access.godotGameplay) throw Error("Actual Godot host unavailable");
           return access.godotGameplay.action("snapshot", {});
@@ -222,6 +229,7 @@ export function installHeadlessControl(access: {
             }
             const bounds = selector => { const r = document.querySelector(selector)?.getBoundingClientRect(); return r ? {x:r.x,y:r.y,width:r.width,height:r.height} : null; };
             return {entry:!!document.querySelector('[data-mode-entry]'),play:!!document.querySelector('.craftmine-play'),
+              playWorldId:document.querySelector('[data-mode="play"]')?.getAttribute('data-active-world')??null,
               world:bounds('.work-plugin-view-surface'),dialog:bounds('.main-pane[role="dialog"]'),width:innerWidth,height:innerHeight};
           })()`, false);
         }

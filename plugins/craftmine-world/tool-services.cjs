@@ -18,16 +18,15 @@ const SERVICE_CONTRACT_FORMAT='craftmine.tool-services/1';
 // marks an override or tuning value that has a working default: its absence is
 // not a capability gap and must not make the wiring look incomplete.
 const SERVICE_PROVIDERS={
-  samplePerformance:{kind:'function',owner:'GU6',hostMethod:'godotPerformance',provides:'current host-bound renderer process working set; engine frame, physics and GPU channels remain unknown',requiredFor:['godot_performance_observe']},
-  sampleEnginePerformance:{kind:'function',owner:'GU6',hostMethod:'godotEnginePerformance',optional:true,provides:'opt-in source/PCK-pinned Godot Performance monitors through the versioned engine bridge',requiredFor:['godot_performance_observe engine metrics']},
-  executorNativeDiagnosticEvidence:{kind:'function',owner:'GU5',hostMethod:null,provides:'private read-only projection of validated native import evidence bound to the exact core job result; missing evidence remains unknown',requiredFor:['godot_build_read native diagnostics']},
+  captureView:{kind:'function',owner:'R2',hostMethod:'godotViewCapture',provides:'one real bound game-view PNG for a declared image-capable session; never desktop capture',requiredFor:['godot_view_capture']},
+  sourceLibrary:{kind:'function',owner:'S3',hostMethod:'asset.search+asset.read+asset.bodyPath',provides:'modern source ZIP discovery and host-bound proposals; player installation uses package.installSource',requiredFor:['godot_source_library']},
   executorCreationCompletion:{kind:'function',owner:'CN4',hostMethod:null,optional:true,provides:'same-job recorded application state; a diagnostic receipt never grants application authority',requiredFor:['godot_build_read']},
   buildReadWaitMs:{kind:"number",owner:"NB5",hostMethod:null,optional:true,provides:"bounded model job-read waiting in milliseconds; fixture default is zero",requiredFor:["godot_build_read"]},
-  creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation','godot_project_query module parameter modes']},
+  creationTarget:{kind:'function',owner:'R2',hostMethod:'creationTarget',provides:'the immutable host-captured target bound to this invocation turn',requiredFor:['creation_operation']},
   sampleLiveState:{
     kind:'function',owner:'R2',hostMethod:'godotLiveState',
     provides:'a timestamped sample of the running instance: world, build, instance, camera, equipment, entities, quests',
-    requiredFor:['godot_runtime_state scope=live','godot_project_facts.live','godot_project_query module parameter modes']},
+    requiredFor:['godot_runtime_state scope=live','godot_project_facts.live']},
   budget:{
     kind:'function',owner:'R2+S1',hostMethod:'budgetSnapshot',
     provides:'the seven limit kinds (tokens, context, requests, compactions, service, wallClock, resource) from the durable ledger',
@@ -115,6 +114,7 @@ function describeToolServices(options){
 function createHostProviders(callHost){
   if(typeof callHost!=='function')fail('HOST_CALL_REQUIRED');
   return {
+    async captureView(input){return callHost('godotViewCapture',input);},
     async creationTarget(context){return callHost('creationTarget',context);},
     async sampleLiveState({worldId,buildId,instanceId}={}){
       const envelope=await callHost('godotLiveState',{worldId:worldId??null,buildId:buildId??null,instanceId:instanceId??null});

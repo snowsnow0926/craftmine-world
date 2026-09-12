@@ -45,7 +45,10 @@ export async function assertDirectCreationCandidate(domain:Domain,context:Contex
   if(formal?.baseId!=='creation-sandbox'||formal.worldId!==worldId||formal.buildId!==capture.buildId||formal.sourceRevision!==capture.sourceRevision||formal.manifestHash!==capture.manifestHash)throw Error('CREATION_TARGET_STALE');
   const job=await domain('godotBuild.read',{context,worldId,jobId});
   if(job?.worldId!==worldId||job.jobId!==jobId||job.kind!=='check'||job.status!=='passed'||job.baseId!=='creation-sandbox'||job.candidateId!==candidateId)throw Error('CREATION_CHECK_NOT_PASSED');
-  assertCreationJobRequirements(capture,job);
+  if(capture.observerUpgradeOnly){
+    const advance=capture.sourceMigration;
+    if(capture.sceneObjectTarget||capture.target.surface!=='none'||capture.autoApply||!advance||advance.formalBuildId!==capture.buildId||advance.formalSourceRevision!==capture.sourceRevision||advance.formalManifestHash!==capture.manifestHash||job.sourceRevision!==advance.revision||job.manifestHash!==advance.manifestHash||job.sourceStale!==false)throw Error('CREATION_OBSERVER_UPGRADE_SOURCE_REQUIRED');
+  }else assertCreationJobRequirements(capture,job);
   const result=await domain('godotCandidate.read',{worldId,candidateId}),candidate=result?.candidate;
   if(result?.checkStatus!=='passed'||candidate?.status!=='ready'||candidate.worldId!==worldId||candidate.checkJobId!==jobId||candidate.buildId!==job.buildId||candidate.sourceRevision!==job.sourceRevision||candidate.manifestHash!==job.manifestHash||candidate.checkOutputHash!==job.outputHash)throw Error('CREATION_CANDIDATE_UNVERIFIED');
   const source=await domain('godotProject.index',{context,worldId,branchId:job.branchId??'main',offset:0,limit:1});
