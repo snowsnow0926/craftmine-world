@@ -290,9 +290,24 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
       return current;
     }
     if(method==='turn.begin'){
-      fields(params,['context','selectedWorld','request']);
+      fields(params,['context','selectedWorld','request'],['resumeInterrupted']);
+      if(params.resumeInterrupted!==undefined&&typeof params.resumeInterrupted!=='boolean')throw Error('INVALID_RECOVERY_INTENT');
       fields(params.request,['id','text'],['kind']);
-      const workspace=await core.call('workspace.open',{context:params.context,selectedWorld:params.selectedWorld});
+      // Validate the fresh request before it can change a recovery generation.
+      boundedText(params.request.id,240);boundedText(params.request.text,16000);
+      let workspace;
+      try{workspace=await core.call('workspace.open',{context:params.context,selectedWorld:params.selectedWorld});}
+      catch(error){
+        if(params.resumeInterrupted!==true||(error?.errorCode??error?.code??error?.message)!=='EXPLICIT_RECOVERY_REQUIRED')throw error;
+        const {projectId,sessionId,turnId}=params.context;
+        const previous=await core.call('workspace.current',{projectId,sessionId}),binding=previous?.task?.binding;
+        if(previous?.worldId!==params.selectedWorld||binding?.projectId!==projectId||binding?.sessionId!==sessionId||binding?.turnId===turnId)throw Error('RECOVERY_WORLD_BINDING_MISMATCH');
+        const retained=await core.call('task.context',{context:contextOf(binding)});
+        if(!sameBinding(retained?.binding,binding)||retained.world?.id!==params.selectedWorld||retained.recovery!=='interrupted'||!Number.isSafeInteger(retained.generation)||retained.generation<0)throw Error('RECOVERY_CONFLICT');
+        const resumed=await core.call('task.resume',{context:params.context,taskId:binding.taskId,generation:retained.generation});
+        workspace=resumed?.workspace;
+        if(workspace?.worldId!==params.selectedWorld||workspace.task?.binding?.projectId!==projectId||workspace.task?.binding?.sessionId!==sessionId||workspace.task?.binding?.turnId!==turnId||resumed.generation!==retained.generation+1||resumed.budget?.ownerTaskId!==retained.budget?.ownerTaskId)throw Error('RECOVERY_BINDING_UNCONFIRMED');
+      }
       await verifications?.cancelOtherTurns(params.context);await reviews?.cancelOtherTurns(params.context);
       await core.call('task.recordContext',{context:params.context,requestId:boundedText(params.request.id,240),text:boundedText(params.request.text,16000),kind:params.request.kind||'request'});
       const result=await snapshot(params.context);
