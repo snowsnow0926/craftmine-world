@@ -7,6 +7,7 @@ const id=value=>typeof value==='string'&&/^[a-zA-Z0-9._-]{1,128}$/.test(value);
 export function validateAdoptionReport(original,ledger){
  const player=original?.format==='craftmine.promo-player/1';
  assert.ok(player||original?.format==='craftmine.promo-pilot/1','ADOPTION_PILOT_REQUIRED');
+ if(original.trialKind==='same-session-player-follow-up')assert.ok(original.originalReportUnchanged===true&&original.budgetAppendOnly===true&&!original.integrityError&&!original.closeoutError,'ADOPTION_CONTINUATION_INTEGRITY_REQUIRED');
  assert.equal(original.latest?.active,false,'ADOPTION_MODEL_MUST_BE_STOPPED');
  assert.ok(typeof original.endedAt==='string'&&Number.isFinite(Date.parse(original.endedAt))&&!original.forcedStop,'ADOPTION_CLEAN_END_REQUIRED');
  for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(original.exitReport?.[field],[],'ADOPTION_CLEAN_END_REQUIRED');
