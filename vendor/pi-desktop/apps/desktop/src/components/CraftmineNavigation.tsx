@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {createPortal} from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Box, Package } from "lucide-react";
-import { useAppStore } from "../stores/app-store";
+import { createCopiedWorldSession, useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
 import { decideCraftmineActivation, loadCraftmineLayout, saveCraftmineLayout } from "../lib/craftmine-layout";
@@ -84,6 +84,8 @@ export function CraftmineNavigation() {
   // real action; the surface request is sent over the documented navigation
   // channel, which the host routes into the retained view.
   const [surfaceError, setSurfaceError] = useState<string | null>(null);
+  const [startingCreation, setStartingCreation] = useState(false);
+  const creationStarting = useRef(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
   const [assetSection, setAssetSection] = useState<"browse" | "world">("browse");
   const assetPreparation = useRef(0), assetPreparing = useRef(false);
@@ -161,6 +163,16 @@ export function CraftmineNavigation() {
 
       {available && (
         <>
+          {controller.activeWorldId && !activeSessionId && <form data-world-start-creation onSubmit={event => {
+            event.preventDefault();
+            const worldId = controller.activeWorldId;
+            if (!worldId || creationStarting.current || useAppStore.getState().activeSessionId || useAppStore.getState().selectingSessionId) return;
+            creationStarting.current = true; setStartingCreation(true); setSurfaceError(null);
+            void createCopiedWorldSession(worldId, undefined).then(sessionId => {
+              if (latestWorld.current === worldId && useAppStore.getState().activeSessionId === sessionId) enterCraftmineMode("create", {explicit: true});
+            }).catch(failure => {if (latestWorld.current === worldId) setSurfaceError(worldErrorMessage(failure, lang));})
+              .finally(() => {creationStarting.current = false; setStartingCreation(false);});
+          }}><button type="submit" className="craftmine-world-nav" disabled={startingCreation || controller.busy}>{lang === "zh" ? (startingCreation ? "正在准备创作…" : "开始创作") : (startingCreation ? "Preparing creation…" : "Start creating")}</button></form>}
           <form data-world-assets-open onSubmit={event => { event.preventDefault(); openSurface({kind: "assets"}, "assets"); }}>
             <button type="submit" className="craftmine-world-nav"><Package size={16} aria-hidden /><span>{CRAFTMINE_WORLD_TEXT.assetsTitle[lang]}</span></button>
           </form>

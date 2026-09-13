@@ -293,8 +293,8 @@ function AppShell() {
   const worldPinned = craftmineLayout.mode === "play" && presentedTabId === CRAFTMINE_WORLD_TAB_ID;
   const craftmineWorldFirst = isCraftmineWorldWorkspace(gameSettingsOpen ? "chat" : page, presentedWorkPanelOpen && workPanelOpen, presentedTabId, subagentPanelOpen && !worldPinned);
   const craftmineImmersive = craftmineWorldFirst && craftmineLayout.mode === "play";
-  const worldConversation = useWorldConversation(ready && modeChosen && craftmineImmersive
-    && !modeEntryOpen && !pauseOpen && !gameSettingsOpen && !searchOpen && !craftmineSheetOpen && !dialogueWorld.state, craftmineLayout.overlay !== "closed");
+  const worldConversation = useWorldConversation(ready && modeChosen && craftmineWorldFirst
+    && !modeEntryOpen && !pauseOpen && !gameSettingsOpen && !searchOpen && !craftmineSheetOpen && !dialogueWorld.state, !craftmineImmersive || craftmineLayout.overlay !== "closed");
   const craftmineChatRef = useRef<HTMLElement | null>(null);
   const craftmineImmersionError = useCraftmineImmersionSurface(modeChosen && craftmineImmersive, craftmineLayout.overlay, searchOpen || craftmineSheetOpen || modeEntryOpen || pauseOpen || gameSettingsOpen || (!!dialogueWorld.state && dialogueWorld.state.phase !== "chat"), craftmineChatRef, openPause, dialogueWorld.state?.phase === "chat");
   useEffect(() => { if (!craftmineImmersive) setPauseOpen(false); }, [craftmineImmersive]);

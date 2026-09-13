@@ -9,6 +9,7 @@ const root=path.resolve(import.meta.dirname,'..'),desktop=path.join(root,'vendor
 fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=fs.mkdtempSync(path.join(root,'test-results/first-creation-guide-ui-'));
 const stub=`export const useTranslation=()=>({i18n:{language:window.fixture.lang}});
+export const createCopiedWorldSession=async()=>{throw Error('Explicit creation is not part of guide navigation');};
 export const useAppStore=selector=>selector(window.fixture.store);useAppStore.getState=()=>window.fixture.store;useAppStore.setState=patch=>{Object.assign(window.fixture.store,patch);};
 export const useCraftmineWorlds=()=>window.fixture.controller;
 export const enterCraftmineMode=mode=>{window.fixture.actions.push(mode);};
