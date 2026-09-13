@@ -36,3 +36,9 @@ Validation uses deterministic renderer fixtures and native separate profiles.
 No operating-system input, pointer lock or foreground test windows are allowed.
 Native publication/storage, runtime adoption, model use and human feel are
 distinct evidence. This implementation does not assert human playtest results.
+# Packaged service closure
+
+The desktop plugin build must stage the world publication service and bundle the
+component publication service with its package-format dependency. A fresh-output
+test loads the complete staged plugin entry before any native UI acceptance;
+successful checkout-only imports do not prove that a Windows package can start.

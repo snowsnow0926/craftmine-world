@@ -22,6 +22,9 @@ test('production plugin build includes exact guidance resources and serves a pin
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
     assert.equal(typeof require(path.join(output,'godot-executor.cjs')).createGodotExecutor,'function','the packaged executor must load all of its actual runtime dependencies');
+    assert.equal(typeof require(path.join(output,'main.cjs')).onLoad,'function','the complete staged plugin must resolve its publication services');
+    assert.equal(typeof require(path.join(output,'player-world-library.cjs')).createPlayerWorldLibrary,'function');
+    assert.equal(typeof require(path.join(output,'player-component-library.cjs')).createPlayerComponentLibrary,'function');
     const corpus=require(path.join(output,'guidance/catalog.json'));
     const packedSchema=require(path.join(output,'creation-operation-schema.cjs'));
     const packedTool=require(path.join(output,'manifest.json')).contributes.agentTools.find(tool=>tool.name==='creation_operation');

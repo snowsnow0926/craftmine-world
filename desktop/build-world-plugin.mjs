@@ -30,6 +30,8 @@ for(const file of ['godot-engine-profile.cjs','godot-engine-performance.mjs','go
 // bundle those modules so the staged plugin has no checkout-relative imports.
 await fs.copyFile(path.join(source,'builtin-source-library.cjs'),path.join(output,'builtin-source-library.cjs'));
 await fs.copyFile(path.join(source,'godot-view-capture.cjs'),path.join(output,'godot-view-capture.cjs'));
+await fs.copyFile(path.join(source,'player-world-library.cjs'),path.join(output,'player-world-library.cjs'));
+await build({entryPoints:[path.join(source,'player-component-library.cjs')],outfile:path.join(output,'player-component-library.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',external:['./package-zip.mjs']});
 buildBuiltinSourceLibrary({output:path.join(output,'builtin-source-library')});
 await build({entryPoints:[path.join(source,'source-library-service.cjs')],outfile:path.join(output,'source-library-service.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',external:['./package-zip.mjs']});
 await build({entryPoints:[path.join(source,'package-zip.mjs')],outfile:path.join(output,'package-zip.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
