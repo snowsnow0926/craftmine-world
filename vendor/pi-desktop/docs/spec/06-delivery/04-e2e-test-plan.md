@@ -10477,6 +10477,10 @@ refs; unknown bridge hashes must not match the new exact cohorts.
   and offscreen/headless, with no OS input, Pointer Lock or focus requests. Preserve
   failed reports and fail the result if shutdown or package inventory fails.
 
+- Run the real core creation check with the preview wrapper enabled. The job's
+  source claim must retain the actual wrapper and both helpers; missing, changed,
+  aliased and mixed cohorts must fail before staging, including LF/CRLF variants.
+
 ## Player setup and portable friend feedback (2026-09-14)
 
 Verify the existing settings row's install/discover/login/verify/save stages.

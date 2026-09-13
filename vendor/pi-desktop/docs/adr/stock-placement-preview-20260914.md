@@ -42,3 +42,9 @@ geometry and collision advice; they do not claim final material appearance. Cust
 scripted components and arbitrary GLBs require a future explicit transform contract.
 This does not claim isolation from hostile scripts executing in the same Godot
 process, or replace the final source collision and progress-preservation checks.
+
+Core validates the full engine extension before applying inherited sampler
+requirements. Normalization is a validation-only clone and never substitutes
+source/build bytes. Both source materialization and actual PCK verification keep
+the complete wrapper chain pinned. A real core project/check/claim regression
+covers this boundary in addition to the observer-cohort unit cases.

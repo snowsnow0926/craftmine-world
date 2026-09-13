@@ -94,3 +94,10 @@ its two previously absent helper files, through source CAS/check/adoption. This 
 files and progress. If an old picker also needs its independent update, it is
 adopted first and the next capture offers the preview update. Unknown/mixed source
 cohorts never gain this maintenance authority.
+
+The Rust source/check boundary independently recognizes the complete current or
+released engine-wrapper cohort, including exact inherited bridge and collector
+bytes and lengths. It validates a cloned inherited view for the unchanged
+legacy/controller/collision sampler rules; the actual source manifest, build
+copy, claim and PCK still contain the original wrapper/helper bytes. Missing,
+unknown, aliased or mixed chains are rejected before a build job can proceed.
