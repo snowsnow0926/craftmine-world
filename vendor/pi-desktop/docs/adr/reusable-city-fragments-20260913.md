@@ -30,3 +30,11 @@ reference-derived geometry's rights are marked unverified; package hashes and
 visual inspection are not legal verification. Actual isolated Godot Web PNGs
 are pinned to the geometry, wrapper and shader hashes and exposed as component
 views. They are separate from a receiving-world runtime/application receipt.
+# Receiving-floor correction
+
+The included street sand is an instance-local surface layer 20 mm above the
+normal Y=0 receiving ground, with its collider at the same offset. Other mesh
+nodes and approved/derived GLB bytes remain unchanged. Publish measured approach
+and interior/passage waypoints as optional package navigation metadata. Adoption
+still validates the saved player capsule; move and save outside the new raised
+footprint through normal gameplay instead of adjusting native penetration guards.

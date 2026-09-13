@@ -12,6 +12,9 @@ func _prepare_geometry(node: Node) -> void:
 	if node is MeshInstance3D:
 		var mesh_node := node as MeshInstance3D
 		mesh_count += 1
+		# Keep this included surface and its child collider above a normal Y=0 receiving floor.
+		if str(node.name) == "Solid_ValleyStrength_sand":
+			mesh_node.position.y += 0.02
 		if str(node.name).begins_with("Solid_") or str(node.name).begins_with("HiddenSolid_"):
 			var shape := ConcavePolygonShape3D.new()
 			var faces := mesh_node.mesh.get_faces()

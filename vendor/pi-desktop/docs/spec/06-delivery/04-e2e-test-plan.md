@@ -10229,3 +10229,12 @@ Cold-open with existing covered-chat pause ownership, compare the complete saved
 state before any resumed frame, then resume normally and confirm live simulation.
 Retain any earlier ordinary-open/late-pause one-frame comparison failures instead
 of accepting state tolerances or rewriting runtime progress.
+
+For city fragments, render over the actual default Y=0 receiving floor. Verify
+only the included street sand and its collider are raised by 20 mm; approved and
+derived GLB hashes and all ten capsule routes remain unchanged. Check source-pinned
+new PNGs and measured approach/interior metadata for both street houses, the
+single house and the gate. Walk and save outside the target footprint before
+adoption, then actually walk back onto the raised street, save and cold-reopen
+the exact state. An unsaved movement followed by a native penetration rejection
+remains failed evidence, not a reason to relax the guard.

@@ -75,3 +75,31 @@ preview claims cache the real captured PNG separately from immutable package
 bytes. Existing conflicting versions are preserved and receive no new preview.
 An image documents the component render scene; receiving-world installation and
 gameplay still require the ordinary source checks and adoption workflow.
+
+## Receiving-floor clearance and measured navigation
+
+The street's included `Solid_ValleyStrength_sand` mesh and its matching child
+collider receive an instance-local 20 mm vertical offset. Houses, roofs, walls
+and every approved/derived GLB byte remain unchanged. This separates the sand
+surface from the normal receiving floor at Y=0 and prevents coplanar flicker.
+Preview verification now also uses receiving ground Y=0; the previous -0.035 m
+preview fixture did not exercise this normal installation condition.
+
+The raised floor must not intersect the current saved player capsule. Before
+adopting under a currently occupied footprint, the player must walk outside it
+and save normally. Native penetration checks are retained; no player coordinate
+rewrite or collision tolerance is used to accept an obstructed saved pose.
+
+Every package publishes `entry.navigation` in component-local millimetres.
+These are measured approach/interior or passage waypoints, not exact door-frame
+centres. The street includes its main route and both house entrances: the first
+approaches local [4, 0.02, 17.928] toward [0, 0.02, 11]; the second approaches
+[5.928, 0.02, -6] toward [-1, 0.02, -10]. Metadata also includes the single-house
+entry and gate passage. Native capsule tests retain all ten successful routes
+and separately measure that only the sand moves and its collider follows it.
+
+After changing a previewed wrapper, rebuild with
+`buildCityFragments({includePreviews:false})`, run the actual isolated Web
+preview, pin that passed report with `scripts/record-city-fragment-previews.mjs`,
+then regenerate normally. The pinning tool verifies actual rendered source and
+PNG hashes; stale pictures cannot be re-labelled as a new source capture.

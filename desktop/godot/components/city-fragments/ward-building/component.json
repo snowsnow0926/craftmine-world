@@ -190,18 +190,41 @@
     },
     {
       "path": "preview.png",
-      "bytes": 153571,
-      "sha256": "e90004a11c88dc87b8feec91614f495919494dbbf6de53d0729aa44a1d5d8c4b"
+      "bytes": 153492,
+      "sha256": "78f7ea157b74b465eb8f127010be6edefb0e8f9fe2c319f2edc444bc52938c6d"
     }
   ],
+  "navigation": {
+    "coordinates": "component-local-millimetres",
+    "meaning": "measured walk approach and interior/passage waypoints, not exact doorway frame centers",
+    "actorRadiusMm": 300,
+    "actorHeightMm": 1800,
+    "routes": [
+      {
+        "id": "house-entry",
+        "kind": "approach-to-interior",
+        "approachMm": [
+          4000,
+          0,
+          7000
+        ],
+        "interiorMm": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
   "preview": {
     "slug": "ward-building",
     "file": "preview.png",
-    "sha256": "e90004a11c88dc87b8feec91614f495919494dbbf6de53d0729aa44a1d5d8c4b",
+    "sha256": "78f7ea157b74b465eb8f127010be6edefb0e8f9fe2c319f2edc444bc52938c6d",
     "width": 1000,
     "height": 760,
     "scope": "isolated-component-render",
     "engine": "4.7.2.stable.official.ed1daf0bf",
+    "receivingGroundY": 0,
     "geometrySha256": "45f0bf31440d1d7f9e3776a127295f76017511e5696eb4868523c417e72ba80c",
     "wrapperSha256": "d5ca70503828f9a9fdc92058ef913db55c8e9cef14eb22b0177b88bbf3aa3527",
     "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"

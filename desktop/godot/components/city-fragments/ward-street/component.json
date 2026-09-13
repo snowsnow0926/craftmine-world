@@ -81,7 +81,10 @@
     }
   ],
   "ground": {
-    "included": true
+    "included": true,
+    "surfaceClearanceMm": 20,
+    "colliderMatchesSurface": true,
+    "adoption": "Keep the current player outside the raised ground footprint until adoption; use ordinary walking, never rewrite saved pose."
   },
   "route": {
     "kind": "street-traverse",
@@ -243,7 +246,16 @@
     "originalsModified": false,
     "licenseStatus": "unverified",
     "sourceLicenseFile": "ORIGINAL_ASSETS_LICENSE.txt",
-    "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified"
+    "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified",
+    "includedGroundTransform": {
+      "node": "Solid_ValleyStrength_sand",
+      "translationMm": [
+        0,
+        20,
+        0
+      ],
+      "scope": "instance mesh and matching child collider; approved and derived GLB bytes unchanged"
+    }
   },
   "files": [
     {
@@ -258,8 +270,8 @@
     },
     {
       "path": "fragment.gd",
-      "bytes": 1911,
-      "sha256": "65f4bfa3f75f0dd7bf141439061a3e12ae9a040984cd6f1918d4885478450108"
+      "bytes": 2085,
+      "sha256": "ef096d8db1ed2e7a07341efcf6055872726335b6db4d36e2c0c164ce4d7775f5"
     },
     {
       "path": "fragment.gd.uid",
@@ -278,8 +290,8 @@
     },
     {
       "path": "provenance.json",
-      "bytes": 1667,
-      "sha256": "c307965685424df90b8493864574afc2cb005f584081c26ecbec0ead8c353608"
+      "bytes": 1900,
+      "sha256": "468c083ffcb1cebf2155143c62826802b6f93d02c5193f3a19164a2944a7cb90"
     },
     {
       "path": "fragment.tscn",
@@ -288,20 +300,73 @@
     },
     {
       "path": "preview.png",
-      "bytes": 169925,
-      "sha256": "bee3138fd9d2feba0f13657cbc0eeb8a02ee445e17161192eceb8f7c811fbe59"
+      "bytes": 165013,
+      "sha256": "22f59613eefbeb92f68a61f07edea8a787302b0cc76c39ac76fdb9f9c596795e"
     }
   ],
+  "navigation": {
+    "coordinates": "component-local-millimetres",
+    "meaning": "measured walk approach and interior/passage waypoints, not exact doorway frame centers",
+    "actorRadiusMm": 300,
+    "actorHeightMm": 1800,
+    "routes": [
+      {
+        "id": "street-traverse",
+        "kind": "street-traverse",
+        "approachMm": [
+          12000,
+          20,
+          20000
+        ],
+        "interiorMm": [
+          12000,
+          20,
+          -20000
+        ]
+      },
+      {
+        "id": "first-house-entry",
+        "kind": "approach-to-interior",
+        "approachMm": [
+          4000,
+          20,
+          17928
+        ],
+        "interiorMm": [
+          0,
+          20,
+          11000
+        ],
+        "entryAngleDegrees": 60
+      },
+      {
+        "id": "second-house-entry",
+        "kind": "approach-to-interior",
+        "approachMm": [
+          5928,
+          20,
+          -6000
+        ],
+        "interiorMm": [
+          -1000,
+          20,
+          -10000
+        ],
+        "entryAngleDegrees": 30
+      }
+    ]
+  },
   "preview": {
     "slug": "ward-street",
     "file": "preview.png",
-    "sha256": "bee3138fd9d2feba0f13657cbc0eeb8a02ee445e17161192eceb8f7c811fbe59",
+    "sha256": "22f59613eefbeb92f68a61f07edea8a787302b0cc76c39ac76fdb9f9c596795e",
     "width": 1000,
     "height": 760,
     "scope": "isolated-component-render",
     "engine": "4.7.2.stable.official.ed1daf0bf",
+    "receivingGroundY": 0,
     "geometrySha256": "843f585b1c100ea88715d6e772621f494391bc79826758c663128bef10ffcccb",
-    "wrapperSha256": "65f4bfa3f75f0dd7bf141439061a3e12ae9a040984cd6f1918d4885478450108",
+    "wrapperSha256": "ef096d8db1ed2e7a07341efcf6055872726335b6db4d36e2c0c164ce4d7775f5",
     "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
   }
 }

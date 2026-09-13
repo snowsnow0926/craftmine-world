@@ -62,5 +62,14 @@
   "originalsModified": false,
   "licenseStatus": "unverified",
   "sourceLicenseFile": "ORIGINAL_ASSETS_LICENSE.txt",
-  "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified"
+  "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified",
+  "includedGroundTransform": {
+    "node": "Solid_ValleyStrength_sand",
+    "translationMm": [
+      0,
+      20,
+      0
+    ],
+    "scope": "instance mesh and matching child collider; approved and derived GLB bytes unchanged"
+  }
 }

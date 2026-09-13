@@ -25,7 +25,7 @@ func _ready() -> void:
 	var mesh := PlaneMesh.new()
 	mesh.size = Vector2(180, 180)
 	ground.mesh = mesh
-	ground.position.y = -0.035
+	ground.position.y = 0.0
 	var material := StandardMaterial3D.new()
 	material.albedo_color = Color("927257")
 	ground.material_override = material

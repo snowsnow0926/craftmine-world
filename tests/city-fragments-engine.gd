@@ -59,6 +59,14 @@ func _run() -> void:
 			_require(result.reached, item.id + ": authored route did not reach target: " + str(result))
 		record.traversals = traversals
 		if item.slug == "ward-street":
+			for instance in instances:
+				for mesh_node in instance.get_node("Geometry").find_children("*","MeshInstance3D",true,false):
+					var expected_y := 0.02 if str(mesh_node.name) == "Solid_ValleyStrength_sand" else 0.0
+					_require(absf(mesh_node.global_position.y-instance.global_position.y-expected_y)<0.00001,"Only the included sand layer may move above the receiving floor")
+				var probe: Vector3 = instance.position + Vector3(12,2,0)
+				var ground_ray := PhysicsRayQueryParameters3D.create(probe,probe-Vector3.UP*3.0,1)
+				var ground_hit := world.get_world_3d().direct_space_state.intersect_ray(ground_ray)
+				_require(not ground_hit.is_empty() and absf(ground_hit.position.y-instance.position.y-0.02)<0.00001,"Included sand collider matches its lifted rendered surface")
 			var entrances: Array = []
 			for instance in instances:
 				for local_center in [Vector3(0, 0, 11), Vector3(-1, 0, -10)]:
