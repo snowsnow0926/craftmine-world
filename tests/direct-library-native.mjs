@@ -206,7 +206,7 @@ async function applyDirect(row){
 try{
  console.log(JSON.stringify({out,cancel:path.join(out,'cancel')}));await start('first');
  worldId=await createWorld('My first library world');report.before=await rpc('godotObserve');report.initialSource=await pkg('sourceList');report.initialSnapshot=await rpc('godotSnapshot');
- report.guide=await rpc('worldCreationGuide');assert.equal(report.guide.steps,5);assert(report.guide.oldGuideAbsent&&report.guide.headerUnchanged&&report.guide.worldUnchanged);
+ await workbench();report.guide=await rpc('worldCreationGuide');assert.equal(report.guide.steps,5);assert(report.guide.oldGuideAbsent&&report.guide.headerUnchanged&&report.guide.worldUnchanged);
  mark('Fresh client created a blank world through the ordinary PI form');
  const first=await startDirect('cw.module.approved-pomeranian',{x:-2,y:0,z:4.3});await applyDirect(first);mark('First exact companion checked and formally added with no AI');
  const second=await startDirect('cw.module.approved-pomeranian',{x:2,y:0,z:4.3});await applyDirect(second);mark('Second companion received a distinct instance without duplicate retry');
