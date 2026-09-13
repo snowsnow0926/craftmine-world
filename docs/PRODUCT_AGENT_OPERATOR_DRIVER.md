@@ -21,7 +21,8 @@ node tests/product-agent-operator-native.mjs `
 
 也支持既有 `--packaged-root` 成品参数，以及 `--resume` 指向本驱动原报告。
 恢复只能使用同一输出根目录下、带有真实测试标记的原 profile。旧命令不自动重放；
-中断的命令保留原记录，总控必须先检查当前真实状态，再提交新的操作。
+中断的命令标为 `interrupted-on-resume`，旧报告保持原样。总控必须先检查当前
+真实状态，再提交新的操作。重复 ID 的不同字节写入独立冲突记录，不覆盖旧结果。
 
 启动会实际验证 Codex 登录和模型，必须为 `gpt-6-astra` / `xhigh`。从普通示例
 选择器创建完整 `promo-city` 的个人副本，使用该世界实际创建的会话，不伪造任务。
@@ -55,7 +56,7 @@ node tests/product-agent-operator-native.mjs `
 | `explore` | `{steps}`，使用现有 `godotExplore`，绑定刚读取的 world/build/instance 身份；操作集遵守现有驱动契约。 |
 | `capture` | 保存当前正式世界的绑定原生画面、SHA-256、身份及观察，不修改画面。 |
 | `history` | 可选 `{branchId,skip,offset}`，读取普通版本面板和源码索引。 |
-| `source-read` | `{branchId,revision,manifestHash,path}`，读取索引指定的真实源码。 |
+| `source-read` | `{branchId,revision,manifestHash,path}`，现有接口只读首个 16000 字符；`nextOffset` 非空表示未读全文，不能伪称完整源码。 |
 | `brief` | 通过现有主窗口 `world.brief` 读取用户目标和保留要求。 |
 | `goal-add` | `{expectedRevision,kind:"goal"或"preserve",text,operationId?}`，显式添加用户条目。 |
 | `goal-review` | `{expectedRevision,id,buildId,accepted,operationId?}`，仅由总控在检查真实结果后明确评审。 |
@@ -70,6 +71,16 @@ node tests/product-agent-operator-native.mjs `
 `sessionTurnMetrics` 与对应转录保存在报告和 `turns`。`captures` 保存实际画面
 和导出 ZIP。报告记录实际运行二进制 SHA、源码 bundle 身份、逐轮消息/turn ID、
 有效模型事件和正常退出审计。
+
+`mainSha256` 哈希的是 launch helper 返回的实际源码内容，并在源模式下与直接
+读取文件字节的哈希交叉核对。每次启动和最终退出检查报告所列 main、preload、
+Core、host、Codex 文件；成品模式还检查完整包清单。源模式不宣称检查了全部
+依赖文件。完整性失败写入 `finalIntegrity` 后才保存最终报告并返回非零退出码，
+不会在报告保存后抛错而留下“验证通过”的假象。
+
+现有 `explore` 接口只支持 `look`、`walk`、`wait`、`interact`、`attack` 和
+单帧 interact 的 `play-action`。它没有通用油门、方向舵或天气按键；不得把步行
+操作当成驾驶验收。普通历史分页用 `history.offset`，每页读取最多 32 个源码描述。
 
 创建标准输出中的取消文件或发送 SIGINT/SIGTERM 会请求普通取消，再正常退出。
 所有窗口必须始终 offscreen、不可聚焦且不可见；不得真实鼠标/键盘输入、
