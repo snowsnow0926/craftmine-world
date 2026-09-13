@@ -14,9 +14,10 @@ const args=process.argv.slice(2),option=name=>{const index=args.indexOf(name);re
 if(args.includes('--help')){console.log('node tests/product-agent-operator-native.mjs --application-root ABS --runtime-resources ABS --codex ABS --output-root ABS [--resume ABS_REPORT] [--packaged-root ABS]\nNo prompts are sent until an explicit inbox command. See docs/PRODUCT_AGENT_OPERATOR_DRIVER.md.');process.exit(0);}
 const applicationRoot=option('--application-root'),resources=option('--runtime-resources'),codex=option('--codex'),outputRoot=option('--output-root');
 assert([applicationRoot,resources,codex,outputRoot].every(value=>typeof value==='string'&&path.isAbsolute(value)),'ABSOLUTE_APPLICATION_RESOURCES_CODEX_OUTPUT_REQUIRED');
+assert.equal(path.basename(path.resolve(outputRoot)),'test-results','HEADLESS_OUTPUT_PARENT_MUST_BE_TEST_RESULTS');
 const previousFile=option('--resume'),previous=previousFile?JSON.parse(fs.readFileSync(previousFile,'utf8')):null;
-if(previous){assert.equal(previous.format,'craftmine.product-agent-operator/1');assert.equal(path.dirname(path.resolve(previousFile)),path.resolve(previous.out));assert.equal(path.dirname(path.resolve(previous.out)),path.resolve(outputRoot));assert(path.basename(previous.out).startsWith('codex-product-'));assert(previous.worldId&&previous.sessionId);}
-fs.mkdirSync(outputRoot,{recursive:true});const out=previous?.out??fs.mkdtempSync(path.join(outputRoot,'codex-product-')),profile=path.join(out,'profile');
+if(previous){assert.equal(previous.format,'craftmine.product-agent-operator/1');assert.equal(path.dirname(path.resolve(previousFile)),path.resolve(previous.out));assert.equal(path.dirname(path.resolve(previous.out)),path.resolve(outputRoot));assert(path.basename(previous.out).startsWith('desktop-native-product-'));assert(previous.worldId&&previous.sessionId);}
+fs.mkdirSync(outputRoot,{recursive:true});const out=previous?.out??fs.mkdtempSync(path.join(outputRoot,'desktop-native-product-')),profile=path.join(out,'profile');
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));atomicProductAgentJson(path.join(profile,'headless-profile.json'),{format:'craftmine.headless-profile/1',token:randomUUID(),legacySource:path.join(out,'legacy')});}
 const marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8'));assert.equal(marker.format,'craftmine.headless-profile/1');
 for(const name of ['inbox','responses','turns','captures'])fs.mkdirSync(path.join(out,name),{recursive:true});
