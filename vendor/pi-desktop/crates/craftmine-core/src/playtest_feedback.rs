@@ -31,6 +31,18 @@ struct Screenshot {png_base64: String, sha256: String, world_id: String, build_i
 fn short(value: &str, max: usize) -> bool { !value.is_empty() && value.len()<=max && !value.chars().any(char::is_control) }
 fn hash(value: &str) -> bool {value.len()==64 && value.bytes().all(|b|b.is_ascii_hexdigit()&&!b.is_ascii_uppercase())}
 fn report_id(value: &str) -> bool {value.strip_prefix("feedback-").is_some_and(hash)}
+fn validate_png_header(bytes: &[u8]) -> Result<()> {
+    ensure!(bytes.len()>=33 && bytes.starts_with(b"\x89PNG\r\n\x1a\n")
+      && bytes[8..12]==13_u32.to_be_bytes() && &bytes[12..16]==b"IHDR", "PLAYTEST_INVALID_SCREENSHOT");
+    let width=u32::from_be_bytes(bytes[16..20].try_into()?);
+    let height=u32::from_be_bytes(bytes[20..24].try_into()?);
+    // Match the native library thumbnail envelope before the renderer decodes
+    // any friend-supplied compressed PNG payload.
+    ensure!((1..=640).contains(&width)&&(1..=360).contains(&height),"PLAYTEST_SCREENSHOT_DIMENSIONS");
+    ensure!(matches!((bytes[25],bytes[24]),(0,1|2|4|8|16)|(2,8|16)|(3,1|2|4|8)|(4,8|16)|(6,8|16))
+      &&bytes[26]==0&&bytes[27]==0&&bytes[28]<=1,"PLAYTEST_INVALID_SCREENSHOT");
+    Ok(())
+}
 fn identity(value: &Value) -> Result<String> {
     let mut body=value.clone();body.as_object_mut().context("PLAYTEST_INVALID_REPORT")?.remove("id");
     Ok(format!("feedback-{}",digest(&serde_json::to_string(&body)?)))
@@ -51,6 +63,7 @@ fn validate(value: &Value) -> Result<Report> {
       ensure!(image.world_id==report.context.world_id&&image.build_id==report.context.build_id,"PLAYTEST_SCREENSHOT_MISMATCH");
       let bytes=STANDARD.decode(&image.png_base64).context("PLAYTEST_INVALID_SCREENSHOT")?;
       ensure!(bytes.len()<=512*1024&&bytes.starts_with(b"\x89PNG\r\n\x1a\n")&&hash(&image.sha256),"PLAYTEST_INVALID_SCREENSHOT");
+      validate_png_header(&bytes)?;
       use sha2::Digest;
       ensure!(sha2::Sha256::digest(&bytes).iter().map(|b|format!("{b:02x}")).collect::<String>()==image.sha256,"PLAYTEST_INVALID_SCREENSHOT");
     }
@@ -109,6 +122,16 @@ mod tests {
  fn sample()->Value {let mut v=json!({"format":FORMAT,"createdAt":1,"context":{"worldId":"world-one","buildId":"build-one","worldRevision":0,"contentHash":"a".repeat(64),"baseId":"creation-sandbox","baseVersion":"1","engineVersion":"4.7.2","progressFormat":"craftmine.godot-progress/1"},"client":{"version":"0.14.4-preview.22","commit":null},"description":"Tree blocks the door","expected":"Walk through the door","replyTo":null,"screenshot":null});v["id"]=identity(&v).unwrap().into();v}
  #[test]fn portable_schema_rejects_tamper_and_unknown_fields(){let good=sample();assert!(validate(&good).is_ok());let mut bad=good.clone();bad["description"]="changed".into();assert!(validate(&bad).is_err());bad=good;bad["privatePath"]="secret".into();bad["id"]=identity(&bad).unwrap().into();assert!(validate(&bad).is_err());}
  #[test]fn portable_schema_rejects_unbound_screenshots(){let mut v=sample();v["screenshot"]=json!({"worldId":"other","buildId":"build-one","pngBase64":"iVBORw0KGgo=","sha256":"a".repeat(64)});v["id"]=identity(&v).unwrap().into();assert!(validate(&v).is_err());}
+ #[test]fn screenshot_png_header_bounds_are_checked_before_decoding(){
+   let png=STANDARD.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=").unwrap();
+   assert!(validate_png_header(&png).is_ok());
+   for (width,height) in [(0,1),(1,0),(641,1),(1,361),(100_000,100_000)] {
+     let mut bad=png.clone();bad[16..20].copy_from_slice(&u32::to_be_bytes(width));bad[20..24].copy_from_slice(&u32::to_be_bytes(height));assert!(validate_png_header(&bad).is_err());
+   }
+   assert!(validate_png_header(&png[..32]).is_err());
+   let mut bad=png.clone();bad[8..12].copy_from_slice(&12_u32.to_be_bytes());assert!(validate_png_header(&bad).is_err());
+   bad=png;bad[12..16].copy_from_slice(b"IDAT");assert!(validate_png_header(&bad).is_err());
+ }
  #[test]fn imported_reports_are_world_scoped_idempotent_and_survive_reopen(){
    let dir=tempfile::tempdir().unwrap();let path=dir.path().join("feedback.sqlite");
    let mut journal=TaskJournal::open(&path).unwrap();

@@ -50,6 +50,9 @@ remain exactly as previewed. A new formal build requires a fresh preview. The
 report is never silently recaptured or rewritten during confirmation.
 Reports are at most 800,000 bytes, PNGs at most 512 KiB, and journals at most
 100 reports per world. These are file/storage limits, not AI task limits.
+Imported PNGs must have a complete first 13-byte IHDR with valid header fields
+and positive dimensions bounded to the native thumbnail envelope of 640×360.
+Huge dimensions and truncated headers are rejected before renderer decoding.
 
 Private Rust methods are `playtest.context`, `validate`, `record`, `list`, `read`.
 The private plugin-runtime orchestrator allowlist admits exactly those five
