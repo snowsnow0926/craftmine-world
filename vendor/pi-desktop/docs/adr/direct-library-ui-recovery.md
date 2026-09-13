@@ -7,13 +7,17 @@ world change. A component-local promise would therefore hide a preparing or
 checking operation, and a fresh click could accidentally create a second
 operation after a lost acknowledgement.
 
-Use a small external React store with session-storage recovery for the exact
-bounded native start request, display label and sanitized receipt. Keep the
+Use a small external React store with profile-local-storage recovery for the
+exact bounded native start request and display label. Persist locators only;
+receipts must be read from main again after renderer or application restart.
+Keep the
 activity surface outside selected card and publication tab state. Main owns
 durable operation records, filesystem access and all authorization. Stored
 renderer data cannot bypass the native world/reference/source/adoption fences.
 
-Mounting or returning to a world reads operation status only. Start and apply
+Mounting or returning to a world reconciles all known operation locators through
+status only. Retain the latest 20 terminal operations and every unresolved one.
+Start and apply
 remain explicit player actions. Retry resubmits the original operation rather
 than allocating a new identity. Terminal receipts cannot be replaced by delayed
 nonterminal responses, and responses for another immutable selection are

@@ -53,7 +53,7 @@ export function DirectLibraryUse({bridge, worldId, asset, zh}: {bridge: AssetLib
             <label className="asset-library-check"><input type="checkbox" data-direct-custom-position checked={custom} onChange={event => setCustom(event.target.checked)}/>{zh ? "调整放置坐标" : "Adjust placement coordinates"}</label>
             {custom && <div className="asset-direct-coordinates">{(["x", "y", "z"] as const).map(axis => <label key={axis}>{axis.toUpperCase()}<Input type="number" step="0.1" min={-80} max={80} required data-direct-position-axis={axis} value={coordinates[axis]} onChange={event => setCoordinates(value => ({...value, [axis]: event.target.value}))}/></label>)}</div>}
           </>}
-          {custom && <p className="asset-library-field-hint">{zh ? "坐标单位为米，Y 为高度。缩略图不代表放置位置；实际场地是否合适由检查确定。" : "Coordinates are in meters; Y is height. The thumbnail does not show placement. The check determines whether the site is suitable."}</p>}
+          {custom && <p className="asset-library-field-hint">{zh ? "坐标单位为米，Y 为高度。缩略图不代表放置位置。先检查世界兼容性，加入后查看实际位置。" : "Coordinates are in meters; Y is height. The thumbnail does not show placement. Check world compatibility, then inspect the actual position after adding."}</p>}
           {invalidPosition && <p role="alert">{zh ? "请填写 −80 到 80 之间的有效坐标。" : "Enter valid coordinates between −80 and 80."}</p>}
           <Button type="submit" size="sm" disabled={invalidPosition} data-direct-start>{zh ? "检查并准备加入" : "Check and prepare"}</Button>
         </fieldset>
@@ -68,15 +68,15 @@ export function DirectLibraryActivity({bridge, worldId, zh}: {bridge: AssetLibra
   useEffect(() => {
     if (!bridge || !worldId) return;
     let stopped = false; const polling = new Set<string>();
-    const poll = () => {
+    const poll = (reconcileAll = false) => {
       if (stopped) return;
-      for (const attempt of currentDirectAttempts().filter(row => row.request.worldId === worldId && !directIsTerminal(row.operation?.status))) {
+      for (const attempt of currentDirectAttempts().filter(row => row.request.worldId === worldId && (reconcileAll || !directIsTerminal(row.operation?.status)))) {
         if (polling.has(attempt.request.operationId)) continue;
         polling.add(attempt.request.operationId);
         void requestDirectOperation(bridge, attempt, "status").finally(() => polling.delete(attempt.request.operationId));
       }
     };
-    poll(); const timer = setInterval(poll, 1500);
+    poll(true); const timer = setInterval(poll, 1500);
     return () => {stopped = true; clearInterval(timer);};
   }, [bridge, worldId]);
   if (!attempts.length) return null;

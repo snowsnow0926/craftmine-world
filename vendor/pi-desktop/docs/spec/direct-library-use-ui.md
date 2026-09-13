@@ -17,8 +17,9 @@ checks, protected saved progress and adoption.
 Omitted position means the package's original default placement. For an exact
 host-supported single-root scene, the player can optionally enter X/Y/Z meter
 coordinates between -80 and 80. Y is height. The asset thumbnail is not a 3D
-placement preview or evidence that the requested site is suitable. The native
-check can refuse the site without reducing the original request.
+placement preview or evidence that the requested site is suitable. Native world
+compatibility checks do not certify visual placement or all object overlaps.
+The player inspects the actual position after adding.
 
 The activity list belongs to the world, not the selected card or publication
 tab. Preparing, checking, ready, applying, applied, cancelled, failed and
@@ -29,10 +30,14 @@ localized next-step guidance for ownership changes, busy creation, unsupported
 content, geometry and input/weather conflicts. Retained drafts are explicitly
 distinguished from the original formal world.
 
-The renderer retains exact requests and sanitized receipts in session storage
-before invoking main, and in an external React store for sheet remounts. This is
-UI recovery state, not authority to apply content. A returning panel polls the
-host for nonterminal operations without automatically replaying start or apply.
+The renderer persists exact requests and display labels as locators in profile
+local storage before invoking main. Receipts stay in the external React store
+only. A fresh renderer reads every result from main; stored labels and requests
+never become cached success or approval. Each panel mount reconciles all known
+operations for the world; later polling covers nonterminal operations without
+automatically replaying start or apply. This is UI recovery state, not authority
+to apply content. Completed history is bounded to the latest 20 operations;
+unresolved operations are not evicted.
 An uncertain start can be retried only with its original world, immutable asset
 reference, coordinates and operation ID. Changing selection or world cannot
 transfer this operation. Confirmed terminal results and newer host timestamps
@@ -43,7 +48,7 @@ Closing the asset sheet retains the native operation and allows the user to
 return to inspect it. No cancellation is implied by hiding UI. Cancellation is
 an explicit request and displays success only after a host receipt. An app
 restart does not automatically resume interrupted creation. Runtime operations
-remain host-owned even if session storage is unavailable.
+remain host-owned even if profile local storage is unavailable.
 
 Validation: `tests/direct-library-ui.mjs` mounts the actual AssetLibraryPanel
 with a deterministic bridge in an independent headless Chromium. It submits
