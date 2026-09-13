@@ -1,10 +1,14 @@
 # 最中幻想 · craftmine world
 
-**Windows 双世界版本：** 默认玩家入口收敛为一个 Godot 3D 世界和一个 Web 世界。进入后通过 F2 对话创作，Esc 暂停、切换世界或保存退出。旧作品保留在设置中的高级存档管理。
+**当前 Windows 测试版：`0.14.4-preview.21`。** 基于 PI Desktop，支持四个示例世界、28 个内置素材条目、对象发布和世界模板导入／导出。已有世界游玩和模板复制无需连接 AI；自然语言创作使用玩家自己的模型连接。F2 打开对话，Esc 暂停、切换世界或保存退出。
 
-[当前 Windows 交付与复盘](docs/CURRENT_WINDOWS_DELIVERY.md) · [双世界玩家操作说明](docs/TWO_WORLD_PLAYER_GUIDE.md) · [收敛方案与范围](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。成品验收与源码实现分开记录，构建成功不等于玩法或真人验收通过。
+[当前 Windows 交付与开始使用](docs/CURRENT_WINDOWS_DELIVERY.md) · [六项工作包交付与实测](docs/PLAYER_LIBRARY_DELIVERY_2026-09-13.md) · [第一次自主创作开发方案](docs/FIRST_INDEPENDENT_CREATION_PLAN_2026-09-13.md) · [新玩家测试与记录](docs/FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。成品验收与源码实现分开记录，构建成功不等于玩法或真人验收通过。
 
-2026-09-10 的 `8276b45` 四底座客户端是历史快照，其 [当时验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) 和 [Git 归档说明](docs/GIT_CLOSEOUT_2026-09-10.md) 保留供追溯。下文是早期独立 Web 运行器的开发启动与使用资料；Windows 成品玩家请使用上面的双世界操作说明。
+本机已验收文件夹位于 `D:/Craftmine Releases/PlayerLibrary-preview21-b8900d63`，打开其中的 `START-PLAYER-PREVIEW.cmd`；其他电脑需要取得完整文件夹，本页没有提供公开安装包下载。成品固定为 `b8900d63`；合并清理记录已随 `475bc6a5` 进入 `main`。GitHub 默认分支仍为 `master`（2026-09-13 只读核对），浏览当前源码请选择 [main](https://github.com/snowsnow0926/craftmine-world/tree/main)。默认分支调整是待处理发行事项。
+
+**开发中：** 现成素材在素材详情中直接放入世界、无需调用 AI 的流程，见上面的自主创作方案。该新增入口不包含在已交付的 preview.21 中；不以文档更新冒充重新打包。
+
+preview.20 的 [复盘](docs/TWO_WORLD_PREVIEW20_RETROSPECTIVE_2026-09-13.md)、[双世界说明](docs/TWO_WORLD_PLAYER_GUIDE.md) 和 [收敛方案](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) 保留为历史资料。2026-09-10 的 `8276b45` 四底座客户端同样是历史快照，见 [当时验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) 和 [Git 归档说明](docs/GIT_CLOSEOUT_2026-09-10.md)。**下文是早期独立 Web 运行器资料，不是当前 Windows 客户端操作或模型预算约定。** Windows 玩家请从当前交付页开始。
 
 从一个能走动的空白 3D 世界开始，用自然语言逐步创造内容。
 
