@@ -18,6 +18,8 @@ text in a bounded, per-world process-local map. Images, reports and grants are
 not retained in that map. Missing or changed frame bindings require reopening
 and review; they are not replaced with synthetic images. Preview shows every
 exported field and image.
+An unavailable pre-sheet frame has explicit close/reopen recovery copy rather
+than an opaque code alone. Recovery keeps unsaved text but requires image review.
 Export requires a separate explicit confirmation and native save dialog.
 
 No account details, conversation, diagnostic logs, source, other issues or saved

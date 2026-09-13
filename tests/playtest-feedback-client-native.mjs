@@ -229,8 +229,18 @@ async function feedbackOpen(){
 }
 async function feedbackPreview(description,expected,includeScreenshot){
  await field('[data-playtest-description]',description);await field('[data-playtest-expected]',expected);await field('[data-playtest-screenshot]',includeScreenshot);
- const before=await rpc('godotObserve');await submit('[data-playtest-create]');
- await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-playtest-confirm]')`);},Boolean);
+ let before=await rpc('godotObserve');
+ for(let attempt=0;;attempt++){
+  await submit('[data-playtest-create]');
+  try{await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-playtest-confirm]')`);},Boolean);break;}
+  catch(error){
+   if(attempt!==0||!String(error).includes('LIBRARY_PREVIEW_PREPARE_REQUIRED'))throw error;
+   report.capturePreparationRetries??=[];report.capturePreparationRetries.push({worldId,at:new Date().toISOString(),error:String(error),action:'ordinary-close-and-reopen-library'});save();
+   await closeAssets();await feedbackOpen();
+   const retained=await evaluate(`({description:document.querySelector('[data-playtest-description]').value,expected:document.querySelector('[data-playtest-expected]').value,screenshot:document.querySelector('[data-playtest-screenshot]').checked})`);
+   assert.deepEqual(retained,{description,expected,screenshot:includeScreenshot},'ORDINARY_REOPEN_RETAINS_UNSAVED_FEEDBACK');before=await rpc('godotObserve');
+  }
+ }
  const preview=await evaluate(`(()=>{const node=document.querySelector('[data-playtest-record]');return {id:node.dataset.playtestRecord,text:node.innerText,image:node.querySelector('img')?.getAttribute('src')??null};})()`);
  assert(preview.text.includes(description)&&preview.text.includes(expected),'REVIEWED_PLAYER_TEXT_REQUIRED');
  if(includeScreenshot){

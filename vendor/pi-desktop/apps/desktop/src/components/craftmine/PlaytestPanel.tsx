@@ -45,6 +45,6 @@ export function PlaytestPanel({bridge,worldId,zh,onRepair}:{bridge:LibraryCall|n
       </div>}
     </article>}
     {!!items.length&&<ul>{items.map(row=><li key={row.id}><button data-playtest-open={row.id} disabled={busy} onClick={()=>void run(async()=>{const report=await call("read",{id:row.id});if(live.current){setCurrent(report);setPreview(null);}})}>{row.description.slice(0,80)} · {row.sameBuild?(zh?"同一构建":"Same build"):(zh?"不同构建，需核对":"Different build; compare first")}</button></li>)}</ul>}
-    {notice&&<p role="status">{notice}</p>}{error&&<p role="alert">{zh?"操作未完成，可重新预览或重试。":"Not completed. Preview again or retry."} {error}</p>}
+    {notice&&<p role="status">{notice}</p>}{error&&<p role="alert">{/LIBRARY_PREVIEW_PREPARE_REQUIRED/.test(error)?(zh?"打开素材库时画面尚未准备好。请关闭并重新打开素材库，文字会保留，然后重新预览。":"The frame was not ready when the library opened. Close and reopen it; your text is retained. Then preview again."):(zh?"操作未完成，可重新预览或重试。":"Not completed. Preview again or retry.")} {error}</p>}
   </details>;
 }

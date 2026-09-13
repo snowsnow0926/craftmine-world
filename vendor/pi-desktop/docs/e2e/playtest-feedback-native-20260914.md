@@ -40,5 +40,10 @@ failure behavior.
 The driver was prepared and syntax-checked before integrated runtime execution.
 Terminal error text from a player form immediately fails the run even when its
 diagnostic code also names a transient native condition such as capture busy.
+For an explicitly reported missing pre-sheet frame only, the driver records the
+failure and follows the visible close/reopen-library recovery once, verifies
+unsaved fields survive, and again requires a real reviewed PNG. Both attempts
+remain in the report. No raw prepared-frame injection or hidden capture fallback
+is used; another failure ends acceptance.
 Passing storage fixtures and React tests do not imply this native test passed.
 Only an actual generated report with `passed: true` is acceptance evidence.
