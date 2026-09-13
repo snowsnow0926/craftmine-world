@@ -1,0 +1,394 @@
+[
+  {
+    "sourceReport": "D:/Craftmine Worktrees/flight-city-native-20260913/test-results/formal-flight-03/report.json",
+    "sourceReportSha256": "ba93d99f516fa31abd8fb14b4328ef1c5df98318a1cc3d1758ececbf208cdb0f",
+    "format": "craftmine.reusable-content-formal-runtime/1",
+    "passed": true,
+    "modelCalls": 0,
+    "physicalInputSent": false,
+    "worlds": [
+      {
+        "kind": "flight",
+        "worldId": "reuse-flight-1e7f10c6",
+        "passed": true,
+        "formalBuildId": "gbd-0542e5808f64af71006fefd3ace051d1ea74ea95e6bd0bc296d2a9d0c6a4dd58",
+        "sourcePreserved": true,
+        "componentId": "ins-56afa255057bec1f57a995d8-e0",
+        "stages": [
+          {
+            "stage": "native-check",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "base-first-load",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "original-blank",
+            "status": null,
+            "buildId": "gbd-5190cb9ef256eaf88b5bd2733622935e4a284ae8d1e0904f2705591e4d4bcfc2",
+            "sha256": "5eee5080e648f0d5bab7a8ff07878141648d29a98c8282ed953c850506b41724",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-flight-03\\flight\\test-results\\desktop-native-codex-live-f8oRiX\\formal-5eee5080e648f0d5bab7a8ff07878141648d29a98c8282ed953c850506b41724.png"
+          },
+          {
+            "stage": "source-package-install",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": "22528c86b2d73b6412d10dccc82362ae0df9ed1f38cf99150f2cd34d44242231",
+            "imagePath": null
+          },
+          {
+            "stage": "package-native-check",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "component-adopted",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "adopted-content",
+            "status": null,
+            "buildId": "gbd-0542e5808f64af71006fefd3ace051d1ea74ea95e6bd0bc296d2a9d0c6a4dd58",
+            "sha256": "e5b1d0573e193045a00491780a3837111e5eb37963955d2af99a86649770159d",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-flight-03\\flight\\test-results\\desktop-native-codex-live-f8oRiX\\formal-e5b1d0573e193045a00491780a3837111e5eb37963955d2af99a86649770159d.png"
+          },
+          {
+            "stage": "gameplay",
+            "label": "normal E boarding",
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "boarded-aircraft",
+            "status": null,
+            "buildId": "gbd-0542e5808f64af71006fefd3ace051d1ea74ea95e6bd0bc296d2a9d0c6a4dd58",
+            "sha256": "e0a0e3a478cd6af13ec1d8922b0a93b79a5c9f35f1fe3815e5115d1e056bd378",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-flight-03\\flight\\test-results\\desktop-native-codex-live-f8oRiX\\formal-e0a0e3a478cd6af13ec1d8922b0a93b79a5c9f35f1fe3815e5115d1e056bd378.png"
+          },
+          {
+            "stage": "gameplay",
+            "label": "runway acceleration",
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "gameplay",
+            "label": "pitch up takeoff",
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "gameplay",
+            "label": "gear and cockpit",
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "airborne-cockpit",
+            "status": null,
+            "buildId": "gbd-0542e5808f64af71006fefd3ace051d1ea74ea95e6bd0bc296d2a9d0c6a4dd58",
+            "sha256": "8501c54d8b99f5513c6fb04acdf7c5bc7406acd4b49a04c15e2e2d19e6c198a0",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-flight-03\\flight\\test-results\\desktop-native-codex-live-f8oRiX\\formal-8501c54d8b99f5513c6fb04acdf7c5bc7406acd4b49a04c15e2e2d19e6c198a0.png"
+          },
+          {
+            "stage": "retired",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "cold-reopen-exact",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "gameplay",
+            "label": "resume restored aircraft camera",
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "cold-restored-flight",
+            "status": null,
+            "buildId": "gbd-0542e5808f64af71006fefd3ace051d1ea74ea95e6bd0bc296d2a9d0c6a4dd58",
+            "sha256": "a5649b2daac0cd199faf14a78da9753cceadbeeccac1a0eff1a7ab69ae4d0d30",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-flight-03\\flight\\test-results\\desktop-native-codex-live-OEkoLi\\formal-a5649b2daac0cd199faf14a78da9753cceadbeeccac1a0eff1a7ab69ae4d0d30.png"
+          },
+          {
+            "stage": "retired",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sourceReport": "D:/Craftmine Worktrees/flight-city-native-20260913/test-results/formal-city-03/report.json",
+    "sourceReportSha256": "a551de9fd7ac9f22debd032c58ab33d5de5bf5aa9fdc212ff1e53cfce76150c9",
+    "format": "craftmine.reusable-content-formal-runtime/1",
+    "passed": true,
+    "modelCalls": 0,
+    "physicalInputSent": false,
+    "worlds": [
+      {
+        "kind": "city",
+        "worldId": "reuse-city-e588b9e0",
+        "passed": true,
+        "formalBuildId": "gbd-1920c3ba38d950f819ca2fdf55199d687a0f75bf4ce9af52f0a6995d1f65bba3",
+        "sourcePreserved": true,
+        "componentId": null,
+        "stages": [
+          {
+            "stage": "native-check",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "base-first-load",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "original-blank",
+            "status": null,
+            "buildId": "gbd-7223a5bffccc219d452abb2aad3e345cd2fec9efebe0d8a8ef2b8160fc1b58c9",
+            "sha256": "5eee5080e648f0d5bab7a8ff07878141648d29a98c8282ed953c850506b41724",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-K3LwdH\\formal-5eee5080e648f0d5bab7a8ff07878141648d29a98c8282ed953c850506b41724.png"
+          },
+          {
+            "stage": "ordinary-walk-and-save-outside-new-ground-before-adoption",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "source-package-install",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": "93d5de281ad0225223b3fd5dae517ee27ed4a50a7f2a7f84e08ad2382450f5e5",
+            "imagePath": null
+          },
+          {
+            "stage": "package-native-check",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "component-adopted",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "source-package-install",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": "e6e18f65ed408fb171596fa1615818a01a37418fb08ad5511c3275beca41027f",
+            "imagePath": null
+          },
+          {
+            "stage": "package-native-check",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "component-adopted",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "adopted-content",
+            "status": null,
+            "buildId": "gbd-6395ab942a267d92da87f16303c9660679f77877766d0886a51b0941cb69844e",
+            "sha256": "8bae8ef292a624f2e53bd99d76afb86e27b3e6b134db250142ab0d24ebb6eafc",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-K3LwdH\\formal-8bae8ef292a624f2e53bd99d76afb86e27b3e6b134db250142ab0d24ebb6eafc.png"
+          },
+          {
+            "stage": "capture",
+            "label": "city-street-walk",
+            "status": null,
+            "buildId": "gbd-6395ab942a267d92da87f16303c9660679f77877766d0886a51b0941cb69844e",
+            "sha256": "0c64bd3e17361e4316503ec7c1a70f4865410d69a5c5b4e2151aefa2a34d4afb",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-K3LwdH\\formal-0c64bd3e17361e4316503ec7c1a70f4865410d69a5c5b4e2151aefa2a34d4afb.png"
+          },
+          {
+            "stage": "retired",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "cold-reopen-exact",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "cold-restored-city",
+            "status": null,
+            "buildId": "gbd-6395ab942a267d92da87f16303c9660679f77877766d0886a51b0941cb69844e",
+            "sha256": "d91eb8e786b68a91899bcd7aad2f5277a8d258c27b1436d23df42f8a9fd41aea",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-97S195\\formal-d91eb8e786b68a91899bcd7aad2f5277a8d258c27b1436d23df42f8a9fd41aea.png"
+          },
+          {
+            "stage": "retired",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "source-package-install",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": "c1d600de6b8443d0fc438af95f8e76f239ee2a5864097020679cb5fb7cf4ca86",
+            "imagePath": null
+          },
+          {
+            "stage": "package-native-check",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "component-adopted",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "adopted-content",
+            "status": null,
+            "buildId": "gbd-1920c3ba38d950f819ca2fdf55199d687a0f75bf4ce9af52f0a6995d1f65bba3",
+            "sha256": "aa90a398b5c86f73b5146c46dcb663234bcde1856be503f20cc08c64f1ab6b7b",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-ZkWTEk\\formal-aa90a398b5c86f73b5146c46dcb663234bcde1856be503f20cc08c64f1ab6b7b.png"
+          },
+          {
+            "stage": "capture",
+            "label": "city-street-walk",
+            "status": null,
+            "buildId": "gbd-1920c3ba38d950f819ca2fdf55199d687a0f75bf4ce9af52f0a6995d1f65bba3",
+            "sha256": "eca7bc533cf82153cd1500aaf8682c4a95295aed55d63743f462e4ff77d82923",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-ZkWTEk\\formal-eca7bc533cf82153cd1500aaf8682c4a95295aed55d63743f462e4ff77d82923.png"
+          },
+          {
+            "stage": "capture",
+            "label": "standalone-house-in-receiving-world",
+            "status": null,
+            "buildId": "gbd-1920c3ba38d950f819ca2fdf55199d687a0f75bf4ce9af52f0a6995d1f65bba3",
+            "sha256": "8fb20a8d9314c374785632d14e4a9413981e3a5c1348ed5c8818237ef1007f4f",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-ZkWTEk\\formal-8fb20a8d9314c374785632d14e4a9413981e3a5c1348ed5c8818237ef1007f4f.png"
+          },
+          {
+            "stage": "retired",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "cold-reopen-exact",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          },
+          {
+            "stage": "capture",
+            "label": "cold-restored-city",
+            "status": null,
+            "buildId": "gbd-1920c3ba38d950f819ca2fdf55199d687a0f75bf4ce9af52f0a6995d1f65bba3",
+            "sha256": "1f962d12e02818570d6642475610005a628eea24f7c216b5546fd6d829de99fb",
+            "imagePath": "D:\\Craftmine Worktrees\\flight-city-native-20260913\\test-results\\formal-city-03\\city\\test-results\\desktop-native-codex-live-QzhS36\\formal-1f962d12e02818570d6642475610005a628eea24f7c216b5546fd6d829de99fb.png"
+          },
+          {
+            "stage": "retired",
+            "label": null,
+            "status": null,
+            "buildId": null,
+            "sha256": null,
+            "imagePath": null
+          }
+        ]
+      }
+    ]
+  }
+]

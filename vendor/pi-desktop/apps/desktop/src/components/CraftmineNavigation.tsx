@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import {createPortal} from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Box, Package } from "lucide-react";
 import { useAppStore } from "../stores/app-store";
@@ -158,15 +159,15 @@ export function CraftmineNavigation() {
 
           <details><summary>{lang==="zh"?"更多工具":"More tools"}</summary><WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} /></details>
           <form data-history-open-form onSubmit={event => { event.preventDefault(); if (controller.activeWorldId) setHistoryOpen(true); }}><button type="submit" data-godot-history-open disabled={!controller.activeWorldId}>版本与创作分支</button></form>
-          {historyOpen && <div className="craftmine-asset-sheet" role="dialog" aria-label="版本与创作分支" data-history-sheet>
+          {historyOpen && createPortal(<div className="craftmine-asset-sheet" role="dialog" aria-label="版本与创作分支" data-history-sheet>
             <div className="craftmine-asset-sheet-head"><span>版本与创作分支</span><form data-history-close-form onSubmit={event => { event.preventDefault(); setHistoryOpen(false); }}><button type="submit">关闭</button></form></div>
             <GodotHistoryPanel bridge={controller.bridge} worldId={controller.activeWorldId} onOpenChecks={() => { setHistoryOpen(false); openSurface({ kind: "checks" }, "checks"); }}/>
-          </div>}
+          </div>, document.body)}
           {surfaceError && (
             <p className="craftmine-world-error" role="alert" data-surface-error="true">{surfaceError}</p>
           )}
           <details><summary>{lang==="zh"?"高级布局":"Advanced layout"}</summary><CraftmineLayoutControls /></details>
-          {assetsOpen && (
+          {assetsOpen && createPortal(
             <div className="craftmine-asset-sheet" role="dialog" aria-modal="true"
               aria-label={CRAFTMINE_WORLD_TEXT.assetsTitle[lang]} data-asset-sheet="true" data-asset-owner={controller.activeWorldId ?? ""}>
               <div className="craftmine-asset-sheet-head">
@@ -205,7 +206,7 @@ export function CraftmineNavigation() {
                   return sourceRoot ? {sourceRoot, sourcePath: ""} : null;
                 }}
               />
-            </div>
+            </div>, document.body
           )}
         </>
       )}

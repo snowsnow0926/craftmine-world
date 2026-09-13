@@ -53,3 +53,8 @@ My worlds labels installed Godot bases using the actual host base catalog. A
 playable world must not retain the domain-only provisional `planned` label.
 Unknown bases retain their reported availability; initialization readiness is
 still read independently from the normal creation coordinator.
+
+Asset and history sheets use a body-level React portal. The sidebar's transform
+and clipping must not constrain their fixed viewport bounds. The existing sheet
+controls, state ownership, theme, close behavior and native-world visibility
+events remain in CraftmineNavigation; no replacement application shell is added.
