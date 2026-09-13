@@ -1,0 +1,138 @@
+{
+  "format": "craftmine.original-builtin-library-pins/1",
+  "sourcePackage": "7fde6778b768-b5420f1c-174e-4573-a287-f1ba479e364d",
+  "entries": [
+    {
+      "assetId": "cw.nature.tree-oak",
+      "version": 1,
+      "file": "cw.nature.tree-oak.zip",
+      "sha256": "5d3ad90b1661c214204dad18ba44a8d9b5e0162f009eba70bb0006a9b485cf34"
+    },
+    {
+      "assetId": "cw.nature.tree-detailed",
+      "version": 1,
+      "file": "cw.nature.tree-detailed.zip",
+      "sha256": "06210a7e27ad9210368db660113d8d3bf99e0384cf0b6d84c19f85f26a0d3fda"
+    },
+    {
+      "assetId": "cw.nature.tree-pine",
+      "version": 1,
+      "file": "cw.nature.tree-pine.zip",
+      "sha256": "b2405ac1fe4c88d466168f4dae21d317b8fb17f5a24b3f3b95c43e7d8d2fa986"
+    },
+    {
+      "assetId": "cw.nature.grass",
+      "version": 1,
+      "file": "cw.nature.grass.zip",
+      "sha256": "4990eaadf8de9093a952d933ea4219ca81a7f2efe0af5b6bb3e7b0eeaa2a0707"
+    },
+    {
+      "assetId": "cw.nature.flower-red",
+      "version": 1,
+      "file": "cw.nature.flower-red.zip",
+      "sha256": "937983ee66b4c67fe6dd864fea4f15e2429f96aa44131e4e17ee308c2918b610"
+    },
+    {
+      "assetId": "cw.nature.bush",
+      "version": 1,
+      "file": "cw.nature.bush.zip",
+      "sha256": "89fb3fd7d1ba69517e15a29077fa73e4a1569606969a4144e4ee8699c9b40ddc"
+    },
+    {
+      "assetId": "cw.nature.rock",
+      "version": 1,
+      "file": "cw.nature.rock.zip",
+      "sha256": "d6ea51afc7b2538d920836ddd102171e47c219961aeb0fb123235341c796fd12"
+    },
+    {
+      "assetId": "cw.nature.bridge-wood",
+      "version": 1,
+      "file": "cw.nature.bridge-wood.zip",
+      "sha256": "e31cd1b4d05f7219c3688eb279398732bacb14c7760b996fc12625a6fd2d75e6"
+    },
+    {
+      "assetId": "cw.nature.fence-wood",
+      "version": 1,
+      "file": "cw.nature.fence-wood.zip",
+      "sha256": "abcb23d08f1929c07c2b5a4b56b6fcd453faa2624538567d50888f20dfe06089"
+    },
+    {
+      "assetId": "cw.castle.wall",
+      "version": 1,
+      "file": "cw.castle.wall.zip",
+      "sha256": "2294d6c12b2fc17102f8af8a4a941841e62997ac485e9c19100b88b1923e09b7"
+    },
+    {
+      "assetId": "cw.castle.wall-corner",
+      "version": 1,
+      "file": "cw.castle.wall-corner.zip",
+      "sha256": "f8743d6c996e2ee518616f93e10af23ea2e3eeff8df55a4841d852b187089965"
+    },
+    {
+      "assetId": "cw.castle.wall-doorway",
+      "version": 1,
+      "file": "cw.castle.wall-doorway.zip",
+      "sha256": "ed7082484795388a6aaa6aeaedd8269089185cb2d04cd7d2c2664aeb252dba86"
+    },
+    {
+      "assetId": "cw.castle.door",
+      "version": 1,
+      "file": "cw.castle.door.zip",
+      "sha256": "4100c9b24ed049c9df2d6de10325eb38ccec2ec93624f09e3f75ab4dc662751c"
+    },
+    {
+      "assetId": "cw.castle.tower-base",
+      "version": 1,
+      "file": "cw.castle.tower-base.zip",
+      "sha256": "a099866c1962b8985112dbfdb137ba4f9d7d2674b10f32334c7caac68b02ce59"
+    },
+    {
+      "assetId": "cw.castle.tower-mid",
+      "version": 1,
+      "file": "cw.castle.tower-mid.zip",
+      "sha256": "2fd0da9bf48db905a0664ebb587296ec27b5fbf8b7cb57de6fff0741fcb4823e"
+    },
+    {
+      "assetId": "cw.castle.tower-top",
+      "version": 1,
+      "file": "cw.castle.tower-top.zip",
+      "sha256": "8d113203fb4b95a8d1dd7452f6083720b9aab004eb8160a95c3dc14b9e0af450"
+    },
+    {
+      "assetId": "cw.environment.natural-daylight",
+      "version": 1,
+      "file": "cw.environment.natural-daylight.zip",
+      "sha256": "c2dea32dcd2d393d63510229108cbfc52e0f58d832ae4101554f35f7a9bc1f23"
+    },
+    {
+      "assetId": "cw.scene.forest-gateway",
+      "version": 1,
+      "file": "cw.scene.forest-gateway.zip",
+      "sha256": "536869158ed55beda23fb79019ebfcd21a96443cb76580c525c929cee982cdc6"
+    },
+    {
+      "assetId": "cw.module.pet-companion",
+      "version": 2,
+      "file": "cw.module.pet-companion.zip",
+      "sha256": "22614b01b614b9ef60a961c16dacbab5340dcc20e1765ac919bc687fbe08bb17"
+    },
+    {
+      "assetId": "cw.module.sandbox-combat",
+      "version": 1,
+      "file": "cw.module.sandbox-combat.zip",
+      "sha256": "bf763ccd427c0135b59b0e8db9024136c80dd7810de8d5e004157fc526aeaf63"
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "version": 1,
+      "file": "cw.module.approved-pomeranian.zip",
+      "sha256": "b3070a8780f26a44e2602fe5b75e4b1ffe8e3cff9e4305ea52ba6b333ae4c4f8"
+    },
+    {
+      "assetId": "cw.model.approved-pomeranian",
+      "version": 1,
+      "file": "cw.model.approved-pomeranian.glb",
+      "sha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b"
+    }
+  ]
+}

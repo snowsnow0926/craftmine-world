@@ -1,0 +1,25 @@
+{
+  "format": "craftmine.rain-control-provenance/1",
+  "sourceWorld": "promo-rain",
+  "source": "Accepted Codex gpt-6-astra/xhigh rain world, 2026-09-13",
+  "sourceFiles": [
+    {
+      "path": "scripts/rain_world.gd",
+      "bytes": 18065,
+      "sha256": "f42a95080d4fcea1671d6044fbaccedfaeb4ef825fe9cd477f0d16d006a7613c"
+    },
+    {
+      "path": "scripts/rain_magic_state.gd",
+      "bytes": 5066,
+      "sha256": "02b07f481e73d2bfb1997bf36395a6300caa4188cc626be84de6e132298169fa"
+    },
+    {
+      "path": "shaders/rain_water.gdshader",
+      "bytes": 838,
+      "sha256": "9b844d3a1171cfab680b0e8c98ba6ccd46a12cea4980fc16291e75a6895c6e6c"
+    }
+  ],
+  "adaptation": "Preserved deterministic 2200-drop distribution and six-stage rain integration; self-contained procedural beads and original water shader. No courtyard, sky replacement, world root, player controller, startup audit or AI generation.",
+  "license": "MIT",
+  "externalAssets": []
+}

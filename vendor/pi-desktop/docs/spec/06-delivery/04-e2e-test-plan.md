@@ -10041,6 +10041,28 @@ after adopting/reopening the second installation. A deliberately overlapping
 fixture must still fail `PET_RESTORE_OVERLAP`; do not bypass this check merely to
 make duplicate installation succeed.
 
+### Reusable rain skill (2026-09-13)
+
+Find `cw.module.rain-control` through the original asset library and install it
+into an existing creation-sandbox world. Normal source checking/adoption must
+preserve that world's player, camera, floor, authored entities and environment.
+With U, suspend all rain; walk through it and verify every held height stays
+fixed. Press U again and verify upwards motion of the same drops. I restores
+downwards rain. O performs the complete sequence; I cancels it without delayed
+restarts. F2 blocks casting and freezes simulation until the conversation closes.
+
+Save during automatic hold and reopen in a new process: retain mode, exact
+float32 drop heights, clocks, casts and the target world's player progress. Bad
+state must reject atomically. A duplicate owner or installation into the legacy
+rain demonstration must produce an explicit conflict rather than a successful
+check with doubled weather. Controls already bound by InputMap must reject; raw
+script bindings are reviewed by the authoring agent. New package registration
+must leave all original 22 asset IDs, versions and payload hashes unchanged.
+
+The native headless fixture is `tests/godot-components/rain-control.mjs` at the
+repository root. Do not label its dummy-renderer results as visual acceptance:
+final integrated client preview is an independent offscreen verification.
+
 ### Player-authored world templates (2026-09-13)
 
 From a ready player-created 3D world, save actual progress and explicitly choose

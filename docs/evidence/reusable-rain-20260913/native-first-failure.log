@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RAIN_CONTROL_TEST={"checks":["normal creation world and packaged rain component initialize","headless fixture never enables mouse capture","rain uses 2200 individually integrated visible instances","normal rain positions move downward","ordinary U input slows and suspends rain","the existing player walks through suspended rain using normal movement input","all held drop positions and actual MultiMesh transforms remain exactly fixed while walking","rain preserves existing player camera and environment identities","rain preserves existing ground node","second U reverses the same rain upward","I returns rain to normal downward motion","modified and repeated keys do not cast skills","O starts an automatic suspension and reversal sequence","normal component ledger captures rain state","F2 tree pause rejects direct and keyboard rain actions","F2 pause leaves all rain positions unchanged","invalid phase restore rejects atomically","foreign identity restore rejects atomically","invalid height data rejects before any position changes","held state cannot restore a nonzero velocity","new component instance restores through the ordinary ledger","reopen exactly preserves mode speed phase age clock casts and every float32 height","restored automatic timer continues into reversal","normal-rain action cancels automatic sequence without a late reversal","cancelled automatic sequence does not restart later","unknown controls are rejected","two weather owners explicitly conflict instead of silently overriding each other","duplicate weather owner prevents a successful world save","removing duplicate owner restores the original component availability","key already owned by InputMap movement is rejected","component never adds or removes global InputMap actions","component never adds or replaces global weather environment"],"facts":{"inputActionsBefore":["ui_accept","ui_select","ui_cancel","ui_close_dialog","ui_close_dialog.macos","ui_focus_next","ui_focus_prev","ui_left","ui_right","ui_up","ui_down","ui_page_up","ui_page_down","ui_home","ui_end","ui_accessibility_drag_and_drop","ui_cut","ui_copy","ui_focus_mode","ui_paste","ui_undo","ui_redo","ui_text_completion_query","ui_text_completion_accept","ui_text_completion_replace","ui_text_newline","ui_text_newline_blank","ui_text_newline_above","ui_text_indent","ui_text_dedent","ui_text_backspace","ui_text_backspace_word","ui_text_backspace_word.macos","ui_text_backspace_all_to_left","ui_text_backspace_all_to_left.macos","ui_text_delete","ui_text_delete_word","ui_text_delete_word.macos","ui_text_delete_all_to_right","ui_text_delete_all_to_right.macos","ui_text_caret_left","ui_text_caret_word_left","ui_text_caret_word_left.macos","ui_text_caret_right","ui_text_caret_word_right","ui_text_caret_word_right.macos","ui_text_caret_up","ui_text_caret_down","ui_text_caret_line_start","ui_text_caret_line_start.macos","ui_text_caret_line_end","ui_text_caret_line_end.macos","ui_text_caret_page_up","ui_text_caret_page_down","ui_text_caret_document_start","ui_text_caret_document_start.macos","ui_text_caret_document_end","ui_text_caret_document_end.macos","ui_text_caret_add_below","ui_text_caret_add_below.macos","ui_text_caret_add_above","ui_text_caret_add_above.macos","ui_text_scroll_up","ui_text_scroll_up.macos","ui_text_scroll_down","ui_text_scroll_down.macos","ui_text_select_all","ui_text_select_word_under_caret","ui_text_select_word_under_caret.macos","ui_text_add_selection_for_next_occurrence","ui_text_skip_selection_for_next_occurrence","ui_text_clear_carets_and_selection","ui_text_toggle_insert_mode","ui_menu","ui_text_submit","ui_unicode_start","ui_graph_duplicate","ui_graph_delete","ui_graph_follow_left","ui_graph_follow_left.macos","ui_graph_follow_right","ui_graph_follow_right.macos","ui_filedialog_delete","ui_filedialog_up_one_level","ui_filedialog_refresh","ui_filedialog_show_hidden","ui_filedialog_find","ui_filedialog_focus_path","ui_filedialog_focus_path.macos","ui_swap_input_direction","ui_colorpicker_delete_preset","move_forward","move_back","move_left","move_right","jump","interact"],"savedStateBytes":12038,"walkDistance":5.7375020980835},"headless":true,"ok":false}
+ERROR: reversal changes actual drop displacement and rendered instance transforms
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] verify (res://test.gd:16)
+       [1] _run (res://test.gd:89)
+       [2] ticks (res://test.gd:19)
+SCRIPT ERROR: Invalid call to function 'validate_restored_state' in base 'Node3D (rain_control.gd)'. Expected 1 argument(s).
+   at: restore (res://craftmine_shared/component_state.gd:149)
+   GDScript backtrace (most recent call first):
+       [0] restore (res://craftmine_shared/component_state.gd:149)
+       [1] _run (res://test.gd:131)
+       [2] ticks (res://test.gd:19)
+
+Error: Command failed: D:\Craftmine Worktrees\reusable-rain-20260913\test-results\rain-control-native-FWelvD\engine\Godot_v4.7.2-stable_win64.exe --headless --language en --path D:\Craftmine Worktrees\reusable-rain-20260913\test-results\rain-control-native-FWelvD\project --fixed-fps 60 --script res://test.gd
+ERROR: reversal changes actual drop displacement and rendered instance transforms
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] verify (res://test.gd:16)
+       [1] _run (res://test.gd:89)
+       [2] ticks (res://test.gd:19)
+SCRIPT ERROR: Invalid call to function 'validate_restored_state' in base 'Node3D (rain_control.gd)'. Expected 1 argument(s).
+   at: restore (res://craftmine_shared/component_state.gd:149)
+   GDScript backtrace (most recent call first):
+       [0] restore (res://craftmine_shared/component_state.gd:149)
+       [1] _run (res://test.gd:131)
+       [2] ticks (res://test.gd:19)

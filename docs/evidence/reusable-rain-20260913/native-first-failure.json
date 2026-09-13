@@ -1,0 +1,37 @@
+{
+  "format": "craftmine.rain-control-native/1",
+  "out": "D:\\Craftmine Worktrees\\reusable-rain-20260913\\test-results\\rain-control-native-FWelvD",
+  "modelCalls": 0,
+  "productProfilesOpened": 0,
+  "playerAcceptance": false,
+  "archiveSha256": "79cda3f39e92423de5f74f723cc91c5443516d8fa11fccc836dda5016f3ed764",
+  "sourcePackageContentHash": "5ba3365034e960245c60589fbfc266da3e76fc19eef953abb2343340710c5d17",
+  "originalRainInventorySha256": "964ddd97f494f8ff80dd41f1e53fad4c6e9d8b5dbff12c5f132e0037f5c9966e",
+  "protectedBefore": {
+    "scripts/creation_world.gd": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615",
+    "scripts/reused/player_controller.gd": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955",
+    "scripts/reused/camera_rig.gd": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f",
+    "world/creation.json": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd",
+    "project.godot": "7d7d408d6052068ee0bd63518e6f4b240a0764a73d26601cb2787a453df603cc"
+  },
+  "scope": "Pinned headless Godot; ordinary scene insertion, actual original creation controller physics, synthetic engine input and component ledger. Fixture enables the base controller input route that stock headless mode disables. No actor motion/progress assignment, OS input, focus or Pointer Lock.",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "error": "Error: Command failed: D:\\Craftmine Worktrees\\reusable-rain-20260913\\test-results\\rain-control-native-FWelvD\\engine\\Godot_v4.7.2-stable_win64.exe --headless --language en --path D:\\Craftmine Worktrees\\reusable-rain-20260913\\test-results\\rain-control-native-FWelvD\\project --fixed-fps 60 --script res://test.gd\nERROR: reversal changes actual drop displacement and rendered instance transforms\r\n   at: push_error (core/variant/variant_utility.cpp:1023)\r\n   GDScript backtrace (most recent call first):\r\n       [0] verify (res://test.gd:16)\r\n       [1] _run (res://test.gd:89)\r\n       [2] ticks (res://test.gd:19)\r\nSCRIPT ERROR: Invalid call to function 'validate_restored_state' in base 'Node3D (rain_control.gd)'. Expected 1 argument(s).\r\n   at: restore (res://craftmine_shared/component_state.gd:149)\r\n   GDScript backtrace (most recent call first):\r\n       [0] restore (res://craftmine_shared/component_state.gd:149)\r\n       [1] _run (res://test.gd:131)\r\n       [2] ticks (res://test.gd:19)\r\n\n    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at ChildProcess.exithandler (node:child_process:417:12)\n    at ChildProcess.emit (node:events:508:28)\n    at maybeClose (node:internal/child_process:1100:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:305:5)",
+  "runs": [
+    {
+      "label": "engine-version",
+      "elapsedMs": 77,
+      "exitCode": 0
+    },
+    {
+      "label": "import",
+      "elapsedMs": 2118,
+      "exitCode": 0
+    },
+    {
+      "label": "behavior",
+      "elapsedMs": 793,
+      "error": "Error: Command failed: D:\\Craftmine Worktrees\\reusable-rain-20260913\\test-results\\rain-control-native-FWelvD\\engine\\Godot_v4.7.2-stable_win64.exe --headless --language en --path D:\\Craftmine Worktrees\\reusable-rain-20260913\\test-results\\rain-control-native-FWelvD\\project --fixed-fps 60 --script res://test.gd\nERROR: reversal changes actual drop displacement and rendered instance transforms\r\n   at: push_error (core/variant/variant_utility.cpp:1023)\r\n   GDScript backtrace (most recent call first):\r\n       [0] verify (res://test.gd:16)\r\n       [1] _run (res://test.gd:89)\r\n       [2] ticks (res://test.gd:19)\r\nSCRIPT ERROR: Invalid call to function 'validate_restored_state' in base 'Node3D (rain_control.gd)'. Expected 1 argument(s).\r\n   at: restore (res://craftmine_shared/component_state.gd:149)\r\n   GDScript backtrace (most recent call first):\r\n       [0] restore (res://craftmine_shared/component_state.gd:149)\r\n       [1] _run (res://test.gd:131)\r\n       [2] ticks (res://test.gd:19)\r\n"
+    }
+  ]
+}
