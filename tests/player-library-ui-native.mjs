@@ -47,6 +47,11 @@ if(process.argv.includes('--recreate-template')){
  report.retainedTemplateDiagnostics??=[];report.retainedTemplateDiagnostics.push({worldId:report.templateWorld,sourceReport:previousFile,reason:'Retained pre-fix source initialization; create a new copy without repairing prior data.'});
  delete report.templateWorld;delete report.copiedSource;
 }
+if(process.argv.includes('--refresh-publications')){
+ assert(previous&&report.componentPublication&&report.installations.some(row=>row.label==='published-pom'&&row.job?.status==='failed')&&!report.crossPlayerTemplate,'REFRESH_ONLY_FAILED_PUBLICATION_FIXTURE');
+ report.retainedPublicationDiagnostics??=[];report.retainedPublicationDiagnostics.push({sourceReport:previousFile,component:report.componentPublication,copied:report.copiedPublication,reuseWorld:report.reuseWorld,reason:'Preserve failed immutable archive and world; publish fresh bytes through the ordinary forms and install in another new world.'});
+ delete report.componentPublication;delete report.copiedPublication;delete report.reuseWorld;delete report.reused;
+}
 const reportFile = path.join(out, previous?'continuation-'+randomUUID()+'.json':'report.json');
 const save = () => fs.writeFileSync(reportFile, JSON.stringify(report, null, 2)+'\n');
 const abort = new AbortController(), pending = new Map();
