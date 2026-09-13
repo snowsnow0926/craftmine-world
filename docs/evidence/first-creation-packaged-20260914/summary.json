@@ -1,0 +1,906 @@
+{
+  "format": "craftmine.first-creation-packaged-acceptance/1",
+  "completedOn": "2026-09-14",
+  "fresh": {
+    "passed": true,
+    "rawReport": {
+      "path": "D:/cm-preview-rt/test-results/desktop-native-rt-lIVieJ/report.json",
+      "sha256": "4e8289e7b768b62d4ca0234e2d83de713019463b5646525cfb33d9e0fc3b4cf7"
+    },
+    "previousReport": null,
+    "sourceBuild": "20aad1fb7ec3fef14e1dbbc9fae0ab120b0195b8",
+    "driverCommit": "7b6646be",
+    "driverSha256": "f7a12b7a538909669921cf1db84f57160d9fc736448209df18137012a91371c1",
+    "packageIdentity": {
+      "inventorySha256": "2dc20211245a6789c0edc8782bc418b7c18b11370e0d86d0d1b389a4e900fd4a",
+      "mainSha256": "ea8035957244697b78a637d7fcf922453aeaf869ef8e2048a3e54db95c6a4677",
+      "version": "0.14.4-preview.22"
+    },
+    "nativeBinaries": {
+      "core": {
+        "file": "D:\\Craftmine Worktrees\\first-creation-complete-20260913\\desktop\\build\\releases\\20aad1fb7ec3-2738383b-d615-4df9-973b-caaf237dda16\\output\\win-unpacked\\resources\\bin\\craftmine-core.exe",
+        "sha256": "a98d41134c763a665953e261c42f3fbb672a5ca521fc52c69cb01e7a15f6706c"
+      },
+      "host": {
+        "file": "D:\\Craftmine Worktrees\\first-creation-complete-20260913\\desktop\\build\\releases\\20aad1fb7ec3-2738383b-d615-4df9-973b-caaf237dda16\\output\\win-unpacked\\resources\\bin\\pi-desktop-host-core.exe",
+        "sha256": "2fe6bdad94ec0242abb62b010cfd70bba0fc3faeb6faba4027b3c4c885df69ca"
+      }
+    },
+    "packageLaunches": [
+      {
+        "kind": "author",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "zero-turn-cold",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "author-cold",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "independent-import",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "independent-cold",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      }
+    ],
+    "zeroTurnReopen": {
+      "sessionId": "f3be535b-542b-4149-bb08-97f9b2d4ad03",
+      "restored": "f3be535b-542b-4149-bb08-97f9b2d4ad03",
+      "worldId": "world-11ffcce9a8bc",
+      "messages": 0,
+      "creationEditorVisible": true
+    },
+    "authorWorldId": "world-11ffcce9a8bc",
+    "importedWorldId": "world-dd2321943431",
+    "companionEntityId": "ins-b476c7d25ee75f2b2196c629-e0",
+    "editedEntity": {
+      "collisionBounds": {
+        "max": [
+          -1.19188833236694,
+          5,
+          4.19557094573975
+        ],
+        "min": [
+          -2.69188833236694,
+          0,
+          2.69557094573975
+        ]
+      },
+      "color": "#88bb44",
+      "id": "created-c7e0ec436ea79951f146d65c",
+      "kind": "tree",
+      "meshBounds": {
+        "max": [
+          -1.19273781776428,
+          4.99999952316284,
+          4.19472122192383
+        ],
+        "min": [
+          -2.6910388469696,
+          0,
+          2.69642043113708
+        ]
+      },
+      "parameters": {},
+      "position": [
+        -1.94188833236694,
+        4.4703483581543e-8,
+        3.44557094573975
+      ],
+      "presenceMutable": false,
+      "rotationY": 0,
+      "scale": [
+        1.25,
+        1.25,
+        1.25
+      ],
+      "solid": true,
+      "solidMutable": false,
+      "visible": true
+    },
+    "templateArchive": {
+      "path": "D:\\cm-preview-rt\\test-results\\desktop-native-rt-lIVieJ\\player-world-template.zip",
+      "sha256": "3dc8148969767183471476a7839b1f894a32662945a180a87050908c0848be87",
+      "bytes": 7468740
+    },
+    "modelCalls": 0,
+    "turns": [
+      {
+        "profile": "D:\\cm-preview-rt\\test-results\\desktop-native-rt-lIVieJ\\profile",
+        "sessionId": "f3be535b-542b-4149-bb08-97f9b2d4ad03",
+        "turnId": "e8df94b6-1b9a-4b80-8372-24625485b913",
+        "calls": {
+          "observed": 0,
+          "pending": 0,
+          "reported": 0
+        }
+      },
+      {
+        "profile": "D:\\cm-preview-rt\\test-results\\desktop-native-rt-lIVieJ\\profile",
+        "sessionId": "f3be535b-542b-4149-bb08-97f9b2d4ad03",
+        "turnId": "fdfdd8b9-2ce6-4d0f-b60c-7f3974026a00",
+        "calls": {
+          "observed": 0,
+          "pending": 0,
+          "reported": 0
+        }
+      }
+    ],
+    "edits": [
+      {
+        "label": "Actual Place here tree",
+        "terminal": {
+          "status": "编辑已应用"
+        },
+        "buildId": "gbd-685b6e304f922dd7b279764cd2d878d438890421da86b9a5277e0f436c75196a"
+      },
+      {
+        "label": "Actual scale and color edit",
+        "terminal": {
+          "status": "编辑已应用"
+        },
+        "buildId": "gbd-40afc23c36bfb35f4db2fdf3b77a4fb6dde2948efeaf62335d14db935f0e8997"
+      }
+    ],
+    "retention": [
+      {
+        "label": "author-saved",
+        "worldId": "world-11ffcce9a8bc",
+        "buildId": "gbd-40afc23c36bfb35f4db2fdf3b77a4fb6dde2948efeaf62335d14db935f0e8997",
+        "instanceId": "ae32d416104facd4aa0944a1",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-c7e0ec436ea79951f146d65c",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-b476c7d25ee75f2b2196c629-e0"
+        ]
+      },
+      {
+        "label": "author-cold-reopen",
+        "worldId": "world-11ffcce9a8bc",
+        "buildId": "gbd-40afc23c36bfb35f4db2fdf3b77a4fb6dde2948efeaf62335d14db935f0e8997",
+        "instanceId": "f7c8b74c9e7f937ad6d5624c",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-c7e0ec436ea79951f146d65c",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-b476c7d25ee75f2b2196c629-e0"
+        ]
+      },
+      {
+        "label": "independent-import",
+        "worldId": "world-dd2321943431",
+        "buildId": "gbd-5311e475b5b273c1c67199bb15d30cc5fa6c5bb560f0db794b060f7bd02b7519",
+        "instanceId": "f84cfe211ea5269dc2d7bd39",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-c7e0ec436ea79951f146d65c",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-b476c7d25ee75f2b2196c629-e0"
+        ]
+      },
+      {
+        "label": "independent-cold-reopen",
+        "worldId": "world-dd2321943431",
+        "buildId": "gbd-5311e475b5b273c1c67199bb15d30cc5fa6c5bb560f0db794b060f7bd02b7519",
+        "instanceId": "62b44c7cb484350dea8e49aa",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-c7e0ec436ea79951f146d65c",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-b476c7d25ee75f2b2196c629-e0"
+        ]
+      }
+    ],
+    "nativeFrames": [
+      {
+        "file": "D:\\cm-preview-rt\\test-results\\desktop-native-rt-lIVieJ\\author-template-content-3-3a75eb57-1464-45dc-a91b-786e3df00033.png",
+        "worldId": "world-11ffcce9a8bc",
+        "buildId": "gbd-40afc23c36bfb35f4db2fdf3b77a4fb6dde2948efeaf62335d14db935f0e8997",
+        "sha256": "a86be05d683ea00ea8241866fd8109b0300f1ca1f0884342faac970bc52e5f0d",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "D:\\cm-preview-rt\\test-results\\desktop-native-rt-lIVieJ\\imported-playing-content-4-eb417d16-1a3b-4ccc-97ed-e6555726314c.png",
+        "worldId": "world-dd2321943431",
+        "buildId": "gbd-5311e475b5b273c1c67199bb15d30cc5fa6c5bb560f0db794b060f7bd02b7519",
+        "sha256": "cbad690ee6a3c382d03871715db140f7654e86a9989577acf5a5e588fedb2067",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "limitations": [
+      "One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.",
+      "Actual PI forms and offscreen native checks; no physical input or Pointer Lock.",
+      "The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed."
+    ]
+  },
+  "previousWorld": {
+    "passed": true,
+    "rawReport": {
+      "path": "D:/cm-rt/test-results/desktop-native-rt-14RtFg/continuation-8107e7b3-101e-43a2-81e2-b7eaf4f2d4e4.json",
+      "sha256": "b100c919fe139199e996c5a0b6948d3d1cf251a4097e05c8f91a0c044fa0d88b"
+    },
+    "previousReport": "D:/cm-rt/test-results/desktop-native-rt-14RtFg/report.json",
+    "sourceBuild": "20aad1fb7ec3fef14e1dbbc9fae0ab120b0195b8",
+    "driverCommit": "7b6646be",
+    "driverSha256": "f7a12b7a538909669921cf1db84f57160d9fc736448209df18137012a91371c1",
+    "packageIdentity": {
+      "inventorySha256": "2dc20211245a6789c0edc8782bc418b7c18b11370e0d86d0d1b389a4e900fd4a",
+      "mainSha256": "ea8035957244697b78a637d7fcf922453aeaf869ef8e2048a3e54db95c6a4677",
+      "version": "0.14.4-preview.22"
+    },
+    "nativeBinaries": {
+      "core": {
+        "file": "D:\\Craftmine Worktrees\\first-creation-complete-20260913\\desktop\\build\\releases\\20aad1fb7ec3-2738383b-d615-4df9-973b-caaf237dda16\\output\\win-unpacked\\resources\\bin\\craftmine-core.exe",
+        "sha256": "a98d41134c763a665953e261c42f3fbb672a5ca521fc52c69cb01e7a15f6706c"
+      },
+      "host": {
+        "file": "D:\\Craftmine Worktrees\\first-creation-complete-20260913\\desktop\\build\\releases\\20aad1fb7ec3-2738383b-d615-4df9-973b-caaf237dda16\\output\\win-unpacked\\resources\\bin\\pi-desktop-host-core.exe",
+        "sha256": "2fe6bdad94ec0242abb62b010cfd70bba0fc3faeb6faba4027b3c4c885df69ca"
+      }
+    },
+    "packageLaunches": [
+      {
+        "kind": "author",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "author-cold",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "independent-import",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      },
+      {
+        "kind": "independent-cold",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "audit": {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      }
+    ],
+    "zeroTurnReopen": null,
+    "authorWorldId": "world-0fea5942b5b7",
+    "importedWorldId": "world-0535b98f63a3",
+    "companionEntityId": "ins-174414f81efcd0a52909f8d9-e0",
+    "editedEntity": {
+      "collisionBounds": {
+        "max": [
+          -1.19188833236694,
+          5,
+          4.19557094573975
+        ],
+        "min": [
+          -2.69188833236694,
+          0,
+          2.69557094573975
+        ]
+      },
+      "color": "#88bb44",
+      "id": "created-27ca7797478a4ccb8b39f1be",
+      "kind": "tree",
+      "meshBounds": {
+        "max": [
+          -1.19273781776428,
+          4.99999952316284,
+          4.19472122192383
+        ],
+        "min": [
+          -2.6910388469696,
+          0,
+          2.69642043113708
+        ]
+      },
+      "parameters": {},
+      "position": [
+        -1.94188833236694,
+        4.4703483581543e-8,
+        3.44557094573975
+      ],
+      "presenceMutable": false,
+      "rotationY": 0,
+      "scale": [
+        1.25,
+        1.25,
+        1.25
+      ],
+      "solid": true,
+      "solidMutable": false,
+      "visible": true
+    },
+    "templateArchive": {
+      "path": "D:\\cm-rt\\test-results\\desktop-native-rt-14RtFg\\player-world-template.zip",
+      "sha256": "d5577c973ed70a948861d5fd0916b90a904569753c6f1454a0720bd1d7138756",
+      "bytes": 7521644
+    },
+    "modelCalls": 0,
+    "turns": [
+      {
+        "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-14RtFg\\profile",
+        "sessionId": "851d8721-781d-43cd-a322-3876d0a47b24",
+        "turnId": "4983f398-17f6-446d-bfef-bbb2de709aac",
+        "calls": {
+          "observed": 0,
+          "pending": 0,
+          "reported": 0
+        }
+      },
+      {
+        "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-14RtFg\\profile",
+        "sessionId": "851d8721-781d-43cd-a322-3876d0a47b24",
+        "turnId": "c93d62b5-1651-4644-abee-906cb0554658",
+        "calls": {
+          "observed": 0,
+          "pending": 0,
+          "reported": 0
+        }
+      },
+      {
+        "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-14RtFg\\profile",
+        "sessionId": "851d8721-781d-43cd-a322-3876d0a47b24",
+        "turnId": "fde3680d-6615-4c1e-9a12-e20d0a7ff260",
+        "calls": {
+          "observed": 0,
+          "pending": 0,
+          "reported": 0
+        }
+      }
+    ],
+    "edits": [
+      {
+        "label": "Ordinary previous sampler upgrade",
+        "terminal": {
+          "status": "编辑已应用"
+        },
+        "buildId": "gbd-6a35858a7982fd660da724e8155ec588762e3b1839fddf2acac209c9c22a0599"
+      },
+      {
+        "label": "Actual Place here tree",
+        "terminal": {
+          "status": "编辑已应用"
+        },
+        "buildId": "gbd-4caaf2a74ff2a258a31c16a2da76c97d9a088ebe24458f85741c5c6fa77b677c"
+      },
+      {
+        "label": "Actual scale and color edit",
+        "terminal": {
+          "status": "编辑已应用"
+        },
+        "buildId": "gbd-6b0b9fd07414f42b60f87582b7fabf39d64b28d102e9161d692fe75839c374c4"
+      }
+    ],
+    "retention": [
+      {
+        "label": "author-saved",
+        "worldId": "world-0fea5942b5b7",
+        "buildId": "gbd-6b0b9fd07414f42b60f87582b7fabf39d64b28d102e9161d692fe75839c374c4",
+        "instanceId": "138641d508aa82e8a5874097",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-27ca7797478a4ccb8b39f1be",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-174414f81efcd0a52909f8d9-e0"
+        ]
+      },
+      {
+        "label": "author-cold-reopen",
+        "worldId": "world-0fea5942b5b7",
+        "buildId": "gbd-6b0b9fd07414f42b60f87582b7fabf39d64b28d102e9161d692fe75839c374c4",
+        "instanceId": "90a272777de08d85d1ab0203",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-27ca7797478a4ccb8b39f1be",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-174414f81efcd0a52909f8d9-e0"
+        ]
+      },
+      {
+        "label": "independent-import",
+        "worldId": "world-0535b98f63a3",
+        "buildId": "gbd-c1e254897e36cc6931583b399ea5fa0d6ffee39ae838104291f1c948e73bf3b8",
+        "instanceId": "d92de1cd418b6c09ee7c0a3b",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-27ca7797478a4ccb8b39f1be",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-174414f81efcd0a52909f8d9-e0"
+        ]
+      },
+      {
+        "label": "independent-cold-reopen",
+        "worldId": "world-0535b98f63a3",
+        "buildId": "gbd-c1e254897e36cc6931583b399ea5fa0d6ffee39ae838104291f1c948e73bf3b8",
+        "instanceId": "ba15c53063b4859492fd7eb3",
+        "tree": {
+          "collisionBounds": {
+            "max": [
+              -1.19188833236694,
+              5,
+              4.19557094573975
+            ],
+            "min": [
+              -2.69188833236694,
+              0,
+              2.69557094573975
+            ]
+          },
+          "color": "#88bb44",
+          "id": "created-27ca7797478a4ccb8b39f1be",
+          "kind": "tree",
+          "meshBounds": {
+            "max": [
+              -1.19273781776428,
+              4.99999952316284,
+              4.19472122192383
+            ],
+            "min": [
+              -2.6910388469696,
+              0,
+              2.69642043113708
+            ]
+          },
+          "parameters": {},
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "presenceMutable": false,
+          "rotationY": 0,
+          "scale": [
+            1.25,
+            1.25,
+            1.25
+          ],
+          "solid": true,
+          "solidMutable": false,
+          "visible": true
+        },
+        "componentIds": [
+          "ins-174414f81efcd0a52909f8d9-e0"
+        ]
+      }
+    ],
+    "nativeFrames": [
+      {
+        "file": "D:\\cm-rt\\test-results\\desktop-native-rt-14RtFg\\author-template-content-3-54b79129-b9a5-4780-950a-a9034dbe33fc.png",
+        "worldId": "world-0fea5942b5b7",
+        "buildId": "gbd-6b0b9fd07414f42b60f87582b7fabf39d64b28d102e9161d692fe75839c374c4",
+        "sha256": "a57bbdf9fa24e8d6abc087be30898f097494d899f403f42db5d9f302424580df",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "D:\\cm-rt\\test-results\\desktop-native-rt-14RtFg\\imported-playing-content-4-bec9dd2a-099b-45d2-a05e-8928ca8cae2d.png",
+        "worldId": "world-0535b98f63a3",
+        "buildId": "gbd-c1e254897e36cc6931583b399ea5fa0d6ffee39ae838104291f1c948e73bf3b8",
+        "sha256": "ca79344a3b8779a5636c2dd9a0d4ce2768e1bb7a9d2269ccc4e672bb62193756",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "limitations": [
+      "One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.",
+      "Actual PI forms and offscreen native checks; no physical input or Pointer Lock.",
+      "The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed."
+    ]
+  },
+  "migration": {
+    "rawReceipt": {
+      "path": "D:/cm-rt/test-results/desktop-native-rt-14RtFg/profile/creation-migrations/75eb8a73a9dd500a56fe3c057343f242da35bd5c9d15bcd1d0de1d6aa79016bf.json",
+      "sha256": "0aa75f308a7a2115260b2e706d8c917e060884b9e24c2a4a039ac54ecc19c844"
+    },
+    "compatibilityId": "ray-local-mesh-budget-20260913",
+    "formalBefore": "gbd-c08aa0485aac9870b8322de4fbb5dde3f58503a26264b98f01c7abf3ead265de",
+    "formalAfter": "gbd-6a35858a7982fd660da724e8155ec588762e3b1839fddf2acac209c9c22a0599",
+    "filesBefore": 38,
+    "filesAfter": 38,
+    "changedFiles": [
+      {
+        "bytes": 15674,
+        "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+        "sha256": "09b64ed260b83dd9b3c0559868d6ee3c34ece69876266154b3821ce166865acd"
+      }
+    ],
+    "operations": [
+      {
+        "op": "put",
+        "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+        "expectedHash": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938",
+        "resultHash": "09b64ed260b83dd9b3c0559868d6ee3c34ece69876266154b3821ce166865acd"
+      }
+    ],
+    "advance": {
+      "format": "craftmine.creation-migration-advance/1",
+      "revision": 4,
+      "manifestHash": "b09c84aed13052e8aaa5482ddcd28eca5213cbc5cbc8306ddcc9d1503ef9ba37",
+      "formalBuildId": "gbd-c08aa0485aac9870b8322de4fbb5dde3f58503a26264b98f01c7abf3ead265de",
+      "formalSourceRevision": 3,
+      "formalManifestHash": "145ceb9e9070d783d47e5952abb637d1dbdadb60dc950abda82d3fd03de26a64",
+      "migrationId": "75eb8a73a9dd500a56fe3c057343f242da35bd5c9d15bcd1d0de1d6aa79016bf",
+      "receiptRevision": 4,
+      "receiptManifestHash": "b09c84aed13052e8aaa5482ddcd28eca5213cbc5cbc8306ddcc9d1503ef9ba37"
+    },
+    "otherSourceFilesPreserved": true
+  }
+}
