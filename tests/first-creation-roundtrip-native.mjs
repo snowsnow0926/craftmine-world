@@ -84,7 +84,9 @@ async function waitWorld(worldId) {
     return row?.state==='ready';
   });
   await until(()=>rpc('godotObserve'),o=>o.worldId===worldId&&!!o.instanceId);
-  return until(()=>rpc('godotSnapshot'),Boolean);
+  await until(()=>rpc('godotSnapshot'),Boolean);
+  await until(()=>rpc('worldNavigationReady'),value=>value.worldId===worldId&&value.ready);
+  return until(()=>rpc('godotSnapshot'),value=>value?.worldId===worldId);
 }
 async function start(kind) {
   ready=false; ended=false; port=await reserveLoopbackPort();
@@ -364,8 +366,9 @@ try{
   const detail=await desktopInvoke('sessionGet',{id:sessionId});assert.equal(detail.session.messages.length,0,'DIRECT_LIBRARY_USE_MUST_NOT_FABRICATE_AUTHOR_TURNS');
   await stop();await start('zero-turn-cold');await openExistingWorld(worldId);await workbench();
   const restored=await until(()=>evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`),Boolean);assert.equal(restored,sessionId,'ZERO_TURN_WORLD_RESTORES_SAME_CONVERSATION');
+  const restoredDetail=await desktopInvoke('sessionGet',{id:restored});assert.equal(restoredDetail.session.messages.length,0,'ZERO_TURN_REOPEN_MUST_KEEP_CONVERSATION_EMPTY');
   await until(()=>evaluate(`!!document.querySelector('[data-creation-target]')`),Boolean);
-  report.zeroTurnReopen={sessionId,restored,worldId,messages:0,creationEditorVisible:true};await modelEvidence('zero-turn-cold-reopen');save();
+  report.zeroTurnReopen={sessionId,restored,worldId,messages:restoredDetail.session.messages.length,creationEditorVisible:true};await modelEvidence('zero-turn-cold-reopen');save();
  }
  if(!previous?.editedEntity)await placeAndEdit();await modelEvidence('author-after-edit');
  await panel('godot.runtimeSave',{freeze:false});await assertContents('author-saved');await stop();
@@ -379,5 +382,9 @@ try{
  report.modelCalls=0;report.passed=true;mark('Real catalog use, ordinary supported edit, save, template export/import, gameplay and both cold reopens passed');
  }
 }catch(error){report.passed=false;report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-12000),notes:Array.from(document.querySelectorAll('.creation-target-note'),n=>({text:n.textContent,title:n.title})),buttons:Array.from(document.querySelectorAll('.creation-target-context button'),n=>({text:n.textContent,disabled:n.disabled})),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
-finally{try{await stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);save();launch.assertUnchanged();}
-console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError}));
+finally{
+ try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}
+ try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}
+ clearInterval(watcher);save();
+}
+console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError,integrityError:report.integrityError}));
