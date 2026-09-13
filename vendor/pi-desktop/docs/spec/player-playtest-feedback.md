@@ -52,6 +52,10 @@ Reports are at most 800,000 bytes, PNGs at most 512 KiB, and journals at most
 100 reports per world. These are file/storage limits, not AI task limits.
 
 Private Rust methods are `playtest.context`, `validate`, `record`, `list`, `read`.
+The private plugin-runtime orchestrator allowlist admits exactly those five
+methods, in addition to the plugin host router and main-frame panel boundary.
+The separately validated `world.brief` product method is also admitted; similarly
+named prefixes and arbitrary brief actions gain no blanket permission.
 Record validates exact schemas, canonical hash and optional screenshot identity.
 Local records must match current Rust formal-content identity; imported records retain original
 identity and have no authority over the author's world. No remote service,
