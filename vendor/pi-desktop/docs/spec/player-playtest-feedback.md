@@ -41,6 +41,8 @@ Main-only routes: `playtest.describe`, `preview`, `export`, `importPreview`,
 only bounded text, IDs and screenshot consent. Renderer-supplied paths, client
 identity, context, report bytes and arbitrary RPC are denied. Native file grants
 are never exposed. Up to eight preview grants expire after fifteen minutes;
+the oldest grant is replaced when a ninth review is requested, so cancelled
+previews do not block subsequent feedback.
 world selection/lifecycle and local source context are rechecked before export.
 Reports are at most 800,000 bytes, PNGs at most 512 KiB, and journals at most
 100 reports per world. These are file/storage limits, not AI task limits.

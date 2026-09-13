@@ -27,7 +27,10 @@ export function createPlaytestFeedbackPanel(options:{
   const selected=async(worldId:any)=>{if(disposed||options.blocked())fail("PLAYTEST_BUSY");if(typeof worldId!=="string"||await options.selection()!==worldId)fail("PLAYTEST_WORLD_CHANGED");};
   const remember=(worldId:string,report:any,origin:"local"|"imported")=>{
     for(const [id,g] of grants)if(g.expires<Date.now())grants.delete(id);
-    if(grants.size>=8)fail("PLAYTEST_PREVIEW_LIMIT");const previewId=randomUUID();grants.set(previewId,{worldId,report,origin,expires:Date.now()+15*60_000});
+    // Cancelled UI previews hold no durable state. Evict the oldest grant so
+    // repeated review/cancel actions cannot strand a player behind the cap.
+    if(grants.size>=8)grants.delete(grants.keys().next().value!);
+    const previewId=randomUUID();grants.set(previewId,{worldId,report,origin,expires:Date.now()+15*60_000});
     return {status:"preview",previewId,report,origin,exclusions:["credentials","conversation","systemLogs","worldSource","savedProgress"],unverifiedPlayerStatement:origin==="imported"};
   };
   return {dispose(){disposed=true;grants.clear();},async request(channel:string,input:any){

@@ -25,6 +25,7 @@ export function PlaytestPanel({bridge,worldId,zh,onRepair}:{bridge:LibraryCall|n
     <form data-playtest-import onSubmit={event=>{event.preventDefault();void run(async()=>{const result=await call("importPreview");if(live.current&&result.status==="preview"){setPreview(result);setCurrent(null);}});}}><button disabled={busy}>{zh?"选择朋友的反馈文件":"Choose friend feedback file"}</button></form>
     {record&&<article data-playtest-record={record.id}>
       <p>{zh?"反馈编号":"Feedback ID"}: {record.id}</p>
+      {record.replyTo&&<p>{zh?"回复反馈":"Reply to feedback"}: {record.replyTo}</p>}
       <p>{zh?"测试版本":"Tested version"}: {record.client.version} · {record.client.commit??(zh?"开发构建":"Development build")}</p>
       <p>{record.context.worldId} · {record.context.buildId} · Godot {record.context.engineVersion} · {record.context.baseId} {record.context.baseVersion}</p>
       <p>{zh?"世界内容指纹":"World content fingerprint"}: {record.context.contentHash}</p>

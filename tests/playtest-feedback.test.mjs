@@ -28,3 +28,9 @@ test('world progress changed after preview cannot be exported, and oversized imp
  context.worldRevision++;try{await assert.rejects(f.service.request('playtest.export',{worldId:'world-one',previewId:p.previewId}),/WORLD_CHANGED/);}finally{context.worldRevision--;}
  await writeFile(f.file,'x'.repeat(800001));await assert.rejects(f.service.request('playtest.importPreview',{worldId:'world-one'}),/TOO_LARGE/);
 });
+test('repeated abandoned previews evict old grants and keep the current review usable',async()=>{
+ const f=await fixture();let first,last;
+ for(let i=0;i<10;i++){last=await f.service.request('playtest.preview',{worldId:'world-one',description:'Review '+i,expected:'',includeScreenshot:false});first??=last;}
+ await assert.rejects(f.service.request('playtest.export',{worldId:'world-one',previewId:first.previewId}),/PREVIEW_EXPIRED/);
+ assert.equal((await f.service.request('playtest.export',{worldId:'world-one',previewId:last.previewId})).status,'completed');
+});
