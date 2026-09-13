@@ -71,4 +71,3 @@ check('guide never prepares, applies, publishes, saves, or submits AI',await pag
 check('no pointer lock, focus, or page errors',await page.evaluate(()=>violations.length===0)&&report.errors.length===0);
 report.passed=true;
 }finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));await browser.close();console.log(JSON.stringify(report));}
-

@@ -151,7 +151,7 @@ try {
  report.restored=await until(()=>evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`),id=>id===report.bound.sessionId);
  report.coldBound=await nav('world.conversation',{worldId});assert.equal(report.coldBound.sessionId,report.bound.sessionId);assert.equal(report.coldBound.taskId,undefined);
  report.coldRows=await readSession();assert.equal(report.coldRows.find(s=>s.id===report.bound.sessionId).messageCount,0);
- 
+
  if(!await evaluate(`!!document.querySelector('[data-first-guide-title]')`))await submit('[data-first-guide-toggle]');await submit('[data-first-guide-step="2"]');await until(()=>evaluate(`!!document.querySelector('[data-first-guide-action="create"]')`),Boolean);await submit('[data-first-guide-action="create"]');
  report.creationSurface=await until(()=>evaluate(`(()=>{const node=document.querySelector('.creation-target-context'),editor=document.querySelector('.creation-object-editor'),rect=node?.getBoundingClientRect();return {targetVisible:!!rect&&rect.width>0&&rect.height>0,targetState:node?.dataset.creationTarget,editorText:editor?.innerText,editor:!!editor,sessionId:document.querySelector('[data-world-session]')?.dataset.worldSession,layout:JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1'))};})()`),value=>value.targetVisible&&value.targetState!=='loading'&&value.editor&&value.sessionId===report.bound.sessionId&&value.layout.mode==='create');
  await delay(500);report.creationCapture=await rpc('capture',{name:'cold-empty-creation'});
