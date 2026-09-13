@@ -225,6 +225,15 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
           for(const required of requirements) {
           exactKeys(required,['path','sha256']);requireValue(isHash(required.sha256)&&originals.get(required.path)===required.sha256,'PACKAGE_BASE_SOURCE_MISMATCH');
           }
+          const profiles=resource.manifest.content.entry?.sourceRequirementProfiles;
+          if(profiles!==undefined){
+            requireValue(Array.isArray(profiles)&&profiles.length>=1&&profiles.length<=8,'PACKAGE_BASE_PROFILES_INVALID');
+            for(const profile of profiles){
+              exactKeys(profile,['id','requirements']);requireValue(text(profile.id,100)&&Array.isArray(profile.requirements)&&profile.requirements.length>=1&&profile.requirements.length<=32,'PACKAGE_BASE_PROFILES_INVALID');
+              for(const required of profile.requirements){exactKeys(required,['path','sha256']);requireValue(text(required.path,240)&&isHash(required.sha256),'PACKAGE_BASE_PROFILES_INVALID');}
+            }
+            requireValue(profiles.some(profile=>profile.requirements.every(required=>originals.get(required.path)===required.sha256)),'PACKAGE_BASE_PROFILE_MISMATCH');
+          }
         }
         const plans=[];
         for(const [index,archive]of archives.entries()){

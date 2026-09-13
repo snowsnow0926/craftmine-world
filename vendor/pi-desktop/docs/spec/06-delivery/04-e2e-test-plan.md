@@ -10010,7 +10010,7 @@ See [the handoff and contract](../../adr/godot-failed-check-export-continuation.
 - The approved Pomeranian can instantiate twice with independent identities and follow/wait/pet progress; editing one instance preserves the other and the original library version. Save and reopen verify the result. Capture model time and cached/noncached input/output separately from world load time.
 
 Automated validation uses independent headless/offscreen processes, disables pointer lock, and submits forms through page scripts. No real keyboard/mouse input, visible windows or model evaluation budgets are introduced.
-# Approved companion reuse (2026-09-13)
+## Approved companion reuse (2026-09-13)
 
 In an independent background profile with no pointer lock or real system input,
 open a fresh creation sandbox and select the actual Codex gpt-6-astra/xhigh
@@ -10027,3 +10027,9 @@ separately from the deterministic component tests; do not add token/call/turn ca
 ### Published demonstration world starters (2026-09-13)
 
 In one fresh profile without a connected model, open the existing world picker and create each of the four published starters. Verify distinct native world IDs and conversation bindings, visible preparation stages, actual first load, save and reopen. Create a second copy of one starter; changing or playing it must leave the first copy and shipped source hashes unchanged. Initial mainline wins/attempts, flight history, rain casts and city exploration must not inherit publisher progress. Cancel initialization between source batches, reopen, and explicitly retry without a duplicate world. Corrupt a private fixture source hash and verify rejection before world registration. PNG previews remain bounded data URLs with no filesystem paths. Gameplay and F2 input checks use independent background profiles and the project no-real-input policy; native source-storage tests alone do not establish these outcomes.
+
+For native source preflight, verify the standard collision-controller world and
+CLI engine-monitor world match an exact supported source profile. A changed hash
+or malformed profile must fail before source writes. Proposing two accepted
+archives as one group must report the existing aggregate limit before creating
+a proposal; adding companions sequentially remains supported.

@@ -49,11 +49,13 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       if(args.mode==='propose-group'){
         exact(args,['mode','items']);check(typeof installSourceGroup==='function','SOURCE_LIBRARY_GROUP_UNAVAILABLE');
         check(Array.isArray(args.items)&&args.items.length>=2&&args.items.length<=8,'SOURCE_LIBRARY_INVALID_GROUP');
-        const cache=new Map(),items=[],summaries=[];
+        const cache=new Map(),items=[],summaries=[];let archiveBytes=0,payloadBytes=0;
         for(const item of args.items){
           exact(item,['ref','position']);const ref=validateAssetRef(item.ref),position=item.position===undefined?undefined:placement(item.position);
           const key=JSON.stringify(ref);if(!cache.has(key))cache.set(key,await readArchive(ref));
           const archive=cache.get(key);if(position)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
+          archiveBytes+=archive.bytes.length;payloadBytes+=archive.archive.packageJson.files.reduce((sum,file)=>sum+file.bytes,0);
+          check(archiveBytes<=6*1024*1024&&payloadBytes<=6*1024*1024,'SOURCE_LIBRARY_GROUP_TOO_LARGE_INSTALL_SEPARATELY');
           const summary=describe(ref,archive);if(position)summary.placement={status:'explicit-position',position,capturedPlayerTargetUsed:false};
           summaries.push(summary);items.push({ref,archiveSha256:archive.archive.archiveSha256,displayName:summary.displayName,...(position?{position}:{})});
         }

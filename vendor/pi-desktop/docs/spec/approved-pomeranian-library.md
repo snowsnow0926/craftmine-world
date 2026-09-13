@@ -14,6 +14,14 @@ receives a distinct native instance identity. The optional cream variant clones
 materials on the selected instance; white remains the exact accepted visual.
 The model has no skeletal animation, navigation, combat, or driving behavior.
 
+`entry.sourceRequirementProfiles` optionally declares one to eight exact runtime
+alternatives, each with an ID and one to 32 `{path,sha256}` requirements. Common
+`sourceRequirements` remain mandatory; one entire alternative must match current
+source. Invalid declarations fail `PACKAGE_BASE_PROFILES_INVALID`, unmatched
+profiles fail `PACKAGE_BASE_PROFILE_MISMATCH` before source installation. The new
+companion accepts the legacy component runtime, current collision controller, or
+that controller with the exact engine-monitor bridge. Old packages are unchanged.
+
 Codex desktop and CLI expose the existing registered `asset_library`,
 `godot_source_library`, and `package_library` tools through their normal permission
 gates. CLI now wires the same source catalog, package installer, and host-owned
@@ -36,6 +44,15 @@ is increased. Wrapper code is MIT; generated model redistribution rights are
 explicitly unverified. The local catalog seed does not publish remotely or carry
 developer paths/accounts. The retained preview and Blender Python source are
 development provenance; runtime model previews use the normal asset preview flow.
+
+The source-library group proposal checks the existing 6 MiB compressed and
+uncompressed aggregate limit before persisting. Two accepted Pomeranian archives
+exceed that group limit, so callers receive
+`SOURCE_LIBRARY_GROUP_TOO_LARGE_INSTALL_SEPARATELY` and install them sequentially.
+The independent second instance does not require replacing the first or rebuilding
+the model. `tests/codex-library-native.mjs` exercises the actual staged CLI host
+with Rust, including catalog search, exact ref, size refusal, source installation,
+idempotent retry and foreign-world refusal without a model or engine launch.
 
 Validation: `tests/approved-pomeranian-package.test.mjs`, existing catalog/source
 proposal tests, `tests/builtin-source-library-native.mjs`, focused native

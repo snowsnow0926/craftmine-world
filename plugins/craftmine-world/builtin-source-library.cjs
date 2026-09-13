@@ -1,4 +1,4 @@
-// Imports only the immutable packages shipped with the product into the existing
+// Imports only immutable source packages and GLB models shipped with the product into the existing
 // asset catalog. No player path, world source, or installed instance is changed.
 'use strict';
 const fs=require('node:fs');

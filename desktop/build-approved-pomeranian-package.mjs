@@ -26,6 +26,21 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
     'companion.tscn':Buffer.from(`[gd_scene load_steps=3 format=3]\n\n[ext_resource type="Script" path="${prefix}companion.gd" id="1"]\n[ext_resource type="PackedScene" path="${prefix}model.glb" id="2"]\n\n[node name="ApprovedPomeranian" type="CharacterBody3D"]\nscript = ExtResource("1")\nentity_id = "pet"\ncompanion_name = "小麦"\nappearance_key = "pomeranian-white"\npomeranian_visual = ExtResource("2")\n`),
   };
   check(Object.values(files).reduce((sum,bytes)=>sum+bytes.length,0)<=4*1024*1024,'APPROVED_POMERANIAN_COMPONENT_TOO_LARGE');
+  const pin=([name,source])=>({path:name,sha256:hash(fs.readFileSync(path.join(repository,source)))});
+  const controllerPins=[
+    ['craftmine_shared/base_adapter.gd','desktop/godot/shared/adapters/creation-sandbox-controller-v2.gd'],
+    ['craftmine_shared/base_adapter_controller_v1.gd','desktop/godot/shared/adapters/creation-sandbox-controller-v1.gd'],
+    ['craftmine_shared/base_adapter_legacy.gd','desktop/godot/shared/adapters/creation-sandbox.gd'],
+    ['craftmine_shared/progress_collision.gd','desktop/godot/shared/progress_collision.gd'],
+  ];
+  const sourceRequirementProfiles=[
+    {id:'legacy-component-runtime',requirements:PET_SOURCE_REQUIREMENTS.slice(1).map(pin)},
+    {id:'creation-player-collision/1',requirements:[...controllerPins,PET_SOURCE_REQUIREMENTS[2]].map(pin)},
+    {id:'creation-player-collision/1+engine-monitor/1',requirements:[...controllerPins,
+      ['craftmine_shared/runtime_bridge.gd','desktop/godot/shared/runtime_bridge_engine_v1.gd'],
+      ['craftmine_shared/runtime_bridge_base.gd','desktop/godot/shared/runtime_bridge.gd'],
+      ['craftmine_shared/engine_performance.gd','desktop/godot/shared/engine_performance.gd']].map(pin)},
+  ];
   const content={assetId:APPROVED_POMERANIAN_ID,version:1,kind:'module',
     files:Object.entries(files).sort(([a],[b])=>a.localeCompare(b,'en')).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],
     entry:{entities:['pet'],label:'演示同款可爱白色博美',
@@ -34,7 +49,7 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
       capabilities:['follow-flat-ground','pet-interaction','wait','persistent-state','independent-instances'],
       style:'soft-round-white-pomeranian',
       sceneInstall:{mode:'instance',sceneFile:'companion.tscn',identityField:'entity_id',identityType:'String'},
-      sourceRequirements:PET_SOURCE_REQUIREMENTS.map(([name,source])=>({path:name,sha256:hash(fs.readFileSync(path.join(repository,source)))})),
+      sourceRequirements:[pin(PET_SOURCE_REQUIREMENTS[0])],sourceRequirementProfiles,
       placement:{anchor:'feet',dimensionsMm:[370,265,370]},
       appearances:[{key:'pomeranian-white',scene:'model.glb',sha256:APPROVED_POMERANIAN_SHA256,acceptedDemoAppearance:true},
         {key:'pomeranian-cream',scene:'model.glb',sha256:APPROVED_POMERANIAN_SHA256,acceptedDemoAppearance:false,variant:'instance-local-material-tint'}],

@@ -23,3 +23,12 @@ application still require their ordinary check/adoption receipts.
 The archived preview documents the accepted appearance; it is not falsely inserted
 as a runtime verification receipt. Model provenance states generated project content
 with redistribution rights unverified; wrapper MIT does not license model bytes.
+
+Native CLI probing exposed that the legacy companion pins the old adapter alias,
+while new worlds use the collision controller and CLI worlds optionally use the
+engine-monitor bridge. The new component therefore declares three exact source
+requirement profiles. Common requirements still all match; one complete profile
+must also match. Each profile is bounded to 32 exact path/SHA-256 requirements,
+with at most eight alternatives. There are no wildcard hashes, automatic source
+rewrites or relaxed requirement checks on existing packages. This additive entry
+contract permits verified managed runtime variants without mutating old versions.

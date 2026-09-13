@@ -45,6 +45,20 @@ try{
   report.incompatiblePetRuntimeRejected=true;
  }
  const operations=[...selectedEntries,selectedEntries.find(entry=>entry.assetId===PET_ASSET_ID)??selectedEntries[0]];
+ const approved=selectedEntries.find(entry=>entry.assetId==='cw.module.approved-pomeranian');
+ if(approved){
+  const resource=unpackStaticPackage(fs.readFileSync(approved.filename)).resources[0];
+  for(const invalid of [false,true]){
+   const content=structuredClone(resource.manifest.content);
+   if(invalid)content.entry.sourceRequirementProfiles=[{id:'forged',requirements:[],allowAny:true}];
+   else for(const profile of content.entry.sourceRequirementProfiles)for(const required of profile.requirements)required.sha256='0'.repeat(64);
+   const bytes=packStaticPackage({root:{id:content.assetId,version:content.version},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files:Object.fromEntries(resource.files)}]});
+   const before=await call('godotProject.index',{context,worldId,offset:0,limit:1});
+   await assert.rejects(installer({worldId,operationId:'profile-refused-'+invalid,archiveBase64:bytes.toString('base64')}),invalid?/UNKNOWN_FIELD|PACKAGE_BASE_PROFILES_INVALID/:/PACKAGE_BASE_PROFILE_MISMATCH/);
+   assert.deepEqual(await call('godotProject.index',{context,worldId,offset:0,limit:1}),before,'Profile mismatch must not mutate source');
+  }
+  report.exactRuntimeProfilesRejectedBeforeWrites=true;
+ }
  for(const [index,entry] of operations.entries()){
   const archiveBytes=fs.readFileSync(entry.filename);assert.equal(sha(archiveBytes),entry.sha256);
   const archive=unpackStaticPackage(archiveBytes),resource=archive.resources.find(item=>item.manifest.content.assetId===entry.assetId);assert.ok(resource);

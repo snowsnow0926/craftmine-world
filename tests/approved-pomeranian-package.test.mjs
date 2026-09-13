@@ -23,6 +23,9 @@ test('accepted package binds exact visual and behavior while staying under real 
   assert.equal(content.licenses.modelLicenseStatus,'unverified');
   assert.match(resource.files.get('companion.tscn').toString(),/appearance_key = "pomeranian-white"/);
   assert.ok(resource.files.has('companion.gd.uid'));
+  assert.equal(content.entry.sourceRequirements.length,1);
+  assert.equal(content.entry.sourceRequirementProfiles.length,3);
+  for(const profile of content.entry.sourceRequirementProfiles)assert.ok(profile.requirements.every(item=>/^[a-f0-9]{64}$/.test(item.sha256)));
 });
 
 test('fixed model and playable package have distinct catalog classifications and source versions',async()=>{
