@@ -17,6 +17,7 @@ mod scheduled;
 mod scratch;
 mod secrets;
 mod sessions;
+mod codex_transport;
 mod state;
 mod tool_budget;
 mod task_metrics;

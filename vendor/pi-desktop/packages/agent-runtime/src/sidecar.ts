@@ -10,6 +10,7 @@ import { copyFile, mkdir, readFile, realpath, stat } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import type { ModelAuth } from "@earendil-works/pi-ai";
 import { ParentHostProxy } from "./parent-host-proxy.js";
+import { CodexDesktopRuntime } from "./codex-desktop-runtime.js";
 import { visionFromModelConfig } from "./model-capabilities.js";
 import { classifyAgentError } from "./agent-errors.js";
 import {
@@ -48,11 +49,11 @@ import type {
   UiMessage,
 } from "@pi-desktop/shared";
 
-type RuntimeMap = Map<string, DesktopAgentRuntime>;
+type RuntimeMap = Map<string, DesktopAgentRuntime | CodexDesktopRuntime>;
 
 const runtimes: RuntimeMap = new Map();
 const hostProxy = new ParentHostProxy();
-const testRuntimeIds = new WeakMap<DesktopAgentRuntime, string>();
+const testRuntimeIds = new WeakMap<DesktopAgentRuntime | CodexDesktopRuntime, string>();
 function testRuntimeIdentity(sessionId: string) {
   if (process.env.PI_DESKTOP_PLAN_UI_PROBE !== "1") {
     throw Object.assign(new Error("test runtime identity RPC is unavailable"), {
@@ -88,6 +89,7 @@ function testRuntimeIdentity(sessionId: string) {
 }
 
 type RuntimeParams = {
+  codex?: { binary: string };
   /** Trusted desktop host world-task scope; never read from model arguments. */
   craftmineWorld?: boolean;
   sessionId: string;
@@ -268,9 +270,28 @@ async function hydrateAttachmentHistory(
 async function runtimeFor(
   params: RuntimeParams,
   currentPrompt?: string,
-): Promise<DesktopAgentRuntime> {
+): Promise<DesktopAgentRuntime | CodexDesktopRuntime> {
   const sessionId = String(params.sessionId);
   const mode = normalizeMode(params.mode);
+  if (params.codex) {
+    if (!params.craftmineWorld || mode !== "agent" || !params.scratchDir) {
+      throw Object.assign(Error("Codex CLI requires an active Godot world in Agent mode."), { errorCode: "CODEX_WORLD_ONLY" });
+    }
+    const previous = runtimes.get(sessionId);
+    if (previous?.getStatus().isRunning) throw Object.assign(Error("AGENT_BUSY"), { errorCode: "AGENT_BUSY" });
+    await previous?.dispose();
+    const runtime = new CodexDesktopRuntime({ sessionId, binary: params.codex.binary, scratchDir: params.scratchDir,
+      tools: params.pluginTools ?? [], host: hostProxy,
+      onEvent: envelope => notify("agent.event", envelope),
+      history: async () => {
+        const detail = await hostProxy.call<{ session?: { messages?: UiMessage[] } }>("session.get", { id: sessionId });
+        if (!detail.session) throw Error("CODEX_SESSION_MISSING");
+        return hydrateAttachmentHistory(detail.session.messages ?? [], params);
+      },
+    });
+    runtimes.set(sessionId, runtime);
+    return runtime;
+  }
   if (!isCommandShellOption(params.commandShell) || !params.commandShell.available) {
     throw Object.assign(new Error("active command shell is invalid or unavailable"), {
       rpcCode: -32000,
@@ -315,7 +336,7 @@ async function runtimeFor(
       errorCode: "AGENT_BUSY",
     });
   }
-  const reusable = existing?.matches({
+  const reusable = existing instanceof DesktopAgentRuntime && existing.matches({
     craftmineWorld: params.craftmineWorld,
     mode,
     provider,
@@ -557,6 +578,7 @@ async function handle(method: string, params: any): Promise<unknown> {
 }
 
 const rl = createInterface({ input: process.stdin });
+rl.on("close", () => { void Promise.allSettled([...runtimes.values()].map(runtime => runtime.dispose())).finally(() => process.exit(0)); });
 rl.on("line", async (line) => {
   if (!line.trim()) return;
   let msg: any;

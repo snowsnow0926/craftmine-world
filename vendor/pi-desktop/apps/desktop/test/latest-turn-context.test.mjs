@@ -24,6 +24,15 @@ const providerModels = {
 };
 const providers = [{ id: "provider", contextWindow: 64_000, models: [] }];
 
+test("Codex turn totals cannot masquerade as context occupancy or a generic provider window", () => {
+  const aggregate={inputTokens:1000,outputTokens:100,cacheReadTokens:8000,totalTokens:9100};
+  const row={id:"codex",role:"assistant",content:"Done",createdAt:"2026-09-13T00:00:00Z",status:"complete",providerId:"codex-cli",modelId:"gpt-6-astra",usage:aggregate};
+  assert.equal(latestTurnContextInspector([row],{},[]),undefined);
+  const last={inputTokens:100,outputTokens:10,cacheReadTokens:800,totalTokens:910};
+  const actual=latestTurnContextInspector([{...row,codexUsage:{scope:"current-turn",lastRequest:last,modelContextWindow:1000000,cost:null}}],{},[]);
+  assert.deepEqual(actual.usage,last);assert.deepEqual(actual.turnUsage,aggregate);assert.equal(actual.contextWindow,1000000);
+});
+
 function message(id, role, content, extra = {}) {
   return {
     id,

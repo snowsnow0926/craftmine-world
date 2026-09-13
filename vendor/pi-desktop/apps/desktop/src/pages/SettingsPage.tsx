@@ -105,6 +105,30 @@ function SettingsCard({
   );
 }
 
+function WorldAgentBackendRow({ settings, saveSettings }: {
+  settings: AppSettings; saveSettings: (patch: Partial<AppSettings>) => Promise<void>;
+}) {
+  const [backend, setBackend] = useState(settings.worldAgentBackend ?? "pi");
+  const [path, setPath] = useState(settings.codexCliPath ?? "");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  return <SettingsRow title="World authoring backend" description={
+    "Experimental Codex CLI uses your existing local ChatGPT login for Godot world conversations in Agent mode. Effective configuration: gpt-6-astra / xhigh. Other conversations and Plan retain the provider backend. No API key is copied."
+  }>
+    <div>
+      <select aria-label="World authoring backend" value={backend} disabled={saving} onChange={event => setBackend(event.target.value as "pi" | "codex-cli")}>
+        <option value="pi">Provider backend (default)</option><option value="codex-cli">Local Codex CLI (experimental)</option>
+      </select>
+      <Input aria-label="Local Codex CLI executable path" value={path} placeholder="Absolute path to codex.exe (0.154.0-alpha.6.2)" onChange={event => setPath(event.target.value)} />
+      <Button disabled={saving || (backend === "codex-cli" && !path.trim())} onClick={() => {
+        setSaving(true); setError("");
+        void saveSettings({ worldAgentBackend: backend, codexCliPath: path.trim() }).catch(error => setError(String(error.message ?? error))).finally(() => setSaving(false));
+      }}>Save world backend</Button>
+      {error ? <p role="alert">{error}</p> : null}
+    </div>
+  </SettingsRow>;
+}
+
 function CommandShellRow({
   settings,
   saveSettings,
@@ -1221,6 +1245,7 @@ export function SettingsPage() {
     await api.setSettings(nextSettings);
     useAppStore.setState({ settings: nextSettings });
     await refreshProviders();
+    if (patch.worldAgentBackend !== undefined) await useAppStore.getState().refreshSessions();
   };
 
   // Nav structure comes from the shared settings index (lib/settings-search)
@@ -1424,6 +1449,7 @@ export function SettingsPage() {
                     ))}
                   </div>
                 </SettingsRow>
+                <WorldAgentBackendRow settings={settings} saveSettings={saveSettings} />
                 <CommandShellRow settings={settings} saveSettings={saveSettings} />
                 <LinkOpenTargetRow settings={settings} saveSettings={saveSettings} />
                 <SettingsRow

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { TaskMetrics, TaskMetricsQuery } from "@pi-desktop/shared";
+import type { TaskMetrics, TaskMetricsQuery, MessageUsage } from "@pi-desktop/shared";
 import { api } from "../lib/api";
 import "../styles/task-metrics.css";
 
@@ -43,14 +43,15 @@ function duration(value: number | null | undefined) {
 }
 
 /** Presentation only: all totals, model identities and timing come from the host. */
-export function TaskMetricsView({ metrics, loading = false, failed = false }: {
+export function TaskMetricsView({ metrics, loading = false, failed = false, codex }: {
   metrics: TaskMetrics | null; loading?: boolean; failed?: boolean;
+  codex?: { modelId?: string; usage?: MessageUsage };
 }) {
   const { i18n } = useTranslation();
   const language = i18n.resolvedLanguage || i18n.language || "en";
   const text = language.startsWith("zh") ? labels.zh : labels.en;
   const models = metrics?.models ?? [];
-  const modelName = models.length ? models.map((model) => model.modelId).join(" / ") : text.unknown;
+  const modelName = codex?.modelId ?? (models.length ? models.map((model) => model.modelId).join(" / ") : text.unknown);
   const coverage = metrics?.coverage ?? "unknown";
   return (
     <section className="task-metrics" aria-label={text.operation} aria-live="off"
@@ -61,12 +62,12 @@ export function TaskMetricsView({ metrics, loading = false, failed = false }: {
         {coverage === "partial" ? <span className="task-metrics-partial">{text.partial}</span> : null}
       </div>
       <dl className="task-metrics-summary">
-        <div><dt>{text.tokens}</dt><dd data-metric="tokens">{count(metrics?.usage?.totalTokens, language)}</dd></div>
+        <div><dt>{text.tokens}</dt><dd data-metric="tokens">{count(codex ? codex.usage?.totalTokens : metrics?.usage?.totalTokens, language)}</dd></div>
         <div title={text.speed}><dt>TPS</dt><dd data-metric="tps">{count(metrics?.tps.value, language, 1)}{metrics?.tps.coverage === "partial" ? ` (${text.partial})` : ""}</dd></div>
         <div><dt>{text.time}</dt><dd data-metric="time">{duration(metrics?.wallTimeMs)}</dd></div>
         <div className="task-metrics-model"><dt>{text.model}</dt><dd data-metric="model" title={modelName}>{modelName}</dd></div>
       </dl>
-      {metrics ? (
+      {codex ? <p>Codex CLI · current-turn token totals. Internal request count, generation-only TPS and cost are unavailable.</p> : metrics ? (
         <details className="task-metrics-details">
           <summary>{text.details}</summary>
           <p>{text.scope}</p>
@@ -93,9 +94,10 @@ export function TaskMetricsView({ metrics, loading = false, failed = false }: {
 }
 
 type Snapshot = { key: string; metrics: TaskMetrics | null; loading: boolean; failed: boolean };
-export function TaskMetricsPanel({ messageId, running, read = api.getTaskMetrics }: {
+export function TaskMetricsPanel({ messageId, running, read = api.getTaskMetrics, codex }: {
   messageId: string | undefined; running: boolean;
   read?: (query: TaskMetricsQuery) => Promise<TaskMetrics | null>;
+  codex?: { modelId?: string; usage?: MessageUsage };
 }) {
   const sessionId = useContext(SessionContext);
   const key = `${sessionId ?? ""}\0${messageId ?? ""}`;
@@ -131,5 +133,5 @@ export function TaskMetricsPanel({ messageId, running, read = api.getTaskMetrics
   }, [sessionId, messageId, key, running, read]);
   if (!sessionId || !messageId) return null;
   const visible = snapshot.key === key ? snapshot : { metrics: null, loading: true, failed: false };
-  return <TaskMetricsView metrics={visible.metrics} loading={visible.loading} failed={visible.failed} />;
+  return <TaskMetricsView metrics={visible.metrics} loading={visible.loading} failed={visible.failed} codex={codex} />;
 }

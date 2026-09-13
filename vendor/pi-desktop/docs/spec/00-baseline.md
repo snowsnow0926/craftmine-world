@@ -6,6 +6,11 @@
 - Language policy: **English-first**
 - Backend policy: **Rust host core + pi agent sidecar**
 
+Craftmine scoped extension (2026-09-13): the existing sidecar can opt into the
+actual local Codex CLI for Godot world conversations. PI remains the default;
+Rust transcript, permissions and world/source ownership are unchanged. See
+[the architecture decision](../adr/codex-desktop-world-backend.md).
+
 > Version history: `0.3.4` froze provider/runtime-safety decisions
 > (D001–D033). `0.4.0` absorbs the Codex visual-parity decision series
 > (D034+, gold source = decisions-log §D) and the M5 hardening decisions

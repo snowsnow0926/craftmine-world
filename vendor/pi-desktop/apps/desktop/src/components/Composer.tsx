@@ -617,6 +617,7 @@ export function Composer({
   const settings = useAppStore((s) => s.settings);
   const sessions = useAppStore((s) => s.sessions);
   const activeSessionId = useAppStore((s) => s.activeSessionId);
+  const effectiveBackend = useAppStore(s => s.activeSessionId ? s.agentStatuses[s.activeSessionId] : undefined);
   const workspacePath = useAppStore((s) => s.workspace?.path ?? "");
   const [voiceWorldGeneration, setVoiceWorldGeneration] = useState(0);
   useEffect(() => {
@@ -1179,6 +1180,8 @@ export function Composer({
   const mode: Mode = activeSession
     ? activeSession.mode
     : (draftConfiguration?.mode ?? settings?.defaultMode ?? "agent");
+  const codexWorld = mode === "agent" && settings?.worldAgentBackend === "codex-cli" &&
+    (voiceEnabled || activeSession?.worldAgentBackend === "codex-cli");
   const planningLive =
     isRunning &&
     planningState === "planning" &&
@@ -1241,11 +1244,11 @@ export function Composer({
     ? sessionThinkingLevel
     : "off";
   const availableThinkingLevels = providerThinkingLevels(thinkingProvider);
-  const thinkingLevel = thinkingLevelForProvider(
+  const thinkingLevel = codexWorld ? "xhigh" : thinkingLevelForProvider(
     thinkingProvider,
     configuredThinkingLevel,
   );
-  const thinkingLabel = t(THINKING_LEVEL_I18N_KEYS[thinkingLevel], {
+  const thinkingLabel = codexWorld ? "xhigh" : t(THINKING_LEVEL_I18N_KEYS[thinkingLevel], {
     defaultValue: THINKING_LEVEL_LABELS[thinkingLevel],
   });
   const selectedModel = provider?.id
@@ -1253,7 +1256,7 @@ export function Composer({
         (model) => model.modelId === modelId,
       )
     : undefined;
-  const modelLabel = selectedModel?.displayName || modelId || t("chat.model");
+  const modelLabel = codexWorld ? "Codex CLI · gpt-6-astra" : selectedModel?.displayName || modelId || t("chat.model");
   const thinkingMenuLevels: ThinkingLevel[] = availableThinkingLevels.length
     ? availableThinkingLevels
     : ["off"];
@@ -1294,7 +1297,7 @@ export function Composer({
   const activeFlatIndex = useMemo(() => flatModels.findIndex(
     (entry) => entry.provider.id === provider?.id && entry.model.modelId === modelId,
   ), [flatModels, provider?.id, modelId]);
-  const modelReady =
+  const modelReady = codexWorld ? !!settings?.codexCliPath :
     !!provider &&
     provider.enabled &&
     !!modelId &&
@@ -2371,6 +2374,10 @@ export function Composer({
                 ref={modelThinkingRef}
                 onKeyDown={onModelThinkingMenuKeyDown}
               >
+                {codexWorld && effectiveBackend?.backend === "codex-cli" ? <span role="status" title="Local Codex CLI; token totals are for this turn. Cost is unavailable.">
+                  {effectiveBackend.transportState === "starting" ? "Connecting Codex" : `Verified ${effectiveBackend.modelId} / ${effectiveBackend.reasoningEffort}`}
+                  {effectiveBackend.transportUsage ? ` · ${effectiveBackend.transportUsage.usage.totalTokens} tokens · cost unavailable` : ""}
+                </span> : null}
                 <button
                   type="button"
                   className={`icon-btn composer-model-thinking-chip ${
@@ -2380,7 +2387,7 @@ export function Composer({
                   aria-label={`${t("chat.model")}: ${modelLabel}. ${t("chat.reasoningLevel")}: ${thinkingLabel}`}
                   aria-haspopup="menu"
                   aria-expanded={modelThinkingOpen}
-                  disabled={controlsBlocked}
+                  disabled={controlsBlocked || codexWorld}
                   onClick={() => {
                     setPermissionOpen(false);
                     if (!modelThinkingOpen) {

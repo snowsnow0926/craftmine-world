@@ -156,6 +156,9 @@ pub struct UiMessage {
     pub provider_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage: Option<MessageUsage>,
+    /// Local Codex turn totals and last-request context counters, never pricing estimates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub codex_usage: Option<Value>,
     /// Elapsed model streaming time for the response throughput statistic.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub response_duration_ms: Option<i64>,
@@ -280,6 +283,9 @@ fn ui_to_record(message: &UiMessage) -> (MessageRecord, Option<String>) {
                 "totalTokens": usage.total_tokens,
             }),
         );
+    }
+    if let Some(codex) = &message.codex_usage {
+        meta_obj.insert("codexUsage".into(), codex.clone());
     }
     if let Some(duration) = message.response_duration_ms {
         meta_obj.insert("responseDurationMs".into(), json!(duration));
@@ -417,6 +423,7 @@ fn record_to_ui(record: MessageRecord) -> UiMessage {
         })
     });
     let error = meta.get("error").cloned();
+    let codex_usage = meta.get("codexUsage").cloned();
     let response_duration_ms = meta.get("responseDurationMs").and_then(|v| v.as_i64());
     let response_output_tokens = meta.get("responseOutputTokens").and_then(|v| v.as_i64());
     let revision_root_id = meta
@@ -485,6 +492,7 @@ fn record_to_ui(record: MessageRecord) -> UiMessage {
             model_id,
             provider_id,
             usage,
+            codex_usage,
             response_duration_ms,
             response_output_tokens,
             error,
@@ -531,6 +539,7 @@ fn record_to_ui(record: MessageRecord) -> UiMessage {
             model_id,
             provider_id,
             usage,
+            codex_usage,
             response_duration_ms,
             response_output_tokens,
             error,
@@ -1505,6 +1514,7 @@ pub fn configure_session_with_thinking(
 }
 
 pub fn delete_session(db: &Database, id: &str) -> Result<bool> {
+    db.kv_delete("codex-transport", id)?;
     let n = db
         .conn()
         .prepare_cached("DELETE FROM sessions WHERE id = ?1")?
@@ -2951,6 +2961,7 @@ mod tests {
             model_id: None,
             provider_id: None,
             usage: None,
+            codex_usage: None,
             response_duration_ms: None,
             response_output_tokens: None,
             error: None,
@@ -3426,6 +3437,7 @@ mod tests {
             model_id: None,
             provider_id: None,
             usage: None,
+            codex_usage: None,
             response_duration_ms: None,
             response_output_tokens: None,
             error: None,
@@ -3751,6 +3763,7 @@ mod tests {
             status: Some("complete".into()),
             model_id: Some("model-1".into()),
             provider_id: Some("provider-1".into()),
+            codex_usage: None,
             usage: Some(MessageUsage {
                 input_tokens: 12,
                 output_tokens: 34,
@@ -3838,6 +3851,20 @@ mod tests {
         assert_eq!(restored.status.as_deref(), Some("error"));
         assert_eq!(restored.is_error, Some(true));
         assert_eq!(restored.error, assistant.error);
+    }
+
+    #[test]
+    fn codex_usage_context_scope_roundtrips_in_canonical_transcript() {
+        let db = test_db();
+        let session = create_session(&db, None, None, None, None, None).unwrap();
+        let mut message = user_msg("codex-usage", "Done", "2026-09-13T00:00:00Z");
+        message.role = "assistant".into();
+        message.codex_usage = Some(json!({"scope":"current-turn","cost":null,"modelContextWindow":522500,
+            "lastRequest":{"inputTokens":265,"cacheReadTokens":158464,"outputTokens":204,"totalTokens":158933}}));
+        append_message(&db, &session.id, &message, None).unwrap();
+        let records = transcripts::read_transcript(db.data_dir(), &session.id).unwrap();
+        assert_eq!(records[0].meta.as_ref().unwrap()["codexUsage"],message.codex_usage.clone().unwrap());
+        assert_eq!(record_to_ui(records[0].clone()).codex_usage,message.codex_usage);
     }
 
     #[test]

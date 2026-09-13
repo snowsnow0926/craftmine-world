@@ -355,6 +355,8 @@ export type ToolTokenUsage = {
 };
 
 export type UiMessage = {
+  /** Codex usage is turn aggregate; context occupancy comes from its last request. */
+  codexUsage?: { scope: "current-turn"; lastRequest?: MessageUsage; modelContextWindow?: number; cost: null };
   id: string;
   role: UiMessageRole;
   content: string;
@@ -421,6 +423,8 @@ export type SubagentRunStatus =
 export const MAX_SESSION_TITLE_LENGTH = 80;
 
 export type SessionSummary = {
+  /** Host-computed transport selection; not a stored API provider row. */
+  worldAgentBackend?: "codex-cli";
   id: string;
   title: string;
   /** Number of messages in the current canonical transcript. */
@@ -515,6 +519,10 @@ export type MessageRevisionSummary = {
 };
 
 export type AgentStatus = {
+  backend?: "codex-cli";
+  reasoningEffort?: "xhigh";
+  transportState?: "starting" | "resumed" | "restored-from-transcript";
+  transportUsage?: { scope: "current-turn"; usage: MessageUsage; cost: null };
   sessionId: string;
   isRunning: boolean;
   currentTurnId?: string;
@@ -1110,6 +1118,9 @@ export type ThemePreference = "system" | "light" | "dark" | `plugin:${string}`;
 export type CloseBehavior = "ask" | "tray" | "quit";
 
 export type AppSettings = {
+  /** Opt-in for registered Godot world conversations only. No API key required. */
+  worldAgentBackend?: "pi" | "codex-cli";
+  codexCliPath?: string;
   defaultProviderId?: string;
   defaultModelId?: string;
   defaultMode: Mode;

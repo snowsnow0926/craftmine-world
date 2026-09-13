@@ -2192,6 +2192,7 @@ const AssistantTurn = memo(function AssistantTurn({
   const retryAssistantMessage = useAppStore((s) => s.retryAssistantMessage);
   const forkAssistantMessage = useAppStore((s) => s.forkAssistantMessage);
   const messages = assistantTurnMessages(entry);
+  const codexMessage = messages.findLast(message => message.providerId === "codex-cli" && message.usage);
   const content = assistantTurnContent(entry);
   const actionMessage = [...messages]
     .reverse()
@@ -2259,7 +2260,8 @@ const AssistantTurn = memo(function AssistantTurn({
             </div>
           ),
         )}
-        <TaskMetricsPanel messageId={entry.metricsMessageId} running={isActive} />
+        <TaskMetricsPanel messageId={entry.metricsMessageId} running={isActive}
+          codex={codexMessage ? {modelId:codexMessage.modelId,usage:codexMessage.usage} : actionMessage?.providerId === "codex-cli" ? {modelId:actionMessage.modelId} : undefined} />
         {(content || hasError) && actionMessage ? (
           <div className="message-actions">
             {content ? <CopyButton text={content} label={t("chat.copy")} /> : null}

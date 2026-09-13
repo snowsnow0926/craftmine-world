@@ -30,6 +30,8 @@ import { creationRequestStatus } from "./creation-request-status";
 import { ActiveTurns } from "./active-turns";
 import { createTurnTerminalOutcomes } from "./turn-terminal-outcome";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
+import { CodexCheckpointHost } from "./codex-checkpoint-host";
+import { CODEX_WORLD_MODEL, CODEX_WORLD_EFFORT, CODEX_WORLD_TOOLS, validateWorldAgentSettings } from "@pi-desktop/shared";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
 import { createCraftmineOperationJournal } from "./craftmine-operation-journal";
@@ -849,6 +851,7 @@ const plugins: PluginRuntime = new PluginRuntime({
       modelId: parsed.modelId,
       thinkingLevel,
     });
+    if (launch.sidecarParams.codex) throw Object.assign(Error("This auxiliary API-provider operation is unavailable with the Codex world backend."), { errorCode: "CODEX_AUXILIARY_UNSUPPORTED" });
     const runtimeProvider = {
       ...launch.sidecarParams.provider,
       ...(launch.sidecarParams.provider.authKind === OAUTH_AUTH_KIND
@@ -1070,7 +1073,10 @@ const craftmineEnginePerformance = createCraftmineEnginePerformanceSampler({
   },
 });
 plugins.setServices({ craftmineEnginePerformanceSample: input => craftmineEnginePerformance(input as any) });
-const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
+const developmentRuntimeResources = app.isPackaged ? undefined : process.env.CRAFTMINE_RUNTIME_RESOURCES;
+if (developmentRuntimeResources && !isAbsolute(developmentRuntimeResources)) throw Error("RUNTIME_RESOURCES_ABSOLUTE_PATH_REQUIRED");
+const godotToolchainRoot = app.isPackaged ? join(process.resourcesPath, "godot") : developmentRuntimeResources
+  ? join(developmentRuntimeResources, "godot") : join(godotRoot, "..", "build", "runtime-resources", "godot");
 const blenderToolchainRoot = join(godotToolchainRoot, "..", "blender");
 plugins.setServices({craftmineBlenderToolchain: {
   broker: join(blenderToolchainRoot, "broker", "blender-host-broker.exe"),
@@ -1719,6 +1725,8 @@ type RuntimeProvider = {
 };
 
 type RuntimeSession = {
+  projectPath?: string;
+  mode?: string;
   providerId?: string;
   modelId?: string;
   thinkingLevel?: ThinkingLevel;
@@ -1842,6 +1850,7 @@ function validateSettingsWrite<T>(settings: T): T {
     }
     value.networkProxy = proxy.value;
   }
+  validateWorldAgentSettings(value as import("@pi-desktop/shared").WorldAgentSettings);
   return settings;
 }
 
@@ -1854,6 +1863,7 @@ async function enrichProviderList<T extends RuntimeProvider>(result: { providers
 }
 
 type SessionCapabilityDefaults = {
+  worldAgentBackend?: "pi" | "codex-cli";
   defaultProviderId?: string;
   defaultModelId?: string;
 };
@@ -1862,10 +1872,12 @@ async function loadSessionCapabilityDefaults(): Promise<SessionCapabilityDefault
   if (!host) return {};
   try {
     const settings = await host.call<{
+      worldAgentBackend?: "pi" | "codex-cli";
       defaultProviderId?: string;
       defaultModelId?: string;
     }>("settings.get");
     return {
+      worldAgentBackend: settings?.worldAgentBackend,
       defaultProviderId: settings?.defaultProviderId,
       defaultModelId: settings?.defaultModelId,
     };
@@ -1913,6 +1925,10 @@ function enrichSession<T extends RuntimeSession>(
   providers: readonly RuntimeProvider[],
   defaults?: SessionCapabilityDefaults,
 ): T & ThinkingCapabilities & { supportsVision: boolean } {
+  if (defaults?.worldAgentBackend === "codex-cli" && session.mode === "agent" &&
+      plugins.getLoaded("craftmine.world") && pluginActiveInProject("craftmine.world", session.projectPath ?? null)) {
+    return { ...session, worldAgentBackend: "codex-cli", supportsReasoning: true, supportsVision: true, supportedThinkingLevels: [CODEX_WORLD_EFFORT] };
+  }
   const target = resolveSessionCapabilityTarget(session, providers, defaults);
   if (!target) {
     return {
@@ -2157,9 +2173,32 @@ async function resolveAgentRuntimeLaunch(
     providerId?: string;
     modelId?: string;
     thinkingLevel?: ThinkingLevel;
+    backend?: "provider";
   } = {},
 ) {
   if (!host) throw new Error("host unavailable");
+  if (overrides.backend !== "provider" && settings.worldAgentBackend === "codex-cli" && plugins.getLoaded("craftmine.world") &&
+      pluginActiveInProject("craftmine.world", session.projectPath ?? null) &&
+      normalizeMode(overrides.mode ?? session.mode ?? settings.defaultMode ?? "agent") === "agent") {
+    if (typeof settings.codexCliPath !== "string" || !isAbsolute(settings.codexCliPath)) {
+      throw Object.assign(Error("Set an absolute local Codex CLI executable path in Settings → General."), { errorCode: "CODEX_PATH_REQUIRED" });
+    }
+    const projectPath = typeof session.projectPath === "string" ? session.projectPath : undefined;
+    sessionProjects.set(sessionId, projectPath ?? null);
+    codexSessions.add(sessionId);
+    sidecar?.clearVendorAuthBindings(sessionId);
+    resolvedCaptureModels.set(sessionId, { providerId: "codex-cli", modelId: CODEX_WORLD_MODEL, declaredImages: true });
+    return { providerId: "codex-cli", modelId: CODEX_WORLD_MODEL, projectPath,
+      sidecarParams: { sessionId, mode: "agent" as const, codex: { binary: settings.codexCliPath as string },
+        thinkingLevel: CODEX_WORLD_EFFORT, scratchDir: join(dataDir, "scratch", sessionId), attachmentsDir: join(dataDir, "attachments"),
+        provider: { id: "codex-cli", name: "Local Codex CLI", modelId: CODEX_WORLD_MODEL, apiKey: "", authKind: "none" as const,
+          supportsReasoning: true, supportsVision: true, supportedThinkingLevels: [CODEX_WORLD_EFFORT],
+          modelConfig: { ...genericModelConfig(CODEX_WORLD_MODEL, ""), cost: undefined, limit: undefined, reasoning: true, input: ["text", "image"] as ("text" | "image")[], supportedThinkingLevels: [CODEX_WORLD_EFFORT] } },
+        pluginTools: plugins.getTools().filter(tool => tool.pluginId === "craftmine.world" && CODEX_WORLD_TOOLS.has(tool.name))
+          .map(tool => ({ name: tool.fullName, description: tool.description, parameters: tool.schema ?? { type: "object", properties: {} }, risk: tool.risk as Risk })),
+      } };
+  }
+  codexSessions.delete(sessionId);
   await modelsDevCatalog.ensureLoaded();
   const commandShell = (await resolveEffectiveCommandShell()).effective!;
   const providers = await host.call<{ providers: RuntimeProvider[] }>(
@@ -2405,6 +2444,7 @@ async function resolveAgentRuntimeLaunch(
     modelId,
     projectPath,
     sidecarParams: {
+      codex: undefined as { binary: string } | undefined,
       sessionId,
       mode: normalizeMode(
         overrides.mode ?? session.mode ?? settings.defaultMode ?? "agent",
@@ -3001,6 +3041,27 @@ let approvedExecutionDrain: Promise<void> | null = null;
 const turnSettlements = new Map<string, Set<() => void>>();
 const turnFinalizations = new Map<string, Promise<void>>();
 const craftmineMaintenanceContexts = new CraftmineMaintenanceContexts();
+const codexSessions = new Set<string>();
+const codexCheckpointHost = new CodexCheckpointHost({
+  binding: (sessionId, turnId) => codexSessions.has(sessionId) && activeTurns.get(sessionId) === turnId && craftmineGateway.get(sessionId)?.turnId === turnId && !turnFinalizations.has(sessionId)
+    ? craftmineGateway.get(sessionId) : undefined,
+  call: (method, params) => { if (!host) throw Error("CODEX_HOST_UNAVAILABLE"); return host.call(method, params); },
+  drain: async sessionId => {
+    await new Promise<void>(resolve => setImmediate(resolve));
+    await inflightCheckpointer.flush(sessionId);
+    await persistenceOutbox.flush(() => host);
+    if (persistenceOutbox.size()) throw Error("CODEX_TRANSCRIPT_PERSIST_PENDING");
+  },
+  fence: async (sessionId, turnId, status) => {
+    craftmineGateway.end(sessionId, turnId);
+    await plugins.endCraftmineTurn({ sessionId, turnId, status });
+    for (const [key, tool] of activeToolCalls) {
+      if (tool.turnId === turnId && key.startsWith(sessionId + ":")) {
+        await host?.call("tools.abort", { sessionId, toolCallId: key.slice(sessionId.length + 1) });
+      }
+    }
+  },
+});
 const craftmineGateway = new CraftmineTurnGateway(
   sessionId => turnFinalizations.has(sessionId) ? undefined : activeTurns.get(sessionId),
   () => new Set(plugins.getTools().filter(tool => tool.pluginId === "craftmine.world").map(tool => tool.fullName)),
@@ -5469,6 +5530,7 @@ function wireHost(h: HostProcess) {
                   modelKey = `${session.providerId}/${session.modelId}`;
                 }
                 thinkingLevel = session?.thinkingLevel;
+                if (q.sessionId && codexSessions.has(q.sessionId)) { modelKey = `codex-cli/${CODEX_WORLD_MODEL}`; thinkingLevel = CODEX_WORLD_EFFORT; }
                 if (tool.pluginId === "craftmine.world") {
                   projectId = craftmineProjectIdentity(session, q.sessionId);
                   const request = session?.messages?.findLast(message => message.role === "user");
@@ -5720,6 +5782,7 @@ async function startSidecar(): Promise<void> {
   const spawnStarted = Date.now();
   const s = new AgentSidecar((text) => logger.child("agent", text));
   s.setCraftmineGateway(craftmineGateway);
+  s.setCodexHandler((method, params) => codexCheckpointHost.invoke(method, params));
   const spawnedMs = Date.now() - spawnStarted;
   wireSidecar(s);
   s.setProjectInstructionResolver(async ({ projectPath, path }) => {
@@ -6223,7 +6286,7 @@ async function dispatchApprovedPlan(rawExecution: unknown): Promise<void> {
       execution.sessionId,
       sessionResult.session,
       settings,
-      { mode: "agent" },
+      { mode: "agent", backend: "provider" },
     );
     const turn = await host.call<{ turnId: string }>("session.beginTurn", {
       sessionId: execution.sessionId,
@@ -7600,6 +7663,10 @@ function registerIpc() {
   handle(IPC.invoke.settingsSet, async (settings: unknown) => {
     if (!host) throw new Error("host unavailable");
     const validatedSettings = validateSettingsWrite(settings);
+    const current = await host.call<any>("settings.get");
+    const patch = validatedSettings as any;
+    if (["worldAgentBackend", "codexCliPath"].some(key => patch?.[key] !== undefined && patch[key] !== current[key]) &&
+        (activeTurns.size || turnFinalizations.size)) throw Object.assign(Error("Finish or cancel active turns before changing the world backend."), { errorCode: "AGENT_BUSY" });
     const result = await host.call("settings.set", validatedSettings);
     await applyNetworkProxyFromAppSettings(validatedSettings);
     if (sidecar) {
@@ -8797,6 +8864,7 @@ function registerIpc() {
         thinkingLevel: req.thinkingLevel,
       },
     );
+    if (launch.sidecarParams.codex) throw Object.assign(Error("This auxiliary API-provider operation is unavailable with the Codex world backend."), { errorCode: "CODEX_AUXILIARY_UNSUPPORTED" });
     const runtimeProvider = {
       ...launch.sidecarParams.provider,
       ...(launch.sidecarParams.provider.authKind === OAUTH_AUTH_KIND
@@ -8843,6 +8911,7 @@ function registerIpc() {
         thinkingLevel: "off",
       },
     );
+    if (launch.sidecarParams.codex) throw Object.assign(Error("This auxiliary API-provider operation is unavailable with the Codex world backend."), { errorCode: "CODEX_AUXILIARY_UNSUPPORTED" });
     const runtimeProvider = {
       ...launch.sidecarParams.provider,
       ...(launch.sidecarParams.provider.authKind === OAUTH_AUTH_KIND
@@ -9054,6 +9123,10 @@ function registerIpc() {
         req.attachments ?? [],
         supportsVision,
       );
+      if (launch.sidecarParams.codex && preparedAttachments.some(attachment => attachment.message.kind !== "image" ||
+          !["image/png", "image/jpeg"].includes(attachment.message.mimeType ?? "") || !attachment.inlineData)) {
+        throw Object.assign(Error("Codex world authoring accepts text and explicit PNG/JPEG image attachments. This attachment cannot be forwarded as image content."), { errorCode: "CODEX_IMAGE_INPUT_REQUIRED" });
+      }
     } catch (error) {
       await finishTurn(req.sessionId, "error", (error as any)?.errorCode);
       throw error;

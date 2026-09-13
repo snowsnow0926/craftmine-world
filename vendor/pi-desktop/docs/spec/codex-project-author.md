@@ -2,7 +2,7 @@
 
 The repository root exposes `npm run author:codex -- ...` (or the equivalent
 `node scripts/codex-world-author.mjs ...`). This is a project authoring surface;
-the desktop composer remains on its existing PI runtime. See the
+the desktop now also has a separate opt-in [Codex world backend](codex-desktop-world-backend.md), while PI remains its default. See the
 [architecture decision](../adr/codex-project-author.md).
 
 The optional [private live-world host](codex-live-world-host.md) now supplies real

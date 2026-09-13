@@ -52,12 +52,17 @@ export function latestTurnContextInspector(
   const latestUsageMessage = [...parentMessages]
     .reverse()
     .find((message) => message.usage);
+  const codex = latestUsageMessage?.providerId === "codex-cli";
+  const codexUsage = latestUsageMessage?.codexUsage;
+  // A turn aggregate cannot stand in for prompt occupancy, and a provider's
+  // generic 128k fallback is not the local CLI's actual context window.
+  if (codex && (!codexUsage?.lastRequest || !codexUsage.modelContextWindow)) return undefined;
 
   return {
-    usage: latestUsage,
+    usage: codex ? codexUsage!.lastRequest! : latestUsage,
     turnUsage:
       (latestTurn ? assistantTurnUsage(latestTurn) : undefined) ?? latestUsage,
-    contextWindow: resolveContextWindow(
+    contextWindow: codex ? codexUsage!.modelContextWindow! : resolveContextWindow(
       latestUsageMessage?.providerId,
       latestUsageMessage?.modelId,
       providerModels,

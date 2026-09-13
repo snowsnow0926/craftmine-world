@@ -437,6 +437,10 @@ fn validate_settings_value(value: &Value) -> Result<(), JsonRpcError> {
     let Some(object) = value.as_object() else {
         return Ok(());
     };
+    if object.get("worldAgentBackend").is_some_and(|v| !matches!(v.as_str(), Some("pi" | "codex-cli"))) ||
+        object.get("codexCliPath").is_some_and(|v| v.as_str().is_none_or(|s| s.len()>4096 || s.chars().any(char::is_control))) {
+        return Err(rpc_err(1002, "Invalid world backend configuration", "CODEX_CONFIGURATION_INVALID"));
+    }
     if let Some(threshold_value) = object.get("largePasteThreshold") {
         let Some(threshold) = threshold_value.as_i64() else {
             return Err(rpc_err(
@@ -1116,6 +1120,9 @@ async fn handle_request(
                 .get_setting("app")
                 .map_err(|e| rpc_err(1000, e.to_string(), "INTERNAL"))?;
             let incoming_shell = params.get("defaultCommandShell").and_then(Value::as_str);
+            if ["worldAgentBackend", "codexCliPath"].iter().any(|key| params.get(key).is_some_and(|v| stored.as_ref().and_then(|s| s.get(key)) != Some(v))) {
+                gate_default_command_shell_setting(&st)?;
+            }
             let current_effective_shell = effective_command_shell_id(stored.as_ref());
             if incoming_shell.is_some_and(|shell| current_effective_shell.as_deref() != Some(shell))
             {
@@ -1343,6 +1350,19 @@ async fn handle_request(
                     }
                 };
             Ok(json!({ "session": session }))
+        }
+        "session.codexCheckpointGet" => {
+            let session = params.get("sessionId").and_then(Value::as_str).ok_or_else(|| rpc_err(1002, "sessionId required", "INVALID_PARAMS"))?;
+            let st = state.lock().await;
+            let value = crate::codex_transport::get(&st.db, session).map_err(|e| rpc_err(1002, e.to_string(), "CODEX_CHECKPOINT_FAILED"))?;
+            Ok(json!({"checkpoint":value}))
+        }
+        "session.codexCheckpointSet" => {
+            let session = params.get("sessionId").and_then(Value::as_str).ok_or_else(|| rpc_err(1002, "sessionId required", "INVALID_PARAMS"))?;
+            let turn = params.get("turnId").and_then(Value::as_str).ok_or_else(|| rpc_err(1002, "turnId required", "INVALID_PARAMS"))?;
+            let st = state.lock().await;
+            crate::codex_transport::set(&st.db, session, turn, &params["checkpoint"]).map_err(|e| rpc_err(1002, e.to_string(), "CODEX_CHECKPOINT_FAILED"))?;
+            Ok(json!({"ok":true}))
         }
         "session.get" => {
             let id = params

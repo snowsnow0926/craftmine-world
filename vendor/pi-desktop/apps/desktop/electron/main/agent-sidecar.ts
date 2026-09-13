@@ -53,6 +53,7 @@ export type VendorAuthResolver = (input: {
 // host-core) and only for a provider row main bound to that same session, so
 // it cannot reach a credential the session was not launched with.
 const HOST_PROXY_ALLOWED = new Set([
+  "codex.checkpoint.load", "codex.checkpoint.save", "codex.fence",
   ...CRAFTMINE_PROXY_METHODS,
   "tools.execute",
   "tools.abort",
@@ -121,6 +122,8 @@ export class AgentSidecar {
   // row can ask for nothing at all.
   private vendorAuthBindings = new Map<string, Set<string>>();
   private craftmineGateway: CraftmineTurnGateway | null = null;
+  private codexHandler?: (method: string, params: Record<string, unknown>) => Promise<unknown>;
+  setCodexHandler(handler: (method: string, params: Record<string, unknown>) => Promise<unknown>) { this.codexHandler = handler; }
 
   setCraftmineGateway(gateway: CraftmineTurnGateway): void {
     this.craftmineGateway = gateway;
@@ -412,6 +415,12 @@ export class AgentSidecar {
           );
         }
         const params = (msg.params?.params ?? {}) as Record<string, unknown>;
+        if (method.startsWith("codex.")) {
+          if (!this.codexHandler) throw Error("CODEX_HOST_UNAVAILABLE");
+          const result = await this.codexHandler(method, params);
+          this.writeToChild(JSON.stringify({ jsonrpc: "2.0", id: msg.id, result }) + "\n");
+          return;
+        }
         if (CRAFTMINE_PROXY_METHODS.has(method)) {
           if (!this.craftmineGateway) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
           const result = await this.craftmineGateway.invoke(method, params);

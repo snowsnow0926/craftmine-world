@@ -9903,3 +9903,36 @@ actual frames, and the build-read tool must return the passing candidate before
 first application. `GODOT_WORLD_NOT_INITIALIZED` must not erase a passed check or
 be interpreted as applied. Corrupt formal artifacts and a changed selected world
 must still reject. Preserve the failed first read and the separate repaired run.
+
+### Opt-in Codex desktop world conversation
+
+Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
+Local Codex CLI in General settings with an explicit executable path. With no
+API providers or keys configured, send the normal world prompt and observe the
+verified `gpt-6-astra`/`xhigh` backend, text, registered plugin tools and native
+permission receipts. No generic shell, repository editing, MCP, Core RPC or
+operator adoption tool may appear in the dynamic namespace. Preserve the default
+provider backend and the unchanged standalone CLI catalog/API.
+
+Test missing executable/login, incompatible version/model/effort, foreign/stale
+tools, duplicated/mismatched calls, failure while starting, cancellation during
+permission/execution, process loss and failed native fences. No fallback may
+occur and no late tool may mutate source. Backend/path changes during an active
+turn reject. Native checkpoint writes require their active Rust turn; their
+metadata must not contain transcript text, images, credentials or another world.
+
+Complete a real tree request, restart the desktop, and send the flower request
+in the same session/world. A synchronized checkpoint resumes the exact CLI
+thread. Interrupted/edited transcript recovery rebuilds from canonical Rust
+history without replaying mutations or granting task-recovery consent. Forward
+PNG/JPEG attachments and actual capture results as image content; reject
+unsupported files. Cumulative usage is delta-accounted once per turn, with
+unavailable cost/request counts left unknown. Check source, candidate, formal
+application, actual frames, save and cold reopen as separate evidence.
+
+`tests/codex-desktop-native.mjs --live --codex <absolute executable>
+--runtime-resources <absolute development components/resources>` exercises the
+real desktop entry. The runtime protocol tests and
+`tests/codex-checkpoint-host.test.mjs` use mocks and are not live-model evidence.
+See [the backend spec](../codex-desktop-world-backend.md) for build and cancellation
+commands. All existing headless/input/profile guards remain enabled.

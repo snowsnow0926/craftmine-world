@@ -5,6 +5,7 @@
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "rootDir": "src",
     "composite": true,
+    "allowJs": true,
     "types": ["node"]
   },
   "include": ["src/**/*"],
