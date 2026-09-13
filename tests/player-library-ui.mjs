@@ -16,7 +16,7 @@ if(channel==='worldTemplate.save'){if(f.lateCancel){await new Promise(resolve=>f
 if(channel==='worldTemplate.cancel')return{status:'cancelled'};
 if(channel==='worldTemplate.status')return{status:'saved',result:f.receipt};
 if(channel==='worldTemplate.list')return{items:[{...ref,displayName:template.displayName}],nextOffset:null};
-if(channel==='worldTemplate.read')return template;
+if(channel==='worldTemplate.read'){if(Object.keys(args.ref).sort().join(',')!=='assetId,contentHash,version')throw Error('WORLD_TEMPLATE_INVALID_PARAMS');return template;}
 if(channel==='worldTemplate.import')return template;
 if(channel==='worldTemplate.export')return{status:'completed',ref};
 if(channel==='package.request'){

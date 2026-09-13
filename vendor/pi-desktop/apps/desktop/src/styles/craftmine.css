@@ -256,7 +256,7 @@ body:has(.craftmine-play),
 .craftmine-asset-sheet {
   position: fixed; inset: 6vh 8vw; z-index: 60; display: flex; flex-direction: column;
   min-width: 0; min-height: 0; padding: 10px 12px 12px; overflow: hidden;
-  background: var(--ds-bg); color: var(--ds-text-primary);
+  background: var(--ds-bg-primary); color: var(--ds-text-primary);
   border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
   box-shadow: 0 18px 48px rgb(0 0 0 / 45%);
 }
@@ -266,7 +266,7 @@ body:has(.craftmine-play),
 }
 .craftmine-asset-sheet-head button {
   margin-left: auto; padding: 4px 10px; font-size: var(--text-2xs); color: var(--ds-text-secondary);
-  background: var(--ds-tile); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
+  background: var(--ds-bg-secondary); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs);
 }
 .craftmine-asset-sheet-head button:hover { color: var(--ds-text-primary); }
 .craftmine-asset-sheet > :not(.craftmine-asset-sheet-head) { flex: 1 1 auto; min-height: 0; min-width: 0; }

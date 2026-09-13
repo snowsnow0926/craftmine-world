@@ -33,7 +33,7 @@ export function LocalWorldTemplates({bridge, zh, busy, locked = false, initialRe
   const read = async (ref: LibraryReference) => {
     if (!bridge || actionLock.current || busy || locked) return;
     const ticket = ++epoch.current; setLoading(true); setError("");
-    try {const next = parsePlayerWorldTemplate(await bridge.call("worldTemplate.read", {ref})); if (alive.current && ticket === epoch.current) {setSelected(next); setTitle(`${next.displayName}${zh ? " · 我的副本" : " · My copy"}`.slice(0, 80));}}
+    try {const next = parsePlayerWorldTemplate(await bridge.call("worldTemplate.read", {ref: libraryReference(ref)})); if (alive.current && ticket === epoch.current) {setSelected(next); setTitle(`${next.displayName}${zh ? " · 我的副本" : " · My copy"}`.slice(0, 80));}}
     catch (failure) {if (alive.current && ticket === epoch.current) setError(publicationMessage(failure, zh));}
     finally {if (alive.current && ticket === epoch.current) setLoading(false);}
   };

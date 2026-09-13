@@ -58,3 +58,6 @@ Asset and history sheets use a body-level React portal. The sidebar's transform
 and clipping must not constrain their fixed viewport bounds. The existing sheet
 controls, state ownership, theme, close behavior and native-world visibility
 events remain in CraftmineNavigation; no replacement application shell is added.
+Sheets use the existing opaque primary background token so the original chat
+does not paint through their contents. Template list display labels never cross
+the strict reference boundary: reads send only assetId, version and contentHash.
