@@ -32,9 +32,11 @@ player target, check verifier or automatic adoption. No UI is opened.
 function options(argv) {
   const [mode,...rest]=argv,values={};
   if(!['init','turn','doctor','cancel','status'].includes(mode))throw Error(HELP);
+  const allowed={init:['--data','--runtime','--plugin','--world'],turn:['--data','--codex','--prompt','--services'],
+    doctor:['--data','--codex','--services'],cancel:['--data'],status:['--data']}[mode];
   for(let i=0;i<rest.length;i+=2) {
     const key=rest[i],value=rest[i+1];
-    if(!['--data','--runtime','--plugin','--world','--codex','--prompt','--services'].includes(key)||value===undefined||values[key]!==undefined)throw Error(HELP);
+    if(!allowed.includes(key)||value===undefined||values[key]!==undefined)throw Error(HELP);
     values[key]=value;
   }
   if(!values['--data'])throw Error(HELP);

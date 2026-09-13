@@ -43,6 +43,8 @@ model, effort, native paths, world/project/session identity, source repository
 identity, tool-catalog digest, Codex thread ID and unfinished native turn. The
 native Core owns source, task history, drafts, requirements, receipts and jobs;
 Codex owns its rollout. The host never substitutes a history summary for resume.
+World, runtime and plugin flags are accepted only by `init`; continuation rejects
+them instead of silently ignoring a caller's attempted identity change.
 
 The normal CLI waits for real turn completion without a new model/time budget.
 The existing per-tool validation and native job constraints still apply. A
@@ -111,3 +113,32 @@ completion, cancellation, restart recovery and world-binding refusal, with no
 model, browser or input. Real Codex authoring is a separate live validation, using
 the original tree/flower requests above and exact `gpt-6-astra`/`xhigh`. Preserve
 failed attempts and their honest usage; they are not successful player acceptance.
+
+## Recorded implementation validation (2026-09-13)
+
+The offline protocol suite passed 15 tests, and the existing Blender tool/job
+suites passed 30 tests. Real Rust validation passed in `test-results/cn5`, including
+source writes, completed-turn continuation, late-write rejection, restart recovery
+and foreign-world refusal. No browser or OS input was used.
+
+The real `我想生成一些树` call in `test-results/cl2` used exact
+`gpt-6-astra`/`xhigh`, completed Blender import and scene edits, and passed a native
+Godot build. Its subsequent check failed with no verifier attached. The final
+assistant response correctly stated that the result was not applied. This is
+source/build integration evidence, not visual or playable acceptance. The JSONL
+record is `test-results/cl2/live-tree.jsonl`; measured host-turn time was 363087 ms.
+The last app-server cumulative usage object reported 1107351 input tokens,
+1015040 cached input tokens, 8391 output tokens and 1115742 total tokens. These
+are cumulative across the turn's repeated requests, not unique context size;
+cost remains unknown.
+
+A real no-model `thread/resume` after process shutdown retained thread
+`01a0981a-33f4-73b0-ac00-54da2eb9ba03`, its completed turn and 28 recorded dynamic
+tool calls, world `codex-live-direct`, and repository `world-codex-live-direct`.
+The coordinator can continue flowers by using the same `test-results/cl2` data
+directory. This implementation validation did not submit the flower request.
+
+An earlier real attempt in `test-results/cl1` failed because flat dynamic tools
+were wrapped in the disabled code-mode executor. It made no world-source change
+and remains a failed record. The final namespace/direct-only configuration was
+validated by the subsequent real calls above; no PI or substitute model was used.

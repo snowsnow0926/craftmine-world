@@ -6,6 +6,7 @@ import {EventEmitter,once} from 'node:events';
 import {spawn} from 'node:child_process';
 import {CodexAppServer,MODEL,EFFORT,LOCKED_CONFIG,processEnvironment,redact,tomlValue} from '../scripts/lib/codex-app-server.mjs';
 import {CodexWorldSession,STATE_FORMAT,readState,writeState,toolOutput,acquireLock} from '../scripts/lib/codex-world-session.mjs';
+import {main} from '../scripts/codex-world-author.mjs';
 
 const results=path.resolve('test-results');fs.mkdirSync(results,{recursive:true});
 function directory(t) {
@@ -163,4 +164,8 @@ test('durable lock refuses a second author and domain images use actual image bl
   const data=directory(t);const unlock=acquireLock(data);assert.throws(()=>acquireLock(data),/AUTHOR_BUSY/);unlock();
   assert.equal(toolOutput(true,{text:'capture',images:[{mimeType:'image/png',data:'iVBORw0KGgo='}]}).contentItems[1].type,'inputImage');
   assert.throws(()=>toolOutput(true,{images:[{mimeType:'image/png',data:'file://private'}]}),/INVALID_DOMAIN_IMAGE/);
+});
+test('continuation rejects ignored identity/path overrides instead of misleading the caller',async()=>{
+  for(const option of ['--world','--runtime','--plugin'])await assert.rejects(main(['turn','--data','unused',option,'foreign']),/Craftmine opt-in Codex author/);
+  await assert.rejects(main(['doctor','--data','unused','--prompt','Do not start a model']),/Craftmine opt-in Codex author/);
 });
