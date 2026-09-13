@@ -23,6 +23,7 @@ if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));atomic
 const marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8'));assert.equal(marker.format,'craftmine.headless-profile/1');
 for(const name of ['inbox','responses','turns','captures'])fs.mkdirSync(path.join(out,name),{recursive:true});
 const hash=value=>createHash('sha256').update(value).digest('hex'),launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
+if(launch.packaged)assert.equal(path.resolve(resources).toLowerCase(),path.join(launch.packaged,'resources').toLowerCase(),'PACKAGED_RESOURCES_MUST_BELONG_TO_PACKAGE');
 const report={format:'craftmine.product-agent-operator/1',out,applicationRoot,resources,codex,model:'gpt-6-astra',effort:'xhigh',sourceTemplate:'promo-city',recipeVersion:2,launches:[],turns:[],commands:[],...(previous?{worldId:previous.worldId,sessionId:previous.sessionId,turns:previous.turns,commands:previous.commands,previousReport:previousFile}:{}),acceptance:'not-assessed-by-driver'};
 const reportFile=path.join(out,previous?'continuation-'+randomUUID()+'.json':'report.json'),save=()=>atomicProductAgentJson(reportFile,report);
 // launch.main contains the UTF-8 bundle contents, not its filesystem path.
