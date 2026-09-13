@@ -51,6 +51,22 @@
 .craftmine-mode-choice-action { margin-top: auto; font-size: var(--text-sm); }
 .craftmine-mode-current-world { margin-bottom: 16px; font-size: var(--text-md); color: var(--ds-text-secondary); overflow-wrap: anywhere; }
 .craftmine-mode-worlds { max-width: 660px; margin: auto; }
+.craftmine-world-entry-tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--ds-border-subtle); }
+.craftmine-world-entry-tabs button { padding: 12px 16px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--ds-text-secondary); font: inherit; cursor: pointer; }
+.craftmine-world-entry-tabs button[aria-selected="true"] { border-bottom-color: var(--ds-text-primary); color: var(--ds-text-primary); }
+.craftmine-world-entry-tabs button:disabled { opacity: .6; cursor: default; }
+.craftmine-world-entry-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 24px; }
+.craftmine-world-entry-actions > button, .craftmine-example-world button { padding: 10px 16px; color: var(--ds-text-primary); background: var(--ds-bg-secondary); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
+.craftmine-world-entry-actions > button:disabled, .craftmine-example-world button:disabled { opacity: .6; cursor: default; }
+.craftmine-world-entry-actions .craftmine-mode-manage { margin: 0; }
+.craftmine-example-worlds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.craftmine-example-world { overflow: hidden; border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-lg); background: var(--ds-bg-secondary); padding: 18px; }
+.craftmine-example-world img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-sm); }
+.craftmine-example-world h2 { font-size: var(--text-lg); margin: 16px 0 8px; }
+.craftmine-example-world p { color: var(--ds-text-secondary); font-size: var(--text-sm); line-height: var(--leading-prose); }
+.craftmine-mode-entry .craftmine-world-list { max-width: none; }
+.craftmine-mode-entry .craftmine-world-create { max-width: 680px; }
+@media (max-width: 680px) { .craftmine-example-worlds { grid-template-columns: 1fr; } .craftmine-world-entry-tabs button { padding: 10px; } }
 .craftmine-mode-back, .craftmine-mode-enter-world { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-sm); background: var(--ds-bg-secondary); color: var(--ds-text-primary); cursor: pointer; }
 .craftmine-mode-back { margin-bottom: 20px; }
 .craftmine-mode-enter-world { margin: 20px 0 0 auto; }

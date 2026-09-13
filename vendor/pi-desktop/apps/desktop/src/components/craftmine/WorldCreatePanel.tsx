@@ -24,11 +24,13 @@ export function WorldCreatePanel({
   lang,
   onClose,
   onCreated,
+  onBeforeCreate,
 }: {
   controller: CraftmineWorldsController;
   lang: CraftmineLang;
   onClose: () => void;
   onCreated?: (worldId: string) => Promise<void>;
+  onBeforeCreate?: () => Promise<(worldId: string) => Promise<void>>;
 }) {
   const bases = controller.capabilities?.bases ?? [];
   const retainedAttempt = controller.createAttempt;
@@ -44,14 +46,22 @@ export function WorldCreatePanel({
   );
 
   const deliveredBase = bases.some((base) => base.delivered);
-  const fixedAttributes = controller.busy || !!retainedAttempt;
+  const preparingRef = useRef(false);
+  const [preparing, setPreparing] = useState(false);
+  const fixedAttributes = preparing || controller.busy || !!retainedAttempt;
   const submit = async () => {
+    if (preparingRef.current || controller.busy) return;
     const invalid = validateWorldTitle(title, lang);
     if (invalid) {
       setLocalError(invalid);
       return;
     }
     setLocalError(null);
+    preparingRef.current = true; setPreparing(true);
+    try {
+    let ready = onCreated;
+    try { if (onBeforeCreate) ready = await onBeforeCreate(); }
+    catch (failure) { setLocalError(failure instanceof Error ? failure.message : String(failure)); return; }
     // Resolve the selection against the current capabilities: a base that
     // arrived late, was removed, or is not delivered must never be sent.
     const {baseId: chosenBase, starterId: chosenStarter} = resolveWorldCreationSelection(controller.capabilities, baseId, starterId);
@@ -60,11 +70,12 @@ export function WorldCreatePanel({
       operationId: operationId.current,
       ...(chosenBase ? { baseId: chosenBase } : {}),
       ...(chosenStarter ? { starterId: chosenStarter } : {}),
-    }, onCreated ?? (async worldId => {
+    }, ready ?? (async worldId => {
       await createCopiedWorldSession(worldId, useAppStore.getState().activeSessionId);
       enterCraftmineMode("create", { explicit: true });
     }));
     if (created) onClose();
+    } finally { preparingRef.current = false; setPreparing(false); }
   };
 
   return (
@@ -175,7 +186,7 @@ export function WorldCreatePanel({
         <button
           type="submit"
           data-world-create="submit"
-          disabled={controller.busy || (!retainedAttempt && bases.length > 0 && !deliveredBase)}
+          disabled={preparing || controller.busy || !controller.capabilities || (!retainedAttempt && !deliveredBase)}
         >
           {controller.busy ? CRAFTMINE_WORLD_TEXT.creating[lang] : retainedAttempt
             ? retainedAttempt.worldId
@@ -183,7 +194,7 @@ export function WorldCreatePanel({
               : lang === "zh" ? "重试并确认创建结果" : "Retry and confirm creation"
             : CRAFTMINE_WORLD_TEXT.createSubmit[lang]}
         </button>
-        <button type="button" data-action="cancel-world-create" disabled={controller.busy && !controller.canCancelCreate} onClick={() => { void Promise.resolve(controller.cancelCreate?.()).then(closed => {if (closed !== false) onClose();}); }}>
+        <button type="button" data-action="cancel-world-create" disabled={(preparing || controller.busy) && !controller.canCancelCreate} onClick={() => { void Promise.resolve(controller.cancelCreate?.()).then(closed => {if (closed !== false) onClose();}); }}>
           {CRAFTMINE_WORLD_TEXT.createCancel[lang]}
         </button>
       </div>

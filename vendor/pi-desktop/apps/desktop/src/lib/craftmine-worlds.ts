@@ -52,6 +52,10 @@ export type CraftmineWorldStarter = {
   /** Host-provided summary of what the starting content contains. */
   description: string;
   delivered: boolean;
+  kind?: "example";
+  preview?: string;
+  source?: { id: string; version: string; sha256: string };
+  initialState?: "authored-defaults";
 };
 
 /**
@@ -271,6 +275,11 @@ function parseStarter(value: unknown): CraftmineWorldStarter | null {
     label: asText(raw.label) || id,
     description: asText(raw.description),
     delivered: raw.delivered === true,
+    ...(raw.kind === "example" ? { kind: "example" as const } : {}),
+    ...(typeof raw.preview === "string" && raw.preview.length <= 2_796_226 && /^data:image\/png;base64,iVBORw0KGgo[A-Za-z0-9+/]*={0,2}$/.test(raw.preview) ? { preview: raw.preview } : {}),
+    ...(typeof asRecord(raw.source).id === "string" && typeof asRecord(raw.source).version === "string" && /^[a-f0-9]{64}$/.test(asText(asRecord(raw.source).sha256))
+      ? { source: { id: asText(asRecord(raw.source).id), version: asText(asRecord(raw.source).version), sha256: asText(asRecord(raw.source).sha256) } } : {}),
+    ...(raw.initialState === "authored-defaults" ? { initialState: "authored-defaults" as const } : {}),
   };
 }
 

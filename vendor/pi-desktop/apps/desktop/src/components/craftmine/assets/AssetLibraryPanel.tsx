@@ -30,6 +30,7 @@ import {
   type AssetScanItem,
   type AssetSearchInput,
   type AssetSource,
+  type AssetVersion,
 } from "./asset-library-model";
 import {
   useAssetLibrary,
@@ -49,6 +50,7 @@ export type AssetLibraryPanelProps = {
   onImportRequest?: () => Promise<AssetImportPick | null> | AssetImportPick | null;
   /** Audio source supplied by the host for a playable WAV preview. */
   audioSrc?: string | null;
+  onUseAsset?: (asset: AssetVersion, modify: boolean) => Promise<void>;
 };
 
 const COPY = {
@@ -150,12 +152,22 @@ export function AssetLibraryPanel({
   worldId = null,
   onImportRequest,
   audioSrc = null,
+  onUseAsset,
 }: AssetLibraryPanelProps) {
   const ownedBridge = useMemo<AssetLibraryBridge | null>(() => bridge ? {
     call: (channel, payload) => bridge.call(channel, {...payload, ownerWorldId: worldId}),
   } : null, [bridge, worldId]);
   const controller: AssetLibraryController = useAssetLibrary(ownedBridge);
   const [view, setView] = useState<"list" | "detail">("list");
+  const [usePending, setUsePending] = useState(false);
+  const [useError, setUseError] = useState("");
+  const requestUse = async (asset: AssetVersion, modify: boolean) => {
+    if (!onUseAsset || usePending) return;
+    setUsePending(true); setUseError("");
+    try { await onUseAsset(asset, modify); }
+    catch (failure) { setUseError(failure instanceof Error ? failure.message : String(failure)); }
+    finally { setUsePending(false); }
+  };
 
   const [scope, setScope] = useState<AssetQueryScope>("local-library");
   const [world, setWorld] = useState(worldId ?? "");
@@ -562,6 +574,12 @@ export function AssetLibraryPanel({
               </p>
 
               <AssetAnnotationEditor key={assetKey(selected.version_.assetId, selected.version_.version)} controller={controller} lang={lang} />
+              {onUseAsset && <div className="asset-library-use-actions">
+                <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, false);}}><Button type="submit" size="sm" disabled={!worldId || usePending} data-asset-use="add">{lang === "zh" ? "让 AI 加入当前世界" : "Ask AI to add to this world"}</Button></form>
+                <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, true);}}><Button type="submit" size="sm" variant="secondary" disabled={!worldId || usePending} data-asset-use="modify">{lang === "zh" ? "修改后加入" : "Modify and add"}</Button></form>
+                <p className="asset-library-field-hint">{lang === "zh" ? "素材引用将填入原对话，发送后开始创作。" : "Adds the asset reference to your conversation. Send it to start creating."}</p>
+                {useError && <p role="alert">{useError}</p>}
+              </div>}
 
               <h4 className="asset-library-section">{t("source", lang)}</h4>
               <dl className="asset-library-source">

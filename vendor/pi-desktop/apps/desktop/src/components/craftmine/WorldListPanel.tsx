@@ -33,11 +33,15 @@ export function WorldListPanel({
   lang,
   onOpenWorld,
   onCreated,
+  onSelectWorld,
+  showCreate = true,
 }: {
   controller: CraftmineWorldsController;
   lang: CraftmineLang;
   onOpenWorld: () => void;
   onCreated?: (worldId: string) => Promise<void>;
+  onSelectWorld?: (worldId: string) => Promise<void>;
+  showCreate?: boolean;
 }) {
   const [creating, setCreating] = useState(false);
   const [now, setNow] = useState(() => Date.now());
@@ -67,7 +71,7 @@ export function WorldListPanel({
         >
           <RefreshCw size={14} aria-hidden />
         </button>
-        <button
+        {showCreate && <button
           type="button"
           className="craftmine-world-icon-btn"
           data-action="new-world"
@@ -78,7 +82,7 @@ export function WorldListPanel({
           title={CRAFTMINE_WORLD_TEXT.newWorld[lang]}
         >
           <Plus size={14} aria-hidden />
-        </button>
+        </button>}
       </div>
 
       {creating && <WorldCreatePanel controller={controller} lang={lang} onClose={() => setCreating(false)} onCreated={onCreated} />}
@@ -114,6 +118,7 @@ export function WorldListPanel({
                 onDelete={entry.state === "failed" && controller.capabilities?.archiveFailed ? () => void controller.removeFailedWorld(entry.id) : undefined}
                 onContinuePreparation={controller.capabilities?.switch === true ? () => void controller.continuePreparation(entry.id) : undefined}
                 onSelect={() => {
+                  if (onSelectWorld && isWorldPlayable(entry)) { void onSelectWorld(entry.id); return; }
                   // An unfinished world cannot be opened; asking the controller
                   // anyway lets it show the host-independent reason instead of
                   // silently doing nothing.
@@ -199,8 +204,9 @@ function WorldRow({
   const actions = createActionsSupported ? creationActions(entry.creation) : [];
   return (
     <div className="craftmine-world-item-wrap">
+      <form data-world-open={entry.id} onSubmit={event => {event.preventDefault(); if (!busy) onSelect();}}>
       <button
-        type="button"
+        type="submit"
         className={`craftmine-world-item${active ? " is-active" : ""}`}
         data-world-id={entry.id}
         data-world-active={active ? "true" : "false"}
@@ -208,7 +214,6 @@ function WorldRow({
         data-world-state={entry.state}
         data-world-playable={playable ? "true" : "false"}
         aria-current={active ? "true" : undefined}
-        onClick={onSelect}
         disabled={busy && !active}
       >
         {playable ? (
@@ -241,7 +246,7 @@ function WorldRow({
             {taskHere && <span className="craftmine-world-item-task">{CRAFTMINE_WORLD_TEXT.taskHere[lang]}</span>}
           </span>
         </span>
-      </button>
+      </button></form>
 
       {!active && entry.state === "initializing" && onContinuePreparation && (
         <button type="button" className="craftmine-world-item-actions" data-world-continue={entry.id}

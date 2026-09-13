@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Box } from "lucide-react";
+import { Box, Package } from "lucide-react";
 import { useAppStore } from "../stores/app-store";
 import { pluginWorkPanelTab } from "../lib/work-panel-tabs";
 import { CraftmineLayoutControls } from "./CraftmineLayoutControls";
@@ -13,6 +13,7 @@ import { enterCraftmineMode, openCraftmineModeEntry } from "../lib/craftmine-mod
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
 import { GodotHistoryPanel } from "./craftmine/GodotHistoryPanel";
+import { worldAssetPrompt } from "../lib/world-asset-request";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -114,14 +115,17 @@ export function CraftmineNavigation() {
         aria-current={active ? "page" : undefined}
       >
         <Box size={16} aria-hidden />
-        <span>{lang==="zh"?"切换世界":"Switch world"}</span>
+        <span title={controller.activeWorld?.title}>{controller.activeWorld?.title || (lang==="zh"?"选择世界":"Choose world")}</span>
         <span className="craftmine-world-nav-hint">
-          {available ? CRAFTMINE_WORLD_TEXT.openWorld[lang] : CRAFTMINE_WORLD_TEXT.loading[lang]}
+          {available ? (lang === "zh" ? "切换" : "Switch") : CRAFTMINE_WORLD_TEXT.loading[lang]}
         </span>
       </button>
 
       {available && (
         <>
+          <form data-world-assets-open onSubmit={event => { event.preventDefault(); openSurface({kind: "assets"}, "assets"); }}>
+            <button type="submit" className="craftmine-world-nav"><Package size={16} aria-hidden /><span>{CRAFTMINE_WORLD_TEXT.assetsTitle[lang]}</span></button>
+          </form>
           {activeSessionId && (
             <div className="craftmine-world-session" data-world-session={activeSessionId}>
               <span className="craftmine-world-session-label">{CRAFTMINE_WORLD_TEXT.sessionTitle[lang]}</span>
@@ -154,6 +158,21 @@ export function CraftmineNavigation() {
                 bridge={controller.bridge}
                 lang={lang}
                 worldId={controller.activeWorldId}
+                onUseAsset={async (asset, modify) => {
+                  const worldId = controller.activeWorldId, bridge = controller.bridge;
+                  const original = useAppStore.getState(), sessionId = original.activeSessionId;
+                  if (!worldId || !bridge) throw Error(lang === "zh" ? "请先打开一个世界。" : "Open a world first.");
+                  const selected = await bridge.list();
+                  const bound = sessionId ? await bridge.call("world.conversation", {worldId, sessionId}) as {worldId?: string; sessionId?: string} : null;
+                  if (selected.activeWorldId !== worldId || useAppStore.getState().activeSessionId !== sessionId || (sessionId && (bound?.worldId !== worldId || bound.sessionId !== sessionId)))
+                    throw Error(lang === "zh" ? "请先回到此世界的对话，再加入素材。" : "Return to this world's conversation before adding the asset.");
+                  const text = worldAssetPrompt(asset, modify, lang === "zh");
+                  const pending = useAppStore.getState().composerPrefill;
+                  if (pending) throw Error(lang === "zh" ? "请先处理对话中待填入的内容。" : "Finish the pending conversation draft first.");
+                  useAppStore.setState({composerPrefill: {sessionId, worldId, text, fileReferences: [], append: true, focus: false}});
+                  setAssetsOpen(false);
+                  enterCraftmineMode("create", {explicit: true});
+                }}
                 onImportRequest={async () => {
                   const bridge = controller.bridge;
                   if (!bridge) return null;

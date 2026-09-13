@@ -10000,3 +10000,13 @@ desktop graphics. `tests/codex-retained-export-native.mjs ABS_RUNTIME
 ABS_PLUGIN ABS_REBUILT_CORE ABS_NEW_PROFILE` runs the native scenario. The
 protocol tests use a scripted broker and are not native engine evidence.
 See [the handoff and contract](../../adr/godot-failed-check-export-continuation.md).
+
+## Player workflow and reusable examples (2026-09-13)
+
+- A fresh isolated profile shows My worlds, Examples and New world in the existing PI chooser. Four bundled examples create separate personal worlds through normal native initialization; no CLI/login is required for opening them. Reopening preserves each world's source and progress, with authored default progress in new copies.
+- Save failure keeps the original world. Changing session or draft while switch/create is pending prevents late conversation adoption. Retry preserves the original operation ID. Old drafts and attachments survive navigation.
+- The sidebar asset entry opens AssetLibraryPanel. Selecting an exact version appends its reference to the normal conversation without submitting a request or replacing existing text/files. World/session changes prevent cross-world prefill.
+- A real Codex Astra/xhigh creation request searches and reads the approved Pomeranian package. The normal proposal card installs through the native package boundary, reports actual check state, and links to preview/application. Source installation alone is never labeled applied. Refresh/remount polls the same durable job and does not create duplicate instances.
+- The approved Pomeranian can instantiate twice with independent identities and follow/wait/pet progress; editing one instance preserves the other and the original library version. Save and reopen verify the result. Capture model time and cached/noncached input/output separately from world load time.
+
+Automated validation uses independent headless/offscreen processes, disables pointer lock, and submits forms through page scripts. No real keyboard/mouse input, visible windows or model evaluation budgets are introduced.

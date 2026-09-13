@@ -220,7 +220,7 @@ test("world navigation renders the list, create flow and auxiliary surfaces on d
   assert.match(panels, /data-aux-open=\{section\.id\}/);
   const nav = await source("../src/components/CraftmineNavigation.tsx");
   assert.match(nav, /data-nav="world"/);
-  assert.match(nav, /<WorldListPanel /);
+  assert.match(await source("../src/components/CraftmineModeEntry.tsx"), /<WorldListPanel /);
   assert.match(nav, /<WorldAuxSections /);
   assert.match(nav, /data-world-session=\{activeSessionId\}/);
   assert.match(nav, /<CraftmineLayoutControls \/>/);

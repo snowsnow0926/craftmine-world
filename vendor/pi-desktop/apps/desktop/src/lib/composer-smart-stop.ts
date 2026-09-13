@@ -13,7 +13,10 @@ export type ComposerDraftSnapshot = {
 };
 
 export type ComposerPrefill = ComposerDraftSnapshot & {
-  sessionId: string;
+  sessionId?: string;
+  worldId?: string;
+  focus?: boolean;
+  append?: boolean;
 };
 
 type AbortMessage = {

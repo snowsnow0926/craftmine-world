@@ -61,10 +61,12 @@ import {
 import { ComposerAutocomplete } from "./ComposerAutocomplete";
 import { VoiceInput } from "./VoiceInput";
 import { appendVoiceTranscript } from "../lib/composer-voice-draft";
+import { appendWorldAssetRequest } from "../lib/world-asset-request";
 import { craftmineWorldBridge } from "../lib/craftmine-worlds";
 import { useCreationTarget } from "../hooks/use-creation-target";
 import { creationRequestContext } from "../lib/creation-target";
 import { CreationTargetContext } from "./CreationTargetContext";
+import { SourceReusePanel } from "./craftmine/SourceReusePanel";
 import { ContextUsageInspector } from "./ContextUsageInspector";
 import { AskToolCard } from "./AskToolCard";
 import { PlanApprovalBar } from "./PlanApprovalBar";
@@ -1031,8 +1033,9 @@ export function Composer({
   useEffect(() => {
     if (!composerPrefill) return;
     if (composerPrefill.sessionId !== activeSessionId) return;
-    setValue(composerPrefill.text);
-    setFileReferences((current) => [
+    if (composerPrefill.worldId && composerPrefill.worldId !== creationTarget.capture?.worldId) return;
+    setValue(composerPrefill.append ? appendWorldAssetRequest(persistDraft(), composerPrefill.text).text : composerPrefill.text);
+    if (!composerPrefill.append) setFileReferences((current) => [
       ...current.filter(
         (fileReference) => fileReference.sessionId !== composerPrefill.sessionId,
       ),
@@ -1040,19 +1043,20 @@ export function Composer({
         createFileReference(
           fileReference.path,
           fileReference.name,
-          composerPrefill.sessionId,
+          composerPrefill.sessionId ?? "",
           fileReference,
         ),
       ),
     ]);
     clearComposerPrefill();
+    if (composerPrefill.focus === false) return;
     requestAnimationFrame(() => {
       const el = ref.current;
       if (!el) return;
       el.focus();
       setEditorCaret(el, readEditorValue(el).length);
     });
-  }, [activeSessionId, composerPrefill, clearComposerPrefill]);
+  }, [activeSessionId, composerPrefill, clearComposerPrefill, creationTarget.capture?.worldId]);
 
   useEffect(() => {
     if (!prefill?.text) return;
@@ -2053,6 +2057,7 @@ export function Composer({
     >
       <div className="composer-stack">
         {voiceEnabled && <CreationTargetContext controller={creationTarget} />}
+        {voiceEnabled && creationTarget.capture?.worldId && <SourceReusePanel key={creationTarget.capture.worldId} worldId={creationTarget.capture.worldId} running={isRunning} />}
         {planCheckpoint?.status === "pending" ? (
           <PlanApprovalBar proposal={planCheckpoint} />
         ) : null}
