@@ -544,6 +544,51 @@ fn verify_project(db: &Connection, world: &str, build: &str, root: &std::path::P
     Ok(())
 }
 
+/// Authority for the narrow exported-failed-check continuation. No caller
+/// paths, old runtime verdicts, or executor ledger entries participate.
+fn retained_export(db: &Connection, directory: &std::path::Path, record: &Value, executor: &Executor) -> Result<Value> {
+    let Some(origin_id) = record["originJobId"].as_str() else { return Ok(Value::Null); };
+    if record["kind"] != "check" { return Ok(Value::Null); }
+    let origin = read_job(db, origin_id)?;
+    let output = &origin["output"];
+    if origin["status"] != "failed" || origin["kind"] != "check"
+        || output["import"]["passed"] != true || output["compile"]["passed"] != true
+        || output["check"]["passed"] != false
+        || !output["artifacts"].as_array().is_some_and(|items| !items.is_empty()) {
+        return Ok(Value::Null);
+    }
+    ensure!(output["format"] == "craftmine.godot-job-result/1" && output["passed"] == false
+        && output["compile"]["errors"].as_array().is_some_and(Vec::is_empty), "GODOT_CONTINUATION_EXPORT_INVALID");
+    for key in ["worldId","buildId","branchId","sourceRevision","manifestHash","assetManifestHash","baseId","baseBuild"] {
+        ensure!(!record[key].is_null() && origin[key] == record[key], "GODOT_CONTINUATION_EXPORT_MISMATCH");
+    }
+    let world = record["worldId"].as_str().context("INVALID_GODOT_JOB")?;
+    let build = record["buildId"].as_str().context("INVALID_GODOT_JOB")?;
+    let task = super::read_task(db, record["taskId"].as_str().context("INVALID_GODOT_JOB")?)?;
+    let original_task = super::read_task(db, origin["taskId"].as_str().context("INVALID_GODOT_JOB")?)?;
+    ensure!(task.binding.project_id == original_task.binding.project_id && task.binding.session_id == original_task.binding.session_id,
+        "GODOT_CONTINUATION_SCOPE_MISMATCH");
+    scope(db, &WorkspaceContext {project_id:task.binding.project_id.clone(),session_id:task.binding.session_id.clone(),turn_id:task.binding.turn_id.clone()}, world, true)?;
+    let (head, hash) = super::godot_projects::branch_head_manifest(db, world, record["branchId"].as_str().unwrap())?;
+    let (assets, _) = godot_builds::asset_manifest(db, world)?;
+    ensure!(record["sourceRevision"].as_u64() == Some(head.revision) && record["manifestHash"] == hash && record["assetManifestHash"] == assets,
+        "GODOT_CONTINUATION_STALE");
+    ensure!(output["engine"]["version"] == executor.engine_version && output["engine"]["isolation"] == executor.isolation
+        && output["engine"]["evidenceHash"] == executor.evidence_hash, "GODOT_CONTINUATION_TOOLCHAIN_CHANGED");
+    let origin_input: String = db.query_row("SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1", [origin_id], |row|row.get(0))?;
+    ensure!(output["inputHash"] == origin_input, "GODOT_CONTINUATION_EXPORT_INVALID");
+    let root = build_root(directory, world, build, false)?;
+    verify_project(db, world, build, &root.join("source"))?;
+    let artifacts = verified_artifacts(db, world, build, &root.join("artifacts"))?;
+    let mut expected = output["artifacts"].as_array().unwrap().clone();
+    expected.sort_by(|a,b|a["path"].as_str().cmp(&b["path"].as_str()));
+    ensure!(artifacts == expected && artifacts.iter().any(|a|a["path"]=="web/index.html"), "GODOT_CONTINUATION_ARTIFACT_MISMATCH");
+    Ok(json!({"format":"craftmine.godot-retained-export/1","originJobId":origin_id,"originOutputHash":origin["outputHash"],
+        "worldId":world,"buildId":build,"sourceRevision":record["sourceRevision"],"manifestHash":record["manifestHash"],
+        "assetManifestHash":record["assetManifestHash"],"baseId":record["baseId"],"baseBuild":record["baseBuild"],
+        "engine":output["engine"],"artifacts":artifacts}))
+}
+
 fn record_artifact(db: &Connection, world: &str, build_id: &str, artifact: &Artifact) -> Result<()> {
     let prior: Option<String> = db
         .query_row(
@@ -712,6 +757,10 @@ impl TaskJournal {
             executor.capabilities["check"] == json!(true),
             "GODOT_EXECUTOR_CAPABILITY_MISSING"
         );
+        let retained = retained_export(&tx, &self.directory, &record, executor)?;
+        if !retained.is_null() {
+            ensure!(retained["artifacts"] == serde_json::to_value(&args.artifacts)?, "GODOT_CONTINUATION_ARTIFACT_MISMATCH");
+        }
         let root = build_root(&self.directory, &world, &build, false)?;
         verify_project(&tx, &world, &build, &root.join("source"))?;
         let root = root.join("artifacts");
@@ -843,6 +892,14 @@ impl TaskJournal {
             |row| row.get(0),
         )?;
         ensure!(build_exists, "GODOT_CONTINUATION_BUILD_GONE");
+        // Fail an unusable retained export at the ordinary resume call when
+        // its executor is available. Claim/check/finish repeat the validation.
+        if let Some(executor) = self.executors.get(origin["executorId"].as_str().unwrap_or_default()) {
+            let mut prospective = origin.clone();
+            prospective["originJobId"] = json!(args.origin_job_id);
+            prospective["taskId"] = json!(task);
+            retained_export(&tx, &self.directory, &prospective, executor)?;
+        }
         let job_id = format!(
             "gjob-{}",
             digest(&format!(
@@ -1035,6 +1092,7 @@ impl TaskJournal {
         verify_project(&tx, world, build, &root)?;
         let cache = build_root(&self.directory, world, build, true)?.join("cache");
         let artifacts = build_root(&self.directory, world, build, true)?.join("artifacts");
+        let retained = retained_export(&tx, &self.directory, &record, &executor)?;
         for path in [&cache, &artifacts] {
             if !path.try_exists()? {
                 match std::fs::create_dir(path) {
@@ -1063,6 +1121,7 @@ impl TaskJournal {
         description["engineVersion"] = json!(executor.engine_version);
         description["isolation"] = json!(executor.isolation);
         description["evidenceHash"] = json!(executor.evidence_hash);
+        if record["originJobId"].is_string() { description["retainedExport"] = retained; }
         description["inputHash"] = json!(tx.query_row(
             "SELECT request_hash FROM craftmine_godot_jobs WHERE id=?1",
             [&args.job_id],
@@ -1216,6 +1275,17 @@ impl TaskJournal {
                 && !args.output.engine.isolation.trim().is_empty(),
             "GODOT_EXECUTOR_MISMATCH"
         );
+        // Failure settlements without artifacts keep their own error. A result
+        // referring to retained bytes must still match live native provenance.
+        if !args.output.artifacts.is_empty() {
+            let retained = retained_export(&tx, &self.directory, &record, &executor)?;
+            if !retained.is_null() {
+                ensure!(retained["artifacts"] == serde_json::to_value(&args.output.artifacts)?, "GODOT_CONTINUATION_ARTIFACT_MISMATCH");
+                let descriptor = check_input(&tx, &args.job_id)?;
+                ensure!(descriptor["jobId"] == args.job_id && descriptor["inputHash"] == args.output.input_hash
+                    && descriptor["artifacts"] == retained["artifacts"], "GODOT_CHECK_INPUT_MISMATCH");
+            }
+        }
         if kind == "check" {
             ensure!(
                 !args.output.check.assertions.is_empty(),

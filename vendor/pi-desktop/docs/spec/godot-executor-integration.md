@@ -35,6 +35,50 @@ an executable, local source directory, OS evidence, launch token or artifact roo
 
 ## Job lifecycle and expiry
 
+### Explicit continuation of an exported failed check
+
+`godotJob.claim` derives a private `retainedExport` authorization for an explicit
+continuation whose origin is a failed check with successful import/compile,
+no compile errors, a failed runtime check, and recorded immutable web artifacts.
+The authorization contains `craftmine.godot-retained-export/1`, the origin job
+and output hash, world/build/source/base identities, original engine evidence,
+and the exact native-recorded artifact allowlist. It contains no caller path or
+old runtime verdict. `null` means the origin has no eligible recorded export;
+other continuation kinds retain their existing build behavior.
+
+Core verifies the origin's stored output hash, input hash, same world/build/
+branch/source/assets/base, same project/session, current active workspace,
+current source head, and matching live engine/isolation/evidence hash. The
+registered artifact set must exactly equal the origin output's set, with every
+length/hash and non-reparse path checked. Validation runs at claim, at creation
+of the new check descriptor, and at finish. When the origin executor is already
+registered, resume also validates before queuing. There is no storage schema or
+model-visible tool change.
+
+The executor still runs a fresh native import/compile and validates its actual
+broker receipt. For an authorized retained export it skips `exportWeb`, checks
+every retained path/byte/hash, rejects linked directories and hardlinked files,
+compares the current pinned bridge and stable toolchain attestation, and reruns
+the protected creation-PCK verification against the claimed source files.
+Missing, corrupt or mismatched bytes are never copied over or regenerated.
+
+Explicit continuations require the real new job's `godotJob.checkDescriptor`,
+including current native progress and requirements. Legacy/local descriptor
+fallback is disabled on this route. A fresh isolated runtime check supplies the new verdict;
+Core requires the new descriptor before accepting retained-artifact output.
+Normal scope, lease, cancellation, current-progress migration and candidate
+adoption rules remain. No source edit is needed to obtain a new job ID.
+
+The progress stage is `reuse-export`. A native-hashed `export.reused` assertion
+records `craftmine.godot-export-reuse/1`, origin job/output hash and
+`exportExecuted:false`. The private ledger retains this as diagnostic history,
+never as reuse authority. The old job/output/candidate are unchanged. Fresh
+export attempts still use existing exclusive staging and raise
+`GODOT_ARTIFACT_CONFLICT` if they would change an immutable artifact. Changed
+toolchains/bridges and unsupported historical evidence are explicit refusals,
+not a generalized export cache. See
+[the decision](../adr/godot-failed-check-export-continuation.md).
+
 `expire` runs inside every job-facing transaction and records `interruptReason`
 when it ends a job: `GODOT_LEASE_EXPIRED` for a dead worker lease,
 `GODOT_QUEUE_TIMEOUT` for a queued job no executor ever claimed,

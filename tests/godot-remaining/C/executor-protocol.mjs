@@ -129,10 +129,14 @@ const passingEvidence = (overrides = {}) => ({
   isolation:{ok:true, guard:{focus:0, pointerLock:0}}, recovery:{ok:true, gracefulExit:true}, ...overrides,
 });
 
-function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files}), verifier = {godotCheck: async () => passingEvidence()}, jobTimeoutMs = 30000, runRecovery, logger}) {
+function makeExecutor({env, core = fakeCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files}), verifier = {godotCheck: async () => passingEvidence()}, jobTimeoutMs = 30000, runRecovery, logger, brokerRequests}) {
   return createGodotExecutor(core, {
     dataPath:env.dataPath, verifier, jobTimeoutMs, runRecovery, logger:logger ?? {log(){}, warn(){}, error(){}},
-    spawnBroker: (binary, args, settings) => spawn(process.execPath, [fixtureBroker, ...args], settings),
+    spawnBroker: (binary, args, settings) => {
+      const child=spawn(process.execPath,[fixtureBroker,...args],settings);
+      if(brokerRequests){const write=child.stdin.write.bind(child.stdin);child.stdin.write=(chunk,...rest)=>{try{brokerRequests.push(JSON.parse(String(chunk)));}catch{}return write(chunk,...rest);};}
+      return child;
+    },
   });
 }
 
@@ -747,6 +751,74 @@ function scriptedEnvironment(t, scenario = {}) {
   const core = scriptedCore({projectRoot:env.projectRoot, artifactsRoot:env.artifactsRoot, files:env.files});
   return {env, core, executor:makeExecutor({env, core})};
 }
+
+for(const fault of ['none','tamper','missing','hardlink','directory-link','authority-missing','origin','source','toolchain','bridge','descriptor-denied','descriptor-mismatch','cancel'])
+test('retained export continuation: '+fault,async t=>{
+  const env=environment();t.after(restoreEnv);setScenario(env,{artifacts:SAME_SOURCE_ARTIFACTS});
+  const core=scriptedCore(env),originId='gjob-'+'1'.repeat(64),nextId='gjob-'+'2'.repeat(64),brokerRequests=[],checks=[];
+  let executor;
+  const raw=core.call.bind(core);
+  core.call=async(method,params)=>{
+    if(method==='godotJob.claim'){
+      const claim=await raw(method,params);claim.baseBuild='base-a';
+      if(params.jobId===nextId){
+        const old=core.jobs.get(originId);claim.originJobId=originId;
+        claim.retainedExport={format:'craftmine.godot-retained-export/1',originJobId:originId,originOutputHash:old.outputHash,
+          ...Object.fromEntries(['worldId','buildId','sourceRevision','manifestHash','assetManifestHash','baseId','baseBuild'].map(key=>[key,claim[key]])),
+          engine:old.output.engine,artifacts:old.output.artifacts};
+        if(fault==='authority-missing')delete claim.retainedExport;
+        if(fault==='origin')claim.retainedExport.originJobId='gjob-'+'3'.repeat(64);
+        if(fault==='source')claim.retainedExport.sourceRevision++;
+        if(fault==='toolchain')claim.retainedExport.engine={...old.output.engine,evidenceHash:sha256('changed')};
+      }
+      return claim;
+    }
+    if(method==='godotJob.checkDescriptor'&&params.jobId===nextId){
+      core.calls.push({method,params});
+      if(fault==='descriptor-denied')throw Error('GODOT_JOB_OWNER_MISMATCH');
+      return {format:'craftmine.godot-check-descriptor/1',phase:'check',jobId:nextId,worldId:core.worldId,buildId:core.buildId,
+        baseId:'first-person',inputHash:core.jobs.get(nextId).inputHash,root:fault==='descriptor-mismatch'?env.root:env.artifactsRoot,
+        entry:'web/index.html',threads:true,artifacts:params.artifacts,snapshot:{currentProgress:11}};
+    }
+    const result=await raw(method,params);
+    if(fault==='cancel'&&params?.jobId===nextId&&params.stage==='reuse-export')void executor.cancel(nextId);
+    return result;
+  };
+  executor=makeExecutor({env,core,brokerRequests,verifier:{godotCheck:async descriptor=>{
+    checks.push(structuredClone(descriptor));return passingEvidence({passed:descriptor.jobId===nextId,error:descriptor.jobId===originId?'CONTROLLED_CHECK_FAILURE':null});
+  }}});
+  t.after(()=>executor.stop());await executor.start();core.addJob(originId);executor.enqueue({jobId:originId,worldId:core.worldId,mode:'check'});await settle(executor,originId);
+  assert.equal(core.record(originId).status,'failed');const original=JSON.stringify(core.record(originId));
+  const files=core.jobs.get(originId).output.artifacts.map(a=>path.join(env.artifactsRoot,a.path)),before=files.map(evidenceFingerprint);
+  if(fault==='tamper')fs.appendFileSync(files[1],'tamper');
+  if(fault==='missing')fs.unlinkSync(files[1]);
+  if(fault==='hardlink')fs.linkSync(files[1],path.join(env.root,'alias'));
+  if(fault==='directory-link'){
+    const web=path.resolve(env.artifactsRoot,'web'),parked=path.resolve(env.artifactsRoot,'parked');
+    assert(web.startsWith(path.resolve(env.root)+path.sep)&&parked.startsWith(path.resolve(env.root)+path.sep));
+    fs.renameSync(web,parked);fs.symlinkSync(parked,web,'junction');
+  }
+  if(fault==='bridge')fs.appendFileSync(env.bridge,'changed pin');
+  // Any accidental export would differ and conflict. It must never be invoked.
+  setScenario(env,{artifacts:{...SAME_SOURCE_ARTIFACTS,'index.html':'different nondeterministic export'}});
+  const start=brokerRequests.length;core.addJob(nextId);core.jobs.get(nextId).inputHash=sha256('continued input');
+  executor.enqueue({jobId:nextId,worldId:core.worldId,mode:'check'});await settle(executor,nextId);await executor.stop();
+  assert.deepEqual(brokerRequests.slice(start).map(r=>r.operation),['import']);
+  assert.equal(JSON.stringify(core.record(originId)),original,'origin receipt is immutable');
+  if(fault==='none'){
+    assert.equal(core.record(nextId).status,'passed');assert.equal(checks.length,2);assert.deepEqual(checks[1].snapshot,{currentProgress:11});
+    assert.notEqual(checks[1].inputHash,checks[0].inputHash);assert.deepEqual(core.jobs.get(nextId).output.artifacts,core.jobs.get(originId).output.artifacts);
+    const proof=JSON.parse(core.jobs.get(nextId).output.check.assertions.find(a=>a.id==='export.reused').detail);
+    assert.equal(proof.exportExecuted,false);assert.equal(proof.originOutputHash,core.jobs.get(originId).outputHash);
+    assertEvidenceUnchanged(before,files,'reuse');
+    await executor.start();assert.deepEqual(executor.ledger.jobs[nextId].exportReuse,proof);await executor.stop();
+  } else {
+    assert.equal(checks.length,1,'no runtime verdict after a refused reuse');assert.notEqual(core.record(nextId).status,'passed');
+    if(fault==='tamper')assert(fs.readFileSync(files[1],'utf8').endsWith('tamper'));
+    if(fault==='missing')assert.equal(fs.existsSync(files[1]),false);
+    if(!['tamper','missing','hardlink','directory-link'].includes(fault))assertEvidenceUnchanged(before,files,'refused continuation');
+  }
+});
 
 const stagedFiles = env => Object.keys(SAME_SOURCE_ARTIFACTS).map(name => path.join(env.artifactsRoot, 'web', name));
 

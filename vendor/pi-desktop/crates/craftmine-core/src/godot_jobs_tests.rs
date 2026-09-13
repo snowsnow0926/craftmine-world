@@ -2,6 +2,79 @@ use super::*;
 use crate::godot_test_support::*;
 use std::path::Path;
 
+fn exported_failure(journal: &mut TaskJournal, context: &WorkspaceContext, project: &Value) -> Result<(Value,Value,Value)> {
+    register(journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+    let job=start(journal,context,"exported-failure",project,"check")?;
+    let owner=claim(journal,&job,"origin-token","executor-a")?;
+    let artifacts=write_artifact(&owner,"web/index.html",b"<html>retained</html>")?;
+    journal.godot_job_check_descriptor(&json!({"jobId":job["jobId"],"token":"origin-token","artifacts":artifacts}))?;
+    let done=finish(journal,&job,"origin-token",&output(&owner,false,json!([{"id":"runtime.not-run","passed":false}]),artifacts.clone(),json!([])))?;
+    Ok((done,owner,artifacts))
+}
+
+#[test]
+fn exported_failed_check_continuation_gets_verified_native_authority_and_a_new_descriptor() -> Result<()> {
+    let (_dir,path)=temp()?;let mut journal=setup(&path)?;let context=ctx("one");let project=create_project(&mut journal,&context)?;
+    let (origin,owner,artifacts)=exported_failure(&mut journal,&context,&project)?;
+    let original=origin.clone();
+    let next=journal.godot_job_continue(&json!({"context":context,"worldId":"a","originJobId":origin["jobId"],"toolCallId":"resume-export"}))?;
+    let claimed=claim(&mut journal,&next,"new-token","executor-a")?;
+    assert_eq!(claimed["retainedExport"]["originOutputHash"],origin["outputHash"]);
+    assert_eq!(claimed["retainedExport"]["artifacts"],artifacts);
+    assert_eq!(claimed["buildId"],origin["buildId"]);assert_ne!(claimed["inputHash"],owner["inputHash"]);
+    // An origin's descriptor is never sufficient to finish the new check.
+    failed(finish(&mut journal,&next,"new-token",&output(&claimed,true,json!([{"id":"runtime.ready","passed":true}]),artifacts.clone(),json!([]))),"GODOT_CHECK_INPUT");
+    let mut foreign_artifacts=artifacts.clone();foreign_artifacts[0]["sha256"]=json!(digest("foreign"));
+    failed(journal.godot_job_check_descriptor(&json!({"jobId":next["jobId"],"token":"new-token","artifacts":foreign_artifacts})),"GODOT_CONTINUATION_ARTIFACT_MISMATCH");
+    let descriptor=journal.godot_job_check_descriptor(&json!({"jobId":next["jobId"],"token":"new-token","artifacts":artifacts}))?;
+    assert_eq!(descriptor["jobId"],next["jobId"]);assert_eq!(descriptor["inputHash"],claimed["inputHash"]);
+    let done=finish(&mut journal,&next,"new-token",&output(&claimed,true,json!([{"id":"runtime.ready","passed":true}]),artifacts,json!([])))?;
+    assert_eq!(done["status"],"passed");assert_ne!(done["candidateId"],origin["candidateId"]);
+    assert_eq!(journal.godot_build_read(&json!({"worldId":"a","jobId":origin["jobId"]}))?["output"],original["output"]);
+    assert_eq!(read_job(&journal.db,origin["jobId"].as_str().unwrap())?["outputHash"],original["outputHash"]);
+    Ok(())
+}
+
+#[test]
+fn retained_export_cannot_cross_sessions_or_outlive_its_executor_lease() -> Result<()> {
+    for foreign_session in [true,false] {
+        let (_dir,path)=temp()?;let mut journal=setup(&path)?;let context=ctx("one");let project=create_project(&mut journal,&context)?;
+        let (origin,_owner,artifacts)=exported_failure(&mut journal,&context,&project)?;
+        if foreign_session {
+            journal.workspace_end_turn(&context.session_id,&context.turn_id,"completed")?;
+            let foreign=WorkspaceContext {session_id:"other-session".into(),..ctx("two")};
+            journal.workspace_open(&foreign,"a")?;
+            failed(journal.godot_job_continue(&json!({"context":foreign,"worldId":"a","originJobId":origin["jobId"],"toolCallId":"foreign-resume"})),"GODOT_CONTINUATION_SCOPE_MISMATCH");
+        } else {
+            let next=journal.godot_job_continue(&json!({"context":context,"worldId":"a","originJobId":origin["jobId"],"toolCallId":"resume-export"}))?;
+            claim(&mut journal,&next,"new-token","executor-a")?;
+            journal.godot_executor_revoke(&json!({"executorId":"executor-a"}))?;
+            failed(journal.godot_job_check_descriptor(&json!({"jobId":next["jobId"],"token":"new-token","artifacts":artifacts})),"GODOT_JOB_OWNER_MISMATCH");
+        }
+        assert_eq!(read_job(&journal.db,origin["jobId"].as_str().unwrap())?["outputHash"],origin["outputHash"]);
+    }
+    Ok(())
+}
+
+#[test]
+fn retained_export_rejects_changed_toolchain_corruption_and_stale_queued_source() -> Result<()> {
+    for fault in ["toolchain","tamper","missing","stale","after-claim"] {
+        let (_dir,path)=temp()?;let mut journal=setup(&path)?;let context=ctx("one");let project=create_project(&mut journal,&context)?;
+        let (origin,owner,artifacts)=exported_failure(&mut journal,&context,&project)?;
+        let args=json!({"context":context,"worldId":"a","originJobId":origin["jobId"],"toolCallId":"resume-export"});
+        let file=Path::new(owner["artifactsRoot"].as_str().unwrap()).join("web/index.html");
+        match fault {
+            "toolchain"=>{register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("changed"))?;failed(journal.godot_job_continue(&args),"GODOT_CONTINUATION_TOOLCHAIN_CHANGED");},
+            "tamper"=>{std::fs::write(&file,b"changed")?;failed(journal.godot_job_continue(&args),"CORRUPT_GODOT_ARTIFACT");assert_eq!(std::fs::read(&file)?,b"changed");},
+            "missing"=>{std::fs::remove_file(&file)?;assert!(journal.godot_job_continue(&args).is_err());assert!(!file.exists());},
+            "stale"=>{let next=journal.godot_job_continue(&args)?;journal.godot_project_patch(&json!({"context":context,"worldId":"a","toolCallId":"changed-head","revision":project["revision"],"manifestHash":project["manifestHash"],"operations":[{"op":"put","path":"new.gd","text":"extends Node\n","expectedHash":null}]}))?;failed(claim(&mut journal,&next,"new-token","executor-a"),"GODOT_CONTINUATION_STALE");},
+            _=>{let next=journal.godot_job_continue(&args)?;claim(&mut journal,&next,"new-token","executor-a")?;std::fs::write(&file,b"changed")?;failed(journal.godot_job_check_descriptor(&json!({"jobId":next["jobId"],"token":"new-token","artifacts":artifacts})),"CORRUPT_GODOT_ARTIFACT");}
+        }
+        assert_eq!(read_job(&journal.db,origin["jobId"].as_str().unwrap())?["outputHash"],origin["outputHash"]);
+    }
+    Ok(())
+}
+
 #[test]
 fn runtime_check_descriptor_requires_a_live_owner_and_verified_staged_bytes() -> Result<()> {
     let (_dir, path) = temp()?;

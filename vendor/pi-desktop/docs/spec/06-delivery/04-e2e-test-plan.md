@@ -9979,3 +9979,24 @@ foreign evidence and successful evidence. Historical discarded verifier errors
 remain explicitly unavailable in old native outputs. See
 [the projection contract](../godot-verifier-failure-diagnostics.md) and
 [the ownership decision](../../adr/godot-source-owned-progress-20260913.md).
+
+### Explicit failed-check export continuation
+
+Create an independent world using the real native services, with the verifier
+deliberately absent for the first exported check. Label this a controlled host
+failure. Restart Core/executor, then use `godot_jobs` mode `resume` on that
+failed job. Verify a different job/input hash, the same build/artifact bytes,
+fresh native import, zero export operations, fresh runtime evidence and a ready
+new candidate. Preserve the original output hash. Apply through normal first
+load, move using the private engine path, save, and continue again to prove the
+new descriptor uses current full native progress rather than origin progress.
+
+In the disposable fixture after save/close, tamper an artifact and verify resume
+rejects without repairing/rewriting it; change source and verify stale refusal
+without exporting it. Protocol/native tests cover missing/linked files, foreign
+scope, changed source/pins, missing authority, descriptor rejection and cancel.
+All windows remain offscreen, hidden, unfocusable and input-guarded with default
+desktop graphics. `tests/codex-retained-export-native.mjs ABS_RUNTIME
+ABS_PLUGIN ABS_REBUILT_CORE ABS_NEW_PROFILE` runs the native scenario. The
+protocol tests use a scripted broker and are not native engine evidence.
+See [the handoff and contract](../../adr/godot-failed-check-export-continuation.md).
