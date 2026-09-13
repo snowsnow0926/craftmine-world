@@ -65,8 +65,9 @@ node tests/product-agent-operator-native.mjs `
 | `brief` | 通过现有主窗口 `world.brief` 读取用户目标和保留要求。 |
 | `goal-add` | `{expectedRevision,kind:"goal"或"preserve",text,operationId?}`，显式添加用户条目。 |
 | `goal-review` | `{expectedRevision,id,buildId,accepted,operationId?}`，仅由总控在检查真实结果后明确评审。 |
-| `save` | 普通非冻结保存。 |
-| `reopen` | 闲置时保存、正常退出、同一 profile 冷重开；保持原世界及会话身份。 |
+| `save` | 普通保存；可传 `{freeze:true}` 保存并冻结，收到的是实际持久化回执。 |
+| `resume` / `snapshot` | 分别走已有普通继续游玩接口和实际运行时快照读取；虚拟输入不会自行把暂停世界改成运行，也不写入玩家或飞机状态。 |
+| `reopen` | 闲置时保存／冻结并读取真实保存时快照，再正常退出、同一 profile 冷重开；保持原世界及会话身份，同时保留恢复快照和作品目标。恢复后已正常推进的物理状态不能当作保存瞬间的同一帧。 |
 | `publish` | `{name,description,tags,aliases}`，提交真实世界模板保存表单，包含已保存进度。 |
 | `export-template` | `{assetId}`，通过真实模板导出表单导出，并保留带唯一名字的 ZIP 证据。 |
 | `abort` | 普通 `agentAbort`；驱动保持运行，便于检查中断结果。 |
