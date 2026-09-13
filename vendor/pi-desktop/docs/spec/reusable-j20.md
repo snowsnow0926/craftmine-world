@@ -30,6 +30,10 @@ Space brakes; Shift adds afterburner; G toggles gear; C changes camera; Enter
 exits after parking. Actions use the `cw_j20_` namespace and only the piloted
 instance consumes them. Aircraft collide with normal world geometry and other
 aircraft. Independent instances retain different entity IDs and state.
+The aircraft participates in normal object collision layer 2 as well as aircraft
+layer 16; its mask includes terrain, ordinary objects and other aircraft. The
+flight HUD starts below the retained world's top caption to avoid overlapping
+player instructions.
 
 This version uses a vehicle-camera abstraction: the actual on-foot controller
 remains at its collision-valid boarding point under an aircraft-owned movement

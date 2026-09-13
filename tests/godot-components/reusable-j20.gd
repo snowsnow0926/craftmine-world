@@ -145,7 +145,7 @@ func run() -> void:
 		# A newly present physical obstacle exercises collision after the checked
 		# runway becomes obstructed; the aircraft state is never assigned.
 		var obstacle := StaticBody3D.new()
-		obstacle.collision_layer = 1
+		obstacle.collision_layer = 2
 		var collider := CollisionShape3D.new()
 		var box := BoxShape3D.new()
 		box.size = Vector3(20,10,2)
@@ -154,7 +154,7 @@ func run() -> void:
 		world.add_child(obstacle)
 		obstacle.position = Vector3(-6,5,-30)
 		await controls({"throttle_up":1.0},300)
-		check(jet.crashed and jet.global_position.z>-30,"real new world obstacle stops and crashes the moving aircraft")
+		check(jet.crashed and jet.global_position.z>-30,"real world-object-layer obstacle stops and crashes the moving aircraft")
 		var actual_crash_pose: Vector3 = jet.global_position
 		await controls({"exit":1.0},3)
 		check(not jet.piloted and not player.movement_locked(),"ending crashed driving releases only the aircraft control lock")

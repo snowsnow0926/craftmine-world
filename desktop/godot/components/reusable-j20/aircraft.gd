@@ -30,7 +30,8 @@ func _ready() -> void:
 	add_to_group("craftmine_persistent_components")
 	add_to_group("craftmine_aircraft")
 	super._ready()
-	collision_mask = 17 # Terrain/objects and other aircraft; never disable world collision.
+	collision_layer = 18 # A normal world object (2) and aircraft (16).
+	collision_mask = 19 # Terrain (1), world objects (2), and other aircraft (16).
 	set_meta("entity_id", entity_id)
 	_source_settings = {"name":aircraft_name}
 	_source_settings.make_read_only()
@@ -62,7 +63,7 @@ func _ready() -> void:
 	_canvas.layer = 8
 	add_child(_canvas)
 	_hud = Label.new()
-	_hud.position = Vector2(24,24)
+	_hud.position = Vector2(24,62)
 	_hud.add_theme_font_size_override("font_size",18)
 	_hud.add_theme_color_override("font_color",Color.WHITE)
 	_hud.add_theme_color_override("font_shadow_color",Color.BLACK)
