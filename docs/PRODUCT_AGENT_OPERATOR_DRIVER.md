@@ -67,8 +67,9 @@ node tests/product-agent-operator-native.mjs `
 | `goal-review` | `{expectedRevision,id,buildId,accepted,operationId?}`，仅由总控在检查真实结果后明确评审。 |
 | `save` | 普通非冻结保存。 |
 | `reopen` | 闲置时保存、正常退出、同一 profile 冷重开；保持原世界及会话身份。 |
-| `publish` | `{name,description,tags,aliases}`，提交真实世界模板保存表单，包含已保存进度。 |
+| `publish` | `{name,description,tags,aliases,includeSavedProgress?}`，提交真实世界模板保存表单，boolean默认true兼容历史。当前产品仅支持已保存进度；传false只会按真实checkbox得到表单拒绝，不支持无进度/0项模板，也不会暗中改成true。连续发布先走“继续保存其他内容”，等待旧结果移除及新表单就绪；每次创建新素材并校验结果属于当前世界和新提交。 |
 | `export-template` | `{assetId}`，通过真实模板导出表单导出，并保留带唯一名字的 ZIP 证据。 |
+| `open-world` | `{}`，导出后经真实“我的世界”页签及当前世界打开表单返回，验证原world/session。仅打开已有当前世界，不换世界或创建会话；需要冻结时随后显式save。`reopen`用于世界运行时的保存冷开，导出停留入口时应先用open-world。 |
 | `abort` | 普通 `agentAbort`；驱动保持运行，便于检查中断结果。 |
 | `quit` | 会话停止后正常退出；有活动模型时要求先完成或显式取消。 |
 
