@@ -5,6 +5,11 @@ The repository root exposes `npm run author:codex -- ...` (or the equivalent
 the desktop composer remains on its existing PI runtime. See the
 [architecture decision](../adr/codex-project-author.md).
 
+The optional [private live-world host](codex-live-world-host.md) now supplies real
+first-load/application, save/cold-reopen, observation and capture. `--live-host true`
+attaches it to a turn, while operator commands control adoption. Repeated `--image`
+options submit explicitly selected PNG/JPEG references as actual image input.
+
 ## Host setup and first two requests
 
 Run from this request worktree. All paths below are trusted caller configuration,

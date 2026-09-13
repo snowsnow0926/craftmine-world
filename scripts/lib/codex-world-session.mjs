@@ -95,15 +95,16 @@ export class CodexWorldSession {
     }
     this.event('session',{resumed,preflight,model:result.model,effort:result.reasoningEffort,surface:'project-cli',tools:this.host.tools.map(t=>t.name)});
   }
-  async run(text) {
+  async run(text,{images=[]}={}) {
     if(this.active)throw Error('CODEX_TURN_BUSY');
     if(typeof text!=='string'||!text.trim()||Buffer.byteLength(text)>16000)throw Error('INVALID_HOST_TEXT');
+    if(!Array.isArray(images)||images.some(image=>image?.input?.type!=='image'||!/^data:image\/(png|jpeg);base64,/.test(image.input.url)||image.provenance?.source!=='operator-local-image'))throw Error('INVALID_HOST_IMAGES');
     const context={projectId:this.state.projectId,sessionId:this.state.sessionId,turnId:randomUUID()};
     let resolveDone;
     const done=new Promise(resolve=>{resolveDone=resolve;});
     const active={context,codexTurnId:null,cancelled:false,resolveDone,startedAt:Date.now()};
     this.active=active;this.state.active={context};this.save();
-    this.event('user',{text});
+    this.event('user',{text,...(images.length?{images:images.map(image=>image.provenance)}:{})});
     try {
       const facts=await this.host.begin(context,text);
       if(active.cancelled) return await done;
@@ -111,7 +112,7 @@ export class CodexWorldSession {
       this.state.threadSubmitted=true;this.save();
       const starting=this.client.call('turn/start',{threadId:this.state.threadId,model:MODEL,effort:EFFORT,
         environments:[],runtimeWorkspaceRoots:[],approvalPolicy:'never',
-        input:[{type:'text',text:`Current host facts (not an application claim): ${JSON.stringify({world:facts.world,binding:facts.binding,generation:facts.generation,recovery:facts.recovery})}\n\nPlayer request:\n${text}`}],
+        input:[{type:'text',text:`Current host facts (not an application claim): ${JSON.stringify({world:facts.world,binding:facts.binding,generation:facts.generation,recovery:facts.recovery})}\n\nPlayer request:\n${text}`},...images.map(image=>image.input)],
       });
       // Cancellation also works while app-server has not acknowledged start.
       const result=await Promise.race([starting,done.then(()=>null)]);

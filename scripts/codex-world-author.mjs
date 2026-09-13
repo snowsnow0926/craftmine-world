@@ -8,11 +8,12 @@ import {pathToFileURL,fileURLToPath} from 'node:url';
 import {CodexAppServer,MODEL,EFFORT,CLI_VERSION,redact,processEnvironment} from './lib/codex-app-server.mjs';
 import {CodexWorldHost} from './lib/codex-world-host.mjs';
 import {CodexWorldSession,STATE_FORMAT,readState,writeState,acquireLock} from './lib/codex-world-session.mjs';
+import {prepareInputImages} from './lib/codex-input-images.mjs';
 
 const HELP=`Craftmine opt-in Codex author (project CLI; not the desktop composer)
 
   init   --data DIR --runtime WIN_UNPACKED --plugin BUILT_PLUGIN --world ID
-  turn   --data DIR --codex CODEX_EXE --prompt TEXT [--services HOST_MODULE]
+  turn   --data DIR --codex CODEX_EXE --prompt TEXT [--image PNG_OR_JPEG ...] [--live-host true] [--services HOST_MODULE]
   doctor --data DIR --codex CODEX_EXE [--services HOST_MODULE]
   cancel --data DIR
   status --data DIR
@@ -27,19 +28,23 @@ An optional trusted services module exports createServices({core,state,data});
 it supplies existing host verifier/toolServices, not author-accessible code.
 Source/build/check/application remain distinct. Default CLI has no live view,
 player target, check verifier or automatic adoption. No UI is opened.
+--live-host true attaches the private headless formal-world host and live readers.
+--image may be repeated with explicit absolute PNG/JPEG paths; originals and
+hashes are recorded and actual image content is sent to Codex.
 `;
 
 function options(argv) {
   const [mode,...rest]=argv,values={};
   if(!['init','turn','doctor','cancel','status'].includes(mode))throw Error(HELP);
-  const allowed={init:['--data','--runtime','--plugin','--world'],turn:['--data','--codex','--prompt','--services'],
-    doctor:['--data','--codex','--services'],cancel:['--data'],status:['--data']}[mode];
+  const allowed={init:['--data','--runtime','--plugin','--world'],turn:['--data','--codex','--prompt','--services','--image','--live-host'],
+    doctor:['--data','--codex','--services','--live-host'],cancel:['--data'],status:['--data']}[mode];
   for(let i=0;i<rest.length;i+=2) {
     const key=rest[i],value=rest[i+1];
-    if(!allowed.includes(key)||value===undefined||values[key]!==undefined)throw Error(HELP);
-    values[key]=value;
+    if(!allowed.includes(key)||value===undefined||key!=='--image'&&values[key]!==undefined)throw Error(HELP);
+    if(key==='--image')(values[key]??=[]).push(value);else values[key]=value;
   }
   if(!values['--data'])throw Error(HELP);
+  if(values['--live-host']!==undefined&&values['--live-host']!=='true')throw Error('LIVE_HOST_OPTION_REQUIRES_TRUE');
   return {mode,values,data:path.resolve(values['--data'])};
 }
 async function verifyCli(binary,cwd) {
@@ -76,10 +81,11 @@ export async function main(argv=process.argv.slice(2)) {
   }
   if(mode==='status') {emit(state);return;}
   if(!values['--codex'])throw Error(HELP);
-  const unlock=acquireLock(data);let host,client,session,poll,services;
-  const cancel=()=>{if(session?.active)void session.cancel().catch(()=>{});else void client?.close();};
+  const unlock=acquireLock(data);let host,client,session,poll,services,cancelled=false;
+  const cancel=()=>{cancelled=true;if(session?.active)void session.cancel().catch(()=>{});else void client?.close();};
   process.on('SIGINT',cancel);process.on('SIGTERM',cancel);
   try {
+    const images=await prepareInputImages(data,values['--image']);
     await verifyCli(values['--codex'],path.join(data,'empty'));
     host=new CodexWorldHost({state,data});
     if(values['--services']) {
@@ -87,10 +93,20 @@ export async function main(argv=process.argv.slice(2)) {
       services=await module.createServices({core:host.core,state:structuredClone(state),data});
       host=new CodexWorldHost({state,data,core:host.core,services});
     }
+    if(values['--live-host']==='true') {
+      const {createServices}=await import('./lib/codex-live-service.mjs');
+      const live=await createServices({core:host.core,state:structuredClone(state),data});
+      const previous=services;
+      services={...live,...previous,toolServices:{...previous?.toolServices,...live.toolServices},
+        stop:async()=>{await live.stop();await previous?.stop?.();},abandon:()=>live.abandon()};
+      host=new CodexWorldHost({state,data,core:host.core,services});
+    }
     await host.start();
+    if(cancelled)throw Error('OPERATOR_CANCELLED');
     client=new CodexAppServer({binary:values['--codex'],cwd:path.join(data,'empty')});
     session=new CodexWorldSession({data,state,host,client,onEvent:emit});
     await session.connect({preflight:mode==='doctor'});
+    if(cancelled)throw Error('OPERATOR_CANCELLED');
     if(mode==='doctor') {
       emit({status:'protocol-ready',model:MODEL,effort:EFFORT,cliVersion:CLI_VERSION,modelTurnStarted:false,
         sourceIdentity:await host.sourceIdentity(),godot:host.executor.status(),blender:await host.blender.status()});
@@ -102,14 +118,16 @@ export async function main(argv=process.argv.slice(2)) {
           if(request.turnId===session.active?.context.turnId&&!session.active.cancelled)void session.cancel().catch(()=>{});
         } catch(error) {if(error.code!=='ENOENT'&&!(error instanceof SyntaxError))emit({status:'diagnostic',code:'CANCEL_FILE_UNREADABLE'});}
       },250);
-      const result=await session.run(values['--prompt']);
+      const result=await session.run(values['--prompt'],{images});
       if(result.status!=='completed')process.exitCode=result.status==='aborted'?130:1;
     }
   } finally {
     clearInterval(poll);
     process.off('SIGINT',cancel);process.off('SIGTERM',cancel);
     try {await client?.close();} finally {
-      try {await host?.stop();} finally {try{await services?.stop?.();}finally{unlock();}}
+      try {await host?.stop({beforeCoreStop:()=>services?.stop?.()});}
+      catch(error){await services?.abandon?.();await host?.core.stop();throw error;}
+      finally{unlock();}
     }
   }
 }

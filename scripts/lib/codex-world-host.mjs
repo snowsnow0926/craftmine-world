@@ -20,6 +20,7 @@ const TOOL_NAMES = new Set(['godot_docs','godot_guidance','godot_project_index',
 export class CodexWorldHost {
   constructor({state, data, core, services = {}, logger = {log(){},warn(){}}}) {
     this.state = state; this.data = data; this.ended = new Set();
+    this.services=services;
     const resources = path.join(state.runtime, 'resources');
     const plugin = state.pluginRoot ?? path.join(resources,'plugins/craftmine.world');
     const {CoreClient}=require(path.join(plugin,'core-client.cjs'));
@@ -86,6 +87,7 @@ export class CodexWorldHost {
     // Fence source RPCs first. No result may be reported as cancelled before
     // this barrier commits. Native workers then drain under their own fences.
     await this.core.call('workspace.endTurn',{sessionId:context.sessionId,turnId:context.turnId,status});
+    if(status!=='completed')await this.services.cancelTurn?.(context);
     await Promise.all([this.blender.cancelTurn(context),this.executor.cancelTurn(context)]);
     if(status!=='completed'&&this.engines) {
       await this.executor.stop();this.enginesStopped=true;
@@ -95,7 +97,11 @@ export class CodexWorldHost {
     const content = await this.core.call('content.status',{worldId:this.state.worldId});
     return {worldId:this.state.worldId,repoId:content.repoId,backend:content.backend};
   }
-  async stop() { await this.blender.stop(); await this.executor.stop(); await this.core.stop(); }
+  async stop({beforeCoreStop}={}) {
+    await this.blender.stop();await this.executor.stop();
+    if(beforeCoreStop)await beforeCoreStop();
+    await this.core.stop();
+  }
 
   async initializeBlank() {
     const {worldId,projectId,sessionId} = this.state;

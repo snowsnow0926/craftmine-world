@@ -9849,6 +9849,31 @@ mock protocol and real native checks are separate from real model authoring and
 from normal player visual/playable acceptance. The reached surface is the project
 CLI, not the desktop composer or a browser UI.
 
+### Codex private live-world host and input images
+
+Use the [live-world host procedure](../codex-live-world-host.md) in a fresh profile.
+Initialize through a real managed check and product candidate first-load; assert
+Core `confirmed`/`playable`, actual applied build/source identity and a real formal
+PNG. Read current observation/capture via the unchanged world tools. A checked
+candidate image cannot replace formal live state, and captures for foreign worlds,
+instances or ended native turns must fail. Verify actual hidden/nonfocusable
+windows and zero Pointer Lock/focus calls.
+
+Move through the existing private base physics command, save through the product
+adapter, stop both helper and Core, and cold-reopen with the same full snapshot,
+source and build but a fresh instance ID. Check a second source revision, preview
+it without adopting, close preview, then explicitly apply and repeat save/reopen.
+Inject a save transport failure: do not report persistence or successful close;
+retain the instance for retry. No fixture executor, finish-job or application
+receipt may replace the actual native path.
+
+Submit multiple explicit PNG/JPEG references through `--image`; inspect the actual
+app-server image items and unchanged raw prompt plus archived byte provenance.
+Reject non-image/linked files and changed archives before model submission. Keep
+these offline protocol checks separate from actual vision/model validation. The
+coordinator-owned live `cl2` profile is not a component-test fixture. This optional
+host still does not integrate the desktop composer or prove promotional gameplay.
+
 Attach the private product verifier to a new source-only world and run its first
 real check. The broker must import/export it, the hidden verifier must inspect
 actual frames, and the build-read tool must return the passing candidate before

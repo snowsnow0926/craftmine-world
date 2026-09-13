@@ -169,3 +169,11 @@ test('continuation rejects ignored identity/path overrides instead of misleading
   for(const option of ['--world','--runtime','--plugin'])await assert.rejects(main(['turn','--data','unused',option,'foreign']),/Craftmine opt-in Codex author/);
   await assert.rejects(main(['doctor','--data','unused','--prompt','Do not start a model']),/Craftmine opt-in Codex author/);
 });
+test('host-selected reference images accompany the raw prompt as actual app-server image items',async t=>{
+  const f=fixture(t);await f.session.connect();
+  const images=[{input:{type:'image',url:'data:image/png;base64,iVBORw0KGgo='},provenance:{source:'operator-local-image',sha256:'fixture',originalPath:'explicit-reference.png'}}];
+  const run=f.session.run('Use this reference',{images});await tick();f.client.complete();await run;
+  assert.deepEqual(f.client.calls.find(c=>c.method==='turn/start').params.input[1],images[0].input);
+  const user=f.events.find(e=>e.type==='user');assert.equal(user.text,'Use this reference');assert.deepEqual(user.images,[images[0].provenance]);
+  assert(!JSON.stringify(user).includes('base64'));
+});
