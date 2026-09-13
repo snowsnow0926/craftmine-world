@@ -8932,6 +8932,18 @@ actual desktop restart evidence must be labeled separately.
 Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
 ### Optional first creation guide in the PI sidebar (2026-09-13)
 
+Before the full journey, create a world in an isolated no-model profile and
+close/reopen the application before any editor or model turn. Open the same
+world through the ordinary chooser, enter Create, and verify the same actual
+empty conversation and world editor surface restore without a model request.
+Then use the normal supported object editor; its ordinary Rust task binding
+must still be established by that operation. For an older world without any
+trustworthy conversation association, use the explicit sidebar Start creating
+form and verify a fresh empty session is registered, while home drafts/files
+and unrelated generic coding sessions stay intact. Do not infer a binding from
+editable browser preferences or choose an arbitrary empty sidebar row. See
+[the continuity contract](empty-world-conversation.md).
+
 Open the actual PI sidebar and expand the initially collapsed first creation
 guide. Its five reading pages cover opening/creating, direct catalog use,
 supported edits, save/reopen, and world-template sharing. Page selection and
