@@ -28,9 +28,10 @@ report.nativeBinaries=Object.fromEntries(Object.entries(nativePaths).map(([name,
 if(previous){const identity={applicationRoot,resources,buildMainSha256:report.buildMainSha256,driverSha256:report.driverSha256,nativeBinaries:report.nativeBinaries,packageIdentity:report.packageIdentity,limits:report.limits};Object.assign(report,previous,identity,{previousReport:previousFile,previousError:previous.error});delete report.error;delete report.shutdownError;delete report.failurePage;}
 const reportFile=path.join(out,previous?'continuation-'+randomUUID()+'.json':'report.json'),save=()=>fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 const abort = new AbortController(), pending = new Map();
+const cancelFile=path.join(out,previous?'cancel-'+randomUUID():'cancel');report.cancelFile=cancelFile;
 let child, ended = true, ready = false, exit, socket, sequence = 0, current, port;
 process.on('SIGINT', () => abort.abort()); process.on('SIGTERM', () => abort.abort());
-const watcher = setInterval(() => {if(fs.existsSync(path.join(out, 'cancel'))) abort.abort();}, 300);
+const watcher = setInterval(() => {if(fs.existsSync(cancelFile)) abort.abort();}, 300);
 const rpc = (method, fields={}) => new Promise((resolve,reject) => {
   if(ended) return reject(Error('DESKTOP_EXITED'));
   const id = randomUUID(), timer = setTimeout(() => {pending.delete(id); reject(Error('RPC_TIMEOUT:'+method));}, 120000);
@@ -321,7 +322,7 @@ async function play(){
  report.play={receipt,before:observed,after:await rpc('godotObserve')};assert.notDeepEqual(report.play.before.payload.player.position,report.play.after.payload.player.position);report.playCapture=await capture('imported-playing');save();
 }
 try{
- console.log(JSON.stringify({out,cancel:path.join(out,'cancel')}));await start('author');
+ console.log(JSON.stringify({out,cancel:cancelFile}));await start('author');
  if(previous){worldId=report.authorWorldId;await openExistingWorld(worldId);}
  else{worldId=await createWorld('我的首次自主创作');report.authorWorldId=worldId;report.initialSnapshot=await rpc('godotSnapshot');
  const companion=await startDirect('cw.module.approved-pomeranian',{x:-2,y:0,z:4.3});await applyDirect(companion);}
