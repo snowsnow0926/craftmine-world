@@ -102,6 +102,13 @@ candidate/application/first-load boundaries; the CLI exposes no model apply RPC.
 
 ## Targeted validation
 
+A source-only world's first check may pass before its first application. The
+ordinary build-read tool preserves that passing candidate when formal runtime
+lookup returns exactly `GODOT_WORLD_NOT_INITIALIZED`; it does not claim adoption.
+Other runtime errors, mismatched receipts and world switches still reject.
+`tests/godot-build-source-only.test.mjs` covers this boundary, and
+`tests/promo-godot-check-native.mjs` exercises the real broker and product verifier.
+
 ```powershell
 node --test tests/codex-world-author.test.mjs tests/blender-tools.test.mjs tests/blender-jobs.test.mjs
 node tests/codex-world-native.mjs --data 'D:/Craftmine Worktrees/codex-promo-20260913/test-results/codex-native-check' --runtime $runtime --plugin $plugin

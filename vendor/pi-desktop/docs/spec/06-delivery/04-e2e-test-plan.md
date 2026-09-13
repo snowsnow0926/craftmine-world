@@ -9848,3 +9848,10 @@ built-in filesystem/shell access. A second author process must be refused. These
 mock protocol and real native checks are separate from real model authoring and
 from normal player visual/playable acceptance. The reached surface is the project
 CLI, not the desktop composer or a browser UI.
+
+Attach the private product verifier to a new source-only world and run its first
+real check. The broker must import/export it, the hidden verifier must inspect
+actual frames, and the build-read tool must return the passing candidate before
+first application. `GODOT_WORLD_NOT_INITIALIZED` must not erase a passed check or
+be interpreted as applied. Corrupt formal artifacts and a changed selected world
+must still reject. Preserve the failed first read and the separate repaired run.
