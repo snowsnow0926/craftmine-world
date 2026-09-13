@@ -1,5 +1,14 @@
 # Optional creation workflow guide
 
+The 2026-09-13 PI sidebar guide supersedes this workbench integration. See
+[the current contract](../../vendor/pi-desktop/docs/spec/06-delivery/first-creation-guide.md).
+The module contract and 2026-09-10 results below are historical; the world view
+no longer mounts that module. The fixed `worldCreationGuide` native probe now
+checks the current sidebar, existing asset/publication/history sheets, retained
+reading bookmark, and unchanged world/header.
+
+## Historical workbench guide (2026-09-10)
+
 This PP1 slice explains existing actions. It does not execute a tutorial, track verified milestones, or establish completion of the full PP1 plan.
 
 ## Integration contract

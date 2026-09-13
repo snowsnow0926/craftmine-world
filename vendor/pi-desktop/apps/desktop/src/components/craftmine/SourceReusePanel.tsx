@@ -82,7 +82,7 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
         {busy === proposal.proposalId ? (zh ? "正在加入源码…" : "Adding source…") : (zh ? "加入当前世界并检查" : "Add to this world and check")}
       </button></form>}
     </div>)}
-    {error && <p role="alert">{error}</p>}
+    {error && <><p role="alert">{zh ? "暂时无法处理本轮素材建议。可重试，或从侧边栏打开素材库直接使用。" : "This turn's asset suggestions are unavailable. Retry, or open the asset library from the sidebar."}</p><details><summary>{zh ? "查看原因" : "Details"}</summary><p>{error}</p></details></>}
     <button type="button" disabled={!!busy} onClick={() => {setJobs({}); void refresh();}}>{zh ? "刷新复用结果" : "Refresh reuse results"}</button>
   </details>;
 }

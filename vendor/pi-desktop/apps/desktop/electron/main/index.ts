@@ -24,6 +24,7 @@ import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { readWorldConversation } from "./world-conversation";
+import {createWorldConversationNavigation, sameConversationProjectDirectory} from "./world-conversation-navigation";
 import { createPlayerWorlds } from "./player-worlds";
 import { createCraftmineQuitState } from "./craftmine-quit-state";
 import { creationRequestStatus } from "./creation-request-status";
@@ -383,6 +384,7 @@ app.setName(APP_NAME);
 const productPaths = craftminePaths(process.env, app.getPath("appData"));
 mkdirSync(productPaths.userData, { recursive: true });
 app.setPath("userData", productPaths.userData);
+const worldConversationNavigation = createWorldConversationNavigation(join(productPaths.userData, "world-conversation-navigation"));
 // Upstream internals share this alias; never inherit another PI profile.
 process.env.PI_DESKTOP_DATA_DIR = productPaths.dataDir;
 process.env.CRAFTMINE_CORE_BIN = app.isPackaged
@@ -6922,6 +6924,24 @@ function registerIpc() {
     }
     if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.conversation") {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      if (payload.payload?.action === "remember-created") {
+        if (!host || profileRestore || quitting || craftmineQuitPreparation) throw Error("WORLD_BUSY");
+        const input = payload.payload;
+        const selectedWorld = await godotSelection();
+        const workspace = await host.call<{workspace: {path: string} | null}>("workspace.get");
+        const sessions = (await host.call<{sessions: SessionSummary[]}>("session.list")).sessions;
+        const session = sessions.find(row => row.id === input.sessionId);
+        if (!session) throw Error("WORLD_CONVERSATION_SESSION_NOT_FOUND");
+        if (activeTurns.has(session.id)) throw Error("WORLD_CONVERSATION_SESSION_ACTIVE");
+        if (!pluginActiveInProject("craftmine.world", session.projectPath ?? null)) throw Error("WORLD_CONVERSATION_PLUGIN_DISABLED");
+        const [latestWorld, latestWorkspace] = await Promise.all([
+          godotSelection(), host.call<{workspace: {path: string} | null}>("workspace.get"),
+        ]);
+        if (latestWorld !== selectedWorld) throw Error("WORLD_CONVERSATION_CHANGED");
+        if (!sameConversationProjectDirectory(workspace.workspace?.path ?? null, latestWorkspace.workspace?.path ?? null)) throw Error("WORLD_CONVERSATION_PROJECT_CHANGED");
+        if (activeTurns.has(session.id)) throw Error("WORLD_CONVERSATION_SESSION_ACTIVE");
+        return worldConversationNavigation.register(input, session, selectedWorld, latestWorkspace.workspace?.path ?? null);
+      }
       return readWorldConversation(payload.payload, {
         selectedWorld: godotSelection,
         sessions: async () => {
@@ -6930,6 +6950,7 @@ function registerIpc() {
         },
         pluginEnabled: path => pluginActiveInProject("craftmine.world", path),
         domain: (method, input) => plugins.requestCraftmineHost(method, input),
+        navigationMatches: (session, worldId) => worldConversationNavigation.matches(session, worldId),
       });
     }
     if (payload?.channel === "world.previewControl" && (event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
@@ -7027,7 +7048,14 @@ function registerIpc() {
         if (channel === "package.request" || channel === "godot.runtimeSave") {
           if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
           if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
-          if (channel === "package.request") return craftminePackages.request(channel, params);
+          if (channel === "package.request") {
+            if (params.method === "installSourceProposal") {
+              await stopWorldMaintenance();
+              assertDirectLibraryIdle();
+              if (directLibrary.isBusy() || godotCandidates.blocking) throw Error("WORLD_BUSY");
+            }
+            return craftminePackages.request(channel, params);
+          }
         }
         if (["world.archiveFailed", "world.restoreArchived", "world.archivedList"].includes(channel)) return worldRemoval.invoke(channel, params);
         if (channel === "world.createOptions") return {...await godotPanel.invoke(channel, params) as any, archiveFailed: true};
@@ -7336,6 +7364,7 @@ function registerIpc() {
   });
   handle(IPC.invoke.sessionCreate, async (input = {}) => {
     if (!host) throw new Error("host unavailable");
+    const creationWorld = await godotSelection().catch(() => null);
     const capabilityPromise = sessionCapabilityContext();
     const res = await host.call<{ session?: (RuntimeSession & { id?: string }) | null }>(
       "session.create",
@@ -7343,6 +7372,7 @@ function registerIpc() {
     );
     logger.app("session", "info", "session created", { sessionId: res.session?.id });
     if (!res.session) return res;
+    if (res.session.id) worldConversationNavigation.noteCreated({id: res.session.id, projectPath: res.session.projectPath}, creationWorld);
     const { providers, defaults } = await capabilityPromise;
     return { ...res, session: enrichSession(res.session, providers, defaults) };
   });

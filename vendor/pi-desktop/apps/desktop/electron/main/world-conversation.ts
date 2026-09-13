@@ -6,6 +6,7 @@ type Access = {
   sessions(): Promise<Session[]>;
   pluginEnabled(projectPath: string | null): boolean;
   domain(method: string, input: Record<string, unknown>): Promise<unknown>;
+  navigationMatches?(session: Session, worldId: string): boolean;
 };
 const token = (value: unknown): value is string => typeof value === "string" && /^[A-Za-z0-9._:-]{1,240}$/.test(value);
 const updated = (session: Session) => typeof session.updatedAt === "number" ? session.updatedAt : Date.parse(session.updatedAt ?? "") || 0;
@@ -37,8 +38,15 @@ export async function readWorldConversation(input: unknown, access: Access): Pro
     }
     await selected();
     const context = result?.context, binding = context?.binding;
-    if (context?.world?.id !== worldId || binding?.sessionId !== session.id || binding?.projectId !== projectId || !token(binding?.taskId)) continue;
-    return {worldId, sessionId: session.id, taskId: binding.taskId};
+    if (context?.world?.id === worldId && binding?.sessionId === session.id && binding?.projectId === projectId && token(binding?.taskId))
+      return {worldId, sessionId: session.id, taskId: binding.taskId};
+    if (access.navigationMatches?.(session, worldId)) {
+      // A real task in any world always supersedes a pre-turn navigation hint.
+      // This existing host-only read returns null only when no workspace exists.
+      const task = await access.domain("maintenance.context", {projectId, sessionId: session.id});
+      await selected();
+      if (task === null) return {worldId, sessionId: session.id};
+    }
   }
   await selected();
   return {worldId, sessionId: null};

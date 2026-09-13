@@ -1,75 +1,73 @@
-# First independent creation — session record
+# 第一次自主创作：单人测试记录
 
-Status: **not run**. Copy this template for one participant; retain failed attempts.
-Use `not run`, `unknown`, or `not supported by this build` instead of invented data.
+状态：**尚未执行**。每位参与者复制一份，保留所有失败尝试。
+无法确认的内容写“未执行”“未知”或“该版本不支持”，不能代填通过。
 
-## Identity and environment
+## 参与者与环境
 
-- Participant alias / prior experience:
-- Observer / date / time zone:
-- Actual application version / source commit / executable path:
-- Distribution origin / archive or folder manifest SHA-256:
-- Windows version / CPU / GPU / RAM / free disk / network:
-- Existing development software and runtimes:
-- Clean external machine, new profile on existing machine, or developer fixture:
-- Test profile identity / pre-existing content:
-- Evidence consent and private local evidence directory:
-- Supported direct-use asset ID / immutable version / package hash:
-- Supported editable object / actual edit capability:
-- AI connection absent for direct-use phase (evidence, or unknown):
+- 参与者匿名编号／相关经验：
+- 观察者／日期／时区：
+- 实际程序版本／源码提交／EXE 路径：
+- 发行物来源／ZIP 或文件夹清单 SHA-256：
+- Windows 版本／CPU／GPU／内存／可用空间／网络：
+- 已安装的开发软件与运行库：
+- 外部干净机器、原机器的新档案，还是开发测试环境：
+- 测试档案标识／已有内容：
+- 参与者同意保留的证据范围／私有本地证据目录：
+- 支持直接加入的素材 ID／固定版本／包哈希：
+- 支持编辑的对象／界面实际提供的修改能力：
+- 直接使用阶段未连接 AI 的证据（无法确认则填未知）：
 
-## Task and attempt log
+## 任务与尝试过程
 
-Record original wording verbatim. Never replace it with an easier requirement.
-Add a row for every attempt, clarification, repair, cancellation or return.
+逐字记录原始需求，不替换为更容易的要求。每次尝试、澄清、修复、取消或返回都新增一行。
 
-| Task / attempt | Original request or clarification | Start / end timestamps | Full elapsed time | User actions and visible stage times | Assistance: exact words / timestamp / takeover | Actual outcome and evidence |
+| 任务／尝试 | 原始需求或澄清 | 开始／结束时间 | 完整耗时 | 玩家操作与界面阶段耗时 | 帮助：原话／时间／是否代操作 | 实际结果与证据 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Acquire / extract / first launch | | | | | | Not run |
-| Open / ordinary play without AI | | | | | | Not run |
-| Find exact asset / place / check / adopt | | | | | | Not run |
-| First supported edit | | | | | | Not run |
-| Second edit or undo | | | | | | Not run |
-| Save / full process exit / cold reopen | | | | | | Not run |
-| World template save / export | | | | | | Not run |
-| Second user import / play / cold reopen | | | | | | Not run |
-| Optional existing standalone game export | | | | | | Not run |
-| Optional own Codex connection / AI edit | | | | | | Not run |
+| 取得包／解压／首次启动 | | | | | | 未执行 |
+| 不连接 AI 打开并游玩 | | | | | | 未执行 |
+| 找到固定素材／摆放／检查／加入 | | | | | | 未执行 |
+| 第一次受支持的编辑 | | | | | | 未执行 |
+| 第二次修改或撤销 | | | | | | 未执行 |
+| 保存／完全退出／冷启动重开 | | | | | | 未执行 |
+| 保存世界模板／导出 | | | | | | 未执行 |
+| 另一用户导入／游玩／冷启动重开 | | | | | | 未执行 |
+| 可选：现有独立游戏导出 | | | | | | 未执行 |
+| 可选：连接自己的 Codex／AI 修改 | | | | | | 未执行 |
 
-Outcome values: independently completed / completed after guidance / observer
-takeover / failed / participant stopped / not run / unsupported. Record both the
-application's reported state and what the player actually played and accepted.
+结果分类：独立完成／提示后完成／观察者代操作／失败／参与者主动停止／未执行／不支持。
+同时记录应用显示的状态，以及玩家实际玩到并认可的结果。
 
-## Exact content, persistence and sharing
+## 内容、保存与分享
 
-- Source world ID / formal build before and after / source version:
-- Added instance IDs / placement / check and adoption operation receipts:
-- Edit before and after / undo result / player satisfaction in their words:
-- Save acknowledgement / cold process restart / restored content and progress:
-- Template ID / version / exported ZIP size and SHA-256:
-- Recipient alias / actual client version / separate machine or profile:
-- Recipient received only ZIP (no author profile, account or original catalog):
-- Actual playable behavior / mismatches / recipient cold reopen:
-- Optional standalone export: exact target, artifact hash, recipient dependencies:
+- 原世界 ID／修改前后的正式构建／源码版本：
+- 新增实例 ID／位置／检查与采用操作凭据：
+- 编辑前后状态／撤销结果／玩家满意程度原话：
+- 保存确认／完全重启／恢复的内容与游玩进度：
+- 模板 ID／版本／导出 ZIP 大小与 SHA-256：
+- 接收者匿名编号／实际客户端版本／独立机器或档案：
+- 接收者是否只取得世界 ZIP，没有作者档案、账号和原始素材库：
+- 实际可玩行为／差异／接收者冷启动重开：
+- 可选独立游戏导出：确切目标、成品哈希、接收环境依赖：
 
-## Optional model run — actual configuration and usage
+## 可选 AI 环节：实际配置与用量
 
-- CLI version / connection outcome (no account email or credentials):
-- Player-selected model / reasoning effort / product configuration:
-- Original request / clarification answers / revision requests:
-- Actual model calls: direct-use path ____; optional AI path ____; evidence ____.
-- Full elapsed time to accepted playable result / stage breakdown:
-- Total tokens / cached input / uncached input / output (unknown if unavailable):
-- Failure, product timeout or cancellation / retained world and draft state:
-- No added evaluator token, call-count or whole-turn cap; deviations, if any:
+- CLI 版本／连接结果（不记录账号邮箱或凭据）：
+- 玩家选中的模型／思考强度／产品配置：
+- 原始需求／澄清回答／后续修改要求：
+- 实际模型调用：直接使用路径 ____；可选 AI 路径 ____；证据 ____。
+- 从开始到玩家认可可玩结果的完整耗时／各阶段耗时：
+- 总 token／缓存输入／非缓存输入／输出（无法取得则写未知）：
+- 失败、产品超时或取消／保留的世界和草稿状态：
+- 是否遵守不额外限制 token、模型调用数和整轮时长；如有偏离，说明：
 
-## Session judgment and follow-up
+## 判断与后续
 
-- First independent creation completed? Actual evidence:
-- Second modification accepted? Actual evidence:
-- Durable save and sharing outcomes:
-- Participant's most confusing step / requested improvement (original words):
-- Blockers: frequency in this session, severity, recovery time, owner:
-- Automatic checks (separate from human acceptance):
-- Untested scope and missing evidence:
-- Next action based on observed failure, not presumed preference:
+- 是否完成第一次自主创作？实际证据：
+- 第二次修改是否得到玩家认可？实际证据：
+- 保存恢复与分享结果：
+- 最困惑的步骤／希望改进的地方（玩家原话）：
+- 阻碍：本次出现次数、严重程度、恢复耗时、负责人：
+- 自动检查结果（与真人判断分开）：
+- 尚未测试的范围与缺失证据：
+- 根据实际失败确定的下一步行动：

@@ -55,6 +55,8 @@ export type AssetLibraryPanelProps = {
   audioSrc?: string | null;
   onUseAsset?: (asset: AssetVersion, modify: boolean) => Promise<void>;
   worldName?: string;
+  /** A navigation destination only; publication still requires its normal form. */
+  initialSection?: "browse" | "component" | "world";
 };
 
 const COPY = {
@@ -158,13 +160,14 @@ export function AssetLibraryPanel({
   audioSrc = null,
   onUseAsset,
   worldName,
+  initialSection = "browse",
 }: AssetLibraryPanelProps) {
   const ownedBridge = useMemo<AssetLibraryBridge | null>(() => bridge ? {
     call: (channel, payload) => bridge.call(channel, {...payload, ownerWorldId: worldId}),
   } : null, [bridge, worldId]);
   const controller: AssetLibraryController = useAssetLibrary(ownedBridge);
   const [view, setView] = useState<"list" | "detail">("list");
-  const [section, setSection] = useState<"browse" | "component" | "world">("browse");
+  const [section, setSection] = useState<"browse" | "component" | "world">(initialSection);
   const [usePending, setUsePending] = useState(false);
   const [useError, setUseError] = useState("");
   const requestUse = async (asset: AssetVersion, modify: boolean) => {

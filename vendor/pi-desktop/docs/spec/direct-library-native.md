@@ -72,3 +72,31 @@ may join the service's own in-flight operation; arbitrary candidate authority
 is never admitted. Ordinary edit/turn-start and maintenance yield during direct
 service work. Quit preparation refuses an in-flight installation/adoption, and
 final shutdown drains the service before disposing plugin and Core owners.
+
+## Measured waiting and duplicate reads (preview.22)
+
+Direct-use progress may expose a bounded native stage and its actual integer
+percent: claimed, import, export, reuse-export, stage-artifacts or check. Unknown
+worker stages are omitted; the UI retains its generic checking state. These are
+executor progress reports, not predicted completion times.
+
+Optional persisted timings record preparation from native request admission to
+Core's terminal check timestamp, excluding later polling and player decision
+wait. Adoption duration uses an in-process monotonic clock around the explicit
+apply path. Recovered historical operations without an observed duration do not
+invent one. Old receipts without timing fields remain readable.
+
+Simultaneous identical inspections and per-operation status reads share only
+the currently running read. Results are not cached across subsequent requests;
+new source/asset identity checks and all native builds/adoption guards remain.
+Cancellation is rechecked after installation-turn finalization. Native shutdown
+drains these shared reads before their plugin owner disappears.
+
+The main conversation's existing source-proposal panel uses a narrow gateway for
+sourceProposals, sourceJob and installSourceProposal. Only current-world exact
+proposal/job IDs are admitted; no paths, source, contexts or raw archives. The
+same package owner enforces frozen source CAS and native checks, with main-frame
+and active-operation guards. Unknown errors remain errors with readable retry
+instructions, not invented empty success. Regressions verify empty successful
+direct sessions show no permission error, and fabricated source/context inputs
+never reach the package owner.

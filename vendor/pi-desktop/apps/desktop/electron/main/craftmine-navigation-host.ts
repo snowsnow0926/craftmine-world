@@ -16,6 +16,7 @@ const HISTORY_CHANNELS = new Set([
   "godot.historyCompare", "godot.historyDiff",
 ]);
 const PUBLICATION_METHODS = new Set(["sourceList", "publishSource", "publishSourceStatus", "cancelPublishSource"]);
+const PROPOSAL_METHODS = new Set(["sourceProposals", "installSourceProposal", "sourceJob"]);
 
 type Request = { pluginId?: unknown; channel?: unknown; payload?: unknown };
 type Dependencies = {
@@ -45,12 +46,18 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
     return deps.invoke(channel, validateDirectLibraryRequest(payload));
   }
   if (channel === "package.request") {
-    if (typeof payload.method !== "string" || !PUBLICATION_METHODS.has(payload.method)) throw Error("PERMISSION_DENIED");
+    if (typeof payload.method !== "string" || !(PUBLICATION_METHODS.has(payload.method) || PROPOSAL_METHODS.has(payload.method))) throw Error("PERMISSION_DENIED");
     const params = payload.params as Record<string, unknown> | undefined;
     if (Object.keys(payload).some(key => !["worldId", "method", "params"].includes(key)) || typeof payload.worldId !== "string"
       || !/^[A-Za-z0-9._-]{1,128}$/.test(payload.worldId) || !params || typeof params !== "object" || Array.isArray(params) || params.worldId !== payload.worldId) throw Error("INVALID_PUBLICATION_REQUEST");
-    // Main routes this subset to the existing package service, which validates
-    // metadata and selected source. General import/install remains world-owned.
+    if (PROPOSAL_METHODS.has(payload.method)) {
+      const keys = payload.method === "sourceProposals" ? ["worldId"] : payload.method === "sourceJob" ? ["worldId", "jobId"] : ["worldId", "proposalId"];
+      if (Object.keys(params).some(key => !keys.includes(key))
+        || (payload.method === "sourceJob" && !/^gjob-[a-f0-9]{64}$/.test(String(params.jobId)))
+        || (payload.method === "installSourceProposal" && !/^source-[a-f0-9]{48}$/.test(String(params.proposalId)))) throw Error("INVALID_SOURCE_PROPOSAL_REQUEST");
+    }
+    // Existing bounded receipts and frozen proposal IDs only. General archive
+    // import, source writes and the private direct installer remain denied.
     return deps.invoke(channel, payload);
   }
   if (channel === "godot.runtimeSave") {

@@ -1,4 +1,5 @@
 import {useSyncExternalStore} from "react";
+import {DIRECT_CHECK_STAGES} from "./direct-library-contract";
 import type {AssetLibraryBridge} from "./use-asset-library";
 import type {LibraryReference} from "../../../lib/player-library";
 import type {DirectPosition, DirectLibraryOperation as DirectOperation, DirectLibraryInspection as DirectInspection} from "./direct-library-contract";
@@ -33,10 +34,15 @@ export function parseDirectOperation(raw: unknown, attempt: DirectAttempt): Dire
     || typeof value.draftRetained !== "boolean" || !Array.isArray(value.instanceIds) || !value.instanceIds.every(id => typeof id === "string")
     || !Number.isFinite(value.createdAt) || !Number.isFinite(value.updatedAt)) throw Error("DIRECT_LIBRARY_RECEIPT_INVALID");
   const error = record(value.error);
+  const check = record(value.checkProgress), timings = record(value.timings);
+  if (value.checkProgress !== undefined && (!DIRECT_CHECK_STAGES.includes(check.stage as any) || !Number.isInteger(check.percent) || Number(check.percent)<0 || Number(check.percent)>100)) throw Error("DIRECT_LIBRARY_RECEIPT_INVALID");
+  if (value.timings !== undefined && Object.entries(timings).some(([key,n])=>!["preparationMs","applyMs"].includes(key)||typeof n!=="number"||!Number.isFinite(n)||n<0)) throw Error("DIRECT_LIBRARY_RECEIPT_INVALID");
   return {operationId: String(value.operationId), worldId: String(value.worldId), ref: {...attempt.request.ref},
     ...(attempt.request.position ? {position: {...attempt.request.position}} : {}), status: value.status as DirectStatus,
     stage: value.stage, instanceIds: value.instanceIds as string[], draftRetained: value.draftRetained, modelCalls: 0,
     createdAt: Number(value.createdAt), updatedAt: Number(value.updatedAt),
+    ...(value.checkProgress ? {checkProgress:{stage:check.stage as NonNullable<DirectOperation["checkProgress"]>["stage"],percent:Number(check.percent)}} : {}),
+    ...(value.timings ? {timings:{...timings} as DirectOperation["timings"]} : {}),
     ...(typeof value.jobId === "string" ? {jobId: value.jobId} : {}), ...(typeof value.candidateId === "string" ? {candidateId: value.candidateId} : {}),
     ...(typeof error.code === "string" && typeof error.message === "string" ? {error: {code: error.code, message: error.message}} : {})};
 }

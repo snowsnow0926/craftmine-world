@@ -6,11 +6,15 @@ export type DirectLibraryRequest =
   | {action:'start';worldId:string;ref:DirectAssetRef;operationId:string;position?:DirectPosition}
   | {action:'status'|'cancel'|'apply';worldId:string;operationId:string};
 export type DirectLibraryInspection = {eligible:boolean;reason?:string;displayName?:string;compatibility:'unchecked';positionSupported:boolean};
+export const DIRECT_CHECK_STAGES = ['claimed','import','export','reuse-export','stage-artifacts','check'] as const;
+export type DirectCheckStage = typeof DIRECT_CHECK_STAGES[number];
 export type DirectLibraryOperation = {
   operationId:string;worldId:string;ref:DirectAssetRef;position?:DirectPosition;
   status:'preparing'|'checking'|'ready'|'applying'|'applied'|'cancelled'|'failed'|'interrupted';
   stage:string;instanceIds:string[];jobId?:string;candidateId?:string;
   error?:{code:string;message:string};draftRetained:boolean;modelCalls:0;createdAt:number;updatedAt:number;
+  checkProgress?:{stage:DirectCheckStage;percent:number};
+  timings?:{preparationMs?:number;applyMs?:number};
 };
 export type DirectLibraryResponse = DirectLibraryInspection | DirectLibraryOperation;
 const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);

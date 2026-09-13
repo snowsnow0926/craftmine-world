@@ -1,0 +1,520 @@
+{
+  "format": "craftmine.first-creation-completion-delivery/1",
+  "recordedAt": "2026-09-13T16:12:53.3951158Z",
+  "version": "0.14.4-preview.22",
+  "sourceCommit": "20aad1fb7ec3fef14e1dbbc9fae0ab120b0195b8",
+  "mainSha256": "ea8035957244697b78a637d7fcf922453aeaf869ef8e2048a3e54db95c6a4677",
+  "coreSha256": "a98d41134c763a665953e261c42f3fbb672a5ca521fc52c69cb01e7a15f6706c",
+  "packageInventorySha256": "2dc20211245a6789c0edc8782bc418b7c18b11370e0d86d0d1b389a4e900fd4a",
+  "archive": {
+    "directory": "D:\\Craftmine Releases\\FirstCreation-preview22-20aad1fb",
+    "archive": "D:\\Craftmine Releases\\FirstCreation-preview22-20aad1fb.zip",
+    "sha256": "2325dde3a4be7a39d47a82309397987f52e9c3075187cf92a28378183e78ef10",
+    "bytes": 1127972077,
+    "fileCount": 8451,
+    "totalBytes": 2211591468,
+    "extractedBytesVerified": true,
+    "extraction": "D:\\Craftmine Releases\\FirstCreation-preview22-20aad1fb.verify-dbcc5ac2-e9ca-424f-820a-c8b90929d31c",
+    "signature": "unsigned-local-preview",
+    "cleanWindowsVerified": false
+  },
+  "reports": {
+    "upgrade": {
+      "file": "D:/cm-rt/test-results/desktop-native-rt-14RtFg/continuation-8107e7b3-101e-43a2-81e2-b7eaf4f2d4e4.json",
+      "sha256": "b100c919fe139199e996c5a0b6948d3d1cf251a4097e05c8f91a0c044fa0d88b",
+      "passed": true,
+      "normalLaunches": 4,
+      "audits": [
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      ],
+      "preservedHistoricalLaunches": 1
+    },
+    "fresh": {
+      "file": "D:/cm-preview-rt/test-results/desktop-native-rt-lIVieJ/report.json",
+      "sha256": "4e8289e7b768b62d4ca0234e2d83de713019463b5646525cfb33d9e0fc3b4cf7",
+      "passed": true,
+      "normalLaunches": 5,
+      "audits": [
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      ]
+    },
+    "direct": {
+      "file": "D:/cm-preview-direct/test-results/desktop-native-complete-3cNbyf/report.json",
+      "sha256": "b35dd57369eaccf01782b75eeaef7340ea1a2a7bdd358a82d6c41df36b266cee",
+      "passed": true,
+      "normalLaunches": 2,
+      "audits": [
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      ]
+    },
+    "workflow": {
+      "file": "D:/cm-preview-workflow/test-results/desktop-native-complete-giUjXx/report.json",
+      "sha256": "ea839e4723518e05214da27a83183daa975ff2f39a8419dcb1c9cd714606b60a",
+      "passed": true,
+      "normalLaunches": 1,
+      "audits": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    "fluency": {
+      "file": "D:/cm-preview-fluency/test-results/desktop-native-complete-BhmMSn/report.json",
+      "sha256": "3427edac096b2a878c2813e2af7a98dcd3b1e51cd50f03a3a1059e50b472a38b",
+      "passed": true,
+      "normalLaunches": 2,
+      "audits": [
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        },
+        {
+          "type": "craftmine-headless-exit",
+          "violations": [],
+          "pageErrors": [],
+          "shutdownFailures": []
+        }
+      ]
+    }
+  },
+  "directOperations": [
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "operationId": "e492e7ea-bf9e-4c46-906a-a180ec984c3b",
+      "instanceIds": [
+        "ins-47c431b152f3b44c689ed26b"
+      ],
+      "prepareObservedMs": 29997.826,
+      "applyObservedMs": 6107.869999999995,
+      "nativeTimings": {
+        "preparationMs": 29892,
+        "applyMs": 5188
+      },
+      "modelCalls": 0
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "operationId": "5a14f2ca-f1c8-47de-a927-dcb06fe27026",
+      "instanceIds": [
+        "ins-85045cec6c7cefa3b9fd7cbd"
+      ],
+      "prepareObservedMs": 35199.928199999995,
+      "applyObservedMs": 6149.157300000006,
+      "nativeTimings": {
+        "preparationMs": 35176,
+        "applyMs": 5146
+      },
+      "modelCalls": 0
+    }
+  ],
+  "guide": {
+    "collapsed": true,
+    "insideSidebar": true,
+    "expanded": true,
+    "steps": 5,
+    "libraryVisible": true,
+    "shareVisible": true,
+    "progressConsentRequired": true,
+    "dismissed": true,
+    "bookmarkRetained": true,
+    "historyVisible": true,
+    "worldId": "world-cd0cbff7a1b5",
+    "headerUnchanged": true,
+    "worldUnchanged": true,
+    "oldGuideAbsent": true
+  },
+  "connection": {
+    "code": "ready",
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "version": "codex-cli 0.154.0-alpha.6.2"
+  },
+  "examples": [
+    {
+      "starterId": "promo-mainline",
+      "worldId": "world-9c152df39014",
+      "createToSnapshotMs": 33220.9627,
+      "saveMs": 21.32390000000305,
+      "rendererFrames": {
+        "worldId": "world-9c152df39014",
+        "surface": "PI renderer",
+        "elapsedMs": 2001.1000000238419,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.700000000004366,
+        "longIntervalsOver50Ms": 0
+      },
+      "engineAvailable": true,
+      "engineAuthority": "host-bound-source-and-pack-verified",
+      "engineFpsSample": {
+        "status": "measured",
+        "monitor": "TIME_FPS",
+        "rawValue": 60,
+        "rawUnit": "fps",
+        "value": 60,
+        "unit": "fps"
+      },
+      "engineGpuTime": {
+        "status": "unknown",
+        "monitor": null,
+        "unit": "ms"
+      }
+    },
+    {
+      "starterId": "promo-flight",
+      "worldId": "world-07902fe8976e",
+      "createToSnapshotMs": 27928.477400000003,
+      "saveMs": 4.779800000003888,
+      "rendererFrames": {
+        "worldId": "world-07902fe8976e",
+        "surface": "PI renderer",
+        "elapsedMs": 2005.2999999821186,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      },
+      "engineAvailable": true,
+      "engineAuthority": "host-bound-source-and-pack-verified",
+      "engineFpsSample": {
+        "status": "measured",
+        "monitor": "TIME_FPS",
+        "rawValue": 60,
+        "rawUnit": "fps",
+        "value": 60,
+        "unit": "fps"
+      },
+      "engineGpuTime": {
+        "status": "unknown",
+        "monitor": null,
+        "unit": "ms"
+      }
+    },
+    {
+      "starterId": "promo-rain",
+      "worldId": "world-e13211a8c9cf",
+      "createToSnapshotMs": 21926.314599999998,
+      "saveMs": 6.399900000003981,
+      "rendererFrames": {
+        "worldId": "world-e13211a8c9cf",
+        "surface": "PI renderer",
+        "elapsedMs": 2005.0999999940395,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      },
+      "engineAvailable": true,
+      "engineAuthority": "host-bound-source-and-pack-verified",
+      "engineFpsSample": {
+        "status": "measured",
+        "monitor": "TIME_FPS",
+        "rawValue": 60,
+        "rawUnit": "fps",
+        "value": 60,
+        "unit": "fps"
+      },
+      "engineGpuTime": {
+        "status": "unknown",
+        "monitor": null,
+        "unit": "ms"
+      }
+    },
+    {
+      "starterId": "promo-city",
+      "worldId": "world-0d4c65c485b0",
+      "createToSnapshotMs": 25184.243300000002,
+      "saveMs": 4.942300000009709,
+      "rendererFrames": {
+        "worldId": "world-0d4c65c485b0",
+        "surface": "PI renderer",
+        "elapsedMs": 2012.199999988079,
+        "frames": 122,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      },
+      "engineAvailable": true,
+      "engineAuthority": "host-bound-source-and-pack-verified",
+      "engineFpsSample": {
+        "status": "measured",
+        "monitor": "TIME_FPS",
+        "rawValue": 60,
+        "rawUnit": "fps",
+        "value": 60,
+        "unit": "fps"
+      },
+      "engineGpuTime": {
+        "status": "unknown",
+        "monitor": null,
+        "unit": "ms"
+      }
+    }
+  ],
+  "switches": [
+    {
+      "starterId": "promo-mainline",
+      "switchToSnapshotMs": 13080.069699999993
+    },
+    {
+      "starterId": "promo-flight",
+      "switchToSnapshotMs": 15224.458700000017
+    },
+    {
+      "starterId": "promo-rain",
+      "switchToSnapshotMs": 11721.941599999991
+    },
+    {
+      "starterId": "promo-city",
+      "switchToSnapshotMs": 10528.319599999988
+    }
+  ],
+  "coldReopenMs": 12089.0766,
+  "overlayHandlerSamples": [
+    {
+      "worldId": "world-9c152df39014",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 8.099999994039536,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-9c152df39014",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 4.299999982118607,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-9c152df39014",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 3.399999976158142,
+      "overlay": "closed",
+      "dialogVisible": false
+    },
+    {
+      "worldId": "world-07902fe8976e",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 5.199999988079071,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-07902fe8976e",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 2.9000000059604645,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-07902fe8976e",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 3,
+      "overlay": "closed",
+      "dialogVisible": false
+    },
+    {
+      "worldId": "world-e13211a8c9cf",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.299999982118607,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-e13211a8c9cf",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 2.899999976158142,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-e13211a8c9cf",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 2.300000011920929,
+      "overlay": "closed",
+      "dialogVisible": false
+    },
+    {
+      "worldId": "world-0d4c65c485b0",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.5999999940395355,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-0d4c65c485b0",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 2.800000011920929,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-0d4c65c485b0",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 2.7999999821186066,
+      "overlay": "closed",
+      "dialogVisible": false
+    }
+  ],
+  "heldInput": {
+    "worldId": "world-9c152df39014",
+    "before": [
+      0,
+      0.899999976158142,
+      6
+    ],
+    "held": [
+      0,
+      0.899999976158142,
+      3.9466667175293
+    ],
+    "movedWhileHeld": 2.0533332824707,
+    "paused": [
+      0,
+      0.899999976158142,
+      3.81916666030884
+    ],
+    "decelerationWaitMs": 1000,
+    "resumed": [
+      0,
+      0.899999976158142,
+      1.79249858856201
+    ],
+    "after": [
+      0,
+      0.899999976158142,
+      1.79249858856201
+    ],
+    "driftAfterConversation": 0,
+    "released": true
+  },
+  "extras": [
+    {
+      "name": "examples/matched-courtyard.zip",
+      "bytes": 4672617,
+      "sha256": "370db90d64fecd0c7c098c36febd2331acd0a32300e2650c012f4b0e79795e4b"
+    },
+    {
+      "name": "examples/companion-and-rain.zip",
+      "bytes": 7567907,
+      "sha256": "7204918acb0275de541cb2d97fbc1b5d3b433641b9e173cb02dc97cdff7a52d5"
+    },
+    {
+      "name": "examples/first-creation-pom-tree.zip",
+      "bytes": 7468740,
+      "sha256": "3dc8148969767183471476a7839b1f894a32662945a180a87050908c0848be87"
+    },
+    {
+      "name": "docs/CURRENT_WINDOWS_DELIVERY.md",
+      "bytes": 3592,
+      "sha256": "c611ba497703d2a3329e083f57ec8ac531a9b1b2e63469b32ba83721e6e70fc3"
+    },
+    {
+      "name": "docs/FIRST_CREATION_QUICKSTART_2026-09-13.md",
+      "bytes": 3123,
+      "sha256": "b7d2ce90b4e963ad87b5d36e616d7b64ef7eb51977e314664aca27bb800becca"
+    },
+    {
+      "name": "docs/FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md",
+      "bytes": 7068,
+      "sha256": "01f94143f0e697522c3bf41b2be30286d0f50f1a7de0b342d7add7b7ec682db4"
+    },
+    {
+      "name": "docs/FIRST_INDEPENDENT_CREATION_PLAN_2026-09-13.md",
+      "bytes": 7932,
+      "sha256": "3af8c4d8752989cc4a5d2bc39abade02384a4cbb525e5c7b249cf31ee77cfa03"
+    },
+    {
+      "name": "docs/templates/FIRST_CREATION_SESSION.md",
+      "bytes": 3876,
+      "sha256": "47d1524d8ccd2e6fb12ef916903dd492b545cb5ed11fc39952e4a3fcb9282d00"
+    }
+  ],
+  "limits": [
+    "Automated hidden client on this developer machine, no physical input or focus changes.",
+    "Window/source/PCK identity checked; short renderer and engine monitor samples are not a long gameplay benchmark.",
+    "Native roundtrip model calls measured from persisted real turns. CLI account verification did not generate content.",
+    "No external clean Windows or real participant acceptance; unsigned portable preview, no installer execution.",
+    "Test driver/report fixes after frozen source commit did not change the delivered application.",
+    "Raw reports retain original launch paths; later cleanup mappings are in the archive LOCATION/CLOSEOUT records."
+  ],
+  "launchCountScope": "Final package launches only; the old-world continuation also retains one historical source launch, excluded from final counts."
+}

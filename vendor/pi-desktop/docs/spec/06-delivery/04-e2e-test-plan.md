@@ -1,5 +1,10 @@
 # 04. E2E Test Plan
 
+First creation preview delivery additionally follows the
+[sealed portable export scenario](first-creation-preview-export.md#verification-scenario):
+relocated launch path, independent preview profile, exact extracted ZIP bytes,
+preserved original seal, and explicit separation from clean-machine acceptance.
+
 ## Codex promotional verification diagnostics (2026-09-13)
 
 An isolated candidate that starts and snapshots successfully but fails during
@@ -8930,9 +8935,46 @@ actual desktop restart evidence must be labeled separately.
 7. Switch pages/worlds during reads and polling. Old responses must not overwrite the active page; background timers must stop. Use isolated headless page scripts with Pointer Lock disabled and no input simulation.
 
 Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
-### Optional creation guide in the library (2026-09-10)
+### Optional first creation guide in the PI sidebar (2026-09-13)
 
-Open the actual library and confirm a collapsed six-step creation guide is inside the workbench. Expanding it must not change the fixed game chrome height. Navigate to checks using its existing action, verify the old guide is cleared, reopen the library and confirm it starts collapsed, then return to the world. No guide action may send a model request, prepare a draft, apply a candidate, or save progress. Use finite headless page scripts with no input simulation. Module-only DOM results are not assembled-client evidence.
+Before the full journey, create a world in an isolated no-model profile and
+close/reopen the application before any editor or model turn. Open the same
+world through the ordinary chooser, enter Create, and verify the same actual
+empty conversation and world editor surface restore without a model request.
+Then use the normal supported object editor; its ordinary Rust task binding
+must still be established by that operation. For an older world without any
+trustworthy conversation association, use the explicit sidebar Start creating
+form and verify a fresh empty session is registered, while home drafts/files
+and unrelated generic coding sessions stay intact. Do not infer a binding from
+editable browser preferences or choose an arbitrary empty sidebar row. See
+[the continuity contract](empty-world-conversation.md).
+
+Open the actual PI sidebar and expand the initially collapsed first creation
+guide. Its five reading pages cover opening/creating, direct catalog use,
+supported edits, save/reopen, and world-template sharing. Page selection and
+navigation must never mark a goal completed. Hide/reopen and renderer restart
+retain only the reading bookmark and visibility preference. With no selected
+world, only world selection is enabled. Verify Chinese and English, narrow
+sidebar layout, and the absence of the superseded workbench guide.
+
+Use guide forms to open the existing chooser, asset sheet, Create/Play layouts,
+version history, and the world publication tab. Sharing must still require
+ordinary publication metadata and explicit saved-progress consent. No guide
+action prepares, applies, publishes, saves, or submits AI. A retained unresolved
+direct operation has a current-world-only sidebar return link; returning reads
+its host status in the existing library. An applied receipt removes that link.
+A late preview-preparation reply after switching worlds must not reopen an old
+sheet. The native `worldCreationGuide` probe exercises the real sidebar and
+asset/publication/history surfaces and verifies unchanged world/header; it does
+not save or publish anything. Run it in a fresh isolated client so no pending
+publication attempt prechecks consent.
+
+`node tests/first-creation-guide-ui.mjs` exercises actual React navigation,
+guide and asset/publication forms with a controlled host fixture in isolated
+headless Chromium. It uses page-script `requestSubmit`, disables Pointer Lock,
+and never uses mouse, keyboard, click, fill or focus simulation. Fixture UI
+results remain distinct from assembled-native and real-player acceptance.
+See [the current guide contract](first-creation-guide.md).
 
 ### Finite runtime check expectation binding (2026-09-10)
 
@@ -10323,3 +10365,40 @@ deterministic bridge in an independent headless process. Native acceptance must
 separately verify real check/adoption and cold world reopening; fixture results
 are not native or human acceptance evidence. No real mouse/keyboard, input
 simulation, Pointer Lock or foreground windows are permitted.
+
+### Direct-use measured stages and concurrent reads
+
+During an actual direct install, observe allowlisted import/export/check stages
+from Core and validate percentages. After ready/apply, show real measured stage
+durations; close/reopen and retain them. A delayed poll must not increase the
+finished preparation duration. Duplicate concurrent reads share one native read,
+but the next request must recheck changed source/archive bytes. Cancel during
+turn finalization and require cancelled, never a stale ready state. Old receipts
+without optional timing fields remain usable. Record actual packaged timings
+separately from fixture call-count reduction; no generalized speedup is implied.
+### First independent creation and sharing roundtrip (2026-09-13)
+
+Run the ordinary PI New World form, direct catalog companion use, supported
+stock placement and scale/color editing, save and cold reopen, world template
+publication/export, then ZIP-only import into a second empty profile, native
+play and another cold reopen. Preserve exact catalog instance identity and
+edited stock properties, player inventory and reward ledgers. Prove zero
+observed model requests from actual session metrics. This edits an ordinarily
+placed supported object and does not claim arbitrary catalog GLB editing.
+See [the acceptance contract](first-creation-roundtrip.md) and
+`tests/first-creation-roundtrip-native.mjs` for evidence and scope boundaries.
+
+After adding the approved large companion, aim at unrelated empty ground and
+verify Place here remains available. Aim through oversized unsupported geometry
+and verify conservative target refusal. Reopen an exact previous sampler cohort,
+use the ordinary observer-upgrade action, and verify one pinned sampler update
+passes normal checking/adoption while authored source and progress survive.
+
+### Main conversation source proposals
+
+After an ordinary direct edit with no AI suggestions, the existing reuse panel
+must read its empty proposal list without PERMISSION_DENIED. Admit only exact
+current-world proposal/job identifiers to its existing install/check path;
+reject injected source/context/paths and private installer methods. Retain real
+failures with retry guidance and diagnostic details. General package authoring
+remains outside the main navigation gateway.

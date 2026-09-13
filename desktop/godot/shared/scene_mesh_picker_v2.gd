@@ -39,6 +39,7 @@ func _array_spec(instance: MeshInstance3D) -> Dictionary:
 	var triangles := 0
 	var vertices := 0
 	var reason := ""
+	var budget_reason := ""
 	for index in count:
 		var format := mesh.surface_get_format(index)
 		# Deformation or vertex updates can invalidate the ordinary static AABB.
@@ -47,17 +48,21 @@ func _array_spec(instance: MeshInstance3D) -> Dictionary:
 		var length := mesh.surface_get_array_len(index)
 		var indices := mesh.surface_get_array_index_len(index)
 		vertices += length
-		if length < 0 or indices < 0 or vertices > V2_MAX_MESH_VERTICES: return {"reason": "mesh-vertex-budget", "unbounded": true}
+		if length < 0 or indices < 0: return {"reason": "invalid-array-lengths", "unbounded": true}
+		if vertices > V2_MAX_MESH_VERTICES: budget_reason = "mesh-vertex-budget"
 		var elements := indices if indices > 0 else length
-		if elements > MAX_MESH_TRIANGLES * 3: return {"reason": "mesh-triangle-budget", "unbounded": true}
+		if elements > MAX_MESH_TRIANGLES * 3: budget_reason = "mesh-triangle-budget"
 		if mesh.surface_get_primitive_type(index) != Mesh.PRIMITIVE_TRIANGLES or elements % 3 != 0: reason = "unsupported-surface-primitive"
 		triangles += elements / 3
-		if triangles > MAX_MESH_TRIANGLES: return {"reason": "mesh-triangle-budget", "unbounded": true}
+		if triangles > MAX_MESH_TRIANGLES: budget_reason = "mesh-triangle-budget"
 		var material := _surface_material(instance, index)
 		if material.get("unbounded", false): return material
 		if material.has("reason"): reason = material.reason
 		specs.append({"surface": index, "vertices": length, "indices": indices, "triangles": elements / 3, "cull": material.get("cull", 0)})
-	return {"surfaces": specs, "triangles": triangles, "vertices": vertices, "reason": reason}
+	# All bounded metadata/material checks finish before budgets can become a
+	# spatial uncertainty. Oversized static meshes never allocate vertex arrays;
+	# their native bounds block a nearer ray, but do not disable unrelated ground.
+	return {"surfaces": specs, "triangles": triangles, "vertices": vertices, "reason": budget_reason if not budget_reason.is_empty() else reason}
 
 func _candidate_surfaces(candidate: Dictionary, counts: Dictionary) -> Dictionary:
 	if candidate.mesh.get_class() != "ArrayMesh":

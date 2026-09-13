@@ -10,6 +10,11 @@ const stageCopy: Record<DirectStatus, [string, string]> = {
   applied: ["已加入世界", "Added to the world"], cancelled: ["已取消", "Cancelled"],
   failed: ["未能加入", "Could not add"], interrupted: ["操作已中断", "Operation interrupted"],
 };
+const checkStageCopy = {
+  claimed: ["检查任务已接收", "Check accepted"], import: ["正在导入模型与资源", "Importing models and resources"],
+  export: ["正在构建世界", "Building the world"], "reuse-export": ["正在复用已验证构建", "Reusing a verified build"],
+  "stage-artifacts": ["正在准备运行文件", "Preparing runtime files"], check: ["正在运行世界检查", "Running world checks"],
+};
 
 /** Read-only eligibility precedes the explicitly requested native preparation. */
 export function DirectLibraryUse({bridge, worldId, asset, zh}: {bridge: AssetLibraryBridge | null; worldId: string | null; asset: AssetVersion; zh: boolean}) {
@@ -89,6 +94,11 @@ export function DirectLibraryActivity({bridge, worldId, zh}: {bridge: AssetLibra
       return <article key={attempt.request.operationId} data-direct-operation={attempt.request.operationId} data-direct-world={attempt.request.worldId} data-direct-status={status ?? "unknown"}>
         <strong>{attempt.displayName} · v{attempt.request.ref.version}</strong>
         <p role="status">{status ? stageCopy[status][zh ? 0 : 1] : zh ? "正在确认准备状态" : "Confirming preparation status"}</p>
+        {status === "checking" && operation?.checkProgress && <p data-direct-native-stage={operation.checkProgress.stage}>{checkStageCopy[operation.checkProgress.stage][zh ? 0 : 1]} · {operation.checkProgress.percent}%</p>}
+        {operation?.timings && <p className="asset-library-field-hint" data-direct-timings>
+          {operation.timings.preparationMs !== undefined && <span>{zh ? "准备及检查" : "Preparation and checks"}: {(operation.timings.preparationMs / 1000).toFixed(1)}{zh ? " 秒" : " s"}</span>}
+          {operation.timings.applyMs !== undefined && <span>{" · "}{zh ? "加入世界" : "Addition"}: {(operation.timings.applyMs / 1000).toFixed(1)}{zh ? " 秒" : " s"}</span>}
+        </p>}
         {operation?.draftRetained && status !== "applied" && <p>{zh ? "本次准备保留了草稿，原来的正式世界仍保留。" : "This preparation retained a draft; the original formal world remains available."}</p>}
         {status === "applied" && <p>{zh ? "可以关闭素材库继续游玩。通过原有修改与保存功能继续创作。" : "Close the library to continue playing. Use the existing editing and save controls to continue creating."}</p>}
         {status === "interrupted" && <p>{zh ? "应用重启后不会自动继续加入。请查看原因，再处理保留的草稿。" : "Restarting the app does not automatically add interrupted work. Review the reason and any retained draft."}</p>}
