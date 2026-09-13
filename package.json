@@ -34,7 +34,9 @@
     "doctor": "node app/harness/selfcheck.mjs",
     "test:desktop:native": "node tests/desktop-native.mjs",
     "test:wish-evaluation": "node --test tests/creation-model-evaluation.test.mjs tests/creation-model-metrics.test.mjs tests/promo-wish-plan.test.mjs",
-    "plan:wishes": "node scripts/prepare-promo-wishes.mjs"
+    "plan:wishes": "node scripts/prepare-promo-wishes.mjs",
+    "author:codex": "node scripts/codex-world-author.mjs",
+    "test:codex-author": "node --test tests/codex-world-author.test.mjs"
   },
   "engines": {
     "node": ">=22"

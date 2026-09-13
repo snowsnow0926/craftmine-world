@@ -9815,3 +9815,36 @@ collision, source editing and preserved progress. It uses no model calls and is
 not a substitute for ordinary-player visual quality or final response acceptance.
 All automatic verification stays headless, uses independent data directories,
 and never activates windows, sends mouse/keyboard input, or obtains Pointer Lock.
+
+## Opt-in Codex project author
+
+Follow [Codex project author](../codex-project-author.md) in a fresh independent
+data directory. Build the current plugin and use explicit sealed native paths.
+`doctor` must use the real local CLI login with no token copy and exact
+`gpt-6-astra`/`xhigh`, make no model request, and preserve an existing thread ID.
+Repeat it before the first turn: an empty ephemeral preflight must not leave an
+unresumable rollout ID. Missing native check/view services stay visibly unavailable.
+
+Submit the original tree request, then flowers/grass in the same data directory.
+Observe actual dynamic tool requests and native source receipts. Restart the host
+between turns: model, effort, world/session/repository identity, Codex rollout and
+earlier trees remain continuous. A completed model turn, imported asset or built
+candidate cannot be labeled applied/playable without the ordinary native evidence.
+Later prompts must preserve the same dog, requested combat, actual aircraft
+piloting and whole-city scope; this interface never hardcodes those outputs.
+
+Cancel during a tool request, queued work, Blender import, and unacknowledged
+Codex turn start. The host fences the native turn before reporting cancellation,
+drains workers and refuses late source writes. Restart after a forced host exit:
+record the old interruption, retain partial source and history, and use a fresh
+native turn with explicit same-session recovery. A failed fence retains recovery
+state and reports error. Foreign threads/worlds/turns, unknown tools, forged
+identity arguments and changed call replays must not mutate source.
+
+Verify exact-model rejection, process death, malformed protocol, missing login,
+unsupported CLI version, custom endpoint, unavailable rollout, and model reroute.
+No case may launch PI, substitute another model, expose credentials, or restore
+built-in filesystem/shell access. A second author process must be refused. These
+mock protocol and real native checks are separate from real model authoring and
+from normal player visual/playable acceptance. The reached surface is the project
+CLI, not the desktop composer or a browser UI.
