@@ -9,7 +9,7 @@ import{useAppStore,createCopiedWorldSession,materializeDraftSession}from'./src/s
 await i18n.use(initReactI18next).init({lng:'zh-CN',resources:{'zh-CN':{translation:{}}}});
 const f=window.fixture={calls:[],opened:[],selected:'w1',switchFailure:false,hold:null,version:0,installs:0};
 const hash='a'.repeat(64), world=id=>({id,title:id==='w1'?'博美与森林':'飞行世界',revision:1,updatedAt:Date.now(),state:'ready',base:{id:'creation-sandbox',label:'Godot 3D',delivered:true}});
-const examples=['mainline','flight','rain','city'].map(id=>({id:'promo-'+id,label:{mainline:'博美与森林',flight:'歼二十飞行',rain:'控雨世界',city:'城市漫游'}[id],description:'已保存的可玩示例',delivered:true,kind:'example',initialState:'authored-defaults'}));
+const examples=['mainline','flight','rain','city'].map(id=>({id:'promo-'+id,label:{mainline:'博美与森林',flight:'歼二十飞行',rain:'控雨世界',city:'城市漫游'}[id],description:'已保存的可玩示例',delivered:true,kind:'example',source:{id:'promo-'+id,version:'1.0.0',sha256:hash},initialState:'authored-defaults'}));
 f.host=async(channel,args={})=>{f.calls.push({channel,args});
  if(channel==='world.list')return{activeWorldId:f.selected,worlds:['w1','w2'].map(world)};
  if(channel==='world.createOptions')return{create:true,switch:true,bases:[{id:'creation-sandbox',label:'Godot 3D',delivered:true,starters:examples},{id:'web',label:'Web world',delivered:true,starters:[]}]};

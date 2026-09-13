@@ -171,7 +171,7 @@ export const ChatSurface = memo(function ChatSurface({ voiceEnabled = false }: {
                   )}
                 </h1>
               </div>
-              <OnboardingChecklist />
+              <OnboardingChecklist world={voiceEnabled} />
             </div>
           </div>
           <div className="home-composer-wrap">

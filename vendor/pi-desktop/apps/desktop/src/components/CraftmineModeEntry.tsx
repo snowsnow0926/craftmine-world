@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
-import { craftmineLang, worldStartersForBase, type CraftmineWorldStarter } from "../lib/craftmine-worlds";
+import { craftmineLang, type CraftmineWorldStarter } from "../lib/craftmine-worlds";
 import { useAppStore, beginPlayerWorldEntry, createCopiedWorldSession } from "../stores/app-store";
 import { WindowControls } from "./WindowControls";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
@@ -27,7 +27,7 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
   const isRunning = useAppStore(state => state.isRunning);
   const busy = opening || controller.busy;
   const examples = (controller.capabilities?.bases ?? []).flatMap(base =>
-    worldStartersForBase(controller.capabilities, base.id).filter(starter => starter.kind === "example")
+    (base.starters ?? []).filter(starter => starter.kind === "example" && starter.initialState === "authored-defaults" && starter.source)
       .map(starter => ({ base, starter })));
   const changed = zh ? "对话或输入已改变。世界已保留，请再次打开。" : "Your conversation or input changed. The world was kept; open it again.";
 

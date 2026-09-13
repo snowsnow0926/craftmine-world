@@ -15,18 +15,22 @@ const STEP_LOCALE_KEY: Record<string, string> = {
 /** First-run inline checklist (D021): rendered on the empty chat home until
  * every step is done or the user dismisses it. State comes from the host
  * (app.getOnboarding); actions deep-link into the relevant surface. */
-export function OnboardingChecklist() {
-  const { t } = useTranslation();
+export function OnboardingChecklist({world = false}: {world?: boolean}) {
+  const { t, i18n } = useTranslation();
   const onboarding = useAppStore((s) => s.onboarding);
   const setPage = useAppStore((s) => s.setPage);
   const setSettingsTab = useAppStore((s) => s.setSettingsTab);
   const openProject = useAppStore((s) => s.openProject);
 
   if (!onboarding?.showChecklist) return null;
-  const steps = onboarding.steps ?? [];
+  const steps = world ? [
+    {id: "world-ai", title: i18n.language.startsWith("zh") ? "连接创作 AI" : "Connect your creation AI", done: false, action: "world-ai"},
+    ...(onboarding.steps ?? []).filter(step => step.id === "prompt"),
+  ] : onboarding.steps ?? [];
   if (steps.length === 0 || steps.every((s) => s.done)) return null;
 
   const stepLabel = (id: string, fallback: string) => {
+    if (id === "world-ai") return fallback;
     const key = `onboarding.${STEP_LOCALE_KEY[id] ?? id}`;
     const label = t(key);
     return label === key ? fallback : label;
@@ -34,6 +38,11 @@ export function OnboardingChecklist() {
 
   const runAction = (id: string) => {
     switch (id) {
+      case "world-ai":
+        sessionStorage.setItem("craftmine.openCodexConnection", "1");
+        setSettingsTab("general");
+        setPage("settings");
+        break;
       case "settings.providers":
       case "addProvider":
       case "saveKey":

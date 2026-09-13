@@ -163,8 +163,8 @@ export function CraftmineNavigation() {
                   const original = useAppStore.getState(), sessionId = original.activeSessionId;
                   if (!worldId || !bridge) throw Error(lang === "zh" ? "请先打开一个世界。" : "Open a world first.");
                   const selected = await bridge.list();
-                  const bound = sessionId ? await bridge.call("world.conversation", {worldId, sessionId}) as {worldId?: string; sessionId?: string} : null;
-                  if (selected.activeWorldId !== worldId || useAppStore.getState().activeSessionId !== sessionId || (sessionId && (bound?.worldId !== worldId || bound.sessionId !== sessionId)))
+                  const target = await bridge.call("godot.creationTarget", {sessionId: sessionId ?? null}) as {worldId?: string};
+                  if (selected.activeWorldId !== worldId || useAppStore.getState().activeSessionId !== sessionId || target.worldId !== worldId)
                     throw Error(lang === "zh" ? "请先回到此世界的对话，再加入素材。" : "Return to this world's conversation before adding the asset.");
                   const text = worldAssetPrompt(asset, modify, lang === "zh");
                   const pending = useAppStore.getState().composerPrefill;
