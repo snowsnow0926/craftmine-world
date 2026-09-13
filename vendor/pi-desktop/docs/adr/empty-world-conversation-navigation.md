@@ -17,6 +17,12 @@ The session-to-world/project tuple is immutable and written atomically under
 the profile. A repeated acknowledgement is idempotent. This is not a turn,
 workspace, task, source scope, lease, permission grant, or model authorization.
 
+The current project is read from host `workspace.get` and rechecked before
+persistence. The first-run project getter may seed the host workspace after
+the main-process cache was initialized to null, so that cache is insufficient
+for this gate. Canonical existing-directory comparison handles native Windows
+path spelling, without changing previously established Rust project hashes.
+
 When resolving a conversation, an actual Rust task binding takes precedence.
 An exact navigation locator is usable only if the existing host-only
 `maintenance.context` read returns null, proving no workspace exists. A foreign,

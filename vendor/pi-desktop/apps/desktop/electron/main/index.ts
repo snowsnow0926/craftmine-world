@@ -24,7 +24,7 @@ import { homedir } from "node:os";
 import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { readWorldConversation } from "./world-conversation";
-import {createWorldConversationNavigation} from "./world-conversation-navigation";
+import {createWorldConversationNavigation, sameConversationProjectDirectory} from "./world-conversation-navigation";
 import { createPlayerWorlds } from "./player-worlds";
 import { createCraftmineQuitState } from "./craftmine-quit-state";
 import { creationRequestStatus } from "./creation-request-status";
@@ -6928,11 +6928,19 @@ function registerIpc() {
         if (!host || profileRestore || quitting || craftmineQuitPreparation) throw Error("WORLD_BUSY");
         const input = payload.payload;
         const selectedWorld = await godotSelection();
+        const workspace = await host.call<{workspace: {path: string} | null}>("workspace.get");
         const sessions = (await host.call<{sessions: SessionSummary[]}>("session.list")).sessions;
         const session = sessions.find(row => row.id === input.sessionId);
-        if (!session || activeTurns.has(session.id) || !pluginActiveInProject("craftmine.world", session.projectPath ?? null)) throw Error("WORLD_CONVERSATION_SESSION_CHANGED");
-        if (await godotSelection() !== selectedWorld) throw Error("WORLD_CONVERSATION_CHANGED");
-        return worldConversationNavigation.register(input, session, selectedWorld, currentWorkspacePath());
+        if (!session) throw Error("WORLD_CONVERSATION_SESSION_NOT_FOUND");
+        if (activeTurns.has(session.id)) throw Error("WORLD_CONVERSATION_SESSION_ACTIVE");
+        if (!pluginActiveInProject("craftmine.world", session.projectPath ?? null)) throw Error("WORLD_CONVERSATION_PLUGIN_DISABLED");
+        const [latestWorld, latestWorkspace] = await Promise.all([
+          godotSelection(), host.call<{workspace: {path: string} | null}>("workspace.get"),
+        ]);
+        if (latestWorld !== selectedWorld) throw Error("WORLD_CONVERSATION_CHANGED");
+        if (!sameConversationProjectDirectory(workspace.workspace?.path ?? null, latestWorkspace.workspace?.path ?? null)) throw Error("WORLD_CONVERSATION_PROJECT_CHANGED");
+        if (activeTurns.has(session.id)) throw Error("WORLD_CONVERSATION_SESSION_ACTIVE");
+        return worldConversationNavigation.register(input, session, selectedWorld, latestWorkspace.workspace?.path ?? null);
       }
       return readWorldConversation(payload.payload, {
         selectedWorld: godotSelection,

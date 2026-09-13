@@ -4,14 +4,16 @@ The original New World/copy flow creates a real PI session with zero messages
 and calls `world.conversation` with exactly
 `{action: "remember-created", worldId, sessionId}`. This route is main-frame
 only. Main validates the selected world before/after the session list read,
-real empty session, inactive turn, enabled plugin and current project. A
+real empty session, inactive turn, enabled plugin and current project. The
+project comes from authoritative host `workspace.get` reads before and after
+registration preparation; the synchronous workspace cache can still be empty
+after first-run workspace seeding and is not used for this ownership decision. A
 current-project comparison resolves both paths to their existing native
 canonical directory: Windows slash/case spelling differences are equivalent,
 while missing paths and different directories are rejected. The session's
 established Rust project hash is unchanged.
 
-A
-host-created-session observation from that same world/project is required for
+A host-created-session observation from that same world/project is required for
 first registration. Profile locators are atomic immutable tuples containing
 only `worldId`, `sessionId`, and `projectId`. Retrying the same tuple is allowed;
 changing world/project or registering an arbitrary old empty row is rejected.
@@ -42,3 +44,8 @@ host locators and task precedence; `tests/fb03-world-conversation-recovery-headl
 covers the actual hook/store and late navigation guards, including empty Create
 recovery; `tests/player-workflow-ui.mjs` covers actual Start creating and retained
 home content. These fixtures do not claim native or external-player acceptance.
+`tests/empty-world-conversation-native.mjs` separately drives ordinary New World,
+quits before any editor/model turn, reopens the same world through the chooser,
+verifies the same zero-message session with no task id, and enters the visible
+Create editor through the existing guide action. It uses real isolated
+offscreen native clients, ordinary page-script forms, and zero physical input.
