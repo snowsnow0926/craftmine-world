@@ -289,7 +289,7 @@ async function tracePreviewTraffic(label){
  }
  assert(target,'NATIVE_PREVIEW_TRANSPORT_REQUIRED');
  const read=async expression=>{const result=await cdp(target,'Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw Error('PREVIEW_TRACE_READ_FAILED');return result.result?.value;};
- await read(`(()=>{if(globalThis.__craftminePreviewTrace)throw Error('TRACE_EXISTS');const rows=[];const off=craftmineRuntime.on(message=>{if(message.type!=='request')return;rows.push({at:performance.now(),op:message.op,id:message.id,previewId:message.args?.previewId,sequence:message.args?.sequence,action:message.args?.action});if(rows.length>256)rows.shift();});globalThis.__craftminePreviewTrace={rows,off};return true;})()`);
+ await read(`(()=>{if(globalThis.__craftminePreviewTrace)throw Error('TRACE_EXISTS');const rows=[];const off=craftmineRuntime.on(message=>{if(message.type!=='request')return;rows.push({at:performance.now(),op:message.op,id:message.id,previewId:message.args?.previewId,sequence:message.args?.sequence,action:message.args?.action,position:message.args?.position,rotationY:message.args?.rotationY,scale:message.args?.scale,targetId:message.args?.targetId});if(rows.length>256)rows.shift();});globalThis.__craftminePreviewTrace={rows,off};return true;})()`);
  const trace={finish:async()=>{if(!previewTraces.has(trace))return;previewTraces.delete(trace);try{const requests=await read(`(()=>{const trace=globalThis.__craftminePreviewTrace;trace?.off();delete globalThis.__craftminePreviewTrace;return trace?.rows??[];})()`);report.previewTransports??=[];report.previewTransports.push({label,scope:state.formal,requests});save();}finally{target.close();}}};previewTraces.add(trace);return trace;
 }
 function previewPixels(beforeFile,afterFile){
@@ -302,6 +302,7 @@ async function previewVisible(){
 }
 async function previewAndCancel(label){
  const transport=await tracePreviewTraffic(label);
+ report.previewInputFields??=[];report.previewInputFields.push({label,values:await evaluate(`Object.fromEntries(Array.from(document.querySelectorAll('.creation-object-editor input[aria-label]'),n=>[n.getAttribute('aria-label'),n.value]))`)});save();
  const beforeFrame=await capture(label+'-baseline');
  // The actual preview button pauses the runtime. Close this first preview so
  // the snapshot baseline and later preview share that ordinary paused state.
