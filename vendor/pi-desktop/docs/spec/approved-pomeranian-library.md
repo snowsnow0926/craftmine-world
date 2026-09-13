@@ -65,3 +65,11 @@ installer preflight and `tests/godot-components/approved-pomeranian.mjs`.
 The native fixture verifies two real GLB instances, follow/wait/pet, isolated
 material editing and fresh-node serialized restoration. It is a component fixture,
 not player or live Codex acceptance; those remain integration scenarios.
+
+The live two-instance check found an inherited collision-guard bug: separated
+cylinder peers were incorrectly classified as unsupported shapes. The accepted
+component handles recognized cylinder/box peers before testing overlap; actual
+overlaps and unsupported shapes remain rejected. The fixture explicitly invokes
+`validate_restored_state` on two separated pets, then on a deliberate overlap,
+then after separation. Merely restoring serialized dictionaries was insufficient
+to prove the complete runtime restore contract.

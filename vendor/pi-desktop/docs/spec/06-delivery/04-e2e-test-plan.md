@@ -10036,3 +10036,7 @@ a proposal; adding companions sequentially remains supported.
 Cancel while a new proposal is being persisted: no late proposal remains visible;
 an already existing exact retry record must remain intact. During follow motion,
 the accepted dog's nose faces the direction of travel rather than its tail.
+Two separated companion cylinders must pass full restored-placement validation
+after adopting/reopening the second installation. A deliberately overlapping
+fixture must still fail `PET_RESTORE_OVERLAP`; do not bypass this check merely to
+make duplicate installation succeed.

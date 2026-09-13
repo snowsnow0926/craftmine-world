@@ -116,6 +116,13 @@ func _run() -> void:
 	first.set_following(true)
 	verify(first.restore(saved).is_empty() and first.snapshot() == saved, "restore preserves first name appearance wait state and pet count")
 	verify(second.snapshot() == peer_state, "restoring first does not mutate second persistent state")
+	verify(first.validate_restored_state().is_empty() and second.validate_restored_state().is_empty(), "separated cylinder peers pass full restored placement validation")
+	var second_saved: Dictionary = second.snapshot()
+	var overlapping: Dictionary = second_saved.duplicate(true)
+	overlapping.position = first.snapshot().position.duplicate()
+	verify(second.restore(overlapping).is_empty(), "overlap fixture restores before placement audit")
+	verify(first.validate_restored_state() == "PET_RESTORE_OVERLAP", "overlapping cylinder peers are still rejected")
+	verify(second.restore(second_saved).is_empty() and first.validate_restored_state().is_empty(), "separated peer restore clears the overlap without weakening the guard")
 	await process_frame
 	var reopened := Companion.new()
 	reopened.entity_id = "pet-first"

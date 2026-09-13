@@ -305,7 +305,8 @@ func _restored_body_overlap(own: Shape3D, own_transform: Transform3D, body: Phys
 			var own_height := _shape_height(own)
 			var peer_radius := _shape_horizontal_radius(shape)
 			var peer_height := _shape_height(shape)
-			if own_radius >= 0.0 and peer_radius >= 0.0 and horizontal < own_radius + peer_radius and absf(a.y - b.y) < (own_height + peer_height) / 2.0:
+			if own_radius >= 0.0 and peer_radius >= 0.0 and (shape is CylinderShape3D or shape is BoxShape3D):
+				if horizontal < own_radius + peer_radius and absf(a.y - b.y) < (own_height + peer_height) / 2.0:
 					return "PET_RESTORE_OVERLAP"
 			elif shape is CapsuleShape3D and own_radius >= 0.0:
 				# Exact distance from the vertical capsule segment to a solid
