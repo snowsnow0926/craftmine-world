@@ -10402,7 +10402,8 @@ current-world proposal/job identifiers to its existing install/check path;
 reject injected source/context/paths and private installer methods. Retain real
 failures with retry guidance and diagnostic details. General package authoring
 remains outside the main navigation gateway.
-# Persistent world goals and multi-turn creation
+
+## Persistent world goals and multi-turn creation
 
 Use the existing PI sidebar's World goals panel on a fresh world. Add a goal
 and preservation requirement without a model, close/reopen the app, then run
@@ -10415,3 +10416,37 @@ review action. After an actual later source adoption, the old review must render
 historical, including while async reload is pending. Agent proposals remain
 unaccepted until reviewed; changed brief revisions and foreign worlds refuse
 stale writes. Keep native gameplay/save checks separate from human goal status.
+
+## World composition recipes — 2026-09-14
+
+In the original PI Desktop asset library, open Compose gameplay for the selected
+world. Choose collect-to-unlock-flight, preserve the actual city, choose a target
+count and retain an additional whole-city requirement. Inspect the composition:
+exact archive versions/root hashes, source adaptation status, missing collection
+and gate logic, and the real 2400 m × 56 m runway requirement must appear. No
+task, source edit, model request or adoption may occur from inspection.
+
+Change a choice and verify the previous plan disappears. Change world/source
+while a request is outstanding and verify late/stale replies cannot hand off an
+old-world plan. Continue with AI only after reviewing current plan; verify the
+ordinary Composer receives the original wishes and exact refs without auto-send,
+focus, a changed backend/model or an overwritten pending prefill. Corrupt pinned
+catalog/archive bytes and forged world/context/path fields must fail closed.
+
+For integrated gameplay acceptance, send the ordinary request with the player's
+actual selected model/settings. Verify original city preservation, locked
+boarding before collection, reachable one-time targets and visible progress,
+unlock after the requested count, actual collision-validated runway and real
+takeoff/landing. Verify walking/camera/input return, save/cold reopen, then save
+as a new reusable world template through the existing publication flow. A ZIP,
+passed compilation, staged proposal or visible aircraft alone is not acceptance.
+Keep source/UI fixture results separate from native/model and human evidence.
+
+On the placement-preview bridge, use recipe version 2 and verify normal catalog
+latest browsing returns Pom/rain version 2 while all-version and exact version 1
+reads still return their original bytes. Install the new versions through the
+normal checks, interact with the real companion and rain, then save/cold reopen.
+Reopen an existing version 1 world and verify its identities, visual appearance,
+state and library references remain intact. A fixed recipe version 1 request
+against the newer bridge must report adaptation rather than silently swapping
+refs; unknown bridge hashes must not match the new exact cohorts.

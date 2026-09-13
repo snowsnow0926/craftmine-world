@@ -227,6 +227,19 @@ export function CraftmineNavigation() {
                 lang={lang}
                 worldId={controller.activeWorldId}
                 worldName={controller.activeWorld?.title}
+                onUseComposition={async ({plan, text}) => {
+                  const worldId = controller.activeWorldId, bridge = controller.bridge;
+                  const sessionId = useAppStore.getState().activeSessionId;
+                  if (!worldId || !bridge || plan.worldId !== worldId) throw Error("GODOT_WORLD_CHANGED");
+                  const selected = await bridge.list();
+                  const target = await bridge.call("godot.creationTarget", {sessionId: sessionId ?? null}) as {worldId?: string};
+                  if (selected.activeWorldId !== worldId || useAppStore.getState().activeSessionId !== sessionId || target.worldId !== worldId)
+                    throw Error(lang === "zh" ? "请先回到此世界的对话，再继续创作。" : "Return to this world's conversation before continuing.");
+                  if (useAppStore.getState().composerPrefill) throw Error(lang === "zh" ? "请先处理对话中待填入的内容。" : "Finish the pending conversation draft first.");
+                  useAppStore.setState({composerPrefill: {sessionId, worldId, text, fileReferences: [], append: true, focus: false}});
+                  setAssetsOpen(false);
+                  enterCraftmineMode("create", {explicit: true});
+                }}
                 onUseAsset={async (asset, modify) => {
                   const worldId = controller.activeWorldId, bridge = controller.bridge;
                   const original = useAppStore.getState(), sessionId = original.activeSessionId;

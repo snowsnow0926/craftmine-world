@@ -3,6 +3,8 @@ import {isAbsolute,parse,join,resolve,sep} from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {writeSelectedFile,desktopServiceError,type CraftmineDomainCall} from './craftmine-backup-service';
 
+import {validateCompositionPackageRequest,parseCompositionPlan} from '../../shared/world-composition-contract';
+
 const MAX_ZIP=5*1024*1024;
 export type PackageRequestOwner={projectId:string;sessionId:string|null;worldId:string;assertCurrent:()=>Promise<void>};
 const hash=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex');
@@ -88,6 +90,13 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           const result=await privateCall(method,{...input,...(preview?{preview}:{})});
           if(result.worldId!==worldId||result.operationId!==args.operationId||!['completed','cancelled'].includes(result.status))failure('PUBLICATION_RECEIPT_INVALID');
           if(result.status==='completed'&&(result.assetRef?.assetId!==args.assetId||result.assetRef?.version!==args.version||!/^[a-f0-9]{64}$/.test(result.assetRef?.contentHash)||!/^[a-f0-9]{64}$/.test(result.archiveSha256)||!['unavailable','source-world-view'].includes(result.previewStatus)))failure('PUBLICATION_RECEIPT_INVALID');
+          return result;
+        }
+        if(method==='compositionCatalog'||method==='compositionPlan'){
+          const request=validateCompositionPackageRequest(method,args);
+          const result=await privateCall(method,request);await selected(worldId);
+          if(method==='compositionPlan')return parseCompositionPlan(result,worldId);
+          if(result.worldId!==worldId||result.format!=='craftmine.world-composition-catalog/1'||result.applied!==false||!Array.isArray(result.recipes)||result.recipes.length>8)failure('COMPOSITION_RECEIPT_INVALID');
           return result;
         }
         if(method==='sourceProposals') {

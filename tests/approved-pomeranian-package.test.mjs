@@ -39,6 +39,7 @@ test('fixed model and playable package have distinct catalog classifications and
   const call=async(method,args)=>{
     calls.push({method,args});const key=args.assetId+'@'+args.version;
     if(method==='asset.read'){if(!rows.has(key))throw Object.assign(Error('missing'),{errorCode:'ASSET_NOT_FOUND'});return rows.get(key);}
+    if(method==='asset.previewBegin')return {claim:null};
     assert.equal(method,'asset.import');const bytes=fs.readFileSync(args.sourcePath);
     rows.set(key,{version_:{assetId:args.assetId,version:args.version,kind:args.kind,mediaKind:args.mediaKind,files:[{path:args.path,sha256:sha(bytes),bytes:bytes.length,mediaType:args.mediaType}]}});
   };

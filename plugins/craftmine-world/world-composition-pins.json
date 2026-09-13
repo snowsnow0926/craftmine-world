@@ -1,0 +1,54 @@
+{
+  "format": "craftmine.world-composition-pins/1",
+  "entries": [
+    {
+      "assetId": "cw.scene.forest-gateway",
+      "version": 1,
+      "archiveSha256": "536869158ed55beda23fb79019ebfcd21a96443cb76580c525c929cee982cdc6",
+      "rootContentHash": "f0cc741eb6dfef4e10622b69b3b2fa20baae3f0ab4bfec1b7226cbab9c55686c",
+      "label": "林间入口"
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "version": 1,
+      "archiveSha256": "b3070a8780f26a44e2602fe5b75e4b1ffe8e3cff9e4305ea52ba6b333ae4c4f8",
+      "rootContentHash": "900bb6a75ae84f118bf257633288560c208640eab77d1d47c2c0f844d50832d3",
+      "label": "演示同款可爱白色博美"
+    },
+    {
+      "assetId": "cw.module.rain-control",
+      "version": 1,
+      "archiveSha256": "633cc9a82137f6344504edc3382890e4ee319d8fcbe32c54008540e3804b5833",
+      "rootContentHash": "f34b43af707779c3c756a28a921febf9435808f9f7c77737cdee4b2d81a8860a",
+      "label": "可复用控雨：悬停与倒流"
+    },
+    {
+      "assetId": "cw.module.reusable-j20",
+      "version": 1,
+      "archiveSha256": "45f2f380e3c797d166d683c00d5838da07c0ffd49ff51928a8246adbefd3fd56",
+      "rootContentHash": "163781574a5b2fe3d427a2a159857e521448acec4793e4f6a08bd8eafd5f5879",
+      "label": "演示同款可驾驶歼二十"
+    },
+    {
+      "assetId": "cw.city.ward-street",
+      "version": 1,
+      "archiveSha256": "93d5de281ad0225223b3fd5dae517ee27ed4a50a7f2a7f84e08ad2382450f5e5",
+      "rootContentHash": "295f987dbf864275859973b3845b242e19c8a814bec898ee702ebba668815545",
+      "label": "峡谷城双屋街区"
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "version": 2,
+      "archiveSha256": "2c9c38faca756f6be9cdd787f8565243571ca736308706405710a5aa7225068a",
+      "rootContentHash": "a7881b2f946018bd747ec5c2eca1df50d4565e7787dc948869aa826f45e29469",
+      "label": "演示同款可爱白色博美"
+    },
+    {
+      "assetId": "cw.module.rain-control",
+      "version": 2,
+      "archiveSha256": "6ab46759457d9c97c743bacda5ffff496706380e44a5ffd30691f745258326b3",
+      "rootContentHash": "7ce8cb9bcab09856ad354aea893f5e149ebf5bfe64786bc925377d4e9d408e4a",
+      "label": "可复用控雨：悬停与倒流"
+    }
+  ]
+}

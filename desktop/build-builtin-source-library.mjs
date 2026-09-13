@@ -110,6 +110,9 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   packages.push({file:flightModelFile,bytes:flightModel});
   entries.push({assetId:'cw.model.approved-j20',version:1,kind:'object',mediaKind:'model',file:flightModelFile,bytes:flightModel.length,sha256:sha(flightModel),
     label:'演示同款歼二十模型（无驾驶行为）',tags:['builtin','reusable-world-content','model-only','approved-demo','歼二十','J20','飞机','aircraft'],source:flight.entry.source});
+  // Keep released v1 bytes discoverable while new exact-cohort versions are
+  // the normal latest catalog rows. No in-place replacement of old IDs/versions.
+  for(const upgraded of [buildApprovedPomeranianPackage({repository,version:2}),buildRainControlPackage({repository,version:2})]){packages.push({file:upgraded.file,bytes:upgraded.bytes});entries.push(upgraded.entry);}
   // Stage only after every resource and archive has passed validation.
   for(const fragment of buildCityFragmentPackages({repository})){packages.push({file:fragment.file,bytes:fragment.bytes});if(fragment.preview)packages.push(fragment.preview);entries.push(fragment.entry);}
   fs.mkdirSync(output,{recursive:true});
