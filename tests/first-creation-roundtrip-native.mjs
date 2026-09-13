@@ -277,7 +277,11 @@ async function selectEditedTree(id){
  await button('编辑对象');await until(()=>evaluate(`!!document.querySelector('[aria-label="尺寸 X"]')`),Boolean);
 }
 async function previewAndCancel(label){
- await panel('godot.runtimePause');const before=completeCreationProgress(await rpc('godotSnapshot'));
+ // The actual preview button pauses the runtime. Close this first preview so
+ // the snapshot baseline and later preview share that ordinary paused state.
+ await button('预览摆放');await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent).some(t=>t==='预览位置可用')`),Boolean);
+ await button('关闭预览');await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
+ const before=completeCreationProgress(await rpc('godotSnapshot'));
  await button('预览摆放');await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent).some(t=>t==='预览位置可用')`),Boolean);
  const frame=await capture(label+'-visible');await button('关闭预览');
  await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
