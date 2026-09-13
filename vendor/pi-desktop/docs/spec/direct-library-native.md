@@ -17,6 +17,8 @@ creating a draft. Eligibility means exactly one installable scene root, matching
 the source archive root; it does not certify target compatibility. Whole-world
 templates retain their new-world flow. Raw resources and multi-root archives
 cannot masquerade as directly installable objects.
+Explicit placement is offered only when the declared script node or package-local
+static scene root resolves to a 3D node; this does not execute package scripts.
 
 Start freezes the target native build/instance and source revision/hash, saves
 the operation, then invokes the existing package planner/materializer/check.
@@ -35,6 +37,8 @@ unfinished native work interrupted; it never silently reinstalls or applies.
 An explicitly resumed ready operation can bind a restarted native instance only
 when its original formal build still matches. A completed adoption is recovered
 from Core evidence, including a commit whose acknowledgement was lost.
+Orderly shutdown fences active work but retains a completed ready check for
+explicit same-build adoption after restart.
 
 Cancellation persists its fence before cancellation RPCs and cancels only its
 own check. A late installation reply updates retained-draft facts but cannot

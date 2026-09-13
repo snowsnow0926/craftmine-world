@@ -83,3 +83,12 @@ test('same operation with changed version or position is refused and raw package
 test('strict renderer protocol rejects paths, forged source authority, nonfixed refs and unbounded coordinates',()=>{
   for(const bad of [{...start,path:'D:/secret'},{...start,expectedSource:{}},{...start,ref:{...ref,displayName:'extra'}},{...start,ref:{...ref,version:'latest'}},{...start,position:{x:81,y:0,z:0}},{...start,position:{x:NaN,y:0,z:0}},{...start,operationId:'../outside'},{...action('apply'),ref}])assert.throws(()=>validateDirectLibraryRequest(bad));
 });
+
+test('orderly shutdown preserves a checked ready operation for explicit same-build restart adoption',async t=>{
+  const f=await fixture(t);await f.service.handle(start);await f.settle();f.state.status='ready';
+  assert.equal((await f.service.handle(action('status'))).status,'ready');
+  await f.service.stop();assert.equal(f.state.cancelled,0);
+  const restarted=f.create();assert.equal((await restarted.handle(action('status'))).status,'ready');
+  assert.equal(f.state.applies,0);assert.equal((await restarted.handle(action('apply'))).status,'applied');
+  assert.equal(f.state.installs,1);await restarted.stop();
+});
