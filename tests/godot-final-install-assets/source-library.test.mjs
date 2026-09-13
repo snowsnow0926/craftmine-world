@@ -12,8 +12,9 @@ async function fixture(t){
  const ref={assetId:'builtin.tree',version:1,contentHash:'c'.repeat(64)},calls=[],installs=[];
  const version={...ref,mediaKind:'package',displayName:'精选树',source:{origin:'Kenney',author:'Kenney',license:'CC0-1.0',licenseStatus:'verified'},files:[{path:'tree.zip',sha256:sha(archive),bytes:archive.length,mediaType:'application/x-godot-package'}]};
  const state={revision:1,manifestHash:'a'.repeat(64),resultError:false};
- const call=async(method,args)=>{calls.push({method,args});if(method==='asset.read')return {version_:version};if(method==='asset.bodyPath')return {...version.files[0],blobPath};if(method==='asset.search')return {items:[{...ref,tags:['builtin','prefab','nature'],source:version.source}]};if(method==='godotProject.index')return {worldId:'world',revision:state.revision,manifestHash:state.manifestHash};throw Error(method);};
+ const call=async(method,args)=>{calls.push({method,args});if(method==='world.read')return {id:'world',runtimeKind:'godot'};if(method==='godotProject.sourceContext')return {context:{projectId:'source',sessionId:'read',turnId:'readonly'}};if(method==='godotBuild.read')return state.job;if(method==='godotCandidate.read')return state.candidate;if(method==='asset.read')return {version_:version};if(method==='asset.bodyPath')return {...version.files[0],blobPath};if(method==='asset.search')return {items:[{...ref,tags:['builtin','prefab','nature'],source:version.source}]};if(method==='godotProject.index')return {worldId:'world',revision:state.revision,manifestHash:state.manifestHash,...(state.sourceExtra??{})};throw Error(method);};
  const installSource=async args=>{installs.push(args);assert.deepEqual(args.expectedSource,{revision:1,manifestHash:'a'.repeat(64)});if(state.resultError)throw Error('LOST_REPLY');return {worldId:'world',applied:false,archiveSha256:sha(archive),instanceIds:['tree-instance'],status:'check-queued',source:{revision:2,manifestHash:'b'.repeat(64)},job:{jobId:'gjob-'+'1'.repeat(64),status:'queued'}};};
+ installSource.readOperation=async()=>state.intent??null;
  const groupInstalls=[];
  const installSourceGroup=async args=>{
    groupInstalls.push(args);if(args.expectedSource.revision!==state.revision)throw Error('PACKAGE_PROPOSAL_SOURCE_CHANGED');if(state.resultError)throw Error('LOST_REPLY');
@@ -106,4 +107,26 @@ test('group preserves CAS, member receipt identities and exact retry operation a
  const result=await f.create().installProposal({worldId:'world',proposalId:p.proposalId});assert.equal(result.applied,false);
  assert.ok(f.groupInstalls.every(args=>JSON.stringify(args)===JSON.stringify(f.groupInstalls[0])));
  await assert.rejects(f.tool(s,{mode:'propose-group',items:[items[1],items[0]]}),/PROPOSAL_CONFLICT/);
+});
+
+test('direct inspection uses read-only Core source context and native installer freezes exact bytes',async t=>{
+ const f=await fixture(t),s=f.create();const info=await s.directInspect({worldId:'world',ref:f.ref});assert.equal(info.eligible,true);assert.equal(info.compatibility,'unchecked');assert.equal(f.installs.length,0);assert.equal(f.calls.filter(c=>c.method==='godotProject.sourceContext').length,1);
+ assert.equal(f.calls.some(c=>c.method==='turn.begin'),false);
+ const result=await s.directInstall({worldId:'world',ref:f.ref,operationId:'direct-fixture-01',expectedSource:info.source,position:{x:1,y:0,z:2}});assert.equal(result.applied,false);assert.equal(f.installs.length,1);assert.deepEqual(Buffer.from(f.installs[0].archiveBase64,'base64'),f.archive);
+ await assert.rejects(s.directInstall({worldId:'world',ref:{...f.ref,contentHash:'9'.repeat(64)},operationId:'direct-fixture-01',expectedSource:info.source}),/ASSET_CHANGED/);
+ f.version.mediaKind='model';await assert.rejects(s.directInspect({worldId:'world',ref:f.ref}),/NOT_SOURCE_PACKAGE/);
+});
+
+test('direct recovery binds check, candidate and current draft; only durable adoption bypasses completed task reads',async t=>{
+ const f=await fixture(t),s=f.create(),jobId='gjob-'+'1'.repeat(64),candidateId='candidate-direct';
+ assert.equal((await s.directStatus({worldId:'world',operationId:'direct-fixture-01'})).status,'unknown');
+ f.state.intent={worldId:'world',context:f.context,job:{id:jobId},receipt:{revision:1,manifestHash:f.state.manifestHash},instanceIds:['tree-instance'],applyRequest:{operation:{branchId:'main'}}};
+ f.state.job={worldId:'world',jobId,candidateId,buildId:'build-direct',status:'passed',sourceRevision:1,manifestHash:f.state.manifestHash,outputHash:'d'.repeat(64),taskId:'task-direct',branchId:'main'};
+ f.state.candidate={checkStatus:'passed',candidate:{worldId:'world',candidateId,status:'ready',buildId:'build-direct',checkJobId:jobId,sourceRevision:1,manifestHash:f.state.manifestHash,checkOutputHash:'d'.repeat(64)}};
+ f.state.sourceExtra={currentTaskId:'task-direct'};
+ assert.equal((await s.directStatus({worldId:'world',operationId:'direct-fixture-01'})).status,'ready');
+ f.state.revision=2;await assert.rejects(s.directStatus({worldId:'world',operationId:'direct-fixture-01'}),/SOURCE_CHANGED/);
+ f.state.candidate.adoption={worldId:'world',candidateId,buildId:'build-direct',wasApplied:true,inCurrentLineage:true};
+ assert.equal((await s.directStatus({worldId:'world',operationId:'direct-fixture-01'})).status,'applied');
+ f.state.candidate.candidate.checkOutputHash='f'.repeat(64);await assert.rejects(s.directStatus({worldId:'world',operationId:'direct-fixture-01'}),/UNVERIFIED/);
 });

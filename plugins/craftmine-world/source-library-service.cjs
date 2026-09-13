@@ -47,6 +47,49 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       ...(p.result.job?{job:{jobId:p.result.job.jobId,status:p.result.job.status}}:{})}}:{})});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
   return {
+    async directInspect(args){
+      exact(args,['worldId','ref']);const ref=validateAssetRef(args.ref);
+      const record=await call('world.read',{id:args.worldId});check(record.runtimeKind==='godot','GODOT_WORLD_REQUIRED');
+      const archive=await readArchive(ref);
+      if(archive.worldTemplate)return {eligible:false,reason:'WORLD_TEMPLATE_REQUIRES_NEW_WORLD',positionSupported:false,compatibility:'unchecked'};
+      const roots=archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall);
+      const root=roots[0],eligible=roots.length===1&&root.manifest.content.assetId===archive.archive.packageJson.root.id;
+      const {context}=await call('godotProject.sourceContext',{worldId:args.worldId});
+      const source=await call('godotProject.index',{context,worldId:args.worldId,offset:0,limit:1});
+      check(source.worldId===args.worldId&&Number.isSafeInteger(source.revision)&&/^[a-f0-9]{64}$/.test(source.manifestHash),'SOURCE_LIBRARY_SOURCE_IDENTITY_REQUIRED');
+      return {eligible,...(!eligible?{reason:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED'}:{}),positionSupported:eligible,compatibility:'unchecked',displayName:archive.record.version_.displayName,
+        source:{revision:source.revision,manifestHash:source.manifestHash}};
+    },
+    async directInstall(args){
+      exact(args,['worldId','operationId','ref','expectedSource','position']);id(args.operationId);
+      const ref=validateAssetRef(args.ref),archive=await readArchive(ref);check(!archive.worldTemplate,'WORLD_TEMPLATE_REQUIRES_NEW_WORLD');
+      const roots=archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall);
+      check(roots.length===1&&roots[0].manifest.content.assetId===archive.archive.packageJson.root.id,'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED');
+      return installSource({worldId:args.worldId,operationId:args.operationId,expectedSource:args.expectedSource,archiveBase64:archive.bytes.toString('base64'),...(args.position?{position:placement(args.position)}:{})});
+    },
+    async directStatus(args){
+      exact(args,['worldId','operationId']);id(args.operationId);
+      const intent=await installSource.readOperation(args);
+      if(!intent)return {status:'unknown',draftRetained:false};
+      check(intent.worldId===args.worldId,'SOURCE_LIBRARY_WORLD_MISMATCH');
+      const output={status:intent.job?'checking':'interrupted',draftRetained:!!intent.receipt,source:intent.receipt,instanceIds:intent.instanceIds??[],jobId:intent.job?.id??intent.job?.jobId};
+      if(!output.jobId)return output;
+      const job=await call('godotBuild.read',{worldId:args.worldId,jobId:output.jobId});
+      check(job.worldId===args.worldId&&(job.jobId??job.id)===output.jobId,'DIRECT_LIBRARY_JOB_MISMATCH');
+      output.status=job.status;output.candidateId=job.candidateId;output.buildId=job.buildId;
+      if(job.status!=='passed')return output;
+      const result=await call('godotCandidate.read',{worldId:args.worldId,candidateId:job.candidateId}),candidate=result.candidate;
+      check(result.checkStatus==='passed'&&candidate?.worldId===args.worldId&&candidate.checkJobId===output.jobId&&candidate.buildId===job.buildId&&candidate.sourceRevision===job.sourceRevision&&candidate.manifestHash===job.manifestHash&&candidate.checkOutputHash===job.outputHash,'DIRECT_LIBRARY_CANDIDATE_UNVERIFIED');
+      // A reply can be lost after formal adoption. Reconcile through Core's
+      // adoption record before inspecting the now completed draft context.
+      if(result.adoption?.wasApplied===true&&result.adoption.candidateId===job.candidateId&&result.adoption.buildId===job.buildId&&result.adoption.worldId===args.worldId){
+        output.status=result.adoption.inCurrentLineage===true?'applied':'historical';return output;
+      }
+      const source=await call('godotProject.index',{context:intent.context,worldId:args.worldId,branchId:job.branchId??intent.applyRequest.operation?.branchId??'main',offset:0,limit:1});
+      check(candidate.status==='ready'&&source.currentTaskId===job.taskId&&source.worldId===args.worldId&&source.revision===job.sourceRevision&&source.manifestHash===job.manifestHash,'DIRECT_LIBRARY_SOURCE_CHANGED');
+      if(candidate.content)check(source.content?.repoId===candidate.content.repoId&&source.content?.contentOid===candidate.content.contentOid&&source.content?.branchId===candidate.content.branchId,'DIRECT_LIBRARY_SOURCE_CHANGED');
+      return {...output,status:'ready'};
+    },
     async tool(args,context,worldId,toolCallId,assertActive=()=>{}){
       assertActive();
       const persistNew=async proposal=>{
