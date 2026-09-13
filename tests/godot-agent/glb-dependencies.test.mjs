@@ -22,7 +22,7 @@ test('malformed container lengths, versions and excessive URI lists are rejected
   assert.throws(()=>glbDependencies('a.glb',glb({images:Array.from({length:257},()=>({uri:'a.png'}))})),/PACKAGE_GLB_INVALID/);
 });
 test('shared base-class GLB dependencies bind external textures in sourceRequirements',async()=>{
- for(const dual of [false,true]){
+ for(const [dual,relocate] of [[false,false],[true,false],[true,true]]){
   const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
   const files=new Map(Object.entries({
     'project.godot':Buffer.from('[application]\nrun/main_scene="res://world.tscn"\n'),
@@ -33,6 +33,7 @@ test('shared base-class GLB dependencies bind external textures in sourceRequire
     'models/a.glb.import':Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n[params]\nmeshes/generate_lods=false\n'),
     'models/Textures/palette.png':Buffer.from('source requirement test bytes')
   }));
+  if(relocate){files.set('addons/previous/module.gd',files.get('module.gd'));files.delete('module.gd');files.set('world.tscn',Buffer.from(files.get('world.tscn').toString().replace('res://module.gd','res://addons/previous/module.gd')));}
   const manifestHash='a'.repeat(64),call=async(method,args)=>{
     if(method==='godotProject.index')return {worldId:'w',revision:1,manifestHash,baseId:'creation-sandbox',engineVersion:'4.7.2-stable',files:[...files].map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),nextOffset:null};
     const bytes=files.get(args.path);return {sha256:hash(bytes),encoding:'base64',bytesBase64:bytes.toString('base64'),nextOffset:null};
@@ -43,9 +44,9 @@ test('shared base-class GLB dependencies bind external textures in sourceRequire
   const requirements=resource.manifest.content.entry.sourceRequirements;
   assert.ok(requirements.some(entry=>entry.path==='models/Textures/palette.png'&&entry.sha256===hash(files.get(entry.path))));
   assert.ok(requirements.some(entry=>entry.path==='scripts/core/base.gd'));assert.ok(requirements.some(entry=>entry.path==='models/a.glb'));
-  assert.equal(resource.files.has('models/Textures/palette.png'),dual,'dual-use dependency needs both namespaced payload and exact original-path requirement');
+  assert.equal([...resource.files.values()].some(bytes=>bytes.equals(files.get('models/Textures/palette.png'))),dual,'dual-use dependency needs both namespaced payload and exact original-path requirement');
   assert.ok(requirements.some(entry=>entry.path==='models/a.glb.import'&&entry.sha256===hash(files.get(entry.path))),'shared model keeps its exact import policy');
-  assert.equal(resource.files.has('models/a.glb.import'),dual,'a payload model retains its paired policy even without a textual res reference');
-  if(dual)assert.deepEqual(resource.files.get('models/a.glb.import'),files.get('models/a.glb.import'));
+  assert.equal([...resource.files.values()].some(bytes=>bytes.equals(files.get('models/a.glb.import'))),dual,'a payload model retains its paired policy even without a textual res reference');
+  if(dual){const [modelPath]=[...resource.files].find(([name])=>name.endsWith('.glb'));assert.deepEqual(resource.files.get(modelPath+'.import'),files.get('models/a.glb.import'));for(const dependency of glbDependencies(modelPath,resource.files.get(modelPath)))assert.ok(resource.files.has(dependency));}
  }
 });

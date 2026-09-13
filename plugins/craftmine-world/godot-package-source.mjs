@@ -50,6 +50,31 @@ function dependencies(name,body) {
   if(name.endsWith('.mtl'))for(const match of body.matchAll(/^map_\w+\s+([^\r\n]+)$/gm)){check(!match[1].startsWith('-'),'PACKAGE_MATERIAL_OPTIONS_UNSUPPORTED');result.push(path.posix.normalize(path.posix.join(path.posix.dirname(name),match[1].trim())));}
   return result;
 }
+// Installed components already carry an addons/<asset> prefix. Re-exporting
+// that path verbatim nests every previous installation on Windows. Relocate
+// their payload into bounded groups, keeping opaque relative model references
+// together. A fresh extraction wrapper stays outside these groups.
+function payloadPaths(payload){
+  const paths=new Map([...payload.keys()].map(name=>[name,name]));
+  if(![...payload.keys()].some(name=>name.startsWith('addons/')))return paths;
+  const names=[...payload.keys()].filter(name=>name!=='_craftmine_component.tscn').sort(),parents=new Map(names.map(name=>[name,name]));
+  const root=name=>{let current=name;while(parents.get(current)!==current)current=parents.get(current);return current;};
+  const join=(a,b)=>{check(parents.has(b),'PACKAGE_SOURCE_DEPENDENCY_MISSING');parents.set(root(b),root(a));};
+  for(const name of names){
+    if(/\.(glb|obj|mtl)$/i.test(name))for(const dependency of dependencies(name,name.toLowerCase().endsWith('.glb')?payload.get(name):payload.get(name).toString('utf8')))join(name,dependency);
+    if(name.endsWith('.glb')&&payload.has(name+'.import'))join(name,name+'.import');
+  }
+  const groups=new Map();for(const name of names){const key=root(name);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(name);}
+  let index=0;
+  for(const group of groups.values()){
+    const prefix=path.posix.dirname(group[0]).split('/').filter(part=>part!=='.');
+    for(const name of group.slice(1)){const directory=path.posix.dirname(name).split('/');while(prefix.length&&!prefix.every((part,i)=>directory[i]===part))prefix.pop();}
+    const skip=prefix.length?prefix.join('/').length+1:0;
+    for(const name of group)paths.set(name,'r/'+index+'/'+name.slice(skip));
+    index++;
+  }
+  check(new Set(paths.values()).size===paths.size,'PACKAGE_RELOCATION_COLLISION');return paths;
+}
 const nodePath=node=>node.parent===null?'.':node.parent==='.'?node.name:node.parent+'/'+node.name;
 function sections(text){return text.replace(/\r\n/g,'\n').split(/(?=^\[(?:gd_scene|ext_resource|sub_resource|node|connection|editable)\b)/m).filter(value=>value.trim());}
 function extractSubtree(sceneText,wanted) {
@@ -205,11 +230,11 @@ export function createManagedPackageSourceService({call,bind,recoverCatalogDecla
       // A namespaced payload copy cannot satisfy an unchanged shared base's
       // original res:// path. Keep both records for dual-use dependencies.
       while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name))continue;const bytes=await loadFile(name);required.set(name,{path:name,sha256:hash(bytes)});if(name.toLowerCase().endsWith('.glb')){globalQueue.push(...dependencies(name,bytes));if(hasSourceFile(name+'.import'))globalQueue.push(name+'.import');}else if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
-      const rewritten={},inputActions=new Set();let total=0;
+      const relocated=payloadPaths(payload),rewritten={},inputActions=new Set();let total=0;
       for(const [name,bytes]of payload) {
         let output=bytes;
-        if(texts.test(name)) {let body=bytes.toString('utf8');body=body.replace(/res:\/\/([^"'\s)]+)/g,(full,ref)=>payload.has(ref)?'res://addons/'+args.assetId+'/'+ref:full).replace(/ uid="uid:\/\/[^"]+"/g,'');for(const match of body.matchAll(/Input\.(?:is_action_\w+|get_action_strength)\("([^"]+)"/g))inputActions.add(match[1]);output=Buffer.from(body);}
-        total+=output.length;check(output.length<=4*1024*1024&&total<=4*1024*1024,'PACKAGE_COMPONENT_TOO_LARGE');rewritten[name]=output;
+        if(texts.test(name)) {let body=bytes.toString('utf8');body=body.replace(/res:\/\/([^"'\s)]+)/g,(full,ref)=>payload.has(ref)?'res://addons/'+args.assetId+'/'+relocated.get(ref):full).replace(/ uid="uid:\/\/[^"]+"/g,'');for(const match of body.matchAll(/Input\.(?:is_action_\w+|get_action_strength)\("([^"]+)"/g))inputActions.add(match[1]);output=Buffer.from(body);}
+        total+=output.length;check(output.length<=4*1024*1024&&total<=4*1024*1024,'PACKAGE_COMPONENT_TOO_LARGE');rewritten[relocated.get(name)]=output;
       }
       for(const name of Object.keys(rewritten))if(name.endsWith('.gd')) {
         // A short leading-b hexadecimal UID stays within Godot's positive ID
@@ -226,7 +251,7 @@ export function createManagedPackageSourceService({call,bind,recoverCatalogDecla
         const ref=literal(value);check(ref?.startsWith('res://'),'PACKAGE_ATTRIBUTION_REFERENCE_INVALID');const declarationPath=ref.slice(6),original=payload.get(declarationPath);
         check(original&&original.length<=65536,'PACKAGE_ATTRIBUTION_MISSING');let declaration;try{declaration=JSON.parse(original.toString('utf8'));}catch{fail('PACKAGE_ATTRIBUTION_INVALID');}
         check(declaration?.format==='craftmine.resource-attribution/1'&&declaration.licenses&&typeof declaration.licenses==='object'&&!Array.isArray(declaration.licenses),'PACKAGE_ATTRIBUTION_INVALID');
-        sourceDeclarations.set(declarationPath,{path:declarationPath,sha256:hash(rewritten[declarationPath]),status:'source-declared'});
+        const relocatedPath=relocated.get(declarationPath);sourceDeclarations.set(relocatedPath,{path:relocatedPath,sha256:hash(rewritten[relocatedPath]),status:'source-declared'});
       }
       const licenses=sourceDeclarations.size?{sourceDeclarations:[...sourceDeclarations.values()]}:{};
       const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()],...(original?{sourceLineage:{resourceRef:parameterDeclaration.resourceRef,licenseStatus:'source-declared',licenses:original.licenses},...(original.entry.capabilities?{capabilities:original.entry.capabilities}:{})}:{})},interfaces:parameterDeclaration.status==='source-declared'?{parameters:parameterDeclaration.parameters}:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:original?.state??{},licenses};

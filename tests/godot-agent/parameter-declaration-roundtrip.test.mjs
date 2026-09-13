@@ -9,6 +9,7 @@ import {packStaticPackage,unpackStaticPackage} from '../../plugins/craftmine-wor
 import {contentHash} from '../../plugins/craftmine-world/package-format.mjs';
 import {resolveInstanceParameterDeclaration} from '../../plugins/craftmine-world/godot-instance-declaration.mjs';
 import {parseScene} from '../../desktop/godot/shared/scene_materializer.mjs';
+import {glbDependencies} from '../../plugins/craftmine-world/godot-package-source.mjs';
 const root=path.resolve(import.meta.dirname,'../..'),hash=value=>createHash('sha256').update(value).digest('hex');
 const script='extends Node3D\n@export var entity_id: String = ""\n@export var percent: int = 100\n@export var label: String = "default"\n';
 const payload={'module.gd':Buffer.from(script),'module.gd.uid':Buffer.from('uid://b01234567890\n'),'module.tscn':Buffer.from('[gd_scene load_steps=2 format=3]\n[ext_resource type="Script" path="res://addons/declared-module/module.gd" id="1"]\n[node name="Module" type="Node3D"]\nscript = ExtResource("1")\n')};
@@ -59,6 +60,34 @@ test('install -> local source override -> export -> second world preserves origi
  await a.installer({worldId:'a',operationId:'install-peer',archiveBase64:archive});
  const appended=JSON.parse(a.files.get('craftmine.instances.json'));assert.deepEqual(appended.futureMetadata,{retained:true});assert.deepEqual(appended.instances[0].futureField,{retained:true});assert.deepEqual(appended.instances[0].sourceDeclaration.resource,manifest);
 });
+test('ten install/export generations keep model paths bounded, relative textures/policy exact and declaration lineage intact',async()=>{
+ const directory=fs.mkdtempSync(path.join(root,'test-results/publication-paths-'));
+ const makeGlb=uri=>{const json=Buffer.from(JSON.stringify({asset:{version:'2.0'},images:[{uri}]})),body=Buffer.concat([json,Buffer.alloc((4-json.length%4)%4,32)]),head=Buffer.alloc(20);head.writeUInt32LE(0x46546c67);head.writeUInt32LE(2,4);head.writeUInt32LE(20+body.length,8);head.writeUInt32LE(body.length,12);head.writeUInt32LE(0x4e4f534a,16);return Buffer.concat([head,body]);};
+ const model=makeGlb('../Textures/palette.png'),other=makeGlb('../../Textures/palette.png'),policy=Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n[params]\nmeshes/generate_lods=false\n'),texture=Buffer.from('immutable texture fixture');
+ const sourceFiles={...payload,
+  'module.tscn':Buffer.from('[gd_scene load_steps=4 format=3]\n[ext_resource type="Script" path="res://addons/declared-module/module.gd" id="1"]\n[ext_resource type="PackedScene" path="res://addons/declared-module/models/model.glb" id="2"]\n[ext_resource type="PackedScene" path="res://addons/declared-module/models/deep/model.glb" id="3"]\n[node name="Module" type="Node3D"]\nscript = ExtResource("1")\nmetadata/craftmine_attribution = "res://addons/declared-module/provenance.json"\n[node name="One" parent="." instance=ExtResource("2")]\n[node name="Two" parent="." instance=ExtResource("3")]\n'),
+  'models/model.glb':model,'models/model.glb.import':policy,'models/deep/model.glb':other,'Textures/palette.png':texture,
+  'provenance.json':Buffer.from(JSON.stringify({format:'craftmine.resource-attribution/1',licenses:{code:{spdx:'MIT',text:'res://addons/declared-module/LICENSE.md'}}})),
+  'LICENSE.md':Buffer.from('Original license remains unchanged.\n')};
+ const initialContent={...content,files:Object.entries(sourceFiles).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)}))};
+ let zip=packStaticPackage({root:{id:content.assetId,version:1},resources:[{manifest:{format:'craftmine.resource/1',content:initialContent,contentHash:contentHash(initialContent)},files:sourceFiles}]}).toString('base64');
+ let previousHash=contentHash(initialContent);const lengths=[];
+ for(let generation=0;generation<10;generation++){
+  const name='player-component-'+String(generation).padStart(2,'0')+'-'+('a'.repeat(32)),world=fakeWorld(name,directory);
+  await world.installer({worldId:name,operationId:'install',archiveBase64:zip});
+  const exported=await world.exportOne(),resource=unpackStaticPackage(Buffer.from(exported.archiveBase64,'base64')).resources[0];
+  assert.equal(resource.manifest.content.entry.sourceLineage.resourceRef.contentHash,previousHash);
+  assert.deepEqual(resource.manifest.content.interfaces.parameters,parameters);
+  const models=[...resource.files].filter(([name])=>name.endsWith('.glb'));assert.equal(models.length,2);
+  for(const [name,bytes]of models){assert.ok(bytes.equals(model)||bytes.equals(other));const refs=glbDependencies(name,bytes);assert.equal(refs.length,1);assert.deepEqual(resource.files.get(refs[0]),texture);if(bytes.equals(model))assert.deepEqual(resource.files.get(name+'.import'),policy);}
+  const declaration=resource.manifest.content.licenses.sourceDeclarations[0];assert.equal(declaration.sha256,hash(resource.files.get(declaration.path)));assert.ok([...resource.files.values()].some(bytes=>bytes.equals(sourceFiles['LICENSE.md'])));
+  for(const [name,bytes]of resource.files)if(/\.(gd|tscn|json)$/.test(name))for(const match of bytes.toString().matchAll(/res:\/\/([^"'\s)]+)/g)){const prefix='addons/'+resource.manifest.content.assetId+'/';assert.ok(match[1].startsWith(prefix));assert.ok(resource.files.has(match[1].slice(prefix.length)),match[1]);}
+  const max=Math.max(...[...resource.files.keys()].map(name=>name.length));assert.ok(max<=45,'archive paths do not retain installation ancestors');lengths.push(max);
+  previousHash=resource.manifest.contentHash;zip=exported.archiveBase64;
+ }
+ assert.ok(Math.max(...lengths.slice(1))-Math.min(...lengths.slice(1))<=1,'after the first reused wrapper, only bounded group index width may grow');
+});
+
 test('legacy absence stays unknown; wrong world/ref/hash, wrapper and managed source never reuse declarations',async()=>{
  const directory=fs.mkdtempSync(path.join(root,'test-results/parameter-negative-'));const a=fakeWorld('neg',directory);await a.installer({worldId:'neg',operationId:'install',archiveBase64:archive});
  const baseline=new Map([...a.files].map(([key,value])=>[key,Buffer.from(value)]));const reset=()=>{a.files.clear();for(const [key,value]of baseline)a.files.set(key,Buffer.from(value));};
