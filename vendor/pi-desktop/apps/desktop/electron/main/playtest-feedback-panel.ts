@@ -8,6 +8,9 @@ export const PLAYTEST_CHANNELS=new Set(ACTIONS.map(action=>`playtest.${action}`)
 function fail(code:string):never {throw Error(code);}
 const stable=(value:any):any=>Array.isArray(value)?value.map(stable):value&&typeof value==="object"?Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])])):value;
 const hash=(bytes:string|Buffer)=>createHash("sha256").update(bytes).digest("hex");
+// Progress revisions identify the reviewed historical moment. Only a change
+// to the selected formal content invalidates permission to export that moment.
+const sameFormalContext=(a:any,b:any)=>["worldId","buildId","baseId","baseVersion","engineVersion","progressFormat"].every(key=>a[key]===b[key]);
 const keys=(value:any,allowed:string[])=>{if(!value||typeof value!=="object"||Array.isArray(value)||Object.keys(value).some(key=>!allowed.includes(key)))fail("PLAYTEST_INVALID_PARAMS");};
 async function readReport(filename:string) {
   if(!isAbsolute(filename))fail("PLAYTEST_INVALID_FILE");
@@ -49,7 +52,7 @@ export function createPlaytestFeedbackPanel(options:{
         const context=await options.domain("playtest.context",{worldId});
         const screenshot=input.includeScreenshot?await options.capture(worldId):null;
         await selected(worldId);
-        if(JSON.stringify(context)!==JSON.stringify(await options.domain("playtest.context",{worldId})))fail("PLAYTEST_WORLD_CHANGED");
+        if(!sameFormalContext(context,await options.domain("playtest.context",{worldId})))fail("PLAYTEST_WORLD_CHANGED");
         const body={format:"craftmine.playtest-feedback/1",createdAt:Date.now(),context,client:{version:options.client.version,commit:options.client.commit??null},description:input.description.trim(),expected:input.expected.trim(),replyTo:input.replyTo??null,screenshot};
         const report={...body,id:`feedback-${hash(JSON.stringify(stable(body)))}`};
         await options.domain("playtest.validate",{report});return remember(worldId,report,"local");
@@ -67,7 +70,7 @@ export function createPlaytestFeedbackPanel(options:{
       }
       if(grant.origin!=="local")fail("PLAYTEST_INVALID_PREVIEW");
       const file=await options.pick("export",`Craftmine-feedback-${grant.report.id.slice(9,21)}.json`);if(!file)return {status:"cancelled"};
-      const verify=async()=>{await selected(worldId);if(JSON.stringify(await options.domain("playtest.context",{worldId}))!==JSON.stringify(grant.report.context))fail("PLAYTEST_WORLD_CHANGED");return true;};
+      const verify=async()=>{await selected(worldId);if(!sameFormalContext(await options.domain("playtest.context",{worldId}),grant.report.context))fail("PLAYTEST_WORLD_CHANGED");return true;};
       await verify();const bytes=Buffer.from(JSON.stringify(grant.report,null,2)+"\n");await writeSelectedFile(file,bytes,verify);
       await options.domain("playtest.record",{worldId,report:grant.report,origin:"local"});
       return {status:"completed",id:grant.report.id,bytes:bytes.length,sha256:hash(bytes)};

@@ -84,7 +84,14 @@ impl TaskJournal {
       let report=validate(&args["report"])?;
       let origin=args["origin"].as_str().context("PLAYTEST_ORIGIN_REQUIRED")?;
       ensure!(matches!(origin,"local"|"imported"),"PLAYTEST_ORIGIN_REQUIRED");
-      if origin=="local" {ensure!(serde_json::to_value(&report.context)?==context,"PLAYTEST_WORLD_CHANGED");}
+      if origin=="local" {
+        // Keep the reviewed timestamp, progress revision/hash and screenshot
+        // unchanged after autosave. Formal content and world identity must
+        // still match; a later adopted build requires a new review.
+        let reviewed=serde_json::to_value(&report.context)?;
+        ensure!(["worldId","buildId","baseId","baseVersion","engineVersion","progressFormat"].iter()
+          .all(|key|reviewed[*key]==context[*key]),"PLAYTEST_WORLD_CHANGED");
+      }
       let body=serde_json::to_string(&report)?;
       if let Some(old)=self.db.query_row("SELECT body FROM craftmine_playtest_feedback WHERE world_id=?1 AND id=?2",params![world,report.id],|row|row.get::<_,String>(0)).optional()? {
         ensure!(old==body,"PLAYTEST_ID_CONFLICT");return Ok(json!({"id":report.id,"status":"recorded","reused":true}));

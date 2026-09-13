@@ -43,12 +43,16 @@ identity, context, report bytes and arbitrary RPC are denied. Native file grants
 are never exposed. Up to eight preview grants expire after fifteen minutes;
 the oldest grant is replaced when a ninth review is requested, so cancelled
 previews do not block subsequent feedback.
-world selection/lifecycle and local source context are rechecked before export.
+World selection/lifecycle and formal build/base/engine/progress-format identity
+are rechecked before export. Autosave-only progress changes do not invalidate a
+reviewed historical report: its timestamp, revision/content hash and screenshot
+remain exactly as previewed. A new formal build requires a fresh preview. The
+report is never silently recaptured or rewritten during confirmation.
 Reports are at most 800,000 bytes, PNGs at most 512 KiB, and journals at most
 100 reports per world. These are file/storage limits, not AI task limits.
 
 Private Rust methods are `playtest.context`, `validate`, `record`, `list`, `read`.
 Record validates exact schemas, canonical hash and optional screenshot identity.
-Local records must equal current Rust context; imported records retain original
+Local records must match current Rust formal-content identity; imported records retain original
 identity and have no authority over the author's world. No remote service,
 upload, messaging, account sharing or background model request is introduced.

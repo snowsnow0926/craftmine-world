@@ -23,9 +23,11 @@ test('world changes, renderer file paths and mismatched grants are refused',asyn
  f.select('other');await assert.rejects(f.service.request('playtest.export',{worldId:'other',previewId:p.previewId}),/PREVIEW_EXPIRED/);
  await assert.rejects(f.service.request('playtest.export',{worldId:'world-one',previewId:p.previewId}),/WORLD_CHANGED/);
 });
-test('world progress changed after preview cannot be exported, and oversized imports fail before parsing',async()=>{
+test('later autosave preserves exact reviewed bytes; a new formal build requires review',async()=>{
  const f=await fixture();const p=await f.service.request('playtest.preview',{worldId:'world-one',description:'One',expected:'Two',includeScreenshot:false});
- context.worldRevision++;try{await assert.rejects(f.service.request('playtest.export',{worldId:'world-one',previewId:p.previewId}),/WORLD_CHANGED/);}finally{context.worldRevision--;}
+ const oldHash=context.contentHash;context.worldRevision++;context.contentHash='c'.repeat(64);
+ try{assert.equal((await f.service.request('playtest.export',{worldId:'world-one',previewId:p.previewId})).status,'completed');assert.deepEqual(JSON.parse(await readFile(f.file)),p.report);assert.equal(p.report.context.worldRevision,0);assert.equal(p.report.context.contentHash,oldHash);}finally{context.worldRevision--;context.contentHash=oldHash;}
+ context.buildId='build-two';try{await assert.rejects(f.service.request('playtest.export',{worldId:'world-one',previewId:p.previewId}),/WORLD_CHANGED/);}finally{context.buildId='build-one';}
  await writeFile(f.file,'x'.repeat(800001));await assert.rejects(f.service.request('playtest.importPreview',{worldId:'world-one'}),/TOO_LARGE/);
 });
 test('repeated abandoned previews evict old grants and keep the current review usable',async()=>{

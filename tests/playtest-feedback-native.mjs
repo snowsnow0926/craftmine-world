@@ -12,7 +12,10 @@ try {
  await friend.start();await author.start();await friend.call('world.create',{id:'friend-world',title:'Friend fixture',world});await author.call('world.create',{id:'author-world',title:'Author fixture',world});
  const fp=panel(friend,'friend-world'),ap=panel(author,'author-world');
  const preview=await fp.request('playtest.preview',{worldId:'friend-world',description:'Door blocks the player',expected:'Walk through',includeScreenshot:false});
+ const autosaved=structuredClone(world.snapshot);autosaved.player.x=2;
+ await friend.call('world.saveProgress',{id:'friend-world',revision:0,baseBuild:'fixture-build',snapshot:autosaved});
  const exported=await fp.request('playtest.export',{worldId:'friend-world',previewId:preview.previewId});assert.equal(exported.status,'completed');
+ assert.deepEqual(JSON.parse(await readFile(file)),preview.report);assert.equal(preview.report.context.worldRevision,0);
  assert.equal((await friend.call('playtest.list',{worldId:'friend-world'})).items.length,1);
  const importPreview=await ap.request('playtest.importPreview',{worldId:'author-world'});assert.deepEqual(importPreview.report,preview.report);
  const commit=await ap.request('playtest.importCommit',{worldId:'author-world',previewId:importPreview.previewId});assert.equal(commit.reused,false);

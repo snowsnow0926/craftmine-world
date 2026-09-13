@@ -10416,8 +10416,11 @@ reviewed bytes, select them in a second author profile, review before confirming
 and cold-reopen the Rust journal. Re-import is idempotent. Compare different
 build identities, prepare an AI-review draft without submitting or overwriting
 existing text, export a linked reply and import it back in the friend profile.
+Autosave after review must export the exact original reviewed bytes without
+recapturing or changing timestamps, progress identity or screenshots; a new
+formal build still requires a fresh preview.
 Reject tampered/oversized files, injected paths, cross-world read IDs and changed
-world context after preview. Saved template version and compatibility metadata
+formal build after preview. Saved template version and compatibility metadata
 remain visible through the normal ZIP export/import/republication workflow.
 
 Targeted evidence: `tests/playtest-feedback.test.mjs`,
