@@ -38,7 +38,7 @@ try{
   await change('[data-composition-recipe]','collect-unlock-flight');await page.waitForSelector('[data-composition-count]');
   await change('[data-composition-count]','5');await change('[data-composition-scenery]','city-street');await change('[data-composition-weather]','rain');await change('[data-composition-wish]','保留整座城市和已有存档');
   await submit('[data-composition-plan-form]');await page.waitForSelector('[data-composition-plan]');
-  check('explicit choices and original wish reach read-only plan',await page.evaluate(()=>{const r=fixture.calls.at(-1).args.params.request;return r.choices.collectionCount===5&&r.choices.weather==='rain'&&r.choices.scenery==='city-street'&&r.wish==='保留整座城市和已有存档';}));
+  check('explicit choices and original wish reach read-only plan',await page.evaluate(()=>{const r=fixture.calls.at(-1).args.params.request;return r.recipeVersion===2&&r.choices.collectionCount===5&&r.choices.weather==='rain'&&r.choices.scenery==='city-street'&&r.wish==='保留整座城市和已有存档';}));
   check('missing logic, runway and remaining checks are visible without claiming completion',await page.evaluate(()=>!!document.querySelector('[data-composition-missing]')&&document.querySelector('[data-composition-runway]').textContent.includes('2400')&&fixture.handoffs.length===0));
   await page.screenshot({path:path.join(out,'composition-zh.png')});
   await page.evaluate(()=>fixture.revision=2);await submit('[data-composition-handoff-form]');await page.waitForSelector('[data-composition-error]');

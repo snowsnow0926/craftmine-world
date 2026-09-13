@@ -10427,3 +10427,12 @@ takeoff/landing. Verify walking/camera/input return, save/cold reopen, then save
 as a new reusable world template through the existing publication flow. A ZIP,
 passed compilation, staged proposal or visible aircraft alone is not acceptance.
 Keep source/UI fixture results separate from native/model and human evidence.
+
+On the placement-preview bridge, use recipe version 2 and verify normal catalog
+latest browsing returns Pom/rain version 2 while all-version and exact version 1
+reads still return their original bytes. Install the new versions through the
+normal checks, interact with the real companion and rain, then save/cold reopen.
+Reopen an existing version 1 world and verify its identities, visual appearance,
+state and library references remain intact. A fixed recipe version 1 request
+against the newer bridge must report adaptation rather than silently swapping
+refs; unknown bridge hashes must not match the new exact cohorts.

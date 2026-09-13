@@ -35,6 +35,20 @@
       "archiveSha256": "93d5de281ad0225223b3fd5dae517ee27ed4a50a7f2a7f84e08ad2382450f5e5",
       "rootContentHash": "295f987dbf864275859973b3845b242e19c8a814bec898ee702ebba668815545",
       "label": "峡谷城双屋街区"
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "version": 2,
+      "archiveSha256": "2c9c38faca756f6be9cdd787f8565243571ca736308706405710a5aa7225068a",
+      "rootContentHash": "a7881b2f946018bd747ec5c2eca1df50d4565e7787dc948869aa826f45e29469",
+      "label": "演示同款可爱白色博美"
+    },
+    {
+      "assetId": "cw.module.rain-control",
+      "version": 2,
+      "archiveSha256": "6ab46759457d9c97c743bacda5ffff496706380e44a5ffd30691f745258326b3",
+      "rootContentHash": "7ce8cb9bcab09856ad354aea893f5e149ebf5bfe64786bc925377d4e9d408e4a",
+      "label": "可复用控雨：悬停与倒流"
     }
   ]
 }

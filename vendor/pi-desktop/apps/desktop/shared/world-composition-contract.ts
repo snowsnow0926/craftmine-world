@@ -1,6 +1,6 @@
 export type CompositionRequest = {
   recipeId: "companion-exploration" | "rain-exploration" | "collect-unlock-flight";
-  recipeVersion: 1;
+  recipeVersion: 1 | 2;
   choices: {scenery: "keep" | "forest" | "city-street"; companion: boolean; weather: "keep" | "rain"; collectionCount: number};
   wish?: string;
 };
@@ -21,12 +21,12 @@ const exact = (value: Record<string, unknown>, keys: string[]) => {
 };
 export function validateCompositionRequest(input: unknown): CompositionRequest {
   const value = record(input); exact(value, ["recipeId", "recipeVersion", "choices", "wish"]);
-  if (!["companion-exploration", "rain-exploration", "collect-unlock-flight"].includes(value.recipeId) || value.recipeVersion !== 1) throw Error("COMPOSITION_RECIPE_VERSION_REQUIRED");
+  if (!["companion-exploration", "rain-exploration", "collect-unlock-flight"].includes(value.recipeId) || ![1, 2].includes(value.recipeVersion)) throw Error("COMPOSITION_RECIPE_VERSION_REQUIRED");
   const choices = record(value.choices); exact(choices, ["scenery", "companion", "weather", "collectionCount"]);
   if (!["keep", "forest", "city-street"].includes(choices.scenery) || typeof choices.companion !== "boolean" || !["keep", "rain"].includes(choices.weather)
     || !Number.isInteger(choices.collectionCount) || (value.recipeId === "collect-unlock-flight" ? choices.collectionCount < 1 || choices.collectionCount > 12 : choices.collectionCount !== 0)) throw Error("COMPOSITION_CHOICES_REQUIRED");
   if (value.wish !== undefined && (typeof value.wish !== "string" || new TextEncoder().encode(value.wish).length > 6000 || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value.wish))) throw Error("COMPOSITION_WISH_INVALID");
-  return {recipeId: value.recipeId, recipeVersion: 1, choices: {...choices} as CompositionRequest["choices"], ...(value.wish === undefined ? {} : {wish: value.wish})};
+  return {recipeId: value.recipeId, recipeVersion: value.recipeVersion, choices: {...choices} as CompositionRequest["choices"], ...(value.wish === undefined ? {} : {wish: value.wish})};
 }
 export function validateCompositionPackageRequest(method: unknown, input: unknown): Record<string, unknown> {
   const value = record(input);

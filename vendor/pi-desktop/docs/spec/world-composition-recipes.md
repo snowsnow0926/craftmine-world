@@ -34,7 +34,8 @@ The existing renderer conversation/selected-world identity checks still apply.
 `godot_source_library` retains search/read/propose/propose-group and adds:
 
 - `mode: "recipes"`: immutable catalog format
-  `craftmine.world-composition-catalog/1`, three recipe IDs/version 1 and choices.
+  `craftmine.world-composition-catalog/1`, three recipe IDs/current version 2 and
+  choices. Exact historical recipe version 1 remains supported by `compose`.
 - `mode: "compose", request: {recipeId, recipeVersion, choices, wish?}`: plan
   format `craftmine.world-composition-plan/1`. Choices require all four fields:
   `scenery`, `companion`, `weather`, `collectionCount`. The selected recipe and
@@ -53,6 +54,16 @@ Plan resolves actual catalog records, verifies those pins and reads the bytes
 through the existing archive validator before describing their contracts.
 Original licence/provenance remains unchanged, including unverified generated
 model rights. A raw GLB is never selected as a playable companion or aircraft.
+
+Recipe version 1 retains the released Pom/rain component version 1 pins. Recipe
+version 2 selects Pom/rain version 2, which adds the exact placement-preview
+bridge source cohorts while retaining the three released requirement profiles.
+Other selected components retain their original versions. The built-in catalog
+has 30 version rows: all 28 preview22 rows remain byte-identical, with separate
+`.v2.zip` files for the two additions. `latestOnly` selects version 2 for normal
+browsing; turning it off or reading an exact old reference still yields version
+1. An old version is never silently redirected to version 2. See
+[component bridge compatibility](component-preview-compatibility.md).
 
 Source preflight pages `godotProject.index` at its actual Core limit of 32 rows,
 pins every continuation to the first revision/hash, bounds inspection at 8192

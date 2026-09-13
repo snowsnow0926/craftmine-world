@@ -32,3 +32,10 @@ measured source and archive identities, while end-to-end playability remains an
 independently tested result. Whole-city wishes remain intact even when a recipe
 offers an optional street fragment. New recipes/asset versions require new
 versioned catalog data and targeted verification, not mutating old pins.
+
+The placement-preview bridge follow-up applies this rule to two affected
+components. Their released version 1 requirement hashes are fixed; version 2
+adds exact new bridge profiles and uses separate ZIP names. Existing catalog
+rows and all 28 preview22 packages remain intact. Current recipe version 2
+selects the new versions explicitly while recipe version 1 retains old refs.
+Native gameplay compatibility remains an independent release gate.

@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {buildBuiltinSourceLibrary} from '../desktop/build-builtin-source-library.mjs';
+import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 const require=createRequire(import.meta.url);
 const {createSourceLibraryService}=require('../plugins/craftmine-world/source-library-service.cjs');
 const {compositionCatalog,validateCompositionRequest,assessRequirements}=require('../plugins/craftmine-world/world-composition.cjs');
@@ -29,8 +30,8 @@ async function fixture(t){
 }
 test('recipes are explicit versioned choices, never keyword classification or mutable catalog references',()=>{
   const catalog=compositionCatalog();assert.equal(catalog.recipes.length,3);assert.equal(catalog.applied,false);
-  catalog.recipes[0].version=99;assert.equal(compositionCatalog().recipes[0].version,1);
-  assert.throws(()=>validateCompositionRequest({...request(),recipeVersion:2}),/VERSION_REQUIRED/);
+  catalog.recipes[0].version=99;assert.equal(compositionCatalog().recipes[0].version,2);
+  assert.throws(()=>validateCompositionRequest({...request(),recipeVersion:99}),/VERSION_REQUIRED/);
   assert.throws(()=>validateCompositionRequest({...request(),worldId:'other'}),/INVALID_PARAMS/);
   assert.throws(()=>validateCompositionRequest({...request(),choices:{...request().choices,collectionCount:0}}),/COUNT_INVALID/);
   assert.throws(()=>validateCompositionRequest({...request(),choices:{...request().choices,fly:true}}),/INVALID_PARAMS/);
@@ -40,7 +41,7 @@ test('real shipped ZIPs resolve exact roots, versions and permissions while cust
   const f=await fixture(t),plan=await f.service.tool({mode:'compose',request:request()},f.context,'world-test','call-1');
   assert.equal(plan.components.length,4);assert.equal(plan.applied,false);assert.equal(plan.compatibility,'not-runtime-verified');
   assert.equal(plan.components.some(row=>row.archiveRef.assetId.startsWith('cw.model.')),false);
-  for(const component of plan.components){const entry=f.catalog.entries.find(row=>row.assetId===component.archiveRef.assetId);assert.equal(component.archiveRef.version,entry.version);assert.equal(component.archiveSha256,entry.sha256);assert.equal(component.rootContentHash,entry.rootContentHash);assert.notEqual(component.archiveRef.contentHash,component.rootContentHash);}
+  for(const component of plan.components){const entry=f.catalog.entries.find(row=>row.assetId===component.archiveRef.assetId&&row.version===component.archiveRef.version);assert.equal(component.archiveRef.version,entry.version);assert.equal(component.archiveSha256,entry.sha256);assert.equal(component.rootContentHash,entry.rootContentHash);assert.notEqual(component.archiveRef.contentHash,component.rootContentHash);}
   assert.deepEqual(plan.missingLogic.map(row=>row.id),['collection-objective','flight-unlock']);assert.equal(plan.missingLogic[0].count,3);
   assert(plan.checks.find(row=>row.id==='physical-runway').detail.includes('2400 m'));assert.equal(plan.request.wish,request().wish);
   assert.equal(JSON.stringify(plan).includes(f.root),false);assert.equal(JSON.stringify(plan).includes('archiveBase64'),false);
@@ -71,3 +72,17 @@ test('ended turns cannot continue source or archive reads',async t=>{
 });
 
 test('source changes during immutable reads reject stale composition instead of returning mixed revisions',async t=>{const f=await fixture(t);f.state.changeSourceOnBuiltin=true;await assert.rejects(f.service.compositionPlan({worldId:'world-test',request:request()}),/COMPOSITION_SOURCE_CHANGED/);});
+
+test('recipe v2 matches the exact preview bridge cohort while fixed recipe v1 remains an explicit adaptation case',async t=>{
+  const f=await fixture(t),entry=f.catalog.entries.find(row=>row.assetId==='cw.module.approved-pomeranian'&&row.version===2);
+  const content=unpackStaticPackage(await fs.readFile(path.join(f.root,'library',entry.file))).resources[0].manifest.content;
+  const profile=content.entry.sourceRequirementProfiles.find(row=>row.id.endsWith('placement-preview/1-lf'));
+  f.state.files=[...content.entry.sourceRequirements,...profile.requirements];
+  const choices={scenery:'keep',companion:true,weather:'rain',collectionCount:0};
+  const current=await f.service.compositionPlan({worldId:'world-test',request:request({recipeId:'rain-exploration',recipeVersion:2,choices})});
+  assert(current.components.every(row=>row.archiveRef.version===2&&row.sourceRequirements.status==='source-requirements-matched'));
+  assert.equal(current.compatibility,'not-runtime-verified');
+  const historical=await f.service.compositionPlan({worldId:'world-test',request:request({recipeId:'rain-exploration',recipeVersion:1,choices})});
+  assert(historical.components.every(row=>row.archiveRef.version===1&&row.sourceRequirements.status==='adaptation-required'));
+  assert.notEqual(current.planHash,historical.planHash);
+});

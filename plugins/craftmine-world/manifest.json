@@ -2432,7 +2432,10 @@
                 },
                 "recipeVersion": {
                   "type": "integer",
-                  "const": 1
+                  "enum": [
+                    1,
+                    2
+                  ]
                 },
                 "choices": {
                   "type": "object",
