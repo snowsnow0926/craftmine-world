@@ -50,6 +50,13 @@ async function materializeArchive(archive,worldId,directory,ref){
   if(section==='[craftmine]'&&/^runtime\/world_id\s*=/.test(line)){const old=JSON.parse(line.slice(line.indexOf('=')+1).trim());check(old===m.sourceWorldId||old===m.worldId,'WORLD_TEMPLATE_RUNTIME_IDENTITY_INVALID');count++;return line.replace(JSON.stringify(old),JSON.stringify(worldId));}return line;
  }).join(''));check(count===1,'WORLD_TEMPLATE_RUNTIME_IDENTITY_INVALID');
  const journal=files.get('world/creation-operations.json');if(journal){const value=JSON.parse(journal.bytes);check(value.format==='craftmine.creation-operations/1'&&Array.isArray(value.operations),'WORLD_TEMPLATE_RECEIPT_INVALID');for(const operation of value.operations){check([m.sourceWorldId,m.worldId].includes(operation.receipt?.worldId),'WORLD_TEMPLATE_RECEIPT_INVALID');operation.receipt.originWorldId??=operation.receipt.worldId;operation.receipt.worldId=worldId;}journal.bytes=Buffer.from(JSON.stringify(value,null,2)+'\n');}
+ const instances=files.get('craftmine.instances.json');if(instances){
+  let value;try{value=JSON.parse(instances.bytes);}catch{throw Error('WORLD_TEMPLATE_INSTANCE_MAP_INVALID');}
+  check(value?.format==='craftmine.godot-draft-instances/1'&&typeof value.worldId==='string'&&[m.sourceWorldId,m.worldId].includes(value.worldId)&&Array.isArray(value.instances)&&value.instances.length<=1024,'WORLD_TEMPLATE_INSTANCE_MAP_INVALID');
+  // Instance/resource identities are local to the copied world and its source
+  // declarations. Only the registry's world binding changes, never script data.
+  value.worldId=worldId;instances.bytes=Buffer.from(JSON.stringify(value,null,2)+'\n');
+ }
  const body={...archive.snapshot.body,worldId};files.set('craftmine_initial_state.json',{path:'craftmine_initial_state.json',bytes:Buffer.from(JSON.stringify({format:'craftmine.materialized-initial-state/1',worldId,baseId:m.baseId,template:'library',initialState:m.initialState,initialProgress:body}))});
  const manifest={format:'craftmine.managed-base-source/1',baseId:m.baseId,baseVersion:m.baseVersion,worldId,template:'library',protocol:'craftmine.godot-runtime/2',progressFormat:'craftmine.godot-progress/1',stateVersion:archive.snapshot.stateVersion,templateSource:ref,initialState:m.initialState,files:[...files.values()].map(f=>({path:f.path,bytes:f.bytes.length,sha256:sha(f.bytes)})).sort((a,b)=>a.path.localeCompare(b.path))};
  await fs.mkdir(directory,{recursive:true});check(!(await fs.lstat(directory)).isSymbolicLink(),'WORLD_TEMPLATE_STAGING_LINK');

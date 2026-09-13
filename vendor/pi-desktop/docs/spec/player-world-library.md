@@ -46,7 +46,10 @@ file, 4096 entries, 1 MiB initial state, 2 MiB PNG). Imported source is untruste
 content and is never executed by the plugin or Electron process.
 
 Materialization only changes the declared `project.godot` runtime world ID,
-world-scoped creation receipts, and host progress envelopes. Source-local object
+world-scoped creation receipts, the `craftmine.instances.json` registry's world
+binding, and host progress envelopes. Instance maps must have the supported
+schema and bind to the source or published world before remapping; foreign,
+missing or malformed bindings are rejected before project writes. Source-local object
 and component identities, scripts, and binary assets retain their bytes. Each
 create operation produces a different world ID, and ordinary native source
 initialization, build checks, candidate first load, and durable save/reopen still

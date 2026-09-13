@@ -10063,6 +10063,17 @@ The native headless fixture is `tests/godot-components/rain-control.mjs` at the
 repository root. Do not label its dummy-renderer results as visual acceptance:
 final integrated client preview is an independent offscreen verification.
 
+### Published world instance registry continuity (2026-09-13)
+
+Publish a world containing a normally installed component, then create a new
+world from that template. Verify `craftmine.instances.json` binds to the new
+world while instance IDs, entity maps, resource references and source
+declarations remain identical. List and export a component from the copied
+world, then install another package and complete check/adoption. A foreign or
+missing registry world ID must reject before materializing any project files;
+script strings and source-local identifiers resembling the old world ID are
+never rewritten. Repeat creation with the same operation to verify idempotency.
+
 ### Player-authored world templates (2026-09-13)
 
 From a ready player-created 3D world, save actual progress and explicitly choose
