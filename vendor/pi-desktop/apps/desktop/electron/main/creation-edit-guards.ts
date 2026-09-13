@@ -11,7 +11,7 @@ type Context={projectId:string;sessionId:string;turnId:string};
 export function directCreationEditIntent(capture:CreationCapture,input:CreationEditInput):Exclude<DirectCreationIntent,{action:'undo'}>{
   if(input.action==='place'){
     if((capture as CreationCapture&{source?:string}).source==='recent'||capture.target.surface!=='ground'||!capture.target.position)throw Error('CREATION_PLACEMENT_GROUND_REQUIRED');
-    return {action:'place',kind:input.kind!,scale:[1,1,1],color:'#84A866'};
+    return {action:'place',kind:input.kind!,scale:[1,1,1],color:'#84A866',...input.placement};
   }
   const targetId=capture.target.entityId;if(!targetId)throw Error('CREATION_OBJECT_REQUIRED');
   if(input.action==='modify')return {action:'modify',targetId,changes:input.changes!};

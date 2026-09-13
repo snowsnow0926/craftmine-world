@@ -44,7 +44,7 @@ export function creationTargetDisplay(target:Target,entities:unknown){
   if(!Object.hasOwn(names,entity.kind)||!vec(entity.scale)||entity.scale.some((n:number)=>n<.25||n>4)||typeof entity.color!=="string"||!/^#[a-fA-F0-9]{6}$/.test(entity.color))return structuredClone(target);
   const label=entity.kind==="marker"?entity.parameters?.label:undefined;
   const entityName=typeof label==="string"&&label.length>0&&label.length<=80&&!/[\x00-\x1f]/.test(label)?label:names[entity.kind];
-  return {...structuredClone(target),entityName,entityKind:entity.kind,scale:[...entity.scale],color:entity.color};
+  return {...structuredClone(target),entityName,entityKind:entity.kind,scale:[...entity.scale],color:entity.color,...(vec(entity.position)&&Number.isFinite(entity.rotationY)?{entityPosition:[...entity.position],rotationY:entity.rotationY}:{})};
 }
 
 /** Host-owned capture coordinates are immutable; a renderer receives only a handle. */

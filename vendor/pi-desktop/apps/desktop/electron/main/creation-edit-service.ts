@@ -4,7 +4,7 @@ import {createHash} from "node:crypto";
 import type {CreationCapture} from "./creation-target-service";
 
 type Context={projectId:string;sessionId:string;turnId:string};
-export type CreationEditInput={sessionId:string;captureId:string;operationId:string;action:"modify"|"delete"|"undo"|"place"|"duplicate"|"upgrade-observer";changes?:{scale?:number[];color?:string};undoOperationId?:string;kind?:"tree"|"rock"|"chest"|"door"|"marker";count?:number;offset?:number[]};
+export type CreationEditInput={sessionId:string;captureId:string;operationId:string;action:"modify"|"delete"|"undo"|"place"|"duplicate"|"upgrade-observer";changes?:{scale?:number[];color?:string;position?:number[];rotationY?:number};placement?:{position:number[];rotationY:number;scale:number[];color:string};undoOperationId?:string;kind?:"tree"|"rock"|"chest"|"door"|"marker";count?:number;offset?:number[]};
 export type CreationEditStatus={operationId:string;sessionId:string;phase:"preparing"|"editing"|"checking"|"applying"|"applied"|"failed"|"interrupted";worldId?:string;jobId?:string;candidateId?:string;receipt?:any;error?:string};
 type Bound={context:Context;capture:CreationCapture};
 type Dependencies={
@@ -21,22 +21,31 @@ type Dependencies={
 function fail(code:string):never{throw Error(code);}
 export function validateCreationEdit(value:unknown):CreationEditInput {
   const input=value as CreationEditInput;
-  if(!input||Object.keys(input).some(key=>!["sessionId","captureId","operationId","action","changes","undoOperationId","kind","count","offset"].includes(key)))fail("CREATION_EDIT_INVALID");
+  if(!input||Object.keys(input).some(key=>!["sessionId","captureId","operationId","action","changes","undoOperationId","kind","count","offset","placement"].includes(key)))fail("CREATION_EDIT_INVALID");
   if(![input.sessionId,input.captureId,input.operationId].every(id=>typeof id==="string"&&/^[a-zA-Z0-9._-]{1,128}$/.test(id)))fail("CREATION_EDIT_INVALID");
   if(!/^[a-zA-Z0-9_-]{1,120}$/.test(input.operationId))fail("CREATION_EDIT_INVALID");
-  if(input.action!=="place"&&input.kind!==undefined||input.action!=="duplicate"&&(input.count!==undefined||input.offset!==undefined))fail("CREATION_EDIT_INVALID");
+  if(input.action!=="place"&&(input.kind!==undefined||input.placement!==undefined)||input.action!=="duplicate"&&(input.count!==undefined||input.offset!==undefined))fail("CREATION_EDIT_INVALID");
   if(input.action==="place"){
     if(!["tree","rock","chest","door","marker"].includes(input.kind??"")||input.changes!==undefined||input.undoOperationId!==undefined)fail("CREATION_EDIT_INVALID");
   }else if(input.action==="duplicate"){
     if(!Number.isInteger(input.count)||input.count!<1||input.count!>8||!Array.isArray(input.offset)||input.offset.length!==3||input.offset.some(n=>!Number.isFinite(n)||Math.abs(n)>8)||Math.hypot(...input.offset)<.5||input.changes!==undefined||input.undoOperationId!==undefined)fail("CREATION_EDIT_INVALID");
   }else if(input.action==="modify"){
     const changes=input.changes;
-    if(input.undoOperationId!==undefined||!changes||!Object.keys(changes).length||Object.keys(changes).some(key=>!["scale","color"].includes(key)))fail("CREATION_EDIT_INVALID");
+    if(input.undoOperationId!==undefined||!changes||!Object.keys(changes).length||Object.keys(changes).some(key=>!["scale","color","position","rotationY"].includes(key)))fail("CREATION_EDIT_INVALID");
     if(changes.scale!==undefined&&(!Array.isArray(changes.scale)||changes.scale.length!==3||changes.scale.some(n=>!Number.isFinite(n)||n<.25||n>4)))fail("CREATION_EDIT_INVALID");
     if(changes.color!==undefined&&(typeof changes.color!=="string"||!/^#[a-fA-F0-9]{6}$/.test(changes.color)))fail("CREATION_EDIT_INVALID");
   }else if(input.action==="undo"){
     if(input.changes!==undefined||typeof input.undoOperationId!=="string"||!/^[a-zA-Z0-9_-]{1,120}$/.test(input.undoOperationId))fail("CREATION_EDIT_INVALID");
   }else if(!["delete","upgrade-observer"].includes(input.action)||input.changes!==undefined||input.undoOperationId!==undefined)fail("CREATION_EDIT_INVALID");
+  const transform=input.action==="place"?input.placement:input.changes;
+  if(transform){
+    if(Object.keys(transform).some(k=>!["position","rotationY","scale","color"].includes(k)))fail("CREATION_EDIT_INVALID");
+    if(transform.position!==undefined&&(!Array.isArray(transform.position)||transform.position.length!==3||transform.position.some((n,i)=>!Number.isFinite(n)||n<(i===1?0:-28)||n>(i===1?16:28))))fail("CREATION_EDIT_INVALID");
+    if(transform.rotationY!==undefined&&(!Number.isFinite(transform.rotationY)||Math.abs(transform.rotationY)>180))fail("CREATION_EDIT_INVALID");
+    if(transform.scale!==undefined&&(!Array.isArray(transform.scale)||transform.scale.length!==3||transform.scale.some(n=>!Number.isFinite(n)||n<.25||n>4)))fail("CREATION_EDIT_INVALID");
+    if(transform.color!==undefined&&(typeof transform.color!=="string"||!/^#[a-fA-F0-9]{6}$/.test(transform.color)))fail("CREATION_EDIT_INVALID");
+    if(input.action==="place"&&["position","rotationY","scale","color"].some(k=>!Object.hasOwn(transform,k)))fail("CREATION_EDIT_INVALID");
+  }
   return structuredClone(input);
 }
 
@@ -84,7 +93,7 @@ export function createCreationEditService(deps:Dependencies){
         edited={source:{revision:source.revision,manifestHash:source.manifestHash}};
       }else{
         const request={operationId:input.operationId,action:input.action,expected:{worldId:capture.worldId,buildId:capture.buildId,instanceId:capture.instanceId,revision:source.revision,manifestHash:source.manifestHash,targetSnapshotId:capture.snapshotId},
-          ...(input.action==="undo"?{undoOperationId:input.undoOperationId}:input.action==="place"?{kind:input.kind,scale:[1,1,1],color:"#84A866"}:{targetId:capture.target.entityId}),...(input.action==="duplicate"?{count:input.count,offset:input.offset}:{}),...(input.changes?{changes:input.changes}:{})};
+          ...(input.action==="undo"?{undoOperationId:input.undoOperationId}:input.action==="place"?{kind:input.kind,scale:[1,1,1],color:"#84A866",...input.placement}:{targetId:capture.target.entityId}),...(input.action==="duplicate"?{count:input.count,offset:input.offset}:{}),...(input.changes?{changes:input.changes}:{})};
         edited=await invoke("creation_operation",{request},"source");
       }
       publish({receipt:edited.receipt,phase:"checking"});

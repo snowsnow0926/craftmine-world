@@ -3955,6 +3955,23 @@
       "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
     },
     {
+      "path": "repairs/runtime_bridge_engine_v1-before-preview.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2755,
+      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+    },
+    {
       "path": "repairs/scene_mesh_picker_v2-global-budget.gd",
       "role": "source",
       "origin": "authored",
@@ -4002,8 +4019,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 2755,
-      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+      "bytes": 10006,
+      "sha256": "938c42a578bb37c0590198232448b1391f688b95f15ce7d5fce65d802cca7e08"
     },
     {
       "path": "scene_materializer.mjs",

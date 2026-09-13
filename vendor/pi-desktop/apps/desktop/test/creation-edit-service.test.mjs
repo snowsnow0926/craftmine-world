@@ -40,7 +40,7 @@ test("unavailable execution never applies unchecked edits",async()=>{
  const {service,calls}=fixture({execute:async(_,name)=>name==="godot_project_index"?{revision:4,manifestHash:"a".repeat(64)}:name==="creation_operation"?{source:{revision:5,manifestHash:"b".repeat(64)}}:{execution:{enqueued:false,reason:"EXECUTOR_UNAVAILABLE"}}});service.start(1,input);assert.match((await terminal(service)).error,/EXECUTOR_UNAVAILABLE/);assert.ok(!calls.some(c=>c.name==="apply"));
 });
 test("renderer cannot inject identity, arbitrary operations or invalid dimensions",()=>{
- for(const patch of [{worldId:"other"},{targetId:"other"},{expected:{}},{action:"place"},{changes:{position:[1,2,3]}},{changes:{scale:[0,1,1]}},{action:"undo",changes:undefined,undoOperationId:""}])assert.throws(()=>validateCreationEdit({...input,...patch}),/INVALID/);
+ for(const patch of [{worldId:"other"},{targetId:"other"},{expected:{}},{action:"place"},{changes:{position:[29,2,3]}},{changes:{scale:[0,1,1]}},{action:"undo",changes:undefined,undoOperationId:""}])assert.throws(()=>validateCreationEdit({...input,...patch}),/INVALID/);
  assert.equal(validateCreationEdit({...input,action:"delete",changes:undefined}).action,"delete");
 });
 
@@ -81,4 +81,11 @@ test('restart marks unfinished operation interrupted and never automatically rep
 test('state persistence failure before a turn refuses work; after application it reports uncertainty',async t=>{
  const root=directory(t),blocked=path.join(root,'blocked');fs.writeFileSync(blocked,'file');const first=fixture({directory:blocked});assert.throws(()=>first.service.start(1,input),/PERSIST_FAILED/);assert.equal(first.calls.length,0);
  const active=path.join(root,'active');const second=fixture({directory:active,apply:async()=>{fs.renameSync(active,path.join(root,'saved'));fs.writeFileSync(active,'file');return {status:'applied'};}});second.service.start(1,input);const status=await terminal(second.service);assert.equal(status.phase,'interrupted');assert.match(status.error,/PERSIST_FAILED/);
+});
+
+test('explicit move and rotation are bounded and sent through the same check/adoption pipeline',async()=>{
+ const {service,calls}=fixture();const changed={...input,changes:{position:[8,0,6],rotationY:45}};
+ service.start(1,changed);assert.equal((await terminal(service)).phase,'applied');
+ assert.deepEqual(calls[1].args.request.changes,changed.changes);
+ for(const changes of [{position:[0,-1,0]},{position:[0,17,0]},{rotationY:181},{rotationY:NaN},{position:[0,0,Infinity]}])assert.throws(()=>validateCreationEdit({...input,changes}),/INVALID/);
 });

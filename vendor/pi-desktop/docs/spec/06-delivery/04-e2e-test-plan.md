@@ -10450,3 +10450,27 @@ Reopen an existing version 1 world and verify its identities, visual appearance,
 state and library references remain intact. A fixed recipe version 1 request
 against the newer bridge must report adaptation rather than silently swapping
 refs; unknown bridge hashes must not match the new exact cohorts.
+
+### Craftmine stock placement preview and transform loop (2026-09-14)
+
+- In the original PI Desktop, create an empty world and place a stock tree using
+  the real Place here form. Preview the actual engine ghost and cancel; the
+  complete progress and formal entity set must be unchanged, with zero model calls.
+- Select the created object through Recent results. Position controls must show
+  its observed origin, not the ray surface hit. Preview movement/yaw, then commit
+  through normal check/adoption. Verify the actual native node position and yaw.
+- Undo that transform through the real Undo action, verify the same object ID and
+  original transform, then edit again and save/cold reopen. Share/import/play and
+  cold reopen in an independent profile must retain the final transform.
+- Obstructed or out-of-world ghosts are visibly invalid; source checks still reject
+  collisions. Custom generators are unavailable for preview rather than approximated.
+- Cancel, stale captures, old owner/session, switching worlds, save, resume and
+  exit must clear temporary geometry. Late cancelled-preview updates never revive it.
+- Exact old LF/CRLF engine bridges may be upgraded by the existing explicit update
+  action; only that pinned file changes. Unrelated draft/source changes are retained
+  or explicitly refused and no accepted component archive is modified in place.
+- Automation uses `tests/first-creation-roundtrip-native.mjs --visual-edit` against
+  the integrated staged app and v2-compatible component resources. The native
+  geometry regression is `tests/creation-preview-native.mjs`. Both remain isolated
+  and offscreen/headless, with no OS input, Pointer Lock or focus requests. Preserve
+  failed reports and fail the result if shutdown or package inventory fails.
