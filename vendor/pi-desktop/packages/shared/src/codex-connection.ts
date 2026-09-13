@@ -12,4 +12,5 @@ export type CodexConnectionStatus = {
   effort: "xhigh";
   account?: { type: string; email?: string; plan?: string };
   loginPending?: boolean;
+  candidates?: Array<{path: string; version?: string; compatible: boolean}>;
 };

@@ -34,3 +34,7 @@ translation. Existing translations are unchanged.
 
 See [the decision](../adr/codex-player-connection.md) and
 [verification scenarios](../e2e/codex-player-connection-20260913.md).
+
+The guided discovery/recovery extension is specified in
+[Player setup and recovery](player-setup-recovery.md). It retains these exact
+authentication and model requirements.

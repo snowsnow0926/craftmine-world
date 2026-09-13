@@ -65,6 +65,12 @@ export function WorldAgentBackendRow({ settings, saveSettings }: {
           <option value="codex-cli">{t("codexConnection.local")}</option>
         </select>
         {backend === "codex-cli" && <>
+          <ol className="settings-row-desc list-decimal pl-5" data-codex-setup-stages>
+            <li>{t("codexConnection.setup.install")}</li>
+            <li>{t("codexConnection.setup.connect")}</li>
+            <li>{t("codexConnection.setup.save")}</li>
+          </ol>
+          <p className="settings-row-desc">{t("codexConnection.setup.distribution")}</p>
           <Input aria-label={t("codexConnection.path")} value={path} disabled={!!locked}
             placeholder={t("codexConnection.path")} onChange={event => {
               ++revision.current; setPath(event.target.value); setStatus(undefined); setSaved(false);
@@ -75,6 +81,13 @@ export function WorldAgentBackendRow({ settings, saveSettings }: {
             <Button size="sm" disabled={!!locked} onClick={() => void run("instructions")}>{t("codexConnection.instructions")}</Button>
           </div>
           <p className="settings-row-desc">{t("codexConnection.version")}</p>
+          {!!status?.candidates?.length && <details data-codex-candidates><summary>{t("codexConnection.setup.candidates")}</summary>
+            {status.candidates.map(candidate => <div key={candidate.path} className="settings-row-desc break-words">
+              <p>{candidate.version ?? t("codexConnection.setup.unreadable")} · {candidate.compatible ? t("codexConnection.setup.compatible") : t("codexConnection.setup.incompatible")}</p>
+              <p>{candidate.path}</p>
+              {candidate.compatible && <Button size="sm" disabled={!!locked} onClick={() => {++revision.current; setPath(candidate.path); setStatus({...status, code:"detected", path:candidate.path, version:candidate.version, account:undefined});setSaved(false);}}>{t("codexConnection.setup.choose")}</Button>}
+            </div>)}
+          </details>}
           <div className="flex flex-wrap gap-2">
             <Button size="sm" disabled={!!locked || !path.trim()} onClick={() => void run("verify")}>{t("codexConnection.verify")}</Button>
             <Button size="sm" disabled={!!locked || !path.trim() || status?.account?.type === "chatgpt"} onClick={() => void run("login")}>{t("codexConnection.login")}</Button>
