@@ -76,3 +76,16 @@ World-template publication may request only `godot.runtimeSave` with the selecte
 world ID and `freeze: false`. Main validates the sender frame and the existing
 Godot coordinator captures/saves the actual runtime. The renderer cannot supply
 progress, a checkpoint token, a snapshot, or a frozen-save request.
+
+## Re-publication paths
+
+Extracted installed components must not accumulate previous `addons/` ancestry
+when republished. The exporter relocates payload into short dependency groups,
+rewrites textual resource and attribution references, and keeps relative model
+dependencies together. GLB, image and paired import policy bytes remain exact;
+shared source requirements retain their original pinned paths. Original archives
+and worlds remain unchanged. Existing size/file limits still apply; arbitrary
+deep authored paths and unlimited inherited scene wrappers are not promised.
+See the root `docs/COMPONENT_PUBLICATION_PATHS_2026-09-13.md` decision and the
+ten-generation install/export regression. Actual engine import/adoption is
+verified independently by the native library UI acceptance.

@@ -10184,6 +10184,12 @@ cold reopen. Native source initialization and component re-publication must
 preserve supported paired GLB import policy. A captured author thumbnail must
 decode; subsequent optional unavailable previews remain explicitly unavailable
 and must not stall acceptance or masquerade as successful captures.
+
+Re-publish and reinstall an installed component repeatedly. Its payload paths
+must not grow with preceding addon namespaces; model/image/import-policy bytes,
+relative dependencies, parameter declarations and attribution must survive.
+Retain the original Windows engine import failure and old immutable archives,
+then verify a freshly published archive through native check and application.
 # Reusable city fragment continuation (2026-09-13)
 
 In an isolated background profile, search the building, gate and street aliases
