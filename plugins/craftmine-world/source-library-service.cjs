@@ -21,16 +21,19 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
     const version=record.version_;
     check(version?.assetId===ref.assetId&&version.version===ref.version&&version.contentHash===ref.contentHash,'SOURCE_LIBRARY_ASSET_CHANGED');
     check(version.mediaKind==='package'&&version.files?.length===1,'SOURCE_LIBRARY_NOT_SOURCE_PACKAGE');
-    const file=version.files[0];check(file.mediaType==='application/x-godot-package'&&file.bytes<=MAX_ZIP,'SOURCE_LIBRARY_NOT_SOURCE_PACKAGE');
+    const file=version.files[0];const worldTemplate=version.kind==='world'&&file.mediaType==='application/zip';
+    check(worldTemplate?file.bytes<=64*1024*1024:file.mediaType==='application/x-godot-package'&&file.bytes<=MAX_ZIP,'SOURCE_LIBRARY_NOT_SOURCE_PACKAGE');
     const body=await call('asset.bodyPath',{assetId:ref.assetId,version:ref.version,path:file.path});
     check(body.sha256===file.sha256&&body.bytes===file.bytes&&body.mediaType===file.mediaType&&path.isAbsolute(body.blobPath),'SOURCE_LIBRARY_BODY_MISMATCH');
     const stat=await fs.lstat(body.blobPath);check(stat.isFile()&&!stat.isSymbolicLink()&&stat.size===file.bytes,'SOURCE_LIBRARY_BODY_MISMATCH');
     const bytes=await fs.readFile(body.blobPath);check(bytes.length===file.bytes&&hash(bytes)===file.sha256,'SOURCE_LIBRARY_BODY_MISMATCH');
+    if(worldTemplate){const {validateArchive,worldTemplateSummary}=require('./player-world-library.cjs');const archive=await validateArchive(bytes);check(archive.manifest.assetId===ref.assetId&&archive.manifest.version===ref.version,'SOURCE_LIBRARY_ASSET_CHANGED');return {bytes,worldTemplate:worldTemplateSummary(archive,ref),record};}
     const {unpackStaticPackage}=await import('./package-zip.mjs');
     const archive=unpackStaticPackage(bytes,{maxEntryBytes:4*1024*1024,maxTotalBytes:6*1024*1024,maxCompressedBytes:6*1024*1024,maxEntries:1024});
     return {bytes,archive,record};
   }
-  function describe(ref,{archive,record}){
+  function describe(ref,{archive,record,worldTemplate}){
+    if(worldTemplate){const {preview,...metadata}=worldTemplate;return {...metadata,note:'Whole-world template. Create a new independent world through the player world picker. It cannot be proposed or installed as a component in the current world. Starting state contains the author-selected saved progress; no target compatibility or first-load success is implied.'};}
     return {format:'craftmine.source-library/1',archiveRef:ref,archiveSha256:archive.archiveSha256,
       rootRef:archive.packageJson.root,displayName:record.version_.displayName,source:record.version_.source,
       placement:{status:'template-default',capturedPlayerTargetUsed:false,note:'Installation uses the component template placement. This proposal does not implement a player request to place here. Use actual installed instance identities and normal source editing for later placement.'},
@@ -66,7 +69,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
         for(const item of args.items){
           exact(item,['ref','position']);const ref=validateAssetRef(item.ref),position=item.position===undefined?undefined:placement(item.position);
           const key=JSON.stringify(ref);if(!cache.has(key))cache.set(key,await readArchive(ref));
-          const archive=cache.get(key);if(position)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
+          const archive=cache.get(key);check(!archive.worldTemplate,'WORLD_TEMPLATE_REQUIRES_NEW_WORLD');if(position)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
           archiveBytes+=archive.bytes.length;payloadBytes+=archive.archive.packageJson.files.reduce((sum,file)=>sum+file.bytes,0);
           check(archiveBytes<=6*1024*1024&&payloadBytes<=6*1024*1024,'SOURCE_LIBRARY_GROUP_TOO_LARGE_INSTALL_SEPARATELY');
           const summary=describe(ref,archive);if(position)summary.placement={status:'explicit-position',position,capturedPlayerTargetUsed:false};
@@ -93,6 +96,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       check(['read','propose'].includes(args.mode),'SOURCE_LIBRARY_INVALID_MODE');
       const ref=validateAssetRef(args.ref),archive=await readArchive(ref),summary=describe(ref,archive);
       if(args.mode==='read')return summary;
+      check(!archive.worldTemplate,'WORLD_TEMPLATE_REQUIRES_NEW_WORLD');
       if(args.position)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
       if(args.position)summary.placement={status:'explicit-position',position:{...args.position},capturedPlayerTargetUsed:false};
       check(typeof toolCallId==='string'&&toolCallId.length>0,'SOURCE_LIBRARY_INVOCATION_REQUIRED');

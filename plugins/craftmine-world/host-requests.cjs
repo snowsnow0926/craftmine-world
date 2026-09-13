@@ -7,7 +7,7 @@ function boundedText(value,max){if(typeof value!=='string'||!value.trim()||Buffe
 function assertIdentity(input,snapshot){
   if(!sameBinding(input.binding,snapshot.binding)||input.generation!==snapshot.generation)throw Error('CRAFTMINE_BUDGET_BINDING_MISMATCH');
 }
-function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback}){
+function createHostRequests(core,{verifications,reviews,getSettings,workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback,worldTemplates}){
   const reservations=new Map();
   const unlimitedRequests=process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS==='1';
   // The bounded surface of the S5 asset service and the S3 works/package
@@ -66,6 +66,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(method.startsWith('worldTemplate.')){
+      const action=method.slice('worldTemplate.'.length);
+      if(!['describe','save','status','cancel','list','read','prepare','importArchive','exportArchive'].includes(action)||!worldTemplates)throw Error('WORLD_TEMPLATE_UNAVAILABLE');
+      return worldTemplates[action](params);
+    }
     if(['targetFeedback.describe','targetFeedback.submit','targetFeedback.status'].includes(method)){
       if(!targetFeedback)throw Error('TARGET_FEEDBACK_UNAVAILABLE');
       return targetFeedback[method.split('.')[1]](params);

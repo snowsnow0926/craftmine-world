@@ -10040,3 +10040,22 @@ Two separated companion cylinders must pass full restored-placement validation
 after adopting/reopening the second installation. A deliberately overlapping
 fixture must still fail `PET_RESTORE_OVERLAP`; do not bypass this check merely to
 make duplicate installation succeed.
+
+### Player-authored world templates (2026-09-13)
+
+From a ready player-created 3D world, save actual progress and explicitly choose
+that saved state as the template's starting point. Publish with a name, tags and
+version; verify catalog/read metadata and actual world-view preview lineage.
+Repeat the same operation after a lost reply: one immutable version remains.
+Cancel before commit and switch worlds during capture: neither may create a late
+catalog record. Stale formal source or saved progress must require a fresh read.
+
+Create two new worlds from the exact template reference. Confirm different world
+and runtime identities, unchanged world-local object identities, the explicitly
+chosen initial state, successful ordinary build/first load, gameplay, save and
+reopen. Verify that the original world's source and progress remain unchanged.
+Read the template through agent source-library retrieval and reject single or
+grouped component installation. Import/export through native file grants; reject
+corruption, aliases, undeclared/private files, changed hashes and overwrite of an
+existing destination. A checked ZIP alone must not be reported as a playable
+world. See `player-world-library.md` and the isolated native boundary test.

@@ -49,7 +49,8 @@ export type GodotCreateOptions = {
   bases: GodotBaseOption[];
 };
 
-export type GodotCreateRequest = { title: string; baseId: string; templateId: string; operationId: string };
+export type WorldLibraryRef = {assetId: string; version: number; contentHash: string};
+export type GodotCreateRequest = { title: string; baseId: string; templateId: string; operationId: string; libraryRef?: WorldLibraryRef };
 
 export type CreationStageStatus = "pending" | "running" | "passed" | "failed" | "skipped";
 export type CreationStage = { id: string; label: string; status: CreationStageStatus };
@@ -122,7 +123,15 @@ export function validateGodotCreateRequest(value: unknown): GodotCreateRequest {
     ? raw.operationId
     : randomBytes(16).toString("hex");
   if (!/^[A-Za-z0-9_-]{8,80}$/.test(operationId)) throw new Error("INVALID_OPERATION_ID");
-  return {title, baseId, templateId, operationId};
+  let libraryRef: WorldLibraryRef | undefined;
+  if (raw.libraryRef !== undefined) {
+    const ref = raw.libraryRef as WorldLibraryRef;
+    if (!ref || typeof ref !== "object" || Array.isArray(ref) || Object.keys(ref).some(key => !["assetId", "version", "contentHash"].includes(key))
+      || typeof ref.assetId !== "string" || !/^player\.world\.[a-z0-9_-]{1,60}$/.test(ref.assetId) || !Number.isInteger(ref.version) || ref.version < 1 || ref.version > 100000
+      || typeof ref.contentHash !== "string" || !/^[a-f0-9]{64}$/.test(ref.contentHash) || baseId !== "creation-sandbox" || templateId !== "library") throw Error("WORLD_TEMPLATE_INVALID_REF");
+    libraryRef = {assetId: ref.assetId, version: ref.version, contentHash: ref.contentHash};
+  }
+  return {title, baseId, templateId, operationId, ...(libraryRef ? {libraryRef} : {})};
 }
 
 /** Deterministic portable world id for one operation (lowercase, tooling-safe). */
@@ -284,6 +293,8 @@ export type GodotCreationDependencies = {
   basesRoot: string;
   domain: (method: string, params: Record<string, unknown>) => Promise<any>;
   materialize: (input: {baseId: string; worldId: string; template: string; out: string}) => unknown;
+  /** Fixed private plugin staging namespace, never supplied by a renderer. */
+  libraryStagingRoot?: string;
   makeWorldId?: () => string;
   /** Tell all world lists to reread durable state after retry scheduling/settlement. */
   changed?: (worldId: string) => void;
@@ -307,6 +318,38 @@ export async function loadMaterializer(modulePath: string): Promise<GodotCreatio
   return module.materializeBase;
 }
 
+/** Copy only a hash-verified, host-prepared closure under the configured namespace. */
+export function materializePreparedLibrary(prepared: Record<string, any>, stagingRoot: string, projectDir: string, worldId: string, request: GodotCreateRequest): void {
+  const expected = path.join(stagingRoot, request.operationId);
+  if (prepared.sourceDirectory !== expected || fs.realpathSync(stagingRoot) !== path.resolve(stagingRoot)
+    || fs.realpathSync(expected) !== path.resolve(expected) || fs.lstatSync(expected).isSymbolicLink()
+    || fs.existsSync(projectDir)) throw Error("WORLD_TEMPLATE_STAGING_INVALID");
+  const metadataPath = path.join(expected, "managed-base.json");
+  if (fs.lstatSync(metadataPath).isSymbolicLink() || fs.statSync(metadataPath).size > 2 * 1024 * 1024) throw Error("WORLD_TEMPLATE_STAGING_INVALID");
+  const manifest = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+  if (manifest.format !== "craftmine.managed-base-source/1" || manifest.worldId !== worldId || manifest.baseId !== request.baseId
+    || manifest.baseVersion !== "1.0.0" || manifest.stateVersion !== 1 || manifest.initialState !== "saved-progress"
+    || JSON.stringify(manifest.templateSource) !== JSON.stringify(request.libraryRef)
+    || !Array.isArray(manifest.files) || manifest.files.length > 4093) throw Error("WORLD_TEMPLATE_STAGING_INVALID");
+  const files: Array<{path: string; bytes: Buffer}> = []; const seen = new Set<string>(); let total = 0;
+  for (const item of manifest.files) {
+    const relative = item.path;
+    if (typeof relative !== "string" || relative.includes("\\") || relative.includes(":") || relative.split("/").some((part: string) => !part || part === "." || part === "..")
+      || ["managed-base.json", ".creation-owner.json"].includes(relative) || seen.has(relative.normalize("NFC").toLowerCase())) throw Error("WORLD_TEMPLATE_STAGING_INVALID");
+    seen.add(relative.normalize("NFC").toLowerCase());let current = expected;
+    for (const part of relative.split("/")) {current = path.join(current, part);if (fs.lstatSync(current).isSymbolicLink()) throw Error("WORLD_TEMPLATE_STAGING_INVALID");}
+    const stat = fs.statSync(current);total += stat.size;
+    if (!stat.isFile() || stat.size > 4 * 1024 * 1024 || total > 64 * 1024 * 1024) throw Error("WORLD_TEMPLATE_STAGING_INVALID");
+    const bytes = fs.readFileSync(current);
+    if (bytes.length !== item.bytes || createHash("sha256").update(bytes).digest("hex") !== item.sha256) throw Error("WORLD_TEMPLATE_SOURCE_CHANGED");
+    files.push({path: relative, bytes});
+  }
+  if (!seen.has("project.godot") || !seen.has("craftmine_initial_state.json")) throw Error("WORLD_TEMPLATE_STAGING_INVALID");
+  fs.mkdirSync(projectDir);
+  for (const file of files) {const target = path.join(projectDir, file.path);fs.mkdirSync(path.dirname(target), {recursive: true});fs.writeFileSync(target, file.bytes, {flag: "wx"});}
+  fs.writeFileSync(path.join(projectDir, "managed-base.json"), JSON.stringify(manifest), {flag: "wx"});
+}
+
 export function createGodotWorldFactory(deps: GodotCreationDependencies) {
   const options = readGodotCreateOptions({catalogFile: deps.catalogFile, basesRoot: deps.basesRoot});
   // A retry is scheduled before Core publishes its new build state. Keep that
@@ -325,7 +368,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const request = validateGodotCreateRequest(payload);
       const base = baseOf(request.baseId);
       const template = base.templates.find((candidate) => candidate.id === request.templateId);
-      if (!template || !template.delivered) throw new Error("WORLD_STARTER_UNAVAILABLE");
+      if (!request.libraryRef && (!template || !template.delivered)) throw new Error("WORLD_STARTER_UNAVAILABLE");
       // The world identity is derived from the caller's stable operation id, so
       // a retried submit after a lost reply targets the same world instead of
       // creating a second one.
@@ -335,7 +378,7 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       const ownsProjectDir = !fs.existsSync(projectDir);
       if (!ownsProjectDir) {
         const owner = readJson(path.join(projectDir, ".creation-owner.json"));
-        if (owner?.operationId !== request.operationId || owner?.worldId !== worldId || owner?.baseId !== request.baseId || owner?.templateId !== request.templateId || owner?.title !== request.title) throw new Error("WORLD_EXISTS");
+        if (owner?.operationId !== request.operationId || owner?.worldId !== worldId || owner?.baseId !== request.baseId || owner?.templateId !== request.templateId || owner?.title !== request.title || JSON.stringify(owner?.libraryRef) !== JSON.stringify(request.libraryRef)) throw new Error("WORLD_EXISTS");
         const existing = await deps.domain("godotWorld.initStatus", {worldId});
         if (canAutomaticallyInitialize(existing)) void deps.initialization?.start(worldId);
         const mapped = initStatusToCreation(existing);
@@ -343,7 +386,11 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       }
       fs.mkdirSync(path.dirname(projectDir), {recursive: true});
       try {
-        deps.materialize({baseId: request.baseId, worldId, template: request.templateId, out: projectDir});
+        if (request.libraryRef) {
+          if (!deps.libraryStagingRoot || !path.isAbsolute(deps.libraryStagingRoot)) throw Error("WORLD_TEMPLATE_HOST_REQUIRED");
+          const prepared = await deps.domain("worldTemplate.prepare", {ref: request.libraryRef, worldId, operationId: request.operationId});
+          materializePreparedLibrary(prepared, deps.libraryStagingRoot, projectDir, worldId, request);
+        } else deps.materialize({baseId: request.baseId, worldId, template: request.templateId, out: projectDir});
         fs.writeFileSync(path.join(projectDir, ".creation-owner.json"), JSON.stringify({...request, worldId}), {flag: "wx"});
         const body = readBaseInitialBody(projectDir);
         const snapshot = buildInitialProgress({
