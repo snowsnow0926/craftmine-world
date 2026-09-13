@@ -91,7 +91,7 @@ async function onLoad() {
   const worldTemplates=createPlayerWorldLibrary({call,directory:require('node:path').join(await pi.plugin.getDataPath(),'world-template-operations'),selected:async()=>(await pi.plugin.getSettings()).activeWorldId});
   reuseService.sourceProposals=args=>sourceLibrary.proposals(args);
   reuseService.installSourceProposal=args=>sourceLibrary.installProposal(args);
-  for(const method of ['directInspect','directInstall','directStatus'])reuseService[method]=args=>sourceLibrary[method](args);
+  for(const method of ['directInspect','directInstall','directStatus','compositionCatalog','compositionPlan'])reuseService[method]=args=>sourceLibrary[method](args);
   // The managed executor owns the pinned engine. It registers only after a real
   // broker preflight, so the reported capability always comes from live state.
   const toolchain=typeof pi.craftmine?.getGodotToolchain==='function'?await pi.craftmine.getGodotToolchain():null;

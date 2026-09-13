@@ -25,7 +25,7 @@ const LOCAL_TOOLS={
   blender_job_read:{owner:'Blender',hostMethod:'managed Blender job records',needs:['godotProjects'],requiredServices:['blenderTool']},
   blender_cancel:{owner:'Blender',hostMethod:'native Blender broker cancellation',needs:['godotProjects'],requiredServices:['blenderTool']},
   godot_docs:{owner:'S6',hostMethod:null,needs:[]},
-  godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'},'propose-group':{proposal:true,targetMethod:'package.installSourceProposal'}}},
+  godot_source_library:{owner:'S3',needs:['sessionDrafts','godotProjects','assetCatalog'],modes:{recipes:{method:'composition.catalog',capability:'assetCatalog'},compose:{method:'asset.read+asset.bodyPath+godotProject.index',capability:'assetCatalog'},search:{method:'asset.search',capability:'assetCatalog'},read:{method:'asset.read+asset.bodyPath',capability:'assetCatalog'},propose:{proposal:true,targetMethod:'package.installSource'},'propose-group':{proposal:true,targetMethod:'package.installSourceProposal'}}},
   godot_guidance:{owner:'AI1',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_project_query:{owner:'S6',hostMethod:'godotProject.index+godotProject.read',needs:['godotProjects']},
   godot_runtime_state:{owner:'S6',hostMethod:'godotRuntime.describe',needs:['godotProjects']},

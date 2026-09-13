@@ -46,7 +46,10 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
     ...(p.result?{installation:{source:p.result.source,instanceIds:p.result.instanceIds??[],
       ...(p.result.job?{job:{jobId:p.result.job.jobId,status:p.result.job.status}}:{})}}:{})});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
+  const composition=require('./world-composition.cjs').createWorldComposition({call,ensureBuiltin,readArchive});
   return {
+    async compositionCatalog(args){exact(args,['worldId']);return {...composition.catalog(),worldId:args.worldId};},
+    async compositionPlan(args){exact(args,['worldId','request']);return composition.plan(args.request,{worldId:args.worldId});},
     async directInspect(args){
       exact(args,['worldId','ref']);const ref=validateAssetRef(args.ref);
       const record=await call('world.read',{id:args.worldId});check(record.runtimeKind==='godot','GODOT_WORLD_REQUIRED');
@@ -119,6 +122,8 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
           throw error;
         }
       };
+      if(args.mode==='recipes'){exact(args,['mode']);return composition.catalog();}
+      if(args.mode==='compose'){exact(args,['mode','request']);return composition.plan(args.request,{context,worldId,assertActive});}
       exact(args,['mode','query','offset','limit','ref','position','items']);
       if(args.mode==='propose-group'){
         exact(args,['mode','items']);check(typeof installSourceGroup==='function','SOURCE_LIBRARY_GROUP_UNAVAILABLE');

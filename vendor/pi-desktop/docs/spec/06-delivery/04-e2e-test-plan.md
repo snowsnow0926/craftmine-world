@@ -10402,3 +10402,28 @@ current-world proposal/job identifiers to its existing install/check path;
 reject injected source/context/paths and private installer methods. Retain real
 failures with retry guidance and diagnostic details. General package authoring
 remains outside the main navigation gateway.
+
+## World composition recipes — 2026-09-14
+
+In the original PI Desktop asset library, open Compose gameplay for the selected
+world. Choose collect-to-unlock-flight, preserve the actual city, choose a target
+count and retain an additional whole-city requirement. Inspect the composition:
+exact archive versions/root hashes, source adaptation status, missing collection
+and gate logic, and the real 2400 m × 56 m runway requirement must appear. No
+task, source edit, model request or adoption may occur from inspection.
+
+Change a choice and verify the previous plan disappears. Change world/source
+while a request is outstanding and verify late/stale replies cannot hand off an
+old-world plan. Continue with AI only after reviewing current plan; verify the
+ordinary Composer receives the original wishes and exact refs without auto-send,
+focus, a changed backend/model or an overwritten pending prefill. Corrupt pinned
+catalog/archive bytes and forged world/context/path fields must fail closed.
+
+For integrated gameplay acceptance, send the ordinary request with the player's
+actual selected model/settings. Verify original city preservation, locked
+boarding before collection, reachable one-time targets and visible progress,
+unlock after the requested count, actual collision-validated runway and real
+takeoff/landing. Verify walking/camera/input return, save/cold reopen, then save
+as a new reusable world template through the existing publication flow. A ZIP,
+passed compilation, staged proposal or visible aircraft alone is not acceptance.
+Keep source/UI fixture results separate from native/model and human evidence.

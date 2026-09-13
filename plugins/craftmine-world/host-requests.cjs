@@ -15,7 +15,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
     'resolveLegacy','recordUsage','recordCheck','preview','cancel']);
   const PACKAGE_METHODS=new Set(['check','install','list','read','progress','grant','upgrade','uninstall','restore',
-    'exportPackage','importPackage','installSource','sourceList','exportSource','publishSource','publishSourceStatus','cancelPublishSource','sourceProposals','installSourceProposal','directInspect','directInstall','directStatus','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
+    'exportPackage','importPackage','installSource','sourceList','exportSource','publishSource','publishSourceStatus','cancelPublishSource','compositionCatalog','compositionPlan','sourceProposals','installSourceProposal','directInspect','directInstall','directStatus','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
     const value=await core.call('task.context',{context});
