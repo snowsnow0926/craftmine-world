@@ -241,7 +241,7 @@ async function modelEvidence(label){
  assert(rows.length>0,'ORDINARY_WORLD_FORM_SESSION_REQUIRED');report.modelEvidence??=[];report.modelEvidence.push({label,profile,rows});save();
 }
 async function refreshTarget(){
- await button('更新指向');
+ const label=await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-target-context > .creation-target-row > button')).find(n=>['更新指向','使用当前指向'].includes(n.textContent)&&!n.disabled)?.textContent`),Boolean);await button(label);
  await until(()=>evaluate(`document.querySelector('[data-creation-target]')?.dataset.creationTarget`),value=>value&&value!=='loading');
 }
 async function aimGround(){
@@ -333,7 +333,7 @@ async function placeAndEdit(){
   await previewAndCancel('move-rotation-preview');
   const moved=await startAndWaitEdit('Actual move and yaw edit');const movedTree=moved.payload.creation.entities.find(e=>e.id===tree.id);
   assert.deepEqual(movedTree.position,transformedPosition);assert(Math.abs(movedTree.rotationY-45)<.005);
-  await refreshTarget();await button('撤销上次操作');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));
+  await button('撤销上次操作');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));
   const undone=await waitEdit('Actual transform undo');const original=undone.payload.creation.entities.find(e=>e.id===tree.id);
   assert.deepEqual(original.position,tree.position);assert(Math.abs(original.rotationY-tree.rotationY)<.005);
   report.visualTransformUndo={before:tree,moved:movedTree,restored:original};save();await selectEditedTree(tree.id);
