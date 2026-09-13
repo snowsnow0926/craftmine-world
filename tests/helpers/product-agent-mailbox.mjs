@@ -13,3 +13,21 @@ export function readProductAgentCommand(directory, name) {
 export function atomicProductAgentJson(file, value) {
   const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(value,null,2)+'\n');fs.renameSync(temp,file);
 }
+export function measureProductAgentFiles(files) {
+  return Object.fromEntries(Object.entries(files).map(([name,file])=>{
+    const stat=fs.lstatSync(file);if(!stat.isFile()||stat.isSymbolicLink())throw Error('OPERATOR_ARTIFACT_FILE_REQUIRED:'+name);
+    const bytes=fs.readFileSync(file);
+    return [name,{file:path.resolve(file),bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')}];
+  }));
+}
+/** Always return failure evidence so the caller can persist it before exit. */
+export function checkProductAgentIntegrity(expected, assertLaunchUnchanged=()=>{}) {
+  const result={checkedAt:new Date().toISOString(),status:'passed',files:{}};
+  try {
+    result.files=measureProductAgentFiles(Object.fromEntries(Object.entries(expected).map(([name,row])=>[name,row.file])));
+    const changed=Object.keys(expected).filter(name=>expected[name].bytes!==result.files[name].bytes||expected[name].sha256!==result.files[name].sha256);
+    if(changed.length)throw Error('OPERATOR_REPORTED_ARTIFACT_CHANGED:'+changed.join(','));
+    assertLaunchUnchanged();
+  }catch(error){result.status='failed';result.error=String(error.stack??error);}
+  return result;
+}
