@@ -57,6 +57,8 @@ node tests/product-agent-operator-native.mjs `
 | `install-proposal` | `{proposalId}`，提交实际素材建议表单；不自动采用检查结果。 |
 | `candidate` | `{action:"preview"或"apply",candidateId}`，必须匹配当前会话真实候选。 |
 | `explore` | `{steps}`，使用现有 `godotExplore`，绑定刚读取的 world/build/instance 身份；操作集遵守现有驱动契约。 |
+| `input-segment` | `{identity:{worldId,buildId,instanceId},segment:{keys?,buttons?,motion?,frames,settleFrames?,capture?}}`，仅走私有父进程验收入口，通过实际 Godot Web 事件处理器输入，记录三阶段证据。 |
+| `cancel-inputs` | `{identity}`，释放指定当前世界的私有输入。运行中也可创建 `report.activeInput.cancelFile` 及时停止输入，不停止模型或应用。 |
 | `capture` | 保存当前正式世界的绑定原生画面、SHA-256、身份及观察，不修改画面。 |
 | `history` | 可选 `{branchId,skip,offset}`，读取普通版本面板和源码索引。 |
 | `source-read` | `{branchId,revision,manifestHash,path}`，现有接口只读首个 16000 字符；`nextOffset` 非空表示未读全文，不能伪称完整源码。 |
@@ -84,6 +86,14 @@ Core、host、Codex 文件；成品模式还检查完整包清单。源模式不
 现有 `explore` 接口只支持 `look`、`walk`、`wait`、`interact`、`attack` 和
 单帧 interact 的 `play-action`。它没有通用油门、方向舵或天气按键；不得把步行
 操作当成驾驶验收。普通历史分页用 `history.offset`，每页读取最多 32 个源码描述。
+
+新增的 `input-segment` 使用与独立 Codex 试玩服务相同的固定虚拟输入控制器，
+可以在真实生成世界中测试油门、俯仰和天气键。必须先从当前状态读取完整 identity，
+例如 `segment:{keys:["KeyW","ArrowDown"],frames:120,settleFrames:1}`。这不是
+真实鼠标/键盘输入，不触发焦点或 Pointer Lock。每段释放可能按下的键，保存
+before/during/after 原生快照、观察和 PNG；采样不是同一物理帧，期间实际物理
+可能继续运行。`status:failed` 或 `partialEvidence.heldUnreleased:true` 必须处理，
+不能把邮箱命令已有响应当成玩法通过；后者会阻止下一段，直到明确释放成功。
 
 创建标准输出中的取消文件或发送 SIGINT/SIGTERM 会请求普通取消，再正常退出。
 所有窗口必须始终 offscreen、不可聚焦且不可见；不得真实鼠标/键盘输入、

@@ -72,7 +72,7 @@ import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
-import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
+import { configureHeadlessAcceptance, installHeadlessControl, drainHeadlessGameInput, recordHeadlessShutdownFailure, isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
 import { NO_IMMERSION, parseImmersion, immersionShortcut } from "../../shared/craftmine-immersion";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { LocalVoiceInputService } from "./local-voice-input";
@@ -10438,6 +10438,15 @@ installHeadlessControl({
   playerActive: sessionId=>activeTurns.has(sessionId)||turnFinalizations.has(sessionId),
   playerLatest: (worldId,sessionId)=>plugins.requestCraftmineHost('godotBuild.latest',{worldId,sessionId}),
   world: () => pluginViews.headlessWorldContents(),
+  gameInput: {
+    instance:()=>godotWorld.instance,
+    dispatch:(identity,events)=>godotWorld.headlessGameInput(identity,events),
+    wait:frames=>godotWorld.request('wait',{frames}),snapshot:()=>godotWorld.snapshot(),
+    observe:()=>godotWorld.request('observe-envelope',{}),capture:identity=>godotWorld.captureView(identity),
+    hold:()=>godotWorld.holdSelectionSync(),
+    unavailable:()=>{try{assertDirectLibraryIdle();return directLibrary.isBusy()||godotCandidates.blocking;}catch{return true;}},
+    diagnostics:async()=>({formal:godotWorld.diagnostics(),views:await Promise.all((mainWindow?.contentView.children??[]).filter(view=>'webContents' in view).map(async view=>({runtime:await (view as Electron.WebContentsView).webContents.executeJavaScript('({guard:globalThis.__craftmineHeadless??null})',false)})))}),
+  },
   godotGameplay: {
     playAction: (identity, args) => godotWorld.headlessPlayAction(identity, args),
     observe: () => godotWorld.request("observe-envelope", {}),
@@ -10794,6 +10803,7 @@ app.on("before-quit", (event) => {
     const attemptId = craftmineQuitState.saving();
     craftmineQuitPreparation = (async () => {
       if (godotCopies.busy || godotExportBusy || directLibrary.isBusy()) throw Error("Wait for world copy, export or material adoption to finish, or cancel it before quitting");
+      await drainHeadlessGameInput();
       groundMaintenanceScheduler.suspend();
       await creationAutoQueue.suspend();
       await stopWorldMaintenance();

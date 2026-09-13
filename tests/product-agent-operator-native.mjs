@@ -34,9 +34,9 @@ report.integrityScope=launch.packaged?'complete-packaged-inventory-and-reported-
 if(previous)for(const item of report.commands)if(item.status==='running'){item.previousStatus='running';item.status='interrupted-on-resume';item.interruptedAt=new Date().toISOString();}
 const checkArtifacts=()=>checkProductAgentIntegrity(report.artifacts,()=>launch.assertUnchanged());
 const cancelFile=path.join(out,'cancel-'+randomUUID()),abort=new AbortController(),pending=new Map();report.cancelFile=cancelFile;
-let child,ended=true,ready=false,exit,socket,sequence=0,run,quitting=false;
+let child,ended=true,ready=false,exit,socket,sequence=0,run,quitting=false,activeInput=null;
 process.on('SIGINT',()=>abort.abort());process.on('SIGTERM',()=>abort.abort());
-const watcher=setInterval(()=>{if(fs.existsSync(cancelFile))abort.abort();},300);
+const watcher=setInterval(()=>{if(fs.existsSync(cancelFile))abort.abort();if(activeInput&&fs.existsSync(activeInput.cancelFile)&&!activeInput.cancelRequested){activeInput.cancelRequested=true;void rpc('cancelInputs',{payload:{identity:activeInput.identity}}).then(receipt=>{report.lastInputCancellation=receipt;save();},error=>{report.inputCancellationError=String(error);save();});}},300);
 const rpc=(method,fields={})=>new Promise((resolve,reject)=>{if(ended)return reject(Error('DESKTOP_EXITED'));const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('RPC_TIMEOUT:'+method));},120000);pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});});
 async function until(read,accept){while(!abort.signal.aborted){if(ended)throw Error('DESKTOP_EXITED');try{const value=await read();if(accept(value))return value;}catch(error){if(!/Window is not ready|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE|GODOT_VIEW_CAPTURE_BUSY/.test(String(error)))throw error;}await delay(200);}throw Error('OPERATOR_CANCELLED');}
 async function evaluate(expression){const current=socket;return new Promise((resolve,reject)=>{const id=++sequence,timer=setTimeout(()=>{current.removeEventListener('message',listener);reject(Error('PAGE_RPC_TIMEOUT'));},120000),listener=event=>{const value=JSON.parse(event.data);if(value.id!==id)return;clearTimeout(timer);current.removeEventListener('message',listener);value.error||value.result?.exceptionDetails?reject(Error(value.result?.exceptionDetails?.exception?.description??JSON.stringify(value.error))):resolve(value.result?.result?.value);};current.addEventListener('message',listener);current.send(JSON.stringify({id,method:'Runtime.evaluate',params:{expression,awaitPromise:true,returnByValue:true}}));});}
@@ -102,6 +102,15 @@ async function command(name,input){
   if(name==='permission'){const permission=await rpc('headlessPermissionPending',{payload:{sessionId:report.sessionId}});assert(permission&&permission.requestId===input.requestId,'CURRENT_PERMISSION_REQUIRED');return rpc('headlessPermissionResolve',{payload:{sessionId:report.sessionId,requestId:input.requestId,decision:input.decision}});}
   if(name==='install-proposal'){assert(/^source-[a-f0-9]{48}$/.test(input.proposalId));await workbench();await until(()=>evaluate(`!!document.querySelector(${JSON.stringify('[data-source-proposal="'+input.proposalId+'"] form')})`),Boolean);await submit('[data-source-proposal="'+input.proposalId+'"] form');return {requested:true,proposalId:input.proposalId,applied:false};}
   if(name==='candidate'){assert(['preview','apply'].includes(input.action));const status=await nav('godot.creationTaskStatus',{sessionId:report.sessionId});assert(input.candidateId&&status.candidateId===input.candidateId,'CURRENT_CANDIDATE_REQUIRED');return panel(input.action==='preview'?'godot.candidatePreview':'godot.candidateApply',{candidateId:input.candidateId});}
+  if(name==='input-segment'){
+    assert(!activeInput,'INPUT_SEGMENT_ALREADY_ACTIVE');assert.equal(input.identity?.worldId,report.worldId);
+    const selected={identity:input.identity,cancelFile:path.join(out,'cancel-input-'+randomUUID()),cancelRequested:false};activeInput=selected;report.activeInput=selected;save();
+    try{const result=await rpc('inputSegment',{payload:{identity:input.identity,segment:input.segment}});
+      for(const samples of [result,result.partialEvidence].filter(Boolean))for(const phase of ['before','during','after']){const frame=samples[phase]?.frame;if(!frame?.pngBase64)continue;const bytes=Buffer.from(frame.pngBase64,'base64');if(frame.sha256)assert.equal(hash(bytes),frame.sha256);const file=path.join(out,'captures','input-'+phase+'-'+Date.now()+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes);const {pngBase64,...metadata}=frame;samples[phase].frame={...metadata,file,sha256:hash(bytes)};}
+      report.lastInputResult=result;save();return result;
+    }finally{try{report.lastInputRelease=await rpc('cancelInputs',{payload:{identity:selected.identity}});}catch(error){report.inputReleaseError=String(error);}activeInput=null;report.activeInput=null;save();}
+  }
+  if(name==='cancel-inputs'){assert.equal(input.identity?.worldId,report.worldId);return rpc('cancelInputs',{payload:{identity:input.identity}});}
   if(name==='explore'){const identity=await rpc('godotObserve');assert.equal(identity.worldId,report.worldId);return rpc('godotExplore',{payload:{worldId:report.worldId,buildId:identity.buildId,instanceId:identity.instanceId,steps:input.steps}});}
   if(name==='capture')return capture();
   if(name==='history')return nav('godot.historyLoad',{...input,worldId:report.worldId});
@@ -114,7 +123,7 @@ async function command(name,input){
   if(name==='quit'){if((await invoke('agentGetStatus',report.sessionId)).status.isRunning)throw Error('ABORT_OR_FINISH_TURN_BEFORE_QUIT');quitting=true;return {requested:true};}
   throw Error('MAILBOX_COMMAND_UNKNOWN');
 }
-abort.signal.addEventListener('abort',()=>{if(!ended&&report.sessionId&&socket)void invoke('agentAbort',{sessionId:report.sessionId}).catch(()=>{});});
+abort.signal.addEventListener('abort',()=>{if(!ended&&activeInput)void rpc('cancelInputs',{payload:{identity:activeInput.identity}}).catch(error=>{report.inputCancellationError=String(error);save();});if(!ended&&report.sessionId&&socket)void invoke('agentAbort',{sessionId:report.sessionId}).catch(()=>{});});
 try{save();console.log(JSON.stringify({out,reportFile,inbox:path.join(out,'inbox'),status:path.join(out,'status.json'),cancelFile}));await start();await setup();if(!previous)await composition();report.ready=true;save();console.log('OPERATOR_READY '+out);
   while(!quitting&&!abort.signal.aborted){await inspect();for(const file of fs.readdirSync(path.join(out,'inbox')).filter(name=>name.endsWith('.json')).sort()){
     const existing=report.commands.find(row=>row.id===file.slice(0,-5));if(existing){

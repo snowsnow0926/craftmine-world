@@ -10436,3 +10436,14 @@ Reopen an existing version 1 world and verify its identities, visual appearance,
 state and library references remain intact. A fixed recipe version 1 request
 against the newer bridge must report adaptation rather than silently swapping
 refs; unknown bridge hashes must not match the new exact cohorts.
+
+For the ordinary desktop's private native input acceptance, submit a finite
+`inputSegment` through the validated parent controller with the current formal
+world/build/instance identity. Verify real aircraft throttle/pitch or weather
+handlers consume the keys; record before/during/after snapshots, frames and
+diagnostics without assigning actor state. Cancel during an outstanding native
+wait and verify releases, then save/cold reopen and confirm no held key remains.
+Runtime/check failure must preserve partial evidence and release every possibly
+delivered key. Unknown fields, stale identity, visible/focused owner, model/tool
+access and production/non-headless routing must fail before delivery. A successful
+segment transport remains separate from actual gameplay and user-goal acceptance.

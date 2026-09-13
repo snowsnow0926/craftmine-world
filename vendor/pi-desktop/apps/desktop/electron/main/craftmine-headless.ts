@@ -16,6 +16,7 @@ import {createHeadlessObserverUpgrade} from './craftmine-headless-observer-upgra
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
 import {runHeadlessBoundCapture} from './craftmine-headless-bound-capture';
 import type {GodotViewCaptureIdentity} from './godot-view-capture';
+import {createHeadlessInputControl,type HeadlessInputAccess} from './craftmine-headless-input';
 import {validateEnginePerformanceAcceptance} from './craftmine-performance-acceptance';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
@@ -27,6 +28,9 @@ export function recordHeadlessShutdownFailure(service: string, error: unknown): 
   shutdownFailures.push({service: service.slice(0, 100), error: String(error).slice(0, 2000)});
   if (shutdownFailures.length > 64) shutdownFailures.shift();
 }
+let privateGameInput:ReturnType<typeof createHeadlessInputControl>|null=null;
+export async function drainHeadlessGameInput():Promise<void>{await privateGameInput?.drain();}
+
 type Profile = NonNullable<ReturnType<typeof readHeadlessProfile>>;
 let profile: Profile | null = null;
 /** Established only by the protected profile + parent IPC setup. */
@@ -95,6 +99,7 @@ export function installHeadlessControl(access: {
   runtime: () => unknown;
   draftProbe: () => Promise<unknown>;
   godotGameplay?: GodotGameplayAccess;
+  gameInput?: Omit<HeadlessInputAccess,'enabled'|'owner'>;
   godotSave?: () => Promise<any>;
   playerActive?: (sessionId:string)=>boolean;
   playerLatest?: (worldId:string,sessionId:string)=>Promise<any>;
@@ -108,6 +113,8 @@ export function installHeadlessControl(access: {
   const godotBases = access.godotGameplay ? createGodotBasesAcceptance({...access.godotGameplay, save: access.godotSave}) : null;
   const godotMining = access.godotGameplay && access.godotSave ? createGodotMiningAcceptance({...access.godotGameplay, save: access.godotSave}) : null;
   const configuration = profile;
+  if(access.gameInput)privateGameInput=createHeadlessInputControl({...access.gameInput,enabled:()=>hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1',owner:()=>{const window=access.window();return window&&!window.isDestroyed()?{visible:window.isVisible(),focused:window.isFocused(),focusable:window.isFocusable(),offscreen:window.webContents.isOffscreen()}:null;}});
+  process.on('disconnect',()=>{void drainHeadlessGameInput().catch(error=>recordHeadlessShutdownFailure('headless-input-release',error)).finally(()=>app.quit());});
   const desktopCall=(script:string)=>{
     const window=access.window();
     if(!hasHeadlessController()||!window||window.isDestroyed()||window.isVisible()||window.isFocusable()||!window.webContents.isOffscreen())throw Error('HEADLESS_PLAYER_WINDOW_UNAVAILABLE');
@@ -132,7 +139,11 @@ export function installHeadlessControl(access: {
     const request = input as { type?: string; id?: string; method?: string; name?: string; channel?: string; payload?: Record<string, unknown> };
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
+      if(privateGameInput?.busy&&['worldNavigation','worldPanel','quit','close','primaryMode'].includes(request.method??''))await drainHeadlessGameInput();
       switch (request.method) {
+        case 'inputSegment':case 'cancelInputs':
+          if(!privateGameInput)throw Error('HEADLESS_INPUT_UNAVAILABLE');
+          return privateGameInput.handle(request);
         case 'godotEnginePerformance': {
           const identity=validateEnginePerformanceAcceptance(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
           if(!access.enginePerformance)throw Error('HEADLESS_ENGINE_PERFORMANCE_UNAVAILABLE');
