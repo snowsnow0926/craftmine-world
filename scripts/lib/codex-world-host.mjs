@@ -7,7 +7,7 @@ import {materializeBase} from '../../desktop/godot/shared/materialize.mjs';
 const require = createRequire(import.meta.url);
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 
-// Only domain tools; no generic RPC, library proposals across worlds, legacy
+// Only domain tools; no generic RPC, library writes across worlds, legacy
 // verification or model-selected draft recovery. Recovery is owned by begin().
 const TOOL_NAMES = new Set(['godot_docs','godot_guidance','godot_project_index',
   'godot_file_read','godot_project_query','godot_project_patch','godot_project_facts',
@@ -15,7 +15,8 @@ const TOOL_NAMES = new Set(['godot_docs','godot_guidance','godot_project_index',
   'godot_performance_observe','godot_asset_put','godot_asset_list',
   'godot_build_start','godot_build_read','godot_build_cancel',
   'godot_candidate_read','godot_candidate_list','godot_jobs','creation_operation',
-  'requirements_read','blender_status','blender_generate','blender_job_read','blender_cancel']);
+  'requirements_read','blender_status','blender_generate','blender_job_read','blender_cancel',
+  'asset_library','godot_source_library','package_library']);
 
 export class CodexWorldHost {
   constructor({state, data, core, services = {}, logger = {log(){},warn(){}}}) {
@@ -28,6 +29,10 @@ export class CodexWorldHost {
     const {createHostRequests}=require(path.join(plugin,'host-requests.cjs'));
     const {createGodotExecutor}=require(path.join(plugin,'godot-executor.cjs'));
     const {createBlenderJobs}=require(path.join(plugin,'blender-jobs.cjs'));
+    const {createSourceLibraryService}=require(path.join(plugin,'source-library-service.cjs'));
+    const {seedBuiltinSourceLibrary}=require(path.join(plugin,'builtin-source-library.cjs'));
+    const {createPackageTurnLifecycle,createPackageInstallBinding}=require(path.join(plugin,'package-turn-lifecycle.cjs'));
+    const {createManagedPackageInstaller,createReuseService}=require(path.join(plugin,'reuse-service.mjs'));
     process.env.CRAFTMINE_BUNDLED_GIT = path.join(resources,'git/bin/git.exe');
     this.core = core ?? new CoreClient(path.join(resources,'bin/craftmine-core.exe'), state.coreData);
     const godot = path.join(resources,'godot');
@@ -44,9 +49,28 @@ export class CodexWorldHost {
         if (current.world?.id !== state.worldId) throw Error('WORLD_BINDING_MISMATCH');
         this.assertActive(context);
       }});
-    this.hostRequest = createHostRequests(this.core,{getSettings:async()=>({activeWorldId:state.worldId})});
+    const call=(method,args)=>this.core.call(method,args);
+    const selected=async()=>state.worldId;
+    this.packageTurns=createPackageTurnLifecycle({call,logger});
+    this.installSource=createManagedPackageInstaller({call,turns:this.packageTurns,
+      stagingRoot:path.join(state.coreData,'package-source-installs'),
+      enqueue:(job,context)=>this.executor.enqueue(job,context),
+      bind:createPackageInstallBinding({call,selected,finish:this.packageTurns.finish,
+        begin:params=>this.hostRequest('turn.begin',params)})});
+    let seeding;
+    const ensureBuiltin=()=>seeding??=(seedBuiltinSourceLibrary({directory:path.join(plugin,'builtin-source-library'),call})
+      .finally(()=>{seeding=undefined;}));
+    this.sourceLibrary=createSourceLibraryService({call,installSource:this.installSource,
+      installSourceGroup:args=>this.installSource.group(args),ensureBuiltin,
+      directory:path.join(state.coreData,'source-library-proposals')});
+    const reuseService=createReuseService({call,installSource:this.installSource});
+    reuseService.sourceProposals=args=>this.sourceLibrary.proposals(args);
+    reuseService.installSourceProposal=args=>this.sourceLibrary.installProposal(args);
+    this.hostRequest = createHostRequests(this.core,{getSettings:async()=>({activeWorldId:state.worldId}),
+      reuseService,packageTurns:this.packageTurns});
     this.tools = createWorldTools(this.core,async()=>({activeWorldId:state.worldId}),context=>this.ended.has(context.turnId),undefined,undefined,{
       ...services.toolServices,
+      sourceLibrary:(args,context,worldId,toolCallId)=>this.sourceLibrary.tool(args,context,worldId,toolCallId),
       blenderTool:(name,args,binding)=>this.blender.tool(name,args,binding),
       executorStatus:()=>this.executor.status(), executorEnqueue:(job,context)=>this.executor.enqueue(job,context),
       executorCancel:id=>this.executor.cancel(id), executorCreationCompletion:binding=>this.executor.creationCompletion(binding),
@@ -56,6 +80,7 @@ export class CodexWorldHost {
   assertActive(context) { if(this.ended.has(context.turnId)) throw Error('TURN_ENDED'); }
   async start({engines=true}={}) {
     await this.core.start();
+    this.packageTurns.start();
     if (path.resolve(this.core.directory) !== path.resolve(this.state.coreData)) throw Error('CORE_SOURCE_STORE_CHANGED');
     this.engines=engines;
     if(engines) { await this.executor.start(); await this.blender.start(); }
@@ -98,6 +123,7 @@ export class CodexWorldHost {
     return {worldId:this.state.worldId,repoId:content.repoId,backend:content.backend};
   }
   async stop({beforeCoreStop}={}) {
+    await this.installSource.drain();await this.packageTurns.stop();
     await this.blender.stop();await this.executor.stop();
     if(beforeCoreStop)await beforeCoreStop();
     await this.core.stop();

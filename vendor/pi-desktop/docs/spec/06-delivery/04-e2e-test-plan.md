@@ -10010,3 +10010,17 @@ See [the handoff and contract](../../adr/godot-failed-check-export-continuation.
 - The approved Pomeranian can instantiate twice with independent identities and follow/wait/pet progress; editing one instance preserves the other and the original library version. Save and reopen verify the result. Capture model time and cached/noncached input/output separately from world load time.
 
 Automated validation uses independent headless/offscreen processes, disables pointer lock, and submits forms through page scripts. No real keyboard/mouse input, visible windows or model evaluation budgets are introduced.
+# Approved companion reuse (2026-09-13)
+
+In an independent background profile with no pointer lock or real system input,
+open a fresh creation sandbox and select the actual Codex gpt-6-astra/xhigh
+configuration. Request the same white Pomeranian as the approved demo. Verify
+library search/read uses the exact accepted module version and model SHA-256,
+and no Blender generation occurs. Confirm the normal source proposal, observe
+its real check and candidate, adopt normally, and save/reopen. Add a second
+companion: native identities and petting/wait progress must be independent.
+Change the first to cream; the second and catalog model bytes stay unchanged.
+Remount while a source install is checking and verify its retained job is polled
+without another install. Cancel/switch worlds during a proposal and verify no
+late result is shown or applied to a different world. Record live-model usage
+separately from the deterministic component tests; do not add token/call/turn caps.

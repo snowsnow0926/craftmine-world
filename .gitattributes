@@ -41,3 +41,6 @@ docs/evidence/gu6-performance-host-20260912/** -text
 docs/evidence/fb02-floor-contact-20260912/** -text
 desktop/godot/shared/engine_performance.gd -text
 desktop/godot/shared/runtime_bridge_engine_v1.gd -text
+desktop/godot/components/approved-pomeranian/** text eol=lf
+desktop/godot/components/approved-pomeranian/*.glb binary
+desktop/godot/components/approved-pomeranian/*.png binary

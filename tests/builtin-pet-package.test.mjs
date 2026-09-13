@@ -60,11 +60,11 @@ test('scene materialization preserves two independent identities and reuses the 
 
 test('whole library is deterministic and appends one playable module without reclassifying old resources',()=>{
  const output=tmp(),other=tmp(),a=buildBuiltinSourceLibrary({output}),b=buildBuiltinSourceLibrary({output:other});
- assert.equal(a.entries.length,20);assert.deepEqual(a,b);assert.equal(a.entries.at(-2).assetId,PET_ASSET_ID);assert.equal(a.entries.at(-1).assetId,'cw.module.sandbox-combat');
+ assert.equal(a.entries.length,22);assert.deepEqual(a,b);assert.equal(a.entries.at(-4).assetId,PET_ASSET_ID);assert.equal(a.entries.at(-3).assetId,'cw.module.sandbox-combat');assert.equal(a.entries.at(-2).assetId,'cw.module.approved-pomeranian');assert.equal(a.entries.at(-1).assetId,'cw.model.approved-pomeranian');
  for(const entry of a.entries)assert.deepEqual(fs.readFileSync(path.join(output,entry.file)),fs.readFileSync(path.join(other,entry.file)));
- assert.equal(a.entries.filter(entry=>entry.kind==='object').length,16);
+ assert.equal(a.entries.filter(entry=>entry.kind==='object').length,17);
  assert.equal(a.entries.filter(entry=>entry.kind==='scene').length,1);
- const baseline=JSON.parse(fs.readFileSync(path.join(repository,'tests/fixtures/builtin-source-library-v1-sha256.json')));
- assert.equal(Object.keys(baseline).length,18);
+ const baseline=JSON.parse(fs.readFileSync(path.join(repository,'tests/fixtures/builtin-source-library-approved-20260913-sha256.json')));
+ assert.equal(Object.keys(baseline).length,20);
  for(const [file,hash]of Object.entries(baseline))assert.equal(sha(fs.readFileSync(path.join(output,file))),hash,'Previously shipped v1 package bytes changed: '+file);
 });

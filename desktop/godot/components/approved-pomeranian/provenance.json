@@ -1,0 +1,22 @@
+{
+  "format": "craftmine.approved-pomeranian-lineage/1",
+  "acceptedDemo": "codex-live-direct / approved-promo-20260913T072209Z",
+  "model": {
+    "file": "model.glb",
+    "bytes": 3753144,
+    "sha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b",
+    "origin": "Previous project Codex CLI gpt-6-astra/xhigh reference-guided Blender generation",
+    "license": "Generated project content; redistribution license not separately verified",
+    "embeddedMaterials": true,
+    "externalResources": [],
+    "animations": [],
+    "skinning": false,
+    "regeneratedForLibrary": false
+  },
+  "behavior": {
+    "origin": "Craftmine pet-companion version 2, adapted to the accepted static model and independent cream material variant",
+    "license": "MIT",
+    "sourceFile": "companion.gd"
+  },
+  "publication": "Bundled local catalog entry; no remote publication or user account data"
+}

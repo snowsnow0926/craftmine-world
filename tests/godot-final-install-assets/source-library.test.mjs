@@ -35,7 +35,11 @@ test('host-frozen proposal persists across restart and installs only through the
  await assert.rejects(s.installProposal({worldId:'other',proposalId:p.proposalId}),/WORLD_MISMATCH/);
  const restarted=f.create();assert.equal((await restarted.proposals({worldId:'world'})).items.length,1);
  const applied=await restarted.installProposal({worldId:'world',proposalId:p.proposalId});assert.equal(applied.applied,false);assert.equal(f.installs.length,1);
- assert.deepEqual(await f.create().installProposal({worldId:'world',proposalId:p.proposalId}),applied);assert.equal(f.installs.length,1);assert.equal((await s.proposals({worldId:'world'})).items.length,0);
+ assert.deepEqual(await f.create().installProposal({worldId:'world',proposalId:p.proposalId}),applied);assert.equal(f.installs.length,1);
+ const retained=(await f.create().proposals({worldId:'world'})).items[0];
+ assert.equal(retained.requiresPlayerAction,false);assert.equal(retained.status,'check-queued');
+ assert.deepEqual(retained.installation,{source:applied.source,instanceIds:['tree-instance'],job:{jobId:applied.job.jobId,status:'queued'}});
+ assert.equal(retained.applied,false,'A retained check is not adoption evidence');
  assert.equal(f.calls.some(c=>['package.check','package.install','world.update'].includes(c.method)),false);
 });
 test('bad references, changed ZIPs, arbitrary paths and forged source identity fail closed',async t=>{

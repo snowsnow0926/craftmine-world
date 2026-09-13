@@ -10,9 +10,9 @@ import {parseScene} from '../desktop/godot/shared/scene_materializer.mjs';
 import {PET_ASSET_ID,PET_SOURCE_REQUIREMENTS} from '../desktop/build-builtin-pet-package.mjs';
 
 const [binary,directory,...options]=process.argv.slice(2);assert.ok([binary,directory].every(value=>value&&path.isAbsolute(value)),'Pass absolute core executable and built source library directory');
-assert.ok(options.length===0||options.length===2&&options[0]==='--asset'&&options[1]===PET_ASSET_ID,'Only --asset cw.module.pet-companion is supported for focused revalidation');
+assert.ok(options.length===0||options.length===2&&options[0]==='--asset'&&[PET_ASSET_ID,'cw.module.approved-pomeranian'].includes(options[1]),'Only shipped companion --asset ids are supported for focused revalidation');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),inventory=loadBuiltinPackages(directory);assert.ok(inventory.entries.length>=17&&inventory.entries.length<=64,'Expected shipped objects and environment, with optional composed scenes');
-const selectedEntries=options.length?inventory.entries.filter(entry=>entry.assetId===PET_ASSET_ID):inventory.entries;assert.ok(selectedEntries.length>0,'Requested package must exist');
+const selectedEntries=inventory.entries.filter(entry=>(!options.length||entry.assetId===options[1])&&entry.mediaKind!=='model');assert.ok(selectedEntries.length>0,'Requested package must exist');
 fs.mkdirSync('test-results',{recursive:true});const out=fs.mkdtempSync(path.resolve('test-results/builtin-install-')),core=new CoreClient(binary,path.join(out,'data'));
 const worldId='builtin-install-world',context={projectId:'builtin-project',sessionId:'builtin-session',turnId:'builtin-turn'};
 const report={format:'craftmine.builtin-library-install-preflight/1',out,binary,coreSha256:sha(fs.readFileSync(binary)),directory,catalogSha256:sha(fs.readFileSync(path.join(directory,'catalog.json'))),selectedAssetIds:selectedEntries.map(entry=>entry.assetId),modelCalls:0,engineLaunches:0,uiLaunches:0,installations:[],ok:false};
@@ -38,7 +38,7 @@ try{
  if(pet){
   const archive=unpackStaticPackage(fs.readFileSync(pet.filename)),resource=archive.resources[0],content=structuredClone(resource.manifest.content);
   content.entry.sourceRequirements[0].sha256='0'.repeat(64);
-  const stale=packStaticPackage({root:{id:PET_ASSET_ID,version:1},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files:Object.fromEntries(resource.files)}]});
+  const stale=packStaticPackage({root:{id:PET_ASSET_ID,version:content.version},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files:Object.fromEntries(resource.files)}]});
   const before=await call('godotProject.index',{context,worldId,offset:0,limit:1});
   await assert.rejects(installer({worldId,operationId:'pet-incompatible-runtime',archiveBase64:stale.toString('base64')}),/PACKAGE_BASE_SOURCE_MISMATCH/);
   assert.deepEqual(await call('godotProject.index',{context,worldId,offset:0,limit:1}),before,'Rejected runtime requirement must not mutate source');

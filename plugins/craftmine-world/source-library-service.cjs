@@ -39,7 +39,9 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
         files:manifest.content.files})),verifiedScope:'archive-integrity-only',applied:false,
       note:'Archive validity is not target compatibility, runtime success or visual verification. Installing still requires a player action, source checks and candidate adoption.'};
   }
-  const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,...(p.items?{kind:'group',items:p.items.map(item=>({archiveRef:item.ref,archiveSha256:item.archiveSha256,displayName:item.displayName,...(item.position?{position:item.position}:{})}))}:{archiveRef:p.ref,archiveSha256:p.archiveSha256}),displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),applied:false,requiresPlayerAction:true,method:'installSourceProposal',status:p.result?.status??'proposed'});
+  const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,...(p.items?{kind:'group',items:p.items.map(item=>({archiveRef:item.ref,archiveSha256:item.archiveSha256,displayName:item.displayName,...(item.position?{position:item.position}:{})}))}:{archiveRef:p.ref,archiveSha256:p.archiveSha256}),displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),applied:false,requiresPlayerAction:!p.result,method:'installSourceProposal',status:p.result?.status??'proposed',
+    ...(p.result?{installation:{source:p.result.source,instanceIds:p.result.instanceIds??[],
+      ...(p.result.job?{job:{jobId:p.result.job.jobId,status:p.result.job.status}}:{})}}:{})});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
   return {
     async tool(args,context,worldId,toolCallId){
@@ -91,7 +93,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       return {...summary,proposal:projection(proposal)};
     },
     async proposals(args){exact(args,['worldId']);check(typeof args.worldId==='string','SOURCE_LIBRARY_INVALID_PARAMS');await fs.mkdir(directory,{recursive:true});const names=await fs.readdir(directory),items=[];
-      for(const name of names.filter(n=>/^source-[a-f0-9]{48}\.json$/.test(n)).slice(-256)){const p=await load(name.slice(0,-5));if(p.worldId===args.worldId&&!p.result)items.push(projection(p));}
+      for(const name of names.filter(n=>/^source-[a-f0-9]{48}\.json$/.test(n)).slice(-256)){const p=await load(name.slice(0,-5));if(p.worldId===args.worldId)items.push(projection(p));}
       return {worldId:args.worldId,items,format:'craftmine.source-proposals/1'};
     },
     async installProposal(args){

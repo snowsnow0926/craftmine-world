@@ -20,4 +20,5 @@ export const CODEX_WORLD_TOOLS = new Set([
   "godot_asset_list", "godot_build_start", "godot_build_read", "godot_build_cancel",
   "godot_candidate_read", "godot_candidate_list", "godot_jobs", "creation_operation",
   "requirements_read", "blender_status", "blender_generate", "blender_job_read", "blender_cancel",
+  "asset_library", "godot_source_library", "package_library",
 ]);

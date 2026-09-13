@@ -6,6 +6,7 @@ import {packStaticPackage,unpackStaticPackage} from '../plugins/craftmine-world/
 import {buildBuiltinCombatPackage} from './build-builtin-combat-package.mjs';
 import {contentHash,validatePath} from '../plugins/craftmine-world/package-format.mjs';
 import {buildBuiltinPetPackage} from './build-builtin-pet-package.mjs';
+import {buildApprovedPomeranianPackage} from './build-approved-pomeranian-package.mjs';
 const repository=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
@@ -89,6 +90,13 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   packages.push({file:pet.file,bytes:pet.bytes});entries.push(pet.entry);
   const combat=buildBuiltinCombatPackage({repository});
   packages.push({file:combat.file,bytes:combat.bytes});entries.push(combat.entry);
+  const approvedPet=buildApprovedPomeranianPackage({repository});
+  packages.push({file:approvedPet.file,bytes:approvedPet.bytes});entries.push(approvedPet.entry);
+  const approvedModel=fs.readFileSync(path.join(repository,'desktop/godot/components/approved-pomeranian/model.glb'));
+  const modelFile='cw.model.approved-pomeranian.glb';
+  packages.push({file:modelFile,bytes:approvedModel});
+  entries.push({assetId:'cw.model.approved-pomeranian',version:1,kind:'object',mediaKind:'model',file:modelFile,bytes:approvedModel.length,sha256:sha(approvedModel),
+    label:'演示同款白色博美模型（无跟随行为）',tags:['builtin','model-only','approved-demo','博美','白色博美','可爱','pomeranian','dog','Mochi'],source:approvedPet.entry.source});
   // Stage only after every resource and archive has passed validation.
   fs.mkdirSync(output,{recursive:true});
   for(const item of packages)fs.writeFileSync(path.join(output,item.file),item.bytes);
