@@ -10290,3 +10290,7 @@ Also verify valid PNG/OGG/WAV originals remain accepted, while a template that
 adds their unsupported `.import` sidecars fails before catalog admission. The
 initializer must likewise fail explicitly for non-cache unsupported sidecars;
 it must not create a seemingly valid source revision with those files omitted.
+
+### Direct library use (2026-09-13)
+
+See [direct library native acceptance](direct-library-native-e2e.md) for exact-reference direct use, cancellation, lost replies, source/world fences and zero-model native adoption.

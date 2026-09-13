@@ -291,6 +291,15 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
   };
   const installSource=args=>executeInstall(args);
   installSource.group=args=>executeInstall(args,true);
+  // Private operation recovery. The caller must never project this intent's
+  // task context or staged source bytes to a renderer.
+  installSource.readOperation=async args=>{
+    exactKeys(args,['worldId','operationId']);identifier(args.worldId);operationId(args.operationId);
+    const fs=await import('node:fs/promises'),path=await import('node:path'),{createHash}=await import('node:crypto');
+    const key=createHash('sha256').update(JSON.stringify([args.worldId,args.operationId])).digest('hex');
+    try{return JSON.parse(await fs.readFile(path.join(stagingRoot,key,'intent.json'),'utf8'));}
+    catch(error){if(error.code==='ENOENT')return null;throw error;}
+  };
   installSource.drain=()=>Promise.allSettled([...active.values()].map(entry=>entry.promise));
   return installSource;
 }
