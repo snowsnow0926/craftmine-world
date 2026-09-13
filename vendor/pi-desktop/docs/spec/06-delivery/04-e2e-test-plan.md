@@ -10510,3 +10510,15 @@ boundaries separately.
 
 Use `tests/playtest-feedback-client-native.mjs` for the integrated native PI
 acceptance described in [the runbook](../../e2e/playtest-feedback-native-20260914.md).
+### Private native input acceptance (2026-09-14)
+
+For the ordinary desktop's private native input acceptance, submit a finite
+`inputSegment` through the validated parent controller with the current formal
+world/build/instance identity. Verify real aircraft throttle/pitch or weather
+handlers consume the keys; record before/during/after snapshots, frames and
+diagnostics without assigning actor state. Cancel during an outstanding native
+wait and verify releases, then save/cold reopen and confirm no held key remains.
+Runtime/check failure must preserve partial evidence and release every possibly
+delivered key. Unknown fields, stale identity, visible/focused owner, model/tool
+access and production/non-headless routing must fail before delivery. A successful
+segment transport remains separate from actual gameplay and user-goal acceptance.
