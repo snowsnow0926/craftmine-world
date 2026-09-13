@@ -40,6 +40,7 @@ import {
 import "./asset-library.css";
 import {AssetAnnotationEditor} from "./AssetAnnotationEditor";
 import {LibraryPublishPanel} from "./LibraryPublishPanel";
+import {DirectLibraryActivity, DirectLibraryUse} from "./DirectLibraryUse";
 import {requestWorldTemplateCreation, type LibraryReference} from "../../../lib/player-library";
 
 export type AssetImportPick = { sourceRoot: string; sourcePath: string };
@@ -325,6 +326,7 @@ export function AssetLibraryPanel({
           {t("import", lang)}
         </Button></form>
       </div>
+      <DirectLibraryActivity bridge={bridge} worldId={worldId} zh={lang === "zh"}/>
       <div className="library-publish-tabs" role="tablist" aria-label={lang === "zh" ? "素材操作" : "Library actions"}>
         {(["browse", "component", "world"] as const).map((tab, index) => <form key={tab} onSubmit={event => {event.preventDefault(); setSection(tab);}} data-library-tab={tab}>
           <button type="submit" role="tab" aria-selected={section === tab} disabled={tab !== "browse" && !worldId}>{(lang === "zh" ? ["浏览素材", "保存对象", "保存世界模板"] : ["Browse", "Save object", "Save world template"])[index]}</button>
@@ -587,12 +589,13 @@ export function AssetLibraryPanel({
               </p>
 
               <AssetAnnotationEditor key={assetKey(selected.version_.assetId, selected.version_.version)} controller={controller} lang={lang} />
+              <DirectLibraryUse key={`${worldId}:${selected.version_.assetId}:${selected.version_.version}:${selected.version_.contentHash}`} bridge={bridge} worldId={worldId} asset={selected.version_} zh={lang === "zh"}/>
               {selected.version_.kind === "world" && selected.version_.assetId.startsWith("player.world.") ? <div className="asset-library-use-actions">
                 <form data-asset-world-template onSubmit={event => {event.preventDefault(); requestWorldTemplateCreation({assetId: selected.version_.assetId, version: selected.version_.version, contentHash: selected.version_.contentHash});}}><Button type="submit" size="sm">{lang === "zh" ? "从此模板新建世界" : "Create a world from this template"}</Button></form>
                 <p className="asset-library-field-hint">{lang === "zh" ? "使用作者保存的起点，创建独立副本。" : "Create an independent copy from the author's saved starting state."}</p>
               </div> : onUseAsset && <div className="asset-library-use-actions">
                 <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, false);}}><Button type="submit" size="sm" disabled={!worldId || usePending} data-asset-use="add">{lang === "zh" ? "让 AI 加入当前世界" : "Ask AI to add to this world"}</Button></form>
-                <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, true);}}><Button type="submit" size="sm" variant="secondary" disabled={!worldId || usePending} data-asset-use="modify">{lang === "zh" ? "修改后加入" : "Modify and add"}</Button></form>
+                <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, true);}}><Button type="submit" size="sm" variant="secondary" disabled={!worldId || usePending} data-asset-use="modify">{lang === "zh" ? "让 AI 修改后加入" : "Ask AI to modify and add"}</Button></form>
                 <p className="asset-library-field-hint">{lang === "zh" ? "素材引用将填入原对话，发送后开始创作。" : "Adds the asset reference to your conversation. Send it to start creating."}</p>
                 {useError && <p role="alert">{useError}</p>}
               </div>}

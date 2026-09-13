@@ -29,8 +29,10 @@ retained world view and factory retain the same immutable library reference.
 Creating a world preserves unrelated drafts and produces a separate conversation.
 
 World-template asset details offer independent world creation rather than
-component installation. The original asset-request Composer, source proposals,
-checks and adoption continue to handle ordinary components.
+component installation. Eligible source packages also expose the bounded
+[direct-use flow](direct-library-use-ui.md), without calling a model. The
+original asset-request Composer remains available for AI add and modification;
+source proposals, native checks and adoption retain their existing authority.
 
 Validation uses deterministic renderer fixtures and native separate profiles.
 No operating-system input, pointer lock or foreground test windows are allowed.

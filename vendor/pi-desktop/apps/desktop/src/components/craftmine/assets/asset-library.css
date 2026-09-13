@@ -387,6 +387,56 @@
 }
 
 /* Narrow windows switch between the list and the selected version. */
+.asset-direct-use,
+.asset-direct-activity article {
+  padding: 10px;
+  border: 1px solid var(--ds-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--ds-bg-secondary);
+  overflow-wrap: anywhere;
+}
+
+.asset-direct-use fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.asset-direct-activity {
+  display: grid;
+  gap: 8px;
+}
+
+.asset-direct-activity .asset-library-use-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.asset-direct-activity details article {
+  margin-top: 8px;
+}
+
+.asset-direct-activity h3,
+.asset-direct-activity p,
+.asset-direct-use p {
+  margin: 6px 0;
+}
+
+.asset-direct-coordinates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.asset-direct-coordinates label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
 @media (max-width: 980px) {
   .asset-library-body {
     grid-template-columns: minmax(0, 1fr);
