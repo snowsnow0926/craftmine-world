@@ -4,6 +4,9 @@
 offscreen 应用和测试数据，通过现有普通 UI、公开 `agentPrompt`、澄清回答、
 素材建议、检查采用与保存接口操作。不增加生产 RPC。
 
+输出根目录必须名为 `test-results`；每次运行创建 `desktop-native-product-*`
+子目录，profile 和 legacy 均位于其中，严格遵守现有 headless 标记边界。
+
 启动前由总控提供已构建的应用、Core/host 和 runtime 路径。驱动本身不构建、不
 更新程序，不为模型增加 token、调用次数或整轮时长限制。单次 IPC 的传输超时
 不是模型预算；模型运行期间持续接受操作命令。
