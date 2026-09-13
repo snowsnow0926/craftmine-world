@@ -13,6 +13,7 @@ import { isHeadlessAcceptance, isOffscreenAcceptance, hasHeadlessController } fr
 import { randomBytes } from "node:crypto";
 import { readEnginePerformance } from "./engine-performance-request";
 import { PRIVATE_PLAY_OPS, validateHeadlessPlayAction, type PlayIdentity } from "./headless-play-action";
+import {gameInputScript,validateGameInputEvents,GAME_INPUT_PROGRAM_SHA256,type GameInputEvent} from './headless-game-input';
 import type { CraftmineImmersionState, CraftmineImmersionShortcut } from "@pi-desktop/shared";
 import { NO_IMMERSION, IMMERSION_INPUT_CHANNEL, excludeImmersion, immersionShortcut, immersionBlocksInput } from "../../shared/craftmine-immersion";
 import { createImmersionPauseController } from "./immersion-pause-controller";
@@ -939,6 +940,21 @@ export class GodotWorldViewHost {
   /** Only the source/PCK-verified Main service may dispatch this fixed read. */
   async enginePerformance(identity: {worldId:string;buildId:string;instanceId:string}, nonce: string): Promise<Record<string, unknown> | null> {
     return readEnginePerformance({current:()=>this.current,busy:()=>Boolean(this.pending||this.transitioning||this.checkpointPromise)},identity,nonce);
+  }
+
+  /** Fixed page input for a finite private operator; no renderer/model route. */
+  async headlessGameInput(identity:PlayIdentity,events:GameInputEvent[]):Promise<Record<string,unknown>> {
+    if(!hasHeadlessController())throw Error('GAME_INPUT_HEADLESS_ONLY');
+    validateGameInputEvents(events);
+    const instance=this.current;
+    const verify=()=>{
+      if(!identity||Object.keys(identity).sort().join(',')!=='buildId,instanceId,worldId'||!instance?.alive||
+        this.current!==instance||['worldId','buildId','instanceId'].some(key=>(instance as any)[key]!==identity[key as keyof PlayIdentity]))throw Error('GAME_INPUT_IDENTITY');
+      if(this.pending||this.transitioning||this.checkpointPromise||this.frozen||instance.view.webContents.isDestroyed())throw Error('GAME_INPUT_BUSY');
+    };
+    verify();
+    const result=await instance!.view.webContents.executeJavaScript(gameInputScript(identity,events),false);
+    verify();return {...result,programSha256:GAME_INPUT_PROGRAM_SHA256};
   }
 
   /** Fixed test action, only reachable from the validated headless controller. */

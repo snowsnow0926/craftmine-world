@@ -9,6 +9,7 @@ import {createGodotCandidateCoordinator} from '../../vendor/pi-desktop/apps/desk
 import {GodotBuildVerifier} from '../../vendor/pi-desktop/apps/desktop/electron/main/godot-build-verifier';
 import {createCraftmineLiveSampler} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-live-sample';
 import {createCraftminePerformanceSampler} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-performance-sample';
+import {createGameplayController,validateInputSegment} from './codex-gameplay-controller';
 
 type Data=Record<string,any>;
 const worldId=process.env.CRAFTMINE_CODEX_LIVE_WORLD;
@@ -29,6 +30,21 @@ let closing=false,queue=Promise.resolve();
 let opened=false;
 const sample=createCraftmineLiveSampler(()=>host);
 const performance=createCraftminePerformanceSampler(()=>host.performanceProcess,()=>app.getAppMetrics());
+const consoleLines:Array<{contents:number;at:string;text:string}>=[];
+app.on('web-contents-created',(_event,contents)=>contents.on('console-message',event=>{
+  consoleLines.push({contents:contents.id,at:new Date().toISOString(),text:event.message.slice(0,2000)});
+  if(consoleLines.length>200)consoleLines.shift();
+}));
+const gameplay=createGameplayController({instance:()=>host?.instance??null,
+  dispatch:(identity,events)=>host.headlessGameInput(identity,events),wait:frames=>host.request('wait',{frames}),
+  snapshot:()=>host.snapshot(),observe:()=>sample(),capture:identity=>capture(identity),
+  diagnostics:()=>diagnostics(),hold:()=>host.holdSelectionSync()});
+async function diagnostics(){
+  const views=window.contentView.children.filter((view:any)=>view.webContents) as any[];
+  const ids=new Set(views.map(view=>view.webContents.id));
+  return {hidden:!window.isVisible(),focusable:window.isFocusable(),offscreen:window.webContents.isOffscreen(),console:consoleLines.filter(line=>ids.has(line.contents)),
+    views:await Promise.all(views.map(async view=>({url:view.webContents.getURL(),runtime:await view.webContents.executeJavaScript('({guard:globalThis.__craftmineHeadless??null,node:typeof require,isolated:crossOriginIsolated})',false)})))};
+}
 
 async function open() {
   if(host.instance)return report();
@@ -67,18 +83,15 @@ async function operate(method:string,args:Data):Promise<unknown> {
   if(method==='performance')return performance(args);
   if(method==='capture')return capture(args);
   if(method==='snapshot')return host.snapshot();
-  if(method==='save')return host.save();
-  if(method==='pause'){await host.pause();return report();}
+  if(method==='save'){await gameplay.drain();return host.save();}
+  if(method==='pause'){await gameplay.drain();await host.pause();return report();}
   if(method==='resume'){await host.resume();return report();}
   // Trusted component tests may exercise real physics through the existing
   // base command. This private host call is not an author tool or OS input.
   if(method==='walk')return host.request('walk',args);
-  if(method==='diagnostics') {
-    const views=window.contentView.children.filter((view:any)=>view.webContents) as any[];
-    return {hidden:!window.isVisible(),focusable:window.isFocusable(),offscreen:window.webContents.isOffscreen(),
-      views:await Promise.all(views.map(async view=>({url:view.webContents.getURL(),
-        runtime:await view.webContents.executeJavaScript('({guard:globalThis.__craftmineHeadless??null,node:typeof require,isolated:crossOriginIsolated})',false)})))};
-  }
+  if(method==='diagnostics')return diagnostics();
+  if(method==='inputSegment')return gameplay.segment(args.identity,args.segment);
+  if(method==='validateInputPlan'){if(!Array.isArray(args.segments)||!args.segments.length)throw Error('GAMEPLAY_PLAN_INVALID');for(const segment of args.segments)validateInputSegment(segment);return {valid:true};}
   if(method==='preview') {
     await open();
     return candidates.invoke('godot.candidatePreview',{worldId,candidateId:args.candidateId});
@@ -103,6 +116,7 @@ async function operate(method:string,args:Data):Promise<unknown> {
     return domain('godotWorld.initLaunchRetry',{worldId,initId:status.initId,candidateId:failure.candidateId,applicationId:failure.applicationId});
   }
   if(method==='close') {
+    await gameplay.drain();
     await candidates.invoke('godot.candidateClose',{worldId});
     const saved=host.instance?await host.save():null;
     if(saved&&saved.status!=='persisted')throw Error(saved.error);
@@ -131,12 +145,20 @@ process.on('message',(message:any)=>{
   if(message.method==='cancelFirstLoad'){
     void candidates.cancelFirstLoad(worldId!).then(result=>reply({result}),error=>reply({error:String(error.message)}));return;
   }
+  if(message.method==='cancelInputs'){
+    void gameplay.cancel(message.args.identity).then(result=>reply({result}),error=>reply({error:String(error.message)}));return;
+  }
+  if(message.method==='inputSegment'&&gameplay.busy){reply({error:'GAMEPLAY_BUSY'});return;}
   queue=queue.then(async()=>{
     try{const result=await operate(message.method,message.args??{});reply({result});if(message.method==='shutdown')app.quit();}
     catch(error){reply({error:error instanceof Error?error.message:'LIVE_OPERATION_FAILED'});}
   });
 });
-process.on('disconnect',()=>{closing=true;verifier.cancelAll();void host?.dispose().finally(()=>app.exit(1));});
+process.on('disconnect',()=>{
+  closing=true;verifier.cancelAll();
+  for(const call of pending.values())call.reject(Error('LIVE_PARENT_DISCONNECTED'));pending.clear();
+  void gameplay.drain().catch(()=>{}).finally(()=>host?.dispose().finally(()=>app.exit(1)));
+});
 void app.whenReady().then(async()=>{
   window=new BrowserWindow({show:false,focusable:false,width:1280,height:860,webPreferences:{offscreen:true,contextIsolation:true,nodeIntegration:false,sandbox:true}});
   await window.loadFile(path.join(__dirname,'../surface.html'));

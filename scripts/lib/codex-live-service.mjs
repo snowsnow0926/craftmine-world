@@ -14,7 +14,7 @@ const DOMAIN=new Set(['world.read','godotWorld.initStatus','godotWorld.initLaunc
   'content.status','content.apply.prepare','content.apply.advance','content.apply.confirm','content.apply.rollback','content.operation.read']);
 const METHODS={open:[],status:[],observe:['worldId','buildId','instanceId'],capture:['worldId','buildId','instanceId','candidateId'],
   snapshot:[],save:[],pause:[],resume:[],preview:['candidateId'],apply:['candidateId'],previewClose:[],retryFirstLoad:['candidateId'],
-  performance:['worldId','buildId','instanceId'],walk:['forward','right','frames'],diagnostics:[],close:[],shutdown:[],check:['descriptor'],cancelCheck:[],cancelFirstLoad:[]};
+  performance:['worldId','buildId','instanceId'],walk:['forward','right','frames'],inputSegment:['identity','segment'],validateInputPlan:['segments'],cancelInputs:['identity'],diagnostics:[],close:[],shutdown:[],check:['descriptor'],cancelCheck:[],cancelFirstLoad:[]};
 export function validateLiveCommand(method,args={}) {
   if(!Object.hasOwn(METHODS,method)||!args||typeof args!=='object'||Array.isArray(args)||Object.keys(args).some(k=>!METHODS[method].includes(k)))throw Error('LIVE_OPERATION_NOT_ALLOWED');
   if(['apply','preview','retryFirstLoad'].includes(method)&&!/^gcan-[a-f0-9]{64}$/.test(args.candidateId??''))throw Error('LIVE_CANDIDATE_REQUIRED');
@@ -76,7 +76,7 @@ export async function startCodexLiveService({core,state,data}) {
     validateLiveCommand(method,args);
     if(ended)return Promise.reject(Error('LIVE_HOST_CLOSED'));
     return new Promise((resolve,reject)=>{
-      const id=randomUUID();pending.set(id,{resolve,reject});child.send({kind:'codex-live-command',id,method,args},error=>{if(error){pending.delete(id);reject(Error('LIVE_HOST_TRANSPORT_FAILED'));}});
+      const id=randomUUID();pending.set(id,{resolve,reject,method,args});child.send({kind:'codex-live-command',id,method,args},error=>{if(error){pending.delete(id);reject(Error('LIVE_HOST_TRANSPORT_FAILED'));}});
     });
   }
   async function authorize(context) {
@@ -86,6 +86,18 @@ export async function startCodexLiveService({core,state,data}) {
   }
   const {flattenObservationEnvelope}=createRequire(import.meta.url)(path.join(state.pluginRoot,'tool-services.cjs'));
   const service={directory,call,
+    async gameplay(identity,segment) {
+      const result=await call('inputSegment',{identity,segment});
+      for(const phase of ['before','during','after']){
+        const frame=result[phase]?.frame;if(!frame?.pngBase64)continue;
+        const imagePath=path.join(directory,`input-${phase}-${frame.sha256}.png`);
+        await fs.writeFile(imagePath,Buffer.from(frame.pngBase64,'base64'));
+        const {pngBase64,...receipt}=frame;result[phase].frame={...receipt,imagePath};
+        await fs.writeFile(imagePath+'.json',JSON.stringify(receipt,null,2));
+      }
+      return result;
+    },
+    cancelGameplay:identity=>call('cancelInputs',{identity}),
     cancelTurn:()=>call('cancelCheck'),
     verifier:{godotCheck:descriptor=>{
       if(descriptor?.worldId!==state.worldId)throw Error('LIVE_CHECK_WORLD_MISMATCH');
@@ -115,6 +127,9 @@ export async function startCodexLiveService({core,state,data}) {
       if(ended)return;
       if(closing)return closing;
       closing=(async()=>{
+        for(const input of [...pending.values()].filter(p=>p.method==='inputSegment'))await call('cancelInputs',{identity:input.args.identity});
+        const current=await call('status');
+        if(current.instance){const {worldId,buildId,instanceId}=current.instance;await call('cancelInputs',{identity:{worldId,buildId,instanceId}});}
         // No model time limit: this deadline is only for explicit process retirement.
         const result=await call('shutdown');const timeout=setTimeout(()=>child.kill(),10000);
         await exited;clearTimeout(timeout);await guardWrite;await fs.writeFile(path.join(directory,'close.json'),JSON.stringify(result,null,2));return result;

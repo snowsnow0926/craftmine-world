@@ -1,0 +1,14 @@
+{
+  "format": "craftmine.gameplay-plan/1",
+  "segments": [
+    {"keys": ["Enter"], "frames": 1, "settleFrames": 60},
+    {"keys": ["KeyW"], "frames": 120, "settleFrames": 5},
+    {"keys": ["ArrowUp"], "frames": 45, "settleFrames": 5},
+    {"keys": ["ArrowRight"], "frames": 30, "settleFrames": 5},
+    {"keys": ["KeyA"], "frames": 30, "settleFrames": 5},
+    {"keys": ["KeyD"], "frames": 30, "settleFrames": 5},
+    {"keys": ["KeyC"], "frames": 1, "settleFrames": 10},
+    {"keys": ["KeyG"], "frames": 1, "settleFrames": 10},
+    {"keys": ["KeyS"], "frames": 30, "settleFrames": 30}
+  ]
+}

@@ -5,6 +5,11 @@ the desktop composer or changing the `craftmine` dynamic-tool catalog. All
 commands are explicit operator actions. Model tools cannot initialize an
 application, choose another world, select local files, or invoke private IPC.
 
+The [private gameplay input surface](codex-gameplay-verification.md) additionally
+lets operators exercise physical keys/buttons/motion through normal Godot input,
+with finite waits, real evidence and release on cancellation. It is not an author
+tool and does not rewrite source or assign gameplay success.
+
 ## Normal initialization and operator commands
 
 Use a new independent directory for component validation. The configured runtime

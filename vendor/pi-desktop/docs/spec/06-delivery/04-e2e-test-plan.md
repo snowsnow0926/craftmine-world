@@ -9874,6 +9874,29 @@ these offline protocol checks separate from actual vision/model validation. The
 coordinator-owned live `cl2` profile is not a component-test fixture. This optional
 host still does not integrate the desktop composer or prove promotional gameplay.
 
+### Private Codex gameplay input
+
+Follow [scripted gameplay verification](../codex-gameplay-verification.md) in a
+fresh independent native fixture. Establish the fixture's source baseline only
+after installing its normal GDScript input receiver, then check/apply through
+real native jobs and first-load. Hold/release W through actual key events and
+verify CharacterBody movement plus physical-key polling; F must reach a non-base
+normal `_input` handler. Exercise buttons/motion without OS input, native focus,
+Pointer Lock, `sendInputEvent` or Playwright input simulation. Confirm the source
+manifest/revision/Git head remain unchanged across verification.
+
+Refuse unknown payloads, arbitrary script/state fields, foreign/stale identities
+and concurrent segments before dispatch. Cancel before down and while a key is
+held; verify release and no later segment. A lost down reply must still release;
+a failed release remains retryable and blocks subsequent input. Stop during a
+hold, verify release before retirement, preserve failed-save recovery, and cold
+reopen with real persisted progress. Check actual guard counters and frames.
+
+Reports must retain real sequential observations/snapshots/PNGs and delivery/
+release receipts. Completed dispatch is not semantic success or human control-feel
+acceptance. Existing pet/flight/city profiles belong to the coordinator and are
+not component fixtures. The craftmine model-tool catalog remains unchanged.
+
 Attach the private product verifier to a new source-only world and run its first
 real check. The broker must import/export it, the hidden verifier must inspect
 actual frames, and the build-read tool must return the passing candidate before

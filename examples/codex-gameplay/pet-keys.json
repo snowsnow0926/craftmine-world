@@ -1,0 +1,9 @@
+{
+  "format": "craftmine.gameplay-plan/1",
+  "segments": [
+    {"keys": ["KeyF"], "frames": 1, "settleFrames": 60},
+    {"keys": ["KeyG"], "frames": 1, "settleFrames": 60},
+    {"keys": ["KeyC"], "frames": 1, "settleFrames": 60},
+    {"frames": 120}
+  ]
+}
