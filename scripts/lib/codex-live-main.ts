@@ -16,9 +16,9 @@ const worldId=process.env.CRAFTMINE_CODEX_LIVE_WORLD;
 if(!worldId||!process.send)throw Error('PRIVATE_LIVE_HOST_REQUIRED');
 configureHeadlessAcceptance();
 app.setPath('userData',process.env.CRAFTMINE_DATA_DIR!);
-app.disableHardwareAcceleration();
-app.commandLine.appendSwitch('enable-unsafe-swiftshader');
-app.commandLine.appendSwitch('use-angle','swiftshader');
+// Use the same graphics backend as the desktop. Offscreen controls window
+// presentation; forcing SwiftShader can stall simultaneous retained/candidate
+// city runtimes even when either immutable export passes an isolated check.
 app.on('window-all-closed',()=>{});
 const pending=new Map<string,{resolve:(value:any)=>void;reject:(error:Error)=>void}>();
 const domain=(method:string,params:Data):Promise<any>=>new Promise((resolve,reject)=>{
@@ -42,7 +42,9 @@ const gameplay=createGameplayController({instance:()=>host?.instance??null,
 async function diagnostics(){
   const views=window.contentView.children.filter((view:any)=>view.webContents) as any[];
   const ids=new Set(views.map(view=>view.webContents.id));
-  return {hidden:!window.isVisible(),focusable:window.isFocusable(),offscreen:window.webContents.isOffscreen(),console:consoleLines.filter(line=>ids.has(line.contents)),
+  return {hidden:!window.isVisible(),focusable:window.isFocusable(),offscreen:window.webContents.isOffscreen(),
+    graphics:{hardwareAcceleration:app.isHardwareAccelerationEnabled(),angle:app.commandLine.getSwitchValue('use-angle')||'platform-default',features:app.getGPUFeatureStatus()},
+    console:consoleLines.filter(line=>ids.has(line.contents)),
     views:await Promise.all(views.map(async view=>({url:view.webContents.getURL(),runtime:await view.webContents.executeJavaScript('({guard:globalThis.__craftmineHeadless??null,node:typeof require,isolated:crossOriginIsolated})',false)})))};
 }
 

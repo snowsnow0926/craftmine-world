@@ -56,7 +56,7 @@ function fixture({cold = false} = {}) {
   host.createView=()=>{
     const handlers={};
     const contents=new EventEmitter(),on=contents.on.bind(contents);
-    Object.assign(contents,{async loadURL(){},on(name,handler){handlers[name]=handler;return on(name,handler);},send(){},isDestroyed(){return this.closed===true;},close(){this.closed=true;events.push('close-view');this.emit('destroyed');}});
+    Object.assign(contents,{async loadURL(){},setBackgroundThrottling(){},async executeJavaScript(){return {ready:'complete',visibility:'hidden',canvas:[640,360],raf:false};},on(name,handler){handlers[name]=handler;return on(name,handler);},send(){},isDestroyed(){return this.closed===true;},close(){this.closed=true;events.push('close-view');this.emit('destroyed');}});
     const view={webContents:contents};
     views.push({view,handlers});
     return view;
@@ -80,6 +80,19 @@ test('promotion requires matching committed artifacts and revision; only then di
 });
 test('bad candidate startup leaves original running object available for recovery',async()=>{
  const f=fixture();await f.host.ensure(f.request());const original=f.host.instance.instanceId;f.setFault('startup');await assert.rejects(f.host.stageCandidate({...f.request(),buildId:'bad'}),/broken candidate/);assert.equal(f.host.instance.instanceId,original);assert.equal(f.host.candidateInstance,null);await f.host.close();
+});
+
+test('cancelling a stalled candidate disposes diagnostics and retains the exact formal instance',async()=>{
+ const f=fixture();await f.host.ensure(f.request());const original=f.host.instance.instanceId;
+ f.setFault('hang');const staging=f.host.stageCandidate({...f.request(),buildId:'build-v2'});
+ const rejected=assert.rejects(staging,/World startup was cancelled.*phase=wait-ready/);
+ await waitFor(()=>f.views.length===2&&f.views[1].view.webContents.listenerCount('paint')===1);
+ assert.equal(await f.host.cancelStaging('foreign'),false);
+ assert.equal(await f.host.cancelStaging('alpha'),true);await rejected;
+ assert.equal(f.views[1].view.webContents.listenerCount('paint'),0);
+ assert.equal(f.views[1].view.webContents.isDestroyed(),true);
+ assert.equal(f.views[0].view.webContents.isDestroyed(),false);
+ assert.equal(f.host.instance.instanceId,original);await f.host.close();
 });
 test('candidate commands target pending runtime rather than formal request path',async()=>{
  const f=fixture();await f.host.ensure(f.request());await f.host.stageCandidate({...f.request(),buildId:'build-v2'});await f.host.candidateRequest('snapshot');await assert.rejects(f.host.request('snapshot'),/WORLD_BUSY/);await f.host.discardCandidate();await assert.rejects(f.host.candidateRequest('snapshot'),/UNAVAILABLE/);await f.host.close();

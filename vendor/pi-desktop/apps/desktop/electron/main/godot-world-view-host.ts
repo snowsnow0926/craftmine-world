@@ -20,6 +20,7 @@ import { createImmersionPauseController } from "./immersion-pause-controller";
 import {captureBoundGodotView,validateGodotViewCaptureIdentity,type GodotViewCaptureIdentity,type GodotViewCapture} from "./godot-view-capture";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { WORLD_CURSOR_CHANNEL } from "../../shared/world-cursor-presentation";
+import { createGodotStartupProbe } from "./godot-startup-diagnostics";
 import {
   GODOT_WORLD_DETACH_CHANNEL,
   GODOT_WORLD_FULLSCREEN_EXIT_CHANNEL,
@@ -554,6 +555,7 @@ export class GodotWorldViewHost {
       this.fail(instance, `World renderer stopped: ${details.reason}`, true);
     });
     view.webContents.on("destroyed", () => { this.recordFault(instance, "renderer-destroyed"); });
+    const startupProbe = createGodotStartupProbe(view.webContents);
     try {
       if (attempt?.cancelled) throw new Error("World startup was cancelled");
       startupState("engine",runtime.instanceId);
@@ -562,9 +564,11 @@ export class GodotWorldViewHost {
       // Constructor preferences do not resynchronize the hidden RenderWidget
       // created during navigation. Apply the policy to that loaded widget too.
       view.webContents.setBackgroundThrottling(false);
+      startupProbe.phase("wait-ready");
       await runtime.waitReady();
       if (attempt?.cancelled) throw new Error("World startup was cancelled");
       if (hasHeadlessController()) {
+        startupProbe.phase("capabilities");
         const capabilities = await runtime.request("capabilities", {});
         // Old retained worlds remain playable but cannot claim the new test API.
         if (capabilities.result?.headlessPlayActionFormat === "craftmine.headless-play-action/1") {
@@ -575,11 +579,13 @@ export class GodotWorldViewHost {
         }
       }
       if (request.build !== undefined || request.snapshot !== undefined) {
+        startupProbe.phase("scene-load");
         startupState("scene",runtime.instanceId);
         const loaded = await runtime.load({ build: request.build ?? null, snapshot: request.snapshot ?? null });
         if (loaded.error) throw new Error(loaded.error);
       }
       if (this.disposed || generation !== this.generation || !instance.alive || attempt?.cancelled) throw new Error("World startup was cancelled");
+      startupProbe.phase("pause");
       await this.pauseController.attach(instance, {
         pause: async () => { const result = await runtime.pause(); if (result.error) throw new Error(result.error); },
         resume: async () => { const result = await runtime.resume(); if (result.error) throw new Error(result.error); },
@@ -588,7 +594,7 @@ export class GodotWorldViewHost {
     } catch (error) {
       // Freeze the causal evidence before our own close emits `destroyed`.
       const message = error instanceof Error ? error.message : String(error);
-      const reason = `${message}${this.describeFailure(instance)}`;
+      const reason = `${message}${this.describeFailure(instance)}${await startupProbe.failure()}`;
       this.pending = null;
       instance.alive = false;
       instance.detach();
@@ -601,6 +607,8 @@ export class GodotWorldViewHost {
         this.publish({ worldId, buildId, instanceId: "", state: "failed", error: message });
       }
       throw new Error(`${reason}${previous?.alive ? " (previous world kept running)" : ""}`);
+    } finally {
+      startupProbe.dispose();
     }
     if (this.disposed || generation !== this.generation || !instance.alive || attempt?.cancelled) {
       this.pending = null;

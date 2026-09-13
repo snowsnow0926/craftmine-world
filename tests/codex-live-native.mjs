@@ -60,6 +60,7 @@ try {
   const saved=await live.call('save');assert.equal(saved.status,'persisted');
   assert.deepEqual((await host.core.call('world.read',{id:worldId})).world.snapshot,saved.snapshot);
   const diagnostics=await live.call('diagnostics');assert.equal(diagnostics.hidden,true);assert.equal(diagnostics.focusable,false);assert.equal(diagnostics.offscreen,true);
+  assert.equal(diagnostics.graphics.hardwareAcceleration,true);assert.equal(diagnostics.graphics.angle,'platform-default');
   assert(diagnostics.views.length);for(const view of diagnostics.views){assert.equal(view.runtime.node,'undefined');assert.deepEqual(view.runtime.guard,{pointerLock:0,focus:0});}
   const oldInstance=capture.instanceId;await stop();
   report.stages.push({stage:'saved-after-physics-walk',receipt:saved.receipt,snapshot:saved.snapshot,diagnostics});

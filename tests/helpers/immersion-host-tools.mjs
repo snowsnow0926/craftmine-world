@@ -3,7 +3,9 @@ export * from '../../vendor/pi-desktop/apps/desktop/shared/craftmine-immersion.t
 // These host VM fixtures have no native window; focus policy is exercised by
 // main-window-layers.test.mjs using inert objects and call counters.
 export const syncMainInputFocus=()=>{};
+export const setMainViewBackground=()=>{};
 export {createImmersionPauseController} from '../../vendor/pi-desktop/apps/desktop/electron/main/immersion-pause-controller.ts';
+export {createGodotStartupProbe} from '../../vendor/pi-desktop/apps/desktop/electron/main/godot-startup-diagnostics.ts';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {stripTypeScriptTypes} from 'node:module';

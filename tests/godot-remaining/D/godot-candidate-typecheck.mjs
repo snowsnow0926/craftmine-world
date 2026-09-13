@@ -4,7 +4,7 @@ const current=process.cwd().replaceAll('\\','/');
 const dependencyRoot=path.resolve(process.env.CRAFTMINE_TYPECHECK_DEPENDENCY_ROOT||current).replaceAll('\\','/');
 const require=createRequire(dependencyRoot+'/vendor/pi-desktop/apps/desktop/package.json');
 const ts=require('typescript');
-const options={target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext,moduleResolution:ts.ModuleResolutionKind.Bundler,strict:true,skipLibCheck:true,noEmit:true,esModuleInterop:true,types:[],typeRoots:[dependencyRoot+'/vendor/pi-desktop/apps/desktop/node_modules/@types']};
+const options={target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext,moduleResolution:ts.ModuleResolutionKind.Bundler,strict:true,skipLibCheck:true,noEmit:true,allowImportingTsExtensions:true,esModuleInterop:true,types:[],typeRoots:[dependencyRoot+'/vendor/pi-desktop/apps/desktop/node_modules/@types']};
 const host=ts.createCompilerHost(options);
 // Read installed dependency/type declarations without changing another checkout.
 host.resolveModuleNames=(names,containing)=>names.map(name=>ts.resolveModuleName(name,containing,options,ts.sys).resolvedModule ?? ts.resolveModuleName(name,containing.replace(current,dependencyRoot),options,ts.sys).resolvedModule);
