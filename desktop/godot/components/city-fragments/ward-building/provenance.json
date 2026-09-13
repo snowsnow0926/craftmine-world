@@ -1,0 +1,33 @@
+{
+  "format": "craftmine.city-fragment-provenance/1",
+  "sourceWorld": "promo-orgrimmar",
+  "sourceTemplate": "desktop/godot/shared/promo-templates/promo-city/source",
+  "sources": [
+    {
+      "file": "orgrimmar-wards.glb",
+      "sourceSha256": "95ed0a416b2d5abb69b1865b24b7e95d346913091e4153a7ad11939d61069465",
+      "boxes": [
+        {
+          "min": [
+            -31.5,
+            -0.1,
+            -60.5
+          ],
+          "max": [
+            -14.5,
+            12,
+            -43.5
+          ]
+        }
+      ],
+      "clip": false,
+      "triangles": 1514,
+      "excluded": 0
+    }
+  ],
+  "derivation": "Existing static triangle/material subset, translated to a local ground anchor; gate wall ends and street ground triangles clipped to declared rectangles. No new AI model or Blender modeling run.",
+  "originalsModified": false,
+  "licenseStatus": "unverified",
+  "sourceLicenseFile": "ORIGINAL_ASSETS_LICENSE.txt",
+  "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified"
+}

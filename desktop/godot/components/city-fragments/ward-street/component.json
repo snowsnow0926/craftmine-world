@@ -1,0 +1,307 @@
+{
+  "format": "craftmine.city-fragment/1",
+  "slug": "ward-street",
+  "id": "cw.city.ward-street",
+  "label": "峡谷城双屋街区",
+  "kind": "scene",
+  "anchor": [
+    -23,
+    0,
+    -63
+  ],
+  "buildings": 2,
+  "tags": [
+    "街区",
+    "街道",
+    "建筑群",
+    "street",
+    "block"
+  ],
+  "aliases": [
+    "奥格瑞玛街区",
+    "兽人街道",
+    "two house street"
+  ],
+  "capabilities": [
+    "two-enterable-buildings",
+    "walkable-street",
+    "included-ground",
+    "static-triangle-collision",
+    "independent-placement"
+  ],
+  "parts": [
+    {
+      "file": "orgrimmar-wards.glb",
+      "nodePattern": "^(Detail|Solid)_LowerWard_0_",
+      "boxes": [
+        {
+          "min": [
+            -31.5,
+            -0.1,
+            -60.5
+          ],
+          "max": [
+            -14.5,
+            12,
+            -43.5
+          ]
+        },
+        {
+          "min": [
+            -32.5,
+            -0.1,
+            -81.5
+          ],
+          "max": [
+            -15.5,
+            12,
+            -64.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "orgrimmar-city.glb",
+      "nodePattern": "^Solid_ValleyStrength_sand$",
+      "clip": true,
+      "boxes": [
+        {
+          "min": [
+            -35,
+            -0.01,
+            -85
+          ],
+          "max": [
+            -8,
+            0.01,
+            -41
+          ]
+        }
+      ]
+    }
+  ],
+  "ground": {
+    "included": true
+  },
+  "route": {
+    "kind": "street-traverse",
+    "start": [
+      12,
+      0,
+      20
+    ],
+    "end": [
+      12,
+      0,
+      -20
+    ]
+  },
+  "version": 1,
+  "geometry": {
+    "triangles": 3042,
+    "collisionTriangles": 334,
+    "meshInstances": 15,
+    "boundaryTrianglesExcluded": 0,
+    "sourceTriangles": 6088,
+    "bounds": {
+      "min": [
+        -12,
+        0,
+        -22
+      ],
+      "max": [
+        15,
+        9.149999618530273,
+        22
+      ]
+    },
+    "parts": [
+      {
+        "file": "orgrimmar-wards.glb",
+        "sourceSha256": "95ed0a416b2d5abb69b1865b24b7e95d346913091e4153a7ad11939d61069465",
+        "boxes": [
+          {
+            "min": [
+              -31.5,
+              -0.1,
+              -60.5
+            ],
+            "max": [
+              -14.5,
+              12,
+              -43.5
+            ]
+          },
+          {
+            "min": [
+              -32.5,
+              -0.1,
+              -81.5
+            ],
+            "max": [
+              -15.5,
+              12,
+              -64.5
+            ]
+          }
+        ],
+        "clip": false,
+        "triangles": 3028,
+        "excluded": 0
+      },
+      {
+        "file": "orgrimmar-city.glb",
+        "sourceSha256": "32cac65f6bee1b9cc262f6093ada6b78fae3910db8ab925311acee1281f07c6c",
+        "boxes": [
+          {
+            "min": [
+              -35,
+              -0.01,
+              -85
+            ],
+            "max": [
+              -8,
+              0.01,
+              -41
+            ]
+          }
+        ],
+        "clip": true,
+        "triangles": 14,
+        "excluded": 0
+      }
+    ],
+    "bytes": 182324,
+    "sha256": "843f585b1c100ea88715d6e772621f494391bc79826758c663128bef10ffcccb",
+    "dimensionsMm": [
+      27000,
+      9150,
+      44000
+    ]
+  },
+  "source": {
+    "format": "craftmine.city-fragment-provenance/1",
+    "sourceWorld": "promo-orgrimmar",
+    "sourceTemplate": "desktop/godot/shared/promo-templates/promo-city/source",
+    "sources": [
+      {
+        "file": "orgrimmar-wards.glb",
+        "sourceSha256": "95ed0a416b2d5abb69b1865b24b7e95d346913091e4153a7ad11939d61069465",
+        "boxes": [
+          {
+            "min": [
+              -31.5,
+              -0.1,
+              -60.5
+            ],
+            "max": [
+              -14.5,
+              12,
+              -43.5
+            ]
+          },
+          {
+            "min": [
+              -32.5,
+              -0.1,
+              -81.5
+            ],
+            "max": [
+              -15.5,
+              12,
+              -64.5
+            ]
+          }
+        ],
+        "clip": false,
+        "triangles": 3028,
+        "excluded": 0
+      },
+      {
+        "file": "orgrimmar-city.glb",
+        "sourceSha256": "32cac65f6bee1b9cc262f6093ada6b78fae3910db8ab925311acee1281f07c6c",
+        "boxes": [
+          {
+            "min": [
+              -35,
+              -0.01,
+              -85
+            ],
+            "max": [
+              -8,
+              0.01,
+              -41
+            ]
+          }
+        ],
+        "clip": true,
+        "triangles": 14,
+        "excluded": 0
+      }
+    ],
+    "derivation": "Existing static triangle/material subset, translated to a local ground anchor; gate wall ends and street ground triangles clipped to declared rectangles. No new AI model or Blender modeling run.",
+    "originalsModified": false,
+    "licenseStatus": "unverified",
+    "sourceLicenseFile": "ORIGINAL_ASSETS_LICENSE.txt",
+    "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified"
+  },
+  "files": [
+    {
+      "path": "geometry.glb",
+      "bytes": 182324,
+      "sha256": "843f585b1c100ea88715d6e772621f494391bc79826758c663128bef10ffcccb"
+    },
+    {
+      "path": "geometry.glb.import",
+      "bytes": 81,
+      "sha256": "2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8"
+    },
+    {
+      "path": "fragment.gd",
+      "bytes": 1911,
+      "sha256": "65f4bfa3f75f0dd7bf141439061a3e12ae9a040984cd6f1918d4885478450108"
+    },
+    {
+      "path": "fragment.gd.uid",
+      "bytes": 19,
+      "sha256": "f76bf047c3547369e1caee980d11613e20a8cd6107beb732de4a00cd3e6383af"
+    },
+    {
+      "path": "city_surface.gdshader",
+      "bytes": 1749,
+      "sha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+    },
+    {
+      "path": "ORIGINAL_ASSETS_LICENSE.txt",
+      "bytes": 1407,
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 1667,
+      "sha256": "c307965685424df90b8493864574afc2cb005f584081c26ecbec0ead8c353608"
+    },
+    {
+      "path": "fragment.tscn",
+      "bytes": 366,
+      "sha256": "221cd213aa9831133631c4641458ad91370d09ba095377b1288051392602e579"
+    },
+    {
+      "path": "preview.png",
+      "bytes": 169925,
+      "sha256": "bee3138fd9d2feba0f13657cbc0eeb8a02ee445e17161192eceb8f7c811fbe59"
+    }
+  ],
+  "preview": {
+    "slug": "ward-street",
+    "file": "preview.png",
+    "sha256": "bee3138fd9d2feba0f13657cbc0eeb8a02ee445e17161192eceb8f7c811fbe59",
+    "width": 1000,
+    "height": 760,
+    "scope": "isolated-component-render",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "geometrySha256": "843f585b1c100ea88715d6e772621f494391bc79826758c663128bef10ffcccb",
+    "wrapperSha256": "65f4bfa3f75f0dd7bf141439061a3e12ae9a040984cd6f1918d4885478450108",
+    "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+  }
+}

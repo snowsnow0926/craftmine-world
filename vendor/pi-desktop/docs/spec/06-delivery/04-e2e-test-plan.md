@@ -10113,3 +10113,21 @@ version in My templates, export/import via the native picker, create independent
 copies, and verify native checks, first load and save/reopen. No profile restore,
 raw renderer filesystem/image input or original-world replacement is allowed.
 The model catalog must distinguish whole-world templates from components.
+# Reusable city fragment continuation (2026-09-13)
+
+In an isolated background profile, search the building, gate and street aliases
+from the existing asset library. Read the exact component version and dimensions,
+then install two copies without replacing existing world content. The same normal
+source/check/adoption flow must run for every package. After adoption, walk into
+the single houses, through the gates, along each street and into both street
+houses, then save and reopen through normal world controls. Instance identities
+and receiving-world content must remain independent and durable. No whole-city
+claim may be based on these three smaller fragments.
+
+Verify original city/ward GLB hashes and byte-identical regeneration, declared
+ground requirements, real preview provenance, unverified source-rights status,
+and absence of player/camera/weather replacement. Automated physics and visual
+probes use only independent headless processes and page/engine scripts; disable
+Pointer Lock and never send real or simulated OS/browser input. Retain failed
+geometry routes and distinguish source persistence, engine traversal, actual
+rendering, formal adoption and player save/reopen results.

@@ -1,0 +1,6 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="Script" path="res://addons/cw.city.gate-section/fragment.gd" id="script"]
+[ext_resource type="PackedScene" path="res://addons/cw.city.gate-section/geometry.glb" id="geometry"]
+[node name="CityFragment" type="Node3D"]
+script = ExtResource("script")
+[node name="Geometry" parent="." instance=ExtResource("geometry")]

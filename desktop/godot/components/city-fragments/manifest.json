@@ -1,0 +1,21 @@
+{
+  "format": "craftmine.city-fragments/1",
+  "sourceWorld": "promo-orgrimmar",
+  "entries": [
+    {
+      "slug": "ward-building",
+      "id": "cw.city.ward-building",
+      "componentSha256": "6a90bffe8f454ee7a279f50fd33fa5d3930e3c9bf488ea713eb86f22d9a5afc0"
+    },
+    {
+      "slug": "gate-section",
+      "id": "cw.city.gate-section",
+      "componentSha256": "92e5a5e81708d742dc32567b07c503aa83904c4bc5698f524e22f3912cdf3b0f"
+    },
+    {
+      "slug": "ward-street",
+      "id": "cw.city.ward-street",
+      "componentSha256": "80579f708a88c456afee099f4d055e1ee2f5b2b95abf61bfd7abfbc162d9fbc2"
+    }
+  ]
+}

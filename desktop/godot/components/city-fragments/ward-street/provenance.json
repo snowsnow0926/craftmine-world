@@ -1,0 +1,66 @@
+{
+  "format": "craftmine.city-fragment-provenance/1",
+  "sourceWorld": "promo-orgrimmar",
+  "sourceTemplate": "desktop/godot/shared/promo-templates/promo-city/source",
+  "sources": [
+    {
+      "file": "orgrimmar-wards.glb",
+      "sourceSha256": "95ed0a416b2d5abb69b1865b24b7e95d346913091e4153a7ad11939d61069465",
+      "boxes": [
+        {
+          "min": [
+            -31.5,
+            -0.1,
+            -60.5
+          ],
+          "max": [
+            -14.5,
+            12,
+            -43.5
+          ]
+        },
+        {
+          "min": [
+            -32.5,
+            -0.1,
+            -81.5
+          ],
+          "max": [
+            -15.5,
+            12,
+            -64.5
+          ]
+        }
+      ],
+      "clip": false,
+      "triangles": 3028,
+      "excluded": 0
+    },
+    {
+      "file": "orgrimmar-city.glb",
+      "sourceSha256": "32cac65f6bee1b9cc262f6093ada6b78fae3910db8ab925311acee1281f07c6c",
+      "boxes": [
+        {
+          "min": [
+            -35,
+            -0.01,
+            -85
+          ],
+          "max": [
+            -8,
+            0.01,
+            -41
+          ]
+        }
+      ],
+      "clip": true,
+      "triangles": 14,
+      "excluded": 0
+    }
+  ],
+  "derivation": "Existing static triangle/material subset, translated to a local ground anchor; gate wall ends and street ground triangles clipped to declared rectangles. No new AI model or Blender modeling run.",
+  "originalsModified": false,
+  "licenseStatus": "unverified",
+  "sourceLicenseFile": "ORIGINAL_ASSETS_LICENSE.txt",
+  "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified"
+}

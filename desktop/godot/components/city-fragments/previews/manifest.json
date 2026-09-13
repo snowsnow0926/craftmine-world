@@ -1,0 +1,45 @@
+{
+  "format": "craftmine.city-fragment-previews/1",
+  "modelCalls": 0,
+  "renderer": "Pinned Godot Web / isolated headless Chromium",
+  "inputSimulation": false,
+  "pointerLockAttempts": 0,
+  "entries": [
+    {
+      "slug": "ward-building",
+      "file": "ward-building.png",
+      "sha256": "e90004a11c88dc87b8feec91614f495919494dbbf6de53d0729aa44a1d5d8c4b",
+      "width": 1000,
+      "height": 760,
+      "scope": "isolated-component-render",
+      "engine": "4.7.2.stable.official.ed1daf0bf",
+      "geometrySha256": "45f0bf31440d1d7f9e3776a127295f76017511e5696eb4868523c417e72ba80c",
+      "wrapperSha256": "d5ca70503828f9a9fdc92058ef913db55c8e9cef14eb22b0177b88bbf3aa3527",
+      "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+    },
+    {
+      "slug": "gate-section",
+      "file": "gate-section.png",
+      "sha256": "b1eb0d2f4ee29a72b1f6234aaa4d61164d99b69b81fb96ff87a6f71565c919d7",
+      "width": 1000,
+      "height": 760,
+      "scope": "isolated-component-render",
+      "engine": "4.7.2.stable.official.ed1daf0bf",
+      "geometrySha256": "2918ee5b765e447274c73bae088cda7bc4ad298d232d36a48ad45b3a4e64fd6f",
+      "wrapperSha256": "a03c62e8641062e8461f886d85169c6a049cf4df7965c435269d6d9582c81c45",
+      "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+    },
+    {
+      "slug": "ward-street",
+      "file": "ward-street.png",
+      "sha256": "bee3138fd9d2feba0f13657cbc0eeb8a02ee445e17161192eceb8f7c811fbe59",
+      "width": 1000,
+      "height": 760,
+      "scope": "isolated-component-render",
+      "engine": "4.7.2.stable.official.ed1daf0bf",
+      "geometrySha256": "843f585b1c100ea88715d6e772621f494391bc79826758c663128bef10ffcccb",
+      "wrapperSha256": "65f4bfa3f75f0dd7bf141439061a3e12ae9a040984cd6f1918d4885478450108",
+      "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "format": "craftmine.city-fragment/1",
+  "slug": "gate-section",
+  "id": "cw.city.gate-section",
+  "label": "峡谷城双塔城门",
+  "kind": "object",
+  "anchor": [
+    0,
+    0,
+    -36
+  ],
+  "buildings": 0,
+  "tags": [
+    "城门",
+    "城墙",
+    "双塔",
+    "入口",
+    "gate",
+    "wall"
+  ],
+  "aliases": [
+    "奥格瑞玛城门",
+    "兽人城门",
+    "twin tower gate"
+  ],
+  "capabilities": [
+    "walk-through-gate",
+    "static-triangle-collision",
+    "independent-placement"
+  ],
+  "parts": [
+    {
+      "file": "orgrimmar-city.glb",
+      "nodePattern": "^(Detail|Solid)_Gate_",
+      "clip": true,
+      "boxes": [
+        {
+          "min": [
+            -24,
+            -0.1,
+            -48
+          ],
+          "max": [
+            24,
+            24,
+            -28
+          ]
+        }
+      ]
+    }
+  ],
+  "ground": {
+    "included": false
+  },
+  "route": {
+    "kind": "gate-passage",
+    "start": [
+      0,
+      0,
+      9
+    ],
+    "end": [
+      0,
+      0,
+      -10
+    ]
+  },
+  "version": 1,
+  "geometry": {
+    "triangles": 5908,
+    "collisionTriangles": 652,
+    "meshInstances": 13,
+    "boundaryTrianglesExcluded": 0,
+    "sourceTriangles": 36988,
+    "bounds": {
+      "min": [
+        -24,
+        0,
+        -4.563678741455078
+      ],
+      "max": [
+        24,
+        22.700000762939453,
+        6.563680648803711
+      ]
+    },
+    "parts": [
+      {
+        "file": "orgrimmar-city.glb",
+        "sourceSha256": "32cac65f6bee1b9cc262f6093ada6b78fae3910db8ab925311acee1281f07c6c",
+        "boxes": [
+          {
+            "min": [
+              -24,
+              -0.1,
+              -48
+            ],
+            "max": [
+              24,
+              24,
+              -28
+            ]
+          }
+        ],
+        "clip": true,
+        "triangles": 5908,
+        "excluded": 0
+      }
+    ],
+    "bytes": 336200,
+    "sha256": "2918ee5b765e447274c73bae088cda7bc4ad298d232d36a48ad45b3a4e64fd6f",
+    "dimensionsMm": [
+      48000,
+      22701,
+      11128
+    ]
+  },
+  "source": {
+    "format": "craftmine.city-fragment-provenance/1",
+    "sourceWorld": "promo-orgrimmar",
+    "sourceTemplate": "desktop/godot/shared/promo-templates/promo-city/source",
+    "sources": [
+      {
+        "file": "orgrimmar-city.glb",
+        "sourceSha256": "32cac65f6bee1b9cc262f6093ada6b78fae3910db8ab925311acee1281f07c6c",
+        "boxes": [
+          {
+            "min": [
+              -24,
+              -0.1,
+              -48
+            ],
+            "max": [
+              24,
+              24,
+              -28
+            ]
+          }
+        ],
+        "clip": true,
+        "triangles": 5908,
+        "excluded": 0
+      }
+    ],
+    "derivation": "Existing static triangle/material subset, translated to a local ground anchor; gate wall ends and street ground triangles clipped to declared rectangles. No new AI model or Blender modeling run.",
+    "originalsModified": false,
+    "licenseStatus": "unverified",
+    "sourceLicenseFile": "ORIGINAL_ASSETS_LICENSE.txt",
+    "sourceLicenseClaim": "MIT source declaration; generated city/reference rights have not been independently verified"
+  },
+  "files": [
+    {
+      "path": "geometry.glb",
+      "bytes": 336200,
+      "sha256": "2918ee5b765e447274c73bae088cda7bc4ad298d232d36a48ad45b3a4e64fd6f"
+    },
+    {
+      "path": "geometry.glb.import",
+      "bytes": 81,
+      "sha256": "2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8"
+    },
+    {
+      "path": "fragment.gd",
+      "bytes": 1912,
+      "sha256": "a03c62e8641062e8461f886d85169c6a049cf4df7965c435269d6d9582c81c45"
+    },
+    {
+      "path": "fragment.gd.uid",
+      "bytes": 19,
+      "sha256": "16a201152d7ff857a1f78c4fe1a3cd1d98ed79ddd76fd05903f7990ad7825115"
+    },
+    {
+      "path": "city_surface.gdshader",
+      "bytes": 1749,
+      "sha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+    },
+    {
+      "path": "ORIGINAL_ASSETS_LICENSE.txt",
+      "bytes": 1407,
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 1051,
+      "sha256": "fabb646422ce8606ad135d7565a270d490e955354d78f5b671252cbd8e0b67a0"
+    },
+    {
+      "path": "fragment.tscn",
+      "bytes": 368,
+      "sha256": "5b777f3e86bc65e729f1993190df73b9c136f668b4b3bd4bbe4451fceae465cf"
+    },
+    {
+      "path": "preview.png",
+      "bytes": 186619,
+      "sha256": "b1eb0d2f4ee29a72b1f6234aaa4d61164d99b69b81fb96ff87a6f71565c919d7"
+    }
+  ],
+  "preview": {
+    "slug": "gate-section",
+    "file": "preview.png",
+    "sha256": "b1eb0d2f4ee29a72b1f6234aaa4d61164d99b69b81fb96ff87a6f71565c919d7",
+    "width": 1000,
+    "height": 760,
+    "scope": "isolated-component-render",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "geometrySha256": "2918ee5b765e447274c73bae088cda7bc4ad298d232d36a48ad45b3a4e64fd6f",
+    "wrapperSha256": "a03c62e8641062e8461f886d85169c6a049cf4df7965c435269d6d9582c81c45",
+    "shaderSha256": "a25aba840637b17d96cdd7a67cca0038d9e76948949de20e415832f254c0c309"
+  }
+}
