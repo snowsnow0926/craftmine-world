@@ -36,5 +36,5 @@ try{
  const connected=await invoke('codexConnection',{action:'verify',path:'C:/Users/WINDOWS/AppData/Local/OpenAI/Codex/bin/bffc5354119c8421/codex.exe'});assert.equal(connected.code,'ready');report.connection={code:connected.code,model:connected.model,effort:connected.effort,version:connected.version};mark('Native controlled IPC verifies actual Codex account and Astra/xhigh catalog');
  await rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId:report.worldId,freeze:true}});report.passed=true;
 }catch(error){report.error=String(error.stack??error);try{report.page=await evaluate(`({text:document.body.innerText.slice(-3000),form:!!document.querySelector('[data-mode-entry]')})`);}catch{}process.exitCode=1;}
-finally{try{await stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);save();launch.assertUnchanged();}
-console.log(JSON.stringify({passed:report.passed===true,out,error:report.error,steps:report.steps}));
+finally{try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}save();}
+console.log(JSON.stringify({passed:report.passed===true,out,error:report.error,steps:report.steps,shutdownError:report.shutdownError,integrityError:report.integrityError}));

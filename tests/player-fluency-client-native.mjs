@@ -212,7 +212,9 @@ try {
   report.error=String(error.stack??error);process.exitCode=1;
   try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-4000),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{}
 } finally {
-  try{await stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}
-  clearInterval(watcher);save();launch.assertUnchanged();
+  try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}
+  clearInterval(watcher);
+  try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}
+  save();
 }
-console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError}));
+console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError,integrityError:report.integrityError}));

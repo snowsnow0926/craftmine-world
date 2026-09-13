@@ -241,5 +241,5 @@ try{
  await assert.rejects(nav('library.direct',{action:'status',worldId,operationId:'missing-operation-id'}),error=>String(error).includes('DIRECT_LIBRARY_OPERATION_NOT_FOUND')&&!String(error).includes(profile));
  report.passed=true;mark('Just-submitted cancellation retained the empty formal world, and the original two-companion world stayed intact');
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-7000),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
-finally{try{await stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);save();launch.assertUnchanged();}
-console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError}));
+finally{try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}save();}
+console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError,integrityError:report.integrityError}));
