@@ -13,9 +13,9 @@ const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
 const root=path.resolve(import.meta.dirname,'..');
 const resultsRoot=path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT??path.join(root,'test-results'));fs.mkdirSync(resultsRoot,{recursive:true});
-const resumeIndex=process.argv.indexOf('--resume-author'),previousFile=resumeIndex>=0?process.argv[resumeIndex+1]:null;
+const resumeIndex=process.argv.indexOf('--resume-author'),frameIndex=process.argv.indexOf('--frame-report'),framesOnly=frameIndex>=0,previousFile=framesOnly?process.argv[frameIndex+1]:resumeIndex>=0?process.argv[resumeIndex+1]:null;
 const previous=previousFile?JSON.parse(fs.readFileSync(previousFile)):null;
-if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
+if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');if(framesOnly)assert(previous.passed&&previous.authorWorldId&&previous.importedWorldId&&previous.companionEntityId,'FRAME_ONLY_ACCEPTED_WORLDS');else assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
 const out=previous?.out??fs.mkdtempSync(path.join(resultsRoot,'desktop-native-rt-'));let profile=path.join(out,'profile');const token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));}
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
@@ -25,7 +25,7 @@ report.limits.push('The supported edit changes an ordinarily placed stock tree. 
 report.packageIdentity=launch.identity?{inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256,version:launch.identity.version}:null;
 const nativePaths=launch.packaged?{core:path.join(launch.packaged,'resources/bin/craftmine-core.exe'),host:path.join(launch.packaged,'resources/bin/pi-desktop-host-core.exe')}:{core:process.env.CRAFTMINE_EVAL_CORE??path.join(applicationRoot,'vendor/pi-desktop/target/release/craftmine-core.exe'),host:process.env.CRAFTMINE_EVAL_HOST??path.join(applicationRoot,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe')};
 report.nativeBinaries=Object.fromEntries(Object.entries(nativePaths).map(([name,file])=>[name,{file:path.resolve(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')}]));
-if(previous){const identity={applicationRoot,resources,buildMainSha256:report.buildMainSha256,driverSha256:report.driverSha256,nativeBinaries:report.nativeBinaries,packageIdentity:report.packageIdentity,limits:report.limits};Object.assign(report,previous,identity,{previousReport:previousFile,previousError:previous.error});delete report.error;delete report.shutdownError;delete report.failurePage;}
+if(previous){const identity={applicationRoot,resources,buildMainSha256:report.buildMainSha256,driverSha256:report.driverSha256,nativeBinaries:report.nativeBinaries,packageIdentity:report.packageIdentity,limits:report.limits};Object.assign(report,previous,identity,{previousReport:previousFile,previousError:previous.error,previousJourneyPassed:previous.passed});delete report.passed;delete report.error;delete report.shutdownError;delete report.failurePage;}
 const reportFile=path.join(out,previous?'continuation-'+randomUUID()+'.json':'report.json'),save=()=>fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 const abort = new AbortController(), pending = new Map();
 const cancelFile=path.join(out,previous?'cancel-'+randomUUID():'cancel');report.cancelFile=cancelFile;
@@ -176,7 +176,7 @@ async function closeAssets(){if(await evaluate(`!!document.querySelector('[data-
 async function capture(name){
  const state=await until(()=>rpc('godotCaptureBoundState'),Boolean);assert.equal(state.formal?.worldId,worldId);
  const frame=await until(async()=>{try{return await rpc('godotCaptureBoundView',{payload:state.formal});}catch(error){if(String(error).includes('GODOT_VIEW_CAPTURE_DETACHED'))return null;throw error;}},Boolean);assert.equal(frame.worldId,worldId);assert.equal(frame.scope,'formal');
- const bytes=Buffer.from(frame.pngBase64,'base64');assert(bytes.length>1000);const file=path.join(out,name+'-'+report.launches.length+'.png');fs.writeFileSync(file,bytes);
+ const bytes=Buffer.from(frame.pngBase64,'base64');assert(bytes.length>1000);const file=path.join(out,name+'-'+report.launches.length+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes,{flag:'wx'});
  const proof={file,worldId,buildId:frame.buildId,sha256:createHash('sha256').update(bytes).digest('hex'),width:frame.width,height:frame.height};save();return proof;
 }
 async function look(pitch){
@@ -241,10 +241,8 @@ async function refreshTarget(){
 async function aimGround(){
   await workbench();await panel('godot.runtimeResume');
   if(!await evaluate(`!!document.querySelector('[data-world-session]')`)){
-   const sessions=await desktopInvoke('sessionList',{});report.restoredSessions=sessions;save();
-   assert.equal(sessions.sessions.length,1,'ONE_OWN_AUTHOR_CONVERSATION_REQUIRED');
-   const selector=`[data-sidebar-session-row="${sessions.sessions[0].id}"] .thread-item-main`;
-   await evaluate(`(()=>{const node=document.querySelector(${JSON.stringify(selector)});if(!node)throw Error('AUTHOR_SESSION_ROW_MISSING');const props=node[Object.keys(node).find(k=>k.startsWith('__reactProps$'))];props.onClick();return true;})()`);
+   await until(()=>evaluate(`!!document.querySelector('[data-world-start-creation]')`),Boolean);
+   await submit('[data-world-start-creation]');
    await until(()=>evaluate(`!!document.querySelector('[data-world-session]')`),Boolean);
   }
   await until(()=>evaluate(`!!document.querySelector('.creation-target-context')`),Boolean);
@@ -288,6 +286,7 @@ async function placeAndEdit(){
  report.editedEntity=actual;report.editorCapture=await rpc('capture',{name:'ordinary-edited-tree'});report.editCapture=await capture('edited-world');save();
 }
 async function publishWorld(){
+ await frameContents('author-template-content');
  await assets('world');await until(()=>evaluate(`!document.querySelector('[data-library-publish-form] fieldset').disabled`),Boolean);
  await field('[data-publication-name]','我的首次创作');await field('[data-publication-description]','素材库伙伴与亲手放置、修改的树。');
  await field('[data-publication-tags]','伙伴,树,首次创作');await field('[data-publication-aliases]','首次创作完整闭环');await field('[data-publication-checkpoint]',true);
@@ -319,10 +318,39 @@ async function assertContents(label){
 async function play(){
  await panel('godot.runtimeResume');const observed=await rpc('godotObserve');
  const receipt=await rpc('godotExplore',{payload:{worldId,buildId:observed.buildId,instanceId:observed.instanceId,steps:[{op:'look',args:{yaw:2,pitch:-.3}},{op:'walk',args:{forward:1,right:0,frames:18}}]}});
- report.play={receipt,before:observed,after:await rpc('godotObserve')};assert.notDeepEqual(report.play.before.payload.player.position,report.play.after.payload.player.position);report.playCapture=await capture('imported-playing');save();
+ report.play={receipt,before:observed,after:await rpc('godotObserve')};assert.notDeepEqual(report.play.before.payload.player.position,report.play.after.payload.player.position);report.playCapture=await frameContents('imported-playing-content');save();
+}
+async function frameContents(label){
+ await closeAssets();await until(()=>rpc('worldNavigationReady'),value=>value.worldId===worldId&&value.ready);await until(()=>panel('godot.runtimeResume'),()=>true);
+ const before=await rpc('godotObserve'),tree=before.payload.creation.entities.find(e=>e.id===report.editedEntityId);assert(tree?.meshBounds,'ACTUAL_TREE_BOUNDS_REQUIRED');
+ const actions=[],player=before.payload.player.position,dx=tree.position[0]-player[0],dz=tree.position[2]-player[2],yaw=Math.atan2(-dx,-dz);
+ // Native player movement gives the tall tree and following companion room
+ // in the stock camera. Its horizontal/vertical FOV depends on viewport aspect;
+ // do not assume the configured 75 degrees is the vertical field of view.
+ {
+  const input={worldId,buildId:before.buildId,instanceId:before.instanceId,steps:[{op:'look',args:{yaw,pitch:-.15}},{op:'walk',args:{forward:-1,right:0,frames:Math.hypot(dx,dz)<12?120:60}}]};
+  actions.push({input,receipt:await rpc('godotExplore',{payload:input})});
+ }
+ const sample=await rpc('godotObserve'),snapshot=await rpc('godotSnapshot'),pet=snapshot.state.body.components[report.companionEntityId];assert(pet?.format==='craftmine.pet-companion-state/1'&&Array.isArray(pet.position),'ACTUAL_COMPANION_POSITION_REQUIRED');
+ const actualTree=sample.payload.creation.entities.find(e=>e.id===report.editedEntityId),eye=sample.payload.player.position;
+ const midpoint=[(actualTree.position[0]+pet.position[0])/2,(actualTree.position[1]+pet.position[1])/2+.65,(actualTree.position[2]+pet.position[2])/2];
+ const mx=midpoint[0]-eye[0],mz=midpoint[2]-eye[2],eyeHeight=sample.payload.controllerEvidence.cameraTransform.rigPosition[1];
+ const eyeY=eye[1]+eyeHeight,bounds=actualTree.meshBounds;
+ const treeDistance=Math.max(.1,Math.hypot(Math.max(bounds.min[0]-eye[0],0,eye[0]-bounds.max[0]),Math.max(bounds.min[2]-eye[2],0,eye[2]-bounds.max[2])));
+ const petDistance=Math.max(.1,Math.hypot(pet.position[0]-eye[0],pet.position[2]-eye[2]));
+ const verticalBounds={top:Math.atan2(bounds.max[1]-eyeY,treeDistance),bottom:Math.atan2(pet.position[1]-eyeY,petDistance)};
+ const angles={yaw:Math.atan2(-mx,-mz),pitch:(verticalBounds.top+verticalBounds.bottom)/2};
+ const input={worldId,buildId:sample.buildId,instanceId:sample.instanceId,steps:[{op:'look',args:angles}]};actions.push({input,receipt:await rpc('godotExplore',{payload:input})});
+ const frame=await capture(label);report.framing??=[];report.framing.push({label,worldId,treeId:actualTree.id,treeBounds:actualTree.meshBounds,companionEntityId:pet.entityId,companionPosition:pet.position,midpoint,verticalBounds,angles,actions,frame});save();return frame;
 }
 try{
- console.log(JSON.stringify({out,cancel:cancelFile}));await start('author');
+ console.log(JSON.stringify({out,cancel:cancelFile}));
+ if(framesOnly){
+  report.framingOnly=true;report.fullJourneyReexecuted=false;await start('frame-author');worldId=report.authorWorldId;await openExistingWorld(worldId);await frameContents('author-content-review');await stop();
+  profile=path.join(out,'independent-profile');await start('frame-import');worldId=report.importedWorldId;await openExistingWorld(worldId);await frameContents('imported-content-review');
+  report.passed=true;report.framingPassed=true;
+ }else{
+ await start('author');
  if(previous){worldId=report.authorWorldId;await openExistingWorld(worldId);}
  else{worldId=await createWorld('我的首次自主创作');report.authorWorldId=worldId;report.initialSnapshot=await rpc('godotSnapshot');
  const companion=await startDirect('cw.module.approved-pomeranian',{x:-2,y:0,z:4.3});await applyDirect(companion);}
@@ -331,6 +359,14 @@ try{
  assert.equal(componentIds.length,1,'ONE_ACTUAL_COMPANION_STATE_REQUIRED');
  const installedComponent=installedSource.items.find(row=>row.entityId===componentIds[0]);assert(installedComponent?.supported,'FORMAL_COMPONENT_DECLARATION_REQUIRED');
  report.companionEntityId=installedComponent.entityId;report.companionSource=installedComponent;save();
+ if(!previous){
+  const sessionId=await evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`);assert(sessionId,'NEW_WORLD_OWNS_REAL_EMPTY_CONVERSATION');
+  const detail=await desktopInvoke('sessionGet',{id:sessionId});assert.equal(detail.session.messages.length,0,'DIRECT_LIBRARY_USE_MUST_NOT_FABRICATE_AUTHOR_TURNS');
+  await stop();await start('zero-turn-cold');await openExistingWorld(worldId);await workbench();
+  const restored=await until(()=>evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`),Boolean);assert.equal(restored,sessionId,'ZERO_TURN_WORLD_RESTORES_SAME_CONVERSATION');
+  await until(()=>evaluate(`!!document.querySelector('[data-creation-target]')`),Boolean);
+  report.zeroTurnReopen={sessionId,restored,worldId,messages:0,creationEditorVisible:true};await modelEvidence('zero-turn-cold-reopen');save();
+ }
  if(!previous?.editedEntity)await placeAndEdit();await modelEvidence('author-after-edit');
  await panel('godot.runtimeSave',{freeze:false});await assertContents('author-saved');await stop();
  await start('author-cold');await openExistingWorld(worldId);await assertContents('author-cold-reopen');
@@ -341,6 +377,7 @@ try{
  await importWorld();await assertContents('independent-import');await play();await panel('godot.runtimeSave',{freeze:false});await modelEvidence('independent-after-play');await stop();
  await start('independent-cold');await openExistingWorld(worldId);await assertContents('independent-cold-reopen');await modelEvidence('independent-cold');
  report.modelCalls=0;report.passed=true;mark('Real catalog use, ordinary supported edit, save, template export/import, gameplay and both cold reopens passed');
-}catch(error){report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-12000),notes:Array.from(document.querySelectorAll('.creation-target-note'),n=>({text:n.textContent,title:n.title})),buttons:Array.from(document.querySelectorAll('.creation-target-context button'),n=>({text:n.textContent,disabled:n.disabled})),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
+ }
+}catch(error){report.passed=false;report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-12000),notes:Array.from(document.querySelectorAll('.creation-target-note'),n=>({text:n.textContent,title:n.title})),buttons:Array.from(document.querySelectorAll('.creation-target-context button'),n=>({text:n.textContent,disabled:n.disabled})),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
 finally{try{await stop();}catch(error){report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);save();launch.assertUnchanged();}
 console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError}));
