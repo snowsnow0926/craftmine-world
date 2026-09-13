@@ -117,7 +117,9 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           const result=await options.domainCall('package.sourceJob',{worldId,jobId:args.jobId});await selected(worldId);
           const statuses=['blocked','queued','claimed','running','passed','failed','cancelled','interrupted'];
           if(result.worldId!==worldId||result.jobId!==args.jobId||!statuses.includes(result.status))failure('PACKAGE_JOB_RECEIPT_INVALID');
-          return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status)};
+          if(result.sourceStale!==undefined&&typeof result.sourceStale!=='boolean')failure('PACKAGE_JOB_RECEIPT_INVALID');
+          return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status),
+            ...(typeof result.sourceStale==='boolean'?{sourceStale:result.sourceStale}:{})};
         }
         if(method==='sourceList') {fields(args,['worldId']);const result=await privateCall('sourceList',{worldId});await selected(worldId);if(result.worldId!==worldId||!Array.isArray(result.items))failure('PACKAGE_SOURCE_RECEIPT_INVALID');return {worldId,revision:result.revision,manifestHash:result.manifestHash,mainScene:result.mainScene,items:result.items.slice(0,512).map((item:any)=>({nodePath:item.nodePath,name:item.name,entityId:item.entityId,supported:item.supported===true,...(item.reason?{reason:item.reason}:{})})),truncated:result.truncated===true||result.items.length>512};}
         if(method==='exportSource') {

@@ -10396,6 +10396,15 @@ passes normal checking/adoption while authored source and progress survive.
 
 ### Main conversation source proposals
 
+After a failed source install, keep its immutable job ID and failed status.
+Complete a later author turn that changes the source. The existing card must
+re-read that exact terminal job and, when Core reports `sourceStale: true`, show
+the historical-failure wording and check-history action without reinstallation
+or any passed/adopted claim. Missing or false staleness retains the original
+failure wording; malformed staleness and cross-world job results are rejected.
+The check-history action uses the existing world checks surface. A different
+successful job never rewrites the older failed receipt.
+
 After an ordinary direct edit with no AI suggestions, the existing reuse panel
 must read its empty proposal list without PERMISSION_DENIED. Admit only exact
 current-world proposal/job identifiers to its existing install/check path;
