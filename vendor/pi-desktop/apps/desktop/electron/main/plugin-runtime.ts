@@ -1036,6 +1036,9 @@ export class PluginRuntime {
       "library.search", "library.read", "library.capture",
       "world.list", "world.create", "world.saveProgress",
       "world.archiveStatus", "world.archiveFailed", "world.archivedList", "world.restoreArchived",
+      "worldTemplate.list", "worldTemplate.read", "worldTemplate.describe", "worldTemplate.save",
+      "worldTemplate.status", "worldTemplate.cancel", "worldTemplate.prepare",
+      "worldTemplate.importArchive", "worldTemplate.exportArchive",
       "workspace.endTurn", "asset.bodyPath",
       "asset.request", "package.request",
     ]) allowed.add(operation);

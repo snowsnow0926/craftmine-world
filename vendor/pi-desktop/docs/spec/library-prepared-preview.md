@@ -8,4 +8,6 @@ When cancellation is durably confirmed and clears the retained operation, a late
 
 ## Acceptance
 
+The trusted orchestrator transport admits exactly the implemented world-template domain methods (`list`, `read`, `describe`, `save`, `status`, `cancel`, `prepare`, `importArchive`, `exportArchive`). The main panel keeps renderer validation and file grants; these private host methods are not a wildcard renderer API. The actual PluginRuntime child-transport regression in `plugin-world-lifecycle-routes.test.mjs` checks admission and refusal of unsupported template methods.
+
 Run `node --test apps/desktop/test/player-library.test.mjs` from the vendor root: source/instance changes, candidate state, invalid request and cross-world caches fail closed. Run `node tests/player-library-ui.mjs` from the repository root for ordinary React form cancellation and publication checks. Native acceptance uses `tests/player-library-ui-native.mjs`: open the actual sheet, publish the installed approved Pom, observe a loaded thumbnail and find the exact version by its alias. Native results are recorded separately from renderer fixtures.
