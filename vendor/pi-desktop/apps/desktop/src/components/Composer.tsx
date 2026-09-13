@@ -2056,6 +2056,13 @@ export function Composer({
       className={`composer-dock composer-dock-${variant}`}
     >
       <div className="composer-stack">
+        {codexWorld && !settings?.codexCliPath && <div className="creation-target-context" data-codex-connect-hint>
+          <span>{settings?.language?.startsWith("zh") ? "连接 Codex 后即可开始创作。" : "Connect Codex to start creating."}</span>
+          <button type="button" onClick={() => {
+            sessionStorage.setItem("craftmine.openCodexConnection", "1");
+            const state = useAppStore.getState(); state.setSettingsTab("general"); state.setPage("settings");
+          }}>{settings?.language?.startsWith("zh") ? "连接 Codex" : "Connect Codex"}</button>
+        </div>}
         {composerPrefill?.append && composerPrefill.worldId && <div className="creation-target-context" data-world-asset-pending>
           <span role="status">{settings?.language?.startsWith("zh") ? "素材引用待加入原世界的对话。" : "Asset reference is waiting for its world's conversation."}</span>
           <button type="button" onClick={clearComposerPrefill}>{settings?.language?.startsWith("zh") ? "取消加入引用" : "Discard pending reference"}</button>

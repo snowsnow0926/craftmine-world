@@ -18,6 +18,10 @@ export function WorldAgentBackendRow({ settings, saveSettings }: {
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
+    if (sessionStorage.getItem("craftmine.openCodexConnection") === "1") {
+      sessionStorage.removeItem("craftmine.openCodexConnection");
+      document.getElementById("world-agent-backend")?.scrollIntoView({block: "center"});
+    }
     return () => { mounted.current = false; ++revision.current; void api.codexConnection({ action: "cancel" }).catch(() => {}); };
   }, []);
   useEffect(() => {

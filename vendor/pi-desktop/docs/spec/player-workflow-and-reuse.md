@@ -21,3 +21,5 @@ The first candidate follows the plan's delivery order: four examples in one clie
 ### Navigation and draft recovery
 
 Creating a world never adopts an unrelated pre-existing home draft. Normal home draft materialization carries a pending asset reference into the created session while retaining its world identity. Pending references remain explicitly discardable if target sampling fails. Leaving a creation form during asynchronous preflight fences the continuation before native registration; chooser navigation is disabled during that preflight.
+
+The Composer's missing-CLI hint opens the existing General settings card and scrolls to its connection controls without focusing a test window. Account/model verification is a catalog capability check, not an inference charge. Native binary reuse for this candidate is from the sealed parent: the request changes no Rust or broker source. The previous development-only progress-migration provenance pin was stale; actual bytes match clean Git and the approved parent, so its inventory now records that same source hash.

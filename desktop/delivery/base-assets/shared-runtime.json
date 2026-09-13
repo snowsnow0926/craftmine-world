@@ -538,8 +538,8 @@
         "development-only"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 12716,
-      "sha256": "929c905cd3e76fc3eb6078de59392e92cd314ec39e2e9fc2ece697d90d7dca2b"
+      "bytes": 12881,
+      "sha256": "09dc831a4240042b7373522877ad198bf01fa6abbbe0bc30faf033dcedebfcf8"
     },
     {
       "path": "promo-templates/catalog.json",
