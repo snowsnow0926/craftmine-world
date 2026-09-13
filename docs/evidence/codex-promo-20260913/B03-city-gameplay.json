@@ -1,0 +1,466 @@
+{
+  "format": "craftmine.promo-city-gameplay/1",
+  "scope": "Operator navigation by normal WASD events; physical collisions and inventory are observed, never written.",
+  "identity": {
+    "worldId": "promo-orgrimmar",
+    "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+    "instanceId": "c5dc354196651fa3b7e1e140"
+  },
+  "sourceRevision": 13,
+  "sourceUnchanged": true,
+  "continuedAuthor": {
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "threadId": "01a0983f-c8e8-7333-b5b1-e784bf7174af",
+    "hostTurnId": "62f8ac83-e942-4476-82af-e9524b80fde7",
+    "jobId": "gjob-8a10b074467dec96fbd282173fdda9d1e0b74d44c9f4e9a5cd28a68f0df25101",
+    "candidateId": "gcan-844fa54f73870c5f0a67eb9c745c018a4c744151a4971cb68c82dea0dfe2a2a1",
+    "reuse": {
+      "format": "craftmine.godot-export-reuse/1",
+      "originJobId": "gjob-931dee6fddca6fdb03a552ae8c977b9c2d14be23aa423b28ede04abde306f60f",
+      "originOutputHash": "30b04b699b8e2129cdbd1db465c3c48132b6ec530d79a36f12cd5ddeca6cdf3a",
+      "exportExecuted": false
+    },
+    "report": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-retained-continuation-result.json",
+      "sha256": "563f289fe7004197f8f7adf7fc8f49aba545174666ee192de24616b5a0922846"
+    }
+  },
+  "application": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-connection-application.jsonl",
+    "sha256": "cf05ce11157d4e0aac244ae5d24d5c3d7b98dea91dfd7f319bc0f0db67f038fd"
+  },
+  "exploration": {
+    "org-drag": 1,
+    "org-gate": 1,
+    "org-hall": 1,
+    "org-honor": 1,
+    "org-spirit": 1,
+    "org-strength": 1
+  },
+  "waypoints": [
+    {
+      "label": "leave the honor building side for the clear connecting path",
+      "position": [
+        37.535457611084,
+        9.90094375610352,
+        -141.358947753906
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:32:31.698Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "2e9e37adc27734a13dfcc379b9d0444f3fda578983bff235941fb2e523f5e155",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-2e9e37adc27734a13dfcc379b9d0444f3fda578983bff235941fb2e523f5e155.png"
+      }
+    },
+    {
+      "label": "east ramp foot",
+      "position": [
+        37.535457611084,
+        9.90094375610352,
+        -152.150390625
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:32:33.976Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "3fa138b7aa3d5b286f92f1fe1644b1670e8f63c0f214a7342250ee3656a7ff85",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-3fa138b7aa3d5b286f92f1fe1644b1670e8f63c0f214a7342250ee3656a7ff85.png"
+      }
+    },
+    {
+      "label": "east ramp ascent",
+      "position": [
+        37.5355033874512,
+        14.7002010345459,
+        -170.710815429688
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:32:37.698Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "2a038a24422b24e25f2c4e7595197871f0c1172f4352198c822b307461c5ba8d",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-2a038a24422b24e25f2c4e7595197871f0c1172f4352198c822b307461c5ba8d.png"
+      }
+    },
+    {
+      "label": "return to citadel",
+      "position": [
+        25.9787158966064,
+        14.9003734588623,
+        -171.004150390625
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:32:41.979Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "db52579998b1bf62777910012c7840fe984675e1912d32adaf61f28ab069daef",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-db52579998b1bf62777910012c7840fe984675e1912d32adaf61f28ab069daef.png"
+      }
+    },
+    {
+      "label": "front terrace return",
+      "position": [
+        25.9787158966064,
+        14.9003734588623,
+        -129.509704589844
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:32:54.785Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "561c9943f94b28d5cd3537598aa6705c95cc02c212d4edf607f19a6fd9c11262",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-561c9943f94b28d5cd3537598aa6705c95cc02c212d4edf607f19a6fd9c11262.png"
+      }
+    },
+    {
+      "label": "west terrace edge",
+      "position": [
+        -25.096363067627,
+        14.9003734588623,
+        -129.509704589844
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:33:10.482Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "071a9b23c032f399e835e17a8a01f618394c7c483a43fa81fe730bea0d50205b",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-071a9b23c032f399e835e17a8a01f618394c7c483a43fa81fe730bea0d50205b.png"
+      }
+    },
+    {
+      "label": "west rear bridge",
+      "position": [
+        -25.096363067627,
+        14.9003734588623,
+        -171.381164550781
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:33:17.764Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "698fd11b076179531d7e7e400d768a99474f67b465a9b55c04d34951c4624bb9",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-698fd11b076179531d7e7e400d768a99474f67b465a9b55c04d34951c4624bb9.png"
+      }
+    },
+    {
+      "label": "west bridge crossing",
+      "position": [
+        -36.4892959594727,
+        14.7006664276123,
+        -171.381164550781
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:33:22.021Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "aa1d454a71f31d8466816415ad21a77c0e5b5439a49bd73d70af836c9b14c798",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-aa1d454a71f31d8466816415ad21a77c0e5b5439a49bd73d70af836c9b14c798.png"
+      }
+    },
+    {
+      "label": "west connecting ramp",
+      "position": [
+        -36.4892959594727,
+        9.9008617401123,
+        -152.592025756836
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-spirit": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:33:28.221Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "bc6dc0a7942112b1af24ebf9ae8ff0336fdbcce275ff50759ed346a167f25be3",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-bc6dc0a7942112b1af24ebf9ae8ff0336fdbcce275ff50759ed346a167f25be3.png"
+      }
+    },
+    {
+      "label": "spirit plateau",
+      "position": [
+        -49.4043769836426,
+        9.9008617401123,
+        -152.592025756836
+      ],
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-honor": 1,
+        "org-spirit": 1,
+        "org-strength": 1
+      },
+      "frame": {
+        "format": "craftmine.godot-view-capture/1",
+        "worldId": "promo-orgrimmar",
+        "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+        "instanceId": "c5dc354196651fa3b7e1e140",
+        "candidateId": null,
+        "scope": "formal",
+        "capturedAt": "2026-09-13T06:33:32.814Z",
+        "viewWidth": 1280,
+        "viewHeight": 784,
+        "sourceWidth": 1280,
+        "sourceHeight": 860,
+        "width": 1280,
+        "height": 860,
+        "resized": false,
+        "sha256": "ecb5698955bad95c9f79eb987a6be2b38bf3a64de3d4db2ea0553d5788fa4fe2",
+        "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\formal-ecb5698955bad95c9f79eb987a6be2b38bf3a64de3d4db2ea0553d5788fa4fe2.png"
+      }
+    }
+  ],
+  "inputSegments": 54,
+  "operatorScript": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\walk-city-v5.mjs",
+    "sha256": "bb297ae8ad31a75364a25bd07db8a61cce1bac59a22c2056e21b3a5750476d03"
+  },
+  "routeReport": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-city-route-report-v5.json",
+    "sha256": "9f9fa049865c7817b1b69cfa4cc785a06422d450bf5e59ddaa378f1e9b2c0424"
+  },
+  "earlierActualReports": {
+    "eastDescent": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-city-route-report-v3.json",
+      "sha256": "fe1c0819b3dce9fea52aac76e666ce4a3b7dafccb364da7eb19fe5454a8c6a28"
+    },
+    "honorArrival": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-city-route-report-v4.json",
+      "sha256": "391227efc97a999c9221e268ebdceb3d27abf7fa0903510abd72c29adcca7939"
+    },
+    "note": "The first operator turned before the ramp guard ended; a later route slid along the honor building and was normally cancelled. These are retained operator route failures, not additional source edits or completed planned guard interaction."
+  },
+  "overview": {
+    "format": "craftmine.godot-view-capture/1",
+    "worldId": "promo-orgrimmar",
+    "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+    "instanceId": "c5dc354196651fa3b7e1e140",
+    "candidateId": null,
+    "scope": "formal",
+    "capturedAt": "2026-09-13T06:33:33.592Z",
+    "viewWidth": 1280,
+    "viewHeight": 784,
+    "sourceWidth": 1280,
+    "sourceHeight": 860,
+    "width": 1280,
+    "height": 860,
+    "resized": false,
+    "sha256": "17e8149e304c36e9a44e92877629391ca3c026493932344b218ea5a14f1d858f",
+    "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-yPJELa\\input-after-17e8149e304c36e9a44e92877629391ca3c026493932344b218ea5a14f1d858f.png"
+  },
+  "returnToPlaza": {
+    "report": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-demo-return-report.json",
+      "sha256": "d5899e97319d10b15e78593c11cc0d9794b163c9d80b40d1cbbc1803946f3dc0"
+    },
+    "operatorScript": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\city-demo-return.mjs",
+      "sha256": "b99bc9611cbf76162e7dc18d62682c7d325046c96b036ce3bc44c4db06e97c51"
+    },
+    "nativePlayer": {
+      "onFloor": true,
+      "pitch": 0,
+      "position": [
+        -2.62765002250671,
+        0.900789082050323,
+        -83.6234436035156
+      ],
+      "yaw": 0
+    },
+    "sourceUnchanged": true,
+    "outcome": "The west ramp ascent and return stairs were traversed normally. The operator stopped at z=-83.623, 0.623m short of the final waypoint, against a collider; it did not reach the requested exact -83 waypoint. This ground-level central-plaza position was saved and cold reopened."
+  },
+  "coldReopen": {
+    "report": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\B03-six-district-reopen.jsonl",
+      "sha256": "d77a459d175ef8d1f49b02db2826a0023de02ae741cf928fb78391de49fa8db1"
+    },
+    "close": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-H7JItI\\close.json",
+      "sha256": "909c070264c1733e830a7b4fe84c8f07299c40c0ada95d415b63f54c4389d327"
+    },
+    "inventoryEqual": true,
+    "playerEqual": true
+  },
+  "frame": {
+    "format": "craftmine.godot-view-capture/1",
+    "worldId": "promo-orgrimmar",
+    "buildId": "gbd-ef766140c6f2a3eefb489b2a70cc93ed8b5299d2037cf7097313acf37524238e",
+    "instanceId": "db2d735b13ec6ec6310030c0",
+    "candidateId": null,
+    "scope": "formal",
+    "capturedAt": "2026-09-13T06:35:56.036Z",
+    "viewWidth": 1280,
+    "viewHeight": 784,
+    "sourceWidth": 1280,
+    "sourceHeight": 860,
+    "width": 1280,
+    "height": 860,
+    "resized": false,
+    "sha256": "ba81804761aaf6504a9c3dea7e44533e14caec058aed14d6a11612ca38a20c0c",
+    "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\pcity\\test-results\\desktop-native-codex-live-4V2snS\\formal-ba81804761aaf6504a9c3dea7e44533e14caec058aed14d6a11612ca38a20c0c.png"
+  },
+  "visualReview": "Actual whole-city overview shows connected main town and two high wards, with 6/6 exploration. The returned plaza view faces the central stairs. Stylized prototype; not a surveyed one-to-one reconstruction or finished promotional film."
+}
