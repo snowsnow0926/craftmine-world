@@ -13,8 +13,9 @@ readable with its exact bytes. Otherwise a copied world's installation
 declaration names a missing managed file and later component publication fails.
 Only paired GLB policies are admitted, matching Core's current source policy;
 image/audio originals do not imply support for their `.import` sidecars.
-Arbitrary `.import` files and `.godot`/`.import` cache-directory contents remain
-excluded. An orphan policy fails explicitly
+Non-cache sidecars unsupported by Core are rejected explicitly during archive
+validation and with `MANAGED_BASE_IMPORT_POLICY_UNSUPPORTED` during initialization.
+`.godot`/`.import` cache-directory contents remain excluded. An orphan policy fails explicitly
 with `MANAGED_BASE_IMPORT_MODEL_REQUIRED`. Sorted initialization patches place
 the model before its policy; Core validates the policy against the same-batch or
 already committed model. No previously failed/copied world is silently repaired.
@@ -58,11 +59,14 @@ unsupported bases, and oversized content (64 MiB archive/total, 4 MiB per source
 file, 4096 entries, 1 MiB initial state, 2 MiB PNG). Imported source is untrusted
 content and is never executed by the plugin or Electron process.
 
-Declared model, image and audio source assets may include their matching
-`.import` settings sidecar. Its asset must also be declared in the archive;
-settings bytes and hashes are preserved. Arbitrary/orphan sidecars and private
-`.godot/imported` caches remain refused. Omitting GLB import settings would change
-the adopted source closure and can change model import behavior.
+Declared GLB models may include their matching `.glb.import` settings sidecar,
+the import configuration currently supported by native Core. Its model must
+also be declared in the archive; settings bytes and hashes are preserved.
+Ordinary image/audio source files remain supported, but their `.import` sidecars
+are refused rather than accepted and silently discarded during initialization.
+Arbitrary/orphan sidecars and private `.godot`/`.import` caches remain refused.
+Omitting GLB import settings would change the adopted source closure and can
+change model import behavior.
 
 Materialization only changes the declared `project.godot` runtime world ID,
 world-scoped creation receipts, the `craftmine.instances.json` registry's world

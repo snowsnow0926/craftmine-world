@@ -126,13 +126,15 @@ export function createGodotWorldInitializer(options: {
       for (const part of relative.split("/")) { parent = path.join(parent, part); if (fs.lstatSync(parent).isSymbolicLink()) throw Error("MANAGED_BASE_LINK_DENIED"); }
       const bytes = fs.readFileSync(full);
       if (bytes.length !== item.bytes || sha(bytes) !== item.sha256) throw Error("MANAGED_BASE_FILE_CHANGED");
+      if (relative.split("/").some(part => [".godot", ".import"].includes(part.toLowerCase()))) continue;
       const ext = path.extname(relative).toLowerCase();
       // Authored static GLB import policy is source. Godot's generated import
       // cache and arbitrary .import files are not. Core still validates the
       // measured policy and paired GLB bytes before accepting the patch.
       const importPolicy = relative.endsWith(".glb.import");
+      if (ext === ".import" && !importPolicy) throw Error("MANAGED_BASE_IMPORT_POLICY_UNSUPPORTED");
       if (importPolicy && !managedPaths.has(relative.slice(0, -".import".length))) throw Error("MANAGED_BASE_IMPORT_MODEL_REQUIRED");
-      if (!relative.split("/").some(part => [".godot", ".import"].includes(part.toLowerCase())) && (SOURCE.has(ext) || importPolicy)) {
+      if (SOURCE.has(ext) || importPolicy) {
         files.push({path: relative, bytesBase64: bytes.toString("base64"), sha256: sha(bytes)});
       }
     }

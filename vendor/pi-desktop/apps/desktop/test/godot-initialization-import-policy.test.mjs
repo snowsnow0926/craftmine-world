@@ -36,11 +36,19 @@ async function run(t,source){
  const initializer=createGodotWorldInitializer({worldsRoot,domain,selection:async()=>worldId,firstLoad:async()=>{}});
  await initializer.start(worldId);return {error:initializer.error(worldId),received,batches};
 }
-test('template initialization preserves paired GLB policy bytes and excludes generated cache/arbitrary import files',async t=>{
+test('template initialization preserves paired GLB policy bytes and excludes generated caches',async t=>{
  const policy='[remap]\nimporter="scene"\ntype="PackedScene"\n[params]\nmeshes/generate_lods=false\n';
- const result=await run(t,{'addons/pet/model.glb.import':policy,'addons/pet/model.glb':'measured-model-fixture','addons/pet/unrelated.import':'cache','.godot/imported/stray.gd':'cache','.godot/cache.json':'{}','.import/cache.gd':'cache','.GODOT/cache.json':'{}'});
+ const result=await run(t,{'addons/pet/model.glb.import':policy,'addons/pet/model.glb':'measured-model-fixture','.godot/imported/stray.gd':'cache','.godot/cache.json':'{}','.import/cache.gd':'cache','.GODOT/cache.json':'{}','.godot/orphan.glb.import':'cache'});
  assert.equal(result.error,null);assert.equal(result.received.get('addons/pet/model.glb.import').toString(),policy);
  assert.deepEqual([...result.received.keys()].sort(),['addons/pet/model.glb','addons/pet/model.glb.import','project.godot']);
+});
+test('ordinary image/audio originals survive initialization and their unsupported sidecars are not silently discarded',async t=>{
+ for(const extension of ['png','ogg','wav']){
+  const asset='assets/original.'+extension,body='opaque original fixture';
+  const allowed=await run(t,{[asset]:body});assert.equal(allowed.error,null);assert.equal(allowed.received.get(asset).toString(),body);
+  const rejected=await run(t,{[asset]:body,[asset+'.import']:'unsupported'});assert.match(rejected.error,/MANAGED_BASE_IMPORT_POLICY_UNSUPPORTED/);assert.equal(rejected.batches.length,0);
+ }
+ const arbitrary=await run(t,{'unrelated.import':'unsupported'});assert.match(arbitrary.error,/MANAGED_BASE_IMPORT_POLICY_UNSUPPORTED/);
 });
 test('orphan authored import policy fails explicitly rather than silently disappearing',async t=>{
  const result=await run(t,{'addons/pet/model.glb.import':'policy'});

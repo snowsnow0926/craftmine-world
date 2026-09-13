@@ -33,6 +33,10 @@ Core currently recognizes only `.glb.import` (`godot_import_policy.rs`), even
 though it accepts image/audio originals. The broader portable-template path
 validator does not make image/audio import sidecars valid native source. This
 patch does not broaden the Rust policy or claim those sidecars are supported.
+The follow-up contract alignment restricts portable archive validation to
+paired `.glb.import` too. Initialization explicitly rejects other non-cache
+`.import` files with `MANAGED_BASE_IMPORT_POLICY_UNSUPPORTED`; ordinary supported
+image/audio originals remain unchanged. Tests cover both admission boundaries.
 
 Validation: 32 initializer tests pass, including the new inclusion/cache/orphan/
 batch scenarios and existing cancel, terminal-state and job-stage tests. Those

@@ -10,7 +10,6 @@ const op=value=>check(typeof value==='string'&&/^[A-Za-z0-9_-]{8,80}$/.test(valu
 const text=(value,max)=>check(typeof value==='string'&&value.trim()&&Buffer.byteLength(value)<=max&&!/[\x00-\x1f]/.test(value),'WORLD_TEMPLATE_INVALID_METADATA');
 const limits={maxEntries:4096,maxEntryBytes:4*1024*1024,maxTotalBytes:64*1024*1024,maxCompressedBytes:64*1024*1024,maxDepth:32,maxNameBytes:240,maxRatio:200};
 const sourceExtensions=new Set(['.godot','.gd','.tscn','.tres','.gdshader','.gdshaderinc','.json','.cfg','.txt','.md','.csv','.svg','.obj','.mtl','.uid','.png','.jpg','.jpeg','.webp','.glb','.ogg','.wav']);
-const importableExtensions=new Set(['.svg','.obj','.mtl','.png','.jpg','.jpeg','.webp','.glb','.ogg','.wav']);
 const identity=s=>({worldId:s.worldId,buildId:s.buildId,contentOid:s.contentOid,revision:s.revision,snapshotHash:sha(JSON.stringify(s.snapshot))});
 const equal=(a,b)=>a&&b&&Object.keys(a).length===Object.keys(b).length&&Object.keys(a).every(key=>a[key]===b[key]);
 function reference(value){exact(value,['assetId','version','contentHash']);check(typeof value.assetId==='string'&&/^player\.world\.[a-z0-9_-]{1,60}$/.test(value.assetId)&&Number.isInteger(value.version)&&value.version>0&&value.version<=100000&&/^[a-f0-9]{64}$/.test(value.contentHash),'WORLD_TEMPLATE_INVALID_REF');return {assetId:value.assetId,version:value.version,contentHash:value.contentHash};}
@@ -33,7 +32,9 @@ async function validateArchive(bytes){
   text(file.path,220);assertShareablePath(file.path);
   check(!file.path.split('/').some(part=>['.godot','.import'].includes(part.toLowerCase())),'WORLD_TEMPLATE_SOURCE_PATH_INVALID');
   const extension=path.posix.extname(file.path).toLowerCase(),assetPath=file.path.slice(0,-7);
-  const importSettings=extension==='.import'&&importableExtensions.has(path.posix.extname(assetPath).toLowerCase())&&manifest.files.some(asset=>asset.path===assetPath);
+  // Match Core's authored source policy; accepting image/audio originals does
+  // not mean their generated import settings are supported source files.
+  const importSettings=file.path.endsWith('.glb.import')&&manifest.files.some(asset=>asset.path===assetPath);
   check((sourceExtensions.has(extension)||importSettings)&&!['managed-base.json','.creation-owner.json','craftmine_initial_state.json'].includes(file.path),'WORLD_TEMPLATE_SOURCE_PATH_INVALID');
   const key=file.path.normalize('NFC').toLowerCase();check(!seen.has(key),'WORLD_TEMPLATE_SOURCE_ALIAS');seen.add(key);
   const name='source/'+file.path,body=files.get(name);check(body&&body.length===file.bytes&&sha(body)===file.sha256,'WORLD_TEMPLATE_SOURCE_CHANGED');allowed.add(name);

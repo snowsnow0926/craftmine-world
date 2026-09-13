@@ -10270,3 +10270,7 @@ receipt. Do not backfill its source or change its failure record. Unit fixtures
 also cover excluded `.godot` caches, arbitrary import files, explicit orphan
 policy failure and a multi-batch initialization boundary. No physical input,
 focus, Pointer Lock or model calls are required for this regression.
+Also verify valid PNG/OGG/WAV originals remain accepted, while a template that
+adds their unsupported `.import` sidecars fails before catalog admission. The
+initializer must likewise fail explicitly for non-cache unsupported sidecars;
+it must not create a seemingly valid source revision with those files omitted.
