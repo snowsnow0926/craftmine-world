@@ -45,7 +45,7 @@ function getSnapshot(): DirectAttempt[] {
   if (snapshot) return snapshot;
   snapshot = [];
   try {
-    const rows: unknown = JSON.parse(sessionStorage.getItem(storageKey) ?? "[]");
+    const rows: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "[]");
     if (Array.isArray(rows)) for (const raw of rows) {
       const row = record(raw), request = record(row.request), ref = record(request.ref), position = record(request.position);
       if (request.action !== "start" || typeof request.worldId !== "string" || !request.worldId || request.worldId.length > 128
@@ -57,17 +57,19 @@ function getSnapshot(): DirectAttempt[] {
         ref: {assetId: ref.assetId, version: Number(ref.version), contentHash: ref.contentHash},
         ...(request.position ? {position: position as DirectPosition} : {})}, displayName: String(row.displayName ?? ref.assetId).slice(0, 160),
         operation: null, error: "", pending: false};
-      // A stored receipt is display history only. Active operations are re-read from main on mount.
-      if (row.operation) try {attempt.operation = parseDirectOperation(row.operation, attempt);} catch { /* Recover the exact request instead. */ }
+      // Persist locators only. A new renderer must ask main before showing any result.
       snapshot.push(attempt);
     }
-  } catch { /* In-memory retention still works when session storage is unavailable. */ }
+  } catch { /* In-memory retention still works when profile storage is unavailable. */ }
   return snapshot;
 }
 export const currentDirectAttempts = () => getSnapshot();
 function update(id: string, mutate: (attempt: DirectAttempt) => DirectAttempt): void {
   snapshot = getSnapshot().map(row => row.request.operationId === id ? mutate(row) : row);
-  try {sessionStorage.setItem(storageKey, JSON.stringify(snapshot.map(row => ({...row, pending: false, error: ""}))));} catch { /* Host operations remain durable. */ }
+  // Bound completed UI history, while never evicting an unresolved native operation.
+  const completed = snapshot.filter(row => directIsTerminal(row.operation?.status)).slice(-20);
+  snapshot = snapshot.filter(row => !directIsTerminal(row.operation?.status) || completed.includes(row));
+  try {localStorage.setItem(storageKey, JSON.stringify(snapshot.map(({request, displayName}) => ({request, displayName}))));} catch { /* Host operations remain durable. */ }
   for (const listener of listeners) listener();
 }
 export function useDirectAttempts() {

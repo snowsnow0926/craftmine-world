@@ -10303,7 +10303,9 @@ it must not create a seemingly valid source revision with those files omitted.
 - Lose a start acknowledgement, remount, and retry. The request, coordinates,
   version and operation ID remain identical. Cancel while start is pending;
   a delayed checking receipt cannot overwrite confirmed cancellation.
-- Reload the renderer with a durable active host operation. Read status only.
+- Reload or reopen the renderer with a durable active host operation. Profile
+  local storage holds exact request locators only, never cached receipts. Read
+  status only, including when the new renderer has empty session storage.
   Reject response world/reference/operation mismatches and unknown statuses.
 - Raw models, bases, data and world templates never display direct object
   preparation. World templates retain independent creation; unsupported source
