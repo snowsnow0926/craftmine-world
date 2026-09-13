@@ -10074,6 +10074,11 @@ missing registry world ID must reject before materializing any project files;
 script strings and source-local identifiers resembling the old world ID are
 never rewritten. Repeat creation with the same operation to verify idempotency.
 
+Publish a world containing GLB import settings, export/import its template and
+create a copy. Preserve the declared asset's `.import` bytes and model settings;
+reject orphan sidecars, non-asset sidecars, and `.godot`/legacy `.import` cache
+directories even when their files otherwise have allowed asset extensions.
+
 ### Player-authored world templates (2026-09-13)
 
 From a ready player-created 3D world, save actual progress and explicitly choose

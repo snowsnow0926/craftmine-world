@@ -45,6 +45,12 @@ unsupported bases, and oversized content (64 MiB archive/total, 4 MiB per source
 file, 4096 entries, 1 MiB initial state, 2 MiB PNG). Imported source is untrusted
 content and is never executed by the plugin or Electron process.
 
+Declared model, image and audio source assets may include their matching
+`.import` settings sidecar. Its asset must also be declared in the archive;
+settings bytes and hashes are preserved. Arbitrary/orphan sidecars and private
+`.godot/imported` caches remain refused. Omitting GLB import settings would change
+the adopted source closure and can change model import behavior.
+
 Materialization only changes the declared `project.godot` runtime world ID,
 world-scoped creation receipts, the `craftmine.instances.json` registry's world
 binding, and host progress envelopes. Instance maps must have the supported
