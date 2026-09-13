@@ -1,59 +1,63 @@
 # 当前 Windows 测试交付
 
-当前已验收成品是 **`0.14.4-preview.21`**，Windows x64 未签名文件夹版。
-程序源码提交为 `b8900d63f857eeff63c3125a0a534f9abdd403cc`，程序本体约
-**2.19 GB**，包含 Godot、Blender 和四个示例世界。
+当前版本为 **0.14.4-preview.22**，基于原 PI Desktop 的 Windows x64 免安装测试版。
+程序源码提交为 `20aad1fb7ec3fef14e1dbbc9fae0ab120b0195b8`，程序本体
+2,188,090,237 字节（约 2.19 GB），包含 Godot、Blender、四个示例世界与素材库。
 
-## 取得和打开
+完整 ZIP 为 `D:/Craftmine Releases/FirstCreation-preview22-20aad1fb.zip`，
+1,127,972,077 字节（约 1.13 GB）；含说明与模板的完整目录约 2.21 GB。
+ZIP SHA-256：`2325dde3a4be7a39d47a82309397987f52e9c3075187cf92a28378183e78ef10`。
+实际解压后的 8,451 个文件已逐一比对一致。
 
-本机保留目录：`D:/Craftmine Releases/PlayerLibrary-preview21-b8900d63`。
-双击其中的 **`START-PLAYER-PREVIEW.cmd`**。它使用
-`%LOCALAPPDATA%\CraftmineWorld-PlayerLibraryPreview21`，与旧测试档案分开；
-再次运行会继续同一份 preview.21 档案，不会每次清空。请保留整个目录，
-仅复制 `output/win-unpacked/Craftmine World.exe` 不能运行。
+## 打开与开始使用
 
-这里的磁盘路径只适用于交付电脑，不是 GitHub 下载链接。其他玩家需要取得完整
-文件夹或另行打包的完整发行物。本记录不声称已有公开下载、签名安装器或干净
-Windows 安装／升级／卸载验收。GitHub 源码 ZIP 也不是可运行的 Windows 成品。
+完整解压发行 ZIP，双击根目录的 **START-PLAYER-PREVIEW.cmd**。
+本机交付目录为 `D:/Craftmine Releases/FirstCreation-preview22-20aad1fb`。
+请保留完整目录，不要只复制 EXE。首次使用从“示例世界”或“新建世界”开始。
 
-## 第一次使用
+启动入口使用 `%LOCALAPPDATA%\CraftmineWorld-FirstCreationPreview22`；再次启动会继续
+同一份档案，与 preview.21 试玩档案分开。无需先登录模型账号即可游玩、直接使用
+兼容素材或导入模板。需要自然语言创作时，在设置中连接自己的 Codex CLI／账号，
+并核对实际选中的模型和思考强度；CLI 和开发者账号不随包分发。
 
-1. 从原 PI Desktop 的“示例世界”打开博美、飞行、控雨或城市，等待准备完成；
-   以后从“我的世界”继续。已有世界游玩不要求登录模型账号。
-2. 使用 WASD 移动；F2 打开对话，Esc 暂停、切换世界或保存退出。首次示例副本
-   准备实测约 23–31 秒、已有世界切换约 11–16 秒，只是本机样本，非速度保证。
-3. 在“素材与作品库”查找内容；“保存对象”可保留名称、别名、用途和固定版本。
-   **当前成品的素材详情加入操作仍通过 AI；新的直接加入入口正在开发。**
-4. “保存世界模板”明确勾选保存进度后，可在“我的模板”创建独立世界或导出 ZIP。
-   同处可以导入 `examples/matched-courtyard.zip`（庭院）或
-   `examples/companion-and-rain.zip`（博美＋控雨）。模板导入／复制无需模型。
-5. 若要 AI 创作，在设置 → General → World authoring backend 连接自己的兼容
-   Codex CLI 和账号，核对选中的模型与思考强度。已验收模型为
-   `gpt-6-astra / xhigh`；CLI 和开发者账号不随成品分发。
+侧边栏“首次创作指引”覆盖打开／新建、素材加入、受支持的编辑、保存重开及分享。
+参见 [简明操作指南](FIRST_CREATION_QUICKSTART_2026-09-13.md)。已有世界没有可信创作
+对话时可点击“开始创作”，无需先发消息。需要升级观察组件时，使用界面明确提供的
+“更新世界观察组件并检查”。任意导入的 GLB 不自动获得尺寸／颜色参数编辑能力；
+完整闭环实际使用原有“在此放置”创建的树完成参数修改。
 
-这是玩家手动操作说明。自动验证始终使用独立后台进程，不控制玩家鼠标键盘、
-请求 Pointer Lock 或置前窗口。新玩家测试请使用独立测试档案，不删除个人存档。
+## 随包可复用内容
 
-## 版本与证据
+在“素材与作品库”→“我的模板”导入 `examples/` 中的 ZIP，再创建独立世界：
 
-- [六项工作包交付、功能边界与原生验收](PLAYER_LIBRARY_DELIVERY_2026-09-13.md)。
-- [合并和空间清理记录](MAIN_MERGE_AND_SPACE_CLEANUP_2026-09-13.md)。源码已进入
-  `main`，合并清理文档提交为 `475bc6a5`；它不是重新构建的应用版本。
-- 成品目录内的 `seal.json`、`package-evidence.json`、`packaged-client-report.json`
-  记录实际打包验证；`LOCATION.json` 记录搬迁位置。`run.json`、`DELIVERY.json`
-  中旧工作树路径属于原始交付记录，不能当成当前运行路径。
-- GitHub 默认分支仍为 `master`（2026-09-13 `git ls-remote --symref origin HEAD`
-  只读核对）。当前源码请选择 [main](https://github.com/snowsnow0926/craftmine-world/tree/main)；
-  调整默认分支仍待单独处理，本次文档更新不更改仓库设置。
-- [下一阶段自主创作方案](FIRST_INDEPENDENT_CREATION_PLAN_2026-09-13.md) 和
-  [真实新玩家评估包](FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md) 描述后续开发。
-  **新增直接使用流程尚未包含在上述成品；真人及干净外部 Windows 结果尚未取得。**
+- `matched-courtyard.zip`：已验证的庭院组合。
+- `companion-and-rain.zip`：博美与控雨组合。
+- `first-creation-pom-tree.zip`：本版实际创作、编辑、保存并由独立档案导入过的博美＋树木世界。
 
-## 历史交付
+这些是完整客户端使用的世界模板，不是独立游戏 EXE。导入模板和直接使用兼容素材
+无需模型；原有 AI 修改入口保留。将自己的作品保存为世界模板时，需要明确选择是否
+把已保存进度作为新世界起点，再从“我的模板”导出给朋友。
 
-preview.20（`03bc893a0243a4845ef1865164dab26dcffcaeed`）已经被替代，
-其 [复盘和原始证据](TWO_WORLD_PREVIEW20_RETROSPECTIVE_2026-09-13.md) 与
-[双世界玩家说明](TWO_WORLD_PLAYER_GUIDE.md) 保留追溯。旧 ZIP SHA-256 为
-`7cfa508d0d8daca6ad052ebb1238dc59591eb58b4eebf2d42af00f2aa4c5252b`。
-旧程序及工作树已按清理记录处理，历史报告中的本地路径不保证仍可直接打开；
-它们不再是当前下载或启动入口。
+## 版本与验证
+
+实际成品已完成新档案创作、空会话冷启动、放置与编辑、保存、导出、独立档案导入
+游玩和再次冷启动的完整自动验证，模型调用为 0。本机该轮自动闭环约 4 分 8 秒；
+直接加入博美的准备约 30 秒、采用约 5.4 秒。这是单次自动样本，不是真人完成时间。
+
+`DELIVERY.json`、`seal.json`、`package-evidence.json` 记录成品身份；`EXTRAS.json`
+记录附带材料的固定哈希。发行 ZIP 同目录下的 `.zip.sha256` 和 `.zip.json` 记录 ZIP
+校验值及实际解压逐文件比对结果。证据内保留原构建路径，不是当前启动入口。
+源码在 `output/win-unpacked/resources/source/`，Blender 对应源码在
+`resources/blender/source/`，已有第三方说明在 `resources/licenses/`。
+
+这是未签名的本地预览版，没有公开下载链接、签名安装器或干净外部 Windows
+通过记录。5–8 位真实新玩家测试仍待执行；[评估包](FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md)
+与[逐人记录](templates/FIRST_CREATION_SESSION.md)已准备好，未填造参与者结果。
+GitHub 默认分支与远程发布不由本次开发自动修改；本轮提交合入本地 `main`，尚未推送。
+
+[完整交付、成品验证与收尾记录](FIRST_CREATION_COMPLETION_DELIVERY_2026-09-14.md)与
+[原生创作及旧世界升级证据](FIRST_CREATION_PACKAGED_ACCEPTANCE_2026-09-14.md)区分
+实际程序源码提交、后续测试脚本和文档提交。ZIP 内说明生成于封包时；上面的 ZIP 哈希
+记录于封包完成后，没有再改写已验证的发行物。
+
+preview.21／`b8900d63` 及原有演示归档继续保留，历史结论不能替代本版成品验证。

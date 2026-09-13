@@ -1,5 +1,7 @@
 # 首次自主创作：首轮实现与验收记录
 
+本页保留首轮源码验收的历史状态。2026-09-14 已完成后续开发与 Windows preview.22，[当前完整交付](FIRST_CREATION_COMPLETION_DELIVERY_2026-09-14.md)替代本页末尾当时的待办结论；原始时间和失败证据仍保留。
+
 日期：2026-09-13。对应[中文方案](FIRST_INDEPENDENT_CREATION_PLAN_2026-09-13.md)与[首次使用指南](FIRST_CREATION_QUICKSTART_2026-09-13.md)。
 
 ## 已实现

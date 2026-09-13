@@ -1,12 +1,14 @@
 # 最中幻想 · craftmine world
 
-**当前 Windows 测试版：`0.14.4-preview.21`。** 基于 PI Desktop，支持四个示例世界、28 个内置素材条目、对象发布和世界模板导入／导出。已有世界游玩和模板复制无需连接 AI；自然语言创作使用玩家自己的模型连接。F2 打开对话，Esc 暂停、切换世界或保存退出。
+**当前 Windows 测试版：`0.14.4-preview.22`。** 基于原 PI Desktop，支持四个示例世界、28 个内置素材条目、兼容素材直接加入、受支持的对象编辑和世界模板分享。已有世界游玩、素材直接加入和模板复制无需连接 AI；自然语言创作使用玩家自己的模型连接。F2 打开对话，Esc 暂停、切换世界或保存退出。
 
-[当前 Windows 交付与开始使用](docs/CURRENT_WINDOWS_DELIVERY.md) · [六项工作包交付与实测](docs/PLAYER_LIBRARY_DELIVERY_2026-09-13.md) · [第一次自主创作开发方案](docs/FIRST_INDEPENDENT_CREATION_PLAN_2026-09-13.md) · [新玩家测试与记录](docs/FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。成品验收与源码实现分开记录，构建成功不等于玩法或真人验收通过。
+[当前 Windows 交付与开始使用](docs/CURRENT_WINDOWS_DELIVERY.md) · [首次创作指南](docs/FIRST_CREATION_QUICKSTART_2026-09-13.md) · [本轮完整交付与实测](docs/FIRST_CREATION_COMPLETION_DELIVERY_2026-09-14.md) · [新玩家测试与记录](docs/FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。
 
-本机已验收文件夹位于 `D:/Craftmine Releases/PlayerLibrary-preview21-b8900d63`，打开其中的 `START-PLAYER-PREVIEW.cmd`；其他电脑需要取得完整文件夹，本页没有提供公开安装包下载。成品固定为 `b8900d63`；合并清理记录已随 `475bc6a5` 进入 `main`。GitHub 默认分支仍为 `master`（2026-09-13 只读核对），浏览当前源码请选择 [main](https://github.com/snowsnow0926/craftmine-world/tree/main)。默认分支调整是待处理发行事项。
+本机成品目录为 `D:/Craftmine Releases/FirstCreation-preview22-20aad1fb`，双击其中的 `START-PLAYER-PREVIEW.cmd`；完整 ZIP 在同目录旁，约 **1.13 GB**，解压后约 **2.21 GB**。程序固定于源码 `20aad1fb`，附带三个可复用世界模板及中文说明。其他玩家需取得完整 ZIP；本页没有公开下载链接。
 
-**开发中：** 现成素材在素材详情中直接放入世界、无需调用 AI 的流程，见上面的自主创作方案。该新增入口不包含在已交付的 preview.21 中；不以文档更新冒充重新打包。
+本版实际成品已通过“加入博美 → 放置并修改树木 → 保存重开 → 导出模板 → 独立档案导入游玩并重开”的完整自动验证，模型调用为 0。侧边栏提供“首次创作指引”，等待时显示实际阶段与耗时。真人首次使用及干净外部 Windows 测试仍待执行。
+
+本轮合并到本地 `main`，未自动推送或修改远程设置。GitHub 默认分支上次于 2026-09-13 核对为 `master`；远程源码请明确选择 [main](https://github.com/snowsnow0926/craftmine-world/tree/main)，本地新增提交需后续发布才会出现在 GitHub。preview.21 与[上一轮交付记录](docs/PLAYER_LIBRARY_DELIVERY_2026-09-13.md)保留为历史基线。
 
 preview.20 的 [复盘](docs/TWO_WORLD_PREVIEW20_RETROSPECTIVE_2026-09-13.md)、[双世界说明](docs/TWO_WORLD_PLAYER_GUIDE.md) 和 [收敛方案](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) 保留为历史资料。2026-09-10 的 `8276b45` 四底座客户端同样是历史快照，见 [当时验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) 和 [Git 归档说明](docs/GIT_CLOSEOUT_2026-09-10.md)。**下文是早期独立 Web 运行器资料，不是当前 Windows 客户端操作或模型预算约定。** Windows 玩家请从当前交付页开始。
 
