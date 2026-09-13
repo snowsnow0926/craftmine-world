@@ -51,3 +51,31 @@ test('a prepared native frame survives sheet hiding but never a different formal
  hidden=false;await capture.prepare({worldId:'w'});hidden=true;candidate=true;await assert.rejects(capture('w'),/UNAVAILABLE/);candidate=false;world='other';await assert.rejects(capture('w'),/UNAVAILABLE/);
  for(const input of [{worldId:'w',pngBase64:'forged'},{worldId:'../world'},{}])await assert.rejects(capture.prepare(input),/INVALID_REQUEST/);
 });
+
+function preparationFixture(captureAction,waiting=()=>{}) {
+ const png=Buffer.alloc(40);Buffer.from('89504e470d0a1a0a','hex').copy(png);const sha=createHash('sha256').update(png).digest('hex');
+ const state={source:'build:artifact-a',identity:{worldId:'w',buildId:'b',instanceId:'i'},clock:0,captures:0,waits:[],diagnostics:[]};
+ const image={isEmpty:()=>false,getSize:()=>({width:1280,height:720}),resize(){return this;},toPNG:()=>png};
+ const service=createLibraryPreviewCapture({selection:async()=>'w',instance:()=>state.identity,sourceIdentity:async()=>state.source,candidateActive:()=>false,decode:()=>image,
+  capture:async()=>{state.captures++;await captureAction(state);return {...state.identity,scope:'formal',pngBase64:png.toString('base64'),sha256:sha};},
+  now:()=>state.clock,wait:async milliseconds=>{state.waits.push(milliseconds);state.clock+=milliseconds;waiting(state);},onPreparation:value=>state.diagnostics.push(value)});
+ return {service,state};
+}
+test('pre-sheet preparation retries transient busy once and stops after the successful frame',async()=>{
+ const {service,state}=preparationFixture(state=>{if(state.captures===1)throw Error('GODOT_VIEW_CAPTURE_BUSY');});
+ assert.equal((await service.prepare({worldId:'w'})).ready,true);assert.equal(state.captures,2);assert.deepEqual(state.waits,[100]);
+ assert.deepEqual(state.diagnostics,[{attempts:2,elapsedMs:100,firstRetryableCode:'GODOT_VIEW_CAPTURE_BUSY',outcome:'ready'}]);
+ await service.prepared('w');assert.equal(state.captures,2);
+});
+test('pre-sheet retry refuses changed original identity before another capture',async()=>{
+ for(const change of [s=>s.source='build:artifact-b',s=>s.identity={...s.identity,instanceId:'replacement'},s=>s.identity={...s.identity,buildId:'new-build'}]){
+  const {service,state}=preparationFixture(()=>{throw Error('GODOT_VIEW_CAPTURE_BUSY');},change);
+  await assert.rejects(service.prepare({worldId:'w'}),/WORLD_CHANGED/);assert.equal(state.captures,1);assert.equal(state.diagnostics[0].finalCode,'LIBRARY_PREVIEW_WORLD_CHANGED');
+ }
+});
+test('permanent pending ends within the two-second retry window and other failures are not retried',async()=>{
+ const {service,state}=preparationFixture(()=>{throw Error('GODOT_VIEW_CAPTURE_PENDING');});
+ await assert.rejects(service.prepare({worldId:'w'}),/GODOT_VIEW_CAPTURE_PENDING/);assert.equal(state.clock,2000);assert.equal(state.captures,20);
+ assert.equal(state.diagnostics[0].attempts,20);assert.equal(state.diagnostics[0].outcome,'failed');await assert.rejects(service.prepared('w'),/PREPARE_REQUIRED/);
+ const other=preparationFixture(()=>{throw Error('GODOT_VIEW_CAPTURE_DETACHED');});await assert.rejects(other.service.prepare({worldId:'w'}),/DETACHED/);assert.equal(other.state.captures,1);assert.deepEqual(other.state.waits,[]);
+});
