@@ -19,4 +19,10 @@ for(const file of files.sort()){
  const entry=font?{...font,path:file,licenseFile:font.licenseFile?file.split('/source/')[0]+'/source/'+font.licenseFile:null}:{path:file,role:file.endsWith('.glb')?'model':file.endsWith('.png')?'preview':'source',origin:'authored',author:'Craftmine World project with Codex-assisted authoring',version:'1.0.0',license:'project-authored',licenseFile:null,redistribution:'permitted',distribution:['app-bundle','user-export'],outstanding:'Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.'};
  manifest.entries.push({...entry,bytes:bytes.length,sha256:hash(bytes)});
 }
-fs.writeFileSync(path.join(root,'desktop/delivery/base-assets/approved-world-templates.json'),JSON.stringify(manifest,null,2)+'\n');
+const publications=new Set(manifest.entries.map(entry=>entry.path));
+shared.entries=shared.entries.filter(entry=>!publications.has(entry.path));
+shared.entries.push(...manifest.entries);
+shared.entries.sort((a,b)=>a.path.localeCompare(b.path));
+const note='Approved demonstration templates retain project-generated source/model provenance and Noto-derived OFL font notices; their metadata does not grant trademark rights.';
+if(!shared.rightsNote.includes(note))shared.rightsNote+=' '+note;
+fs.writeFileSync(sharedFile,JSON.stringify(shared,null,2)+'\n');
