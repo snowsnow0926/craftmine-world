@@ -211,3 +211,25 @@ simulation can therefore be compared exactly before its first resumed physics
 frame. Ordinary `open()` still resumes the world; a later pause after ordinary
 open may observe legitimate simulation progress and must not be misreported as
 lost or corrupted saved state. No restore snapshot or collision guard is altered.
+
+## Reusable flight and city formal-runtime regression
+
+`tests/reusable-flight-city-native.mjs` accepts an existing unpacked runtime,
+built plugin and fresh output directory, plus `flight`, `city` or `both`. It uses
+independent hidden offscreen Electron profiles and normal Core source package
+installation, native checks, first load and candidate adoption. The explicitly
+authored flight receiving area preserves base/controller source; city fragments
+are received by the stock world after normal player movement and save outside
+the raised ground footprint.
+
+Flight checks ordinary E boarding, actual runway acceleration/takeoff, gear and
+cockpit, rendered PNGs, native save, exact paused cold reopen and resumed flight
+camera. City checks all three packages (street, gate and standalone house),
+rendered adoption, actual walking onto the raised street, native save and exact
+cold reopen. All original receiving-source files except the deliberately
+extended root scene keep their hashes. Reports retain real job/application IDs,
+frame hashes, complete snapshots and zero-focus/Pointer-Lock guards. This is
+model-free functional regression, separate from agent recreation cost and human
+control-feel assessment. A `resume` continuation preserves a prior report before
+continuing the same already-adopted test world; it never restores a manufactured
+test snapshot or creates a second world in place of a failure.
