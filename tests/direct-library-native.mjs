@@ -8,11 +8,12 @@ import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
+import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 
 const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
 const root=path.resolve(import.meta.dirname,'..');fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
-const out=fs.mkdtempSync(path.join(root,'test-results/desktop-native-direct-library-'));const profile=path.join(out,'profile'),token=randomUUID();
+const out=createCompleteOutput(root,process.env.CRAFTMINE_CREATION_OUTPUT_ROOT ? path.join(path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT),'test-results') : undefined);const profile=path.join(out,'profile'),token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
 const report={format:'craftmine.direct-library-native/1',out,applicationRoot,resources,buildMainSha256:createHash('sha256').update(launch.main).digest('hex'),modelCalls:0,launches:[],worlds:[],operations:[],steps:[],limits:['One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.','Actual PI forms and offscreen native checks; no physical input or Pointer Lock.']};
@@ -205,9 +206,11 @@ async function applyDirect(row){
 try{
  console.log(JSON.stringify({out,cancel:path.join(out,'cancel')}));await start('first');
  worldId=await createWorld('My first library world');report.before=await rpc('godotObserve');report.initialSource=await pkg('sourceList');report.initialSnapshot=await rpc('godotSnapshot');
+ report.guide=await rpc('worldCreationGuide');assert.equal(report.guide.steps,5);assert(report.guide.oldGuideAbsent&&report.guide.headerUnchanged&&report.guide.worldUnchanged);
  mark('Fresh client created a blank world through the ordinary PI form');
  const first=await startDirect('cw.module.approved-pomeranian',{x:-2,y:0,z:4.3});await applyDirect(first);mark('First exact companion checked and formally added with no AI');
  const second=await startDirect('cw.module.approved-pomeranian',{x:2,y:0,z:4.3});await applyDirect(second);mark('Second companion received a distinct instance without duplicate retry');
+ for(const row of [first,second]){assert(Number.isFinite(row.applied.timings?.preparationMs)&&row.applied.timings.preparationMs>=0);assert(Number.isFinite(row.applied.timings?.applyMs)&&row.applied.timings.applyMs>=0);}
  assert(first.applied.instanceIds.length>0&&second.applied.instanceIds.length>0);assert(!first.applied.instanceIds.some(id=>second.applied.instanceIds.includes(id)));
  report.source=await pkg('sourceList');assert(report.source.items.filter(row=>row.supported).length>=2);
  report.after=await rpc('godotObserve');report.finalSave=await panel('godot.runtimeSave',{freeze:false});report.saved=await rpc('godotSnapshot');
