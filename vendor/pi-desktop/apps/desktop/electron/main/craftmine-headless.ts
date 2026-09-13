@@ -197,21 +197,33 @@ export function installHeadlessControl(access: {
         case "worldNavigationReady": return evaluateWorld(`({worldId:document.body.dataset.worldId,ready:!document.getElementById('world-list').disabled})`);
         case "worldCreationGuide": {
           if (Object.keys(request).sort().join(",") !== "id,method,type") throw Error("Unexpected creation guide probe fields");
-          return evaluateWorld(`(async()=>{
-            await craftmineView.showSurface({surface:{kind:'workbench',tab:'library'}});
-            const area=document.querySelector('[data-creation-guide]'),details=area?.querySelector('details');
-            if(!details)throw Error('Creation guide was not mounted in the real library');
-            const result={worldId:document.body.dataset.worldId,collapsed:!details.open,steps:details.querySelectorAll('li').length,insideWorkbench:area.closest('#workbench-panel')!==null,headerHeight:document.querySelector('header').getBoundingClientRect().height};
-            details.open=true;
-            result.expanded=details.open;result.headerUnchanged=document.querySelector('header').getBoundingClientRect().height===result.headerHeight;
-            details.querySelector('form').requestSubmit();
-            result.checksVisible=!document.getElementById('checks-panel').hidden;result.clearedAfterNavigation=!area.querySelector('details');
-            await craftmineView.showSurface({surface:{kind:'workbench',tab:'library'}});
-            result.reopenedCollapsed=area.querySelector('details')?.open===false;
-            await craftmineView.showSurface({surface:{kind:'world'}});
-            result.clearedAfterWorld=!area.querySelector('details');
+          const window = access.window(); if (!window) throw Error("Window is not ready");
+          const before = await evaluateWorld(`({worldId:document.body.dataset.worldId,headerHeight:document.querySelector('header').getBoundingClientRect().height})`) as {worldId: string; headerHeight: number};
+          const result = await window.webContents.executeJavaScript(`(async()=>{
+            const wait=async(selector)=>{const until=Date.now()+15000;while(Date.now()<until){const node=document.querySelector(selector);if(node)return node;await new Promise(resolve=>setTimeout(resolve,25));}throw Error('Guide surface unavailable: '+selector);};
+            const submit=async(selector)=>{(await wait(selector)).requestSubmit();await new Promise(resolve=>setTimeout(resolve,0));};
+            const toggle=await wait('[data-first-guide-toggle]');
+            const original=JSON.parse(localStorage.getItem('craftmine.first-creation.guide.v1')||'null');
+            if(toggle.querySelector('button').getAttribute('aria-expanded')==='true')await submit('[data-first-guide-toggle]');
+            const result={collapsed:!document.querySelector('[data-first-guide-title]'),insideSidebar:!!toggle.closest('.craftmine-navigation')};
+            await submit('[data-first-guide-toggle]');
+            result.expanded=!!document.querySelector('[data-first-guide-title]');result.steps=document.querySelectorAll('[data-first-guide-step]').length;
+            await submit('[data-first-guide-step="1"]');await submit('[data-first-guide-action="assets"]');
+            result.libraryVisible=!!await wait('[data-asset-sheet]');await submit('[data-asset-close-form]');
+            await submit('[data-first-guide-step="4"]');await submit('[data-first-guide-action="share"]');
+            result.shareVisible=!!await wait('[data-library-publish="world"]');
+            result.progressConsentRequired=!document.querySelector('[data-publication-checkpoint]').checked;
+            await submit('[data-asset-close-form]');await submit('[data-first-guide-dismiss]');
+            result.dismissed=!document.querySelector('[data-first-guide-title]');await submit('[data-first-guide-toggle]');
+            result.bookmarkRetained=JSON.parse(localStorage.getItem('craftmine.first-creation.guide.v1')).step===4;
+            await submit('[data-first-guide-step="2"]');await submit('[data-first-guide-action="history"]');
+            result.historyVisible=!!await wait('[data-history-sheet]');await submit('[data-history-close-form]');
+            await submit('[data-first-guide-step="'+(original?.step??0)+'"]');
+            if(!original?.open)await submit('[data-first-guide-dismiss]');
             return result;
-          })()`);
+          })()`, false);
+          const after = await evaluateWorld(`({worldId:document.body.dataset.worldId,headerHeight:document.querySelector('header').getBoundingClientRect().height,oldGuideAbsent:!document.querySelector('[data-creation-guide]')})`) as {worldId: string; headerHeight: number; oldGuideAbsent: boolean};
+          return {...result, worldId: before.worldId, headerUnchanged: before.headerHeight === after.headerHeight, worldUnchanged: before.worldId === after.worldId, oldGuideAbsent: after.oldGuideAbsent};
         }
         case "desktopState": {
           const window = access.window(); if (!window) throw new Error("Window is not ready");

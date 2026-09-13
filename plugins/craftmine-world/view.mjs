@@ -1,5 +1,4 @@
 import {createWorkbench} from './workbench-ui.mjs';
-import {createCreationGuideUI} from './creation-guide-ui.mjs';
 import {applyPresentation} from './apply-presentation.mjs';
 import {candidateIdentity} from './godot-candidate-view.mjs';
 import {assertPreviewControl} from './preview-control.mjs';
@@ -28,7 +27,6 @@ let previewReview=null,reviewLoading=false,applicationAttempt=null;
 let reviewError=null,applyError=null;
 let godotIdentity=null;
 let workbench;
-let creationGuide;
 // Height in CSS pixels that the Electron host reserves at the top of the panel
 // for this page's chrome (header + modes bar). A sibling WebContentsView with
 // the Godot game is positioned directly below that offset, so the placeholder
@@ -359,7 +357,6 @@ async function refreshList() {
 }
 
 function mount(record) {
-  creationGuide?.clear();
   closePreview(false);
   godotIdentity=null;
   checkWorld=null;checkOffset=0;document.getElementById('check-detail').hidden=true;
@@ -550,7 +547,6 @@ async function navigate(request) {
 
 const checkLabels={queued:'等待检查',running:'后台检查中',passed:'机器检查通过',failed:'检查未通过',cancelled:'已取消',interrupted:'已中断'};
 function setMode(checks,{notify=true}={}) {
-  creationGuide?.clear();
   const leavingWorkbench=!!workbench?.tab;
   void workbench?.show(null);
   for(const item of document.querySelectorAll('[data-workbench-tab]'))item.setAttribute('aria-selected','false');
@@ -563,7 +559,6 @@ function setMode(checks,{notify=true}={}) {
 }
 function openWorkbench(tab){
   if(busy||closing||preview||applicationAttempt)return;
-  if(tab==='library')creationGuide?.show();else creationGuide?.clear();
   if(godot&&current?.id)void bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false}).catch(showError);
   checksPanel.hidden=true;
   document.getElementById('world-mode').setAttribute('aria-selected','false');document.getElementById('checks-mode').setAttribute('aria-selected','false');
@@ -794,14 +789,6 @@ workbench=createWorkbench({
     try{return await activeOperation;}finally{busy=false;controls();}
   },
 });
-const guideArea=document.createElement('section');guideArea.dataset.creationGuide='true';
-document.getElementById('workbench-panel').prepend(guideArea);
-creationGuide=createCreationGuideUI({element:guideArea,navigate:tab=>{
-  if(busy||closing||preview||applicationAttempt)throw Error('WORLD_BUSY');
-  if(tab==='checks')return setMode(true);
-  if(tab==='library')return openWorkbench('library');
-  throw Error('INVALID_GUIDE_DESTINATION');
-}});
 for(const item of document.querySelectorAll('[data-workbench-tab]'))item.addEventListener('click',()=>void openWorkbench(item.dataset.workbenchTab));
 document.getElementById('refresh-workbench').onsubmit=event=>{event.preventDefault();if(!busy&&!closing)void workbench.refreshCapabilities();};
 setInterval(()=>{if(!busy&&!closing){if(workbench.tab==='task')void workbench.refresh();else if(workbench.tab)void workbench.refreshPending();}},4000);

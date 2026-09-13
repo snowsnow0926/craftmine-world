@@ -1,0 +1,11 @@
+.first-creation-guide{border-top:1px solid var(--ds-border-subtle);margin-top:8px;padding-top:8px;min-width:0;font-size:var(--text-sm,13px)}
+.first-creation-guide form{margin:0}
+.first-creation-guide button{color:var(--ds-text-secondary);background:transparent;border:1px solid var(--ds-border-subtle);border-radius:var(--radius-sm,5px);padding:5px 8px;text-align:left;cursor:pointer;max-width:100%;overflow-wrap:anywhere}
+.first-creation-guide button:disabled{opacity:.5;cursor:default}
+.first-creation-guide button:hover:not(:disabled){color:var(--ds-text-primary);background:var(--ds-bg-secondary)}
+.first-creation-guide [data-first-guide-toggle] button{display:flex;align-items:center;justify-content:space-between;width:100%;border:0}
+.first-creation-guide-body{padding:8px;line-height:1.5;overflow-wrap:anywhere}
+.first-creation-guide-body p{margin:6px 0 10px;color:var(--ds-text-secondary)}
+.first-creation-guide-pages,.first-creation-guide-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.first-creation-guide-pages [aria-current=step]{color:var(--ds-text-primary);border-color:currentColor}
+.first-creation-guide [data-first-guide-dismiss] button{border:0;padding-left:0}
