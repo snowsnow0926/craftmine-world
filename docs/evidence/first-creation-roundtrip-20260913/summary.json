@@ -1,0 +1,429 @@
+{
+  "format": "craftmine.first-creation-roundtrip-summary/1",
+  "passed": true,
+  "rawReport": {
+    "path": "D:/cm-rt/test-results/desktop-native-rt-pvPcdM/continuation-ad4126ab-0aba-4bc4-a7d9-6c24726bf066.json",
+    "sha256": "5eda61b4e25ecda9015866c4c091898635af342dbdd5c744b5bbfa529eadd7e3"
+  },
+  "previousReport": "D:/cm-rt/test-results/desktop-native-rt-pvPcdM/report.json",
+  "previousError": "Error: Error: GODOT_VIEW_CAPTURE_BUSY\n    at ChildProcess.<anonymous> (file:///D:/Craftmine%20Worktrees/first-creation-roundtrip-20260913/tests/first-creation-roundtrip-native.mjs:100:110)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "applicationRoot": "D:/Craftmine Worktrees/first-creation-roundtrip-20260913",
+  "buildMainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+  "driverSha256": "e1e6c989d7afd1bd8b38f1255434cc1d56c37a7f8400b06b14eb65a2cd3f925f",
+  "nativeBinaries": {
+    "core": {
+      "file": "D:\\Craftmine Worktrees\\first-creation-roundtrip-20260913\\desktop\\build\\roundtrip-bin\\craftmine-core.exe",
+      "sha256": "1476c66402cc28109d1184d0cc3b701d174eef3323e3a2a07776374e1a8e39e6"
+    },
+    "host": {
+      "file": "D:\\Craftmine Worktrees\\first-creation-roundtrip-20260913\\desktop\\build\\roundtrip-bin\\pi-desktop-host-core.exe",
+      "sha256": "2fe6bdad94ec0242abb62b010cfd70bba0fc3faeb6faba4027b3c4c885df69ca"
+    }
+  },
+  "packageIdentity": null,
+  "authorWorldId": "world-4fc3c010c132",
+  "importedWorldId": "world-46777480642d",
+  "companionEntityId": "ins-4cf92454c50311b657bcfec0-e0",
+  "editedEntity": {
+    "collisionBounds": {
+      "max": [
+        -1.19188833236694,
+        5,
+        4.19557094573975
+      ],
+      "min": [
+        -2.69188833236694,
+        0,
+        2.69557094573975
+      ]
+    },
+    "color": "#88bb44",
+    "id": "created-b8d8640855e386f6fbfaaf5c",
+    "kind": "tree",
+    "meshBounds": {
+      "max": [
+        -1.19273781776428,
+        4.99999952316284,
+        4.19472122192383
+      ],
+      "min": [
+        -2.6910388469696,
+        0,
+        2.69642043113708
+      ]
+    },
+    "parameters": {},
+    "position": [
+      -1.94188833236694,
+      4.4703483581543e-8,
+      3.44557094573975
+    ],
+    "presenceMutable": false,
+    "rotationY": 0,
+    "scale": [
+      1.25,
+      1.25,
+      1.25
+    ],
+    "solid": true,
+    "solidMutable": false,
+    "visible": true
+  },
+  "template": {
+    "path": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\player-world-template.zip",
+    "sha256": "717895885c812129a81fec24713df16ff63729d2a857e8c2e03a57e4cd15bfac",
+    "bytes": 7510302
+  },
+  "modelCalls": 0,
+  "turnMetrics": [
+    {
+      "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\profile",
+      "sessionId": "1310886c-b77a-4123-8683-8ce875f27f38",
+      "turnId": "4e7d8825-d0cb-4264-b2bf-35e2228fa704",
+      "calls": {
+        "observed": 0,
+        "pending": 0,
+        "reported": 0
+      }
+    },
+    {
+      "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\profile",
+      "sessionId": "1310886c-b77a-4123-8683-8ce875f27f38",
+      "turnId": "87fe383b-0c03-4ad6-9e63-70c4fe2806fb",
+      "calls": {
+        "observed": 0,
+        "pending": 0,
+        "reported": 0
+      }
+    }
+  ],
+  "retention": [
+    {
+      "stage": "author-saved",
+      "worldId": "world-4fc3c010c132",
+      "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\profile",
+      "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+      "instanceId": "570d9d22c312bbfd97cdb438",
+      "tree": {
+        "collisionBounds": {
+          "max": [
+            -1.19188833236694,
+            5,
+            4.19557094573975
+          ],
+          "min": [
+            -2.69188833236694,
+            0,
+            2.69557094573975
+          ]
+        },
+        "color": "#88bb44",
+        "id": "created-b8d8640855e386f6fbfaaf5c",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -1.19273781776428,
+            4.99999952316284,
+            4.19472122192383
+          ],
+          "min": [
+            -2.6910388469696,
+            0,
+            2.69642043113708
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.94188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 0,
+        "scale": [
+          1.25,
+          1.25,
+          1.25
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      },
+      "componentIds": [
+        "ins-4cf92454c50311b657bcfec0-e0"
+      ]
+    },
+    {
+      "stage": "author-cold-reopen",
+      "worldId": "world-4fc3c010c132",
+      "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\profile",
+      "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+      "instanceId": "04d2470c69c3ba637f52ea07",
+      "tree": {
+        "collisionBounds": {
+          "max": [
+            -1.19188833236694,
+            5,
+            4.19557094573975
+          ],
+          "min": [
+            -2.69188833236694,
+            0,
+            2.69557094573975
+          ]
+        },
+        "color": "#88bb44",
+        "id": "created-b8d8640855e386f6fbfaaf5c",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -1.19273781776428,
+            4.99999952316284,
+            4.19472122192383
+          ],
+          "min": [
+            -2.6910388469696,
+            0,
+            2.69642043113708
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.94188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 0,
+        "scale": [
+          1.25,
+          1.25,
+          1.25
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      },
+      "componentIds": [
+        "ins-4cf92454c50311b657bcfec0-e0"
+      ]
+    },
+    {
+      "stage": "independent-import",
+      "worldId": "world-46777480642d",
+      "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\independent-profile",
+      "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+      "instanceId": "6ac2f98643506785ad82f9f5",
+      "tree": {
+        "collisionBounds": {
+          "max": [
+            -1.19188833236694,
+            5,
+            4.19557094573975
+          ],
+          "min": [
+            -2.69188833236694,
+            0,
+            2.69557094573975
+          ]
+        },
+        "color": "#88bb44",
+        "id": "created-b8d8640855e386f6fbfaaf5c",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -1.19273781776428,
+            4.99999952316284,
+            4.19472122192383
+          ],
+          "min": [
+            -2.6910388469696,
+            0,
+            2.69642043113708
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.94188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 0,
+        "scale": [
+          1.25,
+          1.25,
+          1.25
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      },
+      "componentIds": [
+        "ins-4cf92454c50311b657bcfec0-e0"
+      ]
+    },
+    {
+      "stage": "independent-cold-reopen",
+      "worldId": "world-46777480642d",
+      "profile": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\independent-profile",
+      "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+      "instanceId": "2fae8d380a674e84da675b57",
+      "tree": {
+        "collisionBounds": {
+          "max": [
+            -1.19188833236694,
+            5,
+            4.19557094573975
+          ],
+          "min": [
+            -2.69188833236694,
+            0,
+            2.69557094573975
+          ]
+        },
+        "color": "#88bb44",
+        "id": "created-b8d8640855e386f6fbfaaf5c",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -1.19273781776428,
+            4.99999952316284,
+            4.19472122192383
+          ],
+          "min": [
+            -2.6910388469696,
+            0,
+            2.69642043113708
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.94188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 0,
+        "scale": [
+          1.25,
+          1.25,
+          1.25
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      },
+      "componentIds": [
+        "ins-4cf92454c50311b657bcfec0-e0"
+      ]
+    }
+  ],
+  "play": {
+    "before": {
+      "onFloor": true,
+      "pitch": -0.45,
+      "position": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "yaw": 0.65
+    },
+    "after": {
+      "onFloor": true,
+      "pitch": -0.3,
+      "position": [
+        -0.727505743503571,
+        0.899999976158142,
+        6.47943162918091
+      ],
+      "yaw": 2
+    },
+    "capture": {
+      "file": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\imported-playing-4.png",
+      "worldId": "world-46777480642d",
+      "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+      "sha256": "9cf3c10582c4b612c14becfb57b8e562904a292a2d8241d35929fed8406ba48e",
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "launches": [
+    {
+      "kind": "author",
+      "mainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "kind": "author",
+      "mainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "kind": "author-cold",
+      "mainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "kind": "independent-import",
+      "mainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "kind": "independent-cold",
+      "mainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    }
+  ],
+  "limits": [
+    "One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.",
+    "Actual PI forms and offscreen native checks; no physical input or Pointer Lock.",
+    "The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed."
+  ]
+}
