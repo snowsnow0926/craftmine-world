@@ -1,0 +1,9 @@
+{
+  "worldId": "promo-flight",
+  "buildId": "gbd-cc3377397c26d09e216532f60e11922e2782a9ac41b1951603ce73045ebb6969",
+  "savedInstance": "dceb96b3ebc6be32399691f8",
+  "reopenedInstance": "6b191d4e585f1fe963abc4d4",
+  "snapshotEqual": true,
+  "initialization": "confirmed",
+  "scope": "Actual initial world save/cold reopen only. This does not prove persisted flight after piloting."
+}

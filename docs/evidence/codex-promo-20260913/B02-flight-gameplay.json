@@ -1,0 +1,1100 @@
+{
+  "scope": "Actual private canvas input to Godot. Explicit operator semantics; no authored-source edits or OS input.",
+  "initial": {
+    "proof": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\gameplay-report.json",
+      "sha256": "391a036e96e6c8129f8230aa47bc124156bc24b5703878d399d8f22be6f0c5c9"
+    },
+    "status": "completed",
+    "identity": {
+      "worldId": "promo-flight",
+      "buildId": "gbd-f0c7ea3802c45daf2384ec0db5bee7fc77d7d1d198ffd2cec43c2bafeccb5fad",
+      "instanceId": "eb6f5ba4aea71b5a85d7cc06"
+    },
+    "source": {
+      "before": {
+        "repoId": "world-promo-flight",
+        "headOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+        "appliedOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc"
+      },
+      "after": {
+        "repoId": "world-promo-flight",
+        "headOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+        "appliedOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc"
+      },
+      "unchanged": true
+    },
+    "retirementStatus": "closed",
+    "segments": [
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 0,
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": false,
+          "heading": 0,
+          "landings": 0,
+          "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+          "pitch": 0,
+          "position": [
+            0,
+            2.1800000667572,
+            180
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "throttle": 0,
+          "velocity": [
+            0,
+            0,
+            0
+          ],
+          "verticalSpeed": 0
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 0,
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": false,
+          "heading": 0,
+          "landings": 0,
+          "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+          "pitch": 0,
+          "position": [
+            0,
+            2.1800000667572,
+            180
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "throttle": 0,
+          "velocity": [
+            0,
+            0,
+            0
+          ],
+          "verticalSpeed": 0
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-77e871f3d7a7f4b3e3318a1062b5016e848b328f62be669ab29cc1a843f557c9.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 0,
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": false,
+          "heading": 0,
+          "landings": 0,
+          "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+          "pitch": 0,
+          "position": [
+            0,
+            2.1800000667572,
+            180
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "throttle": 0,
+          "velocity": [
+            0,
+            0,
+            0
+          ],
+          "verticalSpeed": 0
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 72.5926537792757,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 0,
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": false,
+          "heading": 0,
+          "landings": 0,
+          "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+          "pitch": 0,
+          "position": [
+            0,
+            2.1800000667572,
+            40.6091575622559
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            0,
+            0,
+            -69.4060821533203
+          ],
+          "verticalSpeed": 0
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-cb6daacd7cf4293633ebab8192743cd968e1b2827dc242805daf711f663de3af.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 79.4496616014956,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 0,
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": false,
+          "heading": 0,
+          "landings": 0,
+          "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+          "pitch": 0,
+          "position": [
+            0,
+            2.1800000667572,
+            11.4055881500244
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            0,
+            0,
+            -76.3079223632812
+          ],
+          "verticalSpeed": 0
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 129.539760675879,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 6.56666666666665,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 0,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 1.1025,
+          "position": [
+            0,
+            566.6953125,
+            -429.365997314453
+          ],
+          "rotation": [
+            1.10249996185303,
+            0,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            0,
+            115.361839294434,
+            -55.0795516967773
+          ],
+          "verticalSpeed": 115.361839294434
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-87b64e3619c05215b964b011368999e848cecd42af6fbebfea712fb2a9508b6d.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 131.762139449398,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 7.06666666666665,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 0,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 1.065,
+          "position": [
+            0,
+            624.403564453125,
+            -458.129028320312
+          ],
+          "rotation": [
+            1.06500005722046,
+            0,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            0,
+            115.393630981445,
+            -59.9209594726562
+          ],
+          "verticalSpeed": 115.393630981445
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 141.030776851502,
+          "assist": true,
+          "bank": 1.22633333333333,
+          "crashed": false,
+          "flightSeconds": 9.0666666666667,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 0.558391083311139,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 0.915000000000005,
+          "position": [
+            -13.93994140625,
+            853.053527832031,
+            -597.557556152344
+          ],
+          "rotation": [
+            0.915000021457672,
+            0.558391094207764,
+            1.22633349895477
+          ],
+          "throttle": 1,
+          "velocity": [
+            -30.0627479553223,
+            112.650314331055,
+            -74.9331359863281
+          ],
+          "verticalSpeed": 112.650314331055
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-32433eac73decd1df66d251a3bdc92a8b04988d33bb5482abd0ea40852696b40.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 143.46292843376,
+          "assist": true,
+          "bank": 1.12133333333333,
+          "crashed": false,
+          "flightSeconds": 9.56666666666672,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 0.816309891655151,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 0.877500000000006,
+          "position": [
+            -34.32568359375,
+            909.063110351562,
+            -633.809692382812
+          ],
+          "rotation": [
+            0.877499997615814,
+            0.816309869289398,
+            1.121333360672
+          ],
+          "throttle": 1,
+          "velocity": [
+            -50.8677864074707,
+            111.392372131348,
+            -69.2854232788086
+          ],
+          "verticalSpeed": 111.392372131348
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 153.841029050552,
+          "assist": true,
+          "bank": -0.206500000000007,
+          "crashed": false,
+          "flightSeconds": 11.5833333333335,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.21473321016484,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 0.726250000000009,
+          "position": [
+            -203.90576171875,
+            1126.78576660156,
+            -727.7080078125
+          ],
+          "rotation": [
+            0.726249933242798,
+            1.21473336219788,
+            -0.206500008702278
+          ],
+          "throttle": 1,
+          "velocity": [
+            -104.325233459473,
+            103.946784973145,
+            -35.9802284240723
+          ],
+          "verticalSpeed": 103.946784973145
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-4d4d5e88eaafef3ddd575cd45f72b2376bfac1e9b270fe4894d7679ae407e551.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 156.568076106671,
+          "assist": true,
+          "bank": -0.101500000000006,
+          "crashed": false,
+          "flightSeconds": 12.0833333333335,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.17228719696702,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 0.68875000000001,
+          "position": [
+            -257.142578125,
+            1178.13452148438,
+            -747.265014648438
+          ],
+          "rotation": [
+            0.688750088214874,
+            1.17228722572327,
+            -0.101500004529953
+          ],
+          "throttle": 1,
+          "velocity": [
+            -108.392639160156,
+            101.488403320312,
+            -42.1532020568848
+          ],
+          "verticalSpeed": 101.488403320312
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 163.090426242923,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 13.2333333333336,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 0.602500000000012,
+          "position": [
+            -387.72705078125,
+            1291.11218261719,
+            -802.166076660156
+          ],
+          "rotation": [
+            0.602500081062317,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            -119.129554748535,
+            94.8610229492188,
+            -51.7020378112793
+          ],
+          "verticalSpeed": 94.8610229492188
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-531c1258d9a7a9a76bd9047f68c465d2b86075180be55629cd194fc6ad5cd093.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 166.236998675112,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 13.7666666666669,
+          "gearDown": true,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "已离地！松开俯仰保持平飞，按 G 收起起落架",
+          "pitch": 0.562500000000012,
+          "position": [
+            -452.81103515625,
+            1340.74255371094,
+            -830.497741699219
+          ],
+          "rotation": [
+            0.562500059604645,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            -124.780700683594,
+            91.3123626708984,
+            -54.4117584228516
+          ],
+          "verticalSpeed": 91.3123626708984
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 175.893629342914,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 14.966666666667,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": 0.472500000000014,
+          "position": [
+            -610.6015625,
+            1445.07580566406,
+            -899.379089355469
+          ],
+          "rotation": [
+            0.472500026226044,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            -138.576293945312,
+            82.7494812011719,
+            -60.5160217285156
+          ],
+          "verticalSpeed": 82.7494812011719
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-68118507f783ed7ad92d0622e4f3e5786b27b701881f7da316d5bbd223ccffd9.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 181.062009422257,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 15.5000000000003,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": 0.432500000000015,
+          "position": [
+            -686.42626953125,
+            1488.14794921875,
+            -932.493041992188
+          ],
+          "rotation": [
+            0.432500034570694,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 1,
+          "velocity": [
+            -145.577377319336,
+            78.834846496582,
+            -63.5764579772949
+          ],
+          "verticalSpeed": 78.834846496582
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 191.729686872957,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 16.966666666667,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": 0.322500000000018,
+          "position": [
+            -913.7080078125,
+            1594.30993652344,
+            -1031.75268554688
+          ],
+          "rotation": [
+            0.322499990463257,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -163.046493530273,
+            65.1097869873047,
+            -71.2066650390625
+          ],
+          "verticalSpeed": 65.1097869873047
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-89KRFX\\input-after-10bd347de85be32280fc58e7fdf083847fcbbadfc72e2cba743f0d796513919b.png"
+      }
+    ]
+  },
+  "resumeDescent": {
+    "proof": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-jjUIWw\\gameplay-report.json",
+      "sha256": "ba11b6b93da721f928104721c335363108101b21b2bcff4dc5068f5bed62983e"
+    },
+    "status": "completed",
+    "identity": {
+      "worldId": "promo-flight",
+      "buildId": "gbd-f0c7ea3802c45daf2384ec0db5bee7fc77d7d1d198ffd2cec43c2bafeccb5fad",
+      "instanceId": "fe5ccf565cce846703d0485d"
+    },
+    "source": {
+      "before": {
+        "repoId": "world-promo-flight",
+        "headOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+        "appliedOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc"
+      },
+      "after": {
+        "repoId": "world-promo-flight",
+        "headOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+        "appliedOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc"
+      },
+      "unchanged": true
+    },
+    "retirementStatus": "closed",
+    "segments": [
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 194.449753583901,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 17.5000000000003,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": 0.282500000000018,
+          "position": [
+            -1001.99609375,
+            1627.32934570312,
+            -1070.31018066406
+          ],
+          "rotation": [
+            0.282500028610229,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -167.818801879883,
+            58.8408546447754,
+            -73.2908554077148
+          ],
+          "verticalSpeed": 58.8408546447754
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 197.275037304302,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 18.0333333333336,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": 0.242500000000019,
+          "position": [
+            -1092.74658203125,
+            1656.90625,
+            -1109.94299316406
+          ],
+          "rotation": [
+            0.24250003695488,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -172.322601318359,
+            52.2283630371094,
+            -75.2577896118164
+          ],
+          "verticalSpeed": 52.2283630371094
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-jjUIWw\\input-after-281947d164e679c0e5fe381e23bbe81d06b2b9fe2423e44a9d3476ad4e86d56d.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 199.461580269339,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 18.4333333333336,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": 0.212500000000019,
+          "position": [
+            -1162.3583984375,
+            1676.72961425781,
+            -1140.3447265625
+          ],
+          "rotation": [
+            0.212500020861626,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -175.58837890625,
+            47.0769729614258,
+            -76.6840286254883
+          ],
+          "verticalSpeed": 47.0769729614258
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 234.122061174502,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 21.9,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": -0.690833333333316,
+          "position": [
+            -1755.3046875,
+            1481.23571777344,
+            -1399.298828125
+          ],
+          "rotation": [
+            -0.690833330154419,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -159.442672729492,
+            -149.2490234375,
+            -69.6327972412109
+          ],
+          "verticalSpeed": -149.2490234375
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-jjUIWw\\input-after-ed11d2444ca748115e39d48e3eebeae0fc89dfbb34125172390a625e1a52945a.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 238.575314148755,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 22.3,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": -0.660833333333317,
+          "position": [
+            -1820.43505859375,
+            1421.70556640625,
+            -1427.74328613281
+          ],
+          "rotation": [
+            -0.660833418369293,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -166.040298461914,
+            -148.165878295898,
+            -72.51416015625
+          ],
+          "verticalSpeed": -148.165878295898
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 256.44946402139,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 24.1666666666666,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": -0.52083333333332,
+          "position": [
+            -2160.64453125,
+            1158.4296875,
+            -1576.32214355469
+          ],
+          "rotation": [
+            -0.520833313465118,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -197.729965209961,
+            -132.025665283203,
+            -86.3538513183594
+          ],
+          "verticalSpeed": -132.025665283203
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-jjUIWw\\input-after-378681b945cb49d15cd36426c6d1d7723f3bb3cf73904db9174f58f1c46459a8.png"
+      },
+      {
+        "release": true,
+        "guard": {
+          "pointerLock": 0,
+          "focus": 0
+        },
+        "before": {
+          "afterburner": false,
+          "airspeed": 259.677491271594,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 24.5666666666666,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": -0.49083333333332,
+          "position": [
+            -2241.05004882812,
+            1106.61022949219,
+            -1611.43713378906
+          ],
+          "rotation": [
+            -0.490833342075348,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.76,
+          "velocity": [
+            -203.991592407227,
+            -127.205139160156,
+            -89.0884780883789
+          ],
+          "verticalSpeed": -127.205139160156
+        },
+        "after": {
+          "afterburner": false,
+          "airspeed": 253.083306711196,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 28.5666666666663,
+          "gearDown": false,
+          "grounded": false,
+          "hasFlown": true,
+          "heading": 1.15903552030356,
+          "landings": 0,
+          "message": "起落架已收起",
+          "pitch": -0.190833333333325,
+          "position": [
+            -3130.9169921875,
+            730.790710449219,
+            -2000.06579589844
+          ],
+          "rotation": [
+            -0.190833315253258,
+            1.15903556346893,
+            0
+          ],
+          "throttle": 0.232,
+          "velocity": [
+            -228.098175048828,
+            -55.6094932556152,
+            -99.6164627075195
+          ],
+          "verticalSpeed": -55.6094932556152
+        },
+        "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-jjUIWw\\input-after-ad204428e0c1237b5cdc85043b861bc997edb1b5e7f11610efc7ca06b317e4eb.png"
+      }
+    ]
+  },
+  "persistence": {
+    "checks": {
+      "sameWorld": true,
+      "newInstance": true,
+      "aircraftEqual": true,
+      "cockpitEqual": true,
+      "gearEqual": true,
+      "cameraEqual": true
+    },
+    "before": {
+      "aircraft": {
+        "afterburner": false,
+        "airspeed": 194.449753583901,
+        "assist": true,
+        "bank": 0,
+        "crashed": false,
+        "flightSeconds": 17.5000000000003,
+        "gearDown": false,
+        "grounded": false,
+        "hasFlown": true,
+        "heading": 1.15903552030356,
+        "landings": 0,
+        "message": "起落架已收起",
+        "pitch": 0.282500000000018,
+        "position": [
+          -1001.99609375,
+          1627.32934570312,
+          -1070.31018066406
+        ],
+        "rotation": [
+          0.282500028610229,
+          1.15903556346893,
+          0
+        ],
+        "throttle": 0.76,
+        "velocity": [
+          -167.818801879883,
+          58.8408546447754,
+          -73.2908554077148
+        ],
+        "verticalSpeed": 58.8408546447754
+      },
+      "camera": {
+        "fov": 78,
+        "position": [
+          -1007.47705078125,
+          1629.34655761719,
+          -1072.70397949219
+        ],
+        "rotation": [
+          0.282500058412552,
+          1.15903556346893,
+          0
+        ]
+      },
+      "cockpitView": true,
+      "entityId": "j20-player-aircraft",
+      "format": "craftmine.j20-flight-state/1",
+      "gateIndex": 0,
+      "gearExtension": 0.0350000001490116,
+      "settings": {
+        "flightModelVersion": 1
+      },
+      "sourceSettings": {
+        "flightModelVersion": 1
+      },
+      "started": true,
+      "stateVersion": 1
+    },
+    "after": {
+      "aircraft": {
+        "afterburner": false,
+        "airspeed": 194.449753583901,
+        "assist": true,
+        "bank": 0,
+        "crashed": false,
+        "flightSeconds": 17.5000000000003,
+        "gearDown": false,
+        "grounded": false,
+        "hasFlown": true,
+        "heading": 1.15903552030356,
+        "landings": 0,
+        "message": "起落架已收起",
+        "pitch": 0.282500000000018,
+        "position": [
+          -1001.99609375,
+          1627.32934570312,
+          -1070.31018066406
+        ],
+        "rotation": [
+          0.282500028610229,
+          1.15903556346893,
+          0
+        ],
+        "throttle": 0.76,
+        "velocity": [
+          -167.818801879883,
+          58.8408546447754,
+          -73.2908554077148
+        ],
+        "verticalSpeed": 58.8408546447754
+      },
+      "camera": {
+        "fov": 78,
+        "position": [
+          -1007.47705078125,
+          1629.34655761719,
+          -1072.70397949219
+        ],
+        "rotation": [
+          0.282500058412552,
+          1.15903556346893,
+          0
+        ]
+      },
+      "cockpitView": true,
+      "entityId": "j20-player-aircraft",
+      "format": "craftmine.j20-flight-state/1",
+      "gateIndex": 0,
+      "gearExtension": 0.0350000001490116,
+      "settings": {
+        "flightModelVersion": 1
+      },
+      "sourceSettings": {
+        "flightModelVersion": 1
+      },
+      "started": true,
+      "stateVersion": 1
+    },
+    "reopen": {
+      "format": "craftmine.codex-live-state/1",
+      "worldId": "promo-flight",
+      "status": "formal-running",
+      "instance": {
+        "worldId": "promo-flight",
+        "buildId": "gbd-f0c7ea3802c45daf2384ec0db5bee7fc77d7d1d198ffd2cec43c2bafeccb5fad",
+        "instanceId": "de2f06bddea52330062b41e7",
+        "url": "http://127.0.0.1:58008/w/5c4777879986c509e95007de615abf26f129bc2359e6d71560cef6750912b9ab/web/index.html"
+      },
+      "candidate": null,
+      "view": {
+        "worldId": "promo-flight",
+        "buildId": "gbd-f0c7ea3802c45daf2384ec0db5bee7fc77d7d1d198ffd2cec43c2bafeccb5fad",
+        "instanceId": "de2f06bddea52330062b41e7",
+        "state": "ready"
+      },
+      "initialization": {
+        "applicationId": "28c202ec-54fc-4f71-953c-1b12fcfff14d",
+        "baseBuild": "initial-promo-flight",
+        "baseId": "creation-sandbox",
+        "candidateId": null,
+        "createdAt": 1789259433043,
+        "failureStage": null,
+        "formalBuildId": "gbd-f0c7ea3802c45daf2384ec0db5bee7fc77d7d1d198ffd2cec43c2bafeccb5fad",
+        "format": "craftmine.godot-world-init/1",
+        "initId": "gwinit-973b66b7a02e4c8b3d7812f57987ecd21d5101e7cd5be3a0bd0ae45ab3aefc6f",
+        "initialSnapshotHash": "be99535139d695dd1ab159f21d315813dc1d80c190a323a3b8c2f24ccba06c24",
+        "launchFailure": null,
+        "playable": true,
+        "projectRevision": 10,
+        "reason": null,
+        "status": "confirmed",
+        "title": "promo-flight",
+        "worldId": "promo-flight",
+        "worldRevision": 3
+      },
+      "applied": true,
+      "gameplayAssessment": "not-performed-by-live-host"
+    },
+    "originalGameReport": "test-results/codex-promo/worlds/flight/test-results/desktop-native-codex-live-89KRFX/gameplay-report.json"
+  },
+  "menuAttempt": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-PBOovO\\gameplay-report.json",
+    "sha256": "f89f9776b0d35182842c82e9ef459443674c68c87cbbafecaee1f282287dbd1f"
+  },
+  "menuInterpretation": "Inputs before Enter correctly left the saved aircraft unchanged; subsequent Enter resumed real flight.",
+  "visualLimitations": "Prototype HUD and cockpit; cinematic framing and polish are not established."
+}

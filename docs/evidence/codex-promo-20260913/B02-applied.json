@@ -1,0 +1,66 @@
+{
+  "shot": "B02",
+  "prompt": "我想要驾驶歼20。",
+  "worldId": "promo-flight",
+  "sessionId": "codex-1df18d9d-84f7-484a-a0a3-7a6ab5c76d9a",
+  "threadId": "01a0982c-a9b2-7d91-b9b4-403399747303",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "hostTurnId": "20d2ebce-778d-4458-942e-14d80291c4e5",
+  "elapsedMs": 1053444,
+  "sourceRevision": 8,
+  "checkStatus": "passed",
+  "candidateId": "gcan-ace16285a66c666216cca7b11163fad08e406a53979fb20452e0f82d41819027",
+  "application": "applied",
+  "capture": {
+    "format": "craftmine.godot-view-capture/1",
+    "worldId": "promo-flight",
+    "buildId": "gbd-cc3377397c26d09e216532f60e11922e2782a9ac41b1951603ce73045ebb6969",
+    "instanceId": "67c6f1cb52ff413aff6f2fef",
+    "candidateId": null,
+    "scope": "formal",
+    "capturedAt": "2026-09-13T00:53:46.238Z",
+    "viewWidth": 1280,
+    "viewHeight": 784,
+    "sourceWidth": 1280,
+    "sourceHeight": 860,
+    "width": 1280,
+    "height": 860,
+    "resized": false,
+    "sha256": "c4582ef456545ac4fcd503678bd5ffa9614096d63900325945ecc44f4d83b425",
+    "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\worlds\\flight\\test-results\\desktop-native-codex-live-cLxeCn\\formal-c4582ef456545ac4fcd503678bd5ffa9614096d63900325945ecc44f4d83b425.png"
+  },
+  "save": {
+    "buildId": "gbd-cc3377397c26d09e216532f60e11922e2782a9ac41b1951603ce73045ebb6969",
+    "contentHash": "fa5add52d3ccb4fc7f13b6a1b9e9e57094a8d764f6c58332b4cf317771e9e8ac",
+    "format": "craftmine.godot-progress-receipt/1",
+    "instanceId": "67c6f1cb52ff413aff6f2fef",
+    "persistedAt": 1789260824995,
+    "revision": 1,
+    "snapshotHash": "be99535139d695dd1ab159f21d315813dc1d80c190a323a3b8c2f24ccba06c24",
+    "snapshotSha256": "31e17008c0b14938e902f30caf7ee0319f734699d04e685e5aa4dab5be864534",
+    "worldId": "promo-flight"
+  },
+  "savedComponents": [],
+  "gameplayVerified": false,
+  "visualReview": "Actual formal frame shows the reused J20 on the airfield and the flight menu. Flight input and aircraft-state persistence are not proven by this initial application. The initial save has no flight component state.",
+  "usage": {
+    "total": {
+      "totalTokens": 3065010,
+      "inputTokens": 3037761,
+      "cachedInputTokens": 2880384,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 27249,
+      "reasoningOutputTokens": 7869
+    },
+    "last": {
+      "totalTokens": 129453,
+      "inputTokens": 128962,
+      "cachedInputTokens": 122624,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 491,
+      "reasoningOutputTokens": 361
+    },
+    "modelContextWindow": 522500
+  }
+}

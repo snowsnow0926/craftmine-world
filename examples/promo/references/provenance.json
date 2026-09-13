@@ -14,6 +14,18 @@
       ],
       "userScope": "Recreate Orgrimmar as an entire walkable city",
       "generatedAt": "2026-09-13T00:34:28.594Z"
+    },
+    {
+      "file": "rain-control-reference.png",
+      "sha256": "c32338316e17331c42b2b82858d74bedc459a7522fc140168671e3c90d3dd377",
+      "generator": "built-in imagegen",
+      "role": "AI design reference for falling, suspended and rising spatial rain; not a real game screenshot",
+      "views": [
+        "normal falling rain",
+        "suspended droplets",
+        "upward reversal"
+      ],
+      "generatedAt": "2026-09-13T01:17:54.312Z"
     }
   ]
 }

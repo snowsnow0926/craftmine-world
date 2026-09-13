@@ -1,0 +1,300 @@
+{
+  "format": "craftmine.promo-rain-gameplay/1",
+  "source": {
+    "before": {
+      "repoId": "world-promo-rain",
+      "headOid": "0ce3373f1c4af05c857613d704066729842f5e72",
+      "appliedOid": "0ce3373f1c4af05c857613d704066729842f5e72"
+    },
+    "after": {
+      "repoId": "world-promo-rain",
+      "headOid": "0ce3373f1c4af05c857613d704066729842f5e72",
+      "appliedOid": "0ce3373f1c4af05c857613d704066729842f5e72"
+    },
+    "unchanged": true
+  },
+  "identity": {
+    "worldId": "promo-rain",
+    "buildId": "gbd-3f6b4f1bab2305c2a754d871826360ac2bd08b808d56f3675ef95b0d5ebd2341",
+    "instanceId": "c2226c04dc1acc7b3accd9f0"
+  },
+  "retirementStatus": "closed",
+  "segments": [
+    {
+      "i": 0,
+      "before": {
+        "phase": 0,
+        "velocity": -8.5,
+        "phaseAge": 0.1,
+        "casts": 0,
+        "heightsSha256": "350997edd84679e6fdc812c70d446ca68f4136c7906aa668b46261ef2056930e",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 0,
+        "velocity": -8.5,
+        "phaseAge": 0.7,
+        "casts": 0,
+        "heightsSha256": "aa84244afbdee0e52f800b2bdc3e7e9d28cbb41932d38e83f59e76c5da5f932a",
+        "drops": 2200
+      },
+      "up": 942,
+      "down": 1258,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-2ec992421ed5628901e674937f4f6bbbdeea302f0b026ecc5364f203bc7d4778.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "i": 1,
+      "before": {
+        "phase": 0,
+        "velocity": -8.5,
+        "phaseAge": 0.85,
+        "casts": 0,
+        "heightsSha256": "cc1e027a50f64082ad1eee848095e833b8480ad76df7c29a206be4f3cccf2b11",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 1,
+        "velocity": -0.250000000000002,
+        "phaseAge": 0.75,
+        "casts": 1,
+        "heightsSha256": "f7fefb814bdcea75bfea39c1b369d83b60a470242bc1774fe4e14129872a790a",
+        "drops": 2200
+      },
+      "up": 588,
+      "down": 1612,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-b837c4a8a102d261fbf05a9dcd5a23942b4818e14cd90774ff496dc3c21f96a2.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "i": 2,
+      "before": {
+        "phase": 2,
+        "velocity": 0,
+        "phaseAge": 0.1,
+        "casts": 1,
+        "heightsSha256": "f7fefb814bdcea75bfea39c1b369d83b60a470242bc1774fe4e14129872a790a",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 2,
+        "velocity": 0,
+        "phaseAge": 0.75,
+        "casts": 1,
+        "heightsSha256": "f7fefb814bdcea75bfea39c1b369d83b60a470242bc1774fe4e14129872a790a",
+        "drops": 2200
+      },
+      "up": 0,
+      "down": 0,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-65eb9518595862ffccd50f07142b972a51d8c9b0041b1184db8b412e8432b16b.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "i": 3,
+      "before": {
+        "phase": 2,
+        "velocity": 0,
+        "phaseAge": 0.9,
+        "casts": 1,
+        "heightsSha256": "f7fefb814bdcea75bfea39c1b369d83b60a470242bc1774fe4e14129872a790a",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 3,
+        "velocity": 2.585,
+        "phaseAge": 0.55,
+        "casts": 1,
+        "heightsSha256": "c26df06ddabb1057a40a4993ce6c542f397b44eeb9fce60d407df3ff50d0c1e8",
+        "drops": 2200
+      },
+      "up": 2117,
+      "down": 83,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-f02abdf7e1406ffa95f5fb62fc66cd3539f0d3e3797f0d1f47cb84169c020760.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "i": 4,
+      "before": {
+        "phase": 3,
+        "velocity": 3.29,
+        "phaseAge": 0.7,
+        "casts": 1,
+        "heightsSha256": "7d731572a335faf8eba0c4f27186232e34648d258c166e7933f9b92f9a2b4c62",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 4,
+        "velocity": 5.6,
+        "phaseAge": 0.1,
+        "casts": 1,
+        "heightsSha256": "d3473cfc1117f105c38d5b82cdae22875e15a1c2658b88282fb96855aa2eed04",
+        "drops": 2200
+      },
+      "up": 1790,
+      "down": 410,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-e91c6f4539746c85f57a8915f537c1d32e3b3797fecb498a7456089535cffe9a.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "i": 5,
+      "before": {
+        "phase": 4,
+        "velocity": 5.6,
+        "phaseAge": 0.25,
+        "casts": 1,
+        "heightsSha256": "096bc4ce89299c23009cc50b90f3bcb939b1068b73cf186a67eb767f0f035aff",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 5,
+        "velocity": 0.649999999999999,
+        "phaseAge": 0.55,
+        "casts": 1,
+        "heightsSha256": "2df81e1fbf39ae06d9a3185b0da4005f4353b8f21a38266c2f884da06a4f561f",
+        "drops": 2200
+      },
+      "up": 1775,
+      "down": 425,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-0d8a18663fd4b85d8741659a62b0300425449db0d451d5ef19841c6f7ed809bf.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    },
+    {
+      "i": 6,
+      "before": {
+        "phase": 5,
+        "velocity": -0.700000000000002,
+        "phaseAge": 0.7,
+        "casts": 1,
+        "heightsSha256": "a4516ce6a367cc69bd3675c493f4634887e8c525f5451a5b56e91f6985e02a92",
+        "drops": 2200
+      },
+      "after": {
+        "phase": 2,
+        "velocity": 0,
+        "phaseAge": 0.55,
+        "casts": 2,
+        "heightsSha256": "bd43995f1754f45fa03077835b1886a3762f4691380ee87206cd5aaa0f6d6fb8",
+        "drops": 2200
+      },
+      "up": 75,
+      "down": 2125,
+      "playerBefore": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "playerAfter": [
+        0,
+        0.899999976158142,
+        0.899998068809509
+      ],
+      "frame": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\input-after-a4cdf57ea553c28c7dbfbcbe1031a30c0b6be01c8a38c22c33007a40c819d141.png",
+      "release": true,
+      "guard": {
+        "pointerLock": 0,
+        "focus": 0
+      }
+    }
+  ],
+  "report": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-OwVtWI\\gameplay-report.json",
+    "sha256": "4f5737b6cd07e6caf4bc62e5e943fbf4775b59806390132dbb6e7bbe96bff331"
+  },
+  "coldReopen": {
+    "equalHeldDrops": true,
+    "equalPhase": true,
+    "equalPlayer": true,
+    "phaseAgeBefore": 0.7,
+    "phaseAgeAfter": 0.75,
+    "stage": "hold",
+    "proof": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-rwn4Yh\\close.json",
+      "sha256": "2a5a1c5d6f30f2304852cae34723453c9c283fd9ba512868c68b9fb002301d2f"
+    }
+  },
+  "scope": "Actual fixed canvas inputs, native world state and cold reopen; not a filmed video."
+}

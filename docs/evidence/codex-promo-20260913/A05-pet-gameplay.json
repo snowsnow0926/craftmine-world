@@ -1,0 +1,75 @@
+{
+  "worldId": "codex-live-direct",
+  "buildId": "gbd-00fa89706ede16ec5e3813259f5d246e58e7ae85b4316f32733a7f5dd3592f4c",
+  "checks": {
+    "samePet": true,
+    "pettingIncrement": true,
+    "waitToggle": true,
+    "playerMovedWhilePetWaited": true,
+    "callResumesFollow": true,
+    "inputsReleased": true,
+    "noFocusOrPointerLock": true,
+    "sourceUnchanged": true,
+    "saved": true
+  },
+  "actualReport": "test-results/cl2/test-results/desktop-native-codex-live-Mqa6h2/gameplay-report.json",
+  "clearFrame": {
+    "format": "craftmine.godot-view-capture/1",
+    "worldId": "codex-live-direct",
+    "buildId": "gbd-00fa89706ede16ec5e3813259f5d246e58e7ae85b4316f32733a7f5dd3592f4c",
+    "instanceId": "eb5ce401ce5f1829e7a3c383",
+    "candidateId": null,
+    "scope": "formal",
+    "capturedAt": "2026-09-13T01:34:48.617Z",
+    "viewWidth": 1280,
+    "viewHeight": 784,
+    "sourceWidth": 1280,
+    "sourceHeight": 860,
+    "width": 1280,
+    "height": 860,
+    "resized": false,
+    "sha256": "1179e89eb354f863f81ae7471a1207670e6db13bd5e521f03b1b2edccdc82afb",
+    "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\cl2\\test-results\\desktop-native-codex-live-Mqa6h2\\input-after-1179e89eb354f863f81ae7471a1207670e6db13bd5e521f03b1b2edccdc82afb.png"
+  },
+  "finalState": {
+    "baseVersion": "1.0.0",
+    "components": {
+      "pet-dog-01": {
+        "entityId": "pet-dog-01",
+        "format": "craftmine.pet-dog/1",
+        "pets": 1,
+        "position": [
+          0.362400233745575,
+          0.00083767384057864,
+          7.77067089080811
+        ],
+        "settings": {
+          "following": false
+        },
+        "sourceSettings": {
+          "following": true
+        },
+        "yaw": 3.02333116531372
+      }
+    },
+    "doors": {},
+    "format": "craftmine.creation-progress/1",
+    "inventory": {},
+    "openedChests": {},
+    "player": {
+      "onFloor": true,
+      "pitch": 0,
+      "position": [
+        0,
+        0.899999976158142,
+        13.1999893188477
+      ],
+      "yaw": 0
+    },
+    "rules": {},
+    "sourceTimeOfDay": 12,
+    "timeOfDay": 12,
+    "worldId": "codex-live-direct"
+  },
+  "scope": "Scripted functional pet actions through real game input; no human control-feel or production visual-quality claim"
+}
