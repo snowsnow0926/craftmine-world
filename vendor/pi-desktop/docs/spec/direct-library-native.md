@@ -91,3 +91,12 @@ the currently running read. Results are not cached across subsequent requests;
 new source/asset identity checks and all native builds/adoption guards remain.
 Cancellation is rechecked after installation-turn finalization. Native shutdown
 drains these shared reads before their plugin owner disappears.
+
+The main conversation's existing source-proposal panel uses a narrow gateway for
+sourceProposals, sourceJob and installSourceProposal. Only current-world exact
+proposal/job IDs are admitted; no paths, source, contexts or raw archives. The
+same package owner enforces frozen source CAS and native checks, with main-frame
+and active-operation guards. Unknown errors remain errors with readable retry
+instructions, not invented empty success. Regressions verify empty successful
+direct sessions show no permission error, and fabricated source/context inputs
+never reach the package owner.

@@ -10393,3 +10393,12 @@ verify Place here remains available. Aim through oversized unsupported geometry
 and verify conservative target refusal. Reopen an exact previous sampler cohort,
 use the ordinary observer-upgrade action, and verify one pinned sampler update
 passes normal checking/adoption while authored source and progress survive.
+
+### Main conversation source proposals
+
+After an ordinary direct edit with no AI suggestions, the existing reuse panel
+must read its empty proposal list without PERMISSION_DENIED. Admit only exact
+current-world proposal/job identifiers to its existing install/check path;
+reject injected source/context/paths and private installer methods. Retain real
+failures with retry guidance and diagnostic details. General package authoring
+remains outside the main navigation gateway.

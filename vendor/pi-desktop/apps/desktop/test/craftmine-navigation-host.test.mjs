@@ -95,7 +95,7 @@ test('publication forms reach only source publication and a live nonfreezing sav
  }
  await invokeCraftmineNavigation(request('godot.runtimeSave',{worldId:'world-author',freeze:false}),deps);
  assert.deepEqual(calls.at(-1),{channel:'godot.runtimeSave',payload:{worldId:'world-author',freeze:false}});
- for(const method of ['installSource','importSource','exportSource','sourceProposals','installSourceProposal'])await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-author',method,params:{worldId:'world-author'}}),deps),/PERMISSION_DENIED/);
+ for(const method of ['installSource','importSource','exportSource'])await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-author',method,params:{worldId:'world-author'}}),deps),/PERMISSION_DENIED/);
  for(const payload of [{worldId:'world-author',freeze:true},{worldId:'world-author',freeze:false,snapshot:{}},{worldId:'../world',freeze:false}])await assert.rejects(invokeCraftmineNavigation(request('godot.runtimeSave',payload),deps),/PERMISSION_DENIED/);
  await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-author',method:'sourceList',params:{worldId:'another-world'}}),deps),/INVALID_PUBLICATION_REQUEST/);
  assert.equal(calls.length,5);
@@ -110,4 +110,14 @@ test('direct use accepts only bounded exact catalog requests and denies private 
     await assert.rejects(invokeCraftmineNavigation(request('library.direct',payload),deps),/DIRECT_LIBRARY_INVALID/);
   for(const method of ['directInspect','directInstall','directStatus'])await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-test',method,params:{worldId:'world-test'}}),deps),/PERMISSION_DENIED/);
   assert.equal(calls.length,1);
+});
+
+test('existing conversation proposals use exact IDs without a raw source gateway',async()=>{
+ const calls=[],deps={invoke:async(...args)=>{calls.push(args);return {items:[]};},navigate:async()=>{throw Error('unexpected');}};
+ const envelope=(method,params={})=>request('package.request',{worldId:'world-test',method,params:{worldId:'world-test',...params}});
+ await invokeCraftmineNavigation(envelope('sourceProposals'),deps);
+ await invokeCraftmineNavigation(envelope('sourceJob',{jobId:'gjob-'+'a'.repeat(64)}),deps);
+ await invokeCraftmineNavigation(envelope('installSourceProposal',{proposalId:'source-'+'b'.repeat(48)}),deps);
+ for(const input of [envelope('sourceProposals',{context:{}}),envelope('sourceJob',{jobId:'other'}),envelope('installSourceProposal',{proposalId:'source-'+'b'.repeat(48),source:'forged'}),envelope('installSourceProposal',{proposalId:'../file'})])await assert.rejects(invokeCraftmineNavigation(input,deps),/INVALID_SOURCE_PROPOSAL_REQUEST/);
+ assert.equal(calls.length,3);
 });
