@@ -1,0 +1,287 @@
+{
+  "format": "craftmine.first-creation-framing-summary/1",
+  "passed": true,
+  "framingOnly": true,
+  "fullJourneyReexecuted": false,
+  "rawReport": {
+    "path": "D:/cm-rt/test-results/desktop-native-rt-pvPcdM/continuation-99862066-74ff-4ada-9515-f4847ce7cc67.json",
+    "sha256": "14a13f157dac31352c3be9f523fc0d26a8f0cc408fcde94529bcf15090f360a1"
+  },
+  "buildMainSha256": "cd19cf881ea4b2a15264b5c324f71d8e58684db7bad62b9da57ab51ab8d535a3",
+  "driverSha256": "450e1d1f8b9940bb86fbfceb240ba45a878c1e4cea7a4e543a17d3856700f59d",
+  "frames": [
+    {
+      "label": "author-content-review",
+      "worldId": "world-4fc3c010c132",
+      "treeId": "created-b8d8640855e386f6fbfaaf5c",
+      "treeBounds": {
+        "max": [
+          -1.19273781776428,
+          4.99999952316284,
+          4.19472122192383
+        ],
+        "min": [
+          -2.6910388469696,
+          0,
+          2.69642043113708
+        ]
+      },
+      "companionEntityId": "ins-4cf92454c50311b657bcfec0-e0",
+      "companionPosition": [
+        4.2598090171814,
+        0.00015342968981713,
+        11.5308656692505
+      ],
+      "midpoint": [
+        1.1589603424072301,
+        0.6500767371966504,
+        7.488218307495125
+      ],
+      "verticalBounds": {
+        "top": 0.2397126600332672,
+        "bottom": -0.3019786947533561
+      },
+      "angles": {
+        "yaw": 0.6543397758569321,
+        "pitch": -0.03113301736004445
+      },
+      "actions": [
+        {
+          "input": {
+            "worldId": "world-4fc3c010c132",
+            "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+            "instanceId": "4325ae6dfb298a4aa1599053",
+            "steps": [
+              {
+                "op": "look",
+                "args": {
+                  "yaw": 0.649999950576152,
+                  "pitch": -0.15
+                }
+              },
+              {
+                "op": "walk",
+                "args": {
+                  "forward": -1,
+                  "right": 0,
+                  "frames": 120
+                }
+              }
+            ]
+          },
+          "identity": {
+            "worldId": "world-4fc3c010c132",
+            "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+            "instanceId": "4325ae6dfb298a4aa1599053"
+          },
+          "before": {
+            "onFloor": true,
+            "pitch": -0.122179554865281,
+            "position": [
+              2.04250359535217,
+              0.899999976158142,
+              8.68678283691406
+            ],
+            "yaw": 0.655352479568309
+          },
+          "after": {
+            "onFloor": true,
+            "pitch": -0.15,
+            "position": [
+              7.28808164596558,
+              0.899999976158142,
+              15.4784698486328
+            ],
+            "yaw": 0.649999950576152
+          }
+        },
+        {
+          "input": {
+            "worldId": "world-4fc3c010c132",
+            "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+            "instanceId": "4325ae6dfb298a4aa1599053",
+            "steps": [
+              {
+                "op": "look",
+                "args": {
+                  "yaw": 0.6543397758569321,
+                  "pitch": -0.03113301736004445
+                }
+              }
+            ]
+          },
+          "identity": {
+            "worldId": "world-4fc3c010c132",
+            "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+            "instanceId": "4325ae6dfb298a4aa1599053"
+          },
+          "before": {
+            "onFloor": true,
+            "pitch": -0.15,
+            "position": [
+              7.28808164596558,
+              0.899999976158142,
+              15.4784698486328
+            ],
+            "yaw": 0.649999950576152
+          },
+          "after": {
+            "onFloor": true,
+            "pitch": -0.0311330173600445,
+            "position": [
+              7.32569265365601,
+              0.899999976158142,
+              15.5303983688354
+            ],
+            "yaw": 0.654339775856932
+          }
+        }
+      ],
+      "frame": {
+        "file": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\author-content-review-6-0dc1a0d5-dea7-4295-a7ed-976251430503.png",
+        "worldId": "world-4fc3c010c132",
+        "buildId": "gbd-2cbe97205db42d7e90a1035c6fefe6c6ab8d5cefc0f946802ec52626f9b05258",
+        "sha256": "d17703b4d01d5c780adc05ad39ec73ccca47fd7c17c3333fbe9c193f636e83dc",
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "label": "imported-content-review",
+      "worldId": "world-46777480642d",
+      "treeId": "created-b8d8640855e386f6fbfaaf5c",
+      "treeBounds": {
+        "max": [
+          -1.19273781776428,
+          4.99999952316284,
+          4.19472122192383
+        ],
+        "min": [
+          -2.6910388469696,
+          0,
+          2.69642043113708
+        ]
+      },
+      "companionEntityId": "ins-4cf92454c50311b657bcfec0-e0",
+      "companionPosition": [
+        0.434074223041534,
+        0.00094068387988954,
+        13.2303457260132
+      ],
+      "midpoint": [
+        -0.753907054662703,
+        0.6504703642916866,
+        8.337958335876476
+      ],
+      "verticalBounds": {
+        "top": 0.23994558813759975,
+        "bottom": -0.30481203289965825
+      },
+      "angles": {
+        "yaw": 0.23091423616665518,
+        "pitch": -0.03243322238102925
+      },
+      "actions": [
+        {
+          "input": {
+            "worldId": "world-46777480642d",
+            "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+            "instanceId": "cc8b5159bc7b210320aecbf6",
+            "steps": [
+              {
+                "op": "look",
+                "args": {
+                  "yaw": 0.22568215174718187,
+                  "pitch": -0.15
+                }
+              },
+              {
+                "op": "walk",
+                "args": {
+                  "forward": -1,
+                  "right": 0,
+                  "frames": 120
+                }
+              }
+            ]
+          },
+          "identity": {
+            "worldId": "world-46777480642d",
+            "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+            "instanceId": "cc8b5159bc7b210320aecbf6"
+          },
+          "before": {
+            "onFloor": true,
+            "pitch": -0.128334248709372,
+            "position": [
+              -0.473454058170319,
+              0.899999976158142,
+              9.84137535095215
+            ],
+            "yaw": 0.206639389295039
+          },
+          "after": {
+            "onFloor": true,
+            "pitch": -0.15,
+            "position": [
+              1.52513933181763,
+              0.899999976158142,
+              18.0315761566162
+            ],
+            "yaw": 0.225682151747182
+          }
+        },
+        {
+          "input": {
+            "worldId": "world-46777480642d",
+            "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+            "instanceId": "cc8b5159bc7b210320aecbf6",
+            "steps": [
+              {
+                "op": "look",
+                "args": {
+                  "yaw": 0.23091423616665518,
+                  "pitch": -0.03243322238102925
+                }
+              }
+            ]
+          },
+          "identity": {
+            "worldId": "world-46777480642d",
+            "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+            "instanceId": "cc8b5159bc7b210320aecbf6"
+          },
+          "before": {
+            "onFloor": true,
+            "pitch": -0.15,
+            "position": [
+              1.52513933181763,
+              0.899999976158142,
+              18.0315761566162
+            ],
+            "yaw": 0.225682151747182
+          },
+          "after": {
+            "onFloor": true,
+            "pitch": -0.0324332223810292,
+            "position": [
+              1.53414440155029,
+              0.899999976158142,
+              18.0968971252441
+            ],
+            "yaw": 0.230914236166655
+          }
+        }
+      ],
+      "frame": {
+        "file": "D:\\cm-rt\\test-results\\desktop-native-rt-pvPcdM\\imported-content-review-7-bf1c8771-f354-4dfa-a67e-ba1ddd80ac63.png",
+        "worldId": "world-46777480642d",
+        "buildId": "gbd-2a1a29ae913ec5362209e8cb864932f5594d3df85a34508f96256a43cb952889",
+        "sha256": "9ba304aaa4949a65500e606c87ada4d09b9e93c16333576d16a0fe2258d44b82",
+        "width": 1920,
+        "height": 1080
+      }
+    }
+  ],
+  "visualReview": "Both actual native frames show the full edited tree and the white companion. These are original native screenshots, not replacement renders."
+}
