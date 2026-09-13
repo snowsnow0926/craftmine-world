@@ -309,7 +309,7 @@ async function assertContents(label){
  const observed=await rpc('godotObserve'),snapshot=await rpc('godotSnapshot');
  const tree=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);
  assert(tree&&tree.color==='#88bb44'&&tree.scale.every(n=>Math.abs(n-1.25)<.00001));
- const components=Object.keys(snapshot.state.body.components);assert(components.includes(report.operations[0].applied.instanceIds[0]));
+ const components=Object.keys(snapshot.state.body.components);assert(components.includes(report.companionEntityId));
  assert.deepEqual(snapshot.state.body.inventory,report.initialSnapshot.state.body.inventory);
  assert.deepEqual(snapshot.state.body.openedChests,report.initialSnapshot.state.body.openedChests);
  report.retention??=[];report.retention.push({label,profile,worldId,observed,snapshot});save();
@@ -325,6 +325,10 @@ try{
  else{worldId=await createWorld('我的首次自主创作');report.authorWorldId=worldId;report.initialSnapshot=await rpc('godotSnapshot');
  const companion=await startDirect('cw.module.approved-pomeranian',{x:-2,y:0,z:4.3});await applyDirect(companion);}
  mark('Actual catalog companion directly installed without AI');
+ const installedSource=await pkg('sourceList'),componentIds=Object.keys(report.operations[0].snapshot.state.body.components);
+ assert.equal(componentIds.length,1,'ONE_ACTUAL_COMPANION_STATE_REQUIRED');
+ const installedComponent=installedSource.items.find(row=>row.entityId===componentIds[0]);assert(installedComponent?.supported,'FORMAL_COMPONENT_DECLARATION_REQUIRED');
+ report.companionEntityId=installedComponent.entityId;report.companionSource=installedComponent;save();
  await placeAndEdit();await modelEvidence('author-after-edit');
  await panel('godot.runtimeSave',{freeze:false});await assertContents('author-saved');await stop();
  await start('author-cold');await openExistingWorld(worldId);await assertContents('author-cold-reopen');
