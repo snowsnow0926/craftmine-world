@@ -1,5 +1,10 @@
 # 04. E2E Test Plan
 
+First creation preview delivery additionally follows the
+[sealed portable export scenario](first-creation-preview-export.md#verification-scenario):
+relocated launch path, independent preview profile, exact extracted ZIP bytes,
+preserved original seal, and explicit separation from clean-machine acceptance.
+
 ## Codex promotional verification diagnostics (2026-09-13)
 
 An isolated candidate that starts and snapshots successfully but fails during
