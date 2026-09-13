@@ -2,7 +2,7 @@ import {createHash} from "node:crypto";
 import type {GodotViewCapture, GodotViewCaptureIdentity} from "./godot-view-capture";
 
 type Image = {isEmpty(): boolean; getSize(): {width: number; height: number}; resize(size: {width: number; height: number; quality: "good"}): Image; toPNG(): Buffer};
-type PreparationDiagnostic = {attempts: number; elapsedMs: number; firstRetryableCode: "GODOT_VIEW_CAPTURE_BUSY" | "GODOT_VIEW_CAPTURE_PENDING" | null; outcome: "ready" | "failed"; finalCode?: string};
+type PreparationDiagnostic = {attempts: number; elapsedMs: number; retryElapsedMs: number; firstRetryableCode: "GODOT_VIEW_CAPTURE_BUSY" | "GODOT_VIEW_CAPTURE_PENDING" | null; outcome: "ready" | "failed"; finalCode?: string};
 const RETRYABLE = new Set(["GODOT_VIEW_CAPTURE_BUSY", "GODOT_VIEW_CAPTURE_PENDING"]);
 const DIAGNOSTIC_CODES = new Set([...RETRYABLE, "LIBRARY_PREVIEW_UNAVAILABLE", "LIBRARY_PREVIEW_WORLD_CHANGED", "LIBRARY_PREVIEW_INVALID",
   "GODOT_VIEW_CAPTURE_DETACHED", "GODOT_VIEW_CAPTURE_IDENTITY_CHANGED", "GODOT_VIEW_CAPTURE_UNAVAILABLE", "GODOT_VIEW_CAPTURE_DIMENSIONS_CHANGED",
@@ -36,7 +36,7 @@ export function createLibraryPreviewCapture(options: {
     return {worldId, buildId: current.buildId, instanceId: current.instanceId, source};
   };
   const same = (a: Binding, b: Binding) => a.worldId === b.worldId && a.buildId === b.buildId && a.instanceId === b.instanceId && a.source === b.source;
-  const fresh = async (worldId: string, expected?: Binding) => {
+  const fresh = async (worldId: string, expected?: Binding, beforeCapture?: () => void) => {
     const current = await binding(worldId);
     if (expected && !same(expected, current)) throw Error("LIBRARY_PREVIEW_WORLD_CHANGED");
     const identity = {worldId, buildId: current.buildId, instanceId: current.instanceId};
@@ -44,6 +44,7 @@ export function createLibraryPreviewCapture(options: {
       try {if (same(current, await binding(worldId))) return;} catch { /* Classify a lost binding as a changed captured world. */ }
       throw Error("LIBRARY_PREVIEW_WORLD_CHANGED");
     };
+    beforeCapture?.();
     const frame = await options.capture(identity);
     await verify();
     if (frame.worldId !== worldId || frame.buildId !== identity.buildId || frame.instanceId !== identity.instanceId || frame.scope !== "formal") throw Error("LIBRARY_PREVIEW_WORLD_CHANGED");
@@ -87,10 +88,12 @@ export function createLibraryPreviewCapture(options: {
       cached = null;
       const now = options.now ?? (() => performance.now());
       const wait = options.wait ?? (milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds)));
-      const started = now(), deadline = started + 2000;
+      const started = now();
+      let retryStarted: number | null = null;
       let attempts = 0, firstRetryableCode: PreparationDiagnostic["firstRetryableCode"] = null;
       const diagnostic = (outcome: PreparationDiagnostic["outcome"], finalCode?: string) => {
-        try {options.onPreparation?.({attempts, elapsedMs: Math.max(0, Math.round(now() - started)), firstRetryableCode, outcome, ...(finalCode ? {finalCode} : {})});} catch { /* Diagnostics never change capture ownership or outcome. */ }
+        const finished = now();
+        try {options.onPreparation?.({attempts, elapsedMs: Math.max(0, Math.round(finished - started)), retryElapsedMs: retryStarted === null ? 0 : Math.max(0, Math.round(finished - retryStarted)), firstRetryableCode, outcome, ...(finalCode ? {finalCode} : {})});} catch { /* Diagnostics never change capture ownership or outcome. */ }
       };
       try {
         const original = await binding(worldId);
@@ -101,8 +104,13 @@ export function createLibraryPreviewCapture(options: {
         for (;;) {
           await unchanged();
           try {
-            ++attempts;
-            const result = await fresh(worldId, original);
+            const result = await fresh(worldId, original, () => {
+              if (ticket !== preparation) throw Error("LIBRARY_PREVIEW_WORLD_CHANGED");
+              // The normal first compositor capture has its own native deadline.
+              // Start this contention window only after the first BUSY/PENDING.
+              if (retryStarted !== null && now() >= retryStarted + 2000) throw Error(firstRetryableCode!);
+              ++attempts;
+            });
             await unchanged();
             cached = result; diagnostic("ready");
             // Only host-owned bytes are retained, never returned to the renderer.
@@ -111,14 +119,15 @@ export function createLibraryPreviewCapture(options: {
             const code = error instanceof Error ? error.message : "";
             if (!RETRYABLE.has(code)) throw error;
             firstRetryableCode ??= code as PreparationDiagnostic["firstRetryableCode"];
+            retryStarted ??= now();
             // Save/checkpoint/transition reads may briefly own the capture slot.
             // Retain the first binding and never retry any other failure.
             await unchanged();
-            const remaining = deadline - now();
+            const remaining = retryStarted + 2000 - now();
             if (remaining <= 0) throw error;
             await wait(Math.min(100, remaining));
             await unchanged();
-            if (now() >= deadline) throw error;
+            if (now() >= retryStarted + 2000) throw error;
           }
         }
       } catch (error) {

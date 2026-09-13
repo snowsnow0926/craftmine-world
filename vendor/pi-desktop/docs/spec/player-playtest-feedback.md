@@ -19,12 +19,18 @@ not retained in that map. Missing or changed frame bindings require reopening
 and review; they are not replaced with synthetic images. Preview shows every
 exported field and image.
 Before the sheet opens, native preparation retries only exact capture BUSY or
-PENDING conflicts for up to a two-second retry window, waiting at most 100 ms
-between attempts. Every attempt and wait checks the initial world/build/instance
+PENDING conflicts for up to a two-second retry window starting at the first such
+failure, waiting at most 100 ms between attempts. The normal first capture does
+not consume this retry window. Every attempt and wait checks the initial world/build/instance
 and formal-source binding; changes or other errors fail immediately. A successful
 frame is never recaptured by this loop. The normal compositor deadline remains
-separate. A narrow native diagnostic records attempt count, first retryable code,
-elapsed time and outcome, without paths, account data or image bytes. This is a
+separate: each native capture retains its original four-second deadline. No new
+capture starts after the retry window, but a capture already admitted can finish
+under that native deadline. A narrow diagnostic records actual capture attempts,
+first retryable code, total `elapsedMs`, `retryElapsedMs` since the first retryable
+failure (zero when none occurred), and outcome. Retry elapsed time can include
+the last admitted native capture and exceed two seconds; it never authorizes an
+additional attempt past the deadline. There are no paths, account data or image bytes. This is a
 local capture-contention window, not a model or full-turn budget.
 An unavailable pre-sheet frame has explicit close/reopen recovery copy rather
 than an opaque code alone. Recovery keeps unsaved text but requires image review.
