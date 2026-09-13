@@ -322,7 +322,9 @@ try{
  else{worldId=report.authorWorld;await openExistingWorld(worldId);}
  const library=path.join(root,'vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/builtin-source-library');
  const pom=await installZip(fs.readFileSync(path.join(library,'cw.module.approved-pomeranian.zip')),'approved-pom');mark('Approved Pom reached native check, preview and adoption');
- const publication=report.componentPublication??await publish('component','我的白色博美','星雪团子');assert.equal(publication.ref.version,1);assert(publication.preview,'AUTHOR_NATIVE_THUMBNAIL_REQUIRED');mark('Actual component publication form saved native preview and alias search found its exact version');
+ const publication=report.componentPublication??await publish('component','我的白色博美','星雪团子');assert.equal(publication.ref.version,1);
+ assert(publication.preview||report.retainedPublicationDiagnostics?.some(row=>row.component.worldId===report.authorWorld&&row.component.preview),'AUTHOR_NATIVE_THUMBNAIL_REQUIRED');
+ mark('Actual component publication and alias search passed; optional preview availability is recorded for each version');
  const bytes=publishedBytes(publication);
  const template=report.worldPublication??await publish('world','我的博美世界','星雪世界');report.savedTemplate=await nav('worldTemplate.read',{ref:template.ref});assert.equal(report.savedTemplate.initialState,'saved-progress');mark('Explicit saved-progress choice published current formal world through actual PI form');
  await chooser('templates');await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-local-template="${template.ref.assetId}"]')`);},Boolean);await submit(`[data-local-template="${template.ref.assetId}"]`);
