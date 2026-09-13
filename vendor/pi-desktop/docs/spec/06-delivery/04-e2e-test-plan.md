@@ -9957,3 +9957,25 @@ real desktop entry. The runtime protocol tests and
 `tests/codex-checkpoint-host.test.mjs` use mocks and are not live-model evidence.
 See [the backend spec](../codex-desktop-world-backend.md) for build and cancellation
 commands. All existing headless/input/profile guards remain enabled.
+
+### Creation progress after exploration outside the starter room
+
+Use the recorded native city bridge snapshot with `creation-progress-migration`
+and Rust `additive` tests. Derivation must preserve full progress and reject
+nonfinite/ill-shaped data, foreign identity, malformed ledgers/components and
+forged relocation. Fixed-base validation remains unchanged. Run
+`tests/creation-progress-restore-native.mjs ABS_BUILD_ROOT ABS_EVENTS_JSONL
+ABS_SNAPSHOTS_JSON ABS_FAILED_VERIFIER_JSON` against exact immutable exports
+in a fresh hidden/offscreen process with default desktop graphics. Verify every
+source/artifact hash before/after. The actual scene must restore and confirm the
+original full snapshot, reject a pose outside its own geometry, and reject a
+penetrating pose through its existing collision guard. Save the actual frame
+and native errors; never adopt or mutate the source profile in this replay.
+
+Executor protocol tests must pass a bound verifier failure through native
+assertion projection and `godot_build_read` diagnostics, retaining untrusted-data
+marking and source/output identity. Test long/control-containing error text,
+foreign evidence and successful evidence. Historical discarded verifier errors
+remain explicitly unavailable in old native outputs. See
+[the projection contract](../godot-verifier-failure-diagnostics.md) and
+[the ownership decision](../../adr/godot-source-owned-progress-20260913.md).

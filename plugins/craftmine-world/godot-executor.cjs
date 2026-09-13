@@ -871,6 +871,16 @@ function createGodotExecutor(core, options = {}) {
         && evidence?.requirementsEvidence?.requirementsHash === claim.checkRequirementsHash,
         detail:actual.length === 1 && typeof actual[0].detail === 'string' ? actual[0].detail.slice(0, 300) : 'runtime expectation evidence required'});
     }
+    // The native result schema admits assertion detail, not the entire runtime
+    // object. Keep the verifier's actual failure in that durable, hash-bound
+    // channel instead of discarding it behind secondary "frames=0" symptoms.
+    // This adds evidence only to an already failed check, with matching scope.
+    if(evidence?.format==='craftmine.godot-runtime-check/1' && evidence.scope==='base-startup' && evidence.passed===false
+      && ['jobId','worldId','buildId','inputHash'].every(key=>typeof claim[key]==='string'&&evidence[key]===claim[key])
+      && typeof evidence.error==='string' && evidence.error.trim()) {
+      const reason=[...evidence.error.toWellFormed().replace(/[\u0000-\u001f\u007f]/g,' ').trim()];
+      base.push({id:'runtime.verifier-error',passed:false,detail:reason.slice(0,512).join('')+(reason.length>512?' [truncated]':'')});
+    }
     return base.map(assertion => assertion.detail ? assertion : {id:assertion.id, passed:assertion.passed});
   }
 

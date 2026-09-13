@@ -1,0 +1,64 @@
+{
+  "scope": "Actual native saved city position after physical bridge traversal and original native checked scene defaults.",
+  "previous": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "org-drag": 1,
+        "org-gate": 1,
+        "org-hall": 1,
+        "org-strength": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          36.4433135986328,
+          14.7000799179077,
+          -169.221267700195
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "promo-orgrimmar"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "promo-orgrimmar"
+  },
+  "defaults": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {},
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": 0,
+        "position": [
+          0,
+          0.899999976158142,
+          6
+        ],
+        "yaw": 0
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "promo-orgrimmar"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "promo-orgrimmar"
+  }
+}

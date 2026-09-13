@@ -1,4 +1,4 @@
-//! Fixed, additive FPS state migration. No caller-defined paths or transforms.
+//! Fixed additive progress rules. No caller-defined paths or transforms.
 use super::*;
 use std::collections::BTreeMap;
 
@@ -71,7 +71,9 @@ fn derive_creation(previous: &Value, defaults: &Value) -> Result<Value> {
         ensure!(b.as_object().is_some_and(|m|m.len()==keys.len()+usize::from(m.contains_key("components")) && keys.iter().all(|k|m.contains_key(*k))) && b["format"]=="craftmine.creation-progress/1" && b["worldId"]==value["worldId"] && b["baseVersion"]==value["baseVersion"],"GODOT_ADDITIVE_UNSUPPORTED_SHAPE");
         if let Some(components)=b.get("components") {validate_components(components)?;}
         let p=&b["player"];
-        ensure!(p.as_object().is_some_and(|m|m.len()==4 && ["position","yaw","pitch","onFloor"].iter().all(|k|m.contains_key(*k))) && p["position"].as_array().is_some_and(|a|a.len()==3 && a.iter().enumerate().all(|(i,v)|num(v,if i==1 {0.0} else {-32.0},32.0))) && num(&p["yaw"],-std::f64::consts::PI,std::f64::consts::PI) && num(&p["pitch"],-89.0*std::f64::consts::PI/180.0,89.0*std::f64::consts::PI/180.0) && p["onFloor"].is_boolean() && num(&b["timeOfDay"],0.0,24.0) && num(&b["sourceTimeOfDay"],0.0,24.0),"GODOT_ADDITIVE_CREATION_STATE_INVALID");
+        // Source-owned creation geometry is checked by the real candidate
+        // restore. This structural merge must not impose the starter room.
+        ensure!(p.as_object().is_some_and(|m|m.len()==4 && ["position","yaw","pitch","onFloor"].iter().all(|k|m.contains_key(*k))) && p["position"].as_array().is_some_and(|a|a.len()==3 && a.iter().all(|v|v.as_f64().is_some_and(f64::is_finite))) && num(&p["yaw"],-std::f64::consts::PI,std::f64::consts::PI) && num(&p["pitch"],-89.0*std::f64::consts::PI/180.0,89.0*std::f64::consts::PI/180.0) && p["onFloor"].is_boolean() && num(&b["timeOfDay"],0.0,24.0) && num(&b["sourceTimeOfDay"],0.0,24.0),"GODOT_ADDITIVE_CREATION_STATE_INVALID");
         for key in ["inventory","openedChests","doors","rules"] {
             let map=b[key].as_object().context("GODOT_ADDITIVE_CREATION_STATE_INVALID")?;
             ensure!(map.len()<=4096,"GODOT_ADDITIVE_CREATION_STATE_INVALID");
@@ -215,6 +217,27 @@ mod equipment_tests {
     }
     fn pet(id:&str)->Value {
         json!({"format":"craftmine.pet-companion-state/1","entityId":id,"settings":{"name":"小白","appearanceKey":"dog","following":true},"sourceSettings":{"name":"小白","appearanceKey":"dog","following":true},"position":[2,0,1],"yaw":1,"interactionCount":7})
+    }
+    #[test]
+    fn recorded_city_pose_is_preserved_and_teleport_proofs_are_rejected() -> Result<()> {
+        let recorded: Value = serde_json::from_str(include_str!("../../../../../tests/fixtures/creation-city-migration.json"))?;
+        let previous=&recorded["previous"];let defaults=&recorded["defaults"];
+        let proof=derive(previous,defaults)?;
+        assert_eq!(proof["snapshot"],*previous);assert_eq!(proof["added"],json!([]));
+        verify_proof(previous,defaults,&proof)?;
+        let mut moved=proof.clone();moved["snapshot"]["body"]["player"]=defaults["body"]["player"].clone();
+        assert!(verify_proof(previous,defaults,&moved).is_err());
+        for pose in [json!([36,80,-169]),json!([-500,-20,900]),json!([1e100,0,-1e100])] {
+            let mut state=previous.clone();state["body"]["player"]["position"]=pose.clone();
+            assert_eq!(derive(&state,&state)?["snapshot"]["body"]["player"]["position"],pose);
+        }
+        for pose in [Value::Null,json!({}),json!([0,0]),json!([0,0,0,0]),json!(["36",0,0]),json!([0,null,0])] {
+            let mut bad=previous.clone();bad["body"]["player"]["position"]=pose;
+            assert!(derive(&bad,defaults).is_err());assert!(derive(defaults,&bad).is_err());
+        }
+        // Non-finite JSON numbers are rejected by serde before derivation.
+        assert!(serde_json::from_str::<Value>("[1e999,0,0]").is_err());
+        Ok(())
     }
     #[test]
     fn component_defaults_and_settings_changes_preserve_identity_progress_and_other_instances()->Result<()> {

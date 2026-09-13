@@ -18,6 +18,27 @@ Verifier should load null in a fresh isolated candidate, capture defaults, deriv
 
 FPS WorldState retains complete collection cardinality and checks all scene and saved IDs for nonempty uniqueness. Restore resolves by stable id rather than input array position; unknown/missing IDs remain errors. Transactional rollback remains unchanged. No implicit default insertion or data dropping occurs in runtime restore.
 
+## Source-owned creation progress
+
+Creation-sandbox 1.0.0 also supports its fixed additive ledger/component rules.
+Its player position is structurally an array of exactly three finite numbers;
+the structural merge does not own room dimensions or impose a ground altitude.
+JavaScript and Rust preserve all three coordinates exactly, including positions
+outside the starter room and underground or elevated source-authored worlds.
+They retain the existing exact envelope/body/player keys, world/base/version
+identity, orientation/time constraints, ledger IDs/types/counts, component
+schemas/depth/size limits and total JSON size limits. No other base contract
+changes. The unchanged starter source still enforces its own room bounds.
+
+Derivation is not restore approval. The verifier must still load the complete
+derived state in the actual candidate and compare the entire resulting snapshot.
+The current source's pose validation and pinned native collision guard remain
+authoritative. Core independently validates the same derivation against the
+trusted check/defaults and current formal progress, and application still needs
+real runner receipts. Moving a player, resetting inventory or replacing progress
+with candidate defaults makes the proof invalid. See
+[the ownership decision](../adr/godot-source-owned-progress-20260913.md).
+
 The isolated client acceptance controller has two finite gameplay sequences.
 After checking an imported scene, `godotAdvance` uses real resume, equip and look
 operations to leave different equipment and camera orientation from `godotPlay`.

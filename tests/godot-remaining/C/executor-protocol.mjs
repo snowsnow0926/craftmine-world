@@ -327,6 +327,36 @@ test('a failing runtime check fails the job and its assertions', async t => {
     [['runtime.ready',true],['runtime.frame',true],['runtime.no-errors',true],['runtime.snapshot',true],['runtime.isolation',false],['runtime.recovery',false]]);
 });
 
+test('a bound verifier failure survives native assertion projection and build-read diagnostics',async t=>{
+  const {core,jobId}=await runJob(t,{verifier:{godotCheck:async descriptor=>passingEvidence({
+    jobId:descriptor.jobId,worldId:descriptor.worldId,buildId:descriptor.buildId,inputHash:descriptor.inputHash,
+    passed:false,error:'MIGRATION_CREATION_STATE_INVALID',snapshot:{ok:false,equal:false},render:{ok:false,frames:0,distinctFrames:0},
+  })}});
+  const output=core.state.output;
+  assert.equal(output.passed,false);assert.equal(output.check.passed,false);
+  assert.deepEqual(output.check.assertions.find(a=>a.id==='runtime.verifier-error'),{id:'runtime.verifier-error',passed:false,detail:'MIGRATION_CREATION_STATE_INVALID'});
+  const {diagnoseGodotBuildRead}=require('../../../plugins/craftmine-world/godot-diagnostics.cjs');
+  const record={jobId,worldId:'world-c',buildId:'gbd-'+'a'.repeat(64),status:'failed',output,outputHash:sha256(JSON.stringify(output))};
+  const before=JSON.stringify(record),diagnostic=diagnoseGodotBuildRead(record).diagnostics.find(d=>d.errorCode==='MIGRATION_CREATION_STATE_INVALID');
+  assert(diagnostic);assert.equal(diagnostic.trust,'untrusted-data');assert.equal(diagnostic.source.outputHash,record.outputHash);
+  assert.equal(diagnostic.assertionRef.id,'runtime.verifier-error');assert.equal(JSON.stringify(record),before);
+});
+
+test('verifier diagnostic text is bounded and foreign or successful evidence cannot add a failure',async t=>{
+  for(const variant of ['long','unicode','worldId','jobId','buildId','inputHash','scope','format','success']){
+    const {core}=await runJob(t,{verifier:{godotCheck:async descriptor=>passingEvidence({
+      jobId:descriptor.jobId,worldId:descriptor.worldId,buildId:descriptor.buildId,inputHash:descriptor.inputHash,
+      ...(['worldId','jobId','buildId','inputHash','scope','format'].includes(variant)?{[variant]:'foreign'}:{}),
+      passed:variant==='success',error:variant==='unicode'?'x'.repeat(511)+'🐶more':'MIGRATION_FAILURE\n'+('untrusted diagnostic '.repeat(100)),
+    })}});
+    const output=core.state.output,reason=output.check.assertions.find(a=>a.id==='runtime.verifier-error');
+    assert.equal(output.passed,variant==='success');
+    if(variant==='long'){assert(reason.detail.length<=524);assert(reason.detail.endsWith(' [truncated]'));assert(!/[\u0000-\u001f\u007f]/.test(reason.detail));}
+    else if(variant==='unicode'){assert.equal(reason.detail,'x'.repeat(511)+'🐶 [truncated]');assert(reason.detail.isWellFormed());}
+    else assert.equal(reason,undefined);
+  }
+});
+
 test('forged preflight evidence never registers an executor', async t => {
   for (const [scenario, expected] of [[{processVerified:false}, 'GODOT_BROKER_PROCESS_UNVERIFIED'],
     [{networkVerified:false}, 'GODOT_BROKER_NETWORK_UNVERIFIED'],
@@ -736,7 +766,7 @@ function creationApplicationFixture(t,{allowPending=false,complete}={}){
   }};
   const executor=makeExecutor({env,core,verifier});
   t.after(async()=>{await executor.stop();});
-  return {env,core,executor,jobId,binding,calls,verifier,ledgerPath:path.join(env.dataPath,'godot','executor-ledger.json')};
+  return {env,core,executor,jobId,binding,calls,verifier,protectedFiles:PROTECTED_CREATION_FILES,ledgerPath:path.join(env.dataPath,'godot','executor-ledger.json')};
 }
 function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};}
 async function within(promise,ms=15000){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('protocol barrier not reached')),ms);})]);}finally{clearTimeout(timer);}}
@@ -764,7 +794,7 @@ test('creation completion publishes pending before finish and preserves applied 
   release.resolve();await settle(f.executor,f.jobId);await f.executor.stop();
   assert.equal(f.calls.length,1);assert.deepEqual(f.calls[0],{jobId:f.jobId,context:applicationContext});
   const completed=f.executor.creationCompletion(f.binding);assert.equal(completed.status,'applied');assert.equal(completed.candidateId,f.core.record(f.jobId).candidateId);
-  assert.equal(f.executor.ledger.jobs[f.jobId].creationPackProof.files.length,3,'the creation pack verifier actually ran');
+  assert.deepEqual(f.executor.ledger.jobs[f.jobId].creationPackProof.files.map(file=>file.path).sort(),[...f.protectedFiles].sort(),'the creation pack verifier measured every supplied protected file');
   const restarted=makeExecutor({env:f.env,core:f.core,verifier:f.verifier});t.after(async()=>{await restarted.stop();});
   await restarted.start();assert.deepEqual(restarted.creationCompletion(f.binding),completed);assert.equal(f.calls.length,1,'restored diagnostics cannot invoke adoption');await restarted.stop();
 });
@@ -774,7 +804,7 @@ test('creation reconcile without a live context completes its check without adop
   const recovered=await f.executor.reconcile();assert.equal(recovered.enqueued,1);await settle(f.executor,f.jobId);
   assert.equal(f.core.record(f.jobId).status,'passed');assert.ok(f.core.record(f.jobId).candidateId);assert.equal(f.calls.length,0);
   assert.equal(f.core.attempts(f.jobId,'godotJob.finish').length,1);assert.equal(f.executor.creationCompletion(f.binding),null);
-  assert.equal(f.executor.ledger.jobs[f.jobId].creationPackProof.files.length,3);
+  assert.deepEqual(f.executor.ledger.jobs[f.jobId].creationPackProof.files.map(file=>file.path).sort(),[...f.protectedFiles].sort());
 });
 
 for(const action of ['cancel','stop'])test('creation '+action+' during applying persistence prevents the host callback',async t=>{

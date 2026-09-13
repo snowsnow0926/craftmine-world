@@ -77,7 +77,9 @@ function deriveCreationProgress(previous,defaults){
   const b=value.body;
   if(!exact(b,['format','worldId','baseVersion','player','timeOfDay','sourceTimeOfDay','inventory','openedChests','doors','rules',...(Object.hasOwn(b??{},'components')?['components']:[])])||b.format!=='craftmine.creation-progress/1'||b.worldId!==value.worldId||b.baseVersion!==value.baseVersion)fail('MIGRATION_UNKNOWN_NATIVE_SHAPE');
   validateComponentLedger(Object.hasOwn(b,'components')?b.components:{});
-  if(!exact(b.player,['position','yaw','pitch','onFloor'])||!Array.isArray(b.player.position)||b.player.position.length!==3||!b.player.position.every((n,i)=>number(n,i===1?0:-32,32))||!number(b.player.yaw,-Math.PI,Math.PI)||!number(b.player.pitch,-89*Math.PI/180,89*Math.PI/180)||typeof b.player.onFloor!=='boolean'||!number(b.timeOfDay,0,24)||!number(b.sourceTimeOfDay,0,24))fail('MIGRATION_CREATION_STATE_INVALID');
+  // Creation source owns world geometry. Derivation preserves a finite pose;
+  // the actual candidate restore still validates its bounds and collision.
+  if(!exact(b.player,['position','yaw','pitch','onFloor'])||!Array.isArray(b.player.position)||b.player.position.length!==3||!b.player.position.every(n=>typeof n==='number'&&Number.isFinite(n))||!number(b.player.yaw,-Math.PI,Math.PI)||!number(b.player.pitch,-89*Math.PI/180,89*Math.PI/180)||typeof b.player.onFloor!=='boolean'||!number(b.timeOfDay,0,24)||!number(b.sourceTimeOfDay,0,24))fail('MIGRATION_CREATION_STATE_INVALID');
   if(!ledger(b.inventory,n=>Number.isSafeInteger(n)&&n>=0&&n<=999999)||!ledger(b.openedChests,n=>n===true)||!ledger(b.doors,n=>typeof n==='boolean')||!ledger(b.rules,object))fail('MIGRATION_CREATION_STATE_INVALID');
   if(Buffer.byteLength(canonicalProgressJson(value))>1048576)fail('MIGRATION_SIZE_LIMIT');
  }
