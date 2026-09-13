@@ -68,8 +68,9 @@ node tests/product-agent-operator-native.mjs `
 | `save` | 普通保存；可传 `{freeze:true}` 保存并冻结，收到的是实际持久化回执。 |
 | `resume` / `snapshot` | 分别走已有普通继续游玩接口和实际运行时快照读取；虚拟输入不会自行把暂停世界改成运行，也不写入玩家或飞机状态。 |
 | `reopen` | 闲置时保存／冻结并读取真实保存时快照，再正常退出、同一 profile 冷重开；保持原世界及会话身份，同时保留恢复快照和作品目标。恢复后已正常推进的物理状态不能当作保存瞬间的同一帧。 |
-| `publish` | `{name,description,tags,aliases}`，提交真实世界模板保存表单，包含已保存进度。 |
+| `publish` | `{name,description,tags,aliases,includeSavedProgress?}`，提交真实世界模板保存表单，boolean默认true兼容历史。当前产品仅支持已保存进度；传false只会按真实checkbox得到表单拒绝，不支持无进度/0项模板，也不会暗中改成true。连续发布先走“继续保存其他内容”，等待旧结果移除及新表单就绪；每次创建新素材并校验结果属于当前世界和新提交。 |
 | `export-template` | `{assetId}`，通过真实模板导出表单导出，并保留带唯一名字的 ZIP 证据。 |
+| `open-world` | `{}`，导出后经真实“我的世界”页签及当前世界打开表单返回，验证原world/session。仅打开已有当前世界，不换世界或创建会话；需要冻结时随后显式save。`reopen`用于世界运行时的保存冷开，导出停留入口时应先用open-world。 |
 | `abort` | 普通 `agentAbort`；驱动保持运行，便于检查中断结果。 |
 | `quit` | 会话停止后正常退出；有活动模型时要求先完成或显式取消。 |
 
