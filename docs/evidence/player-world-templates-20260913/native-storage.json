@@ -1,0 +1,36 @@
+{
+  "format": "craftmine.world-template-native-test/1",
+  "worlds": [
+    {
+      "worldId": "native-promo-mainline",
+      "files": 54,
+      "batches": 4,
+      "sourceHash": "a9ee474664fc92cba9144a1d3850d61280f5f2dea9dc872ceab98c110704bc41",
+      "initialStateHash": "5d2c26344d0bd13bbcd17ff4a5c62f2fef85f18ade46c71eca52653ab888e15d"
+    },
+    {
+      "worldId": "native-promo-flight",
+      "files": 46,
+      "batches": 2,
+      "sourceHash": "e8d0108190b7449971d1ebe419e07c23fc240a81a3ec083502d99e298e482e1d",
+      "initialStateHash": "95a39238edd1307eab3b4dd8e345ef60b5097080a73f792808fc6aba9775ca15"
+    },
+    {
+      "worldId": "native-promo-rain",
+      "files": 39,
+      "batches": 2,
+      "sourceHash": "068827b1fb54730fbf64575a02d041dfcfa2bc9720589cccc0b6478b6fc71999",
+      "initialStateHash": "fec918e7bce70b9998fe60d3d3ac97fdb2c21b7abc2d1e372d6d2f7f004507db"
+    },
+    {
+      "worldId": "native-promo-city",
+      "files": 45,
+      "batches": 3,
+      "sourceHash": "435e5941d9d768a72bd62e938a0122e99b40d2077c78054531eed651d2b4b2dd",
+      "initialStateHash": "2dc532063c9e102f090ddc87a9e23b8e8590f50f6d5bee84c51f640fa347a466"
+    }
+  ],
+  "modelCalls": 0,
+  "buildsRun": 0,
+  "passed": true
+}
