@@ -116,8 +116,6 @@ pre-script Pointer Lock guard. It never sends OS input or controls a user browse
 Its finite private `walk` call is an existing base physics command used by native
 component tests, not an author tool or generic page evaluator.
 
-## Explicit reference and feedback images
-
 An unexpected helper exit retains its exit code, pending operation names and
 bounded sanitized diagnostics under the isolated helper directory. Operator
 errors are recorded before retirement so a later cleanup error cannot erase the
@@ -125,6 +123,15 @@ original failure evidence. An exit is not an application receipt: inspect the
 native formal build before retrying an uncertain adoption. The transport-exit
 test uses a real hidden helper and a deliberately stalled stub Core; it is not
 gameplay or application evidence.
+
+The independent candidate verifier retains teardown console errors and the
+actual exit/dispose failure in its bounded diagnostics. These records never
+turn a failed recovery assertion into a pass. The promotional capture observer
+retains a native bitmap and encodes its final PNG once after verification; it
+does not compress every animated paint. A passive page error listener records
+the engine stack without modifying the authored scene or injecting input.
+
+## Explicit reference and feedback images
 
 ```powershell
 node scripts/promo-world-author.mjs turn --data $data --codex $codex --live-host true --prompt '请参考这两张图制作模型' --image 'D:/references/front.png' --image 'D:/references/side.jpg'

@@ -1,5 +1,15 @@
 # 04. E2E Test Plan
 
+## Codex promotional verification diagnostics (2026-09-13)
+
+An isolated candidate that starts and snapshots successfully but fails during
+engine audio teardown must keep `runtime.recovery` failed and retain the exit
+error/console stack. The original rain export reproduced `SampleNode._pause`
+with a null audio context; a real author revision using streaming audio passed
+the unchanged exit assertion. Candidate screenshots are actual offscreen
+bitmaps encoded after the check, never generated replacements. See
+`../codex-live-world-host.md` and the root promotional evidence directory.
+
 ## CRAFTMINE-026: Local token limits and stable request prefixes
 
 On an isolated profile, exhaust a small cumulative task token budget while the

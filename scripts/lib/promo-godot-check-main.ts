@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, type NativeImage} from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -13,7 +13,7 @@ app.disableHardwareAcceleration();
 app.commandLine.appendSwitch('enable-unsafe-swiftshader');
 app.commandLine.appendSwitch('use-angle', 'swiftshader');
 const verifier = new GodotBuildVerifier();
-let active: {jobId: string; lastFrame: Buffer | null; width: number; height: number} | null = null;
+let active: {jobId: string; lastFrame: NativeImage | null; width: number; height: number} | null = null;
 let closing = false;
 const checks = new Set<Promise<void>>();
 
@@ -21,10 +21,15 @@ const checks = new Set<Promise<void>>();
 // preload guard, artifact hashes and runtime assertions. Observe its actual
 // offscreen frames without injecting input or changing the authored scene.
 app.on('web-contents-created', (_event, contents) => {
+  contents.once('dom-ready', () => {
+    void contents.executeJavaScript('window.addEventListener("error",event=>console.error("[runtime-stack] "+String(event.error?.stack??event.message)))', false).catch(() => undefined);
+  });
   contents.on('paint', (_paintEvent, _dirty, nativeImage) => {
     if (!active || nativeImage.isEmpty()) return;
     const size = nativeImage.getSize();
-    active.lastFrame = nativeImage.toPNG();
+    // Retain the last native bitmap. PNG compression on every animated paint
+    // can delay the very runtime/exit messages this verifier is measuring.
+    active.lastFrame = nativeImage;
     active.width = size.width; active.height = size.height;
   });
 });
@@ -46,7 +51,7 @@ process.on('message', (message: any) => {
   if (message.method !== 'check' || closing || active) { reply({error: 'CHECK_HOST_NOT_AVAILABLE'}); return; }
   const jobId = message.descriptor?.jobId;
   if (!/^gjob-[a-f0-9]{64}$/.test(jobId ?? '')) { reply({error: 'INVALID_CHECK_JOB'}); return; }
-  const capture = {jobId, lastFrame: null as Buffer | null, width: 0, height: 0};
+  const capture = {jobId, lastFrame: null as NativeImage | null, width: 0, height: 0};
   active = capture;
   const work = (async () => {
     try {
@@ -54,8 +59,9 @@ process.on('message', (message: any) => {
       let frame = null;
       if (capture.lastFrame) {
         const file = path.join(directory!, jobId + '.png');
-        fs.writeFileSync(file, capture.lastFrame);
-        frame = {file, sha256: createHash('sha256').update(capture.lastFrame).digest('hex'),
+        const bytes = capture.lastFrame.toPNG();
+        fs.writeFileSync(file, bytes);
+        frame = {file, sha256: createHash('sha256').update(bytes).digest('hex'),
           width: capture.width, height: capture.height, source: 'actual candidate runtime offscreen frame'};
       }
       fs.writeFileSync(path.join(directory!, jobId + '.json'), JSON.stringify({evidence, frame}, null, 2) + '\n');

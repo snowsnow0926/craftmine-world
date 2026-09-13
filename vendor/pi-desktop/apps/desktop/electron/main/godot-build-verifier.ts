@@ -519,7 +519,10 @@ export class GodotBuildVerifier {
         if (!finished && isMainFrame && diagnostics.length < 64) diagnostics.push(`[fail-load] ${code} ${description} ${url}`);
       });
       window.webContents.on("console-message", (details) => {
-        if (finished) return;
+        if (finished) {
+          if (diagnostics.length < 64) diagnostics.push(`[teardown:${details.level}] ${details.message.slice(0, 400)}`);
+          return;
+        }
         if (diagnostics.length < 64) diagnostics.push(`[${details.level}] ${details.message.slice(0, 400)}`);
         if (details.level !== "error" && !details.message.startsWith("Uncaught")) return;
         if (errors.console.length < MAX_ERROR_ENTRIES) errors.console.push(details.message.slice(0, MAX_ERROR_CHARS));
@@ -718,14 +721,18 @@ export class GodotBuildVerifier {
         try {
           const exit = await withDeadline(activeRuntime.exit({ timeoutMs: 3000 }), 4000);
           recovery.gracefulExit = exit !== null && typeof exit.error !== "string";
-        } catch {
+          if (exit === null) diagnostics.push("[exit] GODOT_CHECK_EXIT_TIMEOUT");
+          else if (typeof exit.error === "string") diagnostics.push("[exit] " + exit.error.slice(0, 400));
+        } catch (failure) {
           recovery.gracefulExit = false;
+          diagnostics.push("[exit] " + messageOf(failure).slice(0, 400));
         }
         try {
           const disposed = await withDeadline(activeRuntime.dispose({ graceful: true }), 8000);
           if (disposed === null) throw new Error("GODOT_CHECK_DISPOSE_TIMEOUT");
-        } catch {
+        } catch (failure) {
           recovery.gracefulExit = false;
+          diagnostics.push("[dispose] " + messageOf(failure).slice(0, 400));
           await activeRuntime.dispose({ graceful: false }).catch(() => undefined);
         }
         recovery.serverClosed = activeRuntime.state === "disposed";
