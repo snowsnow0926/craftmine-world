@@ -7,6 +7,7 @@ import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
+import {createCompleteOutput} from './godot-final/complete-contract.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 
 const [applicationRoot, resources] = process.argv.slice(2);
@@ -15,7 +16,7 @@ assert(applicationRoot && resources && [applicationRoot, resources].every(path.i
 const root = path.resolve(import.meta.dirname, '..');
 const starters=process.argv.includes('--mainline-only')?['promo-mainline']:['promo-mainline','promo-flight','promo-rain','promo-city'];
 fs.mkdirSync(path.join(root, 'test-results'), {recursive:true});
-const out = fs.mkdtempSync(path.join(root, 'test-results/desktop-native-fluency-'));
+const out = createCompleteOutput(root,process.env.CRAFTMINE_CREATION_OUTPUT_ROOT?path.join(path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT),'test-results'):undefined);
 const profile = path.join(out, 'profile'), token = randomUUID();
 fs.mkdirSync(profile); fs.mkdirSync(path.join(out, 'legacy'));
 fs.writeFileSync(path.join(profile, 'headless-profile.json'), JSON.stringify({
