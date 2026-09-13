@@ -16,3 +16,9 @@ This is a local build interface, not a renderer capability or updater. It does
 not start the application, install it, create an update feed, sign it or publish
 anything remotely. External clean-Windows and human acceptance remain distinct
 facts. Existing NSIS verification requirements stay unchanged.
+
+The optional extras manifest is a trusted local build interface for reusable
+world ZIPs and player documents. Exact pinned files are restricted to delivery
+`examples/` and `docs/`, remain outside the sealed application, and gain copy and
+archive evidence. It is not a renderer path capability, source modification,
+catalog import or alternate mechanism to bypass native world validation.
