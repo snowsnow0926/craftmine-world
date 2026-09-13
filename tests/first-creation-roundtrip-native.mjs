@@ -15,7 +15,7 @@ const root=path.resolve(import.meta.dirname,'..');
 const resultsRoot=path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT??path.join(root,'test-results'));fs.mkdirSync(resultsRoot,{recursive:true});
 const resumeIndex=process.argv.indexOf('--resume-author'),previousFile=resumeIndex>=0?process.argv[resumeIndex+1]:null;
 const previous=previousFile?JSON.parse(fs.readFileSync(previousFile)):null;
-if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');assert(!previous.passed&&!previous.editedEntityId&&previous.operations?.[0]?.applied?.status==='applied','RESUME_ONLY_PRE_EDIT_AUTHOR');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
+if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
 const out=previous?.out??fs.mkdtempSync(path.join(resultsRoot,'desktop-native-rt-'));let profile=path.join(out,'profile');const token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));}
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
@@ -40,7 +40,7 @@ async function until(read, accept) {
   while(!abort.signal.aborted) {
     if(ended) throw Error('DESKTOP_EXITED');
     try {const value = await read(); if(accept(value)) return value;}
-    catch(error) {if(!/Window is not ready|Actual Godot host unavailable|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE/.test(String(error))) throw error;}
+    catch(error) {if(!/Window is not ready|Actual Godot host unavailable|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE|GODOT_VIEW_CAPTURE_BUSY/.test(String(error))) throw error;}
     await delay(100);
   }
   throw Error('TEST_CANCELLED');
@@ -173,7 +173,7 @@ async function assets(tab='browse'){
 }
 async function closeAssets(){if(await evaluate(`!!document.querySelector('[data-asset-close-form]')`))await submit('[data-asset-close-form]');await until(()=>evaluate(`!document.querySelector('[data-asset-sheet]')`),Boolean);}
 async function capture(name){
- const state=await rpc('godotCaptureBoundState');assert.equal(state.formal?.worldId,worldId);
+ const state=await until(()=>rpc('godotCaptureBoundState'),Boolean);assert.equal(state.formal?.worldId,worldId);
  const frame=await until(async()=>{try{return await rpc('godotCaptureBoundView',{payload:state.formal});}catch(error){if(String(error).includes('GODOT_VIEW_CAPTURE_DETACHED'))return null;throw error;}},Boolean);assert.equal(frame.worldId,worldId);assert.equal(frame.scope,'formal');
  const bytes=Buffer.from(frame.pngBase64,'base64');assert(bytes.length>1000);const file=path.join(out,name+'-'+report.launches.length+'.png');fs.writeFileSync(file,bytes);
  const proof={file,worldId,buildId:frame.buildId,sha256:createHash('sha256').update(bytes).digest('hex'),width:frame.width,height:frame.height};save();return proof;
@@ -264,6 +264,7 @@ async function waitEdit(label){
   if(value.error||/编辑未完成|待核对|failed|interrupted/.test(value.status??''))throw Error(JSON.stringify(value));
   return /编辑已应用|^applied$/.test(value.status??'');
  });
+ await until(()=>rpc('worldNavigationReady'),value=>value.worldId===worldId&&value.ready);
  report.edits??=[];report.edits.push({label,terminal,observation:await rpc('godotObserve')});await modelEvidence(label);save();return report.edits.at(-1).observation;
 }
 async function placeAndEdit(){
@@ -329,7 +330,7 @@ try{
  assert.equal(componentIds.length,1,'ONE_ACTUAL_COMPANION_STATE_REQUIRED');
  const installedComponent=installedSource.items.find(row=>row.entityId===componentIds[0]);assert(installedComponent?.supported,'FORMAL_COMPONENT_DECLARATION_REQUIRED');
  report.companionEntityId=installedComponent.entityId;report.companionSource=installedComponent;save();
- await placeAndEdit();await modelEvidence('author-after-edit');
+ if(!previous?.editedEntity)await placeAndEdit();await modelEvidence('author-after-edit');
  await panel('godot.runtimeSave',{freeze:false});await assertContents('author-saved');await stop();
  await start('author-cold');await openExistingWorld(worldId);await assertContents('author-cold-reopen');
  await publishWorld();await modelEvidence('author-after-publish');await stop();
