@@ -34,6 +34,14 @@ export function immersionShortcut(input: NativeFullscreenInput, overlayOpen: boo
 /** No outbound capabilities: only suppress gameplay input while chat owns it. */
 export function attachImmersionInput(target: Window, subscribe: (listener: (blocked: boolean) => void) => () => void, options: {gameFramesOnly?:boolean} = {}): () => void {
   let blocked = false;
+  const held = new Map<string, {target: EventTarget; release: () => Event}>();
+  const releaseHeld = () => {
+    const previous = [...held.values()];
+    held.clear();
+    // The physical release may belong to a different renderer after F2 or blur.
+    // Deliver it through the original DOM input path before play can resume.
+    for (const input of previous) input.target.dispatchEvent(input.release());
+  };
   const frames = new Map<HTMLIFrameElement, {inert:boolean; pointerEvents:string}>();
   const updateFrames = () => {
     if (blocked) {
@@ -49,17 +57,38 @@ export function attachImmersionInput(target: Window, subscribe: (listener: (bloc
   const observer = new MutationObserver(updateFrames);
   observer.observe(target.document, {childList:true, subtree:true});
   const stop = (event: Event) => {
-    if (!blocked || options.gameFramesOnly) return;
-    // Release events still reach the engine so held movement cannot get stuck.
-    if (event.type === "keyup" || event.type === "pointerup" || event.type === "mouseup") return;
-    event.preventDefault(); event.stopImmediatePropagation();
+    if (options.gameFramesOnly) return;
+    const release = ["keyup", "pointerup", "pointercancel", "mouseup"].includes(event.type);
+    if (blocked && !release) { event.preventDefault(); event.stopImmediatePropagation(); return; }
+    if (!event.target) return;
+    if (event.type === "keydown" || event.type === "keyup") {
+      const key = event as KeyboardEvent;
+      if (!key.code && !key.key) return;
+      const id = `key:${key.code || key.key}:${key.location}`;
+      if (release) held.delete(id);
+      else held.set(id, {target:event.target, release:() => new KeyboardEvent("keyup", {
+        code:key.code, key:key.key, location:key.location, bubbles:true, cancelable:true,
+      })});
+    } else if (["mousedown", "mouseup", "pointerdown", "pointerup", "pointercancel"].includes(event.type)) {
+      const pointer = event as PointerEvent;
+      const family = event.type.startsWith("pointer") ? "pointer" : "mouse";
+      const id = `${family}:${family === "pointer" ? pointer.pointerId : 0}:${pointer.button}`;
+      if (release) held.delete(id);
+      else held.set(id, {target:event.target, release:() => family === "pointer"
+        ? new PointerEvent("pointerup", {button:pointer.button, buttons:0, pointerId:pointer.pointerId,
+          pointerType:pointer.pointerType, isPrimary:pointer.isPrimary, bubbles:true, cancelable:true})
+        : new MouseEvent("mouseup", {button:pointer.button, buttons:0, bubbles:true, cancelable:true})});
+    }
   };
-  const events = ["keydown", "pointerdown", "mousedown", "pointermove", "mousemove", "wheel", "touchstart", "touchmove", "click", "contextmenu"];
+  const events = ["keydown", "keyup", "pointerdown", "pointerup", "pointercancel", "mousedown", "mouseup", "pointermove", "mousemove", "wheel", "touchstart", "touchmove", "click", "contextmenu"];
   for (const name of events) target.addEventListener(name, stop, {capture:true, passive:false});
+  target.addEventListener("blur", releaseHeld);
   const off = subscribe(value => {
+    const newlyBlocked = !blocked && value === true;
     blocked = value === true;
+    if (newlyBlocked) releaseHeld();
     updateFrames();
     if (blocked && target.document.pointerLockElement) target.document.exitPointerLock();
   });
-  return () => { off(); observer.disconnect(); blocked = false; updateFrames(); for (const name of events) target.removeEventListener(name, stop, true); };
+  return () => { off(); observer.disconnect(); releaseHeld(); blocked = false; updateFrames(); target.removeEventListener("blur", releaseHeld); for (const name of events) target.removeEventListener(name, stop, true); };
 }

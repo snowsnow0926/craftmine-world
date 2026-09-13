@@ -10079,3 +10079,21 @@ same operation to verify no duplicate version or replacement of frozen bytes.
 No model, mouse/keyboard simulation, visible test window or Pointer Lock is
 required by the automated catalog/source preflight. Runtime adoption and actual
 save/reopen remain separate acceptance, never inferred from a blocked check.
+### World workflow fluency and held-input handoff (2026-09-13)
+
+In a new isolated offscreen client profile, open the four published example
+forms, create each personal world, observe a real native snapshot, and save.
+Measure fresh-profile chooser readiness, create-to-snapshot, save receipt,
+existing-world switch-to-snapshot, and warm-profile active-world restore
+separately. Preserve package inventory hashes and both shutdown guard audits.
+Record PI renderer frame intervals separately from native Godot performance;
+neither renderer timing nor an offscreen snapshot proves physical display FPS.
+
+Hold W through the game's ordinary DOM event path, confirm real movement, open
+F2, and release W in the conversation. Close the conversation and verify the
+world stays still after movement deceleration. Repeat key/button release policy
+under blur, repeated layout updates, and disposal. Compact/full/closed changes
+must retain the same world, build, and runtime instance. The repeatable driver is
+`tests/player-fluency-client-native.mjs` at the repository root; it uses fresh
+profiles and page scripts, never OS input, focus emulation, or Pointer Lock.
+AI task cancellation remains a separate live-authoring acceptance scenario.

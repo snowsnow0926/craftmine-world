@@ -1,0 +1,629 @@
+{
+  "format": "craftmine.player-fluency-client/1",
+  "out": "D:\\Craftmine Worktrees\\player-fluency-20260913\\test-results\\desktop-native-fluency-DpWcT6",
+  "applicationRoot": "D:/Craftmine Worktrees/player-fluency-20260913",
+  "resources": "D:/Craftmine Worktrees/player-workflow-20260913/desktop/build/releases/7fde6778b768-b5420f1c-174e-4573-a287-f1ba479e364d/output/win-unpacked/resources",
+  "package": null,
+  "modelCalls": 0,
+  "launches": [
+    {
+      "kind": "fresh-profile",
+      "startedAt": "2026-09-13T09:36:24.006Z",
+      "hostReadyMs": 450.65729999999996,
+      "rendererReadyMs": 3348.302,
+      "clockOriginMs": 39.1949,
+      "examplesReadyMs": 3363.6616,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "worlds": [
+    {
+      "starterId": "promo-mainline",
+      "firstPending": {
+        "ms": 5.355799999999817,
+        "text": "正在保存进度并准备世界…"
+      },
+      "chooserDismissedMs": 33681.2991,
+      "worldId": "world-8b2c97c235de",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "great-hunt-01": {
+                "action": "none",
+                "actionHit": false,
+                "actionTime": 0,
+                "attempts": 0,
+                "bestTime": 0,
+                "boss": {
+                  "aim": [
+                    0,
+                    0,
+                    -1
+                  ],
+                  "combo": false,
+                  "count": 0,
+                  "distance": 0,
+                  "duration": 0,
+                  "health": 1600,
+                  "hit": false,
+                  "phase": "idle",
+                  "position": [
+                    21,
+                    0.00999999977648258,
+                    9
+                  ],
+                  "timer": 0,
+                  "yaw": 0
+                },
+                "dodgeCooldown": 0,
+                "dodgeDirection": [
+                  0,
+                  0,
+                  0
+                ],
+                "elapsed": 0,
+                "entityId": "great-hunt-01",
+                "format": "craftmine.great-hunt/1",
+                "health": 100,
+                "invulnerable": 0,
+                "potions": 3,
+                "returnPose": {},
+                "settings": {
+                  "difficulty": "hard"
+                },
+                "sourceSettings": {
+                  "difficulty": "hard"
+                },
+                "stamina": 100,
+                "staminaDelay": 0,
+                "status": "ready",
+                "wins": 0
+              },
+              "grove-combat-01": {
+                "entityId": "grove-combat-01",
+                "format": "craftmine.grove-combat/1",
+                "health": 100,
+                "settings": {
+                  "maxHealth": 100
+                },
+                "sourceSettings": {
+                  "maxHealth": 100
+                }
+              },
+              "grove-monster-01": {
+                "entityId": "grove-monster-01",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -9.74642086029053,
+                  0.0008370975847356,
+                  -3.98158359527588
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.199115455150604
+              },
+              "grove-monster-02": {
+                "entityId": "grove-monster-02",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  12.1151494979858,
+                  0.00083771225763484,
+                  -5.36707592010498
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 0.180946722626686
+              },
+              "grove-monster-03": {
+                "entityId": "grove-monster-03",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -11.1238317489624,
+                  0.00083657295908778,
+                  -13.7029361724854
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 0.342058449983597
+              },
+              "grove-monster-04": {
+                "entityId": "grove-monster-04",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  12.6207895278931,
+                  0.00083689991151914,
+                  -15.9979667663574
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 1.11034739017487
+              },
+              "grove-monster-05": {
+                "entityId": "grove-monster-05",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -3.76191663742065,
+                  0.00083705043653026,
+                  -22.1415214538574
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 1.37915742397308
+              },
+              "grove-monster-06": {
+                "entityId": "grove-monster-06",
+                "format": "craftmine.hornling/1",
+                "health": 90,
+                "position": [
+                  3.83743786811829,
+                  0.00083378597628325,
+                  -24.1574115753174
+                ],
+                "settings": {
+                  "maxHealth": 90
+                },
+                "sourceSettings": {
+                  "maxHealth": 90
+                },
+                "yaw": 1.6812607049942
+              },
+              "hunter-ak47-01": {
+                "cooldown": 0,
+                "entityId": "hunter-ak47-01",
+                "equipped": true,
+                "format": "craftmine.ak47/1",
+                "reloadRemaining": 0,
+                "rounds": 30,
+                "settings": {
+                  "magazineSize": 30
+                },
+                "shots": 0,
+                "sourceSettings": {
+                  "magazineSize": 30
+                }
+              },
+              "pet-dog-01": {
+                "entityId": "pet-dog-01",
+                "format": "craftmine.pet-dog/1",
+                "pets": 0,
+                "position": [
+                  1.10618126392365,
+                  0.00083837762940675,
+                  4.49691247940063
+                ],
+                "settings": {
+                  "following": true
+                },
+                "sourceSettings": {
+                  "following": true
+                },
+                "yaw": 2.64127135276794
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-8b2c97c235de"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-8b2c97c235de"
+        },
+        "worldId": "world-8b2c97c235de"
+      },
+      "createToSnapshotMs": 35109.3682,
+      "save": {
+        "buildId": "gbd-f327e939ac62d695d51189f33fcb834d3d433a27124d0804c543ecc3b52f2b45",
+        "contentHash": "f43b53c4fdd05c04e462b366857d1c08de531367538e8321d6f27ee054f3b483",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "fe3ffacfb171a43fae0c1599",
+        "persistedAt": 1789292222500,
+        "revision": 2,
+        "snapshotHash": "0f8a0d33e0003714afebb43a85ac2e7393379be15c4bf90d56aba1241908078d",
+        "snapshotSha256": "fdbec97f0b2aa65efe3ed6f3d51099b27e0090874c2514cdd10669576de2dadd",
+        "worldId": "world-8b2c97c235de"
+      },
+      "saveMs": 27.455900000000838,
+      "rendererFrames": {
+        "worldId": "world-8b2c97c235de",
+        "surface": "PI renderer",
+        "elapsedMs": 2003.5999999940395,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.700000000004366,
+        "longIntervalsOver50Ms": 0
+      }
+    },
+    {
+      "starterId": "promo-flight",
+      "firstPending": {
+        "ms": 4.15679999999702,
+        "text": "正在保存进度并准备世界…"
+      },
+      "chooserDismissedMs": 42506.502799999995,
+      "worldId": "world-bcb5fb528099",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "j20-player-aircraft": {
+                "aircraft": {
+                  "afterburner": false,
+                  "airspeed": 0,
+                  "assist": true,
+                  "bank": 0,
+                  "crashed": false,
+                  "flightSeconds": 0,
+                  "gearDown": true,
+                  "grounded": true,
+                  "hasFlown": false,
+                  "heading": 0,
+                  "landings": 0,
+                  "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    2.1800000667572,
+                    180
+                  ],
+                  "rotation": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "throttle": 0,
+                  "velocity": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "verticalSpeed": 0
+                },
+                "camera": {
+                  "fov": 62,
+                  "position": [
+                    24,
+                    12.1800003051758,
+                    152
+                  ],
+                  "rotation": [
+                    -0.252123326063156,
+                    2.43296647071838,
+                    0
+                  ]
+                },
+                "cockpitView": false,
+                "entityId": "j20-player-aircraft",
+                "format": "craftmine.j20-flight-state/1",
+                "gateIndex": 0,
+                "gearExtension": 1,
+                "settings": {
+                  "flightModelVersion": 1
+                },
+                "sourceSettings": {
+                  "flightModelVersion": 1
+                },
+                "started": false,
+                "stateVersion": 1
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-bcb5fb528099"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-bcb5fb528099"
+        },
+        "worldId": "world-bcb5fb528099"
+      },
+      "createToSnapshotMs": 42835.925800000005,
+      "save": {
+        "buildId": "gbd-9d27d7216078b5a089fcaa6338f10f718140cd69e55b031ba848f70a967fc9c1",
+        "contentHash": "6b3a974ac1830661e463b59048c3c8f9e88a0d0648fa63707a699fa4325989ac",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "9d75dd898d825465004bc8a4",
+        "persistedAt": 1789292268008,
+        "revision": 1,
+        "snapshotHash": "0f3ef1c88b6aab1a013a8857cf0f95f722e83f6fe5eca4f85e0ca32096050a39",
+        "snapshotSha256": "b5e554b0b006ce43f905bfaca372c2e82c9974f78ce48361c2edabe4a7822861",
+        "worldId": "world-bcb5fb528099"
+      },
+      "saveMs": 6.072299999999814,
+      "rendererFrames": {
+        "worldId": "world-bcb5fb528099",
+        "surface": "PI renderer",
+        "elapsedMs": 2009.699999988079,
+        "frames": 122,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      }
+    },
+    {
+      "starterId": "promo-rain",
+      "firstPending": {
+        "ms": 2.330900000000838,
+        "text": "正在保存进度并准备世界…"
+      },
+      "chooserDismissedMs": 23869.016999999993,
+      "worldId": "world-fcb039c36618",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "rain-magic": {
+                "automatic": false,
+                "casts": 0,
+                "entityId": "rain-magic",
+                "format": "craftmine.rain-magic-state/1",
+                "heights": [
+                  "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",
+                  "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",
+                  "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",
+                  "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"
+                ],
+                "phase": 0,
+                "phaseAge": 0.449934333333333,
+                "rainClock": 0.449934333333333,
+                "settings": {
+                  "distributionVersion": 1
+                },
+                "sourceSettings": {
+                  "distributionVersion": 1
+                },
+                "stateVersion": 1,
+                "velocity": -8.5
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-fcb039c36618"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-fcb039c36618"
+        },
+        "worldId": "world-fcb039c36618"
+      },
+      "createToSnapshotMs": 24310.006200000003,
+      "save": {
+        "buildId": "gbd-976ae49bae99ab6aebb8f583bfc17ca832253a1d75b142a6bf93a4f3d204a849",
+        "contentHash": "fe36585e0e78377d0d32755248e0f1e54c0070b56cf4d02a1b2b0d7cba477665",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "f6234e720cae96e548d7d2c8",
+        "persistedAt": 1789292299077,
+        "revision": 2,
+        "snapshotHash": "171f82c4a25ee8880496d1e05e30f5780d160da70a6bfd8b9897484bc9d8838c",
+        "snapshotSha256": "eca43421d415fdad1a4f3a51a6b46e331dffbf7a71c7aa5993b0818738e39642",
+        "worldId": "world-fcb039c36618"
+      },
+      "saveMs": 10.159400000004098,
+      "rendererFrames": {
+        "worldId": "world-fcb039c36618",
+        "surface": "PI renderer",
+        "elapsedMs": 2000.4000000059605,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      }
+    },
+    {
+      "starterId": "promo-city",
+      "firstPending": {
+        "ms": 2.644799999994575,
+        "text": "正在保存进度并准备世界…"
+      }
+    }
+  ],
+  "switches": [],
+  "overlays": [
+    {
+      "worldId": "world-8b2c97c235de",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 13.599999994039536,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-8b2c97c235de",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 0.800000011920929,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-8b2c97c235de",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.0999999940395355,
+      "overlay": "closed",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-bcb5fb528099",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 8,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-bcb5fb528099",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 2,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-bcb5fb528099",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 2.5,
+      "overlay": "closed",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-fcb039c36618",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.0999999940395355,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-fcb039c36618",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 1.7999999821186066,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-fcb039c36618",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 0.19999998807907104,
+      "overlay": "closed",
+      "dialogVisible": true
+    }
+  ],
+  "limits": [
+    "Single run on this machine; startup means fresh profile, not flushed OS disk cache.",
+    "Durations end at a valid native runtime snapshot, not merely chooser dismissal.",
+    "Renderer animation frame timing is not Godot engine FPS or visible OS presentation latency.",
+    "F2 uses the actual DOM application handler with a synthetic page event; no physical input.",
+    "No model requests; AI cancellation and generation time are outside this measurement."
+  ],
+  "heldInput": {
+    "worldId": "world-8b2c97c235de",
+    "before": [
+      0,
+      0.899999976158142,
+      6
+    ],
+    "held": [
+      0,
+      0.899999976158142,
+      3.9466667175293
+    ],
+    "movedWhileHeld": 2.0533332824707,
+    "paused": [
+      0,
+      0.899999976158142,
+      3.81916666030884
+    ],
+    "resumed": [
+      0,
+      0.899999976158142,
+      3.13583326339722
+    ],
+    "after": [
+      0,
+      0.899999976158142,
+      1.79249858856201
+    ],
+    "driftAfterConversation": 1.34333467483521,
+    "released": false
+  },
+  "error": "Error: TEST_CANCELLED\n    at until (file:///D:/Craftmine%20Worktrees/player-fluency-20260913/tests/player-fluency-client-native.mjs:54:9)\n    at async file:///D:/Craftmine%20Worktrees/player-fluency-20260913/tests/player-fluency-client-native.mjs:175:5",
+  "failurePage": {
+    "text": "CRAFTMINE WORLD\n选择你的世界\n我的世界\n示例世界\n新建世界\n\n从示例创建个人副本，可以直接游玩，也可以继续修改。\n\n白色博美与巨兽试炼\n\n森林伙伴、巨兽试炼与枪械\n\n创建副本并游玩\n歼20自由飞行\n\n歼二十起降与驾驶\n\n创建副本并游玩\n雨的逆序\n\n暂停雨滴、倒流与控雨\n\n创建副本并游玩\n奥格瑞玛城市漫游\n\n城市街区漫游与探索\n\n正在准备副本…\n\n世界已登记，正在完成初始化；完成后才能进入游玩。\n\n取消准备，保留世界\n世界\n奥格瑞玛城市漫游 · 我的副本\nGodot · 规划中\n初始化中 · 首次构建 (3/4) · 已进行 75%\n当前\n查看详情\n雨的逆序 · 我的副本\nGodot · 规划中\n刚刚保存\n歼20自由飞行 · 我的副本\nGodot · 规划中\n刚刚保存\n白色博美与巨兽试炼 · 我的副本\nGodot · 规划中\n1 分钟前保存\n我的第一个世界\n网页体素\n1 分钟前保存\n\n世界已登记，正在完成初始化；完成后才能进入游玩。\n\n设置与存档管理",
+    "layout": "{\"mode\":\"play\",\"overlay\":\"closed\",\"chatWidth\":400,\"aux\":{},\"widths\":{\"create\":560,\"play\":720},\"playWhenWorldActivates\":true,\"enteredWorldId\":\"world-a96fa10314cf\"}"
+  }
+}

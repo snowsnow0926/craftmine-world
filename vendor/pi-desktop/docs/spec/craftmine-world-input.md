@@ -22,6 +22,15 @@ override and restores authored CSS. This presentation rule requires no click,
 Pointer Lock permission, new renderer-to-main capability, or world/PCK update.
 It does not claim to change camera motion or mouse capture behavior.
 
+When the conversation or another trusted layer blocks gameplay, the world
+preload releases keys and pointer/mouse buttons previously delivered to that
+world. Releases use the original DOM target and input path; they do not write
+engine state, focus a window, or request Pointer Lock. A physical release in the
+conversation therefore cannot leave movement or firing held after F2 closes.
+Unchanged layout updates preserve held input. Blur and preload disposal also
+release held input. New presses while blocked are discarded, never replayed.
+The plugin's `gameFramesOnly` guard does not track or release workbench controls.
+
 ## Regression evidence and boundary
 
 - `apps/desktop/test/main-window-layers.test.mjs` exercises normal focused owner

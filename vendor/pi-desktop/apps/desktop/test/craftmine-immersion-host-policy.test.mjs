@@ -60,3 +60,26 @@ test('plugin guard blocks opaque game frames while preserving workbench controls
 test('covered chat blocks game input while preserving authoring authorization and geometry',()=>{
  const covered=parseImmersion({...NO_IMMERSION,covered:true,blocked:false});assert.equal(covered.active,false);assert.equal(covered.blocked,false);assert.equal(immersionBlocksInput(covered),true);assert.strictEqual(excludeImmersion(world,covered),world);assert.throws(()=>parseImmersion({...NO_IMMERSION,covered:'true'}));assert.equal(immersionBlocksInput({...covered,covered:false}),false);
 });
+
+test('held world keys and buttons release when chat takes input, even when keyup goes elsewhere',()=>{
+ const saved={KeyboardEvent:globalThis.KeyboardEvent,MouseEvent:globalThis.MouseEvent,PointerEvent:globalThis.PointerEvent,MutationObserver:globalThis.MutationObserver};
+ class InputEvent extends Event {constructor(type,fields){super(type,fields);for(const [key,value]of Object.entries(fields))if(!['bubbles','cancelable'].includes(key))Object.defineProperty(this,key,{value});}}
+ globalThis.KeyboardEvent=InputEvent;globalThis.MouseEvent=InputEvent;globalThis.PointerEvent=InputEvent;
+ globalThis.MutationObserver=class{observe(){}disconnect(){}};
+ const listeners=new Map(),events=[];let notify;
+ const canvas={dispatchEvent(event){events.push(event);listeners.get(event.type)?.(event);return true;}};
+ const target={document:{querySelectorAll:()=>[],pointerLockElement:null},addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
+ const dispose=attachImmersionInput(target,listener=>{notify=listener;return()=>{};});
+ const press=(type,fields={})=>{const event={type,target:canvas,preventDefault(){this.prevented=true;},stopImmediatePropagation(){},...fields};listeners.get(type)(event);return event;};
+ try {
+  press('keydown',{key:'w',code:'KeyW',location:0});press('mousedown',{button:0});
+  notify(false);assert.equal(events.length,0,'unchanged playing state preserves held input');
+  notify(true);assert.deepEqual(events.map(e=>e.type),['keyup','mouseup']);assert.equal(events[0].code,'KeyW');assert.equal(events[1].buttons,0);
+  notify(true);assert.equal(events.length,2,'geometry updates do not repeat releases');
+  assert.equal(press('keydown',{key:'a',code:'KeyA',location:0}).prevented,true);
+  notify(false);notify(true);assert.equal(events.length,2,'blocked presses are not replayed on resume');
+  notify(false);press('keydown',{key:'w',code:'KeyW',location:0});press('keyup',{key:'w',code:'KeyW',location:0});notify(true);assert.equal(events.length,2,'ordinary release clears its tracked key');
+  notify(false);press('keydown',{key:'d',code:'KeyD',location:0});listeners.get('blur')();assert.equal(events.at(-1).code,'KeyD');
+  press('pointerdown',{button:0,pointerId:4,pointerType:'mouse',isPrimary:true});dispose();assert.equal(events.at(-1).type,'pointerup');assert.equal(events.at(-1).pointerId,4);assert.equal(listeners.size,0);
+ }finally{Object.assign(globalThis,saved);}
+});

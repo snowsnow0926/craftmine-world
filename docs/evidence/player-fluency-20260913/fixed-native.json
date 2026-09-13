@@ -1,0 +1,642 @@
+{
+  "format": "craftmine.player-fluency-client/1",
+  "out": "D:\\Craftmine Worktrees\\player-fluency-20260913\\test-results\\desktop-native-fluency-otHMLe",
+  "applicationRoot": "D:/Craftmine Worktrees/player-fluency-20260913",
+  "resources": "D:/Craftmine Worktrees/player-workflow-20260913/desktop/build/releases/7fde6778b768-b5420f1c-174e-4573-a287-f1ba479e364d/output/win-unpacked/resources",
+  "driverSha256": "050aa3c14ab4970750e495186401d837f576ef9840fffdf0e2fd9063d520c461",
+  "package": null,
+  "modelCalls": 0,
+  "starters": [
+    "promo-mainline"
+  ],
+  "launches": [
+    {
+      "kind": "fresh-profile",
+      "startedAt": "2026-09-13T09:39:11.376Z",
+      "hostReadyMs": 221.14999999999998,
+      "rendererReadyMs": 2780.7758,
+      "clockOriginMs": 41.9393,
+      "examplesReadyMs": 2822.8708,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "kind": "warm-profile",
+      "startedAt": "2026-09-13T09:39:53.913Z",
+      "hostReadyMs": 221.88640000000305,
+      "rendererReadyMs": 2223.9565000000002,
+      "clockOriginMs": 42578.3074,
+      "activeWorldReopenedMs": 14110.370500000005,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "worlds": [
+    {
+      "starterId": "promo-mainline",
+      "firstPending": {
+        "ms": 5.692000000000007,
+        "text": "正在保存进度并准备世界…"
+      },
+      "chooserDismissedMs": 28794.553,
+      "worldId": "world-d4428f4546b9",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "great-hunt-01": {
+                "action": "none",
+                "actionHit": false,
+                "actionTime": 0,
+                "attempts": 0,
+                "bestTime": 0,
+                "boss": {
+                  "aim": [
+                    0,
+                    0,
+                    -1
+                  ],
+                  "combo": false,
+                  "count": 0,
+                  "distance": 0,
+                  "duration": 0,
+                  "health": 1600,
+                  "hit": false,
+                  "phase": "idle",
+                  "position": [
+                    21,
+                    0.00999999977648258,
+                    9
+                  ],
+                  "timer": 0,
+                  "yaw": 0
+                },
+                "dodgeCooldown": 0,
+                "dodgeDirection": [
+                  0,
+                  0,
+                  0
+                ],
+                "elapsed": 0,
+                "entityId": "great-hunt-01",
+                "format": "craftmine.great-hunt/1",
+                "health": 100,
+                "invulnerable": 0,
+                "potions": 3,
+                "returnPose": {},
+                "settings": {
+                  "difficulty": "hard"
+                },
+                "sourceSettings": {
+                  "difficulty": "hard"
+                },
+                "stamina": 100,
+                "staminaDelay": 0,
+                "status": "ready",
+                "wins": 0
+              },
+              "grove-combat-01": {
+                "entityId": "grove-combat-01",
+                "format": "craftmine.grove-combat/1",
+                "health": 100,
+                "settings": {
+                  "maxHealth": 100
+                },
+                "sourceSettings": {
+                  "maxHealth": 100
+                }
+              },
+              "grove-monster-01": {
+                "entityId": "grove-monster-01",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -10.0686435699463,
+                  0.00083556480240076,
+                  -3.38638496398926
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.0108528137207
+              },
+              "grove-monster-02": {
+                "entityId": "grove-monster-02",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  12.0946273803711,
+                  0.0008368658600375,
+                  -4.74076414108276
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.619454145431519
+              },
+              "grove-monster-03": {
+                "entityId": "grove-monster-03",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -11.1419515609741,
+                  0.00083531427662819,
+                  -13.1900291442871
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.180435538291931
+              },
+              "grove-monster-04": {
+                "entityId": "grove-monster-04",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  13.0036516189575,
+                  0.0008347705588676,
+                  -15.5110425949097
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 0.151420772075653
+              },
+              "grove-monster-05": {
+                "entityId": "grove-monster-05",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -3.2429883480072,
+                  0.00083706353325396,
+                  -21.8247241973877
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 0.420369625091553
+              },
+              "grove-monster-06": {
+                "entityId": "grove-monster-06",
+                "format": "craftmine.hornling/1",
+                "health": 90,
+                "position": [
+                  4.43725538253784,
+                  0.0008340164204128,
+                  -24.0226802825928
+                ],
+                "settings": {
+                  "maxHealth": 90
+                },
+                "sourceSettings": {
+                  "maxHealth": 90
+                },
+                "yaw": 0.751625537872314
+              },
+              "hunter-ak47-01": {
+                "cooldown": 0,
+                "entityId": "hunter-ak47-01",
+                "equipped": true,
+                "format": "craftmine.ak47/1",
+                "reloadRemaining": 0,
+                "rounds": 30,
+                "settings": {
+                  "magazineSize": 30
+                },
+                "shots": 0,
+                "sourceSettings": {
+                  "magazineSize": 30
+                }
+              },
+              "pet-dog-01": {
+                "entityId": "pet-dog-01",
+                "format": "craftmine.pet-dog/1",
+                "pets": 0,
+                "position": [
+                  1.10618126392365,
+                  0.00083837762940675,
+                  4.49691247940063
+                ],
+                "settings": {
+                  "following": true
+                },
+                "sourceSettings": {
+                  "following": true
+                },
+                "yaw": 2.64127135276794
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-d4428f4546b9"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-d4428f4546b9"
+        },
+        "worldId": "world-d4428f4546b9"
+      },
+      "createToSnapshotMs": 29132.291100000002,
+      "save": {
+        "buildId": "gbd-7e95c187017415a4b5d40ab7e902696005530827cd54cc2eafb6dde5a86b8d20",
+        "contentHash": "ec36ee2bbaa65e3d4b9556658a5e189bcffb4e08ee0317d7059487054e507526",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "d8cfc838ba0e7ab262457045",
+        "persistedAt": 1789292383339,
+        "revision": 2,
+        "snapshotHash": "c390c64fbd940aac68adf63c7fdb505d4ffeff363c2b6abb426c32e3d5542838",
+        "snapshotSha256": "11b330fa67e6e1314fd41ce5fdb13cb9ab763c9078e585f262c7801db7c24552",
+        "worldId": "world-d4428f4546b9"
+      },
+      "saveMs": 11.827300000000832,
+      "rendererFrames": {
+        "worldId": "world-d4428f4546b9",
+        "surface": "PI renderer",
+        "elapsedMs": 2004,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.700000000000728,
+        "longIntervalsOver50Ms": 0
+      }
+    }
+  ],
+  "switches": [
+    {
+      "worldId": "world-d4428f4546b9",
+      "starterId": "promo-mainline",
+      "switchToSnapshotMs": 1369.0671999999977,
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "great-hunt-01": {
+                "action": "none",
+                "actionHit": false,
+                "actionTime": 0,
+                "attempts": 0,
+                "bestTime": 0,
+                "boss": {
+                  "aim": [
+                    0,
+                    0,
+                    -1
+                  ],
+                  "combo": false,
+                  "count": 0,
+                  "distance": 0,
+                  "duration": 0,
+                  "health": 1600,
+                  "hit": false,
+                  "phase": "idle",
+                  "position": [
+                    21,
+                    0.00999999977648258,
+                    9
+                  ],
+                  "timer": 0,
+                  "yaw": 0
+                },
+                "dodgeCooldown": 0,
+                "dodgeDirection": [
+                  0,
+                  0,
+                  0
+                ],
+                "elapsed": 0,
+                "entityId": "great-hunt-01",
+                "format": "craftmine.great-hunt/1",
+                "health": 100,
+                "invulnerable": 0,
+                "potions": 3,
+                "returnPose": {},
+                "settings": {
+                  "difficulty": "hard"
+                },
+                "sourceSettings": {
+                  "difficulty": "hard"
+                },
+                "stamina": 100,
+                "staminaDelay": 0,
+                "status": "ready",
+                "wins": 0
+              },
+              "grove-combat-01": {
+                "entityId": "grove-combat-01",
+                "format": "craftmine.grove-combat/1",
+                "health": 100,
+                "settings": {
+                  "maxHealth": 100
+                },
+                "sourceSettings": {
+                  "maxHealth": 100
+                }
+              },
+              "grove-monster-01": {
+                "entityId": "grove-monster-01",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -10.332935333252,
+                  0.00083538092439994,
+                  -4.97850131988525
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 1.06034827232361
+              },
+              "grove-monster-02": {
+                "entityId": "grove-monster-02",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  11.2885389328003,
+                  0.00083809916395694,
+                  -6.14025735855103
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 1.28574120998383
+              },
+              "grove-monster-03": {
+                "entityId": "grove-monster-03",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -12.1207704544067,
+                  0.00083711073966696,
+                  -14.1658573150635
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 1.64741086959839
+              },
+              "grove-monster-04": {
+                "entityId": "grove-monster-04",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  11.5040073394775,
+                  0.00083572883158922,
+                  -15.9940452575684
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 2.43868780136108
+              },
+              "grove-monster-05": {
+                "entityId": "grove-monster-05",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -4.85821485519409,
+                  0.00083782419096678,
+                  -21.814037322998
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": 2.31616282463074
+              },
+              "grove-monster-06": {
+                "entityId": "grove-monster-06",
+                "format": "craftmine.hornling/1",
+                "health": 90,
+                "position": [
+                  2.92080616950989,
+                  0.00083399849245324,
+                  -23.4733982086182
+                ],
+                "settings": {
+                  "maxHealth": 90
+                },
+                "sourceSettings": {
+                  "maxHealth": 90
+                },
+                "yaw": 2.70933747291565
+              },
+              "hunter-ak47-01": {
+                "cooldown": 0,
+                "entityId": "hunter-ak47-01",
+                "equipped": true,
+                "format": "craftmine.ak47/1",
+                "reloadRemaining": 0,
+                "rounds": 30,
+                "settings": {
+                  "magazineSize": 30
+                },
+                "shots": 0,
+                "sourceSettings": {
+                  "magazineSize": 30
+                }
+              },
+              "pet-dog-01": {
+                "entityId": "pet-dog-01",
+                "format": "craftmine.pet-dog/1",
+                "pets": 0,
+                "position": [
+                  0.74243038892746,
+                  0.00083798903506249,
+                  3.97849822044373
+                ],
+                "settings": {
+                  "following": true
+                },
+                "sourceSettings": {
+                  "following": true
+                },
+                "yaw": 0.483780831098557
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                2.26277828216553
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-d4428f4546b9"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-d4428f4546b9"
+        },
+        "worldId": "world-d4428f4546b9"
+      }
+    }
+  ],
+  "overlays": [
+    {
+      "worldId": "world-d4428f4546b9",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 8.300000011920929,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-d4428f4546b9",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 0.4000000059604645,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-d4428f4546b9",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 3.9000000059604645,
+      "overlay": "closed",
+      "dialogVisible": true
+    }
+  ],
+  "limits": [
+    "Single run on this machine; startup means fresh profile, not flushed OS disk cache.",
+    "Durations end at a valid native runtime snapshot, not merely chooser dismissal.",
+    "Renderer animation frame timing is not Godot engine FPS or visible OS presentation latency.",
+    "F2 uses the actual DOM application handler with a synthetic page event; no physical input.",
+    "No model requests; AI cancellation and generation time are outside this measurement."
+  ],
+  "heldInput": {
+    "worldId": "world-d4428f4546b9",
+    "before": [
+      0,
+      0.899999976158142,
+      6
+    ],
+    "held": [
+      0,
+      0.899999976158142,
+      4.19166660308838
+    ],
+    "movedWhileHeld": 1.8083333969116202,
+    "paused": [
+      0,
+      0.899999976158142,
+      4.07111120223999
+    ],
+    "decelerationWaitMs": 1000,
+    "resumed": [
+      0,
+      0.899999976158142,
+      2.26277828216553
+    ],
+    "after": [
+      0,
+      0.899999976158142,
+      2.26277828216553
+    ],
+    "driftAfterConversation": 0,
+    "released": true
+  },
+  "guards": [
+    {
+      "bridge": "undefined",
+      "guard": {
+        "focus": 0,
+        "pointerLock": 0
+      },
+      "node": "undefined",
+      "url": "file:///D:/Craftmine%20Worktrees/player-fluency-20260913/vendor/pi-desktop/apps/desktop/out/renderer/index.html"
+    },
+    {
+      "bridge": "object",
+      "guard": {
+        "focus": 0,
+        "pointerLock": 0
+      },
+      "node": "undefined",
+      "url": "file:///D:/Craftmine%20Worktrees/player-fluency-20260913/vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/views/world.html"
+    },
+    {
+      "bridge": "undefined",
+      "guard": null,
+      "node": "undefined",
+      "url": "about:blank"
+    }
+  ],
+  "passed": true
+}
