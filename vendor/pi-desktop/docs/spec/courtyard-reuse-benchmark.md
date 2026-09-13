@@ -67,3 +67,11 @@ Entry points: `scripts/courtyard-benchmark.mjs`,
 ZIP format, not a manually assembled near-compatible archive. The selected
 saved progress is explicit and is not silently reset. Normal CLI cancellation
 remains available while an Agent is running.
+
+The completed 2026-09-13 results are recorded in the repository-level
+`docs/PLAYER_COURTYARD_REUSE_LIVE_2026-09-13.md`, with compact immutable evidence
+and actual unedited frames under `docs/evidence/courtyard-reuse-2026-09-13/`.
+All three outcomes passed actual traversal, save and cold reopen. The reference
+Agent's redundant identical-source check remains a recorded artifact-conflict
+failure, separate from its successful initial check/application and gameplay.
+Reports must preserve that distinction and the earlier development catalog run.
