@@ -1,4 +1,5 @@
 import { validatePreviewControl } from "../../shared/craftmine-preview-controls";
+import { validateDirectLibraryRequest } from "../../src/components/craftmine/assets/direct-library-contract";
 
 /** Main-window navigation gateway. World mutations run in the retained view,
  * which owns the live snapshot and serializes save/create/switch operations. */
@@ -40,6 +41,9 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
+  if (channel === "library.direct") {
+    return deps.invoke(channel, validateDirectLibraryRequest(payload));
+  }
   if (channel === "package.request") {
     if (typeof payload.method !== "string" || !PUBLICATION_METHODS.has(payload.method)) throw Error("PERMISSION_DENIED");
     const params = payload.params as Record<string, unknown> | undefined;

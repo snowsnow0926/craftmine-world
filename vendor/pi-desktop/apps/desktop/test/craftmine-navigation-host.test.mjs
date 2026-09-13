@@ -100,3 +100,14 @@ test('publication forms reach only source publication and a live nonfreezing sav
  await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-author',method:'sourceList',params:{worldId:'another-world'}}),deps),/INVALID_PUBLICATION_REQUEST/);
  assert.equal(calls.length,5);
 });
+
+test('direct use accepts only bounded exact catalog requests and denies private installation methods',async()=>{
+  const calls=[],deps={invoke:async(...args)=>{calls.push(args);return {eligible:true};},navigate:async()=>{throw Error('unexpected navigation');}};
+  const value={action:'inspect',worldId:'world-test',ref:{assetId:'cw.module.approved-pomeranian',version:1,contentHash:'a'.repeat(64)}};
+  await invokeCraftmineNavigation(request('library.direct',value),deps);
+  assert.deepEqual(calls,[['library.direct',value]]);
+  for(const payload of [{...value,path:'C:/private'},{...value,ref:{...value.ref,version:'latest'}},{action:'apply',worldId:'world-test',operationId:'direct-operation',candidateId:'forged'}])
+    await assert.rejects(invokeCraftmineNavigation(request('library.direct',payload),deps),/DIRECT_LIBRARY_INVALID/);
+  for(const method of ['directInspect','directInstall','directStatus'])await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-test',method,params:{worldId:'world-test'}}),deps),/PERMISSION_DENIED/);
+  assert.equal(calls.length,1);
+});

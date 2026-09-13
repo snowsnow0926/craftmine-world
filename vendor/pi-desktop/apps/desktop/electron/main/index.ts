@@ -230,6 +230,7 @@ import { registerPluginDevTools } from "./plugin-dev-tools";
 import { PluginPanelHost } from "./plugin-panel-host";
 import { PluginViewHost, pluginViewKey } from "./plugin-view-host";
 import { invokeCraftmineNavigation } from "./craftmine-navigation-host";
+import { createDirectLibraryService } from "./direct-library";
 import { createCraftmineWorldRemoval } from "./craftmine-world-removal";
 import { GodotWorldViewHost } from "./godot-world-view-host";
 import {createCraftmineViewCaptureBridge, type ViewCaptureModel} from "./craftmine-view-capture";
@@ -1394,7 +1395,7 @@ const creationEdits=createCreationEditService({
   directory:join(dataDir,"creation-edits"),
   begin:async(owner,input)=>{
     await stopWorldMaintenance();
-    if(creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
+    if(directLibrary.isBusy()||creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
     try{
       const upgrade=input.action==='upgrade-observer';
@@ -1465,7 +1466,7 @@ const godotRestores = createGodotRestoreRebuildService({
 const groundMaintenance = createCreationGroundMaintenance({
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
   selection: godotSelection, instance: () => godotWorld.instance, resourcesRoot: godotRoot,
-  shouldYield: () => !!(activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy),
+  shouldYield: () => !!(directLibrary.isBusy() || activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy),
   applyVerified: (worldId, candidateId, expected, authorize) => godotCandidates.autoApplyVerified(worldId, candidateId, expected, authorize),
   changed: (worldId, status) => {
     logger.app("plugin", status.status === "failed" ? "warn" : "info", "stock ground maintenance", { data: { worldId, ...status } });
@@ -1477,7 +1478,7 @@ const collisionMaintenance = createCreationGroundMaintenance({
   selection: godotSelection, instance: () => godotWorld.instance, resourcesRoot: godotRoot,
   sourceUpgrade: {plan: planCreationCollisionUpgrade, branchPrefix: "host-collision-", projectId: "craftmine-collision-maintenance",
     description: "Upgrade the exact released collision support-contact guard on a separate formal branch, retaining every authored file, draft, history and saved progress value."},
-  shouldYield: () => !!(activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy),
+  shouldYield: () => !!(directLibrary.isBusy() || activeTurns.size || turnFinalizations.size || profileRestore || godotCopies.busy || godotExportBusy || godotInitializer.busy || godotRestores.busy || groundMaintenance.busy),
   applyVerified: (worldId, candidateId, expected, authorize) => godotCandidates.autoApplyVerified(worldId, candidateId, expected, authorize),
   applySavedVerified: (worldId, candidateId, expected, authorize) => godotCandidates.applySavedMaintenance(worldId, candidateId, expected, authorize),
   changed: (worldId, status) => {
@@ -1521,7 +1522,7 @@ async function stopWorldMaintenance(): Promise<void> {
 }
 const groundMaintenanceScheduler = createCreationGroundScheduler({
   current: () => godotWorld.instance,
-  blocked: () => !!(quitting || craftmineQuitPreparation || craftmineQuitPrepared ||
+  blocked: () => !!(directLibrary.isBusy() || quitting || craftmineQuitPreparation || craftmineQuitPrepared ||
     groundMaintenance.busy || collisionMaintenance.busy || collisionMaintenanceStarting || activeTurns.size || turnFinalizations.size || profileRestore ||
     godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy || godotExportBusy ||
     !["ready", "paused", "saved"].includes(godotWorld.state?.state ?? "")),
@@ -3227,6 +3228,46 @@ const craftminePackages = createCraftminePackageService({
     return result.canceled ? null : result.filePath ?? null;
   },
 });
+function assertDirectLibraryIdle() {
+  if (quitting || craftmineQuitPreparation || craftmineQuitPrepared || profileRestore
+    || godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size
+    || creationEditStarting || godotInitializer.busy || godotRestores.busy || worldRemoval.busy
+    || groundMaintenance.busy || collisionMaintenance.busy) throw Error("WORLD_BUSY");
+}
+async function assertDirectLibraryTarget(worldId: string, target: {buildId: string; instanceId: string}) {
+  assertDirectLibraryIdle();
+  if (await godotSelection() !== worldId) throw Error("GODOT_WORLD_CHANGED");
+  const formal = await godotAdapter.describe(worldId);
+  const instance = godotWorld.instance;
+  if (await godotSelection() !== worldId) throw Error("GODOT_WORLD_CHANGED");
+  if (!instance || instance.worldId !== worldId || instance.buildId !== target.buildId
+    || instance.instanceId !== target.instanceId || formal?.buildId !== target.buildId) throw Error("CREATION_TARGET_STALE");
+  assertDirectLibraryIdle();
+}
+const directLibrary = createDirectLibraryService({
+  directory: join(dataDir, "direct-library-operations"),
+  domain: (method, params) => plugins.requestCraftmineHost(method, params),
+  prepare: async worldId => {
+    await stopWorldMaintenance();
+    assertDirectLibraryIdle();
+    if (godotCandidates.blocking) throw Error("GODOT_CANDIDATE_ACTIVE");
+    if (await godotSelection() !== worldId) throw Error("GODOT_WORLD_CHANGED");
+  },
+  captureTarget: async worldId => {
+    const instance = godotWorld.instance;
+    if (!instance || instance.worldId !== worldId || godotWorld.candidateInstance
+      || !["ready", "paused", "saved"].includes(godotWorld.state?.state ?? "")) throw Error("CREATION_RUNTIME_NOT_READY");
+    const target = {buildId: instance.buildId, instanceId: instance.instanceId};
+    await assertDirectLibraryTarget(worldId, target);
+    return target;
+  },
+  assertTarget: assertDirectLibraryTarget,
+  applyVerified: async (worldId, candidateId, target, authorize) => {
+    const result = await godotCandidates.autoApplyVerified(worldId, candidateId, target, authorize);
+    if (result.status === "applied") sendToRenderer(IPC.event.craftmineWorldChanged, {});
+    return result;
+  },
+});
 const playerWorldTemplates = createWorldTemplatePanel({
   domain: (method, args) => plugins.requestCraftmineHost(method, args), selection: godotSelection, capturePreview: captureLibraryPreview,
   pick: async (kind, suggestedName) => {
@@ -3281,7 +3322,7 @@ const craftminePanelRequest = createCraftminePanelGateway({
   domain: (method, params) => plugins.requestCraftmineHost(method, params),
   begin: async session => {
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
-    if (godotCopies.busy || godotExportBusy) throw Error("ACTIVE_TASK_EXISTS");
+    if (godotCopies.busy || godotExportBusy || directLibrary.isBusy()) throw Error("ACTIVE_TASK_EXISTS");
     if (!host) throw new Error("CRAFTMINE_HOST_UNAVAILABLE");
     if (activeTurns.has(session.id) || turnFinalizations.has(session.id)) throw new Error("ACTIVE_TASK_EXISTS");
     const result = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: session.id, providerId: session.providerId, modelId: session.modelId });
@@ -6975,6 +7016,14 @@ function registerIpc() {
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
       invoke: async (channel, params) => {
+        if (channel === "library.direct") {
+          if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+          if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
+          if (params.action === "inspect") {
+            if (await godotSelection() !== params.worldId) throw Error("GODOT_WORLD_CHANGED");
+          }
+          return directLibrary.handle(params);
+        }
         if (channel === "package.request" || channel === "godot.runtimeSave") {
           if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
           if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
@@ -8986,7 +9035,7 @@ function registerIpc() {
     assertMainWindowSender(event);
     if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
-    if (godotCopies.busy || godotExportBusy) throw Error("ACTIVE_TASK_EXISTS");
+    if (godotCopies.busy || godotExportBusy || directLibrary.isBusy()) throw Error("ACTIVE_TASK_EXISTS");
     if (!host || !sidecar) throw new Error("backend unavailable");
     // Install the renderer's prompt-time snapshot before any asynchronous
     // setup. This closes the gap where a fast completion could beat the
@@ -9120,6 +9169,7 @@ function registerIpc() {
     sidecar.setProjectInstructionRoot(req.sessionId, launch.projectPath);
 
     // Open a durable turn row, then persist the user message under it.
+    if (directLibrary.isBusy()) throw Error("ACTIVE_TASK_EXISTS");
     const turn = await host.call<{ turnId?: string }>("session.beginTurn", {
       sessionId: req.sessionId,
       providerId: launch.providerId,
@@ -9322,6 +9372,7 @@ function registerIpc() {
     }
     if (current) {
       const projectId = craftmineProjectIdentity(detail.session, req.sessionId);
+      if (directLibrary.isBusy()) throw Error("ACTIVE_TASK_EXISTS");
       const turn = await host.call<{ turnId: string }>("session.beginTurn", { sessionId: req.sessionId, providerId: launch.providerId, modelId: launch.modelId });
       activeTurns.set(req.sessionId, turn.turnId);
       try {
@@ -10712,7 +10763,7 @@ app.on("before-quit", (event) => {
     if (craftmineQuitPreparation) return;
     const attemptId = craftmineQuitState.saving();
     craftmineQuitPreparation = (async () => {
-      if (godotCopies.busy || godotExportBusy) throw Error("Wait for world copy or export to finish, or cancel the export before quitting");
+      if (godotCopies.busy || godotExportBusy || directLibrary.isBusy()) throw Error("Wait for world copy, export or material adoption to finish, or cancel it before quitting");
       groundMaintenanceScheduler.suspend();
       await creationAutoQueue.suspend();
       await stopWorldMaintenance();
@@ -10754,6 +10805,13 @@ app.on("before-quit", (event) => {
     pluginLauncherAccelerator = null;
   }
   shutdownPromise = (async () => {
+    // Persist cancellation and drain direct installers while their plugin and
+    // Core owners are still alive. Status receipts survive the next launch.
+    try { await directLibrary.stop(); }
+    catch (error) {
+      recordHeadlessShutdownFailure("direct-library", error);
+      logger.app("lifecycle", "error", "direct material shutdown incomplete", {data: String(error)});
+    }
     await codexConnection.dispose();
     // Preview workers must finish while their body resolver's plugin is alive.
     try {
