@@ -10499,7 +10499,11 @@ Autosave after review must export the exact original reviewed bytes without
 recapturing or changing timestamps, progress identity or screenshots; a new
 formal build still requires a fresh preview. Pre-sheet BUSY/PENDING contention
 may wait briefly while holding the initial binding; changed identities fail,
-permanent contention ends within the two-second retry window and emits bounded
+permanent contention stops admitting captures within the two-second window
+starting at the first BUSY/PENDING, excluding normal first-capture time. A slow
+2.7-second first capture followed by BUSY can still admit a successful retry;
+permanent BUSY remains finite. Each admitted capture retains its native deadline.
+Preparation emits bounded
 attempt/reason diagnostics without paths or account data. Other capture errors
 do not retry.
 Reject tampered/oversized files, injected paths, cross-world read IDs and changed

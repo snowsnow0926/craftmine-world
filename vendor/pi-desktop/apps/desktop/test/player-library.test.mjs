@@ -64,7 +64,7 @@ function preparationFixture(captureAction,waiting=()=>{}) {
 test('pre-sheet preparation retries transient busy once and stops after the successful frame',async()=>{
  const {service,state}=preparationFixture(state=>{if(state.captures===1)throw Error('GODOT_VIEW_CAPTURE_BUSY');});
  assert.equal((await service.prepare({worldId:'w'})).ready,true);assert.equal(state.captures,2);assert.deepEqual(state.waits,[100]);
- assert.deepEqual(state.diagnostics,[{attempts:2,elapsedMs:100,firstRetryableCode:'GODOT_VIEW_CAPTURE_BUSY',outcome:'ready'}]);
+ assert.deepEqual(state.diagnostics,[{attempts:2,elapsedMs:100,retryElapsedMs:100,firstRetryableCode:'GODOT_VIEW_CAPTURE_BUSY',outcome:'ready'}]);
  await service.prepared('w');assert.equal(state.captures,2);
 });
 test('pre-sheet retry refuses changed original identity before another capture',async()=>{
@@ -78,4 +78,15 @@ test('permanent pending ends within the two-second retry window and other failur
  await assert.rejects(service.prepare({worldId:'w'}),/GODOT_VIEW_CAPTURE_PENDING/);assert.equal(state.clock,2000);assert.equal(state.captures,20);
  assert.equal(state.diagnostics[0].attempts,20);assert.equal(state.diagnostics[0].outcome,'failed');await assert.rejects(service.prepared('w'),/PREPARE_REQUIRED/);
  const other=preparationFixture(()=>{throw Error('GODOT_VIEW_CAPTURE_DETACHED');});await assert.rejects(other.service.prepare({worldId:'w'}),/DETACHED/);assert.equal(other.state.captures,1);assert.deepEqual(other.state.waits,[]);
+});
+test('a slow first capture does not consume the BUSY retry window',async()=>{
+ const {service,state}=preparationFixture(state=>{if(state.captures===1){state.clock+=2700;throw Error('GODOT_VIEW_CAPTURE_BUSY');}});
+ assert.equal((await service.prepare({worldId:'w'})).ready,true);assert.equal(state.captures,2);
+ assert.deepEqual(state.diagnostics,[{attempts:2,elapsedMs:2800,retryElapsedMs:100,firstRetryableCode:'GODOT_VIEW_CAPTURE_BUSY',outcome:'ready'}]);
+});
+test('permanent BUSY after a slow first capture still stops within one finite retry window',async()=>{
+ const {service,state}=preparationFixture(state=>{if(state.captures===1)state.clock+=2700;throw Error('GODOT_VIEW_CAPTURE_BUSY');});
+ await assert.rejects(service.prepare({worldId:'w'}),/GODOT_VIEW_CAPTURE_BUSY/);
+ assert.equal(state.captures,20);assert.equal(state.clock,4700);assert.equal(state.diagnostics[0].retryElapsedMs,2000);
+ assert.equal(state.diagnostics[0].outcome,'failed');await assert.rejects(service.prepared('w'),/PREPARE_REQUIRED/);
 });
