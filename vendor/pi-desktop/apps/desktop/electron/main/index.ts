@@ -3205,6 +3205,10 @@ const craftmineBackup = createCraftmineBackupService({
 });
 const captureLibraryPreview = createLibraryPreviewCapture({
   selection: godotSelection,
+  sourceIdentity: async worldId => {
+    const descriptor=await godotAdapter.describe(worldId);
+    return descriptor?.buildId && descriptor.artifactManifestHash ? `${descriptor.buildId}:${descriptor.artifactManifestHash}` : null;
+  },
   instance: () => godotWorld.instance,
   candidateActive: () => !!godotWorld.candidateInstance,
   capture: identity => godotWorld.captureView(identity),
@@ -6958,6 +6962,11 @@ function registerIpc() {
       return creationTargets.policy(input);
     }
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
+    if (payload?.pluginId === "craftmine.world" && payload?.channel === "library.previewPrepare") {
+      if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
+      return captureLibraryPreview.prepare(payload.payload);
+    }
     if (payload?.pluginId === "craftmine.world" && WORLD_TEMPLATE_PANEL_CHANNELS.has(payload?.channel)) {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
       if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
