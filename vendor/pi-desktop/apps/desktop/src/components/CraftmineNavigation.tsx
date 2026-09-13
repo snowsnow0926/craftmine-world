@@ -82,6 +82,11 @@ export function CraftmineNavigation() {
   const [assetsOpen, setAssetsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   useEffect(() => {
+    const closeSheets = () => {setAssetsOpen(false); setHistoryOpen(false);};
+    window.addEventListener("craftmine-mode-entry-open", closeSheets);
+    return () => window.removeEventListener("craftmine-mode-entry-open", closeSheets);
+  }, []);
+  useEffect(() => {
     const open = assetsOpen || historyOpen;
     window.dispatchEvent(new CustomEvent("craftmine-sheet-visibility", {detail: {open}}));
     return () => { window.dispatchEvent(new CustomEvent("craftmine-sheet-visibility", {detail: {open: false}})); };
@@ -158,6 +163,7 @@ export function CraftmineNavigation() {
                 bridge={controller.bridge}
                 lang={lang}
                 worldId={controller.activeWorldId}
+                worldName={controller.activeWorld?.title}
                 onUseAsset={async (asset, modify) => {
                   const worldId = controller.activeWorldId, bridge = controller.bridge;
                   const original = useAppStore.getState(), sessionId = original.activeSessionId;

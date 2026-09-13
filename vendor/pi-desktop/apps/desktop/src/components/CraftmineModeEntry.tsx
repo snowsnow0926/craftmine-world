@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
 import { craftmineLang, type CraftmineWorldStarter } from "../lib/craftmine-worlds";
@@ -6,9 +6,11 @@ import { useAppStore, beginPlayerWorldEntry, createCopiedWorldSession } from "..
 import { WindowControls } from "./WindowControls";
 import { WorldListPanel } from "./craftmine/WorldListPanel";
 import { WorldCreatePanel } from "./craftmine/WorldCreatePanel";
+import { LocalWorldTemplates } from "./craftmine/LocalWorldTemplates";
+import { clearRequestedWorldTemplate, requestedWorldTemplate, type LibraryReference } from "../lib/player-library";
 import "../styles/craftmine-mode-entry.css";
 
-type EntryTab = "worlds" | "examples" | "create";
+type EntryTab = "worlds" | "examples" | "templates" | "create";
 
 /** The existing PI world chooser; all worlds and examples come from the host. */
 export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
@@ -19,7 +21,9 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
   const { i18n } = useTranslation();
   const lang = craftmineLang(i18n.language), zh = lang === "zh";
   const controller = useCraftmineWorlds(lang);
-  const [tab, setTab] = useState<EntryTab>("worlds");
+  const [initialTemplate] = useState(requestedWorldTemplate);
+  const [tab, setTab] = useState<EntryTab>(initialTemplate ? "templates" : "worlds");
+  useEffect(() => {clearRequestedWorldTemplate();}, []);
   const [entryError, setEntryError] = useState("");
   const [opening, setOpening] = useState(false);
   const entryLock = useRef(false);
@@ -64,6 +68,15 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
     } catch (failure) { setEntryError(failure instanceof Error ? failure.message : String(failure)); }
     finally { entryLock.current = false; setOpening(false); }
   };
+  const createTemplate = async (ref: LibraryReference, title: string) => {
+    if (entryLock.current || controller.busy || isRunning) return;
+    entryLock.current = true; setOpening(true); setEntryError("");
+    try {
+      const ready = await prepareCreation();
+      await controller.create(controller.createAttempt?.input ?? {title, baseId: "creation-sandbox", starterId: "library", libraryRef: {...ref}, operationId: crypto.randomUUID()}, ready);
+    } catch (failure) {setEntryError(failure instanceof Error ? failure.message : String(failure));}
+    finally {entryLock.current = false; setOpening(false);}
+  };
   const manage = () => {
     const state = useAppStore.getState(); state.setSettingsTab("general"); state.setPage("settings");
     (onManage ?? onCancel)?.();
@@ -75,10 +88,10 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
     <div className="craftmine-mode-entry-content no-drag">
       <h1 id="craftmine-mode-entry-title">{zh ? "选择你的世界" : "Choose your world"}</h1>
       <div className="craftmine-world-entry-tabs" role="tablist" aria-label={zh ? "世界" : "Worlds"}>
-        {(["worlds", "examples", "create"] as const).map((value, index) => <form key={value} data-world-entry-tab-form={value} onSubmit={event => {event.preventDefault(); if (busy || preflightLock.current || controller.createAttempt) return; setTab(value); setEntryError(""); controller.clearMessages();}}><button type="submit" role="tab"
+        {(["worlds", "examples", "templates", "create"] as const).map((value, index) => <form key={value} data-world-entry-tab-form={value} onSubmit={event => {event.preventDefault(); if (busy || preflightLock.current || controller.createAttempt) return; setTab(value); setEntryError(""); controller.clearMessages();}}><button type="submit" role="tab"
           id={`world-entry-tab-${value}`} aria-selected={tab === value} aria-controls={`world-entry-${value}`}
           disabled={busy || !!controller.createAttempt} data-world-entry-tab={value}>
-          {(zh ? ["我的世界", "示例世界", "新建世界"] : ["My worlds", "Examples", "New world"])[index]}
+          {(zh ? ["我的世界", "示例世界", "我的模板", "新建世界"] : ["My worlds", "Examples", "My templates", "New world"])[index]}
         </button></form>)}
       </div>
       <section role="tabpanel" id={`world-entry-${tab}`} aria-labelledby={`world-entry-tab-${tab}`}>
@@ -105,6 +118,7 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
           {controller.capabilities && !examples.length && <p role="status">{zh ? "此版本尚未提供示例世界。" : "This version has no bundled examples."}</p>}
         </>}
         {tab === "create" && <WorldCreatePanel controller={controller} lang={lang} onClose={() => setTab("worlds")} onBeforeCreate={prepareCreation} />}
+        {tab === "templates" && <LocalWorldTemplates bridge={controller.bridge} zh={zh} busy={busy || isRunning} locked={!!controller.createAttempt} initialRef={initialTemplate} onCreate={createTemplate}/>}
       </section>
       {busy && <p role="status" data-world-entry-pending>{controller.notice || (zh ? "正在保存进度并准备世界…" : "Saving progress and preparing the world…")}</p>}
       {controller.canCancelCreate && <button type="button" data-world-entry-cancel onClick={() => void controller.cancelCreate()}>{zh ? "取消准备，保留世界" : "Cancel preparation and keep world"}</button>}

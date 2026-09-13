@@ -1,0 +1,38 @@
+# Player publication and reuse surfaces
+
+The existing PI Desktop asset sheet adds Browse, Save object and Save world
+template. Publication stays local, uses immutable native asset versions and
+keeps the exact operation across uncertain acknowledgements. The form records a
+name, purpose, tags, aliases and either a new asset or a new version. Scene
+selection is taken from the native source listing; unsupported dynamic objects
+are explicitly unavailable until prepared as independent components.
+
+The optional preview is an actual formal world-view capture provided by Electron
+main. It is resized in memory to a bounded thumbnail, never by changing the
+window, viewport, runtime, camera or player. World/build/instance selection is
+checked before and after capture. Renderer file paths and image bytes are not
+accepted. The library labels it as the source world view, not an isolated-object
+render or verification result.
+
+World publication requires an explicit initially unchecked choice to use saved
+progress as the new world's starting state. Submission first saves current
+runtime progress, then samples the exact native formal-source and snapshot
+identity. Unapplied draft source is excluded. A saved-progress template is not
+advertised as zero-progress authored defaults; the four shipped authored-default
+examples remain unchanged.
+
+My templates is a tab inside the existing world chooser. It reads the local
+native catalog and an exact selected version, supports controlled ZIP import and
+export through a native picker, and creates an independent world through the
+normal initialization/check/first-load lifecycle. The main navigation gateway,
+retained world view and factory retain the same immutable library reference.
+Creating a world preserves unrelated drafts and produces a separate conversation.
+
+World-template asset details offer independent world creation rather than
+component installation. The original asset-request Composer, source proposals,
+checks and adoption continue to handle ordinary components.
+
+Validation uses deterministic renderer fixtures and native separate profiles.
+No operating-system input, pointer lock or foreground test windows are allowed.
+Native publication/storage, runtime adoption, model use and human feel are
+distinct evidence. This implementation does not assert human playtest results.

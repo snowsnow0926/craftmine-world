@@ -11,6 +11,26 @@
   min-width: 0;
 }
 
+.library-publish-tabs, .library-publish-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.library-publish-tabs { border-bottom: 1px solid var(--ds-border-subtle); padding-bottom: 8px; }
+.library-publish-tabs button, .local-world-templates button { color: var(--ds-text-primary); background: var(--ds-bg-secondary); border: 1px solid var(--ds-border-subtle); padding: 8px 12px; border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
+.library-publish-tabs button[aria-selected="true"] { background: var(--ds-bg-active); border-color: var(--ds-text-secondary); }
+.library-publish { max-width: 760px; display: grid; gap: 12px; }
+.library-publish fieldset { display: grid; gap: 12px; padding: 12px 0; border: 0; }
+.library-publish input, .library-publish textarea, .local-world-templates input { color: var(--ds-text-primary); background: var(--ds-bg-secondary); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-sm); padding: 8px; font: inherit; min-width: 0; }
+.library-publish textarea { min-height: 80px; resize: vertical; }
+.library-publish-check { display: flex; align-items: flex-start; gap: 8px; }
+.local-world-templates { display: grid; gap: 16px; }
+.local-world-template-content { display: grid; grid-template-columns: minmax(160px, 1fr) minmax(0, 2fr); gap: 20px; }
+.local-world-template-list { display: flex; flex-direction: column; gap: 8px; }
+.local-world-template-list button { width: 100%; text-align: left; }
+.local-world-template-detail { display: grid; gap: 12px; }
+.local-world-template-detail form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.local-world-template-detail label { display: grid; gap: 6px; min-width: 0; }
+.local-world-template-detail img { width: 100%; max-height: 240px; object-fit: contain; }
+.local-world-templates button:disabled { opacity: .5; cursor: default; }
+@media (max-width: 680px) { .local-world-template-content { grid-template-columns: 1fr; } }
+
 .asset-library-head {
   display: flex;
   align-items: center;

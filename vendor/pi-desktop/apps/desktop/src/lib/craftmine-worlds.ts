@@ -156,6 +156,7 @@ export type CraftmineWorldCreateInput = {
   starterId?: string;
   /** Stable identity for one create attempt; a retry reuses it. */
   operationId?: string;
+  libraryRef?: {assetId: string; version: number; contentHash: string};
 };
 
 export type CraftmineWorldCreateResult = {
@@ -463,6 +464,7 @@ export function createCraftmineWorldBridge(
       if (input.baseId) payload.baseId = input.baseId;
       if (input.starterId) payload.starterId = input.starterId;
       if (input.operationId) payload.operationId = input.operationId;
+      if (input.libraryRef) payload.libraryRef = {...input.libraryRef};
       const record = asRecord(await call("world.create", payload));
       const id = asText(record.id) || asText(asRecord(record.summary).id);
       if (!id) throw new Error("WORLD_CREATE_NO_ID");

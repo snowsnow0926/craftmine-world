@@ -1043,7 +1043,7 @@ export class PluginRuntime {
     const loaded = this.loaded.get("craftmine.world");
     if (!loaded?.child) throw apiError("UNSUPPORTED", "Craftmine world service unavailable");
     const longRunning = ["backup.", "godotRuntime.", "godotApplication.", "godotWorld.", "godotProject.", "godotBuild.",
-      "godotJob.", "godotStorage.", "godotAsset.", "content.", "library.", "world."]
+      "godotJob.", "godotStorage.", "godotAsset.", "content.", "library.", "world.", "worldTemplate."]
       .some(prefix => method.startsWith(prefix)) || method === "workbench.request"
       // Installing a source ZIP snapshots the current project and commits a
       // durable file transaction. Ordinary package reads retain their deadline.

@@ -96,9 +96,14 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
       && (typeof payload.operationId !== "string" || !/^[A-Za-z0-9_-]{8,80}$/.test(payload.operationId))) {
       throw new Error("INVALID_OPERATION_ID");
     }
+    const ref = payload.libraryRef as Record<string, unknown> | undefined;
+    if (ref !== undefined && (!ref || typeof ref !== "object" || Array.isArray(ref) || Object.keys(ref).some(key => !["assetId", "version", "contentHash"].includes(key))
+      || typeof ref.assetId !== "string" || !/^player\.world\.[a-z0-9_-]{1,60}$/.test(ref.assetId) || !Number.isSafeInteger(ref.version) || Number(ref.version) < 1 || Number(ref.version) > 100000 || !/^[a-f0-9]{64}$/.test(String(ref.contentHash))
+      || payload.baseId !== "creation-sandbox" || payload.starterId !== "library")) throw Error("INVALID_WORLD_TEMPLATE_REFERENCE");
     return deps.navigate({
       operation: "create", title: payload.title.trim(),
       baseId: payload.baseId, starterId: payload.starterId, operationId: payload.operationId,
+      ...(ref ? {libraryRef: {...ref}} : {}),
     });
   }
   // No renderer path for raw progress writes, executor registration, application

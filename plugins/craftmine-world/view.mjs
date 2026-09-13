@@ -531,6 +531,7 @@ async function navigate(request) {
       if(request.operation==='create')openingWorldId='__creating__';
       if(request.operation==='create')target=await bridge.invoke('world.create',{
         title:request.title,baseId:request.baseId,starterId:request.starterId,operationId:request.operationId,activate:false,
+        ...(request.libraryRef?{libraryRef:{...request.libraryRef}}:{}),
       });
       const record=await openWorldWithLoading(target.id,{previous});
       // A failed list refresh cannot undo a completed switch.

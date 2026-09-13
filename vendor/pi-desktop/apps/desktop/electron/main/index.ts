@@ -39,6 +39,8 @@ import { createCraftmineOperationJournal } from "./craftmine-operation-journal";
 import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
 import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
+import { createLibraryPreviewCapture } from "./library-preview";
+import { createWorldTemplatePanel, WORLD_TEMPLATE_PANEL_CHANNELS } from "./world-template-panel";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
 import { createCreationGroundMaintenance, interruptsCreationGroundMaintenance } from "./creation-ground-maintenance";
 import {planCreationCollisionUpgrade} from "./creation-collision-upgrade";
@@ -1565,6 +1567,7 @@ const godotExports = createGodotWindowsExportService({
   toolchain: {broker:join(godotToolchainRoot,"broker/godot-host-broker.exe"), brokerIdentity:join(godotToolchainRoot,"broker/broker-identity.json"), engineRoot:join(godotToolchainRoot,"engine/4.7.2-stable")},
 });
 godotCreation = createGodotWorldFactory({
+  libraryStagingRoot: join(dataDir, "plugins", "data", "craftmine.world", "world-template-operations", "prepared"),
   worldsRoot: join(dataDir, "godot-worlds"),
   catalogFile: join(godotRoot, "bases", "base-catalog.json"),
   basesRoot: join(godotRoot, "bases"),
@@ -3204,7 +3207,15 @@ const craftmineBackup = createCraftmineBackupService({
     }
   },
 });
+const captureLibraryPreview = createLibraryPreviewCapture({
+  selection: godotSelection,
+  instance: () => godotWorld.instance,
+  candidateActive: () => !!godotWorld.candidateInstance,
+  capture: identity => godotWorld.captureView(identity),
+  decode: bytes => nativeImage.createFromBuffer(bytes),
+});
 const craftminePackages = createCraftminePackageService({
+  capturePreview: captureLibraryPreview,
   domainCall: (method, params) => plugins.requestCraftmineHost(method, params), selection: godotSelection,
   pickFile: async request => {
     if (headlessAcceptance) return join(headlessAcceptance.root, "component.zip");
@@ -3214,6 +3225,14 @@ const craftminePackages = createCraftminePackageService({
     }
     const result = await dialog.showSaveDialog({title: "导出这件作品", defaultPath: request.suggestedName, filters: [{name: "Craftmine 作品", extensions: ["zip"]}]});
     return result.canceled ? null : result.filePath ?? null;
+  },
+});
+const playerWorldTemplates = createWorldTemplatePanel({
+  domain: (method, args) => plugins.requestCraftmineHost(method, args), selection: godotSelection, capturePreview: captureLibraryPreview,
+  pick: async (kind, suggestedName) => {
+    if (headlessAcceptance) return join(headlessAcceptance.root, "player-world-template.zip");
+    if (kind === "import") {const result = await dialog.showOpenDialog({title: "导入世界模板", properties: ["openFile"], filters: [{name: "Craftmine world template", extensions: ["zip"]}]});return result.canceled ? null : result.filePaths[0] ?? null;}
+    const result = await dialog.showSaveDialog({title: "导出世界模板", defaultPath: suggestedName, filters: [{name: "Craftmine world template", extensions: ["zip"]}]});return result.canceled ? null : result.filePath ?? null;
   },
 });
 const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
@@ -6943,6 +6962,11 @@ function registerIpc() {
       return creationTargets.policy(input);
     }
     if (profileRestore) throw Error("PROFILE_RESTORE_IN_PROGRESS");
+    if (payload?.pluginId === "craftmine.world" && WORLD_TEMPLATE_PANEL_CHANNELS.has(payload?.channel)) {
+      if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
+      return playerWorldTemplates.request(payload.channel, payload.payload ?? {});
+    }
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
       invoke: async (channel, params) => {
@@ -10710,6 +10734,7 @@ app.on("before-quit", (event) => {
   }
 
   quitting = true;
+  playerWorldTemplates.dispose();
   groundMaintenanceScheduler.dispose();
   tray?.destroy();
   tray = null;

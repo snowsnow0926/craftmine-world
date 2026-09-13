@@ -10097,3 +10097,19 @@ must retain the same world, build, and runtime instance. The repeatable driver i
 `tests/player-fluency-client-native.mjs` at the repository root; it uses fresh
 profiles and page scripts, never OS input, focus emulation, or Pointer Lock.
 AI task cancellation remains a separate live-authoring acceptance scenario.
+
+## Self-service library UI and recovery (2026-09-13)
+
+Publish a supported selected object with aliases and a current-view thumbnail
+through the existing asset sheet. Lose the acknowledgement, remount the panel,
+and retry the original operation; no duplicate version may appear. Cancel before
+commit and after commit dispatch, and distinguish cancelled from already saved.
+Publish a second version and retain the first and installed instances. A world
+change must not associate a late result with the newly selected world.
+
+Saving a world requires an explicit saved-progress starting-state choice. Verify
+normal runtime save precedes source/snapshot capture. Browse the exact local
+version in My templates, export/import via the native picker, create independent
+copies, and verify native checks, first load and save/reopen. No profile restore,
+raw renderer filesystem/image input or original-world replacement is allowed.
+The model catalog must distinguish whole-world templates from components.

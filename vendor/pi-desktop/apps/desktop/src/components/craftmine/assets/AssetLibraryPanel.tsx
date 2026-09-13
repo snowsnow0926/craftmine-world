@@ -39,6 +39,8 @@ import {
 } from "./use-asset-library";
 import "./asset-library.css";
 import {AssetAnnotationEditor} from "./AssetAnnotationEditor";
+import {LibraryPublishPanel} from "./LibraryPublishPanel";
+import {requestWorldTemplateCreation, type LibraryReference} from "../../../lib/player-library";
 
 export type AssetImportPick = { sourceRoot: string; sourcePath: string };
 
@@ -51,6 +53,7 @@ export type AssetLibraryPanelProps = {
   /** Audio source supplied by the host for a playable WAV preview. */
   audioSrc?: string | null;
   onUseAsset?: (asset: AssetVersion, modify: boolean) => Promise<void>;
+  worldName?: string;
 };
 
 const COPY = {
@@ -153,12 +156,14 @@ export function AssetLibraryPanel({
   onImportRequest,
   audioSrc = null,
   onUseAsset,
+  worldName,
 }: AssetLibraryPanelProps) {
   const ownedBridge = useMemo<AssetLibraryBridge | null>(() => bridge ? {
     call: (channel, payload) => bridge.call(channel, {...payload, ownerWorldId: worldId}),
   } : null, [bridge, worldId]);
   const controller: AssetLibraryController = useAssetLibrary(ownedBridge);
   const [view, setView] = useState<"list" | "detail">("list");
+  const [section, setSection] = useState<"browse" | "component" | "world">("browse");
   const [usePending, setUsePending] = useState(false);
   const [useError, setUseError] = useState("");
   const requestUse = async (asset: AssetVersion, modify: boolean) => {
@@ -320,7 +325,15 @@ export function AssetLibraryPanel({
           {t("import", lang)}
         </Button></form>
       </div>
-
+      <div className="library-publish-tabs" role="tablist" aria-label={lang === "zh" ? "素材操作" : "Library actions"}>
+        {(["browse", "component", "world"] as const).map((tab, index) => <form key={tab} onSubmit={event => {event.preventDefault(); setSection(tab);}} data-library-tab={tab}>
+          <button type="submit" role="tab" aria-selected={section === tab} disabled={tab !== "browse" && !worldId}>{(lang === "zh" ? ["浏览素材", "保存对象", "保存世界模板"] : ["Browse", "Save object", "Save world template"])[index]}</button>
+        </form>)}
+      </div>
+      {section !== "browse" && worldId ? <LibraryPublishPanel key={`${worldId}:${section}`} bridge={bridge} worldId={worldId} worldName={worldName} kind={section} zh={lang === "zh"} onSaved={(ref: LibraryReference) => {
+        setSection("browse"); setScope("local-library"); setQuery(ref.assetId); setView("detail"); setKind(""); setMediaKind(""); setTags(""); setFavoritesOnly(false); setLatestOnly(false);
+        void controller.search({...filters, scope: "local-library", query: ref.assetId, kind: null, mediaKind: null, tags: [], favoritesOnly: false, latestOnly: false}).then(() => controller.select(ref.assetId, ref.version)).catch(() => {});
+      }}/> : <>
       {controller.status === "unavailable" && (
         <p className="asset-library-note" data-asset-state="unavailable">
           {t("unavailable", lang)}
@@ -574,7 +587,10 @@ export function AssetLibraryPanel({
               </p>
 
               <AssetAnnotationEditor key={assetKey(selected.version_.assetId, selected.version_.version)} controller={controller} lang={lang} />
-              {onUseAsset && <div className="asset-library-use-actions">
+              {selected.version_.kind === "world" && selected.version_.assetId.startsWith("player.world.") ? <div className="asset-library-use-actions">
+                <form data-asset-world-template onSubmit={event => {event.preventDefault(); requestWorldTemplateCreation({assetId: selected.version_.assetId, version: selected.version_.version, contentHash: selected.version_.contentHash});}}><Button type="submit" size="sm">{lang === "zh" ? "从此模板新建世界" : "Create a world from this template"}</Button></form>
+                <p className="asset-library-field-hint">{lang === "zh" ? "使用作者保存的起点，创建独立副本。" : "Create an independent copy from the author's saved starting state."}</p>
+              </div> : onUseAsset && <div className="asset-library-use-actions">
                 <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, false);}}><Button type="submit" size="sm" disabled={!worldId || usePending} data-asset-use="add">{lang === "zh" ? "让 AI 加入当前世界" : "Ask AI to add to this world"}</Button></form>
                 <form onSubmit={event => {event.preventDefault(); void requestUse(selected.version_, true);}}><Button type="submit" size="sm" variant="secondary" disabled={!worldId || usePending} data-asset-use="modify">{lang === "zh" ? "修改后加入" : "Modify and add"}</Button></form>
                 <p className="asset-library-field-hint">{lang === "zh" ? "素材引用将填入原对话，发送后开始创作。" : "Adds the asset reference to your conversation. Send it to start creating."}</p>
@@ -598,6 +614,7 @@ export function AssetLibraryPanel({
               </dl>
 
               <h4 className="asset-library-section">{t("preview", lang)}</h4>
+              {controller.preview?.facts?.previewScope === "source-world-view" && <p className="asset-library-field-hint">{lang === "zh" ? "保存时的世界视角" : "World view when saved"}</p>}
               <div className="asset-library-preview" data-preview-tone={preview.tone}>
                 <p className="asset-library-preview-label">{preview.label}</p>
                 {preview.detail && (
@@ -892,6 +909,7 @@ export function AssetLibraryPanel({
         {scopeLabel(scope, lang)}
         {mediaKind ? ` · ${mediaKindLabel(mediaKind, lang)}` : ""}
       </p>
+      </>}
     </section>
   );
 }
