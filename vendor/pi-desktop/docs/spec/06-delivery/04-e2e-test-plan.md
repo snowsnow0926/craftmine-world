@@ -10120,6 +10120,19 @@ must retain the same world, build, and runtime instance. The repeatable driver i
 profiles and page scripts, never OS input, focus emulation, or Pointer Lock.
 AI task cancellation remains a separate live-authoring acceptance scenario.
 
+The fluency controller may request one `godotEnginePerformance` sample with the
+exact current world/build/instance identity. The protected parent-only route
+calls the same source/PCK-verified host sampler used by the model's performance
+tool. It accepts no script, file path, monitor selector or arbitrary engine op.
+Report engine timing/FPS/draw calls separately from PI renderer frame intervals;
+unknown, paused and unsupported samples must remain explicit.
+
+For real cancellation acceptance, verify the actual Codex account and exact
+Astra/xhigh settings, submit through ordinary `agentPrompt`, wait for real model
+activity, then use ordinary `agentAbort`. Measure the acknowledged stop and
+durable aborted turn separately. Reopen through the existing world form and
+verify the prior formal world plus aborted transcript survive without replay.
+
 ## Self-service library UI and recovery (2026-09-13)
 
 Publish a supported selected object with aliases and a current-view thumbnail

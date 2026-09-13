@@ -1,0 +1,99 @@
+{
+  "format": "craftmine.player-codex-cancel-summary/1",
+  "sourceReport": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-cancel-U4k8bl",
+  "passed": true,
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "modelRequestsStarted": 1,
+  "abortApiMs": 138.14310000000114,
+  "inactiveMs": 140.91090000000258,
+  "terminalMs": 142.15860000000248,
+  "metrics": {
+    "calls": {
+      "observed": 0,
+      "pending": 0,
+      "reported": 0
+    },
+    "coverage": "unknown",
+    "endedAtMs": 1789294677153,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [],
+    "observedAtMs": 1789294677157,
+    "scope": "root-and-delegates",
+    "sessionId": "09df4be3-648a-4848-9e21-4df12ac9c99a",
+    "startedAtMs": 1789294672025,
+    "status": "aborted",
+    "tps": {
+      "coverage": "unknown",
+      "generationMs": null,
+      "outputTokens": null,
+      "value": null,
+      "window": "model-generation"
+    },
+    "turnId": "4e089795-6521-44a1-9c77-8f72be27ce9a",
+    "usage": null,
+    "wallTimeMs": 5128
+  },
+  "reopenedMetrics": {
+    "calls": {
+      "observed": 0,
+      "pending": 0,
+      "reported": 0
+    },
+    "coverage": "unknown",
+    "endedAtMs": 1789294677153,
+    "format": "craftmine.task-metrics/1",
+    "modelIdentity": "runtime-binding",
+    "models": [],
+    "observedAtMs": 1789294735448,
+    "scope": "root-and-delegates",
+    "sessionId": "09df4be3-648a-4848-9e21-4df12ac9c99a",
+    "startedAtMs": 1789294672025,
+    "status": "aborted",
+    "tps": {
+      "coverage": "unknown",
+      "generationMs": null,
+      "outputTokens": null,
+      "value": null,
+      "window": "model-generation"
+    },
+    "turnId": "4e089795-6521-44a1-9c77-8f72be27ce9a",
+    "usage": null,
+    "wallTimeMs": 5128
+  },
+  "formalBuildUnchanged": true,
+  "steps": [
+    "Actual Astra/xhigh activity cancelled through ordinary agentAbort; no new formal build adopted",
+    "Cold reopen preserves original world and aborted transcript without replay"
+  ],
+  "launches": [
+    {
+      "pid": 94508,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "pid": 109244,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "driverCorrection": "Cold reopen initially waited on a chooser. A separate owned-profile CDP action submitted the existing saved-world form; no OS input or world-source mutation. The driver now includes that ordinary form step."
+}

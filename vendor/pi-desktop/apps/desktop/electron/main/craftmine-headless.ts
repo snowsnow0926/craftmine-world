@@ -16,6 +16,7 @@ import {createHeadlessObserverUpgrade} from './craftmine-headless-observer-upgra
 import {validateHeadlessPermissionEnvelope} from './craftmine-headless-permission';
 import {runHeadlessBoundCapture} from './craftmine-headless-bound-capture';
 import type {GodotViewCaptureIdentity} from './godot-view-capture';
+import {validateEnginePerformanceAcceptance} from './craftmine-performance-acceptance';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
@@ -99,6 +100,7 @@ export function installHeadlessControl(access: {
   playerLatest?: (worldId:string,sessionId:string)=>Promise<any>;
   boundCapture?: (identity:GodotViewCaptureIdentity)=>Promise<unknown>;
   boundCaptureState?: ()=>unknown;
+  enginePerformance?: (identity:{worldId:string;buildId:string;instanceId:string})=>Promise<unknown>;
 }): void {
   if (!profile) return;
   const godotExplore = access.godotGameplay ? createGodotExploration(access.godotGameplay) : null;
@@ -131,6 +133,11 @@ export function installHeadlessControl(access: {
     if (request?.type !== "craftmine-headless" || typeof request.id !== "string") return;
     void (async () => {
       switch (request.method) {
+        case 'godotEnginePerformance': {
+          const identity=validateEnginePerformanceAcceptance(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
+          if(!access.enginePerformance)throw Error('HEADLESS_ENGINE_PERFORMANCE_UNAVAILABLE');
+          return access.enginePerformance(identity);
+        }
         case 'godotCaptureBoundView':case 'godotCaptureBoundState':
           if(!access.boundCapture||!access.boundCaptureState)throw Error('HEADLESS_BOUND_CAPTURE_UNAVAILABLE');
           return runHeadlessBoundCapture(request,{enabled:hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1',capture:access.boundCapture,state:access.boundCaptureState});

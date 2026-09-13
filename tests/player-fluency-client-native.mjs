@@ -190,6 +190,9 @@ try {
     record.save=await rpc('worldPanel',{channel:'godot.runtimeSave',payload:{worldId:record.worldId,freeze:false}});
     record.saveMs=performance.now()-saveStarted;
     record.rendererFrames=await rendererFrames(record.worldId);
+    const runtimeIdentity=await rpc('godotObserve');
+    record.enginePerformance=await rpc('godotEnginePerformance',{payload:Object.fromEntries(['worldId','buildId','instanceId'].map(key=>[key,runtimeIdentity[key]]))});
+    if(record.enginePerformance.available){assert.equal(record.enginePerformance.worldId,record.worldId);assert.equal(record.enginePerformance.authority,'host-bound-source-and-pack-verified');}
     await overlayProbe(record.worldId);save();console.log(JSON.stringify({starterId,createMs:record.createToSnapshotMs,saveMs:record.saveMs}));
     if(starterId==='promo-mainline') await heldInputProbe(record.worldId);
   }
