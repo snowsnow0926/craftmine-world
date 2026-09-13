@@ -42,6 +42,11 @@ const report = {
   ],
 };
 if(previous){Object.assign(report,previous,{previousReport:previousFile,previousError:previous.error,driverSha256:report.driverSha256,buildMainSha256:report.buildMainSha256});delete report.error;delete report.shutdownError;delete report.failurePage;delete report.passed;}
+if(process.argv.includes('--recreate-template')){
+ assert(previous&&report.templateWorld&&!report.copiedPublication,'RECREATE_ONLY_FAILED_TEMPLATE_FIXTURE');
+ report.retainedTemplateDiagnostics??=[];report.retainedTemplateDiagnostics.push({worldId:report.templateWorld,sourceReport:previousFile,reason:'Retained pre-fix source initialization; create a new copy without repairing prior data.'});
+ delete report.templateWorld;delete report.copiedSource;
+}
 const reportFile = path.join(out, previous?'continuation-'+randomUUID()+'.json':'report.json');
 const save = () => fs.writeFileSync(reportFile, JSON.stringify(report, null, 2)+'\n');
 const abort = new AbortController(), pending = new Map();
@@ -296,7 +301,7 @@ try{
  const bytes=publishedBytes(publication);
  const template=report.worldPublication??await publish('world','我的博美世界','星雪世界');report.savedTemplate=await nav('worldTemplate.read',{ref:template.ref});assert.equal(report.savedTemplate.initialState,'saved-progress');mark('Explicit saved-progress choice published current formal world through actual PI form');
  await chooser('templates');await until(()=>evaluate(`!!document.querySelector('[data-local-template="${template.ref.assetId}"]')`),Boolean);await submit(`[data-local-template="${template.ref.assetId}"]`);
- await until(()=>evaluate(`!!document.querySelector('[data-local-template-selected]')`),Boolean);
+ await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-local-template-selected]')`);},Boolean);
  report.templateChooserPreview=await until(()=>evaluate(`(()=>{const image=document.querySelector('[data-local-template-selected] img');return image?.complete&&image.naturalWidth>0?{width:image.naturalWidth,height:image.naturalHeight}:null;})()`),Boolean);
  if(!report.templateArchive)await submit('[data-template-export]');
  await until(async()=>fs.existsSync(path.join(out,'player-world-template.zip')),Boolean);report.templateArchive={path:path.join(out,'player-world-template.zip'),sha256:createHash('sha256').update(fs.readFileSync(path.join(out,'player-world-template.zip'))).digest('hex')};

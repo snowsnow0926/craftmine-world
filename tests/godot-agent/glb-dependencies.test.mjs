@@ -30,6 +30,7 @@ test('shared base-class GLB dependencies bind external textures in sourceRequire
     'module.gd':Buffer.from('extends SharedBase\n@export var entity_id: String = ""\n'),
     'scripts/core/base.gd':Buffer.from('class_name SharedBase\nextends Node3D\nconst MODEL = preload("res://models/a.glb")\n'),
     'models/a.glb':glb({images:[{uri:'Textures/palette.png'}]}),
+    'models/a.glb.import':Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n[params]\nmeshes/generate_lods=false\n'),
     'models/Textures/palette.png':Buffer.from('source requirement test bytes')
   }));
   const manifestHash='a'.repeat(64),call=async(method,args)=>{
@@ -43,5 +44,8 @@ test('shared base-class GLB dependencies bind external textures in sourceRequire
   assert.ok(requirements.some(entry=>entry.path==='models/Textures/palette.png'&&entry.sha256===hash(files.get(entry.path))));
   assert.ok(requirements.some(entry=>entry.path==='scripts/core/base.gd'));assert.ok(requirements.some(entry=>entry.path==='models/a.glb'));
   assert.equal(resource.files.has('models/Textures/palette.png'),dual,'dual-use dependency needs both namespaced payload and exact original-path requirement');
+  assert.ok(requirements.some(entry=>entry.path==='models/a.glb.import'&&entry.sha256===hash(files.get(entry.path))),'shared model keeps its exact import policy');
+  assert.equal(resource.files.has('models/a.glb.import'),dual,'a payload model retains its paired policy even without a textual res reference');
+  if(dual)assert.deepEqual(resource.files.get('models/a.glb.import'),files.get('models/a.glb.import'));
  }
 });

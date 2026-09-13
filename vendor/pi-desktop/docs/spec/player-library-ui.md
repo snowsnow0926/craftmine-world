@@ -61,3 +61,8 @@ events remain in CraftmineNavigation; no replacement application shell is added.
 Sheets use the existing opaque primary background token so the original chat
 does not paint through their contents. Template list display labels never cross
 the strict reference boundary: reads send only assetId, version and contentHash.
+
+Selected-component export retains a GLB's supported paired import policy even
+though the model has no textual reference to that sidecar. Its exact bytes stay
+with payload models, or become a pinned source requirement for shared models.
+This preserves explicit LOD behavior across publication and later installation.

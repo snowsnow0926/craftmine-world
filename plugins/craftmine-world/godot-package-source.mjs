@@ -128,7 +128,7 @@ export function createManagedPackageSourceService({call,bind,recoverCatalogDecla
       }offset=index.nextOffset;
     }while(offset!==null&&offset!==undefined);
     const mainScene=/run\/main_scene\s*=\s*"res:\/\/([^"]+)"/.exec(files.get('project.godot')?.toString('utf8')??'')?.[1];check(mainScene&&files.has(mainScene),'PACKAGE_MAIN_SCENE_REQUIRED');
-    return {identity,files,mainScene,bound,loadFile};
+    return {identity,files,mainScene,bound,loadFile,hasSourceFile:name=>descriptors.has(name)};
   }
   async function recoverDeclaration(args,files,mainScene,node,loadFile){
     if(!recoverCatalogDeclaration||!files.has('craftmine.instances.json'))return;
@@ -168,7 +168,7 @@ export function createManagedPackageSourceService({call,bind,recoverCatalogDecla
     async exportSource(args,{assertActive=()=>{}}={}) {
       const {packStaticPackage}=await import('./package-zip.mjs');
       fields(args,['worldId','revision','manifestHash','nodePath','assetId','version']);check(/^[a-z0-9][a-z0-9._-]{0,79}$/.test(args.assetId)&&Number.isSafeInteger(args.version)&&args.version>=1&&args.version<=100000&&Number.isSafeInteger(args.revision)&&/^[a-f0-9]{64}$/.test(args.manifestHash),'INVALID_PARAMS');
-      const {identity,files,mainScene,bound,loadFile}=await read(args,{assertActive}),classes=classIndex(files);
+      const {identity,files,mainScene,bound,loadFile,hasSourceFile}=await read(args,{assertActive}),classes=classIndex(files);
       const node=parseScene(files.get(mainScene).toString('utf8')).nodes.find(node=>nodePath(node)===args.nodePath);check(node,'PACKAGE_COMPONENT_MISSING');
       const entity=identityFor(files,mainScene,node,classes);check(entity,'PACKAGE_COMPONENT_IDENTITY_REQUIRED');
       await recoverDeclaration(args,files,mainScene,node,loadFile);
@@ -196,7 +196,7 @@ export function createManagedPackageSourceService({call,bind,recoverCatalogDecla
         // new license grant. Their original bytes are already hash-validated.
         for(const item of original.files)if(/(?:^|\/)(?:LICENSE[^/]*|provenance\.json)$/i.test(item.path))queue.push(parameterDeclaration.resourceDeclaration.installPath+'/'+item.path);
       }
-      while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=await loadFile(name);payload.set(name,bytes);if(texts.test(name)||name.toLowerCase().endsWith('.glb'))queue.push(...dependencies(name,name.toLowerCase().endsWith('.glb')?bytes:bytes.toString('utf8')));check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
+      while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=await loadFile(name);payload.set(name,bytes);if(texts.test(name)||name.toLowerCase().endsWith('.glb'))queue.push(...dependencies(name,name.toLowerCase().endsWith('.glb')?bytes:bytes.toString('utf8')));if(name.endsWith('.glb')&&hasSourceFile(name+'.import'))queue.push(name+'.import');check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
       // Named base classes remain exact, externally required source files. This
       // avoids copying another Interactable global class into a receiving base.
       const globalQueue=[];
@@ -204,7 +204,7 @@ export function createManagedPackageSourceService({call,bind,recoverCatalogDecla
       for(const [name,bytes]of payload)if(name.endsWith('.gd')) {const body=bytes.toString('utf8'),own=/^\s*class_name\s+(\w+)/m.exec(body)?.[1];for(const [className,classPath]of classes)if(className!==own&&new RegExp('\\b'+className+'\\b').test(body)&&!payload.has(classPath))globalQueue.push(classPath);}
       // A namespaced payload copy cannot satisfy an unchanged shared base's
       // original res:// path. Keep both records for dual-use dependencies.
-      while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name))continue;const bytes=await loadFile(name);required.set(name,{path:name,sha256:hash(bytes)});if(name.toLowerCase().endsWith('.glb'))globalQueue.push(...dependencies(name,bytes));else if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
+      while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name))continue;const bytes=await loadFile(name);required.set(name,{path:name,sha256:hash(bytes)});if(name.toLowerCase().endsWith('.glb')){globalQueue.push(...dependencies(name,bytes));if(hasSourceFile(name+'.import'))globalQueue.push(name+'.import');}else if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
       const rewritten={},inputActions=new Set();let total=0;
       for(const [name,bytes]of payload) {
         let output=bytes;
