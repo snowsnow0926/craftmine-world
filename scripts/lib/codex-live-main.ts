@@ -80,6 +80,14 @@ async function capture(args:Data={}) {
 async function operate(method:string,args:Data):Promise<unknown> {
   if(closing)throw Error('LIVE_HOST_CLOSING');
   if(method==='open')return open();
+  if(method==='openPaused') {
+    // Use the existing covered-chat pause ownership before attachment so a
+    // restored simulation cannot advance between open and a later pause RPC.
+    await host.setImmersion({active:false,overlay:'closed',overlayBounds:null,covered:true});
+    try {await open();await host.pause();}
+    finally {await host.setImmersion({active:false,overlay:'closed',overlayBounds:null});}
+    return report();
+  }
   if(method==='status')return report();
   if(method==='observe')return sample(args);
   if(method==='performance')return performance(args);
@@ -91,6 +99,10 @@ async function operate(method:string,args:Data):Promise<unknown> {
   // Trusted component tests may exercise real physics through the existing
   // base command. This private host call is not an author tool or OS input.
   if(method==='walk')return host.request('walk',args);
+  if(method==='look') {
+    if(Object.keys(args).sort().join(',')!=='pitch,yaw'||!Number.isFinite(args.yaw)||!Number.isFinite(args.pitch)||Math.abs(args.yaw)>Math.PI||Math.abs(args.pitch)>89*Math.PI/180)throw Error('LIVE_LOOK_INVALID');
+    return host.request('look',args);
+  }
   if(method==='diagnostics')return diagnostics();
   if(method==='inputSegment')return gameplay.segment(args.identity,args.segment);
   if(method==='validateInputPlan'){if(!Array.isArray(args.segments)||!args.segments.length)throw Error('GAMEPLAY_PLAN_INVALID');for(const segment of args.segments)validateInputSegment(segment);return {valid:true};}

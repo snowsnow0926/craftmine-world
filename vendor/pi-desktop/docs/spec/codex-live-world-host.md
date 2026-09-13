@@ -196,3 +196,18 @@ without copying or modifying another checkout's dependencies. When omitted, the
 existing Electron package resolution is unchanged. The value is host-owned,
 never a model argument or generic executable tool. Isolated profiles, hidden
 offscreen surfaces and native guards remain unchanged.
+
+## Exact paused reopen and scoped aiming
+
+The private operator helper accepts `look({yaw,pitch})` through the existing
+native look command. Angles must be finite, yaw within plus/minus pi, and pitch
+within plus/minus 89 degrees. It accepts no scripts, paths, extra identities or
+arbitrary input. This lets isolated tests aim without mouse capture or Pointer
+Lock; gameplay interaction still uses the ordinary bounded input path.
+
+`openPaused()` holds the existing covered-chat pause controller across normal
+formal-world opening, sets manual pause, then releases coverage. A cold saved
+simulation can therefore be compared exactly before its first resumed physics
+frame. Ordinary `open()` still resumes the world; a later pause after ordinary
+open may observe legitimate simulation progress and must not be misreported as
+lost or corrupted saved state. No restore snapshot or collision guard is altered.

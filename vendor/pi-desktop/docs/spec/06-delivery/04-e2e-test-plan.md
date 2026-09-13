@@ -10221,3 +10221,11 @@ the developer-only `CRAFTMINE_ELECTRON_BIN` setting. Verify protocol preflight a
 blank-world first load in independent offscreen profiles; reject relative paths
 and directories. Keep all focus/Pointer Lock guards, normal native checks and
 source/adoption distinctions in effect. No model call is needed for preflight.
+
+The private rendered-content helper must reject non-finite/out-of-range look
+angles and extra payload fields. Aim through the existing native look operation
+without Pointer Lock, then interact through ordinary bounded key delivery.
+Cold-open with existing covered-chat pause ownership, compare the complete saved
+state before any resumed frame, then resume normally and confirm live simulation.
+Retain any earlier ordinary-open/late-pause one-frame comparison failures instead
+of accepting state tolerances or rewriting runtime progress.

@@ -13,12 +13,13 @@ const DOMAIN=new Set(['world.read','godotWorld.initStatus','godotWorld.initLaunc
   'godotRuntime.describe','godotRuntime.describeCandidate','godotRuntime.saveProgress','godotCandidate.read',
   'godotApplication.prepare','godotApplication.commit','godotApplication.read','godotApplication.abort',
   'content.status','content.apply.prepare','content.apply.advance','content.apply.confirm','content.apply.rollback','content.operation.read']);
-const METHODS={open:[],status:[],observe:['worldId','buildId','instanceId'],capture:['worldId','buildId','instanceId','candidateId'],
+const METHODS={open:[],openPaused:[],status:[],observe:['worldId','buildId','instanceId'],capture:['worldId','buildId','instanceId','candidateId'],
   snapshot:[],save:[],pause:[],resume:[],preview:['candidateId'],apply:['candidateId'],previewClose:[],retryFirstLoad:['candidateId'],
-  performance:['worldId','buildId','instanceId'],walk:['forward','right','frames'],inputSegment:['identity','segment'],validateInputPlan:['segments'],cancelInputs:['identity'],diagnostics:[],close:[],shutdown:[],check:['descriptor'],cancelCheck:[],cancelFirstLoad:[]};
+  performance:['worldId','buildId','instanceId'],walk:['forward','right','frames'],look:['yaw','pitch'],inputSegment:['identity','segment'],validateInputPlan:['segments'],cancelInputs:['identity'],diagnostics:[],close:[],shutdown:[],check:['descriptor'],cancelCheck:[],cancelFirstLoad:[]};
 export function validateLiveCommand(method,args={}) {
   if(!Object.hasOwn(METHODS,method)||!args||typeof args!=='object'||Array.isArray(args)||Object.keys(args).some(k=>!METHODS[method].includes(k)))throw Error('LIVE_OPERATION_NOT_ALLOWED');
   if(['apply','preview','retryFirstLoad'].includes(method)&&!/^gcan-[a-f0-9]{64}$/.test(args.candidateId??''))throw Error('LIVE_CANDIDATE_REQUIRED');
+  if(method==='look'&&(!Number.isFinite(args.yaw)||!Number.isFinite(args.pitch)||Math.abs(args.yaw)>Math.PI||Math.abs(args.pitch)>89*Math.PI/180))throw Error('LIVE_LOOK_INVALID');
 }
 export function validateLiveDomain(worldId,method,args) {
   if(!DOMAIN.has(method)||!args||typeof args!=='object'||Array.isArray(args))throw Error('LIVE_DOMAIN_NOT_ALLOWED');
