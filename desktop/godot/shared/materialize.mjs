@@ -19,6 +19,9 @@ const TEMPLATE_BASES=['top-down','mining-sandbox'];
 
 /** Materialize trusted authored base source in a new directory, never execute it. */
 export function materializeBase({baseId,worldId,template='blank',out,controllerProfile='creation-player-collision/1',enginePerformanceProfile}) {
+  // New creation worlds provide visual editing without a performance opt-in.
+  // The collector remains request-driven; retained templates keep their source.
+  if(baseId==='creation-sandbox'&&enginePerformanceProfile===undefined)enginePerformanceProfile='engine-monitor/1';
   if(baseId==='creation-sandbox'&&template.startsWith('promo-'))return materializeWorldTemplate({worldId,template,out});
   const config=configs[baseId];
   if(!config || !config.examples.includes(template)) throw Error('Unknown base/template');

@@ -10419,7 +10419,9 @@ remains outside the main navigation gateway.
 - Cancel, stale captures, old owner/session, switching worlds, save, resume and
   exit must clear temporary geometry. Late cancelled-preview updates never revive it.
 - Exact old LF/CRLF engine bridges may be upgraded by the existing explicit update
-  action; only that pinned file changes. Unrelated draft/source changes are retained
+  action; only that pinned file changes. Ordinary standard bridges use the exact
+  three-file wrapper/helper bootstrap, and new worlds support preview with no
+  performance-profile opt-in. Unrelated draft/source changes are retained
   or explicitly refused and no accepted component archive is modified in place.
 - Automation uses `tests/first-creation-roundtrip-native.mjs --visual-edit` against
   the integrated staged app and v2-compatible component resources. The native

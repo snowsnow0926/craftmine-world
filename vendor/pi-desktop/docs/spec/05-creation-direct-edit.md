@@ -83,9 +83,14 @@ state. A retired host preview ID cannot be resurrected by a late update. Preview
 pauses gameplay and releases engine input actions; returning to play uses the
 existing Resume action. Preview cancellation never replays an edit.
 
+New empty creation-sandbox worlds include the fixed visual/engine bridge by default;
+the performance collector still runs only when requested. Other bases and retained
+template source are unchanged.
+
 The preceding engine bridge is retained as exact LF/CRLF source pins. Existing
 worlds remain readable; the existing explicit observer-update action upgrades
-only the bridge through a source CAS/check/adoption, retaining unrelated authored
+the old engine bridge alone, or bootstraps an exact ordinary standard bridge with
+its two previously absent helper files, through source CAS/check/adoption. This retains unrelated authored
 files and progress. If an old picker also needs its independent update, it is
 adopted first and the next capture offers the preview update. Unknown/mixed source
 cohorts never gain this maintenance authority.
