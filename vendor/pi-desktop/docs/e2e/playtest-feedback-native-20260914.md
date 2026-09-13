@@ -8,7 +8,7 @@ headless file grants, Rust feedback journal and normal quit/cold reopen.
 The author creates the approved mainline example and saves/exports a template.
 The friend starts with an empty profile, imports that ZIP, creates an independent
 world, opts into a screenshot and previews the report. The driver writes the
-displayed native PNG into evidence, requests normal progress save after preview,
+displayed native PNG prepared before opening the sheet into evidence, requests normal progress save after preview,
 then confirms export and compares PNG/text/build identity with the reviewed
 payload. No injected image or replacement domain implementation is used.
 
@@ -38,5 +38,7 @@ introduced. Local RPC/transport watchdogs retain the established diagnostic
 failure behavior.
 
 The driver was prepared and syntax-checked before integrated runtime execution.
+Terminal error text from a player form immediately fails the run even when its
+diagnostic code also names a transient native condition such as capture busy.
 Passing storage fixtures and React tests do not imply this native test passed.
 Only an actual generated report with `passed: true` is acceptance evidence.

@@ -36,7 +36,7 @@ async function until(read, accept) {
   while(!abort.signal.aborted) {
     if(ended) throw Error('DESKTOP_EXITED');
     try {const value = await read(); if(accept(value)) return value;}
-    catch(error) {if(!/Window is not ready|Actual Godot host unavailable|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE|GODOT_VIEW_CAPTURE_BUSY/.test(String(error))) throw error;}
+    catch(error) {if(String(error).includes('PLAYER_UI_TERMINAL:')||!/Window is not ready|Actual Godot host unavailable|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE|GODOT_VIEW_CAPTURE_BUSY/.test(String(error))) throw error;}
     await delay(100);
   }
   throw Error('TEST_CANCELLED');
@@ -139,7 +139,7 @@ const panel=(channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...
 const pkg=(method,params={})=>panel('package.request',{method,params:{worldId,...params}});
 const field=(selector,value)=>evaluate(`(()=>{const element=document.querySelector(${JSON.stringify(selector)});if(!element)throw Error('FIELD_NOT_FOUND:'+${JSON.stringify(selector)});const props=element[Object.keys(element).find(key=>key.startsWith('__reactProps$'))];if(typeof props?.onChange!=='function')throw Error('FIELD_HANDLER_REQUIRED');if(element.type==='checkbox'||element.type==='radio')element.checked=${JSON.stringify(value)};else element.value=${JSON.stringify(value)};props.onChange({target:element,currentTarget:element});return true;})()`);
 const mark=message=>{report.steps.push({at:new Date().toISOString(),message});save();console.log(message);};
-async function failIfError(){const error=await evaluate(`document.querySelector('[data-world-entry-error], [data-library-publish] [role="alert"], [data-local-world-templates] [role="alert"], [data-playtest-panel] [role="alert"]')?.textContent`);if(error)throw Error(error);}
+async function failIfError(){const error=await evaluate(`document.querySelector('[data-world-entry-error], [data-library-publish] [role="alert"], [data-local-world-templates] [role="alert"], [data-playtest-panel] [role="alert"]')?.textContent`);if(error)throw Error('PLAYER_UI_TERMINAL:'+error);}
 async function createWorld(title){
   await chooser('create');await until(()=>evaluate(`!!document.querySelector('[data-world-base-option="creation-sandbox"] input')`),Boolean);
   await field('[data-world-base-option="creation-sandbox"] input',true);

@@ -9,8 +9,15 @@ The asset sheet contains a collapsible friend feedback panel for the current
 world. Players write a problem/reply and reproduction steps/expected outcome.
 Screenshots are off by default. Preview freezes the actual Rust world identity,
 build, revision/content hash, base/engine/progress versions and packaged client
-version/commit. Optional screenshots come exclusively from native world capture
-and must match that world/build. Preview shows every exported field and image.
+version/commit. Optional screenshots use the native frame prepared immediately
+before opening the asset sheet, which hides the world view. Reading it requires
+the same world/build/instance/formal-source binding and never starts another
+capture behind the sheet. The UI labels this capture moment explicitly. Closing
+and reopening the sheet refreshes the frame while retaining only unsaved editor
+text in a bounded, per-world process-local map. Images, reports and grants are
+not retained in that map. Missing or changed frame bindings require reopening
+and review; they are not replaced with synthetic images. Preview shows every
+exported field and image.
 Export requires a separate explicit confirmation and native save dialog.
 
 No account details, conversation, diagnostic logs, source, other issues or saved

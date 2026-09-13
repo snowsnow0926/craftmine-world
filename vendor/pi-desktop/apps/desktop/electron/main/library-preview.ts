@@ -60,6 +60,15 @@ export function createLibraryPreviewCapture(options: {
     return (await fresh(worldId)).preview;
   };
   return Object.assign(capture, {
+    /** Feedback reads the explicitly reviewed pre-sheet frame. It must never
+     * attempt a fresh compositor capture while the native view is hidden. */
+    async prepared(worldId: string): Promise<Preview> {
+      const previous = cached;
+      if (!previous) throw Error("LIBRARY_PREVIEW_PREPARE_REQUIRED");
+      const current = await binding(worldId);
+      if (cached !== previous || !same(previous.binding, current)) throw Error("LIBRARY_PREVIEW_WORLD_CHANGED");
+      return {...previous.preview};
+    },
     async prepare(input: unknown) {
       if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).join(",") !== "worldId"
         || typeof (input as {worldId?: unknown}).worldId !== "string" || !/^[A-Za-z0-9._-]{1,128}$/.test((input as {worldId: string}).worldId)) throw Error("LIBRARY_PREVIEW_INVALID_REQUEST");

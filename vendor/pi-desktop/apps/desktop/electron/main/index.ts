@@ -3284,7 +3284,7 @@ const playerFeedback = createPlaytestFeedbackPanel({
   domain: (method,args) => plugins.requestCraftmineHost(method,args), selection:godotSelection,
   blocked:()=>!!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
   client:{version:app.getVersion(),...(typeof craftmineBuildIdentity.commit === "string" ? {commit:craftmineBuildIdentity.commit}:{})},
-  capture:async worldId=>{await captureLibraryPreview.prepare({worldId});return captureLibraryPreview(worldId);},
+  capture:worldId=>captureLibraryPreview.prepared(worldId),
   pick:async(kind,suggestedName)=>{
     if(headlessAcceptance)return join(headlessAcceptance.root,"player-feedback.json");
     if(kind==="import"){const result=await dialog.showOpenDialog({title:"导入试玩反馈",properties:["openFile"],filters:[{name:"Craftmine playtest feedback",extensions:["json"]}]});return result.canceled?null:result.filePaths[0]??null;}

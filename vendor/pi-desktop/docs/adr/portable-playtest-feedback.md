@@ -15,3 +15,10 @@ Review, export, import confirmation and AI draft preparation are separate player
 actions. No report can silently write world source, become a tool instruction,
 claim successful repair or auto-submit a model turn. A reply links a new report
 to an existing ID, preserving history instead of rewriting a friend's words.
+
+Native acceptance found that requesting a new compositor frame after the asset
+sheet hid the native view fails with `GODOT_VIEW_CAPTURE_BUSY`. Feedback therefore
+reads only the existing pre-sheet prepared frame, checking world/build/instance
+and formal source identity again. The common publication preview result schema
+is unchanged. The UI explicitly labels when the image was retained and preserves
+unsaved text while the player closes/reopens the sheet for a refreshed frame.
