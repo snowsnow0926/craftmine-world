@@ -18,6 +18,16 @@ text in a bounded, per-world process-local map. Images, reports and grants are
 not retained in that map. Missing or changed frame bindings require reopening
 and review; they are not replaced with synthetic images. Preview shows every
 exported field and image.
+Before the sheet opens, native preparation retries only exact capture BUSY or
+PENDING conflicts for up to a two-second retry window, waiting at most 100 ms
+between attempts. Every attempt and wait checks the initial world/build/instance
+and formal-source binding; changes or other errors fail immediately. A successful
+frame is never recaptured by this loop. The normal compositor deadline remains
+separate. A narrow native diagnostic records attempt count, first retryable code,
+elapsed time and outcome, without paths, account data or image bytes. This is a
+local capture-contention window, not a model or full-turn budget.
+An unavailable pre-sheet frame has explicit close/reopen recovery copy rather
+than an opaque code alone. Recovery keeps unsaved text but requires image review.
 Export requires a separate explicit confirmation and native save dialog.
 
 No account details, conversation, diagnostic logs, source, other issues or saved

@@ -22,3 +22,8 @@ reads only the existing pre-sheet prepared frame, checking world/build/instance
 and formal source identity again. The common publication preview result schema
 is unchanged. The UI explicitly labels when the image was retained and preserves
 unsaved text while the player closes/reopens the sheet for a refreshed frame.
+Pre-sheet preparation may briefly wait for existing save/checkpoint/capture
+ownership to clear. Only exact BUSY/PENDING failures retry inside a two-second
+window, with the initial source/view binding pinned throughout. CaptureView's
+original ownership, lifecycle and compositor checks are unchanged. Other errors
+and superseded preparation attempts never get silently recaptured.

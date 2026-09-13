@@ -10497,7 +10497,11 @@ build identities, prepare an AI-review draft without submitting or overwriting
 existing text, export a linked reply and import it back in the friend profile.
 Autosave after review must export the exact original reviewed bytes without
 recapturing or changing timestamps, progress identity or screenshots; a new
-formal build still requires a fresh preview.
+formal build still requires a fresh preview. Pre-sheet BUSY/PENDING contention
+may wait briefly while holding the initial binding; changed identities fail,
+permanent contention ends within the two-second retry window and emits bounded
+attempt/reason diagnostics without paths or account data. Other capture errors
+do not retry.
 Reject tampered/oversized files, injected paths, cross-world read IDs and changed
 formal build after preview. Saved template version and compatibility metadata
 remain visible through the normal ZIP export/import/republication workflow.

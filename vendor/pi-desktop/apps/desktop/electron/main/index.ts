@@ -3223,6 +3223,7 @@ const craftmineBackup = createCraftmineBackupService({
   },
 });
 const captureLibraryPreview = createLibraryPreviewCapture({
+  onPreparation: diagnostic => console.info("LIBRARY_PREVIEW_PREPARATION", diagnostic),
   selection: godotSelection,
   sourceIdentity: async worldId => {
     const descriptor=await godotAdapter.describe(worldId);
