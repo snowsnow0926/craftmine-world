@@ -9,6 +9,9 @@
 2. Close the panel while checking, reopen and recover the same operation. Simulate
    lost install/adoption acknowledgements: retries reconcile the exact instance
    and Core adoption, with no second installation.
+   Remount immediately after submitting start, before native preflight/file
+   persistence: status/retry join the reservation and early cancel prevents any
+   installation. Truly unknown ids return a bounded not-found code without paths.
 3. Cancel during installation and during candidate staging. The fence precedes
    the cancellation request; late check completion does not apply. Report source
    already retained in the draft. Change source or switch worlds before apply:

@@ -40,6 +40,15 @@ from Core evidence, including a commit whose acknowledgement was lost.
 Orderly shutdown fences active work but retains a completed ready check for
 explicit same-build adoption after restart.
 
+Start reserves the exact operation synchronously, before disk reads or asynchronous
+native preflight. Same-id status and retry requests join that reservation. An early
+cancel fences it before persistence and prevents installation. Main dispatches
+start/apply after synchronous sender/shutdown checks and supplies asynchronous
+maintenance/selection/busy preflight through the reserved service's `prepare`
+callback. Unknown persisted ids return `DIRECT_LIBRARY_OPERATION_NOT_FOUND`.
+Every public action projects thrown failures to a bounded code without local paths,
+transport messages, causes or native stacks.
+
 Cancellation persists its fence before cancellation RPCs and cancels only its
 own check. A late installation reply updates retained-draft facts but cannot
 adopt. Atomic adoption that already committed is reported as applied based on
