@@ -39,6 +39,7 @@ mod reviews;
 mod verification;
 mod workspaces;
 mod worlds;
+mod world_briefs;
 #[cfg(test)]
 mod godot_test_support;
 pub use workspaces::WorkspaceContext;
@@ -186,6 +187,7 @@ impl TaskJournal {
         godot_applications::migrate(&db)?;
         godot_storage::migrate(&db)?;
         godot_worlds::migrate(&db)?;
+        world_briefs::migrate(&db)?;
         // The managed Git content history owns authored source from here on.
         content_history::migration::migrate(&db)?;
         content_history::apply::migrate(&db)?;

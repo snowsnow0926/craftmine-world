@@ -1,0 +1,11 @@
+.world-brief-panel { border-top: 1px solid var(--ds-border-subtle); margin-top: 8px; padding: 8px 4px; font-size: 12px; }
+.world-brief-panel summary { cursor: pointer; }
+.world-brief-body { max-height: 60vh; overflow-y: auto; padding-top: 8px; }
+.world-brief-body p { overflow-wrap: anywhere; white-space: pre-wrap; margin: 6px 0; }
+.world-brief-body form, .world-brief-goal { display: grid; gap: 6px; margin: 8px 0; padding-bottom: 8px; border-bottom: 1px solid var(--ds-border-subtle); }
+.world-brief-body textarea, .world-brief-body select { width: 100%; min-width: 0; background: var(--ds-bg-secondary); color: inherit; border: 1px solid var(--ds-border-subtle); border-radius: 5px; padding: 5px; }
+.world-brief-body textarea { min-height: 72px; resize: vertical; }
+.world-brief-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+.world-brief-body button { border: 1px solid var(--ds-border-subtle); border-radius: 5px; padding: 4px 6px; }
+.world-brief-body button:disabled { opacity: .5; }
+.world-brief-body small { display: block; opacity: .65; overflow-wrap: anywhere; }

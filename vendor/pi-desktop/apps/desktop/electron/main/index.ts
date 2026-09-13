@@ -25,6 +25,7 @@ import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { readWorldConversation } from "./world-conversation";
 import {createWorldConversationNavigation, sameConversationProjectDirectory} from "./world-conversation-navigation";
+import {createWorldBriefService} from "./world-brief-service";
 import { createPlayerWorlds } from "./player-worlds";
 import { createCraftmineQuitState } from "./craftmine-quit-state";
 import { creationRequestStatus } from "./creation-request-status";
@@ -385,6 +386,9 @@ const productPaths = craftminePaths(process.env, app.getPath("appData"));
 mkdirSync(productPaths.userData, { recursive: true });
 app.setPath("userData", productPaths.userData);
 const worldConversationNavigation = createWorldConversationNavigation(join(productPaths.userData, "world-conversation-navigation"));
+const worldBriefService = createWorldBriefService({selected:()=>godotSelection(),
+  call:(method,args)=>plugins.requestCraftmineHost("world.brief",{method,args}),
+  busy:()=>!!(profileRestore||quitting||craftmineQuitPreparation||creationEditStarting||turnFinalizations.size)});
 // Upstream internals share this alias; never inherit another PI profile.
 process.env.PI_DESKTOP_DATA_DIR = productPaths.dataDir;
 process.env.CRAFTMINE_CORE_BIN = app.isPackaged
@@ -6921,6 +6925,11 @@ function registerIpc() {
       }
       if(quitting||craftmineQuitPreparation||craftmineQuitPrepared||worldRemoval.busy)throw Error('WORLD_BUSY');
       return payload.channel==='world.playerCancel'?playerWorlds.cancel(payload.payload):playerWorlds.enter(payload.payload);
+    }
+    if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.brief") {
+      if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      if (profileRestore || quitting || craftmineQuitPreparation) throw Error("WORLD_BUSY");
+      return worldBriefService.request(payload.payload);
     }
     if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.conversation") {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");

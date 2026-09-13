@@ -16,7 +16,7 @@ const TOOL_NAMES = new Set(['godot_docs','godot_guidance','godot_project_index',
   'godot_build_start','godot_build_read','godot_build_cancel',
   'godot_candidate_read','godot_candidate_list','godot_jobs','creation_operation',
   'requirements_read','blender_status','blender_generate','blender_job_read','blender_cancel',
-  'asset_library','godot_source_library','package_library']);
+  'asset_library','godot_source_library','package_library','world_brief']);
 
 export class CodexWorldHost {
   constructor({state, data, core, services = {}, logger = {log(){},warn(){}}}) {

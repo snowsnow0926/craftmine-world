@@ -13,6 +13,7 @@ import { useCraftmineWorlds } from "../hooks/use-craftmine-worlds";
 import { enterCraftmineMode, openCraftmineModeEntry } from "../lib/craftmine-mode";
 import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
+import {WorldBriefPanel} from "./craftmine/WorldBriefPanel";
 import { GodotHistoryPanel } from "./craftmine/GodotHistoryPanel";
 import { worldAssetPrompt } from "../lib/world-asset-request";
 import {FirstCreationGuide, type FirstCreationDestination} from "./craftmine/FirstCreationGuide";
@@ -180,6 +181,18 @@ export function CraftmineNavigation() {
             <button type="submit" className="craftmine-world-nav" data-direct-return>{lang === "zh" ? `查看素材操作（${directToReview}）` : `Review asset operations (${directToReview})`}</button>
           </form>}
           <FirstCreationGuide lang={lang} worldId={controller.activeWorldId} onNavigate={guideNavigate}/>
+          {controller.activeWorldId&&controller.bridge&&<WorldBriefPanel key={controller.activeWorldId}
+            worldId={controller.activeWorldId} bridge={controller.bridge} zh={lang==="zh"}
+            onContinue={async text=>{
+              const worldId=controller.activeWorldId,bridge=controller.bridge,sessionId=useAppStore.getState().activeSessionId;
+              if(!worldId||!bridge||!sessionId)throw Error("WORLD_CONVERSATION_REQUIRED");
+              const selected=await bridge.list();
+              const bound=await bridge.call("world.conversation",{worldId}) as {sessionId?:string};
+              if(selected.activeWorldId!==worldId||bound.sessionId!==sessionId||useAppStore.getState().activeSessionId!==sessionId||latestWorld.current!==worldId)throw Error("WORLD_CONVERSATION_CHANGED");
+              if(useAppStore.getState().composerPrefill)throw Error("WORLD_COMPOSER_PENDING");
+              useAppStore.setState({composerPrefill:{sessionId,worldId,text,fileReferences:[],append:true,focus:false}});
+              enterCraftmineMode("create",{explicit:true});
+            }}/>}
           {activeSessionId && (
             <div className="craftmine-world-session" data-world-session={activeSessionId}>
               <span className="craftmine-world-session-label">{CRAFTMINE_WORLD_TEXT.sessionTitle[lang]}</span>

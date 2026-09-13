@@ -54,6 +54,7 @@ const LOCAL_TOOLS={
   resource_read:{owner:'S1',hostMethod:'workspace.recordRead',needs:['sessionDrafts']},
   workspace_patch:{owner:'S1',hostMethod:'workspace.commit',needs:['sessionDrafts']},
   requirements_read:{owner:'S1',hostMethod:'task.readRequirements',needs:['sessionDrafts']},
+  world_brief:{owner:'S1',hostMethod:'worldBrief.tool',needs:['sessionDrafts']},
   verification_submit:{owner:'S1',hostMethod:'verification.submit',needs:['verificationJobs']},
   verification_read:{owner:'S1',hostMethod:'verification.read',needs:['verificationJobs']},
   verification_cancel:{owner:'S1',hostMethod:'verification.cancel',needs:['verificationJobs']},

@@ -123,6 +123,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     // S5 asset service and S3 works/package service. Only a method name from the
     // service's own bounded surface is forwarded; the service owns its field
     // validation, operation identity and idempotency.
+    if(method==='world.brief'){
+      fields(params,['method','args']);
+      if(!['worldBrief.read','worldBrief.edit'].includes(params.method))throw Error('UNKNOWN_WORLD_BRIEF_METHOD');
+      return core.call(params.method,params.args);
+    }
     if(method==='asset.request'){
       fields(params,['method'],['args']);
       if(!assetService)throw Error('ASSET_SERVICE_UNAVAILABLE');

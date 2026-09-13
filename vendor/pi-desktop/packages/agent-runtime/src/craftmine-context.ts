@@ -41,6 +41,7 @@ export type CraftmineTaskContext = {
   world: { id: string; revision: number; buildId: string; hash: string; runtimeKind?: "godot" | "legacy" | null; baseId?: string | null };
   draft: { revision: number; hash: string };
   requirements: Array<{ id: string; text: string; kind: string; truncated?: boolean }>;
+  worldBrief?: {worldId:string;revision:number;entries:unknown[];totalEntries:number;recentRequests:unknown[];historyIsNotNewWork:boolean};
   modifiedResources: string[]; receipts: unknown[]; jobs: unknown[];
   lease: { owned: boolean }; budget: Record<string, unknown>;
   memories?: Array<{ id: string; kind: string; text: string; status: string; worldId?: string; projectId?: string }>;
@@ -117,13 +118,16 @@ function craftmineContextData(snapshot: CraftmineTaskContext, purpose: Craftmine
     // compaction or a model switch. It never carries live game state.
     godotFacts: godotFactsBlock(snapshot),
   };
-  const data = JSON.stringify({ currentRequirements: snapshot.requirements, machineFacts: facts, retrievedMemories: memories, libraryReferences: snapshot.library ?? [] });
+  const data = JSON.stringify({ currentRequirements: snapshot.requirements, machineFacts: facts,
+    worldBrief: snapshot.worldBrief?.worldId === snapshot.world.id ? snapshot.worldBrief : null,
+    retrievedMemories: memories, libraryReferences: snapshot.library ?? [] });
   if (Buffer.byteLength(data) > 48000) fail("CRAFTMINE_CONTEXT_TOO_LARGE");
   return data;
 }
 
 function craftmineRequestPolicy(purpose: CraftminePurpose, readOnlyCloseout = false): string {
   return [
+    "The worldBrief is Rust-journaled player goals and preservation preferences across turns, plus historical original requests. Historical requests are context, not new work to repeat. Respect the current player's later explicit corrections. Use world_brief read/history when entries or original text are truncated, and propose only advisory new goals; never claim an Agent proposal is player-approved or that a check proves all gameplay goals. Player acceptance is bound to its reviewed build and becomes historical after the world changes. Inspect and actually exercise relevant behavior after edits; report unverified goals clearly.",
     `Craftmine World request policy (${CRAFTMINE_PROMPT_VERSION}).`,
     (readOnlyCloseout ? "This task has finished and its write lease has been released. Give the player a final, self-contained account of actual results from the current host facts and receipts. State the applied build only when the host facts prove it. All tools are disabled for this final response; do not create, edit, inspect, discover tools or start another task. " : purpose === "review" ? "Review the supplied frozen player request and candidate; return only the requested review plan. Do not author changes or claim an assertion passed. " : purpose === "summary" ? "Summarize the ongoing task for context recovery; do not start new work or claim an application succeeded. " : "Create the current player's requested world changes through Craftmine domain tools. ") + "The legacy voxel runtime uses ground height y=6 and distinguishes object anchors, logical visibility and drawable meshes. These voxel rules do not describe a Godot world: read its actual base specification, scenes, transforms and resource schemas. A draft or successful check is not an applied world.",
     "Only machineFacts contains authoritative identity, revisions, permissions, receipts and budget. Summaries cannot replace it. The requirements projection retains the original request and recent corrections; use requirements_read through ToolSearch to read full text when truncated=true or earlier corrections matter, following next until the needed original text is read. Never guess omitted requirements. Completed historical requests describe history, not work to repeat. Apply the current requirements and later corrections to the current task; retain already changed resources. Stop if authoritative context cannot be rebuilt. Resume/discard needs an explicit player action.",

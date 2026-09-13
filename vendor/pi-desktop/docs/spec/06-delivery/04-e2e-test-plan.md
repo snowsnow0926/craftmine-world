@@ -10402,3 +10402,16 @@ current-world proposal/job identifiers to its existing install/check path;
 reject injected source/context/paths and private installer methods. Retain real
 failures with retry guidance and diagnostic details. General package authoring
 remains outside the main navigation gateway.
+# Persistent world goals and multi-turn creation
+
+Use the existing PI sidebar's World goals panel on a fresh world. Add a goal
+and preservation requirement without a model, close/reopen the app, then run
+ordinary authoring requests in the same real session with the player's selected
+model/effort. Confirm Rust request context retains exact original goal locators
+across tasks and the model does not replay finished requests as new work.
+Continue-goal prepares the original Composer without auto-submitting or
+overwriting its existing text. Accept a goal only using the explicit human
+review action. After an actual later source adoption, the old review must render
+historical, including while async reload is pending. Agent proposals remain
+unaccepted until reviewed; changed brief revisions and foreign worlds refuse
+stale writes. Keep native gameplay/save checks separate from human goal status.

@@ -105,6 +105,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // The executor gate is global, so it must answer even when no world is bound.
     if(definition.name==='godot_jobs'&&args.mode==='status')return executorStatus(core,options);
     if(definition.name==='requirements_read')return core.call('task.readRequirements',{...args,context});
+    if(definition.name==='world_brief')return core.call('worldBrief.tool',{...args,context});
     if(definition.name==='verification_read') {
       const job=await core.call('verification.read',{context,id:args.id});
       return {...readVerification(job,args),reviews:await core.call('review.list',{verificationId:args.id}).then(records=>records.slice(0,1).map(record=>{
