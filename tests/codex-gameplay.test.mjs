@@ -22,7 +22,8 @@ function fixture(overrides={}){
   return {calls,access,controller:createGameplayController(access)};
 }
 test('finite segment schema refuses code, unknown keys, state mutation and invalid timings',()=>{
-  validateInputSegment({keys:['KeyF','Enter','ArrowUp','ControlLeft'],frames:600,settleFrames:600});
+  validateInputSegment({keys:['KeyF','Enter','ArrowUp','ControlLeft','F1','F4','F12'],frames:600,settleFrames:600});
+  for(const code of ['F0','F13','AltF4','MetaLeft'])assert.throws(()=>validateInputSegment({keys:[code],frames:1}));
   for(const input of [{frames:0},{frames:601},{frames:1,js:'alert(1)'},{frames:1,position:[0,0,0]},{frames:1,keys:['KeyW','KeyW']},{frames:1,keys:['bad_code']},{frames:1,buttons:['fire']},{frames:1,motion:{x:NaN,y:0}}])assert.throws(()=>validateInputSegment(input));
   assert.throws(()=>validateGameplayPlan({format:'craftmine.gameplay-plan/1',segments:[{frames:1}],worldId:'other'}));
 });

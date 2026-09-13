@@ -10,6 +10,7 @@ export function browserKey(code:unknown):string {
   if(typeof code!=='string')throw Error('GAME_INPUT_KEY_INVALID');
   if(/^Key[A-Z]$/.test(code))return code.slice(3).toLowerCase();
   if(/^Digit[0-9]$/.test(code))return code.slice(5);
+  if(/^F(?:[1-9]|1[0-2])$/.test(code))return code;
   if(Object.hasOwn(NAMED,code))return NAMED[code];
   throw Error('GAME_INPUT_KEY_INVALID');
 }

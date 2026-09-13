@@ -16,6 +16,11 @@ native saved world. Separately open the author service, require its formal state
 to be paused and consecutive snapshots to remain equal while awaiting model
 work. Actual fixtures are retained in the root promotional test results.
 
+Press the authored F4 clean-view control through the same fixed canvas adapter,
+verify the actual rendered HUD hides and returns, and verify flight still
+responds to controls while hidden. Reject malformed function keys and Alt/Meta
+combinations before delivering any input; require focus/Pointer Lock guards zero.
+
 ## CRAFTMINE-026: Local token limits and stable request prefixes
 
 On an isolated profile, exhaust a small cumulative task token budget while the

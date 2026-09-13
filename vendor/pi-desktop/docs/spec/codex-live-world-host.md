@@ -146,6 +146,11 @@ instead of a fabricated save receipt. Cancellation during gameplay still
 releases held inputs and follows the normal save/close flow. Reports exist even
 when cancellation occurs before a helper directory is available.
 
+The fixed canvas input adapter accepts standard F1–F12 codes as well as letters,
+digits, arrows and its named keys. Function keys are untrusted DOM events in the
+bound game canvas; Alt/Meta combinations and OS input remain unavailable. The
+native flight prototype's F4 clean-view switch is exercised through this path.
+
 ```powershell
 node scripts/promo-world-author.mjs turn --data $data --codex $codex --live-host true --prompt '请参考这两张图制作模型' --image 'D:/references/front.png' --image 'D:/references/side.jpg'
 ```
