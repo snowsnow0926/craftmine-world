@@ -2,6 +2,8 @@
 // CDP only evaluates page scripts; it never enables focus emulation or sends input.
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
@@ -277,17 +279,29 @@ async function selectEditedTree(id){
  await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='编辑对象'&&!n.disabled)`),Boolean);
  await button('编辑对象');await until(()=>evaluate(`!!document.querySelector('[aria-label="尺寸 X"]')`),Boolean);
 }
+function previewPixels(beforeFile,afterFile){
+ const require=createRequire(import.meta.url);let PNG;try{({PNG}=require('pngjs'));}catch{({PNG}=require(path.join(os.homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pngjs')));}
+ const before=PNG.sync.read(fs.readFileSync(beforeFile)),after=PNG.sync.read(fs.readFileSync(afterFile));assert.equal(after.width,before.width);assert.equal(after.height,before.height);
+ let cyanChanged=0;for(let i=0;i<after.data.length;i+=4){const b=before.data,a=after.data;if(a[i]+10<b[i]&&a[i+1]>b[i+1]+10&&a[i+2]>b[i+2]+15)cyanChanged++;}return cyanChanged;
+}
+async function previewVisible(){
+ return until(()=>evaluate(`({statuses:Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent),notes:document.querySelector('.creation-object-editor')?.innerText})`),value=>{if(value.statuses.some(t=>/当前世界暂不支持预览|预览位置存在/.test(t)))throw Error('PREVIEW_UNAVAILABLE:'+value.notes);return value.statuses.includes('预览位置可用');});
+}
 async function previewAndCancel(label){
+ const beforeFrame=await capture(label+'-baseline');
  // The actual preview button pauses the runtime. Close this first preview so
  // the snapshot baseline and later preview share that ordinary paused state.
- await button('预览摆放');await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent).some(t=>t==='预览位置可用')`),Boolean);
+ await button('预览摆放');await previewVisible();
  await button('关闭预览');await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
  const before=completeCreationProgress(await rpc('godotSnapshot'));
- await button('预览摆放');await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent).some(t=>t==='预览位置可用')`),Boolean);
- const frame=await capture(label+'-visible');await button('关闭预览');
+ await button('预览摆放');await previewVisible();
+ const deadline=performance.now()+10000;const visible=await until(async()=>{
+  const frame=await capture(label+'-visible'),changedPixels=previewPixels(beforeFrame.file,frame.file);report.visualFrameAttempts??=[];report.visualFrameAttempts.push({label,frame,changedPixels});save();
+  if(changedPixels<256&&performance.now()>deadline)throw Error('NATIVE_PREVIEW_PIXELS_NOT_VISIBLE:'+JSON.stringify({label,changedPixels,frame}));return {frame,changedPixels};
+ },v=>v.changedPixels>=256);const frame=visible.frame;await button('关闭预览');
  await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
  const after=completeCreationProgress(await rpc('godotSnapshot'));assert.deepEqual(after,before,'PREVIEW_CANCEL_PRESERVES_COMPLETE_PROGRESS');
- report.visualPreviews??=[];report.visualPreviews.push({label,frame,before,after});save();
+ report.visualPreviews??=[];report.visualPreviews.push({label,frame,beforeFrame,changedPixels:visible.changedPixels,before,after});save();
 }
 async function startAndWaitEdit(label){
  await button('检查并应用');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));return waitEdit(label);
