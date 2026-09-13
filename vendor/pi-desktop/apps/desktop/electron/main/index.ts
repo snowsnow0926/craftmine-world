@@ -6966,6 +6966,11 @@ function registerIpc() {
     if (payload?.channel==="world.creationRetry" && (godotCopies.busy || godotExportBusy || activeTurns.size || turnFinalizations.size || godotCandidates.blocking || godotRestores.busy)) throw Error("ACTIVE_TASK_EXISTS");
     return invokeCraftmineNavigation(payload, {
       invoke: async (channel, params) => {
+        if (channel === "package.request" || channel === "godot.runtimeSave") {
+          if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+          if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
+          if (channel === "package.request") return craftminePackages.request(channel, params);
+        }
         if (["world.archiveFailed", "world.restoreArchived", "world.archivedList"].includes(channel)) return worldRemoval.invoke(channel, params);
         if (channel === "world.createOptions") return {...await godotPanel.invoke(channel, params) as any, archiveFailed: true};
         if (channel === "world.creationCancel") {const result = await godotPanel.invoke(channel, params);sendToRenderer(IPC.event.craftmineWorldChanged, {});return result;}

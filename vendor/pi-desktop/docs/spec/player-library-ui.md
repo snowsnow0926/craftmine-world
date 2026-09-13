@@ -42,3 +42,9 @@ The desktop plugin build must stage the world publication service and bundle the
 component publication service with its package-format dependency. A fresh-output
 test loads the complete staged plugin entry before any native UI acceptance;
 successful checkout-only imports do not prove that a Windows package can start.
+
+The asset sheet calls a narrow navigation gateway for source listing and
+publication. Main routes the validated package request through the package
+service, and save through the normal runtime coordinator. Both require the
+actual main frame and refuse shutdown transitions; retained plugin frames do
+not gain a second publication or arbitrary package-install route.
