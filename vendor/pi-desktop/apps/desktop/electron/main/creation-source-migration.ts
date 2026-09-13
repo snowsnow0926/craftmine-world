@@ -3,7 +3,8 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import type {CreationCapture} from './creation-target-service';
 import {CREATION_MANAGED_MIGRATIONS,type ManagedCreationMigration} from './creation-managed-migrations.ts';
-import {currentSceneObserverProfile,hasVersionedSceneObserverFiles,loadSceneObserverPins} from './creation-observer-pins.ts';
+import {currentSceneObserverProfile,hasVersionedSceneObserverFiles,loadSceneObserverPins,needsBoundedMeshPickerUpgrade} from './creation-observer-pins.ts';
+import {MESH_PICKER_UPGRADE} from './creation-mesh-picker-upgrade.ts';
 import {CREATION_GROUND_CURRENT_PINS,planCreationGroundUpgrade} from './creation-ground-upgrade.ts';
 type Data=Record<string,any>;
 type Context={projectId:string;sessionId:string;turnId:string};
@@ -33,7 +34,7 @@ type Dependencies={directory:string;resourcesRoot:string;domain:(method:string,a
  managedMigrations?:readonly ManagedCreationMigration[];};
 /** Host-only stock upgrade. The formal world is never changed by this service. */
 export function createCreationSourceMigration(deps:Dependencies){
- const compatibility=deps.managedMigrations??CREATION_MANAGED_MIGRATIONS;
+ const compatibility=deps.managedMigrations??[MESH_PICKER_UPGRADE,...CREATION_MANAGED_MIGRATIONS];
  const safePath=(value:string)=>typeof value==='string'&&value.length<=240&&/^[a-zA-Z0-9_./-]+$/.test(value)&&!value.startsWith('/')&&value.split('/').every(part=>part&&part!=='.'&&part!=='..');
  if(compatibility.length>32||new Set(compatibility.map(p=>p.id)).size!==compatibility.length)fail('CREATION_MIGRATION_POLICY_INVALID');
  for(const policy of compatibility){
@@ -57,8 +58,9 @@ export function createCreationSourceMigration(deps:Dependencies){
   await deps.assertActive(context,capture);const worldId=capture.worldId;
   const formal=await deps.domain('godotRuntime.exportSource',{worldId});
   if(formal?.worldId!==worldId||formal.buildId!==capture.buildId||formal.baseId!=='creation-sandbox'||formal.sourceRevision!==capture.sourceRevision||!Array.isArray(formal.files)||typeof formal.contentOid!=='string')fail('CREATION_MIGRATION_FORMAL_CHANGED');
+  let versionedPickerUpgrade=false;
   if(hasVersionedSceneObserverFiles(formal.files)){
-    const profile=currentSceneObserverProfile(formal.files,loadSceneObserverPins(deps.resourcesRoot));
+    const pins=loadSceneObserverPins(deps.resourcesRoot),profile=currentSceneObserverProfile(formal.files,pins);
     // Never downgrade a mixed or incomplete versioned cohort through a legacy
     // migration, including a legacy adapter accompanied by modern helpers.
     if(!profile||profile==='legacy')fail('CREATION_MIGRATION_NEEDED');
@@ -68,7 +70,8 @@ export function createCreationSourceMigration(deps:Dependencies){
     await deps.assertActive(context,capture);
     // No migration means no source write: an ordinary unadopted draft remains
     // repairable through the normal source pin/check flow, as for legacy no-op.
-    return null;
+    versionedPickerUpgrade=needsBoundedMeshPickerUpgrade(formal.files,pins);
+    if(!versionedPickerUpgrade)return null;
   }
   const resources=new Map<string,{text:string;sha256:string;bytes:number;accepted:string[]}>();
   const resource=(name:string)=>{let value=resources.get(name);if(!value){const text=fs.readFileSync(path.join(deps.resourcesRoot,name),'utf8').replace(/\r\n/g,'\n');if(Buffer.byteLength(text)>120000)fail('CREATION_MIGRATION_RESOURCE_INVALID');value={text,sha256:sha(text),bytes:Buffer.byteLength(text),accepted:[sha(text),sha(text.replace(/\n/g,'\r\n'))]};resources.set(name,value);}return value;};
@@ -77,6 +80,8 @@ export function createCreationSourceMigration(deps:Dependencies){
   let managed:ManagedCreationMigration|undefined;
   let destination:ManagedCreationMigration|undefined;
   for(const policy of compatibility){
+    if(versionedPickerUpgrade&&policy.id!==MESH_PICKER_UPGRADE.id)continue;
+    if(!versionedPickerUpgrade&&policy.id===MESH_PICKER_UPGRADE.id)continue;
     const candidates=policy.files.map(entry=>({...entry,...resource(entry.resource),actual:formal.files.find((f:Data)=>f.path===entry.source)}));
     // Coupled legacy upgrades may need missing helpers. A newer complete-cohort
     // policy must not hide an older reviewed destination that allows absence.
@@ -88,9 +93,10 @@ export function createCreationSourceMigration(deps:Dependencies){
     if(!planned.length)continue;
     // A compatibility record upgrades only its named files. Other protected
     // files must already match the installed resource; ordinary sources differ freely.
-    if(!targets.slice(0,3).every(target=>policy.files.some(f=>f.source===target.source)||target.accepted.includes(formal.files.find((f:Data)=>f.path===target.source)?.sha256)))continue;
+    if(!versionedPickerUpgrade&&!targets.slice(0,3).every(target=>policy.files.some(f=>f.source===target.source)||target.accepted.includes(formal.files.find((f:Data)=>f.path===target.source)?.sha256)))continue;
     managed=policy;operations.push(...planned);break;
   }
+  if(versionedPickerUpgrade&&!managed)fail('CREATION_MIGRATION_NEEDED');
   if(!managed){
   for(const target of targets.slice(0,3)){const file=formal.files.find((f:Data)=>f.path===target.source);if(!file)fail('CREATION_MIGRATION_NEEDED');if(target.accepted.includes(file.sha256))continue;if(!(target.old as readonly string[]).includes(file.sha256))fail('CREATION_MIGRATION_NEEDED');operations.push({op:'put',path:target.source,text:target.text,expectedHash:file.sha256});}
   const protectedUpgrade=operations.length>0,mutableOperations:Data[]=[];let customizedMutable=false;

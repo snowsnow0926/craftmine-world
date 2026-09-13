@@ -42,7 +42,14 @@ pub(super) fn validate_controller_manifest(manifest:&Manifest)->Result<()> {
  if !collision{ensure!(!manifest.files.keys().any(|p|["craftmine_shared/base_adapter_controller_v1.gd","craftmine_shared/progress_collision.gd"].iter().any(|name|p.eq_ignore_ascii_case(name)||p.to_ascii_lowercase().starts_with(&format!("{name}.")))),"CREATION_COLLISION_PROFILE_MIXED");}
  for(path,text)in if collision{collision_files()}else{controller_files()}{
   let entry=manifest.files.get(path).ok_or_else(||anyhow::anyhow!("CREATION_CONTROLLER_PROBE_UNSUPPORTED: {path}"))?;
-  ensure!([digest(&text),digest(&text.replace('\n',"\r\n"))].contains(&entry.sha256),"CREATION_CONTROLLER_PROBE_UNSUPPORTED: {path}");
+  let mut accepted=vec![digest(&text),digest(&text.replace('\n',"\r\n"))];
+  // Exact released picker stays readable/checkable; host-owned maintenance
+  // upgrades it through normal source CAS and candidate adoption.
+  if path=="craftmine_shared/scene_mesh_picker_v2.gd" {
+   let old=include_str!("../../../../../desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd").replace("\r\n","\n");
+   accepted.extend([digest(&old),digest(&old.replace('\n',"\r\n"))]);
+  }
+  ensure!(accepted.contains(&entry.sha256),"CREATION_CONTROLLER_PROBE_UNSUPPORTED: {path}");
   ensure!(!manifest.files.keys().any(|p|p!=path&&(p.eq_ignore_ascii_case(path)||p.to_ascii_lowercase().starts_with(&(path.to_owned()+".")))),"CREATION_CONTROLLER_PROBE_ALIAS: {path}");
  }Ok(())
 }
@@ -92,6 +99,14 @@ pub(super) fn validate_project(bytes:&[u8])->Result<()> {
   let entries:BTreeMap<String,FileEntry>=collision_files().into_iter().map(|(path,text)|(path.into(),FileEntry{bytes:text.len()as u64,sha256:digest(&text)})).collect();
   let value=json!({"format":"craftmine.godot-project/1","worldId":"world","baseBuild":"base","baseId":"creation-sandbox","engineVersion":"4.7.2-stable","language":"gdscript","renderer":"gl_compatibility","target":"web","revision":1,"task":{"projectId":"project","sessionId":"session","turnId":"turn","taskId":"task","baseBuild":"base"},"files":entries});
   let mut manifest:Manifest=serde_json::from_value(value).unwrap();assert!(validate_manifest(&manifest).is_ok());assert!(validate_controller_manifest(&manifest).is_ok());
+  let picker="craftmine_shared/scene_mesh_picker_v2.gd";
+  let current=manifest.files[picker].clone();
+  let old=include_str!("../../../../../desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd").replace("\r\n","\n");
+  for text in [old.clone(),old.replace('\n',"\r\n")] {
+   manifest.files.insert(picker.into(),FileEntry{bytes:text.len()as u64,sha256:digest(&text)});
+   assert!(validate_manifest(&manifest).is_ok(),"exact released picker remains valid");
+  }
+  manifest.files.insert(picker.into(),current);
   for(path,_)in collision_files(){let entry=manifest.files.remove(path).unwrap();assert!(validate_manifest(&manifest).is_err(),"missing {path}");manifest.files.insert(path.into(),entry.clone());manifest.files.get_mut(path).unwrap().sha256=digest("modified");assert!(validate_manifest(&manifest).is_err(),"modified {path}");manifest.files.insert(path.into(),entry);}
   for(path,text)in controller_files(){manifest.files.insert(path.into(),FileEntry{bytes:text.len()as u64,sha256:digest(&text)});}
   assert!(validate_manifest(&manifest).is_err());manifest.files.remove("craftmine_shared/base_adapter_controller_v1.gd");manifest.files.remove("craftmine_shared/progress_collision.gd");assert!(validate_manifest(&manifest).is_ok());

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {SCENE_OBSERVER_UPGRADE} from './creation-managed-migrations.ts';
+import {MESH_PICKER_UPGRADE} from './creation-mesh-picker-upgrade.ts';
 
 // Runtime fields added after old retained worlds shipped need their own source
 // authority gate. An old adapter may forward authored fields it never sampled.
@@ -37,7 +38,7 @@ export function loadSceneObserverPins(resourcesRoot: string): SceneObserverPins 
   const resources={...SCENE_OBSERVER_RESOURCES,...(Object.values(CONTROLLER_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?CONTROLLER_OBSERVER_RESOURCES:{}),...(Object.values(COLLISION_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?COLLISION_OBSERVER_RESOURCES:{}),...(Object.values(ENGINE_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?ENGINE_OBSERVER_RESOURCES:{})};
   return Object.freeze(Object.fromEntries(Object.entries(resources).map(([name,relative])=>{
     const text=fs.readFileSync(path.join(resourcesRoot,relative),'utf8').replace(/\r\n/g,'\n');
-    return [name,Object.freeze([hash(text),hash(text.replace(/\n/g,'\r\n'))])];
+    return [name,Object.freeze([hash(text),hash(text.replace(/\n/g,'\r\n')),...(name==='craftmine_shared/scene_mesh_picker_v2.gd'?MESH_PICKER_UPGRADE.files[0].from.filter((value):value is string=>value!==null):[])])];
   })));
 }
 export type SceneObserverProfile='legacy'|'creation-fixed-controller/1'|'creation-player-collision/1';
@@ -85,9 +86,16 @@ export function hasCurrentCollisionGuard(files:unknown,pins:SceneObserverPins|un
   return currentSceneObserverProfile(files,pins)==='creation-player-collision/1';
 }
 
+export function needsBoundedMeshPickerUpgrade(files:unknown,pins:SceneObserverPins|undefined):boolean {
+  if(!Array.isArray(files)||!hasCurrentSceneObserver(files,pins))return false;
+  const policy=MESH_PICKER_UPGRADE.files[0],entries=files.filter(file=>file?.path===policy.source);
+  return entries.length===1&&policy.from.includes(entries[0].sha256)&&policy.to.every(hash=>pins?.[policy.source]?.includes(hash));
+}
+
 
 /** A review hint grants maintenance only, never trust in old sampled fields. */
 export function canUpgradeSceneObserver(files: unknown, pins: SceneObserverPins | undefined): boolean {
+  if(needsBoundedMeshPickerUpgrade(files,pins))return true;
   if(!pins||!Array.isArray(files)||hasCurrentSceneObserver(files,pins))return false;
   return SCENE_OBSERVER_UPGRADE.files.length===Object.keys(SCENE_OBSERVER_RESOURCES).length&&SCENE_OBSERVER_UPGRADE.files.every(file=>{
     const matches=files.filter(entry=>entry?.path===file.source);

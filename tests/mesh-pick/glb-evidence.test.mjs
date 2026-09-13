@@ -39,10 +39,11 @@ test('archived complete controller cohort exposes exact imported bodies through 
  assert.equal(cases.aabbOnlyMustMiss.status,'none');assert.equal(cases.unknownPoints.status,'fallback');
  for(const name of ['surfaceBudget','vertexBudget','triangleBudget','aggregateVertexBudget'])assert.equal(cases[name].counts.facesRead,0);
 });
-test('archived executed picker bytes match current implementation and preserve legacy bytes',()=>{
+test('archived executed picker bytes retain their original released implementation',()=>{
  const report=read('controller-v2.json');
- assert.equal(hash(fs.readFileSync(path.join(root,'desktop/godot/shared/scene_mesh_picker_v2.gd'))),report.v2PickerSha256);
- assert.equal(hash(fs.readFileSync(path.join(root,'desktop/godot/shared/scene_mesh_picker.gd'))),report.originalPickerSha256);
+ assert.equal(hash(fs.readFileSync(path.join(root,'desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd'),'utf8').replace(/\r\n/g,'\n')),'f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938');
+ assert.equal(report.v2PickerSha256,'aa0d01c2906892abecc2eff199f1cb31ae4c83c6b0001249573448d97bfc2cb1');
+ assert.equal(report.originalPickerSha256,'d5b6f04b5fe0b4e6acbeb21012cdedb356178221b18347045ee52a7ad468c512');
  for(const record of [read('legacy-negative.json'),report]){
   assert.equal(hash(Buffer.from(JSON.stringify(record.receipt.sourceFiles))),record.request.sourceBinding.sourceDigest);
   assert.equal(record.receipt.sourceSnapshotDigest,record.request.sourceBinding.sourceDigest);
@@ -54,8 +55,9 @@ test('archived executed picker bytes match current implementation and preserve l
 
 test('the integrated materializer emits all ten resources actually exercised by the GLB observation',()=>{
  const directory=fs.mkdtempSync(path.join(tmpdir(),'craftmine-glb-cohort-'));
- const materialized=materializeBase({baseId:'creation-sandbox',worldId:'cohort-review',out:path.join(directory,'project')});
+ const materialized=materializeBase({baseId:'creation-sandbox',worldId:'cohort-review',out:path.join(directory,'project'),controllerProfile:'creation-fixed-controller/1'});
  const expected=read('controller-v2.json').receipt.sourceFiles.filter(f=>f.path.startsWith('craftmine_shared/')||f.path.startsWith('scripts/reused/'));
  assert.equal(expected.length,10);
- for(const file of expected)assert.equal(materialized.files.find(f=>f.path===file.path)?.sha256,file.sha256,file.path);
+ for(const file of expected)assert(materialized.files.some(f=>f.path===file.path),'Current complete cohort retains '+file.path);
+ assert.equal(materialized.files.find(f=>f.path==='craftmine_shared/scene_mesh_picker_v2.gd')?.sha256,hash(fs.readFileSync(path.join(root,'desktop/godot/shared/scene_mesh_picker_v2.gd'))));
 });
