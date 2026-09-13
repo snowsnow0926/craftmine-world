@@ -1,5 +1,7 @@
 # 玩家操作流程、Codex 接入与内容复用方案
 
+交付后更新：源码已合入并推送 `main`；Windows 测试版现位于 `D:/Craftmine Releases/PlayerLibrary-preview21-b8900d63`。旧工作树已在保留原始记录后清理，详见 [合并与空间清理记录](MAIN_MERGE_AND_SPACE_CLEANUP_2026-09-13.md)。
+
 日期：2026-09-13。状态：后续六个工作包已在独立的 `codex/player-library-20260913` 分支完成实现与功能验收，进入 Windows 封装。包括操作流畅性、玩家自行发布对象／世界模板、可驾驶歼二十、控雨、房屋／城门／街区，以及真实 Astra/xhigh 复用对照。结果与范围见 [六项交付报告](PLAYER_LIBRARY_DELIVERY_2026-09-13.md)。下文保留最初计划与当时的现状，不代表这些项目仍未实施。
 核对基线：`fb2752c898811da4274bad3b0e4cae3eb32d780b`。
 

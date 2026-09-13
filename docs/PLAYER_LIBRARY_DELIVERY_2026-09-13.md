@@ -1,5 +1,11 @@
 # Player workflow and reusable library delivery
 
+Maintenance update: the accepted source was subsequently merged and pushed to
+`main`. The Windows folder now resides at
+`D:/Craftmine Releases/PlayerLibrary-preview21-b8900d63`; old worktrees were
+removed after preserving their history. See
+[the merge and cleanup record](MAIN_MERGE_AND_SPACE_CLEANUP_2026-09-13.md).
+
 Scope: all six work packages requested on 2026-09-13, developed in
 `codex/player-library-20260913` at
 `D:/Craftmine Worktrees/player-library-20260913`. The original checkout, accepted
@@ -117,5 +123,6 @@ directory. It is supplied for the user to launch and is not executed by tests.
 Installer execution, signing and clean Windows first-install/upgrade/uninstall
 are not claimed by a tested folder build.
 
-The isolated branch and worktree are retained for user testing. No original
-checkout merge, remote push or remote publication is part of this delivery.
+At the initial delivery, the isolated branch and worktree were retained for user
+testing, with no merge or push. The later user-authorized merge and cleanup is
+recorded in the maintenance update above.
