@@ -48,6 +48,8 @@ maintenance/selection/busy preflight through the reserved service's `prepare`
 callback. Unknown persisted ids return `DIRECT_LIBRARY_OPERATION_NOT_FOUND`.
 Every public action projects thrown failures to a bounded code without local paths,
 transport messages, causes or native stacks.
+An initialization reservation also excludes adoption of a different ready
+operation until initialization settles; same-id callers still join their owner.
 
 Cancellation persists its fence before cancellation RPCs and cancels only its
 own check. A late installation reply updates retained-draft facts but cannot

@@ -127,3 +127,14 @@ test('unknown ids have bounded not-found errors; all public action failures excl
   f.state.status='ready';f.state.prepare=async()=>{throw Error(`private failure ${f.directory}`);};
   const failed=await s.handle(action('apply'));assert.equal(failed.status,'failed');assert.equal(failed.error.code,'DIRECT_LIBRARY_OPERATION_FAILED');assert(!JSON.stringify(failed).includes(f.directory));
 });
+
+test('another operation cannot apply while a new start owns asynchronous preflight',async t=>{
+  const f=await fixture(t);await f.service.handle(start);await f.settle();f.state.status='ready';
+  assert.equal((await f.service.handle(action('status'))).status,'ready');
+  let release;const gate=new Promise(resolve=>{release=resolve;});let entered;const prepared=new Promise(resolve=>{entered=resolve;});
+  f.state.prepare=async()=>{entered();await gate;};
+  const next={...start,operationId:'direct-test-overlap'},pending=f.service.handle(next);
+  await prepared;assert.equal(f.service.isBusy(),true);
+  await assert.rejects(f.service.handle(action('apply')),error=>error.code==='WORLD_BUSY');
+  assert.equal(f.state.applies,0);release();await pending;await f.settle();assert.equal(f.state.installs,2);
+});

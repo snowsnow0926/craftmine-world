@@ -141,7 +141,7 @@ export function createDirectLibraryService(deps:Dependencies){
       }
       if(input.action==='apply'){
         if(running.has(id)){await running.get(id);return output(r);}
-        if(stopping||running.size)throw Error('WORLD_BUSY');
+        if(stopping||starting.size||running.size)throw Error('WORLD_BUSY');
         const task=apply(r).finally(()=>running.delete(id));running.set(id,task);return task;
       }
       if(!running.has(id)){try{await reconcile(r);}catch(error){fail(r,error);}await persist(r);}return output(r);
