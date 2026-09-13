@@ -54,10 +54,23 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       if(archive.worldTemplate)return {eligible:false,reason:'WORLD_TEMPLATE_REQUIRES_NEW_WORLD',positionSupported:false,compatibility:'unchecked'};
       const roots=archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall);
       const root=roots[0],eligible=roots.length===1&&root.manifest.content.assetId===archive.archive.packageJson.root.id;
+      let positionSupported=false;
+      if(eligible){
+        const spec=root.manifest.content.entry.sceneInstall;
+        let nodeType=spec.mode==='script-node'?spec.nodeType:undefined,sceneFile=spec.sceneFile;
+        const {parseScene}=await import('../../desktop/godot/shared/scene_materializer.mjs'),seen=new Set();
+        while(spec.mode==='instance'&&sceneFile&&!nodeType&&!seen.has(sceneFile)&&seen.size<16){
+          seen.add(sceneFile);const parsed=parseScene(root.files.get(sceneFile)?.toString('utf8')??''),sceneRoot=parsed.nodes.find(n=>n.parent===null);
+          nodeType=/(?:^|\s)type="([^"]+)"(?:\s|$)/.exec(sceneRoot?.attributes??'')?.[1];
+          const inherited=/instance=ExtResource\("([^"]+)"\)/.exec(sceneRoot?.header??'')?.[1],entry=parsed.extResources.find(item=>item.id===inherited),prefix='res://addons/'+root.manifest.content.assetId+'/';
+          sceneFile=entry?.path?.startsWith(prefix)?entry.path.slice(prefix.length):null;
+        }
+        positionSupported=typeof nodeType==='string'&&nodeType.endsWith('3D');
+      }
       const {context}=await call('godotProject.sourceContext',{worldId:args.worldId});
       const source=await call('godotProject.index',{context,worldId:args.worldId,offset:0,limit:1});
       check(source.worldId===args.worldId&&Number.isSafeInteger(source.revision)&&/^[a-f0-9]{64}$/.test(source.manifestHash),'SOURCE_LIBRARY_SOURCE_IDENTITY_REQUIRED');
-      return {eligible,...(!eligible?{reason:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED'}:{}),positionSupported:eligible,compatibility:'unchecked',displayName:archive.record.version_.displayName,
+      return {eligible,...(!eligible?{reason:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED'}:{}),positionSupported,compatibility:'unchecked',displayName:archive.record.version_.displayName,
         source:{revision:source.revision,manifestHash:source.manifestHash}};
     },
     async directInstall(args){
