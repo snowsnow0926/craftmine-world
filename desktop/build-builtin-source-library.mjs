@@ -9,6 +9,7 @@ import {buildBuiltinPetPackage} from './build-builtin-pet-package.mjs';
 import {buildApprovedPomeranianPackage} from './build-approved-pomeranian-package.mjs';
 import {buildCityFragmentPackages} from './build-city-fragment-packages.mjs';
 import {buildRainControlPackage} from './build-rain-control-package.mjs';
+import {buildReusableJ20Package} from './build-reusable-j20-package.mjs';
 const repository=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
@@ -101,6 +102,13 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
     label:'演示同款白色博美模型（无跟随行为）',tags:['builtin','model-only','approved-demo','博美','白色博美','可爱','pomeranian','dog','Mochi'],source:approvedPet.entry.source});
   const rain=buildRainControlPackage({repository});
   packages.push({file:rain.file,bytes:rain.bytes});entries.push(rain.entry);
+  const flight=buildReusableJ20Package({repository});
+  packages.push({file:flight.file,bytes:flight.bytes});entries.push(flight.entry);
+  const flightModel=fs.readFileSync(path.join(repository,'desktop/godot/components/reusable-j20/model.glb'));
+  const flightModelFile='cw.model.approved-j20.glb';
+  packages.push({file:flightModelFile,bytes:flightModel});
+  entries.push({assetId:'cw.model.approved-j20',version:1,kind:'object',mediaKind:'model',file:flightModelFile,bytes:flightModel.length,sha256:sha(flightModel),
+    label:'演示同款歼二十模型（无驾驶行为）',tags:['builtin','reusable-world-content','model-only','approved-demo','歼二十','J20','飞机','aircraft'],source:flight.entry.source});
   // Stage only after every resource and archive has passed validation.
   for(const fragment of buildCityFragmentPackages({repository})){packages.push({file:fragment.file,bytes:fragment.bytes});if(fragment.preview)packages.push(fragment.preview);entries.push(fragment.entry);}
   fs.mkdirSync(output,{recursive:true});

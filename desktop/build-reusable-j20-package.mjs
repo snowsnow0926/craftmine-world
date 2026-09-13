@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {contentHash} from '../plugins/craftmine-world/package-format.mjs';
+import {packStaticPackage,unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
+export const REUSABLE_J20_ID='cw.module.reusable-j20';
+export const APPROVED_J20_SHA256='458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe';
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const check=(condition,code)=>{if(!condition)throw Error(code);};
+export function buildReusableJ20Package({repository,root=path.join(repository,'desktop/godot/components/reusable-j20')}){
+ const model=fs.readFileSync(path.join(root,'model.glb'));check(model.length===1130080&&hash(model)===APPROVED_J20_SHA256,'APPROVED_J20_MODEL_CHANGED');
+ const prefix='res://addons/'+REUSABLE_J20_ID+'/';
+ const files=Object.fromEntries(['model.glb','aircraft.gd','flight_physics.gd','provenance.json','LICENSE.txt'].map(file=>[file,fs.readFileSync(path.join(root,file))]));
+ files['model.glb.import']=Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n\n[params]\nmeshes/generate_lods=false\n');
+ files['aircraft.gd.uid']=Buffer.from('uid://dbj20aircraft1\n');files['flight_physics.gd.uid']=Buffer.from('uid://dbj20physics1\n');
+ files['aircraft.tscn']=Buffer.from(`[gd_scene load_steps=3 format=3]\n[ext_resource type="Script" path="${prefix}aircraft.gd" id="1"]\n[ext_resource type="PackedScene" path="${prefix}model.glb" id="2"]\n[node name="ReusableJ20" type="CharacterBody3D"]\nscript = ExtResource("1")\nposition = Vector3(-6, 2.18, 0)\nentity_id = "aircraft"\nmodel_scene = ExtResource("2")\n`);
+ check(Object.values(files).reduce((n,b)=>n+b.length,0)<=4*1024*1024,'J20_COMPONENT_TOO_LARGE');
+ const pin=(target,source)=>({path:target,sha256:hash(fs.readFileSync(path.join(repository,source)))});
+ const common=[pin('craftmine_shared/component_state.gd','desktop/godot/shared/component_state.gd'),pin('scripts/reused/player_controller.gd','desktop/godot/bases/creation-sandbox/scripts/reused/player_controller.gd')];
+ const profiles=[{id:'component-adapter/1',requirements:[pin('craftmine_shared/base_adapter.gd','desktop/godot/shared/adapters/creation-sandbox.gd')]},{id:'creation-player-collision/1',requirements:[pin('craftmine_shared/base_adapter.gd','desktop/godot/shared/adapters/creation-sandbox-controller-v2.gd'),pin('craftmine_shared/base_adapter_controller_v1.gd','desktop/godot/shared/adapters/creation-sandbox-controller-v1.gd'),pin('craftmine_shared/base_adapter_legacy.gd','desktop/godot/shared/adapters/creation-sandbox.gd')]}];
+ const content={assetId:REUSABLE_J20_ID,version:1,kind:'module',files:Object.entries(files).sort(([a],[b])=>a.localeCompare(b,'en')).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],
+  entry:{entities:['aircraft'],label:'演示同款可驾驶歼二十',description:'可登机驾驶的歼二十，支持真实加速起飞、俯仰、压坡度、方向舵、起落架、座舱/跟随相机、着陆刹车和飞行中保存恢复。需要作者准备真实平坦开阔跑道；默认64米造物场不能起飞。返回登机区域停稳后离机，保留原世界与步行角色。简化游戏飞行，不是真实战机模拟器。',
+   aliases:['歼二十','歼20','J20','J-20','可驾驶飞机','fighter jet'],capabilities:['board-nearby','runway-takeoff','pitch-roll-rudder','landing-gear','cockpit-camera','follow-camera','real-collision','landing-brake','persistent-flight','independent-instances','return-to-boarding-area-and-exit'],
+   sceneInstall:{mode:'instance',sceneFile:'aircraft.tscn',identityField:'entity_id',identityType:'String'},sourceRequirements:common,sourceRequirementProfiles:profiles,
+   airspaceRequirements:{runwayLengthM:2400,runwayWidthM:56,runwayDirection:'world-negative-Z',surface:'level physical collider at aircraft center Y minus 2.18m',aircraftPlacement:'level, unit scale, center 2.18m above runway',worldParent:'identity transform',airspaceRadiusM:15000,altitudeLimitM:6500,preflight:'inspect_runway validates actual world collision and sampled ground before boarding',stockSandbox:'requires authored open-area preparation; never removes boundaries'},
+   playerBinding:{nodePath:'../Player',ownership:'aircraft-scoped movement lock; actual on-foot body stays at boarding position',exit:'land and stop within 18m of parking origin; no teleport'},placement:{anchor:'aircraft-center',dimensionsMm:[14000,4400,20400]},controls:{W:'throttle-up',S:'throttle-down',ArrowDown:'pitch-up',ArrowUp:'pitch-down',A:'bank-left',D:'bank-right',Q:'rudder-left',E:'rudder-right',Space:'brake',G:'landing-gear',C:'cockpit-camera',Enter:'exit-when-parked'},lineage:JSON.parse(files['provenance.json'])},
+  interfaces:{persistentComponent:{group:'craftmine_persistent_components',identityProperty:'entity_id',methods:['snapshot','validate_state','restore','validate_restored_state']},interaction:{method:'interact',actor:'Player'}},compatibility:{base:'creation-sandbox',baseVersion:'1.0.0',engine:'4.7.2-stable'},
+  state:{kind:'persistent-component',format:'craftmine.reusable-j20-state/1',ledger:'/body/components',identity:'entityId',settings:['name'],sourceSettings:['name'],runtimeFields:['position','velocity','throttle','airspeed','pitch','heading','bank','gearDown','grounded','crashed','flightSeconds','landings','piloted','cockpitView','boardingPosition'],removedIdentity:'retain-last-saved-state',sourceSettingsMigration:'changed-source-defaults-only'},licenses:{wrapperLicense:'MIT',modelLicenseStatus:'unverified',licenseFile:'LICENSE.txt',distribution:'local-product-reuse-no-remote-publication'}};
+ const manifest={format:'craftmine.resource/1',content,contentHash:contentHash(content)},bytes=packStaticPackage({root:{id:REUSABLE_J20_ID,version:1},resources:[{manifest,files}]});check(bytes.length<=5*1024*1024,'J20_ZIP_TOO_LARGE');unpackStaticPackage(bytes);
+ const file=REUSABLE_J20_ID+'.zip';return {file,bytes,entry:{assetId:REUSABLE_J20_ID,version:1,kind:'module',file,bytes:bytes.length,sha256:hash(bytes),rootContentHash:manifest.contentHash,label:content.entry.label,tags:['builtin','reusable-world-content','prefab','playable','approved-demo','歼二十','歼20','J20','飞机','驾驶','飞行','起飞','降落','flight','drivable'],source:{origin:'Craftmine approved flight demo 2026-09-13 / Codex gpt-6-astra xhigh / Blender model',author:'Craftmine project generated content',license:'MIT wrapper; generated model rights unverified',licenseStatus:'unverified'}}};
+}

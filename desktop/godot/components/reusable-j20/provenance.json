@@ -1,0 +1,18 @@
+{
+  "format": "craftmine.reusable-j20-lineage/1",
+  "acceptedDemo": "promo-flight / approved-promo-20260913T072209Z",
+  "model": {
+    "file": "model.glb",
+    "bytes": 1130080,
+    "sha256": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe",
+    "origin": "Previous project Codex CLI gpt-6-astra/xhigh Blender generation",
+    "license": "Generated project content; redistribution license not separately verified",
+    "regeneratedForLibrary": false
+  },
+  "flightPhysics": {
+    "origin": "desktop/godot/shared/promo-templates/promo-flight/source/scripts/j20_controller.gd",
+    "originalSha256": "915d63c8b1b1b1dc90ae01da78ebe83c2dfaff043840ec35ff948e6a25e2d740",
+    "changes": "Adapt the declared runway elevation and origin for an independent component; remove the demo-only teleport/reset helper. Preserve simplified game-flight dynamics and ordinary world collision. The original immutable demo is unchanged."
+  },
+  "scope": "Game aircraft with original approved visual and simplified flight; no weapons, real aircraft simulation, or automatic world replacement."
+}

@@ -10153,3 +10153,25 @@ probes use only independent headless processes and page/engine scripts; disable
 Pointer Lock and never send real or simulated OS/browser input. Retain failed
 geometry routes and distinguish source persistence, engine traversal, actual
 rendering, formal adoption and player save/reopen results.
+
+### Reusable drivable J20 (2026-09-13)
+
+Distinguish the accepted raw J20 model from the drivable source package. Install
+two instances through the normal native source transaction, retain existing
+target source/markers, and verify stable distinct identities. An unchanged stock
+64 m field must refuse runway-dependent boarding. An explicitly authored open
+flight area must pass actual collision/ground preflight.
+
+Board through the ordinary component ray, accelerate along the actual runway,
+take off, climb, bank, operate gear and cockpit camera, and save airborne state.
+Cold reopen must preserve exact native/component state and use the aircraft
+camera after ordinary resume; an inactive second aircraft must not steal it.
+Perform actual controlled descent/landing, brake and taxi back, then exit and
+reopen parked progress. Existing on-foot movement, camera, player position and
+world content remain available. Report simplified flight and the parked-player
+camera abstraction honestly. All automated runs use private headless profiles
+with no OS input, focus, Pointer Lock, or model calls.
+Introduce an actual physical obstacle after boarding, drive into it, and verify
+collision stops the aircraft. Ending accident control must release the owned
+movement/camera lock while retaining the actual accident position and a complete
+save receipt; collision recovery must not be replaced by a fabricated reset.
