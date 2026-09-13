@@ -4,8 +4,9 @@ export type SourceProposal = {
   proposalId: string; worldId: string; displayName: string; status: string;
   source: {revision: number; manifestHash: string};
   assets: Array<{assetId: string; version: number}>;
-  job?: {id: string; status: string};
+  job?: SourceJob;
 };
+export type SourceJob = {id: string; status: string; sourceStale?: boolean};
 const object = (value: unknown): Record<string, unknown> => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
 export function parseSourceProposals(value: unknown, worldId: string): SourceProposal[] {
   const raw = object(value);
@@ -24,7 +25,11 @@ export async function sourcePackageRequest(bridge: CraftmineWorldBridge, worldId
   return bridge.call("package.request", {worldId, method, params: {...args, worldId}});
 }
 export function sourceJobState(value: unknown, worldId: string, jobId: string): string {
+  return parseSourceJob(value,worldId,jobId).status;
+}
+export function parseSourceJob(value: unknown, worldId: string, jobId: string): SourceJob {
   const result = object(value);
   if (result.worldId !== worldId || result.jobId !== jobId || !["blocked", "queued", "claimed", "running", "passed", "failed", "cancelled", "interrupted"].includes(String(result.status))) throw Error("PACKAGE_JOB_RECEIPT_INVALID");
-  return String(result.status);
+  if (result.sourceStale !== undefined && typeof result.sourceStale !== "boolean") throw Error("PACKAGE_JOB_RECEIPT_INVALID");
+  return {id: jobId,status:String(result.status),...(typeof result.sourceStale==="boolean"?{sourceStale:result.sourceStale}:{})};
 }
