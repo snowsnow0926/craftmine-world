@@ -1,0 +1,64 @@
+{
+  "shot": "A03",
+  "prompt": "我希望地上有花草。",
+  "worldId": "codex-live-direct",
+  "sessionId": "codex-be3cca06-c929-495d-aaf7-e968b639e6fd",
+  "threadId": "01a0981a-33f4-73b0-ac00-54da2eb9ba03",
+  "hostTurnId": "edd04c11-598d-4b53-83ce-5f83f5385f6b",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "elapsedMs": 286487,
+  "sourceRevisions": [
+    3,
+    5
+  ],
+  "treePlacementScriptUnchanged": true,
+  "treePlacementScript": {
+    "bytes": 1571,
+    "path": "scripts/broadleaf_world.gd",
+    "sha256": "75bdf8892a0746dca879d942db24a6429345b8ff2886c6b7e612f3e739aee140"
+  },
+  "checks": [
+    {
+      "jobId": "gjob-66c6f122ea84f696d5c2fcb21515d63ca2f0ffb989016e372e089edf414878ee",
+      "status": "passed",
+      "sourceRevision": 5,
+      "manifestHash": "f23709a233e15934cd28de013c89661770193530e3e35a3aae29f0422b5c1e5a",
+      "candidateId": "gcan-d4bc2437fd5953f270d0bf831b78c89153f2190f4562ba143216c6923be5e6f4",
+      "creationApplication": {
+        "format": "craftmine.creation-application-state/1",
+        "jobId": "gjob-66c6f122ea84f696d5c2fcb21515d63ca2f0ffb989016e372e089edf414878ee",
+        "worldId": "codex-live-direct",
+        "buildId": "gbd-2dab9ff854b52cfd46dc1e662c6fdc350795ca07221a687e2dfd9982bb11a204",
+        "candidateId": "gcan-d4bc2437fd5953f270d0bf831b78c89153f2190f4562ba143216c6923be5e6f4",
+        "status": "manual",
+        "reason": "CREATION_APPLICATION_NOT_STARTED",
+        "updatedAt": "2026-09-13T00:26:34.767Z"
+      }
+    }
+  ],
+  "actualFrame": "test-results/cl2/runtime-checks/check-host-Lfcuo0/gjob-66c6f122ea84f696d5c2fcb21515d63ca2f0ffb989016e372e089edf414878ee.png",
+  "visualReview": "Actual offscreen image shows the prior broadleaf trees, white/yellow flowers and grass patches with a clear central path. Stylized low-poly appearance; not yet promotional-quality lighting.",
+  "usage": {
+    "total": {
+      "totalTokens": 3548949,
+      "inputTokens": 3533733,
+      "cachedInputTokens": 3378048,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 15216,
+      "reasoningOutputTokens": 5805
+    },
+    "last": {
+      "totalTokens": 146769,
+      "inputTokens": 146694,
+      "cachedInputTokens": 146048,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 75,
+      "reasoningOutputTokens": 0
+    },
+    "modelContextWindow": 522500
+  },
+  "usageScope": "thread-cumulative-and-last-request",
+  "applied": false,
+  "gameplayVerified": false
+}

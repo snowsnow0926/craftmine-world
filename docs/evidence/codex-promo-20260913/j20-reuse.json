@@ -1,0 +1,38 @@
+{
+  "format": "craftmine.promo-model-reuse/1",
+  "worldId": "promo-flight",
+  "source": {
+    "name": "j20",
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\reusable-assets\\j20\\model.glb",
+    "bytes": 1130080,
+    "sha256": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe",
+    "source": "Previous Codex CLI gpt-6-astra/xhigh reference-guided Blender run",
+    "staticAsset": true,
+    "generatedThisTurn": false
+  },
+  "target": "assets/library/j20.glb",
+  "sha256": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe",
+  "bytes": 1130080,
+  "imported": {
+    "assetLockHash": "70396c0e7b3582530fb2765684ae9a8bbc6579c93066539e5ed83ce0db5a4809",
+    "baseBuild": "initial-promo-flight",
+    "branchId": "main",
+    "commitOid": "0cc6ecd81ee85de6f58da0f8e9e24e5d4b4a73fc",
+    "currentTaskId": "work-0b9168af76912a2aaa6913626d2e1fc994e7d70a4f1cea010053b2c9cabc1906",
+    "fileCount": 32,
+    "lastWriter": {
+      "baseBuild": "initial-promo-flight",
+      "projectId": "codex-world-6723b75c-4277-45cd-aebb-e15ebff51b9d",
+      "sessionId": "codex-1df18d9d-84f7-484a-a0a3-7a6ab5c76d9a",
+      "taskId": "work-0b9168af76912a2aaa6913626d2e1fc994e7d70a4f1cea010053b2c9cabc1906",
+      "turnId": "e3aa021b-ffbd-4c6e-9717-a66f5d22bef8"
+    },
+    "manifestHash": "b290e817241c717cc921b164249a51af22190ea48a40df3c0872743088fb42fd",
+    "revision": 2
+  },
+  "generatedThisTurn": false,
+  "persistedHashVerified": true,
+  "applied": false,
+  "formalWorldUnchanged": true,
+  "importedAt": "2026-09-13T00:30:37.448Z"
+}

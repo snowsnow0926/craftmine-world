@@ -1,0 +1,147 @@
+{
+  "scope": "Completed integration components; content scenarios continue separately",
+  "sourceBaseline": "master@6c0de348 + Blender/model branch@fe2dcffe",
+  "mergeCommit": "d40a9b8e",
+  "checks": [
+    {
+      "name": "Blender unit regression",
+      "passed": 36,
+      "failed": 0,
+      "log": "test-results/codex-promo/blender-baseline-tests.log"
+    },
+    {
+      "name": "Actual Blender/current Rust/Godot integration",
+      "passed": 14,
+      "failed": 0,
+      "log": "test-results/codex-promo/blender-current-core-integration.log"
+    },
+    {
+      "name": "Build-read and application completion regression",
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "name": "Private real Electron check-host rejection and lifecycle",
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "nativeBlankCheck": {
+    "passed": true,
+    "jobId": "gjob-3dbea5451146b2d22b344ff6f4c8d9a6d54c0e125d912d579eb415f77e8d64cb",
+    "candidateId": "gcan-d693e0a4086274622147c0cc2151bebbf2b935c0289f0c3b400c655aa597d7d3",
+    "sourceUnchanged": true,
+    "check": {
+      "assertions": [
+        {
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit",
+          "id": "runtime.ready",
+          "passed": true
+        },
+        {
+          "detail": "frames=3 distinct=1",
+          "id": "runtime.frame",
+          "passed": true
+        },
+        {
+          "detail": null,
+          "id": "runtime.no-errors",
+          "passed": true
+        },
+        {
+          "detail": "formal progress unchanged",
+          "id": "runtime.snapshot",
+          "passed": true
+        },
+        {
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}",
+          "id": "runtime.isolation",
+          "passed": true
+        },
+        {
+          "detail": "graceful=true",
+          "id": "runtime.recovery",
+          "passed": true
+        }
+      ],
+      "defaultsSnapshot": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "body": {
+          "baseVersion": "1.0.0",
+          "doors": {},
+          "format": "craftmine.creation-progress/1",
+          "inventory": {},
+          "openedChests": {},
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          },
+          "rules": {},
+          "sourceTimeOfDay": 12,
+          "timeOfDay": 12,
+          "worldId": "check-85fa8158-56d7-4815-affe-302540dbc2f7"
+        },
+        "format": "craftmine.godot-progress/1",
+        "stateVersion": 1,
+        "worldId": "check-85fa8158-56d7-4815-affe-302540dbc2f7"
+      },
+      "passed": true,
+      "progressMigration": {
+        "added": [],
+        "defaultsSnapshotHash": "817537d3a30e310736cc7325082b51b1aac0aacfd3ef8039fd47440f8a3c245f",
+        "format": "craftmine.godot-additive-progress/1",
+        "previousSnapshotHash": "817537d3a30e310736cc7325082b51b1aac0aacfd3ef8039fd47440f8a3c245f",
+        "snapshot": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "check-85fa8158-56d7-4815-affe-302540dbc2f7"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "check-85fa8158-56d7-4815-affe-302540dbc2f7"
+        },
+        "snapshotHash": "817537d3a30e310736cc7325082b51b1aac0aacfd3ef8039fd47440f8a3c245f"
+      }
+    },
+    "frame": {
+      "file": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\check-native\\run-bGGFg1\\checks\\check-host-d6XdVR\\gjob-3dbea5451146b2d22b344ff6f4c8d9a6d54c0e125d912d579eb415f77e8d64cb.png",
+      "sha256": "7234431a6acad1c55d44eac287e0962a3ce897fea4ccae85b624c30f3a2597b0",
+      "width": 960,
+      "height": 640,
+      "source": "actual candidate runtime offscreen frame"
+    }
+  },
+  "retainedFailure": "test-results/codex-promo/check-native/run-Bm1ltW/report.json",
+  "operatorAssetImport": "test-results/codex-promo/B02-model-import.jsonl",
+  "limits": [
+    "This is a project CLI using Codex app-server, not the desktop composer",
+    "Blank-base checks do not prove promotional gameplay",
+    "Reference city image is concept art, not implemented scene geometry"
+  ]
+}

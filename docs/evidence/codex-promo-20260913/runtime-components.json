@@ -1,0 +1,34 @@
+{
+  "format": "craftmine.promo-development-components/1",
+  "scope": "Development adapter using current Rust core and copied pinned engines; not a sealed full desktop release",
+  "components": [
+    {
+      "name": "godot",
+      "files": 370,
+      "bytes": 432096035,
+      "source": "D:\\Craftmine Worktrees\\blender-integration-20260913\\desktop\\build\\releases\\04b18aafc8fd-d56bef63-9bd7-4685-9e81-5f6ef5f611f4\\output\\win-unpacked\\resources\\godot",
+      "unchanged": true
+    },
+    {
+      "name": "blender",
+      "files": 6531,
+      "bytes": 1041703864,
+      "source": "D:\\Craftmine Worktrees\\blender-integration-20260913\\desktop\\build\\releases\\04b18aafc8fd-d56bef63-9bd7-4685-9e81-5f6ef5f611f4\\output\\win-unpacked\\resources\\blender",
+      "unchanged": true
+    },
+    {
+      "name": "git",
+      "files": 387,
+      "bytes": 109132445,
+      "source": "D:\\Craftmine Worktrees\\blender-integration-20260913\\desktop\\build\\releases\\04b18aafc8fd-d56bef63-9bd7-4685-9e81-5f6ef5f611f4\\output\\win-unpacked\\resources\\git",
+      "unchanged": true
+    }
+  ],
+  "nativeCoreSourceCommit": "d40a9b8e",
+  "checkedAt": "2026-09-12T23:57:08.133Z",
+  "core": {
+    "file": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\runtime\\resources\\bin\\craftmine-core.exe",
+    "sha256": "932c58d491f92b31f044cd25b180d868cdea1b844c0fcd8cd41c2430c5f0788e",
+    "bytes": 8471040
+  }
+}

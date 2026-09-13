@@ -1,0 +1,20 @@
+{
+  "shot": "A02",
+  "status": "BLOCKED_BY_ADAPTER_CONFIGURATION",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "threadId": "01a09816-8664-7961-8e0d-b56c654cdfa9",
+  "hostTurnId": "5835be46-7bad-41cb-b83c-5010b47c94b6",
+  "originalPrompt": "我想生成一些树。",
+  "facts": [
+    "Real model turn completed, but no world tool reached the native host",
+    "Two actual exec tool calls returned code-mode host is disabled",
+    "The adapter disabled features.code_mode_host; this build exposes the tool dispatch wrapper through exec",
+    "No generated source or trees; not a model capability failure"
+  ],
+  "diagnosis": "The domain-only tool bridge must permit the isolated JavaScript tool dispatcher while keeping OS shell, filesystem, browser and external connectors unavailable.",
+  "retainedLogs": [
+    "test-results/codex-promo/A02-attempt2-console.jsonl",
+    "test-results/codex-promo/worlds/mainline/events.jsonl"
+  ]
+}
