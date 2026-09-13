@@ -13,6 +13,20 @@ export type InitializationPreparation = {
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 const SOURCE = new Set([".godot", ".gd", ".tscn", ".tres", ".gdshader", ".gdshaderinc", ".json", ".cfg", ".txt", ".md", ".csv", ".svg", ".obj", ".mtl", ".uid", ".png", ".jpg", ".jpeg", ".webp", ".glb", ".ogg", ".wav"]);
 
+/** Keep each serialized source request below Core's 8 MiB request boundary.
+ * Base64 expands binary assets; checking only their raw size is insufficient. */
+export function initializationFileBatches<T extends {path: string; bytesBase64: string}>(files: T[]): T[][] {
+  const batches: T[][] = []; let batch: T[] = [], bytes = 2;
+  for (const file of files) {
+    const size = Buffer.byteLength(JSON.stringify(file)) + 1;
+    if (size > 7 * 1024 * 1024) throw Error("MANAGED_BASE_FILE_TOO_LARGE");
+    if (batch.length && bytes + size > 7 * 1024 * 1024) {batches.push(batch); batch = []; bytes = 2;}
+    batch.push(file); bytes += size;
+  }
+  if (batch.length) batches.push(batch);
+  return batches;
+}
+
 /** Only unfinished work resumes automatically; terminal states require explicit retry. */
 export function canAutomaticallyInitialize(status: Data | null | undefined): boolean {
   // The initialize transaction's raw record omits playable; initStatus includes it.
@@ -138,14 +152,16 @@ export function createGodotWorldInitializer(options: {
       if (recover && (status.candidateId || status.status === "checked")) {
         throw Error("GODOT_INITIAL_SOURCE_MISSING");
       }
-      const content = await call("content.status", {worldId});
-      const installedFiles = missing.map(({path, bytesBase64}) => ({path, bytesBase64, expectedHash: null}));
-      const operationId = `base-patch-${sha(JSON.stringify(installedFiles)).slice(0, 40)}`;
-      project = await call("godotProject.applyFiles", {context, worldId, toolCallId: operationId,
-        revision: project.revision, manifestHash: project.manifestHash, files: installedFiles,
-        ...(content.backend === "git" ? {operation: {operationId, worldId, repoId: content.repoId, branchId: "main",
-          expectedHeadOid: content.headOid, expectedAppliedOid: content.appliedOid, expectedProgressRevision: null}} : {})});
-      for (const file of missing) existing.set(file.path, file.sha256);
+      for (const batch of initializationFileBatches(missing)) {
+        const content = await call("content.status", {worldId});
+        const installedFiles = batch.map(({path, bytesBase64}) => ({path, bytesBase64, expectedHash: null}));
+        const operationId = `base-patch-${sha(JSON.stringify(installedFiles)).slice(0, 40)}`;
+        project = await call("godotProject.applyFiles", {context, worldId, toolCallId: operationId,
+          revision: project.revision, manifestHash: project.manifestHash, files: installedFiles,
+          ...(content.backend === "git" ? {operation: {operationId, worldId, repoId: content.repoId, branchId: "main",
+            expectedHeadOid: content.headOid, expectedAppliedOid: content.appliedOid, expectedProgressRevision: null}} : {})});
+        for (const file of batch) existing.set(file.path, file.sha256);
+      }
     }
     const contentStatus = await call("content.status", {worldId});
     if (contentStatus.backend !== "git") {

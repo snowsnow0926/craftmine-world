@@ -44,3 +44,5 @@ desktop/godot/shared/runtime_bridge_engine_v1.gd -text
 desktop/godot/components/approved-pomeranian/** text eol=lf
 desktop/godot/components/approved-pomeranian/*.glb binary
 desktop/godot/components/approved-pomeranian/*.png binary
+# Published templates retain native formal-source hashes, including mixed endings.
+desktop/godot/shared/promo-templates/** -text whitespace=cr-at-eol,-blank-at-eof

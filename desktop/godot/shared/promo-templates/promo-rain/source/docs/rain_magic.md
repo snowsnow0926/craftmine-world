@@ -1,0 +1,19 @@
+# Rain / Reversed
+
+An additive skill over the existing creation-sandbox world. Original entity definitions, native progress format, PlayerController, camera rig and all managed bridges/checks are unchanged. The active scene uses rain_web_world.gd, extending the original rain_world.gd without replacing its scenery or skill simulation.
+
+Controls: Q slows falling rain to a complete hold; Q again ramps that same rain upward; Q again restores gravity. R restores normal rain at any time. F performs brake, 3.2 second hold, upward acceleration, 4.5 second rise, then recovery. H hides only the skill HUD. Movement remains available in every phase. Buttons invoke the same handlers as keys.
+
+2200 independently integrated positions share the authored Blender water mesh. No time_scale or tree pause is used by the skill. Positions never respawn while held. Falling/upward traversal wraps only at vertical rain-volume boundaries. Per-drop rates and identities remain fixed. Mesh shape changes continuously between streak and bead. Impact rings and rain volume fall silent during the hold; no splashes emit while rising.
+
+## Web audio compatibility
+Both actual AudioStreamPlayers explicitly select AudioServer.PLAYBACK_TYPE_STREAM before entering the tree or playing. The original synthesized rain WAV loop and cast WAV remain, including volume/pitch changes. No JavaScript patch, exception swallowing, exit interception, disabling of audio or modification of host assertions is used. This addresses the player's supplied SampleNode._pause/currentTime null diagnostic via the engine's streaming backend. Successful compilation alone does not prove exit; the managed runtime.recovery check must still pass.
+
+## Normal component persistence
+RainMagicState is a descendant in craftmine_persistent_components with independent stable entity_id rain-magic. The existing unmodified adapter/component_state.gd captures it into body.components, validates it and restores atomically. No private FileAccess save or host identity is introduced. The component stores all six stages, signed speed, elapsed transition/automatic-sequence time, rain clock, cast count and exact Float32 heights of all 2200 drops. X/Z positions and per-drop rates/sizes use the unchanged deterministic source distribution. Four canonical base64 chunks stay below the normal 4096-character string and 64 KiB component limits. Source settings version the distribution. Restore does not trigger a new cast or reset phase age; it synchronizes actual MultiMesh transforms, HUD and stream audio with the restored state. Invalid identity, version, fields, phase/velocity combinations, nonfinite/out-of-volume positions or malformed chunks are rejected before mutation.
+
+A bounded startup audit uses the actual bundled ComponentState capture/restore transaction and real skill controls to round-trip every stage, verify restored mesh positions, frozen rain, automatic timer continuation and atomic rejection of invalid state. It restores the initial component state before any host progress load and writes no save/receipt. It exposes real results via observe(). Failure blocks ready_for_play rather than changing a check expectation. This supplements, never replaces, the normal host save/load and exit checks.
+
+Editable Blender sourceJobId: e4c5df9f-e4ae-4957-b56b-596be319be7e (parent fd2bee62-5695-40cb-9caf-0cd20c29d50d), asset res://assets/blender/rainatelier.glb. Existing original geometry is unchanged in this repair.
+
+Target: Godot 4.7.2 Compatibility web. The pinned curated documentation covers input, UI, web constraints, total restore and headless checks but does not include playback_type, shader or MultiMesh details. Bundled guidance reports this modified interface unsupported, so the real component source and engine build/check are authoritative. Visual appearance, audible quality and formal adoption remain distinct from a source receipt or successful compilation.

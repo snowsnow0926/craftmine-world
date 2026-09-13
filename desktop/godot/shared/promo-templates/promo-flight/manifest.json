@@ -1,0 +1,303 @@
+{
+  "format": "craftmine.authored-world-template/1",
+  "id": "promo-flight",
+  "version": "1.0.0",
+  "baseId": "creation-sandbox",
+  "baseVersion": "1.0.0",
+  "worldId": "promo-flight",
+  "title": "歼20自由飞行",
+  "source": {
+    "buildId": "gbd-86b89e8d4494563778403fa0a0c14fd70cb537d00537b09edfe41bc8b48b324f",
+    "contentOid": "9d7c80a96a49f9bc0929435663d5cff8d5073191",
+    "archiveSha256": "80d66855af27e2536829a7b5613ea41ee4542b1eff0522387383a39aa1708d19",
+    "sourceCommit": "fb2752c898811da4274bad3b0e4cae3eb32d780b"
+  },
+  "files": [
+    {
+      "bytes": 1677,
+      "kind": "source",
+      "path": "README.md",
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
+      "bytes": 548,
+      "kind": "source",
+      "path": "assets/ASSET_MANIFEST.json",
+      "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+    },
+    {
+      "bytes": 313348,
+      "kind": "source",
+      "path": "assets/blender/island-airfield.glb",
+      "sha256": "481ed49cbb77894e2458fcdffab16e28218df47e59ddc98a66908333b3bd6970"
+    },
+    {
+      "bytes": 1598228,
+      "kind": "source",
+      "path": "assets/blender/island-vegetation.glb",
+      "sha256": "1715574222c6f8e202926f2a86fb43e50891b3f74e0b90ce52aa8e053f9df16a"
+    },
+    {
+      "bytes": 72028,
+      "kind": "source",
+      "path": "assets/blender/j20-flight-kit.glb",
+      "sha256": "e098f4e8a85e8f19098a3f39990ba1e00ee7bb2e017deeff9e1d0ee9680d2247"
+    },
+    {
+      "bytes": 1202,
+      "kind": "source",
+      "path": "assets/cinematic-provenance.json",
+      "sha256": "294ec794928eb69d00b1856958ae7dd2291d9aef37f4da49a90bcb0254cb69ab"
+    },
+    {
+      "bytes": 1826,
+      "kind": "source",
+      "path": "assets/flight-provenance.json",
+      "sha256": "80b43f7a6c68eeea399933d6d4db7f2d31675ee39677a91d6a214df0d2d92c4a"
+    },
+    {
+      "bytes": 4388,
+      "kind": "source",
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
+      "bytes": 2800055,
+      "kind": "source",
+      "path": "assets/fonts/cjk-0.json",
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "bytes": 2790775,
+      "kind": "source",
+      "path": "assets/fonts/cjk-1.json",
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    },
+    {
+      "bytes": 832,
+      "kind": "source",
+      "path": "assets/fonts/font.json",
+      "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+    },
+    {
+      "bytes": 1130080,
+      "kind": "source",
+      "path": "assets/library/j20.glb",
+      "sha256": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe"
+    },
+    {
+      "bytes": 690,
+      "kind": "source",
+      "path": "craftmine_initial_state.json",
+      "sha256": "cf350953bd191d6f245cb00b8e9ae52792d945a2f056db2b06173bf3984c0a6a"
+    },
+    {
+      "bytes": 3380,
+      "kind": "source",
+      "path": "craftmine_shared/base_adapter.gd",
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+    },
+    {
+      "bytes": 1640,
+      "kind": "source",
+      "path": "craftmine_shared/base_adapter_controller_v1.gd",
+      "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+    },
+    {
+      "bytes": 19410,
+      "kind": "source",
+      "path": "craftmine_shared/base_adapter_legacy.gd",
+      "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+    },
+    {
+      "bytes": 9344,
+      "kind": "source",
+      "path": "craftmine_shared/component_state.gd",
+      "sha256": "2194d1457fcc15af07cd6da930c9f3180948c5a85c53650d1167effc5350bdc6"
+    },
+    {
+      "bytes": 9893,
+      "kind": "source",
+      "path": "craftmine_shared/controller_evidence.gd",
+      "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+    },
+    {
+      "bytes": 3959,
+      "kind": "source",
+      "path": "craftmine_shared/engine_performance.gd",
+      "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+    },
+    {
+      "bytes": 2525,
+      "kind": "source",
+      "path": "craftmine_shared/headless_play_action.gd",
+      "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+    },
+    {
+      "bytes": 4781,
+      "kind": "source",
+      "path": "craftmine_shared/progress_collision.gd",
+      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+    },
+    {
+      "bytes": 2755,
+      "kind": "source",
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+    },
+    {
+      "bytes": 8556,
+      "kind": "source",
+      "path": "craftmine_shared/runtime_bridge_base.gd",
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+    },
+    {
+      "bytes": 18909,
+      "kind": "source",
+      "path": "craftmine_shared/scene_mesh_picker.gd",
+      "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "bytes": 15366,
+      "kind": "source",
+      "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+    },
+    {
+      "bytes": 1759,
+      "kind": "source",
+      "path": "craftmine_shared/state_guard.gd",
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "bytes": 6559,
+      "kind": "source",
+      "path": "creation-scene.schema.json",
+      "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+    },
+    {
+      "bytes": 1407,
+      "kind": "source",
+      "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "bytes": 2430,
+      "kind": "source",
+      "path": "manifest.json",
+      "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+    },
+    {
+      "bytes": 1173,
+      "kind": "source",
+      "path": "project.godot",
+      "sha256": "945440e0ae7cbbc36262715a2fc8183b2bc2d66b4689645e68cdb32f308d010a"
+    },
+    {
+      "bytes": 1294,
+      "kind": "source",
+      "path": "scenes/creation.tscn",
+      "sha256": "024e6297124c6178c629d84b95da690ddc37cb5da1de441d5290622f06bab7de"
+    },
+    {
+      "bytes": 1737,
+      "kind": "source",
+      "path": "scripts/creation_font.gd",
+      "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+    },
+    {
+      "bytes": 26598,
+      "kind": "source",
+      "path": "scripts/creation_world.gd",
+      "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615"
+    },
+    {
+      "bytes": 7662,
+      "kind": "source",
+      "path": "scripts/j20_cinematic.gd",
+      "sha256": "d25c083a6819ea5d1aad4f58d3b7588bbf8b93d4b32e0ad93e98cdda0a3efc3c"
+    },
+    {
+      "bytes": 5341,
+      "kind": "source",
+      "path": "scripts/j20_controller.gd",
+      "sha256": "915d63c8b1b1b1dc90ae01da78ebe83c2dfaff043840ec35ff948e6a25e2d740"
+    },
+    {
+      "bytes": 13319,
+      "kind": "source",
+      "path": "scripts/j20_flight.gd",
+      "sha256": "9bb4b0303c8fc8ebaac4752a58cf8e86437a015a67a93db0ab16ddac2289744a"
+    },
+    {
+      "bytes": 6468,
+      "kind": "source",
+      "path": "scripts/j20_hud.gd",
+      "sha256": "18edbbcd1ce58f2bcf46b1fce08445e4f511871726d609dcb55ef63bbe1e2ab8"
+    },
+    {
+      "bytes": 9069,
+      "kind": "source",
+      "path": "scripts/j20_state.gd",
+      "sha256": "7a8212d0eb67910908b4794e60f7c1cd244293fca47f04e00c3e20a94426b4ae"
+    },
+    {
+      "bytes": 6934,
+      "kind": "source",
+      "path": "scripts/j20_viewport.gd",
+      "sha256": "d8a3bc9d4899ad3a0b9e3d802ee5b0bf5ae521b47547460571aad29cb68d65e1"
+    },
+    {
+      "bytes": 1527,
+      "kind": "source",
+      "path": "scripts/reused/camera_rig.gd",
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "bytes": 7079,
+      "kind": "source",
+      "path": "scripts/reused/player_controller.gd",
+      "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+    },
+    {
+      "bytes": 5289,
+      "kind": "source",
+      "path": "scripts/scene_contract.gd",
+      "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+    },
+    {
+      "bytes": 1745,
+      "kind": "source",
+      "path": "shaders/flight_land.gdshader",
+      "sha256": "e5e57e69e7ec2e637aca9471f89ec76afece7f696b150c304a658a7c7354e82a"
+    },
+    {
+      "bytes": 2264,
+      "kind": "source",
+      "path": "shaders/flight_ocean.gdshader",
+      "sha256": "b45e37163c441760674f6b1511791d5022b08ce834d94c3c115d06526b5df2a5"
+    },
+    {
+      "bytes": 1736,
+      "kind": "source",
+      "path": "shaders/flight_sky.gdshader",
+      "sha256": "3a061af2b598b13ff795e3fa03604f76216becf222e15d75ad59546c0158ed4c"
+    },
+    {
+      "bytes": 115,
+      "kind": "source",
+      "path": "world/creation.json",
+      "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
+    }
+  ],
+  "initial": {
+    "file": "initial.json",
+    "sha256": "e3dd04294c131542636eb5bffe74b24c4d5db56364109faec4c6c3bc3899302d",
+    "authority": "authored-runtime-defaults"
+  },
+  "preview": {
+    "file": "preview.png",
+    "sha256": "70af2d9b49d56c6e2746eae0c6f4e24a918f1d3d0a8c3025dd80cb0cd323c4c3",
+    "bytes": 1142464
+  }
+}

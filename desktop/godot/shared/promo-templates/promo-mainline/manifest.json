@@ -1,0 +1,351 @@
+{
+  "format": "craftmine.authored-world-template/1",
+  "id": "promo-mainline",
+  "version": "1.0.0",
+  "baseId": "creation-sandbox",
+  "baseVersion": "1.0.0",
+  "worldId": "codex-live-direct",
+  "title": "白色博美与巨兽试炼",
+  "source": {
+    "buildId": "gbd-3a3cc6d5183f92f1a2fefd6c5de96b454a3af85056ceeb09f3d890dade0746d0",
+    "contentOid": "bf92fae531d90f391fe5408bf75ff70234683111",
+    "archiveSha256": "b664b37f3f80a282960a3ab52585e5e121f8f17f4872f8b5a6fb54f821e03abc",
+    "sourceCommit": "fb2752c898811da4274bad3b0e4cae3eb32d780b"
+  },
+  "files": [
+    {
+      "bytes": 1677,
+      "kind": "source",
+      "path": "README.md",
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
+      "bytes": 548,
+      "kind": "source",
+      "path": "assets/ASSET_MANIFEST.json",
+      "sha256": "f29271172f64409dd705b5b36aa429c4faae484fa4aee01ce24bacad10530260"
+    },
+    {
+      "bytes": 210864,
+      "kind": "source",
+      "path": "assets/blender/ak47.glb",
+      "sha256": "066a2666ad71f850856052a9b0480a642e04a5d60c000ee48910170dd5bad25c"
+    },
+    {
+      "bytes": 78656,
+      "kind": "source",
+      "path": "assets/blender/broadleaf.glb",
+      "sha256": "a10323c994d4c431ac2246f8376c5ecd53997ca6f6cb6be1c90a806063cc014a"
+    },
+    {
+      "bytes": 83592,
+      "kind": "source",
+      "path": "assets/blender/heavyblade.glb",
+      "sha256": "c32983d66bec11463046f3e66b5c5309225df975cf93ad28878b241c9cc2ccad"
+    },
+    {
+      "bytes": 57432,
+      "kind": "source",
+      "path": "assets/blender/hornling.glb",
+      "sha256": "775ec49dcf1ee9f7fbab8155c1f56b4071c24390fc07f00981626c820a146e69"
+    },
+    {
+      "bytes": 4160452,
+      "kind": "source",
+      "path": "assets/blender/meadow.glb",
+      "sha256": "02ba07f28e8c2c1eaf1724f36d25165fa8ff82862537dc7c5b45a047e65681ac"
+    },
+    {
+      "bytes": 210660,
+      "kind": "source",
+      "path": "assets/blender/puppy.glb",
+      "sha256": "19e62b528763ac4c9b05b620a1d7e2df70cb0c4215dbf393fb9337a93b42319c"
+    },
+    {
+      "bytes": 336872,
+      "kind": "source",
+      "path": "assets/blender/riftbeast.glb",
+      "sha256": "88f9128fbb8e3d246897e97925fe688cd9b6f82d026465cd70c79bc4cda71298"
+    },
+    {
+      "bytes": 4388,
+      "kind": "source",
+      "path": "assets/fonts/OFL-NotoSansSC.txt",
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
+      "bytes": 2800055,
+      "kind": "source",
+      "path": "assets/fonts/cjk-0.json",
+      "sha256": "8698b98e04719d8b25c70ad013c7d4e8c9e72b936b126ecd7a8ffcdb804dc32f"
+    },
+    {
+      "bytes": 2790775,
+      "kind": "source",
+      "path": "assets/fonts/cjk-1.json",
+      "sha256": "afe6c4d9a1768a2913bef937ad190c97fad4fb1983534e2912411624d58b8601"
+    },
+    {
+      "bytes": 832,
+      "kind": "source",
+      "path": "assets/fonts/font.json",
+      "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
+    },
+    {
+      "bytes": 3753144,
+      "kind": "source",
+      "path": "assets/library/pomeranian-cute.glb",
+      "sha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b"
+    },
+    {
+      "bytes": 700,
+      "kind": "source",
+      "path": "craftmine_initial_state.json",
+      "sha256": "91d7c58d8cc6a64f355c076ba994bfbf698b5354ede621808955a126488e4927"
+    },
+    {
+      "bytes": 3380,
+      "kind": "source",
+      "path": "craftmine_shared/base_adapter.gd",
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+    },
+    {
+      "bytes": 1640,
+      "kind": "source",
+      "path": "craftmine_shared/base_adapter_controller_v1.gd",
+      "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+    },
+    {
+      "bytes": 19410,
+      "kind": "source",
+      "path": "craftmine_shared/base_adapter_legacy.gd",
+      "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+    },
+    {
+      "bytes": 9344,
+      "kind": "source",
+      "path": "craftmine_shared/component_state.gd",
+      "sha256": "2194d1457fcc15af07cd6da930c9f3180948c5a85c53650d1167effc5350bdc6"
+    },
+    {
+      "bytes": 9893,
+      "kind": "source",
+      "path": "craftmine_shared/controller_evidence.gd",
+      "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+    },
+    {
+      "bytes": 3959,
+      "kind": "source",
+      "path": "craftmine_shared/engine_performance.gd",
+      "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+    },
+    {
+      "bytes": 2525,
+      "kind": "source",
+      "path": "craftmine_shared/headless_play_action.gd",
+      "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+    },
+    {
+      "bytes": 4781,
+      "kind": "source",
+      "path": "craftmine_shared/progress_collision.gd",
+      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+    },
+    {
+      "bytes": 2755,
+      "kind": "source",
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+    },
+    {
+      "bytes": 8556,
+      "kind": "source",
+      "path": "craftmine_shared/runtime_bridge_base.gd",
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+    },
+    {
+      "bytes": 18909,
+      "kind": "source",
+      "path": "craftmine_shared/scene_mesh_picker.gd",
+      "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "bytes": 15366,
+      "kind": "source",
+      "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+    },
+    {
+      "bytes": 1759,
+      "kind": "source",
+      "path": "craftmine_shared/state_guard.gd",
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "bytes": 6559,
+      "kind": "source",
+      "path": "creation-scene.schema.json",
+      "sha256": "08478a9fa12f3848adbb68a0fe87aa52336e5e71b8157432c41df96cf6188d82"
+    },
+    {
+      "bytes": 1407,
+      "kind": "source",
+      "path": "licenses/ORIGINAL_ASSETS_LICENSE.txt",
+      "sha256": "da086561dc6de81d6ac229450a6a224ef8bf8a25878043de636dbdd50faecb62"
+    },
+    {
+      "bytes": 2430,
+      "kind": "source",
+      "path": "manifest.json",
+      "sha256": "426e695c55871aa6d7794e436fb112e5e58616134880eec997c996c434136d4a"
+    },
+    {
+      "bytes": 1178,
+      "kind": "source",
+      "path": "project.godot",
+      "sha256": "82c4042bdd45214642de97becf58b9236c2df8d24ae389c1aeaac5287d356d60"
+    },
+    {
+      "bytes": 2685,
+      "kind": "source",
+      "path": "scenes/creation.tscn",
+      "sha256": "3783e28add85706aecac11421df61227afc33450ffd90af6907891722d967da9"
+    },
+    {
+      "bytes": 1090,
+      "kind": "source",
+      "path": "scenes/hunt/duel.tscn",
+      "sha256": "b2b4e3ff963c5be5412a8c5364c13456a04bb7403d1287f9edd905d3be2bb87b"
+    },
+    {
+      "bytes": 1674,
+      "kind": "source",
+      "path": "scenes/monsters/encounter.tscn",
+      "sha256": "9db56bd038b339f75a355bc4a7c9c75897cdd49a16b55e24af2ed3d0c83f06e6"
+    },
+    {
+      "bytes": 540,
+      "kind": "source",
+      "path": "scenes/monsters/hornling.tscn",
+      "sha256": "8691e107fa58647b95d0c4353b06e7a1d8faabd7fe7301a02186e49074025664"
+    },
+    {
+      "bytes": 1023,
+      "kind": "source",
+      "path": "scenes/pet_dog.tscn",
+      "sha256": "b03cd0ad1f1963ab1d92ef72c37efc896bb0bfe044950a5566e578e76b664e27"
+    },
+    {
+      "bytes": 1571,
+      "kind": "source",
+      "path": "scripts/broadleaf_world.gd",
+      "sha256": "75bdf8892a0746dca879d942db24a6429345b8ff2886c6b7e612f3e739aee140"
+    },
+    {
+      "bytes": 1737,
+      "kind": "source",
+      "path": "scripts/creation_font.gd",
+      "sha256": "dc56587a13b41885b3248d15c1aecc1280458914694d8ca67a20409307a3d98d"
+    },
+    {
+      "bytes": 26598,
+      "kind": "source",
+      "path": "scripts/creation_world.gd",
+      "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615"
+    },
+    {
+      "bytes": 21730,
+      "kind": "source",
+      "path": "scripts/hunt/duel.gd",
+      "sha256": "745c320822e9b69a9a9e7c7c7d39acd08c15d2faa667fe67bb7b6f7ece215123"
+    },
+    {
+      "bytes": 1056,
+      "kind": "source",
+      "path": "scripts/hunt/hunter_input_guard.gd",
+      "sha256": "1171f293bf9ab6f31ef773f0cbd5397cbb6d4f4711240ed4966e1d9ea42ba8d5"
+    },
+    {
+      "bytes": 10406,
+      "kind": "source",
+      "path": "scripts/hunt/presentation.gd",
+      "sha256": "de71837ff199cf55af731fa132b81634e8ab5d335c64e3417c0e70fb8fea89c9"
+    },
+    {
+      "bytes": 12435,
+      "kind": "source",
+      "path": "scripts/hunt/riftbeast.gd",
+      "sha256": "4661981ac6d4b38ecfd4e01fcd791323d57b430224edaea35c9ec6231d4204d9"
+    },
+    {
+      "bytes": 8525,
+      "kind": "source",
+      "path": "scripts/monsters/encounter.gd",
+      "sha256": "4c539cebdff50568db7cf76d1adec7bf882bb59a21f06917376eba78c4c13617"
+    },
+    {
+      "bytes": 8521,
+      "kind": "source",
+      "path": "scripts/monsters/hornling.gd",
+      "sha256": "29c33fee6879048845f5c839107046361ab8bce9399e14370b58849ede200423"
+    },
+    {
+      "bytes": 12178,
+      "kind": "source",
+      "path": "scripts/pet_dog.gd",
+      "sha256": "08e7c8c75acedb8736fbea371947b7e839f953d034e776a4eff77108e9448416"
+    },
+    {
+      "bytes": 4351,
+      "kind": "source",
+      "path": "scripts/pomeranian_dog.gd",
+      "sha256": "504ee30cf7e4731879ed90f2487e36e08caada1ff5d82e15d4318208ca5edd14"
+    },
+    {
+      "bytes": 1527,
+      "kind": "source",
+      "path": "scripts/reused/camera_rig.gd",
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "bytes": 7079,
+      "kind": "source",
+      "path": "scripts/reused/player_controller.gd",
+      "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+    },
+    {
+      "bytes": 5289,
+      "kind": "source",
+      "path": "scripts/scene_contract.gd",
+      "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+    },
+    {
+      "bytes": 14043,
+      "kind": "source",
+      "path": "scripts/weapons/ak47.gd",
+      "sha256": "709540a57d4806f155a5ab3a3dbfae871d8bcf654debacccbe6290a13388a0ae"
+    },
+    {
+      "bytes": 1633,
+      "kind": "source",
+      "path": "shaders/pomeranian_motion.gdshader",
+      "sha256": "95b13663f43028eef8496b4bb07089d27ef5ea015517de6cd0406a2db623a180"
+    },
+    {
+      "bytes": 1366,
+      "kind": "source",
+      "path": "world/creation.json",
+      "sha256": "f9698a5cfda5b3826bd02126f66245d83cde963a5e2fa176b530928d97c695e9"
+    }
+  ],
+  "initial": {
+    "file": "initial.json",
+    "sha256": "f71ba43ae2cf61c2f1ec355b7c2f78072e5cf313429719053e25e281f1391423",
+    "authority": "authored-runtime-defaults"
+  },
+  "preview": {
+    "file": "preview.png",
+    "sha256": "d97fb0f5f656a041e982099108569c35444083ef094f9be6ec413091b9e5f418",
+    "bytes": 643488
+  }
+}

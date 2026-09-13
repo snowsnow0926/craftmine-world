@@ -10024,3 +10024,6 @@ Remount while a source install is checking and verify its retained job is polled
 without another install. Cancel/switch worlds during a proposal and verify no
 late result is shown or applied to a different world. Record live-model usage
 separately from the deterministic component tests; do not add token/call/turn caps.
+### Published demonstration world starters (2026-09-13)
+
+In one fresh profile without a connected model, open the existing world picker and create each of the four published starters. Verify distinct native world IDs and conversation bindings, visible preparation stages, actual first load, save and reopen. Create a second copy of one starter; changing or playing it must leave the first copy and shipped source hashes unchanged. Initial mainline wins/attempts, flight history, rain casts and city exploration must not inherit publisher progress. Cancel initialization between source batches, reopen, and explicitly retry without a duplicate world. Corrupt a private fixture source hash and verify rejection before world registration. PNG previews remain bounded data URLs with no filesystem paths. Gameplay and F2 input checks use independent background profiles and the project no-real-input policy; native source-storage tests alone do not establish these outcomes.

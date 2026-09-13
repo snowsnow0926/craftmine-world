@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/pomeranian_dog.gd" id="1_pet"]
+[ext_resource type="PackedScene" path="res://assets/library/pomeranian-cute.glb" id="2_model"]
+
+[sub_resource type="CapsuleShape3D" id="PetShape"]
+radius = 0.53
+height = 1.08
+
+[node name="PetDog" type="CharacterBody3D"]
+collision_layer = 16
+collision_mask = 3
+floor_snap_length = 0.2
+script = ExtResource("1_pet")
+entity_id = "pet-dog-01"
+metadata/entity_id = "pet-dog-01"
+metadata/display_name = "白色博美犬小麦"
+metadata/source_asset = "res://assets/library/pomeranian-cute.glb"
+metadata/source_asset_sha256 = "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b"
+metadata/previous_source_job_id = "40a979f4-ae19-4893-87ea-6d3d6233e028"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.54, 0)
+shape = SubResource("PetShape")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Pomeranian" parent="Visual" instance=ExtResource("2_model")]

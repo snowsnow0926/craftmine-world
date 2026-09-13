@@ -20,7 +20,7 @@ test("the shipped catalog offers only delivered Godot bases and their templates"
   const options = creation.readGodotCreateOptions({catalogFile, basesRoot});
   assert.deepEqual([...options.bases.map((base) => base.id)].sort(), ["creation-sandbox", "first-person", "mining-sandbox", "side-view", "top-down"]);
   assert.ok(options.bases.every((base) => base.delivered && base.templates.length >= (base.id === "creation-sandbox" ? 1 : 2)));
-  assert.deepEqual(options.bases.find((base) => base.id === "creation-sandbox").templates.map((t) => t.id), ["blank"]);
+  assert.deepEqual(options.bases.find((base) => base.id === "creation-sandbox").templates.map((t) => t.id), ["blank", "promo-mainline", "promo-flight", "promo-rain", "promo-city"]);
   assert.deepEqual(options.bases.find((base) => base.id === "top-down").templates.map((t) => t.id), ["blank", "town"]);
   assert.equal(options.createActions, true);
   const missing = creation.readGodotCreateOptions({catalogFile, basesRoot: path.join(root, "nope")});

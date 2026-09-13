@@ -1,0 +1,15 @@
+{
+  "format": "craftmine.creation-scene/1",
+  "revision": 2,
+  "defaults": { "timeOfDay": 12 },
+  "entities": [
+    { "id": "grove-tree-01", "kind": "tree", "position": [-4, 0, -1], "rotationY": 18, "scale": [2.2, 1.05, 2.2], "color": "#4d8c45", "parameters": {} },
+    { "id": "grove-tree-02", "kind": "tree", "position": [4.2, 0, -2.3], "rotationY": -32, "scale": [1.9, 0.9, 1.9], "color": "#5a914a", "parameters": {} },
+    { "id": "grove-tree-03", "kind": "tree", "position": [-7, 0, -6], "rotationY": 75, "scale": [2.5, 1.18, 2.5], "color": "#3f7c42", "parameters": {} },
+    { "id": "grove-tree-04", "kind": "tree", "position": [6.5, 0, -7.5], "rotationY": -110, "scale": [2.3, 1.08, 2.3], "color": "#548947", "parameters": {} },
+    { "id": "grove-tree-05", "kind": "tree", "position": [-3.8, 0, -10], "rotationY": 140, "scale": [1.8, 0.86, 1.8], "color": "#62994d", "parameters": {} },
+    { "id": "grove-tree-06", "kind": "tree", "position": [3.4, 0, -12], "rotationY": 48, "scale": [2.4, 1.15, 2.4], "color": "#467f3c", "parameters": {} },
+    { "id": "grove-tree-07", "kind": "tree", "position": [-8.5, 0, -13], "rotationY": -68, "scale": [2.1, 1.0, 2.1], "color": "#568b40", "parameters": {} },
+    { "id": "grove-tree-08", "kind": "tree", "position": [8, 0, -15], "rotationY": 165, "scale": [2.6, 1.2, 2.6], "color": "#3f8046", "parameters": {} }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "visualOnly": true,
+  "vegetation": {"path":"assets/blender/island-vegetation.glb","sourceJobId":"da78c9d4-8ad8-439d-b7f9-584734069f07","previousSourceJobId":"dc0c60ce-e256-4b97-9da7-859b42cb0187","sha256":"1715574222c6f8e202926f2a86fb43e50891b3f74e0b90ce52aa8e053f9df16a","colliders":false},
+  "preserved": ["original J20 model and scale", "island-airfield GLB and existing collision geometry", "j20_controller.gd", "j20_state.gd and the v1 persistent payload", "all existing driving keys and free flight", "managed runtime bridges and formal save ownership"],
+  "presentation": "Velocity-independent close chase camera with 48-degree FOV; small edge HUD; F4 hides flight HUD and visual course rings without disabling physics, inputs or progress. Camera payload is restored unchanged, and new framing eases in only after Start.",
+  "environment": "Static layered sky shader, animated ocean shading/shore foam, world-space land color and rock strata, Blender-authored coastal woodland. No animation or path drives the plane.",
+  "verification": "Ordinary host check plus actual projected-model framing and F4 state-invariance probes; rendered appearance and adoption require their own evidence."
+}

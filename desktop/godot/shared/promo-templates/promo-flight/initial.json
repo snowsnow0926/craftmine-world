@@ -1,0 +1,90 @@
+{
+  "baseId": "creation-sandbox",
+  "baseVersion": "1.0.0",
+  "body": {
+    "baseVersion": "1.0.0",
+    "components": {
+      "j20-player-aircraft": {
+        "aircraft": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "crashed": false,
+          "flightSeconds": 0,
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": false,
+          "heading": 0,
+          "landings": 0,
+          "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+          "pitch": 0,
+          "position": [
+            0,
+            2.1800000667572,
+            180
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "throttle": 0,
+          "velocity": [
+            0,
+            0,
+            0
+          ],
+          "verticalSpeed": 0
+        },
+        "camera": {
+          "fov": 62,
+          "position": [
+            24,
+            12.1800003051758,
+            152
+          ],
+          "rotation": [
+            -0.252123326063156,
+            2.43296647071838,
+            0
+          ]
+        },
+        "cockpitView": false,
+        "entityId": "j20-player-aircraft",
+        "format": "craftmine.j20-flight-state/1",
+        "gateIndex": 0,
+        "gearExtension": 1,
+        "settings": {
+          "flightModelVersion": 1
+        },
+        "sourceSettings": {
+          "flightModelVersion": 1
+        },
+        "started": false,
+        "stateVersion": 1
+      }
+    },
+    "doors": {},
+    "format": "craftmine.creation-progress/1",
+    "inventory": {},
+    "openedChests": {},
+    "player": {
+      "onFloor": true,
+      "pitch": 0,
+      "position": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "yaw": 0
+    },
+    "rules": {},
+    "sourceTimeOfDay": 12,
+    "timeOfDay": 12,
+    "worldId": "promo-flight"
+  },
+  "format": "craftmine.godot-progress/1",
+  "stateVersion": 1,
+  "worldId": "promo-flight"
+}

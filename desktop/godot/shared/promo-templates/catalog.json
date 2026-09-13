@@ -1,0 +1,37 @@
+{
+  "format": "craftmine.authored-world-templates/1",
+  "templates": [
+    {
+      "id": "promo-mainline",
+      "label": "白色博美与巨兽试炼",
+      "kind": "example",
+      "description": "森林伙伴、巨兽试炼与枪械",
+      "version": "1.0.0",
+      "sha256": "cf1ca86c779c319346b74452c595fd45473f1bd6f41bb9a5a33522cb8ec06667"
+    },
+    {
+      "id": "promo-flight",
+      "label": "歼20自由飞行",
+      "kind": "example",
+      "description": "歼二十起降与驾驶",
+      "version": "1.0.0",
+      "sha256": "a3237082395269ee245c955932342c656346dc5c52f4297493d16db5cadae854"
+    },
+    {
+      "id": "promo-rain",
+      "label": "雨的逆序",
+      "kind": "example",
+      "description": "暂停雨滴、倒流与控雨",
+      "version": "1.0.0",
+      "sha256": "cdd69cf063adeec2f2dc86a1d8b92922fdf46f930d32af909d36edda2e88196f"
+    },
+    {
+      "id": "promo-city",
+      "label": "奥格瑞玛城市漫游",
+      "kind": "example",
+      "description": "城市街区漫游与探索",
+      "version": "1.0.0",
+      "sha256": "ff8d7bc56361e4a939d4641d8cdf98cd21163ec7e34c9a30744c1a30d945bf67"
+    }
+  ]
+}

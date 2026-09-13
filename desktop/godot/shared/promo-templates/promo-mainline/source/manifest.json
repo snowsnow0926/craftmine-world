@@ -1,0 +1,95 @@
+{
+  "format": "craftmine.godot-base-manifest/1",
+  "baseId": "creation-sandbox",
+  "baseVersion": "1.0.0",
+  "title": "沉浸式造物世界",
+  "engine": {
+    "name": "godot",
+    "version": "4.7.2-stable",
+    "scriptLanguage": "GDScript",
+    "renderer": "gl_compatibility",
+    "targetPlatforms": [
+      "web",
+      "windows-x64"
+    ]
+  },
+  "protocols": {
+    "worldFormat": "craftmine.creation-scene/1",
+    "stateFormat": "craftmine.creation-progress/1",
+    "progressFormat": "craftmine.godot-progress/1",
+    "probeFormat": "craftmine.godot-observation/1",
+    "baseProtocolVersion": 1
+  },
+  "stateFormat": {
+    "id": "craftmine.creation-progress/1",
+    "version": 1,
+    "preserved": [
+      "worldId",
+      "player",
+      "timeOfDay",
+      "sourceTimeOfDay",
+      "inventory",
+      "openedChests",
+      "doors",
+      "rules"
+    ],
+    "migrations": []
+  },
+  "contract": {
+    "format": "craftmine.godot-base-contract/1",
+    "assets": {
+      "manifest": "assets/ASSET_MANIFEST.json",
+      "license": "licenses/ORIGINAL_ASSETS_LICENSE.txt"
+    },
+    "sourceFiles": [
+      "project.godot",
+      "scenes/creation.tscn",
+      "scripts/creation_world.gd",
+      "scripts/scene_contract.gd",
+      "scripts/reused/player_controller.gd",
+      "scripts/reused/camera_rig.gd",
+      "world/creation.json",
+      "creation-scene.schema.json",
+      "scripts/creation_font.gd",
+      "assets/fonts/font.json",
+      "assets/fonts/cjk-0.json",
+      "assets/fonts/cjk-1.json",
+      "assets/fonts/OFL-NotoSansSC.txt"
+    ]
+  },
+  "templates": [
+    {
+      "id": "blank",
+      "kind": "blank-start",
+      "label": "空白造物世界",
+      "entryScene": "res://scenes/creation.tscn",
+      "source": "scenes/creation.tscn",
+      "description": "有边界的 3D 空白地面，可行走、瞄准并持续创造物件与玩法。",
+      "initialState": {
+        "player": "spawn",
+        "timeOfDay": 12,
+        "inventory": {},
+        "openedChests": {},
+        "doors": {},
+        "rules": {},
+        "sourceTimeOfDay": 12
+      }
+    }
+  ],
+  "capabilities": [
+    "bounded-first-person-movement",
+    "creation-entities",
+    "ray-target-observation",
+    "one-time-chest",
+    "door-interaction",
+    "source-authored-rules",
+    "complete-progress"
+  ],
+  "components": [],
+  "tools": {
+    "newWorld": "tools/new-world.mjs"
+  },
+  "acceptance": {
+    "headless": "tests/headless.mjs"
+  }
+}

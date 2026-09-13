@@ -457,8 +457,8 @@
         "app-bundle"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 6631,
-      "sha256": "3fdf66ead134b6600dfd798c00b67b8f2f3be62278065d4e71957f2325969faf"
+      "bytes": 6816,
+      "sha256": "097aa0df0acaffcfa0016eec800e32719365cbed08b5b09fb30f88f88217efa8"
     },
     {
       "path": "observation.d.mts",

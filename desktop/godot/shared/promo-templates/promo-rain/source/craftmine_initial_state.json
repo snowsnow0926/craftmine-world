@@ -1,0 +1,29 @@
+{
+  "format": "craftmine.materialized-initial-state/1",
+  "baseId": "creation-sandbox",
+  "template": "blank",
+  "worldId": "promo-rain",
+  "sourceDigest": "b5945a659eb2269a4d9ca5d088d2f80a7b1e398fa451dfcac4c148904f1fe07b",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "initialProgress": {
+    "baseVersion": "1.0.0",
+    "doors": {},
+    "format": "craftmine.creation-progress/1",
+    "inventory": {},
+    "openedChests": {},
+    "player": {
+      "onFloor": true,
+      "pitch": 0,
+      "position": [
+        0,
+        0.899999976158142,
+        6
+      ],
+      "yaw": 0
+    },
+    "rules": {},
+    "sourceTimeOfDay": 12,
+    "timeOfDay": 12,
+    "worldId": "promo-rain"
+  }
+}

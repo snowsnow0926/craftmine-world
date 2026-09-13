@@ -17,6 +17,7 @@ import path from "node:path";
 import {createHash, randomBytes} from "node:crypto";
 import {pathToFileURL} from "node:url";
 import {canAutomaticallyInitialize} from "./godot-world-initialization";
+import {readPublishedWorldOptions} from "./godot-template-options";
 
 export const PROGRESS_FORMAT = "craftmine.godot-progress/1";
 /** Bases this client can actually create. Matches the core's accepted set. */
@@ -28,6 +29,9 @@ export type GodotBaseTemplate = {
   kind: string;
   description: string;
   delivered: boolean;
+  preview?: string;
+  source?: {id: string; version: string; sha256: string};
+  initialState?: string;
 };
 
 export type GodotBaseOption = {
@@ -93,6 +97,7 @@ export function readGodotCreateOptions(input: {catalogFile: string; basesRoot: s
         delivered,
       }];
     });
+    if (baseId === "creation-sandbox" && delivered) templates.push(...readPublishedWorldOptions(input.basesRoot));
     bases.push({
       id: baseId,
       baseVersion: String(raw?.baseVersion ?? ""),

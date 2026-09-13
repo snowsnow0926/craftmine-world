@@ -1,0 +1,11 @@
+{
+  "aircraft": {"path":"assets/library/j20.glb","sha256":"458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe","source":"Pre-existing world asset; preserved and instantiated, with runtime scale/orientation and canopy override."},
+  "authoredAssets": [
+    {"path":"assets/blender/island-airfield.glb","sourceJobId":"dc0c60ce-e256-4b97-9da7-859b42cb0187","previousJobId":"d1574a97-8eda-4b74-8eb0-292061a42c42","sha256":"481ed49cbb77894e2458fcdffab16e28218df47e59ddc98a66908333b3bd6970"},
+    {"path":"assets/blender/j20-flight-kit.glb","sourceJobId":"0ef780c6-7eb4-4678-8cd6-61220b14083b","sha256":"e098f4e8a85e8f19098a3f39990ba1e00ee7bb2e017deeff9e1d0ee9680d2247"}
+  ],
+  "experience":"Simplified unarmed free flight, runway takeoff, safe-landing criteria, loss of lift at low speed, collisions, reset, gear, chase/cockpit cameras, optional seven-gate course.",
+  "continuity":"Original sandbox, player and managed bridges remain intact. The flight SubViewport shares world physics without replacing the base camera. Aircraft state now participates in the existing craftmine_persistent_components ledger as j20-player-aircraft. Managed save/load owns durable storage, additive old-save defaults and atomic rollback; there is no independent local save file.",
+  "persistence":"Versioned payload stores position, actual attitude and flight-control angles, velocity vector and airspeed, throttle, gear state and extension, camera mode/pose/FOV, assist, airborne/crashed state and course progress. Start resumes without reset; R explicitly resets. Opening screen has only Start, Back and operating hints.",
+  "verification":"Independent real-controller JSON round-trip and continuation probes accompany ordinary host build/check. A passed check remains separate from adoption and a player save/exit/reentry test."
+}

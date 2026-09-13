@@ -3,6 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import {materializeWorldTemplate} from './world-templates.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const bases=path.resolve(here,'../bases');
@@ -18,6 +19,7 @@ const TEMPLATE_BASES=['top-down','mining-sandbox'];
 
 /** Materialize trusted authored base source in a new directory, never execute it. */
 export function materializeBase({baseId,worldId,template='blank',out,controllerProfile='creation-player-collision/1',enginePerformanceProfile}) {
+  if(baseId==='creation-sandbox'&&template.startsWith('promo-'))return materializeWorldTemplate({worldId,template,out});
   const config=configs[baseId];
   if(!config || !config.examples.includes(template)) throw Error('Unknown base/template');
   if(enginePerformanceProfile!==undefined&&enginePerformanceProfile!=='engine-monitor/1')throw Error('Unknown engine performance profile');

@@ -1,0 +1,67 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/broadleaf_world.gd" id="1_world"]
+[ext_resource type="Script" path="res://scripts/reused/player_controller.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/reused/camera_rig.gd" id="3_camera"]
+[ext_resource type="PackedScene" path="res://assets/blender/meadow.glb" id="4_meadow"]
+[ext_resource type="PackedScene" path="res://scenes/pet_dog.tscn" id="5_pet"]
+[ext_resource type="PackedScene" path="res://scenes/monsters/encounter.tscn" id="6_monsters"]
+[ext_resource type="PackedScene" path="res://scenes/hunt/duel.tscn" id="7_hunt"]
+[ext_resource type="Script" path="res://scripts/hunt/hunter_input_guard.gd" id="8_guard"]
+[ext_resource type="Script" path="res://scripts/weapons/ak47.gd" id="9_ak47"]
+[ext_resource type="Script" path="res://scripts/hunt/presentation.gd" id="10_presentation"]
+[sub_resource type="CapsuleShape3D" id="PlayerShape"]
+radius = 0.3
+height = 1.8
+
+[node name="CreationWorld" type="Node3D"]
+script = ExtResource("1_world")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+position = Vector3(0, 0.9, 6)
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("2_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("PlayerShape")
+
+[node name="CameraRig" type="Node3D" parent="Player"]
+position = Vector3(0, 0.65, 0)
+script = ExtResource("3_camera")
+
+[node name="PitchPivot" type="Node3D" parent="Player/CameraRig"]
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraRig/PitchPivot"]
+current = true
+fov = 75.0
+far = 140.0
+
+[node name="WeaponMount" type="Node3D" parent="Player/CameraRig/PitchPivot/Camera3D"]
+
+[node name="GroundMeadow" parent="." instance=ExtResource("4_meadow")]
+metadata/entity_id = "ground-meadow"
+metadata/display_name = "草地与野花"
+metadata/source_asset = "res://assets/blender/meadow.glb"
+metadata/source_job_id = "d6352d39-d3cc-4960-9b6f-12c6ea890e5e"
+metadata/decoration_only = true
+
+[node name="PetDog" parent="." instance=ExtResource("5_pet")]
+position = Vector3(1.8, 0, 3.6)
+rotation = Vector3(0, -2.5, 0)
+
+[node name="MonsterEncounter" parent="." instance=ExtResource("6_monsters")]
+
+[node name="GreatHunt" parent="." instance=ExtResource("7_hunt")]
+
+[node name="HunterInputGuard" type="Node" parent="GreatHunt"]
+script = ExtResource("8_guard")
+
+[node name="AK47Equipment" type="Node3D" parent="."]
+script = ExtResource("9_ak47")
+metadata/entity_id = "hunter-ak47-01"
+metadata/display_name = "AK47"
+metadata/source_job_id = "9b2bac9f-6271-4231-bbfe-73ba99490fcd"
+
+[node name="HuntPresentation" type="Node" parent="."]
+script = ExtResource("10_presentation")
