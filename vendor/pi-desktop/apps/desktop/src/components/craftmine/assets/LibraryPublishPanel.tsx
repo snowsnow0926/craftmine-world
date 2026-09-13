@@ -101,7 +101,7 @@ export function LibraryPublishPanel({bridge, worldId, worldName, kind, zh, onSav
       if (latestAttempt.current) {
         try {const value = await status(latestAttempt.current); if (value && ["saved", "completed"].includes(String(value.status))) {finish(value.result ?? value); recovered = true;}} catch { /* Retry keeps the exact original operation. */ }
       }
-      if (!recovered && alive.current) setError(publicationMessage(failure, zh));
+      if (!recovered && alive.current && !(cancelled.current && !latestAttempt.current)) setError(publicationMessage(failure, zh));
     } finally {locked.current = false; if (alive.current) {setBusy(false); if (cancelled.current && !latestAttempt.current) setPhase(zh ? "准备已取消" : "Preparation cancelled");}}
   };
   const cancel = async () => {
@@ -145,7 +145,7 @@ export function LibraryPublishPanel({bridge, worldId, worldName, kind, zh, onSav
         <label className="asset-library-field"><span>{zh ? "用途与功能说明" : "Purpose and capabilities"}</span><textarea data-publication-description value={description} onChange={event => setDescription(event.target.value)} maxLength={3000}/></label>
         <label className="asset-library-field"><span>{zh ? "标签（逗号分隔）" : "Tags (comma separated)"}</span><Input data-publication-tags value={tags} onChange={event => setTags(event.target.value)}/></label>
         <label className="asset-library-field"><span>{zh ? "别名（用于 AI 检索）" : "Aliases for AI search"}</span><Input data-publication-aliases value={aliases} onChange={event => setAliases(event.target.value)}/></label>
-        <label className="library-publish-check"><input type="checkbox" checked={includePreview} onChange={event => setIncludePreview(event.target.checked)}/><span>{zh ? "使用当前世界视角作为预览" : "Use the current world view as a preview"}</span></label>
+        <label className="library-publish-check"><input type="checkbox" checked={includePreview} onChange={event => setIncludePreview(event.target.checked)}/><span>{zh ? "使用源世界视角作为预览" : "Use a source world view as a preview"}</span></label>
         {kind === "world" && <label className="library-publish-check"><input data-publication-checkpoint type="checkbox" checked={checkpoint} onChange={event => setCheckpoint(event.target.checked)}/><span>{zh ? "将当前已保存进度作为新世界起点（包括位置、探索和互动状态）" : "Use saved progress as the new world's starting state, including position, exploration and interactions"}</span></label>}
       </fieldset>
       {attempt && <p className="asset-library-note">{String(attempt.args.displayName)} · v{String(attempt.args.version)} — {zh ? "重试会继续同一次保存，不会创建重复版本。" : "Retry continues the same save without creating a duplicate version."}</p>}

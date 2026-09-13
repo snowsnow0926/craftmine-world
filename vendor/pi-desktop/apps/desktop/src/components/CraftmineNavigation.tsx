@@ -80,11 +80,13 @@ export function CraftmineNavigation() {
   // channel, which the host routes into the retained view.
   const [surfaceError, setSurfaceError] = useState<string | null>(null);
   const [assetsOpen, setAssetsOpen] = useState(false);
+  const assetPreparation = useRef(0), assetPreparing = useRef(false);
+  const latestWorld = useRef(controller.activeWorldId); latestWorld.current = controller.activeWorldId;
   const [historyOpen, setHistoryOpen] = useState(false);
   useEffect(() => {
-    const closeSheets = () => {setAssetsOpen(false); setHistoryOpen(false);};
+    const closeSheets = () => {++assetPreparation.current; assetPreparing.current = false; setAssetsOpen(false); setHistoryOpen(false);};
     window.addEventListener("craftmine-mode-entry-open", closeSheets);
-    return () => window.removeEventListener("craftmine-mode-entry-open", closeSheets);
+    return () => {++assetPreparation.current; assetPreparing.current = false; window.removeEventListener("craftmine-mode-entry-open", closeSheets);};
   }, []);
   useEffect(() => {
     const open = assetsOpen || historyOpen;
@@ -96,7 +98,21 @@ export function CraftmineNavigation() {
     setSurfaceError(null);
     // The asset library is a main-window panel, not a plugin-panel tab.
     if (surface.kind === "assets") {
-      setAssetsOpen(true);
+      if (assetPreparing.current) return;
+      const ticket = ++assetPreparation.current, worldId = controller.activeWorldId;
+      assetPreparing.current = true;
+      void (async () => {
+        // Native world views are hidden behind the sheet. Prepare its optional
+        // source-world image while the trusted formal view is still visible.
+        try {if (controller.bridge && worldId) await controller.bridge.call("library.previewPrepare", {worldId});}
+        catch { /* Publication still works when a preview is unavailable. */ }
+        finally {
+          if (ticket === assetPreparation.current) {
+            assetPreparing.current = false;
+            if (latestWorld.current === worldId) setAssetsOpen(true);
+          }
+        }
+      })();
       return;
     }
     const bridge = controller.bridge;

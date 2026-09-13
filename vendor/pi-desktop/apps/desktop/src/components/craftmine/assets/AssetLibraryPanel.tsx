@@ -614,7 +614,7 @@ export function AssetLibraryPanel({
               </dl>
 
               <h4 className="asset-library-section">{t("preview", lang)}</h4>
-              {controller.preview?.facts?.previewScope === "source-world-view" && <p className="asset-library-field-hint">{lang === "zh" ? "保存时的世界视角" : "World view when saved"}</p>}
+              {controller.preview?.facts?.previewScope === "source-world-view" && <p className="asset-library-field-hint">{lang === "zh" ? "源世界视角" : "Source world view"}</p>}
               <div className="asset-library-preview" data-preview-tone={preview.tone}>
                 <p className="asset-library-preview-label">{preview.label}</p>
                 {preview.detail && (

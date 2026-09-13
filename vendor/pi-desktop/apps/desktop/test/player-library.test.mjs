@@ -32,7 +32,20 @@ test('preview capture does not rebind a late native frame to another world',asyn
  const png=Buffer.alloc(40);Buffer.from('89504e470d0a1a0a','hex').copy(png);const sha=createHash('sha256').update(png).digest('hex');
  let world='w',resizes=[];const identity={worldId:'w',buildId:'b',instanceId:'i'},image={isEmpty:()=>false,getSize:()=>({width:1920,height:1080}),resize(size){resizes.push(size);return this;},toPNG:()=>png};
  const capture=async()=>({...identity,scope:'formal',pngBase64:png.toString('base64'),sha256:sha});
- const make=call=>createLibraryPreviewCapture({selection:async()=>world,instance:()=>identity,candidateActive:()=>false,capture:call,decode:()=>image});
+ const make=call=>createLibraryPreviewCapture({selection:async()=>world,instance:()=>identity,candidateActive:()=>false,sourceIdentity:async()=> 'formal-source',capture:call,decode:()=>image});
  const value=await make(capture)('w');assert.equal(value.sha256,sha);assert.deepEqual(resizes[0],{width:640,height:360,quality:'good'});
  await assert.rejects(make(async()=>{world='other';return capture();})('w'),/WORLD_CHANGED/);
+});
+
+test('a prepared native frame survives sheet hiding but never a different formal source or instance',async()=>{
+ const png=Buffer.alloc(40);Buffer.from('89504e470d0a1a0a','hex').copy(png);const sha=createHash('sha256').update(png).digest('hex');
+ let source='build:artifact-a',world='w',identity={worldId:'w',buildId:'b',instanceId:'i'},hidden=false,candidate=false,captures=0;
+ const image={isEmpty:()=>false,getSize:()=>({width:1280,height:720}),resize(){return this;},toPNG:()=>png};
+ const capture=createLibraryPreviewCapture({selection:async()=>world,instance:()=>identity,sourceIdentity:async()=>source,candidateActive:()=>candidate,decode:()=>image,capture:async()=>{captures++;if(hidden)throw Error('DETACHED');return {...identity,scope:'formal',pngBase64:png.toString('base64'),sha256:sha};}});
+ const prepared=await capture.prepare({worldId:'w'});assert.deepEqual(prepared,{ready:true,worldId:'w',buildId:'b'});assert(!('pngBase64'in prepared));
+ hidden=true;assert.equal((await capture('w')).sha256,sha);assert.equal(captures,1,'sheet publication uses actual prepared frame without reattaching hidden view');
+ source='build:artifact-b';await assert.rejects(capture('w'),/DETACHED/);
+ hidden=false;await capture.prepare({worldId:'w'});hidden=true;identity={...identity,instanceId:'new'};await assert.rejects(capture('w'),/DETACHED/);
+ hidden=false;await capture.prepare({worldId:'w'});hidden=true;candidate=true;await assert.rejects(capture('w'),/UNAVAILABLE/);candidate=false;world='other';await assert.rejects(capture('w'),/UNAVAILABLE/);
+ for(const input of [{worldId:'w',pngBase64:'forged'},{worldId:'../world'},{}])await assert.rejects(capture.prepare(input),/INVALID_REQUEST/);
 });
