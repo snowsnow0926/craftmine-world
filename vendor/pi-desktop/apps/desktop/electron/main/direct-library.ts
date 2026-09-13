@@ -8,7 +8,9 @@ import type {DirectLibraryRequest,DirectLibraryInspection,DirectLibraryOperation
 type Data=Record<string,any>;
 type Target={buildId:string;instanceId:string};
 type Stored={format:'craftmine.direct-library/1';request:Extract<DirectLibraryRequest,{action:'start'}>;operation:DirectLibraryOperation;target:Target;source:{revision:number;manifestHash:string};cancelRequested?:boolean;restarted?:boolean};
+type Starting={request:Stored['request'];cancelRequested:boolean;ownsSlot:boolean;promise:Promise<Stored>;record?:Stored};
 type Dependencies={directory:string;domain:(method:string,args:Data)=>Promise<any>;
+  prepare?:(worldId:string)=>Promise<void>;
   captureTarget:(worldId:string)=>Promise<Target>;assertTarget:(worldId:string,target:Target)=>Promise<void>;
   applyVerified:(worldId:string,candidateId:string,target:Target,authorize:()=>Promise<void>)=>Promise<Data>};
 const terminal=new Set(['applied','cancelled','failed']);
@@ -20,6 +22,7 @@ const messages:Record<string,string>={DIRECT_LIBRARY_SOURCE_CHANGED:'世界草�
 export function createDirectLibraryService(deps:Dependencies){
   if(!path.isAbsolute(deps.directory))throw Error('DIRECT_LIBRARY_DIRECTORY_REQUIRED');
   const records=new Map<string,Stored>(),loads=new Map<string,Promise<Stored>>(),writes=new Map<string,Promise<void>>(),running=new Map<string,Promise<unknown>>();
+  const starting=new Map<string,Starting>();
   let stopping=false;
   const key=(worldId:string,operationId:string)=>createHash('sha256').update(JSON.stringify([worldId,operationId])).digest('hex');
   const output=(r:Stored)=>structuredClone(r.operation);
@@ -33,7 +36,7 @@ export function createDirectLibraryService(deps:Dependencies){
   }
   async function load(worldId:string,operationId:string):Promise<Stored>{
     const id=key(worldId,operationId);if(records.has(id))return records.get(id)!;if(loads.has(id))return loads.get(id)!;
-    const pending=(async()=>{const r=JSON.parse(await fs.readFile(path.join(deps.directory,id+'.json'),'utf8')) as Stored;
+    const pending=(async()=>{let text:string;try{text=await fs.readFile(path.join(deps.directory,id+'.json'),'utf8');}catch(error:any){if(error.code==='ENOENT')throw Error('DIRECT_LIBRARY_OPERATION_NOT_FOUND');throw error;}const r=JSON.parse(text) as Stored;
       if(r.format!=='craftmine.direct-library/1'||r.operation.worldId!==worldId||r.operation.operationId!==operationId)throw Error('DIRECT_LIBRARY_OPERATION_CORRUPT');
       validateDirectLibraryRequest(r.request);r.restarted=true;
       if(['preparing','checking','applying'].includes(r.operation.status)){r.operation.status='interrupted';r.operation.stage='interrupted';r.operation.error={code:'DIRECT_LIBRARY_INTERRUPTED',message:messages.DIRECT_LIBRARY_INTERRUPTED};}
@@ -84,6 +87,7 @@ export function createDirectLibraryService(deps:Dependencies){
   }
   async function apply(r:Stored){
     try{
+      await deps.prepare?.(r.operation.worldId);
       await reconcile(r);if(r.operation.status==='applied')return output(r);
       if(r.operation.status!=='ready'||!r.operation.candidateId)throw Error('DIRECT_LIBRARY_CHECK_REQUIRED');
       if(r.restarted){const target=await deps.captureTarget(r.operation.worldId);if(target.buildId!==r.target.buildId)throw Error('CREATION_TARGET_STALE');r.target=target;r.restarted=false;}
@@ -96,28 +100,39 @@ export function createDirectLibraryService(deps:Dependencies){
     }catch(error){try{await reconcile(r);}catch{/* Keep original failure; never invent adoption. */}if(r.operation.status!=='applied')fail(r,error);}
     finally{await persist(r);}return output(r);
   }
-  return {
-    isBusy:()=>running.size>0,
-    async handle(value:unknown):Promise<DirectLibraryInspection|DirectLibraryOperation>{
+  async function initialize(input:Stored['request'],pending:Starting):Promise<Stored>{
+    const id=key(input.worldId,input.operationId);
+    let r:Stored|undefined;try{r=await load(input.worldId,input.operationId);}catch(error:any){if(error.message!=='DIRECT_LIBRARY_OPERATION_NOT_FOUND')throw error;}
+    if(r){if(!isDeepStrictEqual(r.request,input))throw Error('DIRECT_LIBRARY_OPERATION_CONFLICT');pending.record=r;
+      if(pending.cancelRequested)r.cancelRequested=true;
+      if(!running.has(id)){try{await reconcile(r);}catch(error){fail(r,error);}await persist(r);}return r;
+    }
+    if(stopping||!pending.ownsSlot||running.size)throw Error('WORLD_BUSY');
+    await deps.prepare?.(input.worldId);
+    const info=await inspect(input.worldId,input.ref);if(!info.eligible||!info.source)throw Error(info.reason??'DIRECT_LIBRARY_UNSUPPORTED');
+    const target=await deps.captureTarget(input.worldId);await deps.assertTarget(input.worldId,target);
+    const now=Date.now();r={format:'craftmine.direct-library/1',request:input,target,source:info.source,cancelRequested:pending.cancelRequested,operation:{operationId:input.operationId,worldId:input.worldId,ref:input.ref,...(input.position?{position:input.position}:{}),status:pending.cancelRequested?'cancelled':'preparing',stage:pending.cancelRequested?'cancelled':'preparing',instanceIds:[],draftRetained:false,modelCalls:0,createdAt:now,updatedAt:now}};
+    pending.record=r;records.set(id,r);await persist(r);
+    if(pending.cancelRequested){r.cancelRequested=true;r.operation.status='cancelled';r.operation.stage='cancelled';await persist(r);return r;}
+    const task=prepare(r).catch(()=>undefined).finally(()=>{if(running.get(id)===task)running.delete(id);});running.set(id,task);return r;
+  }
+  async function handle(value:unknown):Promise<DirectLibraryInspection|DirectLibraryOperation>{
       const input=validateDirectLibraryRequest(value);
       if(input.action==='inspect'){const {source,...publicResult}=await inspect(input.worldId,input.ref);return publicResult;}
       const id=key(input.worldId,input.operationId);
       if(input.action==='start'){
-        let r:Stored|undefined;try{r=await load(input.worldId,input.operationId);}catch(error:any){if(error.code!=='ENOENT')throw error;}
-        if(r){if(!isDeepStrictEqual(r.request,input))throw Error('DIRECT_LIBRARY_OPERATION_CONFLICT');if(!running.has(id)){try{await reconcile(r);}catch(error){fail(r,error);}await persist(r);}return output(r);}
-        if(stopping||running.size)throw Error('WORLD_BUSY');
-        // Reserve synchronously across the asynchronous inspection/capture, so
-        // concurrent new operation ids cannot both pass the idle check.
-        let release!:()=>void;const reserved=new Promise<void>(resolve=>{release=resolve;});running.set(id,reserved);
-        try{
-          const info=await inspect(input.worldId,input.ref);if(!info.eligible||!info.source)throw Error(info.reason??'DIRECT_LIBRARY_UNSUPPORTED');
-          const target=await deps.captureTarget(input.worldId);await deps.assertTarget(input.worldId,target);
-          const now=Date.now();r={format:'craftmine.direct-library/1',request:input,target,source:info.source,operation:{operationId:input.operationId,worldId:input.worldId,ref:input.ref,...(input.position?{position:input.position}:{}),status:'preparing',stage:'preparing',instanceIds:[],draftRetained:false,modelCalls:0,createdAt:now,updatedAt:now}};
-          records.set(id,r);await persist(r);
-          const task=prepare(r).catch(()=>undefined).finally(()=>{if(running.get(id)===task)running.delete(id);});running.set(id,task);return output(r);
-        }finally{release();if(running.get(id)===reserved)running.delete(id);}
+        let pending=starting.get(id);
+        if(pending){if(!isDeepStrictEqual(pending.request,input))throw Error('DIRECT_LIBRARY_OPERATION_CONFLICT');return output(await pending.promise);}
+        // Register before even the first disk read. A remounted page may poll
+        // or cancel immediately after sending start, before its file exists.
+        pending={request:input,cancelRequested:false,ownsSlot:starting.size===0&&running.size===0,promise:Promise.resolve(null as unknown as Stored)};
+        starting.set(id,pending);
+        pending.promise=Promise.resolve().then(()=>initialize(input,pending!)).finally(()=>starting.delete(id));
+        return output(await pending.promise);
       }
-      const r=await load(input.worldId,input.operationId);
+      const pending=starting.get(id);
+      if(pending&&input.action==='cancel'){pending.cancelRequested=true;if(pending.record)pending.record.cancelRequested=true;}
+      const r=pending?await pending.promise:await load(input.worldId,input.operationId);
       if(input.action==='cancel'){
         if(r.operation.status==='applied')return output(r);
         r.cancelRequested=true;r.operation.status='cancelled';r.operation.stage='cancelled';await persist(r);
@@ -130,7 +145,17 @@ export function createDirectLibraryService(deps:Dependencies){
         const task=apply(r).finally(()=>running.delete(id));running.set(id,task);return task;
       }
       if(!running.has(id)){try{await reconcile(r);}catch(error){fail(r,error);}await persist(r);}return output(r);
+  }
+  return {
+    isBusy:()=>starting.size>0||running.size>0,
+    async handle(value:unknown):Promise<DirectLibraryInspection|DirectLibraryOperation>{
+      try{return await handle(value);}catch(error:any){
+        // Filesystem/transport messages may contain profile paths. The public
+        // product boundary returns only a stable bounded code, without cause.
+        const code=codeOf(error);
+        throw Object.assign(Error(code),{code,stack:code});
+      }
     },
-    async stop(){stopping=true;for(const r of records.values())if(['preparing','checking','applying'].includes(r.operation.status)){r.cancelRequested=true;await persist(r);if(r.operation.jobId)await deps.domain('godotBuild.cancel',{worldId:r.operation.worldId,jobId:r.operation.jobId}).catch(()=>undefined);}await Promise.allSettled([...running.values()]);await Promise.allSettled([...writes.values()]);},
+    async stop(){stopping=true;for(const pending of starting.values()){pending.cancelRequested=true;if(pending.record)pending.record.cancelRequested=true;}await Promise.allSettled([...starting.values()].map(pending=>pending.promise));for(const r of records.values())if(['preparing','checking','applying'].includes(r.operation.status)){r.cancelRequested=true;await persist(r);if(r.operation.jobId)await deps.domain('godotBuild.cancel',{worldId:r.operation.worldId,jobId:r.operation.jobId}).catch(()=>undefined);}await Promise.allSettled([...running.values()]);await Promise.allSettled([...writes.values()]);},
   };
 }

@@ -13,12 +13,12 @@ async function fixture(t){
   const directory=await fs.mkdtemp(path.join(os.tmpdir(),'cm-direct-library-'));t.after(()=>fs.rm(directory,{recursive:true,force:true}));
   const state={status:'unknown',draftRetained:false,instanceIds:[],selected:'world-test',installs:0,applies:0,cancelled:0,eligible:true};
   const calls=[];let release;
-  const deps={directory,captureTarget:async()=>({buildId:'formal-build',instanceId:'instance-original'}),assertTarget:async(world)=>{if(world!==state.selected)throw Error('GODOT_WORLD_CHANGED');},
+  const deps={directory,prepare:async()=>{await state.prepare?.();},captureTarget:async()=>({buildId:'formal-build',instanceId:'instance-original'}),assertTarget:async(world)=>{if(world!==state.selected)throw Error('GODOT_WORLD_CHANGED');},
     domain:async(method,args)=>{calls.push({method,args});
       if(method==='godotBuild.cancel'){state.cancelled++;state.status='cancelled';return {};}
       if(method==='package.sourceJob')return {status:'passed'};
       assert.equal(method,'package.request');
-      if(args.method==='directInspect')return {eligible:state.eligible,reason:state.eligible?undefined:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED',positionSupported:true,compatibility:'unchecked',displayName:'Pet',source:{revision:1,manifestHash:'b'.repeat(64)}};
+      if(args.method==='directInspect'){if(state.inspectError)throw state.inspectError;return {eligible:state.eligible,reason:state.eligible?undefined:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED',positionSupported:true,compatibility:'unchecked',displayName:'Pet',source:{revision:1,manifestHash:'b'.repeat(64)}};}
       if(args.method==='directInstall'){
         state.installs++;assert.deepEqual(args.args.ref,ref);assert.deepEqual(args.args.position,start.position);assert.deepEqual(args.args.expectedSource,{revision:1,manifestHash:'b'.repeat(64)});
         if(state.delay)await new Promise(resolve=>{release=resolve;});
@@ -33,7 +33,7 @@ async function fixture(t){
   };
   const create=()=>createDirectLibraryService(deps);const service=create();
   const settle=async()=>{while(service.isBusy())await new Promise(resolve=>setTimeout(resolve,2));};
-  t.after(()=>service.stop());return {service,create,state,calls,settle,release:()=>release?.()};
+  t.after(()=>service.stop());return {service,create,state,calls,settle,directory,release:()=>release?.()};
 }
 const action=(action)=>({action,worldId:start.worldId,operationId:start.operationId});
 
@@ -91,4 +91,39 @@ test('orderly shutdown preserves a checked ready operation for explicit same-bui
   const restarted=f.create();assert.equal((await restarted.handle(action('status'))).status,'ready');
   assert.equal(f.state.applies,0);assert.equal((await restarted.handle(action('apply'))).status,'applied');
   assert.equal(f.state.installs,1);await restarted.stop();
+});
+
+test('status and identical start retries join the reservation before native preflight or file persistence',async t=>{
+  const f=await fixture(t);let release;const gate=new Promise(resolve=>{release=resolve;});let entered;const prepared=new Promise(resolve=>{entered=resolve;});
+  f.state.prepare=async()=>{entered();await gate;};
+  const initial=f.service.handle(start),early=f.service.handle(action('status')),retry=f.service.handle(start);
+  await prepared;assert.equal(f.service.isBusy(),true);assert.equal((await fs.readdir(f.directory)).length,0);
+  await assert.rejects(f.service.handle({...start,position:{x:3,y:0,z:3}}),/OPERATION_CONFLICT/);
+  release();const results=await Promise.all([initial,early,retry]);await f.settle();
+  assert(results.every(r=>r.operationId===start.operationId));assert.equal(f.state.installs,1);
+});
+
+test('cancel before start persistence fences installation and survives an identical initialization retry',async t=>{
+  const f=await fixture(t);let release;const gate=new Promise(resolve=>{release=resolve;});let entered;const prepared=new Promise(resolve=>{entered=resolve;});
+  f.state.prepare=async()=>{entered();await gate;};
+  const initial=f.service.handle(start),early=f.service.handle(action('status'));
+  await prepared;const cancellation=f.service.handle(action('cancel')),retry=f.service.handle(start);
+  assert.equal((await fs.readdir(f.directory)).length,0);release();
+  const results=await Promise.all([initial,early,cancellation,retry]);assert(results.every(r=>r.status==='cancelled'));assert.equal(f.state.installs,0);
+  assert.equal((await f.create().handle(action('status'))).status,'cancelled');
+});
+
+test('unknown ids have bounded not-found errors; all public action failures exclude paths and stacks',async t=>{
+  const f=await fixture(t),s=f.service;
+  for(const kind of ['status','cancel','apply'])await assert.rejects(s.handle(action(kind)),error=>{
+    assert.equal(error.code,'DIRECT_LIBRARY_OPERATION_NOT_FOUND');assert.equal(error.message,error.code);assert.equal(error.stack,error.code);assert(!JSON.stringify(error).includes(f.directory));return true;
+  });
+  f.state.inspectError=Object.assign(Error(`ENOENT: secret source at ${f.directory}/secret.bin`),{code:'ENOENT',path:f.directory});
+  for(const request of [{action:'inspect',worldId:start.worldId,ref},start])await assert.rejects(s.handle(request),error=>{
+    assert.equal(error.message,'ENOENT');assert.equal(error.stack,'ENOENT');assert.equal(error.path,undefined);assert(!JSON.stringify(error).includes(f.directory));return true;
+  });
+  // Failed initialization releases the reservation; retry creates just once.
+  f.state.inspectError=null;await s.handle(start);await f.settle();assert.equal(f.state.installs,1);
+  f.state.status='ready';f.state.prepare=async()=>{throw Error(`private failure ${f.directory}`);};
+  const failed=await s.handle(action('apply'));assert.equal(failed.status,'failed');assert.equal(failed.error.code,'DIRECT_LIBRARY_OPERATION_FAILED');assert(!JSON.stringify(failed).includes(f.directory));
 });
