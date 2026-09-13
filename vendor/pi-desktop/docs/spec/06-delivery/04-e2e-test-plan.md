@@ -10402,3 +10402,26 @@ current-world proposal/job identifiers to its existing install/check path;
 reject injected source/context/paths and private installer methods. Retain real
 failures with retry guidance and diagnostic details. General package authoring
 remains outside the main navigation gateway.
+# Player setup and portable friend feedback (2026-09-14)
+
+Verify the existing settings row's install/discover/login/verify/save stages.
+An incompatible PATH entry must not mask a compatible known native installation;
+candidate selection still requires account/model re-verification. Check missing
+installation, unavailable pinned distribution, cancelled login and narrow layout.
+
+Create a feedback report in an isolated friend world, review the text/version
+identity, and verify no screenshot is collected by default. Opt into native
+capture and verify the shown PNG matches the selected world/build. Export the
+reviewed bytes, select them in a second author profile, review before confirming,
+and cold-reopen the Rust journal. Re-import is idempotent. Compare different
+build identities, prepare an AI-review draft without submitting or overwriting
+existing text, export a linked reply and import it back in the friend profile.
+Reject tampered/oversized files, injected paths, cross-world read IDs and changed
+world context after preview. Saved template version and compatibility metadata
+remain visible through the normal ZIP export/import/republication workflow.
+
+Targeted evidence: `tests/playtest-feedback.test.mjs`,
+`tests/playtest-feedback-ui.mjs`, `tests/playtest-feedback-native.mjs`, and Rust
+`playtest_feedback` tests. Native storage fixtures do not claim engine play or
+actual model repair. Integrated native application acceptance covers those
+boundaries separately.
