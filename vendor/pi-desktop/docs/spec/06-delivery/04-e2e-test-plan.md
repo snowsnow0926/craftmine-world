@@ -10353,3 +10353,14 @@ deterministic bridge in an independent headless process. Native acceptance must
 separately verify real check/adoption and cold world reopening; fixture results
 are not native or human acceptance evidence. No real mouse/keyboard, input
 simulation, Pointer Lock or foreground windows are permitted.
+
+### Direct-use measured stages and concurrent reads
+
+During an actual direct install, observe allowlisted import/export/check stages
+from Core and validate percentages. After ready/apply, show real measured stage
+durations; close/reopen and retain them. A delayed poll must not increase the
+finished preparation duration. Duplicate concurrent reads share one native read,
+but the next request must recheck changed source/archive bytes. Cancel during
+turn finalization and require cancelled, never a stale ready state. Old receipts
+without optional timing fields remain usable. Record actual packaged timings
+separately from fixture call-count reduction; no generalized speedup is implied.

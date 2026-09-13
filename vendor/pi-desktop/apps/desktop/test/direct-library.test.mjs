@@ -16,9 +16,9 @@ async function fixture(t){
   const deps={directory,prepare:async()=>{await state.prepare?.();},captureTarget:async()=>({buildId:'formal-build',instanceId:'instance-original'}),assertTarget:async(world)=>{if(world!==state.selected)throw Error('GODOT_WORLD_CHANGED');},
     domain:async(method,args)=>{calls.push({method,args});
       if(method==='godotBuild.cancel'){state.cancelled++;state.status='cancelled';return {};}
-      if(method==='package.sourceJob')return {status:'passed'};
+      if(method==='package.sourceJob'){await state.finalizeWait?.();return {status:'passed'};}
       assert.equal(method,'package.request');
-      if(args.method==='directInspect'){if(state.inspectError)throw state.inspectError;return {eligible:state.eligible,reason:state.eligible?undefined:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED',positionSupported:true,compatibility:'unchecked',displayName:'Pet',source:{revision:1,manifestHash:'b'.repeat(64)}};}
+      if(args.method==='directInspect'){await state.inspectWait?.();if(state.inspectError)throw state.inspectError;return {eligible:state.eligible,reason:state.eligible?undefined:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED',positionSupported:true,compatibility:'unchecked',displayName:'Pet',source:{revision:1,manifestHash:'b'.repeat(64)}};}
       if(args.method==='directInstall'){
         state.installs++;assert.deepEqual(args.args.ref,ref);assert.deepEqual(args.args.position,start.position);assert.deepEqual(args.args.expectedSource,{revision:1,manifestHash:'b'.repeat(64)});
         if(state.delay)await new Promise(resolve=>{release=resolve;});
@@ -26,7 +26,7 @@ async function fixture(t){
         if(state.lostReply)throw Error('IPC_LOST_REPLY');
         return {worldId:start.worldId,applied:false,instanceIds:state.instanceIds,job:{id:state.jobId}};
       }
-      if(args.method==='directStatus'){if(state.sourceChanged)throw Error('DIRECT_LIBRARY_SOURCE_CHANGED');return {...state};}
+      if(args.method==='directStatus'){await state.statusWait?.();if(state.sourceChanged)throw Error('DIRECT_LIBRARY_SOURCE_CHANGED');return {...state};}
       throw Error(args.method);
     },
     applyVerified:async(worldId,candidateId,target,authorize)=>{state.applies++;await authorize();if(state.duringApply)await state.duringApply();await authorize();state.status='applied';if(state.lostApply)throw Error('IPC_LOST_REPLY');return {status:'applied',worldId,candidateId};},
@@ -137,4 +137,28 @@ test('another operation cannot apply while a new start owns asynchronous preflig
   await prepared;assert.equal(f.service.isBusy(),true);
   await assert.rejects(f.service.handle(action('apply')),error=>error.code==='WORLD_BUSY');
   assert.equal(f.state.applies,0);release();await pending;await f.settle();assert.equal(f.state.installs,2);
+});
+
+test('concurrent read-only inspections share work but a later inspection verifies again',async t=>{
+ const f=await fixture(t);let release;f.state.inspectWait=()=>new Promise(resolve=>{release=resolve;});
+ const reads=Array.from({length:8},()=>f.service.handle({action:'inspect',worldId:start.worldId,ref}));
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(f.calls.filter(c=>c.args.method==='directInspect').length,1);
+ release();await Promise.all(reads);f.state.inspectWait=undefined;f.state.inspectError=Error('SOURCE_LIBRARY_ASSET_CHANGED');
+ await assert.rejects(f.service.handle({action:'inspect',worldId:start.worldId,ref}),/SOURCE_LIBRARY_ASSET_CHANGED/);
+ assert.equal(f.calls.filter(c=>c.args.method==='directInspect').length,2);
+});
+test('concurrent status uses one native read and timing excludes later polling delay',async t=>{
+ const f=await fixture(t);await f.service.handle(start);await f.settle();const before=f.calls.filter(c=>c.args.method==='directStatus').length;
+ f.state.status='ready';f.state.checkProgress={stage:'check',percent:85};f.state.checkFinishedAt=Date.now();let release;f.state.statusWait=()=>new Promise(resolve=>{release=resolve;});
+ const reads=Array.from({length:6},()=>f.service.handle(action('status')));await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.calls.filter(c=>c.args.method==='directStatus').length-before,1);release();const results=await Promise.all(reads);f.state.statusWait=undefined;
+ assert.deepEqual(results[0].checkProgress,{stage:'check',percent:85});assert(results[0].timings.preparationMs>=0);
+ await new Promise(resolve=>setTimeout(resolve,10));const later=await f.service.handle(action('status'));assert.equal(later.timings.preparationMs,results[0].timings.preparationMs);
+ const applied=await f.service.handle(action('apply'));assert(applied.timings.applyMs>=0);const restored=f.create();assert.deepEqual((await restored.handle(action('status'))).timings,applied.timings);await restored.stop();
+});
+test('cancellation while finalizing a shared ready read cannot reappear as ready',async t=>{
+ const f=await fixture(t);await f.service.handle(start);await f.settle();f.state.status='ready';let release;f.state.finalizeWait=()=>new Promise(resolve=>{release=resolve;});
+ const status=f.service.handle(action('status'));while(!release)await new Promise(resolve=>setImmediate(resolve));const cancel=f.service.handle(action('cancel'));
+ await new Promise(resolve=>setTimeout(resolve,10));release();await Promise.all([status,cancel]);f.state.finalizeWait=undefined;
+ assert.equal((await f.service.handle(action('status'))).status,'cancelled');assert.equal(f.state.applies,0);
 });

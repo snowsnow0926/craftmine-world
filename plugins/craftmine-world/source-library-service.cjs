@@ -90,6 +90,8 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       const job=await call('godotBuild.read',{worldId:args.worldId,jobId:output.jobId});
       check(job.worldId===args.worldId&&(job.jobId??job.id)===output.jobId,'DIRECT_LIBRARY_JOB_MISMATCH');
       output.status=job.status;output.candidateId=job.candidateId;output.buildId=job.buildId;
+      if(['claimed','import','export','reuse-export','stage-artifacts','check'].includes(job.stage)&&Number.isInteger(job.progress)&&job.progress>=0&&job.progress<=100)output.checkProgress={stage:job.stage,percent:job.progress};
+      if(job.status==='passed'&&Number.isSafeInteger(job.updatedAt)&&job.updatedAt>0)output.checkFinishedAt=job.updatedAt;
       if(job.status!=='passed')return output;
       const result=await call('godotCandidate.read',{worldId:args.worldId,candidateId:job.candidateId}),candidate=result.candidate;
       check(result.checkStatus==='passed'&&candidate?.worldId===args.worldId&&candidate.checkJobId===output.jobId&&candidate.buildId===job.buildId&&candidate.sourceRevision===job.sourceRevision&&candidate.manifestHash===job.manifestHash&&candidate.checkOutputHash===job.outputHash,'DIRECT_LIBRARY_CANDIDATE_UNVERIFIED');
