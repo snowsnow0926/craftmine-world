@@ -44,3 +44,16 @@ state, corruption rejection and request boundaries. `tests/world-templates-nativ
 uses a fresh native domain to register all four worlds, install complete sources,
 verify every source hash and reopen the same four-world index. Native storage
 validation is separate from actual rendered first-load/gameplay acceptance.
+
+The actual offscreen desktop host validation also created all four templates in
+one fresh profile through `world.create`, observed real checks and first loads,
+saved through the native runtime channel, restarted the application and reopened
+all four. Creation-to-save times were approximately 27, 23, 19 and 19 seconds on
+the development machine. Flight and city snapshots matched exactly; mainline
+and rain retained gameplay counters, identities and configuration while moving
+actors and rainfall advanced after resuming. All three launches ended normally
+with no focus, input, page or shutdown violations. A premature restart navigation
+initially returned `WORLD_BUSY`; the retained continuation retried that same
+selection after startup settled. See
+`docs/evidence/player-world-templates-20260913/client-save-reopen.json` at the
+repository root. This test did not perform human gameplay or request a model.

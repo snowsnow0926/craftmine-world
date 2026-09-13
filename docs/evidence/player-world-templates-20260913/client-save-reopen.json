@@ -1,0 +1,975 @@
+{
+  "format": "craftmine.world-template-client-native/1",
+  "out": "D:\\Craftmine Worktrees\\player-templates-20260913\\test-results\\desktop-native-templates-N8XpxB",
+  "applicationRoot": "D:/Craftmine Worktrees/player-workflow-20260913",
+  "resources": "D:/Craftmine Worktrees/player-workflow-20260913/desktop/build/runtime-resources",
+  "launches": [
+    {
+      "pid": 83340,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "pid": 85884,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "pid": 62948,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "worlds": [
+    {
+      "starterId": "promo-mainline",
+      "worldId": "world-6a9fb0f8a693",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "great-hunt-01": {
+                "action": "none",
+                "actionHit": false,
+                "actionTime": 0,
+                "attempts": 0,
+                "bestTime": 0,
+                "boss": {
+                  "aim": [
+                    0,
+                    0,
+                    -1
+                  ],
+                  "combo": false,
+                  "count": 0,
+                  "distance": 0,
+                  "duration": 0,
+                  "health": 1600,
+                  "hit": false,
+                  "phase": "idle",
+                  "position": [
+                    21,
+                    0.00999999977648258,
+                    9
+                  ],
+                  "timer": 0,
+                  "yaw": 0
+                },
+                "dodgeCooldown": 0,
+                "dodgeDirection": [
+                  0,
+                  0,
+                  0
+                ],
+                "elapsed": 0,
+                "entityId": "great-hunt-01",
+                "format": "craftmine.great-hunt/1",
+                "health": 100,
+                "invulnerable": 0,
+                "potions": 3,
+                "returnPose": {},
+                "settings": {
+                  "difficulty": "hard"
+                },
+                "sourceSettings": {
+                  "difficulty": "hard"
+                },
+                "stamina": 100,
+                "staminaDelay": 0,
+                "status": "ready",
+                "wins": 0
+              },
+              "grove-combat-01": {
+                "entityId": "grove-combat-01",
+                "format": "craftmine.grove-combat/1",
+                "health": 100,
+                "settings": {
+                  "maxHealth": 100
+                },
+                "sourceSettings": {
+                  "maxHealth": 100
+                }
+              },
+              "grove-monster-01": {
+                "entityId": "grove-monster-01",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -10.9514293670654,
+                  0.00083533208817243,
+                  -3.91195225715637
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.70522725582123
+              },
+              "grove-monster-02": {
+                "entityId": "grove-monster-02",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  11.0740413665771,
+                  0.00083664845442399,
+                  -4.92591047286987
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.53395628929138
+              },
+              "grove-monster-03": {
+                "entityId": "grove-monster-03",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -11.9117975234985,
+                  0.00083321292186155,
+                  -12.9508724212646
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.36477136611938
+              },
+              "grove-monster-04": {
+                "entityId": "grove-monster-04",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  12.0931797027588,
+                  0.00083453644765541,
+                  -14.9869222640991
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.13755214214325
+              },
+              "grove-monster-05": {
+                "entityId": "grove-monster-05",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -3.90851902961731,
+                  0.00083658972289413,
+                  -21.0316410064697
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.785134792327881
+              },
+              "grove-monster-06": {
+                "entityId": "grove-monster-06",
+                "format": "craftmine.hornling/1",
+                "health": 90,
+                "position": [
+                  4.08201885223389,
+                  0.00083394441753625,
+                  -23.063268661499
+                ],
+                "settings": {
+                  "maxHealth": 90
+                },
+                "sourceSettings": {
+                  "maxHealth": 90
+                },
+                "yaw": -0.590246379375458
+              },
+              "hunter-ak47-01": {
+                "cooldown": 0,
+                "entityId": "hunter-ak47-01",
+                "equipped": true,
+                "format": "craftmine.ak47/1",
+                "reloadRemaining": 0,
+                "rounds": 30,
+                "settings": {
+                  "magazineSize": 30
+                },
+                "shots": 0,
+                "sourceSettings": {
+                  "magazineSize": 30
+                }
+              },
+              "pet-dog-01": {
+                "entityId": "pet-dog-01",
+                "format": "craftmine.pet-dog/1",
+                "pets": 0,
+                "position": [
+                  1.63781654834747,
+                  0.0008373208111152,
+                  3.76611018180847
+                ],
+                "settings": {
+                  "following": true
+                },
+                "sourceSettings": {
+                  "following": true
+                },
+                "yaw": 2.64676690101624
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-6a9fb0f8a693"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-6a9fb0f8a693"
+        },
+        "worldId": "world-6a9fb0f8a693"
+      },
+      "save": {
+        "buildId": "gbd-9b13f9632d021b8d543eee30df1ef7a8cdae6eac262097d2dfb9d6cae0113d4a",
+        "contentHash": "ff0291fa73dd89f78872f2430d8d55b27b0c59eea1ff10aa018a9f4cdd3daa96",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "a421d4e9de575c16fa07cd40",
+        "persistedAt": 1789288796011,
+        "revision": 2,
+        "snapshotHash": "7a4f95aa982652b5891108b624657a9fc8274afbca581748a968e57944dad674",
+        "snapshotSha256": "072ceee3f6074921997f8ddc1408e86f104de3f48bb9c22ca31f6a5a76779c76",
+        "worldId": "world-6a9fb0f8a693"
+      },
+      "elapsedMs": 27031,
+      "reopenedSnapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "great-hunt-01": {
+                "action": "none",
+                "actionHit": false,
+                "actionTime": 0,
+                "attempts": 0,
+                "bestTime": 0,
+                "boss": {
+                  "aim": [
+                    0,
+                    0,
+                    -1
+                  ],
+                  "combo": false,
+                  "count": 0,
+                  "distance": 0,
+                  "duration": 0,
+                  "health": 1600,
+                  "hit": false,
+                  "phase": "idle",
+                  "position": [
+                    21,
+                    0.00999999977648258,
+                    9
+                  ],
+                  "timer": 0,
+                  "yaw": 0
+                },
+                "dodgeCooldown": 0,
+                "dodgeDirection": [
+                  0,
+                  0,
+                  0
+                ],
+                "elapsed": 0,
+                "entityId": "great-hunt-01",
+                "format": "craftmine.great-hunt/1",
+                "health": 100,
+                "invulnerable": 0,
+                "potions": 3,
+                "returnPose": {},
+                "settings": {
+                  "difficulty": "hard"
+                },
+                "sourceSettings": {
+                  "difficulty": "hard"
+                },
+                "stamina": 100,
+                "staminaDelay": 0,
+                "status": "ready",
+                "wins": 0
+              },
+              "grove-combat-01": {
+                "entityId": "grove-combat-01",
+                "format": "craftmine.grove-combat/1",
+                "health": 100,
+                "settings": {
+                  "maxHealth": 100
+                },
+                "sourceSettings": {
+                  "maxHealth": 100
+                }
+              },
+              "grove-monster-01": {
+                "entityId": "grove-monster-01",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -10.2609577178955,
+                  0.00083559390623122,
+                  -3.24735021591187
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.59174191951752
+              },
+              "grove-monster-02": {
+                "entityId": "grove-monster-02",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  11.95103931427,
+                  0.00083807070041075,
+                  -4.55772876739502
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -1.03635370731354
+              },
+              "grove-monster-03": {
+                "entityId": "grove-monster-03",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -11.2067470550537,
+                  0.00083468068623915,
+                  -12.6908102035522
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.285665333271027
+              },
+              "grove-monster-04": {
+                "entityId": "grove-monster-04",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  13.0325784683228,
+                  0.00083545787492767,
+                  -15.2595262527466
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.623205661773682
+              },
+              "grove-monster-05": {
+                "entityId": "grove-monster-05",
+                "format": "craftmine.hornling/1",
+                "health": 60,
+                "position": [
+                  -3.12844085693359,
+                  0.00083653314504772,
+                  -21.5931091308594
+                ],
+                "settings": {
+                  "maxHealth": 60
+                },
+                "sourceSettings": {
+                  "maxHealth": 60
+                },
+                "yaw": -0.182696059346199
+              },
+              "grove-monster-06": {
+                "entityId": "grove-monster-06",
+                "format": "craftmine.hornling/1",
+                "health": 90,
+                "position": [
+                  4.60619163513184,
+                  0.00083417783025652,
+                  -23.8671245574951
+                ],
+                "settings": {
+                  "maxHealth": 90
+                },
+                "sourceSettings": {
+                  "maxHealth": 90
+                },
+                "yaw": 0.188107520341873
+              },
+              "hunter-ak47-01": {
+                "cooldown": 0,
+                "entityId": "hunter-ak47-01",
+                "equipped": true,
+                "format": "craftmine.ak47/1",
+                "reloadRemaining": 0,
+                "rounds": 30,
+                "settings": {
+                  "magazineSize": 30
+                },
+                "shots": 0,
+                "sourceSettings": {
+                  "magazineSize": 30
+                }
+              },
+              "pet-dog-01": {
+                "entityId": "pet-dog-01",
+                "format": "craftmine.pet-dog/1",
+                "pets": 0,
+                "position": [
+                  1.10078263282776,
+                  0.00083848752547055,
+                  4.47806882858276
+                ],
+                "settings": {
+                  "following": true
+                },
+                "sourceSettings": {
+                  "following": true
+                },
+                "yaw": 2.64958262443542
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-6a9fb0f8a693"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-6a9fb0f8a693"
+        },
+        "worldId": "world-6a9fb0f8a693"
+      },
+      "reopened": true,
+      "reopenChecks": {
+        "worldId": "world-6a9fb0f8a693",
+        "starterId": "promo-mainline",
+        "initialStateVerified": true,
+        "reopenedProgressVerified": true,
+        "comparison": "persistent gameplay fields; live positions and rain clocks may advance"
+      }
+    },
+    {
+      "starterId": "promo-flight",
+      "worldId": "world-21464c12316c",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "j20-player-aircraft": {
+                "aircraft": {
+                  "afterburner": false,
+                  "airspeed": 0,
+                  "assist": true,
+                  "bank": 0,
+                  "crashed": false,
+                  "flightSeconds": 0,
+                  "gearDown": true,
+                  "grounded": true,
+                  "hasFlown": false,
+                  "heading": 0,
+                  "landings": 0,
+                  "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    2.1800000667572,
+                    180
+                  ],
+                  "rotation": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "throttle": 0,
+                  "velocity": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "verticalSpeed": 0
+                },
+                "camera": {
+                  "fov": 62,
+                  "position": [
+                    24,
+                    12.1800003051758,
+                    152
+                  ],
+                  "rotation": [
+                    -0.252123326063156,
+                    2.43296647071838,
+                    0
+                  ]
+                },
+                "cockpitView": false,
+                "entityId": "j20-player-aircraft",
+                "format": "craftmine.j20-flight-state/1",
+                "gateIndex": 0,
+                "gearExtension": 1,
+                "settings": {
+                  "flightModelVersion": 1
+                },
+                "sourceSettings": {
+                  "flightModelVersion": 1
+                },
+                "started": false,
+                "stateVersion": 1
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-21464c12316c"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-21464c12316c"
+        },
+        "worldId": "world-21464c12316c"
+      },
+      "save": {
+        "buildId": "gbd-5f0267d50ad55b9012ca5d192097450a1aebdcec6057bba84f217b539fc8b02b",
+        "contentHash": "18095a7fcfddc5481aaf970a5099881da3a3885b93e700445533fb606fef36bc",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "d755727c6be1223200e8879a",
+        "persistedAt": 1789288818495,
+        "revision": 1,
+        "snapshotHash": "dfeca1203cd7a56edb7766c6e665557321bf0014b354851cdf8b23cef581101b",
+        "snapshotSha256": "f65f25b2975c80cc8c19ff28db61d723397eb49134a77c307da05b1458195d3a",
+        "worldId": "world-21464c12316c"
+      },
+      "elapsedMs": 22631,
+      "reopenedSnapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "j20-player-aircraft": {
+                "aircraft": {
+                  "afterburner": false,
+                  "airspeed": 0,
+                  "assist": true,
+                  "bank": 0,
+                  "crashed": false,
+                  "flightSeconds": 0,
+                  "gearDown": true,
+                  "grounded": true,
+                  "hasFlown": false,
+                  "heading": 0,
+                  "landings": 0,
+                  "message": "按住 W 加油门；240 km/h 后按 ↓ 抬头起飞",
+                  "pitch": 0,
+                  "position": [
+                    0,
+                    2.1800000667572,
+                    180
+                  ],
+                  "rotation": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "throttle": 0,
+                  "velocity": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "verticalSpeed": 0
+                },
+                "camera": {
+                  "fov": 62,
+                  "position": [
+                    24,
+                    12.1800003051758,
+                    152
+                  ],
+                  "rotation": [
+                    -0.252123326063156,
+                    2.43296647071838,
+                    0
+                  ]
+                },
+                "cockpitView": false,
+                "entityId": "j20-player-aircraft",
+                "format": "craftmine.j20-flight-state/1",
+                "gateIndex": 0,
+                "gearExtension": 1,
+                "settings": {
+                  "flightModelVersion": 1
+                },
+                "sourceSettings": {
+                  "flightModelVersion": 1
+                },
+                "started": false,
+                "stateVersion": 1
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-21464c12316c"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-21464c12316c"
+        },
+        "worldId": "world-21464c12316c"
+      },
+      "reopened": true,
+      "reopenChecks": {
+        "worldId": "world-21464c12316c",
+        "starterId": "promo-flight",
+        "initialStateVerified": true,
+        "reopenedProgressVerified": true,
+        "comparison": "exact snapshot"
+      }
+    },
+    {
+      "starterId": "promo-rain",
+      "worldId": "world-656d56ae165e",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "rain-magic": {
+                "automatic": false,
+                "casts": 0,
+                "entityId": "rain-magic",
+                "format": "craftmine.rain-magic-state/1",
+                "heights": [
+                  "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",
+                  "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",
+                  "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",
+                  "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"
+                ],
+                "phase": 0,
+                "phaseAge": 0.933180000000001,
+                "rainClock": 0.933180000000001,
+                "settings": {
+                  "distributionVersion": 1
+                },
+                "sourceSettings": {
+                  "distributionVersion": 1
+                },
+                "stateVersion": 1,
+                "velocity": -8.5
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-656d56ae165e"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-656d56ae165e"
+        },
+        "worldId": "world-656d56ae165e"
+      },
+      "save": {
+        "buildId": "gbd-25488b7f8bb53945d313a2161c8a098578d3f89d30544bd436ca772b7d1f3856",
+        "contentHash": "afa16e60b38a316d7756040041b8683b22b2b35fffe50de666b3bde0def6ef9e",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "77324478f573232645d422f1",
+        "persistedAt": 1789288837395,
+        "revision": 2,
+        "snapshotHash": "1c1d631cd976a3026e88e596eabaad7066c3f3261430157afa9df174934f877e",
+        "snapshotSha256": "c35e3435f28a85daef2f350190fc91dc8be0c8bf2ef8d6041401245915a144a6",
+        "worldId": "world-656d56ae165e"
+      },
+      "elapsedMs": 18756,
+      "reopenedSnapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "components": {
+              "rain-magic": {
+                "automatic": false,
+                "casts": 0,
+                "entityId": "rain-magic",
+                "format": "craftmine.rain-magic-state/1",
+                "heights": [
+                  "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",
+                  "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",
+                  "KrLVQF4qQEE4XQBAYX9QQaFMQEEi6z1ANG6JQK6dnj64i1I/NXqzQOn2LEDpYr5AJhccQVPrQkFuYFZBEtj/QGYnBUGgXEpB9x8tQCFANUFfH20/mLYcQfjqCEEiIKdAHEBEQTtNMUHOiEhBT8qRQOStK0BvktBAvddiQC45mkC6jLo/YoRjQLmgRkF0IlBBW9YsQdCWAkFxWUhBkFyCQGSNyEDaEbQ+6lI7QegNoUD+yLJACLAKQOFkUkEA5LdAl9CmQAxkI0FYzihBB8T/PxyyWkGIqExBjs00Qa99T0HhXUlBf9ufP5oIoEDV0H5AzllRQf2kUEB99l1BdeQgQR4+40B6lcVAfKePQGhkIEFYpShBePwfQX9sZD4V19E/83b+QHywLkHwiy5BN9wjQevQWEFkI0ZBeLYFQSE5GEElWKRAQaxLQUDQuUCHVAtBzFc9QacTGkA6DaRA7b3/QIxLvz+AErhASbVAQUPAikBlIbU/g+0GQNbdBkHU7WhAVTcmQZ53u0DShhtAYZs2QUGETUHJUgZBqv3pQE6VdkBIw8dAK/NXQR3yRUG1oQpBfXLMQCaq/0D9hHlAupj7QMyPZz/uBuVAG4+MQMqrVEFZC0ZB3tFTQL2k4EBGRvtAVf4RQb9yq0B7MDpB1DuAQCKTVEDfD/dAs33APtBPvEBX4CxBsgAaQDHpiD6+LlhBXCsqQDkejz+rxQtAOxbvPw4y5kCSSA9B4qCxQPUboz+GgrZA9+8KQFrKO0GTuMBA5XsFQbUotUDXlIlAbzoQQVQDIEAt5zdA2mggPxHS10CAUE9Blt7JQKo4hkBCan9AHHlYQRgvS0ECuw1BGd4GQX20gkCBv0VBHjsrQayWTkFrolNBZa4HQcxSAkEIgKFA5C35QPskUUFP8w9ByNZJQRNEJkFKyiVBzjebQGSgeD4qqCdBMwR+QAfcWkHBqL0+3ttPQaQiLUHxc11Ar2orQEQ7HkE+AJhAQQuDPibZzkC2oVtBKtoGQb4/JkHcGZJAoeUhQXI41j7NzvlAImAVQPfaOUBTrgVBqiUHQL9D+T7NuFtB54aiQMCqFEGAUkdBmKoyQTUdUUEQTKFAz0agQA8fe0CW3Ss/CqvBQHplaEBdzDNBLi7dQD1kBUFRwSZBTSgFQVjo0UB8VzxBUJSiP9N6XkEWli1A/bUBQR5oiUAFgbJAoYcjQZtm60CWQopAIfq2QJgdWkAFT4hA540RQWvZTUGNdBJBLEw7QXgLgUAMRypBZENAQY+QGUGKjMc+396JP2YLDkHPUg5ABYZuQNlc+0AldqpAiITWQHVh2T/rwsJApqRZQR14b0CROH8/drGrQOMYmkAa9hI/qm4vQYtLXkFCtvU/netQQYmFKEGwp6ZAkdgmQKLrGUEdpkJB+cUvQd/2c0C0ak1BGMX3QFTLHkF8J2ZAUyhfPlqgB0E1rVdBWwJaP8QasUAjvA1BIkghQb6GDEH9HMxAO80+QQzX6kC22ag+SklWQbQiVD9jkjZBpk78PxI5R0FQsVhA8IuhP9XTHUEawFlA9mMcQdseuEATly1BaH1iQKgODUGl5QpB9wM7QcIOIUDDLUhB92XCPwMW2UDj3g1BdfzZP/zqUEHUmpxA/h4NQYfEzUDuVDJBlOTDQN6s4kAVa3hAHVAHQL+TAkBefdlAb2CbQGy3/0C39FVAXdc7QYfSPEF3X1BBJvjLPuNfLkBIhjJAsw8kQWwq20C2O+s+LDNCQdc6h0C82DlAb4fIQPpiCEGO0AhB3EIkQeCAH0FUgNBAPIfUQHTVPkBlsHtAnYI9QAyDtED2LR9Aa6PiQMyAWEEFFfI/AufFQFCsOUHH0uI+my0TQLbbUEFkmQpBxGhDQaKh8ECbRBM/8cVTQUgbR0HJqn0+VP7JQM2fA0Eg6EJBZWqIQH9Az0A+JUZAPYCkQAF4L0BSIEVBLMSgP/tVBEGFO7hAyAdKQYN9EEGaS+RAmlnIQMbyRT+bPoRAYtTUQKix8UAPTttAPVd+QOOM4T9fHzFBYMM+Qfel3j8BdktBkmNCQcNWvkAocjdAcp/QQEx+6D8sKvZA9a/xQPgQpj8iNaVATeGTQNocWUGKo7ZAlauGQKEdREFwW09Bd0QCQdIOWEGmFDRAG/Y1QTSkgkAxbTJBBvuTQJ8cHUDWJQBB4bF/QLTwAUAq5BhAs7nrP9qHXUEzJ/xAy9tNQTUqXkFJy1BBqoSKQAL+QkH2E9g/yvQ0QbWaLj8N5FVBZyZiQCw43UDEUjxB80G2QPkuUkGGaQdB7jbEQGriL0FXNlRA0FrGPwla0UDlzh9BnPJOP57NAkEfE1U/o2g1QTILEEBTJhFBC/LOQH5jwkCBGZlAcVjcQDClR0GrZR1AkTJ8QHBblkCP8RZBKXc7QKnpNEF3BiNBRHjfQJmGNUG+MN5AIb38QPsJbUCmuCZAqMs2QfI0DUCa1lA/BeiWQKcDckDqzB5By/24QCQXdEAPfIZAvghFQXxtVEFbeiNBXoWWQAL/FEF3sds/W7pGQXJ21UDklrdAaeJWP9xnnUD194A/9F2HQEb61kD5znpAU1qWQBaxlUCkVytBID85Qcf4KEGiR7o/oefNQNKfuT9P0FhBUDCsQCsbCkBURxRBS16GQGxPhkCxC1dA5N2eQJT5jD/9zixB3ZUrQQSl/kAOB1hBz9YVQQaEPUEySydB7Tg9QB7UXUEHwSlBATvvQHrPp0APYxJBBS5BQak6/kDKphhBNBdsQLKwJkGcMzJBCwyeQONiGkEgqThBtdR2QG7sgUDGAGtAB7pWQc9YDkHvm0w/1fmFQNWiqkBOzq8+4+QTQcquNEEMxQtAzoxAQXxtkkCPKt9AyEdkQNzCXkG8urVAVWaKQFeTl0BMlYRA4dUpQLhHb0CB6DhBwtDlQLUQ80DzZiNBFlYOQA==",
+                  "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"
+                ],
+                "phase": 0,
+                "phaseAge": 2.24882066666666,
+                "rainClock": 2.24882066666666,
+                "settings": {
+                  "distributionVersion": 1
+                },
+                "sourceSettings": {
+                  "distributionVersion": 1
+                },
+                "stateVersion": 1,
+                "velocity": -8.5
+              }
+            },
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-656d56ae165e"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-656d56ae165e"
+        },
+        "worldId": "world-656d56ae165e"
+      },
+      "reopened": true,
+      "reopenChecks": {
+        "worldId": "world-656d56ae165e",
+        "starterId": "promo-rain",
+        "initialStateVerified": true,
+        "reopenedProgressVerified": true,
+        "comparison": "persistent gameplay fields; live positions and rain clocks may advance"
+      }
+    },
+    {
+      "starterId": "promo-city",
+      "worldId": "world-9e53891eda4e",
+      "snapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-9e53891eda4e"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-9e53891eda4e"
+        },
+        "worldId": "world-9e53891eda4e"
+      },
+      "save": {
+        "buildId": "gbd-3c8fd51f1deb9ba6bf0e8c1be4b197efbaecf884b8cd7c6b86fd3f7994455172",
+        "contentHash": "b011dab2f91bce224ea46542139032a25b3f3322bcde04dfea9498c9303d0785",
+        "format": "craftmine.godot-progress-receipt/1",
+        "instanceId": "167f06c6a5e8433603be7396",
+        "persistedAt": 1789288856323,
+        "revision": 1,
+        "snapshotHash": "bdeb06190520be65463cb4240d5b76147831e6488215629ac698292cd9490c92",
+        "snapshotSha256": "bedf60a8adb5a6bd1881b585c7be68a806fb10dbecc95bc7bbfef8381974c33b",
+        "worldId": "world-9e53891eda4e"
+      },
+      "elapsedMs": 19268,
+      "reopenedSnapshot": {
+        "base": "creation-sandbox",
+        "state": {
+          "baseId": "creation-sandbox",
+          "baseVersion": "1.0.0",
+          "body": {
+            "baseVersion": "1.0.0",
+            "doors": {},
+            "format": "craftmine.creation-progress/1",
+            "inventory": {},
+            "openedChests": {},
+            "player": {
+              "onFloor": true,
+              "pitch": 0,
+              "position": [
+                0,
+                0.899999976158142,
+                6
+              ],
+              "yaw": 0
+            },
+            "rules": {},
+            "sourceTimeOfDay": 12,
+            "timeOfDay": 12,
+            "worldId": "world-9e53891eda4e"
+          },
+          "format": "craftmine.godot-progress/1",
+          "stateVersion": 1,
+          "worldId": "world-9e53891eda4e"
+        },
+        "worldId": "world-9e53891eda4e"
+      },
+      "reopened": true,
+      "reopenChecks": {
+        "worldId": "world-9e53891eda4e",
+        "starterId": "promo-city",
+        "initialStateVerified": true,
+        "reopenedProgressVerified": true,
+        "comparison": "exact snapshot"
+      }
+    }
+  ],
+  "modelCalls": 0,
+  "previousReport": "D:/Craftmine Worktrees/player-templates-20260913/test-results/desktop-native-templates-N8XpxB/report.json",
+  "previousError": "Error: Error: WORLD_BUSY\n    at ChildProcess.<anonymous> (file:///D:/Craftmine%20Worktrees/player-templates-20260913/tests/world-templates-client-native.mjs:34:275)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+  "passed": true
+}
