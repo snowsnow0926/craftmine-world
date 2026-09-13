@@ -1,4 +1,4 @@
-import {CREATION_PREVIEW_UPGRADE} from './creation-preview-upgrade.ts';
+import {CREATION_PREVIEW_UPGRADE,CREATION_PREVIEW_MIGRATIONS} from './creation-preview-upgrade.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -94,11 +94,15 @@ export function needsBoundedMeshPickerUpgrade(files:unknown,pins:SceneObserverPi
 }
 
 
-export function needsCreationPreviewUpgrade(files:unknown,pins:SceneObserverPins|undefined):boolean {
- if(!Array.isArray(files)||!hasCurrentSceneObserver(files,pins))return false;
- const policy=CREATION_PREVIEW_UPGRADE.files[0],entries=files.filter(file=>file?.path===policy.source);
- return entries.length===1&&policy.from.includes(entries[0].sha256)&&policy.to.every(hash=>pins?.['@engineBridge']?.includes(hash));
+export function creationPreviewUpgradePolicy(files:unknown,pins:SceneObserverPins|undefined){
+ if(!Array.isArray(files)||!hasCurrentSceneObserver(files,pins))return null;
+ return CREATION_PREVIEW_MIGRATIONS.find(policy=>policy.files.every(file=>{
+  const entries=files.filter(entry=>entry?.path===file.source);
+  const key=file.source==='craftmine_shared/runtime_bridge.gd'?'@engineBridge':file.source;
+  return (entries.length===1&&file.from.includes(entries[0].sha256)||entries.length===0&&file.from.includes(null))&&file.to.every(hash=>pins?.[key]?.includes(hash));
+ }))??null;
 }
+export function needsCreationPreviewUpgrade(files:unknown,pins:SceneObserverPins|undefined):boolean {return creationPreviewUpgradePolicy(files,pins)!==null;}
 
 /** A review hint grants maintenance only, never trust in old sampled fields. */
 export function canUpgradeSceneObserver(files: unknown, pins: SceneObserverPins | undefined): boolean {

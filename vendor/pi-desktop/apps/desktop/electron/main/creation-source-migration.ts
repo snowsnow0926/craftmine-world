@@ -1,10 +1,10 @@
-import {CREATION_PREVIEW_UPGRADE} from './creation-preview-upgrade.ts';
+import {CREATION_PREVIEW_MIGRATIONS} from './creation-preview-upgrade.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import type {CreationCapture} from './creation-target-service';
 import {CREATION_MANAGED_MIGRATIONS,type ManagedCreationMigration} from './creation-managed-migrations.ts';
-import {currentSceneObserverProfile,hasVersionedSceneObserverFiles,loadSceneObserverPins,needsBoundedMeshPickerUpgrade,needsCreationPreviewUpgrade} from './creation-observer-pins.ts';
+import {currentSceneObserverProfile,hasVersionedSceneObserverFiles,loadSceneObserverPins,needsBoundedMeshPickerUpgrade,creationPreviewUpgradePolicy} from './creation-observer-pins.ts';
 import {MESH_PICKER_UPGRADE} from './creation-mesh-picker-upgrade.ts';
 import {CREATION_GROUND_CURRENT_PINS,planCreationGroundUpgrade} from './creation-ground-upgrade.ts';
 type Data=Record<string,any>;
@@ -35,7 +35,7 @@ type Dependencies={directory:string;resourcesRoot:string;domain:(method:string,a
  managedMigrations?:readonly ManagedCreationMigration[];};
 /** Host-only stock upgrade. The formal world is never changed by this service. */
 export function createCreationSourceMigration(deps:Dependencies){
- const compatibility=deps.managedMigrations??[MESH_PICKER_UPGRADE,CREATION_PREVIEW_UPGRADE,...CREATION_MANAGED_MIGRATIONS];
+ const compatibility=deps.managedMigrations??[MESH_PICKER_UPGRADE,...CREATION_PREVIEW_MIGRATIONS,...CREATION_MANAGED_MIGRATIONS];
  const safePath=(value:string)=>typeof value==='string'&&value.length<=240&&/^[a-zA-Z0-9_./-]+$/.test(value)&&!value.startsWith('/')&&value.split('/').every(part=>part&&part!=='.'&&part!=='..');
  if(compatibility.length>32||new Set(compatibility.map(p=>p.id)).size!==compatibility.length)fail('CREATION_MIGRATION_POLICY_INVALID');
  for(const policy of compatibility){
@@ -59,7 +59,9 @@ export function createCreationSourceMigration(deps:Dependencies){
   await deps.assertActive(context,capture);const worldId=capture.worldId;
   const formal=await deps.domain('godotRuntime.exportSource',{worldId});
   if(formal?.worldId!==worldId||formal.buildId!==capture.buildId||formal.baseId!=='creation-sandbox'||formal.sourceRevision!==capture.sourceRevision||!Array.isArray(formal.files)||typeof formal.contentOid!=='string')fail('CREATION_MIGRATION_FORMAL_CHANGED');
-  let versionedPickerUpgrade=false;let versionedPreviewUpgrade=false;
+  const previewPins=fs.existsSync(path.join(deps.resourcesRoot,'shared/runtime_bridge_engine_v1.gd'))?loadSceneObserverPins(deps.resourcesRoot):undefined;
+  const previewPolicy=creationPreviewUpgradePolicy(formal.files,previewPins);
+  let versionedPickerUpgrade=false;const versionedPreviewUpgrade=previewPolicy!==null;
   if(hasVersionedSceneObserverFiles(formal.files)){
     const pins=loadSceneObserverPins(deps.resourcesRoot),profile=currentSceneObserverProfile(formal.files,pins);
     // Never downgrade a mixed or incomplete versioned cohort through a legacy
@@ -72,7 +74,6 @@ export function createCreationSourceMigration(deps:Dependencies){
     // No migration means no source write: an ordinary unadopted draft remains
     // repairable through the normal source pin/check flow, as for legacy no-op.
     versionedPickerUpgrade=needsBoundedMeshPickerUpgrade(formal.files,pins);
-    versionedPreviewUpgrade=needsCreationPreviewUpgrade(formal.files,pins);
     if(!versionedPickerUpgrade&&!versionedPreviewUpgrade)return null;
   }
   const resources=new Map<string,{text:string;sha256:string;bytes:number;accepted:string[]}>();
@@ -82,9 +83,9 @@ export function createCreationSourceMigration(deps:Dependencies){
   let managed:ManagedCreationMigration|undefined;
   let destination:ManagedCreationMigration|undefined;
   for(const policy of compatibility){
-    if((versionedPickerUpgrade||versionedPreviewUpgrade)&&policy.id!==(versionedPickerUpgrade?MESH_PICKER_UPGRADE.id:CREATION_PREVIEW_UPGRADE.id))continue;
+    if((versionedPickerUpgrade||versionedPreviewUpgrade)&&policy.id!==(versionedPickerUpgrade?MESH_PICKER_UPGRADE.id:previewPolicy!.id))continue;
     if(!versionedPickerUpgrade&&policy.id===MESH_PICKER_UPGRADE.id)continue;
-    if(!versionedPreviewUpgrade&&policy.id===CREATION_PREVIEW_UPGRADE.id)continue;
+    if(!versionedPreviewUpgrade&&CREATION_PREVIEW_MIGRATIONS.some(p=>p.id===policy.id))continue;
     const candidates=policy.files.map(entry=>({...entry,...resource(entry.resource),actual:formal.files.find((f:Data)=>f.path===entry.source)}));
     // Coupled legacy upgrades may need missing helpers. A newer complete-cohort
     // policy must not hide an older reviewed destination that allows absence.

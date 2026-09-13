@@ -27,7 +27,10 @@ save, observation and undo independent of the temporary image. The app remains
 paused after preview; it does not silently restore held player inputs.
 
 The previous engine bridge remains an accepted exact cohort for existing worlds.
-Its one-file upgrade uses normal source CAS and candidate adoption. Accepted
+Its one-file upgrade uses normal source CAS and candidate adoption. An exact
+ordinary standard bridge gains the fixed wrapper plus two missing helpers through
+a separately pinned three-file bootstrap. New empty creation worlds include the
+wrapper by default; collecting performance samples remains request-driven. Accepted
 version-1 component packages keep their own exact source requirements; components
 requiring the new bridge need independently versioned packages, not weakened pins.
 
