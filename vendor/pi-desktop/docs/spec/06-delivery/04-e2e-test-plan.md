@@ -10290,3 +10290,30 @@ Also verify valid PNG/OGG/WAV originals remain accepted, while a template that
 adds their unsupported `.import` sidecars fails before catalog admission. The
 initializer must likewise fail explicitly for non-cache unsupported sidecars;
 it must not create a seemingly valid source revision with those files omitted.
+# Direct library use and operation recovery (2026-09-13)
+
+- In the existing PI asset sheet, select an exact eligible component without
+  configuring a model. Inspect eligibility, retain default placement or provide
+  supported explicit coordinates, then submit Check and prepare. Verify no
+  Composer mutation or model call. After the native check reports ready, submit
+  Add to this world and verify ordinary native adoption, gameplay and persistence.
+- Close and reopen the sheet during checking; browse another asset and return.
+  Recover the same operation and exact reference without replaying start or
+  apply. Change worlds and verify the original operation cannot apply there.
+- Lose a start acknowledgement, remount, and retry. The request, coordinates,
+  version and operation ID remain identical. Cancel while start is pending;
+  a delayed checking receipt cannot overwrite confirmed cancellation.
+- Reload the renderer with a durable active host operation. Read status only.
+  Reject response world/reference/operation mismatches and unknown statuses.
+- Raw models, bases, data and world templates never display direct object
+  preparation. World templates retain independent creation; unsupported source
+  packages give a reason and retain the original AI modification action.
+- Verify Chinese and English copy, narrow-window containment and collapsed
+  terminal history. Active/latest operation results remain visible. Distinguish
+  retained draft work from the original formal world after failure/cancellation.
+
+Renderer fixture: `tests/direct-library-ui.mjs` uses real React forms with a
+deterministic bridge in an independent headless process. Native acceptance must
+separately verify real check/adoption and cold world reopening; fixture results
+are not native or human acceptance evidence. No real mouse/keyboard, input
+simulation, Pointer Lock or foreground windows are permitted.
