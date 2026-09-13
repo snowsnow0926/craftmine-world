@@ -10174,6 +10174,16 @@ version in My templates, export/import via the native picker, create independent
 copies, and verify native checks, first load and save/reopen. No profile restore,
 raw renderer filesystem/image input or original-world replacement is allowed.
 The model catalog must distinguish whole-world templates from components.
+
+Repeat the actual PI forms with a published companion component installed in a
+new world alongside controllable rain. Export that complete world's exact
+template version, then import only its ZIP into a second empty profile. Without
+the first profile's custom component catalog record, load the world, operate
+rain, republish its companion, reexport the unchanged template bytes, save and
+cold reopen. Native source initialization and component re-publication must
+preserve supported paired GLB import policy. A captured author thumbnail must
+decode; subsequent optional unavailable previews remain explicitly unavailable
+and must not stall acceptance or masquerade as successful captures.
 # Reusable city fragment continuation (2026-09-13)
 
 In an isolated background profile, search the building, gate and street aliases

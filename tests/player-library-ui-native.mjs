@@ -240,7 +240,10 @@ async function publish(kind,name,alias){
  await field('[data-filter="scope"]','local-library');await field('[data-filter="query"]',alias);await evaluate(`document.querySelector('[data-filter="query"]').closest('form').requestSubmit();true`);
  await until(()=>evaluate(`!!document.querySelector('[data-asset-id="${id}"]')`),Boolean);
  await evaluate(`document.querySelector('[data-asset-id="${id}"]').closest('form').requestSubmit();true`);
- if(kind==='component')result.preview=await until(()=>evaluate(`(()=>{const image=document.querySelector('[data-preview-thumb]');return image?.complete&&image.naturalWidth>0?{width:image.naturalWidth,height:image.naturalHeight,source:image.src.slice(0,30)}:null;})()`),Boolean);
+ if(kind==='component'){
+  const preview=await until(()=>evaluate(`(()=>{const region=document.querySelector('.asset-library-preview'),image=region?.querySelector('[data-preview-thumb]');if(!region)return null;if(image)return image.complete&&image.naturalWidth>0?{available:true,width:image.naturalWidth,height:image.naturalHeight,source:image.src.slice(0,30)}:null;const start=region.querySelector('[data-action="asset-preview"]');return start&&!start.disabled?{available:false,text:region.textContent}:null;})()`),Boolean);
+  result.previewStatus=preview.available?'source-world-view':'unavailable';result.preview=preview.available?preview:null;
+ }
  await rpc('capture',{name:'publication-'+kind+'-saved'});save();await closeAssets();return result;
 }
 function publishedBytes(publication){
@@ -292,7 +295,7 @@ async function importForeignTemplate(){
  worldId=(await nav('world.list')).activeWorldId;assert.notEqual(worldId,input.worldId);report.importWorld=worldId;report.importSnapshot=await waitWorld(worldId);report.worlds.push({worldId,title:'Another player imported world',createdThrough:'actual-import-then-My-templates-form'});
  report.importedSource=await pkg('sourceList');assert(report.importedSource.items.filter(row=>row.supported).length>=2);await look(-0.15);report.importCapture=await capture('foreign-template-loaded');
  await rainKeys();report.importSave=await panel('godot.runtimeSave',{freeze:false});
- report.foreignComponentPublication=await publish('component','其他玩家再次保存的伙伴','外部复用团子');assert(report.foreignComponentPublication.preview);
+ report.foreignComponentPublication=await publish('component','其他玩家再次保存的伙伴','外部复用团子');
  report.catalogAfter=await nav('asset.search',{ownerWorldId:worldId,scope:'local-library',query:input.componentRef.assetId,mediaKind:'package',latestOnly:true,offset:0,limit:50});assert(!report.catalogAfter.items.some(row=>row.assetId===input.componentRef.assetId));
  await selectTemplate(input.ref);report.reexport=await exportSelected('foreign-reexport-'+randomUUID());assert.equal(report.reexport.sha256,input.archive.sha256);
  mark('Fresh second profile imported only the shared ZIP, played rain and republished a component without the original custom catalog record');
@@ -306,7 +309,7 @@ try{
  else{worldId=report.authorWorld;await openExistingWorld(worldId);}
  const library=path.join(root,'vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/builtin-source-library');
  const pom=await installZip(fs.readFileSync(path.join(library,'cw.module.approved-pomeranian.zip')),'approved-pom');mark('Approved Pom reached native check, preview and adoption');
- const publication=report.componentPublication??await publish('component','我的白色博美','星雪团子');assert.equal(publication.ref.version,1);mark('Actual component publication form saved native preview and alias search found its exact version');
+ const publication=report.componentPublication??await publish('component','我的白色博美','星雪团子');assert.equal(publication.ref.version,1);assert(publication.preview,'AUTHOR_NATIVE_THUMBNAIL_REQUIRED');mark('Actual component publication form saved native preview and alias search found its exact version');
  const bytes=publishedBytes(publication);
  const template=report.worldPublication??await publish('world','我的博美世界','星雪世界');report.savedTemplate=await nav('worldTemplate.read',{ref:template.ref});assert.equal(report.savedTemplate.initialState,'saved-progress');mark('Explicit saved-progress choice published current formal world through actual PI form');
  await chooser('templates');await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-local-template="${template.ref.assetId}"]')`);},Boolean);await submit(`[data-local-template="${template.ref.assetId}"]`);
