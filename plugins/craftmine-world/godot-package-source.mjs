@@ -2,7 +2,8 @@
 import {createHash} from 'node:crypto';
 import {parseScene} from '../../desktop/godot/shared/scene_materializer.mjs';
 import {contentHash} from './package-format.mjs';
-import {resolveInstanceParameterDeclaration} from './godot-instance-declaration.mjs';
+import {createInstanceSourceDeclaration,resolveInstanceParameterDeclaration} from './godot-instance-declaration.mjs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(Error(code),{code,errorCode:code});};
@@ -103,26 +104,59 @@ function identityFor(files,scenePath,node,classes,seen=new Set()) {
   }
   return null;
 }
-export function createManagedPackageSourceService({call,bind}) {
+export function createManagedPackageSourceService({call,bind,recoverCatalogDeclaration=false}) {
   check(typeof call==='function'&&typeof bind==='function','PACKAGE_SOURCE_HOST_REQUIRED');
-  async function read(args) {
+  async function read(args,{listing=false,assertActive=()=>{}}={}) {
     const bound=await bind(args.worldId);check(bound?.worldRecord?.id===args.worldId&&bound.context,'PACKAGE_BINDING_MISMATCH');
-    const files=new Map();let offset=0,identity,total=0;
+    const files=new Map(),descriptors=new Map();let offset=0,identity,total=0;
+    async function loadFile(name){
+      if(files.has(name))return files.get(name);const file=descriptors.get(name);check(file,'PACKAGE_SOURCE_DEPENDENCY_MISSING');
+      let next=0;const chunks=[];
+      do {assertActive();const part=await call('godotProject.read',{context:bound.context,worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,path:file.path,offset:next,limit:16000});check(part.sha256===file.sha256,'PACKAGE_SOURCE_CHANGED');chunks.push(part.encoding==='base64'?Buffer.from(part.bytesBase64,'base64'):Buffer.from(part.text,'utf8'));next=part.nextOffset;}while(next!==null&&next!==undefined);
+      const bytes=Buffer.concat(chunks);check(bytes.length===file.bytes&&hash(bytes)===file.sha256,'PACKAGE_SOURCE_CORRUPT');files.set(file.path,bytes);return bytes;
+    }
     do {
       const index=await call('godotProject.index',{context:bound.context,worldId:args.worldId,offset,limit:32,...(identity?{revision:identity.revision,manifestHash:identity.manifestHash}:args.revision!==undefined?{revision:args.revision,manifestHash:args.manifestHash}:{})});
       identity??=index;check(index.worldId===args.worldId&&index.revision===identity.revision&&index.manifestHash===identity.manifestHash,'PACKAGE_SOURCE_CHANGED');
       for(const file of index.files) {
-        let next=0;const chunks=[];
-        do {const part=await call('godotProject.read',{context:bound.context,worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,path:file.path,offset:next,limit:16000});check(part.sha256===file.sha256,'PACKAGE_SOURCE_CHANGED');chunks.push(part.encoding==='base64'?Buffer.from(part.bytesBase64,'base64'):Buffer.from(part.text,'utf8'));next=part.nextOffset;}while(next!==null&&next!==undefined);
-        const bytes=Buffer.concat(chunks);total+=bytes.length;check(total<=64*1024*1024&&bytes.length===file.bytes&&hash(bytes)===file.sha256,'PACKAGE_SOURCE_CORRUPT');files.set(file.path,bytes);
+        descriptors.set(file.path,file);total+=file.bytes;check(total<=64*1024*1024,'PACKAGE_SOURCE_CORRUPT');
+        // Listing identities needs scenes and scripts, not every model/texture.
+        // Binary and ancillary export dependencies are loaded lazily from the
+        // same pinned index. Unrelated world assets never cross the IPC bridge.
+        if(file.path!=='project.godot'&&!/\.(gd|tscn)$/.test(file.path)&&(listing||!['craftmine.instances.json','craftmine.assets.lock.json'].includes(file.path)))continue;
+        await loadFile(file.path);
       }offset=index.nextOffset;
     }while(offset!==null&&offset!==undefined);
     const mainScene=/run\/main_scene\s*=\s*"res:\/\/([^"]+)"/.exec(files.get('project.godot')?.toString('utf8')??'')?.[1];check(mainScene&&files.has(mainScene),'PACKAGE_MAIN_SCENE_REQUIRED');
-    return {identity,files,mainScene,bound};
+    return {identity,files,mainScene,bound,loadFile};
+  }
+  async function recoverDeclaration(args,files,mainScene,node,loadFile){
+    if(!recoverCatalogDeclaration||!files.has('craftmine.instances.json'))return;
+    let map;try{map=JSON.parse(files.get('craftmine.instances.json').toString('utf8'));}catch{return;}
+    if(map.worldId!==args.worldId||!Array.isArray(map.instances))return;
+    const matches=map.instances.filter(instance=>Object.values(instance.entityMap??{}).some(id=>['entity_id','target_id'].some(field=>literal(node.properties[field])===id)));
+    if(matches.length!==1)return;const instance=matches[0];if(instance.sourceDeclaration?.status==='source-declared')return;
+    // Older installers omitted the manifest. Recover only from a measured
+    // catalog archive and the exact lock identity; never guess requirements.
+    let record;try{record=await call('asset.read',{assetId:instance.assetId,version:instance.version});}catch(error){if([error.code,error.errorCode,error.message].includes('ASSET_NOT_FOUND'))fail('PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');throw error;}
+    const version=record.version_,file=version?.files?.[0];check(version?.assetId===instance.assetId&&version.version===instance.version&&version.files.length===1&&file.mediaType==='application/x-godot-package'&&file.bytes<=5*1024*1024,'PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');
+    const body=await call('asset.bodyPath',{assetId:instance.assetId,version:instance.version,path:file.path});
+    check(body.sha256===file.sha256&&body.bytes===file.bytes&&path.isAbsolute(body.blobPath),'PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');
+    const stat=await fs.lstat(body.blobPath);check(stat.isFile()&&!stat.isSymbolicLink()&&stat.size===file.bytes,'PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');
+    const bytes=await fs.readFile(body.blobPath);check(bytes.length===file.bytes&&hash(bytes)===file.sha256,'PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');
+    const {unpackStaticPackage}=await import('./package-zip.mjs'),archive=unpackStaticPackage(bytes);
+    const resource=archive.resources.find(item=>item.manifest.content.assetId===instance.assetId&&item.manifest.content.version===instance.version&&item.manifest.contentHash===instance.contentHash)?.manifest;
+    check(resource,'PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');const spec=resource.content.entry.sceneInstall;check(spec,'PACKAGE_COMPONENT_CATALOG_SOURCE_REQUIRED');
+    for(const file of resource.content.files)await loadFile(instance.installPath+'/'+file.path);
+    const managedFiles=resource.content.files.map(file=>{const target=instance.installPath+'/'+file.path,bytes=files.get(target);check(bytes,'PACKAGE_DECLARATION_INSTALLED_SOURCE_CHANGED');return {path:target,bytes,sha256:hash(bytes)};});
+    instance.sourceDeclaration=createInstanceSourceDeclaration({resource,instance,managedFiles,sceneEdit:{scene:mainScene,nodeName:node.name,parent:node.parent,mode:spec.mode,extResource:{path:instance.installPath+'/'+(spec.mode==='instance'?spec.sceneFile:spec.script)},identity:{field:spec.identityField}}});
+    // This is read-only export memory. The original source and instance map are
+    // untouched; the normal declaration resolver checks lock/wrapper/file pins.
+    files.set('craftmine.instances.json',Buffer.from(JSON.stringify(map)));
   }
   return {
     async listSource(args) {
-      fields(args,['worldId']);const {identity,files,mainScene}=await read(args),classes=classIndex(files),items=[];
+      fields(args,['worldId']);const {identity,files,mainScene}=await read(args,{listing:true}),classes=classIndex(files),items=[];
       let truncated=false;
       for(const node of parseScene(files.get(mainScene).toString('utf8')).nodes) {
         if(node.parent===null)continue;const entity=identityFor(files,mainScene,node,classes);if(!entity)continue;
@@ -131,16 +165,38 @@ export function createManagedPackageSourceService({call,bind}) {
       }
       return {worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,items,truncated};
     },
-    async exportSource(args) {
+    async exportSource(args,{assertActive=()=>{}}={}) {
       const {packStaticPackage}=await import('./package-zip.mjs');
       fields(args,['worldId','revision','manifestHash','nodePath','assetId','version']);check(/^[a-z0-9][a-z0-9._-]{0,79}$/.test(args.assetId)&&Number.isSafeInteger(args.version)&&args.version>=1&&args.version<=100000&&Number.isSafeInteger(args.revision)&&/^[a-f0-9]{64}$/.test(args.manifestHash),'INVALID_PARAMS');
-      const {identity,files,mainScene,bound}=await read(args),classes=classIndex(files);
+      const {identity,files,mainScene,bound,loadFile}=await read(args,{assertActive}),classes=classIndex(files);
       const node=parseScene(files.get(mainScene).toString('utf8')).nodes.find(node=>nodePath(node)===args.nodePath);check(node,'PACKAGE_COMPONENT_MISSING');
       const entity=identityFor(files,mainScene,node,classes);check(entity,'PACKAGE_COMPONENT_IDENTITY_REQUIRED');
+      await recoverDeclaration(args,files,mainScene,node,loadFile);
+      // The declaration resolver measures every original payload file, even
+      // sidecars omitted from the selected subtree's dependency closure.
+      if(files.has('craftmine.instances.json')){
+        let map;try{map=JSON.parse(files.get('craftmine.instances.json').toString('utf8'));}catch{}
+        for(const instance of map?.instances??[])if(Object.values(instance.entityMap??{}).some(id=>['entity_id','target_id'].some(field=>literal(node.properties[field])===id)))for(const item of instance.sourceDeclaration?.managedFiles??[])await loadFile(item.path);
+      }
       const parameterDeclaration=resolveInstanceParameterDeclaration({worldId:args.worldId,files,mainScene,nodePath:args.nodePath});
       check(!files.has('_craftmine_component.tscn'),'PACKAGE_RESERVED_PATH');
       const component=extractSubtree(files.get(mainScene).toString('utf8'),args.nodePath),payload=new Map([['_craftmine_component.tscn',Buffer.from(component)]]),required=new Map(),queue=refs(component);
-      while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');payload.set(name,bytes);if(texts.test(name)||name.toLowerCase().endsWith('.glb'))queue.push(...dependencies(name,name.toLowerCase().endsWith('.glb')?bytes:bytes.toString('utf8')));check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
+      const original=parameterDeclaration.resourceDeclaration?.resource?.content;
+      // Runtime integration (player controller / persistence bridge) may have no
+      // static res:// reference from a component. Preserve only exact measured
+      // requirements from its hash-validated installation declaration.
+      if(original){
+        const requirements=[...(original.entry.sourceRequirements??[])];
+        if(original.entry.sourceRequirementProfiles){
+          const profile=original.entry.sourceRequirementProfiles.find(candidate=>candidate.requirements.every(item=>files.has(item.path)&&hash(files.get(item.path))===item.sha256));
+          check(profile,'PACKAGE_BASE_PROFILE_MISMATCH');requirements.push(...profile.requirements);
+        }
+        for(const item of requirements){check(files.has(item.path)&&hash(files.get(item.path))===item.sha256,'PACKAGE_BASE_SOURCE_MISMATCH');required.set(item.path,item);}
+        // Include referenced package attribution sidecars without inventing a
+        // new license grant. Their original bytes are already hash-validated.
+        for(const item of original.files)if(/(?:^|\/)(?:LICENSE[^/]*|provenance\.json)$/i.test(item.path))queue.push(parameterDeclaration.resourceDeclaration.installPath+'/'+item.path);
+      }
+      while(queue.length) {const name=queue.shift();if(payload.has(name))continue;check(name!=='project.godot'&&name!==mainScene,'PACKAGE_WORLD_DEPENDENCY_REFUSED');const bytes=await loadFile(name);payload.set(name,bytes);if(texts.test(name)||name.toLowerCase().endsWith('.glb'))queue.push(...dependencies(name,name.toLowerCase().endsWith('.glb')?bytes:bytes.toString('utf8')));check(payload.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
       // Named base classes remain exact, externally required source files. This
       // avoids copying another Interactable global class into a receiving base.
       const globalQueue=[];
@@ -148,7 +204,7 @@ export function createManagedPackageSourceService({call,bind}) {
       for(const [name,bytes]of payload)if(name.endsWith('.gd')) {const body=bytes.toString('utf8'),own=/^\s*class_name\s+(\w+)/m.exec(body)?.[1];for(const [className,classPath]of classes)if(className!==own&&new RegExp('\\b'+className+'\\b').test(body)&&!payload.has(classPath))globalQueue.push(classPath);}
       // A namespaced payload copy cannot satisfy an unchanged shared base's
       // original res:// path. Keep both records for dual-use dependencies.
-      while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name))continue;const bytes=files.get(name);check(bytes,'PACKAGE_SOURCE_DEPENDENCY_MISSING');required.set(name,{path:name,sha256:hash(bytes)});if(name.toLowerCase().endsWith('.glb'))globalQueue.push(...dependencies(name,bytes));else if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
+      while(globalQueue.length) {const name=globalQueue.shift();if(required.has(name))continue;const bytes=await loadFile(name);required.set(name,{path:name,sha256:hash(bytes)});if(name.toLowerCase().endsWith('.glb'))globalQueue.push(...dependencies(name,bytes));else if(texts.test(name)){const body=bytes.toString('utf8');globalQueue.push(...dependencies(name,body));for(const [className,classPath]of classes)if(new RegExp('\\b'+className+'\\b').test(body)&&classPath!==name)globalQueue.push(classPath);}check(required.size<=256,'PACKAGE_COMPONENT_TOO_LARGE');}
       const rewritten={},inputActions=new Set();let total=0;
       for(const [name,bytes]of payload) {
         let output=bytes;
@@ -173,7 +229,7 @@ export function createManagedPackageSourceService({call,bind}) {
         sourceDeclarations.set(declarationPath,{path:declarationPath,sha256:hash(rewritten[declarationPath]),status:'source-declared'});
       }
       const licenses=sourceDeclarations.size?{sourceDeclarations:[...sourceDeclarations.values()]}:{};
-      const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()]},interfaces:parameterDeclaration.status==='source-declared'?{parameters:parameterDeclaration.parameters}:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:{},licenses};
+      const content={assetId:args.assetId,version:args.version,kind:'object',files:Object.entries(rewritten).map(([path,bytes])=>({path,bytes:bytes.length,sha256:hash(bytes)})),dependencies:[],entry:{entities:[entity.id],sceneInstall:{mode:'instance',sceneFile:'_craftmine_component.tscn',identityField:entity.field,identityType:entity.type,inputActions:[...inputActions]},sourceRequirements:[...required.values()],...(original?{sourceLineage:{resourceRef:parameterDeclaration.resourceRef,licenseStatus:'source-declared',licenses:original.licenses},...(original.entry.capabilities?{capabilities:original.entry.capabilities}:{})}:{})},interfaces:parameterDeclaration.status==='source-declared'?{parameters:parameterDeclaration.parameters}:{},compatibility:{base:identity.baseId,...(bound.worldRecord.world.snapshot?.baseVersion?{baseVersion:bound.worldRecord.world.snapshot.baseVersion}:{}),engine:identity.engineVersion},state:original?.state??{},licenses};
       const archive=packStaticPackage({root:{id:args.assetId,version:args.version},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files:rewritten}]});check(archive.length<=5*1024*1024,'PACKAGE_COMPONENT_TOO_LARGE');
       return {archiveBase64:archive.toString('base64'),archiveSha256:hash(archive),files:Object.keys(rewritten).length,bytes:archive.length,source:{worldId:args.worldId,revision:identity.revision,manifestHash:identity.manifestHash,mainScene,nodePath:args.nodePath},parameterDeclaration,requiredSourceFiles:required.size};
     },

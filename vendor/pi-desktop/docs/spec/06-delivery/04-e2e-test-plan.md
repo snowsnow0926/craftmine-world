@@ -10059,3 +10059,23 @@ grouped component installation. Import/export through native file grants; reject
 corruption, aliases, undeclared/private files, changed hashes and overwrite of an
 existing destination. A checked ZIP alone must not be reported as a playable
 world. See `player-world-library.md` and the isolated native boundary test.
+# Player component publication continuation (2026-09-13)
+
+In an isolated background profile, use the existing selected-component control
+to save a name, aliases, notes and optional source-world preview to the local
+library. Search the alias from a new world, install two copies through the normal
+proposal/check/adoption flow, and verify independent identities and save/reopen.
+The approved white Pomeranian must retain GLB SHA-256
+`1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b` and its exact
+runtime source requirements. Repeat with an older missing instance declaration;
+recovery must use exact catalog evidence without modifying the original map.
+
+Publish a second version and confirm the first still reads unchanged. Refuse
+changed bytes under an existing version, forged world/source identities,
+unsupported subtrees and renderer-supplied filesystem/image fields. Cancel
+during source extraction and confirm no catalog write; cancel after native commit
+dispatch must report committing/completed. Lose an import reply and retry the
+same operation to verify no duplicate version or replacement of frozen bytes.
+No model, mouse/keyboard simulation, visible test window or Pointer Lock is
+required by the automated catalog/source preflight. Runtime adoption and actual
+save/reopen remain separate acceptance, never inferred from a blocked check.

@@ -65,8 +65,11 @@ export function resolveInstanceParameterDeclaration({worldId,files,mainScene,nod
   const reference=parsed.extResources.find(value=>value.id===resourceId);
   check(scene.resourcePath===expectedPath&&reference?.path==='res://'+expectedPath&&reference.type===(spec.mode==='instance'?'PackedScene':'Script')&&(spec.mode!=='instance'||node.properties.script===undefined)&&(spec.mode!=='script-node'||node.type===(spec.nodeType||'Node2D')),'PACKAGE_DECLARATION_WRAPPER_CHANGED');
   const parameters=resource.content.interfaces.parameters;
-  if(parameters===undefined)return {...unknown('PARAMETERS_NOT_DECLARED'),resourceRef:{assetId:instance.assetId,version:instance.version,contentHash:instance.contentHash}};
+  // Export may preserve measured source requirements and attribution even when
+  // a component declares no editable parameters. This is still source evidence.
+  const resourceDeclaration={resource:structuredClone(resource),installPath:instance.installPath};
+  if(parameters===undefined)return {...unknown('PARAMETERS_NOT_DECLARED'),resourceRef:{assetId:instance.assetId,version:instance.version,contentHash:instance.contentHash},resourceDeclaration};
   check(parameters&&typeof parameters==='object'&&!Array.isArray(parameters),'PACKAGE_PARAMETER_DECLARATION_INVALID');
-  return {status:'source-declared',parameters:structuredClone(parameters),resourceRef:{assetId:instance.assetId,version:instance.version,contentHash:instance.contentHash},instanceId:instance.instanceId,
+  return {status:'source-declared',parameters:structuredClone(parameters),resourceRef:{assetId:instance.assetId,version:instance.version,contentHash:instance.contentHash},instanceId:instance.instanceId,resourceDeclaration,
     sourceBinding:{worldId,mainScene,nodePath:wanted,entityId,resourcePath:expectedPath},note:'Original CP0 parameter declarations match the installed source; no setter, permission or runtime behavior is inferred.'};
 }

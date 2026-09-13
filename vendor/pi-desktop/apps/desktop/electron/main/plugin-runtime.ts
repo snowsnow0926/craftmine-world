@@ -1047,7 +1047,7 @@ export class PluginRuntime {
       .some(prefix => method.startsWith(prefix)) || method === "workbench.request"
       // Installing a source ZIP snapshots the current project and commits a
       // durable file transaction. Ordinary package reads retain their deadline.
-      || (method === "package.request" && (params.method === "installSource" || params.method === "installSourceProposal"));
+      || (method === "package.request" && ["installSource", "installSourceProposal", "publishSource", "sourceList", "exportSource"].includes(String(params.method)));
     return this.sendToChild(loaded, { t: "call", method: "lifecycle.craftmineRequest", payload: { method, params } }, method.startsWith("backup.") ? 130_000 : longRunning ? 60_000 : 15_000);
   }
 

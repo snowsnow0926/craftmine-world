@@ -254,14 +254,23 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
           const linked={...spec,parent:spec.parent??'.',script:spec.script?instance.installPath+'/'+spec.script:undefined,sceneFile:spec.sceneFile?instance.installPath+'/'+spec.sceneFile:undefined};
           const itemPosition=items[itemIndex].position;
           if(itemPosition!==undefined){
-            const sceneRoot=spec.mode==='instance'?parseScene(resource.files.get(spec.sceneFile)?.toString('utf8')??'').nodes.find(n=>n.parent===null):null;
-            const nodeType=spec.mode==='script-node'?spec.nodeType:/(?:^|\s)type="([^"]+)"(?:\s|$)/.exec(sceneRoot?.attributes??'')?.[1];
+            let nodeType=spec.mode==='script-node'?spec.nodeType:undefined,sceneFile=spec.sceneFile;
+            // A player export may wrap an already instanced PackedScene. Follow
+            // only package-local static scene roots, without executing scripts.
+            const seen=new Set();
+            while(spec.mode==='instance'&&sceneFile&&!nodeType&&!seen.has(sceneFile)&&seen.size<16){
+              seen.add(sceneFile);const parsed=parseScene(resource.files.get(sceneFile)?.toString('utf8')??''),sceneRoot=parsed.nodes.find(n=>n.parent===null);
+              nodeType=/(?:^|\s)type="([^"]+)"(?:\s|$)/.exec(sceneRoot?.attributes??'')?.[1];
+              const inherited=/instance=ExtResource\("([^"]+)"\)/.exec(sceneRoot?.header??'')?.[1],ref=parsed.extResources.find(item=>item.id===inherited);
+              const prefix='res://addons/'+resource.manifest.content.assetId+'/';sceneFile=ref?.path?.startsWith(prefix)?ref.path.slice(prefix.length):null;
+            }
             requireValue(typeof nodeType==='string'&&nodeType.endsWith('3D'),'PACKAGE_POSITION_REQUIRES_3D_NODE');
           }
           const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0],...(itemPosition?{placement:{position:`Vector3(${itemPosition.x}, ${itemPosition.y}, ${itemPosition.z})`}}:{})});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
           sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
         }
-        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
+        const resourceManifests=[...new Map(archives.flatMap(archive=>archive.resources).map(resource=>[resource.manifest.contentHash,resource.manifest])).values()];
+        const draft=planDraftInstall({plan,payload,projectDir,sceneEdits,inputActions,resourceManifests});if(!draft.ok)throw Object.assign(Error('PACKAGE_DRAFT_CONFLICT: '+JSON.stringify(draft.errors??draft.conflicts??draft.reason??draft)),{code:'PACKAGE_DRAFT_CONFLICT'});
         const files=draft.files.filter(f=>originals.get(f.path)!==f.sha256).map(f=>({path:f.path,bytesBase64:f.bytes.toString('base64'),expectedHash:originals.get(f.path)??null}));
         requireValue(files.length>0,'PACKAGE_NO_CHANGES');
         const toolCallId='package-'+key.slice(0,40);

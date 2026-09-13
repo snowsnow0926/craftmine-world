@@ -20,6 +20,7 @@ const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.
 const {createSourceLibraryService}=require('./source-library-service.cjs');
 const {seedBuiltinSourceLibrary}=require('./builtin-source-library.cjs');
 const {createPlayerWorldLibrary}=require('./player-world-library.cjs');
+const {createPlayerComponentLibrary}=require('./player-component-library.cjs');
 let core,verifications,reviews,applications,hostRequests,workbench,godotExecutor,assetService,reuseService,blenderJobs;
 const endedTurns=new Set();
 const turnKey=context=>JSON.stringify([context.sessionId,context.turnId]);
@@ -64,7 +65,7 @@ async function onLoad() {
     enqueue:(job,context)=>godotExecutor.enqueue(job,context),
     bind:createPackageInstallBinding({call,begin:params=>hostRequests('turn.begin',params),
       selected:async()=>(await pi.plugin.getSettings()).activeWorldId,finish:packageTurns.finish})});
-  const packageSource=createManagedPackageSourceService({call,bind:async worldId=>{
+  const packageSource=createManagedPackageSourceService({call,recoverCatalogDeclaration:true,bind:async worldId=>{
     if((await pi.plugin.getSettings()).activeWorldId!==worldId)throw Error('GODOT_WORLD_CHANGED');
     const worldRecord=await call('world.read',{id:worldId});
     if(worldRecord.runtimeKind!=='godot')throw Error('GODOT_WORLD_REQUIRED');
@@ -75,6 +76,8 @@ async function onLoad() {
   }});
   reuseService=createReuseService({call,installSource,
     sourceList:args=>packageSource.listSource(args),exportSource:args=>packageSource.exportSource(args)});
+  const playerComponents=createPlayerComponentLibrary({call,source:packageSource,selected:async()=>(await pi.plugin.getSettings()).activeWorldId,directory:require('node:path').join(await pi.plugin.getDataPath(),'player-component-publications')});
+  for(const method of ['publishSource','publishSourceStatus','cancelPublishSource'])reuseService[method]=args=>playerComponents[method](args);
   let builtinSeed;
   const ensureBuiltin=()=>{
     // Do not cache across a restored core directory or leave concurrent imports.
@@ -99,9 +102,9 @@ async function onLoad() {
       if(bound?.world?.id!==(await pi.plugin.getSettings()).activeWorldId)throw Error('GODOT_WORLD_CHANGED');
       if(endedTurns.has(turnKey(context)))throw Error('TURN_ENDED');}});
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
-  const portableRestore={restore:async params=>{await worldTemplates.drain();await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();await blenderJobs.start();}}};
+  const portableRestore={restore:async params=>{await worldTemplates.drain();await playerComponents.drain();await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();await blenderJobs.start();}}};
   hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback,worldTemplates});
-  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();await blenderJobs.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await worldTemplates.drain();await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
+  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();await blenderJobs.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await worldTemplates.drain();await playerComponents.drain();await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',

@@ -1,0 +1,64 @@
+# Local player component publication
+
+The existing `package.request` surface adds these player-only methods:
+
+| Method | Parameters | Result |
+| --- | --- | --- |
+| `publishSource` | `worldId`, `operationId`, `revision`, `manifestHash`, `nodePath`, `assetId`, `version`, `displayName`, optional `tags`, `aliases`, `notes`, `includePreview` | Completed exact `assetRef`, source identity, archive hash, file/requirement counts and preview status; or cancelled |
+| `publishSourceStatus` | `worldId`, `operationId` | `not-found`, `preparing`, `prepared`, `committing`, `completed`, or `cancelled` |
+| `cancelPublishSource` | `worldId`, `operationId` | State and whether cancellation was accepted |
+
+The renderer obtains `nodePath`, `revision` and `manifestHash` from the existing
+`sourceList` result. It cannot send a source path, archive or preview body.
+`assetId` is `player.component.<slug>` with at most 80 ASCII characters; version
+is 1–100000; display name is at most 200 UTF-8 bytes; tags and aliases together
+contain at most 29 entries of 40 UTF-8 bytes each; notes use at most 3000 bytes.
+Three reserved searchable tags are added. Aliases and notes are both retained
+inside immutable source publication metadata and projected into the existing
+catalog search index. Updating a version requires a new version number and
+operation ID; overwriting an immutable version refuses.
+
+Metadata and the selected source revision are frozen before import. Publishing
+does not mutate world source, adopt a candidate or save live player progress.
+The return value keeps `applied:false`. The created catalog package is consumed
+by the existing `godot_source_library` search/read/propose and normal source
+installer, check and adoption flow. No extra model call is needed to publish.
+
+The exporter still refuses a whole-world root, multiple identities, detectable
+external node/signal dependencies, missing source and excessive payloads.
+The indexed world may contain up to 64 MiB; copied component source remains
+bounded to 4 MiB and the ZIP to 5 MiB. Listing reads only scenes/scripts. Export
+loads binary and ancillary dependencies lazily from the same pinned index,
+without reading unrelated models. Native import and installation remain the
+authoritative validators. Inherited PackedScene roots can be placed by following
+at most 16 package-local static scene roots, without script execution.
+
+For installed packages, source requirements and the matching exact runtime
+profile survive export; source license/provenance files and declared capabilities
+are retained. An old missing declaration may be reconstructed in export memory
+from the native catalog only after matching its CP0 resource hash, lock and all
+installed files. Edited package bodies whose old declaration no longer matches
+currently refuse; ordinary supported scene property overrides are preserved.
+
+Optional previews use at most 700000 base64 characters of a real host PNG.
+`previewStatus` is `source-world-view` or `unavailable`; the catalog detail must
+say this is the source world's current view, not an isolated object preview.
+Native preview `status:ok` means that captured picture exists, not that the
+component passed a check. Absent running-frame capability never invents a picture.
+
+Cancellation checks between native source reads stop further extraction work.
+Once import is committing, callers poll/retry the same operation; the receipt
+does not claim a cancelled commit disappeared. Lost replies replay frozen native
+import/annotation operations and return the durable completed receipt.
+
+Targeted validation: 22 logic/source regressions passed, with the optional Core
+parameter test skipped in that unit invocation. A separate real Core run using
+binary SHA-256 `160c815d5a5d43a404ad6e1961c6346bfd79a2de66487f76da9c021f521afee2`
+passed approved-Pomeranian publication, exact legacy declaration recovery,
+versions 1 and 2, immutable conflict rejection, alias search and two independent
+cross-world installations. The accepted GLB hash remained unchanged and three
+exact shared runtime requirements survived. The reproducible entry point is
+`tests/player-component-library-native.mjs <core-executable> <built-library-dir>`.
+It starts no executor and reports actual `source-saved-check-blocked`; it is not
+runtime/adoption/save-reopen acceptance. Native source evidence is retained in
+`test-results/player-component-native-ZoJLzc/report.json` in the isolated worktree.

@@ -31,7 +31,7 @@ async function readZip(target:string) {
     return buffer.subarray(0,total);
   }finally{await file.close();}
 }
-export function createCraftminePackageService(options:{domainCall:CraftmineDomainCall;selection:()=>Promise<string|null>|string|null;pickFile:(input:{kind:'export-source'|'open-source';suggestedName?:string})=>Promise<string|null>;now?:()=>number}) {
+export function createCraftminePackageService(options:{domainCall:CraftmineDomainCall;selection:()=>Promise<string|null>|string|null;pickFile:(input:{kind:'export-source'|'open-source';suggestedName?:string})=>Promise<string|null>;capturePreview?:(worldId:string)=>Promise<{worldId:string;buildId:string;pngBase64:string;sha256:string}|null>;now?:()=>number}) {
   const now=options.now??Date.now;
   type Grant={worldId:string;path:string;sha256:string;expiresAt:number};
   type Operation={binding:string;grantId?:string;pending?:Promise<any>;result?:any};
@@ -72,6 +72,24 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
         if(channel!=='package.request')failure('UNKNOWN_PACKAGE_CHANNEL');fields(input,['worldId','method','params']);
         const {worldId,method}=input,args=input.params??{};if(typeof worldId!=='string'||!worldId||args.worldId!==worldId)failure('PACKAGE_WORLD_MISMATCH');
         await selected(worldId);prune();
+        if(method==='publishSourceStatus'||method==='cancelPublishSource'){
+          fields(args,['worldId','operationId']);identifier(args.operationId);
+          const result=await privateCall(method,args);
+          if(result.worldId!==worldId||result.operationId!==args.operationId||!['not-found','preparing','prepared','committing','completed','cancelled'].includes(result.status))failure('PUBLICATION_RECEIPT_INVALID');
+          return result;
+        }
+        if(method==='publishSource'){
+          fields(args,['worldId','operationId','revision','manifestHash','nodePath','assetId','version','displayName','tags','aliases','notes','includePreview']);identifier(args.operationId);
+          if(args.includePreview!==undefined&&typeof args.includePreview!=='boolean')failure('INVALID_PARAMS');
+          const {includePreview,...input}=args;
+          // The optional image comes from a bound native world frame, never from
+          // renderer data URLs, file paths or a screenshot of another surface.
+          const preview=includePreview&&options.capturePreview?await options.capturePreview(worldId).catch(()=>null):null;await selected(worldId);
+          const result=await privateCall(method,{...input,...(preview?{preview}:{})});
+          if(result.worldId!==worldId||result.operationId!==args.operationId||!['completed','cancelled'].includes(result.status))failure('PUBLICATION_RECEIPT_INVALID');
+          if(result.status==='completed'&&(result.assetRef?.assetId!==args.assetId||result.assetRef?.version!==args.version||!/^[a-f0-9]{64}$/.test(result.assetRef?.contentHash)||!/^[a-f0-9]{64}$/.test(result.archiveSha256)||!['unavailable','source-world-view'].includes(result.previewStatus)))failure('PUBLICATION_RECEIPT_INVALID');
+          return result;
+        }
         if(method==='sourceProposals') {
           fields(args,['worldId']);const result=await privateCall('sourceProposals',{worldId});await selected(worldId);
           if(result.worldId!==worldId||!Array.isArray(result.items)||result.items.length>256)failure('PACKAGE_SOURCE_RECEIPT_INVALID');
