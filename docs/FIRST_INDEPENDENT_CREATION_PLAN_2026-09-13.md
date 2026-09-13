@@ -1,119 +1,73 @@
-# First independent creation: product and implementation plan
+# 第一次自主创作：产品与开发方案
 
-Date: 2026-09-13. Accepted direction: a new player independently opens a world,
-uses existing content, makes a change, saves/reopens, and gives the result to a
-friend. Baseline: `475bc6a5`. Development uses a dedicated worktree and the
-existing PI Desktop shell, world services, source installer and native checks.
+日期：2026-09-13。已确定的方向：让新玩家独立完成打开世界、使用已有内容、进行修改、保存并重新打开，再把成果交给朋友游玩。开发基线：`475bc6a5`。本轮使用独立工作树，沿用现有 PI Desktop 界面、世界服务、素材源码安装器和原生检查流程。
 
-## Product diagnosis
+## 一、目前项目的主要问题
 
-The current release proves playable examples, bundled modeling, real Codex
-authoring and component/world-template reuse. It does not yet prove first-time
-user success on another clean Windows machine. Known selected assets still
-enter an AI conversation from the main library. First example preparation took
-23–31 seconds and world switching 11–16 seconds in the measured runs. Composite
-content has real placement, input, source and persistence requirements. README
-and the current delivery page still point at preview.20. These are the immediate
-product gaps; existing implementation reports remain historical evidence.
+当前版本已经验证了可玩的演示世界、内置建模、真实 Codex 创作，以及组件和世界模板的复用。但还没有证明：第一次接触产品的用户，能够在另一台干净的 Windows 电脑上独立完成创作。
 
-The next success criterion is a player-accepted, playable and retained change
-without developer intervention. Generated code volume or an Agent's completion
-message is not sufficient. The intended first users remain non-programming
-creators and friends who play their creations.
+目前，从主素材库选择一个已经确定要使用的素材，仍然需要进入 AI 对话。在已有实测中，首次准备示例世界耗时 23–31 秒，切换世界耗时 11–16 秒。组合多个内容时，还要处理实际摆放、按键冲突、源码依赖和存档恢复等问题。README 和当前交付说明仍指向 preview.20。这些是接下来需要解决的产品缺口；已有开发报告继续作为历史证据保留。
 
-## Development order
+下一阶段的成功标准是：玩家无需开发者介入，就能得到自己认可、可以游玩并且能够保存的修改成果。仅有生成代码的数量，或者 Agent 宣布“已完成”，还不足以证明成功。首批目标用户仍然是不懂编程的创作者，以及游玩他们作品的朋友。
 
-### A. Direct use of an explicitly selected compatible asset
+## 二、开发顺序
 
-Add a direct-use action to the existing asset detail, alongside AI modification.
-For supported source packages, the player selects an exact immutable version and
-placement, then explicitly asks the application to check and add it. Ordinary
-native installation, build validation, progress protection and adoption run with
-no model call, CLI login or Composer mutation. Unsupported kinds and detected
-incompatibilities explain their actual limitation; they do not silently become
-different content. World templates keep their independent-world creation flow.
+### A. 明确选中的兼容素材，可以直接使用
 
-Native main owns asset bytes, selection, operation identity, source/build scope
-and any sampled position. The renderer receives bounded product results, never
-filesystem paths, source text, execution credentials or arbitrary RPC access.
-Reads may describe eligibility but cannot claim target compatibility until the
-actual target checks pass. Retries recover the same operation. Cancelled or
-stale work cannot later apply to another world. Failed installation/checks must
-preserve the original formal world and clearly distinguish retained draft work.
+在现有素材详情中增加“直接使用”操作，同时保留 AI 修改入口。对于支持直接安装的素材源码包，玩家选择确切且不可变的版本与摆放位置，然后明确发起检查和加入操作。整个过程复用原生安装、构建验证、进度保护和正式采用流程，无需调用模型、登录 CLI，也不改写对话输入框（Composer）。
 
-Use the current parameter editing and history features for subsequent changes.
-Natural-language modification and new content still use the player's chosen
-Agent and model; this is not keyword-based imitation of an arbitrary wish.
+对不支持的素材类型，以及检查发现的不兼容情况，界面应说明真实原因，不能悄悄替换成其他内容。世界模板继续使用“创建独立世界”的流程。
 
-### B. One understandable creation journey in PI Desktop
+素材文件内容、当前选择、操作标识、对应的源码与构建范围，以及任何采样得到的位置，都由原生主进程管理。前端只接收受限的产品结果，不能获得文件系统路径、源码文本、执行凭据或任意 RPC 调用能力。
 
-Use the current sidebar, library, world view and conversation. Explain the
-current step and the available next action: preparing, checking, added, or an
-actionable failure. Preserve useful progress when a panel closes or the user
-returns. Keep AI add/modify available and independent of the direct path.
-Provide a concise first-use guide for examples, direct use, a supported edit,
-save/reopen and portable world sharing. Existing controls must not be rebuilt
-as a second frontend.
+只读检查可以说明素材是否具备直接使用的条件，但只有针对目标世界的实际检查通过后，才能确认兼容。重试应恢复同一次操作；取消或已经失效的操作，不能稍后被应用到另一个世界。安装或检查失败时，必须保留原来的正式世界，并明确说明是否留下了未采用的草稿。
 
-### C. Consistent distribution and first-time evaluation
+后续修改优先复用现有参数编辑和历史记录功能。自然语言修改与新内容创作，仍然使用玩家自己选择的 Agent 和模型，不能用关键词匹配来冒充对任意创作需求的理解与执行。
 
-Update README/current-release documentation to the actual delivered version and
-location, clearly separating the accepted preview from new development. Record
-the GitHub default-branch discrepancy without silently changing repository
-settings. Keep play-without-AI and optional Codex connection distinct.
+### B. 在 PI Desktop 中形成一条清楚的创作流程
 
-Prepare an evaluation packet for approximately five to eight new users and a
-clean Windows machine: their own actions, original requests, observed blockers,
-developer assistance, full time to playable result, revision attempts, and
-save/reopen/share results. No participant result or clean-machine pass may be
-invented from developer-machine automation. External participants/machines are
-an availability dependency, not a reason to stop the independent development.
+沿用当前侧边栏、素材库、世界画面和对话界面。让玩家知道现在进行到哪一步，以及接下来能做什么：正在准备、正在检查、已经加入，或出现了可以处理的失败原因。
 
-### D. Follow measured bottlenecks
+关闭面板或稍后返回时，应保留有用的操作进度。AI 加入和 AI 修改继续保留，与直接使用流程相互独立。
 
-Use observed first-use failures and stage timings to select loading/context
-optimizations. Turn repeated successful assemblies into configurable validated
-templates using the existing asset/version system. Community distribution and
-multiplayer follow evidence of useful reusable supply and sustained creation.
-Any later model-routing experiment preserves explicit model choices and records
-its own actual quality/time/usage results.
+提供简短的首次使用指引，覆盖打开示例、直接使用素材、完成一项受支持的修改、保存并重新打开，以及通过可携带的世界包分享成果。所有改动都在现有控件和界面结构中完成，不另起一套前端。
 
-## First implementation acceptance
+### C. 统一版本入口，并准备首次使用验收
 
-1. A fresh isolated client with no model connection adds an existing supported
-   companion through the real asset-detail direct action, native check and
-   formal adoption. Its exact model bytes remain unchanged.
-2. Two direct additions have distinct instance identities; the selected version
-   and normal placement are retained. Existing player and world source survive.
-3. A supported ordinary modification can be saved; cold reopening restores the
-   formal content and progress. Existing world-template export/import remains
-   usable for giving the creation to another player.
-4. An unsupported/raw resource or incompatible target has a meaningful refusal.
-   A whole-world template never becomes an object install. Source/asset changes,
-   cancellation, lost acknowledgements and world switching cannot duplicate or
-   misapply a late operation. Retained operations can be inspected/recovered.
-5. Actual PI renderer forms and an independent offscreen native client prove the
-   product route. Focus, real mouse/keyboard input and Pointer Lock remain
-   forbidden in automation. Historical input-simulation tests are not run.
-6. Record actual model-call count (zero for direct use), stage timings, check and
-   adoption receipts, visual scope and persistence evidence. UI fixture success
-   is not a substitute for native gameplay or human acceptance.
+将 README 和当前交付说明更新为实际交付的版本与位置，明确区分已验收的预览版和正在开发的新功能。记录 GitHub 默认分支与当前开发分支不一致的问题，但不擅自修改仓库设置。清楚区分“无需 AI 即可游玩”和“按需连接 Codex 进行创作”。
 
-First-session independent completion, time to a playable accepted result,
-successful second edits and durable reopening/sharing are the evaluation
-measures. Suggested speed goals are measurement targets, not automatic timeouts.
-No extra token, inference-count or whole-turn cap is added to real-player Agent
-evaluation, and no user request is reduced to make a test pass.
+为约 5–8 名新用户和干净 Windows 电脑测试准备验收材料，记录以下内容：
 
-## Delivery boundaries
+- 用户自己的操作过程与原始需求。
+- 实际遇到的阻碍，以及开发者是否介入帮助。
+- 从开始到得到可玩结果的完整耗时，以及修改尝试次数。
+- 保存、重新打开和分享的实际结果。
 
-The first implementation delivers the direct-use route, existing-UI integration,
-focused regression/native acceptance, refreshed current-release pointers and a
-ready evaluation packet. Human participation, a clean external Windows test and
-future distribution services remain explicitly unverified until actually run.
-No remote messages, automatic model calls, repository setting changes or new
-GitHub publication are implied by preparing those materials.
+不能把开发者电脑上的自动化测试，冒充为真实参与者的结果或干净电脑验收通过。外部参与者和测试电脑是否可用，是后续实测的条件，不影响当前可以独立完成的开发。
 
-Preserve the accepted Windows payload and approved worlds. Development caches
-stay inside their owner worktree. Dependency links must be detached before any
-later cleanup; no recursive operation may follow them into another checkout.
+### D. 根据实测结果决定后续优化
+
+根据首次使用中实际出现的问题和各阶段耗时，选择加载速度与 Agent 上下文方面的优化。将多次验证成功的内容组合，沉淀为可配置、经过验证的模板，继续复用现有素材和版本体系。
+
+社区分发和多人功能，等到已有足够有用的可复用内容，并确认用户持续创作后再推进。以后若开展模型分配或路由实验，必须尊重玩家明确选择的模型，单独记录真实的质量、耗时和用量结果。
+
+## 三、首轮实现的验收标准
+
+1. 使用没有连接任何模型的全新隔离客户端，从真实素材详情中的直接操作入口加入一个受支持的现有宠物组件，完成原生检查和正式采用。所用模型文件的内容必须保持不变。
+2. 连续直接加入两次时，得到不同的实例标识；所选版本与正常摆放结果得到保留。原有玩家状态和世界源码不受损坏。
+3. 能够完成一项现有功能支持的普通修改并保存；彻底关闭后重新启动，仍能恢复正式内容和游玩进度。现有世界模板导出、导入流程仍可用于把作品交给其他玩家。
+4. 不支持直接安装的类型、原始资源或不兼容的目标世界，必须得到明确的拒绝原因。完整世界模板不能被当成单个物体安装。源码或素材变化、取消、响应丢失以及世界切换，都不能导致重复安装，或让延迟完成的操作被应用到错误目标。保留的操作应可以查询和恢复。
+5. 使用真实 PI 前端表单和独立的离屏原生客户端验证产品流程。自动化测试不得抢占焦点、操作真实鼠标或键盘，也不得请求 Pointer Lock；不运行历史上的输入模拟测试。
+6. 记录实际模型调用次数（直接使用应为零）、各阶段耗时、检查与正式采用的结果凭据，以及可视结果和保存恢复的证据。前端模拟测试通过，不能代替原生游玩验证或真人验收。
+
+评估指标包括：首次使用能否独立完成、得到玩家认可且可玩结果的耗时、能否成功进行第二次修改，以及能否可靠地重新打开和分享。建议的速度目标只用于衡量表现，不能变成自动中止任务的时限。
+
+真实玩家 Agent 验收不得额外设置 token、模型调用次数或整轮时长上限，也不能为了让测试通过而缩减用户需求。
+
+## 四、本轮交付范围与边界
+
+首轮交付包括：素材直接使用流程、现有界面中的集成、针对性的回归与原生验收、准确的当前版本入口说明，以及可直接使用的新用户验收材料。
+
+真人参与测试、外部干净 Windows 电脑测试，以及未来的分发服务，在实际执行前都明确标记为尚未验证。准备这些材料，不代表已经授权对外发送消息、自动调用模型、修改仓库设置，或者发布新的 GitHub 版本。
+
+保留已验收的 Windows 成品和已认可的世界。开发缓存放在各自所属工作树中。以后清理工作树之前，必须先解除依赖目录中的链接，任何递归清理操作都不能沿着这些链接进入其他工作目录。
