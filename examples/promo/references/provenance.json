@@ -1,0 +1,19 @@
+{
+  "format": "craftmine.promo-visual-reference/1",
+  "images": [
+    {
+      "file": "orgrimmar-city-reference.png",
+      "sha256": "9cba6b1fc1fbeb00949f7822eb2ab12bd3fd586923f682abeb5eb3da55ea236f",
+      "generator": "built-in imagegen",
+      "role": "AI-generated full-city design target; not an implemented world, render of model geometry, or measured map",
+      "views": [
+        "whole-city overview",
+        "main gate",
+        "central plaza",
+        "connected side district"
+      ],
+      "userScope": "Recreate Orgrimmar as an entire walkable city",
+      "generatedAt": "2026-09-13T00:34:28.594Z"
+    }
+  ]
+}

@@ -86,3 +86,25 @@ node scripts/promo-world-author.mjs cancel --data <同一档案>
 采用状态核对会抛出 `GODOT_WORLD_NOT_INITIALIZED`。现仅对该明确状态保留原
 检查结果；仍不标记为已采用，其他运行时错误和世界切换继续拒绝。修复后真实
 导入、导出、后台检查和画面保存通过，原失败记录保留。
+
+## 既有模型的显式复用
+
+`scripts/promo-model-library.mjs` 读取本轮已准备的素材清单，核对模型字节、
+SHA-256 和 GLB 头，再通过同一世界的正常源文件事务导入 `assets/library/`。
+事务使用实际源索引中的 Git head 和 manifest，拒绝覆盖已有文件，导入后从
+Rust 分页读回并核对完整哈希，确认正式构建和玩家进度没有变化。该操作由操作者
+显式选择素材，未向内容 Agent 开放主机文件读取或通用 RPC。
+
+```powershell
+node scripts/promo-model-library.mjs list
+node scripts/promo-model-library.mjs import <档案绝对路径> j20
+node scripts/promo-model-library.mjs import <档案绝对路径> pomeranian-cute
+```
+
+本轮清单及原素材位于 `test-results/codex-promo/reusable-assets/`，来源为前一轮
+交付的模型包。导入回执写入对应档案的 `asset-imports/`，明确标记
+`generatedThisTurn:false` 和 `applied:false`。飞机素材已在独立飞行档案完成
+完整读回校验；随后提交原始驾驶愿望，由 Codex 编写实际玩法。
+
+整城参考图保存在 `examples/promo/references/`，覆盖城门、主城区和相连侧区。
+它是 AI 设计参考，不是已实现世界的截图或经过测量的地图。
