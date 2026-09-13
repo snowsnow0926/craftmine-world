@@ -16,7 +16,7 @@ Source installation proposals appear within the same conversation. The player in
 
 Use isolated headless profiles with pointer lock and focus disabled. Page scripts submit ordinary forms; do not drive operating-system input. Fixtures prove renderer behavior and races, native probes prove source/initialization and persistence, and live Codex runs prove actual model behavior separately. Keep time and usage evidence distinct. Do not add model, token or whole-turn evaluation budgets.
 
-The first candidate follows the plan's delivery order: four examples in one client, Codex connection in Settings General, and the approved Pomeranian library flow. Flight/rain/city component extraction and remote distribution remain subsequent stages after that flow is verified.
+The first candidate delivered four examples in one client, Codex connection in Settings General, and the approved Pomeranian library flow. The subsequent isolated player-library delivery adds self-service component/world-template publication, drivable flight, controlled rain, city fragments, native fluency/cancellation and matched real-model reuse measurements. Portable single-world ZIP sharing is verified across independent profiles; a remote community distribution service remains outside this local delivery.
 
 ### Navigation and draft recovery
 

@@ -300,7 +300,7 @@ async function shareReuseWorld(){
 async function importForeignTemplate(){
  const input=foreignReport.crossPlayerTemplate,bytes=fs.readFileSync(input.archive.path);assert.equal(createHash('sha256').update(bytes).digest('hex'),input.archive.sha256);
  report.foreignInput={...input,sourceProfileCopied:false};
- report.catalogBefore=await nav('asset.search',{scope:'local-library',query:input.componentRef.assetId,mediaKind:'package',latestOnly:true,offset:0,limit:50});assert(!report.catalogBefore.items.some(row=>row.assetId===input.componentRef.assetId));
+ report.catalogBefore=await nav('asset.search',{ownerWorldId:null,scope:'local-library',query:input.componentRef.assetId,mediaKind:'package',latestOnly:true,offset:0,limit:50});assert(!report.catalogBefore.items.some(row=>row.assetId===input.componentRef.assetId));
  fs.writeFileSync(path.join(out,'player-world-template.zip'),bytes,{flag:'wx'});await chooser('templates');await submit('[data-template-import]');
  await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-local-template-selected="${input.ref.assetId}"]')`);},Boolean);
  report.importedTemplate=await nav('worldTemplate.read',{ref:input.ref});await field('[data-template-world-title]','Another player imported world');await submit('[data-local-template-create]');

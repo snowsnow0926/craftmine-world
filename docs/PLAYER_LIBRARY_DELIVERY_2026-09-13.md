@@ -5,15 +5,16 @@ Scope: all six work packages requested on 2026-09-13, developed in
 `D:/Craftmine Worktrees/player-library-20260913`. The original checkout, accepted
 four-world archive and previous sealed Windows build remain separate.
 
-Release preparation is in progress. The final self-service sharing and packaged
-application results will be recorded before this report is marked complete.
+All six work packages have passed their scoped functional acceptance. The final
+Windows payload and packaged application checks are recorded alongside each
+sealed release, after building from the clean commit containing this report.
 
 ## Delivered behavior
 
 | Work package | Result and evidence |
 | --- | --- |
 | 1. Player fluency | The existing PI chooser opens all four examples as personal worlds. Save, switch, F2 and cold reopening have actual native measurements. Held movement is released when chat takes over. Real Astra/xhigh cancellation preserved the formal world and aborted history. [Fluency](PLAYER_FLUENCY_RESULT_2026-09-13.md), [cancellation](PLAYER_CANCELLATION_RESULT_2026-09-13.md). |
-| 2. Player publication and reuse | The original asset sheet saves selected components, aliases, purpose, immutable versions and optional source-view thumbnails. Explicit saved-progress world templates appear in My templates, export/import as one-world ZIPs and create independent worlds. Native final sharing acceptance is recorded separately. |
+| 2. Player publication and reuse | The original asset sheet saves selected components, aliases, purpose, immutable versions and optional source-view thumbnails. Explicit saved-progress world templates appear in My templates, export/import as one-world ZIPs and create independent worlds. Full native publication, re-publication, installation, rain, cross-profile sharing and cold reopening passed. [Native evidence](evidence/player-library-native-20260913/native.json). |
 | 3. Flight | Raw accepted J20 geometry and a separate drivable component are searchable. Real runway boarding, takeoff, gear, camera, collision behavior, airborne save and cold reopening were checked. Landing, taxi and exit have separate native physics coverage. [Flight and city](REUSABLE_FLIGHT_CITY_RESULT_2026-09-13.md). |
 | 4. Rain | A reusable weather component provides U suspend/reverse, I ordinary rain and O automatic casting, with persistent state. It preserves the receiving player's controller, camera and source, and refuses conflicting weather/keys. [Contract](../vendor/pi-desktop/docs/spec/reusable-rain-control.md). |
 | 5. Buildings and streets | Independent building, gate and street packages include real collision, measured door/route metadata and captured previews. Actual traversal and save/reopen passed. The included sand surface clears the receiving floor by 20 mm; original GLB bytes are preserved. [Flight and city](REUSABLE_FLIGHT_CITY_RESULT_2026-09-13.md). |
@@ -69,6 +70,25 @@ and ten actual React fixture checks passed. One Windows file-symlink fixture
 was skipped because that host capability was unavailable; directory-link and
 other tamper tests ran. Separate native reports prove gameplay and persistence;
 renderer fixtures alone do not establish those results.
+
+The final publication-path fix also passed 15 targeted tests with actual Core,
+including ten consecutive managed installation/publication generations. Native
+acceptance retained the earlier failed archive/world and published a new archive
+through the ordinary PI form. Its approved GLB and paired 81-byte import policy
+retained exact hashes; its model path became `r/3/model.glb`. Installation,
+preview and adoption into a different world then passed.
+
+The successful first profile opened four worlds after a full process restart,
+including the retained diagnostic world's unchanged formal build. The second
+empty profile imported only the exported 7,567,907-byte world ZIP: the author's
+custom component catalog record was absent before import and after re-publication.
+It played rain, republished the companion with exact model/policy bytes,
+reexported the same archive SHA-256 and cold reopened. No source profile, account
+or model calls were needed. The exported template hash is
+`7204918acb0275de541cb2d97fbc1b5d3b433641b9e173cb02dc97cdff7a52d5`.
+Some reopened-source publications had no available thumbnail; their UI explicitly
+displayed that state. Original author preview decoding and actual rain rendering
+were separately verified. Failed probes and driver corrections remain recorded.
 
 The self-service library supports source components with declared independent
 identity/dependencies, not arbitrary dynamic world roots. Templates explicitly

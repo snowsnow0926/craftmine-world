@@ -1,0 +1,547 @@
+[
+  {
+    "sourceReport": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-IEQBfS\\continuation-a1d7eb01-d262-400d-8c29-747dc1de073a.json",
+    "sourceReportSha256": "0f7939e5f1d661162a8f08d21bf0258c2ac0a23e5376beb697f6433c3f9a48da",
+    "format": "craftmine.player-library-ui-native/1",
+    "passed": true,
+    "modelCalls": 0,
+    "buildMainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+    "package": null,
+    "steps": [
+      {
+        "at": "2026-09-13T11:46:02.721Z",
+        "message": "Created author world through actual PI form"
+      },
+      {
+        "at": "2026-09-13T11:46:37.455Z",
+        "message": "Approved Pom reached native check, preview and adoption"
+      },
+      {
+        "at": "2026-09-13T11:46:51.422Z",
+        "message": "Actual component publication form saved native preview and alias search found its exact version"
+      },
+      {
+        "at": "2026-09-13T11:46:57.467Z",
+        "message": "Explicit saved-progress choice published current formal world through actual PI form"
+      },
+      {
+        "at": "2026-09-13T11:46:59.304Z",
+        "message": "Actual template export/import forms used isolated native file picker"
+      },
+      {
+        "at": "2026-09-13T11:47:19.242Z",
+        "message": "My templates form created and loaded a distinct native world"
+      },
+      {
+        "at": "2026-09-13T11:55:58.193Z",
+        "message": "Approved Pom reached native check, preview and adoption"
+      },
+      {
+        "at": "2026-09-13T11:57:24.424Z",
+        "message": "Approved Pom reached native check, preview and adoption"
+      },
+      {
+        "at": "2026-09-13T11:57:24.425Z",
+        "message": "Actual component publication and alias search passed; optional preview availability is recorded for each version"
+      },
+      {
+        "at": "2026-09-13T11:57:24.619Z",
+        "message": "Explicit saved-progress choice published current formal world through actual PI form"
+      },
+      {
+        "at": "2026-09-13T11:57:26.308Z",
+        "message": "Actual template export/import forms used isolated native file picker"
+      },
+      {
+        "at": "2026-09-13T11:58:39.408Z",
+        "message": "Exact player-published ZIP installed and applied in a new world"
+      },
+      {
+        "at": "2026-09-13T11:59:26.414Z",
+        "message": "Actual offscreen rain suspends, reverses and returns through page input without changing player source"
+      },
+      {
+        "at": "2026-09-13T11:59:32.999Z",
+        "message": "Published and exported a full world containing the custom player component plus controlled rain"
+      }
+    ],
+    "component": {
+      "worldId": "world-c6ee850ebca0",
+      "ref": {
+        "assetId": "player.component.ee84e9ed37fc484a95ca084037826c91",
+        "version": 1,
+        "contentHash": "70ded35580c79fcb4223074a0a98b910c60127006961580689d58d8e334b59a2"
+      },
+      "previewStatus": "unavailable",
+      "preview": null,
+      "exportProof": {
+        "files": 8,
+        "modelPath": "r/3/model.glb",
+        "modelSha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b",
+        "policySha256": "2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8"
+      }
+    },
+    "copied": {
+      "worldId": "world-ab964670e8ce",
+      "ref": {
+        "assetId": "player.component.42fbaceaf49e4a44a7f784544d254639",
+        "version": 1,
+        "contentHash": "85d84ee8772b1a585191b4ea42ff954eff60fe85ea671dc3e0654152d6251e0f"
+      },
+      "previewStatus": "unavailable",
+      "preview": null,
+      "exportProof": {
+        "files": 8,
+        "modelPath": "r/3/model.glb",
+        "modelSha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b",
+        "policySha256": "2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8"
+      }
+    },
+    "template": {
+      "assetId": "player.world.5583ab312ad44d08a7548f2a9a2f5d34",
+      "version": 1,
+      "contentHash": "ada357aa342fec896cfef780804828613237ba0461d199e2ae4397405ad8db0b"
+    },
+    "worlds": [
+      {
+        "worldId": "world-c6ee850ebca0",
+        "title": "Library author",
+        "createdThrough": "actual-New-World-form",
+        "reopened": {
+          "sha256": "5d6c80ffe7ffaadb2846e96b0b5b8047a79d9dece893a30c3793d0db1b33701b",
+          "worldId": "world-c6ee850ebca0",
+          "player": {
+            "onFloor": true,
+            "pitch": -0.65,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          }
+        },
+        "saveStatus": true
+      },
+      {
+        "worldId": "world-ab964670e8ce",
+        "title": "Template copy",
+        "createdThrough": "actual-My-templates-form",
+        "reopened": {
+          "sha256": "104107f55a223740dd9d511ebaed305c26abc905e9c71c389f80b7cc1cd5c2a0",
+          "worldId": "world-ab964670e8ce",
+          "player": {
+            "onFloor": true,
+            "pitch": -0.65,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          }
+        },
+        "saveStatus": true
+      },
+      {
+        "worldId": "world-c36ac4a33ead",
+        "title": "Published component reuse",
+        "createdThrough": "actual-New-World-form",
+        "reopened": {
+          "sha256": "6778a9b01e182cf91d47210a0d1fb3f425f7b637c884a6cee8d990213f7b02c2",
+          "worldId": "world-c36ac4a33ead",
+          "player": {
+            "onFloor": true,
+            "pitch": 0,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          }
+        },
+        "saveStatus": true
+      },
+      {
+        "worldId": "world-f7ad5f03b03e",
+        "title": "Published component reuse",
+        "createdThrough": "actual-New-World-form",
+        "reopened": {
+          "sha256": "93c0b30e9008c18057728d45ce54bd42bfe714ab388523d2157668b77cc85411",
+          "worldId": "world-f7ad5f03b03e",
+          "player": {
+            "onFloor": true,
+            "pitch": -0.15,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          }
+        },
+        "saveStatus": true
+      }
+    ],
+    "installations": [
+      {
+        "worldId": "world-c6ee850ebca0",
+        "label": "approved-pom",
+        "archiveSha256": "b3070a8780f26a44e2602fe5b75e4b1ffe8e3cff9e4305ea52ba6b333ae4c4f8",
+        "jobStatus": "passed",
+        "applied": "applied",
+        "retainedFailure": false
+      },
+      {
+        "worldId": "world-c36ac4a33ead",
+        "label": "published-pom",
+        "archiveSha256": "e3a616351c8da4da0faa80a8686a3e25a2c392caa3b2ae1448109f8b6aeba58a",
+        "jobStatus": "failed",
+        "retainedFailure": true
+      },
+      {
+        "worldId": "world-f7ad5f03b03e",
+        "label": "published-pom",
+        "archiveSha256": "e315316800e43cbdad962b2263bafb478380f72eb844ff19fd0c3f0f07a2f0d6",
+        "jobStatus": "passed",
+        "applied": "applied",
+        "retainedFailure": false
+      },
+      {
+        "worldId": "world-f7ad5f03b03e",
+        "label": "rain-normal",
+        "archiveSha256": "633cc9a82137f6344504edc3382890e4ee319d8fcbe32c54008540e3804b5833",
+        "jobStatus": "passed",
+        "applied": "applied",
+        "retainedFailure": false
+      }
+    ],
+    "rain": {
+      "heldExactlyStill": true,
+      "heldPhase": 2,
+      "risingPhase": 4,
+      "risingVelocity": 5.6,
+      "normalPhase": 0,
+      "normalVelocity": -8.5,
+      "automatic": false,
+      "heldFrame": {
+        "file": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-IEQBfS\\rain-held-3.png",
+        "worldId": "world-f7ad5f03b03e",
+        "buildId": "gbd-1db1774a2bc851c0fe3c7d422dd64701244f078bda9ad140bee6b062ceeba34a",
+        "sha256": "509102793c48c20380c6042bc1ac9598f70f8799d82256fec0cf657dd72644c0",
+        "width": 1920,
+        "height": 1080
+      },
+      "riseFrame": {
+        "file": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-IEQBfS\\rain-rising-3.png",
+        "worldId": "world-f7ad5f03b03e",
+        "buildId": "gbd-1db1774a2bc851c0fe3c7d422dd64701244f078bda9ad140bee6b062ceeba34a",
+        "sha256": "1bb7c0da8acdf86646c01467d2d5cab06c8a6f5ae51b46507d2fc1b061295b90",
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    "shared": {
+      "ref": {
+        "assetId": "player.world.c35a5e1119a94082be6a948ab185ae49",
+        "version": 1,
+        "contentHash": "44da49041e01923c67ea16ebc183f871426b976ed878430664e585416fe569a5"
+      },
+      "worldId": "world-f7ad5f03b03e",
+      "componentRef": {
+        "assetId": "player.component.ee84e9ed37fc484a95ca084037826c91",
+        "version": 1,
+        "contentHash": "70ded35580c79fcb4223074a0a98b910c60127006961580689d58d8e334b59a2"
+      },
+      "rainAssetId": "cw.module.rain-control",
+      "archive": {
+        "path": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-IEQBfS\\cross-player-template-6c9e9708-0eac-4f05-ab4d-73e9c999be72.zip",
+        "sha256": "7204918acb0275de541cb2d97fbc1b5d3b433641b9e173cb02dc97cdff7a52d5",
+        "bytes": 7567907
+      }
+    },
+    "originalCustomAssetAbsent": null,
+    "sheetBounds": [
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      },
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      },
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      },
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      },
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      },
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      }
+    ],
+    "launches": [
+      {
+        "kind": "first",
+        "mainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "violations": [],
+        "shutdownFailures": []
+      },
+      {
+        "kind": "first",
+        "mainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "violations": [],
+        "shutdownFailures": []
+      },
+      {
+        "kind": "first",
+        "mainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "violations": [],
+        "shutdownFailures": []
+      },
+      {
+        "kind": "reopen",
+        "mainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "violations": [],
+        "shutdownFailures": []
+      }
+    ],
+    "retainedDiagnostics": [
+      {
+        "sourceReport": "D:/Craftmine Worktrees/player-library-20260913/test-results/desktop-native-library-ui-IEQBfS/report.json",
+        "reuseWorld": "world-c36ac4a33ead",
+        "component": {
+          "assetId": "player.component.ec13318e1e394b71b0897b7d7f862f61",
+          "version": 1,
+          "contentHash": "50e97e1aa484a3bce6e44f7cb1450632bf18e966cf759c9342b46111572ff47f"
+        },
+        "reason": "Preserve failed immutable archive and world; publish fresh bytes through the ordinary forms and install in another new world."
+      }
+    ],
+    "limits": [
+      "Single run on this machine; startup means fresh profile, not flushed OS disk cache.",
+      "Durations end at a valid native runtime snapshot, not merely chooser dismissal.",
+      "Renderer animation frame timing is not Godot engine FPS or visible OS presentation latency.",
+      "F2 uses the actual DOM application handler with a synthetic page event; no physical input.",
+      "No model requests; AI cancellation and generation time are outside this measurement."
+    ]
+  },
+  {
+    "sourceReport": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-fKsCFA\\report.json",
+    "sourceReportSha256": "4ad7e758b26394908bd04bd0d312cf0b3077da8d67be68312bf85ed24c53f874",
+    "format": "craftmine.player-library-ui-native/1",
+    "passed": true,
+    "modelCalls": 0,
+    "buildMainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+    "package": null,
+    "steps": [
+      {
+        "at": "2026-09-13T12:02:56.151Z",
+        "message": "Fresh second profile imported only the shared ZIP, played rain and republished a component without the original custom catalog record"
+      }
+    ],
+    "component": {
+      "worldId": "world-6d6badb94787",
+      "ref": {
+        "assetId": "player.component.2a9fdabee76b4479ad8769a81aa982e2",
+        "version": 1,
+        "contentHash": "2413bf2b77fe3e752161eb9c8e5d614baf370f749867783f9abd2a8aa0526ffb"
+      },
+      "previewStatus": "unavailable",
+      "preview": null,
+      "exportProof": {
+        "files": 9,
+        "modelPath": "r/4/model.glb",
+        "modelSha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b",
+        "policySha256": "2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8"
+      }
+    },
+    "foreignComponent": {
+      "worldId": "world-6d6badb94787",
+      "ref": {
+        "assetId": "player.component.2a9fdabee76b4479ad8769a81aa982e2",
+        "version": 1,
+        "contentHash": "2413bf2b77fe3e752161eb9c8e5d614baf370f749867783f9abd2a8aa0526ffb"
+      },
+      "previewStatus": "unavailable",
+      "preview": null,
+      "exportProof": {
+        "files": 9,
+        "modelPath": "r/4/model.glb",
+        "modelSha256": "1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b",
+        "policySha256": "2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8"
+      }
+    },
+    "worlds": [
+      {
+        "worldId": "world-6d6badb94787",
+        "title": "Another player imported world",
+        "createdThrough": "actual-import-then-My-templates-form",
+        "reopened": {
+          "sha256": "5bb1778210a52d929976ebb14a4f9755c239c00d3baccd8cc2d3bf55e0f15079",
+          "worldId": "world-6d6badb94787",
+          "player": {
+            "onFloor": true,
+            "pitch": -0.15,
+            "position": [
+              0,
+              0.899999976158142,
+              6
+            ],
+            "yaw": 0
+          }
+        },
+        "saveStatus": true
+      }
+    ],
+    "installations": [],
+    "rain": {
+      "heldExactlyStill": true,
+      "heldPhase": 2,
+      "risingPhase": 4,
+      "risingVelocity": 5.6,
+      "normalPhase": 0,
+      "normalVelocity": -8.5,
+      "automatic": false,
+      "heldFrame": {
+        "file": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-fKsCFA\\rain-held-1.png",
+        "worldId": "world-6d6badb94787",
+        "buildId": "gbd-383e8d4f2d0c79a171206ca42731754b6dc8dc776f7ca6650e937c8c1d9284c1",
+        "sha256": "9543a73e518e6d988bf9df174d2c48524905252bb9c9228bd0b3c718c50914f4",
+        "width": 1920,
+        "height": 1080
+      },
+      "riseFrame": {
+        "file": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-fKsCFA\\rain-rising-1.png",
+        "worldId": "world-6d6badb94787",
+        "buildId": "gbd-383e8d4f2d0c79a171206ca42731754b6dc8dc776f7ca6650e937c8c1d9284c1",
+        "sha256": "612cbfb8b2753f87cbe4fdb14fedac6f7bb9d45d4fae6af4872561bd20767572",
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    "foreignInput": {
+      "ref": {
+        "assetId": "player.world.c35a5e1119a94082be6a948ab185ae49",
+        "version": 1,
+        "contentHash": "44da49041e01923c67ea16ebc183f871426b976ed878430664e585416fe569a5"
+      },
+      "worldId": "world-f7ad5f03b03e",
+      "componentRef": {
+        "assetId": "player.component.ee84e9ed37fc484a95ca084037826c91",
+        "version": 1,
+        "contentHash": "70ded35580c79fcb4223074a0a98b910c60127006961580689d58d8e334b59a2"
+      },
+      "rainAssetId": "cw.module.rain-control",
+      "archive": {
+        "path": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-IEQBfS\\cross-player-template-6c9e9708-0eac-4f05-ab4d-73e9c999be72.zip",
+        "sha256": "7204918acb0275de541cb2d97fbc1b5d3b433641b9e173cb02dc97cdff7a52d5",
+        "bytes": 7567907
+      },
+      "sourceProfileCopied": false
+    },
+    "originalCustomAssetAbsent": {
+      "before": true,
+      "after": true
+    },
+    "reexport": {
+      "path": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-library-ui-fKsCFA\\foreign-reexport-c5b9082c-8f09-4316-9c74-90ed5167f397.zip",
+      "sha256": "7204918acb0275de541cb2d97fbc1b5d3b433641b9e173cb02dc97cdff7a52d5",
+      "bytes": 7567907
+    },
+    "sheetBounds": [
+      {
+        "left": 204.796875,
+        "top": 86.390625,
+        "width": 2150.40625,
+        "height": 1267.21875,
+        "viewportWidth": 2560,
+        "viewportHeight": 1440,
+        "bodyLevel": true
+      }
+    ],
+    "launches": [
+      {
+        "kind": "first",
+        "mainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "violations": [],
+        "shutdownFailures": []
+      },
+      {
+        "kind": "reopen",
+        "mainSha256": "eedba9d0ffd8affbdfce1ad1b578e5321507e404eac4d0b307a5ad6f67e6c7c8",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "violations": [],
+        "shutdownFailures": []
+      }
+    ],
+    "limits": [
+      "Single run on this machine; startup means fresh profile, not flushed OS disk cache.",
+      "Durations end at a valid native runtime snapshot, not merely chooser dismissal.",
+      "Renderer animation frame timing is not Godot engine FPS or visible OS presentation latency.",
+      "F2 uses the actual DOM application handler with a synthetic page event; no physical input.",
+      "No model requests; AI cancellation and generation time are outside this measurement."
+    ]
+  }
+]
