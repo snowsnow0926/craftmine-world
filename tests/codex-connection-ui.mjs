@@ -50,6 +50,8 @@ async function button(label){await page.evaluate(label=>{const element=[...docum
 try {
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   await page.waitForSelector('[data-testid=world-agent-backend]');
+  assert.equal(await page.locator('[data-codex-setup-stages] li').count(),3);checks.push('install reconnect verify save guidance');
+  assert(await page.evaluate(()=>document.body.textContent.includes('official general installer may supply a different version')));checks.push('exact distribution limitation visible');
   assert(await page.getByRole('button',{name:'Save world backend',exact:true}).isDisabled());checks.push('save requires verification');
   await button('Verify connection');await page.waitForFunction(()=>document.body.textContent.includes('No ChatGPT login found'));
   checks.push('missing account feedback');
