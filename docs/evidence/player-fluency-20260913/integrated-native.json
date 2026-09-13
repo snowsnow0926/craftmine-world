@@ -1,0 +1,682 @@
+{
+  "format": "craftmine.player-fluency-summary/1",
+  "sourceReport": "D:\\Craftmine Worktrees\\player-library-20260913\\test-results\\desktop-native-fluency-rYC71B",
+  "passed": true,
+  "buildMainSha256": "a9e248679615b3ab44d8f1d76ef3944035bc564297b81fb0d908959b7ba040dc",
+  "modelCalls": 0,
+  "worlds": [
+    {
+      "starterId": "promo-mainline",
+      "worldId": "world-be5708144b84",
+      "createToSnapshotMs": 31054.5206,
+      "saveMs": 8.218400000005204,
+      "rendererFrames": {
+        "worldId": "world-be5708144b84",
+        "surface": "PI renderer",
+        "elapsedMs": 2005.199999988079,
+        "frames": 122,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.799999999999272,
+        "longIntervalsOver50Ms": 0
+      },
+      "enginePerformance": {
+        "format": "craftmine.host-engine-performance/1",
+        "available": true,
+        "worldId": "world-be5708144b84",
+        "buildId": "gbd-7ac7229cf03f28f63e0026e27be09bd865d92e0fbdc3e3e2d88790985c51cebb",
+        "instanceId": "24a6c305c220bae29cfffe8b",
+        "profile": "engine-monitor/1",
+        "nonce": "48f967570ee4f393346c4e2bcc4ffdde33220dd88dbfa09338f61d53b29c6962",
+        "sourceRevision": 4,
+        "manifestHash": "3d5acc51eda14c4311e28db56378de0b68adee5d24fe7d864959463bb77e57e7",
+        "sourceContentOid": "ef1bfd12d81d5ff65739b13808dbe069271ee19f",
+        "sourceFilesHash": "bcf2f3d1f637dd06e7154b91c411e3254426b5c6f01b8999ca7b1835c2438bce",
+        "artifactManifestHash": "286d5679b916e0096a46e7d9b3833554945c186dad761f3cc9476eeca5ee645c",
+        "packSha256": "e2ebe210c357bd6d11fa92e218d4d32cb888cb68a79c1af0ccd42b1668874d55",
+        "hostSampledAt": "2026-09-13T10:33:19.853Z",
+        "observation": {
+          "format": "craftmine.validated-engine-performance/1",
+          "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+          "profile": "engine-monitor/1",
+          "sequence": 1,
+          "sampledAt": "2026-09-13T10:33:18Z",
+          "monotonicUsec": 9306130,
+          "processFrame": 429,
+          "physicsFrame": 450,
+          "framesDrawn": 429,
+          "paused": false,
+          "headless": false,
+          "debugBuild": false,
+          "editorHint": false,
+          "renderingMethod": "gl_compatibility",
+          "renderingDriver": "opengl3",
+          "metrics": {
+            "processTime": {
+              "status": "measured",
+              "monitor": "TIME_PROCESS",
+              "rawValue": 0.005914,
+              "rawUnit": "s",
+              "value": 5.914,
+              "unit": "ms"
+            },
+            "physicsTime": {
+              "status": "measured",
+              "monitor": "TIME_PHYSICS_PROCESS",
+              "rawValue": 0.001235,
+              "rawUnit": "s",
+              "value": 1.2349999999999999,
+              "unit": "ms"
+            },
+            "fps": {
+              "status": "measured",
+              "monitor": "TIME_FPS",
+              "rawValue": 60,
+              "rawUnit": "fps",
+              "value": 60,
+              "unit": "fps"
+            },
+            "objectCount": {
+              "status": "measured",
+              "monitor": "OBJECT_COUNT",
+              "rawValue": 2863,
+              "rawUnit": "count",
+              "value": 2863,
+              "unit": "count"
+            },
+            "nodeCount": {
+              "status": "measured",
+              "monitor": "OBJECT_NODE_COUNT",
+              "rawValue": 674,
+              "rawUnit": "count",
+              "value": 674,
+              "unit": "count"
+            },
+            "drawCalls": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+              "rawValue": 1129,
+              "rawUnit": "count",
+              "value": 1129,
+              "unit": "count"
+            },
+            "primitives": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+              "rawValue": 403351,
+              "rawUnit": "count",
+              "value": 403351,
+              "unit": "count"
+            },
+            "gpuTime": {
+              "status": "unknown",
+              "monitor": null,
+              "unit": "ms"
+            }
+          },
+          "authority": "not-attested-by-structural-validation",
+          "limitations": [
+            "Engine process/physics monitor durations are not OS process CPU time or rendered frame intervals.",
+            "FPS monitor refresh may lag sampling; sequence changes do not prove monitor refresh.",
+            "Host instance, source and PCK checks are required before accepting this as a current runtime observation."
+          ]
+        },
+        "authority": "host-bound-source-and-pack-verified",
+        "boundary": "Fixed source/PCK and host instance binding; not isolation from arbitrary scripts sharing the engine process."
+      }
+    },
+    {
+      "starterId": "promo-flight",
+      "worldId": "world-013351c9b76b",
+      "createToSnapshotMs": 26632.845200000003,
+      "saveMs": 4.462400000003981,
+      "rendererFrames": {
+        "worldId": "world-013351c9b76b",
+        "surface": "PI renderer",
+        "elapsedMs": 2000.3999999761581,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      },
+      "enginePerformance": {
+        "format": "craftmine.host-engine-performance/1",
+        "available": true,
+        "worldId": "world-013351c9b76b",
+        "buildId": "gbd-0c667bfae9b95ce4b7be0ba4afb6565aa1c2e1c7415b1e1a3b43d3c42a16770c",
+        "instanceId": "b843b7068c7c453a481183cf",
+        "profile": "engine-monitor/1",
+        "nonce": "9d44d900da2330bbc94de8a3466504c2088241c37a826c4bef87bb43376350ac",
+        "sourceRevision": 2,
+        "manifestHash": "f19754dca5fef7f6900a0702ca506b4466d3c23605bf0584d5a2176b123678f8",
+        "sourceContentOid": "38afeb1df9bda040373f0d9e8bad39930dd8ba01",
+        "sourceFilesHash": "87c3bee4b84127b81393e4025086c9372830f5deb737778f56b6f661b181eb0f",
+        "artifactManifestHash": "36d6e84595f8979913c1f79317adfac9db76edc9153a8997184a1d019938c761",
+        "packSha256": "a8471879fe27dae93298395e62553493909d986ce3ab2999a5ab29b9a64af527",
+        "hostSampledAt": "2026-09-13T10:33:55.537Z",
+        "observation": {
+          "format": "craftmine.validated-engine-performance/1",
+          "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+          "profile": "engine-monitor/1",
+          "sequence": 1,
+          "sampledAt": "2026-09-13T10:33:54Z",
+          "monotonicUsec": 9605720,
+          "processFrame": 349,
+          "physicsFrame": 363,
+          "framesDrawn": 349,
+          "paused": false,
+          "headless": false,
+          "debugBuild": false,
+          "editorHint": false,
+          "renderingMethod": "gl_compatibility",
+          "renderingDriver": "opengl3",
+          "metrics": {
+            "processTime": {
+              "status": "measured",
+              "monitor": "TIME_PROCESS",
+              "rawValue": 0.00314,
+              "rawUnit": "s",
+              "value": 3.14,
+              "unit": "ms"
+            },
+            "physicsTime": {
+              "status": "measured",
+              "monitor": "TIME_PHYSICS_PROCESS",
+              "rawValue": 0.000344,
+              "rawUnit": "s",
+              "value": 0.34400000000000003,
+              "unit": "ms"
+            },
+            "fps": {
+              "status": "measured",
+              "monitor": "TIME_FPS",
+              "rawValue": 60,
+              "rawUnit": "fps",
+              "value": 60,
+              "unit": "fps"
+            },
+            "objectCount": {
+              "status": "measured",
+              "monitor": "OBJECT_COUNT",
+              "rawValue": 2067,
+              "rawUnit": "count",
+              "value": 2067,
+              "unit": "count"
+            },
+            "nodeCount": {
+              "status": "measured",
+              "monitor": "OBJECT_NODE_COUNT",
+              "rawValue": 253,
+              "rawUnit": "count",
+              "value": 253,
+              "unit": "count"
+            },
+            "drawCalls": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+              "rawValue": 319,
+              "rawUnit": "count",
+              "value": 319,
+              "unit": "count"
+            },
+            "primitives": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+              "rawValue": 254586,
+              "rawUnit": "count",
+              "value": 254586,
+              "unit": "count"
+            },
+            "gpuTime": {
+              "status": "unknown",
+              "monitor": null,
+              "unit": "ms"
+            }
+          },
+          "authority": "not-attested-by-structural-validation",
+          "limitations": [
+            "Engine process/physics monitor durations are not OS process CPU time or rendered frame intervals.",
+            "FPS monitor refresh may lag sampling; sequence changes do not prove monitor refresh.",
+            "Host instance, source and PCK checks are required before accepting this as a current runtime observation."
+          ]
+        },
+        "authority": "host-bound-source-and-pack-verified",
+        "boundary": "Fixed source/PCK and host instance binding; not isolation from arbitrary scripts sharing the engine process."
+      }
+    },
+    {
+      "starterId": "promo-rain",
+      "worldId": "world-0175763cd4c5",
+      "createToSnapshotMs": 23207.156100000007,
+      "saveMs": 11.641900000002352,
+      "rendererFrames": {
+        "worldId": "world-0175763cd4c5",
+        "surface": "PI renderer",
+        "elapsedMs": 2008.5,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      },
+      "enginePerformance": {
+        "format": "craftmine.host-engine-performance/1",
+        "available": true,
+        "worldId": "world-0175763cd4c5",
+        "buildId": "gbd-b416476cdcb81745535d0ad70e64258800f8cbf579dc4310db416230e42fec79",
+        "instanceId": "369d0adfc8b901bf03cf2726",
+        "profile": "engine-monitor/1",
+        "nonce": "62c2c8ffd513b5dabe2a9f592b96fc4aee8db30b53309a5148389cf0b7e89b7f",
+        "sourceRevision": 2,
+        "manifestHash": "1e6d27642ced36f02c9da3277ee64e4c582382460bd401e391e0a723ce965242",
+        "sourceContentOid": "bb182c57fcb694cec2aeae8f2958043f15997cf9",
+        "sourceFilesHash": "31e5815ccb8d4ed41fdc53351c38d71b20cccd47ebd9e154a54800e693bffd57",
+        "artifactManifestHash": "821b8413c905d2a18713e6ca8090d2d762178da47a0a76907db3ed6a0977ea1a",
+        "packSha256": "a606721480665065674baf6386be8b2b78447bd21ce0b250b59e0de0feef1ade",
+        "hostSampledAt": "2026-09-13T10:34:23.661Z",
+        "observation": {
+          "format": "craftmine.validated-engine-performance/1",
+          "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+          "profile": "engine-monitor/1",
+          "sequence": 1,
+          "sampledAt": "2026-09-13T10:34:22Z",
+          "monotonicUsec": 9336725,
+          "processFrame": 380,
+          "physicsFrame": 394,
+          "framesDrawn": 380,
+          "paused": false,
+          "headless": false,
+          "debugBuild": false,
+          "editorHint": false,
+          "renderingMethod": "gl_compatibility",
+          "renderingDriver": "opengl3",
+          "metrics": {
+            "processTime": {
+              "status": "measured",
+              "monitor": "TIME_PROCESS",
+              "rawValue": 0.002965,
+              "rawUnit": "s",
+              "value": 2.9650000000000003,
+              "unit": "ms"
+            },
+            "physicsTime": {
+              "status": "measured",
+              "monitor": "TIME_PHYSICS_PROCESS",
+              "rawValue": 0.000359,
+              "rawUnit": "s",
+              "value": 0.359,
+              "unit": "ms"
+            },
+            "fps": {
+              "status": "measured",
+              "monitor": "TIME_FPS",
+              "rawValue": 60,
+              "rawUnit": "fps",
+              "value": 60,
+              "unit": "fps"
+            },
+            "objectCount": {
+              "status": "measured",
+              "monitor": "OBJECT_COUNT",
+              "rawValue": 1623,
+              "rawUnit": "count",
+              "value": 1623,
+              "unit": "count"
+            },
+            "nodeCount": {
+              "status": "measured",
+              "monitor": "OBJECT_NODE_COUNT",
+              "rawValue": 109,
+              "rawUnit": "count",
+              "value": 109,
+              "unit": "count"
+            },
+            "drawCalls": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+              "rawValue": 93,
+              "rawUnit": "count",
+              "value": 93,
+              "unit": "count"
+            },
+            "primitives": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+              "rawValue": 207500,
+              "rawUnit": "count",
+              "value": 207500,
+              "unit": "count"
+            },
+            "gpuTime": {
+              "status": "unknown",
+              "monitor": null,
+              "unit": "ms"
+            }
+          },
+          "authority": "not-attested-by-structural-validation",
+          "limitations": [
+            "Engine process/physics monitor durations are not OS process CPU time or rendered frame intervals.",
+            "FPS monitor refresh may lag sampling; sequence changes do not prove monitor refresh.",
+            "Host instance, source and PCK checks are required before accepting this as a current runtime observation."
+          ]
+        },
+        "authority": "host-bound-source-and-pack-verified",
+        "boundary": "Fixed source/PCK and host instance binding; not isolation from arbitrary scripts sharing the engine process."
+      }
+    },
+    {
+      "starterId": "promo-city",
+      "worldId": "world-a379f55e9a59",
+      "createToSnapshotMs": 26289.67390000001,
+      "saveMs": 3.403100000010454,
+      "rendererFrames": {
+        "worldId": "world-a379f55e9a59",
+        "surface": "PI renderer",
+        "elapsedMs": 2004.5999999940395,
+        "frames": 121,
+        "medianIntervalMs": 16.69999999999709,
+        "p95IntervalMs": 16.70000000001164,
+        "longIntervalsOver50Ms": 0
+      },
+      "enginePerformance": {
+        "format": "craftmine.host-engine-performance/1",
+        "available": true,
+        "worldId": "world-a379f55e9a59",
+        "buildId": "gbd-8ca4d89135b2efa63c3ece64e109d0c73be24a8a83a310a4d2ae19777e98c13e",
+        "instanceId": "7323366ca65e2a6c891884f0",
+        "profile": "engine-monitor/1",
+        "nonce": "a9907134de35076decc0d95fb429d9a2ee9d16fb2be8572524a502f48e9ae2ef",
+        "sourceRevision": 3,
+        "manifestHash": "8d41da7d0c17333ece10aec05e2da967f4682d20265998b0abe14b4b7ef19fb8",
+        "sourceContentOid": "181c054da69f404b1966378e50637300f22e93bf",
+        "sourceFilesHash": "fff5e0ddddaf1074f764f6a49a85bd9636bafb35cba50aab68eef92fe46a69d9",
+        "artifactManifestHash": "1dc346f588cef9a47fc4d24ea479bf4a0cc54cb33121eaaa330768e97816b337",
+        "packSha256": "7e4910b77159810d96f807e6d38a0eb18c1f4002614f1fc043f6f338e51b6e01",
+        "hostSampledAt": "2026-09-13T10:34:54.3Z",
+        "observation": {
+          "format": "craftmine.validated-engine-performance/1",
+          "engineVersion": "4.7.2.stable.official.ed1daf0bf",
+          "profile": "engine-monitor/1",
+          "sequence": 1,
+          "sampledAt": "2026-09-13T10:34:53Z",
+          "monotonicUsec": 9882756,
+          "processFrame": 456,
+          "physicsFrame": 471,
+          "framesDrawn": 456,
+          "paused": false,
+          "headless": false,
+          "debugBuild": false,
+          "editorHint": false,
+          "renderingMethod": "gl_compatibility",
+          "renderingDriver": "opengl3",
+          "metrics": {
+            "processTime": {
+              "status": "measured",
+              "monitor": "TIME_PROCESS",
+              "rawValue": 0.0037,
+              "rawUnit": "s",
+              "value": 3.7,
+              "unit": "ms"
+            },
+            "physicsTime": {
+              "status": "measured",
+              "monitor": "TIME_PHYSICS_PROCESS",
+              "rawValue": 0.0011,
+              "rawUnit": "s",
+              "value": 1.1,
+              "unit": "ms"
+            },
+            "fps": {
+              "status": "measured",
+              "monitor": "TIME_FPS",
+              "rawValue": 60,
+              "rawUnit": "fps",
+              "value": 60,
+              "unit": "fps"
+            },
+            "objectCount": {
+              "status": "measured",
+              "monitor": "OBJECT_COUNT",
+              "rawValue": 2400,
+              "rawUnit": "count",
+              "value": 2400,
+              "unit": "count"
+            },
+            "nodeCount": {
+              "status": "measured",
+              "monitor": "OBJECT_NODE_COUNT",
+              "rawValue": 399,
+              "rawUnit": "count",
+              "value": 399,
+              "unit": "count"
+            },
+            "drawCalls": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_DRAW_CALLS_IN_FRAME",
+              "rawValue": 670,
+              "rawUnit": "count",
+              "value": 670,
+              "unit": "count"
+            },
+            "primitives": {
+              "status": "measured",
+              "monitor": "RENDER_TOTAL_PRIMITIVES_IN_FRAME",
+              "rawValue": 506095,
+              "rawUnit": "count",
+              "value": 506095,
+              "unit": "count"
+            },
+            "gpuTime": {
+              "status": "unknown",
+              "monitor": null,
+              "unit": "ms"
+            }
+          },
+          "authority": "not-attested-by-structural-validation",
+          "limitations": [
+            "Engine process/physics monitor durations are not OS process CPU time or rendered frame intervals.",
+            "FPS monitor refresh may lag sampling; sequence changes do not prove monitor refresh.",
+            "Host instance, source and PCK checks are required before accepting this as a current runtime observation."
+          ]
+        },
+        "authority": "host-bound-source-and-pack-verified",
+        "boundary": "Fixed source/PCK and host instance binding; not isolation from arbitrary scripts sharing the engine process."
+      }
+    }
+  ],
+  "switches": [
+    {
+      "worldId": "world-be5708144b84",
+      "starterId": "promo-mainline",
+      "switchToSnapshotMs": 15113.6783
+    },
+    {
+      "worldId": "world-013351c9b76b",
+      "starterId": "promo-flight",
+      "switchToSnapshotMs": 13919.787400000001
+    },
+    {
+      "worldId": "world-0175763cd4c5",
+      "starterId": "promo-rain",
+      "switchToSnapshotMs": 15776.009099999996
+    },
+    {
+      "worldId": "world-a379f55e9a59",
+      "starterId": "promo-city",
+      "switchToSnapshotMs": 10823.291900000011
+    }
+  ],
+  "overlays": [
+    {
+      "worldId": "world-be5708144b84",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 8.599999994039536,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-be5708144b84",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 6.899999976158142,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-be5708144b84",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 5.399999976158142,
+      "overlay": "closed",
+      "dialogVisible": false
+    },
+    {
+      "worldId": "world-013351c9b76b",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.699999988079071,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-013351c9b76b",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 2.9000000059604645,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-013351c9b76b",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 2.699999988079071,
+      "overlay": "closed",
+      "dialogVisible": false
+    },
+    {
+      "worldId": "world-0175763cd4c5",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.800000011920929,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-0175763cd4c5",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 2.800000011920929,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-0175763cd4c5",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 2.800000011920929,
+      "overlay": "closed",
+      "dialogVisible": false
+    },
+    {
+      "worldId": "world-a379f55e9a59",
+      "key": "F2",
+      "shiftKey": false,
+      "handlerToDOMMs": 4.100000023841858,
+      "overlay": "compact",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-a379f55e9a59",
+      "key": "F2",
+      "shiftKey": true,
+      "handlerToDOMMs": 3.100000023841858,
+      "overlay": "full",
+      "dialogVisible": true
+    },
+    {
+      "worldId": "world-a379f55e9a59",
+      "key": "Escape",
+      "shiftKey": false,
+      "handlerToDOMMs": 2.5999999940395355,
+      "overlay": "closed",
+      "dialogVisible": false
+    }
+  ],
+  "heldInput": {
+    "worldId": "world-be5708144b84",
+    "before": [
+      0,
+      0.899999976158142,
+      6
+    ],
+    "held": [
+      0,
+      0.899999976158142,
+      4.07111120223999
+    ],
+    "movedWhileHeld": 1.9288887977600098,
+    "paused": [
+      0,
+      0.899999976158142,
+      3.9466667175293
+    ],
+    "decelerationWaitMs": 1000,
+    "resumed": [
+      0,
+      0.899999976158142,
+      2.01777839660645
+    ],
+    "after": [
+      0,
+      0.899999976158142,
+      2.01777839660645
+    ],
+    "driftAfterConversation": 0,
+    "released": true
+  },
+  "launches": [
+    {
+      "kind": "fresh-profile",
+      "startedAt": "2026-09-13T10:32:41.125Z",
+      "hostReadyMs": 336.9042,
+      "rendererReadyMs": 3351.8981,
+      "clockOriginMs": 46.4086,
+      "examplesReadyMs": 3366.1809,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "kind": "warm-profile",
+      "startedAt": "2026-09-13T10:35:54.15Z",
+      "hostReadyMs": 321.53410000001895,
+      "rendererReadyMs": 2643.204700000002,
+      "clockOriginMs": 193071.0432,
+      "activeWorldReopenedMs": 13134.824800000002,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "limits": [
+    "Single run on this machine; startup means fresh profile, not flushed OS disk cache.",
+    "Durations end at a valid native runtime snapshot, not merely chooser dismissal.",
+    "Renderer animation frame timing is not Godot engine FPS or visible OS presentation latency.",
+    "F2 uses the actual DOM application handler with a synthetic page event; no physical input.",
+    "No model requests; AI cancellation and generation time are outside this measurement."
+  ]
+}

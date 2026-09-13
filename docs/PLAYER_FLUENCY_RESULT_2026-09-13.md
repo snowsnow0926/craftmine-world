@@ -82,8 +82,36 @@ Evidence:
 - `docs/evidence/player-fluency-20260913/fixed-native.json`
 - `docs/evidence/player-fluency-20260913/pre-deceleration-diagnostic.json`
 
-Remaining usability work is specific: world switches still take roughly 9–14 s
-in this observation and should retain clear preparation stages. AI creation
-cancel/late-result behavior needs its separate live-authoring evidence, and
-native engine FPS needs the verified engine-monitor path. Neither is claimed
-complete by these renderer and input measurements.
+## Integrated continuation
+
+The four-world run `desktop-native-fluency-rYC71B` passed creation, real native
+snapshot, save, switch, F2 held-input release and cold reopen. Unlike the earlier
+renderer-only result, it also samples the actual Godot engine through the
+source/PCK-verified host monitor. The Windows artifact reader now handles Core's
+extended-length path namespace without weakening its link or hash checks.
+
+| World | First personal copy | Existing-world switch | Engine FPS sample | Engine frame work |
+| --- | ---: | ---: | ---: | ---: |
+| Pomeranian / mainline | 31.05 s | 15.11 s | 60 | 5.91 ms |
+| Flight | 26.63 s | 13.92 s | 60 | 3.14 ms |
+| Rain | 23.21 s | 15.78 s | 60 | 2.97 ms |
+| City | 26.29 s | 10.82 s | 60 | 3.70 ms |
+
+Fresh chooser readiness was 3.37 s; warm-profile active-city reopen was 13.13 s.
+Each normal save acknowledgement took 3.4–11.7 ms. These are small already-live
+snapshots, not large new content generation or archival export. All four engine
+samples are verified, active gameplay readings; FPS is a cached engine monitor,
+not a long-session minimum or a physical-display measurement. Other development
+work was running on this machine, so these single observations are not a
+controlled before/after speed comparison. GPU duration remains unknown.
+
+Real Codex cancellation and cold-reopen evidence is recorded separately in
+`docs/PLAYER_CANCELLATION_RESULT_2026-09-13.md`; its model turn must not be counted
+as part of this no-model timing run. Current world loading still takes visible
+time. This delivery fixes the held-input handoff and reports actual loading
+stages; it does not claim instant world switching.
+
+Compact evidence: `docs/evidence/player-fluency-20260913/integrated-native.json`.
+The staged desktop JS hash is included. Native binaries/resources were reused
+read-only from the prior sealed candidate; final package inventory and launch
+verification are recorded by the delivery report.
