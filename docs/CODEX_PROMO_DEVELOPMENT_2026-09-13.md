@@ -61,3 +61,28 @@ Pointer Lock，不激活测试窗口或操控用户的浏览器。检查依次�
 
 本文件是开发安排。实际结果追加到 `docs/evidence/codex-promo-20260913/`，
 原始日志、输入、资产和隔离档案放在 `test-results/codex-promo/`。
+
+## 已落地的项目入口与后台检查
+
+`scripts/codex-world-author.mjs` 是项目直接调用 Codex CLI 的创作入口，当前表面
+是项目命令行，尚未接入桌面对话框。`scripts/promo-world-author.mjs` 在该入口
+上装配现有 `GodotBuildVerifier`：在独立后台 Electron 中检查候选的真实启动、
+画面、运行错误、进度兼容性和隔离行为，保留实际 PNG 与检查记录。它不伪造
+首次进入世界或候选采用的回执。
+
+```powershell
+node scripts/promo-world-author.mjs init --data <新档案绝对路径> --runtime <运行组件目录> --plugin <当前编译插件目录> --world promo-mainline
+node scripts/promo-world-author.mjs turn --data <同一档案> --codex <codex.exe绝对路径> --prompt "我想生成一些树。"
+node scripts/promo-world-author.mjs turn --data <同一档案> --codex <codex.exe绝对路径> --prompt "我希望地上有花草。"
+node scripts/promo-world-author.mjs cancel --data <同一档案>
+```
+
+后台服务的隔离与非法描述符测试入口为
+`node --test tests/promo-godot-check-service.test.mjs`。实际原生检查入口为
+`node tests/promo-godot-check-native.mjs <运行组件目录> <当前编译插件目录>`；
+它使用未修改的官方空白底座，不调用模型，不代表宣传内容已通过。
+
+首次原生联调发现：新世界通过检查后，尚不存在正式运行实例，构建读取时的
+采用状态核对会抛出 `GODOT_WORLD_NOT_INITIALIZED`。现仅对该明确状态保留原
+检查结果；仍不标记为已采用，其他运行时错误和世界切换继续拒绝。修复后真实
+导入、导出、后台检查和画面保存通过，原失败记录保留。
