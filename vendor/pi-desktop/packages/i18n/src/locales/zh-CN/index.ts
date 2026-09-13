@@ -1,6 +1,8 @@
+import { codexConnectionZhCN } from "../codex-connection.js";
 import type { EnglishCatalog } from "../en/index.js";
 
 export const zhCN = {
+  codexConnection: codexConnectionZhCN,
   app: {
     name: "craftmine world · 最中幻想",
     shellName: "最中幻想",

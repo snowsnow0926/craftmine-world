@@ -1,6 +1,8 @@
+import { codexConnectionEn } from "../codex-connection.js";
 import type { EnglishCatalog } from "../en/index.js";
 
 export const zhTW = {
+  codexConnection: codexConnectionEn,
   app: {
     name: "PI-Desktop",
     shellName: "PI-Desktop",

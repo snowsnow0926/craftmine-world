@@ -1,4 +1,6 @@
+import { codexConnectionEn } from "../codex-connection.js";
 export const en = {
+  codexConnection: codexConnectionEn,
   app: {
     name: "craftmine world",
     shellName: "craftmine world",

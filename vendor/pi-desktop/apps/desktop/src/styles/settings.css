@@ -395,6 +395,23 @@
   min-width: 140px;
 }
 
+/* Connection steps remain inside the original settings row. */
+#world-agent-backend {
+  align-items: flex-start;
+}
+
+#world-agent-backend .settings-row-control {
+  flex: 0 1 440px;
+  max-width: 440px;
+}
+
+@media (max-width: 820px) {
+  #world-agent-backend .settings-row-control {
+    flex: initial;
+    max-width: none;
+  }
+}
+
 .settings-number-control {
   display: flex;
   flex-direction: column;

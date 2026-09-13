@@ -61,7 +61,7 @@ export class CodexAppServer extends EventEmitter {
     super(); this.binary = binary; this.cwd = cwd; this.spawnProcess = spawnProcess;
     this.sequence = 0; this.pending = new Map(); this.closed = false;
   }
-  async start() {
+  async start({requireAccount = true} = {}) {
     const args = ['app-server', '--listen', 'stdio://'];
     for (const [key,value] of Object.entries(LOCKED_CONFIG)) args.push('-c', `${key}=${tomlValue(value)}`);
     this.child = this.spawnProcess(this.binary, args, {
@@ -108,8 +108,8 @@ export class CodexAppServer extends EventEmitter {
         (config?.chatgpt_base_url && config.chatgpt_base_url !== 'https://chatgpt.com/backend-api/'))
       throw Error('CODEX_CUSTOM_ENDPOINT_UNSUPPORTED');
     const {account} = await this.call('account/read', {refreshToken:false});
-    if (account?.type !== 'chatgpt') throw Error('CODEX_CHATGPT_LOGIN_REQUIRED');
-    return {authenticated:true, model:MODEL, effort:EFFORT};
+    if (requireAccount && account?.type !== 'chatgpt') throw Error('CODEX_CHATGPT_LOGIN_REQUIRED');
+    return {authenticated:account?.type === 'chatgpt', model:MODEL, effort:EFFORT};
   }
   send(message) {
     if (this.closed || !this.child?.stdin.writable) throw Error('CODEX_TRANSPORT_CLOSED');

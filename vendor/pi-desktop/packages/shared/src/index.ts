@@ -24,3 +24,4 @@ export * from "./attachment-limits.js";
 export * from "./font-size.js";
 export * from "./task-metrics.js";
 export * from "./codex-world-backend.js";
+export * from "./codex-connection.js";

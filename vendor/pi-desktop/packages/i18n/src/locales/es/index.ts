@@ -1,4 +1,6 @@
+import { codexConnectionEn } from "../codex-connection.js";
 export const es = {
+  codexConnection: codexConnectionEn,
   "app": {
     "name": "PI-Desktop",
     "shellName": "PI-Desktop",

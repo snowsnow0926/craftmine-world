@@ -2,6 +2,9 @@
 
 Date: 2026-09-13. Status: implemented experimentally.
 
+Addendum: [player-owned connection](codex-player-connection.md) extends the
+existing Settings row without changing this author runtime or storage boundary.
+
 The project author CLI already called local Codex, but the desktop conversation
 still ran the PI loop. An OpenAI account/provider label would not close this
 gap. Replace only the world author loop behind the existing prompt protocol with

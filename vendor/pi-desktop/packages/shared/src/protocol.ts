@@ -105,6 +105,7 @@ export const IPC = {
     sessionGetScratchPath: "pi-desktop/session/getScratchPath",
     projectOpenFolder: "pi-desktop/project/openFolder",
     settingsGet: "pi-desktop/settings/get",
+    codexConnection: "pi-desktop/settings/codexConnection",
     settingsSet: "pi-desktop/settings/set",
     networkProxyTest: "pi-desktop/network/testProxy",
     commandShellList: "pi-desktop/commandShell/list",

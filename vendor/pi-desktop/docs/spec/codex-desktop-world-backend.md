@@ -139,6 +139,10 @@ the existing development component wiring.
 
 ## Recorded validation, 2026-09-13
 
+Player onboarding is extended in [Codex player connection](codex-player-connection.md).
+It retains this backend and its authoring protocol, adding the existing Settings
+row's path, login and actual account/model capability checks.
+
 The actual desktop fixture `test-results/desktop-native-codex-vlwaPc` used no API
 provider rows and the existing local Codex login. Session
 `ee1cd78a-1900-43e3-9609-f33f7c0a9be9` stayed in world `world-d2cac5cc93f8`.

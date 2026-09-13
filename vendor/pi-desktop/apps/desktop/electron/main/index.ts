@@ -31,6 +31,7 @@ import { ActiveTurns } from "./active-turns";
 import { createTurnTerminalOutcomes } from "./turn-terminal-outcome";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CodexCheckpointHost } from "./codex-checkpoint-host";
+import { CodexConnection } from "./codex-connection.mjs";
 import { CODEX_WORLD_MODEL, CODEX_WORLD_EFFORT, CODEX_WORLD_TOOLS, validateWorldAgentSettings } from "@pi-desktop/shared";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
@@ -1195,6 +1196,15 @@ const IMPORT_SOURCES = new Set<ExternalSource>([
 
 const dataDir =
   process.env.PI_DESKTOP_DATA_DIR || join(homedir(), ".pi-desktop");
+const codexConnection = new CodexConnection({
+  cwd: join(dataDir, "codex-connection-empty"),
+  pick: async () => {
+    const selected = await dialog.showOpenDialog({ title: "Select Codex CLI executable", properties: ["openFile"],
+      ...(process.platform === "win32" ? { filters: [{ name: "Executable", extensions: ["exe"] }] } : {}) });
+    return selected.canceled ? undefined : selected.filePaths[0];
+  },
+  openExternal: url => shell.openExternal(url),
+});
 
 async function creationFullAuto(sessionId:string|null):Promise<boolean>{
   if(!host || !sessionId)return false;
@@ -7652,6 +7662,11 @@ function registerIpc() {
     },
   );
 
+  handle(IPC.invoke.codexConnection, async (request: any) => {
+    if (["login", "pick", "detect", "verify"].includes(request?.action) && (activeTurns.size || turnFinalizations.size))
+      throw Object.assign(Error("Finish or cancel active turns before connecting Codex."), { errorCode: "AGENT_BUSY" });
+    return codexConnection.invoke(request);
+  });
   handle(IPC.invoke.settingsGet, async () => {
     if (!host) throw new Error("host unavailable");
     const settings = await host.call("settings.get");
@@ -10703,6 +10718,7 @@ app.on("before-quit", (event) => {
     pluginLauncherAccelerator = null;
   }
   shutdownPromise = (async () => {
+    await codexConnection.dispose();
     // Preview workers must finish while their body resolver's plugin is alive.
     try {
       await assetPreviews.dispose();
