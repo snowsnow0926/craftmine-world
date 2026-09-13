@@ -222,7 +222,7 @@ async function applyDirect(row){
 // Invoke the actual component handlers in the actual PI renderer, never a
 // replacement test editor. Ordinary creation uses the session created by the
 // New World form and the host's pinned target/source/check/adoption pipeline.
-const button=(label,scope='.creation-target-context')=>evaluate(`(()=>{const button=[...document.querySelectorAll(${JSON.stringify(scope+' button')})].find(n=>n.textContent===${JSON.stringify(label)});if(!button||button.disabled)throw Error('BUTTON_UNAVAILABLE:'+${JSON.stringify(label)});const props=button[Object.keys(button).find(k=>k.startsWith('__reactProps$'))];if(typeof props?.onClick!=='function')throw Error('BUTTON_HANDLER_REQUIRED');props.onClick();return true;})()`);
+const button=(label,scope='.creation-target-context')=>until(()=>evaluate(`(()=>{const button=[...document.querySelectorAll(${JSON.stringify(scope+' button')})].find(n=>n.textContent===${JSON.stringify(label)});if(!button||button.disabled)return false;const props=button[Object.keys(button).find(k=>k.startsWith('__reactProps$'))];if(typeof props?.onClick!=='function')throw Error('BUTTON_HANDLER_REQUIRED');props.onClick();return true;})()`),Boolean);
 async function desktopInvoke(name,payload){
  return evaluate(`(async()=>{const api=globalThis.piDesktop;const result=await api.invoke(api.channels.invoke[${JSON.stringify(name)}],${JSON.stringify(payload)});if(!result?.ok)throw Error(result?.error?.message??'DESKTOP_READ_FAILED');return result.data;})()`);
 }
