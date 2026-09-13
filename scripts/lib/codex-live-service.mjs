@@ -25,6 +25,9 @@ export function validateLiveDomain(worldId,method,args) {
 }
 
 export async function startCodexLiveService({core,state,data}) {
+  if(typeof state?.pluginRoot!=='string'||!path.isAbsolute(state.pluginRoot))throw Error('LIVE_PLUGIN_ROOT_REQUIRED');
+  const {flattenObservationEnvelope}=createRequire(import.meta.url)(path.join(state.pluginRoot,'tool-services.cjs'));
+  if(typeof flattenObservationEnvelope!=='function')throw Error('LIVE_PLUGIN_SERVICE_INVALID');
   await core.start();
   const parent=path.join(data,'test-results');await fs.mkdir(parent,{recursive:true});
   const directory=await fs.mkdtemp(path.join(parent,'desktop-native-codex-live-'));
@@ -45,12 +48,17 @@ export async function startCodexLiveService({core,state,data}) {
   for(const key of ['SystemRoot','WINDIR','COMSPEC','PATH'])if(process.env[key])env[key]=process.env[key];
   for(const key of ['APPDATA','LOCALAPPDATA','USERPROFILE','TEMP','TMP']){env[key]=path.join(directory,key.toLowerCase());await fs.mkdir(env[key]);}
   const child=spawn(desktopRequire('electron'),[appRoot],{cwd:directory,env,windowsHide:true,shell:false,stdio:['ignore','pipe','pipe','ipc']});
-  const pending=new Map();let ended=false,closing,guardWrite=Promise.resolve();
+  const pending=new Map();let ended=false,closing,guardWrite=Promise.resolve(),exitWrite=Promise.resolve();
   let resolveReady,rejectReady;const ready=new Promise((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;});
   const diagnostics=[];
   // Only this helper's own bounded diagnostics, with no inherited account environment.
   for(const stream of [child.stdout,child.stderr])stream.on('data',chunk=>{diagnostics.push(redact(String(chunk)));if(diagnostics.length>40)diagnostics.shift();});
   const exited=new Promise(resolve=>child.once('close',code=>{
+    const methods=[...pending.values()].map(call=>call.method);
+    if(code!==0||methods.length)exitWrite=Promise.all([
+      fs.writeFile(path.join(directory,'unexpected-exit.json'),JSON.stringify({code,pendingMethods:methods,worldId:state.worldId,at:new Date().toISOString()},null,2)),
+      fs.writeFile(path.join(directory,'failure.log'),diagnostics.join('')),
+    ]).catch(()=>{});
     ended=true;const error=Error('LIVE_HOST_EXITED:'+code);rejectReady(error);for(const call of pending.values())call.reject(error);pending.clear();resolve(code);
   }));
   child.on('error',()=>rejectReady(Error('LIVE_HOST_START_FAILED')));
@@ -84,7 +92,6 @@ export async function startCodexLiveService({core,state,data}) {
     const current=await core.call('task.context',{context});
     if(current.world?.id!==state.worldId||current.status!=='running'||!current.lease?.owned)throw Error('LIVE_ACTIVE_TURN_REQUIRED');
   }
-  const {flattenObservationEnvelope}=createRequire(import.meta.url)(path.join(state.pluginRoot,'tool-services.cjs'));
   const service={directory,call,
     async gameplay(identity,segment) {
       const result=await call('inputSegment',{identity,segment});
@@ -124,7 +131,7 @@ export async function startCodexLiveService({core,state,data}) {
       const {pngBase64,...receipt}=result;await fs.writeFile(imagePath+'.json',JSON.stringify(receipt,null,2));return {...receipt,imagePath};
     },
     async stop() {
-      if(ended)return;
+      if(ended){await exitWrite;return;}
       if(closing)return closing;
       closing=(async()=>{
         for(const input of [...pending.values()].filter(p=>p.method==='inputSegment'))await call('cancelInputs',{identity:input.args.identity});
@@ -143,7 +150,7 @@ export async function startCodexLiveService({core,state,data}) {
         await fs.writeFile(path.join(directory,'failure.log'),diagnostics.join(''));throw error;
       }
     },
-    async abandon(){child.kill();await exited;},
+    async abandon(){child.kill();await exited;await exitWrite;},
   };
   return service;
 }

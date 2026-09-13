@@ -118,6 +118,14 @@ component tests, not an author tool or generic page evaluator.
 
 ## Explicit reference and feedback images
 
+An unexpected helper exit retains its exit code, pending operation names and
+bounded sanitized diagnostics under the isolated helper directory. Operator
+errors are recorded before retirement so a later cleanup error cannot erase the
+original failure evidence. An exit is not an application receipt: inspect the
+native formal build before retrying an uncertain adoption. The transport-exit
+test uses a real hidden helper and a deliberately stalled stub Core; it is not
+gameplay or application evidence.
+
 ```powershell
 node scripts/promo-world-author.mjs turn --data $data --codex $codex --live-host true --prompt '请参考这两张图制作模型' --image 'D:/references/front.png' --image 'D:/references/side.jpg'
 ```

@@ -74,6 +74,9 @@ export async function liveMain(argv=process.argv.slice(2)) {
     report=redact({format:'craftmine.codex-live-operation/1',action,worldId:state.worldId,sourceIdentity:state.sourceIdentity,result,
       gameplayAssessment:'not-performed-by-live-host',operatorInterrupted:controller.signal.aborted,helperDirectory:live.directory});
     await fs.writeFile(path.join(live.directory,'operation.json'),JSON.stringify(report,null,2));
+  } catch(error) {
+    if(live?.directory)await fs.writeFile(path.join(live.directory,'operation-error.json'),JSON.stringify(redact({action,worldId:state.worldId,candidateId:options['--candidate']??null,code:error.message,at:new Date().toISOString()}),null,2));
+    throw error;
   } finally {
     process.off('SIGINT',abort);process.off('SIGTERM',abort);
     try{await host?.stop({beforeCoreStop:async()=>{retirement=await live?.stop();}});}
