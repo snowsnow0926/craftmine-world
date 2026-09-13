@@ -818,12 +818,48 @@ function createGodotExecutor(core, options = {}) {
     try { return bounded(await fsp.readFile(file, 'utf8'), BROKER_TASK_LOG_BYTES); } catch { return ''; }
   }
 
+  // Godot may serialize imported scenes differently on identical exports. Only
+  // Core-verified current formal bytes qualify; runtime checks still run anew.
+  async function appliedExport(claim) {
+    const current = await core.call('world.read', {id:claim.worldId}, 30000);
+    if (current?.world?.build?.id !== claim.buildId) return null;
+    const formal = await core.call('godotRuntime.describe', {worldId:claim.worldId}, 30000);
+    const keys = ['worldId','buildId','sourceRevision','manifestHash','baseId'];
+    if (formal?.format !== 'craftmine.godot-runtime-descriptor/1' || formal.phase !== 'formal'
+      || formal.copiedFromWorldId != null || keys.some(key=>formal[key] !== claim[key])
+      || path.resolve(plainPath(formal.root ?? '')) !== path.resolve(plainPath(claim.artifactsRoot))
+      || formal.entry !== 'web/index.html' || formal.threads !== true)
+      throw Error('GODOT_APPLIED_EXPORT_MISMATCH');
+    const binding = [...keys,'assetManifestHash','baseBuild'];
+    if (['assetManifestHash','baseBuild'].some(key=>formal.build?.godot?.[key] !== claim[key]))
+      throw Error('GODOT_APPLIED_EXPORT_MISMATCH');
+    // Candidate pages and jobs are native readonly records. The executor
+    // ledger and renderer are never export authority.
+    let offset = 0, candidate = null;
+    do {
+      const page = await core.call('godotCandidate.list', {worldId:claim.worldId,offset,limit:32}, 30000);
+      candidate = page.items.find(item=>item.status === 'applied' && binding.every(key=>item[key] === claim[key]));
+      if (candidate || page.nextOffset == null) break;
+      if (!Number.isSafeInteger(page.nextOffset) || page.nextOffset <= offset) throw Error('GODOT_APPLIED_EXPORT_PAGE_INVALID');
+      offset = page.nextOffset;
+    } while (true);
+    if (!candidate) throw Error('GODOT_APPLIED_EXPORT_AUTHORITY_REQUIRED');
+    const old = await core.call('godotBuild.read', {worldId:claim.worldId,jobId:candidate.checkJobId}, 30000);
+    if (old.status !== 'passed' || old.kind !== 'check' || old.output?.passed !== true
+      || old.output?.import?.passed !== true || old.output?.compile?.passed !== true || old.output?.check?.passed !== true
+      || old.jobId !== candidate.checkJobId || old.outputHash !== candidate.checkOutputHash
+      || binding.some(key=>old[key] !== claim[key]) || !isDeepStrictEqual(old.output.artifacts,formal.artifacts))
+      throw Error('GODOT_APPLIED_EXPORT_AUTHORITY_MISMATCH');
+    return {format:'craftmine.godot-retained-export/1',scope:'current-applied-build',
+      originJobId:old.jobId,originOutputHash:old.outputHash,
+      ...Object.fromEntries(binding.map(key=>[key,claim[key]])),engine:old.output.engine,artifacts:formal.artifacts};
+  }
+
   async function retainedArtifacts(claim, files, entry) {
-    if (!claim.originJobId) return null;
-    if (!Object.hasOwn(claim,'retainedExport')) throw Error('GODOT_CONTINUATION_EXPORT_AUTHORITY_REQUIRED');
-    const retained = claim.retainedExport;
+    if (claim.originJobId && !Object.hasOwn(claim,'retainedExport')) throw Error('GODOT_CONTINUATION_EXPORT_AUTHORITY_REQUIRED');
+    const retained = claim.originJobId ? claim.retainedExport : await appliedExport(claim);
     if (retained === null) return null;
-    if (retained?.format !== 'craftmine.godot-retained-export/1' || retained.originJobId !== claim.originJobId
+    if (retained?.format !== 'craftmine.godot-retained-export/1' || (claim.originJobId && retained.originJobId !== claim.originJobId)
       || !/^gjob-[a-f0-9]{64}$/.test(retained.originJobId) || !/^[a-f0-9]{64}$/.test(retained.originOutputHash)
       || ['worldId','buildId','sourceRevision','manifestHash','assetManifestHash','baseId','baseBuild'].some(key=>claim[key]==null || retained[key]!==claim[key]))
       throw Error('GODOT_CONTINUATION_EXPORT_MISMATCH');
@@ -854,7 +890,7 @@ function createGodotExecutor(core, options = {}) {
     if(!seen.has('web/index.html')||!seen.has('web/bridge.js'))throw Error('GODOT_WEB_ENTRY_MISSING');
     if(claim.baseId==='creation-sandbox'&&!creationPackProof)throw Error('CREATION_PACK_MISSING');
     return {artifacts:retained.artifacts.map(({path,bytes,sha256})=>({path,bytes,sha256})),creationPackProof,
-      proof:{format:'craftmine.godot-export-reuse/1',originJobId:retained.originJobId,originOutputHash:retained.originOutputHash,exportExecuted:false}};
+      proof:{format:'craftmine.godot-export-reuse/1',originJobId:retained.originJobId,originOutputHash:retained.originOutputHash,exportExecuted:false,...(retained.scope?{scope:retained.scope}:{})}};
   }
 
   async function checkDescriptorFor(claim, artifacts, token, requireNative = false) {
@@ -1031,7 +1067,7 @@ function createGodotExecutor(core, options = {}) {
         log('staged', artifacts.length, 'artifacts into', path.resolve(claim.artifactsRoot));
         }
         await core.call('godotJob.progress', {jobId, token, stage:'check', percent:85}, 20000).catch(() => {});
-        const resolved = await checkDescriptorFor(claim, artifacts, token, !!claim.originJobId);
+        const resolved = await checkDescriptorFor(claim, artifacts, token, !!claim.originJobId || !!exportReuse);
         descriptorSource = resolved.source;
         if (entry.cancelled) return await abandon(entry, 'GODOT_JOB_CANCELLED');
         if (!verifier?.godotCheck) {
@@ -1366,10 +1402,12 @@ function createGodotExecutor(core, options = {}) {
           // Historical proof is diagnostic only; new jobs always inspect the
           // actual pack again before they can submit a passed result.
           creationPackProof:entry.creationPackProof?.format==='craftmine.creation-pack-proof/1' ? entry.creationPackProof : null,
-          // Diagnostic only; reuse authority always comes from a new Core claim.
+          // Diagnostic only; reuse authority comes from fresh native claim or
+          // verified formal records, never this restored ledger.
           exportReuse:entry.exportReuse?.format==='craftmine.godot-export-reuse/1' && entry.exportReuse.exportExecuted===false
             && /^gjob-[a-f0-9]{64}$/.test(entry.exportReuse.originJobId) && /^[a-f0-9]{64}$/.test(entry.exportReuse.originOutputHash)
-            ? {format:'craftmine.godot-export-reuse/1',originJobId:entry.exportReuse.originJobId,originOutputHash:entry.exportReuse.originOutputHash,exportExecuted:false} : null,
+            ? {format:'craftmine.godot-export-reuse/1',originJobId:entry.exportReuse.originJobId,originOutputHash:entry.exportReuse.originOutputHash,exportExecuted:false,
+              ...(entry.exportReuse.scope==='current-applied-build'?{scope:'current-applied-build'}:{})} : null,
           creationApplication:normalizeCreationApplication(entry.creationApplication,{restart:true}),
           phaseTiming:entry.phaseTiming?.format==='craftmine.creation-timing/1' && Number.isFinite(entry.phaseTiming.totalMs)
             && Array.isArray(entry.phaseTiming.stages) && entry.phaseTiming.stages.length<=2

@@ -1,0 +1,278 @@
+{
+  "format": "craftmine.applied-export-executor-observations/1",
+  "source": "test-results/native-02/core/godot/executor-ledger.json",
+  "authority": "diagnostic-only; native passed outputs in native-report.json are authority",
+  "jobs": [
+    {
+      "jobId": "gjob-852efa85e51077a4fd4025cad3cead5731dbc89ebd69b946ecec67718a218f2e",
+      "worldId": "world-abbc51d282d7",
+      "mode": "check",
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-a1a4eb85dd6049bf9cfce479",
+          "operation": "import",
+          "startedAt": "2026-09-13T11:29:05.834Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-13T11:29:09.032Z",
+          "journalRetired": true,
+          "failure": null
+        },
+        {
+          "requestId": "ex-ac3b798a80a944ffb735a796",
+          "operation": "exportWeb",
+          "startedAt": "2026-09-13T11:29:09.035Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-13T11:29:12.363Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "exportReuse": null,
+      "creationPackProof": {
+        "format": "craftmine.creation-pack-proof/1",
+        "packSha256": "55349a7409211dc6a5a8f38314d508cb0faa93b62768143f4b7f24da038ab1b2",
+        "packBytes": 6588400,
+        "engineVersion": "4.7.2-stable",
+        "packFormat": 4,
+        "files": [
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "bytes": 3380,
+            "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "bytes": 2755,
+            "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+          },
+          {
+            "path": "craftmine_shared/state_guard.gd",
+            "bytes": 1759,
+            "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+          },
+          {
+            "path": "craftmine_shared/headless_play_action.gd",
+            "bytes": 2525,
+            "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker.gd",
+            "bytes": 18909,
+            "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_legacy.gd",
+            "bytes": 19410,
+            "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+          },
+          {
+            "path": "craftmine_shared/controller_evidence.gd",
+            "bytes": 9893,
+            "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+            "bytes": 15366,
+            "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+          },
+          {
+            "path": "scripts/reused/player_controller.gd",
+            "bytes": 7079,
+            "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+          },
+          {
+            "path": "scripts/reused/camera_rig.gd",
+            "bytes": 1527,
+            "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_controller_v1.gd",
+            "bytes": 1640,
+            "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+          },
+          {
+            "path": "craftmine_shared/progress_collision.gd",
+            "bytes": 4781,
+            "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge_base.gd",
+            "bytes": 8556,
+            "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+          },
+          {
+            "path": "craftmine_shared/engine_performance.gd",
+            "bytes": 3959,
+            "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+          }
+        ],
+        "project": {
+          "sha256": "87179a2e6079399726aae2b7ae484d9ccd6c4bd1f5d2ce663adcfca28248ef9d",
+          "selectors": {
+            "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+            "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+          }
+        },
+        "observerContract": {
+          "profileId": "creation-player-collision/1",
+          "historical": false,
+          "enginePerformanceProfile": "engine-monitor/1",
+          "engineAuthority": "requires-app-source-pins"
+        }
+      },
+      "phaseTiming": {
+        "format": "craftmine.creation-timing/1",
+        "totalMs": 16842.402,
+        "stages": [
+          {
+            "stage": "runtime-check",
+            "elapsedMs": 9848.282,
+            "passed": true
+          }
+        ]
+      },
+      "startedAt": "2026-09-13T11:29:05.833Z",
+      "finishedAt": "2026-09-13T11:29:22.369Z",
+      "outcome": "passed",
+      "reason": null
+    },
+    {
+      "jobId": "gjob-801ee6bcc4b66cb0b4ff82b0cc3d50fae6da6e6f47ef070d37864b6364a0db94",
+      "worldId": "world-abbc51d282d7",
+      "mode": "check",
+      "state": "finished",
+      "attempts": [
+        {
+          "requestId": "im-1f612ef576924c1ab05adc99",
+          "operation": "import",
+          "startedAt": "2026-09-13T11:29:26.836Z",
+          "outcome": "succeeded",
+          "transport": "succeeded",
+          "recovery": null,
+          "finishedAt": "2026-09-13T11:29:30.026Z",
+          "journalRetired": true,
+          "failure": null
+        }
+      ],
+      "exportReuse": {
+        "format": "craftmine.godot-export-reuse/1",
+        "originJobId": "gjob-852efa85e51077a4fd4025cad3cead5731dbc89ebd69b946ecec67718a218f2e",
+        "originOutputHash": "3e81cf1b9180243d172da7827458e8f2a584b925fcea06660ce02fc43cd60827",
+        "exportExecuted": false,
+        "scope": "current-applied-build"
+      },
+      "creationPackProof": {
+        "format": "craftmine.creation-pack-proof/1",
+        "packSha256": "55349a7409211dc6a5a8f38314d508cb0faa93b62768143f4b7f24da038ab1b2",
+        "packBytes": 6588400,
+        "engineVersion": "4.7.2-stable",
+        "packFormat": 4,
+        "files": [
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "bytes": 3380,
+            "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "bytes": 2755,
+            "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+          },
+          {
+            "path": "craftmine_shared/state_guard.gd",
+            "bytes": 1759,
+            "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+          },
+          {
+            "path": "craftmine_shared/headless_play_action.gd",
+            "bytes": 2525,
+            "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker.gd",
+            "bytes": 18909,
+            "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_legacy.gd",
+            "bytes": 19410,
+            "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+          },
+          {
+            "path": "craftmine_shared/controller_evidence.gd",
+            "bytes": 9893,
+            "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+          },
+          {
+            "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+            "bytes": 15366,
+            "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+          },
+          {
+            "path": "scripts/reused/player_controller.gd",
+            "bytes": 7079,
+            "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+          },
+          {
+            "path": "scripts/reused/camera_rig.gd",
+            "bytes": 1527,
+            "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_controller_v1.gd",
+            "bytes": 1640,
+            "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+          },
+          {
+            "path": "craftmine_shared/progress_collision.gd",
+            "bytes": 4781,
+            "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge_base.gd",
+            "bytes": 8556,
+            "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+          },
+          {
+            "path": "craftmine_shared/engine_performance.gd",
+            "bytes": 3959,
+            "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+          }
+        ],
+        "project": {
+          "sha256": "87179a2e6079399726aae2b7ae484d9ccd6c4bd1f5d2ce663adcfca28248ef9d",
+          "selectors": {
+            "autoload/CraftmineRuntime": "*res://craftmine_shared/runtime_bridge.gd",
+            "craftmine/runtime/adapter": "res://craftmine_shared/base_adapter.gd"
+          }
+        },
+        "observerContract": {
+          "profileId": "creation-player-collision/1",
+          "historical": false,
+          "enginePerformanceProfile": "engine-monitor/1",
+          "engineAuthority": "requires-app-source-pins"
+        }
+      },
+      "phaseTiming": {
+        "format": "craftmine.creation-timing/1",
+        "totalMs": 6390.576,
+        "stages": [
+          {
+            "stage": "runtime-check",
+            "elapsedMs": 2898.39,
+            "passed": true
+          }
+        ]
+      },
+      "startedAt": "2026-09-13T11:29:26.835Z",
+      "finishedAt": "2026-09-13T11:29:33.063Z",
+      "outcome": "passed",
+      "reason": null
+    }
+  ]
+}

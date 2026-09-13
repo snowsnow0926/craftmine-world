@@ -581,10 +581,10 @@ for (const variant of ['matched','descriptor-missing','descriptor-dropped','desc
     const core=fakeCore(env), original=core.call.bind(core);
     const required={format:'craftmine.godot-check-requirements/1',targetFeedback:{targetId:'target_a',hitFlashMilliseconds:500}};
     const hash=sha256('craftmine.godot-check-requirements/1\ntarget_a\n500\n');
-    let claimed, seen, descriptorCalls=0, fallbackReads=0;
+    let claimed, seen, descriptorCalls=0, fallbackReads=0, formalReads=0;
     core.call=async(method,args)=>{
       if(method==='godotJob.claim') return claimed={...await original(method,args),checkRequirements:required,checkRequirementsHash:hash};
-      if(method==='world.read') fallbackReads++;
+      if(method==='world.read') {if(descriptorCalls)fallbackReads++;else formalReads++;}
       if(method==='godotJob.checkDescriptor') {
         descriptorCalls++;
         if(variant==='descriptor-missing') throw Error('UNSUPPORTED');
@@ -611,6 +611,7 @@ for (const variant of ['matched','descriptor-missing','descriptor-dropped','desc
     assert.equal((await executor.start()).available,true);
     executor.enqueue({jobId:evidence.jobId,worldId:'world-c',mode:'check'});
     await settle(executor,evidence.jobId);await executor.stop();
+    assert.equal(formalReads,1,'one readonly formal-build lookup before export');
     assert.equal(descriptorCalls,1);assert.equal(fallbackReads,0,'required checks must never use legacy descriptor fallback');
     assert.equal(core.state.status,variant==='matched'?'passed':'failed',JSON.stringify(core.state.output));
     if(variant.startsWith('descriptor-')) assert.equal(seen,undefined);
@@ -812,6 +813,82 @@ test('retained export continuation: '+fault,async t=>{
     assert.equal(proof.exportExecuted,false);assert.equal(proof.originOutputHash,core.jobs.get(originId).outputHash);
     assertEvidenceUnchanged(before,files,'reuse');
     await executor.start();assert.deepEqual(executor.ledger.jobs[nextId].exportReuse,proof);await executor.stop();
+  } else {
+    assert.equal(checks.length,1,'no runtime verdict after a refused reuse');assert.notEqual(core.record(nextId).status,'passed');
+    if(fault==='tamper')assert(fs.readFileSync(files[1],'utf8').endsWith('tamper'));
+    if(fault==='missing')assert.equal(fs.existsSync(files[1]),false);
+    if(!['tamper','missing','hardlink','directory-link'].includes(fault))assertEvidenceUnchanged(before,files,'refused continuation');
+  }
+});
+
+for(const fault of ['none','tamper','missing','hardlink','directory-link','authority-missing','origin','source','toolchain','formal-source','formal-owner','artifact-list','applied-missing','old-failed','bridge','descriptor-denied','descriptor-mismatch','runtime-failed','cancel'])
+test('current applied export recheck: '+fault,async t=>{
+  const env=environment();t.after(restoreEnv);setScenario(env,{artifacts:SAME_SOURCE_ARTIFACTS});
+  const core=scriptedCore(env),originId='gjob-'+'1'.repeat(64),nextId='gjob-'+'2'.repeat(64),brokerRequests=[],checks=[];
+  let executor,binding;
+  const applied=()=>core.jobs.get(originId)?.status==='passed';
+  const raw=core.call.bind(core);
+  core.call=async(method,params)=>{
+    if(method==='godotJob.claim'){
+      const claim=await raw(method,params);claim.baseBuild='base-a';binding=Object.fromEntries(['worldId','buildId','sourceRevision','manifestHash','assetManifestHash','baseId','baseBuild'].map(key=>[key,claim[key]]));
+      return claim;
+    }
+    if(applied()){
+      const old=core.jobs.get(originId);
+      if(method==='world.read')return {world:{build:{id:core.buildId}}};
+      if(method==='godotRuntime.describe')return {format:'craftmine.godot-runtime-descriptor/1',phase:'formal',...binding,sourceRevision:fault==='formal-source'?4:binding.sourceRevision,copiedFromWorldId:fault==='formal-owner'?'foreign':null,root:env.artifactsRoot,entry:'web/index.html',threads:true,build:{godot:binding},artifacts:fault==='artifact-list'?[]:old.output.artifacts};
+      if(method==='godotCandidate.list')return {items:fault==='applied-missing'?[]:[{...binding,status:'applied',checkJobId:originId,checkOutputHash:old.outputHash}],nextOffset:null};
+      if(method==='godotBuild.read'&&params.jobId===originId){const record={...core.record(originId),...binding};
+        if(fault==='authority-missing')record.outputHash=null;
+        if(fault==='origin')record.jobId='gjob-'+'3'.repeat(64);
+        if(fault==='source')record.sourceRevision++;
+        if(fault==='old-failed')record.status='failed';
+        if(fault==='toolchain')record.output={...old.output,engine:{...old.output.engine,evidenceHash:sha256('changed')}};
+        return record;
+      }
+    }
+    if(method==='godotJob.checkDescriptor'&&params.jobId===nextId){
+      core.calls.push({method,params});
+      if(fault==='descriptor-denied')throw Error('GODOT_JOB_OWNER_MISMATCH');
+      return {format:'craftmine.godot-check-descriptor/1',phase:'check',jobId:nextId,worldId:core.worldId,buildId:core.buildId,
+        baseId:'first-person',inputHash:core.jobs.get(nextId).inputHash,root:fault==='descriptor-mismatch'?env.root:env.artifactsRoot,
+        entry:'web/index.html',threads:true,artifacts:params.artifacts,snapshot:{currentProgress:11}};
+    }
+    const result=await raw(method,params);
+    if(fault==='cancel'&&params?.jobId===nextId&&params.stage==='reuse-export')void executor.cancel(nextId);
+    return result;
+  };
+  executor=makeExecutor({env,core,brokerRequests,verifier:{godotCheck:async descriptor=>{
+    checks.push(structuredClone(descriptor));return passingEvidence({passed:!(fault==='runtime-failed'&&descriptor.jobId===nextId),error:fault==='runtime-failed'&&descriptor.jobId===nextId?'CURRENT_RUNTIME_FAILURE':null});
+  }}});
+  t.after(()=>executor.stop());await executor.start();core.addJob(originId);executor.enqueue({jobId:originId,worldId:core.worldId,mode:'check'});await settle(executor,originId);
+  assert.equal(core.record(originId).status,'passed');const original=JSON.stringify(core.record(originId));
+  const files=core.jobs.get(originId).output.artifacts.map(a=>path.join(env.artifactsRoot,a.path)),before=files.map(evidenceFingerprint);
+  if(fault==='tamper')fs.appendFileSync(files[1],'tamper');
+  if(fault==='missing')fs.unlinkSync(files[1]);
+  if(fault==='hardlink')fs.linkSync(files[1],path.join(env.root,'alias'));
+  if(fault==='directory-link'){
+    const web=path.resolve(env.artifactsRoot,'web'),parked=path.resolve(env.artifactsRoot,'parked');
+    assert(web.startsWith(path.resolve(env.root)+path.sep)&&parked.startsWith(path.resolve(env.root)+path.sep));
+    fs.renameSync(web,parked);fs.symlinkSync(parked,web,'junction');
+  }
+  if(fault==='bridge')fs.appendFileSync(env.bridge,'changed pin');
+  // Any accidental export would differ and conflict. It must never be invoked.
+  setScenario(env,{artifacts:{...SAME_SOURCE_ARTIFACTS,'index.html':'different nondeterministic export'}});
+  const start=brokerRequests.length;core.addJob(nextId);core.jobs.get(nextId).inputHash=sha256('continued input');
+  executor.enqueue({jobId:nextId,worldId:core.worldId,mode:'check'});await settle(executor,nextId);await executor.stop();
+  assert.deepEqual(brokerRequests.slice(start).map(r=>r.operation),['import']);
+  assert.equal(JSON.stringify(core.record(originId)),original,'origin receipt is immutable');
+  if(fault==='none'){
+    assert.equal(core.record(nextId).status,'passed');assert.equal(checks.length,2);assert.deepEqual(checks[1].snapshot,{currentProgress:11});
+    assert.notEqual(checks[1].inputHash,checks[0].inputHash);assert.deepEqual(core.jobs.get(nextId).output.artifacts,core.jobs.get(originId).output.artifacts);
+    const proof=JSON.parse(core.jobs.get(nextId).output.check.assertions.find(a=>a.id==='export.reused').detail);
+    assert.equal(proof.scope,'current-applied-build');assert.equal(proof.exportExecuted,false);assert.equal(proof.originOutputHash,core.jobs.get(originId).outputHash);
+    assertEvidenceUnchanged(before,files,'reuse');
+    await executor.start();assert.deepEqual(executor.ledger.jobs[nextId].exportReuse,proof);await executor.stop();
+  } else if(fault==='runtime-failed') {
+    assert.equal(checks.length,2,'a retained export never supplies an old successful runtime verdict');
+    assert.equal(core.record(nextId).status,'failed');assertEvidenceUnchanged(before,files,'new check failure');
   } else {
     assert.equal(checks.length,1,'no runtime verdict after a refused reuse');assert.notEqual(core.record(nextId).status,'passed');
     if(fault==='tamper')assert(fs.readFileSync(files[1],'utf8').endsWith('tamper'));
