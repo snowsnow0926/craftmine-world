@@ -10323,3 +10323,21 @@ deterministic bridge in an independent headless process. Native acceptance must
 separately verify real check/adoption and cold world reopening; fixture results
 are not native or human acceptance evidence. No real mouse/keyboard, input
 simulation, Pointer Lock or foreground windows are permitted.
+
+### First independent creation and sharing roundtrip (2026-09-13)
+
+Run the ordinary PI New World form, direct catalog companion use, supported
+stock placement and scale/color editing, save and cold reopen, world template
+publication/export, then ZIP-only import into a second empty profile, native
+play and another cold reopen. Preserve exact catalog instance identity and
+edited stock properties, player inventory and reward ledgers. Prove zero
+observed model requests from actual session metrics. This edits an ordinarily
+placed supported object and does not claim arbitrary catalog GLB editing.
+See [the acceptance contract](first-creation-roundtrip.md) and
+`tests/first-creation-roundtrip-native.mjs` for evidence and scope boundaries.
+
+After adding the approved large companion, aim at unrelated empty ground and
+verify Place here remains available. Aim through oversized unsupported geometry
+and verify conservative target refusal. Reopen an exact previous sampler cohort,
+use the ordinary observer-upgrade action, and verify one pinned sampler update
+passes normal checking/adoption while authored source and progress survive.

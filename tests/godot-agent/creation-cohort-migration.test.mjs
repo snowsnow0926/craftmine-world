@@ -7,7 +7,7 @@ import {register} from 'node:module';
 import {materializeBase} from '../../desktop/godot/shared/materialize.mjs';
 register(new URL('../../vendor/pi-desktop/apps/desktop/test/helpers/ts-import-hooks.mjs',import.meta.url));
 const {createCreationSourceMigration}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/creation-source-migration.ts');
-const {currentSceneObserverProfile,loadSceneObserverPins}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/creation-observer-pins.ts');
+const {currentSceneObserverProfile,loadSceneObserverPins,canUpgradeSceneObserver}=await import('../../vendor/pi-desktop/apps/desktop/electron/main/creation-observer-pins.ts');
 const root=path.resolve(import.meta.dirname,'../..'),sha=bytes=>createHash('sha256').update(bytes).digest('hex'),context={projectId:'migration-fixture',sessionId:'migration-session',turnId:'migration-turn'};
 function fixture(profile){
  fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
@@ -30,6 +30,31 @@ function assertReadOnly(f){
  assert.ok(f.calls.every(call=>['godotRuntime.exportSource','content.readFile'].includes(call.method)),JSON.stringify(f.calls));
  assert.equal(fs.existsSync(f.deps.directory),false,'no durable migration record');
 }
+
+test('released oversized-mesh picker upgrades only pinned sampler bytes through durable source CAS',async()=>{
+ const f=fixture('creation-player-collision/1'),name='craftmine_shared/scene_mesh_picker_v2.gd';
+ f.texts.set(name,fs.readFileSync(path.join(root,'desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd')));
+ f.texts.set('scenes/authored-companion.tscn',Buffer.from('authored companion retained'));
+ f.formal.files=f.files();f.draft.splice(0,f.draft.length,...structuredClone(f.formal.files));
+ const pins=loadSceneObserverPins(f.deps.resourcesRoot);assert.equal(currentSceneObserverProfile(f.formal.files,pins),'creation-player-collision/1');assert.equal(canUpgradeSceneObserver(f.formal.files,pins),true);
+ const original=f.deps.domain,originalFiles=structuredClone(f.draft);let receipt=null,revision=4,hash='d'.repeat(64),patches=0,advance;
+ f.deps.recordAdvance=(_context,_capture,value)=>{advance=value;};
+ f.deps.domain=async(method,args)=>{
+  if(method==='task.context')return{binding:{taskId:'task-fixture'}};
+  if(method==='godotProject.receipt')return receipt;
+  if(method==='godotProject.patch'){
+   patches++;assert.equal(args.operations.length,1);const op=args.operations[0];assert.equal(op.path,name);assert.equal(op.expectedHash,originalFiles.find(f=>f.path===name).sha256);
+   const at=f.draft.findIndex(f=>f.path===name);f.draft[at]={path:name,bytes:Buffer.byteLength(op.text),sha256:sha(op.text)};
+   revision++;hash='e'.repeat(64);return receipt={revision,manifestHash:hash};
+  }
+  const value=await original(method,args);return method==='godotProject.index'?{...value,currentTaskId:'task-fixture',revision,manifestHash:hash}:value;
+ };
+ const migrate=createCreationSourceMigration(f.deps);const result=await migrate(context,f.capture);assert.equal(result.format,'craftmine.creation-migration-advance/1');assert.deepEqual(result,advance);assert.equal(patches,1);
+ assert.deepEqual(f.draft.filter(f=>f.path!==name),originalFiles.filter(f=>f.path!==name));assert.equal(canUpgradeSceneObserver(f.draft,pins),false);
+ assert.deepEqual(await migrate(context,f.capture),result);assert.equal(patches,1,'retry resolves original receipt without replay');
+ const conflict=fixture('creation-player-collision/1');conflict.texts.set(name,f.texts.get(name));conflict.formal.files=conflict.files();conflict.draft.splice(0,conflict.draft.length,...structuredClone(conflict.formal.files));conflict.draft.find(f=>f.path===name).sha256='9'.repeat(64);
+ await assert.rejects(createCreationSourceMigration(conflict.deps)(context,conflict.capture),{errorCode:'CREATION_MIGRATION_DRAFT_CONFLICT'});
+});
 const profiles=['creation-fixed-controller/1','creation-player-collision/1'];
 for(const profile of profiles)test('real materialized '+profile+' is already current and must not be rewritten',async()=>{
  const f=fixture(profile);let result,error;
