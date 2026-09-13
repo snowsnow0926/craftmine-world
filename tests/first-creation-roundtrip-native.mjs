@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
+import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 
