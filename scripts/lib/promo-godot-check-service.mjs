@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
+import {hostElectron} from './codex-host-electron.mjs';
 
 const root = path.resolve(import.meta.dirname, '../..');
 
@@ -27,7 +28,7 @@ export async function startPromoGodotCheckService({directory}) {
   for (const key of ['APPDATA', 'LOCALAPPDATA', 'USERPROFILE', 'TEMP', 'TMP']) {
     env[key] = path.join(run, key.toLowerCase()); await fs.mkdir(env[key], {recursive: true});
   }
-  const child = spawn(require('electron'), [appRoot, '--user-data-dir=' + path.join(run, 'chromium')],
+  const child = spawn(hostElectron(require), [appRoot, '--user-data-dir=' + path.join(run, 'chromium')],
     {cwd: run, env, windowsHide: true, shell: false, stdio: ['ignore', 'ignore', 'ignore', 'ipc']});
   const pending = new Map(), captures = new Map();
   let resolveReady, rejectReady, ended = false;

@@ -10207,3 +10207,10 @@ Introduce an actual physical obstacle after boarding, drive into it, and verify
 collision stops the aircraft. Ending accident control must release the owned
 movement/camera lock while retaining the actual accident position and a complete
 save receipt; collision recovery must not be replaced by a fabricated reset.
+# Project CLI runtime reuse (2026-09-13)
+
+In a new offline worktree, select an existing absolute Electron executable with
+the developer-only `CRAFTMINE_ELECTRON_BIN` setting. Verify protocol preflight and
+blank-world first load in independent offscreen profiles; reject relative paths
+and directories. Keep all focus/Pointer Lock guards, normal native checks and
+source/adoption distinctions in effect. No model call is needed for preflight.

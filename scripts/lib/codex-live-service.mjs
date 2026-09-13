@@ -4,6 +4,7 @@ import {createRequire} from 'node:module';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {MODEL,redact} from './codex-app-server.mjs';
+import {hostElectron} from './codex-host-electron.mjs';
 
 const root=path.resolve(import.meta.dirname,'../..');
 const require=createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'));
@@ -47,7 +48,7 @@ export async function startCodexLiveService({core,state,data}) {
   const env={CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_HEADLESS_ROOT:directory,CRAFTMINE_DATA_DIR:profile,CRAFTMINE_HEADLESS_TOKEN:token,CRAFTMINE_CODEX_LIVE_WORLD:state.worldId};
   for(const key of ['SystemRoot','WINDIR','COMSPEC','PATH'])if(process.env[key])env[key]=process.env[key];
   for(const key of ['APPDATA','LOCALAPPDATA','USERPROFILE','TEMP','TMP']){env[key]=path.join(directory,key.toLowerCase());await fs.mkdir(env[key]);}
-  const child=spawn(desktopRequire('electron'),[appRoot],{cwd:directory,env,windowsHide:true,shell:false,stdio:['ignore','pipe','pipe','ipc']});
+  const child=spawn(hostElectron(desktopRequire),[appRoot],{cwd:directory,env,windowsHide:true,shell:false,stdio:['ignore','pipe','pipe','ipc']});
   const pending=new Map();let ended=false,closing,guardWrite=Promise.resolve(),exitWrite=Promise.resolve();
   let resolveReady,rejectReady;const ready=new Promise((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;});
   const diagnostics=[];

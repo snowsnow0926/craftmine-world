@@ -187,3 +187,12 @@ The reached surface is an applied, persistent headless project world. Desktop
 composer integration, player target selection, automatic adoption, and acceptance
 of pet/combat/rain/aircraft/city gameplay remain separate. The live host neither
 rewrites those wishes nor proves them from a frame or a successful application.
+# Isolated developer runtime selection (2026-09-13)
+
+The project CLI's live-world and candidate-check helpers accept the trusted
+`CRAFTMINE_ELECTRON_BIN` environment override as an absolute existing file. This
+allows a new offline worktree to use an already installed Electron runtime
+without copying or modifying another checkout's dependencies. When omitted, the
+existing Electron package resolution is unchanged. The value is host-owned,
+never a model argument or generic executable tool. Isolated profiles, hidden
+offscreen surfaces and native guards remain unchanged.
