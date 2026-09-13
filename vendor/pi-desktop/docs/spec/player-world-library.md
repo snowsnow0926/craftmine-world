@@ -6,6 +6,17 @@ from an immutable local catalog reference. Its `world.create` request adds
 ID uses `player.world.*`; the version is a positive integer, at most 100000.
 The original published examples and their authored default state remain intact.
 
+Normal new-world source initialization must preserve each hash-verified authored
+`.glb.import` policy together with its declared `.glb` model. Materializing the
+file on disk is insufficient: it must be present in the native source index and
+readable with its exact bytes. Otherwise a copied world's installation
+declaration names a missing managed file and later component publication fails.
+Only paired GLB policies are admitted; arbitrary `.import` files and `.godot`
+cache-directory contents remain excluded. An orphan policy fails explicitly
+with `MANAGED_BASE_IMPORT_MODEL_REQUIRED`. Sorted initialization patches place
+the model before its policy; Core validates the policy against the same-batch or
+already committed model. No previously failed/copied world is silently repaired.
+
 The player must explicitly choose `initialState: saved-progress`. The client
 first saves the actual formal runtime, then describes its native source identity.
 The template uses this saved state as the new world's starting point. It does

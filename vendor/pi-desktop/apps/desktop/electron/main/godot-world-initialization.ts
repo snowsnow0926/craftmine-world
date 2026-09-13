@@ -117,6 +117,7 @@ export function createGodotWorldInitializer(options: {
     control.taskId = task.binding.taskId;
     check();
     const files: Array<{path: string; bytesBase64: string; sha256: string}> = [];
+    const managedPaths = new Set(metadata.files.map((item: Data) => String(item.path)));
     for (const item of metadata.files) {
       const relative = String(item.path);
       if (relative.includes("\\") || relative.startsWith("/") || relative.includes(":") || relative.split("/").some((part: string) => !part || part === "." || part === "..")) throw Error("INVALID_MANAGED_BASE_PATH");
@@ -126,7 +127,14 @@ export function createGodotWorldInitializer(options: {
       const bytes = fs.readFileSync(full);
       if (bytes.length !== item.bytes || sha(bytes) !== item.sha256) throw Error("MANAGED_BASE_FILE_CHANGED");
       const ext = path.extname(relative).toLowerCase();
-      if (SOURCE.has(ext)) files.push({path: relative, bytesBase64: bytes.toString("base64"), sha256: sha(bytes)});
+      // Authored static GLB import policy is source. Godot's generated import
+      // cache and arbitrary .import files are not. Core still validates the
+      // measured policy and paired GLB bytes before accepting the patch.
+      const importPolicy = relative.endsWith(".glb.import");
+      if (importPolicy && !managedPaths.has(relative.slice(0, -".import".length))) throw Error("MANAGED_BASE_IMPORT_MODEL_REQUIRED");
+      if (!relative.split("/").includes(".godot") && (SOURCE.has(ext) || importPolicy)) {
+        files.push({path: relative, bytesBase64: bytes.toString("base64"), sha256: sha(bytes)});
+      }
     }
     files.sort((a, b) => a.path === "project.godot" ? -1 : b.path === "project.godot" ? 1 : a.path.localeCompare(b.path));
     if (files[0]?.path !== "project.godot") throw Error("PROJECT_CONFIG_REQUIRED");

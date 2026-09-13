@@ -10257,3 +10257,16 @@ cold reopen with unchanged source OIDs and restored progress. Frozen development
 and fixed-release catalogs must not replace one another in the evidence. Direct
 template copy, fresh-Agent validation and screenshot reconstruction are distinct
 operations, not interchangeable cost claims.
+# Template initialization retains component import policy (2026-09-13)
+
+Create a new independent world from a player template containing the approved
+Pom component. Through ordinary native sourceContext/index/read, verify the
+copied `addons/cw.module.approved-pomeranian/model.glb.import` remains 81 bytes
+with SHA-256 `2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8`.
+Select that copied component with sourceList and publish it through the ordinary
+player form. Confirm the resulting package can be reused in another world.
+Retain the earlier failing copied world and its native PROJECT_FILE_NOT_FOUND
+receipt. Do not backfill its source or change its failure record. Unit fixtures
+also cover excluded `.godot` caches, arbitrary import files, explicit orphan
+policy failure and a multi-batch initialization boundary. No physical input,
+focus, Pointer Lock or model calls are required for this regression.
