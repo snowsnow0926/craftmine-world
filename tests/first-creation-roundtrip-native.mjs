@@ -268,23 +268,50 @@ async function waitEdit(label){
  await until(()=>rpc('worldNavigationReady'),value=>value.worldId===worldId&&value.ready);
  report.edits??=[];report.edits.push({label,terminal,observation:await rpc('godotObserve')});await modelEvidence(label);save();return report.edits.at(-1).observation;
 }
-async function placeAndEdit(){
- report.ground=await aimGround();await button('在此放置');
- await until(()=>evaluate(`!!document.querySelector('[aria-label="放置类型"]')`),Boolean);
- await field('[aria-label="放置类型"]','tree');await button('放置并检查');
- const placed=await waitEdit('Actual Place here tree');const tree=placed.payload.creation.entities.find(e=>e.kind==='tree');assert(tree,'ACTUAL_PLACEMENT_REQUIRED');report.editedEntityId=tree.id;
- // Select the real checked receipt through the ordinary Recent results UI.
- await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button'),n=>({title:n.title,disabled:n.disabled,text:n.textContent})).find(n=>n.title===${JSON.stringify(tree.id)}&&!n.disabled)`),Boolean);
- const label=await evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button')).find(n=>n.title===${JSON.stringify(tree.id)}).textContent`);
+const visualEditing=process.argv.includes('--visual-edit');
+async function selectEditedTree(id){
+ await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button'),n=>({title:n.title,disabled:n.disabled,text:n.textContent})).find(n=>n.title===${JSON.stringify(id)}&&!n.disabled)`),Boolean);
+ const label=await evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button')).find(n=>n.title===${JSON.stringify(id)}).textContent`);
  await button(label,'.creation-recent-results');
  await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='编辑对象'&&!n.disabled)`),Boolean);
  await button('编辑对象');await until(()=>evaluate(`!!document.querySelector('[aria-label="尺寸 X"]')`),Boolean);
+}
+async function previewAndCancel(label){
+ await panel('godot.runtimePause');const before=completeCreationProgress(await rpc('godotSnapshot'));
+ await button('预览摆放');await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent).some(t=>t==='预览位置可用')`),Boolean);
+ const frame=await capture(label+'-visible');await button('关闭预览');
+ await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
+ const after=completeCreationProgress(await rpc('godotSnapshot'));assert.deepEqual(after,before,'PREVIEW_CANCEL_PRESERVES_COMPLETE_PROGRESS');
+ report.visualPreviews??=[];report.visualPreviews.push({label,frame,before,after});save();
+}
+async function startAndWaitEdit(label){
+ await button('检查并应用');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));return waitEdit(label);
+}
+async function placeAndEdit(){
+ report.ground=await aimGround();await button('在此放置');
+ await until(()=>evaluate(`!!document.querySelector('[aria-label="放置类型"]')`),Boolean);
+ await field('[aria-label="放置类型"]','tree');if(visualEditing)await previewAndCancel('placement-preview');await button('放置并检查');
+ const placed=await waitEdit('Actual Place here tree');const tree=placed.payload.creation.entities.find(e=>e.kind==='tree');assert(tree,'ACTUAL_PLACEMENT_REQUIRED');report.editedEntityId=tree.id;
+ await selectEditedTree(tree.id);
+ let transformedPosition;
+ if(visualEditing){
+  transformedPosition=tree.position.map((n,i)=>i===0?n+.5:n);assert(transformedPosition[0]<27,'NATIVE_TEST_MOVE_WITHIN_WORLD');
+  await field('[aria-label="位置 X"]',String(transformedPosition[0]));await field('[aria-label="朝向角度"]','45');
+  await previewAndCancel('move-rotation-preview');
+  const moved=await startAndWaitEdit('Actual move and yaw edit');const movedTree=moved.payload.creation.entities.find(e=>e.id===tree.id);
+  assert.deepEqual(movedTree.position,transformedPosition);assert(Math.abs(movedTree.rotationY-45)<.005);
+  await refreshTarget();await button('撤销上次操作');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));
+  const undone=await waitEdit('Actual transform undo');const original=undone.payload.creation.entities.find(e=>e.id===tree.id);
+  assert.deepEqual(original.position,tree.position);assert(Math.abs(original.rotationY-tree.rotationY)<.005);
+  report.visualTransformUndo={before:tree,moved:movedTree,restored:original};save();await selectEditedTree(tree.id);
+  await field('[aria-label="位置 X"]',String(transformedPosition[0]));await field('[aria-label="朝向角度"]','45');
+ }
  for(const axis of ['X','Y','Z'])await field(`[aria-label="尺寸 ${axis}"]`,'1.25');
  await field('[aria-label="对象颜色"]','#88bb44');await button('检查并应用');
  // Wait until the existing applied status has actually transitioned away.
  await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));
  const modified=await waitEdit('Actual scale and color edit');const actual=modified.payload.creation.entities.find(e=>e.id===tree.id);
- assert(actual.scale.every(n=>Math.abs(n-1.25)<.00001)&&actual.color==='#88bb44');
+ assert(actual.scale.every(n=>Math.abs(n-1.25)<.00001)&&actual.color==='#88bb44');if(visualEditing){assert.deepEqual(actual.position,transformedPosition);assert(Math.abs(actual.rotationY-45)<.005);}
  report.editedEntity=actual;report.editorCapture=await rpc('capture',{name:'ordinary-edited-tree'});report.editCapture=await capture('edited-world');save();
 }
 async function publishWorld(){
@@ -311,7 +338,7 @@ async function importWorld(){
 async function assertContents(label){
  const observed=await rpc('godotObserve'),snapshot=await rpc('godotSnapshot');
  const tree=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);
- assert(tree&&tree.color==='#88bb44'&&tree.scale.every(n=>Math.abs(n-1.25)<.00001));
+ assert(tree&&tree.color==='#88bb44'&&tree.scale.every(n=>Math.abs(n-1.25)<.00001));if(visualEditing){assert.deepEqual(tree.position,report.editedEntity.position);assert(Math.abs(tree.rotationY-report.editedEntity.rotationY)<.005);}
  const components=Object.keys(snapshot.state.body.components);assert(components.includes(report.companionEntityId));
  assert.deepEqual(snapshot.state.body.inventory,report.initialSnapshot.state.body.inventory);
  assert.deepEqual(snapshot.state.body.openedChests,report.initialSnapshot.state.body.openedChests);

@@ -169,3 +169,20 @@ test('ordinary door opening may advance but does not authorize hiding the door',
  assert.equal(godotCreationMatches({phase:'running',entities:[{...door,solid:false,visible:false,open:true}],timeOfDay:18},outer),false);
  assert.equal(r.entities.some(e=>Object.hasOwn(e,'solidMutable')),false);
 });
+
+test('position and yaw edits require the exact observed transform and preserve other objects',()=>{
+ const original={...tree,rotationY:15},other={...tree,id:'other',position:[10,0,0],rotationY:90};
+ const frozen=freezeCreationRequirements({...capture,entities:[original,other]},{action:'modify',targetId:tree.id,changes:{position:[5,0,1],rotationY:180}});
+ assert.equal(frozen.status,'verifiable');
+ const moved={...original,position:[5,0,1],rotationY:-180};
+ assert.equal(creationEntitiesMatch(frozen.requirements,[moved,other]),true);
+ for(const actual of [[original,other],[{...moved,rotationY:0},other],[moved,{...other,rotationY:0}],[{...moved,rotationY:undefined},other]])assert.equal(creationEntitiesMatch(frozen.requirements,actual),false);
+});
+test('placement freezes the explicitly chosen location and orientation instead of the old hit point',()=>{
+ const frozen=freezeCreationRequirements({...capture,source:'ray'},{action:'place',kind:'rock',position:[8,0,8],rotationY:45,scale:[1,1,1],color:'#abcdef'});
+ assert.equal(frozen.status,'verifiable');
+ const placed={...tree,id:'new-rock',kind:'rock',position:[8,0,8],rotationY:45,color:'#abcdef'};
+ assert.equal(creationEntitiesMatch(frozen.requirements,[tree,placed]),true);
+ assert.equal(creationEntitiesMatch(frozen.requirements,[tree,{...placed,position:capture.target.position}]),false);
+ assert.equal(creationEntitiesMatch(frozen.requirements,[tree,{...placed,rotationY:0}]),false);
+});

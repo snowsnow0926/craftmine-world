@@ -1,3 +1,4 @@
+import {createCreationPreviewService} from './creation-preview-service';
 import { createMainWindow, type MainWindow } from "./main-window";
 import { mainInputContents, setMainImmersion, syncMainInputFocus } from "./main-window-layers";
 import { deliverImmersionShortcut } from "./immersion-shortcut-dispatch";
@@ -1393,9 +1394,16 @@ async function creationEditCapture(owner:number,sessionId:string,captureId:strin
   if(!capture)throw Error("CREATION_TARGET_REQUIRED");
   return {session,projectId,capture};
 }
+const creationPreviews=createCreationPreviewService({
+  resourcesRoot:godotRoot,
+  capture:async(owner,sessionId,captureId)=>(await creationEditCapture(owner,sessionId,captureId)).capture,
+  source:worldId=>plugins.requestCraftmineHost('godotRuntime.exportSource',{worldId}),
+  dispatch:(identity,args)=>godotWorld.creationPreview(identity,args),
+});
 const creationEdits=createCreationEditService({
   directory:join(dataDir,"creation-edits"),
   begin:async(owner,input)=>{
+    await creationPreviews.clear(owner);
     await stopWorldMaintenance();
     if(directLibrary.isBusy()||creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
@@ -1410,7 +1418,10 @@ const creationEdits=createCreationEditService({
       await assertCreationEditor(owner,input.sessionId);
       const turn=await host!.call<{turnId:string}>("session.beginTurn",{sessionId:input.sessionId});turnId=turn.turnId;
       if(!turnId)throw Error("CREATION_EDIT_TURN_REQUIRED");activeTurns.set(input.sessionId,turnId);activeTurnUsages.delete(input.sessionId);
-      const content=upgrade?"升级世界观察组件，保留当前作品和进度":input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      let content=upgrade?"升级世界观察组件，保留当前作品和进度":input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      const transform=input.placement??input.changes;
+      if(transform?.position)content+=`，位置 ${transform.position.join(" × ")}`;
+      if(transform?.rotationY!==undefined)content+=`，朝向 ${transform.rotationY}°`;
       const message={id:crypto.randomUUID(),role:"user",content,createdAt:new Date().toISOString(),status:"complete"};
       await host!.call("session.appendMessage",{sessionId:input.sessionId,turnId,message});
       if(!await bindCraftmineTurn(input.sessionId,turnId,session,{id:message.id,text:content},{owner,capture,intent}))throw Error("CREATION_SESSION_REQUIRED");
@@ -6958,10 +6969,14 @@ function registerIpc() {
       await assertCreationResultAccess(payload.payload ?? {}, {viewingSession:()=>notificationViewingSessionId,
         selectedWorld:godotSelection, domain:(method,args)=>plugins.requestCraftmineHost(method,args)});
     }
-    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory"].includes(payload.channel)){
+    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory","godot.creationPreview"].includes(payload.channel)){
       if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
       const input=payload.payload??{};
       if(!input||typeof input!=="object"||Array.isArray(input))throw Error("CREATION_REQUEST_INVALID");
+      if(payload.channel==="godot.creationPreview"){
+        if(input.action!=='cancel'&&(activeTurns.size||turnFinalizations.size||creationEditStarting||directLibrary.isBusy()))throw Error('ACTIVE_TASK_EXISTS');
+        return creationPreviews.request(event.sender.id,input);
+      }
       if(payload.channel==="godot.creationEdit"){
         const request=validateCreationEdit(input);await assertCreationEditor(event.sender.id,request.sessionId);return creationEdits.start(event.sender.id,request);
       }

@@ -21,7 +21,10 @@ function loadEnginePerformancePins(root){
   if(!Object.values(RESOURCES).every(relative=>fs.existsSync(path.join(root,relative))))return null;
   return Object.freeze(Object.fromEntries(Object.entries(RESOURCES).map(([name,relative])=>{
     const text=fs.readFileSync(path.join(root,relative),'utf8').replace(/\r\n/g,'\n');
-    const variants=[text,text.replace(/\n/g,'\r\n')].map(value=>Object.freeze({bytes:Buffer.byteLength(value),sha256:hash(value)}));
+    const legacy=path.join(root,'shared/repairs/runtime_bridge_engine_v1-before-preview.gd');
+    const texts=[text,text.replace(/\n/g,'\r\n')];
+    if(name==='craftmine_shared/runtime_bridge.gd'&&fs.existsSync(legacy)){const old=fs.readFileSync(legacy,'utf8').replace(/\r\n/g,'\n');texts.push(old,old.replace(/\n/g,'\r\n'));}
+    const variants=texts.map(value=>Object.freeze({bytes:Buffer.byteLength(value),sha256:hash(value)}));
     return [name,Object.freeze(variants)];
   })));
 }
