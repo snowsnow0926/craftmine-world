@@ -12,6 +12,22 @@
   "rightsNote": "Project-authored managed protocol, materializers, component installation and captured authored initial states. Content inventory only; formal per-module licence application remains pending. Approved demonstration templates retain project-generated source/model provenance and Noto-derived OFL font notices; their metadata does not grant trademark rights.",
   "entries": [
     {
+      "path": "README.md",
+      "role": "data",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 13757,
+      "sha256": "84ac18a03c592b7ab5be62e217f9e8678fdb765e731fac51370f987bb62ce8ec"
+    },
+    {
       "path": "adapters/creation-sandbox-controller-v1.gd",
       "role": "source",
       "origin": "authored",
@@ -197,23 +213,6 @@
       "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
     },
     {
-      "path": "creation_runtime.mjs",
-      "role": "tool",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 2862,
-      "sha256": "e4852919b91bb738f04f2c33140e6d852765e5ed4a6cb9475b2bb3ff6f1a0d59"
-    },
-    {
       "path": "creation-entities.mjs",
       "role": "tool",
       "origin": "authored",
@@ -246,6 +245,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 5597,
       "sha256": "dce58ced844ef15781ba9e0c71c33132efc7a6cbdbf478d929134153549e91ee"
+    },
+    {
+      "path": "creation_runtime.mjs",
+      "role": "tool",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2862,
+      "sha256": "e4852919b91bb738f04f2c33140e6d852765e5ed4a6cb9475b2bb3ff6f1a0d59"
     },
     {
       "path": "draft_install.mjs",
@@ -493,23 +509,6 @@
       "sha256": "2f9143390f71f72ba0849b240366b767f903c09886f415e0caa058bdcbcf0113"
     },
     {
-      "path": "progress_collision.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 4781,
-      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
-    },
-    {
       "path": "progress-migration.d.mts",
       "role": "data",
       "origin": "authored",
@@ -540,6 +539,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 12881,
       "sha256": "09dc831a4240042b7373522877ad198bf01fa6abbbe0bc30faf033dcedebfcf8"
+    },
+    {
+      "path": "progress_collision.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 4781,
+      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
     },
     {
       "path": "promo-templates/catalog.json",
@@ -608,6 +624,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 1513903,
       "sha256": "7a0a9eabf4c444b1fea633c1abc6306e5bf2c5456b3d4fb3650d3d0da533c9c0"
+    },
+    {
+      "path": "promo-templates/promo-city/source/README.md",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
     },
     {
       "path": "promo-templates/promo-city/source/assets/ASSET_MANIFEST.json",
@@ -695,6 +728,24 @@
       "sha256": "95ed0a416b2d5abb69b1865b24b7e95d346913091e4153a7ad11939d61069465"
     },
     {
+      "path": "promo-templates/promo-city/source/assets/fonts/OFL-NotoSansSC.txt",
+      "role": "license",
+      "origin": "upstream",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "promo-templates/promo-city/source/assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
       "path": "promo-templates/promo-city/source/assets/fonts/cjk-0.json",
       "role": "font-data",
       "origin": "derived",
@@ -749,24 +800,6 @@
       "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
     },
     {
-      "path": "promo-templates/promo-city/source/assets/fonts/OFL-NotoSansSC.txt",
-      "role": "license",
-      "origin": "upstream",
-      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
-      "version": "Craftmine CJK Regular 1.0",
-      "license": "OFL-1.1",
-      "licenseFile": "promo-templates/promo-city/source/assets/fonts/OFL-NotoSansSC.txt",
-      "redistribution": "permitted-with-notice",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
-      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
-      "bytes": 4388,
-      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
-    },
-    {
       "path": "promo-templates/promo-city/source/craftmine_initial_state.json",
       "role": "source",
       "origin": "authored",
@@ -782,6 +815,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 696,
       "sha256": "608f1863681b09b58fe8ec481afe7eb1a1b901fd02f46255e119b9fb6fefadf4"
+    },
+    {
+      "path": "promo-templates/promo-city/source/craftmine_shared/base_adapter.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 3380,
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
     },
     {
       "path": "promo-templates/promo-city/source/craftmine_shared/base_adapter_controller_v1.gd",
@@ -816,23 +866,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 19410,
       "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
-    },
-    {
-      "path": "promo-templates/promo-city/source/craftmine_shared/base_adapter.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 3380,
-      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
     },
     {
       "path": "promo-templates/promo-city/source/craftmine_shared/component_state.gd",
@@ -920,23 +953,6 @@
       "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
     },
     {
-      "path": "promo-templates/promo-city/source/craftmine_shared/runtime_bridge_base.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 8556,
-      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
-    },
-    {
       "path": "promo-templates/promo-city/source/craftmine_shared/runtime_bridge.gd",
       "role": "source",
       "origin": "authored",
@@ -954,7 +970,7 @@
       "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
     },
     {
-      "path": "promo-templates/promo-city/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "path": "promo-templates/promo-city/source/craftmine_shared/runtime_bridge_base.gd",
       "role": "source",
       "origin": "authored",
       "author": "Craftmine World project with Codex-assisted authoring",
@@ -967,8 +983,8 @@
         "user-export"
       ],
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 15366,
-      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+      "bytes": 8556,
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
     },
     {
       "path": "promo-templates/promo-city/source/craftmine_shared/scene_mesh_picker.gd",
@@ -986,6 +1002,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 18909,
       "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "path": "promo-templates/promo-city/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "promo-templates/promo-city/source/craftmine_shared/state_guard.gd",
@@ -1071,23 +1104,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 1176,
       "sha256": "171ec1bf0837b9a6ae793da6218fe921b0b58e4e454f2e6f06f9a8c67c507d7f"
-    },
-    {
-      "path": "promo-templates/promo-city/source/README.md",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 1677,
-      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
     },
     {
       "path": "promo-templates/promo-city/source/scenes/creation.tscn",
@@ -1430,6 +1446,23 @@
       "sha256": "70af2d9b49d56c6e2746eae0c6f4e24a918f1d3d0a8c3025dd80cb0cd323c4c3"
     },
     {
+      "path": "promo-templates/promo-flight/source/README.md",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
       "path": "promo-templates/promo-flight/source/assets/ASSET_MANIFEST.json",
       "role": "source",
       "origin": "authored",
@@ -1532,6 +1565,24 @@
       "sha256": "80b43f7a6c68eeea399933d6d4db7f2d31675ee39677a91d6a214df0d2d92c4a"
     },
     {
+      "path": "promo-templates/promo-flight/source/assets/fonts/OFL-NotoSansSC.txt",
+      "role": "license",
+      "origin": "upstream",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "promo-templates/promo-flight/source/assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
       "path": "promo-templates/promo-flight/source/assets/fonts/cjk-0.json",
       "role": "font-data",
       "origin": "derived",
@@ -1586,24 +1637,6 @@
       "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
     },
     {
-      "path": "promo-templates/promo-flight/source/assets/fonts/OFL-NotoSansSC.txt",
-      "role": "license",
-      "origin": "upstream",
-      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
-      "version": "Craftmine CJK Regular 1.0",
-      "license": "OFL-1.1",
-      "licenseFile": "promo-templates/promo-flight/source/assets/fonts/OFL-NotoSansSC.txt",
-      "redistribution": "permitted-with-notice",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
-      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
-      "bytes": 4388,
-      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
-    },
-    {
       "path": "promo-templates/promo-flight/source/assets/library/j20.glb",
       "role": "model",
       "origin": "authored",
@@ -1638,6 +1671,23 @@
       "sha256": "cf350953bd191d6f245cb00b8e9ae52792d945a2f056db2b06173bf3984c0a6a"
     },
     {
+      "path": "promo-templates/promo-flight/source/craftmine_shared/base_adapter.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 3380,
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+    },
+    {
       "path": "promo-templates/promo-flight/source/craftmine_shared/base_adapter_controller_v1.gd",
       "role": "source",
       "origin": "authored",
@@ -1670,23 +1720,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 19410,
       "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
-    },
-    {
-      "path": "promo-templates/promo-flight/source/craftmine_shared/base_adapter.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 3380,
-      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
     },
     {
       "path": "promo-templates/promo-flight/source/craftmine_shared/component_state.gd",
@@ -1774,23 +1807,6 @@
       "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
     },
     {
-      "path": "promo-templates/promo-flight/source/craftmine_shared/runtime_bridge_base.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 8556,
-      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
-    },
-    {
       "path": "promo-templates/promo-flight/source/craftmine_shared/runtime_bridge.gd",
       "role": "source",
       "origin": "authored",
@@ -1808,7 +1824,7 @@
       "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
     },
     {
-      "path": "promo-templates/promo-flight/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "path": "promo-templates/promo-flight/source/craftmine_shared/runtime_bridge_base.gd",
       "role": "source",
       "origin": "authored",
       "author": "Craftmine World project with Codex-assisted authoring",
@@ -1821,8 +1837,8 @@
         "user-export"
       ],
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 15366,
-      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+      "bytes": 8556,
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
     },
     {
       "path": "promo-templates/promo-flight/source/craftmine_shared/scene_mesh_picker.gd",
@@ -1840,6 +1856,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 18909,
       "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "path": "promo-templates/promo-flight/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "promo-templates/promo-flight/source/craftmine_shared/state_guard.gd",
@@ -1925,23 +1958,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 1173,
       "sha256": "945440e0ae7cbbc36262715a2fc8183b2bc2d66b4689645e68cdb32f308d010a"
-    },
-    {
-      "path": "promo-templates/promo-flight/source/README.md",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 1677,
-      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
     },
     {
       "path": "promo-templates/promo-flight/source/scenes/creation.tscn",
@@ -2267,6 +2283,23 @@
       "sha256": "d97fb0f5f656a041e982099108569c35444083ef094f9be6ec413091b9e5f418"
     },
     {
+      "path": "promo-templates/promo-mainline/source/README.md",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
       "path": "promo-templates/promo-mainline/source/assets/ASSET_MANIFEST.json",
       "role": "source",
       "origin": "authored",
@@ -2403,6 +2436,24 @@
       "sha256": "88f9128fbb8e3d246897e97925fe688cd9b6f82d026465cd70c79bc4cda71298"
     },
     {
+      "path": "promo-templates/promo-mainline/source/assets/fonts/OFL-NotoSansSC.txt",
+      "role": "license",
+      "origin": "upstream",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "promo-templates/promo-mainline/source/assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    {
       "path": "promo-templates/promo-mainline/source/assets/fonts/cjk-0.json",
       "role": "font-data",
       "origin": "derived",
@@ -2457,24 +2508,6 @@
       "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
     },
     {
-      "path": "promo-templates/promo-mainline/source/assets/fonts/OFL-NotoSansSC.txt",
-      "role": "license",
-      "origin": "upstream",
-      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
-      "version": "Craftmine CJK Regular 1.0",
-      "license": "OFL-1.1",
-      "licenseFile": "promo-templates/promo-mainline/source/assets/fonts/OFL-NotoSansSC.txt",
-      "redistribution": "permitted-with-notice",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
-      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
-      "bytes": 4388,
-      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
-    },
-    {
       "path": "promo-templates/promo-mainline/source/assets/library/pomeranian-cute.glb",
       "role": "model",
       "origin": "authored",
@@ -2509,6 +2542,23 @@
       "sha256": "91d7c58d8cc6a64f355c076ba994bfbf698b5354ede621808955a126488e4927"
     },
     {
+      "path": "promo-templates/promo-mainline/source/craftmine_shared/base_adapter.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 3380,
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+    },
+    {
       "path": "promo-templates/promo-mainline/source/craftmine_shared/base_adapter_controller_v1.gd",
       "role": "source",
       "origin": "authored",
@@ -2541,23 +2591,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 19410,
       "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
-    },
-    {
-      "path": "promo-templates/promo-mainline/source/craftmine_shared/base_adapter.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 3380,
-      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
     },
     {
       "path": "promo-templates/promo-mainline/source/craftmine_shared/component_state.gd",
@@ -2645,23 +2678,6 @@
       "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
     },
     {
-      "path": "promo-templates/promo-mainline/source/craftmine_shared/runtime_bridge_base.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 8556,
-      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
-    },
-    {
       "path": "promo-templates/promo-mainline/source/craftmine_shared/runtime_bridge.gd",
       "role": "source",
       "origin": "authored",
@@ -2679,7 +2695,7 @@
       "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
     },
     {
-      "path": "promo-templates/promo-mainline/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "path": "promo-templates/promo-mainline/source/craftmine_shared/runtime_bridge_base.gd",
       "role": "source",
       "origin": "authored",
       "author": "Craftmine World project with Codex-assisted authoring",
@@ -2692,8 +2708,8 @@
         "user-export"
       ],
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 15366,
-      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+      "bytes": 8556,
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
     },
     {
       "path": "promo-templates/promo-mainline/source/craftmine_shared/scene_mesh_picker.gd",
@@ -2711,6 +2727,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 18909,
       "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "path": "promo-templates/promo-mainline/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "promo-templates/promo-mainline/source/craftmine_shared/state_guard.gd",
@@ -2796,23 +2829,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 1178,
       "sha256": "82c4042bdd45214642de97becf58b9236c2df8d24ae389c1aeaac5287d356d60"
-    },
-    {
-      "path": "promo-templates/promo-mainline/source/README.md",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 1677,
-      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
     },
     {
       "path": "promo-templates/promo-mainline/source/scenes/creation.tscn",
@@ -3240,6 +3256,23 @@
       "sha256": "3103d7cb0a18da452547ba0c3345ae7f0fb37bd106da73e4bfc85f991a387d38"
     },
     {
+      "path": "promo-templates/promo-rain/source/README.md",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 1677,
+      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
+    },
+    {
       "path": "promo-templates/promo-rain/source/assets/ASSET_MANIFEST.json",
       "role": "source",
       "origin": "authored",
@@ -3272,6 +3305,24 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 2016196,
       "sha256": "edb8132ded4890af35cb1286cefa1e4476749b125c02567658061781101bbbf1"
+    },
+    {
+      "path": "promo-templates/promo-rain/source/assets/fonts/OFL-NotoSansSC.txt",
+      "role": "license",
+      "origin": "upstream",
+      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
+      "version": "Craftmine CJK Regular 1.0",
+      "license": "OFL-1.1",
+      "licenseFile": "promo-templates/promo-rain/source/assets/fonts/OFL-NotoSansSC.txt",
+      "redistribution": "permitted-with-notice",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
+      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
+      "bytes": 4388,
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
     },
     {
       "path": "promo-templates/promo-rain/source/assets/fonts/cjk-0.json",
@@ -3328,24 +3379,6 @@
       "sha256": "c136ea0dd081e5d1d9a9f28e792762bc85807e9d159d493c8d557b66ebe03e4d"
     },
     {
-      "path": "promo-templates/promo-rain/source/assets/fonts/OFL-NotoSansSC.txt",
-      "role": "license",
-      "origin": "upstream",
-      "author": "Adobe / Noto Sans SC contributors; derived packaging by Craftmine World project",
-      "version": "Craftmine CJK Regular 1.0",
-      "license": "OFL-1.1",
-      "licenseFile": "promo-templates/promo-rain/source/assets/fonts/OFL-NotoSansSC.txt",
-      "redistribution": "permitted-with-notice",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "source": "vendor/pi-desktop/apps/desktop/src/assets/fonts/licenses/OFL-NotoSansSC.txt",
-      "notes": "Weight 400 instance, renamed Craftmine CJK; 30890 characters retained. Reproducible generator and source/output hashes are recorded in assets/fonts/font.json.",
-      "bytes": 4388,
-      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
-    },
-    {
       "path": "promo-templates/promo-rain/source/craftmine_initial_state.json",
       "role": "source",
       "origin": "authored",
@@ -3361,6 +3394,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 686,
       "sha256": "ddd2803c71eb96aadd305e7d00eed2b4ce6dbe72f511ee18fa780fe776c5c396"
+    },
+    {
+      "path": "promo-templates/promo-rain/source/craftmine_shared/base_adapter.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 3380,
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
     },
     {
       "path": "promo-templates/promo-rain/source/craftmine_shared/base_adapter_controller_v1.gd",
@@ -3395,23 +3445,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 19410,
       "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
-    },
-    {
-      "path": "promo-templates/promo-rain/source/craftmine_shared/base_adapter.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 3380,
-      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
     },
     {
       "path": "promo-templates/promo-rain/source/craftmine_shared/component_state.gd",
@@ -3499,23 +3532,6 @@
       "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
     },
     {
-      "path": "promo-templates/promo-rain/source/craftmine_shared/runtime_bridge_base.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 8556,
-      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
-    },
-    {
       "path": "promo-templates/promo-rain/source/craftmine_shared/runtime_bridge.gd",
       "role": "source",
       "origin": "authored",
@@ -3533,7 +3549,7 @@
       "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
     },
     {
-      "path": "promo-templates/promo-rain/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "path": "promo-templates/promo-rain/source/craftmine_shared/runtime_bridge_base.gd",
       "role": "source",
       "origin": "authored",
       "author": "Craftmine World project with Codex-assisted authoring",
@@ -3546,8 +3562,8 @@
         "user-export"
       ],
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 15366,
-      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
+      "bytes": 8556,
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
     },
     {
       "path": "promo-templates/promo-rain/source/craftmine_shared/scene_mesh_picker.gd",
@@ -3565,6 +3581,23 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 18909,
       "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "path": "promo-templates/promo-rain/source/craftmine_shared/scene_mesh_picker_v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project with Codex-assisted authoring",
+      "version": "1.0.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "promo-templates/promo-rain/source/craftmine_shared/state_guard.gd",
@@ -3667,23 +3700,6 @@
       "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
       "bytes": 1171,
       "sha256": "91eeb12324aa448bc430d6eebd9acda1817b16540593844c0ac27ea46d4a85ce"
-    },
-    {
-      "path": "promo-templates/promo-rain/source/README.md",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project with Codex-assisted authoring",
-      "version": "1.0.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Local project publication; formal per-module licence application remains pending. Fictional-city and aircraft names are descriptive, not a trademark licence.",
-      "bytes": 1677,
-      "sha256": "dff779d08c8aea3f54a341139a18adfe91078781ecd657e65e8e70d6e3d3eb16"
     },
     {
       "path": "promo-templates/promo-rain/source/scenes/creation.tscn",
@@ -3907,22 +3923,6 @@
       "sha256": "85c648e261c2cc3917cbdcb742c31122064e67fd87f3e70c162a8e7f84cb03bd"
     },
     {
-      "path": "README.md",
-      "role": "data",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "development-only"
-      ],
-      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 13757,
-      "sha256": "84ac18a03c592b7ab5be62e217f9e8678fdb765e731fac51370f987bb62ce8ec"
-    },
-    {
       "path": "repairs/.gitattributes",
       "role": "data",
       "origin": "authored",
@@ -3955,7 +3955,7 @@
       "sha256": "faf11c86dc06006a37c65855cd48659107fbe19cc439d771aab45dbf866417a2"
     },
     {
-      "path": "runtime_bridge_engine_v1.gd",
+      "path": "repairs/scene_mesh_picker_v2-global-budget.gd",
       "role": "source",
       "origin": "authored",
       "author": "Craftmine World project",
@@ -3968,8 +3968,8 @@
         "user-export"
       ],
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 2755,
-      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+      "bytes": 15366,
+      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "runtime_bridge.gd",
@@ -3989,6 +3989,23 @@
       "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
     },
     {
+      "path": "runtime_bridge_engine_v1.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 2755,
+      "sha256": "593ade6619c31f44ab3c86790a79ea8ebc0fbd0ac6b9a5ffee212ad5f8849270"
+    },
+    {
       "path": "scene_materializer.mjs",
       "role": "tool",
       "origin": "authored",
@@ -4003,23 +4020,6 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 15057,
       "sha256": "195f5343401cf74ce354f0b36c5229e50d375fb7c802f09b6e8b1242e7b89fb3"
-    },
-    {
-      "path": "scene_mesh_picker_v2.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "1",
-      "license": "project-authored",
-      "licenseFile": null,
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
-      "bytes": 15366,
-      "sha256": "f83525ba2dea31a2578cdae07a91d379ad177011ef689b57dfd9937c135a3938"
     },
     {
       "path": "scene_mesh_picker.gd",
@@ -4037,6 +4037,23 @@
       "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
       "bytes": 18909,
       "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "path": "scene_mesh_picker_v2.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "1",
+      "license": "project-authored",
+      "licenseFile": null,
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "outstanding": "Project-authored provenance reviewed; formal per-module licence application remains pending. This pin is not a licence grant.",
+      "bytes": 15674,
+      "sha256": "09b64ed260b83dd9b3c0559868d6ee3c34ece69876266154b3821ce166865acd"
     },
     {
       "path": "standalone_bootstrap.gd",

@@ -35,6 +35,24 @@
       "notes": "Project or base configuration."
     },
     {
+      "path": "README.md",
+      "role": "doc",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "development-only"
+      ],
+      "bytes": 8105,
+      "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510",
+      "notes": "Project documentation; not loaded by the running game."
+    },
+    {
       "path": "assets/ASSET_MANIFEST.json",
       "role": "data",
       "origin": "authored",
@@ -632,24 +650,6 @@
       "bytes": 2327,
       "sha256": "b3d490321a84a26c7f5153ab026eeff9e2c481f8cd86af10f2ea40717a87bb96",
       "notes": "Project or base configuration."
-    },
-    {
-      "path": "README.md",
-      "role": "doc",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
-      "targetLicense": "AGPL-3.0-only or commercial (creation core, formal application pending)",
-      "redistribution": "permitted",
-      "distribution": [
-        "development-only"
-      ],
-      "bytes": 8105,
-      "sha256": "edcc5272979082beec274a80857edb875c7c5bcc8a3013e14d1d8fe647b52510",
-      "notes": "Project documentation; not loaded by the running game."
     },
     {
       "path": "scenes/actors/monster_encounter.tscn",
@@ -1315,25 +1315,6 @@
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
-      "path": "scripts/ui/crosshair_style.gd",
-      "role": "source",
-      "origin": "authored",
-      "author": "Craftmine World project",
-      "version": "0.1.0",
-      "license": "project-authored",
-      "licenseFile": null,
-      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
-      "targetLicense": "MIT (export runtime, formal application pending)",
-      "redistribution": "permitted",
-      "distribution": [
-        "app-bundle",
-        "user-export"
-      ],
-      "bytes": 1281,
-      "sha256": "12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387",
-      "notes": "Authored GDScript executed by the base runtime."
-    },
-    {
       "path": "scripts/ui/crosshair.gd",
       "role": "source",
       "origin": "authored",
@@ -1350,6 +1331,25 @@
       ],
       "bytes": 5904,
       "sha256": "aef94179a55c9bd51da4eef523e6e8d2258610e58b4ee4fe358c7c7f46067137",
+      "notes": "Authored GDScript executed by the base runtime."
+    },
+    {
+      "path": "scripts/ui/crosshair_style.gd",
+      "role": "source",
+      "origin": "authored",
+      "author": "Craftmine World project",
+      "version": "0.1.0",
+      "license": "project-authored",
+      "licenseFile": null,
+      "licenseDocument": "desktop/delivery/base-assets/rights/first-person.md",
+      "targetLicense": "MIT (export runtime, formal application pending)",
+      "redistribution": "permitted",
+      "distribution": [
+        "app-bundle",
+        "user-export"
+      ],
+      "bytes": 1281,
+      "sha256": "12f46fe53edfeb6e489edc6d548f50b53de8454b1c44443dacb7a2cbeb82c387",
       "notes": "Authored GDScript executed by the base runtime."
     },
     {
