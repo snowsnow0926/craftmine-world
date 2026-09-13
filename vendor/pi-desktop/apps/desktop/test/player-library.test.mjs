@@ -42,9 +42,11 @@ test('a prepared native frame survives sheet hiding but never a different formal
  let source='build:artifact-a',world='w',identity={worldId:'w',buildId:'b',instanceId:'i'},hidden=false,candidate=false,captures=0;
  const image={isEmpty:()=>false,getSize:()=>({width:1280,height:720}),resize(){return this;},toPNG:()=>png};
  const capture=createLibraryPreviewCapture({selection:async()=>world,instance:()=>identity,sourceIdentity:async()=>source,candidateActive:()=>candidate,decode:()=>image,capture:async()=>{captures++;if(hidden)throw Error('DETACHED');return {...identity,scope:'formal',pngBase64:png.toString('base64'),sha256:sha};}});
+ await assert.rejects(capture.prepared('w'),/PREPARE_REQUIRED/);assert.equal(captures,0);
  const prepared=await capture.prepare({worldId:'w'});assert.deepEqual(prepared,{ready:true,worldId:'w',buildId:'b'});assert(!('pngBase64'in prepared));
  hidden=true;assert.equal((await capture('w')).sha256,sha);assert.equal(captures,1,'sheet publication uses actual prepared frame without reattaching hidden view');
- source='build:artifact-b';await assert.rejects(capture('w'),/DETACHED/);
+ assert.equal((await capture.prepared('w')).sha256,sha);assert.equal(captures,1,'feedback reads exact prepared frame without capturing hidden view');
+ source='build:artifact-b';await assert.rejects(capture.prepared('w'),/WORLD_CHANGED/);assert.equal(captures,1,'changed feedback binding never triggers a replacement capture');await assert.rejects(capture('w'),/DETACHED/);
  hidden=false;await capture.prepare({worldId:'w'});hidden=true;identity={...identity,instanceId:'new'};await assert.rejects(capture('w'),/DETACHED/);
  hidden=false;await capture.prepare({worldId:'w'});hidden=true;candidate=true;await assert.rejects(capture('w'),/UNAVAILABLE/);candidate=false;world='other';await assert.rejects(capture('w'),/UNAVAILABLE/);
  for(const input of [{worldId:'w',pngBase64:'forged'},{worldId:'../world'},{}])await assert.rejects(capture.prepare(input),/INVALID_REQUEST/);
