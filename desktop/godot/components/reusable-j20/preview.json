@@ -1,0 +1,32 @@
+{
+  "format": "craftmine.reusable-j20-preview/1",
+  "file": "preview.png",
+  "bytes": 104956,
+  "sha256": "e0a0e3a478cd6af13ec1d8922b0a93b79a5c9f35f1fe3815e5115d1e056bd378",
+  "width": 1280,
+  "height": 860,
+  "scope": "formal-receiving-world-view-of-complete-aircraft",
+  "sourceHashes": {
+    "model.glb": "458105858e12f513dbef111672e83a9897f274796d4321358425a479f094bafe",
+    "aircraft.gd": "a394fe2d355ff38225f41b1f89d541a951f2b96725b06b39d03d037ba04fd5d9",
+    "flight_physics.gd": "ae3fc6ba870b357b089a2331300fae58fad9be549c79e044647e54c008f84d7e"
+  },
+  "capture": {
+    "format": "craftmine.godot-view-capture/1",
+    "worldId": "reuse-flight-1e7f10c6",
+    "buildId": "gbd-0542e5808f64af71006fefd3ace051d1ea74ea95e6bd0bc296d2a9d0c6a4dd58",
+    "instanceId": "1d4a608479779b7a3ebcfd44",
+    "candidateId": null,
+    "scope": "formal",
+    "capturedAt": "2026-09-13T10:29:53.877Z",
+    "viewWidth": 1280,
+    "viewHeight": 784,
+    "sourceWidth": 1280,
+    "sourceHeight": 860,
+    "width": 1280,
+    "height": 860,
+    "resized": false,
+    "sha256": "e0a0e3a478cd6af13ec1d8922b0a93b79a5c9f35f1fe3815e5115d1e056bd378"
+  },
+  "note": "Actual fully visible aircraft in the checked and adopted receiving world. The image includes its flight HUD and runway; it is not an isolated neutral model render and does not certify compatibility or gameplay in a different world."
+}

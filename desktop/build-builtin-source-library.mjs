@@ -104,6 +104,7 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   packages.push({file:rain.file,bytes:rain.bytes});entries.push(rain.entry);
   const flight=buildReusableJ20Package({repository});
   packages.push({file:flight.file,bytes:flight.bytes});entries.push(flight.entry);
+  if(flight.preview)packages.push(flight.preview);
   const flightModel=fs.readFileSync(path.join(repository,'desktop/godot/components/reusable-j20/model.glb'));
   const flightModelFile='cw.model.approved-j20.glb';
   packages.push({file:flightModelFile,bytes:flightModel});

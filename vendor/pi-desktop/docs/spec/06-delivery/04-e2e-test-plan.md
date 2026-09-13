@@ -10238,3 +10238,8 @@ single house and the gate. Walk and save outside the target footprint before
 adoption, then actually walk back onto the raised street, save and cold-reopen
 the exact state. An unsaved movement followed by a native penetration rejection
 remains failed evidence, not a reason to relax the guard.
+Verify the drivable J20 thumbnail displays the full aircraft from an actual
+formal receiving-world capture, stays below 512 KiB, and retains exact source
+and PNG hashes. A changed controller must reject the stale preview. Do not use
+this flight screenshot for the raw visual-only model or claim that it certifies
+another world's compatibility or gameplay.

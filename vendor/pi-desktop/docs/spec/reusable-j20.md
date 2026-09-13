@@ -60,3 +60,12 @@ reopen, actual controlled descent/landing, physical taxi, exit and another cold
 reopen. Existing target source and marker transforms remain unchanged. These
 headless checks send no OS input, show no windows and call no model. They are not
 a sealed Windows client visual playtest.
+
+The playable catalog entry includes an unchanged 104,956-byte actual formal-world
+PNG showing the complete aircraft from its follow camera, with the runway and
+flight HUD visible. Its provenance pins the capture's world/build/instance and
+the exact rendered model/controller source hashes. The catalog display scope is
+`component-view`; the underlying image is explicitly a receiving-world view,
+not an isolated neutral model render or a gameplay/compatibility certificate.
+The raw model entry keeps no driving screenshot. Exact source bytes are retained
+across checkouts so a source change cannot silently reuse a stale preview.
