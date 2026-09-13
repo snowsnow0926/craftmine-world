@@ -8930,9 +8930,34 @@ actual desktop restart evidence must be labeled separately.
 7. Switch pages/worlds during reads and polling. Old responses must not overwrite the active page; background timers must stop. Use isolated headless page scripts with Pointer Lock disabled and no input simulation.
 
 Fixture UI checks and source-only tests are separate from actual client/runtime evidence; do not count them as model or native acceptance.
-### Optional creation guide in the library (2026-09-10)
+### Optional first creation guide in the PI sidebar (2026-09-13)
 
-Open the actual library and confirm a collapsed six-step creation guide is inside the workbench. Expanding it must not change the fixed game chrome height. Navigate to checks using its existing action, verify the old guide is cleared, reopen the library and confirm it starts collapsed, then return to the world. No guide action may send a model request, prepare a draft, apply a candidate, or save progress. Use finite headless page scripts with no input simulation. Module-only DOM results are not assembled-client evidence.
+Open the actual PI sidebar and expand the initially collapsed first creation
+guide. Its five reading pages cover opening/creating, direct catalog use,
+supported edits, save/reopen, and world-template sharing. Page selection and
+navigation must never mark a goal completed. Hide/reopen and renderer restart
+retain only the reading bookmark and visibility preference. With no selected
+world, only world selection is enabled. Verify Chinese and English, narrow
+sidebar layout, and the absence of the superseded workbench guide.
+
+Use guide forms to open the existing chooser, asset sheet, Create/Play layouts,
+version history, and the world publication tab. Sharing must still require
+ordinary publication metadata and explicit saved-progress consent. No guide
+action prepares, applies, publishes, saves, or submits AI. A retained unresolved
+direct operation has a current-world-only sidebar return link; returning reads
+its host status in the existing library. An applied receipt removes that link.
+A late preview-preparation reply after switching worlds must not reopen an old
+sheet. The native `worldCreationGuide` probe exercises the real sidebar and
+asset/publication/history surfaces and verifies unchanged world/header; it does
+not save or publish anything. Run it in a fresh isolated client so no pending
+publication attempt prechecks consent.
+
+`node tests/first-creation-guide-ui.mjs` exercises actual React navigation,
+guide and asset/publication forms with a controlled host fixture in isolated
+headless Chromium. It uses page-script `requestSubmit`, disables Pointer Lock,
+and never uses mouse, keyboard, click, fill or focus simulation. Fixture UI
+results remain distinct from assembled-native and real-player acceptance.
+See [the current guide contract](first-creation-guide.md).
 
 ### Finite runtime check expectation binding (2026-09-10)
 

@@ -15,6 +15,8 @@ import { WorldAuxSections } from "./craftmine/WorldAuxSections";
 import { AssetLibraryPanel } from "./craftmine/assets/AssetLibraryPanel";
 import { GodotHistoryPanel } from "./craftmine/GodotHistoryPanel";
 import { worldAssetPrompt } from "../lib/world-asset-request";
+import {FirstCreationGuide, type FirstCreationDestination} from "./craftmine/FirstCreationGuide";
+import {directIsTerminal, useDirectAttempts} from "./craftmine/assets/direct-library-state";
 
 const WORLD = pluginWorkPanelTab("craftmine.world", "world");
 
@@ -33,6 +35,8 @@ export function CraftmineNavigation() {
   const sessions = useAppStore((s) => s.sessions);
   const initialized = useRef(false);
   const controller = useCraftmineWorlds(lang);
+  const retainedDirectAttempts = useDirectAttempts();
+  const directToReview = retainedDirectAttempts.filter(row => row.request.worldId === controller.activeWorldId && !directIsTerminal(row.operation?.status)).length;
 
   const open = () => {
     const state = useAppStore.getState();
@@ -81,6 +85,7 @@ export function CraftmineNavigation() {
   // channel, which the host routes into the retained view.
   const [surfaceError, setSurfaceError] = useState<string | null>(null);
   const [assetsOpen, setAssetsOpen] = useState(false);
+  const [assetSection, setAssetSection] = useState<"browse" | "world">("browse");
   const assetPreparation = useRef(0), assetPreparing = useRef(false);
   const latestWorld = useRef(controller.activeWorldId); latestWorld.current = controller.activeWorldId;
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -100,6 +105,8 @@ export function CraftmineNavigation() {
     // The asset library is a main-window panel, not a plugin-panel tab.
     if (surface.kind === "assets") {
       if (assetPreparing.current) return;
+      setHistoryOpen(false);
+      setAssetSection(section === "share" ? "world" : "browse");
       const ticket = ++assetPreparation.current, worldId = controller.activeWorldId;
       assetPreparing.current = true;
       void (async () => {
@@ -125,6 +132,15 @@ export function CraftmineNavigation() {
       .call("world.surface", { surface, section })
       .catch((failure) => setSurfaceError(worldErrorMessage(failure, lang)));
   };
+  const guideNavigate = (destination: FirstCreationDestination) => {
+    if (destination === "worlds") {openCraftmineModeEntry(); return;}
+    if (!controller.activeWorldId) return;
+    if (destination === "assets" || destination === "share") {openSurface({kind: "assets"}, destination); return;}
+    ++assetPreparation.current; assetPreparing.current = false; setAssetsOpen(false);
+    if (destination === "history") {setHistoryOpen(true); return;}
+    setHistoryOpen(false);
+    enterCraftmineMode(destination, {explicit: true});
+  };
 
   return (
     <nav className="craftmine-navigation no-drag" aria-label={CRAFTMINE_WORLD_TEXT.worldsTitle[lang]}>
@@ -148,6 +164,10 @@ export function CraftmineNavigation() {
           <form data-world-assets-open onSubmit={event => { event.preventDefault(); openSurface({kind: "assets"}, "assets"); }}>
             <button type="submit" className="craftmine-world-nav"><Package size={16} aria-hidden /><span>{CRAFTMINE_WORLD_TEXT.assetsTitle[lang]}</span></button>
           </form>
+          {directToReview > 0 && <form data-direct-return-form onSubmit={event => {event.preventDefault(); openSurface({kind: "assets"}, "assets");}}>
+            <button type="submit" className="craftmine-world-nav" data-direct-return>{lang === "zh" ? `查看素材操作（${directToReview}）` : `Review asset operations (${directToReview})`}</button>
+          </form>}
+          <FirstCreationGuide lang={lang} worldId={controller.activeWorldId} onNavigate={guideNavigate}/>
           {activeSessionId && (
             <div className="craftmine-world-session" data-world-session={activeSessionId}>
               <span className="craftmine-world-session-label">{CRAFTMINE_WORLD_TEXT.sessionTitle[lang]}</span>
@@ -158,9 +178,9 @@ export function CraftmineNavigation() {
           )}
 
           <details><summary>{lang==="zh"?"更多工具":"More tools"}</summary><WorldAuxSections controller={controller} lang={lang} onOpenSurface={openSurface} /></details>
-          <form data-history-open-form onSubmit={event => { event.preventDefault(); if (controller.activeWorldId) setHistoryOpen(true); }}><button type="submit" data-godot-history-open disabled={!controller.activeWorldId}>版本与创作分支</button></form>
-          {historyOpen && createPortal(<div className="craftmine-asset-sheet" role="dialog" aria-label="版本与创作分支" data-history-sheet>
-            <div className="craftmine-asset-sheet-head"><span>版本与创作分支</span><form data-history-close-form onSubmit={event => { event.preventDefault(); setHistoryOpen(false); }}><button type="submit">关闭</button></form></div>
+          <form data-history-open-form onSubmit={event => { event.preventDefault(); if (controller.activeWorldId) setHistoryOpen(true); }}><button type="submit" data-godot-history-open disabled={!controller.activeWorldId}>{lang === "zh" ? "版本与创作分支" : "Versions and branches"}</button></form>
+          {historyOpen && createPortal(<div className="craftmine-asset-sheet" role="dialog" aria-label={lang === "zh" ? "版本与创作分支" : "Versions and branches"} data-history-sheet>
+            <div className="craftmine-asset-sheet-head"><span>{lang === "zh" ? "版本与创作分支" : "Versions and branches"}</span><form data-history-close-form onSubmit={event => { event.preventDefault(); setHistoryOpen(false); }}><button type="submit">{lang === "zh" ? "关闭" : "Close"}</button></form></div>
             <GodotHistoryPanel bridge={controller.bridge} worldId={controller.activeWorldId} onOpenChecks={() => { setHistoryOpen(false); openSurface({ kind: "checks" }, "checks"); }}/>
           </div>, document.body)}
           {surfaceError && (
@@ -176,8 +196,9 @@ export function CraftmineNavigation() {
                   {CRAFTMINE_WORLD_TEXT.assetsClose[lang]}
                 </button></form>
               </div>
-              <AssetLibraryPanel key={controller.activeWorldId ?? "global"}
+              <AssetLibraryPanel key={`${controller.activeWorldId ?? "global"}:${assetSection}`}
                 bridge={controller.bridge}
+                initialSection={assetSection}
                 lang={lang}
                 worldId={controller.activeWorldId}
                 worldName={controller.activeWorld?.title}
