@@ -10079,6 +10079,13 @@ create a copy. Preserve the declared asset's `.import` bytes and model settings;
 reject orphan sidecars, non-asset sidecars, and `.godot`/legacy `.import` cache
 directories even when their files otherwise have allowed asset extensions.
 
+From the actual PI asset sheet, open Save Object and verify its source list loads
+through the main navigation gateway. Publish metadata with a native world view
+preview and search by alias. Save World must reach the real nonfreezing runtime
+save before describing/exporting source. General source install and caller-supplied
+snapshots remain denied on that renderer route; subframes and shutdown requests
+remain denied by main.
+
 ### Player-authored world templates (2026-09-13)
 
 From a ready player-created 3D world, save actual progress and explicitly choose

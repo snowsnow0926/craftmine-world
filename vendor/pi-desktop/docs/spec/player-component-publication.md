@@ -62,3 +62,17 @@ exact shared runtime requirements survived. The reproducible entry point is
 It starts no executor and reports actual `source-saved-check-blocked`; it is not
 runtime/adoption/save-reopen acceptance. Native source evidence is retained in
 `test-results/player-component-native-ZoJLzc/report.json` in the isolated worktree.
+# Main renderer publication routing
+
+The existing PI asset sheet can call the narrow `package.request` subset
+`sourceList`, `publishSource`, `publishSourceStatus`, and `cancelPublishSource`.
+The navigation gateway validates the matching world envelope; main routes those
+calls to the existing package service with a main-frame sender check and shutdown
+guard. The package service retains metadata, selected-world and source identity
+validation. General ZIP import/export, source installation and candidate adoption
+are not exposed through this new navigation route.
+
+World-template publication may request only `godot.runtimeSave` with the selected
+world ID and `freeze: false`. Main validates the sender frame and the existing
+Godot coordinator captures/saves the actual runtime. The renderer cannot supply
+progress, a checkpoint token, a snapshot, or a frozen-save request.

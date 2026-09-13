@@ -86,3 +86,17 @@ test('main dialogue reads runtime readiness using only the selected-world identi
  for(const channel of ['godot.runtimeSurface','godot.runtimeSave','godot.runtimeResume'])await assert.rejects(invokeCraftmineNavigation(request(channel,{worldId:'world-selected'}),deps),/PERMISSION_DENIED/);
  assert.equal(seen.length,2);
 });
+
+test('publication forms reach only source publication and a live nonfreezing save',async()=>{
+ const calls=[],deps={invoke:async(channel,payload)=>{calls.push({channel,payload});return {status:'forwarded'};}};
+ for(const method of ['sourceList','publishSource','publishSourceStatus','cancelPublishSource']){
+  const payload={worldId:'world-author',method,params:{worldId:'world-author'}};
+  assert.equal((await invokeCraftmineNavigation(request('package.request',payload),deps)).status,'forwarded');
+ }
+ await invokeCraftmineNavigation(request('godot.runtimeSave',{worldId:'world-author',freeze:false}),deps);
+ assert.deepEqual(calls.at(-1),{channel:'godot.runtimeSave',payload:{worldId:'world-author',freeze:false}});
+ for(const method of ['installSource','importSource','exportSource','sourceProposals','installSourceProposal'])await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-author',method,params:{worldId:'world-author'}}),deps),/PERMISSION_DENIED/);
+ for(const payload of [{worldId:'world-author',freeze:true},{worldId:'world-author',freeze:false,snapshot:{}},{worldId:'../world',freeze:false}])await assert.rejects(invokeCraftmineNavigation(request('godot.runtimeSave',payload),deps),/PERMISSION_DENIED/);
+ await assert.rejects(invokeCraftmineNavigation(request('package.request',{worldId:'world-author',method:'sourceList',params:{worldId:'another-world'}}),deps),/INVALID_PUBLICATION_REQUEST/);
+ assert.equal(calls.length,5);
+});

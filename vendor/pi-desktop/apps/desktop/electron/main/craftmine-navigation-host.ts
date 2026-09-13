@@ -14,6 +14,7 @@ const HISTORY_CHANNELS = new Set([
   "godot.historySaveSource", "godot.historyCheck", "godot.historyJob",
   "godot.historyCompare", "godot.historyDiff",
 ]);
+const PUBLICATION_METHODS = new Set(["sourceList", "publishSource", "publishSourceStatus", "cancelPublishSource"]);
 
 type Request = { pluginId?: unknown; channel?: unknown; payload?: unknown };
 type Dependencies = {
@@ -39,6 +40,20 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
   }
   const payload = (input.payload ?? {}) as Record<string, unknown>;
   const channel = input.channel;
+  if (channel === "package.request") {
+    if (typeof payload.method !== "string" || !PUBLICATION_METHODS.has(payload.method)) throw Error("PERMISSION_DENIED");
+    const params = payload.params as Record<string, unknown> | undefined;
+    if (Object.keys(payload).some(key => !["worldId", "method", "params"].includes(key)) || typeof payload.worldId !== "string"
+      || !/^[A-Za-z0-9._-]{1,128}$/.test(payload.worldId) || !params || typeof params !== "object" || Array.isArray(params) || params.worldId !== payload.worldId) throw Error("INVALID_PUBLICATION_REQUEST");
+    // Main routes this subset to the existing package service, which validates
+    // metadata and selected source. General import/install remains world-owned.
+    return deps.invoke(channel, payload);
+  }
+  if (channel === "godot.runtimeSave") {
+    if (Object.keys(payload).sort().join(",") !== "freeze,worldId" || payload.freeze !== false || typeof payload.worldId !== "string"
+      || !/^[A-Za-z0-9._-]{1,128}$/.test(payload.worldId)) throw Error("PERMISSION_DENIED");
+    return deps.invoke(channel, {worldId: payload.worldId, freeze: false});
+  }
   if (["world.archiveFailed", "world.restoreArchived", "world.archivedList"].includes(channel)) {
     if (channel === "world.archivedList") {
       if (Object.keys(payload).length) throw Error("INVALID_WORLD_REMOVAL_REQUEST");
