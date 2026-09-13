@@ -1,0 +1,35 @@
+// Native reference-template preparation and normal new-world source initialization.
+// No handwritten scene replacement or model-source modification occurs here.
+import fs from 'node:fs';import path from 'node:path';import {createHash,randomUUID} from 'node:crypto';import {register} from 'node:module';
+import {CoreClient} from '../plugins/craftmine-world/core-client.cjs';import {createPlayerWorldLibrary} from '../plugins/craftmine-world/player-world-library.cjs';import {readState,writeState,STATE_FORMAT,acquireLock} from './lib/codex-world-session.mjs';
+register(new URL('../vendor/pi-desktop/apps/desktop/test/helpers/ts-import-hooks.mjs',import.meta.url));
+const {createGodotWorldFactory}=await import('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-creation.ts');
+const {initializationFileBatches}=await import('../vendor/pi-desktop/apps/desktop/electron/main/godot-world-initialization.ts');
+const root=path.resolve(import.meta.dirname,'..'),sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+const [fromData,data]=process.argv.slice(2);if(![fromData,data].every(value=>value&&path.isAbsolute(value)))throw Error('Usage: courtyard-benchmark-reference.mjs ABS_SOURCE_DATA ABS_NEW_DATA');
+const sourceState=readState(fromData);if(sourceState.active)throw Error('REFERENCE_AUTHOR_STILL_ACTIVE');const unlock=acquireLock(fromData);
+fs.mkdirSync(data);fs.mkdirSync(path.join(data,'empty'));const report={format:'craftmine.courtyard-reference-preparation/1',modelCalls:0,sourceAuthoredByOperator:false,sourceWorldId:sourceState.worldId,startedAt:new Date().toISOString(),status:'running'};
+const sourceCore=new CoreClient(path.join(sourceState.runtime,'resources/bin/craftmine-core.exe'),sourceState.coreData),archivePath=path.join(data,'matched-reference.zip');let targetCore;
+process.env.CRAFTMINE_BUNDLED_GIT=path.join(sourceState.runtime,'resources/git/bin/git.exe');
+try{
+ await sourceCore.start();const call=(method,args)=>sourceCore.call(method,args,120000),source=await call('world.read',{id:sourceState.worldId}),library=createPlayerWorldLibrary({call,selected:async()=>sourceState.worldId,directory:path.join(fromData,'reference-publications')});
+ report.sourceBefore=source;report.referencePreparationStartedAt=new Date().toISOString();
+ const described=await library.describe({worldId:sourceState.worldId}),saved=await library.save({worldId:sourceState.worldId,operationId:'save-reference-'+sha(JSON.stringify(described.expectedSource)).slice(0,32),assetId:'player.world.courtyard-'+sha(JSON.stringify(described.expectedSource)).slice(0,16),version:1,displayName:'Matched two-house courtyard reference',description:'The completed same-objective courtyard; its saved starting state is deliberately retained.',tags:['courtyard','reference','庭院'],initialState:'saved-progress',expectedSource:described.expectedSource});
+ report.reference=await library.exportArchive({ref:saved.ref,destination:archivePath});report.referencePreparationEndedAt=new Date().toISOString();
+ if(JSON.stringify(await call('world.read',{id:sourceState.worldId}))!==JSON.stringify(source))throw Error('REFERENCE_SOURCE_WORLD_CHANGED');await sourceCore.stop();unlock();report.sourceLockReleased=true;
+ report.newWorldCreationStartedAt=new Date().toISOString();
+ const state={format:STATE_FORMAT,model:'gpt-6-astra',effort:'xhigh',projectId:'codex-world-'+randomUUID(),sessionId:'codex-'+randomUUID(),runtime:sourceState.runtime,coreData:path.join(data,'core'),pluginRoot:sourceState.pluginRoot,threadId:null,active:null};
+ targetCore=new CoreClient(path.join(state.runtime,'resources/bin/craftmine-core.exe'),state.coreData);await targetCore.start();const targetCall=(method,args)=>targetCore.call(method,args,120000),directory=path.join(data,'world-template-operations');
+ const targetLibrary=createPlayerWorldLibrary({call:targetCall,selected:async()=>state.worldId??'reference-pending',directory});await targetLibrary.importArchive({operationId:'import-matched-reference',archivePath,archiveSha256:sha(fs.readFileSync(archivePath))});
+ const worldsDirectory=path.join(data,'managed-worlds'),factory=createGodotWorldFactory({worldsRoot:worldsDirectory,catalogFile:path.join(root,'desktop/godot/bases/base-catalog.json'),basesRoot:path.join(root,'desktop/godot/bases'),libraryStagingRoot:path.join(directory,'prepared'),domain:(method,args)=>method==='worldTemplate.prepare'?targetLibrary.prepare(args):targetCall(method,args),materialize:()=>{throw Error('REFERENCE_MUST_USE_WORLD_LIBRARY');}});
+ const created=await factory.create({title:'Matched courtyard from reference',baseId:'creation-sandbox',starterId:'library',operationId:'create-matched-reference',libraryRef:saved.ref});state.worldId=created.id;report.created=created;
+ const project=path.join(worldsDirectory,created.id),manifest=JSON.parse(fs.readFileSync(path.join(project,'managed-base.json'))),context={projectId:state.projectId,sessionId:state.sessionId,turnId:randomUUID()};
+ await targetCall('workspace.open',{context,selectedWorld:created.id});const task=await targetCall('task.context',{context});let index=await targetCall('godotProject.create',{context,worldId:created.id,toolCallId:'initialize-template-source',baseBuild:task.binding.baseBuild,baseId:'creation-sandbox',files:[{path:'project.godot',text:fs.readFileSync(path.join(project,'project.godot'),'utf8')}]});
+ const files=manifest.files.filter(item=>item.path!=='project.godot').map(item=>({path:item.path,bytesBase64:fs.readFileSync(path.join(project,item.path)).toString('base64'),expectedHash:null}));
+ for(const [number,batch]of initializationFileBatches(files).entries())index=await targetCall('godotProject.applyFiles',{context,worldId:created.id,toolCallId:'template-batch-'+number,revision:index.revision,manifestHash:index.manifestHash,files:batch});
+ await targetCall('content.migrate.apply',{worldId:created.id});await targetCall('workspace.endTurn',{sessionId:context.sessionId,turnId:context.turnId,status:'completed'});
+ const identity=await targetCall('content.status',{worldId:created.id});state.sourceIdentity={worldId:created.id,repoId:identity.repoId,backend:identity.backend};writeState(data,state);
+ report.initialSource=index;report.stateIdentity={worldId:state.worldId,projectId:state.projectId,sessionId:state.sessionId,threadId:null};report.newWorldCreationEndedAt=new Date().toISOString();report.status='source-created';
+ report.limit='Reference is a real saved-progress world template created through the normal native factory. Model validation, real check/first load and gameplay are separate next stages. This is not image-only reconstruction.';
+}catch(error){report.status='failed';report.error=String(error.stack??error);process.exitCode=1;}
+finally{await sourceCore.stop();await targetCore?.stop();if(!report.sourceLockReleased)unlock();report.endedAt=new Date().toISOString();fs.writeFileSync(path.join(data,'benchmark-reference.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({status:report.status,data,sourceWorldId:sourceState.worldId,worldId:report.stateIdentity?.worldId,error:report.error}));}

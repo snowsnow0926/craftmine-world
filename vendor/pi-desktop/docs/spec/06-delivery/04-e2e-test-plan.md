@@ -10243,3 +10243,17 @@ formal receiving-world capture, stays below 512 KiB, and retains exact source
 and PNG hashes. A changed controller must reject the stale preview. Do not use
 this flight screenshot for the raw visual-only model or claim that it certifies
 another world's compatibility or gameplay.
+# Matched courtyard creation/reuse pilot (2026-09-13)
+
+Create the same two-house/gate/street objective with fresh Astra/xhigh sessions
+using from-scratch authoring, local components and a native matched-world
+template. Keep normal domain permissions and no additional model budgets. Record
+actual token deltas, cached input, operator phases and scheduling gaps. Retain
+failed tool arguments, visual defects, model repairs and blocked shortcuts.
+
+Accept only after real check/adoption, visible source-consistent geometry,
+ordinary controller movement through the gate and both houses, native save and
+cold reopen with unchanged source OIDs and restored progress. Frozen development
+and fixed-release catalogs must not replace one another in the evidence. Direct
+template copy, fresh-Agent validation and screenshot reconstruction are distinct
+operations, not interchangeable cost claims.
