@@ -44,7 +44,20 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       ...(p.result.job?{job:{jobId:p.result.job.jobId,status:p.result.job.status}}:{})}}:{})});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
   return {
-    async tool(args,context,worldId,toolCallId){
+    async tool(args,context,worldId,toolCallId,assertActive=()=>{}){
+      assertActive();
+      const persistNew=async proposal=>{
+        assertActive();
+        const filename=path.join(directory,proposal.proposalId+'.json');
+        await atomic(filename,proposal);
+        try{assertActive();}catch(error){
+          // Only this invocation's newly created proposal is rolled back. An
+          // existing retry result is never passed through this helper.
+          const current=await load(proposal.proposalId);
+          if(!current.result&&JSON.stringify(current)===JSON.stringify(proposal))await fs.unlink(filename);
+          throw error;
+        }
+      };
       exact(args,['mode','query','offset','limit','ref','position','items']);
       if(args.mode==='propose-group'){
         exact(args,['mode','items']);check(typeof installSourceGroup==='function','SOURCE_LIBRARY_GROUP_UNAVAILABLE');
@@ -66,7 +79,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
         const proposal={format:'craftmine.source-group-proposal/1',proposalId,context,worldId,items,displayName:items.map(i=>i.displayName).join(' + '),source:{revision:source.revision,manifestHash:source.manifestHash}};
         await fs.mkdir(directory,{recursive:true});
         try{const prior=await load(proposalId);check(JSON.stringify({...prior,result:undefined})===JSON.stringify(proposal),'SOURCE_LIBRARY_PROPOSAL_CONFLICT');return {format:'craftmine.source-library-group/1',items:summaries,proposal:projection(prior),applied:false};}catch(error){if(error.code!=='ENOENT')throw error;}
-        await atomic(path.join(directory,proposalId+'.json'),proposal);
+        await persistNew(proposal);
         return {format:'craftmine.source-library-group/1',items:summaries,proposal:projection(proposal),applied:false};
       }
       check(args.items===undefined,'SOURCE_LIBRARY_INVALID_PARAMS');
@@ -91,7 +104,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
         source:{revision:source.revision,manifestHash:source.manifestHash},...(args.position?{position:{x:args.position.x,y:args.position.y,z:args.position.z}}:{})};
       try{const prior=await load(proposalId);check(JSON.stringify({...prior,result:undefined})===JSON.stringify(proposal),'SOURCE_LIBRARY_PROPOSAL_CONFLICT');return {...summary,proposal:projection(prior)};}
       catch(error){if(error.code!=='ENOENT')throw error;}
-      await atomic(path.join(directory,proposalId+'.json'),proposal);
+      await persistNew(proposal);
       return {...summary,proposal:projection(proposal)};
     },
     async proposals(args){exact(args,['worldId']);check(typeof args.worldId==='string','SOURCE_LIBRARY_INVALID_PARAMS');await fs.mkdir(directory,{recursive:true});const names=await fs.readdir(directory),items=[];

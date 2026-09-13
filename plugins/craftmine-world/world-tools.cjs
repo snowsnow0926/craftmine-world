@@ -229,7 +229,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     if(definition.name==='godot_source_library') {
       if(typeof options.sourceLibrary!=='function')return {available:false,reason:'SOURCE_LIBRARY_NOT_WIRED'};
-      const result=await options.sourceLibrary(args,context,workspace.worldId,invocation.toolCallId);assertActive();return result;
+      const result=await options.sourceLibrary(args,context,workspace.worldId,invocation.toolCallId,assertActive);assertActive();return result;
     }
     if(definition.name==='asset_library') {
       const library=createLibraryBinding({core,context,worldId:workspace.worldId,methods:options.libraryMethods});

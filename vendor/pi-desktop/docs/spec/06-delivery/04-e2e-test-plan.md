@@ -10033,3 +10033,6 @@ CLI engine-monitor world match an exact supported source profile. A changed hash
 or malformed profile must fail before source writes. Proposing two accepted
 archives as one group must report the existing aggregate limit before creating
 a proposal; adding companions sequentially remains supported.
+Cancel while a new proposal is being persisted: no late proposal remains visible;
+an already existing exact retry record must remain intact. During follow motion,
+the accepted dog's nose faces the direction of travel rather than its tail.

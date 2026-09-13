@@ -111,6 +111,8 @@ func _apply_appearance() -> void:
 	if packed != null:
 		var visual := packed.instantiate()
 		_visual.add_child(visual)
+		# glTF maps Blender's authored -Y face to +Z; the follower faces -Z.
+		visual.rotation.y = PI
 		if _settings.appearanceKey == "pomeranian-cream":
 			_tint_instance(visual)
 		var queue: Array[Node] = [visual]

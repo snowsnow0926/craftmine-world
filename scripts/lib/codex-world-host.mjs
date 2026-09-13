@@ -70,7 +70,7 @@ export class CodexWorldHost {
       reuseService,packageTurns:this.packageTurns});
     this.tools = createWorldTools(this.core,async()=>({activeWorldId:state.worldId}),context=>this.ended.has(context.turnId),undefined,undefined,{
       ...services.toolServices,
-      sourceLibrary:(args,context,worldId,toolCallId)=>this.sourceLibrary.tool(args,context,worldId,toolCallId),
+      sourceLibrary:(args,context,worldId,toolCallId,assertActive)=>this.sourceLibrary.tool(args,context,worldId,toolCallId,assertActive),
       blenderTool:(name,args,binding)=>this.blender.tool(name,args,binding),
       executorStatus:()=>this.executor.status(), executorEnqueue:(job,context)=>this.executor.enqueue(job,context),
       executorCancel:id=>this.executor.cancel(id), executorCreationCompletion:binding=>this.executor.creationCompletion(binding),

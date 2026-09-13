@@ -48,6 +48,7 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
       aliases:['博美','白色博美','可爱博美','同款博美','小麦','pomeranian','cute white dog','Mochi'],
       capabilities:['follow-flat-ground','pet-interaction','wait','persistent-state','independent-instances'],
       style:'soft-round-white-pomeranian',
+      orientation:{modelForward:'+Z',componentForward:'-Z',visualYawDegrees:180},
       sceneInstall:{mode:'instance',sceneFile:'companion.tscn',identityField:'entity_id',identityType:'String'},
       sourceRequirements:[pin(PET_SOURCE_REQUIREMENTS[0])],sourceRequirementProfiles,
       placement:{anchor:'feet',dimensionsMm:[370,265,370]},

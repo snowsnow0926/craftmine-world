@@ -147,7 +147,7 @@ async function onLoad() {
   const toolServices={
     blenderTool:(name,args,binding)=>blenderJobs.tool(name,args,binding),
     ...hostProviders,
-    sourceLibrary:(args,context,worldId,toolCallId)=>sourceLibrary.tool(args,context,worldId,toolCallId),
+    sourceLibrary:(args,context,worldId,toolCallId,assertActive)=>sourceLibrary.tool(args,context,worldId,toolCallId,assertActive),
     ...(typeof pi.craftmine?.godotPerformance==='function'?{samplePerformance:input=>pi.craftmine.godotPerformance(input)}:{}),
     ...(typeof pi.craftmine?.godotEnginePerformance==='function'?{sampleEnginePerformance:input=>pi.craftmine.godotEnginePerformance(input)}:{}),
     buildReadWaitMs:30000,

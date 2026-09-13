@@ -42,6 +42,16 @@ test('host-frozen proposal persists across restart and installs only through the
  assert.equal(retained.applied,false,'A retained check is not adoption evidence');
  assert.equal(f.calls.some(c=>['package.check','package.install','world.update'].includes(c.method)),false);
 });
+
+test('cancellation fences new proposals and preserves already existing retry records',async t=>{
+ const f=await fixture(t),s=f.create();let checks=0;
+ await assert.rejects(s.tool({mode:'propose',ref:f.ref},f.context,'world','cancelled-call',()=>{if(++checks===3)throw Error('TURN_ENDED');}),/TURN_ENDED/);
+ assert.equal((await s.proposals({worldId:'world'})).items.length,0,'Late newly written proposal is removed');
+ const existing=await f.tool(s,{mode:'propose',ref:f.ref});
+ await assert.rejects(s.tool({mode:'propose',ref:f.ref},f.context,'world','call-one',()=>{throw Error('TURN_ENDED');}),/TURN_ENDED/);
+ assert.equal((await s.proposals({worldId:'world'})).items[0].proposalId,existing.proposal.proposalId);
+ assert.equal(f.installs.length,0);
+});
 test('bad references, changed ZIPs, arbitrary paths and forged source identity fail closed',async t=>{
  const f=await fixture(t),s=f.create();await assert.rejects(f.tool(s,{mode:'read',ref:{id:'legacy',version:1,hash:'a'.repeat(64)}}),/INVALID_ASSET_REF_FIELDS/);
  await assert.rejects(f.tool(s,{mode:'propose',ref:f.ref,worldId:'other'}),/INVALID_PARAMS/);

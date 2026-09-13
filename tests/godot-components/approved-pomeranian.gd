@@ -77,6 +77,10 @@ func _run() -> void:
 	var original_colors := colors(original_visual)
 	verify(first.configuration_error.is_empty() and second.configuration_error.is_empty(), "real accepted model and behavior initialize")
 	verify(meshes(first).size() == 19, "accepted GLB has nineteen actual mesh parts")
+	for mesh in meshes(first):
+		if mesh.name.begins_with("Nose | rounded"):
+			var nose_local: Vector3 = first.global_transform.affine_inverse() * mesh.global_transform * mesh.get_aabb().get_center()
+			verify(nose_local.z < -0.1, "accepted nose faces follower negative Z direction")
 	verify(colors(first) == original_colors and colors(second) == original_colors, "both instances retain accepted white materials")
 	var bounds := AABB()
 	var initialized := false

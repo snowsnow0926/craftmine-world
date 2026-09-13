@@ -13,6 +13,8 @@ component state contract and exact managed source requirements. Each installatio
 receives a distinct native instance identity. The optional cream variant clones
 materials on the selected instance; white remains the exact accepted visual.
 The model has no skeletal animation, navigation, combat, or driving behavior.
+Its glTF face is +Z. The component rotates the visual 180 degrees to align the
+nose with the follower's -Z heading; the original model bytes remain unchanged.
 
 `entry.sourceRequirementProfiles` optionally declares one to eight exact runtime
 alternatives, each with an ID and one to 32 `{path,sha256}` requirements. Common
@@ -38,6 +40,9 @@ existing player installation action. `package.request` with method
 `applied=false` remains until separate native adoption evidence exists. Consumers
 poll `package.sourceJob` using the retained job ID instead of installing twice.
 Exact duplicate installation uses the same operation ID and is idempotent.
+The synchronous originating-turn activity fence runs before and after creating a
+proposal. Cancellation during persistence removes only that newly created, still
+uninstalled matching record. A pre-existing retry record is never removed.
 
 Source components remain below 4 MiB and ZIPs below 5 MiB. No extraction limit
 is increased. Wrapper code is MIT; generated model redistribution rights are
