@@ -48,3 +48,8 @@ publication. Main routes the validated package request through the package
 service, and save through the normal runtime coordinator. Both require the
 actual main frame and refuse shutdown transitions; retained plugin frames do
 not gain a second publication or arbitrary package-install route.
+
+My worlds labels installed Godot bases using the actual host base catalog. A
+playable world must not retain the domain-only provisional `planned` label.
+Unknown bases retain their reported availability; initialization readiness is
+still read independently from the normal creation coordinator.

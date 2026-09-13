@@ -65,13 +65,20 @@ export function createGodotPanelCoordinator(options: Options) {
     if (!creation || !result || typeof result !== "object" || Array.isArray(result)) return result;
     const list = result as {worlds?: Array<Record<string, unknown>>; activeWorldId?: string | null};
     if (!Array.isArray(list.worlds)) return result;
-    const worlds = await Promise.all(list.worlds.slice(0, 64).map(async world => {
+    // The Core lists source identities; installed-base availability belongs to
+    // this host's catalog. Keep unknown bases explicit rather than guessing.
+    const catalogWorlds=list.worlds.map(world=>{
+      if(world?.runtimeKind!=="godot")return world;
+      const base=currentCreation()?.options?.bases.find(base=>base.id===world.baseId);
+      return base?{...world,base:{id:base.id,label:base.label,delivered:base.delivered}}:world;
+    });
+    const worlds = await Promise.all(catalogWorlds.slice(0, 64).map(async world => {
       if (world?.runtimeKind !== "godot" || typeof world.id !== "string") return world;
       const status = await creation.status(world.id, {resume: false});
       if (!status) return world;
       return {...world, state: status.state, creation: status.creation};
     }));
-    return {...list, worlds: [...worlds, ...list.worlds.slice(64)]};
+    return {...list, worlds: [...worlds, ...catalogWorlds.slice(64)]};
   };
   return {
     async invoke(channel: string, payload: Record<string, unknown> = {}): Promise<unknown> {
