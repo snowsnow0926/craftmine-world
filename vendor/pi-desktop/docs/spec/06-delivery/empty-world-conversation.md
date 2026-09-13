@@ -5,6 +5,12 @@ and calls `world.conversation` with exactly
 `{action: "remember-created", worldId, sessionId}`. This route is main-frame
 only. Main validates the selected world before/after the session list read,
 real empty session, inactive turn, enabled plugin and current project. A
+current-project comparison resolves both paths to their existing native
+canonical directory: Windows slash/case spelling differences are equivalent,
+while missing paths and different directories are rejected. The session's
+established Rust project hash is unchanged.
+
+A
 host-created-session observation from that same world/project is required for
 first registration. Profile locators are atomic immutable tuples containing
 only `worldId`, `sessionId`, and `projectId`. Retrying the same tuple is allowed;
