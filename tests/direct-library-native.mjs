@@ -8,7 +8,6 @@ import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
-import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 
 const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
@@ -234,7 +233,7 @@ try{
  const cancelled={worldId,operationId:cancelledId,assetId:'cw.nature.tree-oak',test:'cancel-just-submitted'};report.operations.push(cancelled);save();
  await submit(`[data-direct-operation="${cancelledId}"] [data-direct-action="cancel"]`);
  cancelled.result=await until(()=>nav('library.direct',{action:'status',worldId,operationId:cancelledId}),r=>['cancelled','failed','applied'].includes(r.status));assert.equal(cancelled.result.status,'cancelled',JSON.stringify(cancelled.result));
- await closeAssets();cancelled.formalSnapshot=await rpc('godotSnapshot');assert.deepEqual(Object.keys(cancelled.formalSnapshot.state.body.components),[]);
+ await closeAssets();cancelled.formalSnapshot=await rpc('godotSnapshot');assert.deepEqual(Object.keys(cancelled.formalSnapshot.state.body.components ?? {}),[]);
  await openExistingWorld(retainedWorld);worldId=retainedWorld;assert.equal((await rpc('godotObserve')).buildId,report.after.buildId);
  await assert.rejects(nav('library.direct',{action:'status',worldId,operationId:'missing-operation-id'}),error=>String(error).includes('DIRECT_LIBRARY_OPERATION_NOT_FOUND')&&!String(error).includes(profile));
  report.passed=true;mark('Just-submitted cancellation retained the empty formal world, and the original two-companion world stayed intact');

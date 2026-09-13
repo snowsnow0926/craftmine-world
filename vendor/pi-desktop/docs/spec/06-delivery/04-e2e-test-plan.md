@@ -10294,7 +10294,7 @@ it must not create a seemingly valid source revision with those files omitted.
 ### Direct library use (2026-09-13)
 
 See [direct library native acceptance](direct-library-native-e2e.md) for exact-reference direct use, cancellation, lost replies, source/world fences and zero-model native adoption.
-# Direct library use and operation recovery (2026-09-13)
+### Direct library use and operation recovery (2026-09-13)
 
 - In the existing PI asset sheet, select an exact eligible component without
   configuring a model. Inspect eligibility, retain default placement or provide
