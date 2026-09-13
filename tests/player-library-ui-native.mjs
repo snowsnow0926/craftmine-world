@@ -8,6 +8,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
+import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 
 const [applicationRoot, resources] = process.argv.slice(2);
 assert(applicationRoot && resources && [applicationRoot, resources].every(path.isAbsolute),
@@ -248,6 +249,13 @@ async function publish(kind,name,alias){
  if(kind==='component'){
   const preview=await until(()=>evaluate(`(()=>{const region=document.querySelector('.asset-library-preview'),image=region?.querySelector('[data-preview-thumb]');if(!region)return null;if(image)return image.complete&&image.naturalWidth>0?{available:true,width:image.naturalWidth,height:image.naturalHeight,source:image.src.slice(0,30)}:null;const start=region.querySelector('[data-action="asset-preview"]');return start&&!start.disabled?{available:false,text:region.textContent}:null;})()`),Boolean);
   result.previewStatus=preview.available?'source-world-view':'unavailable';result.preview=preview.available?preview:null;
+  const exported=unpackStaticPackage(publishedBytes(result)).resources.find(row=>row.manifest.content.assetId===id);
+  const models=[...exported.files].filter(([name])=>name.endsWith('.glb'));
+  assert.equal(models.length,1,'SELECTED_PUBLICATION_MUST_BE_THE_COMPANION');
+  assert.equal(createHash('sha256').update(models[0][1]).digest('hex'),'1ab9f354598df75504b061fb06e1e5e386bd59c878afcec3bad8388832dadd0b');
+  const policy=exported.files.get(models[0][0]+'.import');assert(policy,'PUBLISHED_GLB_IMPORT_POLICY_REQUIRED');
+  assert.equal(createHash('sha256').update(policy).digest('hex'),'2b69138fb4ba7d7b5703fc7e64b289db89bae9f81741fd971e71107166b6b8e8');
+  result.exportProof={files:exported.files.size,modelPath:models[0][0],modelSha256:createHash('sha256').update(models[0][1]).digest('hex'),policySha256:createHash('sha256').update(policy).digest('hex')};
  }
  await rpc('capture',{name:'publication-'+kind+'-saved'});save();await closeAssets();return result;
 }
