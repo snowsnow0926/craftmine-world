@@ -24,10 +24,15 @@ weakening that declaration check would conceal the initialization defect.
 
 The fix admits only paired authored `.glb.import` policy files into normal
 initialization, keeps hash checks and native Core policy validation, and excludes
-generated `.godot` directory content and unrelated `.import` files. An orphan
+generated `.godot`/`.import` directory content and unrelated `.import` files. An orphan
 policy is an explicit preparation error. The model is sorted before its policy,
 so Core sees it either in the same request or in already committed source when
 the serialized request is split into batches. Rust behavior is unchanged.
+
+Core currently recognizes only `.glb.import` (`godot_import_policy.rs`), even
+though it accepts image/audio originals. The broader portable-template path
+validator does not make image/audio import sidecars valid native source. This
+patch does not broaden the Rust policy or claim those sidecars are supported.
 
 Validation: 32 initializer tests pass, including the new inclusion/cache/orphan/
 batch scenarios and existing cancel, terminal-state and job-stage tests. Those

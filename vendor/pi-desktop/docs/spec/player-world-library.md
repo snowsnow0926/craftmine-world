@@ -11,8 +11,10 @@ Normal new-world source initialization must preserve each hash-verified authored
 file on disk is insufficient: it must be present in the native source index and
 readable with its exact bytes. Otherwise a copied world's installation
 declaration names a missing managed file and later component publication fails.
-Only paired GLB policies are admitted; arbitrary `.import` files and `.godot`
-cache-directory contents remain excluded. An orphan policy fails explicitly
+Only paired GLB policies are admitted, matching Core's current source policy;
+image/audio originals do not imply support for their `.import` sidecars.
+Arbitrary `.import` files and `.godot`/`.import` cache-directory contents remain
+excluded. An orphan policy fails explicitly
 with `MANAGED_BASE_IMPORT_MODEL_REQUIRED`. Sorted initialization patches place
 the model before its policy; Core validates the policy against the same-batch or
 already committed model. No previously failed/copied world is silently repaired.

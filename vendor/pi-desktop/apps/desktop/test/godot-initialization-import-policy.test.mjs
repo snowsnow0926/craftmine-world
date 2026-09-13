@@ -37,8 +37,8 @@ async function run(t,source){
  await initializer.start(worldId);return {error:initializer.error(worldId),received,batches};
 }
 test('template initialization preserves paired GLB policy bytes and excludes generated cache/arbitrary import files',async t=>{
- const policy='[remap]\nimporter="scene"\n[params]\nmeshes/ensure_tangents=true\n';
- const result=await run(t,{'addons/pet/model.glb.import':policy,'addons/pet/model.glb':'measured-model-fixture','addons/pet/unrelated.import':'cache','.godot/imported/stray.gd':'cache','.godot/cache.json':'{}'});
+ const policy='[remap]\nimporter="scene"\ntype="PackedScene"\n[params]\nmeshes/generate_lods=false\n';
+ const result=await run(t,{'addons/pet/model.glb.import':policy,'addons/pet/model.glb':'measured-model-fixture','addons/pet/unrelated.import':'cache','.godot/imported/stray.gd':'cache','.godot/cache.json':'{}','.import/cache.gd':'cache','.GODOT/cache.json':'{}'});
  assert.equal(result.error,null);assert.equal(result.received.get('addons/pet/model.glb.import').toString(),policy);
  assert.deepEqual([...result.received.keys()].sort(),['addons/pet/model.glb','addons/pet/model.glb.import','project.godot']);
 });

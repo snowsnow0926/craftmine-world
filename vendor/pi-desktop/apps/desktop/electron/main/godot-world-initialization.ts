@@ -132,7 +132,7 @@ export function createGodotWorldInitializer(options: {
       // measured policy and paired GLB bytes before accepting the patch.
       const importPolicy = relative.endsWith(".glb.import");
       if (importPolicy && !managedPaths.has(relative.slice(0, -".import".length))) throw Error("MANAGED_BASE_IMPORT_MODEL_REQUIRED");
-      if (!relative.split("/").includes(".godot") && (SOURCE.has(ext) || importPolicy)) {
+      if (!relative.split("/").some(part => [".godot", ".import"].includes(part.toLowerCase())) && (SOURCE.has(ext) || importPolicy)) {
         files.push({path: relative, bytesBase64: bytes.toString("base64"), sha256: sha(bytes)});
       }
     }
