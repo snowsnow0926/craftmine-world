@@ -41,7 +41,7 @@ export function createGodotPanelCoordinator(options: Options) {
       create: true,
       createActions: true,
       bases: [
-        ...legacyBases,
+        ...legacyBases.map(base => ({...base, starters: Array.isArray(base.starters) ? base.starters : (Array.isArray(legacy.starters) ? legacy.starters : [])})),
         ...creation.options.bases.map(base => ({
           id: base.id, label: base.label, description: base.description, delivered: base.delivered,
           starters: base.templates.map(template => ({
@@ -54,7 +54,7 @@ export function createGodotPanelCoordinator(options: Options) {
         ...(Array.isArray(legacy.starters) ? legacy.starters : []),
         ...(creation.options.bases[0]?.templates ?? []).map(template => ({
           id: template.id, label: template.label, description: template.description, delivered: template.delivered,
-          kind: template.kind, preview: template.preview, source: template.source, initialState: template.initialState,
+          kind: template.kind, source: template.source, initialState: template.initialState,
         })),
       ],
     };

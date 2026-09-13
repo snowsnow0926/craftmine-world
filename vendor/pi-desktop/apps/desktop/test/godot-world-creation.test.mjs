@@ -269,7 +269,8 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
   const adapter = {allowedRoots: () => [], describe: async () => null, progress: async () => null, describeCandidate: async () => null};
   const factory = {
     options: {create: true, createActions: true, bases: [{id: "top-down", baseVersion: "1.0.0", label: "2D 俯视", description: "d", delivered: true,
-      templates: [{id: "blank", label: "空白", kind: "blank-start", description: "", delivered: true}]}]},
+      templates: [{id: "blank", label: "空白", kind: "blank-start", description: "", delivered: true},
+        {id: "sample", label: "Example", kind: "example", description: "", delivered: true, preview: "data:image/png;base64,example"}]}]},
     create: async (payload) => { forwarded.push(["create", payload]); return {id: "world-x", title: payload.title, state: "initializing", creation: {operationId: "o", stage: "project", stages: [], progress: 25, error: null, actions: ["details"]}}; },
     status: async (worldId, options) => {statusReads.push({worldId, options});return worldId === "godot1" ? {state: "failed", creation: {operationId: "o2", stage: "build", stages: [], progress: 60,
       error: {code: "GODOT_EXECUTION_UNAVAILABLE", message: "no executor", stage: "build", recoverable: true}, actions: ["retry"]}} : null;},
@@ -289,6 +290,9 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
   assert.deepEqual(options.bases.map((b) => b.id), ["craftmine-web/5", "top-down"]);
   assert.equal(options.createActions, true);
   assert.equal(options.bases[1].starters[0].id, "blank");
+  assert.deepEqual(options.bases[0].starters.map(starter => starter.id), ["blank"], "Web cannot inherit Godot examples");
+  assert.equal(options.bases[1].starters[1].preview, "data:image/png;base64,example");
+  assert.equal(options.starters.find(starter => starter.id === "sample").preview, undefined, "large previews are sent once in the base catalog");
 
   const created = await coordinator.invoke("world.create", {title: "小镇", baseId: "top-down", starterId: "blank"});
   assert.equal(created.id, "world-x");
