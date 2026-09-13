@@ -10428,3 +10428,6 @@ Targeted evidence: `tests/playtest-feedback.test.mjs`,
 `playtest_feedback` tests. Native storage fixtures do not claim engine play or
 actual model repair. Integrated native application acceptance covers those
 boundaries separately.
+
+Use `tests/playtest-feedback-client-native.mjs` for the integrated native PI
+acceptance described in [the runbook](../../e2e/playtest-feedback-native-20260914.md).
