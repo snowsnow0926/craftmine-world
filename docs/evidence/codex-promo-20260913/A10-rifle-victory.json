@@ -1,0 +1,129 @@
+{
+  "format": "craftmine.promo-rifle-victory/1",
+  "scope": "Actual input-driven combat in the same world. Read-only adaptive operator policy uses keyboard events, not source or actor-state mutation. This is not a human playtest.",
+  "originalMelee": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\cl2\\test-results\\desktop-native-codex-live-iyBGiH\\gameplay-report.json",
+    "sha256": "747ba21e2b775cb207c75582a35457e9b456cf6ee142ca0f7ab503d626a48ceb"
+  },
+  "missAndFirstMagazine": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\cl2\\test-results\\desktop-native-codex-live-mkzVzJ\\gameplay-report.json",
+    "sha256": "bfef2ebac5f4ebbc70f97b44e59066c98fde3a30167444ed434ebd8f20a36c0a"
+  },
+  "adaptivePlay": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\A10-adaptive-rifle-report-v2.json",
+    "sha256": "5e7948ad0bc3a807c02757f1b2941abb742d50eb263c1c346f805f500e33964f"
+  },
+  "operatorScript": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\play-rifle-v2.mjs",
+    "sha256": "428572b6f4e4bf702717e14bf460e38ed2c6e59e7da20aa70ca09d782f243c2f"
+  },
+  "identity": {
+    "worldId": "codex-live-direct",
+    "buildId": "gbd-a6a2b8fcd2f674c1e8955d379d8be39cdb4643079e13decee2de21d0adb015c5",
+    "instanceId": "56149d5fc49aa68fb31797a4"
+  },
+  "sourceUnchanged": true,
+  "segments": 164,
+  "normalRetriesStartedByAdaptivePolicy": 0,
+  "finalHunt": {
+    "action": "none",
+    "actionHit": false,
+    "actionTime": 0,
+    "attempts": 2,
+    "bestTime": 27.9499999999997,
+    "boss": {
+      "aim": [
+        0.0546614788472652,
+        0,
+        0.998504877090454
+      ],
+      "combo": false,
+      "count": 6,
+      "distance": 17.1583333333333,
+      "duration": 0,
+      "health": 0,
+      "hit": false,
+      "phase": "dead",
+      "position": [
+        13.4554042816162,
+        -0.00097901606932282,
+        21.0576705932617
+      ],
+      "timer": 0,
+      "yaw": -3.0869038105011
+    },
+    "dodgeCooldown": 0,
+    "dodgeDirection": [
+      0.745025813579559,
+      0,
+      0.667035639286041
+    ],
+    "elapsed": 27.9499999999997,
+    "entityId": "great-hunt-01",
+    "format": "craftmine.great-hunt/1",
+    "health": 72,
+    "invulnerable": 0,
+    "potions": 2,
+    "returnPose": {
+      "onFloor": true,
+      "pitch": 0,
+      "position": [
+        -7.14299440383911,
+        0.900826811790466,
+        -8.06532764434814
+      ],
+      "yaw": 0
+    },
+    "settings": {
+      "difficulty": "hard"
+    },
+    "sourceSettings": {
+      "difficulty": "hard"
+    },
+    "stamina": 100,
+    "staminaDelay": 0,
+    "status": "won",
+    "wins": 1
+  },
+  "finalRifle": {
+    "cooldown": 0,
+    "entityId": "hunter-ak47-01",
+    "equipped": true,
+    "format": "craftmine.ak47/1",
+    "reloadRemaining": 0,
+    "rounds": 18,
+    "settings": {
+      "magazineSize": 30
+    },
+    "shots": 63,
+    "sourceSettings": {
+      "magazineSize": 30
+    }
+  },
+  "coldReopen": {
+    "huntAndRifleEqual": true,
+    "proof": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\cl2\\test-results\\desktop-native-codex-live-wdU4Hf\\close.json",
+      "sha256": "f92e783dd14e2bfd9f84a55ec7c1ded81cf1aac2926028c5a59957206bc2ef75"
+    }
+  },
+  "frame": {
+    "format": "craftmine.godot-view-capture/1",
+    "worldId": "codex-live-direct",
+    "buildId": "gbd-a6a2b8fcd2f674c1e8955d379d8be39cdb4643079e13decee2de21d0adb015c5",
+    "instanceId": "56149d5fc49aa68fb31797a4",
+    "candidateId": null,
+    "scope": "formal",
+    "capturedAt": "2026-09-13T04:29:40.794Z",
+    "viewWidth": 1280,
+    "viewHeight": 784,
+    "sourceWidth": 1280,
+    "sourceHeight": 860,
+    "width": 1280,
+    "height": 860,
+    "resized": false,
+    "sha256": "b10453424df62b9ede68bdbeda5804fac6f727f51ccc9674bb8677ca1166a588",
+    "imagePath": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\cl2\\test-results\\desktop-native-codex-live-a1Bb8D\\formal-b10453424df62b9ede68bdbeda5804fac6f727f51ccc9674bb8677ca1166a588.png"
+  },
+  "visualStatus": "Original victory proof preserved. The subsequent presentation correction and normal replay are recorded in A10-presentation-replay.json."
+}

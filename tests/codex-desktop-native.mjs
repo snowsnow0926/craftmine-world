@@ -14,10 +14,13 @@ import {processEnvironment} from '../scripts/lib/codex-app-server.mjs';
 
 const args=process.argv.slice(2),option=name=>{const i=args.indexOf(name);return i<0?undefined:args[i+1];};
 const root=path.resolve(import.meta.dirname,'..'),live=args.includes('--live'),binary=option('--codex'),resources=option('--runtime-resources');
+const restoreDemo=option('--restore-demo'),restoreWorld=option('--world');
+if(restoreDemo)assert(path.isAbsolute(restoreDemo)&&restoreWorld&&!live&&binary&&path.isAbsolute(binary),'Demo restore requires an absolute archive, --world, --codex, and a non-live run');
 assert(resources&&path.isAbsolute(resources),'Pass --runtime-resources with an absolute development component directory containing godot/blender');
 if(live)assert(binary&&path.isAbsolute(binary),'--live requires an absolute --codex executable path');
 const resumeFile=option('--resume-test'),previous=resumeFile?JSON.parse(fs.readFileSync(resumeFile,'utf8')):null;
-if(previous){assert(live);assert.equal(previous.format,'craftmine.codex-desktop-native/1');assert.equal(path.resolve(previous.out,'..'),path.join(root,'test-results'));assert(path.basename(previous.out).startsWith('desktop-native-codex-'));assert.equal(fs.realpathSync(previous.out),previous.out);assert.equal(path.dirname(path.resolve(resumeFile)),previous.out);assert(previous.sessionId&&previous.worldId);}
+if(previous){assert(live||restoreDemo);assert.equal(previous.format,'craftmine.codex-desktop-native/1');assert.equal(path.resolve(previous.out,'..'),path.join(root,'test-results'));assert(path.basename(previous.out).startsWith('desktop-native-codex-'));assert.equal(fs.realpathSync(previous.out),previous.out);assert.equal(path.dirname(path.resolve(resumeFile)),previous.out);assert(previous.sessionId&&previous.worldId);}
+if(previous&&restoreDemo){assert.equal(previous.restore?.status,'completed');assert.equal(previous.worldId,restoreWorld);assert.equal(createHash('sha256').update(fs.readFileSync(restoreDemo)).digest('hex'),previous.demoArchive.sha256);}
 const out=previous?.out??fs.mkdtempSync(path.join(root,'test-results/desktop-native-codex-')),profile=path.join(out,'profile'),legacySource=path.join(out,'legacy');
 const token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8')).token:randomUUID();
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(legacySource);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource}));}
@@ -29,6 +32,8 @@ const cancel=path.join(out,'cancel');const watch=setInterval(()=>{if(fs.existsSy
 console.log(JSON.stringify({out,cancel,live}));
 let sessionId=previous?.sessionId,worldId=previous?.worldId,child,exit,ended,ready,port,debug,debugSocket,sequence=0;const pending=new Map();
 const launch=resolveCreationNativeLaunch({root,inherited:processEnvironment(),requiredGuards:['CodexCheckpointHost','CODEX_PATH_REQUIRED']});
+report.package=launch.identity?{packaged:launch.packaged,inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256,preloadSha256:launch.identity.preloadSha256}:null;
+report.runtimeResources=resources;
 function rpc(method,fields={}) { if(ended)return Promise.reject(Error('DESKTOP_EXITED'));return new Promise((resolve,reject)=>{
   const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('DESKTOP_RPC_TIMEOUT:'+method));},120000);
   pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});
@@ -143,7 +148,35 @@ async function appliedFrame(name) {
 controller.signal.addEventListener('abort',()=>{if(!ended&&sessionId&&debug)void invoke('agentAbort',{sessionId}).catch(()=>{});});
 try {
   await start();
-  if(!previous){
+  if(restoreDemo){
+    report.scope='Native portable restore into a fresh isolated desktop profile, followed by cold reopen; no model requests.';
+    if(previous){
+      report.restore=previous.restore;report.demoArchive=previous.demoArchive;report.restored=previous.restored;
+      const reopened=await until(()=>rpc('godotObserve'),v=>v.worldId===restoreWorld&&v.instanceId);
+      assert.equal(reopened.buildId,previous.restored.buildId);report.reopened=reopened;
+      report.steps.push('reopened the retained restored demo; no restore replay');
+    }else{
+    worldId=(await nav('world.list')).activeWorldId;assert(worldId);
+    report.beforeRestoreSave=await panel('godot.runtimeSave',{worldId,freeze:true});
+    const archive=fs.readFileSync(restoreDemo);fs.writeFileSync(path.join(out,'portable-backup.craftmine'),archive,{flag:'wx'});
+    report.demoArchive={path:restoreDemo,bytes:archive.length,sha256:createHash('sha256').update(archive).digest('hex')};
+    const grant=await panel('backup.inspect',{worldId});assert.equal(grant.status,'ready');assert(grant.bodiesVerified);
+    const operationId='demo-restore-'+randomUUID();
+    const restored=await panel('backup.restore',{worldId,operationId,grantId:grant.grantId,expectedCurrentHash:grant.expectedCurrentHash});
+    report.restore=restored;save();assert.equal(restored.status,'completed');assert.equal(restored.modelReplay,false);
+    const list=await nav('world.list');assert(list.worlds.some(w=>w.id===restoreWorld));worldId=restoreWorld;report.worldId=worldId;
+    if(list.activeWorldId!==worldId)await nav('world.switch',{id:worldId});
+    report.restored=await until(()=>rpc('godotObserve'),v=>v.worldId===worldId&&v.instanceId);
+    await invoke('settingsSet',{worldAgentBackend:'codex-cli',codexCliPath:binary});
+    const created=await invoke('sessionCreate',{title:'宣传片演示世界',mode:'agent',permissionMode:'auto'});sessionId=created.session.id;report.sessionId=sessionId;
+    report.steps.push('native portable archive restored and rebuilt without model replay');
+    await stop();await start();
+    const reopened=await until(()=>rpc('godotObserve'),v=>v.worldId===worldId&&v.instanceId);
+    assert.equal(reopened.buildId,report.restored.buildId);report.reopened=reopened;
+    report.steps.push('cold desktop reopen retains restored playable world');
+    }
+  }
+  if(!previous&&!restoreDemo){
   const list=await nav('world.list');worldId=list.activeWorldId;assert(worldId);report.worldId=worldId;report.worlds=list;save();
   report.initial=await rpc('godotObserve');assert.equal(report.initial.worldId,worldId);report.steps.push('ordinary native world creation and first-load');save();
   await invoke('settingsSet',{worldAgentBackend:'codex-cli',codexCliPath:path.join(out,'missing-codex.exe')});
@@ -152,9 +185,11 @@ try {
   assert.equal((await invoke('providersList')).providers.length,0,'Codex world prompt must not require an API provider');
   const failed=await prompt('Read the current world.');assert(failed.events.some(e=>e.event.type==='error'&&e.event.error.code==='CODEX_PROCESS_START_FAILED'));
   report.steps.push('normal prompt fails visibly on a missing CLI, with no PI fallback');
-  // The interrupted native task remains governed by the normal world UI.
-  const recoverable=await nav('task.recoverable',{worldId});
-  for(const task of recoverable.items??[])await nav('task.discard',{worldId,taskId:task.taskId,generation:task.generation});
+  // Observe the Godot conversation through its actual navigation surface.
+  // Legacy workbench recovery is not a world-navigation command, and the
+  // missing executable check does not authorize discarding unrelated drafts.
+  report.afterMissingCli=await nav('godot.creationTaskStatus',{sessionId});
+  save();
   }
   if(live){
     await invoke('settingsSet',{worldAgentBackend:'codex-cli',codexCliPath:binary});
@@ -186,7 +221,18 @@ try {
   }
   report.final=await rpc('godotObserve');assert.equal(report.final.worldId,worldId);
   const frame=await capture();report.frame=frame;
-  report.saved=await panel('godot.runtimeSave',{worldId,freeze:true});report.steps.push('ordinary native save');
+  report.saved=await until(async()=>{
+    try{return await panel('godot.runtimeSave',{worldId,freeze:true});}
+    catch(error){if(/WORLD_BUSY/.test(String(error)))return null;throw error;}
+  },value=>!!value);
+  assert.equal(report.saved.format,'craftmine.godot-progress-receipt/1');assert.equal(report.saved.worldId,worldId);
+  report.steps.push('ordinary native save');
+  if(restoreDemo){
+    await rpc('primaryMode',{payload:{action:'closed'}});
+    report.demoView=await until(()=>evaluate(`({overlay:JSON.parse(localStorage.getItem('craftmine.desktop.layout.v1')||'{}').overlay,closed:!!document.querySelector('.craftmine-overlay-closed')})`),v=>v.overlay==='closed'&&v.closed);
+    report.demoLayout=await rpc('primaryMode',{payload:{action:'closed'}});
+    report.steps.push('leave the isolated demo in play view');
+  }
   await stop();report.ok=true;
 } catch(error) { report.error=String(error.stack??error);process.exitCode=1;console.error(report.error); }
 finally {clearInterval(watch);if(!ended)await stop().catch(error=>{report.shutdownError=String(error);});save();console.log(JSON.stringify({out,report:reportFile,ok:report.ok??false}));}

@@ -1,0 +1,102 @@
+{
+  "format": "craftmine.promo-rain-automatic/1",
+  "scope": "Actual continuation of the saved automatic rain skill with desktop-default graphics. Original forced-software failure and cancellation remain retained.",
+  "report": "test-results/prain/test-results/desktop-native-codex-live-0eNGmF/gameplay-report.json",
+  "source": {
+    "before": {
+      "repoId": "world-promo-rain",
+      "headOid": "0ce3373f1c4af05c857613d704066729842f5e72",
+      "appliedOid": "0ce3373f1c4af05c857613d704066729842f5e72"
+    },
+    "after": {
+      "repoId": "world-promo-rain",
+      "headOid": "0ce3373f1c4af05c857613d704066729842f5e72",
+      "appliedOid": "0ce3373f1c4af05c857613d704066729842f5e72"
+    },
+    "unchanged": true
+  },
+  "identity": {
+    "worldId": "promo-rain",
+    "buildId": "gbd-3f6b4f1bab2305c2a754d871826360ac2bd08b808d56f3675ef95b0d5ebd2341",
+    "instanceId": "e49fb8b8da7aaff54377ab80"
+  },
+  "stages": [
+    {
+      "phase": 4,
+      "velocity": 5.6,
+      "automatic": true,
+      "casts": 3
+    },
+    {
+      "phase": 4,
+      "velocity": 5.6,
+      "automatic": true,
+      "casts": 3
+    },
+    {
+      "phase": 4,
+      "velocity": 5.6,
+      "automatic": true,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    },
+    {
+      "phase": 0,
+      "velocity": -8.5,
+      "automatic": false,
+      "casts": 3
+    }
+  ],
+  "retirement": "closed",
+  "rawReport": {
+    "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-0eNGmF\\gameplay-report.json",
+    "sha256": "5f1ee844a54fd816bf4d938fbe8bfffd8bdb71d1dc4c4b2af0a67a1e3380e180"
+  }
+}
