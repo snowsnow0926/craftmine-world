@@ -14,6 +14,9 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
         );
     }
     let params = request.get("params").context("PARAMS_REQUIRED")?;
+    if ["playtest.context", "playtest.validate", "playtest.record", "playtest.list", "playtest.read"].contains(&method) {
+        return journal.playtest_request(method, params);
+    }
     // Asset catalog (task S5). The catalog owns every asset.* method; this hook
     // and the lib.rs re-export are the only integration lines.
     if let Some(result) = asset_catalog_dispatch(journal, method, params) {

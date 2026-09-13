@@ -44,6 +44,7 @@ import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
 import { createLibraryPreviewCapture } from "./library-preview";
 import { createWorldTemplatePanel, WORLD_TEMPLATE_PANEL_CHANNELS } from "./world-template-panel";
+import { createPlaytestFeedbackPanel, PLAYTEST_CHANNELS } from "./playtest-feedback-panel";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
 import { createCreationGroundMaintenance, interruptsCreationGroundMaintenance } from "./creation-ground-maintenance";
 import {planCreationCollisionUpgrade} from "./creation-collision-upgrade";
@@ -3294,6 +3295,17 @@ const playerWorldTemplates = createWorldTemplatePanel({
   },
 });
 const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
+const playerFeedback = createPlaytestFeedbackPanel({
+  domain: (method,args) => plugins.requestCraftmineHost(method,args), selection:godotSelection,
+  blocked:()=>!!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
+  client:{version:app.getVersion(),...(typeof craftmineBuildIdentity.commit === "string" ? {commit:craftmineBuildIdentity.commit}:{})},
+  capture:async worldId=>{await captureLibraryPreview.prepare({worldId});return captureLibraryPreview(worldId);},
+  pick:async(kind,suggestedName)=>{
+    if(headlessAcceptance)return join(headlessAcceptance.root,"player-feedback.json");
+    if(kind==="import"){const result=await dialog.showOpenDialog({title:"导入试玩反馈",properties:["openFile"],filters:[{name:"Craftmine playtest feedback",extensions:["json"]}]});return result.canceled?null:result.filePaths[0]??null;}
+    const result=await dialog.showSaveDialog({title:"导出试玩反馈",defaultPath:suggestedName,filters:[{name:"Craftmine playtest feedback",extensions:["json"]}]});return result.canceled?null:result.filePath??null;
+  },
+});
 const craftmineIssues = createCraftmineIssueService({
   directory: join(dataDir, "craftmine-local-issues"),
   client: {version: app.getVersion(), ...(typeof craftmineBuildIdentity.commit === "string" ? {commit: craftmineBuildIdentity.commit} : {})},
@@ -7052,6 +7064,10 @@ function registerIpc() {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
       if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
       return captureLibraryPreview.prepare(payload.payload);
+    }
+    if (payload?.pluginId === "craftmine.world" && PLAYTEST_CHANNELS.has(payload?.channel)) {
+      if((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame || quitting || profileRestore || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("PERMISSION_DENIED");
+      return playerFeedback.request(payload.channel,payload.payload??{});
     }
     if (payload?.pluginId === "craftmine.world" && WORLD_TEMPLATE_PANEL_CHANNELS.has(payload?.channel)) {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
@@ -10851,6 +10867,7 @@ app.on("before-quit", (event) => {
 
   quitting = true;
   playerWorldTemplates.dispose();
+  playerFeedback.dispose();
   groundMaintenanceScheduler.dispose();
   tray?.destroy();
   tray = null;

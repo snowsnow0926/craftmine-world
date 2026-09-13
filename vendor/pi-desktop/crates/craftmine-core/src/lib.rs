@@ -33,6 +33,7 @@ mod godot_copy_runtime;
 mod legacy;
 mod library;
 mod memories;
+mod playtest_feedback;
 mod operation_lock;
 mod recovery;
 mod reviews;
@@ -180,6 +181,7 @@ impl TaskJournal {
         library::migrate(&db)?;
         asset_catalog::migrate(&db)?;
         memories::migrate(&db)?;
+        playtest_feedback::migrate(&db)?;
         backups::migrate(&db)?;
         godot_projects::migrate(&db)?;
         godot_builds::migrate(&db)?;

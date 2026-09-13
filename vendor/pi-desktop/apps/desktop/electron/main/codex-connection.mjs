@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { access, mkdir } from 'node:fs/promises';
+import { access, mkdir, readdir } from 'node:fs/promises';
 import { delimiter, isAbsolute, join } from 'node:path';
 import { CodexAppServer, CLI_VERSION, MODEL, EFFORT, processEnvironment } from '../../../../packages/agent-runtime/src/codex-app-server.mjs';
 
@@ -33,11 +33,39 @@ export async function detectCodexBinary(env = process.env) {
   return undefined;
 }
 
+/** Enumerate only known native install locations. Never execute package wrappers. */
+export async function discoverCodexBinaries(env = process.env, platform = process.platform) {
+  const candidates = [], seen = new Set();
+  const add = async value => {
+    if (!isAbsolute(value) || candidates.length >= 48 || seen.has(value.toLowerCase())) return;
+    seen.add(value.toLowerCase());
+    try { await access(value); candidates.push(value); } catch { /* absent install */ }
+  };
+  for (const directory of (env.PATH || env.Path || '').split(delimiter).filter(isAbsolute).slice(0, 64))
+    await add(join(directory, platform === 'win32' ? 'codex.exe' : 'codex'));
+  if (platform === 'win32') {
+    if (env.LOCALAPPDATA && isAbsolute(env.LOCALAPPDATA)) {
+      const root = join(env.LOCALAPPDATA, 'OpenAI', 'Codex', 'bin');
+      const entries = await readdir(root, {withFileTypes:true}).catch(() => []);
+      for (const entry of entries.filter(row => row.isDirectory() && /^[a-zA-Z0-9._-]{1,80}$/.test(row.name)).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,24))
+        await add(join(root, entry.name, 'codex.exe'));
+    }
+    for (const root of [env.APPDATA && join(env.APPDATA, 'npm', 'node_modules', '@openai', 'codex'),
+      env.USERPROFILE && join(env.USERPROFILE, '.local', 'share', 'npm', 'node_modules', '@openai', 'codex')].filter(Boolean)) {
+      for (const triple of ['x86_64-pc-windows-msvc', 'aarch64-pc-windows-msvc']) {
+        await add(join(root, 'vendor', triple, 'codex', 'codex.exe'));
+        await add(join(root, 'node_modules', '@openai', triple.startsWith('x86') ? 'codex-win32-x64' : 'codex-win32-arm64', 'vendor', triple, 'codex', 'codex.exe'));
+      }
+    }
+  }
+  return candidates;
+}
+
 /** A single settings connection, independent of author turns and their budgets. */
 export class CodexConnection {
   constructor({ cwd, pick, openExternal, clientFactory = options => new CodexAppServer(options),
-    inspectVersion = inspectCodexVersion, detect = detectCodexBinary }) {
-    Object.assign(this, { cwd, pick, openExternal, clientFactory, inspectVersion, detect });
+    inspectVersion = inspectCodexVersion, detect, discover = discoverCodexBinaries }) {
+    Object.assign(this, { cwd, pick, openExternal, clientFactory, inspectVersion, detect, discover });
     this.state = this.result('idle'); this.generation = 0; this.busy = false;
   }
   result(code, extra = {}) {
@@ -91,7 +119,7 @@ export class CodexConnection {
     const generation = ++this.generation;
     try {
       if (action === 'instructions') {
-        await this.openExternal('https://learn.chatgpt.com/docs/cli');
+        await this.openExternal('https://learn.chatgpt.com/docs/codex/cli');
         return this.state;
       }
       if (action === 'openLogin') {
@@ -102,7 +130,22 @@ export class CodexConnection {
       }
       let binary = request.path?.trim();
       if (action === 'pick') binary = await this.pick();
-      if (action === 'detect') binary = await this.detect();
+      if (action === 'detect') {
+        await mkdir(this.cwd, {recursive:true});
+        const paths = this.detect ? [await this.detect()].filter(Boolean) : await this.discover();
+        const candidates = [];
+        for (const path of paths) {
+          if (generation !== this.generation) return this.state;
+          let version; try { version = await this.inspectVersion(path, this.cwd); } catch { /* broken install */ }
+          candidates.push({path, version: /^codex-cli [0-9A-Za-z.+-]+$/.test(version ?? '') ? version : undefined, compatible: version === CLI_VERSION});
+        }
+        if (generation !== this.generation) return this.state;
+        const compatible = candidates.find(candidate => candidate.compatible);
+        binary = compatible?.path ?? candidates[0]?.path;
+        this.state = this.result(compatible ? 'detected' : candidates.length ? 'CODEX_VERSION_MISMATCH' : 'CODEX_NOT_FOUND',
+          {path:binary, version: compatible?.version ?? candidates[0]?.version, candidates});
+        return this.state;
+      }
       if (action === 'pick' && !binary) return this.state;
       this.state = this.result('checking', { path: binary });
       if (!binary) fail(action === 'detect' ? 'CODEX_NOT_FOUND' : 'CODEX_PATH_REQUIRED');

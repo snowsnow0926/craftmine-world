@@ -40,6 +40,7 @@ import {
 import "./asset-library.css";
 import {AssetAnnotationEditor} from "./AssetAnnotationEditor";
 import {LibraryPublishPanel} from "./LibraryPublishPanel";
+import {PlaytestPanel} from "../PlaytestPanel";
 import {DirectLibraryActivity, DirectLibraryUse} from "./DirectLibraryUse";
 import {requestWorldTemplateCreation, type LibraryReference} from "../../../lib/player-library";
 
@@ -58,6 +59,7 @@ export type AssetLibraryPanelProps = {
   onUseAsset?: (asset: AssetVersion, modify: boolean) => Promise<void>;
   worldName?: string;
   onUseComposition?: (value: CompositionHandoff) => Promise<void>;
+  onRepairFeedback?: (text: string) => Promise<void>;
   /** A navigation destination only; publication still requires its normal form. */
   initialSection?: "browse" | "component" | "world";
 };
@@ -164,6 +166,7 @@ export function AssetLibraryPanel({
   onUseAsset,
   onUseComposition,
   worldName,
+  onRepairFeedback,
   initialSection = "browse",
 }: AssetLibraryPanelProps) {
   const ownedBridge = useMemo<AssetLibraryBridge | null>(() => bridge ? {
@@ -334,6 +337,7 @@ export function AssetLibraryPanel({
         </Button></form>
       </div>
       <DirectLibraryActivity bridge={bridge} worldId={worldId} zh={lang === "zh"}/>
+      {worldId&&<PlaytestPanel key={worldId} bridge={bridge} worldId={worldId} zh={lang === "zh"} onRepair={onRepairFeedback}/>}
       <div className="library-publish-tabs" role="tablist" aria-label={lang === "zh" ? "素材操作" : "Library actions"}>
         {(["browse", "component", "world", "composition"] as const).map((tab, index) => <form key={tab} onSubmit={event => {event.preventDefault(); setSection(tab);}} data-library-tab={tab}>
           <button type="submit" role="tab" aria-selected={section === tab} disabled={tab !== "browse" && !worldId}>{(lang === "zh" ? ["浏览素材", "保存对象", "保存世界模板", "玩法组合"] : ["Browse", "Save object", "Save world template", "Compose gameplay"])[index]}</button>

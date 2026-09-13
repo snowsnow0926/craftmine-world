@@ -10474,3 +10474,33 @@ refs; unknown bridge hashes must not match the new exact cohorts.
   geometry regression is `tests/creation-preview-native.mjs`. Both remain isolated
   and offscreen/headless, with no OS input, Pointer Lock or focus requests. Preserve
   failed reports and fail the result if shutdown or package inventory fails.
+
+## Player setup and portable friend feedback (2026-09-14)
+
+Verify the existing settings row's install/discover/login/verify/save stages.
+An incompatible PATH entry must not mask a compatible known native installation;
+candidate selection still requires account/model re-verification. Check missing
+installation, unavailable pinned distribution, cancelled login and narrow layout.
+
+Create a feedback report in an isolated friend world, review the text/version
+identity, and verify no screenshot is collected by default. Opt into native
+capture and verify the shown PNG matches the selected world/build. Export the
+reviewed bytes, select them in a second author profile, review before confirming,
+and cold-reopen the Rust journal. Re-import is idempotent. Compare different
+build identities, prepare an AI-review draft without submitting or overwriting
+existing text, export a linked reply and import it back in the friend profile.
+Autosave after review must export the exact original reviewed bytes without
+recapturing or changing timestamps, progress identity or screenshots; a new
+formal build still requires a fresh preview.
+Reject tampered/oversized files, injected paths, cross-world read IDs and changed
+formal build after preview. Saved template version and compatibility metadata
+remain visible through the normal ZIP export/import/republication workflow.
+
+Targeted evidence: `tests/playtest-feedback.test.mjs`,
+`tests/playtest-feedback-ui.mjs`, `tests/playtest-feedback-native.mjs`, and Rust
+`playtest_feedback` tests. Native storage fixtures do not claim engine play or
+actual model repair. Integrated native application acceptance covers those
+boundaries separately.
+
+Use `tests/playtest-feedback-client-native.mjs` for the integrated native PI
+acceptance described in [the runbook](../../e2e/playtest-feedback-native-20260914.md).

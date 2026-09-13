@@ -66,6 +66,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(['playtest.context','playtest.validate','playtest.record','playtest.list','playtest.read'].includes(method)) return core.call(method,params);
     if(method.startsWith('worldTemplate.')){
       const action=method.slice('worldTemplate.'.length);
       if(!['describe','save','status','cancel','list','read','prepare','importArchive','exportArchive'].includes(action)||!worldTemplates)throw Error('WORLD_TEMPLATE_UNAVAILABLE');

@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import {APP_VERSION} from "@pi-desktop/shared";
 import {libraryRecord, libraryReference, parsePlayerWorldTemplate, publicationMessage, type LibraryCall, type LibraryReference, type WorldTemplate} from "../../lib/player-library";
 
 export function LocalWorldTemplates({bridge, zh, busy, locked = false, initialRef, onCreate}: {
@@ -65,6 +66,12 @@ export function LocalWorldTemplates({bridge, zh, busy, locked = false, initialRe
         {nextOffset !== null && <button type="button" disabled={busy || actionBusy || loading || locked} onClick={() => void load(nextOffset)}>{zh ? "加载更多" : "Load more"}</button>}
       </div>
       {selected && <article className="local-world-template-detail" data-local-template-selected={selected.ref.assetId}>
+        <details data-template-compatibility><summary>{zh?"分享版本与兼容性":"Share version and compatibility"}</summary>
+          <p>Craftmine World {APP_VERSION}</p>
+          <p>{selected.ref.assetId} · v{selected.ref.version}</p><p>{selected.baseId} · {selected.baseVersion}</p>
+          <p>SHA256: {selected.archiveSha256??selected.ref.contentHash}</p>
+          <p>{zh?"请发送此版本的模板 ZIP 和相同版本的应用。导入成功仅表示文件有效；创建副本时仍需构建检查和首次加载。未采用草稿不包含在内。":"Send this template ZIP and the same app version. Successful import validates the archive; creating a copy still requires a build check and first load. Unapplied drafts are excluded."}</p>
+        </details>
         {selected.preview && <img src={selected.preview} alt={selected.displayName}/>}
         <h2>{selected.displayName} · v{selected.ref.version}</h2><p>{selected.description}</p>
         <p className="asset-library-note">{zh ? "新世界从作者保存的起点开始，包括当时的位置、探索和互动状态。原世界保持独立。" : "The new world starts from the author's saved position, exploration and interactions. The original stays independent."}</p>
