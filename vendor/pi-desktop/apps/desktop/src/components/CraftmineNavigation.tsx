@@ -227,6 +227,15 @@ export function CraftmineNavigation() {
                 lang={lang}
                 worldId={controller.activeWorldId}
                 worldName={controller.activeWorld?.title}
+                onRepairFeedback={async text=>{
+                  const worldId=controller.activeWorldId,bridge=controller.bridge,sessionId=useAppStore.getState().activeSessionId;
+                  if(!worldId||!bridge||!sessionId)throw Error(lang==="zh"?"请先打开此世界的创作对话。":"Open this world's creation conversation first.");
+                  const selected=await bridge.list(),bound=await bridge.call("world.conversation",{worldId}) as {sessionId?:string};
+                  if(selected.activeWorldId!==worldId||bound.sessionId!==sessionId||useAppStore.getState().activeSessionId!==sessionId||latestWorld.current!==worldId)throw Error("WORLD_CONVERSATION_CHANGED");
+                  if(useAppStore.getState().composerPrefill)throw Error(lang==="zh"?"请先处理对话中待填入的内容。":"Finish the pending Composer draft first.");
+                  useAppStore.setState({composerPrefill:{sessionId,worldId,text,fileReferences:[],append:true,focus:false}});
+                  setAssetsOpen(false);enterCraftmineMode("create",{explicit:true});
+                }}
                 onUseComposition={async ({plan, text}) => {
                   const worldId = controller.activeWorldId, bridge = controller.bridge;
                   const sessionId = useAppStore.getState().activeSessionId;
