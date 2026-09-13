@@ -1,11 +1,18 @@
 import {createHash, randomUUID} from "node:crypto";
-import {mkdirSync, readFileSync, renameSync, writeFileSync} from "node:fs";
+import {mkdirSync, readFileSync, realpathSync, renameSync, statSync, writeFileSync} from "node:fs";
 import {join} from "node:path";
 import {craftmineProjectIdentity} from "./craftmine-tool-context";
 
 type Session = {id: string; projectPath?: string | null; messageCount?: number; archived?: boolean};
 type Locator = {worldId: string; sessionId: string; projectId: string};
 const token = (value: unknown): value is string => typeof value === "string" && /^[A-Za-z0-9._:-]{1,240}$/.test(value);
+function sameProjectDirectory(sessionPath: string | null, currentPath: string | null): boolean {
+  if (sessionPath === null || currentPath === null) return sessionPath === currentPath;
+  try {
+    const actual = realpathSync.native(sessionPath), current = realpathSync.native(currentPath);
+    return actual === current && statSync(actual).isDirectory();
+  } catch {return false;}
+}
 
 /** Presentation ownership only; this never opens a workspace or authorizes an Agent. */
 export function createWorldConversationNavigation(directory: string) {
@@ -30,7 +37,7 @@ export function createWorldConversationNavigation(directory: string) {
         || !token(args.worldId) || !token(args.sessionId)) throw Error("WORLD_CONVERSATION_REQUEST_INVALID");
       if (args.worldId !== selectedWorld) throw Error("WORLD_CONVERSATION_CHANGED");
       if (session.id !== args.sessionId || session.archived || session.messageCount !== 0
-        || (session.projectPath ?? null) !== currentProjectPath) throw Error("WORLD_CONVERSATION_SESSION_CHANGED");
+        || !sameProjectDirectory(session.projectPath ?? null, currentProjectPath)) throw Error("WORLD_CONVERSATION_SESSION_CHANGED");
       const expected = {worldId: args.worldId, sessionId: session.id, projectId: craftmineProjectIdentity(session, session.id)};
       const previous = read(session.id), fresh = created.get(session.id);
       if (previous && JSON.stringify(previous) !== JSON.stringify(expected)) throw Error("WORLD_CONVERSATION_BINDING_IMMUTABLE");
