@@ -1039,6 +1039,8 @@ export class PluginRuntime {
       "worldTemplate.list", "worldTemplate.read", "worldTemplate.describe", "worldTemplate.save",
       "worldTemplate.status", "worldTemplate.cancel", "worldTemplate.prepare",
       "worldTemplate.importArchive", "worldTemplate.exportArchive",
+      "playtest.context", "playtest.validate", "playtest.record", "playtest.list", "playtest.read",
+      "world.brief",
       "workspace.endTurn", "asset.bodyPath",
       "asset.request", "package.request",
     ]) allowed.add(operation);
