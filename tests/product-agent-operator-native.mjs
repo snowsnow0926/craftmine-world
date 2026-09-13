@@ -104,11 +104,23 @@ async function command(name,input){
   if(name==='candidate'){assert(['preview','apply'].includes(input.action));const status=await nav('godot.creationTaskStatus',{sessionId:report.sessionId});assert(input.candidateId&&status.candidateId===input.candidateId,'CURRENT_CANDIDATE_REQUIRED');return panel(input.action==='preview'?'godot.candidatePreview':'godot.candidateApply',{candidateId:input.candidateId});}
   if(name==='input-segment'){
     assert(!activeInput,'INPUT_SEGMENT_ALREADY_ACTIVE');assert.equal(input.identity?.worldId,report.worldId);
+    const matching=async()=>{const current=await rpc('godotObserve');for(const key of ['worldId','buildId','instanceId'])assert.equal(current[key],input.identity[key],'INPUT_CURRENT_IDENTITY_REQUIRED');};
+    await matching();
     const selected={identity:input.identity,cancelFile:path.join(out,'cancel-input-'+randomUUID()),cancelRequested:false};activeInput=selected;report.activeInput=selected;save();
-    try{const result=await rpc('inputSegment',{payload:{identity:input.identity,segment:input.segment}});
+    let result,frozen=false;
+    const stopAndSave=async()=>{
+      report.lastInputRelease=await rpc('cancelInputs',{payload:{identity:selected.identity}});
+      await matching();
+      const receipt=await panel('godot.runtimeSave',{freeze:true}),snapshot=await rpc('godotSnapshot');
+      assert.equal(snapshot?.worldId,report.worldId);frozen=true;
+      report.lastInputCheckpoint={receipt,snapshot,via:'ordinary-runtimeSave-freeze',continuousHumanPlay:false};
+      if(result)result.operatorCheckpoint=report.lastInputCheckpoint;
+      save();
+    };
+    try{await panel('godot.runtimeResume');result=await rpc('inputSegment',{payload:{identity:input.identity,segment:input.segment}});await stopAndSave();
       for(const samples of [result,result.partialEvidence].filter(Boolean))for(const phase of ['before','during','after']){const frame=samples[phase]?.frame;if(!frame?.pngBase64)continue;const bytes=Buffer.from(frame.pngBase64,'base64');if(frame.sha256)assert.equal(hash(bytes),frame.sha256);const file=path.join(out,'captures','input-'+phase+'-'+Date.now()+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes);const {pngBase64,...metadata}=frame;samples[phase].frame={...metadata,file,sha256:hash(bytes)};}
       report.lastInputResult=result;save();return result;
-    }finally{try{report.lastInputRelease=await rpc('cancelInputs',{payload:{identity:selected.identity}});}catch(error){report.inputReleaseError=String(error);}activeInput=null;report.activeInput=null;save();}
+    }finally{try{if(!frozen)await stopAndSave();}catch(error){report.inputReleaseError=String(error);throw error;}finally{activeInput=null;report.activeInput=null;save();}}
   }
   if(name==='cancel-inputs'){assert.equal(input.identity?.worldId,report.worldId);return rpc('cancelInputs',{payload:{identity:input.identity}});}
   if(name==='explore'){const identity=await rpc('godotObserve');assert.equal(identity.worldId,report.worldId);return rpc('godotExplore',{payload:{worldId:report.worldId,buildId:identity.buildId,instanceId:identity.instanceId,steps:input.steps}});}
