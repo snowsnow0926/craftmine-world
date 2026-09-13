@@ -51,3 +51,13 @@ not added to generic renderer package allowlists. Status/cancel can inspect a
 retained operation after leaving its world. Main shutdown drains this service
 before stopping the plugin/domain. Unit fixtures are protocol evidence only;
 the integrated offscreen native player run remains a separate acceptance gate.
+
+The main-frame navigation gateway validates the shared request before dispatch.
+Only inspect/start/apply require the selected world; retained status and cancel
+remain available after a world switch. Start/apply stop stock maintenance and
+recheck global busy state. The captured native instance must match Core's formal
+build before installation and immediately before adoption. A duplicate apply
+may join the service's own in-flight operation; arbitrary candidate authority
+is never admitted. Ordinary edit/turn-start and maintenance yield during direct
+service work. Quit preparation refuses an in-flight installation/adoption, and
+final shutdown drains the service before disposing plugin and Core owners.

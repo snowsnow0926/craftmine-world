@@ -28,3 +28,12 @@ proves real static ZIP validation and private source/check authority. They do no
 claim human acceptance or clean external Windows execution. Native acceptance
 uses page scripts/owned offscreen processes, no mouse/keyboard simulation,
 foreground windows or Pointer Lock. Root integration records the actual results.
+
+Integrated driver: repository `tests/direct-library-native.mjs` creates a fresh
+no-model client through ordinary PI forms, adds the exact approved companion
+twice, retries the same immutable operation, closes and reopens the sheet, then
+cold-reopens the app. It requires native checked adoption, distinct entity IDs,
+unchanged GLB/player-controller bytes, retained inventory and component state,
+and main-reconciled UI operation history. Raw outputs retain source and native
+captures. Run only for the explicitly authorized scoped player validation;
+never run historical input-simulation suites as a substitute.
