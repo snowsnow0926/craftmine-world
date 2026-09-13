@@ -1,0 +1,53 @@
+// Renderer fixtures: actual PI components, ordinary form submission, no model or native gameplay claims.
+import fs from 'node:fs'; import path from 'node:path'; import assert from 'node:assert/strict'; import {createRequire} from 'node:module'; import {pathToFileURL} from 'node:url';
+import {playwright,browserOptions} from '../app/browser-tools.mjs';
+const root=path.resolve(import.meta.dirname,'..'), desktop=path.join(root,'vendor/pi-desktop/apps/desktop'), require=createRequire(path.join(desktop,'package.json'));
+fs.mkdirSync(path.join(root,'test-results'),{recursive:true}); const out=fs.mkdtempSync(path.join(root,'test-results/player-workflow-ui-'));
+const code=`import React from 'react';import{createRoot}from'react-dom/client';import i18n from'i18next';import{initReactI18next}from'react-i18next';
+import{CraftmineModeEntry}from'./src/components/CraftmineModeEntry';import{SourceReusePanel}from'./src/components/craftmine/SourceReusePanel';
+import{useAppStore}from'./src/stores/app-store';import{api}from'./src/lib/api';import{writeComposerDraft,readComposerDraft,HOME_DRAFT_KEY}from'./src/lib/composer-draft-cache';import{loadCraftmineLayout,saveCraftmineLayout}from'./src/lib/craftmine-layout';
+await i18n.use(initReactI18next).init({lng:'zh-CN',resources:{'zh-CN':{translation:{}}}});
+const f=window.fixture={calls:[],opened:[],selected:'w1',switchFailure:false,hold:null,version:0,installs:0};
+const hash='a'.repeat(64), world=id=>({id,title:id==='w1'?'博美与森林':'飞行世界',revision:1,updatedAt:Date.now(),state:'ready',base:{id:'creation-sandbox',label:'Godot 3D',delivered:true}});
+const examples=['mainline','flight','rain','city'].map(id=>({id:'promo-'+id,label:{mainline:'博美与森林',flight:'歼二十飞行',rain:'控雨世界',city:'城市漫游'}[id],description:'已保存的可玩示例',delivered:true,kind:'example',initialState:'authored-defaults'}));
+f.host=async(channel,args={})=>{f.calls.push({channel,args});
+ if(channel==='world.list')return{activeWorldId:f.selected,worlds:['w1','w2'].map(world)};
+ if(channel==='world.createOptions')return{create:true,switch:true,bases:[{id:'creation-sandbox',label:'Godot 3D',delivered:true,starters:examples},{id:'web',label:'Web world',delivered:true,starters:[]}]};
+ if(channel==='workbench.capabilities')return{switch:true,create:true};
+ if(channel==='task.current')return null;
+ if(channel==='world.conversation')return{worldId:args.worldId,sessionId:null};
+ if(channel==='world.switch'){if(f.hold)await f.hold;if(f.switchFailure)return{ok:false,error:'SAVE_FAILED',activeWorldId:f.selected};f.selected=args.worldId??args.id;return{ok:true,activeWorldId:f.selected};}
+ if(channel==='package.request'){
+ const proposal={proposalId:'source-'+'a'.repeat(48),worldId:'w1',displayName:'认可版白色博美伙伴',status:f.installs?'check-queued':'proposed',source:{revision:1,manifestHash:hash},archiveRef:{assetId:'cw.module.approved-pomeranian',version:1,contentHash:hash},...(f.installs?{installation:{job:{jobId:'gjob-'+hash,status:'queued'},instanceIds:['pet-1']}}:{})};
+ if(args.method==='sourceProposals')return{worldId:'w1',items:[proposal]};
+ if(args.method==='installSourceProposal'){f.installs++;return{worldId:'w1',applied:false,job:{id:'gjob-'+hash,status:'queued'}};}
+ if(args.method==='sourceJob')return{worldId:'w1',jobId:'gjob-'+hash,status:'passed'};
+ }
+ throw Error('UNEXPECTED:'+channel);
+};
+globalThis.__craftmineWorldBridge={invoke:(_p,c,a)=>f.host(c,a),onChanged:()=>()=>{}};api.pluginPanelInvoke=(_p,c,a)=>f.host(c,a);api.onWindowFullScreen=()=>()=>{};api.prompt=async()=>{throw Error('NO_MODEL_EXPECTED');};
+const app=createRoot(document.getElementById('root'));f.reset=()=>{f.version++;f.calls=[];f.opened=[];f.selected='w1';f.switchFailure=false;f.hold=null;useAppStore.setState({ready:true,page:'chat',activeSessionId:undefined,selectingSessionId:undefined,isRunning:false,settings:{language:'zh-CN',defaultMode:'agent'},sessions:[],workPanelTabs:[],activeWorkPanelTabId:null});writeComposerDraft(HOME_DRAFT_KEY,{text:'保留我的愿望',fileReferences:[{path:'reference.png',name:'参考图',kind:'image'}]});saveCraftmineLayout(localStorage,{...loadCraftmineLayout(localStorage),mode:'play',overlay:'closed',enteredWorldId:'w1'});app.render(<CraftmineModeEntry key={f.version} onSelect={(_mode,id)=>f.opened.push(id)} onCancel={()=>{}}/>);};
+f.draft=()=>readComposerDraft(HOME_DRAFT_KEY);f.changeDraft=()=>writeComposerDraft(HOME_DRAFT_KEY,{text:'等待时新写的内容',fileReferences:[]});f.gate=()=>{f.hold=new Promise(resolve=>f.release=resolve);};f.reuse=()=>{f.version++;app.render(<SourceReusePanel key={f.version} worldId='w1' running={false}/>);};f.reset();`;
+await require('esbuild').build({stdin:{contents:code,resolveDir:desktop,sourcefile:'player-workflow-fixture.tsx',loader:'tsx'},bundle:true,format:'esm',outfile:path.join(out,'fixture.js'),define:{'process.env.NODE_ENV':'"production"'},logLevel:'error'});
+fs.writeFileSync(path.join(out,'index.html'),'<!doctype html><html><meta charset="utf-8"><style>:root{--ds-bg-primary:#171717;--ds-bg-secondary:#222;--ds-text-primary:#eee;--ds-text-secondary:#bbb;--ds-border-subtle:#444;--text-2xl:26px;--text-lg:18px;--text-sm:14px}body{margin:0;font:14px system-ui;background:#171717;color:#eee}button,input{font:inherit}.craftmine-world-item{width:100%;text-align:left;padding:16px;color:inherit;background:#222;border:1px solid #444}.craftmine-world-item-body{display:flex;gap:20px}.craftmine-world-items{list-style:none;padding:0}.source-reuse-item{display:grid;gap:12px;margin:20px}</style><link rel="stylesheet" href="./fixture.css"><div id="root"></div><script type="module" src="./fixture.js"></script></html>');
+const browser=await playwright().chromium.launch({...browserOptions(),args:['--allow-file-access-from-files']}),page=await browser.newPage({viewport:{width:1280,height:850}}),report={out,checks:[],errors:[]};
+page.on('pageerror',e=>report.errors.push(String(e)));
+await page.addInitScript(()=>{window.violations=[];Element.prototype.requestPointerLock=function(){violations.push('pointerLock');throw Error('BLOCKED');};window.focus=()=>{violations.push('focus');};HTMLElement.prototype.focus=function(){};});
+const check=(name,value)=>{assert(value,name);report.checks.push(name);};
+const submit=selector=>page.evaluate(selector=>document.querySelector(selector).requestSubmit(),selector);
+const ready=()=>page.waitForSelector('[data-world-list-state="ready"]');
+try{
+ await page.goto(pathToFileURL(path.join(out,'index.html')).href);await ready();
+ check('two native world rows appear without AI setup',await page.locator('[data-world-open]').count()===2);
+ await page.screenshot({path:path.join(out,'my-worlds.png')});
+ await submit('[data-world-entry-tab-form="examples"]');await page.waitForSelector('[data-world-example]');check('four actual host starters appear inside the existing chooser',await page.locator('[data-world-example]').count()===4);
+ await page.screenshot({path:path.join(out,'examples.png')});
+ await submit('[data-world-entry-tab-form="create"]');await page.waitForSelector('[data-world-create="form"]');check('new flow retains Godot and Web choices',await page.locator('[data-world-base-option]').count()===2);
+ await page.evaluate(()=>fixture.reset());await ready();await submit('[data-world-open="w2"]');await page.waitForFunction(()=>fixture.opened.length===1);check('normal switch opens the actual world and preserves home text/files',await page.evaluate(()=>fixture.selected==='w2'&&fixture.draft().text==='保留我的愿望'&&fixture.draft().fileReferences.length===1));
+ await page.evaluate(()=>{fixture.reset();fixture.switchFailure=true;});await ready();await submit('[data-world-open="w2"]');await page.waitForSelector('[data-world-entry-error]');check('failed save keeps the original world and does not present target',await page.evaluate(()=>fixture.selected==='w1'&&!fixture.opened.length));
+ await page.evaluate(()=>{fixture.reset();fixture.gate();});await ready();await submit('[data-world-open="w2"]');await page.waitForFunction(()=>fixture.calls.some(c=>c.channel==='world.switch'));await page.evaluate(()=>{fixture.changeDraft();fixture.release();});await page.waitForSelector('[data-world-entry-error]');check('late switch cannot overwrite a new draft or finish stale navigation',await page.evaluate(()=>!fixture.opened.length&&fixture.draft().text==='等待时新写的内容'));
+ await page.evaluate(()=>fixture.reuse());await page.waitForSelector('[data-source-proposal] form');await submit('[data-source-proposal] form');await page.waitForFunction(()=>document.body.textContent.includes('检查通过'));check('source install reports actual checks and keeps applied separate',await page.evaluate(()=>fixture.installs===1&&!document.body.textContent.includes('已应用')));
+ await page.evaluate(()=>fixture.reuse());await page.waitForFunction(()=>document.body.textContent.includes('检查通过'));check('remount restores same installed job without duplicate source install',await page.evaluate(()=>fixture.installs===1&&!document.querySelector('[data-source-proposal] form')));
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(out,'reuse-mobile.png')});
+ check('no model call, pointer lock, focus, or page error',await page.evaluate(()=>violations.length===0)&&!report.errors.length);report.passed=true;
+}finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));await browser.close();console.log(JSON.stringify(report));}
