@@ -66,3 +66,12 @@ Verification remains separated:
 
 Product-level check/adopt/player-save/reopen stays part of the integrating
 player-flow acceptance, not inferred from these source or geometry receipts.
+# Built-in library preview publication
+
+The host validates each declared component PNG, its exact digest, bounded size,
+and ordinary file containment before importing any catalog entry. Only new
+`reusable-world-content` entries may declare a component-view preview. Native
+preview claims cache the real captured PNG separately from immutable package
+bytes. Existing conflicting versions are preserved and receive no new preview.
+An image documents the component render scene; receiving-world installation and
+gameplay still require the ordinary source checks and adoption workflow.

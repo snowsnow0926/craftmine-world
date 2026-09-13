@@ -52,3 +52,17 @@ test('an import without the corresponding immutable version cannot claim success
   const f=fixture(),normal=f.call;f.call=async(method,args)=>method==='asset.import'?{status:'completed'}:normal(method,args);
   await assert.rejects(seedBuiltinSourceLibrary(f),/ASSET_NOT_FOUND/);
 });
+test('new component pictures are exact bounded PNGs with native cached claims',async()=>{
+  const f=fixture(),png=Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),Buffer.alloc(20)]);
+  f.entry.tags.push('reusable-world-content');f.entry.preview={file:'oak.png',bytes:png.length,sha256:hash(png),scope:'component-view'};
+  fs.writeFileSync(path.join(f.directory,'oak.png'),png);f.write([f.entry]);
+  const normal=f.call;let cached=false,finishes=0;
+  f.call=async(method,args)=>{
+    if(method==='asset.previewBegin')return cached?{cached:true}:{claim:{claimId:'claim-1',attempt:1}};
+    if(method==='asset.previewFinish'){finishes++;cached=true;assert.equal(args.facts.thumbnailBase64,png.toString('base64'));assert.equal(args.facts.previewScope,'component-view');return{applied:true};}
+    return normal(method,args);
+  };
+  await seedBuiltinSourceLibrary(f);await seedBuiltinSourceLibrary(f);assert.equal(finishes,1);
+  fs.writeFileSync(path.join(f.directory,'oak.png'),Buffer.alloc(png.length));
+  await assert.rejects(seedBuiltinSourceLibrary(f),/BUILTIN_PREVIEW_HASH_MISMATCH/);
+});
