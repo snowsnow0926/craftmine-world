@@ -133,6 +133,19 @@ the engine stack without modifying the authored scene or injecting input.
 
 ## Explicit reference and feedback images
 
+The project CLI's author service pauses the formal scene after opening it,
+matching the normal desktop conversation overlay. Source tools and actual
+captures remain available, while combat and other simulation do not advance
+through a long model turn. The separate operator gameplay/open commands retain
+their ordinary running behavior.
+
+Gameplay cancellation metadata is published before opening the native view.
+Cancelling during startup abandons only the owned helper before any gameplay
+input, preserves the last durable snapshot, and records `abandoned-before-input`
+instead of a fabricated save receipt. Cancellation during gameplay still
+releases held inputs and follows the normal save/close flow. Reports exist even
+when cancellation occurs before a helper directory is available.
+
 ```powershell
 node scripts/promo-world-author.mjs turn --data $data --codex $codex --live-host true --prompt '请参考这两张图制作模型' --image 'D:/references/front.png' --image 'D:/references/side.jpg'
 ```

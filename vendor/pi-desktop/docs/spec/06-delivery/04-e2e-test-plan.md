@@ -10,6 +10,12 @@ the unchanged exit assertion. Candidate screenshots are actual offscreen
 bitmaps encoded after the check, never generated replacements. See
 `../codex-live-world-host.md` and the root promotional evidence directory.
 
+For the operator gameplay CLI, cancel while the active metadata says `starting`.
+Require exit 130, zero input segments, `abandoned-before-input`, and an unchanged
+native saved world. Separately open the author service, require its formal state
+to be paused and consecutive snapshots to remain equal while awaiting model
+work. Actual fixtures are retained in the root promotional test results.
+
 ## CRAFTMINE-026: Local token limits and stable request prefixes
 
 On an isolated profile, exhaust a small cumulative task token budget while the

@@ -1,0 +1,89 @@
+{
+  "scope": "Actual private helper startup cancellation, zero gameplay input, existing native progress remains authoritative.",
+  "exitCode": 130,
+  "stdout": "{\"status\":\"cancelled\",\"report\":\"D:\\\\Craftmine Worktrees\\\\codex-promo-20260913\\\\test-results\\\\prain\\\\test-results\\\\desktop-native-codex-live-uO07UF\\\\gameplay-report.json\",\"semanticSuccess\":null}\n",
+  "stderr": "",
+  "report": {
+    "format": "craftmine.gameplay-report/1",
+    "operationId": "23e8273b-7588-486a-babd-1deeaaa82585",
+    "status": "cancelled",
+    "worldId": "promo-rain",
+    "plan": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\gameplay-plans\\rain-automatic-continue.json",
+      "sha256": "34a8a608686f21bd1d930453eaadd73911a767c598cd0feb336d3ab56e610b19",
+      "value": {
+        "format": "craftmine.gameplay-plan/1",
+        "segments": [
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": true
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": true
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": true
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": true
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": false
+          },
+          {
+            "frames": 100,
+            "settleFrames": 0,
+            "capture": true
+          }
+        ]
+      }
+    },
+    "segments": [],
+    "semanticSuccess": null,
+    "helperDirectory": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\prain\\test-results\\desktop-native-codex-live-uO07UF",
+    "error": "GAMEPLAY_CANCELLED_DURING_STARTUP",
+    "retirement": {
+      "status": "abandoned-before-input",
+      "save": null
+    }
+  }
+}

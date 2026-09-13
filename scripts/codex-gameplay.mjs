@@ -31,24 +31,38 @@ export async function gameplayMain(argv=process.argv.slice(2)) {
   if(!options['--plan'])throw Error(help);
   const bytes=await fs.readFile(path.resolve(options['--plan'])),plan=validateGameplayPlan(JSON.parse(bytes));
   const state=readState(data),unlock=acquireLock(data),operationId=randomUUID();
-  let host,live,identity,poll,stopping=false,retirement;
+  let host,live,identity,poll,stopping=false,retirement,startupAbandon;
+  let reportPath=path.join(data,'gameplay-'+operationId+'.json');
   const report={format:'craftmine.gameplay-report/1',operationId,status:'running',worldId:state.worldId,
     plan:{path:path.resolve(options['--plan']),sha256:createHash('sha256').update(bytes).digest('hex'),value:plan},segments:[],semanticSuccess:null};
-  const cancel=()=>{stopping=true;if(live&&identity)void live.cancelGameplay(identity).catch(()=>{});};
+  const cancel=()=>{
+    stopping=true;
+    if(live&&identity)void live.cancelGameplay(identity).catch(()=>{});
+    // Before any input, the last durable native snapshot is authoritative.
+    // A stalled opening must not prevent the operator cancelling this helper.
+    else if(live&&!startupAbandon){startupAbandon=live.abandon();void startupAbandon.catch(()=>{});}
+  };
   process.on('SIGINT',cancel);process.on('SIGTERM',cancel);
   try {
-    host=new CodexWorldHost({state,data});live=await startCodexLiveService({core:host.core,state,data});await host.start({engines:false});
+    await fs.writeFile(reportPath,JSON.stringify(redact(report),null,2));
+    await fs.writeFile(activePath,JSON.stringify({operationId,pid:process.pid,worldId:state.worldId,phase:'starting',identity:null}));
+    poll=setInterval(()=>{void fs.readFile(cancelPath,'utf8').then(text=>{if(JSON.parse(text).operationId===operationId&&!stopping)cancel();}).catch(()=>{});},250);
+    host=new CodexWorldHost({state,data});live=await startCodexLiveService({core:host.core,state,data});
+    report.helperDirectory=live.directory;
+    reportPath=path.join(live.directory,'gameplay-report.json');
+    await fs.writeFile(path.join(live.directory,'gameplay-plan.json'),bytes);
+    await fs.writeFile(path.join(live.directory,'gameplay-report.json'),JSON.stringify(redact(report),null,2));
+    if(stopping){cancel();throw Error('GAMEPLAY_CANCELLED_DURING_STARTUP');}
+    await host.start({engines:false});
     if(JSON.stringify(await host.sourceIdentity())!==JSON.stringify(state.sourceIdentity))throw Error('CODEX_SOURCE_IDENTITY_CHANGED');
     const opened=await live.call('open');if(!opened.instance)throw Error('GAMEPLAY_FORMAL_WORLD_REQUIRED');
+    if(stopping){cancel();throw Error('GAMEPLAY_CANCELLED_DURING_STARTUP');}
     const {worldId,buildId,instanceId}=opened.instance;identity={worldId,buildId,instanceId};report.identity=identity;
     if(options['--expect-build']&&options['--expect-build']!==buildId)throw Error('GAMEPLAY_EXPECTED_BUILD_MISMATCH');
     await live.call('validateInputPlan',{segments:plan.segments});
-    await fs.writeFile(activePath,JSON.stringify({operationId,pid:process.pid,identity}));
-    poll=setInterval(()=>{void fs.readFile(cancelPath,'utf8').then(text=>{if(JSON.parse(text).operationId===operationId&&!stopping)cancel();}).catch(()=>{});},250);
-    report.helperDirectory=live.directory;
+    await fs.writeFile(activePath,JSON.stringify({operationId,pid:process.pid,phase:'playing',identity}));
     const pins=value=>({repoId:value.repoId,headOid:value.headOid,appliedOid:value.appliedOid});
     report.source={before:pins(await host.core.call('content.status',{worldId}))};
-    await fs.writeFile(path.join(live.directory,'gameplay-plan.json'),bytes);
     for(const segment of plan.segments){
       if(stopping)break;
       const result=await live.gameplay(identity,segment);report.segments.push(result);
@@ -60,17 +74,25 @@ export async function gameplayMain(argv=process.argv.slice(2)) {
     report.source.after=pins(await host.core.call('content.status',{worldId}));
     report.source.unchanged=JSON.stringify(report.source.before)===JSON.stringify(report.source.after);
     if(!report.source.unchanged)throw Error('GAMEPLAY_SOURCE_CHANGED');
-  }catch(error){report.status='error';report.error=redact(error.message);throw error;}
+  }catch(error){
+    report.error=redact(error.message);
+    if(stopping&&!identity)report.status='cancelled';
+    else {report.status='error';throw error;}
+  }
   finally {
     clearInterval(poll);process.off('SIGINT',cancel);process.off('SIGTERM',cancel);
-    try{await host?.stop({beforeCoreStop:async()=>{retirement=await live?.stop();}});report.retirement={status:'closed',save:retirement?.saved??null};}
+    try{
+      await startupAbandon;
+      await host?.stop({beforeCoreStop:async()=>{retirement=await live?.stop();}});
+      report.retirement={status:startupAbandon?'abandoned-before-input':'closed',save:retirement?.saved??null};
+    }
     catch(error){report.retirement={status:'failed',error:redact(error.message)};await live?.abandon();await host?.core.stop();report.status='error';throw error;}
     finally{
-      if(live)await fs.writeFile(path.join(live.directory,'gameplay-report.json'),JSON.stringify(redact(report),null,2));
+      await fs.writeFile(reportPath,JSON.stringify(redact(report),null,2));
       await fs.unlink(activePath).catch(error=>{if(error.code!=='ENOENT')throw error;});unlock();
     }
   }
-  console.log(JSON.stringify({status:report.status,report:path.join(live.directory,'gameplay-report.json'),semanticSuccess:null}));
+  console.log(JSON.stringify({status:report.status,report:reportPath,semanticSuccess:null}));
   if(report.status!=='completed')process.exitCode=report.status==='cancelled'?130:1;
   return report;
 }

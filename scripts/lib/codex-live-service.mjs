@@ -157,6 +157,12 @@ export async function startCodexLiveService({core,state,data}) {
 
 export async function createServices(input) {
   const service=await startCodexLiveService(input);
-  try{await service.call('open');return service;}
+  try{
+    const opened=await service.call('open');
+    // A CLI author turn corresponds to the desktop conversation overlay.
+    // Keep the bound scene observable without running combat during model work.
+    if(opened.instance)await service.call('pause');
+    return service;
+  }
   catch(error){await service.stop().catch(()=>service.abandon());throw error;}
 }

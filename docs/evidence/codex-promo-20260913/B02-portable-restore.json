@@ -1,0 +1,68 @@
+{
+  "scope": "Restore archive into a fresh native data store; not a rebuilt playable runtime.",
+  "receipt": {
+    "archiveHash": "759fd7a5c22e70611314107f2a5111e280f95337de7d0bb6c57aa0934a219e8b",
+    "contentBytes": 13653259,
+    "credentialsIncluded": false,
+    "currentHash": "60aea744c322ebceb32e25cb75b0db2d4a4e6d26758b1ca637f887ec7b097d71",
+    "domainHash": "60aea744c322ebceb32e25cb75b0db2d4a4e6d26758b1ca637f887ec7b097d71",
+    "entries": 128,
+    "id": "promo-restore-0528ac5e-8644-480d-85b3-11bfbc1c624a",
+    "importedProvenance": true,
+    "kind": "restore-portable",
+    "rebuildRequired": [
+      "gbd-4b749635e95e320712848d34500d8e09159e46e29a5afdc337c0cb52443bc555",
+      "gbd-77d168d34aa3e91617603481c536d55dd806f6b2084ca07860364142ac4f052f",
+      "gbd-cc3377397c26d09e216532f60e11922e2782a9ac41b1951603ce73045ebb6969",
+      "gbd-f0c7ea3802c45daf2384ec0db5bee7fc77d7d1d198ffd2cec43c2bafeccb5fad"
+    ],
+    "repositories": [
+      {
+        "objectFormat": "sha1",
+        "objects": 95,
+        "refs": 4,
+        "repoId": "world-promo-flight"
+      }
+    ],
+    "restoredInPlace": true,
+    "status": "completed",
+    "targetDirectory": "\\\\?\\D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\promo-archive-restore-kYVB1r",
+    "verifiedFiles": 127
+  },
+  "worldId": "promo-flight",
+  "source": {
+    "appliedOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+    "backend": "git",
+    "branches": [
+      {
+        "name": "refs/heads/main",
+        "objectType": "commit",
+        "oid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+        "symref": null
+      }
+    ],
+    "format": "craftmine.content-status/1",
+    "git": {
+      "path": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\codex-promo\\runtime\\resources\\git\\bin\\git.exe",
+      "sha256": "da240fe9bc24895b3e04150a4990b8a6ff329ecabcd8f19684c2cc310da5ef3f",
+      "source": "bundled",
+      "version": "2.53.0.windows.1",
+      "versionMajor": 2,
+      "versionMinor": 53
+    },
+    "gitDir": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\promo-archive-restore-kYVB1r\\content-history\\repos\\e436d3a6cfab58ba05bf89a278cb6c53\\repo.git",
+    "headOid": "ccfeaf26e00e2cbb3ab5c46a7615f49cb50ee2fc",
+    "migratedRevisions": 2,
+    "registered": true,
+    "repoId": "world-promo-flight",
+    "worldId": "promo-flight"
+  },
+  "savedProgressEqual": true,
+  "sourceDataOpened": false,
+  "data": "D:\\Craftmine Worktrees\\codex-promo-20260913\\test-results\\promo-archive-restore-kYVB1r",
+  "archive": {
+    "path": "D:/Craftmine Worktrees/codex-promo-20260913/test-results/codex-promo/exports/flight.craftmine",
+    "bytes": 13712737,
+    "sha256": "68361d83b47b4216d1337d0a0bc03da70c84e264ee1dfa820ebecfdac3cbe23c"
+  }
+}
