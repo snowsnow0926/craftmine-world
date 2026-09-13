@@ -16,9 +16,10 @@ const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
 const root=path.resolve(import.meta.dirname,'..');
 const resultsRoot=path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT??path.join(root,'test-results'));fs.mkdirSync(resultsRoot,{recursive:true});
-const resumeIndex=process.argv.indexOf('--resume-author'),frameIndex=process.argv.indexOf('--frame-report'),framesOnly=frameIndex>=0,previousFile=framesOnly?process.argv[frameIndex+1]:resumeIndex>=0?process.argv[resumeIndex+1]:null;
+const diagnosticIndex=process.argv.indexOf('--diagnose-preview'),previewDiagnostic=diagnosticIndex>=0;
+const resumeIndex=process.argv.indexOf('--resume-author'),frameIndex=process.argv.indexOf('--frame-report'),framesOnly=frameIndex>=0,previousFile=previewDiagnostic?process.argv[diagnosticIndex+1]:framesOnly?process.argv[frameIndex+1]:resumeIndex>=0?process.argv[resumeIndex+1]:null;
 const previous=previousFile?JSON.parse(fs.readFileSync(previousFile)):null;
-if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');if(framesOnly)assert(previous.passed&&previous.authorWorldId&&previous.importedWorldId&&previous.companionEntityId,'FRAME_ONLY_ACCEPTED_WORLDS');else assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
+if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');if(previewDiagnostic)assert(previous.authorWorldId&&previous.editedEntityId&&previous.edits?.some(e=>e.observation?.payload?.creation?.entities?.some(v=>v.id===previous.editedEntityId)),'DIAGNOSTIC_REQUIRES_ACTUAL_CHECKED_ENTITY');else if(framesOnly)assert(previous.passed&&previous.authorWorldId&&previous.importedWorldId&&previous.companionEntityId,'FRAME_ONLY_ACCEPTED_WORLDS');else assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
 const out=previous?.out??fs.mkdtempSync(path.join(resultsRoot,'desktop-native-rt-'));let profile=path.join(out,'profile');const token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));}
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
@@ -279,6 +280,18 @@ async function selectEditedTree(id){
  await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='编辑对象'&&!n.disabled)`),Boolean);
  await button('编辑对象');await until(()=>evaluate(`!!document.querySelector('[aria-label="尺寸 X"]')`),Boolean);
 }
+const previewTraces=new Set();
+async function tracePreviewTraffic(label){
+ const state=await rpc('godotCaptureBoundState');assert(state.formal?.worldId===worldId);let target;
+ for(const tab of (await tabs()).filter(t=>t.type==='page'&&t.url.startsWith('http://127.0.0.1:'))){
+  const candidate=await connect(tab.webSocketDebuggerUrl);const result=await cdp(candidate,'Runtime.evaluate',{expression:'globalThis.craftmineRuntime?.scope',returnByValue:true});
+  const scope=result.result?.value;if(scope&&['worldId','buildId','instanceId'].every(k=>scope[k]===state.formal[k])){target=candidate;break;}candidate.close();
+ }
+ assert(target,'NATIVE_PREVIEW_TRANSPORT_REQUIRED');
+ const read=async expression=>{const result=await cdp(target,'Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw Error('PREVIEW_TRACE_READ_FAILED');return result.result?.value;};
+ await read(`(()=>{if(globalThis.__craftminePreviewTrace)throw Error('TRACE_EXISTS');const rows=[];const off=craftmineRuntime.on(message=>{if(message.type!=='request')return;rows.push({at:performance.now(),op:message.op,id:message.id,previewId:message.args?.previewId,sequence:message.args?.sequence,action:message.args?.action});if(rows.length>256)rows.shift();});globalThis.__craftminePreviewTrace={rows,off};return true;})()`);
+ const trace={finish:async()=>{if(!previewTraces.has(trace))return;previewTraces.delete(trace);try{const requests=await read(`(()=>{const trace=globalThis.__craftminePreviewTrace;trace?.off();delete globalThis.__craftminePreviewTrace;return trace?.rows??[];})()`);report.previewTransports??=[];report.previewTransports.push({label,scope:state.formal,requests});save();}finally{target.close();}}};previewTraces.add(trace);return trace;
+}
 function previewPixels(beforeFile,afterFile){
  const require=createRequire(import.meta.url);let PNG;try{({PNG}=require('pngjs'));}catch{({PNG}=require(path.join(os.homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pngjs')));}
  const before=PNG.sync.read(fs.readFileSync(beforeFile)),after=PNG.sync.read(fs.readFileSync(afterFile));assert.equal(after.width,before.width);assert.equal(after.height,before.height);
@@ -288,6 +301,7 @@ async function previewVisible(){
  return until(()=>evaluate(`({statuses:Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent),notes:document.querySelector('.creation-object-editor')?.innerText})`),value=>{if(value.statuses.some(t=>/当前世界暂不支持预览|预览位置存在/.test(t)))throw Error('PREVIEW_UNAVAILABLE:'+value.notes);return value.statuses.includes('预览位置可用');});
 }
 async function previewAndCancel(label){
+ const transport=await tracePreviewTraffic(label);
  const beforeFrame=await capture(label+'-baseline');
  // The actual preview button pauses the runtime. Close this first preview so
  // the snapshot baseline and later preview share that ordinary paused state.
@@ -301,7 +315,7 @@ async function previewAndCancel(label){
  },v=>v.changedPixels>=256);const frame=visible.frame;await button('关闭预览');
  await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
  const after=completeCreationProgress(await rpc('godotSnapshot'));assert.deepEqual(after,before,'PREVIEW_CANCEL_PRESERVES_COMPLETE_PROGRESS');
- report.visualPreviews??=[];report.visualPreviews.push({label,frame,beforeFrame,changedPixels:visible.changedPixels,before,after});save();
+ await transport.finish();report.visualPreviews??=[];report.visualPreviews.push({label,frame,beforeFrame,changedPixels:visible.changedPixels,before,after});save();
 }
 async function startAndWaitEdit(label){
  await button('检查并应用');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));return waitEdit(label);
@@ -393,7 +407,10 @@ async function frameContents(label){
 }
 try{
  console.log(JSON.stringify({out,cancel:cancelFile}));
- if(framesOnly){
+ if(previewDiagnostic){
+  report.previewDiagnosticOnly=true;report.fullJourneyReexecuted=false;await start('preview-diagnostic');worldId=report.authorWorldId;await openExistingWorld(worldId);await workbench();await refreshTarget();await selectEditedTree(report.editedEntityId);
+  const observed=await rpc('godotObserve'),entity=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);assert(entity);await field('[aria-label="位置 X"]',String(entity.position[0]+.5));await field('[aria-label="朝向角度"]','45');await previewAndCancel('diagnostic-move-preview');await modelEvidence('preview-diagnostic');report.passed=true;
+ }else if(framesOnly){
   report.framingOnly=true;report.fullJourneyReexecuted=false;await start('frame-author');worldId=report.authorWorldId;await openExistingWorld(worldId);await frameContents('author-content-review');await stop();
   profile=path.join(out,'independent-profile');await start('frame-import');worldId=report.importedWorldId;await openExistingWorld(worldId);await frameContents('imported-content-review');
   report.passed=true;report.framingPassed=true;
@@ -429,6 +446,7 @@ try{
  }
 }catch(error){report.passed=false;report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-12000),notes:Array.from(document.querySelectorAll('.creation-target-note'),n=>({text:n.textContent,title:n.title})),buttons:Array.from(document.querySelectorAll('.creation-target-context button'),n=>({text:n.textContent,disabled:n.disabled})),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
 finally{
+ for(const trace of [...previewTraces])try{await trace.finish();}catch(error){report.previewTraceError=String(error);report.passed=false;process.exitCode=1;}
  try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}
  try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}
  clearInterval(watcher);save();
