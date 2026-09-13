@@ -4,8 +4,10 @@ Date: 2026-09-13. This pilot completed three independent playable courtyard
 worlds using the real project Codex CLI, `gpt-6-astra`, `xhigh`, and ordinary
 source/library/template tools. All three passed native application, ordinary
 controller movement through the gate and both houses, saving, and a new runtime
-reopening the saved world. One redundant reference-world check failed; its
-original successful application and separate gameplay proof remain valid.
+reopening the saved world. One redundant reference-world check failed during
+the measured model run; its original successful application and separate
+gameplay proof remain valid. The product fix below passed a separate native
+regression without changing that historical model result or token count.
 
 This measures a modest courtyard, not recreation of the four full promotional
 worlds. The common objective was two enterable red pitched-roof timber/stone
@@ -113,9 +115,22 @@ resource difference is semantically equivalent.
 
 Original and repeat artifacts remain in separate native executor task folders
 `ex-375b7cf415c14d7e94bb0512` and `ex-40464514ef1f4c739653bc5c` under the reference
-profile. The original stored build was not overwritten. A product fix needs
-separate deterministic-export or checked-artifact reuse design; disabling the
-immutable artifact conflict guard is not justified by this benchmark.
+profile. The original stored build was not overwritten.
+
+The integrated fix (`293ab86c`) reuses immutable artifacts only for the exact
+currently applied build after checking Core's formal authority, passed job,
+candidate, source, asset, engine and evidence identities. It still performs a
+fresh native import, current descriptor validation, actual runtime verifier and
+first load. Other worlds, old builds and unpublished candidates cannot reuse
+this authority. Artifact containment and conflict checks remain enforced.
+
+The separate native regression imported a reference into a new profile, applied
+it, walked and saved, checked unchanged source again, applied again, then cold
+reopened the exact saved state. Both checks passed (18.21 s and 7.42 s); the
+second fresh runtime verifier took 2.90 s. All ten stored artifact hashes and
+modification times stayed unchanged. This regression made no model calls and
+does not retroactively change the measured reference Agent review. See
+[the decision and native evidence](GODOT_APPLIED_ARTIFACT_RECHECK_ADR_2026-09-13.md).
 
 ## Reusable sample and evidence
 

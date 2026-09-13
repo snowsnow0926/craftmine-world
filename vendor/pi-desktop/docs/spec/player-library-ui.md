@@ -66,3 +66,9 @@ Selected-component export retains a GLB's supported paired import policy even
 though the model has no textual reference to that sidecar. Its exact bytes stay
 with payload models, or become a pinned source requirement for shared models.
 This preserves explicit LOD behavior across publication and later installation.
+
+The native UI acceptance driver follows the chooser's visible retry instruction
+if startup conversation restoration invalidates the first open preflight. It
+resubmits the ordinary existing-world form, records that retry and retains the
+ownership fence. It does not alter conversations or bypass a failed preflight.
+Visible library errors fail the probe rather than leaving it polling silently.

@@ -142,9 +142,18 @@ async function stop() {
 }
 let worldId;
 async function openExistingWorld(id){
- await chooser('worlds');await until(()=>evaluate(`!!document.querySelector('[data-world-open="${id}"]')`),Boolean);
- await submit(`[data-world-open="${id}"]`);await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
- return waitWorld(id);
+ for(let attempt=1;attempt<=3;attempt++){
+  await chooser('worlds');await until(()=>evaluate(`!!document.querySelector('[data-world-open="${id}"]')`),Boolean);
+  await submit(`[data-world-open="${id}"]`);
+  try{await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);return await waitWorld(id);}
+  catch(error){
+   if(attempt===3||!/对话或输入已改变。世界已保留，请再次打开。|Conversation or input changed.*open.*again/i.test(String(error)))throw error;
+   // Startup may restore the conversation after the first form preflight.
+   // Follow the visible retry instruction; do not bypass its source guard.
+   report.openRetries??=[];report.openRetries.push({worldId:id,attempt,error:String(error)});save();
+   await delay(500);
+  }
+ }
 }
 const panel=(channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}});
 const pkg=(method,params={})=>panel('package.request',{method,params:{worldId,...params}});
@@ -300,12 +309,12 @@ try{
  const publication=report.componentPublication??await publish('component','我的白色博美','星雪团子');assert.equal(publication.ref.version,1);mark('Actual component publication form saved native preview and alias search found its exact version');
  const bytes=publishedBytes(publication);
  const template=report.worldPublication??await publish('world','我的博美世界','星雪世界');report.savedTemplate=await nav('worldTemplate.read',{ref:template.ref});assert.equal(report.savedTemplate.initialState,'saved-progress');mark('Explicit saved-progress choice published current formal world through actual PI form');
- await chooser('templates');await until(()=>evaluate(`!!document.querySelector('[data-local-template="${template.ref.assetId}"]')`),Boolean);await submit(`[data-local-template="${template.ref.assetId}"]`);
+ await chooser('templates');await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-local-template="${template.ref.assetId}"]')`);},Boolean);await submit(`[data-local-template="${template.ref.assetId}"]`);
  await until(async()=>{await failIfError();return evaluate(`!!document.querySelector('[data-local-template-selected]')`);},Boolean);
  report.templateChooserPreview=await until(()=>evaluate(`(()=>{const image=document.querySelector('[data-local-template-selected] img');return image?.complete&&image.naturalWidth>0?{width:image.naturalWidth,height:image.naturalHeight}:null;})()`),Boolean);
  if(!report.templateArchive)await submit('[data-template-export]');
- await until(async()=>fs.existsSync(path.join(out,'player-world-template.zip')),Boolean);report.templateArchive={path:path.join(out,'player-world-template.zip'),sha256:createHash('sha256').update(fs.readFileSync(path.join(out,'player-world-template.zip'))).digest('hex')};
- await submit('[data-template-import]');await until(()=>evaluate(`document.querySelector('[data-local-world-templates]')?.textContent.includes('模板已导入')||document.querySelector('[data-local-world-templates]')?.textContent.includes('Template imported')`),Boolean);mark('Actual template export/import forms used isolated native file picker');
+ await until(async()=>{await failIfError();return fs.existsSync(path.join(out,'player-world-template.zip'));},Boolean);report.templateArchive={path:path.join(out,'player-world-template.zip'),sha256:createHash('sha256').update(fs.readFileSync(path.join(out,'player-world-template.zip'))).digest('hex')};
+ await submit('[data-template-import]');await until(async()=>{await failIfError();return evaluate(`document.querySelector('[data-local-world-templates]')?.textContent.includes('模板已导入')||document.querySelector('[data-local-world-templates]')?.textContent.includes('Template imported')`);},Boolean);mark('Actual template export/import forms used isolated native file picker');
  if(!report.templateWorld){await field('[data-template-world-title]','Template copy');await submit('[data-local-template-create]');await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
  worldId=(await nav('world.list')).activeWorldId;assert.notEqual(worldId,report.authorWorld);report.templateWorld=worldId;report.templateSnapshot=await waitWorld(worldId);report.worlds.push({worldId,title:'Template copy',createdThrough:'actual-My-templates-form'});report.templateSave=await panel('godot.runtimeSave',{freeze:false});mark('My templates form created and loaded a distinct native world');}
  else{worldId=report.templateWorld;await openExistingWorld(worldId);}
