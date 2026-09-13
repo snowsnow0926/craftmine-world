@@ -236,6 +236,7 @@ import {createCraftmineViewCaptureBridge, type ViewCaptureModel} from "./craftmi
 import { createCraftmineLiveSampler } from "./craftmine-live-sample";
 import { createCraftminePerformanceSampler } from "./craftmine-performance-sample";
 import { createCraftmineEnginePerformanceSampler } from "./craftmine-engine-performance-sample";
+import {readEnginePerformanceArtifact} from './engine-performance-artifact';
 import {createCreationTargetService, type CreationCapture} from "./creation-target-service";
 import {readCurrentCreationCapture} from "./creation-current-capture";
 import {loadSceneObserverPins} from "./creation-observer-pins";
@@ -1067,12 +1068,7 @@ const craftmineEnginePerformance = createCraftmineEnginePerformanceSampler({
   describe: worldId => godotAdapter.describe(worldId),
   exportSource: worldId => plugins.requestCraftmineHost("godotRuntime.exportSource", {worldId}),
   readPack: (descriptor, artifact) => {
-    const root=resolve(String(descriptor.root));
-    if(!godotAdapter.allowedRoots().some(candidate=>resolve(candidate)===root))throw Error("ENGINE_PERFORMANCE_ROOT_UNAUTHORIZED");
-    if(!artifact.path.startsWith("web/")||artifact.path.includes("..")||/[\\:\x00-\x1f\x7f]/.test(artifact.path))throw Error("ENGINE_PERFORMANCE_ARTIFACT_PATH");
-    const file=resolve(root,artifact.path);if(!file.startsWith(root+"/")&&!file.startsWith(root+"\\"))throw Error("ENGINE_PERFORMANCE_ARTIFACT_ESCAPE");
-    if(realpathSync(file)!==file)throw Error("ENGINE_PERFORMANCE_ARTIFACT_LINK");
-    return Promise.resolve(readFileSync(file));
+    return Promise.resolve(readEnginePerformanceArtifact(descriptor as {root: unknown}, artifact, godotAdapter.allowedRoots()));
   },
 });
 plugins.setServices({ craftmineEnginePerformanceSample: input => craftmineEnginePerformance(input as any) });

@@ -10137,6 +10137,9 @@ calls the same source/PCK-verified host sampler used by the model's performance
 tool. It accepts no script, file path, monitor selector or arbitrary engine op.
 Report engine timing/FPS/draw calls separately from PI renderer frame intervals;
 unknown, paused and unsupported samples must remain explicit.
+On Windows, resolving an external checked PCK must use the native filesystem
+resolver and preserve exact containment/link checks; an Electron ASAR-aware
+drive-resolution error must not hide otherwise verified engine measurements.
 
 For real cancellation acceptance, verify the actual Codex account and exact
 Astra/xhigh settings, submit through ordinary `agentPrompt`, wait for real model

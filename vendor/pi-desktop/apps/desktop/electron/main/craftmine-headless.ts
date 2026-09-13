@@ -136,7 +136,8 @@ export function installHeadlessControl(access: {
         case 'godotEnginePerformance': {
           const identity=validateEnginePerformanceAcceptance(request,hasHeadlessController()&&process.env.CRAFTMINE_CREATION_EVAL!=='1');
           if(!access.enginePerformance)throw Error('HEADLESS_ENGINE_PERFORMANCE_UNAVAILABLE');
-          return access.enginePerformance(identity);
+          try {return await access.enginePerformance(identity);}
+          catch(error){process.stderr.write('HEADLESS ENGINE SAMPLE: '+String(error instanceof Error?error.stack:error)+'\n');throw error;}
         }
         case 'godotCaptureBoundView':case 'godotCaptureBoundState':
           if(!access.boundCapture||!access.boundCaptureState)throw Error('HEADLESS_BOUND_CAPTURE_UNAVAILABLE');
