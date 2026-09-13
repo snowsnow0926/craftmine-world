@@ -60,7 +60,7 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
     } catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : String(failure));}
     finally {locked.current = false; if (alive.current) setBusy(null);}
   };
-  if (!proposals.length) return null;
+  if (!proposals.length && !error) return null;
   const checks = () => {void bridge?.call("world.surface", {surface: {kind: "checks"}, section: "checks"}).catch(failure => setError(String(failure)));};
   const jobText = (status: string) => ({
     passed: zh ? "检查通过，可预览并应用" : "Checks passed; preview and apply",

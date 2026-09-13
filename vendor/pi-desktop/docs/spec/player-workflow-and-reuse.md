@@ -17,3 +17,7 @@ Source installation proposals appear within the same conversation. The player in
 Use isolated headless profiles with pointer lock and focus disabled. Page scripts submit ordinary forms; do not drive operating-system input. Fixtures prove renderer behavior and races, native probes prove source/initialization and persistence, and live Codex runs prove actual model behavior separately. Keep time and usage evidence distinct. Do not add model, token or whole-turn evaluation budgets.
 
 The first candidate follows the plan's delivery order: four examples in one client, Codex connection in Settings General, and the approved Pomeranian library flow. Flight/rain/city component extraction and remote distribution remain subsequent stages after that flow is verified.
+
+### Navigation and draft recovery
+
+Creating a world never adopts an unrelated pre-existing home draft. Normal home draft materialization carries a pending asset reference into the created session while retaining its world identity. Pending references remain explicitly discardable if target sampling fails. Leaving a creation form during asynchronous preflight fences the continuation before native registration; chooser navigation is disabled during that preflight.

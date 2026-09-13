@@ -2056,6 +2056,10 @@ export function Composer({
       className={`composer-dock composer-dock-${variant}`}
     >
       <div className="composer-stack">
+        {composerPrefill?.append && composerPrefill.worldId && <div className="creation-target-context" data-world-asset-pending>
+          <span role="status">{settings?.language?.startsWith("zh") ? "素材引用待加入原世界的对话。" : "Asset reference is waiting for its world's conversation."}</span>
+          <button type="button" onClick={clearComposerPrefill}>{settings?.language?.startsWith("zh") ? "取消加入引用" : "Discard pending reference"}</button>
+        </div>}
         {voiceEnabled && <CreationTargetContext controller={creationTarget} />}
         {voiceEnabled && creationTarget.capture?.worldId && <SourceReusePanel key={creationTarget.capture.worldId} worldId={creationTarget.capture.worldId} running={isRunning} />}
         {planCheckpoint?.status === "pending" ? (

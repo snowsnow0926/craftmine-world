@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CRAFTMINE_WORLD_TITLE_MAX,
   normalizeWorldTitle,
@@ -47,6 +47,8 @@ export function WorldCreatePanel({
 
   const deliveredBase = bases.some((base) => base.delivered);
   const preparingRef = useRef(false);
+  const mounted = useRef(true);
+  useEffect(() => {mounted.current = true; return () => {mounted.current = false;};}, []);
   const [preparing, setPreparing] = useState(false);
   const fixedAttributes = preparing || controller.busy || !!retainedAttempt;
   const submit = async () => {
@@ -62,6 +64,7 @@ export function WorldCreatePanel({
     let ready = onCreated;
     try { if (onBeforeCreate) ready = await onBeforeCreate(); }
     catch (failure) { setLocalError(failure instanceof Error ? failure.message : String(failure)); return; }
+    if (!mounted.current) return;
     // Resolve the selection against the current capabilities: a base that
     // arrived late, was removed, or is not delivered must never be sent.
     const {baseId: chosenBase, starterId: chosenStarter} = resolveWorldCreationSelection(controller.capabilities, baseId, starterId);

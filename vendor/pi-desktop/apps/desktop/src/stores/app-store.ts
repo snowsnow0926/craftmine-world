@@ -4634,11 +4634,11 @@ function revealEmptyCreatingSession(intent: number): void {
 
 function commitCreatedEmptySession(
   summary: SessionSummary,
-  options: { activate: boolean; worldContext?: WorkPanelContext },
+  options: { activate: boolean; worldContext?: WorkPanelContext; adoptHomeDraft?: boolean },
 ): void {
   const messages: UiMessage[] = [];
   cacheSessionTranscript(summary.id, messages, EMPTY_SESSION_WINDOW);
-  if (options.activate) scheduleHomeDraftAdopt(summary.id);
+  if (options.activate && options.adoptHomeDraft !== false) scheduleHomeDraftAdopt(summary.id);
   useAppStore.setState((current) => {
     const commit = commitForkedSessionState(current, summary, {
       activate: options.activate,
@@ -4655,6 +4655,9 @@ function commitCreatedEmptySession(
       },
     };
     if (!commit.activated) return shared;
+    const pendingHomeAsset = options.adoptHomeDraft !== false && current.composerPrefill?.append
+      && current.composerPrefill.worldId && current.composerPrefill.sessionId === undefined
+      ? {...current.composerPrefill, sessionId: summary.id} : current.composerPrefill;
     return {
       ...switchWorkPanelSession({
         ...current,
@@ -4662,6 +4665,7 @@ function commitCreatedEmptySession(
           [summary.id]: options.worldContext ?? emptyWorkPanelContext() },
       }, summary.id),
       ...shared,
+      composerPrefill: pendingHomeAsset,
       ...retainSessionPane(current, summary.id, messages),
       activeSessionId: summary.id,
       selectingSessionId: undefined,
@@ -4761,7 +4765,7 @@ async function persistSessionAndSelect(
     commitCreatedEmptySession(created.session, { activate: false });
     return null;
   }
-  commitCreatedEmptySession(created.session, { activate: true, worldContext });
+  commitCreatedEmptySession(created.session, { activate: true, worldContext, adoptHomeDraft: !options.creationWorldId });
   return sessionId;
 }
 

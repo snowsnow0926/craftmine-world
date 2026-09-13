@@ -23,6 +23,7 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
   const [entryError, setEntryError] = useState("");
   const [opening, setOpening] = useState(false);
   const entryLock = useRef(false);
+  const preflightLock = useRef(false);
   const isRunning = useAppStore(state => state.isRunning);
   const busy = opening || controller.busy;
   const examples = (controller.capabilities?.bases ?? []).flatMap(base =>
@@ -43,7 +44,10 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
   // Capture the conversation before creation starts, not after a long build.
   const prepareCreation = async () => {
     if (useAppStore.getState().isRunning) throw Error(zh ? "请先等待当前创作结束。" : "Wait for the current task to finish.");
-    const complete = await beginPlayerWorldEntry();
+    preflightLock.current = true; setOpening(true);
+    let complete: Awaited<ReturnType<typeof beginPlayerWorldEntry>>;
+    try { complete = await beginPlayerWorldEntry(); }
+    finally {preflightLock.current = false; setOpening(false);}
     return async (worldId: string) => {
       if (!await complete(worldId, () => {})) throw Error(changed);
       await createCopiedWorldSession(worldId, useAppStore.getState().activeSessionId);
@@ -71,7 +75,7 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
     <div className="craftmine-mode-entry-content no-drag">
       <h1 id="craftmine-mode-entry-title">{zh ? "选择你的世界" : "Choose your world"}</h1>
       <div className="craftmine-world-entry-tabs" role="tablist" aria-label={zh ? "世界" : "Worlds"}>
-        {(["worlds", "examples", "create"] as const).map((value, index) => <form key={value} data-world-entry-tab-form={value} onSubmit={event => {event.preventDefault(); if (busy || controller.createAttempt) return; setTab(value); setEntryError(""); controller.clearMessages();}}><button type="submit" role="tab"
+        {(["worlds", "examples", "create"] as const).map((value, index) => <form key={value} data-world-entry-tab-form={value} onSubmit={event => {event.preventDefault(); if (busy || preflightLock.current || controller.createAttempt) return; setTab(value); setEntryError(""); controller.clearMessages();}}><button type="submit" role="tab"
           id={`world-entry-tab-${value}`} aria-selected={tab === value} aria-controls={`world-entry-${value}`}
           disabled={busy || !!controller.createAttempt} data-world-entry-tab={value}>
           {(zh ? ["我的世界", "示例世界", "新建世界"] : ["My worlds", "Examples", "New world"])[index]}
