@@ -1,5 +1,16 @@
 # 04. E2E Test Plan
 
+### Godot docs reflected API reachability (2026-09-15)
+
+- Validate actual public manifest arguments through the installed PI SDK, then
+  execute packaged API queries against the measured, hash-verified ClassDB.
+- Verify real navigation signatures, pinned pages, unknown/version mismatch
+  behavior and unchanged manual digest text/citations.
+- Zero-match manual results must identify their coverage gap and offer the
+  separate API entry point without claiming semantic or Web support.
+- See [contract](../godot-docs-api-surface.md) and
+  [evidence](../../e2e/godot-docs-api-surface-20260915.md).
+
 ### Source library reference and prerequisite hints (2026-09-14)
 
 - Preserve catalog archive identity separately from inner package hashes;
