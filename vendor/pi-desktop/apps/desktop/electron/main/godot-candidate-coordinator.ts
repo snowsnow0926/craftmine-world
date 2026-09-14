@@ -104,7 +104,10 @@ export function createGodotCandidateCoordinator(options:{
     let raw;
     try { raw=await rpc("godotApplication.read",{id:session.id}); }
     catch(error) {
-      if(object(error)&&error.errorCode==="GODOT_APPLICATION_NOT_FOUND"&&!session.prepared) {
+      // The plugin child exposes Core's errorCode as PluginApiError.code.
+      // A missing prepare record is conclusive only before a prepare receipt;
+      // message text and transport failures never authorize dropping ownership.
+      if(object(error)&&(error.errorCode??error.code)==="GODOT_APPLICATION_NOT_FOUND"&&!session.prepared) {
         await options.host.discardCandidate();drop();if(options.host.instance)await options.host.resume();return {status:"aborted",worldId:session.worldId};
       }
       throw error;

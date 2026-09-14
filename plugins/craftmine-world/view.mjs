@@ -457,6 +457,9 @@ async function previewControl(request) {
 async function showSurface(request) {
   const surface=request?.surface;
   if(!surface||typeof surface!=='object')throw Error('INVALID_SURFACE_REQUEST');
+  // Sidebar routes must obey the same lock as the page's disabled tab buttons.
+  // Mutating the tab first would leave it out of sync with a refused native hide.
+  if(busy||closing||preview||applicationAttempt)throw Error('WORLD_BUSY');
   if(surface.kind==='checks'){setMode(true);return {ok:true,shown:'checks'};}
   if(surface.kind==='world'){setMode(false);return {ok:true,shown:'world'};}
   if(surface.kind!=='workbench'||typeof surface.tab!=='string'||!surface.tab)throw Error('INVALID_SURFACE_REQUEST');
@@ -826,7 +829,13 @@ async function initializeWorld(){
   if(!bridge) {mount({title:initialWorld.build.scene.title,world:initialWorld});select.options[0].textContent=initialWorld.build.scene.title;return;}
   const state=await bridge.invoke('world.list');
   const selected=state.worlds.find(world=>world.id===state.activeWorldId)||state.worlds[0];
-  if(selected)await openWorldWithLoading(selected.id,{previous:null});
+  if(selected){
+    // A reloaded page has no local preview object, but Main may still own its
+    // prepared or uncertain application. Reconcile before world.open, which
+    // correctly refuses while that application owns the selected world.
+    if(state.activeWorldId===selected.id)await bridge.invoke('godot.candidateClose',{worldId:selected.id});
+    await openWorldWithLoading(selected.id,{previous:null});
+  }
   else {
     renderWorldLoading({state:'loading',initializing:true});
     const record=await bridge.invoke('world.create',{title:'我的第一个世界',activate:false});
