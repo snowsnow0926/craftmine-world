@@ -4,6 +4,7 @@ import { DeepSeekPromptPrefix, supportsDeepSeekPromptPrefix, type DeepSeekPrefix
 import { usageFromPi } from "./agent-messages.js";
 import { godotFactsBlock } from "./craftmine-godot-facts.js";
 import { craftmineRequestBudget } from "@pi-desktop/shared";
+import { logTiming } from "./timing.js";
 
 export const CRAFTMINE_PROMPT_VERSION = "craftmine.request/2";
 // Frequent creation actions must remain advertised after every prompt reset and
@@ -261,6 +262,13 @@ export function createCraftmineRequestHooks(options: {
       await options.domainCall("budget.settle", { binding: prepared.binding, generation: prepared.generation, requestId: prepared.requestId, status: "cancelled", errorCode: "CANCELLED_BEFORE_SEND" });
       fail("TURN_ABORTED");
     }
+    logTiming("craftmine_request_budget", {
+      requestId: prepared.requestId, providerId: prepared.model.provider, modelId: prepared.model.id,
+      purpose: prepared.purpose, outcome: "reserved", method: estimate.method,
+      estimatedInputTokens: estimate.input, maxOutputTokens: prepared.maxOutputTokens,
+      toolReserve: estimate.toolResults, contextWindow: prepared.model.contextWindow,
+      inputCapacity: budget.inputCapacity, compactionThreshold: budget.compactionThreshold,
+    });
     return reservation;
   }
   return {

@@ -35,3 +35,10 @@ It excludes prompts, bodies, header values and credentials. Real-player integrat
 must retain actual 1M/384K/max settings and compare physical reservation records,
 provider prompt usage and captured compaction trigger method, without adding task
 limits or replacing interactive gameplay with a static display.
+
+For packaged calibration attribution, filter existing timing logs for
+`kind=craftmine_request_budget`. Join `requestId` to the durable reservation and
+inspect `method`; `estimatedInputTokens` excludes the separately logged tool
+reserve. Verify one line per successful reservation, no lines for read-only
+inspection or a refused reserve, and an allowlist containing metadata/numbers
+only. A reserved line does not prove a request reached the provider.
