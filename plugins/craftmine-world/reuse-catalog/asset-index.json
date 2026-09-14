@@ -1,6 +1,6 @@
 {
   "format": "craftmine.reuse-asset-index/1",
-  "catalogSha256": "50ca56cb3c932ee967312e3967fdbbcc32369c1e50a2d4a87824ec3d12b97384",
+  "catalogSha256": "64dc53db4507a13173614d5aa64fc5894a39e4501bef43a3619130bd3133eeb4",
   "assetCount": 34,
   "versionCount": 41,
   "policy": {
@@ -676,7 +676,7 @@
         "mode": "search",
         "query": "cw.module.promo-heavyblade"
       },
-      "bytes": 31249,
+      "bytes": 31224,
       "source": {
         "origin": "Craftmine promotional mainline / Codex gpt-6-astra xhigh / Blender",
         "author": "Craftmine project generated content",
@@ -697,7 +697,7 @@
         "mode": "search",
         "query": "cw.module.promo-hunt"
       },
-      "bytes": 67418,
+      "bytes": 67414,
       "source": {
         "origin": "Craftmine promotional mainline / Codex gpt-6-astra xhigh / Blender",
         "author": "Craftmine project generated content",

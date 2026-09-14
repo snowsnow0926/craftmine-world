@@ -332,7 +332,7 @@ func _start() -> void:
 	var entry := trial_to_global(Vector3(12, 0.92, 22))
 	player.call("restore", {"position": [entry.x, entry.y, entry.z], "yaw": -0.605, "pitch": 0.0, "onFloor": false})
 	_sync_mode()
-	tell("战斗开始！WASD 移动，J／K 出刀，方向键转视角。", 4.0)
+	tell("战斗开始！", 4.0)
 
 func _return() -> void:
 	status = "ready"
