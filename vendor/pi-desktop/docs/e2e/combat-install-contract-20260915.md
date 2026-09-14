@@ -35,3 +35,20 @@ mount required helper nodes through normal source editing, and check/adopt befor
 claiming monsters pursue or damage the player. Later sword/AK requests still need
 their requested behavior and actual play tests; do not shrink them to the basic
 ray weapon or silently add an unrequested weapon during monster setup.
+
+## Retained proposal cards
+
+Create four interrupted author proposals, one manual proposal and one group
+proposal for the same invalid archive. Listing must retain all six histories,
+derive verified blockers using one archive read, and leave every proposal file
+byte-for-byte unchanged. A mismatched frozen hash or missing body is unknown;
+a proposal with a recorded job retains that job and receives no downgrade.
+
+Run `node --test tests/godot-final-install-assets/source-library.test.mjs vendor/pi-desktop/apps/desktop/test/player-workflow.test.mjs` and
+`node tests/player-workflow-ui.mjs`. The actual React fixture uses isolated
+headless Chromium with GPU disabled, no OS input, focus or Pointer Lock.
+Require concise blocked author/manual cards, no blocked manual submit route,
+an available unknown proposal, preserved adopted-job text, and no late
+old-world projection repopulating the next world's cards. Details preserve
+original reasons and point to the existing sidebar library; no model prompt or
+automatic version change is submitted.

@@ -3,10 +3,10 @@ import {packStaticPackage} from '../../plugins/craftmine-world/package-zip.mjs';
 import {contentHash} from '../../plugins/craftmine-world/package-format.mjs';
 const {createSourceLibraryService}=createRequire(import.meta.url)(process.env.CRAFTMINE_SOURCE_LIBRARY_PLUGIN?path.join(path.resolve(process.env.CRAFTMINE_SOURCE_LIBRARY_PLUGIN),'source-library-service.cjs'):'../../plugins/craftmine-world/source-library-service.cjs');
 const sha=b=>createHash('sha256').update(b).digest('hex');
-async function fixture(t){
+async function fixture(t,entities=['tree']){
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'source-library-'));t.after(()=>fs.rm(directory,{recursive:true,force:true}));
  const files={'tree.gd':Buffer.from('extends Node3D\n@export var entity_id: String = ""\n')};
- const content={assetId:'kenney-tree',version:1,kind:'object',files:Object.entries(files).map(([path,bytes])=>({path,bytes:bytes.length,sha256:sha(bytes)})),dependencies:[],entry:{entities:['tree'],sceneInstall:{mode:'script-node',script:'tree.gd',nodeType:'Node3D',identityField:'entity_id'}},interfaces:{},compatibility:{base:'creation-sandbox'},state:{},licenses:{}};
+ const content={assetId:'kenney-tree',version:1,kind:'object',files:Object.entries(files).map(([path,bytes])=>({path,bytes:bytes.length,sha256:sha(bytes)})),dependencies:[],entry:{entities,sceneInstall:{mode:'script-node',script:'tree.gd',nodeType:'Node3D',identityField:'entity_id'}},interfaces:{},compatibility:{base:'creation-sandbox'},state:{},licenses:{}};
  const archive=packStaticPackage({root:{id:content.assetId,version:1},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files}]});
  const blobPath=path.join(directory,'archive.zip');await fs.writeFile(blobPath,archive);
  const ref={assetId:'builtin.tree',version:1,contentHash:'c'.repeat(64)},calls=[],installs=[];
@@ -23,13 +23,33 @@ async function fixture(t){
    return {worldId:'world',applied:false,archives,instanceIds:archives.flatMap(a=>a.instanceIds),status:'check-queued',source:{revision:2,manifestHash:'b'.repeat(64)},job:{jobId:'gjob-'+'1'.repeat(64),status:'queued'}};
  };
  const create=(extra={})=>createSourceLibraryService({call,installSource,installSourceGroup,directory:path.join(directory,'proposals'),...extra});
- const context={projectId:'p',sessionId:'s',turnId:'t'};return {ref,archive,blobPath,calls,installs,groupInstalls,state,version,create,context,tool:(service,args)=>service.tool(args,context,'world','call-one')};
+ const context={projectId:'p',sessionId:'s',turnId:'t'};return {directory,ref,archive,blobPath,calls,installs,groupInstalls,state,version,create,context,tool:(service,args)=>service.tool(args,context,'world','call-one')};
 }
 test('modern catalog ZIP discovery retains provenance and distinct root identity without exposing bodies',async t=>{
  const f=await fixture(t),s=f.create();const search=await f.tool(s,{mode:'search',query:'tree'});assert.deepEqual(search.result.items[0].tags,['builtin','prefab','nature']);assert.equal(f.calls[0].args.mediaKind,'package');
  const read=await f.tool(s,{mode:'read',ref:f.ref});assert.deepEqual(read.archiveRef,f.ref);assert.notEqual(read.rootRef.sha256,f.ref.contentHash);assert.equal(read.resources[0].entry.sceneInstall.nodeType,'Node3D');assert.equal(read.source.license,'CC0-1.0');
  assert.deepEqual(search.result.items[0].installRef,f.ref);assert.deepEqual(search.result.items[0].readRequest,{mode:'read',ref:f.ref});assert.deepEqual(read.installRef,f.ref);assert.match(read.referenceRoles.rootRef,/never substitute/);assert.equal(read.targetCompatibility.status,'unknown');
  assert.equal(JSON.stringify(read).includes(f.blobPath),false);assert.equal(JSON.stringify(read).includes('base64'),false);assert.equal(f.installs.length,0);
+});
+
+test('six retained author/manual/group cards derive one verified archive blocker without changing history',async t=>{
+ const f=await fixture(t,['vitals','weapon','monster']),s=f.create({installAuthorSource:async()=>{throw Error('PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED');}});
+ for(let index=0;index<4;index++)await assert.rejects(s.tool({mode:'install',ref:f.ref},f.context,'world','author-'+index),/PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED/);
+ const manual=await s.tool({mode:'propose',ref:f.ref},f.context,'world','manual');await s.tool({mode:'propose-group',items:[{ref:f.ref},{ref:f.ref}]},f.context,'world','group');
+ const directory=path.join(f.directory,'proposals'),names=(await fs.readdir(directory)).filter(n=>n.endsWith('.json')),before=new Map(await Promise.all(names.map(async name=>[name,await fs.readFile(path.join(directory,name))])));const reads=f.calls.filter(c=>c.method==='asset.read').length;
+ const result=await s.proposals({worldId:'world'});assert.equal(result.items.length,6);assert.equal(f.calls.filter(c=>c.method==='asset.read').length-reads,1);assert(result.items.every(p=>p.installationAvailability.status==='blocked-declaration'));assert.equal(result.items.filter(p=>p.status==='interrupted').length,4);assert.equal(result.items.filter(p=>p.status==='proposed').length,2);
+ for(const p of result.items){assert.equal(p.installationAvailability.scope,'frozen-proposal-archive-declaration');assert(p.installationAvailability.archives.every(a=>a.verified&&a.archiveSha256===sha(f.archive)&&a.archiveRef.contentHash===f.ref.contentHash&&a.issues[0].reason==='PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED'));}
+ for(const [name,bytes]of before)assert.deepEqual(await fs.readFile(path.join(directory,name)),bytes);
+ const file=path.join(directory,manual.proposal.proposalId+'.json'),record=JSON.parse(await fs.readFile(file,'utf8'));record.archiveSha256='d'.repeat(64);await fs.writeFile(file,JSON.stringify(record));const changed=(await s.proposals({worldId:'world'})).items.find(p=>p.proposalId===record.proposalId);assert.equal(changed.installationAvailability.status,'unknown');assert.equal(changed.installationAvailability.archives[0].reason,'SOURCE_LIBRARY_ASSET_CHANGED');assert.equal(changed.status,'proposed');
+});
+
+test('missing archive remains unknown while a recorded job is never downgraded by declaration hints',async t=>{
+ const f=await fixture(t,['vitals','weapon','monster']),s=f.create(),first=await s.tool({mode:'propose',ref:f.ref},f.context,'world','first'),second=await s.tool({mode:'propose',ref:f.ref},f.context,'world','second');
+ // The fixture installer supplies a historical receipt; projection must trust
+ // its job evidence rather than rewriting history from today's declarations.
+ await s.installProposal({worldId:'world',proposalId:first.proposal.proposalId});await fs.unlink(f.blobPath);
+ const values=(await s.proposals({worldId:'world'})).items,done=values.find(p=>p.proposalId===first.proposal.proposalId),unknown=values.find(p=>p.proposalId===second.proposal.proposalId);
+ assert.equal(done.status,'check-queued');assert(done.installation.job);assert.equal(done.installationAvailability,undefined);assert.equal(unknown.installationAvailability.status,'unknown');assert.equal(unknown.requiresPlayerAction,true);
 });
 
 test('explicit author installation returns the real job and survives retries without creating a player confirmation',async t=>{

@@ -12,7 +12,9 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const alive = useRef(true), locked = useRef(false), epoch = useRef(0);
+  const currentWorld = useRef(worldId); currentWorld.current = worldId;
   useEffect(() => {alive.current = true; return () => {alive.current = false; ++epoch.current;};}, []);
+  useEffect(() => {setProposals([]); setJobs({}); setError("");}, [worldId]);
   const refresh = useCallback(async () => {
     if (!bridge) return;
     const ticket = ++epoch.current;
@@ -54,15 +56,15 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
     return () => {cancelled = true; window.clearTimeout(timer);};
   }, [jobs, bridge, worldId]);
   const install = async (proposal: SourceProposal) => {
-    if (!bridge || locked.current || running) return;
+    if (!bridge || locked.current || running || proposal.worldId !== worldId || proposal.worldId !== currentWorld.current || proposal.installationAvailability?.status === 'blocked-declaration') return;
     locked.current = true; setBusy(proposal.proposalId); setError("");
     try {
       const receipt = await sourcePackageRequest(bridge, worldId, "installSourceProposal", {proposalId: proposal.proposalId}) as {worldId?: string; applied?: boolean; job?: {id: string; status: string}};
       if (receipt.worldId !== worldId || receipt.applied !== false || !/^gjob-[a-f0-9]{64}$/.test(receipt.job?.id ?? "")) throw Error("PACKAGE_INSTALL_RECEIPT_INVALID");
-      if (!alive.current) return;
+      if (!alive.current || currentWorld.current !== worldId) return;
       setJobs(prior => ({...prior, [proposal.proposalId]: {id: receipt.job!.id, status: receipt.job!.status}}));
       await refresh();
-    } catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : String(failure));}
+    } catch (failure) {if (alive.current && currentWorld.current === worldId) setError(failure instanceof Error ? failure.message : String(failure));}
     finally {locked.current = false; if (alive.current) setBusy(null);}
   };
   if (!proposals.length && !error) return null;
@@ -85,6 +87,10 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
           ? (zh?"历史检查失败；不代表当前源码状态":"Historical check failed; this does not describe the current source")
           : jobText(jobs[proposal.proposalId].status)}</span>
         <button type="button" onClick={checks}>{jobs[proposal.proposalId].application==='applied'?(zh?'查看记录':'View record'):jobs[proposal.proposalId].application==='historical'||jobs[proposal.proposalId].status==="failed"&&jobs[proposal.proposalId].sourceStale===true?(zh?"查看检查历史":"View check history"):(zh ? "查看检查与应用" : "Open checks and application")}</button>
+      </> : proposal.installationAvailability?.status==='blocked-declaration'?<>
+        <span role="status" data-source-install-blocked>{zh?'该素材版本无法直接加入世界，请在素材库选择可用版本。':'This asset version cannot be added directly. Choose an available version in the asset library.'}</span>
+        <details><summary>{zh?'查看原因与原版本':'Reason and original version'}</summary><p>{proposal.installationAvailability.reasons.join(' / ')}</p><p>{zh?'原版本的安装声明不匹配，更改参数或重试此版本无法解决。历史记录已保留；可从侧边栏“素材与作品库”查看其他版本。':'The original installation declaration is inconsistent; changing parameters or retrying this version cannot resolve it. History is retained. Open Assets and works in the sidebar to inspect other versions.'}</p></details>
+        {proposal.execution!=='author'&&<button type="button" disabled>{zh?'加入当前世界并检查':'Add to this world and check'}</button>}
       </> : proposal.execution==='author'?<span role="status">{zh?'安装准备尚未完成，请在对话中继续。':'Installation preparation is incomplete; continue in the conversation.'}</span>:<form onSubmit={event => {event.preventDefault(); void install(proposal);}}><button type="submit" disabled={!!busy || running}>
         {busy === proposal.proposalId ? (zh ? "正在加入源码…" : "Adding source…") : (zh ? "加入当前世界并检查" : "Add to this world and check")}
       </button></form>}

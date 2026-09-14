@@ -57,3 +57,21 @@ is optional manual setup after the player requests it. Three bundled scripts
 do not mean three automatic nodes, a complete sword/AK system or instant gameplay.
 Use actual installed paths with project index/read, then normal source CAS and
 check/adopt for authored setup. Version 1 is never replaced in place.
+
+## Retained proposal recovery
+
+Proposal listings add a read-only `installationAvailability` projection for
+records without an installation result. The original proposal's archiveRef and
+archiveSha256 must both match freshly verified archive bytes. Only a confirmed
+single-entity declaration failure blocks its direct-install affordance. Missing
+archives, changed hashes and read errors remain unknown. Identical frozen archive
+references are read once per listing. No proposal JSON, original status, source
+pin or history ordering is rewritten, and recorded jobs bypass this projection.
+
+The renderer accepts a blocker only when its verified member identities match
+the original proposal. It displays concise recovery text and keeps technical
+causes in details. Manual installation is unavailable for that known bad version;
+unknown versions retain the existing path and all installer guards. The player
+can inspect other versions in the existing sidebar library. No version is picked,
+prompt submitted, or current author task retargeted automatically. Old-world
+read/install replies cannot populate the next world's cards.
