@@ -1609,6 +1609,7 @@ godotCreation = createGodotWorldFactory({
   },
   initialization: {
     start: async (worldId, settings) => {
+      if (godotInitializer.running(worldId)) return godotInitializer.start(worldId, settings);
       const init = await plugins.requestCraftmineHost("godotWorld.initStatus", {worldId}) as any;
       if (init.rebuildRequired) {
         if (await godotSelection() === worldId) await godotRestores.start(worldId).catch(() => undefined);

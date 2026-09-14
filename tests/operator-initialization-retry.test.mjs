@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady,initializationEntryUiScript,prepareAndEnterRetainedWorld} from './helpers/operator-initialization-retry.mjs';
+import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady,initializationEntryUiScript,prepareAndEnterRetainedWorld,isExplicitInitializationRecovery} from './helpers/operator-initialization-retry.mjs';
 
 test('controller ready with zero windows waits for a real hidden window and available host/plugin',async()=>{
   const safe={visible:false,focused:false,focusable:false,offscreen:true};
@@ -43,6 +43,20 @@ test('readiness polling is reached only after the actual preparation callback; m
   const result=await prepareAndEnterRetainedWorld({mode:'ordinary-continue-preparation',continuePreparation:async()=>{calls.push('continue-handler');preparationStarted=true;},retry:async()=>{throw Error('no retry for initializing');},waitReady:async()=>{assert(preparationStarted,'a list read cannot start initialization');calls.push('confirm-ready');},enter:async()=>{calls.push('open-handler');return {worldId:'world-fixture'};}});
   assert.equal(result.worldId,'world-fixture');assert.deepEqual(calls,['continue-handler','confirm-ready','open-handler']);
   calls.length=0;await prepareAndEnterRetainedWorld({mode:'ordinary-react-retry',continuePreparation:async()=>{throw Error('no continue for terminal');},retry:async()=>calls.push('retry-handler'),waitReady:async()=>calls.push('confirm-ready'),enter:async()=>calls.push('open-handler')});assert.deepEqual(calls,['retry-handler','confirm-ready','open-handler']);
+});
+const explicitFailure=()=>Object.assign(Error('retained exact failure'),{code:'RETRY_TERMINAL_INITIALIZATION_FAILURE',worldId:'world-fixture',world:{id:'world-fixture',state:'failed',creation:{error:{code:'GODOT_INITIALIZATION_FAILED',message:'Error: EXPLICIT_RECOVERY_REQUIRED',recoverable:true},actions:['retry','details']}}});
+test('older package Continue failure is retained before one ordinary confirmed Retry, then readiness',async()=>{
+  const failure=explicitFailure(),calls=[];let reads=0;
+  await prepareAndEnterRetainedWorld({worldId:'world-fixture',mode:'ordinary-continue-preparation',continuePreparation:async()=>calls.push('continue'),retry:async()=>calls.push('retry'),waitReady:async()=>{if(reads++===0)throw failure;calls.push('ready');},enter:async()=>calls.push('enter'),onContinueFailure:async error=>{assert.equal(error,failure);calls.push('retain-original-failure');},confirmExplicitRetry:async row=>{assert.equal(row,failure.world);calls.push('confirm-live-retry');}});
+  assert.deepEqual(calls,['continue','retain-original-failure','confirm-live-retry','retry','ready','enter']);
+});
+test('other terminal failures, foreign identities, missing UI retry, and a second explicit recovery failure never loop mutations',async()=>{
+  for(const mutate of [error=>{error.worldId='other';},error=>{error.world.creation.error.message='prefix EXPLICIT_RECOVERY_REQUIRED';},error=>{error.world.creation.actions=['details'];},error=>{error.world.creation.error.code='OTHER';}]){const error=explicitFailure();mutate(error);assert.equal(isExplicitInitializationRecovery(error,'world-fixture'),false);}
+  for(const options of [{confirmFails:true},{mode:'ordinary-react-retry'},{}]){
+    let retries=0,confirms=0;const failure=explicitFailure();
+    await assert.rejects(prepareAndEnterRetainedWorld({worldId:'world-fixture',mode:options.mode??'ordinary-continue-preparation',continuePreparation:async()=>{},retry:async()=>{retries++;},waitReady:async()=>{throw failure;},enter:async()=>{throw Error('must not enter');},confirmExplicitRetry:async()=>{confirms++;if(options.confirmFails)throw Error('RETRY_BUTTON_UNAVAILABLE');}}));
+    assert.equal(retries,options.confirmFails?0:1);assert.equal(confirms,options.mode?0:1);
+  }
 });
 test('existing continue and open callbacks are identity-bound; absent or disabled preparation is not fabricated',()=>{
   const calls=[],form={dataset:{worldOpen:'world-fixture'},getClientRects:()=>[{}],closest:()=>null,querySelector:()=>null,__reactProps$f:{onSubmit:event=>{event.preventDefault();calls.push('open');}}};

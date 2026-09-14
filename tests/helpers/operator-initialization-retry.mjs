@@ -100,9 +100,26 @@ export function initializationEntryUiScript(worldId,action='read'){
     return state;
   })()`;
 }
-export async function prepareAndEnterRetainedWorld({mode,continuePreparation,retry,waitReady,enter}){
+export function isExplicitInitializationRecovery(error,worldId){
+  const row=error?.world;
+  return error instanceof Error&&error.code==='RETRY_TERMINAL_INITIALIZATION_FAILURE'&&typeof worldId==='string'
+    &&error.worldId===worldId&&row?.id===worldId&&row.state==='failed'
+    &&row.creation?.error?.code==='GODOT_INITIALIZATION_FAILED'
+    &&['EXPLICIT_RECOVERY_REQUIRED','Error: EXPLICIT_RECOVERY_REQUIRED'].includes(row.creation.error.message)
+    &&row.creation.error.recoverable===true&&row.creation.actions?.includes('retry')===true;
+}
+export async function prepareAndEnterRetainedWorld({mode,worldId,continuePreparation,retry,waitReady,enter,onContinueFailure,confirmExplicitRetry}){
   assert(['ordinary-continue-preparation','ordinary-react-retry','already-ready-at-startup'].includes(mode),'RETRY_RECOVERY_MODE_REQUIRED');
   if(mode==='ordinary-continue-preparation')await continuePreparation();
   if(mode==='ordinary-react-retry')await retry();
-  await waitReady();return enter();
+  try{await waitReady();}
+  catch(error){
+    if(mode!=='ordinary-continue-preparation'||!isExplicitInitializationRecovery(error,worldId)
+      ||typeof confirmExplicitRetry!=='function')throw error;
+    await onContinueFailure?.(error);
+    // A fresh identity-bound UI read must still expose the ordinary retry.
+    // This is a different explicit action, not a retry of Continue itself.
+    await confirmExplicitRetry(error.world);await retry();await waitReady();
+  }
+  return enter();
 }

@@ -190,11 +190,26 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       setBusy(true);
       if (plan.taskStaysInWorld) setNotice(CRAFTMINE_WORLD_TEXT.taskStays[lang]);
       try {
-        const result = await bridge.switchWorld(id);
+        // Explicit preparation of the selected world must carry recovery
+        // intent. A same-world switch only reads runtime status and therefore
+        // cannot resume an interrupted durable workspace on the player's behalf.
+        const result = resumeInitialization && id === activeWorldId
+          ? {ok: true as const, activeWorldId: id}
+          : await bridge.switchWorld(id);
         if (!result.ok) {
           // The host kept the previous world; keep showing it as active.
           setActionError(`${CRAFTMINE_WORLD_TEXT.switchFailed[lang]} ${worldErrorMessage(result.error, lang)}`);
           return;
+        }
+        if (resumeInitialization) {
+          const latest = await bridge.list();
+          const current = latest.worlds.find(entry => entry.id === id);
+          if (latest.activeWorldId !== id || !current) throw Error("WORLD_INITIALIZATION_IDENTITY_CHANGED");
+          if (current.state !== "ready") {
+            if (!target?.creation?.operationId || current.creation?.operationId !== target.creation.operationId) throw Error("WORLD_INITIALIZATION_IDENTITY_CHANGED");
+            if (current.state !== "initializing") throw Error("WORLD_INITIALIZATION_STATE_CHANGED");
+            await bridge.creationAction(id, "retry");
+          }
         }
         setActiveWorldId(result.activeWorldId);
         if (resumeInitialization) setNotice(lang === "zh" ? "已继续准备这个世界，完成后即可进入。" : "Preparation resumed. You can enter when this world is ready.");
