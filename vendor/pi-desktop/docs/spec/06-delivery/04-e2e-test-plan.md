@@ -11037,6 +11037,14 @@ routes. Preserve compatibility and source ownership; unsuitable inventory must
 not force exhaustive search or a smaller player goal. See
 [the focused acceptance scenario](../../e2e/godot-reuse-first-20260915.md).
 
+## Operator creation-confirmation read recovery (2026-09-15)
+
+After a single ordinary create submission, retry only the exact known transient
+world-list read timeout using P8's classification. Retain terminal creation and
+unknown failures, cancellation and real selected-world readiness; never resend
+creation or increase production timeouts. See
+[the test-only recovery scenario](../../e2e/operator-initialization-read-recovery-20260915.md).
+
 For extracted promo nature content, verify the exact original GLBs, independent
 instance IDs, actual tree collision and the full meadow footprint through the
 source installer and pinned engine. Keep a saved-source receipt separate from
