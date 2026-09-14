@@ -32,7 +32,7 @@ const server=http.createServer((req,res)=>{const file=path.join(out,path.basenam
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const report={out,checks:[],errors:[]};const check=(name,value)=>{assert.ok(value,name);report.checks.push(name);console.log('PASS '+name);};let browser;
 try{
- browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),headless:true});
+ browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),headless:true,args:['--disable-gpu']});
  await browser.addInitScript(()=>{globalThis.inputViolations=[];window.focus=()=>inputViolations.push('focus');Element.prototype.requestPointerLock=()=>{inputViolations.push('pointer');throw Error('disabled');};});
  const page=await browser.newPage();page.on('pageerror',error=>report.errors.push(String(error)));
  await page.goto('http://127.0.0.1:'+server.address().port+'/');
@@ -44,18 +44,18 @@ try{
  await page.evaluate(()=>{fixture.phase='ready';window.dispatchEvent(new Event('craftmine-creation-edit-status'));});
  await page.waitForSelector('[data-phase="ready"]');
  await page.evaluate(()=>{fixture.failure='REAL_HOST_OFFLINE';window.dispatchEvent(new Event('craftmine-creation-edit-status'));});
- await page.waitForSelector('[data-phase="unavailable"]');
- check('an existing real job keeps its unavailable error instead of being silently hidden',await page.locator('.craftmine-creation-result').textContent().then(text=>text.includes('暂时无法读取')));
+ await page.waitForSelector('[data-confirmation="unavailable"]');
+ check('an existing real job keeps its unavailable error instead of being silently hidden',await page.locator('.craftmine-creation-result').textContent().then(text=>text.includes('最新结果尚未确认')));
  await page.evaluate(()=>{fixture.failure=null;fixture.phase='idle';fixture.session='running-session';fixture.running=true;fixture.render();});
  await page.waitForFunction(()=>fixture.acks.length===2&&fixture.errors.filter(x=>x==='CREATION_PLAYER_CONTEXT_CHANGED').length>=2);
- check('running creation still reports real unavailability before acknowledgement',await page.locator('.craftmine-creation-result').textContent().then(text=>text.includes('正在重新连接')));
+ check('running creation still reports real unavailability before acknowledgement',await page.locator('.craftmine-creation-result').textContent().then(text=>text.includes('最新结果尚未确认')));
  const foreignNotification=await page.evaluate(()=>{const before=fixture.reads.length;window.dispatchEvent(new CustomEvent('craftmine-viewing-session-ready',{detail:{sessionId:'foreign-session'}}));return{before,after:fixture.reads.length};});
  assert.equal(foreignNotification.after,foreignNotification.before,'another session ACK must not refresh this observer');
  const reads=await page.evaluate(()=>fixture.reads.length);
  await page.evaluate(()=>fixture.acks[1].release());await page.waitForFunction(count=>fixture.reads.length===count+1,reads);
  check('foreign-session notification cannot authorize or replace the current session',await page.evaluate(()=>fixture.reads.at(-1)==='running-session'&&fixture.allowed==='running-session'));
  await page.evaluate(()=>{fixture.running=false;fixture.render();fixture.failure='PERSISTENT_HOST_ERROR';window.dispatchEvent(new Event('craftmine-creation-edit-status'));});
- await page.waitForSelector('[data-phase="unavailable"]');
+ await page.waitForSelector('[data-confirmation="unavailable"]');
  check('a real error after session acknowledgement remains visible even without a job',await page.locator('.craftmine-creation-result').isVisible());
  check('no input ownership changes or renderer exceptions',await page.evaluate(()=>inputViolations.length===0)&&report.errors.length===0);report.passed=true;
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}
