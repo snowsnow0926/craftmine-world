@@ -13,6 +13,13 @@ on requested appearance/behavior and actual contracts. No prompt should force a
 single implementation for every object or substitute a simpler outcome for the
 player's request.
 
+Tool registration and activation are different. `godot_capability_report`
+`advertised: true` means registered in the plugin catalog; it does not establish
+that the tool is in the current model request's definitions. Call a tool already
+present in those definitions directly. Use ToolSearch only when it is absent,
+then use the activated tool on the next model turn. Do not repeatedly activate
+tools already present. This clarification does not change activation logic.
+
 A source-prerequisite match is not installability or runtime proof. After a
 failure, distinguish request/schema errors, stale source/target, transient
 transport problems and package data or installer-contract incompatibility.
@@ -49,8 +56,14 @@ Real errors and uncertainty remain visible. A passed check does not establish
 that an unknown diagnostic is harmless or that gameplay was exercised.
 
 Only host-confirmed full-auto consent delegates checked-candidate application to
-the host after the author turn. Pending application remains pending until actual
-host evidence proves otherwise. The host updates the running world; do not add
+the host asynchronously under its verification and authoring guards. The host's
+authoring lifecycle is distinct from display of a final chat reply. Report the
+last observed application state: a pending receipt is not adoption evidence, but
+also does not prove current invisibility or guarantee that adoption must wait
+for the visible conversation to end. With only check success or pending known,
+state that checks passed and refer to current creation-result-card progress.
+Do not change receipt status, timing or next-action fields to match this prose.
+The host updates the running world; do not add
 a routine instruction to refresh/reload/reopen after a source receipt or passed
 check. Recommend a recovery action when a real failure or host result requires
 it. Manual permission and the actual player controls remain authoritative.

@@ -176,7 +176,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
           proposal.result=result;await atomic(path.join(directory,proposalId+'.json'),proposal);
         }
         return {format:'craftmine.source-library/1',proposal:projection(proposal),jobId:proposal.result.job.jobId,instanceIds:proposal.result.instanceIds,applied:false,
-          source:proposal.result.source,note:'Source installation has started in this author turn. Read this exact job with godot_build_read until settled. Full-auto adoption uses the existing checked-candidate workflow after the turn ends. A queued or passed check is not proof the world is updated; report actual adoption and verify the requested new instance.'};
+          source:proposal.result.source,note:'Source installation has started in this author turn. Read this exact job with godot_build_read until settled. Full-auto adoption is coordinated asynchronously by the host; current result-card progress can advance after this receipt. Do not infer application timing from when the final chat reply is displayed, or current invisibility from pending alone. A queued or passed check is not proof the world is updated; report observed adoption evidence and verify the requested new instance.'};
         })();
         authorPending.set(proposalId,{requestHash,promise});try{return await promise;}finally{authorPending.delete(proposalId);}
       }

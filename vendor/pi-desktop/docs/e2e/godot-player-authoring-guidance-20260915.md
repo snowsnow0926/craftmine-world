@@ -84,3 +84,75 @@ no successful continuation has been pre-recorded.
 
 Follow-up CPU validation: 63 request-context tests and 15 source-library/schema
 tests passed. Agent-runtime typechecking and the isolated plugin build passed.
+
+## Original tool-activation audit
+
+Read-only session and agent-event records for original monster turn
+`1d5766b5-d35d-42be-9337-c1c6027f22e2`, ending before 2026-09-14 18:08:05 UTC,
+show the following complete relevant activation sequence (all timestamps UTC):
+
+- 17:46:29.686–17:46:29.722 and 17:53:18.957–17:53:19.009:
+  ToolSearch activated the modern
+  `godot_source_library` and `package_library` tools.
+- 18:03:31.454–18:03:31.607: ToolSearch activated `asset_library`, not `library_search`.
+- 18:07:08.572: three calls to `plugin_craftmine_world_library_search` with
+  the queries “怪物”, “monster” and “combat” failed with `Tool not found`.
+  The requested tool had not yet been activated.
+- 18:07:15.270–18:07:15.494: an exact-name ToolSearch activated
+  `plugin_craftmine_world_library_search` and stated next-model-turn availability.
+- 18:07:15.494–18:07:15.684: a separate ToolSearch for `plugin_craftmine_world_library_read`
+  also succeeded.
+- 18:07:20.271–18:07:20.471, 18:07:20.471–18:07:20.639 and
+  18:07:20.639–18:07:20.802: the same three search queries
+  succeeded and returned an empty library (`total: 0`).
+
+The runtime's active-tool filter and ToolSearch activation behavior match this
+sequence. The name was registered but inactive at the failed calls; there is no
+evidence of a registration or activation defect. The optional clarification
+replaces the ambiguous “already advertised” wording with “present in the current
+tool definitions” and explains catalog registration in the capability tool's
+description. No new runtime behavior or mirror-of-text test is introduced.
+The currently running preview27 continuation remains on its original prompt.
+
+## Automatic application observation time
+
+Read-only evidence for preview27 continuation
+`daa1288b-60c2-4ffb-a85b-f7096e93fb68` comes from
+`D:/cm-deepseek-monster-hunter/test-results/desktop-native-product-vJtlTm`,
+including `continuation-77d7782e-3803-4c3c-ad03-355f01a542e3.json`, the
+turn/session record, `agent-events.ndjson`, and canonical application rows in
+the profile's `tasks.sqlite`. All times below are 2026-09-14 UTC.
+
+- Last build-read ran 18:26:42.793–18:26:56.515. The check passed; the matching
+  application receipt was deferred with `CREATION_TURN_BUSY` and its own
+  updated time 18:26:52.419. It did not confirm adoption.
+- Final message ended at 18:27:09.257. It stated pending, but also asserted
+  application would happen after the visible conversation and that the objects
+  were currently invisible. The old guidance supplied this timing assertion.
+- Canonical application `3376a3f1-880d-42b4-a7fa-638f03bfd68c` for candidate
+  `gcan-8d0fc8bb590ae620c9c256318128ce03841ac640e0921907d48772a387df5fe4`
+  was created at 18:27:11.418 and recorded applied at 18:27:15.880.
+- A later-read `status.json.application` UI projection had updatedAt
+  1789410410982 (18:26:50.982). This is not the canonical application transaction
+  time and cannot establish earlier adoption. Neither the tool nor final
+  pending observation is disproved by this projection. No projection-delay
+  runtime defect is claimed.
+
+Only explanatory text now distinguishes observed receipts, host authoring
+coordination and final-reply display. Pending remains unconfirmed; check success
+can be reported with current progress in the existing creation result card.
+No runtime status, timing, nextAction, permission or recovery action changes.
+The active package and session were not changed; model behavior under this
+wording remains unverified until a later rebuilt-package run.
+
+CPU evidence: 66 application-guidance/build-read/source-service/wiring tests and
+63 request-context tests passed; agent-runtime typechecking and the isolated
+plugin build passed. The wiring
+fixture now copies the existing output decorator, explicitly requests `full`
+for its raw-output preservation cases, and recognizes the installed Blender
+owner; these repair stale test setup, not production behavior. A 1320-case
+before/after comparison across authorization, ownership, status, reason and
+stale-source inputs found every machine field identical when excluding only
+`instruction` and `playerMessage`. Evidence is retained in the owner tree's
+`test-results/application-guidance-interface-equivalence.json` and
+`application-time-*-tests.log`.
