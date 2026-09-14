@@ -11,6 +11,7 @@ import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 import {readProductAgentCommand,atomicProductAgentJson,measureProductAgentFiles,checkProductAgentIntegrity} from './helpers/product-agent-mailbox.mjs';
 import {publishOperatorTemplate} from './helpers/product-agent-publication.mjs';
 import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
+import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
 const args=process.argv.slice(2),option=name=>{const index=args.indexOf(name);return index<0?undefined:args[index+1];};
 if(args.includes('--help')){console.log('node tests/product-agent-operator-native.mjs --application-root ABS --runtime-resources ABS --codex ABS --output-root ABS [--resume ABS_REPORT] [--packaged-root ABS]\nNo prompts are sent until an explicit inbox command. See docs/PRODUCT_AGENT_OPERATOR_DRIVER.md.');process.exit(0);}
@@ -140,7 +141,23 @@ async function command(name,input){
     continuePublication:()=>evaluate(`(()=>{const result=document.querySelector('[data-library-publish="world"] [data-publication-result]');const n=[...result.querySelectorAll('button')].find(n=>['继续保存其他内容','Save more content'].includes(n.textContent.trim()));const p=n&&n[Object.keys(n).find(k=>k.startsWith('__reactProps$'))];if(!n||n.disabled||!p?.onClick)throw Error('PUBLICATION_CONTINUE_UNAVAILABLE');p.onClick();return true;})()`),
   },input,report.worldId);
   if(name==='open-world'){assert.equal(Object.keys(input).length,0);assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false);if(await evaluate(`!!document.querySelector('[data-asset-close-form]')`))await submit('[data-asset-close-form]');await rpc('primaryMode',{payload:{action:'entry'}});await until(()=>evaluate(`!!document.querySelector('[data-world-entry-tab-form="worlds"]')`),Boolean);await submit('[data-world-entry-tab-form="worlds"]');const selector='[data-world-open="'+report.worldId+'"]';await until(()=>evaluate(`!!document.querySelector(${JSON.stringify(selector)})`),Boolean);await submit(selector);await waitWorld();return {worldId:report.worldId,sessionId:report.sessionId,observation:await rpc('godotObserve')};}
-  if(name==='export-template'){assert(/^player\.world\.[a-z0-9_-]+$/.test(input.assetId));if(await evaluate(`!!document.querySelector('[data-asset-close-form]')`))await submit('[data-asset-close-form]');await rpc('primaryMode',{payload:{action:'entry'}});await until(()=>evaluate(`!!document.querySelector('[data-world-entry-tab-form="templates"]')`),Boolean);await submit('[data-world-entry-tab-form="templates"]');await until(()=>evaluate(`!!document.querySelector(${JSON.stringify('[data-local-template="'+input.assetId+'"]')})`),Boolean);await submit('[data-local-template="'+input.assetId+'"]');await until(()=>evaluate(`!!document.querySelector('[data-template-export]')`),Boolean);const file=path.join(out,'player-world-template.zip'),before=fs.existsSync(file)?fs.statSync(file).mtimeMs:null;await submit('[data-template-export]');await until(async()=>fs.existsSync(file)&&(before===null||fs.statSync(file).mtimeMs!==before),Boolean);const bytes=fs.readFileSync(file),archived=path.join(out,'captures','world-template-'+Date.now()+'-'+randomUUID()+'.zip');fs.writeFileSync(archived,bytes);return {file:archived,pickerFile:file,sha256:hash(bytes),bytes:bytes.length};}
+  if(name==='export-template'){
+    assert(/^player\.world\.[a-z0-9_-]+$/.test(input.assetId));
+    if(input.version!==undefined)assert(Number.isSafeInteger(input.version)&&input.version>0);
+    if(await evaluate(`!!document.querySelector('[data-asset-close-form]')`))await submit('[data-asset-close-form]');
+    await rpc('primaryMode',{payload:{action:'entry'}});
+    await until(()=>evaluate(`!!document.querySelector('[data-world-entry-tab-form="worlds"]')`),Boolean);
+    // Real tab navigation unmounts an old completion notice before re-export.
+    await submit('[data-world-entry-tab-form="worlds"]');await until(()=>evaluate(`!document.querySelector('[data-local-world-templates]')`),Boolean);
+    await submit('[data-world-entry-tab-form="templates"]');
+    const selector='[data-local-template="'+input.assetId+'"]'+(input.version===undefined?'':'[data-template-version="'+input.version+'"]');
+    await until(()=>evaluate(`!!document.querySelector(${JSON.stringify(selector)})`),Boolean);await submit(selector);
+    await until(()=>evaluate(templateExportReadScript),state=>state.assetId===input.assetId&&!state.busy);
+    const file=path.join(out,'player-world-template.zip');
+    return exportOperatorTemplate({read:()=>evaluate(templateExportReadScript),submit:()=>evaluate(templateExportSubmitScript),until,readBytes:()=>fs.readFileSync(file),archive:bytes=>{
+      const archived=path.join(out,'captures','world-template-'+Date.now()+'-'+randomUUID()+'.zip');fs.writeFileSync(archived,bytes,{flag:'wx'});return {file:archived,pickerFile:file};
+    }},input);
+  }
   if(name==='abort')return invoke('agentAbort',{sessionId:report.sessionId});
   if(name==='quit'){if((await invoke('agentGetStatus',report.sessionId)).status.isRunning)throw Error('ABORT_OR_FINISH_TURN_BEFORE_QUIT');quitting=true;return {requested:true};}
   throw Error('MAILBOX_COMMAND_UNKNOWN');

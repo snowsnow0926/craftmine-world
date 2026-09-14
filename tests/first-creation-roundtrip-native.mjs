@@ -12,6 +12,7 @@ import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs'
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 import {validateTemplateExpectations,inspectTemplateState,requirePackagedResources} from './helpers/template-import-expectations.mjs';
+import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
 const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
@@ -377,9 +378,9 @@ async function publishWorld(){
  const card=(await nav('asset.search',{ownerWorldId:worldId,scope:'local-library',query:'首次创作完整闭环',latestOnly:true,offset:0,limit:50})).items.find(row=>row.assetId===assetId);assert(card);
  report.templateRef={assetId,version:card.version,contentHash:card.contentHash};await closeAssets();
  await chooser('templates');await until(()=>evaluate(`!!document.querySelector('[data-local-template="${assetId}"]')`),Boolean);await submit(`[data-local-template="${assetId}"]`);
- await until(()=>evaluate(`!!document.querySelector('[data-local-template-selected="${assetId}"]')`),Boolean);await submit('[data-template-export]');
- const picker=path.join(out,'player-world-template.zip');await until(async()=>{await failIfError();return fs.existsSync(picker);},Boolean);
- const bytes=fs.readFileSync(picker);report.templateArchive={path:picker,sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length};save();
+ await until(()=>evaluate(`!!document.querySelector('[data-local-template-selected="${assetId}"]')`),Boolean);
+ const picker=path.join(out,'player-world-template.zip');
+ report.templateArchive=await exportOperatorTemplate({read:()=>evaluate(templateExportReadScript),submit:()=>evaluate(templateExportSubmitScript),until,readBytes:()=>fs.readFileSync(picker),archive:()=>({path:picker})},{assetId,version:report.templateRef.version});save();
 }
 async function importWorld(){
  await chooser('templates');await submit('[data-template-import]');
