@@ -11,7 +11,7 @@ export const CRAFTMINE_PANEL_CHANNELS = new Set([
   "diagnostics.status", "diagnostics.export",
   "issue.create", "issue.list", "issue.read", "issue.delete", "issue.followupPrepare", "issue.followup", "issue.export",
   "targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status",
-  "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget",
+  "workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge", "draft.recheck", "task.budget", "task.releaseExecutionLimits",
   // Asset library reads (R6's contract). Writes stay in the player import flow.
   "asset.search", "asset.read", "asset.versions", "asset.usage", "asset.scan",
   "asset.probe", "asset.previewRead", "asset.annotate",
@@ -56,6 +56,12 @@ export function createCraftminePanelGateway(options: {
     if (permit && (permit.token !== internal || JSON.stringify(permit.owner) !== JSON.stringify(operationOwner))) throw new Error("OPERATION_OWNER_CHANGED");
     const workbench = (name: string, input: Record<string, any> = payload, host: Owner = owner) => options.domain("workbench.request", { channel: name, payload: input, host });
     const executeStored = async (record: PendingOperation) => {
+      if (record.channel === "task.releaseExecutionLimits") {
+        const saved = await options.domain("budget.findExecutionReleaseReceipt", {
+          ...record.payload, ...operationOwner, operationId: record.operationId,
+        });
+        if (saved !== null) return saved;
+      }
       if (record.channel === "task.budget") {
         // A resumed task has a new head. The original player operation can
         // still be completed by its exact authoritative receipt, without
@@ -82,7 +88,7 @@ export function createCraftminePanelGateway(options: {
       if (channel === "workbench.operations") return { items: await options.operations.list(operationOwner) };
       if (channel === "workbench.prepare") {
         if (!PERSISTENT_WORKBENCH_CHANNELS.has(payload.channel)) throw new Error("UNSUPPORTED_DURABLE_OPERATION");
-        if (["library.install", "memory.propose", "draft.recheck", "task.budget"].includes(payload.channel) && !sessionId) throw new Error("HOST_SESSION_REQUIRED");
+        if (["library.install", "memory.propose", "draft.recheck", "task.budget", "task.releaseExecutionLimits"].includes(payload.channel) && !sessionId) throw new Error("HOST_SESSION_REQUIRED");
         return options.operations.prepare(operationOwner, payload.channel, payload.payload);
       }
       if (channel === "workbench.acknowledge") return options.operations.acknowledge(operationOwner, payload.operationId);
@@ -95,6 +101,7 @@ export function createCraftminePanelGateway(options: {
     }
     if (channel === "workbench.capabilities") {
       const available = await workbench(channel);
+      available.channels = [...available.channels, "task.releaseExecutionLimits"];
       return { channels: [...new Set([...available.channels, "task.resume", "task.discard", "task.stop", "task.budget", ...(options.packages ? ["package.request"] : []), ...(options.targetFeedback ? ["targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status"] : []), ...(options.issues ? ["issue.create", "issue.list", "issue.read", "issue.delete", "issue.followupPrepare", "issue.followup", "issue.export"] : []), ...(options.operations ? ["workbench.operations", "workbench.prepare", "workbench.execute", "workbench.acknowledge"] : []), ...[...CRAFTMINE_PANEL_CHANNELS].filter(name => /^(backup|diagnostics)\./.test(name))])] };
     }
     if (channel === "package.request") {
@@ -131,7 +138,7 @@ export function createCraftminePanelGateway(options: {
       if (owner.active && channel === "targetFeedback.submit") throw Error("ACTIVE_TASK_EXISTS");
       return options.targetFeedback(channel, payload);
     }
-    if (!["library.install", "memory.propose", "task.resume", "task.discard", "task.stop", "draft.recheck", "task.budget"].includes(channel)) return workbench(channel);
+    if (!["library.install", "memory.propose", "task.resume", "task.discard", "task.stop", "draft.recheck", "task.budget", "task.releaseExecutionLimits"].includes(channel)) return workbench(channel);
     if (!sessionId || !session) throw new Error("请先创建或打开一个创作任务，再执行此操作。");
     const current = await workbench("task.current", { worldId });
     if (channel === "task.stop") {
@@ -139,6 +146,12 @@ export function createCraftminePanelGateway(options: {
       await options.stop(sessionId); return { stopped: true };
     }
     if (owner.active) throw new Error("ACTIVE_TASK_EXISTS");
+    if (channel === "task.releaseExecutionLimits") {
+      const bound = current.context;
+      if (!bound || bound.binding.taskId !== payload.taskId || bound.generation !== payload.generation) throw new Error("STALE_TASK");
+      if (Object.keys(payload).some(key => !["worldId", "operationId", "taskId", "generation"].includes(key))) throw new Error("INVALID_OPERATION_PARAMS");
+      return options.domain("budget.releaseExecutionLimits", { projectId: owner.projectId, sessionId, worldId, taskId: payload.taskId, generation: payload.generation, operationId: payload.operationId });
+    }
     if (channel === "task.budget") {
       const bound = current.context;
       if (!bound || bound.binding.taskId !== payload.taskId || bound.generation !== payload.generation) throw new Error("STALE_TASK");

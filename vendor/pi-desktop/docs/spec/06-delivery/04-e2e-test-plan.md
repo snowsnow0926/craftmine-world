@@ -10828,3 +10828,16 @@ player release of exhausted execution limits, unchanged token budgets, stale
 identity rejection, and exact historical receipt recovery after resume/restart.
 See [the scenario](../../e2e/ordinary-player-execution-limits-20260914.md) and
 [the contract](../player-task-execution-policy.md).
+
+## Player UI release of exhausted execution limits (2026-09-14)
+
+Run the targeted player execution release and continuation tests, then reproduce
+an exhausted historical task in an independently copied player profile. Require
+the explicit failure-card or task-workbench action to retain the same saved draft,
+ledger owner, token policy and original errors, release only the local execution
+limits through an audited receipt, and start ordinary continuation once. Changing
+session/world, an active task or an unknown/malformed release result must not
+start a model. A lost response must be recoverable from the same journal entry
+after resume/restart without changing the new task. Check the actual UI button
+and receipt in the native acceptance; pure tests are not a substitute.
+See [the interface](../player-execution-limit-recovery-ui.md).

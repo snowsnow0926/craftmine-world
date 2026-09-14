@@ -202,7 +202,7 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
     if(context){const card=document.createElement('article');card.className='workbench-card';card.append(text('h3',labels[context.status]||context.status||'当前任务'));
       for(const requirement of context.requirements||[])card.append(text('p',(requirement.kind==='correction'?'最新纠正：':'目标：')+requirement.text));
       card.append(text('p',`草稿 ${context.draft?.revision??'未知'} · 已修改 ${(context.modifiedResources||[]).length} 项`,'workbench-meta'));
-      const budget=context.budget||{};card.append(text('p',`模型请求 ${count(budget.requestCount)} / ${count(budget.limits?.maxRequests)} · 压缩 ${count(budget.compactionCount)} / ${count(budget.limits?.maxCompactions)}`));
+      const budget=context.budget||{};card.append(text('p',`模型请求 ${count(budget.requestCount)} / ${budget.limits?.maxRequests===null?'不限':count(budget.limits?.maxRequests)} · 压缩 ${count(budget.compactionCount)} / ${budget.limits?.maxCompactions===null?'不限':count(budget.limits?.maxCompactions)}`));
       card.append(text('p',`实际用量 ${count(budget.actualTokens)} · 预留 ${count(budget.reservedTokens)} · 结果待确认 ${count(budget.unknownRequestCount)} 次`));
       card.append(text('p',`任务累计 token 上限：${budget.limits?.maxTokens===null?'不限':count(budget.limits?.maxTokens)} · 剩余额度：${budget.remainingTokens===null?'不限':count(budget.remainingTokens)}`,'workbench-meta'));
       card.append(text('p','这是整个任务的累计用量，不是模型一次能读取的上下文容量。解除累计上限仍保留请求次数、压缩次数、截止时间和模型单次限制。','workbench-meta'));
@@ -214,6 +214,19 @@ export function createWorkbench({element,selectionElement,request,getWorld,run=f
         const unlimited=button('解除本地累计 token 上限',()=>configure(null));unlimited.control.disabled=active||budget.limits?.maxTokens===null;card.append(unlimited.form);
         const maximum=field('自定义任务累计 token 额度');maximum.control.type='number';maximum.control.min='1';maximum.control.max=String(Number.MAX_SAFE_INTEGER);maximum.control.step='1';maximum.control.required=true;
         const custom=button('保存累计额度',()=>{const value=Number(maximum.control.value);if(!Number.isSafeInteger(value)||value<1){status('请输入正整数额度。',true);return;}return configure(value);});custom.control.disabled=active;custom.form.prepend(maximum.wrapper);card.append(custom.form);
+      }
+      const reached=(used,limit)=>Number.isFinite(limit)&&Number.isFinite(used)&&used>=limit;
+      const executionLimitReached=reached(budget.requestCount,budget.limits?.maxRequests)||reached(budget.compactionCount,budget.limits?.maxCompactions)
+        ||Number.isFinite(budget.limits?.deadlineAt)&&Date.now()>=budget.limits.deadlineAt;
+      if(!active&&context.recovery==='interrupted'&&executionLimitReached&&has('task.releaseExecutionLimits')){
+        const release=button('解除本地次数与时长限制后继续',()=>action(async()=>{
+          const target={taskId:context.binding.taskId,generation:context.generation};
+          const result=await durableCall('task.releaseExecutionLimits',target);
+          if(result.kind!=='player-execution-limit-release'||result.modelReplay!==false||result.resumed!==false)throw Error('解除限制的结果尚未确认，请重新读取任务。');
+          try{await call('task.resume',target);}catch(error){await showTask();throw Error('本地限制已解除，继续启动尚未确认，请查看已保存任务：'+error.message);}
+          await showTask();status('保留原草稿与用量，正在继续创作。');
+        }));release.form.dataset.releaseExecutionLimits='true';
+        card.append(text('p','仅解除本地请求次数、压缩次数和时长限制；保留已设置的 token 预算、草稿和用量记录。','workbench-meta'),release.form);
       }
       if(active&&has('task.stop'))card.append(button('停止当前任务',()=>action(async()=>{await call('task.stop',{taskId:context.binding.taskId,generation:context.generation});status('停止请求已提交，等待任务状态确认。');await showTask();})).form);
       pages.task.append(card);

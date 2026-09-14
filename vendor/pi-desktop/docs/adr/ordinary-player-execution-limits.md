@@ -32,3 +32,9 @@ retained. Existing capped tasks require explicit player recovery; upgrading the
 application alone does not silently change their policy. Summary-loop defects
 must be fixed at their triggering algorithm, rather than hidden by another
 arbitrary whole-task counter.
+
+The explicit player recovery is exposed through the existing Main panel and
+persistent operation journal, with a failure-card and task-workbench action.
+See [the UI/host contract](../spec/player-execution-limit-recovery-ui.md).
+This extends the existing panel allowlist; it adds no model tool, direct renderer
+Core identity, automatic migration, or provider credential access.

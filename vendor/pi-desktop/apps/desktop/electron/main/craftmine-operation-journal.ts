@@ -14,6 +14,7 @@ const allowed: Record<string, string[]> = {
   "backup.export": [],
   "backup.restore": ["grantId", "expectedCurrentHash"],
   "task.budget": ["taskId", "generation", "maxTokens"],
+  "task.releaseExecutionLimits": ["taskId", "generation"],
   "draft.recheck": ["taskId", "generation", "revision", "draftHash"],
   "targetFeedback.submit": ["targetId", "sourceBinding", "values"],
 };
@@ -47,6 +48,7 @@ function validatePayload(channel: string, payload: Payload): Payload {
   if (channel === "memory.propose" && (!["project-rule", "workflow"].includes(payload.kind) || (payload.replaceId !== undefined && !short(payload.replaceId, 100)))) fail("INVALID_OPERATION_PARAMS");
   if (channel === "backup.restore" && (!short(payload.grantId, 100) || !hash(payload.expectedCurrentHash))) fail("INVALID_OPERATION_PARAMS");
   if (channel === "task.budget" && (!short(payload.taskId, 100) || !integer(payload.generation) || payload.generation < 1 || !(payload.maxTokens === null || (integer(payload.maxTokens) && payload.maxTokens > 0)))) fail("INVALID_OPERATION_PARAMS");
+  if (channel === "task.releaseExecutionLimits" && (!short(payload.taskId, 100) || !integer(payload.generation) || payload.generation < 1)) fail("INVALID_OPERATION_PARAMS");
   if (channel === "draft.recheck" && (!short(payload.taskId, 100) || !integer(payload.generation) || payload.generation < 1 || !integer(payload.revision) || !hash(payload.draftHash))) fail("INVALID_OPERATION_PARAMS");
   if (channel === "targetFeedback.submit") validateTargetFeedbackIntent(payload);
   // Only the explicit player-authored business arguments are retained. Never
@@ -64,6 +66,17 @@ function projection(record: StoredOperation): PendingOperation {
 function receipt(result: any, channel: string) {
   if (channel === "targetFeedback.submit") return validateTargetFeedbackReceipt(result);
   if (!plain(result) || Buffer.byteLength(canonical(result)) > 65536) fail("INVALID_OPERATION_RECEIPT");
+  if (channel === "task.releaseExecutionLimits") {
+    const keys = ["kind", "operationId", "binding", "taskId", "generation", "worldId", "previousLimits", "limits", "budget", "exhausted", "modelReplay", "resumed"];
+    const limits = result.limits;
+    if (Object.keys(result).some(key => !keys.includes(key)) || result.kind !== "player-execution-limit-release"
+      || result.modelReplay !== false || result.resumed !== false || !plain(limits) || !plain(result.previousLimits)
+      || limits.maxRequests !== null || limits.maxCompactions !== null || limits.deadlineAt !== null
+      || limits.maxTokens !== result.previousLimits.maxTokens || !plain(result.budget)
+      || canonical(result.budget.limits) !== canonical(limits) || !Array.isArray(result.exhausted) || !result.exhausted.length
+      || result.exhausted.some((code: unknown) => !["REQUEST_BUDGET_EXHAUSTED", "COMPACTION_BUDGET_EXHAUSTED", "TASK_DEADLINE_EXCEEDED"].includes(String(code)))) fail("INVALID_OPERATION_RECEIPT");
+    return structuredClone(result);
+  }
   const keys = ["budget", "previousMaxTokens", "receipt", "ref", "packageHash", "metadata", "idMap", "dependencies", "applied", "verificationId", "verificationStatus", "replayed", "id", "operationId", "status", "archiveHash", "bytes", "scope", "currentHash", "modelReplay", "credentialsIncluded", "format", "kind", "claim", "sourceRefs", "tags", "appliesTo", "supersedes", "supersededBy", "createdAt", "lastVerifiedAt", "retiredReason", "generation", "draftHash", "revision", "summary", "current", "inputHash", "outputHash", "publishingAvailable", "taskId", "workspaceRevision", "baseBuild"];
   if (Object.keys(result).some(key => !keys.includes(key) && !["activated", "rebuildRequired", "errorCode"].includes(key))) fail("INVALID_OPERATION_RECEIPT");
   if (result.errorCode !== undefined || result.status === "reconciliation-pending") {
