@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/cw.module.promo-monsters/hornling.gd" id="1_ai"]
+[ext_resource type="PackedScene" path="res://addons/cw.module.promo-monsters/model.glb" id="2_model"]
+
+[node name="Hornling" type="CharacterBody3D"]
+collision_layer = 32
+collision_mask = 35
+floor_snap_length = 0.2
+script = ExtResource("1_ai")
+metadata/source_job_id = "bef967e4-6830-4439-a08f-68361a3e32f0"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="Visual" parent="." instance=ExtResource("2_model")]

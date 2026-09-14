@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/cw.module.promo-monsters/encounter.gd" id="1_combat"]
+[ext_resource type="PackedScene" path="res://addons/cw.module.promo-monsters/hornling.tscn" id="2_monster"]
+
+[node name="MonsterEncounter" type="Node3D"]
+script = ExtResource("1_combat")
+entity_id = "grove-combat-01"
+
+[node name="Moss01" parent="." instance=ExtResource("2_monster")]
+position = Vector3(-11, 0, -4)
+entity_id = "grove-monster-01"
+monster_name = "苔角怪"
+phase_seed = 1.0
+
+[node name="Moss02" parent="." instance=ExtResource("2_monster")]
+position = Vector3(11, 0, -5)
+entity_id = "grove-monster-02"
+monster_name = "苔角怪"
+tint = Color(0.28, 0.62, 0.38, 1)
+body_size = 0.9
+phase_seed = 2.0
+
+[node name="Violet03" parent="." instance=ExtResource("2_monster")]
+position = Vector3(-12, 0, -13)
+entity_id = "grove-monster-03"
+monster_name = "紫晶角怪"
+tint = Color(0.57, 0.34, 0.75, 1)
+move_speed = 2.8
+phase_seed = 3.0
+
+[node name="Violet04" parent="." instance=ExtResource("2_monster")]
+position = Vector3(12, 0, -15)
+entity_id = "grove-monster-04"
+monster_name = "紫晶角怪"
+tint = Color(0.48, 0.30, 0.67, 1)
+body_size = 1.05
+phase_seed = 4.0
+
+[node name="Moss05" parent="." instance=ExtResource("2_monster")]
+position = Vector3(-4, 0, -21)
+entity_id = "grove-monster-05"
+monster_name = "苔角怪"
+tint = Color(0.38, 0.63, 0.27, 1)
+body_size = 0.95
+phase_seed = 5.0
+
+[node name="Ember06" parent="." instance=ExtResource("2_monster")]
+position = Vector3(4, 0, -23)
+entity_id = "grove-monster-06"
+monster_name = "赤角怪"
+tint = Color(0.73, 0.26, 0.20, 1)
+body_size = 1.2
+max_health = 90
+attack_damage = 18
+move_speed = 2.2
+phase_seed = 6.0
