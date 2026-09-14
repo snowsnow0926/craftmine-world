@@ -1,5 +1,17 @@
 # 04. E2E Test Plan
 
+### Godot authoring scope and player result guidance (2026-09-15)
+
+- Preserve runtime identity when the journal-derived Godot projection is null;
+  use current facts and inspect unresolved dependencies without fixed reread loops.
+- Keep Godot base-generator, source, library and Blender choices available under
+  their existing target/permission contracts. Separate pending automatic adoption
+  from actual host-confirmed application and avoid routine player reopen requests.
+- Retain original Flash run evidence and the boundary between the active old
+  package and a later rebuilt prompt comparison. See
+  [specification](../godot-player-authoring-guidance.md) and
+  [CPU evidence](../../e2e/godot-player-authoring-guidance-20260915.md).
+
 Combat package declaration recovery (2026-09-15): preserve immutable v1 refusal,
 verify corrected v2's actual automatic node and helper UID files through the real
 source installer, and distinguish source transactions from gameplay. See
@@ -11001,3 +11013,10 @@ and recipe3 configuration. See [the scenario](../../e2e/companion-world-bounds-2
 Verify the existing example cards and the ordinary import shortcut, accurate
 empty-search feedback, imported list refresh, exact retained-attempt retry and
 unmounted reply fences. See [the focused renderer scenario](../../e2e/demo-entry-and-templates-20260915.md).
+
+## Automatic adoption presentation recovery (2026-09-15)
+
+Retain the latest valid surface/resume intent while the existing host candidate
+gate refuses it. Require a positive new reply before clearing only its own busy
+error; preserve unrelated errors, exact world ownership and manual previews.
+See [the focused recovery scenario](../../e2e/godot-presentation-recovery-20260915.md).
