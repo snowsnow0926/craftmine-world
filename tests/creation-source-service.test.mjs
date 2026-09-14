@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),{createCreationSourceService}=require('../plugins/craftmine-world/creation-source-service.cjs');
 const hash=s=>createHash('sha256').update(s).digest('hex');
-function fixture(){
+function fixture({baseId='creation-sandbox'}={}){
  const context={projectId:'p',sessionId:'s',turnId:'t'},workspace={worldId:'alpha',task:{binding:{...context,taskId:'task',baseBuild:'formal-build'}}};
  const start={};for(let i=0;i<40;i++)start[`a-${i}.gd`]='extends Node\n';
  start['world/creation.json']=JSON.stringify({format:'craftmine.creation-scene/1',revision:1,defaults:{timeOfDay:12},entities:[]})+' '.repeat(40000);
@@ -17,7 +17,7 @@ function fixture(){
   if(method==='godotProject.index'){
    const rev=args.revision??current;assert.equal(args.manifestHash??manifest(rev),manifest(rev));const source=versions.get(rev);assert.ok(source);
    const all=Object.keys(source).sort().map(path=>({path,sha256:hash(source[path]),bytes:Buffer.byteLength(source[path])}));const files=all.slice(args.offset,args.offset+args.limit);
-   return {worldId:'alpha',baseId:'creation-sandbox',baseBuild:'ancestral-build',branchId:'main',revision:rev,manifestHash:manifest(rev),files,nextOffset:args.offset+files.length<all.length?args.offset+files.length:null};
+   return {worldId:'alpha',baseId,baseBuild:'ancestral-build',branchId:'main',revision:rev,manifestHash:manifest(rev),files,nextOffset:args.offset+files.length<all.length?args.offset+files.length:null};
   }
   if(method==='godotProject.read'){
    assert.ok(args.limit<=16000);const text=versions.get(args.revision)[args.path],chars=[...text];
@@ -40,6 +40,21 @@ test('host-bound target uses formal build, pages real Rust limits, and advances 
  const second=await f.run(f.request('second',2,[9,0,4]));assert.equal(second.source.revision,3);
  const scene=JSON.parse(f.versions.get(3)['world/creation.json']);assert.equal(scene.entities.length,2);
  assert.ok(f.calls.filter(c=>c.method==='godotProject.index').length>=4);assert.ok(f.calls.filter(c=>c.method==='godotProject.read').length>=4);
+});
+
+test('advertised Godot base-generator scope matches the real source transaction and does not authorize another base',async()=>{
+ const manifest=require('../plugins/craftmine-world/manifest.json');
+ const definition=manifest.contributes.agentTools.find(tool=>tool.name==='creation_operation');
+ assert.match(definition.description,/Godot creation-sandbox structured source editor/);
+ assert.match(definition.description,/not the legacy voxel editor/);
+ assert.match(definition.description,/durable draft receipt, not adoption/);
+ const valid=fixture(),receipt=await valid.run(valid.request('declared-scope'));
+ assert.equal(receipt.applied,false);assert.equal(receipt.checkRequired,true);
+ assert(valid.calls.some(call=>call.method==='godotProject.patch'));
+ assert(!valid.calls.some(call=>call.method.startsWith('workspace.commit')||call.method.startsWith('godotApplication.')));
+ const foreign=fixture({baseId:'first-person'});
+ await assert.rejects(foreign.run(foreign.request('wrong-base')),/CREATION_SOURCE_BINDING_INVALID/);
+ assert(!foreign.calls.some(call=>call.method==='godotProject.patch'));
 });
 test('a committed lost reply is read exactly once and does not duplicate a placement',async()=>{
  const f=fixture(),request=f.request();f.lose();const saved=await f.run(request);assert.equal(saved.source.revision,2);
