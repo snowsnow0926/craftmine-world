@@ -16,6 +16,7 @@ import {blankGodotUiState,createOperatorBlankGodot} from './helpers/operator-bla
 import {createOperatorEventCollector,isRecoverableOperatorCaptureError,recoverOperatorObserver} from './helpers/operator-event-collector.mjs';
 import {operatorCollectorPerformanceSample,accumulateOperatorCollectorPerformance} from './helpers/operator-collector-performance.mjs';
 import {validateOperatorTemplateCopy,assertOperatorTemplateSource,templateCopyReadScript,submitOperatorTemplateCopy,verifyOperatorTemplateCopy} from './helpers/operator-template-world.mjs';
+import {showWorldTabScript,assertShowWorldIdentity} from './helpers/operator-show-world.mjs';
 import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
 import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
@@ -187,8 +188,21 @@ async function createTemplateWorld(input){
   report.worldId=after.activeWorldId;report.sessionId=undefined;report.sourceTemplate='library';report.recipeVersion=null;report.worldCreation={mode:'ordinary-world-template-create',sourceRef:request.ref,archiveSha256:template.archiveSha256,initialState:'saved-progress',sourceWorldId:oldWorldId};receipt.newWorldId=report.worldId;save();await waitWorld();await assertModel();assert.notEqual(report.sessionId,oldSessionId,'TEMPLATE_COPY_REQUIRES_INDEPENDENT_SESSION');receipt.newSessionId=report.sessionId;
   const newOldIdentity=await savedWorldIdentity(oldWorldId,report.worldId);receipt.preservation=verifyOperatorTemplateCopy({before,after,oldWorldId,newWorldId:report.worldId,oldIdentity,newOldIdentity});receipt.observation=await rpc('godotObserve');assert.equal(receipt.observation.worldId,report.worldId);report.worldTransitions??=[];report.worldTransitions.push({at:new Date().toISOString(),...receipt});save();return receipt;
 }
+async function showCurrentWorld(input){
+  assert.equal(Object.keys(input).length,0,'SHOW_WORLD_TAKES_NO_OVERRIDES');
+  const before=await rpc('godotObserve');assert.equal(before.worldId,report.worldId,'SHOW_WORLD_CURRENT_WORLD_REQUIRED');
+  const sessionBefore=await evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`,'show-world-session-before');assert.equal(sessionBefore,report.sessionId,'SHOW_WORLD_CURRENT_SESSION_REQUIRED');
+  const pageResult=await withOwnedReleasePage({port:run.port,worldId:report.worldId,redact},async page=>{
+    const prior=await page(showWorldTabScript(report.worldId));if(prior.error)throw Error(prior.error);await page(showWorldTabScript(report.worldId,true));
+    const shown=await until(async()=>{const state=await page(showWorldTabScript(report.worldId));if(state.error)throw Error(state.error);return state;},state=>state.worldTabSelected&&state.workbenchHidden&&state.checksHidden);return {before:prior,after:shown};
+  });
+  const after=await rpc('godotObserve'),sessionAfter=await evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`,'show-world-session-after');assertShowWorldIdentity(before,after,sessionBefore,sessionAfter);
+  const frame=await capture();assertShowWorldIdentity(before,frame.identity,sessionBefore,sessionAfter);
+  return {submission:'ordinary-world-tab-callback',worldId:report.worldId,sessionId:report.sessionId,identityUnchanged:true,before,after,page:pageResult,frame};
+}
 async function command(name,input){
   if(name==='status')return inspect();
+  if(name==='show-world')return showCurrentWorld(input);
   if(name==='create-template-world')return createTemplateWorld(input);
   if(name==='replay-check'){assert(checkReplayHash,'CHECK_REPLAY_PARENT_PIN_REQUIRED');assert.equal(Object.keys(input).length,0);assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false,'FINISH_ACTIVE_TURN_BEFORE_REPLAY');return rpc('godotCheckReplay',{payload:{diagnosticOnly:true}});}
   if(name==='brief')return brief({action:'read'});

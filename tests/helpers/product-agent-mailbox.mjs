@@ -48,3 +48,5 @@ PRODUCT_AGENT_COMMANDS.add('release-task-continue');
 PRODUCT_AGENT_COMMANDS.add('continue-task');
 
 PRODUCT_AGENT_COMMANDS.add('create-template-world');
+
+PRODUCT_AGENT_COMMANDS.add('show-world');
