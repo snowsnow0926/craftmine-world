@@ -1,0 +1,9 @@
+# DeepSeek pre-inference liveness acceptance
+
+Run deepseek-idle-wire.test.ts with the pinned SDK and a fake-key localhost HTTP server. Preserve the official model identity and configured 1M/384K/max settings while forwarding all actual network bytes locally. Advance a controlled clock: emit documented keep-alives every fifty seconds, no semantic content for 150 seconds, then final content and usage. Require one request, no fabricated delta before content, a successful terminal and one known settlement.
+
+Cover silence, unrelated/empty SSE, heartbeats followed by silence, heartbeats after actual text, explicit cancellation and untrusted transport exclusion. Require one unknown/cancelled settlement as appropriate, no retry, no invented usage and no remaining timers. Pure observer checks cover arbitrary chunk boundaries, CR/LF, oversized/data/partial lines, unchanged response bytes, eligible endpoint/status/content-type, abort and consumer cancellation. Re-run existing request-boundary, prefix transport and retry tests to preserve body validation, reservation ordering, callback execution, cancellation and late-result fences.
+
+Actual player package verification is separate: retain original failed turns, continue the same saved Sword task with the selected provider/effort, and inspect the new aggregate liveness line alongside existing model metrics. A count of keep-alives proves transport waiting, not generation, task completion or playable content. If the service remains silent or closes, preserve that failure rather than endlessly retrying.
+
+Before evidence: test-results/deepseek-idle-before.log in the isolated deepseek-idle-guard-20260915 worktree. After evidence: deepseek-idle-wire-after.log and deepseek-idle-after.log. These are synthetic timing regressions, not real model speed or token-saving claims.
