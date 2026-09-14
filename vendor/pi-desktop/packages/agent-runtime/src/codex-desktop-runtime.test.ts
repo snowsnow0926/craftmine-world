@@ -79,7 +79,7 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
     }finally{await f.cleanup();}
   });
   it('recovers an unsynchronized interrupted thread only after two exact native tail reads and host revalidation',async()=>{
-    for(const variant of ['matching','changed-tail','pending','read-error','read-cancel','deferred','partial-inject']){
+    for(const variant of ['matching','changed-tail','pending','read-error','read-exit','read-cancel','deferred','partial-inject']){
       const history:any[]=[{id:'old-user',role:'user',status:'complete',content:'Keep the complete city',createdAt:'yesterday'},
         {id:'abort',role:'assistant',content:'',status:'aborted',error:{code:'TURN_ABORTED'},createdAt:'yesterday'}];
       const f=await fixture(history);try{
@@ -97,6 +97,7 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         client.call=async(method,params)=>{
           if(method==='thread/read'){
             client.calls.push({method,params});if(variant==='read-error')throw Object.assign(Error('CODEX_RPC_ERROR'),{rpcMethod:method,rpcCode:-1,diagnostic:'temporary unavailable'});
+            if(variant==='read-exit'){client.emit('failure',Error('CODEX_PROCESS_EXIT'));throw Error('CODEX_TRANSPORT_CLOSED');}
             if(variant==='read-cancel'){signalRead();return await new Promise((_resolve,reject)=>{rejectRead=reject;});}
             return {thread:{id:'thread-1',cwd:join(f.scratch,'codex-empty'),status:{type:'notLoaded'},modelProvider:'openai',model:MODEL,reasoningEffort:EFFORT}};
           }
