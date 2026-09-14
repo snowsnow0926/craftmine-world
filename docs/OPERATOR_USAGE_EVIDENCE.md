@@ -114,3 +114,25 @@ modelContextWindow、来源字段/事件行与类型，便于与context_window_e
 终态载体或metrics出现此类异常时，不用更早的有效消息偷偷替代本轮终值。
 只有部分过程快照异常、随后另有一致的真实终态载体时，才可计该终态，且
 异常快照仍留存。最终审计需等待所有恢复回合结束后重新导出。
+
+## 原生维护消耗没有报告时
+
+运行时通过终态消息`codexUsage.coverage`及状态事件`codexUsageCoverage`报告：
+
+```json
+{"status":"incomplete","reason":"native-maintenance-usage-unreported","maintenanceTurns":12,"maintenanceElapsedMs":4567,"reportedCreationUsage":{"inputTokens":20,"cacheReadTokens":80,"cacheWriteTokens":0,"outputTokens":20,"reasoningTokens":7,"totalTokens":120}}
+```
+
+`maintenanceTurns`是观察到的已完成原生维护次数，`maintenanceElapsedMs`可为
+null；它们不是token或费用。没有该metadata的普通旧记录沿用原本口径，协议
+没有“complete/0维护”新形状。明确出现incomplete即使常规usage或metrics仍有
+数值，也必须令该轮`finalUsage`及完整`finalAggregate`为null，物理调用总数同样
+不宣称完整。
+
+提取器将`reportedCreationUsage`单独列为
+`reported-creation-only-excludes-native-maintenance`，不能当成全轮或原生维护的
+消耗；运行中或仅有状态快照时仍标provisional。终态载体优先于状态快照，相同
+维护次数/耗时和创作部分的副本只取一次，不相加。原metadata和每个文件/字段
+来源完整保留在`coverageReports`；冲突、未知形状或033式矛盾计数仍保留告警与
+原值，相关部分保持null。中文导出另表显示已报告创作部分、维护次数与维护
+观测耗时，明确总量不完整。维护耗时不再加到已覆盖整轮的host wallTime上。

@@ -101,3 +101,36 @@ test('rejected terminal carrier cannot be replaced by an earlier valid message o
   const result=extractOperatorUsage({reports,events:[end('t',usage(),'earlier'),end('t',fullWindowSentinel,'bad')]});
   assert.equal(result.turns[0].finalUsage,null);assert.equal(result.finalAggregate,null);assert(result.turns[0].rejectedUsageReports.some(r=>r.kind==='host-metrics'));
 });
+
+const maintenance=(extra={})=>({status:'incomplete',reason:'native-maintenance-usage-unreported',maintenanceTurns:12,maintenanceElapsedMs:4567,reportedCreationUsage:usage(2),...extra});
+const coverageEnd=(turnId,coverage)=>event(turnId,'message_end',{message:{id:'coverage-'+turnId,role:'assistant',status:'complete',codexUsage:{scope:'current-turn',coverage}}});
+test('unreported native maintenance blocks full totals and exposes only the separately scoped creation portion',()=>{
+  const value=maintenance(),carrier=coverageEnd('t',value),session={source:'session.json',data:{session:{id:sid,messages:[{id:'u',role:'user'},carrier.data.event.message]}}};
+  const reports=[report([{turnId:'t',messageId:'u',metrics:metric('t','completed',{coverage:'complete',calls:{observed:2,reported:2,pending:0},usage:usage(2)})}])];
+  const result=extractOperatorUsage({reports,events:[event('t','status',{status:{codexUsageCoverage:maintenance({maintenanceTurns:3,reportedCreationUsage:usage()})}},1),carrier],sessions:[session,session]});
+  const row=result.turns[0];assert.equal(result.finalAggregate,null);assert.equal(row.finalUsage,null);assert.equal(row.modelCalls.value,null);
+  assert.equal(row.reportedCreationUsage.totalTokens,240);assert.equal(row.reportedCreationUsage.scope,'reported-creation-only-excludes-native-maintenance');assert.equal(row.reportedCreationUsage.provisional,false);
+  assert.equal(row.usageCoverage.maintenanceTurns,12);assert.equal(row.usageCoverage.maintenanceElapsedMs,4567);assert.equal(row.usageCoverage.source.file,'session.json');assert.equal(row.coverageReports.length,4);
+  const markdown=operatorUsageMarkdown(result);assert.match(markdown,/不是该轮完整用量/);assert.match(markdown,/\| t \| 240 \| 12 \| 4\.57 \|/);assert(!markdown.includes('已结束轮次合计'));
+});
+test('status-only maintenance is provisional and unknown elapsed remains null',()=>{
+  const result=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t','running')}])],events:[event('t','status',{status:{codexUsageCoverage:maintenance({maintenanceElapsedMs:null})}})]});
+  const row=result.turns[0];assert.equal(row.usageCoverage.maintenanceElapsedMs,null);assert.equal(row.reportedCreationUsage.provisional,true);assert.equal(row.finalUsage,null);assert.equal(result.finalAggregate,null);assert.match(operatorUsageMarkdown(result),/运行中/);
+});
+test('ordinary complete usage without maintenance metadata keeps previous full-usage semantics',()=>{
+  const result=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t')}])],events:[end('t',usage())]});
+  assert.equal(result.finalAggregate.usage.totalTokens,120);assert.equal(result.turns[0].usageCoverage,null);assert.equal(result.turns[0].reportedCreationUsage,null);
+});
+test('coverage without creation counters or with contradictory sentinel keeps partial unknown, not zero',()=>{
+  for(const reportedCreationUsage of [undefined,fullWindowSentinel]){
+    const result=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t','error')}])],events:[coverageEnd('t',maintenance({reportedCreationUsage,maintenanceElapsedMs:null}))]});
+    const row=result.turns[0];assert.equal(row.finalUsage,null);assert.equal(row.reportedCreationUsage,null);assert.equal(row.usageCoverage.maintenanceElapsedMs,null);assert.equal(result.finalAggregate,null);
+    if(reportedCreationUsage)assert.deepEqual(row.rejectedUsageReports[0].rawReported,fullWindowSentinel);
+  }
+});
+test('conflicting or unsupported coverage cannot silently regain full totals',()=>{
+  for(const events of [[coverageEnd('t',maintenance()),coverageEnd('t',maintenance({maintenanceTurns:13}))],[coverageEnd('t',{status:'complete',maintenanceTurns:0})]]){
+    const result=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t')}])],events:[end('t',usage()),...events]});
+    assert.equal(result.turns[0].finalUsage,null);assert.equal(result.finalAggregate,null);assert.equal(result.turns[0].usageCoverage.maintenanceTurns,null);assert(result.turns[0].warnings.length>0);
+  }
+});
