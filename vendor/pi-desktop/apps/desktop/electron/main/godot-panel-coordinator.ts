@@ -6,6 +6,7 @@ type Options = {
   host: GodotWorldViewHost;
   adapter: ReturnType<typeof createGodotRuntimeAdapter>;
   selection: () => Promise<string | null>;
+  candidateBusy?: () => boolean;
   invoke: (channel: string, payload: Record<string, unknown>) => Promise<unknown>;
   /** Client-side Godot creation. Absent only in tests that never create worlds. */
   creation?: (() => ReturnType<typeof createGodotWorldFactory> | null) | null;
@@ -82,6 +83,20 @@ export function createGodotPanelCoordinator(options: Options) {
   };
   return {
     async invoke(channel: string, payload: Record<string, unknown> = {}): Promise<unknown> {
+      if (channel === "godot.runtimeAutosave") {
+        const current=await requireCurrent(payload,["worldId"]);
+        const deferred=()=>({worldId:current.worldId,status:"deferred",reason:"GODOT_CANDIDATE_ACTIVE"});
+        if(options.candidateBusy?.())return deferred();
+        if(switching)throw Error("WORLD_BUSY");
+        const result=await options.host.save();
+        const after=await requireCurrent(payload,["worldId"]);
+        if(after.buildId!==current.buildId||after.instanceId!==current.instanceId)throw Error("GODOT_WORLD_CHANGED");
+        // Only an explicit pre-save native refusal plus the current candidate
+        // owner permits deferral. Other failures remain real save failures.
+        if(result.status==="failed"&&result.error==="GODOT_CANDIDATE_ACTIVE"&&options.candidateBusy?.())return deferred();
+        if(result.status!=="persisted")throw Error(result.error);
+        return {worldId:current.worldId,status:"saved",receipt:result.receipt};
+      }
       if (channel === "godot.runtimeState") {
         if (Object.keys(payload).some(key => key !== "worldId") || typeof payload.worldId !== "string") throw Error("INVALID_GODOT_PANEL_ACTION");
         if (!options.host.instance && await options.selection() === payload.worldId) {

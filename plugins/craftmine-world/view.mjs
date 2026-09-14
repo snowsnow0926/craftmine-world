@@ -250,11 +250,11 @@ function controls() {
   frame.inert=closing||!!applicationAttempt;
 }
 
-function action(run) {
+function action(run,{resumeOnError=true}={}) {
   if(busy||closing)return Promise.resolve();
   busy=true;controls();errorBox.hidden=true;delete status.dataset.error;
   activeOperation=(async()=>{
-    try {return await run();}catch(error){if(!applicationAttempt)send('resume');showError(error);}
+    try {return await run();}catch(error){if(resumeOnError&&!applicationAttempt)send('resume');showError(error);}
     finally {busy=false;controls();}
   })();
   return activeOperation;
@@ -272,12 +272,22 @@ function snapshot({freeze=false}={}) {
   });
 }
 
-async function save({freeze=false}={}) {
+async function save({freeze=false,background=false}={}) {
   // The Electron host owns the Godot save transaction; this page must not
   // snapshot or call world.saveProgress for a Godot world.
   if(godot){
-    const receipt=await bridge.invoke('godot.runtimeSave',{worldId:current.id,freeze});
-    current={...current,revision:receipt.revision,contentHash:receipt.contentHash};status.textContent='已保存';
+    const worldId=current.id;
+    let receipt;
+    if(background){
+      const result=await bridge.invoke('godot.runtimeAutosave',{worldId});
+      if(result?.worldId!==worldId)throw Error('GODOT_WORLD_CHANGED');
+      if(result.status==='deferred'&&result.reason==='GODOT_CANDIDATE_ACTIVE')return result;
+      if(result.status!=='saved'||!result.receipt)throw Error('GODOT_AUTOSAVE_UNCONFIRMED');
+      receipt=result.receipt;
+    }else receipt=await bridge.invoke('godot.runtimeSave',{worldId,freeze});
+    if(current?.id!==worldId)throw Error('GODOT_WORLD_CHANGED');
+    current={...current,revision:receipt.revision,contentHash:receipt.contentHash};
+    if(!background||errorBox.hidden)status.textContent='已保存';
     return {worldId:current.id,revision:receipt.revision,buildId:receipt.buildId};
   }
   if(applicationAttempt)await reconcileApplication();
@@ -289,8 +299,30 @@ async function save({freeze=false}={}) {
     current=await bridge.invoke('world.saveProgress',{id:current.id,revision:current.revision,baseBuild:current.world.build.id,snapshot:result.snapshot});
     lastSaved=serialized;
   }
-  status.textContent='已保存';
+  if(!background||errorBox.hidden)status.textContent='已保存';
   return {worldId:current.id,revision:current.revision,buildId:current.world.build.id};
+}
+
+function autosave() {
+  if(!loaded||busy||closing||preview||backupFrozen||!bridge)return Promise.resolve();
+  const worldId=current?.id;busy=true;controls();
+  // Background work must not dismiss an earlier real error or resume a world
+  // owned by the candidate coordinator after an expected deferred save.
+  activeOperation=(async()=>{
+    try{return await save({background:true});}
+    catch(error){if(current?.id===worldId)showError(error);}
+    finally{busy=false;controls();}
+  })();
+  return activeOperation;
+}
+
+async function saveManually() {
+  try{return await save();}
+  catch(error){
+    if(/(?:^|: )GODOT_CANDIDATE_ACTIVE$/.test(String(error?.message||error)))
+      throw Error('世界正在预览或应用新内容，请完成后再保存。（GODOT_CANDIDATE_ACTIVE）');
+    throw error;
+  }
 }
 
 function cancelClose() {
@@ -796,7 +828,7 @@ for(const item of document.querySelectorAll('[data-workbench-tab]'))item.addEven
 document.getElementById('refresh-workbench').onsubmit=event=>{event.preventDefault();if(!busy&&!closing)void workbench.refreshCapabilities();};
 setInterval(()=>{if(!busy&&!closing){if(workbench.tab==='task')void workbench.refresh();else if(workbench.tab)void workbench.refreshPending();}},4000);
 
-saveButton.addEventListener('click',()=>void action(save));
+saveButton.addEventListener('click',()=>void action(saveManually,{resumeOnError:false}));
 newButton.addEventListener('click',()=>{form.hidden=!form.hidden;});
 document.getElementById('import-form').addEventListener('submit',event=>{
   event.preventDefault();void action(async()=>{
@@ -822,7 +854,7 @@ select.addEventListener('change',()=>{
   const id=select.value;
   void navigate({operation:'switch',id}).catch(()=>{select.value=current?.id||'';});
 });
-setInterval(()=>{if(loaded&&!busy&&!closing&&!preview&&!backupFrozen&&bridge)void action(save);},10000);
+setInterval(()=>{void autosave();},10000);
 
 async function initializeWorld(){
   renderWorldLoading({state:'loading'});
