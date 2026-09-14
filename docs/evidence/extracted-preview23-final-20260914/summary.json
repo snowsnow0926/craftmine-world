@@ -1,0 +1,1345 @@
+{
+  "format": "craftmine.extracted-preview23-final-acceptance/1",
+  "passed": true,
+  "packageCommit": "76e8c0a9ba6a",
+  "extractedRoot": "D:/Craftmine Releases/Product-preview23-76e8c0a9.verify-d9e47e3c-4637-4ae5-a312-fbe10681715b/Product-preview23-76e8c0a9",
+  "packageIdentity": {
+    "inventorySha256": "51de0dbb2605896fe6c03e897446999dd89385f53e692c82ab07d4dbad68002d",
+    "mainSha256": "6c0a337893f08099c6bbb1168ddd16a44ac743ca5e0ffa140e0b734dfd4cb0d9",
+    "version": "0.14.4-preview.23"
+  },
+  "nativeBinaries": {
+    "core": {
+      "file": "D:\\Craftmine Releases\\Product-preview23-76e8c0a9.verify-d9e47e3c-4637-4ae5-a312-fbe10681715b\\Product-preview23-76e8c0a9\\output\\win-unpacked\\resources\\bin\\craftmine-core.exe",
+      "sha256": "6f7218996c688259f41f8da7ac418a2d98c0f562bc320e61f92632e1e602f509"
+    },
+    "host": {
+      "file": "D:\\Craftmine Releases\\Product-preview23-76e8c0a9.verify-d9e47e3c-4637-4ae5-a312-fbe10681715b\\Product-preview23-76e8c0a9\\output\\win-unpacked\\resources\\bin\\pi-desktop-host-core.exe",
+      "sha256": "07bfcbd6b90944518cee89fdc75011aa8f4baa09ebc155f80eab8b9a137f08c8"
+    }
+  },
+  "reports": [
+    {
+      "file": "D:/cm-final-visual/test-results/desktop-native-rt-kVZ6RG/report.json",
+      "sha256": "11104e7d51fdce2ade32aaaae11640ca6f4eed97c2e9eecd03ce1eea8e512a90",
+      "driverSha256": "ae14dc8e1f3acd9b9210e6c9a65725af643b956935a0c333befe599b140dd754",
+      "passed": true,
+      "modelCalls": 0,
+      "launches": [
+        {
+          "kind": "author",
+          "startedAt": "2026-09-14T06:18:25.078Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "kind": "zero-turn-cold",
+          "startedAt": "2026-09-14T06:19:38.555Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "kind": "author-cold",
+          "startedAt": "2026-09-14T06:22:49.340Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "kind": "independent-import",
+          "startedAt": "2026-09-14T06:23:17.455Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "kind": "independent-cold",
+          "startedAt": "2026-09-14T06:23:51.967Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "timing": {
+        "startedAt": "2026-09-14T06:18:25.078Z",
+        "finishedAt": "2026-09-14T06:24:11.784Z",
+        "elapsedSeconds": 346.706,
+        "basis": "First app launch marker to final report write, including normal shutdown and package inventory verification"
+      }
+    },
+    {
+      "file": "D:/cm-final-city-import/test-results/desktop-native-rt-T4m5Dv/report.json",
+      "sha256": "3627e4901d5ff31984270454bf8431704ba1606d865f8b95bebbecc76f1a233e",
+      "driverSha256": "ae14dc8e1f3acd9b9210e6c9a65725af643b956935a0c333befe599b140dd754",
+      "passed": true,
+      "modelCalls": 0,
+      "launches": [
+        {
+          "kind": "external-template-import",
+          "startedAt": "2026-09-14T06:24:46.273Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        },
+        {
+          "kind": "external-template-cold",
+          "startedAt": "2026-09-14T06:25:27.064Z",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          }
+        }
+      ],
+      "timing": {
+        "startedAt": "2026-09-14T06:24:46.273Z",
+        "finishedAt": "2026-09-14T06:25:49.693Z",
+        "elapsedSeconds": 63.42,
+        "basis": "First app launch marker to final report write, including normal shutdown and package inventory verification"
+      }
+    }
+  ],
+  "visual": {
+    "authorWorldId": "world-463a3b9883b4",
+    "importedWorldId": "world-6ea4aa3193f3",
+    "zeroTurnReopen": {
+      "sessionId": "032542d2-4a29-4ed0-9104-e464a5817e27",
+      "restored": "032542d2-4a29-4ed0-9104-e464a5817e27",
+      "worldId": "world-463a3b9883b4",
+      "messages": 0,
+      "creationEditorVisible": true
+    },
+    "previews": [
+      {
+        "label": "placement-preview",
+        "changedPixels": 38330,
+        "completeProgressUnchanged": true,
+        "baseline": {
+          "file": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\placement-preview-baseline-2-7d804e9a-9487-4ad1-9269-227b673daa4b.png",
+          "worldId": "world-463a3b9883b4",
+          "buildId": "gbd-3377867dfd9a68a7925dcbb794ccfa834e3cf5c1b6b3ad01b4edd5dba261f5be",
+          "sha256": "2d1b31dfc207985a1d4e18c2cb4869f6e6146017a9aa6bcdca5504f0fd264799",
+          "width": 1920,
+          "height": 1080
+        },
+        "frame": {
+          "file": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\placement-preview-visible-2-7d1aaf91-f56b-4a49-b4da-38b6a5c04a2c.png",
+          "worldId": "world-463a3b9883b4",
+          "buildId": "gbd-3377867dfd9a68a7925dcbb794ccfa834e3cf5c1b6b3ad01b4edd5dba261f5be",
+          "sha256": "7ececd3680463972b7df2296023f6859bd44abaf3fb74f89b14c7f3c09f135b3",
+          "width": 1920,
+          "height": 1080
+        }
+      },
+      {
+        "label": "move-rotation-preview",
+        "changedPixels": 32426,
+        "completeProgressUnchanged": true,
+        "baseline": {
+          "file": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\move-rotation-preview-baseline-2-607b4c6a-b4f5-4f46-9f24-e564b4818f9e.png",
+          "worldId": "world-463a3b9883b4",
+          "buildId": "gbd-b6f81c0c27ef807a402b08439d168ebd8c185e3778de5198734e5f0dec17785f",
+          "sha256": "1796ac3d37183d57890a0c797ab1c82e1174d2233732bfead210e506777ed39f",
+          "width": 1920,
+          "height": 1080
+        },
+        "frame": {
+          "file": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\move-rotation-preview-visible-2-1221576c-e925-4ae1-b201-aa894a78226e.png",
+          "worldId": "world-463a3b9883b4",
+          "buildId": "gbd-b6f81c0c27ef807a402b08439d168ebd8c185e3778de5198734e5f0dec17785f",
+          "sha256": "7688fab55819492694f342d73535fe9ec346744889f84df5b01f2d7627adc7cf",
+          "width": 1920,
+          "height": 1080
+        }
+      }
+    ],
+    "transformUndo": {
+      "before": {
+        "collisionBounds": {
+          "max": [
+            -1.34188830852509,
+            4,
+            4.04557085037231
+          ],
+          "min": [
+            -2.54188823699951,
+            0,
+            2.84557104110718
+          ]
+        },
+        "color": "#84a866",
+        "id": "created-ebec56a5314601a2464524b2",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -1.34256792068481,
+            3.99999952316284,
+            4.04489135742188
+          ],
+          "min": [
+            -2.54120874404907,
+            0,
+            2.84625053405762
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.94188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      },
+      "moved": {
+        "collisionBounds": {
+          "max": [
+            -0.593360185623169,
+            4,
+            4.29409885406494
+          ],
+          "min": [
+            -2.29041647911072,
+            0,
+            2.59704303741455
+          ]
+        },
+        "color": "#84a866",
+        "id": "created-ebec56a5314601a2464524b2",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -0.594321250915527,
+            3.99999952316284,
+            4.29313802719116
+          ],
+          "min": [
+            -2.28945541381836,
+            0,
+            2.59800386428833
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.44188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 45.0000012522391,
+        "scale": [
+          0.999999940395355,
+          1,
+          0.999999940395355
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      },
+      "restored": {
+        "collisionBounds": {
+          "max": [
+            -1.34188830852509,
+            4,
+            4.04557085037231
+          ],
+          "min": [
+            -2.54188823699951,
+            0,
+            2.84557104110718
+          ]
+        },
+        "color": "#84a866",
+        "id": "created-ebec56a5314601a2464524b2",
+        "kind": "tree",
+        "meshBounds": {
+          "max": [
+            -1.34256792068481,
+            3.99999952316284,
+            4.04489135742188
+          ],
+          "min": [
+            -2.54120874404907,
+            0,
+            2.84625053405762
+          ]
+        },
+        "parameters": {},
+        "position": [
+          -1.94188833236694,
+          4.4703483581543e-8,
+          3.44557094573975
+        ],
+        "presenceMutable": false,
+        "rotationY": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "solid": true,
+        "solidMutable": false,
+        "visible": true
+      }
+    },
+    "editedEntity": {
+      "collisionBounds": {
+        "max": [
+          -0.381227970123291,
+          5,
+          4.5062313079834
+        ],
+        "min": [
+          -2.5025486946106,
+          0,
+          2.38491058349609
+        ]
+      },
+      "color": "#88bb44",
+      "id": "created-ebec56a5314601a2464524b2",
+      "kind": "tree",
+      "meshBounds": {
+        "max": [
+          -0.382429599761963,
+          4.99999952316284,
+          4.50502967834473
+        ],
+        "min": [
+          -2.50134706497192,
+          0,
+          2.38611221313477
+        ]
+      },
+      "parameters": {},
+      "position": [
+        -1.44188833236694,
+        4.4703483581543e-8,
+        3.44557094573975
+      ],
+      "presenceMutable": false,
+      "rotationY": 45.0000012522391,
+      "scale": [
+        1.25,
+        1.25,
+        1.25
+      ],
+      "solid": true,
+      "solidMutable": false,
+      "visible": true
+    },
+    "retention": [
+      {
+        "label": "author-saved",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-1c47f4c07b568db946ac9fdb8d30a1880d0708bec8af1d9206d06ab560c9aeb3",
+        "instanceId": "eeb193f539b99aa252aeaf6f"
+      },
+      {
+        "label": "author-cold-reopen",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-1c47f4c07b568db946ac9fdb8d30a1880d0708bec8af1d9206d06ab560c9aeb3",
+        "instanceId": "76e99ccc25d4663f4e5e8f87"
+      },
+      {
+        "label": "independent-import",
+        "worldId": "world-6ea4aa3193f3",
+        "buildId": "gbd-35f63ad23d410c1fcc98d028f5b9c5a2014b4279f8b7afe20824a348330093f3",
+        "instanceId": "30e5c8e6bbbdf693f343471e"
+      },
+      {
+        "label": "independent-cold-reopen",
+        "worldId": "world-6ea4aa3193f3",
+        "buildId": "gbd-35f63ad23d410c1fcc98d028f5b9c5a2014b4279f8b7afe20824a348330093f3",
+        "instanceId": "6f700cc2bce3190c821ce700"
+      }
+    ],
+    "templateArchive": {
+      "path": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\player-world-template.zip",
+      "assetId": "player.world.84c63e94ba9e4f4b853a459213957228",
+      "version": 1,
+      "sha256": "457268fb6583a241ce09a540f55f1d4367073947b1db3bdb9deda039087875ab",
+      "bytes": 7525488,
+      "uiCompletion": {
+        "assetId": "player.world.84c63e94ba9e4f4b853a459213957228",
+        "version": 1,
+        "archiveSha256": "457268fb6583a241ce09a540f55f1d4367073947b1db3bdb9deda039087875ab",
+        "error": null,
+        "busy": false,
+        "completed": true
+      }
+    },
+    "frames": [
+      {
+        "label": "author-template-content",
+        "frame": {
+          "file": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\author-template-content-3-ce207d61-de98-43db-897c-6cf99575e07d.png",
+          "worldId": "world-463a3b9883b4",
+          "buildId": "gbd-1c47f4c07b568db946ac9fdb8d30a1880d0708bec8af1d9206d06ab560c9aeb3",
+          "sha256": "c908d1432b17213dd1b515516b8dd41071b4d33b5f4a5e5b3a4cc7ece556602e",
+          "width": 1920,
+          "height": 1080
+        }
+      },
+      {
+        "label": "imported-playing-content",
+        "frame": {
+          "file": "D:\\cm-final-visual\\test-results\\desktop-native-rt-kVZ6RG\\imported-playing-content-4-aa574c38-0de6-4c89-9ad0-cff33ce27894.png",
+          "worldId": "world-6ea4aa3193f3",
+          "buildId": "gbd-35f63ad23d410c1fcc98d028f5b9c5a2014b4279f8b7afe20824a348330093f3",
+          "sha256": "fbb3eef02845e6473544b69e1aa33e6982c7d9e63073d9151acf82d95e544bcb",
+          "width": 1920,
+          "height": 1080
+        }
+      }
+    ]
+  },
+  "city": {
+    "worldId": "world-296ce3b567a9",
+    "archive": {
+      "path": "D:/Craftmine Releases/Product-preview23-76e8c0a9.verify-d9e47e3c-4637-4ae5-a312-fbe10681715b/Product-preview23-76e8c0a9/examples/city-flight-and-companion.zip",
+      "sha256": "780615c946006035c82d7002c9ff814180027b84cd65cfbb3bfa83d11e3af25e",
+      "bytes": 10019652
+    },
+    "expected": {
+      "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/final-city-template-expectations.json",
+      "sha256": "f5f19b72c3331189341c2684b0b81a38c6ce8abdbbc7866173b9fc3d36c21db2"
+    },
+    "checks": [
+      {
+        "label": "fresh-import",
+        "passed": true,
+        "count": 30,
+        "failed": [],
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "instanceId": "cdfb40e5d3a4160a3f9c12d1"
+      },
+      {
+        "label": "ordinary-saved",
+        "passed": true,
+        "count": 30,
+        "failed": [],
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "instanceId": "cdfb40e5d3a4160a3f9c12d1"
+      },
+      {
+        "label": "cold-reopened",
+        "passed": true,
+        "count": 30,
+        "failed": [],
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "instanceId": "f4cd6eaa74d994da90623658"
+      }
+    ],
+    "completeProgressColdReopenEqual": true,
+    "finalProgress": {
+      "baseId": "creation-sandbox",
+      "baseVersion": "1.0.0",
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              215.071517944336,
+              0.00010169025335926,
+              60.0948715209961
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": 1.55879603906739
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.3,
+          "position": [
+            207.428436279297,
+            0.900763332843781,
+            60.5791015625
+          ],
+          "yaw": 2
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-296ce3b567a9"
+      },
+      "format": "craftmine.godot-progress/1",
+      "stateVersion": 1,
+      "worldId": "world-296ce3b567a9"
+    },
+    "play": {
+      "before": [
+        208.216369628906,
+        0.900763332843781,
+        60.076229095459
+      ],
+      "after": [
+        207.488861083984,
+        0.900763332843781,
+        60.5556678771973
+      ]
+    },
+    "frames": [
+      {
+        "file": "D:\\cm-final-city-import\\test-results\\desktop-native-rt-T4m5Dv\\external-import-1-50783711-d3f0-4f36-af54-8f6dab538ad2.png",
+        "worldId": "world-296ce3b567a9",
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "sha256": "0e2d8aed26e2587cd4fb9b9b2f338978f161abb80123d308e9b1048a4083ca46",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "D:\\cm-final-city-import\\test-results\\desktop-native-rt-T4m5Dv\\external-saved-1-252eee0d-0e1b-4aab-898b-fe2b9cdf5fd6.png",
+        "worldId": "world-296ce3b567a9",
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "sha256": "a435f450090fd20c0ec976954cb14bfbc2a14736f2017c9e6776ba8c8e4c3963",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "D:\\cm-final-city-import\\test-results\\desktop-native-rt-T4m5Dv\\external-cold-2-25aba69e-80aa-4e9c-9844-4f1c61a9b8ff.png",
+        "worldId": "world-296ce3b567a9",
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "sha256": "fb61d89a6bc24a99c77c98c71da29fc38cb8d2a2bb4ffd57d62683b382c65518",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  "jobs": [
+    {
+      "kind": "visual-author",
+      "jobId": "gjob-a472c47a8d5462f88bfe55c625210afb6d73d6b65e233878fde663a75955ba55",
+      "worldId": "world-463a3b9883b4",
+      "buildId": "gbd-7f5dfd3d894714c8dc9fbc3e3ed12486ff90b418e1363921f57ea2932cde3a40",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=2"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-a472c47a8d5462f88bfe55c625210afb6d73d6b65e233878fde663a75955ba55",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-7f5dfd3d894714c8dc9fbc3e3ed12486ff90b418e1363921f57ea2932cde3a40",
+        "inputHash": "9f45d071c202c4f7eac56057205fda98f67209ee8c5c7f8b24e7f0eee074ba8f",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "4c9788f047e9d8511172b7f7"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=87 stageElapsedMs=87",
+          "[phase] runtime-server started elapsedMs=87 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=93 stageElapsedMs=6",
+          "[phase] window started elapsedMs=93 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=98 stageElapsedMs=5",
+          "[phase] load started elapsedMs=98 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=146 stageElapsedMs=48",
+          "[phase] ready started elapsedMs=146 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=6292 stageElapsedMs=6146",
+          "[phase] runtime-check started elapsedMs=6292 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=6741 stageElapsedMs=449",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":86,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":39}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":44965699,\"verifiedFiles\":10,\"elapsedMs\":39,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":39,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "visual-author",
+      "jobId": "gjob-595e63c29495d4f70aedb03107051c89c1560a796e498c7320ea908e0c86fa24",
+      "worldId": "world-463a3b9883b4",
+      "buildId": "gbd-3377867dfd9a68a7925dcbb794ccfa834e3cf5c1b6b3ad01b4edd5dba261f5be",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=2"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "existing progress preserved; new scene defaults verified"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-595e63c29495d4f70aedb03107051c89c1560a796e498c7320ea908e0c86fa24",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-3377867dfd9a68a7925dcbb794ccfa834e3cf5c1b6b3ad01b4edd5dba261f5be",
+        "inputHash": "c5e8cbbed2f6079f89f9f439b9ad7d92c53653be0e2687aa3ffa0e5d8cfafd79",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "93c27816e1b56a114535f9ef"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=138 stageElapsedMs=138",
+          "[phase] runtime-server started elapsedMs=138 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=158 stageElapsedMs=20",
+          "[phase] window started elapsedMs=158 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=163 stageElapsedMs=5",
+          "[phase] load started elapsedMs=163 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=250 stageElapsedMs=87",
+          "[phase] ready started elapsedMs=250 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=5916 stageElapsedMs=5666",
+          "[phase] runtime-check started elapsedMs=5916 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=6368 stageElapsedMs=452",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":138,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":1,\"maxLagMs\":8},\"workerElapsedMs\":39}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":48354827,\"verifiedFiles\":10,\"elapsedMs\":39,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":39,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "visual-author",
+      "jobId": "gjob-d9863f99c2850eb2fc1c4ca989681538496fbb9726b811543c08606f5df1cdda",
+      "worldId": "world-463a3b9883b4",
+      "buildId": "gbd-b6f81c0c27ef807a402b08439d168ebd8c185e3778de5198734e5f0dec17785f",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=1"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        },
+        {
+          "id": "runtime.creation-requirements",
+          "passed": true,
+          "detail": "runtime expectation evidence required"
+        },
+        {
+          "id": "core.creation-requirements",
+          "passed": true,
+          "detail": "bound runtime expectation confirmed"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-d9863f99c2850eb2fc1c4ca989681538496fbb9726b811543c08606f5df1cdda",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-b6f81c0c27ef807a402b08439d168ebd8c185e3778de5198734e5f0dec17785f",
+        "inputHash": "69312c056bf20a9071f72879f6838dc280c645faeb883d88fc0c8b3ada22f2c7",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "a00c46cde678d30991507619"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=92 stageElapsedMs=92",
+          "[phase] runtime-server started elapsedMs=92 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=99 stageElapsedMs=7",
+          "[phase] window started elapsedMs=99 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=105 stageElapsedMs=6",
+          "[phase] load started elapsedMs=105 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=156 stageElapsedMs=51",
+          "[phase] ready started elapsedMs=156 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=2717 stageElapsedMs=2561",
+          "[phase] runtime-check started elapsedMs=2717 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=3232 stageElapsedMs=515",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":92,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":36}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":48356995,\"verifiedFiles\":10,\"elapsedMs\":36,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":36,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "visual-author",
+      "jobId": "gjob-c107c0a812c83f68e6166fa2be87a154cf8156ba1ae3390261b1115f3e0d6b20",
+      "worldId": "world-463a3b9883b4",
+      "buildId": "gbd-b1dfbb32c1319198084a607ef1f8a19a884f2377a74bb2429b4f895def23e514",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=2"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        },
+        {
+          "id": "runtime.creation-requirements",
+          "passed": true,
+          "detail": "runtime expectation evidence required"
+        },
+        {
+          "id": "core.creation-requirements",
+          "passed": true,
+          "detail": "bound runtime expectation confirmed"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-c107c0a812c83f68e6166fa2be87a154cf8156ba1ae3390261b1115f3e0d6b20",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-b1dfbb32c1319198084a607ef1f8a19a884f2377a74bb2429b4f895def23e514",
+        "inputHash": "8f9d767e847c66734c6126d5dc252fedabc2d4b52283f4376b70e1cacd6996c5",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "79041582f69adeb06cdc874e"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=97 stageElapsedMs=97",
+          "[phase] runtime-server started elapsedMs=97 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=98 stageElapsedMs=1",
+          "[phase] window started elapsedMs=98 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=104 stageElapsedMs=6",
+          "[phase] load started elapsedMs=104 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=155 stageElapsedMs=51",
+          "[phase] ready started elapsedMs=155 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=2706 stageElapsedMs=2551",
+          "[phase] runtime-check started elapsedMs=2706 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=3173 stageElapsedMs=467",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":97,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":42}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":48359059,\"verifiedFiles\":10,\"elapsedMs\":42,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":42,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "visual-author",
+      "jobId": "gjob-26555f431915db18f3ac83a6efb146c537ecd7c1945dd226aacc0e7ebe082e08",
+      "worldId": "world-463a3b9883b4",
+      "buildId": "gbd-e4cda8b40d830e8e4ea3861932e87b4f8d7f7809e0d7f3b8e2dba24166147166",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=2"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        },
+        {
+          "id": "runtime.creation-requirements",
+          "passed": true,
+          "detail": "runtime expectation evidence required"
+        },
+        {
+          "id": "core.creation-requirements",
+          "passed": true,
+          "detail": "bound runtime expectation confirmed"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-26555f431915db18f3ac83a6efb146c537ecd7c1945dd226aacc0e7ebe082e08",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-e4cda8b40d830e8e4ea3861932e87b4f8d7f7809e0d7f3b8e2dba24166147166",
+        "inputHash": "591d5b650a2acca63325830acd26349ea78e87445b748be6b16fc06d155e0542",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "23f98637f215cd6c8ef3814c"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=99 stageElapsedMs=99",
+          "[phase] runtime-server started elapsedMs=99 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=100 stageElapsedMs=1",
+          "[phase] window started elapsedMs=100 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=106 stageElapsedMs=6",
+          "[phase] load started elapsedMs=106 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=160 stageElapsedMs=54",
+          "[phase] ready started elapsedMs=160 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=2622 stageElapsedMs=2462",
+          "[phase] runtime-check started elapsedMs=2622 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=3037 stageElapsedMs=415",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":99,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":41}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":48360211,\"verifiedFiles\":10,\"elapsedMs\":41,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":41,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "visual-author",
+      "jobId": "gjob-f0b84cf04c9034d1729066909e0f5afa3a11f31685668625497079d6b5fa236c",
+      "worldId": "world-463a3b9883b4",
+      "buildId": "gbd-1c47f4c07b568db946ac9fdb8d30a1880d0708bec8af1d9206d06ab560c9aeb3",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=1"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        },
+        {
+          "id": "runtime.creation-requirements",
+          "passed": true,
+          "detail": "runtime expectation evidence required"
+        },
+        {
+          "id": "core.creation-requirements",
+          "passed": true,
+          "detail": "bound runtime expectation confirmed"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-f0b84cf04c9034d1729066909e0f5afa3a11f31685668625497079d6b5fa236c",
+        "worldId": "world-463a3b9883b4",
+        "buildId": "gbd-1c47f4c07b568db946ac9fdb8d30a1880d0708bec8af1d9206d06ab560c9aeb3",
+        "inputHash": "725fcaa1cc3e4222695c061f354733ab9974915158e541ae3f5901a8c870d7dc",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "95ef1d1ef7a0a8a622328a74"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=92 stageElapsedMs=92",
+          "[phase] runtime-server started elapsedMs=92 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=93 stageElapsedMs=1",
+          "[phase] window started elapsedMs=93 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=99 stageElapsedMs=6",
+          "[phase] load started elapsedMs=99 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=166 stageElapsedMs=67",
+          "[phase] ready started elapsedMs=166 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=2748 stageElapsedMs=2582",
+          "[phase] runtime-check started elapsedMs=2748 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=3221 stageElapsedMs=473",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":92,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":38}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":48362307,\"verifiedFiles\":10,\"elapsedMs\":38,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":38,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "visual-import",
+      "jobId": "gjob-8ac803233009d8fdeed7dc547ce09c22e1f1713b250674ad996e03a99a419b6c",
+      "worldId": "world-6ea4aa3193f3",
+      "buildId": "gbd-35f63ad23d410c1fcc98d028f5b9c5a2014b4279f8b7afe20824a348330093f3",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=2"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-8ac803233009d8fdeed7dc547ce09c22e1f1713b250674ad996e03a99a419b6c",
+        "worldId": "world-6ea4aa3193f3",
+        "buildId": "gbd-35f63ad23d410c1fcc98d028f5b9c5a2014b4279f8b7afe20824a348330093f3",
+        "inputHash": "1c4477cb88e1bed1593f2c32c2a3072abc9de46a6e0abd530d267c5ce0c84f31",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "c5ce7f0d82860f457fea2c34"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=84 stageElapsedMs=84",
+          "[phase] runtime-server started elapsedMs=84 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=90 stageElapsedMs=6",
+          "[phase] window started elapsedMs=90 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=95 stageElapsedMs=5",
+          "[phase] load started elapsedMs=95 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=142 stageElapsedMs=47",
+          "[phase] ready started elapsedMs=142 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=9727 stageElapsedMs=9585",
+          "[phase] runtime-check started elapsedMs=9727 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=10221 stageElapsedMs=494",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":83,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":37}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":48362723,\"verifiedFiles\":10,\"elapsedMs\":37,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":37,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    },
+    {
+      "kind": "final-city",
+      "jobId": "gjob-a2ea504cdd89a1ae79285b8af2bc6c4709de0e7a9201d402ba68067eb33957cf",
+      "worldId": "world-296ce3b567a9",
+      "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+      "status": "passed",
+      "assertions": [
+        {
+          "id": "runtime.ready",
+          "passed": true,
+          "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+        },
+        {
+          "id": "runtime.frame",
+          "passed": true,
+          "detail": "frames=3 distinct=3"
+        },
+        {
+          "id": "runtime.no-errors",
+          "passed": true,
+          "detail": null
+        },
+        {
+          "id": "runtime.snapshot",
+          "passed": true,
+          "detail": "formal progress unchanged"
+        },
+        {
+          "id": "runtime.isolation",
+          "passed": true,
+          "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+        },
+        {
+          "id": "runtime.recovery",
+          "passed": true,
+          "detail": "graceful=true"
+        }
+      ],
+      "diagnostic": {
+        "format": "craftmine.godot-runtime-diagnostic/1",
+        "diagnosticOnly": true,
+        "jobId": "gjob-a2ea504cdd89a1ae79285b8af2bc6c4709de0e7a9201d402ba68067eb33957cf",
+        "worldId": "world-296ce3b567a9",
+        "buildId": "gbd-345aa0a2e15bc3fc7c38e1f6570c0c3420559cfa9270e72bb507f94f74fb137a",
+        "inputHash": "396ae845838f923f2b90178884fb6cff79b28c89a32376c38981338ff598a4e2",
+        "error": null,
+        "ready": {
+          "ok": true,
+          "instanceId": "75928bcce609d7ebb3f9f594"
+        },
+        "isolation": {
+          "offscreen": true,
+          "focusable": false,
+          "visible": false
+        },
+        "errors": {
+          "runtime": [],
+          "console": [],
+          "renderer": null
+        },
+        "diagnostics": [
+          "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+          "[phase] artifact-verification completed elapsedMs=96 stageElapsedMs=96",
+          "[phase] runtime-server started elapsedMs=96 stageElapsedMs=0",
+          "[phase] runtime-server completed elapsedMs=104 stageElapsedMs=8",
+          "[phase] window started elapsedMs=104 stageElapsedMs=0",
+          "[phase] window completed elapsedMs=109 stageElapsedMs=5",
+          "[phase] load started elapsedMs=109 stageElapsedMs=0",
+          "[phase] load completed elapsedMs=157 stageElapsedMs=48",
+          "[phase] ready started elapsedMs=157 stageElapsedMs=0",
+          "[phase] ready completed elapsedMs=11134 stageElapsedMs=10977",
+          "[phase] runtime-check started elapsedMs=11134 stageElapsedMs=0",
+          "[phase] runtime-check completed elapsedMs=13402 stageElapsedMs=2268",
+          "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+          "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+          "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+          "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+          "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+          "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":96,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"workerElapsedMs\":37}",
+          "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":52675776,\"verifiedFiles\":10,\"elapsedMs\":37,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+          "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":37,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+        ],
+        "truncated": false
+      }
+    }
+  ],
+  "limits": [
+    "完整城市以最终已保存进度为起点，不是0/3默认态模板。",
+    "城市导入验收保留Ecount2/wait与飞行记录；真实E/H/穿行已另在同76包原档案144–169验证，此轮没有重复重飞或撞墙/撞机。",
+    "此为独立offscreen开发机验收，不代表另一台干净Windows机器或持续真人帧率结论。",
+    "可视编辑预览范围为实际支持的stock对象，未宣称任意脚本GLB都支持全部变换。"
+  ]
+}
