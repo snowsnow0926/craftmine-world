@@ -38,3 +38,12 @@ persistent operation journal, with a failure-card and task-workbench action.
 See [the UI/host contract](../spec/player-execution-limit-recovery-ui.md).
 This extends the existing panel allowlist; it adds no model tool, direct renderer
 Core identity, automatic migration, or provider credential access.
+## Fresh creation authority for explicit player recovery
+
+The real DeepSeek recovered task completed modeling and checking but automatic
+adoption failed because the Main resume callback bypassed creation-target
+binding. Explicit player recovery now creates a fresh capture under the current
+permission mode after validating the recovered Core generation. It does not
+inherit or resurrect a cancelled automatic-repair capture. This keeps cancellation
+and manual permission effective while allowing a new full-auto player action to
+complete its normal check-and-apply flow.

@@ -38,3 +38,13 @@ Commands: `cargo test -p craftmine-core durable::tests --lib`,
 with `CRAFTMINE_CORE_BIN` pointing at the freshly built Core. Build the plugin,
 shared, plugin-sdk, and agent-runtime packages first. Native TypeScript parameter
 properties require the transform-types flag on the local Node 24 runtime.
+## Resumed creation target regression
+
+`tests/player-resume-creation-target.test.mjs` executes the actual Main resume
+callback with the real creation-target service and isolated filesystem records.
+It verifies capture binding before provider dispatch, a fresh snapshot after
+cancelled ancestry, manual-mode preservation, wrong-world/generation/lease
+rejection, cancellation during sampling, and unchanged legacy resume behavior.
+The provider callback and runtime observations are controlled CPU fixtures; they
+do not claim actual native automatic adoption. The 5 new scenarios and 25
+existing creation-target scenarios pass together.
