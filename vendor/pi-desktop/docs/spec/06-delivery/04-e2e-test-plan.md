@@ -10849,3 +10849,11 @@ start a model. A lost response must be recoverable from the same journal entry
 after resume/restart without changing the new task. Check the actual UI button
 and receipt in the native acceptance; pure tests are not a substitute.
 See [the interface](../player-execution-limit-recovery-ui.md).
+
+## Player resume creation authority
+
+Execute the actual Main resume callback and verify a new bound capture exists
+before the provider prompt. Check cancelled old capture, current manual/full-auto
+mode, generation/world/lease changes during sampling, and legacy renderer flow.
+See tests/player-resume-creation-target.test.mjs and the ordinary execution-limit
+recovery scenario.

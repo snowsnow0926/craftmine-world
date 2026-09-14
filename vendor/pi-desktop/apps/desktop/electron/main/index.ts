@@ -38,6 +38,7 @@ import { CodexConnection } from "./codex-connection.mjs";
 import { CODEX_WORLD_MODEL, CODEX_WORLD_EFFORT, CODEX_REGISTERED_WORLD_TOOLS, validateWorldAgentSettings } from "@pi-desktop/shared";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
+import { bindResumedCreationTarget } from "./resumed-creation-target";
 import { createCraftmineOperationJournal } from "./craftmine-operation-journal";
 import { createCraftmineBackupService, type CraftmineFilePicker } from "./craftmine-backup-service";
 import { createGodotHistoryPanelService } from "./godot-history-panel-service";
@@ -3389,15 +3390,22 @@ const craftminePanelRequest = createCraftminePanelGateway({
     if (!host || !sidecar) throw new Error("CRAFTMINE_BACKEND_UNAVAILABLE");
     const sessionId = session.id, projectId = craftmineProjectIdentity(session, sessionId);
     const context = { projectId, sessionId, turnId };
-    await plugins.requestCraftmineHost("task.context", { context });
     // Requirements and corrections are injected from the authoritative journal
     // on every model request. A resume action must not re-journal a reversed,
     // truncated copy of historical requirements as a new player correction.
     const content = "继续完成被中断的创作，保留已保存的改动。";
+    craftmineGateway.bind({ ...context, selectedWorld: result.workspace.worldId });
+    await bindResumedCreationTarget(context,result,content,{
+      readContext:ctx=>plugins.requestCraftmineHost("task.context",{context:ctx}),
+      bindWorld:creationTargets.bindWorld,cancel:creationTargets.cancel,
+      assertCurrent:async(ctx,worldId)=>{
+        if(activeTurns.get(ctx.sessionId)!==ctx.turnId||turnFinalizations.has(ctx.sessionId)
+          ||await godotSelection()!==worldId)throw Error("CREATION_RECOVERY_CONTEXT_CHANGED");
+      },
+    });
     const userMessage = { id: crypto.randomUUID(), role: "user" as const, content, createdAt: new Date().toISOString(), status: "complete" as const };
     await host.call("session.appendMessage", { sessionId, message: userMessage, turnId });
     await plugins.requestCraftmineHost("task.context", { context, request: { id: userMessage.id, text: content } });
-    craftmineGateway.bind({ ...context, selectedWorld: result.workspace.worldId });
     const settings = await host.call<any>("settings.get");
     const launch = await resolveAgentRuntimeLaunch(sessionId, session, settings);
     sidecar.setProjectInstructionRoot(sessionId, launch.projectPath);

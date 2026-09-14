@@ -39,3 +39,19 @@ plugin route is insufficient. The Core integration test now uses the actual
 PluginRuntime parent gate and child transport as well, and rejects unrelated
 budget reset/ledger-clear method names. The original native rejection and its
 unchanged ledger are retained as failure evidence.
+## Creation authorization after explicit resume
+
+The Main player-resume callback binds a fresh creation capture before dispatching
+the next provider request. It verifies the new Core task identity, generation,
+same budget owner, running recovery state, world and lease, then samples the
+current formal world. Current full-auto permission enables auto-application;
+manual permission remains manual. The new capture has its own snapshot ID and
+belongs to the new turn. Original requirements stay in the durable journal.
+
+Do not weaken `bindContinuation`: that route belongs to automatic repair and
+must still refuse cancelled, superseded or permission-revoked ancestry. A
+player explicitly continuing an interrupted task supplies new intent; the old
+capture and cancellation records remain unchanged. Recheck the active turn,
+selected world and Core generation after sampling; failures cancel only the new
+capture before model dispatch. Legacy worlds retain their existing renderer
+application path.
