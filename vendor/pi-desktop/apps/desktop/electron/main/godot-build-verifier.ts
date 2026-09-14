@@ -1,4 +1,5 @@
 import {verifyCreationHarvest} from "./creation-harvest-verifier";
+import {createGodotCheckPhases} from "./godot-check-phases";
 import {collectGodotScenarioDiagnostic,type ScenarioDiagnosticSelector} from "./godot-scenario-collector";
 import {verifyCreationDoorSequence} from "./creation-door-verifier";
 import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
@@ -387,6 +388,7 @@ export class GodotBuildVerifier {
     // Bounded, non-scoring page diagnostics: they make a failed check
     // diagnosable without letting a noisy page fail it.
     const diagnostics: string[] = [];
+    const phases = createGodotCheckPhases(diagnostics);
 
     const ready: GodotRuntimeCheckReady = { ok: false, ops: [], instanceId: "", elapsedMs: 0 };
     const render: GodotRuntimeCheckRender = { ok: false, frames: 0, distinctFrames: 0, captures: [] };
@@ -437,9 +439,12 @@ export class GodotBuildVerifier {
     const timer = setTimeout(() => halt("GODOT_CHECK_TIMEOUT"), remainingMs(deadline));
 
     try {
+      phases.begin('artifact-verification');
       await bounded(verifyArtifacts(descriptor, deadline));
       assertRunning();
+      phases.complete();
 
+      phases.begin('runtime-server');
       const activeRuntime = await createWorldRuntime({
         worldId: descriptor.worldId,
         buildId: descriptor.buildId,
@@ -455,7 +460,9 @@ export class GodotBuildVerifier {
         requirementsEvidence={format:"craftmine.godot-check-requirements-evidence/1",requirementsHash:descriptor.checkRequirementsHash!,jobId:descriptor.jobId,worldId:descriptor.worldId,buildId:descriptor.buildId,instanceId:activeRuntime.instanceId,observations:[]};
       }
       assertRunning();
+      phases.complete();
 
+      phases.begin('window');
       const origin = activeRuntime.origin;
       const preload = join(__dirname, "../preload/godot-check.cjs");
       isolated = session.fromPartition(`pi-godot-check-${randomUUID()}`, { cache: false });
@@ -573,15 +580,21 @@ export class GodotBuildVerifier {
       }, 5000);
       probe.unref?.();
       const readyStarted = Date.now();
+      phases.complete();
       try {
+        phases.begin('load');
         await bounded(window.loadURL(activeRuntime.url));
+        phases.complete();
+        phases.begin('ready');
         const readyInfo = await bounded(activeRuntime.waitReady());
         ready.ok = true;
         ready.ops = Array.isArray(readyInfo.ops) ? readyInfo.ops.slice(0, 64) : [];
         ready.elapsedMs = Date.now() - readyStarted;
+        phases.complete();
       } finally {
         clearInterval(probe);
       }
+      phases.begin('runtime-check');
       if ((["first-person", "creation-sandbox"].includes(descriptor.baseId) && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") || descriptor.checkRequirements?.creation?.doorSequence || descriptor.checkRequirements?.creation?.harvest) {
         // Read defaults from this exact new scene before restoring any player
         // state. Only fixed additive entity rules can combine the two snapshots.
@@ -709,7 +722,9 @@ export class GodotBuildVerifier {
         }catch(failure){if(diagnostics.length<64)diagnostics.push("[scenario-selection] "+messageOf(failure).slice(0,300));}
         assertRunning();
       }
+      phases.complete();
     } catch (failure) {
+      phases.fail();
       error = messageOf(failure);
     } finally {
       finished = true;

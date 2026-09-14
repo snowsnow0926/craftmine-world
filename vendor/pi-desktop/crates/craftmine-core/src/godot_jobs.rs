@@ -170,6 +170,9 @@ struct CompileResult {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct CheckResult {
     passed: bool,
+    /// Bounded untrusted observations, excluded from the pass/fail calculation.
+    #[serde(default, skip_serializing_if = "Option::is_none", deserialize_with = "diagnostic_log")]
+    diagnostic_log: Option<String>,
     #[serde(default)]
     assertions: Vec<Assertion>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -178,6 +181,41 @@ struct CheckResult {
     progress_migration: Option<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     requirements_evidence: Option<Value>,
+}
+
+fn diagnostic_log<'de, D: serde::Deserializer<'de>>(deserializer: D) -> std::result::Result<Option<String>, D::Error> {
+    let value = Option::<String>::deserialize(deserializer)?;
+    if value.as_ref().is_some_and(|log| log.len() > 65_536) {
+        return Err(serde::de::Error::custom("GODOT_DIAGNOSTIC_LOG_TOO_LARGE"));
+    }
+    Ok(value)
+}
+
+#[cfg(test)]
+mod diagnostic_log_tests {
+    use super::*;
+
+    #[test]
+    fn bounded_diagnostic_log_is_optional_non_scoring_and_roundtrips() {
+        let old: CheckResult = serde_json::from_value(json!({"passed":true,"assertions":[]})).unwrap();
+        assert!(serde_json::to_value(old).unwrap().get("diagnosticLog").is_none());
+        for passed in [true, false] {
+            let input = json!({"passed":passed,"assertions":[],"diagnosticLog":"{\"diagnosticOnly\":true,\"error\":\"GODOT_CHECK_TIMEOUT\"}"});
+            let check: CheckResult = serde_json::from_value(input.clone()).unwrap();
+            assert_eq!(check.passed, passed);
+            assert_eq!(serde_json::to_value(check).unwrap(), input);
+        }
+    }
+
+    #[test]
+    fn diagnostic_log_limit_counts_utf8_bytes_and_rejects_non_text() {
+        let accepted = json!({"passed":false,"diagnosticLog":"x".repeat(65_536)});
+        assert!(serde_json::from_value::<CheckResult>(accepted).is_ok());
+        let rejected = json!({"passed":false,"diagnosticLog":"犬".repeat(21_846)});
+        let error = serde_json::from_value::<CheckResult>(rejected).err().unwrap().to_string();
+        assert!(error.contains("GODOT_DIAGNOSTIC_LOG_TOO_LARGE"));
+        assert!(serde_json::from_value::<CheckResult>(json!({"passed":false,"diagnosticLog":{}})).is_err());
+    }
 }
 
 #[derive(Deserialize, Serialize)]
