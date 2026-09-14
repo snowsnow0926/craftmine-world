@@ -4,7 +4,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import {createHash} from 'node:crypto';
-import {createAuthorSourceInstaller} from '../plugins/craftmine-world/author-source-install.mjs';
+import {pathToFileURL} from 'node:url';
+const {createAuthorSourceInstaller}=await import(process.env.CRAFTMINE_AUTHOR_INSTALL_MODULE?pathToFileURL(path.resolve(process.env.CRAFTMINE_AUTHOR_INSTALL_MODULE)).href:new URL('../plugins/craftmine-world/author-source-install.mjs',import.meta.url).href);
 import {packStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 import {contentHash} from '../plugins/craftmine-world/package-format.mjs';
 
