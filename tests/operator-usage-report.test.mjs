@@ -44,3 +44,26 @@ test('without event mapping, unknown user messages stop association with the pre
   const sessions=[{source:'session.json',data:{session:{id:sid,messages:[{role:'user',id:'known'},{role:'assistant',id:'known-a',usage:usage(),codexUsage:{scope:'current-turn'}},{role:'user',id:'unknown'},{role:'assistant',id:'unknown-a',usage:usage(9),codexUsage:{scope:'current-turn'}}]}}}];
   const result=extractOperatorUsage({reports:[report([{turnId:'t',messageId:'known',metrics:metric('t')}])],sessions});assert.equal(result.turns[0].finalUsage.totalTokens,120);assert.equal(result.finalAggregate,null);assert(result.warnings.some(row=>row.code==='UNMAPPED_CODEX_TURN_AGGREGATE'));
 });
+
+test('automatic turn absent from operator report remains provisional, then contributes its one exact terminal aggregate',()=>{
+  const reports=[report([{turnId:'manual',messageId:'u1',metrics:metric('manual')}])];
+  const autoMessage={id:'auto-a',role:'assistant',status:'complete',usage:usage(3),codexUsage:{scope:'current-turn'}};
+  const sessions=[{source:'session.json',data:{session:{id:sid,messages:[{role:'user',id:'u1'},{role:'assistant',id:'assistant-manual',usage:usage(),codexUsage:{scope:'current-turn'}},{role:'user',id:'auto-user',content:'【自动检查修复】保留原任务'},autoMessage]}}}];
+  const events=[end('manual',usage()),event('auto','agent_start',{},2),snapshot('auto',usage(2),3),end('auto',usage(3),'auto-a')];
+  const live=extractOperatorUsage({reports,events,sessions});assert.equal(live.turns.length,2);assert.equal(live.finalAggregate,null);
+  const row=live.turns.find(t=>t.turnId==='auto');assert.equal(row.discovery,'session-event-turn');assert.equal(row.messageId,'auto-user');assert.equal(row.finalUsage,null);assert.equal(row.modelCalls.value,null);
+  const finished=extractOperatorUsage({reports,events:[...events,event('auto','agent_end',{},9)],sessions});
+  assert.equal(finished.finalAggregate.usage.totalTokens,480);const auto=finished.turns.find(t=>t.turnId==='auto');
+  assert.equal(auto.finalUsage.totalTokens,360);assert.equal(auto.elapsed.milliseconds,7);assert.equal(auto.elapsed.coverage,'event-observed-turn-boundaries');assert.equal(auto.modelCalls.value,null);
+});
+
+test('an unmapped pending automatic user prevents manual-only final totals before any usage carrier arrives',()=>{
+  const result=extractOperatorUsage({reports:[report([{turnId:'manual',messageId:'u',metrics:metric('manual')}])],events:[end('manual',usage())],sessions:[{source:'session.json',data:{session:{id:sid,messages:[{role:'user',id:'u'},{role:'assistant',id:'assistant-manual',usage:usage(),codexUsage:{scope:'current-turn'}},{role:'user',id:'new-auto',content:'automatic action pending'}]}}}]});
+  assert.equal(result.finalAggregate,null);assert(result.warnings.some(w=>w.code==='UNMAPPED_SESSION_USER_TURN'&&w.messageId==='new-auto'));
+});
+
+test('multiple event turn owners never guess an unknown user association; recovered event starts do not invent duration',()=>{
+  const events=[event('auto','agent_start',{},2),event('auto','agent_start',{},3),end('auto',usage(),'a'),event('auto','agent_end',{},9),end('other',usage(),'b'),event('other','agent_end',{},10)];
+  const result=extractOperatorUsage({reports:[report([])],events,sessions:[{source:'session.json',data:{session:{id:sid,messages:[{role:'user',id:'ambiguous'},{role:'assistant',id:'a'},{role:'assistant',id:'b'}]}}}]});
+  assert.equal(result.finalAggregate,null);assert.equal(result.turns.find(t=>t.turnId==='auto').elapsed.milliseconds,null);assert(result.warnings.some(w=>w.code==='UNMAPPED_SESSION_USER_TURN'));
+});

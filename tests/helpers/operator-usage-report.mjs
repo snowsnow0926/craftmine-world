@@ -13,7 +13,7 @@ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 /** Input objects carry file/line provenance. No filesystem, model or UI writes. */
 export function extractOperatorUsage({reports=[],events=[],sessions=[],generatedAt=new Date().toISOString()}){
   const groups=new Map(),warnings=[],messageOwners=new Map(),knownSessions=new Set();
-  function group(sessionId,turnId){const id=key(sessionId,turnId);if(!groups.has(id))groups.set(id,{sessionId,turnId,reports:[],metrics:[],snapshots:[],terminalMessages:[],terminalEvents:[],models:[],toolCalls:new Set(),warnings:[]});return groups.get(id);}
+  function group(sessionId,turnId){const id=key(sessionId,turnId);if(!groups.has(id))groups.set(id,{sessionId,turnId,reports:[],metrics:[],snapshots:[],terminalMessages:[],terminalEvents:[],startEvents:[],discoveredUsers:[],models:[],toolCalls:new Set(),warnings:[]});return groups.get(id);}
   for(const report of reports){
     const data=report.data;if(data?.format!=='craftmine.product-agent-operator/1'){warnings.push({code:'UNRECOGNIZED_REPORT',source:report.source});continue;}
     if(typeof data.sessionId==='string')knownSessions.add(data.sessionId);
@@ -41,8 +41,27 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
       const normalized=usage(event.message.usage);
       if(normalized)g.terminalMessages.push({messageId:event.message.id,usage:normalized,lastRequest:usage(event.message.codexUsage.lastRequest),modelContextWindow:event.message.codexUsage.modelContextWindow??null,source,kind:'terminal-message-event'});else g.warnings.push('INVALID_TERMINAL_USAGE');
     }
+    if(event.type==='agent_start')g.startEvents.push({source,atMs:integer(envelope.ts)?envelope.ts:null});
     if(event.type==='agent_end')g.terminalEvents.push({source,atMs:integer(envelope.ts)?envelope.ts:null});
     if(event.type==='tool_start'&&typeof event.toolCallId==='string')g.toolCalls.add(event.toolCallId);
+  }
+  // Automatic application turns may be absent from report.turns. Recover their
+  // user boundary only when that persisted block contains exactly one explicit
+  // event-owned turn, never by matching prompt text or choosing a nearby turn.
+  for(const entry of sessions){
+    const session=entry.data?.session;if(!session||!knownSessions.has(session.id)||!Array.isArray(session.messages))continue;
+    for(let index=0;index<session.messages.length;index++){
+      const user=session.messages[index];if(user.role!=='user'||typeof user.id!=='string')continue;
+      const userKey=key(session.id,user.id);if(messageOwners.has(userKey))continue;
+      const owners=new Set();let conflict=false;
+      for(let next=index+1;next<session.messages.length&&session.messages[next].role!=='user';next++){
+        const owner=messageOwners.get(key(session.id,session.messages[next].id));
+        if(owner===null)conflict=true;else if(owner)owners.add(owner);
+      }
+      if(conflict||owners.size!==1)continue;
+      const g=[...owners][0];messageOwners.set(userKey,g);
+      g.discoveredUsers.push({id:user.id,text:typeof user.content==='string'?user.content:null,source:{file:entry.source,field:`${entry.messageField??'session.messages'}[${index}]`,association:'persisted-user-block-with-exact-event-owner'}});
+    }
   }
   // Prefer exact event message ownership. When events are absent, use persisted
   // message order bounded by known user IDs, resetting at every unknown user.
@@ -50,7 +69,10 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
     const session=entry.data?.session;if(!session||!knownSessions.has(session.id)||!Array.isArray(session.messages))continue;
     let current=null;
     for(const [index,message]of session.messages.entries()){
-      if(message.role==='user')current=messageOwners.get(key(session.id,message.id))??null;
+      if(message.role==='user'){
+        current=messageOwners.get(key(session.id,message.id))??null;
+        if(!current)warnings.push({code:'UNMAPPED_SESSION_USER_TURN',source:entry.source,messageId:message.id});
+      }
       const exactOwner=messageOwners.get(key(session.id,message.id)),g=exactOwner??current;
       if(message.role!=='assistant'||message.codexUsage?.scope!=='current-turn'||!message.usage)continue;
       if(!g||exactOwner===null){warnings.push({code:'UNMAPPED_CODEX_TURN_AGGREGATE',source:entry.source,messageId:message.id});continue;}
@@ -82,19 +104,27 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
     }else if(known?.startedAt&&known?.finishedAt&&isTerminal){
       const milliseconds=Date.parse(known.finishedAt)-Date.parse(known.startedAt);
       if(integer(milliseconds))timing={milliseconds,source:g.reports.at(-1).source,coverage:'operator-observed-boundary-includes-poll-delay',final:true};
+    }else{
+      const starts=[...new Set(g.startEvents.map(row=>row.atMs).filter(integer))],ends=[...new Set(g.terminalEvents.map(row=>row.atMs).filter(integer))];
+      // Multiple distinct starts/ends can indicate recovery. Keep that unknown.
+      if(starts.length===1){
+        const complete=isTerminal&&ends.length===1&&ends[0]>=starts[0];
+        timing={milliseconds:complete?ends[0]-starts[0]:null,startedAtMs:starts[0],endedAtMs:complete?ends[0]:null,source:{start:g.startEvents.find(row=>row.atMs===starts[0]).source,end:complete?g.terminalEvents.find(row=>row.atMs===ends[0]).source:null},coverage:complete?'event-observed-turn-boundaries':'event-start-without-unique-terminal-boundary',final:isTerminal};
+      }
     }
     const fullCalls=raw?.coverage==='complete'&&integer(raw.calls?.observed)&&raw.calls.observed>0&&raw.calls.pending===0;
-    rows.push({sessionId:g.sessionId,turnId:g.turnId,messageId:known?.messageId??null,promptExcerpt:typeof known?.text==='string'?known.text.slice(0,240):null,status,terminal:isTerminal,model,
+    const discovered=g.discoveredUsers.at(-1);
+    rows.push({sessionId:g.sessionId,turnId:g.turnId,messageId:known?.messageId??discovered?.id??null,promptExcerpt:typeof known?.text==='string'?known.text.slice(0,240):discovered?.text?.slice(0,240)??null,discovery:g.reports.length?'operator-report':'session-event-turn',status,terminal:isTerminal,model,
       elapsed:timing,finalUsage:isTerminal&&chosen&&!g.warnings.includes('TERMINAL_SOURCES_DISAGREE')?{...chosen.usage,source:chosen.source,kind:chosen.kind,scope:'one-turn'}:null,
       usageAvailability:chosen?isTerminal?'terminal-reported':'terminal-message-awaiting-turn-close':snapshot?'last-observed-only':'unknown',
       lastObservedUsage:snapshot?{...snapshot.usage,source:snapshot.source,scope:'current-turn-cumulative-snapshot',provisional:true}:null,
       lastRequestUsage:chosen?.lastRequest??null,modelContextWindow:chosen?.modelContextWindow??null,
       modelCalls:{value:fullCalls?raw.calls.observed:null,coverage:raw?.coverage??'unknown',scope:raw?.scope??null,rawObserved:raw?.calls?.observed??null,rawReported:raw?.calls?.reported??null,rawPending:raw?.calls?.pending??null,source:metric?.source??null,reason:fullCalls?'complete-host-model-call-ledger':'no-complete-physical-model-call-ledger'},
       observedToolCalls:g.toolCalls.size,transportSnapshotCount:g.snapshots.length,distinctTransportSnapshotCount:new Set(g.snapshots.map(row=>JSON.stringify(row.usage))).size,
-      aggregateCopies:g.terminalMessages.length,sourceRefs:[...g.reports.map(row=>row.source),...g.terminalMessages.map(row=>row.source)],warnings:[...new Set(g.warnings)]});
+      aggregateCopies:g.terminalMessages.length,sourceRefs:[...g.reports.map(row=>row.source),...g.discoveredUsers.map(row=>row.source),...g.startEvents.map(row=>row.source),...g.terminalEvents.map(row=>row.source),...g.terminalMessages.map(row=>row.source)],warnings:[...new Set(g.warnings)]});
   }
   rows.sort((a,b)=>(a.elapsed.startedAtMs??Infinity)-(b.elapsed.startedAtMs??Infinity)||a.turnId.localeCompare(b.turnId));
-  const final=rows.length>0&&rows.every(row=>row.terminal&&row.finalUsage)&&!warnings.some(row=>['UNMAPPED_CODEX_TURN_AGGREGATE','TURN_IDENTITY_MISSING'].includes(row.code)),aggregate=final?{
+  const final=rows.length>0&&rows.every(row=>row.terminal&&row.finalUsage)&&!warnings.some(row=>['UNMAPPED_CODEX_TURN_AGGREGATE','UNMAPPED_SESSION_USER_TURN','TURN_IDENTITY_MISSING'].includes(row.code)),aggregate=final?{
     scope:'distinct-session-turns-only',turns:rows.length,usage:Object.fromEntries(fields.map(name=>[name,rows.every(row=>integer(row.finalUsage[name]))?rows.reduce((sum,row)=>sum+row.finalUsage[name],0):null])),
     elapsedMilliseconds:rows.every(row=>integer(row.elapsed.milliseconds))?rows.reduce((sum,row)=>sum+row.elapsed.milliseconds,0):null,
     modelCalls:rows.every(row=>integer(row.modelCalls.value))?rows.reduce((sum,row)=>sum+row.modelCalls.value,0):null,
