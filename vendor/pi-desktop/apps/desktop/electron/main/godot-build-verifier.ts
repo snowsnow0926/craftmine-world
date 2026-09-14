@@ -391,7 +391,7 @@ export class GodotBuildVerifier {
       if (halted) return;
       halted = true;
       haltReason = reason;
-      scenarioStop.abort();
+      scenarioStop.abort(new Error(reason));
       rejectHalt(new Error(reason));
     };
     const assertRunning = (): void => {
@@ -404,7 +404,7 @@ export class GodotBuildVerifier {
 
     try {
       phases.begin('artifact-verification');
-      await bounded(verifyArtifacts(descriptor, deadline,artifactProgress));
+      await bounded(verifyArtifacts(descriptor, deadline,artifactProgress,{signal:scenarioStop.signal}));
       assertRunning();
       artifactProgress.report(diagnostics);
       phases.complete();

@@ -10586,3 +10586,11 @@ and cancel must all dispose the interval; no later page stage can keep updating
 this artifact snapshot. Neither the sample count nor a resource type grants a
 pass or changes the 30-second deadline. Keep raw path/PID/argument data out of
 this summary and confirm log size is independent of tick/file count.
+
+After the bounded 1MiB stream change, use the same ordinary old-profile check
+path and compare its artifact/read/heartbeat diagnostics with the retained
+64KiB failure. Require the complete descriptor sizes and hashes and unchanged
+30-second deadline; do not substitute the scheduling simulation for a native
+pass. Cancel a partial read and confirm the same cancellation error, closed
+stream and no subsequent artifact work. The original timeout job remains failed
+and immutable, even if the new check succeeds with its own evidence.

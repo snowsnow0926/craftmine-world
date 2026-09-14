@@ -9,7 +9,7 @@ import {PassThrough} from 'node:stream';
 import {setTimeout as delay} from 'node:timers/promises';
 import {spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
-import {createArtifactVerificationProgress,verifyArtifacts} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-artifact-verification.ts';
+import {ARTIFACT_READ_HIGH_WATER_MARK,createArtifactVerificationProgress,verifyArtifacts} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-artifact-verification.ts';
 import {createGodotCheckPhases} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-check-phases.ts';
 const {diagnosticLog}=createRequire(import.meta.url)('../plugins/craftmine-world/godot-runtime-diagnostic-log.cjs');
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -77,7 +77,7 @@ test('4096 artifacts keep a single final operation and survive the existing boun
 });
 test('production wiring keeps the original timeout race and records artifact failure before phase failure',()=>{
  const source=fs.readFileSync(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-build-verifier.ts',import.meta.url),'utf8');
- assert.match(source,/CHECK_DEADLINE_MS = 30_000/);assert.match(source,/await bounded\(verifyArtifacts\(descriptor, deadline,artifactProgress\)\)/);
+ assert.match(source,/CHECK_DEADLINE_MS = 30_000/);assert.match(source,/await bounded\(verifyArtifacts\(descriptor, deadline,artifactProgress,\{signal:scenarioStop.signal\}\)\)/);assert.match(source,/scenarioStop\.abort\(new Error\(reason\)\)/);
  assert(source.indexOf('artifactProgress.fail(diagnostics,messageOf(failure))')<source.indexOf('phases.fail()'));
 });
 test('diagnostic paths are bounded relative labels and never include private absolute IO filenames',()=>{
@@ -109,4 +109,40 @@ test('deadline-first final gap is observed and resource summary is bounded; defa
  const moduleUrl=new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-artifact-verification.ts',import.meta.url).href;
  const result=spawnSync(process.execPath,['--input-type=module','-e',`import {createArtifactVerificationProgress} from ${JSON.stringify(moduleUrl)};createArtifactVerificationProgress(1).operation('root-lstat','.');console.log('unref-timer-started');`],{encoding:'utf8',windowsHide:true,timeout:3000});
  assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/unref-timer-started/);
+});
+function largeFixture(t){
+ const d=fixture(t),bytes=Buffer.alloc(3*1024*1024+137);for(let i=0;i<bytes.length;i++)bytes[i]=i%251;
+ fs.writeFileSync(path.join(d.root,'web/index.pck'),bytes);d.artifacts.unshift({path:'web/index.pck',bytes:bytes.length,sha256:hash(bytes)});return d;
+}
+test('bounded one-MiB reads hash every byte of a real multiblock file and reject same-size corruption in its tail',async t=>{
+ const d=largeFixture(t),chunks=[];const progress=createArtifactVerificationProgress(d.artifacts.length),original=progress.bytes;
+ progress.bytes=n=>{chunks.push(n);original(n);};
+ await verifyArtifacts(d,Date.now()+30000,progress);assert.equal(ARTIFACT_READ_HIGH_WATER_MARK,1024*1024);assert.equal(chunks.reduce((a,b)=>a+b,0),d.artifacts.reduce((n,f)=>n+f.bytes,0));assert(chunks.length>=5);
+ const fd=fs.openSync(path.join(d.root,'web/index.pck'),'r+');try{fs.writeSync(fd,Buffer.from([255]),0,1,d.artifacts[0].bytes-1);}finally{fs.closeSync(fd);}
+ const failed=await failure(d);assert.equal(failed.error,'GODOT_CHECK_ARTIFACT_MISMATCH');assert.equal(failed.diagnostic.operation,'hash-compare');assert.equal(failed.diagnostic.bytesRead,d.artifacts[0].bytes);
+});
+test('busy callback scheduling needs fewer actual IO reads with one-MiB chunks while both variants verify the same full file',async t=>{
+ const d=largeFixture(t);
+ async function run(baseline){
+  let reads=0;const sizes=[];
+  await verifyArtifacts(d,Date.now()+30000,createArtifactVerificationProgress(d.artifacts.length),{createReadStream:(file,options)=>{
+   assert.equal(options.highWaterMark,1024*1024);sizes.push(options.highWaterMark);
+   return fs.createReadStream(file,{...options,...(baseline?{highWaterMark:64*1024}:{}),fs:{open:fs.open,close:fs.close,read:(fd,buffer,offset,length,position,callback)=>{reads++;fs.read(fd,buffer,offset,length,position,(...args)=>setTimeout(()=>callback(...args),2));}}});
+  }});return{reads,sizes};
+ }
+ const old=await run(true),current=await run(false);assert(current.reads<old.reads/4);assert.equal(current.sizes.length,d.artifacts.length);t.diagnostic(JSON.stringify({baseline64KiBReads:old.reads,current1MiBReads:current.reads,allBytesVerified:true}));
+});
+test('native stream abort closes the file, prevents the next artifact and preserves exact timeout/cancel reasons',async t=>{
+ for(const reason of ['GODOT_CHECK_TIMEOUT','GODOT_CHECK_CANCELLED']){
+  const d=largeFixture(t),stop=new AbortController(),progress=createArtifactVerificationProgress(d.artifacts.length),original=progress.bytes,streams=[];
+  progress.bytes=n=>{original(n);stop.abort(Error(reason));};
+  await assert.rejects(verifyArtifacts(d,Date.now()+30000,progress,{signal:stop.signal,createReadStream:(file,options)=>{assert.equal(options.signal,stop.signal);const stream=fs.createReadStream(file,options);streams.push(stream);return stream;}}),error=>error.message===reason);
+  const log=[];progress.fail(log,reason);assert.equal(streams.length,1);assert.equal(streams[0].destroyed,true);if(!streams[0].closed)await new Promise(resolve=>streams[0].once('close',resolve));assert.equal(streams[0].closed,true);
+  assert(decode(log).bytesRead>0);assert(decode(log).bytesRead<d.artifacts[0].bytes);assert.equal(decode(log).errorCode,reason);
+ }
+});
+test('cancellation during non-cancellable lstat starts no later stat or stream after the pending call returns',async t=>{
+ const d=fixture(t),stop=new AbortController(),entered=deferred(),release=deferred(),progress=createArtifactVerificationProgress(1);let stats=0,streams=0;
+ const work=verifyArtifacts(d,Date.now()+30000,progress,{signal:stop.signal,lstat:async file=>{stats++;entered.resolve();await release.promise;return lstat(file);},createReadStream:()=>{streams++;throw Error('must not open');}});
+ await entered.promise;stop.abort(Error('GODOT_CHECK_CANCELLED'));release.resolve();await assert.rejects(work,/GODOT_CHECK_CANCELLED/);const log=[];progress.fail(log,'GODOT_CHECK_CANCELLED');assert.equal(stats,1);assert.equal(streams,0);assert.equal(decode(log).operation,'root-lstat');
 });

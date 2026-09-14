@@ -55,37 +55,55 @@ export function createArtifactVerificationProgress(totalFiles:number,now=Date.no
 }
 type Progress=ReturnType<typeof createArtifactVerificationProgress>;
 type IO={lstat:typeof lstat;createReadStream:typeof createReadStream};
+export const ARTIFACT_READ_HIGH_WATER_MARK=1024*1024;
 
 /** Same asynchronous file/link/size/hash checks; the observer never scores them. */
-export async function verifyArtifacts(descriptor:Descriptor,deadline:number,progress:Progress,io:IO={lstat,createReadStream}):Promise<void>{
+export async function verifyArtifacts(descriptor:Descriptor,deadline:number,progress:Progress,options:Partial<IO>&{signal?:AbortSignal}={}):Promise<void>{
+  const io={lstat:options.lstat??lstat,createReadStream:options.createReadStream??createReadStream},signal=options.signal;
+  const assertActive=()=>{
+    if(signal?.aborted)throw signal.reason instanceof Error?signal.reason:Error('GODOT_CHECK_CANCELLED');
+    if(Date.now()>=deadline)throw Error('GODOT_CHECK_TIMEOUT');
+  };
+  // lstat itself has no AbortSignal support. Do not begin further IO after an
+  // already pending stat settles following cancellation or the same deadline.
+  const stat=async(file:string)=>{assertActive();const info=await io.lstat(file).catch(()=>null);assertActive();return info;};
   progress.operation('root-lstat','.');
-  const rootInfo=await io.lstat(descriptor.root).catch(()=>null);
+  const rootInfo=await stat(descriptor.root);
   if(!rootInfo||!rootInfo.isDirectory()||rootInfo.isSymbolicLink())throw Error('INVALID_GODOT_CHECK_DESCRIPTOR');
   const entry=join(descriptor.root,'web','index.html');progress.operation('entry-lstat','web/index.html');
-  const entryInfo=await io.lstat(entry).catch(()=>null);
+  const entryInfo=await stat(entry);
   if(!entryInfo||!entryInfo.isFile())throw Error('GODOT_CHECK_ARTIFACT_MISSING');
   for(const [index,artifact]of descriptor.artifacts.entries()){
-    if(Date.now()>=deadline)throw Error('GODOT_CHECK_TIMEOUT');
+    assertActive();
     progress.artifact(artifact.path,index+1,artifact.bytes);
     const parts=artifact.path.split('/');let cursor=descriptor.root;
     for(const [partIndex,part]of parts.entries()){
       cursor=join(cursor,part);progress.operation('path-lstat',parts.slice(0,partIndex+1).join('/'));
-      const info=await io.lstat(cursor).catch(()=>null);
+      const info=await stat(cursor);
       if(!info)throw Error('GODOT_CHECK_ARTIFACT_MISSING');
       if(info.isSymbolicLink())throw Error('GODOT_CHECK_ARTIFACT_MISMATCH');
       if(cursor!==join(descriptor.root,...parts)&&!info.isDirectory())throw Error('INVALID_GODOT_CHECK_DESCRIPTOR');
     }
     const file=join(descriptor.root,...parts);progress.operation('size-lstat');
-    const info=await io.lstat(file).catch(()=>null);
+    const info=await stat(file);
     if(!info||!info.isFile())throw Error('GODOT_CHECK_ARTIFACT_MISSING');
     progress.operation('size-compare');
     if(info.size!==artifact.bytes)throw Error('GODOT_CHECK_ARTIFACT_MISMATCH');
     const hash=createHash('sha256');progress.operation('stream-open');
-    const stream=io.createReadStream(file);
+    assertActive();
+    const stream=io.createReadStream(file,{highWaterMark:ARTIFACT_READ_HIGH_WATER_MARK,signal});
     stream.once('open',()=>progress.operation('stream-read'));
-    for await(const chunk of stream){
-      progress.bytes((chunk as Buffer).length);progress.operation('hash-update');hash.update(chunk as Buffer);progress.operation('stream-read');
-    }
+    try{
+      for await(const chunk of stream){
+        assertActive();progress.bytes((chunk as Buffer).length);progress.operation('hash-update');hash.update(chunk as Buffer);progress.operation('stream-read');
+      }
+      assertActive();
+    }catch(error){
+      // Stream ABORT_ERR can win the outer race. Preserve the exact host stop
+      // cause instead of replacing timeout/cancel diagnostics with AbortError.
+      if(signal?.aborted)throw signal.reason instanceof Error?signal.reason:Error('GODOT_CHECK_CANCELLED');
+      throw error;
+    }finally{if(!stream.destroyed)stream.destroy();}
     progress.operation('hash-digest');const actualHash=hash.digest('hex');progress.operation('hash-compare');
     if(actualHash!==artifact.sha256)throw Error('GODOT_CHECK_ARTIFACT_MISMATCH');
     progress.verified();
