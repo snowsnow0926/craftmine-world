@@ -42,7 +42,7 @@ import {
   type Usage,
   type UserMessage,
 } from "@earendil-works/pi-ai";
-import { DEFAULT_COMMAND_TIMEOUT_MS, OAUTH_AUTH_KIND } from "@pi-desktop/shared";
+import { DEFAULT_COMMAND_TIMEOUT_MS, OAUTH_AUTH_KIND, craftmineRequestBudget } from "@pi-desktop/shared";
 import type {
   AgentActivity,
   AgentActivityError,
@@ -4205,7 +4205,14 @@ Delegation rules:
         Math.ceil(contextWindow * 0.05),
       ),
     );
-    const hardLimit = Math.max(1, contextWindow - requestHeadroom);
+    // The generic PI budget covers retained history and summary generation.
+    // Craftmine also measures the complete request (system, tools and host
+    // facts). Its output allowance must not be subtracted from an 85% total
+    // window: early-compaction headroom belongs to the remaining input space.
+    const hardLimit = this.craftmineHooks
+      ? Math.min(Math.max(1, contextWindow - requestHeadroom),
+          craftmineRequestBudget(contextWindow, this.model.maxTokens).compactionThreshold)
+      : Math.max(1, contextWindow - requestHeadroom);
     const keepRecentTokens = Math.min(
       Math.max(
         COMPACTION_MIN_KEEP_RECENT_TOKENS,
@@ -4406,9 +4413,10 @@ Delegation rules:
     const estimate = await this.craftmineHooks.inspectRequest({ requestId: "preflight", purpose: "creation", model: this.model,
       context: { systemPrompt: this.agent.state.systemPrompt, messages: convertToLlm(messages), tools: this.activeTools() },
       maxOutputTokens: this.model.maxTokens, signal });
-    // Leave summary/framing headroom; the final physical request is measured
-    // again after reminders, context refresh and provider retry preparation.
-    return estimate.total >= Math.floor(this.model.contextWindow * 0.85);
+    // Reserve the actual outgoing allowance, then leave 15% of input space
+    // for summary/framing growth. The physical request is remeasured later.
+    const budget = craftmineRequestBudget(this.model.contextWindow, estimate.output, estimate.toolResults);
+    return estimate.input >= budget.compactionThreshold;
   }
 
   /**
@@ -4604,7 +4612,9 @@ Delegation rules:
     preparation: ShapedPreparation,
     budget: { hardLimit: number; requestHeadroom: number },
   ): boolean {
-    const contextWindow = budget.hardLimit + budget.requestHeadroom;
+    // Craftmine's history threshold can be tighter than the generic PI
+    // summary reserve; their sum no longer reconstructs the model window.
+    const contextWindow = this.model.contextWindow || DEFAULT_CONTEXT_WINDOW;
     const modelOutputBudget = Math.min(
       Math.floor(budget.requestHeadroom * 0.8),
       Math.max(1, Math.round(this.model.maxTokens || DEFAULT_MAX_TOKENS)),

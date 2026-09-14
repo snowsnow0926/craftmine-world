@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { createAssistantMessageEventStream, type Api, type AssistantMessage, type AssistantMessageEventStream, type Context, type Model, type SimpleStreamOptions } from "@earendil-works/pi-ai";
 import { usageFromPi } from "./agent-messages.js";
 import { godotFactsBlock } from "./craftmine-godot-facts.js";
+import { craftmineRequestBudget } from "@pi-desktop/shared";
 
 export const CRAFTMINE_PROMPT_VERSION = "craftmine.request/2";
 // Frequent creation actions must remain advertised after every prompt reset and
@@ -224,7 +225,8 @@ export function createCraftmineRequestHooks(options: {
     async inspectRequest(input) { return (await prepare(input)).estimate; },
     async beforeRequest(input) {
       const { snapshot, context, estimate, purpose, readOnlyCloseout } = await prepare(input);
-      if (!Number.isSafeInteger(input.model.contextWindow) || input.model.contextWindow < 1 || estimate.total > input.model.contextWindow) fail("CRAFTMINE_CONTEXT_BUDGET_EXCEEDED");
+      const budget = craftmineRequestBudget(input.model.contextWindow, input.maxOutputTokens, estimate.toolResults);
+      if (input.maxOutputTokens > input.model.maxTokens || estimate.input > budget.inputCapacity) fail("CRAFTMINE_CONTEXT_BUDGET_EXCEEDED");
       await options.domainCall("budget.reserve", {
         binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId, purpose,
         estimatedInputTokens: estimate.input + estimate.toolResults, maxOutputTokens: input.maxOutputTokens,
@@ -268,6 +270,31 @@ export function isCraftmineToolAllowed(name: string, worldTools: ReadonlySet<str
   return worldTools.has(name) || ["ToolSearch", "new_context", "asktool"].includes(name);
 }
 
+// These are the pinned PI adapters' onPayload shapes, before any SDK wire
+// conversion. Do not recurse into messages or tool schemas with similar keys.
+const OUTPUT_ALLOWANCE_PATHS = [
+  ["max_tokens"], ["max_completion_tokens"], ["max_output_tokens"], ["maxTokens"],
+  ["config", "maxOutputTokens"], ["generationConfig", "maxOutputTokens"],
+  ["inferenceConfig", "maxTokens"], ["options", "maxTokens"],
+];
+function payloadValue(payload: unknown, path: string[]): unknown {
+  let value = payload;
+  for (const key of path) {
+    if (!value || typeof value !== "object") return undefined;
+    value = (value as Record<string, unknown>)[key];
+  }
+  return value;
+}
+function verifyPayloadOutputAllowance(before: unknown[], after: unknown, reserved: number): void {
+  for (const [index, path] of OUTPUT_ALLOWANCE_PATHS.entries()) {
+    const previous = before[index], actual = payloadValue(after, path);
+    if (previous === undefined && actual === undefined) continue;
+    if (!Number.isSafeInteger(actual) || (actual as number) < 1 || (actual as number) > reserved) {
+      fail("CRAFTMINE_FINAL_PAYLOAD_BUDGET_EXCEEDED");
+    }
+  }
+}
+
 /** One physical provider attempt, including retries. PI remains the only loop. */
 export function craftmineGuardedStream(model: Model<Api>, context: Context, options: SimpleStreamOptions | undefined,
   hooks: CraftmineRequestHooks | undefined, purpose: CraftminePurpose,
@@ -296,12 +323,16 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
     const reserved = reservation;
     const stream = start(reservation.context, { ...options, maxRetries: 0, maxTokens: reservation.maxOutputTokens, signal: controller.signal,
       onPayload: async (payload, requestModel) => {
+        // Snapshot allowance fields before an in-place transform can erase or
+        // raise them; never substitute a provider default for a reservation.
+        const originalAllowances = OUTPUT_ALLOWANCE_PATHS.map(path => payloadValue(payload, path));
         const transformed = await options?.onPayload?.(payload, requestModel);
         const finalPayload = transformed ?? payload;
         aborted(controller.signal);
         // Provider serialization and any prior payload transform are the last
         // send boundary. Refuse unexpected growth instead of issuing an
         // unreserved request; no provider or model substitution is attempted.
+        verifyPayloadOutputAllowance(originalAllowances, finalPayload, reserved.maxOutputTokens);
         const serializedInput = tokens(finalPayload);
         if (serializedInput + reserved.maxOutputTokens > model.contextWindow || serializedInput > reserved.estimate.input + reserved.estimate.toolResults) fail("CRAFTMINE_FINAL_PAYLOAD_BUDGET_EXCEEDED");
         return finalPayload;

@@ -10803,3 +10803,12 @@ refuse mutation; actual Core ended-turn state must reject source writing even
 when a deliberately stale host permission fixture remains true. An unregistered
 executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
+# Craftmine PI large-output input headroom (2026-09-14)
+
+Follow [the input-headroom regression](../../e2e/deepseek-input-headroom-20260914.md).
+At 500000 context and 384000 actual request output, verify a 96859 estimated
+input compaction threshold, unchanged output in the physical request/ledger,
+retained transcript after a genuine compaction, and pre-send rejection of
+overflow or a transformed output allowance exceeding/removing its reservation.
+Real player acceptance uses the actual selected model and independent profile;
+contract fixtures are not a substitute for creation/application/reopen evidence.

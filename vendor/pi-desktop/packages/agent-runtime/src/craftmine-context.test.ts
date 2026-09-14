@@ -15,6 +15,47 @@ function fixture() {
   return { hooks, calls, set: (value: CraftmineTaskContext) => { current = value; } };
 }
 describe("Craftmine authoritative request boundary", () => {
+  for (const field of ["max_tokens", "max_completion_tokens", "max_output_tokens"]) {
+    for (const changed of [5000, undefined, null, -1]) it(`refuses transformed ${field}=${changed} beyond the physical reservation`, async () => {
+      const f = fixture();
+      const answer = await craftmineGuardedStream(model, request, { onPayload: (payload: any) => {
+        // In-place transforms must not hide a removed or raised allowance.
+        payload[field] = changed;
+      } }, f.hooks, "creation", (_context, options) => {
+        const output = createAssistantMessageEventStream();
+        void Promise.resolve(options.onPayload?.({ [field]: 4000 }, model)).then(() => output.end(result())).catch(error => {
+          const failed = { ...result(), stopReason: "error" as const, errorMessage: error.message }; output.end(failed);
+        });
+        return output;
+      }).result();
+      expect(answer.stopReason).toBe("error");
+      expect(answer.errorMessage).toContain("FINAL_PAYLOAD_BUDGET");
+    });
+  }
+  for (const [container, field] of [["config", "maxOutputTokens"], ["inferenceConfig", "maxTokens"], ["options", "maxTokens"]]) {
+    it(`preserves the pinned adapter ${container}.${field} shape`, async () => {
+      const f = fixture();
+      const answer = await craftmineGuardedStream(model, request, {}, f.hooks, "creation", (_context, options) => {
+        const output = createAssistantMessageEventStream();
+        void Promise.resolve(options.onPayload?.({ [container]: { [field]: options.maxTokens } }, model)).then(() => output.end(result()));
+        return output;
+      }).result();
+      expect(answer.stopReason).toBe("stop");
+    });
+  }
+  it("keeps 384K on the wire and in the ledger while rejecting genuine overflow", async () => {
+    const f = fixture(), wide = { ...model, contextWindow: 500000, maxTokens: 384000 };
+    const context = { ...request, systemPrompt: "x".repeat(100000) };
+    let actualOutput: number | undefined;
+    const answer = await craftmineGuardedStream(wide, context, {}, f.hooks, "creation", (_context, options) => {
+      actualOutput = options.maxTokens; return stream();
+    }).result();
+    expect(answer.stopReason).toBe("stop"); expect(actualOutput).toBe(384000);
+    expect(f.calls.find(call => call.method === "budget.reserve")?.params.maxOutputTokens).toBe(384000);
+    const start = vi.fn(() => stream());
+    const overflow = await craftmineGuardedStream(wide, { ...context, systemPrompt: "x".repeat(240000) }, {}, f.hooks, "creation", start).result();
+    expect(overflow.errorMessage).toContain("CONTEXT_BUDGET_EXCEEDED"); expect(start).not.toHaveBeenCalled();
+  });
   it("carries current world player goals across requests without treating old reviews as current proof", () => {
     const current=snapshot();
     current.worldBrief={worldId:"world",revision:4,entries:[{text:"Preserve the companion",review:"player-accepted-older-build"}],totalEntries:1,recentRequests:[{text:"Original large city request",taskStatus:"finished"}],historyIsNotNewWork:true};
@@ -302,6 +343,26 @@ describe("Craftmine authoritative request boundary", () => {
       expect(JSON.stringify(users)).toContain("<summary>");
       expect(JSON.stringify(users)).not.toContain("previous task was to build");
     }
+    await runtime.dispose();
+  });
+  for (const compactExpected of [false, true]) it(`500K/384K compacts only at the input threshold: ${compactExpected}`, async () => {
+    const f = fixture(), records: unknown[] = [];
+    const history = [
+      { id: "old-user", role: "user", content: "Keep the existing dog.", createdAt: "2026-09-09T00:00:00Z", status: "complete" },
+      { id: "old-answer", role: "assistant", content: "x".repeat(compactExpected ? 200000 : 100000), createdAt: "2026-09-09T00:00:01Z", status: "complete" },
+    ];
+    const runtime = makeRuntime(f.hooks, records, history), internal = runtime as any;
+    internal.model = { ...internal.model, contextWindow: 500000, maxTokens: 384000 };
+    internal.agent.state.model = internal.model;
+    vi.spyOn(internal.models, "streamSimple").mockImplementation(() => stream(result("The existing dog remains. Continue the player's current request.")));
+    await runtime.prompt("Add another dog; retain the first one.", "new-request", "new-turn");
+    expect(records).toHaveLength(compactExpected ? 1 : 0);
+    const requests = f.calls.filter(call => call.method === "budget.reserve");
+    expect(requests.filter(call => call.params.purpose === "summary")).toHaveLength(compactExpected ? 1 : 0);
+    expect(requests.at(-1)?.params.purpose).toBe("creation");
+    expect(requests.at(-1)?.params.maxOutputTokens).toBe(384000);
+    expect(internal.contextBudget([]).hardLimit).toBe(96859);
+    expect(internal.fullEntries.some((entry: any) => entry.id === "old-answer")).toBe(true);
     await runtime.dispose();
   });
 });
