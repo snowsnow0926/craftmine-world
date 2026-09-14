@@ -13,7 +13,7 @@ export function validateInputSegment(input:unknown):asserts input is InputSegmen
   if(s.motion!==undefined&&(!s.motion||typeof s.motion!=='object'||Object.keys(s.motion).sort().join(',')!=='x,y'||![s.motion.x,s.motion.y].every(n=>typeof n==='number'&&Number.isFinite(n)&&Math.abs(n)<=4096)))throw Error('GAMEPLAY_MOTION_INVALID');
 }
 export type GameplayControllerAccess={instance:()=>PlayIdentity|null;dispatch:(identity:PlayIdentity,events:GameInputEvent[])=>Promise<any>;
-  wait:(frames:number)=>Promise<any>;snapshot:()=>Promise<any>;observe:()=>Promise<any>;capture:(identity:PlayIdentity)=>Promise<any>;diagnostics:()=>Promise<any>;hold:()=>Promise<()=>void>};
+  wait:(frames:number)=>Promise<any>;snapshot:()=>Promise<any>;observe:()=>Promise<any>;capture:(identity:PlayIdentity)=>Promise<any>;diagnostics:()=>Promise<any>;hold:()=>Promise<()=>void>;assertReady?:()=>void};
 export function createGameplayController(access:GameplayControllerAccess) {
   let active:{identity:PlayIdentity;cancelled:boolean;held:GameInputEvent[];release?:Promise<any>;work:Promise<any>;settled:boolean}|null=null;
   const identity=(requested:PlayIdentity)=>{
@@ -21,8 +21,10 @@ export function createGameplayController(access:GameplayControllerAccess) {
     if(!requested||Object.keys(requested).sort().join(',')!=='buildId,instanceId,worldId'||!current||['worldId','buildId','instanceId'].some(k=>(current as Data)[k]!==(requested as Data)[k]))throw Error('GAMEPLAY_IDENTITY');
   };
   const evidence=async(id:PlayIdentity,capture:boolean)=>{
-    identity(id);const snapshot=await access.snapshot(),observation=await access.observe();
-    const frame=capture?await access.capture(id):null;const diagnostics=await access.diagnostics();identity(id);
+    access.assertReady?.();identity(id);const snapshot=await access.snapshot();
+    access.assertReady?.();identity(id);const observation=await access.observe();
+    access.assertReady?.();identity(id);const frame=capture?await access.capture(id):null;
+    const diagnostics=await access.diagnostics();access.assertReady?.();identity(id);
     return {snapshot,observation,frame,diagnostics};
   };
   const release=async(run:NonNullable<typeof active>)=>{
@@ -35,7 +37,7 @@ export function createGameplayController(access:GameplayControllerAccess) {
   return {
     get busy(){return active!==null;},
     async segment(requested:PlayIdentity,s:InputSegment) {
-      identity(requested);validateInputSegment(s);if(active)throw Error('GAMEPLAY_BUSY');
+      access.assertReady?.();identity(requested);validateInputSegment(s);if(active)throw Error('GAMEPLAY_BUSY');
       const run={identity:{...requested},cancelled:false,held:[] as GameInputEvent[],release:undefined as Promise<any>|undefined,work:Promise.resolve(null) as Promise<any>,settled:false,evidence:{} as Data};active=run;
       run.work=(async()=>{
         const unhold=await access.hold();const startedAt=new Date().toISOString();
@@ -43,19 +45,22 @@ export function createGameplayController(access:GameplayControllerAccess) {
         try {
           before=await evidence(run.identity,s.capture!==false);run.evidence.before=before;
           if(!run.cancelled){
+            access.assertReady?.();identity(run.identity);
             const down:GameInputEvent[]=(s.keys??[]).map(code=>({kind:'key',code,key:browserKey(code),down:true}));
             for(const button of s.buttons??[])down.push({kind:'button',button:['left','middle','right'].indexOf(button) as 0|1|2,down:true});
             // Record before the async dispatch so a cancelled/lost reply still
             // sends releases for every key that could have reached the engine.
             run.held=down;const events=[...down];if(s.motion)events.push({kind:'motion',...s.motion});
             delivery=await access.dispatch(run.identity,events);
-            waitReceipt=await access.wait(s.frames);identity(run.identity);
+            access.assertReady?.();identity(run.identity);
+            waitReceipt=await access.wait(s.frames);access.assertReady?.();identity(run.identity);
             if(!run.cancelled){during={source:'native-observation-before-release',waitReceipt,...await evidence(run.identity,s.capture!==false)};run.evidence.during=during;}
           }
         } finally {
           try {releaseReceipt=await release(run);run.evidence.release=releaseReceipt;}
           finally{unhold();}
         }
+        access.assertReady?.();
         if((s.settleFrames??1)>0)await access.wait(s.settleFrames??1);
         after=await evidence(run.identity,s.capture!==false);run.evidence.after=after;
         const guardCalls=(e:any)=>e?.diagnostics?.views?.reduce((n:number,v:any)=>n+(v.runtime?.guard?.pointerLock??0)+(v.runtime?.guard?.focus??0),0)??0;

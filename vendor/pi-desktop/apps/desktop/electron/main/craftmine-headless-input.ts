@@ -26,14 +26,21 @@ export function validateHeadlessInputEnvelope(input:unknown,enabled:boolean) {
 }
 /** Parent-process IPC only. No renderer, model, arbitrary script or source route. */
 export function createHeadlessInputControl(access:HeadlessInputAccess) {
-  const gameplay=createGameplayController(access);
+  const assertOwner=()=>{
+    if(!access.enabled())throw Error('HEADLESS_INPUT_PRIVATE_ONLY');
+    const owner=access.owner();
+    if(!owner||owner.visible||owner.focused||owner.focusable||!owner.offscreen)throw Error('HEADLESS_INPUT_OWNER_UNSAFE');
+  };
+  const gameplay=createGameplayController({...access,assertReady:()=>{
+    assertOwner();
+    if(access.unavailable())throw Error('HEADLESS_INPUT_WORLD_BUSY');
+  }});
   return {
     get busy(){return gameplay.busy;},
     drain:()=>gameplay.drain(),
     async handle(input:unknown){
       const request=validateHeadlessInputEnvelope(input,access.enabled());
-      const owner=access.owner();
-      if(!owner||owner.visible||owner.focused||owner.focusable||!owner.offscreen)throw Error('HEADLESS_INPUT_OWNER_UNSAFE');
+      assertOwner();
       if(request.method==='cancelInputs')return gameplay.cancel(request.identity);
       if(access.unavailable())throw Error('HEADLESS_INPUT_WORLD_BUSY');
       try{return await gameplay.segment(request.identity,request.segment!);}
