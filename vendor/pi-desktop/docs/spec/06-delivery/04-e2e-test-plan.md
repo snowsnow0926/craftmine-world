@@ -29,6 +29,16 @@ Run `pnpm --filter @pi-desktop/shared build`, then
 `pnpm --filter @pi-desktop/agent-runtime exec vitest run src/codex-desktop-runtime.test.ts`
 and `pnpm --filter @pi-desktop/agent-runtime typecheck` from this vendor directory.
 
+Run the additional `src/codex-review-complete.test.ts` adapter suite. Require
+the exact no-tool ephemeral review configuration, model/isolation/identity
+rejection, cancellation, known failed usage and explicit unknown usage. During
+real integration, wait for the frozen review's normal strict plan and actual
+renderer assertions; machine verification alone cannot authorize application.
+Record separate native review usage from its private `review-transport.json`
+diagnostic and Rust review output. Refuse a changed backend rather than billing
+another provider. Generic plugin completions retain their existing deadline;
+only a private bound Codex review can run without an authoring timer.
+
 First creation preview delivery additionally follows the
 [sealed portable export scenario](first-creation-preview-export.md#verification-scenario):
 relocated launch path, independent preview profile, exact extracted ZIP bytes,

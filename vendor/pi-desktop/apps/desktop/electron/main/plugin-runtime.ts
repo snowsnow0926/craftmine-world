@@ -2713,7 +2713,11 @@ export class PluginRuntime {
     const controller = new AbortController();
     if (craftmineReviewId) this.craftmineCompletes.set(craftmineReviewId, controller);
     let timedOut = false;
-    const timer = setTimeout(() => { timedOut = true; controller.abort(); }, PLUGIN_COMPLETE_TIMEOUT_MS);
+    // The trusted review entry supplies this ID; generic agent.complete cannot.
+    // Main still validates its current Rust owner before starting Codex. Keep
+    // cancellation, but do not impose the advisor's whole-completion deadline.
+    const nativeReview = !!craftmineReviewId && modelKey === "codex-cli/gpt-6-astra";
+    const timer = nativeReview ? undefined : setTimeout(() => { timedOut = true; controller.abort(); }, PLUGIN_COMPLETE_TIMEOUT_MS);
     let result: PluginCompleteResult;
     try {
       result = await this.services.complete({

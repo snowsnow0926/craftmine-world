@@ -40,6 +40,17 @@ the player's original immediate runtime-kind rejection.
 
 ## Integration still required
 
+Follow-up source inspection found a second legacy completion gate: application
+requires a completed request review, while the Codex plugin completion adapter
+previously rejected every auxiliary request. The host now admits only the current
+frozen legacy review to a tool-free Codex completion. Existing strict plan,
+actual baseline/candidate renderer checks and player apply guards remain intact.
+The seven dedicated review transport tests plus 26 author adapter tests pass
+(33 total), and runtime typecheck/build pass. Desktop typecheck after building
+dependencies reports only the two pre-existing missing declarations for
+`godot-artifact-worker-protocol.mjs` and `godot-artifact-worker-host.mjs`.
+This is not yet live model or renderer acceptance.
+
 Run the ordinary isolated desktop flow documented in
 [the E2E plan](../spec/06-delivery/04-e2e-test-plan.md#codex-legacy-world-conversation-regression-2026-09-14).
 Require a real selected Codex model turn, compiler/verification receipts, visible

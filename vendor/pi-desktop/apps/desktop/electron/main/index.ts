@@ -182,6 +182,7 @@ import {
   enhancePromptDraft,
   summarizeSessionTitle,
   completeOneShot,
+  completeCodexReview,
   createCraftmineRequestHooks,
   type CraftmineTaskContext,
   loadComposerTemplates,
@@ -854,6 +855,9 @@ const plugins: PluginRuntime = new PluginRuntime({
     }
     const thinkingLevel = asPluginThinkingLevel(input.thinkingLevel);
     const settings = await host.call<any>("settings.get");
+    if (reviewOwner?.review.modelKey === `codex-cli/${CODEX_WORLD_MODEL}` && settings.worldAgentBackend !== "codex-cli") {
+      throw Object.assign(Error("The frozen Codex review cannot switch to another backend."), { errorCode: "CODEX_REVIEW_BACKEND_CHANGED" });
+    }
     const launchSessionId = ownerSessionId || `plugin-complete:${crypto.randomUUID()}`;
     const session = ownerSessionId
       ? (await host.call<{ session?: any }>("session.get", { id: ownerSessionId })).session
@@ -864,7 +868,17 @@ const plugins: PluginRuntime = new PluginRuntime({
       modelId: parsed.modelId,
       thinkingLevel,
     });
-    if (launch.sidecarParams.codex) throw Object.assign(Error("This auxiliary API-provider operation is unavailable with the Codex world backend."), { errorCode: "CODEX_AUXILIARY_UNSUPPORTED" });
+    if (launch.sidecarParams.codex) {
+      if (!reviewId || !reviewOwner || reviewOwner.world.runtimeKind !== "legacy" ||
+          input.modelKey !== `codex-cli/${CODEX_WORLD_MODEL}` || thinkingLevel !== CODEX_WORLD_EFFORT || input.includeSessionContext || !input.signal) {
+        throw Object.assign(Error("Only the current frozen legacy-world review is supported by this Codex completion."), { errorCode: "CODEX_AUXILIARY_UNSUPPORTED" });
+      }
+      const binary = launch.sidecarParams.codex.binary;
+      return craftmineTelemetry.measureCompletion(() => completeCodexReview({
+        binary, scratchDir: join(dataDir, "scratch", launchSessionId, "codex-reviews"),
+        reviewId, modelKey: input.modelKey, thinkingLevel, system: input.system ?? "", messages: input.messages ?? [], signal: input.signal!,
+      }));
+    }
     const runtimeProvider = {
       ...launch.sidecarParams.provider,
       ...(launch.sidecarParams.provider.authKind === OAUTH_AUTH_KIND
