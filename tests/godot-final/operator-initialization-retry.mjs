@@ -8,7 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from '../helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from '../helpers/ordinary-world-ui.mjs';
 import {operatorRedactor,redactedOperatorLog} from '../helpers/operator-provider-config.mjs';
-import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode} from '../helpers/operator-initialization-retry.mjs';
+import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup} from '../helpers/operator-initialization-retry.mjs';
 import {compareGodotPersistentProgress} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-godot-bases-acceptance.ts';
 import {isTransientReadTimeout,terminalState} from '../player-feedback/P8/initialization-poll.mjs';
 
@@ -66,11 +66,12 @@ async function start(){
   for(const stream of ['stdout','stderr']){const log=redactedOperatorLog(redact,text=>fs.appendFileSync(path.join(out,run.number+'-'+stream+'.log'),text));child[stream].on('data',bytes=>log.push(bytes));child[stream].once('end',()=>log.end());}
   child.on('message',message=>{if(message.type==='craftmine-headless-ready')ready=true;if(message.type==='craftmine-headless-exit')run.audit=message;const task=pending.get(message.id);if(task){pending.delete(message.id);message.error?task.reject(Error(message.error)):task.resolve(message.result);}});
   exit=new Promise(resolve=>{child.once('error',error=>{run.spawnError=String(error);ended=true;resolve();});child.once('exit',(code,signal)=>{ended=true;run.exit={code,signal};for(const task of pending.values())task.reject(Error('RETRY_CLIENT_EXITED'));pending.clear();resolve();});});
-  await until(async()=>ready,Boolean);const status=await rpc('status');assert.deepEqual(status.violations,[]);assert(status.windows.length&&status.windows.every(w=>!w.visible&&!w.focused&&!w.focusable&&w.offscreen));
+  await until(async()=>ready,Boolean);
+  run.startupStatus=await waitForRetryStartup({until,readStatus:()=>rpc('status')});
   const targets=await until(async()=>{try{return (await(await fetch('http://127.0.0.1:'+port+'/json/list')).json()).filter(t=>t.type==='page'&&t.url.includes('/out/renderer/index.html')&&!new URL(t.url).searchParams.has('surface'));}catch{return[];}},items=>items.length===1);
   const url=new URL(targets[0].webSocketDebuggerUrl);assert(['127.0.0.1','localhost'].includes(url.hostname)&&url.port===String(port));socket=new WebSocket(url);
   await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true});});
-  await until(()=>evaluate('!!globalThis.__craftmineHeadless&&!!globalThis.piDesktop'),Boolean);
+  await until(()=>evaluate('!!globalThis.__craftmineHeadless&&!!globalThis.piDesktop&&!!document.querySelector(".app-shell:not(.app-shell-boot)")'),Boolean);
   await rpc('primaryMode',{payload:{action:'entry'}});
   await until(()=>evaluate(`!!document.querySelector('[data-world-entry-tab-form="worlds"]')`),Boolean);
   await evaluate(`(()=>{const form=document.querySelector('[data-world-entry-tab-form="worlds"]');if(!globalThis.__craftmineHeadless||!form)throw Error('RETRY_WORLD_TAB_REQUIRED');form.requestSubmit();return true;})()`);

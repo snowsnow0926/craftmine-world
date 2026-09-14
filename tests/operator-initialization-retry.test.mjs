@@ -3,7 +3,22 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode} from './helpers/operator-initialization-retry.mjs';
+import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady} from './helpers/operator-initialization-retry.mjs';
+
+test('controller ready with zero windows waits for a real hidden window and available host/plugin',async()=>{
+  const safe={visible:false,focused:false,focusable:false,offscreen:true};
+  const samples=[{violations:[],windows:[],runtime:{hostAvailable:false,plugins:[]}},
+    {violations:[],windows:[safe],runtime:{hostAvailable:false,plugins:[]}},
+    {violations:[],windows:[safe],runtime:{hostAvailable:true,plugins:[]}},
+    {violations:[],windows:[safe],runtime:{hostAvailable:true,plugins:['craftmine.world']}}];
+  let reads=0;const result=await waitForRetryStartup({readStatus:async()=>samples[reads++],until:async(read,accept)=>{for(;;){assert(reads<samples.length);const value=await read();if(accept(value))return value;}}});
+  assert.equal(reads,4);assert.deepEqual(result,samples[3]);
+});
+test('unsafe windows or violations reject even while the backend is still starting',()=>{
+  const base={violations:[],windows:[{visible:false,focused:false,focusable:false,offscreen:true}],runtime:{hostAvailable:false,plugins:[]}};
+  for(const [field,value] of [['visible',true],['focused',true],['focusable',true],['offscreen',false]]){const status=structuredClone(base);status.windows[0][field]=value;assert.throws(()=>retryStartupStatusReady(status),/UNSAFE/);}
+  assert.throws(()=>retryStartupStatusReady({...base,windows:[],violations:['focus']}),/VIOLATIONS/);
+});
 
 function ui(options={}){
   let count=0;const button={disabled:!!options.disabled,getClientRects:()=>options.hidden?[]:[{}],closest:()=>options.inert?{}:null,...(options.missingHandler?{}:{__reactProps$fixture:{onClick:()=>{count++;}}})};

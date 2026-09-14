@@ -90,3 +90,20 @@ existing read-timeout tests passed (16 total), plus `node --check` and the inert
 `--help` entry. Native execution has not been performed by the implementing
 agent. Root must inspect the resulting report instead of interpreting script
 availability as recovered-world acceptance.
+
+The first parent-run probe (`3m99kY`) exposed a driver startup race: the private
+controller announced readiness before window creation, returning zero windows
+and `hostAvailable:false` with no violations. The original one-sample assertion
+stopped the app during renderer bootstrap, producing the subsequent host-core
+unavailable page error. That failed report is retained unchanged; it is not a
+visible/focused-window violation or a world-recovery verdict.
+
+The probe now polls real status until a window exists and the host plus world
+plugin are available. Every sample still checks all existing windows and any
+violation immediately, so waiting cannot hide an unsafe intermediate window.
+After attaching the owned renderer it waits for the normal application shell
+to leave its bootstrap state before dispatching initialization navigation.
+Two CPU cases cover zero-window -> hidden-window -> backend/plugin readiness
+and immediate rejection of unsafe windows even during backend startup. All
+18 probe/read-timeout tests pass; native recovery still requires the parent's
+next actual run.

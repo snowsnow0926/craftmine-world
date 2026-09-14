@@ -4,6 +4,15 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 export const retryHash=bytes=>createHash('sha256').update(bytes).digest('hex');
+export function retryStartupStatusReady(status){
+  assert.deepEqual(status?.violations,[],'RETRY_STARTUP_VIOLATIONS');
+  assert(Array.isArray(status.windows),'RETRY_STARTUP_WINDOWS_REQUIRED');
+  // Controller readiness precedes window creation. Check every window that
+  // exists immediately; an empty early sample is pending, not a failure.
+  assert(status.windows.every(window=>window.visible===false&&window.focused===false&&window.focusable===false&&window.offscreen===true),'RETRY_UNSAFE_STARTUP_WINDOW');
+  return status.windows.length>0&&status.runtime?.hostAvailable===true&&status.runtime?.plugins?.includes('craftmine.world')===true;
+}
+export function waitForRetryStartup({until,readStatus}){return until(readStatus,retryStartupStatusReady);}
 function unlinked(directory){
   assert.equal(fs.realpathSync(directory).toLowerCase(),path.resolve(directory).toLowerCase(),'RETRY_PROFILE_LINK_DENIED');
   const walk=dir=>{for(const entry of fs.readdirSync(dir)){const file=path.join(dir,entry),stat=fs.lstatSync(file);assert(!stat.isSymbolicLink(),'RETRY_PROFILE_LINK_DENIED');if(stat.isDirectory())walk(file);}};walk(directory);
