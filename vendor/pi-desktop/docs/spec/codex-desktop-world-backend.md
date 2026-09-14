@@ -103,6 +103,9 @@ player request, execute domain tools or substitute another model. Actual native
 maintenance usage belongs to the enclosing PI request; no total-history,
 compaction-count, token or time budget is imposed. A segment is not a guarantee of
 provider acceptance: preserve actual native refusal/error evidence.
+Cancel captures the current native maintenance turn ID before rejecting its local
+waiter, then sends ordinary `turn/interrupt` for that ID before closing the owned
+transport. A maintenance interruption never establishes a synchronized checkpoint.
 
 The adapter awaits each injection acknowledgement and checks the active native
 turn before and after it. There is no invented idempotency: failed/uncertain or

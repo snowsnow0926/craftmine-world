@@ -169,6 +169,11 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       try{
         const client=new Client(),original=client.call.bind(client);let entered!:()=>void;const begun=new Promise<void>(yes=>{entered=yes;});
         client.call=async(method,params)=>{
+          if(method==='turn/interrupt'&&variant==='cancelled'){
+            const result=await original(method,params);
+            client.notify('turn/completed',{turnId:params.turnId,turn:{id:params.turnId,status:'interrupted'}});
+            return result;
+          }
           if(method!=='thread/compact/start')return original(method,params);
           client.calls.push({method,params});client.notify('turn/started',{turnId:'maintenance',turn:{id:'maintenance'}});entered();
           client.request({turnId:'maintenance'});
@@ -181,6 +186,9 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         };
         const {runtime}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await begun;
         if(variant==='cancelled')await runtime.abort();await running;
+        if(variant==='cancelled')expect(client.calls.filter(c=>c.method==='turn/interrupt')).toEqual([
+          {method:'turn/interrupt',params:{threadId:'thread-1',turnId:'maintenance'}},
+        ]);
         expect(client.calls.some(c=>c.method==='turn/start')).toBe(false);expect(f.calls.some(c=>c.method==='tools.execute')).toBe(false);
         expect(f.checkpoint?.synchronized).toBe(false);expect(f.checkpoint?.submitted).toBe(false);expect(client.closed).toBe(true);
         if(variant==='failed')expect(f.events.find(e=>e.event.type==='error').event.error.details.terminalError.codexErrorInfo).toBe('contextWindowExceeded');
