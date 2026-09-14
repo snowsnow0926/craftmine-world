@@ -83,12 +83,13 @@ function createLibraryBinding({core,context,worldId,methods={}}){
 
   return {
     assetSearch(args={}){
-      if(!ASSET_SCOPES.includes(args.scope))fail('INVALID_ASSET_SCOPE');
+      const scope=args.scope===undefined?'local-library':args.scope;
+      if(!ASSET_SCOPES.includes(scope))fail('INVALID_ASSET_SCOPE');
       if(args.kind!==undefined&&!ASSET_KINDS.includes(args.kind))fail('INVALID_ASSET_KIND');
       if(args.mediaKind!==undefined&&!ASSET_MEDIA_KINDS.includes(args.mediaKind))fail('INVALID_ASSET_MEDIA_KIND');
-      const params={scope:args.scope,offset:args.offset??0,limit:args.limit??20};
+      const params={scope,offset:args.offset??0,limit:args.limit??20};
       // The world scope is host-bound; the model cannot point it at another world.
-      if(args.scope==='current-world')params.worldId=worldId;
+      if(scope==='current-world')params.worldId=worldId;
       for(const key of ['query','kind','mediaKind','tags','favoritesOnly','latestOnly'])if(args[key]!==undefined)params[key]=args[key];
       return probe('asset','search',params,OWNERS.asset);
     },

@@ -10645,3 +10645,21 @@ feedback/brief tables restores empty tables;
 wrong present columns, hash changes and dangling world references must reject
 without altering current feedback. These use isolated Rust fixtures, not the
 player's original profile, and launch neither native rendering nor a model.
+
+### Player source discovery after bundled template copy (2026-09-14)
+
+Run the root creation-guidance `current-cohorts`, `engine-cohorts`, `guidance`,
+`retained-monitor`, and `packaging` Node test files together with
+`tests/godot-round2/R7/library-and-intents.test.mjs`. Invalid index limits 100 and
+60 must explain the existing 1–32 range before host workspace calls; valid pinned
+pagination remains unchanged. Omitted asset search scope selects the local
+library, explicit invalid scope rejects, and current-world stays host-bound.
+
+The complete actual player revision-5 index must resolve the retained
+engine-monitor/ray-local cohort and read its original inherited recipe reference.
+Check both shipped and observer-upgraded source bytes against exact full cohorts;
+all old published entries stay unchanged. Mutate/remove every controlled member,
+add aliases/duplicates or alter read identity and require refusal. Build an
+isolated production plugin and rerun the three retained cases against it.
+These checks prove read-tool contracts and packaged source applicability only;
+they do not replace the separate ordinary player install/check/adopt/render flow.

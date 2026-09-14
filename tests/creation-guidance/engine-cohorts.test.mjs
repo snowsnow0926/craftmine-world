@@ -41,7 +41,7 @@ test('all released cohort entries and archived reference bytes stay exactly unch
  assert.equal(hash(JSON.stringify(skill.interfaceCohorts.variants.slice(0,2))),'1f2cc391d9f7c16d9f4f818ad5f5cc5df6a7e507cd2f2e19bc8fa3a017b63878');
  assert.equal(hash(JSON.stringify(skill.references)),'0ca22508585c004bba59e2074f8f4fcae9e910f9bfd8ade5c02076f71db767ee');
  assert.equal(hash(skill.text),'bc7687f90afa10e0afc74383574ce6bd5b6742bb0bdb017eeec556f66f0c5d64');
- assert.deepEqual(skill.interfaceCohorts,registry);assert.equal(corpus.version,'1.8.2');
+ assert.deepEqual(skill.interfaceCohorts,registry);assert.equal(corpus.version,'1.8.3');
 });
 test('explicitly enumerated full cohorts support LF/CRLF and retained exact reference reads',async()=>{
  for(const variant of registry.variants)for(const line of [0,1]){

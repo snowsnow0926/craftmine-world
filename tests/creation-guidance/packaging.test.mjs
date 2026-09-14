@@ -89,5 +89,7 @@ test('production plugin build includes exact guidance resources and serves a pin
     const childEnv={...process.env,CRAFTMINE_GUIDANCE_PLUGIN_ROOT:output};delete childEnv.NODE_TEST_CONTEXT;
     const engineCases=execFileSync(process.execPath,['--test',path.join(root,'tests/creation-guidance/engine-cohorts.test.mjs')],{cwd:root,encoding:'utf8',windowsHide:true,env:childEnv});
     assert.match(engineCases,/(?:#|ℹ) pass 6/);assert.match(engineCases,/(?:#|ℹ) fail 0/);
+    const retainedCases=execFileSync(process.execPath,['--test',path.join(root,'tests/creation-guidance/retained-monitor.test.mjs')],{cwd:root,encoding:'utf8',windowsHide:true,env:childEnv});
+    assert.match(retainedCases,/(?:#|ℹ) pass 3/);assert.match(retainedCases,/(?:#|ℹ) fail 0/);
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });
