@@ -11,15 +11,18 @@ export function operatorReleaseIdentity(live,{worldId,sessionId}) {
   return {worldId,sessionId,taskId:binding.taskId,generation:context.generation};
 }
 
-export function operatorReleasePageScript(expected,submit=false) {
+export function operatorReleasePageScript(expected,submit=false,action='release') {
+  assert(['release','continue'].includes(action),'UNKNOWN_TASK_FORM_ACTION');
   return `(async()=>{
     if(!globalThis.__craftmineHeadless||!globalThis.pluginBridge||document.body.dataset.worldId!==${JSON.stringify(expected.worldId)})throw Error('OWNED_RELEASE_PAGE_REQUIRED');
     const live=await pluginBridge.invoke('task.current',{worldId:${JSON.stringify(expected.worldId)}}),context=live?.context??(live?.binding?live:null);
-    const form=document.querySelector('form[data-release-execution-limits="true"]'),forms=document.querySelectorAll('form[data-release-execution-limits="true"]');
+    const forms=${action==='release'?`document.querySelectorAll('form[data-release-execution-limits="true"]')`:`[...document.querySelectorAll('[data-workbench-page="task"] form')].filter(form=>form.querySelector('button[type="submit"]')?.textContent.trim()==='继续创作')`},form=forms[0];
+    ${action==='continue'?`const recoverable=await pluginBridge.invoke('task.recoverable',{worldId:${JSON.stringify(expected.worldId)}}),entries=Array.isArray(recoverable)?recoverable:recoverable?.items??recoverable?.tasks??[];const onlyTarget=entries.length===1&&(entries[0].taskId??entries[0].id)===${JSON.stringify(expected.taskId)}&&entries[0].generation===${expected.generation};`:`const recoverable=null,onlyTarget=true;`}
     const notice=document.querySelector('.workbench-notice'),page=document.querySelector('[data-workbench-page="task"]');
-    const evidence={live,notice:notice?.textContent??'',error:notice?.dataset.error==='true',taskPageVisible:!!page&&!page.hidden,taskText:page?.textContent??'',formCount:forms.length,formDisabled:!!form?.querySelector('button:disabled'),buttonText:form?.querySelector('button')?.textContent??null};
+    const evidence={live,recoverable,onlyTarget,action:${JSON.stringify(action)},notice:notice?.textContent??'',error:notice?.dataset.error==='true',taskPageVisible:!!page&&!page.hidden,taskText:page?.textContent??'',formCount:forms.length,formDisabled:!!form?.querySelector('button:disabled'),buttonText:form?.querySelector('button')?.textContent??null};
     ${submit?`if(live?.active!==false||context?.world?.id!==${JSON.stringify(expected.worldId)}||context?.binding?.sessionId!==${JSON.stringify(expected.sessionId)}||context?.binding?.taskId!==${JSON.stringify(expected.taskId)}||context?.generation!==${expected.generation}||context?.recovery!=='interrupted')throw Error('RELEASE_TASK_IDENTITY_CHANGED');
     if(evidence.error)throw Error(evidence.notice);
+    if(!onlyTarget)throw Error('CONTINUE_RECOVERABLE_TASK_AMBIGUOUS_OR_CHANGED');
     if(!evidence.taskPageVisible||forms.length!==1||evidence.formDisabled)throw Error('RELEASE_FORM_UNAVAILABLE');
     form.requestSubmit();evidence.submitted=true;`:''}
     return evidence;
