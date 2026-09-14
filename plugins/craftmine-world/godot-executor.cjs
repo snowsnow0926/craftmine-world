@@ -19,6 +19,7 @@ const path = require('node:path');
 const {isDeepStrictEqual} = require('node:util');
 const {captureBinRetirement} = require('./godot-task-bin-retirement.cjs');
 const {creationTiming} = require('./creation-timing.cjs');
+const {diagnosticLog} = require('./godot-runtime-diagnostic-log.cjs');
 const {validCreationApplicationContext,normalizeCreationApplication,creationApplicationRecord,readCreationApplication}=require('./creation-application-state.cjs');
 
 const execFileAsync = (file, args, options = {}) => new Promise(resolve => {
@@ -1109,6 +1110,7 @@ function createGodotExecutor(core, options = {}) {
 
   async function finishJob(entry, result) {
     const {jobId, token} = entry;
+    const runtimeDiagnosticLog = diagnosticLog(result.runtime, entry.claim);
     const kind = entry.claim?.kind ?? entry.mode;
     // The core requires at least one assertion for a check job, including a
     // failed one: a job that never reached the runtime check must say so rather
@@ -1123,7 +1125,7 @@ function createGodotExecutor(core, options = {}) {
         && assertions.every(assertion => assertion.passed === true),
       import:result.import,
       compile:result.compile,
-      check:{passed:result.check.passed, assertions, ...(result.runtime?.requirementsEvidence ? {requirementsEvidence:result.runtime.requirementsEvidence} : {}), ...(result.check.passed && result.runtime?.passed && result.runtime?.defaultsSnapshot && result.runtime?.progressMigration ? {defaultsSnapshot:result.runtime.defaultsSnapshot, progressMigration:result.runtime.progressMigration} : {})},
+      check:{passed:result.check.passed, assertions, ...(runtimeDiagnosticLog ? {diagnosticLog:runtimeDiagnosticLog} : {}), ...(result.runtime?.requirementsEvidence ? {requirementsEvidence:result.runtime.requirementsEvidence} : {}), ...(result.check.passed && result.runtime?.passed && result.runtime?.defaultsSnapshot && result.runtime?.progressMigration ? {defaultsSnapshot:result.runtime.defaultsSnapshot, progressMigration:result.runtime.progressMigration} : {})},
       artifacts:result.artifacts,
       engine:{version:ENGINE_VERSION, isolation:ISOLATION, evidenceHash:discovery.evidenceHash},
     };
