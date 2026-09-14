@@ -181,3 +181,29 @@ supports completing such an already-authored fixture without repeating model
 requests. Last-request context metadata is separately tested through Rust's
 canonical transcript serializer; old messages without that metadata show no
 fabricated context-window estimate.
+# Failed transport diagnostics
+
+The adapter preserves its existing terminal code and adds selected observations
+to the existing `error.details`: a fixed host stage, and for a recognized RPC
+failure only, its request method, integer code and bounded redacted message.
+Stages distinguish context/checkpoint/binary/app-server setup, thread start or
+resume, transcript restoration, checkpoint save and turn start. Request methods
+are selected from initialize, config/read, account/read, thread/start,
+thread/resume and turn/start; no request arguments or arbitrary error fields are
+projected. The message retains at most 1,024 Unicode characters plus an explicit
+truncation marker. Tokens, common credential assignments, local paths, URLs and
+email addresses are redacted before persistence. Raw stderr remains discarded.
+
+This is diagnosis, not a recovery policy change. Interrupted or divergent
+checkpoints still restore the canonical transcript in a new CLI thread; valid
+synchronized checkpoints still resume. No automatic retries, history truncation,
+model fallback, token limits or model-call limits are introduced. A successful
+connection check proves setup, not that a later turn-start request succeeds.
+Old generic errors cannot be retrospectively reconstructed or rewritten.
+
+Regression tests use fixture protocol failures and assert the actual emitted
+details, original terminal code, one turn/start, exact Astra/xhigh selection,
+unsynchronized failure checkpoint and normal process cleanup. Native E2E requires
+a separately labeled ordinary recovery attempt in the original isolated profile;
+source-mode diagnosis is not final packaged acceptance. Inspect the persisted
+error details before inferring account quota, context limits or world errors.

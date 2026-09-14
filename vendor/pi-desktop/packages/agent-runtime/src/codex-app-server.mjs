@@ -42,6 +42,28 @@ export function redact(value) {
   return value;
 }
 
+const DIAGNOSTIC_STAGES = new Set(['context','checkpoint-load','binary-verify','app-server-start','thread-start','thread-resume','checkpoint-save','history-restore','turn-start']);
+const DIAGNOSTIC_METHODS = new Set(['initialize','config/read','account/read','thread/start','thread/resume','turn/start']);
+export function protocolDiagnostic(error, stage) {
+  const detail = {stage: DIAGNOSTIC_STAGES.has(stage) ? stage : 'unknown'};
+  if (!Number.isSafeInteger(error?.rpcCode) || !DIAGNOSTIC_METHODS.has(error?.rpcMethod)) return detail;
+  detail.rpcMethod = error.rpcMethod;
+  detail.rpcCode = error.rpcCode;
+  if (typeof error.diagnostic === 'string') {
+    // Only the RPC message is selected; no params, stderr, headers or data blob.
+    // Redact before truncating so a partially cut secret cannot evade matching.
+    const message = redact(error.diagnostic)
+      .replace(/((?:api[_-]?key|access[_-]?token|refresh[_-]?token|id[_-]?token|authorization|password|secret|credential)\s*[=:]\s*["']?)[^\s"'&,}]+/gi,'$1[REDACTED]')
+      .replace(/https?:\/\/[^\s"'<>]+/g,'[URL]')
+      .replace(/(?:file:\/\/\/)?\b[A-Za-z]:[\\/][^\r\n"'<>]*?(?=:\s|["'\r\n<>]|$)/g,'[LOCAL_PATH]')
+      .replace(/\/(?:Users|home|private|tmp)\/[^\s"'<>]+/g,'[LOCAL_PATH]')
+      .replace(/\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,'[ACCOUNT]')
+      .replace(/[\u0000-\u001f\u007f]/g,' ');
+    detail.message = [...message].slice(0,1024).join('') + ([...message].length > 1024 ? ' [truncated]' : '');
+  }
+  return detail;
+}
+
 export function processEnvironment(env = process.env) {
   // Codex opens its own existing credential store. Do not read/copy auth.json,
   // request account tokens, inherit API keys, or pass host/provider secrets.
@@ -88,7 +110,7 @@ export class CodexAppServer extends EventEmitter {
       if (msg.method) this.emit(msg.id === undefined ? 'notification' : 'request', msg);
       else if (this.pending.has(msg.id)) {
         const p = this.pending.get(msg.id); this.pending.delete(msg.id);
-        if (msg.error) p.reject(Object.assign(Error(`CODEX_RPC_ERROR:${msg.error.code}`), {rpcCode: msg.error.code, diagnostic:redact(msg.error.message)}));
+        if (msg.error) p.reject(Object.assign(Error(`CODEX_RPC_ERROR:${msg.error.code}`), {rpcMethod:p.method,rpcCode: msg.error.code, diagnostic:redact(msg.error.message)}));
         else p.resolve(msg.result);
       }
     });
@@ -118,7 +140,7 @@ export class CodexAppServer extends EventEmitter {
   call(method, params) {
     const id = ++this.sequence;
     return new Promise((resolve,reject) => {
-      this.pending.set(id,{resolve,reject});
+      this.pending.set(id,{resolve,reject,method});
       try { this.send({id,method,params}); } catch (error) { this.pending.delete(id); reject(error); }
     });
   }

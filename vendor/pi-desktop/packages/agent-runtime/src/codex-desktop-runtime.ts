@@ -4,7 +4,7 @@ import { mkdir } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import type { AgentEvent, AgentEventEnvelope, AgentStatus, MessageUsage, UiMessage } from "@pi-desktop/shared";
 import { CODEX_WORLD_TOOLS } from "@pi-desktop/shared";
-import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact } from "./codex-app-server.mjs";
+import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact, protocolDiagnostic } from "./codex-app-server.mjs";
 import type { PluginToolDef, RuntimePrompt } from "./runtime.js";
 
 type Host = { call<T = any>(method: string, params: Record<string, unknown>): Promise<T> };
@@ -17,7 +17,7 @@ export type CodexCheckpoint = { version: 1; model: typeof MODEL; effort: typeof 
 type Active = { turnId: string; cancelled: boolean; finishing?: Promise<void>; done: Promise<void>; resolve(): void;
   controller: AbortController; codexTurnId?: string; message?: UiMessage; itemId?: string; messageIds: string[];
   queue: Promise<void>; seen: Map<string, { digest: string; result: Promise<any> }>; baseline?: Total; total?: Total;
-  last?: MessageUsage; modelContextWindow?: number; startedAt: number };
+  last?: MessageUsage; modelContextWindow?: number; startedAt: number; diagnosticStage?: string; failureDetails?: Record<string,unknown> };
 export type CodexDesktopOptions = { sessionId: string; binary: string; scratchDir: string; tools: PluginToolDef[];
   host: Host; onEvent(event: AgentEventEnvelope): void; history(): Promise<UiMessage[]>;
   clientFactory?: (cwd: string) => Client; verifyBinary?: (signal: AbortSignal) => Promise<void> };
@@ -93,6 +93,7 @@ export class CodexDesktopRuntime {
     if (this.checkpoint) this.checkpoint.synchronized = synchronized;
   }
   private async connect(a: Active, userMessageId: string | undefined) {
+    a.diagnosticStage = 'checkpoint-load';
     const loaded = await this.options.host.call("codex.checkpoint.load", { ...this.identity(a), userMessageId });
     this.assertActive(a);
     const saved = loaded.checkpoint as CodexCheckpoint | undefined;
@@ -103,6 +104,7 @@ export class CodexDesktopRuntime {
     // Rust transcript in a new opaque CLI thread. It is never replayed as tools.
     const cwd = join(this.options.scratchDir, "codex-empty");
     await mkdir(cwd, { recursive: true });
+    a.diagnosticStage = 'binary-verify';
     if (this.options.verifyBinary) await this.options.verifyBinary(a.controller.signal);
     else {
       if (!isAbsolute(this.options.binary)) fail("CODEX_ABSOLUTE_PATH_REQUIRED");
@@ -117,9 +119,11 @@ export class CodexDesktopRuntime {
     client.on("notification", message => this.notification(a, message));
     client.on("request", message => this.request(a, message));
     client.on("failure", () => { if (this.active === a && !a.finishing) void this.finish(a, "error", "CODEX_TRANSPORT_FAILED"); });
+    a.diagnosticStage = 'app-server-start';
     await client.start(); this.assertActive(a);
     const common = { model: MODEL, modelProvider: "openai", config: client.threadConfig, cwd,
       approvalPolicy: "never", sandbox: "read-only", baseInstructions: instructions, developerInstructions: "", runtimeWorkspaceRoots: [] };
+    a.diagnosticStage = resume ? 'thread-resume' : 'thread-start';
     const result = await client.call(resume ? "thread/resume" : "thread/start", resume ? { ...common, threadId: saved!.threadId } :
       { ...common, allowProviderModelFallback: false, environments: [], dynamicTools: this.dynamicTools, ephemeral: false });
     this.assertActive(a);
@@ -130,6 +134,7 @@ export class CodexDesktopRuntime {
     a.baseline = resume ? saved!.usageTotal : { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
     this.checkpoint = { version: 1, model: MODEL, effort: EFFORT, threadId: result.thread.id, toolDigest: this.toolDigest,
       submitted: resume, synchronized: false, ...(resume && saved?.usageTotal ? { usageTotal: saved.usageTotal } : {}) };
+    a.diagnosticStage = 'checkpoint-save';
     await this.save(a, false); this.assertActive(a);
     this.transportState = resume ? "resumed" : "restored-from-transcript";
     this.emit({ type: "status", status: this.getStatus() });
@@ -144,12 +149,14 @@ export class CodexDesktopRuntime {
     this.active = a;
     this.emit({ type: "agent_start" }); this.emit({ type: "turn_start" }); this.emit({ type: "status", status: this.getStatus() });
     try {
+      a.diagnosticStage = 'context';
       const images = (prompt.attachments ?? []).map(imageInput);
       const facts = await this.options.host.call("craftmine.context", this.identity(a)); this.assertActive(a);
       if (facts.world?.runtimeKind !== "godot") fail("CODEX_GODOT_WORLD_REQUIRED");
       const resumed = await this.connect(a, userMessageId); this.assertActive(a);
       const input: any[] = [];
       if (!resumed) {
+        a.diagnosticStage = 'history-restore';
         const history = (await this.options.history()).filter(message => message.id !== userMessageId);
         this.assertActive(a);
         for (const message of history) {
@@ -169,13 +176,16 @@ export class CodexDesktopRuntime {
       input.push({ type: "text", text: "Current authoritative host facts: " + JSON.stringify(facts) },
         { type: "text", text: prompt.text }, ...images);
       this.checkpoint!.submitted = true;
+      a.diagnosticStage = 'checkpoint-save';
       await this.save(a, false); this.assertActive(a);
+      a.diagnosticStage = 'turn-start';
       const result = await this.client!.call("turn/start", { threadId: this.checkpoint!.threadId, model: MODEL, effort: EFFORT,
         environments: [], runtimeWorkspaceRoots: [], approvalPolicy: "never", input });
       if (!result.turn?.id || (a.codexTurnId && a.codexTurnId !== result.turn.id)) fail("CODEX_TURN_IDENTITY_MISMATCH");
       a.codexTurnId = result.turn.id;
       if (a.cancelled) void this.client?.call("turn/interrupt", { threadId: this.checkpoint!.threadId, turnId: result.turn.id }).catch(() => {});
     } catch (error) {
+      a.failureDetails = protocolDiagnostic(error, a.diagnosticStage);
       await this.finish(a, a.cancelled ? "aborted" : "error", diagnostic(error));
     }
     await a.done;
@@ -297,7 +307,7 @@ export class CodexDesktopRuntime {
         catch (error) { if (status === "complete") { status = "error"; code = "CODEX_CHECKPOINT_PERSIST_FAILED"; failureCause = diagnostic(error); } }
       }
       if (status === "error" || status === "aborted") this.emit({ type: "error", error: { code: code ?? "TURN_ABORTED", message: code ?? "TURN_ABORTED", retriable: false,
-        ...(failureCause ? { details: { cause: failureCause } } : {}) } }, a);
+        ...(failureCause || a.failureDetails ? { details: { ...a.failureDetails, ...(failureCause ? {cause: failureCause} : {}) } } : {}) } }, a);
       this.emit({ type: "turn_end" }, a);
       this.emit({ type: "agent_end", messageIds: a.messageIds }, a);
       await this.client?.close().catch(() => {});
