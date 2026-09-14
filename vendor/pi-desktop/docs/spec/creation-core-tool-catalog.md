@@ -15,6 +15,22 @@ review and finished-task closeout remain tool-free. The executor's offered tools
 and the provider request schema remain identical. Codex has its independent
 tool list and is unchanged by this PI-only profile amendment.
 
+## Embedded Blender first-call availability (2026-09-14)
+
+The same authoritative Godot profile includes registered `blender_generate` and
+`blender_job_read` beside the existing `blender_status`. Retained conversations
+refer to these ordinary modeling actions before a new turn has rediscovered
+them. Expose their actual host-supplied parameter schemas on the first request;
+do not require a redundant ToolSearch round merely to activate known tools.
+
+This only changes discoverability. Generation remains the existing asynchronous
+host-bound action with its original authorization, exact revision/manifest and
+expected-hash requirements. Reading a job retains the original world/ownership
+checks. No tool is invented when the host has not registered it, no other deferred
+Blender actions are activated, and no model argument can authorize a write.
+Legacy/unknown worlds, summaries, reviews and finished-task closeout do not gain
+these initial tools. Codex's independent tool profile is unchanged.
+
 每个模型请求先读取宿主当前任务快照。Rust 在现有绑定世界摘要中投影 `runtimeKind` 与 `baseId`，不根据玩家文字、构建 ID 前缀、目标快照或旧会话推测运行时，也不额外读取完整世界。
 
 确认 Godot 后，基础目录加入已注册的 `godot_file_read`、`godot_project_query`、`godot_project_patch`，保留工程事实、能力报告、指导和检查入口；legacy 的 `project_inspect`、`capabilities_read` 改为按需发现。确认 legacy 时使用其两项检查入口，Godot 工具按需发现。运行时未知保持原来的保守目录，不自动增加源码修改工具。

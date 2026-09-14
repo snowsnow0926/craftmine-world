@@ -379,11 +379,33 @@ function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, reco
 
 describe("Godot task tool profile", () => {
   const prefix="plugin_craftmine_world_";
-  const names=["project_inspect","capabilities_read","godot_project_facts","godot_capability_report","godot_guidance","godot_project_index","godot_file_read","godot_project_query","godot_project_patch","godot_build_start","godot_build_read","godot_docs","asset_library"];
+  const names=["project_inspect","capabilities_read","godot_project_facts","godot_capability_report","godot_guidance","godot_project_index","godot_file_read","godot_project_query","godot_project_patch","godot_build_start","godot_build_read","godot_docs","asset_library","blender_status","blender_generate","blender_job_read","blender_cancel"];
   const manifest=JSON.parse(readFileSync(new URL("../../../../../plugins/craftmine-world/manifest.json",import.meta.url),"utf8"));
   const indexDefinition=manifest.contributes.agentTools.find((tool:any)=>tool.name==="godot_project_index");
-  const plugins=names.map(name=>({name:prefix+name,description:name==="godot_project_index"?indexDefinition.description:name,
-    ...(name==="godot_project_index"?{parameters:indexDefinition.schema}:{})}));
+  const schemaNames=new Set(["godot_project_index","blender_generate","blender_job_read"]);
+  const plugins=names.map(name=>{
+    const definition=schemaNames.has(name)?manifest.contributes.agentTools.find((tool:any)=>tool.name===name):undefined;
+    return {name:prefix+name,description:definition?.description??name,...(definition?{parameters:definition.schema}:{})};
+  });
+  for(const name of ["blender_generate","blender_job_read"]) it(`offers the full registered ${name} schema and accepts it as the first native call`,async()=>{
+    const f=fixture(),current=snapshot();current.world.runtimeKind="godot";f.set(current);
+    const runtime=makeRuntime(f.hooks,[],[],plugins),internal=runtime as any,contexts:Context[]=[];
+    const args=name==="blender_generate"?{name:"fixture-dog",script:"import bpy\n",revision:6,manifestHash:"a".repeat(64),expectedHash:null}:{jobId:"12345678-1234-1234-1234-123456789abc"};
+    internal.host.call.mockImplementation(async()=>({ok:true,content:{jobId:"12345678-1234-1234-1234-123456789abc",status:"queued"}}));
+    vi.spyOn(internal.models,"streamSimple").mockImplementation((_model:unknown,raw:unknown)=>{
+      contexts.push(raw as Context);
+      return contexts.length===1?stream({...result(),stopReason:"toolUse",content:[{type:"toolCall",id:"native-blender-first",name:prefix+name,arguments:args}]}):stream();
+    });
+    await runtime.prompt("Continue creating the requested companion","blender-user","blender-turn");
+    const definition=manifest.contributes.agentTools.find((tool:any)=>tool.name===name);
+    expect(contexts[0].tools!.find(tool=>tool.name===prefix+name)?.parameters).toEqual(definition.schema);
+    expect(contexts[0].tools!.map(tool=>tool.name)).not.toContain(prefix+"blender_cancel");
+    const executed=internal.host.call.mock.calls.filter((call:any[])=>call[0]==="tools.execute");
+    expect(executed).toHaveLength(1);expect(executed[0][1]).toMatchObject({toolName:prefix+name,args});
+    expect(internal.activeDeferredToolNames.has(prefix+name)).toBe(false);
+    expect(internal.agent.state.messages.filter((message:any)=>message.role==="toolResult").every((message:any)=>!message.isError)).toBe(true);
+    await runtime.dispose();
+  });
   it("offers the real bounded index schema and executes index, read, patch and check without discovery", async()=>{
     const f=fixture(), current=snapshot();current.world.runtimeKind="godot";current.world.baseId="creation-sandbox";f.set(current);
     const runtime=makeRuntime(f.hooks,[],[],plugins),internal=runtime as any;
@@ -424,6 +446,7 @@ describe("Godot task tool profile", () => {
         const offered=contexts.at(-1)!.tools!.map(tool=>tool.name);
         expect(offered.includes(prefix+"godot_project_patch")).toBe(kind==="godot");
         expect(offered.includes(prefix+"godot_project_index")).toBe(kind==="godot");
+        for(const name of ["blender_generate","blender_job_read"])expect(offered.includes(prefix+name)).toBe(kind==="godot");
         if(kind==="legacy")expect(offered.some(name=>name.startsWith(prefix+"godot_"))).toBe(false);
       }
       expect(contexts).toHaveLength(4);await runtime.dispose();
@@ -431,10 +454,11 @@ describe("Godot task tool profile", () => {
   });
   it("intersects host definitions and disables summary, review and finished tools",async()=>{
     const f=fixture(),current=snapshot();current.world.runtimeKind="godot";f.set(current);
-    const runtime=makeRuntime(f.hooks,[],[],plugins.filter(tool=>![prefix+"godot_project_patch",prefix+"godot_project_index"].includes(tool.name))),internal=runtime as any;
+    const runtime=makeRuntime(f.hooks,[],[],plugins.filter(tool=>!["godot_project_patch","godot_project_index","blender_generate","blender_job_read"].map(name=>prefix+name).includes(tool.name))),internal=runtime as any;
     const prepare=(purpose:"creation"|"summary"|"review")=>f.hooks.beforeRequest({requestId:purpose,purpose,model,context:request,maxOutputTokens:4000});
     let reserved=await prepare("creation");expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_project_patch")).toBe(false);
     expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_project_index")).toBe(false);
+    for(const name of ["blender_generate","blender_job_read"])expect(reserved.context.tools!.some(tool=>tool.name===prefix+name)).toBe(false);
     for(const purpose of ["summary","review"] as const){reserved=await prepare(purpose);expect(reserved.context.tools).toEqual([]);expect(internal.agent.state.tools).toEqual([]);}
     reserved=await prepare("creation");expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_file_read")).toBe(true);
     current.status="finished";current.lease.owned=false;f.set(current);reserved=await prepare("creation");

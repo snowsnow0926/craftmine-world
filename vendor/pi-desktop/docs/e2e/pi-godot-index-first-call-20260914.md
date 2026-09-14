@@ -30,3 +30,24 @@ initial schema was absent and Godot re-selection still omitted the index. The
 same tests then passed; the complete request-boundary file passed 53 tests and
 runtime type-check passed. This is a native-loop contract test with a mocked
 provider and host response, not proof of a subsequent real provider run.
+
+## Embedded Blender continuation regression
+
+The later real 1M/max continuation no longer failed on the index, but its initial
+`blender_generate` still produced Tool not found until ToolSearch activation.
+Include only that existing tool and `blender_job_read` in the initial Godot
+profile; keep `blender_cancel` deferred.
+
+Two added native-loop cases independently make generation or job reading the
+first provider tool call. They load the complete production manifest schemas and
+assert the first offered definition equals those bytes structurally. The request
+reaches the normal `tools.execute` host route with the exact original arguments,
+without ToolSearch or deferred activation. No actual Blender process is launched;
+the host response and provider are contract fixtures. World-switch and
+unregistered-definition cases now cover both Blender names as well, while
+summary/review/finished-tool exclusion remains covered.
+
+Before the one-line profile extension, the two new first-call cases and the
+profile-switch assertion failed. Afterward all 55 request-boundary tests passed,
+and runtime type-check passed. This does not certify a generated artifact;
+subsequent actual model/Blender/check/application acceptance remains separate.
