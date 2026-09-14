@@ -38,9 +38,9 @@
 | 峡谷城双屋街区 | `cw.city.ward-street` | 1 | 源素材包 | 213.9 |
 | 宣传片同款阔叶树 | `cw.nature.promo-broadleaf` | 1 | 源素材包 | 23.3 |
 | 宣传片同款草地与野花 | `cw.scene.promo-meadow` | 1 | 源素材包 | 1497.0 |
-| 宣传片同款六只角怪 | `cw.module.promo-monsters` | 1 | 源素材包 | 33.4 |
+| 宣传片同款六只角怪 | `cw.module.promo-monsters` | 1 | 源素材包 | 33.6 |
 | 宣传片同款重刃 | `cw.module.promo-heavyblade` | 1 | 源素材包 | 30.5 |
-| 宣传片同款裂岳兽试炼 | `cw.module.promo-hunt` | 1 | 源素材包 | 65.8 |
+| 宣传片同款裂岳兽试炼 | `cw.module.promo-hunt` | 1 | 源素材包 | 65.9 |
 | 宣传片同款 AK47 | `cw.module.promo-ak47` | 1 | 源素材包 | 39.1 |
 
 ## 宣传片成品中的可复用内容
@@ -81,4 +81,4 @@
 - 按“树 → 花草 → 小怪 → 剑 → 大怪物 → AK47”重新实测。新增组件不提前出现尚未请求的巨兽、武器或竞技场，不重置已有进度。
 - 本地素材保存不等于远程发布；来源及许可证声明保留原状态，未核实的信息不标成已验证。
 
-当前索引目录 SHA-256：`64dc53db4507a13173614d5aa64fc5894a39e4501bef43a3619130bd3133eeb4`。
+当前索引目录 SHA-256：`97289ff8ca663280d920de16ac19ede1a90e6b3b6e911bb9c3e12ab139d5c537`。
