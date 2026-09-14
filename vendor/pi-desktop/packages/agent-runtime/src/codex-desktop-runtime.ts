@@ -357,11 +357,13 @@ export class CodexDesktopRuntime {
     if (a.finishing) return a.finishing;
     let failureCause: string | undefined;
     const abortTailWasIdle=a.pendingToolReplies===0;
+    // Capture before abort rejects the maintenance waiter and clears its state.
+    const interruptTurnId=a.compaction?.turnId??a.codexTurnId;
     a.cancelled = status !== "complete";
     a.finishing = Promise.resolve().then(async () => {
       if (a.cancelled) {
         a.controller.abort();
-        if (a.codexTurnId) void this.client?.call("turn/interrupt", { threadId: this.checkpoint?.threadId, turnId: a.codexTurnId }).catch(() => {});
+        if (interruptTurnId) void this.client?.call("turn/interrupt", { threadId: this.checkpoint?.threadId, turnId: interruptTurnId }).catch(() => {});
         // Close the owned model process even if the parent host is gone.
         const closing = this.client?.close().catch(() => {});
         try { await this.options.host.call("codex.fence", { ...this.identity(a), status: status === "aborted" ? "aborted" : "error" }); }

@@ -145,6 +145,9 @@ compaction or omit its completed item. Expect no actual player `turn/start`, no
 historical tools, no synchronized checkpoint, preserved native cause and normal
 shutdown. Next ordinary retry rebuilds fully. Do not invent a timeout, model-call
 cap, smaller history or successful maintenance event to force progress.
+The cancelled maintenance case must explicitly send `turn/interrupt` with the
+known maintenance thread/turn ID; merely closing stdin is insufficient. Its
+interrupted acknowledgement must not synchronize the player checkpoint.
 
 ## Required report and automated entry point
 
