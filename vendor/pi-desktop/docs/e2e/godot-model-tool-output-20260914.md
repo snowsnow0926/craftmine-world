@@ -33,3 +33,8 @@ its failure is retained and is outside this projection change.
 The baseline and current normalized main source SHA-256 are identical; the
 source proof is `test-results/godot-tool-output-baseline-assertion.json` and the
 unmodified failure output is in `test-results/godot-tool-output-tests.log`.
+
+Integration follow-up `76ea1547` restored the production callback to the
+existing managed executor. The same 68 tests now pass; the root evidence is
+`test-results/integrated-godot-evidence-fixed.log`. The earlier missing-callback
+failure remains historical evidence rather than a current unresolved failure.
