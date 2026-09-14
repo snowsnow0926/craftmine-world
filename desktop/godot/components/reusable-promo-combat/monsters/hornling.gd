@@ -194,7 +194,10 @@ func restore(data: Dictionary) -> String:
 	if not problem.is_empty(): return problem
 	health = int(data.health)
 	global_position = Vector3(float(data.position[0]), float(data.position[1]), float(data.position[2]))
-	basis = Basis(Vector3.UP, float(data.yaw))
+	# Keep a unit transform and the real Node3D Euler value. Reconstructing only
+	# a basis adds a sin/cos -> atan roundtrip and can change a saved float32 yaw.
+	basis = Basis.IDENTITY
+	rotation = Vector3(0.0, float(data.yaw), 0.0)
 	velocity = Vector3.ZERO
 	aggro = false
 	windup = 0.0

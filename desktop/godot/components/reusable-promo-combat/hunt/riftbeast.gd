@@ -294,7 +294,9 @@ func restore(data: Dictionary) -> String:
 	timer = float(data.timer)
 	duration = float(data.duration)
 	position = Vector3(data.position[0], data.position[1], data.position[2])
-	basis = Basis(Vector3.UP, float(data.yaw))
+	# Preserve the real Euler cache without accumulating scale from an old basis.
+	basis = Basis.IDENTITY
+	rotation = Vector3(0.0, float(data.yaw), 0.0)
 	aim = Vector3(data.aim[0], data.aim[1], data.aim[2])
 	hit_player = data.hit
 	attack_count = int(data.count)

@@ -54,6 +54,7 @@ func run() -> void:
 	check(core.restore(stored) == "" and core.snapshot() == stored, "shared player state exact restore")
 	var monster_state: Dictionary = monster.snapshot()
 	check(monster.restore(monster_state) == "" and monster.snapshot() == monster_state, "hornling state exact restore")
+	check_yaw_roundtrip(monster, "hornling")
 	var blade := load("res://addons/cw.module.promo-heavyblade/blade.tscn").instantiate() as Node3D
 	blade.entity_id = "test-promo-blade"
 	world.add_child(blade)
@@ -116,6 +117,7 @@ func run() -> void:
 	var hunt_state: Dictionary = hunt.snapshot()
 	check(hunt.restore(hunt_state) == "" and hunt.snapshot() == hunt_state, "beast combat phase exact restore")
 	check(hunt.validate_restored_state() == "", "trial and beast state remain consistent")
+	check_yaw_roundtrip(hunt.boss, "riftbeast")
 	var complete_saved: Dictionary = registry.capture(world)
 	check(registry.restore(world, complete_saved.states, true) == "", "actual registry restores whole split combat ledger")
 	var prior_states: Dictionary = registry.capture(world).states
@@ -234,6 +236,7 @@ func conflict_guards() -> void:
 	root.add_child(world)
 	current_scene = world
 	await process_frame
+
 	await physics_frame
 	var core: Node3D = rifle.context
 	check(core.existing_combat_problem() == "", "same family core is not a legacy conflict")
@@ -256,3 +259,37 @@ func conflict_guards() -> void:
 		check(core.existing_combat_problem() == "", source + " gone does not leave a false conflict")
 	world.queue_free()
 	await process_frame
+
+func wire(value: Variant) -> Variant:
+	return JSON.parse_string(JSON.stringify(value))
+
+func check_yaw_roundtrip(actor: Node3D, label: String) -> void:
+	var original: Dictionary = wire(actor.snapshot())
+	for angle in [0.0, 0.192851096391678, -0.192851096391678, PI, -PI, PI - 0.00001, -PI + 0.00001, 0.0000001, -0.0000001, 1.26804494857788]:
+		var saved := original.duplicate(true)
+		# Saved Node3D angles are float32 values encoded through the JSON wire.
+		saved.yaw = wire(Vector3(0, angle, 0).y)
+		if label == "hornling": saved.position = [12.1428146362305, 0.00083703128620982, 2.72962045669556]
+		check(actor.restore(saved) == "", label + " accepts legacy yaw " + str(angle))
+		check(wire(actor.snapshot()) == saved, label + " strictly preserves every saved field at yaw " + str(angle))
+	var max_scale_error := 0.0
+	var stable := true
+	for i in range(2048):
+		var angle := sin(float(i) * 0.31) * PI
+		if actor.has_method("_face"):
+			actor._face(Vector3(-sin(angle), 0, -cos(angle)), 1.0 / 60.0)
+		else:
+			# External transforms must be read from the actual Node3D, not a shadow
+			# saved yaw. This is the same unit-basis representation used in locomotion.
+			actor.basis = Basis(Vector3.UP, angle)
+		var saved: Dictionary = wire(actor.snapshot())
+		if actor.restore(saved) != "" or wire(actor.snapshot()) != saved: stable = false
+		for axis in [actor.basis.x, actor.basis.y, actor.basis.z]: max_scale_error = maxf(max_scale_error, absf(axis.length() - 1.0))
+	check(stable, label + " repeated real turn/restore cycles preserve exact wire state")
+	check(max_scale_error <= 0.000001, label + " repeated turns do not accumulate scale drift")
+	var before: Dictionary = wire(actor.snapshot())
+	actor.position += Vector3(0.25, 0, 0.5)
+	actor.basis = Basis(Vector3.UP, 1.1)
+	var changed: Dictionary = wire(actor.snapshot())
+	check(changed.position != before.position and changed.yaw == wire(actor.rotation.y) and changed.yaw != before.yaw, label + " snapshot reports real external movement and heading")
+	check(actor.restore(original) == "" and wire(actor.snapshot()) == original, label + " restores original health position and settings after edge tests")

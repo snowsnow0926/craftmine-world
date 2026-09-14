@@ -12,6 +12,7 @@
 - Entering or leaving a trial synchronizes the original encounter HUD and damage-overlay visibility without advancing paused HP/timers. Trial control hints describe the actually equipped weapon. Return/defeat messages refer only to existing content and progress, not an assumed dog or forest.
 - The temporary battle-start announcement does not repeat blade-specific controls: a trial can also start with the rifle equipped. The persistent HUD supplies current weapon controls.
 - Component HUD controls use a full-viewport Control parent and relative anchor offsets. Encounter life/downed/hit feedback and blade top/bottom/central panels must have nonzero global rectangles inside the actual viewport, including viewport resize while the tree is paused. This layout change does not depend on the original world's presentation node or mutate combat snapshots/timers.
+- Hornling and riftbeast restore must preserve the actual Node3D Euler yaw through the strict JSON state roundtrip. Restore resets the unit basis and sets `rotation` directly; reconstructing only a basis must not introduce an additional trigonometric roundtrip. Snapshot continues to read real transforms, including external movement. No tolerance, shadow snapshot or saved-format migration is introduced.
 
 ## End-to-end acceptance
 
