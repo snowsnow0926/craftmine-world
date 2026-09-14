@@ -35,7 +35,7 @@ import { createTurnTerminalOutcomes } from "./turn-terminal-outcome";
 import { CraftmineTurnGateway } from "./craftmine-turn-gateway";
 import { CodexCheckpointHost } from "./codex-checkpoint-host";
 import { CodexConnection } from "./codex-connection.mjs";
-import { CODEX_WORLD_MODEL, CODEX_WORLD_EFFORT, CODEX_WORLD_TOOLS, validateWorldAgentSettings } from "@pi-desktop/shared";
+import { CODEX_WORLD_MODEL, CODEX_WORLD_EFFORT, CODEX_REGISTERED_WORLD_TOOLS, validateWorldAgentSettings } from "@pi-desktop/shared";
 import { CraftmineMaintenanceContexts } from "./craftmine-maintenance-context";
 import { createCraftminePanelGateway } from "./craftmine-panel-gateway";
 import { createCraftmineOperationJournal } from "./craftmine-operation-journal";
@@ -2222,7 +2222,7 @@ async function resolveAgentRuntimeLaunch(
         provider: { id: "codex-cli", name: "Local Codex CLI", modelId: CODEX_WORLD_MODEL, apiKey: "", authKind: "none" as const,
           supportsReasoning: true, supportsVision: true, supportedThinkingLevels: [CODEX_WORLD_EFFORT],
           modelConfig: { ...genericModelConfig(CODEX_WORLD_MODEL, ""), cost: undefined, limit: undefined, reasoning: true, input: ["text", "image"] as ("text" | "image")[], supportedThinkingLevels: [CODEX_WORLD_EFFORT] } },
-        pluginTools: plugins.getTools().filter(tool => tool.pluginId === "craftmine.world" && CODEX_WORLD_TOOLS.has(tool.name))
+        pluginTools: plugins.getTools().filter(tool => tool.pluginId === "craftmine.world" && CODEX_REGISTERED_WORLD_TOOLS.has(tool.name))
           .map(tool => ({ name: tool.fullName, description: tool.description, parameters: tool.schema ?? { type: "object", properties: {} }, risk: tool.risk as Risk })),
       } };
   }

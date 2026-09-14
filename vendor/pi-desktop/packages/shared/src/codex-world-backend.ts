@@ -22,3 +22,14 @@ export const CODEX_WORLD_TOOLS = new Set([
   "requirements_read", "world_brief", "blender_status", "blender_generate", "blender_job_read", "blender_cancel",
   "asset_library", "godot_source_library", "package_library",
 ]);
+
+/** Existing Rust-owned voxel transactions; never native/Godot operators. */
+export const CODEX_LEGACY_WORLD_TOOLS = new Set([
+  "project_inspect", "capabilities_read", "resource_read", "workspace_patch",
+  "verification_submit", "verification_read", "verification_cancel",
+  "library_search", "library_read", "library_install", "memory_search", "memory_propose",
+  "requirements_read", "world_brief",
+]);
+
+/** Main supplies registered definitions; the sidecar selects one runtime catalog. */
+export const CODEX_REGISTERED_WORLD_TOOLS = new Set([...CODEX_WORLD_TOOLS, ...CODEX_LEGACY_WORLD_TOOLS]);

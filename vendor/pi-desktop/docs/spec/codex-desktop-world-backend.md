@@ -16,8 +16,10 @@ the app-server handshake. Missing executable/login, unsupported CLI version,
 different effective model/effort or tool catalog, foreign world binding, and
 unexpected built-in tools fail visibly. There is no PI/model fallback.
 
-This is a Godot **Agent-mode** authoring backend. Coding/Plan retain the provider
-backend. A non-Godot world is rejected by this experimental adapter. Auxiliary
+This is a Craftmine **Agent-mode** authoring backend for Godot and legacy voxel
+worlds. Coding/Plan retain the provider backend. Unknown or absent runtime kinds
+fail closed before a model starts. The selected world is neither converted nor
+replaced, and selecting Codex never silently switches to a provider model. Auxiliary
 API-provider completions (prompt enhancement, generated titles, plugin side
 completions/reviews) are unavailable with the Codex world binding and fail
 explicitly. Manual PI compaction is unavailable; Codex manages its context.
@@ -31,8 +33,12 @@ same restricted `codex-app-server.mjs` as the project CLI. Both unbundled TypeSc
 build and packaged runtime bundle contain the module. No development absolute
 path or project CLI world initialization is used in the desktop.
 
-Electron selects only registered, project-scoped Craftmine tools from the finite
-Godot/Blender authoring catalog. The direct `craftmine` namespace uses their short
+Electron supplies only registered, project-scoped Craftmine tools from the finite
+union of the Godot/Blender and legacy voxel authoring catalogs. The sidecar reads
+authoritative `craftmine.context` before connecting, selects exactly the matching
+runtime catalog and verifies its required entry tools. Godot keeps the original
+ordered definitions and digest, so adding legacy support does not invalidate an
+existing Godot checkpoint. The direct `craftmine` namespace uses their short
 names. Every call maps back to the registered full plugin name and reaches
 `tools.execute`, including its declared risk, Rust permission evaluation and the
 existing `plugins.execute` dispatcher. World/session/turn identity and receipt
@@ -40,6 +46,23 @@ IDs are host-derived. No generic Core RPC, shell, repository editing, filesystem
 external MCP, agent delegation, preview/adopt operator interface or user files
 are exposed. Existing source revisions, leases, native broker sandbox and
 candidate/application consent remain unchanged.
+
+Legacy exposes `project_inspect`, `capabilities_read`, `resource_read`,
+`workspace_patch`, `verification_submit/read/cancel`, `library_search/read/install`,
+`memory_search/propose`, `requirements_read` and `world_brief`. It starts with
+the installed voxel contracts, current resource revisions and hashes; edits use
+the existing atomic compiler-backed transactions and asynchronous verification.
+Godot source, Blender and native operator tools are absent. The model cannot
+preview or apply a candidate. A passing machine check does not assert player
+acceptance; preview/application remain the existing player controls. Auxiliary
+provider reviews remain unavailable for Codex, without invalidating machine
+verification. Runtime/world identity is rechecked after history restoration;
+changed bindings fail before the current request reaches the model.
+
+Request callbacks retain their owning transport client. A late callback after
+cancel/close receives a refusal on that client and cannot dereference a disposed
+client or respond through a later conversation transport. The durable turn fence
+and host `tools.execute` permissions remain mandatory for both runtime catalogs.
 
 Current host context is rebuilt before the request; native source/task state is
 authoritative. Thread/turn configuration disables environment access and all
