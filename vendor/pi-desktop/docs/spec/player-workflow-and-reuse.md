@@ -4,7 +4,7 @@ Date: 2026-09-13. This request continues the approved promotion branch at `79ae8
 
 ## Product surface
 
-The existing PI Desktop world chooser contains My worlds, Examples and New world. The original sidebar, projects, sessions, WorkPanel, Composer, themes and settings remain the shell. My worlds uses the native world list; examples come from delivered creation-sandbox starter metadata, bounded inline PNG previews and source version identities. New worlds use the existing base/starter/title flow, including Godot and Web bases reported by the host.
+The existing PI Desktop world chooser contains My worlds, Examples, My templates and New world. The original sidebar, projects, sessions, WorkPanel, Composer, themes and settings remain the shell. My worlds uses the native world list; examples come from delivered creation-sandbox starter metadata, bounded inline PNG previews and source version identities. New worlds use the existing base/starter/title flow, including Godot and Web bases reported by the host.
 
 Choosing an existing world uses save-before-switch and the conversation ownership fence from the prior player slots. Capture the navigation/draft identity before waiting for a switch or build. A changed conversation or draft prevents late presentation handoff and never rebinds the old session. New copies use independent sessions and retain the operation identity for uncertain create receipts. Model connection is not required to open prepared worlds.
 
@@ -29,3 +29,26 @@ Example cards use only published, base-scoped authored-default templates; the le
 Integrated verification includes actual PI renderer form submission, real template initialization, native library selection and Composer prefill, plus controlled native Codex account/model verification with zero inference calls. Four-world native save/reopen evidence is in the repository's player-world-template evidence; charged model reuse evidence is retained separately in the isolated live run.
 
 Creation options retain each engine's own starter list, including Web's blank starter. Large template previews are sent only in the base-scoped catalog, avoiding a duplicate copy in the legacy fallback list.
+
+### Demo entry and imported templates (2026-09-15)
+
+Examples retain their existing one-action copy-and-play flow. A single import
+shortcut opens My templates, where the normal ZIP import remains explicit.
+Concise help locates the demo package's `examples` folder and distinguishes
+importing an archive from creating its independent world with saved progress.
+No filesystem path, built-in starter, model call or automatic import is invented.
+The first creation guide names the actual chooser tabs.
+
+A successful import selects its validated immutable reference, clears the search
+and reloads the first host list page. Pagination uses the last completed search,
+not unsent search-box edits. Empty search results are distinct from an empty
+library. Unmounted chooser callbacks cannot update the next chooser or create a
+world. Import success never itself calls world creation.
+
+`locked` means the chooser retains a create attempt, including uncertain or
+failed preparation; `busy` separately denotes ongoing work. A locked template
+cannot change identity or start a new creation. Only an explicit parent retry
+callback can retry, and the chooser supplies the original create-attempt input
+and operation identity. The button says Retry preparation and enter rather than
+claiming to create a new world. These changes do not alter native import checks,
+saved-progress ownership or the normal creation fence.

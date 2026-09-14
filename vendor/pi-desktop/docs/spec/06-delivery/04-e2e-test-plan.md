@@ -10969,3 +10969,9 @@ Keep strict prefix validation unchanged when other tools are actually activated.
 Check configured city/sandbox ranges, exact cold component state, finite values,
 2 mm vertical contacts, retained field/collision checks, immutable old packages
 and recipe3 configuration. See [the scenario](../../e2e/companion-world-bounds-20260914.md).
+
+## Demo entry and imported template feedback (2026-09-15)
+
+Verify the existing example cards and the ordinary import shortcut, accurate
+empty-search feedback, imported list refresh, exact retained-attempt retry and
+unmounted reply fences. See [the focused renderer scenario](../../e2e/demo-entry-and-templates-20260915.md).
