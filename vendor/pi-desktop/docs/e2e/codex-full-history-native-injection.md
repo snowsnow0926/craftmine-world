@@ -108,6 +108,13 @@ endpoint or falsify a provider response merely to induce this scenario.
 
 ## H5: ordinary synchronized resume remains unchanged
 
+Also test acknowledged interruption of a confirmed user turn with no pending tool
+reply: the matching terminal `interrupted` acknowledgement plus a successful host
+checkpoint save may preserve native resume and its existing compacted context.
+Missing, foreign or post-retirement acknowledgement, a pending tool, unacknowledged
+turn start, failed native fence or failed host save must not establish this state.
+Do not obtain synchronization merely from the UI's `aborted` label.
+
 Complete a normal model turn after a successful restore, close the application
 normally and reopen the same conversation. When the canonical transcript/binding
 still matches the synchronized checkpoint, expect `thread/resume` for that opaque

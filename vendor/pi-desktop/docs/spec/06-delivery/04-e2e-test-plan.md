@@ -9977,6 +9977,9 @@ and executes no historical tools. Record fixture, source-native and final packag
 acceptance separately; synchronized resume must not inject history again.
 Preserve bound asynchronous native errors; a context-window capacity marker with
 zero input/output must remain diagnostic data and never be counted as token usage.
+Verify clean interrupted-turn acknowledgement preserves resume only with a
+confirmed start, idle tool tail and successful host save; late/foreign ack and
+pending tools must remain unsynchronized.
 
 Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
 Local Codex CLI in General settings with an explicit executable path. With no

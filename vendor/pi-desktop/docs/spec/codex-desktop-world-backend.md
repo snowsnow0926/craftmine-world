@@ -68,6 +68,16 @@ tool catalog fails closed. A missing synchronized rollout also fails visibly.
 Native interrupted-task resume/discard continues to require the existing player's
 world recovery action; transport recovery cannot grant a native write lease.
 
+An interruption may retain synchronization only when the actual user `turn/start`
+was acknowledged before abort, no tool reply was pending when abort began or when
+the tail settled, the exact CLI thread/turn reports `interrupted`, and the host
+checkpoint save succeeds. The terminal acknowledgement can arrive while the
+owned process closes; unrelated or post-retirement acknowledgements cannot revive
+it. Missing acknowledgement, partial start, pending tools, failed native fence or
+checkpoint save remain unsynchronized. This preserves native compaction already
+performed in a cleanly interrupted CLI thread without weakening partial recovery.
+Existing overwritten checkpoints are not reconstructed from external rollout files.
+
 Full restoration uses the pinned CLI's `thread/inject_items` interface to append
 ordinary historical-data messages without starting a model turn. Each canonical
 record retains its PI session/message ID, timestamp, original role/status, tool

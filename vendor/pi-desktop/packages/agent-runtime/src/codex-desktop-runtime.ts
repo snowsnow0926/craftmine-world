@@ -18,7 +18,8 @@ export type CodexCheckpoint = { version: 1; model: typeof MODEL; effort: typeof 
 type Active = { turnId: string; cancelled: boolean; finishing?: Promise<void>; done: Promise<void>; resolve(): void;
   controller: AbortController; codexTurnId?: string; message?: UiMessage; itemId?: string; messageIds: string[];
   queue: Promise<void>; seen: Map<string, { digest: string; result: Promise<any> }>; baseline?: Total; total?: Total;
-  last?: MessageUsage; modelContextWindow?: number; startedAt: number; diagnosticStage?: string; failureDetails?: Record<string,unknown> };
+  last?: MessageUsage; modelContextWindow?: number; startedAt: number; diagnosticStage?: string; failureDetails?: Record<string,unknown>;
+  startAcknowledged:boolean; interruptedAcknowledged:boolean; pendingToolReplies:number };
 export type CodexDesktopOptions = { sessionId: string; binary: string; scratchDir: string; tools: PluginToolDef[];
   host: Host; onEvent(event: AgentEventEnvelope): void; history(): Promise<UiMessage[]>;
   clientFactory?: (cwd: string) => Client; verifyBinary?: (signal: AbortSignal) => Promise<void> };
@@ -154,6 +155,7 @@ export class CodexDesktopRuntime {
     if (!turnId || typeof prompt.text !== "string" || !prompt.text.trim()) fail("CODEX_HOST_TURN_REQUIRED");
     let resolveDone!: () => void;
     const a: Active = { turnId, cancelled: false, startedAt: Date.now(), controller: new AbortController(), messageIds: [], queue: Promise.resolve(),
+      startAcknowledged:false,interruptedAcknowledged:false,pendingToolReplies:0,
       seen: new Map(), done: new Promise(resolve => { resolveDone = resolve; }), resolve: () => resolveDone() };
     this.active = a;
     this.emit({ type: "agent_start" }); this.emit({ type: "turn_start" }); this.emit({ type: "status", status: this.getStatus() });
@@ -204,6 +206,7 @@ export class CodexDesktopRuntime {
         environments: [], runtimeWorkspaceRoots: [], approvalPolicy: "never", input });
       if (!result.turn?.id || (a.codexTurnId && a.codexTurnId !== result.turn.id)) fail("CODEX_TURN_IDENTITY_MISMATCH");
       a.codexTurnId = result.turn.id;
+      if(!a.cancelled && !a.finishing) a.startAcknowledged=true;
       if (a.cancelled) void this.client?.call("turn/interrupt", { threadId: this.checkpoint!.threadId, turnId: result.turn.id }).catch(() => {});
     } catch (error) {
       a.failureDetails = protocolDiagnostic(error, a.diagnosticStage);
@@ -229,7 +232,13 @@ export class CodexDesktopRuntime {
     a.message = undefined; a.itemId = undefined;
   }
   private notification(a: Active, { method, params: p = {} }: any) {
-    if (a !== this.active || a.finishing || p.threadId !== this.checkpoint?.threadId) return;
+    if (a !== this.active || p.threadId !== this.checkpoint?.threadId) return;
+    // A clean interrupt acknowledgement may arrive while close() is draining
+    // the owned CLI. Record only its exact confirmed user turn, never a late or
+    // unrelated turn; ordinary notifications still cannot revive finishing work.
+    if(method==='turn/completed' && a.startAcknowledged && p.turn?.id===a.codexTurnId &&
+      (!p.turnId || p.turnId===a.codexTurnId) && p.turn.status==='interrupted')a.interruptedAcknowledged=true;
+    if(a.finishing)return;
     if (method === "turn/started") { if (!a.codexTurnId) a.codexTurnId = p.turn?.id; return; }
     if (p.turnId && a.codexTurnId && p.turnId !== a.codexTurnId) return;
     if (method === "model/rerouted") { void this.finish(a, "error", "CODEX_MODEL_REROUTED"); return; }
@@ -288,6 +297,7 @@ export class CodexDesktopRuntime {
       else void prior.result.then(result => client.respond(request.id, result));
       return;
     }
+    a.pendingToolReplies++;
     const result = a.queue.then(async () => {
       if (a.cancelled || a.finishing) return output(false, { error: "TURN_ENDED" });
       const toolCallId = "codex-" + hash([a.turnId, p.callId]);
@@ -312,13 +322,15 @@ export class CodexDesktopRuntime {
       }
     });
     a.seen.set(p.callId, { digest, result }); a.queue = result.then(() => {});
-    void result.then(value => client.respond(request.id, value)).catch(() => { void this.finish(a, "error", "CODEX_TOOL_TRANSPORT_FAILED"); });
+    void result.then(value => client.respond(request.id, value)).catch(() => { void this.finish(a, "error", "CODEX_TOOL_TRANSPORT_FAILED"); })
+      .finally(()=>{a.pendingToolReplies--;});
   }
   private finish(a: Active, status: "complete" | "error" | "aborted", code?: string): Promise<void> {
     if (a.finishing) return a.finishing;
     let failureCause: string | undefined;
+    const abortTailWasIdle=a.pendingToolReplies===0;
     a.cancelled = status !== "complete";
-    a.finishing = (async () => {
+    a.finishing = Promise.resolve().then(async () => {
       if (a.cancelled) {
         a.controller.abort();
         if (a.codexTurnId) void this.client?.call("turn/interrupt", { threadId: this.checkpoint?.threadId, turnId: a.codexTurnId }).catch(() => {});
@@ -333,15 +345,16 @@ export class CodexDesktopRuntime {
       this.endMessage(a, status, usage, code);
       if (this.checkpoint) {
         this.checkpoint.usageTotal = a.total;
-        try { await this.save(a, status === "complete"); }
-        catch (error) { if (status === "complete") { status = "error"; code = "CODEX_CHECKPOINT_PERSIST_FAILED"; failureCause = diagnostic(error); } }
+        const synchronized=status==='complete' || (status==='aborted' && abortTailWasIdle && a.pendingToolReplies===0 && a.startAcknowledged && a.interruptedAcknowledged);
+        try { await this.save(a, synchronized); }
+        catch (error) { if (status === "complete" || status === 'aborted') { status = "error"; code = "CODEX_CHECKPOINT_PERSIST_FAILED"; failureCause = diagnostic(error); } }
       }
       if (status === "error" || status === "aborted") this.emit({ type: "error", error: { code: code ?? "TURN_ABORTED", message: code ?? "TURN_ABORTED", retriable: false,
         ...(failureCause || a.failureDetails ? { details: { ...a.failureDetails, ...(failureCause ? {cause: failureCause} : {}) } } : {}) } }, a);
       this.emit({ type: "turn_end" }, a);
       this.emit({ type: "agent_end", messageIds: a.messageIds }, a);
       await this.client?.close().catch(() => {});
-    })().finally(() => {
+    }).finally(() => {
       if (this.active === a) { this.active = undefined; this.client = undefined; }
       this.emit({ type: "status", status: this.getStatus() }, a); a.resolve();
     });
