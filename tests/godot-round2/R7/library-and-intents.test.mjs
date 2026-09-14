@@ -63,6 +63,14 @@ test('a local-library search is not pointed at the bound world',()=>{
   assert.ok(!('worldId' in calls[0].params),'a global search must not claim a world scope');
 });
 
+test('omitted search scope uses the local library without weakening explicit scope checks',async()=>{
+  const {calls,library}=binding({'asset.search':{items:[]}});
+  await library.assetSearch({query:'dog',mediaKind:'model',limit:12});
+  assert.deepEqual(calls[0],{method:'asset.search',params:{scope:'local-library',offset:0,limit:12,query:'dog',mediaKind:'model'}});
+  for(const scope of [null,'',false,'everything'])assert.throws(()=>library.assetSearch({scope}),/INVALID_ASSET_SCOPE/);
+  assert.equal(calls.length,1);
+});
+
 test('a missing library adapter names the exact method and owner',async()=>{
   const {library}=binding();
   const search=await library.assetSearch({scope:'local-library'});

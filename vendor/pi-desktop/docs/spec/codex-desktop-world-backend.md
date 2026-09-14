@@ -16,10 +16,12 @@ the app-server handshake. Missing executable/login, unsupported CLI version,
 different effective model/effort or tool catalog, foreign world binding, and
 unexpected built-in tools fail visibly. There is no PI/model fallback.
 
-This is a Godot **Agent-mode** authoring backend. Coding/Plan retain the provider
-backend. A non-Godot world is rejected by this experimental adapter. Auxiliary
-API-provider completions (prompt enhancement, generated titles, plugin side
-completions/reviews) are unavailable with the Codex world binding and fail
+This is a Craftmine **Agent-mode** authoring backend for Godot and legacy voxel
+worlds. Coding/Plan retain the provider backend. Unknown or absent runtime kinds
+fail closed before a model starts. The selected world is neither converted nor
+replaced, and selecting Codex never silently switches to a provider model. Auxiliary
+API-provider completions (prompt enhancement, generated titles and generic plugin
+side completions) are unavailable with the Codex world binding and fail
 explicitly. Manual PI compaction is unavailable; Codex manages its context.
 Plain-text clarification uses the next ordinary conversation message. The
 existing PI asktool card is not advertised to Codex.
@@ -31,8 +33,12 @@ same restricted `codex-app-server.mjs` as the project CLI. Both unbundled TypeSc
 build and packaged runtime bundle contain the module. No development absolute
 path or project CLI world initialization is used in the desktop.
 
-Electron selects only registered, project-scoped Craftmine tools from the finite
-Godot/Blender authoring catalog. The direct `craftmine` namespace uses their short
+Electron supplies only registered, project-scoped Craftmine tools from the finite
+union of the Godot/Blender and legacy voxel authoring catalogs. The sidecar reads
+authoritative `craftmine.context` before connecting, selects exactly the matching
+runtime catalog and verifies its required entry tools. Godot keeps the original
+ordered definitions and digest, so adding legacy support does not invalidate an
+existing Godot checkpoint. The direct `craftmine` namespace uses their short
 names. Every call maps back to the registered full plugin name and reaches
 `tools.execute`, including its declared risk, Rust permission evaluation and the
 existing `plugins.execute` dispatcher. World/session/turn identity and receipt
@@ -40,6 +46,55 @@ IDs are host-derived. No generic Core RPC, shell, repository editing, filesystem
 external MCP, agent delegation, preview/adopt operator interface or user files
 are exposed. Existing source revisions, leases, native broker sandbox and
 candidate/application consent remain unchanged.
+
+Legacy exposes `project_inspect`, `capabilities_read`, `resource_read`,
+`workspace_patch`, `verification_submit/read/cancel`, `library_search/read/install`,
+`memory_search/propose`, `requirements_read` and `world_brief`. It starts with
+the installed voxel contracts, current resource revisions and hashes; edits use
+the existing atomic compiler-backed transactions and asynchronous verification.
+Godot source, Blender and native operator tools are absent. The model cannot
+preview or apply a candidate. A passing machine check does not assert player
+acceptance; preview/application remain the existing player controls. Legacy
+application also requires the ordinary completed request review. Its private
+host-owned review API uses a separate tool-free Codex completion for the exact
+current frozen review, then seals its plan and runs the existing real-renderer
+assertions. Runtime/world identity is rechecked after history restoration;
+changed bindings fail before the current request reaches the model.
+
+Request callbacks retain their owning transport client. A late callback after
+cancel/close receives a refusal on that client and cannot dereference a disposed
+client or respond through a later conversation transport. The durable turn fence
+and host `tools.execute` permissions remain mandatory for both runtime catalogs.
+
+### Frozen legacy request review
+
+Only a current `review.context` with a passed current verification, matching
+legacy world/task binding, original `codex-cli/gpt-6-astra` model key and `xhigh`
+may invoke `completeCodexReview`. The ordinary plugin permission and private
+review ID remain necessary. Generic completions cannot provide a review ID.
+An explicit backend change after creation refuses the frozen review rather than
+using another provider. Godot review/tool paths are not added by this exception.
+
+The completion starts a fresh ephemeral read-only CLI thread in its own scratch
+directory, with no dynamic tools, environment roots or built-in author tools.
+Verify the pinned CLI and effective model/provider/effort/isolation. Refuse tool
+requests or model rerouting. Cancellation uses the existing private review
+controller, interrupts and closes only its owned transport. This native review
+does not inherit the generic advisor's 90-second completion deadline or PI's
+request/token/deadline budget hooks; no replacement model or authoring limit is
+added. Existing prompt/output schema and per-operation IPC bounds stay intact.
+
+The existing `review.start`, strict JSON `review.plan`, actual baseline/candidate
+renderer assertions, `review.finish`, preview and application guards are retained.
+Successful native usage enters the Rust review output in the existing PI
+normalization: `inputTokens` excludes cache read/write tokens, those retain their
+separate fields, and `totalTokens` is the reported total. Every attempt also retains
+`scratch/<session>/codex-reviews/<reviewId>/review-transport.json`, including actual
+thread/turn IDs, timestamps, final/partial text, known usage and terminal error.
+The diagnostic labels its raw input as cache-inclusive and its scope as the last
+reported native thread total. Failed/cancelled snapshots are explicitly possibly
+incomplete, not terminal totals. Unreported or compaction-incomplete usage stays
+null. Known partial usage is retained, not fabricated as a pass.
 
 Current host context is rebuilt before the request; native source/task state is
 authoritative. Thread/turn configuration disables environment access and all

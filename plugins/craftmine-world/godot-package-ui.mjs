@@ -23,9 +23,9 @@ export function createGodotPackageUI({element,request,getWorldId,action=run=>run
       if(result.jobId!==job.id||!['blocked','queued','claimed','running','passed','failed','cancelled','interrupted'].includes(result.status))throw Error('PACKAGE_JOB_RECEIPT_INVALID');
       if(['passed','failed','cancelled','interrupted'].includes(result.status)) {
         pending=null;buttons();
-        notice.textContent=result.status==='passed'?`已加入 ${job.count} 个独立对象，检查通过。请到顶部“检查记录”预览并应用；也可再次安装独立对象。`:`本次检查已结束（${result.status}）。对象源码已保留，请查看检查记录；现在可再次安装。`;
+        notice.textContent=result.status==='passed'?(result.application==='applied'?`已加入世界，共 ${job.count} 个独立对象。`:`${job.count} 个对象的源码已写入，检查通过。请到顶部“检查记录”预览并应用。`):`本次检查已结束（${result.status}）。对象源码已保留，请查看检查记录；现在可再次安装。`;
       } else {
-        notice.textContent=`已加入 ${job.count} 个独立对象，${result.status==='blocked'?'检查暂不可用':'正在检查'}。本次检查结束前暂不能再次安装。`;
+        notice.textContent=`已写入 ${job.count} 个对象的源码，${result.status==='blocked'?'检查暂不可用':'正在检查'}。本次检查结束前暂不能再次安装。`;
         if(result.status==='blocked')retryQuery.form.hidden=false;
         else timer=setTimeout(()=>void pollJob(),800);
       }

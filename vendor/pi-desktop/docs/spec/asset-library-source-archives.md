@@ -1,5 +1,9 @@
 # Source archives in the existing asset catalog
 
+The current model installation and application-status extension is specified in
+[Author-owned source installation](author-source-installation.md). Indexing,
+reading and proposing remain separate from explicit full-auto installation.
+
 The GU6 Kenney trial exposed a retrieval gap: ordinary source-package import
 works, but catalog `asset.import` refused `application/zip` and directory scans
 omitted ZIP files. An imported world object is not automatically a catalog item.

@@ -1,0 +1,275 @@
+{
+  "format": "craftmine.legacy-tree-final-acceptance/1",
+  "request": "生成一个树",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "worldId": "91764f1b-8a9d-4616-9265-d46bb87dd4db",
+  "sessionId": "384e6c9e-b4e4-4a0a-9dde-05072eafc37c",
+  "package": {
+    "packaged": "D:\\Craftmine Releases\\PlayerFix-preview24-c04cef7e.verify-70651ec5-4d9c-4ade-9dc9-08e93af5714c\\PlayerFix-preview24-c04cef7e\\output\\win-unpacked",
+    "inventorySha256": "0eae486db1ff0d4b88cc9e2489aca86c1627ffe57642209f5d893392d8dadf64",
+    "mainSha256": "c29e0b4f6a32f5cfe9410656e041a3c243fdac343a73bb5239c1a84aeac0fdc0"
+  },
+  "packageUnchanged": true,
+  "author": {
+    "turnId": "186a9ec7-78de-4b32-817b-228b5cce425e",
+    "wallTimeMs": 117441,
+    "usage": {
+      "cacheReadTokens": 153344,
+      "cacheWriteTokens": 0,
+      "inputTokens": 23344,
+      "outputTokens": 2819,
+      "reasoningTokens": 495,
+      "totalTokens": 179507
+    },
+    "physicalRequestCount": null
+  },
+  "review": {
+    "id": "review-01018348712a76b0745ff9f60499aabfac4b2d4bbe79e77c292b45a1313df581",
+    "startedAt": "2026-09-14T08:25:18.297Z",
+    "finishedAt": "2026-09-14T08:26:08.900Z",
+    "elapsedMs": 50603,
+    "usage": {
+      "cacheReadTokens": 0,
+      "cacheWriteTokens": 0,
+      "inputTokens": 6256,
+      "outputTokens": 1561,
+      "reasoningTokens": 1034,
+      "totalTokens": 7817
+    },
+    "assertions": [
+      {
+        "detail": "玩法在整个事件序列里没有报错",
+        "id": "no_errors",
+        "kind": "noErrors",
+        "passed": true,
+        "red": "执行过程中出现错误。",
+        "why": "检查加载和生成树的过程没有报错。"
+      },
+      {
+        "detail": "最终世界新增了 1 个符合条件的对象：leafy-tree",
+        "id": "tree_added",
+        "kind": "newObjects",
+        "passed": true,
+        "red": "没有新增任何对象。",
+        "why": "检查空白世界实际新增了对象。"
+      },
+      {
+        "detail": "最终世界 leafy-tree.position = {\"x\":0,\"y\":6,\"z\":0}",
+        "id": "tree_grounded_anchor",
+        "kind": "objectField",
+        "passed": true,
+        "red": "树的锚点不在该位置，包括被错误放到地下或空中。",
+        "why": "检查树的锚点位于提案选定的地表位置。"
+      },
+      {
+        "detail": "最终世界 leafy-tree.visible = true",
+        "id": "tree_visible",
+        "kind": "objectField",
+        "passed": true,
+        "red": "树被隐藏、已消亡或不存在。",
+        "why": "检查生成的树处于可见且存活的状态。"
+      },
+      {
+        "detail": "最终世界 leafy-tree.mesh = true",
+        "id": "tree_drawable",
+        "kind": "objectField",
+        "passed": true,
+        "red": "树没有实际可绘制网格。",
+        "why": "检查实际渲染器中存在树的可绘制网格，而非仅有场景数据。"
+      }
+    ],
+    "verdict": "ready",
+    "limitations": [
+      "树形、配色和枝叶观感需玩家预览确认，断言无法判断外观是否像树。",
+      "位置断言仅检查锚点，不能证明树干底部的实际视觉接地情况。",
+      "未省略附件（0 个）。"
+    ]
+  },
+  "knownReportedTokens": 187324,
+  "usageScope": "Author turn plus distinct frozen Codex review; cache included once, reasoning included in output, billing unknown",
+  "source": {
+    "addedObjectIds": [
+      "leafy-tree"
+    ],
+    "drawableObjectIds": [
+      "leafy-tree"
+    ],
+    "buildId": "v-a69f71f23b4846385348",
+    "scope": "Actual preview renderer mesh observation and applied source; tree aesthetics require screenshot/player review"
+  },
+  "originalFailure": "AssertionError [ERR_ASSERTION]: COLD_PROGRESS_CHANGED\n+ actual - expected\n\n  {\n    behaviors: {\n      archive: [],\n      format: 'craftmine.behavior-state/2',\n      inventory: {},\n      modules: {},\n+     time: 0.35150000000000003\n-     time: 0.12330000000000002\n    },\n    format: 'craftmine.progress/3',\n    gameplay: {\n      archivedTargets: {},\n      cooldown: 0,\n\n    at requireSameLegacySave (file:///D:/Craftmine%20Worktrees/web-world-conversation-fix-20260914/tests/helpers/legacy-tree-contract.mjs:20:10)\n    at file:///D:/Craftmine%20Worktrees/web-world-conversation-fix-20260914/tests/codex-legacy-tree-native.mjs:114:170\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "continuation": {
+    "passed": true,
+    "modelRequestsStarted": 0,
+    "fullPersistedRecordEqual": true,
+    "persistedSnapshot": {
+      "behaviors": {
+        "archive": [],
+        "format": "craftmine.behavior-state/2",
+        "inventory": {},
+        "modules": {},
+        "time": 0.35150000000000003
+      },
+      "format": "craftmine.progress/3",
+      "gameplay": {
+        "archivedTargets": {},
+        "cooldown": 0,
+        "equipped": null,
+        "systems": {},
+        "targets": {
+          "leafy-tree": {
+            "health": 100,
+            "maxHealth": 100
+          }
+        }
+      },
+      "player": {
+        "pitch": 0,
+        "x": 0.5,
+        "y": 6,
+        "yaw": 0,
+        "z": 12.5
+      }
+    },
+    "rendererSnapshot": {
+      "format": "craftmine.progress/3",
+      "player": {
+        "pitch": 0,
+        "x": 0.5,
+        "y": 6,
+        "yaw": 0,
+        "z": 12.5
+      },
+      "gameplay": {
+        "systems": {},
+        "targets": {
+          "leafy-tree": {
+            "health": 100,
+            "maxHealth": 100
+          }
+        },
+        "equipped": null,
+        "archivedTargets": {},
+        "cooldown": 0
+      },
+      "behaviors": {
+        "format": "craftmine.behavior-state/2",
+        "time": 0.4965,
+        "modules": {},
+        "inventory": {},
+        "archive": []
+      }
+    },
+    "allRunningDifferences": [
+      {
+        "path": "behaviors.time",
+        "before": 0.35150000000000003,
+        "after": 0.4965
+      }
+    ],
+    "dialogueIds": [
+      "52afb248-7463-427b-8f6a-037229eaf026",
+      "22326907-a50a-4298-bbe1-f3b573f6bc5d",
+      "codex-f4c7f6858703604dabc224e46a2f34eb8f6be3b99ec5f1bff6e1ff37f172869e",
+      "codex-54d6a51f71069cca6241e3c8afd71a540ea253a0f733bcbde91191d757ebe973",
+      "codex-4ad83a0112862c9355d1d6ea08a4d723b5109ace1b14b7fe0793ecb4c6168a3a",
+      "codex-536637617bf695241f62da6d0808d1c12f2f9d936b9bfe30d5f6543985f6b1dd",
+      "codex-fbc233eb7b1911a58db87985efc5bb536e4f306b6b3c91ce070785365afeaadb",
+      "codex-39c2583eeee2b5135e53bb10f6964e4ee44308baddc1628c91aa626156e90852",
+      "codex-93ff077a640146ab7b449a36873ab7e68ac9bb05e98adcb68d460cade90c1021",
+      "codex-fb8caea55cbeb501465b1da7a84f1609c2c99e9618e51e4c7b060f399a06296f",
+      "codex-46048e39268c0e26fb70afdbb805b055a8ed7703778083e7ee1bc31c3ab3510d",
+      "codex-e9565d3ef8e7cee537bfcc65b88d833080051761ce89fdb3d34bc659b67c3240",
+      "codex-ac0b8c45790d60201038e7600bdc4c7d6da154036ab0a830051323882160827b",
+      "codex-023683aac859ffd19f248d14556489b2034e804d6fb909cba2904d9a0b674040",
+      "a19fed16-2eb4-4573-8383-29f0a260ae71"
+    ]
+  },
+  "launches": [
+    {
+      "label": "connection-setup",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "label": "creation",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "label": "cold-reopen",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "label": "cold-reopen",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\cm-final-legacy-tree\\test-results\\desktop-native-complete-ZKllfo\\report.json",
+      "sha256": "79f38fe86685a866811da48cca045189e33e89ff62a45b7f0e825810f0d04dbf",
+      "bytes": 309863
+    },
+    {
+      "path": "D:\\cm-final-legacy-tree\\test-results\\desktop-native-complete-ZKllfo\\cold-continuation-81b99cad-87e6-4cd1-901b-08a809a5c86d.json",
+      "sha256": "434c3f6b4415abb54d42a9c7bef951b9348c5ae2a569b44edeb7ee75d8af9bf2",
+      "bytes": 464138
+    },
+    {
+      "path": "D:\\cm-final-legacy-tree\\test-results\\desktop-native-complete-ZKllfo\\profile\\scratch\\384e6c9e-b4e4-4a0a-9dde-05072eafc37c\\codex-reviews\\review-01018348712a76b0745ff9f60499aabfac4b2d4bbe79e77c292b45a1313df581\\review-transport.json",
+      "sha256": "f8cb4f6be6a3cbadb9cb86c02534979bd322ee41512e6d2efbca13d690104471",
+      "bytes": 2754
+    },
+    {
+      "path": "D:\\cm-final-legacy-tree\\test-results\\desktop-native-complete-ZKllfo\\agent-events.ndjson",
+      "sha256": "8e2c0f5178fd66f63d39ab191b6f16e92fb6e8022f33da0b73e263baa42c0f32",
+      "bytes": 205971
+    },
+    {
+      "path": "D:\\cm-final-legacy-tree\\test-results\\desktop-native-complete-ZKllfo\\legacy-tree-applied.png",
+      "sha256": "36419597c96652f213e1aa7bc685877b1b1304cca5d863ec0b3b149ec02fb4b7",
+      "bytes": 434156
+    },
+    {
+      "path": "D:\\cm-final-legacy-tree\\test-results\\desktop-native-complete-ZKllfo\\legacy-tree-cold-confirmed.png",
+      "sha256": "36419597c96652f213e1aa7bc685877b1b1304cca5d863ec0b3b149ec02fb4b7",
+      "bytes": 434156
+    }
+  ]
+}

@@ -10,9 +10,9 @@ const exact=(value,keys)=>check(value&&typeof value==='object'&&!Array.isArray(v
 const id=value=>check(typeof value==='string'&&/^[a-zA-Z0-9_-]{8,100}$/.test(value),'SOURCE_LIBRARY_INVALID_PROPOSAL');
 async function atomic(file,value){const temporary=file+'.tmp';await fs.writeFile(temporary,JSON.stringify(value));await fs.rename(temporary,file);}
 
-function createSourceLibraryService({call,directory,installSource,installSourceGroup,ensureBuiltin=async()=>{}}){
+function createSourceLibraryService({call,directory,installSource,installSourceGroup,installAuthorSource,ensureBuiltin=async()=>{}}){
   check(typeof call==='function'&&path.isAbsolute(directory)&&typeof installSource==='function','SOURCE_LIBRARY_HOST_REQUIRED');
-  const pending=new Map();
+  const pending=new Map(),authorPending=new Map();
   const placement=value=>{exact(value,['x','y','z']);check(['x','y','z'].every(key=>Number.isFinite(value[key])&&Math.abs(value[key])<=80),'SOURCE_LIBRARY_INVALID_POSITION');return {x:value.x,y:value.y,z:value.z};};
   async function readArchive(ref){
     await ensureBuiltin();
@@ -40,9 +40,9 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       resources:archive.resources.map(({manifest})=>({ref:{assetId:manifest.content.assetId,version:manifest.content.version,contentHash:manifest.contentHash},
         kind:manifest.content.kind,entry:manifest.content.entry,interfaces:manifest.content.interfaces,compatibility:manifest.content.compatibility,state:manifest.content.state,licenses:manifest.content.licenses,
         files:manifest.content.files})),verifiedScope:'archive-integrity-only',applied:false,
-      note:'Archive validity is not target compatibility, runtime success or visual verification. Installing still requires a player action, source checks and candidate adoption.'};
+      note:'Archive validity is not target compatibility, runtime success or visual verification. Reading does not install anything. With current full-auto authorization, use install or install-group to add source in the active author turn and start checks; otherwise use propose for player confirmation. Both paths still require actual source checks and candidate adoption.'};
   }
-  const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,...(p.items?{kind:'group',items:p.items.map(item=>({archiveRef:item.ref,archiveSha256:item.archiveSha256,displayName:item.displayName,...(item.position?{position:item.position}:{})}))}:{archiveRef:p.ref,archiveSha256:p.archiveSha256}),displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),applied:false,requiresPlayerAction:!p.result,method:'installSourceProposal',status:p.result?.status??'proposed',
+  const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,...(p.items?{kind:'group',items:p.items.map(item=>({archiveRef:item.ref,archiveSha256:item.archiveSha256,displayName:item.displayName,...(item.position?{position:item.position}:{})}))}:{archiveRef:p.ref,archiveSha256:p.archiveSha256}),displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),applied:false,requiresPlayerAction:!p.result&&p.execution!=='author',...(p.execution?{execution:p.execution}:{}),method:'installSourceProposal',status:p.result?.status??(p.execution==='author'?'interrupted':'proposed'),
     ...(p.result?{installation:{source:p.result.source,instanceIds:p.result.instanceIds??[],
       ...(p.result.job?{job:{jobId:p.result.job.jobId,status:p.result.job.status}}:{})}}:{})});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
@@ -125,6 +125,46 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       if(args.mode==='recipes'){exact(args,['mode']);return composition.catalog();}
       if(args.mode==='compose'){exact(args,['mode','request']);return composition.plan(args.request,{context,worldId,assertActive});}
       exact(args,['mode','query','offset','limit','ref','position','items']);
+      if(args.mode==='install'||args.mode==='install-group'){
+        check(typeof installAuthorSource==='function','SOURCE_LIBRARY_AUTOMATIC_INSTALL_UNAVAILABLE');
+        const group=args.mode==='install-group';exact(args,group?['mode','items']:['mode','ref','position']);
+        const input=group?args.items:[{ref:args.ref,...(args.position?{position:args.position}:{})}];
+        check(Array.isArray(input)&&input.length>=(group?2:1)&&input.length<=(group?8:1),'SOURCE_LIBRARY_INVALID_GROUP');
+        check(typeof toolCallId==='string'&&toolCallId.length>0,'SOURCE_LIBRARY_INVOCATION_REQUIRED');
+        const proposalId='source-'+hash(JSON.stringify([context,toolCallId])).slice(0,48),requestHash=hash(JSON.stringify(args));
+        const inFlight=authorPending.get(proposalId);if(inFlight){check(inFlight.requestHash===requestHash,'SOURCE_LIBRARY_PROPOSAL_CONFLICT');return inFlight.promise;}
+        const promise=(async()=>{
+        let proposal;try{proposal=await load(proposalId);check(proposal.execution==='author'&&proposal.requestHash===requestHash&&proposal.worldId===worldId&&JSON.stringify(proposal.context)===JSON.stringify(context),'SOURCE_LIBRARY_PROPOSAL_CONFLICT');}catch(error){if(error.code!=='ENOENT')throw error;}
+        const items=[],archives=[],summaries=[];let totalBytes=0,totalPayload=0;
+        for(const item of input){
+          exact(item,['ref','position']);const ref=validateAssetRef(item.ref),placed=item.position===undefined?undefined:placement(item.position),archive=await readArchive(ref);
+          check(!archive.worldTemplate,'WORLD_TEMPLATE_REQUIRES_NEW_WORLD');
+          if(placed)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
+          totalBytes+=archive.bytes.length;totalPayload+=archive.archive.packageJson.files.reduce((sum,file)=>sum+file.bytes,0);
+          if(group)check(totalBytes<=6*1024*1024&&totalPayload<=6*1024*1024,'SOURCE_LIBRARY_GROUP_TOO_LARGE_INSTALL_SEPARATELY');
+          items.push({ref,archiveSha256:archive.archive.archiveSha256,displayName:archive.record.version_.displayName,...(placed?{position:placed}:{})});
+          archives.push({archiveBase64:archive.bytes.toString('base64'),...(placed?{position:placed}:{})});summaries.push(describe(ref,archive));
+        }
+        if(!proposal){
+          const source=await call('godotProject.index',{context,worldId,offset:0,limit:1});
+          check(source.worldId===worldId&&Number.isSafeInteger(source.revision)&&/^[a-f0-9]{64}$/.test(source.manifestHash),'SOURCE_LIBRARY_SOURCE_IDENTITY_REQUIRED');
+          proposal={format:group?'craftmine.source-group-proposal/1':'craftmine.source-proposal/1',proposalId,context,worldId,execution:'author',requestHash,
+            ...(group?{items}:items[0]),displayName:items.map(item=>item.displayName).join(' + '),source:{revision:source.revision,manifestHash:source.manifestHash}};
+          await fs.mkdir(directory,{recursive:true});await persistNew(proposal);
+        }
+        if(!proposal.result){
+          const request={worldId,operationId:proposalId,expectedSource:proposal.source,...(group?{items:archives}:archives[0])};
+          const result=await installAuthorSource(request,context,assertActive,group);assertActive();
+          check(result.worldId===worldId&&result.applied===false&&/^gjob-[a-f0-9]{64}$/.test(result.job?.jobId)&&Array.isArray(result.instanceIds)&&['check-queued','source-saved-check-blocked'].includes(result.status)&&Number.isSafeInteger(result.source?.revision)&&/^[a-f0-9]{64}$/.test(result.source?.manifestHash),'SOURCE_LIBRARY_INSTALL_RECEIPT_INVALID');
+          if(group)check(result.archives?.length===items.length&&result.archives.every((item,index)=>item.archiveSha256===items[index].archiveSha256),'SOURCE_LIBRARY_INSTALL_RECEIPT_INVALID');
+          else check(result.archiveSha256===items[0].archiveSha256,'SOURCE_LIBRARY_INSTALL_RECEIPT_INVALID');
+          proposal.result=result;await atomic(path.join(directory,proposalId+'.json'),proposal);
+        }
+        return {format:'craftmine.source-library/1',proposal:projection(proposal),jobId:proposal.result.job.jobId,instanceIds:proposal.result.instanceIds,applied:false,
+          source:proposal.result.source,note:'Source installation has started in this author turn. Read this exact job with godot_build_read until settled. Full-auto adoption uses the existing checked-candidate workflow after the turn ends. A queued or passed check is not proof the world is updated; report actual adoption and verify the requested new instance.'};
+        })();
+        authorPending.set(proposalId,{requestHash,promise});try{return await promise;}finally{authorPending.delete(proposalId);}
+      }
       if(args.mode==='propose-group'){
         exact(args,['mode','items']);check(typeof installSourceGroup==='function','SOURCE_LIBRARY_GROUP_UNAVAILABLE');
         check(Array.isArray(args.items)&&args.items.length>=2&&args.items.length<=8,'SOURCE_LIBRARY_INVALID_GROUP');
@@ -182,6 +222,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       exact(args,['worldId','proposalId']);id(args.proposalId);
       const proposal=await load(args.proposalId);check(proposal.worldId===args.worldId,'SOURCE_LIBRARY_WORLD_MISMATCH');
       if(proposal.result)return proposal.result;
+      check(proposal.execution!=='author','SOURCE_LIBRARY_AUTHOR_RETRY_REQUIRED');
       if(pending.has(args.proposalId))return pending.get(args.proposalId);
       const run=(async()=>{
         if(proposal.format==='craftmine.source-group-proposal/1'){

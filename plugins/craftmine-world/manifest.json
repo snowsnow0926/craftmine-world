@@ -90,7 +90,7 @@
       },
       {
         "name": "godot_project_index",
-        "description": "Inspect the source-only Godot project bound to this session. Returns paginated paths, SHA-256 hashes and source revision. Supply revision and manifestHash together to inspect an immutable version; omit both for the latest. Read source files with godot_file_read before patching. Source storage is not a successful build or playable world.",
+        "description": "Inspect the source-only Godot project bound to this session. Returns paginated paths, SHA-256 hashes and source revision. limit is 1-32 (default 32); start at offset 0 and follow nextOffset, retaining the returned revision and manifestHash across pages. Supply revision and manifestHash together to inspect an immutable version; omit both for the latest. Read source files with godot_file_read before patching. Source storage is not a successful build or playable world.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -110,7 +110,9 @@
             "limit": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 32
+              "maximum": 32,
+              "description": "Number of files per page: 1-32, default 32. Follow nextOffset for remaining files.",
+              "default": 32
             }
           },
           "required": [],
@@ -469,7 +471,7 @@
       },
       {
         "name": "godot_guidance",
-        "description": "Discover and read bundled Craftmine creation skills for the bound Godot source. mode=catalog filters exact shipped base/engine and interface hashes, returning versioned skills and reference hashes. mode=read requires exact id, version, sha256, revision and manifestHash from that catalog; optional path selects one exact listed reference. Follow nextOffset. Unsupported or modified interfaces are explicit coverage gaps. Read-only source guidance adds no execution, filesystem or application authority.",
+        "description": "Discover and read bundled Craftmine creation skills for the bound Godot source. mode=catalog filters exact shipped base/engine and interface hashes, returning versioned skills and reference hashes. mode=read requires exact id, version, sha256, revision and manifestHash from that catalog; optional path selects one exact listed reference. For read, limit is 1-8000 Unicode characters (default 4000); offset is 0-200000 and cannot exceed the selected text length. Start at 0 and follow nextOffset until null, retaining the same text identity and source pins. Unsupported or modified interfaces are explicit coverage gaps. Read-only source guidance adds no execution, filesystem or application authority.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -508,12 +510,14 @@
             "offset": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200000
+              "maximum": 200000,
+              "description": "Unicode character offset for read; default 0. Follow nextOffset and do not exceed totalCharacters."
             },
             "limit": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 8000
+              "maximum": 8000,
+              "description": "Unicode characters per read page: 1-8000, default 4000. Follow nextOffset for the remainder."
             }
           },
           "required": [
@@ -909,7 +913,7 @@
       },
       {
         "name": "asset_library",
-        "description": "Search and read the fixed asset library. mode=search finds assets by scope, kind, media kind and tags and returns separated indexed/previewable/baseChecked/applied facts; mode=read returns one immutable version with its exact AssetRef, file hashes and source/licence record, and no body bytes; mode=versions lists every immutable version of one asset. Read-only: nothing here installs, imports or annotates. A missing library adapter is reported with the exact method and owner instead of invented content.",
+        "description": "Search and read the fixed asset library. mode=search defaults to scope=local-library and finds assets by scope, kind, media kind and tags and returns separated indexed/previewable/baseChecked/applied facts; mode=read returns one immutable version with its exact AssetRef, file hashes and source/licence record, and no body bytes; mode=versions lists every immutable version of one asset. Read-only: nothing here installs, imports or annotates. A missing library adapter is reported with the exact method and owner instead of invented content.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -928,7 +932,9 @@
                 "current-world",
                 "local-library",
                 "import-source"
-              ]
+              ],
+              "description": "Search scope; defaults to local-library when omitted. current-world is bound by the host to this conversation world.",
+              "default": "local-library"
             },
             "query": {
               "type": "string",
@@ -2296,8 +2302,8 @@
       },
       {
         "name": "godot_source_library",
-        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement. propose-group freezes 2 to 8 ordered items, each with an exact ref and optional position, against one source revision. The player confirms the whole group once; all items are preflighted and written together, then checked together. Repeated refs create independent instances. It is not a series of separately installed proposals. Group proposal creation does not modify the world. recipes lists versioned gameplay recipes with explicit choices. compose takes request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?}; it reads exact pinned archives and current source, reports requirements/conflicts/missing logic and a planHash. It does not install or certify playability. Preserve the original wish, read/adapt current source, use existing proposals and normal checks/adoption. Collection and flight unlock logic must be implemented and played, not inferred from a visible aircraft.",
-        "risk": "low",
+        "description": "Discover modern Godot source ZIPs in the asset catalog. search finds exact archiveRefs; read validates archive integrity and describes rootRef, sceneInstall, compatibility and source requirements. In full-auto creation, use install (one ref, optional position) or install-group (2 to 8 ordered items with refs and optional positions) to actually add requested components in this author turn and start a real check; the host requires current captured full-auto permission. Poll the returned jobId with godot_build_read. Checked candidates are adopted after the author turn ends under existing world policy; do not claim a new object is present before actual adoption. Repeated refs create independent instances and preserve existing objects. Outside full-auto use propose or propose-group: these ONLY create player-reviewable proposals and require player installation, checking and adoption. Never claim a proposal is a completed world edit. Coordinates must come from the actual scene or player target, never invented; omitted position keeps the component template placement. Whole-world templates create separate worlds through the world picker, not component installation. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Archive validation is not runtime or visual verification. recipes lists versioned gameplay recipes. compose accepts request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?} and reports fixed refs, compatibility, missing logic and planHash without editing. Preserve the original wish, adapt current source and verify gameplay; collection and flight unlock rules do not follow automatically from a visible aircraft.",
+        "risk": "medium",
         "schema": {
           "type": "object",
           "properties": {
@@ -2308,6 +2314,8 @@
                 "read",
                 "propose",
                 "propose-group",
+                "install",
+                "install-group",
                 "recipes",
                 "compose"
               ]

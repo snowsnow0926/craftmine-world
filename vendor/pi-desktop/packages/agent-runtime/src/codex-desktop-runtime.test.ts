@@ -6,6 +6,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { CodexDesktopRuntime, codexTurnUsage, type CodexCheckpoint } from "./codex-desktop-runtime.js";
 import { MODEL, EFFORT, protocolDiagnostic } from "./codex-app-server.mjs";
+import { readFileSync } from "node:fs";
+import { CODEX_WORLD_TOOLS, CODEX_LEGACY_WORLD_TOOLS, CODEX_REGISTERED_WORLD_TOOLS } from "@pi-desktop/shared";
+
+const registeredWorldTools = JSON.parse(readFileSync(new URL("../../../../../plugins/craftmine-world/manifest.json", import.meta.url), "utf8"))
+  .contributes.agentTools.filter((tool: any) => CODEX_REGISTERED_WORLD_TOOLS.has(tool.name))
+  .map((tool: any) => ({ name: "plugin_craftmine_world_" + tool.name, description: tool.description, parameters: tool.schema, risk: tool.risk }));
 
 class Client extends EventEmitter {
   calls: any[] = []; replies: any[] = []; closed = false; threadConfig = {}; model = MODEL;
@@ -33,21 +39,22 @@ class Client extends EventEmitter {
 }
 const next = () => new Promise(resolve => setImmediate(resolve));
 const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aCfoAAAAASUVORK5CYII=";
-async function fixture(historyMessages?: any[]) {
+async function fixture(historyMessages?: any[], config: { runtimeKind?: string | null; tools?: any[] } = {}) {
   const scratch = await mkdtemp(join(tmpdir(), "codex-desktop-"));
   const events: any[] = [], calls: any[] = [];
   let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true, rejectSave=false,recovery:any;
+  let facts: any = { world: { id: "host-world", runtimeKind: config.runtimeKind === undefined ? "godot" : config.runtimeKind } };
   let execute = async (_params: any): Promise<any> => ({ ok: true, content: { world: { id: "host-world" }, images: [{ mimeType: "image/png", data: png }] } });
   const make = (client = new Client()) => {
     let start!: () => void; const ready = new Promise<void>(resolve => { start = resolve; }); client.started = start;
     const runtime = new CodexDesktopRuntime({ sessionId: "host-session", binary: "C:/codex.exe", scratchDir: scratch,
-      tools: [{ name: "plugin_craftmine_world_godot_project_facts", description: "facts", parameters: { type: "object" }, risk: "medium" }],
+      tools: config.tools ?? [{ name: "plugin_craftmine_world_godot_project_facts", description: "facts", parameters: { type: "object" }, risk: "medium" }],
       verifyBinary: async () => {}, interruptGraceMs:30, clientFactory: () => client, onEvent: event => events.push(event),
       history: async () => historyMessages ?? [{ id: "old", role: "user", content: "Preserve my tree", createdAt: "today", status: "complete" },
         {id:"old-capture",role:"tool",content:JSON.stringify({images:[{mimeType:"image/png",data:png}]}),toolResult:{images:[{mimeType:"image/png",data:png}],scope:"formal"},createdAt:"today",status:"complete"}],
       host: { async call(method, params): Promise<any> {
         calls.push({ method, params });
-        if (method === "craftmine.context") return { world: { id: "host-world", runtimeKind: "godot" } };
+        if (method === "craftmine.context") return structuredClone(facts);
         if (method === "codex.checkpoint.load") return { checkpoint, transcriptMatches, recovery };
         if (method === "codex.checkpoint.save") { if(rejectSave)throw Error('CODEX_TEST_SAVE_FAILED'); checkpoint = structuredClone(params.checkpoint) as CodexCheckpoint; return {}; }
         if (method === "codex.fence") return {};
@@ -58,11 +65,113 @@ async function fixture(historyMessages?: any[]) {
     return { runtime, client, ready };
   };
   return { make, events, calls, scratch, get checkpoint() { return checkpoint; }, set execute(fn: typeof execute) { execute = fn; },
+    setFacts: (value: any) => { facts = value; },
     diverge: () => { transcriptMatches = false; },setRecovery:(value:any)=>{recovery=value;},
     rejectSaves:()=>{rejectSave=true;}, cleanup: () => rm(scratch, { recursive: true, force: true }) };
 }
 
 describe("Codex desktop adapter (mock app-server, no live model)", () => {
+  it("routes legacy tree requests through registered host tools with the selected Codex configuration and resumes that catalog", async () => {
+    const f = await fixture([], { runtimeKind: "legacy", tools: registeredWorldTools });
+    try {
+      for (let turn = 1; turn <= 2; turn++) {
+        const x = f.make(); const running = x.runtime.prompt({ text: turn === 1 ? "生成一个树" : "把树冠变大" }, "user-" + turn, "host-turn-" + turn);
+        await x.ready;
+        const launch = x.client.calls.find(c => c.method === (turn === 1 ? "thread/start" : "thread/resume"));
+        expect(launch.params).toMatchObject({ model: MODEL, sandbox: "read-only", approvalPolicy: "never", runtimeWorkspaceRoots: [] });
+        expect(launch.params.baseInstructions).toContain("legacy voxel world");
+        expect(x.client.calls.find(c => c.method === "turn/start").params).toMatchObject({ model: MODEL, effort: EFFORT });
+        if (turn === 1) {
+          const advertised = launch.params.dynamicTools[0].tools;
+          expect(new Set(advertised.map((tool: any) => tool.name))).toEqual(CODEX_LEGACY_WORLD_TOOLS);
+          expect(advertised.find((tool: any) => tool.name === "workspace_patch").inputSchema.additionalProperties).toBe(false);
+        }
+        for (const [tool, args] of [["project_inspect", {}], ["capabilities_read", { section: "objects" }],
+          ["workspace_patch", { workspaceRevision: 0, operations: [{ op: "add", kind: "object", id: "new-tree", expectedHash: null, value: { id: "new-tree" } }] }],
+          ["verification_submit", { workspaceRevision: 1, summary: "Add a tree" }], ["verification_read", { id: "check-" + "a".repeat(64) }]] as const) {
+          x.client.request({ tool, callId: tool, arguments: args }); await next();
+          expect(x.client.replies.at(-1).result.success).toBe(true);
+          expect(f.calls.at(-1)).toMatchObject({ method: "tools.execute", params: { sessionId: "host-session", turnId: "host-turn-" + turn,
+            toolName: "plugin_craftmine_world_" + tool, args, mode: "agent" } });
+          expect(f.calls.at(-1).params.declaredRisk).toBe(registeredWorldTools.find((entry: any) => entry.name.endsWith("_" + tool)).risk);
+        }
+        x.client.notify("turn/completed", { turn: { id: "turn-cli", status: "completed" } }); await running;
+        expect(f.checkpoint?.synchronized).toBe(true);
+      }
+    } finally { await f.cleanup(); }
+  });
+  it("preserves the existing Godot dynamic catalog digest when legacy definitions are supplied", async () => {
+    const godot = registeredWorldTools.filter((tool: any) => CODEX_WORLD_TOOLS.has(tool.name.slice("plugin_craftmine_world_".length)));
+    const expected = createHash("sha256").update(JSON.stringify([{ type: "namespace", name: "craftmine", description: "Host-bound Craftmine world authoring tools",
+      tools: godot.map((tool: any) => ({ type: "function", name: tool.name.slice("plugin_craftmine_world_".length), description: tool.description, inputSchema: tool.parameters })) }])).digest("hex");
+    const f = await fixture([], { tools: registeredWorldTools });
+    try {
+      const x = f.make(); const running = x.runtime.prompt({ text: "Keep my world" }, "user", "turn"); await x.ready;
+      expect(f.checkpoint?.toolDigest).toBe(expected);
+      const count = f.calls.length;
+      x.client.request({ tool: "workspace_patch", arguments: {} }); await next();
+      expect(x.client.replies.at(-1).result.success).toBe(false); expect(f.calls).toHaveLength(count);
+      await x.runtime.abort(); await running;
+    } finally { await f.cleanup(); }
+  });
+  it("rejects native, filesystem and foreign-turn calls in a legacy conversation and preserves host refusals", async () => {
+    const f = await fixture([], { runtimeKind: "legacy", tools: registeredWorldTools });
+    try {
+      const x = f.make(); const running = x.runtime.prompt({ text: "生成一个树" }, "user", "turn"); await x.ready;
+      const before = f.calls.length;
+      for (const fields of [{ tool: "godot_project_patch" }, { tool: "Bash" }, { tool: "workspace_patch", turnId: "foreign" }, { tool: "workspace_patch", namespace: "foreign" }]) {
+        x.client.request(fields); await next(); expect(x.client.replies.at(-1).result.success).toBe(false);
+      }
+      expect(f.calls).toHaveLength(before);
+      f.execute = async () => { throw Object.assign(Error("PERMISSION_DENIED"), { errorCode: "PERMISSION_DENIED" }); };
+      x.client.request({ tool: "workspace_patch", callId: "denied", arguments: { worldId: "foreign" } }); await next();
+      expect(x.client.replies.at(-1).result.success).toBe(false);
+      expect(f.calls.at(-1).params).toMatchObject({ sessionId: "host-session", turnId: "turn", args: { worldId: "foreign" } });
+      const count = f.calls.filter(c => c.method === "tools.execute").length;
+      await x.runtime.abort(); await running;
+      x.client.request({ tool: "workspace_patch", callId: "late" }); await next();
+      expect(f.calls.filter(c => c.method === "tools.execute")).toHaveLength(count);
+    } finally { await f.cleanup(); }
+  });
+  it("rejects unknown runtimes and incomplete legacy catalogs before starting a model", async () => {
+    for (const config of [{ runtimeKind: "unknown", tools: registeredWorldTools }, { runtimeKind: null, tools: registeredWorldTools },
+      { runtimeKind: "legacy", tools: registeredWorldTools.filter((tool: any) => !tool.name.endsWith("_verification_submit")) }]) {
+      const f = await fixture([], config);
+      try {
+        const x = f.make(); await x.runtime.prompt({ text: "生成一个树" }, "user", "turn");
+        expect(x.client.calls).toEqual([]);
+        expect(f.events.some(e => e.event.type === "error")).toBe(true);
+      } finally { await f.cleanup(); }
+    }
+  });
+  it("rejects a changed legacy catalog checkpoint and unregistered or duplicate tool definitions", async () => {
+    const tools = structuredClone(registeredWorldTools);
+    const f = await fixture([], { runtimeKind: "legacy", tools });
+    try {
+      const x = f.make(); const running = x.runtime.prompt({ text: "生成一个树" }, "user", "turn"); await x.ready;
+      x.client.notify("turn/completed", { turn: { id: "turn-cli", status: "completed" } }); await running;
+      tools.find((tool: any) => tool.name.endsWith("_workspace_patch")).description += " changed";
+      const changed = f.make(); await changed.runtime.prompt({ text: "Continue" }, "user-2", "turn-2");
+      expect(changed.client.calls).toEqual([]);
+      expect(f.events.filter(e => e.event.type === "error").at(-1).event.error.code).toBe("CODEX_TOOL_CATALOG_CHANGED");
+    } finally { await f.cleanup(); }
+    for (const entry of [{ name: "Bash", parameters: { type: "object" } }, registeredWorldTools[0]]) {
+      const invalid = await fixture([], { tools: [...registeredWorldTools, entry] });
+      try { expect(() => invalid.make()).toThrow("CODEX_TOOL_SCOPE_INVALID"); } finally { await invalid.cleanup(); }
+    }
+  });
+  it("rejects a changed runtime or world after history restoration before submitting the player request", async () => {
+    for (const world of [{ id: "host-world", runtimeKind: "godot" }, { id: "foreign", runtimeKind: "legacy" }]) {
+      const f = await fixture([], { runtimeKind: "legacy", tools: registeredWorldTools });
+      try {
+        const client = new Client(), original = client.call.bind(client);
+        client.call = async (method, params) => { const result = await original(method, params); if (method === "thread/start") f.setFacts({ world }); return result; };
+        const x = f.make(client); await x.runtime.prompt({ text: "生成一个树" }, "user", "turn");
+        expect(client.calls.some(c => c.method === "turn/start")).toBe(false);
+        expect(f.events.filter(e => e.event.type === "error").at(-1).event.error.code).toBe("CODEX_WORLD_SOURCE_BINDING_CHANGED");
+      } finally { await f.cleanup(); }
+    }
+  });
   it('keeps stdin open through both delayed interrupt response and matching terminal, then saves only confirmed idle tail',async()=>{
     const f=await fixture();try{
       const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'work'},'user','prior');await ready;await next();

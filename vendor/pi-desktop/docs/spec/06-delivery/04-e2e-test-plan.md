@@ -1,5 +1,44 @@
 # 04. E2E Test Plan
 
+### Codex legacy world conversation regression (2026-09-14)
+
+In an independent background profile, create a blank legacy voxel world through
+the ordinary player controls. Select the compatible Codex CLI backend and verify
+the effective `gpt-6-astra` / `xhigh` handshake. Send the original request
+`生成一个树` through the ordinary Composer. Require a real model turn with the
+legacy catalog, real draft transactions and terminal machine-check evidence;
+the immediate preview23 `CODEX_GODOT_WORLD_REQUIRED` failure must not recur.
+Use the existing preview/application controls and confirm drawable tree parts,
+preserved player state and saved/cold-reopened content. Send a second tree edit
+in the same conversation; require same-world continuation without changing the
+model, converting the world or replaying historical writes.
+
+Retain original failures and exact model configuration. A player switching to
+another provider manually is a separate attempt, not Codex acceptance. No model,
+token or whole-turn cap may be added. Do not touch the player's live profile,
+window, input devices or browser; isolated headless validation disables Pointer
+Lock. Passing a mocked transport test is not this real model/playable acceptance.
+
+Targeted adapter regressions use the actual registered manifest schemas and a
+mock app-server: legacy routes through `tools.execute` with host identities and
+declared risks; Godot catalog hashes remain unchanged; incomplete/unknown runtime
+catalogs fail before model start; foreign/native/shell calls are refused; host
+permission errors and cancellation remain authoritative; changed context after
+history restoration is rejected; and late callbacks stay on their old client.
+Run `pnpm --filter @pi-desktop/shared build`, then
+`pnpm --filter @pi-desktop/agent-runtime exec vitest run src/codex-desktop-runtime.test.ts`
+and `pnpm --filter @pi-desktop/agent-runtime typecheck` from this vendor directory.
+
+Run the additional `src/codex-review-complete.test.ts` adapter suite. Require
+the exact no-tool ephemeral review configuration, model/isolation/identity
+rejection, cancellation, known failed usage and explicit unknown usage. During
+real integration, wait for the frozen review's normal strict plan and actual
+renderer assertions; machine verification alone cannot authorize application.
+Record separate native review usage from its private `review-transport.json`
+diagnostic and Rust review output. Refuse a changed backend rather than billing
+another provider. Generic plugin completions retain their existing deadline;
+only a private bound Codex review can run without an authoring timer.
+
 First creation preview delivery additionally follows the
 [sealed portable export scenario](first-creation-preview-export.md#verification-scenario):
 relocated launch path, independent preview profile, exact extracted ZIP bytes,
@@ -10645,3 +10684,122 @@ feedback/brief tables restores empty tables;
 wrong present columns, hash changes and dangling world references must reject
 without altering current feedback. These use isolated Rust fixtures, not the
 player's original profile, and launch neither native rendering nor a model.
+
+### Retained candidate reload and surface recovery (2026-09-14)
+
+In the current world, open a checked candidate using the normal Checks panel.
+Attempt to select another surface through the sidebar while preview/application
+ownership is active. Require an explicit busy response without changing the
+page tab, hiding the native view, saving the preview or altering either snapshot.
+Close/apply normally and verify the regular surface controls work again.
+
+Reload the retained panel during a settled preview and after a committed
+application whose panel reply was lost. Reconcile the exact selected-world
+application before `world.open`: abort only the uncommitted preview, or recover
+the already committed receipt without another commit, then show the correct
+formal build. Preserve the original progress and full added-component state.
+For an unknown/mismatched receipt, keep ownership and show the causal recovery
+error; do not mislabel it as a rollback, silently drop the lock, or open another
+world. A failed prepare followed by the real plugin bridge's code-only
+`GODOT_APPLICATION_NOT_FOUND` must release ownership only if no prepare receipt
+was observed. The same text inside an unrelated error is not proof of absence.
+
+Pure regressions are `node --test tests/godot-panel-recovery.test.mjs` and
+`node --test tests/godot-remaining/D/godot-candidate-coordinator.mjs` from the
+repository root. They exercise the actual page functions and coordinator with
+finite fault seams. They are not proof of an attached/composited native frame;
+isolated Windows package acceptance must separately record runtime identity,
+nonblank rendering and normal shutdown without real mouse/keyboard operations.
+
+### Player-requested source installation and live adoption status (2026-09-14)
+
+Follow [the source installation scenarios](../../e2e/player-source-installation-20260914.md):
+use the original full-auto author lease, retain independent dog identities and
+existing progress, and verify real check/adoption plus rendering and cold reopen.
+Manual proposals keep their confirmation boundary. Revoke/stop/switch and changed
+operation replays must fail without new source writes. Readiness is never displayed
+as adoption, and confirmed adoption refreshes the existing conversation card without
+a manual refresh. Current unit and headless renderer results do not replace native
+Windows/model acceptance.
+
+### Player source discovery after bundled template copy (2026-09-14)
+
+Run the root creation-guidance `current-cohorts`, `engine-cohorts`, `guidance`,
+`retained-monitor`, and `packaging` Node test files together with
+`tests/godot-round2/R7/library-and-intents.test.mjs`. Invalid index limits 100 and
+60 must explain the existing 1–32 range before host workspace calls; valid pinned
+pagination remains unchanged. Omitted asset search scope selects the local
+library, explicit invalid scope rejects, and current-world stays host-bound.
+
+The complete actual player revision-5 index must resolve the retained
+engine-monitor/ray-local cohort and read its original inherited recipe reference.
+Check both shipped and observer-upgraded source bytes against exact full cohorts;
+all old published entries stay unchanged. Mutate/remove every controlled member,
+add aliases/duplicates or alter read identity and require refusal. Build an
+isolated production plugin and rerun the three retained cases against it.
+These checks prove read-tool contracts and packaged source applicability only;
+they do not replace the separate ordinary player install/check/adopt/render flow.
+
+### Native candidate reload package driver (2026-09-14)
+
+The opt-in package driver is:
+
+```text
+node tests/fb02-packaged-candidate-lifecycle.mjs APP_DIR READONLY_PROFILE WORLD_ID --packaged-root PACKAGED_ROOT --resources PACKAGED_ROOT/resources --candidate-reload-recovery --run
+```
+
+Omitting `--run` in this mode only prints the plan and creates no profile. Set
+`CRAFTMINE_CREATION_OUTPUT_ROOT` to the isolated results directory; its report
+records a `cancelFile` that stops the next operation through normal cleanup.
+The source must be a stopped, owned test profile. The driver copies its real
+source, artifacts and database (SQLite read-only backup), then uses the ordinary
+history check route, Checks preview button and main-window preview controls.
+No model runs and no source, candidate or check result is manufactured.
+
+During preview it actually reloads the isolated plugin page via CDP, then checks
+that the same formal instance is restored. It repeats preview/close and
+preview/apply, reloads the applied page, saves and cold-reopens the application.
+For each restored surface it records identity-bound `godotCaptureBoundView`
+evidence: that existing route verifies host visibility, surface visibility and
+owner child-view attachment before and after the read. The driver also requires
+normal product DOM state and multiple non-dark colors in the center of the PNG;
+it does not substitute a capture from an arbitrary hidden WebContents. A final
+read-only database audit requires exactly one application commit for the exact
+new candidate, and the entire shipped package inventory must remain unchanged.
+`node --test tests/candidate-recovery-driver.test.mjs` verifies the prepare-only
+and conflicting-mode guards without launching Electron.
+
+For retained worlds with autonomous NPCs, save assertions use the complete
+durable world document after normal quit and compare it with the cold-read
+formal document. Keep the entire runtime snapshot and all resumed-state
+differences separately; do not filter NPC or unknown fields to claim equality.
+Use each preview's current checkpoint rather than assuming gameplay progress
+never changed between separate previews. Read the real applied application's
+full input/output to verify the additive progress transition. The recovery
+driver uses the current world's ordinary chooser form and verifies the builtin
+registry only after plugin/world initialization, against the exact package
+resources. Capture identity remains strict while unrelated UI overlay ordering
+may change between separate operations; record both native states and obtain a
+new attachment-verified frame after the rejected surface request.
+
+### Guidance pagination recovery (2026-09-14)
+
+Guidance pagination follow-up: replay the ordinary model's read limits 16000 and
+12000 through both source and generated plugin tools. Both must reject before any
+host call and state the unchanged 1–8000 Unicode-character range, default 4000,
+and `nextOffset` recovery. Fractional/negative/over-200000 offsets and offsets past
+the selected text must reject early. Default 4000, maximum 8000, and the exact-end
+empty terminal page remain valid; page concatenation must equal the original
+pinned recipe bytes after Unicode decoding. Preserve the original failed logs.
+
+### Author installation against actual Core (2026-09-14)
+
+With an explicit already-built `CRAFTMINE_CORE_BIN`, run root
+`tests/author-source-install-core.test.mjs`. Require single/group catalog installs
+to retain the original author task, preserve existing entities, write the source
+once and create one real check job. Replaying a fixed invocation must not create
+another entity or check. Host revocation and an actual foreign world binding
+refuse mutation; actual Core ended-turn state must reject source writing even
+when a deliberately stale host permission fixture remains true. An unregistered
+executor must produce its actual blocked status, never a fabricated pass. See
+[the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).

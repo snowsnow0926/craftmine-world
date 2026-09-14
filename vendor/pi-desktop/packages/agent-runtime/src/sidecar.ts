@@ -275,7 +275,7 @@ async function runtimeFor(
   const mode = normalizeMode(params.mode);
   if (params.codex) {
     if (!params.craftmineWorld || mode !== "agent" || !params.scratchDir) {
-      throw Object.assign(Error("Codex CLI requires an active Godot world in Agent mode."), { errorCode: "CODEX_WORLD_ONLY" });
+      throw Object.assign(Error("Codex CLI requires an active Craftmine world in Agent mode."), { errorCode: "CODEX_WORLD_ONLY" });
     }
     const previous = runtimes.get(sessionId);
     if (previous?.getStatus().isRunning) throw Object.assign(Error("AGENT_BUSY"), { errorCode: "AGENT_BUSY" });

@@ -5,6 +5,10 @@ Date: 2026-09-13. Status: implemented experimentally.
 Addendum: [player-owned connection](codex-player-connection.md) extends the
 existing Settings row without changing this author runtime or storage boundary.
 
+2026-09-14 amendment: [legacy voxel world authoring](codex-legacy-world-authoring.md)
+selects an existing host-domain tool catalog for that runtime, preserving the
+Godot catalog digest and this transport's permission and storage boundaries.
+
 The project author CLI already called local Codex, but the desktop conversation
 still ran the PI loop. An OpenAI account/provider label would not close this
 gap. Replace only the world author loop behind the existing prompt protocol with

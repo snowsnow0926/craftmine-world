@@ -36,6 +36,7 @@ buildBuiltinSourceLibrary({output:path.join(output,'builtin-source-library')});
 await build({entryPoints:[path.join(source,'source-library-service.cjs')],outfile:path.join(output,'source-library-service.cjs'),bundle:true,platform:'node',format:'cjs',target:'node22',external:['./package-zip.mjs']});
 await build({entryPoints:[path.join(source,'package-zip.mjs')],outfile:path.join(output,'package-zip.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'reuse-service.mjs')],outfile:path.join(output,'reuse-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
+await build({entryPoints:[path.join(source,'author-source-install.mjs')],outfile:path.join(output,'author-source-install.mjs'),bundle:true,platform:'node',format:'esm',target:'node22',external:['./reuse-service.mjs']});
 await build({entryPoints:[path.join(source,'godot-instance-declaration.mjs')],outfile:path.join(output,'godot-instance-declaration.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'godot-module-parameters.mjs')],outfile:path.join(output,'godot-module-parameters.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await build({entryPoints:[path.join(source,'target-feedback-service.mjs')],outfile:path.join(output,'target-feedback-service.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});

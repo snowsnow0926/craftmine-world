@@ -42,6 +42,14 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // Reject forged identity/unknown fields before acquiring any draft lease.
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
+    if(definition.name==='godot_project_index'){
+      if(args.limit!==undefined&&(!Number.isSafeInteger(args.limit)||args.limit<1||args.limit>32))
+        throw Error('INVALID_PROJECT_PAGE: limit must be an integer from 1 to 32; omit it for 32 files. Follow nextOffset with the returned revision and manifestHash for the next page.');
+      if(args.offset!==undefined&&(!Number.isSafeInteger(args.offset)||args.offset<0))
+        throw Error('INVALID_PROJECT_PAGE: offset must be a nonnegative integer; start at 0 or follow the previous nextOffset.');
+      if((args.revision===undefined)!==(args.manifestHash===undefined))
+        throw Error('INVALID_PROJECT_PAGE: supply revision and manifestHash together, or omit both for the latest source.');
+    }
     // Documentation needs neither the runtime nor a world binding.
     if(definition.name==='godot_docs') {
       if(['api-info','api-class','api-search'].includes(args.mode)){
@@ -63,7 +71,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
     // either way the refusal happens before any host call.
     const conditionalWrite=CONDITIONAL_WRITE_TOOLS[definition.name];
-    const isWrite=WRITE_TOOLS.has(definition.name)||(conditionalWrite!==undefined&&args.mode===conditionalWrite);
+    const isWrite=WRITE_TOOLS.has(definition.name)||(conditionalWrite!==undefined&&args.mode===conditionalWrite)
+      ||definition.name==='godot_source_library'&&['install','install-group'].includes(args.mode);
     if(isWrite) {
       let blocked=typeof options.isDiscussionOnly==='function'&&options.isDiscussionOnly();
       if(!blocked) {
@@ -230,6 +239,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     if(definition.name==='godot_source_library') {
       if(typeof options.sourceLibrary!=='function')return {available:false,reason:'SOURCE_LIBRARY_NOT_WIRED'};
+      if(['install','install-group'].includes(args.mode)){
+        const capture=await options.creationTarget?.(context);assertActive();
+        if(capture?.worldId!==workspace.worldId||capture?.autoApply!==true||capture?.authorization!=='full-auto'||capture?.supersededBy)throw Error('SOURCE_LIBRARY_AUTOMATIC_INSTALL_NOT_AUTHORIZED');
+      }
       const result=await options.sourceLibrary(args,context,workspace.worldId,invocation.toolCallId,assertActive);assertActive();return result;
     }
     if(definition.name==='asset_library') {

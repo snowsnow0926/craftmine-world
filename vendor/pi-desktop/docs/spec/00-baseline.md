@@ -7,7 +7,8 @@
 - Backend policy: **Rust host core + pi agent sidecar**
 
 Craftmine scoped extension (2026-09-13): the existing sidecar can opt into the
-actual local Codex CLI for Godot world conversations. PI remains the default;
+actual local Codex CLI for world conversations (Godot and, since 2026-09-14,
+legacy voxel). PI remains the default;
 Rust transcript, permissions and world/source ownership are unchanged. See
 [the architecture decision](../adr/codex-desktop-world-backend.md).
 

@@ -160,6 +160,30 @@ test('cancellation after content advance rolls its pointer back before replacing
  assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.formal.world.snapshot.body.coins,43);assert.equal(f.coordinator.blocking,false);
 });
 for(const fault of ['descriptor','load','state','prepare'])test('preview '+fault+' failure retains original and releases locks',async()=>{const f=fixture();f.setFault(fault);await assert.rejects(f.coordinator.invoke('godot.candidatePreview',f.args));assert.equal(f.host.instance.instanceId,'original');assert.equal(f.coordinator.blocking,false);assert.ok(!f.events.includes('promote'));});
+test('plugin-bridge code-only missing prepare receipt releases ownership and permits another preview',async()=>{
+ const f=fixture();let rejectPrepare=true;
+ const coordinator=createGodotCandidateCoordinator({host:f.host,adapter:f.adapter,selection:async()=> 'alpha',domain:async(method,args)=>{
+  if(rejectPrepare&&method==='godotApplication.prepare')throw Object.assign(Error('Source changed'),{code:'GODOT_CANDIDATE_STALE'});
+  try{return await f.domain(method,args);}catch(error){throw Object.assign(Error(error.message),{code:error.errorCode});}
+ }});
+ await assert.rejects(coordinator.invoke('godot.candidatePreview',f.args),/Source changed/);
+ assert.equal(coordinator.blocking,false);assert.equal(f.host.instance.instanceId,'original');assert.equal(f.host.paused,false);
+ assert.ok(!f.events.includes('surface:false'));assert.ok(!f.events.includes('promote'));assert.equal(f.records.size,0);
+ rejectPrepare=false;assert.equal((await coordinator.invoke('godot.candidatePreview',f.args)).status,'preview');
+ await coordinator.closeForDeparture();assert.equal(coordinator.blocking,false);
+});
+for(const knownPrepare of [false,true])test('missing-record prose or a lost prepared record cannot release transaction ownership: '+knownPrepare,async()=>{
+ const f=fixture();let enteredRead=false;
+ const coordinator=createGodotCandidateCoordinator({host:f.host,adapter:f.adapter,selection:async()=> 'alpha',domain:async(method,args)=>{
+  if(method==='godotApplication.prepare'&&!knownPrepare)throw Error('transport disconnected');
+  if(method==='godotApplication.read'){enteredRead=true;throw Object.assign(Error('GODOT_APPLICATION_NOT_FOUND'),{code:knownPrepare?'GODOT_APPLICATION_NOT_FOUND':'UNKNOWN'});}
+  return f.domain(method,args);
+ }});
+ if(knownPrepare)f.setFault('descriptor');
+ await assert.rejects(coordinator.invoke('godot.candidatePreview',f.args),/recovery pending/);
+ assert.equal(enteredRead,true);assert.equal(coordinator.blocking,true);assert.equal(f.host.instance.instanceId,'original');
+ assert.equal(f.events.at(-1),'surface:false');assert.ok(!f.events.includes('promote'));
+});
 for(const fault of ['storage','commit-before'])test('apply '+fault+' failure never replaces formal instance',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.setFault(fault);await assert.rejects(f.coordinator.invoke('godot.candidateApply',f.args));assert.equal(f.host.instance.instanceId,'original');assert.equal(f.formal.world.build.id,'build-old');assert.equal(f.coordinator.blocking,false);});
 test('lost committed reply is recovered by matching original receipt without second commit',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.setFault('commit-lost');const result=await f.coordinator.invoke('godot.candidateApply',f.args);assert.equal(result.status,'applied');assert.equal(f.events.filter(x=>x==='godotApplication.commit').length,1);assert.equal(f.events.filter(x=>x==='promote').length,1);});
 test('unknown commit keeps both instances paused; later read reconciles exact commit once',async()=>{const f=fixture();await f.coordinator.invoke('godot.candidatePreview',f.args);f.setFault('commit-unreachable');await assert.rejects(f.coordinator.invoke('godot.candidateApply',f.args),/recovery pending/);assert.equal(f.host.instance.instanceId,'original');assert.ok(f.host.candidateInstance);assert.equal(f.coordinator.blocking,true);assert.equal(f.events.at(-1),'surface:false');f.setFault('');const result=await f.coordinator.invoke('godot.candidateState',f.args);assert.equal(result.status,'applied');assert.equal(f.events.filter(x=>x==='godotApplication.commit').length,1);});
