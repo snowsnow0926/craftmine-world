@@ -1,5 +1,65 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+2026-09-14 增加真实 DeepSeek 玩家配置入口，与原 `--codex` 互斥：
+
+```powershell
+node tests/product-agent-operator-native.mjs `
+  --application-root '实际构建工作树绝对路径' `
+  --runtime-resources '实际成品/resources绝对路径' `
+  --packaged-root '实际成品绝对路径' `
+  --provider-config-file '用户授权附件绝对路径' `
+  --output-root 'D:/cm-deepseek-player/test-results' `
+  --starter promo-mainline
+```
+
+附件为三行：HTTPS DeepSeek endpoint、原始模型 ID、API key。驱动只在自身
+进程内读取，通过普通 `providersCreate` 的 `secretValue` 写入这次独立 host
+的密钥存储。不得把附件复制到报告目录、写进命令行或环境变量。日志、CDP
+异常、JSON 记录统一脱敏；管道按完整行脱敏，避免密钥跨 chunk 泄漏。只采集
+绑定的游戏画面，不采集含密钥的设置页面。原始独立 profile 的应用内部数据
+仍按私有测试数据保管，不作为可公开的脱敏报告。
+
+实际创建并冷重启读取的配置固定为附件精确模型 ID、500000 上下文、384000
+最大输出、max 思考、auto 权限。不会将 `deepseek-v4.1-flash` 悄悄换成
+`deepseek-flash`；接口拒绝的结果保留为失败。驱动在设置之后正常退出重启，
+再从当前普通世界选择器进入；每次发消息核对 provider、模型及配置。这里的
+上下文和输出数值是复现玩家配置，驱动不额外设置评测预算或模型整轮时限。
+
+DeepSeek 入口不自动创建玩法组合草稿、不发送请求、不代答澄清。新增
+`draft-composer` 命令 `{text}` 使用实际 Composer 的 `onInput` 创建草稿，
+仅接受空草稿并等待正常可发送；随后显式 `send-composer` 才走实际发送处理器。
+也保留原 `prompt` 的公开 API 路径，两者在报告中有不同的 submission 字段。
+
+已有玩家档案由总控通过只读原数据和 SQLite online backup 另行复制，排除原
+密钥。驱动不接受活跃用户 profile，也不自行改写数据库。总控可在新的
+`test-results/desktop-native-product-*` 目录放以下 bootstrap JSON，通过
+`--resume` 进入其副本中的原世界和原会话：
+
+```json
+{
+  "format": "craftmine.product-agent-operator/1",
+  "out": "D:/cm-deepseek-player/test-results/desktop-native-product-UNIQUE",
+  "sourceTemplate": "retained",
+  "retainedCopy": {
+    "format": "craftmine.operator-retained-copy/1",
+    "markerToken": "与 profile/headless-profile.json 的 token 一致",
+    "manifest": "只读复制证据清单的绝对路径"
+  },
+  "worldId": "实际复制世界 ID",
+  "sessionId": "实际复制会话 ID",
+  "turns": [],
+  "commands": []
+}
+```
+
+`profile/headless-profile.json` 使用原 headless 标记格式，`legacySource`
+必须为同一输出目录的 `legacy`。驱动验证真实目录与声明路径相同、无符号链接
+或 junction 成员、标记 token 匹配且复制清单存在。bootstrap 的空 `turns`
+只表示本驱动尚未发起新轮次，不删除原会话历史；旧失败不会伪造为新测试轮次。
+原会话 provider/model 为 null 时按真实当前 default 验证；显式不同模型则拒绝。
+首次接入写入新 provider、重启并进入原会话，不自动继续旧任务。后续冷开保留
+同一 provider、世界与会话，持续保留原始失败、检查、采用、虚拟移动与保存证据。
+
 入口：`tests/product-agent-operator-native.mjs`。只控制自己创建的独立
 offscreen 应用和测试数据，通过现有普通 UI、公开 `agentPrompt`、澄清回答、
 素材建议、检查采用与保存接口操作。不增加生产 RPC。
