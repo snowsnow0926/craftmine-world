@@ -29,3 +29,7 @@ identities, includes expectedHash CAS, and never writes progress or old packages
 Custom authored overrides require manual source review. No new Host/Core RPC is
 introduced. Do not use the player-pose validator for pets: anchors and collision
 shapes differ, and arbitrary callbacks could recurse into component validation.
+
+V4 inherits this entire bounds/state contract and fixes only accumulated heading
+scale drift. See [the versioned orientation amendment](companion-heading-stability.md).
+Existing recipe 3 and explicit v3 references retain their original bytes.

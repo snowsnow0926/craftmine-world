@@ -114,6 +114,7 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   // the normal latest catalog rows. No in-place replacement of old IDs/versions.
   for(const upgraded of [buildApprovedPomeranianPackage({repository,version:2}),buildRainControlPackage({repository,version:2})]){packages.push({file:upgraded.file,bytes:upgraded.bytes});entries.push(upgraded.entry);}
   for(const upgraded of [buildApprovedPomeranianPackage({repository,version:3}),buildBuiltinPetPackage({repository,version:3})]){packages.push({file:upgraded.file,bytes:upgraded.bytes});entries.push(upgraded.entry);}
+  for(const upgraded of [buildApprovedPomeranianPackage({repository,version:4}),buildBuiltinPetPackage({repository,version:4})]){packages.push({file:upgraded.file,bytes:upgraded.bytes});entries.push(upgraded.entry);}
   // Stage only after every resource and archive has passed validation.
   for(const fragment of buildCityFragmentPackages({repository})){packages.push({file:fragment.file,bytes:fragment.bytes});if(fragment.preview)packages.push(fragment.preview);entries.push(fragment.entry);}
   fs.mkdirSync(output,{recursive:true});

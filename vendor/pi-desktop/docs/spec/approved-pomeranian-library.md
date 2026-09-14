@@ -78,3 +78,10 @@ to prove the complete runtime restore contract.
 
 V3 adds explicit receiving-world position bounds while preserving published
 v1/v2 bytes. See [the contract](companion-world-bounds.md).
+
+## Version 4 heading amendment
+
+V4 retains v3 bounds and state configuration, replacing repeated Euler heading
+mutation with a unit yaw basis. Earlier packages and fixed recipe references stay
+unchanged. See [heading stability](companion-heading-stability.md) for the CPU
+long-turn/save/cold-restore evidence and its navigation limits.

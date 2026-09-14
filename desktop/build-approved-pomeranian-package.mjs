@@ -12,7 +12,7 @@ const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
 
 export function buildApprovedPomeranianPackage({repository,root=path.join(repository,'desktop/godot/components/approved-pomeranian'),version=1}){
-  check(version===1||version===2||version===3,'COMPONENT_VERSION_UNSUPPORTED');
+  check(version===1||version===2||version===3||version===4,'COMPONENT_VERSION_UNSUPPORTED');
   const model=fs.readFileSync(path.join(root,'model.glb'));
   check(model.length===3753144&&hash(model)===APPROVED_POMERANIAN_SHA256,'APPROVED_POMERANIAN_MODEL_CHANGED');
   const provenance=JSON.parse(fs.readFileSync(path.join(root,'provenance.json')));
@@ -21,7 +21,7 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
   const files={
     'model.glb':model,
     'model.glb.import':Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n\n[params]\nmeshes/generate_lods=false\n'),
-    'companion.gd':version===3?Buffer.from(fs.readFileSync(path.join(root,'companion-v3.gd'),'utf8').replace(/\r\n/g,'\n')):fs.readFileSync(path.join(root,'companion.gd')),
+    'companion.gd':version>=3?Buffer.from(fs.readFileSync(path.join(root,`companion-v${version}.gd`),'utf8').replace(/\r\n/g,'\n')):fs.readFileSync(path.join(root,'companion.gd')),
     'companion.gd.uid':fs.readFileSync(path.join(root,'companion.gd.uid')),
     'LICENSE.txt':fs.readFileSync(path.join(root,'LICENSE.txt')),
     'provenance.json':Buffer.from(JSON.stringify(provenance,null,2)+'\n'),
@@ -65,11 +65,15 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
     state:{kind:'persistent-component',format:'craftmine.pet-companion-state/1',ledger:'/body/components',identity:'entityId',settings:['name','appearanceKey','following'],sourceSettings:['name','appearanceKey','following'],runtimeFields:['position','yaw','interactionCount'],removedIdentity:'retain-last-saved-state',sourceSettingsMigration:'changed-source-defaults-only'},
     licenses:{wrapperLicense:'MIT',licenseFile:'LICENSE.txt',modelLicense:provenance.model.license,modelLicenseStatus:'unverified',distribution:'local-product-reuse-no-remote-publication'}
   };
-  content.entry.sourceRequirementProfiles=componentBridgeProfiles(content.entry.sourceRequirementProfiles,version===3?2:version);
-  if(version===3){
+  content.entry.sourceRequirementProfiles=componentBridgeProfiles(content.entry.sourceRequirementProfiles,version>=3?2:version);
+  if(version>=3){
     content.entry.description += " v3 的默认保存范围仍为各轴 ±80，仅供兼容。安装到城市或其他世界前，必须按该世界源码设置每个实例的 saved_position_min / saved_position_max；不会自动识别任意世界。";
     content.entry.positionValidation={mode:'explicit-receiving-world-bounds',sourceProperties:{minimum:'saved_position_min',maximum:'saved_position_max'},coordinateAnchor:'companion-feet',compatibilityDefaults:{minimum:[-80,-80,-80],maximum:[80,80,80]},requiresWorldConfiguration:true,finiteCoordinateLimit:100000,verticalContactToleranceMm:2,changesSavedPosition:false,note:'Legacy-sized defaults do not cover the full city. Read the receiving world source and explicitly configure both bounds before check/adoption; unknown worlds are not automatically adapted.'};
     content.entry.upgradeFrom={versions:[1,2],script:'companion.gd',sha256:hash(fs.readFileSync(path.join(root,'companion.gd'))),mode:'same-script-path-preserve-entity-and-state'};
+  }
+  if(version===4){
+    content.entry.description += ' v4 修复连续转向造成的缩放漂移，保持原有状态与范围配置契约；不增加寻路能力。';
+    content.entry.upgradeFrom={versions:[3],script:'companion.gd',sha256:hash(Buffer.from(fs.readFileSync(path.join(root,'companion-v3.gd'),'utf8').replace(/\r\n/g,'\n'))),mode:'same-script-path-preserve-entity-and-state'};
   }
   const manifest={format:'craftmine.resource/1',content,contentHash:contentHash(content)};
   const bytes=packStaticPackage({root:{id:APPROVED_POMERANIAN_ID,version},resources:[{manifest,files}]});
@@ -77,6 +81,6 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
   unpackStaticPackage(bytes);
   const file=APPROVED_POMERANIAN_ID+(version===1?'':'.v'+version)+'.zip';
   return {file,bytes,entry:{assetId:APPROVED_POMERANIAN_ID,version,kind:'module',file,bytes:bytes.length,sha256:hash(bytes),rootContentHash:manifest.contentHash,label:content.entry.label,
-    tags:[...(version>=2?['compatibility-version']:[]),...(version===3?['world-bounded-state','reusable-world-content']:[]),'builtin','prefab','playable','approved-demo','博美','白色博美','同款博美','可爱','小麦','pomeranian','dog','Mochi','跟随','follow','抚摸','pet','等待','wait'],
+    tags:[...(version>=2?['compatibility-version']:[]),...(version>=3?['world-bounded-state','reusable-world-content']:[]),'builtin','prefab','playable','approved-demo','博美','白色博美','同款博美','可爱','小麦','pomeranian','dog','Mochi','跟随','follow','抚摸','pet','等待','wait'],
     source:{origin:'Craftmine approved demo 2026-09-13 / Codex gpt-6-astra xhigh / Blender reference-guided model',author:'Craftmine project generated content',license:'MIT wrapper; generated model rights unverified',licenseStatus:'unverified'}}};
 }
