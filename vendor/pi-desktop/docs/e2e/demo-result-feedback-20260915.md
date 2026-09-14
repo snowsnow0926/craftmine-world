@@ -37,9 +37,19 @@ and approval still take precedence over old overlay results.
 
 The result/access/request/turn tests passed 22 cases; runtime request-boundary tests
 passed 60 cases after the final-result evidence instruction. Runtime TypeScript
-passes. Desktop TypeScript reports only the two existing missing declarations for
-`godot-artifact-worker-protocol.mjs` and `godot-artifact-worker-host.mjs`; do not
-describe that full check as passing. Style-token validation reports the existing
-raw 16px radius in unchanged `CraftminePauseMenu.css`; the result styles add no
-token violation. The separate root-owned native/GPU demo run
+passes. A separate cleanup adds precise `.d.mts` contracts for the existing
+artifact-worker protocol and host modules, resolving the two initial declaration
+errors. The full desktop TypeScript check now passes. The pause-menu radius uses
+the existing equal-valued `--radius-lg` token (16px), so style-token validation
+also passes without changing its geometry. Initial failing check logs remain
+available alongside the successful checks. The separate root-owned native/GPU demo run
 must still establish actual behavior, including the companion navigating obstacles.
+
+Run `node --test test/godot-artifact-worker-types.test.mjs` from the desktop
+package for the compile-only declaration regression. It checks request/artifact
+shapes, discriminated success/failure snapshots, unknown unvalidated progress
+fields, the real Node Worker constructor, injected numeric timers, AbortSignal,
+Promise<void> completion and string-array diagnostics. Negative assignments must
+fail compilation; no global wildcard declaration or `any` escape is added. This
+test resolves the existing Electron dependency's Node declarations without loading
+Electron, emitting code or creating a worker.
