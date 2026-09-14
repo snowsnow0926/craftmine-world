@@ -206,3 +206,5 @@ This establishes recovery evidence only; native pixels and normal save/cold-open
 remain to be checked by the parent. The original report and profile were not
 edited. Twenty-five CPU tests and driver syntax checks passed, including
 transient-vs-terminal reads and foreign/stale/unclosed prior-report rejection.
+
+The retained-world driver uses the existing formal-bound capture API for both embedded and fullscreen world layouts. It checks world/build/instance before and after capture, verifies the returned PNG hash, and computes nonblank pixel statistics from that PNG. The earlier Wy4v8W attempt reached the running world but used the legacy unbound capture route and was rejected with GODOT_HEADLESS_CAPTURE_FULLSCREEN_USE_BOUND_VIEW; its original failure remains preserved. No capture protection is relaxed.

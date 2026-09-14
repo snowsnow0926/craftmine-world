@@ -1,6 +1,8 @@
 // Parent-run native recovery probe. This file never calls an Agent or game input.
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
@@ -128,9 +130,20 @@ async function readyWorld(mode='already-ready-at-startup'){
 }
 async function captureAndSave(){
   const saved=await panel('godot.runtimeSave',{freeze:true}),snapshot=await rpc('godotSnapshot'),before=await observeReadyWorld();assert.equal(before.worldId,worldId);
-  const frame=await rpc('godotCaptureView');assert(frame.pixelStats?.sampledColors>4,'RETRY_NONBLANK_NATIVE_PIXELS_REQUIRED');
+  const binding=await rpc('godotCaptureBoundState');
+  for(const key of ['worldId','buildId','instanceId'])assert.equal(binding.formal?.[key],before[key],'RETRY_CAPTURE_BINDING_CHANGED');
+  const frame=await until(async()=>{try{return await rpc('godotCaptureBoundView',{payload:binding.formal});}catch(error){if(String(error).includes('GODOT_VIEW_CAPTURE_DETACHED'))return null;throw error;}},Boolean);
+  for(const key of ['worldId','buildId','instanceId'])assert.equal(frame[key],before[key],'RETRY_CAPTURE_FRAME_IDENTITY_CHANGED');
+  assert.equal(frame.scope,'formal');
+  const bytes=Buffer.from(frame.pngBase64,'base64');assert.equal(retryHash(bytes),frame.sha256);
+  const require=createRequire(import.meta.url);let PNG;try{({PNG}=require('pngjs'));}catch{({PNG}=require(path.join(os.homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pngjs')));}
+  const pixels=PNG.sync.read(bytes);assert.equal(pixels.width,frame.width);assert.equal(pixels.height,frame.height);
+  const colors=new Set();let opaqueSamples=0;
+  for(let offset=0;offset<pixels.data.length;offset+=64*4){if(pixels.data[offset+3]){opaqueSamples++;colors.add(pixels.data.readUInt32BE(offset));}}
+  const pixelStats={source:'decoded-bound-PNG',sha256:frame.sha256,sampledColors:colors.size,opaqueSamples};
+  assert(pixelStats.sampledColors>4,'RETRY_NONBLANK_NATIVE_PIXELS_REQUIRED');
   const after=await observeReadyWorld();for(const key of ['worldId','buildId','instanceId'])assert.equal(before[key],after[key],'RETRY_CAPTURE_IDENTITY_CHANGED');
-  return {saved,snapshot,observation:after,frame:report.calls.findLast(row=>row.method==='godotCaptureView').result};
+  return {saved,snapshot,observation:after,frame:report.calls.findLast(row=>row.method==='godotCaptureBoundView'&&row.result).result,pixelStats};
 }
 async function step(name,action){try{const result=await action();report.steps.push({name,passed:true,result:archive(result)});save();return result;}catch(error){report.steps.push({name,passed:false,error:redact(String(error.stack??error))});save();throw error;}}
 try{
