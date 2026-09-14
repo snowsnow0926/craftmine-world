@@ -25,3 +25,22 @@ reuse unverified application evidence. Existing explicit cancellation clearing,
 task recovery, source identity, build/check, selected-world and first-load
 guards remain in effect. A known no-op bridge permits normal initialization to
 continue; it does not itself prove runtime or gameplay success.
+
+## Explicit continuation of a selected unfinished world
+
+An entry-list `initializing` row describes durable preparation state, not a
+running executor. In headless entry, list reads deliberately use
+`status({resume:false})`. A retained world may therefore be selected and still
+need the player's ordinary Continue Preparing World action after restart.
+
+That existing action is now also shown for the selected initializing row. The
+controller permits same-world navigation only when `resumeInitialization` is
+explicitly true and the target state is `initializing`. Ordinary selection of
+an unfinished world remains non-playable; ready same-world selection keeps its
+original behavior. Failed worlds still require their advertised recovery
+actions. Busy, saving, unsupported-switch and task-binding rules are retained.
+
+This uses the existing navigation path. Its selected Godot runtime-state read
+reaches the coordinator's creation status and existing idempotent initializer;
+an actual switch uses the existing guarded world-open path. No new RPC, source
+repair, background retry or synthetic initialization status is introduced.

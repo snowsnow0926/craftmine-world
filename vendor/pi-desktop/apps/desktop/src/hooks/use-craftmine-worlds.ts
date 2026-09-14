@@ -160,7 +160,7 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       setNotice(null);
       setActionError(null);
       const target = worlds.find((entry) => entry.id === id);
-      if (resumeInitialization && (!target || target.state !== "initializing" || id === activeWorldId)) return;
+      if (resumeInitialization && (!target || target.state !== "initializing")) return;
       if (target && !isWorldPlayable(target) && !resumeInitialization) {
         // The host registered the world but has not finished initializing it;
         // opening it would leave the view on a world it cannot run.
@@ -170,6 +170,8 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       const plan = planWorldSwitch({
         activeWorldId,
         targetId: id,
+        targetState: target?.state,
+        resumeInitialization,
         busy: busyRef.current,
         saving: busyRef.current,
         switchSupported: capabilities?.switch ?? null,

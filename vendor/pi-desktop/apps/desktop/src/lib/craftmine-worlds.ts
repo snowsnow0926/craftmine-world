@@ -703,12 +703,18 @@ export type CraftmineSwitchPlan =
 export function planWorldSwitch(input: {
   activeWorldId: string | null;
   targetId: string;
+  targetState?: CraftmineWorldState;
+  resumeInitialization?: boolean;
   busy: boolean;
   saving: boolean;
   switchSupported: boolean | null;
   activeTask: CraftmineActiveTask | null;
 }): CraftmineSwitchPlan {
-  if (input.targetId === input.activeWorldId) return { kind: "noop" };
+  // Selection alone does not mean a retained unfinished world has an active
+  // initializer after restart. Only its explicit preparation action may ask
+  // the existing host navigation to resume that same selected world.
+  if (input.targetId === input.activeWorldId
+    && !(input.resumeInitialization === true && input.targetState === "initializing")) return { kind: "noop" };
   if (input.busy) return { kind: "blocked", reason: "busy" };
   if (input.saving) return { kind: "blocked", reason: "saving" };
   if (input.switchSupported === false) return { kind: "blocked", reason: "unsupported" };

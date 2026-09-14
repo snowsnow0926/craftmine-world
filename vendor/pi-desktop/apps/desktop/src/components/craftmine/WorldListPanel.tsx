@@ -248,7 +248,7 @@ function WorldRow({
         </span>
       </button></form>
 
-      {!active && entry.state === "initializing" && onContinuePreparation && (
+      {entry.state === "initializing" && onContinuePreparation && (
         <button type="button" className="craftmine-world-item-actions" data-world-continue={entry.id}
           disabled={busy} onClick={onContinuePreparation}>
           {lang === "zh" ? "继续准备世界" : "Continue preparing world"}
