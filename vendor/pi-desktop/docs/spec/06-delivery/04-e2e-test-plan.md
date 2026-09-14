@@ -10671,3 +10671,30 @@ repository root. They exercise the actual page functions and coordinator with
 finite fault seams. They are not proof of an attached/composited native frame;
 isolated Windows package acceptance must separately record runtime identity,
 nonblank rendering and normal shutdown without real mouse/keyboard operations.
+
+The opt-in package driver is:
+
+```text
+node tests/fb02-packaged-candidate-lifecycle.mjs APP_DIR READONLY_PROFILE WORLD_ID --packaged-root PACKAGED_ROOT --resources PACKAGED_ROOT/resources --candidate-reload-recovery --run
+```
+
+Omitting `--run` in this mode only prints the plan and creates no profile. Set
+`CRAFTMINE_CREATION_OUTPUT_ROOT` to the isolated results directory; its report
+records a `cancelFile` that stops the next operation through normal cleanup.
+The source must be a stopped, owned test profile. The driver copies its real
+source, artifacts and database (SQLite read-only backup), then uses the ordinary
+history check route, Checks preview button and main-window preview controls.
+No model runs and no source, candidate or check result is manufactured.
+
+During preview it actually reloads the isolated plugin page via CDP, then checks
+that the same formal instance is restored. It repeats preview/close and
+preview/apply, reloads the applied page, saves and cold-reopens the application.
+For each restored surface it records identity-bound `godotCaptureBoundView`
+evidence: that existing route verifies host visibility, surface visibility and
+owner child-view attachment before and after the read. The driver also requires
+normal product DOM state and multiple non-dark colors in the center of the PNG;
+it does not substitute a capture from an arbitrary hidden WebContents. A final
+read-only database audit requires exactly one application commit for the exact
+new candidate, and the entire shipped package inventory must remain unchanged.
+`node --test tests/candidate-recovery-driver.test.mjs` verifies the prepare-only
+and conflicting-mode guards without launching Electron.
