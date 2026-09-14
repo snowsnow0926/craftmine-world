@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import type {AssetLibraryBridge} from "./use-asset-library";
 import {compositionPrompt, parseCompositionPlan, validateCompositionRequest, type CompositionPlan, type CompositionRequest} from "../../../../shared/world-composition-contract";
 
-type Recipe = {id: CompositionRequest["recipeId"]; version: 1 | 2; label: {zh: string; en: string}; description: {zh: string; en: string}; defaults: CompositionRequest["choices"]};
+type Recipe = {id: CompositionRequest["recipeId"]; version: 1 | 2 | 3; label: {zh: string; en: string}; description: {zh: string; en: string}; defaults: CompositionRequest["choices"]};
 export type CompositionHandoff = {plan: CompositionPlan; text: string};
 export function WorldCompositionPanel({bridge, worldId, zh, onUseComposition}: {bridge: AssetLibraryBridge | null; worldId: string; zh: boolean; onUseComposition?: (value: CompositionHandoff) => Promise<void>}) {
   const [recipes, setRecipes] = useState<Recipe[]>([]), [request, setRequest] = useState<CompositionRequest | null>(null);

@@ -30,7 +30,7 @@ async function fixture(t){
 }
 test('recipes are explicit versioned choices, never keyword classification or mutable catalog references',()=>{
   const catalog=compositionCatalog();assert.equal(catalog.recipes.length,3);assert.equal(catalog.applied,false);
-  catalog.recipes[0].version=99;assert.equal(compositionCatalog().recipes[0].version,2);
+  catalog.recipes[0].version=99;assert.equal(compositionCatalog().recipes[0].version,3);
   assert.throws(()=>validateCompositionRequest({...request(),recipeVersion:99}),/VERSION_REQUIRED/);
   assert.throws(()=>validateCompositionRequest({...request(),worldId:'other'}),/INVALID_PARAMS/);
   assert.throws(()=>validateCompositionRequest({...request(),choices:{...request().choices,collectionCount:0}}),/COUNT_INVALID/);
@@ -85,4 +85,18 @@ test('recipe v2 matches the exact preview bridge cohort while fixed recipe v1 re
   const historical=await f.service.compositionPlan({worldId:'world-test',request:request({recipeId:'rain-exploration',recipeVersion:1,choices})});
   assert(historical.components.every(row=>row.archiveRef.version===1&&row.sourceRequirements.status==='adaptation-required'));
   assert.notEqual(current.planHash,historical.planHash);
+});
+
+test('recipe v3 selects the new companion and carries exact receiving-world source configuration',async t=>{
+  const profiles=JSON.parse(await fs.readFile(new URL('../plugins/craftmine-world/companion-position-profiles.json',import.meta.url)));
+  for(const profile of profiles.profiles){
+    const f=await fixture(t);f.state.files=[{path:profile.path,sha256:profile.sha256},...profile.selectors];
+    const plan=await f.service.compositionPlan({worldId:'world-test',request:request({recipeId:'companion-exploration',recipeVersion:3,choices:{scenery:'keep',companion:true,weather:'keep',collectionCount:0}})});
+    assert.equal(plan.components.length,1);const companion=plan.components[0];assert.equal(companion.archiveRef.version,3);
+    assert.deepEqual(companion.sourceConfiguration.properties,{saved_position_min:profile.minimum,saved_position_max:profile.maximum});
+    assert.equal(companion.sourceConfiguration.status,'source-configuration-required');assert.equal(companion.positionValidation.requiresWorldConfiguration,true);
+    f.state.files[1]={...f.state.files[1],sha256:'e'.repeat(64)};
+    const custom=await f.service.compositionPlan({worldId:'world-test',request:request({recipeId:'companion-exploration',recipeVersion:3,choices:{scenery:'keep',companion:true,weather:'keep',collectionCount:0}})});
+    assert.equal(custom.components[0].sourceConfiguration.status,'world-source-review-required');assert.equal(custom.components[0].sourceConfiguration.properties,undefined);
+  }
 });

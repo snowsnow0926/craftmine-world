@@ -10934,3 +10934,9 @@ Verify host-confirmed candidate deferral without a red error or secondary resume
 then actual persistence on the next ordinary tick. Preserve older real errors and
 show unrelated failures. Explicit Save remains a guarded operation with useful
 feedback. See [the scenario](../../e2e/godot-autosave-candidate-20260914.md).
+
+## Companion v3 receiving-world bounds
+
+Check configured city/sandbox ranges, exact cold component state, finite values,
+2 mm vertical contacts, retained field/collision checks, immutable old packages
+and recipe3 configuration. See [the scenario](../../e2e/companion-world-bounds-20260914.md).
