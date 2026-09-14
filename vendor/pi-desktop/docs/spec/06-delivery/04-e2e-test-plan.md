@@ -11052,3 +11052,10 @@ managed export, native appearance and actual player acceptance. The checked-in
 discovery index must enumerate the current built catalog, while reference-only
 IDs remain non-installable. See the repository-level
 `docs/PROMO_REUSE_INDEX_AND_NATURE_CONTRACT_2026-09-15.md` for measured evidence.
+## DeepSeek cross-turn measurement identity (2026-09-15)
+
+Verify that only an exact proven request prefix under unchanged full-auto Godot
+session/world scope can reuse a successful measurement across tasks. The new
+task's complete reservation/settlement binding remains mandatory; permission,
+media, system/tool/body changes still fail closed. See
+[the cross-turn replay and native-loop cases](../../e2e/deepseek-cross-turn-measurement-20260915.md).

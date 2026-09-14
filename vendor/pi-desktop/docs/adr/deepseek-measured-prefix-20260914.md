@@ -2,6 +2,10 @@
 
 Date: 2026-09-14
 
+2026-09-15 amendment: [cross-turn measurement scope](deepseek-cross-turn-measurement.md)
+separates a narrowly authorized session/world measurement key from the complete
+task authorization. The original final-body and exact-prefix checks remain.
+
 Status: Accepted for the verified official DeepSeek text transport.
 
 The A2 1M/max/384K test showed a real mismatch between measured prompt usage and
