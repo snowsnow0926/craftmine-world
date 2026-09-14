@@ -14,6 +14,28 @@ production-controller cases with controlled native dependencies, seven
 configuration/SDK/renderer cases and 56 existing regressions. The packaged
 module test caught and fixed a CJS-to-ESM builtin import issue before integration.
 
+Native package `e006a531129d` then reproduced a first-use refusal before any
+installation. The ordinary PI New World form created `world-f21db9603014`;
+the application exited normally with no audit violations. Read-only SQLite
+inspection confirmed source revision 2 / manifest
+`5e76086598dfeb73dac7d8588b0a215221c716eaaae1bcad50a91c5e6da5c120`.
+The scene and controller matched `bac1347d...` / `77f10dff...`; the project was
+`e956ae08ce5898713f2fcc83ba16ab30a185ea3fe094f77b64f1d8653d4b6a0f`
+(1179 bytes), containing materializeBase's legitimate runtime suffix. No profile
+data, DB row or progress was changed during diagnosis.
+
+The added test calls the real `materializeBase`, registers its complete source
+file set in Core, and installs first/second companions. The production direct
+controller case now uses that same ordinary materialized source. Generator
+identity, extra input/autoload settings, selectors, adapter paths, duplicate
+settings and each runtime/adapter pin have refusal coverage. The five historical
+archive hashes (Pom v1/v2/v3 and generic pet v2/v3) are asserted unchanged.
+
+After this materialized-world correction, the expanded packaged-plugin suite
+passed 76 cases with zero failures/skips using the actual package's release
+Core executable. The actual-profile read-only recheck and full-source CPU
+fixtures are retained separately; native Windows rerun remains the final gate.
+
 `tests/source-configuration-core.test.mjs` runs the actual Rust catalog,
 immutable package parsing, host binding, source CAS, scene materializer and check
 job persistence. Its four routes are `install`, `install-group`, `propose` and

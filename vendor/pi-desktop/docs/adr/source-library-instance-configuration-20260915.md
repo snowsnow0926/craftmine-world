@@ -37,3 +37,10 @@ apply time, separate from the configuration requirements for a new installation.
 Numeric validation establishes a finite, well-formed domain, not semantic proof
 that a custom world's chosen range is correct. Runtime pet-shape validation,
 actual gameplay and save/reopen still supply that evidence.
+
+The first native regression found that a normal blank world's materialized
+project differs from its unbound stock file. Recognize only the exact generator
+suffix plus unchanged stock-prefix hash, current world ID and registered
+runtime/adapter cohort. Preserve rejection of all other project changes. CPU
+fixtures must materialize and register the complete ordinary source set, rather
+than treating an unmaterialized base directory as the ordinary player path.

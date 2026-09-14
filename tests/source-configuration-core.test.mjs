@@ -10,6 +10,7 @@ import {CoreClient} from '../plugins/craftmine-world/core-client.cjs';
 import {packStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 import {contentHash} from '../plugins/craftmine-world/package-format.mjs';
 import {parseScene} from '../desktop/godot/shared/scene_materializer.mjs';
+import {materializeBase} from '../desktop/godot/shared/materialize.mjs';
 const pluginDirectory=process.env.CRAFTMINE_CONFIGURATION_PLUGIN_DIR?path.resolve(process.env.CRAFTMINE_CONFIGURATION_PLUGIN_DIR):path.resolve(import.meta.dirname,'../plugins/craftmine-world');
 const {createManagedPackageInstaller}=await import(pathToFileURL(path.join(pluginDirectory,'reuse-service.mjs')).href);
 const {createAuthorSourceInstaller}=await import(pathToFileURL(path.join(pluginDirectory,'author-source-install.mjs')).href);
@@ -32,10 +33,16 @@ async function fixture(t,{stock=false,legacy=false}={}){
  await call('world.create',{id:worldId,title:'Configuration fixture',world:{build:{id:'configuration-base',scene:{format:'craftmine.godot-scene/1',baseId:'creation-sandbox'},godot:{}},snapshot:initial,extensions:[]}});
  await call('workspace.open',{context,selectedWorld:worldId});
  const baseSource=stock==='city'?'desktop/godot/shared/promo-templates/promo-city/source':'desktop/godot/bases/creation-sandbox';
- const files=stock?await Promise.all(['project.godot','scenes/creation.tscn','scripts/creation_world.gd',...(stock==='city'?['scripts/orgrimmar_world.gd','scripts/orgrimmar_runtime.gd']:[])].map(async name=>({path:name,text:await fs.readFile(path.join(root,baseSource,name),'utf8')}))):[
+ let files=stock?await Promise.all(['project.godot','scenes/creation.tscn','scripts/creation_world.gd',...(stock==='city'?['scripts/orgrimmar_world.gd','scripts/orgrimmar_runtime.gd']:[])].map(async name=>({path:name,text:await fs.readFile(path.join(root,baseSource,name),'utf8')}))):[
   {path:'project.godot',text:'config_version=5\n[application]\nrun/main_scene="res://world.tscn"\n'},
   {path:'world.tscn',text:'[gd_scene format=3]\n[node name="World" type="Node3D"]\n[node name="ExistingDog" type="Node3D" parent="."]\nmetadata/entity_id = "existing-dog"\n'}];
- await call('godotProject.create',{context,worldId,toolCallId:'create',baseBuild:'configuration-base',baseId:'creation-sandbox',files});
+ if(stock==='materialized'){
+  const out=path.join(directory,'ordinary-materialized-base'),materialized=materializeBase({baseId:'creation-sandbox',worldId,template:'blank',out});
+  files=await Promise.all(materialized.files.map(async file=>({path:file.path,text:await fs.readFile(path.join(out,file.path),'utf8')})));
+  files=[...files.filter(file=>file.path==='project.godot'),...files.filter(file=>file.path!=='project.godot')];
+ }
+ let created=await call('godotProject.create',{context,worldId,toolCallId:'create',baseBuild:'configuration-base',baseId:'creation-sandbox',files:files.slice(0,16)});
+ for(let offset=16;offset<files.length;offset+=16)created=await call('godotProject.patch',{context,worldId,toolCallId:'register-materialized-'+offset,revision:created.revision,manifestHash:created.manifestHash,operations:files.slice(offset,offset+16).map(file=>({op:'put',...file,expectedHash:null}))});
  await call('content.migrate.apply',{worldId});
  const before=await call('godotProject.index',{context,worldId,limit:1});
  const packageFiles={'pet.gd':Buffer.from('extends Node3D\n@export var entity_id: String = ""\n@export var saved_position_min := Vector3(-80, -80, -80)\n@export var saved_position_max := Vector3(80, 80, 80)\n'),'pet.gd.uid':Buffer.from('uid://bconfigurationpet\n')};
@@ -106,7 +113,7 @@ test('unknown source is visible during search/read/direct inspection and cannot 
  }
 });
 
-for(const stock of [true,'city'])test(`pinned ${stock==='city'?'city':'sandbox'} root permits two installations but rejects stale explicit configuration`, {skip:!binary},async t=>{
+for(const stock of [true,'city','materialized'])test(`pinned ${stock==='city'?'city':stock==='materialized'?'ordinary materialized sandbox':'sandbox'} root permits two installations but rejects stale explicit configuration`, {skip:!binary},async t=>{
  const f=await fixture(t,{stock});
  const read=await tool(f,{mode:'read',ref:f.ref},'read');assert.equal(read.targetCompatibility.resources[0].configuration.status,'configuration-planned');
  const inspection=await f.service.directInspect({worldId,ref:f.ref});assert.equal(inspection.eligible,true);
@@ -147,7 +154,7 @@ test('legacy contract keeps limited-area installation available with an advisory
 // Native execution/adoption are controlled dependency fixtures ONLY in these
 // controller contract tests. They never change Core's genuinely blocked job.
 for(const stale of [false,true])test(`production direct controller uses installed bounds through check/apply${stale?' and rejects a later source change':''}`,{skip:!binary},async t=>{
- const f=await fixture(t,{stock:'city'});
+ const f=await fixture(t,{stock:stale?'city':'materialized'});
  const {build}=createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'))('esbuild');
  const modulePath=path.join(f.directory,'direct-controller.mjs');
  await build({entryPoints:[path.join(root,'vendor/pi-desktop/apps/desktop/electron/main/direct-library.ts')],outfile:modulePath,bundle:true,platform:'node',format:'esm'});
@@ -176,7 +183,7 @@ for(const stale of [false,true])test(`production direct controller uses installe
  assert.equal((await controller.handle(action('status'))).status,'checking');
  const after=await f.call('godotProject.index',{context,worldId,limit:1});
  const scene=await f.call('godotProject.read',{context,worldId,revision:after.revision,manifestHash:after.manifestHash,path:f.scene,offset:0,limit:16000});
- assert.match(scene.text,/saved_position_min = Vector3\(-240, -20, -300\)/);
+ assert.match(scene.text,stale?/saved_position_min = Vector3\(-240, -20, -300\)/:/saved_position_min = Vector3\(-32, 0, -32\)/);
  boundary.checked=true;assert.equal((await controller.handle(action('status'))).status,'ready');
  if(stale){
   const next={...context,turnId:'later-source-edit'};await f.call('workspace.open',{context:next,selectedWorld:worldId});

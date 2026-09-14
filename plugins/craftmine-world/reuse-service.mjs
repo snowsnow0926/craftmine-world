@@ -236,7 +236,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
             requireValue(profiles.some(profile=>profile.requirements.every(required=>originals.get(required.path)===required.sha256)),'PACKAGE_BASE_PROFILE_MISMATCH');
           }
         }
-        const indexedFiles=new Map([...originals].map(([path,sha256])=>[path,{path,sha256,...(path==='scenes/creation.tscn'?{text:sourceFiles.get(path).toString('utf8')}:{} )}]));
+        const indexedFiles=new Map([...originals].map(([path,sha256])=>[path,{path,sha256,...(['project.godot','scenes/creation.tscn'].includes(path)?{text:sourceFiles.get(path).toString('utf8')}:{})}]));
         // Resolve before planInstall/applyFiles. Explicit configuration is pinned
         // to the same current source revision that the final CAS will consume.
         const configurations=archives.map((archive,index)=>resolveSourceConfiguration(archive,indexedFiles,identity,items[index].positionBounds));

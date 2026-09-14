@@ -65,7 +65,7 @@ function createWorldComposition({call,ensureBuiltin,readArchive}){
       components.push({archiveRef:ref,archiveSha256:pin.archiveSha256,rootContentHash:pin.rootContentHash,displayName:version.displayName,source:version.source,
         sourceRequirements:assessRequirements(entry,files),existingSource:files.has('addons/'+pin.assetId+'/'+entry.sceneInstall.sceneFile)?'component-files-present-inspect-instances':'not-observed',
         kind:content.kind,compatibility:{declared:content.compatibility,status:content.compatibility?.base===identity.baseId&&(!content.compatibility.engine||content.compatibility.engine===identity.engineVersion)?'base-and-engine-matched':'adaptation-required'},capabilities:entry.capabilities??[],placement:entry.placement??null,airspaceRequirements:entry.airspaceRequirements??null,controls:entry.controls??null,playerBinding:entry.playerBinding??entry.integration??null,exclusiveCapability:entry.exclusiveCapability??null,state:content.state,interfaces:content.interfaces,
-        ...(content.entry.positionValidation?{positionValidation:content.entry.positionValidation,sourceConfiguration:companionPositionConfiguration(files)}:{}),
+        ...(content.entry.positionValidation?{positionValidation:content.entry.positionValidation,sourceConfiguration:companionPositionConfiguration(files,identity)}:{}),
         nextAction:'read-exact-component-and-inspect-target-before-propose',applied:false});
     }
     const checks=[

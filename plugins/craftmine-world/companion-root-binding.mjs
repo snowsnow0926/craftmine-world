@@ -4,6 +4,19 @@ const {profiles}=definition;
 const hash=text=>createHash('sha256').update(text,'utf8').digest('hex');
 const MAX_SCENE_BYTES=256*1024;
 const pinnedScripts=(profile,files)=>profile.rootBinding?.scripts.every(script=>files.get(script.path)?.sha256===script.sha256);
+const runtimePinsMatch=(profile,files)=>profile.projectMaterialization?.requirements.every(file=>files.get(file.path)?.sha256===file.sha256);
+
+function projectBindingMatches(profile,files,source){
+  const expected=profile.selectors.find(item=>item.path==='project.godot'),file=files.get('project.godot');
+  if(file?.sha256===expected?.sha256)return true;
+  if(profile.projectMaterialization?.mode!=='append-runtime'||!runtimePinsMatch(profile,files)||!/^[a-z0-9][a-z0-9-]{1,47}$/.test(source?.worldId??'')
+    ||typeof file?.text!=='string'||Buffer.byteLength(file.text)>32768||hash(file.text)!==file.sha256)return false;
+  // Exact output of materializeBase: no section stripping, normalization or
+  // extra setting tolerance. Every stock-prefix byte and suffix byte is bound.
+  const suffix='\n[autoload]\nCraftmineRuntime="*res://craftmine_shared/runtime_bridge.gd"\n'
+    +'\n[craftmine]\nruntime/enabled=true\nruntime/world_id='+JSON.stringify(source.worldId)+'\nruntime/adapter="res://craftmine_shared/base_adapter.gd"\n';
+  return file.text.endsWith(suffix)&&hash(file.text.slice(0,-suffix.length))===expected.sha256;
+}
 
 // Deliberately narrow static grammar. Unsupported/ambiguous roots require
 // explicit configuration; this is never a substitute for Godot validation.
@@ -62,23 +75,28 @@ function rootBindingMatches(profile,files){
 async function enrichCompanionSourceFiles(call,context,worldId,source,files,assertActive=()=>{}){
   // Only known project/script cohorts merit a scene read. Other worlds remain
   // unknown without fetching arbitrary files or searching for similar scripts.
-  for(const profile of profiles){
-    const binding=profile.rootBinding,scene=files.get(binding?.scene);
-    if(!binding||!pinnedScripts(profile,files)||profile.selectors.some(item=>item.path!==binding.scene&&files.get(item.path)?.sha256!==item.sha256)
-      ||!scene||scene.sha256===profile.selectors.find(item=>item.path===binding.scene)?.sha256||scene.bytes>MAX_SCENE_BYTES)continue;
+  const readText=async(name,limit)=>{
+    const scene=files.get(name);if(!scene||scene.bytes>limit)return;
     let offset=0,text='',pages=0;
     try{
       do{
         if(++pages>32)throw Error('COMPANION_SCENE_READ_LIMIT');
-        assertActive();const part=await call('godotProject.read',{context,worldId,revision:source.revision,manifestHash:source.manifestHash,path:binding.scene,offset,limit:16000});assertActive();
+        assertActive();const part=await call('godotProject.read',{context,worldId,revision:source.revision,manifestHash:source.manifestHash,path:name,offset,limit:16000});assertActive();
         if(part.sha256!==scene.sha256||typeof part.text!=='string')throw Error('COMPANION_SCENE_READ_UNVERIFIED');
-        text+=part.text;if(Buffer.byteLength(text)>MAX_SCENE_BYTES)throw Error('COMPANION_SCENE_READ_LIMIT');
-        if(part.nextOffset!=null&&(!Number.isSafeInteger(part.nextOffset)||part.nextOffset<=offset||part.nextOffset>MAX_SCENE_BYTES||!part.text.length))throw Error('COMPANION_SCENE_READ_UNVERIFIED');
+        text+=part.text;if(Buffer.byteLength(text)>limit)throw Error('COMPANION_SCENE_READ_LIMIT');
+        if(part.nextOffset!=null&&(!Number.isSafeInteger(part.nextOffset)||part.nextOffset<=offset||part.nextOffset>limit||!part.text.length))throw Error('COMPANION_SCENE_READ_UNVERIFIED');
         offset=part.nextOffset;
       }while(offset!=null);
       if(hash(text)!==scene.sha256)throw Error('COMPANION_SCENE_READ_UNVERIFIED');
-      files.set(binding.scene,{...scene,text});
+      files.set(name,{...scene,text});
     }catch{assertActive();/* No proof is a configuration-required result. */}
+  };
+  for(const profile of profiles){
+    const binding=profile.rootBinding;if(!binding||!pinnedScripts(profile,files))continue;
+    if(!projectBindingMatches(profile,files,source)&&runtimePinsMatch(profile,files))await readText('project.godot',32768);
+    if(!projectBindingMatches(profile,files,source))continue;
+    const scene=files.get(binding.scene);
+    if(scene&&scene.sha256!==profile.selectors.find(item=>item.path===binding.scene)?.sha256)await readText(binding.scene,MAX_SCENE_BYTES);
   }
 }
-export {rootBindingMatches,enrichCompanionSourceFiles,pinnedScripts};
+export {rootBindingMatches,enrichCompanionSourceFiles,pinnedScripts,projectBindingMatches};
