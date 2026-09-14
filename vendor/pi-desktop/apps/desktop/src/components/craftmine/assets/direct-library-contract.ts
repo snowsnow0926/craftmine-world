@@ -5,7 +5,7 @@ export type DirectLibraryRequest =
   | {action:'inspect';worldId:string;ref:DirectAssetRef}
   | {action:'start';worldId:string;ref:DirectAssetRef;operationId:string;position?:DirectPosition}
   | {action:'status'|'cancel'|'apply';worldId:string;operationId:string};
-export type DirectLibraryInspection = {eligible:boolean;reason?:string;displayName?:string;compatibility:'unchecked';positionSupported:boolean};
+export type DirectLibraryInspection = {eligible:boolean;reason?:string;warning?:string;displayName?:string;compatibility:'unchecked';positionSupported:boolean};
 export const DIRECT_CHECK_STAGES = ['claimed','import','export','reuse-export','stage-artifacts','check'] as const;
 export type DirectCheckStage = typeof DIRECT_CHECK_STAGES[number];
 export type DirectLibraryOperation = {

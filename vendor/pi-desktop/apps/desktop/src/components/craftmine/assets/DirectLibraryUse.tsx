@@ -51,6 +51,7 @@ export function DirectLibraryUse({bridge, worldId, asset, zh}: {bridge: AssetLib
       : !inspection ? <p role="status">{zh ? "正在读取使用要求…" : "Reading use requirements…"}</p>
       : !inspection.eligible ? <><p data-direct-unavailable>{directErrorMessage(inspection.reason ?? "UNSUPPORTED", zh)}</p>{inspection.reason && <details><summary>{zh ? "原因" : "Reason"}</summary><p>{inspection.reason}</p></details>}</>
       : <form data-direct-start-form onSubmit={event => {event.preventDefault(); submit();}}>
+        {inspection.warning && <p data-direct-warning>{directErrorMessage(inspection.warning, zh)}</p>}
         <p className="asset-library-field-hint">{zh ? "无需连接 AI。先检查当前世界，检查通过后再确认加入。" : "No AI connection needed. Check this world first, then confirm the addition."}</p>
         <fieldset disabled={active}>
           <p>{zh ? "素材默认位置" : "Asset default position"}</p>

@@ -7,6 +7,11 @@ to the source-library read tool. The common `referenceRoles` explains why
 `rootRef.sha256` and `resources[].ref.contentHash` must never replace the catalog
 `ref.contentHash`. None of these response fields grants installation authority.
 
+Required per-instance configuration is assessed separately; see
+[Source-library instance configuration](source-library-instance-configuration.md).
+An otherwise matched prerequisite result with unresolved bounds is
+`configuration-required`, with the original result in `sourcePrerequisitesStatus`.
+
 For component results, `targetCompatibility` is a read-only, advisory comparison
 against one pinned Godot source revision/manifest. The source index is paged
 with the same pins; mixed revisions, invalid index data or missing services

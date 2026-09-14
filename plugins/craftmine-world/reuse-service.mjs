@@ -2,6 +2,7 @@
 // for packages, full backups and legacy conversion. Pure helpers at the bottom
 // (explain / compatibilityMatrix / migrationReport) never touch the host.
 export {createManagedPackageSourceService} from './godot-package-source.mjs';
+import {validatePositionBounds,resolveSourceConfiguration} from './source-configuration.cjs';
 const requireValue=(condition,code)=>{if(!condition)throw Error(code);};
 const exactKeys=(value,allowed)=>{requireValue(value&&typeof value==='object'&&!Array.isArray(value),'OBJECT_REQUIRED');requireValue(Object.keys(value).every(key=>allowed.includes(key)),'UNKNOWN_FIELD');};
 const isObject=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
@@ -154,13 +155,13 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
   requireValue(typeof call==='function'&&typeof bind==='function'&&typeof enqueue==='function','PACKAGE_INSTALL_HOST_REQUIRED');
   const active=new Map();
   const executeInstall=async function(args,group=false){
-    exactKeys(args,group?['operationId','worldId','items','scene','expectedSource']:['operationId','worldId','archiveBase64','scene','expectedSource','position']);operationId(args.operationId);identifier(args.worldId);
+    exactKeys(args,group?['operationId','worldId','items','scene','expectedSource']:['operationId','worldId','archiveBase64','scene','expectedSource','position','positionBounds']);operationId(args.operationId);identifier(args.worldId);
     if(args.position!==undefined)placement(args.position);
     if(group)requireValue(isObject(args.expectedSource),'PACKAGE_SOURCE_IDENTITY_REQUIRED');
     if(args.expectedSource!==undefined){exactKeys(args.expectedSource,['revision','manifestHash']);revision(args.expectedSource.revision);requireValue(isHash(args.expectedSource.manifestHash),'PACKAGE_SOURCE_IDENTITY_REQUIRED');}
-    const items=group?args.items:[{archiveBase64:args.archiveBase64,...(args.position?{position:args.position}:{})}];
+    const items=group?args.items:[{archiveBase64:args.archiveBase64,...(args.position?{position:args.position}:{}),...(args.positionBounds!==undefined?{positionBounds:args.positionBounds}:{})}];
     if(group)requireValue(Array.isArray(items)&&items.length>=2&&items.length<=8,'PACKAGE_GROUP_ITEM_LIMIT');
-    for(const item of items){exactKeys(item,['archiveBase64','position']);if(item.position!==undefined)placement(item.position);requireValue(typeof item.archiveBase64==='string'&&item.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(item.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');}
+    for(const item of items){exactKeys(item,['archiveBase64','position','positionBounds']);if(item.position!==undefined)placement(item.position);if(item.positionBounds!==undefined)validatePositionBounds(item.positionBounds);requireValue(typeof item.archiveBase64==='string'&&item.archiveBase64.length<=7*1024*1024&&/^[A-Za-z0-9+/]*={0,2}$/.test(item.archiveBase64),'PACKAGE_ARCHIVE_TOO_LARGE');}
     if(group)requireValue(items.reduce((total,item)=>total+Buffer.byteLength(item.archiveBase64,'base64'),0)<=6*1024*1024,'PACKAGE_GROUP_ARCHIVE_TOO_LARGE');
     if(args.scene!==undefined)requireValue(text(args.scene,240),'INVALID_SCENE_PATH');
     const fs=await import('node:fs/promises'),path=await import('node:path'),{createHash}=await import('node:crypto');
@@ -235,6 +236,11 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
             requireValue(profiles.some(profile=>profile.requirements.every(required=>originals.get(required.path)===required.sha256)),'PACKAGE_BASE_PROFILE_MISMATCH');
           }
         }
+        const indexedFiles=new Map([...originals].map(([path,sha256])=>[path,{path,sha256}]));
+        // Resolve before planInstall/applyFiles. Explicit configuration is pinned
+        // to the same current source revision that the final CAS will consume.
+        const configurations=archives.map((archive,index)=>resolveSourceConfiguration(archive,indexedFiles,identity,items[index].positionBounds));
+        const appliedConfigurations=[];
         const plans=[];
         for(const [index,archive]of archives.entries()){
           const plan=await call('package.planInstall',{operationId:group?'group-'+hash(JSON.stringify([args.worldId,args.operationId,index])):args.operationId,resources:archive.resources.map(r=>r.manifest),target,options:{allowInputActionRemap:false}});
@@ -266,7 +272,10 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
             }
             requireValue(typeof nodeType==='string'&&nodeType.endsWith('3D'),'PACKAGE_POSITION_REQUIRES_3D_NODE');
           }
-          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0],...(itemPosition?{placement:{position:`Vector3(${itemPosition.x}, ${itemPosition.y}, ${itemPosition.z})`}}:{})});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
+          const configuration=configurations[itemIndex].find(row=>row.resourceId===resource.manifest.content.assetId);
+          const overrides=configuration?.properties?Object.fromEntries(Object.entries(configuration.properties).map(([name,value])=>[name,`Vector3(${value.join(', ')})`])):{};
+          const edit=planSceneInsertion({sceneText:current,scenePath:scene,spec:linked,entityId:ids[0],overrides,...(itemPosition?{placement:{position:`Vector3(${itemPosition.x}, ${itemPosition.y}, ${itemPosition.z})`}}:{})});requireValue(edit.ok,'PACKAGE_SCENE_MATERIALIZATION_FAILED');
+          if(configuration)appliedConfigurations.push({...configuration,instanceId:instance.instanceId,entityId:ids[0]});
           sceneEdits.push(edit.edit);scenes.set(scene,applySceneInsertion(current,edit.edit));inputActions.push(...(spec.inputActions??[]));
         }
         const resourceManifests=[...new Map(archives.flatMap(archive=>archive.resources).map(resource=>[resource.manifest.contentHash,resource.manifest])).values()];
@@ -276,7 +285,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
         const toolCallId='package-'+key.slice(0,40);
         const applyRequest={context,worldId:args.worldId,toolCallId,revision:identity.revision,manifestHash:identity.manifestHash,operation:bound.operation,files};
         requireValue(Buffer.byteLength(JSON.stringify(applyRequest))<=8*1024*1024,'PACKAGE_INSTALL_REQUEST_TOO_LARGE');
-        intent={requestHash,applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,...(group?{archives:merged.archives}:{archiveSha256:archives[0].archiveSha256}),instanceIds:plan.instances.map(i=>i.instanceId)};await save(intent);
+        intent={requestHash,applyRequest,toolCallId,context,ownsTurn:bound.ownsTurn===true,worldId:args.worldId,...(group?{archives:merged.archives}:{archiveSha256:archives[0].archiveSha256}),instanceIds:plan.instances.map(i=>i.instanceId),sourceConfigurations:appliedConfigurations};await save(intent);
       }
       if(!intent.receipt){intent.receipt=await call('godotProject.applyFiles',intent.applyRequest);requireValue(Number.isSafeInteger(intent.receipt.revision)&&typeof intent.receipt.manifestHash==='string','PACKAGE_SOURCE_RECEIPT_REQUIRED');await save(intent);}
       if(!intent.job||!group&&intent.job.status==='blocked'&&!intent.ownsTurn){intent.checkAttempt=(intent.checkAttempt??0)+1;requireValue(intent.checkAttempt<=32,'PACKAGE_CHECK_RETRY_LIMIT');intent.job=await call('godotBuild.start',{context:intent.context,worldId:intent.worldId,...(intent.applyRequest.operation?.branchId?{branchId:intent.applyRequest.operation.branchId}:{}),toolCallId:intent.toolCallId+'-check-'+intent.checkAttempt,revision:intent.receipt.revision,manifestHash:intent.receipt.manifestHash,mode:'check'});await save(intent);}
@@ -285,7 +294,7 @@ export function createManagedPackageInstaller({call,bind,enqueue,stagingRoot,tur
         await enqueue(intent.job,intent.context);
       }
       completed=true;
-      return {status:intent.job.status==='blocked'?'source-saved-check-blocked':'check-queued',applied:false,worldId:intent.worldId,...(intent.archives?{archives:intent.archives}:{archiveSha256:intent.archiveSha256}),instanceIds:intent.instanceIds,source:intent.receipt,job:intent.job};
+      return {status:intent.job.status==='blocked'?'source-saved-check-blocked':'check-queued',applied:false,worldId:intent.worldId,...(intent.archives?{archives:intent.archives}:{archiveSha256:intent.archiveSha256}),instanceIds:intent.instanceIds,...(intent.sourceConfigurations?.length?{sourceConfigurations:intent.sourceConfigurations}:{}),source:intent.receipt,job:intent.job};
     })().finally(async()=>{try{if(ownedContext&&!handedOff)await turns.finish(ownedContext,completed?'completed':'error');}finally{if(active.get(key)===entry)active.delete(key);}});
     return entry.promise;
   };

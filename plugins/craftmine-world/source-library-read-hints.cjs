@@ -1,5 +1,6 @@
 'use strict';
 const {assessRequirements}=require('./world-composition.cjs');
+const {configurationHint}=require('./source-configuration.cjs');
 const hash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const fail=code=>{throw Error(code);};
 const code=error=>error?.errorCode??error?.code??(/^[A-Z][A-Z0-9_]+$/.test(error?.message??'')?error.message:'SOURCE_LIBRARY_PREFLIGHT_UNAVAILABLE');
@@ -30,11 +31,14 @@ function assessArchiveForSource(archive,snapshot){
       const content=manifest.content,declared=content.compatibility??{},requirements=assessRequirements(content.entry??{},snapshot.files);
       const base=typeof declared.base==='string'&&snapshot.source.baseId?declared.base===snapshot.source.baseId?'matched':'different':'unknown';
       const engine=typeof declared.engine==='string'&&snapshot.source.engineVersion?declared.engine===snapshot.source.engineVersion?'matched':'different':'unknown';
-      return {resourceId:content.assetId,base,engine,declaredBaseVersion:declared.baseVersion??null,baseVersionCheck:'not-assessed',requirements};
+      const configuration=configurationHint(content,snapshot.files,snapshot.source);
+      return {resourceId:content.assetId,base,engine,declaredBaseVersion:declared.baseVersion??null,baseVersionCheck:'not-assessed',requirements,...(configuration?{configuration}:{})};
     });
     const mismatch=resources.some(row=>row.base==='different'||row.engine==='different'||row.requirements.status!=='source-requirements-matched');
     const known=resources.length>0&&resources.every(row=>row.base==='matched'&&row.engine==='matched');
-    return {...common,status:mismatch?'adaptation-required':known?'source-prerequisites-matched':'unknown',resources,
+    const sourcePrerequisitesStatus=mismatch?'adaptation-required':known?'source-prerequisites-matched':'unknown';
+    const unconfigured=resources.some(row=>row.configuration&&row.configuration.kind!=='legacy-companion-range'&&row.configuration.status!=='configuration-planned');
+    return {...common,status:sourcePrerequisitesStatus==='source-prerequisites-matched'&&unconfigured?'configuration-required':sourcePrerequisitesStatus,sourcePrerequisitesStatus,resources,
       note:'Pinned source prerequisite comparison only. Base version, package dependencies, installation conflicts, placement, runtime behavior and adoption still require ordinary installer/check validation. Prefer matched prerequisites among actual search results; do not bypass mismatches or guess an unlisted version.'};
   }catch(error){return {...common,status:'unknown',reason:code(error)};}
 }
