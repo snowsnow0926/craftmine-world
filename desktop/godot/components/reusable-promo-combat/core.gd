@@ -95,6 +95,7 @@ var hud: Label
 var downed_label: Label
 var damage_flash: ColorRect
 var hit_cross: Label
+var hud_root: Control
 
 func _ready() -> void:
 	world = get_parent() as Node3D
@@ -117,34 +118,55 @@ func _make_hud() -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 2
 	add_child(layer)
+	hud_root = Control.new()
+	hud_root.name = "PromoCombatViewport"
+	hud_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(hud_root)
+	hud_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var font: Font = world.get("creation_font") as Font
 	damage_flash = ColorRect.new()
 	damage_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(damage_flash)
+	hud_root.add_child(damage_flash)
 	damage_flash.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	damage_flash.color = Color(0.7, 0.06, 0.08, 0.0)
 	hud = Label.new()
 	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if font != null: hud.add_theme_font_override("font", font)
 	hud.add_theme_font_size_override("font_size", 18)
-	layer.add_child(hud)
-	hud.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	hud.position = Vector2(20, -106)
+	hud_root.add_child(hud)
+	hud.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hud.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	hud.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hud.offset_left = 16
+	hud.offset_right = -16
+	hud.offset_top = -130
+	hud.offset_bottom = -16
 	downed_label = Label.new()
 	downed_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if font != null: downed_label.add_theme_font_override("font", font)
 	downed_label.add_theme_font_size_override("font_size", 28)
-	layer.add_child(downed_label)
-	downed_label.set_anchors_preset(Control.PRESET_CENTER)
-	downed_label.position = Vector2(-190, -50)
+	hud_root.add_child(downed_label)
+	downed_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	downed_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	downed_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	downed_label.set_anchors_preset(Control.PRESET_HCENTER_WIDE)
+	downed_label.offset_left = 16
+	downed_label.offset_right = -16
+	downed_label.offset_top = -50
+	downed_label.offset_bottom = 50
 	hit_cross = Label.new()
 	hit_cross.text = "×"
 	hit_cross.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hit_cross.add_theme_font_size_override("font_size", 32)
 	hit_cross.modulate = Color("ffe895")
-	layer.add_child(hit_cross)
+	hud_root.add_child(hit_cross)
 	hit_cross.set_anchors_preset(Control.PRESET_CENTER)
-	hit_cross.position = Vector2(-10, -23)
+	hit_cross.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hit_cross.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hit_cross.offset_left = -16
+	hit_cross.offset_right = 16
+	hit_cross.offset_top = -24
+	hit_cross.offset_bottom = 24
 	hit_cross.visible = false
 	_update_hud()
 

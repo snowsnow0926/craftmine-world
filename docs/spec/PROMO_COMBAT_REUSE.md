@@ -10,6 +10,7 @@
 - Monster movement is the original local obstacle steering, not general navigation. Explicit scene bounds/flat placement are required.
 - For the same bound player, known original promotional combat formats or the supported existing player-vitals interface reject with `PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED`. Preserve and edit the original combat source instead of installing another system. Same-family helpers and unknown node names/formats do not trigger this guard.
 - Entering or leaving a trial synchronizes the original encounter HUD and damage-overlay visibility without advancing paused HP/timers. Trial control hints describe the actually equipped weapon. Return/defeat messages refer only to existing content and progress, not an assumed dog or forest.
+- Component HUD controls use a full-viewport Control parent and relative anchor offsets. Encounter life/downed/hit feedback and blade top/bottom/central panels must have nonzero global rectangles inside the actual viewport, including viewport resize while the tree is paused. This layout change does not depend on the original world's presentation node or mutate combat snapshots/timers.
 
 ## End-to-end acceptance
 
