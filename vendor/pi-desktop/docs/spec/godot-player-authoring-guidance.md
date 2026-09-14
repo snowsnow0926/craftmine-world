@@ -13,6 +13,24 @@ on requested appearance/behavior and actual contracts. No prompt should force a
 single implementation for every object or substitute a simpler outcome for the
 player's request.
 
+A source-prerequisite match is not installability or runtime proof. After a
+failure, distinguish request/schema errors, stale source/target, transient
+transport problems and package data or installer-contract incompatibility.
+Correct request errors from the published schema and actual evidence; package
+declaration errors do not imply hidden arguments. Group installation repeats
+complete archives and does not split their internal entity declarations.
+Recipe requests and search queries are not entity selectors. Inner resource
+hashes do not replace catalog identities.
+
+Retries remain available when corrected inputs, fresh evidence, a repaired
+version or transient recovery justify them. Uncertain writes use existing
+operation/receipt recovery to avoid duplication. There is no retry count, task
+time/token ceiling or blanket retry prohibition in this guidance. An unusable
+asset route leaves ordinary permitted Godot authoring and other supported asset
+routes available. Preserve the requested gameplay/appearance and existing work,
+retain the specific failure, and explain a meaningful alternative when exact
+reuse itself was requested rather than silently changing that requirement.
+
 `machineFacts.godotFacts` is a projection of journaled source facts. Its current
 implementation can return null when there is no projected Godot section or
 source receipt, including for an existing Godot world. Null is not proof that
