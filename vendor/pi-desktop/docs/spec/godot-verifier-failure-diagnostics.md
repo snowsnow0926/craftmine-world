@@ -78,8 +78,9 @@ Only an artifact-stage failure emits one `[artifact-verification]` line into
 existing diagnostics, before the ordinary failed phase line. Updating 4096 files
 does not emit 4096 lines or evict the final state. Failure freezes the observation,
 so late IO completion after timeout/cancel cannot overwrite recorded evidence.
-This does not change or claim to cancel underlying OS IO that the existing race
-has already stopped waiting for. Success emits no artifact-detail line.
+The shared stop signal destroys the active read stream. An OS lstat already in
+flight may settle later, but cannot then begin further IO. Success emits no
+artifact-detail line.
 
 Only relative labels (`.` for root) are retained; labels longer than 96 Unicode
 code points are abbreviated with an ellipsis. Absolute IO filenames and raw OS
@@ -111,3 +112,29 @@ runtime stages. A failure keeps the existing last-operation line plus this one
 summary and the phase failure within the 64-line bound. These observations help
 separate responsive-loop filesystem waits from event-loop delay; they do not
 identify a root cause or prove the absence of other resource contention.
+
+## Bounded large-block artifact reads (2026-09-14)
+
+The subsequent ordinary `a61d14…` check timed out at 30.015 seconds while still
+making progress: artifact 8/10 `web/index.pck`, expected 13,478,360 bytes, read
+7,929,856 bytes (121 default 64KiB blocks), 156 heartbeat samples and maximum
+lag 524ms. Both current-operation and last-byte ages were 2ms. This evidence
+shows poor streaming throughput in that busy main process, not a fully stalled
+read. It motivates fewer asynchronous read completions, not a longer deadline.
+
+The read stream now uses an explicit bounded 1MiB highWaterMark. Every byte still
+enters the SHA256 digest; root/entry/path lstat, no-link traversal, file type,
+size and hash comparisons remain mandatory. No synchronous whole-file read,
+sampling or partial hash is introduced. The original 30-second deadline and
+outer cancellation race remain unchanged. A scheduling-delay test on the same
+real multiblock input observes 52 read calls at 64KiB versus 7 at 1MiB, with
+complete matching hashes in both cases; a same-size corrupt final byte fails.
+This compares IO rounds, not a promised native speedup or a completed job pass.
+
+The existing host stop controller is passed to createReadStream. `halt` aborts
+with the original Error reason, and a stream AbortError is mapped back to that
+reason so GODOT_CHECK_TIMEOUT/CANCELLED cannot become generic ABORT_ERR. The
+stream is destroyed on exit. Cancellation/deadline checks before and after
+non-cancellable lstat prevent opening the next path or file once it returns;
+checks at each chunk stop further hashing after cancellation. Real-stream tests
+verify destruction/close, partial byte progress and no next artifact.
