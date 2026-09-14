@@ -28,7 +28,7 @@ const {capabilityReport}=require(path.join(plugin,'godot-capability.cjs'));
 const {GODOT_METHODS,LOCAL_TOOLS}=require(path.join(plugin,'godot-routing.cjs'));
 const invocation={projectId:'project',sessionId:'session',turnId:'turn',toolCallId:'call',executionId:'execution'};
 const skill=corpus.skills[0];
-function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVersion='4.7.2-stable',missing=false,modified=false,ended=false,foreign=false,selectedSkill=skill}={}){
+function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVersion='4.7.2-stable',missing=false,modified=false,ended=false,foreign=false,sourceMismatch=false,selectedSkill=skill}={}){
   const calls=[];
   const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
     calls.push({method,args});
@@ -37,7 +37,7 @@ function fixture({baseId='first-person',baseBuild='first-person-0.1.0',engineVer
       const files=selectedSkill.references.filter(ref=>ref.requiredInterface).map(ref=>({path:ref.projectPath,sha256:modified?'f'.repeat(64):ref.sha256}));
       const offset=args.offset??0,limit=args.limit??32;
       return {worldId:'bound-world',revision:args.revision??7,
-        manifestHash:args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion,files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
+        manifestHash:sourceMismatch?'e'.repeat(64):args.manifestHash??'a'.repeat(64),baseId,baseBuild,engineVersion,files:files.slice(offset,offset+limit),totalFiles:files.length,nextOffset:offset+limit<files.length?offset+limit:null};
     }
     if(method==='godotProject.read'){
       if(missing)throw Error('PROJECT_FILE_NOT_FOUND');
@@ -132,8 +132,31 @@ test('actual player guidance limits explain recovery before host calls without w
  assert.equal(f.calls.length,before);
  const first=await f.run(args);assert.equal(first.loadRecord.characters,4000);assert.equal(first.nextOffset,4000);
  const second=await f.run({...args,offset:first.nextOffset,limit:8000});assert.equal(second.loadRecord.characters,8000);assert.equal(second.nextOffset,12000);
- const third=await f.run({...args,offset:second.nextOffset});assert.equal(first.text+second.text+third.text,selectedSkill.text);assert.equal(third.nextOffset,null);
+ let next=second.nextOffset,text=first.text+second.text;
+ while(next!==null){const page=await f.run({...args,offset:next});assert(page.loadRecord.characters<=4000);text+=page.text;assert(page.nextOffset===null||page.nextOffset>next);next=page.nextOffset;}
+ assert.equal(text,selectedSkill.text);
  const end=await f.run({...args,offset:total,limit:1});assert.equal(end.text,'');assert.equal(end.nextOffset,null);
+});
+
+test('asset inventory is an exact paginated reference rather than injected source or cross-world authority',async()=>{
+ const selectedSkill=corpus.skills.find(s=>s.id==='creation-sandbox.authoring'),reference=selectedSkill.references.find(r=>r.path==='library/asset-index.json');
+ assert(reference);assert.equal(reference.requiredInterface,false);assert.equal(reference.projectPath,undefined);
+ const f=fixture({baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,selectedSkill}),catalog=await f.run({mode:'catalog'});
+ const metadata=catalog.skills[0].references.find(r=>r.path===reference.path);assert.equal(metadata.text,undefined);
+ assert.equal(JSON.stringify(catalog).includes('plannedComponentId'),false);
+ const args={mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:reference.sha256,path:reference.path,revision:catalog.source.revision,manifestHash:catalog.source.manifestHash};
+ let offset=0,text='';do{const page=await f.run({...args,offset,limit:511});assert(page.loadRecord.characters<=511);text+=page.text;offset=page.nextOffset;}while(offset!==null);
+ assert.equal(hash(text),reference.sha256);assert.equal(text,fs.readFileSync(path.join(plugin,'reuse-catalog/asset-index.json'),'utf8').replace(/\r\n/g,'\n'));
+ const index=JSON.parse(text);assert.equal(index.format,'craftmine.reuse-asset-index/1');
+ assert(index.referenceWorlds.every(row=>row.codeReadRoute===null));
+ assert(index.sourceFeatures.filter(row=>row.status==='reference-only').every(row=>!row.relatedAssetId));
+ assert(f.calls.filter(call=>call.method==='godotProject.read').every(call=>call.args.path!==reference.path));
+ await assert.rejects(f.run({...args,sha256:'0'.repeat(64)}),/GUIDANCE_HASH_MISMATCH/);
+ const changed=fixture({baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,selectedSkill,sourceMismatch:true});
+ await assert.rejects(changed.run(args),/GUIDANCE_SOURCE_IDENTITY_INVALID/);
+ assert.match(selectedSkill.text,/install-group[\s\S]*propose-group/);
+ assert.match(selectedSkill.text,/dependencies[\s\S]*behaviorSetup/);
+ assert.match(selectedSkill.text,/没有合适候选就继续原创/);
 });
 
 test('unsupported base/engine/build gives an empty catalog and rejects pinned skill reads',async()=>{
@@ -158,8 +181,8 @@ test('manifest, capabilities, initial prompt and product discovery expose the ne
   assert.match(JSON.stringify(report),/godot_guidance/);
   assert.equal(LOCAL_TOOLS.godot_guidance.hostMethod,'godotProject.index+godotProject.read');
   const prompt=fs.readFileSync(path.join(root,'vendor/pi-desktop/packages/agent-runtime/src/craftmine-context.ts'),'utf8');
-  assert.match(prompt,/call godot_guidance mode=catalog when advertised/);
-  assert.match(prompt,/ToolSearch only for additional tools absent from the current tool list/);
+  assert.match(prompt,/call godot_guidance mode=catalog when that tool is in the current definitions/);
+  assert.match(prompt,/ToolSearch only for tools absent from the current definitions; do not reactivate tools already present/);
   assert.match(prompt,/Continue using godot_docs/);
   const runtime=fs.readFileSync(path.join(root,'vendor/pi-desktop/packages/agent-runtime/src/runtime.ts'),'utf8');
   assert.match(runtime,/tool\.name\.startsWith\("plugin_craftmine_world_"\)/);
@@ -202,7 +225,7 @@ test('造物指导按真实底座和组件状态接口哈希匹配，普通脚�
  const base=JSON.parse(fs.readFileSync(path.join(root,'desktop/godot/bases/creation-sandbox/manifest.json')));
  assert.equal(creationSkill.applicability.baseVersion,base.baseVersion);
  assert.equal(hash(creationSkill.text),creationSkill.sha256);
- assert.equal(creationSkill.version,'1.8.2');
+ assert.equal(creationSkill.version,'1.9.0');
  assert.match(creationSkill.text.slice(0,8000),/propose-group/);
  assert.match(creationSkill.text.slice(0,8000),/底座生成器和已安装素材是两类对象/);
  assert.match(creationSkill.text.slice(0,8000),/独立 `entity_id`/);

@@ -3,11 +3,17 @@ import {packStaticPackage} from '../../plugins/craftmine-world/package-zip.mjs';
 import {contentHash} from '../../plugins/craftmine-world/package-format.mjs';
 const {createSourceLibraryService}=createRequire(import.meta.url)(process.env.CRAFTMINE_SOURCE_LIBRARY_PLUGIN?path.join(path.resolve(process.env.CRAFTMINE_SOURCE_LIBRARY_PLUGIN),'source-library-service.cjs'):'../../plugins/craftmine-world/source-library-service.cjs');
 const sha=b=>createHash('sha256').update(b).digest('hex');
-async function fixture(t,entities=['tree']){
+async function fixture(t,entities=['tree'],withDependency=false){
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'source-library-'));t.after(()=>fs.rm(directory,{recursive:true,force:true}));
  const files={'tree.gd':Buffer.from('extends Node3D\n@export var entity_id: String = ""\n')};
  const content={assetId:'kenney-tree',version:1,kind:'object',files:Object.entries(files).map(([path,bytes])=>({path,bytes:bytes.length,sha256:sha(bytes)})),dependencies:[],entry:{entities,sceneInstall:{mode:'script-node',script:'tree.gd',nodeType:'Node3D',identityField:'entity_id'}},interfaces:{},compatibility:{base:'creation-sandbox'},state:{},licenses:{}};
- const archive=packStaticPackage({root:{id:content.assetId,version:1},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files}]});
+ const extra=[];
+ if(withDependency){
+   const helper={...content,assetId:'tree-helper',version:2,kind:'module',entry:{description:'Shared helper; source only, no automatic instance'},dependencies:[]};
+   const helperHash=contentHash(helper);content.dependencies=[{id:helper.assetId,version:helper.version,sha256:helperHash}];
+   extra.push({manifest:{format:'craftmine.resource/1',content:helper,contentHash:helperHash},files});
+ }
+ const archive=packStaticPackage({root:{id:content.assetId,version:1},resources:[{manifest:{format:'craftmine.resource/1',content,contentHash:contentHash(content)},files},...extra]});
  const blobPath=path.join(directory,'archive.zip');await fs.writeFile(blobPath,archive);
  const ref={assetId:'builtin.tree',version:1,contentHash:'c'.repeat(64)},calls=[],installs=[];
  const version={...ref,mediaKind:'package',displayName:'精选树',source:{origin:'Kenney',author:'Kenney',license:'CC0-1.0',licenseStatus:'verified'},files:[{path:'tree.zip',sha256:sha(archive),bytes:archive.length,mediaType:'application/x-godot-package'}]};
@@ -30,6 +36,15 @@ test('modern catalog ZIP discovery retains provenance and distinct root identity
  const read=await f.tool(s,{mode:'read',ref:f.ref});assert.deepEqual(read.archiveRef,f.ref);assert.notEqual(read.rootRef.sha256,f.ref.contentHash);assert.equal(read.resources[0].entry.sceneInstall.nodeType,'Node3D');assert.equal(read.source.license,'CC0-1.0');
  assert.deepEqual(search.result.items[0].installRef,f.ref);assert.deepEqual(search.result.items[0].readRequest,{mode:'read',ref:f.ref});assert.deepEqual(read.installRef,f.ref);assert.match(read.referenceRoles.rootRef,/never substitute/);assert.equal(read.targetCompatibility.status,'unknown');
  assert.equal(JSON.stringify(read).includes(f.blobPath),false);assert.equal(JSON.stringify(read).includes('base64'),false);assert.equal(f.installs.length,0);
+});
+
+test('read returns exact verified internal dependency pins without installing or exposing source bytes',async t=>{
+ const f=await fixture(t,['tree'],true),read=await f.tool(f.create(),{mode:'read',ref:f.ref});
+ const root=read.resources.find(r=>r.ref.assetId==='kenney-tree'),helper=read.resources.find(r=>r.ref.assetId==='tree-helper');
+ assert.deepEqual(root.dependencies,[{id:helper.ref.assetId,version:helper.ref.version,sha256:helper.ref.contentHash}]);
+ assert.deepEqual(helper.dependencies,[]);assert.notEqual(root.dependencies[0].sha256,f.ref.contentHash);
+ assert.equal(read.applied,false);assert.equal(f.installs.length,0);assert.equal(JSON.stringify(read).includes('extends Node3D'),false);
+ assert.equal(JSON.stringify(read).includes(f.blobPath),false);
 });
 
 test('six retained author/manual/group cards derive one verified archive blocker without changing history',async t=>{

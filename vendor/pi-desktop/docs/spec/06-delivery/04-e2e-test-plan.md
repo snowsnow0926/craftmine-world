@@ -11028,3 +11028,11 @@ watchdog, while silence, stalled generation and cancellation retain their
 failures and one-settlement semantics. Preserve 1M/384K/max and distinguish
 transport waiting from semantic generation and usage. See
 [the pinned-SDK scenario](../../e2e/deepseek-pre-inference-liveness-20260915.md).
+
+## Reuse-first Godot appearance and gameplay (2026-09-15)
+
+Verify initial registered source-library discovery, exact dependency projection,
+on-demand pinned asset-index reads and the existing auto/manual installation
+routes. Preserve compatibility and source ownership; unsuitable inventory must
+not force exhaustive search or a smaller player goal. See
+[the focused acceptance scenario](../../e2e/godot-reuse-first-20260915.md).

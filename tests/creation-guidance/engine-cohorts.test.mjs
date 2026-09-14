@@ -39,10 +39,10 @@ function variantFiles(variant,line=0){
 }
 test('released cohorts and archived references stay unchanged while the guidance text has its own version',()=>{
  assert.equal(hash(JSON.stringify(skill.interfaceCohorts.variants.slice(0,2))),'1f2cc391d9f7c16d9f4f818ad5f5cc5df6a7e507cd2f2e19bc8fa3a017b63878');
- assert.equal(hash(JSON.stringify(skill.references)),'0ca22508585c004bba59e2074f8f4fcae9e910f9bfd8ade5c02076f71db767ee');
- assert.equal(skill.version,'1.8.2');
- assert.equal(hash(skill.text),'df5c0dc2fd94a1c2727232c3dff6ff3ac48e505816b94f8e6330e94e715031aa');
- assert.deepEqual(skill.interfaceCohorts,registry);assert.equal(corpus.version,'1.8.4');
+ assert.equal(hash(JSON.stringify(skill.references.filter(ref=>ref.path!=='library/asset-index.json'))),'0ca22508585c004bba59e2074f8f4fcae9e910f9bfd8ade5c02076f71db767ee');
+ assert.equal(skill.version,'1.9.0');
+ assert.equal(hash(skill.text),'8d0066422e0033aa282fa3519700d406621e31a44fb62e1b842a11759f4b2924');
+ assert.deepEqual(skill.interfaceCohorts,registry);assert.equal(corpus.version,'1.9.0');
 });
 test('explicitly enumerated full cohorts support LF/CRLF and retained exact reference reads',async()=>{
  for(const variant of registry.variants)for(const line of [0,1]){

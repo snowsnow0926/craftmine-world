@@ -16,6 +16,15 @@ function fixture() {
   return { hooks, calls, set: (value: CraftmineTaskContext) => { current = value; } };
 }
 describe("Craftmine authoritative request boundary", () => {
+  it("prefers targeted Godot appearance and gameplay reuse without inventory or mandatory exhaustive searches", () => {
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("reuse is the default starting point for both appearance and gameplay");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("Inspect relevant existing instances and their real scene references first");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("dependencies, interfaces, compatibility, state and licenses");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("no compatible match is found, continue ordinary permitted source or Blender authoring");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("Do not reread already resolved references or enumerate the entire library");
+    expect(CRAFTMINE_SYSTEM_PROMPT).not.toContain("when the player asks for reuse");
+    expect(CRAFTMINE_SYSTEM_PROMPT).not.toContain("cw.module.");
+  });
   for (const field of ["max_tokens", "max_completion_tokens", "max_output_tokens"]) {
     for (const changed of [5000, undefined, null, -1]) it(`refuses transformed ${field}=${changed} beyond the physical reservation`, async () => {
       const f = fixture();
@@ -447,8 +456,8 @@ describe("Craftmine authoritative request boundary", () => {
     expect(records[0].details.trigger).toEqual(trigger);await runtime.dispose();
   });
 });
-function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = [], pluginTools=[{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }], onEvent: (event:any)=>void=()=>{}) {
-  return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, history, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
+function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = [], pluginTools=[{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }], onEvent: (event:any)=>void=()=>{}, craftmineWorld=true) {
+  return new DesktopAgentRuntime({ craftmineWorld, craftmineHooks: craftmineWorld ? hooks : undefined, history, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
     // The provider is a contract fixture, never a real model or a mock PI loop.
     provider: { id: "fixture", name: "Fixture", modelId: "fixture", baseUrl: "http://127.0.0.1:1", apiKey: "", authKind: "none", supportsReasoning: false, supportedThinkingLevels: ["off"], modelConfig: { source: "generic", name: "Fixture", baseUrl: "http://127.0.0.1:1", input: ["text"], reasoning: false, cost: model.cost, contextWindow: 256000, maxTokens: 4000 } },
     pluginTools,
@@ -472,18 +481,24 @@ it("routes a failed final prefix check through one ordinary overflow compaction 
 
 describe("Godot task tool profile", () => {
   const prefix="plugin_craftmine_world_";
-  const names=["project_inspect","capabilities_read","godot_project_facts","godot_capability_report","godot_guidance","godot_project_index","godot_file_read","godot_project_query","godot_project_patch","godot_build_start","godot_build_read","godot_docs","asset_library","blender_status","blender_generate","blender_job_read","blender_cancel"];
+  const names=["project_inspect","capabilities_read","godot_project_facts","godot_capability_report","godot_guidance","godot_project_index","godot_file_read","godot_project_query","godot_project_patch","godot_build_start","godot_build_read","godot_docs","godot_source_library","asset_library","blender_status","blender_generate","blender_job_read","blender_cancel"];
   const manifest=JSON.parse(readFileSync(new URL("../../../../../plugins/craftmine-world/manifest.json",import.meta.url),"utf8"));
   const indexDefinition=manifest.contributes.agentTools.find((tool:any)=>tool.name==="godot_project_index");
-  const schemaNames=new Set(["godot_project_index","godot_docs","blender_generate","blender_job_read"]);
+  const schemaNames=new Set(["godot_project_index","godot_docs","blender_generate","blender_job_read","godot_source_library"]);
   const plugins=names.map(name=>{
     const definition=schemaNames.has(name)?manifest.contributes.agentTools.find((tool:any)=>tool.name===name):undefined;
     return {name:prefix+name,description:definition?.description??name,...(definition?{parameters:definition.schema}:{})};
   });
-  for(const name of ["blender_generate","blender_job_read","godot_docs"]) it(`offers the full registered ${name} schema and accepts it as the first native call`,async()=>{
+  it("does not preload source-library or add the world reuse policy in ordinary chat", async () => {
+    const runtime=makeRuntime(fixture().hooks,[],[],plugins,()=>{},false),internal=runtime as any;
+    expect(internal.isCoreTool(prefix+"godot_source_library")).toBe(false);
+    expect(internal.agent.state.systemPrompt).not.toContain("reuse is the default starting point for both appearance and gameplay");
+    await runtime.dispose();
+  });
+  for(const name of ["blender_generate","blender_job_read","godot_docs","godot_source_library"]) it(`offers the full registered ${name} schema and accepts it as the first native call`,async()=>{
     const f=fixture(),current=snapshot();current.world.runtimeKind="godot";f.set(current);
     const runtime=makeRuntime(f.hooks,[],[],plugins),internal=runtime as any,contexts:Context[]=[];
-    const args=name==="godot_docs"?{mode:"info"}:name==="blender_generate"?{name:"fixture-dog",script:"import bpy\n",revision:6,manifestHash:"a".repeat(64),expectedHash:null}:{jobId:"12345678-1234-1234-1234-123456789abc"};
+    const args=name==="godot_source_library"?{mode:"search",query:"monster",limit:6}:name==="godot_docs"?{mode:"info"}:name==="blender_generate"?{name:"fixture-dog",script:"import bpy\n",revision:6,manifestHash:"a".repeat(64),expectedHash:null}:{jobId:"12345678-1234-1234-1234-123456789abc"};
     internal.host.call.mockImplementation(async()=>({ok:true,content:{jobId:"12345678-1234-1234-1234-123456789abc",status:"queued"}}));
     vi.spyOn(internal.models,"streamSimple").mockImplementation((_model:unknown,raw:unknown)=>{
       contexts.push(raw as Context);
@@ -541,7 +556,7 @@ describe("Godot task tool profile", () => {
         const offered=contexts.at(-1)!.tools!.map(tool=>tool.name);
         expect(offered.includes(prefix+"godot_project_patch")).toBe(kind==="godot");
         expect(offered.includes(prefix+"godot_project_index")).toBe(kind==="godot");
-        for(const name of ["blender_generate","blender_job_read","godot_docs"])expect(offered.includes(prefix+name)).toBe(kind==="godot");
+        for(const name of ["blender_generate","blender_job_read","godot_docs","godot_source_library"])expect(offered.includes(prefix+name)).toBe(kind==="godot");
         if(kind==="legacy")expect(offered.some(name=>name.startsWith(prefix+"godot_"))).toBe(false);
       }
       expect(contexts).toHaveLength(4);await runtime.dispose();
@@ -549,11 +564,11 @@ describe("Godot task tool profile", () => {
   });
   it("intersects host definitions and disables summary, review and finished tools",async()=>{
     const f=fixture(),current=snapshot();current.world.runtimeKind="godot";f.set(current);
-    const runtime=makeRuntime(f.hooks,[],[],plugins.filter(tool=>!["godot_project_patch","godot_project_index","blender_generate","blender_job_read","godot_docs"].map(name=>prefix+name).includes(tool.name))),internal=runtime as any;
+    const runtime=makeRuntime(f.hooks,[],[],plugins.filter(tool=>!["godot_project_patch","godot_project_index","blender_generate","blender_job_read","godot_docs","godot_source_library"].map(name=>prefix+name).includes(tool.name))),internal=runtime as any;
     const prepare=(purpose:"creation"|"summary"|"review")=>f.hooks.beforeRequest({requestId:purpose,purpose,model,context:request,maxOutputTokens:4000});
     let reserved=await prepare("creation");expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_project_patch")).toBe(false);
     expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_project_index")).toBe(false);
-    for(const name of ["blender_generate","blender_job_read","godot_docs"])expect(reserved.context.tools!.some(tool=>tool.name===prefix+name)).toBe(false);
+    for(const name of ["blender_generate","blender_job_read","godot_docs","godot_source_library"])expect(reserved.context.tools!.some(tool=>tool.name===prefix+name)).toBe(false);
     for(const purpose of ["summary","review"] as const){reserved=await prepare(purpose);expect(reserved.context.tools).toEqual([]);expect(internal.agent.state.tools).toEqual([]);}
     reserved=await prepare("creation");expect(reserved.context.tools!.some(tool=>tool.name===prefix+"godot_file_read")).toBe(true);
     current.status="finished";current.lease.owned=false;f.set(current);reserved=await prepare("creation");
