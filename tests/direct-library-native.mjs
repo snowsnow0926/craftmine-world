@@ -33,7 +33,10 @@ async function until(read, accept) {
   while(!abort.signal.aborted) {
     if(ended) throw Error('DESKTOP_EXITED');
     try {const value = await read(); if(accept(value)) return value;}
-    catch(error) {if(!/Window is not ready|Actual Godot host unavailable|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE/.test(String(error))) throw error;}
+    catch(error) {
+      if(error?.code==='WORLD_INITIALIZATION_TERMINAL')throw error;
+      if(!/Window is not ready|Actual Godot host unavailable|No world runtime is running|World view is not ready|WORLD_BUSY|GODOT_CANDIDATE_ACTIVE/.test(String(error))) throw error;
+    }
     await delay(100);
   }
   throw Error('TEST_CANCELLED');

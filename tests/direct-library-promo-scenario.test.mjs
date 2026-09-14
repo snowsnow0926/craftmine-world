@@ -5,8 +5,19 @@ import path from 'node:path';
 import {parseDirectLibraryArgs,promoPlacementFromGround,readPromoNativePlan,preservePriorComponents,PROMO_NATIVE_STAGES} from './helpers/direct-library-promo-scenario.mjs';
 import {buildPromoCombatPackages} from '../desktop/build-promo-combat-packages.mjs';
 import {buildPromoNaturePackages} from '../desktop/build-promo-nature-packages.mjs';
+import {readOperatorInitializingRuntime} from './helpers/operator-world-initialization.mjs';
 const repository=path.resolve(import.meta.dirname,'..'),base=path.join(repository,'desktop/godot/bases/creation-sandbox');
 const worldSource=fs.readFileSync(path.join(base,'scripts/creation_world.gd'),'utf8'),scene=fs.readFileSync(path.join(base,'scenes/creation.tscn'),'utf8');
+test('actual direct-library until immediately propagates terminal creation faults containing transient text',async()=>{
+  const source=fs.readFileSync(path.join(repository,'tests/direct-library-native.mjs'),'utf8');
+  const actual=source.slice(source.indexOf('async function until('),source.indexOf('\nfunction cdp('));
+  const until=Function('abort','ended','delay',actual+';return until;')({signal:{aborted:false}},false,()=>assert.fail('terminal initialization must not delay or retry'));
+  for(const message of ['WORLD_BUSY','No world runtime is running','Actual Godot host unavailable']){
+    let reads=0,observes=0;
+    await assert.rejects(until(()=>readOperatorInitializingRuntime({worldId:'world-failed',readList:async()=>{reads++;return {activeWorldId:'world-failed',worlds:[{id:'world-failed',state:'failed',creation:{status:'failed',error:message}}]};},observe:async()=>{observes++;return {};}}),Boolean),error=>error.code==='WORLD_INITIALIZATION_TERMINAL'&&error.message.includes(message));
+    assert.equal(reads,1);assert.equal(observes,0);
+  }
+});
 test('explicit sealed scenario accepts actual resource root and retains positional legacy launch',()=>{
   const packaged=path.resolve('test-results/sealed'),resources=path.join(packaged,'resources');
   const value=parseDirectLibraryArgs(['--application-root',repository,'--packaged-root',packaged,'--scenario','promo-six-stage']);
