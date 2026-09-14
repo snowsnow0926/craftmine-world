@@ -21,7 +21,7 @@ for(const field of ['inventory','openedChests','doors','rules'])packet.checks.pu
 for(const [key,entityId]of [['flight',preparation?.aircraftId],['pet',preparation?.companionId]]){
  const component=body.components?.[entityId];assert(component,'ACTUAL_COMPONENT_REQUIRED:'+key);
  packet[key]={entityId,format:component.format};
- const fields=key==='flight'?['hasFlown','landings','piloted','crashed','grounded','gearDown','assist','afterburner','throttle','cockpitView','settings','sourceSettings']:['interactionCount','settings/following','settings/name','sourceSettings'];
+ const fields=key==='flight'?['hasFlown','landings','flightSeconds','airspeed','piloted','crashed','grounded','gearDown','assist','afterburner','throttle','cockpitView','settings','sourceSettings']:['interactionCount','settings/following','settings/name','sourceSettings'];
  for(const field of fields){let value=component;for(const part of field.split('/')){assert(value&&Object.hasOwn(value,part),'ACTUAL_COMPONENT_FIELD_REQUIRED:'+field);value=value[part];}
   packet.checks.push({id:key+'-'+field,source:'snapshot',pointer:'/state/body/components/'+entityId.replaceAll('~','~0').replaceAll('/','~1')+'/'+field,value});
  }
