@@ -43,7 +43,10 @@ empty and package inventory checks passed.
 
 ## Evidence and reproduction boundaries
 
-Evidence is retained under the agent worktree's ignored `test-results`:
+Evidence is archived at
+`D:/Craftmine Archives/demo-readiness-20260915/entry/test-results`.
+The archive's `LOCATION.json` and file inventory preserve its original locations
+and verify every file's bytes and SHA-256:
 
 - `city-navigation-native-tLMrc9`: initial read-only preflight.
 - `city-navigation-native-UnwUC1`: full before state, CAS, check, preview/apply,
