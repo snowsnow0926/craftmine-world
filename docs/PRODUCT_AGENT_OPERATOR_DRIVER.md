@@ -1,5 +1,25 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+`new-conversation` 无参数，只调用当前聊天顶部“新建任务”的原 React 处理器。
+旧模型和输入片段须已结束、输入框为空；不替操作员取消、不自动发消息，也不
+新建世界。切换前后核对同一 worldId/buildId/instanceId、已保存内容哈希和旧
+聊天消息 ID/内容摘要。需要稳定存档比较时，操作员先用普通 `save` 的
+`freeze:true`；本动作不保存、暂停或重开世界。
+
+新会话重新核对实际 PI DeepSeek Flash、1M 上下文、384K 输出、max 思考与
+auto 权限，失败记录真实已选中新 sessionId 和 `failed-unsent`。不会自动换
+模型或压低配置；普通设置修正后可用无参数 `recheck-conversation` 只读复核，
+保留原错误，不再新建聊天。`prompt`/`draft-composer`/`send-composer` 也会在
+首次发送前复核。只读 `status` 始终可用于查看情况。
+
+切换成功仅为 `ready-unsent`，不声称已绑定创作任务。普通首条消息实际接受
+后，再核对 `world.conversation` 与 `task.current` 的 world/session/project/
+task/turn；回读失败记录 `accepted-binding-unconfirmed`，不自动重发，允许
+`recheck-conversation` 只读确认该同一已接受请求。`conversationTransitions`
+保留新旧聊天、存档和配置证据，旧 turns 显式记原 world/session；重启驱动
+继续保留。这是同世界跨对话对照，不能说成原六步在同一聊天一次通过，后续
+仍需用普通自然语言继续原玩家目标。
+
 每次 `input-segment` 收到的原生动作结果（含 failed 的 partialEvidence）先归档
 原始帧并写入独立 `input-results/input-*.json`，再执行正常释放和保存/读回。
 截图存为原字节 PNG；快照、动作、释放结果和原错误不改写。输入错误、帧归档

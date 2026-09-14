@@ -17,6 +17,7 @@ import {createOperatorEventCollector,isRecoverableOperatorCaptureError,recoverOp
 import {operatorCollectorPerformanceSample,accumulateOperatorCollectorPerformance} from './helpers/operator-collector-performance.mjs';
 import {validateOperatorTemplateCopy,assertOperatorTemplateSource,templateCopyReadScript,submitOperatorTemplateCopy,verifyOperatorTemplateCopy} from './helpers/operator-template-world.mjs';
 import {showWorldTabScript,assertShowWorldIdentity} from './helpers/operator-show-world.mjs';
+import {newConversationUiScript,prepareOperatorNewConversation,recheckOperatorNewConversation,confirmNewConversationBinding} from './helpers/operator-new-conversation.mjs';
 import {settleOperatorInputEvidence,settleOperatorExplorationEvidence} from './helpers/operator-input-evidence.mjs';
 import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
 import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
@@ -46,6 +47,7 @@ const hash=value=>createHash('sha256').update(value).digest('hex'),launch=resolv
 if(launch.packaged)assert.equal(path.resolve(resources).toLowerCase(),path.join(launch.packaged,'resources').toLowerCase(),'PACKAGED_RESOURCES_MUST_BELONG_TO_PACKAGE');
 const report={format:'craftmine.product-agent-operator/1',controllerRunId:randomUUID(),out,applicationRoot,resources,codex,model:providerConfig?.model??'gpt-6-astra',effort:providerConfig?.thinkingLevel??'xhigh',backend:providerConfig?'pi':'codex-cli',...(providerConfig?{requestedModel:providerConfig.requestedModel,apiModelId:providerConfig.apiModelId,resolutionSource:providerConfig.resolutionSource,contextWindow:providerConfig.contextWindow,contextWindowSource:providerConfig.contextWindowSource??'original-player-500k-configuration'}:{}),sourceTemplate,recipeVersion:sourceTemplate==='promo-city'?2:null,launches:[],turns:[],commands:[],...(previous?{worldId:previous.worldId,sessionId:previous.sessionId,turns:previous.turns,commands:previous.commands,previousReport:previousFile,providerConfiguration:previous.providerConfiguration,retainedCopy:previous.retainedCopy,worldCreation:previous.worldCreation}:{}),acceptance:'not-assessed-by-driver'};
 const reportFile=path.join(out,previous?'continuation-'+randomUUID()+'.json':'report.json'),save=()=>writeJson(reportFile,report);
+if(previous){report.conversationTransitions=previous.conversationTransitions??[];const pending=previous.pendingConversation;report.pendingConversation=pending?(report.conversationTransitions.find(row=>row.startedAt===pending.startedAt&&row.oldSessionId===pending.oldSessionId)??pending):null;}
 if(checkReplayHash)report.checkReplayPacketSha256=checkReplayHash;
 // launch.main contains the UTF-8 bundle contents, not its filesystem path.
 report.driverSha256=hash(fs.readFileSync(import.meta.filename));report.mainSha256=hash(launch.main);report.packageIdentity=launch.identity?{inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256}:null;
@@ -129,11 +131,12 @@ async function configureProvider(){
   // Cold restart loads settings before ordinary world/session materialization.
   await stop();await start();report.providerConfiguration=await verifyProvider();report.providerConfiguredColdRestart=true;save();
 }
-async function assertModel(){const configured=await invoke('sessionGet',report.sessionId);if(providerConfig){report.providerConfiguration=await verifyProvider(configured.session);}else{assert.equal(configured.session.worldAgentBackend,'codex-cli');assert.deepEqual(configured.session.supportedThinkingLevels,['xhigh']);assert.equal((await invoke('settingsGet')).worldAgentBackend,'codex-cli');}return configured;}
-async function draftComposer(text){assert(typeof text==='string'&&text.trim(),'COMPOSER_TEXT_REQUIRED');await assertModel();assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false);await evaluate(`(()=>{const n=document.querySelector('.composer-input'),p=n&&n[Object.keys(n).find(k=>k.startsWith('__reactProps'))];if(!n||!p?.onInput||n.innerText.trim())throw Error('EMPTY_COMPOSER_REQUIRED');n.textContent=${JSON.stringify(text)};p.onInput({currentTarget:n,target:n});return true;})()`);await until(()=>evaluate(`!!document.querySelector('.send-btn:not(:disabled)')`),Boolean);return {text,sent:false};}
+async function assertModel(sessionId=report.sessionId){const configured=await invoke('sessionGet',sessionId);if(providerConfig){report.providerConfiguration=await verifyProvider(configured.session);}else{assert.equal(configured.session.worldAgentBackend,'codex-cli');assert.deepEqual(configured.session.supportedThinkingLevels,['xhigh']);assert.equal((await invoke('settingsGet')).worldAgentBackend,'codex-cli');}return configured;}
+async function draftComposer(text){assert(typeof text==='string'&&text.trim(),'COMPOSER_TEXT_REQUIRED');await recheckOperatorNewConversation(conversationAccess());await assertModel();assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false);await evaluate(`(()=>{const n=document.querySelector('.composer-input'),p=n&&n[Object.keys(n).find(k=>k.startsWith('__reactProps'))];if(!n||!p?.onInput||n.innerText.trim())throw Error('EMPTY_COMPOSER_REQUIRED');n.textContent=${JSON.stringify(text)};p.onInput({currentTarget:n,target:n});return true;})()`);await until(()=>evaluate(`!!document.querySelector('.send-btn:not(:disabled)')`),Boolean);return {text,sent:false};}
 
-async function prompt(text){assert(typeof text==='string'&&text.trim());await assertModel();assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false);const target=await evaluate(`piDesktop.pluginPanelInvoke('craftmine.world','godot.creationTarget',{sessionId:${JSON.stringify(report.sessionId)}})`);assert.equal(target.worldId,report.worldId);const messageId=randomUUID(),entry={messageId,text,startedAt:new Date().toISOString(),submission:'ordinary-agentPrompt',status:'submitting'};report.turns.push(entry);save();const accepted=await invoke('agentPrompt',{sessionId:report.sessionId,viewingSessionId:report.sessionId,messageId,content:text,...(target.captureId?{requestContext:{creationTarget:{captureId:target.captureId}}}:{})});entry.turnId=accepted.turnId;entry.status='accepted';save();return {messageId,turnId:entry.turnId};}
+async function prompt(text){assert(typeof text==='string'&&text.trim());await recheckOperatorNewConversation(conversationAccess());await assertModel();assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false);const target=await evaluate(`piDesktop.pluginPanelInvoke('craftmine.world','godot.creationTarget',{sessionId:${JSON.stringify(report.sessionId)}})`);assert.equal(target.worldId,report.worldId);const messageId=randomUUID(),entry={messageId,text,worldId:report.worldId,sessionId:report.sessionId,startedAt:new Date().toISOString(),submission:'ordinary-agentPrompt',status:'submitting'};report.turns.push(entry);save();const accepted=await invoke('agentPrompt',{sessionId:report.sessionId,viewingSessionId:report.sessionId,messageId,content:text,...(target.captureId?{requestContext:{creationTarget:{captureId:target.captureId}}}:{})});entry.turnId=accepted.turnId;entry.status='accepted';save();await confirmConversationAfterPrompt(entry);return {messageId,turnId:entry.turnId};}
 async function sendComposer(){
+  await recheckOperatorNewConversation(conversationAccess());
   const prior=await assertModel(),ids=new Set(prior.session.messages.map(row=>row.id));
   assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false);
   const text=await evaluate("document.querySelector('.composer-input')?.innerText");assert(text?.trim(),'COMPOSER_DRAFT_REQUIRED');
@@ -141,7 +144,8 @@ async function sendComposer(){
   const message=await until(async()=>{const record=await invoke('sessionGet',report.sessionId);return record.session.messages.find(row=>!ids.has(row.id)&&row.role==='user');},Boolean);
   const metrics=await until(()=>invoke('sessionTurnMetrics',{sessionId:report.sessionId,messageId:message.id}),value=>!!value.turnId);
   const entry={messageId:message.id,turnId:metrics.turnId,text,startedAt:new Date().toISOString(),submission:'ordinary-Composer-send-handler',status:'accepted'};
-  report.turns.push(entry);save();return {messageId:entry.messageId,turnId:entry.turnId};
+  entry.worldId=report.worldId;entry.sessionId=report.sessionId;
+  report.turns.push(entry);save();await confirmConversationAfterPrompt(entry);return {messageId:entry.messageId,turnId:entry.turnId};
 }
 async function releaseTaskContinue(input,action='release'){
   assert.equal(Object.keys(input).length,0,'RELEASE_COMMAND_TAKES_NO_OVERRIDES');
@@ -171,6 +175,35 @@ async function inspect(){const began=Date.now();const collected=await evaluate('
 async function capture(){const binding=await until(()=>rpc('godotCaptureBoundState'),value=>value.formal?.worldId===report.worldId),frame=await rpc('godotCaptureBoundView',{payload:binding.formal}),bytes=Buffer.from(frame.pngBase64,'base64'),file=path.join(out,'captures',Date.now()+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes);return {file,sha256:hash(bytes),width:frame.width,height:frame.height,identity:binding.formal,observation:frame.viewportObservation};}
 async function savedWorldIdentity(id,ownedWorldId){
   return withOwnedReleasePage({port:run.port,worldId:ownedWorldId,redact},page=>page(`(async()=>{const row=await pluginBridge.invoke('world.read',{id:${JSON.stringify(id)}}),contentHash=row.contentHash??row.content_hash;if(row.id!==${JSON.stringify(id)}||typeof contentHash!=='string'||!/^[a-f0-9]{64}$/.test(contentHash))throw Error('TEMPLATE_COPY_WORLD_READ_IDENTITY_REQUIRED');return {id:row.id,title:row.title,revision:row.revision,contentHash};})()`));
+}
+function conversationAccess(){return {
+  report,persist:save,until,
+  readUi:()=>evaluate(newConversationUiScript(report.sessionId),'new-conversation-read'),
+  submit:sessionId=>evaluate(newConversationUiScript(sessionId,true),'ordinary-new-task-handler'),
+  readSession:async sessionId=>(await invoke('sessionGet',sessionId)).session,
+  readState:async()=>{assert.equal((await nav('world.list')).activeWorldId,report.worldId,'NEW_CONVERSATION_WORLD_CHANGED');return {runtime:await rpc('godotObserve'),saved:await savedWorldIdentity(report.worldId,report.worldId)};},
+  assertIdle:async sessionId=>assert.equal((await invoke('agentGetStatus',sessionId)).status.isRunning,false,'NEW_CONVERSATION_REQUIRES_IDLE_AGENT'),
+  assertModel:async sessionId=>{assert(providerConfig,'NEW_CONVERSATION_PI_PROVIDER_REQUIRED');assert.equal(providerConfig.model,'deepseek-flash','NEW_CONVERSATION_CONFIGURED_FLASH_REQUIRED');assert.equal(providerConfig.contextWindow,1000000,'NEW_CONVERSATION_PLAYER_1M_REQUIRED');assert.equal(providerConfig.maxTokens,384000,'NEW_CONVERSATION_PLAYER_OUTPUT_REQUIRED');assert.equal(providerConfig.thinkingLevel,'max','NEW_CONVERSATION_PLAYER_THINKING_REQUIRED');await assertModel(sessionId);return {...report.providerConfiguration};},
+};}
+async function newConversation(input){
+  assert(!activeInput,'FINISH_INPUT_SEGMENT_BEFORE_NEW_CONVERSATION');
+  assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false,'NEW_CONVERSATION_REQUIRES_IDLE_AGENT');
+  await inspect(); // Finalize and retain the old turn transcript before selection.
+  const evidence=await prepareOperatorNewConversation(input,conversationAccess());
+  await invoke('notificationSetViewingSession',{sessionId:report.sessionId});
+  return evidence;
+}
+async function confirmConversationAfterPrompt(entry){
+  const evidence=report.pendingConversation;if(!evidence)return;
+  evidence.sent=true;evidence.firstMessageId=entry.messageId;evidence.firstTurnId=entry.turnId;save();
+  try{
+    const ui=await conversationAccess().readUi();assert.equal(ui.sessionId,report.sessionId,'NEW_CONVERSATION_UI_SESSION_CHANGED');
+    const session=(await invoke('sessionGet',report.sessionId)).session;
+    const conversation=await nav('world.conversation',{worldId:report.worldId,sessionId:report.sessionId});
+    const task=await evaluate(`piDesktop.pluginPanelInvoke('craftmine.world','task.current',{worldId:${JSON.stringify(report.worldId)}})`,'new-conversation-durable-binding');
+    evidence.binding=confirmNewConversationBinding(evidence,{session,turnId:entry.turnId,conversation,task});
+    evidence.bindingStatus=evidence.binding.bindingStatus;evidence.status='first-prompt-bound';entry.conversationTransition={oldSessionId:evidence.oldSessionId,newSessionId:evidence.newSessionId};report.pendingConversation=null;save();
+  }catch(error){evidence.status='accepted-binding-unconfirmed';evidence.bindingError=redact(String(error.stack??error));save();throw error;}
 }
 async function createTemplateWorld(input){
   const request=validateOperatorTemplateCopy(input);await assertModel();assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false,'FINISH_TURN_BEFORE_TEMPLATE_COPY');await inspect();
@@ -203,6 +236,13 @@ async function showCurrentWorld(input){
 }
 async function command(name,input){
   if(name==='status')return inspect();
+  if(name==='new-conversation')return newConversation(input);
+  if(name==='recheck-conversation'){
+    assert.equal(Object.keys(input).length,0,'NEW_CONVERSATION_TAKES_NO_OVERRIDES');const evidence=report.pendingConversation;assert(evidence,'NEW_CONVERSATION_HANDOFF_REQUIRED');
+    if(evidence.sent){const entry=report.turns.find(row=>row.messageId===evidence.firstMessageId&&row.turnId===evidence.firstTurnId&&row.sessionId===evidence.newSessionId);assert(entry,'NEW_CONVERSATION_ACCEPTED_PROMPT_REQUIRED');await confirmConversationAfterPrompt(entry);}
+    else{await recheckOperatorNewConversation(conversationAccess());await invoke('notificationSetViewingSession',{sessionId:report.sessionId});}
+    return evidence;
+  }
   if(name==='show-world')return showCurrentWorld(input);
   if(name==='create-template-world')return createTemplateWorld(input);
   if(name==='replay-check'){assert(checkReplayHash,'CHECK_REPLAY_PARENT_PIN_REQUIRED');assert.equal(Object.keys(input).length,0);assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false,'FINISH_ACTIVE_TURN_BEFORE_REPLAY');return rpc('godotCheckReplay',{payload:{diagnosticOnly:true}});}
