@@ -1,0 +1,431 @@
+{
+  "format": "craftmine.player-candidate-recovery-acceptance/1",
+  "sourceReport": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\candidate-lifecycle-report.json",
+  "sourceReportSha256": "c0c4da17eb1807e763b90fa0ff91dd6ad349ae4a157951acebca9c7ecfe32fea",
+  "driverSha256": "c76be1663bb40e55352334d65c88dc37112b217c9fe70ff1f82eae2221f51128",
+  "passed": true,
+  "worldId": "world-bd900f064cf2",
+  "package": "D:\\Craftmine Releases\\PlayerFix-preview24-c04cef7e.verify-70651ec5-4d9c-4ade-9dc9-08e93af5714c\\PlayerFix-preview24-c04cef7e\\output\\win-unpacked",
+  "resources": "D:\\Craftmine Releases\\PlayerFix-preview24-c04cef7e.verify-70651ec5-4d9c-4ade-9dc9-08e93af5714c\\PlayerFix-preview24-c04cef7e\\output\\win-unpacked\\resources",
+  "packageInventorySha256": "0eae486db1ff0d4b88cc9e2489aca86c1627ffe57642209f5d893392d8dadf64",
+  "finalPackageInventorySha256": "0eae486db1ff0d4b88cc9e2489aca86c1627ffe57642209f5d893392d8dadf64",
+  "modelCalls": 0,
+  "sourceEditsByHarness": 0,
+  "checks": [
+    {
+      "name": "wrong-world candidate request cannot change the retained formal build",
+      "passed": true
+    },
+    {
+      "name": "original checks-list preview button opens the real retained-world candidate without adopting it",
+      "passed": true
+    },
+    {
+      "name": "actual panel reload reconciles its abandoned preview and restores the same attached formal instance",
+      "passed": true
+    },
+    {
+      "name": "return to original world preserves formal build and complete progress",
+      "passed": true
+    },
+    {
+      "name": "actual native adoption preserves latest progress and the retained draft head",
+      "passed": true
+    },
+    {
+      "name": "applied world remains attached and nonblank after a second real panel reload",
+      "passed": true
+    },
+    {
+      "name": "adopted build content identity and full saved progress survive native app and Rust restart",
+      "passed": true
+    },
+    {
+      "name": "read-only cold application audit proves exactly one new commit of the checked candidate and unchanged package bytes",
+      "passed": true
+    }
+  ],
+  "candidate": {
+    "candidateId": "gcan-4e26de9e4031a89a5467282983e1862f957506bef25bf1743fc70ffa33ae3e1d",
+    "buildId": "gbd-4f5bcc7107630427b481367de9ab5e6f9e0360bd63663db91d0407d7a5fb95de"
+  },
+  "job": {
+    "id": "gjob-2fa410fc5928ffe3ddf128301c8347bc544053c213429223cb1345b759a9f845",
+    "status": "passed",
+    "sourceRevision": 6,
+    "sourceManifest": "0adec834a9b2c18e096c56310254ce0b0d12b1afbdb27113dc34b3ee5726fd38"
+  },
+  "applicationId": "5a3de836-cc74-4754-9fc4-e40c8dfef7fa",
+  "finalApplications": [
+    {
+      "id": "3f74cac1-c1df-42f7-9643-e1a3f5bc4094",
+      "candidate_id": "gcan-4e26de9e4031a89a5467282983e1862f957506bef25bf1743fc70ffa33ae3e1d",
+      "status": "aborted",
+      "created_at": 1789373752125,
+      "updated_at": 1789373757991
+    },
+    {
+      "id": "7b9da6f1-fe06-4acf-ad5d-10be7f4e418a",
+      "candidate_id": "gcan-4e26de9e4031a89a5467282983e1862f957506bef25bf1743fc70ffa33ae3e1d",
+      "status": "aborted",
+      "created_at": 1789373759798,
+      "updated_at": 1789373765794
+    },
+    {
+      "id": "85b0b30c-10a4-4076-b75e-00e1d1ee22ee",
+      "candidate_id": "gcan-4e26de9e4031a89a5467282983e1862f957506bef25bf1743fc70ffa33ae3e1d",
+      "status": "aborted",
+      "created_at": 1789373766228,
+      "updated_at": 1789373771509
+    },
+    {
+      "id": "5a3de836-cc74-4754-9fc4-e40c8dfef7fa",
+      "candidate_id": "gcan-4e26de9e4031a89a5467282983e1862f957506bef25bf1743fc70ffa33ae3e1d",
+      "status": "applied",
+      "created_at": 1789373771609,
+      "updated_at": 1789373775885
+    }
+  ],
+  "frames": [
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\before-preview-reload.png",
+      "sha256": "5bd1e28a812322893c6b289aeece8f14d0fe16d66bf396c895e323e0014605d9",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-4f5bcc7107630427b481367de9ab5e6f9e0360bd63663db91d0407d7a5fb95de",
+      "instanceId": "358ed3ffab4ef828d2530221",
+      "scope": "candidate",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45920,
+        "colors": 771
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": "true",
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "false"
+      }
+    },
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\after-rejected-sidebar-surface.png",
+      "sha256": "e93b9e2d0280627a074e5ffc018f88e805fc37297e99d44f611282885110e03b",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-4f5bcc7107630427b481367de9ab5e6f9e0360bd63663db91d0407d7a5fb95de",
+      "instanceId": "358ed3ffab4ef828d2530221",
+      "scope": "candidate",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45916,
+        "colors": 760
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": "true",
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "false"
+      }
+    },
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\after-preview-reload.png",
+      "sha256": "3aef51775cef80e3a51626bd6bf3f616cca9af7972106d94c6408c609e790947",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-0bdc0cfdcaa4414f6964971353f7a6b66f03bf805718acdf951e5d2960a7b572",
+      "instanceId": "d90a780afc313c34124f50e4",
+      "scope": "formal",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45916,
+        "colors": 757
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": null,
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "true"
+      }
+    },
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\after-ordinary-preview-close.png",
+      "sha256": "3aef51775cef80e3a51626bd6bf3f616cca9af7972106d94c6408c609e790947",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-0bdc0cfdcaa4414f6964971353f7a6b66f03bf805718acdf951e5d2960a7b572",
+      "instanceId": "d90a780afc313c34124f50e4",
+      "scope": "formal",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45916,
+        "colors": 757
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": null,
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "false"
+      }
+    },
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\after-ordinary-apply.png",
+      "sha256": "d20bcaef9894b25205dd9e65b7812a58d838c4ca0e654045695037eff74af12d",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-4f5bcc7107630427b481367de9ab5e6f9e0360bd63663db91d0407d7a5fb95de",
+      "instanceId": "209d29e918a32fa9d5a0df5a",
+      "scope": "formal",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45918,
+        "colors": 745
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": null,
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "true"
+      }
+    },
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\after-applied-panel-reload.png",
+      "sha256": "d20bcaef9894b25205dd9e65b7812a58d838c4ca0e654045695037eff74af12d",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-4f5bcc7107630427b481367de9ab5e6f9e0360bd63663db91d0407d7a5fb95de",
+      "instanceId": "209d29e918a32fa9d5a0df5a",
+      "scope": "formal",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45918,
+        "colors": 745
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": null,
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "true"
+      }
+    },
+    {
+      "file": "D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-VDmLsk\\after-cold-reopen.png",
+      "sha256": "d20bcaef9894b25205dd9e65b7812a58d838c4ca0e654045695037eff74af12d",
+      "worldId": "world-bd900f064cf2",
+      "buildId": "gbd-4f5bcc7107630427b481367de9ab5e6f9e0360bd63663db91d0407d7a5fb95de",
+      "instanceId": "a606132d7105e1d910696363",
+      "scope": "formal",
+      "pixels": {
+        "samples": 46656,
+        "opaque": 46656,
+        "lit": 45918,
+        "colors": 745
+      },
+      "dom": {
+        "worldId": "world-bd900f064cf2",
+        "loaded": "true",
+        "preview": null,
+        "state": "paused",
+        "error": "",
+        "loading": "true",
+        "worldTab": "true"
+      }
+    }
+  ],
+  "launches": [
+    {
+      "label": "first",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "forced": false,
+      "builtinRegistry": {
+        "id": "craftmine.world",
+        "name": "Craftmine World",
+        "version": "0.1.0",
+        "enabled": true,
+        "scope": {
+          "mode": "global",
+          "projects": []
+        },
+        "source": "builtin",
+        "status": "ready",
+        "permissions": [
+          "ui.view",
+          "agent.tool.register",
+          "agent.complete",
+          "background.service",
+          "fs.read"
+        ],
+        "path": "D:\\Craftmine Releases\\PlayerFix-preview24-c04cef7e.verify-70651ec5-4d9c-4ade-9dc9-08e93af5714c\\PlayerFix-preview24-c04cef7e\\output\\win-unpacked\\resources\\plugins\\craftmine.world",
+        "capabilities": [
+          "views",
+          "tools",
+          "services"
+        ],
+        "description": "World creation surfaces for the Craftmine desktop.",
+        "installedAt": "2026-09-14T08:15:17.562813600+00:00",
+        "updatedAt": "2026-09-14T08:15:17.562813600+00:00",
+        "fs": {
+          "read": {
+            "root": "userSelected"
+          }
+        }
+      }
+    },
+    {
+      "label": "restart",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "forced": false,
+      "builtinRegistry": {
+        "id": "craftmine.world",
+        "name": "Craftmine World",
+        "version": "0.1.0",
+        "enabled": true,
+        "scope": {
+          "mode": "global",
+          "projects": []
+        },
+        "source": "builtin",
+        "status": "ready",
+        "permissions": [
+          "ui.view",
+          "agent.tool.register",
+          "agent.complete",
+          "background.service",
+          "fs.read"
+        ],
+        "path": "D:\\Craftmine Releases\\PlayerFix-preview24-c04cef7e.verify-70651ec5-4d9c-4ade-9dc9-08e93af5714c\\PlayerFix-preview24-c04cef7e\\output\\win-unpacked\\resources\\plugins\\craftmine.world",
+        "capabilities": [
+          "views",
+          "tools",
+          "services"
+        ],
+        "description": "World creation surfaces for the Craftmine desktop.",
+        "installedAt": "2026-09-14T08:15:17.562813600+00:00",
+        "updatedAt": "2026-09-14T08:16:23.322983400+00:00",
+        "fs": {
+          "read": {
+            "root": "userSelected"
+          }
+        }
+      }
+    }
+  ],
+  "coldPreservationScope": "Complete durable snapshot equals the cold-read formal document; all resumed runtime differences are retained separately, without filtering NPC or unknown fields.",
+  "completeRuntimeDifference": [],
+  "petIds": [
+    "pet-dog-01",
+    "pet-dog-02"
+  ],
+  "images": [
+    {
+      "path": "after-preview-reload.png",
+      "sha256": "3aef51775cef80e3a51626bd6bf3f616cca9af7972106d94c6408c609e790947"
+    },
+    {
+      "path": "after-cold-reopen.png",
+      "sha256": "d20bcaef9894b25205dd9e65b7812a58d838c4ca0e654045695037eff74af12d"
+    }
+  ],
+  "preservedFailures": [
+    {
+      "file": "D:/cm-final-candidate-recovery/test-results/desktop-native-candidate-BU8ZYy/candidate-lifecycle-report.json",
+      "sha256": "d936e4be45d0b110a41146cb2c99ee48ae4d3ce605a5dcc98da1d1c0de3e2a8d",
+      "error": "Error: ENOENT: no such file or directory, open 'D:\\cm-final-candidate-recovery\\test-results\\desktop-native-candidate-BU8ZYy\\profile\\plugins\\registry.json'\n    at Object.readFileSync (node:fs:440:20)\n    at launch (file:///D:/Craftmine%20Worktrees/candidate-recovery-fix-20260914/tests/fb02-packaged-candidate-lifecycle.mjs:99:36)\n    at async file:///D:/Craftmine%20Worktrees/candidate-recovery-fix-20260914/tests/fb02-packaged-candidate-lifecycle.mjs:161:10",
+      "launches": [
+        {
+          "label": "first",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "forced": false
+        }
+      ]
+    },
+    {
+      "file": "D:/cm-final-candidate-recovery/test-results/desktop-native-candidate-YMNurR/candidate-lifecycle-report.json",
+      "sha256": "fed3aae4e3027cbe4974ae061f09748946ea58eb10f247568e973fc1de40fe96",
+      "error": "Error: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.\n    at ChildProcess.<anonymous> (file:///D:/Craftmine%20Worktrees/candidate-recovery-fix-20260914/tests/fb02-packaged-candidate-lifecycle.mjs:82:267)\n    at ChildProcess.emit (node:events:508:28)\n    at emit (node:internal/child_process:948:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:91:21)",
+      "launches": [
+        {
+          "label": "first",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [
+              "Uncaught Error: Mode entry is not ready"
+            ],
+            "shutdownFailures": []
+          },
+          "forced": false
+        }
+      ]
+    },
+    {
+      "file": "D:/cm-final-candidate-recovery/test-results/desktop-native-candidate-cjg4l1/candidate-lifecycle-report.json",
+      "sha256": "8e15b46e0a233fbadd67c7b42b4eb9e2c1520705d91ec13975e4e892840071ab",
+      "error": "AssertionError [ERR_ASSERTION]: rejected sidebar request leaves the exact attached candidate and formal identities\n+ actual - expected\n... Skipped lines\n\n  {\n    candidate: {\n      buildId: 'gbd-cc27625f2561f71333b97836e4091a71c17d2c996af3eace08fee1be9ebd23d7',\n      instanceId: '9c199330f1ef24b161ca2a85',\n      worldId: 'world-bd900f064cf2'\n...\n          },\n+         contentsId: 5,\n-         contentsId: 1,\n          destroyed: false\n        },\n        {\n          bounds: {\n            height: 1440,\n...\n          },\n+         contentsId: 2,\n-         contentsId: 5,\n          destroyed: false\n        },\n        {\n          bounds: {\n            height: 1440,\n...\n          },\n+         contentsId: 1,\n-         contentsId: 2,\n          destroyed: false\n        }\n      ],\n      visible: false\n    },\n\n    at file:///D:/Craftmine%20Worktrees/candidate-recovery-fix-20260914/tests/fb02-packaged-candidate-lifecycle.mjs:239:12\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+      "launches": [
+        {
+          "label": "first",
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "audit": {
+            "type": "craftmine-headless-exit",
+            "violations": [],
+            "pageErrors": [],
+            "shutdownFailures": []
+          },
+          "forced": false
+        }
+      ]
+    }
+  ]
+}

@@ -10769,6 +10769,19 @@ new candidate, and the entire shipped package inventory must remain unchanged.
 `node --test tests/candidate-recovery-driver.test.mjs` verifies the prepare-only
 and conflicting-mode guards without launching Electron.
 
+For retained worlds with autonomous NPCs, save assertions use the complete
+durable world document after normal quit and compare it with the cold-read
+formal document. Keep the entire runtime snapshot and all resumed-state
+differences separately; do not filter NPC or unknown fields to claim equality.
+Use each preview's current checkpoint rather than assuming gameplay progress
+never changed between separate previews. Read the real applied application's
+full input/output to verify the additive progress transition. The recovery
+driver uses the current world's ordinary chooser form and verifies the builtin
+registry only after plugin/world initialization, against the exact package
+resources. Capture identity remains strict while unrelated UI overlay ordering
+may change between separate operations; record both native states and obtain a
+new attachment-verified frame after the rejected surface request.
+
 ### Guidance pagination recovery (2026-09-14)
 
 Guidance pagination follow-up: replay the ordinary model's read limits 16000 and
