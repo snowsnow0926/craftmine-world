@@ -27,6 +27,11 @@ checks prove renderer behavior, not a new native or live-model acceptance run.
 5. Leave while import or list replies are delayed. Open another chooser and
    resolve the old replies. No old selection, rows, notices or creation may
    appear in the new chooser.
+   Also keep the outer component key unchanged and replace its bridge during
+   import. The new bridge must load immediately and allow its own selection and
+   import. Resolve/reject the old import while the new import remains pending:
+   no old error/selection/list refresh or unlocked new action is allowed. Resolve
+   the new import and require its exact reference and its own list refresh.
 6. Confirm existing source reuse, failed-save navigation and conversation/draft
    fences still pass. Inspect normal and narrow layouts for usable controls.
 

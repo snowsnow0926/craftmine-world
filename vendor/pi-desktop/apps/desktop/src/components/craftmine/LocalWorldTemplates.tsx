@@ -2,12 +2,25 @@ import {useEffect, useRef, useState} from "react";
 import {APP_VERSION} from "@pi-desktop/shared";
 import {libraryRecord, libraryReference, parsePlayerWorldTemplate, publicationMessage, type LibraryCall, type LibraryReference, type WorldTemplate} from "../../lib/player-library";
 
-export function LocalWorldTemplates({bridge, zh, busy, locked = false, initialRef, onCreate, onRetry}: {
+type LocalWorldTemplatesProps = {
   bridge: LibraryCall | null; zh: boolean; busy: boolean; initialRef?: LibraryReference | null;
   locked?: boolean;
   onCreate: (ref: LibraryReference, title: string) => Promise<void>;
   onRetry?: () => Promise<void>;
-}) {
+};
+
+export function LocalWorldTemplates(props: LocalWorldTemplatesProps) {
+  const [binding, setBinding] = useState({bridge: props.bridge, generation: 0});
+  if (binding.bridge !== props.bridge) {
+    setBinding({bridge: props.bridge, generation: binding.generation + 1});
+    return null;
+  }
+  // Each connection owns its selection, pending replies and operation locks.
+  // Returning to a former bridge still creates a new generation.
+  return <BoundWorldTemplates key={binding.generation} {...props}/>;
+}
+
+function BoundWorldTemplates({bridge, zh, busy, locked = false, initialRef, onCreate, onRetry}: LocalWorldTemplatesProps) {
   const [items, setItems] = useState<Array<LibraryReference & {displayName: string}>>([]);
   const [selected, setSelected] = useState<WorldTemplate | null>(null);
   const [title, setTitle] = useState("");
