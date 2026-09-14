@@ -32,7 +32,14 @@ test('pipe chunks never emit a partial credential or split UTF-8',()=>{
 const state=()=>{const c=config();return {config:c,providerId:'isolated-provider',provider:{id:'isolated-provider',...operatorProviderInput(c)},settings:{worldAgentBackend:'pi',defaultProviderId:'isolated-provider',defaultModelId:c.model,defaultPermissionMode:'auto'},session:{providerId:null,modelId:null,thinkingLevel:'max',permissionMode:'auto'}};};
 test('effective inherited player selection is checked after restart and before every prompt',()=>{
   const checked=assertOperatorProvider(state());assert.equal(checked.model,'deepseek-v4.1-flash');assert.equal(checked.permissionMode,'auto');assert(!JSON.stringify(checked).includes(secret));
-  for(const mutate of [s=>s.settings.worldAgentBackend='codex-cli',s=>s.provider.models[0].maxTokens=64000,s=>s.session.modelId='deepseek-flash',s=>s.session.thinkingLevel='high',s=>s.session.permissionMode='inherit',s=>s.provider.models[0].thinkingLevels=['high','max'],s=>s.provider.models[0].supportsImages=false,s=>s.provider.models[0].supportsDocuments=false]){const s=state();mutate(s);assert.throws(()=>assertOperatorProvider(s));}
+  for(const mutate of [s=>s.settings.worldAgentBackend='codex-cli',s=>s.provider.models[0].maxTokens=64000,s=>s.session.modelId='deepseek-flash',s=>s.session.thinkingLevel='high',s=>s.session.permissionMode='readonly',s=>s.provider.models[0].thinkingLevels=['high','max'],s=>s.provider.models[0].supportsImages=false,s=>s.provider.models[0].supportsDocuments=false]){const s=state();mutate(s);assert.throws(()=>assertOperatorProvider(s));}
+});
+test('inherit follows the actual default without losing raw permission evidence',()=>{
+  const s=state();s.session.permissionMode='inherit';
+  const checked=assertOperatorProvider(s);assert.equal(checked.sessionPermissionMode,'inherit');assert.equal(checked.defaultPermissionMode,'auto');assert.equal(checked.effectivePermissionMode,'auto');assert.equal(checked.permissionMode,'auto');
+  s.settings.defaultPermissionMode='readonly';assert.throws(()=>assertOperatorProvider(s),/SESSION_PERMISSION_CHANGED/);
+  s.session.permissionMode='auto';assert.equal(assertOperatorProvider(s).effectivePermissionMode,'auto');
+  s.session.permissionMode='readonly';s.settings.defaultPermissionMode='auto';assert.throws(()=>assertOperatorProvider(s),/SESSION_PERMISSION_CHANGED/);
 });
 test('retained bootstrap requires matching isolated profile marker and existing provenance',()=>{
   const out=fs.mkdtempSync(path.join(os.tmpdir(),'operator-retained-test-')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),manifest=path.join(out,'copy.json');fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(manifest,'{}');

@@ -29,6 +29,12 @@ API 拒绝时保留真实失败，不关闭能力选项来绕过。不会将原�
 再从当前普通世界选择器进入；每次发消息核对 provider、模型及配置。这里的
 上下文和输出数值是复现玩家配置，驱动不额外设置评测预算或模型整轮时限。
 
+权限核对按产品的有效配置计算：会话为 `inherit` 时使用当前全局默认；显式
+会话权限优先。报告同时保留 `sessionPermissionMode` 原值、
+`defaultPermissionMode` 和 `effectivePermissionMode`，只接受最终有效 auto，
+不会把显式只读或默认只读当作全自动。最初鲜建示例被错误判为权限变化的
+0 模型准备失败记录保留，不算模型或产品创作失败。
+
 DeepSeek 入口不自动创建玩法组合草稿、不发送请求、不代答澄清。新增
 `draft-composer` 命令 `{text}` 使用实际 Composer 的 `onInput` 创建草稿，
 仅接受空草稿并等待正常可发送；随后显式 `send-composer` 才走实际发送处理器。
