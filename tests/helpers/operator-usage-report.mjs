@@ -4,16 +4,28 @@ const terminal=new Set(['completed','complete','error','aborted']);
 const fields=['inputTokens','cacheReadTokens','cacheWriteTokens','outputTokens','reasoningTokens','totalTokens'];
 const integer=value=>Number.isSafeInteger(value)&&value>=0;
 const key=(sessionId,turnId)=>JSON.stringify([sessionId,turnId]);
-function usage(value){
-  if(!value||!['inputTokens','outputTokens','totalTokens'].every(name=>integer(value[name])))return null;
-  if(fields.some(name=>value[name]!==undefined&&!integer(value[name])))return null;
-  return Object.fromEntries(fields.map(name=>[name,value[name]??null]));
+function checkUsage(value){
+  if(!value||!['inputTokens','outputTokens','totalTokens'].every(name=>integer(value[name])))return {normalized:null,code:'INVALID_USAGE_COUNTERS'};
+  if(fields.some(name=>value[name]!==undefined&&value[name]!==null&&!integer(value[name])))return {normalized:null,code:'INVALID_USAGE_COUNTERS'};
+  // Desktop input is already uncached. Only compare when both optional cache
+  // counters are actually reported; missing/null cache is not an invented zero.
+  if(integer(value.cacheReadTokens)&&integer(value.cacheWriteTokens)){
+    const sum=BigInt(value.inputTokens)+BigInt(value.cacheReadTokens)+BigInt(value.cacheWriteTokens)+BigInt(value.outputTokens);
+    if(sum!==BigInt(value.totalTokens))return {normalized:null,code:'CODEX_USAGE_TOTAL_INCONSISTENT',counterSum:sum<=BigInt(Number.MAX_SAFE_INTEGER)?Number(sum):String(sum)};
+  }
+  return {normalized:Object.fromEntries(fields.map(name=>[name,value[name]??null]))};
 }
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 /** Input objects carry file/line provenance. No filesystem, model or UI writes. */
 export function extractOperatorUsage({reports=[],events=[],sessions=[],generatedAt=new Date().toISOString()}){
   const groups=new Map(),warnings=[],messageOwners=new Map(),knownSessions=new Set();
-  function group(sessionId,turnId){const id=key(sessionId,turnId);if(!groups.has(id))groups.set(id,{sessionId,turnId,reports:[],metrics:[],snapshots:[],terminalMessages:[],terminalEvents:[],startEvents:[],discoveredUsers:[],models:[],toolCalls:new Set(),warnings:[]});return groups.get(id);}
+  function group(sessionId,turnId){const id=key(sessionId,turnId);if(!groups.has(id))groups.set(id,{sessionId,turnId,reports:[],metrics:[],snapshots:[],terminalMessages:[],terminalEvents:[],startEvents:[],discoveredUsers:[],models:[],toolCalls:new Set(),warnings:[],rejectedUsageReports:[]});return groups.get(id);}
+  function usage(g,value,source,kind,modelContextWindow=null){
+    if(value===undefined||value===null)return null;
+    const result=checkUsage(value);
+    if(!result.normalized){g.warnings.push(result.code);g.rejectedUsageReports.push({code:result.code,rawReported:structuredClone(value),counterSum:result.counterSum??null,modelContextWindow,source,kind});}
+    return result.normalized;
+  }
   for(const report of reports){
     const data=report.data;if(data?.format!=='craftmine.product-agent-operator/1'){warnings.push({code:'UNRECOGNIZED_REPORT',source:report.source});continue;}
     if(typeof data.sessionId==='string')knownSessions.add(data.sessionId);
@@ -33,13 +45,14 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
       const status=event.status??{},transport=status.transportUsage;
       if(status.backend||status.modelId)g.models.push({backend:status.backend??null,model:status.modelId??null,effort:status.reasoningEffort??null,transportState:status.transportState??null,source});
       if(transport?.scope==='current-turn'){
-        const normalized=usage(transport.usage);
+        const normalized=usage(g,transport.usage,source,'transport-snapshot',transport.modelContextWindow??null);
         if(normalized)g.snapshots.push({usage:normalized,source,observedAtMs:integer(envelope.ts)?envelope.ts:null});else g.warnings.push('INVALID_TRANSPORT_USAGE');
       }
     }
     if(event.type==='message_end'&&event.message?.codexUsage?.scope==='current-turn'&&event.message?.usage){
-      const normalized=usage(event.message.usage);
-      if(normalized)g.terminalMessages.push({messageId:event.message.id,usage:normalized,lastRequest:usage(event.message.codexUsage.lastRequest),modelContextWindow:event.message.codexUsage.modelContextWindow??null,source,kind:'terminal-message-event'});else g.warnings.push('INVALID_TERMINAL_USAGE');
+      const window=event.message.codexUsage.modelContextWindow??null;
+      const normalized=usage(g,event.message.usage,source,'terminal-message-event',window);
+      if(normalized)g.terminalMessages.push({messageId:event.message.id,usage:normalized,lastRequest:usage(g,event.message.codexUsage.lastRequest,source,'last-request',window),modelContextWindow:window,source,kind:'terminal-message-event'});else g.warnings.push('INVALID_TERMINAL_USAGE');
     }
     if(event.type==='agent_start')g.startEvents.push({source,atMs:integer(envelope.ts)?envelope.ts:null});
     if(event.type==='agent_end')g.terminalEvents.push({source,atMs:integer(envelope.ts)?envelope.ts:null});
@@ -76,9 +89,10 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
       const exactOwner=messageOwners.get(key(session.id,message.id)),g=exactOwner??current;
       if(message.role!=='assistant'||message.codexUsage?.scope!=='current-turn'||!message.usage)continue;
       if(!g||exactOwner===null){warnings.push({code:'UNMAPPED_CODEX_TURN_AGGREGATE',source:entry.source,messageId:message.id});continue;}
-      const normalized=usage(message.usage);if(!normalized){g.warnings.push('INVALID_PERSISTED_USAGE');continue;}
-      g.terminalMessages.push({messageId:message.id,usage:normalized,lastRequest:usage(message.codexUsage.lastRequest),modelContextWindow:message.codexUsage.modelContextWindow??null,
-        source:{file:entry.source,field:`${entry.messageField??'session.messages'}[${index}].usage`,association:exactOwner?'event-message-id':'persisted-order-between-known-user-ids'},kind:'persisted-terminal-message'});
+      const source={file:entry.source,field:`${entry.messageField??'session.messages'}[${index}].usage`,association:exactOwner?'event-message-id':'persisted-order-between-known-user-ids'},window=message.codexUsage.modelContextWindow??null;
+      const normalized=usage(g,message.usage,source,'persisted-terminal-message',window);if(!normalized){g.warnings.push('INVALID_PERSISTED_USAGE');continue;}
+      g.terminalMessages.push({messageId:message.id,usage:normalized,lastRequest:usage(g,message.codexUsage.lastRequest,{...source,field:source.field.replace(/\.usage$/,'.codexUsage.lastRequest')},'last-request',window),modelContextWindow:window,
+        source,kind:'persisted-terminal-message'});
     }
   }
   const rows=[];
@@ -92,7 +106,9 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
     const unique=new Map(candidates.map(row=>[JSON.stringify(row.usage),row]));
     let chosen=unique.size===1?[...unique.values()][0]:null;
     if(unique.size>1)g.warnings.push('CONFLICTING_TURN_AGGREGATES_NOT_SUMMED');
-    if(!chosen&&!unique.size&&raw?.coverage==='complete'&&usage(raw.usage))chosen={usage:usage(raw.usage),source:metric.source,kind:'complete-host-call-ledger',lastRequest:null,modelContextWindow:null};
+    const metricUsage=raw?.usage?usage(g,raw.usage,metric.source,'host-metrics'):null;
+    if(!chosen&&!unique.size&&raw?.coverage==='complete'&&metricUsage)chosen={usage:metricUsage,source:metric.source,kind:'complete-host-call-ledger',lastRequest:null,modelContextWindow:null};
+    const rejectedTerminal=g.rejectedUsageReports.some(row=>['terminal-message-event','persisted-terminal-message','host-metrics'].includes(row.kind));
     if(chosen&&g.terminalMessages.some(row=>!same(row.usage,chosen.usage)))g.warnings.push('TERMINAL_SOURCES_DISAGREE');
     const snapshot=g.snapshots.at(-1),model=g.models.findLast(row=>row.backend&&row.model)??(known?.effectiveModel?{...known.effectiveModel,transportState:null,source:{...g.reports.at(-1).source,field:g.reports.at(-1).source.field+'.effectiveModel'}}:null);
     let timing={milliseconds:null,source:null,coverage:'unknown',final:isTerminal};
@@ -115,13 +131,13 @@ export function extractOperatorUsage({reports=[],events=[],sessions=[],generated
     const fullCalls=raw?.coverage==='complete'&&integer(raw.calls?.observed)&&raw.calls.observed>0&&raw.calls.pending===0;
     const discovered=g.discoveredUsers.at(-1);
     rows.push({sessionId:g.sessionId,turnId:g.turnId,messageId:known?.messageId??discovered?.id??null,promptExcerpt:typeof known?.text==='string'?known.text.slice(0,240):discovered?.text?.slice(0,240)??null,discovery:g.reports.length?'operator-report':'session-event-turn',status,terminal:isTerminal,model,
-      elapsed:timing,finalUsage:isTerminal&&chosen&&!g.warnings.includes('TERMINAL_SOURCES_DISAGREE')?{...chosen.usage,source:chosen.source,kind:chosen.kind,scope:'one-turn'}:null,
-      usageAvailability:chosen?isTerminal?'terminal-reported':'terminal-message-awaiting-turn-close':snapshot?'last-observed-only':'unknown',
+      elapsed:timing,finalUsage:isTerminal&&chosen&&!rejectedTerminal&&!g.warnings.includes('TERMINAL_SOURCES_DISAGREE')?{...chosen.usage,source:chosen.source,kind:chosen.kind,scope:'one-turn'}:null,
+      usageAvailability:rejectedTerminal?'rejected-terminal-usage':chosen?isTerminal?'terminal-reported':'terminal-message-awaiting-turn-close':snapshot?'last-observed-only':g.rejectedUsageReports.length?'invalid-reported-usage':'unknown',
       lastObservedUsage:snapshot?{...snapshot.usage,source:snapshot.source,scope:'current-turn-cumulative-snapshot',provisional:true}:null,
       lastRequestUsage:chosen?.lastRequest??null,modelContextWindow:chosen?.modelContextWindow??null,
       modelCalls:{value:fullCalls?raw.calls.observed:null,coverage:raw?.coverage??'unknown',scope:raw?.scope??null,rawObserved:raw?.calls?.observed??null,rawReported:raw?.calls?.reported??null,rawPending:raw?.calls?.pending??null,source:metric?.source??null,reason:fullCalls?'complete-host-model-call-ledger':'no-complete-physical-model-call-ledger'},
       observedToolCalls:g.toolCalls.size,transportSnapshotCount:g.snapshots.length,distinctTransportSnapshotCount:new Set(g.snapshots.map(row=>JSON.stringify(row.usage))).size,
-      aggregateCopies:g.terminalMessages.length,sourceRefs:[...g.reports.map(row=>row.source),...g.discoveredUsers.map(row=>row.source),...g.startEvents.map(row=>row.source),...g.terminalEvents.map(row=>row.source),...g.terminalMessages.map(row=>row.source)],warnings:[...new Set(g.warnings)]});
+      aggregateCopies:g.terminalMessages.length,rejectedUsageReports:g.rejectedUsageReports,sourceRefs:[...g.reports.map(row=>row.source),...g.discoveredUsers.map(row=>row.source),...g.startEvents.map(row=>row.source),...g.terminalEvents.map(row=>row.source),...g.terminalMessages.map(row=>row.source),...g.rejectedUsageReports.map(row=>row.source)],warnings:[...new Set(g.warnings)]});
   }
   rows.sort((a,b)=>(a.elapsed.startedAtMs??Infinity)-(b.elapsed.startedAtMs??Infinity)||a.turnId.localeCompare(b.turnId));
   const final=rows.length>0&&rows.every(row=>row.terminal&&row.finalUsage)&&!warnings.some(row=>['UNMAPPED_CODEX_TURN_AGGREGATE','UNMAPPED_SESSION_USER_TURN','TURN_IDENTITY_MISSING'].includes(row.code)),aggregate=final?{
