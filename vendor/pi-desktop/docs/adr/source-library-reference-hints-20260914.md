@@ -46,3 +46,13 @@ It does not prove v2 combat gameplay. The subsequent real-model continuation
 selected ordinary source authoring instead of v2, so it supplies no v2 gameplay
 acceptance evidence. See the [response contract](../spec/source-library-reference-hints.md)
 and [focused validation scenario](../e2e/combat-install-contract-20260915.md).
+
+### Retained proposal projection
+
+Old proposal cards otherwise continue to advertise installation or generic
+conversation retry after an immutable declaration failure is known. Extend the
+same advisory metadata into their read projection, verified against each frozen
+archive identity. Do not migrate stored proposal status or infer a current-task
+failure from an old attempt. Existing job evidence wins; unreadable or changed
+archives remain unknown. This additive response controls only the known-invalid
+UI affordance, while unchanged native installation guards remain authoritative.

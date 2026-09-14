@@ -8,6 +8,15 @@ const {parseSourceProposals, sourcePackageRequest, sourceJobState, parseSourceJo
 const {createCraftminePackageService} = await import('../electron/main/craftmine-package-service.ts');
 const hash='a'.repeat(64);
 
+test('only verified frozen archive declarations block a retained proposal',()=>{
+ const ref={assetId:'combat',version:1,contentHash:hash},proposal={proposalId:'source-'+'b'.repeat(48),worldId:'w1',displayName:'Combat',status:'proposed',source:{revision:1,manifestHash:hash},archiveRef:ref,archiveSha256:hash};
+ const availability={scope:'frozen-proposal-archive-declaration',status:'blocked-declaration',archives:[{archiveRef:ref,archiveSha256:hash,verified:true,status:'blocked-declaration',issues:[{resourceId:'combat',reason:'PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED'}]}]};
+ const parse=value=>parseSourceProposals({worldId:'w1',items:[{...proposal,installationAvailability:value}]},'w1')[0];
+ assert.equal(parse(availability).installationAvailability.status,'blocked-declaration');assert.equal(parse(availability).status,'proposed');
+ for(const mutate of [value=>value.archives[0].verified=false,value=>value.archives[0].archiveSha256='c'.repeat(64),value=>value.archives[0].archiveRef={...ref,version:2},value=>value.archives[0].issues[0].reason='UNKNOWN_PROBLEM']){const value=structuredClone(availability);mutate(value);assert.equal(parse(value).installationAvailability.status,'unknown');}
+ const group={...proposal,kind:'group',items:[{archiveRef:ref,archiveSha256:hash},{archiveRef:ref,archiveSha256:hash}],installationAvailability:{...availability,archives:[availability.archives[0],availability.archives[0]]}};assert.equal(parseSourceProposals({worldId:'w1',items:[group]},'w1')[0].installationAvailability.status,'blocked-declaration');
+});
+
 test('examples retain host metadata and reject remote or executable previews', () => {
   const parse=preview=>parseWorldCapabilities({bases:[{id:'creation-sandbox',delivered:true,starters:[{id:'promo',kind:'example',delivered:true,label:'Dog',preview,source:{id:'promo',version:'1.0.0',sha256:hash},initialState:'authored-defaults'}]}]}).bases[0].starters[0];
   assert.equal(parse('https://example.com/track.png').preview,undefined);

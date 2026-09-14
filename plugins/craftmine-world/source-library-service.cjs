@@ -49,6 +49,27 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
     ...(p.result?{installation:{source:p.result.source,instanceIds:p.result.instanceIds??[],
       ...(p.result.job?{job:{jobId:p.result.job.jobId,status:p.result.job.status}}:{}),...(p.result.sourceConfigurations?{sourceConfigurations:p.result.sourceConfigurations}:{})}}:{})});
   async function load(proposalId){id(proposalId);return JSON.parse(await fs.readFile(path.join(directory,proposalId+'.json'),'utf8'));}
+  async function proposalProjection(proposal,cache){
+    const projected=projection(proposal);
+    // Existing receipts/jobs retain their historical check/adoption semantics.
+    if(proposal.result)return projected;
+    const members=proposal.items??[{ref:proposal.ref,archiveSha256:proposal.archiveSha256}],archives=[];
+    for(const member of members){
+      const key=JSON.stringify([member.ref,member.archiveSha256]);
+      if(!cache.has(key))cache.set(key,(async()=>{
+        const identity={archiveRef:member.ref,archiveSha256:member.archiveSha256};
+        try{
+          const value=await readArchive(member.ref);
+          check(!value.worldTemplate&&value.archive.archiveSha256===member.archiveSha256,'SOURCE_LIBRARY_ASSET_CHANGED');
+          const declaration=archiveInstallation(value.archive);
+          const issues=declaration.resources.flatMap(resource=>resource.reason==='PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED'?[{resourceId:resource.resourceId,reason:resource.reason}]:[]);
+          return {...identity,verified:true,status:issues.length?'blocked-declaration':'declared',issues};
+        }catch(error){return {...identity,verified:false,status:'unknown',reason:preflightErrorCode(error)};}
+      })());
+      archives.push(await cache.get(key));
+    }
+    return {...projected,installationAvailability:{scope:'frozen-proposal-archive-declaration',status:archives.some(a=>a.verified&&a.status==='blocked-declaration')?'blocked-declaration':archives.every(a=>a.verified)?'declared':'unknown',archives}};
+  }
   const composition=require('./world-composition.cjs').createWorldComposition({call,ensureBuiltin,readArchive});
   return {
     async compositionCatalog(args){exact(args,['worldId']);return {...composition.catalog(),worldId:args.worldId};},
@@ -245,8 +266,8 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       await persistNew(proposal);
       return {...summary,proposal:projection(proposal)};
     },
-    async proposals(args){exact(args,['worldId']);check(typeof args.worldId==='string','SOURCE_LIBRARY_INVALID_PARAMS');await fs.mkdir(directory,{recursive:true});const names=await fs.readdir(directory),items=[];
-      for(const name of names.filter(n=>/^source-[a-f0-9]{48}\.json$/.test(n)).slice(-256)){const p=await load(name.slice(0,-5));if(p.worldId===args.worldId)items.push(projection(p));}
+    async proposals(args){exact(args,['worldId']);check(typeof args.worldId==='string','SOURCE_LIBRARY_INVALID_PARAMS');await fs.mkdir(directory,{recursive:true});const names=await fs.readdir(directory),items=[],cache=new Map();
+      for(const name of names.filter(n=>/^source-[a-f0-9]{48}\.json$/.test(n)).slice(-256)){const p=await load(name.slice(0,-5));if(p.worldId===args.worldId)items.push(await proposalProjection(p,cache));}
       return {worldId:args.worldId,items,format:'craftmine.source-proposals/1'};
     },
     async installProposal(args){
