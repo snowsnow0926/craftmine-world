@@ -10778,3 +10778,15 @@ and `nextOffset` recovery. Fractional/negative/over-200000 offsets and offsets p
 the selected text must reject early. Default 4000, maximum 8000, and the exact-end
 empty terminal page remain valid; page concatenation must equal the original
 pinned recipe bytes after Unicode decoding. Preserve the original failed logs.
+
+### Author installation against actual Core (2026-09-14)
+
+With an explicit already-built `CRAFTMINE_CORE_BIN`, run root
+`tests/author-source-install-core.test.mjs`. Require single/group catalog installs
+to retain the original author task, preserve existing entities, write the source
+once and create one real check job. Replaying a fixed invocation must not create
+another entity or check. Host revocation and an actual foreign world binding
+refuse mutation; actual Core ended-turn state must reject source writing even
+when a deliberately stale host permission fixture remains true. An unregistered
+executor must produce its actual blocked status, never a fabricated pass. See
+[the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
