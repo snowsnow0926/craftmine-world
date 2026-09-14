@@ -10927,3 +10927,10 @@ explicit failed/cancelled result and attempted same-instance release; report any
 unconfirmed release and keep the controller blocked until drain succeeds. Check
 that model activity still refuses direct library/edit operations. No OS input,
 focus, Pointer Lock, arbitrary script or public/model input capability is added.
+
+## Periodic autosave during automatic candidate adoption
+
+Verify host-confirmed candidate deferral without a red error or secondary resume,
+then actual persistence on the next ordinary tick. Preserve older real errors and
+show unrelated failures. Explicit Save remains a guarded operation with useful
+feedback. See [the scenario](../../e2e/godot-autosave-candidate-20260914.md).

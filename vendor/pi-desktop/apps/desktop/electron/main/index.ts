@@ -667,8 +667,8 @@ const pluginPanels = new PluginPanelHost(
       sendToRenderer(IPC.event.craftmineWorldChanged, {});
       return result;
     }
-    if (godotCopies.busy && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeResume)|package\.|backup\.)/.test(channel)) throw Error("GODOT_COPY_BUSY");
-    if (profileRestore && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeResume)|package\.)/.test(channel)) throw Error("PROFILE_RESTORE_IN_PROGRESS");
+    if (godotCopies.busy && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeAutosave|runtimeResume)|package\.|backup\.)/.test(channel)) throw Error("GODOT_COPY_BUSY");
+    if (profileRestore && pluginId === "craftmine.world" && /^(?:world\.(?:create|open|saveProgress|importLegacy)|godot\.(?:candidate|runtimeSave|runtimeAutosave|runtimeResume)|package\.)/.test(channel)) throw Error("PROFILE_RESTORE_IN_PROGRESS");
     const result = pluginId === "craftmine.world"
       ? await (channel.startsWith("godot.candidate") && !["godot.candidateList", "godot.candidateRead"].includes(channel)
         ? godotCandidates.invoke(channel, payload ?? {})
@@ -1129,6 +1129,7 @@ let godotCreation: ReturnType<typeof createGodotWorldFactory> | null = null;
 const godotCreationFactory = () => godotCreation;
 const godotPanel = createGodotPanelCoordinator({
   host: godotWorld, adapter: godotAdapter, selection: godotSelection,
+  candidateBusy:()=>godotCandidates.blocking,
   creation: godotCreationFactory,
   compatibility: {
     required: async worldId => {
