@@ -2,6 +2,7 @@ import { requireCompleteSummary, CRAFTMINE_SUMMARY_FOCUS } from "./compaction-co
 import { randomUUID } from "node:crypto";
 import { completedGodotReadFiles } from "./craftmine-godot-read-files.js";
 import { observeModelStream } from "./task-metrics-stream.js";
+import { LatestPartialPublisher } from "./latest-partial-publisher.js";
 import { CRAFTMINE_SYSTEM_PROMPT, craftmineCoreToolNames, appendCraftmineRequestData, craftmineAuthorizedBudget, craftmineGuardedStream, createCraftmineProxyHooks, isCraftmineToolAllowed, type CraftmineRequestHooks, type CraftmineTaskContext, type CraftminePurpose } from "./craftmine-context.js";
 import {
   Agent,
@@ -1200,6 +1201,9 @@ export class DesktopAgentRuntime {
   private planningState: PlanningState;
   private pendingPlanId?: string;
   private currentAssistant?: UiMessage;
+  private assistantUpdates = new LatestPartialPublisher<Extract<AgentEvent, {type: "message_update"}>>(
+    event => this.publishAssistantUpdate(event),
+  );
   private pluginTools: PluginToolDef[];
   private pluginSkills: PluginSkillDef[];
   /** Subagent definitions offered through the `Task` tool (ADR 0062). */
@@ -3882,6 +3886,7 @@ Delegation rules:
   }
 
   private emit(event: AgentEventEnvelope["event"], turnId?: string) {
+    if (event.type !== "message_update") this.assistantUpdates.flush();
     this.onEvent({
       sessionId: this.sessionId,
       turnId: turnId ?? this.turnId,
@@ -5050,7 +5055,43 @@ Delegation rules:
     }
   }
 
+  private publishAssistantUpdate(event: Extract<AgentEvent, {type: "message_update"}>) {
+    if (!this.currentAssistant || event.message.role !== "assistant") return;
+    const content = assistantContent(event.message.content);
+    const previousText = this.currentAssistant.content;
+    const previousThinking = this.currentAssistant.thinking ?? "";
+    const nextText = content.hasText ? content.text : previousText;
+    const nextThinking = content.hasThinking ? content.thinking : previousThinking;
+    // Deltas cover every skipped provider update since the last published
+    // snapshot, retaining the existing full-replacement fallback on rewrites.
+    const deltaText = content.hasText
+      ? content.text.startsWith(previousText) ? content.text.slice(previousText.length) : content.text : "";
+    const deltaThinking = content.hasThinking
+      ? content.thinking.startsWith(previousThinking) ? content.thinking.slice(previousThinking.length) : content.thinking : "";
+    this.currentAssistant = {
+      ...this.currentAssistant, content: nextText,
+      ...(nextThinking ? { thinking: nextThinking } : content.hasThinking ? { thinking: undefined } : {}),
+      status: "streaming",
+    };
+    this.emit({ type: "message_update", message: this.currentAssistant, deltaText,
+      ...(deltaThinking ? { deltaThinking } : {}),
+    });
+  }
+
   private async handleAgentEvent(event: AgentEvent) {
+    if (event.type === "message_update" && event.message.role === "assistant") {
+      if (!this.disposed && !this.runCancelled) {
+        // PI partials contain mutable arrays/blocks. Retain current string
+        // references without flattening or serializing the accumulated text;
+        // a later provider mutation must not erase an interrupted partial.
+        this.assistantUpdates.enqueue({ ...event, message: { ...event.message,
+          content: event.message.content.map(block => ({ ...block })),
+        } });
+      }
+      return;
+    }
+    this.assistantUpdates.flush();
+    if (event.type === "message_start") this.assistantUpdates.reset();
     switch (event.type) {
       case "agent_start":
         if (this.providerRetryInProgress || this.silentTurnRerunInProgress) {
@@ -5103,41 +5144,6 @@ Delegation rules:
         break;
       }
       case "message_update": {
-        if (this.currentAssistant && event.message.role === "assistant") {
-          const content = assistantContent((event.message as any).content);
-          const previousText = this.currentAssistant.content;
-          const previousThinking = this.currentAssistant.thinking ?? "";
-          const nextText = content.hasText ? content.text : previousText;
-          const nextThinking = content.hasThinking
-            ? content.thinking
-            : previousThinking;
-          const deltaText = content.hasText
-            ? content.text.startsWith(previousText)
-              ? content.text.slice(previousText.length)
-              : content.text
-            : "";
-          const deltaThinking = content.hasThinking
-            ? content.thinking.startsWith(previousThinking)
-              ? content.thinking.slice(previousThinking.length)
-              : content.thinking
-            : "";
-          this.currentAssistant = {
-            ...this.currentAssistant,
-            content: nextText,
-            ...(nextThinking
-              ? { thinking: nextThinking }
-              : content.hasThinking
-                ? { thinking: undefined }
-                : {}),
-            status: "streaming",
-          };
-          this.emit({
-            type: "message_update",
-            message: this.currentAssistant,
-            deltaText,
-            ...(deltaThinking ? { deltaThinking } : {}),
-          });
-        }
         break;
       }
       case "message_end": {
@@ -5635,6 +5641,7 @@ Delegation rules:
     // Claims are message-scoped: a later prompt must observe edited or newly
     // created instruction files instead of reusing a previous chain.
     this.pathInstructionClaims.clear();
+    this.assistantUpdates.reset();
     this.hostTurnId = durableTurnId;
     this.turnId = durableTurnId;
     this.pendingUserMessageId = undefined;
@@ -5705,6 +5712,7 @@ Delegation rules:
     durableTurnId?: string,
   ): Promise<{ turnId: string }> {
     if (this.disposed) throw new Error("runtime disposed");
+    this.assistantUpdates.reset();
     const nextTurnId = durableTurnId?.trim() || randomUUID();
     this.hostTurnId = nextTurnId;
     this.turnId = nextTurnId;
@@ -5784,6 +5792,7 @@ Delegation rules:
   }
 
   async abort(): Promise<void> {
+    this.assistantUpdates.reset();
     this.gracefulStopRequested = false;
     this.runCancelled = true;
     this.resolvePendingAskTools();
@@ -5822,6 +5831,7 @@ Delegation rules:
   }
 
   async dispose(): Promise<void> {
+    this.assistantUpdates.close();
     this.disposed = true;
     this.runCancelled = true;
     this.resolvePendingAskTools();
