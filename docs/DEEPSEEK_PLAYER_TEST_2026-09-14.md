@@ -248,3 +248,22 @@ A6的首导航版烘焙有2419多边形，但参数精度warnings与空路径尚
 导航验收，也不是因本地整轮限额停止。当前正式A5世界与4/4进度保留，源rev13
 草稿留待普通继续任务修复。新启动日志没有主进程错误，不能据此宣称所有候选
 保存竞态均已做完native验收。证据test-results/city-a6-calibrated-prefix-proof.json。
+
+## 用户调整优先级，保存现场暂停（最后实际结果）
+
+补齐API入口后的完整包cd405ec2ed0a恢复原任务，普通继续turn
+30f9848a-2fea-4da8-83ed-66e2d5cd4e8d完成检查并自动应用。检查里导航网格
+2420多边形、路径探针可达，不能当实际跟随成功。092真实运行600帧后，
+雪球仍停在约[32.0687,0.0303,-103.6085]，玩家位于[42.8692,9.9005,-128.3755]。
+实际绕障/登高仍未通过，需要继续修复；不得将本轮导航宣称完成。
+
+091重复已完成宝物交互仍为4/4；城市4/6、小麦等待/抚摸3次、雪球跟随/
+抚摸1次、天气关闭均保留。092已通过普通runtimeSave冻结保存。
+用户表示接下来有更重要的事，故不再开启新的长测试，093正常退出当前驱动。
+
+剩余：城市实际导航修复、最终冷开/模板导出与独立副本；空白世界B1/B2/B3
+尚未开始；最终Windows发布包导出、main合并及工作树清理尚未执行。
+代码在codex/deepseek-player-test-20260914，未推GitHub，原玩家资料未改。
+恢复入口：D:/cm-deepseek-creators/test-results/desktop-native-product-UNfo0G/
+continuation-3c168ffd-dffd-4d5b-a545-ba27f80aeff4.json；不要重置该档案。
+详细现场记录：test-results/PLAYER_TEST_PAUSED_FOR_PRIORITY.json。
