@@ -5,6 +5,7 @@ import { createAssistantMessageEventStream } from "@earendil-works/pi-ai";
 import { buildProviderModel, createProviderModels, type RuntimeProviderConfig } from "./provider-binding.js";
 import { craftmineGuardedStream, createCraftmineRequestHooks, type CraftmineTaskContext } from "./craftmine-context.js";
 import { DesktopAgentRuntime } from "./runtime.js";
+import * as timing from "./timing.js";
 
 const provider: RuntimeProviderConfig = { id: "fixture-provider", name: "Fixture", baseUrl: "https://api.deepseek.com", modelId: "deepseek-flash",
   apiKey: "fake-never-sent", supportsReasoning: true, supportedThinkingLevels: ["off", "max"],
@@ -42,6 +43,23 @@ function fixture() {
 const nextContext = (): Context => ({ ...context, messages: [...context.messages, { ...answer, timestamp: 4 }, { role: "user", content: "继续添加互动🐕", timestamp: 5 }] });
 
 describe("pinned DeepSeek SDK final-body calibrated reservations", () => {
+  it("logs one bounded final estimate per successful reservation and none for inspection or refusal", async () => {
+    const logged=vi.spyOn(timing,"logTiming").mockImplementation(()=>{}),f=fixture();
+    try {
+      await f.run();await f.run(nextContext());
+      await f.hooks.inspectRequest!({requestId:"inspection-only",purpose:"creation",model,context:nextContext(),maxOutputTokens:384000});
+      f.pauseReserve(async()=>{throw new Error("TOKEN_BUDGET_EXHAUSTED");});
+      expect((await f.run(nextContext())).errorMessage).toBe("TOKEN_BUDGET_EXHAUSTED");
+      const rows=logged.mock.calls.filter(([kind])=>kind==="craftmine_request_budget").map(([,fields])=>fields);
+      expect(rows).toHaveLength(2);
+      expect(rows[0].method).toBe("utf8-half-model-content-json-framing/3");
+      expect(rows[1].method).toBe("measured-whole-prompt-exact-prefix-plus-utf8-half-tail/1");
+      expect(rows[1]).toMatchObject({providerId:provider.id,modelId:model.id,outcome:"reserved",maxOutputTokens:384000,toolReserve:2048,contextWindow:1000000,inputCapacity:613952,compactionThreshold:521859});
+      expect(rows.map(row=>row.requestId)).toEqual(f.calls.filter(call=>call.method==="budget.reserve").slice(0,2).map(call=>call.params.requestId));
+      expect(Object.keys(rows[1]).sort()).toEqual(["requestId","providerId","modelId","purpose","outcome","method","estimatedInputTokens","maxOutputTokens","toolReserve","contextWindow","inputCapacity","compactionThreshold"].sort());
+      expect(rows[1].estimatedInputTokens).toBe(f.calls.filter(call=>call.method==="budget.reserve")[1].params.estimatedInputTokens-2048);
+    } finally {logged.mockRestore();}
+  });
   it("uses successful measured input for an exact append while preserving current host facts and 384K output", async () => {
     const f = fixture(); expect((await f.run()).stopReason).toBe("stop");
     const first = f.calls.find(call => call.method === "budget.reserve")!.params;

@@ -111,3 +111,11 @@ single overflow-compaction recovery. Preserve local guard errors even when the S
 wraps fetch exceptions as connection failures. Failed settlement releases no success
 or tool-call terminal message. The configured window/output remain 1M/384K when
 selected; the UI ring continues to describe last-request provider usage.
+
+After successful durable reserve and the cancellation check, emit one existing
+timing-log line with `kind=craftmine_request_budget`, `outcome=reserved`, request,
+provider/model IDs, purpose, final estimate method, estimated input, output/tool
+reserves, window, input capacity and threshold. This is reservation evidence,
+not confirmation of provider execution or billing. Inspection, failed reserve and
+pre-send cancellation emit no success line. No body, header value, credential or
+host snapshot is included; the existing timing opt-out remains effective.
