@@ -10645,3 +10645,29 @@ feedback/brief tables restores empty tables;
 wrong present columns, hash changes and dangling world references must reject
 without altering current feedback. These use isolated Rust fixtures, not the
 player's original profile, and launch neither native rendering nor a model.
+
+### Retained candidate reload and surface recovery (2026-09-14)
+
+In the current world, open a checked candidate using the normal Checks panel.
+Attempt to select another surface through the sidebar while preview/application
+ownership is active. Require an explicit busy response without changing the
+page tab, hiding the native view, saving the preview or altering either snapshot.
+Close/apply normally and verify the regular surface controls work again.
+
+Reload the retained panel during a settled preview and after a committed
+application whose panel reply was lost. Reconcile the exact selected-world
+application before `world.open`: abort only the uncommitted preview, or recover
+the already committed receipt without another commit, then show the correct
+formal build. Preserve the original progress and full added-component state.
+For an unknown/mismatched receipt, keep ownership and show the causal recovery
+error; do not mislabel it as a rollback, silently drop the lock, or open another
+world. A failed prepare followed by the real plugin bridge's code-only
+`GODOT_APPLICATION_NOT_FOUND` must release ownership only if no prepare receipt
+was observed. The same text inside an unrelated error is not proof of absence.
+
+Pure regressions are `node --test tests/godot-panel-recovery.test.mjs` and
+`node --test tests/godot-remaining/D/godot-candidate-coordinator.mjs` from the
+repository root. They exercise the actual page functions and coordinator with
+finite fault seams. They are not proof of an attached/composited native frame;
+isolated Windows package acceptance must separately record runtime identity,
+nonblank rendering and normal shutdown without real mouse/keyboard operations.

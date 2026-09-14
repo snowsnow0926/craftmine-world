@@ -67,6 +67,13 @@ again; a foreign receipt cannot authorize promotion or resume an incompatible
 world. A post-commit native failure is not silently represented as a rollback of
 the committed Rust build.
 
+A failed prepare whose exact application id is authoritatively absent releases
+the local candidate owner and resumes the retained runtime. The orchestrator
+accepts the exact `GODOT_APPLICATION_NOT_FOUND` code carried by the real plugin
+bridge's `PluginApiError.code` as well as Core's `errorCode`. Message text alone,
+an unavailable transport, or a missing record after a prepare receipt was already
+observed cannot authorize this recovery.
+
 ## First world load
 
 A world with no formal build cannot preview: `godot.candidatePreview` still
@@ -110,9 +117,24 @@ any owned candidate session, so a plugin restart cannot strand an invisible
 prepared operation. Quit, disable and panel close first reconcile/discard the
 candidate before the formal close checkpoint.
 
+The initial page bootstrap reconciles the currently selected world's candidate
+**before** calling `world.open`. Waiting until `mount(record)` is too late:
+`world.open` correctly refuses a retained candidate, so the old ordering made
+reload unable to reach reconciliation. Applied receipts reopen the committed
+world; uncommitted previews abort and reopen the retained world. Uncertain
+receipts remain blocked with the actual recovery error and are never committed
+again. A list fallback that is not the selected world cannot close another
+world's application. Sidebar surface requests obey the same busy, closing,
+preview and application locks as the page's tab buttons; rejected requests must
+not change the selected tab before native visibility has been authorized.
+
 ## Validation boundaries
 
 `tests/godot-remaining/D/godot-candidate-coordinator.mjs` injects pure store/runtime faults.
+`tests/godot-panel-recovery.test.mjs` executes the actual page bootstrap and
+surface functions against deterministic host replies, including reload with a
+retained preview, a committed application with a lost reply, and an unconfirmed
+outcome. It opens no browser and makes no native rendering claim.
 `tests/godot-remaining/D/godot-candidate-host.mjs` runs the real host class with deterministic native
 seams and verifies retention, blocked saves, failed promotion, cancellation, fail-fast startup faults, bounded diagnostics and the first-instance path.
 `tests/godot-remaining/D/godot-candidate-typecheck.mjs` checks the new coordinator and host types.
