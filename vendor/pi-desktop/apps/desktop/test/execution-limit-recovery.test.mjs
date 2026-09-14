@@ -6,11 +6,12 @@ const {releaseAndContinueTask,isExecutionLimitFailure}=await import('../src/lib/
 
 function fixture(){
   const calls=[];let selected='world',session='session',released=0,executeError=false;
-  const task={binding:{taskId:'task',sessionId:'session'},generation:2};
+  const task={binding:{taskId:'task',sessionId:'session'},generation:2,recovery:'interrupted'};
   const opts={sessionId:'session',assertSession(){assert.equal(session,'session','changed session');},onReleased(){released++;},
     async call(channel,payload){calls.push({channel,payload});
       if(channel==='world.list')return{activeWorldId:selected};
       if(channel==='task.current')return{context:task};
+      if(channel==='workbench.operations')return{items:[]};
       if(channel==='workbench.prepare')return{operationId:'operation'};
       if(channel==='workbench.execute'){if(executeError)throw Error('uncertain');return{kind:'player-execution-limit-release',taskId:'task',generation:2,worldId:'world',modelReplay:false,resumed:false};}
       if(channel==='task.resume')return{continuation:'running'};
@@ -31,6 +32,10 @@ test('explicit action journals release then continues the same saved task withou
 test('unknown release outcome never starts a model continuation',async()=>{
   const f=fixture();f.executeError=true;await assert.rejects(releaseAndContinueTask(f.opts),/uncertain/);
   assert.equal(f.released,0);assert(!f.calls.some(x=>x.channel==='task.resume'));
+});
+test('a previously released interrupted task can retry continuation without releasing another policy',async()=>{
+  const f=fixture();f.task.budget={limits:{maxRequests:null,maxCompactions:null,deadlineAt:null,maxTokens:777}};
+  await releaseAndContinueTask(f.opts);assert(!f.calls.some(x=>x.channel==='workbench.prepare'));assert.equal(f.calls.at(-1).channel,'task.resume');assert.equal(f.task.budget.limits.maxTokens,777);
 });
 test('session or selected world change prevents continuation after a committed release',async()=>{
   for(const changed of ['session','world']){

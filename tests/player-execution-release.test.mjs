@@ -9,7 +9,7 @@ async function load(name){const result=await build({entryPoints:[path.join(root,
 const [{createCraftminePanelGateway},{createCraftmineOperationJournal}]=await Promise.all([load('craftmine-panel-gateway'),load('craftmine-operation-journal')]);
 const previousLimits={maxRequests:80,maxCompactions:8,maxTokens:777777,deadlineAt:1};
 const limits={...previousLimits,maxRequests:null,maxCompactions:null,deadlineAt:null};
-const receipt=operationId=>({kind:'player-execution-limit-release',operationId,binding:{projectId:'p',sessionId:'s',taskId:'old-task',turnId:'t'},taskId:'old-task',generation:1,worldId:'world',previousLimits,limits,budget:{limits,compactionCount:8,actualTokens:5000},exhausted:['COMPACTION_BUDGET_EXHAUSTED'],modelReplay:false,resumed:false});
+const receipt=operationId=>({kind:'player-execution-limit-release',operationId,binding:{projectId:'p',sessionId:'s',taskId:'old-task',turnId:'t'},taskId:'old-task',generation:1,worldId:'world',previousLimits,limits,budget:{limits,compactionCount:8,actualTokens:5000},exhausted:['COMPACTION_BUDGET_EXHAUSTED'],modelReplay:false,resumed:false,createdAt:1789380000000});
 async function fixture(){
   await fs.mkdir(path.join(root,'test-results'),{recursive:true});const dir=await fs.mkdtemp(path.join(root,'test-results/player-release-'));
   let active=false,selected='world',head='old-task',generation=1,writes=0,saved=null,lose=false;

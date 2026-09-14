@@ -67,9 +67,9 @@ function receipt(result: any, channel: string) {
   if (channel === "targetFeedback.submit") return validateTargetFeedbackReceipt(result);
   if (!plain(result) || Buffer.byteLength(canonical(result)) > 65536) fail("INVALID_OPERATION_RECEIPT");
   if (channel === "task.releaseExecutionLimits") {
-    const keys = ["kind", "operationId", "binding", "taskId", "generation", "worldId", "previousLimits", "limits", "budget", "exhausted", "modelReplay", "resumed"];
+    const keys = ["kind", "operationId", "binding", "taskId", "generation", "worldId", "previousLimits", "limits", "budget", "exhausted", "modelReplay", "resumed", "createdAt"];
     const limits = result.limits;
-    if (Object.keys(result).some(key => !keys.includes(key)) || result.kind !== "player-execution-limit-release"
+    if (Object.keys(result).some(key => !keys.includes(key)) || result.kind !== "player-execution-limit-release" || !Number.isSafeInteger(result.createdAt) || result.createdAt < 1
       || result.modelReplay !== false || result.resumed !== false || !plain(limits) || !plain(result.previousLimits)
       || limits.maxRequests !== null || limits.maxCompactions !== null || limits.deadlineAt !== null
       || limits.maxTokens !== result.previousLimits.maxTokens || !plain(result.budget)
