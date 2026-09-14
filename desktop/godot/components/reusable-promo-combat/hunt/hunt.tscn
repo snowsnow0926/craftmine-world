@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://addons/cw.module.promo-hunt/hunt.gd" id="1_duel"]
+[ext_resource type="Script" path="res://addons/cw.module.promo-hunt/riftbeast.gd" id="2_boss"]
+[ext_resource type="PackedScene" path="res://addons/cw.module.promo-hunt/model.glb" id="3_model"]
+[sub_resource type="CapsuleShape3D" id="BeastShape"]
+radius = 1.7
+height = 4.6
+
+[node name="GreatHunt" type="Node3D"]
+script = ExtResource("1_duel")
+entity_id = "promo-hunt"
+metadata/display_name = "裂岳兽大型怪物试炼"
+
+[node name="Riftbeast" type="CharacterBody3D" parent="."]
+position = Vector3(2, 0.01, -5)
+collision_layer = 66
+collision_mask = 11
+script = ExtResource("2_boss")
+metadata/entity_id = "riftbeast-01"
+metadata/display_name = "裂岳兽"
+metadata/source_asset = "res://addons/cw.module.promo-hunt/model.glb"
+metadata/source_job_id = "c1ab3278-4931-408e-a1c8-d4c180cf72a3"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Riftbeast"]
+position = Vector3(0, 2.3, 0)
+shape = SubResource("BeastShape")
+
+[node name="Visual" parent="Riftbeast" instance=ExtResource("3_model")]

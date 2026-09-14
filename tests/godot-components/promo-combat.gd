@@ -79,6 +79,41 @@ func run() -> void:
 	check(blade.stamina < 100, "slash consumes original stamina")
 	var blade_state: Dictionary = blade.snapshot()
 	check(blade.restore(blade_state) == "" and blade.snapshot() == blade_state, "blade action state exact restore without boss")
+	var before_hunt_player: Dictionary = player.snapshot()
+	var hunt := load("res://addons/cw.module.promo-hunt/hunt.tscn").instantiate() as Node3D
+	hunt.entity_id = "test-promo-hunt"
+	world.add_child(hunt)
+	await process_frame
+	await physics_frame
+	check(player.snapshot() == before_hunt_player, "installing hunt does not teleport player")
+	check(blade.snapshot() == blade_state, "adding hunt preserves previous blade action progress")
+	evidence.huntPlacement = hunt.validate_placement()
+	check(evidence.huntPlacement == "", "explicit arena footprint is physically flat and clear")
+	check(blade.boss == hunt.boss and blade.blade != null, "hunt reuses existing blade")
+	player.set("input_enabled", true)
+	var start := InputEventKey.new()
+	start.physical_keycode = KEY_H
+	start.pressed = true
+	blade._unhandled_input(start)
+	await physics_frame
+	await physics_frame
+	player.set("input_enabled", false)
+	check(blade.status == "active" and hunt.boss.phase != "idle", "ordinary H starts original beast trial")
+	check(blade.attempts == 1 and blade.health == 100, "explicit trial start initializes trial resources")
+	var boss_before: Dictionary = hunt.boss.snapshot()
+	for i in range(12): await physics_frame
+	check(hunt.boss.snapshot() == boss_before, "conversation pauses beast simulation")
+	check(registry.capture(world).error == "", "actual ledger accepts active hunt and prior modules")
+	player.set("input_enabled", true)
+	for i in range(360): await physics_frame
+	player.set("input_enabled", false)
+	check(blade.health < 100, "original moving beast attacks and hurts player")
+	evidence.huntAfterAI = {"health":blade.health,"boss":hunt.boss.snapshot()}
+	var hunt_state: Dictionary = hunt.snapshot()
+	check(hunt.restore(hunt_state) == "" and hunt.snapshot() == hunt_state, "beast combat phase exact restore")
+	check(hunt.validate_restored_state() == "", "trial and beast state remain consistent")
+	var complete_saved: Dictionary = registry.capture(world)
+	check(registry.restore(world, complete_saved.states, true) == "", "actual registry restores whole split combat ledger")
 	check(player.get("captured") == false, "test never captures input")
 	print("PROMO_COMBAT_RESULT=" + JSON.stringify({"checks":checks,"errors":errors,"evidence":evidence}))
 	world.queue_free()

@@ -55,6 +55,7 @@ var boss: CharacterBody3D
 
 func _ready() -> void:
 	context = Core.acquire(self, Core, player_path, camera_path)
+	if context != null: configuration_error = context.register_module("blade", self)
 	call_deferred("_bind")
 
 func _bind() -> void:
