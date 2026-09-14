@@ -373,6 +373,15 @@ recovery path; it resolves the existing host binding. The original failed comman
 stays in the report, and session readiness alone does not claim the remaining
 template preservation checks succeeded.
 
+The resume report constructor clones `lastTemplateCopy` and `worldTransitions`.
+Pending recovery first checks the retained exact source ref, archive hash and
+source world against `worldCreation`. A regression executes the real constructor
+and `waitWorld` with the retained command-097 report shape; testing only a
+preassembled report would miss this initialization boundary. The original report
+is not mutated. `world.conversation` is called without `action`: its optional
+session ID only prioritizes an existing candidate during host reads; it does not
+select a UI session, create a session or invoke `remember-created`.
+
 Regression: `node --test tests/operator-world-session.test.mjs` covers delayed
 selection, actual old-session/wrong-world bindings, cold identity changes,
 selection changes during lookup, normal Start creating, exact timeout handling,

@@ -1,5 +1,27 @@
 import assert from 'node:assert/strict';
 import {isTransientReadTimeout} from '../player-feedback/P8/initialization-poll.mjs';
+import {validateOperatorTemplateCopy} from './operator-template-world.mjs';
+
+export function retainedOperatorTemplateState(previous){
+  if(!previous)return {};
+  const state={};
+  if(previous.worldTransitions!==undefined){assert(Array.isArray(previous.worldTransitions),'TEMPLATE_COPY_TRANSITIONS_INVALID');state.worldTransitions=structuredClone(previous.worldTransitions);}
+  if(previous.lastTemplateCopy){
+    const copy=previous.lastTemplateCopy;
+    validateOperatorTemplateCopy({ref:copy.sourceRef,title:copy.title});
+    assert(typeof copy.oldWorldId==='string'&&copy.oldWorldId&&typeof copy.oldSessionId==='string'&&copy.oldSessionId,'TEMPLATE_COPY_ORIGINAL_IDENTITY_REQUIRED');
+    if(copy.newWorldId===previous.worldId&&!copy.newSessionId){
+      const creation=previous.worldCreation;
+      assert.equal(creation?.mode,'ordinary-world-template-create','TEMPLATE_COPY_RECOVERY_SOURCE_REQUIRED');
+      assert.equal(creation.sourceWorldId,copy.oldWorldId,'TEMPLATE_COPY_RECOVERY_WORLD_CHANGED');
+      assert.deepEqual(creation.sourceRef,copy.sourceRef,'TEMPLATE_COPY_RECOVERY_REF_CHANGED');
+      assert.equal(creation.archiveSha256,copy.archiveSha256,'TEMPLATE_COPY_RECOVERY_ARCHIVE_CHANGED');
+      assert(/^[a-f0-9]{64}$/.test(copy.archiveSha256),'TEMPLATE_COPY_RECOVERY_ARCHIVE_REQUIRED');
+    }
+    state.lastTemplateCopy=structuredClone(copy);
+  }
+  return state;
+}
 
 export const worldSessionReadScript=`(()=>({sessionId:document.querySelector('[data-world-session]')?.dataset.worldSession??null,
   restoring:!!document.querySelector('[data-world-conversation-restoring]'),
