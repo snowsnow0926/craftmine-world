@@ -17,7 +17,7 @@ const require=createRequire(import.meta.url);
 const source=path.join(root,'plugins/craftmine-world');
 const staging=await mkdtemp(path.join(process.env.PI_SCRATCH_DIR||tmpdir(),'godot-round3-S6-wiring-'));
 const FILES=['manifest.json','world-tools.cjs','godot-routing.cjs','godot-docs.cjs','godot-query.cjs','godot-module-parameter-query.cjs',
-  'godot-observe.cjs','godot-build-read-wait.cjs','creation-application-guidance.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs','godot-engine-api.cjs','godot-diagnostics.cjs'];
+  'godot-observe.cjs','godot-build-read-wait.cjs','godot-tool-output.cjs','creation-application-guidance.cjs','godot-capability.cjs','godot-history.cjs','godot-jobs.cjs','godot-library.cjs','tool-services.cjs','godot-engine-api.cjs','godot-diagnostics.cjs'];
 for(const file of FILES)await copyFile(path.join(source,file),path.join(staging,file));
 await writeFile(path.join(staging,'domain.cjs'),`
 function fields(args,required,optional){
@@ -151,7 +151,8 @@ test('the capability report exposes the real wiring state and the durable ledger
   assert.equal(report.limits.ledger.ownerTaskId,'task-1');
   // Guidance and identity-bound view capture have installed AI1/R2 owners.
   assert.equal(report.tools.find(tool=>tool.name==='godot_view_capture').owner,'R2');
-  assert.ok(report.tools.every(tool=>tool.owner===null||/^(S\d|AI1|R2)$/.test(tool.owner)),'tool owners must name an installed module owner');
+  assert.equal(report.tools.find(tool=>tool.name==='blender_generate').owner,'Blender');
+  assert.ok(report.tools.every(tool=>tool.owner===null||/^(S\d|AI1|R2|Blender)$/.test(tool.owner)),'tool owners must name an installed module owner');
 });
 
 test('godot_jobs mode=status prefers the live executor over the durable registration row',async()=>{
@@ -253,7 +254,7 @@ for(const waitMs of [0,1000])test(`diagnostics wraps ${waitMs?'wait':'direct'} r
    compile:{passed:false,errors:['SCRIPT ERROR: Parse Error: Expected parameter name.'],warnings:[]},check:{passed:false,assertions:[{id:'runtime.not-run',passed:false,detail:'GODOT_COMPILE_FAILED'}]}};
  const record={jobId,worldId:'alpha',buildId:'gbd-test',sourceRevision:3,manifestHash:'b'.repeat(64),outputHash:'d'.repeat(64),kind:'check',status:'failed',sourceStale:false,candidateId:null,output};
  const before=JSON.stringify(record),f=fixture({options:{buildReadWaitMs:waitMs},coreOverrides:{'godotBuild.read':()=>record}});
- const result=await f.call('godot_build_read',{jobId});
+ const result=await f.call('godot_build_read',{jobId,detail:'full'});
  for(const key of Object.keys(record))assert.deepEqual(result[key],record[key],key);
  assert.equal(JSON.stringify(record),before);assert.equal(Object.hasOwn(record,'diagnostics'),false);
  assert.equal(result.diagnostics.source.jobId,jobId);assert.equal(result.diagnostics.source.outputHash,record.outputHash);
@@ -390,7 +391,7 @@ for(const reason of ['CREATION_TURN_BUSY','CREATION_AWAITING_TURN_FINISH'])test(
  assert.equal(result.applicationGuidance.adoptionConfirmed,false);assert.equal(result.applicationGuidance.playerActionRequired,false);
  assert.equal(result.applicationGuidance.nextAction,'finish-current-turn-if-work-complete');assert.equal(result.applicationGuidance.timing,'after-current-turn-settles');
  assert.equal(result.applicationGuidance.owner.sessionId,'session');assert.equal(result.applicationGuidance.jobId,jobId);
- assert.match(result.applicationGuidance.playerMessage,/本轮创作结束后自动放入世界/);assert.equal(f.calls.filter(c=>c.method==='godotBuild.read').length,1);
+ assert.match(result.applicationGuidance.playerMessage,/最新进度见创作结果卡/);assert.equal(f.calls.filter(c=>c.method==='godotBuild.read').length,1);
 });
 
 for(const capture of [null,{worldId:'foreign',authorization:'full-auto',autoApply:true},{worldId:'alpha',authorization:'full-auto',autoApply:false},{worldId:'alpha',authorization:'world-policy',autoApply:true},{worldId:'alpha',authorization:'full-auto',autoApply:true,supersededBy:{turnId:'new'}}])test('registered read does not promise automatic handoff from missing, foreign or revoked capture: '+JSON.stringify(capture),async()=>{

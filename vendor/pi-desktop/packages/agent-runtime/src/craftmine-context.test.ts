@@ -98,7 +98,8 @@ describe("Craftmine authoritative request boundary", () => {
     expect(prepared.context.systemPrompt).toContain("Keep necessary dependency, placement and behavior checks");
   });
   it("explains automatic application without granting it or suppressing unresolved diagnostics", () => {
-    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("report pending until actual host application evidence");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("Report the last observed application status");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("do not claim applied without actual host application evidence");
     expect(CRAFTMINE_SYSTEM_PROMPT).toContain("do not routinely ask the player to refresh, reload or reopen");
     expect(CRAFTMINE_SYSTEM_PROMPT).toContain("Outside authorized automatic application");
     expect(CRAFTMINE_SYSTEM_PROMPT).toContain("unknown diagnostic is not harmless just because a check passed");
