@@ -4,11 +4,12 @@ import fs from 'node:fs';
 import {confirmOperatorCreatedWorld,readOperatorInitializingRuntime} from './helpers/operator-world-initialization.mjs';
 
 const timeout=()=>Error('Error: Craftmine Rust request timed out');
-const worlds=(state='initializing',activeWorldId='new-world')=>({activeWorldId,worlds:[{id:'old-world',state:'ready'},{id:'new-world',state}]});
+const godot=(id,state='ready',baseId='creation-sandbox')=>({id,state,baseId,runtimeKind:'godot'});
+const worlds=(state='initializing',activeWorldId='new-world')=>({activeWorldId,worlds:[{id:'old-world',state:'ready',runtimeKind:'legacy'},godot('new-world',state)]});
 function fixture(script){
   let reads=0,cancelled=false,exited=false,uiError=null;
   const timeouts=[];
-  const args={existingIds:new Set(['old-world']),readList:async()=>{reads++;assert(script.length,'fixture script exhausted');const value=script.shift();if(value instanceof Error||typeof value==='string')throw value;return value;},
+  const args={existingIds:new Set(['old-world']),baseId:'creation-sandbox',readList:async()=>{reads++;assert(script.length,'fixture script exhausted');const value=script.shift();if(value instanceof Error||typeof value==='string')throw value;return value;},
     readUiError:async()=>uiError,onReadTimeout:error=>timeouts.push(error.message),
     until:async(read,accept)=>{for(;;){if(exited)throw Error('DESKTOP_EXITED');if(cancelled)throw Error('OPERATOR_CANCELLED');const value=await read();if(accept(value))return value;}}};
   return{args,timeouts,reads:()=>reads,cancel:()=>cancelled=true,exit:()=>exited=true,setUiError:value=>uiError=value};
@@ -18,7 +19,27 @@ test('a previously submitted creation survives exact read timeouts and requires 
   const f=fixture([timeout(),worlds('building'),timeout(),worlds('ready','old-world'),worlds('ready')]);
   const result=await confirmOperatorCreatedWorld(f.args);
   assert.equal(result.activeWorldId,'new-world');assert.equal(f.reads(),5);assert.equal(f.timeouts.length,2);
-  assert.deepEqual(Object.keys(f.args).sort(),['existingIds','onReadTimeout','readList','readUiError','until'].sort(),'confirmation has no create/install/write callback');
+  assert.deepEqual(Object.keys(f.args).sort(),['baseId','existingIds','onReadTimeout','readList','readUiError','until'].sort(),'confirmation has no create/install/write callback');
+});
+
+test('fresh lazy legacy creation is recorded without being mistaken for duplicate Godot creation or readiness',async()=>{
+  const legacy={id:'lazy-default',title:'我的第一个世界',runtimeKind:'legacy',state:'ready'};
+  const f=fixture([{activeWorldId:legacy.id,worlds:[legacy]}, {activeWorldId:legacy.id,worlds:[legacy,godot('new-world','building')]},
+    {activeWorldId:'new-world',worlds:[legacy,godot('new-world')]}]);
+  f.args.existingIds=new Set();const additional=[];f.args.onAdditionalWorlds=rows=>additional.push(rows);
+  const result=await confirmOperatorCreatedWorld(f.args);assert.equal(f.reads(),3);assert.equal(result.activeWorldId,'new-world');
+  assert(result.worlds.includes(legacy),'do not remove the unrelated product-created world from observations');
+  assert.deepEqual(additional.at(-1),[{id:legacy.id,title:legacy.title,runtimeKind:'legacy',baseId:null}]);
+});
+
+test('Godot duplicates, wrong requested base and unknown runtime still fail with a fresh legacy row present',async()=>{
+  const legacy={id:'lazy-default',runtimeKind:'legacy',state:'ready'};
+  for(const [rows,error] of [[[godot('one'),godot('two')],/WORLD_CONFIRMATION_MULTIPLE_NEW_WORLDS/],
+    [[godot('wrong-base','ready','top-down')],/WORLD_CONFIRMATION_BASE_MISMATCH/],[[{id:'unknown',state:'ready'}],/WORLD_CONFIRMATION_RUNTIME_UNKNOWN/]]){
+    const f=fixture([{activeWorldId:rows[0].id,worlds:[legacy,...rows]}]);f.args.existingIds=new Set();
+    await assert.rejects(confirmOperatorCreatedWorld(f.args),error);assert.equal(f.reads(),1);
+  }
+  const missing=fixture([]);delete missing.args.baseId;assert.throws(()=>confirmOperatorCreatedWorld(missing.args),/WORLD_CONFIRMATION_CONFIGURATION/);
 });
 
 test('terminal creation states are failures immediately, even before selection catches up',async()=>{
@@ -33,7 +54,7 @@ test('unknown transport errors, malformed lists and multiple new worlds are neve
     const f=fixture([error,worlds('ready')]);await assert.rejects(confirmOperatorCreatedWorld(f.args),value=>value===error);assert.equal(f.reads(),1);assert.equal(f.timeouts.length,0);
   }
   const malformed=fixture([{}]);await assert.rejects(confirmOperatorCreatedWorld(malformed.args),/WORLD_CONFIRMATION_INVALID_LIST/);
-  const duplicate=fixture([{activeWorldId:'new-world',worlds:[{id:'new-world',state:'ready'},{id:'unexpected-world',state:'ready'}]}]);
+  const duplicate=fixture([{activeWorldId:'new-world',worlds:[godot('new-world'),godot('unexpected-world')]}]);
   await assert.rejects(confirmOperatorCreatedWorld(duplicate.args),/WORLD_CONFIRMATION_MULTIPLE_NEW_WORLDS/);
 });
 

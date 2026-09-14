@@ -24,15 +24,22 @@ export async function readOperatorInitializingRuntime({readList,observe,worldId,
 // Confirmation only: creation was already submitted through the ordinary UI.
 // Reuse P8's exact read-error classification, but keep the operator's existing
 // cancellation/desktop-exit lifecycle instead of importing P8's test deadline.
-export function confirmOperatorCreatedWorld({until,readList,readUiError=async()=>null,existingIds,onReadTimeout=()=>{}}){
-  if(typeof until!=='function'||typeof readList!=='function'||!(existingIds instanceof Set))throw Error('WORLD_CONFIRMATION_CONFIGURATION');
+export function confirmOperatorCreatedWorld({until,readList,readUiError=async()=>null,existingIds,baseId,onReadTimeout=()=>{},onAdditionalWorlds=()=>{}}){
+  if(typeof until!=='function'||typeof readList!=='function'||!(existingIds instanceof Set)||typeof baseId!=='string'||!baseId)throw Error('WORLD_CONFIRMATION_CONFIGURATION');
   return until(async()=>{
     const uiError=await readUiError();if(uiError)throw Error(uiError);
     const state=await readInitializationList(readList,onReadTimeout);if(!state)return null;
-    const created=state.worlds.filter(row=>row&&typeof row.id==='string'&&!existingIds.has(row.id));
+    const added=state.worlds.filter(row=>row&&typeof row.id==='string'&&!existingIds.has(row.id));
+    // First attachment may lazily create the product's default legacy world.
+    // Preserve that observation, but only Godot rows can satisfy this request.
+    const legacy=added.filter(row=>row.runtimeKind==='legacy');
+    if(legacy.length)onAdditionalWorlds(legacy.map(row=>({id:row.id,title:row.title,runtimeKind:row.runtimeKind,baseId:row.baseId??null})));
+    if(added.some(row=>!['legacy','godot'].includes(row.runtimeKind)))throw Error('WORLD_CONFIRMATION_RUNTIME_UNKNOWN');
+    const created=added.filter(row=>row.runtimeKind==='godot');
     if(created.length>1)throw Error('WORLD_CONFIRMATION_MULTIPLE_NEW_WORLDS');
+    if(created.some(row=>row.baseId!==baseId))throw Error('WORLD_CONFIRMATION_BASE_MISMATCH');
     const failed=created.find(row=>terminalState(row));
     if(failed)throw terminalError(failed);
     return state;
-  },state=>!!state?.activeWorldId&&!existingIds.has(state.activeWorldId)&&state.worlds.some(row=>row.id===state.activeWorldId&&row.state==='ready'));
+  },state=>!!state?.activeWorldId&&!existingIds.has(state.activeWorldId)&&state.worlds.some(row=>row.id===state.activeWorldId&&row.runtimeKind==='godot'&&row.baseId===baseId&&row.state==='ready'));
 }
