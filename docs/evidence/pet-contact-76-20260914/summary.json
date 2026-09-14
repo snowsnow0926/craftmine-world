@@ -1,0 +1,1479 @@
+{
+  "format": "craftmine.actual-pet-contact-evidence/1",
+  "verified": true,
+  "continuousHumanPlay": false,
+  "scope": "Actual packaged 76e8c0a9 normal-adopted rev14; original operator play-144..169",
+  "operatorFile": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\continuation-c599760d-d6b6-44e9-9abb-c5e25ea3ee40.json",
+  "packageIdentity": {
+    "inventorySha256": "51de0dbb2605896fe6c03e897446999dd89385f53e692c82ab07d4dbad68002d",
+    "mainSha256": "6c0a337893f08099c6bbb1168ddd16a44ac743ca5e0ffa140e0b734dfd4cb0d9"
+  },
+  "binaries": {
+    "core": {
+      "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\76e8c0a9ba6a-abddb286-62ab-4fa1-b0a8-032a21b09086\\output\\win-unpacked\\resources\\bin\\craftmine-core.exe",
+      "bytes": 8743936,
+      "sha256": "6f7218996c688259f41f8da7ac418a2d98c0f562bc320e61f92632e1e602f509"
+    },
+    "host": {
+      "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\76e8c0a9ba6a-abddb286-62ab-4fa1-b0a8-032a21b09086\\output\\win-unpacked\\resources\\bin\\pi-desktop-host-core.exe",
+      "bytes": 9277440,
+      "sha256": "07bfcbd6b90944518cee89fdc75011aa8f4baa09ebc155f80eab8b9a137f08c8"
+    }
+  },
+  "sourceEvidence": {
+    "sourceRevision": 14,
+    "changedSourceFiles": [
+      {
+        "bytes": 2001,
+        "kind": "source",
+        "path": "scripts/city_pet.gd",
+        "sha256": "69900c20ff38e31055c5f96c96c76956062e313621c71068a6276b62acf00aab"
+      },
+      {
+        "bytes": 3897,
+        "kind": "source",
+        "path": "world/pet_contact_check_recovery.md",
+        "sha256": "7acfbf241d2c7ef8d39a8cdd24c61124900560557c99d411e93202f55743425c"
+      },
+      {
+        "bytes": 5040,
+        "kind": "source",
+        "path": "world/pet_contact_fix.md",
+        "sha256": "3784899ee25565d6cbac8ad18ebcc01a96a2416d7d6c4257b69dda3cec700e7e"
+      }
+    ],
+    "unchangedPlayerCityPlaneAndOriginalPetPackage": true,
+    "petScriptSha256": "69900c20ff38e31055c5f96c96c76956062e313621c71068a6276b62acf00aab"
+  },
+  "finalIdentity": {
+    "worldId": "world-7a2bad903a26",
+    "buildId": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+    "instanceId": "0357743d3f4628aca7300037"
+  },
+  "crossing": {
+    "start": [
+      226.255905151367,
+      0.900763332843781,
+      60.9014167785645
+    ],
+    "end": [
+      221.323867797852,
+      0.900763332843781,
+      60.076229095459
+    ],
+    "center": [
+      222.071655273438,
+      0.00069141690619289,
+      60.2324676513672
+    ],
+    "fraction": 0.8473545144607697,
+    "lineDistance": 0.030698237015876345,
+    "startDistance": 4.237385983802596,
+    "endDistance": 0.7639349415988231
+  },
+  "following": {
+    "walkingDistance": 5.714069415197432,
+    "convergedDistance": 1.5002379030907125
+  },
+  "cold": {
+    "before": "439aa97c4ebd24ffa43efb9d",
+    "after": "0357743d3f4628aca7300037",
+    "buildId": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+    "completeProgressEqual": true,
+    "normalExit": {
+      "code": 0,
+      "signal": null
+    },
+    "audit": {
+      "type": "craftmine-headless-exit",
+      "violations": [],
+      "pageErrors": [],
+      "shutdownFailures": []
+    }
+  },
+  "finalProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "components": {
+        "ins-1f469382cd78cdfa61ee927d-e0": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "boardingPosition": [
+            394.942352294922,
+            0.900529861450195,
+            58.5021781921387
+          ],
+          "cockpitView": false,
+          "crashed": false,
+          "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+          "flightSeconds": 4.59999999999999,
+          "format": "craftmine.reusable-j20-state/1",
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": true,
+          "heading": -3.14049785466256,
+          "landings": 1,
+          "piloted": false,
+          "pitch": 0,
+          "position": [
+            400.559448242188,
+            2.1800000667572,
+            55.6621627807617
+          ],
+          "settings": {
+            "name": "歼二十"
+          },
+          "sourceSettings": {
+            "name": "歼二十"
+          },
+          "throttle": 0,
+          "velocity": [
+            0.00016778997087385,
+            0,
+            0.153270438313484
+          ],
+          "verticalSpeed": 0
+        },
+        "ins-41d4d88059c4ba486b108f6e-e0": {
+          "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+          "format": "craftmine.pet-companion-state/1",
+          "interactionCount": 2,
+          "position": [
+            215.071517944336,
+            0.00010169025335926,
+            60.0948715209961
+          ],
+          "settings": {
+            "appearanceKey": "pomeranian-white",
+            "following": false,
+            "name": "小麦"
+          },
+          "sourceSettings": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          },
+          "yaw": 1.55879603906739
+        }
+      },
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "org-flight-chart": 1,
+        "org-flight-clearance": 1,
+        "org-flight-compass": 1,
+        "org-gate": 1,
+        "org-strength": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.203996972103888,
+        "position": [
+          208.216369628906,
+          0.900763332843781,
+          60.076229095459
+        ],
+        "yaw": -1.5735157981648
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-7a2bad903a26"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-7a2bad903a26"
+  },
+  "finalCapture": {
+    "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\1789365964347-92f9b084-b490-4be3-a218-481418a2fe30.png",
+    "sha256": "c4f7029688a18c1fbb88aef074a7dfa18becc1748ab931c2c5653c83751b1807",
+    "width": 1920,
+    "height": 1080,
+    "identity": {
+      "worldId": "world-7a2bad903a26",
+      "buildId": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+      "instanceId": "0357743d3f4628aca7300037"
+    }
+  },
+  "limits": [
+    "分段真实虚拟输入与普通冻结存档，不代表连续帧时长或性能结论。",
+    "此轮没有主动撞墙/撞机或重新飞行；保留原几何/控制器源码及实际layer/mask和地面观察证据。",
+    "截取的是异步观测/原生帧和最终冻结快照，不把多个采样当成同一物理瞬间。",
+    "冷开后客户端留在冻结世界交还总控；后续退出/包最终封装验收由总控记录。"
+  ],
+  "raw": [
+    {
+      "id": "play-144",
+      "command": "status",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-144.json",
+      "sha256": "c8ea2368234442d28b9bae66b376a80563acbad4137f4affa40be74f6713866c",
+      "startedAt": "2026-09-14T06:01:18.774Z",
+      "finishedAt": "2026-09-14T06:01:19.720Z"
+    },
+    {
+      "id": "play-145",
+      "command": "snapshot",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-145.json",
+      "sha256": "e46607041a15576cfe50b21633739cde4725632f668076cad0c198f75e8f39f3",
+      "startedAt": "2026-09-14T06:01:22.202Z",
+      "finishedAt": "2026-09-14T06:01:22.210Z"
+    },
+    {
+      "id": "play-146",
+      "command": "resume",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-146.json",
+      "sha256": "9e8bbf9eab2588b0ef364788553595c44bcc4e7e34c6ac239769cee04f5644e8",
+      "startedAt": "2026-09-14T06:02:09.038Z",
+      "finishedAt": "2026-09-14T06:02:09.043Z"
+    },
+    {
+      "id": "play-147",
+      "command": "explore",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-147.json",
+      "sha256": "0316dd4a81c5894b4623cded6130ec1d5aaac0586e5974b214b93402735b5203",
+      "startedAt": "2026-09-14T06:02:11.519Z",
+      "finishedAt": "2026-09-14T06:02:11.544Z"
+    },
+    {
+      "id": "play-148",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-148.json",
+      "sha256": "7776f8695151ea0f9213a9c00849e4c6f5d1489650937ea9698d849dc745298b",
+      "startedAt": "2026-09-14T06:02:14.010Z",
+      "finishedAt": "2026-09-14T06:02:15.199Z",
+      "segment": {
+        "keys": [
+          "KeyW"
+        ],
+        "frames": 30,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 1,
+            "position": [
+              222.071655273438,
+              0.00069141690619289,
+              60.2324676513672
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": -1.1593533980096
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.35,
+          "position": [
+            221.323867797852,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.41226476966936
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365735194-293c5fd2-f642-4383-9c51-02af7b23a685.png",
+          "sha256": "9ee076641e4400f87952801956eb491ba6060a094364191dbbac4bda612ab8c3"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365735195-9f548910-dedd-4a0a-995f-59dcaca7f1c7.png",
+          "sha256": "c26c5b2fe87f8b8f0f56d240374fab0b8b5d72cb1a1a7efb10e2c2d9347596fc"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365735196-76b2df6d-e46c-4256-99e7-5ef8248e443c.png",
+          "sha256": "78cd816bb3b126637f4cd23f5562ad550a678242f54ad3a66d066138288f4161"
+        }
+      ]
+    },
+    {
+      "id": "play-149",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-149.json",
+      "sha256": "1d71caa467068dc031fcefe336cbba67968d35fade5a69a0462fd9b87e9a9929",
+      "startedAt": "2026-09-14T06:02:47.259Z",
+      "finishedAt": "2026-09-14T06:02:48.429Z",
+      "segment": {
+        "keys": [],
+        "frames": 30,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 1,
+            "position": [
+              222.071655273438,
+              0.00069141690619289,
+              60.2324676513672
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": -1.1593533980096
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.35,
+          "position": [
+            221.093963623047,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.41226476966936
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365768423-9a7e227d-f2c8-4ca8-ab63-0929926db196.png",
+          "sha256": "100caf27d3a6f20a605e1f7fbb14f0803de9e7ffdc8da0f58ef70fefd580f8bd"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365768424-b5a10fbd-b0ee-48e5-8da9-a2bd0c2e6ba9.png",
+          "sha256": "0132171d2a2cfe6bca4d79236ef3329ccea94359b2af1b9f2536f83f9683ec6b"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365768425-58431881-2c49-48e4-8a08-d7c5742150b9.png",
+          "sha256": "e7b4ab06a18eb57a578522754bb650cc80196a1521fb7b086a6c1c4dd9c6c5a3"
+        }
+      ]
+    },
+    {
+      "id": "play-150",
+      "command": "resume",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-150.json",
+      "sha256": "20e4856d0babe1fc8d2fea70ed227d54256574ef9acb7fd3b3b2e603f23bb1ea",
+      "startedAt": "2026-09-14T06:03:03.222Z",
+      "finishedAt": "2026-09-14T06:03:03.226Z"
+    },
+    {
+      "id": "play-151",
+      "command": "explore",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-151.json",
+      "sha256": "31ab78144b05e825cab6eba51cfbf17e17291585533f9f53007c48d229a5c791",
+      "startedAt": "2026-09-14T06:03:05.672Z",
+      "finishedAt": "2026-09-14T06:03:05.694Z"
+    },
+    {
+      "id": "play-152",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-152.json",
+      "sha256": "8d3c2365939f8118c6a3f737622eb72b6bb0d04b00e19155fee0291ea2f1859e",
+      "startedAt": "2026-09-14T06:03:08.169Z",
+      "finishedAt": "2026-09-14T06:03:08.471Z",
+      "segment": {
+        "keys": [
+          "KeyE"
+        ],
+        "frames": 1,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              222.071655273438,
+              0.00069141690619289,
+              60.2324676513672
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": -1.1593533980096
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.961114423504728,
+          "position": [
+            221.093963623047,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": -1.72925999617931
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365788468-d7c3e976-1308-4582-bc0a-8e502cb0744a.png",
+          "sha256": "47ba1b80ba42772533bb17110595ff2f7115a62e73e807b763631e1b801f7028"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365788468-0b54b072-33f2-4afe-9aa3-d769b43901ac.png",
+          "sha256": "5673f70f485f432959cd6e5b2c18d117e83354832c492c54ea97c0ccfdd534f6"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365788468-5b1c17b0-21bb-473c-8a49-326424613585.png",
+          "sha256": "5673f70f485f432959cd6e5b2c18d117e83354832c492c54ea97c0ccfdd534f6"
+        }
+      ]
+    },
+    {
+      "id": "play-153",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-153.json",
+      "sha256": "bc42d07c4de0c3e3f1eeb01c34b576b6b80ef96975f672d5f1f2ce0f9aa22d8d",
+      "startedAt": "2026-09-14T06:03:25.758Z",
+      "finishedAt": "2026-09-14T06:03:26.044Z",
+      "segment": {
+        "keys": [
+          "KeyH"
+        ],
+        "frames": 1,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              222.071655273438,
+              0.00069141690619289,
+              60.2324676513672
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": -1.1593533980096
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.961114423504728,
+          "position": [
+            221.093963623047,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": -1.72925999617931
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365806041-3c8f652d-c34e-4003-8423-37021ff8e1ea.png",
+          "sha256": "5673f70f485f432959cd6e5b2c18d117e83354832c492c54ea97c0ccfdd534f6"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365806041-5382b73c-5687-4172-8f1f-a1f537a69562.png",
+          "sha256": "952ea2cb2560565926dd5dcad67a609772986f2cfea48212f9a597ab079d9485"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365806042-fb5215cc-fce1-46c8-b42f-19a0d2df8728.png",
+          "sha256": "952ea2cb2560565926dd5dcad67a609772986f2cfea48212f9a597ab079d9485"
+        }
+      ]
+    },
+    {
+      "id": "play-154",
+      "command": "resume",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-154.json",
+      "sha256": "bf1aa9f6e0b9aba0c8922da7d481d6256361c4a30b577c13756e399efd4ba12f",
+      "startedAt": "2026-09-14T06:03:48.232Z",
+      "finishedAt": "2026-09-14T06:03:48.240Z"
+    },
+    {
+      "id": "play-155",
+      "command": "explore",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-155.json",
+      "sha256": "d0fda627fd610d450e29f6e4967ae9bf5107adf1d8fffe4f505c72289e5543ce",
+      "startedAt": "2026-09-14T06:03:50.690Z",
+      "finishedAt": "2026-09-14T06:03:50.712Z"
+    },
+    {
+      "id": "play-156",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-156.json",
+      "sha256": "85f3995df5d9311c094a56f7b535eb8dc3a01f8d53e65d1b122ee156a5be810a",
+      "startedAt": "2026-09-14T06:03:53.180Z",
+      "finishedAt": "2026-09-14T06:03:54.723Z",
+      "segment": {
+        "keys": [
+          "KeyW"
+        ],
+        "frames": 45,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              219.578323364258,
+              0.00011606200132519,
+              60.1500511169434
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": 1.55613109533509
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.15,
+          "position": [
+            213.864730834961,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.5707963267949
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365834716-c0a1dc4f-4f38-494f-93cd-b3ee5bc3e878.png",
+          "sha256": "bfe430fc2c50d8b2fe60b1616b9b3681efaae8b9d3b555457f682426731d1e8a"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365834718-99be0dba-f092-477c-aba3-6a1ce77d7124.png",
+          "sha256": "ec7741e77e7a82b73b2c58977528449ad7023c2412edaa2c1787ffda3276fc24"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365834718-e74ad221-0d63-4e07-8554-dfcc25fede1d.png",
+          "sha256": "32bf9052164e800a0229c0e5d538a0f062a2b4a20f23c1fcfd70d2d41c1d3754"
+        }
+      ]
+    },
+    {
+      "id": "play-157",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-157.json",
+      "sha256": "f9496bd6591a719052e38ed2bcd1b3c702321a5b5665aa169a307c330e02cf0d",
+      "startedAt": "2026-09-14T06:04:04.630Z",
+      "finishedAt": "2026-09-14T06:04:08.496Z",
+      "segment": {
+        "keys": [],
+        "frames": 180,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              215.071517944336,
+              0.00010169025335926,
+              60.0948715209961
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": 1.55879603906739
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.15,
+          "position": [
+            213.571395874023,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.5707963267949
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365848492-eaed0698-973a-44b9-95be-9d5a19f8e56b.png",
+          "sha256": "9872f238bce0bc0341dd44e5081443831cd8c9c306fc75d8cdf91eb074ec1604"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365848493-eaa289c5-58d4-442a-918c-c729e1fd84f0.png",
+          "sha256": "4b165d8cfc3ad39ca171d1a739e7fad6ff7189cde7f8857575a200c7b36a3d8c"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365848493-33f0abf2-5572-4879-87ca-b5f71ebf50f9.png",
+          "sha256": "103731cdd66e2af483d9c21de251974d0a6104010487d6c56b9845d8e0548b4b"
+        }
+      ]
+    },
+    {
+      "id": "play-158",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-158.json",
+      "sha256": "d8cb45c59c1754d1886f1ce0b21ee7f122eda9fa92c557c27efd8ab14a17b6da",
+      "startedAt": "2026-09-14T06:04:25.922Z",
+      "finishedAt": "2026-09-14T06:04:26.699Z",
+      "segment": {
+        "keys": [
+          "KeyH"
+        ],
+        "frames": 1,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              215.071517944336,
+              0.00010169025335926,
+              60.0948715209961
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": 1.55879603906739
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.15,
+          "position": [
+            213.571395874023,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.5707963267949
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365866694-8787c281-39d6-47ab-a93e-1b56674e2d4f.png",
+          "sha256": "3cd55060fde01e689b95cbbfbf67d2a2feb578a102f1cea403fcaf41d59f834b"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365866695-c47008ae-559d-40d2-ac32-a1be2d76575b.png",
+          "sha256": "ef9a83a8dfb5596ea2a18e384b47a627e800156394dd593a08fd38e8d8cbb0db"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365866696-bdd4da05-7c77-44c3-9bc9-8151d40169af.png",
+          "sha256": "109fa7292dd62854506d9ab52986cac7f4d6b77852f7fc616be3b633c624427e"
+        }
+      ]
+    },
+    {
+      "id": "play-159",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-159.json",
+      "sha256": "46ea2aaee6de752068cb2c2cad3ed4cb292c8d2cef333755f0080b16ac446164",
+      "startedAt": "2026-09-14T06:04:29.197Z",
+      "finishedAt": "2026-09-14T06:04:30.427Z",
+      "segment": {
+        "keys": [
+          "KeyW"
+        ],
+        "frames": 30,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              215.071517944336,
+              0.00010169025335926,
+              60.0948715209961
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": 1.55879603906739
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.15,
+          "position": [
+            208.4638671875,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.5707963267949
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365870422-4df965ba-575e-4b6c-86c2-5d16b3c5d085.png",
+          "sha256": "9c020ee1d2271df2fad0bb55b78ce9fdb3f69bd7cc89f7cd2123b3593ccab81c"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365870423-3e0459f0-624a-4474-99a7-ddfb1c9a252c.png",
+          "sha256": "6e539bea9b31306a28385a7fcc91793ddce50e26c9662091aa4fcca37afa074d"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365870424-16e0d507-2aa8-4bd9-a028-92b55a94f39f.png",
+          "sha256": "d63f4907eafa31678f30db9712a56b1d21795df0bad78ef93be94bb079186628"
+        }
+      ]
+    },
+    {
+      "id": "play-160",
+      "command": "input-segment",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-160.json",
+      "sha256": "ba0c8880d467d3db451800f6b4ec241a626369a56cfb919a60b8ff947789da3e",
+      "startedAt": "2026-09-14T06:04:32.909Z",
+      "finishedAt": "2026-09-14T06:04:34.685Z",
+      "segment": {
+        "keys": [],
+        "frames": 60,
+        "settleFrames": 1,
+        "capture": true
+      },
+      "body": {
+        "baseVersion": "1.0.0",
+        "components": {
+          "ins-1f469382cd78cdfa61ee927d-e0": {
+            "afterburner": false,
+            "airspeed": 0,
+            "assist": true,
+            "bank": 0,
+            "boardingPosition": [
+              394.942352294922,
+              0.900529861450195,
+              58.5021781921387
+            ],
+            "cockpitView": false,
+            "crashed": false,
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "flightSeconds": 4.59999999999999,
+            "format": "craftmine.reusable-j20-state/1",
+            "gearDown": true,
+            "grounded": true,
+            "hasFlown": true,
+            "heading": -3.14049785466256,
+            "landings": 1,
+            "piloted": false,
+            "pitch": 0,
+            "position": [
+              400.559448242188,
+              2.1800000667572,
+              55.6621627807617
+            ],
+            "settings": {
+              "name": "歼二十"
+            },
+            "sourceSettings": {
+              "name": "歼二十"
+            },
+            "throttle": 0,
+            "velocity": [
+              0.00016778997087385,
+              0,
+              0.153270438313484
+            ],
+            "verticalSpeed": 0
+          },
+          "ins-41d4d88059c4ba486b108f6e-e0": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1",
+            "interactionCount": 2,
+            "position": [
+              215.071517944336,
+              0.00010169025335926,
+              60.0948715209961
+            ],
+            "settings": {
+              "appearanceKey": "pomeranian-white",
+              "following": false,
+              "name": "小麦"
+            },
+            "sourceSettings": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            },
+            "yaw": 1.55879603906739
+          }
+        },
+        "doors": {},
+        "format": "craftmine.creation-progress/1",
+        "inventory": {
+          "org-flight-chart": 1,
+          "org-flight-clearance": 1,
+          "org-flight-compass": 1,
+          "org-gate": 1,
+          "org-strength": 1
+        },
+        "openedChests": {},
+        "player": {
+          "onFloor": true,
+          "pitch": -0.15,
+          "position": [
+            208.216369628906,
+            0.900763332843781,
+            60.076229095459
+          ],
+          "yaw": 1.5707963267949
+        },
+        "rules": {},
+        "sourceTimeOfDay": 12,
+        "timeOfDay": 12,
+        "worldId": "world-7a2bad903a26"
+      },
+      "frames": [
+        {
+          "phase": "before",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-before-1789365874680-18273138-bff2-468f-95c7-f4494bf9c0b0.png",
+          "sha256": "f28cd733b42697d24e41948440b7eb722405a0c390af2dd8fbdbf1c493529a3c"
+        },
+        {
+          "phase": "during",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-during-1789365874681-79aae43d-3a73-439c-a454-71470e5a6a09.png",
+          "sha256": "b26f96fa33df2211d09824e4426033d5c2a587c4ff385d7dea4c0981fe23cfd0"
+        },
+        {
+          "phase": "after",
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\input-after-1789365874682-b3057966-f392-4fb9-b46b-9309b9f4272b.png",
+          "sha256": "38b7d712050d9f713d27bc256de45c0f8af092164710d0b0b5733d9cbfa12782"
+        }
+      ]
+    },
+    {
+      "id": "play-161",
+      "command": "resume",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-161.json",
+      "sha256": "e656e8214d08f0eb1290d1bfb253701e66bd104f4d5d2065e720f1cef3e28bed",
+      "startedAt": "2026-09-14T06:05:19.236Z",
+      "finishedAt": "2026-09-14T06:05:19.241Z"
+    },
+    {
+      "id": "play-162",
+      "command": "explore",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-162.json",
+      "sha256": "e946cf67e30249cb068516aa5481d122a2854e14f757155ea8ea445dc9dc0f69",
+      "startedAt": "2026-09-14T06:05:21.720Z",
+      "finishedAt": "2026-09-14T06:05:21.730Z"
+    },
+    {
+      "id": "play-163",
+      "command": "save",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-163.json",
+      "sha256": "e3536da2ff7ad529110a63e1dd17d71047b06df6e21439ad01f48cec403d0eba",
+      "startedAt": "2026-09-14T06:05:24.197Z",
+      "finishedAt": "2026-09-14T06:05:24.207Z"
+    },
+    {
+      "id": "play-164",
+      "command": "snapshot",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-164.json",
+      "sha256": "9c3a44918e5fe7bb062fb0da5176f44f2b1daf499af4570d84cb9f46d539da61",
+      "startedAt": "2026-09-14T06:05:26.689Z",
+      "finishedAt": "2026-09-14T06:05:26.693Z"
+    },
+    {
+      "id": "play-165",
+      "command": "capture",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-165.json",
+      "sha256": "e6588c95b3f9556456bd6789fa7aef724e600dad384d827e9d463bc3da8c2c33",
+      "startedAt": "2026-09-14T06:05:29.155Z",
+      "finishedAt": "2026-09-14T06:05:29.244Z",
+      "frame": {
+        "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\1789365929243-a542177a-18ba-40ee-a0a7-a3fc18d9e662.png",
+        "sha256": "171ea6d0ac786575ee159f8785539610d7d2172ccc523597c200521c868861be",
+        "width": 1920,
+        "height": 1080,
+        "identity": {
+          "worldId": "world-7a2bad903a26",
+          "buildId": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+          "instanceId": "439aa97c4ebd24ffa43efb9d"
+        }
+      }
+    },
+    {
+      "id": "play-166",
+      "command": "reopen",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-166.json",
+      "sha256": "414e9b741d9b005a3707cba244aeb1119e18c9591c6d7393a848fffc42cf716e",
+      "startedAt": "2026-09-14T06:05:31.766Z",
+      "finishedAt": "2026-09-14T06:05:56.771Z"
+    },
+    {
+      "id": "play-167",
+      "command": "snapshot",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-167.json",
+      "sha256": "89647b29f8aff00dfd7a7de020886331a060d59d617a7c351c2eb6533384b21e",
+      "startedAt": "2026-09-14T06:06:01.631Z",
+      "finishedAt": "2026-09-14T06:06:01.704Z"
+    },
+    {
+      "id": "play-168",
+      "command": "capture",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-168.json",
+      "sha256": "91403bf2f324c20e48e927f2ed5d99e86388e1c5ab6305bcb2707addaa45e6fe",
+      "startedAt": "2026-09-14T06:06:04.252Z",
+      "finishedAt": "2026-09-14T06:06:04.348Z",
+      "frame": {
+        "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\1789365964347-92f9b084-b490-4be3-a218-481418a2fe30.png",
+        "sha256": "c4f7029688a18c1fbb88aef074a7dfa18becc1748ab931c2c5653c83751b1807",
+        "width": 1920,
+        "height": 1080,
+        "identity": {
+          "worldId": "world-7a2bad903a26",
+          "buildId": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+          "instanceId": "0357743d3f4628aca7300037"
+        }
+      }
+    },
+    {
+      "id": "play-169",
+      "command": "status",
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-169.json",
+      "sha256": "8e6a742e55c9461e37b219cf7ce84993ac56b5f955e011e3fe5fc870895bcf28",
+      "startedAt": "2026-09-14T06:06:06.855Z",
+      "finishedAt": "2026-09-14T06:06:07.794Z"
+    }
+  ]
+}
