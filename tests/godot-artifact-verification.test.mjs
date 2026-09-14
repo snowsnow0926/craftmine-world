@@ -6,6 +6,8 @@ import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {PassThrough} from 'node:stream';
+import {setTimeout as delay} from 'node:timers/promises';
+import {spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {createArtifactVerificationProgress,verifyArtifacts} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-artifact-verification.ts';
 import {createGodotCheckPhases} from '../vendor/pi-desktop/apps/desktop/electron/main/godot-check-phases.ts';
@@ -82,4 +84,29 @@ test('diagnostic paths are bounded relative labels and never include private abs
  const p=createArtifactVerificationProgress(1),log=[];p.artifact('web/'+'🐶'.repeat(4096)+'.pck',1,Number.MAX_SAFE_INTEGER);p.operation('stream-read');p.fail(log,'C:/Private/Artifacts/file.pck ENOENT');
  assert(log[0].length<=1024);assert(!log[0].includes('C:/Private'));assert.equal(decode(log).errorCode,'ARTIFACT_IO_ERROR');assert(decode(log).artifactPath.endsWith('…'));
  const q=createArtifactVerificationProgress(1),other=[];q.operation('root-lstat','D:/Secret/root');q.fail(other,'GODOT_CHECK_TIMEOUT');assert.equal(decode(other).path,'[invalid-relative-path]');
+});
+const runtimeSummary=log=>JSON.parse(log.find(s=>s.startsWith('[artifact-verification-runtime] ')).slice('[artifact-verification-runtime] '.length));
+test('heartbeat is stage-local and disposed once on success, failure and cancellation; only resource types are retained',()=>{
+ for(const outcome of ['completed','GODOT_CHECK_TIMEOUT','GODOT_CHECK_CANCELLED']){
+  let time=0,created=0,disposed=0,reads=0,tick;const log=[];
+  const progress=createArtifactVerificationProgress(1,()=>time,{schedule:sample=>{created++;tick=sample;return()=>disposed++;},resources:()=>{reads++;return ['FSReqPromise','FSReqPromise','Timeout','D:/private/root','pid=77'];}});
+  assert.equal(created,0);progress.operation('root-lstat','.');assert.equal(created,1);time=100;tick();time=450;tick();
+  if(outcome==='completed'){progress.complete();progress.report(log);}else progress.fail(log,outcome);
+  const summary=runtimeSummary(log);assert.equal(summary.diagnosticOnly,true);assert.equal(summary.heartbeat.samples,2);assert.equal(summary.heartbeat.maxLagMs,250);assert.deepEqual(summary.resources.start.counts,{FSReqPromise:2,Other:2,Timeout:1});assert.equal(disposed,1);assert.equal(reads,2);
+  const before=JSON.stringify(log);time=1000;tick();progress.complete();progress.fail(log,'late');progress.report(log);assert.equal(disposed,1);assert.equal(JSON.stringify(log),before);assert(!before.includes('private'));assert(!before.includes('pid='));
+ }
+});
+test('a paused filesystem await still permits real heartbeat samples without per-tick logging',async t=>{
+ const d=fixture(t),entered=deferred(),release=deferred(),progress=createArtifactVerificationProgress(1),log=[];let count=0;
+ const work=verifyArtifacts(d,Date.now()+30000,progress,{lstat:async file=>{if(++count===1){entered.resolve();await release.promise;}return lstat(file);},createReadStream:fs.createReadStream});
+ await entered.promise;await delay(250);assert.equal(log.length,0);progress.fail(log,'GODOT_CHECK_CANCELLED');
+ assert.equal(decode(log).operation,'root-lstat');assert(runtimeSummary(log).heartbeat.samples>=1);assert.equal(log.length,2);
+ const before=JSON.stringify(log);release.resolve();await work;await delay(110);assert.equal(JSON.stringify(log),before);
+});
+test('deadline-first final gap is observed and resource summary is bounded; default timer is unref',()=>{
+ let time=0;const log=[],p=createArtifactVerificationProgress(1,()=>time,{schedule:()=>()=>{},resources:()=>Array.from({length:100},(_,i)=>'Resource'+String(i).padStart(2,'0'))});p.operation('root-lstat','.');time=30141;p.fail(log,'GODOT_CHECK_TIMEOUT');
+ const summary=runtimeSummary(log);assert.equal(summary.heartbeat.samples,0);assert.equal(summary.heartbeat.maxLagMs,30041);assert.equal(summary.resources.start.omittedTypes,94);assert(log.every(line=>line.length<=1024));
+ const moduleUrl=new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-artifact-verification.ts',import.meta.url).href;
+ const result=spawnSync(process.execPath,['--input-type=module','-e',`import {createArtifactVerificationProgress} from ${JSON.stringify(moduleUrl)};createArtifactVerificationProgress(1).operation('root-lstat','.');console.log('unref-timer-started');`],{encoding:'utf8',windowsHide:true,timeout:3000});
+ assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/unref-timer-started/);
 });

@@ -406,6 +406,7 @@ export class GodotBuildVerifier {
       phases.begin('artifact-verification');
       await bounded(verifyArtifacts(descriptor, deadline,artifactProgress));
       assertRunning();
+      artifactProgress.report(diagnostics);
       phases.complete();
 
       phases.begin('runtime-server');
