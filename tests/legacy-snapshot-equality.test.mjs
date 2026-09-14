@@ -8,10 +8,10 @@ const snapshot=()=>({format:'craftmine.progress/3',player:{x:.5,y:6,z:12.5,yaw:0
 function fixture(saved=snapshot()){
  const state={live:structuredClone(saved),saves:0,failSave:false};
  const code=`let current,loaded=false,lastSaved='',nonce,godotIdentity,checkWorld,checkOffset;
- let godot=false,applicationAttempt=null,restoreOperation=null,closing=false,preview=null;
+ let godot=false,applicationAttempt=null,restoreOperation=null,closing=false,preview=null,recoverySequence=0;
  const requests=new Map();
  ${slice('function mount(record) {','\n  godot=isGodotWorld(record);')}\n}
- ${slice('async function save({freeze=false}={}) {','\nfunction cancelClose()')}
+ ${slice('async function save({freeze=false,background=false}={}) {','\nfunction cancelClose()')}
  ${slice('async function beginRestore({operationId}) {','\nasync function finishRestore')}
  function cancelClose(){closing=false;}
  ({save,beginRestore,mount(record){mount(record);loaded=true;},saved:()=>lastSaved,closed:()=>closing});`;

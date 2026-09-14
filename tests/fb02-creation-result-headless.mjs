@@ -44,6 +44,7 @@ try {
       if(method==='world.list')return {worlds:[record],activeWorldId:domain.selectedWorldId};
       if(method==='world.open'||method==='world.read')return record;
       if(method==='godot.runtimeState')return {worldId:record.id,buildId:record.world.build.id,instanceId:'fixture-instance',state:'ready'};
+      if(method==='godot.runtimeSurface'||method==='godot.runtimeResume')return {ok:true};
       if(method==='godot.runtimeSave'){domain.saveCount++;return {worldId:record.id,buildId:record.world.build.id,revision:record.revision};}
       if(method==='godot.candidateList')return {items:[{...identity,sourceRevision:2,status:domain.status==='applied'?'applied':'ready'}],nextOffset:null};
       if(method==='godot.candidatePreview'){if(args.candidateId!==identity.candidateId)throw Error('CANDIDATE_NOT_FOUND');domain.preview=true;return {status:'preview',...identity};}

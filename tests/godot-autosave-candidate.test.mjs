@@ -30,7 +30,7 @@ function fixture(){
   const panel=createGodotPanelCoordinator({host,adapter:{},selection:async()=> 'world',candidateBusy:()=>state.candidateBusy,invoke:async()=>{throw Error('unexpected channel');}});
   const calls=[],loading=[];
   const view={godot:true,loaded:true,current:{id:'world',revision:1,world:{build:{id:'formal'}}},busy:false,closing:false,preview:null,backupFrozen:false,
-    applicationAttempt:null,openingWorldId:null,errorBox:{textContent:'',hidden:true},status:{textContent:'已保存',dataset:{}},controls(){},renderWorldLoading:x=>loading.push(x),
+    applicationAttempt:null,openingWorldId:null,errorGeneration:0,presentationError:null,errorBox:{textContent:'',hidden:true},status:{textContent:'已保存',dataset:{}},controls(){},renderWorldLoading:x=>loading.push(x),
     bridge:{invoke:async(channel,args)=>{calls.push(channel);return panel.invoke(channel,args);}}};
   vm.createContext(view);vm.runInContext(code,view);
   return{state,view,host,panel,calls,loading};
