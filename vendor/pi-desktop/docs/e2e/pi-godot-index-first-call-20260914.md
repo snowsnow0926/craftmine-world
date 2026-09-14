@@ -51,3 +51,23 @@ Before the one-line profile extension, the two new first-call cases and the
 profile-switch assertion failed. Afterward all 55 request-boundary tests passed,
 and runtime type-check passed. This does not certify a generated artifact;
 subsequent actual model/Blender/check/application acceptance remains separate.
+
+## Engine documentation and strict-prefix continuity
+
+Real package `7aa4fb70`, A6 turn `92b37c4a-54e2-47aa-8f99-7a903bf29fbc`,
+confirmed successful calibrated requests before ToolSearch activated only
+`plugin_craftmine_world_godot_docs` (`call_01_eIQg1pKsXqyCFVhEB7gG6307`).
+The next trigger recorded `history.estimatedTokens=294923`, complete estimated
+input 654738 using the conservative UTF-8/2 method, and threshold 521859 with
+window 1M/output 384000. Adding the tool necessarily changed the strict toolset
+key; this was an intentional fallback, not permission to weaken prefix proof.
+The summary succeeded and subsequent requests used calibration again. These
+are observations during an unfinished turn, not a final zero-compaction claim.
+
+Add the existing registered `godot_docs` read tool to the initial Godot profile.
+Its manifest parameter schema is 384 bytes. The native first-call regression
+uses `mode=info`, checks the full real schema and 1..16000 read limit, and
+requires the normal `tools.execute` route without deferred activation. Extend
+world-switch, missing-registration, summary/review and finished-task checks to
+this name. Keep live sampling, library and unrelated controls deferred; do not
+modify Codex, engine documentation contents or any exact-prefix verifier rule.
