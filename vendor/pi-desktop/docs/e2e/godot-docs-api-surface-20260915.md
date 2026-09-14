@@ -1,9 +1,14 @@
 # Godot docs API reachability evidence
 
 ```powershell
-node desktop/build-world-plugin.mjs --output test-results/docs-api-plugin
 node --test tests/godot-agent/docs-api-tool.test.mjs tests/godot-agent/engine-api.test.mjs tests/godot-remaining/L/docs.test.mjs tests/godot-remaining/L/docs-chinese.test.mjs
 ```
+
+The API tool test builds its own uniquely named temporary plugin fixture and
+removes only that verified owned directory afterwards. No earlier test or
+`test-results/docs-api-plugin` preparation is required. To test a specific
+existing package, set `CRAFTMINE_DOCS_API_PLUGIN` to its plugin directory; that
+explicit directory is read only, never rebuilt or deleted by test setup.
 
 All 24 focused tests pass. The new tests run the actual installed PI SDK's
 argument validator using the actual packaged manifest, then execute packaged
