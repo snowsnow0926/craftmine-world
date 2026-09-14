@@ -45,3 +45,48 @@ These are real materializer/initializer and synthetic executor results, not
 native first-load acceptance. The parent will rebuild and use the same retained
 cancelled world through its ordinary retry control, separately from fresh-world
 and subsequent model-flow tests. Do not reset that profile to manufacture a pass.
+
+## Retained operator-profile native probe
+
+`tests/godot-final/operator-initialization-retry.mjs` is a parent-run, test-only
+probe for this operator report format. Required options are
+`--application-root ABS`, `--packaged-root ABS`, `--original-report ABS`,
+`--world-id ID` and `--output-root ABS/test-results`. It reuses the sealed-package
+inventory/launch helper, private offscreen controller, loopback renderer,
+credential log redactor and complete-progress comparison. It does not create a
+new world, configure or call a model, inject input, or write Core/SQLite/source.
+Only the application's normal initialization, save and open flows write state.
+
+Before launch it requires a retained failed operator report, normal shutdown,
+passing package integrity, zero prior model turns, closed continuation reports,
+matching world creation ownership and a fully isolated unlinked headless profile.
+It hashes the original report and associated failed retry/UI evidence, reads
+managed file hashes and canonical source pins, and records existing chat IDs.
+The recorded JMwD2n report passed this read-only preflight: SHA
+`6e6d0cf65d66146bb5c980950568f002a10777802a1abf35541ec933d4f7ba5c`,
+30 managed files, source revision 2, zero jobs/messages/turns. No app was launched
+for that preflight.
+
+The probe chooses from actual startup state. A failed/cancelled/interrupted
+world with a visible enabled retry control invokes its existing React `onClick`
+once; no DOM click event or production retry RPC substitutes for that callback.
+If startup already starts or completes recovery, it records
+`automatic-startup-recovery` with zero retry clicks and never cancels merely to
+manufacture a button. A lost dispatch acknowledgement records an unknown click
+count and does not retry. The prior ordinary retry failure remains linked.
+
+Both paths require the same world set and world ID, a real formal runtime,
+nonblank native pixel evidence, ordinary frozen save/snapshot, normal exit,
+canonical new passed check with matching applied candidate/application, and a
+second normal startup/open with exactly equal complete saved progress. Indexed
+source, managed bytes and chat IDs must remain unchanged. Page errors, wrong
+identities, stale receipts, altered outputs or forced shutdown are failures.
+Exact known Core world-list read timeouts may be retried and are retained;
+other errors and terminal states propagate. No new whole-task limit is used.
+SIGINT/SIGTERM or the emitted cancel-file path requests normal cancellation.
+
+CPU validation: seven owned-profile/UI/canonical-receipt boundary tests and nine
+existing read-timeout tests passed (16 total), plus `node --check` and the inert
+`--help` entry. Native execution has not been performed by the implementing
+agent. Root must inspect the resulting report instead of interpreting script
+availability as recovered-world acceptance.
