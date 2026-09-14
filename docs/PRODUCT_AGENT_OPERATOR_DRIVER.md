@@ -1,5 +1,32 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+采集器 v2 在自己的 renderer 订阅入口合并高频 `message_update`：每条消息只
+保留最新长度/身份、增量字符计数和原事件数量，不把不断增长的整段思考反复入队。
+完整 message_end、工具结果、error、status、model_call、澄清/权限等不同请求
+仍全部保留，完整会话和每轮最终转录不裁剪。事件批次必须在 Node 持久化后才
+acknowledge；CDP 响应丢失可取回同一批次，driver 按 deliveryId 防止重复写入。
+
+报告新增峰值待采记录数、累计输出字节、省略的重复 update 正文字符数（不是
+丢弃最终正文）、最大单次正文长度、每次 inspect 耗时、Node CPU/内存和可用时
+的 renderer JS heap。旧 65N8WV 原始日志明确记载 `Renderer 1: oom`；分块
+审计发现 34,173 条完整消息更新占约 1.021GB。这证明测试观察器存在额外的
+二次方累积压力，尚不能独立证明产品 renderer 全部内存故障都由它引起。
+
+每个 CDP 操作以无敏感内容的标签记录耗时/失败位置。观察传输超时不会自动
+取消仍运行的模型；driver 尝试重连原进程的同一 renderer，保留原 collector。
+三次自动重连失败后明确进入 `degraded-awaiting-operator`，在报告/标准输出
+给出 `reconnectFile` 和取消文件。创建 reconnectFile 才再次重连；创建取消
+文件仍正常停止任务和应用。这是观察连接恢复策略，不是模型次数或任务时限。
+若 renderer 已替换而 collector 消失，报告标明 captureGap；若应用已经退出，
+保留真实退出码与缺失审计，不伪造恢复或正常退出。
+
+只读分块重放 65N8WV 的 34,222 条原事件，按原 timestamp 的 1.5 秒采集间隔，
+旧文件 1,021,449,631 字节对应新表示 324,426 字节、149 条记录；所有非更新
+事件顺序与内容 SHA 完全一致，峰值待采记录 11。详细证据保留在本轮工作树
+`test-results/events-audit-65N8WV.json`、`events-audit-oUgGvo.json` 和
+`events-collector-replay-65N8WV.json`。这是离线数据重放，不是新模型试玩、
+真实 renderer 内存峰值或产品 OOM 已修好的证明。
+
 `--starter blank` 使用普通新建世界页，明确选择 `creation-sandbox` Godot 基础
 和“空白”起点，填写名称后提交真实创建表单。它不会从宣传片示例复制、注入玩法
 或直接创建数据库记录；基础运行所需地面/角色等由产品的空白模板决定，不能据此
