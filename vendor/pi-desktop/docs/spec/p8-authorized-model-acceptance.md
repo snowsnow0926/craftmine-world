@@ -82,16 +82,17 @@ failure lists. Finally failures are persisted rather than relabeled as success.
 
 ## Authorized native budget
 
-The authorized phase runs without a native request or cumulative-token boundary,
-and only a verified authorization removes it. `craftmineAuthorizedBudget(env)`
+The dated phase helper explicitly echoes the ordinary no-cumulative-limit policy;
+it cannot replace a retained owner policy. `craftmineAuthorizedBudget(env)`
 is the single decision point (`@pi-desktop/agent-runtime`): it returns
-`{limits:{maxRequests:null,maxTokens:null,maxCompactions:8}, authorization:{kind:
+`{limits:{maxRequests:null,maxTokens:null,maxCompactions:null}, authorization:{kind:
 "p8-native-unlimited",phase}}` only when `CRAFTMINE_HEADLESS_TEST=1`, the P8
 native phase is active (`CRAFTMINE_P8_NATIVE=1`) and
 `CRAFTMINE_P8_AUTHORIZATION_PHASE` names a known dated authorization
 (`parallel-20260910` or `unlimited-20260910`). The default `initial-16` phase, an
 unknown or absent phase, a non-headless process and a normal player turn all get
-no budget at all, so the core keeps its product default of 80 requests; a phase
+no override, so Rust keeps the current owner policy (new tasks default to no
+cumulative limits); a phase
 that is only shaped right is refused at the hook
 (`CRAFTMINE_BUDGET_AUTHORIZATION_PHASE`).
 

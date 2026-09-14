@@ -27,8 +27,9 @@ their own purpose while receiving the same authoritative task facts.
 
 The built-in plugin accepts a private parent lifecycle request, separate from
 panel invocation. It reads Rust task context and validates full binding and
-generation claims for each budget reservation. The host initializes a 30-minute
-deadline once, alongside the durable request/token/compaction limits. Later
+generation claims for each budget reservation. New ordinary tasks have no
+cumulative request/compaction/token limit or whole-turn deadline. Rust retains
+explicit and pre-existing policies; the host does not invent a deadline. Later
 requests, review and compaction share those limits. An exact existing request may
 settle after cancellation; it cannot start another request or apply late output.
 The latest actual host user message is recorded as a correction when its durable

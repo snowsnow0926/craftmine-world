@@ -10803,3 +10803,11 @@ refuse mutation; actual Core ended-turn state must reject source writing even
 when a deliberately stale host permission fixture remains true. An unregistered
 executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
+
+## Craftmine ordinary execution policy (2026-09-14)
+
+Verify ordinary request 81 and compaction 9, preserved existing policies, explicit
+player release of exhausted execution limits, unchanged token budgets, stale
+identity rejection, and exact historical receipt recovery after resume/restart.
+See [the scenario](../../e2e/ordinary-player-execution-limits-20260914.md) and
+[the contract](../player-task-execution-policy.md).

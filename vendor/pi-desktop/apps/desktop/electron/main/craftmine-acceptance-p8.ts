@@ -22,7 +22,7 @@ export function p8SubmissionContent(caseId: CaseId, feedback?: unknown): string 
  *  cumulative-token boundary. Main must propagate exactly this value into the
  *  crafting runtime; without it the product default (80 requests) stays in
  *  force, which is what silently ended the recorded run. */
-export const P8_AUTHORIZED_LIMITS = { maxRequests: null, maxTokens: null, maxCompactions: 8 } as const;
+export const P8_AUTHORIZED_LIMITS = { maxRequests: null, maxTokens: null, maxCompactions: null } as const;
 /** The authorized budget of this process, or undefined when this is not the
  *  authorized P8 native phase. The decision (headless acceptance, P8 native and
  *  one of the known dated phases) lives in the runtime package so the crafting

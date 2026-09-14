@@ -38,23 +38,21 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     const id=args.requestId;
     const key=keyOf(context,id);
     if(method==='budget.reserve'){
-      const limits=unlimitedRequests&&current.budget.requestCount===0
-        ?{...current.budget.limits,maxRequests:null,maxTokens:null}:current.budget.limits;
+      const limits=current.budget.limits;
       // Limits are host-owned. The sidecar may only echo the exact authorized
       // policy, never choose values or widen an already admitted task.
       if(args.limits!==undefined){
         const proposed=args.limits;
         if(!unlimitedRequests||!proposed||typeof proposed!=='object'||Array.isArray(proposed)||
           Object.keys(proposed).sort().join(',')!=='maxCompactions,maxRequests,maxTokens'||
-          proposed.maxRequests!==null||proposed.maxTokens!==null||proposed.maxCompactions!==8||
+          proposed.maxRequests!==null||proposed.maxTokens!==null||proposed.maxCompactions!==null||
           proposed.maxRequests!==limits.maxRequests||proposed.maxTokens!==limits.maxTokens||proposed.maxCompactions!==limits.maxCompactions)
           throw Error('CRAFTMINE_HOST_LIMITS_REQUIRED');
       }
       const previous=reservations.get(key);
-      // Initialize only before the first physical request. An old null policy
-      // stays null after consumption; retrying a lost reply keeps its clock.
-      const deadlineAt=limits.deadlineAt??(current.budget.requestCount===0?(previous?.request.limits.deadlineAt??Date.now()+30*60*1000):null);
-      const request={...args,binding:current.binding,generation:current.generation,limits:{...limits,deadlineAt}};
+      // The Rust policy also owns the deadline. Do not invent a whole-turn
+      // timeout or overwrite an explicitly configured/retained policy.
+      const request={...args,binding:current.binding,generation:current.generation,limits:{...limits}};
       if(previous&&JSON.stringify(previous.request)!==JSON.stringify(request))throw Error('CRAFTMINE_RESERVATION_REPLAY_MISMATCH');
       // Record before awaiting the durable call: a lost reply must still allow
       // an exact-owner settlement (Rust rejects a reservation that never existed).
@@ -265,6 +263,10 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
         return {...result,execution};
       }
       return result;
+    }
+    if(method==='budget.releaseExecutionLimits'||method==='budget.findExecutionReleaseReceipt'){
+      fields(params,['projectId','sessionId','worldId','taskId','generation','operationId']);
+      return core.call(method,params);
     }
     if(method==='budget.configure'||method==='budget.findReceipt'){
       fields(params,['projectId','sessionId','worldId','taskId','generation','operationId','maxTokens']);

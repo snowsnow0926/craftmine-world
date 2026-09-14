@@ -363,6 +363,111 @@ fn requirements_survive_explicit_recovery_but_do_not_enter_ordinary_new_tasks() 
 fn configure(id: &Value, operation: &str, max: Value) -> Value {
     json!({"projectId":id["binding"]["projectId"],"sessionId":id["binding"]["sessionId"],"worldId":"world-a","taskId":id["binding"]["taskId"],"generation":id["generation"],"operationId":operation,"maxTokens":max})
 }
+fn release_execution(id: &Value, operation: &str) -> Value {
+    let mut request = configure(id, operation, Value::Null);
+    request.as_object_mut().unwrap().remove("maxTokens");
+    request
+}
+
+#[test]
+fn player_releases_exhausted_execution_policy_without_erasing_tokens_or_history() -> Result<()> {
+    let (dir, mut j, ctx, id) = fixture()?;
+    let mut first = reserve(&id, "old-request");
+    first["limits"] = json!({"maxRequests":80,"maxCompactions":8,"maxTokens":200,"deadlineAt":null});
+    j.budget_call("budget.reserve", &first)?;
+    for n in 0..8 {
+        let mut event = id.clone();
+        event["eventId"] = json!(format!("old-compaction-{n}"));
+        event["kind"] = json!("compaction");
+        j.budget_call("budget.boundary", &event)?;
+    }
+    j.task_interrupt(&json!({"context":ctx,"reason":"COMPACTION_BUDGET_EXHAUSTED"}))?;
+    let before = j.budget_call("budget.inspect", &id)?;
+    let original = j.workspace_inspect(&ctx)?;
+    drop(j);
+    let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    // Loading does not guess that a persisted 80/8 policy was a default.
+    assert_eq!(j.budget_call("budget.inspect", &id)?, before);
+    let request = release_execution(&id, "player-release");
+    assert!(j.budget_find_execution_release_receipt(&request)?.is_null());
+    for (key, value) in [("projectId", json!("other")), ("sessionId", json!("other")), ("worldId", json!("other")), ("generation", json!(2))] {
+        let mut forged = request.clone();
+        forged[key] = value;
+        assert!(j.budget_release_execution_limits(&forged).is_err());
+    }
+    assert!(j.budget_call("budget.releaseExecutionLimits", &request).is_err());
+    let result = j.budget_release_execution_limits(&request)?;
+    assert_eq!(result["previousLimits"], before["limits"]);
+    let mut expected = before.clone();
+    expected["limits"]["maxRequests"] = Value::Null;
+    expected["limits"]["maxCompactions"] = Value::Null;
+    assert_eq!(result["budget"], expected);
+    assert_eq!(result["exhausted"], json!(["COMPACTION_BUDGET_EXHAUSTED"]));
+    assert_eq!(j.budget_release_execution_limits(&request)?, result);
+    assert_eq!(j.workspace_inspect(&ctx)?.task.draft, original.task.draft);
+    assert!(j.task_context(&json!({"context":ctx}))?["receipts"].as_array().unwrap().iter().any(|r| r["reason"] == "COMPACTION_BUDGET_EXHAUSTED"));
+    let mut next = ctx.clone();
+    next.turn_id = "after-player-release".into();
+    let resumed = j.task_resume(&json!({"context":next,"taskId":id["binding"]["taskId"],"generation":1}))?;
+    assert_eq!(resumed["budget"], expected);
+    let next_id = json!({"binding":resumed["workspace"]["task"]["binding"],"generation":2});
+    let mut event = next_id.clone();
+    event["eventId"] = json!("ninth-compaction");
+    event["kind"] = json!("compaction");
+    assert_eq!(j.budget_call("budget.boundary", &event)?["budget"]["compactionCount"], 9);
+    // The explicit player token limit is still exhausted after recovery.
+    assert!(j.budget_call("budget.reserve", &reserve(&next_id, "still-token-limited")).unwrap_err().to_string().contains("TOKEN_BUDGET_EXHAUSTED"));
+    assert!(j.budget_release_execution_limits(&request).is_err(), "old head must be fenced after resume");
+    assert_eq!(j.budget_find_execution_release_receipt(&request)?, result);
+    let mut forged = request.clone();
+    forged["sessionId"] = json!("other");
+    assert!(j.budget_find_execution_release_receipt(&forged).is_err());
+    let before_lookup = j.budget_call("budget.inspect", &next_id)?;
+    drop(j);
+    let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert_eq!(j.budget_find_execution_release_receipt(&request)?, result);
+    assert_eq!(j.budget_call("budget.inspect", &next_id)?, before_lookup);
+    validate_ledger(&j.db)?;
+    Ok(())
+}
+
+#[test]
+fn release_requires_interruption_and_an_actually_exhausted_execution_limit() -> Result<()> {
+    let (_dir, mut j, ctx, id) = fixture()?;
+    let request = release_execution(&id, "release");
+    assert!(j.budget_release_execution_limits(&request).unwrap_err().to_string().contains("INTERRUPTED_TASK_REQUIRED"));
+    let mut first = reserve(&id, "explicit");
+    first["limits"] = json!({"maxRequests":2,"maxCompactions":2,"maxTokens":200});
+    j.budget_call("budget.reserve", &first)?;
+    j.task_interrupt(&json!({"context":ctx,"reason":"TOKEN_BUDGET_EXHAUSTED"}))?;
+    assert!(j.budget_release_execution_limits(&request).unwrap_err().to_string().contains("EXECUTION_LIMIT_NOT_EXHAUSTED"));
+    let mut injected = request.clone();
+    injected["maxTokens"] = Value::Null;
+    assert!(j.budget_release_execution_limits(&injected).unwrap_err().to_string().contains("UNKNOWN_FIELD"));
+    assert_eq!(j.budget_call("budget.inspect", &id)?["limits"]["maxRequests"], 2);
+    Ok(())
+}
+
+#[test]
+fn player_can_release_request_or_deadline_exhaustion_only_after_stopping() -> Result<()> {
+    for deadline in [false, true] {
+        let (_dir, mut j, ctx, id) = fixture()?;
+        let mut first = reserve(&id, "explicit");
+        first["limits"] = json!({"maxRequests":1,"deadlineAt":null});
+        j.budget_call("budget.reserve", &first)?;
+        if deadline {
+            // Time passage in an isolated test fixture, never a production write.
+            j.db.execute("UPDATE craftmine_budget_limits SET limits=json_set(limits,'$.maxRequests',null,'$.deadlineAt',1) WHERE owner=?1", [id["binding"]["taskId"].as_str().unwrap()])?;
+        }
+        j.task_interrupt(&json!({"context":ctx,"reason":"TASK_DEADLINE_EXCEEDED"}))?;
+        let released = j.budget_release_execution_limits(&release_execution(&id, "release"))?;
+        assert_eq!(released["exhausted"], json!([if deadline { "TASK_DEADLINE_EXCEEDED" } else { "REQUEST_BUDGET_EXHAUSTED" }]));
+        assert_eq!(released["limits"], default_limits());
+        assert_eq!(released["budget"]["requestCount"], 1);
+    }
+    Ok(())
+}
+
 #[test]
 fn unlimited_budget_keeps_other_boundaries_and_never_clears_usage() -> Result<()> {
     let (_dir, mut j, _ctx, id) = fixture()?;
@@ -674,20 +779,27 @@ fn malformed_backup_accounting_is_rejected_before_replacing_any_world() -> Resul
 }
 
 #[test]
-fn the_default_request_budget_still_refuses_the_eighty_first_request() -> Result<()> {
-    let (_dir, mut j, _ctx, id) = fixture()?;
-    for n in 0..80 {
+fn ordinary_requests_and_compactions_continue_without_cumulative_limits() -> Result<()> {
+    let (dir, mut j, _ctx, id) = fixture()?;
+    for n in 0..81 {
         j.budget_call("budget.reserve", &reserve(&id, &format!("default-{n}")))?;
     }
-    let budget = j.budget_call("budget.inspect", &id)?;
-    assert_eq!(budget["requestCount"], 80);
-    assert_eq!(budget["limits"]["maxRequests"], 80);
-    let error = j
-        .budget_call("budget.reserve", &reserve(&id, "one-too-many"))
-        .unwrap_err()
-        .to_string();
-    assert!(error.contains("REQUEST_BUDGET_EXHAUSTED"), "{error}");
-    assert_eq!(j.budget_call("budget.inspect", &id)?["requestCount"], 80);
+    for n in 0..9 {
+        let mut event = id.clone();
+        event["eventId"] = json!(format!("compaction-{n}"));
+        event["kind"] = json!("compaction");
+        j.budget_call("budget.boundary", &event)?;
+        j.budget_call("budget.boundary", &event)?;
+    }
+    let before = j.budget_call("budget.inspect", &id)?;
+    assert_eq!(before["requestCount"], 81);
+    assert_eq!(before["compactionCount"], 9);
+    assert_eq!(before["limits"], default_limits());
+    drop(j);
+    let mut j = TaskJournal::open(&dir.path().join("tasks.sqlite"))?;
+    assert_eq!(j.budget_call("budget.inspect", &id)?, before);
+    j.budget_call("budget.reserve", &reserve(&id, "after-reopen"))?;
+    assert_eq!(j.budget_call("budget.inspect", &id)?["requestCount"], 82);
     Ok(())
 }
 
@@ -726,12 +838,12 @@ fn an_authorized_unlimited_request_budget_continues_past_the_product_default() -
 }
 
 #[test]
-fn a_missing_or_mistyped_request_limit_is_never_unlimited() -> Result<()> {
+fn omitted_limits_inherit_policy_and_malformed_fields_are_rejected() -> Result<()> {
     let (_dir, mut journal, _ctx, identity) = fixture()?;
     let mut omitted = reserve(&identity, "omitted");
     omitted["limits"] = json!({"maxTokens":null,"maxCompactions":8,"deadlineAt":null});
     let admitted = journal.budget_call("budget.reserve", &omitted)?;
-    assert_eq!(admitted["budget"]["limits"]["maxRequests"], 80);
+    assert!(admitted["budget"]["limits"]["maxRequests"].is_null());
     assert_eq!(admitted["budget"]["requestCount"], 1);
     let cases = [
         (
@@ -780,7 +892,7 @@ fn a_missing_or_mistyped_request_limit_is_never_unlimited() -> Result<()> {
         // in place instead of widening the task.
         let budget = j.budget_call("budget.inspect", &id)?;
         assert_eq!(budget["requestCount"], 0, "{limits}");
-        assert_eq!(budget["limits"]["maxRequests"], 80, "{limits}");
+        assert!(budget["limits"]["maxRequests"].is_null(), "{limits}");
     }
     Ok(())
 }
@@ -817,7 +929,7 @@ fn the_player_token_configuration_cannot_change_the_request_boundary() -> Result
     widen["maxRequests"] = json!(null);
     let error = j.budget_configure(&widen).unwrap_err().to_string();
     assert!(error.contains("UNKNOWN_FIELD"), "{error}");
-    assert_eq!(j.budget_call("budget.inspect", &id)?["limits"]["maxRequests"], 80);
+    assert!(j.budget_call("budget.inspect", &id)?["limits"]["maxRequests"].is_null());
     Ok(())
 }
 #[test]

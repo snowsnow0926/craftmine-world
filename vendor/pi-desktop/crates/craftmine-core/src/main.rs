@@ -22,6 +22,12 @@ fn dispatch(journal: &mut TaskJournal, request: &Value) -> Result<Value> {
     if let Some(result) = asset_catalog_dispatch(journal, method, params) {
         return result;
     }
+    if method == "budget.releaseExecutionLimits" {
+        return journal.budget_release_execution_limits(params);
+    }
+    if method == "budget.findExecutionReleaseReceipt" {
+        return journal.budget_find_execution_release_receipt(params);
+    }
     if method == "budget.configure" {
         return journal.budget_configure(params);
     }

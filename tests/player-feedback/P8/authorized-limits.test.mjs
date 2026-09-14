@@ -43,7 +43,7 @@ const context = await bundle('context', 'vendor/pi-desktop/packages/agent-runtim
 const runtimeModule = await bundle('runtime', 'vendor/pi-desktop/packages/agent-runtime/src/runtime.ts');
 
 const AUTHORIZED_ENV = { CRAFTMINE_HEADLESS_TEST: '1', CRAFTMINE_P8_NATIVE: '1', CRAFTMINE_P8_AUTHORIZATION_PHASE: 'parallel-20260910' };
-const LIMITS = { maxRequests: null, maxTokens: null, maxCompactions: 8 };
+const LIMITS = { maxRequests: null, maxTokens: null, maxCompactions: null };
 const model = { id: 'fixture', name: 'fixture', api: 'openai-completions', provider: 'fixture', baseUrl: 'http://127.0.0.1:1', reasoning: false, input: ['text'], contextWindow: 256000, maxTokens: 4000, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } };
 const snapshot = () => ({ binding: { projectId: 'project', sessionId: 'session', turnId: 'turn', taskId: 'task', baseBuild: 'v1' }, generation: 1, status: 'running', world: { id: 'world', revision: 1, buildId: 'v1', hash: 'a'.repeat(64) }, draft: { revision: 4, hash: 'b'.repeat(64) }, requirements: [], modifiedResources: [], receipts: [], jobs: [], lease: { owned: true }, budget: { requestCount: 2 } });
 const input = { requestId: 'r1', purpose: 'creation', model, context: { systemPrompt: 'stable', messages: [{ role: 'user', content: 'authorized fixture', timestamp: 1 }], tools: [] }, maxOutputTokens: 4000 };
@@ -98,7 +98,7 @@ test('the boundary removal needs its authorization, but token-null keeps working
     assert.deepEqual(reserves().at(-1).params.limits, limits, JSON.stringify(limits));
   }
   // No budget at all: the reservation carries no limits, so the core keeps its
-  // default of 80 requests.
+  // ordinary policy without cumulative limits.
   await context.createCraftmineProxyHooks(call, identity).beforeRequest(input);
   assert.equal('limits' in reserves().at(-1).params, false);
 });

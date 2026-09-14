@@ -61,3 +61,20 @@ raw intent/timestamp values. `tests/ordinary-turn-recovery-core.mjs` additionall
 uses the actual private host router and standalone Core binary to prove the
 ordinary message path admits a new reservation after expiry without changing
 the prior count, tokens, budget owner, or limits.
+
+
+## Explicit execution-limit recovery (2026-09-14)
+
+New ordinary tasks no longer acquire cumulative request/compaction limits or a
+whole-turn deadline. Existing owner policies and failure records are not silently
+rewritten. The player may explicitly release exhausted local execution limits on
+an interrupted current task using the bound private
+`budget.releaseExecutionLimits` action. This records the previous/new limits and
+exhaustion reasons, clears requests/compactions/deadline only, and preserves the
+player token budget, accounting, owner, draft, and original failure. The action
+does not resume or call the model; the existing continuation path follows it.
+
+`budget.findExecutionReleaseReceipt` resolves an exact historical action after
+head advancement or restart without granting new write authority. Both routes
+are absent from model tools and the model budget dispatcher. See
+[the policy](../player-task-execution-policy.md).
