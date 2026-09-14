@@ -10819,3 +10819,12 @@ separate configured output/input/compaction values only for a matching PI world
 creation model. Verify Chinese/English React output and hide stale, Codex or
 ordinary-chat configuration estimates. See the linked regression's composer
 section for deterministic commands and validation boundaries.
+
+
+## Craftmine ordinary execution policy (2026-09-14)
+
+Verify ordinary request 81 and compaction 9, preserved existing policies, explicit
+player release of exhausted execution limits, unchanged token budgets, stale
+identity rejection, and exact historical receipt recovery after resume/restart.
+See [the scenario](../../e2e/ordinary-player-execution-limits-20260914.md) and
+[the contract](../player-task-execution-policy.md).

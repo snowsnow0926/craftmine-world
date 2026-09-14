@@ -167,8 +167,8 @@ export function appendCraftmineRequestData(context: Context, text: string): Cont
 export type CraftmineBudgetLimits = {
   maxRequests?: number | null;
   maxTokens?: number | null;
-  maxCompactions?: number;
-  deadlineAt?: number;
+  maxCompactions?: number | null;
+  deadlineAt?: number | null;
 };
 /** How a trusted caller proves it may remove the request boundary. `phase` is
  *  the authorization a parent process verified, never a model argument. */
@@ -180,13 +180,13 @@ export const CRAFTMINE_UNLIMITED_REQUEST_PHASES = ["parallel-20260910", "unlimit
  *  process configuration only: a headless acceptance run, the P8 native phase
  *  and one of the known dated authorizations. Everything else (no phase, the
  *  default `initial-16` phase, an unknown phase, a normal run) keeps the product
- *  default of 80 requests. */
+ *  default without cumulative limits. */
 export function craftmineAuthorizedBudget(env: Record<string, string | undefined> | undefined): CraftmineBudget | undefined {
   if (!env) return undefined;
   if (env.CRAFTMINE_HEADLESS_TEST !== "1" || env.CRAFTMINE_P8_NATIVE !== "1") return undefined;
   const phase = env.CRAFTMINE_P8_AUTHORIZATION_PHASE;
   if (typeof phase !== "string" || !(CRAFTMINE_UNLIMITED_REQUEST_PHASES as readonly string[]).includes(phase)) return undefined;
-  return { limits: { maxRequests: null, maxTokens: null, maxCompactions: 8 }, authorization: { kind: "p8-native-unlimited", phase } };
+  return { limits: { maxRequests: null, maxTokens: null, maxCompactions: null }, authorization: { kind: "p8-native-unlimited", phase } };
 }
 /** An unlimited *request* boundary without a verified authorization is refused.
  *  `maxTokens: null` keeps its existing, always-legal meaning and is not gated. */

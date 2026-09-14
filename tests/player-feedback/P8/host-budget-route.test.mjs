@@ -16,13 +16,13 @@ const {emptyWorld}=require(root+'/desktop/build/craftmine.world/domain.cjs');
 const authorized={CRAFTMINE_HEADLESS_TEST:'1',CRAFTMINE_P8_NATIVE:'1',CRAFTMINE_P8_AUTHORIZATION_PHASE:'parallel-20260910'};
 const model={id:'fixture',api:'openai-completions',provider:'fixture',contextWindow:256000,maxTokens:4000,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}};
 
-test('actual runtime, gateway, private plugin router and Rust admit request 81 under the propagated policy',async t=>{
+for (const [name,budgetEnv] of [['ordinary',{}],['dated acceptance',authorized]]) test(`actual runtime, gateway, private plugin router and Rust admit request 81 for ${name}`,async t=>{
   const directory=await mkdtemp(path.join(tmpdir(),'p8-budget-route-'));
   const core=new CoreClient(process.env.CRAFTMINE_CORE_BIN||root+'/desktop/build/rust-target/debug/craftmine-core.exe',directory);
   t.after(()=>core.stop());await core.start();
   await core.call('world.create',{id:'fixture',title:'Budget route',world:emptyWorld('Budget route')});
   const ctx={projectId:'p',sessionId:'s',turnId:'t'};
-  const env=pluginProcessEnv('craftmine.world',authorized),previous=process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS;
+  const env=pluginProcessEnv('craftmine.world',budgetEnv),previous=process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS;
   let domain;
   try {process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS=env.CRAFTMINE_P8_UNLIMITED_REQUESTS;domain=createHostRequests(core,{getSettings:async()=>({activeWorldId:'fixture'})});}
   finally {if(previous===undefined)delete process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS;else process.env.CRAFTMINE_P8_UNLIMITED_REQUESTS=previous;}
@@ -32,7 +32,7 @@ test('actual runtime, gateway, private plugin router and Rust admit request 81 u
     return domain(method==='craftmine.context'?'task.context':method.replace(/^craftmine\./,''),{...input,context:{projectId:binding.projectId,sessionId:binding.sessionId,turnId:binding.turnId}});
   });
   gateway.bind({...ctx,selectedWorld:'fixture'});
-  const runtime=new DesktopAgentRuntime({craftmineWorld:true,craftmineBudgetEnv:authorized,history:[],sessionId:'s',turnId:'t',mode:'agent',thinkingLevel:'off',
+  const runtime=new DesktopAgentRuntime({craftmineWorld:true,craftmineBudgetEnv:budgetEnv,history:[],sessionId:'s',turnId:'t',mode:'agent',thinkingLevel:'off',
     commandShell:{id:'bash',label:'Bash',dialect:'posix',available:true,isDefault:true},
     provider:{id:'fixture',name:'Fixture',modelId:'fixture',baseUrl:'http://127.0.0.1:1',apiKey:'',authKind:'none',supportsReasoning:false,supportedThinkingLevels:['off'],modelConfig:{source:'generic',name:'Fixture',baseUrl:'http://127.0.0.1:1',input:['text'],reasoning:false,cost:model.cost,contextWindow:256000,maxTokens:4000}},
     pluginTools:[],host:{call:(method,input)=>gateway.invoke(method,input),onNotification:()=>()=>{}},onEvent:()=>{}});
@@ -43,6 +43,9 @@ test('actual runtime, gateway, private plugin router and Rust admit request 81 u
   }
   const current=await domain('task.context',{context:ctx});
   assert.equal(current.budget.requestCount,81);assert.equal(current.budget.limits.maxRequests,null);assert.equal(current.budget.limits.maxTokens,null);
+  assert.equal(current.budget.limits.maxCompactions,null);assert.equal(current.budget.limits.deadlineAt,null);
+  for(let i=0;i<9;i++) await domain('budget.boundary',{context:ctx,binding:current.binding,generation:current.generation,eventId:'c'+i,kind:'compaction'});
+  assert.equal((await domain('task.context',{context:ctx})).budget.compactionCount,9);
   await assert.rejects(domain('budget.reserve',{context:ctx,binding:current.binding,generation:current.generation,requestId:'forged',purpose:'creation',estimatedInputTokens:10,maxOutputTokens:10,limits:{maxRequests:9999,maxTokens:null,maxCompactions:8}}),/CRAFTMINE_HOST_LIMITS_REQUIRED/);
   assert.equal((await domain('task.context',{context:ctx})).budget.requestCount,81);
 });
