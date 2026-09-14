@@ -10830,6 +10830,12 @@ executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
 # DeepSeek official alias transport (2026-09-14)
 
+For companion reuse, run [the runtime-settings guidance regression](../../e2e/companion-runtime-settings-guidance-20260914.md).
+The published v2 ZIP/hash remains unchanged while the versioned guide teaches
+public snapshot runtime settings for follow toggles and matching HUD labels.
+Source defaults and restored progress must not be confused; ordinary player
+feedback and gameplay remain the acceptance path for generated-world repairs.
+
 Run [PI stream publication validation](../../e2e/pi-stream-publication-20260914.md)
 for long thinking responses: latest-only partial publication precedes JSON/IPC,
 while terminal/tool/error ordering, complete transcript, cumulative deltas and
