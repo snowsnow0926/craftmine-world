@@ -2296,8 +2296,8 @@
       },
       {
         "name": "godot_source_library",
-        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement. propose-group freezes 2 to 8 ordered items, each with an exact ref and optional position, against one source revision. The player confirms the whole group once; all items are preflighted and written together, then checked together. Repeated refs create independent instances. It is not a series of separately installed proposals. Group proposal creation does not modify the world. recipes lists versioned gameplay recipes with explicit choices. compose takes request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?}; it reads exact pinned archives and current source, reports requirements/conflicts/missing logic and a planHash. It does not install or certify playability. Preserve the original wish, read/adapt current source, use existing proposals and normal checks/adoption. Collection and flight unlock logic must be implemented and played, not inferred from a visible aircraft.",
-        "risk": "low",
+        "description": "Discover modern Godot source ZIPs in the asset catalog. search finds exact archiveRefs; read validates archive integrity and describes rootRef, sceneInstall, compatibility and source requirements. In full-auto creation, use install (one ref, optional position) or install-group (2 to 8 ordered items with refs and optional positions) to actually add requested components in this author turn and start a real check; the host requires current captured full-auto permission. Poll the returned jobId with godot_build_read. Checked candidates are adopted after the author turn ends under existing world policy; do not claim a new object is present before actual adoption. Repeated refs create independent instances and preserve existing objects. Outside full-auto use propose or propose-group: these ONLY create player-reviewable proposals and require player installation, checking and adoption. Never claim a proposal is a completed world edit. Coordinates must come from the actual scene or player target, never invented; omitted position keeps the component template placement. Whole-world templates create separate worlds through the world picker, not component installation. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Archive validation is not runtime or visual verification. recipes lists versioned gameplay recipes. compose accepts request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?} and reports fixed refs, compatibility, missing logic and planHash without editing. Preserve the original wish, adapt current source and verify gameplay; collection and flight unlock rules do not follow automatically from a visible aircraft.",
+        "risk": "medium",
         "schema": {
           "type": "object",
           "properties": {
@@ -2308,6 +2308,8 @@
                 "read",
                 "propose",
                 "propose-group",
+                "install",
+                "install-group",
                 "recipes",
                 "compose"
               ]

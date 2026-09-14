@@ -10671,3 +10671,14 @@ repository root. They exercise the actual page functions and coordinator with
 finite fault seams. They are not proof of an attached/composited native frame;
 isolated Windows package acceptance must separately record runtime identity,
 nonblank rendering and normal shutdown without real mouse/keyboard operations.
+
+### Player-requested source installation and live adoption status (2026-09-14)
+
+Follow [the source installation scenarios](../../e2e/player-source-installation-20260914.md):
+use the original full-auto author lease, retain independent dog identities and
+existing progress, and verify real check/adoption plus rendering and cold reopen.
+Manual proposals keep their confirmation boundary. Revoke/stop/switch and changed
+operation replays must fail without new source writes. Readiness is never displayed
+as adoption, and confirmed adoption refreshes the existing conversation card without
+a manual refresh. Current unit and headless renderer results do not replace native
+Windows/model acceptance.

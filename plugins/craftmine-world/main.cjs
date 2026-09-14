@@ -18,6 +18,7 @@ const {createTargetFeedbackService} = require('./target-feedback-service.mjs');
 const {emptyWorld, validateSnapshot, prepareLegacyWorld,readVerification,verificationSummary,createLibraryService,createMemoryService} = require('./domain.cjs');
 const {createHostProviders,createCoreBudgetProvider} = require('./tool-services.cjs');
 const {createSourceLibraryService}=require('./source-library-service.cjs');
+const {createAuthorSourceInstaller}=require('./author-source-install.mjs');
 const {seedBuiltinSourceLibrary}=require('./builtin-source-library.cjs');
 const {createPlayerWorldLibrary}=require('./player-world-library.cjs');
 const {createPlayerComponentLibrary}=require('./player-component-library.cjs');
@@ -87,7 +88,10 @@ async function onLoad() {
     pending.promise=seedBuiltinSourceLibrary({directory:require('node:path').join(__dirname,'builtin-source-library'),call}).finally(()=>{if(builtinSeed===pending)builtinSeed=null;});
     builtinSeed=pending;return pending.promise;
   };
-  const sourceLibrary=createSourceLibraryService({call,installSource,installSourceGroup:args=>installSource.group(args),ensureBuiltin,directory:require('node:path').join(await pi.plugin.getDataPath(),'source-library-proposals')});
+  const installAuthorSource=createAuthorSourceInstaller({call,
+    authorize:context=>pi.craftmine.creationTarget(context),selected:async()=>(await pi.plugin.getSettings()).activeWorldId,
+    enqueue:(job,context)=>godotExecutor.enqueue(job,context),stagingRoot:require('node:path').join(await pi.plugin.getDataPath(),'author-source-installs')});
+  const sourceLibrary=createSourceLibraryService({call,installSource,installAuthorSource,installSourceGroup:args=>installSource.group(args),ensureBuiltin,directory:require('node:path').join(await pi.plugin.getDataPath(),'source-library-proposals')});
   const worldTemplates=createPlayerWorldLibrary({call,directory:require('node:path').join(await pi.plugin.getDataPath(),'world-template-operations'),selected:async()=>(await pi.plugin.getSettings()).activeWorldId});
   reuseService.sourceProposals=args=>sourceLibrary.proposals(args);
   reuseService.installSourceProposal=args=>sourceLibrary.installProposal(args);
@@ -103,9 +107,9 @@ async function onLoad() {
       if(bound?.world?.id!==(await pi.plugin.getSettings()).activeWorldId)throw Error('GODOT_WORLD_CHANGED');
       if(endedTurns.has(turnKey(context)))throw Error('TURN_ENDED');}});
   const restoreService=createPortableRestoreService({core,rootDirectory:await pi.plugin.getDataPath()});
-  const portableRestore={restore:async params=>{await worldTemplates.drain();await playerComponents.drain();await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();await blenderJobs.start();}}};
+  const portableRestore={restore:async params=>{await worldTemplates.drain();await playerComponents.drain();await blenderJobs.stop();await targetFeedback.drain();await installAuthorSource.drain();await installSource.drain();await packageTurns.stop();try{return await restoreService.restore(params);}finally{packageTurns.start();await blenderJobs.start();}}};
   hostRequests=createHostRequests(core,{verifications,reviews,getSettings:()=>pi.plugin.getSettings(),workbench,godotExecutor,assetService,reuseService,portableRestore,packageTurns,targetFeedback,worldTemplates});
-  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();await blenderJobs.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await worldTemplates.drain();await playerComponents.drain();await blenderJobs.stop();await targetFeedback.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
+  pi.services.register({id:'world-core',start:async()=>{packageTurns.start();const hello=await core.start();await blenderJobs.start();try{await ensureBuiltin();}catch(error){console.warn('Built-in source library unavailable: '+String(error.message));}return hello;},stop:async()=>{await worldTemplates.drain();await playerComponents.drain();await blenderJobs.stop();await targetFeedback.drain();await installAuthorSource.drain();await installSource.drain();await godotExecutor?.stop();await packageTurns.stop();await core.stop();}});
   pi.services.register({id:'godot-executor',start:()=>godotExecutor.start(),stop:()=>godotExecutor.stop()});
   await pi.agent.registerTool({
     name: 'runtime_info',

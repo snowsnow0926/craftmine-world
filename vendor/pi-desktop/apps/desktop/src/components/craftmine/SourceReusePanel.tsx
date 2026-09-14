@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { craftmineWorldBridge } from "../../lib/craftmine-worlds";
 import { parseSourceProposals, parseSourceJob, sourcePackageRequest, type SourceProposal, type SourceJob } from "../../lib/source-reuse";
 
-/** Reuse receipts in the existing conversation; installation stays player-owned. */
+/** Show source checks separately from verified adoption in this conversation. */
 export function SourceReusePanel({worldId, running}: {worldId: string; running: boolean}) {
   const {i18n} = useTranslation(), zh = i18n.language.startsWith("zh");
   const bridge = useMemo(() => craftmineWorldBridge(), []);
@@ -40,7 +40,7 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
   }, [refresh, running]);
   useEffect(() => {
     if (!bridge) return;
-    const pending = Object.entries(jobs).filter(([, job]) => ["queued", "claimed", "running"].includes(job.status));
+    const pending = Object.entries(jobs).filter(([, job]) => ["queued", "claimed", "running"].includes(job.status)||job.status==='passed'&&!['applied','historical'].includes(job.application??''));
     if (!pending.length) return;
     let cancelled = false;
     const timer = window.setTimeout(async () => {
@@ -81,11 +81,11 @@ export function SourceReusePanel({worldId, running}: {worldId: string; running: 
       <strong>{proposal.displayName}</strong>
       <span>{proposal.assets.map(asset => `${asset.assetId} · v${asset.version}`).join(" / ")}</span>
       {jobs[proposal.proposalId] ? <>
-        <span role="status" data-source-job={jobs[proposal.proposalId].id} data-source-job-stale={jobs[proposal.proposalId].sourceStale===true?"true":"false"}>{jobs[proposal.proposalId].status==="failed"&&jobs[proposal.proposalId].sourceStale===true
+        <span role="status" data-source-job={jobs[proposal.proposalId].id} data-source-job-application={jobs[proposal.proposalId].application??'unchecked'} data-source-job-stale={jobs[proposal.proposalId].sourceStale===true?"true":"false"}>{jobs[proposal.proposalId].application==='applied'?(zh?'已加入世界':'Added to world'):jobs[proposal.proposalId].application==='historical'?(zh?'历史结果；当前世界已有其他版本':'Historical result; the world has another version'):jobs[proposal.proposalId].application==='unknown'?(zh?'检查通过，加入状态待核对':'Checks passed; application status unconfirmed'):jobs[proposal.proposalId].status==="failed"&&jobs[proposal.proposalId].sourceStale===true
           ? (zh?"历史检查失败；不代表当前源码状态":"Historical check failed; this does not describe the current source")
           : jobText(jobs[proposal.proposalId].status)}</span>
-        <button type="button" onClick={checks}>{jobs[proposal.proposalId].status==="failed"&&jobs[proposal.proposalId].sourceStale===true?(zh?"查看检查历史":"View check history"):(zh ? "查看检查与应用" : "Open checks and application")}</button>
-      </> : <form onSubmit={event => {event.preventDefault(); void install(proposal);}}><button type="submit" disabled={!!busy || running}>
+        <button type="button" onClick={checks}>{jobs[proposal.proposalId].application==='applied'?(zh?'查看记录':'View record'):jobs[proposal.proposalId].application==='historical'||jobs[proposal.proposalId].status==="failed"&&jobs[proposal.proposalId].sourceStale===true?(zh?"查看检查历史":"View check history"):(zh ? "查看检查与应用" : "Open checks and application")}</button>
+      </> : proposal.execution==='author'?<span role="status">{zh?'安装准备尚未完成，请在对话中继续。':'Installation preparation is incomplete; continue in the conversation.'}</span>:<form onSubmit={event => {event.preventDefault(); void install(proposal);}}><button type="submit" disabled={!!busy || running}>
         {busy === proposal.proposalId ? (zh ? "正在加入源码…" : "Adding source…") : (zh ? "加入当前世界并检查" : "Add to this world and check")}
       </button></form>}
     </div>)}

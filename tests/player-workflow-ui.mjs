@@ -21,7 +21,7 @@ f.host=async(channel,args={})=>{f.calls.push({channel,args});
  const proposal={proposalId:'source-'+'a'.repeat(48),worldId:'w1',displayName:'认可版白色博美伙伴',status:f.installs?'check-queued':'proposed',source:{revision:1,manifestHash:hash},archiveRef:{assetId:'cw.module.approved-pomeranian',version:1,contentHash:hash},...(f.installs?{installation:{job:{jobId:'gjob-'+hash,status:'queued'},instanceIds:['pet-1']}}:{})};
  if(args.method==='sourceProposals')return{worldId:'w1',items:[proposal]};
  if(args.method==='installSourceProposal'){f.installs++;return{worldId:'w1',applied:false,job:{id:'gjob-'+hash,status:'queued'}};}
- if(args.method==='sourceJob')return{worldId:'w1',jobId:'gjob-'+hash,status:f.jobStatus??'passed',...(f.jobStale===undefined?{}:{sourceStale:f.jobStale})};
+ if(args.method==='sourceJob')return{worldId:'w1',jobId:'gjob-'+hash,status:f.jobStatus??'passed',...(f.application?{application:f.application}:{}),...(f.jobStale===undefined?{}:{sourceStale:f.jobStale})};
  }
  throw Error('UNEXPECTED:'+channel);
 };
@@ -51,6 +51,11 @@ try{
  await page.evaluate(()=>{fixture.reset();fixture.gate();});await ready();await submit('[data-world-open="w2"]');await page.waitForFunction(()=>fixture.calls.some(c=>c.channel==='world.switch'));await page.evaluate(()=>{fixture.changeDraft();fixture.release();});await page.waitForSelector('[data-world-entry-error]');check('late switch cannot overwrite a new draft or finish stale navigation',await page.evaluate(()=>!fixture.opened.length&&fixture.draft().text==='等待时新写的内容'));
  await page.evaluate(()=>fixture.reuse());await page.waitForSelector('[data-source-proposal] form');await submit('[data-source-proposal] form');await page.waitForFunction(()=>document.body.textContent.includes('检查通过'));check('source install reports actual checks and keeps applied separate',await page.evaluate(()=>fixture.installs===1&&!document.body.textContent.includes('已应用')));
  await page.evaluate(()=>fixture.reuse());await page.waitForFunction(()=>document.body.textContent.includes('检查通过'));check('remount restores same installed job without duplicate source install',await page.evaluate(()=>fixture.installs===1&&!document.querySelector('[data-source-proposal] form')));
+ await page.evaluate(()=>{fixture.application='applied';});await page.waitForFunction(()=>document.querySelector('[data-source-job-application="applied"]'));
+ check('verified adoption appears automatically without refresh or a second install',await page.evaluate(()=>document.body.textContent.includes('已加入世界')&&document.body.textContent.includes('查看记录')&&!document.body.textContent.includes('可预览并应用')&&fixture.installs===1));
+ await page.evaluate(()=>{fixture.application='historical';fixture.reuse();});await page.waitForFunction(()=>document.body.textContent.includes('历史结果；当前世界已有其他版本'));
+ check('historical adoption is distinct from the current world',await page.evaluate(()=>!document.body.textContent.includes('已加入世界')));
+ await page.evaluate(()=>{fixture.application=undefined;});
  await page.evaluate(()=>{fixture.jobStatus='failed';fixture.jobStale=false;fixture.reuse();});await page.waitForFunction(()=>document.body.textContent.includes('检查失败，源码已保留'));
  await page.evaluate(()=>{fixture.jobStale=true;fixture.reuseState(true);});await page.waitForFunction(()=>document.body.textContent.includes('历史检查失败；不代表当前源码状态'));await page.evaluate(()=>fixture.reuseState(false));
  check('later author-turn refresh marks the original failed job historical without upgrading or reinstalling',await page.evaluate(()=>document.body.textContent.includes('查看检查历史')&&!document.body.textContent.includes('检查通过')&&fixture.installs===1&&!document.querySelector('[data-source-proposal] form')));

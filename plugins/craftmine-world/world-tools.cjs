@@ -63,7 +63,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // pass a predicate, or expose discussionOnly/readOnlyTurn through settings;
     // either way the refusal happens before any host call.
     const conditionalWrite=CONDITIONAL_WRITE_TOOLS[definition.name];
-    const isWrite=WRITE_TOOLS.has(definition.name)||(conditionalWrite!==undefined&&args.mode===conditionalWrite);
+    const isWrite=WRITE_TOOLS.has(definition.name)||(conditionalWrite!==undefined&&args.mode===conditionalWrite)
+      ||definition.name==='godot_source_library'&&['install','install-group'].includes(args.mode);
     if(isWrite) {
       let blocked=typeof options.isDiscussionOnly==='function'&&options.isDiscussionOnly();
       if(!blocked) {
@@ -230,6 +231,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     }
     if(definition.name==='godot_source_library') {
       if(typeof options.sourceLibrary!=='function')return {available:false,reason:'SOURCE_LIBRARY_NOT_WIRED'};
+      if(['install','install-group'].includes(args.mode)){
+        const capture=await options.creationTarget?.(context);assertActive();
+        if(capture?.worldId!==workspace.worldId||capture?.autoApply!==true||capture?.authorization!=='full-auto'||capture?.supersededBy)throw Error('SOURCE_LIBRARY_AUTOMATIC_INSTALL_NOT_AUTHORIZED');
+      }
       const result=await options.sourceLibrary(args,context,workspace.worldId,invocation.toolCallId,assertActive);assertActive();return result;
     }
     if(definition.name==='asset_library') {

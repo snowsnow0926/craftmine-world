@@ -127,7 +127,21 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           const statuses=['blocked','queued','claimed','running','passed','failed','cancelled','interrupted'];
           if(result.worldId!==worldId||result.jobId!==args.jobId||!statuses.includes(result.status))failure('PACKAGE_JOB_RECEIPT_INVALID');
           if(result.sourceStale!==undefined&&typeof result.sourceStale!=='boolean')failure('PACKAGE_JOB_RECEIPT_INVALID');
+          let application:'ready'|'applied'|'historical'|'unknown'|undefined;
+          if(result.status==='passed'){
+            application='unknown';
+            if(typeof result.candidateId==='string'&&/^gcan-[a-f0-9]{64}$/.test(result.candidateId)){
+              const verified=await options.domainCall('godotCandidate.read',{worldId,candidateId:result.candidateId});await selected(worldId);
+              const candidate=verified?.candidate,adoption=verified?.adoption;
+              if(verified?.checkStatus!=='passed'||candidate?.candidateId!==result.candidateId||candidate.worldId!==worldId||candidate.checkJobId!==args.jobId||candidate.buildId!==result.buildId||candidate.sourceRevision!==result.sourceRevision||candidate.manifestHash!==result.manifestHash||candidate.checkOutputHash!==result.outputHash)failure('PACKAGE_CANDIDATE_RECEIPT_INVALID');
+              if(adoption?.worldId===worldId&&adoption.candidateId===result.candidateId&&adoption.buildId===result.buildId&&adoption.wasApplied===true){
+                application=adoption.inCurrentLineage===true?'applied':'historical';
+              }else if(candidate.status==='ready'&&result.sourceStale!==true)application='ready';
+              else if(['superseded','rejected'].includes(candidate.status)||result.sourceStale===true)application='historical';
+            }
+          }
           return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status),
+            ...(application?{application}:{}),
             ...(typeof result.sourceStale==='boolean'?{sourceStale:result.sourceStale}:{})};
         }
         if(method==='sourceList') {fields(args,['worldId']);const result=await privateCall('sourceList',{worldId});await selected(worldId);if(result.worldId!==worldId||!Array.isArray(result.items))failure('PACKAGE_SOURCE_RECEIPT_INVALID');return {worldId,revision:result.revision,manifestHash:result.manifestHash,mainScene:result.mainScene,items:result.items.slice(0,512).map((item:any)=>({nodePath:item.nodePath,name:item.name,entityId:item.entityId,supported:item.supported===true,...(item.reason?{reason:item.reason}:{})})),truncated:result.truncated===true||result.items.length>512};}

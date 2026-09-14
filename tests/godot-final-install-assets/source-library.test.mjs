@@ -22,13 +22,32 @@ async function fixture(t){
    if(state.badGroupReceipt)archives[1].archiveSha256='e'.repeat(64);
    return {worldId:'world',applied:false,archives,instanceIds:archives.flatMap(a=>a.instanceIds),status:'check-queued',source:{revision:2,manifestHash:'b'.repeat(64)},job:{jobId:'gjob-'+'1'.repeat(64),status:'queued'}};
  };
- const create=()=>createSourceLibraryService({call,installSource,installSourceGroup,directory:path.join(directory,'proposals')});
+ const create=(extra={})=>createSourceLibraryService({call,installSource,installSourceGroup,directory:path.join(directory,'proposals'),...extra});
  const context={projectId:'p',sessionId:'s',turnId:'t'};return {ref,archive,blobPath,calls,installs,groupInstalls,state,version,create,context,tool:(service,args)=>service.tool(args,context,'world','call-one')};
 }
 test('modern catalog ZIP discovery retains provenance and distinct root identity without exposing bodies',async t=>{
  const f=await fixture(t),s=f.create();const search=await f.tool(s,{mode:'search',query:'tree'});assert.deepEqual(search.result.items[0].tags,['builtin','prefab','nature']);assert.equal(f.calls[0].args.mediaKind,'package');
  const read=await f.tool(s,{mode:'read',ref:f.ref});assert.deepEqual(read.archiveRef,f.ref);assert.notEqual(read.rootRef.sha256,f.ref.contentHash);assert.equal(read.resources[0].entry.sceneInstall.nodeType,'Node3D');assert.equal(read.source.license,'CC0-1.0');
  assert.equal(JSON.stringify(read).includes(f.blobPath),false);assert.equal(JSON.stringify(read).includes('base64'),false);assert.equal(f.installs.length,0);
+});
+
+test('explicit author installation returns the real job and survives retries without creating a player confirmation',async t=>{
+ const f=await fixture(t);let installed=0,release;
+ const gate=new Promise(resolve=>release=resolve);
+ const s=f.create({installAuthorSource:async(args,context,active,group)=>{installed++;active();assert.deepEqual(context,f.context);assert.equal(group,false);await gate;return {worldId:'world',applied:false,archiveSha256:sha(f.archive),instanceIds:['second-dog'],status:'check-queued',source:{revision:2,manifestHash:'b'.repeat(64)},job:{jobId:'gjob-'+'2'.repeat(64),status:'queued'}};}});
+ const first=f.tool(s,{mode:'install',ref:f.ref});const second=f.tool(s,{mode:'install',ref:f.ref});release();
+ const [a,b]=await Promise.all([first,second]);assert.deepEqual(a,b);assert.equal(installed,1);assert.equal(a.jobId,'gjob-'+'2'.repeat(64));assert.equal(a.applied,false);assert.equal(a.proposal.requiresPlayerAction,false);assert.equal(a.proposal.execution,'author');
+ f.state.revision=2;const replay=await f.tool(s,{mode:'install',ref:f.ref});assert.equal(replay.jobId,a.jobId);assert.equal(installed,1);
+ await assert.rejects(f.tool(s,{mode:'install',ref:f.ref,position:{x:1,y:0,z:0}}),/PROPOSAL_CONFLICT/);
+ assert.equal(f.installs.length,0,'The manual installer is never used');
+});
+
+test('failed author preparation stays retryable by the author and cannot cross into a manual task',async t=>{
+ const f=await fixture(t),s=f.create({installAuthorSource:async()=>{throw Error('SOURCE_LIBRARY_AUTOMATIC_INSTALL_NOT_AUTHORIZED');}});
+ await assert.rejects(f.tool(s,{mode:'install',ref:f.ref}),/NOT_AUTHORIZED/);
+ const proposal=(await s.proposals({worldId:'world'})).items[0];assert.equal(proposal.execution,'author');assert.equal(proposal.requiresPlayerAction,false);
+ await assert.rejects(s.installProposal({worldId:'world',proposalId:proposal.proposalId}),/AUTHOR_RETRY_REQUIRED/);
+ assert.equal(f.installs.length,0);
 });
 test('host-frozen proposal persists across restart and installs only through the normal source installer',async t=>{
  const f=await fixture(t),s=f.create(),result=await f.tool(s,{mode:'propose',ref:f.ref});const p=result.proposal;
