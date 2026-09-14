@@ -36,7 +36,7 @@ export function DirectLibraryUse({bridge, worldId, asset, zh}: {bridge: AssetLib
   }, [bridge, worldId, asset.assetId, asset.version, asset.contentHash, isResource, refresh]);
   const invalidPosition = custom && Object.values(coordinates).some(value => !value.trim() || !Number.isFinite(Number(value)) || Math.abs(Number(value)) > 80);
   const submit = () => {
-    if (!bridge || !worldId || !inspection?.eligible || active || started.current || invalidPosition) return;
+    if (!bridge || !worldId || !inspection?.eligible || inspection.configurationRequired || active || started.current || invalidPosition) return;
     started.current = true;
     const attempt = retainDirectAttempt(worldId, {assetId: asset.assetId, version: asset.version, contentHash: asset.contentHash}, asset.displayName,
       custom && inspection.positionSupported ? {x: Number(coordinates.x), y: Number(coordinates.y), z: Number(coordinates.z)} : undefined);
@@ -49,7 +49,7 @@ export function DirectLibraryUse({bridge, worldId, asset, zh}: {bridge: AssetLib
       : !bridge ? <p>{zh ? "素材使用接口尚未就绪。" : "Asset use is unavailable."}</p>
       : error ? <><p role="alert">{directErrorMessage(error, zh)}</p><details><summary>{zh ? "原因" : "Reason"}</summary><p>{error}</p></details><form onSubmit={event => {event.preventDefault(); setRefresh(value => value + 1);}}><Button type="submit" size="sm" variant="secondary">{zh ? "重新读取" : "Read again"}</Button></form></>
       : !inspection ? <p role="status">{zh ? "正在读取使用要求…" : "Reading use requirements…"}</p>
-      : !inspection.eligible ? <><p data-direct-unavailable>{directErrorMessage(inspection.reason ?? "UNSUPPORTED", zh)}</p>{inspection.reason && <details><summary>{zh ? "原因" : "Reason"}</summary><p>{inspection.reason}</p></details>}</>
+      : !inspection.eligible || inspection.configurationRequired ? <><p data-direct-unavailable>{directErrorMessage(inspection.reason ?? "UNSUPPORTED", zh)}</p>{inspection.reason && <details><summary>{zh ? "原因" : "Reason"}</summary><p>{inspection.reason}</p></details>}</>
       : <form data-direct-start-form onSubmit={event => {event.preventDefault(); submit();}}>
         {inspection.warning && <p data-direct-warning>{directErrorMessage(inspection.warning, zh)}</p>}
         <p className="asset-library-field-hint">{zh ? "无需连接 AI。先检查当前世界，检查通过后再确认加入。" : "No AI connection needed. Check this world first, then confirm the addition."}</p>

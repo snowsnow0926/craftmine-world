@@ -25,7 +25,19 @@
           "path": "scenes/creation.tscn",
           "sha256": "bac1347d32bb5736043ecb3d3e4794e40d22654dc0ae354f270ab09a4bbcab88"
         }
-      ]
+      ],
+      "rootBinding": {
+        "scene": "scenes/creation.tscn",
+        "name": "CreationWorld",
+        "type": "Node3D",
+        "script": "scripts/creation_world.gd",
+        "scripts": [
+          {
+            "path": "scripts/creation_world.gd",
+            "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615"
+          }
+        ]
+      }
     },
     {
       "id": "orgrimmar-city",
@@ -51,7 +63,27 @@
           "path": "scenes/creation.tscn",
           "sha256": "7a6a9f25a4402ec0e028271d32a950a3d37d31c7f9d9327a10301d15aae35bd8"
         }
-      ]
+      ],
+      "rootBinding": {
+        "scene": "scenes/creation.tscn",
+        "name": "CreationWorld",
+        "type": "Node3D",
+        "script": "scripts/orgrimmar_runtime.gd",
+        "scripts": [
+          {
+            "path": "scripts/orgrimmar_runtime.gd",
+            "sha256": "0bdd6f163d8f28452c53e2377ce36efba58b41f2d44c16156d631af230ee1c00"
+          },
+          {
+            "path": "scripts/orgrimmar_world.gd",
+            "sha256": "d723b7dfb91a0d5962bb2273273ff094e3be0f93c1b4e975c81f3186cc731ac0"
+          },
+          {
+            "path": "scripts/creation_world.gd",
+            "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615"
+          }
+        ]
+      }
     }
   ]
 }

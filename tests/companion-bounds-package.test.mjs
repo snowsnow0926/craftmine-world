@@ -48,6 +48,7 @@ test('documented stock bounds profiles are pinned to actual receiving source and
     assert.equal(sha(fs.readFileSync(path.join(repository,profile.source))),profile.sha256);
     const base=profile.id==='stock-sandbox'?'desktop/godot/bases/creation-sandbox':'desktop/godot/shared/promo-templates/promo-city/source';
     for(const selector of profile.selectors)assert.equal(sha(fs.readFileSync(path.join(repository,base,selector.path))),selector.sha256);
+    for(const script of profile.rootBinding.scripts)assert.equal(sha(fs.readFileSync(path.join(repository,base,script.path))),script.sha256);
   }
   assert.deepEqual(profiles.find(p=>p.id==='orgrimmar-city').minimum,bounds.minimum);
 });

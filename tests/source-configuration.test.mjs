@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
 import {buildApprovedPomeranianPackage} from '../desktop/build-approved-pomeranian-package.mjs';
 import {buildBuiltinPetPackage} from '../desktop/build-builtin-pet-package.mjs';
 import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
@@ -11,8 +12,9 @@ const require=createRequire(import.meta.url);
 const {configurationHint,validatePositionBounds,resolveSourceConfiguration}=require('../plugins/craftmine-world/source-configuration.cjs');
 const {assessArchiveForSource}=require('../plugins/craftmine-world/source-library-read-hints.cjs');
 const {profiles}=require('../plugins/craftmine-world/companion-position-profiles.json');
+const {rootBindingMatches,enrichCompanionSourceFiles}=require('../plugins/craftmine-world/companion-root-binding.mjs');
 const repository=path.resolve(import.meta.dirname,'..'),source={revision:4,manifestHash:'a'.repeat(64)};
-const profileMap=profile=>new Map([{path:profile.path,sha256:profile.sha256},...profile.selectors].map(file=>[file.path,file]));
+const profileMap=profile=>new Map([{path:profile.path,sha256:profile.sha256},...profile.selectors,...profile.rootBinding.scripts].map(file=>[file.path,file]));
 const city=profiles.find(p=>p.id==='orgrimmar-city'),sandbox=profiles.find(p=>p.id==='stock-sandbox');
 const bounds={minimum:[-240,-20,-300],maximum:[240,160,80],expectedSource:source};
 
@@ -25,7 +27,7 @@ test('published v3 read declarations resolve exact pins and never infer bounds f
    assert.deepEqual(hint.positionBounds.minimum,profile.minimum);
    const plan=resolveSourceConfiguration(archive,files,source);
    assert.deepEqual(plan[0].properties.saved_position_max,profile.maximum);
-   for(const missing of [profile.path,...profile.selectors.map(s=>s.path)]){
+   for(const missing of new Set([profile.path,...profile.selectors.map(s=>s.path),...profile.rootBinding.scripts.map(s=>s.path)])){
     const changed=new Map(files);changed.set(missing,{path:missing,sha256:'b'.repeat(64)});
     assert.equal(configurationHint(content,changed,source).status,'configuration-required');
     assert.throws(()=>resolveSourceConfiguration(archive,changed,source),/PACKAGE_POSITION_BOUNDS_REQUIRED/);
@@ -90,8 +92,50 @@ test('renderer retains legacy warnings without disabling use, and explains requi
  const {parseDirectInspection,directErrorMessage}=await import(pathToFileURL(output).href);
  const legacy=parseDirectInspection({eligible:true,warning:'LEGACY_COMPANION_SAVE_BOUNDS',compatibility:'unchecked',positionSupported:true});
  assert.equal(legacy.eligible,true);assert.match(directErrorMessage(legacy.warning,false),/−80 to 80/);assert.match(directErrorMessage(legacy.warning,true),/保留原身份和存档/);
- const configurable=parseDirectInspection({eligible:false,reason:'DIRECT_LIBRARY_WORLD_CONFIGURATION_REQUIRED',compatibility:'unchecked',positionSupported:true});
- assert.equal(configurable.eligible,false);assert.match(directErrorMessage(configurable.reason,false),/inspect the world source/);
+ const configurable=parseDirectInspection({eligible:true,configurationRequired:true,reason:'DIRECT_LIBRARY_WORLD_CONFIGURATION_REQUIRED',compatibility:'unchecked',positionSupported:true});
+ assert.equal(configurable.configurationRequired,true);assert.match(directErrorMessage(configurable.reason,false),/inspect the world source/);
  assert.match(directErrorMessage('PACKAGE_CONFIGURATION_SOURCE_CHANGED',false),/current revision/);
  assert.match(directErrorMessage('PET_STATE_POSITION_INVALID',false),/did not finish/);
+});
+
+test('appended scene instances retain only the exact pinned root/controller binding; ambiguous or overridden roots are unknown',async()=>{
+ const digest=text=>createHash('sha256').update(text).digest('hex');
+ for(const profile of profiles){
+  const base=profile.id==='orgrimmar-city'?'desktop/godot/shared/promo-templates/promo-city/source':'desktop/godot/bases/creation-sandbox';
+  const original=await fs.readFile(path.join(repository,base,profile.rootBinding.scene),'utf8');
+  const appended=original+'\n[node name="ExtraPet" type="Node3D" parent="."]\nmetadata/entity_id = "independent-pet"\n';
+  const filesFor=text=>{const files=profileMap(profile);files.set(profile.rootBinding.scene,{path:profile.rootBinding.scene,sha256:digest(text),text});return files;};
+  assert.equal(rootBindingMatches(profile,filesFor(appended)),true);
+  const root='[node name="CreationWorld" type="Node3D"]';
+  for(const bad of [
+   appended+'\n'+root+'\nscript = ExtResource("1_world")\n',
+   appended.replace(root,'[node name="CreationWorld" name="Again" type="Node3D"]'),
+   appended.replace(root,'[node name="CreationWorld" type="Node3D" instance=ExtResource("1_world")]'),
+   appended.replace('script = ExtResource("1_world")','script = ExtResource("1_world")\nscript = ExtResource("1_world")'),
+   appended.replace('script = ExtResource("1_world")','script = ExtResource("2_player")'),
+   appended.replace('script = ExtResource("1_world")','script = ExtResource("1_world")\nposition = Vector3(0, 0, -100)'),
+   appended.replace('[gd_scene','[gd_scene format=3'),
+   '[gd_scene format=3]\n'+appended,
+   appended+'\n[ext_resource type="Script" path="res://other.gd" id="1_world"]\n',
+   appended+'\n[node name="ExtraPet" type="Node3D" parent="."]\n',
+   '[node name="Premature" type="Node3D" parent="."]\n'+appended,
+   appended.replace('id="1_world"','id="1_world" id="duplicate"'),
+  ])assert.equal(rootBindingMatches(profile,filesFor(bad)),false,bad.slice(0,160));
+  const wrongHash=filesFor(appended);wrongHash.get(profile.rootBinding.scene).sha256='f'.repeat(64);assert.equal(rootBindingMatches(profile,wrongHash),false);
+  const missingText=filesFor(appended);delete missingText.get(profile.rootBinding.scene).text;assert.equal(rootBindingMatches(profile,missingText),false);
+  const override=filesFor(appended);override.set(profile.rootBinding.script,{sha256:'f'.repeat(64)});assert.equal(rootBindingMatches(profile,override),false);
+ }
+});
+
+test('advisory root text reads retain revision and hash binding and refuse unverified pages',async()=>{
+ const base=await fs.readFile(path.join(repository,'desktop/godot/bases/creation-sandbox/scenes/creation.tscn'),'utf8');
+ const text=base+'\n[node name="ExtraPet" type="Node3D" parent="."]\n',sha256=createHash('sha256').update(text).digest('hex');
+ const fresh=()=>{const files=profileMap(sandbox);files.set(sandbox.rootBinding.scene,{path:sandbox.rootBinding.scene,sha256});return files;};
+ const files=fresh(),calls=[];
+ await enrichCompanionSourceFiles(async(method,args)=>{calls.push({method,args});return {sha256,text:text.slice(args.offset,args.offset+1000),nextOffset:args.offset+1000<text.length?args.offset+1000:null};},{projectId:'p',sessionId:'s',turnId:'t'},'w',source,files);
+ assert(rootBindingMatches(sandbox,files));assert(calls.every(c=>c.args.revision===source.revision&&c.args.manifestHash===source.manifestHash&&c.args.path===sandbox.rootBinding.scene));
+ for(const part of [{sha256:'f'.repeat(64),text,nextOffset:null},{sha256,text:text+'# corrupt',nextOffset:null},{sha256,text:base,nextOffset:0},{sha256,text:'',nextOffset:1},{sha256,nextOffset:null}]){
+  const invalid=fresh();await enrichCompanionSourceFiles(async()=>part,{},'w',source,invalid);assert.equal(rootBindingMatches(sandbox,invalid),false);
+ }
+ let stopped=false;await assert.rejects(enrichCompanionSourceFiles(async()=>{stopped=true;return {sha256,text,nextOffset:null};},{},'w',source,fresh(),()=>{if(stopped)throw Error('TURN_ENDED');}),/TURN_ENDED/);
 });

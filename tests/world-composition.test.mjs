@@ -90,7 +90,7 @@ test('recipe v2 matches the exact preview bridge cohort while fixed recipe v1 re
 test('recipe v3 selects the new companion and carries exact receiving-world source configuration',async t=>{
   const profiles=JSON.parse(await fs.readFile(new URL('../plugins/craftmine-world/companion-position-profiles.json',import.meta.url)));
   for(const profile of profiles.profiles){
-    const f=await fixture(t);f.state.files=[{path:profile.path,sha256:profile.sha256},...profile.selectors];
+    const f=await fixture(t);f.state.files=[...new Map([{path:profile.path,sha256:profile.sha256},...profile.selectors,...profile.rootBinding.scripts].map(file=>[file.path,file])).values()];
     const plan=await f.service.compositionPlan({worldId:'world-test',request:request({recipeId:'companion-exploration',recipeVersion:3,choices:{scenery:'keep',companion:true,weather:'keep',collectionCount:0}})});
     assert.equal(plan.components.length,1);const companion=plan.components[0];assert.equal(companion.archiveRef.version,3);
     assert.deepEqual(companion.sourceConfiguration.properties,{saved_position_min:profile.minimum,saved_position_max:profile.maximum});

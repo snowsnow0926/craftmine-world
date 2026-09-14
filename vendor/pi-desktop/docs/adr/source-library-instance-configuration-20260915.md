@@ -29,9 +29,11 @@ remain authoritative.
 ## Consequences
 
 This removes silent default use from every v3 installation route. Explicit
-configuration becomes stale after any source revision change; even a stock
-scene changed by a previous installation needs fresh review. This conservative
-rule is visible to the agent rather than reusing an old compatibility claim.
+configuration becomes stale after any source revision change. A stock scene
+changed by a previous installation can obtain a new automatic plan only while
+its parsed root binding, project entry and entire registered script chain still
+match. An already installed candidate uses operation/check/source evidence at
+apply time, separate from the configuration requirements for a new installation.
 Numeric validation establishes a finite, well-formed domain, not semantic proof
 that a custom world's chosen range is correct. Runtime pet-shape validation,
 actual gameplay and save/reopen still supply that evidence.

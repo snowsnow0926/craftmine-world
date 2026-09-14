@@ -1,6 +1,7 @@
 'use strict';
 const {assessRequirements}=require('./world-composition.cjs');
 const {configurationHint}=require('./source-configuration.cjs');
+const {enrichCompanionSourceFiles}=require('./companion-root-binding.mjs');
 const hash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const fail=code=>{throw Error(code);};
 const code=error=>error?.errorCode??error?.code??(/^[A-Z][A-Z0-9_]+$/.test(error?.message??'')?error.message:'SOURCE_LIBRARY_PREFLIGHT_UNAVAILABLE');
@@ -19,6 +20,7 @@ async function readSourceSnapshot(call,context,worldId,assertActive){
       if(files.size>8192)fail('SOURCE_LIBRARY_PREFLIGHT_INDEX_TOO_LARGE');
       if(page.nextOffset!=null&&(!Number.isSafeInteger(page.nextOffset)||page.nextOffset<=offset))fail('SOURCE_LIBRARY_PREFLIGHT_INDEX_INVALID');offset=page.nextOffset;
     }while(offset!=null);
+    await enrichCompanionSourceFiles(call,context,worldId,identity,files,assertActive);
     return {available:true,files,source:{worldId,revision:identity.revision,manifestHash:identity.manifestHash,baseId:identity.baseId??null,engineVersion:identity.engineVersion??null}};
   }catch(error){assertActive();return {available:false,reason:code(error),source:null};}
 }

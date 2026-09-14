@@ -3,6 +3,7 @@
 const {createHash}=require('node:crypto');
 const pins=require('./world-composition-pins.json');
 const {companionPositionConfiguration}=require('./companion-position-bounds.cjs');
+const {enrichCompanionSourceFiles}=require('./companion-root-binding.mjs');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
 const exact=(value,keys)=>check(value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(key=>keys.includes(key)),'COMPOSITION_INVALID_PARAMS');
@@ -51,6 +52,7 @@ function createWorldComposition({call,ensureBuiltin,readArchive}){
       if(index.nextOffset!=null)check(Number.isSafeInteger(index.nextOffset)&&index.nextOffset>offset,'COMPOSITION_SOURCE_INDEX_INVALID');
       offset=index.nextOffset;
     }while(offset!=null);
+    await enrichCompanionSourceFiles(call,context,worldId,identity,files,assertActive);
     await ensureBuiltin();const components=[];
     for(const pin of selectedAssets(selected)){
       assertActive();const record=await call('asset.read',{assetId:pin.assetId,version:pin.version}),version=record.version_;
