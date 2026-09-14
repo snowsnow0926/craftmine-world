@@ -92,3 +92,22 @@ diagnostic-only, not a new acceptance assertion or a fix for the stall.
 wrong size/hash, directory links, separately suspended lstat calls, unopened and
 partially read streams, cancellation, frozen late progress and bounded logs.
 No native client or model run is implied by these isolated tests.
+
+During artifact verification only, one 100ms `unref` interval observes heartbeat
+sample count and maximum overdue interval. It starts at the first artifact
+operation and is cleared on completion, failure or cancellation. The final gap
+is included even when the deadline callback runs before an overdue heartbeat;
+zero samples plus a long gap must not be reported as zero scheduler delay.
+No per-tick or per-artifact log is emitted and this timer does not keep the
+process alive, extend the deadline or contribute to the verdict.
+
+One additional `[artifact-verification-runtime]` diagnostic-only summary records
+the heartbeat and start/end `process.getActiveResourcesInfo()` type counts. It
+contains no resource objects, PID, paths, arguments or accounts. At most six
+sanitized type names (32 characters each) per snapshot are retained, with omitted
+type count; read failure is marked unavailable without its raw error. Successful
+verification records this summary too, and releases the interval before later
+runtime stages. A failure keeps the existing last-operation line plus this one
+summary and the phase failure within the 64-line bound. These observations help
+separate responsive-loop filesystem waits from event-loop delay; they do not
+identify a root cause or prove the absence of other resource contention.

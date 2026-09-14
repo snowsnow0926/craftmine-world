@@ -10578,3 +10578,11 @@ linearly; later OS completions must not change the already persisted diagnostic.
 Keep the 30-second default and ordinary file/type/link/size/hash checks unchanged.
 The unit pending-IO cases diagnose instrumentation only; the actual stalled job's
 cause and any subsequent recovery still require their own real check evidence.
+
+For that same check, retain the fixed artifact runtime summary: 100ms unref
+heartbeat samples/maxLag and start/end resource type counts. A pending file await
+with heartbeat samples differs from a long final heartbeat gap. Success, timeout
+and cancel must all dispose the interval; no later page stage can keep updating
+this artifact snapshot. Neither the sample count nor a resource type grants a
+pass or changes the 30-second deadline. Keep raw path/PID/argument data out of
+this summary and confirm log size is independent of tick/file count.
