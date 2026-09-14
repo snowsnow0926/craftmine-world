@@ -13,6 +13,86 @@ fn exported_failure(journal: &mut TaskJournal, context: &WorkspaceContext, proje
 }
 
 #[test]
+fn fresh_export_variants_preserve_old_bytes_and_history_and_can_be_checked_and_applied() -> Result<()> {
+    for (changed_toolchain,git_backed) in [(false,false),(true,false),(false,true),(true,true)] {
+        let (_dir,path)=temp()?;
+        let mut journal=setup(&path)?;
+        let context=ctx("one");
+        let project=create_project(&mut journal,&context)?;
+        let asset=put_asset(&mut journal,&context,"asset-one","hero.png","image/png",b"unchanged asset")?;
+        if git_backed {journal.content_migrate_apply(&json!({"worldId":"a"}))?;}
+        register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("old engine evidence"))?;
+        let old=start(&mut journal,&context,"old-export",&project,"check")?;
+        let old_owner=claim(&mut journal,&old,"old-token","executor-a")?;
+        let mut old_artifacts=write_artifact(&old_owner,"web/index.html",b"<html>same entry</html>")?;
+        old_artifacts.as_array_mut().unwrap().extend(write_artifact(&old_owner,"web/index.pck",b"old nondeterministic pack")?.as_array().unwrap().clone());
+        journal.godot_job_check_descriptor(&json!({"jobId":old["jobId"],"token":"old-token","artifacts":old_artifacts}))?;
+        finish(&mut journal,&old,"old-token",&output(&old_owner,false,json!([{"id":"runtime.ready","passed":false}]),old_artifacts.clone(),json!([])))?;
+        let old_record=read_job(&journal.db,old["jobId"].as_str().unwrap())?;
+        let old_root=Path::new(old_owner["projectRoot"].as_str().unwrap()).parent().unwrap();
+        let old_manifest=std::fs::read(old_root.join("manifest.json"))?;
+        let old_pck=Path::new(old_owner["artifactsRoot"].as_str().unwrap()).join("web/index.pck");
+        let old_modified=std::fs::metadata(&old_pck)?.modified()?;
+        let before=journal.world_read("a")?;
+        if changed_toolchain {
+            register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("new engine evidence"))?;
+            failed(journal.godot_job_continue(&json!({"context":context,"worldId":"a","originJobId":old["jobId"],"toolCallId":"wrong-toolchain-resume"})),"GODOT_CONTINUATION_TOOLCHAIN_CHANGED");
+        }
+        assert_eq!(start(&mut journal,&context,"old-export",&project,"check")?,old,"a recorded call keeps its original build across toolchain changes");
+        failed(start(&mut journal,&context,"old-export",&project,"build"),"REPLAY_MISMATCH");
+        let fresh=start(&mut journal,&context,"explicit-fresh-export",&project,"check")?;
+        assert_ne!(fresh["buildId"],old["buildId"]);
+        assert_ne!(fresh["jobId"],old["jobId"]);
+        if git_backed {
+            let content_ref=|build:&Value|->Result<(String,String)>{Ok(journal.db.query_row(
+                "SELECT content_oid,asset_lock_hash FROM craftmine_godot_builds WHERE world_id='a' AND build_id=?1",
+                [build["buildId"].as_str().unwrap()],|row|Ok((row.get(0)?,row.get(1)?)))?)};
+            assert_eq!(content_ref(&old)?,content_ref(&fresh)?,"export variants retain the exact Git commit and asset lock");
+        }
+        for field in ["sourceRevision","manifestHash","assetManifestHash","baseId","baseBuild","engineVersion","renderer","target"] {
+            assert_eq!(fresh[field],old[field],"only the export attempt changes: {field}");
+        }
+        assert_eq!(start(&mut journal,&context,"explicit-fresh-export",&project,"check")?,fresh);
+        let new_owner=claim(&mut journal,&fresh,"fresh-token","executor-a")?;
+        assert_ne!(new_owner["artifactsRoot"],old_owner["artifactsRoot"]);
+        assert_eq!(new_owner["files"],old_owner["files"]);
+        assert_eq!(new_owner["retainedExport"],Value::Null);
+        let mut new_artifacts=write_artifact(&new_owner,"web/index.html",b"<html>same entry</html>")?;
+        new_artifacts.as_array_mut().unwrap().extend(write_artifact(&new_owner,"web/index.pck",b"new nondeterministic pack")?.as_array().unwrap().clone());
+        let descriptor=journal.godot_job_check_descriptor(&json!({"jobId":fresh["jobId"],"token":"fresh-token","artifacts":new_artifacts}))?;
+        assert_eq!(descriptor["buildId"],fresh["buildId"]);
+        assert_eq!(descriptor["artifacts"],new_artifacts);
+        let checked=finish(&mut journal,&fresh,"fresh-token",&output(&new_owner,true,json!([{"id":"runtime.ready","passed":true}]),new_artifacts,json!([])))?;
+        assert_eq!(checked["status"],"passed");
+        assert_eq!(journal.world_read("a")?,before);
+        let candidate=journal.godot_candidate_read(&json!({"context":context,"worldId":"a","candidateId":checked["candidateId"]}))?;
+        assert_eq!(candidate["candidate"]["buildId"],fresh["buildId"]);
+        let prepared=journal.godot_application_prepare(&json!({"id":"apply-fresh","token":"apply-token","candidateId":checked["candidateId"],
+            "worldId":"a","revision":before.summary.revision,"snapshot":before.world.snapshot}))?;
+        // Fixture launch evidence exercises the real native commit boundary; no
+        // engine process or renderer is launched by this Rust integration test.
+        let applied=journal.godot_application_commit(&json!({"id":"apply-fresh","token":"apply-token","evidence":{
+            "format":"craftmine.godot-application/1","inputHash":prepared["inputHash"],
+            "launch":{"passed":true,"buildId":fresh["buildId"],"instanceId":"fresh-instance","stateHash":digest("launched-state")},
+            "player":before.world.snapshot["player"]}}))?;
+        assert_eq!(applied["status"],"applied");
+        assert_eq!(journal.world_read("a")?.world.build["id"],fresh["buildId"]);
+        assert_eq!(journal.world_read("a")?.world.snapshot,before.world.snapshot);
+        assert_eq!(std::fs::read(&old_pck)?,b"old nondeterministic pack");
+        assert_eq!(std::fs::metadata(&old_pck)?.modified()?,old_modified);
+        assert_eq!(std::fs::read(old_root.join("manifest.json"))?,old_manifest);
+        assert_eq!(read_job(&journal.db,old["jobId"].as_str().unwrap())?,old_record);
+        assert_eq!(std::fs::read(Path::new(new_owner["projectRoot"].as_str().unwrap()).join(asset["path"].as_str().unwrap()))?,b"unchanged asset");
+        drop(journal);
+        let journal=TaskJournal::open(&path)?;
+        assert_eq!(journal.world_read("a")?.world.build["id"],fresh["buildId"]);
+        assert_eq!(read_job(&journal.db,old["jobId"].as_str().unwrap())?,old_record);
+        assert_eq!(read_job(&journal.db,fresh["jobId"].as_str().unwrap())?["status"],"passed");
+    }
+    Ok(())
+}
+
+#[test]
 fn exported_failed_check_continuation_gets_verified_native_authority_and_a_new_descriptor() -> Result<()> {
     let (_dir,path)=temp()?;let mut journal=setup(&path)?;let context=ctx("one");let project=create_project(&mut journal,&context)?;
     let (origin,owner,artifacts)=exported_failure(&mut journal,&context,&project)?;
@@ -617,48 +697,38 @@ fn a_refused_result_is_settled_as_a_failure_without_touching_staged_artifacts() 
     Ok(())
 }
 
-/// A repeated check of the same source reuses identical bytes, and a result
+/// A continued check reuses its origin's identical bytes, and a result
 /// that claims different bytes for an already recorded path is refused without
 /// replacing the first evidence.
 #[test]
-fn a_repeated_check_reuses_recorded_artifacts_and_refuses_a_changed_one() -> Result<()> {
+fn a_continued_check_reuses_recorded_artifacts_and_refuses_a_changed_one() -> Result<()> {
     let (_dir, path) = temp()?;
     let mut journal = setup(&path)?;
     let context = ctx("one");
     let project = create_project(&mut journal, &context)?;
-    let (first, checked) = run_check(&mut journal, &context, &project, "check-one", true)?;
-    assert_eq!(checked["status"], "passed");
+    let (first, checked) = run_check(&mut journal, &context, &project, "check-one", false)?;
+    assert_eq!(checked["status"], "failed");
     let build = first["buildId"].as_str().unwrap().to_string();
     let root = build_root(&journal.directory, "a", &build, false)?.join("artifacts");
     let recorded = build_files(&journal.db, "a", &build, "artifact")?;
     assert_eq!(recorded.len(), 1);
     let original = recorded[0].clone();
-    // Same source, same build identity: the identical bytes are reused and the
-    // repeated result is accepted.
-    let second = start(&mut journal, &context, "check-two", &project, "check")?;
-    assert_eq!(second["buildId"], first["buildId"], "the same source keeps its build identity");
+    // Explicit continuation retains this exact export and receives a new check
+    // descriptor. A fresh full export instead has its own build identity.
+    let second = journal.godot_job_continue(&json!({"context":context,"worldId":"a","originJobId":first["jobId"],"toolCallId":"check-two"}))?;
+    assert_eq!(second["buildId"], first["buildId"], "continuation keeps the origin's build identity");
     let claimed = claim(&mut journal, &second, "token-b", "executor-a")?;
-    let identical = write_artifact(&claimed, "web/index.html", b"<html></html>")?;
+    let identical = claimed["retainedExport"]["artifacts"].clone();
+    journal.godot_job_check_descriptor(&json!({"jobId":second["jobId"],"token":"token-b","artifacts":identical}))?;
     let repeated = finish(&mut journal, &second, "token-b",
         &output(&claimed, true, json!([{"id":"runtime.ready","passed":true}]), identical, json!([])))?;
     assert_eq!(repeated["status"], "passed");
     assert_eq!(build_files(&journal.db, "a", &build, "artifact")?, vec![original.clone()]);
-    // Different bytes for an already recorded path are a conflict: the job stays
-    // unsettled and the recorded evidence keeps the first hash.
-    let third = start(&mut journal, &context, "check-three", &project, "check")?;
-    let claimed = claim(&mut journal, &third, "token-c", "executor-a")?;
-    let changed = write_artifact(&claimed, "web/index.html", b"<html>a different build produced this</html>")?;
-    assert_ne!(changed[0]["sha256"], original["sha256"]);
-    failed(
-        finish(&mut journal, &third, "token-c",
-            &output(&claimed, true, json!([{"id":"runtime.ready","passed":true}]), changed, json!([]))),
-        "GODOT_ARTIFACT_CONFLICT",
-    );
-    assert_eq!(read_job(&journal.db, third["jobId"].as_str().unwrap())?["status"], "claimed");
+    // The artifact registry still cannot change a hash under the same build.
+    failed(record_artifact(&journal.db,"a",&build,&Artifact{path:"web/index.html".into(),
+        sha256:digest("a different export"),bytes:18}),"GODOT_ARTIFACT_CONFLICT");
     assert_eq!(build_files(&journal.db, "a", &build, "artifact")?, vec![original.clone()]);
-    // With the verified bytes back in place the build still serves the first
-    // evidence, so the refusal left nothing behind.
-    std::fs::write(root.join("web/index.html"), b"<html></html>")?;
+    // No write was necessary: the original evidence still serves unchanged.
     let served = verified_artifacts(&journal.db, "a", &build, &root)?;
     assert_eq!(served.len(), 1);
     assert_eq!(served[0]["sha256"], original["sha256"]);
