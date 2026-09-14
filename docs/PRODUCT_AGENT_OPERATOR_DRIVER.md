@@ -1,5 +1,15 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+`release-task-continue` 无参数命令用于旧任务遇到本地次数/时长限制后的普通恢复。
+先核对模型、闲置状态及真实 `task.current` 的 world/session/task/generation，
+通过 `world.surface` 打开任务页，在本进程自己的 loopback CDP 端口中定位
+`plugins/craftmine.world/views/world.html` 并核对 headless 标记与当前世界。
+只有唯一、可用的 `form[data-release-execution-limits="true"]` 才执行
+`requestSubmit()`；driver 不直接调用 release 或 resume 域接口。
+记录原任务、表单文字、提交回执、之后任务读回与新消息/turn 身份，submission 为
+`ordinary-player-execution-limit-release-form`。显式界面报错会中止等待并保留
+错误，不自动代答问题。短时 CDP 连接在 finally 中关闭；不涉及真实输入或焦点。
+
 2026-09-14 增加真实 DeepSeek 玩家配置入口，与原 `--codex` 互斥：
 
 ```powershell

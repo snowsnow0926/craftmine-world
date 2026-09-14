@@ -42,3 +42,5 @@ export function checkProductAgentIntegrity(expected, assertLaunchUnchanged=()=>{
   }catch(error){result.status='failed';result.error=String(error.stack??error);}
   return result;
 }
+
+PRODUCT_AGENT_COMMANDS.add('release-task-continue');
