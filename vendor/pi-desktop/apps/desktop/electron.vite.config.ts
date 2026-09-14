@@ -77,6 +77,7 @@ export default defineConfig({
           "plugin-host-process": resolve(__dirname, "electron/main/plugin-host-process.mjs"),
           // A fixed decoder-only worker; it must never self-spawn bundled Main.
           "asset-preview-worker": resolve(__dirname, "electron/craftmine-assets/asset-preview-worker.js"),
+          "godot-artifact-worker": resolve(__dirname, "electron/main/godot-artifact-worker.ts"),
         },
       },
     },

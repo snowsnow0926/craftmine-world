@@ -74,7 +74,7 @@ current-operation elapsed time, and time since last byte progress (or tracking
 start when no bytes have arrived). Hash operations are synchronous markers
 within the unchanged streaming algorithm; they are not claimed to be awaits.
 
-Only an artifact-stage failure emits one `[artifact-verification]` line into
+Before the worker amendment below, only an artifact-stage failure emitted one `[artifact-verification]` line into
 existing diagnostics, before the ordinary failed phase line. Updating 4096 files
 does not emit 4096 lines or evict the final state. Failure freezes the observation,
 so late IO completion after timeout/cancel cannot overwrite recorded evidence.
@@ -138,3 +138,49 @@ stream is destroyed on exit. Cancellation/deadline checks before and after
 non-cancellable lstat prevent opening the next path or file once it returns;
 checks at each chunk stop further hashing after cancellation. Real-stream tests
 verify destruction/close, partial byte progress and no next artifact.
+
+## Independent artifact Worker (2026-09-14)
+
+The following ordinary check still spent 21.277 seconds verifying artifacts;
+runtime-server creation (465ms) and load (2.341s) then left insufficient time
+for ready before the existing 30-second deadline. Full stat/hash verification
+now runs on a fixed Node Worker entry with its own event loop. It reuses exactly
+the above asynchronous checks and 1MiB bounded stream. The host still parses the
+descriptor and retains its original deadline race; the worker receives that same
+absolute deadline. No deadline, hash, link, size or readiness requirement changes.
+
+Electron-Vite emits `godot-artifact-worker.js` beside the main entry. The private
+host passes only an attempt/job/world/build/input-hash binding, the validated
+root/artifact descriptor, and the deadline. The worker validates them again. Its
+environment and exec arguments are empty; it imports no Electron main code and
+does not execute world source. This is not a renderer, plugin or model RPC.
+
+Success requires one matching result with complete byte/file coverage and an
+observed code-zero worker exit. Foreign, oversized, duplicate or incomplete
+results, excessive progress, worker errors and silent exits fail. Cancellation
+or timeout terminates the worker; the worker also independently aborts its stream
+at the shared deadline. Host completion waits for exit, including failures after
+worker construction. Failure to confirm termination within five seconds records
+`GODOT_CHECK_ARTIFACT_WORKER_STOP_TIMEOUT` separately from the initiating failure,
+sets `exitConfirmed: false`, and prevents that verifier from starting more workers.
+Cleanup time does not extend the check's acceptance deadline. No late success can
+turn a timed-out check into a pass.
+
+The worker sends one initial observation, at most one periodic observation per
+250ms, and one final result. Its 100ms heartbeat/resource-type tracker remains
+local to the artifact phase. The host retains only the latest validated snapshot
+and adds its own 100ms unref heartbeat plus lifecycle timings. Three bounded lines
+at most are added at teardown: `[artifact-worker]`, latest artifact progress, and
+latest artifact runtime summary. They retain phase failures within the existing
+64-line log and contain no absolute root, raw exception, environment, PID or
+account data. A terminated worker may have only a previous `running` snapshot;
+that is explicitly not a final measurement. No response is reported as missing,
+not fabricated zero-byte progress. All timers/listeners are disposed on exit or
+the explicit unconfirmed-stop path.
+
+`tests/godot-artifact-worker.test.mjs` compiles the actual worker and dependency
+chunks, verifies full real files and rejection/exit boundaries, and packages that
+same compiled entry into ASAR for an Electron Node-only load check. These tests
+open no app window, GPU or model. The next ordinary packaged old-profile check
+must establish real performance and gameplay readiness with its own job evidence;
+isolated worker timings do not certify the native client or erase prior failures.
