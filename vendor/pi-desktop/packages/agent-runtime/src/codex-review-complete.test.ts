@@ -34,11 +34,12 @@ describe("Frozen Codex legacy review completion (mock transport)", () => {
   it("uses the exact model, empty tool catalog, isolated ephemeral thread and actual reported usage", async () => {
     const f = await fixture(); try {
       const result = await completeCodexReview(f.options);
-      expect(result).toMatchObject({ text: '{"summary":"A tree"}', modelKey: f.options.modelKey, thinkingLevel: "xhigh", usage: { inputTokens: 100, outputTokens: 12, totalTokens: 112, cacheReadTokens: 70 } });
+      expect(result).toMatchObject({ text: '{"summary":"A tree"}', modelKey: f.options.modelKey, thinkingLevel: "xhigh", usage: { inputTokens: 30, outputTokens: 12, totalTokens: 112, cacheReadTokens: 70 } });
+      expect(result.usage!.inputTokens + result.usage!.cacheReadTokens! + result.usage!.outputTokens).toBe(result.usage!.totalTokens);
       expect(f.client.calls[0].params).toMatchObject({ model: "gpt-6-astra", sandbox: "read-only", dynamicTools: [], environments: [], runtimeWorkspaceRoots: [], ephemeral: true, allowProviderModelFallback: false });
       expect(f.client.calls[1].params).toMatchObject({ effort: "xhigh", model: "gpt-6-astra", environments: [], runtimeWorkspaceRoots: [] });
       expect(f.client.calls[1].params).not.toHaveProperty("maxTokens");
-      expect(f.client.closed).toBe(true); expect(await f.audit()).toMatchObject({ status: "completed", usageAvailability: "reported", usage: { totalTokens: 112 } });
+      expect(f.client.closed).toBe(true); expect(await f.audit()).toMatchObject({ status: "completed", usageAvailability: "reported", usage: { inputTokens: 100, totalTokens: 112 }, usageInputIncludesCache: true, usageMayBeIncomplete: false });
     } finally { await f.cleanup(); }
   });
   it("rejects non-review IDs, model or effort overrides before opening a client", async () => {
@@ -77,13 +78,13 @@ describe("Frozen Codex legacy review completion (mock transport)", () => {
       f.client.startTurn = client => { client.notify("thread/tokenUsage/updated", { tokenUsage: { total: { inputTokens: 10, outputTokens: 2, totalTokens: 12 } } }); f.controller.abort(); };
       await expect(completeCodexReview(f.options)).rejects.toThrow();
       expect(f.client.calls.some(c => c.method === "turn/interrupt")).toBe(true);
-      expect(await f.audit()).toMatchObject({ status: "cancelled", usage: { totalTokens: 12 } }); expect(f.client.closed).toBe(true);
+      expect(await f.audit()).toMatchObject({ status: "cancelled", usage: { totalTokens: 12 }, usageScope: "native-thread-last-reported-total", usageMayBeIncomplete: true }); expect(f.client.closed).toBe(true);
     } finally { await f.cleanup(); }
   });
   it("retains failed model usage and response text without fabricating a review result", async () => {
     const f = await fixture(); try {
       f.client.startTurn = client => { client.notify("thread/tokenUsage/updated", { tokenUsage: { total: { inputTokens: 20, outputTokens: 3, totalTokens: 23 } } }); client.notify("item/agentMessage/delta", { itemId: "message", delta: "partial" }); client.notify("turn/completed", { turn: { id: "turn-review", status: "failed" } }); };
-      await expect(completeCodexReview(f.options)).rejects.toThrow("CODEX_REVIEW_FAILED"); expect(await f.audit()).toMatchObject({ status: "failed", usage: { totalTokens: 23 }, text: "partial" });
+      await expect(completeCodexReview(f.options)).rejects.toThrow("CODEX_REVIEW_FAILED"); expect(await f.audit()).toMatchObject({ status: "failed", usage: { totalTokens: 23 }, text: "partial", usageMayBeIncomplete: true });
     } finally { await f.cleanup(); }
   });
 });
