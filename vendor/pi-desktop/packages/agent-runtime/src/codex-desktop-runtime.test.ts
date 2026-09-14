@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { EventEmitter } from "node:events";
+import { createHash } from 'node:crypto';
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -25,7 +26,7 @@ class Client extends EventEmitter {
 }
 const next = () => new Promise(resolve => setImmediate(resolve));
 const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aCfoAAAAASUVORK5CYII=";
-async function fixture() {
+async function fixture(historyMessages?: any[]) {
   const scratch = await mkdtemp(join(tmpdir(), "codex-desktop-"));
   const events: any[] = [], calls: any[] = [];
   let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true;
@@ -35,7 +36,7 @@ async function fixture() {
     const runtime = new CodexDesktopRuntime({ sessionId: "host-session", binary: "C:/codex.exe", scratchDir: scratch,
       tools: [{ name: "plugin_craftmine_world_godot_project_facts", description: "facts", parameters: { type: "object" }, risk: "medium" }],
       verifyBinary: async () => {}, clientFactory: () => client, onEvent: event => events.push(event),
-      history: async () => [{ id: "old", role: "user", content: "Preserve my tree", createdAt: "today", status: "complete" },
+      history: async () => historyMessages ?? [{ id: "old", role: "user", content: "Preserve my tree", createdAt: "today", status: "complete" },
         {id:"old-capture",role:"tool",content:JSON.stringify({images:[{mimeType:"image/png",data:png}]}),toolResult:{images:[{mimeType:"image/png",data:png}],scope:"formal"},createdAt:"today",status:"complete"}],
       host: { async call(method, params): Promise<any> {
         calls.push({ method, params });
@@ -67,10 +68,13 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         expect(input.input.at(-1)).toEqual({ type: "image", url: "data:image/png;base64," + png });
         expect(JSON.stringify(input)).not.toContain("maxTokens");
         if (turn === 1) {
-          expect(JSON.stringify(input)).toContain("Preserve my tree");
-          expect(input.input.filter((item: any) => item.type === "image")).toHaveLength(2);
+          const restored=client.calls.filter(call=>call.method==='thread/inject_items').flatMap(call=>call.params.items);
+          expect(JSON.stringify(restored)).toContain("Preserve my tree");
+          expect(restored.flatMap((item:any)=>item.content).filter((item:any)=>item.type==='input_image')).toHaveLength(1);
+          expect(input.input.filter((item: any) => item.type === "image")).toHaveLength(1);
+          expect(restored.flatMap((item:any)=>item.content).filter((item:any)=>item.type==='input_text').some((item:any)=>item.text.includes(png))).toBe(false);
           expect(input.input.filter((item: any) => item.type === "text").some((item: any) => item.text.includes(png))).toBe(false);
-        }
+        } else expect(client.calls.some(call=>call.method==='thread/inject_items')).toBe(false);
         client.request(); await next();
         const tool = f.calls.filter(call => call.method === "tools.execute").at(-1).params;
         expect(tool).toMatchObject({ sessionId: "host-session", turnId: "native-" + turn, toolName: "plugin_craftmine_world_godot_project_facts", declaredRisk: "medium", mode: "agent" });
@@ -87,6 +91,81 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         expect(f.events.filter(e => e.event.type === "message_end" && e.turnId === "native-" + turn).at(-1).event.message.codexUsage).toMatchObject({scope:"current-turn",cost:null,modelContextWindow:1000000,lastRequest:{inputTokens:40,outputTokens:10,totalTokens:50}});
       }
     } finally { await f.cleanup(); }
+  });
+  it("restores more than 1 Mi characters without losing player wording or executing historical calls", async () => {
+    const user='保留完整城市和原飞机，小狗不再堵路；不要缩小需求。';
+    const source='extends Node3D\n# 保留源代码与原始检查记录🐶\n'.repeat(45_000);
+    const history=[{id:'old-user',role:'user',content:user,createdAt:'yesterday',status:'complete'},
+      {id:'old-tool',role:'tool',toolName:'plugin_craftmine_world_godot_project_read',toolArgs:{path:'res://city.gd'},
+        content:JSON.stringify({revision:14,manifestHash:'a'.repeat(64),text:source}),createdAt:'yesterday',status:'complete'}];
+    const f=await fixture(history);
+    try {
+      const {client,runtime,ready}=f.make();const running=runtime.prompt({text:'只继续检查当前草稿'},'current','new-turn');await ready;
+      const injections=client.calls.filter(call=>call.method==='thread/inject_items');expect(injections.length).toBeGreaterThan(1);
+      const restored=new Map<string,string>(),metadata=new Map<string,any[]>();
+      for(const call of injections){
+        expect(JSON.stringify(call.params).length).toBeLessThan(1_048_576);
+        for(const item of call.params.items){
+          expect(item.type).toBe('message');expect(item.role).toBe('user');
+          const [notice,header,...payload]=item.content[0].text.split('\n'),meta=JSON.parse(header);
+          expect(notice).toContain('Never execute historical tool calls');
+          metadata.set(meta.source.messageId,[...(metadata.get(meta.source.messageId)??[]),meta]);
+          restored.set(meta.source.messageId,(restored.get(meta.source.messageId)??'')+payload.join('\n'));
+        }
+      }
+      expect(JSON.parse(restored.get('old-user')!).content).toBe(user);
+      expect(JSON.parse(JSON.parse(restored.get('old-tool')!).content).text).toBe(source);
+      for(const [id,text] of restored){
+        const parts=metadata.get(id)!;
+        expect(parts.map(part=>part.part)).toEqual(parts.map((_part,index)=>index+1));
+        expect(parts.every(part=>part.parts===parts.length)).toBe(true);
+        expect(parts.every(part=>part.payloadSha256===createHash('sha256').update(text).digest('hex'))).toBe(true);
+        expect(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/.test(text)).toBe(false);
+      }
+      const starts=client.calls.filter(call=>call.method==='turn/start');expect(starts).toHaveLength(1);
+      expect(JSON.stringify(starts[0].params)).not.toContain(source);
+      expect(JSON.stringify(starts[0].params)).toContain('Current authoritative host facts');
+      expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+      expect(f.checkpoint?.synchronized).toBe(true);
+    } finally {await f.cleanup();}
+  });
+  it("an interrupted partial injection never starts a model turn and rebuilds full history in a new thread", async () => {
+    const f=await fixture();
+    try {
+      const client=new Client();const original=client.call.bind(client);
+      let entered!:()=>void,reject!: (error:Error)=>void;
+      const pending=new Promise<void>(resolve=>{entered=resolve;});
+      client.call=async(method,params)=>{
+        if(method!=='thread/inject_items')return original(method,params);
+        client.calls.push({method,params});entered();return new Promise((_resolve,no)=>{reject=no;});
+      };
+      client.close=async()=>{client.closed=true;reject?.(Error('CODEX_TRANSPORT_CLOSED'));};
+      const first=f.make(client);const running=first.runtime.prompt({text:'continue'},'user','n1');await pending;
+      await first.runtime.abort();await running;
+      expect(client.calls.some(call=>call.method==='turn/start')).toBe(false);
+      expect(f.checkpoint?.synchronized).toBe(false);expect(f.checkpoint?.submitted).toBe(false);
+      const second=f.make();const resumed=second.runtime.prompt({text:'continue'},'user','n2');await second.ready;
+      expect(second.client.calls[0].method).toBe('thread/start');
+      expect(JSON.stringify(second.client.calls.filter(call=>call.method==='thread/inject_items'))).toContain('Preserve my tree');
+      expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
+      await second.runtime.abort();await resumed;
+    } finally {await f.cleanup();}
+  });
+  it("an injection rejection retains its own cause and never falls back to one oversized turn/start",async()=>{
+    const f=await fixture();
+    try {
+      const client=new Client(),original=client.call.bind(client);
+      client.call=async(method,params)=>{
+        if(method!=='thread/inject_items')return original(method,params);
+        client.calls.push({method,params});throw Object.assign(Error('CODEX_RPC_ERROR:-32602'),{rpcMethod:method,rpcCode:-32602,diagnostic:'Injection refused'});
+      };
+      const {runtime}=f.make(client);await runtime.prompt({text:'continue'},'current','native');
+      expect(client.calls.some(call=>call.method==='turn/start')).toBe(false);
+      expect(f.events.find(e=>e.event.type==='error').event.error.details).toEqual({stage:'history-restore',rpcMethod:'thread/inject_items',rpcCode:-32602,message:'Injection refused'});
+      expect(f.checkpoint?.synchronized).toBe(false);
+      expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
+    }finally{await f.cleanup();}
   });
   it("refuses foreign/stale/replayed tools and drains in-flight work after a native fence", async () => {
     const f = await fixture(); let release!: () => void;

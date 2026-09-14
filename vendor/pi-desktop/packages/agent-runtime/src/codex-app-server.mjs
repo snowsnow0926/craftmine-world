@@ -43,7 +43,7 @@ export function redact(value) {
 }
 
 const DIAGNOSTIC_STAGES = new Set(['context','checkpoint-load','binary-verify','app-server-start','thread-start','thread-resume','checkpoint-save','history-restore','turn-start']);
-const DIAGNOSTIC_METHODS = new Set(['initialize','config/read','account/read','thread/start','thread/resume','turn/start']);
+const DIAGNOSTIC_METHODS = new Set(['initialize','config/read','account/read','thread/start','thread/resume','thread/inject_items','turn/start']);
 export function protocolDiagnostic(error, stage) {
   const detail = {stage: DIAGNOSTIC_STAGES.has(stage) ? stage : 'unknown'};
   if (!Number.isSafeInteger(error?.rpcCode) || !DIAGNOSTIC_METHODS.has(error?.rpcMethod)) return detail;

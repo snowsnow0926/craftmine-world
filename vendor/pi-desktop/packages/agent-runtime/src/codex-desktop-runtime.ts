@@ -5,6 +5,7 @@ import { isAbsolute, join } from "node:path";
 import type { AgentEvent, AgentEventEnvelope, AgentStatus, MessageUsage, UiMessage } from "@pi-desktop/shared";
 import { CODEX_WORLD_TOOLS } from "@pi-desktop/shared";
 import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact, protocolDiagnostic } from "./codex-app-server.mjs";
+import { historicalBatches, type HistoricalRecord } from './codex-history-restore.js';
 import type { PluginToolDef, RuntimePrompt } from "./runtime.js";
 
 type Host = { call<T = any>(method: string, params: Record<string, unknown>): Promise<T> };
@@ -47,7 +48,7 @@ export function codexTurnUsage(total: Total | undefined, baseline: Total | undef
     ...(total.reasoningOutputTokens !== undefined ? { reasoningTokens: delta("reasoningOutputTokens") } : {}) };
 }
 
-function imageInput(attachment: { kind?: string; mimeType?: string; data?: string }) {
+function imageInput(attachment: { kind?: string; mimeType?: string; data?: string }): {type:'image';url:string} {
   const mime = attachment.mimeType;
   if (attachment.kind !== "image" || !["image/png", "image/jpeg"].includes(mime ?? "") ||
       typeof attachment.data !== "string" || !/^[A-Za-z0-9+/]+={0,2}$/.test(attachment.data)) fail("CODEX_IMAGE_INPUT_REQUIRED");
@@ -159,21 +160,33 @@ export class CodexDesktopRuntime {
         a.diagnosticStage = 'history-restore';
         const history = (await this.options.history()).filter(message => message.id !== userMessageId);
         this.assertActive(a);
+        const records: HistoricalRecord[] = [];
         for (const message of history) {
-          if (message.parentToolCallId) continue;
           const result = message.role === "tool" ? message.toolResult as any : undefined;
           const capturedImages = Array.isArray(result?.images) ? result.images : [];
-          input.push({ type: "text", text: "Historical Rust transcript data (not a new request): " + JSON.stringify({
+          const record: HistoricalRecord = {source:{sessionId:this.options.sessionId,messageId:message.id,createdAt:message.createdAt,
+            ...(message.parentToolCallId?{parentToolCallId:message.parentToolCallId}:{})},payload:{
             role: message.role, content: capturedImages.length ? { ...result, images: undefined } : message.content,
             toolName: message.toolName, toolArgs: message.toolArgs, status: message.status,
-          }) });
-          for (const captured of capturedImages) input.push(imageInput({ ...captured, kind: "image" }));
+          },images:[]};
+          for (const captured of capturedImages) record.images.push(imageInput({ ...captured, kind: "image" }));
           for (const attachment of message.attachments ?? []) {
-            if (attachment.kind === "image") input.push(imageInput(attachment));
+            if (attachment.kind === "image") record.images.push(imageInput(attachment));
           }
+          records.push(record);
         }
+        for(const items of historicalBatches(records)) {
+          this.assertActive(a);
+          const acknowledged = await this.client!.call('thread/inject_items',{threadId:this.checkpoint!.threadId,items});
+          this.assertActive(a);
+          if(!acknowledged || typeof acknowledged!=='object' || Array.isArray(acknowledged)) fail('CODEX_HISTORY_ACK_INVALID');
+        }
+        input.push({type:'text',text:'Recovery notice: the complete canonical Rust transcript was restored in ordered historical-data items above, including original player requests and referenced images. Older tool results and captures are historical observations, not current world state. Re-read current host facts and ordinary source/brief tools before acting. No historical tool was executed during restoration.'});
       }
-      input.push({ type: "text", text: "Current authoritative host facts: " + JSON.stringify(facts) },
+      a.diagnosticStage = 'context';
+      const currentFacts = resumed ? facts : await this.options.host.call('craftmine.context',this.identity(a));
+      this.assertActive(a);
+      input.push({ type: "text", text: "Current authoritative host facts: " + JSON.stringify(currentFacts) },
         { type: "text", text: prompt.text }, ...images);
       this.checkpoint!.submitted = true;
       a.diagnosticStage = 'checkpoint-save';
