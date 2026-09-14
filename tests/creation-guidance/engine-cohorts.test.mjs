@@ -43,14 +43,15 @@ test('all released cohort entries and archived reference bytes stay exactly unch
  assert.equal(hash(skill.text),'bc7687f90afa10e0afc74383574ce6bd5b6742bb0bdb017eeec556f66f0c5d64');
  assert.deepEqual(skill.interfaceCohorts,registry);assert.equal(corpus.version,'1.8.2');
 });
-test('six explicitly enumerated full cohorts support LF/CRLF and retained exact reference reads',async()=>{
+test('explicitly enumerated full cohorts support LF/CRLF and retained exact reference reads',async()=>{
  for(const variant of registry.variants)for(const line of [0,1]){
   const f=fixture(variantFiles(variant,line)),catalog=await f.run();
   assert.equal(catalog.interfaceMatches[0].profile,variant.profile);
   const ref=skill.references.find(r=>r.projectPath==='craftmine_shared/base_adapter.gd');
   const read=await f.run({mode:'read',id:skill.id,version:skill.version,sha256:ref.sha256,path:ref.path,revision:city.revision,manifestHash:city.manifestHash});
   assert.equal(read.sha256,ref.sha256);
-  assert(f.calls.some(c=>c.method==='godotProject.read'&&c.args.path==='craftmine_shared/base_adapter_legacy.gd'));
+  const inherited=variant.referencePaths['craftmine_shared/base_adapter.gd']??'craftmine_shared/base_adapter.gd';
+  assert(f.calls.some(c=>c.method==='godotProject.read'&&c.args.path===inherited));
  }
 });
 test('actual city rev9 interface now resolves preview cohort while retaining authored-source restrictions',async()=>{
@@ -71,9 +72,12 @@ test('every new controlled member fails when missing or custom; old picker and b
    await assert.rejects(f.run(),/GUIDANCE_INTERFACE_(UNSUPPORTED|MISSING)/,variant.profile+' '+member.path+' '+mode);
   }
   for(const p of ['craftmine_shared/runtime_bridge.gd','craftmine_shared/scene_mesh_picker_v2.gd']){
+   if(!variant.files.some(f=>f.path===p))continue;
    const f=fixture(variantFiles(variant));f.files.find(x=>x.path===p).sha256=registry.variants[0].files.find(x=>x.path===p).acceptedSourceHashes[0];
    await assert.rejects(f.run(),/GUIDANCE_INTERFACE_UNSUPPORTED/);
   }
+  const incomplete=fixture(variantFiles(variant).filter(f=>!['craftmine_shared/runtime_bridge_base.gd','craftmine_shared/engine_performance.gd'].includes(f.path)));
+  await assert.rejects(incomplete.run(),/GUIDANCE_INTERFACE_UNSUPPORTED/,'known top-level wrapper alone cannot fall back to legacy');
  }
 });
 test('reserved aliases, bytecode/remap paths and duplicate members do not inherit source compatibility',async()=>{

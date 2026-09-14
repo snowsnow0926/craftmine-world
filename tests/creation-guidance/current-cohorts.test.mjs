@@ -21,13 +21,17 @@ if(!process.env.CRAFTMINE_GUIDANCE_PLUGIN_ROOT){
 const {createWorldTools}=require(path.join(plugin,'world-tools.cjs'));
 const corpus=require(path.join(plugin,'guidance/catalog.json')),skill=corpus.skills.find(s=>s.id==='creation-sandbox.authoring');
 const context={projectId:'project',sessionId:'session',turnId:'turn',executionId:'execution',toolCallId:'call'};
-function fixture(profile){
+function fixture(profile,{retained=true}={}){
  const out=path.join(fs.mkdtempSync(path.join(temporary,'source-')),'project');
  const manifest=materializeBase({baseId:'creation-sandbox',worldId:'world-guidance',out,controllerProfile:profile});
  const texts=new Map(manifest.files.map(file=>[file.path,fs.readFileSync(path.join(out,file.path),'utf8')]));
  // Retained profiles have immutable old picker bytes, even after the ordinary
  // materializer advances. New picker cohorts are covered separately below.
- if(profile!=='legacy')texts.set('craftmine_shared/scene_mesh_picker_v2.gd',fs.readFileSync(path.join(root,'desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd'),'utf8'));
+ if(retained){
+  texts.set('craftmine_shared/runtime_bridge.gd',fs.readFileSync(path.join(root,'desktop/godot/shared/runtime_bridge.gd'),'utf8'));
+  texts.delete('craftmine_shared/runtime_bridge_base.gd');texts.delete('craftmine_shared/engine_performance.gd');
+  if(profile!=='legacy')texts.set('craftmine_shared/scene_mesh_picker_v2.gd',fs.readFileSync(path.join(root,'desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd'),'utf8'));
+ }
  let change=()=>{};const calls=[];
  const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
   calls.push({method,args});
@@ -60,6 +64,13 @@ test('current factory picker gets a distinct exact cohort instead of changing re
  for(const profile of ['creation-fixed-controller/1','creation-player-collision/1']){
   const f=fixture(profile);f.texts.set('craftmine_shared/scene_mesh_picker_v2.gd',fs.readFileSync(path.join(root,'desktop/godot/shared/scene_mesh_picker_v2.gd'),'utf8'));
   const result=await guide(f);assert.equal(result.interfaceMatches[0].profile,profile.replace('/1','-ray-local/1'));readOnly(f);
+ }
+});
+
+test('unmodified integrated factory defaults match the full preview wrapper for every controller profile',async()=>{
+ for(const profile of ['legacy','creation-fixed-controller/1','creation-player-collision/1']){
+  const f=fixture(profile,{retained:false});
+  const result=await guide(f);assert.equal(result.interfaceMatches[0].profile,profile==='legacy'?'creation-legacy-engine-preview/1':profile.replace('/1','-engine-preview/1'));readOnly(f);
  }
 });
 

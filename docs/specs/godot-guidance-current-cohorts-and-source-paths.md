@@ -10,6 +10,9 @@
 | creation-player-collision-ray-local/1 | 13 | ray-local picker；原bridge |
 | creation-fixed-controller-engine-preview/1 | 13 | ray-local picker；完整preview包装链 |
 | creation-player-collision-engine-preview/1 | 15 | ray-local picker；完整preview包装链 |
+| creation-legacy-engine-preview/1 | 10 | 原legacy adapter；完整preview包装链，无v2 picker |
+
+集成`0f01c2e0`后，factory默认在所有creation controller模式加入preview引擎。因此额外登记legacy controller加完整preview链的真实10文件组合，前六个条目不变。历史fixture完整保留旧bridge/旧picker及无wrapper helper的状态；另有测试对当前三种controller的**未改动factory输出**逐一匹配完整preview配置。裸legacy adapter本身不代表engine扩展，已知顶层engine bridge本身却必须触发完整链验证，不能删除两个helper后降为legacy通过。
 
 新增preview桥LF hash为`938c42a578bb37c0590198232448b1391f688b95f15ce7d5fce65d802cca7e08`；picker LF hash为`09b64ed260b83dd9b3c0559868d6ee3c34ece69876266154b3821ce166865acd`。LF/CRLF各自完整hash在审阅目录中固定；包装链必须包含原bridge的实际继承文件及engine_performance。每个variant是完整组合，不允许旧picker与新包装链混搭。未知受控脚本、受控路径大小写/bytecode/remap别名及缺失成员拒绝；非受控的自定义场景脚本不因此受写入限制。
 
