@@ -1,12 +1,17 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.8.1`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.8.2`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
 这是按源码整理的接口指南。加载指南或示例不会证明模型首次成功、玩法验收或正式采用。
 
 ## 已安装伙伴：改名、换外观的短流程
+
+For runtime follow/wait toggles and HUD labels, read the verified companion's
+`snapshot().settings.following`, not the exported `following` default or
+`sourceSettings`. The public setter updates runtime settings only; see
+`#companion-runtime-settings` for the verified v2 example.
 
 玩家指着现有伙伴要求改名或换外观时，先读真实实例场景和该模块声明的 `editableSettings`。
 已安装 `cw.module.pet-companion@1` 的三个导出字段为 `companion_name`、`appearance_key`、
@@ -118,6 +123,45 @@ Godot 的渲染能力与宿主当前的目标拾取覆盖范围不同。`scene_m
 带脚本的网格、skin、blend shape、LOD、透明或位移材质等未覆盖情形仍明确回退。
 GLB 文件没有动画或 LOD 扩展，并不保证导入后无 LOD：Godot 可能自动生成 LOD。
 需依据实际导入网格与观察结果判断，不能承诺所有静态素材都可精准选中，也不能修改托管观察器绕过拒绝。
+
+<a id="companion-runtime-settings"></a>
+
+## Companion runtime settings: read the public snapshot
+
+For the verified `cw.module.approved-pomeranian` v2 component,
+`@export following`, `companion_name` and `appearance_key` are authored initial
+defaults. `_ready()` copies them into `sourceSettings` and initializes runtime
+`settings`. The public `set_following(value)` changes runtime settings only;
+`companion.get("following")` still reads the exported default. Negating that
+default repeatedly can keep sending `false` and prevent following from resuming.
+
+Use the actual installed node's public `snapshot().settings.following` for both
+the toggle and the HUD/action label. `sourceSettings` describes initial source
+defaults, not the current follow/wait choice. Snapshot dictionaries are copies:
+editing one does not update the companion. Use its public setter, then read the
+snapshot again. Do not reach into private `_settings`, broadcast to every pet,
+or replace the component/save identity to repair a label.
+
+```gdscript
+# The caller resolves this specific live, ready companion and its HUD label.
+# These methods/fields are verified for approved-pomeranian v2; inspect other
+# component versions before reusing this example.
+func refresh_pet_label(companion: Node, label: Label) -> void:
+    var state: Dictionary = companion.call("snapshot")
+    var following_now: bool = state.settings.following
+    label.text = "Following · F: wait" if following_now else "Waiting · F: follow"
+
+func toggle_pet_following(companion: Node, label: Label) -> void:
+    var state: Dictionary = companion.call("snapshot")
+    companion.call("set_following", not bool(state.settings.following))
+    refresh_pet_label(companion, label)
+```
+
+F is an example binding; use the player's actual input routing. Refresh the HUD
+after ordinary interaction and restored progress as well, rather than maintaining
+a second unsynchronized follow flag. Verify wait → follow → wait with real input,
+matching labels, independent pets, and save/reopen. Reading this guide or a source
+default is not proof of the running world's state.
 
 ## 可保存伙伴与同一对象换外观
 

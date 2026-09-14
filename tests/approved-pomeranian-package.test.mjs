@@ -9,6 +9,34 @@ import {loadBuiltinPackages,seedBuiltinSourceLibrary} from '../plugins/craftmine
 import {buildBuiltinSourceLibrary} from '../desktop/build-builtin-source-library.mjs';
 const repository=path.resolve('.'),sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 
+test('runtime follow guidance matches the unchanged published v2 snapshot and setter contract',()=>{
+  const built=buildApprovedPomeranianPackage({repository,version:2});
+  const pins=JSON.parse(fs.readFileSync(path.join(repository,'plugins/craftmine-world/world-composition-pins.json'),'utf8'));
+  const pin=pins.entries.find(row=>row.assetId===APPROVED_POMERANIAN_ID&&row.version===2);
+  assert.equal(sha(built.bytes),pin.archiveSha256,'Guidance must not change the published module ZIP');
+  const resource=unpackStaticPackage(built.bytes).resources[0];
+  assert.equal(resource.manifest.contentHash,pin.rootContentHash);
+  const source=resource.files.get('companion.gd').toString('utf8');
+  assert.match(source,/@export var following := true/);
+  assert.match(source,/_source_settings = \{[^\n]*"following": following\}/);
+  assert.match(source,/_settings = _source_settings\.duplicate\(true\)/);
+  const setter=source.match(/func set_following\(value: bool\) -> void:([\s\S]*?)(?=\nfunc )/)[1];
+  assert.match(setter,/_settings\.following = value/);
+  assert.doesNotMatch(setter,/^\s*following\s*=/m);
+  const snapshot=source.match(/func snapshot\(\) -> Dictionary:([\s\S]*?)(?=\nfunc )/)[1];
+  assert.match(snapshot,/"settings": _settings\.duplicate\(true\)/);
+  assert.match(snapshot,/"sourceSettings": _source_settings\.duplicate\(true\)/);
+  const catalog=JSON.parse(fs.readFileSync(path.join(repository,'plugins/craftmine-world/guidance/catalog.json'),'utf8'));
+  const skill=catalog.skills.find(row=>row.id==='creation-sandbox.authoring');
+  assert.equal(sha(Buffer.from(skill.text)),skill.sha256);
+  assert.match(skill.text,/<a id="companion-runtime-settings"><\/a>/);
+  const example=skill.text.split('<a id="companion-runtime-settings"></a>')[1].split('```gdscript')[1].split('```')[0];
+  assert.match(example,/companion\.call\("snapshot"\)/);
+  assert.match(example,/companion\.call\("set_following", not bool\(state\.settings\.following\)\)/);
+  assert.match(example,/following_now: bool = state\.settings\.following/);
+  assert.doesNotMatch(example,/get\("following"\)|sourceSettings|_settings/);
+});
+
 test('accepted package binds exact visual and behavior while staying under real source and ZIP limits',()=>{
   const built=buildApprovedPomeranianPackage({repository}),resource=unpackStaticPackage(built.bytes).resources[0];
   const {content}=resource.manifest;
