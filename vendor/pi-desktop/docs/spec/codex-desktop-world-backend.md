@@ -86,12 +86,15 @@ added. Existing prompt/output schema and per-operation IPC bounds stay intact.
 
 The existing `review.start`, strict JSON `review.plan`, actual baseline/candidate
 renderer assertions, `review.finish`, preview and application guards are retained.
-Successful native usage enters the Rust review output; its input count includes
-cache hits, so cache is not added again to total. Every attempt also retains
+Successful native usage enters the Rust review output in the existing PI
+normalization: `inputTokens` excludes cache read/write tokens, those retain their
+separate fields, and `totalTokens` is the reported total. Every attempt also retains
 `scratch/<session>/codex-reviews/<reviewId>/review-transport.json`, including actual
 thread/turn IDs, timestamps, final/partial text, known usage and terminal error.
-Unreported or compaction-incomplete usage stays null. Failed and cancelled known
-partial usage is retained in that private diagnostic, not fabricated as a pass.
+The diagnostic labels its raw input as cache-inclusive and its scope as the last
+reported native thread total. Failed/cancelled snapshots are explicitly possibly
+incomplete, not terminal totals. Unreported or compaction-incomplete usage stays
+null. Known partial usage is retained, not fabricated as a pass.
 
 Current host context is rebuilt before the request; native source/task state is
 authoritative. Thread/turn configuration disables environment access and all

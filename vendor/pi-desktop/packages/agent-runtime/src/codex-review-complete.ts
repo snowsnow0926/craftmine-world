@@ -2,11 +2,11 @@ import { execFile } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, protocolDiagnostic } from "./codex-app-server.mjs";
-import { validCodexUsageTotal } from "./codex-desktop-runtime.js";
+import { codexTurnUsage, validCodexUsageTotal } from "./codex-desktop-runtime.js";
 
 type Client = { start(): Promise<unknown>; call(method: string, params: any): Promise<any>; close(): Promise<void>;
   on(event: string, handler: (...args: any[]) => void): unknown; reject(id: unknown): void; threadConfig?: unknown };
-type Usage = { inputTokens: number; outputTokens: number; totalTokens: number; cachedInputTokens?: number; reasoningOutputTokens?: number };
+type Usage = { inputTokens: number; outputTokens: number; totalTokens: number; cachedInputTokens?: number; cacheWriteInputTokens?: number; reasoningOutputTokens?: number };
 export type CodexReviewOptions = {
   binary: string; scratchDir: string; reviewId: string; modelKey: string; thinkingLevel: string;
   system: string; messages: Array<{ role: "user" | "assistant"; content: string }>; signal: AbortSignal;
@@ -87,10 +87,8 @@ export async function completeCodexReview(options: CodexReviewOptions) {
     const response = [...text.values()].join("\n").trim();
     if (!response) fail("CODEX_REVIEW_EMPTY");
     audit.status = "completed";
-    return { text: response, modelKey: `codex-cli/${MODEL}`, thinkingLevel: EFFORT,
-      ...(usage ? { usage: { inputTokens: usage.inputTokens, outputTokens: usage.outputTokens, totalTokens: usage.totalTokens,
-        ...(usage.cachedInputTokens !== undefined ? { cacheReadTokens: usage.cachedInputTokens } : {}),
-        ...(usage.reasoningOutputTokens !== undefined ? { reasoningTokens: usage.reasoningOutputTokens } : {}) } } : {}) };
+    const normalized = codexTurnUsage(usage, { inputTokens: 0, outputTokens: 0, totalTokens: 0 });
+    return { text: response, modelKey: `codex-cli/${MODEL}`, thinkingLevel: EFFORT, ...(normalized ? { usage: normalized } : {}) };
   } catch (error) {
     audit.status = options.signal.aborted ? "cancelled" : "failed";
     const code = (error as any)?.errorCode ?? (error as any)?.message;
@@ -102,6 +100,9 @@ export async function completeCodexReview(options: CodexReviewOptions) {
     await client?.close().catch(() => {});
     audit.threadId = threadId ?? null; audit.turnId = turnId ?? null;
     audit.usage = usage ?? null; audit.usageAvailability = usageIncomplete ? "incomplete-native-compaction" : usage ? "reported" : "unreported";
+    audit.usageScope = "native-thread-last-reported-total";
+    audit.usageInputIncludesCache = true;
+    audit.usageMayBeIncomplete = audit.status !== "completed" || usageIncomplete || !usage;
     audit.text = [...text.values()].join("\n"); audit.finishedAt = new Date().toISOString();
     await save();
   }
