@@ -4,6 +4,7 @@ import {createHash,randomUUID} from 'node:crypto';
 export const PRODUCT_AGENT_COMMANDS = new Set(['status','brief','goal-add','goal-review','prompt','send-composer','composition','answer','permission','install-proposal','candidate','input-segment','cancel-inputs','explore','capture','history','source-read','save','resume','snapshot','reopen','publish','export-template','abort','quit']);
 PRODUCT_AGENT_COMMANDS.add('open-world');
 PRODUCT_AGENT_COMMANDS.add('feedback-repair-draft');
+PRODUCT_AGENT_COMMANDS.add('replay-check');
 export function readProductAgentCommand(directory, name) {
   if (!/^[a-zA-Z0-9_-]{1,100}\.json$/.test(name)) throw Error('MAILBOX_NAME_INVALID');
   const file=path.join(directory,name),stat=fs.lstatSync(file);

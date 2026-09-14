@@ -75,6 +75,8 @@ node tests/product-agent-operator-native.mjs `
 | `abort` | 普通 `agentAbort`；驱动保持运行，便于检查中断结果。 |
 | `quit` | 会话停止后正常退出；有活动模型时要求先完成或显式取消。 |
 
+启动时另给 `--check-replay-sha256`，才能调用只诊断的 `replay-check`。它读取本驱动输出目录中固定的 `replay-packet.json`，经实际主进程核对父进程指定的 SHA 后，将真实失败作业的原始描述交给同一个生产检查器。此命令不调用模型、不写原作业、不采用候选；必须读取内层 `evidence.passed`，命令返回成功本身不等于检查通过。它用于比较全新档案与已有世界／会话环境，不替代正常 Agent 检查验收。
+
 `input-segment` 操作驱动会显式执行普通继续游玩，再发送有限的虚拟输入；收到结果后立刻释放按键，并通过普通 `runtimeSave({freeze:true})` 保存和暂停世界，记录真实回执及冻结快照。飞机油门等持久控制量不会因松键自动归零，暂停能避免操作员阅读报告时飞机继续飞行。失败也尝试相同的释放与暂停；若身份已变化则拒绝操作新实例。此流程是分段功能检查，不代表连续、不暂停的真人操控手感测试。
 
 持续输出：`status.json`、`session.json`、`agent-events.ndjson`；每轮的正式
