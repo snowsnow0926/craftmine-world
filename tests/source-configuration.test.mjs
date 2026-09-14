@@ -107,7 +107,10 @@ test('appended scene instances retain only the exact pinned root/controller bind
   const filesFor=text=>{const files=profileMap(profile);files.set(profile.rootBinding.scene,{path:profile.rootBinding.scene,sha256:digest(text),text});return files;};
   assert.equal(rootBindingMatches(profile,filesFor(appended)),true);
   const root='[node name="CreationWorld" type="Node3D"]';
+  const childUid=appended.replace(root,'[ext_resource type="Script" uid="uid://bchild12345" path="res://other.gd" id="99_added"]\n\n'+root);
+  assert.equal(rootBindingMatches(profile,filesFor(childUid)),true,'new child resource UIDs do not alter the pinned root binding');
   for(const bad of [
+   appended.replace('[ext_resource type="Script" path="res://'+profile.rootBinding.script+'"','[ext_resource type="Script" uid="uid://bforeignroot" path="res://'+profile.rootBinding.script+'"'),
    appended+'\n'+root+'\nscript = ExtResource("1_world")\n',
    appended.replace(root,'[node name="CreationWorld" name="Again" type="Node3D"]'),
    appended.replace(root,'[node name="CreationWorld" type="Node3D" instance=ExtResource("1_world")]'),
