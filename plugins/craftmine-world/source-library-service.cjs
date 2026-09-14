@@ -3,7 +3,7 @@ const fs=require('node:fs/promises');
 const path=require('node:path');
 const {createHash}=require('node:crypto');
 const {validateAssetRef}=require('./godot-library.cjs');
-const {referenceRoles,referenceHints,readSourceSnapshot,assessArchiveForSource,preflightErrorCode}=require('./source-library-read-hints.cjs');
+const {referenceRoles,referenceHints,archiveInstallation,readSourceSnapshot,assessArchiveForSource,preflightErrorCode}=require('./source-library-read-hints.cjs');
 const {validatePositionBounds,configurationHint}=require('./source-configuration.cjs');
 const boundsFields=value=>value===undefined?{}:{positionBounds:validatePositionBounds(value)};
 const hash=value=>createHash('sha256').update(value).digest('hex');
@@ -37,13 +37,13 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
   }
   function describe(ref,{archive,record,worldTemplate}){
     if(worldTemplate){const {preview,...metadata}=worldTemplate;return {...metadata,note:'Whole-world template. Create a new independent world through the player world picker. It cannot be proposed or installed as a component in the current world. Starting state contains the author-selected saved progress; no target compatibility or first-load success is implied.'};}
-    return {format:'craftmine.source-library/1',...referenceHints(ref),archiveSha256:archive.archiveSha256,
+    return {format:'craftmine.source-library/1',...referenceHints(ref),archiveSha256:archive.archiveSha256,automaticInstallation:archiveInstallation(archive),
       rootRef:archive.packageJson.root,displayName:record.version_.displayName,source:record.version_.source,
       placement:{status:'template-default',capturedPlayerTargetUsed:false,note:'Installation uses the component template placement. This proposal does not implement a player request to place here. Use actual installed instance identities and normal source editing for later placement.'},
       resources:archive.resources.map(({manifest})=>({ref:{assetId:manifest.content.assetId,version:manifest.content.version,contentHash:manifest.contentHash},
         kind:manifest.content.kind,entry:manifest.content.entry,interfaces:manifest.content.interfaces,compatibility:manifest.content.compatibility,state:manifest.content.state,licenses:manifest.content.licenses,
         files:manifest.content.files})),verifiedScope:'archive-integrity-only',applied:false,
-      note:'Archive validity is not target compatibility, runtime success or visual verification. Reading does not install anything. With current full-auto authorization, use install or install-group to add source in the active author turn and start checks; otherwise use propose for player confirmation. Both paths still require actual source checks and candidate adoption.'};
+      note:archiveInstallation(archive).status==='blocked-declaration'?'Automatic installation is blocked by this immutable archive declaration. Read automaticInstallation.resources[].recovery; changing tool parameters cannot repair the package. Find a corrected version through its searchRequest, read that exact catalog ref, then follow its actual automatic nodes and required manual behavior setup. Reading did not install source or nodes.':'Archive validity is not target compatibility, runtime success or visual verification. Reading does not install anything. With current full-auto authorization, use install or install-group to add source in the active author turn and start checks; otherwise use propose for player confirmation. Both paths still require actual source checks and candidate adoption.'};
   }
   const projection=p=>({proposalId:p.proposalId,worldId:p.worldId,...(p.items?{kind:'group',items:p.items.map(item=>({archiveRef:item.ref,archiveSha256:item.archiveSha256,displayName:item.displayName,...(item.position?{position:item.position}:{}),...boundsFields(item.positionBounds)}))}:{archiveRef:p.ref,archiveSha256:p.archiveSha256}),displayName:p.displayName,source:p.source,...(p.position?{position:p.position}:{}),...boundsFields(p.positionBounds),applied:false,requiresPlayerAction:!p.result&&p.execution!=='author',...(p.execution?{execution:p.execution}:{}),method:'installSourceProposal',status:p.result?.status??(p.execution==='author'?'interrupted':'proposed'),
     ...(p.result?{installation:{source:p.result.source,instanceIds:p.result.instanceIds??[],
@@ -216,7 +216,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
           const ref={assetId:item.assetId,version:item.version,contentHash:item.contentHash};
           if(item.kind==='world'){items.push({...item,archiveRef:ref,readRequest:{mode:'read',ref},action:'create-new-world',targetCompatibility:{status:'not-a-component',installValidationRequired:true}});continue;}
           let targetCompatibility;
-          try{if(!snapshot.available)targetCompatibility={status:'unknown',reason:snapshot.reason,source:null,installValidationRequired:true};else{const candidate=await readArchive(ref);assertActive();targetCompatibility=candidate.worldTemplate?{status:'not-a-component',installValidationRequired:true}:assessArchiveForSource(candidate.archive,snapshot);}}
+          try{const candidate=await readArchive(ref);assertActive();targetCompatibility=candidate.worldTemplate?{status:'not-a-component',installValidationRequired:true}:assessArchiveForSource(candidate.archive,snapshot);}
           catch(error){assertActive();targetCompatibility={status:'unknown',reason:preflightErrorCode(error),source:snapshot.source??null,installValidationRequired:true};}
           const {referenceRoles:roles,...refs}=referenceHints(ref);void roles;
           items.push({...item,...refs,targetCompatibility});

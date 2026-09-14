@@ -1,5 +1,10 @@
 # 04. E2E Test Plan
 
+Combat package declaration recovery (2026-09-15): preserve immutable v1 refusal,
+verify corrected v2's actual automatic node and helper UID files through the real
+source installer, and distinguish source transactions from gameplay. See
+[the focused scenario](../../e2e/combat-install-contract-20260915.md).
+
 ### Demo result feedback (2026-09-15)
 
 Run [the focused result feedback plan](../../e2e/demo-result-feedback-20260915.md).

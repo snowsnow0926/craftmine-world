@@ -91,8 +91,9 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
     tags:['builtin','prefab','scene','森林','风格化',...sceneManifest.tags],source:{origin:'Craftmine World forest-gateway 1.0.0',author:'Craftmine World contributors / Kenney',license:'MIT AND CC0-1.0',licenseStatus:'verified'}});
   const pet=buildBuiltinPetPackage({repository});
   packages.push({file:pet.file,bytes:pet.bytes});entries.push(pet.entry);
-  const combat=buildBuiltinCombatPackage({repository});
-  packages.push({file:combat.file,bytes:combat.bytes});entries.push(combat.entry);
+  for(const version of [1,2]){const combat=buildBuiltinCombatPackage({repository,version});
+    packages.push({file:combat.file,bytes:combat.bytes});entries.push(combat.entry);
+  }
   const approvedPet=buildApprovedPomeranianPackage({repository});
   packages.push({file:approvedPet.file,bytes:approvedPet.bytes});entries.push(approvedPet.entry);
   const approvedModel=fs.readFileSync(path.join(repository,'desktop/godot/components/approved-pomeranian/model.glb'));
