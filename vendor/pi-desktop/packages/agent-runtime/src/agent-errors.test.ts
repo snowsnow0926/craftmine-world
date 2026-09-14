@@ -8,6 +8,7 @@ describe("classifyAgentError", () => {
       expect(classifyAgentError(Object.assign(new Error(`${code}: network error`), { status: 429 }))).toMatchObject({ code, retriable: false });
     }
     expect(classifyAgentError("CRAFTMINE_CONTEXT_BUDGET_EXCEEDED")).toMatchObject({ code: "CRAFTMINE_REQUEST_TOO_LARGE", retriable: false });
+    expect(classifyAgentError("CRAFTMINE_PREFIX_FALLBACK_CONTEXT_TOO_LARGE")).toMatchObject({ code: "CRAFTMINE_REQUEST_TOO_LARGE", retriable: false });
     expect(classifyAgentError("CRAFTMINE_TASK_NOT_ACTIVE")).toMatchObject({ code: "CRAFTMINE_TASK_STATE_CHANGED", retriable: false });
   });
   it("classifies auth failures from status fields", () => {

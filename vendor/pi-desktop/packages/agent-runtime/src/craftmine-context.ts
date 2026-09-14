@@ -1,5 +1,6 @@
-import { randomUUID } from "node:crypto";
-import { createAssistantMessageEventStream, type Api, type AssistantMessage, type AssistantMessageEventStream, type Context, type Model, type SimpleStreamOptions } from "@earendil-works/pi-ai";
+import { createHash, randomUUID } from "node:crypto";
+import { createAssistantMessageEventStream, type Api, type AssistantMessage, type AssistantMessageEventStream, type Context, type Model, type SimpleStreamOptions, type Usage } from "@earendil-works/pi-ai";
+import { DeepSeekPromptPrefix, supportsDeepSeekPromptPrefix, type DeepSeekPrefixReceipt } from "./craftmine-prompt-prefix.js";
 import { usageFromPi } from "./agent-messages.js";
 import { godotFactsBlock } from "./craftmine-godot-facts.js";
 import { craftmineRequestBudget } from "@pi-desktop/shared";
@@ -62,6 +63,7 @@ export type CraftmineUsage = { inputTokens: number; outputTokens: number; totalT
 export type CraftmineEstimate = { system: number; messages: number; tools: number; attachments: number; framing: number; output: number; toolResults: number; input: number; total: number; method: string };
 export type CraftmineBeforeInput = { requestId: string; purpose: CraftminePurpose; model: Model<Api>; context: Context; maxOutputTokens: number; signal?: AbortSignal };
 export type CraftmineReservation = { binding: CraftmineBinding; generation: number; requestId: string; context: Context; estimate: CraftmineEstimate; maxOutputTokens: number; readOnlyCloseout?: boolean };
+export type CraftminePrepared = CraftmineReservation & { model: Model<Api>; purpose: CraftminePurpose; signal?: AbortSignal };
 export type CraftmineBoundary = { kind: "compaction" | "tool" | "stop" | "resume" | "model-change" | "world-change"; eventId: string };
 export interface CraftmineRequestHooks {
   /** In-process runtime only: select actual registered tools from current host facts. */
@@ -69,7 +71,12 @@ export interface CraftmineRequestHooks {
   /** Read-only preflight for PI's existing inline compaction guard. */
   inspectRequest?(input: CraftmineBeforeInput): Promise<CraftmineEstimate>;
   beforeRequest(input: CraftmineBeforeInput): Promise<CraftmineReservation>;
-  afterRequest(input: { reservation: CraftmineReservation; status: "known" | "unknown" | "cancelled"; usage?: CraftmineUsage; errorCode?: string }): Promise<void>;
+  /** Trusted text transport only: prepare without reservation, then reserve
+   * after the actual serialized fetch body has passed the final guard. */
+  prepareRequest?(input: CraftmineBeforeInput): Promise<CraftminePrepared>;
+  finalizeRequest?(prepared: CraftminePrepared, payload: unknown, transportKey: string): Promise<CraftmineReservation>;
+  clearPromptReceipt?(): void;
+  afterRequest(input: { reservation: CraftmineReservation; status: "known" | "unknown" | "cancelled"; usage?: CraftmineUsage; errorCode?: string; promptUsage?: Usage }): Promise<void>;
   onBoundary(input: CraftmineBoundary): Promise<void>;
 }
 export type CraftmineDomainCall = <T = unknown>(method: string, params: Record<string, unknown>) => Promise<T>;
@@ -206,6 +213,16 @@ export function createCraftmineRequestHooks(options: {
 }): CraftmineRequestHooks {
   assertCraftmineBudgetAuthorized(options.limits ? { limits: options.limits, authorization: options.authorization } : undefined);
   let selectTools: ((snapshot: CraftmineTaskContext, purpose: CraftminePurpose) => Context["tools"]) | undefined;
+  const prefix = new DeepSeekPromptPrefix();
+  let receiptEpoch = 0;
+  const clearReceipt = () => { prefix.clear(); receiptEpoch++; };
+  const receipts = new WeakMap<CraftmineReservation, { proof?: DeepSeekPrefixReceipt; signal?: AbortSignal; epoch: number }>();
+  const scope = (prepared: Pick<CraftmineReservation, "binding" | "generation">) => ({ binding: prepared.binding, generation: prepared.generation });
+  function calibrated(estimate: CraftmineEstimate, input: number | undefined): CraftmineEstimate {
+    if (input === undefined || input >= estimate.input) return estimate;
+    return { ...estimate, system: 0, tools: 0, attachments: 0, messages: input - 1024, framing: 1024,
+      input, total: input + estimate.output + estimate.toolResults, method: "measured-whole-prompt-exact-prefix-plus-utf8-half-tail/1" };
+  }
   async function prepare(input: CraftmineBeforeInput) {
     aborted(input.signal);
     const snapshot = await options.getContext();
@@ -222,29 +239,71 @@ export function createCraftmineRequestHooks(options: {
     const estimate = estimateCraftmineRequest(context, input.maxOutputTokens, purpose === "creation" || purpose === "retry" ? 2048 : 0);
     return { snapshot, context, estimate, purpose, readOnlyCloseout };
   }
+  async function prepareUnreserved(input: CraftmineBeforeInput): Promise<CraftminePrepared> {
+    const { snapshot, context, estimate, purpose, readOnlyCloseout } = await prepare(input);
+    return { binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId,
+      context, estimate, maxOutputTokens: input.maxOutputTokens, model: input.model, purpose, signal: input.signal,
+      ...(readOnlyCloseout ? { readOnlyCloseout: true } : {}) };
+  }
+  async function reserve(prepared: CraftminePrepared, estimate = prepared.estimate): Promise<CraftmineReservation> {
+    aborted(prepared.signal);
+    const budget = craftmineRequestBudget(prepared.model.contextWindow, prepared.maxOutputTokens, estimate.toolResults);
+    if (prepared.maxOutputTokens > prepared.model.maxTokens || estimate.input > budget.inputCapacity) fail("CRAFTMINE_CONTEXT_BUDGET_EXCEEDED");
+    await options.domainCall("budget.reserve", {
+      binding: prepared.binding, generation: prepared.generation, requestId: prepared.requestId, purpose: prepared.purpose,
+      estimatedInputTokens: estimate.input + estimate.toolResults, maxOutputTokens: prepared.maxOutputTokens,
+      ...(options.limits ? { limits: options.limits } : {}),
+    });
+    const reservation: CraftmineReservation = { binding: prepared.binding, generation: prepared.generation,
+      requestId: prepared.requestId, context: prepared.context, estimate, maxOutputTokens: prepared.maxOutputTokens,
+      ...(prepared.readOnlyCloseout ? { readOnlyCloseout: true } : {}) };
+    if (prepared.signal?.aborted) {
+      await options.domainCall("budget.settle", { binding: prepared.binding, generation: prepared.generation, requestId: prepared.requestId, status: "cancelled", errorCode: "CANCELLED_BEFORE_SEND" });
+      fail("TURN_ABORTED");
+    }
+    return reservation;
+  }
   return {
     setToolSelector(select) { selectTools = select; },
-    async inspectRequest(input) { return (await prepare(input)).estimate; },
-    async beforeRequest(input) {
-      const { snapshot, context, estimate, purpose, readOnlyCloseout } = await prepare(input);
-      const budget = craftmineRequestBudget(input.model.contextWindow, input.maxOutputTokens, estimate.toolResults);
-      if (input.maxOutputTokens > input.model.maxTokens || estimate.input > budget.inputCapacity) fail("CRAFTMINE_CONTEXT_BUDGET_EXCEEDED");
-      await options.domainCall("budget.reserve", {
-        binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId, purpose,
-        estimatedInputTokens: estimate.input + estimate.toolResults, maxOutputTokens: input.maxOutputTokens,
-        ...(options.limits ? { limits: options.limits } : {}),
-      });
-      const reservation = { binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId, context, estimate, maxOutputTokens: input.maxOutputTokens, ...(readOnlyCloseout?{readOnlyCloseout:true}:{}) };
-      if (input.signal?.aborted) {
-        await options.domainCall("budget.settle", { binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId, status: "cancelled", errorCode: "CANCELLED_BEFORE_SEND" });
-        fail("TURN_ABORTED");
+    async inspectRequest(input) {
+      const prepared = await prepareUnreserved(input);
+      return calibrated(prepared.estimate, prefix.estimateNative(input.model, prepared.context, input.maxOutputTokens, scope(prepared)));
+    },
+    prepareRequest: prepareUnreserved,
+    clearPromptReceipt: clearReceipt,
+    async finalizeRequest(prepared, payload, transportKey) {
+      const estimate = calibrated(prepared.estimate, prefix.estimateWire(prepared.model, prepared.context, prepared.maxOutputTokens, scope(prepared), payload, transportKey));
+      // A changed payload cannot use a tentative preflight prediction. Fall
+      // back to the original complete estimate before immutable reservation.
+      const input = estimate.method === prepared.estimate.method ? tokens(payload) : estimate.input;
+      if (input > estimate.input + estimate.toolResults || input + prepared.maxOutputTokens > prepared.model.contextWindow) {
+        clearReceipt(); fail("CRAFTMINE_PREFIX_FALLBACK_CONTEXT_TOO_LARGE");
       }
+      let reservation: CraftmineReservation;
+      const proof = prefix.capture(prepared.model, prepared.context, prepared.maxOutputTokens, scope(prepared), payload, transportKey);
+      const epoch = receiptEpoch;
+      try { reservation = await reserve(prepared, estimate); }
+      catch (error) {
+        clearReceipt();
+        if (error instanceof Error && error.message === "CRAFTMINE_CONTEXT_BUDGET_EXCEEDED") fail("CRAFTMINE_PREFIX_FALLBACK_CONTEXT_TOO_LARGE");
+        throw error;
+      }
+      receipts.set(reservation, { proof, signal: prepared.signal, epoch });
       return reservation;
     },
-    async afterRequest({ reservation, ...outcome }) {
+    async beforeRequest(input) {
+      return reserve(await prepareUnreserved(input));
+    },
+    async afterRequest({ reservation, promptUsage, ...outcome }) {
       await options.domainCall("budget.settle", { binding: reservation.binding, generation: reservation.generation, requestId: reservation.requestId, ...outcome });
+      const receipt = receipts.get(reservation);
+      receipts.delete(reservation);
+      if (receipt && receipt.epoch === receiptEpoch && !receipt.signal?.aborted && outcome.status === "known" && !outcome.errorCode && promptUsage) {
+        prefix.rememberCaptured(receipt.proof, promptUsage);
+      } else clearReceipt();
     },
     async onBoundary(input) {
+      if (input.kind !== "tool") clearReceipt();
       if (input.kind === "tool" || input.kind === "compaction") {
         const snapshot = await options.getContext();
         await options.domainCall("budget.boundary", { binding: snapshot.binding, generation: snapshot.generation, eventId: input.eventId, kind: input.kind });
@@ -301,6 +360,7 @@ function verifyPayloadOutputAllowance(before: unknown[], after: unknown, reserve
 export function craftmineGuardedStream(model: Model<Api>, context: Context, options: SimpleStreamOptions | undefined,
   hooks: CraftmineRequestHooks | undefined, purpose: CraftminePurpose,
   start: (context: Context, options: SimpleStreamOptions) => AssistantMessageEventStream,
+  trustedTextTransport = false,
 ): AssistantMessageEventStream {
   if (!hooks) return start(context, options ?? {});
   const outer = createAssistantMessageEventStream();
@@ -317,13 +377,43 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
   let timer = setTimeout(expireIdle, 120000);
   const progress = new Map<string, number | string>();
   let reservation: CraftmineReservation | undefined;
+  let prepared: CraftminePrepared | undefined;
+  let approvedPayloadHash: string | undefined;
+  let finalizationError: unknown;
+  const deferred = trustedTextTransport && supportsDeepSeekPromptPrefix(model) && ["creation", "retry"].includes(purpose)
+    && !!hooks.prepareRequest && !!hooks.finalizeRequest;
   let settled = false;
   const run = async () => {
-    reservation = await hooks.beforeRequest({ requestId: `request-${randomUUID()}`, purpose, model, context,
-      maxOutputTokens: Math.max(1, Math.min(options?.maxTokens ?? model.maxTokens, model.maxTokens)), signal: controller.signal });
+    const input = { requestId: `request-${randomUUID()}`, purpose, model, context,
+      maxOutputTokens: Math.max(1, Math.min(options?.maxTokens ?? model.maxTokens, model.maxTokens)), signal: controller.signal };
+    if (deferred) prepared = await hooks.prepareRequest!(input);
+    else reservation = await hooks.beforeRequest(input);
     aborted(controller.signal);
-    const reserved = reservation;
-    const stream = start(reservation.context, { ...options, maxRetries: 0, maxTokens: reservation.maxOutputTokens, signal: controller.signal,
+    const reserved = (prepared ?? reservation)!;
+    const stream = start(reserved.context, { ...options, maxRetries: 0, maxTokens: reserved.maxOutputTokens, signal: controller.signal,
+      ...(deferred ? { fetch: (async (url: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
+        try {
+          aborted(controller.signal);
+          if (!approvedPayloadHash || typeof init?.body !== "string" || reservation) fail("CRAFTMINE_UNVERIFIED_PROVIDER_BODY");
+          const target = new URL(typeof url === "string" ? url : url instanceof URL ? url.href : url.url);
+          const expected = new URL(model.baseUrl);
+          if (target.origin !== expected.origin || !/^\/(?:v1\/)?chat\/completions$/.test(target.pathname) || target.search || target.hash) fail("CRAFTMINE_UNVERIFIED_PROVIDER_BODY");
+          const body: unknown = JSON.parse(init.body);
+          if (createHash("sha256").update(JSON.stringify(body)).digest("hex") !== approvedPayloadHash) fail("CRAFTMINE_UNVERIFIED_PROVIDER_BODY");
+          approvedPayloadHash = undefined;
+          // Header values may affect provider features. Keep only their digest,
+          // never credentials or request contents, in the reusable receipt key.
+          const transportKey = createHash("sha256").update(JSON.stringify({ url: target.href, method: init.method,
+            headers: [...new Headers(init.headers).entries()].sort(([a], [b]) => a.localeCompare(b)) })).digest("hex");
+          reservation = await hooks.finalizeRequest!(prepared!, body, transportKey);
+          aborted(controller.signal);
+        } catch (error) {
+          // OpenAI wraps thrown fetch errors as "Connection error". Preserve
+          // our local pre-send failure for PI's normal compaction recovery.
+          finalizationError = error; throw error;
+        }
+        return (options?.fetch ?? globalThis.fetch)(url, init);
+      }) as typeof fetch } : {}),
       onPayload: async (payload, requestModel) => {
         // Snapshot allowance fields before an in-place transform can erase or
         // raise them; never substitute a provider default for a reservation.
@@ -335,6 +425,12 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
         // send boundary. Refuse unexpected growth instead of issuing an
         // unreserved request; no provider or model substitution is attempted.
         verifyPayloadOutputAllowance(originalAllowances, finalPayload, reserved.maxOutputTokens);
+        if (deferred) {
+          // Pin the exact adapter payload, then compare the serialized SDK
+          // body at fetch. No budget reservation or network exists yet.
+          approvedPayloadHash = createHash("sha256").update(JSON.stringify(finalPayload)).digest("hex");
+          return finalPayload;
+        }
         const serializedInput = tokens(finalPayload);
         if (serializedInput + reserved.maxOutputTokens > model.contextWindow || serializedInput > reserved.estimate.input + reserved.estimate.toolResults) fail("CRAFTMINE_FINAL_PAYLOAD_BUDGET_EXCEEDED");
         return finalPayload;
@@ -369,12 +465,18 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
     }
     const result = await stream.result();
     aborted(controller.signal);
+    if (finalizationError) throw finalizationError;
+    if (!reservation) {
+      hooks.clearPromptReceipt?.();
+      fail(result.errorMessage || "CRAFTMINE_UNFINALIZED_REQUEST");
+    }
     if (result.stopReason === "pending") fail("CRAFTMINE_INCOMPLETE_PROVIDER_RESULT");
     if(reservation.readOnlyCloseout&&result.content.some(block=>block.type==="toolCall"))fail("CRAFTMINE_FINISHED_TASK_TOOL_REFUSED");
     const usage = usageFromPi(result.usage);
     await hooks.afterRequest({ reservation, status: controller.signal.aborted ? "cancelled" : usage ? "known" : "unknown",
       ...(usage ? { usage: { inputTokens: usage.inputTokens, outputTokens: usage.outputTokens, totalTokens: usage.totalTokens } } : {}),
-      ...(result.stopReason === "error" ? { errorCode: "PROVIDER_REQUEST_FAILED" } : {}) });
+      ...(deferred ? { promptUsage: result.usage } : {}),
+      ...(["error", "aborted"].includes(result.stopReason) ? { errorCode: "PROVIDER_REQUEST_FAILED" } : {}) });
     settled = true;
     aborted(controller.signal);
     if (result.stopReason === "error" || result.stopReason === "aborted") outer.push({ type: "error", reason: result.stopReason, error: result });
@@ -390,6 +492,7 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
     else controller.signal.addEventListener("abort", abortListener, { once: true });
   });
   void Promise.race([run(), cancellation]).catch(async error => {
+    hooks.clearPromptReceipt?.();
     if (reservation && !settled) {
       try { await hooks.afterRequest({ reservation, status: controller.signal.aborted && !idleExpired ? "cancelled" : "unknown", errorCode: idleExpired ? "PROVIDER_IDLE_TIMEOUT" : "REQUEST_INTERRUPTED" }); }
       catch { /* The durable reservation remains unknown; never zero it locally. */ }

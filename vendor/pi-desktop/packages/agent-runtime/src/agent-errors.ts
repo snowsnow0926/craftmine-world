@@ -131,7 +131,7 @@ export function classifyAgentError(err: unknown): ClassifiedAgentError {
   // Classify before network/status text, including wrapped RPC/stream errors.
   const taskLimit = rawMessage.match(/\b(TOKEN_BUDGET_EXHAUSTED|REQUEST_BUDGET_EXHAUSTED|COMPACTION_BUDGET_EXHAUSTED|TASK_DEADLINE_EXCEEDED|EVALUATION_REQUEST_LIMIT)\b/);
   if (taskLimit) return result(taskLimit[1], false);
-  if (/\bCRAFTMINE_(?:CONTEXT_BUDGET_EXCEEDED|FINAL_PAYLOAD_BUDGET_EXCEEDED|CONTEXT_TOO_LARGE)\b/.test(rawMessage)) {
+  if (/\bCRAFTMINE_(?:CONTEXT_BUDGET_EXCEEDED|FINAL_PAYLOAD_BUDGET_EXCEEDED|CONTEXT_TOO_LARGE|PREFIX_FALLBACK_CONTEXT_TOO_LARGE)\b/.test(rawMessage)) {
     return result("CRAFTMINE_REQUEST_TOO_LARGE", false);
   }
   if (/\b(?:CRAFTMINE_(?:CONTEXT_INVALID|TASK_NOT_ACTIVE|PENDING_TOOL_RESULTS|ACTIVE_TURN_REQUIRED|STALE_REPLY)|BUDGET_LIMITS_IMMUTABLE|STALE_GENERATION|TASK_INACTIVE|LEASE_LOST)\b/.test(rawMessage)) {

@@ -10934,3 +10934,13 @@ Verify host-confirmed candidate deferral without a red error or secondary resume
 then actual persistence on the next ordinary tick. Preserve older real errors and
 show unrelated failures. Explicit Save remains a guarded operation with useful
 feedback. See [the scenario](../../e2e/godot-autosave-candidate-20260914.md).
+
+## DeepSeek measured-prefix input calibration (2026-09-14)
+
+Run the pure prefix verifier and pinned-SDK/native PI-loop scenario in
+[the focused validation plan](../../e2e/deepseek-measured-prefix-20260914.md).
+Require final body proof and a completed durable reservation before dispatch,
+strict fallback on all identity/options/media changes, and no late request after
+cancellation. Verify cache counts once, unchanged 1M/384K/max configuration and
+one ordinary compaction recovery after a pre-send fallback overflow. Synthetic
+fixture counts are not real-player token-saving claims.

@@ -1483,7 +1483,7 @@ Delegation rules:
           context,
           requestOptions,
           (retryOptions) => craftmineGuardedStream(m, context, retryOptions, this.craftmineHooks, providerAttempt++ === 0 ? "creation" : "retry",
-            (boundedContext, boundedOptions) => this.trackedModelStream(m, "agent", () => models.streamSimple(m, boundedContext, boundedOptions))),
+            (boundedContext, boundedOptions) => this.trackedModelStream(m, "agent", () => models.streamSimple(m, boundedContext, boundedOptions)), !options?.fetch && !options?.onPayload),
           {
             allowOutputLimitRepair: !this.craftmineHooks,
             claim: (error, phase) => this.claimProviderRetry(error, phase),
@@ -5193,7 +5193,8 @@ Delegation rules:
           const stopReason = (event.message as any).stopReason as
             | string
             | undefined;
-          const overflow = isContextOverflow(
+          const localPrefixOverflow = !!this.craftmineHooks && String((event.message as AssistantMessage).errorMessage ?? "").includes("CRAFTMINE_PREFIX_FALLBACK_CONTEXT_TOO_LARGE");
+          const overflow = localPrefixOverflow || isContextOverflow(
             event.message as AssistantMessage,
             this.model.contextWindow || DEFAULT_CONTEXT_WINDOW,
           );
