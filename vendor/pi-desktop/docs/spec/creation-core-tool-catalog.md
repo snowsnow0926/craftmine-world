@@ -1,5 +1,20 @@
 # 造物连续任务的基础工具目录
 
+## PI Godot source index amendment (2026-09-14)
+
+After authoritative host facts identify a Godot world, the initial PI tool
+profile also includes the existing registered `godot_project_index` read tool.
+Project/source guidance already requires its revision and manifest hashes; the
+first call must not fail merely because ToolSearch has not activated it yet.
+Expose the actual host-supplied manifest schema unchanged: `limit` is an integer
+from 1 through 32, default 32, and `nextOffset` is used for pagination.
+
+This adds no tool implementation or authority. An unregistered tool stays absent;
+legacy and unknown runtime profiles do not receive it automatically. Summary,
+review and finished-task closeout remain tool-free. The executor's offered tools
+and the provider request schema remain identical. Codex has its independent
+tool list and is unchanged by this PI-only profile amendment.
+
 每个模型请求先读取宿主当前任务快照。Rust 在现有绑定世界摘要中投影 `runtimeKind` 与 `baseId`，不根据玩家文字、构建 ID 前缀、目标快照或旧会话推测运行时，也不额外读取完整世界。
 
 确认 Godot 后，基础目录加入已注册的 `godot_file_read`、`godot_project_query`、`godot_project_patch`，保留工程事实、能力报告、指导和检查入口；legacy 的 `project_inspect`、`capabilities_read` 改为按需发现。确认 legacy 时使用其两项检查入口，Godot 工具按需发现。运行时未知保持原来的保守目录，不自动增加源码修改工具。

@@ -10818,6 +10818,11 @@ executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
 # DeepSeek official alias transport (2026-09-14)
 
+Also run [PI Godot index first-call validation](../../e2e/pi-godot-index-first-call-20260914.md):
+the host-registered read-only project index is offered on the first Godot PI
+request with its actual limit 1–32 schema and executes without ToolSearch.
+Unregistered tools, legacy/unknown worlds and Codex remain outside this change.
+
 Follow [the localhost wire regression](../../e2e/deepseek-alias-wire-20260914.md).
 With the pinned PI adapter and provider UUID, preserve `deepseek-flash`, explicit
 max/off, assistant reasoning fields and the configured output allowance. Verify
