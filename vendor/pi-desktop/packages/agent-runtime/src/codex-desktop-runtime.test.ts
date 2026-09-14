@@ -13,6 +13,13 @@ class Client extends EventEmitter {
   async start() {}
   async call(method: string, params: any): Promise<any> {
     this.calls.push({ method, params });
+    if(method==='thread/compact/start'){
+      const id='compact-'+this.calls.filter(c=>c.method===method).length;
+      this.notify('turn/started',{turnId:id,turn:{id}});
+      this.notify('item/completed',{turnId:id,item:{type:'contextCompaction'}});
+      this.notify('turn/completed',{turnId:id,turn:{id,status:'completed'}});
+      return {};
+    }
     if (method.startsWith("thread/")) return { model: this.model, modelProvider: "openai", reasoningEffort: EFFORT,
       sandbox: { type: "readOnly" }, approvalPolicy: "never", instructionSources: [], thread: { id: "thread-1", turns: [] } };
     if (method === "turn/start") { this.notify("turn/started", { turn: { id: "turn-cli" } }); this.started?.(); return { turn: { id: "turn-cli" } }; }
@@ -109,6 +116,7 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
           expect(item.type).toBe('message');expect(item.role).toBe('user');
           const [notice,header,...payload]=item.content[0].text.split('\n'),meta=JSON.parse(header);
           expect(notice).toContain('Never execute historical tool calls');
+          if(meta.source.restorationAnchor)continue;
           metadata.set(meta.source.messageId,[...(metadata.get(meta.source.messageId)??[]),meta]);
           restored.set(meta.source.messageId,(restored.get(meta.source.messageId)??'')+payload.join('\n'));
         }
@@ -123,6 +131,9 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         expect(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/.test(text)).toBe(false);
       }
       const starts=client.calls.filter(call=>call.method==='turn/start');expect(starts).toHaveLength(1);
+      expect(client.calls.some(call=>call.method==='thread/compact/start')).toBe(true);
+      const finalCompaction=client.calls.map(c=>c.method).lastIndexOf('thread/compact/start');
+      expect(JSON.stringify(client.calls.slice(finalCompaction+1))).toContain(user);
       expect(JSON.stringify(starts[0].params)).not.toContain(source);
       expect(JSON.stringify(starts[0].params)).toContain('Current authoritative host facts');
       expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
@@ -151,6 +162,53 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
       await second.runtime.abort();await resumed;
     } finally {await f.cleanup();}
+  });
+  it('native compaction failure or cancellation never completes the player request or sends its turn',async()=>{
+    for(const variant of ['failed','cancelled','rerouted']){
+      const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
+      try{
+        const client=new Client(),original=client.call.bind(client);let entered!:()=>void;const begun=new Promise<void>(yes=>{entered=yes;});
+        client.call=async(method,params)=>{
+          if(method!=='thread/compact/start')return original(method,params);
+          client.calls.push({method,params});client.notify('turn/started',{turnId:'maintenance',turn:{id:'maintenance'}});entered();
+          client.request({turnId:'maintenance'});
+          if(variant==='failed'){
+            client.notify('error',{turnId:'maintenance',error:{message:'Native compact refused',codexErrorInfo:'contextWindowExceeded'},willRetry:false});
+            client.notify('turn/completed',{turnId:'maintenance',turn:{id:'maintenance',status:'failed',error:{message:'Native compact refused',codexErrorInfo:'contextWindowExceeded'}}});
+          }
+          if(variant==='rerouted')client.notify('model/rerouted',{turnId:'maintenance'});
+          return {};
+        };
+        const {runtime}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await begun;
+        if(variant==='cancelled')await runtime.abort();await running;
+        expect(client.calls.some(c=>c.method==='turn/start')).toBe(false);expect(f.calls.some(c=>c.method==='tools.execute')).toBe(false);
+        expect(f.checkpoint?.synchronized).toBe(false);expect(f.checkpoint?.submitted).toBe(false);expect(client.closed).toBe(true);
+        if(variant==='failed')expect(f.events.find(e=>e.event.type==='error').event.error.details.terminalError.codexErrorInfo).toBe('contextWindowExceeded');
+        if(variant==='rerouted')expect(f.events.find(e=>e.event.type==='error').event.error.code).toBe('CODEX_MODEL_REROUTED');
+      }finally{await f.cleanup();}
+    }
+  });
+  it('attributes valid native maintenance usage to the enclosing PI request without making maintenance its player turn',async()=>{
+    const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
+    try{
+      const client=new Client(),original=client.call.bind(client);let count=0;
+      client.call=async(method,params)=>{
+        const result=await original(method,params);
+        if(method==='thread/compact/start'){
+          count++;const total={inputTokens:count*10,outputTokens:count*2,totalTokens:count*12};
+          client.notify('thread/tokenUsage/updated',{turnId:'compact-'+count,tokenUsage:{total,last:{inputTokens:10,outputTokens:2,totalTokens:12},modelContextWindow:522500}});
+        }
+        return result;
+      };
+      const {runtime,ready}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await ready;
+      expect(count).toBeGreaterThan(0);expect(runtime.getStatus().isRunning).toBe(true);
+      expect(f.events.some(e=>e.event.type==='agent_end')).toBe(false);
+      expect(runtime.getStatus().transportUsage?.usage.totalTokens).toBe(count*12);
+      client.notify('thread/tokenUsage/updated',{tokenUsage:{total:{inputTokens:count*10+5,outputTokens:count*2+1,totalTokens:count*12+6},last:{inputTokens:5,outputTokens:1,totalTokens:6},modelContextWindow:522500}});
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+      const message=f.events.filter(e=>e.event.type==='message_end').at(-1).event.message;
+      expect(message.usage.totalTokens).toBe(count*12+6);expect(f.events.filter(e=>e.event.type==='agent_end')).toHaveLength(1);
+    }finally{await f.cleanup();}
   });
   it("an injection rejection retains its own cause and never falls back to one oversized turn/start",async()=>{
     const f=await fixture();
