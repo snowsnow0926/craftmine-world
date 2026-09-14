@@ -9969,6 +9969,13 @@ must still reject. Preserve the failed first read and the separate repaired run.
 
 ### Opt-in Codex desktop world conversation
 
+For complete-history recovery, follow the
+[native transcript injection scenarios](../../e2e/codex-full-history-native-injection.md):
+restore more than 1 Mi characters without losing original requests, preserve real
+image blocks, and prove that aborted or rejected injection starts no model turn
+and executes no historical tools. Record fixture, source-native and final packaged
+acceptance separately; synchronized resume must not inject history again.
+
 Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
 Local Codex CLI in General settings with an explicit executable path. With no
 API providers or keys configured, send the normal world prompt and observe the
