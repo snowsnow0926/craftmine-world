@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
 import { mkdir } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
-import type { AgentEvent, AgentEventEnvelope, AgentStatus, MessageUsage, UiMessage } from "@pi-desktop/shared";
+import type { AgentEvent, AgentEventEnvelope, AgentStatus, MessageUsage, UiMessage, CodexUsageCoverage } from "@pi-desktop/shared";
 import { CODEX_WORLD_TOOLS } from "@pi-desktop/shared";
 import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact, protocolDiagnostic, turnDiagnostic } from "./codex-app-server.mjs";
 import { historyHydration, type HistoricalRecord } from './codex-history-restore.js';
@@ -20,7 +20,8 @@ type Active = { turnId: string; cancelled: boolean; finishing?: Promise<void>; d
   controller: AbortController; codexTurnId?: string; message?: UiMessage; itemId?: string; messageIds: string[];
   queue: Promise<void>; seen: Map<string, { digest: string; result: Promise<any> }>; baseline?: Total; total?: Total;
   last?: MessageUsage; modelContextWindow?: number; startedAt: number; diagnosticStage?: string; failureDetails?: Record<string,unknown>;
-  startAcknowledged:boolean; interruptedAcknowledged:boolean; pendingToolReplies:number; compaction?:ReturnType<typeof nativeCompaction> };
+  startAcknowledged:boolean; interruptedAcknowledged:boolean; pendingToolReplies:number; compaction?:ReturnType<typeof nativeCompaction>;
+  maintenanceUsageUnreported?:boolean; maintenanceTurns:number; maintenanceElapsedMs:number; maintenanceStartedAt?:number; maintenanceTimingUnknown?:boolean };
 export type CodexDesktopOptions = { sessionId: string; binary: string; scratchDir: string; tools: PluginToolDef[];
   host: Host; onEvent(event: AgentEventEnvelope): void; history(): Promise<UiMessage[]>;
   clientFactory?: (cwd: string) => Client; verifyBinary?: (signal: AbortSignal) => Promise<void> };
@@ -88,11 +89,20 @@ export class CodexDesktopRuntime {
     this.toolDigest = hash(this.dynamicTools);
   }
   getStatus(): AgentStatus {
-    const usage = codexTurnUsage(this.active?.total, this.active?.baseline);
+    const coverage=this.usageCoverage();
+    const usage = coverage?undefined:codexTurnUsage(this.active?.total, this.active?.baseline);
     return { sessionId: this.options.sessionId, isRunning: !!this.active, currentTurnId: this.active?.turnId,
       pendingToolConfirmations: 0, modelId: MODEL, backend: "codex-cli", reasoningEffort: EFFORT,
       transportState: this.transportState, ...(usage ? { transportUsage: { scope: "current-turn", usage, cost: null } } : {}),
+      ...(coverage?{codexUsageCoverage:coverage}:{}),
       ...(this.active ? { activity: { phase: "waiting-model" as const, since: this.active.startedAt } } : {}) };
+  }
+  private usageCoverage(a=this.active):CodexUsageCoverage|undefined {
+    if(!a?.maintenanceUsageUnreported)return undefined;
+    const reported=a.startAcknowledged&&!a.compaction?codexTurnUsage(a.total,a.baseline):undefined;
+    return {status:'incomplete',reason:'native-maintenance-usage-unreported',maintenanceTurns:a.maintenanceTurns,
+      maintenanceElapsedMs:a.maintenanceTimingUnknown?null:a.maintenanceElapsedMs+(a.maintenanceStartedAt===undefined?0:Math.max(0,Date.now()-a.maintenanceStartedAt)),
+      ...(reported&&reported.totalTokens>0?{reportedCreationUsage:reported}:{})};
   }
   private emit(event: AgentEvent, a = this.active) {
     this.options.onEvent({ sessionId: this.options.sessionId, turnId: a?.turnId, ts: Date.now(), event });
@@ -157,6 +167,7 @@ export class CodexDesktopRuntime {
     let resolveDone!: () => void;
     const a: Active = { turnId, cancelled: false, startedAt: Date.now(), controller: new AbortController(), messageIds: [], queue: Promise.resolve(),
       startAcknowledged:false,interruptedAcknowledged:false,pendingToolReplies:0,
+      maintenanceTurns:0,maintenanceElapsedMs:0,
       seen: new Map(), done: new Promise(resolve => { resolveDone = resolve; }), resolve: () => resolveDone() };
     this.active = a;
     this.emit({ type: "agent_start" }); this.emit({ type: "turn_start" }); this.emit({ type: "status", status: this.getStatus() });
@@ -219,17 +230,23 @@ export class CodexDesktopRuntime {
   }
   private async compactHistory(a:Active){
     this.assertActive(a);a.diagnosticStage='history-compact';
+    a.maintenanceUsageUnreported=true;a.maintenanceStartedAt=Date.now();
+    this.emit({type:'status',status:this.getStatus()},a);
     const pending=nativeCompaction(a.controller.signal);a.compaction=pending;
     try{
       const acknowledged=await this.client!.call('thread/compact/start',{threadId:this.checkpoint!.threadId});
       this.assertActive(a);
       if(!acknowledged||typeof acknowledged!=='object'||Array.isArray(acknowledged))fail('CODEX_HISTORY_ACK_INVALID');
-      await pending.done;this.assertActive(a);
-    }finally{pending.dispose();if(a.compaction===pending)a.compaction=undefined;}
+      await pending.done;this.assertActive(a);a.maintenanceTurns++;
+    }finally{
+      a.maintenanceElapsedMs+=Math.max(0,Date.now()-(a.maintenanceStartedAt??Date.now()));a.maintenanceStartedAt=undefined;
+      pending.dispose();if(a.compaction===pending)a.compaction=undefined;
+      if(this.active===a)this.emit({type:'status',status:this.getStatus()},a);
+    }
   }
   private message(a: Active, itemId: string) {
     if (a.itemId !== itemId) {
-      this.endMessage(a, "complete");
+      if(a.message)this.endMessage(a, "complete");
       a.itemId = itemId;
       a.message = { id: randomUUID(), role: "assistant", content: "", status: "streaming", createdAt: new Date().toISOString(), providerId: "codex-cli", modelId: MODEL };
       this.emit({ type: "message_start", message: { ...a.message } }, a);
@@ -237,9 +254,11 @@ export class CodexDesktopRuntime {
     return a.message!;
   }
   private endMessage(a: Active, status: "complete" | "error" | "aborted", usage?: MessageUsage, code?: string) {
-    if (!a.message && (usage || code)) this.message(a, "host-terminal");
+    const coverage=this.usageCoverage(a);
+    if (!a.message && (usage || code || coverage)) this.message(a, "host-terminal");
     if (!a.message) return;
-    const message = { ...a.message, status, ...(usage ? { usage, codexUsage: { scope: "current-turn" as const, lastRequest: a.last, modelContextWindow: a.modelContextWindow, cost: null } } : {}),
+    const message = { ...a.message, status, ...(usage&&!coverage?{usage}:{}),
+      ...(usage||coverage?{codexUsage:{scope:'current-turn' as const,lastRequest:a.last,modelContextWindow:a.modelContextWindow,cost:null,...(coverage?{coverage}:{})}}:{}),
       ...(code ? { error: { code, message: code, retriable: false, ...(a.failureDetails?{details:a.failureDetails}:{}) } } : {}) };
     this.emit({ type: "message_end", message }, a); a.messageIds.push(message.id);
     a.message = undefined; a.itemId = undefined;
@@ -272,6 +291,15 @@ export class CodexDesktopRuntime {
     if (method === "model/rerouted") { void this.finish(a, "error", "CODEX_MODEL_REROUTED"); return; }
     if (method === "thread/tokenUsage/updated") {
       const total = p.tokenUsage?.total;
+      const last=p.tokenUsage?.last;
+      const contextReset=total?.inputTokens===0&&total?.outputTokens===0&&total?.totalTokens===0&&
+        last?.inputTokens===0&&last?.outputTokens===0&&Number.isSafeInteger(last?.totalTokens)&&last.totalTokens>0;
+      if(contextReset||a.compaction){
+        a.maintenanceUsageUnreported=true;
+        if(contextReset){a.total=undefined;a.last=undefined;a.baseline={inputTokens:0,outputTokens:0,totalTokens:0};}
+        if(Number.isSafeInteger(p.tokenUsage?.modelContextWindow)&&p.tokenUsage.modelContextWindow>0)a.modelContextWindow=p.tokenUsage.modelContextWindow;
+        this.emit({type:'status',status:this.getStatus()},a);return;
+      }
       if (validCodexUsageTotal(total)) {
         a.total = total;
         a.last = codexTurnUsage(p.tokenUsage.last, { inputTokens: 0, outputTokens: 0, totalTokens: 0 });
@@ -287,6 +315,13 @@ export class CodexDesktopRuntime {
       const message = this.message(a, p.itemId); message.content += p.delta;
       this.emit({ type: "message_update", message: { ...message }, deltaText: p.delta }, a);
     } else if (method === "item/started" || method === "item/completed") {
+      if(p.item?.type==='contextCompaction'){
+        a.maintenanceUsageUnreported=true;
+        if(method==='item/started')a.maintenanceStartedAt=Date.now();
+        else {a.maintenanceTurns++;if(a.maintenanceStartedAt===undefined)a.maintenanceTimingUnknown=true;
+          else a.maintenanceElapsedMs+=Math.max(0,Date.now()-a.maintenanceStartedAt);a.maintenanceStartedAt=undefined;}
+        this.emit({type:'status',status:this.getStatus()},a);return;
+      }
       if (["commandExecution", "fileChange", "mcpToolCall", "webSearch", "imageGeneration"].includes(p.item?.type)) {
         void this.finish(a, "error", "CODEX_UNEXPECTED_BUILTIN_TOOL"); return;
       }
@@ -371,10 +406,10 @@ export class CodexDesktopRuntime {
         await closing;
       }
       try { await a.queue; } catch { status = "error"; code = "CODEX_TOOL_TRANSPORT_FAILED"; }
-      const usage = codexTurnUsage(a.total, a.baseline);
+      const usage = a.maintenanceUsageUnreported?undefined:codexTurnUsage(a.total, a.baseline);
       this.endMessage(a, status, usage, code);
       if (this.checkpoint) {
-        this.checkpoint.usageTotal = a.total;
+        this.checkpoint.usageTotal = a.maintenanceUsageUnreported&&a.total?.totalTokens===0?undefined:a.total;
         const synchronized=status==='complete' || (status==='aborted' && abortTailWasIdle && a.pendingToolReplies===0 && a.startAcknowledged && a.interruptedAcknowledged);
         try { await this.save(a, synchronized); }
         catch (error) { if (status === "complete" || status === 'aborted') { status = "error"; code = "CODEX_CHECKPOINT_PERSIST_FAILED"; failureCause = diagnostic(error); } }

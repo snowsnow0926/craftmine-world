@@ -33,6 +33,13 @@ test("Codex turn totals cannot masquerade as context occupancy or a generic prov
   assert.deepEqual(actual.usage,last);assert.deepEqual(actual.turnUsage,aggregate);assert.equal(actual.contextWindow,1000000);
 });
 
+test('legacy 033 capacity-only metadata is not projected as usage by the context inspector',()=>{
+  const marker={inputTokens:0,outputTokens:0,cacheReadTokens:0,cacheWriteTokens:0,reasoningTokens:0,totalTokens:522500};
+  const row={id:'legacy-033',role:'assistant',content:'',createdAt:'2026-09-14T02:16:35Z',status:'error',providerId:'codex-cli',modelId:'gpt-6-astra',usage:marker,
+    codexUsage:{scope:'current-turn',cost:null,modelContextWindow:522500,lastRequest:marker}};
+  const original=JSON.stringify(row);assert.equal(latestTurnContextInspector([row],{},[]),undefined);assert.equal(JSON.stringify(row),original);
+});
+
 function message(id, role, content, extra = {}) {
   return {
     id,

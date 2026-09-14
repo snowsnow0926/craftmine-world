@@ -137,8 +137,10 @@ All user requests remain in the canonical PI transcript and receive explicit
 anchors. Verify the tested original user wording and four historical image blocks
 are available after the final original-text compaction. No base64 text, substituted
 current capture or source/save mutation is allowed. Refresh current host facts
-before the one actual player `turn/start`. Include actual native maintenance usage
-in the PI request only through valid reported counters, not injection acknowledgements.
+before the one actual player `turn/start`. Maintenance usage is unreported in the
+consumed native notification contract: zero reset counters are not consumption.
+Preserve completed maintenance count/time and explicitly incomplete coverage;
+subsequently reported creation counters must not become a complete operation total.
 
 With fixtures, interrupt an acknowledged but unfinished compact turn; also reject
 compaction or omit its completed item. Expect no actual player `turn/start`, no
@@ -148,6 +150,25 @@ cap, smaller history or successful maintenance event to force progress.
 The cancelled maintenance case must explicitly send `turn/interrupt` with the
 known maintenance thread/turn ID; merely closing stdin is insufficient. Its
 interrupted acknowledgement must not synchronize the player checkpoint.
+
+## H7: honest usage coverage after native maintenance
+
+Replay the actual notification shape: `total` input/output/cache/total all zero,
+while `last` has only a positive total. The active UI must show unknown total usage
+and maintenance-unreported coverage, never zero consumption. Finish or abort
+without creation usage; verify no zero usage baseline is saved. Then provide a
+valid creation counter and verify it appears only as reported creation usage in
+the incomplete-coverage metadata, not generic `message.usage`/complete total.
+
+Cold-read the terminal message through Rust and render it again. Optional
+`codexUsage.coverage` must preserve the reason, completed maintenance count, measured
+time (or null) and reported creation counters. Transcript UI and offline export
+must keep the total unknown even if a stale caller also supplies a numeric usage.
+Read the already persisted 033 capacity marker without rewriting it; metrics and
+context inspector must not display its 522,500 as token consumption. Ordinary
+no-maintenance consistent counters remain visible. Native rollout usage audits,
+if separately authorized, must clearly label their source and deduplicate unique
+response records; they cannot be substituted for product-reported coverage.
 
 ## Required report and automated entry point
 
@@ -165,7 +186,7 @@ pnpm -C vendor/pi-desktop/packages/agent-runtime exec vitest run src/codex-deskt
 pnpm -C vendor/pi-desktop/packages/agent-runtime typecheck
 ```
 
-Report H1-H6 independently as passed, failed or not run, identifying fixture,
+Report H1-H7 independently as passed, failed or not run, identifying fixture,
 source-native or packaged-native evidence. Include source/binary identity, profile
 binding, original and reconstructed payload counts/hashes, image block counts,
 injection acknowledgement counts, number of `turn/start` and domain calls before

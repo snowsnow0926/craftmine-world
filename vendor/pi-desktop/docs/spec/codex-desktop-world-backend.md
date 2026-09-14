@@ -140,6 +140,31 @@ one app-server turn; the existing request-level metrics panel may have unknown
 coverage for Codex. No invented PI model-call records, cost, throughput or native
 budget settlements are produced. This backend adds no model/token/turn budget.
 
+Native maintenance usage has incomplete coverage in the verified CLI notification
+contract. Actual compaction writes separate native usage records, but the consumed
+`thread/tokenUsage/updated` stream resets its total counters to zero afterward and
+may expose context occupancy as an otherwise-zero `last` total. These resets are
+not model consumption, must not display zero usage and never become a zero
+checkpoint baseline. Do not silently import private rollout counters into product
+events or call account-wide APIs to fill the gap.
+
+When maintenance occurred, omit generic `message.usage` and `status.transportUsage`
+as complete totals. Persist `message.codexUsage.coverage`, and expose the same
+`status.codexUsageCoverage`, with `status: incomplete`, reason
+`native-maintenance-usage-unreported`, completed `maintenanceTurns`, observed
+`maintenanceElapsedMs` (null if timing is unavailable), and optional
+`reportedCreationUsage`. The latter contains only subsequently reported creation
+counters, never a complete operation total. These optional fields survive Rust's
+canonical transcript roundtrip. UI and exports show total usage as unknown,
+explicitly label creation counters/maintenance absence, and preserve the coverage.
+Known valid post-reset creation counters may seed later-turn deltas; unreported
+maintenance is never reclassified as zero. No cost is inferred.
+
+Legacy persisted context-capacity markers (all-zero components, total equal to
+model window) are filtered in the metrics/context UI as a read-only projection.
+The original SQLite/transcript record remains unchanged. Existing no-maintenance
+turns with consistent reported usage retain their ordinary behavior.
+
 Cancellation first revokes local dispatch and native turn authority, cancels
 owned permission/tool waiters, interrupts/closes the CLI and drains outstanding
 work. Late tool requests fail. The native fence must succeed before cancellation

@@ -9985,6 +9985,9 @@ own matched turn/item completion, valid usage and no domain tools; failure/cance
 must not start the actual player turn. Preserve original requests and images.
 Maintenance cancellation must send `turn/interrupt` for its known native turn ID
 and must remain unsynchronized even when that maintenance interruption is acknowledged.
+Run H7 usage coverage: native reset zeros and old capacity markers cannot become
+consumption. Persist incomplete maintenance coverage through Rust, UI and export;
+show reported creation counters separately while overall usage stays unknown.
 
 Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
 Local Codex CLI in General settings with an explicit executable path. With no
