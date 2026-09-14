@@ -49,6 +49,13 @@
       "archiveSha256": "6ab46759457d9c97c743bacda5ffff496706380e44a5ffd30691f745258326b3",
       "rootContentHash": "7ce8cb9bcab09856ad354aea893f5e149ebf5bfe64786bc925377d4e9d408e4a",
       "label": "可复用控雨：悬停与倒流"
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "version": 3,
+      "archiveSha256": "186f0fa94cc396d7c625a45cdfdb6352d71891fab104ba54f961b2a16c171718",
+      "rootContentHash": "3ea1a0e9872746f3dbabb9958b5e2e55435529d06afc94d3ab5a77545d0b61c2",
+      "label": "演示同款可爱白色博美"
     }
   ]
 }

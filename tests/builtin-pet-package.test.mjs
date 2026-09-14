@@ -60,7 +60,8 @@ test('scene materialization preserves two independent identities and reuses the 
 
 test('whole library is deterministic and appends one playable module without reclassifying old resources',()=>{
  const output=tmp(),other=tmp(),a=buildBuiltinSourceLibrary({output}),b=buildBuiltinSourceLibrary({output:other});
- const preserved=a.entries.filter(entry=>!entry.tags.includes('reusable-world-content'));
+ // Compatibility versions were appended after this historical 22-entry set.
+ const preserved=a.entries.filter(entry=>!entry.tags.includes('reusable-world-content')&&!entry.tags.includes('compatibility-version'));
  assert.equal(preserved.length,22);assert.deepEqual(a,b);assert.equal(preserved.at(-4).assetId,PET_ASSET_ID);assert.equal(preserved.at(-3).assetId,'cw.module.sandbox-combat');assert.equal(preserved.at(-2).assetId,'cw.module.approved-pomeranian');assert.equal(preserved.at(-1).assetId,'cw.model.approved-pomeranian');
  for(const entry of a.entries)assert.deepEqual(fs.readFileSync(path.join(output,entry.file)),fs.readFileSync(path.join(other,entry.file)));
  assert.equal(preserved.filter(entry=>entry.kind==='object').length,17);

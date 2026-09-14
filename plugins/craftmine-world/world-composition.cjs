@@ -2,6 +2,7 @@
 // Composition is a source-bound plan, never an installer or gameplay verifier.
 const {createHash}=require('node:crypto');
 const pins=require('./world-composition-pins.json');
+const {companionPositionConfiguration}=require('./companion-position-bounds.cjs');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
 const exact=(value,keys)=>check(value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(key=>keys.includes(key)),'COMPOSITION_INVALID_PARAMS');
@@ -10,10 +11,10 @@ const recipes=[
   {id:'rain-exploration',version:1,label:{zh:'雨中漫游',en:'Rain exploration'},description:{zh:'保留步行与相机，加入可操控的雨。',en:'Add controllable rain while preserving walking and the camera.'},defaults:{scenery:'keep',companion:false,weather:'rain',collectionCount:0}},
   {id:'collect-unlock-flight',version:1,label:{zh:'收集物品解锁飞行',en:'Collect to unlock flight'},description:{zh:'组合伙伴、收集任务和飞机；AI 需补齐任务与真实跑道。',en:'Combine a companion, collection quest and aircraft; the agent must implement the quest and a real runway.'},defaults:{scenery:'keep',companion:true,weather:'keep',collectionCount:3}},
 ];
-function catalog(){return {format:'craftmine.world-composition-catalog/1',recipes:recipes.map(row=>({...structuredClone(row),version:2})),supportedRecipeVersions:[1,2],choices:{scenery:[{id:'keep',label:{zh:'保留当前场景',en:'Keep current scenery'}},{id:'forest',label:{zh:'增加森林入口',en:'Add forest gateway'}},{id:'city-street',label:{zh:'增加城市街区片段',en:'Add city street fragment'}}],weather:[{id:'keep',label:{zh:'保留当前天气',en:'Keep current weather'}},{id:'rain',label:{zh:'加入可操控的雨',en:'Add controllable rain'}}]},scope:'current-world-preserved',applied:false};}
+function catalog(){return {format:'craftmine.world-composition-catalog/1',recipes:recipes.map(row=>({...structuredClone(row),version:3})),supportedRecipeVersions:[1,2,3],choices:{scenery:[{id:'keep',label:{zh:'保留当前场景',en:'Keep current scenery'}},{id:'forest',label:{zh:'增加森林入口',en:'Add forest gateway'}},{id:'city-street',label:{zh:'增加城市街区片段',en:'Add city street fragment'}}],weather:[{id:'keep',label:{zh:'保留当前天气',en:'Keep current weather'}},{id:'rain',label:{zh:'加入可操控的雨',en:'Add controllable rain'}}]},scope:'current-world-preserved',applied:false};}
 function request(input){
   exact(input,['recipeId','recipeVersion','choices','wish']);
-  const recipe=recipes.find(row=>row.id===input.recipeId&&[1,2].includes(input.recipeVersion));check(recipe,'COMPOSITION_RECIPE_VERSION_REQUIRED');
+  const recipe=recipes.find(row=>row.id===input.recipeId&&[1,2,3].includes(input.recipeVersion));check(recipe,'COMPOSITION_RECIPE_VERSION_REQUIRED');
   exact(input.choices,['scenery','companion','weather','collectionCount']);const choices=input.choices;
   check(['keep','forest','city-street'].includes(choices.scenery)&&typeof choices.companion==='boolean'&&['keep','rain'].includes(choices.weather)&&Number.isInteger(choices.collectionCount),'COMPOSITION_CHOICES_REQUIRED');
   check(recipe.id==='collect-unlock-flight'?choices.collectionCount>=1&&choices.collectionCount<=12:choices.collectionCount===0,'COMPOSITION_COLLECTION_COUNT_INVALID');
@@ -27,7 +28,7 @@ function selectedAssets(input){
   if(input.choices.companion)chosen.push('cw.module.approved-pomeranian');
   if(input.choices.weather==='rain')chosen.push('cw.module.rain-control');
   if(input.recipeId==='collect-unlock-flight')chosen.push('cw.module.reusable-j20');
-  return chosen.map(id=>{const entry=pins.entries.find(row=>row.assetId===id&&row.version===(input.recipeVersion===2&&['cw.module.approved-pomeranian','cw.module.rain-control'].includes(id)?2:1));check(entry,'COMPOSITION_PIN_MISSING');return entry;});
+  return chosen.map(id=>{const version=input.recipeVersion===3&&id==='cw.module.approved-pomeranian'?3:input.recipeVersion>=2&&['cw.module.approved-pomeranian','cw.module.rain-control'].includes(id)?2:1;const entry=pins.entries.find(row=>row.assetId===id&&row.version===version);check(entry,'COMPOSITION_PIN_MISSING');return entry;});
 }
 function assessRequirements(entry,files){
   const evaluate=items=>(items??[]).map(item=>({path:item.path,expectedSha256:item.sha256,status:files.has(item.path)?files.get(item.path).sha256===item.sha256?'matched':'changed':'missing'}));
@@ -62,6 +63,7 @@ function createWorldComposition({call,ensureBuiltin,readArchive}){
       components.push({archiveRef:ref,archiveSha256:pin.archiveSha256,rootContentHash:pin.rootContentHash,displayName:version.displayName,source:version.source,
         sourceRequirements:assessRequirements(entry,files),existingSource:files.has('addons/'+pin.assetId+'/'+entry.sceneInstall.sceneFile)?'component-files-present-inspect-instances':'not-observed',
         kind:content.kind,compatibility:{declared:content.compatibility,status:content.compatibility?.base===identity.baseId&&(!content.compatibility.engine||content.compatibility.engine===identity.engineVersion)?'base-and-engine-matched':'adaptation-required'},capabilities:entry.capabilities??[],placement:entry.placement??null,airspaceRequirements:entry.airspaceRequirements??null,controls:entry.controls??null,playerBinding:entry.playerBinding??entry.integration??null,exclusiveCapability:entry.exclusiveCapability??null,state:content.state,interfaces:content.interfaces,
+        ...(content.entry.positionValidation?{positionValidation:content.entry.positionValidation,sourceConfiguration:companionPositionConfiguration(files)}:{}),
         nextAction:'read-exact-component-and-inspect-target-before-propose',applied:false});
     }
     const checks=[

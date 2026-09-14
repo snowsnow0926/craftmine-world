@@ -10944,3 +10944,9 @@ strict fallback on all identity/options/media changes, and no late request after
 cancellation. Verify cache counts once, unchanged 1M/384K/max configuration and
 one ordinary compaction recovery after a pre-send fallback overflow. Synthetic
 fixture counts are not real-player token-saving claims.
+
+## Companion v3 receiving-world bounds
+
+Check configured city/sandbox ranges, exact cold component state, finite values,
+2 mm vertical contacts, retained field/collision checks, immutable old packages
+and recipe3 configuration. See [the scenario](../../e2e/companion-world-bounds-20260914.md).

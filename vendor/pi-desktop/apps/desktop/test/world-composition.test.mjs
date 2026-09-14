@@ -11,6 +11,7 @@ const request={recipeId:'collect-unlock-flight',recipeVersion:1,choices:{scenery
 const plan={format:'craftmine.world-composition-plan/1',worldId:'world-one',planHash:'e'.repeat(64),request,source:{revision:2,manifestHash:'a'.repeat(64)},components:[],checks:[{id:'physical-runway',status:'runtime-verification-required',detail:'Actual collider required'}],missingLogic:[{id:'collection-objective',detail:'Generate and play the quest'}],applied:false,compatibility:'not-runtime-verified'};
 test('UI and domain agree on exact versions, choices, UTF-8 wish bounds and unknown-field refusals',()=>{
   assert.deepEqual(validateCompositionRequest(request),domainValidate(request));
+  for(const recipeVersion of [1,2,3])assert.deepEqual(validateCompositionRequest({...request,recipeVersion}),domainValidate({...request,recipeVersion}));
   for(const invalid of [{...request,recipeVersion:'latest'},{...request,choices:{...request.choices,collectionCount:0}},{...request,worldId:'elsewhere'},{...request,wish:'城'.repeat(2001)}]){assert.throws(()=>validateCompositionRequest(invalid));assert.throws(()=>domainValidate(invalid));}
 });
 test('navigation exposes only bounded read-only composition requests',async()=>{

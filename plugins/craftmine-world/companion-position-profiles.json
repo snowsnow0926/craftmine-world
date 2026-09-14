@@ -1,0 +1,57 @@
+{
+  "format": "craftmine.companion-position-profiles/1",
+  "profiles": [
+    {
+      "id": "stock-sandbox",
+      "path": "scripts/creation_world.gd",
+      "minimum": [
+        -32,
+        0,
+        -32
+      ],
+      "maximum": [
+        32,
+        32,
+        32
+      ],
+      "source": "desktop/godot/bases/creation-sandbox/scripts/creation_world.gd",
+      "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615",
+      "selectors": [
+        {
+          "path": "project.godot",
+          "sha256": "7d7d408d6052068ee0bd63518e6f4b240a0764a73d26601cb2787a453df603cc"
+        },
+        {
+          "path": "scenes/creation.tscn",
+          "sha256": "bac1347d32bb5736043ecb3d3e4794e40d22654dc0ae354f270ab09a4bbcab88"
+        }
+      ]
+    },
+    {
+      "id": "orgrimmar-city",
+      "path": "scripts/orgrimmar_world.gd",
+      "minimum": [
+        -240,
+        -20,
+        -300
+      ],
+      "maximum": [
+        240,
+        160,
+        80
+      ],
+      "source": "desktop/godot/shared/promo-templates/promo-city/source/scripts/orgrimmar_world.gd",
+      "sha256": "d723b7dfb91a0d5962bb2273273ff094e3be0f93c1b4e975c81f3186cc731ac0",
+      "selectors": [
+        {
+          "path": "project.godot",
+          "sha256": "171ec1bf0837b9a6ae793da6218fe921b0b58e4e454f2e6f06f9a8c67c507d7f"
+        },
+        {
+          "path": "scenes/creation.tscn",
+          "sha256": "7a6a9f25a4402ec0e028271d32a950a3d37d31c7f9d9327a10301d15aae35bd8"
+        }
+      ]
+    }
+  ]
+}

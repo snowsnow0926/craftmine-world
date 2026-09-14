@@ -73,3 +73,8 @@ overlaps and unsupported shapes remain rejected. The fixture explicitly invokes
 `validate_restored_state` on two separated pets, then on a deliberate overlap,
 then after separation. Merely restoring serialized dictionaries was insufficient
 to prove the complete runtime restore contract.
+
+## Version 3 bounds amendment
+
+V3 adds explicit receiving-world position bounds while preserving published
+v1/v2 bytes. See [the contract](companion-world-bounds.md).
