@@ -79,6 +79,35 @@ describe("Craftmine authoritative request boundary", () => {
     current.creationTarget.worldId="other-world";
     expect(craftmineContextBlocks(current)).not.toContain("Renamed/Body");
   });
+  it("keeps a Godot world with no projected source receipts authoritative and preserves the selected wide model allowance", async () => {
+    const f=fixture(),current=snapshot();
+    current.world.runtimeKind="godot";current.world.baseId="creation-sandbox";
+    current.creationTarget={worldId:"world",autoApply:true,authorization:"full-auto",sourceRevision:2,manifestHash:"c".repeat(64),snapshotId:"captured-target"};
+    f.set(current);
+    const wide={...model,contextWindow:1000000,maxTokens:384000};
+    const prepared=await f.hooks.beforeRequest({requestId:"godot-first-request",purpose:"creation",model:wide,context:{...request,systemPrompt:CRAFTMINE_SYSTEM_PROMPT},maxOutputTokens:384000});
+    expect(prepared.maxOutputTokens).toBe(384000);
+    expect(f.calls.find(call=>call.method==="budget.reserve")?.params.maxOutputTokens).toBe(384000);
+    const blocks=craftmineContextBlocks(current);
+    const data=JSON.parse(blocks.slice(blocks.lastIndexOf("\n\n{")+2));
+    expect(data.machineFacts.godotFacts).toBeNull();expect(data.machineFacts.world.runtimeKind).toBe("godot");
+    expect(data.machineFacts.creationTarget).toEqual(current.creationTarget);
+    expect(data.machineFacts.receipts).toEqual([]);
+    expect(prepared.context.systemPrompt).toContain("not evidence that the Godot project is absent");
+    expect(prepared.context.systemPrompt).toContain("structured Godot creation-sandbox base-generator editor");
+    expect(prepared.context.systemPrompt).toContain("Keep necessary dependency, placement and behavior checks");
+  });
+  it("explains automatic application without granting it or suppressing unresolved diagnostics", () => {
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("report pending until actual host application evidence");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("do not routinely ask the player to refresh, reload or reopen");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("Outside authorized automatic application");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("unknown diagnostic is not harmless just because a check passed");
+    const manual=snapshot();manual.world.runtimeKind="godot";
+    manual.creationTarget={worldId:"world",autoApply:false,authorization:"manual"};
+    const blocks=craftmineContextBlocks(manual),data=JSON.parse(blocks.slice(blocks.lastIndexOf("\n\n{")+2));
+    expect(data.machineFacts.creationTarget).toEqual(manual.creationTarget);
+    expect(data.machineFacts.jobs).toEqual([]);expect(data.machineFacts.receipts).toEqual([]);
+  });
   it("carries the host target through compaction/retry and drops a different world's capture", () => {
     const current=snapshot();
     current.creationTarget={worldId:"world",snapshotId:"host-capture",target:{entityId:"tree-fixed"}};

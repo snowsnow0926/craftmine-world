@@ -1,5 +1,17 @@
 # 04. E2E Test Plan
 
+### Godot authoring scope and player result guidance (2026-09-15)
+
+- Preserve runtime identity when the journal-derived Godot projection is null;
+  use current facts and inspect unresolved dependencies without fixed reread loops.
+- Keep Godot base-generator, source, library and Blender choices available under
+  their existing target/permission contracts. Separate pending automatic adoption
+  from actual host-confirmed application and avoid routine player reopen requests.
+- Retain original Flash run evidence and the boundary between the active old
+  package and a later rebuilt prompt comparison. See
+  [specification](../godot-player-authoring-guidance.md) and
+  [CPU evidence](../../e2e/godot-player-authoring-guidance-20260915.md).
+
 ### Demo result feedback (2026-09-15)
 
 Run [the focused result feedback plan](../../e2e/demo-result-feedback-20260915.md).
