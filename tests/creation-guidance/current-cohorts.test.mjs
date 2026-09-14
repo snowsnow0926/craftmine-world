@@ -49,7 +49,7 @@ function fixture(profile,{retained=true}={}){
   change(method,args,response);return response;
  }};
  const tools=createWorldTools(core,async()=>({activeWorldId:'world-guidance'}));
- return {texts,calls,alter:fn=>change=fn,run:(name,args)=>tools.find(tool=>tool.name===name).execute(args,context)};
+ return {texts,calls,tools,alter:fn=>change=fn,run:(name,args)=>tools.find(tool=>tool.name===name).execute(args,context)};
 }
 const query=(f,args)=>f.run('godot_project_query',args),guide=(f,args={mode:'catalog'})=>f.run('godot_guidance',args);
 function readOnly(f){assert.ok(f.calls.every(call=>['workspace.open','godotProject.index','godotProject.read'].includes(call.method)));}
@@ -58,6 +58,17 @@ test.after(()=>fs.rmSync(temporary,{recursive:true,force:true}));
 test('cohort corpus matches the reviewed retained registry without refreshing released pins',()=>{
  execFileSync(process.execPath,[path.join(root,'scripts/refresh-guidance-cohorts.mjs'),'--check'],{cwd:root,windowsHide:true,stdio:'pipe'});
  assert.deepEqual(skill.interfaceCohorts.variants.slice(0,2).map(v=>v.files.length),[11,13]);
+});
+
+test('project index rejects invalid pagination before host calls and explains the actual limit',async()=>{
+ const f=fixture('creation-player-collision/1');
+ const tool=f.tools.find(t=>t.name==='godot_project_index');
+ assert.match(tool.description,/1-32 \(default 32\)/);
+ for(const limit of [100,60,0,33,1.5])await assert.rejects(tool.execute({limit},context),/INVALID_PROJECT_PAGE: limit must be an integer from 1 to 32/);
+ await assert.rejects(tool.execute({revision:4},context),/supply revision and manifestHash together/);
+ await assert.rejects(tool.execute({offset:-1},context),/offset must be a nonnegative integer/);
+ assert.equal(f.calls.length,0);
+ const result=await tool.execute({limit:32},context);assert.equal(result.revision,4);
 });
 
 test('current factory picker gets a distinct exact cohort instead of changing released controller pins',async()=>{

@@ -42,6 +42,14 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
     // Reject forged identity/unknown fields before acquiring any draft lease.
     const allowed=Object.keys(definition.schema.properties);
     fields(args,definition.schema.required||[],allowed.filter(key=>!(definition.schema.required||[]).includes(key)));
+    if(definition.name==='godot_project_index'){
+      if(args.limit!==undefined&&(!Number.isSafeInteger(args.limit)||args.limit<1||args.limit>32))
+        throw Error('INVALID_PROJECT_PAGE: limit must be an integer from 1 to 32; omit it for 32 files. Follow nextOffset with the returned revision and manifestHash for the next page.');
+      if(args.offset!==undefined&&(!Number.isSafeInteger(args.offset)||args.offset<0))
+        throw Error('INVALID_PROJECT_PAGE: offset must be a nonnegative integer; start at 0 or follow the previous nextOffset.');
+      if((args.revision===undefined)!==(args.manifestHash===undefined))
+        throw Error('INVALID_PROJECT_PAGE: supply revision and manifestHash together, or omit both for the latest source.');
+    }
     // Documentation needs neither the runtime nor a world binding.
     if(definition.name==='godot_docs') {
       if(['api-info','api-class','api-search'].includes(args.mode)){

@@ -90,7 +90,7 @@
       },
       {
         "name": "godot_project_index",
-        "description": "Inspect the source-only Godot project bound to this session. Returns paginated paths, SHA-256 hashes and source revision. Supply revision and manifestHash together to inspect an immutable version; omit both for the latest. Read source files with godot_file_read before patching. Source storage is not a successful build or playable world.",
+        "description": "Inspect the source-only Godot project bound to this session. Returns paginated paths, SHA-256 hashes and source revision. limit is 1-32 (default 32); start at offset 0 and follow nextOffset, retaining the returned revision and manifestHash across pages. Supply revision and manifestHash together to inspect an immutable version; omit both for the latest. Read source files with godot_file_read before patching. Source storage is not a successful build or playable world.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -110,7 +110,9 @@
             "limit": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 32
+              "maximum": 32,
+              "description": "Number of files per page: 1-32, default 32. Follow nextOffset for remaining files.",
+              "default": 32
             }
           },
           "required": [],
@@ -909,7 +911,7 @@
       },
       {
         "name": "asset_library",
-        "description": "Search and read the fixed asset library. mode=search finds assets by scope, kind, media kind and tags and returns separated indexed/previewable/baseChecked/applied facts; mode=read returns one immutable version with its exact AssetRef, file hashes and source/licence record, and no body bytes; mode=versions lists every immutable version of one asset. Read-only: nothing here installs, imports or annotates. A missing library adapter is reported with the exact method and owner instead of invented content.",
+        "description": "Search and read the fixed asset library. mode=search defaults to scope=local-library and finds assets by scope, kind, media kind and tags and returns separated indexed/previewable/baseChecked/applied facts; mode=read returns one immutable version with its exact AssetRef, file hashes and source/licence record, and no body bytes; mode=versions lists every immutable version of one asset. Read-only: nothing here installs, imports or annotates. A missing library adapter is reported with the exact method and owner instead of invented content.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -928,7 +930,9 @@
                 "current-world",
                 "local-library",
                 "import-source"
-              ]
+              ],
+              "description": "Search scope; defaults to local-library when omitted. current-world is bound by the host to this conversation world.",
+              "default": "local-library"
             },
             "query": {
               "type": "string",
