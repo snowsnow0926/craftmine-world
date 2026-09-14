@@ -1,6 +1,6 @@
 # 沉浸式造物世界：物件操作与普通源码玩法
 
-指导 ID：`creation-sandbox.authoring`，版本 `1.8.2`。仅匹配
+指导 ID：`creation-sandbox.authoring`，版本 `1.9.0`。仅匹配
 `creation-sandbox` 底座 `1.0.0`、初始 `creation-sandbox-1.0.0` 或已采用的 `gbd-*` build，以及
 Godot `4.7.2-stable`，并检查所列运行时接口的真实文件哈希。
 
@@ -45,13 +45,23 @@ For runtime follow/wait toggles and HUD labels, read the verified companion's
 需要重开保留的变化，应进入实际源码及受支持的 capture/validate/restore 进度路径；
 临时附加节点或运行时变量不能代替持久化实现。
 
-## 常见静态外观：先查真实组件
+## 外观和玩法：先查真实组件，再按用法组装
 
-确认世界事实和可用工具后，树木、地表装饰、桥、围栏、城墙等常见静态外观，先用
-`godot_source_library` 查找符合玩家风格、尺寸和用途的组件，避免重复用方块从头拼造。
+确认世界事实和可用工具后，先查看相关已有实例和真实场景引用，再用
+`godot_source_library` 查找符合玩家风格、尺寸、交互和用途的少量组件。
+树木、地表装饰、桥、围栏等外观，以及宠物跟随、天气、武器、怪物、收集等玩法，都先检查可复用内容。
 工具尚未暴露时，用 `ToolSearch` 按这个准确名称发现；真正不可用或没有合适素材时，
 继续通过普通场景、GDScript 和允许的资源原创，不为迁就库存擅自降低玩家要求。
-已有少量精选组件不代表所有动物、城市或飞机都已有素材，能力只以实际返回为准。
+库不保证包含所有愿望；没有合适候选就继续原创。仅有证据支持另一个名称、版本或候选时才扩展查询，
+不穷举库存、不反复读取已解决的引用，也不把搜索失败当作降低玩家外观或可玩互动要求的理由。
+
+需要了解现有成品范围或宣传片参考世界时，可在本指南目录里找到 `library/asset-index.json`，
+按实际返回的指南版本、引用 `sha256` 和源码 pins 分页读取，遵守 `nextOffset`；它是按需查阅的目录，
+不要求每轮全读。`components` 只描述生成目录时已收录的资源，`latestListedVersion` 不是安装授权，
+仍应搜索取得当前精确 `archiveRef` 再读用法。`referenceWorlds` 是完整参考世界摘要，
+`codeReadRoute:null` 表示没有跨世界源码读取入口；当前世界的 `godot_file_read` 不能因此读取这些模板路径。
+`sourceFeatures` 中的 `reference-only` 或 `plannedComponentId` 不表示已经入库、可以安装或具备完整玩法。
+先使用实际已收录的关联组件；未拆出的内容只能作为摘要参考，不虚构工具、资源版本或源码读取结果。
 
 **底座生成器和已安装素材是两类对象。** `creation_operation` 的 `place kind=tree/rock/chest/door/marker`
 选择 `world/creation.json` 所用的底座生成器，不是素材 ID、GLB 名称或已安装场景引用。
@@ -71,24 +81,34 @@ For runtime follow/wait toggles and HUD labels, read the verified companion's
 2. **read**：将检索结果中真实的 `assetId`、整数 `version`、`contentHash` 原样组成 `ref`，
    调用 `mode:"read"`。这是资产目录 ZIP 的 `archiveRef`，不是内部组件的 `rootRef`；
    两者身份和哈希不能混用，不写 `latest`、不猜版本或哈希。读取返回的 `resources`，
-   核对 `entry`、`compatibility`、`state` 和许可：`entry.placement.dimensionsMm` 是毫米，
+   核对 `entry`、`dependencies`、`interfaces`、`compatibility`、`state` 和许可：
+   依赖中的 `id/version/sha256` 是包内资源固定引用，不是可替换目录 `archiveRef` 的安装参数。
+   阅读 `automaticInstallation.resources[].behaviorSetup` 和 `entry.installationGuide`（如有），
+   分清自动建立的实例、包内附带但需手动接线的脚本，以及仍要原创的逻辑；安装后按真实返回路径读必要源码。
+   怪物追击和伤害还可能需要唯一玩家生命状态、目标绑定、碰撞层及保存恢复接口，不能只凭模型出现就称玩法完成。
+   `entry.placement.dimensionsMm` 是毫米，
    同时看 `entry.collision`、`entry.visualOnlyScene`、`entry.importConfiguration` 的真实声明。
    没有声明就不要猜。静态门不等于开门机关，飞机外形不等于可驾驶飞机，怪物外形不等于战斗 AI。
-3. **propose**：选中合适组件后，用同一精确目录 `ref` 调用 `mode:"propose"`，交给玩家通过
-   正常作品面板安装。只有玩家明确给定或可信当前观察已确定的坐标，且各轴在 -80..80 内，
+3. **install / propose**：选中合适组件后，按当前宿主授权选择操作。
+   已捕获全自动创作授权时，用同一精确目录 `ref` 调用 `mode:"install"`，在本轮实际写入并启动检查；
+   读取返回的 `jobId`，用 `godot_build_read` 跟进真实结果及宿主采用进度。
+   没有全自动授权时使用 `mode:"propose"`，交给玩家通过正常作品面板安装，不能声称已完成世界修改。
+   只有玩家明确给定或可信当前观察已确定的坐标，且各轴在 -80..80 内，
    才能传完整 `position:{x,y,z}`；不能猜“这里”、从名称推坐标或默默填零。省略位置就是模板默认位置，
    此提案不自动消费玩家捕获的“这里”指代，不能声称已经放到指定落点。
 
-4. **propose-group**：同一愿望需要一起安装 2..8 项时，使用
-   `{mode:"propose-group",items:[{ref:真实目录引用,position:可选真实位置},...]}`。
+4. **install-group / propose-group**：同一愿望需要一起安装 2..8 项时，全自动授权下使用
+   `{mode:"install-group",items:[{ref:真实目录引用,position:可选真实位置},...]}`；否则使用相同结构的 `mode:"propose-group"`。
    每项引用先按上述 read 核对；同一素材可以重复出现，每项产生独立安装实例。
-   整组绑定同一源码版本，只需一次玩家确认，全部预检通过后一次写入，再统一检查和采用。
+   整组绑定同一源码版本；提案路径只需一次玩家确认，全自动路径由当前宿主授权把关。
+   全部预检通过后一次写入，再统一检查和采用。
    不要先生成多个独立提案再逐个安装：第一项写入会让其余旧版本提案过期。
    分组不放宽组件兼容、实例身份、源码哈希、位置依据或存档约束；任一资源冲突整组拒绝。
    超过单次组容量时保留完整目标，分批完成后重读实际源码再提案，不因容量缩减玩家场景。
 
 `propose` 只生成绑定当前世界与源码版本的安装提案，`applied:false` 不表示已采用。
-安装仍须经过正常草稿写入、检查和候选采用；后续放置/修改使用实际安装实例身份与最新源码，
+`install` 的写入和检查任务回执也不是采用或实玩成功。安装仍须经过正常草稿写入、检查和候选采用；
+后续放置/修改使用实际安装实例身份与最新源码，
 源码变化导致提案过期时重新读取并提案，不能绕过版本冲突。归档有效不证明画面、碰撞、精准拾取或玩法成功。
 库的 ZIP 与二进制由宿主读取，不在模型上下文搬运 base64、复制整个包正文或调用旧 `package_library`
 代替现代源组件流程。同一轮复用已经读到的精确引用和摘要，仅在需求、候选版本或实际读取结果变化时更新；

@@ -28,7 +28,9 @@ test('production plugin build includes exact guidance resources and serves a pin
     const corpus=require(path.join(output,'guidance/catalog.json'));
     const packedSchema=require(path.join(output,'creation-operation-schema.cjs'));
     const packedTool=require(path.join(output,'manifest.json')).contributes.agentTools.find(tool=>tool.name==='creation_operation');
-    assert.equal(packedTool.description,packedSchema.CREATION_OPERATION_DESCRIPTION);
+    const sourceTool=require(path.join(root,'plugins/craftmine-world/manifest.json')).contributes.agentTools.find(tool=>tool.name==='creation_operation');
+    assert.equal(packedTool.description,sourceTool.description);
+    assert(packedTool.description.includes(packedSchema.CREATION_OPERATION_DESCRIPTION),'packaged discovery retains the complete base editor contract plus current routing/result hints');
     assert.deepEqual(packedTool.schema.properties.request,packedSchema.CREATION_OPERATION_SCHEMA);
     assert.match(packedTool.description,/not an installed asset ID, GLB/);
     assert.match(packedTool.schema.properties.request.oneOf[0].properties.kind.description,/not an AssetRef/);
@@ -79,6 +81,17 @@ test('production plugin build includes exact guidance resources and serves a pin
       creationText+=next.text;nextOffset=next.nextOffset;
     }
     assert.equal(creationText,selectedSkill.text);
+    const indexRef=selectedSkill.references.find(ref=>ref.path==='library/asset-index.json');
+    assert(indexRef);assert.equal(creationCatalog.skills[0].references.find(ref=>ref.path===indexRef.path).text,undefined);
+    let inventoryText='',inventoryOffset=0;
+    do{
+      const page=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:indexRef.sha256,path:indexRef.path,
+        revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,offset:inventoryOffset,limit:8000},context);
+      inventoryText+=page.text;assert(page.nextOffset===null||page.nextOffset>inventoryOffset);inventoryOffset=page.nextOffset;
+    }while(inventoryOffset!==null);
+    assert.equal(inventoryText,indexRef.text);assert.equal(JSON.parse(inventoryText).format,'craftmine.reuse-asset-index/1');
+    assert.equal(createHash('sha256').update(inventoryText).digest('hex'),indexRef.sha256);
+    assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false);
     const example=selectedSkill.references.find(ref=>ref.path==='examples/double-press-rule.gd');
     const exampleBody=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:example.sha256,path:example.path,
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);

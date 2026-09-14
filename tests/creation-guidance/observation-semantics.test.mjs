@@ -69,7 +69,7 @@ test('frame distinct is tied to the one-probe implementation and the archived as
 test('versioned guidance and advertised observation/check tools state these finite evidence boundaries',()=>{
  const corpus=require('../../plugins/craftmine-world/guidance/catalog.json'),skill=corpus.skills.find(s=>s.id==='creation-sandbox.authoring');
  const text=fs.readFileSync(path.join(root,'plugins/craftmine-world/guidance/creation-sandbox.md'),'utf8').replace(/\r\n/g,'\n');
- assert.equal(skill.version,'1.8.2');assert.equal(skill.text,text);assert.equal(skill.sha256,sha(text));
+ assert.equal(skill.version,'1.9.0');assert.equal(skill.text,text);assert.equal(skill.sha256,sha(text));
  // The archive and live presentation tests above still assert the exact
  // collision/selection, sceneObjectRefs, bounds and one-probe contracts.
  // Current guidance expresses their interpretation in these separate clauses;
