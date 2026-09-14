@@ -86,5 +86,8 @@ test('production plugin build includes exact guidance resources and serves a pin
     const visual=await capture.execute({buildId:'build',instanceId:'instance'},context);assert.equal(visual.images[0].data,png.toString('base64'));assert.equal(JSON.parse(visual.text).sha256,sha256);assert.equal(visual.text.includes(png.toString('base64')),false);
     const candidate=await capture.execute({buildId:'candidate-build',candidateId:'gcan-'+'a'.repeat(64)},context);assert.equal(JSON.parse(candidate.text).instanceId,'preview-instance');
     await assert.rejects(capture.execute({buildId:'build',instanceId:'instance',worldId:'other'},context));assert.equal(captures,2);
+    const childEnv={...process.env,CRAFTMINE_GUIDANCE_PLUGIN_ROOT:output};delete childEnv.NODE_TEST_CONTEXT;
+    const engineCases=execFileSync(process.execPath,['--test',path.join(root,'tests/creation-guidance/engine-cohorts.test.mjs')],{cwd:root,encoding:'utf8',windowsHide:true,env:childEnv});
+    assert.match(engineCases,/(?:#|ℹ) pass 6/);assert.match(engineCases,/(?:#|ℹ) fail 0/);
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });

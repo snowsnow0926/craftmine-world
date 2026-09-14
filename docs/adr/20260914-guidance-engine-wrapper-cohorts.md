@@ -1,0 +1,15 @@
+# Guidance 为完整固定引擎包装链新增版本
+
+状态：已实现，2026-09-14。
+
+真实城市创作回合在源码 revision 9、manifest `4426f81be3b48b67374c1557f010c7ad26ae35ccf891fbc94a0267f01ebdb46d` 上收到 `GUIDANCE_INTERFACE_UNSUPPORTED`。源码可正常修改、检查和游玩；失败来自指导目录仍只认识旧桥和旧picker，错误信息将整个组合不匹配归在base_adapter。Core已有完整固定包装链验证，并不会自动更新独立的guidance静态目录。
+
+决定保留两个已发布cohort的完整条目、全部指导正文与必需引用的字节/hash/version。目录版本由1.8.1升至1.8.2，新增四个明确组合：fixed-controller及player-collision各增加ray-local picker版本，再各增加同一picker搭配preview engine wrapper的版本。新包装链同时固定顶层bridge、继承的runtime_bridge_base、engine_performance；不把不同代文件加入同一接受集合而产生任意组合。
+
+完整组合匹配之后，原adapter引用继续在base_adapter_legacy读取，并逐次核对同一world/revision/manifest及精确引用hash。referencePaths同时明确运行桥的继承位置runtime_bridge_base；当前指导没有新增运行桥引用正文，也没有把该映射伪称为运行验收。旧picker加新包装链、缺失/未知成员、大小写/字节码/remap别名均拒绝。非受控的自定义场景脚本仍可存在，原必需接口发生未知修改时仍不提供此指导。
+
+新增人工审阅的interface-cohorts.json作为开发期注册表。刷新脚本只复制这份版本目录并拒绝删改已发布条目，不再从不断变化的materializer学习并覆盖旧pin。运行时仍只读取已打包catalog；不引入新的文件访问或执行入口。修改不涉及原世界、素材ZIP、组件版本、应用状态或原生资源。
+
+验证包含原旧cohort、当前factory的picker、真实城市索引接口子集、每个新增包装链成员的缺失/改写反例、混搭、别名、重复项和继承引用的身份/hash变化。它们是只读source/broker测试；实际新Windows包里的完整Agent回合应由总控继续验证。
+
+本次完成24项source/broker/插件打包测试；打包测试额外运行6项新的engine-cohort测试并核对确实执行6项且无失败。用独立输出重建素材库，30个现存目录条目（28个ZIP及2个模型文件）逐项ID/version/file SHA256完全一致，包括旧版博美、雨控与歼二十，未重写已发布文件。核对明细保留在本工作树`test-results/route-review/guidance-package-retention.json`。
