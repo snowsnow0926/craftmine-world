@@ -668,7 +668,7 @@
       ],
       "templateId": "promo-mainline",
       "status": "reference-only",
-      "relatedAssetId": "cw.nature.promo-broadleaf",
+      "plannedComponentId": "cw.nature.promo-broadleaf",
       "originalFiles": [
         {
           "path": "assets/blender/broadleaf.glb",
@@ -693,7 +693,7 @@
       ],
       "templateId": "promo-mainline",
       "status": "reference-only",
-      "relatedAssetId": "cw.scene.promo-meadow",
+      "plannedComponentId": "cw.scene.promo-meadow",
       "originalFiles": [
         {
           "path": "assets/blender/meadow.glb",
@@ -713,7 +713,7 @@
       ],
       "templateId": "promo-mainline",
       "status": "reference-only",
-      "relatedAssetId": "cw.module.promo-monsters",
+      "plannedComponentId": "cw.module.promo-monsters",
       "originalFiles": [
         {
           "path": "assets/blender/hornling.glb",
@@ -743,7 +743,7 @@
       ],
       "templateId": "promo-mainline",
       "status": "reference-only",
-      "relatedAssetId": "cw.module.promo-heavyblade",
+      "plannedComponentId": "cw.module.promo-heavyblade",
       "originalFiles": [
         {
           "path": "assets/blender/heavyblade.glb",
@@ -769,7 +769,7 @@
       ],
       "templateId": "promo-mainline",
       "status": "reference-only",
-      "relatedAssetId": "cw.module.promo-hunt",
+      "plannedComponentId": "cw.module.promo-hunt",
       "originalFiles": [
         {
           "path": "assets/blender/riftbeast.glb",
@@ -800,7 +800,7 @@
       ],
       "templateId": "promo-mainline",
       "status": "reference-only",
-      "relatedAssetId": "cw.module.promo-ak47",
+      "plannedComponentId": "cw.module.promo-ak47",
       "originalFiles": [
         {
           "path": "assets/blender/ak47.glb",
