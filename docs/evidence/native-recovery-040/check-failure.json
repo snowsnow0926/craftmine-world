@@ -1,0 +1,61 @@
+{
+  "format": "craftmine.check-failure-evidence/1",
+  "source": {
+    "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/profile/plugins/data/craftmine.world/tasks.sqlite",
+    "readOnly": true,
+    "outputHash": "d1ec25bffa45d0dcbb4c675282541ea6f433a5e2aa78e34f05b368a00fa860ff",
+    "outputTextSha256": "d1ec25bffa45d0dcbb4c675282541ea6f433a5e2aa78e34f05b368a00fa860ff"
+  },
+  "jobId": "gjob-a61d14a8c95c3bce1ada20347e253054121e62e236d732bc44a29bf94dd7f1be",
+  "worldId": "world-7a2bad903a26",
+  "buildId": "gbd-9f3e3e4f850fdf04f5d2447acbe2e60e5337451aee2c61e588689c1814f015bc",
+  "sourceRevision": 14,
+  "status": "failed",
+  "passed": false,
+  "check": {
+    "passed": false,
+    "diagnosticLog": "{\"format\":\"craftmine.godot-runtime-diagnostic/1\",\"diagnosticOnly\":true,\"jobId\":\"gjob-a61d14a8c95c3bce1ada20347e253054121e62e236d732bc44a29bf94dd7f1be\",\"worldId\":\"world-7a2bad903a26\",\"buildId\":\"gbd-9f3e3e4f850fdf04f5d2447acbe2e60e5337451aee2c61e588689c1814f015bc\",\"inputHash\":\"a74f05c7f7739cfdc0c01f91c9926169a58610fbe2f9a2ef69c7734fa11fdf9b\",\"error\":\"GODOT_CHECK_TIMEOUT\",\"ready\":{\"ok\":false,\"instanceId\":\"\"},\"isolation\":{\"offscreen\":false,\"focusable\":true,\"visible\":true},\"errors\":{\"runtime\":[],\"console\":[],\"renderer\":null},\"diagnostics\":[\"[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0\",\"[phase] artifact-verification failed elapsedMs=30015 stageElapsedMs=30015\",\"[artifact-verification] {\\\"operation\\\":\\\"stream-read\\\",\\\"path\\\":\\\"web/index.pck\\\",\\\"artifactPath\\\":\\\"web/index.pck\\\",\\\"artifactIndex\\\":8,\\\"totalFiles\\\":10,\\\"expectedBytes\\\":13478360,\\\"bytesRead\\\":7929856,\\\"totalBytesRead\\\":8284653,\\\"verifiedFiles\\\":7,\\\"errorCode\\\":\\\"GODOT_CHECK_TIMEOUT\\\",\\\"elapsedMs\\\":30015,\\\"operationElapsedMs\\\":2,\\\"lastByteProgressAgoMs\\\":2}\",\"[artifact-verification-runtime] {\\\"diagnosticOnly\\\":true,\\\"state\\\":\\\"failed\\\",\\\"elapsedMs\\\":30015,\\\"heartbeat\\\":{\\\"periodMs\\\":100,\\\"samples\\\":156,\\\"maxLagMs\\\":524},\\\"resources\\\":{\\\"start\\\":{\\\"available\\\":true,\\\"counts\\\":{\\\"PipeWrap\\\":15,\\\"ProcessWrap\\\":2,\\\"TCPServerWrap\\\":1,\\\"Timeout\\\":5},\\\"omittedTypes\\\":0},\\\"end\\\":{\\\"available\\\":true,\\\"counts\\\":{\\\"FSReqCallback\\\":1,\\\"PipeWrap\\\":15,\\\"ProcessWrap\\\":2,\\\"TCPServerWrap\\\":1,\\\"Timeout\\\":8},\\\"omittedTypes\\\":0}}}\"],\"truncated\":false}",
+    "assertions": [
+      {
+        "id": "runtime.ready",
+        "passed": false,
+        "detail": "ops="
+      },
+      {
+        "id": "runtime.frame",
+        "passed": false,
+        "detail": "frames=0 distinct=0"
+      },
+      {
+        "id": "runtime.no-errors",
+        "passed": true,
+        "detail": null
+      },
+      {
+        "id": "runtime.snapshot",
+        "passed": false,
+        "detail": "snapshot not confirmed"
+      },
+      {
+        "id": "runtime.isolation",
+        "passed": false,
+        "detail": "guard=null"
+      },
+      {
+        "id": "runtime.recovery",
+        "passed": false,
+        "detail": "graceful=false"
+      },
+      {
+        "id": "runtime.verifier-error",
+        "passed": false,
+        "detail": "GODOT_CHECK_TIMEOUT"
+      },
+      {
+        "id": "export.reused",
+        "passed": true,
+        "detail": "{\"format\":\"craftmine.godot-export-reuse/1\",\"originJobId\":\"gjob-6c2e8a0d200a840dc9cc508b3ccfa921afb3f5033cea732a6abf977ce4697fda\",\"originOutputHash\":\"bd859b1c4228a4d38505f80febe3c909b960c29d4c17bbb8c8f908d642efbaa9\",\"exportExecuted\":false}"
+      }
+    ]
+  }
+}
