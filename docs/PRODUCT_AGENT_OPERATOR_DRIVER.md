@@ -35,6 +35,19 @@ API 拒绝时保留真实失败，不关闭能力选项来绕过。不会将原�
 不会把显式只读或默认只读当作全自动。最初鲜建示例被错误判为权限变化的
 0 模型准备失败记录保留，不算模型或产品创作失败。
 
+官方在 <https://deepseek.com/news/deepseek-v4-1-flash/> 明确说明最新 V4.1 Flash
+通过 `deepseek-flash` 调用。保留原附名真实 400 失败后，操作员可显式增加
+`--api-model-id deepseek-flash`：仅允许官方 DeepSeek 端点且附件精确名称为
+`deepseek-v4.1-flash` 的这一项映射。未给该参数仍原名发送，不自动重试或回退。
+报告同时记录 `requestedModel`、`apiModelId`、`resolutionSource`；附件和旧
+转录中的模型名称、usage 均不修改。
+
+转换阶段使用新的 retained bootstrap，保留上一阶段报告路径作为复制清单
+证据，且不带上一阶段的 `providerConfiguration`。随后仍通过普通新建 provider、
+设置 default 和正常冷重启接入相同复制会话。原会话若显式绑定旧模型会拒绝，
+不会重写其配置。直接 `--resume` 已配置旧模型的报告并更改 API ID 会被拒绝，
+防止将两个配置阶段混为同一次验收。
+
 DeepSeek 入口不自动创建玩法组合草稿、不发送请求、不代答澄清。新增
 `draft-composer` 命令 `{text}` 使用实际 Composer 的 `onInput` 创建草稿，
 仅接受空草稿并等待正常可发送；随后显式 `send-composer` 才走实际发送处理器。

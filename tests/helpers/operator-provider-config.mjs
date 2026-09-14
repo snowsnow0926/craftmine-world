@@ -18,6 +18,13 @@ export function parseOperatorProviderConfig(text) {
   return {baseUrl:url.href,model,secret,contextWindow:500000,maxTokens:384000,thinkingLevel:'max'};
 }
 
+export function resolveOperatorApiModel(config,apiModelId) {
+  if(apiModelId===undefined)return {...config,requestedModel:config.model,apiModelId:config.model,resolutionSource:null};
+  assert(config&&new URL(config.baseUrl).origin==='https://api.deepseek.com','API_MODEL_MAPPING_REQUIRES_OFFICIAL_DEEPSEEK');
+  assert(config.model==='deepseek-v4.1-flash'&&apiModelId==='deepseek-flash','API_MODEL_MAPPING_NOT_AUTHORIZED');
+  return {...config,requestedModel:config.model,model:apiModelId,apiModelId,resolutionSource:'https://deepseek.com/news/deepseek-v4-1-flash/'};
+}
+
 export function operatorProviderInput(config) {
   return {name:'Isolated player DeepSeek attachment',vendorKey:'deepseek',protocol:'openai_compatible',type:'openai_compatible',baseUrl:config.baseUrl,authKind:'api_key_and_base_url',secretValue:config.secret,apiStyle:'chat_completions',defaultModelId:config.model,models:[{id:config.model,contextWindow:config.contextWindow,maxTokens:config.maxTokens,thinkingLevels:['max'],defaultThinkingLevel:config.thinkingLevel,supportsImages:true,supportsDocuments:true}]};
 }
@@ -57,7 +64,7 @@ export function assertOperatorProvider({config,providerId,provider,settings,sess
   const effectivePermissionMode=sessionPermissionMode===null||sessionPermissionMode==='inherit'?settings.defaultPermissionMode:sessionPermissionMode;
   assert.equal(effectivePermissionMode,'auto','SESSION_PERMISSION_CHANGED');
   if(session){assert.notEqual(session.worldAgentBackend,'codex-cli');assert.equal(session.providerId??settings.defaultProviderId,providerId,'SESSION_PROVIDER_CHANGED');assert.equal(session.modelId??settings.defaultModelId,config.model,'SESSION_MODEL_CHANGED');assert.equal(session.thinkingLevel,config.thinkingLevel,'SESSION_THINKING_CHANGED');}
-  return {backend:'pi',providerId,baseUrl:config.baseUrl,model:config.model,contextWindow:binding.contextWindow,maxTokens:binding.maxTokens,thinkingLevel:binding.defaultThinkingLevel,thinkingLevels:binding.thinkingLevels,supportsImages:binding.supportsImages,supportsDocuments:binding.supportsDocuments,sessionPermissionMode,defaultPermissionMode:settings.defaultPermissionMode,effectivePermissionMode,permissionMode:effectivePermissionMode};
+  return {backend:'pi',providerId,baseUrl:config.baseUrl,model:config.model,requestedModel:config.requestedModel??config.model,apiModelId:config.apiModelId??config.model,resolutionSource:config.resolutionSource??null,contextWindow:binding.contextWindow,maxTokens:binding.maxTokens,thinkingLevel:binding.defaultThinkingLevel,thinkingLevels:binding.thinkingLevels,supportsImages:binding.supportsImages,supportsDocuments:binding.supportsDocuments,sessionPermissionMode,defaultPermissionMode:settings.defaultPermissionMode,effectivePermissionMode,permissionMode:effectivePermissionMode};
 }
 
 export function assertRetainedOperatorCopy({previous,out,profile,marker}) {

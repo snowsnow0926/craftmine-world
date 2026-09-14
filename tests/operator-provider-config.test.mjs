@@ -3,10 +3,17 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {parseOperatorProviderConfig,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
+import {parseOperatorProviderConfig,resolveOperatorApiModel,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
 
 const secret='sk-synthetic-test-key-1234';
 const config=()=>parseOperatorProviderConfig(`https://api.deepseek.com/\n模型：deepseek-v4.1-flash\n${secret}\n`);
+test('official API identifier mapping is explicit, uniquely scoped and preserves requested identity',()=>{
+  const original=config(),unchanged=resolveOperatorApiModel(original);
+  assert.equal(unchanged.model,'deepseek-v4.1-flash');assert.equal(unchanged.resolutionSource,null);
+  const mapped=resolveOperatorApiModel(original,'deepseek-flash');assert.equal(mapped.model,'deepseek-flash');assert.equal(mapped.apiModelId,'deepseek-flash');assert.equal(mapped.requestedModel,'deepseek-v4.1-flash');assert.equal(mapped.resolutionSource,'https://deepseek.com/news/deepseek-v4-1-flash/');assert.equal(mapped.secret,secret);assert.equal(original.model,'deepseek-v4.1-flash');
+  assert.equal(operatorProviderInput(mapped).models[0].id,'deepseek-flash');
+  for(const [source,target] of [[original,'deepseek-v4-pro'],[{...original,model:'deepseek-other'},'deepseek-flash'],[{...original,baseUrl:'https://third-party.invalid/'},'deepseek-flash']])assert.throws(()=>resolveOperatorApiModel(source,target));
+});
 test('attachment keeps exact model and player limits without alias substitution',()=>{
   const value=config(),input=operatorProviderInput(value);
   assert.equal(input.secretValue,secret);assert.equal(input.defaultModelId,'deepseek-v4.1-flash');
