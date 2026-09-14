@@ -31,6 +31,9 @@ node tests/playtest-feedback-client-native.mjs '<absolute integrated checkout>' 
 ```
 
 For packaged acceptance add `--packaged-root '<absolute win-unpacked>'`; the
+runtime resource argument must be that exact `win-unpacked/resources` directory.
+An external staging directory is rejected before launch, preventing package
+acceptance from silently using source-checkout runtime assets. The
 shared launcher verifies package identity/inventory. The report records source
 bundle, native binary and driver hashes and all shutdown audits. Create the
 printed `cancel` file to stop cooperatively. No whole-test/model/token budget is
@@ -47,3 +50,21 @@ remain in the report. No raw prepared-frame injection or hidden capture fallback
 is used; another failure ends acceptance.
 Passing storage fixtures and React tests do not imply this native test passed.
 Only an actual generated report with `passed: true` is acceptance evidence.
+
+Final package command template (prepare now; execute only against the frozen
+delivered directory). Replace the package directory with the coordinator's real
+`win-unpacked` path. The test does not need a Codex account or submit model calls.
+
+```powershell
+$packageDirectory = 'D:/Craftmine Releases/<final-preview23>/output/win-unpacked'
+$env:CRAFTMINE_CREATION_OUTPUT_ROOT = 'D:/cm-preview23-feedback/test-results'
+node tests/playtest-feedback-client-native.mjs `
+  'D:/Craftmine World' `
+  (Join-Path $packageDirectory 'resources') `
+  --packaged-root $packageDirectory
+```
+
+The package owns Core, host, app bundle and runtime resources. Source-mode
+Core/host environment overrides are not package acceptance evidence. Keep the
+two-profile result separate from the source T37 acceptance and from the operator's
+later, explicitly submitted real AI repair turn.

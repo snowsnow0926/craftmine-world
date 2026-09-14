@@ -16,6 +16,7 @@ const resultsRoot=path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT??path.
 const out=fs.mkdtempSync(path.join(resultsRoot,'desktop-native-feedback-'));let profile=path.join(out,'author-profile');const token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
+if(launch.packaged)assert.equal(path.resolve(resources).toLowerCase(),path.resolve(launch.packaged,'resources').toLowerCase(),'PACKAGED_FEEDBACK_RESOURCES_MUST_BELONG_TO_TESTED_APP');
 const report={format:'craftmine.playtest-client-roundtrip/1',out,applicationRoot,resources,buildMainSha256:createHash('sha256').update(launch.main).digest('hex'),modelCalls:null,launches:[],worlds:[],operations:[],steps:[],limits:['Two fresh isolated developer-machine profiles; external clean Windows and human acceptance pending.','Actual PI forms and offscreen native checks; no physical input or Pointer Lock.','Repair action is a draft-only handoff. No actual AI repair or gameplay fix is claimed.']};
 report.driverSha256=createHash('sha256').update(fs.readFileSync(import.meta.filename)).digest('hex');
 
