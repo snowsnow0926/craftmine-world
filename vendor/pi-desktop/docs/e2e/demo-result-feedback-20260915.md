@@ -53,3 +53,9 @@ Promise<void> completion and string-array diagnostics. Negative assignments must
 fail compilation; no global wildcard declaration or `any` escape is added. This
 test resolves the existing Electron dependency's Node declarations without loading
 Electron, emitting code or creating a worker.
+
+Integration on Windows additionally reproduced `build:deps` reporting no matching
+workspace projects because the command-shell script passed literal single quotes
+around its pnpm filter. Double-quoting the existing filter builds all five desktop
+dependencies. The ordinary script now succeeds on the fresh integration checkout;
+the complete desktop TypeScript and style-token checks pass after those builds.
