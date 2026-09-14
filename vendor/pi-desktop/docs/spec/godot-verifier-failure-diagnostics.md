@@ -56,3 +56,39 @@ check/resume in an isolated profile, retain its exact `outputHash`, and compare
 the diagnostic-only log with passive CDP observations. A failed check must retain
 its original result; a successful resume must receive its own job and evidence.
 Do not edit old outputs or treat mock stage tests as a real packaged check pass.
+
+## Artifact await diagnostics (2026-09-14)
+
+A real failed check stopped in artifact-verification after 30.141 seconds, before
+the runtime server existed. To identify the pending filesystem operation,
+`godot-artifact-verification.ts` retains one in-memory observation while running
+the original asynchronous lstat, no-link traversal, file type, size and streaming
+SHA256 checks. No check is removed, no synchronous IO substitutes them, and the
+existing verifier cancellation/deadline race and 30-second default stay intact.
+
+The observation distinguishes root-lstat, entry-lstat, path-lstat, size-lstat,
+size-compare, stream-open, stream-read, hash-update, hash-digest and hash-compare.
+It includes the relative artifact/path, one-based artifact index, total/verified
+file counts, expected bytes, bytes read for this file and all files, total and
+current-operation elapsed time, and time since last byte progress (or tracking
+start when no bytes have arrived). Hash operations are synchronous markers
+within the unchanged streaming algorithm; they are not claimed to be awaits.
+
+Only an artifact-stage failure emits one `[artifact-verification]` line into
+existing diagnostics, before the ordinary failed phase line. Updating 4096 files
+does not emit 4096 lines or evict the final state. Failure freezes the observation,
+so late IO completion after timeout/cancel cannot overwrite recorded evidence.
+This does not change or claim to cancel underlying OS IO that the existing race
+has already stopped waiting for. Success emits no artifact-detail line.
+
+Only relative labels (`.` for root) are retained; labels longer than 96 Unicode
+code points are abbreviated with an ellipsis. Absolute IO filenames and raw OS
+error strings are never copied into this line. Error codes preserve timeout,
+cancellation, missing/invalid files and mismatch; size-compare and hash-compare
+distinguish two failures sharing the existing mismatch code. This remains
+diagnostic-only, not a new acceptance assertion or a fix for the stall.
+
+`tests/godot-artifact-verification.test.mjs` covers real async files, missing,
+wrong size/hash, directory links, separately suspended lstat calls, unopened and
+partially read streams, cancellation, frozen late progress and bounded logs.
+No native client or model run is implied by these isolated tests.

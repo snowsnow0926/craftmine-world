@@ -1,5 +1,6 @@
 import {verifyCreationHarvest} from "./creation-harvest-verifier";
 import {createGodotCheckPhases} from "./godot-check-phases";
+import {createArtifactVerificationProgress,verifyArtifacts} from "./godot-artifact-verification";
 import {collectGodotScenarioDiagnostic,type ScenarioDiagnosticSelector} from "./godot-scenario-collector";
 import {verifyCreationDoorSequence} from "./creation-door-verifier";
 import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
@@ -23,8 +24,6 @@ import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-r
 
 import { BrowserWindow, session, type Session } from "electron";
 import { createHash, randomUUID } from "node:crypto";
-import { createReadStream } from "node:fs";
-import { lstat } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import {
   createWorldRuntime,
@@ -213,12 +212,6 @@ function hashJson(value: unknown): string {
   return createHash("sha256").update(canonicalJson(value)).digest("hex");
 }
 
-async function sha256File(file: string): Promise<string> {
-  const hash = createHash("sha256");
-  for await (const chunk of createReadStream(file)) hash.update(chunk as Buffer);
-  return hash.digest("hex");
-}
-
 /** A manifest path must be a forward-slash relative path under `web/`. */
 function requireArtifactPath(value: unknown): string {
   if (typeof value !== "string" || value.length < 1 || value.length > 4096) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
@@ -302,36 +295,6 @@ export function parseGodotCheckDescriptor(input: unknown): GodotRuntimeCheckDesc
 }
 
 /**
- * The artifacts directory is core-owned, but the check still proves the files
- * it will serve are the files the descriptor promised: ordinary files, exact
- * size, exact sha256, and no link anywhere on the path.
- */
-async function verifyArtifacts(descriptor: GodotRuntimeCheckDescriptor, deadline: number): Promise<void> {
-  const rootInfo = await lstat(descriptor.root).catch(() => null);
-  if (!rootInfo || !rootInfo.isDirectory() || rootInfo.isSymbolicLink()) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
-  const entry = join(descriptor.root, "web", "index.html");
-  const entryInfo = await lstat(entry).catch(() => null);
-  if (!entryInfo || !entryInfo.isFile()) throw new Error("GODOT_CHECK_ARTIFACT_MISSING");
-  for (const artifact of descriptor.artifacts) {
-    if (Date.now() >= deadline) throw new Error("GODOT_CHECK_TIMEOUT");
-    const parts = artifact.path.split("/");
-    let cursor = descriptor.root;
-    for (const part of parts) {
-      cursor = join(cursor, part);
-      const info = await lstat(cursor).catch(() => null);
-      if (!info) throw new Error("GODOT_CHECK_ARTIFACT_MISSING");
-      if (info.isSymbolicLink()) throw new Error("GODOT_CHECK_ARTIFACT_MISMATCH");
-      if (cursor !== join(descriptor.root, ...parts) && !info.isDirectory()) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
-    }
-    const file = join(descriptor.root, ...parts);
-    const info = await lstat(file).catch(() => null);
-    if (!info || !info.isFile()) throw new Error("GODOT_CHECK_ARTIFACT_MISSING");
-    if (info.size !== artifact.bytes) throw new Error("GODOT_CHECK_ARTIFACT_MISMATCH");
-    if ((await sha256File(file)) !== artifact.sha256) throw new Error("GODOT_CHECK_ARTIFACT_MISMATCH");
-  }
-}
-
-/**
  * Egress is confined to the instance's own loopback origin. Same-origin blob
  * and inline data URLs are page-local resources a threaded Web export needs;
  * everything else is cancelled and counted.
@@ -389,6 +352,7 @@ export class GodotBuildVerifier {
     // diagnosable without letting a noisy page fail it.
     const diagnostics: string[] = [];
     const phases = createGodotCheckPhases(diagnostics);
+    const artifactProgress=createArtifactVerificationProgress(descriptor.artifacts.length);
 
     const ready: GodotRuntimeCheckReady = { ok: false, ops: [], instanceId: "", elapsedMs: 0 };
     const render: GodotRuntimeCheckRender = { ok: false, frames: 0, distinctFrames: 0, captures: [] };
@@ -440,7 +404,7 @@ export class GodotBuildVerifier {
 
     try {
       phases.begin('artifact-verification');
-      await bounded(verifyArtifacts(descriptor, deadline));
+      await bounded(verifyArtifacts(descriptor, deadline,artifactProgress));
       assertRunning();
       phases.complete();
 
@@ -724,6 +688,7 @@ export class GodotBuildVerifier {
       }
       phases.complete();
     } catch (failure) {
+      artifactProgress.fail(diagnostics,messageOf(failure));
       phases.fail();
       error = messageOf(failure);
     } finally {

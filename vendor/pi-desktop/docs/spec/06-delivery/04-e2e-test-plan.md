@@ -10554,3 +10554,17 @@ Runtime/check failure must preserve partial evidence and release every possibly
 delivered key. Unknown fields, stale identity, visible/focused owner, model/tool
 access and production/non-headless routing must fail before delivery. A successful
 segment transport remains separate from actual gameplay and user-goal acceptance.
+
+### Artifact-await failure evidence (2026-09-14)
+
+Run the next ordinary failed-job check/resume in its isolated profile and retain
+the resulting immutable job output/diagnosticLog. If artifact verification stalls,
+confirm the existing failed phase and one `[artifact-verification]` line identify
+the last lstat/open/read/hash operation, relative artifact/index, expected and
+observed bytes, and elapsed time. Cancel an outstanding check separately and
+require GODOT_CHECK_CANCELLED, not timeout or a fabricated pass. No private root
+path should appear in the new detail. File count must not increase log size
+linearly; later OS completions must not change the already persisted diagnostic.
+Keep the 30-second default and ordinary file/type/link/size/hash checks unchanged.
+The unit pending-IO cases diagnose instrumentation only; the actual stalled job's
+cause and any subsequent recovery still require their own real check evidence.
