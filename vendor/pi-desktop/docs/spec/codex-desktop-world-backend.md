@@ -213,6 +213,19 @@ canonical transcript serializer; old messages without that metadata show no
 fabricated context-window estimate.
 # Failed transport diagnostics
 
+Asynchronous `error` notifications and failed `turn/completed.error` now retain
+their selected, bounded sanitized message/additionalDetails and recognized native
+error classification in both terminal message and error-event details. Thread and
+turn identities must match. A retryable native notification alone never terminates
+the turn. Unknown error objects, raw provider fields and credentials are omitted.
+
+Usage totals must satisfy `inputTokens + outputTokens === totalTokens` before
+being displayed, persisted as a new transport baseline or converted into turn
+usage. A real context-full marker with zero input/output and total equal to the
+model context window is recorded only as `usageSignal.notTokenUsage`, never as
+consumption or cost. Previously persisted error/usage records remain immutable;
+this validation applies to new events and rejects invalid historical baselines.
+
 The adapter preserves its existing terminal code and adds selected observations
 to the existing `error.details`: a fixed host stage, and for a recognized RPC
 failure only, its request method, integer code and bounded redacted message.

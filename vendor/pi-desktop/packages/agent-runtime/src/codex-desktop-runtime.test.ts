@@ -245,6 +245,35 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
     expect(protocolDiagnostic(Error('private-account-path'),'history-restore')).toEqual({stage:'history-restore'});
     expect(protocolDiagnostic({rpcMethod:'turn/start',rpcCode:NaN,diagnostic:'secret'},'turn-start')).toEqual({stage:'turn-start'});
   });
+  it('retains bound notification/terminal errors and excludes the actual context-window usage marker',async()=>{
+    const f=await fixture();
+    try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'current','native');await ready;
+      client.notify('error',{turnId:'foreign',error:{message:'foreign-message',codexErrorInfo:'badRequest'},willRetry:false});
+      const marker={inputTokens:0,outputTokens:0,totalTokens:522500,cachedInputTokens:0,cacheWriteInputTokens:0,reasoningOutputTokens:0};
+      client.notify('thread/tokenUsage/updated',{tokenUsage:{total:marker,last:marker,modelContextWindow:522500}});
+      expect(runtime.getStatus().transportUsage).toBeUndefined();
+      client.notify('error',{error:{message:'Context full Bearer hidden-secret',codexErrorInfo:'contextWindowExceeded',additionalDetails:'account=user@example.com'},willRetry:false});
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'failed',error:{message:'Context full',codexErrorInfo:'contextWindowExceeded'}}});await running;
+      const terminal=f.events.find(e=>e.event.type==='error').event.error;
+      expect(terminal.code).toBe('CODEX_TURN_FAILED');
+      expect(terminal.details).toMatchObject({stage:'model-turn',usageSignal:{kind:'context-window-marker',notTokenUsage:true,modelContextWindow:522500},notificationError:{codexErrorInfo:'contextWindowExceeded',willRetry:false},terminalError:{codexErrorInfo:'contextWindowExceeded'}});
+      for(const secret of ['foreign-message','hidden-secret','user@example.com'])expect(JSON.stringify(terminal)).not.toContain(secret);
+      const message=f.events.find(e=>e.event.type==='message_end').event.message;
+      expect(message.error.details).toEqual(terminal.details);expect(message.usage).toBeUndefined();
+      expect(f.checkpoint?.usageTotal).toBeUndefined();
+      expect(codexTurnUsage(marker,{inputTokens:0,outputTokens:0,totalTokens:0})).toBeUndefined();
+    }finally{await f.cleanup();}
+  });
+  it('an async retry notification does not terminate a turn that later succeeds',async()=>{
+    const f=await fixture();try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'current','native');await ready;
+      client.notify('error',{error:{message:'Temporary disconnect',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:502}}},willRetry:true});
+      expect(runtime.getStatus().isRunning).toBe(true);
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+      expect(f.events.some(e=>e.event.type==='error')).toBe(false);
+    }finally{await f.cleanup();}
+  });
   it("cancels during unacknowledged start and preserves a failed native fence as an error", async () => {
     const f = await fixture();
     try {

@@ -117,6 +117,13 @@ insertion acknowledgements are not fabricated model usage or successful turns.
 
 ## Required report and automated entry point
 
+For a native context-full failure, preserve the structured classification from
+both `error` and `turn/completed.error`, with matching CLI thread/turn ownership.
+An all-zero input/output count paired with total equal to context-window capacity
+must not appear as billed usage or become the next checkpoint baseline. Verify a
+foreign error is ignored and a retry notification followed by success does not
+become a failed PI turn. Never rewrite prior failed receipts to claim success.
+
 Run from the repository root:
 
 ```powershell
