@@ -16,11 +16,14 @@ the existing source launch helper and requires the corresponding built outputs.
 The driver refuses to execute without `--live`.
 
 The driver creates a fresh marked profile beneath its printed output directory.
-It uses the actual New World form, selects `craftmine-web/5`, the blank starter
-and a name, then uses the ordinary Start creating/session flow. Connection
-verification must confirm `gpt-6-astra` / `xhigh`. The profile selects the same
-Codex backend and Auto permission setting observed in the player's report; no
-live player profile is changed. Original text `生成一个树` is inserted into the
+It waits for React and the actual delivered world catalog, verifies
+`gpt-6-astra` / `xhigh`, and saves the same Codex backend and Auto permission
+setting observed in the player's report. It normally closes and reopens this
+independent app so its mounted renderer loads the persisted selection; calling
+the Settings RPC alone does not update the existing renderer's settings cache.
+It then uses the actual New World form, selects `craftmine-web/5`, the blank
+starter and a name, and uses the ordinary Start creating/session flow. No live
+player profile is changed. Original text `生成一个树` is inserted into the
 empty Composer via its React input handler, then its ordinary Send handler runs.
 No synthetic mouse/keyboard, focus, Pointer Lock or user browser is used.
 
@@ -32,6 +35,13 @@ to be physical model-call counts. No evaluator, model/token/call/whole-turn cap
 is added; individual IPC/preview/shutdown timeouts are existing infrastructure
 boundaries. To cancel, create the printed `cancel` file or interrupt the driver.
 It aborts its own Agent and requests normal application shutdown.
+
+World/check/review reads use the bound world's existing `pluginBridge` read
+channels. The main renderer navigation bridge intentionally refuses generic
+`world.read`; the driver must not broaden that product permission. During
+preparation, one refused navigation read and two disabled-Send settings-cache
+attempts were retained separately with zero model requests. The latter were
+explicitly cancelled before Send, not stopped because of model execution time.
 
 After a passed machine check and a completed real request review, the driver
 submits the ordinary preview form, obtains read-only `request-observe` data from
