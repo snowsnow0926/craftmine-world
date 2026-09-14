@@ -7,6 +7,9 @@
   same progress snapshot and exact source pins; verify the real library receipt.
 - Close the sheet normally. Gameplay resumes without a manually injected resume;
   a prior player pause or a later candidate/overlay blocker must remain effective.
+- Include an ordinary autosave between capture and release. Its checkpoint-cache
+  invalidation must not strand a publication-owned pause; confirm two increasing
+  physics ticks after sheet close in the sealed native client.
 - During capture/save, cancel or leave the sheet and verify only the matching
   operation's pause is released after pending work settles. An old release must
   not affect a newer operation in the same world.

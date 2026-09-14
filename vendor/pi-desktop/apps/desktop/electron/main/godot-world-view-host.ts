@@ -1202,7 +1202,7 @@ export class GodotWorldViewHost {
       if (released) return;
       released = true;
       if (joined || previouslyPaused || this.current !== instance || !instance.alive
-        || this.pauseIntentRevision.get(instance) !== intent || this.frozen?.result !== saved
+        || this.pauseIntentRevision.get(instance) !== intent
         || this.stagedRequest || this.pending || this.transitioning || this.closing || this.disposed) return;
       await this.resume();
     }};
