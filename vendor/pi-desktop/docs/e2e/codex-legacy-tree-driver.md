@@ -53,12 +53,27 @@ reported; the driver does not bypass the apply condition or acknowledge warnings
 as a substitute for the tree acceptance.
 
 Saving uses the normal `craftmineView.prepareClose()` lifecycle, which freezes
-and saves the actual game progress. The app exits normally and reopens the same
-world through the existing world-list form. Require exact applied build, full
-saved progress and unchanged visible dialogue IDs; capture the cold frame and
+and saves the actual game progress. Once the app is fully stopped, the package's
+existing CoreClient reads the owned profile's `world.read` record and exits; no
+direct SQLite or world mutation is used. The app reopens the same world through
+the existing world-list form. Its bound renderer bridge reads the complete
+persisted world record before another save and compares it exactly with the
+post-quit record. Separately compare the full actual renderer snapshot, retaining
+every changed field; only a finite, non-decreasing `behaviors.time` may advance
+while the reopened engine runs. No field is removed to claim live equality.
+Require unchanged visible dialogue IDs; capture the cold frame and
 retain both shutdown audits. The renderer mesh observation proves a drawable
 addition; tree aesthetics and operation feel still require viewing the captures
 and human play. This static driver does not test a second model edit.
+
+If creation/review/application already completed and a driver assertion failed
+only during cold inspection, use `--resume-cold-test <absolute prior report.json>`
+with the same package/resources arguments. It verifies the driver's marked
+directory, applied-world evidence, normal prior exits and package inventory,
+writes a separate `cold-continuation-*.json`, then runs only the cold inspection.
+It neither resends the original prompt nor overwrites the original failed report.
+The original `ZKllfo` attempt correctly retained a too-strict live-clock equality
+failure; the subsequent same-world continuation completed with zero model calls.
 
 Preparation checks, without launching Electron or Codex:
 

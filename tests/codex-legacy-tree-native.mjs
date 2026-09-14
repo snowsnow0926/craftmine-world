@@ -2,14 +2,15 @@
 // Explicit --live only. No evaluator, model/token/whole-turn deadline or OS input.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
 import{spawn}from'node:child_process';import{randomUUID}from'node:crypto';import{setTimeout as delay}from'node:timers/promises';
+import{createRequire}from'node:module';
 import{resolveCreationNativeLaunch}from'./helpers/creation-native-launch.mjs';
 import{createCompleteOutput}from'./godot-final/complete-contract.mjs';import{reserveLoopbackPort}from'./helpers/ordinary-world-ui.mjs';
-import{LEGACY_TREE_REQUEST,LEGACY_TREE_BASE,requireLegacyTree,requireSameLegacySave}from'./helpers/legacy-tree-contract.mjs';
+import{LEGACY_TREE_REQUEST,LEGACY_TREE_BASE,requireLegacyTree,requireSameLegacySave,legacyProgressDifferences}from'./helpers/legacy-tree-contract.mjs';
 
 const args=process.argv.slice(2),option=name=>{const at=args.indexOf(name);return at<0?undefined:args[at+1];};
 for(let i=0;i<args.length;i++){
   if(args[i]==='--live')continue;
-  assert(['--runtime-resources','--codex','--output-root','--packaged-root'].includes(args[i]),'UNKNOWN_DRIVER_OPTION:'+args[i]);
+  assert(['--runtime-resources','--codex','--output-root','--packaged-root','--resume-cold-test'].includes(args[i]),'UNKNOWN_DRIVER_OPTION:'+args[i]);
   assert(args[i+1]&&!args[i+1].startsWith('--'),'OPTION_VALUE_REQUIRED');i++;
 }
 assert(args.includes('--live'),'Explicit --live required; preparation uses node --check and the pure contract test');
@@ -17,17 +18,22 @@ const root=path.resolve(import.meta.dirname,'..'),resources=option('--runtime-re
 assert(resources&&binary&&[resources,binary].every(path.isAbsolute),'Absolute --runtime-resources and --codex required');
 const launch=resolveCreationNativeLaunch({root,inherited:process.env,requiredGuards:['CodexCheckpointHost','CODEX_PATH_REQUIRED']});
 if(launch.packaged)assert.equal(path.resolve(resources),path.join(launch.packaged,'resources'),'PACKAGED_RESOURCES_MUST_MATCH');
-const out=createCompleteOutput(root,option('--output-root')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),token=randomUUID();
-fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
-const report={format:'craftmine.codex-legacy-tree-native/1',out,request:LEGACY_TREE_REQUEST,model:'gpt-6-astra',effort:'xhigh',launches:[],stages:[],
+const resumeFile=option('--resume-cold-test'),previous=resumeFile?JSON.parse(fs.readFileSync(resumeFile,'utf8')):null;
+if(previous){assert(path.isAbsolute(resumeFile));assert.equal(previous.format,'craftmine.codex-legacy-tree-native/1');assert.equal(path.dirname(path.resolve(resumeFile)),path.resolve(previous.out));assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-complete-'));assert.equal(fs.realpathSync(previous.out),previous.out);assert(previous.treeProof&&previous.saved&&previous.dialogue&&previous.worldId===previous.saved.record.id);assert(previous.launches.every(row=>row.exit?.code===0&&row.audit?.shutdownFailures?.length===0));assert.equal(previous.package.inventorySha256,launch.identity?.inventorySha256);}
+const out=previous?.out??createCompleteOutput(root,option('--output-root')),profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8')).token:randomUUID();
+if(!previous){fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));}
+const report={...(previous??{}),format:'craftmine.codex-legacy-tree-native/1',out,request:LEGACY_TREE_REQUEST,model:'gpt-6-astra',effort:'xhigh',launches:[],stages:[],
+  ...(previous?{previousReport:resumeFile,previousFailure:previous.error,priorLaunches:previous.launches,coldOnly:true,error:undefined,passed:undefined}:{}),
   package:launch.identity?{packaged:launch.packaged,inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256}:null,
   limits:['No physical mouse/keyboard, focus or Pointer Lock','No authored state assignment or fake review','Static tree render/application/save coverage; aesthetics need player review']};
-const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));
+const reportFile=path.join(out,previous?'cold-continuation-'+randomUUID()+'.json':'report.json');
+const save=()=>fs.writeFileSync(reportFile,JSON.stringify(report,null,2));
 const mark=(phase,detail={})=>{report.stages.push({phase,at:new Date().toISOString(),...detail});save();console.log(phase);};
 const abort=new AbortController(),pending=new Map();let child,ended=true,ready=false,exit,port,socket,worldSocket,current,seq=0;
 process.on('SIGINT',()=>abort.abort());process.on('SIGTERM',()=>abort.abort());
-const watcher=setInterval(()=>{if(fs.existsSync(path.join(out,'cancel')))abort.abort();},250);
-console.log(JSON.stringify({out,cancel:path.join(out,'cancel'),request:LEGACY_TREE_REQUEST}));save();
+const cancel=path.join(out,previous?'cancel-cold-'+randomUUID():'cancel');
+const watcher=setInterval(()=>{if(fs.existsSync(cancel))abort.abort();},250);
+console.log(JSON.stringify({out,reportFile,cancel,request:LEGACY_TREE_REQUEST,coldOnly:!!previous}));save();
 function rpc(method,fields={}){return new Promise((resolve,reject)=>{
   if(ended)return reject(Error('DESKTOP_EXITED'));const id=randomUUID(),timer=setTimeout(()=>{pending.delete(id);reject(Error('RPC_TIMEOUT:'+method));},120000);
   pending.set(id,{resolve,reject,timer});child.send({type:'craftmine-headless',id,method,...fields});
@@ -79,8 +85,15 @@ async function stop(){
   socket?.close();worldSocket?.close();socket=worldSocket=null;
   assert(current.audit,'NORMAL_SHUTDOWN_AUDIT_REQUIRED');assert.deepEqual(current.audit.violations,[]);assert.deepEqual(current.audit.shutdownFailures,[]);assert.equal(current.exit.code,0);save();
 }
+async function readStoppedWorld(){
+  assert(ended,'APP_MUST_BE_STOPPED_BEFORE_CORE_READ');
+  const {CoreClient}=createRequire(import.meta.url)(path.join(resources,'plugins/craftmine.world/core-client.cjs'));
+  const core=new CoreClient(path.join(resources,'bin/craftmine-core.exe'),path.join(profile,'plugins/data/craftmine.world'));
+  try{await core.start();return await core.call('world.read',{id:report.worldId});}finally{await core.stop();}
+}
 abort.signal.addEventListener('abort',()=>{if(!ended&&report.sessionId)void invoke('agentAbort',{sessionId:report.sessionId}).catch(()=>{});});
 try{
+  if(!previous){
   await start('connection-setup');
   const connection=await invoke('codexConnection',{action:'verify',path:binary});assert.equal(connection.code,'ready');assert.equal(connection.model,report.model);assert.equal(connection.effort,report.effort);
   report.connection={code:connection.code,model:connection.model,effort:connection.effort,version:connection.version};await invoke('settingsSet',{worldAgentBackend:'codex-cli',codexCliPath:binary,defaultPermissionMode:'auto'});
@@ -110,8 +123,14 @@ try{
   await until(()=>worldEvaluate(`document.body.dataset.worldLoaded==='true'&&document.getElementById('preview-panel').hidden`),Boolean);
   report.applied=await worldRead('world.read',{id:report.worldId});report.treeProof=requireLegacyTree({before:report.before,record:report.applied,observation:report.previewObservation});report.appliedFrame=await rpc('captureWorld',{name:'legacy-tree-applied'});mark('ordinary-preview-and-apply-completed');
   await worldEvaluate(`craftmineView.prepareClose()`);report.saved={record:await worldRead('world.read',{id:report.worldId}),snapshot:(await rpc('worldState')).snapshot};assert.deepEqual(report.saved.record.world.snapshot,report.saved.snapshot);mark('normal-world-close-save-completed');await stop();
+  }
+  report.persistedAfterNormalQuit=await readStoppedWorld();mark('persisted-snapshot-read-after-normal-quit');
   await start('cold-reopen');await chooser('worlds');await until(()=>evaluate(`!!document.querySelector('[data-world-open="${report.worldId}"]')`),Boolean);await submit(`[data-world-open="${report.worldId}"]`);await until(async()=>{await uiError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);await bindWorld();
-  await worldEvaluate(`craftmineView.prepareClose()`);report.cold={record:await worldRead('world.read',{id:report.worldId}),snapshot:(await rpc('worldState')).snapshot};requireSameLegacySave(report.saved,report.cold);report.coldFrame=await rpc('captureWorld',{name:'legacy-tree-cold'});report.coldDialogue=await invoke('sessionGet',report.sessionId);assert.deepEqual(report.coldDialogue.session.messages.map(row=>row.id),report.dialogue.session.messages.map(row=>row.id));mark('cold-build-progress-and-dialogue-preserved');report.passed=true;
+  report.cold={record:await worldRead('world.read',{id:report.worldId}),snapshot:(await rpc('worldState')).snapshot};requireSameLegacySave({record:report.persistedAfterNormalQuit},report.cold);
+  report.runningProgressDifferences=legacyProgressDifferences(report.persistedAfterNormalQuit.world.snapshot,report.cold.snapshot);
+  assert(report.runningProgressDifferences.every(row=>row.path==='behaviors.time'&&Number.isFinite(row.before)&&Number.isFinite(row.after)&&row.after>=row.before),'UNEXPECTED_RUNNING_PROGRESS_CHANGE');
+  report.coldFrame=await rpc('captureWorld',{name:previous?'legacy-tree-cold-confirmed':'legacy-tree-cold'});report.coldDialogue=await invoke('sessionGet',report.sessionId);assert.deepEqual(report.coldDialogue.session.messages.map(row=>row.id),report.dialogue.session.messages.map(row=>row.id));
+  await worldEvaluate(`craftmineView.prepareClose()`);report.coldSaved=await worldRead('world.read',{id:report.worldId});mark('cold-build-persisted-progress-and-dialogue-preserved');report.passed=true;
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}
 finally{
   if(!ended&&report.sessionId){if(!report.passed)await invoke('agentAbort',{sessionId:report.sessionId}).catch(()=>{});await drainEvents().catch(()=>{});report.finalDialogue=await invoke('sessionGet',report.sessionId).catch(error=>({error:String(error)}));}
