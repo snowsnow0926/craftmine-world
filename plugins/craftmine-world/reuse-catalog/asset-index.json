@@ -1,0 +1,818 @@
+{
+  "format": "craftmine.reuse-asset-index/1",
+  "catalogSha256": "f4fd1b3b1e1751733f89dee70399d13677df7339adc7640303476314cd13b079",
+  "assetCount": 28,
+  "versionCount": 35,
+  "policy": {
+    "scope": "bundled-discovery-metadata",
+    "authority": "Lookup IDs in the live catalog and use its exact returned archiveRef/readRequest. These hashes are provenance, never installation refs.",
+    "inspection": "Read entry, dependencies, interfaces, state and automaticInstallation before choosing an exact compatible component. Model-only is not playable behavior. A listed version is not proof of target compatibility or gameplay.",
+    "referenceWorlds": "Whole worlds use the existing world picker. This index exposes summaries and original-file metadata, not a cross-world source-reading tool. Reference-only content is not independently installable.",
+    "efficiency": "Search relevant keywords first; read only matching candidates. Do not reload the complete index or every source file each turn."
+  },
+  "components": [
+    {
+      "assetId": "cw.nature.tree-oak",
+      "title": "橡树",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.tree-oak"
+      },
+      "bytes": 11832,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.tree-detailed",
+      "title": "繁茂阔叶树",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.tree-detailed"
+      },
+      "bytes": 18428,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.tree-pine",
+      "title": "圆冠松树",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.tree-pine"
+      },
+      "bytes": 10843,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.grass",
+      "title": "草丛",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.grass"
+      },
+      "bytes": 10335,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.flower-red",
+      "title": "红色花丛",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.flower-red"
+      },
+      "bytes": 8936,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.bush",
+      "title": "浓密灌木",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.bush"
+      },
+      "bytes": 10025,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.rock",
+      "title": "小型岩石",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.rock"
+      },
+      "bytes": 8986,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.bridge-wood",
+      "title": "木桥",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.bridge-wood"
+      },
+      "bytes": 12328,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.nature.fence-wood",
+      "title": "木围栏",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.fence-wood"
+      },
+      "bytes": 9526,
+      "source": {
+        "origin": "https://kenney.nl/assets/nature-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.wall",
+      "title": "城墙直段",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.wall"
+      },
+      "bytes": 19017,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.wall-corner",
+      "title": "城墙转角",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.wall-corner"
+      },
+      "bytes": 18938,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.wall-doorway",
+      "title": "城墙门洞",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.wall-doorway"
+      },
+      "bytes": 25161,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.door",
+      "title": "木门静态模型",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.door"
+      },
+      "bytes": 19645,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.tower-base",
+      "title": "方塔基座",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.tower-base"
+      },
+      "bytes": 16481,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.tower-mid",
+      "title": "方塔中段",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.tower-mid"
+      },
+      "bytes": 17086,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.castle.tower-top",
+      "title": "方塔垛口",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.castle.tower-top"
+      },
+      "bytes": 18289,
+      "source": {
+        "origin": "https://kenney.nl/assets/castle-kit",
+        "author": "Kenney",
+        "license": "CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.environment.natural-daylight",
+      "title": "自然日光与草土地面",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.environment.natural-daylight"
+      },
+      "bytes": 10457,
+      "source": {
+        "origin": "Craftmine World natural-daylight 1.0.0",
+        "author": "Craftmine World contributors",
+        "license": "MIT",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.scene.forest-gateway",
+      "title": "林间入口",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "scene",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.scene.forest-gateway"
+      },
+      "bytes": 58984,
+      "source": {
+        "origin": "Craftmine World forest-gateway 1.0.0",
+        "author": "Craftmine World contributors / Kenney",
+        "license": "MIT AND CC0-1.0",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.module.pet-companion",
+      "title": "宠物伙伴：小狗与白色博美",
+      "latestListedVersion": 4,
+      "versions": [
+        2,
+        3,
+        4
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.pet-companion"
+      },
+      "bytes": 55095,
+      "source": {
+        "origin": "Craftmine World pet-companion 4.0.0",
+        "author": "Craftmine World contributors",
+        "license": "MIT",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.module.sandbox-combat",
+      "title": "造物战斗：怪物实例与生命/武器源码",
+      "latestListedVersion": 2,
+      "versions": [
+        1,
+        2
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.sandbox-combat"
+      },
+      "bytes": 16523,
+      "source": {
+        "origin": "Craftmine World sandbox combat 2.0.0",
+        "author": "Craftmine World contributors",
+        "license": "MIT",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.module.approved-pomeranian",
+      "title": "演示同款可爱白色博美",
+      "latestListedVersion": 4,
+      "versions": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.approved-pomeranian"
+      },
+      "bytes": 3203945,
+      "source": {
+        "origin": "Craftmine approved demo 2026-09-13 / Codex gpt-6-astra xhigh / Blender reference-guided model",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.model.approved-pomeranian",
+      "title": "演示同款白色博美模型（无跟随行为）",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "asset_library-model-only",
+      "lookupAssetId": "cw.model.approved-pomeranian",
+      "bytes": 3753144,
+      "source": {
+        "origin": "Craftmine approved demo 2026-09-13 / Codex gpt-6-astra xhigh / Blender reference-guided model",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.module.rain-control",
+      "title": "可复用控雨：悬停与倒流",
+      "latestListedVersion": 2,
+      "versions": [
+        1,
+        2
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.rain-control"
+      },
+      "bytes": 14225,
+      "source": {
+        "origin": "Craftmine approved rain demo 2026-09-13",
+        "author": "Craftmine World contributors",
+        "license": "MIT",
+        "licenseStatus": "verified"
+      }
+    },
+    {
+      "assetId": "cw.module.reusable-j20",
+      "title": "演示同款可驾驶歼二十",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.reusable-j20"
+      },
+      "bytes": 676437,
+      "source": {
+        "origin": "Craftmine approved flight demo 2026-09-13 / Codex gpt-6-astra xhigh / Blender model",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.model.approved-j20",
+      "title": "演示同款歼二十模型（无驾驶行为）",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "asset_library-model-only",
+      "lookupAssetId": "cw.model.approved-j20",
+      "bytes": 1130080,
+      "source": {
+        "origin": "Craftmine approved flight demo 2026-09-13 / Codex gpt-6-astra xhigh / Blender model",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.city.ward-building",
+      "title": "峡谷城红顶民居",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.city.ward-building"
+      },
+      "bytes": 184121,
+      "source": {
+        "origin": "Craftmine approved canyon city static fragment / 1",
+        "author": "Craftmine World player / Codex-authored source",
+        "license": "Source-declared MIT; generated/reference rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.city.gate-section",
+      "title": "峡谷城双塔城门",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.city.gate-section"
+      },
+      "bytes": 261699,
+      "source": {
+        "origin": "Craftmine approved canyon city static fragment / 1",
+        "author": "Craftmine World player / Codex-authored source",
+        "license": "Source-declared MIT; generated/reference rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.city.ward-street",
+      "title": "峡谷城双屋街区",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "scene",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.city.ward-street"
+      },
+      "bytes": 219000,
+      "source": {
+        "origin": "Craftmine approved canyon city static fragment / 1",
+        "author": "Craftmine World player / Codex-authored source",
+        "license": "Source-declared MIT; generated/reference rights unverified",
+        "licenseStatus": "unverified"
+      }
+    }
+  ],
+  "referenceWorlds": [
+    {
+      "templateId": "promo-mainline",
+      "title": "白色博美与巨兽试炼",
+      "version": "1.0.0",
+      "description": "森林伙伴、巨兽试炼与枪械",
+      "scope": "complete-world-template",
+      "route": "existing-world-picker",
+      "codeReadRoute": null,
+      "manifestSha256": "cf1ca86c779c319346b74452c595fd45473f1bd6f41bb9a5a33522cb8ec06667",
+      "relatedListedComponents": [
+        "cw.module.approved-pomeranian"
+      ]
+    },
+    {
+      "templateId": "promo-flight",
+      "title": "歼20自由飞行",
+      "version": "1.0.0",
+      "description": "歼二十起降与驾驶",
+      "scope": "complete-world-template",
+      "route": "existing-world-picker",
+      "codeReadRoute": null,
+      "manifestSha256": "a3237082395269ee245c955932342c656346dc5c52f4297493d16db5cadae854",
+      "relatedListedComponents": [
+        "cw.module.reusable-j20"
+      ]
+    },
+    {
+      "templateId": "promo-rain",
+      "title": "雨的逆序",
+      "version": "1.0.0",
+      "description": "暂停雨滴、倒流与控雨",
+      "scope": "complete-world-template",
+      "route": "existing-world-picker",
+      "codeReadRoute": null,
+      "manifestSha256": "cdd69cf063adeec2f2dc86a1d8b92922fdf46f930d32af909d36edda2e88196f",
+      "relatedListedComponents": [
+        "cw.module.rain-control"
+      ]
+    },
+    {
+      "templateId": "promo-city",
+      "title": "奥格瑞玛城市漫游",
+      "version": "1.0.0",
+      "description": "城市街区漫游与探索",
+      "scope": "complete-world-template",
+      "route": "existing-world-picker",
+      "codeReadRoute": null,
+      "manifestSha256": "ff8d7bc56361e4a939d4641d8cdf98cd21163ec7e34c9a30744c1a30d945bf67",
+      "relatedListedComponents": [
+        "cw.city.ward-building",
+        "cw.city.gate-section",
+        "cw.city.ward-street"
+      ]
+    }
+  ],
+  "sourceFeatures": [
+    {
+      "id": "promo-broadleaf",
+      "title": "宣传片同款阔叶树",
+      "keywords": [
+        "树",
+        "阔叶树",
+        "宣传片同款"
+      ],
+      "templateId": "promo-mainline",
+      "status": "reference-only",
+      "relatedAssetId": "cw.nature.promo-broadleaf",
+      "originalFiles": [
+        {
+          "path": "assets/blender/broadleaf.glb",
+          "bytes": 78656,
+          "sha256": "a10323c994d4c431ac2246f8376c5ecd53997ca6f6cb6be1c90a806063cc014a"
+        },
+        {
+          "path": "scripts/broadleaf_world.gd",
+          "bytes": 1571,
+          "sha256": "75bdf8892a0746dca879d942db24a6429345b8ff2886c6b7e612f3e739aee140"
+        }
+      ]
+    },
+    {
+      "id": "promo-meadow",
+      "title": "宣传片同款草地与野花",
+      "keywords": [
+        "花草",
+        "草地",
+        "草甸",
+        "野花"
+      ],
+      "templateId": "promo-mainline",
+      "status": "reference-only",
+      "relatedAssetId": "cw.scene.promo-meadow",
+      "originalFiles": [
+        {
+          "path": "assets/blender/meadow.glb",
+          "bytes": 4160452,
+          "sha256": "02ba07f28e8c2c1eaf1724f36d25165fa8ff82862537dc7c5b45a047e65681ac"
+        }
+      ]
+    },
+    {
+      "id": "promo-monsters",
+      "title": "宣传片角怪与遭遇战",
+      "keywords": [
+        "小怪",
+        "怪物",
+        "角怪",
+        "战斗"
+      ],
+      "templateId": "promo-mainline",
+      "status": "reference-only",
+      "relatedAssetId": "cw.module.promo-monsters",
+      "originalFiles": [
+        {
+          "path": "assets/blender/hornling.glb",
+          "bytes": 57432,
+          "sha256": "775ec49dcf1ee9f7fbab8155c1f56b4071c24390fc07f00981626c820a146e69"
+        },
+        {
+          "path": "scripts/monsters/hornling.gd",
+          "bytes": 8521,
+          "sha256": "29c33fee6879048845f5c839107046361ab8bce9399e14370b58849ede200423"
+        },
+        {
+          "path": "scripts/monsters/encounter.gd",
+          "bytes": 8525,
+          "sha256": "4c539cebdff50568db7cf76d1adec7bf882bb59a21f06917376eba78c4c13617"
+        }
+      ]
+    },
+    {
+      "id": "promo-heavyblade",
+      "title": "宣传片重剑与挥砍",
+      "keywords": [
+        "剑",
+        "重剑",
+        "大剑",
+        "近战"
+      ],
+      "templateId": "promo-mainline",
+      "status": "reference-only",
+      "relatedAssetId": "cw.module.promo-heavyblade",
+      "originalFiles": [
+        {
+          "path": "assets/blender/heavyblade.glb",
+          "bytes": 83592,
+          "sha256": "c32983d66bec11463046f3e66b5c5309225df975cf93ad28878b241c9cc2ccad"
+        },
+        {
+          "path": "scripts/hunt/duel.gd",
+          "bytes": 21730,
+          "sha256": "745c320822e9b69a9a9e7c7c7d39acd08c15d2faa667fe67bb7b6f7ece215123"
+        }
+      ]
+    },
+    {
+      "id": "promo-hunt",
+      "title": "宣传片裂岳兽与巨兽试炼",
+      "keywords": [
+        "怪猎",
+        "巨兽",
+        "大怪物",
+        "狩猎",
+        "boss"
+      ],
+      "templateId": "promo-mainline",
+      "status": "reference-only",
+      "relatedAssetId": "cw.module.promo-hunt",
+      "originalFiles": [
+        {
+          "path": "assets/blender/riftbeast.glb",
+          "bytes": 336872,
+          "sha256": "88f9128fbb8e3d246897e97925fe688cd9b6f82d026465cd70c79bc4cda71298"
+        },
+        {
+          "path": "scripts/hunt/riftbeast.gd",
+          "bytes": 12435,
+          "sha256": "4661981ac6d4b38ecfd4e01fcd791323d57b430224edaea35c9ec6231d4204d9"
+        },
+        {
+          "path": "scripts/hunt/duel.gd",
+          "bytes": 21730,
+          "sha256": "745c320822e9b69a9a9e7c7c7d39acd08c15d2faa667fe67bb7b6f7ece215123"
+        }
+      ]
+    },
+    {
+      "id": "promo-ak47",
+      "title": "宣传片 AK47 与射击",
+      "keywords": [
+        "AK47",
+        "AK",
+        "枪",
+        "步枪",
+        "射击"
+      ],
+      "templateId": "promo-mainline",
+      "status": "reference-only",
+      "relatedAssetId": "cw.module.promo-ak47",
+      "originalFiles": [
+        {
+          "path": "assets/blender/ak47.glb",
+          "bytes": 210864,
+          "sha256": "066a2666ad71f850856052a9b0480a642e04a5d60c000ee48910170dd5bad25c"
+        },
+        {
+          "path": "scripts/weapons/ak47.gd",
+          "bytes": 14043,
+          "sha256": "709540a57d4806f155a5ab3a3dbfae871d8bcf654debacccbe6290a13388a0ae"
+        }
+      ]
+    }
+  ]
+}
