@@ -166,6 +166,7 @@ async function onLoad() {
     // The managed executor lives in this process: its own status is the gate,
     // and it is the service that actually runs a queued build or check job.
     executorStatus:()=>godotExecutor.status(),
+    executorNativeDiagnosticEvidence:record=>godotExecutor.nativeDiagnosticEvidence(record),
     executorCreationCompletion:binding=>godotExecutor.creationCompletion(binding),
     executorEnqueue:(job,context)=>godotExecutor.enqueue(job,context),
     executorCancel:jobId=>godotExecutor.cancel(jobId),

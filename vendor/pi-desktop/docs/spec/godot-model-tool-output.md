@@ -35,3 +35,10 @@ Recovery facts apply this projection only to their verified session-latest
 job diagnostics. Task scope, budget, stale-source comparison, candidate and
 unknown application coverage remain intact. Their nested `summary.fullRead`
 provides the job's original evidence without repeatedly embedding raw logs.
+
+The packaged plugin wires `executorNativeDiagnosticEvidence` to its own managed
+executor. A failed read can therefore distinguish executor-validated native
+import failures from unverified log observations. The existing private ledger,
+broker and source checks remain mandatory; model arguments cannot supply this
+proof. Missing or mismatched evidence remains unknown. This restores the
+previously missing production callback rather than changing diagnostic verdicts.

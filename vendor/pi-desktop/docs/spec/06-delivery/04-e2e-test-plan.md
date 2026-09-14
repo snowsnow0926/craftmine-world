@@ -10870,3 +10870,11 @@ before the provider prompt. Check cancelled old capture, current manual/full-aut
 mode, generation/world/lease changes during sampling, and legacy renderer flow.
 See tests/player-resume-creation-target.test.mjs and the ordinary execution-limit
 recovery scenario.
+# Packaged native evidence callback — 2026-09-14
+
+- Build the ordinary world plugin and run `tests/godot-native-diagnostics.test.mjs`.
+  Verify its production `main.cjs` supplies the managed executor's private
+  diagnostic callback to world tools. Both default summary and explicit full
+  reads preserve validated native failures. Wrong world/source/broker pins,
+  missing files, injected model arguments and directory junctions must not
+  manufacture native proof. The prior missing-callback failure is retained.
