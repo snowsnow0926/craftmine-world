@@ -20,6 +20,7 @@ export function craftmineCoreToolNames(runtimeKind: unknown): ReadonlySet<string
       "plugin_craftmine_world_godot_file_read", "plugin_craftmine_world_godot_project_query", "plugin_craftmine_world_godot_project_patch",
       "plugin_craftmine_world_godot_project_index",
       "plugin_craftmine_world_blender_status",
+      "plugin_craftmine_world_blender_generate", "plugin_craftmine_world_blender_job_read",
     ]));
   if (runtimeKind === "legacy") return new Set(["plugin_craftmine_world_project_inspect", "plugin_craftmine_world_capabilities_read", "new_context", "asktool"]);
   return CRAFTMINE_CORE_TOOL_NAMES;

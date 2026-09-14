@@ -10829,6 +10829,10 @@ the host-registered read-only project index is offered on the first Godot PI
 request with its actual limit 1–32 schema and executes without ToolSearch.
 Unregistered tools, legacy/unknown worlds and Codex remain outside this change.
 
+The same first-call regression also covers registered embedded Blender generate
+and job-read tools with their complete unchanged schemas. Generation retains all
+existing host authorization/source checks; other deferred tools stay deferred.
+
 Follow [the localhost wire regression](../../e2e/deepseek-alias-wire-20260914.md).
 With the pinned PI adapter and provider UUID, preserve `deepseek-flash`, explicit
 max/off, assistant reasoning fields and the configured output allowance. Verify
