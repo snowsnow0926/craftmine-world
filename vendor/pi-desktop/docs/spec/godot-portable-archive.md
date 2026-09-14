@@ -5,6 +5,37 @@ Owner: R5 (complete archive, restore, backup protection references).
 Consumers: R1 (RPC registration, Git and build reclamation), R2 (restore UI),
 R6 (asset body reclamation), R7 (query/proposal entry points).
 
+## Player feedback and world brief compatibility (2026-09-14)
+
+`craftmine_playtest_feedback` is durable domain data and belongs in the explicit
+bounded domain/complete archive table registry. Its world-scoped ID, complete
+stored report body, screenshot bytes/hash, imported source context, reply link
+and stored timestamp survive export and restore unchanged. The streaming portable
+archive also carries these rows through its complete domain enumeration. Reports
+remain untrusted player data; restoring them does not submit a repair or acquire
+new check authority.
+
+The companion continuity tables `craftmine_world_briefs`,
+`craftmine_world_brief_operations` and `craftmine_world_brief_proposals` are also
+explicit durable members. Restore preserves exact goals, build-bound human
+reviews, original task requests, operation receipts and pending proposals. A
+pending model proposal stays pending; imported backup data does not create a
+new player acceptance or native verification. Proposal rows follow their world
+and task parents in the bounded restore registry.
+
+These same four tables are explicitly additive for old domain, complete and
+portable archives written before the features existed. Only absence of these known tables is
+padded with the exact current columns and zero rows. A present table with wrong
+columns, broken world foreign keys, or an invalid archive hash still fails before
+replacement. No arbitrary absent column/table is inferred and the schema-drift
+guard remains active. Existing archive formats and original archive bytes stay
+unchanged; compatibility is applied in restore staging.
+
+`backups::feedback_tests` exercises all three real export/restore APIs into a
+fresh data directory, cold reopen, imported feedback plus replies/screenshots,
+preserved goals/review/receipts and pending proposals, old absent-table archives
+and atomic rejection of malformed present data.
+
 ## 1. Problem
 
 The bounded domain archive (`craftmine.domain-backup/1`) and the earlier

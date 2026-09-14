@@ -44,3 +44,12 @@ developer credentials, open a real browser, request Pointer Lock or send OS
 input. Use pure page scripts in independent headless profiles for UI fixtures.
 User-operated login and natural Windows interaction remain separate acceptance
 steps and are not claimed by the deterministic tests above.
+# Guided known-install discovery (2026-09-14)
+
+Place an incompatible native executable before a compatible installation in the
+fixture candidate list. Detect must report both versions, select the compatible
+path, and never read an account or open a browser. A broken candidate exposes no
+raw diagnostic output. Verify remains required before saving. On a fresh PC,
+the settings row must show install/re-detect/login/verify/save instructions and
+the exact development-build distribution limitation; it must not claim that the
+general official installer guarantees compatibility.

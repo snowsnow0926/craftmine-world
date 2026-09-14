@@ -1777,6 +1777,7 @@ export const fr = {
     "justNow": "À l'instant"
   },
   "errors": {
+    "CODEX_INTERRUPTED_RECOVERY_UNVERIFIED": "Le tour arrêté n’a pas encore pu être vérifié. La conversation et le monde sont conservés. Choisissez Continuer pour réessayer ; l’historique complet ne sera pas reconstruit automatiquement.",
     TOKEN_BUDGET_EXHAUSTED: "Le budget local de tokens est épuisé. Ajustez-le dans l’atelier du monde, puis reprenez la tâche enregistrée.",
     REQUEST_BUDGET_EXHAUSTED: "La limite de requêtes est atteinte. Consultez la tâche dans l’atelier du monde.",
     COMPACTION_BUDGET_EXHAUSTED: "La limite de compactage est atteinte. Consultez la tâche dans l’atelier du monde.",

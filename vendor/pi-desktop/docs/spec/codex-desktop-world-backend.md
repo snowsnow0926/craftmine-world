@@ -68,6 +68,65 @@ tool catalog fails closed. A missing synchronized rollout also fails visibly.
 Native interrupted-task resume/discard continues to require the existing player's
 world recovery action; transport recovery cannot grant a native write lease.
 
+An interruption may retain synchronization only when the actual user `turn/start`
+was acknowledged before abort, no tool reply was pending when abort began or when
+the tail settled, the exact CLI thread/turn reports `interrupted`, and the host
+checkpoint save succeeds. The terminal acknowledgement can arrive while the
+owned process closes; unrelated or post-retirement acknowledgements cannot revive
+it. Missing acknowledgement, partial start, pending tools, failed native fence or
+checkpoint save remain unsynchronized. This preserves native compaction already
+performed in a cleanly interrupted CLI thread without weakening partial recovery.
+Existing overwritten checkpoints are not reconstructed from external rollout files.
+
+Full restoration uses the pinned CLI's `thread/inject_items` interface to append
+ordinary historical-data messages without starting a model turn. Each canonical
+record retains its PI session/message ID, timestamp, original role/status, tool
+name/arguments and complete visible content. Serialized payloads are divided into
+32,768 UTF-16-unit fragments without splitting surrogate pairs. Fragment headers
+carry the original payload SHA-256 and ordered part/count. Up to eight text items
+are sent per request; each real historical image is a separate `input_image`
+item, never base64 text inside the historical JSON. These are request transport
+bounds, not history truncation or model/token/whole-turn limits.
+
+For history exceeding one 256 KiB textual hydration segment, insert every original
+textual record in complete ordered segments and call CLI-native
+`thread/compact/start` between segments, including after the last original-text
+segment. No source text is cropped. Native summaries carry prior segments forward;
+Rust's full visible transcript remains untouched. Finally anchor original player
+requests and real historical images with their original message IDs. An unusually
+large anchor set also uses native segmented maintenance instead of a silent cut.
+
+Maintenance has a distinct native turn identity. Await the compact RPC ack, a
+matching completed `contextCompaction` item and successful matching terminal turn
+before adding the next segment. Maintenance completion cannot finish the enclosing
+player request, execute domain tools or substitute another model. Actual native
+maintenance usage belongs to the enclosing PI request; no total-history,
+compaction-count, token or time budget is imposed. A segment is not a guarantee of
+provider acceptance: preserve actual native refusal/error evidence.
+Cancel captures the current native maintenance turn ID before rejecting its local
+waiter, then sends ordinary `turn/interrupt` for that ID before closing the owned
+transport. A maintenance interruption never establishes a synchronized checkpoint.
+
+The adapter awaits each injection acknowledgement and checks the active native
+turn before and after it. There is no invented idempotency: failed/uncertain or
+aborted injection leaves the checkpoint unsynchronized; the next ordinary retry
+starts a new opaque thread from the full canonical transcript. It neither
+continues a partially injected thread nor executes synthetic historical tools.
+After complete history hydration and maintenance, it refreshes host facts and sends one
+ordinary `turn/start` with those facts, the current player request/images and an
+explicit recovery notice. Historical results are not proof of the current source,
+build, gameplay or acceptance. Codex retains its own normal context management.
+An injection refusal stays visible with its protocol diagnostic, with no fallback
+to an oversized prompt or automatic history trimming.
+
+Validation includes a source-shaped historical tool result above 1 Mi characters,
+exact reconstructed payloads and hashes, original player wording, image blocks,
+no historical tools, one actual player `turn/start`, interrupted injection and rejection. The
+original player's 207-message transcript was also projected read-only: all
+2,159,106 payload characters reconstructed exactly, with four image blocks and no
+base64 text. This is transport projection evidence, not a successful live model
+restoration or packaged acceptance; the coordinator runs that through normal UI.
+
 Text, tools and terminal messages use the current agent event contract. Codex's
 cumulative thread usage is converted to **current-turn deltas**, streamed in
 `AgentStatus.transportUsage` and attached once to the final assistant message.
@@ -80,6 +139,31 @@ Internal model-request count and generation-only timing are not inferred from
 one app-server turn; the existing request-level metrics panel may have unknown
 coverage for Codex. No invented PI model-call records, cost, throughput or native
 budget settlements are produced. This backend adds no model/token/turn budget.
+
+Native maintenance usage has incomplete coverage in the verified CLI notification
+contract. Actual compaction writes separate native usage records, but the consumed
+`thread/tokenUsage/updated` stream resets its total counters to zero afterward and
+may expose context occupancy as an otherwise-zero `last` total. These resets are
+not model consumption, must not display zero usage and never become a zero
+checkpoint baseline. Do not silently import private rollout counters into product
+events or call account-wide APIs to fill the gap.
+
+When maintenance occurred, omit generic `message.usage` and `status.transportUsage`
+as complete totals. Persist `message.codexUsage.coverage`, and expose the same
+`status.codexUsageCoverage`, with `status: incomplete`, reason
+`native-maintenance-usage-unreported`, completed `maintenanceTurns`, observed
+`maintenanceElapsedMs` (null if timing is unavailable), and optional
+`reportedCreationUsage`. The latter contains only subsequently reported creation
+counters, never a complete operation total. These optional fields survive Rust's
+canonical transcript roundtrip. UI and exports show total usage as unknown,
+explicitly label creation counters/maintenance absence, and preserve the coverage.
+Known valid post-reset creation counters may seed later-turn deltas; unreported
+maintenance is never reclassified as zero. No cost is inferred.
+
+Legacy persisted context-capacity markers (all-zero components, total equal to
+model window) are filtered in the metrics/context UI as a read-only projection.
+The original SQLite/transcript record remains unchanged. Existing no-maintenance
+turns with consistent reported usage retain their ordinary behavior.
 
 Cancellation first revokes local dispatch and native turn authority, cancels
 owned permission/tool waiters, interrupts/closes the CLI and drains outstanding
@@ -181,3 +265,81 @@ supports completing such an already-authored fixture without repeating model
 requests. Last-request context metadata is separately tested through Rust's
 canonical transcript serializer; old messages without that metadata show no
 fabricated context-window estimate.
+# Failed transport diagnostics
+
+Asynchronous `error` notifications and failed `turn/completed.error` now retain
+their selected, bounded sanitized message/additionalDetails and recognized native
+error classification in both terminal message and error-event details. Thread and
+turn identities must match. A retryable native notification alone never terminates
+the turn. Unknown error objects, raw provider fields and credentials are omitted.
+
+Usage totals must satisfy `inputTokens + outputTokens === totalTokens` before
+being displayed, persisted as a new transport baseline or converted into turn
+usage. A real context-full marker with zero input/output and total equal to the
+model context window is recorded only as `usageSignal.notTokenUsage`, never as
+consumption or cost. Previously persisted error/usage records remain immutable;
+this validation applies to new events and rejects invalid historical baselines.
+
+The adapter preserves its existing terminal code and adds selected observations
+to the existing `error.details`: a fixed host stage, and for a recognized RPC
+failure only, its request method, integer code and bounded redacted message.
+Stages distinguish context/checkpoint/binary/app-server setup, thread start or
+resume, transcript restoration, checkpoint save and turn start. Request methods
+are selected from initialize, config/read, account/read, thread/start,
+thread/resume and turn/start; no request arguments or arbitrary error fields are
+projected. The message retains at most 1,024 Unicode characters plus an explicit
+truncation marker. Tokens, common credential assignments, local paths, URLs and
+email addresses are redacted before persistence. Raw stderr remains discarded.
+
+These diagnostic fields do not themselves authorize recovery. Divergent
+checkpoints restore the canonical transcript in a new CLI thread; valid
+synchronized checkpoints resume. The verified interrupted-tail exception below
+preserves an existing native thread without reconstructing its compacted history.
+No automatic model retries, history truncation,
+model fallback, token limits or model-call limits are introduced. A successful
+connection check proves setup, not that a later turn-start request succeeds.
+Old generic errors cannot be retrospectively reconstructed or rewritten.
+
+Regression tests use fixture protocol failures and assert the actual emitted
+details, original terminal code, one turn/start, exact Astra/xhigh selection,
+unsynchronized failure checkpoint and normal process cleanup. Native E2E requires
+a separately labeled ordinary recovery attempt in the original isolated profile;
+source-mode diagnosis is not final packaged acceptance. Inspect the persisted
+error details before inferring account quota, context limits or world errors.
+
+## Interrupted acknowledgement and verified same-thread recovery
+
+Cancellation fences native world authority immediately. The owned app-server
+remains open for the ordinary matching `turn/interrupt` response **and** matching
+`turn/completed` with `interrupted` status, up to a two-second process cleanup
+grace. Only then is stdin closed and stdout drained. This is not a model deadline.
+An idle tool tail, acknowledged actual user turn/start, both interrupt receipts
+and successful Rust save are required for synchronized=true. Maintenance turns,
+pending tool replies, foreign/late receipts or failed saves cannot authorize it.
+See [transport close/drain](../adr/codex-app-server-close-drain.md).
+
+A submitted unsynchronized checkpoint with matching Rust transcript/binding and
+an empty aborted terminal message is a narrow recovery candidate. The main host
+gets the prior user turn identity from existing `session.turnMetrics`. The sidecar
+reads only that CLI thread using `thread/read(includeTurns:false)` and
+`thread/turns/list(desc,limit:1,itemsView:full)`. It requires inactive metadata,
+the exact cwd/model/provider/effort, an interrupted latest turn, original user
+text/images and historical host identities, visible assistant text, and every
+completed dynamic tool's namespace/name/arguments/result. PI call IDs must equal
+`codex-` plus SHA256(JSON.stringify([hostTurnId,nativeCallId])). JSON object key
+order is normalized; source strings and image bytes are not rewritten. Unknown
+items, missing output, running calls and unmatched identities fail closed.
+
+After ordinary thread/resume with the existing sandbox/MCP/model checks, repeat
+the native terminal/tail fingerprint and Rust checkpoint/transcript proof before
+submitting a new turn. No external rollout or database mutation authorizes this
+path. An uncertain read returns CODEX_INTERRUPTED_RECOVERY_UNVERIFIED with bounded
+cause details; it never silently rebuilds the long history. English and Chinese
+transcript copy points to the existing Continue action. Empty local read-only
+failure/cancel receipts can be separated for prefix digest verification; their
+user messages remain visible and are injected as historical data after verified
+resume. Before any such injection the checkpoint becomes submitted=false; an
+uncertain partial injection can never be resumed as synchronized. All other
+fresh-thread/import/divergent-history paths retain their existing behavior.
+
+Validation: [interrupted recovery E2E](../e2e/codex-interrupted-recovery.md).

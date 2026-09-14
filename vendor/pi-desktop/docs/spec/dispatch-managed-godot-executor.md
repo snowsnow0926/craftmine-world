@@ -216,8 +216,10 @@ including the host-pinned bridge, before its first write. Existing ordinary,
 unlinked files are reused only when their bytes match. Conflicting hashes,
 links or non-files produce `GODOT_ARTIFACT_CONFLICT`; existing evidence is never
 overwritten or deleted. New files use exclusive copies and are verified again.
-A repeated check can reuse identical artifacts. Different exports for the same
-build fail explicitly; retrying changed content requires a new source revision.
+A continued check can reuse the origin's exact authorized artifacts. Different
+bytes targeting the same build still fail explicitly. A fresh complete build call
+now owns a distinct immutable v2 build ID, so a new export needs no artificial
+source edit. The existing durable receipt replays the same job/build on retries.
 An interrupted ledger entry is terminal and excluded from the active count.
 
 ### Resource budget

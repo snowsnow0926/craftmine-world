@@ -17,7 +17,7 @@ test('production plugin build includes exact guidance resources and serves a pin
   try {
     execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',output],
       {cwd:root,encoding:'utf8',windowsHide:true,timeout:120000,maxBuffer:2*1024*1024});
-    for(const file of ['godot-guidance.cjs','godot-view-capture.cjs','godot-build-read-wait.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
+    for(const file of ['godot-guidance.cjs','godot-view-capture.cjs','godot-build-read-wait.cjs','godot-runtime-diagnostic-log.cjs','creation-application-state.cjs','guidance/catalog.json','guidance/equipment-parameters.md','guidance/creation-sandbox.md','guidance/references/double-press-rule.gd']){
       assert.deepEqual(fs.readFileSync(path.join(output,file)),fs.readFileSync(path.join(root,'plugins/craftmine-world',file)),file);
     }
     assert.equal(fs.existsSync(path.join(output,'guidance/build-catalog.mjs')),false,'developer generator is not a runtime capability');
@@ -86,5 +86,8 @@ test('production plugin build includes exact guidance resources and serves a pin
     const visual=await capture.execute({buildId:'build',instanceId:'instance'},context);assert.equal(visual.images[0].data,png.toString('base64'));assert.equal(JSON.parse(visual.text).sha256,sha256);assert.equal(visual.text.includes(png.toString('base64')),false);
     const candidate=await capture.execute({buildId:'candidate-build',candidateId:'gcan-'+'a'.repeat(64)},context);assert.equal(JSON.parse(candidate.text).instanceId,'preview-instance');
     await assert.rejects(capture.execute({buildId:'build',instanceId:'instance',worldId:'other'},context));assert.equal(captures,2);
+    const childEnv={...process.env,CRAFTMINE_GUIDANCE_PLUGIN_ROOT:output};delete childEnv.NODE_TEST_CONTEXT;
+    const engineCases=execFileSync(process.execPath,['--test',path.join(root,'tests/creation-guidance/engine-cohorts.test.mjs')],{cwd:root,encoding:'utf8',windowsHide:true,env:childEnv});
+    assert.match(engineCases,/(?:#|ℹ) pass 6/);assert.match(engineCases,/(?:#|ℹ) fail 0/);
   } finally {fs.rmSync(output,{recursive:true,force:true});}
 });

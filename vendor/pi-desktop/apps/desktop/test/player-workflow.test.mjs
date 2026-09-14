@@ -4,7 +4,8 @@ import {register} from 'node:module';
 register(new URL('./helpers/ts-import-hooks.mjs', import.meta.url));
 const {parseWorldCapabilities} = await import('../src/lib/craftmine-worlds.ts');
 const {worldAssetPrompt, appendWorldAssetRequest} = await import('../src/lib/world-asset-request.ts');
-const {parseSourceProposals, sourcePackageRequest, sourceJobState} = await import('../src/lib/source-reuse.ts');
+const {parseSourceProposals, sourcePackageRequest, sourceJobState, parseSourceJob} = await import('../src/lib/source-reuse.ts');
+const {createCraftminePackageService} = await import('../electron/main/craftmine-package-service.ts');
 const hash='a'.repeat(64);
 
 test('examples retain host metadata and reject remote or executable previews', () => {
@@ -33,4 +34,22 @@ test('durable proposal restores the exact job and rejects cross-world receipts',
   assert.deepEqual(actual,['package.request',{worldId:'w1',method:'installSourceProposal',params:{worldId:'w1',proposalId:proposal.proposalId}}]);
   assert.equal(sourceJobState({worldId:'w1',jobId:'gjob-'+hash,status:'failed'},'w1','gjob-'+hash),'failed');
   assert.throws(()=>sourceJobState({worldId:'w2',jobId:'gjob-'+hash,status:'passed'},'w1','gjob-'+hash));
+});
+test('historical source checks retain failure and only accept explicit stale evidence',()=>{
+ const receipt={worldId:'w1',jobId:'gjob-'+hash,status:'failed'};
+ assert.deepEqual(parseSourceJob({...receipt,sourceStale:true},'w1',receipt.jobId),{id:receipt.jobId,status:'failed',sourceStale:true});
+ assert.deepEqual(parseSourceJob(receipt,'w1',receipt.jobId),{id:receipt.jobId,status:'failed'});
+ assert.equal(parseSourceJob({...receipt,sourceStale:false},'w1',receipt.jobId).sourceStale,false);
+ assert.throws(()=>parseSourceJob({...receipt,sourceStale:'true'},'w1',receipt.jobId),/RECEIPT_INVALID/);
+});
+test('native source-job projection carries only the current core staleness flag, never later-success claims',async()=>{
+ const jobId='gjob-'+hash;let sourceStale=true;
+ const service=createCraftminePackageService({selection:()=> 'w1',pickFile:async()=>{throw Error('unexpected picker');},domainCall:async(method,args)=>{
+  assert.equal(method,'package.sourceJob');assert.deepEqual(args,{worldId:'w1',jobId});
+  return {worldId:'w1',jobId,status:'failed',sourceStale,privatePath:'private-source-path',laterPassed:true};
+ }});
+ const read=()=>service.request('package.request',{worldId:'w1',method:'sourceJob',params:{worldId:'w1',jobId}});
+ assert.deepEqual(await read(),{worldId:'w1',jobId,status:'failed',terminal:true,sourceStale:true});
+ sourceStale=false;assert.equal((await read()).sourceStale,false);
+ sourceStale='true';await assert.rejects(read(),/PACKAGE_JOB_RECEIPT_INVALID/);
 });

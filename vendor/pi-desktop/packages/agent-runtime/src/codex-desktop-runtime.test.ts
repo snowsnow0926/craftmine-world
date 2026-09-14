@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { EventEmitter } from "node:events";
+import { createHash } from 'node:crypto';
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { CodexDesktopRuntime, codexTurnUsage, type CodexCheckpoint } from "./codex-desktop-runtime.js";
-import { MODEL, EFFORT } from "./codex-app-server.mjs";
+import { MODEL, EFFORT, protocolDiagnostic } from "./codex-app-server.mjs";
 
 class Client extends EventEmitter {
   calls: any[] = []; replies: any[] = []; closed = false; threadConfig = {}; model = MODEL;
@@ -12,6 +13,13 @@ class Client extends EventEmitter {
   async start() {}
   async call(method: string, params: any): Promise<any> {
     this.calls.push({ method, params });
+    if(method==='thread/compact/start'){
+      const id='compact-'+this.calls.filter(c=>c.method===method).length;
+      this.notify('turn/started',{turnId:id,turn:{id}});
+      this.notify('item/completed',{turnId:id,item:{type:'contextCompaction'}});
+      this.notify('turn/completed',{turnId:id,turn:{id,status:'completed'}});
+      return {};
+    }
     if (method.startsWith("thread/")) return { model: this.model, modelProvider: "openai", reasoningEffort: EFFORT,
       sandbox: { type: "readOnly" }, approvalPolicy: "never", instructionSources: [], thread: { id: "thread-1", turns: [] } };
     if (method === "turn/start") { this.notify("turn/started", { turn: { id: "turn-cli" } }); this.started?.(); return { turn: { id: "turn-cli" } }; }
@@ -25,23 +33,23 @@ class Client extends EventEmitter {
 }
 const next = () => new Promise(resolve => setImmediate(resolve));
 const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aCfoAAAAASUVORK5CYII=";
-async function fixture() {
+async function fixture(historyMessages?: any[]) {
   const scratch = await mkdtemp(join(tmpdir(), "codex-desktop-"));
   const events: any[] = [], calls: any[] = [];
-  let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true;
+  let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true, rejectSave=false,recovery:any;
   let execute = async (_params: any): Promise<any> => ({ ok: true, content: { world: { id: "host-world" }, images: [{ mimeType: "image/png", data: png }] } });
   const make = (client = new Client()) => {
     let start!: () => void; const ready = new Promise<void>(resolve => { start = resolve; }); client.started = start;
     const runtime = new CodexDesktopRuntime({ sessionId: "host-session", binary: "C:/codex.exe", scratchDir: scratch,
       tools: [{ name: "plugin_craftmine_world_godot_project_facts", description: "facts", parameters: { type: "object" }, risk: "medium" }],
-      verifyBinary: async () => {}, clientFactory: () => client, onEvent: event => events.push(event),
-      history: async () => [{ id: "old", role: "user", content: "Preserve my tree", createdAt: "today", status: "complete" },
+      verifyBinary: async () => {}, interruptGraceMs:30, clientFactory: () => client, onEvent: event => events.push(event),
+      history: async () => historyMessages ?? [{ id: "old", role: "user", content: "Preserve my tree", createdAt: "today", status: "complete" },
         {id:"old-capture",role:"tool",content:JSON.stringify({images:[{mimeType:"image/png",data:png}]}),toolResult:{images:[{mimeType:"image/png",data:png}],scope:"formal"},createdAt:"today",status:"complete"}],
       host: { async call(method, params): Promise<any> {
         calls.push({ method, params });
         if (method === "craftmine.context") return { world: { id: "host-world", runtimeKind: "godot" } };
-        if (method === "codex.checkpoint.load") return { checkpoint, transcriptMatches };
-        if (method === "codex.checkpoint.save") { checkpoint = structuredClone(params.checkpoint) as CodexCheckpoint; return {}; }
+        if (method === "codex.checkpoint.load") return { checkpoint, transcriptMatches, recovery };
+        if (method === "codex.checkpoint.save") { if(rejectSave)throw Error('CODEX_TEST_SAVE_FAILED'); checkpoint = structuredClone(params.checkpoint) as CodexCheckpoint; return {}; }
         if (method === "codex.fence") return {};
         if (method === "tools.execute") return execute(params);
         throw Error("Unexpected host operation " + method);
@@ -49,11 +57,81 @@ async function fixture() {
     });
     return { runtime, client, ready };
   };
-  return { make, events, calls, get checkpoint() { return checkpoint; }, set execute(fn: typeof execute) { execute = fn; },
-    diverge: () => { transcriptMatches = false; }, cleanup: () => rm(scratch, { recursive: true, force: true }) };
+  return { make, events, calls, scratch, get checkpoint() { return checkpoint; }, set execute(fn: typeof execute) { execute = fn; },
+    diverge: () => { transcriptMatches = false; },setRecovery:(value:any)=>{recovery=value;},
+    rejectSaves:()=>{rejectSave=true;}, cleanup: () => rm(scratch, { recursive: true, force: true }) };
 }
 
 describe("Codex desktop adapter (mock app-server, no live model)", () => {
+  it('keeps stdin open through both delayed interrupt response and matching terminal, then saves only confirmed idle tail',async()=>{
+    const f=await fixture();try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'work'},'user','prior');await ready;await next();
+      const original=client.call.bind(client);let reply!:()=>void;
+      client.call=async(method,params)=>{
+        if(method!=='turn/interrupt')return original(method,params);
+        client.calls.push({method,params});await new Promise<void>(resolve=>{reply=resolve;});return {};
+      };
+      const stopping=runtime.abort();await next();
+      expect(client.closed).toBe(false);expect(f.calls.at(-1).method).toBe('codex.fence');
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});await next();
+      expect(client.closed).toBe(false);reply();await stopping;await running;
+      expect(client.closed).toBe(true);expect(f.checkpoint?.synchronized).toBe(true);
+    }finally{await f.cleanup();}
+  });
+  it('recovers an unsynchronized interrupted thread only after two exact native tail reads and host revalidation',async()=>{
+    for(const variant of ['matching','changed-tail','pending','read-error','read-exit','read-cancel','deferred','partial-inject']){
+      const history:any[]=[{id:'old-user',role:'user',status:'complete',content:'Keep the complete city',createdAt:'yesterday'},
+        {id:'abort',role:'assistant',content:'',status:'aborted',error:{code:'TURN_ABORTED'},createdAt:'yesterday'}];
+      const f=await fixture(history);try{
+        const seed=f.make();const first=seed.runtime.prompt({text:'seed'},'current','seed');await seed.ready;await seed.runtime.abort();await first;
+        const saved=structuredClone(f.checkpoint),beforeSaves=f.calls.filter(c=>c.method==='codex.checkpoint.save').length;
+        const recovery={hostTurnId:'prior',sessionId:'host-session',projectId:'p',worldId:'host-world',userMessageId:'old-user',tailEndMessageId:'abort',deferredMessageIds:[] as string[]};
+        if(['deferred','partial-inject'].includes(variant)){
+          history.push({id:'never-sent',role:'user',content:'Also preserve this request',status:'complete',createdAt:'now'},
+            {id:'verify-error',role:'assistant',content:'',status:'error',error:{code:'CODEX_INTERRUPTED_RECOVERY_UNVERIFIED'},createdAt:'now'});
+          recovery.deferredMessageIds=['never-sent','verify-error'];
+        }
+        f.setRecovery(recovery);
+        const client=new Client(),original=client.call.bind(client);let reads=0,rejectRead:(e:Error)=>void=()=>{};
+        let signalRead!:()=>void;const readEntered=new Promise<void>(resolve=>{signalRead=resolve;});
+        client.call=async(method,params)=>{
+          if(method==='thread/read'){
+            client.calls.push({method,params});if(variant==='read-error')throw Object.assign(Error('CODEX_RPC_ERROR'),{rpcMethod:method,rpcCode:-1,diagnostic:'temporary unavailable'});
+            if(variant==='read-exit'){client.emit('failure',Error('CODEX_PROCESS_EXIT'));throw Error('CODEX_TRANSPORT_CLOSED');}
+            if(variant==='read-cancel'){signalRead();return await new Promise((_resolve,reject)=>{rejectRead=reject;});}
+            return {thread:{id:'thread-1',cwd:join(f.scratch,'codex-empty'),status:{type:'notLoaded'},modelProvider:'openai',model:MODEL,reasoningEffort:EFFORT}};
+          }
+          if(method==='thread/turns/list'){
+            client.calls.push({method,params});reads++;
+            return {data:[{id:variant==='changed-tail'&&reads===2?'foreign':'old-native-turn',status:variant==='pending'?'inProgress':'interrupted',itemsView:'full',error:null,
+              items:[{type:'userMessage',content:[{type:'text',text:'Current authoritative host facts: '+JSON.stringify({world:{id:'host-world'},binding:{sessionId:'host-session',projectId:'p',turnId:'prior'}})},{type:'text',text:'Keep the complete city'}]}]}]};
+          }
+          if(method==='thread/inject_items'&&variant==='partial-inject'){client.calls.push({method,params});throw Error('CODEX_TRANSPORT_CLOSED');}
+          return original(method,params);
+        };
+        const x=f.make(client);const running=x.runtime.prompt({text:'Continue'},'new-user','new-turn');
+        if(variant==='read-cancel'){
+          client.close=async()=>{client.closed=true;rejectRead(Error('CODEX_TRANSPORT_CLOSED'));};
+          await readEntered;await x.runtime.abort();
+        }
+        if(['matching','deferred'].includes(variant)){
+          await x.ready;expect(reads).toBe(2);expect(client.calls.some(c=>c.method==='thread/start'||c.method==='thread/compact/start')).toBe(false);
+          if(variant==='deferred')expect(JSON.stringify(client.calls.filter(c=>c.method==='thread/inject_items'))).toContain('Also preserve this request');
+          else expect(client.calls.some(c=>c.method==='thread/inject_items')).toBe(false);
+          expect(client.calls.filter(c=>c.method==='turn/start')).toHaveLength(1);
+          client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+        }else{
+          await running;expect(client.calls.some(c=>['thread/start','turn/start','thread/compact/start'].includes(c.method))).toBe(false);
+          if(variant==='partial-inject')expect(f.checkpoint?.submitted).toBe(false);
+          else{
+            expect(f.checkpoint).toEqual(saved);expect(f.calls.filter(c=>c.method==='codex.checkpoint.save')).toHaveLength(beforeSaves);
+            expect(f.events.filter(e=>e.event.type==='error').at(-1).event.error).toMatchObject(variant==='read-cancel'?
+              {code:'TURN_ABORTED',details:{recoveryReadOnly:true}}:{code:'CODEX_INTERRUPTED_RECOVERY_UNVERIFIED',retriable:true});
+          }
+        }
+      }finally{await f.cleanup();}
+    }
+  });
   it("uses host identities/registered permissions, actual images, exact config and cumulative deltas across fresh runtimes", async () => {
     const f = await fixture();
     try {
@@ -67,10 +145,13 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         expect(input.input.at(-1)).toEqual({ type: "image", url: "data:image/png;base64," + png });
         expect(JSON.stringify(input)).not.toContain("maxTokens");
         if (turn === 1) {
-          expect(JSON.stringify(input)).toContain("Preserve my tree");
-          expect(input.input.filter((item: any) => item.type === "image")).toHaveLength(2);
+          const restored=client.calls.filter(call=>call.method==='thread/inject_items').flatMap(call=>call.params.items);
+          expect(JSON.stringify(restored)).toContain("Preserve my tree");
+          expect(restored.flatMap((item:any)=>item.content).filter((item:any)=>item.type==='input_image')).toHaveLength(1);
+          expect(input.input.filter((item: any) => item.type === "image")).toHaveLength(1);
+          expect(restored.flatMap((item:any)=>item.content).filter((item:any)=>item.type==='input_text').some((item:any)=>item.text.includes(png))).toBe(false);
           expect(input.input.filter((item: any) => item.type === "text").some((item: any) => item.text.includes(png))).toBe(false);
-        }
+        } else expect(client.calls.some(call=>call.method==='thread/inject_items')).toBe(false);
         client.request(); await next();
         const tool = f.calls.filter(call => call.method === "tools.execute").at(-1).params;
         expect(tool).toMatchObject({ sessionId: "host-session", turnId: "native-" + turn, toolName: "plugin_craftmine_world_godot_project_facts", declaredRisk: "medium", mode: "agent" });
@@ -88,6 +169,160 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       }
     } finally { await f.cleanup(); }
   });
+  it("restores more than 1 Mi characters without losing player wording or executing historical calls", async () => {
+    const user='保留完整城市和原飞机，小狗不再堵路；不要缩小需求。';
+    const source='extends Node3D\n# 保留源代码与原始检查记录🐶\n'.repeat(45_000);
+    const history=[{id:'old-user',role:'user',content:user,createdAt:'yesterday',status:'complete'},
+      {id:'old-tool',role:'tool',toolName:'plugin_craftmine_world_godot_project_read',toolArgs:{path:'res://city.gd'},
+        content:JSON.stringify({revision:14,manifestHash:'a'.repeat(64),text:source}),createdAt:'yesterday',status:'complete'}];
+    const f=await fixture(history);
+    try {
+      const {client,runtime,ready}=f.make();const running=runtime.prompt({text:'只继续检查当前草稿'},'current','new-turn');await ready;
+      const injections=client.calls.filter(call=>call.method==='thread/inject_items');expect(injections.length).toBeGreaterThan(1);
+      const restored=new Map<string,string>(),metadata=new Map<string,any[]>();
+      for(const call of injections){
+        expect(JSON.stringify(call.params).length).toBeLessThan(1_048_576);
+        for(const item of call.params.items){
+          expect(item.type).toBe('message');expect(item.role).toBe('user');
+          const [notice,header,...payload]=item.content[0].text.split('\n'),meta=JSON.parse(header);
+          expect(notice).toContain('Never execute historical tool calls');
+          if(meta.source.restorationAnchor)continue;
+          metadata.set(meta.source.messageId,[...(metadata.get(meta.source.messageId)??[]),meta]);
+          restored.set(meta.source.messageId,(restored.get(meta.source.messageId)??'')+payload.join('\n'));
+        }
+      }
+      expect(JSON.parse(restored.get('old-user')!).content).toBe(user);
+      expect(JSON.parse(JSON.parse(restored.get('old-tool')!).content).text).toBe(source);
+      for(const [id,text] of restored){
+        const parts=metadata.get(id)!;
+        expect(parts.map(part=>part.part)).toEqual(parts.map((_part,index)=>index+1));
+        expect(parts.every(part=>part.parts===parts.length)).toBe(true);
+        expect(parts.every(part=>part.payloadSha256===createHash('sha256').update(text).digest('hex'))).toBe(true);
+        expect(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/.test(text)).toBe(false);
+      }
+      const starts=client.calls.filter(call=>call.method==='turn/start');expect(starts).toHaveLength(1);
+      expect(client.calls.some(call=>call.method==='thread/compact/start')).toBe(true);
+      const finalCompaction=client.calls.map(c=>c.method).lastIndexOf('thread/compact/start');
+      expect(JSON.stringify(client.calls.slice(finalCompaction+1))).toContain(user);
+      expect(JSON.stringify(starts[0].params)).not.toContain(source);
+      expect(JSON.stringify(starts[0].params)).toContain('Current authoritative host facts');
+      expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+      expect(f.checkpoint?.synchronized).toBe(true);
+    } finally {await f.cleanup();}
+  });
+  it("an interrupted partial injection never starts a model turn and rebuilds full history in a new thread", async () => {
+    const f=await fixture();
+    try {
+      const client=new Client();const original=client.call.bind(client);
+      let entered!:()=>void,reject!: (error:Error)=>void;
+      const pending=new Promise<void>(resolve=>{entered=resolve;});
+      client.call=async(method,params)=>{
+        if(method!=='thread/inject_items')return original(method,params);
+        client.calls.push({method,params});entered();return new Promise((_resolve,no)=>{reject=no;});
+      };
+      client.close=async()=>{client.closed=true;reject?.(Error('CODEX_TRANSPORT_CLOSED'));};
+      const first=f.make(client);const running=first.runtime.prompt({text:'continue'},'user','n1');await pending;
+      await first.runtime.abort();await running;
+      expect(client.calls.some(call=>call.method==='turn/start')).toBe(false);
+      expect(f.checkpoint?.synchronized).toBe(false);expect(f.checkpoint?.submitted).toBe(false);
+      const second=f.make();const resumed=second.runtime.prompt({text:'continue'},'user','n2');await second.ready;
+      expect(second.client.calls[0].method).toBe('thread/start');
+      expect(JSON.stringify(second.client.calls.filter(call=>call.method==='thread/inject_items'))).toContain('Preserve my tree');
+      expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
+      await second.runtime.abort();await resumed;
+    } finally {await f.cleanup();}
+  });
+  it('native compaction failure or cancellation never completes the player request or sends its turn',async()=>{
+    for(const variant of ['failed','cancelled','rerouted']){
+      const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
+      try{
+        const client=new Client(),original=client.call.bind(client);let entered!:()=>void;const begun=new Promise<void>(yes=>{entered=yes;});
+        client.call=async(method,params)=>{
+          if(method==='turn/interrupt'&&variant==='cancelled'){
+            const result=await original(method,params);
+            client.notify('turn/completed',{turnId:params.turnId,turn:{id:params.turnId,status:'interrupted'}});
+            return result;
+          }
+          if(method!=='thread/compact/start')return original(method,params);
+          client.calls.push({method,params});client.notify('turn/started',{turnId:'maintenance',turn:{id:'maintenance'}});entered();
+          client.request({turnId:'maintenance'});
+          if(variant==='failed'){
+            client.notify('error',{turnId:'maintenance',error:{message:'Native compact refused',codexErrorInfo:'contextWindowExceeded'},willRetry:false});
+            client.notify('turn/completed',{turnId:'maintenance',turn:{id:'maintenance',status:'failed',error:{message:'Native compact refused',codexErrorInfo:'contextWindowExceeded'}}});
+          }
+          if(variant==='rerouted')client.notify('model/rerouted',{turnId:'maintenance'});
+          return {};
+        };
+        const {runtime}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await begun;
+        if(variant==='cancelled')await runtime.abort();await running;
+        if(variant==='cancelled')expect(client.calls.filter(c=>c.method==='turn/interrupt')).toEqual([
+          {method:'turn/interrupt',params:{threadId:'thread-1',turnId:'maintenance'}},
+        ]);
+        expect(client.calls.some(c=>c.method==='turn/start')).toBe(false);expect(f.calls.some(c=>c.method==='tools.execute')).toBe(false);
+        expect(f.checkpoint?.synchronized).toBe(false);expect(f.checkpoint?.submitted).toBe(false);expect(client.closed).toBe(true);
+        if(variant==='failed')expect(f.events.find(e=>e.event.type==='error').event.error.details.terminalError.codexErrorInfo).toBe('contextWindowExceeded');
+        if(variant==='rerouted')expect(f.events.find(e=>e.event.type==='error').event.error.code).toBe('CODEX_MODEL_REROUTED');
+      }finally{await f.cleanup();}
+    }
+  });
+  it('keeps native maintenance usage unknown and separates subsequently reported creation counters',async()=>{
+    const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
+    try{
+      const client=new Client(),original=client.call.bind(client);let count=0;
+      client.call=async(method,params)=>{
+        const result=await original(method,params);
+        if(method==='thread/compact/start'){
+          count++;const total={inputTokens:0,outputTokens:0,totalTokens:0,cachedInputTokens:0,cacheWriteInputTokens:0,reasoningOutputTokens:0};
+          client.notify('thread/tokenUsage/updated',{turnId:'compact-'+count,tokenUsage:{total,last:{...total,totalTokens:75024},modelContextWindow:522500}});
+        }
+        return result;
+      };
+      const {runtime,ready}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await ready;await next();
+      expect(count).toBeGreaterThan(0);expect(runtime.getStatus().isRunning).toBe(true);
+      expect(f.events.some(e=>e.event.type==='agent_end')).toBe(false);
+      expect(runtime.getStatus().transportUsage).toBeUndefined();
+      expect(runtime.getStatus().codexUsageCoverage).toMatchObject({status:'incomplete',reason:'native-maintenance-usage-unreported',maintenanceTurns:count});
+      expect(runtime.getStatus().codexUsageCoverage?.reportedCreationUsage).toBeUndefined();
+      expect(f.checkpoint?.usageTotal).toBeUndefined();
+      client.notify('thread/tokenUsage/updated',{tokenUsage:{total:{inputTokens:5,outputTokens:1,totalTokens:6},last:{inputTokens:5,outputTokens:1,totalTokens:6},modelContextWindow:522500}});
+      expect(runtime.getStatus().transportUsage).toBeUndefined();expect(runtime.getStatus().codexUsageCoverage?.reportedCreationUsage?.totalTokens).toBe(6);
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+      const message=f.events.filter(e=>e.event.type==='message_end').at(-1).event.message;
+      expect(message.usage).toBeUndefined();expect(message.codexUsage.coverage.reportedCreationUsage.totalTokens).toBe(6);
+      expect(message.codexUsage.coverage.status).toBe('incomplete');expect(f.events.filter(e=>e.event.type==='agent_end')).toHaveLength(1);
+      expect(f.checkpoint?.usageTotal?.totalTokens).toBe(6);
+    }finally{await f.cleanup();}
+  });
+  it('stopping after native reset persists unknown maintenance coverage without a zero usage baseline',async()=>{
+    const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
+    try{
+      const client=new Client(),original=client.call.bind(client);let count=0;
+      client.call=async(method,params)=>{const result=await original(method,params);if(method==='thread/compact/start'){
+        count++;const zero={inputTokens:0,outputTokens:0,totalTokens:0};client.notify('thread/tokenUsage/updated',{turnId:'compact-'+count,tokenUsage:{total:zero,last:{...zero,totalTokens:75024},modelContextWindow:522500}});
+      }return result;};
+      const {runtime,ready}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await ready;await runtime.abort();await running;
+      expect(f.checkpoint?.usageTotal).toBeUndefined();
+      const final=f.events.filter(e=>e.event.type==='message_end').at(-1).event.message;
+      expect(final.usage).toBeUndefined();expect(final.codexUsage.coverage.reportedCreationUsage).toBeUndefined();
+      expect(final.codexUsage.coverage.maintenanceTurns).toBe(count);expect(final.codexUsage.coverage.status).toBe('incomplete');
+    }finally{await f.cleanup();}
+  });
+  it("an injection rejection retains its own cause and never falls back to one oversized turn/start",async()=>{
+    const f=await fixture();
+    try {
+      const client=new Client(),original=client.call.bind(client);
+      client.call=async(method,params)=>{
+        if(method!=='thread/inject_items')return original(method,params);
+        client.calls.push({method,params});throw Object.assign(Error('CODEX_RPC_ERROR:-32602'),{rpcMethod:method,rpcCode:-32602,diagnostic:'Injection refused'});
+      };
+      const {runtime}=f.make(client);await runtime.prompt({text:'continue'},'current','native');
+      expect(client.calls.some(call=>call.method==='turn/start')).toBe(false);
+      expect(f.events.find(e=>e.event.type==='error').event.error.details).toEqual({stage:'history-restore',rpcMethod:'thread/inject_items',rpcCode:-32602,message:'Injection refused'});
+      expect(f.checkpoint?.synchronized).toBe(false);
+      expect(f.calls.some(call=>call.method==='tools.execute')).toBe(false);
+    }finally{await f.cleanup();}
+  });
   it("refuses foreign/stale/replayed tools and drains in-flight work after a native fence", async () => {
     const f = await fixture(); let release!: () => void;
     f.execute = async () => { await new Promise<void>(resolve => { release = resolve; }); return { ok: true, content: "late" }; };
@@ -98,12 +333,44 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       client.request(); await next(); client.request(); client.request({ arguments: { changed: true } });
       expect(f.calls.filter(call => call.method === "tools.execute")).toHaveLength(1);
       const abort = runtime.abort(); await next();
-      expect(f.calls.some(call => call.method === "codex.fence")).toBe(true); expect(client.closed).toBe(true);
+      expect(f.calls.some(call => call.method === "codex.fence")).toBe(true); expect(client.closed).toBe(false);
       client.request({ callId: "late" }); release(); await abort; await running;
       expect(f.calls.filter(call => call.method === "tools.execute")).toHaveLength(1);
       expect(f.events.find(e => e.event.type === "error").event.error.code).toBe("TURN_ABORTED");
       expect(f.checkpoint?.synchronized).toBe(false);
     } finally { await f.cleanup(); }
+  });
+  it('resumes acknowledged idle interruption but rejects missing/late/foreign ack and failed checkpoint save',async()=>{
+    for(const variant of ['ack','missing','late','foreign','save-failed']){
+      const f=await fixture();try{
+        const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'user','n1');await ready;await next();
+        const original=client.call.bind(client);client.call=async(method,params)=>{
+          if(method==='turn/interrupt'&&variant!=='missing'&&variant!=='late')client.notify('turn/completed',{turn:{id:variant==='foreign'?'other':'turn-cli',status:'interrupted'}});
+          return original(method,params);
+        };
+        if(variant==='save-failed')f.rejectSaves();
+        await runtime.abort();await running;
+        if(variant==='late')client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});
+        expect(f.checkpoint?.synchronized).toBe(variant==='ack');
+        if(variant==='save-failed')expect(f.events.find(e=>e.event.type==='error').event.error.code).toBe('CODEX_CHECKPOINT_PERSIST_FAILED');
+        if(variant==='ack'){
+          const second=f.make();const resumed=second.runtime.prompt({text:'next'},'user','n2');await second.ready;
+          expect(second.client.calls[0].method).toBe('thread/resume');expect(second.client.calls.some(c=>c.method==='thread/inject_items')).toBe(false);
+          await second.runtime.abort();await resumed;
+        }
+      }finally{await f.cleanup();}
+    }
+  });
+  it('an interrupted acknowledgement with a pending tool cannot synchronize the native tail',async()=>{
+    const f=await fixture();let release!:()=>void;f.execute=async()=>{await new Promise<void>(resolve=>{release=resolve;});return {ok:true,content:'late'};};
+    try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'user','n1');await ready;await next();
+      client.request();await next();const original=client.call.bind(client);client.call=async(method,params)=>{
+        if(method==='turn/interrupt')client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});return original(method,params);
+      };
+      const aborted=runtime.abort();await next();release();await aborted;await running;
+      expect(f.checkpoint?.synchronized).toBe(false);
+    }finally{await f.cleanup();}
   });
   it("restores canonical history after an ended/interrupted transport, without replaying tools", async () => {
     const f = await fixture();
@@ -132,6 +399,68 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         expect(client.calls.filter(call => call.method === "turn/start").length).toBe(failure === "model" ? 0 : 1);
       } finally { await f.cleanup(); }
     }
+  });
+  it("retains the failed restoration RPC stage and sanitized protocol cause without retrying or changing model", async () => {
+    const f = await fixture();
+    try {
+      const client = new Client(); const original = client.call.bind(client);
+      client.call = async (method, params) => {
+        if (method !== 'turn/start') return original(method, params);
+        client.calls.push({method,params});
+        throw Object.assign(Error('CODEX_RPC_ERROR:-32602'), {rpcMethod:method,rpcCode:-32602,
+          diagnostic:'Input rejected; api_key=private-key Bearer private-bearer; user@example.com https://example.test/?secret=private-query',
+          rawRequest:params,stderr:'private-stderr'});
+      };
+      const {runtime}=f.make(client); await runtime.prompt({text:'preserve the world'},'user','native');
+      const error=f.events.find(e=>e.event.type==='error').event.error;
+      expect(error.code).toBe('CODEX_BACKEND_FAILED');
+      expect(error.details).toMatchObject({stage:'turn-start',rpcMethod:'turn/start',rpcCode:-32602});
+      expect(error.details.message).toContain('Input rejected');
+      for(const secret of ['private-key','private-bearer','user@example.com','private-query','private-stderr','rawRequest'])expect(JSON.stringify(error)).not.toContain(secret);
+      expect(client.calls.filter(call=>call.method==='turn/start')).toHaveLength(1);
+      expect(client.calls.find(call=>call.method==='turn/start').params.model).toBe(MODEL);
+      expect(client.calls.find(call=>call.method==='turn/start').params.effort).toBe(EFFORT);
+      expect(runtime.getStatus().transportState).toBe('restored-from-transcript');
+      expect(f.checkpoint?.synchronized).toBe(false);
+      expect(client.closed).toBe(true);
+    } finally { await f.cleanup(); }
+  });
+  it("bounds protocol diagnostics and does not project arbitrary exceptions or fields", () => {
+    const result=protocolDiagnostic({rpcMethod:'turn/start',rpcCode:-32602,diagnostic:'犬'.repeat(1500),data:{secret:'private'}},'turn-start');
+    expect((result as any).message).toHaveLength(1036);
+    expect((result as any).message).toMatch(/\[truncated\]$/);
+    expect(protocolDiagnostic({rpcMethod:'unknown/private',rpcCode:4,diagnostic:'secret'},'foreign')).toEqual({stage:'unknown'});
+    expect(protocolDiagnostic(Error('private-account-path'),'history-restore')).toEqual({stage:'history-restore'});
+    expect(protocolDiagnostic({rpcMethod:'turn/start',rpcCode:NaN,diagnostic:'secret'},'turn-start')).toEqual({stage:'turn-start'});
+  });
+  it('retains bound notification/terminal errors and excludes the actual context-window usage marker',async()=>{
+    const f=await fixture();
+    try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'current','native');await ready;
+      client.notify('error',{turnId:'foreign',error:{message:'foreign-message',codexErrorInfo:'badRequest'},willRetry:false});
+      const marker={inputTokens:0,outputTokens:0,totalTokens:522500,cachedInputTokens:0,cacheWriteInputTokens:0,reasoningOutputTokens:0};
+      client.notify('thread/tokenUsage/updated',{tokenUsage:{total:marker,last:marker,modelContextWindow:522500}});
+      expect(runtime.getStatus().transportUsage).toBeUndefined();
+      client.notify('error',{error:{message:'Context full Bearer hidden-secret',codexErrorInfo:'contextWindowExceeded',additionalDetails:'account=user@example.com'},willRetry:false});
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'failed',error:{message:'Context full',codexErrorInfo:'contextWindowExceeded'}}});await running;
+      const terminal=f.events.find(e=>e.event.type==='error').event.error;
+      expect(terminal.code).toBe('CODEX_TURN_FAILED');
+      expect(terminal.details).toMatchObject({stage:'model-turn',usageSignal:{kind:'context-window-marker',notTokenUsage:true,modelContextWindow:522500},notificationError:{codexErrorInfo:'contextWindowExceeded',willRetry:false},terminalError:{codexErrorInfo:'contextWindowExceeded'}});
+      for(const secret of ['foreign-message','hidden-secret','user@example.com'])expect(JSON.stringify(terminal)).not.toContain(secret);
+      const message=f.events.find(e=>e.event.type==='message_end').event.message;
+      expect(message.error.details).toEqual(terminal.details);expect(message.usage).toBeUndefined();
+      expect(f.checkpoint?.usageTotal).toBeUndefined();
+      expect(codexTurnUsage(marker,{inputTokens:0,outputTokens:0,totalTokens:0})).toBeUndefined();
+    }finally{await f.cleanup();}
+  });
+  it('an async retry notification does not terminate a turn that later succeeds',async()=>{
+    const f=await fixture();try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'current','native');await ready;
+      client.notify('error',{error:{message:'Temporary disconnect',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:502}}},willRetry:true});
+      expect(runtime.getStatus().isRunning).toBe(true);
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+      expect(f.events.some(e=>e.event.type==='error')).toBe(false);
+    }finally{await f.cleanup();}
   });
   it("cancels during unacknowledged start and preserves a failed native fence as an error", async () => {
     const f = await fixture();

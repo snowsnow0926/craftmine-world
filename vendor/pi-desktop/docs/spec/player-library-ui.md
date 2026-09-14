@@ -34,6 +34,17 @@ component installation. Eligible source packages also expose the bounded
 original asset-request Composer remains available for AI add and modification;
 source proposals, native checks and adoption retain their existing authority.
 
+The source-reuse card re-reads the exact installed job during proposal refresh,
+including terminal jobs after an author turn ends. The immutable installation
+receipt and a previously cached failure are not current-source status. The
+native `sourceJob` projection carries the existing Core `sourceStale` boolean;
+absence remains unknown, and no later-success field is inferred or forwarded.
+When a failed job explicitly reports stale source, the card says “Historical
+check failed; this does not describe the current source” and links to check
+history. The original job remains failed and visible; it is neither retried nor
+relabeled passed. Core can also report staleness when the old branch head is
+unavailable, so this flag does not prove that later modifications passed.
+
 Validation uses deterministic renderer fixtures and native separate profiles.
 No operating-system input, pointer lock or foreground test windows are allowed.
 Native publication/storage, runtime adoption, model use and human feel are

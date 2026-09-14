@@ -45,3 +45,59 @@ entity-behavior 必需提供纯读 project_entities(state)，返回每个 entity
 ## 通用只读工具的Godot分流
 
 project_inspect与capabilities_read按真实绑定世界的runtimeKind/场景合同分流。Godot必须返回godotProject.index文件、源码身份及适用Godot能力，不将craftmine.godot-scene/1送入体素对象升级/素材遍历。缺少工程明确不可用；权限和身份错误继续失败。legacy保留旧资源与schema。响应提供runtimeKind、baseId、sourceRevision/manifestHash和nextTools，正文支持有界Unicode分页；当前world/panel变化不能重定向已绑定任务。
+
+## Stock object placement preview and transforms (2026-09-14)
+
+The existing PI Desktop object editor exposes position, yaw, 0.5-unit axis nudges
+and 15-degree rotation alongside scale and color. Values start from the same
+observed entity's origin and yaw; the ray's surface hit point is never substituted
+for an entity origin. A ground capture may submit an explicit bounded placement
+transform. Position bounds are X/Z -28..28, Y 0..16; yaw is -180..180 degrees.
+The existing compiler additionally validates occupied space, world bounds and
+player collision. Modify, placement and undo retain the existing source CAS,
+normal check, actual observation requirements and candidate adoption. Yaw is
+verified modulo 360 in both Electron and Rust; untouched observed yaw is preserved.
+
+**Preview placement** explicitly opens an engine-rendered translucent ghost.
+Subsequent field changes debounce by 180 ms; they run no model, task, source patch,
+export or build. Valid preview is cyan and obstructed preview is red. The preview
+is an advisory shape/placement view; the final source check remains authoritative.
+It supports the five fixed stock generators (tree, rock, chest, door, marker).
+Arbitrary imported scenes, authored generator replacements and scripted components
+are not represented by a substitute mesh.
+
+Main validates the owner/session capture, selected formal source and runtime
+instance before and after dispatch. The private `godot.creationPreview` route
+cannot be reached through the general runtime-command route. The runtime verifies
+its scope, paused state and actual loaded stock generator source bytes. Placement
+uses the same generator on a detached holder that never enters the scene tree;
+modification clones the selected object's actual meshes. Only script-free mesh
+instances enter the ghost, bounded to 128 visited nodes and depth 16. Ghosts have
+no collision bodies, shadows or entity-map membership. Live physics tests the
+proposed volume, excluding only the modified object's own body.
+
+Cancel, panel/capture/session change, explicit edit submission and a 60-second
+inactivity expiry clear the ghost. Save, snapshot, restore, resume, exit and
+observation clear it inside the engine before reading or changing authoritative
+state. A retired host preview ID cannot be resurrected by a late update. Preview
+pauses gameplay and releases engine input actions; returning to play uses the
+existing Resume action. Preview cancellation never replays an edit.
+
+New empty creation-sandbox worlds include the fixed visual/engine bridge by default;
+the performance collector still runs only when requested. Other bases and retained
+template source are unchanged.
+
+The preceding engine bridge is retained as exact LF/CRLF source pins. Existing
+worlds remain readable; the existing explicit observer-update action upgrades
+the old engine bridge alone, or bootstraps an exact ordinary standard bridge with
+its two previously absent helper files, through source CAS/check/adoption. This retains unrelated authored
+files and progress. If an old picker also needs its independent update, it is
+adopted first and the next capture offers the preview update. Unknown/mixed source
+cohorts never gain this maintenance authority.
+
+The Rust source/check boundary independently recognizes the complete current or
+released engine-wrapper cohort, including exact inherited bridge and collector
+bytes and lengths. It validates a cloned inherited view for the unchanged
+legacy/controller/collision sampler rules; the actual source manifest, build
+copy, claim and PCK still contain the original wrapper/helper bytes. Missing,
+unknown, aliased or mixed chains are rejected before a build job can proceed.

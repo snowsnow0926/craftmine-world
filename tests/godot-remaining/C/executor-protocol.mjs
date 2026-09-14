@@ -361,6 +361,23 @@ test('verifier diagnostic text is bounded and foreign or successful evidence can
   }
 });
 
+test('executor persists bound native causes and phases as non-scoring diagnostic log',async t=>{
+  for(const passed of [false,true]){
+    const {core}=await runJob(t,{verifier:{godotCheck:async descriptor=>passingEvidence({
+      jobId:descriptor.jobId,worldId:descriptor.worldId,buildId:descriptor.buildId,inputHash:descriptor.inputHash,
+      passed,error:passed?null:'GODOT_CHECK_TIMEOUT',
+      errors:{ok:true,runtime:[],console:['diagnostic-only message'],renderer:null},
+      isolation:{ok:true,offscreen:true,focusable:false,visible:false,guard:{focus:0,pointerLock:0}},
+      diagnostics:['[phase] ready started elapsedMs=123 stageElapsedMs=0','[probe] ready=loading'],
+    })}});
+    const output=core.state.output,log=JSON.parse(output.check.diagnosticLog);
+    assert.equal(output.passed,passed);assert.equal(output.check.passed,passed);
+    assert.equal(log.diagnosticOnly,true);assert.equal(log.inputHash,output.inputHash);
+    assert.equal(log.errors.console[0],'diagnostic-only message');
+    assert.equal(log.isolation.offscreen,true);assert.match(log.diagnostics[0],/ready started/);
+  }
+});
+
 test('forged preflight evidence never registers an executor', async t => {
   for (const [scenario, expected] of [[{processVerified:false}, 'GODOT_BROKER_PROCESS_UNVERIFIED'],
     [{networkVerified:false}, 'GODOT_BROKER_NETWORK_UNVERIFIED'],

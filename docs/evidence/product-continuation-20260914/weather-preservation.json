@@ -1,0 +1,60 @@
+{
+  "format": "craftmine.product-continuation-evidence/1",
+  "verified": true,
+  "inputs": {
+    "before-snapshot": {
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-102.json",
+      "sha256": "4062628b5ef4e5332ebf9484fa212aeafa41fc6ae1efbdd71d913956fec3f887",
+      "bytes": 3200,
+      "id": "play-102"
+    },
+    "after-snapshot": {
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-106.json",
+      "sha256": "98250f0991fc04744048590333e14a2b84eda0384cb7267c8c94da64cd6ed563",
+      "bytes": 3200,
+      "id": "play-106"
+    },
+    "before-capture": {
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-103.json",
+      "sha256": "6dc60a4893ba4233cc781b6543f6117e7033e7b34b8c66d12f34983dd9e5850d",
+      "bytes": 725,
+      "id": "play-103"
+    },
+    "after-capture": {
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-107.json",
+      "sha256": "43b57c5f0e7ff4849cba0a2b433257fe94b01f7c4cd18be328f8d5e9f2e866c9",
+      "bytes": 725,
+      "id": "play-107"
+    },
+    "reopen": {
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\responses\\play-108.json",
+      "sha256": "7dcf821a76db37b61793d2d976f41c0be53d9b4bcdbc22f987029533838cd052",
+      "bytes": 38475,
+      "id": "play-108"
+    }
+  },
+  "worldId": "world-7a2bad903a26",
+  "beforeBuildId": "gbd-345efa60a42214b1c97d5bfb9d18d46151c066b7db7e365fe1350cc44cfad758",
+  "afterBuildId": "gbd-8c52f3d3c74b77d80bb42250d8226e42df9e77d293101c977e0280e58681d98c",
+  "allPriorProgressFieldsPreserved": true,
+  "coldSavedBodyExactlyEqual": true,
+  "priorComponentIds": [
+    "ins-1f469382cd78cdfa61ee927d-e0",
+    "ins-41d4d88059c4ba486b108f6e-e0"
+  ],
+  "inventory": {
+    "org-flight-chart": 1,
+    "org-flight-clearance": 1,
+    "org-flight-compass": 1,
+    "org-gate": 1,
+    "org-strength": 1
+  },
+  "afterCapture": {
+    "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\captures\\1789344147326-7f275d9a-5e9f-441e-8ffe-b27a2bdaa37a.png",
+    "sha256": "240f514ab1c6f53408b3b65324a1458f7260bdb2362515692c033742fec1f71a"
+  },
+  "limitations": [
+    "This verifies actual saved fields and version identities. It does not judge visual quality or prove every gameplay action.",
+    "Additional state fields are allowed; every existing field and value must remain unchanged."
+  ]
+}

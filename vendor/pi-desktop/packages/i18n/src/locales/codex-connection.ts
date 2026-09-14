@@ -1,4 +1,5 @@
 export const codexConnectionEn = {
+  setup: {install:"Install Codex using the official guide, then detect again. Existing Desktop and npm native installations are checked automatically.", connect:"Verify the compatible CLI, then sign in with your own ChatGPT account if needed.", save:"Verify model access and save. You can cancel and retry any connection step.", distribution:"This preview requires a specific CLI build. The official general installer may supply a different version; if detection reports incompatibility, use the provider backend or play existing worlds while waiting for a compatible app update. No unverified installer is downloaded.", candidates:"Detected installations", unreadable:"Cannot read version", compatible:"Compatible", incompatible:"Incompatible", choose:"Use this installation"},
   title: "World authoring backend",
   description: "Connect your own local Codex account for Godot world conversations in Agent mode. Other conversations and Plan use the provider backend. Existing worlds can be played without AI.",
   provider: "Provider backend (default)", local: "Local Codex CLI (experimental)",
@@ -27,6 +28,7 @@ export const codexConnectionEn = {
   },
 };
 export const codexConnectionZhCN = {
+  setup: {install:"按官方指引安装 Codex 后重新检测。应用会检查已有 Desktop 与 npm 本机安装。", connect:"验证兼容 CLI；如未登录，使用你自己的 ChatGPT 账号登录。", save:"验证模型权限后保存。连接步骤均可取消和重试。", distribution:"此预览版需要指定 CLI 版本，官方通用安装器可能提供其他版本。如检测不兼容，可先使用提供商后端或游玩已有世界，等待兼容的应用更新。应用不会下载未经验证的安装器。", candidates:"检测到的安装", unreadable:"无法读取版本", compatible:"兼容", incompatible:"不兼容", choose:"使用此安装"},
   title: "世界创作后端",
   description: "使用你自己的本机 Codex 账号，在 Godot 世界的 Agent 对话中创作。其他对话与 Plan 模式使用原有提供商。游玩已有世界不需要连接 AI。",
   provider: "提供商后端（默认）", local: "本机 Codex CLI（实验）",

@@ -1,4 +1,6 @@
 import {verifyCreationHarvest} from "./creation-harvest-verifier";
+import {createGodotCheckPhases} from "./godot-check-phases";
+import {startArtifactVerification} from "./godot-artifact-worker-host.mjs";
 import {collectGodotScenarioDiagnostic,type ScenarioDiagnosticSelector} from "./godot-scenario-collector";
 import {verifyCreationDoorSequence} from "./creation-door-verifier";
 import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
@@ -22,8 +24,6 @@ import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-r
 
 import { BrowserWindow, session, type Session } from "electron";
 import { createHash, randomUUID } from "node:crypto";
-import { createReadStream } from "node:fs";
-import { lstat } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import {
   createWorldRuntime,
@@ -212,12 +212,6 @@ function hashJson(value: unknown): string {
   return createHash("sha256").update(canonicalJson(value)).digest("hex");
 }
 
-async function sha256File(file: string): Promise<string> {
-  const hash = createHash("sha256");
-  for await (const chunk of createReadStream(file)) hash.update(chunk as Buffer);
-  return hash.digest("hex");
-}
-
 /** A manifest path must be a forward-slash relative path under `web/`. */
 function requireArtifactPath(value: unknown): string {
   if (typeof value !== "string" || value.length < 1 || value.length > 4096) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
@@ -301,36 +295,6 @@ export function parseGodotCheckDescriptor(input: unknown): GodotRuntimeCheckDesc
 }
 
 /**
- * The artifacts directory is core-owned, but the check still proves the files
- * it will serve are the files the descriptor promised: ordinary files, exact
- * size, exact sha256, and no link anywhere on the path.
- */
-async function verifyArtifacts(descriptor: GodotRuntimeCheckDescriptor, deadline: number): Promise<void> {
-  const rootInfo = await lstat(descriptor.root).catch(() => null);
-  if (!rootInfo || !rootInfo.isDirectory() || rootInfo.isSymbolicLink()) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
-  const entry = join(descriptor.root, "web", "index.html");
-  const entryInfo = await lstat(entry).catch(() => null);
-  if (!entryInfo || !entryInfo.isFile()) throw new Error("GODOT_CHECK_ARTIFACT_MISSING");
-  for (const artifact of descriptor.artifacts) {
-    if (Date.now() >= deadline) throw new Error("GODOT_CHECK_TIMEOUT");
-    const parts = artifact.path.split("/");
-    let cursor = descriptor.root;
-    for (const part of parts) {
-      cursor = join(cursor, part);
-      const info = await lstat(cursor).catch(() => null);
-      if (!info) throw new Error("GODOT_CHECK_ARTIFACT_MISSING");
-      if (info.isSymbolicLink()) throw new Error("GODOT_CHECK_ARTIFACT_MISMATCH");
-      if (cursor !== join(descriptor.root, ...parts) && !info.isDirectory()) throw new Error("INVALID_GODOT_CHECK_DESCRIPTOR");
-    }
-    const file = join(descriptor.root, ...parts);
-    const info = await lstat(file).catch(() => null);
-    if (!info || !info.isFile()) throw new Error("GODOT_CHECK_ARTIFACT_MISSING");
-    if (info.size !== artifact.bytes) throw new Error("GODOT_CHECK_ARTIFACT_MISMATCH");
-    if ((await sha256File(file)) !== artifact.sha256) throw new Error("GODOT_CHECK_ARTIFACT_MISMATCH");
-  }
-}
-
-/**
  * Egress is confined to the instance's own loopback origin. Same-origin blob
  * and inline data URLs are page-local resources a threaded Web export needs;
  * everything else is cancelled and counted.
@@ -358,6 +322,7 @@ function readGuardProbe(raw: unknown): GuardProbe {
  */
 export class GodotBuildVerifier {
   private jobs = new Map<string, () => void>();
+  private artifactWorkerStopFailed = false;
   private readonly deadlineMs: number;
   private readonly scenarioDiagnostics?: ScenarioDiagnosticSelector;
 
@@ -379,6 +344,7 @@ export class GodotBuildVerifier {
 
   async check(input: unknown): Promise<GodotRuntimeCheckEvidence> {
     const descriptor = parseGodotCheckDescriptor(input);
+    if(this.artifactWorkerStopFailed)throw Error("GODOT_CHECK_ARTIFACT_WORKER_STOP_TIMEOUT");
     if (this.jobs.has(descriptor.jobId) || this.jobs.size >= MAX_JOBS) throw new Error("GODOT_CHECK_BUSY");
 
     const startedMs = Date.now();
@@ -387,6 +353,8 @@ export class GodotBuildVerifier {
     // Bounded, non-scoring page diagnostics: they make a failed check
     // diagnosable without letting a noisy page fail it.
     const diagnostics: string[] = [];
+    const phases = createGodotCheckPhases(diagnostics);
+    let artifactTask:ReturnType<typeof startArtifactVerification>|null=null;
 
     const ready: GodotRuntimeCheckReady = { ok: false, ops: [], instanceId: "", elapsedMs: 0 };
     const render: GodotRuntimeCheckRender = { ok: false, frames: 0, distinctFrames: 0, captures: [] };
@@ -425,7 +393,7 @@ export class GodotBuildVerifier {
       if (halted) return;
       halted = true;
       haltReason = reason;
-      scenarioStop.abort();
+      scenarioStop.abort(new Error(reason));
       rejectHalt(new Error(reason));
     };
     const assertRunning = (): void => {
@@ -437,9 +405,13 @@ export class GodotBuildVerifier {
     const timer = setTimeout(() => halt("GODOT_CHECK_TIMEOUT"), remainingMs(deadline));
 
     try {
-      await bounded(verifyArtifacts(descriptor, deadline));
+      phases.begin('artifact-verification');
+      artifactTask=startArtifactVerification(descriptor,deadline,{signal:scenarioStop.signal});
+      await bounded(artifactTask.result);
       assertRunning();
+      phases.complete();
 
+      phases.begin('runtime-server');
       const activeRuntime = await createWorldRuntime({
         worldId: descriptor.worldId,
         buildId: descriptor.buildId,
@@ -455,7 +427,9 @@ export class GodotBuildVerifier {
         requirementsEvidence={format:"craftmine.godot-check-requirements-evidence/1",requirementsHash:descriptor.checkRequirementsHash!,jobId:descriptor.jobId,worldId:descriptor.worldId,buildId:descriptor.buildId,instanceId:activeRuntime.instanceId,observations:[]};
       }
       assertRunning();
+      phases.complete();
 
+      phases.begin('window');
       const origin = activeRuntime.origin;
       const preload = join(__dirname, "../preload/godot-check.cjs");
       isolated = session.fromPartition(`pi-godot-check-${randomUUID()}`, { cache: false });
@@ -573,15 +547,21 @@ export class GodotBuildVerifier {
       }, 5000);
       probe.unref?.();
       const readyStarted = Date.now();
+      phases.complete();
       try {
+        phases.begin('load');
         await bounded(window.loadURL(activeRuntime.url));
+        phases.complete();
+        phases.begin('ready');
         const readyInfo = await bounded(activeRuntime.waitReady());
         ready.ok = true;
         ready.ops = Array.isArray(readyInfo.ops) ? readyInfo.ops.slice(0, 64) : [];
         ready.elapsedMs = Date.now() - readyStarted;
+        phases.complete();
       } finally {
         clearInterval(probe);
       }
+      phases.begin('runtime-check');
       if ((["first-person", "creation-sandbox"].includes(descriptor.baseId) && isRecord(descriptor.snapshot) && descriptor.snapshot.format === "craftmine.godot-progress/1") || descriptor.checkRequirements?.creation?.doorSequence || descriptor.checkRequirements?.creation?.harvest) {
         // Read defaults from this exact new scene before restoring any player
         // state. Only fixed additive entity rules can combine the two snapshots.
@@ -709,12 +689,19 @@ export class GodotBuildVerifier {
         }catch(failure){if(diagnostics.length<64)diagnostics.push("[scenario-selection] "+messageOf(failure).slice(0,300));}
         assertRunning();
       }
+      phases.complete();
     } catch (failure) {
+      phases.fail();
       error = messageOf(failure);
     } finally {
       finished = true;
       scenarioStop.abort();
       clearTimeout(timer);
+      if(artifactTask){
+        try{await artifactTask.closed;}
+        catch(failure){this.artifactWorkerStopFailed=true;error??=messageOf(failure);}
+        artifactTask.report(diagnostics);
+      }
       this.jobs.delete(descriptor.jobId);
       const activeRuntime = runtime;
       if (activeRuntime) {

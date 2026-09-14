@@ -1789,6 +1789,7 @@ export const zhTW = {
     justNow: "剛剛",
   },
   errors: {
+    CODEX_INTERRUPTED_RECOVERY_UNVERIFIED: "暫時無法核實上次已停止的創作。對話和世界均已保留。點擊「繼續」可重試核驗；應用不會自動重建完整歷史。",
     TOKEN_BUDGET_EXHAUSTED: "本機任務累計 token 額度已用完。請到世界工作台調整額度，再恢復已儲存的任務。",
     REQUEST_BUDGET_EXHAUSTED: "本機任務請求次數已達上限，請在世界工作台查看已儲存的任務。",
     COMPACTION_BUDGET_EXHAUSTED: "本機任務壓縮次數已達上限，請在世界工作台查看已儲存的任務。",

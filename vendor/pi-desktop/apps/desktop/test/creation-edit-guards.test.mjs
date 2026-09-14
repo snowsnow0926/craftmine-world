@@ -1,8 +1,9 @@
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {build} from 'esbuild';
 import {createHash} from 'node:crypto';
-const bundle=await build({entryPoints:[new URL('../electron/main/creation-edit-guards.ts',import.meta.url).pathname.replace(/^\/(\w:)/,'$1')],bundle:true,write:false,format:'esm',platform:'node'});
+const bundle=await build({entryPoints:[fileURLToPath(new URL('../electron/main/creation-edit-guards.ts',import.meta.url))],bundle:true,write:false,format:'esm',platform:'node'});
 const {readFormalCreationJournal,assertDirectCreationCandidate}=await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].text).toString('base64')}`);
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const entity={id:'tree-a',kind:'tree',position:[1,0,2],scale:[1,1,1],color:'#88bb44'};

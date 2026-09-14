@@ -1,0 +1,69 @@
+{
+  "format": "craftmine.product-preview-release-summary/1",
+  "source": {
+    "file": "D:/Craftmine Releases/Product-preview23-76e8c0a9.zip.json",
+    "sha256": "5813e7255d96242d19c498e00f0456a354ae437507306805e2a50ccbe19a8366"
+  },
+  "delivery": {
+    "format": "craftmine.preview-delivery/1",
+    "version": "0.14.4-preview.23",
+    "commit": "76e8c0a9ba6abf875db3302c313542a7d27b5654",
+    "buildManifestSha256": "55e6a6877a9be2abc243171c2056056ff1ebaebf692448e4d26556d2717a001b",
+    "application": "output/win-unpacked/Craftmine World.exe",
+    "launcher": "START-PLAYER-PREVIEW.cmd",
+    "signature": "unsigned-local-preview",
+    "cleanWindowsVerified": false,
+    "installerExecuted": false,
+    "sourceRunFile": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\76e8c0a9ba6a-abddb286-62ab-4fa1-b0a8-032a21b09086\\run.json",
+    "copiedAt": "2026-09-14T06:15:11.699Z",
+    "extras": {
+      "format": "craftmine.preview-extras-proof/1",
+      "sourceManifestSha256": "c467a89421d08dd1b095eef18d5df0910dce8527eb6fc898c41c88a164d7f6bd",
+      "entries": [
+        {
+          "name": "examples/matched-courtyard.zip",
+          "bytes": 4672617,
+          "sha256": "370db90d64fecd0c7c098c36febd2331acd0a32300e2650c012f4b0e79795e4b"
+        },
+        {
+          "name": "examples/companion-and-rain.zip",
+          "bytes": 7567907,
+          "sha256": "7204918acb0275de541cb2d97fbc1b5d3b433641b9e173cb02dc97cdff7a52d5"
+        },
+        {
+          "name": "examples/pomeranian-and-edited-tree.zip",
+          "bytes": 7526974,
+          "sha256": "3313a166197b90ba422c368a399b6a2dccdd7fcf9db95f4b4d47f9cb38236b90"
+        },
+        {
+          "name": "docs/PLAYER-GUIDE.zh-CN.md",
+          "bytes": 7798,
+          "sha256": "04e861a73d5dc507f8ed34494725d782448c12979e46b6f637ac487f2a66d67d"
+        },
+        {
+          "name": "docs/CITY-PLAY-GUIDE.zh-CN.md",
+          "bytes": 2315,
+          "sha256": "9a069aef2bb8930df851ea60a0ec85259893a85376f79de6e63c690e82411715"
+        },
+        {
+          "name": "examples/city-flight-and-companion.zip",
+          "bytes": 10019652,
+          "sha256": "780615c946006035c82d7002c9ff814180027b84cd65cfbb3bfa83d11e3af25e"
+        }
+      ]
+    }
+  },
+  "archive": {
+    "path": "D:\\Craftmine Releases\\Product-preview23-76e8c0a9.zip",
+    "sha256": "06e60c0fc2c2e5629de2be5193937f16a85590497f187a737f8cde8da961694b",
+    "bytes": 1141577714,
+    "fileCount": 8453,
+    "totalBytes": 2225835243,
+    "extractedBytesVerified": true,
+    "extraction": "D:\\Craftmine Releases\\Product-preview23-76e8c0a9.verify-d9e47e3c-4637-4ae5-a312-fbe10681715b"
+  },
+  "signature": "unsigned-local-preview",
+  "cleanWindowsVerified": false,
+  "installerExecuted": false,
+  "extractedAcceptance": "docs/evidence/extracted-preview23-final-20260914/summary.json"
+}

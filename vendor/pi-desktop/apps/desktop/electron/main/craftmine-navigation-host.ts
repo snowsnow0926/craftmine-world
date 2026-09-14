@@ -1,6 +1,8 @@
 import { validatePreviewControl } from "../../shared/craftmine-preview-controls";
 import { validateDirectLibraryRequest } from "../../src/components/craftmine/assets/direct-library-contract";
 
+import {validateCompositionPackageRequest} from "../../shared/world-composition-contract";
+
 /** Main-window navigation gateway. World mutations run in the retained view,
  * which owns the live snapshot and serializes save/create/switch operations. */
 export const NAVIGATION_READ_CHANNELS = new Set([
@@ -46,6 +48,12 @@ export async function invokeCraftmineNavigation(input: Request, deps: Dependenci
     return deps.invoke(channel, validateDirectLibraryRequest(payload));
   }
   if (channel === "package.request") {
+    if (payload.method === "compositionCatalog" || payload.method === "compositionPlan") {
+      if (Object.keys(payload).some(key => !["worldId", "method", "params"].includes(key))) throw Error("COMPOSITION_INVALID_PARAMS");
+      const params = validateCompositionPackageRequest(payload.method, payload.params);
+      if (params.worldId !== payload.worldId) throw Error("COMPOSITION_WORLD_REQUIRED");
+      return deps.invoke(channel, {worldId: payload.worldId, method: payload.method, params});
+    }
     if (typeof payload.method !== "string" || !(PUBLICATION_METHODS.has(payload.method) || PROPOSAL_METHODS.has(payload.method))) throw Error("PERMISSION_DENIED");
     const params = payload.params as Record<string, unknown> | undefined;
     if (Object.keys(payload).some(key => !["worldId", "method", "params"].includes(key)) || typeof payload.worldId !== "string"

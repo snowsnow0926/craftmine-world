@@ -1,3 +1,4 @@
+import {createCreationPreviewService} from './creation-preview-service';
 import { createMainWindow, type MainWindow } from "./main-window";
 import { mainInputContents, setMainImmersion, syncMainInputFocus } from "./main-window-layers";
 import { deliverImmersionShortcut } from "./immersion-shortcut-dispatch";
@@ -25,6 +26,7 @@ import { craftminePaths } from "./craftmine-product";
 import { craftmineProjectIdentity } from "./craftmine-tool-context";
 import { readWorldConversation } from "./world-conversation";
 import {createWorldConversationNavigation, sameConversationProjectDirectory} from "./world-conversation-navigation";
+import {createWorldBriefService} from "./world-brief-service";
 import { createPlayerWorlds } from "./player-worlds";
 import { createCraftmineQuitState } from "./craftmine-quit-state";
 import { creationRequestStatus } from "./creation-request-status";
@@ -42,6 +44,7 @@ import { createGodotHistoryPanelService } from "./godot-history-panel-service";
 import { createCraftminePackageService } from "./craftmine-package-service";
 import { createLibraryPreviewCapture } from "./library-preview";
 import { createWorldTemplatePanel, WORLD_TEMPLATE_PANEL_CHANNELS } from "./world-template-panel";
+import { createPlaytestFeedbackPanel, PLAYTEST_CHANNELS } from "./playtest-feedback-panel";
 import { createGodotRestoreRebuildService } from "./godot-restore-rebuild-service";
 import { createCreationGroundMaintenance, interruptsCreationGroundMaintenance } from "./creation-ground-maintenance";
 import {planCreationCollisionUpgrade} from "./creation-collision-upgrade";
@@ -72,7 +75,7 @@ import { installNativeAgentAcceptance } from "./craftmine-acceptance-f-agent";
 import { installP8NativeAcceptance } from "./craftmine-acceptance-p8";
 import { installBatch07NativeAcceptance } from "./craftmine-acceptance-batch07";
 import { runNativeDraftProbe } from "./craftmine-draft-probe";
-import { configureHeadlessAcceptance, installHeadlessControl, recordHeadlessShutdownFailure, isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
+import { configureHeadlessAcceptance, installHeadlessControl, drainHeadlessGameInput, recordHeadlessShutdownFailure, isHeadlessAcceptance, isOffscreenAcceptance } from "./craftmine-headless";
 import { NO_IMMERSION, parseImmersion, immersionShortcut } from "../../shared/craftmine-immersion";
 import { nativeFullscreenKeyDecision } from "../../shared/world-fullscreen-shortcuts";
 import { LocalVoiceInputService } from "./local-voice-input";
@@ -385,6 +388,9 @@ const productPaths = craftminePaths(process.env, app.getPath("appData"));
 mkdirSync(productPaths.userData, { recursive: true });
 app.setPath("userData", productPaths.userData);
 const worldConversationNavigation = createWorldConversationNavigation(join(productPaths.userData, "world-conversation-navigation"));
+const worldBriefService = createWorldBriefService({selected:()=>godotSelection(),
+  call:(method,args)=>plugins.requestCraftmineHost("world.brief",{method,args}),
+  busy:()=>!!(profileRestore||quitting||craftmineQuitPreparation||creationEditStarting||turnFinalizations.size)});
 // Upstream internals share this alias; never inherit another PI profile.
 process.env.PI_DESKTOP_DATA_DIR = productPaths.dataDir;
 process.env.CRAFTMINE_CORE_BIN = app.isPackaged
@@ -1393,9 +1399,16 @@ async function creationEditCapture(owner:number,sessionId:string,captureId:strin
   if(!capture)throw Error("CREATION_TARGET_REQUIRED");
   return {session,projectId,capture};
 }
+const creationPreviews=createCreationPreviewService({
+  resourcesRoot:godotRoot,
+  capture:async(owner,sessionId,captureId)=>(await creationEditCapture(owner,sessionId,captureId)).capture,
+  source:worldId=>plugins.requestCraftmineHost('godotRuntime.exportSource',{worldId}),
+  dispatch:(identity,args)=>godotWorld.creationPreview(identity,args),
+});
 const creationEdits=createCreationEditService({
   directory:join(dataDir,"creation-edits"),
   begin:async(owner,input)=>{
+    await creationPreviews.clear(owner);
     await stopWorldMaintenance();
     if(directLibrary.isBusy()||creationEditStarting||activeTurns.size||turnFinalizations.size||profileRestore||godotCopies.busy||godotExportBusy||godotCandidates.blocking||godotInitializer.busy||godotRestores.busy)throw Error("ACTIVE_TASK_EXISTS");
     creationEditStarting=true;let turnId:string|undefined;
@@ -1410,7 +1423,10 @@ const creationEdits=createCreationEditService({
       await assertCreationEditor(owner,input.sessionId);
       const turn=await host!.call<{turnId:string}>("session.beginTurn",{sessionId:input.sessionId});turnId=turn.turnId;
       if(!turnId)throw Error("CREATION_EDIT_TURN_REQUIRED");activeTurns.set(input.sessionId,turnId);activeTurnUsages.delete(input.sessionId);
-      const content=upgrade?"升级世界观察组件，保留当前作品和进度":input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      let content=upgrade?"升级世界观察组件，保留当前作品和进度":input.action==="undo"?"撤销上一次物体编辑":input.action==="delete"?"删除选中的物体":input.action==="place"?`在当前落点放置${({tree:"树",rock:"石头",chest:"宝箱",door:"门",marker:"标记"})[input.kind!]}`:input.action==="duplicate"?`复制选中物体 ${input.count} 个，每个偏移 ${input.offset!.join(" × ")}`:`调整选中物体${input.changes?.scale?`，尺寸 ${input.changes.scale.join(" × ")}`:""}${input.changes?.color?`，颜色 ${input.changes.color}`:""}`;
+      const transform=input.placement??input.changes;
+      if(transform?.position)content+=`，位置 ${transform.position.join(" × ")}`;
+      if(transform?.rotationY!==undefined)content+=`，朝向 ${transform.rotationY}°`;
       const message={id:crypto.randomUUID(),role:"user",content,createdAt:new Date().toISOString(),status:"complete"};
       await host!.call("session.appendMessage",{sessionId:input.sessionId,turnId,message});
       if(!await bindCraftmineTurn(input.sessionId,turnId,session,{id:message.id,text:content},{owner,capture,intent}))throw Error("CREATION_SESSION_REQUIRED");
@@ -3207,6 +3223,7 @@ const craftmineBackup = createCraftmineBackupService({
   },
 });
 const captureLibraryPreview = createLibraryPreviewCapture({
+  onPreparation: diagnostic => console.info("LIBRARY_PREVIEW_PREPARATION", diagnostic),
   selection: godotSelection,
   sourceIdentity: async worldId => {
     const descriptor=await godotAdapter.describe(worldId);
@@ -3279,6 +3296,17 @@ const playerWorldTemplates = createWorldTemplatePanel({
   },
 });
 const craftmineBuildIdentity = readCraftmineBuildIdentity(process.resourcesPath);
+const playerFeedback = createPlaytestFeedbackPanel({
+  domain: (method,args) => plugins.requestCraftmineHost(method,args), selection:godotSelection,
+  blocked:()=>!!profileRestore || godotCandidates.blocking || godotInitializer.busy || godotRestores.busy || godotCopies.busy,
+  client:{version:app.getVersion(),...(typeof craftmineBuildIdentity.commit === "string" ? {commit:craftmineBuildIdentity.commit}:{})},
+  capture:worldId=>captureLibraryPreview.prepared(worldId),
+  pick:async(kind,suggestedName)=>{
+    if(headlessAcceptance)return join(headlessAcceptance.root,"player-feedback.json");
+    if(kind==="import"){const result=await dialog.showOpenDialog({title:"导入试玩反馈",properties:["openFile"],filters:[{name:"Craftmine playtest feedback",extensions:["json"]}]});return result.canceled?null:result.filePaths[0]??null;}
+    const result=await dialog.showSaveDialog({title:"导出试玩反馈",defaultPath:suggestedName,filters:[{name:"Craftmine playtest feedback",extensions:["json"]}]});return result.canceled?null:result.filePath??null;
+  },
+});
 const craftmineIssues = createCraftmineIssueService({
   directory: join(dataDir, "craftmine-local-issues"),
   client: {version: app.getVersion(), ...(typeof craftmineBuildIdentity.commit === "string" ? {commit: craftmineBuildIdentity.commit} : {})},
@@ -6922,6 +6950,11 @@ function registerIpc() {
       if(quitting||craftmineQuitPreparation||craftmineQuitPrepared||worldRemoval.busy)throw Error('WORLD_BUSY');
       return payload.channel==='world.playerCancel'?playerWorlds.cancel(payload.payload):playerWorlds.enter(payload.payload);
     }
+    if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.brief") {
+      if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
+      if (profileRestore || quitting || craftmineQuitPreparation) throw Error("WORLD_BUSY");
+      return worldBriefService.request(payload.payload);
+    }
     if (payload?.pluginId === "craftmine.world" && payload?.channel === "world.conversation") {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
       if (payload.payload?.action === "remember-created") {
@@ -6958,10 +6991,14 @@ function registerIpc() {
       await assertCreationResultAccess(payload.payload ?? {}, {viewingSession:()=>notificationViewingSessionId,
         selectedWorld:godotSelection, domain:(method,args)=>plugins.requestCraftmineHost(method,args)});
     }
-    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory"].includes(payload.channel)){
+    if(payload?.pluginId==="craftmine.world"&&["godot.creationTarget","godot.creationPolicy","godot.creationTaskStatus","godot.creationEdit","godot.creationEditStatus","godot.creationEditHistory","godot.creationPreview"].includes(payload.channel)){
       if((event as Electron.IpcMainInvokeEvent).senderFrame!==mainWindow?.webContents.mainFrame)throw Error("PERMISSION_DENIED");
       const input=payload.payload??{};
       if(!input||typeof input!=="object"||Array.isArray(input))throw Error("CREATION_REQUEST_INVALID");
+      if(payload.channel==="godot.creationPreview"){
+        if(input.action!=='cancel'&&(activeTurns.size||turnFinalizations.size||creationEditStarting||directLibrary.isBusy()))throw Error('ACTIVE_TASK_EXISTS');
+        return creationPreviews.request(event.sender.id,input);
+      }
       if(payload.channel==="godot.creationEdit"){
         const request=validateCreationEdit(input);await assertCreationEditor(event.sender.id,request.sessionId);return creationEdits.start(event.sender.id,request);
       }
@@ -7028,6 +7065,10 @@ function registerIpc() {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
       if (quitting || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("WORLD_BUSY");
       return captureLibraryPreview.prepare(payload.payload);
+    }
+    if (payload?.pluginId === "craftmine.world" && PLAYTEST_CHANNELS.has(payload?.channel)) {
+      if((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame || quitting || profileRestore || craftmineQuitPreparation || craftmineQuitPrepared) throw Error("PERMISSION_DENIED");
+      return playerFeedback.request(payload.channel,payload.payload??{});
     }
     if (payload?.pluginId === "craftmine.world" && WORLD_TEMPLATE_PANEL_CHANNELS.has(payload?.channel)) {
       if ((event as Electron.IpcMainInvokeEvent).senderFrame !== mainWindow?.webContents.mainFrame) throw Error("PERMISSION_DENIED");
@@ -10438,6 +10479,15 @@ installHeadlessControl({
   playerActive: sessionId=>activeTurns.has(sessionId)||turnFinalizations.has(sessionId),
   playerLatest: (worldId,sessionId)=>plugins.requestCraftmineHost('godotBuild.latest',{worldId,sessionId}),
   world: () => pluginViews.headlessWorldContents(),
+  gameInput: {
+    instance:()=>godotWorld.instance,
+    dispatch:(identity,events)=>godotWorld.headlessGameInput(identity,events),
+    wait:frames=>godotWorld.request('wait',{frames}),snapshot:()=>godotWorld.snapshot(),
+    observe:()=>godotWorld.request('observe-envelope',{}),capture:identity=>godotWorld.captureView(identity),
+    hold:()=>godotWorld.holdSelectionSync(),
+    unavailable:()=>{try{assertDirectLibraryIdle();return directLibrary.isBusy()||godotCandidates.blocking;}catch{return true;}},
+    diagnostics:async()=>({formal:godotWorld.diagnostics(),views:await Promise.all((mainWindow?.contentView.children??[]).filter(view=>'webContents' in view).map(async view=>({runtime:await (view as Electron.WebContentsView).webContents.executeJavaScript('({guard:globalThis.__craftmineHeadless??null})',false)})))}),
+  },
   godotGameplay: {
     playAction: (identity, args) => godotWorld.headlessPlayAction(identity, args),
     observe: () => godotWorld.request("observe-envelope", {}),
@@ -10447,6 +10497,7 @@ installHeadlessControl({
     capture: (width, height) => godotWorld.headlessCapture(width, height),
   },
   godotSave: () => godotWorld.checkpoint(),
+  godotCheckReplay: (descriptor) => godotVerifier.check(descriptor),
   runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
   draftProbe: async () => {
     if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");
@@ -10794,6 +10845,7 @@ app.on("before-quit", (event) => {
     const attemptId = craftmineQuitState.saving();
     craftmineQuitPreparation = (async () => {
       if (godotCopies.busy || godotExportBusy || directLibrary.isBusy()) throw Error("Wait for world copy, export or material adoption to finish, or cancel it before quitting");
+      await drainHeadlessGameInput();
       groundMaintenanceScheduler.suspend();
       await creationAutoQueue.suspend();
       await stopWorldMaintenance();
@@ -10827,6 +10879,7 @@ app.on("before-quit", (event) => {
 
   quitting = true;
   playerWorldTemplates.dispose();
+  playerFeedback.dispose();
   groundMaintenanceScheduler.dispose();
   tray?.destroy();
   tray = null;

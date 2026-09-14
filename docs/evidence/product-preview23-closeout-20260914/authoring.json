@@ -1,0 +1,220 @@
+{
+  "format": "craftmine.product-final-authoring-acceptance/1",
+  "source": {
+    "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\continuation-c599760d-d6b6-44e9-9abb-c5e25ea3ee40.json",
+    "sha256": "be05df6ecf196bd216d74edda8840d79814dbd912f36a52677ae3d14bbb8f291"
+  },
+  "database": {
+    "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\profile\\plugins\\data\\craftmine.world\\tasks.sqlite",
+    "readOnly": true,
+    "table": "craftmine_godot_jobs",
+    "jobId": "gjob-e7eca52be1f4a5db4949f9508dd07d430103ef166b3a434e8972908ac09cd904"
+  },
+  "job": {
+    "id": "gjob-e7eca52be1f4a5db4949f9508dd07d430103ef166b3a434e8972908ac09cd904",
+    "build_id": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+    "status": "passed",
+    "source_revision": 14,
+    "manifest_hash": "da27dd8327a37a0e779f52e5fcd6ec0aa3c248f241614299e5be0c6002ba2b45",
+    "check_input_hash": "69e4a2ca5ab471483c3ca09d36c9ddcb085a3bd70555714ec402daf9db628d33",
+    "output_hash": "88b0bc5d5dabb66e52c595c38a7c31b64e84cf855221e252b722044f2c17dad3"
+  },
+  "result": {
+    "passed": true,
+    "inputHash": "9f8545682cccd41b57d07561d0849693f552abcc70e6fa6f3854496528fead17",
+    "importPassed": true,
+    "compile": {
+      "passed": true,
+      "errors": [],
+      "warnings": []
+    },
+    "checkPassed": true,
+    "assertions": [
+      {
+        "id": "runtime.ready",
+        "passed": true,
+        "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+      },
+      {
+        "id": "runtime.frame",
+        "passed": true,
+        "detail": "frames=3 distinct=3"
+      },
+      {
+        "id": "runtime.no-errors",
+        "passed": true,
+        "detail": null
+      },
+      {
+        "id": "runtime.snapshot",
+        "passed": true,
+        "detail": "formal progress unchanged"
+      },
+      {
+        "id": "runtime.isolation",
+        "passed": true,
+        "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+      },
+      {
+        "id": "runtime.recovery",
+        "passed": true,
+        "detail": "graceful=true"
+      }
+    ],
+    "diagnostic": {
+      "format": "craftmine.godot-runtime-diagnostic/1",
+      "diagnosticOnly": true,
+      "jobId": "gjob-e7eca52be1f4a5db4949f9508dd07d430103ef166b3a434e8972908ac09cd904",
+      "worldId": "world-7a2bad903a26",
+      "buildId": "gbd-5eca401ecb43674379b3ba8eba42d16a1dbb8300fd93b5b9ab2631bfe2fd2a76",
+      "inputHash": "9f8545682cccd41b57d07561d0849693f552abcc70e6fa6f3854496528fead17",
+      "error": null,
+      "ready": {
+        "ok": true,
+        "instanceId": "f56fe80811d1c7d83e3dd9e2"
+      },
+      "isolation": {
+        "offscreen": true,
+        "focusable": false,
+        "visible": false
+      },
+      "errors": {
+        "runtime": [],
+        "console": [],
+        "renderer": null
+      },
+      "diagnostics": [
+        "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+        "[phase] artifact-verification completed elapsedMs=108 stageElapsedMs=108",
+        "[phase] runtime-server started elapsedMs=108 stageElapsedMs=0",
+        "[phase] runtime-server completed elapsedMs=238 stageElapsedMs=130",
+        "[phase] window started elapsedMs=238 stageElapsedMs=0",
+        "[phase] window completed elapsedMs=246 stageElapsedMs=8",
+        "[phase] load started elapsedMs=246 stageElapsedMs=0",
+        "[phase] load completed elapsedMs=900 stageElapsedMs=654",
+        "[phase] ready started elapsedMs=900 stageElapsedMs=0",
+        "[phase] ready completed elapsedMs=6726 stageElapsedMs=5826",
+        "[phase] runtime-check started elapsedMs=6726 stageElapsedMs=0",
+        "[phase] runtime-check completed elapsedMs=8087 stageElapsedMs=1361",
+        "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+        "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+        "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+        "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+        "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":108,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":8},\"workerElapsedMs\":41}",
+        "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":52674672,\"verifiedFiles\":10,\"elapsedMs\":41,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+        "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":41,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+      ],
+      "truncated": false
+    },
+    "progressMigration": {
+      "added": [],
+      "defaultsSnapshotHash": "3c4488363abf620b9522771fbb5fd8042173c1943cda95df5894792a67ab7f30",
+      "format": "craftmine.godot-additive-progress/1",
+      "previousSnapshotHash": "ac4853226799821d144374f76cbf4d15eee75b5605e45e540d8d9869c91beccd",
+      "snapshotHash": "ac4853226799821d144374f76cbf4d15eee75b5605e45e540d8d9869c91beccd"
+    }
+  },
+  "adoption": {
+    "source": {
+      "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\profile\\creation-auto-queue\\c3a20c81ad93349e04e26a195f6c2428bb930470ceff5f680d80338165aa03dd.json",
+      "sha256": "1e82e725eb4c0245dd78f2746f03072f5030adfddb37111209c64de57859d15d"
+    },
+    "jobId": "gjob-e7eca52be1f4a5db4949f9508dd07d430103ef166b3a434e8972908ac09cd904",
+    "context": {
+      "projectId": "pi-2c755482e26f40b1ea92ee97bd78aeb8064cca34f5617e9238476e15b21635f8",
+      "sessionId": "da57da5e-063e-46a0-99a7-7b3ba27fd35e",
+      "turnId": "0de18f06-6a0b-4371-abe0-34c9df285e47"
+    },
+    "worldId": "world-7a2bad903a26",
+    "status": "applied",
+    "updatedAt": "2026-09-14T05:59:20.403Z",
+    "candidateId": "gcan-c7ec5b0db3174d10c218eb7c8315cddf7335dc4738a28f41906547df0646fb05"
+  },
+  "launches": [
+    {
+      "at": "2026-09-14T05:56:19.998Z",
+      "port": 57914,
+      "pid": 76932,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "at": "2026-09-14T06:05:37.021Z",
+      "port": 59013,
+      "pid": 63836,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "normalShutdown": true,
+  "finalIntegrity": {
+    "checkedAt": "2026-09-14T06:13:53.221Z",
+    "status": "passed",
+    "files": {
+      "core": {
+        "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\76e8c0a9ba6a-abddb286-62ab-4fa1-b0a8-032a21b09086\\output\\win-unpacked\\resources\\bin\\craftmine-core.exe",
+        "bytes": 8743936,
+        "sha256": "6f7218996c688259f41f8da7ac418a2d98c0f562bc320e61f92632e1e602f509"
+      },
+      "host": {
+        "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\76e8c0a9ba6a-abddb286-62ab-4fa1-b0a8-032a21b09086\\output\\win-unpacked\\resources\\bin\\pi-desktop-host-core.exe",
+        "bytes": 9277440,
+        "sha256": "07bfcbd6b90944518cee89fdc75011aa8f4baa09ebc155f80eab8b9a137f08c8"
+      },
+      "codex": {
+        "file": "C:\\Users\\WINDOWS\\AppData\\Local\\OpenAI\\Codex\\bin\\bffc5354119c8421\\codex.exe",
+        "bytes": 297858352,
+        "sha256": "081e4de4be8e38fac6ed4d95e3b1a0b9f6d31c090ddc36e1696b349fe406f575"
+      }
+    }
+  },
+  "packageIdentity": {
+    "inventorySha256": "51de0dbb2605896fe6c03e897446999dd89385f53e692c82ab07d4dbad68002d",
+    "mainSha256": "6c0a337893f08099c6bbb1168ddd16a44ac743ca5e0ffa140e0b734dfd4cb0d9"
+  },
+  "finalTurn": {
+    "turnId": "0de18f06-6a0b-4371-abe0-34c9df285e47",
+    "status": "completed",
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "wallMs": 118797,
+    "usage": {
+      "inputTokens": 84560,
+      "cacheReadTokens": 4439424,
+      "cacheWriteTokens": 0,
+      "outputTokens": 1495,
+      "reasoningTokens": 624,
+      "totalTokens": 4525479,
+      "source": {
+        "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+        "field": "session.messages[319].usage",
+        "association": "event-message-id"
+      },
+      "kind": "persisted-terminal-message",
+      "scope": "one-turn"
+    },
+    "usageAvailability": "terminal-reported",
+    "notes": null
+  },
+  "petAcceptance": "docs/evidence/pet-contact-76-20260914/summary.json",
+  "limitations": [
+    "Godot import log retains Windows isolation environment warnings; compile and runtime assertions passed. Raw output remains in the owned test DB.",
+    "The model final message correctly said adoption was deferred while the turn was busy. The applied queue and subsequent real play independently establish final adoption."
+  ]
+}

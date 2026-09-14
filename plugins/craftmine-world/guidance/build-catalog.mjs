@@ -35,7 +35,7 @@ creationReferences.push(snapshot({sourceCommit:creationManagedCommit,sourcePath:
 creationReferences.push(snapshot({sourceCommit:creationManagedCommit,sourcePath:'desktop/godot/shared/component_state.gd',
  projectPath:'craftmine_shared/component_state.gd',requiredInterface:true}));
 creationReferences.push(snapshot({sourcePath:'plugins/craftmine-world/guidance/references/double-press-rule.gd',path:'examples/double-press-rule.gd'}));
-const catalog={version:'1.8.1',requiredInterfacePolicy:{
+const catalog={version:'1.8.2',requiredInterfacePolicy:{
  meaning:'Source-hash applicability check for this guidance only; not a read-only marker or an immutable-file list.',
  writeAuthority:'Actual godot_project_patch and host write/build policies; existing permissions, managed bridges and frozen checks are unchanged.',
  afterSourceChange:'GUIDANCE_INTERFACE_UNSUPPORTED means this recipe does not cover the current source. Reinspect that source; do not revert a legitimate edit just to regain guidance coverage.'},provenance:{publisher:'Craftmine World bundled source',

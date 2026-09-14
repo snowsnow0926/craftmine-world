@@ -8,6 +8,16 @@ import { join, resolve } from 'node:path';
 import { CodexConnection } from '../vendor/pi-desktop/apps/desktop/electron/main/codex-connection.mjs';
 import { CLI_VERSION, CodexAppServer } from '../vendor/pi-desktop/packages/agent-runtime/src/codex-app-server.mjs';
 
+test('discovery skips incompatible first PATH candidate and exposes every checked version',async t=>{
+  const cwd=await mkdtemp(join(tmpdir(),'codex-discovery-'));t.after(()=>rm(cwd,{recursive:true,force:true}));
+  let called=0;const service=new CodexConnection({cwd,pick:async()=>undefined,openExternal:async()=>{throw Error('unexpected browser');},
+    discover:async()=>[join(cwd,'old.exe'),join(cwd,'broken.exe'),join(cwd,'compatible.exe')],
+    inspectVersion:async path=>{called++;if(path.endsWith('broken.exe'))throw Error('private diagnostic');return path.endsWith('compatible.exe')?CLI_VERSION:'codex-cli 0.1.0';},
+    clientFactory:()=>{throw Error('unexpected account access');}});
+  const result=await service.invoke({action:'detect'});assert.equal(result.code,'detected');assert.equal(called,3);
+  assert(result.path.endsWith('compatible.exe'));assert.deepEqual(result.candidates.map(row=>row.compatible),[false,false,true]);assert(!JSON.stringify(result).includes('private diagnostic'));
+});
+
 function fixture(t, options = {}) {
   const binary = resolve('fixture-codex.exe'), opened = [], clients = [];
   let account = options.account === undefined ? { type: 'chatgpt', email: 'player@example.test', planType: 'pro', access_token: 'SECRET' } : options.account;

@@ -9338,6 +9338,13 @@ save and restart before claiming model creation acceptance. Use only offscreen
 processes and no input simulation. See godot-authoring-content-context.md.
 ### Godot continuation after an incomplete model turn
 
+Also run [fresh complete export identities](../../e2e/godot-export-attempt-identities.md):
+same source under the same or changed attested toolchain gets a distinct immutable
+root for each new complete build call; exact receipt retries retain the old ID.
+Verify old artifact bytes/history remain unchanged, continued checks keep their
+origin authorization, and the new candidate can be checked, applied and reopened.
+No public tool schema change, source edit workaround or weakened attestation.
+
 Use the actual world-specific prompt and preserve the original source between
 up to three fixed follow-ups. A completed conversation without a new checked
 candidate must not pass creation. Verify the continue helper refuses an active,
@@ -9969,6 +9976,34 @@ must still reject. Preserve the failed first read and the separate repaired run.
 
 ### Opt-in Codex desktop world conversation
 
+Run the [interrupted native recovery scenarios](../../e2e/codex-interrupted-recovery.md)
+and [process close/drain boundary](../../adr/codex-app-server-close-drain.md):
+delay interrupt response/terminal independently, drain stdout after process exit,
+and verify an existing matching unsynchronized aborted tail through the real
+read-only paginated API before/after ordinary same-thread resume. Mismatches must
+offer localized Continue without automatic full reconstruction; preserve local
+retry requests and reject uncertain partial injection. No model budget is added.
+
+For complete-history recovery, follow the
+[native transcript injection scenarios](../../e2e/codex-full-history-native-injection.md):
+restore more than 1 Mi characters without losing original requests, preserve real
+image blocks, and prove that aborted or rejected injection starts no model turn
+and executes no historical tools. Record fixture, source-native and final packaged
+acceptance separately; synchronized resume must not inject history again.
+Preserve bound asynchronous native errors; a context-window capacity marker with
+zero input/output must remain diagnostic data and never be counted as token usage.
+Verify clean interrupted-turn acknowledgement preserves resume only with a
+confirmed start, idle tool tail and successful host save; late/foreign ack and
+pending tools must remain unsynchronized.
+Run H6 native segmented compaction for context-full history: maintenance has its
+own matched turn/item completion, valid usage and no domain tools; failure/cancel
+must not start the actual player turn. Preserve original requests and images.
+Maintenance cancellation must send `turn/interrupt` for its known native turn ID
+and must remain unsynchronized even when that maintenance interruption is acknowledged.
+Run H7 usage coverage: native reset zeros and old capacity markers cannot become
+consumption. Persist incomplete maintenance coverage through Rust, UI and export;
+show reported creation counters separately while overall usage stays unknown.
+
 Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
 Local Codex CLI in General settings with an explicit executable path. With no
 API providers or keys configured, send the normal world prompt and observe the
@@ -10396,9 +10431,217 @@ passes normal checking/adoption while authored source and progress survive.
 
 ### Main conversation source proposals
 
+After a failed source install, keep its immutable job ID and failed status.
+Complete a later author turn that changes the source. The existing card must
+re-read that exact terminal job and, when Core reports `sourceStale: true`, show
+the historical-failure wording and check-history action without reinstallation
+or any passed/adopted claim. Missing or false staleness retains the original
+failure wording; malformed staleness and cross-world job results are rejected.
+The check-history action uses the existing world checks surface. A different
+successful job never rewrites the older failed receipt.
+
 After an ordinary direct edit with no AI suggestions, the existing reuse panel
 must read its empty proposal list without PERMISSION_DENIED. Admit only exact
 current-world proposal/job identifiers to its existing install/check path;
 reject injected source/context/paths and private installer methods. Retain real
 failures with retry guidance and diagnostic details. General package authoring
 remains outside the main navigation gateway.
+
+## Persistent world goals and multi-turn creation
+
+Use the existing PI sidebar's World goals panel on a fresh world. Add a goal
+and preservation requirement without a model, close/reopen the app, then run
+ordinary authoring requests in the same real session with the player's selected
+model/effort. Confirm Rust request context retains exact original goal locators
+across tasks and the model does not replay finished requests as new work.
+Continue-goal prepares the original Composer without auto-submitting or
+overwriting its existing text. Accept a goal only using the explicit human
+review action. After an actual later source adoption, the old review must render
+historical, including while async reload is pending. Agent proposals remain
+unaccepted until reviewed; changed brief revisions and foreign worlds refuse
+stale writes. Keep native gameplay/save checks separate from human goal status.
+
+## World composition recipes — 2026-09-14
+
+In the original PI Desktop asset library, open Compose gameplay for the selected
+world. Choose collect-to-unlock-flight, preserve the actual city, choose a target
+count and retain an additional whole-city requirement. Inspect the composition:
+exact archive versions/root hashes, source adaptation status, missing collection
+and gate logic, and the real 2400 m × 56 m runway requirement must appear. No
+task, source edit, model request or adoption may occur from inspection.
+
+Change a choice and verify the previous plan disappears. Change world/source
+while a request is outstanding and verify late/stale replies cannot hand off an
+old-world plan. Continue with AI only after reviewing current plan; verify the
+ordinary Composer receives the original wishes and exact refs without auto-send,
+focus, a changed backend/model or an overwritten pending prefill. Corrupt pinned
+catalog/archive bytes and forged world/context/path fields must fail closed.
+
+For integrated gameplay acceptance, send the ordinary request with the player's
+actual selected model/settings. Verify original city preservation, locked
+boarding before collection, reachable one-time targets and visible progress,
+unlock after the requested count, actual collision-validated runway and real
+takeoff/landing. Verify walking/camera/input return, save/cold reopen, then save
+as a new reusable world template through the existing publication flow. A ZIP,
+passed compilation, staged proposal or visible aircraft alone is not acceptance.
+Keep source/UI fixture results separate from native/model and human evidence.
+
+On the placement-preview bridge, use recipe version 2 and verify normal catalog
+latest browsing returns Pom/rain version 2 while all-version and exact version 1
+reads still return their original bytes. Install the new versions through the
+normal checks, interact with the real companion and rain, then save/cold reopen.
+Reopen an existing version 1 world and verify its identities, visual appearance,
+state and library references remain intact. A fixed recipe version 1 request
+against the newer bridge must report adaptation rather than silently swapping
+refs; unknown bridge hashes must not match the new exact cohorts.
+
+### Craftmine stock placement preview and transform loop (2026-09-14)
+
+- In the original PI Desktop, create an empty world and place a stock tree using
+  the real Place here form. Preview the actual engine ghost and cancel; the
+  complete progress and formal entity set must be unchanged, with zero model calls.
+- Select the created object through Recent results. Position controls must show
+  its observed origin, not the ray surface hit. Preview movement/yaw, then commit
+  through normal check/adoption. Verify the actual native node position and yaw.
+- Undo that transform through the real Undo action, verify the same object ID and
+  original transform, then edit again and save/cold reopen. Share/import/play and
+  cold reopen in an independent profile must retain the final transform.
+- Obstructed or out-of-world ghosts are visibly invalid; source checks still reject
+  collisions. Custom generators are unavailable for preview rather than approximated.
+- Cancel, stale captures, old owner/session, switching worlds, save, resume and
+  exit must clear temporary geometry. Late cancelled-preview updates never revive it.
+- Exact old LF/CRLF engine bridges may be upgraded by the existing explicit update
+  action; only that pinned file changes. Ordinary standard bridges use the exact
+  three-file wrapper/helper bootstrap, and new worlds support preview with no
+  performance-profile opt-in. Unrelated draft/source changes are retained
+  or explicitly refused and no accepted component archive is modified in place.
+- Automation uses `tests/first-creation-roundtrip-native.mjs --visual-edit` against
+  the integrated staged app and v2-compatible component resources. The native
+  geometry regression is `tests/creation-preview-native.mjs`. Both remain isolated
+  and offscreen/headless, with no OS input, Pointer Lock or focus requests. Preserve
+  failed reports and fail the result if shutdown or package inventory fails.
+
+- Run the real core creation check with the preview wrapper enabled. The job's
+  source claim must retain the actual wrapper and both helpers; missing, changed,
+  aliased and mixed cohorts must fail before staging, including LF/CRLF variants.
+
+## Player setup and portable friend feedback (2026-09-14)
+
+Verify the existing settings row's install/discover/login/verify/save stages.
+An incompatible PATH entry must not mask a compatible known native installation;
+candidate selection still requires account/model re-verification. Check missing
+installation, unavailable pinned distribution, cancelled login and narrow layout.
+
+Create a feedback report in an isolated friend world, review the text/version
+identity, and verify no screenshot is collected by default. Opt into native
+capture and verify the shown PNG matches the selected world/build. Export the
+reviewed bytes, select them in a second author profile, review before confirming,
+and cold-reopen the Rust journal. Re-import is idempotent. Compare different
+build identities, prepare an AI-review draft without submitting or overwriting
+existing text, export a linked reply and import it back in the friend profile.
+Autosave after review must export the exact original reviewed bytes without
+recapturing or changing timestamps, progress identity or screenshots; a new
+formal build still requires a fresh preview. Pre-sheet BUSY/PENDING contention
+may wait briefly while holding the initial binding; changed identities fail,
+permanent contention stops admitting captures within the two-second window
+starting at the first BUSY/PENDING, excluding normal first-capture time. A slow
+2.7-second first capture followed by BUSY can still admit a successful retry;
+permanent BUSY remains finite. Each admitted capture retains its native deadline.
+Preparation emits bounded
+attempt/reason diagnostics without paths or account data. Other capture errors
+do not retry.
+Reject tampered/oversized files, injected paths, cross-world read IDs and changed
+formal build after preview. Saved template version and compatibility metadata
+remain visible through the normal ZIP export/import/republication workflow.
+
+Targeted evidence: `tests/playtest-feedback.test.mjs`,
+`tests/playtest-feedback-ui.mjs`, `tests/playtest-feedback-native.mjs`, and Rust
+`playtest_feedback` tests. Native storage fixtures do not claim engine play or
+actual model repair. Integrated native application acceptance covers those
+boundaries separately.
+
+Use `tests/playtest-feedback-client-native.mjs` for the integrated native PI
+acceptance described in [the runbook](../../e2e/playtest-feedback-native-20260914.md).
+
+The operator mailbox's explicit `feedback-repair-draft` command fills the real
+current-world feedback form, previews and confirms export, compares the exported
+record with Rust readback, and invokes the actual repair-draft button. It defaults
+capture off, preserves existing Composer text, and verifies unchanged session
+message IDs. No world/session/path/send override is accepted. Only a subsequent
+separate `send-composer` command submits a model turn; this helper never writes
+SQLite, fabricates imported reports or presents a repair as completed.
+### Private native input acceptance (2026-09-14)
+
+For the ordinary desktop's private native input acceptance, submit a finite
+`inputSegment` through the validated parent controller with the current formal
+world/build/instance identity. Verify real aircraft throttle/pitch or weather
+handlers consume the keys; record before/during/after snapshots, frames and
+diagnostics without assigning actor state. Cancel during an outstanding native
+wait and verify releases, then save/cold reopen and confirm no held key remains.
+Runtime/check failure must preserve partial evidence and release every possibly
+delivered key. Unknown fields, stale identity, visible/focused owner, model/tool
+access and production/non-headless routing must fail before delivery. A successful
+segment transport remains separate from actual gameplay and user-goal acceptance.
+
+### Artifact-await failure evidence (2026-09-14)
+
+Run the next ordinary failed-job check/resume in its isolated profile and retain
+the resulting immutable job output/diagnosticLog. If artifact verification stalls,
+confirm the existing failed phase and one `[artifact-verification]` line identify
+the last lstat/open/read/hash operation, relative artifact/index, expected and
+observed bytes, and elapsed time. Cancel an outstanding check separately and
+require GODOT_CHECK_CANCELLED, not timeout or a fabricated pass. No private root
+path should appear in the new detail. File count must not increase log size
+linearly; later OS completions must not change the already persisted diagnostic.
+Keep the 30-second default and ordinary file/type/link/size/hash checks unchanged.
+The unit pending-IO cases diagnose instrumentation only; the actual stalled job's
+cause and any subsequent recovery still require their own real check evidence.
+
+For that same check, retain the fixed artifact runtime summary: 100ms unref
+heartbeat samples/maxLag and start/end resource type counts. A pending file await
+with heartbeat samples differs from a long final heartbeat gap. Success, timeout
+and cancel must all dispose the interval; no later page stage can keep updating
+this artifact snapshot. Neither the sample count nor a resource type grants a
+pass or changes the 30-second deadline. Keep raw path/PID/argument data out of
+this summary and confirm log size is independent of tick/file count.
+
+After the bounded 1MiB stream change, use the same ordinary old-profile check
+path and compare its artifact/read/heartbeat diagnostics with the retained
+64KiB failure. Require the complete descriptor sizes and hashes and unchanged
+30-second deadline; do not substitute the scheduling simulation for a native
+pass. Cancel a partial read and confirm the same cancellation error, closed
+stream and no subsequent artifact work. The original timeout job remains failed
+and immutable, even if the new check succeeds with its own evidence.
+
+After the independent artifact Worker change, first run
+`node --test tests/godot-artifact-verification.test.mjs tests/godot-runtime-diagnostic-log.test.mjs tests/godot-artifact-worker.test.mjs`
+from the Craftmine repository root. The worker test must compile the actual fixed
+entry/dependency chunks and load them from ASAR under Electron Node-only, not
+substitute a stub. Retain its report and archive hash. Confirm full multiblock
+hashing, corrupt tail/missing/link rejection, parent-loop pause, cancellation,
+deadline, silent/crashed exit, malformed/boundary replies, startup cleanup and
+explicit unconfirmed termination. This suite opens no application or GPU.
+
+Then use the newly built candidate EXE and its own resources for the same ordinary
+old-profile Agent continuation/check. Retain native job/build/input/output hashes,
+artifact worker message/exit status, main and worker timing/heartbeat summaries,
+and the later ready/gameplay observations. Require `exitConfirmed: true` before
+runtime startup and no worker surviving cancel. Missing worker messages or
+`STOP_TIMEOUT` are failures, not zero-duration passes. Do not change the original
+30-second deadline or overwrite old job evidence. Isolated ASAR and worker tests
+do not replace this candidate's real native acceptance.
+
+### Player feedback backup coverage (2026-09-14)
+
+Run Rust `backups::feedback_tests`, `backups::domain_tests`, and the Godot-world
+backup regressions `first_launch_failure_archive_roundtrip_keeps_failure_and_accepts_older_absent_table`
+and `portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts`.
+Require exported feedback/replies/screenshot bodies, exact world binding and
+stored timestamps to survive domain, complete and portable restore plus cold
+reopen. The same roundtrip must preserve world goals, exact build-bound human
+reviews, original request history, idempotent operation receipts and pending
+proposals without accepting them. An old archive without the four known
+feedback/brief tables restores empty tables;
+wrong present columns, hash changes and dangling world references must reject
+without altering current feedback. These use isolated Rust fixtures, not the
+player's original profile, and launch neither native rendering nor a model.

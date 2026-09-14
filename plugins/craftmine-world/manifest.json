@@ -2273,8 +2273,30 @@
         }
       },
       {
+        "name": "world_brief",
+        "description": "Read persistent player goals and recent original requests for the current host-bound world across turns. read returns goals, pending advisory proposals and native check identity; human acceptance only applies to the reviewed build. history reads full original request text using the taskId/requestId from that world, with Unicode offsets. propose records up to eight advisory goals or preservation preferences against expectedRevision; it never changes player goals, declares gameplay success or marks human acceptance. Historical requests are not new tasks to repeat. Keep the latest explicit player correction authoritative.",
+        "risk": "low",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "mode": {"type":"string","enum":["read","history","propose"]},
+            "operationId": {"type":"string","minLength":1,"maxLength":240},
+            "expectedRevision": {"type":"integer","minimum":0},
+            "taskId": {"type":"string","minLength":1,"maxLength":240},
+            "requestId": {"type":"string","minLength":1,"maxLength":240},
+            "start": {"type":"integer","minimum":0},
+            "limit": {"type":"integer","minimum":1,"maximum":4000},
+            "entries": {"type":"array","minItems":1,"maxItems":8,"items":{
+              "type":"object","properties":{"kind":{"type":"string","enum":["goal","preserve"]},"text":{"type":"string","minLength":1,"maxLength":500}},
+              "required":["kind","text"],"additionalProperties":false
+            }}
+          },
+          "required":["mode"],"additionalProperties":false
+        }
+      },
+      {
         "name": "godot_source_library",
-        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement. propose-group freezes 2 to 8 ordered items, each with an exact ref and optional position, against one source revision. The player confirms the whole group once; all items are preflighted and written together, then checked together. Repeated refs create independent instances. It is not a series of separately installed proposals. Group proposal creation does not modify the world.",
+        "description": "Discover modern Godot source ZIPs stored in the asset catalog, including built-in components. search returns catalog rows; read validates an exact archiveRef and shows rootRef, component entry, compatibility and source requirements. propose captures the current host-bound world/source revision and creates a player-reviewable installation proposal visible in Godot works. No model installation or adoption occurs. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Never claim archive validation proves runtime or visual quality. propose optionally accepts an explicit position for one 3D component, fixed in the proposal; do not invent coordinates or claim these are the player captured target. Omission keeps template placement. propose-group freezes 2 to 8 ordered items, each with an exact ref and optional position, against one source revision. The player confirms the whole group once; all items are preflighted and written together, then checked together. Repeated refs create independent instances. It is not a series of separately installed proposals. Group proposal creation does not modify the world. recipes lists versioned gameplay recipes with explicit choices. compose takes request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?}; it reads exact pinned archives and current source, reports requirements/conflicts/missing logic and a planHash. It does not install or certify playability. Preserve the original wish, read/adapt current source, use existing proposals and normal checks/adoption. Collection and flight unlock logic must be implemented and played, not inferred from a visible aircraft.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -2285,7 +2307,9 @@
                 "search",
                 "read",
                 "propose",
-                "propose-group"
+                "propose-group",
+                "recipes",
+                "compose"
               ]
             },
             "query": {
@@ -2416,6 +2440,71 @@
                 "additionalProperties": false
               },
               "description": "Only for propose-group. Ordered source archives and frozen explicit placements; omit position to keep template placement."
+            },
+            "request": {
+              "type": "object",
+              "properties": {
+                "recipeId": {
+                  "type": "string",
+                  "enum": [
+                    "companion-exploration",
+                    "rain-exploration",
+                    "collect-unlock-flight"
+                  ]
+                },
+                "recipeVersion": {
+                  "type": "integer",
+                  "enum": [
+                    1,
+                    2
+                  ]
+                },
+                "choices": {
+                  "type": "object",
+                  "properties": {
+                    "scenery": {
+                      "type": "string",
+                      "enum": [
+                        "keep",
+                        "forest",
+                        "city-street"
+                      ]
+                    },
+                    "companion": {
+                      "type": "boolean"
+                    },
+                    "weather": {
+                      "type": "string",
+                      "enum": [
+                        "keep",
+                        "rain"
+                      ]
+                    },
+                    "collectionCount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 12
+                    }
+                  },
+                  "required": [
+                    "scenery",
+                    "companion",
+                    "weather",
+                    "collectionCount"
+                  ],
+                  "additionalProperties": false
+                },
+                "wish": {
+                  "type": "string",
+                  "maxLength": 3000
+                }
+              },
+              "required": [
+                "recipeId",
+                "recipeVersion",
+                "choices"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [

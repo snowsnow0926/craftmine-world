@@ -933,6 +933,7 @@ export class GodotWorldViewHost {
   /** Forward one runtime operation; the base owns everything but the core ops. */
   async request(op: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown> | null> {
     if (PRIVATE_PLAY_OPS.has(op)) throw Error("PLAY_ACTION_PRIVATE_ROUTE");
+    if (op === "creation-preview") throw Error("CREATION_PREVIEW_PRIVATE_ROUTE");
     if (op === "engine-performance") throw Error("ENGINE_PERFORMANCE_PRIVATE_ROUTE");
     const instance = this.current;
     if (!instance?.alive) throw new Error("No world runtime is running");
@@ -943,6 +944,17 @@ export class GodotWorldViewHost {
     const response = await instance.runtime.request(op, args);
     if (response.error) throw new Error(response.error);
     return (response.result ?? null) as Record<string, unknown> | null;
+  }
+
+  /** Main validates the immutable capture and fixed stock generator before dispatch. */
+  async creationPreview(identity: {worldId:string;buildId:string;instanceId:string},args:Record<string,unknown>):Promise<Record<string,unknown>|null>{
+    const instance=this.current;
+    const verify=()=>{if(!instance?.alive||this.current!==instance||['worldId','buildId','instanceId'].some(k=>(instance as any)[k]!==identity[k as keyof typeof identity]))throw Error('CREATION_TARGET_STALE');if(this.pending||this.transitioning||this.checkpointPromise||this.frozen)throw Error('WORLD_BUSY');};
+    verify();
+    await this.pause();verify();
+    const response=await instance!.runtime.request('creation-preview',args);verify();
+    if(response.error)throw Error(response.error);
+    return response.result??null;
   }
 
   /** Only the source/PCK-verified Main service may dispatch this fixed read. */

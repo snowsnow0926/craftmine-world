@@ -60,7 +60,11 @@ test('real hidden subprocess protocol: handshake, multiplexing, RPC failure, std
   assert.equal(spawns[0].options.env.OPENAI_API_KEY,undefined);
   const [a,b]=await Promise.all([client.call('fixture/echo',{a:1}),client.call('fixture/echo',{b:2})]);
   assert.deepEqual(a,{a:1});assert.deepEqual(b,{b:2});
-  await assert.rejects(client.call('fixture/error',{}),/CODEX_RPC_ERROR:-32602/);
+  await assert.rejects(client.call('fixture/error',{}),error=>{
+    assert.match(error.message,/CODEX_RPC_ERROR:-32602/);
+    assert.equal(error.rpcMethod,'fixture/error');assert.equal(error.rpcCode,-32602);
+    return true;
+  });
   assert.deepEqual(await client.call('fixture/stderr',{}),{ok:true});
   await client.close();assert.equal(client.pending.size,0);
 });

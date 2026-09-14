@@ -1,0 +1,93 @@
+{
+  "source": "Actual operator session godot_project_index revision9 plus unchanged base_adapter.gd read at revision7; subset only, not a full manifest or runtime proof.",
+  "worldId": "world-7a2bad903a26",
+  "revision": 9,
+  "manifestHash": "4426f81be3b48b67374c1557f010c7ad26ae35ccf891fbc94a0267f01ebdb46d",
+  "files": [
+    {
+      "path": "craftmine_shared/base_adapter.gd",
+      "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902",
+      "bytes": 3380
+    },
+    {
+      "bytes": 1640,
+      "path": "craftmine_shared/base_adapter_controller_v1.gd",
+      "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+    },
+    {
+      "bytes": 19410,
+      "path": "craftmine_shared/base_adapter_legacy.gd",
+      "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+    },
+    {
+      "bytes": 9344,
+      "path": "craftmine_shared/component_state.gd",
+      "sha256": "2194d1457fcc15af07cd6da930c9f3180948c5a85c53650d1167effc5350bdc6"
+    },
+    {
+      "bytes": 9893,
+      "path": "craftmine_shared/controller_evidence.gd",
+      "sha256": "00d81cab062986af27b1f7d3a4eb390928b6d1e89648259b3b96aca556b9147a"
+    },
+    {
+      "bytes": 3959,
+      "path": "craftmine_shared/engine_performance.gd",
+      "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+    },
+    {
+      "bytes": 2525,
+      "path": "craftmine_shared/headless_play_action.gd",
+      "sha256": "cc8a124b91069f65518fc4f0df5644ddabb12d5a398bfe9d4c213d4927a89cc7"
+    },
+    {
+      "bytes": 4781,
+      "path": "craftmine_shared/progress_collision.gd",
+      "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+    },
+    {
+      "bytes": 10006,
+      "path": "craftmine_shared/runtime_bridge.gd",
+      "sha256": "938c42a578bb37c0590198232448b1391f688b95f15ce7d5fce65d802cca7e08"
+    },
+    {
+      "bytes": 8556,
+      "path": "craftmine_shared/runtime_bridge_base.gd",
+      "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+    },
+    {
+      "bytes": 18909,
+      "path": "craftmine_shared/scene_mesh_picker.gd",
+      "sha256": "ef88799b3ce08335c3728832531f3505e07895cf7ae26c5ca9a72b5b743b7af8"
+    },
+    {
+      "bytes": 15674,
+      "path": "craftmine_shared/scene_mesh_picker_v2.gd",
+      "sha256": "09b64ed260b83dd9b3c0559868d6ee3c34ece69876266154b3821ce166865acd"
+    },
+    {
+      "bytes": 1759,
+      "path": "craftmine_shared/state_guard.gd",
+      "sha256": "a1e524c8b45743244651b17c33c8ab916fad0b9f5809f9cbc3dc519a10562f20"
+    },
+    {
+      "bytes": 26598,
+      "path": "scripts/creation_world.gd",
+      "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615"
+    },
+    {
+      "bytes": 1527,
+      "path": "scripts/reused/camera_rig.gd",
+      "sha256": "8dd9b057ac7e86428d9c580038265f290d2b185f6de2a452405b5035a567748f"
+    },
+    {
+      "bytes": 7079,
+      "path": "scripts/reused/player_controller.gd",
+      "sha256": "557e0e834c726f1b54d59eb260d6147c8b4a8400fdc5386a447c964cc4063955"
+    },
+    {
+      "bytes": 5289,
+      "path": "scripts/scene_contract.gd",
+      "sha256": "2a8c1b17fef37d5f2d7f754886459402698ef03fa11bc0cd2a2c7622b2bb2551"
+    }
+  ]
+}

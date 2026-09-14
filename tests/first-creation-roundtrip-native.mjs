@@ -2,26 +2,50 @@
 // CDP only evaluates page scripts; it never enables focus emulation or sends input.
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
+import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
+import {validateTemplateExpectations,inspectTemplateState,requirePackagedResources} from './helpers/template-import-expectations.mjs';
+import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
 const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
+const importIndex=process.argv.indexOf('--import-template'),expectIndex=process.argv.indexOf('--expected-state');
+const externalImport=importIndex>=0;
+assert.equal(externalImport,expectIndex>=0,'IMPORT_TEMPLATE_AND_EXPECTED_STATE_REQUIRED_TOGETHER');
+const externalArchive=externalImport?process.argv[importIndex+1]:null,expectFile=externalImport?process.argv[expectIndex+1]:null;
+if(externalImport){
+ assert([externalArchive,expectFile].every(value=>typeof value==='string'&&path.isAbsolute(value)),'ABSOLUTE_IMPORT_INPUTS_REQUIRED');
+ for(const flag of ['--resume-author','--frame-report','--diagnose-preview','--visual-edit'])assert(!process.argv.includes(flag),'IMPORT_MODE_CONFLICT:'+flag);
+}
+const expectations=externalImport?validateTemplateExpectations(JSON.parse(fs.readFileSync(expectFile,'utf8'))):null;
+const externalBytes=externalImport?fs.readFileSync(externalArchive):null;
+if(externalImport)assert.equal(createHash('sha256').update(externalBytes).digest('hex'),expectations.archiveSha256,'EXTERNAL_TEMPLATE_ARCHIVE_CHANGED');
 const root=path.resolve(import.meta.dirname,'..');
 const resultsRoot=path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT??path.join(root,'test-results'));fs.mkdirSync(resultsRoot,{recursive:true});
-const resumeIndex=process.argv.indexOf('--resume-author'),frameIndex=process.argv.indexOf('--frame-report'),framesOnly=frameIndex>=0,previousFile=framesOnly?process.argv[frameIndex+1]:resumeIndex>=0?process.argv[resumeIndex+1]:null;
+const diagnosticIndex=process.argv.indexOf('--diagnose-preview'),previewDiagnostic=diagnosticIndex>=0;
+const resumeIndex=process.argv.indexOf('--resume-author'),frameIndex=process.argv.indexOf('--frame-report'),framesOnly=frameIndex>=0,previousFile=previewDiagnostic?process.argv[diagnosticIndex+1]:framesOnly?process.argv[frameIndex+1]:resumeIndex>=0?process.argv[resumeIndex+1]:null;
 const previous=previousFile?JSON.parse(fs.readFileSync(previousFile)):null;
-if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');if(framesOnly)assert(previous.passed&&previous.authorWorldId&&previous.importedWorldId&&previous.companionEntityId,'FRAME_ONLY_ACCEPTED_WORLDS');else assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
+if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1');if(previewDiagnostic)assert(previous.authorWorldId&&previous.editedEntityId&&previous.edits?.some(e=>e.observation?.payload?.creation?.entities?.some(v=>v.id===previous.editedEntityId)),'DIAGNOSTIC_REQUIRES_ACTUAL_CHECKED_ENTITY');else if(framesOnly)assert(previous.passed&&previous.authorWorldId&&previous.importedWorldId&&previous.companionEntityId,'FRAME_ONLY_ACCEPTED_WORLDS');else assert(!previous.passed&&!previous.templateRef&&previous.operations?.[0]?.applied?.status==='applied'&&(!previous.editedEntityId||previous.editedEntity?.id===previous.editedEntityId),'RESUME_ONLY_KNOWN_AUTHOR_STAGE');assert.equal(path.basename(path.dirname(previous.out)),'test-results');assert(path.basename(previous.out).startsWith('desktop-native-rt-'));}
 const out=previous?.out??fs.mkdtempSync(path.join(resultsRoot,'desktop-native-rt-'));let profile=path.join(out,'profile');const token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));}
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
+requirePackagedResources(launch.packaged,path.resolve(resources));
 const report={format:'craftmine.first-creation-roundtrip/1',out,applicationRoot,resources,buildMainSha256:createHash('sha256').update(launch.main).digest('hex'),modelCalls:null,launches:[],worlds:[],operations:[],steps:[],limits:['One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.','Actual PI forms and offscreen native checks; no physical input or Pointer Lock.']};
 report.driverSha256=createHash('sha256').update(fs.readFileSync(import.meta.filename)).digest('hex');
-report.limits.push('The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed.');
+if(!externalImport)report.limits.push('The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed.');
+if(externalImport){
+ report.mode='external-template-import';report.expectations={file:expectFile,sha256:createHash('sha256').update(fs.readFileSync(expectFile)).digest('hex'),packet:expectations};
+ report.templateArchive={path:externalArchive,sha256:expectations.archiveSha256,bytes:externalBytes.length};
+ fs.writeFileSync(path.join(out,'player-world-template.zip'),externalBytes,{flag:'wx'});
+ report.limits.push('Imported snapshot assertions are read only; gameplay is one scoped walk segment, not a repeated flight mission or continuous performance acceptance.');
+}
 report.packageIdentity=launch.identity?{inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256,version:launch.identity.version}:null;
 const nativePaths=launch.packaged?{core:path.join(launch.packaged,'resources/bin/craftmine-core.exe'),host:path.join(launch.packaged,'resources/bin/pi-desktop-host-core.exe')}:{core:process.env.CRAFTMINE_EVAL_CORE??path.join(applicationRoot,'vendor/pi-desktop/target/release/craftmine-core.exe'),host:process.env.CRAFTMINE_EVAL_HOST??path.join(applicationRoot,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe')};
 report.nativeBinaries=Object.fromEntries(Object.entries(nativePaths).map(([name,file])=>[name,{file:path.resolve(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')}]));
@@ -93,7 +117,7 @@ async function start(kind) {
   current={kind,startedAt:new Date().toISOString(),mainSha256:report.buildMainSha256}; report.launches.push(current);
   const started=performance.now();
   child=spawn(launch.executable,[...launch.args,'--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port],{
-    cwd:applicationRoot,env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources},
+    cwd:launch.cwd,env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources},
     windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],
   });
   for(const stream of ['stdout','stderr']) child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,kind+'-'+stream+'.log'),bytes));
@@ -219,7 +243,7 @@ async function applyDirect(row){
 // Invoke the actual component handlers in the actual PI renderer, never a
 // replacement test editor. Ordinary creation uses the session created by the
 // New World form and the host's pinned target/source/check/adoption pipeline.
-const button=(label,scope='.creation-target-context')=>evaluate(`(()=>{const button=[...document.querySelectorAll(${JSON.stringify(scope+' button')})].find(n=>n.textContent===${JSON.stringify(label)});if(!button||button.disabled)throw Error('BUTTON_UNAVAILABLE:'+${JSON.stringify(label)});const props=button[Object.keys(button).find(k=>k.startsWith('__reactProps$'))];if(typeof props?.onClick!=='function')throw Error('BUTTON_HANDLER_REQUIRED');props.onClick();return true;})()`);
+const button=(label,scope='.creation-target-context')=>until(()=>evaluate(`(()=>{const button=[...document.querySelectorAll(${JSON.stringify(scope+' button')})].find(n=>n.textContent===${JSON.stringify(label)});if(!button||button.disabled)return false;const props=button[Object.keys(button).find(k=>k.startsWith('__reactProps$'))];if(typeof props?.onClick!=='function')throw Error('BUTTON_HANDLER_REQUIRED');props.onClick();return true;})()`),Boolean);
 async function desktopInvoke(name,payload){
  return evaluate(`(async()=>{const api=globalThis.piDesktop;const result=await api.invoke(api.channels.invoke[${JSON.stringify(name)}],${JSON.stringify(payload)});if(!result?.ok)throw Error(result?.error?.message??'DESKTOP_READ_FAILED');return result.data;})()`);
 }
@@ -237,7 +261,7 @@ async function modelEvidence(label){
  assert(rows.length>0,'ORDINARY_WORLD_FORM_SESSION_REQUIRED');report.modelEvidence??=[];report.modelEvidence.push({label,profile,rows});save();
 }
 async function refreshTarget(){
- await button('更新指向');
+ const label=await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-target-context > .creation-target-row > button')).find(n=>['更新指向','使用当前指向'].includes(n.textContent)&&!n.disabled)?.textContent`),Boolean);await button(label);
  await until(()=>evaluate(`document.querySelector('[data-creation-target]')?.dataset.creationTarget`),value=>value&&value!=='loading');
 }
 async function aimGround(){
@@ -268,23 +292,80 @@ async function waitEdit(label){
  await until(()=>rpc('worldNavigationReady'),value=>value.worldId===worldId&&value.ready);
  report.edits??=[];report.edits.push({label,terminal,observation:await rpc('godotObserve')});await modelEvidence(label);save();return report.edits.at(-1).observation;
 }
-async function placeAndEdit(){
- report.ground=await aimGround();await button('在此放置');
- await until(()=>evaluate(`!!document.querySelector('[aria-label="放置类型"]')`),Boolean);
- await field('[aria-label="放置类型"]','tree');await button('放置并检查');
- const placed=await waitEdit('Actual Place here tree');const tree=placed.payload.creation.entities.find(e=>e.kind==='tree');assert(tree,'ACTUAL_PLACEMENT_REQUIRED');report.editedEntityId=tree.id;
- // Select the real checked receipt through the ordinary Recent results UI.
- await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button'),n=>({title:n.title,disabled:n.disabled,text:n.textContent})).find(n=>n.title===${JSON.stringify(tree.id)}&&!n.disabled)`),Boolean);
- const label=await evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button')).find(n=>n.title===${JSON.stringify(tree.id)}).textContent`);
+const visualEditing=process.argv.includes('--visual-edit');
+async function selectEditedTree(id){
+ await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button'),n=>({title:n.title,disabled:n.disabled,text:n.textContent})).find(n=>n.title===${JSON.stringify(id)}&&!n.disabled)`),Boolean);
+ const label=await evaluate(`Array.from(document.querySelectorAll('.creation-recent-results button')).find(n=>n.title===${JSON.stringify(id)}).textContent`);
  await button(label,'.creation-recent-results');
  await until(()=>evaluate(`Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='编辑对象'&&!n.disabled)`),Boolean);
  await button('编辑对象');await until(()=>evaluate(`!!document.querySelector('[aria-label="尺寸 X"]')`),Boolean);
+}
+const previewTraces=new Set();
+async function tracePreviewTraffic(label){
+ const state=await rpc('godotCaptureBoundState');assert(state.formal?.worldId===worldId);let target;
+ for(const tab of (await tabs()).filter(t=>t.type==='page'&&t.url.startsWith('http://127.0.0.1:'))){
+  const candidate=await connect(tab.webSocketDebuggerUrl);const result=await cdp(candidate,'Runtime.evaluate',{expression:'globalThis.craftmineRuntime?.scope',returnByValue:true});
+  const scope=result.result?.value;if(scope&&['worldId','buildId','instanceId'].every(k=>scope[k]===state.formal[k])){target=candidate;break;}candidate.close();
+ }
+ assert(target,'NATIVE_PREVIEW_TRANSPORT_REQUIRED');
+ const read=async expression=>{const result=await cdp(target,'Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw Error('PREVIEW_TRACE_READ_FAILED');return result.result?.value;};
+ await read(`(()=>{if(globalThis.__craftminePreviewTrace)throw Error('TRACE_EXISTS');const rows=[];const off=craftmineRuntime.on(message=>{if(message.type!=='request')return;rows.push({at:performance.now(),op:message.op,id:message.id,previewId:message.args?.previewId,sequence:message.args?.sequence,action:message.args?.action,position:message.args?.position,rotationY:message.args?.rotationY,scale:message.args?.scale,targetId:message.args?.targetId});if(rows.length>256)rows.shift();});globalThis.__craftminePreviewTrace={rows,off};return true;})()`);
+ const trace={finish:async()=>{if(!previewTraces.has(trace))return;previewTraces.delete(trace);try{const requests=await read(`(()=>{const trace=globalThis.__craftminePreviewTrace;trace?.off();delete globalThis.__craftminePreviewTrace;return trace?.rows??[];})()`);report.previewTransports??=[];report.previewTransports.push({label,scope:state.formal,requests});save();}finally{target.close();}}};previewTraces.add(trace);return trace;
+}
+function previewPixels(beforeFile,afterFile){
+ const require=createRequire(import.meta.url);let PNG;try{({PNG}=require('pngjs'));}catch{({PNG}=require(path.join(os.homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pngjs')));}
+ const before=PNG.sync.read(fs.readFileSync(beforeFile)),after=PNG.sync.read(fs.readFileSync(afterFile));assert.equal(after.width,before.width);assert.equal(after.height,before.height);
+ let cyanChanged=0;for(let i=0;i<after.data.length;i+=4){const b=before.data,a=after.data;if(a[i]+10<b[i]&&a[i+1]>b[i+1]+10&&a[i+2]>b[i+2]+15)cyanChanged++;}return cyanChanged;
+}
+async function previewVisible(){
+ return until(()=>evaluate(`({statuses:Array.from(document.querySelectorAll('.creation-object-editor [role="status"]'),n=>n.textContent),notes:document.querySelector('.creation-object-editor')?.innerText})`),value=>{if(value.statuses.some(t=>/当前世界暂不支持预览|预览位置存在/.test(t)))throw Error('PREVIEW_UNAVAILABLE:'+value.notes);return value.statuses.includes('预览位置可用');});
+}
+async function previewAndCancel(label){
+ const transport=await tracePreviewTraffic(label);
+ report.previewInputFields??=[];report.previewInputFields.push({label,values:await evaluate(`Object.fromEntries(Array.from(document.querySelectorAll('.creation-object-editor input[aria-label]'),n=>[n.getAttribute('aria-label'),n.value]))`)});save();
+ const beforeFrame=await capture(label+'-baseline');
+ // The actual preview button pauses the runtime. Close this first preview so
+ // the snapshot baseline and later preview share that ordinary paused state.
+ await button('预览摆放');await previewVisible();
+ await button('关闭预览');await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
+ const before=completeCreationProgress(await rpc('godotSnapshot'));
+ await button('预览摆放');await previewVisible();
+ const deadline=performance.now()+10000;const visible=await until(async()=>{
+  const frame=await capture(label+'-visible'),changedPixels=previewPixels(beforeFrame.file,frame.file);report.visualFrameAttempts??=[];report.visualFrameAttempts.push({label,frame,changedPixels});save();
+  if(changedPixels<256&&performance.now()>deadline)throw Error('NATIVE_PREVIEW_PIXELS_NOT_VISIBLE:'+JSON.stringify({label,changedPixels,frame}));return {frame,changedPixels};
+ },v=>v.changedPixels>=256);const frame=visible.frame;await button('关闭预览');
+ await until(()=>evaluate(`!Array.from(document.querySelectorAll('.creation-object-editor button')).some(n=>n.textContent==='关闭预览')`),Boolean);
+ const after=completeCreationProgress(await rpc('godotSnapshot'));assert.deepEqual(after,before,'PREVIEW_CANCEL_PRESERVES_COMPLETE_PROGRESS');
+ await transport.finish();report.visualPreviews??=[];report.visualPreviews.push({label,frame,beforeFrame,changedPixels:visible.changedPixels,before,after});save();
+}
+async function startAndWaitEdit(label){
+ await button('检查并应用');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));return waitEdit(label);
+}
+async function placeAndEdit(){
+ report.ground=await aimGround();await button('在此放置');
+ await until(()=>evaluate(`!!document.querySelector('[aria-label="放置类型"]')`),Boolean);
+ await field('[aria-label="放置类型"]','tree');if(visualEditing)await previewAndCancel('placement-preview');await button('放置并检查');
+ const placed=await waitEdit('Actual Place here tree');const tree=placed.payload.creation.entities.find(e=>e.kind==='tree');assert(tree,'ACTUAL_PLACEMENT_REQUIRED');report.editedEntityId=tree.id;
+ await selectEditedTree(tree.id);
+ let transformedPosition;
+ if(visualEditing){
+  transformedPosition=tree.position.map((n,i)=>i===0?n+.5:n);assert(transformedPosition[0]<27,'NATIVE_TEST_MOVE_WITHIN_WORLD');
+  await field('[aria-label="位置 X"]',String(transformedPosition[0]));await field('[aria-label="朝向角度"]','45');
+  await previewAndCancel('move-rotation-preview');
+  const moved=await startAndWaitEdit('Actual move and yaw edit');const movedTree=moved.payload.creation.entities.find(e=>e.id===tree.id);
+  assert.deepEqual(movedTree.position,transformedPosition);assert(Math.abs(movedTree.rotationY-45)<.005);
+  await button('撤销上次操作');await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));
+  const undone=await waitEdit('Actual transform undo');const original=undone.payload.creation.entities.find(e=>e.id===tree.id);
+  assert.deepEqual(original.position,tree.position);assert(Math.abs(original.rotationY-tree.rotationY)<.005);
+  report.visualTransformUndo={before:tree,moved:movedTree,restored:original};save();await selectEditedTree(tree.id);
+  await field('[aria-label="位置 X"]',String(transformedPosition[0]));await field('[aria-label="朝向角度"]','45');
+ }
  for(const axis of ['X','Y','Z'])await field(`[aria-label="尺寸 ${axis}"]`,'1.25');
  await field('[aria-label="对象颜色"]','#88bb44');await button('检查并应用');
  // Wait until the existing applied status has actually transitioned away.
  await until(()=>evaluate(`document.querySelector('.creation-object-editor [role="status"]')?.textContent`),s=>!/编辑已应用|^applied$/.test(s??''));
  const modified=await waitEdit('Actual scale and color edit');const actual=modified.payload.creation.entities.find(e=>e.id===tree.id);
- assert(actual.scale.every(n=>Math.abs(n-1.25)<.00001)&&actual.color==='#88bb44');
+ assert(actual.scale.every(n=>Math.abs(n-1.25)<.00001)&&actual.color==='#88bb44');if(visualEditing){assert.deepEqual(actual.position,transformedPosition);assert(Math.abs(actual.rotationY-45)<.005);}
  report.editedEntity=actual;report.editorCapture=await rpc('capture',{name:'ordinary-edited-tree'});report.editCapture=await capture('edited-world');save();
 }
 async function publishWorld(){
@@ -297,9 +378,9 @@ async function publishWorld(){
  const card=(await nav('asset.search',{ownerWorldId:worldId,scope:'local-library',query:'首次创作完整闭环',latestOnly:true,offset:0,limit:50})).items.find(row=>row.assetId===assetId);assert(card);
  report.templateRef={assetId,version:card.version,contentHash:card.contentHash};await closeAssets();
  await chooser('templates');await until(()=>evaluate(`!!document.querySelector('[data-local-template="${assetId}"]')`),Boolean);await submit(`[data-local-template="${assetId}"]`);
- await until(()=>evaluate(`!!document.querySelector('[data-local-template-selected="${assetId}"]')`),Boolean);await submit('[data-template-export]');
- const picker=path.join(out,'player-world-template.zip');await until(async()=>{await failIfError();return fs.existsSync(picker);},Boolean);
- const bytes=fs.readFileSync(picker);report.templateArchive={path:picker,sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length};save();
+ await until(()=>evaluate(`!!document.querySelector('[data-local-template-selected="${assetId}"]')`),Boolean);
+ const picker=path.join(out,'player-world-template.zip');
+ report.templateArchive=await exportOperatorTemplate({read:()=>evaluate(templateExportReadScript),submit:()=>evaluate(templateExportSubmitScript),until,readBytes:()=>fs.readFileSync(picker),archive:()=>({path:picker})},{assetId,version:report.templateRef.version});save();
 }
 async function importWorld(){
  await chooser('templates');await submit('[data-template-import]');
@@ -308,10 +389,49 @@ async function importWorld(){
  await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
  worldId=(await nav('world.list')).activeWorldId;assert.notEqual(worldId,report.authorWorldId);await waitWorld(worldId);report.importedWorldId=worldId;
 }
+async function importExternalWorld(){
+ await chooser('templates');await submit('[data-template-import]');
+ const assetId=await until(async()=>{await failIfError();return evaluate(`document.querySelector('[data-local-template-selected]')?.getAttribute('data-local-template-selected')`);},Boolean);
+ report.importedTemplateAssetId=assetId;
+ if(expectations.assetId)assert.equal(assetId,expectations.assetId,'EXPECTED_TEMPLATE_IDENTITY');
+ await field('[data-template-world-title]',expectations.title);await submit('[data-local-template-create]');
+ await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
+ worldId=(await nav('world.list')).activeWorldId;assert(worldId,'ACTUAL_IMPORTED_WORLD_REQUIRED');
+ await waitWorld(worldId);report.importedWorldId=worldId;save();
+}
+async function checkExternalState(label){
+ // Take the true native snapshot before observation. Neither value is supplied
+ // to restore-state; only ordinary world import/open is allowed to restore.
+ const snapshot=await rpc('godotSnapshot'),observation=await rpc('godotObserve');
+ assert.equal(snapshot.worldId,worldId);assert.equal(observation.worldId,worldId);
+ const result=inspectTemplateState(expectations,{snapshot,observation});
+ const row={label,worldId,snapshot,observation,...result};report.templateStateChecks??=[];report.templateStateChecks.push(row);save();
+ assert(result.passed,'EXTERNAL_TEMPLATE_STATE_MISMATCH:'+JSON.stringify(result.checks.filter(check=>!check.passed)));
+ return row;
+}
+async function externalTemplateJourney(){
+ await start('external-template-import');assert.deepEqual((await nav('world.list')).worlds,[],'EXTERNAL_IMPORT_REQUIRES_FRESH_PROFILE');
+ await importExternalWorld();await checkExternalState('fresh-import');report.importFrame=await capture('external-import');
+ await panel('godot.runtimeResume');const before=await rpc('godotObserve');
+ const input={worldId,buildId:before.buildId,instanceId:before.instanceId,steps:[{op:'look',args:{yaw:2,pitch:-.3}},{op:'walk',args:{forward:1,right:0,frames:18}}]};
+ const receipt=await rpc('godotExplore',{payload:input}),after=await rpc('godotObserve');
+ report.templatePlay={input,receipt,before,after};save();
+ assert.notDeepEqual(before.payload.player.position,after.payload.player.position,'ACTUAL_IMPORTED_PLAYER_MOVEMENT_REQUIRED');
+ report.templateSaveReceipt=await panel('godot.runtimeSave',{freeze:true});
+ const saved=await checkExternalState('ordinary-saved');report.savedFrame=await capture('external-saved');await modelEvidence('external-saved');await stop();
+ await start('external-template-cold');await openExistingWorld(worldId);const cold=await checkExternalState('cold-reopened');
+ // No omitted fields or tolerances here: the actual ordinary saved body must
+ // survive the cold reopen, including inventory, component state and player.
+ assert.notEqual(cold.observation.instanceId,saved.observation.instanceId,'NEW_NATIVE_INSTANCE_REQUIRED');
+ assert.equal(cold.observation.buildId,saved.observation.buildId,'SAME_IMPORTED_BUILD_REQUIRED');
+ assert.deepEqual(completeCreationProgress(cold.snapshot),completeCreationProgress(saved.snapshot),'COMPLETE_IMPORTED_CHECKPOINT_MUST_SURVIVE_COLD_REOPEN');
+ report.coldFrame=await capture('external-cold');await modelEvidence('external-cold');report.modelCalls=0;report.passed=true;
+ mark('Specified template imported through ordinary PI controls, declared state verified, played, saved and cold reopened');
+}
 async function assertContents(label){
  const observed=await rpc('godotObserve'),snapshot=await rpc('godotSnapshot');
  const tree=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);
- assert(tree&&tree.color==='#88bb44'&&tree.scale.every(n=>Math.abs(n-1.25)<.00001));
+ assert(tree&&tree.color==='#88bb44'&&tree.scale.every(n=>Math.abs(n-1.25)<.00001));if(visualEditing){assert.deepEqual(tree.position,report.editedEntity.position);assert(Math.abs(tree.rotationY-report.editedEntity.rotationY)<.005);}
  const components=Object.keys(snapshot.state.body.components);assert(components.includes(report.companionEntityId));
  assert.deepEqual(snapshot.state.body.inventory,report.initialSnapshot.state.body.inventory);
  assert.deepEqual(snapshot.state.body.openedChests,report.initialSnapshot.state.body.openedChests);
@@ -347,7 +467,12 @@ async function frameContents(label){
 }
 try{
  console.log(JSON.stringify({out,cancel:cancelFile}));
- if(framesOnly){
+ if(externalImport){
+  await externalTemplateJourney();
+ }else if(previewDiagnostic){
+  report.previewDiagnosticOnly=true;report.fullJourneyReexecuted=false;await start('preview-diagnostic');worldId=report.authorWorldId;await openExistingWorld(worldId);await workbench();await refreshTarget();await selectEditedTree(report.editedEntityId);
+  const observed=await rpc('godotObserve'),entity=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);assert(entity);await field('[aria-label="位置 X"]',String(entity.position[0]+.5));await field('[aria-label="朝向角度"]','45');await previewAndCancel('diagnostic-move-preview');await modelEvidence('preview-diagnostic');report.passed=true;
+ }else if(framesOnly){
   report.framingOnly=true;report.fullJourneyReexecuted=false;await start('frame-author');worldId=report.authorWorldId;await openExistingWorld(worldId);await frameContents('author-content-review');await stop();
   profile=path.join(out,'independent-profile');await start('frame-import');worldId=report.importedWorldId;await openExistingWorld(worldId);await frameContents('imported-content-review');
   report.passed=true;report.framingPassed=true;
@@ -383,8 +508,10 @@ try{
  }
 }catch(error){report.passed=false;report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-12000),notes:Array.from(document.querySelectorAll('.creation-target-note'),n=>({text:n.textContent,title:n.title})),buttons:Array.from(document.querySelectorAll('.creation-target-context button'),n=>({text:n.textContent,disabled:n.disabled})),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
 finally{
+ for(const trace of [...previewTraces])try{await trace.finish();}catch(error){report.previewTraceError=String(error);report.passed=false;process.exitCode=1;}
  try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}
  try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}
+ if(externalImport)try{assert.equal(createHash('sha256').update(fs.readFileSync(externalArchive)).digest('hex'),expectations.archiveSha256,'SOURCE_TEMPLATE_ARCHIVE_CHANGED_DURING_TEST');}catch(error){report.passed=false;report.archiveIntegrityError=String(error);process.exitCode=1;}
  clearInterval(watcher);save();
 }
 console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError,integrityError:report.integrityError}));

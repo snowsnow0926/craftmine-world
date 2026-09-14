@@ -76,7 +76,7 @@ fn a_forged_asset_hash_never_writes_anything() -> Result<()> {
 }
 
 #[test]
-fn a_build_copy_is_materialized_verified_and_reused_without_touching_source() -> Result<()> {
+fn a_build_copy_is_materialized_verified_and_replayed_without_touching_source() -> Result<()> {
     let (_dir, path) = temp()?;
     let mut journal = setup(&path)?;
     let context = ctx("one");
@@ -111,12 +111,12 @@ fn a_build_copy_is_materialized_verified_and_reused_without_touching_source() ->
         |row| row.get(0),
     )?;
     assert_eq!(recorded, 3);
-    // The same call replays its durable receipt; a new call gets a new job but
-    // reuses the identical immutable build copy.
+    // The same call replays its durable receipt. A new complete build request
+    // gets its own export root even with identical immutable source inputs.
     let replay = start(&mut journal, &context, "build-one", &created, "build")?;
     assert_eq!(replay, started);
     let again = start(&mut journal, &context, "build-two", &created, "build")?;
-    assert_eq!(again["buildId"], started["buildId"]);
+    assert_ne!(again["buildId"], started["buildId"]);
     assert_ne!(again["jobId"], started["jobId"]);
     assert_eq!(again["materialized"]["files"], 7);
     assert_eq!(journal.world_read("a")?, before);
@@ -173,6 +173,7 @@ fn cross_world_and_ended_turns_cannot_start_builds() -> Result<()> {
     let mut journal = setup(&path)?;
     let context = ctx("one");
     let created = create_project(&mut journal, &context)?;
+    let first = start(&mut journal, &context, "resumed", &created, "build")?;
     // The workspace is bound to world "a"; naming another world must not work.
     failed(
         journal.godot_build_start(&json!({"context":&context,"worldId":"b","toolCallId":"cross",
@@ -186,6 +187,7 @@ fn cross_world_and_ended_turns_cannot_start_builds() -> Result<()> {
     journal.workspace_open(&next, "a")?;
     // A new turn reuses the same source project and can start a fresh build.
     let resumed = start(&mut journal, &next, "resumed", &created, "build")?;
+    assert_ne!(resumed["buildId"],first["buildId"],"same call label in a different durable task is a distinct export");
     assert_eq!(resumed["sourceRevision"], 0);
     failed(start(&mut journal, &context, "old-turn", &created, "build"), "STALE_TURN");
     Ok(())

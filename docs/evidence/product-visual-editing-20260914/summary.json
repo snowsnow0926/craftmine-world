@@ -1,0 +1,356 @@
+{
+  "format": "craftmine.product-visual-editing-acceptance/1",
+  "passed": true,
+  "sourceAcceptanceOnly": true,
+  "packagedAcceptance": false,
+  "serialClient": true,
+  "report": {
+    "path": "D:\\cm-product-visual\\test-results\\desktop-native-rt-wzajjh\\report.json",
+    "sha256": "5bde227997a4d254dde3555983f2241bd0d15b40b39ce277f311993a52a51922"
+  },
+  "sourceCommit": "ad6bd63f4d4b1c2b6692f9674d8e83afa8f59781",
+  "buildMainSha256": "88d8a223708c1e65efb0338e8607121ae613278d3d4d48234f7cd7486a17600f",
+  "driverSha256": "774cef7dd2e000e447bf284e3f9f7cbbf4aaab0704883555f1d4a606f90de7fa",
+  "nativeBinaries": {
+    "core": {
+      "file": "D:\\cm-product-bin\\2e0a34c7\\craftmine-core.exe",
+      "sha256": "6a1d9a8a57c6249a52d68c018e75fcc0c0a86f56b385564626a6b21533eddc56"
+    },
+    "host": {
+      "file": "D:\\cm-product-bin\\2e0a34c7\\pi-desktop-host-core.exe",
+      "sha256": "c0c2d7677cd42a9a5ac10a95ca0cb015a06b1f6ddbf116758eae8e59ed3f2bd7"
+    }
+  },
+  "modelCalls": 0,
+  "elapsedSeconds": 338.838,
+  "authorWorldId": "world-3335849b343a",
+  "importedWorldId": "world-5af8b278dc87",
+  "companionRef": {
+    "assetId": "cw.module.approved-pomeranian",
+    "version": 2,
+    "contentHash": "262daf6e5fab6fdd13e95420340202ad759f08766ef06409b74a163373d7db21"
+  },
+  "companionEntityId": "ins-b87ca41b1daf28ebc98f9503-e0",
+  "zeroTurnReopen": {
+    "sessionId": "7e38da3e-0d1f-4b1e-a1a5-2ae953ef0969",
+    "restored": "7e38da3e-0d1f-4b1e-a1a5-2ae953ef0969",
+    "worldId": "world-3335849b343a",
+    "messages": 0,
+    "creationEditorVisible": true
+  },
+  "previews": [
+    {
+      "label": "placement-preview",
+      "changedPixels": 38330,
+      "frame": {
+        "file": "D:\\cm-product-visual\\test-results\\desktop-native-rt-wzajjh\\placement-preview-visible-2-d9db1185-d713-43ed-afc0-800c9029dbe0.png",
+        "worldId": "world-3335849b343a",
+        "buildId": "gbd-5769975e715b6a2d2e68880cfc4358d590d6c94f97ae3f97513a29f8eec06c9b",
+        "sha256": "7ececd3680463972b7df2296023f6859bd44abaf3fb74f89b14c7f3c09f135b3",
+        "width": 1920,
+        "height": 1080
+      },
+      "progressUnchanged": true
+    },
+    {
+      "label": "move-rotation-preview",
+      "changedPixels": 32426,
+      "frame": {
+        "file": "D:\\cm-product-visual\\test-results\\desktop-native-rt-wzajjh\\move-rotation-preview-visible-2-d48d37f4-4304-4002-8ad5-1238bd8caa93.png",
+        "worldId": "world-3335849b343a",
+        "buildId": "gbd-7e3a47fd003f81ecbeff84aa59fce4a8b6f43d14a745146470abee680d708c1a",
+        "sha256": "82af7b87d00fd66f11762b7f9bb09906dd92efd55e28cd63fb6fd2c3545925dd",
+        "width": 1920,
+        "height": 1080
+      },
+      "progressUnchanged": true
+    }
+  ],
+  "previewTransports": [
+    {
+      "label": "placement-preview",
+      "scope": {
+        "worldId": "world-3335849b343a",
+        "buildId": "gbd-5769975e715b6a2d2e68880cfc4358d590d6c94f97ae3f97513a29f8eec06c9b",
+        "instanceId": "4c963ff4644acbbba1bba7a8"
+      },
+      "requests": [
+        {
+          "at": 21996.734999999404,
+          "op": "pause",
+          "id": 23
+        },
+        {
+          "at": 22005.969999998808,
+          "op": "creation-preview",
+          "id": 24,
+          "previewId": "4fd0d076-f05e-4224-a382-4f638b1342b5",
+          "sequence": 1,
+          "action": "place",
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "at": 22178.320000000298,
+          "op": "creation-preview",
+          "id": 25,
+          "previewId": "4fd0d076-f05e-4224-a382-4f638b1342b5",
+          "sequence": 2,
+          "action": "cancel"
+        },
+        {
+          "at": 22185.199999999255,
+          "op": "snapshot",
+          "id": 26
+        },
+        {
+          "at": 23080.945000000298,
+          "op": "creation-preview",
+          "id": 27,
+          "previewId": "6fd1b10f-88d4-44f0-aa13-0007faedf526",
+          "sequence": 1,
+          "action": "place",
+          "position": [
+            -1.94188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "rotationY": 0,
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "at": 23615.144999999553,
+          "op": "creation-preview",
+          "id": 28,
+          "previewId": "6fd1b10f-88d4-44f0-aa13-0007faedf526",
+          "sequence": 2,
+          "action": "cancel"
+        },
+        {
+          "at": 23616.264999998733,
+          "op": "snapshot",
+          "id": 29
+        }
+      ]
+    },
+    {
+      "label": "move-rotation-preview",
+      "scope": {
+        "worldId": "world-3335849b343a",
+        "buildId": "gbd-7e3a47fd003f81ecbeff84aa59fce4a8b6f43d14a745146470abee680d708c1a",
+        "instanceId": "1263030efbae8eae4b420492"
+      },
+      "requests": [
+        {
+          "at": 17462.650000000373,
+          "op": "pause",
+          "id": 14
+        },
+        {
+          "at": 17464.294999999925,
+          "op": "creation-preview",
+          "id": 15,
+          "previewId": "64a7c20f-f5b7-41bc-9ce9-b47aa6625f47",
+          "sequence": 1,
+          "action": "modify",
+          "position": [
+            -1.44188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "rotationY": 45,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "targetId": "created-b6fced61f623e28338ea96d9"
+        },
+        {
+          "at": 17561.544999999925,
+          "op": "creation-preview",
+          "id": 16,
+          "previewId": "64a7c20f-f5b7-41bc-9ce9-b47aa6625f47",
+          "sequence": 2,
+          "action": "cancel"
+        },
+        {
+          "at": 17564.69000000134,
+          "op": "snapshot",
+          "id": 17
+        },
+        {
+          "at": 18445.745000001043,
+          "op": "creation-preview",
+          "id": 18,
+          "previewId": "954a7f69-dd46-4fd1-a60f-c10d479a3307",
+          "sequence": 1,
+          "action": "modify",
+          "position": [
+            -1.44188833236694,
+            4.4703483581543e-8,
+            3.44557094573975
+          ],
+          "rotationY": 45,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "targetId": "created-b6fced61f623e28338ea96d9"
+        },
+        {
+          "at": 18795.41500000097,
+          "op": "creation-preview",
+          "id": 19,
+          "previewId": "954a7f69-dd46-4fd1-a60f-c10d479a3307",
+          "sequence": 2,
+          "action": "cancel"
+        },
+        {
+          "at": 18834.47000000067,
+          "op": "snapshot",
+          "id": 20
+        }
+      ]
+    }
+  ],
+  "editLabels": [
+    "Actual Place here tree",
+    "Actual move and yaw edit",
+    "Actual transform undo",
+    "Actual scale and color edit"
+  ],
+  "undo": {
+    "entityId": "created-b6fced61f623e28338ea96d9",
+    "before": [
+      -1.94188833236694,
+      4.4703483581543e-8,
+      3.44557094573975
+    ],
+    "moved": [
+      -1.44188833236694,
+      4.4703483581543e-8,
+      3.44557094573975
+    ],
+    "restored": [
+      -1.94188833236694,
+      4.4703483581543e-8,
+      3.44557094573975
+    ]
+  },
+  "finalEntity": {
+    "id": "created-b6fced61f623e28338ea96d9",
+    "position": [
+      -1.44188833236694,
+      4.4703483581543e-8,
+      3.44557094573975
+    ],
+    "rotationY": 45.0000012522391,
+    "scale": [
+      1.25,
+      1.25,
+      1.25
+    ],
+    "color": "#88bb44"
+  },
+  "retention": [
+    {
+      "label": "author-saved",
+      "worldId": "world-3335849b343a"
+    },
+    {
+      "label": "author-cold-reopen",
+      "worldId": "world-3335849b343a"
+    },
+    {
+      "label": "independent-import",
+      "worldId": "world-5af8b278dc87"
+    },
+    {
+      "label": "independent-cold-reopen",
+      "worldId": "world-5af8b278dc87"
+    }
+  ],
+  "templateRef": {
+    "assetId": "player.world.30dacd4b3722491db653d6d97c3d62f6",
+    "version": 1,
+    "contentHash": "cf32090302e52089b035da4235ec1642a77144376812cb87f4c77244f6ac3387"
+  },
+  "templateArchive": {
+    "path": "D:\\cm-product-visual\\test-results\\desktop-native-rt-wzajjh\\player-world-template.zip",
+    "sha256": "3313a166197b90ba422c368a399b6a2dccdd7fcf9db95f4b4d47f9cb38236b90",
+    "bytes": 7526974
+  },
+  "launches": [
+    {
+      "kind": "author",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": [],
+      "pageErrors": []
+    },
+    {
+      "kind": "zero-turn-cold",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": [],
+      "pageErrors": []
+    },
+    {
+      "kind": "author-cold",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": [],
+      "pageErrors": []
+    },
+    {
+      "kind": "independent-import",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": [],
+      "pageErrors": []
+    },
+    {
+      "kind": "independent-cold",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": [],
+      "pageErrors": []
+    }
+  ],
+  "limits": [
+    "One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.",
+    "Actual PI forms and offscreen native checks; no physical input or Pointer Lock.",
+    "The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed.",
+    "Earlier failed and diagnostic-only reports remain preserved. The isolated single-client full run is authoritative here; it does not establish the cause of an earlier intermittent zero-pixel concurrent run."
+  ]
+}

@@ -1817,6 +1817,7 @@ export const ko = {
     justNow: "방금",
   },
   errors: {
+    CODEX_INTERRUPTED_RECOVERY_UNVERIFIED: "이전에 중단한 작업을 아직 확인하지 못했습니다. 대화와 월드는 보존됩니다. 계속을 선택해 다시 확인하세요. 전체 기록을 자동으로 재구성하지 않습니다.",
     TOKEN_BUDGET_EXHAUSTED: "로컬 작업 토큰 예산을 모두 사용했습니다. 월드 작업대에서 예산을 조정하고 저장된 작업을 재개하세요.",
     REQUEST_BUDGET_EXHAUSTED: "작업 요청 횟수 제한에 도달했습니다. 월드 작업대에서 작업을 확인하세요.",
     COMPACTION_BUDGET_EXHAUSTED: "작업 압축 횟수 제한에 도달했습니다. 월드 작업대에서 작업을 확인하세요.",

@@ -15,7 +15,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   const ASSET_METHODS=new Set(['search','read','versions','usage','annotate','scan','importAsset','previewRead','probe',
     'resolveLegacy','recordUsage','recordCheck','preview','cancel']);
   const PACKAGE_METHODS=new Set(['check','install','list','read','progress','grant','upgrade','uninstall','restore',
-    'exportPackage','importPackage','installSource','sourceList','exportSource','publishSource','publishSourceStatus','cancelPublishSource','sourceProposals','installSourceProposal','directInspect','directInstall','directStatus','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
+    'exportPackage','importPackage','installSource','sourceList','exportSource','publishSource','publishSourceStatus','cancelPublishSource','compositionCatalog','compositionPlan','sourceProposals','installSourceProposal','directInspect','directInstall','directStatus','usage','backupFull','backupVerify','backupRestoreFull','legacyConvert','explain']);
   const keyOf=(context,id)=>JSON.stringify([context.projectId,context.sessionId,context.turnId,id]);
   async function snapshot(context){
     const value=await core.call('task.context',{context});
@@ -66,6 +66,7 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
   }
   return async function onHostRequest(method,params={}){
     await core.start();
+    if(['playtest.context','playtest.validate','playtest.record','playtest.list','playtest.read'].includes(method)) return core.call(method,params);
     if(method.startsWith('worldTemplate.')){
       const action=method.slice('worldTemplate.'.length);
       if(!['describe','save','status','cancel','list','read','prepare','importArchive','exportArchive'].includes(action)||!worldTemplates)throw Error('WORLD_TEMPLATE_UNAVAILABLE');
@@ -123,6 +124,11 @@ function createHostRequests(core,{verifications,reviews,getSettings,workbench,go
     // S5 asset service and S3 works/package service. Only a method name from the
     // service's own bounded surface is forwarded; the service owns its field
     // validation, operation identity and idempotency.
+    if(method==='world.brief'){
+      fields(params,['method','args']);
+      if(!['worldBrief.read','worldBrief.edit'].includes(params.method))throw Error('UNKNOWN_WORLD_BRIEF_METHOD');
+      return core.call(params.method,params.args);
+    }
     if(method==='asset.request'){
       fields(params,['method'],['args']);
       if(!assetService)throw Error('ASSET_SERVICE_UNAVAILABLE');

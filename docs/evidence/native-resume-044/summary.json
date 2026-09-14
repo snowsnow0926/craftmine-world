@@ -1,0 +1,187 @@
+{
+  "format": "craftmine.native-resume-validation/1",
+  "sourceReport": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/continuation-82a85950-51ff-42a3-a003-34b0467c115a.json",
+  "accepted": {
+    "id": "044-continue-after-verified-interrupt",
+    "command": "prompt",
+    "sha256": "f112157665c7046d80f02cdc0b37f7bb44a302f11348f8a145ae4d183ab0313f",
+    "startedAt": "2026-09-14T04:47:24.553Z",
+    "status": "completed",
+    "finishedAt": "2026-09-14T04:47:31.159Z",
+    "result": {
+      "messageId": "4d87afc5-4322-451d-9237-ff24ea242147",
+      "turnId": "0c28f46f-8d57-4e40-9c53-ad2dac52429a"
+    }
+  },
+  "native": [
+    {
+      "timestamp": "2026-09-14T04:47:37.566Z",
+      "type": "task_started",
+      "turnId": "01a09e3d-fc57-7753-b6a0-8e84aba8acef"
+    },
+    {
+      "timestamp": "2026-09-14T04:49:55.667Z",
+      "type": "task_complete",
+      "turnId": "01a09e3d-fc57-7753-b6a0-8e84aba8acef",
+      "durationMs": 138101
+    },
+    {
+      "timestamp": "2026-09-14T04:50:06.384Z",
+      "type": "task_started",
+      "turnId": "01a09e40-41aa-77e2-957c-c70c1c6f21b9"
+    },
+    {
+      "timestamp": "2026-09-14T04:51:25.083Z",
+      "type": "turn_aborted",
+      "turnId": "01a09e40-41aa-77e2-957c-c70c1c6f21b9",
+      "reason": "interrupted",
+      "durationMs": 78699
+    }
+  ],
+  "checkpointAfterAbort": {
+    "bindingDigest": "ee4dee677f5b03b4015adcaf56dc22c8f6334dc1afcfd5c832959c5d7da267d1",
+    "checkpoint": {
+      "effort": "xhigh",
+      "model": "gpt-6-astra",
+      "submitted": true,
+      "synchronized": true,
+      "threadId": "01a09dd3-7128-7ca3-93d7-4cd70f6782c4",
+      "toolDigest": "b558f380dad8e09334978312be808841d411d7e05e5f4c644c5aa11d0f4d312e",
+      "usageTotal": {
+        "cacheWriteInputTokens": 0,
+        "cachedInputTokens": 9774336,
+        "inputTokens": 10407244,
+        "outputTokens": 6111,
+        "reasoningOutputTokens": 2561,
+        "totalTokens": 10413355
+      },
+      "version": 1
+    },
+    "transcriptDigest": "8aa16a244d6c768f5833897683179f5d0e68b5f7a68c57a1a9bd54fd0bade5c9",
+    "updatedAt": 1789361488011
+  },
+  "abortReceipt": {
+    "id": "045-abort-for-io-followup",
+    "command": "abort",
+    "sha256": "ab5bbee821bae69d1704dc694da1b35b7050c81421061e137e54a0f5e481b9be",
+    "startedAt": "2026-09-14T04:51:24.328Z",
+    "status": "completed",
+    "finishedAt": "2026-09-14T04:51:29.096Z",
+    "result": {
+      "ok": true
+    }
+  },
+  "hostTurn": {
+    "messageId": "4d87afc5-4322-451d-9237-ff24ea242147",
+    "text": "继续原来的博美接触修复任务。应用已修复CLI中止确认和文件校验读取过慢的问题，原会话、修订14草稿和世界进度保持不变。请读取当前事实，通过普通工作台续检原失败检查 gjob-a61d14a8c95c3bce1ada20347e253054121e62e236d732bc44a29bf94dd7f1be；保留完整城市、轻雨、三个已收集物品、飞机起降记录和博美互动状态。检查通过后按正常流程采用修复，说明实际结果；若仍是应用层校验失败，读取完整诊断并保留草稿，不要靠修改世界源码来掩盖文件读取故障。",
+    "startedAt": "2026-09-14T04:47:28.959Z",
+    "submission": "ordinary-agentPrompt",
+    "status": "completed",
+    "turnId": "0c28f46f-8d57-4e40-9c53-ad2dac52429a",
+    "effectiveModel": {
+      "backend": "codex-cli",
+      "model": "gpt-6-astra",
+      "effort": "xhigh"
+    },
+    "metrics": {
+      "calls": {
+        "observed": 0,
+        "pending": 0,
+        "reported": 0
+      },
+      "coverage": "unknown",
+      "endedAtMs": 1789361398918,
+      "format": "craftmine.task-metrics/1",
+      "modelIdentity": "runtime-binding",
+      "models": [],
+      "observedAtMs": 1789361400231,
+      "scope": "root-and-delegates",
+      "sessionId": "da57da5e-063e-46a0-99a7-7b3ba27fd35e",
+      "startedAtMs": 1789361249181,
+      "status": "completed",
+      "tps": {
+        "coverage": "unknown",
+        "generationMs": null,
+        "outputTokens": null,
+        "value": null,
+        "window": "model-generation"
+      },
+      "turnId": "0c28f46f-8d57-4e40-9c53-ad2dac52429a",
+      "usage": null,
+      "wallTimeMs": 149737
+    },
+    "finishedAt": "2026-09-14T04:50:00.304Z",
+    "transcriptFile": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\turns\\0c28f46f-8d57-4e40-9c53-ad2dac52429a.json"
+  },
+  "launches": [
+    {
+      "at": "2026-09-14T04:46:25.635Z",
+      "port": 49729,
+      "pid": 70792,
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      }
+    }
+  ],
+  "normalShutdown": true,
+  "integrity": "passed",
+  "check": {
+    "id": "gjob-f62a398a5806360d108f90cc39d8800af519b0e734a3206f0fc86a07d913a2a0",
+    "world_id": "world-7a2bad903a26",
+    "build_id": "gbd-9f3e3e4f850fdf04f5d2447acbe2e60e5337451aee2c61e588689c1814f015bc",
+    "source_revision": 14,
+    "status": "failed",
+    "outputSha256": "aa543190cbe5606a6c973e2403771d18e5c9aa893aee5ecb3220ebd3f8e65c97",
+    "passed": false,
+    "diagnostic": {
+      "format": "craftmine.godot-runtime-diagnostic/1",
+      "diagnosticOnly": true,
+      "jobId": "gjob-f62a398a5806360d108f90cc39d8800af519b0e734a3206f0fc86a07d913a2a0",
+      "worldId": "world-7a2bad903a26",
+      "buildId": "gbd-9f3e3e4f850fdf04f5d2447acbe2e60e5337451aee2c61e588689c1814f015bc",
+      "inputHash": "716d96edd68c39f357d0b6dd443aa50eeb21590c5e9c017e0adb2bbe3c2120f9",
+      "error": "GODOT_CHECK_TIMEOUT",
+      "ready": {
+        "ok": false,
+        "instanceId": "9c406d470ddebdd30e052877"
+      },
+      "isolation": {
+        "offscreen": true,
+        "focusable": false,
+        "visible": false
+      },
+      "errors": {
+        "runtime": [],
+        "console": [],
+        "renderer": null
+      },
+      "diagnostics": [
+        "[phase] artifact-verification started elapsedMs=1 stageElapsedMs=0",
+        "[phase] artifact-verification completed elapsedMs=21278 stageElapsedMs=21277",
+        "[phase] runtime-server started elapsedMs=21278 stageElapsedMs=0",
+        "[phase] runtime-server completed elapsedMs=21743 stageElapsedMs=465",
+        "[phase] window started elapsedMs=21743 stageElapsedMs=0",
+        "[phase] window completed elapsedMs=21754 stageElapsedMs=11",
+        "[phase] load started elapsedMs=21754 stageElapsedMs=0",
+        "[phase] load completed elapsedMs=24095 stageElapsedMs=2341",
+        "[phase] ready started elapsedMs=24095 stageElapsedMs=0",
+        "[phase] ready failed elapsedMs=30019 stageElapsedMs=5924",
+        "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":21277,\"heartbeat\":{\"periodMs\":100,\"samples\":112,\"maxLagMs\":231},\"resources\":{\"start\":{\"available\":true,\"counts\":{\"PipeWrap\":15,\"ProcessWrap\":2,\"TCPServerWrap\":1,\"Timeout\":5},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1,\"PipeWrap\":15,\"ProcessWrap\":2,\"TCPServerWrap\":1,\"Timeout\":5},\"omittedTypes\":0}}}",
+        "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[300,150],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+        "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+        "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+        "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+        "[exit] Godot runtime is not ready"
+      ],
+      "truncated": false
+    }
+  },
+  "scope": "Same CLI thread resumed; check failed after full hash completed; no repair adoption."
+}

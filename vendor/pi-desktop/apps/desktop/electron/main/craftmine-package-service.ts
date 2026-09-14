@@ -3,6 +3,8 @@ import {isAbsolute,parse,join,resolve,sep} from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {writeSelectedFile,desktopServiceError,type CraftmineDomainCall} from './craftmine-backup-service';
 
+import {validateCompositionPackageRequest,parseCompositionPlan} from '../../shared/world-composition-contract';
+
 const MAX_ZIP=5*1024*1024;
 export type PackageRequestOwner={projectId:string;sessionId:string|null;worldId:string;assertCurrent:()=>Promise<void>};
 const hash=(bytes:Buffer|string)=>createHash('sha256').update(bytes).digest('hex');
@@ -90,6 +92,13 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           if(result.status==='completed'&&(result.assetRef?.assetId!==args.assetId||result.assetRef?.version!==args.version||!/^[a-f0-9]{64}$/.test(result.assetRef?.contentHash)||!/^[a-f0-9]{64}$/.test(result.archiveSha256)||!['unavailable','source-world-view'].includes(result.previewStatus)))failure('PUBLICATION_RECEIPT_INVALID');
           return result;
         }
+        if(method==='compositionCatalog'||method==='compositionPlan'){
+          const request=validateCompositionPackageRequest(method,args);
+          const result=await privateCall(method,request);await selected(worldId);
+          if(method==='compositionPlan')return parseCompositionPlan(result,worldId);
+          if(result.worldId!==worldId||result.format!=='craftmine.world-composition-catalog/1'||result.applied!==false||!Array.isArray(result.recipes)||result.recipes.length>8)failure('COMPOSITION_RECEIPT_INVALID');
+          return result;
+        }
         if(method==='sourceProposals') {
           fields(args,['worldId']);const result=await privateCall('sourceProposals',{worldId});await selected(worldId);
           if(result.worldId!==worldId||!Array.isArray(result.items)||result.items.length>256)failure('PACKAGE_SOURCE_RECEIPT_INVALID');
@@ -117,7 +126,9 @@ export function createCraftminePackageService(options:{domainCall:CraftmineDomai
           const result=await options.domainCall('package.sourceJob',{worldId,jobId:args.jobId});await selected(worldId);
           const statuses=['blocked','queued','claimed','running','passed','failed','cancelled','interrupted'];
           if(result.worldId!==worldId||result.jobId!==args.jobId||!statuses.includes(result.status))failure('PACKAGE_JOB_RECEIPT_INVALID');
-          return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status)};
+          if(result.sourceStale!==undefined&&typeof result.sourceStale!=='boolean')failure('PACKAGE_JOB_RECEIPT_INVALID');
+          return {worldId,jobId:args.jobId,status:result.status,terminal:['passed','failed','cancelled','interrupted'].includes(result.status),
+            ...(typeof result.sourceStale==='boolean'?{sourceStale:result.sourceStale}:{})};
         }
         if(method==='sourceList') {fields(args,['worldId']);const result=await privateCall('sourceList',{worldId});await selected(worldId);if(result.worldId!==worldId||!Array.isArray(result.items))failure('PACKAGE_SOURCE_RECEIPT_INVALID');return {worldId,revision:result.revision,manifestHash:result.manifestHash,mainScene:result.mainScene,items:result.items.slice(0,512).map((item:any)=>({nodePath:item.nodePath,name:item.name,entityId:item.entityId,supported:item.supported===true,...(item.reason?{reason:item.reason}:{})})),truncated:result.truncated===true||result.items.length>512};}
         if(method==='exportSource') {

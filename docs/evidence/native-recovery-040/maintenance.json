@@ -1,0 +1,279 @@
+{
+  "format": "craftmine.native-maintenance-audit/1",
+  "createdAt": "2026-09-14T04:11:19.708Z",
+  "scope": "040 recovery maintenance only",
+  "source": {
+    "nativeThreadId": "01a09dd3-7128-7ca3-93d7-4cd70f6782c4",
+    "rolloutFile": "C:/Users/WINDOWS/.codex/sessions/2026/09/14/rollout-2026-09-14T10-51-15-01a09dd3-7128-7ca3-93d7-4cd70f6782c4.jsonl",
+    "sha256": "b2077c61272810dbc28bc721d2479c8923bcc10e39ebb54b423482d4f2947f4b"
+  },
+  "maintenanceCount": 12,
+  "uniqueReportedResponses": 12,
+  "durationMs": 4031920,
+  "nativeReportedUsage": {
+    "inputTokens": 2130142,
+    "cachedInputTokens": 419712,
+    "outputTokens": 91444,
+    "totalTokens": 2221586
+  },
+  "maintenance": [
+    {
+      "nativeTurnId": "01a09dd3-7a34-7102-88b4-3e70e0cc73b3",
+      "startedAt": "2026-09-14T02:51:17.432Z",
+      "completedAt": "2026-09-14T02:53:40.528Z",
+      "durationMs": 143098,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa760fc673887d0a51dff32814ab0f0",
+          "usage": {
+            "input_tokens": 82667,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 3825,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 86492
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09dd5-a962-7e23-8d8e-04bfe3e7f5aa",
+      "startedAt": "2026-09-14T02:53:40.581Z",
+      "completedAt": "2026-09-14T02:56:30.402Z",
+      "durationMs": 169822,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76189b4dc87d0a0bdee2f660c8870",
+          "usage": {
+            "input_tokens": 175443,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 4573,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 180016
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09dd8-40ff-7021-8fe8-47770ea72959",
+      "startedAt": "2026-09-14T02:56:30.467Z",
+      "completedAt": "2026-09-14T02:59:58.849Z",
+      "durationMs": 208383,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76233af2087d0943d7b539dc00dac",
+          "usage": {
+            "input_tokens": 192242,
+            "cached_input_tokens": 7680,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 5607,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 197849
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09ddb-6f43-7cf1-a098-e2f98a83942b",
+      "startedAt": "2026-09-14T02:59:58.918Z",
+      "completedAt": "2026-09-14T03:03:47.109Z",
+      "durationMs": 228192,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76304373487d08be938521179478f",
+          "usage": {
+            "input_tokens": 192840,
+            "cached_input_tokens": 7680,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 6155,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 198995
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09dde-eae2-7a82-9497-e3d992f94e04",
+      "startedAt": "2026-09-14T03:03:47.174Z",
+      "completedAt": "2026-09-14T03:08:15.203Z",
+      "durationMs": 268031,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa764160f2c87d0a9aea35c94633d1a",
+          "usage": {
+            "input_tokens": 181738,
+            "cached_input_tokens": 181504,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 6023,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 187761
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09de3-0212-7c12-90ce-11ec91d04e5c",
+      "startedAt": "2026-09-14T03:08:15.254Z",
+      "completedAt": "2026-09-14T03:12:29.693Z",
+      "durationMs": 254441,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa764f4744487d08caedd803cc00688",
+          "usage": {
+            "input_tokens": 188263,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 6866,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 195129
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09de6-e432-7242-8b14-305f5f847ef2",
+      "startedAt": "2026-09-14T03:12:29.750Z",
+      "completedAt": "2026-09-14T03:27:48.983Z",
+      "durationMs": 919235,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa7685e576887d0aded193e16b1ffe6",
+          "usage": {
+            "input_tokens": 199941,
+            "cached_input_tokens": 199808,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 8163,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 208104
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09df4-eb29-71c3-819f-ba69f1fc4dc5",
+      "startedAt": "2026-09-14T03:27:49.038Z",
+      "completedAt": "2026-09-14T03:33:30.418Z",
+      "durationMs": 341382,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa7698a8c4487d081c54edff0847567",
+          "usage": {
+            "input_tokens": 194195,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 9330,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 203525
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09dfa-20e3-7263-9b71-bb0115e8c925",
+      "startedAt": "2026-09-14T03:33:30.471Z",
+      "completedAt": "2026-09-14T03:39:39.783Z",
+      "durationMs": 369314,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76ae00f5487d0bf9681c1923ae8e8",
+          "usage": {
+            "input_tokens": 202122,
+            "cached_input_tokens": 7680,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 10041,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 212163
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09dff-c3b8-7181-bbb5-2df3ec5a25f7",
+      "startedAt": "2026-09-14T03:39:39.835Z",
+      "completedAt": "2026-09-14T03:45:31.393Z",
+      "durationMs": 351559,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76c51507487d099d69aadddcb0269",
+          "usage": {
+            "input_tokens": 196086,
+            "cached_input_tokens": 7680,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 9565,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 205651
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09e05-2133-74a3-807d-fbc16bb383e5",
+      "startedAt": "2026-09-14T03:45:31.447Z",
+      "completedAt": "2026-09-14T03:51:49.884Z",
+      "durationMs": 378438,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76db1251887d0825e170bade7cdf7",
+          "usage": {
+            "input_tokens": 197267,
+            "cached_input_tokens": 7680,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 10338,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 207605
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    },
+    {
+      "nativeTurnId": "01a09e0a-e794-7c92-87e7-ac047fc84b1b",
+      "startedAt": "2026-09-14T03:51:49.911Z",
+      "completedAt": "2026-09-14T03:58:29.935Z",
+      "durationMs": 400025,
+      "terminalError": null,
+      "reportedUsage": [
+        {
+          "responseId": "resp_0f42e66d51dc720f016aa76f2b6ad087d0b23dd350796d2ad8",
+          "usage": {
+            "input_tokens": 127338,
+            "cached_input_tokens": 0,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 10958,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 138296
+          },
+          "sourceType": "token_usage_record"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Separate native-record audit, not application-reported usage and not billing evidence.",
+    "Unique response usage records are summed once; cumulative thread totals are not added again.",
+    "The first current player turn began at 03:58:32.480Z after maintenance; its usage and the later automatic turn are excluded.",
+    "No checkpoint, transcript, source, world or running process was modified."
+  ]
+}

@@ -1,0 +1,494 @@
+{
+  "format": "craftmine.product-authoring-usage-audit/1",
+  "source": {
+    "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\final-product-authoring-usage.json",
+    "sha256": "a11904480a1df9012c68b7933012f9761c14da9ecd1e1b471bdde6936e208c75"
+  },
+  "scope": "This single in-app city session, including maintenance, interrupted attempts and application debugging; excludes Codex development agents and unreported billing.",
+  "aggregateAvailability": "missing-or-conflicting-final-usage",
+  "completeTotalTokens": null,
+  "cost": null,
+  "physicalModelCalls": null,
+  "knownCreationSubtotal": {
+    "inputTokens": 3333701,
+    "cacheReadTokens": 54349696,
+    "cacheWriteTokens": 0,
+    "outputTokens": 74622,
+    "reasoningTokens": 32197,
+    "totalTokens": 57758019
+  },
+  "separatelyReportedNativeMaintenance": {
+    "source": {
+      "file": "docs/evidence/native-recovery-040/maintenance.json",
+      "sha256": "59caa51dcfea3911d15ebd3df46772288d7b6669e7ebb6ab87184d53b2bec891"
+    },
+    "durationMs": 4031920,
+    "usage": {
+      "inputTokens": 2130142,
+      "cachedInputTokens": 419712,
+      "outputTokens": 91444,
+      "totalTokens": 2221586
+    }
+  },
+  "knownCombinedSubtotalTokens": 59979605,
+  "initialThreeTurns": {
+    "wallMs": 1722698,
+    "tokens": 13731507
+  },
+  "turns": [
+    {
+      "turnId": "bd4d6753-d308-4cbf-99c9-23bc3953d2aa",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 513681,
+      "usage": {
+        "inputTokens": 114417,
+        "cacheReadTokens": 2035072,
+        "cacheWriteTokens": 0,
+        "outputTokens": 11034,
+        "reasoningTokens": 2677,
+        "totalTokens": 2160523,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[45].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "36468d82-63c9-4341-92c9-b391840baf1c",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 757704,
+      "usage": {
+        "inputTokens": 138518,
+        "cacheReadTokens": 5140480,
+        "cacheWriteTokens": 0,
+        "outputTokens": 18027,
+        "reasoningTokens": 7056,
+        "totalTokens": 5297025,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[78].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "f34a92ff-a0f1-4e12-a356-83ce1649f693",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 451313,
+      "usage": {
+        "inputTokens": 323123,
+        "cacheReadTokens": 5940608,
+        "cacheWriteTokens": 0,
+        "outputTokens": 10228,
+        "reasoningTokens": 4605,
+        "totalTokens": 6273959,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[104].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "eb3dfa3a-0a81-4467-b5af-e45c26f76a87",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 694290,
+      "usage": {
+        "inputTokens": 173045,
+        "cacheReadTokens": 12304256,
+        "cacheWriteTokens": 0,
+        "outputTokens": 12803,
+        "reasoningTokens": 8057,
+        "totalTokens": 12490104,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[140].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "1b35731f-8dbf-4e6c-a9ad-88a160ce3b58",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 663100,
+      "usage": {
+        "inputTokens": 272387,
+        "cacheReadTokens": 3514368,
+        "cacheWriteTokens": 0,
+        "outputTokens": 6419,
+        "reasoningTokens": 1816,
+        "totalTokens": 3793174,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[175].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "7797779a-10d6-4ddf-a077-4f5a6f7df557",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 89318,
+      "usage": {
+        "inputTokens": 147519,
+        "cacheReadTokens": 1088512,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1502,
+        "reasoningTokens": 1111,
+        "totalTokens": 1237533,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[183].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "14e10c95-e274-478e-bc52-44671331936c",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 166197,
+      "usage": {
+        "inputTokens": 303409,
+        "cacheReadTokens": 1984000,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1585,
+        "reasoningTokens": 916,
+        "totalTokens": 2288994,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[194].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "bf5fcca2-0003-4ed8-9e24-72a24da34ee6",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 41537,
+      "usage": {
+        "inputTokens": 27769,
+        "cacheReadTokens": 854272,
+        "cacheWriteTokens": 0,
+        "outputTokens": 410,
+        "reasoningTokens": 248,
+        "totalTokens": 882451,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[200].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "78c05a7a-acd3-4d19-96d8-702008be8896",
+      "status": "error",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 9137,
+      "usage": null,
+      "usageAvailability": "unknown",
+      "notes": null
+    },
+    {
+      "turnId": "7ad89b66-3ec0-481c-85d0-f5042ce29f9c",
+      "status": "error",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 8709,
+      "usage": null,
+      "usageAvailability": "unknown",
+      "notes": null
+    },
+    {
+      "turnId": "3aae76c9-ec2c-4f14-81eb-13c7cf15c39b",
+      "status": "error",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 10308,
+      "usage": null,
+      "usageAvailability": "unknown",
+      "notes": null
+    },
+    {
+      "turnId": "f600a8e9-8512-440c-9e94-f8988b7d2e7d",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 306640,
+      "usage": {
+        "inputTokens": 1010213,
+        "cacheReadTokens": 1653888,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1590,
+        "reasoningTokens": 588,
+        "totalTokens": 2665691,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[224].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "1280fe1d-593b-4f86-9216-90c1e5e7a64c",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 36823,
+      "usage": {
+        "inputTokens": 2721,
+        "cacheReadTokens": 184192,
+        "cacheWriteTokens": 0,
+        "outputTokens": 68,
+        "reasoningTokens": 0,
+        "totalTokens": 186981,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[229].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "aad92522-824b-44b0-9064-aac66173e4d7",
+      "status": "error",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 17339,
+      "usage": null,
+      "usageAvailability": "rejected-terminal-usage",
+      "notes": null
+    },
+    {
+      "turnId": "df8f1e0e-debf-4d21-aaca-4c03491c02a5",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 4254976,
+      "usage": {
+        "inputTokens": 216660,
+        "cacheReadTokens": 2273152,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1633,
+        "reasoningTokens": 398,
+        "totalTokens": 2491445,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[249].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": "Creation only. Separate maintenance is reported above, not in this legacy producer count."
+    },
+    {
+      "turnId": "694f1e03-3ea9-4ec3-8056-8b327c2d0383",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 113140,
+      "usage": {
+        "inputTokens": 54020,
+        "cacheReadTokens": 2007936,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1528,
+        "reasoningTokens": 675,
+        "totalTokens": 2063484,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[261].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "0c28f46f-8d57-4e40-9c53-ad2dac52429a",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 149737,
+      "usage": {
+        "inputTokens": 327791,
+        "cacheReadTokens": 2707200,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1673,
+        "reasoningTokens": 708,
+        "totalTokens": 3036664,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[275].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "b5ac862d-53e9-4ee5-bebc-3a4ab8716b93",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 86721,
+      "usage": {
+        "inputTokens": 34437,
+        "cacheReadTokens": 2786048,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1277,
+        "reasoningTokens": 780,
+        "totalTokens": 2821762,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[286].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "b093d2b6-ceed-488d-b906-7777c9fd2473",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 125194,
+      "usage": {
+        "inputTokens": 69283,
+        "cacheReadTokens": 3810688,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1783,
+        "reasoningTokens": 881,
+        "totalTokens": 3881754,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[300].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "3b852052-fc46-4551-90e0-ab6780e0154e",
+      "status": "terminal-event-only",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 82646,
+      "usage": {
+        "inputTokens": 33829,
+        "cacheReadTokens": 1625600,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1567,
+        "reasoningTokens": 1057,
+        "totalTokens": 1660996,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[306].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    },
+    {
+      "turnId": "0de18f06-6a0b-4371-abe0-34c9df285e47",
+      "status": "completed",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "wallMs": 118797,
+      "usage": {
+        "inputTokens": 84560,
+        "cacheReadTokens": 4439424,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1495,
+        "reasoningTokens": 624,
+        "totalTokens": 4525479,
+        "source": {
+          "file": "D:\\cm-product-agent\\test-results\\desktop-native-product-5N6HZ2\\session.json",
+          "field": "session.messages[319].usage",
+          "association": "event-message-id"
+        },
+        "kind": "persisted-terminal-message",
+        "scope": "one-turn"
+      },
+      "usageAvailability": "terminal-reported",
+      "notes": null
+    }
+  ],
+  "countingRules": [
+    "Cached input is included in totalTokens. Reasoning is included in output; do not add it again.",
+    "Four unknown failed turns are not zero. The old 522500 context-capacity sentinel is not usage.",
+    "Known combined subtotal includes only separately verified reported maintenance; it is not a complete invoice.",
+    "Host turn time excludes time between turns; turn durations are not model generation time."
+  ]
+}

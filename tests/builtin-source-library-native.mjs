@@ -24,6 +24,17 @@ try{
     assert.equal(summary.rootRef.id,entry.assetId);assert.equal(summary.rootRef.sha256,entry.rootContentHash);assert.equal(summary.applied,false);
     assert.ok(summary.resources[0].entry.sceneInstall);report.bundledServiceRead=true;
   }
-  report.search=search;report.ok=true;
+  const versionChecks=[];
+  for(const assetId of ['cw.module.approved-pomeranian','cw.module.rain-control']){
+    const versions=inventory.entries.filter(row=>row.assetId===assetId);if(versions.length!==2)continue;
+    assert.deepEqual(versions.map(row=>row.version).sort(),[1,2]);
+    const latest=await call('asset.search',{scope:'local-library',query:assetId,latestOnly:true,offset:0,limit:24});
+    const all=await call('asset.search',{scope:'local-library',query:assetId,latestOnly:false,offset:0,limit:24});
+    assert.deepEqual(latest.items.filter(row=>row.assetId===assetId).map(row=>row.version),[2]);
+    assert.deepEqual(all.items.filter(row=>row.assetId===assetId).map(row=>row.version).sort(),[1,2]);
+    for(const version of versions){const record=await call('asset.read',{assetId,version:version.version});assert.equal(record.version_.files[0].sha256,version.sha256);}
+    versionChecks.push({assetId,latest:2,retained:[1,2],exactRead:true});
+  }
+  report.versionChecks=versionChecks;report.search=search;report.ok=true;
 }catch(error){report.ok=false;report.error=String(error.stack??error);process.exitCode=1;}
 finally{await core.stop();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,report:path.join(output,'report.json'),error:report.error?.split('\n')[0]}));}

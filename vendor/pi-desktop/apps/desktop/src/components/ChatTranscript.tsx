@@ -2192,7 +2192,8 @@ const AssistantTurn = memo(function AssistantTurn({
   const retryAssistantMessage = useAppStore((s) => s.retryAssistantMessage);
   const forkAssistantMessage = useAppStore((s) => s.forkAssistantMessage);
   const messages = assistantTurnMessages(entry);
-  const codexMessage = messages.findLast(message => message.providerId === "codex-cli" && message.usage);
+  const codexMessage = messages.findLast(message => message.providerId === "codex-cli" && (message.usage || message.codexUsage?.coverage))
+    ?? messages.findLast(message=>message.providerId==='codex-cli');
   const content = assistantTurnContent(entry);
   const actionMessage = [...messages]
     .reverse()
@@ -2261,7 +2262,7 @@ const AssistantTurn = memo(function AssistantTurn({
           ),
         )}
         <TaskMetricsPanel messageId={entry.metricsMessageId} running={isActive}
-          codex={codexMessage ? {modelId:codexMessage.modelId,usage:codexMessage.usage} : actionMessage?.providerId === "codex-cli" ? {modelId:actionMessage.modelId} : undefined} />
+          codex={codexMessage ? {modelId:codexMessage.modelId,usage:codexMessage.usage,coverage:codexMessage.codexUsage?.coverage,modelContextWindow:codexMessage.codexUsage?.modelContextWindow} : actionMessage?.providerId === "codex-cli" ? {modelId:actionMessage.modelId} : undefined} />
         {(content || hasError) && actionMessage ? (
           <div className="message-actions">
             {content ? <CopyButton text={content} label={t("chat.copy")} /> : null}

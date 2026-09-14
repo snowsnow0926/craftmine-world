@@ -51,9 +51,9 @@ test('new wrapper line endings do not silently change the first published packag
 });
 test('rain is searchable as a playable module and does not replace any original catalog item',()=>{
  const output=fs.mkdtempSync(path.join(repository,'test-results/rain-catalog-'));
- const catalog=buildBuiltinSourceLibrary({output}),rain=catalog.entries.filter(e=>e.assetId===RAIN_CONTROL_ID);assert.equal(rain.length,1);
+ const catalog=buildBuiltinSourceLibrary({output}),rain=catalog.entries.filter(e=>e.assetId===RAIN_CONTROL_ID);assert.equal(rain.length,2);
  assert.equal(rain[0].kind,'module');for(const tag of ['控雨','悬停','倒流','技能'])assert(rain[0].tags.includes(tag));
- const original=catalog.entries.filter(e=>!e.tags.includes('reusable-world-content'));assert.equal(original.length,22);
+ const original=catalog.entries.filter(e=>!e.tags.includes('reusable-world-content')&&!e.tags.includes('compatibility-version'));assert.equal(original.length,22);
  const completePins=JSON.parse(fs.readFileSync(path.join(repository,'tests/fixtures/player-workflow-builtin22-20260913.json'))).entries;
  assert.deepEqual(original.map(e=>e.assetId).sort(),completePins.map(e=>e.assetId).sort());
  for(const pin of completePins){const entry=original.find(e=>e.assetId===pin.assetId);assert.equal(entry.version,pin.version);assert.equal(sha(fs.readFileSync(path.join(output,pin.file))),pin.sha256);}

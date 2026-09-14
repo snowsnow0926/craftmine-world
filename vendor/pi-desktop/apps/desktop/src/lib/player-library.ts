@@ -2,7 +2,7 @@ export type LibraryReference = {assetId: string; version: number; contentHash: s
 export type PublishKind = "component" | "world";
 export type LibraryCall = {call(channel: string, payload?: Record<string, unknown>): Promise<unknown>};
 export type SourceSelection = {worldId: string; revision: number; manifestHash: string; items: Array<{nodePath: string; name: string; supported: boolean; reason?: string}>};
-export type WorldTemplate = {ref: LibraryReference; displayName: string; description: string; tags: string[]; initialState: "saved-progress"; preview?: string; previewScope?: string};
+export type WorldTemplate = {ref: LibraryReference; displayName: string; description: string; tags: string[]; initialState: "saved-progress"; preview?: string; previewScope?: string; baseId?: string; baseVersion?: string; archiveSha256?: string};
 let pendingTemplate: LibraryReference | null = null;
 export const requestedWorldTemplate = () => pendingTemplate;
 export const clearRequestedWorldTemplate = () => {pendingTemplate = null;};
@@ -32,7 +32,7 @@ export function parsePlayerWorldTemplate(value: unknown): WorldTemplate {
   const ref = libraryReference(result.ref);
   if (!ref.assetId.startsWith("player.world.")) throw Error("WORLD_TEMPLATE_INVALID");
   const preview = typeof result.preview === "string" && result.preview.length < 700050 && /^data:image\/png;base64,iVBORw0KGgo[A-Za-z0-9+/]*={0,2}$/.test(result.preview) ? result.preview : undefined;
-  return {ref, displayName: result.displayName, description: typeof result.description === "string" ? result.description : "", tags: Array.isArray(result.tags) ? result.tags.filter((tag): tag is string => typeof tag === "string") : [], initialState: "saved-progress", ...(preview ? {preview, previewScope: "source-world-view"} : {})};
+  return {ref, displayName: result.displayName, description: typeof result.description === "string" ? result.description : "", tags: Array.isArray(result.tags) ? result.tags.filter((tag): tag is string => typeof tag === "string") : [], initialState: "saved-progress", ...(preview ? {preview, previewScope: "source-world-view"} : {}), ...(typeof result.baseId==="string"?{baseId:result.baseId}:{}), ...(typeof result.baseVersion==="string"?{baseVersion:result.baseVersion}:{}), ...(/^[a-f0-9]{64}$/.test(String(result.archiveSha256))?{archiveSha256:result.archiveSha256 as string}:{})};
 }
 export function publicationMetadata(kind: PublishKind, name: string, description: string, tagsText: string, aliasesText: string) {
   const size = (text: string) => new TextEncoder().encode(text).length;

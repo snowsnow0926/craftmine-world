@@ -28,6 +28,7 @@ import {
 import { materializeDraftSession, useAppStore } from "../stores/app-store";
 import type { ComposerDraftSnapshot } from "../lib/composer-smart-stop";
 import { latestTurnContextInspector } from "../lib/latest-turn-context";
+import {codexUsageCoverageText} from '../lib/codex-usage-coverage';
 import {
   HOME_DRAFT_KEY,
   captureComposerDraft,
@@ -607,7 +608,7 @@ export function Composer({
   prefill?: ComposerPrefill | null;
   voiceEnabled?: boolean;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const sendPrompt = useAppStore((s) => s.sendPrompt);
   const removeQueuedPrompt = useAppStore((s) => s.removeQueuedPrompt);
   const sendQueuedNow = useAppStore((s) => s.sendQueuedNow);
@@ -2390,9 +2391,9 @@ export function Composer({
                 ref={modelThinkingRef}
                 onKeyDown={onModelThinkingMenuKeyDown}
               >
-                {codexWorld && effectiveBackend?.backend === "codex-cli" ? <span role="status" title="Local Codex CLI; token totals are for this turn. Cost is unavailable.">
+                {codexWorld && effectiveBackend?.backend === "codex-cli" ? <span role="status" title={effectiveBackend.codexUsageCoverage?codexUsageCoverageText(effectiveBackend.codexUsageCoverage,i18n.resolvedLanguage||i18n.language||'en'):"Local Codex CLI; token totals are for this turn. Cost is unavailable."}>
                   {effectiveBackend.transportState === "starting" ? "Connecting Codex" : `Verified ${effectiveBackend.modelId} / ${effectiveBackend.reasoningEffort}`}
-                  {effectiveBackend.transportUsage ? ` · ${effectiveBackend.transportUsage.usage.totalTokens} tokens · cost unavailable` : ""}
+                  {effectiveBackend.codexUsageCoverage ? ` · ${codexUsageCoverageText(effectiveBackend.codexUsageCoverage,i18n.resolvedLanguage||i18n.language||'en')}` : effectiveBackend.transportUsage ? ` · ${effectiveBackend.transportUsage.usage.totalTokens} tokens · cost unavailable` : ""}
                 </span> : null}
                 <button
                   type="button"

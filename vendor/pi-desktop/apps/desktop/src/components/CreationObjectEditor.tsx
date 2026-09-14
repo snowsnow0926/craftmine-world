@@ -24,6 +24,9 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
   const scopeRef=useRef(scope);scopeRef.current=scope;
   const submitted=useRef(false);
   const [open,setOpen]=useState(false),[scale,setScale]=useState([1,1,1]),[color,setColor]=useState("#84a866");
+  const [position,setPosition]=useState([0,0,0]),[rotationY,setRotationY]=useState(0);
+  const [preview,setPreview]=useState<{status:string;valid?:boolean;reason?:string}|null>(null);
+  const previewHandle=useRef<{id:string;sequence:number;sessionId:string;captureId:string}|null>(null);
   const [placing,setPlacing]=useState(false),[kind,setKind]=useState("tree"),[count,setCount]=useState(1),[offset,setOffset]=useState([2,0,0]);
   const [status,setStatus]=useState<Status|null>(()=>scope?readStatus(scope):null);
   const [error,setError]=useState("");
@@ -36,7 +39,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
     if(scopeRef.current===expectedScope)setStatus(next);
     window.dispatchEvent(new CustomEvent("craftmine-creation-edit-status",{detail:next}));
   };
-  useEffect(()=>{setOpen(false);setPlacing(false);setScale(target?.scale??[1,1,1]);setColor(target?.color??"#84a866");setError("");},[controller.capture?.captureId]);
+  useEffect(()=>{setOpen(false);setPlacing(false);setScale(target?.scale??[1,1,1]);setColor(target?.color??"#84a866");setPosition(target?.entityPosition??target?.position??[0,0,0]);setRotationY(target?.rotationY??0);setPreview(null);setError("");},[controller.capture?.captureId]);
   useEffect(()=>{setStatus(scope?readStatus(scope):null);setUndo(null);setError("");submitted.current=false;},[scope]);
   useEffect(()=>{
     if(!sessionId||!controller.capture?.captureId||!bridge)return;
@@ -69,14 +72,41 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
     };
     void poll();return()=>{alive=false;clearTimeout(timer);};
   },[busy,visibleStatus?.operationId,scope]);
+  const cancelPreview=async()=>{
+    const previous=previewHandle.current;previewHandle.current=null;setPreview(null);
+    if(previous&&bridge)await bridge.call('godot.creationPreview',{sessionId:previous.sessionId,captureId:previous.captureId,previewId:previous.id,sequence:previous.sequence+1,action:'cancel'}).catch(()=>{});
+  };
+  useEffect(()=>()=>{void cancelPreview();},[scope,controller.capture?.captureId]);
+  useEffect(()=>{if(!open&&!placing)void cancelPreview();},[open,placing]);
+  useEffect(()=>{if(preview?.status!=='visible')return;const timer=setTimeout(()=>void cancelPreview(),60000);return()=>clearTimeout(timer);},[preview]);
+  const resetTransform=()=>{setPosition(target?.entityPosition??target?.position??[0,0,0]);setRotationY(target?.rotationY??0);setScale(target?.scale??[1,1,1]);setColor(target?.color??"#84a866");};
+  const transformValid=position.length===3&&position.every((n,i)=>Number.isFinite(n)&&n>=(i===1?0:-28)&&n<=(i===1?16:28))&&Number.isFinite(rotationY)&&Math.abs(rotationY)<=180&&scale.every(n=>Number.isFinite(n)&&n>=.25&&n<=4);
+  const showPreview=async()=>{
+    if(!bridge||!sessionId||!controller.capture?.captureId||!transformValid||busy)return;
+    const handle=previewHandle.current??{id:crypto.randomUUID(),sequence:0,sessionId,captureId:controller.capture.captureId};previewHandle.current=handle;
+    const sequence=++handle.sequence;setPreview({status:'preparing'});
+    try{const result=await bridge.call('godot.creationPreview',{sessionId,captureId:handle.captureId,previewId:handle.id,sequence,action:placing?'place':'modify',...(placing?{kind}:{}),position,rotationY,scale,color}) as any;
+      if(previewHandle.current===handle&&handle.sequence===sequence)setPreview(result);
+    }catch(failure){if(previewHandle.current===handle&&handle.sequence===sequence)setPreview({status:'failed',reason:String(failure)});}
+  };
+  // Debounce only an explicitly opened preview; fields alone start no runtime action.
+  useEffect(()=>{if(!previewHandle.current)return;const timer=setTimeout(()=>void showPreview(),180);return()=>clearTimeout(timer);},[position,rotationY,scale,color,kind]);
+  const transformControls=<>
+    <div className="creation-target-row">{['X','Y','Z'].map((axis,index)=><label key={axis}>{zh?'位置':'Position'} {axis}<input aria-label={(zh?'位置':'Position')+' '+axis} type="number" min={index===1?0:-28} max={index===1?16:28} step="0.5" value={position[index]} onChange={event=>setPosition(values=>values.map((value,i)=>i===index?Number(event.target.value):value))} style={{width:65}}/></label>)}
+    <label>{zh?'朝向':'Yaw'}<input aria-label={zh?'朝向角度':'Yaw degrees'} type="number" min="-180" max="180" step="15" value={rotationY} onChange={event=>setRotationY(Number(event.target.value))} style={{width:70}}/>°</label></div>
+    <div className="creation-target-row">{["X","Y","Z"].map((axis,index)=><span key={axis}><button type="button" aria-label={(zh?"移动":"Move")+" "+axis+" -0.5"} onClick={()=>setPosition(values=>values.map((n,i)=>i===index?Math.max(i===1?0:-28,n-.5):n))}>{axis} −</button><button type="button" aria-label={(zh?"移动":"Move")+" "+axis+" +0.5"} onClick={()=>setPosition(values=>values.map((n,i)=>i===index?Math.min(i===1?16:28,n+.5):n))}>{axis} +</button></span>)}<button type="button" onClick={()=>setRotationY(value=>(value+195)%360-180)}>{zh?"旋转 15°":"Rotate 15°"}</button></div>
+    <div className="creation-target-row"><button type="button" disabled={!transformValid||busy||open&&(!target?.entityPosition||target.rotationY===undefined)} onClick={()=>void showPreview()}>{zh?'预览摆放':'Preview placement'}</button>{preview&&<><button type="button" onClick={()=>void cancelPreview()}>{zh?'关闭预览':'Close preview'}</button><span role="status">{preview.status==='visible'?(preview.valid?(zh?'预览位置可用':'Preview position available'):(zh?'预览位置存在碰撞或越界':'Preview position blocked')):preview.status==='preparing'?(zh?'正在预览…':'Preparing preview…'):(zh?'当前世界暂不支持预览':'Preview unavailable for this world')}</span></>}</div>
+    {preview?.reason&&<span className="creation-target-note">{failures[Object.keys(failures).find(code=>preview.reason!.includes(code))??'']??preview.reason}</span>}
+  </>;
   const submit=async(action:"modify"|"delete"|"undo"|"place"|"duplicate"|"upgrade-observer")=>{
     const captureId=action==='upgrade-observer'?controller.capture?.upgradeId:controller.capture?.captureId;
     if(!bridge||!sessionId||!worldId||!captureId||busy||visibleStatus?.phase==="interrupted"||submitted.current)return;
     submitted.current=true;setError("");
+    await cancelPreview();
     const operationId=crypto.randomUUID(),requestScope=scope;
     const pending:Status={sessionId,worldId,operationId,phase:"preparing"};publish(pending);
     try{
-      const next=await bridge.call("godot.creationEdit",{sessionId,captureId,operationId,action,...(action==="modify"?{changes:{scale,color}}:{}),...(action==="undo"?{undoOperationId:undo}:{}),...(action==="place"?{kind}:{}),...(action==="duplicate"?{count,offset}:{})}) as Status;
+      const next=await bridge.call("godot.creationEdit",{sessionId,captureId,operationId,action,...(action==="modify"?{changes:{scale,color,...(target?.entityPosition&&target.rotationY!==undefined?{position,rotationY}:{})}}:{}),...(action==="undo"?{undoOperationId:undo}:{}),...(action==="place"?{kind,placement:{position,rotationY,scale,color}}:{}),...(action==="duplicate"?{count,offset}:{})}) as Status;
       if(next.sessionId!==sessionId||next.operationId!==operationId||(next.worldId!==undefined&&next.worldId!==worldId))throw Error("CREATION_EDIT_CONTEXT_CHANGED");
       // The status poll may have already observed a later phase while this
       // original response was delayed. Never move that operation backwards.
@@ -94,19 +124,21 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
   return <div className="creation-object-editor">
     {controller.capture?.upgradeId&&<button type="button" disabled={!sessionId||busy||controller.loading||visibleStatus?.phase==='interrupted'} onClick={()=>void submit('upgrade-observer')}>{zh?'更新世界观察组件并检查':'Update world observer and check'}</button>}
     <div className="creation-target-row">
-      <button type="button" disabled={!sessionId||!controller.capture?.captureId||target?.surface!=="ground"||(controller.capture as {source?:string}|null)?.source==="recent"||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{setPlacing(!placing);setOpen(false);}}>{zh?"在此放置":"Place here"}</button>
-      <button type="button" disabled={!sessionId||!target?.entityId||!target.scale||!target.color||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{setOpen(!open);setPlacing(false);}}>{zh?"编辑对象":"Edit object"}</button>
+      <button type="button" disabled={!sessionId||!controller.capture?.captureId||target?.surface!=="ground"||(controller.capture as {source?:string}|null)?.source==="recent"||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{resetTransform();setPlacing(!placing);setOpen(false);}}>{zh?"在此放置":"Place here"}</button>
+      <button type="button" disabled={!sessionId||!target?.entityId||!target.scale||!target.color||busy||visibleStatus?.phase==="interrupted"} onClick={()=>{resetTransform();setOpen(!open);setPlacing(false);}}>{zh?"编辑对象":"Edit object"}</button>
       <button type="button" title={zh?"支持本版记录的放置、参数修改、复制和删除；旧记录与规则修改暂不可撤销。":"Supports recorded placement, property edits, duplication and deletion; older records and rule edits cannot be undone."} disabled={!sessionId||!undo||busy||visibleStatus?.phase==="interrupted"||!controller.capture?.captureId} onClick={()=>void submit("undo")}>{zh?"撤销上次操作":"Undo last edit"}</button>
     </div>
     {placing&&<fieldset disabled={busy}>
       <legend>{zh?"在当前空地放置物体，无需模型":"Place an object on the selected ground without a model"}</legend>
       <label>{zh?"物体类型":"Object type"}<select aria-label={zh?"放置类型":"Placement kind"} value={kind} onChange={event=>setKind(event.target.value)}>{[["tree","树","Tree"],["rock","石头","Rock"],["chest","宝箱","Chest"],["door","门","Door"],["marker","标记","Marker"]].map(([value,cn,en])=><option key={value} value={value}>{zh?cn:en}</option>)}</select></label>
       <span className="creation-target-note">{zh?"默认尺寸与绿色外观；宝箱奖励一个造物代币，门初始关闭。采用后可编辑或撤销。":"Default size and green appearance; chests reward one creation token and doors start closed. Edit or undo after adoption."}</span>
-      <button type="button" onClick={()=>void submit("place")}>{zh?"放置并检查":"Place and check"}</button>
+      {transformControls}
+      <button type="button" disabled={!transformValid} onClick={()=>void submit("place")}>{zh?"放置并检查":"Place and check"}</button>
       <button type="button" onClick={()=>setPlacing(false)}>{zh?"取消":"Cancel"}</button>
     </fieldset>}
     {open&&<fieldset disabled={busy}>
       <legend>{target?.entityName??target?.entityId}</legend>
+      {target?.entityPosition&&target.rotationY!==undefined&&transformControls}
       <div className="creation-target-row">{["X","Y","Z"].map((axis,index)=><label key={axis}>{axis}<input aria-label={`${zh?"尺寸":"Scale"} ${axis}`} type="number" min="0.25" max="4" step="0.25" value={scale[index]} onChange={event=>setScale(values=>values.map((value,i)=>i===index?Number(event.target.value):value))} style={{width:65}}/></label>)}
         <label>{zh?"颜色":"Color"}<input aria-label={zh?"对象颜色":"Object color"} type="color" value={color} onChange={event=>setColor(event.target.value)}/></label>
       </div>
@@ -117,7 +149,7 @@ export function CreationObjectEditor({controller}:{controller:ReturnType<typeof 
       </div>
       <span className="creation-target-note">{zh?"每个副本相对上一个偏移，使用当前已采用的属性；未提交的尺寸和颜色不随复制生效。占用或越界时整次操作不生效。":"Copies use adopted properties and successive offsets. Unsubmitted size or color edits are not copied. Occupied or out-of-bounds placement rejects the whole operation."}</span>
       <div className="creation-target-row">
-        <button type="button" disabled={scale.some(n=>!Number.isFinite(n)||n<.25||n>4)} onClick={()=>void submit("modify")}>{zh?"检查并应用":"Check and apply"}</button>
+        <button type="button" disabled={!transformValid} onClick={()=>void submit("modify")}>{zh?"检查并应用":"Check and apply"}</button>
         <button type="button" onClick={()=>void submit("delete")}>{zh?"删除对象":"Delete object"}</button>
         <button type="button" onClick={()=>setOpen(false)}>{zh?"取消":"Cancel"}</button>
       </div>

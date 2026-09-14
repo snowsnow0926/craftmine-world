@@ -1,0 +1,174 @@
+{
+  "format": "craftmine.player-feedback-acceptance/1",
+  "passed": true,
+  "scope": "integrated-source-native-client",
+  "sourceCommit": "ad6bd63f",
+  "version": "0.14.4-preview.23",
+  "rawReport": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\report.json",
+  "rawReportSha256": "eb94031452d92b595aa6d89e42a0e17cb82814e311888b5cff34582999541f35",
+  "mainSha256": "88d8a223708c1e65efb0338e8607121ae613278d3d4d48234f7cd7486a17600f",
+  "driverSha256": "5d572e31250b51f7cf332243d157e429a6cb6648d14d18c719ef20b33ffb95ca",
+  "nativeBinaries": {
+    "core": {
+      "file": "D:\\cm-product-bin\\2e0a34c7\\craftmine-core.exe",
+      "sha256": "6a1d9a8a57c6249a52d68c018e75fcc0c0a86f56b385564626a6b21533eddc56"
+    },
+    "host": {
+      "file": "D:\\cm-product-bin\\2e0a34c7\\pi-desktop-host-core.exe",
+      "sha256": "c0c2d7677cd42a9a5ac10a95ca0cb015a06b1f6ddbf116758eae8e59ed3f2bd7"
+    }
+  },
+  "authorWorldId": "world-25ca8dfeca1d",
+  "friendWorldId": "world-1cf9b206a6a4",
+  "modelCalls": 0,
+  "repairDraft": {
+    "worldId": "world-25ca8dfeca1d",
+    "id": "feedback-3c42eb3c3b35521c477147a74b95acd30d88a3946b07489496bd4af0af7e8c56",
+    "characters": 626,
+    "submitted": false
+  },
+  "imports": [
+    {
+      "profile": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\author-profile",
+      "worldId": "world-25ca8dfeca1d",
+      "id": "feedback-3c42eb3c3b35521c477147a74b95acd30d88a3946b07489496bd4af0af7e8c56",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "profile": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\author-profile",
+      "worldId": "world-25ca8dfeca1d",
+      "id": "feedback-3c42eb3c3b35521c477147a74b95acd30d88a3946b07489496bd4af0af7e8c56",
+      "before": 1,
+      "after": 1
+    },
+    {
+      "profile": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\friend-profile",
+      "worldId": "world-1cf9b206a6a4",
+      "id": "feedback-b7d1d5601e0c48e061b8f025394fd27aca8d63cddc924cb3a1b3433e7070ec10",
+      "before": 1,
+      "after": 2
+    }
+  ],
+  "launches": [
+    {
+      "kind": "author-create",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": []
+    },
+    {
+      "kind": "friend-import",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": []
+    },
+    {
+      "kind": "author-import-feedback",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": []
+    },
+    {
+      "kind": "author-feedback-cold",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": []
+    },
+    {
+      "kind": "friend-receive-reply",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": []
+    },
+    {
+      "kind": "friend-reply-cold",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "violations": [],
+      "shutdownFailures": []
+    }
+  ],
+  "feedback": [
+    {
+      "label": "friend-original-feedback",
+      "file": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\friend-original-feedback.json",
+      "id": "feedback-3c42eb3c3b35521c477147a74b95acd30d88a3946b07489496bd4af0af7e8c56",
+      "context": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "buildId": "gbd-dade6ac5f0b3f088892a1c9187f58ff9b01bd294def1956b751358e509788ba3",
+        "contentHash": "bd9f312ca886e8bb19304a9e6c1e8d92a99bcd2b997df7e1975c1a1c3db5022d",
+        "engineVersion": "4.7.2-stable",
+        "progressFormat": "craftmine.godot-progress/1",
+        "worldId": "world-1cf9b206a6a4",
+        "worldRevision": 2
+      },
+      "client": {
+        "version": "0.14.4-preview.23",
+        "commit": null
+      },
+      "replyTo": null,
+      "sha256": "4379386828ae785f9b805abf478fa1a0179952a0fb30496819b37f948de84cb6",
+      "reviewedPng": {
+        "file": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\reviewed-feedback-3c42eb3c3b35521c477147a74b95acd30d88a3946b07489496bd4af0af7e8c56.png",
+        "bytes": 148682,
+        "sha256": "005b3e52d5f5f45c0b60f2549c721fdc80d2b6eaabdc9ed3bc2365d0a1ac1540"
+      }
+    },
+    {
+      "label": "author-linked-reply",
+      "file": "D:\\cm-product-feedback\\test-results\\desktop-native-feedback-T37D9w\\author-linked-reply.json",
+      "id": "feedback-b7d1d5601e0c48e061b8f025394fd27aca8d63cddc924cb3a1b3433e7070ec10",
+      "context": {
+        "baseId": "creation-sandbox",
+        "baseVersion": "1.0.0",
+        "buildId": "gbd-222f860fff0dbde79cd9f8988d1a20c9b3b23d851a5ad72b2303683f4d7e38ff",
+        "contentHash": "e1ce64347d12cdb3506f81f45e6697d63436e2d82a6d9c6e270871a73e3f3363",
+        "engineVersion": "4.7.2-stable",
+        "progressFormat": "craftmine.godot-progress/1",
+        "worldId": "world-25ca8dfeca1d",
+        "worldRevision": 5
+      },
+      "client": {
+        "version": "0.14.4-preview.23",
+        "commit": null
+      },
+      "replyTo": "feedback-3c42eb3c3b35521c477147a74b95acd30d88a3946b07489496bd4af0af7e8c56",
+      "sha256": "4842c18ea5025b928134e29e7b5f2b3bc1733601f73516e9a7b7ac025295c75d",
+      "reviewedPng": null
+    }
+  ],
+  "capturePreparationRetries": [
+    {
+      "worldId": "world-1cf9b206a6a4",
+      "at": "2026-09-13T21:10:46.275Z",
+      "error": "Error: PLAYER_UI_TERMINAL:打开素材库时画面尚未准备好。请关闭并重新打开素材库，文字会保留，然后重新预览。 LIBRARY_PREVIEW_PREPARE_REQUIRED",
+      "action": "ordinary-close-and-reopen-library"
+    }
+  ],
+  "limitations": [
+    "One manual library-close/reopen recovery after first friend capture BUSY; original text and screenshot consent retained.",
+    "No real AI repair submitted; only scoped Composer draft handoff verified.",
+    "Two local isolated profiles; no external clean Windows or human playtest claim.",
+    "Source build evidence, not final portable package acceptance.",
+    "Exact pinned Codex alpha public distribution not established."
+  ]
+}

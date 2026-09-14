@@ -3868,6 +3868,27 @@ mod tests {
     }
 
     #[test]
+    fn codex_maintenance_coverage_preserves_unknown_total_in_history() {
+        let db = test_db();
+        let session = create_session(&db, None, None, None, None, None).unwrap();
+        let mut message = user_msg("codex-partial", "Continued", "2026-09-14T00:00:00Z");
+        message.role = "assistant".into();
+        message.codex_usage = Some(json!({"scope":"current-turn","cost":null,"coverage":{
+            "status":"incomplete","reason":"native-maintenance-usage-unreported",
+            "maintenanceTurns":3,"maintenanceElapsedMs":521303,
+            "reportedCreationUsage":{"inputTokens":5,"outputTokens":1,"totalTokens":6}}}));
+        append_message(&db, &session.id, &message, None).unwrap();
+        let records = transcripts::read_transcript(db.data_dir(), &session.id).unwrap();
+        assert_eq!(records[0].meta.as_ref().unwrap()["codexUsage"],message.codex_usage.clone().unwrap());
+        let restored = record_to_ui(records[0].clone());
+        assert_eq!(restored.codex_usage,message.codex_usage);
+        assert!(restored.usage.is_none());
+        let reread = get_session(&db, &session.id).unwrap().unwrap();
+        assert_eq!(reread.messages[0].codex_usage,message.codex_usage);
+        assert!(reread.messages[0].usage.is_none());
+    }
+
+    #[test]
     fn import_and_replace_preserve_thinking() {
         let db = test_db();
         let summary = SessionSummary {

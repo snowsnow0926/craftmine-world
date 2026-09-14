@@ -1,3 +1,4 @@
+import {CREATION_PREVIEW_UPGRADE,CREATION_PREVIEW_MIGRATIONS} from './creation-preview-upgrade.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -38,7 +39,7 @@ export function loadSceneObserverPins(resourcesRoot: string): SceneObserverPins 
   const resources={...SCENE_OBSERVER_RESOURCES,...(Object.values(CONTROLLER_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?CONTROLLER_OBSERVER_RESOURCES:{}),...(Object.values(COLLISION_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?COLLISION_OBSERVER_RESOURCES:{}),...(Object.values(ENGINE_OBSERVER_RESOURCES).every(relative=>fs.existsSync(path.join(resourcesRoot,relative)))?ENGINE_OBSERVER_RESOURCES:{})};
   return Object.freeze(Object.fromEntries(Object.entries(resources).map(([name,relative])=>{
     const text=fs.readFileSync(path.join(resourcesRoot,relative),'utf8').replace(/\r\n/g,'\n');
-    return [name,Object.freeze([hash(text),hash(text.replace(/\n/g,'\r\n')),...(name==='craftmine_shared/scene_mesh_picker_v2.gd'?MESH_PICKER_UPGRADE.files[0].from.filter((value):value is string=>value!==null):[])])];
+    return [name,Object.freeze([hash(text),hash(text.replace(/\n/g,'\r\n')),...(name==='@engineBridge'?CREATION_PREVIEW_UPGRADE.files[0].from.filter((value):value is string=>value!==null):[]),...(name==='craftmine_shared/scene_mesh_picker_v2.gd'?MESH_PICKER_UPGRADE.files[0].from.filter((value):value is string=>value!==null):[])])];
   })));
 }
 export type SceneObserverProfile='legacy'|'creation-fixed-controller/1'|'creation-player-collision/1';
@@ -93,9 +94,19 @@ export function needsBoundedMeshPickerUpgrade(files:unknown,pins:SceneObserverPi
 }
 
 
+export function creationPreviewUpgradePolicy(files:unknown,pins:SceneObserverPins|undefined){
+ if(!Array.isArray(files)||!hasCurrentSceneObserver(files,pins))return null;
+ return CREATION_PREVIEW_MIGRATIONS.find(policy=>policy.files.every(file=>{
+  const entries=files.filter(entry=>entry?.path===file.source);
+  const key=file.source==='craftmine_shared/runtime_bridge.gd'?'@engineBridge':file.source;
+  return (entries.length===1&&file.from.includes(entries[0].sha256)||entries.length===0&&file.from.includes(null))&&file.to.every(hash=>pins?.[key]?.includes(hash));
+ }))??null;
+}
+export function needsCreationPreviewUpgrade(files:unknown,pins:SceneObserverPins|undefined):boolean {return creationPreviewUpgradePolicy(files,pins)!==null;}
+
 /** A review hint grants maintenance only, never trust in old sampled fields. */
 export function canUpgradeSceneObserver(files: unknown, pins: SceneObserverPins | undefined): boolean {
-  if(needsBoundedMeshPickerUpgrade(files,pins))return true;
+  if(needsBoundedMeshPickerUpgrade(files,pins)||needsCreationPreviewUpgrade(files,pins))return true;
   if(!pins||!Array.isArray(files)||hasCurrentSceneObserver(files,pins))return false;
   return SCENE_OBSERVER_UPGRADE.files.length===Object.keys(SCENE_OBSERVER_RESOURCES).length&&SCENE_OBSERVER_UPGRADE.files.every(file=>{
     const matches=files.filter(entry=>entry?.path===file.source);

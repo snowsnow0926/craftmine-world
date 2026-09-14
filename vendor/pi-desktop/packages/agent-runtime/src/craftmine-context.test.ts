@@ -15,6 +15,17 @@ function fixture() {
   return { hooks, calls, set: (value: CraftmineTaskContext) => { current = value; } };
 }
 describe("Craftmine authoritative request boundary", () => {
+  it("carries current world player goals across requests without treating old reviews as current proof", () => {
+    const current=snapshot();
+    current.worldBrief={worldId:"world",revision:4,entries:[{text:"Preserve the companion",review:"player-accepted-older-build"}],totalEntries:1,recentRequests:[{text:"Original large city request",taskStatus:"finished"}],historyIsNotNewWork:true};
+    for(const purpose of ["creation","summary","review","retry"] as const){
+      const content=craftmineContextBlocks(current,purpose);
+      expect(content).toContain("Preserve the companion");expect(content).toContain("player-accepted-older-build");
+      expect(content).toContain("Historical requests are context, not new work to repeat");
+    }
+    current.worldBrief.worldId="another-world";
+    expect(craftmineContextBlocks(current)).not.toContain("Preserve the companion");
+  });
   it("preserves ordinary scene references without labeling them as structured entities", () => {
     const current=snapshot();
     current.creationTarget={worldId:"world",sceneObjectTarget:{objectId:"111",nodePath:"Actor/Body",identityScope:"runtime-instance",sourceUse:"context-only"},sceneObjectLive:{currentNodePath:"Renamed/Body"}};

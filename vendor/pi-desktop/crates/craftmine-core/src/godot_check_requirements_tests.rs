@@ -361,3 +361,35 @@ fn creation_requirement_build_rejects_modified_probe_and_redirected_entry() -> R
  }
  Ok(())
 }
+
+#[test]
+fn creation_transform_requirements_verify_observed_yaw_and_position() -> Result<()> {
+ let value=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("move and rotate"),"entities":[{"id":"tree-a","kind":"tree","position":[5,0,1],"rotationY":180}],"counts":[]}});
+ let r:requirements::Requirements=serde_json::from_value(value.clone())?;r.validate("creation-sandbox","check")?;
+ let descriptor=json!({"format":"craftmine.godot-check-descriptor/1","phase":"check","checkRequirements":value,"checkRequirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build"});
+ let entity=json!({"id":"tree-a","kind":"tree","position":[5,0,1],"rotationY":-180,"scale":[1,1,1]});
+ let evidence=json!({"format":"craftmine.godot-check-requirements-evidence/1","requirementsHash":r.hash(),"jobId":"job","worldId":"world","buildId":"build","instanceId":"engine","observations":[{"phase":"loaded","entities":[entity]},{"phase":"running","entities":[entity]}]});
+ assert!(requirements::evidence_matches(&r,Some(&evidence),&descriptor));
+ for (field,wrong) in [("rotationY",json!(0)),("rotationY",Value::Null),("position",json!([0,0,0]))]{let mut bad=evidence.clone();bad["observations"][1]["entities"][0][field]=wrong;assert!(!requirements::evidence_matches(&r,Some(&bad),&descriptor));}
+ for wrong in [json!(181),json!("90"),Value::Null]{let mut bad=value.clone();bad["creation"]["entities"][0]["rotationY"]=wrong;let r:requirements::Requirements=serde_json::from_value(bad)?;assert!(r.validate("creation-sandbox","check").is_err());}
+ Ok(())
+}
+
+#[test]
+fn creation_visual_wrapper_survives_real_check_job_materialization() -> Result<()> {
+ let (_dir,path)=temp()?;let mut journal=setup(&path)?;
+ let mut files=project_files();let mut protected=std::collections::BTreeMap::new();
+ for(path,text)in crate::godot_creation_probe::collision_files().into_iter().chain(crate::godot_creation_probe::engine_files()){protected.insert(path,text);}
+ for(path,text)in &protected{files.as_array_mut().unwrap().push(json!({"path":path,"text":text}));}
+ files[0]["text"]=json!(format!("{}\n[autoload]\nCraftmineRuntime=\"*res://craftmine_shared/runtime_bridge.gd\"\n[craftmine]\nruntime/adapter=\"res://craftmine_shared/base_adapter.gd\"\n",files[0]["text"].as_str().unwrap()));
+ let all=files.as_array().unwrap();
+ let mut project=journal.godot_project_create(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"visual-project","baseBuild":"base-a","baseId":"creation-sandbox","files":all.iter().take(16).cloned().collect::<Vec<_>>()}))?;
+ if all.len()>16{project=journal.godot_project_patch(&json!({"context":ctx("one"),"worldId":"a","toolCallId":"visual-source-rest","revision":project["revision"],"manifestHash":project["manifestHash"],"operations":all.iter().skip(16).map(|f|json!({"op":"put","path":f["path"],"text":f["text"],"expectedHash":Value::Null})).collect::<Vec<_>>()}))?;}
+ register(&mut journal,"executor-a",json!({"import":true,"build":true,"check":true}),&digest("e"))?;
+ let mut args=request(&project,"visual-check");args["checkRequirements"]=json!({"format":requirements::FORMAT,"creation":{"format":"craftmine.creation-requirements/1","requestHash":digest("move and rotate"),"entities":[{"id":"tree-a","kind":"tree","position":[5,0,1],"rotationY":45}],"counts":[]}});
+ let job=journal.godot_build_start(&args)?;let claimed=claim(&mut journal,&job,"token-a","executor-a")?;
+ for(path,text)in crate::godot_creation_probe::engine_files(){
+  let entry=claimed["files"]["source"].as_array().unwrap().iter().find(|f|f["path"]==path).unwrap();assert_eq!(entry["sha256"],json!(digest(&text)),"claim retains exact actual wrapper/helper bytes");
+ }
+ Ok(())
+}

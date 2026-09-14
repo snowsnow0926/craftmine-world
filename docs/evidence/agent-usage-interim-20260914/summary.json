@@ -1,0 +1,260 @@
+{
+  "format": "craftmine.interim-agent-usage-audit/1",
+  "scope": "only this operator/session through the normal shutdown; later appended recovery events excluded",
+  "cutoffUtc": "2026-09-14T01:56:43.099Z",
+  "exportedAt": "2026-09-14T01:58:43.652Z",
+  "operatorReport": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/continuation-4261d44b-4e47-477f-beb4-b1ede6ef3f54.json",
+  "operatorNormalShutdown": true,
+  "observedClosedTurns": 11,
+  "manualTurns": 8,
+  "automaticTurns": 3,
+  "knownTerminalUsageSubtotal": {
+    "turns": 8,
+    "inputTokens": 1500187,
+    "cacheReadTokens": 32861568,
+    "cacheWriteTokens": 0,
+    "outputTokens": 62008,
+    "reasoningTokens": 26486,
+    "totalTokens": 34423763,
+    "elapsedMilliseconds": 3377140
+  },
+  "missingUsage": {
+    "turns": 3,
+    "turnIds": [
+      "78c05a7a-acd3-4d19-96d8-702008be8896",
+      "7ad89b66-3ec0-481c-85d0-f5042ce29f9c",
+      "3aae76c9-ec2c-4f14-81eb-13c7cf15c39b"
+    ],
+    "observedElapsedMilliseconds": 28154,
+    "usage": null
+  },
+  "allObservedTurnWallMilliseconds": 3405294,
+  "durationCoverage": {
+    "hostWallMilliseconds": 2611339,
+    "eventBoundaryMilliseconds": 793955
+  },
+  "finalAggregate": null,
+  "modelCalls": null,
+  "costUsd": null,
+  "needsFinalRecoveryExport": true,
+  "usageEvidence": {
+    "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\test-results\\usage-interim-20260914-015643.json",
+    "sha256": "86174fd89b0419ddff9311d0d9b74ac073890a4bf7300671df9f1741742e9e99"
+  },
+  "eventEvidence": {
+    "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/agent-events.ndjson",
+    "snapshot": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\test-results\\usage-interim-20260914-015643-events.ndjson",
+    "bytes": 19299218,
+    "sha256": "be11eead7deac00a4d95b28651a0f11454b3c712ec20f3befc91495e0cba7fe7"
+  },
+  "auditEvidence": {
+    "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\test-results\\usage-interim-20260914-015643-audit.json",
+    "sha256": "6db0c27d67f5b568c699915b5fc8a87b7395448428fb9cdbd2b0d1d300f02961"
+  },
+  "rows": [
+    {
+      "turnId": "bd4d6753-d308-4cbf-99c9-23bc3953d2aa",
+      "origin": "explicit-manual",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 114417,
+        "cacheReadTokens": 2035072,
+        "cacheWriteTokens": 0,
+        "outputTokens": 11034,
+        "reasoningTokens": 2677,
+        "totalTokens": 2160523
+      },
+      "elapsedMilliseconds": 513681,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "36468d82-63c9-4341-92c9-b391840baf1c",
+      "origin": "explicit-manual",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 138518,
+        "cacheReadTokens": 5140480,
+        "cacheWriteTokens": 0,
+        "outputTokens": 18027,
+        "reasoningTokens": 7056,
+        "totalTokens": 5297025
+      },
+      "elapsedMilliseconds": 757704,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "f34a92ff-a0f1-4e12-a356-83ce1649f693",
+      "origin": "explicit-manual",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 323123,
+        "cacheReadTokens": 5940608,
+        "cacheWriteTokens": 0,
+        "outputTokens": 10228,
+        "reasoningTokens": 4605,
+        "totalTokens": 6273959
+      },
+      "elapsedMilliseconds": 451313,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "eb3dfa3a-0a81-4467-b5af-e45c26f76a87",
+      "origin": "explicit-manual",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 173045,
+        "cacheReadTokens": 12304256,
+        "cacheWriteTokens": 0,
+        "outputTokens": 12803,
+        "reasoningTokens": 8057,
+        "totalTokens": 12490104
+      },
+      "elapsedMilliseconds": 694290,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "1b35731f-8dbf-4e6c-a9ad-88a160ce3b58",
+      "origin": "event-discovered-automatic-repair",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 272387,
+        "cacheReadTokens": 3514368,
+        "cacheWriteTokens": 0,
+        "outputTokens": 6419,
+        "reasoningTokens": 1816,
+        "totalTokens": 3793174
+      },
+      "elapsedMilliseconds": 663100,
+      "durationCoverage": "event-observed-turn-boundaries",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "7797779a-10d6-4ddf-a077-4f5a6f7df557",
+      "origin": "event-discovered-automatic-repair",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 147519,
+        "cacheReadTokens": 1088512,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1502,
+        "reasoningTokens": 1111,
+        "totalTokens": 1237533
+      },
+      "elapsedMilliseconds": 89318,
+      "durationCoverage": "event-observed-turn-boundaries",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "14e10c95-e274-478e-bc52-44671331936c",
+      "origin": "explicit-manual",
+      "outcome": "closed",
+      "usage": {
+        "inputTokens": 303409,
+        "cacheReadTokens": 1984000,
+        "cacheWriteTokens": 0,
+        "outputTokens": 1585,
+        "reasoningTokens": 916,
+        "totalTokens": 2288994
+      },
+      "elapsedMilliseconds": 166197,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": []
+    },
+    {
+      "turnId": "bf5fcca2-0003-4ed8-9e24-72a24da34ee6",
+      "origin": "event-discovered-automatic-repair",
+      "outcome": "aborted",
+      "usage": {
+        "inputTokens": 27769,
+        "cacheReadTokens": 854272,
+        "cacheWriteTokens": 0,
+        "outputTokens": 410,
+        "reasoningTokens": 248,
+        "totalTokens": 882451
+      },
+      "elapsedMilliseconds": 41537,
+      "durationCoverage": "event-observed-turn-boundaries",
+      "turnStartRejected": null,
+      "errorEvidence": [
+        {
+          "line": 3342,
+          "at": 1789347610293,
+          "code": "TURN_ABORTED",
+          "message": "TURN_ABORTED",
+          "retriable": false
+        }
+      ]
+    },
+    {
+      "turnId": "78c05a7a-acd3-4d19-96d8-702008be8896",
+      "origin": "explicit-manual",
+      "outcome": "backend-error",
+      "usage": null,
+      "elapsedMilliseconds": 9137,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": [
+        {
+          "line": 3354,
+          "at": 1789349177764,
+          "code": "CODEX_BACKEND_FAILED",
+          "message": "CODEX_BACKEND_FAILED",
+          "retriable": false
+        }
+      ]
+    },
+    {
+      "turnId": "7ad89b66-3ec0-481c-85d0-f5042ce29f9c",
+      "origin": "explicit-manual",
+      "outcome": "backend-error",
+      "usage": null,
+      "elapsedMilliseconds": 8709,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": null,
+      "errorEvidence": [
+        {
+          "line": 3366,
+          "at": 1789349466799,
+          "code": "CODEX_BACKEND_FAILED",
+          "message": "CODEX_BACKEND_FAILED",
+          "retriable": false
+        }
+      ]
+    },
+    {
+      "turnId": "3aae76c9-ec2c-4f14-81eb-13c7cf15c39b",
+      "origin": "explicit-manual",
+      "outcome": "backend-error",
+      "usage": null,
+      "elapsedMilliseconds": 10308,
+      "durationCoverage": "terminal-host-wall",
+      "turnStartRejected": true,
+      "errorEvidence": [
+        {
+          "line": 3378,
+          "at": 1789350307292,
+          "code": "CODEX_BACKEND_FAILED",
+          "message": "CODEX_BACKEND_FAILED",
+          "retriable": false,
+          "details": {
+            "stage": "turn-start",
+            "rpcMethod": "turn/start",
+            "rpcCode": -32602,
+            "message": "Input exceeds the maximum length of 1048576 characters."
+          }
+        }
+      ]
+    }
+  ]
+}

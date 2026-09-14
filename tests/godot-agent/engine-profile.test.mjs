@@ -57,12 +57,14 @@ test('protected remaps, compiled aliases and configuration replacement cannot pa
   assert.throws(()=>verifyEnginePerformancePack(damaged,source(),pins),/DIGEST_MISMATCH/);
 });
 
-test('real materializer opts in with app-pinned resources while default worlds remain unsupported',()=>{
+test('creation worlds include the pinned preview bridge while other bases retain explicit opt-in',()=>{
   const root=fileURLToPath(new URL('../../',import.meta.url));
   const actualPins=loadEnginePerformancePins(path.join(root,'desktop/godot'));
   const ordinary=materializeBase({baseId:'creation-sandbox',worldId:'engine-default',out:path.join(tmp,'default')});
   const enabled=materializeBase({baseId:'creation-sandbox',worldId:'engine-enabled',out:path.join(tmp,'enabled'),enginePerformanceProfile:'engine-monitor/1'});
-  assert.equal(hasEnginePerformanceSource(ordinary.files,actualPins),false);
+  assert.equal(hasEnginePerformanceSource(ordinary.files,actualPins),true);
+  const other=materializeBase({baseId:'first-person',worldId:'engine-other',out:path.join(tmp,'other-default')});
+  assert.equal(hasEnginePerformanceSource(other.files,actualPins),false);
   assert.equal(hasEnginePerformanceSource(enabled.files,actualPins),true);
   const actualEntries=Object.keys(RESOURCES).map(name=>({path:name,data:fs.readFileSync(path.join(tmp,'enabled',name))}));
   assert.equal(verifyEnginePerformancePack(build(actualEntries),enabled.files,actualPins).files.length,5);

@@ -40,8 +40,11 @@ import {
 import "./asset-library.css";
 import {AssetAnnotationEditor} from "./AssetAnnotationEditor";
 import {LibraryPublishPanel} from "./LibraryPublishPanel";
+import {PlaytestPanel} from "../PlaytestPanel";
 import {DirectLibraryActivity, DirectLibraryUse} from "./DirectLibraryUse";
 import {requestWorldTemplateCreation, type LibraryReference} from "../../../lib/player-library";
+
+import {WorldCompositionPanel, type CompositionHandoff} from "./WorldCompositionPanel";
 
 export type AssetImportPick = { sourceRoot: string; sourcePath: string };
 
@@ -55,6 +58,8 @@ export type AssetLibraryPanelProps = {
   audioSrc?: string | null;
   onUseAsset?: (asset: AssetVersion, modify: boolean) => Promise<void>;
   worldName?: string;
+  onUseComposition?: (value: CompositionHandoff) => Promise<void>;
+  onRepairFeedback?: (text: string) => Promise<void>;
   /** A navigation destination only; publication still requires its normal form. */
   initialSection?: "browse" | "component" | "world";
 };
@@ -159,7 +164,9 @@ export function AssetLibraryPanel({
   onImportRequest,
   audioSrc = null,
   onUseAsset,
+  onUseComposition,
   worldName,
+  onRepairFeedback,
   initialSection = "browse",
 }: AssetLibraryPanelProps) {
   const ownedBridge = useMemo<AssetLibraryBridge | null>(() => bridge ? {
@@ -167,7 +174,7 @@ export function AssetLibraryPanel({
   } : null, [bridge, worldId]);
   const controller: AssetLibraryController = useAssetLibrary(ownedBridge);
   const [view, setView] = useState<"list" | "detail">("list");
-  const [section, setSection] = useState<"browse" | "component" | "world">(initialSection);
+  const [section, setSection] = useState<"browse" | "component" | "world" | "composition">(initialSection);
   const [usePending, setUsePending] = useState(false);
   const [useError, setUseError] = useState("");
   const requestUse = async (asset: AssetVersion, modify: boolean) => {
@@ -330,12 +337,13 @@ export function AssetLibraryPanel({
         </Button></form>
       </div>
       <DirectLibraryActivity bridge={bridge} worldId={worldId} zh={lang === "zh"}/>
+      {worldId&&<PlaytestPanel key={worldId} bridge={bridge} worldId={worldId} zh={lang === "zh"} onRepair={onRepairFeedback}/>}
       <div className="library-publish-tabs" role="tablist" aria-label={lang === "zh" ? "素材操作" : "Library actions"}>
-        {(["browse", "component", "world"] as const).map((tab, index) => <form key={tab} onSubmit={event => {event.preventDefault(); setSection(tab);}} data-library-tab={tab}>
-          <button type="submit" role="tab" aria-selected={section === tab} disabled={tab !== "browse" && !worldId}>{(lang === "zh" ? ["浏览素材", "保存对象", "保存世界模板"] : ["Browse", "Save object", "Save world template"])[index]}</button>
+        {(["browse", "component", "world", "composition"] as const).map((tab, index) => <form key={tab} onSubmit={event => {event.preventDefault(); setSection(tab);}} data-library-tab={tab}>
+          <button type="submit" role="tab" aria-selected={section === tab} disabled={tab !== "browse" && !worldId}>{(lang === "zh" ? ["浏览素材", "保存对象", "保存世界模板", "玩法组合"] : ["Browse", "Save object", "Save world template", "Compose gameplay"])[index]}</button>
         </form>)}
       </div>
-      {section !== "browse" && worldId ? <LibraryPublishPanel key={`${worldId}:${section}`} bridge={bridge} worldId={worldId} worldName={worldName} kind={section} zh={lang === "zh"} onSaved={(ref: LibraryReference) => {
+      {section === "composition" && worldId ? <WorldCompositionPanel bridge={bridge} worldId={worldId} zh={lang === "zh"} onUseComposition={onUseComposition}/> : section !== "browse" && section !== "composition" && worldId ? <LibraryPublishPanel key={`${worldId}:${section}`} bridge={bridge} worldId={worldId} worldName={worldName} kind={section} zh={lang === "zh"} onSaved={(ref: LibraryReference) => {
         setSection("browse"); setScope("local-library"); setQuery(ref.assetId); setView("detail"); setKind(""); setMediaKind(""); setTags(""); setFavoritesOnly(false); setLatestOnly(false);
         void controller.search({...filters, scope: "local-library", query: ref.assetId, kind: null, mediaKind: null, tags: [], favoritesOnly: false, latestOnly: false}).then(() => controller.select(ref.assetId, ref.version)).catch(() => {});
       }}/> : <>

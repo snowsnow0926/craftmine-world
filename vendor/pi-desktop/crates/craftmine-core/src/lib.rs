@@ -33,12 +33,14 @@ mod godot_copy_runtime;
 mod legacy;
 mod library;
 mod memories;
+mod playtest_feedback;
 mod operation_lock;
 mod recovery;
 mod reviews;
 mod verification;
 mod workspaces;
 mod worlds;
+mod world_briefs;
 #[cfg(test)]
 mod godot_test_support;
 pub use workspaces::WorkspaceContext;
@@ -179,6 +181,7 @@ impl TaskJournal {
         library::migrate(&db)?;
         asset_catalog::migrate(&db)?;
         memories::migrate(&db)?;
+        playtest_feedback::migrate(&db)?;
         backups::migrate(&db)?;
         godot_projects::migrate(&db)?;
         godot_builds::migrate(&db)?;
@@ -186,6 +189,7 @@ impl TaskJournal {
         godot_applications::migrate(&db)?;
         godot_storage::migrate(&db)?;
         godot_worlds::migrate(&db)?;
+        world_briefs::migrate(&db)?;
         // The managed Git content history owns authored source from here on.
         content_history::migration::migrate(&db)?;
         content_history::apply::migrate(&db)?;

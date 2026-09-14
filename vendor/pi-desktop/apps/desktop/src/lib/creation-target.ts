@@ -4,6 +4,8 @@ export type CreationTarget = {
   entityKind?: string;
   scale?: [number,number,number];
   color?: string;
+  entityPosition?: [number,number,number];
+  rotationY?: number;
   position: [number, number, number];
   normal: [number, number, number];
   surface: "entity" | "ground";
@@ -35,7 +37,7 @@ export function parseCreationTarget(value: unknown): CreationTargetCapture {
   const validSurface = hit.surface === "ground" || (hit.surface === "entity" && entityId !== null);
   const revision = typeof hit.revision === "number" && Number.isSafeInteger(hit.revision) && hit.revision >= 0 ? hit.revision : null;
   const target = position && normal && validSurface && revision !== null
-    ? { entityId: hit.surface === "entity" ? entityId : null, position, normal, surface: hit.surface as "entity" | "ground", revision, ...(id(hit.entityName)?{entityName: id(hit.entityName)!}:{}), ...(id(hit.entityKind)?{entityKind:id(hit.entityKind)!}:{}), ...(vector(hit.scale)?{scale:vector(hit.scale)!}:{}), ...(typeof hit.color === "string" && /^#[a-fA-F0-9]{6}$/.test(hit.color)?{color:hit.color}:{}) }
+    ? { entityId: hit.surface === "entity" ? entityId : null, position, normal, surface: hit.surface as "entity" | "ground", revision, ...(id(hit.entityName)?{entityName: id(hit.entityName)!}:{}), ...(id(hit.entityKind)?{entityKind:id(hit.entityKind)!}:{}), ...(vector(hit.entityPosition)&&typeof hit.rotationY==='number'&&Number.isFinite(hit.rotationY)?{entityPosition:vector(hit.entityPosition)!,rotationY:hit.rotationY}:{}), ...(vector(hit.scale)?{scale:vector(hit.scale)!}:{}), ...(typeof hit.color === "string" && /^#[a-fA-F0-9]{6}$/.test(hit.color)?{color:hit.color}:{}) }
     : null;
   const recent=Array.isArray(raw.recent)?raw.recent.slice(0,32).flatMap(value=>{
     const item=record(value);
