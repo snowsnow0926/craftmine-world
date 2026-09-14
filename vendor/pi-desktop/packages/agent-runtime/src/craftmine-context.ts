@@ -5,6 +5,7 @@ import { usageFromPi } from "./agent-messages.js";
 import { godotFactsBlock } from "./craftmine-godot-facts.js";
 import { craftmineRequestBudget } from "@pi-desktop/shared";
 import { logTiming } from "./timing.js";
+import { deepSeekKeepAliveFetch } from "./deepseek-keep-alive.js";
 
 export const CRAFTMINE_PROMPT_VERSION = "craftmine.request/2";
 // Frequent creation actions must remain advertised after every prompt reset and
@@ -387,6 +388,18 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
     controller.abort();
   };
   let timer = setTimeout(expireIdle, 120000);
+  const resetIdle = () => { clearTimeout(timer); timer = setTimeout(expireIdle, 120000); };
+  const requestId = `request-${randomUUID()}`;
+  let semanticStarted = false, transportBytes = 0, keepAliveCount = 0, observing = true, sseObserved = false;
+  let lastTransportAt: number | undefined, lastKeepAliveAt: number | undefined;
+  const keepAliveEligible = trustedTextTransport && supportsDeepSeekPromptPrefix(model);
+  const transportFetch = keepAliveEligible ? deepSeekKeepAliveFetch(options?.fetch ?? globalThis.fetch, controller.signal,
+    () => observing && !semanticStarted, (bytes, keepAlive) => {
+      if (!observing) return;
+      transportBytes += bytes;
+      if (bytes) lastTransportAt = Date.now();
+      if (keepAlive && !semanticStarted) { keepAliveCount++; lastKeepAliveAt = Date.now(); resetIdle(); }
+    }, () => { sseObserved = true; }) : options?.fetch;
   const progress = new Map<string, number | string>();
   let reservation: CraftmineReservation | undefined;
   let prepared: CraftminePrepared | undefined;
@@ -396,13 +409,14 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
     && !!hooks.prepareRequest && !!hooks.finalizeRequest;
   let settled = false;
   const run = async () => {
-    const input = { requestId: `request-${randomUUID()}`, purpose, model, context,
+    const input = { requestId, purpose, model, context,
       maxOutputTokens: Math.max(1, Math.min(options?.maxTokens ?? model.maxTokens, model.maxTokens)), signal: controller.signal };
     if (deferred) prepared = await hooks.prepareRequest!(input);
     else reservation = await hooks.beforeRequest(input);
     aborted(controller.signal);
     const reserved = (prepared ?? reservation)!;
     const stream = start(reserved.context, { ...options, maxRetries: 0, maxTokens: reserved.maxOutputTokens, signal: controller.signal,
+      ...(transportFetch ? { fetch: transportFetch } : {}),
       ...(deferred ? { fetch: (async (url: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
         try {
           aborted(controller.signal);
@@ -424,7 +438,7 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
           // our local pre-send failure for PI's normal compaction recovery.
           finalizationError = error; throw error;
         }
-        return (options?.fetch ?? globalThis.fetch)(url, init);
+        return (transportFetch ?? globalThis.fetch)(url, init);
       }) as typeof fetch } : {}),
       onPayload: async (payload, requestModel) => {
         // Snapshot allowance fields before an in-place transform can erase or
@@ -468,9 +482,9 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
         const advanced = typeof measure === "number" ? measure > (typeof previous === "number" ? previous : 0)
           : typeof measure === "string" && measure !== previous;
         if (advanced) {
+          semanticStarted = true;
           progress.set(key, measure!);
-          clearTimeout(timer);
-          timer = setTimeout(expireIdle, 120000);
+          resetIdle();
         }
       }
       if (event.type !== "done" && event.type !== "error") outer.push(event);
@@ -513,6 +527,14 @@ export function craftmineGuardedStream(model: Model<Api>, context: Context, opti
       usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
       stopReason: controller.signal.aborted && !idleExpired ? "aborted" : "error", errorMessage: idleExpired ? "PROVIDER_IDLE_TIMEOUT" : error instanceof Error ? error.message : "CRAFTMINE_REQUEST_FAILED", timestamp: Date.now() };
     outer.push({ type: "error", reason: result.stopReason as "error" | "aborted", error: result }); outer.end(result);
-  }).finally(() => { clearTimeout(timer); options?.signal?.removeEventListener("abort", relay); if (abortListener) controller.signal.removeEventListener("abort", abortListener); });
+  }).finally(() => {
+    observing = false;
+    clearTimeout(timer); options?.signal?.removeEventListener("abort", relay); if (abortListener) controller.signal.removeEventListener("abort", abortListener);
+    if (keepAliveEligible) logTiming("craftmine_provider_liveness", { requestId, providerId: model.provider, modelId: model.id,
+      purpose, sseObserved, transportBytes, preInferenceKeepAliveCount: keepAliveCount, semanticStarted, idleExpired,
+      cancelled: controller.signal.aborted && !idleExpired,
+      lastTransportAgeMs: lastTransportAt === undefined ? undefined : Date.now() - lastTransportAt,
+      lastKeepAliveAgeMs: lastKeepAliveAt === undefined ? undefined : Date.now() - lastKeepAliveAt });
+  });
   return outer;
 }

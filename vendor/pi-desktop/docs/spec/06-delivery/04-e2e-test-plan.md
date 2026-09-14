@@ -11020,3 +11020,11 @@ Retain the latest valid surface/resume intent while the existing host candidate
 gate refuses it. Require a positive new reply before clearing only its own busy
 error; preserve unrelated errors, exact world ownership and manual previews.
 See [the focused recovery scenario](../../e2e/godot-presentation-recovery-20260915.md).
+
+## DeepSeek waiting-stream liveness (2026-09-15)
+
+Verify standard pre-inference keep-alives extend only the existing inactivity
+watchdog, while silence, stalled generation and cancellation retain their
+failures and one-settlement semantics. Preserve 1M/384K/max and distinguish
+transport waiting from semantic generation and usage. See
+[the pinned-SDK scenario](../../e2e/deepseek-pre-inference-liveness-20260915.md).
