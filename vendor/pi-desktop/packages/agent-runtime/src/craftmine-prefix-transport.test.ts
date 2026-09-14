@@ -21,11 +21,12 @@ const context: Context = { systemPrompt: "Stable system", tools: [], messages: [
 ] };
 function fixture() {
   let revision = 1;
+  let snapshotPatch: Partial<CraftmineTaskContext> = {};
   let pauseReserve: (() => Promise<void>) | undefined;
   const calls: Array<{ method: string; params: any }> = [], bodies: any[] = [];
   const snapshot = (): CraftmineTaskContext => ({ binding: { projectId: "p", sessionId: "s", turnId: "t", taskId: "task", baseBuild: "v1" },
     generation: 1, status: "running", world: { id: "w", revision, buildId: "v1", hash: "a".repeat(64) }, draft: { revision, hash: "b".repeat(64) },
-    requirements: [{ id: "r", text: "Make it playable", kind: "request" }], modifiedResources: [], receipts: [], jobs: [], lease: { owned: true }, budget: {} });
+    requirements: [{ id: "r", text: "Make it playable", kind: "request" }], modifiedResources: [], receipts: [], jobs: [], lease: { owned: true }, budget: {}, ...snapshotPatch });
   const hooks = createCraftmineRequestHooks({ getContext: async () => snapshot(), domainCall: async <T>(method: string, params: any) => {
     calls.push({ method, params }); if (method === "budget.reserve") await pauseReserve?.(); return {} as T;
   } });
@@ -38,11 +39,68 @@ function fixture() {
   });
   const run = (input = context, options: SimpleStreamOptions = {}) => craftmineGuardedStream(model, input, { reasoning: "max", fetch: transport, ...options }, hooks,
     "creation", (prepared, opts) => models.streamSimple(model, prepared, opts), true).result();
-  return { hooks, calls, bodies, transport, run, revise() { revision++; }, pauseReserve(callback: () => Promise<void>) { pauseReserve = callback; } };
+  return { hooks, calls, bodies, transport, run, setContext(patch: Partial<CraftmineTaskContext>) { snapshotPatch = patch; }, revise() { revision++; }, pauseReserve(callback: () => Promise<void>) { pauseReserve = callback; } };
 }
 const nextContext = (): Context => ({ ...context, messages: [...context.messages, { ...answer, timestamp: 4 }, { role: "user", content: "继续添加互动🐕", timestamp: 5 }] });
 
 describe("pinned DeepSeek SDK final-body calibrated reservations", () => {
+  const authorized = (turn = "t1"): Partial<CraftmineTaskContext> => ({
+    binding: { projectId: "p", sessionId: "s", turnId: turn, taskId: "task-" + turn, baseBuild: "build-" + turn },
+    generation: 1, status: "running", lease: { owned: true },
+    world: { id: "w", revision: turn === "t1" ? 1 : 2, buildId: "build-" + turn, hash: "a".repeat(64), runtimeKind: "godot", baseId: "creation-sandbox" },
+    creationTarget: { format: "craftmine.creation-target/1", worldId: "w", authorization: "full-auto", autoApply: true },
+  });
+  it("reuses measurement across author turns but reserves and settles only against the new complete task binding", async () => {
+    const f=fixture(), first=authorized(), second=authorized("t2");f.setContext(first);await f.run();f.setContext(second);
+    const next=nextContext();const estimate=await f.hooks.inspectRequest!({requestId:"inspect-t2",purpose:"creation",model,context:next,maxOutputTokens:384000});
+    expect(estimate.method).toContain("measured-whole-prompt-exact-prefix");expect(estimate.input).toBeLessThan(20000);
+    expect((await f.run(next)).stopReason).toBe("stop");
+    const requests=f.calls.filter(call=>call.method==="budget.reserve"),settled=f.calls.filter(call=>call.method==="budget.settle");
+    expect(requests).toHaveLength(2);expect(requests[1].params.binding).toEqual(second.binding);expect(requests[1].params.generation).toBe(1);
+    expect(settled[1].params.binding).toEqual(second.binding);expect(settled[1].params.generation).toBe(1);
+    expect(requests[1].params.maxOutputTokens).toBe(384000);expect(model.contextWindow).toBe(1000000);
+    expect(requests[1].params).not.toHaveProperty("measurementScope");
+    expect(JSON.stringify(f.bodies[1].messages.at(-1))).toContain("task-t2");
+    expect(JSON.stringify(f.bodies[1].messages.at(-1))).toContain("build-t2");
+  });
+  it("does not send a calibrated next-turn request cancelled during its own new reservation", async () => {
+    const f=fixture(),controller=new AbortController();f.setContext(authorized());await f.run();f.setContext(authorized("t2"));
+    f.pauseReserve(async()=>{controller.abort();});
+    expect((await f.run(nextContext(),{signal:controller.signal})).stopReason).toBe("aborted");
+    expect(f.transport).toHaveBeenCalledTimes(1);
+    const settlement=f.calls.filter(call=>call.method==="budget.settle").at(-1)!.params;
+    expect(settlement.binding).toEqual(authorized("t2").binding);expect(settlement.status).toBe("cancelled");
+    expect((await f.hooks.inspectRequest!({requestId:"after-cancel",purpose:"creation",model,context:nextContext(),maxOutputTokens:384000})).method).toBe("utf8-half-model-content-json-framing/3");
+  });
+  it.each(["world","session","project","generation","base","permission","capture","revoked","superseded","legacy"])("fails closed across turns when %s changes", async change => {
+    const f=fixture();f.setContext(authorized());await f.run();const next=authorized("t2");
+    if(change==="world"){next.world!.id="other";next.creationTarget!.worldId="other";}
+    if(change==="session")next.binding!.sessionId="other";
+    if(change==="project")next.binding!.projectId="other";
+    if(change==="generation")next.generation=2;
+    if(change==="base")next.world!.baseId="other";
+    if(change==="permission")next.creationTarget!.authorization="world-policy";
+    if(change==="capture")next.creationTarget=null;
+    if(change==="revoked")next.creationTarget!.autoApply=false;
+    if(change==="superseded")next.creationTarget!.supersededBy={turnId:"other"};
+    if(change==="legacy")next.world!.runtimeKind="legacy";
+    f.setContext(next);expect((await f.run(nextContext())).stopReason).toBe("stop");
+    expect(f.calls.filter(call=>call.method==="budget.reserve").at(-1)!.params.estimatedInputTokens).toBeGreaterThan(100000);
+  });
+  it.each(["system","toolset","media","old-message","wire-options"])("keeps exact native/final-body checks across author turns for %s", async change => {
+    const f=fixture();f.setContext(authorized());await f.run();f.setContext(authorized("t2"));const next=nextContext();
+    if(change==="system")next.systemPrompt+=" changed";
+    if(change==="toolset")next.tools=[{name:"extra",description:"new permission surface",parameters:{type:"object",properties:{}}}];
+    if(change==="media")next.messages.push({role:"user",content:[{type:"image",data:"eA==",mimeType:"image/png"}],timestamp:8});
+    if(change==="old-message")next.messages[0]={...next.messages[0],content:"Changed earlier source"} as Context["messages"][number];
+    const inspected=await f.hooks.inspectRequest!({requestId:"before",purpose:"creation",model,context:next,maxOutputTokens:384000});
+    await f.run(next,change==="wire-options"?{reasoning:"high"}:{});
+    const reserved=f.calls.filter(call=>call.method==="budget.reserve").at(-1)!.params;
+    // An edited old message can make the full request small; test method via
+    // preflight in that case rather than assuming a minimum token count.
+    if(change!=="wire-options")expect(inspected.method).toBe("utf8-half-model-content-json-framing/3");
+    if(change!=="old-message")expect(reserved.estimatedInputTokens).toBeGreaterThan(100000);
+  });
   it("logs one bounded final estimate per successful reservation and none for inspection or refusal", async () => {
     const logged=vi.spyOn(timing,"logTiming").mockImplementation(()=>{}),f=fixture();
     try {
@@ -87,13 +145,14 @@ describe("pinned DeepSeek SDK final-body calibrated reservations", () => {
       expect(f.calls.filter(call => call.method === "budget.reserve").at(-1)!.params.estimatedInputTokens).toBeGreaterThan(100000);
     }
   });
-  it("uses the normal PI loop with a tool result that previously crossed the conservative trigger", async () => {
+  it.each([false,true])("uses the normal PI loop past the conservative trigger, including cross-turn=%s", async crossTurn => {
     const f = fixture(), events: any[] = [];
+    if(crossTurn)f.setContext(authorized("t"));
     const completeEstimates: number[] = [];
     const prepareRequest = f.hooks.prepareRequest!;
     f.hooks.prepareRequest = async input => { const prepared = await prepareRequest(input); completeEstimates.push(prepared.estimate.input); return prepared; };
     let count = 0;
-    const tool = "plugin_craftmine_world_project_inspect";
+    const tool = crossTurn ? "plugin_craftmine_world_godot_project_facts" : "plugin_craftmine_world_project_inspect";
     const fakeFetch = vi.fn(async (_url: any, init?: RequestInit) => {
       expect(f.calls.at(-1)?.method).toBe("budget.reserve");
       const body = JSON.parse(String(init?.body));
@@ -123,9 +182,16 @@ describe("pinned DeepSeek SDK final-body calibrated reservations", () => {
       expect(completeEstimates[0]).toBeLessThan(521859);
       expect(completeEstimates[1]).toBeGreaterThan(521859);
       expect((runtime as any).fullEntries.at(-1).message.stopReason).toBe("stop");
+      if(crossTurn){
+        f.setContext(authorized("t2"));await runtime.prompt("Add the next requested object.","next-user","t2");
+        expect(count).toBe(3);expect(events.some(envelope=>envelope.event.type==="compaction_start")).toBe(false);
+        const nextReservation=f.calls.filter(call=>call.method==="budget.reserve").at(-1)!.params;
+        expect(nextReservation.binding).toEqual(authorized("t2").binding);expect(nextReservation.estimatedInputTokens).toBeLessThan(160000);
+        expect(completeEstimates.at(-1)).toBeGreaterThan(521859);
+      }
       if (process.env.CRAFTMINE_PREFIX_REPORT) writeFileSync(process.env.CRAFTMINE_PREFIX_REPORT, JSON.stringify({ fixture: "Native PI loop + pinned SDK + controlled fetch; synthetic provider usage, no model call",
         contextWindow: 1000000, maxOutputTokens: 384000, threshold: 521859, promptUsage: { input: 3000, cacheRead: 1000, cacheWrite: 0 },
-        completeEstimates, reservedInputs: reservations.map(call => call.params.estimatedInputTokens), physicalRequests: count,
+        crossTurn, completeEstimates, reservedInputs: f.calls.filter(call => call.method === "budget.reserve").map(call => call.params.estimatedInputTokens), physicalRequests: count,
         compactions: events.filter(envelope => envelope.event.type === "compaction_start").length }, null, 2));
     } finally { await runtime.dispose(); vi.unstubAllGlobals(); }
   });

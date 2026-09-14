@@ -72,6 +72,26 @@ export type CraftmineBeforeInput = { requestId: string; purpose: CraftminePurpos
 export type CraftmineReservation = { binding: CraftmineBinding; generation: number; requestId: string; context: Context; estimate: CraftmineEstimate; maxOutputTokens: number; readOnlyCloseout?: boolean };
 export type CraftminePrepared = CraftmineReservation & { model: Model<Api>; purpose: CraftminePurpose; signal?: AbortSignal };
 export type CraftmineBoundary = { kind: "compaction" | "tool" | "stop" | "resume" | "model-change" | "world-change"; eventId: string };
+
+/** Measurement identity only. It never authorizes a reservation or tool call.
+ * Broader reuse is limited to the currently revalidated full-auto Godot route;
+ * missing/revoked/ambiguous permission retains a task-bound key. */
+export function craftmineMeasurementScope(snapshot: CraftmineTaskContext): unknown {
+  const capture = snapshot.creationTarget;
+  if (snapshot.status === "running" && snapshot.lease?.owned === true && snapshot.world.runtimeKind === "godot"
+    && Number.isSafeInteger(snapshot.generation) && snapshot.generation > 0
+    && [snapshot.binding.projectId, snapshot.binding.sessionId, snapshot.world.id].every(value => typeof value === "string" && value.length > 0)
+    && typeof snapshot.world.baseId === "string" && snapshot.world.baseId.length > 0
+    && capture?.format === "craftmine.creation-target/1" && capture.worldId === snapshot.world.id
+    && capture.authorization === "full-auto" && capture.autoApply === true && !capture.observerUpgradeOnly && !capture.supersededBy) {
+    return { kind: "same-session-world-full-auto-measurement/1", projectId: snapshot.binding.projectId,
+      sessionId: snapshot.binding.sessionId, worldId: snapshot.world.id, runtimeKind: snapshot.world.runtimeKind,
+      baseId: snapshot.world.baseId, generation: snapshot.generation, authorization: capture.authorization, autoApply: true };
+  }
+  return { binding: snapshot.binding, generation: snapshot.generation, permission: { status: snapshot.status, leaseOwned: snapshot.lease?.owned,
+    capture: capture ? { format: capture.format, worldId: capture.worldId, authorization: capture.authorization,
+      autoApply: capture.autoApply, observerUpgradeOnly: capture.observerUpgradeOnly, supersededBy: capture.supersededBy } : null } };
+}
 export interface CraftmineRequestHooks {
   /** In-process runtime only: select actual registered tools from current host facts. */
   setToolSelector?(select: (snapshot: CraftmineTaskContext, purpose: CraftminePurpose) => Context["tools"]): void;
@@ -224,7 +244,8 @@ export function createCraftmineRequestHooks(options: {
   let receiptEpoch = 0;
   const clearReceipt = () => { prefix.clear(); receiptEpoch++; };
   const receipts = new WeakMap<CraftmineReservation, { proof?: DeepSeekPrefixReceipt; signal?: AbortSignal; epoch: number }>();
-  const scope = (prepared: Pick<CraftmineReservation, "binding" | "generation">) => ({ binding: prepared.binding, generation: prepared.generation });
+  const measurementScopes = new WeakMap<CraftminePrepared, unknown>();
+  const scope = (prepared: CraftminePrepared) => measurementScopes.get(prepared) ?? ({ binding: prepared.binding, generation: prepared.generation });
   function calibrated(estimate: CraftmineEstimate, input: number | undefined): CraftmineEstimate {
     if (input === undefined || input >= estimate.input) return estimate;
     return { ...estimate, system: 0, tools: 0, attachments: 0, messages: input - 1024, framing: 1024,
@@ -248,9 +269,11 @@ export function createCraftmineRequestHooks(options: {
   }
   async function prepareUnreserved(input: CraftmineBeforeInput): Promise<CraftminePrepared> {
     const { snapshot, context, estimate, purpose, readOnlyCloseout } = await prepare(input);
-    return { binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId,
+    const prepared: CraftminePrepared = { binding: snapshot.binding, generation: snapshot.generation, requestId: input.requestId,
       context, estimate, maxOutputTokens: input.maxOutputTokens, model: input.model, purpose, signal: input.signal,
       ...(readOnlyCloseout ? { readOnlyCloseout: true } : {}) };
+    measurementScopes.set(prepared, craftmineMeasurementScope(snapshot));
+    return prepared;
   }
   async function reserve(prepared: CraftminePrepared, estimate = prepared.estimate): Promise<CraftmineReservation> {
     aborted(prepared.signal);
