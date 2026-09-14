@@ -21,6 +21,7 @@ fs.copyFileSync(path.join(root,'desktop/godot/shared/component_state.gd'),path.j
 fs.copyFileSync(path.join(root,'tests/godot-components/promo-combat.gd'),path.join(project,'test.gd'));
 fs.copyFileSync(path.join(root,'tests/godot-components/promo-combat-reopen.gd'),path.join(project,'reopen.gd'));
 fs.copyFileSync(path.join(root,'tests/godot-components/promo-combat-conflict-bootstrap.gd'),path.join(project,'conflict-bootstrap.gd'));
+fs.copyFileSync(path.join(root,'tests/godot-components/promo-hud-layout.gd'),path.join(project,'hud-layout.gd'));
 fs.copyFileSync(path.join(root,'desktop/godot/shared/promo-templates/promo-mainline/source/scripts/monsters/encounter.gd'),path.join(project,'legacy-encounter.gd'));
 fs.copyFileSync(path.join(root,'desktop/godot/components/combat-vitals/scripts/combat_vitals.gd'),path.join(project,'legacy-vitals.gd'));
 const webExport=process.argv.includes('--web-export');
@@ -31,6 +32,9 @@ const result=JSON.parse(run.split(/\r?\n/).find(x=>x.startsWith('PROMO_COMBAT_RE
 assert.deepEqual(result.errors,[]);
 const reopen=await env.run('cold-reopen',['--path',project,'--script','res://reopen.gd']);
 const cold=JSON.parse(reopen.split(/\r?\n/).find(x=>x.startsWith('PROMO_COMBAT_REOPEN=')).slice('PROMO_COMBAT_REOPEN='.length));
+const layoutRun=await env.run('hud-layout',['--path',project,'--script','res://hud-layout.gd']);
+const layout=JSON.parse(layoutRun.split(/\r?\n/).find(x=>x.startsWith('PROMO_HUD_LAYOUT=')).slice('PROMO_HUD_LAYOUT='.length));
+assert.deepEqual(layout.errors,[]);
 let expectedConflict;
 try{await env.run('expected-conflict',['--path',project,'--script','res://conflict-bootstrap.gd']);assert.fail('Conflicting source must report a Godot check error');}
 catch(error){
@@ -40,7 +44,7 @@ catch(error){
   expectedConflict=JSON.parse(log.split(/\r?\n/).find(x=>x.startsWith('PROMO_EXPECTED_CONFLICT=')).slice('PROMO_EXPECTED_CONFLICT='.length));
   assert.equal(expectedConflict.code,'PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED');assert.equal(expectedConflict.oldHealth,100);assert.equal(expectedConflict.oldStillPresent,true);assert.equal(expectedConflict.newInputAllowed,false);
 }
-fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({result,cold,expectedConflict,runs:env.runs},null,2));
+fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({result,cold,layout,expectedConflict,runs:env.runs},null,2));
 assert.equal(cold.error,'');assert.equal(cold.sameComponents,true);assert.equal(cold.samePlayer,true);
 if(webExport){
   const host=fs.readFileSync(path.join(root,'vendor/pi-desktop/crates/craftmine-core/src/godot_host_resources.rs'),'utf8');
@@ -64,6 +68,6 @@ if(webExport){
   const binaryPack=await env.run('web-compiled-restore',['--path',project,'--main-pack',path.join(compiled,'index.pck'),'--script','res://reopen.gd']);
   const binaryCold=JSON.parse(binaryPack.split(/\r?\n/).find(x=>x.startsWith('PROMO_COMBAT_REOPEN=')).slice('PROMO_COMBAT_REOPEN='.length));
   assert.equal(binaryCold.error,'');assert.equal(binaryCold.sameComponents,true);
-  fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({result,cold,expectedConflict,web:{exported:true,productPresetScriptExportMode:0,productPackRestore:packCold,binaryTokenMode:1,compiledPackRestore:binaryCold,browserRenderingTested:false},runs:env.runs},null,2));
+  fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({result,cold,layout,expectedConflict,web:{exported:true,productPresetScriptExportMode:0,productPackRestore:packCold,binaryTokenMode:1,compiledPackRestore:binaryCold,browserRenderingTested:false},runs:env.runs},null,2));
 }
-console.log(JSON.stringify({passed:true,out,checks:result.checks.length+3}));
+console.log(JSON.stringify({passed:true,out,checks:result.checks.length+layout.checks.length+3,layoutChecks:layout.checks.length}));

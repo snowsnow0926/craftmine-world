@@ -51,6 +51,9 @@ var health_bar: ProgressBar
 var stamina_bar: ProgressBar
 var boss_bar: ProgressBar
 var red_screen: ColorRect
+var hud_root: Control
+var top_panel: VBoxContainer
+var bottom_panel: VBoxContainer
 var boss: CharacterBody3D
 
 func _ready() -> void:
@@ -134,6 +137,7 @@ func _make_arena() -> void:
 func _label(parent: Node, size_value: int) -> Label:
 	var label := Label.new()
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var font: Font = world.get("creation_font") as Font
 	if font != null: label.add_theme_font_override("font", font)
 	label.add_theme_font_size_override("font_size", size_value)
@@ -161,35 +165,66 @@ func _make_hud() -> void:
 	hud = CanvasLayer.new()
 	hud.layer = 5
 	add_child(hud)
+	hud_root = Control.new()
+	hud_root.name = "PromoBladeViewport"
+	hud_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(hud_root)
+	hud_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	red_screen = ColorRect.new()
 	red_screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(red_screen)
+	hud_root.add_child(red_screen)
 	red_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	red_screen.color = Color(0.7, 0.015, 0.025, 0)
 	var top := VBoxContainer.new()
-	hud.add_child(top)
-	top.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	top.position = Vector2(-250, 22)
+	top_panel = top
+	hud_root.add_child(top)
+	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	header = _label(top, 22)
-	boss_bar = _bar(top, Color("c95633"), 500)
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	boss_bar = _bar(top, Color("c95633"), 0)
 	boss_bar.max_value = 1600
 	var bottom := VBoxContainer.new()
-	hud.add_child(bottom)
-	bottom.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	bottom.position = Vector2(22, -220)
-	health_bar = _bar(bottom, Color("d84943"), 330)
-	stamina_bar = _bar(bottom, Color("dfbb54"), 330)
+	bottom_panel = bottom
+	hud_root.add_child(bottom)
+	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	bottom.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	health_bar = _bar(bottom, Color("d84943"), 0)
+	stamina_bar = _bar(bottom, Color("dfbb54"), 0)
 	controls = _label(bottom, 18)
-	center = _label(hud, 25)
-	center.set_anchors_preset(Control.PRESET_CENTER)
-	center.position = Vector2(-320, 64)
-	center.custom_minimum_size = Vector2(640, 100)
+	center = _label(hud_root, 25)
+	center.set_anchors_preset(Control.PRESET_HCENTER_WIDE)
+	center.offset_left = 16
+	center.offset_right = -16
+	center.offset_top = -40
+	center.offset_bottom = 80
 	center.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	float_number = _label(hud, 30)
+	center.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	float_number = _label(hud_root, 30)
 	float_number.set_anchors_preset(Control.PRESET_CENTER)
-	float_number.position = Vector2(28, -24)
+	float_number.offset_left = 28
+	float_number.offset_right = 112
+	float_number.offset_top = -24
+	float_number.offset_bottom = 24
+	hud_root.resized.connect(_layout_hud)
+	_layout_hud()
 	_sync_mode()
 	_update_hud()
+
+func _layout_hud() -> void:
+	# Anchor offsets stay relative to the full viewport Control. Assigning a
+	# negative absolute position after an anchor preset would move HUD offscreen.
+	if hud_root == null or top_panel == null or bottom_panel == null: return
+	var width := hud_root.size.x
+	var height := hud_root.size.y
+	var top_width := minf(500.0, maxf(1.0, width - 32.0))
+	top_panel.offset_left = (width - top_width) * 0.5
+	top_panel.offset_right = -(width - top_width) * 0.5
+	top_panel.offset_top = 16
+	top_panel.offset_bottom = 96
+	bottom_panel.offset_left = 16
+	bottom_panel.offset_right = -16
+	bottom_panel.offset_top = -minf(220.0, maxf(1.0, height - 16.0))
+	bottom_panel.offset_bottom = -16
 
 func combat_running() -> bool:
 	if context == null or not context.input_allowed() or not configuration_error.is_empty(): return false
