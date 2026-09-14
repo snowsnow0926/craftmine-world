@@ -29,7 +29,7 @@ const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwM
 async function fixture(historyMessages?: any[]) {
   const scratch = await mkdtemp(join(tmpdir(), "codex-desktop-"));
   const events: any[] = [], calls: any[] = [];
-  let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true;
+  let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true, rejectSave=false;
   let execute = async (_params: any): Promise<any> => ({ ok: true, content: { world: { id: "host-world" }, images: [{ mimeType: "image/png", data: png }] } });
   const make = (client = new Client()) => {
     let start!: () => void; const ready = new Promise<void>(resolve => { start = resolve; }); client.started = start;
@@ -42,7 +42,7 @@ async function fixture(historyMessages?: any[]) {
         calls.push({ method, params });
         if (method === "craftmine.context") return { world: { id: "host-world", runtimeKind: "godot" } };
         if (method === "codex.checkpoint.load") return { checkpoint, transcriptMatches };
-        if (method === "codex.checkpoint.save") { checkpoint = structuredClone(params.checkpoint) as CodexCheckpoint; return {}; }
+        if (method === "codex.checkpoint.save") { if(rejectSave)throw Error('CODEX_TEST_SAVE_FAILED'); checkpoint = structuredClone(params.checkpoint) as CodexCheckpoint; return {}; }
         if (method === "codex.fence") return {};
         if (method === "tools.execute") return execute(params);
         throw Error("Unexpected host operation " + method);
@@ -51,7 +51,7 @@ async function fixture(historyMessages?: any[]) {
     return { runtime, client, ready };
   };
   return { make, events, calls, get checkpoint() { return checkpoint; }, set execute(fn: typeof execute) { execute = fn; },
-    diverge: () => { transcriptMatches = false; }, cleanup: () => rm(scratch, { recursive: true, force: true }) };
+    diverge: () => { transcriptMatches = false; },rejectSaves:()=>{rejectSave=true;}, cleanup: () => rm(scratch, { recursive: true, force: true }) };
 }
 
 describe("Codex desktop adapter (mock app-server, no live model)", () => {
@@ -183,6 +183,33 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       expect(f.events.find(e => e.event.type === "error").event.error.code).toBe("TURN_ABORTED");
       expect(f.checkpoint?.synchronized).toBe(false);
     } finally { await f.cleanup(); }
+  });
+  it('resumes acknowledged idle interruption but rejects missing/late/foreign ack and failed checkpoint save',async()=>{
+    for(const variant of ['ack','missing','late','foreign','save-failed']){
+      const f=await fixture();try{
+        const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'user','n1');await ready;await next();
+        client.close=async()=>{client.closed=true;if(variant!=='missing'&&variant!=='late')client.notify('turn/completed',{turn:{id:variant==='foreign'?'other':'turn-cli',status:'interrupted'}});};
+        if(variant==='save-failed')f.rejectSaves();
+        await runtime.abort();await running;
+        if(variant==='late')client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});
+        expect(f.checkpoint?.synchronized).toBe(variant==='ack');
+        if(variant==='save-failed')expect(f.events.find(e=>e.event.type==='error').event.error.code).toBe('CODEX_CHECKPOINT_PERSIST_FAILED');
+        if(variant==='ack'){
+          const second=f.make();const resumed=second.runtime.prompt({text:'next'},'user','n2');await second.ready;
+          expect(second.client.calls[0].method).toBe('thread/resume');expect(second.client.calls.some(c=>c.method==='thread/inject_items')).toBe(false);
+          await second.runtime.abort();await resumed;
+        }
+      }finally{await f.cleanup();}
+    }
+  });
+  it('an interrupted acknowledgement with a pending tool cannot synchronize the native tail',async()=>{
+    const f=await fixture();let release!:()=>void;f.execute=async()=>{await new Promise<void>(resolve=>{release=resolve;});return {ok:true,content:'late'};};
+    try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'user','n1');await ready;await next();
+      client.request();await next();client.close=async()=>{client.closed=true;client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});};
+      const aborted=runtime.abort();await next();release();await aborted;await running;
+      expect(f.checkpoint?.synchronized).toBe(false);
+    }finally{await f.cleanup();}
   });
   it("restores canonical history after an ended/interrupted transport, without replaying tools", async () => {
     const f = await fixture();
