@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {createHash, randomUUID} from "node:crypto";
-import {INITIAL_LOAD_BRIDGE_PATH, initialLoadBridgeRepair} from "./godot-initial-load-repair";
+import {INITIAL_LOAD_BRIDGE_PATH, INITIAL_LOAD_BASE_BRIDGE_PATH, initialLoadBridgeRepair} from "./godot-initial-load-repair";
 
 type Data = Record<string, any>;
 type Domain = (method: string, args: Data) => Promise<any>;
@@ -183,7 +183,7 @@ export function createGodotWorldInitializer(options: {
     // revision and therefore requires a fresh build/candidate before adoption.
     if (recover && options.initialLoadBridge) {
       const existingBridgeHash = existing.get(INITIAL_LOAD_BRIDGE_PATH);
-      const repair = initialLoadBridgeRepair(existingBridgeHash, options.initialLoadBridge(existingBridgeHash));
+      const repair = initialLoadBridgeRepair(existingBridgeHash, options.initialLoadBridge(existingBridgeHash), existing.get(INITIAL_LOAD_BASE_BRIDGE_PATH));
       if (repair) {
         const latest = await call("godotWorld.initStatus", {worldId});
         if (latest.playable || latest.status === "confirmed" || latest.initId !== status.initId) {
