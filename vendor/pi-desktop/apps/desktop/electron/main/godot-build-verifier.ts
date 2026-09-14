@@ -1,6 +1,6 @@
 import {verifyCreationHarvest} from "./creation-harvest-verifier";
 import {createGodotCheckPhases} from "./godot-check-phases";
-import {createArtifactVerificationProgress,verifyArtifacts} from "./godot-artifact-verification";
+import {startArtifactVerification} from "./godot-artifact-worker-host.mjs";
 import {collectGodotScenarioDiagnostic,type ScenarioDiagnosticSelector} from "./godot-scenario-collector";
 import {verifyCreationDoorSequence} from "./creation-door-verifier";
 import {readGodotCreationObservation,godotCreationMatches} from "./godot-check-requirements";
@@ -322,6 +322,7 @@ function readGuardProbe(raw: unknown): GuardProbe {
  */
 export class GodotBuildVerifier {
   private jobs = new Map<string, () => void>();
+  private artifactWorkerStopFailed = false;
   private readonly deadlineMs: number;
   private readonly scenarioDiagnostics?: ScenarioDiagnosticSelector;
 
@@ -343,6 +344,7 @@ export class GodotBuildVerifier {
 
   async check(input: unknown): Promise<GodotRuntimeCheckEvidence> {
     const descriptor = parseGodotCheckDescriptor(input);
+    if(this.artifactWorkerStopFailed)throw Error("GODOT_CHECK_ARTIFACT_WORKER_STOP_TIMEOUT");
     if (this.jobs.has(descriptor.jobId) || this.jobs.size >= MAX_JOBS) throw new Error("GODOT_CHECK_BUSY");
 
     const startedMs = Date.now();
@@ -352,7 +354,7 @@ export class GodotBuildVerifier {
     // diagnosable without letting a noisy page fail it.
     const diagnostics: string[] = [];
     const phases = createGodotCheckPhases(diagnostics);
-    const artifactProgress=createArtifactVerificationProgress(descriptor.artifacts.length);
+    let artifactTask:ReturnType<typeof startArtifactVerification>|null=null;
 
     const ready: GodotRuntimeCheckReady = { ok: false, ops: [], instanceId: "", elapsedMs: 0 };
     const render: GodotRuntimeCheckRender = { ok: false, frames: 0, distinctFrames: 0, captures: [] };
@@ -404,9 +406,9 @@ export class GodotBuildVerifier {
 
     try {
       phases.begin('artifact-verification');
-      await bounded(verifyArtifacts(descriptor, deadline,artifactProgress,{signal:scenarioStop.signal}));
+      artifactTask=startArtifactVerification(descriptor,deadline,{signal:scenarioStop.signal});
+      await bounded(artifactTask.result);
       assertRunning();
-      artifactProgress.report(diagnostics);
       phases.complete();
 
       phases.begin('runtime-server');
@@ -689,13 +691,17 @@ export class GodotBuildVerifier {
       }
       phases.complete();
     } catch (failure) {
-      artifactProgress.fail(diagnostics,messageOf(failure));
       phases.fail();
       error = messageOf(failure);
     } finally {
       finished = true;
       scenarioStop.abort();
       clearTimeout(timer);
+      if(artifactTask){
+        try{await artifactTask.closed;}
+        catch(failure){this.artifactWorkerStopFailed=true;error??=messageOf(failure);}
+        artifactTask.report(diagnostics);
+      }
       this.jobs.delete(descriptor.jobId);
       const activeRuntime = runtime;
       if (activeRuntime) {

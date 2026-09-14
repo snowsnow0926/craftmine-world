@@ -10605,3 +10605,21 @@ path and compare its artifact/read/heartbeat diagnostics with the retained
 pass. Cancel a partial read and confirm the same cancellation error, closed
 stream and no subsequent artifact work. The original timeout job remains failed
 and immutable, even if the new check succeeds with its own evidence.
+
+After the independent artifact Worker change, first run
+`node --test tests/godot-artifact-verification.test.mjs tests/godot-runtime-diagnostic-log.test.mjs tests/godot-artifact-worker.test.mjs`
+from the Craftmine repository root. The worker test must compile the actual fixed
+entry/dependency chunks and load them from ASAR under Electron Node-only, not
+substitute a stub. Retain its report and archive hash. Confirm full multiblock
+hashing, corrupt tail/missing/link rejection, parent-loop pause, cancellation,
+deadline, silent/crashed exit, malformed/boundary replies, startup cleanup and
+explicit unconfirmed termination. This suite opens no application or GPU.
+
+Then use the newly built candidate EXE and its own resources for the same ordinary
+old-profile Agent continuation/check. Retain native job/build/input/output hashes,
+artifact worker message/exit status, main and worker timing/heartbeat summaries,
+and the later ready/gameplay observations. Require `exitConfirmed: true` before
+runtime startup and no worker surviving cancel. Missing worker messages or
+`STOP_TIMEOUT` are failures, not zero-duration passes. Do not change the original
+30-second deadline or overwrite old job evidence. Isolated ASAR and worker tests
+do not replace this candidate's real native acceptance.

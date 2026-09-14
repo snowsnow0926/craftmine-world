@@ -75,10 +75,10 @@ test('4096 artifacts keep a single final operation and survive the existing boun
  const persisted=JSON.parse(diagnosticLog({format:'craftmine.godot-runtime-check/1',scope:'base-startup',...claim,diagnostics:log},claim));
  assert(persisted.diagnostics.some(s=>s.includes('"artifactIndex":4096')));assert(persisted.diagnostics.some(s=>s.includes('artifact-verification failed')));
 });
-test('production wiring keeps the original timeout race and records artifact failure before phase failure',()=>{
+test('production wiring keeps the original deadline race and confirms worker shutdown',()=>{
  const source=fs.readFileSync(new URL('../vendor/pi-desktop/apps/desktop/electron/main/godot-build-verifier.ts',import.meta.url),'utf8');
- assert.match(source,/CHECK_DEADLINE_MS = 30_000/);assert.match(source,/await bounded\(verifyArtifacts\(descriptor, deadline,artifactProgress,\{signal:scenarioStop.signal\}\)\)/);assert.match(source,/scenarioStop\.abort\(new Error\(reason\)\)/);
- assert(source.indexOf('artifactProgress.fail(diagnostics,messageOf(failure))')<source.indexOf('phases.fail()'));
+ assert.match(source,/CHECK_DEADLINE_MS = 30_000/);assert.match(source,/startArtifactVerification\(descriptor,deadline,\{signal:scenarioStop.signal\}\)/);assert.match(source,/await bounded\(artifactTask.result\)/);assert.match(source,/scenarioStop\.abort\(new Error\(reason\)\)/);
+ assert.match(source,/await artifactTask.closed/);assert.match(source,/this.artifactWorkerStopFailed=true/);assert.match(source,/if\(this.artifactWorkerStopFailed\)throw Error\("GODOT_CHECK_ARTIFACT_WORKER_STOP_TIMEOUT"\)/);
 });
 test('diagnostic paths are bounded relative labels and never include private absolute IO filenames',()=>{
  const p=createArtifactVerificationProgress(1),log=[];p.artifact('web/'+'🐶'.repeat(4096)+'.pck',1,Number.MAX_SAFE_INTEGER);p.operation('stream-read');p.fail(log,'C:/Private/Artifacts/file.pck ENOENT');
