@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {createHash} from 'node:crypto';
+import {createHash,randomUUID} from 'node:crypto';
 export const PRODUCT_AGENT_COMMANDS = new Set(['status','brief','goal-add','goal-review','prompt','send-composer','composition','answer','permission','install-proposal','candidate','input-segment','cancel-inputs','explore','capture','history','source-read','save','resume','snapshot','reopen','publish','export-template','abort','quit']);
 PRODUCT_AGENT_COMMANDS.add('open-world');
 PRODUCT_AGENT_COMMANDS.add('feedback-repair-draft');
@@ -13,7 +13,14 @@ export function readProductAgentCommand(directory, name) {
   return {...value,args:value.args??{},sha256:createHash('sha256').update(bytes).digest('hex')};
 }
 export function atomicProductAgentJson(file, value) {
-  const temp=file+'.tmp';fs.writeFileSync(temp,JSON.stringify(value,null,2)+'\n');fs.renameSync(temp,file);
+  const temp=file+'.tmp-'+randomUUID();fs.writeFileSync(temp,JSON.stringify(value,null,2)+'\n',{flag:'wx'});
+  // Windows readers can briefly deny rename sharing. Keep the old complete
+  // report and retry the same replacement bytes; never delete the destination.
+  const started=Date.now(),pause=new Int32Array(new SharedArrayBuffer(4));
+  for(;;){
+    try{fs.renameSync(temp,file);return;}
+    catch(error){if(!['EPERM','EACCES','EBUSY'].includes(error.code)||Date.now()-started>=1000)throw error;Atomics.wait(pause,0,0,25);}
+  }
 }
 export function measureProductAgentFiles(files) {
   return Object.fromEntries(Object.entries(files).map(([name,file])=>{

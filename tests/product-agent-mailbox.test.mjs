@@ -26,3 +26,16 @@ test('artifact evidence hashes actual bytes and records changed or missing files
 test('packaged launch assertion failure remains serializable evidence instead of escaping after save',t=>{
   const dir=fixture(t),file=path.join(dir,'core.exe');fs.writeFileSync(file,'binary');const checked=checkProductAgentIntegrity(measureProductAgentFiles({core:file}),()=>{throw Error('PACKAGED_PAYLOAD_CHANGED');});assert.equal(checked.status,'failed');assert.match(checked.error,/PACKAGED_PAYLOAD_CHANGED/);
 });
+
+test('transient Windows report sharing retains the old complete report until replacement succeeds',t=>{
+  const dir=fixture(t),file=path.join(dir,'status.json');atomicProductAgentJson(file,{stage:'old'});
+  const rename=fs.renameSync;let attempts=0;
+  t.mock.method(fs,'renameSync',(source,target)=>{
+    assert.equal(JSON.parse(fs.readFileSync(file,'utf8')).stage,'old');
+    if(++attempts<3)throw Object.assign(Error('sharing conflict'),{code:'EPERM'});
+    return rename(source,target);
+  });
+  atomicProductAgentJson(file,{stage:'new'});
+  assert.equal(attempts,3);assert.deepEqual(JSON.parse(fs.readFileSync(file,'utf8')),{stage:'new'});
+  assert.deepEqual(fs.readdirSync(dir),['status.json']);
+});
