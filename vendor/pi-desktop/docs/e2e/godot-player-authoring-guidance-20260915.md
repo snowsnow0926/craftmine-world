@@ -52,3 +52,35 @@ the same player model/thinking/allowances and complete original task scope when
 comparing. Do not replay earlier completed requests as new work, force a chosen
 modeling implementation, impose per-task limits or erase old failures to improve
 the comparison.
+
+## Package-error interpretation follow-up
+
+The same original preview26 playtest later encountered a combat archive whose
+three entity declarations conflicted with a single-entity scene installer.
+The actual repeated error was `PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED`.
+The visible transcript then tried repeated archive group items, invented
+`entity` fields, `request.entity`, an inner resource hash, and position/query
+variants. These introduced separate schema and asset-identity errors without
+repairing the archive contract. The model's claim that rules required exhaustive
+parameter exploration was its own incorrect inference: the existing guide
+already permits ordinary authoring when assets are unavailable or unsuitable.
+
+The follow-up only clarifies error layers, complete-archive group semantics,
+evidence-based retries and goal-preserving alternatives. Package data repair is
+a separate change. `source-library-error-guidance.test.mjs` uses the installed
+PI argument validator and actual source service to reject invented selectors
+before host calls. The added request-boundary test preserves the original error
+tool result during retry. No active model run or raw transcript is altered;
+behavioral improvement remains unverified until a later rebuilt-package test.
+
+The original monster turn was subsequently stopped through the normal controller
+abort after the package contradiction and repeated parameter guessing were
+established. This was not a request/token/time threshold. Duration was 15m25.67s;
+24 model requests were observed and 23 had reported usage, totaling 5221792
+reported tokens including 4316672 cached and 161939 output (153792 reasoning).
+One compaction was followed by another full-library search. The same world was
+saved for continuation under a corrected package with the original player goal;
+no successful continuation has been pre-recorded.
+
+Follow-up CPU validation: 63 request-context tests and 15 source-library/schema
+tests passed. Agent-runtime typechecking and the isolated plugin build passed.

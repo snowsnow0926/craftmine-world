@@ -108,6 +108,22 @@ describe("Craftmine authoritative request boundary", () => {
     expect(data.machineFacts.creationTarget).toEqual(manual.creationTarget);
     expect(data.machineFacts.jobs).toEqual([]);expect(data.machineFacts.receipts).toEqual([]);
   });
+  it("keeps a package-contract failure intact during retry without treating it as a missing argument or banning ordinary authoring", async () => {
+    const f=fixture(),current=snapshot();current.world.runtimeKind="godot";f.set(current);
+    const error={type:"text" as const,text:'{"error":"PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED"}'};
+    const original:Context={systemPrompt:CRAFTMINE_SYSTEM_PROMPT,messages:[
+      {role:"user",content:"Add the requested gameplay",timestamp:1},
+      {...result(),stopReason:"toolUse",content:[{type:"toolCall",id:"source-install",name:"plugin_craftmine_world_godot_source_library",arguments:{mode:"install",ref:{assetId:"fixture.module",version:1,contentHash:"c".repeat(64)}}}]},
+      {role:"toolResult",toolCallId:"source-install",toolName:"plugin_craftmine_world_godot_source_library",isError:true,content:[error],timestamp:3},
+    ],tools:request.tools};
+    const reserved=await f.hooks.beforeRequest({requestId:"retained-package-error",purpose:"retry",model,context:original,maxOutputTokens:model.maxTokens});
+    const retained=reserved.context.messages.find(message=>message.role==="toolResult");
+    expect(retained?.content[0]).toEqual(error);expect(retained?.role==="toolResult"&&retained.isError).toBe(true);
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("package declaration error does not imply that an undocumented argument exists");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("ordinary Godot scene/script authoring");
+    expect(CRAFTMINE_SYSTEM_PROMPT).toContain("If exact reuse itself is a player requirement");
+    expect(f.calls.filter(call=>call.method==="budget.reserve")).toHaveLength(1);
+  });
   it("carries the host target through compaction/retry and drops a different world's capture", () => {
     const current=snapshot();
     current.creationTarget={worldId:"world",snapshotId:"host-capture",target:{entityId:"tree-fixed"}};
