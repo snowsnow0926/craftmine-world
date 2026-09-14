@@ -1,5 +1,24 @@
 # Guidance current cohorts and query resource aliases
 
+## 2026-09-14：目录1.8.2的固定包装链扩展
+
+原两个cohort条目和指导正文/必需引用hash完全保留。增加四个独立完整配置：
+
+| profile | 文件数 | picker / engine |
+| --- | --- | --- |
+| creation-fixed-controller-ray-local/1 | 11 | ray-local picker；原bridge |
+| creation-player-collision-ray-local/1 | 13 | ray-local picker；原bridge |
+| creation-fixed-controller-engine-preview/1 | 13 | ray-local picker；完整preview包装链 |
+| creation-player-collision-engine-preview/1 | 15 | ray-local picker；完整preview包装链 |
+
+新增preview桥LF hash为`938c42a578bb37c0590198232448b1391f688b95f15ce7d5fce65d802cca7e08`；picker LF hash为`09b64ed260b83dd9b3c0559868d6ee3c34ece69876266154b3821ce166865acd`。LF/CRLF各自完整hash在审阅目录中固定；包装链必须包含原bridge的实际继承文件及engine_performance。每个variant是完整组合，不允许旧picker与新包装链混搭。未知受控脚本、受控路径大小写/bytecode/remap别名及缺失成员拒绝；非受控的自定义场景脚本不因此受写入限制。
+
+`referencePaths`仍将必需adapter引用指向确切legacy文件，并标明runtime_bridge对应runtime_bridge_base。所有原必需引用仍逐项读取并核对精确hash及相同source identity；不扩大自定义creation_world/scene_contract的适用条件。
+
+从本版本起，`scripts/refresh-guidance-cohorts.mjs`使用人工审阅的`guidance/interface-cohorts.json`，`--check`检查目录与interfaceHash一致；写入模式拒绝删改已发布profile，**不再从当前materializer覆盖旧条目**。下面关于原刷新器按materializer生成的文字仅描述1.7.0历史实现。
+
+新增`tests/creation-guidance/engine-cohorts.test.mjs`覆盖六个完整组合及反例；`fixtures/city-rev9-interface.json`明确只是实际城市索引中的受控接口子集，非完整manifest或新的运行证明。已有current-cohorts测试仍用真实旧picker存档验证原版，并用当前factory资源验证新增ray-local组合。任何源码刷新必须按版本新增，不得将GUIDANCE_INTERFACE_UNSUPPORTED解释为玩家源码不可改。
+
 The ordinary `863622e9` player turn encountered two read-only discovery failures:
 `godot_guidance catalog` rejected the current v2 adapter, and passing summary's
 `res://scenes/creation.tscn` unchanged to the scene query failed. The model could

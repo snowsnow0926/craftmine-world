@@ -7,6 +7,7 @@ const hash=text=>createHash('sha256').update(text,'utf8').digest('hex');
 const fail=(code,detail)=>{throw Object.assign(Error(code+(detail?': '+detail:'')),{errorCode:code});};
 const entries=new Map(corpus.skills.map(skill=>[skill.id,skill]));
 const metadata=entry=>{const {text,...rest}=entry;return rest;};
+const interfaceAlias=(candidate,name)=>{const lower=candidate.toLowerCase(),bytecode=name.slice(0,-3)+'.gdc';return lower===name||lower.startsWith(name+'.')||lower===bytecode||lower.startsWith(bytecode+'.');};
 const unsupported=path=>fail('GUIDANCE_INTERFACE_UNSUPPORTED',
   'Guidance source compatibility changed at '+path+'. This is not a write-permission denial. Reinspect current source and follow actual godot_project_patch/host policy; do not revert a legitimate edit just to load this recipe.');
 
@@ -56,8 +57,11 @@ async function queryGuidance(core,{context,worldId,args,assertActive=()=>{}}){
       if(cohortIdentity.baseId!==index.baseId||cohortIdentity.engineVersion!==index.engineVersion)fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
       const {variants,reservedPaths}=skill.interfaceCohorts;
       const adapter=files.find(file=>file.path==='craftmine_shared/base_adapter.gd');
-      const modern=files.some(file=>reservedPaths.includes(file.path))||variants.some(v=>v.files.find(file=>file.path===adapter?.path)?.acceptedSourceHashes.includes(adapter?.sha256));
+      const modern=files.some(file=>reservedPaths.some(name=>interfaceAlias(file.path,name)))||variants.some(v=>v.files.find(file=>file.path===adapter?.path)?.acceptedSourceHashes.includes(adapter?.sha256));
       if(modern){
+        const controlled=[...new Set(variants.flatMap(v=>v.files.map(file=>file.path)))];
+        const alias=files.find(file=>controlled.some(name=>file.path!==name&&interfaceAlias(file.path,name)));
+        if(alias)unsupported(alias.path+' (reserved interface alias)');
         const cohort=variants.find(v=>v.files.every(expected=>files.some(file=>file.path===expected.path&&expected.acceptedSourceHashes.includes(file.sha256)))&&
           !files.some(file=>reservedPaths.includes(file.path)&&!v.files.some(expected=>expected.path===file.path)));
         if(!cohort)unsupported('craftmine_shared/base_adapter.gd (complete guidance interface cohort required)');

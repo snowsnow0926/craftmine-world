@@ -25,6 +25,9 @@ function fixture(profile){
  const out=path.join(fs.mkdtempSync(path.join(temporary,'source-')),'project');
  const manifest=materializeBase({baseId:'creation-sandbox',worldId:'world-guidance',out,controllerProfile:profile});
  const texts=new Map(manifest.files.map(file=>[file.path,fs.readFileSync(path.join(out,file.path),'utf8')]));
+ // Retained profiles have immutable old picker bytes, even after the ordinary
+ // materializer advances. New picker cohorts are covered separately below.
+ if(profile!=='legacy')texts.set('craftmine_shared/scene_mesh_picker_v2.gd',fs.readFileSync(path.join(root,'desktop/godot/shared/repairs/scene_mesh_picker_v2-global-budget.gd'),'utf8'));
  let change=()=>{};const calls=[];
  const core={start:async()=>({godotProjects:true}),call:async(method,args)=>{
   calls.push({method,args});
@@ -48,9 +51,16 @@ const query=(f,args)=>f.run('godot_project_query',args),guide=(f,args={mode:'cat
 function readOnly(f){assert.ok(f.calls.every(call=>['workspace.open','godotProject.index','godotProject.read'].includes(call.method)));}
 test.after(()=>fs.rmSync(temporary,{recursive:true,force:true}));
 
-test('cohort corpus deterministically matches the current real materializer and shared observer authority',()=>{
+test('cohort corpus matches the reviewed retained registry without refreshing released pins',()=>{
  execFileSync(process.execPath,[path.join(root,'scripts/refresh-guidance-cohorts.mjs'),'--check'],{cwd:root,windowsHide:true,stdio:'pipe'});
- assert.deepEqual(skill.interfaceCohorts.variants.map(v=>v.files.length),[11,13]);
+ assert.deepEqual(skill.interfaceCohorts.variants.slice(0,2).map(v=>v.files.length),[11,13]);
+});
+
+test('current factory picker gets a distinct exact cohort instead of changing released controller pins',async()=>{
+ for(const profile of ['creation-fixed-controller/1','creation-player-collision/1']){
+  const f=fixture(profile);f.texts.set('craftmine_shared/scene_mesh_picker_v2.gd',fs.readFileSync(path.join(root,'desktop/godot/shared/scene_mesh_picker_v2.gd'),'utf8'));
+  const result=await guide(f);assert.equal(result.interfaceMatches[0].profile,profile.replace('/1','-ray-local/1'));readOnly(f);
+ }
 });
 
 for(const profile of ['legacy','creation-fixed-controller/1','creation-player-collision/1'])test('real '+profile+' catalog and pinned recipe/reference work through '+(process.env.CRAFTMINE_GUIDANCE_PLUGIN_ROOT?'packaged':'source')+' broker',async()=>{
@@ -71,7 +81,7 @@ for(const profile of ['legacy','creation-fixed-controller/1','creation-player-co
 });
 
 test('each modern cohort dependency and inherited recipe contract rejects missing or changed bytes; mixed groups reject',async()=>{
- for(const variant of skill.interfaceCohorts.variants){
+ for(const variant of skill.interfaceCohorts.variants.slice(0,2)){
   const f=fixture(variant.profile),original=new Map(f.texts);
   for(const name of [...variant.files.map(file=>file.path),'scripts/creation_world.gd','scripts/scene_contract.gd'])for(const mode of ['missing','modified']){
    f.texts.clear();for(const entry of original)f.texts.set(...entry);
