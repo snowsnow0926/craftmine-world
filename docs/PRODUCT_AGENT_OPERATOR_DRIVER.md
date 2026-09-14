@@ -1,5 +1,16 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+每次检查的轻量性能样本异步追加到 `collector-performance.ndjson`，只含计数、
+耗时、CPU/内存和身份元数据，不含正文。每条关联 `controllerRunId`、应用启动
+序号、真实 app PID、collectorId、世界和会话；同一个 Node 控制器中的冷重开
+会得到不同启动/collector 身份。`collectorPerformanceSummary.sampledMax`
+保留整个控制器生命周期的观测峰值，不被冷重开后的小值覆盖。每个 collector
+的累计收集字节先取已见最大值再求和，不重复加每次快照。缺失 renderer heap
+标为 `unknown`/null，并单独统计缺失采样次数；未采到的峰值不推算。
+再次运行 Node `--resume` 是新的 controllerRunId，旧样本文件继续保留且可按
+身份区分；新报告只汇总新控制器实际采样，不追认此前已覆盖或未记录的旧峰值。
+这是测试观察数据，不增加模型、任务时长或调用次数限制，也不要求重新打包应用。
+
 初次连接仍等待自己启动的 renderer 导航到主页面，再安装采集器；headless-ready
 只表示主进程已接入，不代表页面 URL 已就绪。运行后的连接故障采用单独的重连与
 degraded 流程。首次改采集器时的 0 模型准备失败记录保留，不当作创作失败。
