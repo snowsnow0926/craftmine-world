@@ -8,15 +8,15 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from '../helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from '../helpers/ordinary-world-ui.mjs';
 import {operatorRedactor,redactedOperatorLog} from '../helpers/operator-provider-config.mjs';
-import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,initializationEntryUiScript,prepareAndEnterRetainedWorld,isExplicitInitializationRecovery} from '../helpers/operator-initialization-retry.mjs';
+import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,initializationEntryUiScript,prepareAndEnterRetainedWorld,isExplicitInitializationRecovery,readRetryRuntime,validatePriorInitializationRecovery} from '../helpers/operator-initialization-retry.mjs';
 import {compareGodotPersistentProgress} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-godot-bases-acceptance.ts';
 import {isTransientReadTimeout,terminalState} from '../player-feedback/P8/initialization-poll.mjs';
 
-const argv=process.argv.slice(2),allowed=['--application-root','--packaged-root','--original-report','--world-id','--output-root'];
-if(argv.includes('--help')){console.log('node tests/godot-final/operator-initialization-retry.mjs --application-root ABS --packaged-root ABS --original-report ABS --world-id ID --output-root ABS/test-results\nRuns only when explicitly launched; original stopped zero-model operator profile, same world, no model/input.');process.exit(0);}
-assert(argv.length===allowed.length*2&&argv.every((value,i)=>i%2||allowed.includes(value)),'RETRY_EXACT_ARGUMENTS_REQUIRED');
-const options=Object.fromEntries(allowed.map(name=>{assert.equal(argv.filter(value=>value===name).length,1,'RETRY_DUPLICATE_ARGUMENT');return [name,argv[argv.indexOf(name)+1]];}));
-for(const name of allowed.filter(name=>name!=='--world-id'))assert(path.isAbsolute(options[name]),'RETRY_ABSOLUTE_PATH_REQUIRED');
+const argv=process.argv.slice(2),required=['--application-root','--packaged-root','--original-report','--world-id','--output-root'],allowed=[...required,'--prior-recovery-report'];
+if(argv.includes('--help')){console.log('node tests/godot-final/operator-initialization-retry.mjs --application-root ABS --packaged-root ABS --original-report ABS --world-id ID --output-root ABS/test-results [--prior-recovery-report ABS]\nRuns only when explicitly launched; original stopped zero-model operator profile, same world, no model/input.');process.exit(0);}
+assert([required.length*2,allowed.length*2].includes(argv.length)&&argv.every((value,i)=>i%2||allowed.includes(value)),'RETRY_EXACT_ARGUMENTS_REQUIRED');
+const options=Object.fromEntries(allowed.filter(name=>required.includes(name)||argv.includes(name)).map(name=>{assert.equal(argv.filter(value=>value===name).length,1,'RETRY_DUPLICATE_ARGUMENT');return [name,argv[argv.indexOf(name)+1]];}));
+for(const name of Object.keys(options).filter(name=>name!=='--world-id'))assert(path.isAbsolute(options[name]),'RETRY_ABSOLUTE_PATH_REQUIRED');
 const owned=validateOperatorRetryProfile(options['--original-report'],options['--world-id']),worldId=owned.worldId;
 const outputRoot=path.resolve(options['--output-root']);assert.equal(path.basename(outputRoot),'test-results');fs.mkdirSync(outputRoot,{recursive:true});
 const out=fs.mkdtempSync(path.join(outputRoot,'desktop-native-operator-retry-')),redact=operatorRedactor();
@@ -28,6 +28,12 @@ fs.copyFileSync(owned.originalFile,path.join(out,'original-report.json'));
 report.priorFailureEvidence=[];
 for(const name of ['ordinary-initialization-retry.json','read-only-startup-page.json','initialization-retry-stop-reason.json']){const source=path.join(owned.owner,name);if(fs.existsSync(source)){const bytes=fs.readFileSync(source);fs.writeFileSync(path.join(out,'prior-'+name),bytes);report.priorFailureEvidence.push({file:source,sha256:retryHash(bytes)});}}
 report.before=retainedInitializationEvidence(owned.profile,worldId);save();
+if(options['--prior-recovery-report']){
+  report.priorRecovery=validatePriorInitializationRecovery(options['--prior-recovery-report'],owned,report.before,launch.identity);
+  fs.copyFileSync(report.priorRecovery.file,path.join(out,'prior-recovery-report.json'));
+  assert.equal(retryHash(fs.readFileSync(path.join(out,'prior-recovery-report.json'))),report.priorRecovery.sha256,'PRIOR_RECOVERY_REPORT_CHANGED');
+  report.recoveryBaseline=report.priorRecovery.before;save();
+}
 const cancelled=new AbortController(),cancelFile=path.join(out,'cancel');report.cancelFile=cancelFile;
 process.on('SIGINT',()=>cancelled.abort());process.on('SIGTERM',()=>cancelled.abort());
 const watcher=setInterval(()=>{if(fs.existsSync(cancelFile))cancelled.abort();},250);
@@ -48,6 +54,10 @@ function archive(value){
 async function until(read,accept){while(!cancelled.signal.aborted){if(ended)throw Error('RETRY_CLIENT_EXITED');const result=await read();if(accept(result))return result;await delay(200);}throw Error('OPERATOR_CANCELLED');}
 const nav=(channel,payload={})=>rpc('worldNavigation',{channel,payload});
 async function readWorldList(){try{return await nav('world.list');}catch(error){if(!isTransientReadTimeout(error))throw error;report.transientReadErrors??=[];report.transientReadErrors.push({at:new Date().toISOString(),error:redact(String(error))});save();return null;}}
+const readRuntime=method=>readRetryRuntime({method,worldId,readList:readWorldList,readRuntime:()=>rpc(method),
+  readUiError:()=>evaluate(`(()=>{const node=[...document.querySelectorAll('[data-world-entry-error], [data-world-notice="error"], .craftmine-immersion-error')].find(node=>node.getClientRects().length>0&&getComputedStyle(node).visibility!=='hidden'&&node.textContent?.trim());return node?.textContent??null;})()`),
+  onTransient:error=>{report.transientViewReads??=[];report.transientViewReads.push({at:new Date().toISOString(),method,error:redact(String(error))});save();}});
+const observeReadyWorld=()=>until(()=>readRuntime('godotObserve'),state=>state?.worldId===worldId&&!!state.instanceId);
 const panel=(channel,payload={})=>rpc('worldPanel',{channel,payload:{worldId,...payload}});
 async function evaluate(expression){
   assert(socket?.readyState===1,'RETRY_OWNED_PAGE_CONNECTION_REQUIRED');const id=++sequence;
@@ -77,7 +87,7 @@ async function start(){
   await evaluate(`(()=>{const form=document.querySelector('[data-world-entry-tab-form="worlds"]');if(!globalThis.__craftmineHeadless||!form)throw Error('RETRY_WORLD_TAB_REQUIRED');form.requestSubmit();return true;})()`);
 }
 async function stop(){
-  if(!ended){await rpc('quit').catch(()=>{});await Promise.race([exit,delay(60000)]);if(!ended){run.forcedStop=true;child.kill();await exit;}}
+  if(!ended){await rpc('quit').catch(()=>{});await Promise.race([exit,delay(60000,undefined,{ref:false})]);if(!ended){run.forcedStop=true;child.kill();await exit;}}
   socket?.close();socket=null;assert(!run.forcedStop,'RETRY_NORMAL_SHUTDOWN_REQUIRED');assert.equal(run.exit?.code,0);assert(run.audit,'RETRY_SHUTDOWN_AUDIT_REQUIRED');assert.deepEqual(run.audit.violations,[]);assert.deepEqual(run.audit.shutdownFailures,[]);assert.deepEqual(run.audit.pageErrors??[],[],'RETRY_PAGE_ERRORS');save();
 }
 async function readyWorld(mode='already-ready-at-startup'){
@@ -111,15 +121,15 @@ async function readyWorld(mode='already-ready-at-startup'){
       }
       // An ordinary handler can already have left entry. Never wait for its
       // now-unmounted form or dispatch another open after that transition.
-      await until(()=>rpc('worldNavigationReady'),state=>state.ready&&state.worldId===worldId);
-      return until(()=>rpc('godotObserve'),state=>state.worldId===worldId&&!!state.instanceId);
+      await until(()=>readRuntime('worldNavigationReady'),state=>state?.ready&&state.worldId===worldId);
+      return observeReadyWorld();
     },
   });
 }
 async function captureAndSave(){
-  const saved=await panel('godot.runtimeSave',{freeze:true}),snapshot=await rpc('godotSnapshot'),before=await rpc('godotObserve');assert.equal(before.worldId,worldId);
+  const saved=await panel('godot.runtimeSave',{freeze:true}),snapshot=await rpc('godotSnapshot'),before=await observeReadyWorld();assert.equal(before.worldId,worldId);
   const frame=await rpc('godotCaptureView');assert(frame.pixelStats?.sampledColors>4,'RETRY_NONBLANK_NATIVE_PIXELS_REQUIRED');
-  const after=await rpc('godotObserve');for(const key of ['worldId','buildId','instanceId'])assert.equal(before[key],after[key],'RETRY_CAPTURE_IDENTITY_CHANGED');
+  const after=await observeReadyWorld();for(const key of ['worldId','buildId','instanceId'])assert.equal(before[key],after[key],'RETRY_CAPTURE_IDENTITY_CHANGED');
   return {saved,snapshot,observation:after,frame:report.calls.findLast(row=>row.method==='godotCaptureView').result};
 }
 async function step(name,action){try{const result=await action();report.steps.push({name,passed:true,result:archive(result)});save();return result;}catch(error){report.steps.push({name,passed:false,error:redact(String(error.stack??error))});save();throw error;}}
@@ -129,18 +139,21 @@ try{
   const decision=await until(async()=>{const list=await readWorldList();if(!list)return null;assert(list.worlds.some(row=>row.id===worldId),'RETRY_WORLD_MISSING');return {list,ui:await evaluate(initializationRetryUiScript(worldId))};},value=>!!value&&!!initializationRecoveryMode(value.list.worlds.find(row=>row.id===worldId),value.ui));
   report.recoveryDecision=decision;const row=decision.list.worlds.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');
   report.recoveryMode=initializationRecoveryMode(row,decision.ui);
-  save();await step('same world becomes an actual running formal instance',()=>readyWorld(report.recoveryMode));
+  const entryMode=report.recoveryMode;
+  if(report.priorRecovery){assert.equal(entryMode,'already-ready-at-startup','PRIOR_RECOVERY_NO_LONGER_READY');report.recoveryMode='prior-recovery-verification';}
+  save();await step('same world becomes an actual running formal instance',()=>readyWorld(entryMode));
   const afterList=await until(readWorldList,Boolean);assert.deepEqual(afterList.worlds.map(row=>row.id).sort(),report.beforeWorldIds,'RETRY_WORLD_SET_CHANGED');
   const first=await step('native pixels and ordinary frozen save',captureAndSave);report.savedSnapshot=first.snapshot;
   await step('normal shutdown after recovery',stop);
-  report.afterRecovery=retainedInitializationEvidence(owned.profile,worldId);report.canonicalRecovery=assertRetainedInitializationRecovery(report.before,report.afterRecovery,worldId);save();
+  report.afterRecovery=retainedInitializationEvidence(owned.profile,worldId);report.canonicalRecovery=assertRetainedInitializationRecovery(report.recoveryBaseline??report.before,report.afterRecovery,worldId);save();
   await step('cold start sealed package on same recovered profile',start);
   const secondRuntime=await step('ordinary open of recovered world after restart',readyWorld);assert.equal(secondRuntime.buildId,first.observation.buildId,'RETRY_COLD_BUILD_CHANGED');assert.notEqual(secondRuntime.instanceId,first.observation.instanceId,'RETRY_NEW_RUNTIME_INSTANCE_REQUIRED');
   const second=await step('cold-reopened native pixels and save',captureAndSave);
   const compared=compareGodotPersistentProgress(first.snapshot,second.snapshot);report.progressComparison=compared;assert(compared.equal,'RETRY_COLD_PROGRESS_CHANGED: '+JSON.stringify(compared.differences));
   await step('normal shutdown after cold reopen',stop);
-  report.afterCold=retainedInitializationEvidence(owned.profile,worldId);assertRetainedInitializationRecovery(report.before,report.afterCold,worldId);
+  report.afterCold=retainedInitializationEvidence(owned.profile,worldId);assertRetainedInitializationRecovery(report.recoveryBaseline??report.before,report.afterCold,worldId);
   assert.equal(retryHash(fs.readFileSync(owned.originalFile)),owned.originalReportSha256,'RETRY_ORIGINAL_REPORT_CHANGED');
+  if(report.priorRecovery)assert.equal(retryHash(fs.readFileSync(report.priorRecovery.file)),report.priorRecovery.sha256,'PRIOR_RECOVERY_REPORT_CHANGED');
   launch.assertUnchanged();report.finalIntegrity='passed';report.passed=true;
 }catch(error){report.fatal=redact(String(error.stack??error));process.exitCode=1;}
 finally{

@@ -170,3 +170,39 @@ single explicit Continue path instead.
 
 73 targeted CPU tests and desktop typechecking pass for this follow-up. Native
 acceptance remains the parent's separate run; KA5iz0 is preserved unchanged.
+
+The newer-package probe `u9rwxZ` completed the real Continue, first check and
+initial application, then executed ordinary Open. Its immediate
+`worldNavigationReady` read raced the retained panel mount and returned exactly
+`World view is not ready`. The application subsequently exited with code 0 and
+empty violation/page-error/shutdown-failure arrays. This report remains failed
+and unchanged; it is not a complete pixels/save/cold-reopen pass.
+
+The test driver now retries only that exact navigation-read error and the
+`godotObserve` error `No world runtime is running`, including the single known
+serialized `Error: ` prefix. Each attempt checks current world selection,
+terminal world state and visible entry/load errors first. Other errors propagate;
+no mutation is repeated. The completed shutdown timer is unreferenced so it
+does not keep an otherwise exited controller alive for 60 seconds.
+
+`--prior-recovery-report ABS` can continue remaining acceptance from a failed,
+normally closed probe that already performed recovery. It verifies the original
+operator report hash, same owned profile/world/init identity, sealed package
+inventory/main/preload hashes, clean exit audits and zero model calls. Its
+recorded `before` must agree with current canonical source/managed/chat data and
+prove a new passed check plus matching applied candidate/application within that
+prior run's recorded time interval. The raw prior file is copied unchanged and
+hashed, then rechecked at completion. The new report keeps its own current
+`before` separately from `recoveryBaseline`; no additional check or retry is
+required or created for an already-ready world.
+
+Read-only preflight of the actual u9rwxZ report passed with SHA
+`45ef8c8a44214dde10054946cb316df9b5c6470ca785edc9be320d5c1aa50bab`.
+Canonical init is confirmed; the new check is
+`gjob-cc969db485db2e322f98d86c5ec1b333baa1b80b98393edb3803800203c81db9`
+and application is `eacc2851-b9de-4e96-9cbb-35e52189ee11`. The original source
+manifest remains `b32e77ccdeaa221bbed030d6267dc44700b6fe9336a1fe08ef4bdf8a4a87483e`.
+This establishes recovery evidence only; native pixels and normal save/cold-open
+remain to be checked by the parent. The original report and profile were not
+edited. Twenty-five CPU tests and driver syntax checks passed, including
+transient-vs-terminal reads and foreign/stale/unclosed prior-report rejection.
