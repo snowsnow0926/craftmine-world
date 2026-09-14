@@ -1,5 +1,6 @@
 import {
   effectiveContextWindow,
+  craftmineRequestBudget,
   modelIdsMatch,
   type MessageUsage,
   type ModelInfo,
@@ -9,6 +10,29 @@ import {
 } from "@pi-desktop/shared";
 
 export const DEFAULT_CONTEXT_WINDOW = 128_000;
+
+export type CraftmineConfiguredBudget = ReturnType<typeof craftmineRequestBudget>;
+
+/** Configuration arithmetic only, never current prompt occupancy. Hide it
+ * when the visible usage belongs to a different model/provider or backend. */
+export function resolveCraftmineConfiguredBudget(
+  selection: { worldCreation: boolean; codex: boolean; providerId?: string; modelId?: string;
+    usageProviderId?: string; usageModelId?: string },
+  providerModels: Record<string, ModelInfo[]>,
+  providers: ProviderPublic[],
+): CraftmineConfiguredBudget | undefined {
+  if (!selection.worldCreation || selection.codex || !selection.providerId || !selection.modelId ||
+      selection.providerId === "codex-cli" || selection.usageProviderId !== selection.providerId ||
+      !selection.usageModelId || !modelIdsMatch(selection.usageModelId, selection.modelId)) return undefined;
+  const provider = providers.find(candidate => candidate.id === selection.providerId);
+  const binding = provider?.models?.find(candidate => modelIdsMatch(candidate.id, selection.modelId!));
+  // The actual selected binding owns maxTokens. No model-default or task-total
+  // fallback may masquerade as the player's request allowance.
+  if (!binding) return undefined;
+  try {
+    return craftmineRequestBudget(resolveContextWindow(selection.providerId, selection.modelId, providerModels, providers), binding.maxTokens);
+  } catch { return undefined; }
+}
 
 function positiveTokenCount(value: number | undefined): number {
   return typeof value === "number" && Number.isFinite(value) && value > 0

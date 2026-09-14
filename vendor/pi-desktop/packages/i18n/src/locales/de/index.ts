@@ -1,6 +1,8 @@
 import { codexConnectionEn } from "../codex-connection.js";
+import { playerBudgetEn } from "../player-budget.js";
 export const de = {
   codexConnection: codexConnectionEn,
+  playerBudget: playerBudgetEn,
   "app": {
     "name": "PI-Desktop",
     "shellName": "PI-Desktop",

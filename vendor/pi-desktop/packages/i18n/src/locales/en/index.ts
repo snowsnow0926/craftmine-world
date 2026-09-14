@@ -1,6 +1,8 @@
 import { codexConnectionEn } from "../codex-connection.js";
+import { playerBudgetEn } from "../player-budget.js";
 export const en = {
   codexConnection: codexConnectionEn,
+  playerBudget: playerBudgetEn,
   app: {
     name: "craftmine world",
     shellName: "craftmine world",

@@ -18,6 +18,8 @@ import { latestMessageUsage, resolveContextWindow } from "./context-usage";
 import {codexContextCapacityMarker} from './codex-usage-coverage';
 
 export type LatestTurnContextInspector = {
+  usageProviderId?: string;
+  usageModelId?: string;
   usage: MessageUsage;
   turnUsage: MessageUsage;
   contextWindow: number;
@@ -61,6 +63,8 @@ export function latestTurnContextInspector(
   if (codex && (!codexUsage?.lastRequest || !codexUsage.modelContextWindow)) return undefined;
 
   return {
+    usageProviderId: latestUsageMessage?.providerId,
+    usageModelId: latestUsageMessage?.modelId,
     usage: codex ? codexUsage!.lastRequest! : latestUsage,
     turnUsage:
       (latestTurn ? assistantTurnUsage(latestTurn) : undefined) ?? latestUsage,
