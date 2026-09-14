@@ -31,12 +31,26 @@ Blender actions are activated, and no model argument can authorize a write.
 Legacy/unknown worlds, summaries, reviews and finished-task closeout do not gain
 these initial tools. Codex's independent tool profile is unchanged.
 
+## Pinned engine documentation from the first request (2026-09-14)
+
+The registered `godot_docs` read tool is also part of the initial authoritative
+Godot PI creation profile. Common engine API lookup should not require a late
+ToolSearch activation that changes tool schemas and invalidates an otherwise
+reusable exact-prefix input receipt. Expose its existing 384-byte manifest schema
+unchanged, including `mode=info|search|read` and the 1..16000 `limit` range.
+
+Keep exact-prefix validation strict. This is a small catalog/discoverability
+change, not permission to reuse a receipt across actual toolset changes. The tool
+still requires host registration and its existing execution/capability guards;
+legacy/unknown worlds, summary/review/finished requests and Codex remain unchanged.
+
 每个模型请求先读取宿主当前任务快照。Rust 在现有绑定世界摘要中投影 `runtimeKind` 与 `baseId`，不根据玩家文字、构建 ID 前缀、目标快照或旧会话推测运行时，也不额外读取完整世界。
 
 确认 Godot 后，基础目录加入已注册的 `godot_file_read`、`godot_project_query`、`godot_project_patch`，保留工程事实、能力报告、指导和检查入口；legacy 的 `project_inspect`、`capabilities_read` 改为按需发现。确认 legacy 时使用其两项检查入口，Godot 工具按需发现。运行时未知保持原来的保守目录，不自动增加源码修改工具。
 
 工具集合只与宿主已提供的实际定义求交，在预算估算之前同时更新 PI 执行器与供应商请求。任务或世界运行时变化时重建目录并清除旧的延迟激活状态；每轮重置、压缩和运行时重建后重新读取权威身份。摘要、评审和已结束任务收尾不提供工具。原有世界作用域、任务租约、预算、源码身份和采用权限保持由宿主检查，新增 schema 不产生权限。
 
-已展示的工具可以直接调用，额外工具才使用 ToolSearch。引擎文档、实时采样、作业控制、素材与包库仍按需发现。
+Call already offered tools directly; use ToolSearch for additional tools. Live
+sampling, job control and asset/package library operations remain on demand.
 
 验收：原生 PI 循环无需 ToolSearch 即可调用读取、修改、检查；没有注册的名称不出现，执行器集合与供应商 schema 一致。覆盖 Godot/legacy/未知世界切换、提示重置、压缩摘要、任务结束和进程重建；通用 Bash/Task 权限不扩展。

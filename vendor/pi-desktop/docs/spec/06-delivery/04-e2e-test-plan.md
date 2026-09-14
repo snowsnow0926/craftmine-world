@@ -10945,6 +10945,14 @@ cancellation. Verify cache counts once, unchanged 1M/384K/max configuration and
 one ordinary compaction recovery after a pre-send fallback overflow. Synthetic
 fixture counts are not real-player token-saving claims.
 
+## Godot documentation first-call profile (2026-09-14)
+
+The native PI Godot profile must expose the registered `godot_docs` schema before
+its first engine API lookup. Run the existing source-index/Blender profile tests
+with the added docs first-call case and world/registration/closeout exclusions.
+See [the focused profile evidence](../../e2e/pi-godot-index-first-call-20260914.md).
+Keep strict prefix validation unchanged when other tools are actually activated.
+
 ## Companion v3 receiving-world bounds
 
 Check configured city/sandbox ranges, exact cold component state, finite values,
