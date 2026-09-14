@@ -1,7 +1,23 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';
+import test,{after} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import {execFileSync} from 'node:child_process';import {createRequire} from 'node:module';import {fileURLToPath,pathToFileURL} from 'node:url';
 const require=createRequire(import.meta.url);
-const {validateToolArguments}=await import(pathToFileURL(path.resolve('vendor/pi-desktop/packages/agent-runtime/node_modules/@earendil-works/pi-ai/dist/utils/validation.js')));
-const directory=path.resolve(process.env.CRAFTMINE_DOCS_API_PLUGIN??'test-results/docs-api-plugin');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const {validateToolArguments}=await import(pathToFileURL(path.join(root,'vendor/pi-desktop/packages/agent-runtime/node_modules/@earendil-works/pi-ai/dist/utils/validation.js')));
+const configured=process.env.CRAFTMINE_DOCS_API_PLUGIN;
+if(configured!==undefined)assert(configured.trim(),'CRAFTMINE_DOCS_API_PLUGIN_MUST_NAME_AN_EXISTING_PACKAGE');
+const directory=configured!==undefined?path.resolve(configured):fs.mkdtempSync(path.join(os.tmpdir(),'craftmine-docs-api-test-'));
+if(configured===undefined){
+  // Each test process owns a unique package fixture. An explicitly supplied
+  // package is read only and is never built over or removed by this test.
+  after(()=>{
+    if(!fs.existsSync(directory))return;
+    assert.equal(path.dirname(directory).toLowerCase(),path.resolve(os.tmpdir()).toLowerCase());
+    assert(path.basename(directory).startsWith('craftmine-docs-api-test-'));
+    assert(!fs.lstatSync(directory).isSymbolicLink());
+    assert.equal(fs.realpathSync(directory).toLowerCase(),directory.toLowerCase());
+    fs.rmSync(directory,{recursive:true,force:true});
+  });
+  execFileSync(process.execPath,[path.join(root,'desktop/build-world-plugin.mjs'),'--output',directory],{cwd:root,windowsHide:true,stdio:'pipe'});
+}
 const manifest=require(path.join(directory,'manifest.json')),definition=manifest.contributes.agentTools.find(t=>t.name==='godot_docs');
 const {createWorldTools}=require(path.join(directory,'world-tools.cjs'));
 const invocation={projectId:'p',sessionId:'s',turnId:'t',executionId:'e',toolCallId:'read-docs'};
