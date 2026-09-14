@@ -22,7 +22,9 @@ export const directIsTerminal = (status?: DirectStatus) => !!status && terminal.
 export function parseDirectInspection(raw: unknown): DirectInspection {
   const value = record(raw);
   if (typeof value.eligible !== "boolean" || value.compatibility !== "unchecked" || typeof value.positionSupported !== "boolean") throw Error("DIRECT_LIBRARY_RECEIPT_INVALID");
+  if (value.configurationRequired !== undefined && typeof value.configurationRequired !== "boolean") throw Error("DIRECT_LIBRARY_RECEIPT_INVALID");
   return {eligible: value.eligible, compatibility: "unchecked", positionSupported: value.positionSupported,
+    ...(typeof value.configurationRequired === "boolean" ? {configurationRequired: value.configurationRequired} : {}),
     ...(typeof value.warning === "string" ? {warning: value.warning} : {}),
     ...(typeof value.reason === "string" ? {reason: value.reason} : {}), ...(typeof value.displayName === "string" ? {displayName: value.displayName} : {})};
 }

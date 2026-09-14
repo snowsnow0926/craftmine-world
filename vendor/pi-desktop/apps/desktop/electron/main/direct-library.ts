@@ -108,6 +108,8 @@ export function createDirectLibraryService(deps:Dependencies){
       if(r.operation.status!=='ready'||!r.operation.candidateId)throw Error('DIRECT_LIBRARY_CHECK_REQUIRED');
       if(r.restarted){const target=await deps.captureTarget(r.operation.worldId);if(target.buildId!==r.target.buildId)throw Error('CREATION_TARGET_STALE');r.target=target;r.restarted=false;}
       const authorize=async()=>{await assertActive(r);const state=await packageCall('directStatus',{worldId:r.operation.worldId,operationId:r.operation.operationId});if(state.status!=='ready'||state.candidateId!==r.operation.candidateId)throw Error('DIRECT_LIBRARY_SOURCE_CHANGED');await assertActive(r);};
+      // configurationRequired concerns another new installation. Adoption uses
+      // this already materialized operation's exact check/source evidence.
       await authorize();const info=await inspect(r.operation.worldId,r.operation.ref);if(!info.eligible)throw Error(info.reason??'DIRECT_LIBRARY_UNSUPPORTED');await authorize();
       r.operation.status='applying';r.operation.stage='applying';await persist(r);
       appliedStartedAt=requestedAt;
@@ -126,7 +128,7 @@ export function createDirectLibraryService(deps:Dependencies){
     }
     if(stopping||!pending.ownsSlot||running.size)throw Error('WORLD_BUSY');
     await deps.prepare?.(input.worldId);
-    const info=await inspect(input.worldId,input.ref);if(!info.eligible||!info.source)throw Error(info.reason??'DIRECT_LIBRARY_UNSUPPORTED');
+    const info=await inspect(input.worldId,input.ref);if(!info.eligible||info.configurationRequired||!info.source)throw Error(info.reason??'DIRECT_LIBRARY_UNSUPPORTED');
     const target=await deps.captureTarget(input.worldId);await deps.assertTarget(input.worldId,target);
     const now=Date.now();r={format:'craftmine.direct-library/1',request:input,target,source:info.source,startedAt:pending.startedAt,cancelRequested:pending.cancelRequested,operation:{operationId:input.operationId,worldId:input.worldId,ref:input.ref,...(input.position?{position:input.position}:{}),status:pending.cancelRequested?'cancelled':'preparing',stage:pending.cancelRequested?'cancelled':'preparing',instanceIds:[],draftRetained:false,modelCalls:0,createdAt:now,updatedAt:now}};
     pending.record=r;records.set(id,r);await persist(r);

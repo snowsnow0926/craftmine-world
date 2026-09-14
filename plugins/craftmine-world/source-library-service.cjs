@@ -88,7 +88,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       }
       const legacy=configuration?.kind==='legacy-companion-range';
       const configured=!configuration||legacy||configuration.status==='configuration-planned';
-      return {eligible:eligible&&configured,...(!eligible?{reason:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED'}:!configured?{reason:'DIRECT_LIBRARY_WORLD_CONFIGURATION_REQUIRED'}:{}),...(legacy?{warning:'LEGACY_COMPANION_SAVE_BOUNDS'}:{}),...(configuration?{configuration}:{}),positionSupported,compatibility:'unchecked',displayName:archive.record.version_.displayName,
+      return {eligible,...(!eligible?{reason:'DIRECT_LIBRARY_SINGLE_SCENE_REQUIRED'}:!configured?{reason:'DIRECT_LIBRARY_WORLD_CONFIGURATION_REQUIRED'}:{}),...(legacy?{warning:'LEGACY_COMPANION_SAVE_BOUNDS'}:{}),...(configuration?{configurationRequired:!configured,configuration}:{}),positionSupported,compatibility:'unchecked',displayName:archive.record.version_.displayName,
         source:{revision:source.revision,manifestHash:source.manifestHash}};
     },
     async directInstall(args){

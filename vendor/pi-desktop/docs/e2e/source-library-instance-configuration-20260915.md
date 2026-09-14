@@ -4,10 +4,15 @@ Scope: independent source checkout and isolated Core data. No model requests,
 GPU/GUI input, running user profile, candidate adoption or progress injection.
 The existing debug Rust Core is used without rebuilding or changing its RPCs.
 
-Final targeted run: 45 passed, zero failures/skips. This comprises eight actual
-Core routes/boundaries, five configuration/SDK/renderer cases and 32 existing
-source-library, permission, published-package and autosave regressions. The
-plugin packaging build and isolated DirectLibraryUse renderer bundle succeeded.
+The initial targeted run passed 45 cases without skips. Follow-up coverage adds
+the production direct controller, repeated installation, root-binding ambiguity
+and existing direct/composition regression suites. Plugin packaging and an
+isolated DirectLibraryUse renderer bundle are part of verification.
+
+Final expanded run: 74 passed, zero failures/skips: eight Core cases, three
+production-controller cases with controlled native dependencies, seven
+configuration/SDK/renderer cases and 56 existing regressions. The packaged
+module test caught and fixed a CJS-to-ESM builtin import issue before integration.
 
 `tests/source-configuration-core.test.mjs` runs the actual Rust catalog,
 immutable package parsing, host binding, source CAS, scene materializer and check
@@ -25,8 +30,19 @@ pins, actual stock sandbox/city source bytes, changed scene pins after install,
 and legacy limited-area installation with warning-only behavior. The synthetic
 component fixture exercises the configuration protocol. Separate published
 package tests verify real v3 declarations and unchanged old archive hashes.
-The Core has no engine executor: checks must be genuinely `blocked`; no passed
-job, gameplay success or runtime position is fabricated.
+The Core has no engine executor: persisted checks must be genuinely `blocked`;
+no passed job, gameplay success or runtime position is written into Core.
+
+Three follow-up controller cases execute production DirectLibraryService with
+the actual package/materializer/Core path. The native check/adoption dependencies
+are explicitly controlled JS fixtures for this CPU contract test; their simulated
+passed responses are never persisted in Core. One test prepares/checks/applies
+two independent companions, another performs an actual later Core source patch
+and verifies refusal, and a third refuses an unknown required configuration
+before installation starts. Before the fix, the first apply failed because a
+fresh-install configuration decision was reused at candidate-application time.
+The test verifies Core's original job is still blocked after the simulated
+controller interaction. Actual native acceptance remains separate.
 
 `tests/source-configuration.test.mjs` covers both published companion variants,
 all exact source/selector pins, custom-city fallback refusal, finite/order/range
@@ -40,7 +56,7 @@ Run in a prepared isolated dependency tree:
 $env:CRAFTMINE_CORE_BIN='<existing craftmine-core executable>'
 node desktop/build-world-plugin.mjs --output test-results/source-configuration-plugin
 $env:CRAFTMINE_CONFIGURATION_PLUGIN_DIR='test-results/source-configuration-plugin'
-node --test tests/source-configuration-core.test.mjs tests/source-configuration.test.mjs tests/source-library-read-hints.test.mjs tests/godot-final-install-assets/source-library.test.mjs tests/author-source-install.test.mjs tests/companion-bounds-package.test.mjs tests/godot-autosave-candidate.test.mjs
+node --test tests/source-configuration-core.test.mjs tests/source-configuration.test.mjs tests/source-library-read-hints.test.mjs tests/godot-final-install-assets/source-library.test.mjs tests/author-source-install.test.mjs tests/companion-bounds-package.test.mjs tests/godot-autosave-candidate.test.mjs tests/world-composition.test.mjs vendor/pi-desktop/apps/desktop/test/direct-library.test.mjs
 ```
 
 The Core test can run against checkout modules by omitting the plugin directory.

@@ -13,6 +13,9 @@ existing automatic play handoff without model/GPU or physical input in fixtures.
   confirmation through the actual Core and packaged shared materializer.
 - Verify exact stock source pins, mandatory custom-world bounds, invalid/stale
   configuration refusal before writes, independent instances and cold retry.
+- Revalidate the pinned root/controller binding after adding an instance;
+  prepare/apply a second companion without new AI setup. Keep new-install
+  requirements separate from exact checked-candidate application evidence.
 - Keep legacy limited-area installation available with a visible range warning;
   retain published ZIP hashes and progress. Validate real PI tool arguments.
 - See [contract](../source-library-instance-configuration.md) and
