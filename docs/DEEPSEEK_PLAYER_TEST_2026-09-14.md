@@ -225,3 +225,26 @@ turn2e2dbd6b…，205,362ms、6请求、1,459,428token。现在完整验证身�
 这一修复后执行。083正常退出，完整包身份核验通过。
 
 证据位于UNfo0G及root test-results/city-a3-a5-creation-play-proof.json。
+
+## A6 校准真实生效，但文档入口缺失拖慢导航修复
+
+包7aa4fb70恢复原城市4/4，普通请求92b37c4a…开始绕障修复。
+13条成功预约记录中10条实际采用measured-whole-prompt-exact-prefix-plus-utf8-half-tail/1；
+例如第二、第三请求估算265232、246009，W=1000000、O=384000不变。
+这不是同一请求的前后A/B，只证明实际路径已启用。
+
+一次晚加载godot_docs改变toolset导致校准按设计回退：history294923，完整
+request估算654738，超过521859阈值，发生一次压缩。已把384bytes的原文档工具
+提前加入Godot PI创作工具，严格前缀规则保持。
+
+另一项实际缺口：Godot ClassDB已内置1054类、17008方法，但godot_docs公开schema
+只允许16篇摘要文档的info/search/read，没开放已有api-info/api-class/api-search。
+导航查询多次返回无匹配或泛词摘要。现已接通原有只读API入口及明确覆盖提示，
+真实PI参数校验→打包工具→pinned ClassDB回归通过，没有下载或换引擎。
+
+A6的首导航版烘焙有2419多边形，但参数精度warnings与空路径尚未解决。为升级
+文档入口，在829121ms主动暂停并正常退出：13调用、2226761累计token（完整usage）；
+其中缓存1425920、输入633692、输出167149（推理155342包含其中）。这不是完整
+导航验收，也不是因本地整轮限额停止。当前正式A5世界与4/4进度保留，源rev13
+草稿留待普通继续任务修复。新启动日志没有主进程错误，不能据此宣称所有候选
+保存竞态均已做完native验收。证据test-results/city-a6-calibrated-prefix-proof.json。
