@@ -57,6 +57,7 @@ import type {
   CommandShellOption,
   ContextCompactionReason,
   ContextCompactionRecord,
+  ContextCompactionTrigger,
   ContextCompactionSettings,
   MessageUsage,
   Mode,
@@ -1201,6 +1202,7 @@ export class DesktopAgentRuntime {
   private planningState: PlanningState;
   private pendingPlanId?: string;
   private currentAssistant?: UiMessage;
+  private activeCompactionTrigger?: ContextCompactionTrigger;
   private assistantUpdates = new LatestPartialPublisher<Extract<AgentEvent, {type: "message_update"}>>(
     event => this.publishAssistantUpdate(event),
   );
@@ -3887,6 +3889,9 @@ Delegation rules:
 
   private emit(event: AgentEventEnvelope["event"], turnId?: string) {
     if (event.type !== "message_update") this.assistantUpdates.flush();
+    if ((event.type === "compaction_start" || event.type === "compaction_end") && this.activeCompactionTrigger) {
+      event = { ...event, trigger: this.activeCompactionTrigger };
+    }
     this.onEvent({
       sessionId: this.sessionId,
       turnId: turnId ?? this.turnId,
@@ -4374,7 +4379,11 @@ Delegation rules:
     }
 
     const budget = this.contextBudget(context.messages);
-    const hardLimitReached = budget.tokens >= budget.hardLimit || await this.craftmineCompactionNeeded(context.messages, _signal);
+    let requestMeasurement: ContextCompactionTrigger["request"];
+    const historyLimitReached = budget.tokens >= budget.hardLimit;
+    const requestLimitReached = !historyLimitReached && await this.craftmineCompactionNeeded(context.messages, _signal,
+      measurement => { requestMeasurement = measurement; });
+    const hardLimitReached = historyLimitReached || requestLimitReached;
     // Codex's `should_roll_over`: either the model asked for a new window or
     // the limit forces one. A model request that fails to compact is not fatal
     // — nothing is over the boundary yet — so only the limit throws.
@@ -4389,11 +4398,10 @@ Delegation rules:
       turn.message?.stopReason === "toolUse"
         ? "active_turn"
         : "completed_turn";
-    const compacted = await this.runCompaction(
-      "threshold",
-      false,
-      retentionMode,
-    );
+    const trigger = this.compactionTrigger(budget, historyLimitReached ? "history-limit" : requestLimitReached ? "request-input-limit" : "model-request", requestMeasurement);
+    const compacted = trigger
+      ? await this.runCompaction("threshold", false, retentionMode, trigger)
+      : await this.runCompaction("threshold", false, retentionMode);
     if (!compacted) {
       if (!hardLimitReached && !this.craftmineHooks) return { context };
       // Continuing would immediately issue the provider request that this
@@ -4413,7 +4421,16 @@ Delegation rules:
     return { context };
   }
 
-  private async craftmineCompactionNeeded(messages: AgentMessage[], signal?: AbortSignal): Promise<boolean> {
+  private compactionTrigger(budget: ContextBudget, cause: ContextCompactionTrigger["cause"], request?: ContextCompactionTrigger["request"]): ContextCompactionTrigger | undefined {
+    if (!this.craftmineHooks) return undefined;
+    return { cause, observedAt: Date.now(), history: { estimatedTokens: budget.tokens, hardLimit: budget.hardLimit },
+      ...(request ? { request } : {}),
+    };
+  }
+
+  private async craftmineCompactionNeeded(messages: AgentMessage[], signal?: AbortSignal,
+    inspected?: (measurement: NonNullable<ContextCompactionTrigger["request"]>) => void,
+  ): Promise<boolean> {
     if (!this.craftmineHooks?.inspectRequest) return false;
     const estimate = await this.craftmineHooks.inspectRequest({ requestId: "preflight", purpose: "creation", model: this.model,
       context: { systemPrompt: this.agent.state.systemPrompt, messages: convertToLlm(messages), tools: this.activeTools() },
@@ -4421,6 +4438,8 @@ Delegation rules:
     // Reserve the actual outgoing allowance, then leave 15% of input space
     // for summary/framing growth. The physical request is remeasured later.
     const budget = craftmineRequestBudget(this.model.contextWindow, estimate.output, estimate.toolResults);
+    inspected?.({ ...budget, providerId: this.provider.id, modelId: this.model.id,
+      estimatedInputTokens: estimate.input, estimationMethod: estimate.method });
     return estimate.input >= budget.compactionThreshold;
   }
 
@@ -4473,14 +4492,17 @@ Delegation rules:
     reason: ContextCompactionReason,
     willRetry: boolean,
     retentionMode: CompactionRetentionMode = "completed_turn",
+    trigger?: ContextCompactionTrigger,
   ): Promise<boolean> {
     if (this.compactionInProgress) return false;
     this.compactionInProgress = true;
+    this.activeCompactionTrigger = trigger;
     try {
       return await this.performCompaction(reason, willRetry, retentionMode);
     } finally {
       this.compactionAbort = undefined;
       this.compactionInProgress = false;
+      this.activeCompactionTrigger = undefined;
     }
   }
 
@@ -4651,6 +4673,11 @@ Delegation rules:
     mustFitSafeBudget: boolean,
     fallback?: ContextCompactionFallback,
   ): Promise<CheckpointPersistResult> {
+    if (this.activeCompactionTrigger) {
+      checkpoint = { ...checkpoint, details: { ...(isRecord(checkpoint.details) ? checkpoint.details : {}),
+        trigger: structuredClone(this.activeCompactionTrigger),
+      } };
+    }
     const compactedBudget = this.contextBudget(
       buildSessionContext(this.entriesWithCompaction(checkpoint)).messages,
     );
@@ -5735,8 +5762,16 @@ Delegation rules:
         content,
         timestamp: Date.now(),
       };
-      if (this.automaticCompactionNeeded([incomingUserMessage]) || await this.craftmineCompactionNeeded([...this.agent.state.messages, incomingUserMessage])) {
-        const compacted = await this.runCompaction("threshold", false);
+      let requestMeasurement: ContextCompactionTrigger["request"];
+      const historyLimitReached = this.automaticCompactionNeeded([incomingUserMessage]);
+      const requestLimitReached = !historyLimitReached && await this.craftmineCompactionNeeded([...this.agent.state.messages, incomingUserMessage], undefined,
+        measurement => { requestMeasurement = measurement; });
+      if (historyLimitReached || requestLimitReached) {
+        const budget = this.contextBudget([...this.agent.state.messages, incomingUserMessage]);
+        const trigger = this.compactionTrigger(budget, historyLimitReached ? "history-limit" : "request-input-limit", requestMeasurement);
+        const compacted = trigger
+          ? await this.runCompaction("threshold", false, "completed_turn", trigger)
+          : await this.runCompaction("threshold", false);
         if (!compacted) {
           this.failBeforeProviderRequest(incomingUserMessage, {
             code: "CONTEXT_COMPACTION_FAILED",

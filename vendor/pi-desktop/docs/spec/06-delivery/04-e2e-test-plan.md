@@ -10830,6 +10830,10 @@ executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
 # DeepSeek official alias transport (2026-09-14)
 
+Run [compaction trigger evidence validation](../../e2e/compaction-trigger-evidence-20260914.md)
+to distinguish complete-request estimates from PI history tokens in events and
+checkpoint details while preserving the player's configured model limits.
+
 For companion reuse, run [the runtime-settings guidance regression](../../e2e/companion-runtime-settings-guidance-20260914.md).
 The published v2 ZIP/hash remains unchanged while the versioned guide teaches
 public snapshot runtime settings for follow toggles and matching HUD labels.

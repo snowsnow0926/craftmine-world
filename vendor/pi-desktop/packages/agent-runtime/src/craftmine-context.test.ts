@@ -366,14 +366,48 @@ describe("Craftmine authoritative request boundary", () => {
     expect(internal.fullEntries.some((entry: any) => entry.id === "old-answer")).toBe(true);
     await runtime.dispose();
   });
+  for (const failSummary of [false, true]) it(`records the actual 1M request trigger separately from PI history tokens, failure=${failSummary}`, async () => {
+    const f=fixture(),records:any[]=[],events:any[]=[];
+    const history=[{id:"old-user",role:"user",content:"Preserve the current world.",createdAt:"2026-09-09T00:00:00Z",status:"complete"},
+      {id:"long-history",role:"assistant",content:"x".repeat(1050000),createdAt:"2026-09-09T00:00:01Z",status:"complete"}];
+    const runtime=makeRuntime(f.hooks,records,history,undefined,envelope=>events.push(envelope)),internal=runtime as any;
+    internal.model={...internal.model,contextWindow:1000000,maxTokens:384000};internal.agent.state.model=internal.model;
+    vi.spyOn(internal.models,"streamSimple").mockImplementation(()=>stream(failSummary
+      ? {...result(),stopReason:"error",content:[],errorMessage:"SUMMARY_PROVIDER_UNAVAILABLE"}
+      : result("Keep the existing world and continue the request.")));
+    await runtime.prompt("Continue the world","user-audit","turn-audit");
+    const start=events.find(e=>e.event.type==="compaction_start").event;
+    const end=events.find(e=>e.event.type==="compaction_end").event;
+    expect(start.trigger.cause).toBe("request-input-limit");
+    expect(start.trigger.request).toMatchObject({contextWindow:1000000,maxOutputTokens:384000,toolResultReserve:2048,inputCapacity:613952,compactionThreshold:521859,estimationMethod:"utf8-half-model-content-json-framing/3"});
+    expect(start.trigger.request.estimatedInputTokens).toBeGreaterThanOrEqual(521859);
+    expect(start.trigger.history.estimatedTokens).toBeLessThan(521859);
+    expect(end.trigger).toEqual(start.trigger);expect(end.ok).toBe(!failSummary);
+    if(!failSummary){expect(records[0].details.trigger).toEqual(start.trigger);expect(end.tokensBefore).toBeLessThan(521859);}
+    expect(internal.activeCompactionTrigger).toBeUndefined();
+    internal.emit({type:"compaction_start",reason:"manual"});expect(events.at(-1).event.trigger).toBeUndefined();
+    await runtime.dispose();
+  });
+  it("labels a model-requested compaction without claiming the safe input threshold was exceeded",async()=>{
+    const f=fixture(),records:any[]=[],events:any[]=[];
+    const history=[{id:"request",role:"user",content:"Keep the tree.",createdAt:"2026-09-09T00:00:00Z",status:"complete"},
+      {id:"answer",role:"assistant",content:"The tree remains.",createdAt:"2026-09-09T00:00:01Z",status:"complete"}];
+    const runtime=makeRuntime(f.hooks,records,history,undefined,e=>events.push(e)),internal=runtime as any;
+    vi.spyOn(internal.models,"streamSimple").mockImplementation(()=>stream(result("The existing tree remains.")));
+    internal.pendingModelCompaction=true;
+    await internal.prepareNextTurn({toolResults:[],message:{stopReason:"stop"}});
+    const trigger=events.find(e=>e.event.type==="compaction_start").event.trigger;
+    expect(trigger.cause).toBe("model-request");expect(trigger.request.estimatedInputTokens).toBeLessThan(trigger.request.compactionThreshold);
+    expect(records[0].details.trigger).toEqual(trigger);await runtime.dispose();
+  });
 });
-function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = [], pluginTools=[{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }]) {
+function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, records: unknown[] = [], history: any[] = [], pluginTools=[{ name: "plugin_craftmine_world_project_inspect", description: "Inspect" }], onEvent: (event:any)=>void=()=>{}) {
   return new DesktopAgentRuntime({ craftmineWorld: true, craftmineHooks: hooks, history, sessionId: "session", turnId: "turn", mode: "agent", thinkingLevel: "off", commandShell: { id: "bash", label: "Bash", dialect: "posix", available: true, isDefault: true },
     // The provider is a contract fixture, never a real model or a mock PI loop.
     provider: { id: "fixture", name: "Fixture", modelId: "fixture", baseUrl: "http://127.0.0.1:1", apiKey: "", authKind: "none", supportsReasoning: false, supportedThinkingLevels: ["off"], modelConfig: { source: "generic", name: "Fixture", baseUrl: "http://127.0.0.1:1", input: ["text"], reasoning: false, cost: model.cost, contextWindow: 256000, maxTokens: 4000 } },
     pluginTools,
     host: { call: vi.fn(async (method: string, params: any) => { if (method === "session.appendCompaction") records.push(params.compaction); return {}; }), onNotification: () => () => {} } as any,
-    onEvent: () => {},
+    onEvent,
   });
 }
 

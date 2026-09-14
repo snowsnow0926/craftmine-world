@@ -519,6 +519,18 @@ export type ContextCompactionMark = ContextCompactionStatus & {
 };
 
 export type ContextCompactionReason = "manual" | "threshold" | "overflow";
+/** The actual guard decision, distinct from PI's historical tokensBefore. */
+export type ContextCompactionTrigger = {
+  cause: "request-input-limit" | "history-limit" | "model-request";
+  observedAt: number;
+  history: { estimatedTokens: number; hardLimit: number };
+  /** Absent when the history guard short-circuited request inspection. */
+  request?: {
+    providerId: string; modelId: string; contextWindow: number;
+    maxOutputTokens: number; toolResultReserve: number; inputCapacity: number;
+    compactionThreshold: number; estimatedInputTokens: number; estimationMethod: string;
+  };
+};
 export type ContextCompactionFallback = "retained_tail";
 
 export type MessageRevisionSummary = {
@@ -763,11 +775,13 @@ export type AgentEvent =
   | {
       type: "compaction_start";
       reason: ContextCompactionReason;
+      trigger?: ContextCompactionTrigger;
     }
   | {
       type: "compaction_end";
       reason: ContextCompactionReason;
       ok: boolean;
+      trigger?: ContextCompactionTrigger;
       tokensBefore?: number;
       firstKeptMessageId?: string;
       willRetry: boolean;
