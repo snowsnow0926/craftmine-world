@@ -411,6 +411,19 @@ function makeRuntime(hooks: ReturnType<typeof createCraftmineRequestHooks>, reco
   });
 }
 
+it("routes a failed final prefix check through one ordinary overflow compaction before retrying", async () => {
+  const f=fixture(),events:any[]=[],runtime=makeRuntime(f.hooks,[],[],undefined,e=>events.push(e)),internal=runtime as any;
+  const compact=vi.spyOn(internal,"runCompaction").mockResolvedValue(true);
+  const provider=vi.spyOn(internal.models,"streamSimple").mockReturnValue(stream({...result(),content:[],stopReason:"error",errorMessage:"CRAFTMINE_PREFIX_FALLBACK_CONTEXT_TOO_LARGE"}));
+  await runtime.prompt("Continue the unfinished world.","user-prefix","turn-prefix");
+  expect(compact).toHaveBeenCalledExactlyOnceWith("overflow",true,"active_turn");
+  expect(provider).toHaveBeenCalledTimes(2);
+  expect(events.filter(e=>e.event.type==="error")).toHaveLength(1);
+  expect(events.find(e=>e.event.type==="error").event.error.code).toBe("CRAFTMINE_REQUEST_TOO_LARGE");
+  expect(internal.overflowRecoveryAttempted).toBe(true);
+  await runtime.dispose();
+});
+
 describe("Godot task tool profile", () => {
   const prefix="plugin_craftmine_world_";
   const names=["project_inspect","capabilities_read","godot_project_facts","godot_capability_report","godot_guidance","godot_project_index","godot_file_read","godot_project_query","godot_project_patch","godot_build_start","godot_build_read","godot_docs","asset_library","blender_status","blender_generate","blender_job_read","blender_cancel"];

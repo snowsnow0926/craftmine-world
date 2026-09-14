@@ -77,3 +77,37 @@ existing opaque `details`. `tokensBefore` retains its separate PI history meanin
 If history already short-circuited inspection, request measurements stay absent.
 Manual/overflow operations without captured evidence cannot inherit an older
 automatic trigger. Guards, physical reservations and usage accounting are unchanged.
+
+## Exact-prefix measured input (official DeepSeek text requests)
+
+The verified official DeepSeek completions path may use a successful physical
+request's measured prompt as a conservative prefix allowance. Eligibility requires
+the pinned completions adapter, an official HTTPS endpoint and the verified
+`deepseek-flash` alias. Runtime callers with external fetch/payload hooks do not opt in;
+summary, review, other providers, Codex and media keep the existing estimate.
+
+Both native history and final wire messages must match every retained prefix
+message by SHA-256 of its JSON. Bind the complete model configuration, task
+binding/generation, output allowance, system and tool definitions. At the final
+send boundary also bind every non-message payload field, target URL, HTTP method
+and header digest. Differences, missing receipts, malformed usage or media revert
+to the original conservative calculation. Receipts contain hashes and counts,
+are in-memory only, and are cleared by cancellation, errors, compaction and stop.
+
+The final message carries volatile host data, so exclude it from the retained
+prefix. Keep the **entire** previous measured prompt count as that prefix's upper
+allowance, then add the current remaining tail's conservative UTF-8/2 JSON estimate
+and framing. This deliberately counts the previous host tail twice rather than
+guessing its token cost. Prompt usage is uncached input + cache read + cache write
+exactly once; reasoning is part of output and is not added again. All counts must
+be finite nonnegative integers and sum consistently with total usage.
+
+Preflight prediction is tentative. For eligible physical requests, prepare fresh
+facts first; validate SDK output allowance and the final serialized fetch body;
+then select the proven calibrated estimate or conservative fallback, check capacity,
+and reserve that amount before network dispatch. Never send using a smaller earlier
+reservation. If fallback exceeds capacity, clear the receipt and use PI's existing
+single overflow-compaction recovery. Preserve local guard errors even when the SDK
+wraps fetch exceptions as connection failures. Failed settlement releases no success
+or tool-call terminal message. The configured window/output remain 1M/384K when
+selected; the UI ring continues to describe last-request provider usage.

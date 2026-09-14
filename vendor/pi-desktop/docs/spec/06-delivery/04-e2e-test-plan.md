@@ -10927,3 +10927,13 @@ explicit failed/cancelled result and attempted same-instance release; report any
 unconfirmed release and keep the controller blocked until drain succeeds. Check
 that model activity still refuses direct library/edit operations. No OS input,
 focus, Pointer Lock, arbitrary script or public/model input capability is added.
+
+## DeepSeek measured-prefix input calibration (2026-09-14)
+
+Run the pure prefix verifier and pinned-SDK/native PI-loop scenario in
+[the focused validation plan](../../e2e/deepseek-measured-prefix-20260914.md).
+Require final body proof and a completed durable reservation before dispatch,
+strict fallback on all identity/options/media changes, and no late request after
+cancellation. Verify cache counts once, unchanged 1M/384K/max configuration and
+one ordinary compaction recovery after a pre-send fallback overflow. Synthetic
+fixture counts are not real-player token-saving claims.
