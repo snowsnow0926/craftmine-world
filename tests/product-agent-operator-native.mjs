@@ -11,6 +11,7 @@ import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 import {readProductAgentCommand,atomicProductAgentJson,measureProductAgentFiles,checkProductAgentIntegrity} from './helpers/product-agent-mailbox.mjs';
 import {publishOperatorTemplate} from './helpers/product-agent-publication.mjs';
 import {parseOperatorProviderConfig,resolveOperatorApiModel,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
+import {operatorReleaseIdentity,operatorReleasePageScript,withOwnedReleasePage} from './helpers/operator-task-release.mjs';
 import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
 import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
@@ -110,6 +111,24 @@ async function sendComposer(){
   const entry={messageId:message.id,turnId:metrics.turnId,text,startedAt:new Date().toISOString(),submission:'ordinary-Composer-send-handler',status:'accepted'};
   report.turns.push(entry);save();return {messageId:entry.messageId,turnId:entry.turnId};
 }
+async function releaseTaskContinue(input){
+  assert.equal(Object.keys(input).length,0,'RELEASE_COMMAND_TAKES_NO_OVERRIDES');
+  const prior=await assertModel(),ids=new Set(prior.session.messages.map(row=>row.id));
+  assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false,'RELEASE_REQUIRES_IDLE_AGENT');
+  const readLive=()=>evaluate(`piDesktop.pluginPanelInvoke('craftmine.world','task.current',{worldId:${JSON.stringify(report.worldId)}})`);
+  const before=await readLive(),identity=operatorReleaseIdentity(before,report),evidence={identity,before,at:new Date().toISOString(),submission:'ordinary-player-execution-limit-release-form'};report.lastTaskRelease=evidence;save();
+  try{
+    await nav('world.surface',{surface:{kind:'workbench',tab:'task'}});
+    return await withOwnedReleasePage({port:run.port,worldId:report.worldId,redact},async page=>{
+      evidence.pageBefore=await until(async()=>{const state=await page(operatorReleasePageScript(identity));if(state.error)throw Error(state.notice);if(state.taskPageVisible&&!['正在读取…','处理中…'].includes(state.notice)&&state.formCount!==1)throw Error('RELEASE_FORM_UNAVAILABLE: '+state.notice);return state;},state=>state.taskPageVisible&&state.formCount===1&&!state.formDisabled);
+      evidence.submissionReceipt=await page(operatorReleasePageScript(identity,true));save();
+      const message=await until(async()=>{const record=await invoke('sessionGet',report.sessionId),state=await page(operatorReleasePageScript(identity));evidence.pageAfter=state;if(state.error)throw Error(state.notice);const result=record.session.messages.find(row=>!ids.has(row.id)&&row.role==='user');if(!result&&state.notice==='已更新')throw Error('RELEASE_CONTINUATION_UNCONFIRMED');return result;},Boolean);
+      const metrics=await until(async()=>{const state=await page(operatorReleasePageScript(identity));evidence.pageAfter=state;if(state.error)throw Error(state.notice);return invoke('sessionTurnMetrics',{sessionId:report.sessionId,messageId:message.id});},value=>!!value.turnId);
+      const entry={messageId:message.id,turnId:metrics.turnId,text:message.content,startedAt:evidence.at,submission:evidence.submission,status:'accepted'};report.turns.push(entry);evidence.messageId=entry.messageId;evidence.turnId=entry.turnId;save();return {messageId:entry.messageId,turnId:entry.turnId,identity};
+    });
+  }catch(error){evidence.error=redact(String(error.stack??error));throw error;}
+  finally{try{evidence.after=await readLive();}catch(error){evidence.readbackError=redact(String(error));}save();}
+}
 async function inspect(){const events=await evaluate('operatorEvents.splice(0)');if(events.length)fs.appendFileSync(path.join(out,'agent-events.ndjson'),events.map(row=>JSON.stringify(redact(row))).join('\n')+'\n');for(const event of events){if(event.event?.type==='status'&&event.event.status?.backend&&!providerConfig){assert.equal(event.event.status.backend,'codex-cli');assert.equal(event.event.status.modelId,'gpt-6-astra');assert.equal(event.event.status.reasoningEffort,'xhigh');const turn=report.turns.find(row=>row.turnId===event.turnId);if(turn)turn.effectiveModel={backend:event.event.status.backend,model:event.event.status.modelId,effort:event.event.status.reasoningEffort};}}
   const session=await invoke('sessionGet',report.sessionId);writeJson(path.join(out,'session.json'),session);const status=await invoke('agentGetStatus',report.sessionId);
   for(const turn of report.turns.filter(row=>row.turnId&&!row.finishedAt)){const metrics=await invoke('sessionTurnMetrics',{sessionId:report.sessionId,messageId:turn.messageId});turn.metrics=metrics;if(metrics.turnId===turn.turnId&&metrics.status!=='running'&&!status.status.isRunning){turn.status=metrics.status;turn.finishedAt=new Date().toISOString();turn.transcriptFile=path.join(out,'turns',turn.turnId+'.json');writeJson(turn.transcriptFile,{turn,session});}}
@@ -125,6 +144,7 @@ async function command(name,input){
   if(name==='goal-add'){assert(['goal','preserve'].includes(input.kind));assert(Number.isSafeInteger(input.expectedRevision));return brief({action:'add',operationId:input.operationId??randomUUID(),expectedRevision:input.expectedRevision,kind:input.kind,text:input.text});}
   if(name==='goal-review'){assert(Number.isSafeInteger(input.expectedRevision));assert(typeof input.accepted==='boolean');return brief({action:'review',operationId:input.operationId??randomUUID(),expectedRevision:input.expectedRevision,id:input.id,buildId:input.buildId,accepted:input.accepted});}
   if(name==='prompt')return prompt(input.text);
+  if(name==='release-task-continue')return releaseTaskContinue(input);
   if(name==='draft-composer')return draftComposer(input.text);
   if(name==='send-composer')return sendComposer();
   if(name==='feedback-repair-draft'){assert(!activeInput,'FINISH_INPUT_SEGMENT_BEFORE_FEEDBACK');return prepareProductFeedbackRepair(input,{report,out,evaluate,invoke,nav,assets,submit,field,until});}
