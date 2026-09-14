@@ -32,3 +32,10 @@ task can resume its already-unrestricted policy without attempting another
 release. `tests/player-execution-release-core.test.mjs` exercises these paths
 through the actual Rust Core, private host gateway, Main journal and UI helper;
 it does not launch a model or substitute mocked Core receipts.
+
+Native package acceptance also traverses PluginRuntime's private lifecycle gate.
+Both release and historical lookup must be allowed there; adding only the child
+plugin route is insufficient. The Core integration test now uses the actual
+PluginRuntime parent gate and child transport as well, and rejects unrelated
+budget reset/ledger-clear method names. The original native rejection and its
+unchanged ledger are retained as failure evidence.

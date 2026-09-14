@@ -2,11 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {createRequire} from 'node:module';
+import {createRequire,register} from 'node:module';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 
 const root=path.resolve(import.meta.dirname,'..'),require=createRequire(import.meta.url);
+register(new URL('../vendor/pi-desktop/apps/desktop/test/helpers/ts-import-hooks.mjs',import.meta.url));
+const {PluginRuntime}=await import('../vendor/pi-desktop/apps/desktop/electron/main/plugin-runtime.ts');
 const {build}=createRequire(path.join(root,'vendor/pi-desktop/packages/agent-runtime/package.json'))('esbuild');
 const {CoreClient}=require('../desktop/build/craftmine.world/core-client.cjs');
 const {createHostRequests}=require('../desktop/build/craftmine.world/host-requests.cjs');
@@ -44,6 +46,15 @@ async function fixture(t){
   const before=await core.call('task.context',{context});
   const getSettings=async()=>({activeWorldId:worldId});
   const domain=createHostRequests(core,{getSettings,workbench:createWorkbenchService(core,{getSettings})});
+  const runtime=new PluginRuntime({});
+  const loaded={manifest:{id:'craftmine.world'},pending:new Map(),nextCallId:1,child:{postMessage(message){
+    assert.equal(message.method,'lifecycle.craftmineRequest');
+    Promise.resolve().then(()=>domain(message.payload.method,message.payload.params)).then(
+      value=>runtime.handleChildMessage(loaded,{t:'res',id:message.id,ok:true,value}),
+      error=>runtime.handleChildMessage(loaded,{t:'res',id:message.id,ok:false,error:{code:error.code??'CORE_ERROR',message:error.message}}));
+  }}};
+  runtime.loaded.set('craftmine.world',loaded);
+  const transport=(method,args)=>runtime.requestCraftmineHost(method,args);
   let active=false,selected=worldId,viewedSession=sessionId,turn=0,resumes=0,releases=0,loseRelease=false,failLaunch=false;
   let journal=createCraftmineOperationJournal(path.join(out,'operations')),panel;
   function buildPanel(){
@@ -51,14 +62,14 @@ async function fixture(t){
       operations:journal,
       domain:async(method,args)=>{
         if(method==='selection.read')return{worldId:selected};
-        const result=await domain(method,args);
+        const result=await transport(method,args);
         if(method==='budget.releaseExecutionLimits'){releases++;if(loseRelease){loseRelease=false;throw Error('TEST_LOST_COMMITTED_RELEASE_REPLY');}}
         return result;
       },
       begin:async()=>{active=true;return 'continued-turn-'+(++turn);},
       end:async()=>{active=false;},stop:async()=>{active=false;},
       resume:async()=>{resumes++;if(failLaunch){failLaunch=false;throw Error('TEST_PROVIDER_LAUNCH_FAILED');}},
-      interrupt:(ctx,reason)=>domain('task.interrupt',{context:ctx,reason}),
+      interrupt:(ctx,reason)=>transport('task.interrupt',{context:ctx,reason}),
       backup:async()=>{throw Error('unexpected backup');},diagnostics:async()=>{throw Error('unexpected diagnostics');},
     });
   }

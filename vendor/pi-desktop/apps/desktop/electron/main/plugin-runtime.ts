@@ -999,6 +999,8 @@ export class PluginRuntime {
   async requestCraftmineHost(method: string, params: Record<string, unknown>): Promise<unknown> {
     const allowed = new Set(["selection.read", "maintenance.context", "turn.begin", "task.context", "budget.configure", "budget.reserve", "budget.settle", "budget.boundary", "review.context", "review.reserve", "review.settle", "workbench.request", "task.resume", "task.interrupt", "task.discard", "backup.export", "backup.inspect", "backup.restore", "backup.status", "backup.cancel"]);
     allowed.add("budget.findReceipt");
+    allowed.add("budget.releaseExecutionLimits");
+    allowed.add("budget.findExecutionReleaseReceipt");
     allowed.add("task.recoverable");
     allowed.add("package.sourceJob");
     for (const method of ["targetFeedback.describe", "targetFeedback.submit", "targetFeedback.status"]) allowed.add(method);
