@@ -31,7 +31,7 @@ async function fixture(t){
     if(method==='godotBuild.start')return {worldId:'world-one',jobId:'gjob-'+'e'.repeat(64),status:'queued'};
     throw Error('Unexpected '+method);
   };
-  const installer=createAuthorSourceInstaller({call,authorize:async c=>{assert.deepEqual(c,context);return state.capture;},selected:async()=>state.selected,stagingRoot:directory,enqueue:async(job,c)=>state.enqueued.push({job,context:c})});
+  const installer=createAuthorSourceInstaller({call,authorize:async c=>{assert.deepEqual(c,context);return state.capture;},selected:async()=>state.selected,stagingRoot:directory,enqueue:async(job,c)=>{state.enqueued.push({job,context:c});return state.enqueueResult??{enqueued:true,jobId:job.jobId};}});
   const args={worldId:'world-one',operationId:'source-test-author',archiveBase64:archive.toString('base64'),expectedSource:{revision:1,manifestHash:'a'.repeat(64)}};
   return {state,args,run:()=>installer(args,context,()=>{if(state.ended)throw Error('TURN_ENDED');}),installer};
 }
@@ -51,4 +51,13 @@ test('manual, revoked, foreign-world and stopped requests cannot write',async t=
 });
 test('permission revoked during source inspection blocks the first mutation',async t=>{
   const f=await fixture(t);f.state.revokeAt='godotProject.read';await assert.rejects(f.run(),/NOT_AUTHORIZED/);assert.equal(f.state.calls.some(c=>c.method==='package.planInstall'||c.method==='godotProject.applyFiles'),false);
+});
+
+test('executor refusal is not reported as queued and replay hands off the same persisted job without another dog',async t=>{
+  const f=await fixture(t);f.state.enqueueResult={enqueued:false,reason:'GODOT_EXECUTOR_BUSY'};
+  await assert.rejects(f.run(),error=>error.code==='GODOT_EXECUTOR_BUSY'&&error.jobId==='gjob-'+'e'.repeat(64)&&/retained/.test(error.message));
+  assert.equal(f.state.calls.filter(c=>c.method==='godotProject.applyFiles').length,1);
+  f.state.enqueueResult=undefined;const result=await f.run();assert.equal(result.job.jobId,'gjob-'+'e'.repeat(64));
+  assert.equal(f.state.enqueued.length,2);assert.equal(f.state.calls.filter(c=>c.method==='godotProject.applyFiles').length,1);assert.equal(f.state.calls.filter(c=>c.method==='godotBuild.start').length,1);
+  f.state.enqueueResult={enqueued:false,reason:'GODOT_JOB_ALREADY_ENQUEUED'};assert.equal((await f.run()).job.jobId,result.job.jobId);
 });

@@ -38,7 +38,13 @@ export function createAuthorSourceInstaller({call,authorize,selected,enqueue,sta
         return {context,ownsTurn:false,worldRecord,operation:{operationId,worldId,repoId:status.repoId,branchId:source.branchId,
           expectedHeadOid:branch.oid,expectedAppliedOid:status.appliedOid,expectedProgressRevision:worldRecord.revision}};
       },
-      enqueue:async(job,owner)=>{await guard();if(!sameContext(owner,context))fail('SOURCE_LIBRARY_INSTALL_OWNER_CHANGED');return enqueue(job,context);},
+      enqueue:async(job,owner)=>{
+        await guard();if(!sameContext(owner,context))fail('SOURCE_LIBRARY_INSTALL_OWNER_CHANGED');
+        const result=await enqueue(job,context),jobId=job.jobId??job.id;
+        if(result?.enqueued===true&&result.jobId===jobId||result?.enqueued===false&&result.reason==='GODOT_JOB_ALREADY_ENQUEUED')return result;
+        const code=/^[A-Z][A-Z0-9_]{0,100}$/.test(result?.reason??'')?result.reason:'SOURCE_LIBRARY_CHECK_NOT_ENQUEUED';
+        throw Object.assign(Error(`${code}: Source and check job ${jobId} are retained. Inspect this existing job and executor state before requesting another installation.`),{code,jobId});
+      },
     });
     return group?installer.group(args):installer(args);
   };
