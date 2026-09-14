@@ -32,6 +32,28 @@ Only returned component archives are inspected. No alternative version is
 invented, selected or installed. Empty results and whole-world-only results do
 not read a component source snapshot. Whole-world results continue to require
 creating a separate world. If preflight cannot read the source, search retains
-the catalog result and exact read request with unknown compatibility, avoiding
-unnecessary archive reads. Archive read failures likewise remain explicit
+unknown source compatibility but still inspects returned archives for intrinsic
+installation declaration failures. Archive read failures likewise remain explicit
 unknown results with safe error codes; cancellation still propagates.
+
+## Automatic instance declarations
+
+Search's `targetCompatibility.automaticInstallation` and read's top-level
+`automaticInstallation` distinguish declared automatic scene nodes from bundled
+helper scripts. A scene installer needs exactly one declared entity per resource.
+A contradictory declaration produces `installation-declaration-blocked` without
+promoting unknown source prerequisites; their independent status remains in
+`sourcePrerequisitesStatus`. The hints preserve `PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED`,
+explain that parameter guessing cannot repair immutable package metadata, and
+offer an exact asset search followed by ordinary read/install/source editing.
+They do not invent an entity-selection parameter or relax the real installer.
+
+Combat v1 remains byte-for-byte available with its original three-entity,
+one-scene declaration. Corrected v2 declares only its actual automatic monster
+and adds deterministic UID companions for all three GDScripts. Its machine-readable
+`installationGuide` names the one required manual player-vitals node: without
+unique vitals, monsters deliberately do not pursue or attack. The weapon script
+is optional manual setup after the player requests it. Three bundled scripts
+do not mean three automatic nodes, a complete sword/AK system or instant gameplay.
+Use actual installed paths with project index/read, then normal source CAS and
+check/adopt for authored setup. Version 1 is never replaced in place.
