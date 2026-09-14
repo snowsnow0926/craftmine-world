@@ -4,7 +4,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { CodexDesktopRuntime, codexTurnUsage, type CodexCheckpoint } from "./codex-desktop-runtime.js";
-import { MODEL, EFFORT } from "./codex-app-server.mjs";
+import { MODEL, EFFORT, protocolDiagnostic } from "./codex-app-server.mjs";
 
 class Client extends EventEmitter {
   calls: any[] = []; replies: any[] = []; closed = false; threadConfig = {}; model = MODEL;
@@ -132,6 +132,39 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
         expect(client.calls.filter(call => call.method === "turn/start").length).toBe(failure === "model" ? 0 : 1);
       } finally { await f.cleanup(); }
     }
+  });
+  it("retains the failed restoration RPC stage and sanitized protocol cause without retrying or changing model", async () => {
+    const f = await fixture();
+    try {
+      const client = new Client(); const original = client.call.bind(client);
+      client.call = async (method, params) => {
+        if (method !== 'turn/start') return original(method, params);
+        client.calls.push({method,params});
+        throw Object.assign(Error('CODEX_RPC_ERROR:-32602'), {rpcMethod:method,rpcCode:-32602,
+          diagnostic:'Input rejected; api_key=private-key Bearer private-bearer; user@example.com https://example.test/?secret=private-query',
+          rawRequest:params,stderr:'private-stderr'});
+      };
+      const {runtime}=f.make(client); await runtime.prompt({text:'preserve the world'},'user','native');
+      const error=f.events.find(e=>e.event.type==='error').event.error;
+      expect(error.code).toBe('CODEX_BACKEND_FAILED');
+      expect(error.details).toMatchObject({stage:'turn-start',rpcMethod:'turn/start',rpcCode:-32602});
+      expect(error.details.message).toContain('Input rejected');
+      for(const secret of ['private-key','private-bearer','user@example.com','private-query','private-stderr','rawRequest'])expect(JSON.stringify(error)).not.toContain(secret);
+      expect(client.calls.filter(call=>call.method==='turn/start')).toHaveLength(1);
+      expect(client.calls.find(call=>call.method==='turn/start').params.model).toBe(MODEL);
+      expect(client.calls.find(call=>call.method==='turn/start').params.effort).toBe(EFFORT);
+      expect(runtime.getStatus().transportState).toBe('restored-from-transcript');
+      expect(f.checkpoint?.synchronized).toBe(false);
+      expect(client.closed).toBe(true);
+    } finally { await f.cleanup(); }
+  });
+  it("bounds protocol diagnostics and does not project arbitrary exceptions or fields", () => {
+    const result=protocolDiagnostic({rpcMethod:'turn/start',rpcCode:-32602,diagnostic:'犬'.repeat(1500),data:{secret:'private'}},'turn-start');
+    expect((result as any).message).toHaveLength(1036);
+    expect((result as any).message).toMatch(/\[truncated\]$/);
+    expect(protocolDiagnostic({rpcMethod:'unknown/private',rpcCode:4,diagnostic:'secret'},'foreign')).toEqual({stage:'unknown'});
+    expect(protocolDiagnostic(Error('private-account-path'),'history-restore')).toEqual({stage:'history-restore'});
+    expect(protocolDiagnostic({rpcMethod:'turn/start',rpcCode:NaN,diagnostic:'secret'},'turn-start')).toEqual({stage:'turn-start'});
   });
   it("cancels during unacknowledged start and preserves a failed native fence as an error", async () => {
     const f = await fixture();
