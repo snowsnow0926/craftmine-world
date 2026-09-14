@@ -10768,3 +10768,13 @@ read-only database audit requires exactly one application commit for the exact
 new candidate, and the entire shipped package inventory must remain unchanged.
 `node --test tests/candidate-recovery-driver.test.mjs` verifies the prepare-only
 and conflicting-mode guards without launching Electron.
+
+### Guidance pagination recovery (2026-09-14)
+
+Guidance pagination follow-up: replay the ordinary model's read limits 16000 and
+12000 through both source and generated plugin tools. Both must reject before any
+host call and state the unchanged 1–8000 Unicode-character range, default 4000,
+and `nextOffset` recovery. Fractional/negative/over-200000 offsets and offsets past
+the selected text must reject early. Default 4000, maximum 8000, and the exact-end
+empty terminal page remain valid; page concatenation must equal the original
+pinned recipe bytes after Unicode decoding. Preserve the original failed logs.

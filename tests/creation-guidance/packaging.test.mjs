@@ -63,6 +63,12 @@ test('production plugin build includes exact guidance resources and serves a pin
     selectedSkill=corpus.skills.find(skill=>skill.id==='creation-sandbox.authoring');
     const creationCatalog=await tool.execute({mode:'catalog'},context);
     assert.equal(creationCatalog.skills[0].id,selectedSkill.id);
+    for(const limit of [16000,12000]){
+      const count=calls.length;
+      await assert.rejects(tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:selectedSkill.sha256,
+        revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit},context),/limit must be an integer from 1 to 8000 Unicode characters/);
+      assert.equal(calls.length,count,'invalid guidance pagination does not reach the packaged host');
+    }
     const creationBody=await tool.execute({mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:selectedSkill.sha256,
       revision:creationCatalog.source.revision,manifestHash:creationCatalog.source.manifestHash,limit:8000},context);
     let creationText=creationBody.text,nextOffset=creationBody.nextOffset;

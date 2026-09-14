@@ -471,7 +471,7 @@
       },
       {
         "name": "godot_guidance",
-        "description": "Discover and read bundled Craftmine creation skills for the bound Godot source. mode=catalog filters exact shipped base/engine and interface hashes, returning versioned skills and reference hashes. mode=read requires exact id, version, sha256, revision and manifestHash from that catalog; optional path selects one exact listed reference. Follow nextOffset. Unsupported or modified interfaces are explicit coverage gaps. Read-only source guidance adds no execution, filesystem or application authority.",
+        "description": "Discover and read bundled Craftmine creation skills for the bound Godot source. mode=catalog filters exact shipped base/engine and interface hashes, returning versioned skills and reference hashes. mode=read requires exact id, version, sha256, revision and manifestHash from that catalog; optional path selects one exact listed reference. For read, limit is 1-8000 Unicode characters (default 4000); offset is 0-200000 and cannot exceed the selected text length. Start at 0 and follow nextOffset until null, retaining the same text identity and source pins. Unsupported or modified interfaces are explicit coverage gaps. Read-only source guidance adds no execution, filesystem or application authority.",
         "risk": "low",
         "schema": {
           "type": "object",
@@ -510,12 +510,14 @@
             "offset": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200000
+              "maximum": 200000,
+              "description": "Unicode character offset for read; default 0. Follow nextOffset and do not exceed totalCharacters."
             },
             "limit": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 8000
+              "maximum": 8000,
+              "description": "Unicode characters per read page: 1-8000, default 4000. Follow nextOffset for the remainder."
             }
           },
           "required": [

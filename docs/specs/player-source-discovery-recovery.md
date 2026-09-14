@@ -43,3 +43,21 @@ Validation: 40 source/broker/packaging tests pass. The packaging test additional
 executes six existing engine-cohort cases and three retained-monitor cases against
 the actually generated plugin. These are deterministic source and host-double
 tests; they are not a real model turn, native rendering or second-pet acceptance.
+
+## Guidance pagination follow-up
+
+The separate ordinary model run in session
+`d8e5b82a-8a52-44c8-ab5f-c081f545bc95` first requested guidance read limits 16000
+and 12000, receiving bare `INVALID_GUIDANCE_PAGE` twice before omitting the limit.
+The schema already capped reads at 8000. The tool description, catalog guidance
+and validation errors now all state the same unchanged range: 1–8000 Unicode
+characters, default 4000. Offset remains 0–200000, default 0, and cannot exceed
+the selected text's character count. That last check now occurs before host reads,
+alongside the existing exact ID/version/hash/pin and page validation. An offset
+equal to the character count still returns the existing empty terminal page.
+Follow `nextOffset` until null with the same text and source identity.
+
+Tests replay both actual invalid limits, fractional/out-of-range values, and
+default/max/final pages through source and generated-plugin routes. Original
+failed player tool calls remain unchanged. This is clearer recovery for malformed
+arguments, not evidence that a model will never make a pagination mistake.
