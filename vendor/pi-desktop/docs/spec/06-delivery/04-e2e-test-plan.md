@@ -1,5 +1,34 @@
 # 04. E2E Test Plan
 
+### Codex legacy world conversation regression (2026-09-14)
+
+In an independent background profile, create a blank legacy voxel world through
+the ordinary player controls. Select the compatible Codex CLI backend and verify
+the effective `gpt-6-astra` / `xhigh` handshake. Send the original request
+`生成一个树` through the ordinary Composer. Require a real model turn with the
+legacy catalog, real draft transactions and terminal machine-check evidence;
+the immediate preview23 `CODEX_GODOT_WORLD_REQUIRED` failure must not recur.
+Use the existing preview/application controls and confirm drawable tree parts,
+preserved player state and saved/cold-reopened content. Send a second tree edit
+in the same conversation; require same-world continuation without changing the
+model, converting the world or replaying historical writes.
+
+Retain original failures and exact model configuration. A player switching to
+another provider manually is a separate attempt, not Codex acceptance. No model,
+token or whole-turn cap may be added. Do not touch the player's live profile,
+window, input devices or browser; isolated headless validation disables Pointer
+Lock. Passing a mocked transport test is not this real model/playable acceptance.
+
+Targeted adapter regressions use the actual registered manifest schemas and a
+mock app-server: legacy routes through `tools.execute` with host identities and
+declared risks; Godot catalog hashes remain unchanged; incomplete/unknown runtime
+catalogs fail before model start; foreign/native/shell calls are refused; host
+permission errors and cancellation remain authoritative; changed context after
+history restoration is rejected; and late callbacks stay on their old client.
+Run `pnpm --filter @pi-desktop/shared build`, then
+`pnpm --filter @pi-desktop/agent-runtime exec vitest run src/codex-desktop-runtime.test.ts`
+and `pnpm --filter @pi-desktop/agent-runtime typecheck` from this vendor directory.
+
 First creation preview delivery additionally follows the
 [sealed portable export scenario](first-creation-preview-export.md#verification-scenario):
 relocated launch path, independent preview profile, exact extracted ZIP bytes,
