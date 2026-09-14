@@ -9,6 +9,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 import {readProductAgentCommand,atomicProductAgentJson,measureProductAgentFiles,checkProductAgentIntegrity} from './helpers/product-agent-mailbox.mjs';
+import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
 
 const args=process.argv.slice(2),option=name=>{const index=args.indexOf(name);return index<0?undefined:args[index+1];};
 if(args.includes('--help')){console.log('node tests/product-agent-operator-native.mjs --application-root ABS --runtime-resources ABS --codex ABS --output-root ABS [--resume ABS_REPORT] [--packaged-root ABS]\nNo prompts are sent until an explicit inbox command. See docs/PRODUCT_AGENT_OPERATOR_DRIVER.md.');process.exit(0);}
@@ -97,6 +98,7 @@ async function command(name,input){
   if(name==='goal-review'){assert(Number.isSafeInteger(input.expectedRevision));assert(typeof input.accepted==='boolean');return brief({action:'review',operationId:input.operationId??randomUUID(),expectedRevision:input.expectedRevision,id:input.id,buildId:input.buildId,accepted:input.accepted});}
   if(name==='prompt')return prompt(input.text);
   if(name==='send-composer')return sendComposer();
+  if(name==='feedback-repair-draft'){assert(!activeInput,'FINISH_INPUT_SEGMENT_BEFORE_FEEDBACK');return prepareProductFeedbackRepair(input,{report,out,evaluate,invoke,nav,assets,submit,field,until});}
   if(name==='composition')return composition(input);
   if(name==='answer'){const ask=await rpc('headlessAskPending',{payload:{sessionId:report.sessionId}});assert(ask&&ask.requestId===input.requestId,'CURRENT_ASK_REQUIRED');assert(Array.isArray(input.answers)&&input.answers.length===ask.questions.length);return invoke('askToolResolve',{sessionId:report.sessionId,requestId:ask.requestId,answers:input.answers});}
   if(name==='permission'){const permission=await rpc('headlessPermissionPending',{payload:{sessionId:report.sessionId}});assert(permission&&permission.requestId===input.requestId,'CURRENT_PERMISSION_REQUIRED');return rpc('headlessPermissionResolve',{payload:{sessionId:report.sessionId,requestId:input.requestId,decision:input.decision}});}

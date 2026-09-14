@@ -52,6 +52,7 @@ node tests/product-agent-operator-native.mjs `
 | `prompt` | `{text}`，使用普通公开 `agentPrompt`，携带当前真实 creationTarget（若可获取）。 |
 | `send-composer` | 执行真实 Composer 发送处理器，保留通常的输入清空、上下文与消息生成逻辑。 |
 | `composition` | 可选 `{wish}`，重新读取 recipe v2 并填入 Composer，不发送。 |
+| `feedback-repair-draft` | `{description,expected,capture?}`，通过当前世界素材库的真实反馈表单预览、确认导出，读回记录并点击实际“交给 AI 检查”按钮。`capture` 默认 `false`；保留原有 Composer 文字和反馈世界/构建身份，返回草稿、反馈编号及导出文件哈希，绝不发送。 |
 | `answer` | `{requestId,answers}`，`answers` 为每题的字符串数组或 `null`；支持按真实目标填写自定义答案。 |
 | `permission` | `{requestId,decision:"allow-once"或"deny"}`，仅处理当前显示的请求。 |
 | `install-proposal` | `{proposalId}`，提交实际素材建议表单；不自动采用检查结果。 |
@@ -105,3 +106,23 @@ Pointer Lock 或操控用户浏览器。
 驱动只记录实际操作和证据，**不根据 AI 文字、编译通过或画面中的飞机宣告玩法
 成功**。总控需要根据真实生成的玩法源码与状态，继续检验收集前锁定、三个独立
 目标、解锁、真实跑道和起降、存档重开、多轮修改保留结果及模板复现。
+
+## 通过真实试玩反馈准备独立修复轮
+
+当前模型轮和输入片段必须先结束，再发送显式命令，例如：
+
+```json
+{"id":"031-companion-feedback","command":"feedback-repair-draft","args":{"description":"博美在窄路中挡住玩家，正常步行无法通过。","expected":"保留博美跟随与城市玩法，在窄路附近给玩家让出通行空间，并实际检查。"}}
+```
+
+命令使用当前选中的世界及其真实创作会话，不能通过参数指定另一个世界、文件
+路径或自动发送开关。它填写现有 PlaytestPanel，预览后确认导出到该测试档案
+的原生选择器文件，核对 Rust 读回记录，再点击实际修复草稿按钮。返回
+`feedbackId`、`context`、`composerText`、唯一证据文件路径、字节数和 SHA-256，
+以及 `sent:false`。若事先有 Composer 文字，必须原样保留；会话消息 ID 也必须
+未改变，才可报告草稿交接完成。命令不会直接写数据库、伪造导入或执行修复。
+
+只有显式传入 `capture:true` 才附带真实预先捕获的世界画面，导出的 Base64
+必须与预览相同。首次画面未准备好时，可按界面提示关闭、重开素材库一次，
+保留原文字并记录恢复动作；仍失败就停止命令。总控核对草稿后，再另发
+`send-composer` 才会启动真实模型。不要把准备草稿与天气修改等另一轮混在一起。

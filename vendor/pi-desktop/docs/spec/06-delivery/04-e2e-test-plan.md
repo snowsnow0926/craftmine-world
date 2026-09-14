@@ -10527,6 +10527,14 @@ boundaries separately.
 
 Use `tests/playtest-feedback-client-native.mjs` for the integrated native PI
 acceptance described in [the runbook](../../e2e/playtest-feedback-native-20260914.md).
+
+The operator mailbox's explicit `feedback-repair-draft` command fills the real
+current-world feedback form, previews and confirms export, compares the exported
+record with Rust readback, and invokes the actual repair-draft button. It defaults
+capture off, preserves existing Composer text, and verifies unchanged session
+message IDs. No world/session/path/send override is accepted. Only a subsequent
+separate `send-composer` command submits a model turn; this helper never writes
+SQLite, fabricates imported reports or presents a repair as completed.
 ### Private native input acceptance (2026-09-14)
 
 For the ordinary desktop's private native input acceptance, submit a finite
