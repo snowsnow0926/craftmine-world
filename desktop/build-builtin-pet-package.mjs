@@ -30,7 +30,7 @@ export function buildBuiltinPetPackage({repository,petRoot=path.join(repository,
   const visualManifest=JSON.parse(read(visualRoot,'manifest.json'));
   check(visualManifest.format==='craftmine.canine-visual-source/1'&&visualManifest.version===1&&visualManifest.license==='MIT','PET_VISUAL_MANIFEST_INVALID');
   const files={
-    'scripts/pet_companion.gd':read(petRoot,version===3?'scripts/pet_companion-v3.gd':'scripts/pet_companion.gd'),
+    'scripts/pet_companion.gd':version===3?Buffer.from(read(petRoot,'scripts/pet_companion-v3.gd').toString('utf8').replace(/\r\n/g,'\n')):read(petRoot,'scripts/pet_companion.gd'),
     'scripts/pet_companion.gd.uid':read(petRoot,'scripts/pet_companion.gd.uid'),
     'LICENSE.txt':read(visualRoot,'LICENSE.txt'),
   };

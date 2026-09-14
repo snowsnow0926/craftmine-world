@@ -17,7 +17,7 @@ export function planCompanionBoundsUpgrade({repository,files,bounds}){
     const match=scripts.find(entry=>file.path.endsWith(entry.suffix));if(!match)continue;
     if(!/^[a-zA-Z0-9_./-]+$/.test(file.path)||file.path.split('/').some(part=>!part||part==='..'||part==='.')||typeof file.text!=='string')throw Error('COMPANION_SOURCE_INVALID');
     if(sha(file.text)!==match.old)throw Error('COMPANION_SCRIPT_NOT_RELEASED');
-    const text=fs.readFileSync(path.join(repository,match.source),'utf8')
+    const text=fs.readFileSync(path.join(repository,match.source),'utf8').replace(/\r\n/g,'\n')
       .replace('Vector3(-80, -80, -80)','Vector3('+bounds.minimum.join(', ')+')')
       .replace('Vector3(80, 80, 80)','Vector3('+bounds.maximum.join(', ')+')');
     operations.push({op:'put',path:file.path,expectedHash:match.old,text});

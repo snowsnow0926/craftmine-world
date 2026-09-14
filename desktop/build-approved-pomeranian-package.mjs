@@ -21,7 +21,7 @@ export function buildApprovedPomeranianPackage({repository,root=path.join(reposi
   const files={
     'model.glb':model,
     'model.glb.import':Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n\n[params]\nmeshes/generate_lods=false\n'),
-    'companion.gd':fs.readFileSync(path.join(root,version===3?'companion-v3.gd':'companion.gd')),
+    'companion.gd':version===3?Buffer.from(fs.readFileSync(path.join(root,'companion-v3.gd'),'utf8').replace(/\r\n/g,'\n')):fs.readFileSync(path.join(root,'companion.gd')),
     'companion.gd.uid':fs.readFileSync(path.join(root,'companion.gd.uid')),
     'LICENSE.txt':fs.readFileSync(path.join(root,'LICENSE.txt')),
     'provenance.json':Buffer.from(JSON.stringify(provenance,null,2)+'\n'),
