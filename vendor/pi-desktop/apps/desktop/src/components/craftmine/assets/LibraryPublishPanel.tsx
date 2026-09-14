@@ -64,6 +64,7 @@ export function LibraryPublishPanel({bridge, worldId, worldName, kind, zh, onSav
   const submit = async () => {
     if (!bridge || locked.current) return;
     setError(""); cancelled.current = false; locked.current = true; setBusy(true); setResult(null);
+    let captureOperationId: string | null = null;
     try {
       let current = latestAttempt.current;
       if (!current) {
@@ -77,7 +78,8 @@ export function LibraryPublishPanel({bridge, worldId, worldName, kind, zh, onSav
         if (kind === "world") {
           if (!checkpoint) throw Error(zh ? "请选择是否使用当前已保存进度作为新世界起点。" : "Choose the saved progress as the starting state first.");
           setPhase(zh ? "正在保存世界进度…" : "Saving world progress…");
-          await bridge.call("godot.runtimeSave", {worldId, freeze: false});
+          captureOperationId = operationId;
+          await bridge.call("worldTemplate.capture", {worldId, operationId});
           if (cancelled.current || !alive.current) return;
           const description = libraryRecord(await bridge.call("worldTemplate.describe", {worldId}));
           if (cancelled.current || !alive.current) return;
@@ -102,7 +104,13 @@ export function LibraryPublishPanel({bridge, worldId, worldName, kind, zh, onSav
         try {const value = await status(latestAttempt.current); if (value && ["saved", "completed"].includes(String(value.status))) {finish(value.result ?? value); recovered = true;}} catch { /* Retry keeps the exact original operation. */ }
       }
       if (!recovered && alive.current && !(cancelled.current && !latestAttempt.current)) setError(publicationMessage(failure, zh));
-    } finally {locked.current = false; if (alive.current) {setBusy(false); if (cancelled.current && !latestAttempt.current) setPhase(zh ? "准备已取消" : "Preparation cancelled");}}
+    } finally {
+      if (captureOperationId) {
+        try {await bridge.call("worldTemplate.releaseCapture", {worldId, operationId: captureOperationId});}
+        catch (failure) {if (alive.current) setError(previous => previous || publicationMessage(failure, zh));}
+      }
+      locked.current = false; if (alive.current) {setBusy(false); if (cancelled.current && !latestAttempt.current) setPhase(zh ? "准备已取消" : "Preparation cancelled");}
+    }
   };
   const cancel = async () => {
     if (!bridge) return;

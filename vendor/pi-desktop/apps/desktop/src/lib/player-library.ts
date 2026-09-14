@@ -50,7 +50,7 @@ export function publicationMessage(code: unknown, zh: boolean): string {
     [/PUBLICATION_NAME_INVALID/, "请填写较短的素材名称。", "Enter a shorter asset name."],
     [/PUBLICATION_DESCRIPTION_INVALID/, "请缩短说明。", "Shorten the description."],
     [/PUBLICATION_TAGS_INVALID/, "标签与别名合计最多 24 项，请缩短过长条目。", "Use up to 24 short tags and aliases."],
-    [/SOURCE_CHANGED|WORLD_CHANGED|OWNER_CHANGED|SOURCE_MISMATCH|SOURCE_STALE/, "世界或源码已变化，请重新读取后再保存。", "The world or source changed. Reload before saving."],
+    [/SOURCE_CHANGED|WORLD_CHANGED|OWNER_CHANGED|SOURCE_MISMATCH|SOURCE_STALE/, "世界或源码已变化。如有保留的保存操作，请先取消本次保存，再重新读取并保存。", "The world or source changed. Cancel any retained save, then reload and save again."],
     [/COMPONENT_TOO_LARGE/, "这个对象及其依赖超过组件大小限制，请先拆分。", "This object and its dependencies are too large; split it into smaller components."],
     [/DEPENDENCY|MULTIPLE_IDENTITIES|SELECT_COMPONENT_NOT_WORLD/, "此对象还不能独立保存，需要先整理依赖或拆分组件。", "Prepare an independent component or resolve its dependencies first."],
     [/VERSION.*(CONFLICT|EXISTS)|ASSET.*CONFLICT/, "这个版本已存在，请查看素材库或选择新的版本。", "This version already exists. Check the library or choose a new version."],

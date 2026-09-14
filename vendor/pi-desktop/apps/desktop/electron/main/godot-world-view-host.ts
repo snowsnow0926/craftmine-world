@@ -1188,6 +1188,26 @@ export class GodotWorldViewHost {
     if (instance === this.current) this.publish({ ...this.identityOf(instance), state: this.pauseController.paused(instance) ? "paused" : "ready" });
   }
 
+  /** A publication can release only the manual pause introduced by its checkpoint. */
+  async checkpointForPublication(): Promise<{receipt: unknown; release: () => Promise<void>}> {
+    const instance = this.current;
+    if (!instance?.alive) throw Error("No world runtime is running");
+    const previouslyPaused = this.pauseController.manualPaused(instance);
+    const joined = !!this.checkpointPromise || this.frozen?.instance === instance;
+    const intent = (this.pauseIntentRevision.get(instance) ?? 0) + 1;
+    const saved = await this.checkpoint();
+    if (saved.status !== "persisted") throw Error(saved.error);
+    let released = false;
+    return {receipt: saved.receipt, release: async () => {
+      if (released) return;
+      released = true;
+      if (joined || previouslyPaused || this.current !== instance || !instance.alive
+        || this.pauseIntentRevision.get(instance) !== intent || this.frozen?.result !== saved
+        || this.stagedRequest || this.pending || this.transitioning || this.closing || this.disposed) return;
+      await this.resume();
+    }};
+  }
+
   /** Freeze and durably save the current instance; successful checkpoints stay paused. */
   async checkpoint(options: {fresh?: boolean} = {}): Promise<GodotWorldSaveResult> {
     // Private lifecycle callers may require a new confirmation. Invalidate

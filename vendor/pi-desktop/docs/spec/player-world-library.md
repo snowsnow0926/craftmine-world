@@ -21,11 +21,38 @@ the model before its policy; Core validates the policy against the same-batch or
 already committed model. No previously failed/copied world is silently repaired.
 
 The player must explicitly choose `initialState: saved-progress`. The client
-first saves the actual formal runtime, then describes its native source identity.
+first captures and saves the actual formal runtime while paused, then describes its native source identity.
 The template uses this saved state as the new world's starting point. It does
 not claim a reset, authored defaults, zero victories, or unexplored territory.
 Current draft changes are excluded. A changed selected world, formal source, or
 durable snapshot rejects publication before catalog commit.
+
+### Stable publication capture and release
+
+The authenticated main-window panel accepts `worldTemplate.capture` and
+`worldTemplate.releaseCapture` with exactly `{worldId, operationId}`. These are
+main-process lifecycle actions, not Core methods or model tools. Capture uses the
+existing host checkpoint, including waiting for an earlier save and confirming
+pause before reading progress. Its private release closure belongs to the exact
+runtime instance, checkpoint result and pause-intent revision. It restores only
+the manual pause introduced by this publication; a pre-existing pause, joined
+checkpoint, later pause, candidate, replaced world or closing host cannot be
+released by it. Overlay pauses remain governed by the existing pause controller.
+
+The panel retains the capture under its operation ID. A different capture in the
+same world cannot overlap it. Release waits for pending capture and archive work;
+an old or duplicate release cannot affect a newer operation. The renderer never
+supplies pause state, native identity, snapshot or release token. The submission
+finally path requests this scoped release after success, failure or preparation
+cancellation, including after unmount. Successful publication therefore does not
+leave a manual pause behind: closing the ordinary asset sheet removes its overlay
+blocker and gameplay resumes unless another pause owner remains.
+
+An uncertain/committing publication retry preserves the original operation and
+source identity. A terminal failure followed by live snapshot drift cannot reuse
+that operation with new arguments; the player explicitly cancels the retained
+save and starts a newly captured publication. The error text explains this path.
+Original failed journals and source/snapshot compare-and-swap checks are retained.
 
 The private `worldTemplate` host service supports `describe`, `save`, `status`,
 `cancel`, `list`, `read`, `prepare`, `importArchive`, and `exportArchive`. The
