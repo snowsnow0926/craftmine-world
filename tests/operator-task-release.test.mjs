@@ -7,15 +7,19 @@ test('release identity rejects other worlds, sessions, running tasks and stale r
   const owner={worldId:'w',sessionId:'s'};assert.deepEqual(operatorReleaseIdentity(live(),owner),{...owner,taskId:'t',generation:4});
   for(const change of [v=>v.active=true,v=>v.context.world.id='other',v=>v.context.binding.sessionId='other',v=>v.context.recovery='running',v=>v.context.generation=-1]){const value=live();change(value);assert.throws(()=>operatorReleaseIdentity(value,owner));}
 });
-async function run({value=live(),headless=true,worldId='w',count=1,disabled=false,error=false,submit=true}={}){
-  const calls=[],form={querySelector:selector=>selector==='button:disabled'?(disabled?{}:null):{textContent:'解除本地次数与时长限制后继续'},requestSubmit:()=>calls.push('requestSubmit')};
+async function run({value=live(),headless=true,worldId='w',count=1,disabled=false,error=false,submit=true,action='release',recoverable=[{taskId:'t',generation:4}]}={}){
+  const calls=[],form={querySelector:selector=>selector==='button:disabled'?(disabled?{}:null):{textContent:action==='continue'?'继续创作':'解除本地次数与时长限制后继续'},requestSubmit:()=>calls.push('requestSubmit')};
   const document={body:{dataset:{worldId}},querySelector:selector=>selector.startsWith('form')?(count?form:null):selector==='.workbench-notice'?{textContent:error?'explicit UI failure':'已更新',dataset:{error:String(error)}}:{hidden:false,textContent:'current task'},querySelectorAll:()=>Array(count).fill(form)};
-  const context={__craftmineHeadless:headless,document,pluginBridge:{invoke:async(channel,payload)=>{calls.push({channel,payload});return value;}}};
-  return {result:await vm.runInNewContext(operatorReleasePageScript({worldId:'w',sessionId:'s',taskId:'t',generation:4},submit),context),calls};
+  const context={__craftmineHeadless:headless,document,pluginBridge:{invoke:async(channel,payload)=>{calls.push({channel,payload});return channel==='task.recoverable'?{items:recoverable}:value;}}};
+  return {result:await vm.runInNewContext(operatorReleasePageScript({worldId:'w',sessionId:'s',taskId:'t',generation:4},submit,action),context),calls};
 }
 test('ordinary form performs only a read and requestSubmit, never direct release/resume calls',async()=>{
   const {result,calls}=await run();assert.equal(result.submitted,true);assert.equal(calls.length,2);assert.equal(calls[0].channel,'task.current');assert.equal(calls[1],'requestSubmit');
   const read=await run({submit:false});assert.equal(read.calls.length,1);assert.equal(read.result.formCount,1);
+});
+test('continue uses only the ordinary recovery form and never performs a budget release',async()=>{
+  const {result,calls}=await run({action:'continue'});assert.equal(result.action,'continue');assert.equal(result.submitted,true);assert.equal(calls.length,3);assert.equal(calls[0].channel,'task.current');assert.equal(calls[1].channel,'task.recoverable');assert.equal(calls[2],'requestSubmit');
+  for(const recoverable of [[],[{taskId:'other',generation:4}],[{taskId:'t',generation:5}],[{taskId:'t',generation:4},{taskId:'other',generation:2}]])await assert.rejects(()=>run({action:'continue',recoverable}),/CONTINUE_RECOVERABLE_TASK_AMBIGUOUS_OR_CHANGED/);
 });
 test('wrong identity, absent or ambiguous form, disabled button and explicit errors prevent submission',async()=>{
   const changed=live();changed.context.generation=5;

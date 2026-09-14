@@ -15,7 +15,9 @@ export function createOperatorEventCollector(){
         pending.set(id,{sessionId:event.sessionId,turnId:event.turnId,ts:event.ts,event:{type:'message_update',message:{id:message.id,role:message.role,status:message.status,modelId:message.modelId,providerId:message.providerId,contentCharacters:typeof message.content==='string'?message.content.length:null,thinkingCharacters:typeof message.thinking==='string'?message.thinking.length:null},capture:{representation:'coalesced-update-metadata',observedUpdates:count,firstTs:previous?.event.capture.firstTs??event.ts,lastTs:event.ts,deltaTextCharacters:(previous?.event.capture.deltaTextCharacters??0)+(event.event.deltaText?.length??0),deltaThinkingCharacters:(previous?.event.capture.deltaThinkingCharacters??0)+(event.event.deltaThinking?.length??0),completeText:'session-and-message-end'}}});
         peak();return;
       }
-      if(event.event?.message?.id)flush(key(event));
+      // A control/terminal boundary follows all earlier observed updates, even
+      // when it has no message ID (tool, status, error, ask, permission).
+      for(const id of pending.keys())flush(id);
       // Terminal text, errors, usage/model calls, tools, asks and status are
       // retained unchanged. Only high-frequency growing snapshots coalesce.
       queue.push(structuredClone(event));

@@ -1,5 +1,14 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+`continue-task` 是无参数的普通任务恢复命令，与继续游玩的 `resume` 不同。
+它在当前任务页寻找实际“继续创作”表单，核对闲置模型、当前世界/会话/任务及
+generation，并只接受唯一匹配的可恢复任务后 `requestSubmit()`。不调用
+release 或 resume 域接口，不重新解除预算，不重置档案。多个恢复目标、任务
+变化、禁用按钮或界面错误都会明确失败。提交记录为
+`ordinary-player-task-continue-form`，保留前后 task.current 与 recoverable
+读回；新消息/轮次按普通后台采集。用于已经解除限制后中断、玩家停止后继续等
+真实保留草稿流程；仍需 Core 正常恢复条件成立。
+
 采集器 v2 在自己的 renderer 订阅入口合并高频 `message_update`：每条消息只
 保留最新长度/身份、增量字符计数和原事件数量，不把不断增长的整段思考反复入队。
 完整 message_end、工具结果、error、status、model_call、澄清/权限等不同请求

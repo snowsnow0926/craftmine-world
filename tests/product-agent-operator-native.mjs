@@ -134,19 +134,19 @@ async function sendComposer(){
   const entry={messageId:message.id,turnId:metrics.turnId,text,startedAt:new Date().toISOString(),submission:'ordinary-Composer-send-handler',status:'accepted'};
   report.turns.push(entry);save();return {messageId:entry.messageId,turnId:entry.turnId};
 }
-async function releaseTaskContinue(input){
+async function releaseTaskContinue(input,action='release'){
   assert.equal(Object.keys(input).length,0,'RELEASE_COMMAND_TAKES_NO_OVERRIDES');
   const prior=await assertModel(),ids=new Set(prior.session.messages.map(row=>row.id));
   assert.equal((await invoke('agentGetStatus',report.sessionId)).status.isRunning,false,'RELEASE_REQUIRES_IDLE_AGENT');
   const readLive=()=>evaluate(`piDesktop.pluginPanelInvoke('craftmine.world','task.current',{worldId:${JSON.stringify(report.worldId)}})`);
-  const before=await readLive(),identity=operatorReleaseIdentity(before,report),evidence={identity,before,at:new Date().toISOString(),submission:'ordinary-player-execution-limit-release-form'};report.lastTaskRelease=evidence;save();
+  const before=await readLive(),identity=operatorReleaseIdentity(before,report),evidence={identity,before,at:new Date().toISOString(),submission:action==='release'?'ordinary-player-execution-limit-release-form':'ordinary-player-task-continue-form',action};report.lastTaskRelease=evidence;save();
   try{
     await nav('world.surface',{surface:{kind:'workbench',tab:'task'}});
     return await withOwnedReleasePage({port:run.port,worldId:report.worldId,redact},async page=>{
-      evidence.pageBefore=await until(async()=>{const state=await page(operatorReleasePageScript(identity));if(state.error)throw Error(state.notice);if(state.taskPageVisible&&!['正在读取…','处理中…'].includes(state.notice)&&state.formCount!==1)throw Error('RELEASE_FORM_UNAVAILABLE: '+state.notice);return state;},state=>state.taskPageVisible&&state.formCount===1&&!state.formDisabled);
-      evidence.submissionReceipt=await page(operatorReleasePageScript(identity,true));save();
-      const message=await until(async()=>{const record=await invoke('sessionGet',report.sessionId),state=await page(operatorReleasePageScript(identity));evidence.pageAfter=state;if(state.error)throw Error(state.notice);const result=record.session.messages.find(row=>!ids.has(row.id)&&row.role==='user');if(!result&&state.notice==='已更新')throw Error('RELEASE_CONTINUATION_UNCONFIRMED');return result;},Boolean);
-      const metrics=await until(async()=>{const state=await page(operatorReleasePageScript(identity));evidence.pageAfter=state;if(state.error)throw Error(state.notice);return invoke('sessionTurnMetrics',{sessionId:report.sessionId,messageId:message.id});},value=>!!value.turnId);
+      evidence.pageBefore=await until(async()=>{const state=await page(operatorReleasePageScript(identity,false,action));if(state.error)throw Error(state.notice);if(state.taskPageVisible&&!['正在读取…','处理中…'].includes(state.notice)&&state.formCount!==1)throw Error('RELEASE_FORM_UNAVAILABLE: '+state.notice);return state;},state=>state.taskPageVisible&&state.formCount===1&&!state.formDisabled);
+      evidence.submissionReceipt=await page(operatorReleasePageScript(identity,true,action));save();
+      const message=await until(async()=>{const record=await invoke('sessionGet',report.sessionId),state=await page(operatorReleasePageScript(identity,false,action));evidence.pageAfter=state;if(state.error)throw Error(state.notice);const result=record.session.messages.find(row=>!ids.has(row.id)&&row.role==='user');if(!result&&state.notice==='已更新')throw Error('RELEASE_CONTINUATION_UNCONFIRMED');return result;},Boolean);
+      const metrics=await until(async()=>{const state=await page(operatorReleasePageScript(identity,false,action));evidence.pageAfter=state;if(state.error)throw Error(state.notice);return invoke('sessionTurnMetrics',{sessionId:report.sessionId,messageId:message.id});},value=>!!value.turnId);
       const entry={messageId:message.id,turnId:metrics.turnId,text:message.content,startedAt:evidence.at,submission:evidence.submission,status:'accepted'};report.turns.push(entry);evidence.messageId=entry.messageId;evidence.turnId=entry.turnId;save();return {messageId:entry.messageId,turnId:entry.turnId,identity};
     });
   }catch(error){evidence.error=redact(String(error.stack??error));throw error;}
@@ -168,6 +168,7 @@ async function command(name,input){
   if(name==='goal-review'){assert(Number.isSafeInteger(input.expectedRevision));assert(typeof input.accepted==='boolean');return brief({action:'review',operationId:input.operationId??randomUUID(),expectedRevision:input.expectedRevision,id:input.id,buildId:input.buildId,accepted:input.accepted});}
   if(name==='prompt')return prompt(input.text);
   if(name==='release-task-continue')return releaseTaskContinue(input);
+  if(name==='continue-task')return releaseTaskContinue(input,'continue');
   if(name==='draft-composer')return draftComposer(input.text);
   if(name==='send-composer')return sendComposer();
   if(name==='feedback-repair-draft'){assert(!activeInput,'FINISH_INPUT_SEGMENT_BEFORE_FEEDBACK');return prepareProductFeedbackRepair(input,{report,out,evaluate,invoke,nav,assets,submit,field,until});}
