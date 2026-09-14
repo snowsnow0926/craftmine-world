@@ -21,6 +21,10 @@ node tests/product-agent-operator-native.mjs `
 
 实际创建并冷重启读取的配置固定为附件精确模型 ID、500000 上下文、384000
 最大输出、max 思考、auto 权限。不会将 `deepseek-v4.1-flash` 悄悄换成
+其他模型。另保留已核对的玩家配置：`thinkingLevels=["max"]`、
+`supportsImages=true`、`supportsDocuments=true`，并在冷开和发消息前核对。
+这些是玩家的显式能力覆盖配置，不是对上游实际图像或文档支持的验证结论；
+API 拒绝时保留真实失败，不关闭能力选项来绕过。不会将原模型 ID 换成
 `deepseek-flash`；接口拒绝的结果保留为失败。驱动在设置之后正常退出重启，
 再从当前普通世界选择器进入；每次发消息核对 provider、模型及配置。这里的
 上下文和输出数值是复现玩家配置，驱动不额外设置评测预算或模型整轮时限。
