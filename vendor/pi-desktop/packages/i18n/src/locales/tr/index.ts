@@ -1817,6 +1817,7 @@ export const tr = {
     justNow: "Az önce",
   },
   errors: {
+    CODEX_INTERRUPTED_RECOVERY_UNVERIFIED: "Durdurulan önceki tur henüz doğrulanamadı. Sohbetiniz ve dünyanız korunuyor. Doğrulamayı yeniden denemek için Devam et'i seçin; geçmiş otomatik olarak yeniden oluşturulmaz.",
     TOKEN_BUDGET_EXHAUSTED: "Yerel görev token bütçesi tükendi. Dünya çalışma alanında bütçeyi ayarlayıp kaydedilmiş görevi sürdürün.",
     REQUEST_BUDGET_EXHAUSTED: "Görev istek sınırına ulaşıldı. Dünya çalışma alanında görevi inceleyin.",
     COMPACTION_BUDGET_EXHAUSTED: "Görev sıkıştırma sınırına ulaşıldı. Dünya çalışma alanında görevi inceleyin.",

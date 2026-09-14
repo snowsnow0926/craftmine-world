@@ -47,3 +47,34 @@ test('asynchronous transcript drain cannot authorize a successor turn',async()=>
     fence:async()=>{},call:async(method)=>{if(method==='session.get')return{session:{messages:[]}};writes++;}});
   await assert.rejects(host.invoke('codex.checkpoint.save',{sessionId:'s',turnId:'t',checkpoint:metadata()}),/STALE_TURN/);assert.equal(writes,0);
 });
+
+test('only matching durable aborted tails become recovery candidates; local read-only retries retain original requests',async()=>{
+  const binding={sessionId:'s',turnId:'new',projectId:'p',selectedWorld:'w'};
+  let record,metrics={sessionId:'s',turnId:'old-turn',status:'aborted'},messages=[
+    {id:'old-user',role:'user',content:'Full original requirement',status:'complete'},
+    {id:'aborted',role:'assistant',content:'',status:'aborted',error:{code:'TURN_ABORTED'}},
+  ];
+  const host=new CodexCheckpointHost({binding:()=>binding,drain:async()=>{},fence:async()=>{},call:async(method,params)=>{
+    if(method==='session.get')return{session:{projectPath:null,messages}};
+    if(method==='session.codexCheckpointGet')return{checkpoint:record};
+    if(method==='session.codexCheckpointSet'){record=params.checkpoint;return{};}
+    if(method==='session.turnMetrics'){assert.equal(params.messageId,'old-user');return metrics;}
+    throw Error('unexpected '+method);
+  }});
+  const identity={sessionId:'s',turnId:'new'};
+  await host.invoke('codex.checkpoint.save',{...identity,checkpoint:{...metadata(),synchronized:false}});
+  const stored=structuredClone(record);
+  messages.push({id:'current',role:'user',content:'Continue',status:'complete'});
+  const load=()=>host.invoke('codex.checkpoint.load',{...identity,userMessageId:messages.at(-1).id});
+  assert.deepEqual((await load()).recovery,{hostTurnId:'old-turn',sessionId:'s',projectId:'p',worldId:'w',userMessageId:'old-user',tailEndMessageId:'aborted',deferredMessageIds:[]});
+  messages.push({id:'read-failed',role:'assistant',content:'',status:'error',error:{code:'CODEX_INTERRUPTED_RECOVERY_UNVERIFIED'}},
+    {id:'again',role:'user',content:'Also preserve the aircraft',status:'complete'});
+  const retry=await load();assert.equal(retry.transcriptMatches,true);assert.deepEqual(retry.recovery.deferredMessageIds,['current','read-failed']);
+  assert.deepEqual(record,stored);assert.equal(messages.find(m=>m.id==='current').content,'Continue');
+  metrics={...metrics,sessionId:'foreign'};assert.equal((await load()).recovery.hostTurnId,null);
+  metrics={...metrics,sessionId:'s'};
+  messages[3].error.code='CODEX_TRANSPORT_CLOSED';assert.equal((await load()).transcriptMatches,false);assert.equal((await load()).recovery,undefined);
+  messages[3]={id:'read-failed',role:'assistant',content:'',status:'aborted',error:{code:'TURN_ABORTED',details:{recoveryReadOnly:true}}};
+  assert.equal((await load()).transcriptMatches,true);
+  messages[0].content+=' changed';assert.equal((await load()).transcriptMatches,false);assert.equal((await load()).recovery,undefined);
+});

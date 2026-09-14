@@ -9969,6 +9969,14 @@ must still reject. Preserve the failed first read and the separate repaired run.
 
 ### Opt-in Codex desktop world conversation
 
+Run the [interrupted native recovery scenarios](../../e2e/codex-interrupted-recovery.md)
+and [process close/drain boundary](../../adr/codex-app-server-close-drain.md):
+delay interrupt response/terminal independently, drain stdout after process exit,
+and verify an existing matching unsynchronized aborted tail through the real
+read-only paginated API before/after ordinary same-thread resume. Mismatches must
+offer localized Continue without automatic full reconstruction; preserve local
+retry requests and reject uncertain partial injection. No model budget is added.
+
 For complete-history recovery, follow the
 [native transcript injection scenarios](../../e2e/codex-full-history-native-injection.md):
 restore more than 1 Mi characters without losing original requests, preserve real

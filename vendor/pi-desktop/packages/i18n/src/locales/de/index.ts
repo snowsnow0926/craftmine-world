@@ -1777,6 +1777,7 @@ export const de = {
     "justNow": "Gerade eben"
   },
   "errors": {
+    "CODEX_INTERRUPTED_RECOVERY_UNVERIFIED": "Die zuvor gestoppte Aufgabe konnte noch nicht bestätigt werden. Chat und Welt bleiben erhalten. Wählen Sie „Fortfahren“, um die Prüfung zu wiederholen. Der Verlauf wird nicht automatisch neu aufgebaut.",
     TOKEN_BUDGET_EXHAUSTED: "Das lokale Token-Budget der Aufgabe ist aufgebraucht. Passen Sie es in der Welt-Werkbank an und setzen Sie die gespeicherte Aufgabe fort.",
     REQUEST_BUDGET_EXHAUSTED: "Das Anfrage-Limit der Aufgabe wurde erreicht. Prüfen Sie die Aufgabe in der Welt-Werkbank.",
     COMPACTION_BUDGET_EXHAUSTED: "Das Komprimierungslimit der Aufgabe wurde erreicht. Prüfen Sie die Aufgabe in der Welt-Werkbank.",
