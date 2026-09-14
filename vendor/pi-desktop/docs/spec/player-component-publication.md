@@ -72,10 +72,11 @@ guard. The package service retains metadata, selected-world and source identity
 validation. General ZIP import/export, source installation and candidate adoption
 are not exposed through this new navigation route.
 
-World-template publication may request only `godot.runtimeSave` with the selected
-world ID and `freeze: false`. Main validates the sender frame and the existing
-Godot coordinator captures/saves the actual runtime. The renderer cannot supply
-progress, a checkpoint token, a snapshot, or a frozen-save request.
+The generic navigation route still permits only `godot.runtimeSave` with the
+selected world ID and `freeze: false`. Whole-world publication instead uses the
+operation-bound main-window capture/release lifecycle described in
+[Player world library](player-world-library.md). The renderer cannot supply
+progress, pause state, a checkpoint token or a snapshot.
 
 ## Re-publication paths
 

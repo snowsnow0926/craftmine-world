@@ -11,7 +11,8 @@ const ref={assetId:'player.world.garden',version:2,contentHash:hash},template={f
 f.templateRows=[{...ref,displayName:template.displayName}];
 f.bridge={call:async(channel,args={})=>{f.calls.push({channel,args});
 if(channel==='asset.search')return{items:[{assetId:'player.component.pet',version:1,contentHash:hash,displayName:'小白'}]};
-if(channel==='godot.runtimeSave'){if(f.hold)await new Promise(resolve=>f.release=resolve);return{saved:true};}
+if(channel==='worldTemplate.capture'){if(f.hold)await new Promise(resolve=>f.release=resolve);return{saved:true};}
+if(channel==='worldTemplate.releaseCapture')return{status:'released',operationId:args.operationId};
 if(channel==='worldTemplate.describe')return{expectedSource:{worldId:args.worldId,buildId:'b1',revision:3,snapshotHash:hash}};
 if(channel==='worldTemplate.save'){if(f.lateCancel){await new Promise(resolve=>f.rejectLate=resolve);throw Error('OPERATION_CONFLICT');}f.receipt={...template,ref:{assetId:args.assetId,version:args.version,contentHash:hash},displayName:args.displayName};if(f.fail)throw Error('LOST_ACK');return f.receipt;}
 if(channel==='worldTemplate.cancel')return{status:'cancelled'};
@@ -51,9 +52,9 @@ await page.evaluate(()=>{fixture.unmount();});await page.waitForSelector('[data-
 await submit('[data-library-publish-form]');await page.waitForSelector('[data-publication-result]');
 check('remount retry preserves exact operation, selected source, metadata and version',JSON.stringify(original)===JSON.stringify(await page.evaluate(()=>fixture.calls.filter(row=>row.args.method==='publishSource').at(-1).args)));
 await page.evaluate(()=>fixture.render('world','checkpoint-world'));await ready();await submit('[data-library-publish-form]');await page.waitForSelector('[role=alert]');
-check('world checkpoint starts unchecked and refusal performs no save or publication',await page.evaluate(()=>!fixture.calls.some(row=>row.channel==='godot.runtimeSave'||row.channel==='worldTemplate.save')));
+check('world checkpoint starts unchecked and refusal performs no save or publication',await page.evaluate(()=>!fixture.calls.some(row=>row.channel==='worldTemplate.capture'||row.channel==='worldTemplate.save')));
 await change('[data-publication-checkpoint]',true,true);await submit('[data-library-publish-form]');await page.waitForSelector('[data-publication-result]');
-check('explicit checkpoint uses ordinary runtime save, formal source description, then template commit',await page.evaluate(()=>fixture.calls.filter(row=>['godot.runtimeSave','worldTemplate.describe','worldTemplate.save'].includes(row.channel)).map(row=>row.channel).join(',')==='godot.runtimeSave,worldTemplate.describe,worldTemplate.save'&&fixture.calls.find(row=>row.channel==='worldTemplate.save').args.expectedSource.worldId==='checkpoint-world'));
+check('explicit checkpoint uses scoped capture, formal source description, then template commit',await page.evaluate(()=>fixture.calls.filter(row=>['worldTemplate.capture','worldTemplate.describe','worldTemplate.save'].includes(row.channel)).map(row=>row.channel).join(',')==='worldTemplate.capture,worldTemplate.describe,worldTemplate.save'&&fixture.calls.find(row=>row.channel==='worldTemplate.save').args.expectedSource.worldId==='checkpoint-world'));
 await page.evaluate(()=>{fixture.hold=true;fixture.render('world','closed-world');});await ready();await change('[data-publication-checkpoint]',true,true);await submit('[data-library-publish-form]');await page.waitForFunction(()=>fixture.release);await page.evaluate(()=>fixture.unmount());await page.waitForSelector('[data-unmounted]');await page.evaluate(()=>fixture.release());await page.waitForTimeout(50);
 check('closing during save preflight cannot publish the old world later',await page.evaluate(()=>!fixture.calls.some(row=>row.channel==='worldTemplate.save'&&row.args.worldId==='closed-world')));
 await page.evaluate(()=>{fixture.hold=false;fixture.lateCancel=true;fixture.render('world','cancelled-world');});await ready();await change('[data-publication-checkpoint]',true,true);await submit('[data-library-publish-form]');await page.waitForFunction(()=>fixture.rejectLate);

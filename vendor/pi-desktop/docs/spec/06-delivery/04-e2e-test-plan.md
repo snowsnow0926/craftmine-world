@@ -1,5 +1,24 @@
 # 04. E2E Test Plan
 
+### Live-world publication capture (2026-09-15)
+
+- With the ordinary saved world running, publish from the asset sheet without a
+  separate preparatory freeze. Capture, description and archive must retain the
+  same progress snapshot and exact source pins; verify the real library receipt.
+- Close the sheet normally. Gameplay resumes without a manually injected resume;
+  a prior player pause or a later candidate/overlay blocker must remain effective.
+- During capture/save, cancel or leave the sheet and verify only the matching
+  operation's pause is released after pending work settles. An old release must
+  not affect a newer operation in the same world.
+- Preserve errors and exact retry identity. If a failed publication becomes stale
+  after simulation resumes, cancel it explicitly and create a new captured save.
+- CPU regression `tests/world-publication-capture.test.mjs` executes the actual
+  submit handler, main panel, host checkpoint/release methods, pause controller
+  and archive service with isolated in-memory runtime/Core fixtures. It reproduces
+  the old nonfreezing drift and tests strict revision rejection, stale release,
+  manual/candidate ownership, cancellation and save failure. Native validation is
+  a separate sealed-package run; the CPU fixture makes no gameplay claim.
+
 ### Godot authoring scope and player result guidance (2026-09-15)
 
 - Preserve runtime identity when the journal-derived Godot projection is null;

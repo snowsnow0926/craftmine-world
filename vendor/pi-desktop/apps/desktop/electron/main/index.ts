@@ -3314,6 +3314,16 @@ const directLibrary = createDirectLibraryService({
 });
 const playerWorldTemplates = createWorldTemplatePanel({
   domain: (method, args) => plugins.requestCraftmineHost(method, args), selection: godotSelection, capturePreview: captureLibraryPreview,
+  capture: async worldId => {
+    if (await godotSelection() !== worldId || godotWorld.instance?.worldId !== worldId) throw Error("GODOT_WORLD_CHANGED");
+    if (quitting || craftmineQuitPreparation || craftmineQuitPrepared || godotCandidates.blocking || godotCopies.busy || godotExportBusy || godotRestores.busy || profileRestore) throw Error("WORLD_BUSY");
+    const capture = await godotWorld.checkpointForPublication();
+    return {receipt: capture.receipt, release: async () => {
+      if (quitting || craftmineQuitPreparation || craftmineQuitPrepared || profileRestore
+        || godotCandidates.blocking || godotCopies.busy || godotExportBusy || godotRestores.busy) return;
+      await capture.release();
+    }};
+  },
   pick: async (kind, suggestedName) => {
     if (headlessAcceptance) return join(headlessAcceptance.root, "player-world-template.zip");
     if (kind === "import") {const result = await dialog.showOpenDialog({title: "导入世界模板", properties: ["openFile"], filters: [{name: "Craftmine world template", extensions: ["zip"]}]});return result.canceled ? null : result.filePaths[0] ?? null;}
