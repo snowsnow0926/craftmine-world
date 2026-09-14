@@ -63,3 +63,17 @@ selected provider/model. This prevents a model change or an old Codex usage row
 from attaching current PI configuration facts to unrelated usage. All shipped
 locales include the `playerBudget` namespace; English and Simplified Chinese have
 dedicated strings, with the existing shared-English fallback pattern elsewhere.
+
+## Compaction trigger evidence
+
+Craftmine PI automatic compaction events carry a bounded `trigger` diagnostic:
+request-input limit, history limit, or explicit model request. History estimates
+are separate from the inspected complete-request estimate, method, provider/model,
+window, output/tool reserve, input capacity and compaction threshold. No prompt,
+tool body or credential is included. `observedAt` is host decision time.
+
+The same values appear on start/end events and in an installed checkpoint's
+existing opaque `details`. `tokensBefore` retains its separate PI history meaning.
+If history already short-circuited inspection, request measurements stay absent.
+Manual/overflow operations without captured evidence cannot inherit an older
+automatic trigger. Guards, physical reservations and usage accounting are unchanged.
