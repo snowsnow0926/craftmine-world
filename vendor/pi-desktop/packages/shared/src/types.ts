@@ -354,9 +354,19 @@ export type ToolTokenUsage = {
   estimated: true;
 };
 
+export type CodexUsageCoverage = {
+  status: "incomplete";
+  reason: "native-maintenance-usage-unreported";
+  /** Completed native maintenance turns; never inferred model request count. */
+  maintenanceTurns: number;
+  maintenanceElapsedMs: number | null;
+  /** Reported creation counters only, not the operation's complete usage. */
+  reportedCreationUsage?: MessageUsage;
+};
+
 export type UiMessage = {
-  /** Codex usage is turn aggregate; context occupancy comes from its last request. */
-  codexUsage?: { scope: "current-turn"; lastRequest?: MessageUsage; modelContextWindow?: number; cost: null };
+  /** Codex scope/coverage are explicit; incomplete metadata is never a complete usage total. */
+  codexUsage?: { scope: "current-turn"; lastRequest?: MessageUsage; modelContextWindow?: number; cost: null; coverage?: CodexUsageCoverage };
   id: string;
   role: UiMessageRole;
   content: string;
@@ -523,6 +533,7 @@ export type AgentStatus = {
   reasoningEffort?: "xhigh";
   transportState?: "starting" | "resumed" | "restored-from-transcript";
   transportUsage?: { scope: "current-turn"; usage: MessageUsage; cost: null };
+  codexUsageCoverage?: CodexUsageCoverage;
   sessionId: string;
   isRunning: boolean;
   currentTurnId?: string;

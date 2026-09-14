@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { TaskMetrics, TaskMetricsQuery, MessageUsage } from "@pi-desktop/shared";
+import type { TaskMetrics, TaskMetricsQuery, MessageUsage, CodexUsageCoverage } from "@pi-desktop/shared";
+import {codexUsageCoverageText,codexContextCapacityMarker} from '../lib/codex-usage-coverage';
 import { api } from "../lib/api";
 import "../styles/task-metrics.css";
 
@@ -45,14 +46,16 @@ function duration(value: number | null | undefined) {
 /** Presentation only: all totals, model identities and timing come from the host. */
 export function TaskMetricsView({ metrics, loading = false, failed = false, codex }: {
   metrics: TaskMetrics | null; loading?: boolean; failed?: boolean;
-  codex?: { modelId?: string; usage?: MessageUsage };
+  codex?: { modelId?: string; usage?: MessageUsage; coverage?:CodexUsageCoverage; modelContextWindow?:number };
 }) {
   const { i18n } = useTranslation();
   const language = i18n.resolvedLanguage || i18n.language || "en";
   const text = language.startsWith("zh") ? labels.zh : labels.en;
   const models = metrics?.models ?? [];
   const modelName = codex?.modelId ?? (models.length ? models.map((model) => model.modelId).join(" / ") : text.unknown);
-  const coverage = metrics?.coverage ?? "unknown";
+  const incomplete=codex?.coverage?.status==='incomplete';
+  const capacityMarker=codexContextCapacityMarker(codex?.usage,codex?.modelContextWindow);
+  const coverage = incomplete?'partial':capacityMarker?'unknown':metrics?.coverage ?? "unknown";
   return (
     <section className="task-metrics" aria-label={text.operation} aria-live="off"
       data-task-id={metrics?.turnId} data-task-coverage={coverage}>
@@ -62,12 +65,14 @@ export function TaskMetricsView({ metrics, loading = false, failed = false, code
         {coverage === "partial" ? <span className="task-metrics-partial">{text.partial}</span> : null}
       </div>
       <dl className="task-metrics-summary">
-        <div><dt>{text.tokens}</dt><dd data-metric="tokens">{count(codex ? codex.usage?.totalTokens : metrics?.usage?.totalTokens, language)}</dd></div>
+        <div><dt>{text.tokens}</dt><dd data-metric="tokens">{count(incomplete||capacityMarker?undefined:codex ? codex.usage?.totalTokens : metrics?.usage?.totalTokens, language)}</dd></div>
         <div title={text.speed}><dt>TPS</dt><dd data-metric="tps">{count(metrics?.tps.value, language, 1)}{metrics?.tps.coverage === "partial" ? ` (${text.partial})` : ""}</dd></div>
         <div><dt>{text.time}</dt><dd data-metric="time">{duration(metrics?.wallTimeMs)}</dd></div>
         <div className="task-metrics-model"><dt>{text.model}</dt><dd data-metric="model" title={modelName}>{modelName}</dd></div>
       </dl>
-      {codex ? <p>Codex CLI · current-turn token totals. Internal request count, generation-only TPS and cost are unavailable.</p> : metrics ? (
+      {codex ? incomplete ? <p data-codex-usage-coverage="incomplete">{codexUsageCoverageText(codex.coverage!,language)}</p>
+        : capacityMarker ? <p>{language.startsWith('zh')?'CLI 报告的是上下文容量标记，并非实际消耗；用量未报告。':'CLI reported a context capacity marker, not token consumption. Usage is not reported.'}</p>
+        : <p>Codex CLI · current-turn token totals. Internal request count, generation-only TPS and cost are unavailable.</p> : metrics ? (
         <details className="task-metrics-details">
           <summary>{text.details}</summary>
           <p>{text.scope}</p>
@@ -97,7 +102,7 @@ type Snapshot = { key: string; metrics: TaskMetrics | null; loading: boolean; fa
 export function TaskMetricsPanel({ messageId, running, read = api.getTaskMetrics, codex }: {
   messageId: string | undefined; running: boolean;
   read?: (query: TaskMetricsQuery) => Promise<TaskMetrics | null>;
-  codex?: { modelId?: string; usage?: MessageUsage };
+  codex?: { modelId?: string; usage?: MessageUsage; coverage?:CodexUsageCoverage; modelContextWindow?:number };
 }) {
   const sessionId = useContext(SessionContext);
   const key = `${sessionId ?? ""}\0${messageId ?? ""}`;

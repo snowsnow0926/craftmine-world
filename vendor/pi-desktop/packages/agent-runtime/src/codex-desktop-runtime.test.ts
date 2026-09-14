@@ -196,26 +196,46 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       }finally{await f.cleanup();}
     }
   });
-  it('attributes valid native maintenance usage to the enclosing PI request without making maintenance its player turn',async()=>{
+  it('keeps native maintenance usage unknown and separates subsequently reported creation counters',async()=>{
     const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
     try{
       const client=new Client(),original=client.call.bind(client);let count=0;
       client.call=async(method,params)=>{
         const result=await original(method,params);
         if(method==='thread/compact/start'){
-          count++;const total={inputTokens:count*10,outputTokens:count*2,totalTokens:count*12};
-          client.notify('thread/tokenUsage/updated',{turnId:'compact-'+count,tokenUsage:{total,last:{inputTokens:10,outputTokens:2,totalTokens:12},modelContextWindow:522500}});
+          count++;const total={inputTokens:0,outputTokens:0,totalTokens:0,cachedInputTokens:0,cacheWriteInputTokens:0,reasoningOutputTokens:0};
+          client.notify('thread/tokenUsage/updated',{turnId:'compact-'+count,tokenUsage:{total,last:{...total,totalTokens:75024},modelContextWindow:522500}});
         }
         return result;
       };
-      const {runtime,ready}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await ready;
+      const {runtime,ready}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await ready;await next();
       expect(count).toBeGreaterThan(0);expect(runtime.getStatus().isRunning).toBe(true);
       expect(f.events.some(e=>e.event.type==='agent_end')).toBe(false);
-      expect(runtime.getStatus().transportUsage?.usage.totalTokens).toBe(count*12);
-      client.notify('thread/tokenUsage/updated',{tokenUsage:{total:{inputTokens:count*10+5,outputTokens:count*2+1,totalTokens:count*12+6},last:{inputTokens:5,outputTokens:1,totalTokens:6},modelContextWindow:522500}});
+      expect(runtime.getStatus().transportUsage).toBeUndefined();
+      expect(runtime.getStatus().codexUsageCoverage).toMatchObject({status:'incomplete',reason:'native-maintenance-usage-unreported',maintenanceTurns:count});
+      expect(runtime.getStatus().codexUsageCoverage?.reportedCreationUsage).toBeUndefined();
+      expect(f.checkpoint?.usageTotal).toBeUndefined();
+      client.notify('thread/tokenUsage/updated',{tokenUsage:{total:{inputTokens:5,outputTokens:1,totalTokens:6},last:{inputTokens:5,outputTokens:1,totalTokens:6},modelContextWindow:522500}});
+      expect(runtime.getStatus().transportUsage).toBeUndefined();expect(runtime.getStatus().codexUsageCoverage?.reportedCreationUsage?.totalTokens).toBe(6);
       client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
       const message=f.events.filter(e=>e.event.type==='message_end').at(-1).event.message;
-      expect(message.usage.totalTokens).toBe(count*12+6);expect(f.events.filter(e=>e.event.type==='agent_end')).toHaveLength(1);
+      expect(message.usage).toBeUndefined();expect(message.codexUsage.coverage.reportedCreationUsage.totalTokens).toBe(6);
+      expect(message.codexUsage.coverage.status).toBe('incomplete');expect(f.events.filter(e=>e.event.type==='agent_end')).toHaveLength(1);
+      expect(f.checkpoint?.usageTotal?.totalTokens).toBe(6);
+    }finally{await f.cleanup();}
+  });
+  it('stopping after native reset persists unknown maintenance coverage without a zero usage baseline',async()=>{
+    const f=await fixture([{id:'large',role:'tool',content:'source'.repeat(100_000),createdAt:'past',status:'complete'}]);
+    try{
+      const client=new Client(),original=client.call.bind(client);let count=0;
+      client.call=async(method,params)=>{const result=await original(method,params);if(method==='thread/compact/start'){
+        count++;const zero={inputTokens:0,outputTokens:0,totalTokens:0};client.notify('thread/tokenUsage/updated',{turnId:'compact-'+count,tokenUsage:{total:zero,last:{...zero,totalTokens:75024},modelContextWindow:522500}});
+      }return result;};
+      const {runtime,ready}=f.make(client);const running=runtime.prompt({text:'continue'},'current','native');await ready;await runtime.abort();await running;
+      expect(f.checkpoint?.usageTotal).toBeUndefined();
+      const final=f.events.filter(e=>e.event.type==='message_end').at(-1).event.message;
+      expect(final.usage).toBeUndefined();expect(final.codexUsage.coverage.reportedCreationUsage).toBeUndefined();
+      expect(final.codexUsage.coverage.maintenanceTurns).toBe(count);expect(final.codexUsage.coverage.status).toBe('incomplete');
     }finally{await f.cleanup();}
   });
   it("an injection rejection retains its own cause and never falls back to one oversized turn/start",async()=>{

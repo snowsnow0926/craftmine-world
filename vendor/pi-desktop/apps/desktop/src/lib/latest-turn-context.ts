@@ -15,6 +15,7 @@ import {
   type AssistantTurnEntry,
 } from "./assistant-turns";
 import { latestMessageUsage, resolveContextWindow } from "./context-usage";
+import {codexContextCapacityMarker} from './codex-usage-coverage';
 
 export type LatestTurnContextInspector = {
   usage: MessageUsage;
@@ -54,6 +55,7 @@ export function latestTurnContextInspector(
     .find((message) => message.usage);
   const codex = latestUsageMessage?.providerId === "codex-cli";
   const codexUsage = latestUsageMessage?.codexUsage;
+  if(codex&&codexContextCapacityMarker(codexUsage?.lastRequest,codexUsage?.modelContextWindow))return undefined;
   // A turn aggregate cannot stand in for prompt occupancy, and a provider's
   // generic 128k fallback is not the local CLI's actual context window.
   if (codex && (!codexUsage?.lastRequest || !codexUsage.modelContextWindow)) return undefined;
