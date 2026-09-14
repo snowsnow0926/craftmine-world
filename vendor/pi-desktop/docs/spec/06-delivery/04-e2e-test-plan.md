@@ -11052,3 +11052,9 @@ managed export, native appearance and actual player acceptance. The checked-in
 discovery index must enumerate the current built catalog, while reference-only
 IDs remain non-installable. See the repository-level
 `docs/PROMO_REUSE_INDEX_AND_NATURE_CONTRACT_2026-09-15.md` for measured evidence.
+# Promotional progress evidence boundaries (2026-09-15)
+
+For local six-stage native library acceptance, compare old progress at the actual
+applied Core transaction boundary. Keep later live motion and cold-frame limits
+explicit rather than claiming zero-frame pose equality. See
+[the application and cold-progress scenario](../../e2e/promo-application-progress-boundary-20260915.md).
