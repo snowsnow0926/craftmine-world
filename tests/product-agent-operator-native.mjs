@@ -17,6 +17,7 @@ import {createOperatorEventCollector,isRecoverableOperatorCaptureError,recoverOp
 import {operatorCollectorPerformanceSample,accumulateOperatorCollectorPerformance} from './helpers/operator-collector-performance.mjs';
 import {validateOperatorTemplateCopy,assertOperatorTemplateSource,templateCopyReadScript,submitOperatorTemplateCopy,verifyOperatorTemplateCopy} from './helpers/operator-template-world.mjs';
 import {showWorldTabScript,assertShowWorldIdentity} from './helpers/operator-show-world.mjs';
+import {settleOperatorInputEvidence,settleOperatorExplorationEvidence} from './helpers/operator-input-evidence.mjs';
 import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
 import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
@@ -40,7 +41,7 @@ fs.mkdirSync(outputRoot,{recursive:true});const out=previous?.out??fs.mkdtempSyn
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));atomicProductAgentJson(path.join(profile,'headless-profile.json'),{format:'craftmine.headless-profile/1',token:randomUUID(),legacySource:path.join(out,'legacy')});}
 const marker=JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'),'utf8'));assert.equal(marker.format,'craftmine.headless-profile/1');
 assertRetainedOperatorCopy({previous,out,profile,marker});
-for(const name of ['inbox','responses','turns','captures'])fs.mkdirSync(path.join(out,name),{recursive:true});
+for(const name of ['inbox','responses','turns','captures','input-results'])fs.mkdirSync(path.join(out,name),{recursive:true});
 const hash=value=>createHash('sha256').update(value).digest('hex'),launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
 if(launch.packaged)assert.equal(path.resolve(resources).toLowerCase(),path.join(launch.packaged,'resources').toLowerCase(),'PACKAGED_RESOURCES_MUST_BELONG_TO_PACKAGE');
 const report={format:'craftmine.product-agent-operator/1',controllerRunId:randomUUID(),out,applicationRoot,resources,codex,model:providerConfig?.model??'gpt-6-astra',effort:providerConfig?.thinkingLevel??'xhigh',backend:providerConfig?'pi':'codex-cli',...(providerConfig?{requestedModel:providerConfig.requestedModel,apiModelId:providerConfig.apiModelId,resolutionSource:providerConfig.resolutionSource,contextWindow:providerConfig.contextWindow,contextWindowSource:providerConfig.contextWindowSource??'original-player-500k-configuration'}:{}),sourceTemplate,recipeVersion:sourceTemplate==='promo-city'?2:null,launches:[],turns:[],commands:[],...(previous?{worldId:previous.worldId,sessionId:previous.sessionId,turns:previous.turns,commands:previous.commands,previousReport:previousFile,providerConfiguration:previous.providerConfiguration,retainedCopy:previous.retainedCopy,worldCreation:previous.worldCreation}:{}),acceptance:'not-assessed-by-driver'};
@@ -224,23 +225,30 @@ async function command(name,input){
     const matching=async()=>{const current=await rpc('godotObserve');for(const key of ['worldId','buildId','instanceId'])assert.equal(current[key],input.identity[key],'INPUT_CURRENT_IDENTITY_REQUIRED');};
     await matching();
     const selected={identity:input.identity,cancelFile:path.join(out,'cancel-input-'+randomUUID()),cancelRequested:false};activeInput=selected;report.activeInput=selected;save();
-    let result,frozen=false;
-    const stopAndSave=async()=>{
-      report.lastInputRelease=await rpc('cancelInputs',{payload:{identity:selected.identity}});
-      await matching();
-      const receipt=await panel('godot.runtimeSave',{freeze:true}),snapshot=await rpc('godotSnapshot');
-      assert.equal(snapshot?.worldId,report.worldId);frozen=true;
-      report.lastInputCheckpoint={receipt,snapshot,via:'ordinary-runtimeSave-freeze',continuousHumanPlay:false};
-      if(result)result.operatorCheckpoint=report.lastInputCheckpoint;
-      save();
-    };
-    try{await panel('godot.runtimeResume');result=await rpc('inputSegment',{payload:{identity:input.identity,segment:input.segment}});await stopAndSave();
-      for(const samples of [result,result.partialEvidence].filter(Boolean))for(const phase of ['before','during','after']){const frame=samples[phase]?.frame;if(!frame?.pngBase64)continue;const bytes=Buffer.from(frame.pngBase64,'base64');if(frame.sha256)assert.equal(hash(bytes),frame.sha256);const file=path.join(out,'captures','input-'+phase+'-'+Date.now()+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes);const {pngBase64,...metadata}=frame;samples[phase].frame={...metadata,file,sha256:hash(bytes)};}
-      report.lastInputResult=result;save();return result;
-    }finally{try{if(!frozen)await stopAndSave();}catch(error){report.inputReleaseError=String(error);throw error;}finally{activeInput=null;report.activeInput=null;save();}}
+    const evidenceFile=path.join(out,'input-results','input-'+Date.now()+'-'+randomUUID()+'.json');
+    let evidence;
+    try{
+      evidence=await settleOperatorInputEvidence({identity:input.identity,segment:input.segment,
+        run:async()=>{await panel('godot.runtimeResume');return rpc('inputSegment',{payload:{identity:input.identity,segment:input.segment}});},
+        archive:async original=>{const result=structuredClone(original);for(const samples of [result,result.partialEvidence].filter(Boolean))for(const phase of ['before','during','after']){const frame=samples[phase]?.frame;if(!frame?.pngBase64)continue;const bytes=Buffer.from(frame.pngBase64,'base64');if(frame.sha256)assert.equal(hash(bytes),frame.sha256);const file=path.join(out,'captures','input-'+phase+'-'+Date.now()+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes);const {pngBase64,...metadata}=frame;samples[phase].frame={...metadata,file,sha256:hash(bytes)};}return result;},
+        release:async()=>{const result=await rpc('cancelInputs',{payload:{identity:selected.identity}});report.lastInputRelease=result;save();return result;},
+        checkpoint:async()=>{await matching();const receipt=await panel('godot.runtimeSave',{freeze:true});try{const snapshot=await rpc('godotSnapshot');assert.equal(snapshot?.worldId,report.worldId);const checkpoint={receipt,snapshot,evidenceFile,via:'ordinary-runtimeSave-freeze',continuousHumanPlay:false};report.lastInputCheckpoint=checkpoint;save();return checkpoint;}catch(error){throw Object.assign(error,{checkpointEvidence:{receipt,status:'save-received-readback-unconfirmed'}});}},
+        persist:async value=>{writeJson(evidenceFile,value);report.lastInputEvidenceFile=evidenceFile;report.lastInputEvidence=value;if(value.resultReceived)report.lastInputResult=value.result;save();},
+      });
+      report.lastInputEvidence=evidence;report.lastInputEvidenceFile=evidenceFile;if(evidence.resultReceived)report.lastInputResult=evidence.result;save();
+      if(evidence.primaryError)throw Object.assign(Error(evidence.primaryError),{inputEvidenceFile:evidenceFile});
+      return {...evidence.result,operatorCheckpoint:evidence.checkpoint,operatorEvidenceFile:evidenceFile};
+    }finally{activeInput=null;report.activeInput=null;save();}
+
   }
   if(name==='cancel-inputs'){assert.equal(input.identity?.worldId,report.worldId);return rpc('cancelInputs',{payload:{identity:input.identity}});}
-  if(name==='explore'){const identity=await rpc('godotObserve');assert.equal(identity.worldId,report.worldId);return rpc('godotExplore',{payload:{worldId:report.worldId,buildId:identity.buildId,instanceId:identity.instanceId,steps:input.steps}});}
+  if(name==='explore'){
+    const before=await rpc('godotObserve');assert.equal(before.worldId,report.worldId);const identity={worldId:report.worldId,buildId:before.buildId,instanceId:before.instanceId},evidenceFile=path.join(out,'input-results','explore-'+Date.now()+'-'+randomUUID()+'.json');
+    const evidence=await settleOperatorExplorationEvidence({identity,steps:input.steps,observe:()=>rpc('godotObserve'),run:()=>rpc('godotExplore',{payload:{...identity,steps:input.steps}}),
+      archive:async original=>{const result=structuredClone(original);for(const capture of result.captures??[]){const frame=capture.image;if(!frame?.pngBase64)continue;const bytes=Buffer.from(frame.pngBase64,'base64');if(frame.sha256)assert.equal(hash(bytes),frame.sha256);const file=path.join(out,'captures','explore-'+Date.now()+'-'+randomUUID()+'.png');fs.writeFileSync(file,bytes);const {pngBase64,...metadata}=frame;capture.image={...metadata,file,sha256:hash(bytes)};}return result;},
+      persist:async value=>{writeJson(evidenceFile,value);report.lastExplorationEvidenceFile=evidenceFile;report.lastExplorationEvidence=value;save();}});
+    report.lastExplorationEvidence=evidence;report.lastExplorationEvidenceFile=evidenceFile;save();if(evidence.primaryError)throw Object.assign(Error(evidence.primaryError),{inputEvidenceFile:evidenceFile});return {...evidence.result,operatorEvidenceFile:evidenceFile};
+  }
   if(name==='capture')return capture();
   if(name==='history')return nav('godot.historyLoad',{...input,worldId:report.worldId});
   if(name==='source-read')return nav('godot.historyReadSource',{...input,worldId:report.worldId});
@@ -287,7 +295,7 @@ try{save();console.log(JSON.stringify({out,reportFile,inbox:path.join(out,'inbox
       continue;
     }
     let item,entry;try{item=readProductAgentCommand(path.join(out,'inbox'),file);entry={id:item.id,command:item.command,sha256:item.sha256,startedAt:new Date().toISOString(),status:'running'};report.commands.push(entry);save();const result=await command(item.command,item.args);entry.status='completed';entry.finishedAt=new Date().toISOString();writeJson(path.join(out,'responses',item.id+'.json'),{...entry,result});}
-    catch(error){entry??={id:file.slice(0,-5),command:item?.command};if(!report.commands.includes(entry))report.commands.push(entry);entry.status='failed';entry.error=String(error.stack??error);writeJson(path.join(out,'responses',entry.id+'.json'),entry);}save();if(quitting||abort.signal.aborted)break;
+    catch(error){entry??={id:file.slice(0,-5),command:item?.command};if(!report.commands.includes(entry))report.commands.push(entry);entry.status='failed';entry.error=String(error.stack??error);if(error.inputEvidenceFile)entry.inputEvidenceFile=error.inputEvidenceFile;writeJson(path.join(out,'responses',entry.id+'.json'),entry);}save();if(quitting||abort.signal.aborted)break;
   }await delay(1500);}
   if(abort.signal.aborted){report.cancelled=true;if(!ended&&report.sessionId){await invoke('agentAbort',{sessionId:report.sessionId}).catch(()=>{});while(!ended&&(await invoke('agentGetStatus',report.sessionId)).status.isRunning)await delay(250);}}
   if(!ended&&report.sessionId)await inspect();report.operatorFinished=true;

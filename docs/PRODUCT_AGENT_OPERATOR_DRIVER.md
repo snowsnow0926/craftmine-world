@@ -1,5 +1,24 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+每次 `input-segment` 收到的原生动作结果（含 failed 的 partialEvidence）先归档
+原始帧并写入独立 `input-results/input-*.json`，再执行正常释放和保存/读回。
+截图存为原字节 PNG；快照、动作、释放结果和原错误不改写。输入错误、帧归档
+错误、释放错误、保存错误分别保留，cleanup 不覆盖原始失败，也不重复尝试保存。
+失败命令回执包含 `inputEvidenceFile`；即使没有收到原生结果，也明确记录未知，
+不会伪造动作已完成或 semantic pass。保存回执已收到但随后读回失败时，单独
+保留该回执并标注读回未确认。`lastInputCheckpoint` 指最近成功保存，本次状态
+应以 `lastInputEvidence.checkpointStatus` 为准。
+
+实际 A3 的宠物越出 ±80 后，原 snapshot 校验拒绝，下一次 `inputSegment`
+会在 before 快照阶段停止，尚未派发输入。既有 `explore` 使用 observe 和实际
+玩家物理控制器 walk，不要求成功 snapshot；可由操作员基于真实镜头选择方向，
+先 `resume`、再 `explore` 走回有效区域，最后重新 `snapshot`/`save`。这没有
+放宽产品 validator，也不写位置或存档。探索默认不要求截图；全屏用
+`capture:false`，之后单独使用 `capture` 的绑定视口读取。若请求的后段截图
+被既有保护拒绝，前面的动作仍可能已经执行，不能按命令 failed 推断没有移动。
+新驱动把探索前后实际观察和原错误写到 `input-results/explore-*.json`，没有
+完整原生回执时标为 actions-may-have-executed，不补造逐动作回执或成功判定。
+
 `show-world` 无参数命令只执行当前已打开世界中可见、未禁用的“世界”页签
 原有 DOM `onclick` 回调，不要求模型闲置，不走入口、重开世界或新建会话。
 不调用底层 resume/authority 域接口；从工作台切回世界时，产品自身原回调的
