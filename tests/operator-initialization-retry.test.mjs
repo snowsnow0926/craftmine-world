@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady} from './helpers/operator-initialization-retry.mjs';
+import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady,initializationEntryUiScript,prepareAndEnterRetainedWorld} from './helpers/operator-initialization-retry.mjs';
 
 test('controller ready with zero windows waits for a real hidden window and available host/plugin',async()=>{
   const safe={visible:false,focused:false,focusable:false,offscreen:true};
@@ -32,10 +32,28 @@ test('owned visible retry uses exactly the installed React callback with no even
 test('unknown world, duplicate/hidden/inert/disabled controls and wrong owner cannot dispatch retry',()=>{
   for(const options of [{otherWorld:true},{duplicateRows:true},{duplicateButtons:true},{hidden:true},{inert:true},{disabled:true},{missingHandler:true},{unowned:true}]){const f=ui(options);assert.throws(()=>vm.runInNewContext(initializationRetryUiScript('world-fixture',true),f.context));assert.equal(f.count,0);}
 });
-test('automatic startup completion or preparation never manufactures a retry click',()=>{
-  for(const state of ['ready','initializing'])assert.equal(initializationRecoveryMode({state},{ready:true}),'automatic-startup-recovery');
+test('only ready means recovered at startup; initializing requires an explicit preparation action, never a retry click',()=>{
+  assert.equal(initializationRecoveryMode({state:'ready'},{ready:true}),'already-ready-at-startup');
+  assert.equal(initializationRecoveryMode({state:'initializing'},{ready:false}),'ordinary-continue-preparation');
   for(const state of ['failed','cancelled','interrupted']){assert.equal(initializationRecoveryMode({state},{ready:true}),'ordinary-react-retry');assert.equal(initializationRecoveryMode({state},{ready:false}),null);}
   assert.equal(initializationRecoveryMode(undefined,{ready:true}),null);
+});
+test('readiness polling is reached only after the actual preparation callback; mutations are each invoked once',async()=>{
+  const calls=[];let preparationStarted=false;
+  const result=await prepareAndEnterRetainedWorld({mode:'ordinary-continue-preparation',continuePreparation:async()=>{calls.push('continue-handler');preparationStarted=true;},retry:async()=>{throw Error('no retry for initializing');},waitReady:async()=>{assert(preparationStarted,'a list read cannot start initialization');calls.push('confirm-ready');},enter:async()=>{calls.push('open-handler');return {worldId:'world-fixture'};}});
+  assert.equal(result.worldId,'world-fixture');assert.deepEqual(calls,['continue-handler','confirm-ready','open-handler']);
+  calls.length=0;await prepareAndEnterRetainedWorld({mode:'ordinary-react-retry',continuePreparation:async()=>{throw Error('no continue for terminal');},retry:async()=>calls.push('retry-handler'),waitReady:async()=>calls.push('confirm-ready'),enter:async()=>calls.push('open-handler')});assert.deepEqual(calls,['retry-handler','confirm-ready','open-handler']);
+});
+test('existing continue and open callbacks are identity-bound; absent or disabled preparation is not fabricated',()=>{
+  const calls=[],form={dataset:{worldOpen:'world-fixture'},getClientRects:()=>[{}],closest:()=>null,querySelector:()=>null,__reactProps$f:{onSubmit:event=>{event.preventDefault();calls.push('open');}}};
+  const button={dataset:{worldContinue:'world-fixture'},getClientRects:()=>[{}],closest:()=>null,disabled:false,__reactProps$b:{onClick:()=>calls.push('continue')}};
+  const context={__craftmineHeadless:true,getComputedStyle:()=>({visibility:'visible'}),document:{querySelector:()=>({}),querySelectorAll:selector=>selector==='[data-world-open]'?[form]:[button]}};
+  assert.equal(vm.runInNewContext(initializationEntryUiScript('world-fixture','continue'),context).submitted,'continue');
+  assert.equal(vm.runInNewContext(initializationEntryUiScript('world-fixture','open'),context).submitted,'open');assert.deepEqual(calls,['continue','open']);
+  button.disabled=true;assert.throws(()=>vm.runInNewContext(initializationEntryUiScript('world-fixture','continue'),context),/UNAVAILABLE/);
+  assert.throws(()=>vm.runInNewContext(initializationEntryUiScript('other-world','open'),context),/UNAVAILABLE/);assert.deepEqual(calls,['continue','open']);
+  context.document.querySelector=()=>null;context.document.querySelectorAll=()=>[];
+  const state=vm.runInNewContext(initializationEntryUiScript('world-fixture'),context);assert.equal(state.entryOpen,false);assert.equal(state.openCount,0);
 });
 function profile(options={}){
   const parent=path.resolve('test-results');fs.mkdirSync(parent,{recursive:true});const top=fs.mkdtempSync(path.join(parent,'retry-profile-contract-')),owner=path.join(top,'test-results','desktop-native-product-fixture'),directory=path.join(owner,'profile'),worldId='world-fixture';

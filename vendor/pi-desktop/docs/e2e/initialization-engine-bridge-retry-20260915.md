@@ -107,3 +107,35 @@ Two CPU cases cover zero-window -> hidden-window -> backend/plugin readiness
 and immediate rejection of unsafe windows even during backend startup. All
 18 probe/read-timeout tests pass; native recovery still requires the parent's
 next actual run.
+
+The subsequent retained probe `ZKBqHo` exposed a distinct selected-world entry
+gap. The actual list identified `world-c0009e708f37` as active and initializing
+at the build stage, while canonical jobs and the executor ledger were empty.
+The entry list itself never starts the initializer. The old row hid Continue
+Preparing World for the selected world; its controller also rejected same-world
+continuation, and ordinary opening of non-playable rows only showed a notice.
+The parent cancelled that wait normally; its original report is not modified.
+
+The production correction exposes the existing continuation for a selected
+initializing row and permits only that explicit state-scoped same-world path.
+`tests/selected-initialization-continuation.test.mjs` renders the actual React
+row, then executes the actual controller callback through the real bridge,
+retained-page navigation function, host panel coordinator and creation factory
+with controlled initialization dependencies. Pure list reads and ordinary
+selection start nothing; explicit continuation reaches the initializer, and
+repeat requests do not restart an already-running initializer. Ready/failed
+states and busy/unsupported cases retain their old guards. No fake jobs or
+profile changes are used to manufacture readiness.
+
+The native probe now records `ordinary-continue-preparation` for initializing,
+invokes that actual existing callback once, and only then polls readiness.
+Only a ready startup row is `already-ready-at-startup`. Terminal rows may use
+their one explicit retry. Once ready, the probe opens through the ordinary form
+once if entry is still open; it never waits for an entry form after a handler
+has already left entry. Cold reopen has its own single open. Callback loss is
+not a reason to repeat a mutation.
+
+56 targeted CPU tests and desktop typechecking passed. These cover the actual
+production continuation chain, state guards, private probe action ordering and
+read-timeout classification. The new native package still needs parent-run
+acceptance on the unchanged retained world.

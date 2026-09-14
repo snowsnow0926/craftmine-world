@@ -82,7 +82,27 @@ export function initializationRetryUiScript(worldId,submit=false){
   })()`;
 }
 export function initializationRecoveryMode(row,ui){
-  if(['ready','initializing'].includes(row?.state))return 'automatic-startup-recovery';
+  if(row?.state==='ready')return 'already-ready-at-startup';
+  if(row?.state==='initializing')return 'ordinary-continue-preparation';
   if(['failed','cancelled','interrupted'].includes(row?.state)&&ui?.ready)return 'ordinary-react-retry';
   return null;
+}
+export function initializationEntryUiScript(worldId,action='read'){
+  assert(/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId));assert(['read','continue','open'].includes(action));
+  return `(()=>{
+    if(!globalThis.__craftmineHeadless)throw Error('RETRY_OWNED_RENDERER_REQUIRED');
+    const forms=[...document.querySelectorAll('[data-world-open]')].filter(form=>form.dataset.worldOpen===${JSON.stringify(worldId)}),form=forms[0];
+    const buttons=[...document.querySelectorAll('[data-world-continue]')].filter(button=>button.dataset.worldContinue===${JSON.stringify(worldId)}),button=buttons[0];
+    const props=node=>node?.[Object.keys(node).find(key=>key.startsWith('__reactProps$'))];
+    const visible=node=>!!node&&node.getClientRects().length>0&&getComputedStyle(node).visibility!=='hidden'&&!node.closest('[inert], [aria-hidden="true"]');
+    const state={entryOpen:!!document.querySelector('.app-shell.craftmine-mode-entry-open'),continueCount:buttons.length,continueReady:buttons.length===1&&visible(button)&&!button.disabled&&typeof props(button)?.onClick==='function',openCount:forms.length,openReady:forms.length===1&&visible(form)&&!form.querySelector('button:disabled')&&typeof props(form)?.onSubmit==='function'};
+    ${action==='continue'?`if(!state.continueReady)throw Error('RETRY_PREPARATION_CONTROL_UNAVAILABLE');props(button).onClick();state.submitted='continue';`:action==='open'?`if(!state.openReady)throw Error('RETRY_WORLD_OPEN_UNAVAILABLE');props(form).onSubmit({preventDefault(){},target:form,currentTarget:form});state.submitted='open';`:''}
+    return state;
+  })()`;
+}
+export async function prepareAndEnterRetainedWorld({mode,continuePreparation,retry,waitReady,enter}){
+  assert(['ordinary-continue-preparation','ordinary-react-retry','already-ready-at-startup'].includes(mode),'RETRY_RECOVERY_MODE_REQUIRED');
+  if(mode==='ordinary-continue-preparation')await continuePreparation();
+  if(mode==='ordinary-react-retry')await retry();
+  await waitReady();return enter();
 }

@@ -8,7 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from '../helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from '../helpers/ordinary-world-ui.mjs';
 import {operatorRedactor,redactedOperatorLog} from '../helpers/operator-provider-config.mjs';
-import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup} from '../helpers/operator-initialization-retry.mjs';
+import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,initializationEntryUiScript,prepareAndEnterRetainedWorld} from '../helpers/operator-initialization-retry.mjs';
 import {compareGodotPersistentProgress} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-godot-bases-acceptance.ts';
 import {isTransientReadTimeout,terminalState} from '../player-feedback/P8/initialization-poll.mjs';
 
@@ -80,13 +80,33 @@ async function stop(){
   if(!ended){await rpc('quit').catch(()=>{});await Promise.race([exit,delay(60000)]);if(!ended){run.forcedStop=true;child.kill();await exit;}}
   socket?.close();socket=null;assert(!run.forcedStop,'RETRY_NORMAL_SHUTDOWN_REQUIRED');assert.equal(run.exit?.code,0);assert(run.audit,'RETRY_SHUTDOWN_AUDIT_REQUIRED');assert.deepEqual(run.audit.violations,[]);assert.deepEqual(run.audit.shutdownFailures,[]);assert.deepEqual(run.audit.pageErrors??[],[],'RETRY_PAGE_ERRORS');save();
 }
-async function readyWorld(){
-  const list=await until(readWorldList,value=>{if(!value)return false;const row=value.worlds.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');if(terminalState(row))throw Error('RETRY_TERMINAL_INITIALIZATION_FAILURE: '+JSON.stringify(row.creation));return row.state==='ready';});
-  assert(list.worlds.some(row=>row.id===worldId));
-  await until(()=>evaluate(`!!document.querySelector('[data-world-open="${worldId}"]')`),Boolean);
-  await evaluate(`(()=>{const form=document.querySelector('[data-world-open="${worldId}"]');if(!globalThis.__craftmineHeadless||!form||form.querySelector('button:disabled'))throw Error('RETRY_WORLD_OPEN_UNAVAILABLE');form.requestSubmit();return true;})()`);
-  await until(()=>rpc('worldNavigationReady'),state=>state.ready&&state.worldId===worldId);
-  return until(()=>rpc('godotObserve'),state=>state.worldId===worldId&&!!state.instanceId);
+async function readyWorld(mode='already-ready-at-startup'){
+  return prepareAndEnterRetainedWorld({mode,
+    continuePreparation:async()=>{
+      await until(()=>evaluate(initializationEntryUiScript(worldId)),ui=>ui.continueReady);
+      assert(!run.continueDispatchAttempted,'RETRY_PREPARATION_ALREADY_DISPATCHED');run.continueDispatchAttempted=true;save();
+      run.continueDispatch=await evaluate(initializationEntryUiScript(worldId,'continue'));save();
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    },
+    retry:async()=>{
+      assert(!report.retryDispatchAttempted,'RETRY_ALREADY_DISPATCHED');report.retryDispatchAttempted=true;report.retryClicks=null;save();
+      report.retryDispatch=await evaluate(initializationRetryUiScript(worldId,true));assert.equal(report.retryDispatch.submitted,true);report.retryClicks=1;save();
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    },
+    waitReady:()=>until(readWorldList,value=>{if(!value)return false;const row=value.worlds.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');if(terminalState(row))throw Error('RETRY_TERMINAL_INITIALIZATION_FAILURE: '+JSON.stringify(row.creation));return row.state==='ready';}),
+    enter:async()=>{
+      const ui=await evaluate(initializationEntryUiScript(worldId));
+      if(ui.entryOpen){
+        await until(()=>evaluate(initializationEntryUiScript(worldId)),state=>state.openReady);
+        assert(!run.openDispatchAttempted,'RETRY_WORLD_OPEN_ALREADY_DISPATCHED');run.openDispatchAttempted=true;save();
+        run.openDispatch=await evaluate(initializationEntryUiScript(worldId,'open'));save();
+      }
+      // An ordinary handler can already have left entry. Never wait for its
+      // now-unmounted form or dispatch another open after that transition.
+      await until(()=>rpc('worldNavigationReady'),state=>state.ready&&state.worldId===worldId);
+      return until(()=>rpc('godotObserve'),state=>state.worldId===worldId&&!!state.instanceId);
+    },
+  });
 }
 async function captureAndSave(){
   const saved=await panel('godot.runtimeSave',{freeze:true}),snapshot=await rpc('godotSnapshot'),before=await rpc('godotObserve');assert.equal(before.worldId,worldId);
@@ -101,8 +121,7 @@ try{
   const decision=await until(async()=>{const list=await readWorldList();if(!list)return null;assert(list.worlds.some(row=>row.id===worldId),'RETRY_WORLD_MISSING');return {list,ui:await evaluate(initializationRetryUiScript(worldId))};},value=>!!value&&!!initializationRecoveryMode(value.list.worlds.find(row=>row.id===worldId),value.ui));
   report.recoveryDecision=decision;const row=decision.list.worlds.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');
   report.recoveryMode=initializationRecoveryMode(row,decision.ui);
-  if(report.recoveryMode==='ordinary-react-retry'){report.retryDispatchAttempted=true;report.retryClicks=null;save();report.retryDispatch=await evaluate(initializationRetryUiScript(worldId,true));assert.equal(report.retryDispatch.submitted,true);report.retryClicks=1;await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');}
-  save();await step('same world becomes an actual running formal instance',readyWorld);
+  save();await step('same world becomes an actual running formal instance',()=>readyWorld(report.recoveryMode));
   const afterList=await until(readWorldList,Boolean);assert.deepEqual(afterList.worlds.map(row=>row.id).sort(),report.beforeWorldIds,'RETRY_WORLD_SET_CHANGED');
   const first=await step('native pixels and ordinary frozen save',captureAndSave);report.savedSnapshot=first.snapshot;
   await step('normal shutdown after recovery',stop);
