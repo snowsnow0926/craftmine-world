@@ -8,6 +8,7 @@ const code=`import React from'react';import{createRoot}from'react-dom/client';im
 const hash='a'.repeat(64),app=createRoot(document.getElementById('root'));
 const f=window.fixture={calls:[],version:0,fail:false,statusFail:false,hold:false,receipt:null,created:[],saved:[]};
 const ref={assetId:'player.world.garden',version:2,contentHash:hash},template={format:'craftmine.player-world-template/1',kind:'world',action:'create-new-world',initialState:'saved-progress',ref,displayName:'我的庭院',description:'可步行庭院',tags:['庭院']};
+f.templateRows=[{...ref,displayName:template.displayName}];
 f.bridge={call:async(channel,args={})=>{f.calls.push({channel,args});
 if(channel==='asset.search')return{items:[{assetId:'player.component.pet',version:1,contentHash:hash,displayName:'小白'}]};
 if(channel==='godot.runtimeSave'){if(f.hold)await new Promise(resolve=>f.release=resolve);return{saved:true};}
@@ -15,9 +16,9 @@ if(channel==='worldTemplate.describe')return{expectedSource:{worldId:args.worldI
 if(channel==='worldTemplate.save'){if(f.lateCancel){await new Promise(resolve=>f.rejectLate=resolve);throw Error('OPERATION_CONFLICT');}f.receipt={...template,ref:{assetId:args.assetId,version:args.version,contentHash:hash},displayName:args.displayName};if(f.fail)throw Error('LOST_ACK');return f.receipt;}
 if(channel==='worldTemplate.cancel')return{status:'cancelled'};
 if(channel==='worldTemplate.status')return{status:'saved',result:f.receipt};
-if(channel==='worldTemplate.list')return{items:[{...ref,displayName:template.displayName}],nextOffset:null};
+if(channel==='worldTemplate.list'){const matching=f.templateRows.filter(row=>!args.query||row.displayName.includes(args.query));const result={items:f.paged?matching.slice(args.offset,args.offset+1):matching,nextOffset:f.paged&&args.offset+1<matching.length?args.offset+1:null};if(f.holdList)await new Promise(resolve=>f.releaseList=resolve);return result;}
 if(channel==='worldTemplate.read'){if(Object.keys(args.ref).sort().join(',')!=='assetId,contentHash,version')throw Error('WORLD_TEMPLATE_INVALID_PARAMS');return template;}
-if(channel==='worldTemplate.import')return template;
+if(channel==='worldTemplate.import'){const result=f.importedTemplate??template;if(f.holdImport)await new Promise(resolve=>f.releaseImport=resolve);if(f.cancelImport)return{status:'cancelled'};if(!f.templateRows.some(row=>row.assetId===result.ref.assetId))f.templateRows.push({...result.ref,displayName:result.displayName});return result;}
 if(channel==='worldTemplate.export')return{status:'completed',ref};
 if(channel==='package.request'){
 if(args.method==='sourceList')return{worldId:args.worldId,revision:7,manifestHash:hash,items:[{nodePath:'world/Pet',name:'小白',supported:true},{nodePath:'world',name:'整个世界',supported:false}]};
@@ -26,7 +27,7 @@ if(args.method==='publishSourceStatus'){if(f.statusFail)throw Error('TEMPORARILY
 if(args.method==='cancelPublishSource')return{...f.receipt,cancelled:false};
 }throw Error('UNEXPECTED:'+channel);}};
 f.render=(kind='component',worldId='w1')=>{app.render(<LibraryPublishPanel key={++f.version} bridge={f.bridge} worldId={worldId} worldName='测试世界' kind={kind} zh onSaved={ref=>f.saved.push(ref)}/>);};
-f.templates=(locked=false)=>app.render(<LocalWorldTemplates key={++f.version} bridge={f.bridge} zh busy={false} locked={locked} onCreate={async(ref,title)=>{f.created.push({ref,title});}}/>);
+f.templates=(locked=false,remount=true,retry=false)=>{if(remount)++f.version;app.render(<LocalWorldTemplates key={f.version} bridge={f.bridge} zh busy={false} locked={locked} onRetry={retry?async()=>{f.retries=(f.retries??0)+1;}:undefined} onCreate={async(ref,title)=>{f.created.push({ref,title});}}/>);};
 f.change=(selector,value,checked=false)=>{const node=document.querySelector(selector),key=Object.keys(node).find(key=>key.startsWith('__reactProps$'));node[key].onChange({target:checked?{checked:value}:{value}});};
 f.activate=selector=>{const node=document.querySelector(selector),key=Object.keys(node).find(key=>key.startsWith('__reactProps$'));node[key].onClick({preventDefault(){}});};
 f.unmount=()=>app.render(<p data-unmounted>Closed</p>);f.render();`;
@@ -62,6 +63,23 @@ await page.evaluate(()=>fixture.templates());await page.waitForSelector('[data-l
 check('template creation retains exact immutable version and chosen title',await page.evaluate(()=>fixture.created[0].ref.assetId==='player.world.garden'&&fixture.created[0].ref.version===2&&fixture.created[0].title==='庭院副本'));
 await submit('[data-template-export]');await page.waitForFunction(()=>document.body.textContent.includes('已导出'));await submit('[data-template-import]');await page.waitForFunction(()=>document.body.textContent.includes('模板已导入'));
 check('import/export supply references and operation ids, never renderer filesystem paths',await page.evaluate(()=>fixture.calls.filter(row=>['worldTemplate.export','worldTemplate.import'].includes(row.channel)).every(row=>!JSON.stringify(row.args).includes('Path'))));
+await change('[data-template-search] input','不存在');await submit('[data-template-search]');await page.waitForFunction(()=>document.querySelector('[data-template-empty]')?.textContent.includes('没有匹配'));
+check('a filtered empty result does not claim the library is empty and retains selected detail',await page.evaluate(()=>!!document.querySelector('[data-local-template-selected]')));
+await page.evaluate(()=>{fixture.importedTemplate={format:'craftmine.player-world-template/1',kind:'world',action:'create-new-world',initialState:'saved-progress',ref:{assetId:'player.world.ranger',version:3,contentHash:'b'.repeat(64)},displayName:'暗影游侠',description:'Saved progress'};});
+await submit('[data-template-import]');await page.waitForSelector('[data-local-template="player.world.ranger"]');
+check('successful import refreshes the host list, clears search and preserves exact selected version without creating',await page.evaluate(()=>document.querySelector('[data-template-search] input').value===''&&document.querySelector('[data-local-template-selected]').dataset.localTemplateSelected==='player.world.ranger'&&fixture.calls.filter(row=>row.channel==='worldTemplate.list').at(-1).args.query===''&&fixture.created.length===1));
+await page.evaluate(()=>fixture.templates(true,false));await page.waitForFunction(()=>document.querySelector('[data-local-template-create] button').disabled);await submit('[data-local-template-create]');
+check('retained world creation locks the selected template form and its submit handler',await page.evaluate(()=>fixture.created.length===1&&document.querySelector('[data-template-import] button').disabled));
+await page.evaluate(()=>fixture.templates(true,false,true));await page.waitForFunction(()=>document.querySelector('[data-local-template-create] button').textContent.includes('重试'));await submit('[data-local-template-create]');await page.waitForFunction(()=>fixture.retries===1);
+check('an explicit retained-attempt retry stays available without calling ordinary new creation or unlocking identity',await page.evaluate(()=>fixture.created.length===1&&document.querySelector('[data-template-world-title]').disabled&&document.querySelector('[data-template-import] button').disabled));
+await page.evaluate(()=>fixture.templates(false,false));await page.waitForFunction(()=>!document.querySelector('[data-local-template-create] button').disabled);await submit('[data-local-template-create]');await page.waitForFunction(()=>fixture.created.length===2);
+check('unlocking retains the chosen immutable version and allows one explicit creation',await page.evaluate(()=>fixture.created[1].ref.assetId==='player.world.ranger'&&fixture.created[1].ref.version===3&&fixture.created[1].ref.contentHash==='b'.repeat(64)));
+await page.evaluate(()=>{fixture.paged=true;fixture.templates();});await page.waitForSelector('.local-world-template-list > button');await change('[data-template-search] input','未提交的搜索');await page.evaluate(()=>fixture.activate('.local-world-template-list > button'));await page.waitForFunction(()=>document.querySelectorAll('[data-local-template]').length===2);
+check('load more uses the completed search and host offset despite unsent search edits',await page.evaluate(()=>fixture.calls.filter(row=>row.channel==='worldTemplate.list').at(-1).args.query===''&&fixture.calls.filter(row=>row.channel==='worldTemplate.list').at(-1).args.offset===1));
+await page.evaluate(()=>{fixture.paged=false;fixture.holdImport=true;});await submit('[data-template-import]');await page.waitForFunction(()=>fixture.releaseImport);await page.evaluate(()=>fixture.unmount());await page.waitForSelector('[data-unmounted]');await page.evaluate(()=>{fixture.holdImport=false;fixture.templates();});await page.waitForSelector('[data-local-template]');await page.evaluate(()=>fixture.releaseImport());await page.waitForTimeout(30);
+check('a late import receipt cannot select or create a world in the newly mounted chooser',await page.evaluate(()=>!document.querySelector('[data-local-template-selected]')&&fixture.created.length===2));
+await page.evaluate(()=>{fixture.holdList=true;fixture.templates();});await page.waitForFunction(()=>fixture.releaseList);await page.evaluate(()=>fixture.unmount());await page.waitForSelector('[data-unmounted]');await page.evaluate(()=>{fixture.templateRows=[];fixture.holdList=false;fixture.templates();});await page.waitForSelector('[data-template-empty]');await page.evaluate(()=>fixture.releaseList());await page.waitForTimeout(30);
+check('a stale list receipt after leaving the chooser cannot repopulate the new list',await page.evaluate(()=>!document.querySelector('[data-local-template]')&&document.querySelector('[data-template-empty]').textContent.includes('还没有世界模板')));
 await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(out,'templates-narrow.png')});
 check('no pointer lock, focus, or page errors',await page.evaluate(()=>violations.length===0)&&!report.errors.length);report.passed=true;
 }finally{fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));await browser.close();console.log(JSON.stringify(report));}

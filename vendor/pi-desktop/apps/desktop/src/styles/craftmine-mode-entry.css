@@ -56,6 +56,7 @@
 .craftmine-world-entry-tabs button[aria-selected="true"] { border-bottom-color: var(--ds-text-primary); color: var(--ds-text-primary); }
 .craftmine-world-entry-tabs button:disabled { opacity: .6; cursor: default; }
 .craftmine-world-entry-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 24px; }
+.craftmine-world-entry-actions[data-world-example-import] { margin: 0 0 20px; }
 .craftmine-world-entry-actions > button, .craftmine-example-world button { padding: 10px 16px; color: var(--ds-text-primary); background: var(--ds-bg-secondary); border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
 .craftmine-world-entry-actions > button:disabled, .craftmine-example-world button:disabled { opacity: .6; cursor: default; }
 .craftmine-world-entry-actions .craftmine-mode-manage { margin: 0; }

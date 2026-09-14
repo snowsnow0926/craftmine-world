@@ -102,7 +102,10 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
           <button type="button" onClick={() => setTab("create")}>{zh ? "创建空白世界" : "Create a blank world"}</button>
         </div>}
         {tab === "examples" && <>
-          <p className="craftmine-world-note">{zh ? "从示例创建个人副本，可以直接游玩，也可以继续修改。" : "Create a personal copy to play or keep creating."}</p>
+          <p className="craftmine-world-note">{zh ? "从内置示例创建个人副本，无需连接 AI 即可游玩，也可以继续修改。" : "Create a personal copy of a built-in example to play without an AI account or keep creating."}</p>
+          <form className="craftmine-world-entry-actions" data-world-example-import onSubmit={event => {event.preventDefault(); if (busy || preflightLock.current || controller.createAttempt) return; setTab("templates"); setEntryError(""); controller.clearMessages();}}>
+            <button type="submit" disabled={busy || !!controller.createAttempt}>{zh ? "导入演示或朋友的模板 ZIP" : "Import a demo or friend's template ZIP"}</button>
+          </form>
           <div className="craftmine-example-worlds">
             {examples.map(({ base, starter }) => <article className="craftmine-example-world" key={`${base.id}:${starter.id}`} data-world-example={starter.id}>
               {starter.preview && <img src={starter.preview} alt={starter.label} loading="lazy" />}
@@ -118,7 +121,11 @@ export function CraftmineModeEntry({ onSelect, onCancel, onManage }: {
           {controller.capabilities && !examples.length && <p role="status">{zh ? "此版本尚未提供示例世界。" : "This version has no bundled examples."}</p>}
         </>}
         {tab === "create" && <WorldCreatePanel controller={controller} lang={lang} onClose={() => setTab("worlds")} onBeforeCreate={prepareCreation} />}
-        {tab === "templates" && <LocalWorldTemplates bridge={controller.bridge} zh={zh} busy={busy || isRunning} locked={!!controller.createAttempt} initialRef={initialTemplate} onCreate={createTemplate}/>}
+        {tab === "templates" && <LocalWorldTemplates bridge={controller.bridge} zh={zh} busy={busy || isRunning} locked={!!controller.createAttempt} initialRef={initialTemplate} onCreate={createTemplate}
+          onRetry={controller.createAttempt?.input.libraryRef ? async () => {
+            const input = controller.createAttempt?.input;
+            if (input?.libraryRef) await createTemplate(input.libraryRef, input.title);
+          } : undefined}/>}
       </section>
       {busy && <p role="status" data-world-entry-pending>{controller.notice || (zh ? "正在保存进度并准备世界…" : "Saving progress and preparing the world…")}</p>}
       {controller.canCancelCreate && <button type="button" data-world-entry-cancel onClick={() => void controller.cancelCreate()}>{zh ? "取消准备，保留世界" : "Cancel preparation and keep world"}</button>}
