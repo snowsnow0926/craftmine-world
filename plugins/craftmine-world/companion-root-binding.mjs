@@ -54,7 +54,9 @@ function rootBindingMatches(profile,files){
   const script=/^ExtResource\(("[^"\\]+")\)$/.exec(root.properties.get('script')??'');
   const resource=script&&resources.get(script[1]);
   return !!resource&&resource.type==='"Script"'&&resource.path===JSON.stringify('res://'+binding.script)
-    &&Object.keys(resource).every(key=>['type','path','id','uid'].includes(key));
+    // Registered stock root resources have no UID. A supplied UID can resolve
+    // differently from this path; child-instance resource UIDs are unrelated.
+    &&Object.keys(resource).every(key=>['type','path','id'].includes(key));
 }
 
 async function enrichCompanionSourceFiles(call,context,worldId,source,files,assertActive=()=>{}){
