@@ -1,5 +1,17 @@
 # 04. E2E Test Plan
 
+### Source library reference and prerequisite hints (2026-09-14)
+
+- Preserve catalog archive identity separately from inner package hashes;
+  copying the explicit installRef must retain exact id/version/contentHash.
+- Annotate only actual search results with one pinned source prerequisite
+  comparison, retaining every missing/changed path and alternative profile.
+  Unknown remains unknown; preserve original order and pagination.
+- Check that immutable installation still rejects hash/source mismatches and
+  that a preflight match never claims runtime compatibility or adoption.
+- See [contract](../source-library-reference-hints.md) and
+  [evidence](../../e2e/source-library-reference-hints-20260914.md).
+
 ### Godot model read summaries (2026-09-14)
 
 - Preserve core verdict, source freshness, application authority, distinct

@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';import {createHash} from 'node:crypto';import {createRequire} from 'node:module';
 import {packStaticPackage} from '../../plugins/craftmine-world/package-zip.mjs';
 import {contentHash} from '../../plugins/craftmine-world/package-format.mjs';
-const {createSourceLibraryService}=createRequire(import.meta.url)('../../plugins/craftmine-world/source-library-service.cjs');
+const {createSourceLibraryService}=createRequire(import.meta.url)(process.env.CRAFTMINE_SOURCE_LIBRARY_PLUGIN?path.join(path.resolve(process.env.CRAFTMINE_SOURCE_LIBRARY_PLUGIN),'source-library-service.cjs'):'../../plugins/craftmine-world/source-library-service.cjs');
 const sha=b=>createHash('sha256').update(b).digest('hex');
 async function fixture(t){
  const directory=await fs.mkdtemp(path.join(os.tmpdir(),'source-library-'));t.after(()=>fs.rm(directory,{recursive:true,force:true}));
@@ -28,6 +28,7 @@ async function fixture(t){
 test('modern catalog ZIP discovery retains provenance and distinct root identity without exposing bodies',async t=>{
  const f=await fixture(t),s=f.create();const search=await f.tool(s,{mode:'search',query:'tree'});assert.deepEqual(search.result.items[0].tags,['builtin','prefab','nature']);assert.equal(f.calls[0].args.mediaKind,'package');
  const read=await f.tool(s,{mode:'read',ref:f.ref});assert.deepEqual(read.archiveRef,f.ref);assert.notEqual(read.rootRef.sha256,f.ref.contentHash);assert.equal(read.resources[0].entry.sceneInstall.nodeType,'Node3D');assert.equal(read.source.license,'CC0-1.0');
+ assert.deepEqual(search.result.items[0].installRef,f.ref);assert.deepEqual(search.result.items[0].readRequest,{mode:'read',ref:f.ref});assert.deepEqual(read.installRef,f.ref);assert.match(read.referenceRoles.rootRef,/never substitute/);assert.equal(read.targetCompatibility.status,'unknown');
  assert.equal(JSON.stringify(read).includes(f.blobPath),false);assert.equal(JSON.stringify(read).includes('base64'),false);assert.equal(f.installs.length,0);
 });
 

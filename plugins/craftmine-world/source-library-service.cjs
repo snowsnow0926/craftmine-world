@@ -3,6 +3,7 @@ const fs=require('node:fs/promises');
 const path=require('node:path');
 const {createHash}=require('node:crypto');
 const {validateAssetRef}=require('./godot-library.cjs');
+const {referenceRoles,referenceHints,readSourceSnapshot,assessArchiveForSource,preflightErrorCode}=require('./source-library-read-hints.cjs');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const MAX_ZIP=5*1024*1024;
 const check=(yes,code)=>{if(!yes)throw Error(code);};
@@ -34,7 +35,7 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
   }
   function describe(ref,{archive,record,worldTemplate}){
     if(worldTemplate){const {preview,...metadata}=worldTemplate;return {...metadata,note:'Whole-world template. Create a new independent world through the player world picker. It cannot be proposed or installed as a component in the current world. Starting state contains the author-selected saved progress; no target compatibility or first-load success is implied.'};}
-    return {format:'craftmine.source-library/1',archiveRef:ref,archiveSha256:archive.archiveSha256,
+    return {format:'craftmine.source-library/1',...referenceHints(ref),archiveSha256:archive.archiveSha256,
       rootRef:archive.packageJson.root,displayName:record.version_.displayName,source:record.version_.source,
       placement:{status:'template-default',capturedPlayerTargetUsed:false,note:'Installation uses the component template placement. This proposal does not implement a player request to place here. Use actual installed instance identities and normal source editing for later placement.'},
       resources:archive.resources.map(({manifest})=>({ref:{assetId:manifest.content.assetId,version:manifest.content.version,contentHash:manifest.contentHash},
@@ -194,11 +195,26 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
         await ensureBuiltin();
         check(args.query===undefined||typeof args.query==='string'&&args.query.length<=120,'SOURCE_LIBRARY_INVALID_PARAMS');
         const offset=args.offset??0,limit=args.limit??20;check(Number.isSafeInteger(offset)&&offset>=0&&offset<=4096&&Number.isSafeInteger(limit)&&limit>=1&&limit<=24,'SOURCE_LIBRARY_INVALID_PARAMS');
-        return {format:'craftmine.source-library/1',namespace:'asset-catalog-source-zip',result:await call('asset.search',{scope:'local-library',mediaKind:'package',query:args.query??'',offset,limit}),note:'Use read with the exact catalog AssetRef; this is not the legacy package_library store.'};
+        const result=await call('asset.search',{scope:'local-library',mediaKind:'package',query:args.query??'',offset,limit});assertActive();
+        const snapshot=(result.items??[]).some(item=>item.kind!=='world')?await readSourceSnapshot(call,context,worldId,assertActive):{available:false,reason:'NO_COMPONENT_RESULTS',source:null},items=[];
+        for(const item of result.items??[]){
+          const ref={assetId:item.assetId,version:item.version,contentHash:item.contentHash};
+          if(item.kind==='world'){items.push({...item,archiveRef:ref,readRequest:{mode:'read',ref},action:'create-new-world',targetCompatibility:{status:'not-a-component',installValidationRequired:true}});continue;}
+          let targetCompatibility;
+          try{if(!snapshot.available)targetCompatibility={status:'unknown',reason:snapshot.reason,source:null,installValidationRequired:true};else{const candidate=await readArchive(ref);assertActive();targetCompatibility=candidate.worldTemplate?{status:'not-a-component',installValidationRequired:true}:assessArchiveForSource(candidate.archive,snapshot);}}
+          catch(error){assertActive();targetCompatibility={status:'unknown',reason:preflightErrorCode(error),source:snapshot.source??null,installValidationRequired:true};}
+          const {referenceRoles:roles,...refs}=referenceHints(ref);void roles;
+          items.push({...item,...refs,targetCompatibility});
+        }
+        return {format:'craftmine.source-library/1',namespace:'asset-catalog-source-zip',result:{...result,items},referenceRoles:{...referenceRoles},note:'Use readRequest and exact installRef/archiveRef. Root/resource hashes are not catalog installation refs. Source prerequisite hints share one pinned source snapshot; unknown is not compatible. Original search ordering and pagination are preserved; installation revalidates everything.'};
       }
       check(['read','propose'].includes(args.mode),'SOURCE_LIBRARY_INVALID_MODE');
       const ref=validateAssetRef(args.ref),archive=await readArchive(ref),summary=describe(ref,archive);
-      if(args.mode==='read')return summary;
+      if(args.mode==='read'){
+        if(archive.worldTemplate)return summary;
+        const snapshot=await readSourceSnapshot(call,context,worldId,assertActive);assertActive();
+        return {...summary,targetCompatibility:assessArchiveForSource(archive.archive,snapshot)};
+      }
       check(!archive.worldTemplate,'WORLD_TEMPLATE_REQUIRES_NEW_WORLD');
       if(args.position)check(archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall).length===1,'SOURCE_LIBRARY_POSITION_REQUIRES_SINGLE_INSTANCE');
       if(args.position)summary.placement={status:'explicit-position',position:{...args.position},capturedPlayerTargetUsed:false};
