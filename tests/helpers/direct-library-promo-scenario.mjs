@@ -3,6 +3,9 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {createHash,randomUUID} from 'node:crypto';
 import {unpackStaticPackage} from '../../plugins/craftmine-world/package-zip.mjs';
+import {promoBody,preservePriorComponents,observeLiveComponents,compareColdLiveProgress} from './direct-library-progress.mjs';
+import {auditPromoApplications,auditClosedSavedProgress} from './direct-library-application-audit.mjs';
+export {promoBody,preservePriorComponents} from './direct-library-progress.mjs';
 import {settleOperatorInputEvidence,settleOperatorExplorationEvidence} from './operator-input-evidence.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -52,14 +55,6 @@ export function readPromoNativePlan(resources){
   return {...plan,sourceEvidence:{sourceFile,sourceSha256:sha(source),sceneFile,sceneSha256:sha(scene),catalogFile,catalogSha256:sha(catalogBytes)}};
 }
 
-export const promoBody=snapshot=>{assert.equal(snapshot?.state?.body?.format,'craftmine.creation-progress/1');return snapshot.state.body;};
-export function preservePriorComponents(before,after){
-  const a=promoBody(before),b=promoBody(after);
-  for(const [id,state]of Object.entries(a.components??{}))assert.deepEqual(b.components?.[id],state,'PRIOR_COMPONENT_CHANGED:'+id);
-  assert.deepEqual(b.player,a.player,'PLAYER_CHANGED_DURING_INSTALL');
-  for(const key of ['inventory','openedChests','doors','rules'])assert.deepEqual(b[key],a[key],'PRIOR_WORLD_PROGRESS_CHANGED:'+key);
-  return {previousComponentIds:Object.keys(a.components??{}),addedComponentIds:Object.keys(b.components??{}).filter(id=>!Object.hasOwn(a.components??{},id)),priorComponentsPreserved:true};
-}
 const components=(snapshot,format)=>Object.entries(promoBody(snapshot).components??{}).filter(([,state])=>state.format===format).map(([id,state])=>({id,...state}));
 const one=(snapshot,format)=>{const rows=components(snapshot,format);assert.equal(rows.length,1,'ONE_COMPONENT_REQUIRED:'+format);return rows[0];};
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[2]-b[2]);
@@ -69,7 +64,7 @@ export async function runPromoSixStage(api){
   const plan=readPromoNativePlan(resources);report.scenario='promo-six-stage';report.plan=plan;report.play=[];report.stages=[];report.modelCalls=0;
   report.limits.push('Local ordinary-library acceptance only; no DeepSeek request or autonomous model selection is tested.','The pinned blank floor and specific source footprints are checked. Native candidate physics guards remain authoritative.');save();
   let worldId;
-  async function freeze(){const receipt=await panel('godot.runtimeSave',{freeze:true});const snapshot=await rpc('godotSnapshot');assert.equal(snapshot.worldId,worldId);return {receipt,snapshot};}
+  async function freeze(){const receipt=await panel('godot.runtimeSave',{freeze:true});const snapshot=await rpc('godotSnapshot'),observation=await rpc('godotObserve');assert.equal(snapshot.worldId,worldId);assert.equal(observation.worldId,worldId);assert.equal(observation.buildId,receipt.buildId);assert.equal(observation.instanceId,receipt.instanceId);assert.equal(observation.payload.progressCollisionGuard.synchronization.paused,true);return {receipt,snapshot,observation};}
   async function identity(){const o=await rpc('godotObserve');assert.equal(o.worldId,worldId);assert(o.buildId&&o.instanceId);return {worldId,buildId:o.buildId,instanceId:o.instanceId};}
   function playWriter(kind,label){const file=path.join(out,'promo-play-'+String(report.play.length).padStart(2,'0')+'-'+randomUUID()+'.json'),entry={file,kind,label,status:'started'};report.play.push(entry);save();return async value=>{fs.writeFileSync(file,JSON.stringify({...value,kind,label},null,2));entry.status=value.primaryError?'failed':'recorded';save();};}
   async function segment(label,segment){
@@ -131,7 +126,7 @@ export async function runPromoSixStage(api){
     const row=await startDirect(stage.assetId,stage.position);row.packagedEvidence=stage.package;assert.equal(row.ready.ref.assetId,stage.assetId);assert.equal(row.ready.ref.version,1);
     await applyDirect(row,{staticCapture:true});const after=await freeze(),sourceAfter=await pkg('sourceList');
     const proof={assetId:stage.assetId,before,after,sourceBefore,sourceAfter,operationId:row.operationId};report.stages.push(proof);save();
-    proof.progress=preservePriorComponents(before.snapshot,after.snapshot);
+    proof.liveProgress=observeLiveComponents(before.snapshot,after.snapshot);proof.applicationProgress={status:'pending-closed-profile-audit'};
     for(const id of row.applied.instanceIds){assert(!instanceIds.has(id),'DUPLICATE_INSTANCE_ID');instanceIds.add(id);}
     assert(sourceAfter.revision>sourceBefore.revision);assert.notEqual(sourceAfter.manifestHash,sourceBefore.manifestHash);
     proof.formal=await rpc('godotObserve');
@@ -150,9 +145,9 @@ export async function runPromoSixStage(api){
     const normalized=file.replaceAll('\\','/'),stage=plan.stages.find(row=>normalized.includes('/addons/'+row.assetId+'/model.glb'));if(stage){const bytes=fs.readFileSync(file);copies.push({assetId:stage.assetId,file,sha256:sha(bytes),bytes:bytes.length});assert.equal(sha(bytes),stage.package.modelSha256,'MATERIALIZED_MODEL_CHANGED');}
   }}}
   scan(materialized);for(const stage of plan.stages)assert(copies.some(row=>row.assetId===stage.assetId),'MATERIALIZED_MODEL_NOT_FOUND:'+stage.assetId);report.materializedModelCopies=copies;save();
-  await stop();if(api.cancelled?.())throw Error('TEST_CANCELLED');await start('promo-cold');await openExistingWorld(worldId);report.reopened=await rpc('godotObserve');report.reopenedSnapshot=await rpc('godotSnapshot');report.reopenedSource=await pkg('sourceList');save();
-  assert.equal(report.reopened.buildId,report.after.buildId);assert.notEqual(report.reopened.instanceId,report.after.instanceId);assert.deepEqual(promoBody(report.reopenedSnapshot),promoBody(report.saved),'COLD_PROGRESS_CHANGED');
+  await stop();report.applicationProgress=auditPromoApplications(report);for(const proof of report.applicationProgress)report.stages.find(stage=>stage.operationId===proof.operationId).applicationProgress={status:'verified',applicationId:proof.applicationId,progress:proof.progress};report.closedSavedProgress=auditClosedSavedProgress(report);save();if(api.cancelled?.())throw Error('TEST_CANCELLED');await start('promo-cold');await openExistingWorld(worldId);report.coldFreeze=await freeze();report.reopened=report.coldFreeze.observation;report.reopenedSnapshot=report.coldFreeze.snapshot;report.reopenedSource=await pkg('sourceList');save();
+  assert.equal(report.reopened.buildId,report.after.buildId);assert.notEqual(report.reopened.instanceId,report.after.instanceId);report.coldProgress=compareColdLiveProgress(report.saved,report.reopenedSnapshot,report.reopened);save();
   assert.deepEqual(report.reopenedSource.items.map(x=>x.entityId).sort(),report.source.items.map(x=>x.entityId).sort());
   for(const row of report.operations){row.coldStatus=await nav('library.direct',{action:'status',worldId,operationId:row.operationId});assert.equal(row.coldStatus.status,'applied');assert.deepEqual(row.coldStatus.instanceIds,row.applied.instanceIds);assert.deepEqual(row.coldStatus.ref,row.applied.ref);}
-  await closeAssets();report.reopenedCapture=await capture('promo-six-cold');report.passed=true;mark('Six ordinary-library stages and actual input probes retained formal progress on cold reopen');
+  await closeAssets();report.reopenedCapture=await capture('promo-six-cold');report.passed=true;report.acceptanceScope='six library stages and gameplay; exact Core application/saved progress; native cold persistent values, not zero-frame pose';mark('Six ordinary-library stages and gameplay checked; cold native pose precision remains explicitly unconfirmed');
 }
