@@ -56,3 +56,10 @@ archive identity. Do not migrate stored proposal status or infer a current-task
 failure from an old attempt. Existing job evidence wins; unreadable or changed
 archives remain unknown. This additive response controls only the known-invalid
 UI affordance, while unchanged native installation guards remain authoritative.
+
+Apply that same intrinsic check to the existing direct-inspection response so
+opening the original bad version in the library does not re-enable the failed
+installation route. Reuse `eligible` and `reason`, with no new RPC or alternate
+installation path. Unknown/read-failure cases retain their earlier behavior;
+only a hash-verified, known declaration mismatch receives the new unavailable
+message. Selection and upgrade remain explicit player actions.

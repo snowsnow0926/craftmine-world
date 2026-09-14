@@ -52,3 +52,14 @@ an available unknown proposal, preserved adopted-job text, and no late
 old-world projection repopulating the next world's cards. Details preserve
 original reasons and point to the existing sidebar library; no model prompt or
 automatic version change is submitted.
+
+For the same known archive, direct inspection must return ineligible with
+`PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED` before source preparation. A changed
+catalog hash still raises its original error; an ordinary single-instance archive
+keeps its existing eligible/unchecked response. Run
+`node --test tests/godot-final-install-assets/source-library.test.mjs vendor/pi-desktop/apps/desktop/test/direct-library.test.mjs`
+and `node tests/direct-library-ui.mjs` (GPU-disabled headless React fixture).
+Require the same concise recovery message, technical reason in details, no
+direct-start form and no automatic AI request. Existing explicit AI modification,
+version selection, cancellation, cold operation restoration and stale-asset
+refusal continue to work.

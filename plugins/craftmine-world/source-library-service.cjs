@@ -79,6 +79,8 @@ function createSourceLibraryService({call,directory,installSource,installSourceG
       const record=await call('world.read',{id:args.worldId});check(record.runtimeKind==='godot','GODOT_WORLD_REQUIRED');
       const archive=await readArchive(ref);
       if(archive.worldTemplate)return {eligible:false,reason:'WORLD_TEMPLATE_REQUIRES_NEW_WORLD',positionSupported:false,compatibility:'unchecked'};
+      const knownBlocker=archiveInstallation(archive.archive).resources.find(resource=>resource.reason==='PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED');
+      if(knownBlocker)return {eligible:false,reason:knownBlocker.reason,positionSupported:false,compatibility:'unchecked',displayName:archive.record.version_.displayName};
       const roots=archive.archive.resources.filter(r=>r.manifest.content.entry?.sceneInstall);
       const root=roots[0],eligible=roots.length===1&&root.manifest.content.assetId===archive.archive.packageJson.root.id;
       let positionSupported=false;
