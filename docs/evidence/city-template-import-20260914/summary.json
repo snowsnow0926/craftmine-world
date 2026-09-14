@@ -1,0 +1,1527 @@
+{
+  "format": "craftmine.city-template-import-acceptance/1",
+  "passed": true,
+  "scope": "修复前轻雨城市：独立新玩家普通导入、游玩、保存、冷开。混合诊断源码客户端，非最终包。",
+  "reportFile": "D:/cm-city-import/test-results/desktop-native-rt-Q3o2mz/report.json",
+  "reportSha256": "a847ec9ffd18280617e3b8af201d9d006281c8720d6f4109868c68362090001c",
+  "sourceIdentity": {
+    "reportedSource": "eb92ecfd",
+    "actualMainSha256": "ecf76da49d6709b888afb9db45839956de12c6d5126f7abae6d50b8b7c5d2d3f",
+    "runtimeResourcesStage": {
+      "format": "craftmine.runtime-resources/1",
+      "workspace": "D:\\Craftmine Worktrees\\product-completion-20260914",
+      "sourceCommit": "98e559a392a0bd92e11433a891bbeabdf8e2d488"
+    },
+    "nativeBinaries": {
+      "core": {
+        "file": "D:\\Craftmine Worktrees\\product-completion-20260914\\vendor\\pi-desktop\\target\\release\\craftmine-core.exe",
+        "sha256": "d807f3913c7a11bb84df3ffbbb4902ecaacd60e2f6f4a9635fd32006e7d30a54"
+      },
+      "host": {
+        "file": "D:\\Craftmine Worktrees\\product-completion-20260914\\vendor\\pi-desktop\\target\\release\\pi-desktop-host-core.exe",
+        "sha256": "c0c2d7677cd42a9a5ac10a95ca0cb015a06b1f6ddbf116758eae8e59ed3f2bd7"
+      }
+    },
+    "driverSha256": "ae14dc8e1f3acd9b9210e6c9a65725af643b956935a0c333befe599b140dd754"
+  },
+  "archive": {
+    "path": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/captures/weather-baseline-completed-export-a36aaaf4.zip",
+    "sha256": "a36aaaf4fffb10c95c1cff83c29e6e69b1a62d42696da7388004a87e70c8f094",
+    "bytes": 10059483
+  },
+  "expected": {
+    "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/weather-baseline-completed-template-expectations.json",
+    "sha256": "770e4b4ca7e18fd4e868319e1e8e6afa0d7b6a85211750948d71066119dc61ac",
+    "packet": {
+      "format": "craftmine.template-import-expectations/1",
+      "archiveSha256": "a36aaaf4fffb10c95c1cff83c29e6e69b1a62d42696da7388004a87e70c8f094",
+      "title": "独立玩家导入奥格瑞玛",
+      "city": {
+        "districts": 6,
+        "authoredBuildings": 22
+      },
+      "quest": {
+        "items": [
+          "org-flight-chart",
+          "org-flight-clearance",
+          "org-flight-compass"
+        ],
+        "collected": 3
+      },
+      "checks": [
+        {
+          "id": "inventory",
+          "source": "snapshot",
+          "pointer": "/state/body/inventory",
+          "value": {
+            "org-flight-chart": 1,
+            "org-flight-clearance": 1,
+            "org-flight-compass": 1,
+            "org-gate": 1,
+            "org-strength": 1
+          }
+        },
+        {
+          "id": "openedChests",
+          "source": "snapshot",
+          "pointer": "/state/body/openedChests",
+          "value": {}
+        },
+        {
+          "id": "doors",
+          "source": "snapshot",
+          "pointer": "/state/body/doors",
+          "value": {}
+        },
+        {
+          "id": "rules",
+          "source": "snapshot",
+          "pointer": "/state/body/rules",
+          "value": {}
+        },
+        {
+          "id": "flight-hasFlown",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/hasFlown",
+          "value": true
+        },
+        {
+          "id": "flight-landings",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/landings",
+          "value": 1
+        },
+        {
+          "id": "flight-flightSeconds",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/flightSeconds",
+          "value": 4.59999999999999
+        },
+        {
+          "id": "flight-airspeed",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/airspeed",
+          "value": 0
+        },
+        {
+          "id": "flight-piloted",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/piloted",
+          "value": false
+        },
+        {
+          "id": "flight-crashed",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/crashed",
+          "value": false
+        },
+        {
+          "id": "flight-grounded",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/grounded",
+          "value": true
+        },
+        {
+          "id": "flight-gearDown",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/gearDown",
+          "value": true
+        },
+        {
+          "id": "flight-assist",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/assist",
+          "value": true
+        },
+        {
+          "id": "flight-afterburner",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/afterburner",
+          "value": false
+        },
+        {
+          "id": "flight-throttle",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/throttle",
+          "value": 0
+        },
+        {
+          "id": "flight-cockpitView",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/cockpitView",
+          "value": false
+        },
+        {
+          "id": "flight-settings",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/settings",
+          "value": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "flight-sourceSettings",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-1f469382cd78cdfa61ee927d-e0/sourceSettings",
+          "value": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "pet-interactionCount",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-41d4d88059c4ba486b108f6e-e0/interactionCount",
+          "value": 1
+        },
+        {
+          "id": "pet-settings/following",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-41d4d88059c4ba486b108f6e-e0/settings/following",
+          "value": false
+        },
+        {
+          "id": "pet-settings/name",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-41d4d88059c4ba486b108f6e-e0/settings/name",
+          "value": "小麦"
+        },
+        {
+          "id": "pet-sourceSettings",
+          "source": "snapshot",
+          "pointer": "/state/body/components/ins-41d4d88059c4ba486b108f6e-e0/sourceSettings",
+          "value": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/responses/035-snapshot-weather-baseline.json",
+          "sha256": "0ef79fecee359011cad249634af2f64d86a51c537675877bcf6324347f07b4f8"
+        },
+        {
+          "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/responses/036-status-weather-baseline.json",
+          "sha256": "05ecdcb0968d4a322fd376ed3a3fa303416a59b9b17cf4f5d6a47f95876d5427"
+        }
+      ],
+      "flight": {
+        "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+        "format": "craftmine.reusable-j20-state/1"
+      },
+      "pet": {
+        "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+        "format": "craftmine.pet-companion-state/1"
+      }
+    }
+  },
+  "modelCalls": 0,
+  "worldId": "world-fe4885cc3afa",
+  "templateAssetId": "player.world.71abd33f7e4e4b11a35dd995b826acae",
+  "launches": [
+    {
+      "kind": "external-template-import",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "kind": "external-template-cold",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    }
+  ],
+  "check": {
+    "jobId": "gjob-fd835ab1e29b2ca2dee5c463b84e7bee8055b42d710ca6dbb4587ce0e005346e",
+    "passed": true,
+    "assertions": [
+      {
+        "id": "runtime.ready",
+        "passed": true,
+        "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+      },
+      {
+        "id": "runtime.frame",
+        "passed": true,
+        "detail": "frames=3 distinct=3"
+      },
+      {
+        "id": "runtime.no-errors",
+        "passed": true,
+        "detail": null
+      },
+      {
+        "id": "runtime.snapshot",
+        "passed": true,
+        "detail": "formal progress unchanged"
+      },
+      {
+        "id": "runtime.isolation",
+        "passed": true,
+        "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+      },
+      {
+        "id": "runtime.recovery",
+        "passed": true,
+        "detail": "graceful=true"
+      }
+    ],
+    "diagnostic": {
+      "format": "craftmine.godot-runtime-diagnostic/1",
+      "diagnosticOnly": true,
+      "jobId": "gjob-fd835ab1e29b2ca2dee5c463b84e7bee8055b42d710ca6dbb4587ce0e005346e",
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "inputHash": "afd776b8129c7611330b6b963e9d5c16f1502d61c066690ad294c4b0dc52e7a2",
+      "error": null,
+      "ready": {
+        "ok": true,
+        "instanceId": "f4408c40ff7c3999ad68909b"
+      },
+      "isolation": {
+        "offscreen": true,
+        "focusable": false,
+        "visible": false
+      },
+      "errors": {
+        "runtime": [],
+        "console": [],
+        "renderer": null
+      },
+      "diagnostics": [
+        "[phase] artifact-verification started elapsedMs=0 stageElapsedMs=0",
+        "[phase] artifact-verification completed elapsedMs=75 stageElapsedMs=75",
+        "[phase] runtime-server started elapsedMs=75 stageElapsedMs=0",
+        "[phase] runtime-server completed elapsedMs=83 stageElapsedMs=8",
+        "[phase] window started elapsedMs=83 stageElapsedMs=0",
+        "[phase] window completed elapsedMs=90 stageElapsedMs=7",
+        "[phase] load started elapsedMs=90 stageElapsedMs=0",
+        "[phase] load completed elapsedMs=143 stageElapsedMs=53",
+        "[phase] ready started elapsedMs=143 stageElapsedMs=0",
+        "[phase] ready completed elapsedMs=14398 stageElapsedMs=14255",
+        "[phase] runtime-check started elapsedMs=14398 stageElapsedMs=0",
+        "[phase] runtime-check completed elapsedMs=17309 stageElapsedMs=2911",
+        "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+        "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+        "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+        "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+        "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}"
+      ],
+      "truncated": false
+    }
+  },
+  "retention": [
+    {
+      "label": "fresh-import",
+      "passed": true,
+      "checks": [
+        {
+          "id": "inventory",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "org-flight-chart": 1,
+              "org-flight-clearance": 1,
+              "org-flight-compass": 1,
+              "org-gate": 1,
+              "org-strength": 1
+            }
+          },
+          "expected": {
+            "org-flight-chart": 1,
+            "org-flight-clearance": 1,
+            "org-flight-compass": 1,
+            "org-gate": 1,
+            "org-strength": 1
+          }
+        },
+        {
+          "id": "openedChests",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "doors",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "rules",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "flight-hasFlown",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-landings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 1
+          },
+          "expected": 1
+        },
+        {
+          "id": "flight-flightSeconds",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 4.59999999999999
+          },
+          "expected": 4.59999999999999
+        },
+        {
+          "id": "flight-airspeed",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 0
+          },
+          "expected": 0
+        },
+        {
+          "id": "flight-piloted",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-crashed",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-grounded",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-gearDown",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-assist",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-afterburner",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-throttle",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 0
+          },
+          "expected": 0
+        },
+        {
+          "id": "flight-cockpitView",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-settings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "name": "歼二十"
+            }
+          },
+          "expected": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "flight-sourceSettings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "name": "歼二十"
+            }
+          },
+          "expected": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "pet-interactionCount",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 1
+          },
+          "expected": 1
+        },
+        {
+          "id": "pet-settings/following",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "pet-settings/name",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": "小麦"
+          },
+          "expected": "小麦"
+        },
+        {
+          "id": "pet-sourceSettings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            }
+          },
+          "expected": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          }
+        },
+        {
+          "id": "city-districts",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 6
+          },
+          "expected": 6
+        },
+        {
+          "id": "city-authoredBuildings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 22
+          },
+          "expected": 22
+        },
+        {
+          "id": "quest-items",
+          "passed": true,
+          "actual": [
+            1,
+            1,
+            1
+          ],
+          "expected": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "id": "observed-quest",
+          "passed": true,
+          "actual": {
+            "collected": 3,
+            "required": 3,
+            "objectiveComplete": true
+          },
+          "expected": {
+            "collected": 3,
+            "required": 3,
+            "objectiveComplete": true
+          }
+        },
+        {
+          "id": "flight-component-identity",
+          "passed": true,
+          "actual": {
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "format": "craftmine.reusable-j20-state/1"
+          },
+          "expected": {
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "format": "craftmine.reusable-j20-state/1"
+          }
+        },
+        {
+          "id": "flight-observed-entity",
+          "passed": true,
+          "actual": "ins-1f469382cd78cdfa61ee927d-e0",
+          "expected": "ins-1f469382cd78cdfa61ee927d-e0"
+        },
+        {
+          "id": "pet-component-identity",
+          "passed": true,
+          "actual": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1"
+          },
+          "expected": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1"
+          }
+        },
+        {
+          "id": "pet-observed-entity",
+          "passed": true,
+          "actual": "ins-41d4d88059c4ba486b108f6e-e0",
+          "expected": "ins-41d4d88059c4ba486b108f6e-e0"
+        }
+      ],
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "instanceId": "1e3afbd6721e2b1449098161"
+    },
+    {
+      "label": "ordinary-saved",
+      "passed": true,
+      "checks": [
+        {
+          "id": "inventory",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "org-flight-chart": 1,
+              "org-flight-clearance": 1,
+              "org-flight-compass": 1,
+              "org-gate": 1,
+              "org-strength": 1
+            }
+          },
+          "expected": {
+            "org-flight-chart": 1,
+            "org-flight-clearance": 1,
+            "org-flight-compass": 1,
+            "org-gate": 1,
+            "org-strength": 1
+          }
+        },
+        {
+          "id": "openedChests",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "doors",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "rules",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "flight-hasFlown",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-landings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 1
+          },
+          "expected": 1
+        },
+        {
+          "id": "flight-flightSeconds",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 4.59999999999999
+          },
+          "expected": 4.59999999999999
+        },
+        {
+          "id": "flight-airspeed",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 0
+          },
+          "expected": 0
+        },
+        {
+          "id": "flight-piloted",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-crashed",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-grounded",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-gearDown",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-assist",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-afterburner",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-throttle",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 0
+          },
+          "expected": 0
+        },
+        {
+          "id": "flight-cockpitView",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-settings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "name": "歼二十"
+            }
+          },
+          "expected": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "flight-sourceSettings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "name": "歼二十"
+            }
+          },
+          "expected": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "pet-interactionCount",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 1
+          },
+          "expected": 1
+        },
+        {
+          "id": "pet-settings/following",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "pet-settings/name",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": "小麦"
+          },
+          "expected": "小麦"
+        },
+        {
+          "id": "pet-sourceSettings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            }
+          },
+          "expected": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          }
+        },
+        {
+          "id": "city-districts",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 6
+          },
+          "expected": 6
+        },
+        {
+          "id": "city-authoredBuildings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 22
+          },
+          "expected": 22
+        },
+        {
+          "id": "quest-items",
+          "passed": true,
+          "actual": [
+            1,
+            1,
+            1
+          ],
+          "expected": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "id": "observed-quest",
+          "passed": true,
+          "actual": {
+            "collected": 3,
+            "required": 3,
+            "objectiveComplete": true
+          },
+          "expected": {
+            "collected": 3,
+            "required": 3,
+            "objectiveComplete": true
+          }
+        },
+        {
+          "id": "flight-component-identity",
+          "passed": true,
+          "actual": {
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "format": "craftmine.reusable-j20-state/1"
+          },
+          "expected": {
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "format": "craftmine.reusable-j20-state/1"
+          }
+        },
+        {
+          "id": "flight-observed-entity",
+          "passed": true,
+          "actual": "ins-1f469382cd78cdfa61ee927d-e0",
+          "expected": "ins-1f469382cd78cdfa61ee927d-e0"
+        },
+        {
+          "id": "pet-component-identity",
+          "passed": true,
+          "actual": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1"
+          },
+          "expected": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1"
+          }
+        },
+        {
+          "id": "pet-observed-entity",
+          "passed": true,
+          "actual": "ins-41d4d88059c4ba486b108f6e-e0",
+          "expected": "ins-41d4d88059c4ba486b108f6e-e0"
+        }
+      ],
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "instanceId": "1e3afbd6721e2b1449098161"
+    },
+    {
+      "label": "cold-reopened",
+      "passed": true,
+      "checks": [
+        {
+          "id": "inventory",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "org-flight-chart": 1,
+              "org-flight-clearance": 1,
+              "org-flight-compass": 1,
+              "org-gate": 1,
+              "org-strength": 1
+            }
+          },
+          "expected": {
+            "org-flight-chart": 1,
+            "org-flight-clearance": 1,
+            "org-flight-compass": 1,
+            "org-gate": 1,
+            "org-strength": 1
+          }
+        },
+        {
+          "id": "openedChests",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "doors",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "rules",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {}
+          },
+          "expected": {}
+        },
+        {
+          "id": "flight-hasFlown",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-landings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 1
+          },
+          "expected": 1
+        },
+        {
+          "id": "flight-flightSeconds",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 4.59999999999999
+          },
+          "expected": 4.59999999999999
+        },
+        {
+          "id": "flight-airspeed",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 0
+          },
+          "expected": 0
+        },
+        {
+          "id": "flight-piloted",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-crashed",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-grounded",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-gearDown",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-assist",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": true
+          },
+          "expected": true
+        },
+        {
+          "id": "flight-afterburner",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-throttle",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 0
+          },
+          "expected": 0
+        },
+        {
+          "id": "flight-cockpitView",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "flight-settings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "name": "歼二十"
+            }
+          },
+          "expected": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "flight-sourceSettings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "name": "歼二十"
+            }
+          },
+          "expected": {
+            "name": "歼二十"
+          }
+        },
+        {
+          "id": "pet-interactionCount",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 1
+          },
+          "expected": 1
+        },
+        {
+          "id": "pet-settings/following",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": false
+          },
+          "expected": false
+        },
+        {
+          "id": "pet-settings/name",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": "小麦"
+          },
+          "expected": "小麦"
+        },
+        {
+          "id": "pet-sourceSettings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": {
+              "appearanceKey": "pomeranian-white",
+              "following": true,
+              "name": "小麦"
+            }
+          },
+          "expected": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          }
+        },
+        {
+          "id": "city-districts",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 6
+          },
+          "expected": 6
+        },
+        {
+          "id": "city-authoredBuildings",
+          "passed": true,
+          "actual": {
+            "found": true,
+            "value": 22
+          },
+          "expected": 22
+        },
+        {
+          "id": "quest-items",
+          "passed": true,
+          "actual": [
+            1,
+            1,
+            1
+          ],
+          "expected": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "id": "observed-quest",
+          "passed": true,
+          "actual": {
+            "collected": 3,
+            "required": 3,
+            "objectiveComplete": true
+          },
+          "expected": {
+            "collected": 3,
+            "required": 3,
+            "objectiveComplete": true
+          }
+        },
+        {
+          "id": "flight-component-identity",
+          "passed": true,
+          "actual": {
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "format": "craftmine.reusable-j20-state/1"
+          },
+          "expected": {
+            "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+            "format": "craftmine.reusable-j20-state/1"
+          }
+        },
+        {
+          "id": "flight-observed-entity",
+          "passed": true,
+          "actual": "ins-1f469382cd78cdfa61ee927d-e0",
+          "expected": "ins-1f469382cd78cdfa61ee927d-e0"
+        },
+        {
+          "id": "pet-component-identity",
+          "passed": true,
+          "actual": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1"
+          },
+          "expected": {
+            "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+            "format": "craftmine.pet-companion-state/1"
+          }
+        },
+        {
+          "id": "pet-observed-entity",
+          "passed": true,
+          "actual": "ins-41d4d88059c4ba486b108f6e-e0",
+          "expected": "ins-41d4d88059c4ba486b108f6e-e0"
+        }
+      ],
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "instanceId": "dc0dc2e96d1ed9939dfaf8d6"
+    }
+  ],
+  "savedProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "components": {
+        "ins-1f469382cd78cdfa61ee927d-e0": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "boardingPosition": [
+            394.942352294922,
+            0.900529861450195,
+            58.5021781921387
+          ],
+          "cockpitView": false,
+          "crashed": false,
+          "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+          "flightSeconds": 4.59999999999999,
+          "format": "craftmine.reusable-j20-state/1",
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": true,
+          "heading": -3.14049785466256,
+          "landings": 1,
+          "piloted": false,
+          "pitch": 0,
+          "position": [
+            400.559448242188,
+            2.1800000667572,
+            55.6621627807617
+          ],
+          "settings": {
+            "name": "歼二十"
+          },
+          "sourceSettings": {
+            "name": "歼二十"
+          },
+          "throttle": 0,
+          "velocity": [
+            0.00016778997087385,
+            0,
+            0.153270438313484
+          ],
+          "verticalSpeed": 0
+        },
+        "ins-41d4d88059c4ba486b108f6e-e0": {
+          "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+          "format": "craftmine.pet-companion-state/1",
+          "interactionCount": 1,
+          "position": [
+            222.071655273438,
+            0.00069141690619289,
+            60.2324676513672
+          ],
+          "settings": {
+            "appearanceKey": "pomeranian-white",
+            "following": false,
+            "name": "小麦"
+          },
+          "sourceSettings": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          },
+          "yaw": -1.1593533980096
+        }
+      },
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "org-flight-chart": 1,
+        "org-flight-clearance": 1,
+        "org-flight-compass": 1,
+        "org-gate": 1,
+        "org-strength": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.3,
+        "position": [
+          225.467971801758,
+          0.900763332843781,
+          61.4042892456055
+        ],
+        "yaw": 2
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-fe4885cc3afa"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-fe4885cc3afa"
+  },
+  "coldProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "components": {
+        "ins-1f469382cd78cdfa61ee927d-e0": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "boardingPosition": [
+            394.942352294922,
+            0.900529861450195,
+            58.5021781921387
+          ],
+          "cockpitView": false,
+          "crashed": false,
+          "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+          "flightSeconds": 4.59999999999999,
+          "format": "craftmine.reusable-j20-state/1",
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": true,
+          "heading": -3.14049785466256,
+          "landings": 1,
+          "piloted": false,
+          "pitch": 0,
+          "position": [
+            400.559448242188,
+            2.1800000667572,
+            55.6621627807617
+          ],
+          "settings": {
+            "name": "歼二十"
+          },
+          "sourceSettings": {
+            "name": "歼二十"
+          },
+          "throttle": 0,
+          "velocity": [
+            0.00016778997087385,
+            0,
+            0.153270438313484
+          ],
+          "verticalSpeed": 0
+        },
+        "ins-41d4d88059c4ba486b108f6e-e0": {
+          "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+          "format": "craftmine.pet-companion-state/1",
+          "interactionCount": 1,
+          "position": [
+            222.071655273438,
+            0.00069141690619289,
+            60.2324676513672
+          ],
+          "settings": {
+            "appearanceKey": "pomeranian-white",
+            "following": false,
+            "name": "小麦"
+          },
+          "sourceSettings": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          },
+          "yaw": -1.1593533980096
+        }
+      },
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "org-flight-chart": 1,
+        "org-flight-clearance": 1,
+        "org-flight-compass": 1,
+        "org-gate": 1,
+        "org-strength": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.3,
+        "position": [
+          225.467971801758,
+          0.900763332843781,
+          61.4042892456055
+        ],
+        "yaw": 2
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-fe4885cc3afa"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-fe4885cc3afa"
+  },
+  "play": {
+    "before": [
+      226.255905151367,
+      0.900763332843781,
+      60.9014167785645
+    ],
+    "after": [
+      225.528396606445,
+      0.900763332843781,
+      61.3808555603027
+    ]
+  },
+  "frames": [
+    {
+      "file": "D:\\cm-city-import\\test-results\\desktop-native-rt-Q3o2mz\\external-import-1-032f6f60-7ff0-41d2-8f68-654ece8604a5.png",
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "sha256": "a99f83a400bc12b188f97dfec40b2e5bf113a86c8aa36220d9c032520125cb67",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "D:\\cm-city-import\\test-results\\desktop-native-rt-Q3o2mz\\external-saved-1-037c0a66-d2e3-4e94-85e6-663633a3baae.png",
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "sha256": "cc22b7af681accad636a3010761972897daaba92ada222820c52cc995cfdccaf",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "D:\\cm-city-import\\test-results\\desktop-native-rt-Q3o2mz\\external-cold-2-e2fb7f51-410d-4d92-ac61-6064ae5d753f.png",
+      "worldId": "world-fe4885cc3afa",
+      "buildId": "gbd-1606a6ecbd67699f50121f88205a12b9da4da9b7e1302e9d5e9f151d568db8c7",
+      "sha256": "c4e1765ce38cb336d5c3b1da88ce450c9cbe8af52ba7d3b2ba7f041444981945",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "limits": [
+    "没有运行博美9f修复草稿的玩法验收；原等待博美仍可能挡路。",
+    "没有重飞飞机或主动撞墙/撞机，仅验证已有飞行记录保留。",
+    "普通新profile导入check通过不解释旧原profile的artifact30s阻塞。",
+    "轻雨以实际原生画面确认，存档中没有凭空增加天气字段。"
+  ],
+  "previousFailure": {
+    "reportFile": "D:/cm-city-import/test-results/desktop-native-rt-RcwD7T/report.json",
+    "error": "ZIP_BAD_CENTRAL_DIRECTORY",
+    "cause": "driver复制尚在写入的picker文件，截断副本是完整ZIP的精确前缀"
+  }
+}
