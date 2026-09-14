@@ -37,6 +37,39 @@
             "sha256": "77f10dffb771464e13f77301fa9dcba180f431b80dc34b1b3e396dc55c84f615"
           }
         ]
+      },
+      "projectMaterialization": {
+        "mode": "append-runtime",
+        "requirements": [
+          {
+            "path": "craftmine_shared/runtime_bridge.gd",
+            "sha256": "938c42a578bb37c0590198232448b1391f688b95f15ce7d5fce65d802cca7e08"
+          },
+          {
+            "path": "craftmine_shared/runtime_bridge_base.gd",
+            "sha256": "58b4f108bc8fe6fa9232c9f98e577bc6a2914d1f623f373f79cec5450cba51f3"
+          },
+          {
+            "path": "craftmine_shared/engine_performance.gd",
+            "sha256": "1a2fdaabfa81b1217e74656bc9d720a2d9e34f5fe7652e16626ed9dcbfb61945"
+          },
+          {
+            "path": "craftmine_shared/base_adapter.gd",
+            "sha256": "917a7b88eb30a33a11ca532cc712d17498ef94d707c275ccd7cdb7d81ce03902"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_controller_v1.gd",
+            "sha256": "0c380b00172a96a3d8453b552adea9ae4f305e00c5600e021de93c4c35d4496a"
+          },
+          {
+            "path": "craftmine_shared/base_adapter_legacy.gd",
+            "sha256": "9ba59987d1a9c644ee3884f19c565556196f4ff897d87b0e89613d2c53b48417"
+          },
+          {
+            "path": "craftmine_shared/progress_collision.gd",
+            "sha256": "c447551cef401e15221d797b33a239a5f65059420cf0f8c2709475eae58594db"
+          }
+        ]
       }
     },
     {

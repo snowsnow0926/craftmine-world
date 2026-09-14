@@ -33,6 +33,17 @@ source bytes. Unsupported scenes remain available to explicit configuration.
 This permits a second independent companion without needing AI just because
 the first was added. It does not infer bounds from a file's mere existence.
 
+Ordinary blank-world creation uses `materializeBase`, which appends the fixed
+Craftmine runtime autoload and settings to the stock project. That one supported
+transform is also recognized: the complete untouched prefix must hash to the
+registered stock project, the entire suffix must equal the generator's output,
+and its `runtime/world_id` must equal the current source's host-bound world ID.
+Registered runtime bridge and adapter inheritance/cohort pins must also match.
+The source-bound project read is limited to 32 KiB. No sections are stripped or
+normalized. Additional input mappings, autoloads, changed selectors/adapters or
+extra/duplicate settings remain unknown and require explicit configuration.
+An editable managed-base manifest is never used to establish trust.
+
 For a custom or changed world, inspect its actual source and supply:
 
 ```json

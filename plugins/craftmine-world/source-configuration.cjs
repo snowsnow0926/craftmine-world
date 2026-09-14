@@ -15,7 +15,7 @@ function configurationHint(content,files,source){
   const declaration=content.entry?.positionValidation;
   if(!declaration){
     if(!companions.has(content.assetId)||!Number.isInteger(content.version)||content.version>2)return null;
-    const profile=companionPositionConfiguration(files),properties=profile.properties;
+    const profile=companionPositionConfiguration(files,source),properties=profile.properties;
     const exceeds=properties&&[...properties.saved_position_min,...properties.saved_position_max].some(n=>n< -80||n>80);
     return {kind:'legacy-companion-range',status:exceeds?'legacy-range-insufficient':properties?'legacy-range-covers-stock':'legacy-range-unverified',fixedBounds:{minimum:[-80,-80,-80],maximum:[80,80,80]},
       instruction:'This published companion has fixed ±80 save bounds. Matching source prerequisites does not make it suitable for a larger world. Search/read a configurable v3 or newer companion, or review a source-local upgrade; never rewrite old archives or clamp positions.'};
@@ -23,7 +23,7 @@ function configurationHint(content,files,source){
   if(declaration.mode!=='explicit-receiving-world-bounds'||declaration.requiresWorldConfiguration!==true
     ||declaration.sourceProperties?.minimum!=='saved_position_min'||declaration.sourceProperties?.maximum!=='saved_position_max')
     return {kind:'source-configuration',status:'unsupported-configuration',instruction:'Unsupported source-configuration contract.'};
-  const profile=companionPositionConfiguration(files);
+  const profile=companionPositionConfiguration(files,source);
   return {kind:'companion-position-bounds',status:profile.properties?'configuration-planned':'configuration-required',
     ...(profile.properties&&source?{positionBounds:{minimum:profile.properties.saved_position_min,maximum:profile.properties.saved_position_max,
       expectedSource:{revision:source.revision,manifestHash:source.manifestHash}},evidence:profile.evidence,profile:profile.profile}:{}),

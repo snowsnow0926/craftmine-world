@@ -7,12 +7,13 @@ import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {buildApprovedPomeranianPackage} from '../desktop/build-approved-pomeranian-package.mjs';
 import {buildBuiltinPetPackage} from '../desktop/build-builtin-pet-package.mjs';
+import {materializeBase} from '../desktop/godot/shared/materialize.mjs';
 import {unpackStaticPackage} from '../plugins/craftmine-world/package-zip.mjs';
 const require=createRequire(import.meta.url);
 const {configurationHint,validatePositionBounds,resolveSourceConfiguration}=require('../plugins/craftmine-world/source-configuration.cjs');
 const {assessArchiveForSource}=require('../plugins/craftmine-world/source-library-read-hints.cjs');
 const {profiles}=require('../plugins/craftmine-world/companion-position-profiles.json');
-const {rootBindingMatches,enrichCompanionSourceFiles}=require('../plugins/craftmine-world/companion-root-binding.mjs');
+const {rootBindingMatches,enrichCompanionSourceFiles,projectBindingMatches}=require('../plugins/craftmine-world/companion-root-binding.mjs');
 const repository=path.resolve(import.meta.dirname,'..'),source={revision:4,manifestHash:'a'.repeat(64)};
 const profileMap=profile=>new Map([{path:profile.path,sha256:profile.sha256},...profile.selectors,...profile.rootBinding.scripts].map(file=>[file.path,file]));
 const city=profiles.find(p=>p.id==='orgrimmar-city'),sandbox=profiles.find(p=>p.id==='stock-sandbox');
@@ -141,4 +142,22 @@ test('advisory root text reads retain revision and hash binding and refuse unver
   const invalid=fresh();await enrichCompanionSourceFiles(async()=>part,{},'w',source,invalid);assert.equal(rootBindingMatches(sandbox,invalid),false);
  }
  let stopped=false;await assert.rejects(enrichCompanionSourceFiles(async()=>{stopped=true;return {sha256,text,nextOffset:null};},{},'w',source,fresh(),()=>{if(stopped)throw Error('TURN_ENDED');}),/TURN_ENDED/);
+});
+
+test('ordinary materializeBase project suffix is accepted only with its exact stock prefix, host world and runtime cohort',async()=>{
+ await fs.mkdir(path.join(repository,'test-results'),{recursive:true});
+ const directory=await fs.mkdtemp(path.join(repository,'test-results/materialized-project-binding-')),out=path.join(directory,'world'),worldId='world-binding-fixture';
+ const manifest=materializeBase({baseId:'creation-sandbox',worldId,template:'blank',out});
+ const files=new Map(manifest.files.map(file=>[file.path,file]));
+ const owner={...source,worldId},project=await fs.readFile(path.join(out,'project.godot'),'utf8'),sha=text=>createHash('sha256').update(text).digest('hex');
+ assert.equal(projectBindingMatches(sandbox,files,owner),false,'an unknown project hash alone does not grant trust');
+ const reads=[];
+ await enrichCompanionSourceFiles(async(method,args)=>{reads.push({method,args});const text=await fs.readFile(path.join(out,args.path),'utf8');return {sha256:sha(text),text:text.slice(args.offset,args.offset+args.limit),nextOffset:args.offset+args.limit<text.length?args.offset+args.limit:null};},{},worldId,owner,files);
+ assert.equal(projectBindingMatches(sandbox,files,owner),true);assert.equal(reads.length,1);assert.equal(reads[0].args.path,'project.godot');assert.equal(reads[0].args.revision,source.revision);
+ assert.equal(projectBindingMatches(sandbox,files,{...owner,worldId:'another-world'}),false);
+ for(const text of [project+'\n[input]\nextra={}\n',project.replace('[input]','[input]\nextra={}'),project.replace('run/main_scene="res://scenes/creation.tscn"','run/main_scene="res://other.tscn"'),project.replace('[autoload]','[autoload]\nOther="*res://other.gd"'),project.replace('runtime/enabled=true','runtime/enabled=false'),project.replace('runtime/adapter="res://craftmine_shared/base_adapter.gd"','runtime/adapter="res://other.gd"'),project.replace('runtime/world_id="'+worldId+'"','runtime/world_id="'+worldId+'"\nruntime/world_id="'+worldId+'"')]){
+  const altered=new Map(files);altered.set('project.godot',{path:'project.godot',text,sha256:sha(text)});assert.equal(projectBindingMatches(sandbox,altered,owner),false);
+ }
+ for(const requirement of sandbox.projectMaterialization.requirements){const altered=new Map(files);altered.set(requirement.path,{sha256:'a'.repeat(64)});assert.equal(projectBindingMatches(sandbox,altered,owner),false,requirement.path);}
+ const corrupt=new Map(files);corrupt.set('project.godot',{...files.get('project.godot'),text:project+'# unexpected'});assert.equal(projectBindingMatches(sandbox,corrupt,owner),false);
 });

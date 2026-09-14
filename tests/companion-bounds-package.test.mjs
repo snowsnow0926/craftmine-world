@@ -15,6 +15,8 @@ test('released Pom v1/v2 and generic pet v2 archives stay byte-for-byte pinned',
   assert.equal(buildApprovedPomeranianPackage({repository,version:2}).entry.sha256,'2c9c38faca756f6be9cdd787f8565243571ca736308706405710a5aa7225068a');
   const pin=JSON.parse(fs.readFileSync(path.join(repository,'tests/fixtures/player-workflow-builtin22-20260913.json'))).entries.find(e=>e.assetId==='cw.module.pet-companion');
   assert.equal(buildBuiltinPetPackage({repository,version:2}).entry.sha256,pin.sha256);
+  assert.equal(buildApprovedPomeranianPackage({repository,version:3}).entry.sha256,'186f0fa94cc396d7c625a45cdfdb6352d71891fab104ba54f961b2a16c171718');
+  assert.equal(buildBuiltinPetPackage({repository,version:3}).entry.sha256,'19e1d424316bc3621e9b9200f45ddceefec42813e2d24c2aebeb1b69ddffd1c3');
 });
 
 test('new source packages preserve visual bytes and state schema while exposing explicit bounds requirements',()=>{
