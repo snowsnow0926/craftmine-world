@@ -15,6 +15,8 @@ use serde_json::{json, Map, Value};
 mod complete;
 #[cfg(test)]
 mod domain_tests;
+#[cfg(test)]
+mod feedback_tests;
 mod portable;
 
 const LIMIT: usize = 32 * 1024 * 1024;
@@ -32,6 +34,7 @@ const PACKAGE_TABLES: &[&str] = &[
 const TABLES: &[&str] = &[
     "craftmine_worlds",
     "craftmine_world_archives",
+    "craftmine_playtest_feedback",
     "craftmine_godot_init_cancellations",
     "craftmine_tasks",
     "craftmine_receipts",
@@ -53,6 +56,9 @@ const TABLES: &[&str] = &[
     "craftmine_budget_events",
     "craftmine_budget_settlement_history",
     "craftmine_task_requirements",
+    "craftmine_world_briefs",
+    "craftmine_world_brief_operations",
+    "craftmine_world_brief_proposals",
     "craftmine_library",
     "craftmine_library_operations",
     "craftmine_packages",
@@ -108,6 +114,10 @@ const TABLES: &[&str] = &[
 const ADDITIVE_TABLES: &[&str] = &[
     "craftmine_godot_init_cancellations",
     "craftmine_world_archives",
+    "craftmine_playtest_feedback",
+    "craftmine_world_briefs",
+    "craftmine_world_brief_operations",
+    "craftmine_world_brief_proposals",
     "craftmine_godot_projects",
     "craftmine_godot_revisions",
     "craftmine_godot_receipts",

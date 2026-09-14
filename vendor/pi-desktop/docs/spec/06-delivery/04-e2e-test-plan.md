@@ -10630,3 +10630,18 @@ runtime startup and no worker surviving cancel. Missing worker messages or
 `STOP_TIMEOUT` are failures, not zero-duration passes. Do not change the original
 30-second deadline or overwrite old job evidence. Isolated ASAR and worker tests
 do not replace this candidate's real native acceptance.
+
+### Player feedback backup coverage (2026-09-14)
+
+Run Rust `backups::feedback_tests`, `backups::domain_tests`, and the Godot-world
+backup regressions `first_launch_failure_archive_roundtrip_keeps_failure_and_accepts_older_absent_table`
+and `portable_restore_rebuilds_applied_source_without_losing_progress_or_drafts`.
+Require exported feedback/replies/screenshot bodies, exact world binding and
+stored timestamps to survive domain, complete and portable restore plus cold
+reopen. The same roundtrip must preserve world goals, exact build-bound human
+reviews, original request history, idempotent operation receipts and pending
+proposals without accepting them. An old archive without the four known
+feedback/brief tables restores empty tables;
+wrong present columns, hash changes and dangling world references must reject
+without altering current feedback. These use isolated Rust fixtures, not the
+player's original profile, and launch neither native rendering nor a model.
