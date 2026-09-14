@@ -13,7 +13,7 @@ Use the existing runtime checkpoint to freeze/save, then preserve the exact
 source guard through archive completion. A checkpoint also leaves a manual pause;
 releasing that pause unconditionally could override a player's pause or candidate
 application. A host-only closure therefore records the original instance,
-checkpoint result and pause-intent revision and releases only its own unchanged
+pause-intent revision and releases only its own unchanged
 intent. Existing overlay blocking still determines whether the engine runs.
 
 Two narrowly validated main-window channels carry only world/operation identity:
@@ -39,3 +39,23 @@ and exact archive snapshot hashes. No native app, GPU or model was run for this
 patch. Existing headless React fixture routing was updated and syntax-checked;
 new sealed-package publication and ordinary sheet-close remain root integration
 acceptance, not a claim inferred from the CPU checks.
+
+## Autosave cache invalidation correction
+
+The first sealed implementation published successfully but retained a pause after
+ordinary sheet close. A second native run removed the earlier workbench-mode
+confound: it opened the asset sheet directly from the running world, published
+`player.world.1126b801c06c48798336110ba1c3b688` at 2026-09-14 23:43:45.685 UTC,
+and closed the sheet at 23:43:45.686 UTC without changing mode or sending resume.
+Physics tick remained 8921 through 23:44:20.117 UTC. The original failed close
+assertion and direct-live evidence remain retained.
+
+The actual host `save()` clears its cached frozen checkpoint on ordinary autosave.
+That cache is not pause ownership: its invalidation does not advance the manual
+pause-intent revision. The release closure no longer requires cache identity;
+all original-instance, previous/joined pause, current intent, candidate and
+shutdown guards remain. A CPU regression now runs the real host `save()` through
+the coordinator autosave route between capture and release. Ordinary overlay
+close resumes two subsequent simulated ticks, and later/manual/candidate/instance
+guards still hold even after that same autosave. The targeted suite passes 46
+tests. Final native validation requires two progressing post-close observations.

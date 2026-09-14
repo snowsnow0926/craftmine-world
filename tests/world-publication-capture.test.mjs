@@ -19,7 +19,8 @@ const handler=transformSync(ui.slice(ui.indexOf('  const submit = async () => {'
 assert(handler.includes('worldTemplate.describe'));
 const hostSource=fs.readFileSync(path.join(root,'vendor/pi-desktop/apps/desktop/electron/main/godot-world-view-host.ts'),'utf8');
 const hostMethods=hostSource.slice(hostSource.indexOf('  async pause(): Promise<void>'),hostSource.indexOf('  /** Safe departure'));
-const Host=vm.runInNewContext(transformSync('class Host {'+hostMethods+'}\nHost;',{loader:'ts',target:'es2022'}).code);
+const hostSave=hostSource.slice(hostSource.indexOf('  async save(options:'),hostSource.indexOf('  private async saveInner'));
+const Host=vm.runInNewContext(transformSync('class Host {'+hostSave+hostMethods+'}\nHost;',{loader:'ts',target:'es2022'}).code);
 
 async function fixture({legacy=false,changed=false,saveFailure=false,cancelDuringSave=false,unmountDuringSave=false,selectedOther=false,manual=false}={}){
   fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
@@ -39,7 +40,7 @@ async function fixture({legacy=false,changed=false,saveFailure=false,cancelDurin
   const instance={worldId,buildId:'formal-build',instanceId:'instance',alive:true};
   const pauseController=createImmersionPauseController();await pauseController.attach(instance,{pause:()=>{state.live=false;},resume:()=>{state.live=true;}});await pauseController.setManual(instance,manual);
   const host=Object.assign(new Host(),{instance,current:instance,pauseController,pauseIntentRevision:new WeakMap(),identityOf:value=>value,publish:()=>{},setSurfaceVisible:()=>{},
-    save:async()=>{if(saveFailure)return{status:'failed',error:'SAVE_FAILED'};if(cancelDuringSave)context.cancelled.current=true;if(unmountDuringSave)context.alive.current=false;return{status:'persisted',receipt:{worldId,revision:11},snapshot:source().snapshot};}});
+    saveInner:async()=>{if(saveFailure)return{status:'failed',error:'SAVE_FAILED'};if(cancelDuringSave)context.cancelled.current=true;if(unmountDuringSave)context.alive.current=false;return{status:'persisted',receipt:{worldId,revision:11},snapshot:source().snapshot};}});
   const panel=createGodotPanelCoordinator({host,adapter:{},selection:async()=>selectedOther?'different-world':worldId,invoke:async(channel,args)=>{
     if(channel==='worldTemplate.save'){const {includePreview,...request}=args;return library.save(request);}
     if(channel==='worldTemplate.describe')return library.describe(args);
@@ -92,6 +93,18 @@ test('publication completion and asset close preserve an existing manual pause',
   assert.equal(f.state.imports,1);await f.pauseController.setOverlay(false);assert.equal(f.state.live,false);
 });
 
+test('actual host autosave invalidates the checkpoint cache without taking ownership of its pause',async()=>{
+  const f=await fixture();await f.pauseController.setOverlay(true);
+  const capture=await f.host.checkpointForPublication();assert(f.host.frozen);
+  const intent=f.host.pauseIntentRevision.get(f.host.current);
+  await f.panel.invoke('godot.runtimeAutosave',{worldId:'world-publication'});
+  assert.equal(f.host.frozen,null);assert.equal(f.host.pauseIntentRevision.get(f.host.current),intent);
+  await capture.release();assert.equal(f.state.live,false,'the asset sheet still blocks gameplay');
+  await f.pauseController.setOverlay(false);
+  const step=()=>{if(f.state.live)f.state.tick++;return f.state.tick;};
+  const first=step(),second=step();assert.equal(second,first+1,'ordinary sheet close resumes without runtimeResume');
+});
+
 test('failed checkpoint retains an earlier manual pause, and shutdown disposal never releases it',async()=>{
   const f=await fixture({manual:true,saveFailure:true});await f.context.submit();assert.equal(f.state.live,false);
   const normal=await fixture();await normal.publication.request('worldTemplate.capture',{worldId:'world-publication',operationId:'shutdown-capture'});
@@ -102,6 +115,7 @@ test('failed checkpoint retains an earlier manual pause, and shutdown disposal n
 for(const blocker of ['later-manual-pause','candidate','replacement-instance','joined-checkpoint'])test(blocker+' cannot be released by an older publication closure',async()=>{
   const f=await fixture();if(blocker==='joined-checkpoint')await f.host.checkpoint();
   const capture=await f.host.checkpointForPublication();
+  await f.host.save();
   if(blocker==='later-manual-pause')await f.host.pause();
   if(blocker==='candidate')f.host.stagedRequest={worldId:'world-publication'};
   if(blocker==='replacement-instance')f.host.current={...f.host.current,instanceId:'replacement'};

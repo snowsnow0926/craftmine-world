@@ -34,10 +34,13 @@ The authenticated main-window panel accepts `worldTemplate.capture` and
 main-process lifecycle actions, not Core methods or model tools. Capture uses the
 existing host checkpoint, including waiting for an earlier save and confirming
 pause before reading progress. Its private release closure belongs to the exact
-runtime instance, checkpoint result and pause-intent revision. It restores only
+runtime instance and pause-intent revision. It restores only
 the manual pause introduced by this publication; a pre-existing pause, joined
 checkpoint, later pause, candidate, replaced world or closing host cannot be
 released by it. Overlay pauses remain governed by the existing pause controller.
+An ordinary autosave invalidates the cached checkpoint result without changing
+pause ownership. Releasing a publication must therefore not require that cache
+to remain populated; the original manual intent and runtime identity govern it.
 
 The panel retains the capture under its operation ID. A different capture in the
 same world cannot overlap it. Release waits for pending capture and archive work;
