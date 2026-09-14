@@ -305,10 +305,13 @@ func _return() -> void:
 	action = "none"
 	_sync_mode()
 	if not return_pose.is_empty(): player.call("restore", return_pose)
-	tell("已返回树林；原有怪物、小麦和进度继续保留。", 4.0)
+	tell("已返回世界；已有内容和进度继续保留。", 4.0)
 
 func _sync_mode() -> void:
 	if player == null: return
+	# UI state changes immediately even while encounter simulation is paused.
+	# This does not advance health, recovery or damage-flash timers.
+	context._update_hud()
 	var in_trial := status != "ready"
 	player.call("set_movement_lock", self, status == "failed" or (status == "active" and duel_paused))
 	if blade != null: blade.visible = context.current_weapon() == self
@@ -501,16 +504,17 @@ func _update_hud() -> void:
 	boss_bar.value = boss.get("health")
 	health_bar.value = health
 	stamina_bar.value = stamina
-	controls.text = "生命 %d/100   耐力 %d/100   药剂 %d\nWASD 移动 · 方向键 转视角 · Shift + WASD 闪避\nJ／左键 轻斩 · K／右键 重斩 · 1 饮药\nEsc 暂停／继续 · B 返回树林 · 点击可切回鼠标视角" % [health, roundi(stamina), potions] if in_trial else ""
+	var weapon_controls := "J／左键 轻斩 · K／右键 重斩" if context.current_weapon() == self else "J／左键 连射 · K／右键 瞄准 · R 换弹 · 3 重刃"
+	controls.text = "生命 %d/100   耐力 %d/100   药剂 %d\nWASD 移动 · 方向键 转视角 · Shift + WASD 闪避\n%s · 1 饮药\nEsc 暂停／继续 · B 返回世界 · 点击可切回鼠标视角" % [health, roundi(stamina), potions, weapon_controls] if in_trial else ""
 	red_screen.color.a = damage_flash * 0.70
 	float_number.visible = hit_flash > 0.0
 	center.text = notice if notice_time > 0.0 else ""
 	if status == "active" and duel_paused:
-		center.text = "试炼已暂停\nEsc 继续（无需点击或锁定鼠标）\nB 返回树林"
+		center.text = "试炼已暂停\nEsc 继续（无需点击或锁定鼠标）\nB 返回世界"
 	elif status == "failed":
-		center.text = "讨伐失败\nH 重新挑战 · B 返回树林\n你的物品、小麦和旧进度不会丢失"
+		center.text = "讨伐失败\nH 重新挑战 · B 返回世界\n已有物品和进度不会丢失"
 	elif status == "won":
-		center.text = "讨伐成功！  %.1f 秒\n挑战 %d 次 · 胜利 %d 次\nH 再战 · B 返回树林" % [elapsed, attempts, wins]
+		center.text = "讨伐成功！  %.1f 秒\n挑战 %d 次 · 胜利 %d 次\nH 再战 · B 返回世界" % [elapsed, attempts, wins]
 
 func snapshot() -> Dictionary:
 	return {"format": "craftmine.promo-heavyblade/1", "entityId": entity_id, "settings": {"difficulty": "hard"}, "sourceSettings": {"difficulty": "hard"}, "status": status, "health": health, "stamina": stamina, "potions": potions, "attempts": attempts, "wins": wins, "elapsed": elapsed, "bestTime": best_time, "returnPose": return_pose.duplicate(true), "action": action, "actionTime": action_time, "actionHit": action_hit, "dodgeDirection": [dodge_direction.x, dodge_direction.y, dodge_direction.z], "dodgeCooldown": dodge_cooldown, "invulnerable": invulnerable, "staminaDelay": stamina_delay}

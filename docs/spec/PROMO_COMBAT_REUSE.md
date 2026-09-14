@@ -9,6 +9,7 @@
 - Later installation preserves existing persistent IDs and progress. Context state uses `craftmine.promo-combat-context/1`; new component formats do not rewrite the original world's formats.
 - Monster movement is the original local obstacle steering, not general navigation. Explicit scene bounds/flat placement are required.
 - For the same bound player, known original promotional combat formats or the supported existing player-vitals interface reject with `PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED`. Preserve and edit the original combat source instead of installing another system. Same-family helpers and unknown node names/formats do not trigger this guard.
+- Entering or leaving a trial synchronizes the original encounter HUD and damage-overlay visibility without advancing paused HP/timers. Trial control hints describe the actually equipped weapon. Return/defeat messages refer only to existing content and progress, not an assumed dog or forest.
 
 ## End-to-end acceptance
 

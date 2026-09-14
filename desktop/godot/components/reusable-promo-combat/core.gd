@@ -236,6 +236,7 @@ func _update_hud() -> void:
 	elif notice_time > 0.0: text += "\n" + notice
 	hud.text = text
 	hud.visible = not in_trial()
+	damage_flash.visible = not in_trial()
 	damage_flash.color.a = 0.2 if health <= 0 else flash_time * 0.65
 	downed_label.visible = health <= 0 and not in_trial()
 	downed_label.text = "暂时被击倒了……" if recovery_delay > 0.0 else "按 R 恢复，继续冒险"
