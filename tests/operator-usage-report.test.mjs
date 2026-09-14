@@ -67,3 +67,37 @@ test('multiple event turn owners never guess an unknown user association; recove
   const result=extractOperatorUsage({reports:[report([])],events,sessions:[{source:'session.json',data:{session:{id:sid,messages:[{role:'user',id:'ambiguous'},{role:'assistant',id:'a'},{role:'assistant',id:'b'}]}}}]});
   assert.equal(result.finalAggregate,null);assert.equal(result.turns.find(t=>t.turnId==='auto').elapsed.milliseconds,null);assert(result.warnings.some(w=>w.code==='UNMAPPED_SESSION_USER_TURN'));
 });
+
+const fullWindowSentinel={inputTokens:0,cacheReadTokens:0,cacheWriteTokens:0,outputTokens:0,reasoningTokens:0,totalTokens:522500};
+test('actual full-context sentinel remains raw evidence, never final tokens in either event or persisted source',()=>{
+  const turnId='aad92522-824b-44b0-9064-aac66173e4d7',carrier=end(turnId,fullWindowSentinel,'sentinel');carrier.data.event.message.codexUsage.modelContextWindow=522500;
+  const sessions=[{source:'session.json',data:{session:{id:sid,messages:[{id:'u',role:'user'},carrier.data.event.message]}}}];
+  const before=JSON.stringify({carrier,sessions});
+  const result=extractOperatorUsage({reports:[report([{turnId,messageId:'u',metrics:metric(turnId,'error')}])],events:[snapshot(turnId,fullWindowSentinel,10),carrier],sessions});
+  const row=result.turns[0];assert.equal(row.finalUsage,null);assert.equal(row.lastObservedUsage,null);assert.equal(result.finalAggregate,null);assert.equal(row.usageAvailability,'rejected-terminal-usage');
+  assert(row.warnings.includes('CODEX_USAGE_TOTAL_INCONSISTENT'));assert.equal(row.rejectedUsageReports.length,3);
+  const persisted=row.rejectedUsageReports.find(r=>r.kind==='persisted-terminal-message');assert.deepEqual(persisted.rawReported,fullWindowSentinel);assert.equal(persisted.counterSum,0);assert.equal(persisted.modelContextWindow,522500);assert.equal(persisted.source.file,'session.json');
+  assert.equal(JSON.stringify({carrier,sessions}),before);assert(!operatorUsageMarkdown(result).includes('| 522500 |'));
+});
+test('normal uncached plus read/write cache plus output is counted once and reasoning is not added',()=>{
+  const value={inputTokens:11,cacheReadTokens:100,cacheWriteTokens:4,outputTokens:9,reasoningTokens:7,totalTokens:124};
+  const result=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t')}])],events:[end('t',value)]});
+  assert.equal(result.finalAggregate.usage.totalTokens,124);assert.equal(result.turns[0].rejectedUsageReports.length,0);
+});
+test('missing or null optional cache does not become zero or a guessed accounting contradiction',()=>{
+  for(const value of [{inputTokens:0,outputTokens:0,totalTokens:522500},{inputTokens:0,cacheReadTokens:0,cacheWriteTokens:null,outputTokens:0,totalTokens:522500}]){
+    const result=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t')}])],events:[end('t',value)]});
+    assert.equal(result.turns[0].finalUsage.totalTokens,522500);assert.equal(result.turns[0].finalUsage.cacheWriteTokens,null);assert.equal(result.turns[0].rejectedUsageReports.length,0);
+  }
+});
+test('invalid partial snapshots stay rejected; a separate valid terminal carrier may close the turn',()=>{
+  const base={reports:[report([{turnId:'t',metrics:metric('t','running')}])],events:[snapshot('t',fullWindowSentinel,1)]};
+  const running=extractOperatorUsage(base);assert.equal(running.finalAggregate,null);assert.equal(running.turns[0].lastObservedUsage,null);assert.equal(running.turns[0].usageAvailability,'invalid-reported-usage');
+  const ended=extractOperatorUsage({reports:[report([{turnId:'t',metrics:metric('t')}])],events:[...base.events,end('t',usage())]});
+  assert.equal(ended.finalAggregate.usage.totalTokens,120);assert.equal(ended.turns[0].rejectedUsageReports[0].rawReported.totalTokens,522500);
+});
+test('rejected terminal carrier cannot be replaced by an earlier valid message or inconsistent complete metrics',()=>{
+  const reports=[report([{turnId:'t',metrics:metric('t','error',{coverage:'complete',usage:fullWindowSentinel})}])];
+  const result=extractOperatorUsage({reports,events:[end('t',usage(),'earlier'),end('t',fullWindowSentinel,'bad')]});
+  assert.equal(result.turns[0].finalUsage,null);assert.equal(result.finalAggregate,null);assert(result.turns[0].rejectedUsageReports.some(r=>r.kind==='host-metrics'));
+});

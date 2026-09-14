@@ -96,3 +96,21 @@ session的事件包创建额外turn，因此自动修复即使没有manual repor
 没有report.turns条目，但已由事件2290/2291开始边界发现。原提取器实际输出
 5轮、4轮结束、finalAggregate=null，未漏掉正在运行的自动轮。本文不报告未
 完成全流程的总量；最终导出应使用全部自动轮落盘后的新证据文件。
+
+## 矛盾计数与上下文窗口占位
+
+当未缓存input、cacheRead、cacheWrite、output、total五个必要计数都明确存在
+时，必须满足`input + cacheRead + cacheWrite + output = total`。reasoning已含
+在输出内，不再参与加法。cache等可选字段缺失或null时不补零，也不凭残缺
+分项否定提供方total；保留缺失范围。
+
+真实失败轮`aad92522-824b-44b0-9064-aac66173e4d7`曾报告全0分项但
+total=522500（恰为modelContextWindow）的占位值。它不满足上述恒等式，
+提取器将其标记`CODEX_USAGE_TOTAL_INCONSISTENT`，不作为快照、finalUsage或
+finalAggregate使用。`rejectedUsageReports`保留原始reported对象、分项和、
+modelContextWindow、来源字段/事件行与类型，便于与context_window_exceeded
+原始诊断交叉核对；拒绝的值是未知，不会改成0，也不改写session/events。
+
+终态载体或metrics出现此类异常时，不用更早的有效消息偷偷替代本轮终值。
+只有部分过程快照异常、随后另有一致的真实终态载体时，才可计该终态，且
+异常快照仍留存。最终审计需等待所有恢复回合结束后重新导出。
