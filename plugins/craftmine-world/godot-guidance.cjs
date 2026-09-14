@@ -27,8 +27,10 @@ function validateRequest(args){
   if(!entry)fail('GUIDANCE_REFERENCE_NOT_FOUND');
   if(args.sha256!==entry.sha256)fail('GUIDANCE_HASH_MISMATCH');
   if(args.revision===undefined)fail('GUIDANCE_SOURCE_PIN_REQUIRED');
-  if(args.offset!==undefined&&(!Number.isSafeInteger(args.offset)||args.offset<0||args.offset>200000))fail('INVALID_GUIDANCE_PAGE');
-  if(args.limit!==undefined&&(!Number.isSafeInteger(args.limit)||args.limit<1||args.limit>8000))fail('INVALID_GUIDANCE_PAGE');
+  if(args.offset!==undefined&&(!Number.isSafeInteger(args.offset)||args.offset<0||args.offset>200000))fail('INVALID_GUIDANCE_PAGE','offset must be an integer from 0 to 200000 Unicode characters; omit it to start at 0, then follow nextOffset.');
+  if(args.limit!==undefined&&(!Number.isSafeInteger(args.limit)||args.limit<1||args.limit>8000))fail('INVALID_GUIDANCE_PAGE','limit must be an integer from 1 to 8000 Unicode characters; omit it for 4000. Follow nextOffset with the same id, version, sha256, path and source pins.');
+  const characters=Array.from(entry.text).length;
+  if((args.offset??0)>characters)fail('INVALID_GUIDANCE_PAGE','offset exceeds this selected text (totalCharacters='+characters+'). Start at 0 or follow nextOffset; null means this text is complete.');
   return {skill,entry};
 }
 
@@ -94,11 +96,10 @@ async function queryGuidance(core,{context,worldId,args,assertActive=()=>{}}){
       supported:corpus.skills.map(skill=>skill.applicability)};
   }
   if(!selection)return {...envelope,available:true,skills:matches.map(skill=>({...metadata(skill),references:skill.references.map(metadata)})),
-    guidance:'Read an exact skill id, version and sha256 with this source revision/manifestHash. Read references with their exact path and sha256. Follow nextOffset until complete; re-catalog after source edits.'};
+    guidance:'Read an exact skill id, version and sha256 with this source revision/manifestHash. Read references with their exact path and sha256. For read, limit is 1-8000 Unicode characters (default 4000); offset starts at 0. Follow nextOffset until null using the same selected text and source pins; re-catalog after source edits.'};
   const {skill,entry}=selection;
   if(hash(entry.text)!==entry.sha256)fail('GUIDANCE_BUNDLE_INTEGRITY_FAILED');
   const chars=Array.from(entry.text),offset=args.offset??0,limit=args.limit??4000;
-  if(offset>chars.length)fail('INVALID_GUIDANCE_PAGE');
   const text=chars.slice(offset,offset+limit).join(''),end=offset+Array.from(text).length;
   return {...envelope,id:skill.id,version:skill.version,path:entry.path,sha256:entry.sha256,
     applicability:skill.applicability,text,offset,totalCharacters:chars.length,

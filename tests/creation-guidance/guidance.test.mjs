@@ -108,6 +108,34 @@ test('unknown IDs, traversal, version, hash, forged identity and page errors fai
   await assert.rejects(fixture({ended:true}).run({mode:'catalog'}),/TURN_ENDED/);
 });
 
+test('actual player guidance limits explain recovery before host calls without widening pagination',async()=>{
+ const selectedSkill=corpus.skills.find(s=>s.id==='creation-sandbox.authoring');
+ const f=fixture({baseId:selectedSkill.applicability.baseId,baseBuild:selectedSkill.applicability.baseBuild,selectedSkill});
+ const catalog=await f.run({mode:'catalog'}),args={mode:'read',id:selectedSkill.id,version:selectedSkill.version,sha256:selectedSkill.sha256,revision:catalog.source.revision,manifestHash:catalog.source.manifestHash};
+ const tool=manifest.contributes.agentTools.find(t=>t.name==='godot_guidance');
+ assert.match(tool.description,/1-8000 Unicode characters \(default 4000\)/);
+ assert.equal(tool.schema.properties.limit.maximum,8000);
+ assert.equal(tool.schema.properties.offset.maximum,200000);
+ assert.match(catalog.guidance,/1-8000 Unicode characters \(default 4000\)/);
+ for(const limit of [16000,12000,8001,0,1.5]){
+  const before=f.calls.length;
+  await assert.rejects(f.run({...args,limit}),error=>error.errorCode==='INVALID_GUIDANCE_PAGE'&&/1 to 8000 Unicode characters.*4000.*nextOffset/.test(error.message));
+  assert.equal(f.calls.length,before);
+ }
+ for(const offset of [-1,200001,1.5]){
+  const before=f.calls.length;
+  await assert.rejects(f.run({...args,offset}),/offset must be an integer from 0 to 200000/);
+  assert.equal(f.calls.length,before);
+ }
+ const total=Array.from(selectedSkill.text).length,before=f.calls.length;
+ await assert.rejects(f.run({...args,offset:total+1}),new RegExp('offset exceeds this selected text.*totalCharacters='+total));
+ assert.equal(f.calls.length,before);
+ const first=await f.run(args);assert.equal(first.loadRecord.characters,4000);assert.equal(first.nextOffset,4000);
+ const second=await f.run({...args,offset:first.nextOffset,limit:8000});assert.equal(second.loadRecord.characters,8000);assert.equal(second.nextOffset,12000);
+ const third=await f.run({...args,offset:second.nextOffset});assert.equal(first.text+second.text+third.text,selectedSkill.text);assert.equal(third.nextOffset,null);
+ const end=await f.run({...args,offset:total,limit:1});assert.equal(end.text,'');assert.equal(end.nextOffset,null);
+});
+
 test('unsupported base/engine/build gives an empty catalog and rejects pinned skill reads',async()=>{
   for(const options of [{baseId:'top-down'},{baseBuild:'first-person-0.2.0'},{baseBuild:'custom'},{engineVersion:'4.8-stable'}]){
     const f=fixture(options),catalog=await f.run({mode:'catalog'});

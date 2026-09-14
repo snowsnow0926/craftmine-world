@@ -10663,3 +10663,11 @@ add aliases/duplicates or alter read identity and require refusal. Build an
 isolated production plugin and rerun the three retained cases against it.
 These checks prove read-tool contracts and packaged source applicability only;
 they do not replace the separate ordinary player install/check/adopt/render flow.
+
+Guidance pagination follow-up: replay the ordinary model's read limits 16000 and
+12000 through both source and generated plugin tools. Both must reject before any
+host call and state the unchanged 1–8000 Unicode-character range, default 4000,
+and `nextOffset` recovery. Fractional/negative/over-200000 offsets and offsets past
+the selected text must reject early. Default 4000, maximum 8000, and the exact-end
+empty terminal page remain valid; page concatenation must equal the original
+pinned recipe bytes after Unicode decoding. Preserve the original failed logs.
