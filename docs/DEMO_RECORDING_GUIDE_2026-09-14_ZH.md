@@ -12,7 +12,7 @@
 | 伙伴与雨天 | `examples/companion-and-rain.zip` |
 | 博美与修改后的树 | `examples/pomeranian-and-edited-tree.zip` |
 | 轻雨城市、博美与歼二十 | `examples/city-flight-and-companion.zip` |
-| 帐篷里的暗影游侠 | 随包提供的暗影游侠世界模板 |
+| 帐篷里的暗影游侠 | `examples/dark-ranger-tent.zip` |
 
 这些模板创建独立副本，并带入作者保存的进度。城市模板的三个通航物品已收齐、飞机已解锁。游玩这些内容不需要 AI 账号；发送新的创作需求才需要配置自己的账号。
 

@@ -267,3 +267,11 @@ A6的首导航版烘焙有2419多边形，但参数精度warnings与空路径尚
 恢复入口：D:/cm-deepseek-creators/test-results/desktop-native-product-UNfo0G/
 continuation-3c168ffd-dffd-4d5b-a545-ba27f80aeff4.json；不要重置该档案。
 详细现场记录：test-results/PLAYER_TEST_PAUSED_FOR_PRIORITY.json。
+
+## Demo交付优先：只整理素材，不继续长测试
+
+用户确认交付Windows x64免安装ZIP，自行实测和录屏。交付阶段通过普通素材库
+保存并导出双狗回归世界，asset player.world.a64ecea636a74ba78873fd9609294309 v1，
+9526356字节，SHA256 4e0b1f40e7f021cf335f279e25d2d990b790f365acd39830e0bc85bc638710e5。
+名称与说明明确导航待修、4/4完成进度，仅作回归素材；未新增模型请求，未执行
+新副本复制和空白世界测试。094/095为真实发布与导出回执，096正常退出。
