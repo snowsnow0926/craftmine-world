@@ -9,13 +9,15 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 import {createCompleteOutput} from './godot-final/complete-contract.mjs';
+import {parseDirectLibraryArgs,runPromoSixStage} from './helpers/direct-library-promo-scenario.mjs';
+import {confirmOperatorCreatedWorld,readOperatorInitializingRuntime} from './helpers/operator-world-initialization.mjs';
 
-const [applicationRoot,resources]=process.argv.slice(2);
+const {applicationRoot,resources,scenario,packagedRoot}=parseDirectLibraryArgs(process.argv.slice(2),process.env);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
 const root=path.resolve(import.meta.dirname,'..');fs.mkdirSync(path.join(root,'test-results'),{recursive:true});
 const out=createCompleteOutput(root,process.env.CRAFTMINE_CREATION_OUTPUT_ROOT ? path.join(path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT),'test-results') : undefined);const profile=path.join(out,'profile'),token=randomUUID();
 fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));
-const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
+const launch=resolveCreationNativeLaunch({root:applicationRoot,packagedRoot,inherited:process.env});
 const report={format:'craftmine.direct-library-native/1',out,applicationRoot,resources,buildMainSha256:createHash('sha256').update(launch.main).digest('hex'),modelCalls:0,launches:[],worlds:[],operations:[],steps:[],limits:['One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.','Actual PI forms and offscreen native checks; no physical input or Pointer Lock.']};
 const reportFile=path.join(out,'report.json'),save=()=>fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 const abort = new AbortController(), pending = new Map();
@@ -59,6 +61,7 @@ async function connect(url) {
 }
 const tabs = async () => (await(await fetch('http://127.0.0.1:'+port+'/json/list')).json()).filter(t=>t.type==='page');
 const nav = (channel,payload={}) => rpc('worldNavigation',{channel,payload});
+abort.signal.addEventListener('abort',()=>{if(report.activeNativeInput&&!ended)void rpc('cancelInputs',{payload:{identity:report.activeNativeInput}}).catch(error=>{report.inputCancelError=String(error);save();});});
 const submit = selector => evaluate(`(()=>{const form=document.querySelector(${JSON.stringify(selector)});if(!form||form.tagName!=='FORM')throw Error('FORM_NOT_FOUND');form.requestSubmit();return true;})()`);
 async function chooser(tab) {
   await rpc('primaryMode',{payload:{action:'entry'}});
@@ -68,6 +71,10 @@ async function chooser(tab) {
   if(tab==='examples') await until(()=>evaluate(`document.querySelectorAll('[data-world-example]').length`),n=>n===4);
 }
 async function waitWorld(worldId) {
+  if(scenario==='promo-six-stage'){
+    await until(()=>readOperatorInitializingRuntime({readList:()=>nav('world.list'),observe:()=>rpc('godotObserve'),worldId,onReadTimeout:error=>{report.initializationReadErrors??=[];report.initializationReadErrors.push(String(error));save();}}),o=>o?.worldId===worldId&&!!o.instanceId);
+    return until(()=>rpc('godotSnapshot'),Boolean);
+  }
   await until(()=>nav('world.list'), value => {
     const row=value.worlds.find(w=>w.id===worldId);
     if(row?.state==='failed') throw Error('WORLD_INITIALIZATION_FAILED:'+JSON.stringify(row));
@@ -81,7 +88,7 @@ async function start(kind) {
   current={kind,startedAt:new Date().toISOString(),mainSha256:report.buildMainSha256}; report.launches.push(current);
   const started=performance.now();
   child=spawn(launch.executable,[...launch.args,'--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port],{
-    cwd:applicationRoot,env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources},
+    cwd:launch.cwd,env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources},
     windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],
   });
   for(const stream of ['stdout','stderr']) child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,kind+'-'+stream+'.log'),bytes));
@@ -138,7 +145,12 @@ async function createWorld(title){
   await field('[data-world-base-option="creation-sandbox"] input',true);
   await field('[data-world-starter-option="blank"] input',true);
   await field('[data-world-create="name"]',title);
+  const existingIds=new Set((await nav('world.list')).worlds.map(row=>row.id));
   const started=performance.now();await submit('[data-world-create="form"]');
+  if(scenario==='promo-six-stage'){
+    const confirmed=await confirmOperatorCreatedWorld({until,readList:()=>nav('world.list'),readUiError:()=>evaluate(`document.querySelector('[data-world-entry-error]')?.textContent??null`),existingIds,baseId:'creation-sandbox',onReadTimeout:error=>{report.initializationReadErrors??=[];report.initializationReadErrors.push(String(error));save();}});
+    worldId=confirmed.activeWorldId;
+  }
   await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
   worldId=(await nav('world.list')).activeWorldId;const snapshot=await waitWorld(worldId);
   report.worlds.push({worldId,title,createdThrough:'actual-New-World-form',createMs:performance.now()-started,snapshot});save();return worldId;
@@ -196,15 +208,20 @@ async function startDirect(assetId,position){
  await until(()=>evaluate(`document.querySelector('[data-direct-operation="${id}"]')?.dataset.directStatus==='ready'`),Boolean);
  row.renderer=await rpc('capture',{name:'direct-ready-'+report.operations.length});save();return row;
 }
-async function applyDirect(row){
+async function applyDirect(row,options={}){
  const started=performance.now();await submit(`[data-direct-operation="${row.operationId}"] [data-direct-action="apply"]`);
  row.applied=await until(()=>nav('library.direct',{action:'status',worldId,operationId:row.operationId}),r=>['applied','failed','cancelled'].includes(r.status));
  assert.equal(row.applied.status,'applied',JSON.stringify(row.applied));assert.equal(row.applied.modelCalls,0);row.applyMs=performance.now()-started;
- const repeated=await nav('library.direct',{action:'start',worldId,operationId:row.operationId,ref:row.applied.ref,position:row.position});assert.deepEqual(repeated.instanceIds,row.applied.instanceIds);assert.equal(repeated.status,'applied');
- await closeAssets();row.snapshot=await rpc('godotSnapshot');await look(-0.45);row.capture=await capture('direct-'+report.operations.length);save();
+ if(!options.staticCapture){const repeated=await nav('library.direct',{action:'start',worldId,operationId:row.operationId,ref:row.applied.ref,position:row.position});assert.deepEqual(repeated.instanceIds,row.applied.instanceIds);assert.equal(repeated.status,'applied');}
+ await closeAssets();if(options.staticCapture)row.freeze=await panel('godot.runtimeSave',{freeze:true});row.snapshot=await rpc('godotSnapshot');if(!options.staticCapture)await look(-0.45);row.capture=await capture('direct-'+report.operations.length);save();
 }
 try{
- console.log(JSON.stringify({out,cancel:path.join(out,'cancel')}));await start('first');
+ console.log(JSON.stringify({out,cancel:path.join(out,'cancel')}));
+ if(scenario==='promo-six-stage'){
+  report.packageIdentity=launch.identity?{packaged:launch.packaged,version:launch.identity.version,inventorySha256:launch.identity.inventorySha256}:null;
+  await runPromoSixStage({report,out,resources,rpc,nav,panel,pkg,start,stop,createWorld,openExistingWorld,startDirect,applyDirect,capture,save,mark,closeAssets,cancelled:()=>abort.signal.aborted});
+ }else{
+ await start('first');
  worldId=await createWorld('My first library world');report.before=await rpc('godotObserve');report.initialSource=await pkg('sourceList');report.initialSnapshot=await rpc('godotSnapshot');
  await workbench();report.guide=await rpc('worldCreationGuide');assert.equal(report.guide.steps,5);assert(report.guide.oldGuideAbsent&&report.guide.headerUnchanged&&report.guide.worldUnchanged);
  mark('Fresh client created a blank world through the ordinary PI form');
@@ -240,6 +257,7 @@ try{
  await openExistingWorld(retainedWorld);worldId=retainedWorld;assert.equal((await rpc('godotObserve')).buildId,report.after.buildId);
  await assert.rejects(nav('library.direct',{action:'status',worldId,operationId:'missing-operation-id'}),error=>String(error).includes('DIRECT_LIBRARY_OPERATION_NOT_FOUND')&&!String(error).includes(profile));
  report.passed=true;mark('Just-submitted cancellation retained the empty formal world, and the original two-companion world stayed intact');
+ }
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;try{report.failurePage=await evaluate(`({text:document.body.innerText.slice(-7000),layout:localStorage.getItem('craftmine.desktop.layout.v1')})`);}catch{} }
 finally{try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}clearInterval(watcher);try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}save();}
 console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError,integrityError:report.integrityError}));
