@@ -10818,6 +10818,12 @@ executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
 # DeepSeek official alias transport (2026-09-14)
 
+Run [PI stream publication validation](../../e2e/pi-stream-publication-20260914.md)
+for long thinking responses: latest-only partial publication precedes JSON/IPC,
+while terminal/tool/error ordering, complete transcript, cumulative deltas and
+abort/new-turn ownership remain intact. Test collector retention is validated
+independently; cumulative log size is not production heap size.
+
 Also run [PI Godot index first-call validation](../../e2e/pi-godot-index-first-call-20260914.md):
 the host-registered read-only project index is offered on the first Godot PI
 request with its actual limit 1–32 schema and executes without ToolSearch.
