@@ -14,6 +14,7 @@ import {parseOperatorProviderConfig,resolveOperatorApiModel,resolveOperatorConte
 import {operatorReleaseIdentity,operatorReleasePageScript,withOwnedReleasePage} from './helpers/operator-task-release.mjs';
 import {blankGodotUiState,createOperatorBlankGodot} from './helpers/operator-blank-world.mjs';
 import {confirmOperatorCreatedWorld,readOperatorInitializingRuntime} from './helpers/operator-world-initialization.mjs';
+import {confirmOperatorWorldSession,operatorWorldSessionExpectation,worldSessionReadScript} from './helpers/operator-world-session.mjs';
 import {createOperatorEventCollector,isRecoverableOperatorCaptureError,recoverOperatorObserver} from './helpers/operator-event-collector.mjs';
 import {operatorCollectorPerformanceSample,accumulateOperatorCollectorPerformance} from './helpers/operator-collector-performance.mjs';
 import {validateOperatorTemplateCopy,assertOperatorTemplateSource,templateCopyReadScript,submitOperatorTemplateCopy,verifyOperatorTemplateCopy} from './helpers/operator-template-world.mjs';
@@ -102,7 +103,18 @@ async function connectRenderer(){socket?.close();socket=null;
 }
 async function stop(){if(!ended){await rpc('quit').catch(()=>{});await Promise.race([exit,delay(60000)]);if(!ended){child.kill();await exit;throw Error('NORMAL_SHUTDOWN_REQUIRED');}}socket?.close();socket=null;assert(run.audit,'NORMAL_SHUTDOWN_AUDIT_REQUIRED');assert.deepEqual(run.audit.violations,[]);assert.deepEqual(run.audit.shutdownFailures,[]);save();}
 async function workbench(){await until(()=>evaluate(`!!document.querySelector('[data-craftmine-layout] > form')`),Boolean);await submit('[data-craftmine-layout] > form');await until(()=>evaluate(`!!document.querySelector('[data-world-assets-open]')`),Boolean);}
-async function waitWorld(){await until(()=>readOperatorInitializingRuntime({readList:()=>nav('world.list'),observe:()=>rpc('godotObserve'),worldId:report.worldId,onReadTimeout:recordInitializationReadTimeout}),value=>value?.worldId===report.worldId&&value.instanceId);await until(()=>rpc('worldNavigationReady'),value=>value.worldId===report.worldId&&value.ready);await workbench();if(!await evaluate(`!!document.querySelector('[data-world-session]')`)){await until(()=>evaluate(`!!document.querySelector('[data-world-start-creation]')`),Boolean);await submit('[data-world-start-creation]');}const sessionId=await until(()=>evaluate(`document.querySelector('[data-world-session]')?.dataset.worldSession`),Boolean);if(report.sessionId)assert.equal(sessionId,report.sessionId,'COLD_REOPEN_SESSION_CHANGED');report.sessionId=sessionId;await invoke('notificationSetViewingSession',{sessionId});save();}
+async function waitWorld(){
+  await until(()=>readOperatorInitializingRuntime({readList:()=>nav('world.list'),observe:()=>rpc('godotObserve'),worldId:report.worldId,onReadTimeout:recordInitializationReadTimeout}),value=>value?.worldId===report.worldId&&value.instanceId);
+  await until(()=>rpc('worldNavigationReady'),value=>value.worldId===report.worldId&&value.ready);await workbench();
+  const expectation=operatorWorldSessionExpectation(report);
+  const confirmed=await confirmOperatorWorldSession({worldId:report.worldId,...expectation,until,
+    readUi:()=>evaluate(worldSessionReadScript,'world-session-readiness'),
+    readBinding:(worldId,sessionId)=>nav('world.conversation',{worldId,...(sessionId?{sessionId}:{})}),
+    startCreation:()=>submit('[data-world-start-creation]'),onReadTimeout:recordInitializationReadTimeout});
+  report.sessionId=confirmed.sessionId;report.worldSessionReadiness=confirmed;
+  if(expectation.pendingCopy){report.lastTemplateCopy.newSessionId=confirmed.sessionId;report.lastTemplateCopy.sessionReadiness=confirmed;}
+  await invoke('notificationSetViewingSession',{sessionId:confirmed.sessionId});save();
+}
 async function setup(){if(providerConfig){await verifyProvider();}else{const connection=await invoke('codexConnection',{action:'verify',path:codex});assert.equal(connection.code,'ready');assert.equal(connection.model,'gpt-6-astra');assert.equal(connection.effort,'xhigh');report.connection={code:connection.code,model:connection.model,effort:connection.effort,version:connection.version,accountType:connection.account?.type};await invoke('settingsSet',{worldAgentBackend:'codex-cli',codexCliPath:codex});}
   await rpc('primaryMode',{payload:{action:'entry'}});
   if(report.worldId){await until(()=>evaluate(`!!document.querySelector('[data-world-entry-tab-form="worlds"]')`),Boolean);await submit('[data-world-entry-tab-form="worlds"]');await until(()=>evaluate(`!!document.querySelector(${JSON.stringify('[data-world-open="'+report.worldId+'"]')})`),Boolean);await submit('[data-world-open="'+report.worldId+'"]');}

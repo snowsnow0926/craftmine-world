@@ -355,3 +355,27 @@ Pointer Lock 或操控用户浏览器。
 必须与预览相同。首次画面未准备好时，可按界面提示关闭、重开素材库一次，
 保留原文字并记录恢复动作；仍失败就停止命令。总控核对草稿后，再另发
 `send-composer` 才会启动真实模型。不要把准备草稿与天气修改等另一轮混在一起。
+# World/session readiness after copying a template
+
+Runtime readiness does not imply that the renderer has finished selecting the
+new world's conversation. `waitWorld` now waits for the existing read-only
+`world.conversation` response for the exact destination world and the current
+`data-world-session` to agree. It rechecks the DOM after the host read. A template
+copy still rejects a host binding to the original session; a cold reopen still
+requires its confirmed session. Unknown errors remain failures, and only the
+existing exact Core read-timeout classification is retried.
+
+For an interrupted copy acknowledgement, a saved `lastTemplateCopy.newWorldId`
+with no confirmed `newSessionId` permits rechecking that already-created world
+on the next ordinary open. An old report session equal to `oldSessionId` is not
+treated as a cold-reopen expectation. No world or session is created by this
+recovery path; it resolves the existing host binding. The original failed command
+stays in the report, and session readiness alone does not claim the remaining
+template preservation checks succeeded.
+
+Regression: `node --test tests/operator-world-session.test.mjs` covers delayed
+selection, actual old-session/wrong-world bindings, cold identity changes,
+selection changes during lookup, normal Start creating, exact timeout handling,
+and interrupted-copy recovery. NUWiAc command 097 is retained as the original
+race evidence: its report sampled `caea7779…`, while the product subsequently
+held the new empty `8575e46b…` session bound to `world-a256ef707e46`.
