@@ -16,11 +16,14 @@ the existing source launch helper and requires the corresponding built outputs.
 The driver refuses to execute without `--live`.
 
 The driver creates a fresh marked profile beneath its printed output directory.
-It uses the actual New World form, selects `craftmine-web/5`, the blank starter
-and a name, then uses the ordinary Start creating/session flow. Connection
-verification must confirm `gpt-6-astra` / `xhigh`. The profile selects the same
-Codex backend and Auto permission setting observed in the player's report; no
-live player profile is changed. Original text `生成一个树` is inserted into the
+It waits for React and the actual delivered world catalog, verifies
+`gpt-6-astra` / `xhigh`, and saves the same Codex backend and Auto permission
+setting observed in the player's report. It normally closes and reopens this
+independent app so its mounted renderer loads the persisted selection; calling
+the Settings RPC alone does not update the existing renderer's settings cache.
+It then uses the actual New World form, selects `craftmine-web/5`, the blank
+starter and a name, and uses the ordinary Start creating/session flow. No live
+player profile is changed. Original text `生成一个树` is inserted into the
 empty Composer via its React input handler, then its ordinary Send handler runs.
 No synthetic mouse/keyboard, focus, Pointer Lock or user browser is used.
 
@@ -33,6 +36,13 @@ is added; individual IPC/preview/shutdown timeouts are existing infrastructure
 boundaries. To cancel, create the printed `cancel` file or interrupt the driver.
 It aborts its own Agent and requests normal application shutdown.
 
+World/check/review reads use the bound world's existing `pluginBridge` read
+channels. The main renderer navigation bridge intentionally refuses generic
+`world.read`; the driver must not broaden that product permission. During
+preparation, one refused navigation read and two disabled-Send settings-cache
+attempts were retained separately with zero model requests. The latter were
+explicitly cancelled before Send, not stopped because of model execution time.
+
 After a passed machine check and a completed real request review, the driver
 submits the ordinary preview form, obtains read-only `request-observe` data from
 that actual preview iframe, captures it and requires visible drawable added
@@ -43,12 +53,27 @@ reported; the driver does not bypass the apply condition or acknowledge warnings
 as a substitute for the tree acceptance.
 
 Saving uses the normal `craftmineView.prepareClose()` lifecycle, which freezes
-and saves the actual game progress. The app exits normally and reopens the same
-world through the existing world-list form. Require exact applied build, full
-saved progress and unchanged visible dialogue IDs; capture the cold frame and
+and saves the actual game progress. Once the app is fully stopped, the package's
+existing CoreClient reads the owned profile's `world.read` record and exits; no
+direct SQLite or world mutation is used. The app reopens the same world through
+the existing world-list form. Its bound renderer bridge reads the complete
+persisted world record before another save and compares it exactly with the
+post-quit record. Separately compare the full actual renderer snapshot, retaining
+every changed field; only a finite, non-decreasing `behaviors.time` may advance
+while the reopened engine runs. No field is removed to claim live equality.
+Require unchanged visible dialogue IDs; capture the cold frame and
 retain both shutdown audits. The renderer mesh observation proves a drawable
 addition; tree aesthetics and operation feel still require viewing the captures
 and human play. This static driver does not test a second model edit.
+
+If creation/review/application already completed and a driver assertion failed
+only during cold inspection, use `--resume-cold-test <absolute prior report.json>`
+with the same package/resources arguments. It verifies the driver's marked
+directory, applied-world evidence, normal prior exits and package inventory,
+writes a separate `cold-continuation-*.json`, then runs only the cold inspection.
+It neither resends the original prompt nor overwrites the original failed report.
+The original `ZKllfo` attempt correctly retained a too-strict live-clock equality
+failure; the subsequent same-world continuation completed with zero model calls.
 
 Preparation checks, without launching Electron or Codex:
 

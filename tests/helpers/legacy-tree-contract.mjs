@@ -17,6 +17,12 @@ export function requireLegacyTree({before,record,observation}){
 export function requireSameLegacySave(saved,cold){
   assert.equal(cold.record.id,saved.record.id);assert.equal(cold.record.runtimeKind,'legacy');
   assert.deepEqual(cold.record.world.build,saved.record.world.build,'COLD_BUILD_CHANGED');
-  assert.deepEqual(cold.snapshot,saved.snapshot,'COLD_PROGRESS_CHANGED');
+  assert.deepEqual(cold.record.world.snapshot,saved.record.world.snapshot,'COLD_PERSISTED_PROGRESS_CHANGED');
+  assert.deepEqual(cold.record,saved.record,'COLD_PERSISTED_RECORD_CHANGED');
   return true;
+}
+export function legacyProgressDifferences(before,after,prefix=''){
+  if(JSON.stringify(before)===JSON.stringify(after))return [];
+  if(before&&after&&typeof before==='object'&&typeof after==='object'&&!Array.isArray(before)&&!Array.isArray(after))return [...new Set([...Object.keys(before),...Object.keys(after)])].flatMap(key=>legacyProgressDifferences(before[key],after[key],prefix?prefix+'.'+key:key));
+  return [{path:prefix,before:before??null,after:after??null}];
 }
