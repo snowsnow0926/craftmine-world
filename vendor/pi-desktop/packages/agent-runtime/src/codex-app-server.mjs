@@ -44,6 +44,25 @@ export function redact(value) {
 
 const DIAGNOSTIC_STAGES = new Set(['context','checkpoint-load','binary-verify','app-server-start','thread-start','thread-resume','checkpoint-save','history-restore','turn-start']);
 const DIAGNOSTIC_METHODS = new Set(['initialize','config/read','account/read','thread/start','thread/resume','thread/inject_items','turn/start']);
+const TURN_ERROR_CODES = new Set(['contextWindowExceeded','sessionBudgetExceeded','usageLimitExceeded','rateLimitExceeded','serverOverloaded','cyberPolicy','misalignmentPolicyViolation','internalServerError','unauthorized','badRequest','threadRollbackFailed','sandboxError','other']);
+const HTTP_ERROR_CODES = new Set(['httpConnectionFailed','responseStreamConnectionFailed','responseStreamDisconnected','responseTooManyFailedAttempts']);
+export function turnDiagnostic(error) {
+  if(!error || typeof error!=='object') return undefined;
+  const output={};
+  // Reuse the bounded protocol-message sanitizer, without copying raw error data.
+  for(const field of ['message','additionalDetails'])if(typeof error[field]==='string') {
+    output[field]=protocolDiagnostic({rpcMethod:'turn/start',rpcCode:0,diagnostic:error[field]},'turn-start').message;
+  }
+  if(TURN_ERROR_CODES.has(error.codexErrorInfo))output.codexErrorInfo=error.codexErrorInfo;
+  else if(error.codexErrorInfo && typeof error.codexErrorInfo==='object'){
+    const entries=Object.entries(error.codexErrorInfo);
+    if(entries.length===1 && HTTP_ERROR_CODES.has(entries[0][0])){
+      output.codexErrorInfo=entries[0][0];const status=entries[0][1]?.httpStatusCode;
+      if(Number.isInteger(status)&&status>=100&&status<=599)output.httpStatusCode=status;
+    }
+  }
+  return Object.keys(output).length ? output : undefined;
+}
 export function protocolDiagnostic(error, stage) {
   const detail = {stage: DIAGNOSTIC_STAGES.has(stage) ? stage : 'unknown'};
   if (!Number.isSafeInteger(error?.rpcCode) || !DIAGNOSTIC_METHODS.has(error?.rpcMethod)) return detail;

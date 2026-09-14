@@ -9975,6 +9975,8 @@ restore more than 1 Mi characters without losing original requests, preserve rea
 image blocks, and prove that aborted or rejected injection starts no model turn
 and executes no historical tools. Record fixture, source-native and final packaged
 acceptance separately; synchronized resume must not inject history again.
+Preserve bound asynchronous native errors; a context-window capacity marker with
+zero input/output must remain diagnostic data and never be counted as token usage.
 
 Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
 Local Codex CLI in General settings with an explicit executable path. With no

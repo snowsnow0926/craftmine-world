@@ -4,7 +4,7 @@ import { mkdir } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import type { AgentEvent, AgentEventEnvelope, AgentStatus, MessageUsage, UiMessage } from "@pi-desktop/shared";
 import { CODEX_WORLD_TOOLS } from "@pi-desktop/shared";
-import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact, protocolDiagnostic } from "./codex-app-server.mjs";
+import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact, protocolDiagnostic, turnDiagnostic } from "./codex-app-server.mjs";
 import { historicalBatches, type HistoricalRecord } from './codex-history-restore.js';
 import type { PluginToolDef, RuntimePrompt } from "./runtime.js";
 
@@ -34,6 +34,9 @@ Give concise progress text before substantial tool work and a self-contained fin
 
 export function codexTurnUsage(total: Total | undefined, baseline: Total | undefined): MessageUsage | undefined {
   if (!total || !baseline) return undefined;
+  // A context-window marker has zero input/output but totalTokens=window size.
+  // It is not observed token consumption and cannot become a usage baseline.
+  if(!validCodexUsageTotal(total)||!validCodexUsageTotal(baseline))return undefined;
   const delta = (key: keyof Total) => (total[key] ?? 0) - (baseline[key] ?? 0);
   if (["inputTokens", "outputTokens", "totalTokens", "cachedInputTokens", "cacheWriteInputTokens", "reasoningOutputTokens"].some(key =>
     !Number.isSafeInteger(delta(key as keyof Total)) || delta(key as keyof Total) < 0)) return undefined;
@@ -46,6 +49,11 @@ export function codexTurnUsage(total: Total | undefined, baseline: Total | undef
     ...(total.cachedInputTokens !== undefined ? { cacheReadTokens: delta("cachedInputTokens") } : {}),
     ...(total.cacheWriteInputTokens !== undefined ? { cacheWriteTokens: written } : {}),
     ...(total.reasoningOutputTokens !== undefined ? { reasoningTokens: delta("reasoningOutputTokens") } : {}) };
+}
+
+export function validCodexUsageTotal(total: Total | undefined): boolean {
+  return !!total && [total.inputTokens,total.outputTokens,total.totalTokens].every(n=>Number.isSafeInteger(n)&&n>=0)
+    && Number.isSafeInteger(total.inputTokens+total.outputTokens) && total.inputTokens+total.outputTokens===total.totalTokens;
 }
 
 function imageInput(attachment: { kind?: string; mimeType?: string; data?: string }): {type:'image';url:string} {
@@ -216,7 +224,7 @@ export class CodexDesktopRuntime {
     if (!a.message && (usage || code)) this.message(a, "host-terminal");
     if (!a.message) return;
     const message = { ...a.message, status, ...(usage ? { usage, codexUsage: { scope: "current-turn" as const, lastRequest: a.last, modelContextWindow: a.modelContextWindow, cost: null } } : {}),
-      ...(code ? { error: { code, message: code, retriable: false } } : {}) };
+      ...(code ? { error: { code, message: code, retriable: false, ...(a.failureDetails?{details:a.failureDetails}:{}) } } : {}) };
     this.emit({ type: "message_end", message }, a); a.messageIds.push(message.id);
     a.message = undefined; a.itemId = undefined;
   }
@@ -227,12 +235,17 @@ export class CodexDesktopRuntime {
     if (method === "model/rerouted") { void this.finish(a, "error", "CODEX_MODEL_REROUTED"); return; }
     if (method === "thread/tokenUsage/updated") {
       const total = p.tokenUsage?.total;
-      if (total && [total.inputTokens, total.outputTokens, total.totalTokens].every(n => Number.isSafeInteger(n) && n >= 0)) {
+      if (validCodexUsageTotal(total)) {
         a.total = total;
         a.last = codexTurnUsage(p.tokenUsage.last, { inputTokens: 0, outputTokens: 0, totalTokens: 0 });
         a.modelContextWindow = Number.isSafeInteger(p.tokenUsage.modelContextWindow) && p.tokenUsage.modelContextWindow > 0 ? p.tokenUsage.modelContextWindow : undefined;
         this.emit({ type: "status", status: this.getStatus() }, a);
+      } else if(total?.inputTokens===0 && total?.outputTokens===0 && Number.isSafeInteger(total?.totalTokens) && total.totalTokens>0 && total.totalTokens===p.tokenUsage?.modelContextWindow) {
+        a.failureDetails={...a.failureDetails,usageSignal:{kind:'context-window-marker',notTokenUsage:true,modelContextWindow:total.totalTokens}};
       }
+    } else if(method==='error' && p.turnId===a.codexTurnId) {
+      const detail=turnDiagnostic(p.error);
+      if(detail)a.failureDetails={...a.failureDetails,stage:'model-turn',notificationError:{...detail,...(typeof p.willRetry==='boolean'?{willRetry:p.willRetry}:{})}};
     } else if (method === "item/agentMessage/delta" && typeof p.delta === "string") {
       const message = this.message(a, p.itemId); message.content += p.delta;
       this.emit({ type: "message_update", message: { ...message }, deltaText: p.delta }, a);
@@ -245,6 +258,10 @@ export class CodexDesktopRuntime {
         this.emit({ type: "message_update", message: { ...message } }, a);
       }
     } else if (method === "turn/completed" && p.turn?.id === a.codexTurnId) {
+      if(p.turn.status!=='completed') {
+        const detail=turnDiagnostic(p.turn.error);
+        if(detail)a.failureDetails={...a.failureDetails,stage:'model-turn',terminalError:detail};
+      }
       void this.finish(a, p.turn.status === "completed" ? "complete" : p.turn.status === "interrupted" ? "aborted" : "error",
         p.turn.status === "completed" ? undefined : p.turn.status === "interrupted" ? "TURN_ABORTED" : "CODEX_TURN_FAILED");
     }
