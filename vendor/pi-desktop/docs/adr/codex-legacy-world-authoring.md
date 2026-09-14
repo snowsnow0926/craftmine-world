@@ -24,9 +24,16 @@ Generic shell/filesystem, Codex built-in tools, native operator calls and candid
 application remain unavailable. Neither model choice nor persisted world content
 is changed by transport selection.
 
-Machine verification and player application remain separate; a model reply is
-not proof of an applied tree. Existing auxiliary provider reviews are not added
-to this Codex backend. This amendment changes only the world authoring scope of
+Machine verification, request review and player application remain separate;
+a model reply is not proof of an applied tree. Inspection of the real preview
+handler found that machine verification alone cannot unlock application: the
+legacy UI also requires a completed review. Add a narrowly scoped, host-owned,
+tool-free Codex completion only for that current frozen legacy review. It uses
+the exact original model/effort and existing strict plan/actual renderer/assertion
+pipeline; it does not weaken any application condition or add generic auxiliary
+completions. Native review cancellation remains available without the generic
+advisor's whole-request timer. Actual successful and failed usage is retained,
+with unknown values explicit. This amendment changes only the world authoring scope of
 the [original decision](codex-desktop-world-backend.md), preserving its identity,
 storage, sandbox, cancellation, usage and transcript ownership decisions.
 
