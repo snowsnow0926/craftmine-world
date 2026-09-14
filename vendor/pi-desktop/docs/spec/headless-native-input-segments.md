@@ -47,10 +47,32 @@ operator cancel file also releases inputs before normal shutdown.
 
 ## Validation
 
+The private input availability policy is separate from edit/library-write
+availability. An active model turn or turn finalization alone does not prevent a
+segment on the same formal world; background thought and source-draft work can
+continue while the operator uses the existing game handlers. The stricter
+`assertDirectLibraryIdle` remains unchanged for editing operations.
+
+Shutdown, profile restore, world copy/export/removal, direct-edit startup,
+initialization, restoration, maintenance, library mutation, and candidate
+replacement/preview remain unavailable. The native host independently refuses
+pending transitions, save checkpoints, frozen worlds, destroyed views and changed
+world/build/instance identities. The private controller rechecks owner safety and
+availability throughout observation and dispatch, after the frame wait, and
+before settling. A transition race fails the segment and attempts the existing
+same-identity key/button release in `finally`. Busy checks never skip release,
+cancel or drain; a native release refusal is retained as unconfirmed evidence.
+
+The prior `HEADLESS_INPUT_WORLD_BUSY` rejection during model thought was caused
+by reusing the edit-only idle policy in this private test route. It is not
+evidence that ordinary player keyboard input is blocked during model work.
+
 Contract tests cover private-only routing, owner visibility/focus, unavailable
 worlds, foreign identities, finite/unknown fields, before/during/after evidence,
 error-path release, concurrent cancellation and retryable release failure. The
-existing standalone gameplay lifecycle tests continue against the shared module.
+actual Main policy tests additionally retain edit refusal while permitting model
+work, reject every world-transition flag, and verify application-race releases.
+The existing standalone gameplay lifecycle tests continue against the shared module.
 These fixture checks are not native event-consumption or player acceptance.
 Final acceptance must use the actual ordinary packaged desktop, real authored
 aircraft/weather handlers, measured physics and save/cold-reopen evidence.

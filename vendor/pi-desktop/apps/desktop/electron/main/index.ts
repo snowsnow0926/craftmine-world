@@ -3268,6 +3268,14 @@ function assertDirectLibraryIdle() {
     || creationEditStarting || godotInitializer.busy || godotRestores.busy || worldRemoval.busy
     || groundMaintenance.busy || collisionMaintenance.busy) throw Error("WORLD_BUSY");
 }
+/** Private gameplay probes follow the live formal world while authors work on
+ * drafts. Model activity is not a world transition or editing permission. */
+function isHeadlessGameplayWorldBusy() {
+  return Boolean(quitting || craftmineQuitPreparation || craftmineQuitPrepared || profileRestore
+    || godotCopies.busy || godotExportBusy || creationEditStarting || godotInitializer.busy
+    || godotRestores.busy || worldRemoval.busy || groundMaintenance.busy || collisionMaintenance.busy
+    || directLibrary.isBusy() || godotCandidates.blocking || godotWorld.candidateInstance);
+}
 async function assertDirectLibraryTarget(worldId: string, target: {buildId: string; instanceId: string}) {
   assertDirectLibraryIdle();
   if (await godotSelection() !== worldId) throw Error("GODOT_WORLD_CHANGED");
@@ -10507,7 +10515,7 @@ installHeadlessControl({
     wait:frames=>godotWorld.request('wait',{frames}),snapshot:()=>godotWorld.snapshot(),
     observe:()=>godotWorld.request('observe-envelope',{}),capture:identity=>godotWorld.captureView(identity),
     hold:()=>godotWorld.holdSelectionSync(),
-    unavailable:()=>{try{assertDirectLibraryIdle();return directLibrary.isBusy()||godotCandidates.blocking;}catch{return true;}},
+    unavailable:isHeadlessGameplayWorldBusy,
     diagnostics:async()=>({formal:godotWorld.diagnostics(),views:await Promise.all((mainWindow?.contentView.children??[]).filter(view=>'webContents' in view).map(async view=>({runtime:await (view as Electron.WebContentsView).webContents.executeJavaScript('({guard:globalThis.__craftmineHeadless??null})',false)})))}),
   },
   godotGameplay: {

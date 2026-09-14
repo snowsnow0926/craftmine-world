@@ -10889,3 +10889,15 @@ recovery scenario.
   reads preserve validated native failures. Wrong world/source/broker pins,
   missing files, injected model arguments and directory junctions must not
   manufacture native proof. The prior missing-callback failure is retained.
+## Concurrent player input and background creation (2026-09-14)
+
+In an independent offscreen profile, keep an ordinary model turn active and send
+a short private input segment against the observed formal world/build/instance.
+Verify dispatch, held/released controls and before/during/after evidence while the
+model works. Do not infer semantic gameplay success from event delivery alone.
+
+Race a candidate application or world transition with a segment. Require an
+explicit failed/cancelled result and attempted same-instance release; report any
+unconfirmed release and keep the controller blocked until drain succeeds. Check
+that model activity still refuses direct library/edit operations. No OS input,
+focus, Pointer Lock, arbitrary script or public/model input capability is added.

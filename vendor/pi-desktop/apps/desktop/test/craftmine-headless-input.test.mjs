@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {register} from 'node:module';
+import fs from 'node:fs';
+import vm from 'node:vm';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 register(pathToFileURL(fileURLToPath(new URL('./helpers/ts-import-hooks.mjs',import.meta.url))));
 const {createHeadlessInputControl,validateHeadlessInputEnvelope}=await import('../electron/main/craftmine-headless-input.ts');
@@ -40,4 +42,67 @@ test('lost release remains a blocking failure until an explicit successful drain
   let refuse=true;const f=fixture({dispatch:async(_id,events)=>{if(!events[0].down&&refuse)throw Error('RELEASE_FAILED');return {};}});
   const result=await f.control.handle(envelope());assert.equal(result.status,'failed');assert.equal(result.partialEvidence.heldUnreleased,true);assert.equal(f.control.busy,true);
   await assert.rejects(f.control.handle(envelope()),/GAMEPLAY_BUSY/);refuse=false;await f.control.drain();assert.equal(f.control.busy,false);
+});
+
+function worldBusyPolicy(){
+  const source=fs.readFileSync(new URL('../electron/main/index.ts',import.meta.url),'utf8');
+  const idle=source.match(/function assertDirectLibraryIdle\(\) \{[\s\S]*?\n\}/)?.[0];
+  const gameplay=source.match(/function isHeadlessGameplayWorldBusy\(\) \{[\s\S]*?\n\}/)?.[0];
+  assert(idle&&gameplay);assert(source.includes('unavailable:isHeadlessGameplayWorldBusy'));
+  const state={quitting:false,craftmineQuitPreparation:null,craftmineQuitPrepared:false,profileRestore:null,
+    godotCopies:{busy:false},godotExportBusy:false,creationEditStarting:false,godotInitializer:{busy:false},
+    godotRestores:{busy:false},worldRemoval:{busy:false},groundMaintenance:{busy:false},collisionMaintenance:{busy:false},
+    directLibrary:{isBusy:()=>false},godotCandidates:{blocking:false},godotWorld:{candidateInstance:null},
+    activeTurns:new Map(),turnFinalizations:new Map()};
+  const functions=vm.runInNewContext(idle+'\n'+gameplay+'\n({idle:assertDirectLibraryIdle,busy:isHeadlessGameplayWorldBusy})',state);
+  return {state,...functions};
+}
+
+test('actual Main policy permits private gameplay during a model turn while edit ownership remains blocked',async()=>{
+  const policy=worldBusyPolicy();policy.state.activeTurns.set('session','thinking-turn');policy.state.turnFinalizations.set('session',Promise.resolve());
+  assert.throws(policy.idle,/WORLD_BUSY/);assert.equal(policy.busy(),false);
+  const f=fixture({unavailable:policy.busy});const result=await f.control.handle(envelope({keys:['KeyW'],frames:15,settleFrames:0}));
+  assert.equal(result.status,'completed');assert.equal(result.release.released,true);
+  assert.equal(f.calls.filter(call=>call.events?.[0]?.down===true).length,1);
+});
+
+test('actual Main policy rejects every world replacement, candidate and maintenance conflict before dispatch',async()=>{
+  const transitions=[s=>s.quitting=true,s=>s.craftmineQuitPreparation={},s=>s.craftmineQuitPrepared=true,s=>s.profileRestore={},
+    s=>s.godotCopies.busy=true,s=>s.godotExportBusy=true,s=>s.creationEditStarting=true,s=>s.godotInitializer.busy=true,
+    s=>s.godotRestores.busy=true,s=>s.worldRemoval.busy=true,s=>s.groundMaintenance.busy=true,s=>s.collisionMaintenance.busy=true,
+    s=>s.directLibrary.isBusy=()=>true,s=>s.godotCandidates.blocking=true,s=>s.godotWorld.candidateInstance={worldId:'candidate'}];
+  for(const transition of transitions){
+    const policy=worldBusyPolicy();transition(policy.state);const f=fixture({unavailable:policy.busy});
+    await assert.rejects(f.control.handle(envelope()),/HEADLESS_INPUT_WORLD_BUSY/);assert.equal(f.calls.length,0);
+  }
+});
+
+test('candidate application racing a held segment fails with partial evidence and releases original keys',async()=>{
+  const policy=worldBusyPolicy();let released=0;
+  const f=fixture({unavailable:policy.busy,
+    wait:async()=>{policy.state.godotCandidates.blocking=true;return{physicsFrames:15};},
+    dispatch:async(id,events)=>{assert.deepEqual(id,identity);if(events.every(event=>event.down===false))released++;return{};}});
+  const result=await f.control.handle(envelope({keys:['KeyW'],frames:15,settleFrames:0}));
+  assert.equal(result.status,'failed');assert.match(result.error,/HEADLESS_INPUT_WORLD_BUSY/);
+  assert(result.partialEvidence.before);assert.equal(result.partialEvidence.release.released,true);
+  assert.equal(result.partialEvidence.heldUnreleased,false);assert.equal(released,1);assert.equal(f.control.busy,false);
+});
+
+test('world transition or owner change during observation rejects before key-down',async()=>{
+  for(const kind of ['busy','owner']){
+    let busy=false,visible=false,downs=0;
+    const f=fixture({unavailable:()=>busy,owner:()=>({visible,focused:false,focusable:false,offscreen:true}),
+      snapshot:async()=>{if(kind==='busy')busy=true;else visible=true;return{};},
+      dispatch:async(_id,events)=>{downs+=events.filter(event=>event.down).length;return{};}});
+    const result=await f.control.handle(envelope());assert.equal(result.status,'failed');assert.equal(downs,0);
+    assert.match(result.error,kind==='busy'?/WORLD_BUSY/:/OWNER_UNSAFE/);assert.equal(f.control.busy,false);
+  }
+});
+
+test('explicit cancel and drain still release held keys after a world conflict begins',async()=>{
+  let finish,busy=false;const f=fixture({unavailable:()=>busy,wait:()=>new Promise(resolve=>finish=resolve)});
+  const running=f.control.handle(envelope());await tick();busy=true;
+  const cancelled=await f.control.handle(envelope(undefined,'cancelInputs'));assert.equal(cancelled.released,true);
+  finish({physicsFrames:30});const result=await running;assert.equal(result.status,'failed');
+  assert.equal(result.partialEvidence.heldUnreleased,false);await f.control.drain();assert.equal(f.control.busy,false);
 });
