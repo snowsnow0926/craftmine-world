@@ -1,8 +1,10 @@
 import { codexConnectionEn } from "../codex-connection.js";
+import { playerBudgetEn } from "../player-budget.js";
 import type { EnglishCatalog } from "../en/index.js";
 
 export const tr = {
   codexConnection: codexConnectionEn,
+  playerBudget: playerBudgetEn,
   app: {
     name: "PI-Desktop",
     shellName: "PI-Desktop",

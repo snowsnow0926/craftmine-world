@@ -33,3 +33,27 @@ raw failures and actual compaction records. Confirm request cap and provider
 usage independently, continue the original creation scope through ordinary
 checks/application, and verify the created world visually and after reopening.
 Do not infer real-world success from the deterministic fixture results above.
+
+## Composer labeling and configuration calculation
+
+In `apps/desktop`, run:
+
+```text
+node --test test/player-context-budget.test.mjs test/context-usage.test.mjs test/latest-turn-context.test.mjs test/transcript-style.test.mjs
+```
+
+Observed: 48 tests passed. The added tests exercise pure selection/binding gates
+and actual React server rendering in Chinese and English without a browser,
+window focus, Pointer Lock or simulated player input. A 15000-token reported
+request in a 500000 window keeps its 97% ring. The separate configuration section
+renders output reserve 384k, input capacity approximately 114k, and compaction
+threshold approximately 97k, with the explicit non-live-occupancy qualifier.
+Different providers/models, Codex, non-world scope, unknown usage identity and
+missing/invalid bindings hide the configuration section. Catalog output metadata
+does not override the actual selected binding.
+
+The i18n package builds successfully. After building this tree's shared, runtime,
+plugin-sdk and plugin-devkit dependencies, desktop type-check reports only the
+two existing missing declarations for `godot-artifact-worker-protocol.mjs` and
+`godot-artifact-worker-host.mjs`; no new renderer errors were reported. These
+checks do not claim full desktop type-check success or visual pixel acceptance.

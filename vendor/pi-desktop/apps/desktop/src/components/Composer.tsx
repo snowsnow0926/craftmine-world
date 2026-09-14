@@ -28,6 +28,7 @@ import {
 import { materializeDraftSession, useAppStore } from "../stores/app-store";
 import type { ComposerDraftSnapshot } from "../lib/composer-smart-stop";
 import { latestTurnContextInspector } from "../lib/latest-turn-context";
+import { resolveCraftmineConfiguredBudget } from "../lib/context-usage";
 import {codexUsageCoverageText} from '../lib/codex-usage-coverage';
 import {
   HOME_DRAFT_KEY,
@@ -1221,6 +1222,13 @@ export function Composer({
     settings?.defaultModelId ??
     provider?.defaultModelId;
   const selectedModelCatalog = provider ? providerModels[provider.id] : undefined;
+  const configuredContextBudget = resolveCraftmineConfiguredBudget({
+    worldCreation: voiceEnabled && mode === "agent",
+    codex: codexWorld || (isRunning && effectiveBackend?.backend === "codex-cli"),
+    providerId: provider?.id, modelId,
+    usageProviderId: composerContextUsage?.usageProviderId,
+    usageModelId: composerContextUsage?.usageModelId,
+  }, providerModels, providers);
   const catalogThinkingProvider = thinkingProviderForModel(
     provider,
     modelId,
@@ -2384,7 +2392,7 @@ export function Composer({
 
             <div className="composer-right">
               {composerContextUsage ? (
-                <ContextUsageInspector {...composerContextUsage} />
+                <ContextUsageInspector {...composerContextUsage} configuredBudget={configuredContextBudget} />
               ) : null}
               <div
                 className="composer-model-thinking"

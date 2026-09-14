@@ -10812,3 +10812,10 @@ retained transcript after a genuine compaction, and pre-send rejection of
 overflow or a transformed output allowance exceeding/removing its reservation.
 Real player acceptance uses the actual selected model and independent profile;
 contract fixtures are not a substitute for creation/application/reopen evidence.
+
+The same scenario also covers composer labeling: preserve the last-request
+usage/window percentage, identify its historical measurement, and show the
+separate configured output/input/compaction values only for a matching PI world
+creation model. Verify Chinese/English React output and hide stale, Codex or
+ordinary-chat configuration estimates. See the linked regression's composer
+section for deterministic commands and validation boundaries.

@@ -41,3 +41,25 @@ are distinct measures. A UI explanation may use the shared capacity/threshold
 arithmetic; it must not relabel the last response's reported usage as the complete
 current preflight estimate. Cumulative task token consumption is not occupied
 context space.
+
+## Composer presentation
+
+Keep the existing last-reported-request usage/window ring calculation. Its
+accessible label, hover title and expanded heading identify it as last-request
+window remaining; the expanded note says it is not space remaining before
+compaction. Do not change the ring denominator to the input threshold.
+
+Only the PI world-creation Agent composer may add a Current configuration
+section, showing the selected model binding's per-request output reserve,
+available input capacity and estimated input compaction threshold. Reuse the
+shared budget helper. Show approximate rounded input values and state that these
+are configuration calculations, not live occupancy; input includes system
+instructions, tools and world information. Do not use cumulative tool/task usage
+or an unrelated catalog output default.
+
+Hide this section for Codex, non-world chat, Plan, missing/invalid bindings, or
+when the latest usage-bearing message's provider/model differs from the currently
+selected provider/model. This prevents a model change or an old Codex usage row
+from attaching current PI configuration facts to unrelated usage. All shipped
+locales include the `playerBudget` namespace; English and Simplified Chinese have
+dedicated strings, with the existing shared-English fallback pattern elsewhere.

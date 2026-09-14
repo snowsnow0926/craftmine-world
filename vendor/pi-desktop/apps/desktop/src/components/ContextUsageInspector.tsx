@@ -16,6 +16,7 @@ import {
   calculateContextUsage,
   calculateTokenRate,
   usageTokenTotal,
+  type CraftmineConfiguredBudget,
 } from "../lib/context-usage";
 
 function formatTokenCount(value: number): string {
@@ -23,6 +24,19 @@ function formatTokenCount(value: number): string {
   if (value >= 10_000) return `${Math.round(value / 1000)}k`;
   if (value >= 1000) return `${(value / 1000).toFixed(1)}k`;
   return String(value);
+}
+
+/** Kept separate so configuration facts can be rendered and tested without
+ * opening or focusing the player's live inspector popover. */
+export function ConfiguredContextBudget({ budget }: { budget: CraftmineConfiguredBudget }) {
+  const { t } = useTranslation();
+  return <section className="context-inspector-summary" data-configured-context-budget>
+    <strong>{t("playerBudget.currentConfiguration")}</strong>
+    <div className="context-inspector-window"><span>{t("playerBudget.outputReserve")}</span><strong>{formatTokenCount(budget.maxOutputTokens)}</strong></div>
+    <div className="context-inspector-window"><span>{t("playerBudget.inputCapacity")}</span><strong>≈{formatTokenCount(budget.inputCapacity)}</strong></div>
+    <div className="context-inspector-window"><span>{t("playerBudget.compactionThreshold")}</span><strong>≈{formatTokenCount(budget.compactionThreshold)}</strong></div>
+    <p>{t("playerBudget.configurationNote")}</p>
+  </section>;
 }
 
 const CONTEXT_RING_RADIUS = 9;
@@ -43,6 +57,7 @@ export function ContextUsageInspector({
   responseDurationMs,
   responseOutputTokens,
   responseOutputEstimated = false,
+  configuredBudget,
 }: {
   usage: MessageUsage;
   turnUsage: MessageUsage;
@@ -51,6 +66,7 @@ export function ContextUsageInspector({
   responseDurationMs?: number;
   responseOutputTokens?: number;
   responseOutputEstimated?: boolean;
+  configuredBudget?: CraftmineConfiguredBudget;
 }) {
   const { t } = useTranslation();
   const panelId = useId();
@@ -225,7 +241,7 @@ export function ContextUsageInspector({
     >
       <div className="context-inspector-heading">
         <strong className="context-inspector-heading-value">
-          {t("chat.usageContextLeft", {
+          {t("playerBudget.lastRequestLeft", {
             count: formatTokenCount(context.remainingTokens),
           })}
         </strong>
@@ -233,6 +249,7 @@ export function ContextUsageInspector({
           {context.remainingPercent}%
         </strong>
       </div>
+      <p>{t("playerBudget.lastRequestNote")}</p>
       <div className="context-inspector-window">
         <span>{t("chat.usageContextWindow")}</span>
         <strong>
@@ -245,6 +262,7 @@ export function ContextUsageInspector({
           {context.usedPercent}%
         </span>
       </div>
+      {configuredBudget && <ConfiguredContextBudget budget={configuredBudget} />}
       <div className="context-inspector-kpis">
         <div>
           <span>{t("chat.usageTurnTotal")}</span>
@@ -335,7 +353,8 @@ export function ContextUsageInspector({
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        aria-label={t("chat.usageContextAria", {
+        title={t("playerBudget.lastRequestAria", { percent: context.remainingPercent, remaining: formatTokenCount(context.remainingTokens) })}
+        aria-label={t("playerBudget.lastRequestAria", {
           percent: context.remainingPercent,
           remaining: formatTokenCount(context.remainingTokens),
         })}
