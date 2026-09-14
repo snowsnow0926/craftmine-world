@@ -1,5 +1,20 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+`create-template-world` 接受 `{ref:{assetId,version,contentHash},title}`，从已经
+保存到素材库的确切世界模板创建独立副本并打开。先通过普通入口返回当前世界、
+保存/冻结旧进度，记录其只读 contentHash；随后走“我的模板”实际列表，选择
+确切版本，填写名称并提交“创建独立世界”表单。列表需要分页时只执行现有
+“加载更多”处理器；未列出的版本明确失败，不悄悄选择最新版。
+
+回执包括 sourceRef、archiveSha256、`initialState:"saved-progress"`、新旧
+worldId/sessionId、普通保存回执、旧世界内容哈希前后核对和新世界实际运行身份。
+必须产生新 worldId，旧世界仍存在且保存内容未被覆盖；新会话继承当前真实模型
+配置后再次核对。此操作不会自动发送模型请求，也不会把含位置/探索/互动状态的
+模板伪称为空白进度。成功后 driver 的当前世界/会话切换到副本，后续普通创作、
+保存、冷开和发布命令作用于副本；`worldCreation` 和 `worldTransitions` 保留
+模板来源。模板读和旧世界哈希读均只读，创建写入只走真实 React 表单，未增加
+生产 RPC 或数据库/人物位置写入。
+
 每次检查的轻量性能样本异步追加到 `collector-performance.ndjson`，只含计数、
 耗时、CPU/内存和身份元数据，不含正文。每条关联 `controllerRunId`、应用启动
 序号、真实 app PID、collectorId、世界和会话；同一个 Node 控制器中的冷重开
