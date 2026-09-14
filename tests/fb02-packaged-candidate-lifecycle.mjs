@@ -42,15 +42,23 @@ for(const name of ['godot-worlds','desktop/Local Storage'])if(fs.existsSync(path
 const sourceDb=new DatabaseSync(path.join(from,'tasks.sqlite'),{readOnly:true});await backup(sourceDb,path.join(to,'tasks.sqlite'));sourceDb.close();
 const applicationRows=()=>{const db=new DatabaseSync(path.join(to,'tasks.sqlite'),{readOnly:true});try{return db.prepare('SELECT id,candidate_id,status,created_at,updated_at FROM craftmine_godot_applications WHERE world_id=? ORDER BY created_at,id').all(worldId).map(row=>({...row}));}finally{db.close();}};
 const originalApplications=recovery?applicationRows():null;
+const readDurableWorld=()=>{const db=new DatabaseSync(path.join(to,'tasks.sqlite'),{readOnly:true});try{const row=db.prepare('SELECT id,revision,document,content_hash FROM craftmine_worlds WHERE id=?').get(worldId);return {id:row.id,revision:row.revision,world:JSON.parse(row.document),contentHash:row.content_hash};}finally{db.close();}};
+const readApplication=candidateId=>{const db=new DatabaseSync(path.join(to,'tasks.sqlite'),{readOnly:true});try{const row=db.prepare("SELECT id,input,output FROM craftmine_godot_applications WHERE candidate_id=? AND status='applied'").get(candidateId);assert.ok(row);return {id:row.id,input:JSON.parse(row.input),output:JSON.parse(row.output)};}finally{db.close();}};
+function fullDifferences(before,after,at='$'){
+ if(JSON.stringify(before)===JSON.stringify(after))return[];
+ if(before&&after&&typeof before==='object'&&typeof after==='object'&&Array.isArray(before)===Array.isArray(after))return [...new Set([...Object.keys(before),...Object.keys(after)])].flatMap(key=>fullDifferences(before[key],after[key],at+'.'+key));
+ return [{path:at,before:before??null,after:after??null}];
+}
 const settingsPath=path.join(to,'settings.json'),settings=JSON.parse(fs.readFileSync(settingsPath,'utf8'));settings.activeWorldId=worldId;fs.writeFileSync(settingsPath,JSON.stringify(settings));
 fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
 const development=fs.existsSync(path.join(pack,'package.json'));
 if(recovery)assert.equal(development,false,'SHIPPED_PACKAGE_REQUIRED');
 const inventory=()=>createHash('sha256').update(JSON.stringify(creationPackageInventory(pack))).digest('hex');
 const packageInventorySha256=recovery?inventory():null;
-const asar=loadPackageAsar(path.join(repo,'vendor/pi-desktop/apps/desktop'));
+const asar=loadPackageAsar(path.join(process.env.CRAFTMINE_TEST_DEPENDENCY_ROOT??repo,'vendor/pi-desktop/apps/desktop'));
 const mainText=development?fs.readFileSync(path.join(pack,'out/main/index.js'),'utf8'):asar.extractFile(path.join(pack,'resources/app.asar'),path.normalize('out/main/index.js')).toString();
-for(const guard of ['configureHeadlessAcceptance()', 'focusable: !headlessAcceptance', 'offscreen: !!headlessAcceptance'])assert.ok(mainText.includes(guard),'UNSAFE_APP:'+guard);
+for(const guard of ['configureHeadlessAcceptance()', 'focusable: !headlessAcceptance'])assert.ok(mainText.includes(guard),'UNSAFE_APP:'+guard);
+assert.ok(mainText.includes('offscreen: !!headlessAcceptance')||mainText.includes('offscreen: isOffscreenAcceptance()'),'UNSAFE_APP: offscreen guard');
 const report={directory,profile,sourceProfile:source,package:pack,development,worldId,copied:copying,checks:[],launches:[],
   scope:'real retained product, native Godot and Rust domain; preserved authored candidate, no model-generation claim',
   limits:['No real keyboard/mouse, no visible OS window activation','Original source profile is only read during the initial copy; subsequent user changes are not attributed to this run']};
@@ -93,7 +101,10 @@ async function launch(label){
     browser=await playwright().chromium.connectOverCDP(chromeWs,{noDefaults:true});
     for(let i=0;i<160;i++){
       appPage=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('/out/renderer/index.html'));
-      if(appPage&&await appPage.evaluate(()=>!!document.querySelector('[data-mode-entry]'))){await rpc('primaryMode',{payload:{action:'create'}});}
+      if(appPage&&await appPage.evaluate(()=>!!document.querySelector('[data-mode-entry]'))){
+        if(recovery)await appPage.evaluate(id=>{const form=document.querySelector(`[data-world-open="${id}"]`);if(form?.tagName==='FORM'&&!form.querySelector('button')?.disabled)form.requestSubmit();},worldId);
+        else await rpc('primaryMode',{payload:{action:'create'}});
+      }
       product=browser.contexts().flatMap(c=>c.pages()).find(p=>p.url().includes('/views/world.html'));
       if(product&&await product.evaluate(()=>document.body.dataset.worldLoaded==='true'))break;
       await delay(250);
@@ -101,6 +112,13 @@ async function launch(label){
     assert.ok(product,'retained product view exists');await product.waitForFunction(()=>document.body.dataset.worldLoaded==='true',{},{timeout:120000});
     if(await product.evaluate(()=>document.body.dataset.worldId)!==worldId)await product.evaluate(worldId=>craftmineView.navigate({operation:'switch',id:worldId}),worldId);
     await product.waitForFunction(id=>document.body.dataset.worldId===id&&document.body.dataset.worldLoaded==='true',worldId,{timeout:120000});
+    if(recovery){
+      const registry=JSON.parse(fs.readFileSync(path.join(profile,'plugins/registry.json'),'utf8'));
+      const rows=Array.isArray(registry)?registry:Object.values(registry.plugins??registry);
+      const builtin=rows.find(row=>row&&typeof row==='object'&&(row.id==='craftmine.world'||row.pluginId==='craftmine.world'));
+      assert.ok(builtin,'BUILTIN_REGISTRY_REQUIRED');record.builtinRegistry=builtin;
+      assert.equal(path.resolve(builtin.path).toLowerCase(),path.join(resources,'plugins/craftmine.world').toLowerCase(),'FINAL_PACKAGE_PLUGIN_BINDING');
+    }
     // Let finite startup maintenance settle before touching candidate transactions.
     await delay(process.argv.includes('--maintenance-interrupt')?100:2000);
     const panel=(channel,payload={})=>product.evaluate(({channel,payload})=>pluginBridge.invoke(channel,payload),{channel,payload});
@@ -182,6 +200,7 @@ try{
     check('resumed real check and adoption fixes the stock ground while keeping all progress and the unapplied main draft',true);
     report.guards=await active.rpc('guards');await active.stop();active=null;report.passed=true;
   } else {
+  if(recovery)await active.panel('godot.runtimeSave',{worldId,freeze:true});
   report.before={formal:await active.formal(),content:await active.content(),snapshot:await active.rpc('godotSnapshot')};write();
   const list=await active.panel('godot.candidateList',{worldId,offset:0,limit:32});report.originalCandidates=list;
   let candidate=list.items.find(c=>c.status==='ready'&&c.buildId!==report.before.formal.world.build.id);
@@ -197,7 +216,7 @@ try{
   report.candidateDetails=await active.panel('godot.candidateRead',{worldId,candidateId:candidate.candidateId});
   const originalProgress=report.before.snapshot.state;
   const defaults=report.candidateDetails.job?.check?.defaultsSnapshot;
-  const expectedProgress=defaults?deriveAdditiveProgress(originalProgress,defaults).snapshot:originalProgress;
+  let expectedProgress=defaults?deriveAdditiveProgress(originalProgress,defaults).snapshot:originalProgress;
   report.expectedProgress=expectedProgress;
   // Wrong-world request is a genuine native identity refusal, never data mutation.
   await assert.rejects(active.panel('godot.candidatePreview',{worldId:'world-unrelated-fb02',candidateId:candidate.candidateId}),/WORLD_CHANGED|BINDING|NOT_FOUND/);
@@ -217,7 +236,13 @@ try{
   if(recovery){
     report.reloadPreview={before:await active.captureNative('before-preview-reload',candidate.candidateId)};
     await assert.rejects(active.product.evaluate(()=>craftmineView.showSurface({surface:{kind:'checks'}})),/WORLD_BUSY/);
-    assert.deepEqual(await active.rpc('godotCaptureBoundState'),report.reloadPreview.before.before,'rejected sidebar request leaves the exact attached candidate and formal identities');
+    report.reloadPreview.afterRejectedSurface=await active.rpc('godotCaptureBoundState');
+    assert.deepEqual(report.reloadPreview.afterRejectedSurface.formal,report.reloadPreview.before.before.formal);
+    assert.deepEqual(report.reloadPreview.afterRejectedSurface.candidate,report.reloadPreview.before.before.candidate);
+    // The main preview-controls overlay may raise itself while the rejection
+    // is delivered. Preserve that entire native record, but do not require an
+    // unrelated overlay's z-order to freeze across two separate UI operations.
+    report.reloadPreview.afterRejectedCapture=await active.captureNative('after-rejected-sidebar-surface',candidate.candidateId);
     await active.product.reload({waitUntil:'domcontentloaded'});
     await active.product.waitForFunction(()=>document.body.dataset.worldLoaded==='true'||!document.querySelector('#error').hidden,{},{timeout:120000});
     report.reloadPreview.after=await active.captureNative('after-preview-reload');
@@ -228,10 +253,11 @@ try{
     await openOriginalButton();
   }
   await active.product.screenshot({path:path.join(directory,'original-button-preview.png')});
+  const closeBaseline=recovery?(await active.formal()).world.snapshot:originalProgress;
   await active.appPage.waitForSelector('[data-preview-id]',{timeout:10000});
   await active.appPage.evaluate(()=>{const button=[...document.querySelectorAll('[data-preview-id] button')].find(x=>x.textContent==='返回原世界');if(!button||button.disabled)throw Error('CLOSE_DISABLED');return button[Object.keys(button).find(key=>key.startsWith('__reactProps$'))].onClick();});
   await active.product.waitForFunction(()=>document.body.dataset.previewLoaded!=='true');
-  const returned=await active.formal();assert.equal(returned.world.build.id,report.before.formal.world.build.id);assert.deepEqual(returned.world.snapshot,originalProgress);
+  const returned=await active.formal();assert.equal(returned.world.build.id,report.before.formal.world.build.id);assert.deepEqual(returned.world.snapshot,closeBaseline);
   check('return to original world preserves formal build and complete progress',true);
   if(recovery)report.closeCapture=await active.captureNative('after-ordinary-preview-close');
   await openOriginalButton();
@@ -250,6 +276,14 @@ try{
   await active.appPage.evaluate(()=>{const button=document.querySelector('[data-preview-id] button');if(!button||button.disabled)throw Error('APPLY_DISABLED');return button[Object.keys(button).find(key=>key.startsWith('__reactProps$'))].onClick();});
   await active.product.waitForFunction(()=>document.body.dataset.previewLoaded!=='true'||!document.querySelector('#error').hidden,{},{timeout:120000});
   report.after={formal:await active.formal(),content:await active.content(),snapshot:await active.rpc('godotSnapshot')};
+  if(recovery){
+    report.appliedReceipt=readApplication(candidate.candidateId);
+    const latest=report.appliedReceipt.input.previousSnapshot??report.appliedReceipt.input.snapshot;
+    expectedProgress=defaults?deriveAdditiveProgress(latest,defaults).snapshot:latest;
+    assert.deepEqual(report.appliedReceipt.input.snapshot,expectedProgress);assert.deepEqual(report.appliedReceipt.output.snapshot,expectedProgress);
+    report.expectedProgress=expectedProgress;
+    report.progressDuringOrdinaryPlay=fullDifferences(originalProgress,latest);
+  }
   assert.equal(report.after.formal.world.build.id,candidate.buildId);assert.deepEqual(report.after.formal.world.snapshot,expectedProgress);
   assert.equal(report.after.content.headOid,report.before.content.headOid,'existing main draft head preserved');
   check('actual native adoption preserves latest progress and the retained draft head',true);
@@ -266,9 +300,11 @@ try{
   await active.panel('godot.runtimeSave',{worldId,freeze:false});
   report.beforeQuit=await active.formal();report.guards=await active.rpc('guards');report.nativeAfter=await active.native();write();
   await active.stop();active=null;
+  if(recovery){report.persistedAfterNormalQuit=readDurableWorld();write();}
   active=await launch('restart');
   report.reopened={formal:await active.formal(),snapshot:await active.rpc('godotSnapshot'),content:await active.content()};
-  assert.equal(report.reopened.formal.world.build.id,candidate.buildId);assert.deepEqual(report.reopened.formal.world.snapshot,report.beforeQuit.world.snapshot);
+  assert.equal(report.reopened.formal.world.build.id,candidate.buildId);assert.deepEqual(report.reopened.formal.world.snapshot,(recovery?report.persistedAfterNormalQuit:report.beforeQuit).world.snapshot);
+  if(recovery){report.runtimeAfterColdResumeDifferences=fullDifferences(report.persistedAfterNormalQuit.world.snapshot,report.reopened.snapshot.state);report.coldPreservationScope='Complete durable snapshot equals the cold-read formal document; all resumed runtime differences are retained separately, without filtering NPC or unknown fields.';}
   assert.equal(report.reopened.content.appliedOid,report.after.content.appliedOid);assert.equal(report.reopened.content.headOid,report.after.content.headOid);
   report.progressHashes={original:hash(originalProgress),applied:hash(report.after.formal.world.snapshot),reopened:hash(report.reopened.formal.world.snapshot)};
   check('adopted build content identity and full saved progress survive native app and Rust restart',true);
