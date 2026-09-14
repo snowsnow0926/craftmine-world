@@ -23,6 +23,7 @@ export function parseDirectInspection(raw: unknown): DirectInspection {
   const value = record(raw);
   if (typeof value.eligible !== "boolean" || value.compatibility !== "unchecked" || typeof value.positionSupported !== "boolean") throw Error("DIRECT_LIBRARY_RECEIPT_INVALID");
   return {eligible: value.eligible, compatibility: "unchecked", positionSupported: value.positionSupported,
+    ...(typeof value.warning === "string" ? {warning: value.warning} : {}),
     ...(typeof value.reason === "string" ? {reason: value.reason} : {}), ...(typeof value.displayName === "string" ? {displayName: value.displayName} : {})};
 }
 
@@ -105,6 +106,9 @@ export async function requestDirectOperation(bridge: AssetLibraryBridge, attempt
 }
 
 export function directErrorMessage(raw: string, zh: boolean): string {
+  if (/WORLD_CONFIGURATION_REQUIRED|POSITION_BOUNDS_REQUIRED/.test(raw)) return zh ? "此伙伴需要按当前世界设置保存范围。请让 AI 查看世界源码并配置后再加入。" : "This companion needs save bounds for the current world. Ask AI to inspect the world source and configure it before adding it.";
+  if (/LEGACY_COMPANION_SAVE_BOUNDS/.test(raw)) return zh ? "旧版伙伴只能保存各坐标在 −80 到 80 内的位置。若需在大世界中跟随，请选用新版并配置范围，或让 AI 保留原身份和存档进行源码升级。" : "This older companion saves positions only within −80 to 80 on each axis. For following across a larger world, configure a newer version or ask AI to upgrade the source while preserving identity and progress.";
+  if (/CONFIGURATION_SOURCE_CHANGED/.test(raw)) return zh ? "配置对应的世界源码已改变。请重新读取当前版本并确认范围后再加入。" : "The world source changed after this configuration was prepared. Read the current revision and confirm its bounds before adding the asset.";
   if (/WORLD_CHANGED|WORLD_NOT_SELECTED|SELECTION|STALE/i.test(raw)) return zh ? "世界或内容已改变。返回原世界查看此操作；重新准备前请先确认当前内容。" : "The world or content changed. Return to the original world and review this operation before preparing again.";
   if (/BUSY|ACTIVE|PENDING/i.test(raw)) return zh ? "世界正在处理其他创作。等待它结束后，刷新本次状态。" : "Another creation is active. Wait for it to finish, then refresh this operation.";
   if (/RUNWAY|SPACE|COLLISION|OVERLAP|FOOTPRINT|GROUND|PLACEMENT/i.test(raw)) return zh ? "这个位置或场地不符合素材要求。查看检查原因，调整位置或选择合适的世界后重新准备。" : "The placement or site does not meet this asset's requirements. Review the check, then adjust the position or use a suitable world.";

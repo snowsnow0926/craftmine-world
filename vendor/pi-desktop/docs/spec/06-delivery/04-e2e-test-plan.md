@@ -7,6 +7,17 @@ Distinguish automated checks, application and gameplay evidence. Verify short
 actionable titles, compact diagnostic disclosure, safe pending status reads and
 existing automatic play handoff without model/GPU or physical input in fixtures.
 
+### Source-library receiving-world configuration (2026-09-15)
+
+- Exercise automatic single/group installation and manual single/group proposal
+  confirmation through the actual Core and packaged shared materializer.
+- Verify exact stock source pins, mandatory custom-world bounds, invalid/stale
+  configuration refusal before writes, independent instances and cold retry.
+- Keep legacy limited-area installation available with a visible range warning;
+  retain published ZIP hashes and progress. Validate real PI tool arguments.
+- See [contract](../source-library-instance-configuration.md) and
+  [CPU evidence and native boundary](../../e2e/source-library-instance-configuration-20260915.md).
+
 ### Godot docs reflected API reachability (2026-09-15)
 
 - Validate actual public manifest arguments through the installed PI SDK, then

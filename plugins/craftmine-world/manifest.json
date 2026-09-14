@@ -2355,7 +2355,7 @@
       },
       {
         "name": "godot_source_library",
-        "description": "Discover modern Godot source ZIPs in the asset catalog. search returns explicit archiveRef/installRef and readRequest; read validates the ZIP. Always pass installRef unchanged: rootRef/resources[].ref are inner resource hashes. targetCompatibility compares declared requirements against one pinned source snapshot; unknown is not compatible, and matched prerequisites still require normal installation checks. In full-auto creation, use install (one ref, optional position) or install-group (2 to 8 ordered items with refs and optional positions) to actually add requested components in this author turn and start a real check; the host requires current captured full-auto permission. Poll the returned jobId with godot_build_read. Checked candidates are adopted after the author turn ends under existing world policy; do not claim a new object is present before actual adoption. Repeated refs create independent instances and preserve existing objects. Outside full-auto use propose or propose-group: these ONLY create player-reviewable proposals and require player installation, checking and adoption. Never claim a proposal is a completed world edit. Coordinates must come from the actual scene or player target, never invented; omitted position keeps the component template placement. Whole-world templates create separate worlds through the world picker, not component installation. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Archive validation is not runtime or visual verification. recipes lists versioned gameplay recipes. compose accepts request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?} and reports fixed refs, compatibility, missing logic and planHash without editing. Preserve the original wish, adapt current source and verify gameplay; collection and flight unlock rules do not follow automatically from a visible aircraft.",
+        "description": "Discover modern Godot source ZIPs in the asset catalog. search returns explicit archiveRef/installRef and readRequest; read validates the ZIP. Always pass installRef unchanged: rootRef/resources[].ref are inner resource hashes. targetCompatibility compares declared requirements against one pinned source snapshot; unknown is not compatible, and matched prerequisites still require normal installation checks. In full-auto creation, use install (one ref, optional position) or install-group (2 to 8 ordered items with refs and optional positions) to actually add requested components in this author turn and start a real check; the host requires current captured full-auto permission. Poll the returned jobId with godot_build_read. Checked candidates are adopted after the author turn ends under existing world policy; do not claim a new object is present before actual adoption. Repeated refs create independent instances and preserve existing objects. Outside full-auto use propose or propose-group: these ONLY create player-reviewable proposals and require player installation, checking and adoption. Never claim a proposal is a completed world edit. Coordinates must come from the actual scene or player target, never invented; omitted position keeps the component template placement. Whole-world templates create separate worlds through the world picker, not component installation. This is separate from legacy package_library; archive catalog contentHash is not the package root hash. Archive validation is not runtime or visual verification. recipes lists versioned gameplay recipes. compose accepts request {recipeId,recipeVersion,choices:{scenery,companion,weather,collectionCount},wish?} and reports fixed refs, compatibility, missing logic and planHash without editing. Preserve the original wish, adapt current source and verify gameplay; collection and flight unlock rules do not follow automatically from a visible aircraft. For configurable companion bounds, inspect targetCompatibility.resources[].configuration. Exact stock world pins can auto-plan bounds; custom worlds require positionBounds {minimum:[x,y,z],maximum:[x,y,z],expectedSource:{revision,manifestHash}} on install/propose or each group item. Configuration is written to new scene instances before checks; a source-prerequisite match alone is not ready gameplay. Old fixed-bound companion versions remain limited and need explicit upgrade review.",
         "risk": "medium",
         "schema": {
           "type": "object",
@@ -2493,6 +2493,55 @@
                       "z"
                     ],
                     "additionalProperties": false
+                  },
+                  "positionBounds": {
+                    "type": "object",
+                    "properties": {
+                      "minimum": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number",
+                          "minimum": -100000,
+                          "maximum": 100000
+                        }
+                      },
+                      "maximum": {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": {
+                          "type": "number",
+                          "minimum": -100000,
+                          "maximum": 100000
+                        }
+                      },
+                      "expectedSource": {
+                        "type": "object",
+                        "properties": {
+                          "revision": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "manifestHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          }
+                        },
+                        "required": [
+                          "revision",
+                          "manifestHash"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "minimum",
+                      "maximum",
+                      "expectedSource"
+                    ],
+                    "additionalProperties": false
                   }
                 },
                 "required": [
@@ -2500,7 +2549,7 @@
                 ],
                 "additionalProperties": false
               },
-              "description": "Only for propose-group. Ordered source archives and frozen explicit placements; omit position to keep template placement."
+              "description": "Ordered source archives for install-group or propose-group. Optional source-bound positionBounds configures each eligible companion instance before check; omitted position keeps template placement."
             },
             "request": {
               "type": "object",
@@ -2517,7 +2566,8 @@
                   "type": "integer",
                   "enum": [
                     1,
-                    2
+                    2,
+                    3
                   ]
                 },
                 "choices": {
@@ -2564,6 +2614,55 @@
                 "recipeId",
                 "recipeVersion",
                 "choices"
+              ],
+              "additionalProperties": false
+            },
+            "positionBounds": {
+              "type": "object",
+              "properties": {
+                "minimum": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  }
+                },
+                "maximum": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -100000,
+                    "maximum": 100000
+                  }
+                },
+                "expectedSource": {
+                  "type": "object",
+                  "properties": {
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "manifestHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  },
+                  "required": [
+                    "revision",
+                    "manifestHash"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "minimum",
+                "maximum",
+                "expectedSource"
               ],
               "additionalProperties": false
             }
