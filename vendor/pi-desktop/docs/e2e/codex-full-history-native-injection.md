@@ -1,6 +1,7 @@
 # Complete Codex transcript restoration: E2E test plan
 
-Protocol implementation: `4ccb16e0`. See
+Initial injection implementation: `4ccb16e0`; subsequent native context maintenance
+follows the updated backend contract. See
 [backend contract](../spec/codex-desktop-world-backend.md) and
 [decision](../adr/codex-full-history-native-injection.md). This document is a test
 plan, not a claim that the live recovery or final Windows package has passed.
@@ -55,7 +56,7 @@ tool results are identified as historical, not current source/build/play evidenc
 The 1,048,576-character `turn/start` refusal must not recur from copied history.
 The Agent must still read ordinary current world/source/brief facts before acting.
 
-Before the new model turn begins, no domain tool, source write, progress mutation,
+Before the actual player turn begins, no domain tool, source write, progress mutation,
 candidate registration or adoption may have occurred because of restoration.
 After it begins, record any normal tool work separately. A successful restore does
 not prove that its subsequent Godot check, candidate adoption or gameplay passed.
@@ -122,6 +123,29 @@ thread and no `thread/inject_items`. The new request retains Astra/xhigh and the
 ordinary tool/permission boundary. Usage is based on actual CLI events; history
 insertion acknowledgements are not fabricated model usage or successful turns.
 
+## H6: native context maintenance during complete history restoration
+
+Use full history that previously produced native `contextWindowExceeded` despite
+acknowledged injection. Hydrate all original text in segments of at most 256 KiB.
+For each `thread/compact/start`, observe its acknowledgement, own native turn ID,
+matching completed contextCompaction item and successful matching turn completion
+before the next segment. A maintenance completion must never finish the PI player
+request. Foreign/missing terminal evidence cannot authorize continuation; model
+rerouting remains a failure and maintenance tool requests cannot execute.
+
+All user requests remain in the canonical PI transcript and receive explicit
+anchors. Verify the tested original user wording and four historical image blocks
+are available after the final original-text compaction. No base64 text, substituted
+current capture or source/save mutation is allowed. Refresh current host facts
+before the one actual player `turn/start`. Include actual native maintenance usage
+in the PI request only through valid reported counters, not injection acknowledgements.
+
+With fixtures, interrupt an acknowledged but unfinished compact turn; also reject
+compaction or omit its completed item. Expect no actual player `turn/start`, no
+historical tools, no synchronized checkpoint, preserved native cause and normal
+shutdown. Next ordinary retry rebuilds fully. Do not invent a timeout, model-call
+cap, smaller history or successful maintenance event to force progress.
+
 ## Required report and automated entry point
 
 For a native context-full failure, preserve the structured classification from
@@ -134,11 +158,11 @@ become a failed PI turn. Never rewrite prior failed receipts to claim success.
 Run from the repository root:
 
 ```powershell
-pnpm -C vendor/pi-desktop/packages/agent-runtime exec vitest run src/codex-desktop-runtime.test.ts
+pnpm -C vendor/pi-desktop/packages/agent-runtime exec vitest run src/codex-desktop-runtime.test.ts src/codex-native-compaction.test.ts
 pnpm -C vendor/pi-desktop/packages/agent-runtime typecheck
 ```
 
-Report H1-H5 independently as passed, failed or not run, identifying fixture,
+Report H1-H6 independently as passed, failed or not run, identifying fixture,
 source-native or packaged-native evidence. Include source/binary identity, profile
 binding, original and reconstructed payload counts/hashes, image block counts,
 injection acknowledgement counts, number of `turn/start` and domain calls before

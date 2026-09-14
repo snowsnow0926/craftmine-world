@@ -5,7 +5,8 @@ import { isAbsolute, join } from "node:path";
 import type { AgentEvent, AgentEventEnvelope, AgentStatus, MessageUsage, UiMessage } from "@pi-desktop/shared";
 import { CODEX_WORLD_TOOLS } from "@pi-desktop/shared";
 import { CodexAppServer, MODEL, EFFORT, CLI_VERSION, processEnvironment, redact, protocolDiagnostic, turnDiagnostic } from "./codex-app-server.mjs";
-import { historicalBatches, type HistoricalRecord } from './codex-history-restore.js';
+import { historyHydration, type HistoricalRecord } from './codex-history-restore.js';
+import { nativeCompaction } from './codex-native-compaction.js';
 import type { PluginToolDef, RuntimePrompt } from "./runtime.js";
 
 type Host = { call<T = any>(method: string, params: Record<string, unknown>): Promise<T> };
@@ -19,7 +20,7 @@ type Active = { turnId: string; cancelled: boolean; finishing?: Promise<void>; d
   controller: AbortController; codexTurnId?: string; message?: UiMessage; itemId?: string; messageIds: string[];
   queue: Promise<void>; seen: Map<string, { digest: string; result: Promise<any> }>; baseline?: Total; total?: Total;
   last?: MessageUsage; modelContextWindow?: number; startedAt: number; diagnosticStage?: string; failureDetails?: Record<string,unknown>;
-  startAcknowledged:boolean; interruptedAcknowledged:boolean; pendingToolReplies:number };
+  startAcknowledged:boolean; interruptedAcknowledged:boolean; pendingToolReplies:number; compaction?:ReturnType<typeof nativeCompaction> };
 export type CodexDesktopOptions = { sessionId: string; binary: string; scratchDir: string; tools: PluginToolDef[];
   host: Host; onEvent(event: AgentEventEnvelope): void; history(): Promise<UiMessage[]>;
   clientFactory?: (cwd: string) => Client; verifyBinary?: (signal: AbortSignal) => Promise<void> };
@@ -185,13 +186,15 @@ export class CodexDesktopRuntime {
           }
           records.push(record);
         }
-        for(const items of historicalBatches(records)) {
+        for(const step of historyHydration(records)) {
           this.assertActive(a);
-          const acknowledged = await this.client!.call('thread/inject_items',{threadId:this.checkpoint!.threadId,items});
+          if(step.kind==='compact') {await this.compactHistory(a);continue;}
+          a.diagnosticStage='history-restore';
+          const acknowledged = await this.client!.call('thread/inject_items',{threadId:this.checkpoint!.threadId,items:step.items});
           this.assertActive(a);
           if(!acknowledged || typeof acknowledged!=='object' || Array.isArray(acknowledged)) fail('CODEX_HISTORY_ACK_INVALID');
         }
-        input.push({type:'text',text:'Recovery notice: the complete canonical Rust transcript was restored in ordered historical-data items above, including original player requests and referenced images. Older tool results and captures are historical observations, not current world state. Re-read current host facts and ordinary source/brief tools before acting. No historical tool was executed during restoration.'});
+        input.push({type:'text',text:'Recovery notice: the complete canonical Rust transcript was hydrated in ordered historical-data segments, using Codex native context compaction where needed. Original player requests and historical images are anchored with their original message IDs. The full visible PI history remains unchanged. Older tool results and captures are historical observations, not current world state. Re-read current host facts and ordinary source/brief tools before acting. No historical tool was executed during restoration.'});
       }
       a.diagnosticStage = 'context';
       const currentFacts = resumed ? facts : await this.options.host.call('craftmine.context',this.identity(a));
@@ -209,10 +212,20 @@ export class CodexDesktopRuntime {
       if(!a.cancelled && !a.finishing) a.startAcknowledged=true;
       if (a.cancelled) void this.client?.call("turn/interrupt", { threadId: this.checkpoint!.threadId, turnId: result.turn.id }).catch(() => {});
     } catch (error) {
-      a.failureDetails = protocolDiagnostic(error, a.diagnosticStage);
+      a.failureDetails = {...a.failureDetails,...protocolDiagnostic(error, a.diagnosticStage)};
       await this.finish(a, a.cancelled ? "aborted" : "error", diagnostic(error));
     }
     await a.done;
+  }
+  private async compactHistory(a:Active){
+    this.assertActive(a);a.diagnosticStage='history-compact';
+    const pending=nativeCompaction(a.controller.signal);a.compaction=pending;
+    try{
+      const acknowledged=await this.client!.call('thread/compact/start',{threadId:this.checkpoint!.threadId});
+      this.assertActive(a);
+      if(!acknowledged||typeof acknowledged!=='object'||Array.isArray(acknowledged))fail('CODEX_HISTORY_ACK_INVALID');
+      await pending.done;this.assertActive(a);
+    }finally{pending.dispose();if(a.compaction===pending)a.compaction=undefined;}
   }
   private message(a: Active, itemId: string) {
     if (a.itemId !== itemId) {
@@ -239,6 +252,21 @@ export class CodexDesktopRuntime {
     if(method==='turn/completed' && a.startAcknowledged && p.turn?.id===a.codexTurnId &&
       (!p.turnId || p.turnId===a.codexTurnId) && p.turn.status==='interrupted')a.interruptedAcknowledged=true;
     if(a.finishing)return;
+    const nativeTurn=a.compaction?.turnId??a.codexTurnId;
+    if(method!=='turn/started'&&nativeTurn&&p.turnId&&p.turnId!==nativeTurn)return;
+    if(method==='model/rerouted'){void this.finish(a,'error','CODEX_MODEL_REROUTED');return;}
+    if((method==='item/started'||method==='item/completed')&&['commandExecution','fileChange','mcpToolCall','webSearch','imageGeneration'].includes(p.item?.type)){
+      void this.finish(a,'error','CODEX_UNEXPECTED_BUILTIN_TOOL');return;
+    }
+    if(a.compaction){
+      const pending=a.compaction;
+      if((p.turnId??p.turn?.id)===pending.turnId&&(method==='error'||method==='turn/completed')){
+        const detail=turnDiagnostic(method==='error'?p.error:p.turn?.error);
+        if(detail)a.failureDetails={...a.failureDetails,stage:'history-compact',[method==='error'?'notificationError':'terminalError']:detail};
+      }
+      pending.receive(method,p);
+      if(method!=='thread/tokenUsage/updated'||p.turnId!==pending.turnId)return;
+    }
     if (method === "turn/started") { if (!a.codexTurnId) a.codexTurnId = p.turn?.id; return; }
     if (p.turnId && a.codexTurnId && p.turnId !== a.codexTurnId) return;
     if (method === "model/rerouted") { void this.finish(a, "error", "CODEX_MODEL_REROUTED"); return; }

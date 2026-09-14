@@ -42,8 +42,8 @@ export function redact(value) {
   return value;
 }
 
-const DIAGNOSTIC_STAGES = new Set(['context','checkpoint-load','binary-verify','app-server-start','thread-start','thread-resume','checkpoint-save','history-restore','turn-start']);
-const DIAGNOSTIC_METHODS = new Set(['initialize','config/read','account/read','thread/start','thread/resume','thread/inject_items','turn/start']);
+const DIAGNOSTIC_STAGES = new Set(['context','checkpoint-load','binary-verify','app-server-start','thread-start','thread-resume','checkpoint-save','history-restore','history-compact','turn-start']);
+const DIAGNOSTIC_METHODS = new Set(['initialize','config/read','account/read','thread/start','thread/resume','thread/inject_items','thread/compact/start','turn/start']);
 const TURN_ERROR_CODES = new Set(['contextWindowExceeded','sessionBudgetExceeded','usageLimitExceeded','rateLimitExceeded','serverOverloaded','cyberPolicy','misalignmentPolicyViolation','internalServerError','unauthorized','badRequest','threadRollbackFailed','sandboxError','other']);
 const HTTP_ERROR_CODES = new Set(['httpConnectionFailed','responseStreamConnectionFailed','responseStreamDisconnected','responseTooManyFailedAttempts']);
 export function turnDiagnostic(error) {

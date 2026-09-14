@@ -88,12 +88,28 @@ are sent per request; each real historical image is a separate `input_image`
 item, never base64 text inside the historical JSON. These are request transport
 bounds, not history truncation or model/token/whole-turn limits.
 
+For history exceeding one 256 KiB textual hydration segment, insert every original
+textual record in complete ordered segments and call CLI-native
+`thread/compact/start` between segments, including after the last original-text
+segment. No source text is cropped. Native summaries carry prior segments forward;
+Rust's full visible transcript remains untouched. Finally anchor original player
+requests and real historical images with their original message IDs. An unusually
+large anchor set also uses native segmented maintenance instead of a silent cut.
+
+Maintenance has a distinct native turn identity. Await the compact RPC ack, a
+matching completed `contextCompaction` item and successful matching terminal turn
+before adding the next segment. Maintenance completion cannot finish the enclosing
+player request, execute domain tools or substitute another model. Actual native
+maintenance usage belongs to the enclosing PI request; no total-history,
+compaction-count, token or time budget is imposed. A segment is not a guarantee of
+provider acceptance: preserve actual native refusal/error evidence.
+
 The adapter awaits each injection acknowledgement and checks the active native
 turn before and after it. There is no invented idempotency: failed/uncertain or
 aborted injection leaves the checkpoint unsynchronized; the next ordinary retry
 starts a new opaque thread from the full canonical transcript. It neither
 continues a partially injected thread nor executes synthetic historical tools.
-After all history is present, it refreshes authoritative host facts and sends one
+After complete history hydration and maintenance, it refreshes host facts and sends one
 ordinary `turn/start` with those facts, the current player request/images and an
 explicit recovery notice. Historical results are not proof of the current source,
 build, gameplay or acceptance. Codex retains its own normal context management.
@@ -102,7 +118,7 @@ to an oversized prompt or automatic history trimming.
 
 Validation includes a source-shaped historical tool result above 1 Mi characters,
 exact reconstructed payloads and hashes, original player wording, image blocks,
-no historical tools, one model turn, interrupted injection and rejection. The
+no historical tools, one actual player `turn/start`, interrupted injection and rejection. The
 original player's 207-message transcript was also projected read-only: all
 2,159,106 payload characters reconstructed exactly, with four image blocks and no
 base64 text. This is transport projection evidence, not a successful live model

@@ -9980,6 +9980,9 @@ zero input/output must remain diagnostic data and never be counted as token usag
 Verify clean interrupted-turn acknowledgement preserves resume only with a
 confirmed start, idle tool tail and successful host save; late/foreign ack and
 pending tools must remain unsynchronized.
+Run H6 native segmented compaction for context-full history: maintenance has its
+own matched turn/item completion, valid usage and no domain tools; failure/cancel
+must not start the actual player turn. Preserve original requests and images.
 
 Use a fresh offscreen desktop/profile and the ordinary Godot world entry. Select
 Local Codex CLI in General settings with an explicit executable path. With no
