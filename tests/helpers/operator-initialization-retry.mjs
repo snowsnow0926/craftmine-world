@@ -13,6 +13,20 @@ export function retryStartupStatusReady(status){
   return status.windows.length>0&&status.runtime?.hostAvailable===true&&status.runtime?.plugins?.includes('craftmine.world')===true;
 }
 export function waitForRetryStartup({until,readStatus}){return until(readStatus,retryStartupStatusReady);}
+export function isTransientRetryViewRead(method,error){
+  if(!(error instanceof Error))return false;
+  const message=error.message.replace(/^Error: /,'');
+  return method==='worldNavigationReady'&&message==='World view is not ready'
+    ||method==='godotObserve'&&message==='No world runtime is running';
+}
+export async function readRetryRuntime({method,readList,readRuntime,readUiError=async()=>null,worldId,onTransient=()=>{}}){
+  const list=await readList();if(!list)return null;
+  const row=list.worlds?.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');
+  assert.equal(list.activeWorldId,worldId,'RETRY_SELECTION_CHANGED');
+  if(['failed','cancelled','interrupted'].includes(row.state))throw Error('RETRY_TERMINAL_INITIALIZATION_FAILURE: '+JSON.stringify(row.creation));
+  const uiError=await readUiError();if(uiError)throw Error('RETRY_RUNTIME_UI_FAILURE: '+uiError);
+  try{return await readRuntime();}catch(error){if(!isTransientRetryViewRead(method,error))throw error;onTransient(error);return null;}
+}
 function unlinked(directory){
   assert.equal(fs.realpathSync(directory).toLowerCase(),path.resolve(directory).toLowerCase(),'RETRY_PROFILE_LINK_DENIED');
   const walk=dir=>{for(const entry of fs.readdirSync(dir)){const file=path.join(dir,entry),stat=fs.lstatSync(file);assert(!stat.isSymbolicLink(),'RETRY_PROFILE_LINK_DENIED');if(stat.isDirectory())walk(file);}};walk(directory);
@@ -68,6 +82,32 @@ export function assertRetainedInitializationRecovery(before,after,worldId){
   const candidate=after.candidates.find(row=>row.world_id===worldId&&row.status==='applied'&&row.check_job_id===job.id&&row.build_id===job.build_id&&row.manifest_hash===job.manifest_hash&&row.source_revision===job.source_revision&&row.check_output_hash===job.output_hash);assert(candidate,'RETRY_MATCHING_CHECKED_CANDIDATE_REQUIRED');
   const application=after.applications.find(row=>row.world_id===worldId&&row.id===after.init.application_id&&row.candidate_id===candidate.id&&row.build_id===job.build_id&&row.status==='applied'&&/^[a-f0-9]{64}$/.test(row.output_hash));assert(application,'RETRY_CANONICAL_APPLIED_RECEIPT_REQUIRED');
   return {job,candidate,application,sourceUnchanged:true,managedUnchanged:true,chatUnchanged:true};
+}
+export function validatePriorInitializationRecovery(file,owned,current,packageIdentity){
+  assert(path.isAbsolute(file),'PRIOR_RECOVERY_ABSOLUTE_REPORT_REQUIRED');
+  const directory=path.resolve(path.dirname(file));
+  assert.equal(path.dirname(directory),path.dirname(owned.owner),'PRIOR_RECOVERY_OWNER_ROOT_CHANGED');
+  assert(path.basename(directory).startsWith('desktop-native-operator-retry-'),'PRIOR_RECOVERY_REPORT_ROOT_REQUIRED');
+  assert.equal(fs.realpathSync(directory).toLowerCase(),directory.toLowerCase(),'PRIOR_RECOVERY_LINK_DENIED');
+  assert(!fs.lstatSync(file).isSymbolicLink(),'PRIOR_RECOVERY_LINK_DENIED');
+  const bytes=fs.readFileSync(file),prior=JSON.parse(bytes);
+  assert.equal(prior.format,'craftmine.operator-initialization-retry/1');assert.equal(path.resolve(prior.out),directory);
+  assert.equal(path.resolve(prior.profile),path.resolve(owned.profile),'PRIOR_RECOVERY_PROFILE_CHANGED');
+  assert.equal(path.resolve(prior.originalFile),path.resolve(owned.originalFile),'PRIOR_RECOVERY_ORIGINAL_CHANGED');
+  assert.equal(prior.originalReportSha256,owned.originalReportSha256,'PRIOR_RECOVERY_ORIGINAL_HASH_CHANGED');
+  assert.equal(prior.worldId,owned.worldId,'PRIOR_RECOVERY_WORLD_CHANGED');assert.equal(prior.modelCalls,0,'PRIOR_RECOVERY_MODEL_CALLS');
+  const start=Date.parse(prior.startedAt),end=Date.parse(prior.finishedAt);
+  assert(Number.isFinite(start)&&Number.isFinite(end)&&end>=start&&prior.fatal&&prior.passed===false,'PRIOR_RECOVERY_FINISHED_FAILURE_REQUIRED');
+  assert.equal(prior.finalIntegrity,'passed','PRIOR_RECOVERY_INTEGRITY_REQUIRED');
+  assert(Array.isArray(prior.launches)&&prior.launches.length>0,'PRIOR_RECOVERY_CLOSED_APPLICATION_REQUIRED');
+  for(const run of prior.launches){assert.equal(run.exit?.code,0,'PRIOR_RECOVERY_CLOSED_APPLICATION_REQUIRED');assert(!run.forcedStop&&!run.spawnError,'PRIOR_RECOVERY_NORMAL_EXIT_REQUIRED');for(const field of ['violations','pageErrors','shutdownFailures'])assert.deepEqual(run.audit?.[field],[],'PRIOR_RECOVERY_CLEAN_AUDIT_REQUIRED');}
+  assert(/^[a-f0-9]{64}$/.test(prior.packageIdentity?.inventorySha256),'PRIOR_RECOVERY_PACKAGE_PIN_REQUIRED');
+  for(const key of ['inventorySha256','mainSha256','preloadSha256'])assert.equal(prior.packageIdentity[key],packageIdentity[key],'PRIOR_RECOVERY_PACKAGE_CHANGED');
+  assert.equal(prior.before?.init?.world_id,owned.worldId,'PRIOR_RECOVERY_BASELINE_WORLD_CHANGED');
+  const canonical=assertRetainedInitializationRecovery(prior.before,current,owned.worldId);
+  assert(canonical.job.created_at>=start&&canonical.job.updated_at<=end&&canonical.application.created_at>=start&&canonical.application.updated_at<=end,'PRIOR_RECOVERY_OUTSIDE_RECORDED_RUN');
+  return {file,bytes:bytes.length,sha256:retryHash(bytes),startedAt:prior.startedAt,finishedAt:prior.finishedAt,fatal:prior.fatal,
+    recoveryMode:prior.recoveryMode,retryClicks:prior.retryClicks,before:prior.before,canonical};
 }
 export function initializationRetryUiScript(worldId,submit=false){
   assert(/^[a-z0-9][a-z0-9-]{1,47}$/.test(worldId));

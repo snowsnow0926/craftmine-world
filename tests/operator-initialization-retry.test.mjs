@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady,initializationEntryUiScript,prepareAndEnterRetainedWorld,isExplicitInitializationRecovery} from './helpers/operator-initialization-retry.mjs';
+import {retryHash,validateOperatorRetryProfile,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,retryStartupStatusReady,initializationEntryUiScript,prepareAndEnterRetainedWorld,isExplicitInitializationRecovery,isTransientRetryViewRead,readRetryRuntime,validatePriorInitializationRecovery} from './helpers/operator-initialization-retry.mjs';
 
 test('controller ready with zero windows waits for a real hidden window and available host/plugin',async()=>{
   const safe={visible:false,focused:false,focusable:false,offscreen:true};
@@ -97,4 +97,30 @@ test('only new actual check and its applied candidate/application validate recov
 test('ready prose, stale job, wrong output/candidate/application, changed source or new model turn cannot masquerade as recovery',()=>{
   const mutations=[f=>{f.after.init.status='drafting';},f=>{f.before.jobs=[f.after.jobs[0]];},f=>{f.after.jobs[0].status='queued';},f=>{f.after.jobs[0].output_hash=null;},f=>{f.after.candidates[0].check_output_hash='f'.repeat(64);},f=>{f.after.applications[0].candidate_id='other';},f=>{f.after.applications[0].status='prepared';},f=>{f.after.source.revision++;},f=>{f.after.managed.manifestSha256='f'.repeat(64);},f=>{f.after.chat.turnIds=['unexpected'];}];
   for(const change of mutations){const f=receipts();change(f);assert.throws(()=>assertRetainedInitializationRecovery(f.before,f.after,'world-fixture'));}
+});
+test('only method-specific temporary view errors can be polled; terminal state and other errors immediately fail',async()=>{
+  const list={activeWorldId:'world-fixture',worlds:[{id:'world-fixture',state:'ready'}]},events=[];let reads=0;
+  const input={method:'worldNavigationReady',worldId:'world-fixture',readList:async()=>list,onTransient:error=>events.push(error.message),readRuntime:async()=>{if(reads++===0)throw Error('Error: World view is not ready');return {ready:true,worldId:'world-fixture'};}};
+  assert.equal(await readRetryRuntime(input),null);assert.equal((await readRetryRuntime(input)).ready,true);assert.deepEqual(events,['Error: World view is not ready']);
+  assert.equal(isTransientRetryViewRead('godotObserve',Error('No world runtime is running')),true);
+  for(const [method,error] of [['worldNavigationReady',Error('No world runtime is running')],['godotObserve',Error('World view is not ready')],['worldNavigationReady',Error('World view is not ready: other')],['godotObserve','No world runtime is running'],['godotObserve',Error('GODOT_WORLD_CHANGED')]])assert.equal(isTransientRetryViewRead(method,error),false);
+  list.worlds[0].state='failed';await assert.rejects(readRetryRuntime(input),/TERMINAL/);assert.equal(reads,2);
+  list.worlds[0].state='ready';await assert.rejects(readRetryRuntime({...input,readRuntime:async()=>{throw Error('GODOT_CANDIDATE_ACTIVE');}}),/GODOT_CANDIDATE_ACTIVE/);
+  await assert.rejects(readRetryRuntime({...input,readUiError:async()=>'Actual load failure'}),/RUNTIME_UI_FAILURE/);assert.equal(reads,2);
+});
+function priorFixture(){
+  const p=profile(),owned={owner:p.owner,profile:path.join(p.owner,'profile'),worldId:p.worldId,originalFile:p.file,originalReportSha256:retryHash(fs.readFileSync(p.file))},r=receipts();
+  const start=Date.parse('2026-09-14T21:00:00Z');r.after.jobs[0].created_at=start+1000;r.after.jobs[0].updated_at=start+2000;r.after.applications[0].created_at=start+2500;r.after.applications[0].updated_at=start+3000;
+  const directory=path.join(path.dirname(p.owner),'desktop-native-operator-retry-prior');fs.mkdirSync(directory);const file=path.join(directory,'report.json');
+  const identity={inventorySha256:'1'.repeat(64),mainSha256:'2'.repeat(64),preloadSha256:'3'.repeat(64)};
+  const prior={format:'craftmine.operator-initialization-retry/1',out:directory,profile:owned.profile,worldId:p.worldId,originalFile:p.file,originalReportSha256:owned.originalReportSha256,modelCalls:0,startedAt:new Date(start).toISOString(),finishedAt:new Date(start+4000).toISOString(),fatal:'World view is not ready',passed:false,finalIntegrity:'passed',packageIdentity:identity,before:r.before,launches:[{exit:{code:0},audit:{violations:[],pageErrors:[],shutdownFailures:[]}}]};
+  const write=()=>fs.writeFileSync(file,JSON.stringify(prior));write();return {owned,file,prior,current:r.after,identity,write};
+}
+test('a closed same-owner prior recovery report preserves raw hash and validates its existing check instead of creating another',()=>{
+  const f=priorFixture(),raw=fs.readFileSync(f.file),receipt=validatePriorInitializationRecovery(f.file,f.owned,f.current,f.identity);
+  assert.equal(receipt.sha256,retryHash(raw));assert.equal(receipt.canonical.job.id,'check-new');assert.equal(receipt.before.jobs.length,0);assert.deepEqual(fs.readFileSync(f.file),raw);
+});
+test('prior recovery cannot borrow another owner/world/package, unfinished exit, changed source or an application outside its recorded run',()=>{
+  const mutations=[f=>{f.prior.profile+='-foreign';},f=>{f.prior.worldId='other';},f=>{f.prior.originalReportSha256='f'.repeat(64);},f=>{f.prior.finishedAt=undefined;},f=>{f.prior.launches[0].exit=undefined;},f=>{f.prior.launches[0].audit.pageErrors=['actual error'];},f=>{f.prior.packageIdentity={...f.identity,inventorySha256:'e'.repeat(64)};},f=>{f.current.source.revision++;},f=>{f.current.applications[0].updated_at=Date.parse(f.prior.finishedAt)+1;},f=>{f.current.jobs[0].created_at=Date.parse(f.prior.startedAt)-1;}];
+  for(const change of mutations){const f=priorFixture();change(f);f.write();assert.throws(()=>validatePriorInitializationRecovery(f.file,f.owned,f.current,f.identity));}
 });
