@@ -3,10 +3,17 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {parseOperatorProviderConfig,resolveOperatorApiModel,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
+import {parseOperatorProviderConfig,resolveOperatorApiModel,resolveOperatorContextWindow,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
 
 const secret='sk-synthetic-test-key-1234';
 const config=()=>parseOperatorProviderConfig(`https://api.deepseek.com/\n模型：deepseek-v4.1-flash\n${secret}\n`);
+test('explicit 1M changes only authorized context size and old 500K cannot pass as 1M',()=>{
+  const original=config(),updated=resolveOperatorContextWindow(original,'1000000');
+  assert.equal(resolveOperatorContextWindow(original).contextWindow,500000);assert.equal(original.contextWindow,500000);assert.equal(updated.contextWindow,1000000);assert.equal(updated.maxTokens,384000);assert.equal(updated.thinkingLevel,'max');
+  const input=operatorProviderInput(updated);assert.deepEqual(input.models[0].thinkingLevels,['max']);assert.equal(input.models[0].supportsImages,true);assert.equal(input.models[0].supportsDocuments,true);
+  assert.throws(()=>resolveOperatorContextWindow(original,'100000'),/EXPLICIT_1M/);
+  const old=state();old.config=updated;assert.throws(()=>assertOperatorProvider(old),/PLAYER_CONTEXT_CHANGED/);
+});
 test('official API identifier mapping is explicit, uniquely scoped and preserves requested identity',()=>{
   const original=config(),unchanged=resolveOperatorApiModel(original);
   assert.equal(unchanged.model,'deepseek-v4.1-flash');assert.equal(unchanged.resolutionSource,null);

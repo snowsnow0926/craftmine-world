@@ -10,20 +10,21 @@ import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs'
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
 import {readProductAgentCommand,atomicProductAgentJson,measureProductAgentFiles,checkProductAgentIntegrity} from './helpers/product-agent-mailbox.mjs';
 import {publishOperatorTemplate} from './helpers/product-agent-publication.mjs';
-import {parseOperatorProviderConfig,resolveOperatorApiModel,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
+import {parseOperatorProviderConfig,resolveOperatorApiModel,resolveOperatorContextWindow,operatorProviderInput,operatorRedactor,redactedOperatorLog,assertOperatorProvider,assertRetainedOperatorCopy} from './helpers/operator-provider-config.mjs';
 import {operatorReleaseIdentity,operatorReleasePageScript,withOwnedReleasePage} from './helpers/operator-task-release.mjs';
 import {prepareProductFeedbackRepair} from './helpers/product-feedback-repair.mjs';
 import {exportOperatorTemplate,templateExportReadScript,templateExportSubmitScript} from './helpers/product-template-export.mjs';
 
 const args=process.argv.slice(2),option=name=>{const index=args.indexOf(name);return index<0?undefined:args[index+1];};
-if(args.includes('--help')){console.log('node tests/product-agent-operator-native.mjs --application-root ABS --runtime-resources ABS (--codex ABS | --provider-config-file ABS) --output-root ABS [--api-model-id deepseek-flash] [--starter promo-city|promo-mainline] [--resume ABS_REPORT] [--packaged-root ABS]\nNo prompts are sent until an explicit inbox command. See docs/PRODUCT_AGENT_OPERATOR_DRIVER.md.');process.exit(0);}
+if(args.includes('--help')){console.log('node tests/product-agent-operator-native.mjs --application-root ABS --runtime-resources ABS (--codex ABS | --provider-config-file ABS) --output-root ABS [--api-model-id deepseek-flash] [--context-window 1000000] [--starter promo-city|promo-mainline] [--resume ABS_REPORT] [--packaged-root ABS]\nNo prompts are sent until an explicit inbox command. See docs/PRODUCT_AGENT_OPERATOR_DRIVER.md.');process.exit(0);}
 const applicationRoot=option('--application-root'),resources=option('--runtime-resources'),codex=option('--codex'),providerConfigFile=option('--provider-config-file'),outputRoot=option('--output-root');
 const checkReplayHash=option('--check-replay-sha256');
 if(checkReplayHash!==undefined)assert(/^[a-f0-9]{64}$/.test(checkReplayHash),'CHECK_REPLAY_PARENT_PIN_REQUIRED');
 assert(!!codex!==!!providerConfigFile,'EXACTLY_ONE_CODEX_OR_PROVIDER_CONFIG_REQUIRED');
 assert([applicationRoot,resources,codex??providerConfigFile,outputRoot].every(value=>typeof value==='string'&&path.isAbsolute(value)),'ABSOLUTE_APPLICATION_RESOURCES_BACKEND_OUTPUT_REQUIRED');
 assert(option('--api-model-id')===undefined||providerConfigFile,'API_MODEL_ID_REQUIRES_PROVIDER_CONFIG');
-const providerConfig=providerConfigFile?resolveOperatorApiModel(parseOperatorProviderConfig(fs.readFileSync(providerConfigFile,'utf8')),option('--api-model-id')):null;
+assert(option('--context-window')===undefined||providerConfigFile,'CONTEXT_WINDOW_REQUIRES_PROVIDER_CONFIG');
+const providerConfig=providerConfigFile?resolveOperatorContextWindow(resolveOperatorApiModel(parseOperatorProviderConfig(fs.readFileSync(providerConfigFile,'utf8')),option('--api-model-id')),option('--context-window')):null;
 const redact=operatorRedactor(providerConfig?.secret),writeJson=(file,value)=>atomicProductAgentJson(file,redact(value));
 assert.equal(path.basename(path.resolve(outputRoot)),'test-results','HEADLESS_OUTPUT_PARENT_MUST_BE_TEST_RESULTS');
 const previousFile=option('--resume'),previous=previousFile?JSON.parse(fs.readFileSync(previousFile,'utf8')):null;
@@ -37,7 +38,7 @@ assertRetainedOperatorCopy({previous,out,profile,marker});
 for(const name of ['inbox','responses','turns','captures'])fs.mkdirSync(path.join(out,name),{recursive:true});
 const hash=value=>createHash('sha256').update(value).digest('hex'),launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
 if(launch.packaged)assert.equal(path.resolve(resources).toLowerCase(),path.join(launch.packaged,'resources').toLowerCase(),'PACKAGED_RESOURCES_MUST_BELONG_TO_PACKAGE');
-const report={format:'craftmine.product-agent-operator/1',out,applicationRoot,resources,codex,model:providerConfig?.model??'gpt-6-astra',effort:providerConfig?.thinkingLevel??'xhigh',backend:providerConfig?'pi':'codex-cli',...(providerConfig?{requestedModel:providerConfig.requestedModel,apiModelId:providerConfig.apiModelId,resolutionSource:providerConfig.resolutionSource}:{}),sourceTemplate,recipeVersion:sourceTemplate==='promo-city'?2:null,launches:[],turns:[],commands:[],...(previous?{worldId:previous.worldId,sessionId:previous.sessionId,turns:previous.turns,commands:previous.commands,previousReport:previousFile,providerConfiguration:previous.providerConfiguration,retainedCopy:previous.retainedCopy}:{}),acceptance:'not-assessed-by-driver'};
+const report={format:'craftmine.product-agent-operator/1',out,applicationRoot,resources,codex,model:providerConfig?.model??'gpt-6-astra',effort:providerConfig?.thinkingLevel??'xhigh',backend:providerConfig?'pi':'codex-cli',...(providerConfig?{requestedModel:providerConfig.requestedModel,apiModelId:providerConfig.apiModelId,resolutionSource:providerConfig.resolutionSource,contextWindow:providerConfig.contextWindow,contextWindowSource:providerConfig.contextWindowSource??'original-player-500k-configuration'}:{}),sourceTemplate,recipeVersion:sourceTemplate==='promo-city'?2:null,launches:[],turns:[],commands:[],...(previous?{worldId:previous.worldId,sessionId:previous.sessionId,turns:previous.turns,commands:previous.commands,previousReport:previousFile,providerConfiguration:previous.providerConfiguration,retainedCopy:previous.retainedCopy}:{}),acceptance:'not-assessed-by-driver'};
 const reportFile=path.join(out,previous?'continuation-'+randomUUID()+'.json':'report.json'),save=()=>writeJson(reportFile,report);
 if(checkReplayHash)report.checkReplayPacketSha256=checkReplayHash;
 // launch.main contains the UTF-8 bundle contents, not its filesystem path.
@@ -88,7 +89,7 @@ async function composition({wish='保留完整城市、已有建筑与操作方�
 }
 async function verifyProvider(session){const settings=await invoke('settingsGet'),providers=await invoke('providersList'),providerId=report.providerConfiguration?.providerId;return assertOperatorProvider({config:providerConfig,providerId,provider:providers.providers.find(row=>row.id===providerId),settings,session});}
 async function configureProvider(){
-  if(report.providerConfiguration){assert.equal(report.providerConfiguration.model,providerConfig.model,'API_MODEL_CHANGE_REQUIRES_NEW_RETAINED_BOOTSTRAP');await verifyProvider();return;}
+  if(report.providerConfiguration){assert.equal(report.providerConfiguration.contextWindow,providerConfig.contextWindow,'CONTEXT_CHANGE_REQUIRES_NEW_RETAINED_BOOTSTRAP');assert.equal(report.providerConfiguration.model,providerConfig.model,'API_MODEL_CHANGE_REQUIRES_NEW_RETAINED_BOOTSTRAP');await verifyProvider();return;}
   const created=await invoke('providersCreate',operatorProviderInput(providerConfig));
   assert(typeof created.provider?.id==='string','PROVIDER_CREATE_RECEIPT_REQUIRED');
   report.providerConfiguration={providerId:created.provider.id};save();

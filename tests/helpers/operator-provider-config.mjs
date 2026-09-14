@@ -25,6 +25,12 @@ export function resolveOperatorApiModel(config,apiModelId) {
   return {...config,requestedModel:config.model,model:apiModelId,apiModelId,resolutionSource:'https://deepseek.com/news/deepseek-v4-1-flash/'};
 }
 
+export function resolveOperatorContextWindow(config,contextWindow) {
+  if(contextWindow===undefined)return config;
+  assert(contextWindow==='1000000','PLAYER_CONTEXT_OVERRIDE_MUST_BE_EXPLICIT_1M');
+  return {...config,contextWindow:1000000,contextWindowSource:'explicit-player-1m-request'};
+}
+
 export function operatorProviderInput(config) {
   return {name:'Isolated player DeepSeek attachment',vendorKey:'deepseek',protocol:'openai_compatible',type:'openai_compatible',baseUrl:config.baseUrl,authKind:'api_key_and_base_url',secretValue:config.secret,apiStyle:'chat_completions',defaultModelId:config.model,models:[{id:config.model,contextWindow:config.contextWindow,maxTokens:config.maxTokens,thinkingLevels:['max'],defaultThinkingLevel:config.thinkingLevel,supportsImages:true,supportsDocuments:true}]};
 }

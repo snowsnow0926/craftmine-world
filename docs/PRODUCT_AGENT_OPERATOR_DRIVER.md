@@ -1,5 +1,11 @@
 # 实际 PI Desktop 多轮创作操作驱动
 
+用户明确将后续玩家测试上下文提升至 1M。新增显式 `--context-window 1000000`
+用于新测试阶段；最大输出 384000、max 思考、图像/文档开启保持不变，不新增
+调用次数或整轮时限。未给参数仍复现原 500K，旧报告和原失败保留。新 1M
+阶段使用新的独立 profile/retained bootstrap 新建 provider；直接把已有 500K
+配置报告带此参数 resume 会拒绝，不修改旧 provider 或把旧用量伪称为 1M。
+
 `release-task-continue` 无参数命令用于旧任务遇到本地次数/时长限制后的普通恢复。
 先核对模型、闲置状态及真实 `task.current` 的 world/session/task/generation，
 通过 `world.surface` 打开任务页，在本进程自己的 loopback CDP 端口中定位
