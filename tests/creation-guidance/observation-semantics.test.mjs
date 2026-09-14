@@ -69,10 +69,24 @@ test('frame distinct is tied to the one-probe implementation and the archived as
 test('versioned guidance and advertised observation/check tools state these finite evidence boundaries',()=>{
  const corpus=require('../../plugins/craftmine-world/guidance/catalog.json'),skill=corpus.skills.find(s=>s.id==='creation-sandbox.authoring');
  const text=fs.readFileSync(path.join(root,'plugins/craftmine-world/guidance/creation-sandbox.md'),'utf8').replace(/\r\n/g,'\n');
- assert.equal(skill.version,'1.7.1');assert.equal(skill.text,text);assert.equal(skill.sha256,sha(text));
- assert.match(text,/物理碰撞关闭不等于视觉选择关闭/);assert.match(text,/sceneObjectRefs/);
- assert.match(text,/不是跨版本画面对比/);assert.match(text,/playerBounds.*玩家胶囊边界/);
+ assert.equal(skill.version,'1.8.2');assert.equal(skill.text,text);assert.equal(skill.sha256,sha(text));
+ // The archive and live presentation tests above still assert the exact
+ // collision/selection, sceneObjectRefs, bounds and one-probe contracts.
+ // Current guidance expresses their interpretation in these separate clauses;
+ // do not require wording retired with the 1.7.1 guide.
+ assert.match(text,/Godot 的渲染能力与宿主当前的目标拾取覆盖范围不同/);
+ assert.match(text,/`fallback` 说明当前目标证据不足，不说明该网格不能显示/);
+ assert.match(text,/或把碰撞包围盒当作精确可见表面来掩盖覆盖缺口/);
+ assert.match(text,/宿主的通用运行、画面、存档与恢复检查通过只证明这些边界，不代表任意自然语言需求的语义验收已经完成/);
+ assert.match(text,/player\.position 是胶囊中心/);
+ assert.match(text,/playerBounds\.position 是脚底位置/);
  const tools=require('../../plugins/craftmine-world/manifest.json').contributes.agentTools;
- assert.match(tools.find(x=>x.name==='godot_runtime_state').description,/collision disabled does not imply visual selection disabled/);
- assert.match(tools.find(x=>x.name==='godot_build_read').description,/within that one probe/);
+ const observation=tools.find(x=>x.name==='godot_runtime_state'),check=tools.find(x=>x.name==='godot_build_read');
+ assert.deepEqual(observation.schema.properties.scope.enum,['build','live']);
+ assert.deepEqual(Object.keys(observation.schema.properties),['scope'],'The model cannot inject observation identity');
+ assert.equal(observation.risk,'low');
+ assert.match(observation.description,/A sample without its own identity, from another world or build, from a replaced instance, or older than the freshness window is marked stale/);
+ assert.match(observation.description,/Live state is never inferred from a task-start snapshot or from the last saved progress/);
+ assert.match(check.description,/passed proves only the checked candidate/);
+ assert.match(check.description,/Reading never grants authority or proves untested gameplay/);
 });
