@@ -59,18 +59,18 @@ test('an acknowledged retry displays preparation until Core publishes a new atte
   gate.resolve(); await pending;
 });
 
-test('overlapping retry requests wait for one existing attempt and schedule only one recovery', async () => {
-  const existing = deferred(), recovery = deferred(); const calls = [];
+test('overlapping retry requests join existing work without scheduling recovery after it finishes', async () => {
+  const existing = deferred(); const calls = [];
   const factory = setup({running: () => true, error: () => null, start: (id, options) => {
     calls.push({id, recover: options?.recover === true});
-    return options?.recover ? recovery.promise : existing.promise;
+    return existing.promise;
   }});
   const a = factory.retry('retry-world'), b = factory.retry('retry-world');
   assert.equal((await factory.status('retry-world')).state, 'initializing');
   assert.equal(calls.length, 1);
   existing.resolve(); await new Promise(resolve => setImmediate(resolve));
-  assert.deepEqual(calls, [{id: 'retry-world', recover: false}, {id: 'retry-world', recover: true}]);
-  recovery.resolve(); await Promise.all([a, b]);
+  assert.deepEqual(calls, [{id: 'retry-world', recover: false}]);
+  await Promise.all([a, b]);
   const terminal = await factory.status('retry-world');
   assert.equal(terminal.state, 'failed', 'finishing the scheduler is not proof of a successful build');
   assert.equal(terminal.creation.error.code, 'GODOT_JOB_FAILED');

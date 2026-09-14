@@ -507,7 +507,13 @@ export function createGodotWorldFactory(deps: GodotCreationDependencies) {
       retries.set(worldId, retry);
       retry.work = Promise.resolve().then(async () => {
         if (retry.cancelled) return;
-        if (initialization.running(worldId)) await initialization.start(worldId);
+        if (initialization.running(worldId)) {
+          // Continue joins existing work. Do not queue a second attempt after
+          // that work finishes or fails; a later retry remains explicit.
+          await initialization.start(worldId);
+          rememberPreparationFailure();
+          return;
+        }
         if (retry.cancelled) return;
         retry.waiting = false;
         await initialization.start(worldId, {recover: true});

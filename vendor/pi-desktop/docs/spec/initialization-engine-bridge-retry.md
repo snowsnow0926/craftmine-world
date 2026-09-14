@@ -40,7 +40,18 @@ an unfinished world remains non-playable; ready same-world selection keeps its
 original behavior. Failed worlds still require their advertised recovery
 actions. Busy, saving, unsupported-switch and task-binding rules are retained.
 
-This uses the existing navigation path. Its selected Godot runtime-state read
-reaches the coordinator's creation status and existing idempotent initializer;
-an actual switch uses the existing guarded world-open path. No new RPC, source
-repair, background retry or synthetic initialization status is introduced.
+Explicit preparation now uses the existing `world.creationRetry` scheduler so
+the initializer receives `recover:true`. For an already selected target it does
+not first trigger a status-only navigation, which would lack recovery intent.
+Other targets still use the existing guarded switch before recovery. Immediately
+before recovery, a fresh list must confirm selection, the same initialization
+operation ID and an initializing state. A world already ready needs no recovery;
+another terminal state remains an explicit failure rather than a hidden retry.
+
+When work is already running, the scheduler joins that existing promise and
+returns; it does not append another recovery attempt after success or failure.
+The main initializer adapter obtains an existing running promise before any
+asynchronous status query. Otherwise normal explicit recovery retains the
+original task/generation checks and bridge/source pins. Passive status remains
+unable to cross an interrupted workspace. No new RPC, source repair, background
+retry or synthetic initialization status is introduced.

@@ -8,7 +8,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from '../helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from '../helpers/ordinary-world-ui.mjs';
 import {operatorRedactor,redactedOperatorLog} from '../helpers/operator-provider-config.mjs';
-import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,initializationEntryUiScript,prepareAndEnterRetainedWorld} from '../helpers/operator-initialization-retry.mjs';
+import {retryHash,validateOperatorRetryProfile,retainedInitializationEvidence,assertRetainedInitializationRecovery,initializationRetryUiScript,initializationRecoveryMode,waitForRetryStartup,initializationEntryUiScript,prepareAndEnterRetainedWorld,isExplicitInitializationRecovery} from '../helpers/operator-initialization-retry.mjs';
 import {compareGodotPersistentProgress} from '../../vendor/pi-desktop/apps/desktop/electron/main/craftmine-godot-bases-acceptance.ts';
 import {isTransientReadTimeout,terminalState} from '../player-feedback/P8/initialization-poll.mjs';
 
@@ -81,7 +81,8 @@ async function stop(){
   socket?.close();socket=null;assert(!run.forcedStop,'RETRY_NORMAL_SHUTDOWN_REQUIRED');assert.equal(run.exit?.code,0);assert(run.audit,'RETRY_SHUTDOWN_AUDIT_REQUIRED');assert.deepEqual(run.audit.violations,[]);assert.deepEqual(run.audit.shutdownFailures,[]);assert.deepEqual(run.audit.pageErrors??[],[],'RETRY_PAGE_ERRORS');save();
 }
 async function readyWorld(mode='already-ready-at-startup'){
-  return prepareAndEnterRetainedWorld({mode,
+  const terminalError=row=>Object.assign(Error('RETRY_TERMINAL_INITIALIZATION_FAILURE: '+JSON.stringify(row.creation)),{code:'RETRY_TERMINAL_INITIALIZATION_FAILURE',worldId:row.id,world:row});
+  return prepareAndEnterRetainedWorld({mode,worldId,
     continuePreparation:async()=>{
       await until(()=>evaluate(initializationEntryUiScript(worldId)),ui=>ui.continueReady);
       assert(!run.continueDispatchAttempted,'RETRY_PREPARATION_ALREADY_DISPATCHED');run.continueDispatchAttempted=true;save();
@@ -91,9 +92,16 @@ async function readyWorld(mode='already-ready-at-startup'){
     retry:async()=>{
       assert(!report.retryDispatchAttempted,'RETRY_ALREADY_DISPATCHED');report.retryDispatchAttempted=true;report.retryClicks=null;save();
       report.retryDispatch=await evaluate(initializationRetryUiScript(worldId,true));assert.equal(report.retryDispatch.submitted,true);report.retryClicks=1;save();
+      if(report.continueRecovery){report.continueRecovery.status='ordinary-retry-dispatched';report.recoveryMode='ordinary-continue-preparation-then-retry';save();}
       await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
     },
-    waitReady:()=>until(readWorldList,value=>{if(!value)return false;const row=value.worlds.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');if(terminalState(row))throw Error('RETRY_TERMINAL_INITIALIZATION_FAILURE: '+JSON.stringify(row.creation));return row.state==='ready';}),
+    onContinueFailure:async error=>{report.continueRecovery={observedAt:new Date().toISOString(),world:structuredClone(error.world),error:String(error),status:'explicit-retry-required'};save();},
+    confirmExplicitRetry:async()=>{
+      assert(!report.retryDispatchAttempted&&report.retryClicks===0,'RETRY_ALREADY_DISPATCHED');
+      const confirmed=await until(async()=>{const list=await readWorldList();if(!list)return null;assert.equal(list.activeWorldId,worldId,'RETRY_SELECTION_CHANGED');const row=list.worlds.find(row=>row.id===worldId);assert(isExplicitInitializationRecovery(terminalError(row??{}),worldId),'RETRY_EXPLICIT_RECOVERY_STATE_CHANGED');return evaluate(initializationRetryUiScript(worldId));},ui=>ui?.ready===true);
+      report.continueRecovery.confirmedUi=confirmed;save();
+    },
+    waitReady:()=>until(readWorldList,value=>{if(!value)return false;const row=value.worlds.find(row=>row.id===worldId);assert(row,'RETRY_WORLD_MISSING');if(terminalState(row))throw terminalError(row);return row.state==='ready';}),
     enter:async()=>{
       const ui=await evaluate(initializationEntryUiScript(worldId));
       if(ui.entryOpen){

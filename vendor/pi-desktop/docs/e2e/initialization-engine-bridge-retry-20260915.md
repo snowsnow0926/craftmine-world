@@ -139,3 +139,34 @@ not a reason to repeat a mutation.
 production continuation chain, state guards, private probe action ordering and
 read-timeout classification. The new native package still needs parent-run
 acceptance on the unchanged retained world.
+
+The next native probe `KA5iz0` confirmed the actual Continue callback, then
+returned the real `GODOT_INITIALIZATION_FAILED` message
+`Error: EXPLICIT_RECOVERY_REQUIRED`, with ordinary `retry` and `details`
+actions. The script retained that failure and shut down; this was not a build
+success. The cause is the interrupted initialization workspace: status-driven
+initialization uses ordinary `turn.begin`, whereas only explicit `recover:true`
+first reads the recoverable task and resumes its exact generation. Rust's
+refusal was correct and is unchanged.
+
+The product continuation now dispatches the existing explicit-retry scheduler
+after selection/initialization identity checks. The CPU chain includes the
+actual initializer, with controlled interrupted workspace replies: it asserts
+`task.resume` generation 7 before `turn.begin`, one fresh check, and no source
+rewrite. Passive status still produces the exact recovery refusal. Separate
+in-flight work joins without cancellation, another begin/check, or a queued
+`recover:true` restart. An obsolete initialization ID is rejected before the
+retry channel. Ready same-world and ordinary failure behavior remain intact.
+
+For older-package diagnosis, the probe also supports the authorized two-stage
+player flow within one process. Only after its own Continue, the exact same-world
+error above, advertised retry, and a fresh enabled ordinary retry control may
+it invoke Retry once. The original error, terminal row, UI confirmation and
+second action are retained under `continueRecovery`; the mode is then
+`ordinary-continue-preparation-then-retry`. Other terminal errors, foreign
+selection, unavailable retry and a repeated recovery failure stop. This does
+not mutate Core or manufacture a new state. A new package should use the
+single explicit Continue path instead.
+
+73 targeted CPU tests and desktop typechecking pass for this follow-up. Native
+acceptance remains the parent's separate run; KA5iz0 is preserved unchanged.
