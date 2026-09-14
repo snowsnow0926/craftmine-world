@@ -68,6 +68,36 @@ tool catalog fails closed. A missing synchronized rollout also fails visibly.
 Native interrupted-task resume/discard continues to require the existing player's
 world recovery action; transport recovery cannot grant a native write lease.
 
+Full restoration uses the pinned CLI's `thread/inject_items` interface to append
+ordinary historical-data messages without starting a model turn. Each canonical
+record retains its PI session/message ID, timestamp, original role/status, tool
+name/arguments and complete visible content. Serialized payloads are divided into
+32,768 UTF-16-unit fragments without splitting surrogate pairs. Fragment headers
+carry the original payload SHA-256 and ordered part/count. Up to eight text items
+are sent per request; each real historical image is a separate `input_image`
+item, never base64 text inside the historical JSON. These are request transport
+bounds, not history truncation or model/token/whole-turn limits.
+
+The adapter awaits each injection acknowledgement and checks the active native
+turn before and after it. There is no invented idempotency: failed/uncertain or
+aborted injection leaves the checkpoint unsynchronized; the next ordinary retry
+starts a new opaque thread from the full canonical transcript. It neither
+continues a partially injected thread nor executes synthetic historical tools.
+After all history is present, it refreshes authoritative host facts and sends one
+ordinary `turn/start` with those facts, the current player request/images and an
+explicit recovery notice. Historical results are not proof of the current source,
+build, gameplay or acceptance. Codex retains its own normal context management.
+An injection refusal stays visible with its protocol diagnostic, with no fallback
+to an oversized prompt or automatic history trimming.
+
+Validation includes a source-shaped historical tool result above 1 Mi characters,
+exact reconstructed payloads and hashes, original player wording, image blocks,
+no historical tools, one model turn, interrupted injection and rejection. The
+original player's 207-message transcript was also projected read-only: all
+2,159,106 payload characters reconstructed exactly, with four image blocks and no
+base64 text. This is transport projection evidence, not a successful live model
+restoration or packaged acceptance; the coordinator runs that through normal UI.
+
 Text, tools and terminal messages use the current agent event contract. Codex's
 cumulative thread usage is converted to **current-turn deltas**, streamed in
 `AgentStatus.transportUsage` and attached once to the final assistant message.
