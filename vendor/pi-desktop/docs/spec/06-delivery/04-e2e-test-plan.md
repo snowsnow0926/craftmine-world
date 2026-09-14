@@ -10996,3 +10996,10 @@ and recipe3 configuration. See [the scenario](../../e2e/companion-world-bounds-2
 Verify the existing example cards and the ordinary import shortcut, accurate
 empty-search feedback, imported list refresh, exact retained-attempt retry and
 unmounted reply fences. See [the focused renderer scenario](../../e2e/demo-entry-and-templates-20260915.md).
+
+## Automatic adoption presentation recovery (2026-09-15)
+
+Retain the latest valid surface/resume intent while the existing host candidate
+gate refuses it. Require a positive new reply before clearing only its own busy
+error; preserve unrelated errors, exact world ownership and manual previews.
+See [the focused recovery scenario](../../e2e/godot-presentation-recovery-20260915.md).

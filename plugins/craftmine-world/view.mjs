@@ -4,6 +4,7 @@ import {candidateIdentity} from './godot-candidate-view.mjs';
 import {assertPreviewControl} from './preview-control.mjs';
 import {canonicalJSON} from '../../app/canonical.mjs';
 import {createWorldKeyboardRelay} from '../../app/world-keyboard.mjs';
+import {createGodotPresentationQueue} from './godot-presentation-queue.mjs';
 const initialWorld = CRAFTMINE_BOOT_WORLD;
 const gameDocument = CRAFTMINE_GAME_DOCUMENT;
 const frame = document.querySelector('iframe');
@@ -53,6 +54,25 @@ addEventListener('blur',keyboardRelay.reset);
 addEventListener('pagehide',keyboardRelay.reset);
 const godotStateLabels={loading:'载入中',ready:'已就绪',paused:'已暂停',saving:'保存中',saved:'已保存',failed:'运行失败',closed:'已关闭'};
 const godotLoadingStates=new Set(['loading','failed']);
+let errorGeneration=0,presentationError=null;
+const godotPresentation=createGodotPresentationQueue({
+  invoke:(channel,payload)=>bridge.invoke(channel,payload),
+  scope:()=>godot&&current?.id&&!closing&&!preview&&!applicationAttempt&&!openingWorldId&&!restoreOperation
+    ?{worldId:current.id,key:nonce+':'+closeGeneration}:null,
+  onError:(error,request)=>{
+    // A background busy retry cannot erase a real save/navigation/runtime error.
+    if(request.retrying&&!errorBox.hidden&&!presentationError)return;
+    showError(error);
+    if(request.retrying)presentationError={worldId:request.worldId,generation:errorGeneration,text:errorBox.textContent};
+  },
+  onSuccess:request=>{
+    if(presentationError?.worldId!==request.worldId||presentationError.generation!==errorGeneration
+      ||presentationError.text!==errorBox.textContent)return;
+    errorBox.hidden=true;presentationError=null;delete status.dataset.error;
+    status.textContent=godotStateLabels[document.body.dataset.godotState]||'界面操作已完成';
+  },
+});
+addEventListener('pagehide',()=>godotPresentation.dispose());
 function isGodotWorld(record) {
   return record?.world?.build?.engine?.kind==='godot-web' ||
     record?.world?.build?.scene?.format==='craftmine.godot-scene/1';
@@ -151,12 +171,11 @@ function onGodotState(payload) {
     // save events must not reveal a world hidden by a preview or another sheet.
     if(initializingSurfaceWorld===current.id&&!openingWorldId&&!preview&&!applicationAttempt&&!closing&&checksPanel.hidden&&!workbench?.tab){
       const worldId=current.id;initializingSurfaceWorld=null;
-      void bridge.invoke('godot.runtimeSurface',{worldId,visible:true}).catch(error=>{
-        if(current?.id===worldId){initializingSurfaceWorld=worldId;showError(error);}
-      });
+      godotPresentation.request('godot.runtimeSurface',{worldId,visible:true});
     }
   }
   else if(state==='loading'||state==='failed'||state==='closed'){loaded=false;delete document.body.dataset.worldLoaded;controls();}
+  godotPresentation.changed();
 }
 
 function renderWorldLoading(payload) {
@@ -208,13 +227,14 @@ function send(type, value = {}) {
   if(type==='resume')backupFrozen=false;
   // Godot worlds never speak the voxel host protocol; the host owns the game view.
   if(godot){
-    if(type==='resume')void bridge.invoke('godot.runtimeResume',{worldId:current.id}).catch(showError);
+    if(type==='resume')godotPresentation.request('godot.runtimeResume',{worldId:current.id});
     return;
   }
   frame.contentWindow.postMessage({channel:'craftmine-host/1',nonce,type,...value}, '*');
 }
 
 function showError(error) {
+  errorGeneration++;presentationError=null;
   if(openingWorldId||!current||!loaded)renderWorldLoading({state:'failed',error:String(error.message||error)});
   errorBox.textContent=String(error.message||error);errorBox.hidden=false;
   status.textContent='操作未完成';status.dataset.error='true';
@@ -395,6 +415,7 @@ function mount(record) {
   document.getElementById('checks-list').replaceChildren();setMode(false,{notify:false});
   for(const pending of requests.values()){clearTimeout(pending.timer);pending.reject(Error('世界已切换'));}requests.clear();
   current=record;openingWorldId=null;loaded=false;nonce=crypto.randomUUID();lastSaved=canonicalJSON(record.world.snapshot);
+  const mountedNonce=nonce;
   godot=isGodotWorld(record);
   initializingSurfaceWorld=godot&&record?.world?.build?.godot?.initializing===true?record.id:null;
   document.getElementById('import-result').hidden=true;
@@ -408,16 +429,16 @@ function mount(record) {
     status.textContent='载入中';
     renderWorldLoading({state:'loading'});
     void bridge.invoke('godot.candidateClose',{worldId:record.id}).then(result=>{
-      if(current?.id!==record.id)return null;
+      if(current?.id!==record.id||nonce!==mountedNonce)return null;
       if(result.status==='applied'){mount(result.record);return null;}
       return bridge.invoke('godot.runtimeState',{worldId:record.id});
     }).then(async state=>{
       if(!state)return;
-      if(current?.id!==record.id)return;
+      if(current?.id!==record.id||nonce!==mountedNonce)return;
       onGodotState(state);
       if(state.initializing)return;
-      await bridge.invoke('godot.runtimeSurface',{worldId:record.id,visible:true});
-    }).catch(error=>{if(current?.id===record.id)showError(error);});
+      godotPresentation.request('godot.runtimeSurface',{worldId:record.id,visible:checksPanel.hidden&&!workbench?.tab});
+    }).catch(error=>{if(current?.id===record.id&&nonce===mountedNonce)showError(error);});
   } else {
     delete document.body.dataset.godot;
     status.textContent='正在载入';
@@ -588,13 +609,13 @@ function setMode(checks,{notify=true}={}) {
   checksPanel.hidden=!checks;
   document.getElementById('world-mode').setAttribute('aria-selected',String(!checks));
   document.getElementById('checks-mode').setAttribute('aria-selected',String(checks));
-  if(notify&&godot&&current?.id)void bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:!checks}).catch(showError);
+  if(notify&&godot&&current?.id)godotPresentation.request('godot.runtimeSurface',{worldId:current.id,visible:!checks});
   if(checks){send('pause');void refreshChecks(true);}
-  else if(notify&&leavingWorkbench&&loaded&&!applicationAttempt&&!preview)send('resume');
+  else if(notify&&leavingWorkbench&&loaded&&!applicationAttempt&&!preview&&!godot)send('resume');
 }
 function openWorkbench(tab){
   if(busy||closing||preview||applicationAttempt)return;
-  if(godot&&current?.id)void bridge.invoke('godot.runtimeSurface',{worldId:current.id,visible:false}).catch(showError);
+  if(godot&&current?.id)godotPresentation.request('godot.runtimeSurface',{worldId:current.id,visible:false});
   checksPanel.hidden=true;
   document.getElementById('world-mode').setAttribute('aria-selected','false');document.getElementById('checks-mode').setAttribute('aria-selected','false');
   for(const item of document.querySelectorAll('[data-workbench-tab]'))item.setAttribute('aria-selected',String(item.dataset.workbenchTab===tab));
