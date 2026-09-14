@@ -11,9 +11,21 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {completeCreationProgress} from './helpers/creation-model-evaluation.mjs';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {reserveLoopbackPort} from './helpers/ordinary-world-ui.mjs';
+import {validateTemplateExpectations,inspectTemplateState,requirePackagedResources} from './helpers/template-import-expectations.mjs';
 
 const [applicationRoot,resources]=process.argv.slice(2);
 assert(applicationRoot&&resources&&[applicationRoot,resources].every(path.isAbsolute),'ABSOLUTE_CHECKOUT_AND_RUNTIME_REQUIRED');
+const importIndex=process.argv.indexOf('--import-template'),expectIndex=process.argv.indexOf('--expected-state');
+const externalImport=importIndex>=0;
+assert.equal(externalImport,expectIndex>=0,'IMPORT_TEMPLATE_AND_EXPECTED_STATE_REQUIRED_TOGETHER');
+const externalArchive=externalImport?process.argv[importIndex+1]:null,expectFile=externalImport?process.argv[expectIndex+1]:null;
+if(externalImport){
+ assert([externalArchive,expectFile].every(value=>typeof value==='string'&&path.isAbsolute(value)),'ABSOLUTE_IMPORT_INPUTS_REQUIRED');
+ for(const flag of ['--resume-author','--frame-report','--diagnose-preview','--visual-edit'])assert(!process.argv.includes(flag),'IMPORT_MODE_CONFLICT:'+flag);
+}
+const expectations=externalImport?validateTemplateExpectations(JSON.parse(fs.readFileSync(expectFile,'utf8'))):null;
+const externalBytes=externalImport?fs.readFileSync(externalArchive):null;
+if(externalImport)assert.equal(createHash('sha256').update(externalBytes).digest('hex'),expectations.archiveSha256,'EXTERNAL_TEMPLATE_ARCHIVE_CHANGED');
 const root=path.resolve(import.meta.dirname,'..');
 const resultsRoot=path.resolve(process.env.CRAFTMINE_CREATION_OUTPUT_ROOT??path.join(root,'test-results'));fs.mkdirSync(resultsRoot,{recursive:true});
 const diagnosticIndex=process.argv.indexOf('--diagnose-preview'),previewDiagnostic=diagnosticIndex>=0;
@@ -23,9 +35,16 @@ if(previous){assert.equal(previous.format,'craftmine.first-creation-roundtrip/1'
 const out=previous?.out??fs.mkdtempSync(path.join(resultsRoot,'desktop-native-rt-'));let profile=path.join(out,'profile');const token=previous?JSON.parse(fs.readFileSync(path.join(profile,'headless-profile.json'))).token:randomUUID();
 if(!previous){fs.mkdirSync(profile);fs.mkdirSync(path.join(out,'legacy'));fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:path.join(out,'legacy')}));}
 const launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env});
+requirePackagedResources(launch.packaged,path.resolve(resources));
 const report={format:'craftmine.first-creation-roundtrip/1',out,applicationRoot,resources,buildMainSha256:createHash('sha256').update(launch.main).digest('hex'),modelCalls:null,launches:[],worlds:[],operations:[],steps:[],limits:['One fresh isolated developer-machine profile; external clean Windows and human acceptance pending.','Actual PI forms and offscreen native checks; no physical input or Pointer Lock.']};
 report.driverSha256=createHash('sha256').update(fs.readFileSync(import.meta.filename)).digest('hex');
-report.limits.push('The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed.');
+if(!externalImport)report.limits.push('The supported edit changes an ordinarily placed stock tree. The catalog companion is retained as its exact model; arbitrary GLB recoloring is not claimed.');
+if(externalImport){
+ report.mode='external-template-import';report.expectations={file:expectFile,sha256:createHash('sha256').update(fs.readFileSync(expectFile)).digest('hex'),packet:expectations};
+ report.templateArchive={path:externalArchive,sha256:expectations.archiveSha256,bytes:externalBytes.length};
+ fs.writeFileSync(path.join(out,'player-world-template.zip'),externalBytes,{flag:'wx'});
+ report.limits.push('Imported snapshot assertions are read only; gameplay is one scoped walk segment, not a repeated flight mission or continuous performance acceptance.');
+}
 report.packageIdentity=launch.identity?{inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256,version:launch.identity.version}:null;
 const nativePaths=launch.packaged?{core:path.join(launch.packaged,'resources/bin/craftmine-core.exe'),host:path.join(launch.packaged,'resources/bin/pi-desktop-host-core.exe')}:{core:process.env.CRAFTMINE_EVAL_CORE??path.join(applicationRoot,'vendor/pi-desktop/target/release/craftmine-core.exe'),host:process.env.CRAFTMINE_EVAL_HOST??path.join(applicationRoot,'vendor/pi-desktop/target/release/pi-desktop-host-core.exe')};
 report.nativeBinaries=Object.fromEntries(Object.entries(nativePaths).map(([name,file])=>[name,{file:path.resolve(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')}]));
@@ -97,7 +116,7 @@ async function start(kind) {
   current={kind,startedAt:new Date().toISOString(),mainSha256:report.buildMainSha256}; report.launches.push(current);
   const started=performance.now();
   child=spawn(launch.executable,[...launch.args,'--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port],{
-    cwd:applicationRoot,env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources},
+    cwd:launch.cwd,env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources},
     windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],
   });
   for(const stream of ['stdout','stderr']) child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,kind+'-'+stream+'.log'),bytes));
@@ -369,6 +388,45 @@ async function importWorld(){
  await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
  worldId=(await nav('world.list')).activeWorldId;assert.notEqual(worldId,report.authorWorldId);await waitWorld(worldId);report.importedWorldId=worldId;
 }
+async function importExternalWorld(){
+ await chooser('templates');await submit('[data-template-import]');
+ const assetId=await until(async()=>{await failIfError();return evaluate(`document.querySelector('[data-local-template-selected]')?.getAttribute('data-local-template-selected')`);},Boolean);
+ report.importedTemplateAssetId=assetId;
+ if(expectations.assetId)assert.equal(assetId,expectations.assetId,'EXPECTED_TEMPLATE_IDENTITY');
+ await field('[data-template-world-title]',expectations.title);await submit('[data-local-template-create]');
+ await until(async()=>{await failIfError();return evaluate(`!document.querySelector('[data-mode-entry]')`);},Boolean);
+ worldId=(await nav('world.list')).activeWorldId;assert(worldId,'ACTUAL_IMPORTED_WORLD_REQUIRED');
+ await waitWorld(worldId);report.importedWorldId=worldId;save();
+}
+async function checkExternalState(label){
+ // Take the true native snapshot before observation. Neither value is supplied
+ // to restore-state; only ordinary world import/open is allowed to restore.
+ const snapshot=await rpc('godotSnapshot'),observation=await rpc('godotObserve');
+ assert.equal(snapshot.worldId,worldId);assert.equal(observation.worldId,worldId);
+ const result=inspectTemplateState(expectations,{snapshot,observation});
+ const row={label,worldId,snapshot,observation,...result};report.templateStateChecks??=[];report.templateStateChecks.push(row);save();
+ assert(result.passed,'EXTERNAL_TEMPLATE_STATE_MISMATCH:'+JSON.stringify(result.checks.filter(check=>!check.passed)));
+ return row;
+}
+async function externalTemplateJourney(){
+ await start('external-template-import');assert.deepEqual((await nav('world.list')).worlds,[],'EXTERNAL_IMPORT_REQUIRES_FRESH_PROFILE');
+ await importExternalWorld();await checkExternalState('fresh-import');report.importFrame=await capture('external-import');
+ await panel('godot.runtimeResume');const before=await rpc('godotObserve');
+ const input={worldId,buildId:before.buildId,instanceId:before.instanceId,steps:[{op:'look',args:{yaw:2,pitch:-.3}},{op:'walk',args:{forward:1,right:0,frames:18}}]};
+ const receipt=await rpc('godotExplore',{payload:input}),after=await rpc('godotObserve');
+ report.templatePlay={input,receipt,before,after};save();
+ assert.notDeepEqual(before.payload.player.position,after.payload.player.position,'ACTUAL_IMPORTED_PLAYER_MOVEMENT_REQUIRED');
+ report.templateSaveReceipt=await panel('godot.runtimeSave',{freeze:true});
+ const saved=await checkExternalState('ordinary-saved');report.savedFrame=await capture('external-saved');await modelEvidence('external-saved');await stop();
+ await start('external-template-cold');await openExistingWorld(worldId);const cold=await checkExternalState('cold-reopened');
+ // No omitted fields or tolerances here: the actual ordinary saved body must
+ // survive the cold reopen, including inventory, component state and player.
+ assert.notEqual(cold.observation.instanceId,saved.observation.instanceId,'NEW_NATIVE_INSTANCE_REQUIRED');
+ assert.equal(cold.observation.buildId,saved.observation.buildId,'SAME_IMPORTED_BUILD_REQUIRED');
+ assert.deepEqual(completeCreationProgress(cold.snapshot),completeCreationProgress(saved.snapshot),'COMPLETE_IMPORTED_CHECKPOINT_MUST_SURVIVE_COLD_REOPEN');
+ report.coldFrame=await capture('external-cold');await modelEvidence('external-cold');report.modelCalls=0;report.passed=true;
+ mark('Specified template imported through ordinary PI controls, declared state verified, played, saved and cold reopened');
+}
 async function assertContents(label){
  const observed=await rpc('godotObserve'),snapshot=await rpc('godotSnapshot');
  const tree=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);
@@ -408,7 +466,9 @@ async function frameContents(label){
 }
 try{
  console.log(JSON.stringify({out,cancel:cancelFile}));
- if(previewDiagnostic){
+ if(externalImport){
+  await externalTemplateJourney();
+ }else if(previewDiagnostic){
   report.previewDiagnosticOnly=true;report.fullJourneyReexecuted=false;await start('preview-diagnostic');worldId=report.authorWorldId;await openExistingWorld(worldId);await workbench();await refreshTarget();await selectEditedTree(report.editedEntityId);
   const observed=await rpc('godotObserve'),entity=observed.payload.creation.entities.find(e=>e.id===report.editedEntityId);assert(entity);await field('[aria-label="位置 X"]',String(entity.position[0]+.5));await field('[aria-label="朝向角度"]','45');await previewAndCancel('diagnostic-move-preview');await modelEvidence('preview-diagnostic');report.passed=true;
  }else if(framesOnly){
@@ -450,6 +510,7 @@ finally{
  for(const trace of [...previewTraces])try{await trace.finish();}catch(error){report.previewTraceError=String(error);report.passed=false;process.exitCode=1;}
  try{await stop();}catch(error){report.passed=false;report.shutdownError=String(error);process.exitCode=1;}
  try{launch.assertUnchanged();}catch(error){report.passed=false;report.integrityError=String(error);process.exitCode=1;}
+ if(externalImport)try{assert.equal(createHash('sha256').update(fs.readFileSync(externalArchive)).digest('hex'),expectations.archiveSha256,'SOURCE_TEMPLATE_ARCHIVE_CHANGED_DURING_TEST');}catch(error){report.passed=false;report.archiveIntegrityError=String(error);process.exitCode=1;}
  clearInterval(watcher);save();
 }
 console.log(JSON.stringify({passed:report.passed===true,report:reportFile,error:report.error,shutdownError:report.shutdownError,integrityError:report.integrityError}));
