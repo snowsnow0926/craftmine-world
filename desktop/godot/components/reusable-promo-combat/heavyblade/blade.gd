@@ -242,7 +242,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			if request != "": get_viewport().set_input_as_handled()
 
 func _physics_process(delta: float) -> void:
-	if world == null or not context.input_allowed(): return
+	if world == null or not context.input_allowed():
+		request = ""
+		return
 	if request != "":
 		var next := request
 		request = ""
