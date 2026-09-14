@@ -184,3 +184,32 @@ same compiled entry into ASAR for an Electron Node-only load check. These tests
 open no app window, GPU or model. The next ordinary packaged old-profile check
 must establish real performance and gameplay readiness with its own job evidence;
 isolated worker timings do not certify the native client or erase prior failures.
+
+## Bound native isolation observations (2026-09-15)
+
+Successful Windows LPAC checks can contain native `ERROR` lines already accepted
+by the executor's exact message-and-engine-frame classifier. The build-read
+projection must consume that existing classification instead of independently
+presenting those same observations as unexplained source or network failures.
+There is no second allowlist and no change to import, compile or check verdicts.
+
+The private executor evidence provider rereads its own ledger and build manifest.
+Evidence requires a finished matching check job, a succeeded and retired import
+attempt, matching world/build/source/asset pins, successful import and compile,
+the fixed engine and LPAC identity, and the existing classifier reporting no
+unclassified errors. The projection binds this evidence to the job/output/input
+and engine evidence identities and the SHA-256 of the available original log.
+Only exact message/frame pairs from that classification become `native-isolation`
+with attribution `known-check-environment`. Tool arguments and record-carried
+claims cannot supply or authorize this private evidence. Missing/mismatched
+evidence retains the conservative diagnostic behavior.
+
+Original logs, observation severity, hashes, source references and occurrence
+counts remain available. Summary and full build reads carry the same attribution.
+A player summary says that the check passed and that these environment details
+need no player repair or repeated warning only when the actual check passed and
+all available diagnostics have this verified classification. It does not claim
+that application or gameplay acceptance passed. A failed assertion still reports
+failure; script errors, unknown messages and familiar messages at different
+engine frames are not reclassified. No automatic retry or task budget changes
+are introduced. Read paths without private executor evidence remain conservative.

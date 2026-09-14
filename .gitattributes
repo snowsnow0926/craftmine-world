@@ -36,6 +36,7 @@ docs/dispatch-prompts/player-feedback-20260910/ALL_PROMPTS.md whitespace=cr-at-e
 
 # Native replay fixtures are compared to the original full-file SHA256.
 tests/godot-remaining/C/fixtures/native-import-task.log -text whitespace=cr-at-eol
+tests/fixtures/native-isolation/*.log -text whitespace=cr-at-eol,-blank-at-eof
 docs/evidence/next-batch-nb1/** -text whitespace=cr-at-eol,-blank-at-eof
 docs/evidence/gu6-performance-host-20260912/** -text
 docs/evidence/fb02-floor-contact-20260912/** -text

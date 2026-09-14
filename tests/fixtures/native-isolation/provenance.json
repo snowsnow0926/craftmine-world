@@ -1,0 +1,23 @@
+{
+  "format": "craftmine.anonymized-native-log-fixtures/1",
+  "source": "Retained NUWiAc first tree and meadow successful check output.import.log",
+  "anonymization": "Checked for absolute Windows paths, broker tokens and credential patterns; no personal fields occur in these logs. Test wrapper job/world identities are synthetic. Diagnostic messages/frames unchanged.",
+  "rows": [
+    {
+      "file": "tree.log",
+      "originalSha256": "ef4832e1d412abbb5fda28048ac39c850eacf65490220efd489a70a7278be49d",
+      "fixtureSha256": "ef4832e1d412abbb5fda28048ac39c850eacf65490220efd489a70a7278be49d",
+      "originalCharacters": 4379,
+      "fixtureCharacters": 4379,
+      "native": 11
+    },
+    {
+      "file": "meadow.log",
+      "originalSha256": "a737b9f66401948fcf09e767db36568e02bdbf95e1f4b7e35080c170b33ceca3",
+      "fixtureSha256": "a737b9f66401948fcf09e767db36568e02bdbf95e1f4b7e35080c170b33ceca3",
+      "originalCharacters": 5595,
+      "fixtureCharacters": 5595,
+      "native": 11
+    }
+  ]
+}
