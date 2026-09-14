@@ -19,7 +19,7 @@ export function parseOperatorProviderConfig(text) {
 }
 
 export function operatorProviderInput(config) {
-  return {name:'Isolated player DeepSeek attachment',vendorKey:'deepseek',protocol:'openai_compatible',type:'openai_compatible',baseUrl:config.baseUrl,authKind:'api_key_and_base_url',secretValue:config.secret,apiStyle:'chat_completions',defaultModelId:config.model,models:[{id:config.model,contextWindow:config.contextWindow,maxTokens:config.maxTokens,thinkingLevels:['off','minimal','low','medium','high','max'],defaultThinkingLevel:config.thinkingLevel,supportsImages:false,supportsDocuments:false}]};
+  return {name:'Isolated player DeepSeek attachment',vendorKey:'deepseek',protocol:'openai_compatible',type:'openai_compatible',baseUrl:config.baseUrl,authKind:'api_key_and_base_url',secretValue:config.secret,apiStyle:'chat_completions',defaultModelId:config.model,models:[{id:config.model,contextWindow:config.contextWindow,maxTokens:config.maxTokens,thinkingLevels:['max'],defaultThinkingLevel:config.thinkingLevel,supportsImages:true,supportsDocuments:true}]};
 }
 
 export function operatorRedactor(secret) {
@@ -50,8 +50,11 @@ export function assertOperatorProvider({config,providerId,provider,settings,sess
   assert.equal(binding?.contextWindow,config.contextWindow,'PLAYER_CONTEXT_CHANGED');
   assert.equal(binding?.maxTokens,config.maxTokens,'PLAYER_OUTPUT_CHANGED');
   assert.equal(binding?.defaultThinkingLevel,config.thinkingLevel,'PLAYER_THINKING_CHANGED');
+  assert.deepEqual(binding?.thinkingLevels,['max'],'PLAYER_THINKING_LEVELS_CHANGED');
+  assert.equal(binding?.supportsImages,true,'PLAYER_IMAGE_SETTING_CHANGED');
+  assert.equal(binding?.supportsDocuments,true,'PLAYER_DOCUMENT_SETTING_CHANGED');
   if(session){assert.notEqual(session.worldAgentBackend,'codex-cli');assert.equal(session.providerId??settings.defaultProviderId,providerId,'SESSION_PROVIDER_CHANGED');assert.equal(session.modelId??settings.defaultModelId,config.model,'SESSION_MODEL_CHANGED');assert.equal(session.thinkingLevel,config.thinkingLevel,'SESSION_THINKING_CHANGED');assert.equal(session.permissionMode,'auto','SESSION_PERMISSION_CHANGED');}
-  return {backend:'pi',providerId,baseUrl:config.baseUrl,model:config.model,contextWindow:binding.contextWindow,maxTokens:binding.maxTokens,thinkingLevel:binding.defaultThinkingLevel,permissionMode:session?.permissionMode??settings.defaultPermissionMode};
+  return {backend:'pi',providerId,baseUrl:config.baseUrl,model:config.model,contextWindow:binding.contextWindow,maxTokens:binding.maxTokens,thinkingLevel:binding.defaultThinkingLevel,thinkingLevels:binding.thinkingLevels,supportsImages:binding.supportsImages,supportsDocuments:binding.supportsDocuments,permissionMode:session?.permissionMode??settings.defaultPermissionMode};
 }
 
 export function assertRetainedOperatorCopy({previous,out,profile,marker}) {
