@@ -3,6 +3,9 @@ import { CODEX_WORLD_MODEL, CODEX_WORLD_EFFORT } from "@pi-desktop/shared";
 import type { CraftmineTurnBinding } from "./craftmine-turn-gateway";
 
 const digest = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
+const transcriptHash=(messages:any[])=>digest(messages.map(message=>({id:message.id,role:message.role,content:message.content,
+  status:message.status,toolName:message.toolName,toolArgs:message.toolArgs,toolResult:message.toolResult,
+  attachments:message.attachments?.map((image:any)=>({ref:image.ref,kind:image.kind,mimeType:image.mimeType}))})));
 function fail(code: string): never { throw Object.assign(Error(code), { data: { errorCode: code } }); }
 type Access = {
   binding(sessionId: string, turnId: string): CraftmineTurnBinding | undefined;
@@ -35,13 +38,34 @@ export class CodexCheckpointHost {
       messages = messages.slice(0, -1);
     }
     // Revision pager metadata and UI timings do not change what the model saw.
-    const transcriptDigest = digest(messages.map((message: any) => ({ id: message.id, role: message.role, content: message.content,
-      status: message.status, toolName: message.toolName, toolArgs: message.toolArgs, toolResult: message.toolResult,
-      attachments: message.attachments?.map((image: any) => ({ ref: image.ref, kind: image.kind, mimeType: image.mimeType })) })));
+    const transcriptDigest = transcriptHash(messages);
     if (method === "codex.checkpoint.load") {
       const { checkpoint: stored } = await this.access.call("session.codexCheckpointGet", { sessionId });
       if (stored && stored.bindingDigest !== bindingDigest) fail("CODEX_WORLD_SOURCE_BINDING_CHANGED");
-      return { checkpoint: stored?.checkpoint, transcriptMatches: !!stored && stored.transcriptDigest === transcriptDigest };
+      const deferredMessageIds:string[]=[];
+      // Only verification failures before any native history mutation are local
+      // requests. Keep them visible and deliver their original text on recovery.
+      while(stored && stored.transcriptDigest!==transcriptHash(messages) && messages.length>=2){
+        const [user,error]=messages.slice(-2);
+        const readFailure=error.status==='error'&&error.error?.code==='CODEX_INTERRUPTED_RECOVERY_UNVERIFIED';
+        const readAborted=error.status==='aborted'&&error.error?.code==='TURN_ABORTED'&&error.error?.details?.recoveryReadOnly===true;
+        if(user.role!=='user'||error.role!=='assistant'||error.content!==''||(!readFailure&&!readAborted))break;
+        deferredMessageIds.unshift(user.id,error.id);messages=messages.slice(0,-2);
+      }
+      const transcriptMatches=!!stored&&stored.transcriptDigest===transcriptHash(messages);
+      let recovery;
+      const last=messages.at(-1),user=messages.findLast((m:any)=>m.role==='user');
+      if(stored?.checkpoint?.submitted && !stored.checkpoint.synchronized && transcriptMatches &&
+        last?.role==='assistant'&&last.status==='aborted'&&last.content===''&&last.error?.code==='TURN_ABORTED'&&user){
+        const metrics=await this.access.call('session.turnMetrics',{sessionId,messageId:user.id}).catch(()=>undefined);
+        if(this.access.binding(sessionId,turnId)!==binding)fail('CODEX_STALE_TURN');
+        // Presence marks a recovery candidate even if metrics cannot certify it:
+        // the runtime must fail visibly rather than silently rebuild this tail.
+        recovery={hostTurnId:metrics?.status==='aborted'&&metrics?.sessionId===sessionId?metrics.turnId:null,
+          sessionId,projectId:binding.projectId,worldId:binding.selectedWorld,userMessageId:user.id,
+          tailEndMessageId:last.id,deferredMessageIds};
+      }
+      return { checkpoint: stored?.checkpoint, transcriptMatches, ...(recovery?{recovery}:{}) };
     }
     const checkpoint = validateCodexCheckpoint(params.checkpoint);
     await this.access.call("session.codexCheckpointSet", { sessionId, turnId, checkpoint: { bindingDigest, transcriptDigest, checkpoint } });

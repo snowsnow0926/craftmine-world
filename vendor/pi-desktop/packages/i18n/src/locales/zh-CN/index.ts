@@ -1789,6 +1789,7 @@ export const zhCN = {
     justNow: "刚刚",
   },
   errors: {
+    CODEX_INTERRUPTED_RECOVERY_UNVERIFIED: "暂时无法核实上次已停止的创作。对话和世界均已保留。点击「继续」可重试核验；应用不会自动重建完整历史。",
     TOKEN_BUDGET_EXHAUSTED: "本地任务累计 token 额度已用完。请到世界工作台调整额度，再恢复已保存的任务。",
     REQUEST_BUDGET_EXHAUSTED: "本地任务请求次数已达上限。请在世界工作台查看已保存的任务。",
     COMPACTION_BUDGET_EXHAUSTED: "本地任务压缩次数已达上限。请在世界工作台查看已保存的任务。",

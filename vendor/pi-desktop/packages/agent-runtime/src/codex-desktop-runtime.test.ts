@@ -36,19 +36,19 @@ const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwM
 async function fixture(historyMessages?: any[]) {
   const scratch = await mkdtemp(join(tmpdir(), "codex-desktop-"));
   const events: any[] = [], calls: any[] = [];
-  let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true, rejectSave=false;
+  let checkpoint: CodexCheckpoint | undefined, transcriptMatches = true, rejectSave=false,recovery:any;
   let execute = async (_params: any): Promise<any> => ({ ok: true, content: { world: { id: "host-world" }, images: [{ mimeType: "image/png", data: png }] } });
   const make = (client = new Client()) => {
     let start!: () => void; const ready = new Promise<void>(resolve => { start = resolve; }); client.started = start;
     const runtime = new CodexDesktopRuntime({ sessionId: "host-session", binary: "C:/codex.exe", scratchDir: scratch,
       tools: [{ name: "plugin_craftmine_world_godot_project_facts", description: "facts", parameters: { type: "object" }, risk: "medium" }],
-      verifyBinary: async () => {}, clientFactory: () => client, onEvent: event => events.push(event),
+      verifyBinary: async () => {}, interruptGraceMs:30, clientFactory: () => client, onEvent: event => events.push(event),
       history: async () => historyMessages ?? [{ id: "old", role: "user", content: "Preserve my tree", createdAt: "today", status: "complete" },
         {id:"old-capture",role:"tool",content:JSON.stringify({images:[{mimeType:"image/png",data:png}]}),toolResult:{images:[{mimeType:"image/png",data:png}],scope:"formal"},createdAt:"today",status:"complete"}],
       host: { async call(method, params): Promise<any> {
         calls.push({ method, params });
         if (method === "craftmine.context") return { world: { id: "host-world", runtimeKind: "godot" } };
-        if (method === "codex.checkpoint.load") return { checkpoint, transcriptMatches };
+        if (method === "codex.checkpoint.load") return { checkpoint, transcriptMatches, recovery };
         if (method === "codex.checkpoint.save") { if(rejectSave)throw Error('CODEX_TEST_SAVE_FAILED'); checkpoint = structuredClone(params.checkpoint) as CodexCheckpoint; return {}; }
         if (method === "codex.fence") return {};
         if (method === "tools.execute") return execute(params);
@@ -57,11 +57,80 @@ async function fixture(historyMessages?: any[]) {
     });
     return { runtime, client, ready };
   };
-  return { make, events, calls, get checkpoint() { return checkpoint; }, set execute(fn: typeof execute) { execute = fn; },
-    diverge: () => { transcriptMatches = false; },rejectSaves:()=>{rejectSave=true;}, cleanup: () => rm(scratch, { recursive: true, force: true }) };
+  return { make, events, calls, scratch, get checkpoint() { return checkpoint; }, set execute(fn: typeof execute) { execute = fn; },
+    diverge: () => { transcriptMatches = false; },setRecovery:(value:any)=>{recovery=value;},
+    rejectSaves:()=>{rejectSave=true;}, cleanup: () => rm(scratch, { recursive: true, force: true }) };
 }
 
 describe("Codex desktop adapter (mock app-server, no live model)", () => {
+  it('keeps stdin open through both delayed interrupt response and matching terminal, then saves only confirmed idle tail',async()=>{
+    const f=await fixture();try{
+      const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'work'},'user','prior');await ready;await next();
+      const original=client.call.bind(client);let reply!:()=>void;
+      client.call=async(method,params)=>{
+        if(method!=='turn/interrupt')return original(method,params);
+        client.calls.push({method,params});await new Promise<void>(resolve=>{reply=resolve;});return {};
+      };
+      const stopping=runtime.abort();await next();
+      expect(client.closed).toBe(false);expect(f.calls.at(-1).method).toBe('codex.fence');
+      client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});await next();
+      expect(client.closed).toBe(false);reply();await stopping;await running;
+      expect(client.closed).toBe(true);expect(f.checkpoint?.synchronized).toBe(true);
+    }finally{await f.cleanup();}
+  });
+  it('recovers an unsynchronized interrupted thread only after two exact native tail reads and host revalidation',async()=>{
+    for(const variant of ['matching','changed-tail','pending','read-error','read-cancel','deferred','partial-inject']){
+      const history:any[]=[{id:'old-user',role:'user',status:'complete',content:'Keep the complete city',createdAt:'yesterday'},
+        {id:'abort',role:'assistant',content:'',status:'aborted',error:{code:'TURN_ABORTED'},createdAt:'yesterday'}];
+      const f=await fixture(history);try{
+        const seed=f.make();const first=seed.runtime.prompt({text:'seed'},'current','seed');await seed.ready;await seed.runtime.abort();await first;
+        const saved=structuredClone(f.checkpoint),beforeSaves=f.calls.filter(c=>c.method==='codex.checkpoint.save').length;
+        const recovery={hostTurnId:'prior',sessionId:'host-session',projectId:'p',worldId:'host-world',userMessageId:'old-user',tailEndMessageId:'abort',deferredMessageIds:[] as string[]};
+        if(['deferred','partial-inject'].includes(variant)){
+          history.push({id:'never-sent',role:'user',content:'Also preserve this request',status:'complete',createdAt:'now'},
+            {id:'verify-error',role:'assistant',content:'',status:'error',error:{code:'CODEX_INTERRUPTED_RECOVERY_UNVERIFIED'},createdAt:'now'});
+          recovery.deferredMessageIds=['never-sent','verify-error'];
+        }
+        f.setRecovery(recovery);
+        const client=new Client(),original=client.call.bind(client);let reads=0,rejectRead:(e:Error)=>void=()=>{};
+        let signalRead!:()=>void;const readEntered=new Promise<void>(resolve=>{signalRead=resolve;});
+        client.call=async(method,params)=>{
+          if(method==='thread/read'){
+            client.calls.push({method,params});if(variant==='read-error')throw Object.assign(Error('CODEX_RPC_ERROR'),{rpcMethod:method,rpcCode:-1,diagnostic:'temporary unavailable'});
+            if(variant==='read-cancel'){signalRead();return await new Promise((_resolve,reject)=>{rejectRead=reject;});}
+            return {thread:{id:'thread-1',cwd:join(f.scratch,'codex-empty'),status:{type:'notLoaded'},modelProvider:'openai',model:MODEL,reasoningEffort:EFFORT}};
+          }
+          if(method==='thread/turns/list'){
+            client.calls.push({method,params});reads++;
+            return {data:[{id:variant==='changed-tail'&&reads===2?'foreign':'old-native-turn',status:variant==='pending'?'inProgress':'interrupted',itemsView:'full',error:null,
+              items:[{type:'userMessage',content:[{type:'text',text:'Current authoritative host facts: '+JSON.stringify({world:{id:'host-world'},binding:{sessionId:'host-session',projectId:'p',turnId:'prior'}})},{type:'text',text:'Keep the complete city'}]}]}]};
+          }
+          if(method==='thread/inject_items'&&variant==='partial-inject'){client.calls.push({method,params});throw Error('CODEX_TRANSPORT_CLOSED');}
+          return original(method,params);
+        };
+        const x=f.make(client);const running=x.runtime.prompt({text:'Continue'},'new-user','new-turn');
+        if(variant==='read-cancel'){
+          client.close=async()=>{client.closed=true;rejectRead(Error('CODEX_TRANSPORT_CLOSED'));};
+          await readEntered;await x.runtime.abort();
+        }
+        if(['matching','deferred'].includes(variant)){
+          await x.ready;expect(reads).toBe(2);expect(client.calls.some(c=>c.method==='thread/start'||c.method==='thread/compact/start')).toBe(false);
+          if(variant==='deferred')expect(JSON.stringify(client.calls.filter(c=>c.method==='thread/inject_items'))).toContain('Also preserve this request');
+          else expect(client.calls.some(c=>c.method==='thread/inject_items')).toBe(false);
+          expect(client.calls.filter(c=>c.method==='turn/start')).toHaveLength(1);
+          client.notify('turn/completed',{turn:{id:'turn-cli',status:'completed'}});await running;
+        }else{
+          await running;expect(client.calls.some(c=>['thread/start','turn/start','thread/compact/start'].includes(c.method))).toBe(false);
+          if(variant==='partial-inject')expect(f.checkpoint?.submitted).toBe(false);
+          else{
+            expect(f.checkpoint).toEqual(saved);expect(f.calls.filter(c=>c.method==='codex.checkpoint.save')).toHaveLength(beforeSaves);
+            expect(f.events.filter(e=>e.event.type==='error').at(-1).event.error).toMatchObject(variant==='read-cancel'?
+              {code:'TURN_ABORTED',details:{recoveryReadOnly:true}}:{code:'CODEX_INTERRUPTED_RECOVERY_UNVERIFIED',retriable:true});
+          }
+        }
+      }finally{await f.cleanup();}
+    }
+  });
   it("uses host identities/registered permissions, actual images, exact config and cumulative deltas across fresh runtimes", async () => {
     const f = await fixture();
     try {
@@ -263,7 +332,7 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
       client.request(); await next(); client.request(); client.request({ arguments: { changed: true } });
       expect(f.calls.filter(call => call.method === "tools.execute")).toHaveLength(1);
       const abort = runtime.abort(); await next();
-      expect(f.calls.some(call => call.method === "codex.fence")).toBe(true); expect(client.closed).toBe(true);
+      expect(f.calls.some(call => call.method === "codex.fence")).toBe(true); expect(client.closed).toBe(false);
       client.request({ callId: "late" }); release(); await abort; await running;
       expect(f.calls.filter(call => call.method === "tools.execute")).toHaveLength(1);
       expect(f.events.find(e => e.event.type === "error").event.error.code).toBe("TURN_ABORTED");
@@ -274,7 +343,10 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
     for(const variant of ['ack','missing','late','foreign','save-failed']){
       const f=await fixture();try{
         const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'user','n1');await ready;await next();
-        client.close=async()=>{client.closed=true;if(variant!=='missing'&&variant!=='late')client.notify('turn/completed',{turn:{id:variant==='foreign'?'other':'turn-cli',status:'interrupted'}});};
+        const original=client.call.bind(client);client.call=async(method,params)=>{
+          if(method==='turn/interrupt'&&variant!=='missing'&&variant!=='late')client.notify('turn/completed',{turn:{id:variant==='foreign'?'other':'turn-cli',status:'interrupted'}});
+          return original(method,params);
+        };
         if(variant==='save-failed')f.rejectSaves();
         await runtime.abort();await running;
         if(variant==='late')client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});
@@ -292,7 +364,9 @@ describe("Codex desktop adapter (mock app-server, no live model)", () => {
     const f=await fixture();let release!:()=>void;f.execute=async()=>{await new Promise<void>(resolve=>{release=resolve;});return {ok:true,content:'late'};};
     try{
       const {runtime,client,ready}=f.make();const running=runtime.prompt({text:'continue'},'user','n1');await ready;await next();
-      client.request();await next();client.close=async()=>{client.closed=true;client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});};
+      client.request();await next();const original=client.call.bind(client);client.call=async(method,params)=>{
+        if(method==='turn/interrupt')client.notify('turn/completed',{turn:{id:'turn-cli',status:'interrupted'}});return original(method,params);
+      };
       const aborted=runtime.abort();await next();release();await aborted;await running;
       expect(f.checkpoint?.synchronized).toBe(false);
     }finally{await f.cleanup();}

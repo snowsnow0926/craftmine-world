@@ -291,9 +291,11 @@ projected. The message retains at most 1,024 Unicode characters plus an explicit
 truncation marker. Tokens, common credential assignments, local paths, URLs and
 email addresses are redacted before persistence. Raw stderr remains discarded.
 
-This is diagnosis, not a recovery policy change. Interrupted or divergent
-checkpoints still restore the canonical transcript in a new CLI thread; valid
-synchronized checkpoints still resume. No automatic retries, history truncation,
+These diagnostic fields do not themselves authorize recovery. Divergent
+checkpoints restore the canonical transcript in a new CLI thread; valid
+synchronized checkpoints resume. The verified interrupted-tail exception below
+preserves an existing native thread without reconstructing its compacted history.
+No automatic model retries, history truncation,
 model fallback, token limits or model-call limits are introduced. A successful
 connection check proves setup, not that a later turn-start request succeeds.
 Old generic errors cannot be retrospectively reconstructed or rewritten.
@@ -304,3 +306,40 @@ unsynchronized failure checkpoint and normal process cleanup. Native E2E require
 a separately labeled ordinary recovery attempt in the original isolated profile;
 source-mode diagnosis is not final packaged acceptance. Inspect the persisted
 error details before inferring account quota, context limits or world errors.
+
+## Interrupted acknowledgement and verified same-thread recovery
+
+Cancellation fences native world authority immediately. The owned app-server
+remains open for the ordinary matching `turn/interrupt` response **and** matching
+`turn/completed` with `interrupted` status, up to a two-second process cleanup
+grace. Only then is stdin closed and stdout drained. This is not a model deadline.
+An idle tool tail, acknowledged actual user turn/start, both interrupt receipts
+and successful Rust save are required for synchronized=true. Maintenance turns,
+pending tool replies, foreign/late receipts or failed saves cannot authorize it.
+See [transport close/drain](../adr/codex-app-server-close-drain.md).
+
+A submitted unsynchronized checkpoint with matching Rust transcript/binding and
+an empty aborted terminal message is a narrow recovery candidate. The main host
+gets the prior user turn identity from existing `session.turnMetrics`. The sidecar
+reads only that CLI thread using `thread/read(includeTurns:false)` and
+`thread/turns/list(desc,limit:1,itemsView:full)`. It requires inactive metadata,
+the exact cwd/model/provider/effort, an interrupted latest turn, original user
+text/images and historical host identities, visible assistant text, and every
+completed dynamic tool's namespace/name/arguments/result. PI call IDs must equal
+`codex-` plus SHA256(JSON.stringify([hostTurnId,nativeCallId])). JSON object key
+order is normalized; source strings and image bytes are not rewritten. Unknown
+items, missing output, running calls and unmatched identities fail closed.
+
+After ordinary thread/resume with the existing sandbox/MCP/model checks, repeat
+the native terminal/tail fingerprint and Rust checkpoint/transcript proof before
+submitting a new turn. No external rollout or database mutation authorizes this
+path. An uncertain read returns CODEX_INTERRUPTED_RECOVERY_UNVERIFIED with bounded
+cause details; it never silently rebuilds the long history. English and Chinese
+transcript copy points to the existing Continue action. Empty local read-only
+failure/cancel receipts can be separated for prefix digest verification; their
+user messages remain visible and are injected as historical data after verified
+resume. Before any such injection the checkpoint becomes submitted=false; an
+uncertain partial injection can never be resumed as synchronized. All other
+fresh-thread/import/divergent-history paths retain their existing behavior.
+
+Validation: [interrupted recovery E2E](../e2e/codex-interrupted-recovery.md).

@@ -35,3 +35,14 @@ manual PI compaction, PI asktool cards and auxiliary provider completions are no
 Codex capabilities. Exact alpha CLI compatibility is intentionally checked;
 incompatible upgrades require reviewed schema/policy validation. Details and
 commands: [desktop backend spec](../spec/codex-desktop-world-backend.md).
+
+2026-09-14 recovery amendment: an externally visible native interrupted journal
+does not prove the adapter received its terminal acknowledgement. Keep the
+restricted transport open through the interrupt RPC and matching terminal, then
+use [close/drain semantics](codex-app-server-close-drain.md). Existing submitted
+but unsynchronized aborted checkpoints may resume only through read-only native
+API tail comparison against Rust's digest and prior turn metrics, repeated after
+ordinary resume. Uncertain verification has an explicit Continue retry and never
+silently rebuilds the complete history. This preserves native compaction while
+leaving the original Rust transcript, model and world state intact. The exact
+criteria and partial-injection boundary are in the backend specification.

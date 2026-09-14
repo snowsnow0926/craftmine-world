@@ -1815,6 +1815,7 @@ export const en = {
     justNow: "Just now",
   },
   errors: {
+    CODEX_INTERRUPTED_RECOVERY_UNVERIFIED: "The previous stopped turn could not be verified yet. Your conversation and world are preserved. Choose Continue to retry verification; the app will not rebuild the full history automatically.",
     TOKEN_BUDGET_EXHAUSTED: "The local task token budget is exhausted. Adjust its budget in the world workbench, then resume the saved task.",
     REQUEST_BUDGET_EXHAUSTED: "The task request limit is reached. Review the saved task in the world workbench.",
     COMPACTION_BUDGET_EXHAUSTED: "The task compaction limit is reached. Review the saved task in the world workbench.",

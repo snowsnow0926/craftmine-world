@@ -1777,6 +1777,7 @@ export const es = {
     "justNow": "Justo ahora"
   },
   "errors": {
+    "CODEX_INTERRUPTED_RECOVERY_UNVERIFIED": "Todavía no se pudo verificar el turno detenido. La conversación y el mundo se conservan. Pulsa Continuar para volver a verificar; no se reconstruirá automáticamente todo el historial.",
     TOKEN_BUDGET_EXHAUSTED: "Se agotó el presupuesto local de tokens de la tarea. Ajústalo en el taller del mundo y reanuda la tarea guardada.",
     REQUEST_BUDGET_EXHAUSTED: "Se alcanzó el límite de solicitudes. Revisa la tarea en el taller del mundo.",
     COMPACTION_BUDGET_EXHAUSTED: "Se alcanzó el límite de compactaciones. Revisa la tarea en el taller del mundo.",
