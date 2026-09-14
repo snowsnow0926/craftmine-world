@@ -22,3 +22,11 @@ The engine verifies three distinct identities, two actual collision bodies, no i
 The fixture intentionally has no managed export executor: its source install reports `source-saved-check-blocked`, followed by an independently executed real Godot import/probe. This is source-install and CPU component evidence, not native UI, model selection, managed Web export or complete player-flow acceptance. Those remain separate integration checks.
 
 The earlier failed test fixture omitted the required source pin; its failure log is retained. It was corrected by supplying the actual `godotProject.index` revision/hash, without relaxing the installer guard.
+
+## Integrated catalog
+
+The production source-library builder now includes these two nature packages and the four promo combat packages. Its generated inventory lists 34 distinct assets across 41 version records, plus four complete reference worlds. Existing released archive versions retain their original bytes.
+
+`tests/promo-reuse-discovery.test.mjs` seeds the entire built catalog into an isolated real Core process and uses the actual source-library search/read route. Default results find the correct packages for the player's Chinese words for tree, flowers/grass, monsters, sword, heavy sword, large monster, monster hunting and AK47. Exact returned archive references resolve to the declared single-root packages. The test has no active receiving world and correctly reports unknown compatibility rather than claiming it is ready to install. Historical combat v1 bytes remain available while an exact-ID search selects v2.
+
+The on-demand guidance index is explicitly regenerated from this catalog. Existing source-interface hashes and controller cohorts remain unchanged. The index consistency regression rejects an outdated component/version inventory after later catalog changes.

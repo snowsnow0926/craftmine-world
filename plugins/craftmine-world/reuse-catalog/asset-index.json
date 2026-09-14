@@ -1,8 +1,8 @@
 {
   "format": "craftmine.reuse-asset-index/1",
-  "catalogSha256": "f4fd1b3b1e1751733f89dee70399d13677df7339adc7640303476314cd13b079",
-  "assetCount": 28,
-  "versionCount": 35,
+  "catalogSha256": "16c05d7d93ed20dcabacc9dae90993b672f7d36985ada516eb246742797a6fdb",
+  "assetCount": 34,
+  "versionCount": 41,
   "policy": {
     "scope": "bundled-discovery-metadata",
     "authority": "Lookup IDs in the live catalog and use its exact returned archiveRef/readRequest. These hashes are provenance, never installation refs.",
@@ -599,6 +599,132 @@
         "license": "Source-declared MIT; generated/reference rights unverified",
         "licenseStatus": "unverified"
       }
+    },
+    {
+      "assetId": "cw.nature.promo-broadleaf",
+      "title": "宣传片同款阔叶树",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "object",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.promo-broadleaf"
+      },
+      "bytes": 23813,
+      "source": {
+        "origin": "Craftmine promo-mainline / assets/blender/broadleaf.glb",
+        "author": "Craftmine World player / Codex-authored source",
+        "license": "Source-declared MIT; generated/reference rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.scene.promo-meadow",
+      "title": "宣传片同款草地与野花",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "scene",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.scene.promo-meadow"
+      },
+      "bytes": 1532932,
+      "source": {
+        "origin": "Craftmine promo-mainline / assets/blender/meadow.glb",
+        "author": "Craftmine World player / Codex-authored source",
+        "license": "Source-declared MIT; generated/reference rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.module.promo-monsters",
+      "title": "宣传片同款六只角怪",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-monsters"
+      },
+      "bytes": 32961,
+      "source": {
+        "origin": "Craftmine promotional mainline / Codex gpt-6-astra xhigh / Blender",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.module.promo-heavyblade",
+      "title": "宣传片同款重刃",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-heavyblade"
+      },
+      "bytes": 29401,
+      "source": {
+        "origin": "Craftmine promotional mainline / Codex gpt-6-astra xhigh / Blender",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.module.promo-hunt",
+      "title": "宣传片同款裂岳兽试炼",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-hunt"
+      },
+      "bytes": 66135,
+      "source": {
+        "origin": "Craftmine promotional mainline / Codex gpt-6-astra xhigh / Blender",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
+    },
+    {
+      "assetId": "cw.module.promo-ak47",
+      "title": "宣传片同款 AK47",
+      "latestListedVersion": 1,
+      "versions": [
+        1
+      ],
+      "kind": "module",
+      "route": "godot_source_library",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-ak47"
+      },
+      "bytes": 38684,
+      "source": {
+        "origin": "Craftmine promotional mainline / Codex gpt-6-astra xhigh / Blender",
+        "author": "Craftmine project generated content",
+        "license": "MIT wrapper; generated model rights unverified",
+        "licenseStatus": "unverified"
+      }
     }
   ],
   "referenceWorlds": [
@@ -612,7 +738,13 @@
       "codeReadRoute": null,
       "manifestSha256": "cf1ca86c779c319346b74452c595fd45473f1bd6f41bb9a5a33522cb8ec06667",
       "relatedListedComponents": [
-        "cw.module.approved-pomeranian"
+        "cw.module.approved-pomeranian",
+        "cw.nature.promo-broadleaf",
+        "cw.scene.promo-meadow",
+        "cw.module.promo-monsters",
+        "cw.module.promo-heavyblade",
+        "cw.module.promo-hunt",
+        "cw.module.promo-ak47"
       ]
     },
     {
@@ -667,8 +799,12 @@
         "宣传片同款"
       ],
       "templateId": "promo-mainline",
-      "status": "reference-only",
-      "plannedComponentId": "cw.nature.promo-broadleaf",
+      "status": "component-listed",
+      "relatedAssetId": "cw.nature.promo-broadleaf",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.nature.promo-broadleaf"
+      },
       "originalFiles": [
         {
           "path": "assets/blender/broadleaf.glb",
@@ -692,8 +828,12 @@
         "野花"
       ],
       "templateId": "promo-mainline",
-      "status": "reference-only",
-      "plannedComponentId": "cw.scene.promo-meadow",
+      "status": "component-listed",
+      "relatedAssetId": "cw.scene.promo-meadow",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.scene.promo-meadow"
+      },
       "originalFiles": [
         {
           "path": "assets/blender/meadow.glb",
@@ -712,8 +852,12 @@
         "战斗"
       ],
       "templateId": "promo-mainline",
-      "status": "reference-only",
-      "plannedComponentId": "cw.module.promo-monsters",
+      "status": "component-listed",
+      "relatedAssetId": "cw.module.promo-monsters",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-monsters"
+      },
       "originalFiles": [
         {
           "path": "assets/blender/hornling.glb",
@@ -742,8 +886,12 @@
         "近战"
       ],
       "templateId": "promo-mainline",
-      "status": "reference-only",
-      "plannedComponentId": "cw.module.promo-heavyblade",
+      "status": "component-listed",
+      "relatedAssetId": "cw.module.promo-heavyblade",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-heavyblade"
+      },
       "originalFiles": [
         {
           "path": "assets/blender/heavyblade.glb",
@@ -768,8 +916,12 @@
         "boss"
       ],
       "templateId": "promo-mainline",
-      "status": "reference-only",
-      "plannedComponentId": "cw.module.promo-hunt",
+      "status": "component-listed",
+      "relatedAssetId": "cw.module.promo-hunt",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-hunt"
+      },
       "originalFiles": [
         {
           "path": "assets/blender/riftbeast.glb",
@@ -799,8 +951,12 @@
         "射击"
       ],
       "templateId": "promo-mainline",
-      "status": "reference-only",
-      "plannedComponentId": "cw.module.promo-ak47",
+      "status": "component-listed",
+      "relatedAssetId": "cw.module.promo-ak47",
+      "searchRequest": {
+        "mode": "search",
+        "query": "cw.module.promo-ak47"
+      },
       "originalFiles": [
         {
           "path": "assets/blender/ak47.glb",

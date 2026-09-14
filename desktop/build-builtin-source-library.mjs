@@ -10,6 +10,8 @@ import {buildApprovedPomeranianPackage} from './build-approved-pomeranian-packag
 import {buildCityFragmentPackages} from './build-city-fragment-packages.mjs';
 import {buildRainControlPackage} from './build-rain-control-package.mjs';
 import {buildReusableJ20Package} from './build-reusable-j20-package.mjs';
+import {buildPromoNaturePackages} from './build-promo-nature-packages.mjs';
+import {buildPromoCombatPackages} from './build-promo-combat-packages.mjs';
 const repository=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const check=(yes,code)=>{if(!yes)throw Error(code);};
@@ -118,6 +120,10 @@ export function buildBuiltinSourceLibrary({output,componentRoot=path.join(reposi
   for(const upgraded of [buildApprovedPomeranianPackage({repository,version:4}),buildBuiltinPetPackage({repository,version:4})]){packages.push({file:upgraded.file,bytes:upgraded.bytes});entries.push(upgraded.entry);}
   // Stage only after every resource and archive has passed validation.
   for(const fragment of buildCityFragmentPackages({repository})){packages.push({file:fragment.file,bytes:fragment.bytes});if(fragment.preview)packages.push(fragment.preview);entries.push(fragment.entry);}
+  for(const component of [...buildPromoNaturePackages({repository}),...buildPromoCombatPackages({repository})]){
+    check(!entries.some(entry=>entry.assetId===component.entry.assetId&&entry.version===component.entry.version),'BUILTIN_PROMO_ID_DUPLICATE');
+    packages.push({file:component.file,bytes:component.bytes});entries.push(component.entry);
+  }
   fs.mkdirSync(output,{recursive:true});
   for(const item of packages)fs.writeFileSync(path.join(output,item.file),item.bytes);
   const catalog={format:'craftmine.builtin-source-library/1',version:1,entries};
