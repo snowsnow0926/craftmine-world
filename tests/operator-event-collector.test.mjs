@@ -18,6 +18,12 @@ test('interleaved sessions, errors, tools, usage and questions keep their identi
 test('lost CDP response can retrieve the same unacknowledged batch without losing terminal or ask events',()=>{
   const collector=createOperatorEventCollector(),ask=event('asktool',null,{requestId:'q',questions:['original']});collector.push(ask);const first=collector.drain();collector.push(event('error',null,{code:'later'}));assert.deepEqual(collector.drain(),first);assert.equal(collector.acknowledge('wrong-id'),false);assert.deepEqual(collector.drain(),first);collector.acknowledge(first.deliveryId);assert.equal(collector.drain().events[0].event.code,'later');
 });
+test('update metadata stays before subsequent tool/status/error/ask boundaries without message IDs',()=>{
+  for(const type of ['tool_start','status','error','asktool','permission']){
+    const collector=createOperatorEventCollector();collector.push(event('message_update',{id:'first',thinking:'earlier'}));collector.push(event('message_update',{id:'second',thinking:'later'}));const boundary=event(type,null,{requestId:'unique'});collector.push(boundary);
+    const rows=collector.drain().events;assert.deepEqual(rows.map(row=>row.event.type),['message_update','message_update',type]);assert.equal(rows[0].event.message.id,'first');assert.equal(rows[1].event.message.id,'second');assert.deepEqual(rows[2],boundary);
+  }
+});
 test('observation timeouts reconnect without model actions; repeated failure waits for explicit operator retry',async()=>{
   let attempts=0,operatorRequests=0;const states=[];
   await recoverOperatorObserver({assertAlive(){},notify:value=>states.push(value.state),connect:async()=>{attempts++;if(attempts<=3)throw Error('PAGE_RPC_TIMEOUT:observer');},waitForOperator:async()=>{operatorRequests++;}});
