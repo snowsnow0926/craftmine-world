@@ -1,0 +1,776 @@
+{
+  "format": "craftmine.candidate-city-import-acceptance/1",
+  "candidateCommit": "201faf9db13c",
+  "scope": "Actual packaged candidate EXE; baseline pre-pet-fix city ZIP, normal new-profile import/play/save/cold-reopen. Not final delivery or pet fix acceptance.",
+  "passed": true,
+  "report": {
+    "file": "D:/cm-201-city-import/test-results/desktop-native-rt-fwBT94/report.json",
+    "sha256": "2f188f16498a354c479dbf0739fcb7df8239b9c0f1ea166133fe621be0e918d0"
+  },
+  "packageIdentity": {
+    "inventorySha256": "28b352b9188a37a6e14efa96295493886229d7e7da6bb2815452d1fb4a72cb74",
+    "mainSha256": "6c0a337893f08099c6bbb1168ddd16a44ac743ca5e0ffa140e0b734dfd4cb0d9",
+    "version": "0.14.4-preview.23"
+  },
+  "nativeBinaries": {
+    "core": {
+      "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\201faf9db13c-dd7a04fc-53e4-4248-ac27-67edc734a7bf\\output\\win-unpacked\\resources\\bin\\craftmine-core.exe",
+      "sha256": "7851dc59ffaa8b67ac2c371eae48c306fe20f3f008e76db84cf517bc37dfad82"
+    },
+    "host": {
+      "file": "D:\\Craftmine Worktrees\\product-world-kits-20260914\\desktop\\build\\releases\\201faf9db13c-dd7a04fc-53e4-4248-ac27-67edc734a7bf\\output\\win-unpacked\\resources\\bin\\pi-desktop-host-core.exe",
+      "sha256": "07bfcbd6b90944518cee89fdc75011aa8f4baa09ebc155f80eab8b9a137f08c8"
+    }
+  },
+  "driverSha256": "ae14dc8e1f3acd9b9210e6c9a65725af643b956935a0c333befe599b140dd754",
+  "archive": {
+    "path": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/captures/weather-baseline-completed-export-a36aaaf4.zip",
+    "sha256": "a36aaaf4fffb10c95c1cff83c29e6e69b1a62d42696da7388004a87e70c8f094",
+    "bytes": 10059483
+  },
+  "expected": {
+    "file": "D:/cm-product-agent/test-results/desktop-native-product-5N6HZ2/weather-baseline-completed-template-expectations.json",
+    "sha256": "770e4b4ca7e18fd4e868319e1e8e6afa0d7b6a85211750948d71066119dc61ac"
+  },
+  "worldId": "world-0eb2abf9d197",
+  "assetId": "player.world.71abd33f7e4e4b11a35dd995b826acae",
+  "modelCalls": 0,
+  "launches": [
+    {
+      "kind": "external-template-import",
+      "startedAt": "2026-09-14T05:28:54.446Z",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    },
+    {
+      "kind": "external-template-cold",
+      "startedAt": "2026-09-14T05:29:41.820Z",
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "audit": {
+        "type": "craftmine-headless-exit",
+        "violations": [],
+        "pageErrors": [],
+        "shutdownFailures": []
+      }
+    }
+  ],
+  "check": {
+    "jobId": "gjob-e0d0a1d85b9b34a667dcbdf96d272bdcd535617646205f2e51b5e9c75100ca46",
+    "passed": true,
+    "assertions": [
+      {
+        "id": "runtime.ready",
+        "passed": true,
+        "detail": "ops=capabilities,load,snapshot,save,pause,resume,acknowledge,cancel,exit"
+      },
+      {
+        "id": "runtime.frame",
+        "passed": true,
+        "detail": "frames=3 distinct=3"
+      },
+      {
+        "id": "runtime.no-errors",
+        "passed": true,
+        "detail": null
+      },
+      {
+        "id": "runtime.snapshot",
+        "passed": true,
+        "detail": "formal progress unchanged"
+      },
+      {
+        "id": "runtime.isolation",
+        "passed": true,
+        "detail": "guard={\"focus\":0,\"pointerLock\":0}"
+      },
+      {
+        "id": "runtime.recovery",
+        "passed": true,
+        "detail": "graceful=true"
+      }
+    ],
+    "diagnostic": {
+      "format": "craftmine.godot-runtime-diagnostic/1",
+      "diagnosticOnly": true,
+      "jobId": "gjob-e0d0a1d85b9b34a667dcbdf96d272bdcd535617646205f2e51b5e9c75100ca46",
+      "worldId": "world-0eb2abf9d197",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1",
+      "inputHash": "da29f21e950991e2382a2f872655663970d40b96a5ab465d608cd78db962ca10",
+      "error": null,
+      "ready": {
+        "ok": true,
+        "instanceId": "c6a71cd67a98beb504646106"
+      },
+      "isolation": {
+        "offscreen": true,
+        "focusable": false,
+        "visible": false
+      },
+      "errors": {
+        "runtime": [],
+        "console": [],
+        "renderer": null
+      },
+      "diagnostics": [
+        "[phase] artifact-verification started elapsedMs=1 stageElapsedMs=1",
+        "[phase] artifact-verification completed elapsedMs=119 stageElapsedMs=119",
+        "[phase] runtime-server started elapsedMs=119 stageElapsedMs=0",
+        "[phase] runtime-server completed elapsedMs=127 stageElapsedMs=8",
+        "[phase] window started elapsedMs=127 stageElapsedMs=0",
+        "[phase] window completed elapsedMs=134 stageElapsedMs=7",
+        "[phase] load started elapsedMs=134 stageElapsedMs=0",
+        "[phase] load completed elapsedMs=188 stageElapsedMs=54",
+        "[phase] ready started elapsedMs=188 stageElapsedMs=0",
+        "[phase] ready completed elapsedMs=14295 stageElapsedMs=14107",
+        "[phase] runtime-check started elapsedMs=14295 stageElapsedMs=0",
+        "[phase] runtime-check completed elapsedMs=17228 stageElapsedMs=2933",
+        "[info] Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org/[runtime-url]",
+        "[info] OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+        "[info] Build configuration: Emscripten 4.0.20, multi-threaded, no GDExtension support.",
+        "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+        "[probe] {\"ready\":\"complete\",\"coi\":true,\"game\":\"object\",\"engine\":\"function\",\"canvas\":[960,640],\"status\":\"正在加载世界…正在准备场景和运行资源，请稍候\"}",
+        "[artifact-worker] {\"diagnosticOnly\":true,\"status\":\"completed\",\"errorCode\":null,\"shutdownErrorCode\":null,\"workerStarted\":true,\"messageReceived\":true,\"exitConfirmed\":true,\"exitCode\":0,\"progressMessages\":1,\"mainElapsedMs\":117,\"mainHeartbeat\":{\"periodMs\":100,\"samples\":1,\"maxLagMs\":8},\"workerElapsedMs\":44}",
+        "[artifact-verification] {\"operation\":\"hash-compare\",\"path\":\"web/index.wasm\",\"artifactPath\":\"web/index.wasm\",\"artifactIndex\":10,\"totalFiles\":10,\"expectedBytes\":38820072,\"bytesRead\":38820072,\"totalBytesRead\":52674944,\"verifiedFiles\":10,\"elapsedMs\":44,\"operationElapsedMs\":0,\"lastByteProgressAgoMs\":0}",
+        "[artifact-verification-runtime] {\"diagnosticOnly\":true,\"state\":\"completed\",\"elapsedMs\":44,\"heartbeat\":{\"periodMs\":100,\"samples\":0,\"maxLagMs\":0},\"resources\":{\"start\":{\"available\":true,\"counts\":{},\"omittedTypes\":0},\"end\":{\"available\":true,\"counts\":{\"FSReqCallback\":1},\"omittedTypes\":0}}}"
+      ],
+      "truncated": false
+    }
+  },
+  "stateChecks": [
+    {
+      "label": "fresh-import",
+      "passed": true,
+      "checks": [
+        {
+          "id": "inventory",
+          "passed": true
+        },
+        {
+          "id": "openedChests",
+          "passed": true
+        },
+        {
+          "id": "doors",
+          "passed": true
+        },
+        {
+          "id": "rules",
+          "passed": true
+        },
+        {
+          "id": "flight-hasFlown",
+          "passed": true
+        },
+        {
+          "id": "flight-landings",
+          "passed": true
+        },
+        {
+          "id": "flight-flightSeconds",
+          "passed": true
+        },
+        {
+          "id": "flight-airspeed",
+          "passed": true
+        },
+        {
+          "id": "flight-piloted",
+          "passed": true
+        },
+        {
+          "id": "flight-crashed",
+          "passed": true
+        },
+        {
+          "id": "flight-grounded",
+          "passed": true
+        },
+        {
+          "id": "flight-gearDown",
+          "passed": true
+        },
+        {
+          "id": "flight-assist",
+          "passed": true
+        },
+        {
+          "id": "flight-afterburner",
+          "passed": true
+        },
+        {
+          "id": "flight-throttle",
+          "passed": true
+        },
+        {
+          "id": "flight-cockpitView",
+          "passed": true
+        },
+        {
+          "id": "flight-settings",
+          "passed": true
+        },
+        {
+          "id": "flight-sourceSettings",
+          "passed": true
+        },
+        {
+          "id": "pet-interactionCount",
+          "passed": true
+        },
+        {
+          "id": "pet-settings/following",
+          "passed": true
+        },
+        {
+          "id": "pet-settings/name",
+          "passed": true
+        },
+        {
+          "id": "pet-sourceSettings",
+          "passed": true
+        },
+        {
+          "id": "city-districts",
+          "passed": true
+        },
+        {
+          "id": "city-authoredBuildings",
+          "passed": true
+        },
+        {
+          "id": "quest-items",
+          "passed": true
+        },
+        {
+          "id": "observed-quest",
+          "passed": true
+        },
+        {
+          "id": "flight-component-identity",
+          "passed": true
+        },
+        {
+          "id": "flight-observed-entity",
+          "passed": true
+        },
+        {
+          "id": "pet-component-identity",
+          "passed": true
+        },
+        {
+          "id": "pet-observed-entity",
+          "passed": true
+        }
+      ],
+      "instanceId": "a9f13a31ba7ee163c1b4d1a5",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1"
+    },
+    {
+      "label": "ordinary-saved",
+      "passed": true,
+      "checks": [
+        {
+          "id": "inventory",
+          "passed": true
+        },
+        {
+          "id": "openedChests",
+          "passed": true
+        },
+        {
+          "id": "doors",
+          "passed": true
+        },
+        {
+          "id": "rules",
+          "passed": true
+        },
+        {
+          "id": "flight-hasFlown",
+          "passed": true
+        },
+        {
+          "id": "flight-landings",
+          "passed": true
+        },
+        {
+          "id": "flight-flightSeconds",
+          "passed": true
+        },
+        {
+          "id": "flight-airspeed",
+          "passed": true
+        },
+        {
+          "id": "flight-piloted",
+          "passed": true
+        },
+        {
+          "id": "flight-crashed",
+          "passed": true
+        },
+        {
+          "id": "flight-grounded",
+          "passed": true
+        },
+        {
+          "id": "flight-gearDown",
+          "passed": true
+        },
+        {
+          "id": "flight-assist",
+          "passed": true
+        },
+        {
+          "id": "flight-afterburner",
+          "passed": true
+        },
+        {
+          "id": "flight-throttle",
+          "passed": true
+        },
+        {
+          "id": "flight-cockpitView",
+          "passed": true
+        },
+        {
+          "id": "flight-settings",
+          "passed": true
+        },
+        {
+          "id": "flight-sourceSettings",
+          "passed": true
+        },
+        {
+          "id": "pet-interactionCount",
+          "passed": true
+        },
+        {
+          "id": "pet-settings/following",
+          "passed": true
+        },
+        {
+          "id": "pet-settings/name",
+          "passed": true
+        },
+        {
+          "id": "pet-sourceSettings",
+          "passed": true
+        },
+        {
+          "id": "city-districts",
+          "passed": true
+        },
+        {
+          "id": "city-authoredBuildings",
+          "passed": true
+        },
+        {
+          "id": "quest-items",
+          "passed": true
+        },
+        {
+          "id": "observed-quest",
+          "passed": true
+        },
+        {
+          "id": "flight-component-identity",
+          "passed": true
+        },
+        {
+          "id": "flight-observed-entity",
+          "passed": true
+        },
+        {
+          "id": "pet-component-identity",
+          "passed": true
+        },
+        {
+          "id": "pet-observed-entity",
+          "passed": true
+        }
+      ],
+      "instanceId": "a9f13a31ba7ee163c1b4d1a5",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1"
+    },
+    {
+      "label": "cold-reopened",
+      "passed": true,
+      "checks": [
+        {
+          "id": "inventory",
+          "passed": true
+        },
+        {
+          "id": "openedChests",
+          "passed": true
+        },
+        {
+          "id": "doors",
+          "passed": true
+        },
+        {
+          "id": "rules",
+          "passed": true
+        },
+        {
+          "id": "flight-hasFlown",
+          "passed": true
+        },
+        {
+          "id": "flight-landings",
+          "passed": true
+        },
+        {
+          "id": "flight-flightSeconds",
+          "passed": true
+        },
+        {
+          "id": "flight-airspeed",
+          "passed": true
+        },
+        {
+          "id": "flight-piloted",
+          "passed": true
+        },
+        {
+          "id": "flight-crashed",
+          "passed": true
+        },
+        {
+          "id": "flight-grounded",
+          "passed": true
+        },
+        {
+          "id": "flight-gearDown",
+          "passed": true
+        },
+        {
+          "id": "flight-assist",
+          "passed": true
+        },
+        {
+          "id": "flight-afterburner",
+          "passed": true
+        },
+        {
+          "id": "flight-throttle",
+          "passed": true
+        },
+        {
+          "id": "flight-cockpitView",
+          "passed": true
+        },
+        {
+          "id": "flight-settings",
+          "passed": true
+        },
+        {
+          "id": "flight-sourceSettings",
+          "passed": true
+        },
+        {
+          "id": "pet-interactionCount",
+          "passed": true
+        },
+        {
+          "id": "pet-settings/following",
+          "passed": true
+        },
+        {
+          "id": "pet-settings/name",
+          "passed": true
+        },
+        {
+          "id": "pet-sourceSettings",
+          "passed": true
+        },
+        {
+          "id": "city-districts",
+          "passed": true
+        },
+        {
+          "id": "city-authoredBuildings",
+          "passed": true
+        },
+        {
+          "id": "quest-items",
+          "passed": true
+        },
+        {
+          "id": "observed-quest",
+          "passed": true
+        },
+        {
+          "id": "flight-component-identity",
+          "passed": true
+        },
+        {
+          "id": "flight-observed-entity",
+          "passed": true
+        },
+        {
+          "id": "pet-component-identity",
+          "passed": true
+        },
+        {
+          "id": "pet-observed-entity",
+          "passed": true
+        }
+      ],
+      "instanceId": "546327d687ef7ff8eb31d4b3",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1"
+    }
+  ],
+  "completeProgressColdReopenEqual": true,
+  "savedProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "components": {
+        "ins-1f469382cd78cdfa61ee927d-e0": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "boardingPosition": [
+            394.942352294922,
+            0.900529861450195,
+            58.5021781921387
+          ],
+          "cockpitView": false,
+          "crashed": false,
+          "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+          "flightSeconds": 4.59999999999999,
+          "format": "craftmine.reusable-j20-state/1",
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": true,
+          "heading": -3.14049785466256,
+          "landings": 1,
+          "piloted": false,
+          "pitch": 0,
+          "position": [
+            400.559448242188,
+            2.1800000667572,
+            55.6621627807617
+          ],
+          "settings": {
+            "name": "歼二十"
+          },
+          "sourceSettings": {
+            "name": "歼二十"
+          },
+          "throttle": 0,
+          "velocity": [
+            0.00016778997087385,
+            0,
+            0.153270438313484
+          ],
+          "verticalSpeed": 0
+        },
+        "ins-41d4d88059c4ba486b108f6e-e0": {
+          "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+          "format": "craftmine.pet-companion-state/1",
+          "interactionCount": 1,
+          "position": [
+            222.071655273438,
+            0.00069141690619289,
+            60.2324676513672
+          ],
+          "settings": {
+            "appearanceKey": "pomeranian-white",
+            "following": false,
+            "name": "小麦"
+          },
+          "sourceSettings": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          },
+          "yaw": -1.1593533980096
+        }
+      },
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "org-flight-chart": 1,
+        "org-flight-clearance": 1,
+        "org-flight-compass": 1,
+        "org-gate": 1,
+        "org-strength": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.3,
+        "position": [
+          225.467971801758,
+          0.900763332843781,
+          61.4042892456055
+        ],
+        "yaw": 2
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-0eb2abf9d197"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-0eb2abf9d197"
+  },
+  "coldProgress": {
+    "baseId": "creation-sandbox",
+    "baseVersion": "1.0.0",
+    "body": {
+      "baseVersion": "1.0.0",
+      "components": {
+        "ins-1f469382cd78cdfa61ee927d-e0": {
+          "afterburner": false,
+          "airspeed": 0,
+          "assist": true,
+          "bank": 0,
+          "boardingPosition": [
+            394.942352294922,
+            0.900529861450195,
+            58.5021781921387
+          ],
+          "cockpitView": false,
+          "crashed": false,
+          "entityId": "ins-1f469382cd78cdfa61ee927d-e0",
+          "flightSeconds": 4.59999999999999,
+          "format": "craftmine.reusable-j20-state/1",
+          "gearDown": true,
+          "grounded": true,
+          "hasFlown": true,
+          "heading": -3.14049785466256,
+          "landings": 1,
+          "piloted": false,
+          "pitch": 0,
+          "position": [
+            400.559448242188,
+            2.1800000667572,
+            55.6621627807617
+          ],
+          "settings": {
+            "name": "歼二十"
+          },
+          "sourceSettings": {
+            "name": "歼二十"
+          },
+          "throttle": 0,
+          "velocity": [
+            0.00016778997087385,
+            0,
+            0.153270438313484
+          ],
+          "verticalSpeed": 0
+        },
+        "ins-41d4d88059c4ba486b108f6e-e0": {
+          "entityId": "ins-41d4d88059c4ba486b108f6e-e0",
+          "format": "craftmine.pet-companion-state/1",
+          "interactionCount": 1,
+          "position": [
+            222.071655273438,
+            0.00069141690619289,
+            60.2324676513672
+          ],
+          "settings": {
+            "appearanceKey": "pomeranian-white",
+            "following": false,
+            "name": "小麦"
+          },
+          "sourceSettings": {
+            "appearanceKey": "pomeranian-white",
+            "following": true,
+            "name": "小麦"
+          },
+          "yaw": -1.1593533980096
+        }
+      },
+      "doors": {},
+      "format": "craftmine.creation-progress/1",
+      "inventory": {
+        "org-flight-chart": 1,
+        "org-flight-clearance": 1,
+        "org-flight-compass": 1,
+        "org-gate": 1,
+        "org-strength": 1
+      },
+      "openedChests": {},
+      "player": {
+        "onFloor": true,
+        "pitch": -0.3,
+        "position": [
+          225.467971801758,
+          0.900763332843781,
+          61.4042892456055
+        ],
+        "yaw": 2
+      },
+      "rules": {},
+      "sourceTimeOfDay": 12,
+      "timeOfDay": 12,
+      "worldId": "world-0eb2abf9d197"
+    },
+    "format": "craftmine.godot-progress/1",
+    "stateVersion": 1,
+    "worldId": "world-0eb2abf9d197"
+  },
+  "play": {
+    "before": [
+      226.255905151367,
+      0.900763332843781,
+      60.9014167785645
+    ],
+    "after": [
+      225.528396606445,
+      0.900763332843781,
+      61.3808555603027
+    ]
+  },
+  "frames": [
+    {
+      "file": "D:\\cm-201-city-import\\test-results\\desktop-native-rt-fwBT94\\external-import-1-b90be0b7-538b-46af-bfe8-164baa27ab2e.png",
+      "worldId": "world-0eb2abf9d197",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1",
+      "sha256": "c9b237906fca3e42436e26c69ec0c85a126ecf584fe2a8b5fa334aa16ac45439",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "D:\\cm-201-city-import\\test-results\\desktop-native-rt-fwBT94\\external-saved-1-1c4194c2-7cce-4ae8-8454-ce69744f9261.png",
+      "worldId": "world-0eb2abf9d197",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1",
+      "sha256": "47cd5665b4083d0db11c702f5d273bd8551e6f732a27e04e2c7d0fe9db33b127",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "file": "D:\\cm-201-city-import\\test-results\\desktop-native-rt-fwBT94\\external-cold-2-1c30d640-6cef-4919-ba37-eaa3d11da7b6.png",
+      "worldId": "world-0eb2abf9d197",
+      "buildId": "gbd-914f085cece71a91ab808a4f4ed95c3b9e877fc8bfdf524b7902c6f898c580e1",
+      "sha256": "abbee95e7709aac3a6d7f86f48d7ec9344c31795cdd70dddf29546fd110c661c",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "limits": [
+    "原9f博美修复未采用，没有操作原profile或play144+。",
+    "没有重飞/撞机/撞墙；验证旧飞机记录与库存保留。",
+    "此处新profile导入通过不替代旧profile工具链升级恢复验证。"
+  ]
+}
