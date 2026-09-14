@@ -76,7 +76,9 @@ never as reuse authority. The old job/output/candidate are unchanged. Fresh
 export attempts still use existing exclusive staging and raise
 `GODOT_ARTIFACT_CONFLICT` if they would change an immutable artifact. Changed
 toolchains/bridges and unsupported historical evidence are explicit refusals,
-not a generalized export cache. See
+not a generalized export cache. Fresh complete build calls use separate
+[immutable export identities](../adr/godot-export-attempt-identities.md), so a
+new export after an update does not target an old build's artifact directory. See
 [the decision](../adr/godot-failed-check-export-continuation.md).
 
 `expire` runs inside every job-facing transaction and records `interruptReason`

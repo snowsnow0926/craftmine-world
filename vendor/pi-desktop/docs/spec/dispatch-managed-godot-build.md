@@ -8,7 +8,7 @@ specified by ADR 0312.
 
 | Identity | Value | Bound to |
 | --- | --- | --- |
-| `buildId` | `gbd-` + sha256 of the canonical identity document | world, base, formal base build, source revision, manifest hash, asset manifest hash, engine, renderer, target |
+| `buildId` | `gbd-` + sha256 of the v2 canonical identity document | export job ID, world, base, formal base build, source revision, manifest hash, asset manifest hash, engine, renderer, target, content commit, asset lock, host resources |
 | `jobId` | `gjob-` + sha256(`craftmine.godot-job/1\|worldId\|taskId\|toolCallId`) | one tool call in one task |
 | `candidateId` | `gcan-` + sha256(`craftmine.godot-candidate/1\|worldId\|buildId\|checkJobId`) | one passing check job |
 | `executorId` | caller-supplied, ≤240 printable | one registered executor process |
@@ -53,6 +53,18 @@ or an executor ID. Those come from the trusted broker or the executor process.
   call replays its durable receipt, a different payload with the same call id is
   `REPLAY_MISMATCH`. The broker recovers an uncertain transport outcome by reading
   the original receipt (`godotBuild.receipt`) and never by repeating the write.
+- Every new explicit `godotBuild.start` includes its existing durable `jobId` in
+  the build identity (`craftmine.godot-build/2`). Distinct complete exports have
+  distinct immutable source/cache/artifact roots, even with identical source or
+  toolchain. Godot may produce different PCK bytes on repeat exports. Replaying
+  a recorded call returns its original job/build receipt, including historical
+  v1 IDs. The same call ID with a changed request remains `REPLAY_MISMATCH`.
+- Existing `godotJob.continue` retains the origin's build ID and exact native
+  export authorization; changed toolchains still fail that reuse check. Starting
+  a new complete build after an application update never overwrites those bytes
+  or requires editing the source just to create a new ID. Executor attestation,
+  source/assets/base validation and existing storage accounting remain unchanged.
+  See [the export identity decision](../adr/godot-export-attempt-identities.md).
 
 ## 4 Executor contract
 

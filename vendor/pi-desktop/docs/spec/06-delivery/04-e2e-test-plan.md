@@ -9338,6 +9338,13 @@ save and restart before claiming model creation acceptance. Use only offscreen
 processes and no input simulation. See godot-authoring-content-context.md.
 ### Godot continuation after an incomplete model turn
 
+Also run [fresh complete export identities](../../e2e/godot-export-attempt-identities.md):
+same source under the same or changed attested toolchain gets a distinct immutable
+root for each new complete build call; exact receipt retries retain the old ID.
+Verify old artifact bytes/history remain unchanged, continued checks keep their
+origin authorization, and the new candidate can be checked, applied and reopened.
+No public tool schema change, source edit workaround or weakened attestation.
+
 Use the actual world-specific prompt and preserve the original source between
 up to three fixed follow-ups. A completed conversation without a new checked
 candidate must not pass creation. Verify the continue helper refuses an active,

@@ -1,5 +1,5 @@
 //! Managed Godot build inputs: binary asset store, per-build project copies and
-//! deterministic build identity. No Godot process is started from this module.
+//! deterministic per-export build identity. No Godot process is started here.
 //!
 //! Source revisions stay authoritative in `godot_projects`; a build is a derived,
 //! integrity-checked copy of one source revision plus one asset manifest.
@@ -49,9 +49,8 @@ pub(super) struct AssetRow {
     pub bytes: u64,
 }
 
-/// Immutable identity of one build input set. Every field participates in
-/// `build_id`, so a stale source revision or asset manifest cannot be reused as
-/// the current candidate.
+/// Immutable build inputs. `build_id` also binds the durable export job, because
+/// the engine can emit different PCK bytes from identical source inputs.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(super) struct BuildIdentity {
@@ -295,9 +294,10 @@ fn text_asset(path: &str) -> bool {
     )
 }
 
-pub(super) fn build_id(identity: &BuildIdentity) -> Result<String> {
+pub(super) fn build_id(identity: &BuildIdentity, export_job_id: &str) -> Result<String> {
     let body = serde_json::to_string(&json!({
-        "format":"craftmine.godot-build/1","worldId":identity.world_id,"baseId":identity.base_id,
+        "format":"craftmine.godot-build/2","exportJobId":export_job_id,
+        "worldId":identity.world_id,"baseId":identity.base_id,
         "baseBuild":identity.base_build,"sourceRevision":identity.source_revision,
         "manifestHash":identity.manifest_hash,"assetManifestHash":identity.asset_manifest_hash,
         "engineVersion":identity.engine_version,"renderer":identity.renderer,"target":identity.target,
@@ -910,6 +910,14 @@ impl TaskJournal {
         } else {
             None
         };
+        // A fresh ordinary build call owns a fresh immutable export root. Its
+        // durable task/call identity makes retries deterministic without sharing
+        // potentially nondeterministic export bytes with another job. Earlier
+        // receipts returned above retain their original (including v1) IDs.
+        let job_id = format!(
+            "gjob-{}",
+            digest(&format!("craftmine.godot-job/1|{}|{}|{}", args.world_id, task, args.tool_call_id))
+        );
         let mut identity = BuildIdentity {
             branch_id:args.branch_id.clone(),
             world_id: args.world_id.clone(),
@@ -925,7 +933,7 @@ impl TaskJournal {
             content_oid: content_oid.clone(),
             asset_lock_hash: asset_lock_hash.clone(),
         };
-        identity.build_id = build_id(&identity)?;
+        identity.build_id = build_id(&identity, &job_id)?;
         // A world's derived storage is capped so build history cannot grow
         // without bound. Reusing an identical immutable copy costs nothing.
         let reused: bool = tx.query_row(
@@ -987,13 +995,6 @@ impl TaskJournal {
                     file["bytes"].as_u64().unwrap_or(0) as i64],
             )?;
         }
-        let job_id = format!(
-            "gjob-{}",
-            digest(&format!(
-                "craftmine.godot-job/1|{}|{}|{}",
-                args.world_id, task, args.tool_call_id
-            ))
-        );
         let status = if queued { "queued" } else { "blocked" };
         let now = worlds::timestamp()?;
         tx.execute(
