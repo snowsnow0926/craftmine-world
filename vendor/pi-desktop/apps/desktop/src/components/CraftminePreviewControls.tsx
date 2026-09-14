@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { CraftminePreviewState } from "../../shared/craftmine-preview-controls";
 import { api } from "../lib/api";
 import { loadCraftmineLayout, setCraftmineOverlay } from "../lib/craftmine-layout";
+import { creationResultError } from "../lib/creation-task-status";
 import "./CraftminePreviewControls.css";
 
 const request = (payload: Record<string, unknown>) =>
@@ -9,6 +11,8 @@ const request = (payload: Record<string, unknown>) =>
 
 /** Mounted inside the retained immersion surface even while it is closed. */
 export function CraftminePreviewControls({ autoOpen = true }: { autoOpen?: boolean }) {
+  const {i18n} = useTranslation();
+  const chinese = (i18n.language ?? "zh-CN").startsWith("zh");
   const [preview, setPreview] = useState<CraftminePreviewState | null>(null);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -68,7 +72,10 @@ export function CraftminePreviewControls({ autoOpen = true }: { autoOpen?: boole
       <p role="status">{preview.reason}</p>
       <p>{preview.next}</p>
       <small>F2 收起窗口继续试玩，再按 F2 返回这里采用或退出预览。</small>
-      {(error || preview.error) && <p role="alert">{error || preview.error}</p>}
+      {(error || preview.error) && <>
+        <p role="alert">{creationResultError(error || preview.error,chinese)}</p>
+        <details className="creation-result-details"><summary>{chinese ? "诊断详情" : "Diagnostic details"}</summary><pre>{error || preview.error}</pre></details>
+      </>}
     </div>
     <div className="craftmine-preview-controls-actions">
       <button type="button" disabled={pending || preview.applyDisabled} onClick={() => void run("apply")}>{preview.applyLabel}</button>

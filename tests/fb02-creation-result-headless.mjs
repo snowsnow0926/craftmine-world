@@ -32,7 +32,7 @@ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const url=`http://127.0.0.1:${server.address().port}`;
 let browser;
 try {
-  browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),headless:true,viewport:{width:1200,height:760}});
+  browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),headless:true,args:['--disable-gpu'],viewport:{width:1200,height:760}});
   await browser.addInitScript(()=>{globalThis.inputViolations=[];window.focus=()=>inputViolations.push('focus');Element.prototype.requestPointerLock=()=>{inputViolations.push('pointer');throw Error('disabled');};});
   const product=await browser.newPage();product.on('pageerror',e=>report.errors.push(String(e)));
   await product.addInitScript(()=>{
@@ -80,7 +80,8 @@ try {
   check('return from preview leaves formal build and player progress unchanged',await product.evaluate(()=>domain.record.world.build.id==='build-old'&&domain.record.world.snapshot.coins===12));
   // Exercise the new direct result action without visiting the records again.
   await product.evaluate(()=>{domain.failApply=true;});await reactAction('应用到世界');await main.waitForSelector('[role="alert"]');
-  check('failed direct adoption remains visible and recoverable',await main.locator('[role="alert"]').first().textContent().then(x=>x.includes('SAVE_TEMPORARILY')));
+  check('failed direct adoption has a readable cause and retains raw diagnostics',await main.locator('[role="alert"]').first().textContent().then(x=>x.includes('保存未完成'))
+    &&await main.locator('details pre').first().textContent().then(x=>x.includes('SAVE_TEMPORARILY')));
   await product.evaluate(()=>{domain.failApply=false;});
   // The failed request retains a real preview; repeat through its guarded nonce.
   await main.waitForSelector('[data-preview-id]');

@@ -17,6 +17,13 @@
 .craftmine-preview-controls-actions { display: flex; flex-wrap: wrap; gap: 8px; flex: 0 0 auto; }
 .craftmine-preview-controls button { padding: 6px 10px; border: 1px solid var(--ds-border-subtle); border-radius: var(--radius-xs); background: var(--ds-tile); color: var(--ds-text-primary); }
 .craftmine-preview-controls button:disabled { opacity: .5; }
+.craftmine-creation-result button.primary { background: var(--ds-accent); color: var(--ds-bg-primary); }
+.craftmine-creation-result { flex-wrap: wrap; }
+.craftmine-creation-result .craftmine-preview-controls-copy { min-width: min(220px, 100%); }
+.craftmine-creation-result .craftmine-preview-controls-actions { max-width: 100%; }
+.creation-result-details { margin-top: 4px; font-size: 12px; }
+.creation-result-details summary { cursor: pointer; }
+.creation-result-details pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 4px 0; font-size: inherit; }
 @media (max-width: 700px) {
   .craftmine-preview-controls { align-items: flex-start; flex-direction: column; }
 }

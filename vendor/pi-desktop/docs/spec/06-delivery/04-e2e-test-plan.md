@@ -1,5 +1,12 @@
 # 04. E2E Test Plan
 
+### Demo result feedback (2026-09-15)
+
+Run [the focused result feedback plan](../../e2e/demo-result-feedback-20260915.md).
+Distinguish automated checks, application and gameplay evidence. Verify short
+actionable titles, compact diagnostic disclosure, safe pending status reads and
+existing automatic play handoff without model/GPU or physical input in fixtures.
+
 ### Godot docs reflected API reachability (2026-09-15)
 
 - Validate actual public manifest arguments through the installed PI SDK, then

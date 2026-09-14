@@ -87,8 +87,13 @@ and [SetInputToWaveStream](https://learn.microsoft.com/en-us/dotnet/api/system.s
 清除旧结果并拒绝迟到回包；收起后重新挂载时补读持久任务/检查/采用记录。订阅现有
 `craftmineWorldChanged`，直接编辑事件仅触发重读。实际任务未结束时按 2、5、10 秒退避，
 最长 30 分钟；终态停止轮询。读取失败/超时明确显示状态暂不可用。终态无需模型处于运行中
-仍可见；中断、取消、草稿恢复分别显示。“已采用”与“愿望检查通过”分开；未请求、待验证或
-不支持的要求不会显示已验证。无百分比推算，无第二套本地任务数据库。
+仍可见；中断、取消、草稿恢复分别显示。
+
+The compact status now says Added to world / ready to try. Automated check results
+and actual gameplay evidence are distinguished in the result card details; a
+passed requirement check never certifies interaction quality. Pending refreshes
+retain same-owner history but disable result actions until freshly confirmed.
+No inferred percentage or second local task database is introduced.
 
 补充自动证据：`test/creation-task-status.test.mjs`，`tests/creation-voice-status-headless.mjs`。
 后者运行实际 React 控件和假宿主传输，采用独立 headless profile、页面函数、禁用麦克风和

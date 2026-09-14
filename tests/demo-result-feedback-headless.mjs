@@ -1,0 +1,77 @@
+// Actual result component and observer; deterministic host replies, no engine/model.
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {playwright,browserOptions} from '../app/browser-tools.mjs';
+const desktop=path.resolve('vendor/pi-desktop/apps/desktop'),require=createRequire(path.join(desktop,'package.json'));
+fs.mkdirSync('test-results',{recursive:true});
+const out=fs.mkdtempSync(path.resolve('test-results/demo-result-'));
+const report={scope:'Actual React result and observer; deterministic host, no gameplay acceptance',checks:[],errors:[]};
+const check=(name,ok)=>{assert.ok(ok,name);report.checks.push(name);console.log('PASS '+name);};
+const entry=`import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
+import {CraftmineCreationResult} from ${JSON.stringify(path.join(desktop,'src/components/CraftmineCreationResult.tsx'))};
+globalThis.fixture={sessionId:'session-one',running:false,lang:'zh-CN',hold:false,reads:[],calls:[],modes:[],status:{sessionId:'session-one',worldId:'world-one',selectedWorldId:'world-one',worldTitle:'城市寻宝',jobId:'job-one',candidateId:'candidate-one',buildId:'build-one',phase:'applied',requirementStatus:'passed',resultRequestRelation:'current-request'}};
+globalThis.productInvoke=async(method,args)=>{fixture.calls.push({method,args});if(method==='godot.creationTaskStatus'){const value=structuredClone({...fixture.status,sessionId:args.sessionId});if(fixture.hold)await new Promise((resolve,reject)=>fixture.reads.push({resolve,reject,sessionId:args.sessionId}));return value;}if(method==='world.previewControl'&&fixture.holdActions)await new Promise((resolve,reject)=>fixture.pendingAction={resolve,reject});return {ok:true};};
+globalThis.__craftmineWorldBridge={invoke:(_plugin,method,args)=>productInvoke(method,args),onChanged:()=>()=>{}};
+function Root(){const [version,update]=useState(0);fixture.render=()=>update(x=>x+1);return <main data-version={version}><CraftmineCreationResult/></main>}
+createRoot(document.getElementById('root')).render(<Root/>);`;
+await require('esbuild').build({stdin:{contents:entry,loader:'tsx',resolveDir:desktop},outfile:path.join(out,'result.js'),bundle:true,platform:'browser',format:'iife',jsx:'automatic',plugins:[{name:'isolated-host',setup(b){
+  b.onResolve({filter:/^(react|react-dom)(\/.*)?$/},args=>({path:require.resolve(args.path)}));
+  b.onResolve({filter:/react-i18next$/},()=>({path:'locale',namespace:'fixture'}));
+  b.onResolve({filter:/(^|\/)api$/},()=>({path:'api',namespace:'fixture'}));
+  b.onResolve({filter:/stores\/app-store$/},()=>({path:'store',namespace:'fixture'}));
+  b.onResolve({filter:/lib\/craftmine-mode$/},()=>({path:'mode',namespace:'fixture'}));
+  b.onLoad({filter:/.*/,namespace:'fixture'},({path:kind})=>({loader:'js',contents:kind==='api'?`export const api={pluginPanelInvoke:(_plugin,method,args)=>productInvoke(method,args)};`:kind==='locale'?`export const useTranslation=()=>({i18n:{language:fixture.lang}});`:kind==='mode'?`export const enterCraftmineMode=mode=>fixture.modes.push(mode);`:`export const useAppStore=selector=>selector({activeSessionId:fixture.sessionId,isRunning:fixture.running});useAppStore.getState=()=>({activeSessionId:fixture.sessionId,isRunning:fixture.running,workPanelTabs:[]});`}));
+}}]});
+fs.writeFileSync(path.join(out,'index.html'),`<html><meta charset="utf-8"><link rel="stylesheet" href="result.css"><style>:root{--ds-accent:#dedede;--ds-bg-primary:#181818;--ds-border-subtle:#444;--ds-bg:#191919;--ds-text-primary:#eee;--ds-error:#ffa39b;--ds-tile:#252525;--radius-xs:4px}body{margin:0;background:#191919;color:#eee;font:14px sans-serif}main{width:440px} .craftmine-creation-result{max-height:90vh}</style><div id="root"></div><script src="result.js"></script></html>`);
+const server=http.createServer((req,res)=>{const name=path.basename(req.url||'index.html'),file=path.join(out,name);if(!fs.existsSync(file)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':'text/html; charset=utf-8');res.end(fs.readFileSync(file));});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));let browser;
+try{
+  browser=await playwright().chromium.launchPersistentContext(path.join(out,'profile'),{...browserOptions(),headless:true,args:['--disable-gpu'],viewport:{width:460,height:380}});
+  await browser.addInitScript(()=>{globalThis.violations=[];window.focus=()=>violations.push('focus');Element.prototype.requestPointerLock=()=>{violations.push('pointer');throw Error('disabled');};});
+  const page=await browser.newPage();page.on('pageerror',error=>report.errors.push(String(error)));
+  await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);await page.waitForSelector('[data-phase="applied"]');
+  const action=label=>page.evaluate(label=>{const button=[...document.querySelectorAll('button')].find(x=>x.textContent===label);if(!button||button.disabled)throw Error('Disabled action '+label);return button[Object.keys(button).find(key=>key.startsWith('__reactProps$'))].onClick();},label);
+  const set=patch=>page.evaluate(patch=>{Object.assign(fixture.status,patch);window.dispatchEvent(new Event('craftmine-creation-edit-status'));},patch);
+  const settled=()=>page.waitForFunction(()=>document.querySelector('section')?.getAttribute('aria-busy')==='false');
+  await settled();
+  check('applied and passed checks do not claim gameplay or saved progress',await page.locator('strong').textContent().then(text=>text==='已放入世界，可以试玩')&&!await page.locator('body').textContent().then(text=>/愿望检查通过|世界进度已保留/.test(text)));
+  check('playtest evidence boundary remains in compact collapsed details',await page.evaluate(()=>!document.querySelector('details').open&&document.querySelector('details').textContent.includes('交互效果需实际试玩确认')));
+  await page.screenshot({path:path.join(out,'applied.png')});
+  await set({phase:'ready'});await settled();
+  check('preview is the primary action and adoption remains available',await page.locator('button.primary').textContent().then(text=>text==='试玩副本')&&await page.locator('button').filter({hasText:'应用到世界'}).isEnabled());
+  await page.evaluate(()=>{const button=[...document.querySelectorAll('button')].find(x=>x.textContent==='应用到世界');fixture.oldAction=button[Object.keys(button).find(key=>key.startsWith('__reactProps$'))].onClick;fixture.hold=true;window.dispatchEvent(new Event('craftmine-creation-edit-status'));});
+  await page.waitForFunction(()=>fixture.reads.length>0);await page.waitForFunction(()=>document.querySelector('section')?.getAttribute('aria-busy')==='true');
+  await page.evaluate(()=>fixture.oldAction());
+  check('refresh retains the card but blocks old candidate callbacks',await page.locator('[data-phase="ready"]').count()===1&&await page.locator('button').filter({hasText:'应用到世界'}).isDisabled()&&await page.evaluate(()=>!fixture.calls.some(call=>call.method==='world.previewControl')));
+  await page.evaluate(()=>{fixture.hold=false;fixture.reads.shift().reject(Error('OFFLINE'));});await settled();
+  check('failed refresh leaves the old result visibly unconfirmed and disabled',await page.locator('[data-phase="ready"]').count()===1&&await page.locator('body').textContent().then(text=>text.includes('最新结果尚未确认'))&&await page.locator('button').filter({hasText:'应用到世界'}).isDisabled());
+  await action('重新读取结果');await settled();
+  await page.setViewportSize({width:960,height:380});await page.evaluate(()=>{document.querySelector('main').style.width='300px';});
+  await set({phase:'failed',error:"Error invoking remote method: GODOT_CANDIDATE_ACTIVE"});await settled();
+  check('technical error is retained without replacing the visible explanation',await page.locator('[role="alert"]').textContent().then(text=>text.includes('世界正在处理其他操作')&&!text.includes('GODOT_'))&&await page.locator('details pre').textContent().then(text=>text.includes('GODOT_CANDIDATE_ACTIVE')));
+  check('narrow docked result keeps readable copy and contained actions at a desktop viewport',await page.evaluate(()=>document.querySelector('.craftmine-preview-controls-copy').clientWidth>=220&&document.querySelector('section').scrollWidth===document.querySelector('section').clientWidth));
+  await page.screenshot({path:path.join(out,'needs-attention.png')});
+  await action('查看检查记录');await settled();check('attention action opens the existing checks surface',await page.evaluate(()=>fixture.calls.some(call=>call.method==='world.surface'&&call.args.surface.kind==='checks')&&fixture.modes.includes('create')));
+  await set({phase:'ready',error:undefined,sourceStale:true});await settled();check('stale drafts cannot be previewed or adopted',await page.locator('button').filter({hasText:'应用到世界'}).isDisabled());
+  await set({phase:'applied',sourceStale:false,resultRequestRelation:'previous-request'});await settled();check('previous request does not become the current actionable result',await page.locator('strong').textContent().then(text=>text.startsWith('上次创作结果'))&&await page.locator('button').filter({hasText:'进入世界试玩'}).isDisabled());
+  await page.evaluate(()=>{fixture.hold=true;window.dispatchEvent(new Event('craftmine-creation-edit-status'));});await page.waitForFunction(()=>fixture.reads.length>0);
+  await page.evaluate(()=>{fixture.status={...fixture.status,phase:'idle',worldId:'world-two',selectedWorldId:'world-two'};fixture.sessionId='session-two';fixture.render();window.dispatchEvent(new Event('craftmine-world-changed'));});
+  await page.waitForFunction(()=>!document.querySelector('[data-world-id="world-one"]'));
+  await page.evaluate(()=>{fixture.hold=false;for(const read of fixture.reads.splice(0))read.resolve();});
+  check('session/world changes clear old owner immediately and ignore its late reply',!await page.locator('[data-world-id="world-one"]').count());
+  await page.evaluate(()=>{fixture.lang='en';fixture.status={...fixture.status,phase:'applied',error:undefined,sourceStale:false,resultRequestRelation:'current-request'};fixture.render();window.dispatchEvent(new Event('craftmine-creation-edit-status'));});
+  await page.waitForSelector('[data-phase="applied"]');await settled();
+  check('English result has an actionable title and the same evidence boundary',await page.locator('strong').textContent().then(text=>text==='Added to world · ready to try')&&await page.locator('details').textContent().then(text=>text.includes('actual playtest')));
+  await action('Try in world');await settled();check('play action uses the existing world surface and presentation mode',await page.evaluate(()=>fixture.calls.some(call=>call.method==='world.surface'&&call.args.surface.kind==='world')&&fixture.modes.includes('play')));
+  await set({phase:'ready'});await settled();await page.evaluate(()=>{fixture.holdActions=true;});await action('Add to world');await page.waitForFunction(()=>!!fixture.pendingAction);
+  await page.evaluate(()=>{fixture.status={...fixture.status,phase:'applied',worldId:'world-three',selectedWorldId:'world-three'};fixture.sessionId='session-three';fixture.render();window.dispatchEvent(new Event('craftmine-world-changed'));});await page.waitForSelector('[data-world-id="world-three"]');
+  check('a pending action keeps its lock without labelling the new owner as applying',await page.locator('strong').textContent().then(text=>text==='Added to world · ready to try')&&await page.locator('button').filter({hasText:'Try in world'}).isDisabled());
+  await page.evaluate(()=>{fixture.holdActions=false;fixture.pendingAction.reject(Error('OLD_OWNER_FAILURE'));});await settled();
+  check('a late action error does not leak to the new owner and controls unlock',!await page.locator('[role="alert"]').count()&&await page.locator('button').filter({hasText:'Try in world'}).isEnabled());
+  check('no OS input, Pointer Lock, focus request or renderer error',await page.evaluate(()=>violations.length===0)&&report.errors.length===0);
+  report.passed=true;
+}catch(error){report.error=String(error.stack??error);throw error;}
+finally{await browser?.close();await new Promise(resolve=>server.close(resolve));fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(out);}

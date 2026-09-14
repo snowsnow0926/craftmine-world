@@ -4,7 +4,7 @@ import { setCraftmineOverlay } from "../lib/craftmine-layout";
 import { enterCraftmineMode, openCraftmineModeEntry } from "../lib/craftmine-mode";
 import { useCraftmineLayout } from "../lib/use-craftmine-immersion";
 import { useCreationTaskStatus } from "../hooks/use-creation-task-status";
-import { creationTaskLabel } from "../lib/creation-task-status";
+import { creationResultError, creationTaskLabel } from "../lib/creation-task-status";
 
 export function CraftmineOverlayControls() {
   const { i18n, t } = useTranslation();
@@ -15,7 +15,7 @@ export function CraftmineOverlayControls() {
   const creation = useCreationTaskStatus(sessionId ?? null, running);
   const status = useAppStore(state => state.activeSessionId ? state.agentStatuses[state.activeSessionId] : undefined);
   const activity = status?.activity;
-  const showHost = !!creation.status && creation.status.phase !== "idle" && (!running || ["checking", "applying"].includes(creation.status.phase));
+  const showHost = !creation.unavailable && !creation.refreshing && !!creation.status && creation.status.phase !== "idle" && (!running || ["checking", "applying"].includes(creation.status.phase));
   const showUnavailable = creation.unavailable && !running;
   const stage = status?.pendingToolConfirmations ? (chinese ? "等待确认" : "Awaiting approval")
     : activity?.phase === "waiting-model" ? t("chat.waitingForModel")
@@ -44,9 +44,10 @@ export function CraftmineOverlayControls() {
       </button>
       {(creation.status?.phase !== "idle" && creation.status) || creation.unavailable || running ? <span className="craftmine-overlay-task" role="status" aria-live="polite"
         data-task-stage={status?.pendingToolConfirmations ? "approval" : showHost ? creation.status!.phase : showUnavailable ? "unavailable" : activity?.phase ?? "running"}
-        title={showHost ? creation.status?.error : undefined}>
+        title={showHost && creation.status?.error ? creationResultError(creation.status.error,chinese) : undefined}>
         {status?.pendingToolConfirmations ? stage : showHost ? creationTaskLabel(creation.status!, chinese)
-          : showUnavailable ? (chinese ? "任务状态暂不可用 · 打开工作台查看" : "Task status unavailable · open workbench") : stage}
+          : showUnavailable ? (chinese ? "任务状态暂不可用 · 打开工作台查看" : "Task status unavailable · open workbench")
+          : creation.refreshing && !running ? (chinese ? "正在确认最新结果…" : "Confirming the latest result…") : stage}
       </span> : null}
     </div>
   );
