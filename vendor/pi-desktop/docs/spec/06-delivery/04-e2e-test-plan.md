@@ -10803,6 +10803,14 @@ refuse mutation; actual Core ended-turn state must reject source writing even
 when a deliberately stale host permission fixture remains true. An unregistered
 executor must produce its actual blocked status, never a fabricated pass. See
 [the recorded contract acceptance](../../e2e/author-source-install-core-20260914.md).
+# DeepSeek official alias transport (2026-09-14)
+
+Follow [the localhost wire regression](../../e2e/deepseek-alias-wire-20260914.md).
+With the pinned PI adapter and provider UUID, preserve `deepseek-flash`, explicit
+max/off, assistant reasoning fields and the configured output allowance. Verify
+off-only bindings send disabled and generic metadata does not silently clamp an
+enabled max selection to high. No remote model calls are part of this fixture.
+
 # Craftmine PI large-output input headroom (2026-09-14)
 
 Follow [the input-headroom regression](../../e2e/deepseek-input-headroom-20260914.md).

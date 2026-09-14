@@ -198,7 +198,12 @@ export function buildProviderModel(
   try { deepseekEndpoint = new URL(baseUrl).hostname.toLowerCase() === "api.deepseek.com"; } catch { /* Existing URL validation owns malformed endpoints. */ }
   const deepseekThinking = binding.api === "openai-completions"
     && (provider.vendorKey?.trim().toLowerCase() === "deepseek" || deepseekEndpoint)
-    && /^deepseek-v4(?:\.\d+)?-(?:flash|pro)(?:-[a-z0-9-]+)?$/i.test(provider.modelId);
+    && /^(?:deepseek-flash|deepseek-v4(?:\.\d+)?-(?:flash|pro)(?:-[a-z0-9-]+)?)$/i.test(provider.modelId);
+  // PI only advertises extended efforts with an explicit map. A user-enabled
+  // max on the official alias must not silently become high when generic
+  // catalog metadata has no effort map. Preserve any explicit catalog mapping.
+  const deepseekMax = deepseekThinking && provider.supportedThinkingLevels.includes("max")
+    && catalogModel.thinkingLevelMap?.max === undefined ? { max: "max" } : {};
   const zhipuCompat = zhipuRequestCompat({
     vendorKey: provider.vendorKey,
     baseUrl,
@@ -228,7 +233,7 @@ export function buildProviderModel(
       : catalogModel.compat;
   return {
     ...catalogModel,
-    ...(deepseekThinking ? { reasoning: true, thinkingLevelMap: { ...catalogModel.thinkingLevelMap, off: undefined } } : {}),
+    ...(deepseekThinking ? { reasoning: true, thinkingLevelMap: { ...catalogModel.thinkingLevelMap, ...deepseekMax, off: undefined } } : {}),
     id: provider.modelId,
     api: binding.api,
     provider: provider.id,
