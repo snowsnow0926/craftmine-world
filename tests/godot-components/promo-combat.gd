@@ -100,6 +100,10 @@ func run() -> void:
 	player.set("input_enabled", false)
 	check(blade.status == "active" and hunt.boss.phase != "idle", "ordinary H starts original beast trial")
 	check(blade.attempts == 1 and blade.health == 100, "explicit trial start initializes trial resources")
+	check(not core.hud.visible and not core.damage_flash.visible, "trial entry hides old health HUD and damage overlay immediately")
+	var paused_timers := [core.health, core.invulnerable, core.since_damage, core.flash_time]
+	core._update_hud()
+	check([core.health, core.invulnerable, core.since_damage, core.flash_time] == paused_timers, "HUD synchronization does not advance paused combat resources")
 	var boss_before: Dictionary = hunt.boss.snapshot()
 	for i in range(12): await physics_frame
 	check(hunt.boss.snapshot() == boss_before, "conversation pauses beast simulation")
@@ -124,6 +128,8 @@ func run() -> void:
 	for id in prior_states:
 		check(with_rifle.states[id] == prior_states[id], "adding rifle preserves " + id)
 	check(core.current_weapon() == rifle, "auto selection equips newly available rifle")
+	blade._update_hud()
+	check(blade.controls.text.contains("连射") and not blade.controls.text.contains("轻斩"), "active trial HUD describes equipped rifle rather than blade controls")
 	check(core.select_weapon("blade"), "ordinary selection can select installed blade")
 	check(core.current_weapon() == blade and not rifle.equipped, "exactly one equipment owns attack input")
 	check(core.select_weapon("rifle"), "ordinary selection can return to rifle")
@@ -147,6 +153,10 @@ func run() -> void:
 	var save_file := FileAccess.open("user://promo-combat-save.json", FileAccess.WRITE)
 	save_file.store_string(JSON.stringify({"player":player.snapshot(),"components":final_saved.states}))
 	save_file.close()
+	blade._return()
+	blade._update_hud()
+	check(core.hud.visible and core.damage_flash.visible, "leaving trial immediately restores encounter HUD visibility")
+	check(not blade.notice.contains("小麦") and not blade.notice.contains("树林"), "return text describes only existing world content")
 	check(player.get("captured") == false, "test never captures input")
 	world.queue_free()
 	await process_frame

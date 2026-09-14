@@ -320,7 +320,7 @@ func _update_hud() -> void:
 		ammo_label.text = "AK47   %02d / 30   ·   备用弹药 ∞\n按住 J／左键 连射 · R 换弹\n按住 K／右键 瞄准 " % rounds
 		if context.module("blade") != null: ammo_label.text += " · 3 切回重刃"
 		if reload_remaining > 0.0: ammo_label.text += "\n换弹 %.1f 秒" % reload_remaining
-		elif _duel_status() == "failed": ammo_label.text += "\nH 重新挑战 · B 返回树林"
+		elif _duel_status() == "failed": ammo_label.text += "\nH 重新挑战 · B 返回世界"
 		elif _duel_status() == "active" and _duel_paused(): ammo_label.text += "\n已暂停 · Esc 继续"
 		elif notice_time > 0.0: ammo_label.text += "\n" + notice
 		elif _duel_status() == "ready" and int(old_encounter.get("health")) <= 0: ammo_label.text += "\n先按 R 恢复生命"
