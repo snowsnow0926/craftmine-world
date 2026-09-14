@@ -57,7 +57,11 @@ async function queryGuidance(core,{context,worldId,args,assertActive=()=>{}}){
       if(cohortIdentity.baseId!==index.baseId||cohortIdentity.engineVersion!==index.engineVersion)fail('GUIDANCE_SOURCE_IDENTITY_INVALID');
       const {variants,reservedPaths}=skill.interfaceCohorts;
       const adapter=files.find(file=>file.path==='craftmine_shared/base_adapter.gd');
-      const modern=files.some(file=>reservedPaths.some(name=>interfaceAlias(file.path,name)))||variants.some(v=>v.files.find(file=>file.path===adapter?.path)?.acceptedSourceHashes.includes(adapter?.sha256));
+      const bridge=files.find(file=>file.path==='craftmine_shared/runtime_bridge.gd');
+      // A legacy adapter may also appear in an engine-wrapper cohort. Its
+      // unchanged bytes alone must not classify a retained bare legacy world
+      // as an incomplete extension; wrapper members identify that extension.
+      const modern=files.some(file=>reservedPaths.some(name=>interfaceAlias(file.path,name)))||variants.some(v=>v.referencePaths['craftmine_shared/base_adapter.gd']&&v.files.find(file=>file.path===adapter?.path)?.acceptedSourceHashes.includes(adapter?.sha256)||v.referencePaths['craftmine_shared/runtime_bridge.gd']&&v.files.find(file=>file.path===bridge?.path)?.acceptedSourceHashes.includes(bridge?.sha256));
       if(modern){
         const controlled=[...new Set(variants.flatMap(v=>v.files.map(file=>file.path)))];
         const alias=files.find(file=>controlled.some(name=>file.path!==name&&interfaceAlias(file.path,name)));

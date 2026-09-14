@@ -13,3 +13,5 @@
 验证包含原旧cohort、当前factory的picker、真实城市索引接口子集、每个新增包装链成员的缺失/改写反例、混搭、别名、重复项和继承引用的身份/hash变化。它们是只读source/broker测试；实际新Windows包里的完整Agent回合应由总控继续验证。
 
 本次完成24项source/broker/插件打包测试；打包测试额外运行6项新的engine-cohort测试并核对确实执行6项且无失败。用独立输出重建素材库，30个现存目录条目（28个ZIP及2个模型文件）逐项ID/version/file SHA256完全一致，包括旧版博美、雨控与歼二十，未重写已发布文件。核对明细保留在本工作树`test-results/route-review/guidance-package-retention.json`。
+
+集成修正：同步总控`0f01c2e0`后复现5项测试失败，原因是factory已默认加入preview engine，而历史fixture只还原旧picker，构成应拒绝的混搭。现完整还原历史fixture的旧bridge和无helper链，并独立测试真实当前factory三种controller输出。新增完整`creation-legacy-engine-preview/1`10文件组合；已有六个cohort条目全部保持。裸legacy adapter不会误触现代cohort门槛；已知engine顶层bridge则即使两个helper同时缺失也必须拒绝。集成范围32项测试与打包后6项反例测试通过。
