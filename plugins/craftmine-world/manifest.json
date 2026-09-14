@@ -693,7 +693,7 @@
       },
       {
         "name": "godot_capability_report",
-        "description": "Report what this session can actually do before answering that something is impossible. Returns every advertised world tool, the host method each reaches, whether the core capability flag enables it (reachable=false or null means it is not usable), host methods that no tool reaches, and the limit kinds. With request and evidence it classifies one gap into: exists-but-unread, state-or-interface-missing, developable-as-ordinary-script, needs-reusable-component, target-platform-unsupported, or needs-core-or-host-change. Evidence needs kind and source; without it the answer is undetermined, never a guess.",
+        "description": "Report what this session can actually do before answering that something is impossible. Returns every advertised world tool, the host method each reaches, whether the core capability flag enables it (reachable=false or null means it is not usable), host methods that no tool reaches, and the limit kinds. With request and evidence it classifies one gap into: exists-but-unread, state-or-interface-missing, developable-as-ordinary-script, needs-reusable-component, target-platform-unsupported, or needs-core-or-host-change. Evidence needs kind and source; without it the answer is undetermined, never a guess. advertised=true means the tool is registered in the plugin catalog, not necessarily activated in the current model request. Call tools present in the current tool definitions directly; use ToolSearch only for a tool absent from those definitions, then use the newly activated tool on the next model turn.",
         "risk": "low",
         "schema": {
           "type": "object",

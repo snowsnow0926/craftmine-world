@@ -13,6 +13,13 @@ on requested appearance/behavior and actual contracts. No prompt should force a
 single implementation for every object or substitute a simpler outcome for the
 player's request.
 
+Tool registration and activation are different. `godot_capability_report`
+`advertised: true` means registered in the plugin catalog; it does not establish
+that the tool is in the current model request's definitions. Call a tool already
+present in those definitions directly. Use ToolSearch only when it is absent,
+then use the activated tool on the next model turn. Do not repeatedly activate
+tools already present. This clarification does not change activation logic.
+
 A source-prerequisite match is not installability or runtime proof. After a
 failure, distinguish request/schema errors, stale source/target, transient
 transport problems and package data or installer-contract incompatibility.
