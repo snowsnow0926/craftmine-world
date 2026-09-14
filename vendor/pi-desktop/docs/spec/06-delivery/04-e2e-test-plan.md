@@ -11036,3 +11036,11 @@ on-demand pinned asset-index reads and the existing auto/manual installation
 routes. Preserve compatibility and source ownership; unsuitable inventory must
 not force exhaustive search or a smaller player goal. See
 [the focused acceptance scenario](../../e2e/godot-reuse-first-20260915.md).
+
+For extracted promo nature content, verify the exact original GLBs, independent
+instance IDs, actual tree collision and the full meadow footprint through the
+source installer and pinned engine. Keep a saved-source receipt separate from
+managed export, native appearance and actual player acceptance. The checked-in
+discovery index must enumerate the current built catalog, while reference-only
+IDs remain non-installable. See the repository-level
+`docs/PROMO_REUSE_INDEX_AND_NATURE_CONTRACT_2026-09-15.md` for measured evidence.
