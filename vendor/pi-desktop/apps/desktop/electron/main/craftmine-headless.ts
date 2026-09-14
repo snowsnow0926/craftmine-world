@@ -18,11 +18,13 @@ import {runHeadlessBoundCapture} from './craftmine-headless-bound-capture';
 import type {GodotViewCaptureIdentity} from './godot-view-capture';
 import {createHeadlessInputControl,type HeadlessInputAccess} from './craftmine-headless-input';
 import {validateEnginePerformanceAcceptance} from './craftmine-performance-acceptance';
+import {readHeadlessCheckReplayPacket} from './craftmine-headless-check-replay';
 
 export const isHeadlessAcceptance = () => process.env.CRAFTMINE_HEADLESS_TEST === "1";
 const violations: string[] = [];
 const pageErrors: string[] = [];
 const shutdownFailures: Array<{service: string; error: string}> = [];
+let checkReplayActive=false;
 export function recordHeadlessShutdownFailure(service: string, error: unknown): void {
   if (!isHeadlessAcceptance()) return;
   shutdownFailures.push({service: service.slice(0, 100), error: String(error).slice(0, 2000)});
@@ -101,6 +103,7 @@ export function installHeadlessControl(access: {
   godotGameplay?: GodotGameplayAccess;
   gameInput?: Omit<HeadlessInputAccess,'enabled'|'owner'>;
   godotSave?: () => Promise<any>;
+  godotCheckReplay?: (descriptor:unknown) => Promise<unknown>;
   playerActive?: (sessionId:string)=>boolean;
   playerLatest?: (worldId:string,sessionId:string)=>Promise<any>;
   boundCapture?: (identity:GodotViewCaptureIdentity)=>Promise<unknown>;
@@ -297,6 +300,14 @@ export function installHeadlessControl(access: {
           return evaluateWorld(`globalThis.pluginBridge.invoke(${JSON.stringify(request.channel)},${JSON.stringify(request.payload ?? {})})`);
         }
         case "draftProbe": return access.draftProbe();
+        case "godotCheckReplay": {
+          if(!hasHeadlessController()||!isOffscreenAcceptance()||request.payload?.diagnosticOnly!==true||!access.godotCheckReplay)throw Error('PROTECTED_CHECK_REPLAY_REQUIRED');
+          if(checkReplayActive)throw Error('CHECK_REPLAY_BUSY');
+          const frozen=readHeadlessCheckReplayPacket(configuration.root,process.env.CRAFTMINE_CHECK_REPLAY_PACKET_SHA256);
+          checkReplayActive=true;
+          try{return {format:'craftmine.godot-check-replay-result/1',diagnosticOnly:true,coreJobWritten:false,candidateAdopted:false,packetSha256:frozen.packetSha256,checkInputSha256:frozen.checkInputSha256,evidence:await access.godotCheckReplay(frozen.descriptor)};}
+          finally{checkReplayActive=false;}
+        }
         case "guards": {
           const contents = [access.window()?.webContents, access.world()].filter((value): value is WebContents => !!value);
           return Promise.all(contents.flatMap(view => view.mainFrame.framesInSubtree.map(frame => frame.executeJavaScript(`({url:location.href,guard:globalThis.__craftmineHeadless||null,node:typeof process,bridge:typeof pluginBridge})`, false))));

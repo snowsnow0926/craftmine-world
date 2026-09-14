@@ -10497,6 +10497,7 @@ installHeadlessControl({
     capture: (width, height) => godotWorld.headlessCapture(width, height),
   },
   godotSave: () => godotWorld.checkpoint(),
+  godotCheckReplay: (descriptor) => godotVerifier.check(descriptor),
   runtime: () => ({ hostAvailable: !!host?.isAvailable(), plugins: plugins.listLoaded().map(plugin => plugin.manifest.id) }),
   draftProbe: async () => {
     if (!headlessAcceptance || !host) throw new Error("Native draft acceptance is unavailable");
