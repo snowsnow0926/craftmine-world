@@ -8,6 +8,7 @@
 - Conversation/creation input disable and scene-tree pause stop hostile damage/simulation. Loading a component never teleports a player or clears terrain.
 - Later installation preserves existing persistent IDs and progress. Context state uses `craftmine.promo-combat-context/1`; new component formats do not rewrite the original world's formats.
 - Monster movement is the original local obstacle steering, not general navigation. Explicit scene bounds/flat placement are required.
+- For the same bound player, known original promotional combat formats or the supported existing player-vitals interface reject with `PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED`. Preserve and edit the original combat source instead of installing another system. Same-family helpers and unknown node names/formats do not trigger this guard.
 
 ## End-to-end acceptance
 
@@ -40,6 +41,6 @@ $env:CRAFTMINE_CORE_BIN='ABSOLUTE_CRAFTMINE_CORE_EXE'
 node --test tests/promo-combat-source-install.test.mjs
 ```
 
-The engine fixture uses isolated data and no OS input or pointer capture. It covers 74 behavior assertions, including the no-monster solo stages, a real slash and rifle collision ray, beast attacks, conversation pause, later additions preserving state, and reload. A separate engine process restores the player and full component ledger. The normal product Web preset currently uses source text (`script_export_mode=0`); a second Web export uses binary tokens (`script_export_mode=1`) and is checked for `.gdc` output. Both actual exported PCKs restore through the pinned CPU runtime. This does not claim browser rendering or a natural AI/player victory.
+The engine fixture uses isolated data and no OS input or pointer capture. It covers behavior assertions including the no-monster solo stages, a real slash and rifle collision ray, beast attacks, conversation pause, later additions preserving state, reload and precise known-conflict rejection. The expected-error bootstrap probe confirms an existing old health component remains intact and new combat input is disabled. A separate engine process restores the player and full component ledger. The normal product Web preset currently uses source text (`script_export_mode=0`); a second Web export uses binary tokens (`script_export_mode=1`) and is checked for `.gdc` output. Both actual exported PCKs restore through the pinned CPU runtime. This does not claim browser rendering or a natural AI/player victory.
 
 The source-transaction fixture uses the ordinary archive/proposal/CAS installer on a real Core process. Without an executor its check request remains explicitly blocked with `GODOT_EXECUTION_UNAVAILABLE`; this is recorded rather than reported as a passed engine check. Existing source bytes and prior lock/instance entries are preserved while the two package ledgers append new entries. The separately recorded engine fixture is the behavior evidence.

@@ -42,6 +42,21 @@ func current_weapon() -> Node3D:
 	if selected_slot != "auto": return module(selected_slot)
 	return module("rifle") if module("rifle") != null else module("blade")
 
+func existing_combat_problem() -> String:
+	if not is_inside_tree() or player == null: return ""
+	# Only established interfaces/formats for this same receiving world and
+	# player are conflicts. A node name or an unknown component is not proof.
+	for candidate in get_tree().get_nodes_in_group("craftmine_persistent_components"):
+		if candidate == self or not world.is_ancestor_of(candidate) or not candidate.has_method("snapshot"): continue
+		var state: Variant = candidate.call("snapshot")
+		if not state is Dictionary: continue
+		var format_id: String = str(state.get("format", ""))
+		if format_id in ["craftmine.grove-combat/1", "craftmine.great-hunt/1", "craftmine.ak47/1"]:
+			if candidate.get("player") == player: return "PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED"
+		if format_id == "craftmine.combat-vitals-state/1" and candidate.is_in_group("craftmine_player_vitals"):
+			if candidate.get("_player") == player: return "PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED"
+	return ""
+
 func select_weapon(slot: String) -> bool:
 	if module(slot) == null: return false
 	var blade_node := module("blade")
@@ -90,6 +105,7 @@ func _ready() -> void:
 	else:
 		for method in ["set_movement_lock", "movement_locked", "snapshot", "restore", "look", "set_look", "movement_direction"]:
 			if not player.has_method(method): configuration_error = "PROMO_PLAYER_INTERFACE_REQUIRED: " + method
+	if configuration_error.is_empty(): configuration_error = existing_combat_problem()
 	if not configuration_error.is_empty():
 		push_error(configuration_error)
 		return
@@ -228,6 +244,9 @@ func snapshot() -> Dictionary:
 	return {"format": PROTOCOL, "entityId": entity_id, "sourceSettings": {"maxHealth": 100}, "settings": {"maxHealth": 100}, "health": health, "selectedSlot": selected_slot}
 
 func validate_state(data: Dictionary) -> String:
+	var conflict := existing_combat_problem()
+	if not conflict.is_empty(): return conflict
+	if not configuration_error.is_empty(): return configuration_error
 	if not Contract.fields(data, ["format", "entityId", "sourceSettings", "settings", "health", "selectedSlot"]): return "Invalid combat state fields"
 	if data.format != PROTOCOL or data.entityId != entity_id: return "Combat identity mismatch"
 	for key in ["settings", "sourceSettings"]:

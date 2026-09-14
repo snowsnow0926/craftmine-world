@@ -79,7 +79,7 @@ test('actual Core installs each promo stage through archive refs, source CAS and
     report.stages.push({ref,installed,sourceRevision:after.revision,manifestHash:after.manifestHash,checkExecution:'not-executed-in-CPU-source-transaction-fixture; see actual job status and separate engine evidence'});
   }
   const final=await indexAll();
-  const scene=await call('godotProject.read',{context,worldId,revision:final.revision,manifestHash:final.manifestHash,path:'scenes/creation.tscn',offset:0,limit:20000});
+  const scene=await call('godotProject.read',{context,worldId,revision:final.revision,manifestHash:final.manifestHash,path:'scenes/creation.tscn',offset:0,limit:16000});
   assert.equal((scene.text.match(/entity_id = /g)??[]).length,4);
   report.passed=true;report.normalSourceTransactions=4;
 });

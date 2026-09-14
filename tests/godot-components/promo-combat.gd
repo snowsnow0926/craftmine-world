@@ -152,6 +152,7 @@ func run() -> void:
 	await process_frame
 	await solo_equipment("heavyblade", "blade.tscn")
 	await solo_equipment("ak47", "rifle.tscn")
+	await conflict_guards()
 	print("PROMO_COMBAT_RESULT=" + JSON.stringify({"checks":checks,"errors":errors,"evidence":evidence}))
 	quit(0 if errors.is_empty() else 1)
 
@@ -209,5 +210,39 @@ func solo_equipment(stage: String, scene_name: String) -> void:
 		equipment._unhandled_input(fire)
 		check(target.health < target.max_health, "AK actual collision ray damages hornling with no boss or blade")
 	player.set("input_enabled", false)
+	world.queue_free()
+	await process_frame
+
+func conflict_guards() -> void:
+	var world := load("res://scenes/creation.tscn").instantiate() as Node3D
+	var player := world.get_node("Player") as CharacterBody3D
+	player.set("capture_mouse_on_click", false)
+	player.set("input_enabled", false)
+	var rifle := load("res://addons/cw.module.promo-ak47/rifle.tscn").instantiate() as Node3D
+	rifle.entity_id = "conflict-fixture-rifle"
+	world.add_child(rifle)
+	root.add_child(world)
+	current_scene = world
+	await process_frame
+	await physics_frame
+	var core: Node3D = rifle.context
+	check(core.existing_combat_problem() == "", "same family core is not a legacy conflict")
+	var unknown := Node3D.new()
+	unknown.name = "GreatHunt"
+	world.add_child(unknown)
+	check(core.existing_combat_problem() == "", "unknown node names alone are not rejected")
+	for source in ["legacy-encounter.gd", "legacy-vitals.gd"]:
+		var legacy := Node3D.new()
+		legacy.set_script(load("res://" + source))
+		legacy.entity_id = "conflict-existing-player-health"
+		world.add_child(legacy)
+		await process_frame
+		var before: Dictionary = legacy.snapshot()
+		check(core.existing_combat_problem() == "PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED", source + " same-player conflict is explicit")
+		check(core.validate_state(core.snapshot()) == "PROMO_EXISTING_COMBAT_ADAPTATION_REQUIRED", source + " conflict rejects actual save validation")
+		check(legacy.snapshot() == before, source + " conflict check leaves old progress intact")
+		legacy.queue_free()
+		await process_frame
+		check(core.existing_combat_problem() == "", source + " gone does not leave a false conflict")
 	world.queue_free()
 	await process_frame
