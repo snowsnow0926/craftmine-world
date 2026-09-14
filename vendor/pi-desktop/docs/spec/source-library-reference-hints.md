@@ -75,3 +75,12 @@ unknown versions retain the existing path and all installer guards. The player
 can inspect other versions in the existing sidebar library. No version is picked,
 prompt submitted, or current author task retargeted automatically. Old-world
 read/install replies cannot populate the next world's cards.
+
+The ordinary library's `directInspect` uses the same verified declaration check.
+For a confirmed single-entity mismatch it returns its existing `eligible: false`
+response with the original error code, avoiding another guaranteed failed direct
+start. The renderer maps that code to the same concise version-selection message
+and leaves technical details available. Read/hash failures keep their existing
+error behavior and are not reclassified as a known bad declaration; valid or
+otherwise unknown declarations continue through the existing eligibility checks.
+The source installer itself and explicit version selection are unchanged.

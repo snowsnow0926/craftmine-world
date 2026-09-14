@@ -108,6 +108,7 @@ export async function requestDirectOperation(bridge: AssetLibraryBridge, attempt
 }
 
 export function directErrorMessage(raw: string, zh: boolean): string {
+  if (raw === "PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED") return zh ? "该素材版本无法直接加入世界，请在素材库选择可用版本。" : "This asset version cannot be added directly. Choose an available version in the asset library.";
   if (/WORLD_CONFIGURATION_REQUIRED|POSITION_BOUNDS_REQUIRED/.test(raw)) return zh ? "此伙伴需要按当前世界设置保存范围。请让 AI 查看世界源码并配置后再加入。" : "This companion needs save bounds for the current world. Ask AI to inspect the world source and configure it before adding it.";
   if (/LEGACY_COMPANION_SAVE_BOUNDS/.test(raw)) return zh ? "旧版伙伴只能保存各坐标在 −80 到 80 内的位置。若需在大世界中跟随，请选用新版并配置范围，或让 AI 保留原身份和存档进行源码升级。" : "This older companion saves positions only within −80 to 80 on each axis. For following across a larger world, configure a newer version or ask AI to upgrade the source while preserving identity and progress.";
   if (/CONFIGURATION_SOURCE_CHANGED/.test(raw)) return zh ? "配置对应的世界源码已改变。请重新读取当前版本并确认范围后再加入。" : "The world source changed after this configuration was prepared. Read the current revision and confirm its bounds before adding the asset.";

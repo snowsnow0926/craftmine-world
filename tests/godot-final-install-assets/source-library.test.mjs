@@ -52,6 +52,12 @@ test('missing archive remains unknown while a recorded job is never downgraded b
  assert.equal(done.status,'check-queued');assert(done.installation.job);assert.equal(done.installationAvailability,undefined);assert.equal(unknown.installationAvailability.status,'unknown');assert.equal(unknown.requiresPlayerAction,true);
 });
 
+test('direct inspection rejects only the verified intrinsic declaration and does not turn unreadable archives into that blocker',async t=>{
+ const f=await fixture(t,['vitals','weapon','monster']),s=f.create();const result=await s.directInspect({worldId:'world',ref:f.ref});assert.equal(result.eligible,false);assert.equal(result.reason,'PACKAGE_SINGLE_ENTITY_DECLARATION_REQUIRED');assert.equal(result.compatibility,'unchecked');assert.equal(f.installs.length,0);assert(!f.calls.some(c=>c.method==='godotProject.sourceContext'));
+ f.version.contentHash='d'.repeat(64);await assert.rejects(s.directInspect({worldId:'world',ref:f.ref}),/SOURCE_LIBRARY_ASSET_CHANGED/);
+ const good=await fixture(t),ordinary=await good.create().directInspect({worldId:'world',ref:good.ref});assert.equal(ordinary.eligible,true);assert.equal(ordinary.compatibility,'unchecked');
+});
+
 test('explicit author installation returns the real job and survives retries without creating a player confirmation',async t=>{
  const f=await fixture(t);let installed=0,release;
  const gate=new Promise(resolve=>release=resolve);
