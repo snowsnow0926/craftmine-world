@@ -146,7 +146,11 @@ export class CodexDesktopRuntime {
     this.client = client;
     client.on("notification", message => this.notification(a, message));
     client.on("request", message => this.request(a, message));
-    client.on("failure", () => { if (this.active === a && !a.finishing) void this.finish(a, "error", "CODEX_TRANSPORT_FAILED"); });
+    client.on("failure", () => {
+      if(this.active!==a||a.finishing)return;
+      if(a.preserveCheckpoint)a.failureDetails={stage:'interrupted-recovery',cause:'CODEX_TRANSPORT_FAILED'};
+      void this.finish(a,"error",a.preserveCheckpoint?'CODEX_INTERRUPTED_RECOVERY_UNVERIFIED':'CODEX_TRANSPORT_FAILED');
+    });
     a.diagnosticStage = 'app-server-start';
     await client.start(); this.assertActive(a);
     const common = { model: MODEL, modelProvider: "openai", config: client.threadConfig, cwd,
