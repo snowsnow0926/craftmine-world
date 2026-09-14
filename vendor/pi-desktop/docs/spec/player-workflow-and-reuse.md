@@ -45,6 +45,13 @@ not unsent search-box edits. Empty search results are distinct from an empty
 library. Unmounted chooser callbacks cannot update the next chooser or create a
 world. Import success never itself calls world creation.
 
+Template form state belongs to one bridge connection generation. Replacing the
+bridge inside the same chooser remounts only that internal form, discarding its
+selection, search and pending UI locks. Returning to a prior bridge creates
+another generation. Old success/error/finally continuations cannot update the
+new connection or unlock its import, and cannot issue a stale follow-up list.
+Ordinary busy/locked changes on the same bridge retain the form and retry state.
+
 `locked` means the chooser retains a create attempt, including uncertain or
 failed preparation; `busy` separately denotes ongoing work. A locked template
 cannot change identity or start a new creation. Only an explicit parent retry
