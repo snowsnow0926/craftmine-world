@@ -13,6 +13,7 @@ export const PROMO_COMBAT_MODEL_PINS=Object.freeze({
 });
 const stages={
   monsters:{label:'宣传片同款六只角怪',description:'直接复用宣传片里的六只角怪：靠近追击、蓄力近战、击倒、R 恢复和保存各怪物生命。自动创建六只怪物及不可见玩家生命组件；不附赠剑、AK 或巨兽。需要明确的平地活动范围，不具备完整导航寻路。',scene:'encounter.tscn',entities:['encounter'],tags:['小怪','怪物','角怪','hornling','monster','enemy','combat'],automatic:['encounter-root','six-hornlings','shared-invisible-player-combat-context'],formats:['craftmine.promo-combat-context/1','craftmine.promo-encounter/1','craftmine.promo-hornling/1']},
+  heavyblade:{label:'宣传片同款重刃',description:'直接复用宣传片重刃模型与轻重斩、耐力和闪避。可单独装备，也能打已安装的宣传片角怪；不附带怪物、竞技场或巨兽。J/左键轻斩，K/右键重斩，Shift闪避；方向键转视角。巨兽试炼需另装。',scene:'blade.tscn',entities:['blade'],tags:['剑','重刃','大剑','heavyblade','sword','melee','weapon'],automatic:['heavyblade-equipment','shared-invisible-player-combat-context'],formats:['craftmine.promo-combat-context/1','craftmine.promo-heavyblade/1']},
 };
 
 export function buildPromoCombatPackage({repository=process.cwd(),stage}={}){
@@ -23,9 +24,10 @@ export function buildPromoCombatPackage({repository=process.cwd(),stage}={}){
   const origin='desktop/godot/shared/promo-templates/promo-mainline/source';
   const model=fs.readFileSync(path.join(repository,origin,'assets/blender',pin.file));
   if(model.length!==pin.bytes||hash(model)!==pin.sha256)throw Error('PROMO_COMBAT_ORIGINAL_MODEL_CHANGED');
-  const files={'core.gd':fs.readFileSync(path.join(directory,'core.gd')),'model.glb':model,
+  const readSource=file=>Buffer.from(fs.readFileSync(file,'utf8').replace(/\r\n/g,'\n'));
+  const files={'core.gd':readSource(path.join(directory,'core.gd')),'model.glb':model,
     'model.glb.import':Buffer.from('[remap]\nimporter="scene"\ntype="PackedScene"\n\n[params]\nmeshes/generate_lods=false\n')};
-  for(const name of fs.readdirSync(path.join(directory,stage)).sort()) files[name]=fs.readFileSync(path.join(directory,stage,name));
+  for(const name of fs.readdirSync(path.join(directory,stage)).sort()) files[name]=readSource(path.join(directory,stage,name));
   for(const name of Object.keys(files).filter(name=>name.endsWith('.gd')))
     files[name+'.uid']=Buffer.from('uid://'+hash(Buffer.from(assetId+'/v1/'+name)).slice(0,12)+'\n');
   const lineage={template:'promo-mainline',sourceCommit:'fb2752c898811da4274bad3b0e4cae3eb32d780b',model:{...pin,sourcePath:origin+'/assets/blender/'+pin.file,byteIdentical:true},adaptation:'Source-local component split from the existing promotional combat. Original template and model bytes are unchanged.'};
@@ -38,7 +40,7 @@ export function buildPromoCombatPackage({repository=process.cwd(),stage}={}){
     entry:{entities:spec.entities,label:spec.label,description:spec.description,aliases:spec.tags,capabilities:['persistent-state','promotional-model-reuse'],
       sceneInstall:{mode:'instance',sceneFile:spec.scene,identityField:'entity_id',identityType:'String'},
       sourceRequirements:[{path:'scripts/scene_contract.gd',sha256:hash(fs.readFileSync(path.join(repository,'desktop/godot/bases/creation-sandbox/scripts/scene_contract.gd')))}],
-      installationGuide:{automaticNodes:spec.automatic,notIncluded:stage==='monsters'?['heavyblade','riftbeast','AK47','arena','magic-pulse']:[],requiredConfiguration:['Unique creation-sandbox Player with look, movement, snapshot and movement-lock interfaces.','Explicit camera_path and player_path; root-relative default Player and Player/CameraRig/PitchPivot/Camera3D.','Flat walkable unobstructed encounter footprint: local X [-26,26], Z [-37,10], height compatible with original capsule. Set saved_position_min/max to the receiving world bounds before adoption; the package does not clear terrain or teleport the player.'],repeatedInstall:'Adds a new encounter with derived independent monster identities; shared player health is reused.'},
+      installationGuide:{automaticNodes:spec.automatic,notIncluded:stage==='monsters'?['heavyblade','riftbeast','AK47','arena','magic-pulse']:['hornlings','riftbeast','arena','AK47'],requiredConfiguration:['Unique creation-sandbox Player with look, movement, snapshot and movement-lock interfaces.','Explicit camera_path and player_path; root-relative default Player and Player/CameraRig/PitchPivot/Camera3D.',...(stage==='monsters'?['Flat walkable unobstructed encounter footprint: local X [-26,26], Z [-37,10], height compatible with original capsule. Set saved_position_min/max to the receiving world bounds before adoption; the package does not clear terrain or teleport the player.']:[])],repeatedInstall:stage==='monsters'?'Adds a new encounter with derived independent monster identities; shared player health is reused.':'Exactly one instance of this equipment role per player; duplicate installation is rejected at runtime check.'},
       playerBinding:{scope:'receiving-world',playerPath:'Player',cameraPath:'Player/CameraRig/PitchPivot/Camera3D'},lineage},
     interfaces:{persistentComponent:{group:'craftmine_persistent_components',identityProperty:'entity_id',methods:['snapshot','validate_state','restore']},sharedContext:{protocol:'craftmine.promo-combat-context/1',group:'craftmine_promo_context',identity:'sha256-of-explicit-player-path',singletonPerWorld:true}},
     compatibility:{base:'creation-sandbox',baseVersion:'1.0.0',engine:'4.7.2-stable'},

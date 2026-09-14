@@ -54,6 +54,31 @@ func run() -> void:
 	check(core.restore(stored) == "" and core.snapshot() == stored, "shared player state exact restore")
 	var monster_state: Dictionary = monster.snapshot()
 	check(monster.restore(monster_state) == "" and monster.snapshot() == monster_state, "hornling state exact restore")
+	var blade := load("res://addons/cw.module.promo-heavyblade/blade.tscn").instantiate() as Node3D
+	blade.entity_id = "test-promo-blade"
+	world.add_child(blade)
+	await process_frame
+	await physics_frame
+	check(core.snapshot() == stored, "adding blade preserves player health and selection")
+	check(monster.snapshot() == monster_state, "adding blade preserves original monster state")
+	check(get_nodes_in_group("craftmine_promo_context").size() == 1, "blade reuses invisible context")
+	check(blade.boss == null and blade.barrier == null, "blade does not create boss or arena")
+	check(core.current_weapon() == blade and blade.blade.visible, "standalone blade is equipped")
+	check(registry.capture(world).error == "", "actual registry accepts blade without hunt")
+	player.global_position = monster.global_position + Vector3(0, 0.92, 3.2)
+	player.call("set_look", 0.0, 0.0)
+	await physics_frame
+	player.set("input_enabled", true)
+	var slash := InputEventKey.new()
+	slash.physical_keycode = KEY_J
+	slash.pressed = true
+	blade._unhandled_input(slash)
+	for i in range(18): await physics_frame
+	player.set("input_enabled", false)
+	check(monster.health == 0, "original light slash kills hornling before hunt exists")
+	check(blade.stamina < 100, "slash consumes original stamina")
+	var blade_state: Dictionary = blade.snapshot()
+	check(blade.restore(blade_state) == "" and blade.snapshot() == blade_state, "blade action state exact restore without boss")
 	check(player.get("captured") == false, "test never captures input")
 	print("PROMO_COMBAT_RESULT=" + JSON.stringify({"checks":checks,"errors":errors,"evidence":evidence}))
 	world.queue_free()
