@@ -101,7 +101,7 @@ async function installedFixture(t,{mutate=()=>{},wait=false,provider=true}={}){
   let projectionHook=record=>executor.nativeDiagnosticEvidence(record),providerCalls=0;
   const options={...(wait?{buildReadWaitMs:1}:{}),...(provider?{executorNativeDiagnosticEvidence:async record=>{providerCalls++;return projectionHook(record);}}:{})};
   const tool=createWorldTools(core,async()=>({activeWorldId:selected}),()=>ended,undefined,undefined,options).find(tool=>tool.name==='godot_build_read');
-  const invoke=args=>tool.execute(args??{jobId:original.jobId},{projectId:'fixture',sessionId:'fixture',turnId:'fixture',executionId:'fixture',toolCallId:'read'});
+  const invoke=args=>tool.execute(args??{jobId:original.jobId,detail:'full'},{projectId:'fixture',sessionId:'fixture',turnId:'fixture',executionId:'fixture',toolCallId:'read'});
   return {f,temp,buildRoot,ledgerPath,calls,executor,invoke,setHook(fn){projectionHook=fn;},switchWorld(){selected='other';},end(){ended=true;},get providerCalls(){return providerCalls;}};
 }
 for(const wait of [false,true])test('actual packaged build_read '+(wait?'wait':'direct')+' projects archived host ledger without mutations',async t=>{
@@ -111,6 +111,11 @@ for(const wait of [false,true])test('actual packaged build_read '+(wait?'wait':'
   assert.deepEqual(await fs.readFile(f.ledgerPath),before);assert.equal(f.providerCalls,1);
   assert.deepEqual(f.calls,['workspace.open','godotBuild.read']);
   assert.ok(!JSON.stringify(result.diagnostics).includes(f.temp));assert.ok(!JSON.stringify(result.diagnostics).includes('stderr'));
+});
+test('packaged default summary retains validated native failure with shared source and full evidence access',async t=>{
+  const f=await installedFixture(t),result=await f.invoke({jobId:original.jobId}),item=crashes(result.diagnostics)[0];
+  assert.equal(result.status,'failed');assert.equal(item.nativeProcess.validation,'executor-validated-native-import-receipt');assert.equal(item.sourceRef,'/diagnostics/source');assert.equal(result.diagnostics.source.jobId,original.jobId);assert.equal(result.diagnostics.nativeEvidenceBinding,'matched');
+  const full=await f.invoke(result.summary.fullRead.args);assert.deepEqual(full.output,original.output);assert.deepEqual(crashes(full.diagnostics)[0].nativeProcess,item.nativeProcess);
 });
 for(const name of ['raw exit without validation stamp','wrong world','wrong source revision','changed source digest','parse log even with rewritten stamp','native timeout','cancelled job'])test('packaged model read: '+name+' remains unverified',async t=>{
   const f=await installedFixture(t,{mutate:negatives[name]});assert.equal(crashes((await f.invoke()).diagnostics).length,0);
@@ -143,5 +148,5 @@ for(const change of ['switchWorld','end'])test('private evidence await rechecks 
 });
 test('production main wires the private provider and packaging preserves exact modules',async()=>{
   const main=await fs.readFile(path.join(packed,'main.cjs'),'utf8');assert.match(main,/executorNativeDiagnosticEvidence:record=>godotExecutor.nativeDiagnosticEvidence\(record\)/);
-  for(const file of ['godot-diagnostics.cjs','godot-executor.cjs','world-tools.cjs','tool-services.cjs','main.cjs'])assert.deepEqual(await fs.readFile(path.join(packed,file)),await fs.readFile(path.join(root,'plugins/craftmine-world',file)));
+  for(const file of ['godot-tool-output.cjs','godot-diagnostics.cjs','godot-executor.cjs','world-tools.cjs','tool-services.cjs','main.cjs'])assert.deepEqual(await fs.readFile(path.join(packed,file)),await fs.readFile(path.join(root,'plugins/craftmine-world',file)));
 });

@@ -209,7 +209,7 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       try { facts.usage=await usageSummary(core,{context,worldId:workspace.worldId}); }
       catch(error){ facts.usage={available:false,reason:error?.errorCode==='UNKNOWN_METHOD'?'DEPENDENCY_NOT_WIRED':'USAGE_READ_FAILED',
         requiredHostMethod:'godotJob.usage',owner:'R1'}; }
-      return facts;
+      return require('./godot-tool-output.cjs').compactGodotProjectFacts(facts);
     }
     if(definition.name==='godot_jobs') {
       if(args.mode==='status')return executorStatus(core,options);
@@ -280,6 +280,10 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
       assertActive();
       // Project identity and receipts always come from the durable host binding.
       const params={...args,context,worldId:workspace.worldId};
+      if(definition.name==='godot_build_read'){
+        if(args.detail!==undefined&&!['summary','full'].includes(args.detail))throw Error('INVALID_GODOT_BUILD_READ_DETAIL');
+        delete params.detail;
+      }
       if(godotWrites[definition.name])params.toolCallId=invocation.toolCallId;
       if(definition.name==='godot_project_create')params.baseBuild=workspace.task.binding.baseBuild;
       if(definition.name==='godot_build_start'&&args.mode==='check'&&typeof options.creationTarget==='function'){
@@ -323,7 +327,8 @@ function createWorldTools(core,getSettings,isEnded=()=>false,verifications,revie
           assertActive();
           applicationGuidance=require('./creation-application-guidance.cjs').creationApplicationGuidance(record.worldId,captured,record,context);
         }
-        return {...record,...(applicationGuidance?{applicationGuidance}:{}),diagnostics:require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(record,nativeEvidence)};
+        const decorated={...record,...(applicationGuidance?{applicationGuidance}:{}),diagnostics:require('./godot-diagnostics.cjs').diagnoseGodotBuildRead(record,nativeEvidence)};
+        return args.detail==='full'?decorated:require('./godot-tool-output.cjs').compactGodotBuildRead(decorated);
       };
       if(definition.name==='godot_build_read'&&((options.buildReadWaitMs??0)>0||typeof options.executorCreationCompletion==='function')){
         const record=await require('./godot-build-read-wait.cjs').readGodotBuildWithWait({core,params,waitMs:options.buildReadWaitMs,assertActive,

@@ -1,5 +1,18 @@
 # 04. E2E Test Plan
 
+### Godot model read summaries (2026-09-14)
+
+- Preserve core verdict, source freshness, application authority, distinct
+  errors and complete native/requirements evidence bindings across the default
+  summary and explicit full read. Neither reading proves gameplay acceptance.
+- Share repeated diagnostic source pins and exact duplicate observations;
+  retain occurrence totals and all evidence references. Raw log hashes must
+  match the full evidence read through the same host identity checks.
+- Verify the actual packaged module and compare all original retained DeepSeek
+  facts/build text blocks without rewriting transcript or Core records.
+- See [evidence](../../e2e/godot-model-tool-output-20260914.md) and
+  [contract](../godot-model-tool-output.md).
+
 ### Codex legacy world conversation regression (2026-09-14)
 
 In an independent background profile, create a blank legacy voxel world through
