@@ -74,7 +74,7 @@ var since_damage := 0.0
 var regeneration := 0.0
 var recovery_delay := 0.0
 var flash_time := 0.0
-var notice := "树林边出现了角怪。靠近后小心它们的蓄力攻击。"
+var notice := ""
 var notice_time := 7.0
 var hud: Label
 var downed_label: Label
@@ -189,7 +189,7 @@ func damage_player(amount: int) -> void:
 	if health <= 0:
 		recovery_delay = 2.0
 		player.call("set_movement_lock", self, true)
-		_notice("你被击倒了。恢复后可继续挑战，物品和小麦都不会丢失。")
+		_notice("你被击倒了。恢复后可继续挑战，原有物品和进度会保留。")
 
 func _recover() -> void:
 	health = 100
@@ -212,13 +212,16 @@ func _update_hud() -> void:
 	var defeated := 0
 	for monster in monsters:
 		if monster.get("health") <= 0: defeated += 1
-	var text := "生命 " + str(health) + "/100  ·  击败 " + str(defeated) + "/" + str(monsters.size())
-	text += "\n躲开橙红色蓄力攻击"
+	var text := "生命 " + str(health) + "/100"
+	if not monsters.is_empty():
+		text += "  ·  击败 " + str(defeated) + "/" + str(monsters.size())
+		text += "\n躲开橙红色蓄力攻击"
 	if not monsters.is_empty() and defeated == monsters.size(): text += "\n角怪已清理完毕！"
 	elif notice_time > 0.0: text += "\n" + notice
 	hud.text = text
+	hud.visible = not in_trial()
 	damage_flash.color.a = 0.2 if health <= 0 else flash_time * 0.65
-	downed_label.visible = health <= 0
+	downed_label.visible = health <= 0 and not in_trial()
 	downed_label.text = "暂时被击倒了……" if recovery_delay > 0.0 else "按 R 恢复，继续冒险"
 
 func snapshot() -> Dictionary:

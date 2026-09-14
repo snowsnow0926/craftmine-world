@@ -74,13 +74,14 @@ func _bind() -> void:
 	blade.set_meta("source_job_id", "41a3e161-9855-46d5-b143-4e41dad1762a")
 	blade.scale = Vector3.ONE * 0.63
 	blade.visible = context.current_weapon() == self
+	if hunt != null and barrier == null: _make_arena()
 	_make_hud()
 
 func bind_hunt(module_node: Node3D) -> String:
 	if hunt != null and hunt != module_node: return "PROMO_DUPLICATE_HUNT"
 	hunt = module_node
 	boss = hunt.boss
-	_make_arena()
+	if world != null and barrier == null: _make_arena()
 	_sync_mode()
 	return ""
 

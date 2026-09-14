@@ -23,6 +23,7 @@ func _ready() -> void:
 	if context == null: return
 	for child in get_children():
 		if child.has_method("take_hit"): context.monsters.append(child)
+	context._notice("树林边出现了角怪。靠近后小心它们的蓄力攻击。")
 	add_to_group("craftmine_persistent_components")
 	var problem := validate_state(snapshot())
 	if not problem.is_empty(): push_error(problem)
