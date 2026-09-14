@@ -8,6 +8,7 @@ import {spawn} from 'node:child_process';
 import {setTimeout as delay} from 'node:timers/promises';
 import {resolveCreationNativeLaunch} from './helpers/creation-native-launch.mjs';
 import {requirePackagedResources} from './helpers/template-import-expectations.mjs';
+import {createCheckReplayDirectory,createCheckReplayProfile} from './helpers/check-replay-profile.mjs';
 
 const [applicationRoot,resources,database,jobId]=process.argv.slice(2);
 assert([applicationRoot,resources,database].every(v=>typeof v==='string'&&path.isAbsolute(v)),'ABSOLUTE_CHECKOUT_RESOURCES_DATABASE_REQUIRED');
@@ -15,11 +16,12 @@ assert.match(jobId??'',/^gjob-[a-f0-9]{64}$/);
 const run=process.argv.includes('--run-replay');
 assert(run!==process.argv.includes('--prepare-only'),'EXPLICIT_RUN_REPLAY_OR_PREPARE_ONLY_REQUIRED');
 const results=path.resolve(process.env.CRAFTMINE_CHECK_REPLAY_OUTPUT_ROOT??path.join(import.meta.dirname,'../test-results'));
-fs.mkdirSync(results,{recursive:true});const out=fs.mkdtempSync(path.join(results,'godot-check-replay-'));
+const out=createCheckReplayDirectory(results);
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const report={format:'craftmine.godot-check-replay-diagnostic/1',diagnosticOnly:true,out,database,jobId,runRequested:run,coreJobWritten:false,candidateAdopted:false,artifactReads:[],limits:['Diagnostic replay does not finish the original failed Core job or adopt its candidate.','No model, source edit, import/export rebuild, real input, focus or Pointer Lock.','No deadline override: the packaged production verifier keeps its ordinary 30 second check limit.']};
 const write=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
 report.modelInvocationsByDriver=0;report.cancelFile=path.join(out,'cancel');
+report.driverSha256=sha(fs.readFileSync(import.meta.filename));
 const readJob=()=>{const db=new DatabaseSync(database,{readOnly:true});try{return db.prepare('SELECT id,world_id,build_id,status,check_input,check_input_hash,output,output_hash FROM craftmine_godot_jobs WHERE id=?').get(jobId);}finally{db.close();}};
 let original,launch,child,exit,ended=true,audit,ready=false;
 let cancelled=false,cancelRequested=false;
@@ -47,7 +49,7 @@ try{
  if(run){
   launch=resolveCreationNativeLaunch({root:applicationRoot,inherited:process.env,requiredGuards:['godotCheckReplay','CHECK_REPLAY_PARENT_PIN_REQUIRED']});requirePackagedResources(launch.packaged,path.resolve(resources));
   report.packageIdentity=launch.identity?{packaged:launch.packaged,version:launch.identity.version,inventorySha256:launch.identity.inventorySha256,mainSha256:launch.identity.mainSha256}:null;report.mainSha256=sha(launch.main);
-  const profile=path.join(out,'profile'),legacy=path.join(out,'legacy'),token=randomUUID();fs.mkdirSync(profile);fs.mkdirSync(legacy);fs.writeFileSync(path.join(profile,'headless-profile.json'),JSON.stringify({format:'craftmine.headless-profile/1',token,legacySource:legacy}));
+  const {profile,token}=createCheckReplayProfile(out);
   ended=false;child=spawn(launch.executable,launch.args,{cwd:launch.cwd,windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...launch.environment({out,profile,token}),CRAFTMINE_RUNTIME_RESOURCES:resources,CRAFTMINE_CHECK_REPLAY_PACKET_SHA256:report.packetSha256}});
   for(const stream of ['stdout','stderr'])child[stream].on('data',bytes=>fs.appendFileSync(path.join(out,stream+'.log'),bytes));
   child.on('message',message=>{if(message.type==='craftmine-headless-ready')ready=true;if(message.type==='craftmine-headless-exit')audit=message;const task=pending.get(message.id);if(task){pending.delete(message.id);clearTimeout(task.timer);message.error?task.reject(Error(message.error)):task.resolve(message.result);}});
