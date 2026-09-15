@@ -11112,3 +11112,12 @@ new-world choices must not remove that flow or modify the original world.
 Automated verification must use an independent headless profile, disabled pointer
 lock and normal page callbacks without real keyboard/mouse input or focus changes.
 See [the visibility and compatibility contract](fb04-new-world-choices.md).
+
+## Restored fullscreen world presentation (FB04-001, 2026-09-15)
+
+Verify an already attached staging view is promoted above opaque plugin chrome
+when it becomes the current world or explicit candidate preview. Trusted
+overlays retain priority, background staging retains input exclusion, and stable
+layout reports cause no native reordering. Cold-launch a retained play profile
+before performing any pause/Continue or show-world workaround. See
+[the presentation regression and package scenario](../../e2e/fb04-restored-world-presentation-20260915.md).
