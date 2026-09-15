@@ -2,11 +2,19 @@
 开放世界，能有我开放吗？一边创造，一边游玩。
 
 【启动】
-完整解压应用 ZIP，双击同目录 START-PLAYER-PREVIEW.cmd。
+完整解压应用 ZIP，按下面的入口选择体验。
 请运行应用包，不是 GitHub 的源码 ZIP；保留解压后的所有资源文件。
-本包属于 0.14.4-preview.27。首次启动使用独立资料目录
-%LOCALAPPDATA%\CraftmineWorld-FirstCreationPreview27。
-新入口没有旧世界是正常的，请先导入下面的示例。
+1. 正常试玩／继续本版本：START-PLAYER-PREVIEW.cmd。
+   再次启动保留本版本的账号配置、世界与存档。
+2. 模拟全新玩家：START-NEW-PLAYER.cmd。
+   每次创建全新的资料，不带入旧账号、密钥、世界或设置，也不会删除旧资料。
+   资料保存在 %LOCALAPPDATA%\CraftmineWorld-NewPlayers\player-唯一编号。
+   同时在 NEW-PLAYER-SESSIONS 中生成 CONTINUE-唯一编号.cmd。
+   同编号 PLAYER 文本记录资料路径与创建时间，方便区分不同试玩玩家。
+   下次继续这位玩家，请用这个对应的 CONTINUE 入口；不要再次点新玩家入口。
+3. 继续 preview.27 的旧世界：CONTINUE-PREVIEW27.cmd。
+   使用原来的 %LOCALAPPDATA%\CraftmineWorld-FirstCreationPreview27。
+新玩家没有旧世界是正常的，可创建空白世界，或先导入下面的示例。
 
 【先看核心玩法：约 3 分钟，不含首次加载】
 1. 世界入口 → 我的模板 → 导入世界模板 ZIP。

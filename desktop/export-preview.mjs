@@ -14,13 +14,19 @@ export function previewLauncher(version) {
   const match = /^\d+\.\d+\.\d+-preview\.(\d+)$/.exec(version);
   if (!match) throw Error('PREVIEW_VERSION_REQUIRED');
   return [
-    '@echo off', 'setlocal',
+    '@echo off', 'setlocal DisableDelayedExpansion',
     'for /f "tokens=1 delims==" %%V in (\'set CRAFTMINE_ 2^>nul\') do set "%%V="',
     'for /f "tokens=1 delims==" %%V in (\'set PI_DESKTOP_ 2^>nul\') do set "%%V="',
     `set "CRAFTMINE_DATA_DIR=%LOCALAPPDATA%\\CraftmineWorld-FirstCreationPreview${match[1]}"`,
     'set "ELECTRON_RUN_AS_NODE="', 'set "NODE_OPTIONS="',
     'start "" "%~dp0output\\win-unpacked\\Craftmine World.exe"', '',
   ].join('\r\n');
+}
+
+export function newPlayerLauncher() {
+  return ['@echo off', 'setlocal DisableDelayedExpansion',
+    'powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0START-NEW-PLAYER.ps1"',
+    'if errorlevel 1 pause', ''].join('\r\n');
 }
 
 const invoke = (command, args, cwd) => new Promise((resolve, reject) => {
@@ -143,12 +149,17 @@ export async function exportPreview({root, runFile, destination, tool, toolSha25
     await fs.copyFile(path.join(releaseDirectory, filename), path.join(destination, filename));
   }
   await fs.writeFile(path.join(destination, 'START-PLAYER-PREVIEW.cmd'), launcher, {flag: 'wx'});
+  await fs.writeFile(path.join(destination, 'START-NEW-PLAYER.cmd'), newPlayerLauncher(), {flag: 'wx'});
+  await fs.copyFile(path.join(root, 'desktop/new-player-launcher.ps1'), path.join(destination, 'START-NEW-PLAYER.ps1'), constants.COPYFILE_EXCL);
+  await fs.writeFile(path.join(destination, 'CONTINUE-PREVIEW27.cmd'), previewLauncher('0.14.4-preview.27'), {flag: 'wx'});
   await fs.writeFile(path.join(destination, 'README.zh-CN.txt'),
-    `Craftmine World ${metadata.version}\r\n源码提交：${run.commit}\r\n\r\n完整解压 ZIP 后，双击 START-PLAYER-PREVIEW.cmd。请勿直接从压缩包内运行。\r\n试玩存档使用独立的 FirstCreationPreview 配置目录，不会读取旧试玩存档。\r\n首次运行可直接打开示例世界；素材库支持的素材可不连接 AI 直接加入。\r\n需要 AI 创作时，在应用中连接自己的账户并选择模型。\r\n\r\n这是未签名的 Windows x64 免安装试玩目录，尚未声称通过独立干净 Windows 或新玩家测试。\r\n源码、Blender 源码和第三方许可证位于 output\\win-unpacked\\resources 下。\r\n验证证据记录原构建路径；移动目录不会改变构建身份。\r\n`, {flag: 'wx'});
+    `Craftmine World ${metadata.version}\r\n源码提交：${run.commit}\r\n\r\n完整解压 ZIP 后运行，请勿直接从压缩包内运行。\r\n\r\n【正常试玩／继续本版本】双击 START-PLAYER-PREVIEW.cmd。\r\n使用本版本独立的 FirstCreationPreview 资料目录，再次打开会保留账号配置和世界。\r\n【模拟全新玩家】双击 START-NEW-PLAYER.cmd。\r\n每次创建一份全新的空资料，不带入旧账号、密钥、世界或设置，也不删除旧资料。\r\n资料保存在 %LOCALAPPDATA%\\CraftmineWorld-NewPlayers\\player-唯一编号。\r\n本包 NEW-PLAYER-SESSIONS 内会生成 CONTINUE-唯一编号.cmd；以后双击它，\r\n才能继续刚才那位新玩家。不要再次点 START-NEW-PLAYER 来继续存档。\r\n启动时会显示完整资料目录和对应继续入口。新玩家仍可从 examples 导入七份世界模板。\r\n【继续 preview.27 的旧世界】双击 CONTINUE-PREVIEW27.cmd。\r\n它使用原 FirstCreationPreview27 资料目录，不复制或重置资料。\r\n不要同时打开多个应用实例操作同一份资料。\r\n\r\n需要 AI 创作时，在应用中连接自己的账户并选择模型。\r\n这是未签名的 Windows x64 免安装试玩目录，尚未声称通过独立干净 Windows 测试。\r\n源码、Blender 源码和第三方许可证位于 output\\win-unpacked\\resources 下。\r\n验证证据记录原构建路径；移动目录不会改变构建身份。\r\n`, {flag: 'wx'});
   const extrasProof = await copyPreviewExtras(destination, extras);
   await fs.writeFile(path.join(destination, 'DELIVERY.json'), JSON.stringify({format: 'craftmine.preview-delivery/1',
     version: metadata.version, commit: run.commit, buildManifestSha256: run.buildManifestSha256,
     application: 'output/win-unpacked/Craftmine World.exe', launcher: 'START-PLAYER-PREVIEW.cmd',
+    newPlayerLauncher: 'START-NEW-PLAYER.cmd', newPlayerResumeDirectory: 'NEW-PLAYER-SESSIONS',
+    previousPlayerLauncher: 'CONTINUE-PREVIEW27.cmd',
     signature: 'unsigned-local-preview', cleanWindowsVerified: false, installerExecuted: false,
     sourceRunFile: run.runFile, copiedAt: new Date().toISOString(), ...(extrasProof ? {extras: extrasProof} : {})}, null, 2) + '\n', {flag: 'wx'});
   await verifySeal(run);

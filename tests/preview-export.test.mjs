@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
-import {previewLauncher, archivePreview, verifyPortableTool, exportPreview, readPreviewExtras, copyPreviewExtras} from '../desktop/export-preview.mjs';
+import {previewLauncher, newPlayerLauncher, archivePreview, verifyPortableTool, exportPreview, readPreviewExtras, copyPreviewExtras} from '../desktop/export-preview.mjs';
 import {fileHash, resourceInventory} from '../desktop/prepare-runtime-resources.mjs';
 import {beginRelease, sealRelease, verifySeal} from '../desktop/release-run.mjs';
 
@@ -16,6 +16,69 @@ test('preview launcher is relocatable, uses its own profile, and clears inherite
   assert.match(launcher, /set "ELECTRON_RUN_AS_NODE="/); assert.match(launcher, /set "NODE_OPTIONS="/);
   assert.ok(!launcher.replaceAll('\r\n', '').includes('\n'));
   for (const version of ['0.14.4', '0.14.4-preview.22&calc', 'other']) assert.throws(() => previewLauncher(version), /PREVIEW_VERSION/);
+});
+
+test('Windows fresh-player launcher creates isolated identities and resumes only the selected player', {skip: process.platform !== 'win32'}, async () => {
+  const parent = await fs.mkdtemp(path.join(os.tmpdir(), 'craftmine-fresh-player-'));
+  const root = path.join(parent, '中文 包 ! & (one)'), local = path.join(parent, '本地 资料 !');
+  const application = path.join(root, 'output/win-unpacked/Craftmine World.exe');
+  await fs.mkdir(path.dirname(application), {recursive: true}); await fs.mkdir(local);
+  await fs.copyFile(new URL('../desktop/new-player-launcher.ps1', import.meta.url), path.join(root, 'START-NEW-PLAYER.ps1'));
+  await fs.writeFile(path.join(root, 'START-NEW-PLAYER.cmd'), newPlayerLauncher());
+  const source = path.join(parent, 'stub.cs'), compiler = path.join(parent, 'compile.ps1');
+  await fs.writeFile(source, `using System; using System.IO; public class LauncherProbe {
+    public static void Main() {
+      var profile = Environment.GetEnvironmentVariable("CRAFTMINE_DATA_DIR");
+      var inherited = new [] {"CRAFTMINE_TEST_SECRET", "PI_DESKTOP_HEADLESS", "NODE_OPTIONS", "ELECTRON_RUN_AS_NODE"};
+      foreach (var key in inherited) if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable(key))) return;
+      File.AppendAllText(Path.Combine(profile, "launches.txt"), profile + "\\n");
+    }
+  }`);
+  await fs.writeFile(compiler, 'param($Source, $Destination)\nAdd-Type -Path $Source -OutputAssembly $Destination -OutputType WindowsApplication\n');
+  execFileSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', compiler, source, application], {windowsHide: true});
+  const env = {...process.env, LOCALAPPDATA: local, CRAFTMINE_TEST_SECRET: 'must-not-inherit', PI_DESKTOP_HEADLESS: '1',
+    NODE_OPTIONS: '--trace-warnings', ELECTRON_RUN_AS_NODE: '1'};
+  const invoke = args => execFileSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(root, 'START-NEW-PLAYER.ps1'), ...args], {env, windowsHide: true, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']});
+  const invokeCmd = file => execFileSync('cmd.exe', ['/d', '/s', '/c', '""' + file + '""'], {env, windowsHide: true, windowsVerbatimArguments: true, encoding: 'utf8', timeout: 15000});
+  const profiles = path.join(local, 'CraftmineWorld-NewPlayers');
+  const waitForLaunch = async (profile, count) => {
+    for (let i = 0; i < 100; i++) {
+      const text = await fs.readFile(path.join(profile, 'launches.txt'), 'utf8').catch(() => '');
+      if (text.trim().split('\n').filter(Boolean).length === count) return text;
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    assert.fail('dummy application did not receive the isolated profile');
+  };
+  await fs.mkdir(path.join(local, 'CraftmineWorld-FirstCreationPreview27'));
+  await fs.writeFile(path.join(local, 'CraftmineWorld-FirstCreationPreview27/private.json'), 'old account and world sentinel');
+  invokeCmd(path.join(root, 'START-NEW-PLAYER.cmd'));
+  const [first] = await fs.readdir(profiles), firstPath = path.join(profiles, first);
+  await waitForLaunch(firstPath, 1);
+  assert.deepEqual((await fs.readdir(firstPath)).sort(), ['launches.txt', 'new-player-profile.json']);
+  await fs.writeFile(path.join(firstPath, 'saved-world.json'), 'first player persistent world');
+  invoke([]);
+  const second = (await fs.readdir(profiles)).find(name => name !== first), secondPath = path.join(profiles, second);
+  assert.ok(second); await waitForLaunch(secondPath, 1);
+  assert.deepEqual((await fs.readdir(secondPath)).sort(), ['launches.txt', 'new-player-profile.json']);
+  const id = first.replace('player-', ''), resume = path.join(root, 'NEW-PLAYER-SESSIONS', `CONTINUE-${id}.cmd`);
+  assert.match(await fs.readFile(resume, 'utf8'), /%~dp0\.\.\\START-NEW-PLAYER.ps1/);
+  const info = await fs.readFile(path.join(root, 'NEW-PLAYER-SESSIONS', `PLAYER-${id}.txt`), 'utf8');
+  assert.ok(info.includes(firstPath)); assert.ok(info.includes(`CONTINUE-${id}.cmd`));
+  // Execute the generated CMD through cmd.exe: spaces, Chinese, ! and & must survive both shells.
+  invokeCmd(resume);
+  await waitForLaunch(firstPath, 2);
+  assert.equal(await fs.readFile(path.join(firstPath, 'saved-world.json'), 'utf8'), 'first player persistent world');
+  assert.equal((await fs.readdir(profiles)).length, 2);
+  assert.throws(() => invoke(['-ProfileId', '../escape']), /NEW_PLAYER_PROFILE_ID_INVALID/);
+  assert.throws(() => invoke(['-ProfileId', '00000000-0000-0000-0000-000000000000']), /NEW_PLAYER_PROFILE_NOT_FOUND/);
+  const markerPath = path.join(firstPath, 'new-player-profile.json');
+  const marker = JSON.parse((await fs.readFile(markerPath, 'utf8')).replace(/^\uFEFF/, ''));
+  await fs.writeFile(markerPath, JSON.stringify({...marker, id: 'mismatch'}));
+  assert.throws(() => invoke(['-ProfileId', id]), /NEW_PLAYER_PROFILE_IDENTITY_MISMATCH/);
+  const aliasId = '11111111-1111-1111-1111-111111111111';
+  await fs.symlink(firstPath, path.join(profiles, 'player-' + aliasId), 'junction');
+  assert.throws(() => invoke(['-ProfileId', aliasId]), /NEW_PLAYER_LINK_PATH_DENIED/);
+  assert.equal(await fs.readFile(path.join(local, 'CraftmineWorld-FirstCreationPreview27/private.json'), 'utf8'), 'old account and world sentinel');
 });
 
 test('archive tool must match an explicit byte pin', async () => {
@@ -115,6 +178,8 @@ test('sealed release export rejects changed source or payload and preserves orig
   const metadataPath = path.join(root, 'vendor/pi-desktop/apps/desktop/package.json');
   await fs.writeFile(metadataPath, JSON.stringify({version: '0.14.4-preview.22'}));
   await fs.writeFile(path.join(root, '.gitignore'), 'desktop/build/\n'); git(['add', '.']);
+  await fs.mkdir(path.join(root, 'desktop'), {recursive: true});
+  await fs.copyFile(new URL('../desktop/new-player-launcher.ps1', import.meta.url), path.join(root, 'desktop/new-player-launcher.ps1')); git(['add', '.']);
   git(['-c', 'user.name=Preview fixture', '-c', 'user.email=preview@example.invalid', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'fixture']);
   const commit = git(['rev-parse', 'HEAD']);
   await fs.mkdir(path.join(root, 'desktop/build'), {recursive: true});
@@ -137,6 +202,9 @@ test('sealed release export rejects changed source or payload and preserves orig
   await verifySeal(run);
   const delivery = JSON.parse(await fs.readFile(path.join(options.destination, 'DELIVERY.json'), 'utf8'));
   assert.equal(delivery.commit, commit); assert.equal(delivery.version, '0.14.4-preview.22');
+  assert.equal(delivery.newPlayerLauncher, 'START-NEW-PLAYER.cmd');
+  assert.equal(delivery.previousPlayerLauncher, 'CONTINUE-PREVIEW27.cmd');
+  assert.match(await fs.readFile(path.join(options.destination, 'CONTINUE-PREVIEW27.cmd'), 'utf8'), /FirstCreationPreview27/);
   assert.equal(delivery.extras.entries[0].sha256, extra.entry.sha256);
   assert.equal(await fileHash(path.join(result.extraction, path.basename(options.destination), extra.entry.name)), extra.entry.sha256);
   await fs.writeFile(path.join(run.output, 'unexpected.txt'), 'changed');
