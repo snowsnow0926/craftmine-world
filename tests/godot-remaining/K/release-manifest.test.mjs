@@ -10,6 +10,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {PACKAGE_REQUIRED_FILES} from '../../../desktop/delivery/lib/preflight-core.mjs';
+import {PROJECT_LICENSE_FILES} from '../../../desktop/project-license-files.mjs';
 import {
   BASE_IDS,
   BRIDGE_FILES,
@@ -72,6 +73,8 @@ function buildRoot() {
   write(path.join(root, 'desktop/UPSTREAM.json'),
     JSON.stringify({format: 'craftmine.upstream/1', commit: 'a'.repeat(40), license: 'LGPL-3.0-or-later'}, null, 2) + '\n');
   write(path.join(root, 'desktop/windows-NOTICES.md'), '# synthetic notices\n');
+  write(path.join(root, 'desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md'), '# historical audit notices\n');
+  for (const [source] of PROJECT_LICENSE_FILES) write(path.join(root, source), '# synthetic project license ' + source + '\n');
   write(path.join(root, 'desktop/windows-USER_GUIDE.zh-CN.md'), '# synthetic guide\n');
   write(path.join(root, 'desktop/windows-upgrade-guard.ps1'), 'Write-Output "synthetic"\n');
   write(path.join(root, 'vendor/pi-desktop/LICENSE'), 'synthetic LGPL text\n');
@@ -223,6 +226,13 @@ test('create() pins real bytes for every component', () => {
   assert.ok(licencePaths.includes('desktop/UPSTREAM.json'));
   assert.ok(licencePaths.includes('desktop/windows-NOTICES.md'));
   assert.ok(licencePaths.includes('vendor/pi-desktop/LICENSE'));
+  for (const [source, target] of PROJECT_LICENSE_FILES) {
+    const entry = manifest.components.licenses.files.find(file => file.path === source);
+    assert.equal(entry?.packagePath, target);
+    assert.equal(entry.sha256, independentSha256(path.join(root, source)));
+  }
+  assert.equal(manifest.components.licenses.files.find(file => file.path === 'desktop/windows-NOTICES.md').packagePath, 'resources/licenses/CRAFTMINE-NOTICES.md');
+  assert.equal(manifest.components.licenses.files.find(file => file.path === 'desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md').packagePath, null);
 
   const uniquePaths = new Set(componentFiles(manifest).map(item => item.file.path));
   assert.equal(manifest.totals.files, uniquePaths.size);

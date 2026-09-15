@@ -9,3 +9,23 @@ The broker and native template are pinned. The service checks source and artifac
 Save bootstrap remains native, with no browser or editor bridge. It restores full managed state, saves periodically/F5/button/on close, and preserves previous JSON on failed writes. Exported native programs run with normal user permissions. Local preview does not clear pending source/module redistribution rights. First-person, top-down and side-view are accepted; mining-sandbox remains separately pending.
 
 Mining-sandbox follow-up: now enabled after real formal export and full native restart; nested body.state.worldId is validated and mapped explicitly. Standalone failed-state mapping refuses writes. Backup recovery preserves the known valid backup and retains a rejected primary separately. Native corrupt-primary, both-corrupt and failed-write acceptance passed; see windows-service/mining evidence.
+
+## Applied runtime license notices (2026-09-15)
+
+After the owner's project-code authorization, future exports include the exact
+`CRAFTMINE-RUNTIME-MIT.txt` and `CRAFTMINE-RUNTIME-NOTICES.md` from staged Godot
+licenses beside the existing Godot texts. All four texts are hash-verified before
+any notice is written. Missing or modified texts fail the unpublished export;
+the existing owned-stage cleanup and publication boundary remain unchanged.
+
+The MIT grant applies only to original project runtime in the source scopes named
+by the notice. Models, fonts, other assets, user content and independently
+generated code are not automatically licensed. Export provenance and README
+describe this distinction instead of claiming every authored module lacks a
+license. Existing receipts retain their historical status; exports are not
+retroactively rewritten. Full source continues to accompany the exported game.
+
+Future desktop packages also carry the root license, bilingual scope index,
+third-party index and project license texts in `resources/licenses/`. Package
+verification compares their bytes with the current source tree. This is not a
+claim that every third-party dependency or user asset has passed a rights audit.

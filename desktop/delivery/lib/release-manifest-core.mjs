@@ -13,6 +13,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {PROJECT_LICENSE_FILES} from '../../project-license-files.mjs';
 import {
   PACKAGE_REQUIRED_FILES,
   checkGodotCache,
@@ -595,11 +596,11 @@ function collectLicenses(root) {
     files.push({...file, role: 'engine-notice'});
   }
   push(entryFor(root, 'desktop/UPSTREAM.json', {role: 'provenance', packagePath: 'resources/licenses/UPSTREAM.json'}));
-  // The package notice document is the generated comprehensive notice, not the short
-  // repository summary: desktop/windows-NOTICES.md is pinned as a repo document, while
-  // the generated notices travel as resources/licenses/CRAFTMINE-NOTICES.md.
-  push(entryFor(root, 'desktop/windows-NOTICES.md', {role: 'product-notices', packagePath: null}));
-  push(entryFor(root, 'desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md', {role: 'package-notices', packagePath: 'resources/licenses/CRAFTMINE-NOTICES.md'}));
+  // Mirror the current electron-builder mapping. Historical generated audit
+  // notices remain repository evidence, not the client build's notice source.
+  push(entryFor(root, 'desktop/windows-NOTICES.md', {role: 'product-notices', packagePath: 'resources/licenses/CRAFTMINE-NOTICES.md'}));
+  push(entryFor(root, 'desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md', {role: 'historical-audit-notices', packagePath: null}));
+  for (const [source, target] of PROJECT_LICENSE_FILES) push(entryFor(root, source, {role: 'project-license', packagePath: target}));
   push(entryFor(root, 'desktop/delivery/licensing/offline-entry.json', {role: 'offline-licence-entry', packagePath: null}));
   push(entryFor(root, 'vendor/pi-desktop/LICENSE', {role: 'lgpl-text', packagePath: 'resources/licenses/PI-Desktop-LICENSE.txt'}));
   const seen = new Set();
@@ -615,8 +616,8 @@ function collectLicenses(root) {
     files: unique,
     status: unique.length ? 'verified' : 'absent',
     notes: 'desktop/godot/licenses/** (engine notices and the notice manifest), desktop/UPSTREAM.json, ' +
-      'the generated package notices (desktop/delivery/licensing/notices/CRAFTMINE-NOTICES.md), the offline ' +
-      'licence entry, the repository notice summary and the vendor LGPL text that the package ships as ' +
+      'the project license texts and scope, historical audit notices, the offline ' +
+      'licence entry, the packaged desktop/windows-NOTICES.md and the vendor LGPL text that the package ships as ' +
       'resources/licenses/PI-Desktop-LICENSE.txt.'
   });
 }

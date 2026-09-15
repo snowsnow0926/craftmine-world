@@ -1,5 +1,12 @@
 # 04. E2E Test Plan
 
+### Applied project license distribution (2026-09-15)
+
+Future client builds carry the root AGPL text, scope documents and MIT/LGPL/GPL
+texts with byte verification. Standalone game exports carry pinned original
+runtime MIT terms and scope exclusions beside Godot notices; missing or changed
+texts fail before publication. See [scenario and executed pure logic checks](../../e2e/project-license-distribution-20260915.md).
+
 ### Live-world publication capture (2026-09-15)
 
 - With the ordinary saved world running, publish from the asset sheet without a
