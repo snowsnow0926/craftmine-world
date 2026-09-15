@@ -6,3 +6,4 @@ export function createGodotWindowsExportService(options: {
  stagingRoot:string; resourcesRoot:string;
  toolchain:{broker:string;brokerIdentity:string;engineRoot:string};
 }): {request(channel:string,input:{worldId:string;operationId:string}):Promise<any>;dispose():Promise<void>};
+export function writeWindowsExportNotices(resourcesRoot: string, outputStage: string): Promise<void>;

@@ -24,6 +24,24 @@ async function writeNew(file,bytes){await fs.mkdir(path.dirname(file),{recursive
 async function inventory(root){const files=[];async function visit(dir){for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isSymbolicLink())fail('EXPORT_LINK_DENIED');if(entry.isDirectory())await visit(file);else{const bytes=await readBounded(file,256*1024*1024);files.push({path:relative(path.relative(root,file).replaceAll('\\','/')),bytes:bytes.length,sha256:hash(bytes)});}}}await visit(root);return files.sort((a,b)=>Buffer.compare(Buffer.from(a.path),Buffer.from(b.path)));}
 async function removeOwned(root,parent){if(path.dirname(root)!==parent||!path.basename(root).startsWith('.craftmine-export-'))fail('EXPORT_CLEANUP_SCOPE');await ordinary(root,{directory:true});await inventory(root);await fs.rm(root,{recursive:true});}
 
+export async function writeWindowsExportNotices(resourcesRoot, outputStage) {
+ const pins = [
+  ['GODOT_LICENSE.txt','b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80'],
+  ['GODOT_COPYRIGHT.txt','cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d'],
+  ['CRAFTMINE-RUNTIME-MIT.txt','48b8f1a875f4081ef737e40b8bb0a2f5cb5146308f0c2bf872769b53fab63f47'],
+  ['CRAFTMINE-RUNTIME-NOTICES.md','7fdae1a72b641d8d4a8c5f3ad1223757089fe2bd2f6b02386953fc28e18b87a2'],
+ ];
+ // Verify every notice before writing any of them. Output remains in the owned
+ // unpublished export stage until the caller completes its existing checks.
+ const texts = [];
+ for (const [name, digest] of pins) {
+  const bytes = await readBounded(path.join(resourcesRoot, 'licenses', name), 4 * 1024 * 1024);
+  if (hash(bytes) !== digest) fail('EXPORT_NOTICE_HASH_MISMATCH');
+  texts.push([name, bytes]);
+ }
+ for (const [name, bytes] of texts) await writeNew(path.join(outputStage, name), bytes);
+}
+
 /** No renderer path, command, template override or executable is accepted. */
 export function createGodotWindowsExportService(options){
  const operations=new Map(),locks=new Set();let disposed=false;
@@ -93,10 +111,10 @@ export function createGodotWindowsExportService(options){
    const current=await options.domainCall('godotRuntime.exportSource',{worldId:entry.worldId});if(current.buildId!==source.buildId||current.contentOid!==source.contentOid)fail('EXPORT_FORMAL_VERSION_CHANGED');
    state(entry,'publishing');const freshOutput=path.join(outputParent,'.craftmine-export-'+entry.operationId);await fs.mkdir(freshOutput);outputStage=freshOutput;await writeNew(path.join(outputStage,'.craftmine-export.json'),JSON.stringify({operationId:entry.operationId,worldId:entry.worldId,inputHash}));
    for(const file of result.artifacts){const bytes=await readBounded(path.join(result.artifactsRoot,file.path),256*1024*1024);if(bytes.length!==file.bytes||hash(bytes)!==file.sha256)fail('EXPORT_ARTIFACT_CHANGED');await writeNew(path.join(outputStage,file.path),bytes);}
-   for(const [name,digest] of [['GODOT_LICENSE.txt','b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80'],['GODOT_COPYRIGHT.txt','cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d']]){const bytes=await readBounded(path.join(options.resourcesRoot,'licenses',name),4*1024*1024);if(hash(bytes)!==digest)fail('EXPORT_NOTICE_HASH_MISMATCH');await writeNew(path.join(outputStage,name),bytes);}
+   await writeWindowsExportNotices(options.resourcesRoot,outputStage);
    for(const file of files)await writeNew(path.join(outputStage,'source',file.path),await readBounded(path.join(project,file.path),4*1024*1024));
-   const provenance={format:'craftmine.standalone-export/1',worldId:source.worldId,buildId:source.buildId,baseId:source.baseId,sourceWorldId:source.sourceWorldId,contentOid:source.contentOid,revision:source.revision,snapshotHash:hash(JSON.stringify(source.snapshot)),inputHash,originalFiles:source.files,exportFiles:files,artifacts:result.artifacts,brokerSha256:result.brokerSha256,rightsStatus:'local-preview-source-included; pending-authored-module-rights-not-cleared'};
-   await writeNew(path.join(outputStage,'EXPORT.json'),JSON.stringify(provenance,null,2));await writeNew(path.join(outputStage,'README.txt'),'Double-click game.exe to play. Save with F5 or the Save button; closing the window saves before exit. Keep game.exe and game.pck together.\n\nLocal preview export. Original authored module rights remain pending; no redistribution permission is granted here. Complete export source is included in source/. Godot license and third-party copyright notices are included.\n');
+   const provenance={format:'craftmine.standalone-export/1',worldId:source.worldId,buildId:source.buildId,baseId:source.baseId,sourceWorldId:source.sourceWorldId,contentOid:source.contentOid,revision:source.revision,snapshotHash:hash(JSON.stringify(source.snapshot)),inputHash,originalFiles:source.files,exportFiles:files,artifacts:result.artifacts,brokerSha256:result.brokerSha256,rightsStatus:'local-preview-source-included; original-project-runtime-MIT; content-rights-not-certified'};
+   await writeNew(path.join(outputStage,'EXPORT.json'),JSON.stringify(provenance,null,2));await writeNew(path.join(outputStage,'README.txt'),'Double-click game.exe to play. Save with F5 or the Save button; closing the window saves before exit. Keep game.exe and game.pck together.\n\nLocal preview export. Complete export source is included in source/. Original project runtime in the scopes listed by CRAFTMINE-RUNTIME-NOTICES.md is licensed under CRAFTMINE-RUNTIME-MIT.txt. Preserve those notices. Godot license and third-party copyright notices are included. User-created content, imported assets, and separately licensed code retain their own terms; this export does not certify the rights of the entire game.\n');
    if(entry.cancelled)fail('EXPORT_CANCELLED');const final=path.join(outputParent,'Craftmine-'+source.baseId+'-'+entry.operationId);await ordinary(final,{directory:true,missing:true});const receipt={worldId:entry.worldId,operationId:entry.operationId,status:'completed',buildId:source.buildId,baseId:source.baseId,revision:source.revision,files:files.length,directoryName:path.basename(final),rightsStatus:'local-preview-source-included'};await writeNew(path.join(entry.root,'publishing.json'),JSON.stringify({output:final,provenanceHash:hash(JSON.stringify(provenance,null,2)),receipt}));await fs.rename(outputStage,final);outputStage=null;
    await writeNew(path.join(entry.root,'completed.json'),JSON.stringify({output:final,provenance,receipt})).catch(()=>{});entry.status='completed';entry.view=receipt;return receipt;
   }catch(error){if(outputStage)await removeOwned(outputStage,outputParent).catch(()=>{});const code=typeof error.code==='string'&&/^[A-Z][A-Z0-9_]{0,100}$/.test(error.code)?error.code:'EXPORT_FAILED';if(entry.root)await fs.writeFile(path.join(entry.root,'failure.json'),JSON.stringify({code,message:String(error)})).catch(()=>{});state(entry,entry.cancelled?'cancelled':'failed',{error:{code}});throw Object.assign(Error(code),{code});}

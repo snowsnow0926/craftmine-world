@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {loadPackageAsar} from './package-asar.mjs';
+import {verifyProjectLicenseFiles} from './project-license-files.mjs';
 import {fileHash,resourceInventory,verifyRuntimeResources} from './prepare-runtime-resources.mjs';
 import {beginRelease,readRelease,sealRelease,verifySeal,selectInstaller,extractInstaller,verifyArchiveTool} from './release-run.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -66,6 +67,7 @@ if(mode==='begin-release'){
   if(manifest.commit!==exe('git',['rev-parse','HEAD'])||exe('git',['status','--porcelain','--untracked-files=normal']))throw Error('PACKAGE_SOURCE_NOT_CURRENT_CLEAN_HEAD');
   const required=['Craftmine World.exe','resources/app.asar','resources/bin/pi-desktop-host-core.exe','resources/bin/craftmine-core.exe','resources/agent-runtime/sidecar.js','resources/plugins/craftmine.world/main.cjs','resources/source/CraftmineWorld-source.zip','resources/source/USER_GUIDE.zh-CN.md','resources/licenses/PI-Desktop-LICENSE.txt','resources/licenses/CRAFTMINE-NOTICES.md'];
   for(const p of required)if(!(await fs.stat(path.join(packageRoot,p))).isFile())throw Error('MISSING_PACKAGE_FILE');
+  await verifyProjectLicenseFiles(root,packageRoot);
   const mappings=[['resources/bin/pi-desktop-host-core.exe',0],['resources/bin/craftmine-core.exe',1],['resources/agent-runtime/sidecar.js',2],['resources/plugins/craftmine.world/manifest.json',3],['resources/source/CraftmineWorld-source.zip',4]];
   for(const [p,index]of mappings)if(await digest(path.join(packageRoot,p))!==manifest.artifacts[index].sha256)throw Error('PACKAGE_SOURCE_HASH_MISMATCH');
   const runtime=await verifyRuntimeResources(path.join(packageRoot,'resources'),manifest.commit,{packaged:true});
