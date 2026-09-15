@@ -1,5 +1,13 @@
 # Craftmine World licensing inventory
 
+**Historical audit snapshot (2026-09-09/10).** The current project-owned-code
+grant is applied in [LICENSING.md](../../../LICENSING.md), following the
+[2026-09-15 owner confirmation](../../../docs/LICENSE_APPLICATION_2026-09-15.md).
+The statement below that no project license is applied describes this historical
+inventory, not the current root grant. Dependency and asset uncertainties remain
+unresolved unless backed by their own evidence. Current distribution pointers are
+in [THIRD_PARTY_NOTICES.md](../../../THIRD_PARTY_NOTICES.md).
+
 Status: **facts, targets and reviewable drafts only.** Nothing in this directory
 applies a licence, relicenses anything or constitutes legal advice. The governing
 decision record is `docs/LICENSING_STRATEGY.md`; it is a decision record, not an

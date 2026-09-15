@@ -1,5 +1,11 @@
 # Offline licence entry (packaged client and exported game)
 
+> Historical 2026-09-09/10 inventory, not a current package inspection. Some
+> descriptions below predate the shipped Godot/Blender/GPL resources. Use the
+> current [project scope](../../../LICENSING.md), [third-party index](../../../THIRD_PARTY_NOTICES.md),
+> and each actual package's inventories. Old missing/pending entries neither
+> negate the new original-code grant nor certify third-party clearance.
+
 Status: **facts and paths only. This document is not a licence, not legal advice and it
 does not apply any licence.** The machine-checkable mapping is
 `desktop/delivery/licensing/offline-entry.json`; the checker is
