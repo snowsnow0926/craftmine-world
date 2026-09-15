@@ -47,6 +47,18 @@ test('extras copy preserves pinned bytes with proof outside the sealed applicati
   assert.deepEqual((await fs.readdir(destination)).sort(), ['EXTRAS.json', 'examples']);
 });
 
+test('extras allow only the named root player guide and preserve its pinned bytes', async () => {
+  const fixture = await extrasFixture();
+  await fixture.write([{...fixture.entry, name: '00-开始试玩.txt'}]);
+  const extras = await readPreviewExtras(fixture.manifest), destination = path.join(fixture.directory, 'with-guide');
+  await fs.mkdir(destination); await copyPreviewExtras(destination, extras);
+  assert.equal(await fileHash(path.join(destination, '00-开始试玩.txt')), fixture.entry.sha256);
+  for (const name of ['00-开始试玩.cmd', '00-开始试玩.txt/child', 'START-PLAYER-PREVIEW.cmd', 'README.zh-CN.txt', 'DELIVERY.json']) {
+    await fixture.write([{...fixture.entry, name}]);
+    await assert.rejects(readPreviewExtras(fixture.manifest), /ENTRY_INVALID/);
+  }
+});
+
 test('extras reject traversal, Windows aliases, duplicate destinations and excessive declarations', async () => {
   const fixture = await extrasFixture();
   for (const name of ['output/app.exe', 'examples/../escape.zip', 'docs/con.txt', 'docs/x:stream', 'docs/a?.txt', 'docs/back\\slash', 'docs/trailing.']) {

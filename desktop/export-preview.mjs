@@ -8,6 +8,8 @@ import {randomUUID, createHash} from 'node:crypto';
 import {fileHash, resourceInventory, safeResourcePath} from './prepare-runtime-resources.mjs';
 import {readRelease, verifySeal, noLinks, archiveEntries} from './release-run.mjs';
 
+const ROOT_PLAYER_GUIDE = '00-开始试玩.txt';
+
 export function previewLauncher(version) {
   const match = /^\d+\.\d+\.\d+-preview\.(\d+)$/.exec(version);
   if (!match) throw Error('PREVIEW_VERSION_REQUIRED');
@@ -52,7 +54,7 @@ export async function readPreviewExtras(filename) {
   const names = new Set(); let total = 0;
   for (const entry of manifest.entries) {
     if (!entry || Array.isArray(entry) || Object.keys(entry).sort().join(',') !== 'bytes,file,name,sha256' ||
-        typeof entry.name !== 'string' || !/^(examples|docs)\/.+/.test(entry.name) || /[<>"|?*]/.test(entry.name) ||
+        typeof entry.name !== 'string' || (!/^(examples|docs)\/.+/.test(entry.name) && entry.name !== ROOT_PLAYER_GUIDE) || /[<>"|?*]/.test(entry.name) ||
         typeof entry.file !== 'string' || !path.isAbsolute(entry.file) || !/^[a-f0-9]{64}$/.test(entry.sha256) ||
         !Number.isSafeInteger(entry.bytes) || entry.bytes < 0 || entry.bytes > 64 * 1024 * 1024) throw Error('PREVIEW_EXTRAS_ENTRY_INVALID');
     safeResourcePath(entry.name);
