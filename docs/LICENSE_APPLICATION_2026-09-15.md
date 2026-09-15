@@ -39,4 +39,6 @@
 
 GNU 全文按原始 SHA-256 核对；MIT 运行时副本与项目 MIT 正文逐字节一致。文档核对相对链接和中英文功能、版本、许可范围的一致性。打包和导出规则采用针对性纯逻辑测试，不启动图形窗口、不调用模型、不重新制作已封存 Demo。
 
+本次完成的检查：13 份文档中 153 个本地相对链接全部存在；AGPL／LGPL／GPL 官方文本哈希一致，MIT 双份文件字节相同；24 项打包映射、运行时资源和发行清单测试通过，包含许可缺失、被篡改时拒绝导出的反例。完整 Windows 重打包和原生游戏重新导出未在本次文档任务中执行，不能把纯逻辑验证写成新成品验收。
+
 官方资料：[AGPL](https://www.gnu.org/licenses/agpl-3.0.html)、[LGPL](https://www.gnu.org/licenses/lgpl-3.0.html)、[Godot](https://godotengine.org/license/)、[Blender](https://www.blender.org/about/license/)。

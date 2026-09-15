@@ -1,5 +1,13 @@
 # Craftmine World Windows distribution notices
 
+Original project creation software is licensed under AGPL-3.0-only, with the
+explicit original export-runtime scopes separately licensed under MIT. Read
+`LICENSE`, `LICENSING.md`, `LICENSE.zh-CN.md` and `THIRD_PARTY_NOTICES.md` beside
+this file in `resources/licenses/`. Full supporting texts are in `LICENSES/`.
+The original PI Desktop tree, including currently LGPL-covered Craftmine domain
+code, keeps its existing LGPL declaration. These project grants do not replace
+third-party licenses or clear the rights of generated/imported assets.
+
 Craftmine World / 最中幻想 derives from PI-Desktop, whose pinned upstream revision and provenance are in `UPSTREAM.json`. The upstream copyright and LGPL-3.0-or-later license remain in `PI-Desktop-LICENSE.txt` and the supplied source archive. This file does not replace or relicense upstream material.
 
 The corresponding project source is bundled at `resources/source/CraftmineWorld-source.zip`, with build instructions, Chinese user guidance and a source/hash manifest. Build from that exact archive with the checked-in lockfiles. No remote publishing or proprietary-only redistribution is performed by this local preview build.
