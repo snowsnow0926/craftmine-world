@@ -11096,3 +11096,19 @@ session/world scope can reuse a successful measurement across tasks. The new
 task's complete reservation/settlement binding remains mandatory; permission,
 media, system/tool/body changes still fail closed. See
 [the cross-turn replay and native-loop cases](../../e2e/deepseek-cross-turn-measurement-20260915.md).
+
+## Demo new-world choices (FB04-002, 2026-09-15)
+
+In an isolated profile, open advanced save management and the new-world form.
+Verify that `first-person`, `mining-sandbox`, `side-view` and `top-down` have no
+cards or radio options, including disabled entries. Web and the creation world
+remain present. Choose the creation world and verify its blank starter plus all
+four shipped promotional examples. The Web choice retains only its own starters.
+
+With existing saves for the four hidden bases, verify that their rows, identity,
+opening, retry and copy actions remain available. Import a saved creation-world
+template and create a separate world using its exact library reference; hiding
+new-world choices must not remove that flow or modify the original world.
+Automated verification must use an independent headless profile, disabled pointer
+lock and normal page callbacks without real keyboard/mouse input or focus changes.
+See [the visibility and compatibility contract](fb04-new-world-choices.md).
