@@ -16,6 +16,7 @@ import {
   type CraftmineWorldEntry,
 } from "../lib/craftmine-worlds";
 import { CRAFTMINE_WORLD_TEXT } from "../lib/craftmine-worlds-text";
+import { readWorldCreationConfirmation } from "../lib/world-creation-confirmation";
 
 export type CraftmineWorldsStatus = "loading" | "ready" | "unavailable" | "error";
 
@@ -264,6 +265,13 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
       let finish!: (result: boolean) => void;
       const operation: CreateOperation = {worldId: attempt.worldId, previous, needsCancel: true, done: new Promise(resolve => {finish = resolve;}), finish: result => finish(result)};
       pendingCreate.current = operation;cancelRetry.current = null;
+      const ownsConfirmation = () => alive.current && !createCancelled.current
+        && pendingCreate.current === operation && createAttemptRef.current === attempt;
+      const confirmationList = () => readWorldCreationConfirmation({
+        read: () => bridge.list(), current: ownsConfirmation,
+        pending: () => setNotice(CRAFTMINE_WORLD_TEXT.createInitializing[lang]),
+        wait: () => new Promise<void>(resolve => setTimeout(resolve, CRAFTMINE_CREATION_POLL_MS)),
+      });
       try {
         if (!attempt.worldId) {
           // An uncertain acknowledgement is recovered using the exact original
@@ -273,7 +281,8 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
           operation.needsCancel = receipt.state !== "ready";
           setCreateAttempt({worldId:receipt.id,input:attempt.input});
         }
-        let createdList = await bridge.list();
+        let createdList = await confirmationList();
+        if (!createdList) return false;
         let created = createdList.worlds.find(world => world.id === attempt.worldId);
         if (!created) throw Error("CREATED_WORLD_NOT_FOUND");
         if (retrying && created.state === "failed" && !createCancelled.current) {
@@ -287,7 +296,8 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
           }
           if (createCancelled.current) return false;
           await bridge.creationAction(created.id, "retry");
-          createdList = await bridge.list();
+          createdList = await confirmationList();
+          if (!createdList) return false;
           created = createdList.worlds.find(world => world.id === attempt.worldId);
           if (!created) throw Error("CREATED_WORLD_NOT_FOUND");
         }
@@ -298,18 +308,19 @@ export function useCraftmineWorlds(lang: CraftmineLang): CraftmineWorldsControll
           setNotice(CRAFTMINE_WORLD_TEXT.createInitializing[lang]);
           let entry = created;
           while (entry.state !== "ready") {
-            if (!alive.current || createCancelled.current) return false;
+            if (!ownsConfirmation()) return false;
             if (entry.state === "failed") throw Error(entry.creation?.error?.message || "WORLD_INITIALIZATION_FAILED");
             await new Promise(resolve => setTimeout(resolve, CRAFTMINE_CREATION_POLL_MS));
-            if (!alive.current || createCancelled.current) return false;
-            const list = await bridge.list();
+            if (!ownsConfirmation()) return false;
+            const list = await confirmationList();
+            if (!list) return false;
             const found = list.worlds.find(world => world.id === created.id);
             if (!found) throw Error("CREATED_WORLD_NOT_FOUND");
             entry = found;
             await refresh();
           }
         }
-        if (!alive.current || createCancelled.current) return false;
+        if (!ownsConfirmation()) return false;
         operation.needsCancel = false;
         setCanCancelCreate(false);
         const result = await bridge.switchWorld(created.id);
